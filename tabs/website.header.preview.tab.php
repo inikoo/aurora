@@ -9,7 +9,9 @@
 
 */
 
-$html = $smarty->fetch('header_preview.tpl');
 
+$smarty->assign('website',$state['_object']);
+
+$html = $smarty->fetch('header_preview.tpl');
 
 ?>

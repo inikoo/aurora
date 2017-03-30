@@ -278,8 +278,7 @@ class Website extends DB_Table {
         switch ($key) {
 
             case 'Data':
-            case 'Header Data':
-            case 'Footer Data':
+
                 if ($this->data['Website '.$key] == '') {
                     $content_data = false;
                 } else {
@@ -290,7 +289,40 @@ class Website extends DB_Table {
                 break;
 
 
+            case 'Footer Data':
+            case 'Footer Published Data':
+
+                $sql = sprintf('SELECT `Website %s` AS data FROM `Website Footer Dimension` WHERE `Website Footer Key`=%d  ', $key, $this->get('Website Footer Key'));
+                if ($result = $this->db->query($sql)) {
+                    if ($row = $result->fetch()) {
+                        return json_decode($row['data'], true);
+                    } else {
+                        return false;
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
                 break;
+            case 'Header Data':
+            case 'Header Published Data':
+
+                $sql = sprintf('SELECT `Website %s` AS data FROM `Website Header Dimension` WHERE `Website Header Key`=%d  ', $key, $this->get('Website Header Key'));
+                if ($result = $this->db->query($sql)) {
+                    if ($row = $result->fetch()) {
+                        return json_decode($row['data'], true);
+                    } else {
+                        return false;
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+                break;
+
+
             default:
 
 
@@ -743,7 +775,7 @@ class Website extends DB_Table {
         include_once 'class.Category.php';
         $category = new Category($category_key);
 
-        $page_code = $this->get_unique_webpage_code($category->get('Code'));
+        $page_code = $this->get_unique_code($category->get('Code'), 'Webpage');
 
 
         $webpage_type = new Webpage_Type('website_code', $this->id, ($category->get('Category Subject') == 'Product' ? 'Prods' : 'Cats'));
@@ -874,7 +906,7 @@ class Website extends DB_Table {
 
     }
 
-    function get_unique_webpage_code($code) {
+    function get_unique_code($code, $type) {
 
 
         for ($i = 1; $i <= 200; $i++) {
@@ -887,8 +919,20 @@ class Website extends DB_Table {
                 $suffix = uniqid('', true);
             }
 
+            if ($type == 'Webpage') {
+                $sql = sprintf("SELECT `Page Key` FROM `Page Store Dimension`  WHERE `Webpage Website Key`=%d AND `Page Code`=%s  ", $this->id, prepare_mysql($code.$suffix));
+            } elseif ($type == 'Footer') {
+                $sql = sprintf(
+                    "SELECT `Website Footer Key` FROM `Website Footer Dimension`  WHERE `Website Footer Website Key`=%d AND `Website Footer Code`=%s  ", $this->id, prepare_mysql($code.$suffix)
+                );
+            } elseif ($type == 'Header') {
+                $sql = sprintf(
+                    "SELECT `Website Header Key` FROM `Website Header Dimension`  WHERE `Website Header Website Key`=%d AND `Website Header Code`=%s  ", $this->id, prepare_mysql($code.$suffix)
+                );
+            } else {
+                exit('error unknown type in get_unique_code ');
+            }
 
-            $sql = sprintf("SELECT `Page Code`,`Page Key` FROM `Page Store Dimension`  WHERE `Webpage Website Key`=%d AND `Page Code`=%s  ", $this->id, prepare_mysql($code.$suffix));
 
             if ($result = $this->db->query($sql)) {
                 if ($row = $result->fetch()) {
@@ -903,6 +947,92 @@ class Website extends DB_Table {
 
         return $suffix;
     }
+
+
+    function create_footer($data) {
+
+        include_once 'class.WebsiteFooter.php';
+
+        if (!isset($data['Website Footer Code'])) {
+            $this->error = true;
+            $this->msg   = 'no footer code';
+
+            return;
+        }
+
+        if ($data['Website Footer Code'] == '') {
+            $this->error = true;
+            $this->msg   = 'footer code empty';
+
+            return;
+        }
+
+        $data['Website Footer Code'] = $this->get_unique_code($data['Website Footer Code'], 'Footer');
+
+        $data['Website Footer Website Key'] = $this->id;
+
+
+        $footer = new WebsiteFooter('find', $data, 'create');
+        if (!$footer->id) {
+            $this->error = true;
+            $this->msg   = $footer->msg;
+
+            return;
+        }
+
+        if (!$this->get('Website Footer Key')) {
+
+            $this->update(
+                array('Website Footer Key' => $footer->id), 'no_history'
+
+            );
+
+        }
+
+    }
+
+    function create_header($data) {
+
+        include_once 'class.WebsiteHeader.php';
+
+        if (!isset($data['Website Header Code'])) {
+            $this->error = true;
+            $this->msg   = 'no header code';
+
+            return;
+        }
+
+        if ($data['Website Header Code'] == '') {
+            $this->error = true;
+            $this->msg   = 'header code empty';
+
+            return;
+        }
+
+        $data['Website Header Code'] = $this->get_unique_code($data['Website Header Code'], 'Header');
+
+        $data['Website Header Website Key'] = $this->id;
+
+
+        $header = new WebsiteHeader('find', $data, 'create');
+        if (!$header->id) {
+            $this->error = true;
+            $this->msg   = $header->msg;
+
+            return;
+        }
+
+        if (!$this->get('Website Header Key')) {
+
+            $this->update(
+                array('Website Header Key' => $header->id), 'no_history'
+
+            );
+
+        }
+
+    }
+
 
     function create_product_webpage($product_id) {
 
@@ -933,7 +1063,7 @@ class Website extends DB_Table {
         include_once 'class.Product.php';
         $product = new Product($product_id);
 
-        $page_code = $this->get_unique_webpage_code($product->get('Code'));
+        $page_code = $this->get_unique_code($product->get('Code'), 'Webpage');
 
 
         $webpage_type = new Webpage_Type('website_code', $this->id, 'Prod');
@@ -998,7 +1128,6 @@ class Website extends DB_Table {
         $this->error        = $page->error;
 
 
-
         $content_data = array(
             'description_block' => array(
                 'class' => '',
@@ -1012,7 +1141,6 @@ class Website extends DB_Table {
         );
 
         $page->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
-
 
 
         return $page->id;
@@ -1050,6 +1178,78 @@ class Website extends DB_Table {
 
 
     }
+
+
+    function add_image($raw_data, $options = false) {
+
+        include_once 'class.Image.php';
+
+        include_once 'utils/units_functions.php';
+
+
+        $data = array(
+            'Image Width'         => 0,
+            'Image Height'        => 0,
+            'Image File Size'     => 0,
+            'Image File Checksum' => '',
+            'Image Filename'      => $raw_data['Image Filename'],
+            'Image File Format'   => '',
+            'Image Data'          => '',
+
+            'upload_data' => $raw_data['Upload Data'],
+            'editor'      => $this->editor
+        );
+
+        if ($options) {
+            $options = json_decode($options, true);
+        }
+
+       // print_r($data);
+       // print_r($raw_data);
+       // print_r($options);
+
+
+        $scope_data = json_decode($raw_data['Image Subject Object Image Scope'], true);
+
+        $image    = new Image('find', $data);
+        $tmp_file = $data['upload_data']['tmp_name'];
+
+        $image_format = $image->guess_file_format($tmp_file);
+        $im           = $image->get_image_from_file($image_format, $tmp_file);
+
+        $width  = imagesx($im);
+        $height = imagesy($im);
+
+        if (isset($options['max_width']) and is_numeric($options['max_width']) and $width > $options['max_width']) {
+
+
+            $new_width  = $options['max_width'];
+            $new_height = $height * $options['max_width'] / $width;
+
+            $source = $im;
+            $im     = imagecreatetruecolor($new_width, $new_height);
+
+
+            imagecopyresized($im, $source, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
+        }
+
+      //  print_r($im);
+
+        $sql = sprintf(
+            "INSERT INTO `Website Image Dimension`  (`Website Image Website Key`,`Website Image Scope`,`Website Image Scope Key`,`Website Image Data`,`Website Image Date`,`Website Image Format`) VALUES (%d,%s,%s,%s,%s,%s) ",
+            $this->id, prepare_mysql($scope_data['scope']), prepare_mysql($scope_data['scope_key'], true), "'".addslashes($image->get_image_blob($im, $image_format))."'",
+            prepare_mysql(gmdate('Y-m-d H;i:s')),
+            prepare_mysql($image_format)
+
+        );
+        $this->db->exec($sql);
+        $image_key = $this->db->lastInsertId();
+
+
+        return $image_key;
+
+    }
+
 
 }
 

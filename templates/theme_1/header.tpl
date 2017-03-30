@@ -2,7 +2,7 @@
 <!--
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 6 March 2017 at 14:15:23 GMT+8, Sanur, Bali, Indonesia
+ Created: 28 March 2017 at 17:45:30 GMT+8, Cyberjaya, Malaysia
  Copyright (c) 2016, Inikoo
 
  Version 3
@@ -132,7 +132,26 @@
 
     }
 
+
+    /* real editinf css */
+
+
+    #logo:hover{
+        border:1px solid yellow;
+
+    }
+
+
+    /* real scructural css */
+
+    #logo {
+
+        background:url( web_image.php?id={$header_data['logo_image_key']}) no-repeat left top;
+    }
+
 </style>
+
+
 
 <div id="input_container_link" class="input_container link_url hide  " style="">
 <input  value="" placeholder="{t}http://... or webpage code{/t}">
@@ -243,7 +262,7 @@
 
 
 
-    <span id="save_button" class="" style="float:right" onClick="save_footer()"><i class="fa fa-cloud  " aria-hidden="true"></i> {t}Save{/t}</span>
+    <span id="save_button" class="" style="float:right" onClick="save_header()"><i class="fa fa-cloud  " aria-hidden="true"></i> {t}Save{/t}</span>
 
 
 </div>
@@ -256,7 +275,7 @@
 
         <li id="item_email_stem_cell" ><i class="fa fa-fw fa-envelope"></i> <span contenteditable>info@yourdomain.com</span></li>
         <li id="item_stem_cell"><i class="fa fa-fw "></i> <span contenteditable></span></li>
-        <li  id="item_image_stem_cell" ><img  onclick="edit_item_image(this)" src="theme_1/images/footer-wmap.png" alt="" /></li>
+        <li  id="item_image_stem_cell" ><img  onclick="edit_item_image(this)" src="theme_1/images/header-wmap.png" alt="" /></li>
 
 
 
@@ -264,7 +283,7 @@
 
 
     <div id="block_copyright_bundle_stem_cell" class="hide">
-    <div onClick="edit_copyright_bundle(this)"  class="footer_copyright_bundle">
+    <div onClick="edit_copyright_bundle(this)"  class="header_copyright_bundle">
         {t}Copyright{/t} © {"%Y"|strftime} <span class="copyright_bundle_owner">Aurora</span>. {t}All rights reserved{/t}. <span class="copyright_bundle_links"> <a class="copyright_bundle_link" href="#"> Terms of Use</a> | <a class="copyright_bundle_link" href="#"> Privacy Policy</a></span>
     </div>
     </div>
@@ -273,7 +292,7 @@
     </div>
 
     <div id="block_social_links_stem_cell" class="hide">
-        <ul  onClick="edit_social_links(this)"  class="footer_social_links">
+        <ul  onClick="edit_social_links(this)"  class="header_social_links">
 
                 <li class="" icon="fa-facebook"  ><a href="#"><i class="fa fa-facebook"></i></a></li>
             <li class="" icon="fa-twitter"  ><a href="#"><i class="fa fa-twitter"></i></a></li>
@@ -285,7 +304,7 @@
 
     <div id="block_text_stem_cell" class="hide">
 
-        <div class="footer_block siteinfo">
+        <div class="header_block siteinfo">
 
             <h4 class="lmb" contenteditable>{t}About us{/t}</h4>
 
@@ -302,7 +321,7 @@
     </div>
 
     <div id="block_links_stem_cell" class="hide">
-        <div class="footer_block qlinks">
+        <div class="header_block qlinks">
             <h4 class="lmb" contenteditable>{t}Useful Links{/t}</h4>
             <ul class="links_list">
                 <li class="item"><a href="#"><i class="fa fa-fw fa-angle-right link_icon" onClick="update_link(this)"></i> <span class="item_label" ondrop="return false;" contenteditable>{t}Home Page Variations{/t}<span></span></a></li>
@@ -318,204 +337,349 @@
 
     <div id="block_nothing_stem_cell" class="hide">
 
-        <div class="footer_block">&nbsp;</div>
+        <div class="header_block">&nbsp;</div>
     </div>
     <div id="block_low_nothing_stem_cell" class="hide">
         &nbsp;
     </div>
 
     <div id="block_items_stem_cell" class="hide">
-        <ul class="footer_block faddress">
+        <ul class="header_block faddress">
 
-                <li  class="item"><img  onclick="edit_item_image(this)" src="theme_1/images/footer-logo.png" alt="" /></li>
+                <li  class="item"><img  onclick="edit_item_image(this)" src="theme_1/images/header-logo.png" alt="" /></li>
 
                 <li   class="item"><i onclick="edit_item(this)"  class="fa fa-fw fa-map-marker"></i> <span contenteditable>10 London Road, Oxford,  OX2 6RB, UK</span></li>
 
                     <li   class="item"><i onclick="edit_item(this)"  class="fa fa-fw fa-phone"></i> <span contenteditable>+1-541-754-3010</span></li>
 
                     <li  class="item"><i onclick="edit_item(this)" class="fa fa-fw fa-envelope"></i> <span contenteditable>info@yourdomain.com</span></li>
-                <li  class="item"><img  onclick="edit_item_image(this)" src="theme_1/images/footer-wmap.png" alt="" /></li>
+                <li  class="item"><img  onclick="edit_item_image(this)" src="theme_1/images/header-wmap.png" alt="" /></li>
 
 
             <li onClick="add_item(this)"  class="ui-state-disabled add_item"><a href="{$item.url}"><i class="fa fa-fw fa-plus editing link_icon" onClick="update_link(this)"></i> <span class="editing" ondrop="return false;" >{t}Add item{/t}<span></span></a></li>
         </ul>
     </div>
 
-  <footer class="footer">
-      <div class="top_footer empty"></div><!-- end footer top section -->
-      <div class="clearfix"></div>
-
-      {foreach from=$footer_data.rows item=row}
-
-          {if $row.type=='main_4'}
-
-      <div class="container sortable_container ">
 
 
+    <header id="header">
 
-          {foreach from=$row.columns item=column name=main_4}
+        <!-- Top header bar -->
+        <div id="topHeader">
 
+            <div class="wrapper">
 
-              {if $column.type=='address'}
+                <div class="top_nav">
+                    <div class="container">
 
-                  <div class="one_fourth   editable_block {if $smarty.foreach.main_4.last}last{/if}" >
+                        <div class="left">
 
-                      <i class="fa fa-hand-rock-o editing hide dragger" aria-hidden="true" style="position:absolute;top:-25px"></i>
-                      <i onclick="open_block_type_options(this,'block_type_1','{$column.type}')" class="fa fa-recycle editing hide button recycler" aria-hidden="true" style="position:absolute;top:-23px;left:20px"></i>
+                            <!-- Logo -->
+                            <a href="index.html" id="logo"></a>
 
+                        </div><!-- end left -->
 
-                      <ul class="footer_block faddress">
-                          {foreach from=$column.items item=item }
-                              {if $item.type=='logo'}
-                                  <li  class="item _logo"><img  onclick="edit_item_image(this)" src="{$item.src}" title=" {$item.title}" /></li>
-                              {elseif $item.type=='text'}
-                                  <li   class="item _text" icon="{$item.icon}"><i onclick="edit_item(this)"  class="fa fa-fw {$item.icon}"></i> <span contenteditable>{$item.text}</span></li>
-                              {elseif $item.type=='email'}
-                                  <li  class="item _email"><i onclick="edit_item(this)" class="fa fa-fw fa-envelope"></i> <span contenteditable>{$item.text}</span></li>
-                              {/if}
-                          {/foreach}
-                          <li onClick="add_item(this)"  class="ui-state-disabled add_item"><a href="{$item.url}"><i class="fa fa-fw fa-plus editing link_icon" onClick="update_link(this)"></i> <span class="editing" ondrop="return false;" >{t}Add item{/t}<span></span></a></li>
-                      </ul>
-                  </div>
-              {elseif $column.type=='links'}
-                  <div class="one_fourth links  editable_block {if $smarty.foreach.main_4.last}last{/if}" >
-                      <i class="fa fa-hand-rock-o editing hide dragger" aria-hidden="true" style="position:absolute;top:-25px"></i>
-                      <i onclick="open_block_type_options(this,'block_type_1','{$column.type}')" class="fa fa-recycle editing hide button recycler" aria-hidden="true" style="position:absolute;top:-23px;left:20px"></i>
+                        <div class="right">
 
-                      <div class="footer_block qlinks">
+                            <a href="mailto:info@yourwebsite.com"><i class="fa fa-envelope"></i>&nbsp; info@yourwebsite.com</a>
+                            <i class="fa fa-phone-square"></i>&nbsp; +88 123 456 7890
 
-                          <h4 class="lmb" contenteditable>{$column.header}</h4>
+                            <ul class="topsocial two">
+                                <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                                <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                                <li><a href="#"><i class="fa fa-google-plus"></i></a></li>
+                                <li><a href="#"><i class="fa fa-youtube"></i></a></li>
+                                <li><a href="#"><i class="fa fa-rss"></i></a></li>
+                            </ul>
 
-                          <ul class="links_list">
-                              {foreach from=$column.items item=item }
-                                  <li class="item"><a href="{$item.url}">
-                                          <i class="fa fa-fw fa-angle-right link_icon" onClick="update_link(this)"></i>
-                                            <span class="item_label" ondrop="return false;" contenteditable>{$item.label}</span></a></li>
+                        </div><!-- end right -->
 
-                              {/foreach}
+                    </div>
+                </div><!-- end top links -->
 
-                              <li onClick="add_link(this)"  class="ui-state-disabled add_link"><a href="{$item.url}"><i class="fa fa-fw fa-plus editing link_icon" onClick="update_link(this)"></i> <span class="editing" ondrop="return false;" >{t}Add link{/t}<span></span></a></li>
+            </div>
 
-                          </ul>
-
-                      </div>
-                  </div>
-              {elseif $column.type=='text'}
-                  <div class="one_fourth  editable_block {if $smarty.foreach.main_4.last}last{/if}" >
-                      <i class="fa fa-hand-rock-o editing hide dragger" aria-hidden="true" style="position:absolute;top:-25px"></i>
-                      <i onclick="open_block_type_options(this,'block_type_1','{$column.type}')" class="fa fa-recycle editing hide button recycler" aria-hidden="true" style="position:absolute;top:-23px;left:20px"></i>
-
-                      <div class="footer_block siteinfo">
-
-                          <h4 class="lmb" contenteditable>{$column.header}</h4>
-
-                          <div  contenteditable>
-                          {$column.text}
-                          </div>
-                      </div>
-                  </div>
-              {elseif $column.type=='nothing'}
-                  <div class="one_fourth  editable_block {if $smarty.foreach.main_4.last}last{/if}">
-                      <div class="footer_block nothing">
-
-                      </div>
-
-                  </div>
-              {/if}
+        </div><!-- end top navigations -->
 
 
-          {/foreach}
+        <div id="trueHeader">
 
-      </div>
+            <div class="wrapper">
 
+                <div class="container">
 
+                    <nav class="menu_main2">
 
-          {elseif $row.type=='copyright'}
-              <div class="clearfix"></div>
+                        <div class="navbar yamm navbar-default">
 
-
-
-
-              <div class="copyright_info">
-                  <div class="container sortable_container">
-
-                      <div class="clearfix divider_dashed10"></div>
-
-
-
-                      {foreach from=$row.columns item=column name=copyright_info}
-
-                      {if $column.type=='text'}
-                          <div class="one_half  {if $smarty.foreach.copyright_info.last}last{/if}" >
-                              <i class="fa fa-hand-rock-o editing hide dragger" aria-hidden="true" style="position:absolute;top:-25px"></i>
-                              <i onclick="open_block_type_options(this,'block_type_2','low_{$column.type}')" class="fa fa-recycle editing hide button recycler" aria-hidden="true" style="position:absolute;top:-23px;left:20px"></i>
-                              <div class="footer_block _copyright_text">
-                              {$column.text}
-                              </div>
-                          </div>
-
-                          {elseif $column.type=='nothing'}
-                              <div class="one_half  {if $smarty.foreach.copyright_info.last}last{/if}" >
-                                  <i class="fa fa-hand-rock-o editing hide dragger" aria-hidden="true" style="position:absolute;top:-25px"></i>
-                                  <i onclick="open_block_type_options(this,'block_type_2','low_{$column.type}')" class="fa fa-recycle editing hide button recycler" aria-hidden="true" style="position:absolute;top:-23px;left:20px"></i>
-                                  <div class="footer_block _copyright_nothing">
-                                  </div>
-                              </div>
-
-                      {elseif $column.type=='copyright_bundle'}
-                              <div class="one_half  {if $smarty.foreach.copyright_info.last}last{/if}"  >
-
-                                  <i class="fa fa-hand-rock-o editing hide dragger" aria-hidden="true" style="position:absolute;top:-25px"></i>
-                                  <i onclick="open_block_type_options(this,'block_type_2','{$column.type}')" class="fa fa-recycle editing hide button recycler" aria-hidden="true" style="position:absolute;top:-23px;left:20px"></i>
-
-                                  <div class="footer_block _copyright_bundle">
-                                <div onClick="edit_copyright_bundle(this)"  class="footer_copyright_bundle">
-                                  {t}Copyright{/t} © {"%Y"|strftime} <span class="copyright_bundle_owner">{$column.owner}</span>. {t}All rights reserved{/t}. <span class="copyright_bundle_links">{foreach  from=$column.links item=item name=copyright_links}<a class="copyright_bundle_link" href="{$item.url}">{$item.label}</a>{if !$smarty.foreach.copyright_links.last} | {/if}{/foreach}</span>
+                            <div class="navbar-header">
+                                <div class="navbar-toggle .navbar-collapse .pull-right " data-toggle="collapse" data-target="#navbar-collapse-1"  > <span>Menu</span>
+                                    <button type="button" > <i class="fa fa-bars"></i></button>
                                 </div>
-                                </div>
-                              </div>
-                      {elseif $column.type=='social_links'}
-
-
-
-                          <div class="one_half  {if $smarty.foreach.copyright_info.last}last{/if}">
-
-                              <i class="fa fa-hand-rock-o editing hide dragger" aria-hidden="true" style="position:absolute;top:-25px"></i>
-                              <i onclick="open_block_type_options(this,'block_type_2','{$column.type}')" class="fa fa-recycle editing hide button recycler" aria-hidden="true" style="position:absolute;top:-23px;left:20px"></i>
-
-                              <div class="footer_block _social_links">
-
-                              <ul  onClick="edit_social_links(this)"  class="footer_social_links">
-                                  {foreach from=$column.items item=item}
-                                      <li class="social_link" icon="{$item.icon}"  ><a href="{$item.url}"><i class="fa {$item.icon}"></i></a></li>
-
-                                  {/foreach}
-                              </ul>
                             </div>
-                          </div>
-                      {/if}
+
+                            <div id="navbar-collapse-1" class="navbar-collapse collapse">
+
+                                <ul class="nav navbar-nav three">
+
+                                    <li class="dropdown yamm-fw"><a href="index.html" data-toggle="dropdown" class="dropdown-toggle active">Home</a>
+                                        <ul class="dropdown-menu">
+                                            <li>
+                                                <div class="yamm-content">
+                                                    <div class="row">
+
+                                                        <ul class="col-sm-6 col-md-4 list-unstyled two">
+                                                            <li>
+                                                                <p>Header Styles</p>
+                                                            </li>
+                                                            <li><a href="index1.html"><i class="fa fa-caret-right"></i> Header Style 1</a></li>
+                                                            <li><a href="index2.html"><i class="fa fa-caret-right"></i> Header Style 2</a></li>
+                                                            <li><a href="index3.html"><i class="fa fa-caret-right"></i> Header Style 3</a></li>
+                                                            <li><a href="index4.html"><i class="fa fa-caret-right"></i> Header Style 4</a></li>
+                                                            <li><a href="index5.html"><i class="fa fa-caret-right"></i> Header Style 5</a></li>
+                                                            <li><a href="index6.html"><i class="fa fa-caret-right"></i> Header Style 6</a></li>
+                                                            <li><a href="index.html"><i class="fa fa-caret-right"></i> Header Style 7</a></li>
+                                                            <li><a href="index10.html"><i class="fa fa-caret-right"></i> Header Style 8</a></li>
+                                                            <li><a href="index11.html"><i class="fa fa-caret-right"></i> Header Style 9</a><b class="mitemnew">New</b></li>
+                                                            <li><a href="http://gsrthemes.com/aaika/onepage/index.html"><i class="fa fa-caret-right"></i> One Page Theme</a><b class="mitemnew">New</b></li>
+                                                        </ul>
+
+                                                        <ul class="col-sm-6 col-md-4 list-unstyled two">
+                                                            <li>
+                                                                <p>Home Page Styles</p>
+                                                            </li>
+                                                            <li><a href="index-layout1.html"><i class="fa fa-caret-right"></i> Home Layout 1</a></li>
+                                                            <li><a href="index-layout2.html"><i class="fa fa-caret-right"></i> Home Layout 2</a></li>
+                                                            <li><a href="index-layout3.html"><i class="fa fa-caret-right"></i> Home Layout 3</a></li>
+                                                            <li><a href="index-layout4.html"><i class="fa fa-caret-right"></i> Home Layout 4</a></li>
+                                                            <li><a href="index-layout5.html"><i class="fa fa-caret-right"></i> Home Layout 5</a></li>
+                                                            <li><a href="index-layout6.html"><i class="fa fa-caret-right"></i> Home Layout 6</a></li>
+                                                            <li><a href="index-layout7.html"><i class="fa fa-caret-right"></i> Home Layout 7</a></li>
+                                                            <li><a href="index-layout8.html"><i class="fa fa-caret-right"></i> Home Layout 8</a></li>
+                                                            <li><a href="index-layout9.html"><i class="fa fa-caret-right"></i> Home Layout 9</a></li>
+                                                            <li><a href="index-layout10.html"><i class="fa fa-caret-right"></i> Home Layout 10</a></li>
+                                                        </ul>
+
+                                                        <ul class="col-sm-6 col-md-4 list-unstyled two">
+                                                            <li>
+                                                                <p>&nbsp;</p>
+                                                            </li>
+                                                            <li><a href="index-layout11.html"><i class="fa fa-caret-right"></i> Home Layout 11</a></li>
+                                                            <li><a href="index-layout12.html"><i class="fa fa-caret-right"></i> Home Layout 12</a></li>
+                                                            <li><a href="index-layout13.html"><i class="fa fa-caret-right"></i> Home Layout 13</a></li>
+                                                            <li><a href="index.html"><i class="fa fa-caret-right"></i> Home Layout 14</a></li>
+                                                            <li><a href="index10.html"><i class="fa fa-caret-right"></i> Text Slider</a><b class="mitemnew">New</b></li>
+                                                            <li><a href="index9.html"><i class="fa fa-caret-right"></i> Header with Portfolio</a><b class="mitemnew">New</b></li>
+                                                            <li><a href="index7.html"><i class="fa fa-caret-right"></i> Slider with Form</a><b class="mitemnew">New</b></li>
+                                                            <li><a href="index8.html"><i class="fa fa-caret-right"></i> Form in Header</a><b class="mitemnew">New</b></li>
+
+                                                        </ul>
 
 
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </li>
 
-                    {/foreach}
+                                    <li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Pages</a>
+                                        <ul class="dropdown-menu multilevel" role="menu">
+                                            <li><a href="about.html">About Style 1</a></li>
+                                            <li><a href="about2.html">About Style 2</a></li>
+                                            <li><a href="about3.html">About Style 3</a></li>
+                                            <li><a href="about4.html">About Style 4</a></li>
+                                            <li><a href="about5.html">About Style 5</a></li>
+                                            <li><a href="services.html">Services Style 1</a></li>
+                                            <li><a href="services2.html">Services Style 2</a></li>
+                                            <li><a href="services3.html">Services Style 3</a></li>
+                                            <li><a href="services4.html">Services Style 4</a></li>
+                                            <li><a href="services5.html">Services Style 5</a></li>
+                                            <li><a href="team.html">Our Team Style 1</a></li>
+                                            <li><a href="team2.html">Our Team Style 2</a></li>
+                                            <li><a href="team3.html">Our Team Style 3</a></li>
+                                            <li class="dropdown-submenu mul"> <a tabindex="-1" href="#">Multi Level Submenu +</a>
+                                                <ul class="dropdown-menu">
+                                                    <li><a href="#">Menu Item 1</a></li>
+                                                    <li><a href="#">Menu Item 2</a></li>
+                                                    <li><a href="#">Menu Item 3</a></li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </li>
 
+                                    <li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Sliders</a>
+                                        <ul class="dropdown-menu multilevel" role="menu">
+                                            <li><a href="index1.html">Slider Style 1</a></li>
+                                            <li><a href="index5.html">Slider Style 2</a></li>
+                                            <li><a href="index4.html">Slider Style 3</a></li>
+                                            <li><a href="index-layout14.html">Slider Style 4</a></li>
+                                            <li><a href="index10.html">Slider Style 5</a></li>
+                                            <li><a href="index11.html">Slider Style 6</a></li>
+                                            <li><a href="index8.html">Slider Style 7</a></li>
+                                            <li><a href="index9.html">Slider Style 8</a></li>
+                                            <li><a href="index7.html">Slider Style 9</a></li>
+                                            <li><a href="index.html">Slider Style 10</a></li>
+                                        </ul>
+                                    </li>
 
+                                    <li class="dropdown yamm-fw"> <a href="#" data-toggle="dropdown" class="dropdown-toggle">Features</a>
+                                        <ul class="dropdown-menu">
+                                            <li>
+                                                <div class="yamm-content">
+                                                    <div class="row">
 
-                  </div>
-              </div>
-          {/if}
+                                                        <ul class="col-sm-6 col-md-4 list-unstyled two">
+                                                            <li>
+                                                                <p>Useful Pages</p>
+                                                            </li>
+                                                            <li><a href="left-sidebar.html"><i class="fa fa-angle-right"></i>Left Sidebar</a></li>
+                                                            <li><a href="right-sidebar.html"><i class="fa fa-angle-right"></i>Right Sidebar</a></li>
+                                                            <li><a href="left-nav.html"><i class="fa fa-angle-right"></i>Left Navigation</a></li>
+                                                            <li><a href="right-nav.html"><i class="fa fa-angle-right"></i>Right Navigation</a></li>
+                                                            <li><a href="login.html"><i class="fa fa-angle-right"></i>Login Form</a></li>
+                                                            <li><a href="register.html"><i class="fa fa-angle-right"></i>Registration Form</a></li>
+                                                            <li><a href="404.html"><i class="fa fa-angle-right"></i>404 Error Page</a></li>
+                                                            <li><a href="faq.html"><i class="fa fa-angle-right"></i>FAQs Page</a></li>
+                                                            <li><a href="video-bg.html"><i class="fa fa-angle-right"></i>Video Backgrounds</a></li>
+                                                        </ul>
 
+                                                        <ul class="col-sm-6 col-md-4 list-unstyled two">
+                                                            <li>
+                                                                <p>Diffrent Websites</p>
+                                                            </li>
+                                                            <li><a href="coming-soon.html" target="_blank"><i class="fa fa-angle-right"></i>Coming Soon</a></li>
+                                                            <li><a href="history.html"><i class="fa fa-angle-right"></i>History Timeline</a></li>
+                                                            <li><a href="index-layout14.html"><i class="fa fa-angle-right"></i>Video BG Slider</a></li>
+                                                            <li><a href="template17.html"><i class="fa fa-angle-right"></i>Header Styles</a></li>
+                                                            <li><a href="template18.html"><i class="fa fa-angle-right"></i>Header Styles</a></li>
+                                                            <li><a href="#"><i class="fa fa-angle-right"></i>Masonry Gallerys</a> </li>
+                                                            <li><a href="#"><i class="fa fa-angle-right"></i>Parallax Backgrounds</a> </li>
+                                                            <li><a href="#"><i class="fa fa-angle-right"></i>Background Videos</a> </li>
+                                                            <li><a href="#"><i class="fa fa-angle-right"></i>Create your Own</a> </li>
+                                                        </ul>
 
-      {/foreach}
+                                                        <ul class="col-sm-6 col-md-4 list-unstyled two">
+                                                            <li>
+                                                                <p>More Features</p>
+                                                            </li>
+                                                            <li><a href="#"><i class="fa fa-angle-right"></i>Mega Menu</a></li>
+                                                            <li><a href="#"><i class="fa fa-angle-right"></i>Diffrent Websites</a></li>
+                                                            <li><a href="#"><i class="fa fa-angle-right"></i>Cross Browser Check</a></li>
+                                                            <li><a href="#"><i class="fa fa-angle-right"></i>Premium Sliders</a></li>
+                                                            <li><a href="#"><i class="fa fa-angle-right"></i>Diffrent Slide Shows</a></li>
+                                                            <li><a href="#"><i class="fa fa-angle-right"></i>Video BG Effects</a></li>
+                                                            <li><a href="#"><i class="fa fa-angle-right"></i>100+ Feature Sections</a></li>
+                                                            <li><a href="#"><i class="fa fa-angle-right"></i>Use for any Website</a></li>
+                                                            <li><a href="#"><i class="fa fa-angle-right"></i>Free Updates</a></li>
+                                                        </ul>
 
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </li>
 
+                                    <li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Portfolio</a>
+                                        <ul class="dropdown-menu" role="menu">
+                                            <li> <a href="portfolio-1.html">Single Item</a> </li>
+                                            <li> <a href="portfolio-5.html">Portfolio Masonry</a> </li>
+                                            <li> <a href="portfolio-4.html">Portfolio Columns 4</a> </li>
+                                            <li> <a href="portfolio-3.html">Portfolio Columns 3</a> </li>
+                                            <li> <a href="portfolio-2.html">Portfolio Columns 2</a> </li>
+                                            <li> <a href="portfolio-6.html">Portfolio + Sidebar</a> </li>
+                                            <li> <a href="portfolio-7.html">Portfolio Full Width</a> </li>
+                                            <li> <a href="portfolio-8.html">Image Gallery</a> </li>
+                                        </ul>
+                                    </li>
 
+                                    <li class="dropdown"> <a href="#" data-toggle="dropdown" class="dropdown-toggle">Blog </a>
+                                        <ul class="dropdown-menu multilevel" role="menu">
+                                            <li> <a href="blog-4.html">With Masonry</a> </li>
+                                            <li> <a href="blog.html">With Large Image</a> </li>
+                                            <li> <a href="blog-2.html">With Medium Image</a> </li>
+                                            <li> <a href="blog-3.html">With Small Image</a> </li>
+                                            <li> <a href="blog-post.html">Single Post</a> </li>
+                                        </ul>
+                                    </li>
 
-            <div class="clearfix"></div>
+                                    <li class="dropdown yamm-fw"> <a href="#" data-toggle="dropdown" class="dropdown-toggle">Shortcodes</a>
+                                        <ul class="dropdown-menu">
+                                            <li>
+                                                <div class="yamm-content">
+                                                    <div class="row">
 
-        </footer>
+                                                        <ul class="col-sm-6 col-md-4 list-unstyled two">
+                                                            <li><a href="template1.html"><i class="fa fa-plus-square"></i> Accordion &amp; Toggle</a></li>
+                                                            <li><a href="template2.html"><i class="fa fa-leaf"></i> Title Styles</a></li>
+                                                            <li><a href="template3.html"><i class="fa fa-bars"></i> List of Dividers</a></li>
+                                                            <li><a href="template4.html"><i class="fa fa-exclamation-triangle"></i> Boxes Alert</a></li>
+                                                            <li><a href="template5.html"><i class="fa fa-hand-o-up"></i> List of Buttons</a></li>
+                                                            <li><a href="template6.html"><i class="fa fa-cog"></i> Carousel Sliders</a></li>
+                                                            <li><a href="template7.html"><i class="fa fa-file-text"></i> Page Columns</a></li>
+                                                            <li><a href="template8.html"><i class="fa fa-rocket"></i> Animated Counters</a></li>
+                                                            <li><a href="template17.html"><i class="fa fa-question"></i> Faqs Page</a></li>
+                                                        </ul>
 
-    </div>
+                                                        <ul class="col-sm-6 col-md-4 list-unstyled two">
+                                                            <li><a href="template9.html"><i class="fa fa-pie-chart"></i> Pie Charts</a></li>
+                                                            <li><a href="template10.html"><i class="fa fa-flag"></i> Font Icons</a></li>
+                                                            <li><a href="template11.html"><i class="fa fa-umbrella"></i> Flip Boxes</a></li>
+                                                            <li><a href="template12.html"><i class="fa fa-picture-o"></i> Image Frames</a></li>
+                                                            <li><a href="template13.html"><i class="fa fa-table"></i> Pricing Tables</a></li>
+                                                            <li><a href="template14.html"><i class="fa fa-line-chart"></i> Progress Bars</a></li>
+                                                            <li><a href="template15.html"><i class="fa fa-toggle-on"></i> List of Tabs</a></li>
+                                                            <li><a href="template16.html"><i class="fa fa-paper-plane"></i> Popover &amp; Tooltip</a></li>
+                                                            <li><a href="template18.html"><i class="fa fa-play-circle"></i> Video Backgrounds</a></li>
+                                                        </ul>
+
+                                                        <ul class="col-sm-6 col-md-4 list-unstyled two">
+                                                            <li>
+                                                                <p>About Website</p>
+                                                            </li>
+                                                            <li class="dart">
+                                                                <img src="http://placehold.it/230x80" alt="" class="rimg marb1" />
+                                                                There are many variations passages available the majority have alteration in some form, by injected humour on randomised words if you are going to use a passage of lorem anything.
+                                                            </li>
+                                                        </ul>
+
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </li>
+
+                                    <li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Contact</a>
+                                        <ul class="dropdown-menu" role="menu">
+                                            <li> <a href="contact.html">Contact Style 1</a> </li>
+                                            <li> <a href="contact2.html">Contact Style 2</a> </li>
+                                            <li> <a href="contact3.html">Contact Style 3</a> </li>
+                                        </ul>
+                                    </li>
+
+                                </ul>
+
+                            </div>
+
+                        </div>
+
+                    </nav><!-- end Navigation Menu -->
+
+                    <div class="menu_right2">
+                        <div class="search_hwrap two">
+                            <form action="index.html" autocomplete="on">
+                                <input id="search" name="search" type="text" placeholder="Search the site..."><input id="search_submit" value="Rechercher" type="submit">
+                            </form>
+                        </div>
+                    </div><!-- end search bar -->
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </header>
+
 
 
     <script>
@@ -534,7 +698,7 @@ var current_editing_item_id=false
         var option_dialog=$('#'+option_id)
 
 
-        var block=$(element).next('.footer_block')
+        var block=$(element).next('.header_block')
 
         block.uniqueId()
         var id= block.attr('id')
@@ -939,11 +1103,11 @@ console.log(link.html())
         block.find('.copyright_bundle_links').html(copyright_links)
     }
 
-    $("body").on('DOMSubtreeModified', ".footer", function() {
+    $("body").on('DOMSubtreeModified', ".header", function() {
         $('#save_button').addClass('save button')
     });
 
-    function save_footer(){
+    function save_header(){
 
        if(! $('#save_button').hasClass('save')){
          //  return;
@@ -955,7 +1119,7 @@ console.log(link.html())
         var cols_main_4=[];
         var cols_copyright=[];
 
-        $('footer.footer .footer_block').each(function(i, obj) {
+        $('header.header .header_block').each(function(i, obj) {
 
 
 
@@ -1132,26 +1296,25 @@ console.log(link.html())
             }
         })
 
-        footer_data={
+        header_data={
             rows:[]}
 
 
-        footer_data.rows.push({
+        header_data.rows.push({
                 'type':'main_4',
                 'columns':cols_main_4
             }
         )
-        footer_data.rows.push({
+        header_data.rows.push({
             'type':'copyright',
             'columns':cols_copyright
     }
     )
 
 
+     //   console.log(header_data)
 
-     //   console.log(footer_data)
-
-        var request = '/ar_edit_website.php?tipo=save_footer&footer_key={$footer_key}&footer_data=' +encodeURIComponent(btoa(JSON.stringify(footer_data)));
+        var request = '/ar_edit_website.php?tipo=save_header&header_key={$header_key}&header_data=' +encodeURIComponent(btoa(JSON.stringify(header_data)));
 
 
         $.getJSON(request, function (data) {
@@ -1192,7 +1355,7 @@ console.log(link.html())
         ajaxData.append("parent", 'website')
         ajaxData.append("parent_key", '{$website->id}')
         ajaxData.append("parent_object_scope", JSON.stringify({
-            scope: 'footer', scope_key: '{$footer_key}'
+            scope: 'header', scope_key: '{$header_key}'
 
         }))
         ajaxData.append("options", JSON.stringify({

@@ -1745,7 +1745,7 @@ class Customer extends Subject {
             'Action'            => 'created',
             'Direct Object'     => 'Invoice',
             'Direct Object Key' => $refund->id,
-            'Prepostion'        => 'on',
+            'Preposition'        => 'on',
             // 'Indirect Object'=>'User'
             //'Indirect Object Key'=>0,
             'Date'              => $refund->data ['Invoice Date']

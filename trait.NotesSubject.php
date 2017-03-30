@@ -15,21 +15,35 @@
 trait NotesSubject {
 
 
-    function add_note($note, $details = '', $date = false, $deletable = 'No', $customer_history_type = 'Notes', $author = false, $subject = false, $subject_key = false) {
+    function add_note($note, $details = '', $date = false, $deletable = 'No', $history_type = 'Notes', $author = false, $subject = false, $subject_key = false,
+        $indirect_object=false,$indirect_object_key=false,
+        $subject_history_object=false,$subject_history_object_key=false
+
+        ) {
 
 
         list($ok, $note, $details) = $this->prepare_note($note, $details);
         if (!$ok) {
             return;
         }
+
+
+        if($indirect_object===false){
+            $indirect_object=$this->table_name;
+        }
+
+        if($indirect_object_key===false){
+            $indirect_object_key=  $this->id;
+        }
+
         $history_data = array(
             'History Abstract'    => $note,
             'History Details'     => $details,
             'Action'              => 'created',
             'Direct Object'       => 'Note',
-            'Prepostion'          => 'on',
-            'Indirect Object'     => $this->table_name,
-            'Indirect Object Key' => (($this->table_name == 'Product' or $this->table_name == 'Supplier Product') ? $this->pid : $this->id)
+            'Preposition'          => 'on',
+            'Indirect Object'     => $indirect_object,
+            'Indirect Object Key' => $indirect_object_key
         );
         if ($author) {
             $history_data['Author Name'] = $author;
@@ -43,9 +57,17 @@ trait NotesSubject {
             $history_data['Date'] = $date;
         }
 
+        if($subject_history_object===false){
+            $subject_history_object=$this->table_name;
+        }
+
+        if($subject_history_object_key===false){
+            $subject_history_object_key=  $this->id;
+        }
+
 
         $history_key = $this->add_subject_history(
-            $history_data, $force_save = true, $deletable, $customer_history_type, $this->table_name, $this->id
+            $history_data, $force_save = true, $deletable, $history_type, $subject_history_object, $subject_history_object_key
         );
 
         $this->updated   = true;

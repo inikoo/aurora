@@ -224,7 +224,7 @@ switch ($tab) {
     case 'deal.history':
     case 'campaign.history':
     case 'supplier.order.history':
-
+    case 'category.webpage.logbook':
         $data = prepare_values(
             $_REQUEST, array(
                          'parameters' => array('type' => 'json array')
@@ -1213,7 +1213,8 @@ function get_history_elements($db, $data) {
             'Changes'     => 0,
             'Attachments' => 0,
             'WebLog'      => 0,
-            'Emails'      => 0
+            'Emails'      => 0,
+            'Deployment'      => 0
         )
     );
     if ($data['parent'] == 'category') {
@@ -1255,6 +1256,10 @@ function get_history_elements($db, $data) {
     } elseif ($data['parent'] == 'purchase_order') {
         $sql = sprintf(
             "SELECT count(*) AS num ,`Type` FROM  `Purchase Order History Bridge` WHERE  `Purchase Order Key`=%d GROUP BY  `Type`", $data['parent_key']
+        );
+    } elseif ($data['parent'] == 'webpage_logbook') {
+        $sql = sprintf(
+            "SELECT count(*) AS num ,`Type` FROM  `Webpage Publishing History Bridge` WHERE  `Webpage Key`=%d GROUP BY  `Type`", $data['parent_key']
         );
     } elseif ($data['parent'] == 'none') {
         $sql = sprintf(

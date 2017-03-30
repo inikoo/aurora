@@ -2267,7 +2267,7 @@ class User extends DB_Table {
 
     }
 
-    function add_image($image_key) {
+    function add_image($image_key,$options=false) {
 
         $sql = sprintf(
             "SELECT `Image Key` FROM `Image Bridge` WHERE `Subject Key`=%d AND `Subject Type`='User Profile'", $this->id

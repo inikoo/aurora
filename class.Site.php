@@ -405,7 +405,7 @@ class Site extends DB_Table {
     }
 
     function add_store_page($raw_page_data) {
-
+        return;
         $store = new Store($this->data['Site Store Key']);
 
         $page_code = $this->get_unique_store_page_code($store);
@@ -567,7 +567,7 @@ class Site extends DB_Table {
     }
 
     function add_department_page_to_delete($department_key, $raw_data) {
-
+        return;
         $sql = sprintf(
             "SELECT `Page Key` FROM `Page Store Dimension` WHERE `Page Store Section`='Department Catalogue' AND `Page Parent Key`=%d  AND `Page Site Key`=%d ", $department_key, $this->id
         );
@@ -731,6 +731,8 @@ class Site extends DB_Table {
 
     function add_family_page_to_delete($family_key, $raw_data) {
 
+        return;
+
         $this->new_page = false;
 
 
@@ -891,7 +893,7 @@ class Site extends DB_Table {
     }
 
     function add_product_page_to_delete($product_pid, $raw_data) {
-
+        return;
 
         $sql = sprintf(
             "SELECT `Page Key` FROM `Page Store Dimension` WHERE `Page Store Section`='Product Description' AND `Page Parent Key`=%d AND `Page Site Key`=%d", $product_pid, $this->id

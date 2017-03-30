@@ -523,6 +523,11 @@ ALTER TABLE `Staff Dimension` CHANGE `Staff Working Hours Per Week Metadata` `St
 
  update  `Supplier Part Dimension` set `Supplier Part Unit Extra Percentage`=truncate(`Supplier Part Unit Extra Cost`/`Supplier Part Unit Cost`,2),  where `Supplier Part Unit Extra Cost`!=0  and `Supplier Part Unit Cost`!=0 ;
 
+
+ALTER TABLE `Website Dimension`DROP `Website Header Data`, DROP `Website Footer Data`;
+ALTER TABLE `Website Dimension` ADD `Website Header Key` MEDIUMINT NULL DEFAULT NULL AFTER `Website Data`, ADD `Website Footer Key` INT NULL DEFAULT NULL AFTER `Website Header Key`;
+
+
 ===============
 
 

@@ -118,6 +118,27 @@ $elements_options = array(
 
         )
     ),
+
+
+    'webpage_publishing_history'       => array(
+        'type' => array(
+            'label' => _('Type'),
+            'items' => array(
+                'Notes'       => array(
+                    'label'    => _('Notes'),
+                    'selected' => true
+                ),
+
+                'Deployment'     => array(
+                    'label'    => _('Deployments'),
+                    'selected' => true
+                ),
+
+            ),
+
+        )
+    ),
+
     'supplier_history'       => array(
         'type' => array(
             'label' => _('Type'),

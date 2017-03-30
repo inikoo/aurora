@@ -16,11 +16,12 @@ include_once 'class.PageStoreSection.php';
 include_once 'class.Site.php';
 include_once 'class.Image.php';
 include_once 'trait.ImageSubject.php';
+include_once 'trait.NotesSubject.php';
 
 include_once 'utils/website_functions.php';
 
 class Page extends DB_Table {
-    use ImageSubject;
+    use ImageSubject,NotesSubject;
 
     var $new = false;
     var $logged = false;
@@ -105,7 +106,9 @@ class Page extends DB_Table {
 
         $result = mysql_query($sql);
         if ($this->data = mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $this->id   = $this->data['Page Key'];
+            $this->id = $this->data['Page Key'];
+
+
             $this->type = $this->data['Page Type'];
 
             if ($this->type == 'Store') {
@@ -1708,7 +1711,10 @@ class Page extends DB_Table {
 
 
         switch ($field) {
+            case 'History Note':
+                $this->add_note($value, '', '', $metadata['deletable'],'Notes',false,false,false,'Webpage',false,'Webpage Publishing');
 
+                    break;
 
             case('Webpage Scope'):
             case('Webpage Scope Key'):
@@ -2727,7 +2733,7 @@ class Page extends DB_Table {
 
     }
 
-    function publish() {
+    function publish($note = '') {
 
 
         if ($this->get('Webpage State') == 'Offline') {
@@ -2736,7 +2742,9 @@ class Page extends DB_Table {
         }
         if ($this->get('Webpage Launch Date') == '') {
             $this->update(array('Webpage Launch Date' => gmdate('Y-m-d H:i:s')), 'no_history');
-
+            $msg=_('Webpage launched');
+        }else{
+            $msg=_('Webpage published');
         }
 
 
@@ -2746,6 +2754,23 @@ class Page extends DB_Table {
         $sql = sprintf(
             'UPDATE `Page Store Dimension` SET  `Page Store Content Published Data`=`Page Store Content Data`,`Page Store Published CSS`=`Page Store CSS` WHERE `Page Key`=%d ', $this->id
         );
+
+        $this->db->exec($sql);
+
+
+        $history_data = array(
+            'Date'              => gmdate('Y-m-d H:i:s'),
+            'Direct Object'     => 'Webpage',
+            'Direct Object Key' => $this->id,
+            'History Details'   => '',
+            'History Abstract'  => $msg.($note != '' ? ', '.$note : ''),
+        );
+
+        $history_key = $this->add_history($history_data, $force_save = true);
+        $sql         = sprintf(
+            "INSERT INTO `Webpage Publishing History Bridge` VALUES (%d,%d,'No','No','Deployment')", $this->id, $history_key
+        );
+
 
         $this->db->exec($sql);
 
@@ -2771,12 +2796,15 @@ class Page extends DB_Table {
                     $webpage = new Page('scope', 'Product', $row['Product Category Index Product ID']);
 
 
-                    if ($webpage->get('Webpage Launch Date') == '') {
+                    if ($webpage->id) {
 
 
-                        $webpage->publish();
+                        if ($webpage->get('Webpage Launch Date') == '') {
+
+
+                            $webpage->publish();
+                        }
                     }
-
 
                 }
             } else {
@@ -3136,7 +3164,6 @@ class Page extends DB_Table {
         $this->db->exec($sql);
 
 
-
         $this->deleted = false;
         $sql           = sprintf(
             "DELETE FROM `Page Dimension` WHERE `Page Key`=%d", $this->id
@@ -3254,7 +3281,6 @@ class Page extends DB_Table {
 
             $deleted_page = new PageDeleted();
             $deleted_page->create($data);
-
 
 
             require_once 'class.Webpage_Type.php';

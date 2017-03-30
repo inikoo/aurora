@@ -168,6 +168,11 @@ if ($parameters['parent'] == 'customer' or $parameters['parent'] == 'order_custo
         ' where   B.`Purchase Order Key`=%d   ', $parameters['parent_key']
     );
     $subject = 'Purchase Order';
+} elseif ($parameters['parent'] == 'webpage_logbook') {
+    $where   = sprintf(
+        ' where   B.`Webpage Key`=%d   ', $parameters['parent_key']
+    );
+    $subject = 'Webpage Publishing';
 } elseif ($parameters['parent'] == 'hr') {
     $where   = sprintf(' where  true ');
     $subject = 'HR';
