@@ -68,6 +68,8 @@ CREATE TABLE `API Request Dimension` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Account Data` (
   `Account Key` mediumint(8) unsigned NOT NULL,
+  `Account Active Parts Number` mediumint(9) NOT NULL DEFAULT '0',
+  `Account Active Parts with SKO Barcode Number` mediumint(9) NOT NULL DEFAULT '0',
   `Account Orders In Basket Number` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Account Orders In Basket Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Account Orders In Process Paid Number` mediumint(8) unsigned NOT NULL DEFAULT '0',
@@ -76,8 +78,11 @@ CREATE TABLE `Account Data` (
   `Account Orders In Process Not Paid Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Account Orders In Warehouse Number` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Account Orders In Warehouse Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Account Orders Packed Number` mediumint(9) NOT NULL DEFAULT '0',
+  `Account Orders Packed Amount` decimal(12,0) NOT NULL DEFAULT '0',
   `Account Orders In Dispatch Area Number` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Account Orders In Dispatch Area Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Account Today Start Orders In Warehouse Number` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Account Total Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Account Total Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Account Total Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
@@ -1464,8 +1469,8 @@ CREATE TABLE `Barcode Asset Bridge` (
   `Barcode Asset Key` mediumint(9) DEFAULT NULL,
   `Barcode Asset Assigned Date` datetime DEFAULT NULL,
   `Barcode Asset Withdrawn Date` datetime DEFAULT NULL,
-  KEY `Barcode Asset Status` (`Barcode Asset Status`),
-  KEY `Barcode Asset Type` (`Barcode Asset Type`,`Barcode Asset Key`,`Barcode Asset Status`,`Barcode Asset Barcode Key`)
+  UNIQUE KEY `Barcode Asset Type` (`Barcode Asset Type`,`Barcode Asset Key`,`Barcode Asset Status`),
+  KEY `Barcode Asset Status` (`Barcode Asset Status`)
 );
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1587,9 +1592,10 @@ CREATE TABLE `Campaign Deal Schema` (
 CREATE TABLE `Category Bridge` (
   `Category Key` mediumint(8) unsigned NOT NULL,
   `Subject` enum('Product','Supplier','Customer','Family','Invoice','Part','Category','Location') NOT NULL,
-  `Subject Key` mediumint(8) unsigned NOT NULL,
+  `Subject Key` int(8) unsigned NOT NULL,
   `Other Note` varchar(255) DEFAULT NULL,
   `Category Head Key` mediumint(8) unsigned DEFAULT NULL,
+  `Stack Index` smallint(6) NOT NULL DEFAULT '1',
   UNIQUE KEY `Category Key` (`Category Key`,`Subject`,`Subject Key`),
   KEY `Subject` (`Subject`),
   KEY `Subject Key` (`Subject Key`),
@@ -1669,6 +1675,8 @@ CREATE TABLE `Category Dimension` (
   `Category Children Other` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Category Locked` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Category Sticky Note` text,
+  `Category Main Image` varchar(255) DEFAULT NULL,
+  `Category Main Image Key` mediumint(8) unsigned DEFAULT NULL,
   PRIMARY KEY (`Category Key`),
   UNIQUE KEY `Category Code` (`Category Code`,`Category Root Key`),
   KEY `Category Default` (`Category Default`),
@@ -1702,6 +1710,30 @@ CREATE TABLE `Category History Bridge` (
   KEY `History Key` (`History Key`),
   KEY `Deletable` (`Deletable`),
   KEY `Type` (`Type`)
+);
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Category Webpage Index`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Category Webpage Index` (
+  `Category Webpage Index Key` int(10) unsigned NOT NULL,
+  `Category Webpage Index Webpage Key` mediumint(8) unsigned NOT NULL,
+  `Category Webpage Index Parent Category Key` mediumint(8) unsigned NOT NULL,
+  `Category Webpage Index Category Key` mediumint(8) unsigned NOT NULL,
+  `Category Webpage Index Category Webpage Key` mediumint(8) unsigned DEFAULT NULL,
+  `Category Webpage Index Section Key` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Category Webpage Index Stack` smallint(5) unsigned DEFAULT NULL,
+  `Category Webpage Index Published Stack` smallint(5) unsigned DEFAULT NULL,
+  `Category Webpage Index Content Data` text,
+  `Category Webpage Index Content Published Data` text,
+  `Category Webpage Index Subject Type` enum('Subject','Guest') NOT NULL DEFAULT 'Subject',
+  PRIMARY KEY (`Category Webpage Index Key`),
+  UNIQUE KEY `Category Webpage Stack Category Key` (`Category Webpage Index Parent Category Key`,`Category Webpage Index Category Key`),
+  KEY `Category Webpage Index Webpage Key` (`Category Webpage Index Webpage Key`)
 );
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2963,6 +2995,7 @@ CREATE TABLE `Deal Target Bridge` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Delivery Note Dimension` (
   `Delivery Note Key` mediumint(8) unsigned NOT NULL,
+  `Delivery Note Order Key` mediumint(8) unsigned DEFAULT NULL,
   `Delivery Note Warehouse Key` smallint(5) unsigned NOT NULL,
   `Delivery Note Order Date Placed` datetime DEFAULT NULL,
   `Delivery Note Date Created` datetime DEFAULT NULL,
@@ -2972,6 +3005,7 @@ CREATE TABLE `Delivery Note Dimension` (
   `Delivery Note Date Finish Packing` datetime DEFAULT NULL,
   `Delivery Note Date Done Approved` datetime DEFAULT NULL,
   `Delivery Note Date Dispatched Approved` datetime DEFAULT NULL,
+  `Delivery Note Date Dispatched` datetime DEFAULT NULL,
   `Delivery Note Date` datetime DEFAULT NULL COMMENT 'Date when the DN dispatched',
   `Delivery Note Approved Done` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Delivery Note Approved To Dispatch` enum('Yes','No') NOT NULL DEFAULT 'No',
@@ -3025,6 +3059,11 @@ CREATE TABLE `Delivery Note Dimension` (
   `Delivery Note Invoiced` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Delivery Note Invoiced Net DC Amount` float DEFAULT NULL,
   `Delivery Note Invoiced Shipping DC Amount` float DEFAULT NULL,
+  `Delivery Note Number Picked Items` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Delivery Note Number Packed Items` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Delivery Note Number Ordered Items` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Delivery Note Number To Pick Items` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Delivery Note Number Ordered Parts` smallint(5) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`Delivery Note Key`),
   KEY `Metadata` (`Delivery Note Metadata`(12)),
   KEY `Delivery Note Type` (`Delivery Note Type`),
@@ -3035,7 +3074,10 @@ CREATE TABLE `Delivery Note Dimension` (
   KEY `Delivery Note State` (`Delivery Note State`),
   KEY `Delivery Note Show in Warehouse Orders` (`Delivery Note Show in Warehouse Orders`),
   KEY `Delivery Note Invoiced` (`Delivery Note Invoiced`),
-  KEY `Delivery Note Waiting For Parts` (`Delivery Note Waiting For Parts`)
+  KEY `Delivery Note Waiting For Parts` (`Delivery Note Waiting For Parts`),
+  KEY `Delivery Note File As` (`Delivery Note File As`),
+  KEY `Delivery Note Order Key` (`Delivery Note Order Key`),
+  KEY `Delivery Note Date` (`Delivery Note Date`)
 );
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -3698,7 +3740,7 @@ CREATE TABLE `Export Map` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Fork Dimension` (
   `Fork Key` mediumint(8) unsigned NOT NULL,
-  `Fork Type` enum('au_export','au_upload','au_housekeeping','export','import','edit','ping_sitemap','housekeeping','sendemail','edit_pages','au_time_series','au_calculate_sales') NOT NULL,
+  `Fork Type` enum('au_export','au_upload','au_housekeeping','export','import','edit','ping_sitemap','housekeeping','sendemail','edit_pages','au_time_series','au_calculate_sales','au_export_edit_template','au_upload_edit') NOT NULL,
   `Fork Process Data` text NOT NULL,
   `Fork Token` varchar(64) DEFAULT NULL,
   `Fork State` enum('Queued','In Process','Finished','Cancelled') NOT NULL DEFAULT 'Queued',
@@ -3781,7 +3823,7 @@ CREATE TABLE `History Dimension` (
   `Subject` enum('Customer','Staff','Supplier','Administrator','System') DEFAULT NULL,
   `Subject Key` mediumint(8) unsigned DEFAULT NULL,
   `Action` enum('sold_since','last_sold','first_sold','placed','wrote','deleted','edited','cancelled','charged','merged','created','associated','disassociate','register','login','logout','fail_login','password_request','password_reset','search') DEFAULT 'edited',
-  `Direct Object` enum('After Sale','Delivery Note','Category','Warehouse','Warehouse Area','Shelf','Location','Company Department','Company Area','Position','Store','User','Product','Address','Customer','Note','Order','Telecom','Email','Company','Contact','FAX','Telephone','Mobile','Work Telephone','Office Fax','Supplier','Family','Department','Attachment','Supplier Product','Part','Site','Page','Invoice','Category Customer','Category Part','Category Invoice','Category Supplier','Category Product','Category Family','Purchase Order','Supplier Delivery Note','Supplier Invoice') DEFAULT NULL,
+  `Direct Object` enum('After Sale','Delivery Note','Category','Warehouse','Warehouse Area','Shelf','Location','Company Department','Company Area','Position','Store','User','Product','Address','Customer','Note','Order','Telecom','Email','Company','Contact','FAX','Telephone','Mobile','Work Telephone','Office Fax','Supplier','Family','Department','Attachment','Supplier Product','Part','Site','Page','Invoice','Category Customer','Category Part','Category Invoice','Category Supplier','Category Product','Category Family','Purchase Order','Supplier Delivery Note','Supplier Invoice','Webpage','Website') DEFAULT NULL,
   `Direct Object Key` mediumint(8) unsigned DEFAULT '0',
   `Preposition` enum('about','','to','on','because') DEFAULT NULL,
   `Indirect Object` varchar(128) DEFAULT NULL,
@@ -3867,9 +3909,9 @@ CREATE TABLE `Image Dimension` (
   `Image Height` smallint(5) unsigned NOT NULL,
   `Image File Size` mediumint(8) unsigned NOT NULL,
   `Image File Format` enum('jpeg','png','gif') NOT NULL DEFAULT 'jpeg',
+  `Image Original Filename` varchar(255) NOT NULL,
   `Image Public` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Last Modify Date` datetime DEFAULT NULL,
-  `Image Original Filename` varchar(255) NOT NULL,
   PRIMARY KEY (`Image Key`),
   KEY `Image Checksum` (`Image File Checksum`),
   KEY `Image Public` (`Image Public`)
@@ -3884,7 +3926,8 @@ CREATE TABLE `Image Dimension` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Image Subject Bridge` (
   `Image Subject Key` mediumint(8) unsigned NOT NULL,
-  `Image Subject Object` enum('Store Product','Site Favicon','Product','Family','Department','Store','Part','Supplier Product','Store Logo','Store Email Template Header','Store Email Postcard','Email Image','Page','Page Header','Page Footer','Page Header Preview','Page Footer Preview','Page Preview','Site Menu','Site Search','User Profile','Attachment Thumbnail','Category','Staff') DEFAULT NULL,
+  `Image Subject Object` enum('Webpage','Store Product','Site Favicon','Product','Family','Department','Store','Part','Supplier Product','Store Logo','Store Email Template Header','Store Email Postcard','Email Image','Page','Page Header','Page Footer','Page Header Preview','Page Footer Preview','Page Preview','Site Menu','Site Search','User Profile','Attachment Thumbnail','Category','Staff') DEFAULT NULL,
+  `Image Subject Object Image Scope` varchar(16) NOT NULL DEFAULT 'Default',
   `Image Subject Object Key` mediumint(8) unsigned NOT NULL,
   `Image Subject Image Key` mediumint(8) unsigned NOT NULL,
   `Image Subject Is Principal` enum('Yes','No') NOT NULL DEFAULT 'Yes',
@@ -3896,7 +3939,8 @@ CREATE TABLE `Image Subject Bridge` (
   UNIQUE KEY `unique` (`Image Subject Object`,`Image Subject Object Key`,`Image Subject Image Key`),
   KEY `Subject Key` (`Image Subject Object Key`),
   KEY `Image Key` (`Image Subject Image Key`),
-  KEY `Subject Type` (`Image Subject Object`)
+  KEY `Subject Type` (`Image Subject Object`),
+  KEY `Image Subject Object Type` (`Image Subject Object Image Scope`)
 );
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -6477,15 +6521,23 @@ CREATE TABLE `Page Store Deleted Dimension` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Page Store Dimension` (
   `Page Key` mediumint(8) unsigned NOT NULL,
+  `Webpage Code` varchar(64) DEFAULT NULL,
   `Page Code` varchar(64) NOT NULL,
   `Page State` enum('Online','Offline') NOT NULL DEFAULT 'Offline',
   `Page Stealth Mode` enum('Yes','No') CHARACTER SET ucs2 NOT NULL DEFAULT 'No',
   `Page Site Key` mediumint(8) unsigned NOT NULL,
   `Page Store Key` smallint(5) unsigned NOT NULL,
+  `Webpage State` enum('Online','Offline') DEFAULT 'Offline',
+  `Webpage Website Key` smallint(5) unsigned DEFAULT NULL,
+  `Webpage Type Key` smallint(5) unsigned DEFAULT NULL,
+  `Webpage Store Key` smallint(5) unsigned DEFAULT NULL,
+  `Webpage Scope` enum('Product','Category Categories','Category Products') DEFAULT NULL,
+  `Webpage Scope Key` mediumint(9) DEFAULT NULL,
+  `Webpage Scope Metadata` varchar(255) DEFAULT NULL,
   `Page Parent Key` mediumint(8) unsigned NOT NULL,
   `Page Parent Code` varchar(64) DEFAULT NULL,
   `Page Store Section Type` enum('System','Info','Department','Family','Product','FamilyCategory','ProductCategory') NOT NULL DEFAULT 'System',
-  `Page Store Section Key` mediumint(8) unsigned NOT NULL,
+  `Page Store Section Key` mediumint(8) unsigned DEFAULT NULL,
   `Page Store Section` enum('Front Page Store','Search','Product Description','Information','Product Category Catalogue','Family Category Catalogue','Family Catalogue','Department Catalogue','Registration','Client Section','Checkout','Login','Welcome','Not Found','Reset','Basket','Login Help','Thanks','Payment Limbo','Family Description','Department Description') NOT NULL DEFAULT 'Information',
   `Page Locale` char(5) NOT NULL DEFAULT 'en_GB',
   `Page Store Title` varchar(255) NOT NULL,
@@ -6503,8 +6555,10 @@ CREATE TABLE `Page Store Dimension` (
   `Page Footer Key` mediumint(9) DEFAULT NULL,
   `Page Footer Type` enum('Set','SiteDefault','None') NOT NULL DEFAULT 'SiteDefault',
   `Page Store CSS` longtext,
+  `Page Store Published CSS` longtext,
   `Page Store Javascript` longtext,
   `Page Store Creation Date` datetime DEFAULT NULL,
+  `Webpage Launch Date` datetime DEFAULT NULL,
   `Page Store Last Update Date` datetime DEFAULT NULL,
   `Page Store Last Structural Change Date` datetime DEFAULT NULL,
   `Number See Also Links` tinyint(3) unsigned NOT NULL,
@@ -6529,8 +6583,12 @@ CREATE TABLE `Page Store Dimension` (
   `Site Flag Key` tinyint(3) unsigned DEFAULT NULL,
   `Page Related Products List` text,
   `Page See Also Last Updated` datetime DEFAULT NULL,
+  `Page Store Content Data` text,
+  `Page Store Content Published Data` text,
+  `Webpage Version` tinyint(3) unsigned NOT NULL DEFAULT '1',
   PRIMARY KEY (`Page Key`),
   UNIQUE KEY `Page Site Key_2` (`Page Site Key`,`Page Code`),
+  UNIQUE KEY `Webpage Code` (`Webpage Code`,`Page Site Key`),
   KEY `Page Store Function` (`Page Store Section`),
   KEY `Page Parent Key` (`Page Parent Key`),
   KEY `Page Site Key` (`Page Site Key`),
@@ -6539,7 +6597,12 @@ CREATE TABLE `Page Store Dimension` (
   KEY `Page Footer Type` (`Page Footer Type`),
   KEY `Page Code` (`Page Code`(5)),
   KEY `Page Store Section Type` (`Page Store Section Type`),
-  KEY `Site Flag Key` (`Site Flag Key`)
+  KEY `Site Flag Key` (`Site Flag Key`),
+  KEY `Webpage Website Key` (`Webpage Website Key`),
+  KEY `Webpage Store Key` (`Webpage Store Key`),
+  KEY `Webpage State` (`Webpage State`),
+  KEY `Webpage Version` (`Webpage Version`),
+  KEY `Webpage Type Key` (`Webpage Type Key`)
 );
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -7136,14 +7199,18 @@ CREATE TABLE `Part Category Dimension` (
   `Part Category Warehouse Key` smallint(5) unsigned DEFAULT '1',
   `Part Category Valid From` datetime DEFAULT NULL,
   `Part Category Valid To` datetime DEFAULT NULL,
-  `Part Category Status` enum('NotInUse','InUse') NOT NULL DEFAULT 'InUse',
+  `Part Category Status` enum('NotInUse','InUse','InProcess','Discontinuing') NOT NULL DEFAULT 'InUse',
+  `Part Category In Process` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Part Category Active` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Part Category Discontinuing` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Part Category Discontinued` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Part Category Current Stock Value` float NOT NULL DEFAULT '0',
-  `Part Category Number Surplus Parts` mediumint(9) NOT NULL DEFAULT '0',
-  `Part Category Number Optimal Parts` mediumint(9) NOT NULL DEFAULT '0',
-  `Part Category Number Low Parts` mediumint(9) NOT NULL DEFAULT '0',
-  `Part Category Number Critical Parts` mediumint(9) NOT NULL DEFAULT '0',
-  `Part Category Number Out Of Stock Parts` mediumint(9) NOT NULL DEFAULT '0',
-  `Part Category Number Error Parts` mediumint(9) NOT NULL DEFAULT '0',
+  `Part Category Number Surplus Parts` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Part Category Number Optimal Parts` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Part Category Number Low Parts` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Part Category Number Critical Parts` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Part Category Number Out Of Stock Parts` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Part Category Number Error Parts` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Part Category Acc To Day Updated` datetime DEFAULT NULL COMMENT 'Total, Year to Day, Quarter to day, Week to day',
   `Part Category Acc Ongoing Intervals Updated` datetime DEFAULT NULL COMMENT '1 year, 1 quarter',
   `Part Category Acc Previous Intervals Updated` datetime DEFAULT NULL COMMENT 'last month, last week, past years, past quarters',
@@ -7630,6 +7697,7 @@ CREATE TABLE `Part Dimension` (
   `Part Available for Products Configuration` enum('Yes','No','Automatic') NOT NULL DEFAULT 'No',
   `Part Main State` enum('Keeping','LastStock','Discontinued','NotKeeping') DEFAULT NULL,
   `Part Cost` decimal(12,4) DEFAULT '0.0000',
+  `Part Cost in Warehouse` decimal(12,4) DEFAULT NULL,
   `Part Unit Price` float unsigned DEFAULT NULL,
   `Part Unit RRP` float unsigned DEFAULT NULL,
   `Part XHTML Currently Used In` text,
@@ -7640,12 +7708,14 @@ CREATE TABLE `Part Dimension` (
   `Part XHTML Currently Supplied By` text,
   `Part XHTML Description` varchar(255) DEFAULT NULL,
   `Part Package Description` varchar(255) DEFAULT NULL,
+  `Part Package Description Note` varchar(255) DEFAULT NULL,
   `Part Unit Description` text,
+  `Part SKO Barcode` varchar(128) DEFAULT NULL,
   `Part Barcode Type` enum('none','ean8','ean13',' code11','code39','code128','codabar') NOT NULL DEFAULT 'code128',
   `Part Barcode Data Source` enum('SKU','Reference','Other') NOT NULL DEFAULT 'SKU',
   `Part Barcode Data` text,
   `Part Barcode Key` mediumint(8) unsigned DEFAULT NULL,
-  `Part Barcode Number` bigint(20) unsigned DEFAULT NULL,
+  `Part Barcode Number` varchar(128) DEFAULT NULL,
   `Part General Description` longtext,
   `Part Health And Safety` longtext,
   `Part UN Number` varchar(4) DEFAULT NULL,
@@ -8743,7 +8813,7 @@ CREATE TABLE `Product Category Data` (
 CREATE TABLE `Product Category Dimension` (
   `Product Category Key` mediumint(8) unsigned NOT NULL,
   `Product Category Store Key` mediumint(8) unsigned NOT NULL DEFAULT '1',
-  `Product Category Status` enum('In Process','Active','Suspended','Discontinued') NOT NULL DEFAULT 'In Process',
+  `Product Category Status` enum('In Process','Active','Suspended','Discontinued','Discontinuing') NOT NULL DEFAULT 'In Process',
   `Product Category Description` mediumtext NOT NULL,
   `Product Category Valid From` datetime DEFAULT NULL,
   `Product Category Valid To` datetime DEFAULT NULL,
@@ -8792,6 +8862,44 @@ CREATE TABLE `Product Category History Bridge` (
   `Type` enum('Changes','Assign') NOT NULL,
   UNIQUE KEY `Store Key` (`Store Key`,`Category Key`,`History Key`),
   KEY `Type` (`Type`)
+);
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Product Category Index`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Product Category Index` (
+  `Product Category Index Key` int(10) unsigned NOT NULL,
+  `Product Category Index Category Key` mediumint(8) unsigned NOT NULL,
+  `Product Category Index Website Key` mediumint(8) unsigned DEFAULT NULL,
+  `Product Category Index Product ID` mediumint(8) unsigned NOT NULL,
+  `Product Category Index Stack` smallint(5) unsigned DEFAULT NULL,
+  `Product Category Index Published Stack` smallint(5) unsigned DEFAULT NULL,
+  `Product Category Index Content Data` text,
+  `Product Category Index Content Published Data` text,
+  PRIMARY KEY (`Product Category Index Key`),
+  UNIQUE KEY `Product Category Stack Category Key` (`Product Category Index Category Key`,`Product Category Index Product ID`),
+  KEY `Product Category Index Website Key` (`Product Category Index Website Key`)
+);
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Product Category Stack Index`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Product Category Stack Index` (
+  `Product Category Stack Key` int(10) unsigned NOT NULL,
+  `Product Category Stack Category Key` mediumint(8) unsigned NOT NULL,
+  `Product Category Stack Product ID` mediumint(8) unsigned NOT NULL,
+  `Product Category Stack Index` smallint(5) unsigned DEFAULT NULL,
+  `Product Category Published Stack Index` smallint(5) unsigned DEFAULT NULL,
+  PRIMARY KEY (`Product Category Stack Key`),
+  UNIQUE KEY `Product Category Stack Category Key` (`Product Category Stack Category Key`,`Product Category Stack Product ID`)
 );
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -10173,7 +10281,7 @@ CREATE TABLE `Product Department History Bridge` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Product Dimension` (
   `Product ID` mediumint(8) unsigned NOT NULL,
-  `Product Current Key` mediumint(8) unsigned NOT NULL,
+  `Product Current Key` mediumint(8) unsigned DEFAULT NULL,
   `Product Status` enum('InProcess','Active','Suspended','Discontinuing','Discontinued') DEFAULT 'Active',
   `Product Public` enum('Yes','No') NOT NULL DEFAULT 'Yes',
   `Product Type` enum('Product','Service') NOT NULL DEFAULT 'Product',
@@ -10190,6 +10298,8 @@ CREATE TABLE `Product Dimension` (
   `Product Number Web Pages` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `Product Code File As` varchar(255) NOT NULL,
   `Product Code` varchar(30) NOT NULL,
+  `Product Barcode Number` varchar(128) DEFAULT NULL,
+  `Product Barcode Key` mediumint(8) unsigned DEFAULT NULL,
   `Product Barcode Type` enum('none','ean8','ean13',' code11','code39','code128','codabar') NOT NULL DEFAULT 'none',
   `Product Barcode Data Source` enum('ID','Code','Other') NOT NULL DEFAULT 'ID',
   `Product Barcode Data` varchar(255) DEFAULT NULL,
@@ -11599,8 +11709,11 @@ CREATE TABLE `Purchase Order Dimension` (
   `Purchase Order Parent Email` varchar(255) DEFAULT NULL,
   `Purchase Order Parent Telephone` varchar(255) DEFAULT NULL,
   `Purchase Order Parent Address` text,
+  `Purchase Order Agent Key` mediumint(8) unsigned DEFAULT NULL,
+  `Purchase Order Agent Data` text,
   `Purchase Order Creation Date` datetime DEFAULT NULL COMMENT 'Date when the purchase order where first placed',
   `Purchase Order Confirmed Date` datetime DEFAULT NULL,
+  `Purchase Order Submitted Agent Date` datetime DEFAULT NULL,
   `Purchase Order Submitted Date` datetime DEFAULT NULL,
   `Purchase Order Inputted Date` datetime DEFAULT NULL,
   `Purchase Order Estimated Receiving Date` datetime DEFAULT NULL,
@@ -11617,7 +11730,7 @@ CREATE TABLE `Purchase Order Dimension` (
   `Purchase Order Main Buyer Key` mediumint(8) unsigned DEFAULT NULL,
   `Purchase Order Main Buyer Name` varchar(255) DEFAULT NULL,
   `Purchase Order Main Source Type` enum('Post','Internet','Telephone','Fax','In Person','Unknown','Email','Other') NOT NULL DEFAULT 'Unknown',
-  `Purchase Order State` enum('InProcess','Submitted','Inputted','Dispatched','Received','Checked','Placed','Cancelled') NOT NULL DEFAULT 'InProcess',
+  `Purchase Order State` enum('InProcess','SubmittedAgent','Submitted','Inputted','Dispatched','Received','Checked','Placed','Cancelled') NOT NULL DEFAULT 'InProcess',
   `Purchase Order Max Supplier Delivery State` enum('NA','InProcess','Dispatched','Received','Checked','Placed') NOT NULL DEFAULT 'NA',
   `Purchase Order Our Feedback` enum('Praise','None','Shortages','Breakings','Different Product','Multiple','Low Quality','Not Like','Slow Delivery','Other') NOT NULL DEFAULT 'None',
   `Purchase Order Actions Taken` enum('Refund','Credit','Replacement','Send Missing','Other','No Applicable') NOT NULL DEFAULT 'No Applicable',
@@ -11667,7 +11780,8 @@ CREATE TABLE `Purchase Order Dimension` (
   `Purchase Order Missing CBMs` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Purchase Order Metadata` text,
   PRIMARY KEY (`Purchase Order Key`),
-  KEY `Purchase Order Parent` (`Purchase Order Parent`)
+  KEY `Purchase Order Parent` (`Purchase Order Parent`),
+  KEY `Purchase Order Agent Key` (`Purchase Order Agent Key`)
 );
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -12087,12 +12201,12 @@ CREATE TABLE `Site Dimension` (
   `Site Key` smallint(5) unsigned NOT NULL,
   `Site Store Key` smallint(5) unsigned NOT NULL,
   `Site Code` varchar(8) NOT NULL,
-  `Site Name` varchar(128) NOT NULL,
-  `Site URL` varchar(255) NOT NULL,
+  `Site Name` text NOT NULL,
+  `Site URL` varchar(64) NOT NULL,
   `Site Locale` enum('en_GB','de_DE','fr_FR','es_ES','pl_PL','it_IT','sk_SK','pt_PT') NOT NULL DEFAULT 'en_GB',
   `Site Contact Address` text NOT NULL,
   `Site Contact Telephone` text NOT NULL,
-  `Site Contact Email` varchar(128) DEFAULT NULL,
+  `Site Contact Email` text,
   `Site Slogan` text NOT NULL,
   `Site Logo Image Key` mediumint(8) unsigned DEFAULT NULL,
   `Site Checkout Method` enum('Mals','Inikoo','AW') NOT NULL DEFAULT 'Inikoo',
@@ -12106,7 +12220,7 @@ CREATE TABLE `Site Dimension` (
   `Site Footer Data` text NOT NULL,
   `Site Layout Data` text NOT NULL,
   `Site Head Include` text,
-  `Site Body Include` text,
+  `Site Body Include` mediumtext,
   `Site Active` enum('Yes','No') NOT NULL DEFAULT 'Yes',
   `Site Secret Key` text,
   `Site Default Header Key` mediumint(9) DEFAULT NULL,
@@ -12285,7 +12399,7 @@ CREATE TABLE `Site Dimension` (
   `Site Show RSS` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Site Show Twitter` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Site Registration Disclaimer` longtext,
-  `Site Direct Subscribe Madmimi` varchar(255) NOT NULL,
+  `Site Direct Subscribe Madmimi` text NOT NULL,
   `Site Default Flag Color` enum('Blue','Green','Orange','Pink','Purple','Red','Yellow') NOT NULL DEFAULT 'Blue',
   `Site Welcome Email Code` text,
   `Site Forgot Password Email Code` text,
@@ -12295,8 +12409,8 @@ CREATE TABLE `Site Dimension` (
   `Site SSL` enum('Yes','No') NOT NULL DEFAULT 'No',
   PRIMARY KEY (`Site Key`),
   UNIQUE KEY `Site Code` (`Site Code`),
-  UNIQUE KEY `Site Name` (`Site Name`,`Site Store Key`),
   UNIQUE KEY `Site URL` (`Site URL`),
+  UNIQUE KEY `Site Name` (`Site Name`(16),`Site Store Key`),
   KEY `Store Key` (`Site Store Key`)
 );
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -12456,8 +12570,9 @@ CREATE TABLE `Staff Dimension` (
   `Staff Is Supervisor` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Staff Working Hours` text,
   `Staff Working Hours Per Week` float DEFAULT NULL,
-  `Staff Working Hours Per Week Metadata` varchar(255) NOT NULL,
+  `Staff Working Hours Per Week Metadata` varchar(255) DEFAULT NULL,
   `Staff Salary` text,
+  `Staff Warehouse Key` mediumint(8) unsigned DEFAULT NULL,
   PRIMARY KEY (`Staff Key`),
   UNIQUE KEY `Staff Alias` (`Staff Alias`),
   KEY `Staff ID` (`Staff ID`),
@@ -12721,6 +12836,7 @@ CREATE TABLE `Store Data` (
   `Store Orders Packed Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Store Orders In Dispatch Area Number` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Store Orders In Dispatch Area Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Store Today Start Orders In Warehouse Number` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Store Total Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Store Total Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Store Total Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
@@ -13628,6 +13744,22 @@ CREATE TABLE `Store Default Currency` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `Store Deleted Dimension`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Store Deleted Dimension` (
+  `Store Deleted Key` mediumint(9) NOT NULL,
+  `Store Deleted Code` varchar(16) NOT NULL,
+  `Store Deleted Name` varchar(255) NOT NULL,
+  `Store Deleted Date` datetime NOT NULL,
+  PRIMARY KEY (`Store Deleted Key`),
+  KEY `Store Deleted Code` (`Store Deleted Code`)
+);
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `Store Dimension`
 --
 
@@ -13760,9 +13892,9 @@ CREATE TABLE `Store Dimension` (
   `Store Payments` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Store Family Category Key` mediumint(9) DEFAULT NULL,
   `Store Department Category Key` mediumint(9) DEFAULT NULL,
-  `Store Acc To Day Updated` datetime DEFAULT NULL COMMENT 'Total, Year to Day, Quarter to day, Week to day	',
-  `Store  Acc Ongoing Intervals Updated` datetime DEFAULT NULL COMMENT '1 year, 1 quarter	',
-  `Store Acc Previous Intervals Updated` datetime DEFAULT NULL COMMENT 'last month, last week, past years, past quarters	',
+  `Store Acc To Day Updated` datetime DEFAULT NULL COMMENT 'Total, Year to Day, Quarter to day, Week to day ',
+  `Store Acc Ongoing Intervals Updated` datetime DEFAULT NULL COMMENT '1 year, 1 quarter ',
+  `Store Acc Previous Intervals Updated` datetime DEFAULT NULL COMMENT 'last month, last week, past years, past quarters ',
   PRIMARY KEY (`Store Key`),
   UNIQUE KEY `Store Name` (`Store Name`),
   KEY `code` (`Store Code`),
@@ -14993,6 +15125,7 @@ CREATE TABLE `Supplier Part Dimension` (
   `Supplier Part From` datetime NOT NULL,
   `Supplier Part To` datetime DEFAULT NULL,
   `Supplier Part Unit Cost` float unsigned DEFAULT NULL,
+  `Supplier Part Unit Extra Cost Percentage` float DEFAULT NULL,
   `Supplier Part Unit Extra Cost` float NOT NULL DEFAULT '0',
   `Supplier Part Currency Code` varchar(3) DEFAULT NULL,
   `Supplier Part Packages Per Carton` smallint(6) NOT NULL DEFAULT '1',
@@ -16353,6 +16486,9 @@ CREATE TABLE `Timesheet Dimension` (
   `Timesheet Friday Paid Overtime` mediumint(9) unsigned NOT NULL DEFAULT '0',
   `Timesheet Saturday Paid Overtime` mediumint(9) unsigned NOT NULL DEFAULT '0',
   `Timesheet Sunday Paid Overtime` mediumint(9) unsigned NOT NULL DEFAULT '0',
+  `Timesheet Warehouse Clocked Time` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Timesheet Production Clocked Time` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Timesheet Office Clocked Time` mediumint(8) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`Timesheet Key`),
   UNIQUE KEY `Timesheet Date` (`Timesheet Date`,`Timesheet Staff Key`),
   KEY `Timesheet Date_2` (`Timesheet Date`)
@@ -16441,7 +16577,7 @@ CREATE TABLE `Upload Record Dimension` (
   `Upload Record Status` enum('InProcess','Done') NOT NULL DEFAULT 'InProcess',
   `Upload Record State` enum('InProcess','OK','Error','Warning','Cancelled','NoChange') NOT NULL DEFAULT 'InProcess',
   `Upload Record Date` datetime DEFAULT NULL,
-  `Upload Record Message Code` varchar(255) DEFAULT NULL,
+  `Upload Record Message Code` text,
   `Upload Record Message Metadata` text,
   `Upload Record Data` longblob NOT NULL,
   `Upload Record Object Key` int(10) unsigned DEFAULT NULL,
@@ -16887,6 +17023,18 @@ CREATE TABLE `Warehouse Dimension` (
   `Warehouse Supplier Delivery Days` smallint(5) unsigned NOT NULL DEFAULT '30',
   `Warehouse Default Flag Color` enum('Blue','Green','Orange','Pink','Purple','Red','Yellow') NOT NULL DEFAULT 'Blue',
   `Warehouse Default PO Terms and Conditions` text,
+  `Warehouse Part Locations` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Warehouse Part Locations Errors` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Warehouse Tolerable Percentage Part Locations Errors` float unsigned NOT NULL DEFAULT '0.05',
+  `Warehouse Max Percentage Part Locations Errors` float unsigned NOT NULL DEFAULT '0.15',
+  `Warehouse Pending Orders Errors` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Warehouse Pending Orders` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Warehouse Tolerable Percentage Pending Orders Errors` float unsigned NOT NULL DEFAULT '0.05',
+  `Warehouse Max Percentage Pending Orders Errors` float unsigned NOT NULL DEFAULT '0.2',
+  `Warehouse Paid Ordered Parts To Replenish` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Warehouse Paid Ordered Parts` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Warehouse Tolerable Percentage Paid Ordered Parts To Replenish` float unsigned NOT NULL DEFAULT '0.05',
+  `Warehouse Max Percentage Paid Ordered Parts To Replenish` float unsigned NOT NULL DEFAULT '0.2',
   PRIMARY KEY (`Warehouse Key`),
   UNIQUE KEY `Warehouse Code` (`Warehouse Code`),
   UNIQUE KEY `Warehouse Name` (`Warehouse Name`)
@@ -16981,18 +17129,97 @@ CREATE TABLE `Webpage Dimension` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `Webpage Panel Dimension`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Webpage Panel Dimension` (
+  `Webpage Panel Key` int(11) NOT NULL,
+  `Webpage Panel Id` varchar(255) NOT NULL,
+  `Webpage Panel Webpage Key` mediumint(8) unsigned NOT NULL,
+  `Webpage Panel Section Key` mediumint(8) unsigned DEFAULT '0',
+  `Webpage Panel Type` enum('code','text','image','page_break') NOT NULL,
+  `Webpage Panel Data` text,
+  `Webpage Panel Metadata` text,
+  PRIMARY KEY (`Webpage Panel Key`),
+  UNIQUE KEY `Webpage Panel Id` (`Webpage Panel Id`,`Webpage Panel Webpage Key`)
+);
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Webpage Publishing History Bridge`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Webpage Publishing History Bridge` (
+  `Webpage Key` mediumint(8) unsigned NOT NULL,
+  `History Key` int(10) unsigned NOT NULL,
+  `Deletable` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Strikethrough` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Type` enum('Notes','Deployment','Breakpoint') NOT NULL DEFAULT 'Notes',
+  PRIMARY KEY (`Webpage Key`,`History Key`),
+  KEY `Webpage Key` (`Webpage Key`),
+  KEY `History Key` (`History Key`),
+  KEY `Deletable` (`Deletable`),
+  KEY `Type` (`Type`)
+);
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `Webpage Related Product Bridge`
 --
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Webpage Related Product Bridge` (
+  `Webpage Related Product Key` mediumint(8) unsigned NOT NULL,
   `Webpage Related Product Page Key` mediumint(8) unsigned NOT NULL,
   `Webpage Related Product Product ID` mediumint(8) unsigned NOT NULL,
   `Webpage Related Product Product Page Key` mediumint(8) unsigned NOT NULL,
   `Webpage Related Product Order` smallint(5) unsigned NOT NULL,
-  PRIMARY KEY (`Webpage Related Product Page Key`,`Webpage Related Product Product ID`),
+  `Webpage Related Product Published Order` smallint(5) unsigned NOT NULL,
+  `Webpage Related Product Content Data` text,
+  `Webpage Related Product Content Published Data` text,
+  PRIMARY KEY (`Webpage Related Product Key`),
+  UNIQUE KEY `Webpage Related Product Page K_2` (`Webpage Related Product Page Key`,`Webpage Related Product Product ID`),
   KEY `Webpage Related Product Page Key` (`Webpage Related Product Page Key`)
+);
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Webpage Section Dimension`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Webpage Section Dimension` (
+  `Webpage Section Key` mediumint(8) unsigned NOT NULL,
+  `Webpage Section Webpage Key` mediumint(8) unsigned NOT NULL,
+  `Webpage Section Webpage Stack Index` smallint(5) unsigned NOT NULL DEFAULT '1',
+  `Webpage Section Data` text,
+  PRIMARY KEY (`Webpage Section Key`)
+);
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Webpage Type Dimension`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Webpage Type Dimension` (
+  `Webpage Type Key` smallint(5) unsigned NOT NULL,
+  `Webpage Type Code` varchar(16) NOT NULL,
+  `Webpage Type Website Key` smallint(5) unsigned NOT NULL,
+  `Webpage Type Online Webpages` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Webpage Type Offline Webpages` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Webpage Type Deleted Webpages` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`Webpage Type Key`),
+  UNIQUE KEY `Webpage Type Code_2` (`Webpage Type Code`,`Webpage Type Website Key`),
+  KEY `Webpage Type Code` (`Webpage Type Code`),
+  KEY `Webpage Type Websiite Key` (`Webpage Type Website Key`)
 );
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -17165,6 +17392,9 @@ CREATE TABLE `Website Dimension` (
   `Website Name` varchar(128) NOT NULL,
   `Website URL` varchar(255) NOT NULL,
   `Website Locale` varchar(5) NOT NULL DEFAULT 'en_GB',
+  `Website Data` text,
+  `Website Header Key` mediumint(9) DEFAULT NULL,
+  `Website Footer Key` int(11) DEFAULT NULL,
   `Website Number Webpages` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Website Number Webpages with Products` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Website Number Webpages with Out of Stock Products` mediumint(8) unsigned NOT NULL DEFAULT '0',
@@ -17172,6 +17402,65 @@ CREATE TABLE `Website Dimension` (
   `Website Number Out of Stock Products` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Website Number Users` mediumint(8) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`Website Key`)
+);
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Website Footer Dimension`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Website Footer Dimension` (
+  `Website Footer Key` mediumint(8) unsigned NOT NULL,
+  `Website Footer Website Key` mediumint(9) DEFAULT NULL,
+  `Website Footer Code` varchar(64) NOT NULL,
+  `Website Footer Data` mediumtext NOT NULL,
+  `Website Footer Published Data` mediumtext,
+  `Website Footer Last Updated` datetime DEFAULT NULL,
+  PRIMARY KEY (`Website Footer Key`),
+  UNIQUE KEY `Website Footer Website Key_2` (`Website Footer Website Key`,`Website Footer Code`),
+  KEY `Website Footer Code` (`Website Footer Code`),
+  KEY `Website Footer Website Key` (`Website Footer Website Key`)
+);
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Website Header Dimension`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Website Header Dimension` (
+  `Website Header Key` mediumint(8) unsigned NOT NULL,
+  `Website Header Website Key` mediumint(9) DEFAULT NULL,
+  `Website Header Code` varchar(64) NOT NULL,
+  `Website Header Data` mediumtext NOT NULL,
+  `Website Header Published Data` mediumtext,
+  `Website Header Last Updated` datetime DEFAULT NULL,
+  PRIMARY KEY (`Website Header Key`),
+  UNIQUE KEY `Website Header Website Key_2` (`Website Header Website Key`,`Website Header Code`),
+  KEY `Website Header Code` (`Website Header Code`),
+  KEY `Website Header Website Key` (`Website Header Website Key`)
+);
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Website Image Dimension`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Website Image Dimension` (
+  `Website Image Key` mediumint(8) unsigned NOT NULL,
+  `Website Image Website Key` mediumint(8) unsigned NOT NULL,
+  `Website Image Scope` varchar(16) NOT NULL,
+  `Website Image Scope Key` mediumint(8) unsigned DEFAULT NULL,
+  `Website Image Format` varchar(4) DEFAULT NULL,
+  `Website Image Data` longblob,
+  `Website Image Date` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`Website Image Key`),
+  KEY `Website Image Website Key` (`Website Image Website Key`)
 );
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -17254,4 +17543,4 @@ CREATE TABLE `todo_users` (
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-11-19  9:34:56
+-- Dump completed on 2017-03-30 17:46:20
