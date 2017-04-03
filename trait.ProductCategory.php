@@ -452,11 +452,9 @@ trait ProductCategory {
 		round(ifnull(sum(`Invoice Quantity`),0),1) AS invoiced,
 		round(ifnull(sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)*`Invoice Currency Exchange Rate`),0),2) AS dc_net,
 		round(ifnull(sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`+`Cost Supplier`)*`Invoice Currency Exchange Rate`),0),2) AS dc_profit
-		FROM `Order Transaction Fact` USE INDEX (`Product ID`,`Invoice Date`) WHERE    `Invoice Key` IS NOT NULL  AND  `Product ID` IN (%s) %s %s ", $product_ids, ($from_date ? sprintf(
-                'and `Invoice Date`>=%s', prepare_mysql($from_date)
-            ) : ''), ($to_date ? sprintf(
-                'and `Invoice Date`<%s', prepare_mysql($to_date)
-            ) : '')
+		FROM `Order Transaction Fact` USE INDEX (`Product ID`,`Invoice Date`) WHERE    `Invoice Key` IS NOT NULL  AND  `Product ID` IN (%s) %s %s ", $product_ids,
+                    ($from_date ? sprintf('and `Invoice Date`>=%s', prepare_mysql($from_date)) : ''),
+                    ($to_date ? sprintf('and `Invoice Date`<%s', prepare_mysql($to_date)) : '')
 
             );
             //print "$sql\n";

@@ -53,6 +53,8 @@ function fork_asset_sales($job) {
                 exit;
             }
 
+            $account->load_acc_data();
+
             if ($data['intervals'] == 'Quarters') {
                 $account->update_previous_quarters_data();
 
