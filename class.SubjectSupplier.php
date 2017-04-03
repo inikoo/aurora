@@ -745,6 +745,7 @@ class SubjectSupplier extends Subject {
             }
 
 
+
             $sql = sprintf(
                 "SELECT count(DISTINCT `Delivery Note Customer Key`) AS customers, count( DISTINCT ITF.`Delivery Note Key`) AS deliveries, round(ifnull(sum(`Amount In`),0),2) AS invoiced_amount,round(ifnull(sum(`Amount In`+`Inventory Transaction Amount`),0),2) AS profit,round(ifnull(sum(`Inventory Transaction Quantity`),0),1) AS dispatched,round(ifnull(sum(`Required`),0),1) AS required FROM `Inventory Transaction Fact` ITF  LEFT JOIN `Delivery Note Dimension` DN ON (DN.`Delivery Note Key`=ITF.`Delivery Note Key`) WHERE `Inventory Transaction Type` LIKE 'Sale' AND `Part SKU` IN (%s) %s %s",
                 $part_skus, ($from_date ? sprintf(
@@ -752,7 +753,6 @@ class SubjectSupplier extends Subject {
             ) : ''), ($to_date ? sprintf('and `Date`<%s', prepare_mysql($to_date)) : '')
             );
 
-            //  print "$from_date $to_date  \n";
 
             if ($result = $this->db->query($sql)) {
                 if ($row = $result->fetch()) {

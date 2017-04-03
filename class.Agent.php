@@ -689,7 +689,10 @@ class Agent extends SubjectSupplier {
         $part_skus = '';
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
-                $part_skus .= $row['Supplier Part Part SKU'].',';
+                if( is_numeric($row['Supplier Part Part SKU']) and $row['Supplier Part Part SKU']>0 ){
+                    $part_skus .= $row['Supplier Part Part SKU'].',';
+
+                }
             }
         } else {
             print_r($error_info = $this->db->errorInfo());

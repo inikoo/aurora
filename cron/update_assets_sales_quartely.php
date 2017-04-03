@@ -40,6 +40,103 @@ $editor = array(
 //shortcuts($db);
 
 
+
+
+
+$msg = new_housekeeping_fork(
+    'au_asset_sales', array(
+    'type'     => 'update_stores_sales_data',
+    'interval' => 'Last Month',
+    'mode'     => array(
+        true,
+        true
+    )
+), $account->get('Account Code')
+);
+
+$msg = new_housekeeping_fork(
+    'au_asset_sales', array(
+    'type'     => 'update_invoices_categories_sales_data',
+    'interval' => 'Last Month',
+    'mode'     => array(
+        true,
+        true
+    )
+), $account->get('Account Code')
+);
+
+
+$msg = new_housekeeping_fork(
+    'au_asset_sales', array(
+    'type'     => 'update_products_sales_data',
+    'interval' => 'Last Month',
+    'mode'     => array(
+        true,
+        true
+    )
+), $account->get('Account Code')
+);
+
+$msg = new_housekeeping_fork(
+    'au_asset_sales', array(
+    'type'     => 'update_parts_sales_data',
+    'interval' => 'Last Month',
+    'mode'     => array(
+        true,
+        true
+    )
+), $account->get('Account Code')
+);
+
+$msg = new_housekeeping_fork(
+    'au_asset_sales', array(
+    'type'     => 'update_part_categories_sales_data',
+    'interval' => 'Last Month',
+    'mode'     => array(
+        true,
+        true
+    )
+), $account->get('Account Code')
+);
+
+$msg = new_housekeeping_fork(
+    'au_asset_sales', array(
+    'type'     => 'update_product_categories_sales_data',
+    'interval' => 'Last Month',
+    'mode'     => array(
+        true,
+        true
+    )
+), $account->get('Account Code')
+);
+
+
+$msg = new_housekeeping_fork(
+    'au_asset_sales', array(
+    'type'     => 'update_suppliers_data',
+    'interval' => 'Last Month',
+    'mode'     => array(
+        true,
+        true
+    )
+), $account->get('Account Code')
+);
+
+
+$msg = new_housekeeping_fork(
+    'au_asset_sales', array(
+    'type'     => 'update_supplier_categories_sales_data',
+    'interval' => 'Last Month',
+    'mode'     => array(
+        true,
+        true
+    )
+), $account->get('Account Code')
+);
+
+
+
+
 $msg = new_housekeeping_fork(
     'au_asset_sales', array(
         'type'     => 'update_stores_previous_intervals',
