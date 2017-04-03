@@ -11,6 +11,8 @@
 
 
 include_once 'utils/invalid_messages.php';
+include_once 'utils/country_functions.php';
+
 
 
 $root_user = $state['_object'];
@@ -47,15 +49,9 @@ $object_fields = array(
 
                 'id'              => 'User_Password_Recovery_Mobile',
                 'edit'            => 'telephone',
-                'value'           => $root_user->get(
-                    'User Password Recovery Mobile'
-                ),
-                'formatted_value' => $root_user->get(
-                    'Password Recovery Mobile'
-                ),
-                'label'           => ucfirst(
-                    $root_user->get_field_label('User Password Recovery Mobile')
-                ),
+                'value'           => $root_user->get('User Password Recovery Mobile'),
+                'formatted_value' => $root_user->get('Password Recovery Mobile'),
+                'label'           => ucfirst($root_user->get_field_label('User Password Recovery Mobile')),
                 'invalid_msg'     => get_invalid_message('telephone'),
                 'required'        => true,
                 'type'            => 'value'
@@ -104,6 +100,31 @@ $smarty->assign('form_type', 'setup');
 
 $smarty->assign('object_name', $root_user->get_object_name());
 $smarty->assign('step', 'root_user');
+
+$country='GB';
+
+$smarty->assign(
+    'default_country', $country
+);
+$smarty->assign(
+    'preferred_countries', '"'.join(
+                             '", "', preferred_countries($country)
+                         ).'"'
+);
+
+$default_country = $country;
+$smarty->assign(
+    'default_telephone_data', base64_encode(
+                                json_encode(
+                                    array(
+                                        'default_country'     => strtolower($default_country),
+                                        'preferred_countries' => array_map(
+                                            'strtolower', preferred_countries($default_country)
+                                        ),
+                                    )
+                                )
+                            )
+);
 
 
 $smarty->assign('object_fields', $object_fields);

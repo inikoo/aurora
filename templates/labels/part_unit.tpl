@@ -24,8 +24,7 @@
                 All rights reserved
 
             </td>
-            <td style="border:0px solid red;"><img style="height:20mm"
-                                                   src="/barcode_asset.php?number={$part->get('Part Barcode Number')}">
+            <td style="border:0px solid red;"><img style="height:20mm" src="/barcode_asset.php?number={$part->get('Part Barcode Number')}">
             </td>
 
         </tr>

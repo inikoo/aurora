@@ -166,6 +166,24 @@ switch ($tipo) {
 
         skip_step($data);
         break;
+    case 'edit_field':
+
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'object'   => array('type' => 'string'),
+                         'key'      => array('type' => 'string'),
+                         'field'    => array('type' => 'string'),
+                         'value'    => array('type' => 'string'),
+                         'metadata' => array(
+                             'type'     => 'json array',
+                             'optional' => true
+                         ),
+
+                     )
+        );
+        $account=new Account();
+        edit_field($account, $db, $user, $editor, $data, $smarty);
+break;
     case 'help':
         $data = prepare_values(
             $_REQUEST, array(
@@ -303,6 +321,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                 case ('setup'):
                 case ('setup_error'):
                 case ('setup_root_user'):
+                case ('setup_account'):
                 case ('setup_add_employees'):
                 case ('setup_add_warehouse'):
                 case ('setup_add_store'):
@@ -327,6 +346,9 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 
 function get_view($data, $db, $modules, $smarty) {
 
+
+
+
     require_once 'utils/parse_request.php';
 
     if (isset($data['metadata']['help']) and $data['metadata']['help']) {
@@ -343,7 +365,7 @@ function get_view($data, $db, $modules, $smarty) {
     }
 
 
-    $state = parse_request($data, $db, $modules, $account = '', $user = '');
+    $state = parse_request($data, $db, $modules, $account = '', $user = '',true);
 
 
     $_object = get_object($state['object'], $state['key']);
@@ -392,7 +414,6 @@ function get_view($data, $db, $modules, $smarty) {
 
 
     $response['object_showcase'] = '';
-
 
     $response['tab'] = get_tab(
         $db, $smarty, $user, $account, $state['tab'], $state['subtab'], $state, $data['metadata']
@@ -1421,13 +1442,21 @@ function skip_step($data) {
 
     switch ($data['step']) {
         case 'setup_add_employees':
-
             $step = 'add_employees';
+            break;
+        case 'setup_add_warehouse':
+            $step = 'add_warehouse';
+            break;
+        case 'setup_add_store':
+            $step = 'add_store';
+            break;
+        case 'setup_account':
+            $step = 'setup_account';
             break;
         default:
             $response = array(
                 'state' => 400,
-                'msg'   => 'Step not found'
+                'msg'   => 'Step not found '.$data['step']
 
             );
             echo json_encode($response);
@@ -1445,6 +1474,8 @@ function skip_step($data) {
 
     $done     = true;
     $redirect = 'account/setup/state';
+
+
     foreach ($setup_data['steps'] as $step_code => $step_data) {
         if (!$step_data['setup']) {
             $done     = false;
@@ -1534,6 +1565,174 @@ function get_help_content($state, $step, $smarty, $account, $user) {
     }
 
     return _('There is not help for this section');
+}
+
+
+
+
+function edit_field($account, $db, $user, $editor, $data, $smarty) {
+
+
+    $object = get_object(
+        $data['object'], $data['key'], $load_other_data = true
+    );
+
+
+    if (!$object->id) {
+        $response = array(
+            'state' => 405,
+            'resp'  => 'Object not found'
+        );
+        echo json_encode($response);
+        exit;
+
+    }
+
+    $object->editor = $editor;
+
+    $field = preg_replace('/_/', ' ', $data['field']);
+
+
+    $formatted_field = preg_replace('/^'.$object->get_object_name().' /', '', $field);
+
+    $options = '';
+
+
+    
+
+    if (isset($data['metadata'])) {
+        $object->update(
+            array($field => $data['value']), $options, $data['metadata']
+        );
+
+    } else {
+
+        $object->update(array($field => $data['value']), $options);
+    }
+
+
+    //print_r($data['metadata']);
+
+    if (isset($data['metadata'])) {
+        if (isset($data['metadata']['extra_fields'])) {
+            foreach ($data['metadata']['extra_fields'] as $extra_field) {
+
+                $options = '';
+                $_field  = preg_replace('/_/', ' ', $extra_field['field']);
+
+                $_value = $extra_field['value'];
+
+                $object->update(array($_field => $_value), $options);
+
+            }
+
+        }
+
+
+    }
+
+
+    if ($object->error) {
+        $response = array(
+            'state' => 400,
+            'msg'   => $object->msg,
+
+        );
+
+
+    } else {
+
+        $update_metadata = $object->get_update_metadata();
+
+        $directory_field    = '';
+        $directory          = '';
+        $items_in_directory = '';
+
+
+        if ($object->updated or true) {
+            $msg = sprintf(
+                '<span class="success"><i class="fa fa-check " onClick="hide_edit_field_msg(\'%s\')" ></i> %s</span>', $data['field'], _('Updated')
+            );
+            if (isset($object->deleted_value)) {
+                $msg = sprintf(
+                    '<span class="deleted">%s</span> <span class="discreet"><i class="fa fa-check " onClick="hide_edit_field_msg(\'%s\')" ></i> %s</span>', $object->deleted_value, $data['field'],
+                    _('Deleted')
+                );
+            }
+
+
+
+
+
+
+
+
+
+            $formatted_value = $object->get($formatted_field);
+
+
+            $action = 'updated';
+
+
+
+
+        } elseif (isset($object->field_deleted)) {
+            $msg             = sprintf(
+                '<span class="discreet"><i class="fa fa-check " onClick="hide_edit_field_msg(\'%s\')" ></i> %s</span>', $data['field'], _('Deleted')
+            );
+            $formatted_value = sprintf(
+                '<span class="deleted">%s</span>', $object->deleted_value
+            );
+            $action          = 'deleted';
+        } elseif (isset($object->field_created)) {
+            $msg             = sprintf(
+                '<span class="success"><i class="fa fa-check " onClick="hide_edit_field_msg(\'%s\')" ></i> %s</span>', $data['field'], _('Created')
+            );
+            $formatted_value = '';
+            $action          = 'new_field';
+
+            if ($field == 'new delivery address') {
+                $directory_field = 'other_delivery_addresses';
+                $smarty->assign('customer', $object);
+
+                $other_delivery_addresses = $object->get_other_delivery_addresses_data();
+
+                $smarty->assign('other_delivery_addresses',$other_delivery_addresses);
+
+
+                $directory          = $smarty->fetch('delivery_addresses_directory.tpl');
+                $items_in_directory = count($object->get_other_delivery_addresses_data());
+            }
+
+
+        } else {
+
+            $msg             = '';
+            $formatted_value = $object->get($formatted_field);
+            $action          = '';
+        }
+
+
+        $response = array(
+            'state'              => 200,
+            'msg'                => $msg,
+            'action'             => $action,
+            'formatted_value'    => $formatted_value,
+            'value'              => $object->get($field),
+            'other_fields'       => $object->get_other_fields_update_info(),
+            'new_fields'         => $object->get_new_fields_info(),
+            'deleted_fields'     => $object->get_deleted_fields_info(),
+            'update_metadata'    => $update_metadata,
+            'directory_field'    => $directory_field,
+            'directory'          => $directory,
+            'items_in_directory' => $items_in_directory,
+
+        );
+
+
+    }
+    echo json_encode($response);
+
 }
 
 

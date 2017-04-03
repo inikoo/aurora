@@ -1,31 +1,19 @@
-<div style="font-size:2.0mm;padding:3px 2px 2px 2px">
-    <table style="width:100%;font-size:2.0mm;">
-        <tr>
-            <td style=" border:0px solid red;text-align: center;vertical-align:bottom;padding:1px 5px 0px 5px;">
-                <span style="font-size:1.5mm;">Pack contains</span><br>
-                {$part->get('Units')}x {$part->get('Reference')} </td>
-            <td style=" text-align: center;font-size:1.5mm;"> {$part->get('Unit Description')}</td>
+<div style="font-size:2.0mm;padding:3px 5px 2px 5px">
+
+    <table style="font-size:2.0mm;">
+        <tr >
+            <td style=" text-align: center;vertical-align:bottom;padding:1px 5px 0px 5px;">
+
+                <b> {$part->get('Reference')}</b>  {$part->get('Package Description')}</td>
         </tr>
-    </table>
-    <table style="width:100%;font-size:2.0mm;">
         <tr>
-            <td style="border:0px solid red;"><img style="height:20mm"
-                                                   src="/barcode_asset.php?type=code128&number={$part->get('Part Barcode Number')}">
+            <td style=""><img  src="/barcode_asset.php?type=code128&number={$part->get('Part SKO Barcode')}">
             </td>
-            <td style=" text-align: center;font-size:2mm;padding:2mm">
-                {if $part->get('Origin Country')!='' and $part->get('Part Origin Country Code')!=$account->get('Account Country Code')  }
-                    Imported from {$part->get('Origin Country')} by
-                {else}
 
-                {/if}
-                <span style="font-size:2.0mm">{$account->get('Name')}</span><br>
-                Reg. no. 04108870
-                <br>
-                S3 8AL UK
-                <br>
-                All rights reserved
+        </tr>
+        <tr>
+            <td style="text-align: center">{$part->get('Part SKO Barcode')}</td>
 
-            </td>
         </tr>
     </table>
 </div>

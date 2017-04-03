@@ -1,4 +1,4 @@
-<div id="fields" class="edit_object" object="{$state._object->get_object_name()}" key="{$state.key}">
+<div id="fields" class="edit_object" object="{$state._object->get_object_name()}" key="{$state.key}" form_type="{if isset($form_type)}{$form_type}{else}edit{/if}">
     <span id="invalid_msg" class="hide">{t}Invalid value{/t}</span>
 
     {if isset($preferred_countries)}

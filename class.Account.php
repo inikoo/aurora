@@ -153,8 +153,7 @@ class Account extends DB_Table {
         $data['editor'] = $this->editor;
 
 
-
-        $staff          = new Staff('find', $data, 'create');
+        $staff = new Staff('find', $data, 'create');
         if ($staff->id) {
             $this->new_employee_msg = $staff->msg;
 
@@ -203,7 +202,7 @@ class Account extends DB_Table {
         $data['editor'] = $this->editor;
 
 
-      //  print_r($data);
+        //  print_r($data);
 
 
         $data['Store Valid From']                = gmdate('Y-m-d H:i:s');
@@ -291,8 +290,7 @@ class Account extends DB_Table {
                     $this->error = true;
 
 
-
-                    $this->msg   = $barcode->msg;
+                    $this->msg = $barcode->msg;
 
                     return;
                 }
@@ -713,6 +711,19 @@ class Account extends DB_Table {
             case 'Account Suppliers Terms and Conditions':
                 $label = _('Purchases Terms & Conditions');
                 break;
+            case 'Account Currency':
+                $label = _('currency');
+                break;
+            case 'Account Timezone':
+                $label = _('timezone');
+                break;
+            case 'Account Locale':
+                $label = _('language');
+                break;
+            case 'Account Name':
+                $label = _('organization name');
+                break;
+
             default:
                 $label = $field;
         }
@@ -1103,9 +1114,45 @@ class Account extends DB_Table {
 
         switch ($key) {
 
-            case 'Account Currency':
-                return $this->data['Account Currency'];
+            case ('Currency'):
+
+                if ($this->data['Account Currency'] != '') {
+
+
+                    $sql = sprintf(
+                        "SELECT `Currency Code`,`Currency Name`,`Currency Symbol` FROM kbase.`Currency Dimension` WHERE `Currency Code`=%s", prepare_mysql($this->data['Account Currency'])
+                    );
+
+
+                    if ($result = $this->db->query($sql)) {
+                        if ($row = $result->fetch()) {
+                            return sprintf("%s (%s)", $row['Currency Name'], $row['Currency Code']);
+                        } else {
+                            return '';
+                        }
+                    } else {
+                        print_r($error_info = $this->db->errorInfo());
+                        exit;
+                    }
+                } else {
+                    return '';
+                }
+
                 break;
+
+            case 'Country Code':
+                if ($this->get('Account Country Code')) {
+                    include_once 'class.Country.php';
+                    $country = new Country('code', $this->data['Account Country Code']);
+
+                    return _($country->get('Country Name')).' ('.$country->get('Country Code').')';
+                } else {
+                    return '';
+                }
+
+                break;
+
+
             case 'Productions':
 
                 $number = 0;
@@ -1455,7 +1502,7 @@ class Account extends DB_Table {
             foreach ($result as $row) {
 
 
-                $data['in_process_paid']['number'] += $row['num'];
+                $data['in_process_paid']['number']    += $row['num'];
                 $data['in_process_paid']['dc_amount'] += $row['dc_amount'];
 
 
@@ -1475,7 +1522,7 @@ class Account extends DB_Table {
             foreach ($result as $row) {
 
 
-                $data['in_process_not_paid']['number'] += $row['num'];
+                $data['in_process_not_paid']['number']    += $row['num'];
                 $data['in_process_not_paid']['dc_amount'] += $row['dc_amount'];
 
 
@@ -1621,11 +1668,43 @@ class Account extends DB_Table {
 
 
         switch ($field) {
-            case 'Company Name':
 
+            case 'Account Country Code':
+               $country = new Country('code', $value);
+               if($country->id){
+                   $this->update_field('Account Country Code', $country->get('Country Code'), $options);
+                   $this->update_field('Account Country 2 Alpha Code', $country->get('Country 2 Alpha Code'), 'no_history');
+
+
+
+               }else{
+                   $this->error=true;
+                   $this->msg='Country not found';
+               }
 
             case('Account Currency'):
-                $this->update_currency($value);
+
+                $value = strtoupper($value);
+                $sql   = sprintf(
+                    "SELECT `Currency Symbol` FROM kbase.`Currency Dimension` WHERE `Currency Code`=%s", prepare_mysql($value)
+                );
+
+                if ($result = $this->db->query($sql)) {
+                    if ($row = $result->fetch()) {
+
+                        $this->update_field('Account Currency', $value, $options);
+                        $this->update_field('Account Currency Symbol', $row['Currency Symbol'], 'no_history');
+
+                    } else {
+                        $this->error = true;
+                        $this->msg   = 'Currency Code '.$value.' not valid';
+
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    exit;
+                }
+
                 break;
             default:
 
@@ -1639,36 +1718,6 @@ class Account extends DB_Table {
 
                 break;
         }
-    }
-
-    function update_currency($value) {
-        $value = strtoupper($value);
-        $sql   = sprintf(
-            "SELECT * FROM kbase.`Currency Dimension` WHERE `Currency Code`=%s", prepare_mysql($value)
-        );
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-
-                $sql = sprintf(
-                    "UPDATE `Account Dimension` SET `Account Currency`=%s", prepare_mysql($value)
-                );
-                $this->db->exec($sql);
-
-                $this->updated   = true;
-                $this->new_value = $value;
-
-            } else {
-                $this->error = true;
-                $this->msg   = 'Currency Code '.$value.' not valid';
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
     }
 
 

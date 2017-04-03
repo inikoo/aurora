@@ -14,6 +14,13 @@
 $object->get_flags_data();
 
 
+if (isset($options['new']) and $options['new']) {
+    $new = true;
+} else {
+    $new = false;
+}
+
+
 $object_fields = array(
     array(
         'label'      => _('Id'),
@@ -81,51 +88,54 @@ $object_fields = array(
 
 );
 
-$flags = array();
-$sql   = sprintf("SELECT * FROM `Warehouse Flag Dimension`  ");
 
-if ($result = $db->query($sql)) {
-    foreach ($result as $row) {
-        $flags[] = array(
-            'edit' => ($edit ? 'string' : ''),
+if(!$new) {
 
-            'id'                => 'Warehouse_Flag_Label_'.$row['Warehouse Flag Key'],
-            'value'             => $object->get(
-                'Warehouse Flag Label '.$row['Warehouse Flag Key']
-            ),
-            'formatted_value'   => $object->get(
-                'Flag Label '.$row['Warehouse Flag Key']
-            ),
-            'label'             => ucfirst(
-                $object->get_field_label(
-                    'Warehouse Flag Label '.$row['Warehouse Flag Color']
-                )
-            ),
-            'invalid_msg'       => get_invalid_message('string'),
-            'required'          => true,
-            'server_validation' => json_encode(
-                array(
-                    'tipo'         => 'check_for_duplicates',
-                    'object'       => 'Warehouse Flag',
-                    'parent'       => 'warehouse',
-                    'parent_key'   => $object->id,
-                    'actual_field' => 'Warehouse Flag Label'
-                )
-            ),
-            'type'              => 'value'
-        );
+    $flags = array();
+    $sql   = sprintf("SELECT * FROM `Warehouse Flag Dimension`  ");
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+            $flags[] = array(
+                'edit' => ($edit ? 'string' : ''),
+
+                'id'                => 'Warehouse_Flag_Label_'.$row['Warehouse Flag Key'],
+                'value'             => $object->get(
+                    'Warehouse Flag Label '.$row['Warehouse Flag Key']
+                ),
+                'formatted_value'   => $object->get(
+                    'Flag Label '.$row['Warehouse Flag Key']
+                ),
+                'label'             => ucfirst(
+                    $object->get_field_label(
+                        'Warehouse Flag Label '.$row['Warehouse Flag Color']
+                    )
+                ),
+                'invalid_msg'       => get_invalid_message('string'),
+                'required'          => true,
+                'server_validation' => json_encode(
+                    array(
+                        'tipo'         => 'check_for_duplicates',
+                        'object'       => 'Warehouse Flag',
+                        'parent'       => 'warehouse',
+                        'parent_key'   => $object->id,
+                        'actual_field' => 'Warehouse Flag Label'
+                    )
+                ),
+                'type'              => 'value'
+            );
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
     }
-} else {
-    print_r($error_info = $db->errorInfo());
-    exit;
+
+
+    $object_fields[] = array(
+        'label'      => _("Location's flag labels"),
+        'show_title' => true,
+        'fields'     => $flags
+    );
 }
-
-
-$object_fields[] = array(
-    'label'      => _("Location's flag labels"),
-    'show_title' => true,
-    'fields'     => $flags
-);
-
 
 ?>

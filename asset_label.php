@@ -67,28 +67,17 @@ if ($object_name == 'part') {
 $mpdf->WriteHTML($html);
 
 $mpdf->Output();
-exit;
 
 
-$number = $_REQUEST['number'];
-
-if (!is_numeric($number)) {
-    exit;
-
-}
 
 
-if (isset($_REQUEST['scale']) and is_numeric($_REQUEST['scale'])) {
-    $scale = ceil($_REQUEST['scale']);
-} else {
-    $scale = null;
-}
 
-include_once 'external_libs/barcodes/ean.php';
 
-$ean = new EAN($number, $scale);
 
-$ean->display();
+
+
+
+
 
 
 ?>

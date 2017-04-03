@@ -321,7 +321,7 @@ if ($field == 'Product Category Department Category Key') {
             );
             if (isset($object->deleted_value)) {
                 $msg = sprintf(
-                    '<span class="deleted">%s</span> <span class="discret"><i class="fa fa-check " onClick="hide_edit_field_msg(\'%s\')" ></i> %s</span>', $object->deleted_value, $data['field'],
+                    '<span class="deleted">%s</span> <span class="discreet"><i class="fa fa-check " onClick="hide_edit_field_msg(\'%s\')" ></i> %s</span>', $object->deleted_value, $data['field'],
                     _('Deleted')
                 );
             }
@@ -427,7 +427,7 @@ $cost=  sprintf('<span class="part_cost"  pid="%d" cost="%s"  currency="%s"   on
 
         } elseif (isset($object->field_deleted)) {
             $msg             = sprintf(
-                '<span class="discret"><i class="fa fa-check " onClick="hide_edit_field_msg(\'%s\')" ></i> %s</span>', $data['field'], _('Deleted')
+                '<span class="discreet"><i class="fa fa-check " onClick="hide_edit_field_msg(\'%s\')" ></i> %s</span>', $data['field'], _('Deleted')
             );
             $formatted_value = sprintf(
                 '<span class="deleted">%s</span>', $object->deleted_value

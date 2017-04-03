@@ -15,14 +15,15 @@ $current_section = $data['section'];
 
 $nav_menu = array();
 
-$nav_menu[] = array(
-    '<i class="fa fa-dashboard fa-fw"></i>',
-    _('Dashboard'),
-    '/dashboard',
-    '_dashboard',
-    'module',
-    ''
-);
+    $nav_menu[] = array(
+        '<i class="fa fa-dashboard fa-fw"></i>',
+        _('Dashboard'),
+        '/dashboard',
+        '_dashboard',
+        'module',
+        ''
+    );
+
 
 
 if ($user->can_view('customers')) {
@@ -426,7 +427,8 @@ if ($user->get('User Type') == 'Agent') {
     );
 
 
-} elseif ($user->get('User Type') == 'Supplier') {
+}
+elseif ($user->get('User Type') == 'Supplier') {
 
 
     //$nav_menu[] = array(_('Orders'), 'suppliers.php?orders'  ,'orders');
@@ -438,7 +440,8 @@ if ($user->get('User Type') == 'Agent') {
         ''
     );
 
-} elseif ($user->get('User Type') == 'Warehouse') {
+}
+elseif ($user->get('User Type') == 'Warehouse') {
 
     $nav_menu[] = array(
         _('Pending Orders'),
@@ -449,7 +452,8 @@ if ($user->get('User Type') == 'Agent') {
     );
 
 
-} else {
+}
+else {
 
 
     $nav_menu[] = array(
@@ -467,6 +471,8 @@ if ($user->get('User Type') == 'Agent') {
     }
 }
 
+
+
 if ($user->can_view('account')) {
 
 
@@ -478,6 +484,9 @@ if ($user->can_view('account')) {
         'module',
         ''
     );
+
+
+
 }
 
 
@@ -525,7 +534,7 @@ if ($data['object'] == 'order') {
     }
 
 }
-//print_r($nav_menu);
+
 
 $smarty->assign('current_item', $current_item);
 $smarty->assign('current_section', $current_section);

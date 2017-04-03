@@ -4606,6 +4606,12 @@ $modules = array(
                     'account.setup.root_user' => array('label' => ''),
                 )
             ),
+            'setup_account' => array(
+                'type' => '',
+                'tabs' => array(
+                    'account.setup.account' => array('label' => ''),
+                )
+            ),
             'setup_add_employees' => array(
                 'type' => '',
                 'tabs' => array(
