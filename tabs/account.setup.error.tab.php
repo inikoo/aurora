@@ -16,6 +16,8 @@ if ($state['key'] == 1 or $state['key'] == 2 or $state['key'] == 3) {
             'E%02d', $state['key']
         );
 
+}else{
+    $msg='unknown error';
 }
 
 

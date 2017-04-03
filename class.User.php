@@ -99,6 +99,8 @@ class User extends DB_Table {
             "SELECT `User Key` FROM `User Dimension` WHERE `User Type`=%s AND `User Handle`=%s %s", prepare_mysql($data['User Type']), prepare_mysql($data['User Handle']), $where_site
         );
 
+
+
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
                 $this->found     = true;
@@ -147,6 +149,8 @@ class User extends DB_Table {
             $this->get_data('id', $this->found_key);
 
         }
+
+
 
         if (!$this->found and $create) {
             $this->create($raw_data);
@@ -260,6 +264,8 @@ class User extends DB_Table {
 
     function create($data) {
 
+
+
         $this->new = false;
         $this->msg = _('Unknown Error').' (0)';
         $base_data = $this->base_data();
@@ -364,6 +370,9 @@ class User extends DB_Table {
         $keys   = preg_replace('/,$/', ')', $keys);
         $values = preg_replace('/,$/', ')', $values);
         $sql    = sprintf("INSERT INTO `User Dimension` %s %s", $keys, $values);
+
+
+      //  print $sql;
 
         if ($this->db->exec($sql)) {
 
@@ -2685,13 +2694,16 @@ class User extends DB_Table {
 
         $dashboard_items = array();
 
-        if ($this->data['User Type'] == 'Staff' or $this->data['User Type'] == 'Administrator' ) {
+        if ($this->data['User Type'] == 'Staff'  ) {
 
             $dashboard_items[] = 'pending_orders';
             $dashboard_items[] = 'sales_overview';
             $dashboard_items[] = 'kpis';
 
         }else if($this->data['User Type'] == 'Contractor'){
+
+
+        }else if($this->data['User Type'] == 'Administrator'){
 
 
         }

@@ -22,10 +22,15 @@ function get_account_setup_navigation($data, $smarty, $user, $db, $account) {
         $skip  = true;
     } elseif ($data['section'] == 'setup_root_user') {
         $title = _('Set up root user');
+    } elseif ($data['section'] == 'setup_account') {
+        $title = _('Set up account');
+        $skip  = true;
     } elseif ($data['section'] == 'setup_add_warehouse') {
         $title = _('Add warehouse');
+        $skip  = true;
     } elseif ($data['section'] == 'setup_add_store') {
         $title = _('Add store');
+        $skip  = true;
     } else {
         $title = _('Account set up');
     }

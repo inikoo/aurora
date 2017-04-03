@@ -135,7 +135,6 @@
 <script src="/js/libs/jquery.mobile-1.4.5.js"></script>
 
 <script src="/js/app.mobile.js"></script>
-<script src="/js/keyboard_shorcuts.js"></script>
 <script src="/js/search.mobile.js"></script>
 
 

@@ -1,1 +1,1 @@
-mysqldump --skip-opt --no_data -u root -p aurora > app.sql 
+mysqldump -d -h localhost --no_data -u root -p dw | sed 's/ AUTO_INCREMENT=[0-9]*//g' |  sed 's/varchar(256)/varchar(255)/g'  > app.sql

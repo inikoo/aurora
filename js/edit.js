@@ -981,11 +981,21 @@ function save_field(object, key, field) {
 
     }
 
+if($('#fields').attr('form_type')=='setup')
+    var request = '/ar_setup.php?tipo=edit_field&object=' + object + '&key=' + key + '&field=' + field + '&value=' + fixedEncodeURIComponent(value) + '&metadata=' + JSON.stringify(metadata)
+
+else
     var request = '/ar_edit.php?tipo=edit_field&object=' + object + '&key=' + key + '&field=' + field + '&value=' + fixedEncodeURIComponent(value) + '&metadata=' + JSON.stringify(metadata)
-    //  console.log(request)
+
+
+      console.log(request)
+
+
 
     $.getJSON(request, function (data) {
+        console.log('www')
 
+        console.log(data)
         $('#' + field + '_save_button').addClass('fa-cloud').removeClass('fa-spinner fa-spin')
         if (data.state == 100) {
             pre_save_actions(field, data)
@@ -994,7 +1004,7 @@ function save_field(object, key, field) {
         if (data.state == 200) {
 
 
-            //  console.log(data)
+
 
             $('#' + field + '_msg').html(data.msg).addClass('success').removeClass('hide')
             $('#' + field + '_value').val(data.value)

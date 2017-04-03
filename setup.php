@@ -62,7 +62,7 @@ if (!$account->id) {
 
 
     // TODO get account create data from setup.inikoo.com
-    $accout_data = array(
+    $account_data = array(
         'Account Code'              => 'AU',
         'Account Name'              => 'Test',
         'Account System Public URL' => 'au.bali',
@@ -70,6 +70,7 @@ if (!$account->id) {
             array(
                 'steps'     => array(
                     'root_user'     => array('setup' => false),
+                    'setup_account'     => array('setup' => false),
                     'add_employees' => array('setup' => false),
                     'add_warehouse' => array('setup' => false),
                     'add_store'     => array('setup' => false)
@@ -94,8 +95,8 @@ if (!$account->id) {
 
     // Create account
 
-    $accout_data['Account Creation Date'] = gmdate('Y-m-d H:i:s');
-    $accout_data['Account Key']           = 1;
+    $account_data['Account Creation Date'] = gmdate('Y-m-d H:i:s');
+    $account_data['Account Key']           = 1;
 
     $base_data     = array();
     $ignore_fields = array();
@@ -107,7 +108,7 @@ if (!$account->id) {
     }
 
 
-    foreach ($accout_data as $key => $value) {
+    foreach ($account_data as $key => $value) {
         if (array_key_exists($key, $base_data)) {
             $base_data[$key] = _trim($value);
         }
@@ -118,7 +119,7 @@ if (!$account->id) {
     foreach ($base_data as $key => $value) {
         $keys .= "`$key`,";
 
-        if ($key == 'Account Short Message') {
+        if ($key == 'Account Short Message' or $key == 'Account Menu Label') {
             $values .= prepare_mysql($value, false).",";
         } else {
             $values .= prepare_mysql($value).",";
@@ -130,18 +131,33 @@ if (!$account->id) {
     $sql = sprintf("INSERT INTO `Account Dimension` %s %s", $keys, $values);
 
 
-    if ($result = $db->query($sql)) {
-        if ($row = $result->fetch()) {
+    if ($db->exec($sql)) {
+        $account = new Account();
+
+        $sql = sprintf(
+            "INSERT INTO `Account Data` ( `Account Key`) VALUES (%d)", $account->id
+
+        );
 
 
-            $sql = sprintf(
-                "INSERT INTO `Payment Service Provider Dimension` ( `Payment Service Provider Code`, `Payment Service Provider Name`, `Payment Service Provider Type`) VALUES ('Accounts', %s, 'Account');",
-                _('Internal customers accounts')
 
-            );
+        $db->exec($sql);
 
-            $db->exec($sql);
-        }
+        $sql = sprintf(
+            "INSERT INTO `Payment Service Provider Dimension` ( `Payment Service Provider Code`, `Payment Service Provider Name`, `Payment Service Provider Type`) VALUES ('Accounts', %s, 'Account');",
+           prepare_mysql( _('Internal customers accounts'))
+
+        );
+        $db->exec($sql);
+
+        $sql = sprintf(
+            "INSERT INTO `Payment Service Provider Dimension` ( `Payment Service Provider Code`, `Payment Service Provider Name`, `Payment Service Provider Type`) VALUES ('Cash', %s, 'Cash');",
+            prepare_mysql( _('Petty cash'))
+
+        );
+        $db->exec($sql);
+
+
     } else {
         $smarty->assign('request', 'account/setup/error/1');
 
@@ -150,7 +166,7 @@ if (!$account->id) {
     }
 
 
-    $account = new Account();
+
 
 
     if ($account->id != 1) {
@@ -197,6 +213,7 @@ if (!$setup_data['steps']['root_user']['setup']) {
 
     if (!$user->id) {
 
+
         $smarty->assign('request', 'account/setup/error/3');
 
         $smarty->display("setup.tpl");
@@ -210,10 +227,14 @@ if (!$setup_data['steps']['root_user']['setup']) {
     $user = new User('Administrator');
 }
 
+
 $_SESSION['logged_in']      = true;
 $_SESSION['logged_in_page'] = 0;
 $_SESSION['user_key']       = $user->id;
 $_SESSION['text_locale']    = $user->get('User Preferred Locale');
+
+
+$smarty->assign('locale',$user->get('User Preferred Locale'));
 
 
 $_SESSION['current_store']     = '';

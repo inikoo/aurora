@@ -24,13 +24,17 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
             if ($options['type'] == 'suppliers.settings') {
                 include 'fields/suppliers.settings.fld.php';
+            } elseif ($options['type'] == 'setup') {
+                include 'fields/account.setup.fld.php';
             } else {
                 include 'fields/account.fld.php';
             }
 
+
             return $object_fields;
             break;
-        case 'Material':
+        case
+        'Material':
             include 'fields/material.fld.php';
 
             return $object_fields;
@@ -255,7 +259,7 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
                     return $supplier_part_fields;
                 }
-            }else{
+            } else {
 
                 $agent = $options['parent_object'];
 
@@ -302,6 +306,7 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
 
             } else {
+
 
                 if (!in_array($object->id, $user->stores)) {
                     $edit = false;

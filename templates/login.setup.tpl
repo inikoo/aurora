@@ -52,7 +52,7 @@
                        required>
             </div>
             <div class="form__field">
-                <input type="submit" value="{t}Set up{/t}">
+                <button onclick="on_my_Submit()" >{t}Set up{/t}</button>
             </div>
         </form>
         <div id="error_message" class="text--center error" style="visibility:{if $error==1}visible{else}hidden{/if}">
@@ -63,5 +63,6 @@
 
 </body>
 </html>
+
 {if $_DEVEL}{/strip}{/if}
 
