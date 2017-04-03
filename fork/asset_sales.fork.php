@@ -21,9 +21,47 @@ function fork_asset_sales($job) {
 
     list($account, $db, $data) = $_data;
 
-   // print_r($data);
+    // print_r($data);
 
     switch ($data['type']) {
+
+
+        case 'update_stores_previous_intervals':
+            include_once 'class.Store.php';
+
+            if(!in_array($data['intervals'],array('Quarters','Years'))){
+                return;
+            }
+
+            $sql = sprintf("SELECT `Store Key` FROM `Store Dimension`");
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+                    $store = new Store('id', $row['Store Key']);
+                    $store->load_acc_data();
+
+
+                    if ($data['intervals'] == 'Quarters') {
+                        $store->update_previous_quarters_data();
+
+                    } elseif ($data['intervals'] = 'Years') {
+                        $store->update_previous_years_data();
+                    }
+
+                }
+            } else {
+                print_r($error_info = $db->errorInfo());
+                exit;
+            }
+
+            if ($data['intervals'] == 'Quarters') {
+                $account->update_previous_quarters_data();
+
+            } elseif ($data['intervals'] = 'Years') {
+                $account->update_previous_years_data();
+            }
+
+
+            break;
 
 
         case 'update_stores_sales_data':
@@ -52,7 +90,7 @@ function fork_asset_sales($job) {
 
             $account->load_acc_data();
             $account->update_sales_from_invoices($data['interval'], $this_year, $last_year);
-            
+
             break;
 
 
@@ -68,9 +106,7 @@ function fork_asset_sales($job) {
             }
 
 
-            $sql = sprintf(
-                "SELECT `Category Key` FROM `Category Dimension` WHERE   `Category Scope`='Invoice' "
-            );
+            $sql = sprintf("SELECT `Category Key` FROM `Category Dimension` WHERE   `Category Scope`='Invoice' ");
 
 
             if ($result = $db->query($sql)) {
@@ -85,9 +121,102 @@ function fork_asset_sales($job) {
             }
             break;
 
+        case 'update_invoices_categories_previous_intervals':
+            include_once 'class.Category.php';
+
+            if(!in_array($data['intervals'],array('Quarters','Years'))){
+                return;
+            }
+
+            $sql = sprintf("SELECT `Category Key` FROM `Category Dimension` WHERE   `Category Scope`='Invoice' ");
+
+
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+                    $category = new Category($row['Category Key']);
+                    $category->load_acc_data();
+
+                    if ($data['intervals'] == 'Quarters') {
+                        $category->update_invoice_previous_quarters_data();
+
+                    } elseif ($data['intervals'] = 'Years') {
+                        $category->update_invoice_previous_years_data();
+                    }
+
+
+                }
+            }
+
+
+
+
+            break;
+
+
+        case 'update_suppliers_previous_intervals':
+            include_once 'class.Supplier.php';
+            include_once 'class.Agent.php';
+
+            if(!in_array($data['intervals'],array('Quarters','Years'))){
+                return;
+            }
+
+
+
+            $sql = sprintf('SELECT `Supplier Key` FROM `Supplier Dimension`  ');
+
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+                    $supplier = new Supplier($row['Supplier Key']);
+                    $supplier->load_acc_data();
+
+                    if ($data['intervals'] == 'Quarters') {
+                        $supplier->update_previous_quarters_data();
+                    } elseif ($data['intervals'] = 'Years') {
+                        $supplier->update_previous_years_data();
+                    }
+
+                }
+
+            } else {
+                print_r($error_info = $db->errorInfo());
+                exit;
+            }
+
+
+
+            $sql = sprintf('SELECT `Agent Key` FROM `Agent Dimension`  ');
+
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+                    $agent = new Agent($row['Agent Key']);
+                    $agent->load_acc_data();
+
+                    if ($data['intervals'] == 'Quarters') {
+                        $agent->update_previous_quarters_data();
+                    } elseif ($data['intervals'] = 'Years') {
+                        $agent->update_previous_years_data();
+                    }
+
+                }
+
+            } else {
+                print_r($error_info = $db->errorInfo());
+                exit;
+            }
+
+
+
+
+            break;
+
+
+
 
         case 'update_suppliers_sales_data':
             include_once 'class.Supplier.php';
+            include_once 'class.Agent.php';
+
 
             if (!isset($data['mode'])) {
                 $this_year = true;
@@ -98,22 +227,7 @@ function fork_asset_sales($job) {
             }
 
 
-            $sql = sprintf('SELECT `Agent Key` FROM `Agent Dimension`  ');
 
-            if ($result = $db->query($sql)) {
-                foreach ($result as $row) {
-                    $agent = new Agent($row['Agent Key']);
-                    $agent->load_acc_data();
-                    $agent->update_sales(
-                        $data['interval'], $this_year, $last_year
-                    );
-
-                }
-
-            } else {
-                print_r($error_info = $db->errorInfo());
-                exit;
-            }
 
             $sql = sprintf('SELECT `Supplier Key` FROM `Supplier Dimension`  ');
 
@@ -134,7 +248,56 @@ function fork_asset_sales($job) {
                 exit;
             }
 
+
+            $sql = sprintf('SELECT `Agent Key` FROM `Agent Dimension`  ');
+
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+                    $agent = new Agent($row['Agent Key']);
+                    $agent->load_acc_data();
+                    $agent->update_sales(
+                        $data['interval'], $this_year, $last_year
+                    );
+
+                }
+
+            } else {
+                print_r($error_info = $db->errorInfo());
+                exit;
+            }
+
             break;
+
+
+
+        case 'update_products_previous_intervals':
+            include_once 'class.Product.php';
+
+            if(!in_array($data['intervals'],array('Quarters','Years'))){
+                return;
+            }
+
+            $sql = sprintf("SELECT `Product ID` FROM `Product Dimension`  ");
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+
+                    $product = new Product('id', $row['Product ID']);
+                    $product->load_acc_data();
+
+                    if ($data['intervals'] == 'Quarters') {
+                        $product->update_previous_quarters_data();
+
+                    } elseif ($data['intervals'] = 'Years') {
+                        $product->update_previous_years_data();
+                    }
+
+                }
+            }
+            break;
+
+
+
+
 
         case 'update_products_sales_data':
             include_once 'class.Product.php';
@@ -158,6 +321,38 @@ function fork_asset_sales($job) {
                 }
             }
             break;
+
+
+        case 'update_parts_previous_intervals':
+            include_once 'class.Part.php';
+
+            if(!in_array($data['intervals'],array('Quarters','Years'))){
+                return;
+            }
+
+
+            $sql = sprintf("SELECT `Part SKU` FROM `Part Dimension`  ");
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+
+                    $part = new Part($row['Part SKU']);
+                    $part->load_acc_data();
+
+                    if ($data['intervals'] == 'Quarters') {
+                        $part->update_previous_quarters_data();
+
+                    } elseif ($data['intervals'] = 'Years') {
+                        $part->update_previous_years_data();
+                    }
+                }
+            }
+
+
+            break;
+
+
+
+
 
         case 'update_parts_sales_data':
             include_once 'class.Part.php';
@@ -183,6 +378,30 @@ function fork_asset_sales($job) {
                 }
             }
             break;
+
+        case 'update_product_categories_previous_intervals':
+            include_once 'class.Category.php';
+
+            if(!in_array($data['intervals'],array('Quarters','Years'))){
+                return;
+            }
+
+            $sql = sprintf("SELECT `Category Key` FROM `Category Dimension` WHERE   `Category Scope`='Product' ");
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+                    $category = new Category($row['Category Key']);
+                    if ($data['intervals'] == 'Quarters') {
+                        $category->update_product_category_previous_quarters_data();
+
+                    } elseif ($data['intervals'] = 'Years') {
+                        $category->update_product_category_previous_years_data();
+                    }
+
+                }
+            }
+            break;
+
+
         case 'update_product_categories_sales_data':
             include_once 'class.Category.php';
 
@@ -211,6 +430,33 @@ function fork_asset_sales($job) {
                 }
             }
             break;
+
+
+
+        case 'update_part_categories_previous_intervals':
+            include_once 'class.Category.php';
+
+            if(!in_array($data['intervals'],array('Quarters','Years'))){
+                return;
+            }
+
+            $sql = sprintf("SELECT `Category Key` FROM `Category Dimension` WHERE   `Category Scope`='Part' ");
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+                    $category = new Category($row['Category Key']);
+                    $category->load_acc_data();
+
+                    if ($data['intervals'] == 'Quarters') {
+                        $category->update_part_category_previous_quarters_data();
+
+                    } elseif ($data['intervals'] = 'Years') {
+                        $category->update_part_category_previous_years_data();
+                    }
+
+                }
+            }
+            break;
+
         case 'update_part_categories_sales_data':
             include_once 'class.Category.php';
 
@@ -223,10 +469,7 @@ function fork_asset_sales($job) {
             }
 
 
-            $sql = sprintf(
-                "SELECT `Category Key` FROM `Category Dimension` WHERE   `Category Scope`='Part' "
-            );
-
+            $sql = sprintf("SELECT `Category Key` FROM `Category Dimension` WHERE   `Category Scope`='Part' ");
             if ($result = $db->query($sql)) {
                 foreach ($result as $row) {
                     $category = new Category($row['Category Key']);
@@ -235,6 +478,30 @@ function fork_asset_sales($job) {
                     $category->update_part_category_sales(
                         $data['interval'], $this_year, $last_year
                     );
+                }
+            }
+            break;
+
+        case 'update_suppliers_categories_previous_intervals':
+            include_once 'class.Category.php';
+
+            if(!in_array($data['intervals'],array('Quarters','Years'))){
+                return;
+            }
+
+            $sql = sprintf("SELECT `Category Key` FROM `Category Dimension` WHERE   `Category Scope`='Supplier' ");
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+                    $category = new Category($row['Category Key']);
+                    $category->load_acc_data();
+
+                    if ($data['intervals'] == 'Quarters') {
+                        $category->update_supplier_category_previous_quarters_data();
+
+                    } elseif ($data['intervals'] = 'Years') {
+                        $category->update_supplier_category_previous_years_data();
+                    }
+
                 }
             }
             break;
@@ -251,9 +518,7 @@ function fork_asset_sales($job) {
             }
 
 
-            $sql = sprintf(
-                "SELECT `Category Key` FROM `Category Dimension` WHERE   `Category Scope`='Supplier' "
-            );
+            $sql = sprintf("SELECT `Category Key` FROM `Category Dimension` WHERE   `Category Scope`='Supplier' ");
 
             if ($result = $db->query($sql)) {
                 foreach ($result as $row) {
@@ -346,11 +611,11 @@ function fork_asset_sales($job) {
             break;
 
         case 'update_invoice_products_sales_data':
-            update_invoice_products_sales_data($db,$account, $data);
+            update_invoice_products_sales_data($db, $account, $data);
 
             break;
         case 'update_deleted_invoice_products_sales_data':
-            update_deleted_invoice_products_sales_data($db, $data,$account);
+            update_deleted_invoice_products_sales_data($db, $data, $account);
 
 
             break;
@@ -362,14 +627,13 @@ function fork_asset_sales($job) {
 }
 
 
-function update_invoice_products_sales_data($db,$account, $data) {
+function update_invoice_products_sales_data($db, $account, $data) {
 
     include_once 'class.Product.php';
     include_once 'class.Customer.php';
     include_once 'class.Category.php';
     include_once 'class.Store.php';
     include_once 'class.Invoice.php';
-
 
 
     $account->load_acc_data();
@@ -382,7 +646,7 @@ function update_invoice_products_sales_data($db,$account, $data) {
 
     $categories     = array();
     $categories_bis = array();
-  //  print_r($data);
+    //  print_r($data);
 
     $customer = new Customer($data['customer_key']);
     $customer->update_product_bridge();
