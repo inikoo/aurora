@@ -169,7 +169,7 @@
                 </ul>
             {/if}
             <ul style="margin-top:20px">
-                <li onclick="logout()"><i class="fa fa-sign-out fa-fw"></i><span id="logout_label" class="label"> {t}Logout{/t}</span>
+                <li onclick="logout()"><i class="fa fa-sign-out fa-fw"></i><span id="logout_label" class="label" title="{t}Logout{/t}"> {t}Logout{/t}</span>
                 </li>
             </ul>
         </div>
