@@ -9,6 +9,19 @@
 
 */
 
+
+if($account->get('Account Warehouses')==0){
+
+    $html='<div style="padding:20px">'.sprintf(_('Warehouse missing, set it up %s'),'<span class="marked_link" onClick="change_view(\'/warehouse/new\')" >'._('here').'</span>').'</div>';
+    return;
+}
+
+if($account->get('Account Stores')==0){
+
+    $html='<div style="padding:20px">'.sprintf(_('There are not stores, create one %s'),'<span class="marked_link" onClick="change_view(\'/store/new\')" >'._('here').'</span>').'</div>';
+    return;
+}
+
 $tab     = 'store.products';
 $ar_file = 'ar_products_tables.php';
 $tipo    = 'products';

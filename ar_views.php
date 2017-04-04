@@ -530,7 +530,7 @@ function get_view($db, $smarty, $user, $account, $modules) {
 
 
     if ($data['old_state']['module'] != $state['module'] or $reload) {
-        $response['menu'] = get_menu($state, $user, $smarty);
+        $response['menu'] = get_menu($state, $user, $smarty, $db, $account);
 
     }
 
@@ -931,7 +931,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
 }
 
 
-function get_menu($data, $user, $smarty) {
+function get_menu($data, $user, $smarty, $db, $account) {
 
     include_once 'navigation/menu.php';
 

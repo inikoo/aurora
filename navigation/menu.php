@@ -13,17 +13,17 @@
 
 $current_section = $data['section'];
 
+
 $nav_menu = array();
 
-    $nav_menu[] = array(
-        '<i class="fa fa-dashboard fa-fw"></i>',
-        _('Dashboard'),
-        '/dashboard',
-        '_dashboard',
-        'module',
-        ''
-    );
-
+$nav_menu[] = array(
+    '<i class="fa fa-dashboard fa-fw"></i>',
+    _('Dashboard'),
+    '/dashboard',
+    '_dashboard',
+    'module',
+    ''
+);
 
 
 if ($user->can_view('customers')) {
@@ -171,11 +171,11 @@ if ($user->can_view('orders')) {
 if ($user->can_view('sites')) {
 
 
-    if ($user->data['User Hooked Site Key']) {
+    if ($user->get('User Hooked Site Key')) {
         $nav_menu[] = array(
             '<i class="fa fa-globe fa-fw"></i>',
             _('Websites'),
-            'website/'.$user->data['User Hooked Site Key'],
+            'website/'.$user->get('User Hooked Site Key'),
             'websites',
             'module',
             ''
@@ -279,6 +279,29 @@ if ($user->can_view('locations')) {
             'module',
             ''
         );
+    } elseif ($account->get('Account Warehouses') == 1) {
+
+
+        $sql = sprintf('SELECT `Warehouse Key` FROM `Warehouse Dimension` WHERE `Warehouse State`="Active" ');
+
+        if ($result = $db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $warehouse_key = $row['Warehouse Key'];
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+        $nav_menu[] = array(
+            '<i class="fa fa-map fa-fw"></i>',
+            _('Warehouse'),
+            'warehouse/'.$warehouse_key.'/dashboard',
+            'warehouses',
+            'module',
+            ''
+        );
     } else {
 
         $nav_menu[] = array(
@@ -290,6 +313,7 @@ if ($user->can_view('locations')) {
             ''
         );
     }
+
 
 }
 
@@ -321,7 +345,7 @@ if ($user->can_view('suppliers')) {
 }
 
 
-if ($user->can_view('production')) {
+if ($user->can_view('production') and $account->get('Account Manufacturers') > 0) {
 
 
     if ($user->get('User Hooked Production Key')) {
@@ -331,6 +355,29 @@ if ($user->can_view('production')) {
             'production/'.$user->get(
                 'User Hooked Production Key'
             ),
+            'production',
+            'module',
+            ''
+        );
+    } elseif ($account->get('Account Manufacturers') == 1) {
+
+
+        $sql = sprintf('SELECT `Supplier Production Supplier Key` FROM `Supplier Production Dimension` left join `Supplier Dimension` on (`Supplier Key`=`Supplier Production Supplier Key`) WHERE `Supplier Type`!="Archived"  ');
+
+        if ($result = $db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $manufacturer_key = $row['Supplier Production Supplier Key'];
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+        $nav_menu[] = array(
+            '<i class="fa fa-industry fa-fw"></i>',
+            _('Production'),
+            'production/'.$manufacturer_key,
             'production',
             'module',
             ''
@@ -378,8 +425,6 @@ if ($user->can_view('reports')) {
 if ($user->get('User Type') == 'Agent') {
 
 
-
-
     $nav_menu[] = array(
         '<i class="fa fa-clipboard fa-fw"></i>',
         _("Client's orders"),
@@ -388,7 +433,6 @@ if ($user->get('User Type') == 'Agent') {
         'module',
         ''
     );
-
 
 
     $nav_menu[] = array(
@@ -427,8 +471,7 @@ if ($user->get('User Type') == 'Agent') {
     );
 
 
-}
-elseif ($user->get('User Type') == 'Supplier') {
+} elseif ($user->get('User Type') == 'Supplier') {
 
 
     //$nav_menu[] = array(_('Orders'), 'suppliers.php?orders'  ,'orders');
@@ -440,20 +483,18 @@ elseif ($user->get('User Type') == 'Supplier') {
         ''
     );
 
-}
-elseif ($user->get('User Type') == 'Warehouse') {
+} elseif ($user->get('User Type') == 'Warehouse') {
 
     $nav_menu[] = array(
         _('Pending Orders'),
-        'warehouse_orders.php?id='.$user->data['User Parent Key'],
+        'warehouse_orders.php?id='.$user->get('User Parent Key'),
         'orders',
         'module',
         'last'
     );
 
 
-}
-else {
+} else {
 
 
     $nav_menu[] = array(
@@ -472,7 +513,6 @@ else {
 }
 
 
-
 if ($user->can_view('account')) {
 
 
@@ -486,9 +526,7 @@ if ($user->can_view('account')) {
     );
 
 
-
 }
-
 
 
 $current_item = $data['module'];

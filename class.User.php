@@ -226,11 +226,16 @@ class User extends DB_Table {
             $this->id                    = $this->data['User Key'];
             $this->data['User Password'] = '';
 
-            if ($this->data['User Type'] == 'Staff' or $this->data['User Type'] == 'Administrator' or $this->data['User Type'] == 'Warehouse') {
+//print $this->data['User Type'];
+
+            if ($this->data['User Type'] == 'Staff' or $this->data['User Type'] == 'Contractor' or $this->data['User Type'] == 'Administrator' or $this->data['User Type'] == 'Warehouse') {
 
                 $sql = sprintf(
                     "SELECT * FROM `User Staff Settings Dimension` WHERE `User Key`=%d", $this->id
                 );
+
+//print $sql;
+
 
                 if ($row = $this->db->query($sql)->fetch()) {
 
@@ -400,7 +405,9 @@ class User extends DB_Table {
 
             $this->update_staff_type();
 
-            if ($this->data['User Type'] == 'Staff' or $this->data['User Type'] == 'Administrator') {
+            if ($this->data['User Type'] == 'Staff' or $this->data['User Type'] == 'Contractor' or $this->data['User Type'] == 'Administrator' or $this->data['User Type'] == 'Warehouse') {
+
+
                 $sql = sprintf(
                     "INSERT INTO `User Staff Settings Dimension` (`User Key`) VALUES (%d)  ", $this->id
                 );

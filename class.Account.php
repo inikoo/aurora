@@ -248,15 +248,18 @@ class Account extends DB_Table {
     }
 
     function update_stores_data() {
-        $number_stores = 0;
-        $sql           = sprintf(
-            'SELECT count(*) AS num FROM `Account Dimension` WHERE `Account State`="Normal"'
+        $number_stores   = 0;
+        $number_websites = 0;
+        $sql             = sprintf(
+            'SELECT count(*) AS num FROM `Store Dimension` WHERE `Store State`="Normal"'
         );
         if ($row = $this->db->query($sql)->fetch()) {
             $number_stores = $row['num'];
         }
 
-        $this->update(array('Account Accounts' => $number_stores), 'no_history');
+        $this->update(array('Account Stores' => $number_stores), 'no_history');
+        $this->update(array('Account Websites' => $number_websites), 'no_history');
+
 
     }
 
@@ -516,7 +519,28 @@ class Account extends DB_Table {
     }
 
     function update_suppliers_data() {
-        // TODO
+        $number_suppliers     = 0;
+        $number_agents        = 0;
+        $number_manufacturers = 0;
+
+        $sql                  = sprintf('SELECT count(*) AS num FROM `Supplier Dimension` WHERE `Supplier Type`!="Archived"');
+        if ($row = $this->db->query($sql)->fetch()) {
+            $number_suppliers = $row['num'];
+        }
+        $sql                  = sprintf('SELECT count(*) AS num FROM `Agent Dimension` ');
+        if ($row = $this->db->query($sql)->fetch()) {
+            $number_agents = $row['num'];
+        }
+
+        $sql                  = sprintf('SELECT count(*) AS num FROM `Supplier Production Dimension` left join `Supplier Dimension` on (`Supplier Key`=`Supplier Production Supplier Key`) WHERE `Supplier Type`!="Archived" ');
+        if ($row = $this->db->query($sql)->fetch()) {
+            $number_manufacturers = $row['num'];
+        }
+
+
+        $this->update(array('Account Suppliers' => $number_suppliers), 'no_history');
+        $this->update(array('Account agents' => $number_agents), 'no_history');
+        $this->update(array('Account Manufacturers' => $number_manufacturers), 'no_history');
     }
 
     function create_agent($data) {
@@ -600,7 +624,7 @@ class Account extends DB_Table {
 
             if ($agent->new) {
                 $this->new_agent = true;
-                //$this->update_agents_data();
+                $this->update_suppliers_data();
             } else {
                 $this->error = true;
                 $this->msg   = $agent->msg;
@@ -1670,18 +1694,18 @@ class Account extends DB_Table {
         switch ($field) {
 
             case 'Account Country Code':
-               $country = new Country('code', $value);
-               if($country->id){
-                   $this->update_field('Account Country Code', $country->get('Country Code'), $options);
-                   $this->update_field('Account Country 2 Alpha Code', $country->get('Country 2 Alpha Code'), 'no_history');
+                include_once 'class.Country.php';
+                $country = new Country('code', $value);
+                if ($country->id) {
+                    $this->update_field('Account Country Code', $country->get('Country Code'), $options);
+                    $this->update_field('Account Country 2 Alpha Code', $country->get('Country 2 Alpha Code'), 'no_history');
 
 
-
-               }else{
-                   $this->error=true;
-                   $this->msg='Country not found';
-               }
-
+                } else {
+                    $this->error = true;
+                    $this->msg   = 'Country not found';
+                }
+                break;
             case('Account Currency'):
 
                 $value = strtoupper($value);

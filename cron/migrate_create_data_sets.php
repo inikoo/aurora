@@ -15,9 +15,6 @@ require_once 'class.Data_Sets.php';
 require_once 'class.Store.php';
 require_once 'class.Invoice.php';
 
-require_once 'utils/date_functions.php';
-require_once 'conf/data_sets.php';
-
 $editor = array(
     'Author Name'  => '',
     'Author Alias' => '',
@@ -26,6 +23,10 @@ $editor = array(
     'User Key'     => 0,
     'Date'         => gmdate('Y-m-d H:i:s')
 );
+
+
+require_once 'utils/date_functions.php';
+require_once 'conf/data_sets.php';
 
 foreach ($data_sets as $data_set_data) {
     $data_set_data['editor'] = $editor;

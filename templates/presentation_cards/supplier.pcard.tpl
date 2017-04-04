@@ -12,8 +12,8 @@
             <td colspan="2">{t}Supplier{/t} </td>
         </tr>
         <tr>
-            <td class="label"><span class="link" onclick="change_view('supplier/{$supplier->id}')">{$supplier->get_field_label('Supplier Code')|capitalize}</span></td>
-            <td>{$supplier->get('Code')}</td>
+            <td class="label">{$supplier->get_field_label('Supplier Code')|capitalize}</td>
+            <td> <span class="link" onclick="change_view('supplier/{$supplier->id}')"> {$supplier->get('Code')}</span>  </td>
         </tr>
         <tr>
             <td class="label">{$supplier->get_field_label('Supplier Name')|capitalize}</td>

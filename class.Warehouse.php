@@ -223,6 +223,18 @@ class Warehouse extends DB_Table {
             }
 
 
+
+            $this->create_location(array(
+                                       'Location Code'=>'Unknown',
+                                       'Location Mainly Used For'=>'Storing'
+                                   ));
+
+            $this->create_location(array(
+                                       'Location Code'=>'LoadBay',
+                                       'Location Mainly Used For'=>'Loading'
+                                   ));
+
+
             return;
         } else {
             $this->msg = _(" Error can not create warehouse");
