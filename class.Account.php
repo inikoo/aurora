@@ -257,6 +257,13 @@ class Account extends DB_Table {
             $number_stores = $row['num'];
         }
 
+        $sql             = sprintf(
+            'SELECT count(*) AS num FROM `Website Dimension` '
+        );
+        if ($row = $this->db->query($sql)->fetch()) {
+            $number_websites = $row['num'];
+        }
+
         $this->update(array('Account Stores' => $number_stores), 'no_history');
         $this->update(array('Account Websites' => $number_websites), 'no_history');
 
@@ -539,7 +546,7 @@ class Account extends DB_Table {
 
 
         $this->update(array('Account Suppliers' => $number_suppliers), 'no_history');
-        $this->update(array('Account agents' => $number_agents), 'no_history');
+        $this->update(array('Account Agents' => $number_agents), 'no_history');
         $this->update(array('Account Manufacturers' => $number_manufacturers), 'no_history');
     }
 
