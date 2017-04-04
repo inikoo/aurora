@@ -84,7 +84,7 @@ if ($result = $db->query($sql)) {
 
         );
 
-
+        $store->update_new_products();
 
     }
 } else {
@@ -158,6 +158,7 @@ if ($result = $db->query($sql)) {
     exit;
 }
 
+/*
 
 $sql = sprintf('UPDATE `Store Data` SET `Store Yesterday Acc Invoiced Discount Amount`=`Store Today Acc Invoiced Discount Amount` ,`Store Today Acc Invoiced Discount Amount`=0  ');
 $db->exec($sql);
@@ -244,7 +245,8 @@ $sql = sprintf(
 );
 $db->exec($sql);
 
-
+*/
+/*
 $sql = sprintf("SELECT `Store Key` FROM `Store Dimension`");
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
@@ -262,9 +264,9 @@ if ($result = $db->query($sql)) {
     exit;
 }
 
+*/
 
-
-
+/*
 
 $sql = sprintf('UPDATE `Invoice Category Data` SET `Invoice Category Yesterday Acc Discount Amount`=`Invoice Category Today Acc Discount Amount` ,`Invoice Category Today Acc Discount Amount`=0  ');
 $db->exec($sql);
@@ -324,6 +326,7 @@ if ($result = $db->query($sql)) {
     exit;
 }
 
+*/
 
 /*
 
@@ -378,6 +381,55 @@ $sql=sprintf('update `Part Category Data` set `Part Category Yesterday Acc Repea
 */
 
 
+
+$msg = new_housekeeping_fork(
+    'au_asset_sales', array(
+    'type'     => 'update_stores_sales_data',
+    'interval' => 'Today',
+    'mode'     => array(
+        true,
+        true
+    )
+), $account->get('Account Code')
+);
+
+$msg = new_housekeeping_fork(
+    'au_asset_sales', array(
+    'type'     => 'update_invoices_categories_sales_data',
+    'interval' => 'Today',
+    'mode'     => array(
+        true,
+        true
+    )
+), $account->get('Account Code')
+);
+
+
+$msg = new_housekeeping_fork(
+    'au_asset_sales', array(
+    'type'     => 'update_stores_sales_data',
+    'interval' => 'Yesterday',
+    'mode'     => array(
+        true,
+        true
+    )
+), $account->get('Account Code')
+);
+
+$msg = new_housekeeping_fork(
+    'au_asset_sales', array(
+    'type'     => 'update_invoices_categories_sales_data',
+    'interval' => 'Yesterday',
+    'mode'     => array(
+        true,
+        true
+    )
+), $account->get('Account Code')
+);
+
+
+
+
 $intervals = array(
     'Year To Day',
     'Quarter To Day',
@@ -389,6 +441,29 @@ $intervals = array(
     '1 Week'
 );
 foreach ($intervals as $interval) {
+
+
+    $msg = new_housekeeping_fork(
+        'au_asset_sales', array(
+        'type'     => 'update_stores_sales_data',
+        'interval' => $interval,
+        'mode'     => array(
+            false,
+            true
+        )
+    ), $account->get('Account Code')
+    );
+
+    $msg = new_housekeeping_fork(
+        'au_asset_sales', array(
+        'type'     => 'update_invoices_categories_sales_data',
+        'interval' => $interval,
+        'mode'     => array(
+            false,
+            true
+        )
+    ), $account->get('Account Code')
+    );
 
 
     $msg = new_housekeeping_fork(
@@ -436,39 +511,30 @@ foreach ($intervals as $interval) {
     );
 
 
-    $sql = sprintf('SELECT `Category Key` FROM `Category Dimension` WHERE `Category Scope`="Invoice"  ');
-
-    if ($result = $db->query($sql)) {
-        foreach ($result as $row) {
-            $category = new Category($row['Category Key']);
-            $category->update_invoice_category_sales($interval);
-        }
-
-    } else {
-        print_r($error_info = $db->errorInfo());
-        exit;
-    }
+    $msg = new_housekeeping_fork(
+        'au_asset_sales', array(
+        'type'     => 'update_suppliers_data',
+        'interval' => $interval,
+        'mode'     => array(
+            false,
+            true
+        )
+    ), $account->get('Account Code')
+    );
 
 
-    $sql = sprintf("SELECT `Store Key` FROM `Store Dimension`");
-    if ($result = $db->query($sql)) {
-        foreach ($result as $row) {
-            $store = new Store('id', $row['Store Key']);
-
-            $store->load_acc_data();
-            $store->update_sales_from_invoices($interval);
-
-
-        }
-
-    } else {
-        print_r($error_info = $db->errorInfo());
-        exit;
-    }
+    $msg = new_housekeeping_fork(
+        'au_asset_sales', array(
+        'type'     => 'update_supplier_categories_sales_data',
+        'interval' => $interval,
+        'mode'     => array(
+            false,
+            true
+        )
+    ), $account->get('Account Code')
+    );
 
 
-    $account->load_acc_data();
-    $account->update_sales_from_invoices($interval);
 
 
 }
