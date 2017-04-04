@@ -13,14 +13,25 @@
 function get_stores_showcase($data, $smarty) {
 
 
+
+
+
     $account = $data['_object'];
     $account->load_acc_data();
+
+
+
 
 
 
     if (!$account->id) {
         return "";
     }
+
+    if($account->get('Account Stores')==0){
+        return "";
+    }
+
 
     $smarty->assign('account', $account);
 

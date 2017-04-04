@@ -10,6 +10,7 @@
 */
 
 
+
 $category                = $state['_object'];
 $sales_max_sample_domain = 1;
 $timeseries_key          = '';

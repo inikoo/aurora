@@ -167,7 +167,7 @@ function get_suppliers_navigation($data, $smarty, $user, $db) {
         'sections'       => $sections,
         'left_buttons'   => $left_buttons,
         'right_buttons'  => $right_buttons,
-        'title'          => _('Suppliers'),
+        'title'          => _('Manufacturers'),
         'search'         => array(
             'show'        => true,
             'placeholder' => _('Search production')

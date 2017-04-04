@@ -76,20 +76,25 @@ if (isset($parameters['awhere']) and $parameters['awhere']) {
 
 
 } elseif ($parameters['parent'] == 'account') {
-    if (is_numeric($parameters['parent_key']) and in_array(
-            $parameters['parent_key'], $user->stores
-        )
-    ) {
 
         if (count($user->stores) == 0) {
             $where = ' where false';
         } else {
 
-            $where = sprintf(
-                'where  `Order Store Key` in (%s)  ', join(',', $user->stores)
-            );
+            if($user->stores==''){
+                $where = 'where false';
+            }else{
+                $where = sprintf('where  `Order Store Key` in (%s)  ', join(',', $user->stores));
+
+            }
+
+
         }
-    }
+
+
+
+
+
 } elseif ($parameters['parent'] == 'customer') {
 
 
@@ -153,6 +158,8 @@ if (isset($parameters['awhere']) and $parameters['awhere']) {
 } else {
     exit("unknown parent\n");
 }
+
+
 
 if (isset($parameters['period'])) {
     include_once 'utils/date_functions.php';

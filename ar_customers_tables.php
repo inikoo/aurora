@@ -383,6 +383,7 @@ function customers_server($_data, $db, $user) {
     $total_new_contacts_with_orders    = 0;
     $total_lost_contacts_with_orders   = 0;
     $total_losing_contacts_with_orders = 0;
+    $total_users=0;
 
 
     if ($result = $db->query($sql)) {

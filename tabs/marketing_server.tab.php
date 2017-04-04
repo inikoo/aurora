@@ -14,6 +14,20 @@ $tab     = 'marketing_server';
 $ar_file = 'ar_marketing_tables.php';
 $tipo    = 'marketing_server';
 
+
+
+if($account->get('Account Warehouses')==0){
+
+    $html='<div style="padding:20px">'.sprintf(_('Warehouse missing, set it up %s'),'<span class="marked_link" onClick="change_view(\'/warehouse/new\')" >'._('here').'</span>').'</div>';
+    return;
+}
+
+if($account->get('Account Stores')==0){
+
+    $html='<div style="padding:20px">'.sprintf(_('There are not stores, create one %s'),'<span class="marked_link" onClick="change_view(\'/store/new\')" >'._('here').'</span>').'</div>';
+    return;
+}
+
 $default = $user->get_tab_defaults($tab);
 
 

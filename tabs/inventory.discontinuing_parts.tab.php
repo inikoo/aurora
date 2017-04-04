@@ -10,6 +10,13 @@
 */
 
 
+if($account->get('Account Warehouses')==0){
+
+    $html='<div style="padding:20px">'.sprintf(_('Warehouse missing, set it up %s'),'<span class="marked_link" onClick="change_view(\'/warehouse/new\')" >'._('here').'</span>').'</div>';
+    return;
+}
+
+
 $tab     = 'inventory.discontinuing_parts';
 $ar_file = 'ar_inventory_tables.php';
 $tipo    = 'discontinuing_parts';

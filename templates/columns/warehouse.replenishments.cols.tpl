@@ -78,7 +78,7 @@ sortType: "toggle",
 editable: false,
 headerCell: integerHeaderCell,
 
-cell: "rhtml"
+cell: "html"
 }
 
 ]

@@ -9,6 +9,8 @@
 
 */
 
+
+
 $tab     = 'supplier.orders';
 $ar_file = 'ar_suppliers_tables.php';
 $tipo    = 'orders';

@@ -31,6 +31,10 @@ html, body, textarea {
     color: #6a6d91;
     cursor: pointer;
     text-decoration: none; }
+  html .marked_link, body .marked_link, textarea .marked_link {
+    color: #6a6d91;
+    cursor: pointer;
+    text-decoration: underline; }
   html .button, body .button, textarea .button {
     cursor: pointer; }
   html i.button.edit, body i.button.edit, textarea i.button.edit {

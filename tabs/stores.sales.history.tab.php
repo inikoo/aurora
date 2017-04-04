@@ -10,6 +10,12 @@
 */
 
 
+
+if($account->get('Account Stores')==0) {
+    $html='';
+    return;
+}
+
 $tab     = 'stores.sales.history';
 $ar_file = 'ar_products_tables.php';
 $tipo    = 'sales_history';

@@ -10,8 +10,13 @@
 */
 
 
+
 $account = $state['_object'];
 
+if($account->get('Account Stores')==0) {
+    $html='';
+    return;
+}
 
 $data = base64_encode(
     json_encode(

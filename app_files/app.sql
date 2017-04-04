@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 5.7.16, for osx10.12 (x86_64)
 --
--- Host: localhost    Database: aurora
+-- Host: localhost    Database: dw
 -- ------------------------------------------------------
 -- Server version	5.7.16
 
@@ -643,6 +643,9 @@ CREATE TABLE `Account Dimension` (
   `Account Stores` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Account Websites` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Account Warehouses` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Account Suppliers` smallint(6) NOT NULL DEFAULT '0',
+  `Account Agents` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Account Manufacturers` smallint(6) NOT NULL DEFAULT '0',
   `Account Employees` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Account Menu Label` varchar(8) NOT NULL,
   `Account Country Code` varchar(3) NOT NULL DEFAULT 'GBR',
@@ -1318,6 +1321,9 @@ CREATE TABLE `Agent Dimension` (
   `Agent Skip Mark as Received` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Agent Skip Checking` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Agent Automatic Placement Location` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Agent Acc To Day Updated` datetime DEFAULT NULL,
+  `Agent Acc Ongoing Intervals Updated` datetime DEFAULT NULL,
+  `Agent Acc Previous Intervals Updated` datetime DEFAULT NULL,
   PRIMARY KEY (`Agent Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -3148,6 +3154,7 @@ CREATE TABLE `Delivery Note Dimension` (
   `Delivery Note Number Ordered Items` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Delivery Note Number To Pick Items` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Delivery Note Number Ordered Parts` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Delivery Note Pending` enum('Yes','No') DEFAULT 'Yes',
   PRIMARY KEY (`Delivery Note Key`),
   KEY `Metadata` (`Delivery Note Metadata`(12)),
   KEY `Delivery Note Type` (`Delivery Note Type`),
@@ -6315,6 +6322,50 @@ CREATE TABLE `Organization Dimension` (
   `Organization Description` text NOT NULL,
   PRIMARY KEY (`Organization Key`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Overtime Dimension`
+--
+
+DROP TABLE IF EXISTS `Overtime Dimension`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Overtime Dimension` (
+  `Overtime Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Overtime Reference` varchar(255) NOT NULL,
+  `Overtime Status` enum('Pending','Active','Suspended','Finish') NOT NULL,
+  `Overtime Start Date` datetime NOT NULL,
+  `Overtime End Date` datetime NOT NULL,
+  `Overtime Metadata` text NOT NULL,
+  `Overtime Description` text NOT NULL,
+  `Overtime Type` enum('Pay','AccruedTime') NOT NULL,
+  `Overtime Timesheets Entitled` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Overtime Timesheets Granted` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Overtime Staff Entitled` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Overtime Staff Granted` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Overtime Time` int(10) unsigned NOT NULL DEFAULT '0',
+  `Overtime Paid Amount` float NOT NULL DEFAULT '0',
+  `Overtime Accrued Time` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`Overtime Key`),
+  KEY `Overtime Status` (`Overtime Status`),
+  KEY `Overtime Reference` (`Overtime Reference`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Overtime Timesheet Bridge`
+--
+
+DROP TABLE IF EXISTS `Overtime Timesheet Bridge`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Overtime Timesheet Bridge` (
+  `Overtime Key` mediumint(8) unsigned NOT NULL,
+  `Timesheet Key` mediumint(8) unsigned NOT NULL,
+  `Status` enum('Active','Suspended') NOT NULL DEFAULT 'Active',
+  UNIQUE KEY `Overtime Key` (`Overtime Key`,`Timesheet Key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -17948,4 +17999,4 @@ CREATE TABLE `todo_users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-03-30 21:16:24
+-- Dump completed on 2017-04-04 14:06:29

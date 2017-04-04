@@ -10,6 +10,12 @@
 */
 
 
+if($account->get('Account Warehouses')==0){
+
+    $html='<div style="padding:20px">'.sprintf(_('Set uo the warehouse %s'),'<span class="marked_link" onClick="change_view(\'/warehouse/new\')" >'._('here').'</span>').'</div>';
+    return;
+}
+
 $tab     = 'warehouses';
 $ar_file = 'ar_warehouse_tables.php';
 $tipo    = 'warehouses';
