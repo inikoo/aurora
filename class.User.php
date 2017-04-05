@@ -1533,7 +1533,7 @@ class User extends DB_Table {
             $update_op->execute();
             $affected = $update_op->rowCount();
 
-            if ($affected > 0) {
+            if ($affected > 0 and $history )   {
                 $changed++;
 
 
@@ -1542,7 +1542,7 @@ class User extends DB_Table {
                         _("User's rights for warehouse %s were granted"), $warehouse->data['Warehouse Code']
                     ),
                     'History Details'     => '',
-                    'Action'              => 'disassociate',
+                    'Action'              => 'associate',
                     'Indirect Object'     => 'Warehouse',
                     'Indirect Object Key' => $warehouse->id
                 );
@@ -1935,7 +1935,6 @@ class User extends DB_Table {
         $tag = strtolower(_trim($tag));
 
 
-        //print_r($this->rights_allow);
         if ($tag_key == false) {
             if (isset($this->rights_allow[$right_type][$tag])) {
 

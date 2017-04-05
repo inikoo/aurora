@@ -17,6 +17,7 @@ $_product = array(
         'product.sales.plot'           => 'product.sales',
         'product.sales.history'        => 'product.sales',
         'product.sales.calendar'       => 'product.sales',
+        'product.sales.info'       => 'product.sales',
         'product.customers.customers'  => 'product.customers',
         'product.customers.favourites' => 'product.customers',
         'product.webpage.settings'      => 'product.webpage',
@@ -79,6 +80,11 @@ $_product = array(
                     'label' => _(
                         'Calendar'
                     )
+                ),
+                'product.sales.info'     => array(
+                    'label' => _('Info'),
+                    'icon'  => 'info',
+                    'class' => 'right icon_only'
                 ),
 
             )
@@ -3444,6 +3450,7 @@ $modules = array(
                     'part.sales.plot'          => 'part.sales',
                     'part.sales.history'       => 'part.sales',
                     'part.sales.calendar'      => 'part.sales',
+                    'part.sales.info'      => 'part.sales',
 
                 ),
 
@@ -3475,6 +3482,11 @@ $modules = array(
                                 'label' => _(
                                     'Calendar'
                                 )
+                            ),
+                            'part.sales.info'     => array(
+                                'label' => _('Info'),
+                                'icon'  => 'info',
+                                'class' => 'right icon_only'
                             ),
 
                         )

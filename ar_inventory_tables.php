@@ -1743,6 +1743,7 @@ function sales_history($_data, $db, $user, $account) {
     }
 
 
+
     switch ($_data['parameters']['parent']) {
         case 'part':
             if ($_data['parameters']['frequency'] == 'annually') {
@@ -1792,6 +1793,8 @@ function sales_history($_data, $db, $user, $account) {
         "select $fields from $table $where $wheref and %s>=%s and  %s<=%s %s order by $date_field    ", $date_field, prepare_mysql($from_date), $date_field, prepare_mysql($to_date), " $group_by "
     );
 
+
+    //print $sql;
 
     $last_year_data = array();
 

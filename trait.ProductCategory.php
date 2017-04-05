@@ -354,8 +354,8 @@ trait ProductCategory {
                 "Product Category $db_interval Acc Quantity Ordered"   => $sales_product_category_data['ordered'],
                 "Product Category $db_interval Acc Quantity Invoiced"  => $sales_product_category_data['invoiced'],
                 "Product Category $db_interval Acc Quantity Delivered" => $sales_product_category_data['delivered'],
-                "Product Category DC $db_interval Acc Profit"          => $sales_product_category_data['dc_net'],
-                "Product Category DC $db_interval Acc Invoiced Amount" => $sales_product_category_data['dc_profit']
+                "Product Category DC $db_interval Acc Profit"          => $sales_product_category_data['dc_profit'],
+                "Product Category DC $db_interval Acc Invoiced Amount" => $sales_product_category_data['dc_net']
             );
             $this->update($data_to_update, 'no_history');
 
@@ -375,8 +375,8 @@ trait ProductCategory {
                 "Product Category $db_interval Acc 1YB Quantity Ordered"   => $sales_product_category_data['ordered'],
                 "Product Category $db_interval Acc 1YB Quantity Invoiced"  => $sales_product_category_data['invoiced'],
                 "Product Category $db_interval Acc 1YB Quantity Delivered" => $sales_product_category_data['delivered'],
-                "Product Category DC $db_interval Acc 1YB Profit"          => $sales_product_category_data['dc_net'],
-                "Product Category DC $db_interval Acc 1YB Invoiced Amount" => $sales_product_category_data['dc_profit']
+                "Product Category DC $db_interval Acc 1YB Profit"          => $sales_product_category_data['dc_profit'],
+                "Product Category DC $db_interval Acc 1YB Invoiced Amount" => $sales_product_category_data['dc_net']
             );
             $this->update($data_to_update, 'no_history');
 

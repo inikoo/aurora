@@ -55,6 +55,10 @@ if ($order == 'date') {
 $sql_totals
     = "select count(Distinct $sql_totals_fields) as num from $table  $where  ";
 
+
+
+
+
 $fields
     = "`Date`,
 sum(`Amount In`) as sales,

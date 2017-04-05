@@ -159,6 +159,9 @@ class Warehouse extends DB_Table {
     }
 
     function create($data) {
+
+
+        global $account;
         $this->new = false;
         $base_data = $this->base_data();
 
@@ -193,6 +196,7 @@ class Warehouse extends DB_Table {
             $this->new = true;
 
 
+            /*
             if (is_numeric($this->editor['User Key']) and $this->editor['User Key'] > 1) {
 
                 $sql = sprintf(
@@ -201,7 +205,7 @@ class Warehouse extends DB_Table {
                 $this->db->exec($sql);
 
             }
-
+*/
 
             $flags = array(
                 'Blue'   => _('Blue'),
@@ -233,6 +237,32 @@ class Warehouse extends DB_Table {
                                        'Location Code'=>'LoadBay',
                                        'Location Mainly Used For'=>'Loading'
                                    ));
+
+
+
+            $history_data = array(
+                'History Abstract' => _('Warehouse created'),
+                'History Details'  => '',
+                'Action'           => 'created'
+            );
+
+            $this->add_subject_history(
+                $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id()
+            );
+
+
+            $history_data = array(
+                'History Abstract' => sprintf(
+                    _('Warehouse (%s) created'), $this->get('Name')
+                ),
+                'History Details'  => '',
+                'Action'           => 'created'
+            );
+
+            $account->add_subject_history(
+                $history_data, true, 'No', 'Changes', $account->get_object_name(), $account->get_main_id()
+            );
+
 
 
             return;

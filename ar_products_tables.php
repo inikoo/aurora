@@ -813,6 +813,7 @@ function sales_history($_data, $db, $user, $account) {
     $last_year_data = array();
 
 
+
     if ($result = $db->query($sql)) {
 
 

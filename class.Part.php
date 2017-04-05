@@ -342,6 +342,11 @@ class Part extends Asset {
 
 
         switch ($key) {
+
+
+
+
+
             case 'Stock Status Icon':
 
                 if ($this->data['Part Status'] == 'In Process') {
@@ -751,6 +756,23 @@ class Part extends Asset {
                 return $image;
 
                 break;
+
+            case 'Acc To Day Updated':
+            case 'Acc Ongoing Intervals Updated':
+            case 'Acc Previous Intervals Updated':
+
+                if ($this->data['Part '.$key] == '') {
+                    $value = '';
+                } else {
+
+                    $value = strftime("%a %e %b %Y %H:%M:%S %Z", strtotime($this->data['Part '.$key].' +0:00'));
+
+                }
+
+                return $value;
+                break;
+
+
             default:
 
                 if (preg_match('/No Supplied$/', $key)) {
@@ -3075,6 +3097,41 @@ class Part extends Asset {
             $this->update($data_to_update, 'no_history');
 
 
+        }
+
+        if (in_array(
+            $db_interval, [
+                            'Total',
+                            'Year To Date',
+                            'Quarter To Date',
+                            'Week To Date',
+                            'Month To Date',
+                            'Today'
+                        ]
+        )) {
+
+            $this->update(['Part Acc To Day Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
+
+        } elseif (in_array(
+            $db_interval, [
+                            '1 Year',
+                            '1 Month',
+                            '1 Week',
+                            '1 Quarter'
+                        ]
+        )) {
+
+            $this->update(['Part Acc Ongoing Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
+        } elseif (in_array(
+            $db_interval, [
+                            'Last Month',
+                            'Last Week',
+                            'Yesterday',
+                            'Last Year'
+                        ]
+        )) {
+
+            $this->update(['Part Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
         }
 
 

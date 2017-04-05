@@ -28,9 +28,9 @@ function fork_calculate_sales($job) {
 
     $object         = get_object($fork_data['parent'], $fork_data['parent_key']);
     $object->editor = $fork_data['editor'];
+    $object->load_acc_data();
 
-
-    print_r($fork_data);
+   // print_r($fork_data);
 
     switch ($fork_data['scope']) {
         case 'X_To_Day':

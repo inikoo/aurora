@@ -837,6 +837,24 @@ class Product extends Asset {
                     return number($this->data['Product Availability']);
                 }
                 break;
+
+
+            case 'Acc To Day Updated':
+            case 'Acc Ongoing Intervals Updated':
+            case 'Acc Previous Intervals Updated':
+
+                if ($this->data['Product '.$key] == '') {
+                    $value = '';
+                } else {
+
+                    $value = strftime("%a %e %b %Y %H:%M:%S %Z", strtotime($this->data['Product '.$key].' +0:00'));
+
+                }
+
+                return $value;
+                break;
+
+
             default:
 
 
@@ -2969,9 +2987,13 @@ class Product extends Asset {
                 "Product $db_interval Acc Quantity Ordered"   => $sales_data['ordered'],
                 "Product $db_interval Acc Quantity Invoiced"  => $sales_data['invoiced'],
                 "Product $db_interval Acc Quantity Delivered" => $sales_data['delivered'],
-                "Product DC $db_interval Acc Profit"          => $sales_data['dc_net'],
-                "Product DC $db_interval Acc Invoiced Amount" => $sales_data['dc_profit']
+                "Product DC $db_interval Acc Profit"          => $sales_data['dc_profit'],
+                "Product DC $db_interval Acc Invoiced Amount" => $sales_data['dc_net']
             );
+
+
+          //  print_r($data_to_update);
+
             $this->update($data_to_update, 'no_history');
 
 
@@ -2989,11 +3011,46 @@ class Product extends Asset {
                 "Product $db_interval Acc 1YB Quantity Ordered"   => $sales_data['ordered'],
                 "Product $db_interval Acc 1YB Quantity Invoiced"  => $sales_data['invoiced'],
                 "Product $db_interval Acc 1YB Quantity Delivered" => $sales_data['delivered'],
-                "Product DC $db_interval Acc 1YB Profit"          => $sales_data['dc_net'],
-                "Product DC $db_interval Acc 1YB Invoiced Amount" => $sales_data['dc_profit']
+                "Product DC $db_interval Acc 1YB Profit"          => $sales_data['dc_profit'],
+                "Product DC $db_interval Acc 1YB Invoiced Amount" => $sales_data['dc_net']
             );
             $this->update($data_to_update, 'no_history');
 
+        }
+
+        if (in_array(
+            $db_interval, [
+                            'Total',
+                            'Year To Date',
+                            'Quarter To Date',
+                            'Week To Date',
+                            'Month To Date',
+                            'Today'
+                        ]
+        )) {
+
+            $this->update(['Product Acc To Day Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
+
+        } elseif (in_array(
+            $db_interval, [
+                            '1 Year',
+                            '1 Month',
+                            '1 Week',
+                            '1 Quarter'
+                        ]
+        )) {
+
+            $this->update(['Product Acc Ongoing Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
+        } elseif (in_array(
+            $db_interval, [
+                            'Last Month',
+                            'Last Week',
+                            'Yesterday',
+                            'Last Year'
+                        ]
+        )) {
+
+            $this->update(['Product Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
         }
 
 
@@ -3061,7 +3118,6 @@ class Product extends Asset {
             exit;
         }
 
-        //print "$sql\n";
 
         return $sales_data;
     }
