@@ -58,7 +58,16 @@ switch ($tipo) {
 
         break;
 
+    case 'create_isf':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'key'       => array('type' => 'key'),
 
+                     )
+        );
+        create_isf($account, $db, $data, $editor);
+
+        break;
 
     case 'bridge':
         $data = prepare_values(
@@ -2243,6 +2252,31 @@ function create_time_series($account, $db, $data, $editor) {
     require_once 'utils/new_fork.php';
 
     $data['editor'] = $editor;
+    $data['type'] = 'timeseries';
+
+    list($fork_key, $msg) = new_fork('au_time_series', $data, $account->get('Account Code'), $db);
+
+
+    $response = array(
+        'state'    => 200,
+        'fork_key' => $fork_key,
+        'msg'      => $msg
+
+    );
+    echo json_encode($response);
+
+
+}
+
+
+
+function create_isf($account, $db, $data, $editor) {
+
+
+    require_once 'utils/new_fork.php';
+
+    $data['editor'] = $editor;
+    $data['type'] = 'isf';
 
     list($fork_key, $msg) = new_fork('au_time_series', $data, $account->get('Account Code'), $db);
 

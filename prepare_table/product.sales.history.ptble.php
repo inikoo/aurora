@@ -55,7 +55,7 @@ $sql_totals
     = "select count(Distinct $sql_totals_fields) as num from $table  $where  ";
 
 $fields
-    = "`Invoice Date`,
+    = "`Invoice Date` as `Date`,
 sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as sales,
 count(distinct `Invoice Key`) as invoices,
 count(distinct `Customer Key`) as customers
