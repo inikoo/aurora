@@ -232,12 +232,54 @@ class Store extends DB_Table {
 
             $timeseries_data = $timeseries['Store'];
 
+            include_once 'class.Timeserie.php';
+
             foreach ($timeseries_data as $time_series_data) {
 
-                $time_series_data['editor'] = $editor;
+                $time_series_data['editor'] = $this->editor;
                 $this->create_timeseries($time_series_data);
 
             }
+
+
+            $account=new Account($this->db);
+            $account->editor=$this->editor;
+
+            $families_category_data = array(
+                'Category Code'           => 'Fam.'.$this->get('Store Code'),
+                'Category Label'          => 'Families',
+                'Category Scope'          => 'Product',
+                'Category Subject'        => 'Product',
+                'Category Store Key'=>$this->id
+
+
+            );
+
+
+            $families=$account->create_category($families_category_data);
+
+
+
+
+            $departments_category_data = array(
+                'Category Code'           => 'Dept.'.$this->get('Store Code'),
+                'Category Label'          => 'Families',
+                'Category Scope'          => 'Product',
+                'Category Subject'        => 'Category',
+                'Category Store Key'=>$this->id
+
+
+            );
+
+
+            $departments=$account->create_category($departments_category_data);
+
+            $this->update(array(
+
+                                 'Store Family Category Key' => $families->id,
+                                 'Store Department Category Key' => $departments->id,
+                             ), 'no_history');
+
 
 
             /*
@@ -2009,17 +2051,33 @@ class Store extends DB_Table {
 
     }
 
+
+
     function get_field_label($field) {
 
         switch ($field) {
 
             case 'Store Code':
-                $label = _('Code');
+                $label = _('code');
                 break;
             case 'Store Name':
-                $label = _('Name');
+                $label = _('name');
                 break;
-
+            case 'Store Currency Code':
+                $label = _('currency');
+                break;
+            case 'Store Locale':
+                $label = _('language');
+                break;
+            case 'Store Timezone':
+                $label = _('timezone');
+                break;
+            case 'Store Email':
+                $label = _('email');
+                break;
+            case 'Store Telephone':
+                $label = _('telephone');
+                break;
 
             default:
                 $label = $field;

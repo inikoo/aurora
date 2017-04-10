@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 5.7.16, for osx10.12 (x86_64)
 --
--- Host: localhost    Database: aurora
+-- Host: localhost    Database: dw
 -- ------------------------------------------------------
 -- Server version	5.7.16
 
@@ -8084,6 +8084,11 @@ CREATE TABLE `Part Dimension` (
   `Part On Demand` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Part Fresh` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Part CPNP Number` varchar(64) DEFAULT NULL COMMENT 'For EU notification of cosmetic products',
+  `Part ISF Records` mediumint(8) unsigned DEFAULT '0',
+  `Part ISF Updated` datetime DEFAULT NULL,
+  `Part Acc To Day Updated` datetime DEFAULT NULL,
+  `Part Acc Ongoing Intervals Updated` datetime DEFAULT NULL,
+  `Part Acc Previous Intervals Updated` datetime DEFAULT NULL,
   PRIMARY KEY (`Part SKU`),
   KEY `Part TYpe` (`Part Status`),
   KEY `Part Valid From` (`Part Valid From`),
@@ -10734,6 +10739,11 @@ CREATE TABLE `Product Dimension` (
   `Product Label in Family` varchar(255) DEFAULT NULL,
   `Product Materials` text,
   `Product CPNP Number` varchar(64) DEFAULT NULL,
+  `Product OSF Records` mediumint(8) unsigned DEFAULT '0',
+  `Product OSF Updated` datetime DEFAULT NULL,
+  `Product Acc To Day Updated` datetime DEFAULT NULL,
+  `Product Acc Ongoing Intervals Updated` datetime DEFAULT NULL,
+  `Product Acc Previous Intervals Updated` datetime DEFAULT NULL,
   PRIMARY KEY (`Product ID`,`Product Store Key`),
   KEY `Product Alphanumeric Code` (`Product Code File As`(16)),
   KEY `date` (`Product Valid From`),
@@ -17999,4 +18009,4 @@ CREATE TABLE `todo_users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-04-04 14:06:29
+-- Dump completed on 2017-04-06 13:12:15

@@ -14,10 +14,14 @@ include_once 'class.Asset.php';
 
 class Product extends Asset {
 
-    function __construct($arg1 = false, $arg2 = false, $arg3 = false) {
+    function __construct($arg1 = false, $arg2 = false, $arg3 = false,$_db=false) {
 
-        global $db;
-        $this->db = $db;
+        if(!$_db) {
+            global $db;
+            $this->db = $db;
+        }else{
+            $this->db = $_db;
+        }
 
 
         $this->table_name    = 'Product';
@@ -46,7 +50,6 @@ class Product extends Asset {
 
     }
 
-
     function get_data($key, $id, $aux_id = false) {
 
         if ($key == 'id') {
@@ -59,8 +62,17 @@ class Product extends Asset {
             }
         } elseif ($key == 'store_code') {
             $sql = sprintf(
-                "SELECT * FROM `Product Dimension` WHERE `Product Store Key`=%s  AND `Product Code`=%s", $id, prepare_mysql($aux_id)
+                "SELECT * FROM `Product Dimension` WHERE `Product Store Key`=%s  AND `Product Code`=%s   ORDER BY CASE `Product Status`
+    WHEN 'Active' THEN 1
+    WHEN 'InProcess' THEN 2
+    WHEN 'Suspended' THEN 3
+     WHEN 'Discontinued' THEN 4
+    ELSE 5
+  END; ", $id, prepare_mysql($aux_id)
             );
+
+
+
             if ($this->data = $this->db->query($sql)->fetch()) {
                 $this->id          = $this->data['Product ID'];
                 $this->historic_id = $this->data['Product Current Key'];

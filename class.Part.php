@@ -22,10 +22,15 @@ class Part extends Asset {
     public $locale = 'en_GB';
     private $current_locations_loaded = false;
 
-    function __construct($arg1, $arg2 = false, $arg3 = false) {
+    function __construct($arg1, $arg2 = false, $arg3 = false, $_db = false) {
 
-        global $db;
-        $this->db = $db;
+
+        if (!$_db) {
+            global $db;
+            $this->db = $db;
+        } else {
+            $this->db = $_db;
+        }
 
         $this->table_name    = 'Part';
         $this->ignore_fields = array(
@@ -72,6 +77,8 @@ class Part extends Asset {
                 return;
             }
         }
+
+       // print $sql;
 
         if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id  = $this->data['Part SKU'];
@@ -228,11 +235,15 @@ class Part extends Asset {
             );
 
 
+          //  print 'x'.$this->get('Part Family Category Key')."\n";
+
             if ($this->get('Part Family Category Key')) {
                 $family         = new Category(
                     $this->get('Part Family Category Key')
                 );
                 $family->editor = $this->editor;
+
+
 
 
                 if ($family->id) {
@@ -342,9 +353,6 @@ class Part extends Asset {
 
 
         switch ($key) {
-
-
-
 
 
             case 'Stock Status Icon':
@@ -457,12 +465,12 @@ class Part extends Asset {
                 $sko_cost = sprintf('<span title="%s">%s/SKO</span>', _('SKO stock value'), money($this->data['Part Cost in Warehouse'], $account->get('Account Currency')));
 
 
-                $total_value=$this->data['Part Cost in Warehouse']*$this->get('Part Current On Hand Stock');
+                $total_value = $this->data['Part Cost in Warehouse'] * $this->get('Part Current On Hand Stock');
 
-                if($total_value>0){
-                    $total_value = sprintf('<span title="%s">%s</span>', _('Total stock value'), money($total_value ,$account->get('Account Currency')));
-                }else{
-                    $total_value='';
+                if ($total_value > 0) {
+                    $total_value = sprintf('<span title="%s">%s</span>', _('Total stock value'), money($total_value, $account->get('Account Currency')));
+                } else {
+                    $total_value = '';
                 }
 
 
@@ -574,8 +582,6 @@ class Part extends Asset {
                 if ($this->get('Part Barcode Number') == '') {
                     return '';
                 }
-
-
 
 
                 return '<i '.($this->get('Part Barcode Key') ? 'class="fa fa-barcode button" onClick="change_view(\'inventory/barcode/'.$this->get('Part Barcode Key').'\')"' : 'class="fa fa-barcode"')
@@ -1010,8 +1016,6 @@ class Part extends Asset {
     }
 
     function update_status($value, $options = '', $force = false) {
-
-
 
 
         if ($value == 'Not In Use' and ($this->data['Part Current On Hand Stock'] - $this->data['Part Current Stock In Process']) > 0) {
@@ -1510,14 +1514,10 @@ class Part extends Asset {
             case 'Part Barcode Number':
 
 
-
-
-
                 $this->update_field($field, $value, $options);
 
 
                 $updated = $this->updated;
-
 
 
                 foreach ($this->get_products('objects') as $product) {
@@ -1533,7 +1533,6 @@ class Part extends Asset {
 
 
                 $this->updated = $updated;
-
 
 
                 break;
@@ -1559,7 +1558,6 @@ class Part extends Asset {
 
 
                 $this->updated = $updated;
-
 
 
                 break;
@@ -1874,6 +1872,8 @@ class Part extends Asset {
 
                     $materials_data = parse_materials($value, $this->editor);
 
+                   // print_r($materials_data);
+
                     $sql = sprintf(
                         "DELETE FROM `Part Material Bridge` WHERE `Part SKU`=%d ", $this->sku
                     );
@@ -1936,7 +1936,6 @@ class Part extends Asset {
 
 
             case '':
-
 
 
                 foreach ($this->get_products('objects') as $product) {
@@ -2252,7 +2251,6 @@ class Part extends Asset {
             case('Part Status'):
 
 
-
                 if (!in_array(
                     $value, array(
                               'In Use',
@@ -2268,17 +2266,17 @@ class Part extends Asset {
                     return;
                 }
 
-/*
-                if ($this->get('Part Status') == 'In Process' and $value = 'In Use' and !($this->get('Part Current On Hand Stock') > 0)
-                ) {
+                /*
+                                if ($this->get('Part Status') == 'In Process' and $value = 'In Use' and !($this->get('Part Current On Hand Stock') > 0)
+                                ) {
 
-                    $this->error = true;
-                    $this->msg   = _("Part status can't be set to active until stock is set up");
+                                    $this->error = true;
+                                    $this->msg   = _("Part status can't be set to active until stock is set up");
 
-                    return;
+                                    return;
 
-                }
-*/
+                                }
+                */
 
                 if ($value == 'Not In Use') {
                     if ($this->get('Part Current On Hand Stock') > 0) {
@@ -2344,7 +2342,7 @@ class Part extends Asset {
             foreach ($result as $row) {
 
                 if ($scope == 'objects') {
-                    $supplier_parts[$row['Supplier Part Key']] = new SupplierPart($row['Supplier Part Key']);
+                    $supplier_parts[$row['Supplier Part Key']] = new SupplierPart('id', $row['Supplier Part Key'], false, $this->db);
                 } else {
                     $supplier_parts[$row['Supplier Part Key']] = $row['Supplier Part Key'];
                 }
@@ -2400,6 +2398,7 @@ class Part extends Asset {
                 $category_data[] = array(
                     'root_label'   => $root_label,
                     'root_code'    => $root_code,
+                    'root_key'     => $row['Category Root Key'],
                     'label'        => $row['Category Label'],
                     'code'         => $row['Category Code'],
                     'value'        => $value,
@@ -2592,7 +2591,9 @@ class Part extends Asset {
             foreach ($result as $row) {
 
                 if ($scope == 'objects') {
-                    $suppliers[$row['Supplier Part Supplier Key']] = new Supplier($row['Supplier Part Supplier Key']);
+
+
+                    $suppliers[$row['Supplier Part Supplier Key']] = new Supplier('id', $row['Supplier Part Supplier Key'], false, $this->db);
                 } else {
                     $suppliers[$row['Supplier Part Supplier Key']] = $row['Supplier Part Supplier Key'];
                 }
@@ -3036,7 +3037,7 @@ class Part extends Asset {
             }
 
             $stock += $row['Inventory Transaction Quantity'];
-            $sql = sprintf(
+            $sql   = sprintf(
                 "UPDATE `Inventory Transaction Fact` SET `Part Stock`=%f,`Part Location Stock`=%f WHERE `Inventory Transaction Key`=%d", $stock, $locations_data[$row['Location Key']],
                 $row['Inventory Transaction Key']
             );

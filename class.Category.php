@@ -26,11 +26,15 @@ class Category extends DB_Table {
     use PartCategory, SupplierCategory, InvoiceCategory, ProductCategory, LocationCategory;
 
 
-    function Category($a1, $a2 = false, $a3 = false) {
+    function Category($a1, $a2 = false, $a3 = false, $_db = false) {
 
 
-        global $db;
-        $this->db = $db;
+        if (!$_db) {
+            global $db;
+            $this->db = $db;
+        } else {
+            $this->db = $_db;
+        }
 
         $this->update_subjects_data = true;
         $this->table_name           = 'Category';
@@ -67,7 +71,6 @@ class Category extends DB_Table {
                 );
                 break;
             case 'subject_code':
-                // Note it can not be unique is just give the 1st resutl
                 $sql = sprintf(
                     "SELECT * FROM `Category Dimension` WHERE `Category Subject`=%s AND `Category Code`=%s ", prepare_mysql($tag), prepare_mysql($tag2)
                 );
@@ -79,7 +82,6 @@ class Category extends DB_Table {
 
                 break;
         }
-
 
         if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id = $this->data['Category Key'];
@@ -337,8 +339,6 @@ class Category extends DB_Table {
 
 
 
-            print "XXX Created category";
-
             $this->new = true;
 
             $created_msg = _('Category created');
@@ -573,10 +573,11 @@ class Category extends DB_Table {
 
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
-                    if ($row['Part Status'] == 'In Use') {
-                        $num_active = $row['num'];
-                    } else {
+                    if ($row['Part Status'] == 'Not In Use') {
+
                         $num_no_active = $row['num'];
+                    } else {
+                        $num_active = $row['num'];
                     }
                 }
             } else {
@@ -873,9 +874,11 @@ class Category extends DB_Table {
                         }
                         break;
                     case 'Active Web For Sale including Out of Stock':
-                        return number($this->data['Product Category Active Web For Sale']+$this->data['Product Category Active Web Out of Stock']);
+                        return number($this->data['Product Category Active Web For Sale'] + $this->data['Product Category Active Web Out of Stock']);
                     case 'Percentage Active Web Out of Stock':
-                        return percentage($this->data['Product Category Active Web Out of Stock'], $this->data['Product Category Active Web For Sale']+$this->data['Product Category Active Web Out of Stock'], 0);
+                        return percentage(
+                            $this->data['Product Category Active Web Out of Stock'], $this->data['Product Category Active Web For Sale'] + $this->data['Product Category Active Web Out of Stock'], 0
+                        );
                     case 'Percentage Active Web Offline':
                         return percentage($this->data['Product Category Active Web Offline'], $this->data['Product Category Active Products'], 0);
 
@@ -1688,15 +1691,12 @@ class Category extends DB_Table {
         // $data['editor']
 
 
-
-
-
         $subcategory = new Category('find create', $data);
 
 
-     //   print_r($subcategory);
+        //   print_r($subcategory);
 
-        if($subcategory->new) {
+        if ($subcategory->new) {
 
 
             /*
@@ -1783,30 +1783,34 @@ class Category extends DB_Table {
                 $subcategory->update_product_category_products_data();
 
 
-            //    if ($subcategory->get('Product Category Public') == 'Yes') {
-              //      foreach ($store->get_websites('objects') as $website) {
+                //    if ($subcategory->get('Product Category Public') == 'Yes') {
+                //      foreach ($store->get_websites('objects') as $website) {
                 //        $website->create_category_webpage($subcategory->id);
-                  //  }
+                //  }
 
-               // }
+                // }
 
 
             }
 
 
             return $subcategory;
-        }else if ($subcategory->found) {
-            $this->error = true;
+        } else {
+            if ($subcategory->found) {
+                $this->error = true;
 
-            if ($subcategory->duplicated_field == 'Category Code') {
-                $this->msg = _('Duplicated code');
+                if ($subcategory->duplicated_field == 'Category Code') {
+                    $this->msg = _('Duplicated code');
+                } else {
+                    $this->msg = "Category already exists";
+                }
+
+                return $subcategory;
             } else {
-                $this->msg = "Category already exists";
+                $this->error = true;
+
+                return false;
             }
-            return $subcategory;
-        }else{
-            $this->error = true;
-            return false;
         }
 
 
@@ -3106,6 +3110,9 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
     function associate_subject($subject_key, $force_associate = false, $other_value = '', $options = '') {
 
+
+       // print "caca";
+
         if ($this->data['Category Branch Type'] == 'Root') {
             $this->msg = _("Subject can't be associated with category").' (Node is Root)';
 
@@ -3116,6 +3123,9 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
             return true;
         }
+
+
+     //   print $this->data['Category Subject Multiplicity']."\n";
 
         if ($this->data['Category Subject Multiplicity'] == 'Yes' or $force_associate) {
 
@@ -3148,6 +3158,8 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                             ).sprintf(
                                 ' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']
                             ).' ('.$this->data['Category Label'].')';
+
+           $this->update_part_category_status();
                         break;
                     case('Supplier'):
                         include_once 'class.Supplier.php';
@@ -3326,8 +3338,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                         }
 
 
-
-                        if($this->get('Category Subject')=='Product'){
+                        if ($this->get('Category Subject') == 'Product') {
                             $this->create_stack_index(true);
 
                         }

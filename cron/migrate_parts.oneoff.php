@@ -1422,9 +1422,7 @@ function create_families($db, $account) {
                         );
 
 
-                        $cat                    = $main_cat->create_category(
-                            $data
-                        );
+                        $cat                    = $main_cat->create_category($data);
                         $cat->skip_update_sales = true;
 
 

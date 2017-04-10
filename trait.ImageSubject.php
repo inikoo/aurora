@@ -37,7 +37,6 @@ trait ImageSubject {
 
 
 
-
         if (isset($raw_data['Image Subject Object Image Scope'])) {
 
             if($this->table_name=='Page'){
@@ -231,6 +230,9 @@ trait ImageSubject {
 
             return $image;
         } else {
+
+
+
             $this->error = true;
             $this->msg   = "Can't create/found image, ".$image->msg;
 

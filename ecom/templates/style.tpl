@@ -1,5 +1,11 @@
    <style>
 
+
+
+          .ui-resizable-handle, .ui-resizable-e{
+                 display:none
+          }
+
           .sim_button{
                  cursor:pointer;
 

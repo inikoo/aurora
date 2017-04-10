@@ -38,9 +38,14 @@ class Image {
     );
 
 
-    function Image($a1, $a2 = false, $a3 = false) {
-        global $db;
-        $this->db = $db;
+    function Image($a1, $a2 = false, $a3 = false, $_db = false) {
+
+        if (!$_db) {
+            global $db;
+            $this->db = $db;
+        } else {
+            $this->db = $_db;
+        }
 
         $this->tmp_path       = 'server_files/tmp/';
         $this->found          = false;
@@ -204,10 +209,6 @@ class Image {
             return;
         }
 
-        // Remove and delete Image Original Filename after migration
-        if (!isset($data['Image Original Filename'])) {
-            $data['Image Original Filename'] = $data['Image Filename'];
-        }
 
         $data['Image Width']  = imagesx($im);
         $data['Image Height'] = imagesy($im);
@@ -215,13 +216,11 @@ class Image {
         unset($data['upload_data']);
 
 
-        if ($data['Image File Format']== 'gif' and $this->is_animated_gif($tmp_file)) {
-            $data['Image Data'] = file_get_contents( $tmp_file);
-        }else{
+        if ($data['Image File Format'] == 'gif' and $this->is_animated_gif($tmp_file)) {
+            $data['Image Data'] = file_get_contents($tmp_file);
+        } else {
             $data['Image Data'] = $this->get_image_blob($im, $data['Image File Format']);
         }
-
-
 
 
         $keys   = '(';
@@ -252,7 +251,7 @@ class Image {
             $this->error = true;
             $this->msg   = 'Can not insert the image ';
 
-            //print_r($this->db->errorInfo());
+            print_r($this->db->errorInfo());
             return;
         }
 
@@ -369,6 +368,29 @@ class Image {
 
     }
 
+    function is_animated_gif($filename) {
+        if (!($fh = @fopen($filename, 'rb'))) {
+            return false;
+        }
+        $count = 0;
+        //an animated gif contains multiple "frames", with each frame having a
+        //header made up of:
+        // * a static 4-byte sequence (\x00\x21\xF9\x04)
+        // * 4 variable bytes
+        // * a static 2-byte sequence (\x00\x2C) (some variants may use \x00\x21 ?)
+
+        // We read through the file til we reach the end of the file, or we've found
+        // at least 2 frame headers
+        while (!feof($fh) && $count < 2) {
+            $chunk = fread($fh, 1024 * 100); //read 100kb at a time
+            $count += preg_match_all('#\x00\x21\xF9\x04.{4}\x00(\x2C|\x21)#s', $chunk, $matches);
+        }
+
+        fclose($fh);
+
+        return $count > 1;
+    }
+
     function get_image_blob($im, $format = '') {
 
         if (!$format) {
@@ -455,6 +477,9 @@ class Image {
         return $dst_img;
     }
 
+
+    // scale the image constraining proportions (maxX and maxY)
+
     function create_small() {
 
         if ($this->data['Image Small Data'] != '') {
@@ -488,13 +513,13 @@ class Image {
 
     }
 
-
-    // scale the image constraining proportions (maxX and maxY)
-
     function get_object_name() {
 
         return 'Image';
     }
+
+
+    // scale the image constraining proportions (maxX and maxY)
 
     function get_resized($tn_w, $tn_h, $quality = 100, $watermark = false) {
 
@@ -554,16 +579,25 @@ class Image {
     }
 
 
-    // scale the image constraining proportions (maxX and maxY)
+    function save_image_to_file($path, $filename = false) {
 
-    function get_image_from_string($str) {
 
-        // $str can be `Image Data Dimension` value in `Image Dimension`
+        if (!$filename) {
+            $filename = $this->id;
+        }
 
-        return imagecreatefromstring(base64_decode($row['Image Data']));
 
+
+
+
+        file_put_contents($path.'/'.$filename.'.'.$this->data['Image File Format'], $this->data['Image Data']);
+
+        return $filename.'.'.$this->data['Image File Format'];
 
     }
+
+
+    // speaks for itself
 
     function saveImage($im, $destImage) {
 
@@ -576,9 +610,6 @@ class Image {
             imagegif($im, $destImage);
         }
     }
-
-
-    // speaks for itself
 
     function setCompression($val = 70) {
         if ($val > 0 && $val < 10) {
@@ -692,7 +723,6 @@ class Image {
         $this->db->exec($sql);
     }
 
-
     function delete($force = false) {
         $subjects     = $this->get_subjects();
         $num_subjects = count($subjects);
@@ -799,27 +829,6 @@ class Image {
         }
 
 
-    }
-
-    function is_animated_gif($filename) {
-        if(!($fh = @fopen($filename, 'rb')))
-            return false;
-        $count = 0;
-        //an animated gif contains multiple "frames", with each frame having a
-        //header made up of:
-        // * a static 4-byte sequence (\x00\x21\xF9\x04)
-        // * 4 variable bytes
-        // * a static 2-byte sequence (\x00\x2C) (some variants may use \x00\x21 ?)
-
-        // We read through the file til we reach the end of the file, or we've found
-        // at least 2 frame headers
-        while(!feof($fh) && $count < 2) {
-            $chunk = fread($fh, 1024 * 100); //read 100kb at a time
-            $count += preg_match_all('#\x00\x21\xF9\x04.{4}\x00(\x2C|\x21)#s', $chunk, $matches);
-        }
-
-        fclose($fh);
-        return $count > 1;
     }
 
 }

@@ -563,7 +563,6 @@ trait PartCategory {
         );
 
 
-
         if ($status == 'NotInUse') {
 
             if ($this->data['Part Category Valid To'] == '' or $current_status != $status) {

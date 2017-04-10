@@ -24,6 +24,7 @@ require_once 'utils/date_functions.php';
 include_once 'utils/i18n.php';
 include_once 'class.User.php';
 require_once 'class.Data_Sets.php';
+include_once 'class.Category.php';
 
 
 date_default_timezone_set('UTC');
@@ -86,8 +87,8 @@ if (!$account->id) {
             )
         ),
         'editor'                    => array(
-            'Author Name'  => '',
-            'Author Alias' => '',
+            'Author Name'  => 'Aurora',
+            'Author Alias' => 'Aurora',
             'Author Type'  => '',
             'Author Key'   => '',
             'User Key'     => 0,
@@ -161,23 +162,6 @@ if (!$account->id) {
         $db->exec($sql);
 
 
-        require_once 'conf/data_sets.php';
-
-        $editor = array(
-            'Author Name'  => '',
-            'Author Alias' => '',
-            'Author Type'  => '',
-            'Author Key'   => '',
-            'User Key'     => 0,
-            'Date'         => gmdate('Y-m-d H:i:s')
-        );
-
-        foreach ($data_sets as $data_set_data) {
-            $data_set_data['editor'] = $editor;
-
-            $data_set = $account->create_data_sets($data_set_data);
-            $data_set->update_stats();
-        }
 
 
     } else {
@@ -244,7 +228,61 @@ if (!$setup_data['steps']['root_user']['setup']) {
 
     $user->add_group(array(1), false);
 
-    $account->update(array('Account State' => 'RootUser'), 'no_history');
+
+
+    require_once 'conf/data_sets.php';
+
+    $editor = array(
+        'Author Name'  => '',
+        'Author Alias' => '',
+        'Author Type'  => '',
+        'Author Key'   => '',
+        'User Key'     => $user->id,
+        'Date'         => gmdate('Y-m-d H:i:s')
+    );
+    $account->editor=$editor;
+
+    foreach ($data_sets as $data_set_data) {
+        $data_set_data['editor'] = $editor;
+
+        $data_set = $account->create_data_sets($data_set_data);
+        $data_set->update_stats();
+    }
+
+
+    $parts_fmap_data = array(
+        'Category Code'           => 'FMap',
+        'Category Label'          => 'Family Map',
+        'Category Scope'          => 'Part',
+        'Category Subject'        => 'Part',
+
+
+    );
+
+
+    $fmap=$account->create_category($parts_fmap_data);
+
+    $sr_cat_data = array(
+        'Category Code'           => 'SR',
+        'Category Label'          => 'SR',
+        'Category Scope'          => 'Invoice',
+        'Category Subject'        => 'Invoice',
+
+
+    );
+
+
+    $sr_cat=$account->create_category($sr_cat_data);
+
+    $account->update(array(
+        'Account State' => 'RootUser',
+        'Account SR Category Key' => $sr_cat->id,
+        'Account Part Family Category Key' => $fmap->id,
+                     ), 'no_history');
+
+
+
+
 } else {
     $user = new User('Administrator');
 }

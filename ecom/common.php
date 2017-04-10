@@ -108,7 +108,7 @@ $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 		date_default_timezone_set(TIMEZONE) ;
 	}
 
-	$inikoo_account=new Account(1);
+	$inikoo_account=new Account();
 	$site=new Site(SITE_KEY);
 	$store_key=$site->data['Site Store Key'];
 	$store=new Store($store_key);

@@ -528,6 +528,10 @@ ALTER TABLE `Website Dimension`DROP `Website Header Data`, DROP `Website Footer 
 ALTER TABLE `Website Dimension` ADD `Website Header Key` MEDIUMINT NULL DEFAULT NULL AFTER `Website Data`, ADD `Website Footer Key` INT NULL DEFAULT NULL AFTER `Website Header Key`;
 
 
+
+  ALTER TABLE `Image Dimension` CHANGE `Image Original Filename` `Image Original Filename` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT 'To delete';
+
+
 ===============
 
 
