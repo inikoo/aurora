@@ -2633,6 +2633,8 @@ class Page extends DB_Table {
             );
 
 
+
+
             $sql = sprintf(
                 'INSERT INTO `Category Webpage Index` (`Category Webpage Index Parent Category Key`,`Category Webpage Index Category Key`,`Category Webpage Index Webpage Key`,`Category Webpage Index Category Webpage Key`,`Category Webpage Index Section Key`,`Category Webpage Index Content Data`,`Category Webpage Index Subject Type`,`Category Webpage Index Stack`) VALUES (%d,%d,%d,%d,%d,%s,%s,%d) ',
                 $this->get('Webpage Scope Key'), $item_key, $this->id, $subject_webpage->id, $section_key, prepare_mysql(json_encode($subject_data)),
@@ -2640,6 +2642,7 @@ class Page extends DB_Table {
                 prepare_mysql($subject_type), $stack
             );
 
+           // print $sql;
 
             $this->db->exec($sql);
 

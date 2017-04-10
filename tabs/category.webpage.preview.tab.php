@@ -17,6 +17,17 @@ $logged = true;
 
 
 $category = $state['_object'];
+
+
+
+if ($category->get('Product Category Public')=='No') {
+    $html = '<div style="padding:40px">'._("This category is not public").'</div>';
+
+    return;
+}
+
+
+
 $webpage  = $category->get_webpage();
 
 
@@ -31,7 +42,6 @@ if (!$webpage->id) {
     return;
 }
 
-// todo migrate to new webpage & webpage version classes
 
 
 $public_category = new Public_Category($category->id);

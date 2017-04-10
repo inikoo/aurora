@@ -66,6 +66,7 @@ switch ($tipo) {
             $_REQUEST, array(
                          'query'      => array('type' => 'string'),
                          'scope'      => array('type' => 'string'),
+                         'action'      => array('type' => 'string', 'optional' => true),
                          'parent'     => array(
                              'type'     => 'string',
                              'optional' => true
@@ -2345,7 +2346,6 @@ function find_category_webpages($db, $account, $memcache_ip, $data) {
         return;
     }
 
-    //  $where = sprintf("  and `Product Category Status` in ('Active','Discontinuing') ");
     switch ($data['parent']) {
         case 'website':
             $where = sprintf(' and `Page Site Key`=%d', $data['parent_key']);
@@ -2356,6 +2356,14 @@ function find_category_webpages($db, $account, $memcache_ip, $data) {
         default:
 
             break;
+    }
+
+
+
+    if(isset($data['action'])){
+        $action=$data['action'];
+    }else{
+        $action='';
     }
 
 
@@ -2415,7 +2423,7 @@ function find_category_webpages($db, $account, $memcache_ip, $data) {
 
 
         $sql = sprintf(
-            "select `Page Key`,`Category Code`,`Category Label`,`Category Subject`,`Category Key`,`Product Category Active Products`,`Product Category Status` from `Page Store Dimension`  left join `Category Dimension` on (`Webpage Scope Key`=`Category Key` and `Webpage Scope` in ('Category Products','Category Categories')  )   left join `Product Category Dimension` on (`Category Key`=`Product Category Key`)  where  `Category Code` like '%s%%' %s order by `Category Code` limit $max_results ",
+            "select `Product Category Public`,`Webpage State`,`Page Key`,`Category Code`,`Category Label`,`Category Subject`,`Category Key`,`Product Category Active Products`,`Product Category Discontinuing Products` ,`Product Category In Process Products`, `Product Category Status` from `Page Store Dimension`  left join `Category Dimension` on (`Webpage Scope Key`=`Category Key` and `Webpage Scope` in ('Category Products','Category Categories')  )   left join `Product Category Dimension` on (`Category Key`=`Product Category Key`)  where  `Category Code` like '%s%%' %s order by `Category Code` limit $max_results ",
             $q, $where
         );
 
@@ -2437,8 +2445,11 @@ function find_category_webpages($db, $account, $memcache_ip, $data) {
                     'Category Code'    => $row['Category Code'],
                     'Category Label'   => $row['Category Label'],
                     'Status'           => $row['Product Category Status'],
-                    'Products'         => $row['Product Category Active Products'],
+                    'Products'         => $row['Product Category Active Products']+$row['Product Category Discontinuing Products']+$row['Product Category In Process Products'],
                     'Category Subject' => $row['Category Subject'],
+                    'Public'=>$row['Product Category Public'],
+                    'Webpage State'=>$row['Webpage State'],
+
                 );
 
             }
@@ -2482,6 +2493,37 @@ function find_category_webpages($db, $account, $memcache_ip, $data) {
 
                 if ($candidates_data[$category_key]['Category Subject'] == 'Product') {
                     $description .= ' <span class="discreet italic">('.$candidates_data[$category_key]['Products'].' <i class="fa fa-cube" aria-hidden="true"></i>)</span>';
+
+                    if($action=='add_category_to_webpage'){
+
+
+
+                        if($candidates_data[$category_key]['Public']=='No'){
+                            $description .=' <i class="fa fa-exclamation-circle padding_left_10 error" aria-hidden="true"></i>  <span class="error">'. _('Category is not public').'</span>';
+                            $code        = '<span class="strikethrough">'.$candidates_data[$category_key]['Category Code'].'</span>';
+                            $value=0;
+                        }
+
+                        else if($candidates_data[$category_key]['Webpage State']=='Offline'){
+                            $description .=' <i class="fa fa-exclamation-circle padding_left_10 error" aria-hidden="true"></i>  <span class="error">'. _('Webpage is offline').'</span>';
+                            $code        = '<span class="strikethrough">'.$candidates_data[$category_key]['Category Code'].'</span>';
+                            $value=0;
+                        }
+
+
+                        else if($candidates_data[$category_key]['Products']==0){
+                            $description .=' <i class="fa fa-exclamation-circle padding_left_10 error" aria-hidden="true"></i>  <span class="error">'. _("Category don't have any product for sale").'</span>';
+                            $code        = '<span class="strikethrough">'.$candidates_data[$category_key]['Category Code'].'</span>';
+                            $value=0;
+                        }
+
+
+
+                    }
+
+
+
+
                 } else {
                     $description .= ' <span class="discreet italic">('._('Category').')</span>';
 
