@@ -1738,13 +1738,29 @@ function get_dropdown_select(dropdown_input, new_value) {
     var scope = $('#' + dropdown_input).attr('scope')
     var field = $('#' + dropdown_input).attr('field')
     var metadata = $('#' + dropdown_input).data('metadata')
-console.log(metadata)
+
+
+
+
+
+
+
+
+    console.log(metadata)
 
     if(metadata==undefined){
         metadata={}
     }
 
     var request = '/ar_find.php?tipo=find_object&query=' + fixedEncodeURIComponent(new_value) + '&scope=' + scope + '&parent=' + parent + '&parent_key=' + parent_key + '&metadata=' + JSON.stringify(metadata)+ '&state=' + JSON.stringify(state)
+
+
+
+
+    if($('#' + dropdown_input).attr('action')!=undefined){
+        request+='&action='+$('#' + dropdown_input).attr('action');
+    }
+
 
     console.log(request)
     $.getJSON(request, function (data) {
@@ -1813,6 +1829,9 @@ console.log(metadata)
                 clone.addClass('selected')
                 first = false
             }
+
+
+
 
             clone.children(".code").html(data.results[result_key].code)
 

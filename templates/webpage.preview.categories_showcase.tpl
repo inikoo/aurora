@@ -36,9 +36,13 @@
                 <input id="add_item_dropdown_select_label" field="add_item" style="width:200px"
                        scope="category_webpages" parent="store"
 
-                       parent_key="{$store_key}" class=" dropdown_select"
+                       parent_key="{$store_key}"
+                       class=" dropdown_select"
                        value="" has_been_valid="0"
-                       placeholder="{t}Family / category code{/t}"/>
+                       placeholder="{t}Family / category code{/t}"
+                       action="add_category_to_webpage"
+
+                />
                 <span id="add_item_msg" class="msg"></span>
                 <i id="add_item_save_button" class="fa fa-cloud save dropdown_select hide"
                    onclick="save_this_field(this)"></i>
@@ -47,7 +51,7 @@
                     <table id="add_item_results" border="0"  >
 
                         <tr class="hide" id="add_item_search_result_template" field="" value=""
-                            formatted_value="" onClick="select_dropdown_item(this)">
+                            formatted_value=""  onClick="select_dropdown_item(this)">
                             <td class="code"></td>
                             <td style="width:85%" class="label"></td>
 

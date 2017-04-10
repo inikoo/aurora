@@ -20,6 +20,17 @@ include_once 'conf/object_fields.php';
 
 $category = $state['_object'];
 
+
+
+if ($category->get('Product Category Public')=='No') {
+    $html = '<div style="padding:40px">'._("This category is not public").'</div>';
+
+    return;
+}
+
+
+
+
 $webpage=$category->get_webpage();
 
 
