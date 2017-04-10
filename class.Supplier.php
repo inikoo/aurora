@@ -859,6 +859,7 @@ class Supplier extends SubjectSupplier {
         }
 
 
+        /*
         if (!isset($data['Supplier Part Unit Extra Cost']) or $data['Supplier Part Unit Extra Cost'] == '') {
             $data['Supplier Part Unit Extra Cost'] = 0;
         }
@@ -873,6 +874,8 @@ class Supplier extends SubjectSupplier {
 
             return;
         }
+
+        */
 
         if (isset($data['Part Unit Price']) and $data['Part Unit Price'] != '') {
             if (!is_numeric($data['Part Unit Price']) or $data['Part Unit Price'] < 0) {
@@ -934,6 +937,11 @@ class Supplier extends SubjectSupplier {
 
         }
 
+        if (preg_match('/\%$/',  $data['Supplier Part Unit Extra Cost Percentage'])) {
+            $data['Supplier Part Unit Extra Cost Percentage'] = preg_replace('/\%^/', '',  $data['Supplier Part Unit Extra Cost Percentage']) / 100;
+            // $value = $this->data['Supplier Part Unit Cost'] * $value / 100;
+        }
+
         if (isset($data['Supplier Part Unit Extra Cost Percentage']) and (!is_numeric($data['Supplier Part Unit Extra Cost Percentage']) or $data['Supplier Part Unit Extra Cost Percentage'] < 0)) {
             $this->error      = true;
             $this->msg        = sprintf(_('Invalid extra %% cost (%s)'), $data['Supplier Part Unit Extra Cost Percentage']);
@@ -943,10 +951,7 @@ class Supplier extends SubjectSupplier {
             return;
         }
 
-        if (isset($data['Supplier Part Unit Extra Cost Percentage'])) {
-            $data['Supplier Part Unit Extra Cost'] = $data['Supplier Part Unit Extra Cost Percentage'] * $data['Supplier Part Unit Cost'];
 
-        }
 
 
         $data['Supplier Part Supplier Key'] = $this->id;

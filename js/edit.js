@@ -1840,14 +1840,13 @@ function select_dropdown_option(element) {
 
     $('#' + field + '_dropdown_select_label').val(formatted_value)
 
-    console.log(value)
 
     $('#' + field).val(value)
     on_changed_value(field, value)
 
     $('#' + field + '_results_container').addClass('hide').removeClass('show')
 
-    //    console.log(element)
+        console.log(metadata)
     if (metadata != undefined) {
 
         if (metadata.other_fields) {

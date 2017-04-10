@@ -182,7 +182,7 @@
 		<span id="{$field.id}_formatted_value" class="{$field.id} formatted_value hide" ondblclick="open_edit_field('{$object_name}','{$state.key}','{$field.id}')">{if isset($field.formatted_value)}{$field.formatted_value}{else}{$field.value}{/if}</span>
 		<span id="{$field.id}_value" class="hide " >{$field.value}</span>
 
-		{if $edit=='string' or $edit=='handle' or $edit=='dimensions'  or $edit=='email' or  $edit=='int_unsigned' or $edit=='smallint_unsigned' or $edit=='mediumint_unsigned' or $edit=='int' or $edit=='smallint' or $edit=='mediumint' or $edit=='anything' or $edit=='numeric'  or $edit=='amount'  or $edit=='amount_margin'  or $edit=='amount_percentage' } 
+		{if $edit=='string' or $edit=='handle' or $edit=='dimensions'  or $edit=='email' or  $edit=='int_unsigned' or $edit=='smallint_unsigned' or $edit=='mediumint_unsigned' or $edit=='int' or $edit=='smallint' or $edit=='mediumint' or $edit=='anything' or  $edit=='percentage' or $edit=='numeric'  or $edit=='amount'  or $edit=='amount_margin'  or $edit=='amount_percentage' }
 		
 	
 		<input id="{$field.id}" class="input_field " value="{$field.value}" {if $locked}readonly="readonly="{/if}  has_been_valid="0" {if isset($field.placeholder)}placeholder="{$field.placeholder}"{/if}/>

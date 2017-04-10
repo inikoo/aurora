@@ -45,12 +45,12 @@ $supplier_part_fields[] = array(
             'scope'                    => 'suppliers',
             'parent'                   => 'account',
             'parent_key'               => 1,
-            'value'                    => 0,
+            'value'                    => '',
             'formatted_value'          => '',
             'stripped_formatted_value' => '',
-            'label'                    => ("Supplier's code"),
+            'label'                    => ("Supplier"),
             'placeholder'              => _("Supplier's code"),
-            'required'                 => ($part_scope ? true : false),
+            'required'                 => (($new and $part_scope) ? true : false),
             'type'                     => 'value'
         ),
         array(
@@ -216,7 +216,7 @@ $supplier_part_fields[] = array(
                 )),
             'type'            => 'value'
         ),
-
+/*
         array(
             'id'              => 'Supplier_Part_Unit_Extra_Cost',
             'edit'            => 'amount_percentage',
@@ -234,6 +234,23 @@ $supplier_part_fields[] = array(
                 : sprintf(
                     _('amount in %s or %%'), $options['supplier']->get('Default Currency Code')
                 )),
+            'type'            => 'value'
+        ),
+*/
+        array(
+            'id'              => 'Supplier_Part_Unit_Extra_Cost_Percentage',
+            'edit'            => 'percentage',
+            'locked'          => ($part_scope ? 1 : 0),
+            'value'           => htmlspecialchars(
+                $object->get('Supplier Part Unit Extra Cost Percentage')
+            ),
+            'formatted_value' => $object->get('Unit Extra Cost Percentage'),
+            'label'           => ucfirst(
+                $object->get_field_label('Supplier Part Unit Extra Cost Percentage')
+            ),
+            'required'        => false,
+            'placeholder'     => ($part_scope
+                ? _('select supplier') : '%'),
             'type'            => 'value'
         ),
 

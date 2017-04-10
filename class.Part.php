@@ -3624,9 +3624,9 @@ class Part extends Asset {
         );
 
 
-        if ($data['Supplier Part Unit Extra Cost'] == '') {
-            $data['Supplier Part Unit Extra Cost'] = 0;
-        }
+
+
+
 
 
         $supplier_part = new SupplierPart('find', $data, 'create');

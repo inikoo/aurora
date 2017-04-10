@@ -14,14 +14,12 @@
             </td>
         </tr>
         <tr class="title">
-            <td colspan=2>{t}Supplier part{/t} <i
-                        onClick="change_view('supplier/{$supplier_part->get('Supplier Part Supplier Key')}/part/{$supplier_part->id}')"
-                        class="fa fa-stop link"></i></td>
+            <td colspan=2>{t}Supplier part{/t} </td>
         </tr>
 
         <tr>
             <td class="label">{$supplier_part->get_field_label('Supplier Part Reference')|capitalize}</td>
-            <td>{$supplier_part->get('Reference')}</td>
+            <td><span  onClick="change_view('supplier/{$supplier_part->get('Supplier Part Supplier Key')}/part/{$supplier_part->id}')" class="marked_link">{$supplier_part->get('Reference')}</span></td>
         </tr>
         <tr>
             <td class="label">{$supplier_part->part->get_field_label('Part Reference')|capitalize}</td>
