@@ -17,11 +17,15 @@ class Agent extends SubjectSupplier {
     var $new = false;
     public $locale = 'en_GB';
 
-    function Agent($arg1 = false, $arg2 = false, $arg3 = false) {
+    function Agent($arg1 = false, $arg2 = false, $arg3 = false,$_db = false) {
 
 
-        global $db;
-        $this->db = $db;
+        if (!$_db) {
+            global $db;
+            $this->db = $db;
+        } else {
+            $this->db = $_db;
+        }
 
         $this->table_name    = 'Agent';
         $this->ignore_fields = array('Agent Key');

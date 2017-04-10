@@ -17,10 +17,14 @@ include_once 'utils/natural_language.php';
 class SupplierPart extends DB_Table {
 
 
-    function SupplierPart($a1, $a2 = false, $a3 = false) {
+    function SupplierPart($a1, $a2 = false, $a3 = false,$_db=false) {
 
-        global $db;
-        $this->db = $db;
+        if(!$_db) {
+            global $db;
+            $this->db = $db;
+        }else{
+            $this->db = $_db;
+        }
 
         $this->table_name    = 'Supplier Part';
         $this->ignore_fields = array('Supplier Part Key');
@@ -52,7 +56,7 @@ class SupplierPart extends DB_Table {
 
 
 
-            $this->part = new Part($this->data['Supplier Part Part SKU']);
+            $this->part = new Part('id',$this->data['Supplier Part Part SKU'],false,$this->db);
         }
 
 
@@ -479,7 +483,7 @@ class SupplierPart extends DB_Table {
             include_once 'class.Supplier.php';
 
 
-                $supplier = new Supplier('code', $value);
+                $supplier = new Supplier('code', $value,false,$this->db);
                 if (!$supplier->id) {
                     $this->error = true;
                     $this->msg   = sprintf(_("Supplier %s not found"), $value);
@@ -501,7 +505,7 @@ class SupplierPart extends DB_Table {
                     return;
                 }
 
-                $supplier = new Supplier($value);
+                $supplier = new Supplier('id',$value,false,$this->id);
                 if (!$supplier->id) {
                     $this->error = true;
                     $this->msg   = _("Supplier not found");
@@ -510,9 +514,7 @@ class SupplierPart extends DB_Table {
                 }
 
 
-                $old_supplier = new Supplier(
-                    $this->get('Supplier Part Supplier Key')
-                );
+                $old_supplier = new Supplier('id',$this->get('Supplier Part Supplier Key'),false,$this->db);
 
                 if (!$supplier->id) {
                     $this->error = true;
@@ -1385,6 +1387,9 @@ class SupplierPart extends DB_Table {
                 return $cost;
                 break;
 
+            case 'Supplier Part Unit Extra Cost Fraction':
+                return $this->data['Supplier Part Unit Extra Cost Percentage'];
+break;
             case 'Supplier Part Unit Extra Cost Percentage':
                 if ($this->data['Supplier Part Unit Extra Cost Percentage'] == '') {
                     return '';

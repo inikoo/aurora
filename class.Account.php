@@ -13,12 +13,14 @@ include_once 'class.DB_Table.php';
 
 class Account extends DB_Table {
 
-    function Account($db = false) {
+    function Account($_db = false) {
 
-        if (!$db) {
+        if (!$_db) {
             global $db;
+            $this->db = $db;
+        } else {
+            $this->db = $_db;
         }
-        $this->db = $db;
 
 
         $this->table_name = 'Account';
@@ -206,11 +208,30 @@ class Account extends DB_Table {
 
 
         $data['Store Valid From']                = gmdate('Y-m-d H:i:s');
-        $data['Store Timezone']                  = preg_replace('/_/', '/', $data['Store Timezone']);
+
+
+        if(!isset($data['Store Timezone']) or $data['Store Timezone']==''){
+            $data['Store Timezone']                  = $this->get('Account Timezone');
+
+        }else{
+            $data['Store Timezone']                  = preg_replace('/_/', '/', $data['Store Timezone']);
+
+        }
+
+        if(!isset($data['Store Currency Code']) or $data['Store Currency Code']==''){
+            $data['Store Currency Code']                  = $this->get('Account Currency');
+
+        }else{
+            $data['Store Currency Code']                  = $data['Store Currency Code'];
+
+        }
+
         $data['Store Home Country Code 2 Alpha'] = substr($data['Store Locale'], -2);
 
         $country                         = new Country('2alpha', $data['Store Home Country Code 2 Alpha']);
         $data['Store Home Country Name'] = $country->get('Country Name');
+
+
 
         $store = new Store('find', $data, 'create');
 
@@ -382,7 +403,7 @@ class Account extends DB_Table {
 
                             if ($_user->can_view('locations')) {
 
-                                print "xxx";
+                              //  print "xxx";
 
                                 $_user->add_warehouse(array($warehouse->id));
                             }
@@ -708,6 +729,11 @@ class Account extends DB_Table {
     }
 
     function create_supplier($data) {
+
+
+        include_once 'class.Supplier.php';
+
+
         $this->new_employee = false;
 
         $data['editor'] = $this->editor;
@@ -743,7 +769,7 @@ class Account extends DB_Table {
             'Address Country 2 Alpha Code' => $country_code,
 
         );
-        unset($data['Supplier Contact Address country']);
+        unset($data['Supplier Contact Address Country']);
 
         if (isset($data['Supplier Contact Address addressLine1'])) {
             $address_fields['Address Line 1'] = $data['Supplier Contact Address addressLine1'];
@@ -1072,6 +1098,14 @@ class Account extends DB_Table {
             'editor'                  => $this->editor
 
         );
+
+        if (isset($raw_data['Category Store Key']) ) {
+            $data['Category Store Key'] = $raw_data['Category Store Key'];
+        }
+
+        if (isset($raw_data['Category Warehouse Key']) ) {
+            $data['Category Warehouse Key'] = $raw_data['Category Warehouse Key'];
+        }
 
         $category = new Category('find create', $data);
 

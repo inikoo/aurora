@@ -44,3 +44,5 @@ js/libs/jquery-ui.old.js
 app_files/sk1.sql
 
 cron/create_instance.oneoff.php
+
+app_files/sk2.sql

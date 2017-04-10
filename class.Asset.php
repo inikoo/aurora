@@ -337,9 +337,11 @@ class Asset extends DB_Table {
             case 'Materials':
 
                 if ($this->data[$this->table_name.' Materials'] != '') {
-                    $materials_data  = json_decode(
-                        $this->data[$this->table_name.' Materials'], true
-                    );
+
+
+
+
+                    $materials_data  = json_decode($this->data[$this->table_name.' Materials'], true);
                     $xhtml_materials = '';
 
 

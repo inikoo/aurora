@@ -20,11 +20,16 @@ class Supplier extends SubjectSupplier {
     var $new = false;
     public $locale = 'en_GB';
 
-    function Supplier($arg1 = false, $arg2 = false, $arg3 = false) {
+    function Supplier($arg1 = false, $arg2 = false, $arg3 = false,$_db=false) {
+
+        if(!$_db) {
+            global $db;
+            $this->db = $db;
+        }else{
 
 
-        global $db;
-        $this->db = $db;
+            $this->db = $_db;
+        }
 
         $this->table_name    = 'Supplier';
         $this->ignore_fields = array('Supplier Key');
@@ -50,6 +55,10 @@ class Supplier extends SubjectSupplier {
 
     function get_data($tipo, $id) {
 
+
+
+
+
         $this->data = $this->base_data();
 
         if ($tipo == 'id' or $tipo == 'key') {
@@ -71,6 +80,9 @@ class Supplier extends SubjectSupplier {
         } else {
             return;
         }
+
+
+
         if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id = $this->data['Supplier Key'];
         }
@@ -253,7 +265,7 @@ class Supplier extends SubjectSupplier {
             }
             $this->update_field('Supplier Name', $supplier_name, 'no_history');
 
-            $this->update_address('Contact', $address_raw_data);
+            $this->update_address('Contact', $address_raw_data, 'no_history');
 
             $history_data = array(
                 'History Abstract' => _('Supplier created'),
