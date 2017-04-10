@@ -726,11 +726,13 @@ class Image {
     function delete($force = false) {
         $subjects     = $this->get_subjects();
         $num_subjects = count($subjects);
+
         if ($num_subjects == 0 or $force) {
             $sql = sprintf(
                 "DELETE FROM `Image Dimension` WHERE `Image Key`=%d", $this->id
             );
-            // print $sql;
+
+
             $this->db->exec($sql);
             $sql = sprintf(
                 "DELETE FROM `Image Bridge` WHERE `Image Key`=%d", $this->id
@@ -743,7 +745,7 @@ class Image {
     function get_subjects() {
         $subjects = array();
         $sql      = sprintf(
-            'SELECT `Image Subject Object`,`Image Subject Is Principal`,`Image Subject Object Key` FROM `Image Subject Bridge` WHERE `Image Subject Key`=%d', $this->id
+            'SELECT `Image Subject Object`,`Image Subject Is Principal`,`Image Subject Object Key` FROM `Image Subject Bridge` WHERE `Image Subject Image Key`=%d', $this->id
         );
 
         if ($result = $this->db->query($sql)) {

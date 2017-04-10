@@ -853,7 +853,7 @@ function supplier_parts($_data, $db, $user, $account) {
     $record_data = array();
 
 
-    $exchange = -1;
+   // $exchange = -1;
 
     if ($result = $db->query($sql)) {
 
@@ -861,11 +861,11 @@ function supplier_parts($_data, $db, $user, $account) {
         foreach ($result as $data) {
 
 
-            if ($exchange < 0) {
+          //  if ($exchange < 0) {
                 $exchange = currency_conversion(
                     $db, $data['Supplier Part Currency Code'], $account->get('Account Currency'), '- 1 day'
                 );
-            }
+        //    }
 
             if ($exchange != 1) {
 

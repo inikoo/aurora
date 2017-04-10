@@ -589,17 +589,21 @@ trait ImageSubject {
             if ($row = $result->fetch()) {
 
 
-                $sql = sprintf(
-                    'DELETE FROM `Image Subject Bridge` WHERE `Image Subject Key`=%d ', $image_bridge_key
-                );
+                $sql = sprintf('DELETE FROM `Image Subject Bridge` WHERE `Image Subject Key`=%d ', $image_bridge_key);
                 $this->db->exec($sql);
 
                 $image         = new Image($row['Image Subject Image Key']);
                 $image->editor = $this->editor;
 
                 $image->delete();
+
+
+
                 $order_index = $this->reindex_order();
 
+
+
+                /*
 
                 if ($this->table_name == 'Part') {
 
@@ -617,9 +621,7 @@ trait ImageSubject {
 
                             if ($result2 = $this->db->query($sql)) {
                                 foreach ($result2 as $row2) {
-                                    $product->delete_image(
-                                        $row2['Image Subject Key']
-                                    );
+                                    $product->delete_image($row2['Image Subject Key']);
                                 }
                             } else {
                                 print_r($error_info = $this->db->errorInfo());
@@ -631,7 +633,7 @@ trait ImageSubject {
                     }
 
                 }
-
+*/
 
             } else {
                 $this->error;

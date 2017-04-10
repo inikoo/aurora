@@ -340,11 +340,9 @@ function find_suppliers($db, $account, $memcache_ip, $data) {
 
                             ),
                             'Supplier_Part_Unit_Extra_Cost' => array(
-                                'field'           => 'Supplier_Part_Unit_Extra_Cost',
+                                'field'           => 'Supplier_Part_Unit_Extra_Cost_Percentage',
                                 'render'          => true,
-                                'placeholder'     => sprintf(
-                                    _('amount in %s or %%'), $row['Supplier Default Currency Code']
-                                ),
+                                'placeholder'     => '%',
                                 'value'           => '',
                                 'formatted_value' => '',
                                 'locked'          => false
