@@ -1,3 +1,5 @@
+
+
 {foreach $locations_data item=location_data}
     <tr id="part_location_edit_{$location_data.location_key}" class="locations"  location_key="{$location_data.location_key}" >
         <td style="width:20px" class="unlink_operations hide"><i class="fa fa-fw  fa-unlink button super_discreet"

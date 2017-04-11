@@ -186,7 +186,7 @@ function move_qty_changed(element) {
     if (value == '') {
         $('#move_stock_tr').removeClass('valid invalid')
     } else {
-        validation = client_validation('smallint_unsigned', false, value, '')
+        validation = client_validation('number_unsigned', false, value, '')
 
         if (validation.class == 'valid') {
             //console.log($('#locations_table  .from ').closest('tr').find('input.stock').val())
@@ -272,7 +272,7 @@ function stock_changed(element) {
     }
 
 
-    var validation = validate_signed_integer(value, 999999999)
+    var validation = validate_number(value,0, 999999999)
 
     if (!validation) {
         validation = {
