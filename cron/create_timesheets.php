@@ -14,6 +14,9 @@ require_once 'common.php';
 require_once 'class.Staff.php';
 require_once 'utils/date_functions.php';
 
+$mode='this HR year';
+
+
 $sql = sprintf(
     'SELECT `Staff Key` FROM `Staff Dimension` WHERE `Staff Type`!="Contractor"  ORDER BY `Staff Key` DESC '
 );
@@ -21,22 +24,29 @@ $sql = sprintf(
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
         $employee = new Staff($row['Staff Key']);
-        $from     = $employee->get('Staff Valid From');
 
 
-        if ($from != '' and $from != '') {
-            $from = date(
-                'Y-m-d', strtotime($employee->get('Staff Valid From'))
-            );
 
-        }
+       if($mode=='all') {
+           $from = $employee->get('Staff Valid From');
+       }else{
+
+           $from = date(
+               'Y-m-d', strtotime(
+                          date('Y', strtotime('now ')).'-'.$account->get('Account HR Start Year')
+                      )
+           );
+       }
+
+
 
         if ($employee->get('Staff Currently Working') == 'No') {
             $to = $employee->get('Staff Valid To');
         } else {
-            if (!$from) {
-                $from = date('Y-m-d');
-            }
+            if (!$from) {$from = date('Y-m-d');}
+
+
+
             $to = date(
                 'Y-m-d', strtotime(
                     date('Y', strtotime('now + 1 year')).'-'.$account->get(
