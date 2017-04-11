@@ -510,6 +510,13 @@ function client_validation(type, required, value, field) {
             if (res) return res
             break;
 
+
+        case 'number_unsigned':
+
+            var res = validate_number(value, 0,4294967295)
+            if (res) return res
+            break;
+
         case 'minutes_in_break':
 
             if (value == 0) {
@@ -711,6 +718,9 @@ function validate_number(value, min, max) {
     var value = parseFloat(value)
     var min = parseFloat(min)
     var max = parseFloat(max)
+
+
+    console.log(value)
 
     if (!$.isNumeric(value)) {
         return {
