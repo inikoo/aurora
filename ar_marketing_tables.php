@@ -77,10 +77,10 @@ function marketing_server($_data, $db, $user) {
             $adata[] = array(
                 'id' => (integer)$data['Store Key'],
 
-                'code'      => $data['Store Code'],
+                'code'      => sprintf('<span class="link" onClick="change_view(\'marketing/%d\')">%s</span>',$data['Store Key'],$data['Store Code']),
                 'name'      => $data['Store Name'],
-                'campaigns' => number($data['campaigns']),
-                'deals'     => number($data['deals']),
+                'campaigns' => sprintf('<span class="link" onClick="change_view(\'campaigns/%d\')">%s</span>',$data['Store Key'],$data['campaigns']),
+                'deals'     => sprintf('<span class="link" onClick="change_view(\'deals/%d\')">%s</span>',$data['Store Key'],$data['deals']),
             );
 
 
