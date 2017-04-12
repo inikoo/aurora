@@ -513,12 +513,19 @@ class SupplierPart extends DB_Table {
             case 'Supplier Part Supplier Key':
                 include_once 'class.Supplier.php';
 
+
+
+
                 if ($value == $this->get('Supplier Part Supplier Key')) {
 
                     return;
                 }
 
-                $supplier = new Supplier('id', $value, false, $this->id);
+
+
+
+                $supplier = new Supplier('id', $value, false, $this->db);
+
                 if (!$supplier->id) {
                     $this->error = true;
                     $this->msg   = _("Supplier not found");
@@ -536,6 +543,11 @@ class SupplierPart extends DB_Table {
                     return;
 
                 }
+
+
+
+
+
 
 
                 $sql = sprintf(
@@ -1261,9 +1273,7 @@ class SupplierPart extends DB_Table {
                 } else {
                     $extra_cost = $this->data['Supplier Part Unit Extra Cost'];
                 }
-                $exchange       = currency_conversion(
-                    $this->db, $this->data['Supplier Part Currency Code'], $account->get('Account Currency'), '- 1 day'
-                );
+                $exchange       = currency_conversion($this->db, $this->data['Supplier Part Currency Code'], $account->get('Account Currency'), '- 1 day');
                 $delivered_cost = $exchange * $this->part->data['Part Units Per Package'] * ($this->data['Supplier Part Unit Cost'] + $extra_cost);
 
                 $cost = money(
