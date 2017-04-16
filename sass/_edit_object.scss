@@ -63,6 +63,9 @@ tr.invalid {
   }
 }
 
+
+
+
 .edit_object {
   margin-bottom: 100px;
   padding: 10px 20px;
@@ -75,6 +78,8 @@ tr.invalid {
 
   }
 
+
+
   //For displaying correctly the msg to the right of the formated value
   .formatted_value, .address_edit_fields_container {
     margin-right: 15px;
@@ -86,7 +91,7 @@ tr.invalid {
   .fa.save {
     margin-left: 5px;
     opacity: .4;
-    &.radio_option {
+    &.option_multiple_choices {
       margin-left: 320px;
     }
   }

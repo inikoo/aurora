@@ -236,18 +236,7 @@
 
     }
 
-    function download_exported_file(type) {
-        $("#download_" + type)[0].click();
-        $('#upload_icon').removeClass('very_discreet').addClass('valid_save')
-        setTimeout(
-                function () {
-                    $('#upload_icon').addClass('valid_save')
-                    hide_export_dialog()
-                }
-                , 1000)
-
-
-    }
+    f
 
 
     function export_table(type) {
@@ -272,7 +261,7 @@
         console.log(request)
         $.getJSON(request, function (data) {
             if (data.state == 200) {
-                get_export_process_bar(data.fork_key, data.tipo, type);
+                get_export_process_bar(data.fork_key, data.tipo, type,'');
             }
         })
 

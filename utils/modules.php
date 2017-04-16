@@ -2136,26 +2136,53 @@ $modules = array(
         'parent_type' => 'key',
         'sections'    => array(
 
-            'campaigns' => array(
+            'dashboard' => array(
                 'type'      => 'navigation',
-                'label'     => _('Deals'),
-                'title'     => _('Deals'),
-                'icon'      => 'tag',
-                'reference' => 'campaigns/%d',
+                'label'     => _('Dashboard'),
+                'title'     => _("Marketing dashboard"),
+                'icon'      => 'dashboard',
+                'reference' => 'marketing/%d',
                 'tabs'      => array(
-                    'campaigns' => array(
-                        'label' => _('Campaigns'),
-                        'title' => _('Campaigns')
-                    ),
+                    'marketing.dashboard' => array()
+                )
+            ),
+
+
+            'deals' => array(
+                'type'      => 'navigation',
+                'label'     => _('Offers'),
+                'icon'      => 'tag',
+                'reference' => 'deals/%d',
+                'tabs'      => array(
+
                     'deals'     => array(
-                        'label' => _('Offers'),
-                        'title' => _('Offers')
+                        'label' => _('Offers')
                     ),
 
                 )
 
 
             ),
+
+            'campaigns' => array(
+                'type'      => 'navigation',
+                'label'     => _('Campaigns'),
+                'icon'      => 'tags',
+                'reference' => 'campaigns/%d',
+                'tabs'      => array(
+                    'campaigns' => array(
+                        'label' => _('Campaigns')
+                    )
+
+
+                )
+
+
+            ),
+
+
+
+
 
             'campaign' => array(
                 'type' => 'object',
@@ -2167,15 +2194,10 @@ $modules = array(
                         'icon'  => 'database',
                         'title' => _('Details')
                     ),
-                    'campaign.history'   => array(
-                        'label' => _(
-                            'History, notes'
-                        ),
-                        'icon'  => 'sticky-note-o'
-                    ),
+
                     'campaign.deals'     => array(
                         'label' => _('Offers'),
-                        'icon'  => 'tag'
+                        'icon'  => 'tags'
                     ),
                     'campaign.orders'    => array(
                         'label' => _('Orders'),
@@ -2184,7 +2206,14 @@ $modules = array(
                     'campaign.customers' => array(
                         'label' => _('Customers'),
                         'icon'  => 'users'
-                    )
+                    ),
+                    'campaign.history'   => array(
+                        'label' => _(
+                            'History, notes'
+                        ),
+                        'icon'  => 'road',
+                        'class' => 'right icon_only'
+                    ),
 
                 )
             ),
@@ -2218,6 +2247,32 @@ $modules = array(
                     )
 
                 )
+            ),
+
+            'campaign.new' => array(
+                'type' => 'new_object',
+                'tabs' => array(
+                    'campaign.new' => array(
+                        'label' => _(
+                            'New campaign'
+                        )
+                    ),
+
+                )
+
+            ),
+
+            'deal.new' => array(
+                'type' => 'new_object',
+                'tabs' => array(
+                    'deal.new' => array(
+                        'label' => _(
+                            'New offer'
+                        )
+                    ),
+
+                )
+
             ),
 
             /*

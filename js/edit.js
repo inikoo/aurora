@@ -162,7 +162,7 @@ function open_edit_field(object, key, field) {
 
 
             break;
-        case 'radio_option':
+        case 'option_multiple_choices':
             $('#' + field + '_formatted').removeClass('hide')
             $('#' + field + '_options').removeClass('hide')
             $('#' + field + '_save_button').removeClass('hide')
@@ -403,7 +403,7 @@ function close_edit_field(field) {
             $("#" + field + '_editor').removeClass('changed')
 
             break;
-        case 'radio_option':
+        case 'option_multiple_choices':
 
 
             $('#' + field + '_options').addClass('hide')
@@ -714,7 +714,7 @@ function select_option(element, field, value) {
 
 }
 
-function select_radio_option(field, value, label) {
+function select_option_multiple_choices(field, value, label) {
 
     var checkbox_option = $('#' + field + '_option_' + value);
 
@@ -1024,7 +1024,7 @@ else
 
                 // console.log('#' + field + '_option_' + value + ' .current_mark')
                 //  $('#' + field + '_option_' + value + ' .current_mark').addClass('current')
-            } else if (type == 'radio_option') {
+            } else if (type == 'option_multiple_choices') {
                 $('#' + field + '_options li .current_mark').removeClass('current')
                 $('#' + field + '_option_' + value + ' .current_mark').addClass('current')
             } else if (type == 'dropdown_select') {

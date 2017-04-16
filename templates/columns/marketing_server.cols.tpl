@@ -5,38 +5,13 @@ label: "",
 editable: false,
 renderable: false,
 cell: "string"
-}, {
+},
+
+{
 name: "code",
 label: "{t}Code{/t}",
 editable: false,
-cell: Backgrid.Cell.extend({
-orderSeparator: '',
-events: {
-"click": function() {
-change_view('store/' + this.model.get("id") )
-}
-},
-className: "link",
-
-render: function () {
-this.constructor.__super__.render.apply(this, arguments);
-
-
-this.$el.empty();
-var rawValue = this.model.get(this.column.get("name"));
-var formattedValue = this.formatter.fromRaw(rawValue, this.model);
-this.$el.append(formattedValue);
-this.delegateEvents();
-
-
-if(this.model.get('id')==''){
-this.$el.removeClass('link');
-}
-return this;
-}
-
-
-})
+cell: Backgrid.HtmlCell.extend({ })
 } ,{
 name: "name",
 label:"{t}Store Name{/t}",
@@ -54,16 +29,8 @@ editable: false,
 sortType: "toggle",
 {if $sort_key=='campaigns'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
-
-cell: Backgrid.Cell.extend({
-orderSeparator: '',
-events: {
-"click": function() {
-change_view('campaigns/' + this.model.get("id") )
-}
-},
-className: "link aright",
-
+cell: Backgrid.HtmlCell.extend({
+className: 'aright'
 
 }),
 headerCell: integerHeaderCell
@@ -77,16 +44,8 @@ editable: false,
 sortType: "toggle",
 {if $sort_key=='deals'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
-
-cell: Backgrid.Cell.extend({
-orderSeparator: '',
-events: {
-"click": function() {
-change_view('deals/' + this.model.get("id") )
-}
-},
-className: "link aright",
-
+cell: Backgrid.HtmlCell.extend({
+className: 'aright'
 
 }),
 headerCell: integerHeaderCell

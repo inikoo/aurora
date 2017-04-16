@@ -234,6 +234,12 @@ function save_new_object(object, form_type) {
             $('#saving_label').addClass('hide')
             $('tr.controls').removeClass('waiting');
             if (data.state == 200) {
+
+
+                if(data.pcard=='' && data.updated_data.redirect!= undefined){
+                    change_view(data.updated_data.redirect)
+                }
+
                 $('#result').html(data.pcard).removeClass('hide')
 
                 $('#fields').addClass('hide')
@@ -278,6 +284,8 @@ function save_new_object(object, form_type) {
 }
 
 function post_new_actions(object, data) {
+
+    console.log(data)
 
     switch (object) {
         case 'Timesheet_Record':
@@ -605,5 +613,34 @@ function update_related_fields(country_data) {
 }
 
 function post_update_related_fields(country_data) {
+
+}
+
+
+function show_field_options(element){
+
+$(element).addClass('hide')
+
+    $('#'+$(element).attr('id')+'_options_ul').removeClass('hide')
+
+}
+
+
+function select_option_for_new_object(element, field, value) {
+
+
+
+    $('#' + field).val(value)
+
+
+    $('#' + field + '_options li').removeClass('selected')
+    $(element).addClass('selected')
+
+    $('#'+field).removeClass('hide')
+
+    $('#'+field+'_options_ul').addClass('hide')
+
+
+    on_changed_value(field, value)
 
 }

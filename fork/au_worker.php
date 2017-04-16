@@ -140,16 +140,27 @@ function get_fork_data($job) {
         return false;
     }
 
+
+    if(!file_exists("keyring/dns.$inikoo_account_code.php")){
+        print "file keyring/dns.$inikoo_account_code.php missing\n";
+        exit;
+    }
+
+
     require_once "keyring/dns.$inikoo_account_code.php";
     require_once "class.Account.php";
+
+
+
+
+
+
 
 
     $fork_key = $fork_metadata['fork_key'];
     $token    = $fork_metadata['token'];
 
-    $db = new PDO(
-        "mysql:host=$dns_host;dbname=$dns_db;charset=utf8", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
-    );
+    $db = new PDO("mysql:host=$dns_host;dbname=$dns_db;charset=utf8", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';"));
     $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
 

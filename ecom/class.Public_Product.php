@@ -665,11 +665,9 @@ break;
     function get_images_slidesshow() {
         include_once 'utils/natural_language.php';
 
-        if ($this->table_name == 'Store Product') {
-            $image_subject_type = 'Product';
-        } else {
+
             $image_subject_type = $this->table_name;
-        }
+
 
 
         $sql = sprintf(

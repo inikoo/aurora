@@ -31,7 +31,6 @@ $tipo = $_REQUEST['tipo'];
 switch ($tipo) {
 
 
-
     case 'calculate_sales':
         $data = prepare_values(
             $_REQUEST, array(
@@ -61,7 +60,7 @@ switch ($tipo) {
     case 'create_isf':
         $data = prepare_values(
             $_REQUEST, array(
-                         'key'       => array('type' => 'key'),
+                         'key' => array('type' => 'key'),
 
                      )
         );
@@ -253,15 +252,14 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
     $formatted_field = preg_replace('/^'.$object->get_object_name().' /', '', $field);
 
 
+    if ($field == 'Product Category Department Category Key') {
+        $formatted_field = 'Department Category Key';
 
-if ($field == 'Product Category Department Category Key') {
-    $formatted_field='Department Category Key';
-
-}
+    }
 
     if ($field == 'Staff Position' and $data['object'] == 'User') {
         $formatted_field = 'Position';
-    }elseif ($field == 'Part Category Status Including Parts') {
+    } elseif ($field == 'Part Category Status Including Parts') {
         $formatted_field = 'Status Including Parts';
     }
 
@@ -336,13 +334,6 @@ if ($field == 'Product Category Department Category Key') {
             }
 
 
-
-
-
-
-
-
-
             $formatted_value = $object->get($formatted_field);
 
 
@@ -378,58 +369,51 @@ if ($field == 'Product Category Department Category Key') {
                 }
 
 
+                $update_metadata['price_cell'] = sprintf(
+                    '<span style="cursor:text" class="product_price" title="%s" pid="%d" price="%s"    currency="%s"  exchange="%s" cost="%s" old_margin="%s" onClick="open_edit_price(this)">%s</span>',
+                    money($exchange * $object->get('Product Price'), $account->get('Account Currency')), $object->id, $object->get('Product Price'), $object->get('Store Currency Code'), $exchange,
+                    $object->get('Product Cost'), percentage($exchange * $object->get('Product Price') - $object->get('Product Cost'), $exchange * $object->get('Product Price')),
+                    money($object->get('Product Price'), $object->get('Store Currency Code'))
+                );
 
+                //        $update_metadata['margin_cell']='<span style="cursor:text" class="product_margin" onClick="open_edit_margin(this)" title="'._('Cost price').':'.money($object->get('Product Cost'), $account->get('Account Currency')).'">'.percentage($exchange*$object->get('Product Price')-$object->get('Product Cost'), $exchange*$object->get('Product Price')).'<span>';
 
-                $update_metadata['price_cell']=sprintf('<span style="cursor:text" class="product_price" title="%s" pid="%d" price="%s"    currency="%s"  exchange="%s" cost="%s" old_margin="%s" onClick="open_edit_price(this)">%s</span>',
-                                                       money($exchange* $object->get('Product Price'), $account->get('Account Currency')),
-                                                       $object->id,
-                                                       $object->get('Product Price'),
-                                                       $object->get('Store Currency Code'),
-                                                       $exchange,
-                                                       $object->get('Product Cost'),
-                                                       percentage($exchange* $object->get('Product Price')- $object->get('Product Cost'), $exchange* $object->get('Product Price')),
-                                                       money( $object->get('Product Price'), $object->get('Store Currency Code')) );
+                $update_metadata['margin_cell'] = '<span  class="product_margin"  title="'._('Cost price').':'.money($object->get('Product Cost'), $account->get('Account Currency')).'">'.percentage(
+                        $exchange * $object->get('Product Price') - $object->get('Product Cost'), $exchange * $object->get('Product Price')
+                    ).'<span>';
 
-            //        $update_metadata['margin_cell']='<span style="cursor:text" class="product_margin" onClick="open_edit_margin(this)" title="'._('Cost price').':'.money($object->get('Product Cost'), $account->get('Account Currency')).'">'.percentage($exchange*$object->get('Product Price')-$object->get('Product Cost'), $exchange*$object->get('Product Price')).'<span>';
-
-                $update_metadata['margin_cell']='<span  class="product_margin"  title="'._('Cost price').':'.money($object->get('Product Cost'), $account->get('Account Currency')).'">'.percentage($exchange*$object->get('Product Price')-$object->get('Product Cost'), $exchange*$object->get('Product Price')).'<span>';
-
-            }elseif ($field == 'Product Unit RRP') {
-
+            } elseif ($field == 'Product Unit RRP') {
 
 
                 if ($object->get('Product RRP') == '') {
-                    $rrp='';
-                }else{
+                    $rrp = '';
+                } else {
                     $rrp = money($object->get('Product RRP') / $object->get('Product Units Per Case'), $object->get('Store Currency Code'));
                     if ($object->get('Product Units Per Case') != 1) {
                         $rrp .= '/'.$object->get('Product Unit Label');
                     }
-                    $rrp=sprintf('<span style="cursor:text" class="product_rrp" title="%s" pid="%d" rrp="%s"  currency="%s"   onClick="open_edit_rrp(this)">%s</span>',
-                                 sprintf(_('margin %s'), percentage($object->get('Product RRP') - $object->get('Product Price'), $object->get('Product RRP'))),
-                                 $object->get('Product ID'),
-                                 $object->get('Product RRP')/$object->get('Product Units Per Case'),
-                                 $object->get('Store Currency Code'),
-                                 $rrp
+                    $rrp = sprintf(
+                        '<span style="cursor:text" class="product_rrp" title="%s" pid="%d" rrp="%s"  currency="%s"   onClick="open_edit_rrp(this)">%s</span>',
+                        sprintf(_('margin %s'), percentage($object->get('Product RRP') - $object->get('Product Price'), $object->get('Product RRP'))), $object->get('Product ID'),
+                        $object->get('Product RRP') / $object->get('Product Units Per Case'), $object->get('Store Currency Code'), $rrp
 
                     );
 
                 }
 
 
+                $update_metadata['rrp_cell'] = $rrp;
 
-                $update_metadata['rrp_cell']=$rrp;
-
-            }elseif ($field == 'Supplier Part Unit Cost') {
-
+            } elseif ($field == 'Supplier Part Unit Cost') {
 
 
-$cost=  sprintf('<span class="part_cost"  pid="%d" cost="%s"  currency="%s"   onClick="open_edit_cost(this)">%s</span>' ,
-                $object->get('Supplier Part Key'),$object->get('Supplier Part Unit Cost'),$object->get('Supplier Part Currency Code'),money($object->get('Supplier Part Unit Cost'), $object->get('Supplier Part Currency Code'))
-);
+                $cost = sprintf(
+                    '<span class="part_cost"  pid="%d" cost="%s"  currency="%s"   onClick="open_edit_cost(this)">%s</span>', $object->get('Supplier Part Key'), $object->get('Supplier Part Unit Cost'),
+                    $object->get('Supplier Part Currency Code'), money($object->get('Supplier Part Unit Cost'), $object->get('Supplier Part Currency Code'))
+                );
 
 
-                $update_metadata['cost_cell']=$cost;
+                $update_metadata['cost_cell'] = $cost;
 
             }
 
@@ -455,7 +439,7 @@ $cost=  sprintf('<span class="part_cost"  pid="%d" cost="%s"  currency="%s"   on
 
                 $other_delivery_addresses = $object->get_other_delivery_addresses_data();
 
-                $smarty->assign('other_delivery_addresses',$other_delivery_addresses);
+                $smarty->assign('other_delivery_addresses', $other_delivery_addresses);
 
 
                 $directory          = $smarty->fetch('delivery_addresses_directory.tpl');
@@ -750,7 +734,11 @@ function object_operation($account, $db, $user, $editor, $data, $smarty) {
                 }
             }
 
-        } else {
+        }else if ($object->get_object_name() == 'Deal Campaign') {
+
+            $response['request'] = sprintf('campaigns/%d', $object->get('Deal Campaign Store Key'));
+
+        }  else {
 
             if (is_string($request) and $request != '') {
                 $response['request'] = $request;
@@ -780,8 +768,33 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
     $parent->editor = $editor;
 
     $metadata = array();
+    $redirect='';
 
     switch ($data['object']) {
+
+
+        case 'Deal Campaign':
+            include_once 'class.Location.php';
+
+            $data['fields_data']['user'] = $user;
+
+
+            $object = $parent->create_campaign($data['fields_data']);
+
+
+            if (!$parent->error) {
+
+                $smarty->assign('account', $account);
+                $smarty->assign('parent', $parent);
+
+                $smarty->assign('object', $object);
+
+                $pcard        = '';
+                $updated_data = array('redirect' => sprintf('campaigns/%d/%d', $object->get('Deal Campaign Store Key'), $object->id));
+
+            }
+            break;
+
         case 'Location':
             include_once 'class.Location.php';
 
@@ -798,9 +811,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
                 $smarty->assign('object', $object);
 
-                $pcard        = $smarty->fetch(
-                    'presentation_cards/location.pcard.tpl'
-                );
+                $pcard        = $smarty->fetch('presentation_cards/location.pcard.tpl');
                 $updated_data = array();
             }
             break;
@@ -1522,7 +1533,8 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             'pcard'        => $pcard,
             'new_id'       => $object->id,
             'updated_data' => $updated_data,
-            'metadata'     => $metadata
+            'metadata'     => $metadata,
+            'redirect'     => $redirect
         );
 
 
@@ -1537,11 +1549,9 @@ function delete_image($account, $db, $user, $editor, $data, $smarty) {
     include_once 'class.Image.php';
 
 
-
     $sql = sprintf(
         'SELECT `Image Subject Object`,`Image Subject Object Key`,`Image Subject Image Key` FROM `Image Subject Bridge` WHERE `Image Subject Key`=%d ', $data['image_bridge_key']
     );
-
 
 
     if ($result = $db->query($sql)) {
@@ -2244,15 +2254,13 @@ function edit_bridge($account, $db, $user, $editor, $data, $smarty) {
 }
 
 
-
-
 function create_time_series($account, $db, $data, $editor) {
 
 
     require_once 'utils/new_fork.php';
 
     $data['editor'] = $editor;
-    $data['type'] = 'timeseries';
+    $data['type']   = 'timeseries';
 
     list($fork_key, $msg) = new_fork('au_time_series', $data, $account->get('Account Code'), $db);
 
@@ -2269,14 +2277,13 @@ function create_time_series($account, $db, $data, $editor) {
 }
 
 
-
 function create_isf($account, $db, $data, $editor) {
 
 
     require_once 'utils/new_fork.php';
 
     $data['editor'] = $editor;
-    $data['type'] = 'isf';
+    $data['type']   = 'isf';
 
     list($fork_key, $msg) = new_fork('au_time_series', $data, $account->get('Account Code'), $db);
 
@@ -2314,7 +2321,6 @@ function calculate_sales($account, $db, $data, $editor) {
 
 
 }
-
 
 
 ?>

@@ -449,7 +449,7 @@ $object_fields = array(
             ),
             array(
                 'id'              => 'Staff_Position',
-                'edit'            => 'radio_option',
+                'edit'            => 'option_multiple_choices',
                 'value'           => $employee->get('Staff Position'),
                 'formatted_value' => $employee->get('Position'),
                 'options'         => $options_Staff_Position,
@@ -460,7 +460,7 @@ $object_fields = array(
             array(
                 //   'render'=>($employee->get('Staff Currently Working')=='Yes'?true:false),
                 'id'   => 'Staff_Supervisor',
-                'edit' => ($edit ? 'radio_option' : ''),
+                'edit' => ($edit ? 'option_multiple_choices' : ''),
 
                 'value'           => $employee->get('Staff Supervisor'),
                 'formatted_value' => $employee->get('Supervisor'),
@@ -580,7 +580,7 @@ if (!$new) {
                 array(
                     'render' => ($employee->get('Staff User Active') == 'Yes' ? true : false),
                     'id'              => 'Staff_User_Groups',
-                    'edit'            => 'radio_option',
+                    'edit'            => 'option_multiple_choices',
                     'value'           => $employee->system_user->get('User Groups'),
                     'formatted_value' => $employee->system_user->get('Groups'),
                     'options'         => $options_User_Groups,
@@ -589,7 +589,7 @@ if (!$new) {
                 array(
                     'render'=>$employee->system_user->has_scope('Stores'),
                     'id'              => 'Staff_User_Stores',
-                    'edit'            => 'radio_option',
+                    'edit'            => 'option_multiple_choices',
                     'value'           => $employee->system_user->get('User Stores'),
                     'formatted_value' => $employee->system_user->get('Stores'),
                     'label'           => ucfirst($object->get_field_label('User Stores')),
@@ -600,7 +600,7 @@ if (!$new) {
                 array(
                     'render'=>$employee->system_user->has_scope('Websites'),
                     'id'              => 'Staff_User_Websites',
-                    'edit'            => 'radio_option',
+                    'edit'            => 'option_multiple_choices',
                     'value'           => $employee->system_user->get('User Websites'),
                     'formatted_value' => $employee->system_user->get('Websites'),
                     'label'           => ucfirst($employee->get_field_label('User Websites')
@@ -612,7 +612,7 @@ if (!$new) {
                 array(
                     'render'=>$employee->system_user->has_scope('Warehouses'),
                     'id'              => 'Staff_User_Warehouses',
-                    'edit'            => 'radio_option',
+                    'edit'            => 'option_multiple_choices',
                     'value'           => $employee->system_user->get('User Warehouses'),
                     'formatted_value' => $employee->system_user->get('Warehouses'),
                     'label'           => ucfirst($employee->get_field_label('User Warehouses')
@@ -625,7 +625,7 @@ if (!$new) {
                 array(
                     'render'=>$employee->system_user->has_scope('Productions'),
                     'id'              => 'Staff_User_Productions',
-                    'edit'            => 'radio_option',
+                    'edit'            => 'option_multiple_choices',
                     'value'           => $employee->system_user->get('User Productions'),
                     'formatted_value' => $employee->system_user->get('Productions'),
                     'label'           => ucfirst($employee->get_field_label('User Productions')
@@ -686,6 +686,19 @@ if (!$new) {
                 'from_mmddyy'=>$from_mmddyy,
                 'to_mmddyy'=>$to_mmddyy
             ),
+
+
+
+            array(
+                'id'        => 'terminate_employment',
+                'class'     => 'operation',
+                'value'     => '',
+                'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name(
+                    ).'", "key":"'.$object->id.'"}\' onClick="terminate_employment(this)" class="delete_object disabled">'._("Terminate employment").' <i class="fa fa-hand-scissors-o  fa-flip-horizontal new_button link"></i></span>',
+                'reference' => '',
+                'type'      => 'operation'
+            ),
+
 
             array(
                 'id'        => 'delete_employee',
@@ -771,7 +784,7 @@ if (!$new) {
             array(
                 'render' => false,
                 'id'     => 'Staff_Position',
-                'edit'   => ($edit ? 'radio_option' : ''),
+                'edit'   => ($edit ? 'option_multiple_choices' : ''),
 
                 'value'           => '',
                 'formatted_value' => '',

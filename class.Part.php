@@ -20,7 +20,6 @@ class Part extends Asset {
     public $sku = false;
     public $warehouse_key = 1;
     public $locale = 'en_GB';
-    private $current_locations_loaded = false;
 
     function __construct($arg1, $arg2 = false, $arg3 = false, $_db = false) {
 

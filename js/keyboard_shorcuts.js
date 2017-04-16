@@ -152,7 +152,7 @@ function enter_hit(e) {
                 break;
 
             case 'option':
-            case 'radio_option':
+            case 'option_multiple_choices':
             case 'string':
             case 'telephone':
             case 'email':

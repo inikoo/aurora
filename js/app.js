@@ -61,7 +61,7 @@ function change_browser_history_state(request) {
         request = '/' + request
     }
 
-    console.log(old_state_request + ' _> ' + request)
+   // console.log(old_state_request + ' _> ' + request)
 
     if (old_state_request != request) {
 

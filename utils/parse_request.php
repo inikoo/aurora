@@ -2069,40 +2069,26 @@ function parse_request($_data, $db, $modules, $account = '', $user = '',$is_setu
                 }
 
                 $module = 'marketing';
-                if ($count_view_path == 0) {
-                    $section = 'deals';
-                    $parent  = 'store';
-                    if ($user->data['User Hooked Store Key'] and in_array(
-                            $user->data['User Hooked Store Key'], $user->stores
-                        )
-                    ) {
-                        $parent_key = $user->data['User Hooked Store Key'];
-                    } else {
-                        $_tmp       = $user->stores;
-                        $parent_key = array_shift($_tmp);
+
+
+
+                if(isset($view_path[0])){
+                    if (is_numeric($view_path[0])) {
+
+                        $parent     = 'store';
+                        $parent_key = $view_path[0];
+
+                       $section='dashboard';
+
+                    }elseif($view_path[0]=='all'){
+                        $module  = 'marketing_server';
+                        $section = 'marketing';
                     }
 
                 }
-                $arg1 = array_shift($view_path);
-                if ($arg1 == 'all') {
-                    $module  = 'marketing_server';
-                    $section = 'marketing';
 
 
-                } elseif (is_numeric($arg1)) {
 
-                    $parent     = 'store';
-                    $parent_key = $arg1;
-
-                    if (isset($view_path[0])) {
-
-
-                    } else {
-
-                        $section = 'deals';
-                    }
-
-                }
                 break;
             case 'campaigns':
                 $module = 'marketing';
@@ -2124,7 +2110,6 @@ function parse_request($_data, $db, $modules, $account = '', $user = '',$is_setu
 
                             if (isset($view_path[2])) {
                                 if ($view_path[2] == 'deal') {
-
                                     $section    = 'deal';
                                     $object     = 'deal';
                                     $parent     = 'campaign';
@@ -2134,6 +2119,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '',$is_setu
                                             $key = $view_path[3];
                                         } elseif ($view_path[3] == 'new') {
 
+                                            $section    = 'deal.new';
 
                                         }
 
@@ -2145,6 +2131,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '',$is_setu
 
 
                         } elseif ($view_path[1] == 'new') {
+                            $object     = 'campaign';
                             $section = 'campaign.new';
                         }
 
@@ -2157,21 +2144,24 @@ function parse_request($_data, $db, $modules, $account = '', $user = '',$is_setu
                 $module = 'marketing';
 
                 if (isset($view_path[0])) {
-                    $section = 'deal';
-                    $object  = 'deal';
-                    $key     = $view_path[0];
-                    $parent  = 'store';
+                    $section = 'deals';
 
+
+                    $parent  = 'store';
+                    $parent_key  = $view_path[0];
 
                     if (isset($view_path[1])) {
-
+                        $object  = 'deal';
                         $parent     = 'store';
                         $parent_key = $view_path[0];
                         if (is_numeric($view_path[1])) {
                             $key = $view_path[1];
 
+
+
+
                         } elseif ($view_path[1] == 'new') {
-                            $section = 'campaign.new';
+                            $section = 'deal.new';
                         }
 
                     }

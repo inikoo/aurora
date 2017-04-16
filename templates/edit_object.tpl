@@ -191,7 +191,7 @@
 
                                     // console.log('#' + field + '_option_' + value + ' .current_mark')
                                     //  $('#' + field + '_option_' + value + ' .current_mark').addClass('current')
-                                } else if (type == 'radio_option') {
+                                } else if (type == 'option_multiple_choices') {
                                     $('#' + field + '_options li .current_mark').removeClass('current')
                                     $('#' + field + '_option_' + value + ' .current_mark').addClass('current')
                                 } else if (type == 'dropdown_select') {
@@ -608,7 +608,7 @@
                                     <span id="{$field.id}_msg" class="msg"></span>
                                 {elseif $edit=='option' }
                                     <input id="{$field.id}" class="hide" value="{$field.value}" has_been_valid="0"/>
-                                    <i id="{$field.id}_save_button" class="fa fa-cloud  save {$edit} radio_option hide"
+                                    <i id="{$field.id}_save_button" class="fa fa-cloud  save {$edit} option_multiple_choices hide"
                                        xstyle="margin-left:5px"
                                        onclick="save_field('{$state._object->get_object_name()}','{$state.key}','{$field.id}')"></i>
                                     <span id="{$field.id}_msg" class="msg"></span>
@@ -617,7 +617,7 @@
                                        onClick="show_add_other_option('{$field.id}')"
                                        style="cursor:pointer;float:left;margin-right:5px;padding-top:8px"></i>
                                 {/if}
-                                    <div id="{$field.id}_options" class="dropcontainer radio_option hide"
+                                    <div id="{$field.id}_options" class="dropcontainer option_multiple_choices hide"
                                          style="width:310px;xmargin-left:20px">
                                         <ul id="{$field.id}_options_ul">
                                             {foreach from=$field.options item=option key=value}
@@ -628,17 +628,17 @@
                                             {/foreach}
                                         </ul>
                                     </div>
-                                {elseif $edit=='radio_option' }
+                                {elseif $edit=='option_multiple_choices' }
                                     <input id="{$field.id}" type="hidden" value="{$field.value}" has_been_valid="0"/>
                                     <i id="{$field.id}_save_button" class="fa fa-cloud save {$edit} hide"
                                        onclick="save_field('{$state._object->get_object_name()}','{$state.key}','{$field.id}')"></i>
                                     <span id="{$field.id}_msg" class="msg"></span>
-                                    <div id="{$field.id}_options" class="dropcontainer radio_option hide">
+                                    <div id="{$field.id}_options" class="dropcontainer option_multiple_choices hide">
                                         <ul>
                                             {foreach from=$field.options item=option key=value}
                                                 <li id="{$field.id}_option_{$value}" label="{$option.label}"
                                                     value="{$value}" is_selected="{$option.selected}"
-                                                    onclick="select_radio_option('{$field.id}','{$value}','{$option.label}' )">
+                                                    onclick="select_option_multiple_choices('{$field.id}','{$value}','{$option.label}' )">
                                                     <i class="fa fa-fw checkbox {if $option.selected}fa-check-square-o{else}fa-square-o{/if}"></i> {$option.label}
                                                     <i class="fa fa-circle fw current_mark {if $option.selected}current{/if}"></i>
                                                 </li>

@@ -295,7 +295,7 @@ $object_fields = array(
             array(
                 //   'render'=>($employee->get('Staff Currently Working')=='Yes'?true:false),
                 'id'   => 'Staff_Supervisor',
-                'edit' => ($edit ? 'radio_option' : ''),
+                'edit' => ($edit ? 'option_multiple_choices' : ''),
 
                 'value'           => $employee->get('Staff Supervisor'),
                 'formatted_value' => $employee->get('Supervisor'),
@@ -373,7 +373,7 @@ if (!$new) {
                 ),
                 array(
                     'id'              => 'Staff_Position',
-                    'edit'            => 'radio_option',
+                    'edit'            => 'option_multiple_choices',
                     'value'           => $employee->get('Staff Position'),
                     'formatted_value' => $employee->get('Position'),
                     'options'         => $options_Staff_Position,
@@ -534,7 +534,7 @@ if (!$new) {
             array(
                 'render' => false,
                 'id'     => 'Staff_Position',
-                'edit'   => ($edit ? 'radio_option' : ''),
+                'edit'   => ($edit ? 'option_multiple_choices' : ''),
 
                 'value'           => '',
                 'formatted_value' => '',
