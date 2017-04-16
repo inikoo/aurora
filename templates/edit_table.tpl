@@ -56,11 +56,9 @@
                         <div class="export_download hide" id="export_download_excel"> {t}Download{/t}</div>
                     </td>
                     <td class="width_20">
-                        <i id="stop_export_table_excel" stop=0 onclick="stop_export('excel')"
-                           class="fa button fa-hand-stop-o error hide" title="{t}Stop{/t}"></i>
+                        <i id="stop_export_table_excel" stop=0 onclick="stop_export('excel')" class="fa button fa-hand-stop-o error hide" title="{t}Stop{/t}"></i>
                     </td>
-                    <td id="export_table_excel" class="link" onclick="export_table('excel')"><i
-                                class="fa fa-file-excel-o" title="Excel"></i>Excel
+                    <td id="export_table_excel" class="link" onclick="get_editable_data('excel')"><i class="fa fa-file-excel-o" title="Excel"></i>Excel
                     </td>
                 </tr>
                 <tr>
@@ -70,17 +68,14 @@
                         <div class="export_download hide " id="export_download_csv"> {t}Download{/t}</div>
 
                     </td>
-                    <td class="width_20"><i id="stop_export_table_csv" onclick="stop_export('csv')"
-                                            class="fa button fa-hand-stop-o error hide" title="{t}Stop{/t}"></i></td>
-                    <td id="export_table_csv" class="link" onclick="export_table('csv')"><i class="fa fa-table"
-                                                                                            title="{t}Comma Separated Value{/t}"></i>CSV
+                    <td class="width_20"><i id="stop_export_table_csv" onclick="stop_export('csv')" class="fa button fa-hand-stop-o error hide" title="{t}Stop{/t}"></i></td>
+                    <td id="export_table_csv" class="link" onclick="get_editable_data('csv')"><i class="fa fa-table" title="{t}Comma Separated Value{/t}"></i>CSV
                     </td>
                 </tr>
                 <tr>
                     <td colspan="2" class=""><i onclick="open_export_config()" class="fa fa-cogs button hide"></i></td>
                     <td>
-                        <div onclick="hide_export_dialog()" class="button disabled"><i class="fa fa-times"
-                                                                                       title="{t}Close dialog{/t}"></i>{t}Close{/t}
+                        <div onclick="hide_export_dialog()" class="button disabled"><i class="fa fa-times" title="{t}Close dialog{/t}"></i>{t}Close{/t}
                         </div>
                     </td>
                 </tr>
@@ -262,21 +257,9 @@
 
     }
 
-    function download_exported_file(type) {
-        $("#download_" + type)[0].click();
-        $('#upload_icon').removeClass('very_discreet').addClass('valid_save')
-        setTimeout(
-                function () {
-                    $('#upload_icon').addClass('valid_save')
-                    hide_export_dialog()
-                }
-                , 1000)
 
 
-    }
-
-
-    function export_table(type) {
+    function get_editable_data(type) {
 
 
         $('#export_progress_bar_bg_' + type).removeClass('hide').html('&nbsp;' + $('#export_queued_msg').html())
@@ -297,7 +280,7 @@
         // console.log(request)
         $.getJSON(request, function (data) {
             if (data.state == 200) {
-                get_export_process_bar(data.fork_key, data.tipo, type);
+                get_export_process_bar(data.fork_key, data.tipo, type,'');
             }
         })
 

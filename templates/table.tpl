@@ -75,29 +75,29 @@
             <table border=0 style="width:100%">
                 <tr class="no_border">
                     <td class="export_progress_bar_container">
-                        <a href="" id="download_excel" download hidden></a>
-                        <span class="hide export_progress_bar_bg" id="export_progress_bar_bg_excel"></span>
-                        <div class="hide export_progress_bar" id="export_progress_bar_excel"></div>
-                        <div class="export_download hide" id="export_download_excel"> {t}Download{/t}</div>
+                        <a href="" id="download_excel_export" download hidden></a>
+                        <span class="hide export_progress_bar_bg" id="export_progress_bar_bg_excel_export"></span>
+                        <div class="hide export_progress_bar" id="export_progress_bar_excel_export"></div>
+                        <div class="export_download hide" id="export_download_excel_export"> {t}Download{/t}</div>
                     </td>
                     <td class="width_20">
-                        <i id="stop_export_table_excel" stop=0 onclick="stop_export('excel')"
+                        <i id="stop_export_table_excel_export" stop=0 onclick="stop_export('excel')"
                            class="fa button fa-hand-stop-o error hide" title="{t}Stop{/t}"></i>
                     </td>
-                    <td id="export_table_excel" class="link" onclick="export_table('excel')"><i
+                    <td id="export_table_excel_export" class="link" onclick="export_table('excel')"><i
                                 class="fa fa-file-excel-o" title="Excel"></i>Excel
                     </td>
                 </tr>
                 <tr>
-                    <td class="export_progress_bar_container"><a href="" id="download_csv" download hidden></a>
-                        <span class="hide export_progress_bar_bg" id="export_progress_bar_bg_csv"></span>
-                        <div class="hide export_progress_bar" id="export_progress_bar_csv"></div>
-                        <div class="export_download hide " id="export_download_csv"> {t}Download{/t}</div>
+                    <td class="export_progress_bar_container"><a href="" id="download_csv_export" download hidden></a>
+                        <span class="hide export_progress_bar_bg" id="export_progress_bar_bg_csv_export"></span>
+                        <div class="hide export_progress_bar" id="export_progress_bar_csv_export"></div>
+                        <div class="export_download hide " id="export_download_csv_export"> {t}Download{/t}</div>
 
                     </td>
-                    <td class="width_20"><i id="stop_export_table_csv" onclick="stop_export('csv')"
+                    <td class="width_20"><i id="stop_export_table_csv_export" onclick="stop_export('csv')"
                                             class="fa button fa-hand-stop-o error hide" title="{t}Stop{/t}"></i></td>
-                    <td id="export_table_csv" class="link" onclick="export_table('csv')"><i class="fa fa-table"
+                    <td id="export_table_csv_export" class="link" onclick="export_table('csv')"><i class="fa fa-table"
                                                                                             title="{t}Comma Separated Value{/t}"></i>CSV
                     </td>
                 </tr>
