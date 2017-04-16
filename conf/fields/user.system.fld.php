@@ -331,7 +331,7 @@ if (!$new) {
 
                 array(
                     'id'              => 'User_Groups',
-                    'edit'            => 'radio_option',
+                    'edit'            => 'option_multiple_choices',
                     'value'           => $object->get('User Groups'),
                     'formatted_value' => $object->get('Groups'),
                     'options'         => $options_User_Groups,
@@ -340,7 +340,7 @@ if (!$new) {
                 array(
                     'render'=>$object->has_scope('Stores'),
                     'id'              => 'User_Stores',
-                    'edit'            => 'radio_option',
+                    'edit'            => 'option_multiple_choices',
                     'value'           => $object->get('User Stores'),
                     'formatted_value' => $object->get('Stores'),
                     'label'           => ucfirst(
@@ -353,7 +353,7 @@ if (!$new) {
                 array(
                     'render'=>$object->has_scope('Websites'),
                     'id'              => 'User_Websites',
-                    'edit'            => 'radio_option',
+                    'edit'            => 'option_multiple_choices',
                     'value'           => $object->get('User Websites'),
                     'formatted_value' => $object->get('Websites'),
                     'label'           => ucfirst(
@@ -366,7 +366,7 @@ if (!$new) {
                 array(
                     'render'=>$object->has_scope('Warehouses'),
                     'id'              => 'User_Warehouses',
-                    'edit'            => 'radio_option',
+                    'edit'            => 'option_multiple_choices',
                     'value'           => $object->get('User Warehouses'),
                     'formatted_value' => $object->get('Warehouses'),
                     'label'           => ucfirst(
@@ -380,7 +380,7 @@ if (!$new) {
                 array(
                     'render'=>$object->has_scope('Productions'),
                     'id'              => 'User_Productions',
-                    'edit'            => 'radio_option',
+                    'edit'            => 'option_multiple_choices',
                     'value'           => $object->get('User Productions'),
                     'formatted_value' => $object->get('Productions'),
                     'label'           => ucfirst(

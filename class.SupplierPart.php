@@ -235,8 +235,8 @@ class SupplierPart extends DB_Table {
 
             return;
         } else {
-            $this->msg = _(" Error can not create supplier part");
-            print $sql;
+            $this->msg = "Error can not create supplier part";
+           // print $sql;
             exit;
         }
     }

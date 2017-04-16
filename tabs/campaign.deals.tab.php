@@ -42,7 +42,7 @@ $table_buttons   = array();
 $table_buttons[] = array(
     'icon'      => 'plus',
     'title'     => _('New offer'),
-    'reference' => "campaigns/".$state['parent_key']."/".$state['key']."/new"
+    'reference' => "campaigns/".$state['parent_key']."/".$state['key']."/deal/new"
 );
 $smarty->assign('table_buttons', $table_buttons);
 

@@ -5,6 +5,7 @@
 
 <div id="result" class=" hide">
 </div>
+
 <div  id="fields" class="new_object   {if $form_type}$form_type{/if}" object="{$object_name}" parent='{$state.parent}' parent_key='{$state.parent_key}' key="{$state.key}" {if isset($step)}step="{$step}"{/if} has_been_fully_validated="0" >
     <table id="edit_container" border=0 data-default_telephone_data="{if isset($default_telephone_data)}{$default_telephone_data}{/if}">
     {foreach from=$object_fields item=field_group } 
@@ -335,17 +336,17 @@ function input_barcode_to_new_object(field) {
 		
 			
 		
-		<input id="{$field.id}" class="hide" value="{$field.value}" has_been_valid="0"  />
+		<input onClick="show_field_options(this)" id="{$field.id}" class="button" readonly value="{$field.value}" has_been_valid="0"  placeholder="{if isset($field.placeholder)}{$field.placeholder}{/if}" />
 		
 		<span id="{$field.id}_msg" class="msg"></span>
 		{if isset($field.allow_other) and  $field.allow_other} 
 		<i id="{$field.id}_add_other_option" class="fa fa-plus fw button hide"  onClick="show_add_other_option('{$field.id}')" style="cursor:pointer;float:left;margin-right:5px;padding-top:8px"></i>  
         {/if}
        &nbsp;
-		<div id="{$field.id}_options" class="dropcontainer radio_option " style="clear:both;width:310px" >
-			<ul  id="{$field.id}_options_ul" >
+		<div id="{$field.id}_options" class="dropcontainer  option_multiple_choices" style="clear:both;width:310px" >
+			<ul  id="{$field.id}_options_ul" class="hide" >
 				{foreach from=$field.options item=option key=value} 
-				<li  class="{if $value==$field.value}selected{/if}" onclick="select_option(this,'{$field.id}','{$value}' )">{$option}<i class="fa fa-circle fw padding_left_5 current_mark {if $value==$field.value}current{/if}"></i></li>
+				<li  class="{if $value==$field.value}selected{/if}" onclick="select_option_for_new_object(this,'{$field.id}','{$value}' )">{$option}<i class="fa fa-circle fw padding_left_5 current_mark {if $value==$field.value}current{/if}"></i></li>
 				{/foreach} 
 			</ul>
 		</div>
@@ -378,17 +379,17 @@ function input_barcode_to_new_object(field) {
         </script>
 
 
-		{elseif $edit=='radio_option' } 
+		{elseif $edit=='option_multiple_choices' }
 		
 		<input id="{$field.id}" type="hidden" value="{$field.value}" has_been_valid="0"/>
 		
 		<input id="{$field.id}_formatted"  class="option_input_field " value="{$field.formatted_value}" readonly  onClick="toggle_options('{$field.id}')"/>
 		
         <span id="{$field.id}_msg" class="msg"></span> 
-		<div id="{$field.id}_options" class="dropcontainer radio_option  hide" >
+		<div id="{$field.id}_options" class="dropcontainer option_multiple_choices  hide" >
 			<ul>
 				{foreach from=$field.options item=option key=value} 
-				<li id="{$field.id}_option_{$value}" label="{$option.label}" value="{$value}" is_selected="{$option.selected}" onclick="select_radio_option('{$field.id}','{$value}','{$option.label}' )"><i class="fa fa-fw checkbox {if $option.selected}fa-check-square-o{else}fa-square-o{/if}"></i> {$option.label} <i class="fa fa-circle fw current_mark {if $option.selected}current{/if}"></i></li>
+				<li id="{$field.id}_option_{$value}" label="{$option.label}" value="{$value}" is_selected="{$option.selected}" onclick="select_option_multiple_choices('{$field.id}','{$value}','{$option.label}' )"><i class="fa fa-fw checkbox {if $option.selected}fa-check-square-o{else}fa-square-o{/if}"></i> {$option.label} <i class="fa fa-circle fw current_mark {if $option.selected}current{/if}"></i></li>
 				{/foreach} 
 			</ul>
 		</div>
@@ -484,6 +485,7 @@ function input_barcode_to_new_object(field) {
 
 </table>
 </div>
+
  <script>
     $(".input_field").on("input propertychange", function(evt) {
 
@@ -503,30 +505,30 @@ function input_barcode_to_new_object(field) {
     });
 
      $(".value").each(function(index) {
-     
+
        // if($(this).hasClass('address_value')){
        //     return;
        // }
-     
-     
-    
-     
+
+
+
+
         var field = $(this).attr('field')
-    
+
         var value = $('#' + field).val()
 
         var field_data = $('#' + field + '_container')
         var type = field_data.attr('field_type')
-        
-        
-        
+
+
+
         if(field_data.hasClass('address_value')){
                 var required = field_data.closest('tbody.address_fields').attr('_required')
 
         }else{
         var required = field_data.attr('_required')
         }
-        
+
         var server_validation = field_data.attr('server_validation')
         var parent = field_data.attr('parent')
         var parent_key = field_data.attr('parent_key')
@@ -536,14 +538,14 @@ function input_barcode_to_new_object(field) {
 
         var validation = validate_field(field, value, type, required, server_validation, parent, parent_key, _object, key)
 
-     
-       
+
+
             if (validation.class == 'invalid' && value == '') {
                 validation.class = 'potentially_valid'
             }
             //console.log(field)
             //console.log(validation)
-       
+
          $('#' + field + '_field').removeClass('invalid potentially_valid valid').addClass(validation.class)
 
 
@@ -551,16 +553,16 @@ function input_barcode_to_new_object(field) {
     });
 
    var form_validation = get_form_validation_state()
-    
-    
+
+
     process_form_validation(form_validation)
 
-        
+
     $(".confirm_input_field").on("input propertychange", function(evt) {
         if (window.event && event.type == "propertychange" && event.propertyName != "value") return;
         on_changed_confirm_value($(this).attr('confirm_field'), $(this).val())
     });
 
-   
+
 {if isset($js_code) }{fetch file="$js_code"}{/if}
-</script> 
+</script>

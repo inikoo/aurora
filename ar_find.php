@@ -66,7 +66,10 @@ switch ($tipo) {
             $_REQUEST, array(
                          'query'      => array('type' => 'string'),
                          'scope'      => array('type' => 'string'),
-                         'action'      => array('type' => 'string', 'optional' => true),
+                         'action'     => array(
+                             'type'     => 'string',
+                             'optional' => true
+                         ),
                          'parent'     => array(
                              'type'     => 'string',
                              'optional' => true
@@ -119,21 +122,19 @@ switch ($tipo) {
             case 'webpages':
                 find_webpages($db, $account, $memcache_ip, $data);
                 break;
+
+            case 'product_categories':
+                find_special_category('product_categories', $db, $account, $memcache_ip, $data);
+                break;
+
             case 'families':
-                find_special_category(
-                    'Family', $db, $account, $memcache_ip, $data
-                );
+                find_special_category('Family', $db, $account, $memcache_ip, $data);
                 break;
             case 'departments':
-
-                find_special_category(
-                    'Department', $db, $account, $memcache_ip, $data
-                );
+                find_special_category('Department', $db, $account, $memcache_ip, $data);
                 break;
             case 'part_families':
-                find_special_category(
-                    'PartFamily', $db, $account, $memcache_ip, $data
-                );
+                find_special_category('PartFamily', $db, $account, $memcache_ip, $data);
                 break;
             case 'web_node':
                 find_web_node($db, $account, $memcache_ip, $data);
@@ -300,7 +301,7 @@ function find_suppliers($db, $account, $memcache_ip, $data) {
 
         foreach ($candidates as $key => $val) {
             $counter++;
-            $product_keys .= ','.$key;
+            $product_keys  .= ','.$key;
             $results[$key] = '';
             if ($counter > $max_results) {
                 break;
@@ -521,7 +522,7 @@ function find_stores($db, $account, $memcache_ip, $data) {
 
         foreach ($candidates as $key => $val) {
             $counter++;
-            $product_keys .= ','.$key;
+            $product_keys  .= ','.$key;
             $results[$key] = '';
             if ($counter > $max_results) {
                 break;
@@ -880,16 +881,32 @@ function find_products($db, $account, $memcache_ip, $data) {
 
 
     $where = '';
-    switch ($data['metadata']['parent']) {
-        case 'store':
-            $where = sprintf(
-                ' and `Product Store Key`=%d', $data['metadata']['parent_key']
-            );
-            break;
-        default:
 
-            break;
+    if(isset($data['metadata']['parent'])){
+        switch ($data['metadata']['parent']) {
+            case 'store':
+                $where = sprintf(' and `Product Store Key`=%d', $data['metadata']['parent_key']
+                );
+                break;
+            default:
+
+                break;
+        }
+    }else{
+
+        switch ($data['parent']) {
+            case 'store':
+                $where = sprintf(' and `Product Store Key`=%d', $data['parent_key']
+                );
+                break;
+            default:
+
+                break;
+        }
+
     }
+
+
 
 
     $memcache_fingerprint = $account->get('Account Code').'FIND_PRODUCTS'.md5(
@@ -1224,14 +1241,16 @@ function find_special_category($type, $db, $account, $memcache_ip, $data) {
 
     $root_keys = '';
 
+    if ($type == 'product_categories') {
 
-    if ($type == 'PartFamily') {
-        $root_keys             = $account->get(
-            'Account Part Family Category Key'
-        );
-        $where_root_categories = sprintf(
-            ' and `Category Root Key`=%d', $root_keys
-        );
+
+        $where_root_categories = sprintf(' and `Category Branch Type`="Head"  and `Category Scope`="Product"  and `Category Store Key`=%d ', $data['parent_key']);
+
+
+
+    } elseif ($type == 'PartFamily') {
+        $root_keys             = $account->get('Account Part Family Category Key');
+        $where_root_categories = sprintf(' and `Category Root Key`=%d', $root_keys);
     } else {
 
         if ($data['parent'] == 'store') {
@@ -1270,6 +1289,7 @@ function find_special_category($type, $db, $account, $memcache_ip, $data) {
         }
     }
 
+
     $memcache_fingerprint = $account->get('Account Code').'SEARCH_SPCL_CAT'.$type.$root_keys.md5($queries);
 
     $cache = new Memcached();
@@ -1306,7 +1326,7 @@ function find_special_category($type, $db, $account, $memcache_ip, $data) {
 
 
             $sql = sprintf(
-                "select `Category Key`,`Category Code`,`Category Label` from `Category Dimension` where true $where_root_categories and `Category Code` like '%s%%' limit 20 ", $q
+                "SELECT `Category Key`,`Category Code`,`Category Label` FROM `Category Dimension` WHERE TRUE %s AND `Category Code` LIKE '%s%%' LIMIT 20 ", $where_root_categories, $q
             );
 
 
@@ -1317,9 +1337,7 @@ function find_special_category($type, $db, $account, $memcache_ip, $data) {
                         $candidates[$row['Category Key']] = 1000;
                     } else {
 
-                        $len_name                         = strlen(
-                            $row['Category Code']
-                        );
+                        $len_name                         = strlen($row['Category Code']);
                         $len_q                            = strlen($q);
                         $factor                           = $len_q / $len_name;
                         $candidates[$row['Category Key']] = 500 * $factor;
@@ -1382,7 +1400,7 @@ function find_special_category($type, $db, $account, $memcache_ip, $data) {
 
         foreach ($candidates as $key => $val) {
             $counter++;
-            $product_keys .= ','.$key;
+            $product_keys  .= ','.$key;
             $results[$key] = '';
             if ($counter > $max_results) {
                 break;
@@ -1390,16 +1408,39 @@ function find_special_category($type, $db, $account, $memcache_ip, $data) {
         }
         $product_keys = preg_replace('/^,/', '', $product_keys);
 
-        $sql = sprintf(
-            "SELECT `Category Code`,`Category Key`,`Category Label` FROM `Category Dimension` C WHERE `Category Key` IN (%s)", $product_keys
+
+        if ($type == 'product_categories') {
+
+            include_once('class.Store.php');
+            $store = new Store($data['parent_key']);
+        }
+
+
+            $sql = sprintf(
+            "SELECT `Category Code`,`Category Key`,`Category Label`,`Category Root Key` FROM `Category Dimension` C WHERE `Category Key` IN (%s)", $product_keys
         );
 
         if ($result = $db->query($sql)) {
             foreach ($result as $row) {
+
+                $code=$row['Category Code'];
+                if ($type == 'product_categories') {
+                    $code=$row['Category Code'];
+
+                    if($row['Category Root Key']==$store->get('Store Family Category Key')){
+                        $code.=' (F)';
+                    }else if($row['Category Root Key']==$store->get('Store Department Category Key')){
+                        $code.=' (D)';
+                    }
+
+
+                }
+
+
                 $results[$row['Category Key']] = array(
                     'value'           => $row['Category Key'],
                     'formatted_value' => $row['Category Code'],
-                    'code'            => $row['Category Code'],
+                    'code'            => $code,
                     'description'     => $row['Category Label'],
                     'metadata'        => array()
 
@@ -1628,7 +1669,7 @@ function find_countries($db, $account, $memcache_ip, $data) {
 
         foreach ($candidates as $key => $val) {
             $counter++;
-            $product_keys .= ','.$key;
+            $product_keys  .= ','.$key;
             $results[$key] = '';
             if ($counter > $max_results) {
                 break;
@@ -1755,8 +1796,8 @@ function number_orders_in_process($db, $data) {
 function new_agent_delivery_options($db, $data) {
 
 
-    $warehouse_options        = array();
-    $warehouse_key            = false;
+    $warehouse_options = array();
+    $warehouse_key     = false;
 
 
     $sql = sprintf("SELECT `Warehouse Key`,`Warehouse Code`,`Warehouse Name` FROM `Warehouse Dimension` WHERE `Warehouse State`='Active'");
@@ -1779,7 +1820,7 @@ function new_agent_delivery_options($db, $data) {
         'warehouse_key'     => $warehouse_key,
         'warehouse_options' => $warehouse_options,
 
-       // 'msg'               => $msg,
+        // 'msg'               => $msg,
     );
     echo json_encode($response);
     exit;
@@ -2359,11 +2400,10 @@ function find_category_webpages($db, $account, $memcache_ip, $data) {
     }
 
 
-
-    if(isset($data['action'])){
-        $action=$data['action'];
-    }else{
-        $action='';
+    if (isset($data['action'])) {
+        $action = $data['action'];
+    } else {
+        $action = '';
     }
 
 
@@ -2445,10 +2485,10 @@ function find_category_webpages($db, $account, $memcache_ip, $data) {
                     'Category Code'    => $row['Category Code'],
                     'Category Label'   => $row['Category Label'],
                     'Status'           => $row['Product Category Status'],
-                    'Products'         => $row['Product Category Active Products']+$row['Product Category Discontinuing Products']+$row['Product Category In Process Products'],
+                    'Products'         => $row['Product Category Active Products'] + $row['Product Category Discontinuing Products'] + $row['Product Category In Process Products'],
                     'Category Subject' => $row['Category Subject'],
-                    'Public'=>$row['Product Category Public'],
-                    'Webpage State'=>$row['Webpage State'],
+                    'Public'           => $row['Product Category Public'],
+                    'Webpage State'    => $row['Webpage State'],
 
                 );
 
@@ -2483,9 +2523,9 @@ function find_category_webpages($db, $account, $memcache_ip, $data) {
 
             if (in_array(
                 $candidates_data[$category_key]['Status'], array(
-                'Active',
-                'Discontinuing'
-            )
+                                                             'Active',
+                                                             'Discontinuing'
+                                                         )
             )) {
                 $value       = $category_key;
                 $description = $candidates_data[$category_key]['Category Label'];
@@ -2494,34 +2534,31 @@ function find_category_webpages($db, $account, $memcache_ip, $data) {
                 if ($candidates_data[$category_key]['Category Subject'] == 'Product') {
                     $description .= ' <span class="discreet italic">('.$candidates_data[$category_key]['Products'].' <i class="fa fa-cube" aria-hidden="true"></i>)</span>';
 
-                    if($action=='add_category_to_webpage'){
+                    if ($action == 'add_category_to_webpage') {
 
 
-
-                        if($candidates_data[$category_key]['Public']=='No'){
-                            $description .=' <i class="fa fa-exclamation-circle padding_left_10 error" aria-hidden="true"></i>  <span class="error">'. _('Category is not public').'</span>';
+                        if ($candidates_data[$category_key]['Public'] == 'No') {
+                            $description .= ' <i class="fa fa-exclamation-circle padding_left_10 error" aria-hidden="true"></i>  <span class="error">'._('Category is not public').'</span>';
                             $code        = '<span class="strikethrough">'.$candidates_data[$category_key]['Category Code'].'</span>';
-                            $value=0;
+                            $value       = 0;
+                        } else {
+                            if ($candidates_data[$category_key]['Webpage State'] == 'Offline') {
+                                $description .= ' <i class="fa fa-exclamation-circle padding_left_10 error" aria-hidden="true"></i>  <span class="error">'._('Webpage is offline').'</span>';
+                                $code        = '<span class="strikethrough">'.$candidates_data[$category_key]['Category Code'].'</span>';
+                                $value       = 0;
+                            } else {
+                                if ($candidates_data[$category_key]['Products'] == 0) {
+                                    $description .= ' <i class="fa fa-exclamation-circle padding_left_10 error" aria-hidden="true"></i>  <span class="error">'._(
+                                            "Category don't have any product for sale"
+                                        ).'</span>';
+                                    $code        = '<span class="strikethrough">'.$candidates_data[$category_key]['Category Code'].'</span>';
+                                    $value       = 0;
+                                }
+                            }
                         }
-
-                        else if($candidates_data[$category_key]['Webpage State']=='Offline'){
-                            $description .=' <i class="fa fa-exclamation-circle padding_left_10 error" aria-hidden="true"></i>  <span class="error">'. _('Webpage is offline').'</span>';
-                            $code        = '<span class="strikethrough">'.$candidates_data[$category_key]['Category Code'].'</span>';
-                            $value=0;
-                        }
-
-
-                        else if($candidates_data[$category_key]['Products']==0){
-                            $description .=' <i class="fa fa-exclamation-circle padding_left_10 error" aria-hidden="true"></i>  <span class="error">'. _("Category don't have any product for sale").'</span>';
-                            $code        = '<span class="strikethrough">'.$candidates_data[$category_key]['Category Code'].'</span>';
-                            $value=0;
-                        }
-
 
 
                     }
-
-
 
 
                 } else {

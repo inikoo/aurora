@@ -1756,9 +1756,9 @@ textarea {
         opacity: .5; }
       .dropcontainer ul li .current_mark.current {
         visibility: visible; }
-  .dropcontainer.radio_option {
+  .dropcontainer.option_multiple_choices {
     margin-top: -30px; }
-    .dropcontainer.radio_option ul {
+    .dropcontainer.option_multiple_choices ul {
       border-top: 1px solid #ccc; }
 
 .textarea_dialog {
@@ -1825,7 +1825,7 @@ tr.invalid input {
   .edit_object .fa.save {
     margin-left: 5px;
     opacity: .4; }
-    .edit_object .fa.save.radio_option {
+    .edit_object .fa.save.option_multiple_choices {
       margin-left: 320px; }
   .edit_object .changed .fa.save {
     opacity: .6;
@@ -2000,6 +2000,8 @@ tr.invalid input {
 #fields.new_object {
   margin-bottom: 100px;
   padding: 10px 20px; }
+  #fields.new_object textarea {
+    width: 90%; }
   #fields.new_object .field_state {
     opacity: 0; }
     #fields.new_object .field_state.required {

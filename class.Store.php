@@ -12,20 +12,20 @@
   Version 2.0
 */
 
-/* class: Store
-   Class to manage the *Company Dimension* table
-*/
 
 include_once 'class.DB_Table.php';
 
 class Store extends DB_Table {
 
 
-    function Store($a1, $a2 = false, $a3 = false) {
+    function Store($a1, $a2 = false, $a3 = false, $_db = false) {
 
-        global $db;
-
-        $this->db = $db;
+        if (!$_db) {
+            global $db;
+            $this->db = $db;
+        } else {
+            $this->db = $_db;
+        }
 
         $this->table_name    = 'Store';
         $this->ignore_fields = array('Store Key');
@@ -79,13 +79,11 @@ class Store extends DB_Table {
         $this->found_key = false;
 
         $create = '';
-        $update = '';
+
         if (preg_match('/create/i', $options)) {
             $create = 'create';
         }
-        if (preg_match('/update/i', $options)) {
-            $update = 'update';
-        }
+
 
         $data = $this->base_data();
         foreach ($raw_data as $key => $value) {
@@ -227,7 +225,7 @@ class Store extends DB_Table {
 
             require_once 'conf/timeseries.php';
 
-            $timeseries=get_time_series_config();
+            $timeseries = get_time_series_config();
 
 
             $timeseries_data = $timeseries['Store'];
@@ -242,44 +240,43 @@ class Store extends DB_Table {
             }
 
 
-            $account=new Account($this->db);
-            $account->editor=$this->editor;
+            $account         = new Account($this->db);
+            $account->editor = $this->editor;
 
             $families_category_data = array(
-                'Category Code'           => 'Fam.'.$this->get('Store Code'),
-                'Category Label'          => 'Families',
-                'Category Scope'          => 'Product',
-                'Category Subject'        => 'Product',
-                'Category Store Key'=>$this->id
+                'Category Code'      => 'Fam.'.$this->get('Store Code'),
+                'Category Label'     => 'Families',
+                'Category Scope'     => 'Product',
+                'Category Subject'   => 'Product',
+                'Category Store Key' => $this->id
 
 
             );
 
 
-            $families=$account->create_category($families_category_data);
-
-
+            $families = $account->create_category($families_category_data);
 
 
             $departments_category_data = array(
-                'Category Code'           => 'Dept.'.$this->get('Store Code'),
-                'Category Label'          => 'Families',
-                'Category Scope'          => 'Product',
-                'Category Subject'        => 'Category',
-                'Category Store Key'=>$this->id
+                'Category Code'      => 'Dept.'.$this->get('Store Code'),
+                'Category Label'     => 'Families',
+                'Category Scope'     => 'Product',
+                'Category Subject'   => 'Category',
+                'Category Store Key' => $this->id
 
 
             );
 
 
-            $departments=$account->create_category($departments_category_data);
+            $departments = $account->create_category($departments_category_data);
 
-            $this->update(array(
+            $this->update(
+                array(
 
-                                 'Store Family Category Key' => $families->id,
-                                 'Store Department Category Key' => $departments->id,
-                             ), 'no_history');
-
+                    'Store Family Category Key'     => $families->id,
+                    'Store Department Category Key' => $departments->id,
+                ), 'no_history'
+            );
 
 
             /*
@@ -403,7 +400,7 @@ class Store extends DB_Table {
 
         if ($this->data['Store Contacts'] == 0) {
 
-            $sql = sprintf("SELECT `Category Key` FROM `Category Dimension` where `Category Store Key`=%d", $this->id);
+            $sql = sprintf("SELECT `Category Key` FROM `Category Dimension` WHERE `Category Store Key`=%d", $this->id);
 
             include_once 'class.Category.php';
             if ($result = $this->db->query($sql)) {
@@ -431,22 +428,20 @@ class Store extends DB_Table {
             $this->db->exec($sql);
 
 
-            $sql = sprintf("SELECT `Timeseries Key` FROM `Timeseries Dimension` where `Timeseries Parent`='Store' and `Timeseries Parent Key`=%d ", $this->id);
+            $sql = sprintf("SELECT `Timeseries Key` FROM `Timeseries Dimension` WHERE `Timeseries Parent`='Store' AND `Timeseries Parent Key`=%d ", $this->id);
 
-          if ($result=$this->db->query($sql)) {
-          		foreach ($result as $row) {
-                    $sql = sprintf("delete from FROM `Category Record Dimension` where `Timeseries Record Timeseries Key`=%d", $row['Timeseries Key']);
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
+                    $sql = sprintf("DELETE FROM FROM `Category Record Dimension` WHERE `Timeseries Record Timeseries Key`=%d", $row['Timeseries Key']);
                     $this->db->exec($sql);
-          		}
-          }else {
-          		print_r($error_info=$this->db->errorInfo());
-          		print "$sql\n";
-          		exit;
-          }
-            $sql = sprintf("delete FROM `Timeseries Dimension` where `Timeseries Parent`='Store' and `Timeseries Parent Key`=%d ", $this->id);
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+            $sql = sprintf("DELETE FROM `Timeseries Dimension` WHERE `Timeseries Parent`='Store' AND `Timeseries Parent Key`=%d ", $this->id);
             $this->db->exec($sql);
-
-
 
 
             $history_key = $this->add_history(
@@ -723,7 +718,7 @@ class Store extends DB_Table {
         );
 
         $sql = sprintf(
-            "SELECT count(*) AS num,ifnull(sum(`Order Total Net Amount`),0) AS amount,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE `Order Store Key`=%d and `Order Number Items`>0 AND `Order Current Dispatch State`  IN ('In Process by Customer','In Process')  ",
+            "SELECT count(*) AS num,ifnull(sum(`Order Total Net Amount`),0) AS amount,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE `Order Store Key`=%d AND `Order Number Items`>0 AND `Order Current Dispatch State`  IN ('In Process by Customer','In Process')  ",
             $this->id
         );
 
@@ -744,12 +739,10 @@ class Store extends DB_Table {
         }
 
 
-
         $data_to_update = array(
-            'Store Orders In Basket Number'              => $data['in_basket']['number'],
-            'Store Orders In Basket Amount'              => $data['in_basket']['amount'],
-            'Store DC Orders In Basket Amount'           => $data['in_basket']['dc_amount'],
-
+            'Store Orders In Basket Number'    => $data['in_basket']['number'],
+            'Store Orders In Basket Amount'    => $data['in_basket']['amount'],
+            'Store DC Orders In Basket Amount' => $data['in_basket']['dc_amount'],
 
 
         );
@@ -772,7 +765,7 @@ class Store extends DB_Table {
                 'dc_amount' => 0
             )
         );
-        $sql = sprintf(
+        $sql  = sprintf(
             'SELECT `Order Current Dispatch State`,count(*) AS num,ifnull(sum(`Order Total Net Amount`),0) AS amount,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE `Order Store Key`=%d  AND `Order Current Dispatch State` ="Submitted by Customer"  AND `Order Current Payment State`="Paid" ',
             $this->id
         );
@@ -782,8 +775,8 @@ class Store extends DB_Table {
             foreach ($result as $row) {
 
 
-                $data['in_process_paid']['number'] += $row['num'];
-                $data['in_process_paid']['amount'] += $row['amount'];
+                $data['in_process_paid']['number']    += $row['num'];
+                $data['in_process_paid']['amount']    += $row['amount'];
                 $data['in_process_paid']['dc_amount'] += $row['dc_amount'];
 
 
@@ -804,8 +797,8 @@ class Store extends DB_Table {
             foreach ($result as $row) {
 
 
-                $data['in_process_not_paid']['number'] += $row['num'];
-                $data['in_process_not_paid']['amount'] += $row['amount'];
+                $data['in_process_not_paid']['number']    += $row['num'];
+                $data['in_process_not_paid']['amount']    += $row['amount'];
                 $data['in_process_not_paid']['dc_amount'] += $row['dc_amount'];
 
 
@@ -830,8 +823,6 @@ class Store extends DB_Table {
     }
 
 
-
-
     function update_orders_in_warehouse_data() {
 
         $data = array(
@@ -841,8 +832,6 @@ class Store extends DB_Table {
                 'dc_amount' => 0
             ),
         );
-
-
 
 
         $sql = sprintf(
@@ -867,12 +856,10 @@ class Store extends DB_Table {
         }
 
 
-
         $data_to_update = array(
-            'Store Orders In Warehouse Number'              => $data['warehouse']['number'],
-            'Store Orders In Warehouse Amount'              => $data['warehouse']['amount'],
-            'Store DC Orders In Warehouse Amount'           => $data['warehouse']['dc_amount'],
-
+            'Store Orders In Warehouse Number'    => $data['warehouse']['number'],
+            'Store Orders In Warehouse Amount'    => $data['warehouse']['amount'],
+            'Store DC Orders In Warehouse Amount' => $data['warehouse']['dc_amount'],
 
 
         );
@@ -889,8 +876,6 @@ class Store extends DB_Table {
                 'dc_amount' => 0
             ),
         );
-
-
 
 
         $sql = sprintf(
@@ -915,12 +900,10 @@ class Store extends DB_Table {
         }
 
 
-
         $data_to_update = array(
-            'Store Orders Packed Number'              => $data['packed']['number'],
-            'Store Orders Packed Amount'              => $data['packed']['amount'],
-            'Store DC Orders Packed Amount'           => $data['packed']['dc_amount'],
-
+            'Store Orders Packed Number'    => $data['packed']['number'],
+            'Store Orders Packed Amount'    => $data['packed']['amount'],
+            'Store DC Orders Packed Amount' => $data['packed']['dc_amount'],
 
 
         );
@@ -939,8 +922,6 @@ class Store extends DB_Table {
                 'dc_amount' => 0
             ),
         );
-
-
 
 
         $sql = sprintf(
@@ -965,12 +946,10 @@ class Store extends DB_Table {
         }
 
 
-
         $data_to_update = array(
-            'Store Orders In Dispatch Area Number'              => $data['ready_to_ship']['number'],
-            'Store Orders In Dispatch Area Amount'              => $data['ready_to_ship']['amount'],
-            'Store DC Orders In Dispatch Area Amount'           => $data['ready_to_ship']['dc_amount'],
-
+            'Store Orders In Dispatch Area Number'    => $data['ready_to_ship']['number'],
+            'Store Orders In Dispatch Area Amount'    => $data['ready_to_ship']['amount'],
+            'Store DC Orders In Dispatch Area Amount' => $data['ready_to_ship']['dc_amount'],
 
 
         );
@@ -985,8 +964,6 @@ class Store extends DB_Table {
         $this->update_orders_in_warehouse_data();
         $this->update_orders_packed_data();
         $this->update_orders_ready_to_ship_data();
-
-
 
 
         $this->data['Store Total Acc Orders']  = 0;
@@ -1581,131 +1558,35 @@ class Store extends DB_Table {
         //print "$sql\n";
     }
 
-    function update_campaings_data() {
+    function update_campaigns_data() {
 
-        $campaings = 0;
-
-        $sql   = sprintf(
-            "SELECT count(*) AS num FROM `Deal Campaign Dimension` WHERE `Deal Campaign Store Key`=%d AND `Deal Campaign Status`='Active' ", $this->id
-        );
-        $res   = mysql_query($sql);
-        $sites = array();
-        if ($row = mysql_fetch_assoc($res)) {
-            $campaings = $row['num'];
-        }
+        $campaigns = 0;
 
         $sql = sprintf(
-            'UPDATE `Store Dimension` SET `Store Active Deal Campaigns`=%d WHERE `Store Key`=%d', $campaings, $this->id
+            "SELECT count(*) AS num FROM `Deal Campaign Dimension` WHERE `Deal Campaign Store Key`=%d AND `Deal Campaign Status`='Active' ", $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $campaigns = $row['num'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        $this->update(array('Store Active Deal Campaigns' => $campaigns), 'no_history');
+
+        $sql = sprintf(
+            'UPDATE `Store Dimension` SET `Store Active Deal Campaigns`=%d WHERE `Store Key`=%d', $campaigns, $this->id
         );
 
         mysql_query($sql);
         //print "$sql\n";
     }
 
-    function create_site($data) {
-
-
-        $data['Site Store Key'] = $this->id;
-
-
-        if ($data['Site Name'] == '') {
-            $data['Site Name'] = $this->data['Store Name'];
-        }
-
-        if ($data['Site Code'] == '') {
-            $data['Site Code'] = $this->data['Store Code'];
-        }
-
-        if (!array_key_exists('Site Contact Telephone', $data) or $data['Site Contact Telephone'] == '') {
-            $data['Site Contact Telephone'] = $this->data['Store Telephone'];
-        }
-        if (!array_key_exists('Site Contact Address', $data) or $data['Site Contact Address'] == '') {
-            $data['Site Contact Address'] = $this->data['Store Address'];
-        }
-
-        $data['editor'] = $this->editor;
-
-        $site = new Site('new', $data);
-
-        return $site;
-    }
-
-    function get_active_sites_keys() {
-        $sql = sprintf(
-            "SELECT `Site Key` FROM `Site Dimension` WHERE `Site Store Key`=%d AND `Site Active`='Yes' ", $this->id
-        );
-
-        $res   = mysql_query($sql);
-        $sites = array();
-        while ($row = mysql_fetch_assoc($res)) {
-            $sites[$row['Site Key']] = $row['Site Key'];
-        }
-        //print "$sql\n";
-        //print_r($sites);
-        return $sites;
-    }
-
-    function get_sites_data($smarty = false) {
-        $data = array();
-        $sql  = sprintf(
-            "SELECT  `Site Key`,`Site URL`,`Site Name` FROM `Site Dimension` WHERE `Site Store Key`=%d ", $this->id
-        );
-        $res  = mysql_query($sql);
-        while ($row = mysql_fetch_assoc($res)) {
-            if ($smarty) {
-                $_row = array();
-                foreach ($row as $key => $value) {
-                    $_row[str_replace(' ', '', $key)] = $value;
-                }
-
-                $data[] = $_row;
-            } else {
-                $data[] = $row;
-            }
-        }
-
-        return $data;
-    }
-
-    function get_site_keys() {
-
-        $site_keys = array();
-
-
-        $sql = sprintf(
-            "SELECT  `Site Key` FROM `Site Dimension` WHERE `Site Store Key`=%d ", $this->id
-        );
-        $res = mysql_query($sql);
-        while ($row = mysql_fetch_assoc($res)) {
-
-            $site_keys[$row['Site Key']] = $row['Site Key'];
-
-        }
-
-
-        return $site_keys;
-
-    }
-
-    function get_site_key() {
-
-        $site_key = 0;
-
-
-        $sql = sprintf(
-            "SELECT  `Site Key` FROM `Site Dimension` WHERE `Site Store Key`=%d ", $this->id
-        );
-        $res = mysql_query($sql);
-        if ($row = mysql_fetch_assoc($res)) {
-
-            $site_key = $row['Site Key'];
-
-        }
-
-
-        return $site_key;
-
-    }
 
     function get_formatted_email_credentials($type) {
 
@@ -1836,29 +1717,6 @@ class Store extends DB_Table {
 
     //$type='Newsletters'
 
-    function add_campaign($data) {
-        $data['Deal Campaign Store Key'] = $this->id;
-        $campaign                        = new DealCampaign(
-            'find create', $data
-        );
-
-        return $campaign;
-
-    }
-
-    function get_valid_to() {
-        /*
-	To do discintinued Store
-	if($this->data['Store Record Type']=='Discontinued'){
-			return $this->data['Store Valid To'];
-		}else{
-			return gmdate("Y-m-d H:i:s");
-		}
-
-		*/
-        return gmdate("Y-m-d H:i:s");
-
-    }
 
     function update_sales_averages() {
 
@@ -1907,7 +1765,7 @@ class Store extends DB_Table {
         $sum        = 0;
         while ($row = mysql_fetch_assoc($res)) {
             $data_sales[] = $row['sales'];
-            $sum += $row['sales'];
+            $sum          += $row['sales'];
             $counter++;
             if ($row['sales'] > $max_value) {
                 $max_value = $row['sales'];
@@ -2052,7 +1910,6 @@ class Store extends DB_Table {
     }
 
 
-
     function get_field_label($field) {
 
         switch ($field) {
@@ -2148,7 +2005,7 @@ class Store extends DB_Table {
 
     }
 
-    function update_timeseries_record($timeseries, $from, $to, $fork_key=false) {
+    function update_timeseries_record($timeseries, $from, $to, $fork_key = false) {
 
         if ($timeseries->get('Type') == 'StoreSales') {
 
@@ -2343,7 +2200,7 @@ class Store extends DB_Table {
                 break;
             case('Total Products'):
                 return $this->data['Store For Sale Products'] + $this->data['Store In Process Products'] + $this->data['Store Not For Sale Products'] + $this->data['Store Discontinued Products']
-                + $this->data['Store Unknown Sales State Products'];
+                    + $this->data['Store Unknown Sales State Products'];
                 break;
             case('For Sale Products'):
                 return number($this->data['Store For Sale Products']);
@@ -2367,34 +2224,33 @@ class Store extends DB_Table {
                 );
             case 'Delta Today Start Orders In Warehouse Number':
 
-                $start=$this->data['Store Today Start Orders In Warehouse Number'];
-                $end=$this->data['Store Orders In Warehouse Number']+$this->data['Store Orders Packed Number']+$this->data['Store Orders In Dispatch Area Number'];
+                $start = $this->data['Store Today Start Orders In Warehouse Number'];
+                $end   = $this->data['Store Orders In Warehouse Number'] + $this->data['Store Orders Packed Number'] + $this->data['Store Orders In Dispatch Area Number'];
 
-                $diff=$end-$start;
+                $diff = $end - $start;
 
-                $delta=($diff>0?'+':'').number($diff).delta_icon($end,$start,$inverse=true);
+                $delta = ($diff > 0 ? '+' : '').number($diff).delta_icon($end, $start, $inverse = true);
 
 
                 return $delta;
 
             case 'Today Orders Dispatched':
 
-                $number=0;
+                $number = 0;
 
-                $sql=sprintf('select count(*) as num from `Order Dimension` where `Order Store Key`=%d and `Order Current Dispatch State`="Dispatched" and `Order Dispatched Date`>%s   and  `Order Dispatched Date`<%s   ',
-                             $this->id,
-                             prepare_mysql(date('Y-m-d 00:00:00')),
-                             prepare_mysql(date('Y-m-d 23:59:59'))
-                             );
+                $sql = sprintf(
+                    'SELECT count(*) AS num FROM `Order Dimension` WHERE `Order Store Key`=%d AND `Order Current Dispatch State`="Dispatched" AND `Order Dispatched Date`>%s   AND  `Order Dispatched Date`<%s   ',
+                    $this->id, prepare_mysql(date('Y-m-d 00:00:00')), prepare_mysql(date('Y-m-d 23:59:59'))
+                );
 
-                if ($result=$this->db->query($sql)) {
+                if ($result = $this->db->query($sql)) {
                     if ($row = $result->fetch()) {
-                        $number=$row['num'];
-                	}
-                }else {
-                	print_r($error_info=$this->db->errorInfo());
-                	print "$sql\n";
-                	exit;
+                        $number = $row['num'];
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
                 }
 
 
@@ -2420,7 +2276,8 @@ class Store extends DB_Table {
         if (preg_match('/^(DC Orders).*(Amount|Profit)$/', $key)) {
 
             $field = 'Store '.$key;
-            return money($this->data[$field],  $account->get('Account Currency'));
+
+            return money($this->data[$field], $account->get('Account Currency'));
 
             return $amount;
         }
@@ -2477,7 +2334,6 @@ class Store extends DB_Table {
 
             return $amount;
         }
-
 
 
         if (preg_match('/^(Orders|Last|Yesterday|Total|1|10|6|3|4|2|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit) Soft Minify$/', $key)) {
@@ -2752,8 +2608,6 @@ class Store extends DB_Table {
     function create_product($data) {
 
 
-
-
         $this->new_product = false;
 
         $data['editor'] = $this->editor;
@@ -2776,7 +2630,6 @@ class Store extends DB_Table {
         );
 
 
-
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
                 if ($row['num'] > 0) {
@@ -2794,7 +2647,6 @@ class Store extends DB_Table {
             print_r($error_info = $this->db->errorInfo());
             exit;
         }
-
 
 
         if (!isset($data['Product Unit Label']) or $data['Product Unit Label'] == '') {
@@ -2881,9 +2733,6 @@ class Store extends DB_Table {
         $data['Product Locale']   = $this->data['Store Locale'];
 
 
-
-
-
         if (array_key_exists('Family Category Code', $data)) {
             include_once 'class.Category.php';
             $root_category = new Category($this->get('Store Family Category Key'));
@@ -2904,8 +2753,6 @@ class Store extends DB_Table {
         } else {
             $family_key = false;
         }
-
-
 
 
         if (isset($data['Parts']) and $data['Parts'] != '') {
@@ -2946,25 +2793,95 @@ class Store extends DB_Table {
             $product_parts = json_decode($data['Product Parts'], true);
 
 
-
-
             if ($product_parts and is_array($product_parts)) {
 
                 foreach ($product_parts as $product_part) {
+
+
+                    //   print_r($product_part);
+
+
                     if (!is_array($product_part)
-                        or !isset($product_part['Part SKU'])
-                        or !isset($product_part['Ratio'])
-                        or !isset($product_part['Note'])
-                        or !is_numeric($product_part['Part SKU'])
-                        or !is_string($product_part['Note'])
+
                     ) {
 
                         $this->error      = true;
                         $this->msg        = "Can't parse product parts";
-                        $this->error_code = 'can_not_parse_product_parts';
+                        $this->error_code = 'can_not_parse_product_parts_no_array';
                         $this->metadata   = '';
 
 
+                        return;
+                    }
+
+                    if (!isset($product_part['Part SKU'])
+
+
+                    ) {
+
+                        $this->error      = true;
+                        $this->msg        = "Can't parse product parts, missing part sku";
+                        $this->error_code = 'can_not_parse_product_parts_missing_part_sku';
+                        $this->metadata   = '';
+
+
+                        return;
+                    }
+
+                    if (!array_key_exists('Ratio', $product_part)
+
+                    ) {
+
+                        $this->error      = true;
+                        $this->msg        = "Can't parse product parts, missing ratio";
+                        $this->error_code = 'can_not_parse_product_parts_missing_ratio';
+                        $this->metadata   = '';
+
+
+                        return;
+                    }
+
+                    if (!array_key_exists('Note', $product_part)
+
+                    ) {
+
+                        $this->error      = true;
+                        $this->msg        = "Can't parse product parts, missing note";
+                        $this->error_code = 'can_not_parse_product_parts_missing_note';
+                        $this->metadata   = '';
+
+
+                        return;
+                    }
+
+                    if (is_null($product_part['Note'])) {
+                        $product_part['Note'] = '';
+
+                    }
+
+                    if (
+
+                    !is_numeric($product_part['Part SKU'])
+                    ) {
+
+                        $this->error      = true;
+                        $this->msg        = "Can't parse product parts";
+                        $this->error_code = 'can_not_parse_product_parts_wrong_part_sku';
+                        $this->metadata   = '';
+
+
+                        return;
+                    }
+
+                    if (
+
+                    !is_string($product_part['Note'])
+                    ) {
+
+                        $this->error      = true;
+                        $this->msg        = "Can't parse product parts";
+                        $this->error_code = 'can_not_parse_product_parts_note_is_not_string';
+                        $this->metadata   = '';
 
 
                         return;
@@ -2979,6 +2896,7 @@ class Store extends DB_Table {
                         $this->msg        = 'Part not found';
                         $this->error_code = 'part_not_found';
                         $this->metadata   = $product_part['Part SKU'];
+
 
                         return;
 
@@ -3026,8 +2944,6 @@ class Store extends DB_Table {
         if ($product->id) {
 
 
-
-
             $this->new_object_msg = $product->msg;
 
             if ($product->new) {
@@ -3037,18 +2953,18 @@ class Store extends DB_Table {
 
                 if ($product_parts_data) {
 
-/*
+                    /*
 
-                    $tmp=json_decode($product_parts_data, true);
-                    print_r($tmp);
+                                        $tmp=json_decode($product_parts_data, true);
+                                        print_r($tmp);
 
-                    foreach($tmp as $_key=>$_tmp_val){
-                        $tmp[$_key]['Key']=$product->id;
-                    }
-                    print_r($tmp);
-                    $product_parts_data=json_encode($tmp);
+                                        foreach($tmp as $_key=>$_tmp_val){
+                                            $tmp[$_key]['Key']=$product->id;
+                                        }
+                                        print_r($tmp);
+                                        $product_parts_data=json_encode($tmp);
 
-*/
+                    */
 
                     $product->update_part_list($product_parts_data, 'no_history');
 
@@ -3070,8 +2986,6 @@ class Store extends DB_Table {
                         array('Product Family Category Key' => $family_key), 'no_history'
                     );
                 }
-
-
 
 
                 foreach ($this->get_websites('objects') as $website) {
@@ -3111,7 +3025,7 @@ class Store extends DB_Table {
             $this->error      = true;
             $this->error_code = 'cant create product'.$product->msg;
             $this->metadata   = '';
-            
+
 
         }
 
@@ -3225,6 +3139,75 @@ class Store extends DB_Table {
 
     }
 
+
+    function create_campaign($data) {
+
+        include_once 'class.DealCampaign.php';
+
+        if (!array_key_exists('Deal Campaign Name', $data) or $data['Deal Campaign Name'] == '') {
+            $this->error = true;
+            $this->msg   = 'error, no campaign name';
+
+            return;
+        }
+
+        if (!array_key_exists('Deal Campaign Valid From', $data)) {
+            $this->error = true;
+            $this->msg   = 'error, no campaign start date';
+
+            return;
+        }
+
+        if ($data['Deal Campaign Valid From'] == '') {
+            $data['Deal Campaign Valid From']=gmdate('Y-m-d');
+        }
+
+        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $data['Deal Campaign Valid From'])) {
+            $data['Deal Campaign Valid From'] .= ' 00:00:00';
+        }
+
+        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $data['Deal Campaign Valid To'])) {
+            $data['Deal Campaign Valid To'] .= ' 23:59:59';
+        }
+
+        $data['Deal Campaign Store Key'] = $this->id;
+
+
+        $campaign = new DealCampaign('find create', $data);
+
+
+        if ($campaign->id) {
+            $this->new_object_msg = $campaign->msg;
+
+            if ($campaign->new) {
+                $this->new_object = true;
+                $this->update_campaigns_data();
+
+            } else {
+                $this->error = true;
+                if ($campaign->found) {
+
+                    $this->error_code     = 'duplicated_field';
+                    $this->error_metadata = json_encode(array($campaign->duplicated_field));
+
+                    if ($campaign->duplicated_field == 'Deal Campaign Name') {
+                        $this->msg = _('Duplicated campaign name');
+                    }
+
+
+                } else {
+                    $this->msg = $campaign->msg;
+                }
+            }
+
+            return $campaign;
+        } else {
+            $this->error = true;
+            $this->msg   = $campaign->msg;
+        }
+
+    }
+
     function create_website($data) {
 
         $this->new_object = false;
@@ -3234,8 +3217,6 @@ class Store extends DB_Table {
 
         $data['Website Store Key']  = $this->id;
         $data['Website Valid From'] = gmdate('Y-m-d H:i:s');
-
-
 
 
         $website = new Website('find', $data, 'create');

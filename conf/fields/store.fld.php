@@ -25,7 +25,7 @@ $options_locale = array(
     'es_ES' => 'es_ES '._('Spanish'),
     'pl_PL' => 'pl_PL '._('Polish'),
     'it_IT' => 'it_IT '._('Italian'),
-    'sk_SK' => 'sk_SK '._('Sloavak'),
+    'sk_SK' => 'sk_SK '._('Slovak'),
     'pt_PT' => 'pt_PT '._('Portuguese'),
 );
 asort($options_locale);

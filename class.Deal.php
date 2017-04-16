@@ -177,6 +177,7 @@ class Deal extends DB_Table {
 
     function get($key = '') {
 
+        if(!$this->id) return;
 
         switch ($key) {
 
@@ -934,7 +935,7 @@ class Deal extends DB_Table {
         $campaign         = new DealCampaign($this->data['Deal Campaign Key']);
         $campaign->editor = $this->editor;
 
-        $campaign->get_number_deals();
+        $campaign->update_current_number_of_deals();
 
 
     }

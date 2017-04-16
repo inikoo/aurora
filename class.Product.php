@@ -2653,6 +2653,9 @@ class Product extends Asset {
             return;
         }
 
+
+
+
         foreach ($value as $product_part) {
 
 
@@ -2709,6 +2712,9 @@ class Product extends Asset {
                 }
             }
         }
+
+
+
 
         $this->get_data('id', $this->id);
         $this->update_part_numbers();

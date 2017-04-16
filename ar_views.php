@@ -241,16 +241,18 @@ function get_view($db, $smarty, $user, $account, $modules) {
     if ($state['object'] != '') {
 
 
-      //  print_r($state['object']);
+        //  print_r($state['object']);
 
 
         if (!isset($_object)) {
             $_object = get_object($state['object'], $state['key']);
         }
 
-       // print_r($_object);
-       // print_r($state);
+        //print_r($_object);
+        // print_r($state);
 
+        //$_object->get('Store Key');
+        //exit;
         if (is_numeric($_object->get('Store Key'))) {
             include_once 'class.Store.php';
             $store                  = new Store($_object->get('Store Key'));
@@ -263,8 +265,6 @@ function get_view($db, $smarty, $user, $account, $modules) {
         }
 
         if (is_numeric($_object->get('Website Key'))) {
-
-
 
 
             include_once 'class.Website.php';
@@ -678,7 +678,6 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
     }
 
 
-
     switch ($showcase) {
         case 'material':
             include_once 'showcase/material.show.php';
@@ -905,7 +904,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             if ($user->get('User Type') == 'Agent') {
                 include_once 'showcase/agent_delivery.show.php';
                 $html = get_showcase($data, $smarty, $user, $db);
-            }else{
+            } else {
                 include_once 'showcase/supplier.delivery.show.php';
                 $html = get_showcase($data, $smarty, $user, $db);
             }
@@ -1328,6 +1327,8 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 
         case ('marketing'):
             require_once 'navigation/marketing.nav.php';
+
+
             switch ($data['section']) {
 
                 case ('campaigns'):
@@ -1335,8 +1336,23 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                         $data, $smarty, $user, $db, $account
                     );
                     break;
+                case ('deals'):
+                    return get_deals_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
                 case ('campaign'):
                     return get_campaign_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
+                case ('campaign.new'):
+                    return get_new_campaign_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
+                case ('deal.new'):
+                    return get_new_deal_navigation(
                         $data, $smarty, $user, $db, $account
                     );
                     break;
@@ -1363,32 +1379,14 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                         $data, $smarty, $user, $db, $account
                     );
                     break;
-                case ('lists'):
-                    return get_customers_lists_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-                    break;
-                case ('list'):
-                    return get_customers_list_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-                    break;
-                case ('dashboard'):
-                    return get_customers_dashboard_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-                    break;
-                case ('statistics'):
 
-                    return get_customers_statistics_navigation(
+                case ('dashboard'):
+                    return get_marketing_dashboard_navigation(
                         $data, $smarty, $user, $db, $account
                     );
                     break;
-                case ('pending_orders'):
-                    return get_customers_pending_orders_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-                    break;
+
+
             }
 
 
@@ -2222,7 +2220,6 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     break;
 
 
-
             }
             break;
         default:
@@ -2302,8 +2299,8 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
 
                         $_content['tabs']['category.categories']['selected'] = true;
                         $data['tab']                                         = 'category.categories';
-                        $data['subtab']                                         = '';
-                        $_content['subtabs']=array();
+                        $data['subtab']                                      = '';
+                        $_content['subtabs']                                 = array();
 
                     }
 
@@ -2324,8 +2321,8 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
 
                         $_content['tabs']['category.categories']['selected'] = true;
                         $data['tab']                                         = 'category.categories';
-                        $data['subtab']                                         = '';
-                        $_content['subtabs']=array();
+                        $data['subtab']                                      = '';
+                        $_content['subtabs']                                 = array();
 
                     }
 
@@ -2402,8 +2399,8 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
 
         }
     }
-   // print_r($_content['tabs']);
-   // print_r($_content['subtabs']);
+    // print_r($_content['tabs']);
+    // print_r($_content['subtabs']);
 
     $smarty->assign('_content', $_content);
 
@@ -6091,7 +6088,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
             if ($state['section'] == 'deals') {
 
                 $branch[] = array(
-                    'label'     => _('Deals').' '.$state['store']->get('Code'),
+                    'label'     => _('Offers').' '.$state['store']->get('Code'),
                     'icon'      => 'tag',
                     'reference' => ''
                 );
@@ -6111,6 +6108,46 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 $branch[] = array(
                     'label'     => '<span class="Deal_Campaign_Name">'.$state['_object']->get('Name').'</span>',
                     'icon'      => 'tags',
+                    'reference' => ''
+                );
+            } elseif ($state['section'] == 'campaign.new') {
+                $branch[] = array(
+                    'label'     => _('Campaigns').' <span class="Store_Code">'.$state['store']->get('Code').'</span>',
+                    'icon'      => 'tags',
+                    'reference' => 'campaigns/'.$state['store']->id
+                );
+
+                $branch[] = array(
+                    'label'     => _('New campaign'),
+                    'icon'      => '',
+                    'reference' => ''
+                );
+            } elseif ($state['section'] == 'deal.new') {
+
+
+                if ($state['parent'] == 'campaign') {
+
+                    include_once 'class.Store.php';
+                    $state['store'] = new Store($state['_parent']->get('Store Key'));
+
+                    $branch[] = array(
+                        'label'     => _('Campaigns').' <span class="Store_Code">'.$state['store']->get('Code').'</span>',
+                        'icon'      => 'tags',
+                        'reference' => 'campaigns/'.$state['store']->id
+                    );
+
+                    $branch[] = array(
+                        'label'     => '<span class="Deal_Campaign_Name">'.$state['_parent']->get('Name').'</span>',
+                        'icon'      => 'tags',
+                        'reference' => ''
+                    );
+
+                }
+
+
+                $branch[] = array(
+                    'label'     => _('New offer'),
+                    'icon'      => '',
                     'reference' => ''
                 );
             } elseif ($state['section'] == 'deal') {
@@ -6137,14 +6174,17 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     'icon'      => 'tag',
                     'reference' => ''
                 );
+            } elseif ($state['section'] == 'dashboard') {
+                $branch[] = array(
+                    'label'     => _('Marketing dashboard').' <span class="Store_Code">'.$state['store']->get('Code').'</span>',
+                    'icon'      => 'tachometer',
+                    'reference' => ''
+                );
             }
             break;
 
 
         case 'agent_suppliers':
-
-
-
 
 
             if ($state['section'] == 'suppliers') {
@@ -6441,7 +6481,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
         case 'agent_client_orders':
 
-            switch ($state['section']){
+            switch ($state['section']) {
                 case 'orders':
                     $branch[] = array(
                         'label'     => _("Client's orders"),
@@ -6467,7 +6507,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
         case 'agent_parts':
 
-            switch ($state['section']){
+            switch ($state['section']) {
                 case 'parts':
                     $branch[] = array(
                         'label'     => _("Products"),
