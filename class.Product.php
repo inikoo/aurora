@@ -2457,43 +2457,11 @@ class Product extends Asset {
 
 
             include_once 'class.Page.php';
-            include_once 'class.Site.php';
+
             include_once 'class.Order.php';
 
-            $sql = sprintf(
-                "SELECT `Page Key` FROM `Page Product Dimension` WHERE `Product ID`=%d ", $this->id
-            );
-
-            /*
-
-            if ($result = $this->db->query($sql)) {
-                foreach ($result as $row) {
-
-                    $page = new Page($row['Page Key']);
 
 
-                    $site = new Site($page->get('Page Site Key'));
-                    if ($site->data['Site SSL'] == 'Yes') {
-                        $site_protocol = 'https';
-                    } else {
-                        $site_protocol = 'http';
-                    }
-
-                    if ($site->id and $site->data['Site URL'] != '') {
-
-                        $template_response = file_get_contents(
-                            $site_protocol.'://'.$site->data['Site URL']."/maintenance/write_templates.php?parent=page_clean_cache&parent_key=".$page->id."&sk=x"
-                        );
-
-                    }
-
-
-                }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                exit;
-            }
-*/
 
             $sql = sprintf(
                 "SELECT `Order Key` FROM `Order Transaction Fact` WHERE `Current Dispatching State`='In Process by Customer' AND `Product ID`=%d ", $this->id
@@ -2902,7 +2870,7 @@ class Product extends Asset {
             );
             $this->db->exec($sql);
 
-            //$this->update_sales_averages();
+
         }
 
     }

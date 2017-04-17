@@ -101,8 +101,6 @@ abstract class DB_Table extends stdClass {
         $data = array();
 
 
-
-
         $sql = sprintf('show columns from `%s`', addslashes($table_name));
         foreach ($this->db->query($sql) as $row) {
             if (!in_array($row['Field'], $this->ignore_fields)) {

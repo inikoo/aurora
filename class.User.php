@@ -1344,7 +1344,7 @@ class User extends DB_Table {
 
     function delete_website($to_delete, $history = true) {
 
-        include_once 'class.Site.php';
+        include_once 'class.Website.php';
 
         $changed = 0;
         foreach ($to_delete as $website_key) {
@@ -1355,12 +1355,10 @@ class User extends DB_Table {
             $_changed = $this->db->exec($sql);
             $changed += $_changed;
 
-            $website = new Site($website_key);
+            $website = new Website($website_key);
             if ($website->id and $_changed) {
                 $history_data = array(
-                    'History Abstract'    => sprintf(
-                        _("User's rights for website %s were removed"), $website->data['Site Code']
-                    ),
+                    'History Abstract'    => sprintf(_("User's rights for website %s were removed"), $website->get('Code')),
                     'History Details'     => '',
                     'Action'              => 'disassociate',
                     'Indirect Object'     => 'Website',

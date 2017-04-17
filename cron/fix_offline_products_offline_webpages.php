@@ -29,7 +29,6 @@ mysql_query("SET time_zone='+0:00'");
 require_once 'utils/get_addressing.php';
 require_once 'utils/parse_natural_language.php';
 
-require_once 'class.Site.php';
 require_once 'class.Page.php';
 require_once 'class.Website.php';
 require_once 'class.WebsiteNode.php';
