@@ -61,6 +61,7 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
                     'Invoice'       => _('Invoice'),
                     'PurchaseOrder' => _('Purchase order'),
                     'Catalogue'     => _('Catalogue'),
+                    'Image'       => _('Image'),
                     'Other'         => _('Other'),
 
                 );

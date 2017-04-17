@@ -2822,8 +2822,10 @@ $modules = array(
                     ),
 
                     'supplier.supplier_parts' => array(
-                        'label' => _(
-                            "Supplier's Parts"
+                        'label' => _("Supplier's Parts"),
+                        'quantity_data'=>array(
+                            'object'=>'_object',
+                            'field'=>'Number Parts'
                         ),
                         'icon'  => 'stop'
                     ),

@@ -37,21 +37,11 @@ $object_fields = array(
                 'id'   => 'Attachment_Subject_Type',
                 'edit' => 'option',
 
-                'value'           => ($new
-                    ? 'Other'
-                    : $object->get(
-                        'Attachment Subject Type'
-                    )),
-                'formatted_value' => ($new
-                    ? _('Other')
-                    : $object->get(
-                        'Subject Type'
-                    )),
+                'value'           => ($new ? 'Other' : $object->get('Attachment Subject Type')),
+                'formatted_value' => ($new ? _('Other') : $object->get('Subject Type')),
 
                 'options'  => $options_Attachment_Subject_Type,
-                'label'    => ucfirst(
-                    $object->get_field_label('Attachment Subject Type')
-                ),
+                'label'    => ucfirst($object->get_field_label('Attachment Subject Type')),
                 'required' => true,
 
                 'type' => 'value'
