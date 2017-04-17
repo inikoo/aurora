@@ -128,6 +128,14 @@ function images($_data, $db, $user) {
                 'image'       => sprintf(
                     '<div class="tint"><img style="max-width:100px;height-width:50px" src="/image_root.php?id=%d&size=small" title="%s" /></div>', $data['Image Key'], $data['Image Filename']
                 ),
+
+                'preview'       => sprintf(
+                    '<a href="/image_root.php?id=%d&size=original" data-type="image" data-fancybox="group" data-caption="%s">
+                    <img  src="/image_root.php?id=%d&size=small"  style="max-width:100px;height-width:50px"  />
+                 </a>',
+                    $data['Image Key'],   $data['Image Subject Image Caption'],$data['Image Key']
+                ),
+
                 'filename'    => $data['Image Filename'],
                 'caption'     => $data['Image Subject Image Caption'],
                 'size'        => file_size($data['Image File Size']),

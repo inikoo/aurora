@@ -41,6 +41,7 @@
         <link href="/css/amcharts/style.css" rel="stylesheet">
         <link href="/css/sweetalert.css" rel="stylesheet">
         <link href="/css/fotorama.css" rel="stylesheet">
+        <link href="/css/jquery.fancybox.min.css" rel="stylesheet">
 
 
 
@@ -120,6 +121,7 @@
         <script type="text/javascript" src="/js/libs/amcharts/plugins/dataloader/dataloader.min.js"></script>
         <script type="text/javascript" src="/js/libs/amcharts/plugins/export/export.min.js"></script>
         <script type="text/javascript" src="/js/libs/jquery.scannerdetection.js"></script>
+        <script type="text/javascript" src="/js/libs/jquery.fancybox.min.js"></script>
 
 
 

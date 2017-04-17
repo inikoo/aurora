@@ -161,7 +161,10 @@ function attachments($_data, $db, $user) {
             'type'       => $type,
             'file_type'  => $file_type,
             'preview'       => sprintf(
-                '<div class="tint"><img style="max-width:100px;height-width:50px" src="/image_root.php?id=%d&size=small" title="%s" /></div>', $data['Attachment Thumbnail Image Key'], $data['Attachment File Original Name']
+                '<a href="/image_root.php?id=%d&size=original" data-type="image"  data-fancybox="group" data-caption="%s">
+                    <img  src="/image_root.php?id=%d&size=small"  style="max-width:100px;height-width:50px"  />
+                 </a>',
+                $data['Attachment Thumbnail Image Key'],   $data['Attachment File Original Name'].' '.$data['Attachment Caption'],$data['Attachment Thumbnail Image Key']
             ),
             'file'       => sprintf(
                 '<a href="/attachment.php?id=%d" download><i class="fa fa-download"></i></a>  <a href="/attachment.php?id=%d" >%s</a>', $data['Attachment Bridge Key'], $data['Attachment Bridge Key'],
