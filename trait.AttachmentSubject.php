@@ -119,7 +119,7 @@ trait AttachmentSubject {
                 } elseif ($row['Attachment Type'] == 'PDF') {
                     $icon
                         = '<img class="icon" src="art/icons/page_white_acrobat.png" alt="'.$row['Attachment MIME Type'].'" title="'.$row['Attachment MIME Type'].'"/>';
-                } elseif ($row['Attachment Type'] == 'Compresed') {
+                } elseif ($row['Attachment Type'] == 'Compressed') {
                     $icon
                         = '<img class="icon" src="art/icons/page_white_compressed.png" alt="'.$row['Attachment MIME Type'].'" title="'.$row['Attachment MIME Type'].'"/>';
                 } elseif ($row['Attachment Type'] == 'Text') {

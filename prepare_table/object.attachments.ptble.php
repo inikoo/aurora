@@ -73,7 +73,7 @@ $sql_totals
 
 
 $fields
-    = "`Attachment Bridge Key`,B.`Attachment Key`,`Attachment Subject Type`,`Attachment Caption`,`Attachment File Original Name`,`Attachment Public`,`Attachment MIME Type`,`Attachment Type`,`Attachment File Size`";
+    = "`Attachment Bridge Key`,B.`Attachment Key`,`Attachment Subject Type`,`Attachment Caption`,`Attachment File Original Name`,`Attachment Public`,`Attachment MIME Type`,`Attachment Type`,`Attachment File Size`,`Attachment Thumbnail Image Key`";
 
 
 ?>

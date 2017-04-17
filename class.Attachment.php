@@ -94,8 +94,11 @@ class Attachment extends DB_Table {
             $this->update_type();
             $this->create_thumbnail();
         } else {
-            $error = mysql_error();
-            if (preg_match('/max_allowed_packet/i', $error)) {
+
+
+
+            $error = $this->db->errorInfo();
+            if (preg_match('/max_allowed_packet/i', $error[2])) {
                 $this->msg
                     = "Got a packet bigger than 'max_allowed_packet' bytes ";
             } else {
@@ -132,6 +135,7 @@ class Attachment extends DB_Table {
 
     }
 
+
     function update_type() {
         $type = 'Other';
         if (preg_match('/^image/', $this->data['Attachment MIME Type'])) {
@@ -145,7 +149,7 @@ class Attachment extends DB_Table {
         } elseif (preg_match(
             '/(zip|rar)/', $this->data['Attachment MIME Type']
         )) {
-            $type = 'Compresed';
+            $type = 'Compressed';
         } elseif (preg_match('/(text)/', $this->data['Attachment MIME Type'])) {
             $type = 'Text';
         }
@@ -153,7 +157,7 @@ class Attachment extends DB_Table {
         $sql = sprintf(
             "UPDATE `Attachment Dimension` SET `Attachment Type`=%s WHERE `Attachment Key`=%d", prepare_mysql($type), $this->id
         );
-        mysql_query($sql);
+        $this->db->exec($sql);
         $this->data['Attachment Type'] = $type;
 
     }
@@ -210,18 +214,17 @@ class Attachment extends DB_Table {
                 "DELETE FROM `Image Bridge` WHERE `Subject Type`=%s AND `Subject Key`=%d", prepare_mysql('Attachment Thumbnail'), $this->id
 
             );
-            mysql_query($sql);
-
+           $this->db->exec($sql);
             $sql = sprintf(
                 "INSERT INTO `Image Bridge` (`Subject Type`,`Subject Key`,`Image Key`,`Is Principal`,`Caption`) VALUES (%s,%d,%d,'Yes','')", prepare_mysql('Attachment Thumbnail'), $this->id,
                 $image->id
             );
-            mysql_query($sql);
+            $this->db->exec($sql);
 
             $sql = sprintf(
                 "UPDATE `Attachment Dimension` SET `Attachment Thumbnail Image Key`=%d WHERE `Attachment Key`=%d", $image->id, $this->id
             );
-            mysql_query($sql);
+            $this->db->exec($sql);
             $this->data['Attachment Thumbnail Image Key'] = $image->id;
         } else {
 
@@ -249,13 +252,11 @@ class Attachment extends DB_Table {
 
         $this->found = false;
         $create      = '';
-        $update      = '';
+
         if (preg_match('/create/i', $options)) {
             $create = 'create';
         }
-        if (preg_match('/update/i', $options)) {
-            $update = 'update';
-        }
+
 
 
         if (isset($raw_data['file']) and $raw_data['file'] != '') {
@@ -291,11 +292,18 @@ class Attachment extends DB_Table {
             "SELECT `Attachment Key` FROM `Attachment Dimension` WHERE `Attachment File Checksum`=%s", prepare_mysql($data['Attachment File Checksum'])
         );
 
-        $res = mysql_query($sql);
-        if ($row = mysql_fetch_array($res)) {
-            $this->found     = true;
-            $this->found_key = $row['Attachment Key'];
+
+        if ($result=$this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $this->found     = true;
+                $this->found_key = $row['Attachment Key'];
+        	}
+        }else {
+        	print_r($error_info=$this->db->errorInfo());
+        	print "$sql\n";
+        	exit;
         }
+
 
         //what to do if found
         if ($this->found) {
@@ -394,7 +402,7 @@ class Attachment extends DB_Table {
             $sql = sprintf(
                 "DELETE FROM `Attachment Bridge` WHERE `Attachment Key`=%d", $this->id
             );
-            mysql_query($sql);
+
             $this->db->exec($sql);
         }
     }
@@ -522,7 +530,22 @@ class Attachment extends DB_Table {
                         $type = _('Curriculum vitae');
                         break;
                     case 'Other':
-                        $type = _('Curriculum vitae');
+                        $type = _('Other');
+                        break;
+                    case 'Invoice':
+                        $type = _('Invoice');
+                        break;
+                    case 'PurchaseOrder':
+                        $type = _('Purchase order');
+                        break;
+                    case 'Contact Card':
+                        $type = _('Contact card');
+                        break;
+                    case 'Catalogue':
+                        $type = _('Catalogue');
+                        break;
+                    case 'Image':
+                        $type = _('Image');
                         break;
                     case 'MSDS':
                         $type = _('Material Safety Data Sheet (MSDS)');
@@ -552,9 +575,9 @@ class Attachment extends DB_Table {
                             '<i title="%s" class="fa fa-fw fa-picture-o"></i> %s', $this->data['Attachment MIME Type'], _('Image')
                         );
                         break;
-                    case 'Compresed':
+                    case 'Compressed':
                         $file_type = sprintf(
-                            '<i title="%s" class="fa fa-fw fa-file-archive-o"></i> %s', $this->data['Attachment MIME Type'], _('Compresed')
+                            '<i title="%s" class="fa fa-fw fa-file-archive-o"></i> %s', $this->data['Attachment MIME Type'], _('Compressed')
                         );
                         break;
                     case 'Spreadsheet':

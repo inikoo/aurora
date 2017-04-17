@@ -44,6 +44,9 @@ switch ($tipo) {
 
 function attachments($_data, $db, $user) {
 
+
+
+
     include_once 'utils/natural_language.php';
 
     $rtext_label = 'attachment';
@@ -66,6 +69,9 @@ function attachments($_data, $db, $user) {
         }
 
 
+
+
+
         switch ($data['Attachment Subject Type']) {
             case 'Contract':
                 $type = _('Employment contract');
@@ -73,10 +79,39 @@ function attachments($_data, $db, $user) {
             case 'CV':
                 $type = _('Curriculum vitae');
                 break;
-            default:
+            case 'Other':
                 $type = _('Other');
                 break;
+            case 'Invoice':
+                $type = _('Invoice');
+                break;
+            case 'PurchaseOrder':
+                $type = _('Purchase order');
+                break;
+            case 'Contact Card':
+                $type = _('Contact card');
+                break;
+            case 'Catalogue':
+                $type = _('Catalogue');
+                break;
+            case 'Image':
+                $type = _('Image');
+                break;
+            case 'MSDS':
+                $type = _('Material Safety Data Sheet (MSDS)');
+                break;
+            default:
+                $type = $data['Attachment Subject Type'];
+                break;
         }
+
+
+
+
+
+
+
+
 
 
         switch ($data['Attachment Type']) {
@@ -91,9 +126,9 @@ function attachments($_data, $db, $user) {
                     '<i title="%s" class="fa fa-fw fa-picture-o"></i> %s', $data['Attachment MIME Type'], _('Image')
                 );
                 break;
-            case 'Compresed':
+            case 'Compressed':
                 $file_type = sprintf(
-                    '<i title="%s" class="fa fa-fw fa-file-archive-o"></i> %s', $data['Attachment MIME Type'], _('Compresed')
+                    '<i title="%s" class="fa fa-fw fa-file-archive-o"></i> %s', $data['Attachment MIME Type'], _('Compressed')
                 );
                 break;
             case 'Spreadsheet':
@@ -125,9 +160,16 @@ function attachments($_data, $db, $user) {
             'visibility' => $visibility,
             'type'       => $type,
             'file_type'  => $file_type,
+            'preview'       => sprintf(
+                '<div class="tint"><img style="max-width:100px;height-width:50px" src="/image_root.php?id=%d&size=small" title="%s" /></div>', $data['Attachment Thumbnail Image Key'], $data['Attachment File Original Name']
+            ),
             'file'       => sprintf(
                 '<a href="/attachment.php?id=%d" download><i class="fa fa-download"></i></a>  <a href="/attachment.php?id=%d" >%s</a>', $data['Attachment Bridge Key'], $data['Attachment Bridge Key'],
                 $data['Attachment File Original Name']
+            ),
+
+            'download'       => sprintf(
+                '<a href="/attachment.php?id=%d" download title="%s"><i class="fa fa-download"></i></a>', $data['Attachment Bridge Key'], $data['Attachment File Original Name']
             ),
         );
 
