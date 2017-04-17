@@ -5250,16 +5250,16 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 case 'website.user':
 
                     if ($state['parent'] == 'website') {
-                        $website = new Site($state['parent_key']);
+                        $website = new Website($state['parent_key']);
                     } elseif ($state['parent'] == 'page') {
                         $page = new Page($state['parent_key']);
 
-                        $website = new Site($page->get('Page Site Key'));
+                        $website = new Website($page->get('Webpage Website Key'));
 
                     }
 
                     $branch[] = array(
-                        'label'     => _('Website').' '.$website->data['Site Code'],
+                        'label'     => _('Website').' '.$website->get('Code'),
                         'icon'      => 'globe',
                         'reference' => 'website/'.$website->id
                     );
@@ -5267,7 +5267,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     if ($state['parent'] == 'page') {
 
                         $branch[] = array(
-                            'label'     => _('Page').' '.$page->data['Page Code'],
+                            'label'     => _('Page').' '.$page->get('Code'),
                             'icon'      => 'file',
                             'reference' => 'website/'.$website->id.'/page/'.$page->id
                         );

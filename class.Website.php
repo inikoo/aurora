@@ -752,9 +752,6 @@ class Website extends DB_Table {
     function create_category_webpage($category_key) {
 
         include_once 'class.Webpage_Type.php';
-        include_once 'class.Site.php';
-
-        $site = new Site($this->id);
 
 
         $sql = sprintf(
@@ -771,6 +768,22 @@ class Website extends DB_Table {
             print "$sql\n";
             exit;
         }
+
+
+        //-- to delete
+
+        $sql=sprintf('select `Site Default Header Key`,`Site Default Footer Key` from `Site Dimension` where `Site Key`=%d',$this->id);
+        if ($result=$this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $header_key=$row['Site Default Header Key'];
+                $footer_key=$row['Site Default Footer Key'];
+            }
+        }else {
+            print_r($error_info=$this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+        //
 
         include_once 'class.Category.php';
         $category = new Category($category_key);
@@ -814,8 +827,8 @@ class Website extends DB_Table {
             'Page Title'                             => $category->get('Label'),
             'Page Short Title'                       => $category->get('Label'),
             'Page Store Title'                       => $category->get('Label'),
-            'Page Header Key'                        => $site->data['Site Default Header Key'],
-            'Page Footer Key'                        => $site->data['Site Default Footer Key'],
+            'Page Header Key'                        => $header_key,
+            'Page Footer Key'                        => $footer_key
             //-------------------
 
         );
@@ -1040,8 +1053,8 @@ class Website extends DB_Table {
         include_once 'class.Page.php';
 
 
-        include_once 'class.Site.php';
-        $site = new Site($this->id);
+        //include_once 'class.Site.php';
+       // $site = new Site($this->id);
 
 
         $sql = sprintf(
@@ -1064,6 +1077,23 @@ class Website extends DB_Table {
         $product = new Product($product_id);
 
         $page_code = $this->get_unique_code($product->get('Code'), 'Webpage');
+
+
+
+        //-- to delete
+
+        $sql=sprintf('select `Site Default Header Key`,`Site Default Footer Key` from `Site Dimension` where `Site Key`=%d',$this->id);
+        if ($result=$this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $header_key=$row['Site Default Header Key'];
+                $footer_key=$row['Site Default Footer Key'];
+        	}
+        }else {
+        	print_r($error_info=$this->db->errorInfo());
+        	print "$sql\n";
+        	exit;
+        }
+        //
 
 
         $webpage_type = new Webpage_Type('website_code', $this->id, 'Prod');
@@ -1103,8 +1133,8 @@ class Website extends DB_Table {
             'Page Title'                             => $product->get('Name'),
             'Page Short Title'                       => $product->get('Name'),
             'Page Store Title'                       => $product->get('Name'),
-            'Page Header Key'                        => $site->data['Site Default Header Key'],
-            'Page Footer Key'                        => $site->data['Site Default Footer Key'],
+            'Page Header Key'                        => $header_key,
+            'Page Footer Key'                        => $footer_key
             //-------------------
 
         );

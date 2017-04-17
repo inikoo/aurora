@@ -187,19 +187,27 @@ class Auth {
             "INSERT INTO `User Log Dimension` (`User Key`,`Session ID`, `IP`, `Start Date`,`Last Visit Date`, `Logout Date`,`Remember Cookie`,`Site Key`) VALUES (%d, %s, %s, %s,%s, %s,%s,%d)",
             $this->user_key, prepare_mysql(session_id()), prepare_mysql($ip), prepare_mysql($date), prepare_mysql($date), 'NULL', prepare_mysql(($this->remember ? 'Yes' : 'No')), $this->site_key
         );
-        //print $sql;
-        mysql_query($sql);
 
-        $this->user_log_key = mysql_insert_id();
 
-        $sql        = sprintf(
-            "SELECT count(*) AS num FROM `User Log Dimension` WHERE `User Key`=%d", $this->user_key
-        );
-        $res        = mysql_query($sql);
+        $this->db->exec($sql);
+
+        $this->user_log_key = $this->db->lastInsertId();
+
+        $sql = sprintf("SELECT count(*) AS num FROM `User Log Dimension` WHERE `User Key`=%d", $this->user_key);
+
         $num_logins = 0;
-        if ($row = mysql_fetch_assoc($res)) {
-            $num_logins = $row['num'];
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $num_logins = $row['num'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
+
+
         if ($num_logins > 0) {
             $this->data['User Has Login'] = 'Yes';
         } else {
@@ -209,7 +217,7 @@ class Auth {
             "UPDATE `User Dimension` SET `User Has Login`=%d , `User Login Count`=%d, `User Last Login IP`=%s,`User Last Login`=%s WHERE `User Key`=%d", prepare_mysql($this->data['User Has Login']),
             $num_logins, prepare_mysql($ip), prepare_mysql($date), $this->user_key
         );
-        mysql_query($sql);
+        $this->db->exec($sql);
 
         //print $sql;
         // if ($this->log_page=='customer' or $this->log_page=='masterkey') {
@@ -263,31 +271,40 @@ class Auth {
             prepare_mysql($this->pass['time']), prepare_mysql($this->pass['ip']), prepare_mysql($this->pass['ikey'])
 
         );
-        //print $sql;
-        mysql_query($sql);
+
+
+        $this->db->exec($sql);
+
         if ($this->pass['handle_key']) {
 
-            $sql               = sprintf(
+            $sql = sprintf(
                 "SELECT count(*) AS num FROM `User Failed Log Dimension` WHERE `User Key`=%d", $this->pass['handle_key']
             );
-            $res               = mysql_query($sql);
+
             $num_failed_logins = 0;
-            if ($row = mysql_fetch_assoc($res)) {
-                $num_failed_logins = $row['num'];
+
+            if ($result = $this->db->query($sql)) {
+                if ($row = $result->fetch()) {
+                    $num_failed_logins = $row['num'];
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
             }
+
+
             $sql = sprintf(
                 "UPDATE `User Dimension` SET `User Failed Login Count`=%d, `User Last Failed Login IP`=%s,`User Last Failed Login`=%s WHERE `User Key`=%d", $num_failed_logins, prepare_mysql($ip),
                 prepare_mysql($date), $this->pass['handle_key']
             );
-            mysql_query($sql);
+            $this->db->exec($sql);
 
             if ($this->log_page == 'customer') {
 
                 if (!array_key_exists('user_parent_key', $this->pass)) {
 
-                    $_user                         = new User(
-                        $this->pass['handle_key']
-                    );
+                    $_user                         = new User($this->pass['handle_key']);
                     $this->pass['user_parent_key'] = $_user->data['User Parent Key'];
                 }
 
@@ -297,9 +314,7 @@ class Auth {
                         $formatted_reason = _('wrong password');
                         break;
                     case('masterkey_used'):
-                        $formatted_reason = _(
-                            'reset password link already used'
-                        );
+                        $formatted_reason = _('reset password link already used');
                         break;
                     case('masterkey_expired'):
                         $formatted_reason = _('reset password link expired');
@@ -357,49 +372,55 @@ class Auth {
         $sql = sprintf(
             "SELECT `User Key`,`User Password`,`User Parent Key` FROM `User Dimension` WHERE `User Handle`=%s AND `User Active`='Yes' %s  ", prepare_mysql($this->handle), $this->where_user_type
         );
-        //print $sql;
-        $res = mysql_query($sql);
-        if ($row = mysql_fetch_array($res)) {
-            $this->pass['handle']        = 'Yes';
-            $this->pass['handle_in_use'] = 'Yes';
 
-            $st = AESDecryptCtr(
-                AESDecryptCtr($this->sk, $row['User Password'], 256), $this->skey, 256
-            );
-            //echo $st;
-            $this->pass['handle_key'] = $row['User Key'];
-            if (preg_match('/^skstart\|\d+\|[abcdef0-9\.\:]+\|.+\|/', $st)) {
-                $this->pass['password'] = 'Yes';
-                $data                   = preg_split('/\|/', $st);
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $this->pass['handle']        = 'Yes';
+                $this->pass['handle_in_use'] = 'Yes';
 
-                //print_r($data);
-                $time = $data[1];
-                $ip   = $data[2];
-                $ikey = $data[3];
+                $st = AESDecryptCtr(
+                    AESDecryptCtr($this->sk, $row['User Password'], 256), $this->skey, 256
+                );
+                //echo $st;
+                $this->pass['handle_key'] = $row['User Key'];
+                if (preg_match('/^skstart\|\d+\|[abcdef0-9\.\:]+\|.+\|/', $st)) {
+                    $this->pass['password'] = 'Yes';
+                    $data                   = preg_split('/\|/', $st);
 
-                if (isset($_COOKIE['user_handle'])) {
-                    $time = time(gmdate('U')) + 100;
+                    //print_r($data);
+                    $time = $data[1];
+                    $ip   = $data[2];
+                    $ikey = $data[3];
 
-                }
+                    if (isset($_COOKIE['user_handle'])) {
+                        $time = time(gmdate('U')) + 100;
 
-                $pass_tests = true;
+                    }
+
+                    $pass_tests = true;
 
 
-                if ($this->ikey != $ikey) {
-                    $pass_tests                = false;
-                    $this->pass['main_reason'] = 'cookie_error';
-                    $this->pass['ikey']        = 'No';
+                    if ($this->ikey != $ikey) {
+                        $pass_tests                = false;
+                        $this->pass['main_reason'] = 'cookie_error';
+                        $this->pass['ikey']        = 'No';
+
+                    } else {
+                        $this->pass['ikey'] = 'Yes';
+                    }
 
                 } else {
-                    $this->pass['ikey'] = 'Yes';
+                    $pass_tests                = false;
+                    $this->pass['password']    = 'No';
+                    $this->pass['main_reason'] = 'cookie_error';
                 }
-
-            } else {
-                $pass_tests                = false;
-                $this->pass['password']    = 'No';
-                $this->pass['main_reason'] = 'cookie_error';
             }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
+
 
         if ($pass_tests) {
 
@@ -421,27 +442,27 @@ class Auth {
         $sql = sprintf(
             "SELECT `User Log Key` FROM `User Log Dimension`  WHERE `Logout Date` IS NULL  AND `User Key`=%d ", $this->user_key
         );
-        // print $sql;
-        $res = mysql_query($sql);
-        if ($row = mysql_fetch_assoc($res)) {
 
 
-            $ip   = ip();
-            $date = gmdate('Y-m-d H:i:s');
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
 
+                $ip                 = ip();
+                $date               = gmdate('Y-m-d H:i:s');
+                $this->user_log_key = $row['User Log Key'];
 
-            $this->user_log_key = $row['User Log Key'];
+                $sql = sprintf("UPDATE `User Dimension` SET `User Last Login IP`=%s,`User Last Login`=%s WHERE `User Key`=%d", prepare_mysql($ip), prepare_mysql($date), $this->user_key);
+                $this->db->exec($sql);
 
-
-            $sql = sprintf(
-                "UPDATE `User Dimension` SET `User Last Login IP`=%s,`User Last Login`=%s WHERE `User Key`=%d", prepare_mysql($ip), prepare_mysql($date), $this->user_key
-            );
-            mysql_query($sql);
-
-
+            } else {
+                $this->create_user_log();
+            }
         } else {
-            $this->create_user_log();
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
+
 
     }
 
@@ -490,31 +511,26 @@ class Auth {
         }
 
 
-        $res = mysql_query($sql);
-        if ($row = mysql_fetch_array($res)) {
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $this->status          = true;
+                $this->user_key        = $row['User Key'];
+                $this->user_handle     = $row['User Handle'];
+                $this->user_parent_key = $row['User Parent Key'];
+                //$this->create_user_log();
+                //todo  $this->create_inikoo_log <-- to log this shit!!!!
 
 
-            $this->status          = true;
-            $this->user_key        = $row['User Key'];
-            $this->user_handle     = $row['User Handle'];
-            $this->user_parent_key = $row['User Parent Key'];
-            //$this->create_user_log();
-            //todo  $this->create_inikoo_log <-- to log this shit!!!!
+                $sql = sprintf("DELETE FROM  `MasterKey Internal Dimension` WHERE `MasterKey Internal Key`=%d   ", $row['MasterKey Internal Key']);
+                $this->db->exec($sql);
+            } else {
+                // $this->log_failed_login();
 
-
-            $sql = sprintf(
-                "DELETE FROM  `MasterKey Internal Dimension` WHERE `MasterKey Internal Key`=%d   ", $row['MasterKey Internal Key']
-            );
-            mysql_query($sql);
-            //print $sql;
-            // exit;
-
+            }
         } else {
-
-
-            // $this->log_failed_login();
-
-
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
 
 
@@ -538,78 +554,68 @@ class Auth {
         //'cookie_error','handle','password','logging_timeout','ip','ikey','masterkey_not_found','masterkey_used','masterkey_expired'
 
         $this->authentication_type = 'masterkey';
-        $sql                       = sprintf(
-            "SELECT `User Key`,`Valid Until`,`MasterKey Key`,`Used`,`Fails Already Used`,`Fails Expired`  FROM `MasterKey Dimension` M  WHERE `Key`=%s  ", prepare_mysql($data)
-
-
-        );
+        $sql                       =
+            sprintf("SELECT `User Key`,`Valid Until`,`MasterKey Key`,`Used`,`Fails Already Used`,`Fails Expired`  FROM `MasterKey Dimension` M  WHERE `Key`=%s  ", prepare_mysql($data));
 
         //  if ($same_ip) {$sql.=sprintf(" and `IP`=%s",prepare_mysql(ip()));}
 
 
-        $res = mysql_query($sql);
-        if ($row = mysql_fetch_array($res)) {
-            $user                          = new User($row['User Key']);
-            $this->handle                  = $user->data['User Handle'];
-            $this->pass['handle_key']      = $user->id;
-            $this->pass['user_parent_key'] = $user->data['User Parent Key'];
-            if ($row['Used'] == 'No') {
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $user                          = new User($row['User Key']);
+                $this->handle                  = $user->data['User Handle'];
+                $this->pass['handle_key']      = $user->id;
+                $this->pass['user_parent_key'] = $user->data['User Parent Key'];
+                if ($row['Used'] == 'No') {
 
 
-                if (gmdate('U') < date(
-                        'U', strtotime($row['Valid Until'].' +00:00')
-                    )
-                ) {
+                    if (gmdate('U') < date('U', strtotime($row['Valid Until'].' +00:00'))) {
 
-                    $sql = sprintf(
-                        "UPDATE `MasterKey Dimension` SET `Used`='Yes' ,`Date Used`=%s WHERE  `MasterKey Key`=%d", prepare_mysql(gmdate('Y-m-d H:i:s')), $row['MasterKey Key']
-                    );
-                    mysql_query($sql);
+                        $sql = sprintf("UPDATE `MasterKey Dimension` SET `Used`='Yes' ,`Date Used`=%s WHERE  `MasterKey Key`=%d", prepare_mysql(gmdate('Y-m-d H:i:s')), $row['MasterKey Key']);
 
-                    if ($user->id) {
-                        $pass_tests            = true;
-                        $this->status          = true;
-                        $this->user_key        = $user->id;
-                        $this->user_handle     = $user->data['User Handle'];
-                        $this->user_parent_key = $user->data['User Parent Key'];
-                        $this->create_user_log();
+
+                        $this->db->exec($sql);
+
+                        if ($user->id) {
+                            $pass_tests            = true;
+                            $this->status          = true;
+                            $this->user_key        = $user->id;
+                            $this->user_handle     = $user->data['User Handle'];
+                            $this->user_parent_key = $user->data['User Parent Key'];
+                            $this->create_user_log();
+                        } else {
+                            $this->pass['main_reason'] = 'handle';
+                        }
                     } else {
-                        $this->pass['main_reason'] = 'handle';
+                        $sql = sprintf("UPDATE `MasterKey Dimension` SET `Fails Expired`=%d WHERE  `MasterKey Key`=%d", $row['Fails Expired'] + 1, $row['MasterKey Key']);
+                        $this->db->exec($sql);
+                        $this->pass['main_reason'] = 'masterkey_expired';
+                        $this->pass['time']        = 'No';
+                        $this->pass['password']    = 'Yes';
+                        $this->pass['handle']      = 'Yes';
+                        $this->pass['ikey']        = 'Yes';
+
                     }
                 } else {
-                    $sql = sprintf(
-                        "UPDATE `MasterKey Dimension` SET `Fails Expired`=%d WHERE  `MasterKey Key`=%d", $row['Fails Expired'] + 1, $row['MasterKey Key']
-                    );
-                    mysql_query($sql);
-                    $this->pass['main_reason'] = 'masterkey_expired';
-                    $this->pass['time']        = 'No';
-                    $this->pass['password']    = 'Yes';
-                    $this->pass['handle']      = 'Yes';
-                    $this->pass['ikey']        = 'Yes';
+
+                    $this->pass['password'] = 'Yes';
+                    $this->pass['handle']   = 'Yes';
+                    $this->pass['ikey']     = 'Yes';
+
+                    $sql = sprintf("UPDATE `MasterKey Dimension` SET `Fails Already Used`=%d WHERE  `MasterKey Key`=%d", $row['Fails Already Used'] + 1, $row['MasterKey Key']);
+                    $this->db->exec($sql);
+                    $this->pass['main_reason'] = 'masterkey_used';
+
 
                 }
+
             } else {
-
-                $this->pass['password'] = 'Yes';
-                $this->pass['handle']   = 'Yes';
-                $this->pass['ikey']     = 'Yes';
-
-                $sql = sprintf(
-                    "UPDATE `MasterKey Dimension` SET `Fails Already Used`=%d WHERE  `MasterKey Key`=%d", $row['Fails Already Used'] + 1, $row['MasterKey Key']
-                );
-                mysql_query($sql);
-                $this->pass['main_reason'] = 'masterkey_used';
-
-
+                // $this->log_failed_login();
             }
-
-
         } else {
-
-
-            // $this->log_failed_login();
-
-
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
 
 

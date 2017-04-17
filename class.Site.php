@@ -13,7 +13,6 @@
 */
 include_once 'class.DB_Table.php';
 include_once 'class.Page.php';
-include_once 'class.PageStoreSection.php';
 
 class Site extends DB_Table {
 
@@ -1042,11 +1041,6 @@ class Site extends DB_Table {
         return $suffix;
     }
 
-    function get_page_section_object($code) {
-        $page_section = new PageStoreSection('code', $code, $this->id);
-
-        return $page_section;
-    }
 
     function get_welcome_template() {
         return $this->data['Site Welcome Source'];
@@ -2201,117 +2195,8 @@ $sql = 'SELECT word FROM words_list
     }
 
 
-    function update_page_flags_numbers() {
 
 
-        $sql = sprintf(
-            "SELECT * FROM  `Site Flag Dimension` WHERE `Site Key`=%d  ", $this->id
-        );
-        $res = mysql_query($sql);
-        while ($row = mysql_fetch_assoc($res)) {
-
-            $this->update_page_flag_number($row['Site Flag Key']);
-
-        }
-    }
-
-
-    function update_page_flag_number($flag_key) {
-        $num = 0;
-        $sql = sprintf(
-            "SELECT count(*) AS num  FROM  `Page Store Dimension` WHERE `Site Flag Key`=%d ", $flag_key
-        );
-        $res = mysql_query($sql);
-        if ($row = mysql_fetch_assoc($res)) {
-            $num = $row['num'];
-
-        }
-
-        $sql = sprintf(
-            "UPDATE  `Site Flag Dimension`  SET `Site Flag Number Pages`=%d WHERE `Site Flag Key`=%d ", $num, $flag_key
-        );
-        mysql_query($sql);
-
-
-    }
-
-    function update_flag($flag_key, $field, $value) {
-
-        if (in_array(
-            $field, array(
-            'Site Flag Label',
-            'Site Flag Active'
-        )
-        )) {
-
-
-            $sql = sprintf(
-                "SELECT * FROM  `Site Flag Dimension` WHERE  `Site Flag Key`=%d AND `Site Key`=%d", $flag_key, $this->id
-            );
-            $res = mysql_query($sql);
-            if ($row = mysql_fetch_assoc($res)) {
-
-                $default_flag_key = $this->get_default_flag_key();
-                if ($default_flag_key == $value and $field == 'Site Flag Active' and $value == 'No') {
-                    $this->error = true;
-                    $this->msg   = 'can not disable default flag';
-                }
-
-
-                $sql = sprintf(
-                    "UPDATE  `Site Flag Dimension`  SET `%s`=%s WHERE `Site Flag Key`=%d ", $field, prepare_mysql($value), $flag_key
-
-                );
-                mysql_query($sql);
-
-
-                if ($field == 'Site Flag Active' and $value == 'No') {
-                    $sql = sprintf(
-                        "SELECT `Page Key` FROM `Page Store Dimension` WHERE `Page Site Key`=%d AND `Site Flag Key`=%d", $this->id, $row['Site Flag Key']
-
-                    );
-                    //print $sql;
-                    $res2 = mysql_query($sql);
-                    while ($row2 = mysql_fetch_assoc($res2)) {
-                        $page = new Page($row2['Page Key']);
-                        $page->update_site_flag_key($default_flag_key);
-                    }
-
-                }
-
-
-                $this->updated   = true;
-                $this->new_value = $value;
-
-
-            } else {
-                $this->error = true;
-                $this->msg   = 'unknown flag';
-            }
-
-
-        } else {
-            $this->error = true;
-            $this->msg   = 'unknown field';
-        }
-
-    }
-
-    function get_default_flag_key() {
-        $flag_key = 0;
-        $sql      = sprintf(
-            "SELECT `Site Flag Key` FROM  `Site Flag Dimension` WHERE `Site Flag Color`=%s AND `Site Key`=%d", prepare_mysql($this->data['Site Default Flag Color']), $this->id
-        );
-
-
-        $result = mysql_query($sql);
-        if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $flag_key = $row['Site Flag Key'];
-        }
-
-        return $flag_key;
-
-    }
 
     function get_payment_options_data() {
 

@@ -32,16 +32,23 @@ $db = new PDO(
 );
 $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
-$con = @mysql_connect($dns_host, $dns_user, $dns_pwd);
 
-if (!$con) {
-    print "Error can not connect with database server\n";
-    exit;
-}
-$db2 = @mysql_select_db($dns_db, $con);
-if (!$db2) {
-    print "Error can not access the database\n";
-    exit;
+if(function_exists('mysql_connect')) {
+
+
+    $con = @mysql_connect($dns_host, $dns_user, $dns_pwd);
+
+    if (!$con) {
+        print "Error can not connect with database server\n";
+        exit;
+    }
+    $db2 = @mysql_select_db($dns_db, $con);
+    if (!$db2) {
+        print "Error can not access the database\n";
+        exit;
+    }
+    mysql_set_charset('utf8');
+
 }
 
 include_once 'utils/i18n.php';
@@ -50,7 +57,6 @@ require_once 'utils/detect_agent.php';
 require_once "utils/aes.php";
 
 
-mysql_set_charset('utf8');
 setlocale(LC_MONETARY, 'en_GB.UTF-8');
 
 

@@ -1239,14 +1239,21 @@ class Part extends Asset {
         $sql = sprintf(
             "SELECT sum(`Quantity On Hand`) AS stock , sum(`Quantity In Process`) AS in_process , sum(`Stock Value`) AS value FROM `Part Location Dimension` WHERE `Part SKU`=%d ", $this->id
         );
-        $res = mysql_query($sql);
-        //print $sql;
-        if ($row = mysql_fetch_array($res)) {
-            $stock      = round($row['stock'], 3);
-            $in_process = round($row['in_process'], 3);
-            $value      = $row['value'];
 
+
+        if ($result=$this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $stock      = round($row['stock'], 3);
+                $in_process = round($row['in_process'], 3);
+                $value      = $row['value'];
+        	}
+        }else {
+        	print_r($error_info=$this->db->errorInfo());
+        	print "$sql\n";
+        	exit;
         }
+
+
 
 
         return array(
@@ -1344,17 +1351,23 @@ class Part extends Asset {
 
         // -------------- simple forecast -------------------------
 
-        $sql = sprintf(
-            "SELECT `Date` FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d AND `Inventory Transaction Type` LIKE 'Associate' ORDER BY `Date` DESC", $this->id
-        );
-        $res = mysql_query($sql);
+        $sql = sprintf("SELECT `Date` FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d AND `Inventory Transaction Type` LIKE 'Associate' ORDER BY `Date` DESC", $this->id);
 
-        if ($row = mysql_fetch_array($res)) {
-            $date     = $row['Date'];
-            $interval = (date('U') - strtotime($date)) / 3600 / 24;
-        } else {
-            $interval = 0;
+
+        if ($result=$this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $date     = $row['Date'];
+                $interval = (date('U') - strtotime($date)) / 3600 / 24;
+        	}else{
+                $interval = 0;
+            }
+        }else {
+        	print_r($error_info=$this->db->errorInfo());
+        	print "$sql\n";
+        	exit;
         }
+
+
 
         if ($this->data['Part Current Stock'] == '' or $this->data['Part Current Stock'] < 0) {
             $this->data['Part Days Available Forecast']      = 0;
@@ -1413,66 +1426,16 @@ class Part extends Asset {
             }
 
 
-            /*
-
-
-			if ($this->data['Part 1 Year Acc Required']>0) {
-				if ($interval>(365)) {
-					$interval=365;
-				}
-
-
-      //  print $interval;
-
-				$this->data['Part Days Available Forecast']=$interval*$this->data['Part Current Stock']/$this->data['Part 1 Year Acc Required'];
-				$this->data['Part XHTML Available For Forecast']=number($this->data['Part Days Available Forecast'], 0).' '._('d');
-
-
-			}
-			elseif ($this->data['Part 1 Quarter Acc Required']>0) {
-
-
-
-				// print $this->data['Part 1 Quarter Acc Required']."xxxx\n";
-				if ($interval>(365/4)) {
-					$interval=365/4;
-				}
-				//print $this->data['Part 1 Quarter Acc Required']/$interval;
-
-
-				$this->data['Part Days Available Forecast']=$interval*$this->data['Part Current Stock']/$this->data['Part 1 Quarter Acc Required'];
-				$this->data['Part XHTML Available For Forecast']=number($this->data['Part Days Available Forecast'], 0).' '._('d');
-			}
-			else {
-
-				$from_since=(date('U')-strtotime($this->data['Part Valid From'])/86400);
-				if ($from_since<($this->data['Part Excess Availability Days Limit']/2)) {
-					$forecast=$this->data['Part Excess Availability Days Limit']-1;
-				}else {
-					$forecast=$this->data['Part Excess Availability Days Limit']+$from_since;
-				}
-
-
-
-				$this->data['Part Days Available Forecast']=$forecast;
-				$this->data['Part XHTML Available For Forecast']=number($this->data['Part Days Available Forecast'], 0).' '._('d');
-
-
-
-
-			}
-
-*/
-
-
         }
 
-        $sql = sprintf(
-            "UPDATE `Part Dimension` SET `Part Days Available Forecast`=%s,`Part XHTML Available for Forecast`=%s WHERE `Part SKU`=%d", $this->data['Part Days Available Forecast'],
-            prepare_mysql($this->data['Part XHTML Available For Forecast']), $this->id
-        );
-        //print $sql;
-        mysql_query($sql);
+
+        $this->update(array(
+            'Part Days Available Forecast'=> $this->data['Part Days Available Forecast'],
+            'Part XHTML Available for Forecast'=> $this->data['Part XHTML Available For Forecast']
+                      ),'no_history');
+
+
+
 
     }
 
@@ -2470,15 +2433,21 @@ class Part extends Asset {
                 $this->sku, $this->warehouse_key
             );
 
-
-            $res = mysql_query($sql);
-            if ($row = mysql_fetch_assoc($res)) {
-                $last_record_key  = $row['Part Availability for Products Key'];
-                $last_record_date = $row['date'];
-            } else {
-                $last_record_key  = false;
-                $last_record_date = false;
+            if ($result=$this->db->query($sql)) {
+                if ($row = $result->fetch()) {
+                    $last_record_key  = $row['Part Availability for Products Key'];
+                    $last_record_date = $row['date'];
+            	}else {
+                    $last_record_key  = false;
+                    $last_record_date = false;
+                }
+            }else {
+            	print_r($error_info=$this->db->errorInfo());
+            	print "$sql\n";
+            	exit;
             }
+
+
 
             $new_date_formatted = gmdate('Y-m-d H:i:s');
             $new_date           = gmdate('U');
@@ -2734,49 +2703,7 @@ class Part extends Asset {
         return $unit;
     }
 
-    function get_current_stock_old() {
-        $stock      = 0;
-        $value      = 0;
-        $in_process = 0;
 
-        /*
-
-			$sql=sprintf("select sum(`Quantity On Hand`) as stock , sum(`Quantity In Process`) as in_process , sum(`Stock Value`) as value from `Part Location Dimension` where `Part SKU`=%d ",$this->id);
-			$res=mysql_query($sql);
-			//print $sql;
-			if ($row=mysql_fetch_array($res)) {
-				$stock=round($row['stock'],3);
-				$in_process=round($row['in_process'],3);
-				$value=$row['value'];
-
-			}
-*/
-
-        $sql = sprintf(
-            "SELECT sum(`Inventory Transaction Quantity`) AS stock , sum(`Inventory Transaction Amount`) AS value
-																																																								FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d ",
-            $this->sku
-        );
-
-        $res = mysql_query($sql);
-        if ($row = mysql_fetch_assoc($res)) {
-
-            $stock = ceil($row['stock'] * 10000) / 10000; // 6.26
-            if ($stock == -0) {
-                $stock = 0;
-            }
-            //$stock=round($row['stock'], 4);
-            $value = $row['value'];
-        }
-
-
-        return array(
-            $stock,
-            $value,
-            $in_process
-        );
-
-    }
 
     function get_stock($date) {
         $stock = 0;
@@ -2785,12 +2712,20 @@ class Part extends Asset {
             "SELECT ifnull(sum(`Quantity On Hand`), 0) AS stock, ifnull(sum(`Value At Cost`), 0) AS value FROM `Inventory Spanshot Fact` WHERE `Part SKU`=%d AND `Date`=%s", $this->id,
             prepare_mysql($date)
         );
-        $res   = mysql_query($sql);
 
-        if ($row = mysql_fetch_array($res)) {
-            $stock = $row['stock'];
-            $value = $row['value'];
+
+        if ($result=$this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $stock = $row['stock'];
+                $value = $row['value'];
+        	}
+        }else {
+        	print_r($error_info=$this->db->errorInfo());
+        	print "$sql\n";
+        	exit;
         }
+
+
 
         return array(
             $stock,
@@ -2833,48 +2768,6 @@ class Part extends Asset {
         }
     }
 
-    function update_last_date_from_transactions($type) {
-
-        if ($type == 'Sale') {
-            $field = 'Part Last Sale Date';
-        } elseif ($type == 'In') {
-            $field = 'Part Last Booked In Date';
-        } else {
-            print "$type\n";
-
-            return false;
-        }
-        $date = '';
-        $sql  = sprintf(
-            "SELECT `Date` FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d AND `Inventory Transaction Type`=%s ORDER BY `Date` DESC LIMIT 1", $this->id, prepare_mysql($type)
-        );
-        $res  = mysql_query($sql);
-        if ($row = mysql_fetch_assoc($res)) {
-            $date = $row['Date'];
-        }
-        $sql = sprintf(
-            "UPDATE `Part Dimension`  SET `%s`=%s WHERE  `Part SKU`=%d", $field, prepare_mysql($date), $this->id
-        );
-
-        $this->db->exec($sql);
-        $this->data[$field] = $date;
-    }
-
-    function update_last_sale_date() {
-        $date = '';
-        $sql  = sprintf(
-            "SELECT `Date` FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d AND `Inventory Transaction Type` LIKE 'Sale' ORDER BY `Date` DESC LIMIT 1", $this->id
-        );
-        $res  = mysql_query($sql);
-        if ($row = mysql_fetch_assoc($res)) {
-            $date = $row['Date'];
-        }
-        $sql = sprintf(
-            "UPDATE `Part Dimension`  SET `Part Last Sale Date`=%s WHERE  `Part SKU`=%d", prepare_mysql($date), $this->id
-        );
-        $this->db->exec($sql);
-        $this->data['Part Last Sale Date'] = $date;
-    }
 
     function get_barcode_data() {
 
@@ -3026,23 +2919,31 @@ class Part extends Asset {
         $sql            = sprintf(
             "SELECT `Inventory Transaction Quantity` ,`Inventory Transaction Key`,`Location Key` FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d ORDER BY `Date`,`Event Order`", $this->sku
         );
-        $result         = mysql_query($sql);
-        while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
 
-            if (array_key_exists($row['Location Key'], $locations_data)) {
-                $locations_data[$row['Location Key']] += $row['Inventory Transaction Quantity'];
-            } else {
-                $locations_data[$row['Location Key']] = $row['Inventory Transaction Quantity'];
-            }
 
-            $stock += $row['Inventory Transaction Quantity'];
-            $sql   = sprintf(
-                "UPDATE `Inventory Transaction Fact` SET `Part Stock`=%f,`Part Location Stock`=%f WHERE `Inventory Transaction Key`=%d", $stock, $locations_data[$row['Location Key']],
-                $row['Inventory Transaction Key']
-            );
-            mysql_query($sql);
-            //print "$sql\n";
+        if ($result=$this->db->query($sql)) {
+        		foreach ($result as $row) {
+                    if (array_key_exists($row['Location Key'], $locations_data)) {
+                        $locations_data[$row['Location Key']] += $row['Inventory Transaction Quantity'];
+                    } else {
+                        $locations_data[$row['Location Key']] = $row['Inventory Transaction Quantity'];
+                    }
+
+                    $stock += $row['Inventory Transaction Quantity'];
+                    $sql   = sprintf(
+                        "UPDATE `Inventory Transaction Fact` SET `Part Stock`=%f,`Part Location Stock`=%f WHERE `Inventory Transaction Key`=%d", $stock, $locations_data[$row['Location Key']],
+                        $row['Inventory Transaction Key']
+                    );
+                    $this->db->exec($sql);
+        		}
+        }else {
+        		print_r($error_info=$this->db->errorInfo());
+        		print "$sql\n";
+        		exit;
         }
+
+
+
 
 
     }
@@ -3274,136 +3175,7 @@ class Part extends Asset {
 
     }
 
-    function update_days_until_out_of_stock() {
-        $this->get_days_until_out_of_stock();
-    }
 
-    function get_days_until_out_of_stock() {
-
-        if ($this->data['Part Current Stock'] == 0) {
-            $days           = 0;
-            $days_formatted = '0';
-
-            return array(
-                $days,
-                $days_formatted
-            );
-        }
-
-
-        $sql = sprintf(
-            "SELECT `Date` FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d AND `Inventory Transaction Type` LIKE 'Associate' ORDER BY `Date` DESC", $this->id
-        );
-        $res = mysql_query($sql);
-
-        if ($row = mysql_fetch_array($res)) {
-            $date     = $row['Date'];
-            $interval = (date('U') - strtotime($date)) / 3600 / 24;
-            if ($interval < 21) {
-                $qty = $this->data['Part Total Acc Provided'] + $this->data['Part Total Acc Lost'];
-                if ($interval != 0) {
-                    $qty_per_day = $qty / $interval;
-
-                    if ($qty == 0) {
-                        $days = 0;
-                    } else {
-                        $days = $this->data['Part Current Stock'] / $qty_per_day;
-                    }
-
-                } else {
-                    $days = 100;
-
-                }
-
-                $days_formatted = $days.' '._('days');
-
-
-                return array(
-                    $days,
-                    $days_formatted
-                );
-
-            }
-
-
-        } else {
-            $days           = 0;
-            $days_formatted = 'ND';
-
-            return array(
-                $days,
-                $days_formatted
-            );
-        }
-
-        //include_once('class.Timeserie.php');
-        /*
-
-		$sql=sprintf("select `First Day` from kbase.`Week Dimension` where `Year Week`=%s",date("YW"));
-		$res=mysql_query($sql);
-		$no_data=true;
-		if ($row=mysql_fetch_array($res)) {
-			$date=date("Y-m-d",strtotime($row['First Day'].' -1 day'));
-		}
-		list($stock,$value)=$this->get_stock($date);
-		print "$stock,$value\n";
-
-
-
-		// $tm=new TimeSeries(array('m','part sku '.$row['Part SKU']));
-		//  $tm->get_values();$tm->save_values();
-		//  $tm->forecast();
-
-		$sql=sprintf("select `Time Series Value` from `Time Series Dimension` where `Time Series Frequency`='Weekly' and `Times Series Name`='SkuS' and `Time Series Name Key`=%d  and `Time Series Type`='Forecast' order by `Time Series Date`",$this->id);
-
-
-		$resmysql_query($sql);
-		$future_stock='';
-		while ($row=mysql_fetch_array($res)) {
-
-		}
-*/
-
-
-    }
-
-    function update_number_transactions() {
-
-
-        $transactions = array(
-            'all_transactions'   => 0,
-            'in_transactions'    => 0,
-            'out_transactions'   => 0,
-            'audit_transactions' => 0,
-            'oip_transactions'   => 0,
-            'move_transactions'  => 0
-        );
-        $sql          = sprintf(
-            "SELECT sum(if(`Inventory Transaction Type` NOT IN ('Move In','Move Out','Associate','Disassociate'),1,0))  AS all_transactions , sum(if(`Inventory Transaction Type`='Not Found' OR `Inventory Transaction Type` LIKE 'No Dispatched' OR `Inventory Transaction Type` LIKE 'Audit',1,0)) AS audit_transactions,sum(if(`Inventory Transaction Type`='Move',1,0)) AS move_transactions,sum(if(`Inventory Transaction Type` LIKE 'Sale' OR `Inventory Transaction Type`='Broken' OR  `Inventory Transaction Type` LIKE 'Other Out' OR `Inventory Transaction Type` LIKE 'Lost',1,0)) AS out_transactions, sum(if(`Inventory Transaction Type`='Order In Process',1,0)) AS oip_transactions, sum(if(`Inventory Transaction Type` LIKE 'In',1,0)) AS in_transactions FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d",
-            $this->sku
-        );
-
-        $res = mysql_query($sql);
-        if ($row = mysql_fetch_assoc($res)) {
-            $this->data['Part Transactions']       = $row['all_transactions'];
-            $this->data['Part Transactions In']    = $row['in_transactions'];
-            $this->data['Part Transactions Out']   = $row['out_transactions'];
-            $this->data['Part Transactions Audit'] = $row['audit_transactions'];
-            $this->data['Part Transactions OIP']   = $row['oip_transactions'];
-            $this->data['Part Transactions Move']  = $row['move_transactions'];
-
-            $sql = sprintf(
-                "UPDATE `Part Dimension` SET `Part Transactions`=%d ,`Part Transactions In`=%d,`Part Transactions Out`=%d ,`Part Transactions Audit`=%d,`Part Transactions OIP`=%d ,`Part Transactions Move`=%d WHERE `Part SKU`=%d ",
-                $this->data['Part Transactions'], $this->data['Part Transactions In'], $this->data['Part Transactions Out'], $this->data['Part Transactions Audit'],
-                $this->data['Part Transactions OIP'], $this->data['Part Transactions Move'], $this->sku
-
-            );
-            //print "$sql\n";
-            mysql_query($sql);
-        }
-
-
-    }
 
     function delete($metadata = false) {
 

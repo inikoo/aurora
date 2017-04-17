@@ -12,8 +12,7 @@
  Version 2.0
 */
 include_once 'class.DB_Table.php';
-include_once 'class.PageStoreSection.php';
-include_once 'class.Site.php';
+
 include_once 'class.Image.php';
 include_once 'trait.ImageSubject.php';
 include_once 'trait.NotesSubject.php';
@@ -21,7 +20,7 @@ include_once 'trait.NotesSubject.php';
 include_once 'utils/website_functions.php';
 
 class Page extends DB_Table {
-    use ImageSubject,NotesSubject;
+    use ImageSubject, NotesSubject;
 
     var $new = false;
     var $logged = false;
@@ -104,49 +103,50 @@ class Page extends DB_Table {
         }
 
 
-        $result = mysql_query($sql);
-        if ($this->data = mysql_fetch_array($result, MYSQL_ASSOC)) {
+        if ($this->data = $this->db->query($sql)->fetch()) {
+
             $this->id = $this->data['Page Key'];
 
 
             $this->type = $this->data['Page Type'];
 
             if ($this->type == 'Store') {
-                $sql     = sprintf(
-                    "SELECT * FROM `Page Store Dimension` WHERE  `Page Key`=%d", $this->id
-                );
-                $result2 = mysql_query($sql);
-                if ($row = mysql_fetch_array($result2, MYSQL_ASSOC)) {
-                    foreach ($row as $key => $value) {
-                        $this->data[$key] = $value;
+                $sql = sprintf("SELECT * FROM `Page Store Dimension` WHERE  `Page Key`=%d", $this->id);
+
+
+                if ($result2 = $this->db->query($sql)) {
+                    if ($row2 = $result2->fetch()) {
+                        foreach ($row2 as $key => $value) {
+                            $this->data[$key] = $value;
+                        }
                     }
-
-
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
                 }
 
-                //print "cacaca   ".$this->id."\n";
-                if (array_key_exists('Page Site Key', $this->data)) {
-                    $this->site = new Site($this->data['Page Site Key']);
-
-
-                }
 
             } elseif ($this->type == 'Internal') {
-                $sql     = sprintf(
-                    "SELECT * FROM `Page Internal Dimension` WHERE  `Page Key`=%d", $this->id
-                );
-                $result2 = mysql_query($sql);
-                if ($row = mysql_fetch_array($result2, MYSQL_ASSOC)) {
-                    foreach ($row as $key => $value) {
-                        $this->data[$key] = $value;
-                    }
+                $sql = sprintf("SELECT * FROM `Page Internal Dimension` WHERE  `Page Key`=%d", $this->id);
 
+
+                if ($result2 = $this->db->query($sql)) {
+                    if ($row2 = $result2->fetch()) {
+                        foreach ($row2 as $key => $value) {
+                            $this->data[$key] = $value;
+                        }
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
                 }
 
+
             }
-
-
         }
+
 
     }
 
@@ -163,12 +163,9 @@ class Page extends DB_Table {
         }
 
         $create = '';
-        $update = '';
+
         if (preg_match('/create/i', $options)) {
             $create = 'create';
-        }
-        if (preg_match('/update/i', $options)) {
-            $update = 'update';
         }
 
 
@@ -179,12 +176,20 @@ class Page extends DB_Table {
                 prepare_mysql($raw_data['Page URL']), $raw_data['Page Site Key']
             );
 
-            $res = mysql_query($sql);
-            if ($row = mysql_fetch_array($res)) {
-                $this->found     = true;
-                $this->found_key = $row['Page Key'];
-                $this->get_data('id', $this->found_key);
+
+            if ($result=$this->db->query($sql)) {
+                if ($row = $result->fetch()) {
+                    $this->found     = true;
+                    $this->found_key = $row['Page Key'];
+                    $this->get_data('id', $this->found_key);
+            	}
+            }else {
+            	print_r($error_info=$this->db->errorInfo());
+            	print "$sql\n";
+            	exit;
             }
+
+
         }
 
         if (!$this->found and $create) {
@@ -230,9 +235,7 @@ class Page extends DB_Table {
         $values = 'values(';
         foreach ($data as $key => $value) {
             $keys .= "`$key`,";
-            if (preg_match(
-                '/Page Title|Page Description|Javascript|CSS|Page Keywords/i', $key
-            )) {
+            if (preg_match('/Page Title|Page Description|Javascript|CSS|Page Keywords/i', $key)) {
                 $values .= "'".addslashes($value)."',";
             } else {
                 $values .= prepare_mysql($value).",";
@@ -243,16 +246,14 @@ class Page extends DB_Table {
         $sql    = sprintf("INSERT INTO `Page Dimension` %s %s", $keys, $values);
 
 
-        if (mysql_query($sql)) {
-            $this->id = mysql_insert_id();
+        if ($this->db->exec($sql)) {
+            $this->id = $this->db->lastInsertId();
             $this->get_data('id', $this->id);
 
             $this->update_valid_url();
             $this->update_working_url();
 
-            if ($this->data['Page Type'] == 'Internal') {
-                $this->create_internal($raw_data);
-            } elseif ($this->data['Page Type'] == 'Store') {
+            if ($this->data['Page Type'] == 'Store') {
                 $this->create_store_page($raw_data);
 
             }
@@ -262,224 +263,9 @@ class Page extends DB_Table {
                 $this->data['Page Site Key'], prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql($this->data['Page State'])
 
             );
-            mysql_query($sql);
+            $this->db->exec($sql);
 
 
-            //==== set scope
-
-
-            if ($migration_hack) {
-
-
-                include_once 'class.Store.php';
-                $store = new Store($this->data['Page Store Key']);
-
-
-                //======
-                $scope = false;
-
-                if ($this->data['Page Store Section'] == 'Product Description') {
-                    include_once('class.Public_Product.php');
-                    $scope       = new Public_Product($this->data['Page Parent Key']);
-                    $scope_found = 'Product';
-
-
-                } elseif ($this->data['Page Store Section'] == 'Category') {
-                    include_once('class.Public_Category.php');
-
-                    $scope       = new Public_Category($this->data['Page Parent Key']);
-                    $scope_found = 'Category';
-
-                } elseif ($this->data['Page Store Section'] == 'Family Catalogue') {
-
-
-                    include_once('class.Public_Category.php');
-                    $store    = new Store($this->get('Page Store Key'));
-                    $category = new Public_Category('root_key_code', $store->get('Store Family Category Key'), $this->get('Code'));
-                    if ($category->id) {
-                        $scope       = $category;
-                        $scope_found = 'Category';
-
-                    } else {
-
-                        $sql = sprintf('SELECT `Product Family Code`  FROM `Product Family Dimension` WHERE `Product Family Key`=%d ', $this->data['Page Parent Key']);
-
-
-                        if ($result2 = $this->db->query($sql)) {
-                            if ($row2 = $result2->fetch()) {
-
-                                $category = new Public_Category('root_key_code', $store->get('Store Family Category Key'), $row2['Product Family Code']);
-                                if ($category->id) {
-                                    $scope       = $category;
-                                    $scope_found = 'Category';
-
-                                } else {
-                                    //    print 'F '.$this->get('Code').' '.$this->data['Page Parent Code'].' '."$sql\n";
-
-                                }
-
-                            }
-                        } else {
-                            print_r($error_info = $this->db->errorInfo());
-                            print "$sql\n";
-                            exit;
-                        }
-
-                    }
-
-
-                } elseif ($this->data['Page Store Section'] == 'Department Catalogue') {
-
-                    include_once('class.Store.php');
-
-                    include_once('class.Public_Category.php');
-                    $store    = new Store($this->get('Page Store Key'));
-                    $category = new Public_Category('root_key_code', $store->get('Store Department Category Key'), $this->get('Code'));
-                    if ($category->id) {
-                        $scope       = $category;
-                        $scope_found = 'Category';
-
-                    } else {
-
-                        $sql = sprintf('SELECT `Product Department Code`  FROM `Product Department Dimension` WHERE `Product Department Key`=%d ', $this->data['Page Parent Key']);
-
-
-                        if ($result2 = $this->db->query($sql)) {
-                            if ($row2 = $result2->fetch()) {
-
-                                $category = new Public_Category('root_key_code', $store->get('Store Department Category Key'), $row2['Product Department Code']);
-                                if ($category->id) {
-                                    $scope       = $category;
-                                    $scope_found = 'Category';
-
-                                } else {
-                                    //  print 'D '.$this->get('Code').' '.$this->data['Page Parent Code'].' '."$sql\n";
-
-                                }
-
-                            }
-                        } else {
-                            print_r($error_info = $this->db->errorInfo());
-                            print "$sql\n";
-                            exit;
-                        }
-
-                    }
-
-
-                }
-
-
-                //===
-                require_once 'class.Webpage_Type.php';
-
-
-                if ($scope) {
-
-
-                    if ($scope->get_object_name() == 'Product') {
-                        $this->update(
-                            array(
-                                'Webpage Scope'     => 'Product',
-                                'Webpage Scope Key' => $scope->id
-                            ), 'no_history'
-                        );
-
-                    } elseif ($scope->get_object_name() == 'Category') {
-
-
-                        $category = new Category($scope->id);
-
-                        if ($category->get('Category Subject') == 'Product') {
-
-                            $this->update(
-                                array(
-                                    'Webpage Scope'     => 'Category Products',
-                                    'Webpage Scope Key' => $category->id
-                                ), 'no_history'
-                            );
-
-
-                        } elseif ($category->get('Category Subject') == 'Category') {
-                            //print $category->get('Category Subject');
-
-                            $this->update(
-                                array(
-                                    'Webpage Scope'     => 'Category Categories',
-                                    'Webpage Scope Key' => $scope->id
-                                ), 'no_history'
-                            );
-
-
-                            if ($category->get('Category Root Key') == $store->get('Store Family Category Key')) {
-
-                                $this->update(
-                                    array(
-                                        'Webpage Scope Metadata' => 'Family',
-                                    ), 'no_history'
-                                );
-                            } elseif ($category->get('Category Root Key') == $store->get('Store Department Category Key')) {
-
-                                $this->update(
-                                    array(
-                                        'Webpage Scope Metadata' => 'Department',
-                                    ), 'no_history'
-                                );
-                            }
-
-                        }
-
-
-                    }
-
-                }
-
-
-                if ($this->data['Page Store Section Type'] == 'Product') {
-                    $type = 'Prod';
-
-
-                } elseif ($this->data['Page Store Section'] == 'Department Catalogue') {
-                    $type = 'Cats';
-
-                } elseif ($this->data['Page Store Section'] == 'Family Catalogue') {
-
-                    $type = 'Prods';
-
-                } elseif ($this->data['Page Store Section'] == 'Information' or $this->data['Page Store Section'] == 'Front Page Store') {
-                    $type = 'Info';
-
-                } else {
-                    print $this->data['Page Store Section']."\n";
-                    $type = 'Sys';
-                }
-
-
-                $webpage_type = new Webpage_Type('website_code', $this->get('Page Site Key'), $type);
-
-
-                $this->update(
-                    array(
-                        'Webpage Website Key' => $this->get('Page Site Key'),
-                        'Webpage Store Key'   => $this->get('Page Store Key'),
-                        'Webpage State'       => $this->get('Page State'),
-                        'Webpage Type Key'    => $webpage_type->id,
-                    ), 'no_history'
-                );
-
-
-                $this->update(
-                    array(
-                        'Webpage Code' => $this->get('Page Code'),
-                    ), 'no_history'
-                );
-
-                $webpage_type->update_number_webpages();
-
-                $this->update_version();
-            }
-
-            //===============
 
 
         } else {
@@ -493,22 +279,16 @@ class Page extends DB_Table {
 
     function update_valid_url() {
         $old_value                    = $this->data['Page Valid URL'];
-        $this->data['Page Valid URL'] = ($this->is_valid_url(
-            $this->data['Page URL']
-        ) ? 'Yes' : 'No');
+        $this->data['Page Valid URL'] = ($this->is_valid_url($this->data['Page URL']) ? 'Yes' : 'No');
         if ($old_value != $this->data['Page Valid URL']) {
-            $sql = sprintf(
-                "UPDATE `Page Dimension` SET `Page Valid URL`=%s WHERE `Page Key`=%d", prepare_mysql($this->data['Page Valid URL']), $this->id
-            );
-            mysql_query($sql);
+            $sql = sprintf("UPDATE `Page Dimension` SET `Page Valid URL`=%s WHERE `Page Key`=%d", prepare_mysql($this->data['Page Valid URL']), $this->id);
+            $this->db->exec($sql);
         }
 
     }
 
     function is_valid_url($url) {
-        if (preg_match(
-            "/^(http(s?):\\/\\/|ftp:\\/\\/{1})((\w+\.)+)\w{2,}(\/?)$/i", $url
-        )) {
+        if (preg_match("/^(http(s?):\\/\\/|ftp:\\/\\/{1})((\w+\.)+)\w{2,}(\/?)$/i", $url)) {
             return true;
         } else {
             return false;
@@ -522,10 +302,8 @@ class Page extends DB_Table {
             $this->data['Page URL']
         );
         if ($old_value != $this->data['Page Working URL']) {
-            $sql = sprintf(
-                "UPDATE `Page Dimension` SET `Page Working URL`=%s WHERE `Page Key`=%d", prepare_mysql($this->data['Page Working URL']), $this->id
-            );
-            mysql_query($sql);
+            $sql = sprintf("UPDATE `Page Dimension` SET `Page Working URL`=%s WHERE `Page Key`=%d", prepare_mysql($this->data['Page Working URL']), $this->id);
+            $this->db->exec($sql);
         }
 
     }
@@ -537,61 +315,6 @@ class Page extends DB_Table {
 
     }
 
-    function create_internal($raw_data) {
-
-        $data = $this->internal_base_data();
-        foreach ($raw_data as $key => $value) {
-            if (array_key_exists($key, $data)) {
-                $data[$key] = _trim($value);
-            }
-
-        }
-
-        $keys             = '(';
-        $values           = 'values(';
-        $data['Page Key'] = $this->id;
-        foreach ($data as $key => $value) {
-            $keys .= "`$key`,";
-
-
-            $values .= prepare_mysql($value).",";
-        }
-        $keys   = preg_replace('/,$/', ')', $keys);
-        $values = preg_replace('/,$/', ')', $values);
-        $sql    = sprintf(
-            "INSERT INTO `Page Internal Dimension` %s %s", $keys, $values
-        );
-        //print $sql;
-        if (mysql_query($sql)) {
-            $this->id = mysql_insert_id();
-            $this->get_data('id', $this->id);
-
-
-        } else {
-            $this->error = true;
-            $this->msg   = 'Can not insert Page Internal Dimension';
-        }
-
-
-    }
-
-    function internal_base_data() {
-        $data   = array();
-        $result = mysql_query("SHOW COLUMNS FROM `Page Internal Dimension`");
-        if (!$result) {
-            echo 'Could not run query: '.mysql_error();
-            exit;
-        }
-        if (mysql_num_rows($result) > 0) {
-            while ($row = mysql_fetch_assoc($result)) {
-                if (!in_array($row['Field'], $this->ignore_fields)) {
-                    $data[$row['Field']] = $row['Default'];
-                }
-            }
-        }
-
-        return $data;
-    }
 
     function create_store_page($raw_data) {
         //print_r($raw_data);
@@ -627,12 +350,9 @@ class Page extends DB_Table {
         }
         $keys   = preg_replace('/,$/', ')', $keys);
         $values = preg_replace('/,$/', ')', $values);
-        $sql    = sprintf(
-            "INSERT INTO `Page Store Dimension` %s %s", $keys, $values
-        );
-        //asdasdasd();
-        //print "$sql\n";
-        if (mysql_query($sql)) {
+        $sql    = sprintf("INSERT INTO `Page Store Dimension` %s %s", $keys, $values);
+
+        if ($this->db->exec($sql)) {
 
             $this->get_data('id', $this->id);
             $this->new = true;
@@ -641,17 +361,9 @@ class Page extends DB_Table {
             $sql = sprintf(
                 "INSERT INTO `Page Store Data Dimension` (`Page Key`) VALUES (%d)", $this->id
             );
-            mysql_query($sql);
-
-            $sql = sprintf(
-                "SELECT `Site Flag Key` FROM  `Site Flag Dimension` WHERE `Site Flag Color`=%s AND `Site Key`=%d", prepare_mysql($this->data['Site Flag']), $this->data['Page Site Key']
-            );
+            $this->db->exec($sql);
 
 
-            $result = mysql_query($sql);
-            if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-                $this->update_site_flag_key($row['Site Flag Key']);
-            }
 
 
             $content = $this->get_plain_content();
@@ -661,7 +373,7 @@ class Page extends DB_Table {
                 "INSERT INTO `Page Store Search Dimension` VALUES (%d,%d,%s,%s,%s,%s)", $this->id, $this->data['Page Site Key'], prepare_mysql($this->data['Page URL']),
                 prepare_mysql($this->data['Page Store Title'], false), prepare_mysql($this->data['Page Store Description'], false), prepare_mysql($content, false)
             );
-            mysql_query($sql);
+            $this->db->exec($sql);
 
             $this->update_see_also();
             $this->update_image_key();
@@ -678,18 +390,15 @@ class Page extends DB_Table {
 
     function store_base_data() {
         $data   = array();
-        $result = mysql_query("SHOW COLUMNS FROM `Page Store Dimension`");
-        if (!$result) {
-            echo 'Could not run query: '.mysql_error();
-            exit;
-        }
-        if (mysql_num_rows($result) > 0) {
-            while ($row = mysql_fetch_assoc($result)) {
-                if (!in_array($row['Field'], $this->ignore_fields)) {
-                    $data[$row['Field']] = $row['Default'];
-                }
+
+
+        $sql = 'show columns from `Page Store Dimension`';
+        foreach ($this->db->query($sql) as $row) {
+            if (!in_array($row['Field'], $this->ignore_fields)) {
+                $data[$row['Field']] = $row['Default'];
             }
         }
+
 
         return $data;
     }
@@ -701,42 +410,47 @@ class Page extends DB_Table {
             "SELECT `Site Key`,`Site Flag Color` FROM  `Site Flag Dimension` WHERE `Site Flag Key`=%d", $value
         );
 
-        $result = mysql_query($sql);
-        if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+        if ($result=$this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                if ($row['Site Key'] != $this->data['Page Site Key']) {
+                    $this->error = true;
+                    $this->msg   = 'flag key not in this site';
 
+                    return;
+                }
 
-            if ($row['Site Key'] != $this->data['Page Site Key']) {
+                $old_key = $this->data['Site Flag Key'];
+
+                $sql = sprintf(
+                    "UPDATE `Page Store Dimension` SET `Site Flag Key`=%d ,`Site Flag`=%s WHERE `Page Key`=%d", $value, prepare_mysql($row['Site Flag Color']), $this->id
+                );
+
+                $this->db->exec($sql);
+                $this->data['Site Flag Key'] = $value;
+                $this->new_value             = $this->data['Site Flag Key'];
+                $this->msg                   = _('Site flag changed');
+                $this->updated               = true;
+
+                /*
+                $site = new Site($this->data['Page Site Key']);
+                $site->update_page_flag_number($this->data['Site Flag Key']);
+                if ($old_key) {
+                    $site->update_page_flag_number($old_key);
+
+                }
+                */
+        	}else{
                 $this->error = true;
-                $this->msg   = 'flag key not in this site';
-
-                return;
+                $this->msg   = 'flag key not found';
             }
-
-            $old_key = $this->data['Site Flag Key'];
-
-            $sql = sprintf(
-                "UPDATE `Page Store Dimension` SET `Site Flag Key`=%d ,`Site Flag`=%s WHERE `Page Key`=%d", $value, prepare_mysql($row['Site Flag Color']), $this->id
-            );
-
-            mysql_query($sql);
-            $this->data['Site Flag Key'] = $value;
-            $this->new_value             = $this->data['Site Flag Key'];
-            $this->msg                   = _('Site flag changed');
-            $this->updated               = true;
-
-            $site = new Site($this->data['Page Site Key']);
-            $site->update_page_flag_number($this->data['Site Flag Key']);
-            if ($old_key) {
-                $site->update_page_flag_number($old_key);
-
-            }
-
-
-        } else {
-            $this->error = true;
-            $this->msg   = 'flag key not found';
-
+        }else {
+        	print_r($error_info=$this->db->errorInfo());
+        	print "$sql\n";
+        	exit;
         }
+
+
+
 
     }
 
@@ -1317,8 +1031,6 @@ class Page extends DB_Table {
         $account      = new Account($this->db);
         $account_code = $account->get('Account Code');
 
-        include_once 'class.Site.php';
-        $site = new Site($this->data['Page Site Key']);
 
         $template_response = '';
 
@@ -1339,13 +1051,8 @@ class Page extends DB_Table {
         $mem = new Memcached();
         $mem->addServer($memcache_ip, 11211);
 
-        $mem->set(
-            'ECOMP'.md5($account_code.$site->id.'/'.$this->data['Page Code']), $this->id, 172800
-        );
-        $mem->set(
-            'ECOMP'.md5(
-                $account_code.$site->id.'/'.strtolower($this->data['Page Code'])
-            ), $this->id, 172800
+        $mem->set('ECOMP'.md5($account_code.$this->get('Webpage Website Key').'/'.$this->get('Page Code')), $this->id, 172800);
+        $mem->set('ECOMP'.md5($account_code.$this->get('Webpage Website Key').'/'.strtolower($this->get('Page Code'))), $this->id, 172800
         );
 
         return $template_response;
@@ -1613,108 +1320,19 @@ class Page extends DB_Table {
 
     }
 
-    function update_show_layout($layout, $value) {
-        switch ($layout) {
-            case 'thumbnails':
-                $field = "Product Thumbnails Layout";
-                break;
-            case 'list':
-            case 'lists':
-                $field = "List Layout";
-                break;
-            case 'slideshow':
-                $field = "Product Slideshow Layout";
-                break;
-            case 'manual':
-                $field = "Product Manual Layout";
-                break;
-            default:
-                $this->error = true;
-                $this->msg   = 'Invalid field';
-
-                return;
-                break;
-        }
-        $value = ($value == 'true' ? 'Yes' : 'No');
-
-        $sql = sprintf(
-            "UPDATE `Page Store Dimension` SET `%s`=%s WHERE `Page Key`=%d", $field, prepare_mysql($value), $this->id
-        );
-        mysql_query($sql);
-        if (mysql_affected_rows()) {
-            $this->updated   = true;
-            $this->new_value = $value;
-
-        } else {
-            $this->msg = _('Nothing to change');
-
-        }
 
 
-    }
-
-    function get_header_template() {
-        $template = '';
-        $sql      = sprintf(
-            "SELECT `Template` FROM `Page Header Dimension` WHERE `Page Header Key`=%d", $this->data['Page Header Key']
-        );
-        $result   = mysql_query($sql);
-        if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $template = $row['Template'];
-        }
-
-        return $template;
-    }
-
-    function get_footer_template() {
 
 
-        if ($this->data['Page Footer Type'] == 'None') {
-            return '';
-        }
-
-        $template = '';
-        $sql      = sprintf(
-            "SELECT `Template` FROM `Page Footer Dimension` WHERE `Page Footer Key`=%d", $this->data['Page Footer Key']
-        );
-
-        $result = mysql_query($sql);
-        if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $template = $row['Template'];
-        }
-
-        return $template;
-    }
-
-    function get_css() {
-        $css = '';
-
-
-        $sql    = sprintf(
-            "SELECT `CSS` FROM `Page Header Dimension` WHERE `Page Header Key`=%d", $this->data['Page Header Key']
-        );
-        $result = mysql_query($sql);
-        if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $css .= $row['CSS'];
-        }
-
-        $css .= $this->data['Page Store CSS'];
-
-        return $css;
-    }
-
-    function get_javascript() {
-        return $this->data['Page Store Javascript'];
-    }
 
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
 
 
         switch ($field) {
             case 'History Note':
-                $this->add_note($value, '', '', $metadata['deletable'],'Notes',false,false,false,'Webpage',false,'Webpage Publishing');
+                $this->add_note($value, '', '', $metadata['deletable'], 'Notes', false, false, false, 'Webpage', false, 'Webpage Publishing');
 
-                    break;
+                break;
 
             case('Webpage Scope'):
             case('Webpage Scope Key'):
@@ -1865,9 +1483,7 @@ class Page extends DB_Table {
                     $this->update_see_also();
                 }
                 break;
-            case('Site Flag Key'):
-                $this->update_site_flag_key($value);
-                break;
+
             case('code'):
             case('page_code'):
             case('Page Code'):
@@ -2077,7 +1693,7 @@ class Page extends DB_Table {
 
         $value = _trim($value);
         if ($value == '') {
-            $this->msg .= ' '._('Invalid Code')."\n";
+            $this->msg           .= ' '._('Invalid Code')."\n";
             $this->error_updated = true;
             $this->error         = true;
 
@@ -2100,7 +1716,7 @@ class Page extends DB_Table {
 
         $result = mysql_query($sql);
         if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $this->msg .= ' '._('Code already used on this website')."\n";
+            $this->msg           .= ' '._('Code already used on this website')."\n";
             $this->error_updated = true;
             $this->error         = true;
 
@@ -2122,7 +1738,7 @@ class Page extends DB_Table {
         mysql_query($sql);
         $affected = mysql_affected_rows();
         if ($affected == -1) {
-            $this->msg .= ' '._('Record can not be updated')."\n";
+            $this->msg           .= ' '._('Record can not be updated')."\n";
             $this->error_updated = true;
             $this->error         = true;
 
@@ -2132,8 +1748,8 @@ class Page extends DB_Table {
 
         } else {
 
-            $this->msg .= _('Code updated').", \n";
-            $this->msg_updated .= _('Code updated').", \n";
+            $this->msg               .= _('Code updated').", \n";
+            $this->msg_updated       .= _('Code updated').", \n";
             $this->updated           = true;
             $this->new_value         = $value;
             $this->data['Page Code'] = $value;
@@ -2178,146 +1794,6 @@ class Page extends DB_Table {
 
     }
 
-    function update_header_key($value, $options = '') {
-        if ($this->type != 'Store') {
-            return;
-        }
-
-        $old_value = $this->data['Page Header Key'];
-
-
-        $site = new Site($this->data['Page Site Key']);
-
-        $default_header_key = $site->data['Site Default Header Key'];
-        if ($value == $default_header_key) {
-            $header_type = 'SiteDefault';
-        } else {
-            $header_type = 'Set';
-
-        }
-
-        $sql = sprintf(
-            "UPDATE `Page Store Dimension`  SET  `Page Header Key`=%d , `Page Header Type`=%s    WHERE `Page Key`=%d", $value, prepare_mysql($header_type), $this->id
-        );
-        // print $sql;
-
-
-        mysql_query($sql);
-        $affected = mysql_affected_rows();
-        if ($affected == -1) {
-            $this->msg .= ' '._('Record can not be updated')."\n";
-            $this->error_updated = true;
-            $this->error         = true;
-
-            return;
-        } elseif ($affected == 0) {
-            $this->msg .= ' '._('Same value as the old record');
-
-        } else {
-
-            $this->msg .= _('Header updated').", \n";
-            $this->msg_updated .= _('Code updated').", \n";
-            $this->updated                  = true;
-            $this->new_value                = $value;
-            $this->data['Page Header Key']  = $value;
-            $this->data['Page Header Type'] = $header_type;
-            $save_history                   = true;
-            if (preg_match('/no( |\_)history|nohistory/i', $options)) {
-                $save_history = false;
-            }
-
-            if (!$this->new and $save_history) {
-                $history_data = array(
-                    'indirect_object' => 'Page Code',
-                    'old_value'       => $old_value,
-                    'new_value'       => $value
-
-                );
-
-
-                $this->add_history($history_data);
-
-
-            }
-
-
-            //$this->update_field('Page URL',$url,'nohistory');
-
-        }
-
-
-    }
-
-    function update_footer_key($value, $options = '') {
-        if ($this->type != 'Store') {
-            return;
-        }
-
-        $old_value = $this->data['Page Footer Key'];
-
-
-        $site = new Site($this->data['Page Site Key']);
-
-        $default_footer_key = $site->data['Site Default Footer Key'];
-        if ($value == $default_footer_key) {
-            $footer_type = 'SiteDefault';
-        } else {
-            $footer_type = 'Set';
-
-        }
-
-        $sql = sprintf(
-            "UPDATE `Page Store Dimension`  SET  `Page Footer Key`=%d , `Page Footer Type`=%s    WHERE `Page Key`=%d", $value, prepare_mysql($footer_type), $this->id
-        );
-        // print $sql;
-
-
-        mysql_query($sql);
-        $affected = mysql_affected_rows();
-        if ($affected == -1) {
-            $this->msg .= ' '._('Record can not be updated')."\n";
-            $this->error_updated = true;
-            $this->error         = true;
-
-            return;
-        } elseif ($affected == 0) {
-            $this->msg .= ' '._('Same value as the old record');
-
-        } else {
-
-            $this->msg .= _('Footer updated').", \n";
-            $this->msg_updated .= _('Code updated').", \n";
-            $this->updated                  = true;
-            $this->new_value                = $value;
-            $this->data['Page Footer Key']  = $value;
-            $this->data['Page Footer Type'] = $footer_type;
-            $save_history                   = true;
-            if (preg_match('/no( |\_)history|nohistory/i', $options)) {
-                $save_history = false;
-            }
-
-            if (!$this->new and $save_history) {
-                $history_data = array(
-                    'indirect_object' => 'Page Code',
-                    'old_value'       => $old_value,
-                    'new_value'       => $value
-
-                );
-
-
-                $this->add_history($history_data);
-
-
-            }
-
-
-            //$this->update_field('Page URL',$url,'nohistory');
-
-        }
-
-
-    }
-
     function update_store_search() {
 
         if ($this->data['Page Type'] == 'Store') {
@@ -2329,7 +1805,7 @@ class Page extends DB_Table {
                 prepare_mysql($this->get_plain_content(), false), prepare_mysql($this->data['Page Title'], false), prepare_mysql($this->data['Page Store Description'], false),
                 prepare_mysql($this->get_plain_content(), false)
             );
-            mysql_query($sql);
+           $this->db->exec($sql);
 
 
         }
@@ -2633,8 +2109,6 @@ class Page extends DB_Table {
             );
 
 
-
-
             $sql = sprintf(
                 'INSERT INTO `Category Webpage Index` (`Category Webpage Index Parent Category Key`,`Category Webpage Index Category Key`,`Category Webpage Index Webpage Key`,`Category Webpage Index Category Webpage Key`,`Category Webpage Index Section Key`,`Category Webpage Index Content Data`,`Category Webpage Index Subject Type`,`Category Webpage Index Stack`) VALUES (%d,%d,%d,%d,%d,%s,%s,%d) ',
                 $this->get('Webpage Scope Key'), $item_key, $this->id, $subject_webpage->id, $section_key, prepare_mysql(json_encode($subject_data)),
@@ -2642,7 +2116,7 @@ class Page extends DB_Table {
                 prepare_mysql($subject_type), $stack
             );
 
-           // print $sql;
+            // print $sql;
 
             $this->db->exec($sql);
 
@@ -2745,9 +2219,9 @@ class Page extends DB_Table {
         }
         if ($this->get('Webpage Launch Date') == '') {
             $this->update(array('Webpage Launch Date' => gmdate('Y-m-d H:i:s')), 'no_history');
-            $msg=_('Webpage launched');
-        }else{
-            $msg=_('Webpage published');
+            $msg = _('Webpage launched');
+        } else {
+            $msg = _('Webpage published');
         }
 
 
@@ -4465,7 +3939,7 @@ class Page extends DB_Table {
 
 
             if ($product['Product Web State'] == 'Out of Stock') {
-                $tr_class .= 'out_of_stock_tr';
+                $tr_class    .= 'out_of_stock_tr';
                 $tr_style    = "background-color:rgba(255,209,209,.6);border-top:1px solid #FF9999;;border-bottom:1px solid #FFB2B2;font-size:95%;padding-bottom:0px;";
                 $description = $product['description']."<br/><span class='out_of_stock' style='opacity:.6;filter: alpha(opacity = 60);' >$out_of_stock_label2</span>$email_reminder";
             } else {
@@ -4654,7 +4128,7 @@ class Page extends DB_Table {
 
 
             if ($product['Product Web State'] == 'Out of Stock') {
-                $tr_class .= 'out_of_stock_tr';
+                $tr_class    .= 'out_of_stock_tr';
                 $tr_style    = "background-color:rgba(255,209,209,.6);border-top:1px solid #FF9999;;border-bottom:1px solid #FFB2B2;font-size:95%;padding-bottom:0px;";
                 $description = $product['description']."<br/><span class='out_of_stock' style='opacity:.6;filter: alpha(opacity = 60);' >$out_of_stock_label2</span>$email_reminder";
             } else {
@@ -4957,7 +4431,7 @@ class Page extends DB_Table {
 
 
             if ($product['Product Web State'] == 'Out of Stock') {
-                $tr_class .= 'out_of_stock_tr';
+                $tr_class    .= 'out_of_stock_tr';
                 $tr_style    = "background-color:rgba(255,209,209,.6);border-top:1px solid #FF9999;;border-bottom:1px solid #FFB2B2;font-size:95%;padding-bottom:0px;";
                 $description = $product['description']."<br/><span class='out_of_stock' style='opacity:.6;filter: alpha(opacity = 60);' >$out_of_stock_label2</span>$email_reminder";
             } else {
@@ -5423,7 +4897,7 @@ class Page extends DB_Table {
 
 
             if ($product['Product Web State'] == 'Out of Stock') {
-                $tr_class .= 'out_of_stock_tr';
+                $tr_class    .= 'out_of_stock_tr';
                 $tr_style    = "background-color:rgba(255,209,209,.6);border-top:1px solid #FF9999;;border-bottom:1px solid #FFB2B2;font-size:95%;padding-bottom:0px;";
                 $description = $product['description']."<br/><span class='out_of_stock' style='opacity:.6;filter: alpha(opacity = 60);' >$out_of_stock_label2</span>$email_reminder";
             } else {
@@ -5511,7 +4985,7 @@ class Page extends DB_Table {
                         .'"\' src="art/basket.jpg" style="height:15px;position:relative;top:3px;margin-left:10px;cursor:pointer"/> <span style="color:#ff8000;margin-left:0px" class="link basket"  id="see_basket"  onClick=\'window.location="'
                         .$this->site->get_checkout_data('url').'/cf/review.cfm?sd=ignore&userid='.$this->site->get_checkout_data('id').'&return='.$this->data['Page URL'].'"\' >'._('Basket & Checkout')
                         .'</span> </div>';
-                    $html = $basket;
+                    $html   = $basket;
 
                     break;
 
