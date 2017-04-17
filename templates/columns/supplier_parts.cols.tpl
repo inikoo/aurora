@@ -12,14 +12,7 @@ editable: false,
 renderable: {if $data['object']=='supplier' }false{else}true{/if},
 sortType: "toggle",
 
-cell: Backgrid.StringCell.extend({
-events: {
-"click": function() {
-change_view('/supplier/' + this.model.get("supplier_key"))
-}
-},
-className: "link"
-
+cell: Backgrid.HtmlCell.extend({
 })
 
 }, {
