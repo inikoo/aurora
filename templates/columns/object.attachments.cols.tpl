@@ -44,11 +44,12 @@ cell: Backgrid.HtmlCell.extend({
 })
 
 }, {
-name: "file",
-label: "{t}File{/t}",
+name: "preview",
+label: "{t}Preview{/t}",
 editable: false,
 cell: "html"
-},{
+}
+,{
 name: "size",
 label: "{t}Size{/t}",
 editable: false,
@@ -57,6 +58,16 @@ className: "aright"
 }),
 headerCell: integerHeaderCell
 }
+
+,{
+name: "download",
+label: "",
+editable: false,
+cell: Backgrid.HtmlCell.extend({
+className: "width_20"
+}),
+}
+
 ]
 
 

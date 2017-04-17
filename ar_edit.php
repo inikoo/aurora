@@ -1663,7 +1663,6 @@ function delete_attachment($account, $db, $user, $editor, $data, $smarty) {
     if ($result = $db->query($sql)) {
         if ($row = $result->fetch()) {
 
-            //'Staff','Customer Communications','Customer History Attachment','Product History Attachment','Part History Attachment','Part MSDS','Product MSDS','Supplier Product MSDS','Product Info Sheet','Purchase Order History Attachment','Purchase Order','Supplier Delivery Note History Attachment','Supplier Delivery Note','Supplier Invoice History Attachment','Supplier Invoice','Order Note History Attachment','Delivery Note History Attachment','Invoice History Attachment'
             switch ($row['Subject']) {
                 case 'Customer Communications':
                 case 'Customer History Attachment':
@@ -1672,6 +1671,10 @@ function delete_attachment($account, $db, $user, $editor, $data, $smarty) {
                 case 'Staff':
                     $_object = 'Staff';
                     $request = 'employee/'.$row['Subject Key'];
+                    break;
+                case 'Supplier':
+                    $_object = 'Supplier';
+                    $request = 'supplier/'.$row['Subject Key'];
                     break;
                 default:
                     $_object = $row['Subject'];

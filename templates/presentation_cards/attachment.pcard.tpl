@@ -5,15 +5,15 @@
             <td><span id="result_msg" class="msg success"><i class="fa fa-check"></i> {t}Success{/t}</span></td>
             <td>
 
-                <span class=" results link" onClick="change_view(state.request)">{t}Attach other file{/t} <i
-                            class="fa fa-plus"></i>  </span>
+                <span class=" results link" onClick="change_view(state.request)">{t}Attach other file{/t} <i class="fa fa-plus"></i>  </span>
 
+            </td>
+            <td>
+                <span class="marked_link" onClick="change_view('{$parent}/{$parent_key}')"   >{t}Attachment's list{/t}</span>
             </td>
         </tr>
         <tr class="title">
-            <td colspan=2>{t}Attachment{/t} <i
-                        onClick="change_view('{$parent}/{$parent_key}/attachment/{$object->get('Attachment Bridge Key')}')"
-                        class="fa fa-paperclip link"></i></td>
+            <td colspan=2>{t}Attachment{/t}
         </tr>
         <tr>
             <td class="label">{$object->get_field_label('Attachment Subject Type')|capitalize}</td>
@@ -21,7 +21,7 @@
         </tr>
         <tr>
             <td class="label">{$object->get_field_label('Attachment Caption')|capitalize}</td>
-            <td>{$object->get('Caption')}</td>
+            <td><span  onClick="change_view('{$parent}/{$parent_key}/attachment/{$object->get('Attachment Bridge Key')}')"   class="marked_link" >{$object->get('Caption')}  </span> </td>
         </tr>
         <tr>
             <td class="label">{$object->get_field_label('Attachment Public')|capitalize}</td>

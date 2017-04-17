@@ -31,6 +31,6 @@ if ($order == 'file_type') {
 $sql_totals
     = "select count(Distinct A.`Attachment Key`) as num from $table $where  ";
 $fields
-    = "`Attachment Key`,`Attachment MIME Type`,	`Attachment Type`,`Attachment File Size`,`Attachment Thumbnail Image Key`";
+    = "`Attachment Key`,`Attachment MIME Type`,	`Attachment Type`,`Attachment File Size`,`Attachment Thumbnail Image Key`,`Attachment Thumbnail Image Key`";
 
 ?>

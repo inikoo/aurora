@@ -411,9 +411,9 @@ function attachments($_data, $db, $user, $account) {
                         '<i title="%s" class="fa fa-fw fa-picture-o"></i> %s', $data['Attachment MIME Type'], _('Image')
                     );
                     break;
-                case 'Compresed':
+                case 'Compressed':
                     $file_type = sprintf(
-                        '<i title="%s" class="fa fa-fw fa-file-archive-o"></i> %s', $data['Attachment MIME Type'], _('Compresed')
+                        '<i title="%s" class="fa fa-fw fa-file-archive-o"></i> %s', $data['Attachment MIME Type'], _('Compressed')
                     );
                     break;
                 case 'Spreadsheet':
