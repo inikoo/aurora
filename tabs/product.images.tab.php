@@ -40,7 +40,16 @@ $smarty->assign(
 
 
 $smarty->assign(
-    'js_code', 'js/injections/edit_images.'.(_DEVEL ? '' : 'min.').'js'
+
+    'js_code',
+    array(
+        'js/injections/edit_images.'.(_DEVEL ? '' : 'min.').'js',
+        'js/injections/images_popups.'.(_DEVEL ? '' : 'min.').'js'
+
+    )
+
+
+
 );
 
 

@@ -28,7 +28,7 @@ className: "width_50",
 })
 
 }, {
-name: "image",
+name: "preview",
 label: "{t}Image{/t}",
 editable: false,
 sortable: false,
