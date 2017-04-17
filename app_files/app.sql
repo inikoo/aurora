@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.7.16, for osx10.12 (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.18, for osx10.12 (x86_64)
 --
 -- Host: localhost    Database: dw
 -- ------------------------------------------------------
--- Server version	5.7.16
+-- Server version	5.7.18
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -1412,7 +1412,7 @@ CREATE TABLE `Attachment Bridge` (
   `Attachment Key` mediumint(8) unsigned NOT NULL,
   `Subject` enum('Part','Staff','Customer Communications','Customer History Attachment','Product History Attachment','Part History Attachment','Part MSDS','Product MSDS','Supplier Product MSDS','Product Info Sheet','Purchase Order History Attachment','Purchase Order','Supplier Delivery Note History Attachment','Supplier Delivery Note','Supplier Invoice History Attachment','Supplier Invoice','Order Note History Attachment','Delivery Note History Attachment','Invoice History Attachment','Supplier') NOT NULL,
   `Subject Key` int(10) unsigned NOT NULL,
-  `Attachment Subject Type` enum('Other','CV','Contract','Invoice','PurchaseOrder','Catalogue','MSDS') NOT NULL DEFAULT 'Other',
+  `Attachment Subject Type` enum('Other','CV','Contract','Invoice','PurchaseOrder','Catalogue','MSDS','Image','Contact Card') NOT NULL DEFAULT 'Other',
   `Attachment Caption` text,
   `Attachment File Original Name` varchar(255) DEFAULT NULL,
   `Attachment Public` enum('Yes','No') NOT NULL DEFAULT 'No',
@@ -1455,7 +1455,7 @@ DROP TABLE IF EXISTS `Attachment Dimension`;
 CREATE TABLE `Attachment Dimension` (
   `Attachment Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `Attachment MIME Type` varchar(255) NOT NULL,
-  `Attachment Type` enum('PDF','Image','Compresed','Spreadsheet','Text','Word','Other') NOT NULL DEFAULT 'Other',
+  `Attachment Type` enum('PDF','Image','Compressed','Spreadsheet','Text','Word','Other') NOT NULL DEFAULT 'Other',
   `Attachment Data` longblob NOT NULL,
   `Attachment File Checksum` varchar(32) NOT NULL,
   `Attachment File Size` mediumint(8) unsigned NOT NULL,
@@ -1499,7 +1499,7 @@ CREATE TABLE `Barcode Asset Bridge` (
   `Barcode Asset Key` mediumint(9) DEFAULT NULL,
   `Barcode Asset Assigned Date` datetime DEFAULT NULL,
   `Barcode Asset Withdrawn Date` datetime DEFAULT NULL,
-  UNIQUE KEY `Barcode Asset Type` (`Barcode Asset Type`,`Barcode Asset Key`,`Barcode Asset Status`) USING BTREE,
+  UNIQUE KEY `Barcode Asset Type` (`Barcode Asset Type`,`Barcode Asset Key`,`Barcode Asset Status`,`Barcode Asset Barcode Key`) USING BTREE,
   KEY `Barcode Asset Status` (`Barcode Asset Status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -3007,7 +3007,7 @@ CREATE TABLE `Deal Dimension` (
   `Deal Description` text,
   `Deal Term Allowances` text,
   `Deal Term Allowances Label` text,
-  `Deal Trigger` enum('Order','Department','Family','Product','Customer','Customer Category','Customer List') NOT NULL,
+  `Deal Trigger` enum('Order','Category','Department','Family','Product','Customer','Customer Category','Customer List') NOT NULL,
   `Deal Trigger Key` mediumint(9) NOT NULL DEFAULT '0',
   `Deal Trigger XHTML Label` varchar(255) NOT NULL,
   `Deal Terms Type` enum('Department Quantity Ordered','Every Order','Family For Every Quantity Any Product Ordered','Department For Every Quantity Any Product Ordered','Voucher AND Order Interval','Amount AND Order Number','Amount AND Order Interval','Voucher AND Order Number','Voucher AND Amount','Amount','Order Total Net Amount','Order Total Net Amount AND Order Number','Order Total Net Amount AND Shipping Country','Order Total Net Amount AND Order Interval','Order Items Net Amount','Order Items Net Amount AND Order Number','Order Items Net Amount AND Shipping Country','Order Items Net Amount AND Order Interval','Order Total Amount','Order Total Amount AND Order Number','Order Total Amount AND Shipping Country','Order Total Amount AND Order Interval','Order Interval','Product Quantity Ordered','Family Quantity Ordered','Order Number','Shipping Country','Voucher','Department For Every Quantity Ordered','Family For Every Quantity Ordered','Product For Every Quantity Ordered') NOT NULL,
@@ -5579,6 +5579,7 @@ DROP TABLE IF EXISTS `Order Dimension`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Order Dimension` (
   `Order Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Order Class` enum('InWebsite','InProcess','Archived') NOT NULL DEFAULT 'InWebsite',
   `Order Date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'Date when the order where first placed',
   `Order Created Date` datetime DEFAULT NULL,
   `Order Checkout Submitted Payment Date` datetime DEFAULT NULL,
@@ -5790,7 +5791,8 @@ CREATE TABLE `Order Dimension` (
   KEY `Order Submitted by Customer Date` (`Order Submitted by Customer Date`),
   KEY `Order Send to Warehouse Date` (`Order Send to Warehouse Date`),
   KEY `Order Dispatched Date` (`Order Dispatched Date`),
-  KEY `Order Show in Warehouse Orders` (`Order Show in Warehouse Orders`)
+  KEY `Order Show in Warehouse Orders` (`Order Show in Warehouse Orders`),
+  KEY `Order Class` (`Order Class`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -12938,7 +12940,7 @@ CREATE TABLE `Staff Dimension` (
   `Staff Is Supervisor` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Staff Working Hours` text,
   `Staff Working Hours Per Week` float DEFAULT NULL,
-  `Staff Working Hours Per Week Metadata` varchar(255) DEFAULT NULL,
+  `Staff Working Hours Per Week Metadata` varchar(255) NOT NULL,
   `Staff Salary` text,
   `Staff Warehouse Key` mediumint(8) unsigned DEFAULT NULL,
   PRIMARY KEY (`Staff Key`),
@@ -14168,7 +14170,7 @@ CREATE TABLE `Store Dimension` (
   `Store Avg with Sale Day Sales` float NOT NULL DEFAULT '0',
   `Store STD with Sale Day Sales` float NOT NULL DEFAULT '0',
   `Store Max Day Sales` float NOT NULL DEFAULT '0',
-  `Store Locale` enum('en_GB','de_DE','fr_FR','es_ES','pl_PL','it_IT','sk_SK','pt_PT') DEFAULT 'en_GB',
+  `Store Locale` enum('en_GB','de_DE','fr_FR','es_ES','pl_PL','it_IT','sk_SK','pt_PT','hu_HU','da_DK','nl_NL','cs_CZ') DEFAULT 'en_GB',
   `Store Timezone` varchar(64) NOT NULL DEFAULT 'Europe/London',
   `Store Sticky Note` text,
   `Store Page Key` mediumint(8) unsigned DEFAULT NULL,
@@ -17000,7 +17002,7 @@ CREATE TABLE `Upload Record Dimension` (
   `Upload Record Status` enum('InProcess','Done') NOT NULL DEFAULT 'InProcess',
   `Upload Record State` enum('InProcess','OK','Error','Warning','Cancelled','NoChange') NOT NULL DEFAULT 'InProcess',
   `Upload Record Date` datetime DEFAULT NULL,
-  `Upload Record Message Code` text,
+  `Upload Record Message Code` varchar(255) DEFAULT NULL,
   `Upload Record Message Metadata` text,
   `Upload Record Data` longblob NOT NULL,
   `Upload Record Object Key` int(10) unsigned DEFAULT NULL,
@@ -18009,4 +18011,4 @@ CREATE TABLE `todo_users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-04-06 13:12:15
+-- Dump completed on 2017-04-17 18:22:00
