@@ -2264,12 +2264,27 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
         $subtabs[$data['subtab']]['selected'] = true;
     }
 
+
+    foreach($tabs as $key=>$tab){
+        if(isset($tab['quantity_data'])) {
+
+
+            $tabs[$key]['label'].=sprintf(' <span class=\'discreet\'>(%s)</span>',$data[$tab['quantity_data']['object']]->get($tab['quantity_data']['field'])  );
+
+
+        }
+    }
+
+
     $_content = array(
         'tabs'    => $tabs,
         'subtabs' => $subtabs
 
 
     );
+
+
+
 
 
     if ($data['section'] == 'category') {
@@ -2399,7 +2414,7 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
 
         }
     }
-    // print_r($_content['tabs']);
+    //print_r($_content['tabs']);
     // print_r($_content['subtabs']);
 
     $smarty->assign('_content', $_content);

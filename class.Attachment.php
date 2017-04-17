@@ -160,9 +160,7 @@ class Attachment extends DB_Table {
 
     function create_thumbnail() {
         include_once 'class.Image.php';
-        if (preg_match(
-            '/application\/pdf/', $this->data['Attachment MIME Type']
-        )) {
+        if (preg_match('/application\/pdf/', $this->data['Attachment MIME Type'])) {
             $tmp_file = 'server_files/tmp/attch'.date('U').$this->data['Attachment File Checksum'];
 
 
@@ -172,9 +170,7 @@ class Attachment extends DB_Table {
             $im = new imagick($tmp_file_name.'[0]');
 
 
-        } elseif (preg_match(
-            '/image\/(png|jpg|gif|jpeg)/', $this->data['Attachment MIME Type']
-        )) {
+        } elseif (preg_match('/image\/(png|jpg|gif|jpeg)/', $this->data['Attachment MIME Type'])) {
 
             $tmp_file      = 'server_files/tmp/attch'.date('U').$this->data['Attachment File Checksum'];
             $tmp_file_name = $tmp_file;
