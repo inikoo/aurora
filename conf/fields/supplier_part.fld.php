@@ -502,7 +502,7 @@ $supplier_part_fields[] = array(
 
         array(
             'id'              => 'Supplier_Part_Unit_Extra_Cost',
-            'render'=>false,
+            'render'          => false,
             'edit'            => 'amount_percentage',
             'locked'          => ($part_scope ? 1 : 0),
             'value'           => htmlspecialchars(
@@ -525,13 +525,9 @@ $supplier_part_fields[] = array(
             'id'              => 'Supplier_Part_Unit_Extra_Cost_Percentage',
             'edit'            => 'percentage',
             'locked'          => ($part_scope ? 1 : 0),
-            'value'           => htmlspecialchars(
-                $object->get('Supplier Part Unit Extra Cost Percentage')
-            ),
+            'value'           => htmlspecialchars($object->get('Supplier Part Unit Extra Cost Percentage')),
             'formatted_value' => $object->get('Unit Extra Cost Percentage'),
-            'label'           => ucfirst(
-                $object->get_field_label('Supplier Part Unit Extra Cost Percentage')
-            ),
+            'label'           => ucfirst($object->get_field_label('Supplier Part Unit Extra Cost Percentage')),
             'required'        => false,
             'placeholder'     => ($part_scope ? '' : '%'),
             'type'            => 'value'
@@ -542,33 +538,21 @@ $supplier_part_fields[] = array(
             'id'   => 'Part_Unit_Price',
             'edit' => 'amount_margin',
 
-            'value'           => htmlspecialchars(
-                $object->get('Part Part Unit Price')
-            ),
+            'value'           => htmlspecialchars($object->get('Part Part Unit Price')),
             'formatted_value' => $object->get('Part Unit Price'),
-            'label'           => ucfirst(
-                $object->get_field_label('Part Unit Price')
-            ),
+            'label'           => ucfirst($object->get_field_label('Part Unit Price')),
             'required'        => false,
-            'placeholder'     => sprintf(
-                _('amount in %s or margin (%%)'), $account->get('Currency')
-            ),
+            'placeholder'     => sprintf(_('amount in %s or margin (%%)'), $account->get('Currency')),
             'type'            => 'value'
         ),
         array(
             'id'              => 'Part_Unit_RRP',
             'edit'            => 'amount_margin',
-            'value'           => htmlspecialchars(
-                $object->get('Part Part Unit RRP')
-            ),
+            'value'           => htmlspecialchars($object->get('Part Part Unit RRP')),
             'formatted_value' => $object->get('Part Unit RRP'),
-            'label'           => ucfirst(
-                $object->get_field_label('Part Unit RRP')
-            ),
+            'label'           => ucfirst($object->get_field_label('Part Unit RRP')),
             'required'        => false,
-            'placeholder'     => sprintf(
-                _('amount in %s or margin (%%)'), $account->get('Currency')
-            ),
+            'placeholder'     => sprintf(_('amount in %s or margin (%%)'), $account->get('Currency')),
             'type'            => 'value'
         ),
 

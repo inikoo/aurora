@@ -43,9 +43,7 @@ class SupplierPart extends DB_Table {
     function get_data($key, $tag) {
 
         if ($key == 'id') {
-            $sql = sprintf(
-                "SELECT * FROM `Supplier Part Dimension` WHERE `Supplier Part Key`=%d", $tag
-            );
+            $sql = sprintf("SELECT * FROM `Supplier Part Dimension` WHERE `Supplier Part Key`=%d", $tag);
         } else {
             return;
         }
@@ -1484,6 +1482,54 @@ class SupplierPart extends DB_Table {
                         return $this->data['Supplier Part '.$key];
                         break;
                 }
+                break;
+
+            case 'Part Unit Price':
+
+
+                if ($this->part->data['Part Unit Price'] == '') {
+                    return '';
+                }
+                include_once 'utils/natural_language.php';
+                $unit_price = money(
+                    $this->part->data['Part Unit Price'], $account->get('Account Currency')
+                );
+
+                $price_other_info = '';
+                if ($this->part->data['Part Units Per Package'] != 1 and is_numeric(
+                        $this->part->data['Part Units Per Package']
+                    )
+                ) {
+                    $price_other_info = '('.money(
+                            $this->part->data['Part Unit Price'] * $this->part->data['Part Units Per Package'], $account->get('Account Currency')
+                        ).' '._('per SKO').'), ';
+                }
+
+
+                if ($this->part->data['Part Units Per Package'] != 0 and is_numeric($this->part->data['Part Units Per Package'])) {
+
+                    include_once 'utils/currency_functions.php';
+                    $exchange       = currency_conversion(
+                        $this->db, $this->data['Supplier Part Currency Code'], $account->get('Account Currency'), '- 1 day'
+                    );
+
+                    $unit_margin = $this->part->data['Part Unit Price'] - $this->data['Supplier Part Unit Cost'] *$exchange;
+
+                    $price_other_info .= sprintf(
+                        '<span class="'.($unit_margin < 0 ? 'error' : '').'">'._('margin %s').'</span>', percentage($unit_margin, $this->part->data['Part Unit Price'])
+                    );
+                }
+
+                $price_other_info = preg_replace(
+                    '/^, /', '', $price_other_info
+                );
+                if ($price_other_info != '') {
+                    $unit_price .= ' <span class="discreet">'.$price_other_info.'</span>';
+                }
+
+                return $unit_price;
+                
+                
                 break;
             default:
                 if (preg_match('/^Part /', $key)) {

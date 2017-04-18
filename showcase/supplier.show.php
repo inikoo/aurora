@@ -15,6 +15,8 @@ function get_supplier_showcase($data) {
     global $smarty;
 
     $supplier = $data['_object'];
+
+
     if (!$supplier->id) {
         return "";
     }

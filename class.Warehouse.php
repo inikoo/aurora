@@ -260,7 +260,7 @@ class Warehouse extends DB_Table {
             );
 
             $account->add_subject_history(
-                $history_data, true, 'No', 'Changes', $account->get_object_name(), $account->id()
+                $history_data, true, 'No', 'Changes', $account->get_object_name(), $account->id
             );
 
 

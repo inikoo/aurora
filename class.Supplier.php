@@ -723,7 +723,7 @@ class Supplier extends SubjectSupplier {
                 if ($row['num'] > 0) {
                     $this->error      = true;
                     $this->msg        = sprintf(
-                        _('Duplicated reference (%s)'), $data['Supplier Part Reference']
+                        _('Duplicated supplier part reference (%s)'), $data['Supplier Part Reference']
                     );
                     $this->error_code = 'duplicate_supplier_part_reference';
                     $this->metadata   = $data['Supplier Part Reference'];
@@ -756,9 +756,7 @@ class Supplier extends SubjectSupplier {
             if ($row = $result->fetch()) {
                 if ($row['num'] > 0) {
                     $this->error      = true;
-                    $this->msg        = sprintf(
-                        _('Duplicated reference (%s)'), $data['Part Reference']
-                    );
+                    $this->msg        = sprintf(_('Duplicated reference (%s)'), $data['Part Reference']);
                     $this->error_code = 'duplicate_part_reference';
                     $this->metadata   = $data['Part Reference'];
 
@@ -996,7 +994,7 @@ class Supplier extends SubjectSupplier {
 
             if ($supplier_part->new ) {
                 $this->new_object = true;
-                $this->update_supplier_parts();
+
 
 
                 if (isset($data['Part Part Materials'])) {
@@ -1093,6 +1091,7 @@ class Supplier extends SubjectSupplier {
                     
                     
                     $supplier_part->update_historic_object();
+                    $this->update_supplier_parts();
                     $part->update_cost();
                 } else {
 
@@ -1251,7 +1250,7 @@ class Supplier extends SubjectSupplier {
                 //	print $sql;
                 if ($result = $this->db->query($sql)) {
                     if ($row = $result->fetch()) {
-                        //print_r($row);
+                        print_r($row);
                         $supplier_number_active_parts = $row['num'];
                         if ($row['num'] > 0) {
                             $supplier_number_surplus_parts      = $row['surplus'];
@@ -1311,8 +1310,14 @@ class Supplier extends SubjectSupplier {
         }
 
         $part_skus = '';
+
+      //  print "$sql\n";
+
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
+
+
+
                 if( is_numeric($row['Supplier Part Part SKU']) and $row['Supplier Part Part SKU']>0 ){
                     $part_skus .= $row['Supplier Part Part SKU'].',';
 
@@ -1323,6 +1328,9 @@ class Supplier extends SubjectSupplier {
             exit;
         }
         $part_skus = preg_replace('/\,$/', '', $part_skus);
+
+
+
 
         return $part_skus;
 
