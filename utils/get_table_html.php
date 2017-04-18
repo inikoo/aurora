@@ -141,9 +141,7 @@ $smarty->assign('table_view', $parameters['view']);
 
 if (array_key_exists('f_period', $parameters)) {
     $smarty->assign('f_period', $parameters['f_period']);
-    $smarty->assign(
-        'f_period_label', get_interval_db_name($parameters['f_period'])
-    );
+    $smarty->assign('f_period_label', get_interval_db_name($parameters['f_period']));
 
     $f_periods = array(
         'all'    => get_interval_db_name('all'),
@@ -160,6 +158,8 @@ if (array_key_exists('f_period', $parameters)) {
     $smarty->assign('f_periods', $f_periods);
 
 
+}else{
+    $smarty->assign('f_periods',array());
 }
 
 
@@ -180,13 +180,20 @@ if (array_key_exists('frequency', $parameters)) {
 
     $smarty->assign('frequencies', $frequencies);
 
+}else{
+    $smarty->assign('frequencies',array());
 }
 
 if (array_key_exists('elements', $parameters)) {
     $smarty->assign('elements', $parameters['elements']);
+}else{
+    $smarty->assign('elements', array());
 }
+
 if (array_key_exists('elements_type', $parameters)) {
     $smarty->assign('elements_type', $parameters['elements_type']);
+}else{
+    $smarty->assign('elements_type', '');
 }
 
 

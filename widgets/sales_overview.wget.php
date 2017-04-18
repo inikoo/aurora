@@ -556,7 +556,7 @@ function get_dashboard_sales_overview($db, $account, $user, $smarty, $type,$sub_
         return $smarty->fetch('dashboard/sales_overview.mobile.dbard.tpl');
     } else {
 
-        
+
 
         return $smarty->fetch('dashboard/sales_overview.dbard.tpl');
     }

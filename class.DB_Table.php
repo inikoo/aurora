@@ -608,7 +608,7 @@ abstract class DB_Table extends stdClass {
 
         $table=$this->get_object_name().' History Bridge';
 
-        $table=($this->get_object_name() == 'Category' ? $this->subject_table_name.' Category' : $this->get_object_name()).' History Bridge';
+        $table=($this->get_object_name() == 'Category' ? $this->subject_table_name : $this->get_object_name()).' History Bridge';
 
         switch ($this->get_object_name()) {
 
