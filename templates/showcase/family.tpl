@@ -1,3 +1,5 @@
+{include file="sticky_note.tpl" value=$category->get('Sticky Note') object="Category" key="{$category->id}" field="Category_Sticky_Note"  }
+
 <div class="name_and_categories">
 
     <span class="strong">{$category->get('Label')}</span>
@@ -25,7 +27,7 @@
             </div>
             {include file='upload_main_image.tpl' object='Category'  key=$category->id class="{if $image_key!=''}hide{/if}"}
         </div>
-        {include file='sticky_note.tpl' object='Category'  key=$category->id sticky_note_field='Category_Sticky_Note' _object=$category}
+
 
 
         <div style="clear:both">

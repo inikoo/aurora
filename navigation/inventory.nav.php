@@ -399,6 +399,13 @@ function get_part_navigation($data, $smarty, $user, $db, $account) {
 
     }
 
+    $right_buttons[] = array(
+        'icon'  => 'sticky-note',
+        'title' => _('Sticky note'),
+        'id'    => 'sticky_note_button',
+        'class' => ($object->get('Sticky Note') == '' ? '' : 'hide')
+    );
+
 
     $_content = array(
         'sections_class' => '',
