@@ -608,12 +608,17 @@ abstract class DB_Table extends stdClass {
 
         $table=$this->get_object_name().' History Bridge';
 
+        $table=($this->get_object_name() == 'Category' ? $this->subject_table_name.' Category' : $this->get_object_name()).' History Bridge';
+
         switch ($this->get_object_name()) {
+
+            case 'Page':
+                $where_field = 'Webpage Key';
+                $table='Webpage History Bridge';
+                break;
+
             case 'Part':
-
-
-
-                $where_field = 'Part SKU';
+               $where_field = 'Part SKU';
                 break;
             case 'Product':
                 $where_field = 'Product ID';
@@ -625,7 +630,7 @@ abstract class DB_Table extends stdClass {
 
 
         $sql = sprintf(
-            'SELECT count(*) AS num FROM `%s History Bridge` WHERE  `%s`=%d ', addslashes( ($this->get_object_name() == 'Category' ? $this->subject_table_name.' Category' : $this->get_object_name())), $where_field, $this->id
+            'SELECT count(*) AS num FROM `%s` WHERE  `%s`=%d ', $table, $where_field, $this->id
         );
 
         $sql = sprintf(
