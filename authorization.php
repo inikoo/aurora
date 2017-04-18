@@ -66,13 +66,8 @@ define("TIMEZONE", $account->data['Account Timezone']);
 
 
 include_once 'class.Auth.php';
-require_once "class.Session.php";
 include_once 'class.User.php';
 
-//session_save_path('server_files/tmp');
-ini_set('session.gc_maxlifetime', 57600); // 16 hours
-ini_set('session.gc_probability', 1);
-ini_set('session.gc_divisor', 100);
 session_start();
 
 

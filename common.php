@@ -69,10 +69,6 @@ if ($account->get('Timezone')) {
 
 require_once 'utils/modules.php';
 
-//session_save_path('server_files/tmp');
-ini_set('session.gc_maxlifetime', 57600); // 16 hours
-ini_set('session.gc_probability', 1);
-ini_set('session.gc_divisor', 100);
 session_start();
 
 
