@@ -149,6 +149,9 @@
             <td class="orders_amount aright {if $type!='orders' or $orders_view_type=='numbers'}hide{/if}">{t}In dispatch area{/t}</td>
 
         </tr>
+
+
+
         {foreach from=$sales_overview item=record}
             <tbody class="data">
             <tr class="{$record.class} small_row">
@@ -192,39 +195,39 @@
 
                 <td id="orders_overview_in_basket_{$record.id}"
                     onclick="change_view('orders/{$record.id}',{ parameters: { period:'{$period}',elements_type:'type'},element:{ type:{ Order:1,Sample:1,Donation:1,Replacements:'',Shortages:''}} } )"
-                    class="link orders width_150 aright {if $type!='orders' or $orders_view_type=='amounts'}hide{/if}">{$record.in_basket.value}</td>
+                    class="link orders width_150 aright {if $type!='orders' or $orders_view_type=='amounts'}hide{/if}">{if isset($record.in_basket.value)}{$record.in_basket.value}{/if}</td>
                 <td id="orders_overview_in_basket_amount_{$record.id}"
-                    class="orders_amount width_150 aright {if $type!='orders'  or $orders_view_type=='numbers'}hide{/if}">{$record.in_basket_amount.value}</td>
+                    class="orders_amount width_150 aright {if $type!='orders'  or $orders_view_type=='numbers'}hide{/if}">{if isset($record.in_basket_amount.value)}{$record.in_basket_amount.value}{/if}</td>
 
                 <td id="orders_overview_in_process_not_paid{$record.id}"
                     onclick="change_view('orders/{$record.id}',{ parameters: { period:'{$period}',elements_type:'type'},element:{ type:{ Order:1,Sample:1,Donation:1,Replacements:'',Shortages:''}} } )"
-                    class="link orders width_150 aright {if $type!='orders' or $orders_view_type=='amounts'}hide{/if}">{$record.in_process_not_paid.value}</td>
+                    class="link orders width_150 aright {if $type!='orders' or $orders_view_type=='amounts'}hide{/if}">{if isset($record.in_process_not_paid.value)}{$record.in_process_not_paid.value}{/if}</td>
                 <td id="orders_overview_in_process_not_paid_amount_{$record.id}"
-                    class="orders_amount width_150 aright {if $type!='orders'  or $orders_view_type=='numbers'}hide{/if}">{$record.in_process_amount_not_paid.value}</td>
+                    class="orders_amount width_150 aright {if $type!='orders'  or $orders_view_type=='numbers'}hide{/if}">{if isset($record.in_process_amount_not_paid.value)}{$record.in_process_amount_not_paid.value}{/if}</td>
 
                 <td id="orders_overview_in_process_paid_{$record.id}"
                     onclick="change_view('orders/{$record.id}',{ parameters: { period:'{$period}',elements_type:'type'},element:{ type:{ Order:1,Sample:1,Donation:1,Replacements:'',Shortages:''}} } )"
-                    class="link orders width_150 aright {if $type!='orders' or $orders_view_type=='amounts'}hide{/if}">{$record.in_process_paid.value}</td>
+                    class="link orders width_150 aright {if $type!='orders' or $orders_view_type=='amounts'}hide{/if}">{if isset($record.in_process_paid.value)}{$record.in_process_paid.value}{/if}</td>
                 <td id="orders_overview_in_process_paid_amount_{$record.id}"
-                    class="orders_amount width_150 aright {if $type!='orders' or $orders_view_type=='numbers'}hide{/if}">{$record.in_process_amount_paid.value}</td>
+                    class="orders_amount width_150 aright {if $type!='orders' or $orders_view_type=='numbers'}hide{/if}">{if isset($record.in_process_amount_paid.value)}{$record.in_process_amount_paid.value}{/if}</td>
 
                 <td id="orders_overview_in_warehouse_{$record.id}"
                     onclick="change_view('orders/{$record.id}',{ parameters: { period:'{$period}',elements_type:'type'},element:{ type:{ Order:1,Sample:1,Donation:1,Replacements:'',Shortages:''}} } )"
-                    class="link orders width_150 aright {if $type!='orders' or $orders_view_type=='amounts'}hide{/if}">{$record.in_warehouse.value}</td>
+                    class="link orders width_150 aright {if $type!='orders' or $orders_view_type=='amounts'}hide{/if}">{if isset($record.in_warehouse.value)}{$record.in_warehouse.value}{/if}</td>
                 <td id="orders_overview_in_warehouse_amount_{$record.id}"
-                    class="orders_amount width_150 aright {if $type!='orders' or $orders_view_type=='numbers'}hide{/if}">{$record.in_warehouse_amount.value}</td>
+                    class="orders_amount width_150 aright {if $type!='orders' or $orders_view_type=='numbers'}hide{/if}">{if isset($record.in_warehouse_amount.value)}{$record.in_warehouse_amount.value}{/if}</td>
                 <td id="orders_overview_packed_{$record.id}"
                     onclick="change_view('orders/{$record.id}',{ parameters: { period:'{$period}',elements_type:'type'},element:{ type:{ Order:1,Sample:1,Donation:1,Replacements:'',Shortages:''}} } )"
-                    class="link orders width_150 aright {if $type!='orders' or $orders_view_type=='amounts'}hide{/if}">{$record.packed.value}</td>
+                    class="link orders width_150 aright {if $type!='orders' or $orders_view_type=='amounts'}hide{/if}">{if isset($record.packed.value)}{$record.packed.value}{/if}</td>
                 <td id="orders_overview_packed_amount_{$record.id}"
-                    class="orders_amount width_150 aright {if $type!='orders' or $orders_view_type=='numbers'}hide{/if}">{$record.packed_amount.value}</td>
+                    class="orders_amount width_150 aright {if $type!='orders' or $orders_view_type=='numbers'}hide{/if}">{if isset($record.packed_amount.value)}{$record.packed_amount.value}{/if}</td>
 
 
                 <td id="orders_overview_in_dispatch_area_{$record.id}"
                     onclick="change_view('orders/{$record.id}',{ parameters: { period:'{$period}',elements_type:'type'},element:{ type:{ Order:1,Sample:1,Donation:1,Replacements:'',Shortages:''}} } )"
-                    class="link orders width_150 aright padding_right_10 {if $type!='orders' or $orders_view_type=='amounts'}hide{/if}">{$record.in_dispatch_area.value}</td>
+                    class="link orders width_150 aright padding_right_10 {if $type!='orders' or $orders_view_type=='amounts'}hide{/if}">{if isset($record.in_dispatch_area.value)}{$record.in_dispatch_area.value}{/if}</td>
                 <td id="orders_overview_in_dispatch_area_amount_{$record.id}"
-                    class="orders_amount width_150 aright {if $type!='orders' or $orders_view_type=='numbers'}hide{/if}">{$record.in_dispatch_area_amount.value}</td>
+                    class="orders_amount width_150 aright {if $type!='orders' or $orders_view_type=='numbers'}hide{/if}">{if isset($record.in_dispatch_area_amount.value)}{$record.in_dispatch_area_amount.value}{/if}</td>
 
 
             </tr>

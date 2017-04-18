@@ -555,6 +555,9 @@ function get_dashboard_sales_overview($db, $account, $user, $smarty, $type,$sub_
     if ($display_device_version =='mobile') {
         return $smarty->fetch('dashboard/sales_overview.mobile.dbard.tpl');
     } else {
+
+        
+
         return $smarty->fetch('dashboard/sales_overview.dbard.tpl');
     }
 }
