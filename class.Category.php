@@ -136,7 +136,7 @@ class Category extends DB_Table {
             } elseif ($this->data['Category Scope'] == 'Product') {
 
 
-                $this->subject_table_name = 'Product';
+                $this->subject_table_name = 'Product Category';
                 $sql                      = sprintf(
                     "SELECT * FROM `Product Category Dimension` WHERE `Product Category Key`=%d", $this->id
                 );
@@ -155,7 +155,7 @@ class Category extends DB_Table {
             } elseif ($this->data['Category Scope'] == 'Supplier') {
 
 
-                $this->subject_table_name = 'Supplier';
+                $this->subject_table_name = 'Supplier Category';
 
                 $sql = sprintf(
                     "SELECT * FROM `Supplier Category Dimension` WHERE `Supplier Category Key`=%d", $this->id
@@ -183,7 +183,7 @@ class Category extends DB_Table {
 
 
             } elseif ($this->data['Category Subject'] == 'Invoice') {
-                $this->subject_table_name = 'Invoice';
+                $this->subject_table_name = 'Invoice Category';
 
                 $sql = sprintf(
                     "SELECT * FROM `Invoice Category Dimension` WHERE `Invoice Category Key`=%d", $this->id
@@ -438,7 +438,7 @@ class Category extends DB_Table {
                 'History Abstract' => $created_msg,
                 'History Details'  => ''
             );
-            $this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id());
+            $this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id);
 
 
             $this->update_branch_tree();
@@ -1002,10 +1002,17 @@ class Category extends DB_Table {
                 switch ($key) {
 
 
+                    case 'Parts':
+
+                        return number($this->data['Part Category In Process']  +$this->data['Part Category Active'] +$this->data['Part Category Discontinuing']  );
+                        break;
+
                     case 'In Process':
                     case 'Active':
                     case 'Discontinuing':
                     case 'Discontinued':
+                    case 'Number Images':
+                    case 'Number History Records':
                         return number($this->data['Part Category '.$key]);
                         break;
 
@@ -2963,7 +2970,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                     $new_formatted_value = $this->get('Status');
 
                     if ($new_formatted_value != $old_formatted_value) {
-                        $this->add_changelog_record($field, $old_formatted_value, $new_formatted_value, '', $this->get_object_name(), $this->get_main_id());
+                        $this->add_changelog_record($field, $old_formatted_value, $new_formatted_value, '', $this->get_object_name(), $this->id);
                     }
 
 

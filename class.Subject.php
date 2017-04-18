@@ -681,7 +681,6 @@ class Subject extends DB_Table {
                 return true;
                 break;
 
-
             case 'History Note':
 
 

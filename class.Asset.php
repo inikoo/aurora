@@ -114,7 +114,7 @@ class Asset extends DB_Table {
                                 );
 
                                 $this->add_subject_history(
-                                    $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id()
+                                    $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
                                 );
 
 

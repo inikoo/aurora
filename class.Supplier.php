@@ -273,7 +273,7 @@ class Supplier extends SubjectSupplier {
                 'Action'           => 'created'
             );
             $this->add_subject_history(
-                $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id()
+                $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
             );
             $this->new = true;
 
@@ -351,6 +351,9 @@ class Supplier extends SubjectSupplier {
         ) {
             return;
         }
+
+
+
 
 
         switch ($field) {
@@ -527,40 +530,45 @@ class Supplier extends SubjectSupplier {
 
                 $history_data = array(
                     'History Abstract' => sprintf(
-                        _("Supplier %s inlinked from agent %s"), $this->data['Supplier Code'], $agent->get('Code')
+                        _("Supplier %s unlinked from agent %s"), $this->data['Supplier Code'], $agent->get('Code')
                     ),
                     'History Details'  => '',
                     'Action'           => 'edited'
                 );
 
                 $this->add_subject_history(
-                    $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id()
+                    $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
                 );
 
                 break;
 
             default:
 
-
                 if (array_key_exists(
                     $field, $this->base_data('Supplier Data')
                 )) {
-                    //print "$field $value \n";
+
                     $this->update_table_field(
                         $field, $value, $options, 'Supplier', 'Supplier Data', $this->id
                     );
                 } else {
 
+
                     $this->update_field($field, $value, $options);
+
+
+
                 }
         }
+
+
 
 
     }
 
     function get($key) {
 
-        global $account;
+
         if (!$this->id) {
             return false;
         }
@@ -571,7 +579,20 @@ class Supplier extends SubjectSupplier {
         }
 
         switch ($key) {
+
+            case 'Number System Users':
+            case 'Number Attachments':
+            case 'Number Purchase Orders':
+            case 'Number Deliveries':
+            case 'Number Parts':
+            case 'Number Attachments':
+
+                return number($this->data['Supplier '.$key]);
+                break;
+
             default;
+
+
 
 
                 if (array_key_exists($key, $this->data)) {
@@ -1509,7 +1530,7 @@ class Supplier extends SubjectSupplier {
         );
 
         $this->add_subject_history(
-            $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id()
+            $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
         );
 
 
@@ -1530,7 +1551,7 @@ class Supplier extends SubjectSupplier {
         );
 
         $this->add_subject_history(
-            $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id()
+            $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
         );
 
 
@@ -1567,7 +1588,7 @@ class Supplier extends SubjectSupplier {
         );
 
         $this->add_subject_history(
-            $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id()
+            $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
         );
 
 

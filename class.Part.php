@@ -77,7 +77,7 @@ class Part extends Asset {
             }
         }
 
-       // print $sql;
+        // print $sql;
 
         if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id  = $this->data['Part SKU'];
@@ -230,19 +230,17 @@ class Part extends Asset {
                 'History Details'  => ''
             );
             $this->add_subject_history(
-                $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id()
+                $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
             );
 
 
-          //  print 'x'.$this->get('Part Family Category Key')."\n";
+            //  print 'x'.$this->get('Part Family Category Key')."\n";
 
             if ($this->get('Part Family Category Key')) {
                 $family         = new Category(
                     $this->get('Part Family Category Key')
                 );
                 $family->editor = $this->editor;
-
-
 
 
                 if ($family->id) {
@@ -353,6 +351,11 @@ class Part extends Asset {
 
         switch ($key) {
 
+            case 'Products Numbers':
+
+                return number($this->data['Part Number Active Products']).",<span class=' very_discreet'>".number($this->data['Part Number No Active Products']).'</span>';
+
+                break;
 
             case 'Stock Status Icon':
 
@@ -1241,19 +1244,17 @@ class Part extends Asset {
         );
 
 
-        if ($result=$this->db->query($sql)) {
+        if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
                 $stock      = round($row['stock'], 3);
                 $in_process = round($row['in_process'], 3);
                 $value      = $row['value'];
-        	}
-        }else {
-        	print_r($error_info=$this->db->errorInfo());
-        	print "$sql\n";
-        	exit;
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
-
-
 
 
         return array(
@@ -1354,19 +1355,18 @@ class Part extends Asset {
         $sql = sprintf("SELECT `Date` FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d AND `Inventory Transaction Type` LIKE 'Associate' ORDER BY `Date` DESC", $this->id);
 
 
-        if ($result=$this->db->query($sql)) {
+        if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
                 $date     = $row['Date'];
                 $interval = (date('U') - strtotime($date)) / 3600 / 24;
-        	}else{
+            } else {
                 $interval = 0;
             }
-        }else {
-        	print_r($error_info=$this->db->errorInfo());
-        	print "$sql\n";
-        	exit;
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
-
 
 
         if ($this->data['Part Current Stock'] == '' or $this->data['Part Current Stock'] < 0) {
@@ -1429,12 +1429,12 @@ class Part extends Asset {
         }
 
 
-        $this->update(array(
-            'Part Days Available Forecast'=> $this->data['Part Days Available Forecast'],
-            'Part XHTML Available for Forecast'=> $this->data['Part XHTML Available For Forecast']
-                      ),'no_history');
-
-
+        $this->update(
+            array(
+                'Part Days Available Forecast'      => $this->data['Part Days Available Forecast'],
+                'Part XHTML Available for Forecast' => $this->data['Part XHTML Available For Forecast']
+            ), 'no_history'
+        );
 
 
     }
@@ -1834,7 +1834,7 @@ class Part extends Asset {
 
                     $materials_data = parse_materials($value, $this->editor);
 
-                   // print_r($materials_data);
+                    // print_r($materials_data);
 
                     $sql = sprintf(
                         "DELETE FROM `Part Material Bridge` WHERE `Part SKU`=%d ", $this->sku
@@ -2433,20 +2433,19 @@ class Part extends Asset {
                 $this->sku, $this->warehouse_key
             );
 
-            if ($result=$this->db->query($sql)) {
+            if ($result = $this->db->query($sql)) {
                 if ($row = $result->fetch()) {
                     $last_record_key  = $row['Part Availability for Products Key'];
                     $last_record_date = $row['date'];
-            	}else {
+                } else {
                     $last_record_key  = false;
                     $last_record_date = false;
                 }
-            }else {
-            	print_r($error_info=$this->db->errorInfo());
-            	print "$sql\n";
-            	exit;
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
             }
-
 
 
             $new_date_formatted = gmdate('Y-m-d H:i:s');
@@ -2704,7 +2703,6 @@ class Part extends Asset {
     }
 
 
-
     function get_stock($date) {
         $stock = 0;
         $value = 0;
@@ -2714,17 +2712,16 @@ class Part extends Asset {
         );
 
 
-        if ($result=$this->db->query($sql)) {
+        if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
                 $stock = $row['stock'];
                 $value = $row['value'];
-        	}
-        }else {
-        	print_r($error_info=$this->db->errorInfo());
-        	print "$sql\n";
-        	exit;
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
-
 
 
         return array(
@@ -2921,29 +2918,26 @@ class Part extends Asset {
         );
 
 
-        if ($result=$this->db->query($sql)) {
-        		foreach ($result as $row) {
-                    if (array_key_exists($row['Location Key'], $locations_data)) {
-                        $locations_data[$row['Location Key']] += $row['Inventory Transaction Quantity'];
-                    } else {
-                        $locations_data[$row['Location Key']] = $row['Inventory Transaction Quantity'];
-                    }
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                if (array_key_exists($row['Location Key'], $locations_data)) {
+                    $locations_data[$row['Location Key']] += $row['Inventory Transaction Quantity'];
+                } else {
+                    $locations_data[$row['Location Key']] = $row['Inventory Transaction Quantity'];
+                }
 
-                    $stock += $row['Inventory Transaction Quantity'];
-                    $sql   = sprintf(
-                        "UPDATE `Inventory Transaction Fact` SET `Part Stock`=%f,`Part Location Stock`=%f WHERE `Inventory Transaction Key`=%d", $stock, $locations_data[$row['Location Key']],
-                        $row['Inventory Transaction Key']
-                    );
-                    $this->db->exec($sql);
-        		}
-        }else {
-        		print_r($error_info=$this->db->errorInfo());
-        		print "$sql\n";
-        		exit;
+                $stock += $row['Inventory Transaction Quantity'];
+                $sql   = sprintf(
+                    "UPDATE `Inventory Transaction Fact` SET `Part Stock`=%f,`Part Location Stock`=%f WHERE `Inventory Transaction Key`=%d", $stock, $locations_data[$row['Location Key']],
+                    $row['Inventory Transaction Key']
+                );
+                $this->db->exec($sql);
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
-
-
-
 
 
     }
@@ -3176,7 +3170,6 @@ class Part extends Asset {
     }
 
 
-
     function delete($metadata = false) {
 
 
@@ -3203,7 +3196,7 @@ class Part extends Asset {
         );
 
         $this->add_subject_history(
-            $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id()
+            $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
         );
 
 
@@ -3395,11 +3388,6 @@ class Part extends Asset {
         );
 
 
-
-
-
-
-
         $supplier_part = new SupplierPart('find', $data, 'create');
 
 
@@ -3539,8 +3527,8 @@ class Part extends Asset {
         }
 
         $this->update_field('Part Cost', $cost, 'no_history');
+        $this->update_field('Part Number Supplier Parts', count($supplier_parts), 'no_history');
 
-        //print $this->get('Referece')." $cost\n";
 
         foreach ($this->get_products('objects') as $product) {
             $product->update_cost();
@@ -3715,5 +3703,56 @@ class Part extends Asset {
 
     }
 
+
+    function update_products_data() {
+
+
+        //'InProcess','Active','Suspended',,'Discontinued'
+
+        $active_products =0;
+        $no_active_products =0;
+
+
+        $sql = sprintf(
+            "SELECT count(*) AS num FROM `Product Part Bridge`  LEFT JOIN `Product Dimension` P ON (P.`Product ID`=`Product Part Product ID`)  WHERE `Product Part Part SKU`=%d  AND `Product Status` IN ('InProcess','Active','Discontinuing') ",
+            $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $active_products = $row['num'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+        $sql = sprintf(
+            "SELECT count(*) AS num FROM `Product Part Bridge`  LEFT JOIN `Product Dimension` P ON (P.`Product ID`=`Product Part Product ID`)  WHERE `Product Part Part SKU`=%d  AND `Product Status` IN ('Suspended','Discontinued') ",
+            $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $no_active_products = $row['num'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+        $this->update(
+            array(
+                'Part Number Active Products' => $active_products,
+                'Part Number No Active Products' => $no_active_products,
+
+            ), 'no_history'
+
+        );
+
+
+    }
 
 }

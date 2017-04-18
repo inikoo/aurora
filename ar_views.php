@@ -2265,13 +2265,18 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
     }
 
 
+   // print_r($tabs);
+
+
     foreach($tabs as $key=>$tab){
         if(isset($tab['quantity_data'])) {
-
-
             $tabs[$key]['label'].=sprintf(' <span class=\'discreet\'>(%s)</span>',$data[$tab['quantity_data']['object']]->get($tab['quantity_data']['field'])  );
+        }
+    }
 
-
+    foreach($subtabs as $key=>$subtab){
+        if(isset($subtab['quantity_data'])) {
+            $subtabs[$key]['label'].=sprintf(' <span class=\'discreet\'>(%s)</span>',$data[$subtab['quantity_data']['object']]->get($subtab['quantity_data']['field'])  );
         }
     }
 

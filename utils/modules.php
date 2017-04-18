@@ -14,55 +14,55 @@
 $_product = array(
     'type'           => 'object',
     'subtabs_parent' => array(
-        'product.sales.plot'           => 'product.sales',
-        'product.sales.history'        => 'product.sales',
-        'product.sales.calendar'       => 'product.sales',
-        'product.sales.info'       => 'product.sales',
-        'product.customers.customers'  => 'product.customers',
-        'product.customers.favourites' => 'product.customers',
-        'product.webpage.settings'      => 'product.webpage',
-        'product.webpage.preview'      => 'product.webpage',
-      //  'product.webpage.analytics'      => 'product.webpage',
-        'product.webpage.logbook'      => 'product.webpage',
+        'product.sales.plot'        => 'product.sales',
+        'product.sales.history'     => 'product.sales',
+        'product.sales.calendar'    => 'product.sales',
+        'product.sales.info'        => 'product.sales',
+        'product.customers'         => 'product.customers',
+        'product.customers.favored' => 'product.customers',
+        'product.webpage.settings'  => 'product.webpage',
+        'product.webpage.preview'   => 'product.webpage',
+        //  'product.webpage.analytics'      => 'product.webpage',
+        'product.webpage.logbook'   => 'product.webpage',
 
     ),
 
     'tabs' => array(
-        'product.details'   => array(
+        'product.details' => array(
             'label' => _('Data'),
             'icon'  => 'database',
             'title' => _('Details')
         ),
-        'product.webpage'    => array(
-            'label' => _('Website'),
-            'icon'  => 'globe',
+        'product.webpage' => array(
+            'label'   => _('Website'),
+            'icon'    => 'globe',
             'subtabs' => array(
-                'product.webpage.settings'  => array(
+                'product.webpage.settings' => array(
                     'label' => _('Settings'),
-                    'icon'=>'sliders'
+                    'icon'  => 'sliders'
                 ),
 
-                'product.webpage.preview'     => array(
+                'product.webpage.preview' => array(
                     'label' => _('Workshop'),
-                    'icon'=>'wrench'
+                    'icon'  => 'wrench'
                 ),
-                'product.webpage.logbook'     => array(
+                'product.webpage.logbook' => array(
                     'label' => _('Logbook'),
-                    'icon'=>'road'
+                    'icon'  => 'road'
                 ),
-            //    'product.webpage.analytics'  => array(
-            //        'label' => _('Analytics')
-            //    ),
+                //    'product.webpage.analytics'  => array(
+                //        'label' => _('Analytics')
+                //    ),
 
 
             )
         ),
 
-        'product.history'   => array(
+        'product.history' => array(
             'label' => _('History, notes'),
             'icon'  => 'sticky-note-o'
         ),
-        'product.sales'     => array(
+        'product.sales'   => array(
             'label'   => _('Sales'),
             'title'   => _('Sales'),
             'subtabs' => array(
@@ -89,75 +89,80 @@ $_product = array(
 
             )
         ),
-        'product.orders'    => array(
-            'label' => _('Orders'),
+        'product.orders'  => array(
+            'label'         => _('Orders'),
+            'quantity_data' => array(
+                'object' => '_object',
+                'field'  => 'Number Orders'
+            ),
 
         ),
-        'product.customers' => array(
-            'label'   => _('Customers'),
-            'subtabs' => array(
-                'product.customers.customers'  => array(
-                    'label' => _('Customers')
 
-                ),
-                'product.customers.favourites' => array(
-                    'label' => _(
-                        'Customers who favorited'
+        'product.customers' => array(
+            'label'         => _('Customers'),
+            'quantity_data' => array(
+                'object' => '_object',
+                'field'  => 'Customers Numbers'
+            ),
+            'subtabs'       => array(
+                'product.customers'         => array(
+                    'label'         => _('Customers'),
+                    'quantity_data' => array(
+                        'object' => '_object',
+                        'field'  => 'Number Customers'
                     ),
-                    'title' => _(
-                        'Customers who favorited'
-                    )
+                ),
+                'product.customers.favored' => array(
+                    'label'         => _('Customers who favored'),
+                    'quantity_data' => array(
+                        'object' => '_object',
+                        'field'  => 'Number Customers Favored'
+                    ),
+
                 ),
 
             )
         ),
+
+
+        /* To do
+
         'product.offers'    => array(
             'label' => _('Offers'),
             'title' => _('Offers')
         ),
+*/
 
 
-
-        /*
-        'product.website' => array(
-            'label'   => _('Website'),
-            'title'   => _('Website'),
-            'subtabs' => array(
-                'product.website.webpage' => array(
-                    'label' => _(
-                        'Webpage'
-                    ),
-                    'title' => _(
-                        'Product webpage'
-                    )
-                ),
-                'product.sales.pages'     => array(
-                    'label' => _(
-                        'Webpages'
-                    ),
-                    'title' => _(
-                        'Webpages where this product is on sale'
-                    )
-                ),
-
-            )
-        ),
-
-        */
         'product.history' => array(
-            'label' => _('History'),
-            'icon'  => 'road',
-            'class' => 'right icon_only'
+            'title'         => _('History/Notes'),
+            'label'         => '',
+            'quantity_data' => array(
+                'object' => '_object',
+                'field'  => 'Number History Records'
+            ),
+            'icon'          => 'road',
+            'class'         => 'right icon_only'
         ),
         'product.images'  => array(
-            'label' => _('Images'),
-            'icon'  => 'camera-retro',
-            'class' => 'right icon_only'
+            'title'         => _('Images'),
+            'label'         => '',
+            'quantity_data' => array(
+                'object' => '_object',
+                'field'  => 'Number Images'
+            ),
+            'icon'          => 'camera-retro',
+            'class'         => 'right icon_only'
         ),
         'product.parts'   => array(
-            'label' => _('Parts'),
-            'icon'  => 'square',
-            'class' => 'right icon_only'
+            'title'         => _('Parts'),
+            'label'         => '',
+            'quantity_data' => array(
+                'object' => '_object',
+                'field'  => 'Number of Parts'
+            ),
+            'icon'          => 'square',
+            'class'         => 'right icon_only'
         ),
 
     )
@@ -527,8 +532,7 @@ $modules = array(
         'sections'    => array(
 
 
-
-            'dashboard'          => array(
+            'dashboard' => array(
                 'type'      => 'navigation',
                 'label'     => _('Dashboard'),
                 'icon'      => 'tachometer',
@@ -540,7 +544,7 @@ $modules = array(
             ),
 
 
-            'basket_orders'          => array(
+            'basket_orders' => array(
                 'type'      => 'navigation',
                 'label'     => _('Orders in website'),
                 'icon'      => 'globe',
@@ -551,7 +555,7 @@ $modules = array(
                 )
             ),
 
-            'pending_orders'          => array(
+            'pending_orders' => array(
                 'type'      => 'navigation',
                 'label'     => _('Pending orders'),
                 'icon'      => 'shopping-cart',
@@ -940,7 +944,6 @@ $modules = array(
         'sections'    => array(
 
 
-
             'delivery_notes' => array(
                 'type'      => 'navigation',
                 'label'     => _('All delivery notes'),
@@ -1248,7 +1251,7 @@ $modules = array(
     ),
 
 
-    'websites_server'      => array(
+    'websites_server' => array(
 
         'parent'      => 'none',
         'parent_type' => 'none',
@@ -1268,21 +1271,20 @@ $modules = array(
 
     ),
 
-    'websites'              => array(
+    'websites'         => array(
         'section'     => 'dashboard',
         'parent'      => 'website',
         'parent_type' => 'key',
         'sections'    => array(
 
 
-
-            'website'  => array(
-                'type'      => 'navigation',
-                'label'     => '',
-                'title'     => _('Website'),
-                'icon'      => 'globe',
-                'reference' => 'website/%d',
-                'class'     => 'icon_only',
+            'website' => array(
+                'type'           => 'navigation',
+                'label'          => '',
+                'title'          => _('Website'),
+                'icon'           => 'globe',
+                'reference'      => 'website/%d',
+                'class'          => 'icon_only',
                 'subtabs_parent' => array(
                     'website.favourites.families'  => 'website.favourites',
                     'website.favourites.products'  => 'website.favourites',
@@ -1294,19 +1296,17 @@ $modules = array(
                     'website.reminders.families'   => 'website.reminders',
                     'website.reminders.products'   => 'website.reminders',
                     'website.root_nodes'           => 'website.content',
-                    'website.online_webpages'             => 'website.content',
-                    'website.offline_webpages'             => 'website.content',
+                    'website.online_webpages'      => 'website.content',
+                    'website.offline_webpages'     => 'website.content',
 
-                    'website.footer.preview'  => 'website.footer',
-                //    'website.footer.templates' => 'website.footer',
-                    'website.header.preview'  => 'website.header',
-               //     'website.header.templates' => 'website.header',
+                    'website.footer.preview' => 'website.footer',
+                    //    'website.footer.templates' => 'website.footer',
+                    'website.header.preview' => 'website.header',
+                    //     'website.header.templates' => 'website.header',
 
 
                     'website.templates.categories' => 'website.templates',
-                    'website.templates' => 'website.templates',
-
-
+                    'website.templates'            => 'website.templates',
 
 
                 ),
@@ -1432,19 +1432,17 @@ $modules = array(
                     ),
 
 
-
                     'website.templates' => array(
-                        'label'   => _('Templates')
-                        ,
+                        'label'   => _('Templates'),
                         'icon'    => 'code',
                         'subtabs' => array(
-                            'website.templates.categories'  => array(
+                            'website.templates.categories' => array(
                                 'label' => _(
                                     "Template categories"
                                 ),
                                 'icon'  => 'sitemap'
                             ),
-                            'website.templates'  => array(
+                            'website.templates'            => array(
                                 'label' => _(
                                     'Templates'
                                 ),
@@ -1462,7 +1460,7 @@ $modules = array(
                         ),
                         'icon'    => 'header',
                         'subtabs' => array(
-                            'website.header.preview'  => array(
+                            'website.header.preview' => array(
                                 'label' => _(
                                     'Preview'
                                 ),
@@ -1478,7 +1476,7 @@ $modules = array(
                         ),
                         'icon'    => 'minus',
                         'subtabs' => array(
-                            'website.footer.preview'  => array(
+                            'website.footer.preview' => array(
                                 'label' => _(
                                     'Preview'
                                 ),
@@ -1490,11 +1488,8 @@ $modules = array(
                     ),
 
 
-
-
                 )
             ),
-
 
 
             'webpages' => array(
@@ -1504,22 +1499,22 @@ $modules = array(
                 'reference' => 'webpages/%d',
 
                 'tabs' => array(
-                    'website.online_webpages'   => array(
+                    'website.online_webpages'  => array(
                         'label' => _('Online web pages'),
                         'icon'  => 'files-o'
                     ),
-                    'website.webpage.types'   => array(
+                    'website.webpage.types'    => array(
                         'label' => _('Web pages by type'),
                         'icon'  => 'server'
                     ),
-                    'website.root_nodes' => array(
+                    'website.root_nodes'       => array(
                         'label' => _('Sitemap'),
                         'icon'  => 'sitemap',
-                        'class'=>'hide'
+                        'class' => 'hide'
                     ),
-                    'website.offline_webpages'   => array(
+                    'website.offline_webpages' => array(
                         'label' => _('Offline web pages'),
-                        'class'=>'right icon_only',
+                        'class' => 'right icon_only',
                         'icon'  => 'eye-slash'
                     ),
 
@@ -1533,8 +1528,7 @@ $modules = array(
                 'tabs' => array(
 
 
-
-                    'webpage_type.webpages'   => array(
+                    'webpage_type.webpages' => array(
                         'label' => _(
                             'Versions'
                         ),
@@ -1559,7 +1553,7 @@ $modules = array(
                         'label' => _('Data'),
                         'icon'  => 'database'
                     ),
-                    'page.versions'   => array(
+                    'page.versions'  => array(
                         'label' => _(
                             'Versions'
                         ),
@@ -1596,7 +1590,7 @@ $modules = array(
                         'icon'  => 'database'
                     ),
 
-                    'page_version.preview'   => array(
+                    'page_version.preview' => array(
                         'label' => _(
                             'Preview'
                         ),
@@ -1724,7 +1718,7 @@ $modules = array(
             //'categories'=>array('label'=>_('Categories'),'title'=>_('Categories'),'icon'=>'sitemap','reference'=>'orders/categories/%d'),
         )
     ),
-    'products'              => array(
+    'products'         => array(
         'section'  => 'products',
         'sections' => array(
             /*
@@ -1751,13 +1745,13 @@ $modules = array(
 
                 ),
 
-                'tabs'      => array(
+                'tabs' => array(
                     'store.details' => array(
                         'label' => _('Data'),
                         'icon'  => 'database',
                         'title' => _('Details')
                     ),
-                    'store.sales'      => array(
+                    'store.sales'   => array(
                         'label'   => _('Sales'),
                         'subtabs' => array(
                             'store.sales.plot'     => array(
@@ -1851,11 +1845,11 @@ $modules = array(
                     'category.product.sales.history'  => 'category.sales',
                     'category.product.sales.calendar' => 'category.sales',
                     'category.product.sales.info'     => 'category.sales',
-                    'category.webpage.preview'     => 'category.webpage',
-                    'category.webpage.settings'     => 'category.webpage',
-                    'category.webpage.products'     => 'category.webpage',
-                    'category.webpage.analytics'     => 'category.webpage',
-                    'category.webpage.logbook'     => 'category.webpage'
+                    'category.webpage.preview'        => 'category.webpage',
+                    'category.webpage.settings'       => 'category.webpage',
+                    'category.webpage.products'       => 'category.webpage',
+                    'category.webpage.analytics'      => 'category.webpage',
+                    'category.webpage.logbook'        => 'category.webpage'
 
                 ),
                 'tabs'           => array(
@@ -1868,7 +1862,38 @@ $modules = array(
                             'Subcategories'
                         )
                     ),
-                    'category.subjects'   => array('label' => ''),
+
+
+
+
+
+
+                    'category.webpage'    => array(
+                        'label'   => _('Website'),
+                        'icon'    => 'globe',
+                        'subtabs' => array(
+                            'category.webpage.settings' => array(
+                                'label' => _('Settings'),
+                                'icon'  => 'sliders'
+                            ),
+
+                            'category.webpage.preview' => array(
+                                'label' => _('Workshop'),
+                                'icon'  => 'wrench'
+                            ),
+                            'category.webpage.logbook' => array(
+                                'label' => _('Logbook'),
+                                'icon'  => 'road'
+                            ),
+                            //   'category.webpage.analytics'  => array(
+                            //      'label' => _('Analytics'),
+                            //       'icon'=>'line-chart'
+                            //  ),
+
+
+                        )
+                    ),
+
                     'category.sales'      => array(
                         'label'   => _('Sales'),
                         'subtabs' => array(
@@ -1896,39 +1921,27 @@ $modules = array(
                         )
 
                     ),
-                    'category.webpage'    => array(
-                        'label' => _('Website'),
-                        'icon'  => 'globe',
-                        'subtabs' => array(
-                            'category.webpage.settings'  => array(
-                                'label' => _('Settings'),
-                                'icon'=>'sliders'
-                            ),
 
-                            'category.webpage.preview'     => array(
-                                'label' => _('Workshop'),
-                                'icon'=>'wrench'
-                            ),
-                            'category.webpage.logbook'     => array(
-                                'label' => _('Logbook'),
-                                'icon'=>'road'
-                            ),
-                         //   'category.webpage.analytics'  => array(
-                          //      'label' => _('Analytics'),
-                         //       'icon'=>'line-chart'
-                          //  ),
+                    'category.subjects'   => array('label' => ''),
 
-
-                        )
-                    ),
 
                     'category.history' => array(
-                        'label' => _('History'),
+                        'title'         => _('History/Notes'),
+                        'label'         => '',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number History Records'
+                        ),
                         'icon'  => 'road',
                         'class' => 'right icon_only'
                     ),
                     'category.images'  => array(
-                        'label' => _('Images'),
+                        'title'         => _('Images'),
+                        'label'         => '',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number Images'
+                        ),
                         'icon'  => 'camera-retro',
                         'class' => 'right icon_only'
                     ),
@@ -2061,18 +2074,18 @@ $modules = array(
 
         )
     ),
-    'products_server'       => array(
+    'products_server'  => array(
 
         'parent'      => 'none',
         'parent_type' => 'none',
 
-        'sections'    => array(
+        'sections' => array(
             'stores'   => array(
-                'type'      => 'navigation',
-                'label'     => _('Stores'),
-                'icon'      => 'shopping-bag',
-                'reference' => 'stores',
-                'showcase'=>'account',
+                'type'           => 'navigation',
+                'label'          => _('Stores'),
+                'icon'           => 'shopping-bag',
+                'reference'      => 'stores',
+                'showcase'       => 'account',
                 'subtabs_parent' => array(
                     'stores.sales.plot'     => 'stores.sales',
                     'stores.sales.history'  => 'stores.sales',
@@ -2080,9 +2093,9 @@ $modules = array(
                     'stores.sales.info'     => 'stores.sales'
 
                 ),
-                'tabs'      => array(
-                    'stores' => array('label'   => _('Stores')),
-                    'stores.sales'      => array(
+                'tabs'           => array(
+                    'stores'       => array('label' => _('Stores')),
+                    'stores.sales' => array(
                         'label'   => _('Sales'),
                         'subtabs' => array(
                             'stores.sales.plot'     => array(
@@ -2130,7 +2143,7 @@ $modules = array(
 
         )
     ),
-    'marketing'             => array(
+    'marketing'        => array(
         'section'     => 'marketing',
         'parent'      => 'store',
         'parent_type' => 'key',
@@ -2155,7 +2168,7 @@ $modules = array(
                 'reference' => 'deals/%d',
                 'tabs'      => array(
 
-                    'deals'     => array(
+                    'deals' => array(
                         'label' => _('Offers')
                     ),
 
@@ -2181,15 +2194,12 @@ $modules = array(
             ),
 
 
-
-
-
             'campaign' => array(
                 'type' => 'object',
 
 
                 'tabs' => array(
-                    'campaign.details'   => array(
+                    'campaign.details' => array(
                         'label' => _('Data'),
                         'icon'  => 'database',
                         'title' => _('Details')
@@ -2306,7 +2316,7 @@ $modules = array(
 
         )
     ),
-    'marketing_server'      => array(
+    'marketing_server' => array(
 
         'parent'      => 'none',
         'parent_type' => 'none',
@@ -2770,7 +2780,7 @@ $modules = array(
                     'supplier.sales.history'   => 'supplier.sales',
                     'supplier.sales.calendar'  => 'supplier.sales',
                     'supplier.sales.dashboard' => 'supplier.sales',
-                    'supplier.sales.info' => 'supplier.sales',
+                    'supplier.sales.info'      => 'supplier.sales',
 
                 ),
 
@@ -2811,7 +2821,7 @@ $modules = array(
                             ),
 
 
-                            'supplier.sales.info'     => array(
+                            'supplier.sales.info' => array(
                                 'label' => _('Info'),
                                 'icon'  => 'info',
                                 'class' => 'right icon_only'
@@ -2822,44 +2832,63 @@ $modules = array(
                     ),
 
                     'supplier.supplier_parts' => array(
-                        'label' => _("Supplier's Parts"),
-                        'quantity_data'=>array(
-                            'object'=>'_object',
-                            'field'=>'Number Parts'
+                        'label'         => _("Supplier's Parts"),
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number Parts'
                         ),
-                        'icon'  => 'stop'
+                        'icon'          => 'stop'
                     ),
                     'supplier.orders'         => array(
-                        'label' => _(
+                        'label'         => _(
                             'Purchase orders'
                         ),
-                        'icon'  => 'clipboard'
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number Purchase Orders'
+                        ),
+                        'icon'          => 'clipboard'
                     ),
                     'supplier.deliveries'     => array(
-                        'label' => _(
-                            'Deliveries'
+                        'label'         => _('Deliveries'),
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number Deliveries'
                         ),
-                        'icon'  => 'truck'
+                        'icon'          => 'truck'
                     ),
-
-
 
 
                     'supplier.history' => array(
-                        'label' => _('History/Notes'),
-                        'icon'  => 'road',
-                        'class' => 'right icon_only'
+                        'title'         => _('History/Notes'),
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number History Records'
+                        ),
+                        'label'         => '',
+                        'icon'          => 'road',
+                        'class'         => 'right icon_only'
                     ),
                     'supplier.users'   => array(
-                        'label' => _('System users'),
-                        'icon'  => 'user',
-                        'class' => 'right icon_only'
+                        'title'         => _('System users'),
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number System Users'
+                        ),
+                        'label'         => '',
+                        'icon'          => 'user',
+                        'class'         => 'right icon_only'
                     ),
 
                     'supplier.attachments' => array(
-                        'label' => _('Attachments'),
-                        'icon'  => 'paperclip',
-                        'class' => 'right icon_only'
+                        'title'         => _('Attachments'),
+                        'label'         => '',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number Attachments'
+                        ),
+                        'icon'          => 'paperclip',
+                        'class'         => 'right icon_only'
                     ),
 
                 )
@@ -3271,7 +3300,7 @@ $modules = array(
     'inventory'       => array(
         'sections' => array(
 
-            'dashboard'          => array(
+            'dashboard' => array(
                 'type'      => 'navigation',
                 'label'     => _('Dashboard'),
                 'icon'      => 'tachometer',
@@ -3283,7 +3312,7 @@ $modules = array(
             ),
 
 
-            'inventory'         => array(
+            'inventory' => array(
 
                 'type'      => 'navigation',
                 'label'     => _('Inventory').' ('._('Parts').')',
@@ -3316,8 +3345,6 @@ $modules = array(
 
                 )
             ),
-
-
 
 
             'barcodes'          => array(
@@ -3438,50 +3465,55 @@ $modules = array(
 
                     ),
 
-                    'category.subjects'                   => array(
-                        'label' => _(
-                            'Parts'
-                        )
+                    'category.subjects' => array(
+                        'label'         => _('Parts'),
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Parts'
+                        ),
                     ),
 
                     'category.part.discontinued_subjects' => array(
-                        'label' => _(
-                            'Discontinued parts'
-                        )
+                        'label'         => _('Discontinued parts'),
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Discontinued'
+                        ),
                     ),
 
-                    'category.categories'                 => array(
+                    'category.categories'          => array(
                         'label' => _(
                             'Subcategories'
                         )
                     ),
-                    'part_family.product_families'        => array(
+                    'part_family.product_families' => array(
                         'label' => _(
                             'Product families'
                         )
                     ),
 
-                    'category.images'       => array(
-                        'label' => _(
-                            'Images'
+                    'category.images'  => array(
+                        'title'         => _('Images'),
+                        'label'         => '',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number Images'
                         ),
-                        'icon'  => 'camera-retro',
-                        'class' => 'right icon_only'
+                        'icon'          => 'camera-retro',
+                        'class'         => 'right icon_only'
                     ),
-                    'category.history'      => array(
-                        'label' => _(
-                            'History/Notes'
+                    'category.history' => array(
+                        'title'         => _('History/Notes'),
+                        'label'         => '',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number History Records'
                         ),
+
+
                         'icon'  => 'road',
                         'class' => 'right icon_only'
-                    ),
-                    'category.all_subjects' => array(
-                        'label' => _(
-                            'Parts'
-                        ),
-                        'icon'  => 'square',
-                        'class' => 'right icon_only'
-                    ),
+                    )
 
 
                 )
@@ -3507,7 +3539,7 @@ $modules = array(
                     'part.sales.plot'          => 'part.sales',
                     'part.sales.history'       => 'part.sales',
                     'part.sales.calendar'      => 'part.sales',
-                    'part.sales.info'      => 'part.sales',
+                    'part.sales.info'          => 'part.sales',
 
                 ),
 
@@ -3580,9 +3612,9 @@ $modules = array(
                     ),
 
 
-                    'part.purchase_orders' => array(
+                    'part.supplier.orders' => array(
                         'label'   => _(
-                            'Purchase orders / deliveries'
+                            'Purchase orders'
                         ),
                         'icon'    => 'clipboard',
                         'subtabs' => array(
@@ -3594,9 +3626,7 @@ $modules = array(
                                 'icon'  => 'clipboard'
                             ),
                             'part.supplier.deliveries' => array(
-                                'label' => _(
-                                    "Supplier's deliveries"
-                                ),
+                                'label' => _("Supplier's deliveries"),
                                 'icon'  => 'truck'
                             ),
 
@@ -3604,39 +3634,58 @@ $modules = array(
 
                     ),
 
+
                     'part.supplier_parts' => array(
-                        'label' => _(
+                        'label'         => _(
                             "Supplier's parts"
                         ),
-                        'icon'  => 'stop'
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number Supplier Parts'
+                        ),
+                        'icon'          => 'stop'
                     ),
 
                     'part.products'    => array(
-                        'label' => _(
-                            'Products'
+                        'label'         => _('Products'),
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Products Numbers'
                         ),
-                        'icon'  => 'cube'
+                        'icon'          => 'cube'
                     ),
                     'part.history'     => array(
-                        'label' => _(
-                            'History/Notes'
+
+
+                        'title'         => _('History/Notes'),
+                        'label'         => '',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number History Records'
                         ),
+
                         'icon'  => 'road',
                         'class' => 'right icon_only'
                     ),
                     'part.images'      => array(
-                        'label' => _(
-                            'Images'
+                        'title'         => _('Images'),
+                        'label'         => '',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number Images'
                         ),
-                        'icon'  => 'camera-retro',
-                        'class' => 'right icon_only'
+                        'icon'          => 'camera-retro',
+                        'class'         => 'right icon_only'
                     ),
                     'part.attachments' => array(
-                        'label' => _(
-                            'Attachments'
+                        'title'         => _('Attachments'),
+                        'label'         => '',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number Attachments'
                         ),
-                        'icon'  => 'paperclip',
-                        'class' => 'right icon_only'
+                        'icon'          => 'paperclip',
+                        'class'         => 'right icon_only'
                     ),
 
 
@@ -3757,7 +3806,7 @@ $modules = array(
                         )
                     ),
 
-                    'inventory.stock.history.plot'     => array(
+                    'inventory.stock.history.plot' => array(
                         'label' => _(
                             'Chart'
                         ),
@@ -3797,7 +3846,7 @@ $modules = array(
     ),
     'warehouses'      => array(
         'sections' => array(
-            'dashboard'          => array(
+            'dashboard' => array(
                 'type'      => 'navigation',
                 'label'     => _('Dashboard'),
                 'icon'      => 'tachometer',
@@ -3817,7 +3866,7 @@ $modules = array(
                 'icon'      => 'map',
                 'reference' => 'warehouse/%d',
 
-                'tabs'      => array(
+                'tabs' => array(
                     'warehouse.details'        => array(
                         'label' => _('Data'),
                         'title' => _(
@@ -4252,12 +4301,14 @@ $modules = array(
                     'organization.areas'       => array(
                         'label' => _(
                             'Working Areas'
-                        ),'class'=>'hide'
+                        ),
+                        'class' => 'hide'
                     ),
                     'organization.departments' => array(
                         'label' => _(
                             'Company departments'
-                        ),'class'=>'hide'
+                        ),
+                        'class' => 'hide'
                     ),
                     'organization.positions'   => array(
                         'label' => _(
@@ -4267,7 +4318,8 @@ $modules = array(
                     'organization.organigram'  => array(
                         'label' => _(
                             'Organizational chart'
-                        ),'class'=>'hide'
+                        ),
+                        'class' => 'hide'
                     ),
 
 
@@ -4278,37 +4330,37 @@ $modules = array(
 
 
                 'tabs' => array(
-                    'employee.details'     => array(
+                    'employee.details'                 => array(
                         'label' => _(
                             'Data'
                         ),
                         'icon'  => 'database'
                     ),
-                    'employee.today_timesheet.records'  => array(
+                    'employee.today_timesheet.records' => array(
                         'label' => _(
                             'Today timesheet'
                         )
                     ),
-                    'employee.timesheets'  => array(
+                    'employee.timesheets'              => array(
                         'label' => _(
                             'Timesheets'
                         )
                     ),
-                    'employee.history'     => array(
+                    'employee.history'                 => array(
                         'label' => _(
                             'History, notes'
                         ),
                         'icon'  => 'road',
-                        'class'=>'right icon_only'
+                        'class' => 'right icon_only'
                     ),
-                    'employee.images'      => array(
+                    'employee.images'                  => array(
                         'label' => _(
                             'Images'
                         ),
                         'icon'  => 'camera-retro',
                         'class' => 'right icon_only'
                     ),
-                    'employee.attachments' => array(
+                    'employee.attachments'             => array(
                         'label' => _(
                             'Attachments'
                         ),
@@ -4542,19 +4594,18 @@ $modules = array(
             ),
 
 
-            'position'         => array(
+            'position' => array(
                 'type' => 'object',
 
 
                 'tabs' => array(
 
 
-                    'position.employees'  => array(
+                    'position.employees' => array(
                         'label' => _(
                             'Employees'
                         )
                     ),
-
 
 
                 )
@@ -4562,7 +4613,7 @@ $modules = array(
             ),
 
 
-            'uploads'              => array(
+            'uploads'    => array(
                 'type' => '',
                 'tabs' => array(
                     'uploads' => array(
@@ -4574,7 +4625,7 @@ $modules = array(
                 )
 
             ),
-            'upload'               => array(
+            'upload'     => array(
                 'type' => 'object',
                 'tabs' => array(
                     'upload.employees' => array(
@@ -4586,7 +4637,7 @@ $modules = array(
                 )
 
             ),
-            'hr.history'           => array(
+            'hr.history' => array(
                 'type'      => 'navigation',
                 'label'     => '',
                 'icon'      => 'road',
@@ -4675,7 +4726,7 @@ $modules = array(
                     'account.setup.root_user' => array('label' => ''),
                 )
             ),
-            'setup_account' => array(
+            'setup_account'       => array(
                 'type' => '',
                 'tabs' => array(
                     'account.setup.account' => array('label' => ''),
@@ -4750,12 +4801,12 @@ $modules = array(
                 'icon'      => 'bars',
                 'reference' => 'account/orders',
                 'tabs'      => array(
-                    'orders_index' => array(
+                    'orders_index'          => array(
                         'label' => _(
                             "Overview"
                         )
                     ),
-                    'orders_server' => array(
+                    'orders_server'         => array(
                         'label' => _(
                             "Orders list"
                         )
@@ -4765,7 +4816,7 @@ $modules = array(
                             "Delivery notes list"
                         )
                     ),
-                    'invoices_server' => array(
+                    'invoices_server'       => array(
                         'label' => _(
                             "Invoice list"
                         )
@@ -5263,7 +5314,6 @@ $modules = array(
             ),
 
 
-
             'order_to_delete' => array(
                 'type' => 'object',
                 'tabs' => array(
@@ -5700,14 +5750,16 @@ $modules = array(
             'client_order' => array(
                 'type' => 'object',
                 'tabs' => array(
-                    'client_order.items'     => array(
+                    'client_order.items'   => array(
                         'label' => _(
                             'Items'
                         ),
                         'icon'  => 'bars'
                     ),
-                    'client_order.details'=>array('label'=>_('Data'), 'icon'=>'database'),
-
+                    'client_order.details' => array(
+                        'label' => _('Data'),
+                        'icon'  => 'database'
+                    ),
 
 
                     'client_order.history' => array(
@@ -5765,13 +5817,22 @@ $modules = array(
             'agent_delivery' => array(
                 'type' => 'object',
                 'tabs' => array(
-                    'client_order.items'     => array('label' => _('Items'), 'icon'  => 'bars'),
-                    'client_order.client_orders'     => array('label' => _("Client's orders"), 'icon'  => 'clipboard'),
-                    'client_order.details'=>array('label'=>_('Data'), 'icon'=>'database'),
+                    'client_order.items'         => array(
+                        'label' => _('Items'),
+                        'icon'  => 'bars'
+                    ),
+                    'client_order.client_orders' => array(
+                        'label' => _("Client's orders"),
+                        'icon'  => 'clipboard'
+                    ),
+                    'client_order.details'       => array(
+                        'label' => _('Data'),
+                        'icon'  => 'database'
+                    ),
 
 
-
-                    'client_order.history' => array('label' => _('History/Notes'),
+                    'client_order.history' => array(
+                        'label' => _('History/Notes'),
                         'icon'  => 'road',
                         'class' => 'right icon_only'
                     ),
@@ -5804,8 +5865,6 @@ $modules = array(
     ),
 
 
-
-
     'agent_parts' => array(
         'sections' => array(
             'parts' => array(
@@ -5819,7 +5878,7 @@ $modules = array(
             ),
 
 
-            'agent_part'  => array(
+            'agent_part' => array(
                 'type' => 'object',
 
 
@@ -5854,12 +5913,8 @@ $modules = array(
             ),
 
 
-
-
         )
     ),
-
-
 
 
 );

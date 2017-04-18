@@ -293,6 +293,8 @@ trait ImageSubject {
             );
             $this->db->exec($sql);
 
+            $this->update_images_data();
+
             $image_subject_key = $this->db->lastInsertId();
 
 
@@ -380,6 +382,44 @@ trait ImageSubject {
         return $number_of_images;
     }
 
+
+
+
+    function update_images_data() {
+
+        $number_images=0;
+
+        $subject = $this->table_name;
+
+        $sql              = sprintf(
+            "SELECT count(*) AS num FROM `Image Subject Bridge` WHERE `Image Subject Object`=%s AND `Image Subject Object Key`=%d ", prepare_mysql($subject), $this->id
+        );
+
+
+
+
+        if ($result=$this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $number_images=$row['num'];
+            }
+        }else {
+            print_r($error_info=$this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+
+        $this->update(
+            array( ($this->get_object_name()=='Category' ? $this->subject_table_name :  $this->get_object_name()).' Number Images'=>$number_images),
+            'no_history'
+        );
+
+
+
+    }
+
+
     function reindex_order() {
 
         $order_index = array();
@@ -458,10 +498,7 @@ trait ImageSubject {
 
             include_once 'class.Store.php';
             $store = new Store($this->get('Category Store Key'));
-            if ($this->get('Category Root Key') == $store->get(
-                    'Store Family Category Key'
-                )
-            ) {
+            if ($this->get('Category Root Key') == $store->get('Store Family Category Key')) {
 
 
                 $sql = sprintf(
@@ -584,6 +621,9 @@ trait ImageSubject {
 
                 $sql = sprintf('DELETE FROM `Image Subject Bridge` WHERE `Image Subject Key`=%d ', $image_bridge_key);
                 $this->db->exec($sql);
+
+                $this->update_images_data();
+
 
                 $image         = new Image($row['Image Subject Image Key']);
                 $image->editor = $this->editor;

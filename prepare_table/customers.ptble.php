@@ -6,6 +6,7 @@ $table    = '`Customer Dimension` C ';
 $group_by = '';
 
 
+
 $fields
     = ' *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds`';
 
@@ -116,16 +117,24 @@ if (isset($parameters['awhere']) and $parameters['awhere']) {
     $store    = new Store($deal->get('Deal Store Key'));
     $currency = $store->get('Store Currency Code');
 
+} elseif ($parameters['parent'] == 'product') {
+    $table = '`Order Transaction Fact` OTF  left join `Customer Dimension` C on (OTF.`Customer Key`=C.`Customer Key`) ';
+
+    $where = sprintf(' where  `Product ID`=%d ', $parameters['parent_key']);
+
+
 } elseif ($parameters['parent'] == 'favourites') {
 
-    $table
-        = '`Customer Favorite Product Bridge` F  left join `Customer Dimension` C   on (C.`Customer Key`=F.`Customer Key`)  ';
+    $table = '`Customer Favorite Product Bridge` F  left join `Customer Dimension` C   on (C.`Customer Key`=F.`Customer Key`)  ';
 
-    if (in_array($parameters['parent_key'], $user->websites)) {
-        $where .= sprintf(' and  `Site Key`=%d ', $parameters['parent_key']);
-    } else {
-        $where .= ' and false';
-    }
+
+    $where .= sprintf(' and  F.`Product ID`=%d ', $parameters['parent_key']);
+
+   // if (in_array($parameters['parent_key'], $user->websites)) {
+   //     $where .= sprintf(' and  `Site Key`=%d ', $parameters['parent_key']);
+   // } else {
+   //     $where .= ' and false';
+   // }
 
     $group_by = 'group by F.`Customer Key`';
 

@@ -235,7 +235,7 @@ class Customer extends Subject {
             );
 
             $this->add_subject_history(
-                $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id()
+                $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
             );
 
             $this->new = true;
@@ -439,13 +439,16 @@ class Customer extends Subject {
                 break;
             case('Total Net Per Order'):
                 if ($this->data['Customer Orders Invoiced'] > 0) {
-                    return money(
-                        $this->data['Customer Net Balance'] / $this->data['Customer Orders Invoiced'], $this->data['Customer Currency Code']
-                    );
+                    return money($this->data['Customer Net Balance'] / $this->data['Customer Orders Invoiced'], $this->data['Customer Currency Code']);
                 } else {
                     return _('ND');
                 }
                 break;
+
+
+
+
+
             case('Order Interval'):
                 $order_interval = $this->get('Customer Order Interval') / 24 / 3600;
 

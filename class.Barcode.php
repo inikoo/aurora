@@ -238,7 +238,7 @@ $this->msg=_('Barcode already in the system');
             );
 
             $this->add_subject_history(
-                $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id()
+                $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
             );
 
             //506006011228
@@ -365,7 +365,7 @@ $this->msg=_('Barcode already in the system');
             );
 
             $this->add_subject_history(
-                $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id()
+                $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
             );
 
             $this->assigned=true;
@@ -574,7 +574,7 @@ $this->msg=_('Barcode already in the system');
         );
 
         $this->add_subject_history(
-            $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id()
+            $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
         );
 
 
@@ -609,7 +609,7 @@ $this->msg=_('Barcode already in the system');
             'Action'           => 'disassociate'
         );
         $this->add_subject_history(
-            $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id()
+            $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
         );
 
     }

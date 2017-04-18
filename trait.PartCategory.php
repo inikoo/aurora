@@ -45,18 +45,14 @@ trait PartCategory {
 
 
             if ($this->data['Part Category Valid From'] != '') {
-                $from = date(
-                    'Y-m-d', strtotime($this->get('Part Category Valid From'))
-                );
+                $from = date('Y-m-d', strtotime($this->get('Part Category Valid From')));
 
             } else {
                 $from = '';
             }
 
             if ($this->get('Part Category Status') == 'NotInUse') {
-                $to = date(
-                    'Y-m-d', strtotime($this->get('Part Category Valid To'))
-                );
+                $to = date('Y-m-d', strtotime($this->get('Part Category Valid To')));
             } else {
                 $to = date('Y-m-d');
             }

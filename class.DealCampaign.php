@@ -168,7 +168,7 @@ class DealCampaign extends DB_Table {
                 'History Abstract' => _("Campaign created"),
                 'History Details'  => ''
             );
-            $this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id());
+            $this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id);
             $this->update_status_from_dates();
 
 

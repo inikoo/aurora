@@ -19,14 +19,13 @@ abstract class DB_Table extends stdClass {
     public $no_history = false;
     public $candidate = array();
     public $updated_field = array();
-    public $editor
-        = array(
-            'Author Name'  => false,
-            'Author Alias' => false,
-            'Author Key'   => 0,
-            'User Key'     => 0,
-            'Date'         => false
-        );
+    public $editor = array(
+        'Author Name'  => false,
+        'Author Alias' => false,
+        'Author Key'   => 0,
+        'User Key'     => 0,
+        'Date'         => false
+    );
     protected $table_name;
     protected $ignore_fields = array();
 
@@ -243,7 +242,6 @@ abstract class DB_Table extends stdClass {
                 "UPDATE `%s` SET `%s`=%s WHERE `%s`=%d", addslashes($table_full_name), addslashes($field), prepare_mysql($value, $null_if_empty), addslashes($key_field), $table_key
             );
 
-           // print "$sql\n";
 
         }
 
@@ -253,16 +251,18 @@ abstract class DB_Table extends stdClass {
         $affected = $update_op->rowCount();
 
         if ($affected == 0) {
+
+
             $this->data[$field] = $value;
 
         } else {
 
 
             $this->data[$field] = $value;
-            $this->msg .= " $field "._('Record updated').", \n";
-            $this->msg_updated .= " $field "._('Record updated').", \n";
-            $this->updated   = true;
-            $this->new_value = $value;
+            $this->msg          .= " $field "._('Record updated').", \n";
+            $this->msg_updated  .= " $field "._('Record updated').", \n";
+            $this->updated      = true;
+            $this->new_value    = $value;
 
 
             if (preg_match('/no( |\_)history|nohistory/i', $options)) {
@@ -311,8 +311,12 @@ abstract class DB_Table extends stdClass {
             $sql = sprintf(
                 "INSERT INTO `%s History Bridge` VALUES (%d,%d,'No','No','Changes')", $table_name, $table_key, $history_key
             );
-           // print "$sql\n";
+            // print "$sql\n";
             $this->db->exec($sql);
+
+
+            $this->update_history_records_data();
+
         }
 
     }
@@ -320,7 +324,7 @@ abstract class DB_Table extends stdClass {
     function add_history($raw_data, $force = false, $post_arg1 = false, $options = '') {
 
 
-        return $this->add_table_history($raw_data, $force, $post_arg1, $options, $this->table_name, $this->get_main_id());
+        return $this->add_table_history($raw_data, $force, $post_arg1, $options, $this->table_name, $this->id);
     }
 
     function add_table_history($raw_data, $force, $post_arg1, $options = '', $table_name, $table_key) {
@@ -351,7 +355,9 @@ abstract class DB_Table extends stdClass {
         };
 
 
-        if($data['Action']=='updated')$data['Action']='edited';
+        if ($data['Action'] == 'updated') {
+            $data['Action'] = 'edited';
+        }
 
         if (array_key_exists('User Key', $raw_data)) {
             $data['User Key'] = $raw_data['User Key'];
@@ -489,8 +495,7 @@ abstract class DB_Table extends stdClass {
         if ($data['History Details'] == '') {
             if (isset($raw_data['old_value']) and isset($raw_data['new_value'])) {
 
-                $data['History Details']
-                    = '
+                $data['History Details'] = '
 				<div class="table">
 				<div class="field tr"><div>'._('Time').':</div><div>'.strftime(
                         "%a %e %b %Y %H:%M:%S %Z"
@@ -507,8 +512,7 @@ abstract class DB_Table extends stdClass {
 
             } elseif (isset($raw_data['new_value'])) {
 
-                $data['History Details']
-                    = '
+                $data['History Details'] = '
 				<div class="table">
 				<div class="field tr"><div>'._('Time').':</div><div>'.strftime(
                         "%a %e %b %Y %H:%M:%S %Z"
@@ -532,7 +536,7 @@ abstract class DB_Table extends stdClass {
             prepare_mysql($data['History Abstract']), prepare_mysql($data['History Details']), $data['User Key'], prepare_mysql($data['Deep']), prepare_mysql($data['Metadata'])
         );
 
-      //  print "$sql\n";
+        //  print "$sql\n";
         $this->db->exec($sql);
 
         $history_key = $this->db->lastInsertId();
@@ -599,10 +603,59 @@ abstract class DB_Table extends stdClass {
 
     }
 
-    function get_main_id() {
+    function update_history_records_data() {
 
 
-        return $this->id;
+        $table=$this->get_object_name().' History Bridge';
+
+        switch ($this->get_object_name()) {
+            case 'Part':
+
+
+
+                $where_field = 'Part SKU';
+                break;
+            case 'Product':
+                $where_field = 'Product ID';
+                break;
+            default:
+                $where_field = $this->get_object_name().' Key';
+                break;
+        }
+
+
+        $sql = sprintf(
+            'SELECT count(*) AS num FROM `%s History Bridge` WHERE  `%s`=%d ', addslashes( ($this->get_object_name() == 'Category' ? $this->subject_table_name.' Category' : $this->get_object_name())), $where_field, $this->id
+        );
+
+        $sql = sprintf(
+            'SELECT count(*) AS num FROM `%s` WHERE  `%s`=%d ', $table, $where_field, $this->id
+        );
+
+
+
+
+        $number = 0;
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $number = $row['num'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+        $this->update(
+            array(  ($this->get_object_name() == 'Category' ? $this->subject_table_name : $this->get_object_name()).' Number History Records' => $number), 'no_history'
+        );
+
+
+    }
+
+    function get_object_name() {
+        return $this->table_name;
 
     }
 
@@ -643,36 +696,16 @@ abstract class DB_Table extends stdClass {
 
         $this->db->exec($sql);
 
+        $this->update_history_records_data();
 
         return $history_key;
     }
 
-    function get_object_name() {
-        return $this->table_name;
-
-    }
-
-
     function get_formatted_id($prefix = '') {
 
-        /*
-        global $myconf;
-        $sql="select count(*) as num from `Company Dimension`";
-        $res=mysql_query($sql);
-        $min_number_zeros=$myconf['company_min_number_zeros_id'];
-        if ($row=mysql_fetch_array($res)) {
-            if (strlen($row['num'])-1>$min_number_zeros)
-                $min_number_zeros=strlen($row['num'])-01;
-        }
-        if (!is_numeric($min_number_zeros))
-            $min_number_zeros=4;
-
-        return sprintf("%s%0".$min_number_zeros."d",$myconf['company_id_prefix'], $this->id);
-*/
 
         return sprintf("%s%04d", $prefix, $this->id);
     }
-
 
     function get_update_metadata() {
 
@@ -684,7 +717,6 @@ abstract class DB_Table extends stdClass {
 
     }
 
-
     function get_other_fields_update_info() {
 
         if (isset($this->other_fields_updated)) {
@@ -694,7 +726,6 @@ abstract class DB_Table extends stdClass {
         }
     }
 
-
     function get_new_fields_info() {
         if (isset($this->new_fields_info)) {
             return $this->new_fields_info;
@@ -703,39 +734,12 @@ abstract class DB_Table extends stdClass {
         }
     }
 
-
     function get_deleted_fields_info() {
         if (isset($this->deleted_fields_info)) {
             return $this->deleted_fields_info;
         } else {
             return false;
         }
-    }
-
-    protected function translate_data($data, $options = '') {
-
-        $_data = array();
-        foreach ($data as $key => $value) {
-
-            if (preg_match('/supplier/i', $options)) {
-                $regeprix = '/^Supplier /i';
-            } elseif (preg_match('/customer/i', $options)) {
-                $regex = '/^Customer /i';
-            } elseif (preg_match('/company/i', $options)) {
-                $regex = '/^Company /i';
-            } elseif (preg_match('/contact/i', $options)) {
-                $regex = '/^Contact /i';
-            }
-
-            $rpl = $this->table_name.' ';
-
-
-            $_key         = preg_replace($regex, $rpl, $key);
-            $_data[$_key] = $value;
-        }
-
-
-        return $_data;
     }
 
 

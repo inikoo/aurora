@@ -208,16 +208,16 @@ function get_rtext($record_label, $total_records) {
         return sprintf(
             ngettext('%s list', '%s lists', $total_records), number($total_records)
         );
-    } elseif ($record_label == 'customer with favourites') {
+    } elseif ($record_label == 'customer who favored') {
         return sprintf(
             ngettext(
-                '%s customer with favourites', '%s customers with favourites', $total_records
+                '%s customer who favored', '%s customers who favored', $total_records
             ), number($total_records)
         );
-    } elseif ($record_label == 'product favourited') {
+    } elseif ($record_label == 'product favored') {
         return sprintf(
             ngettext(
-                '%s product favourited', '%s products favourited', $total_records
+                '%s product favored', '%s products favored', $total_records
             ), number($total_records)
         );
     } elseif ($record_label == 'query') {
