@@ -54,7 +54,7 @@ foreach ($intervals as $interval) {
         'type'     => 'update_stores_sales_data',
         'interval' => $interval,
         'mode'     => array(
-            false,
+            true,
             true
         )
     ), $account->get('Account Code')
@@ -65,7 +65,7 @@ foreach ($intervals as $interval) {
         'type'     => 'update_invoices_categories_sales_data',
         'interval' => $interval,
         'mode'     => array(
-            false,
+            true,
             true
         )
     ), $account->get('Account Code')
@@ -77,7 +77,7 @@ foreach ($intervals as $interval) {
         'type'     => 'update_products_sales_data',
         'interval' => $interval,
         'mode'     => array(
-            false,
+            true,
             true
         )
     ), $account->get('Account Code')
@@ -88,7 +88,7 @@ foreach ($intervals as $interval) {
         'type'     => 'update_parts_sales_data',
         'interval' => $interval,
         'mode'     => array(
-            false,
+            true,
             true
         )
     ), $account->get('Account Code')
@@ -99,7 +99,7 @@ foreach ($intervals as $interval) {
         'type'     => 'update_part_categories_sales_data',
         'interval' => $interval,
         'mode'     => array(
-            false,
+            true,
             true
         )
     ), $account->get('Account Code')
@@ -110,7 +110,7 @@ foreach ($intervals as $interval) {
         'type'     => 'update_product_categories_sales_data',
         'interval' => $interval,
         'mode'     => array(
-            false,
+            true,
             true
         )
     ), $account->get('Account Code')
@@ -122,7 +122,7 @@ foreach ($intervals as $interval) {
         'type'     => 'update_suppliers_data',
         'interval' => $interval,
         'mode'     => array(
-            false,
+            true,
             true
         )
     ), $account->get('Account Code')
@@ -134,7 +134,7 @@ foreach ($intervals as $interval) {
         'type'     => 'update_supplier_categories_sales_data',
         'interval' => $interval,
         'mode'     => array(
-            false,
+            true,
             true
         )
     ), $account->get('Account Code')
