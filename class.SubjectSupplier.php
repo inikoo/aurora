@@ -59,7 +59,7 @@ class SubjectSupplier extends Subject {
 
         );
 
-        if ($_data['agent_key']) {
+        if (  array_key_exists('agent_key',$_data) and  $_data['agent_key']) {
             include_once 'class.Agent.php';
             $agent = new Agent($_data['agent_key']);
             if ($agent->id) {
