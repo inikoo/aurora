@@ -56,9 +56,7 @@ $smarty->assign(
 $smarty->assign('object_fields', $object_fields_supplier_part);
 $smarty->assign('state', $state);
 
-$smarty->assign(
-    'js_code', 'js/injections/supplier_part_details.'.(_DEVEL ? '' : 'min.').'js'
-);
+$smarty->assign('js_code', 'js/injections/supplier_part_details.'.(_DEVEL ? '' : 'min.').'js');
 
 $html = $smarty->fetch('edit_object.tpl');
 

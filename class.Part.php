@@ -3383,12 +3383,14 @@ class Part extends Asset {
         }
 
 
-        $data['Supplier Part Currency Code'] = $supplier->get(
-            'Supplier Default Currency Code'
-        );
+        $data['Supplier Part Currency Code'] = $supplier->get('Supplier Default Currency Code');
+
+
+
 
 
         $supplier_part = new SupplierPart('find', $data, 'create');
+
 
 
         if ($supplier_part->id) {
@@ -3396,13 +3398,18 @@ class Part extends Asset {
 
             if ($supplier_part->new) {
                 $this->new_object = true;
-                $supplier->update_supplier_parts();
 
 
-                $supplier_part->update(
-                    array('Supplier Part Part SKU' => $this->sku)
-                );
+
+
+
+
+
+
+                $supplier_part->update(array('Supplier Part Part SKU' => $this->sku));
                 $supplier_part->get_data('id', $supplier_part->id);
+
+                $supplier->update_supplier_parts();
 
                 $this->update_cost();
                 $supplier_part->update_historic_object();
