@@ -1365,10 +1365,21 @@ function get_parts_category_navigation($data, $smarty, $user, $db, $account) {
 
     //$right_buttons[]=array('icon'=>'edit', 'title'=>_('Edit'), 'url'=>"edit_product_categories.php?store_id=".$data['store']->id);
 
-    $sections                           = get_sections(
-        'inventory', $data['store']->id
-    );
+    $sections                           = get_sections('inventory', $data['store']->id);
     $sections['categories']['selected'] = true;
+
+
+    if($category->get('Category Branch Type')!='Root') {
+
+        $right_buttons[] = array(
+            'icon'  => 'sticky-note',
+            'title' => _('Sticky note'),
+            'id'    => 'sticky_note_button',
+            'class' => ($category->get('Sticky Note') == '' ? '' : 'hide')
+        );
+
+    }
+
 
     $_content = array(
         'sections_class' => '',

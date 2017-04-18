@@ -722,6 +722,13 @@ function get_supplier_navigation($data, $smarty, $user, $db, $account) {
     $title .= '</span>';
 
 
+    $right_buttons[] = array(
+        'icon'  => 'sticky-note',
+        'title' => _('Sticky note'),
+        'id'    => 'sticky_note_button',
+        'class' => ($supplier->get('Sticky Note') == '' ? '' : 'hide')
+    );
+
     $_content = array(
         'sections_class' => '',
         'sections'       => $sections,
@@ -775,6 +782,7 @@ function get_new_supplier_navigation($data, $smarty, $user, $db, $account) {
 
 
     $title = '<span class="id ">'._('New supplier').'</span>';
+
 
 
     $_content = array(

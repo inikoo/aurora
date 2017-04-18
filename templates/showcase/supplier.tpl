@@ -1,3 +1,6 @@
+{include file="sticky_note.tpl" value=$supplier->get('Sticky Note') object="Supplier" key="{$supplier->id}" field="Supplier_Sticky_Note"  }
+
+
 <div class="subject_profile" style="padding-top:10px">
 
 
@@ -106,14 +109,7 @@
         </div>
         <div style="clear:both">
         </div>
-        <div class="data_container {if $supplier->get('Sticky Note')==''}hide{/if} ">
-            <div class="sticky_note_button">
-                <i class="fa fa-sticky-note"></i>
-            </div>
-            <div class="sticky_note">
-                {$supplier->get('Sticky Note')}
-            </div>
-        </div>
+
         <div style="clear:both">
         </div>
     </div>

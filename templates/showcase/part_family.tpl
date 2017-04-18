@@ -1,3 +1,6 @@
+{include file="sticky_note.tpl" value=$category->get('Sticky Note') object="Category" key="{$category->id}" field="Category_Sticky_Note"  }
+
+
 <div class="name_and_categories">
     <span class="strong"><span class="Category_Label">{$category->get('Label')}</span> </span>
     <ul class="tags Categories" style="float:right">

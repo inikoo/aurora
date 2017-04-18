@@ -22,7 +22,6 @@
                 <img src="/barcode_asset.php?number={$barcode->get('Barcode Number')}&scale=10">
             </div>
         </div>
-        {include file='sticky_note.tpl' object='Category'  key=$barcode->id sticky_note_field='Store_Product_Sticky_Note' _object=$barcode}
 
 
         <div style="clear:both">

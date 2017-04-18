@@ -608,7 +608,7 @@ abstract class DB_Table extends stdClass {
 
         $table=$this->get_object_name().' History Bridge';
 
-        $table=($this->get_object_name() == 'Category' ? $this->subject_table_name : $this->get_object_name()).' History Bridge';
+       // $table=($this->get_object_name() == 'Category' ? $this->subject_table_name : $this->get_object_name()).' History Bridge';
 
         switch ($this->get_object_name()) {
 
@@ -629,9 +629,7 @@ abstract class DB_Table extends stdClass {
         }
 
 
-        $sql = sprintf(
-            'SELECT count(*) AS num FROM `%s` WHERE  `%s`=%d ', $table, $where_field, $this->id
-        );
+
 
         $sql = sprintf(
             'SELECT count(*) AS num FROM `%s` WHERE  `%s`=%d ', $table, $where_field, $this->id
@@ -651,6 +649,7 @@ abstract class DB_Table extends stdClass {
             print "$sql\n";
             exit;
         }
+
 
         $this->update(
             array(  ($this->get_object_name() == 'Category' ? $this->subject_table_name : $this->get_object_name()).' Number History Records' => $number), 'no_history'
