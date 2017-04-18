@@ -1466,6 +1466,27 @@ CREATE TABLE `Attachment Dimension` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `Attachment History Bridge`
+--
+
+DROP TABLE IF EXISTS `Attachment History Bridge`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Attachment History Bridge` (
+  `Attachment Key` mediumint(8) unsigned NOT NULL,
+  `History Key` int(10) unsigned NOT NULL,
+  `Deletable` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Strikethrough` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Type` enum('Notes','Changes') NOT NULL DEFAULT 'Notes',
+  PRIMARY KEY (`Attachment Key`,`History Key`),
+  KEY `Attachment Key` (`Attachment Key`),
+  KEY `History Key` (`History Key`),
+  KEY `Deletable` (`Deletable`),
+  KEY `Type` (`Type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `Audit Dimension`
 --
 
@@ -17604,6 +17625,27 @@ CREATE TABLE `Webpage Dimension` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `Webpage History Bridge`
+--
+
+DROP TABLE IF EXISTS `Webpage History Bridge`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Webpage History Bridge` (
+  `Webpage Key` mediumint(8) unsigned NOT NULL,
+  `History Key` int(10) unsigned NOT NULL,
+  `Deletable` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Strikethrough` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Type` enum('Notes','Changes') NOT NULL DEFAULT 'Notes',
+  PRIMARY KEY (`Webpage Key`,`History Key`),
+  KEY `Webpage Key` (`Webpage Key`),
+  KEY `History Key` (`History Key`),
+  KEY `Deletable` (`Deletable`),
+  KEY `Type` (`Type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `Webpage Panel Dimension`
 --
 
@@ -17932,6 +17974,27 @@ CREATE TABLE `Website Header Dimension` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `Website History Bridge`
+--
+
+DROP TABLE IF EXISTS `Website History Bridge`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Website History Bridge` (
+  `Website Key` mediumint(8) unsigned NOT NULL,
+  `History Key` int(10) unsigned NOT NULL,
+  `Deletable` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Strikethrough` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Type` enum('Notes','Changes') NOT NULL DEFAULT 'Notes',
+  PRIMARY KEY (`Website Key`,`History Key`),
+  KEY `Website Key` (`Website Key`),
+  KEY `History Key` (`History Key`),
+  KEY `Deletable` (`Deletable`),
+  KEY `Type` (`Type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `Website Image Dimension`
 --
 
@@ -18037,4 +18100,4 @@ CREATE TABLE `todo_users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-04-18 14:37:09
+-- Dump completed on 2017-04-18 20:46:53
