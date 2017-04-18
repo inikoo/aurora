@@ -752,6 +752,7 @@ class Website extends DB_Table {
     function create_category_webpage($category_key) {
 
         include_once 'class.Webpage_Type.php';
+        include_once 'class.Page.php';
 
 
         $sql = sprintf(
@@ -786,6 +787,7 @@ class Website extends DB_Table {
         //
 
         include_once 'class.Category.php';
+
         $category = new Category($category_key);
 
         $page_code = $this->get_unique_code($category->get('Code'), 'Webpage');
