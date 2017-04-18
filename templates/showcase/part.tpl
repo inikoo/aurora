@@ -1,3 +1,5 @@
+{include file="sticky_note.tpl" value=$part->get('Sticky Note') object="Part" key="{$part->id}" field="Part_Sticky_Note"  }
+
 <div class="name_and_categories">
     <span class="strong"><span
                 class="strong Part_Unit_Description">{$part->get('Part Package Description')}</span> </span>
