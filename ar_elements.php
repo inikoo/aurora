@@ -133,6 +133,10 @@ switch ($tab) {
         break;
     case 'customers':
     case 'website.favourites.customers':
+
+    case 'product.customers':
+    case 'product.customers.favored':
+
         $data = prepare_values(
             $_REQUEST, array(
                          'parameters' => array('type' => 'json array')
@@ -184,6 +188,7 @@ switch ($tab) {
 
 
     case 'orders':
+    case 'product.orders':
         $data = prepare_values(
             $_REQUEST, array(
                          'parameters' => array('type' => 'json array')
@@ -225,6 +230,8 @@ switch ($tab) {
     case 'campaign.history':
     case 'supplier.order.history':
     case 'category.webpage.logbook':
+    case 'supplier.history':
+
         $data = prepare_values(
             $_REQUEST, array(
                          'parameters' => array('type' => 'json array')
@@ -1029,7 +1036,6 @@ function get_customers_element_numbers($db, $data) {
 
     global $user;
 
-    $parent_key = $data['parent_key'];
 
     $elements_numbers = array(
         'orders'   => array(
@@ -1077,10 +1083,21 @@ function get_customers_element_numbers($db, $data) {
             $table = '`Order Dimension` O  left join `Order Deal Bridge` DB on (DB.`Order Key`=O.`Order Key`) left join `Customer Dimension` C on (`Order Customer Key`=C.`Customer Key`) ';
             $where = sprintf(' where `Deal Key`=%d', $data['parent_key']);
             break;
+
+        case 'product':
+            $table = '`Order Transaction Fact` OTF  left join `Customer Dimension` C on (OTF.`Customer Key`=C.`Customer Key`) ';
+
+            $where = sprintf(' where  `Product ID`=%d ',  $data['parent_key']);
+
+            break;
+
         case 'favourites':
-            $where = sprintf(
-                ' where C.`Customer Key` in (select DISTINCT F.`Customer Key` from `Customer Favorite Product Bridge` F where `Site Key`=%d )', $data['parent_key']
-            );
+
+            $table = '`Customer Favorite Product Bridge` F  left join `Customer Dimension` C   on (C.`Customer Key`=F.`Customer Key`)  ';
+
+
+            $where = sprintf(' where  F.`Product ID`=%d ',$data['parent_key']);
+
             break;
         default:
             $response = array(
@@ -1096,6 +1113,8 @@ function get_customers_element_numbers($db, $data) {
     $sql = sprintf(
         "select count(Distinct C.`Customer Key`) as number,`Customer With Orders` as element from $table $where  group by `Customer With Orders` "
     );
+
+
     foreach ($db->query($sql) as $row) {
 
         $elements_numbers['orders'][$row['element']] = number($row['number']);
@@ -1214,7 +1233,7 @@ function get_history_elements($db, $data) {
             'Attachments' => 0,
             'WebLog'      => 0,
             'Emails'      => 0,
-            'Deployment'      => 0
+            'Deployment'  => 0
         )
     );
     if ($data['parent'] == 'category') {
@@ -1244,6 +1263,10 @@ function get_history_elements($db, $data) {
     } elseif ($data['parent'] == 'store') {
         $sql = sprintf(
             "SELECT count(*) AS num ,`Type` FROM  `%s Category History Bridge` WHERE  `Store Key`=%d GROUP BY  `Type`", $data['subject'], $data['parent_key']
+        );
+    } elseif ($data['parent'] == 'supplier') {
+        $sql = sprintf(
+            "SELECT count(*) AS num ,`Type` FROM  `Supplier History Bridge` WHERE  `Supplier Key`=%d GROUP BY  `Type`", $data['parent_key']
         );
     } elseif ($data['parent'] == 'deal') {
         $sql = sprintf(
@@ -1495,15 +1518,12 @@ function get_orders_element_numbers($db, $data, $user) {
     }
 
 
-    list(
-        $db_interval, $from, $to, $from_date_1yb, $to_1yb
-        ) = calculate_interval_dates(
-        $db, $data['period'], $data['from'], $data['to']
-    );
+    list($db_interval, $from, $to, $from_date_1yb, $to_1yb) = calculate_interval_dates($db, $data['period'], $data['from'], $data['to']);
 
 
     $parent_key = $data['parent_key'];
 
+    $count = ' count(*)';
 
     switch ($data['parent']) {
         case 'account':
@@ -1528,12 +1548,19 @@ function get_orders_element_numbers($db, $data, $user) {
             $table = '`Order Dimension` O left join `Order Deal Bridge` DB on (DB.`Order Key`=O.`Order Key`) ';
             $where = sprintf('where  `Deal Key`=%d', $parent_key);
             break;
+        case 'product':
+            $table = '`Order Transaction Fact` OTF  left join     `Order Dimension` O   on (OTF.`Order Key`=O.`Order Key`)   ';
+
+            $where = sprintf(' where  `Product ID`=%d ', $parent_key);
+            $count = ' count(Distinct O.`Order Key`)';
+
+            break;
         default:
             exit ($data['parent']);
             break;
     }
 
-    $where_interval = prepare_mysql_dates($from, $to, '`Order Date`');
+    $where_interval = prepare_mysql_dates($from, $to, 'O.`Order Date`');
     $where_interval = $where_interval['mysql'];
 
     $elements_numbers = array(
@@ -1613,7 +1640,7 @@ function get_orders_element_numbers($db, $data, $user) {
 
     // USE INDEX (`Type Store Key`)
     $sql = sprintf(
-        "SELECT count(*) AS number,`Order Type` AS element FROM %s %s %s GROUP BY `Order Type` ", $table, $where, $where_interval
+        "SELECT %s AS number,`Order Type` AS element FROM %s %s %s GROUP BY `Order Type` ", $count, $table, $where, $where_interval
     );
     foreach ($db->query($sql) as $row) {
 
@@ -1623,8 +1650,10 @@ function get_orders_element_numbers($db, $data, $user) {
 
 
     $sql = sprintf(
-        "SELECT count(*) AS number,`Order Current Dispatch State` AS element FROM %s  %s %s GROUP BY `Order Current Dispatch State` ", $table, $where, $where_interval
+        "SELECT %s AS number,`Order Current Dispatch State` AS element FROM %s  %s %s GROUP BY `Order Current Dispatch State` ", $count, $table, $where, $where_interval
     );
+
+
     foreach ($db->query($sql) as $row) {
 
         if ($row['element'] != '') {
@@ -1648,12 +1677,14 @@ function get_orders_element_numbers($db, $data, $user) {
         }
     }
 
+    // print $sql;
+
     foreach ($elements_numbers['dispatch'] as $key => $value) {
         $elements_numbers['dispatch'][$key] = number($value);
     }
     // USE INDEX (`Current Payment State Store Key`)
     $sql = sprintf(
-        "SELECT count(*) AS number,`Order Current Payment State` AS element FROM %s  %s %s GROUP BY `Order Current Payment State` ", $table, $where, $where_interval
+        "SELECT %s AS number,`Order Current Payment State` AS element FROM %s  %s %s GROUP BY `Order Current Payment State` ", $count, $table, $where, $where_interval
     );
     foreach ($db->query($sql) as $row) {
         if ($row['element'] == 'Waiting Payment') {
@@ -2124,8 +2155,6 @@ function get_supplier_orders_elements($db, $data) {
 }
 
 
-
-
 function get_agent_orders_elements($db, $data) {
 
 
@@ -2159,7 +2188,7 @@ function get_agent_orders_elements($db, $data) {
 
     $elements_numbers = array(
         'state' => array(
-            'SubmittedAgent'                   => 0,
+            'SubmittedAgent'              => 0,
             'SubmittedInputtedDispatched' => 0,
             'ReceivedChecked'             => 0,
             'Placed'                      => 0,
@@ -2177,7 +2206,7 @@ function get_agent_orders_elements($db, $data) {
         foreach ($result as $row) {
 
 
-            if ($row['element'] == 'Submitted'  or $row['element'] == 'Inputted' or $row['element'] == 'Dispatched') {
+            if ($row['element'] == 'Submitted' or $row['element'] == 'Inputted' or $row['element'] == 'Dispatched') {
                 $element = 'SubmittedInputtedDispatched';
             } elseif ($row['element'] == 'Received' or $row['element'] == 'Checked') {
                 $element = 'ReceivedChecked';
@@ -2204,7 +2233,7 @@ function get_agent_orders_elements($db, $data) {
 
 }
 
-function get_agent_client_orders_elements($db, $data,$user) {
+function get_agent_client_orders_elements($db, $data, $user) {
 
 
     if ($user->get('User Type') != 'Agent') {
@@ -2217,8 +2246,7 @@ function get_agent_client_orders_elements($db, $data,$user) {
         exit;
     }
     // $_data['parameters']['parent']     = 'agent';
-   $agent_key = $user->get('User Parent Key');
-
+    $agent_key = $user->get('User Parent Key');
 
 
     list($db_interval, $from, $to, $from_date_1yb, $to_1yb) = calculate_interval_dates($db, $data['period'], $data['from'], $data['to']);
@@ -2230,12 +2258,12 @@ function get_agent_client_orders_elements($db, $data,$user) {
     switch ($data['parent']) {
         case 'supplier':
             $table = '`Purchase Order Dimension` O';
-            $where = sprintf('where  `Purchase Order Parent`="Supplier" and `Purchase Order Parent Key`=%d and `Purchase Order Agent Key`=%d', $parent_key,$agent_key);
+            $where = sprintf('where  `Purchase Order Parent`="Supplier" and `Purchase Order Parent Key`=%d and `Purchase Order Agent Key`=%d', $parent_key, $agent_key);
             break;
 
         case 'account':
             $table = '`Purchase Order Dimension` O';
-            $where = sprintf('where  `Purchase Order Agent Key`=%d',$agent_key);
+            $where = sprintf('where  `Purchase Order Agent Key`=%d', $agent_key);
             break;
         default:
             exit ($data['parent']);
@@ -2248,7 +2276,7 @@ function get_agent_client_orders_elements($db, $data,$user) {
 
     $elements_numbers = array(
         'state' => array(
-            'SubmittedAgent'                   => 0,
+            'SubmittedAgent'              => 0,
             'SubmittedInputtedDispatched' => 0,
             'ReceivedChecked'             => 0,
             'Placed'                      => 0,
@@ -2266,7 +2294,7 @@ function get_agent_client_orders_elements($db, $data,$user) {
         foreach ($result as $row) {
 
 
-            if ($row['element'] == 'Submitted'  or $row['element'] == 'Inputted' or $row['element'] == 'Dispatched') {
+            if ($row['element'] == 'Submitted' or $row['element'] == 'Inputted' or $row['element'] == 'Dispatched') {
                 $element = 'SubmittedInputtedDispatched';
             } elseif ($row['element'] == 'Received' or $row['element'] == 'Checked') {
                 $element = 'ReceivedChecked';
@@ -2671,7 +2699,6 @@ function get_online_webpages_element_numbers($db, $data, $user) {
 }
 
 
-
 function get_agent_parts_element_numbers($db, $data, $user) {
 
 
@@ -2689,8 +2716,6 @@ function get_agent_parts_element_numbers($db, $data, $user) {
         ),
 
     );
-
-
 
 
     $table = '`Supplier Part Dimension`  SP left join `Part Dimension` P on (P.`Part SKU`=SP.`Supplier Part Part SKU`) ';
@@ -2752,10 +2777,10 @@ function get_agent_parts_element_numbers($db, $data, $user) {
     foreach ($db->query($sql) as $row) {
 
 
-        if($row['element']=='Discontinuing' or $row['element']=='Not In Use'){
-            $_element='NotRequired';
-        }else{
-            $_element='Required';
+        if ($row['element'] == 'Discontinuing' or $row['element'] == 'Not In Use') {
+            $_element = 'NotRequired';
+        } else {
+            $_element = 'Required';
         }
 
 
@@ -2764,8 +2789,8 @@ function get_agent_parts_element_numbers($db, $data, $user) {
     }
 
 
-    foreach( $elements_numbers['part_status'] as $key=>$value){
-        $elements_numbers['part_status'][$key]=number($value);
+    foreach ($elements_numbers['part_status'] as $key => $value) {
+        $elements_numbers['part_status'][$key] = number($value);
     }
 
 
@@ -2788,7 +2813,6 @@ function get_agent_parts_element_numbers($db, $data, $user) {
 
 
 }
-
 
 
 ?>

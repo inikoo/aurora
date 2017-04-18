@@ -103,7 +103,7 @@ if ($_SESSION['logged_in_page'] != 0) {
     $sql = sprintf(
         "UPDATE `User Log Dimension` SET `Logout Date`=NOW()  WHERE `Session ID`=%s", prepare_mysql(session_id())
     );
-    mysql_query($sql);
+    $db->exec($sql);
 
     session_regenerate_id();
     session_destroy();

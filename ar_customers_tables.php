@@ -66,7 +66,7 @@ function customers($_data, $db, $user) {
 
 
     if ($_data['parameters']['parent'] == 'favourites') {
-        $rtext_label = 'customer with favourites';
+        $rtext_label = 'customer who favored';
     } else {
         $rtext_label = 'customer';
     }

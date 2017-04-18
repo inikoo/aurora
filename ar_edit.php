@@ -274,11 +274,11 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
     if (isset($data['metadata'])) {
 
 
-        $object->update(
-            array($field => $data['value']), $options, $data['metadata']
-        );
+        $object->update(array($field => $data['value']), $options, $data['metadata']);
+
 
     } else {
+
 
         $object->update(array($field => $data['value']), $options);
     }
@@ -303,6 +303,7 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
 
 
     }
+
 
 
     if ($object->error) {

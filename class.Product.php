@@ -269,7 +269,7 @@ class Product extends Asset {
             );
 
             $this->add_subject_history(
-                $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id()
+                $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
             );
 
             $this->new = true;
@@ -865,8 +865,23 @@ class Product extends Asset {
 
                 return $value;
                 break;
+            case 'Customers Numbers':
+                $customer_numbers= number($this->data['Product Number Customers']);
 
+                if($this->data['Product Number Customers Favored']>0){
+                $customer_numbers .=', <i class="fa fa-heart" aria-hidden="true"></i>'.number($this->data['Product Number Customers Favored']);
+                }
 
+                return $customer_numbers;
+
+                break;
+
+            case 'Number Customers Favored':
+            case 'Number Customers':
+            case 'Number Orders':
+            case 'Number Images':
+            case 'Number History Records':
+            number($this->data['Product '.$key]);
             default:
 
 
@@ -2722,6 +2737,76 @@ class Product extends Asset {
 
     }
 
+
+    function update_order_numbers() {
+
+        $number_orders = 0;
+        $number_customers = 0;
+
+        $sql = sprintf(
+            'SELECT count(Distinct `Order Key`) AS orders,count(Distinct `Customer Key`) AS customers FROM `Order Transaction Fact`  WHERE `Product ID`=%d', $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $number_orders = $row['orders'];
+                $number_customers = $row['customers'];
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+
+        $this->update(
+            array(
+                'Product Number Orders' => $number_orders,
+                'Product Number Customers' => $number_customers
+
+
+            ), 'no_history'
+        );
+
+
+    }
+
+
+    function update_customers_favored_numbers() {
+
+        $number_customers_favored = 0;
+
+
+        $sql = sprintf(
+            'SELECT count(Distinct `Customer Key`)  customers FROM `Customer Favorite Product Bridge`  WHERE `Product ID`=%d', $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $number_customers_favored = $row['customers'];
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        $this->update(
+            array(
+
+                'Product Number Customers Favored' => $number_customers_favored,
+
+
+            ), 'no_history'
+        );
+
+
+    }
+
+
+
     function update_cost() {
         $cost = 0;
 
@@ -2906,8 +2991,9 @@ class Product extends Asset {
 
         $status = 'Active';
 
+        $part_objects=$this->get_parts('objects') ;
 
-        foreach ($this->get_parts('objects') as $part) {
+        foreach ($part_objects as  $part) {
             if ($part->get('Part Status') == 'Discontinuing') {
                 $status = 'Discontinuing';
             } elseif ($part->get('Part Status') == 'Not In Use') {
@@ -2921,9 +3007,7 @@ class Product extends Asset {
 
         if ($status == 'Active') {
             if ($this->get('Product Status') == 'Discontinuing') {
-                $this->update(
-                    array('Product Status' => 'Active'), 'no_history'
-                );
+                $this->update(array('Product Status' => 'Active'), 'no_history');
 
             }
         } elseif ($status == 'Discontinuing') {
@@ -2937,6 +3021,8 @@ class Product extends Asset {
 
 
         }
+
+
 
         $this->update_availability();
 

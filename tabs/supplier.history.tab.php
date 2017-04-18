@@ -31,6 +31,7 @@ $parameters = array(
 );
 
 
+
 $table_buttons   = array();
 $table_buttons[] = array(
     'icon'  => 'sticky-note-o',
@@ -38,6 +39,16 @@ $table_buttons[] = array(
     'id'    => "show_history_note_dialog"
 );
 $smarty->assign('table_buttons', $table_buttons);
+
+
+$smarty->assign('history_notes_data',
+                array(
+
+                    'object'=>'supplier',
+                    'key'=>$state['_object']->id
+                )
+);
+
 
 
 $smarty->assign('aux_templates', array('history_notes.tpl'));

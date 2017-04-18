@@ -34,7 +34,7 @@ trait AttachmentSubject {
 
             $sql = sprintf(
                 "INSERT INTO `Attachment Bridge` (`Attachment Key`,`Subject`,`Subject Key`,`Attachment File Original Name`,`Attachment Caption`,`Attachment Subject Type`) VALUES (%d,%s,%d,%s,%s,%s)",
-                $attach->id, prepare_mysql($this->get_object_name()), $this->get_main_id(), prepare_mysql($raw_data['Attachment File Original Name']),
+                $attach->id, prepare_mysql($this->get_object_name()), $this->id, prepare_mysql($raw_data['Attachment File Original Name']),
                 prepare_mysql($raw_data['Attachment Caption'], false), prepare_mysql($raw_data['Attachment Subject Type'])
 
 
@@ -62,7 +62,7 @@ trait AttachmentSubject {
 
 
             $attach->get_subject_data($subject_bridge_key);
-
+            $this->update_attachments_data();
 
         } else {
             $this->error;
@@ -78,20 +78,8 @@ trait AttachmentSubject {
 
         include_once 'utils/units_functions.php';
 
-        if ($this->table_name == 'Product' or $this->table_name == 'Supplier Product') {
-            $subject_key = $this->pid;
-        } else {
-            $subject_key = $this->id;
-        }
 
-        if ($this->table_name == 'Product Family') {
-            $subject = 'Family';
-        } elseif ($this->table_name == 'Product Department') {
-            $subject = 'Department';
-        } else {
-
-            $subject = $this->table_name;
-        }
+        $subject = $this->table_name;
 
 
         $sql = sprintf(
@@ -108,23 +96,17 @@ trait AttachmentSubject {
 
 
                 if ($row['Attachment Type'] == 'Image') {
-                    $icon
-                        = '<img class="icon" src="art/icons/page_white_picture.png" alt="'.$row['Attachment MIME Type'].'" title="'.$row['Attachment MIME Type'].'" />';
+                    $icon = '<img class="icon" src="art/icons/page_white_picture.png" alt="'.$row['Attachment MIME Type'].'" title="'.$row['Attachment MIME Type'].'" />';
                 } elseif ($row['Attachment Type'] == 'Image') {
-                    $icon
-                        = '<img class="icon"  src="art/icons/page_white_excel.png" alt="'.$row['Attachment MIME Type'].'" title="'.$row['Attachment MIME Type'].'"/>';
+                    $icon = '<img class="icon"  src="art/icons/page_white_excel.png" alt="'.$row['Attachment MIME Type'].'" title="'.$row['Attachment MIME Type'].'"/>';
                 } elseif ($row['Attachment Type'] == 'Word') {
-                    $icon
-                        = '<img class="icon" src="art/icons/page_white_word.png" alt="'.$row['Attachment MIME Type'].'" title="'.$row['Attachment MIME Type'].'"/>';
+                    $icon = '<img class="icon" src="art/icons/page_white_word.png" alt="'.$row['Attachment MIME Type'].'" title="'.$row['Attachment MIME Type'].'"/>';
                 } elseif ($row['Attachment Type'] == 'PDF') {
-                    $icon
-                        = '<img class="icon" src="art/icons/page_white_acrobat.png" alt="'.$row['Attachment MIME Type'].'" title="'.$row['Attachment MIME Type'].'"/>';
+                    $icon = '<img class="icon" src="art/icons/page_white_acrobat.png" alt="'.$row['Attachment MIME Type'].'" title="'.$row['Attachment MIME Type'].'"/>';
                 } elseif ($row['Attachment Type'] == 'Compressed') {
-                    $icon
-                        = '<img class="icon" src="art/icons/page_white_compressed.png" alt="'.$row['Attachment MIME Type'].'" title="'.$row['Attachment MIME Type'].'"/>';
+                    $icon = '<img class="icon" src="art/icons/page_white_compressed.png" alt="'.$row['Attachment MIME Type'].'" title="'.$row['Attachment MIME Type'].'"/>';
                 } elseif ($row['Attachment Type'] == 'Text') {
-                    $icon
-                        = '<img class="icon" src="art/icons/page_white_text.png" alt="'.$row['Attachment MIME Type'].'" title="'.$row['Attachment MIME Type'].'"/>';
+                    $icon = '<img class="icon" src="art/icons/page_white_text.png" alt="'.$row['Attachment MIME Type'].'" title="'.$row['Attachment MIME Type'].'"/>';
                 } else {
                     $icon = '<img class="icon" src="art/icons/attach.png" alt="'.$row['Attachment MIME Type'].'" title="'.$row['Attachment MIME Type'].'"/>';
 
@@ -198,6 +180,34 @@ trait AttachmentSubject {
             print "$sql";
             exit;
         }
+
+        $this->update_attachments_data();
+
+    }
+
+
+    function update_attachments_data() {
+
+        $sql = sprintf(
+            'SELECT count(*) AS num FROM `Attachment Bridge` WHERE `Subject`=%s AND `Subject Key`=%d ',prepare_mysql( $this->get_object_name()) , $this->id
+        );
+
+        $number=0;
+
+        if ($result=$this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $number=$row['num'];
+        	}
+        }else {
+        	print_r($error_info=$this->db->errorInfo());
+        	print "$sql\n";
+        	exit;
+        }
+
+        $this->update(
+            array($this->get_object_name().' Number Attachments'=>$number),
+            'no_history'
+        );
 
 
     }

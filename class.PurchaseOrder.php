@@ -117,7 +117,7 @@ class PurchaseOrder extends DB_Table {
                 'Action'           => 'created'
             );
             $this->add_subject_history(
-                $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id()
+                $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
             );
 
             $this->new = true;
@@ -870,7 +870,7 @@ class PurchaseOrder extends DB_Table {
                         'Action'           => 'created'
                     );
                     $this->add_subject_history(
-                        $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id()
+                        $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
                     );
 
 
@@ -912,7 +912,7 @@ class PurchaseOrder extends DB_Table {
                             'History Details'  => '',
                             'Action'           => 'created'
                         );
-                        $this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id());
+                        $this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id);
 
                     }
 
@@ -954,7 +954,7 @@ class PurchaseOrder extends DB_Table {
                             'Action'           => 'created'
                         );
                         $this->add_subject_history(
-                            $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id()
+                            $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
                         );
 
                     }
@@ -984,7 +984,7 @@ class PurchaseOrder extends DB_Table {
                         'Action'           => 'created'
                     );
                     $this->add_subject_history(
-                        $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id()
+                        $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
                     );
 
 
@@ -1462,7 +1462,7 @@ class PurchaseOrder extends DB_Table {
                 'Action'           => 'deleted'
             );
             $this->add_subject_history(
-                $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id()
+                $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
             );
 
 

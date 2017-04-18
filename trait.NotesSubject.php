@@ -72,6 +72,9 @@ trait NotesSubject {
 
         $this->updated   = true;
         $this->new_value = $history_key;
+
+
+
     }
 
     function prepare_note($note, $details) {
@@ -211,6 +214,7 @@ trait NotesSubject {
 
         return $note;
     }
+
 
 
 }
