@@ -352,9 +352,7 @@ if ($user->can_view('production') and $account->get('Account Manufacturers') > 0
         $nav_menu[] = array(
             '<i class="fa fa-industry fa-fw"></i>',
             _('Production'),
-            'production/'.$user->get(
-                'User Hooked Production Key'
-            ),
+            'production/'.$user->get('User Hooked Production Key'),
             'production',
             'module',
             ''
@@ -468,30 +466,18 @@ if ($user->get('User Type') == 'Agent') {
         'agent_profile',
         'module',
         'jump'
+
     );
 
 
-} elseif ($user->get('User Type') == 'Supplier') {
+}
+elseif ($user->get('User Type') == 'Supplier') {
 
 
-    //$nav_menu[] = array(_('Orders'), 'suppliers.php?orders'  ,'orders');
-    $nav_menu[] = array(
-        _('Products'),
-        'suppliers.php',
-        'suppliers',
-        'module',
-        ''
-    );
 
 } elseif ($user->get('User Type') == 'Warehouse') {
 
-    $nav_menu[] = array(
-        _('Pending Orders'),
-        'warehouse_orders.php?id='.$user->get('User Parent Key'),
-        'orders',
-        'module',
-        'last'
-    );
+
 
 
 } else {

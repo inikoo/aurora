@@ -187,6 +187,32 @@ function sales_overview($_data, $db, $user, $account) {
 
         0 replacements,
         0 replacements_1yb,
+        
+        0 `Store Orders In Basket Number`,
+        
+        0 ` Store Orders In Basket Amount`,
+         0 `Store Orders In Process Paid Number`,
+          0 `Store Orders In Process Paid Amount`,
+            0 `Store Orders In Process Not Paid Number`,
+         0 `Store Orders In Process Not Paid Amount`,
+          0 `Store Orders In Warehouse Number`,
+             0 `Store Orders In Warehouse Amount`,
+           0 `Store Orders Packed Number`,
+            0 `Store Orders Packed Amount`,
+             0 `Store Orders In Dispatch Area Number`,
+              0 `Store Orders In Dispatch Area Amount`,
+               0 `Store Orders In Warehouse Amount`,
+                0 `Store Orders Packed Amount`,
+                
+             0   `Store DC Orders In Basket Amount`,
+              0   `Store DC Orders In Process Paid Amount`,
+               0   ` Store DC Orders In Process Not Paid Amount`,
+                0   `Store DC Orders In Warehouse Amount`,
+                 0   `Store DC Orders Packed Amount`,
+                  0   `Store DC Orders In Dispatch Area Amount `,
+                   0   `Store DC Orders In Dispatch Area Amount`
+          
+        ,
                         ";
 
 
@@ -213,7 +239,8 @@ function sales_overview($_data, $db, $user, $account) {
             "select  concat('cat',C.`Category Key`) record_key, C.`Category Key`,`Category Store Key`,`Store Currency Code` currency, $fields from `Invoice Category Dimension` IC left join `Invoice Category Data` ICD on (IC.`Invoice Category Key`=ICD.`Invoice Category Key`)  left join `Invoice Category DC Data` ICSCD on (IC.`Invoice Category Key`=ICSCD.`Invoice Category Key`)  left join `Category Dimension` C on (C.`Category Key`=IC.`Invoice Category Key`) left join `Store Dimension` S on (S.`Store Key`=C.`Category Store Key`) order by C.`Category Store Key` ,`Category Function Order`";
 
 
-    } else {
+    }
+    else {
         $request = 'invoices';
         $fields  = "
 			`Store Orders In Basket Number`,`Store Orders In Basket Amount`,`Store DC Orders In Basket Amount`,
@@ -239,6 +266,10 @@ function sales_overview($_data, $db, $user, $account) {
         );
 
     }
+
+
+
+
 
     $sum_invoices = 0;
     $sum_refunds  = 0;
@@ -348,7 +379,8 @@ function sales_overview($_data, $db, $user, $account) {
                 );
 
 
-            } else {
+            }
+            else {
                 $data['orders_overview_sales_'.$row['record_key']]       = array(
                     'value' => money(
                         $row['dc_sales'], $account->get('Account Currency')
@@ -372,14 +404,10 @@ function sales_overview($_data, $db, $user, $account) {
                     )
                 );
                 $data['orders_overview_in_process_paid_amount_'.$row['record_key']]     = array(
-                    'value' => money(
-                        $row['Store DC Orders In Process Paid Amount'], $account->get('Account Currency')
-                    )
+                    'value' => money($row['Store DC Orders In Process Paid Amount'], $account->get('Account Currency'))
                 );
                 $data['orders_overview_in_process_not_paid_amount_'.$row['record_key']] = array(
-                    'value' => money(
-                        $row['Store DC Orders In Process Not Paid Amount'], $account->get('Account Currency')
-                    )
+                    'value' => money($row['Store DC Orders In Process Not Paid Amount'], $account->get('Account Currency'))
                 );
                 $data['orders_overview_in_warehouse_amount_'.$row['record_key']]        = array(
                     'value' => money(
