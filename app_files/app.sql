@@ -7482,6 +7482,8 @@ CREATE TABLE `Part Category Dimension` (
   `Part Category Acc To Day Updated` datetime DEFAULT NULL COMMENT 'Total, Year to Day, Quarter to day, Week to day',
   `Part Category Acc Ongoing Intervals Updated` datetime DEFAULT NULL COMMENT '1 year, 1 quarter',
   `Part Category Acc Previous Intervals Updated` datetime DEFAULT NULL COMMENT 'last month, last week, past years, past quarters',
+  `Part Category Number History Records` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Part Category Number Images` mediumint(8) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`Part Category Key`),
   KEY `Part Category Status` (`Part Category Status`),
   KEY `Part Category Warehouse Key` (`Part Category Warehouse Key`)
@@ -8091,6 +8093,14 @@ CREATE TABLE `Part Dimension` (
   `Part Acc To Day Updated` datetime DEFAULT NULL,
   `Part Acc Ongoing Intervals Updated` datetime DEFAULT NULL,
   `Part Acc Previous Intervals Updated` datetime DEFAULT NULL,
+  `Part Number No Active Products` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Part Number Deliveries` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Part Number Purchase Orders` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Part Number Supplier Parts` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Part Number Active Products` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Part Number History Records` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Part Number Attachments` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Part Number Images` smallint(5) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`Part SKU`),
   KEY `Part TYpe` (`Part Status`),
   KEY `Part Valid From` (`Part Valid From`),
@@ -9142,6 +9152,8 @@ CREATE TABLE `Product Category Dimension` (
   `Product Category Acc To Day Updated` datetime DEFAULT NULL COMMENT 'Total, Year to Day, Quarter to day, Week to day',
   `Product Category Acc Ongoing Intervals Updated` datetime DEFAULT NULL COMMENT '1 year, 1 quarter',
   `Product Category Acc Previous Intervals Updated` datetime DEFAULT NULL COMMENT 'ast month, last week, past years, past quarters',
+  `Product Category Number History Records` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Product Category Number Images` mediumint(8) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`Product Category Key`) USING BTREE,
   KEY `Product Category Store Key` (`Product Category Store Key`),
   KEY `Product Category Status` (`Product Category Status`)
@@ -10746,6 +10758,15 @@ CREATE TABLE `Product Dimension` (
   `Product Acc To Day Updated` datetime DEFAULT NULL,
   `Product Acc Ongoing Intervals Updated` datetime DEFAULT NULL,
   `Product Acc Previous Intervals Updated` datetime DEFAULT NULL,
+  `Product Number Customers Favored` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Product Number Deals Historic` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Product Number Deals` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Product Number Customers Favorite` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Product Number Customers` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Product Number Orders` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Product Number Parts` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Product Number History Records` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Product Number Images` smallint(5) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`Product ID`,`Product Store Key`),
   KEY `Product Alphanumeric Code` (`Product Code File As`(16)),
   KEY `date` (`Product Valid From`),
@@ -15416,6 +15437,11 @@ CREATE TABLE `Supplier Dimension` (
   `Supplier Acc To Day Updated` datetime DEFAULT NULL,
   `Supplier Acc Ongoing Intervals Updated` datetime DEFAULT NULL,
   `Supplier Acc Previous Intervals Updated` datetime DEFAULT NULL,
+  `Supplier Number Deliveries` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Supplier Number Purchase Orders` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Supplier Number History Records` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Supplier Number System Users` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Supplier Number Attachments` smallint(5) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`Supplier Key`),
   UNIQUE KEY `Supplier Code` (`Supplier Code`),
   KEY `Supplier Most Recent` (`Supplier Active`),
@@ -18011,4 +18037,4 @@ CREATE TABLE `todo_users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-04-17 18:22:00
+-- Dump completed on 2017-04-18 14:37:09
