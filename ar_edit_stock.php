@@ -303,6 +303,7 @@ function edit_stock($account, $db, $user, $editor, $data, $smarty) {
             $data['object'], $data['key'], $load_other_data = true
         );
 
+        $smarty->assign('part_sku', $part->id);
 
         $smarty->assign('locations_data', $part->get_locations('data'));
         $part_locations = $smarty->fetch('part_locations.edit.tpl');
