@@ -479,9 +479,7 @@ class Attachment extends DB_Table {
 
             case 'Preview':
 
-                return sprintf(
-                    '/attachment_preview.php?id=%d', $this->get('Attachment Bridge Key')
-                );
+                return sprintf('/attachment_preview.php?id=%d', $this->get('Attachment Bridge Key'));
 
             case 'Public':
                 if ($this->data['Attachment Public'] == 'Yes') {
@@ -505,13 +503,9 @@ class Attachment extends DB_Table {
                     }
                 } else {
                     if ($this->data['Attachment Public'] == 'Yes') {
-                        $visibility = sprintf(
-                            '<i title="%s" class="fa fa-eye"></i> %s', _('Public'), _('Public')
-                        );
+                        $visibility = sprintf('<i title="%s" class="fa fa-eye"></i> %s', _('Public'), _('Public'));
                     } else {
-                        $visibility = sprintf(
-                            '<i title="%s" class="fa fa-eye-slash"></i> %s', _('Private'), _('Private')
-                        );
+                        $visibility = sprintf('<i title="%s" class="fa fa-eye-slash"></i> %s', _('Private'), _('Private'));
                     }
 
                 }
@@ -522,40 +516,47 @@ class Attachment extends DB_Table {
 
 
             case 'Subject Type':
-                switch ($this->data['Attachment Subject Type']) {
-                    case 'Contract':
-                        $type = _('Employment contract');
-                        break;
-                    case 'CV':
-                        $type = _('Curriculum vitae');
-                        break;
-                    case 'Other':
-                        $type = _('Other');
-                        break;
-                    case 'Invoice':
-                        $type = _('Invoice');
-                        break;
-                    case 'PurchaseOrder':
-                        $type = _('Purchase order');
-                        break;
-                    case 'Contact Card':
-                        $type = _('Contact card');
-                        break;
-                    case 'Catalogue':
-                        $type = _('Catalogue');
-                        break;
-                    case 'Image':
-                        $type = _('Image');
-                        break;
-                    case 'MSDS':
-                        $type = _('Material Safety Data Sheet (MSDS)');
-                        break;
-                    default:
-                        $type = $this->data['Attachment Subject Type'].'*';
-                        break;
-                }
 
-                return $type;
+                if(array_key_exists('Attachment Subject Type',$this->data)) {
+
+
+                    switch ($this->data['Attachment Subject Type']) {
+                        case 'Contract':
+                            $type = _('Employment contract');
+                            break;
+                        case 'CV':
+                            $type = _('Curriculum vitae');
+                            break;
+                        case 'Other':
+                            $type = _('Other');
+                            break;
+                        case 'Invoice':
+                            $type = _('Invoice');
+                            break;
+                        case 'PurchaseOrder':
+                            $type = _('Purchase order');
+                            break;
+                        case 'Contact Card':
+                            $type = _('Contact card');
+                            break;
+                        case 'Catalogue':
+                            $type = _('Catalogue');
+                            break;
+                        case 'Image':
+                            $type = _('Image');
+                            break;
+                        case 'MSDS':
+                            $type = _('Material Safety Data Sheet (MSDS)');
+                            break;
+                        default:
+                            $type = $this->data['Attachment Subject Type'].'*';
+                            break;
+                    }
+
+                    return $type;
+                }else{
+                    return '';
+                }
                 break;
             case 'File Size':
                 include_once 'utils/natural_language.php';
