@@ -27,7 +27,7 @@ function setTimezone($default) {
         $pos = strpos($filename, "zoneinfo");
         if ($pos) {
             // When it is, it's in the "/usr/share/zoneinfo/" folder
-            $timezone = substr($filename, $pos + strlen("zoneinfo/"));
+            $timezone = trim(substr($filename, $pos + strlen("zoneinfo/")));
         } else {
             // If not, bail
             $timezone = $default;
@@ -35,7 +35,7 @@ function setTimezone($default) {
     } else {
         // On other systems, like Ubuntu, there's file with the Olsen time
         // right inside it.
-        $timezone = file_get_contents("/etc/timezone");
+        $timezone = trim(file_get_contents("/etc/timezone"));
         if (!strlen($timezone)) {
             $timezone = $default;
         }
