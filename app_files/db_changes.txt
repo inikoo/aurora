@@ -544,6 +544,7 @@ ALTER TABLE `Part Dimension` ADD `Part Number History Records` SMALLINT UNSIGNED
 ALTER TABLE `Part Dimension` ADD `Part Number Active Products` SMALLINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Part Acc Previous Intervals Updated`;
 ALTER TABLE `Part Dimension` ADD `Part Number No Active Products` SMALLINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Part Acc Previous Intervals Updated`;
 
+
 ALTER TABLE `Part Dimension` ADD `Part Number Supplier Parts` SMALLINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Part Acc Previous Intervals Updated`;
 ALTER TABLE `Part Dimension` ADD `Part Number Purchase Orders` SMALLINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Part Acc Previous Intervals Updated`;
 ALTER TABLE `Part Dimension` ADD `Part Number Deliveries` SMALLINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Part Acc Previous Intervals Updated`;

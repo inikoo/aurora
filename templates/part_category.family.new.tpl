@@ -236,7 +236,7 @@
 
     }
 
-    f
+
 
 
     function export_table(type) {
