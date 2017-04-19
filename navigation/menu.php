@@ -206,8 +206,9 @@ if ($user->can_view('sites')) {
 }
 
 
-
+/*
 if ($user->can_view('marketing')) {
+
 
     if ($user->get('User Hooked Store Key')) {
         $nav_menu[] = array(
@@ -230,15 +231,12 @@ if ($user->can_view('marketing')) {
         );
     }
 
-    /*
-    $sections=get_sections('marketing', $data['parent_key']);
-    foreach ($sections as $key=>$section ) {
-        $nav_menu[] = array('<i class="fa fa-'.$section['icon'].' fa-fw"></i>',$section['label'], $section['reference'], $key, 'section', '');
-    }
-*/
+
 
 
 }
+
+*/
 
 if ($user->can_view('stores')) {
 

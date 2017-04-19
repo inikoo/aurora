@@ -970,6 +970,8 @@ function get_navigation($user, $smarty, $data, $db, $account) {
         case ('products'):
             require_once 'navigation/products.nav.php';
             require_once 'navigation/websites.nav.php';
+            require_once 'navigation/marketing.nav.php';
+
 
             switch ($data['section']) {
 
@@ -1078,6 +1080,60 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_user_navigation(
                         $data, $smarty, $user, $db, $account
                     );
+                case ('marketing'):
+                    return get_marketing_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
+                case ('campaigns'):
+                    return get_campaigns_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
+                case ('deals'):
+                    return get_deals_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
+                case ('campaign'):
+                    return get_campaign_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
+                case ('campaign.new'):
+                    return get_new_campaign_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
+                case ('deal.new'):
+                    return get_new_deal_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
+                case ('deal'):
+                    return get_deal_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
+
+                case ('enewsletters'):
+                    return get_enewsletters_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
+                case ('mailshots'):
+
+                    return get_mailshots_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
+                case ('marketing_post'):
+
+                    return get_marketing_post_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
+
 
                     break;
             }
@@ -1329,69 +1385,6 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 
             break;
 
-        case ('marketing'):
-            require_once 'navigation/marketing.nav.php';
-
-
-            switch ($data['section']) {
-
-                case ('campaigns'):
-                    return get_campaigns_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-                    break;
-                case ('deals'):
-                    return get_deals_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-                    break;
-                case ('campaign'):
-                    return get_campaign_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-                    break;
-                case ('campaign.new'):
-                    return get_new_campaign_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-                    break;
-                case ('deal.new'):
-                    return get_new_deal_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-                    break;
-                case ('deal'):
-                    return get_deal_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-                    break;
-
-                case ('enewsletters'):
-                    return get_enewsletters_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-                    break;
-                case ('mailshots'):
-
-                    return get_mailshots_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-                    break;
-                case ('marketing_post'):
-
-                    return get_marketing_post_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-                    break;
-
-                case ('dashboard'):
-                    return get_marketing_dashboard_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-                    break;
-
-
-            }
 
 
         case ('reports'):
