@@ -168,9 +168,12 @@ if ($user->can_view('orders')) {
     */
 }
 
+
+
+
 if ($user->can_view('sites')) {
 
-
+/*
     if ($user->get('User Hooked Site Key')) {
         $nav_menu[] = array(
             '<i class="fa fa-globe fa-fw"></i>',
@@ -190,6 +193,9 @@ if ($user->can_view('sites')) {
             ''
         );
     }
+
+    */
+
     /*
     $sections=get_sections('websites', $data['parent_key']);
     foreach ($sections as $key=>$section ) {
@@ -198,6 +204,8 @@ if ($user->can_view('sites')) {
 */
 
 }
+
+
 
 if ($user->can_view('marketing')) {
 
@@ -236,7 +244,7 @@ if ($user->can_view('stores')) {
 
     if ($user->get('User Hooked Store Key')) {
         $nav_menu[] = array(
-            '<i class="fa fa-cube fa-fw"></i>',
+            '<i class="fa fa-shopping-bag fa-fw"></i>',
             _('Products'),
             'store/'.$user->get('User Hooked Store Key'),
             'products',

@@ -25,8 +25,8 @@ $table_filters = array(
 );
 
 $parameters = array(
-    'parent'     => $state['parent'],
-    'parent_key' => $state['parent_key'],
+    'parent'     => $state['object'],
+    'parent_key' => $state['key'],
 );
 
 

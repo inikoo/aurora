@@ -17,6 +17,7 @@ $tipo    = 'online_webpages';
 $default = $user->get_tab_defaults($tab);
 
 
+
 $table_views = array();
 
 $table_filters = array(
@@ -25,8 +26,8 @@ $table_filters = array(
 );
 
 $parameters = array(
-    'parent'     => $state['parent'],
-    'parent_key' => $state['parent_key'],
+    'parent'     => $state['object'],
+    'parent_key' => $state['key'],
 );
 
 

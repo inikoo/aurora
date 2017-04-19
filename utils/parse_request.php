@@ -942,7 +942,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '',$is_setu
                     break;
                 }
 
-                $module  = 'websites';
+                $module  = 'products';
                 $section = 'website';
                 $object  = 'website';
                 $key     = $view_path[0];

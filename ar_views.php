@@ -969,6 +969,8 @@ function get_navigation($user, $smarty, $data, $db, $account) {
             }
         case ('products'):
             require_once 'navigation/products.nav.php';
+            require_once 'navigation/websites.nav.php';
+
             switch ($data['section']) {
 
                 case 'store':
@@ -1038,6 +1040,45 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_order_navigation(
                         $data, $smarty, $user, $db, $account
                     );
+
+                case ('websites'):
+
+                    return get_websites_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
+                case ('webpages'):
+
+                    return get_webpages_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
+                case ('webpage_type'):
+                    return get_webpage_type_navigation($data, $smarty, $user, $db, $account);
+                    break;
+                case ('website'):
+                    return get_website_navigation($data, $smarty, $user, $db, $account);
+                    break;
+                case ('website.node'):
+                    return get_node_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
+                case ('page'):
+                    return get_page_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
+                case ('page_version'):
+                    return get_page_version_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
+                case ('website.user'):
+                    return get_user_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+
                     break;
             }
         case ('customers'):
@@ -1269,44 +1310,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 
 
             switch ($data['section']) {
-                case ('websites'):
 
-                    return get_websites_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-                    break;
-                case ('webpages'):
-
-                    return get_webpages_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-                    break;
-                case ('webpage_type'):
-                    return get_webpage_type_navigation($data, $smarty, $user, $db, $account);
-                    break;
-                case ('website'):
-                    return get_website_navigation($data, $smarty, $user, $db, $account);
-                    break;
-                case ('website.node'):
-                    return get_node_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-                    break;
-                case ('page'):
-                    return get_page_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-                    break;
-                case ('page_version'):
-                    return get_page_version_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-                    break;
-                case ('website.user'):
-                    return get_user_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-                    break;
                 default:
                     return 'View not found';
 

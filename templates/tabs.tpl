@@ -17,8 +17,7 @@
             <div id="subtab_{$id}"
                  class="tab {if isset($tab.class)}{$tab.class}{else}left{/if} {if isset($tab.selected) and $tab.selected}selected{/if}"
                  onclick="change_subtab('{$id}')" title="{if isset($tab.title)}{$tab.title}{else}{$tab.label}{/if}">
-                {if isset($tab.icon) and  $tab.icon!=''}<i class="fa fa-{$tab.icon}"></i>{/if} <span
-                        class="label"> {$tab.label}</span>
+                {if isset($tab.icon) and  $tab.icon!=''}<i class="fa fa-{$tab.icon}"></i>{/if} <span class="label"> {$tab.label}</span>
             </div>
         {/foreach}
     </div>
