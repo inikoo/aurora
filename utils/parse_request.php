@@ -2091,7 +2091,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '',$is_setu
 
                 break;
             case 'campaigns':
-                $module = 'marketing';
+                $module = 'products';
 
                 if (isset($view_path[0])) {
                     $section = 'campaigns';
@@ -2141,7 +2141,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '',$is_setu
                 }
                 break;
             case 'deals':
-                $module = 'marketing';
+                $module = 'products';
 
                 if (isset($view_path[0])) {
                     $section = 'deals';
