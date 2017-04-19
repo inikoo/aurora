@@ -2068,7 +2068,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '',$is_setu
                     break;
                 }
 
-                $module = 'marketing';
+                $module = 'products';
 
 
 
@@ -2078,7 +2078,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '',$is_setu
                         $parent     = 'store';
                         $parent_key = $view_path[0];
 
-                       $section='dashboard';
+                       $section='marketing';
 
                     }elseif($view_path[0]=='all'){
                         $module  = 'marketing_server';

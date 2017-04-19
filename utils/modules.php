@@ -1840,7 +1840,9 @@ $modules = array(
                 'reference' => 'products/%d/categories',
                 'showcase'  => 'products_special_categories',
                 'tabs'      => array(
-                    'products.categories' => array()
+
+
+
                 )
 
             ),
@@ -2085,6 +2087,30 @@ $modules = array(
 
                 )
             ),
+
+
+
+
+            'marketing'        => array(
+                'type'      => 'navigation',
+                'label'     => _('Marketing'),
+
+                'icon'      => 'bullhorn',
+                'reference' => 'marketing/%d',
+                'tabs'      => array(
+                    'deals'    => array(
+                        'label'     => _('Offers'),
+                        'icon'  => 'tag'
+                    ),
+                    'campaigns' => array(
+                        'label' => _('Campaigns'),
+                        'icon'      => 'tags',
+                    ),
+                )
+
+            ),
+
+
 
 
             'category'          => array(
@@ -2380,6 +2406,8 @@ $modules = array(
                 'reference' => 'products/all',
                 'tabs'      => array(
 
+
+
                     'products' => array(
                         'label' => _(
                             'Products'
@@ -2392,7 +2420,10 @@ $modules = array(
 
         )
     ),
-    'marketing'        => array(
+
+
+
+    'marketingx'        => array(
         'section'     => 'marketing',
         'parent'      => 'store',
         'parent_type' => 'key',
@@ -2565,7 +2596,7 @@ $modules = array(
 
         )
     ),
-    'marketing_server' => array(
+    'marketingx_server' => array(
 
         'parent'      => 'none',
         'parent_type' => 'none',
@@ -2585,6 +2616,11 @@ $modules = array(
         )
 
     ),
+
+
+
+
+
 
     'production_server' => array(
         'sections' => array(

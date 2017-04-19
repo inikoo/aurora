@@ -1250,7 +1250,7 @@ class Supplier extends SubjectSupplier {
                 //	print $sql;
                 if ($result = $this->db->query($sql)) {
                     if ($row = $result->fetch()) {
-                        print_r($row);
+                       // print_r($row);
                         $supplier_number_active_parts = $row['num'];
                         if ($row['num'] > 0) {
                             $supplier_number_surplus_parts      = $row['surplus'];

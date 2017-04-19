@@ -17,7 +17,7 @@ function get_new_deal_navigation($data, $smarty, $user, $db) {
 
     $left_buttons  = array();
     $right_buttons = array();
-    $sections      = get_sections('marketing', $data['parent_key']);
+    $sections      = get_sections('products', $data['parent_key']);
 
 
     $sections['campaigns']['selected'] = true;
@@ -55,7 +55,7 @@ function get_new_campaign_navigation($data, $smarty, $user, $db) {
 
     $left_buttons  = array();
     $right_buttons = array();
-    $sections      = get_sections('marketing', $data['parent_key']);
+    $sections      = get_sections('products', $data['parent_key']);
 
 
     $sections['campaigns']['selected'] = true;
@@ -87,7 +87,7 @@ function get_marketing_dashboard_navigation($data, $smarty, $user, $db) {
 
     $left_buttons  = array();
     $right_buttons = array();
-    $sections      = get_sections('marketing', $data['parent_key']);
+    $sections      = get_sections('products', $data['parent_key']);
 
     if (isset($sections[$data['section']])) {
         $sections[$data['section']]['selected'] = true;
@@ -207,7 +207,7 @@ function get_campaigns_navigation($data, $smarty, $user, $db) {
     }
 
 
-    $sections = get_sections('marketing', $data['store']->id);
+    $sections = get_sections('products', $data['store']->id);
 
     if (isset($sections[$data['section']])) {
         $sections[$data['section']]['selected'] = true;
@@ -328,7 +328,7 @@ function get_deals_navigation($data, $smarty, $user, $db) {
 
     }
 
-    $sections = get_sections('marketing', $data['store']->id);
+    $sections = get_sections('products', $data['store']->id);
 
     if (isset($sections[$data['section']])) {
         $sections[$data['section']]['selected'] = true;
@@ -577,7 +577,7 @@ function get_campaign_navigation($data, $smarty, $user, $db) {
     //$right_buttons[]=array('icon'=>'shopping-cart', 'title'=>_('New order'), 'id'=>'take_order');
     //$right_buttons[]=array('icon'=>'sticky-note', 'title'=>_('Sticky note'), 'id'=>'sticky_note_button', 'class'=> ($object->get('Sticky Note')==''?'':'hide'));
 
-    $sections = get_sections('marketing', $data['store']->id);
+    $sections = get_sections('products', $data['store']->id);
 
 
     if (isset($sections[$_section])) {
@@ -842,7 +842,7 @@ function get_deal_navigation($data, $smarty, $user, $db) {
     //$right_buttons[]=array('icon'=>'shopping-cart', 'title'=>_('New order'), 'id'=>'take_order');
     //$right_buttons[]=array('icon'=>'sticky-note', 'title'=>_('Sticky note'), 'id'=>'sticky_note_button', 'class'=> ($object->get('Sticky Note')==''?'':'hide'));
 
-    $sections = get_sections('marketing', $data['store']->id);
+    $sections = get_sections('products', $data['store']->id);
 
 
     if (isset($sections[$_section])) {
