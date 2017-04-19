@@ -1833,16 +1833,12 @@ $modules = array(
             'categories'        => array(
                 'type'      => 'navigation',
                 'label'     => _('Categories'),
-                'title'     => _(
-                    "Products categories"
-                ),
+                'title'     => _("Products categories"),
                 'icon'      => 'sitemap',
                 'reference' => 'products/%d/categories',
                 'showcase'  => 'products_special_categories',
                 'tabs'      => array(
-
-
-
+                    'products.categories' => array()
                 )
 
             ),
@@ -2098,14 +2094,15 @@ $modules = array(
                 'icon'      => 'bullhorn',
                 'reference' => 'marketing/%d',
                 'tabs'      => array(
-                    'deals'    => array(
-                        'label'     => _('Offers'),
-                        'icon'  => 'tag'
-                    ),
                     'campaigns' => array(
                         'label' => _('Campaigns'),
                         'icon'      => 'tags',
                     ),
+                    'deals'    => array(
+                        'label'     => _('Offers'),
+                        'icon'  => 'tag'
+                    ),
+
                 )
 
             ),

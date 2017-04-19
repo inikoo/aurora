@@ -82,7 +82,7 @@ function get_new_campaign_navigation($data, $smarty, $user, $db) {
 
 }
 
-function get_marketing_dashboard_navigation($data, $smarty, $user, $db) {
+function get_marketing_navigation($data, $smarty, $user, $db) {
 
 
     $left_buttons  = array();
@@ -100,7 +100,7 @@ function get_marketing_dashboard_navigation($data, $smarty, $user, $db) {
         'sections'       => $sections,
         'left_buttons'   => $left_buttons,
         'right_buttons'  => $right_buttons,
-        'title'          => _('Marketing dashboard').' <span class="id">'.$data['_parent']->get('Code').'</span>',
+        'title'          => _('Marketing').' <span class="id">'.$data['_parent']->get('Code').'</span>',
         'search'         => array(
             'show'        => true,
             'placeholder' => _('Search marketing')
