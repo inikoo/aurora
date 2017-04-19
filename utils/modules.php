@@ -1270,6 +1270,7 @@ $modules = array(
         )
 
     ),
+/*
 
     'websites'         => array(
         'section'     => 'dashboard',
@@ -1718,6 +1719,11 @@ $modules = array(
             //'categories'=>array('label'=>_('Categories'),'title'=>_('Categories'),'icon'=>'sitemap','reference'=>'orders/categories/%d'),
         )
     ),
+
+
+    */
+
+
     'products'         => array(
         'section'  => 'products',
         'sections' => array(
@@ -1838,6 +1844,249 @@ $modules = array(
                 )
 
             ),
+
+
+            'website' => array(
+                'type'      => 'navigation',
+                'label'     => _('Website'),
+                'icon'      => 'globe',
+                'reference' => 'website/%d',
+                'subtabs_parent' => array(
+                    'website.favourites.families'  => 'website.favourites',
+                    'website.favourites.products'  => 'website.favourites',
+                    'website.favourites.customers' => 'website.favourites',
+                    'website.search.queries'       => 'website.search',
+                    'website.search.history'       => 'website.search',
+                    'website.reminders.requests'   => 'website.reminders',
+                    'website.reminders.customers'  => 'website.reminders',
+                    'website.reminders.families'   => 'website.reminders',
+                    'website.reminders.products'   => 'website.reminders',
+
+                    'website.root_nodes'           => 'website.webpages',
+                    'website.online_webpages'      => 'website.webpages',
+                    'website.offline_webpages'     => 'website.webpages',
+                    'website.webpage.types'  => 'website.webpages',
+                    'website.in_process_webpages'  => 'website.webpages',
+
+                    'website.footer.preview' => 'website.templates',
+                    'website.header.preview' => 'website.templates',
+
+
+                    'website.templates'            => 'website.templates',
+
+
+                ),
+
+                'tabs' => array(
+
+                    'website.analytics' => array(
+                        'label' => _('Analytics'),
+                        'icon'  => 'line-chart',
+
+                        'subtabs' => array(
+                            'website.pageviews'  => array(
+                                'label' => _(
+                                    'Pageviews'
+                                ),
+                                'icon'  => 'eye'
+                            ),
+                            'website.users'      => array(
+                                'label' => _(
+                                    'Users'
+                                ),
+                                'icon'  => 'terminal'
+                            ),
+                            'website.search'     => array(
+                                'label'   => _(
+                                    'Queries'
+                                ),
+                                'title'   => _(
+                                    'Search Queries'
+                                ),
+                                'icon'    => 'search',
+                                'subtabs' => array(
+                                    'website.search.queries' => array(
+                                        'label' => _(
+                                            'Queries'
+                                        ),
+                                        'title' => _(
+                                            'Search queries goruped by keywords'
+                                        )
+                                    ),
+                                    'website.search.history' => array(
+                                        'label' => _(
+                                            'Search History'
+                                        ),
+                                        'title' => _(
+                                            'List of all search queries'
+                                        )
+                                    ),
+
+                                )
+
+                            ),
+                            'website.favourites' => array(
+                                'label'   => _(
+                                    'Favourites'
+                                ),
+                                'title'   => _(
+                                    'Favourites'
+                                ),
+                                'icon'    => 'heart-o',
+                                'subtabs' => array(
+                                    'website.favourites.products'  => array(
+                                        'label' => _(
+                                            'Products'
+                                        )
+                                    ),
+                                    'website.favourites.customers' => array(
+                                        'label' => _(
+                                            'Customers'
+                                        )
+                                    ),
+
+                                )
+
+                            ),
+                            'website.reminders'  => array(
+                                'label'   => _(
+                                    'OOS Reminders'
+                                ),
+                                'title'   => _(
+                                    'Out of stock reminders'
+                                ),
+                                'icon'    => 'hand-paper-o',
+                                'subtabs' => array(
+                                    'website.reminders.requests'  => array(
+                                        'label' => _(
+                                            'Requests'
+                                        ),
+                                        'title' => _(
+                                            'Out of stock notifications requests'
+                                        )
+                                    ),
+                                    'website.reminders.customers' => array(
+                                        'label' => _(
+                                            'Customers'
+                                        ),
+                                        'title' => _(
+                                            'Customers who ask for a out of stock notification'
+                                        )
+                                    ),
+                                    'website.reminders.products'  => array(
+                                        'label' => _(
+                                            'Products'
+                                        ),
+                                        'title' => _(
+                                            'Out of stock notifications grouped by product'
+                                        )
+                                    ),
+
+                                )
+
+                            ),
+
+                        )
+
+
+                    ),
+                    'website.details'   => array(
+                        'label' => _(
+                            'Data'
+                        ),
+                        'icon'  => 'database'
+                    ),
+
+
+                    'website.templates' => array(
+                        'label'   => _('Look & feel'),
+                        'icon'    => 'paint-brush',
+                        'subtabs' => array(
+
+
+                            'website.header.preview' => array(
+                                'label'   => _('Header'),
+                                'icon'    => 'header',
+
+
+                            ),
+                            'website.footer.preview' => array(
+                                'label'   => _('Footer'),
+                                'icon'    => 'minus',
+
+
+                            ),
+
+                            'website.templates'            => array(
+                                'label'   =>'',
+                                'title' => _('Templates'),
+                                'icon'  => 'code',
+                                'class' => 'right icon_only',
+
+
+                            ),
+
+                        ),
+
+                    ),
+
+
+
+
+                    'website.webpages' => array(
+                        'label'     => _('Web pages'),
+                        'icon'      => 'files-o',
+
+
+                        'subtabs' => array(
+
+
+
+                            'website.in_process_webpages'  => array(
+                                'label' => _('In process web pages'),
+                                'icon'  => 'child'
+                            ),
+
+                            'website.online_webpages'  => array(
+                                'label' => _('Online web pages'),
+                                'icon'  => 'rocket '
+                            ),
+
+                            'website.root_nodes'       => array(
+                                'label' => _('Sitemap'),
+                                'icon'  => 'sitemap',
+                                'class' => 'hide'
+                            ),
+                            'website.offline_webpages' => array(
+                                'label' => _('Offline web pages'),
+                                'icon'  => 'rocket fa-flip-vertical'
+                            ),
+
+
+                            'website.webpage.types'    => array(
+                                'label'=>'',
+                                'title' => _("Web pages's groups"),
+                                'icon'  => 'server',
+                                'class' => 'right icon_only',
+                            ),
+
+                        )
+
+                    ),
+
+
+
+
+
+
+
+
+
+
+                )
+            ),
+
+
             'category'          => array(
                 'type'           => 'object',
                 'subtabs_parent' => array(

@@ -127,7 +127,7 @@ function get_website_navigation($data, $smarty, $user, $db, $account) {
     }
 
 
-    $sections = get_sections('websites', $website->id);
+    $sections = get_sections('products', $website->get('Store Key'));
     if (isset($sections[$data['section']])) {
         $sections[$data['section']]['selected'] = true;
     }
