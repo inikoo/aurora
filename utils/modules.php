@@ -2108,6 +2108,96 @@ $modules = array(
             ),
 
 
+            'campaign' => array(
+                'type' => 'object',
+
+
+                'tabs' => array(
+                    'campaign.details' => array(
+                        'label' => _('Data'),
+                        'icon'  => 'database',
+                        'title' => _('Details')
+                    ),
+
+                    'campaign.deals'     => array(
+                        'label' => _('Offers'),
+                        'icon'  => 'tags'
+                    ),
+                    'campaign.orders'    => array(
+                        'label' => _('Orders'),
+                        'icon'  => 'shopping-cart'
+                    ),
+                    'campaign.customers' => array(
+                        'label' => _('Customers'),
+                        'icon'  => 'users'
+                    ),
+                    'campaign.history'   => array(
+                        'label' => _(
+                            'History, notes'
+                        ),
+                        'icon'  => 'road',
+                        'class' => 'right icon_only'
+                    ),
+
+                )
+            ),
+            'deal'     => array(
+                'type' => 'object',
+
+
+                'tabs' => array(
+                    'campaign.details'    => array(
+                        'label' => _('Data'),
+                        'icon'  => 'database',
+                        'title' => _('Details')
+                    ),
+                    'campaign.history'    => array(
+                        'label' => _(
+                            'History, notes'
+                        ),
+                        'icon'  => 'sticky-note-o'
+                    ),
+                    'campaign.allowances' => array(
+                        'label' => _('Allowances'),
+                        'icon'  => ''
+                    ),
+                    'campaign.orders'     => array(
+                        'label' => _('Orders'),
+                        'icon'  => 'shopping-cart'
+                    ),
+                    'campaign.customers'  => array(
+                        'label' => _('Customers'),
+                        'icon'  => 'users'
+                    )
+
+                )
+            ),
+
+            'campaign.new' => array(
+                'type' => 'new_object',
+                'tabs' => array(
+                    'campaign.new' => array(
+                        'label' => _(
+                            'New campaign'
+                        )
+                    ),
+
+                )
+
+            ),
+
+            'deal.new' => array(
+                'type' => 'new_object',
+                'tabs' => array(
+                    'deal.new' => array(
+                        'label' => _(
+                            'New offer'
+                        )
+                    ),
+
+                )
+
+            ),
 
 
             'category'          => array(
