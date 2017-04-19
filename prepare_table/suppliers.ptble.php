@@ -160,7 +160,7 @@ if ($order == 'code') {
 } elseif ($order == 'location') {
     $order = '`Supplier Location`';
 } elseif ($order == 'email') {
-    $order = '`Supplier Main XHTML Email`';
+    $order = '`Supplier Main Plain Email`';
 } elseif ($order == 'telephone') {
     $order = '`Supplier Preferred Contact Number Formatted Number`';
 } elseif ($order == 'contact') {
