@@ -508,6 +508,9 @@ if($webpage->get('Page Store Content Display Type')=='Template') {
             $smarty->assign('store_key', $category->get('Category Store Key'));
 
 
+
+
+
             $html = $smarty->fetch('webpage.preview.categories_showcase.tpl');
 
             break;

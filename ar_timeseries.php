@@ -238,7 +238,7 @@ function asset_sales($db, $data, $account) {
 
 
             $fields
-                   = ' `Timeseries Record Date` as Date,sum(`Timeseries Record Float A`) as Sales ,sum(`Timeseries Record Integer A`) as Invoices';
+                   = ' `Timeseries Record Date` as Date,sum(`Timeseries Record Float A`) as Sales ,sum(`Timeseries Record Integer A`) as Volume';
             $where = sprintf(
                 "where `Timeseries Record Timeseries Key`=%d", $timeseries_key
             );
@@ -367,7 +367,7 @@ function asset_sales($db, $data, $account) {
 
     } else {
 
-        $res = mysql_query($sql);
+
         $res = array();
         print "Date,Open,Volume\n";
 
