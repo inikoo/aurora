@@ -1,7 +1,15 @@
 
 {foreach from=$categories item=category_data}
+
+
+
        {assign stack_index $category_data.stack_index}
-            <div class="category_wrap item_wrap"  item_key="{$category_data.category_key}" stack_index="{$stack_index}" category_stack_index="{$category_data.category_stack_index}"  max_free_slots="{$category_data.data.max_free_slots}" >
+
+
+
+
+
+            <div class="category_wrap item_wrap"   {if $category_data.type=='category'} item_key="{$category_data.category_key}"{/if} stack_index="{$stack_index}" category_stack_index="{$category_data.category_stack_index}"  max_free_slots="{$category_data.data.max_free_slots}" >
 
 
                 {if $category_data.type=='category'}
@@ -207,6 +215,9 @@
                 {/if}
 
             </div>
+
+
+
 {/foreach}
 <div class="category_wrap item_dragabble" item_key="0">
 <div item_key=0 class="tail_drop_zone button overview_item_droppable" style="height:218px;width: 218px;margin-right:5px;border:1px dashed #ccc;text-align:center; " ondrop="overview_items_drop(event)"  ondragover="overview_items_allowDrop(event)"  >
