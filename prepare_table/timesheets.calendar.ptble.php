@@ -38,7 +38,7 @@ switch ($parameters['parent']) {
         );
         break;
     default:
-        exit('parent not suported '.$parameters['parent']);
+        exit('parent not supported '.$parameters['parent']);
         break;
 }
 
@@ -65,7 +65,7 @@ switch ($parameters['group_by']) {
 
         break;
     default:
-        exit('group not suported '.$parameters['group_by']);
+        exit('group not supported '.$parameters['group_by']);
         break;
 }
 
