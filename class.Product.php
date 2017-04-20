@@ -707,7 +707,7 @@ class Product extends Asset {
                 }
 
                 if ($parts == '') {
-                    $parts = '<span class="discret">'._('No parts assigned').'</span>';
+                    $parts = '<span class="discreet">'._('No parts assigned').'</span>';
                 }
                 $parts = preg_replace('/^, /', '', $parts);
 

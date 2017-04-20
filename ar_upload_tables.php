@@ -96,7 +96,7 @@ function records($_data, $db, $user) {
                     break;
                 case 'Cancelled':
                     $state
-                         = '<i class="fa discret fa-ban padding_left_10"></i>';
+                         = '<i class="fa discreet fa-ban padding_left_10"></i>';
                     $msg = _('Cancelled');
 
                     break;

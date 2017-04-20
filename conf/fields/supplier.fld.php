@@ -183,7 +183,7 @@ $object_fields = array(
                         $object->get_field_label('Supplier Other Email')
                     ).' <i onClick="set_this_as_main(this)" title="'._(
                         'Set as main email'
-                    ).'" class="fa fa-star-o very_discret button"></i>',
+                    ).'" class="fa fa-star-o very_discreet button"></i>',
                 'invalid_msg'       => get_invalid_message('email'),
                 'required'          => false,
                 'type'              => 'value'
@@ -219,7 +219,7 @@ $object_fields = array(
                         ? ''
                         : ' <i onClick="set_this_as_main(this)" title="'._(
                             'Set as main contact number'
-                        ).'" class="fa fa-star-o discret button"></i>') : ''),
+                        ).'" class="fa fa-star-o discreet button"></i>') : ''),
                 'invalid_msg'     => get_invalid_message('telephone'),
                 'required'        => false,
                 'type'            => 'value'
@@ -241,7 +241,7 @@ $object_fields = array(
                         ? ''
                         : ' <i onClick="set_this_as_main(this)" title="'._(
                             'Set as main contact number'
-                        ).'" class="fa fa-star-o discret button"></i>') : ''),
+                        ).'" class="fa fa-star-o discreet button"></i>') : ''),
                 'invalid_msg'     => get_invalid_message('telephone'),
                 'required'        => false,
                 'type'            => 'value'
@@ -257,7 +257,7 @@ $object_fields = array(
                         $object->get_field_label('Supplier Other Telephone')
                     ).' <i onClick="set_this_as_main(this)" title="'._(
                         'Set as main telephone'
-                    ).'" class="fa fa-star-o very_discret button"></i>',
+                    ).'" class="fa fa-star-o very_discreet button"></i>',
                 'required'        => false,
                 'type'            => 'ignore'
             ),
@@ -273,7 +273,7 @@ $object_fields = array(
                         $object->get_field_label('Supplier Other Telephone')
                     ).' <i onClick="set_this_as_main(this)" title="'._(
                         'Set as main telephone'
-                    ).'" class="fa fa-star-o very_discret button"></i>',
+                    ).'" class="fa fa-star-o very_discreet button"></i>',
                 'required'        => false,
                 'type'            => 'ignore'
             ),
@@ -976,7 +976,7 @@ if (count($other_emails) > 0) {
                     $object->get_field_label('Supplier Other Email')
                 ).' <i onClick="set_this_as_main(this)" title="'._(
                     'Set as main email'
-                ).'" class="fa fa-star-o very_discret button"></i>',
+                ).'" class="fa fa-star-o very_discreet button"></i>',
             'required'          => false
         );
     }
@@ -999,7 +999,7 @@ if (count($other_telephones) > 0) {
                     $object->get_field_label('Supplier Other Telephone')
                 ).' <i onClick="set_this_as_main(this)" title="'._(
                     'Set as main telephone'
-                ).'" class="fa fa-star-o very_discret button"></i>',
+                ).'" class="fa fa-star-o very_discreet button"></i>',
             'required'        => false
         );
     }
