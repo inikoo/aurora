@@ -21,7 +21,7 @@ switch ($parameters['parent']) {
         $where = sprintf(" where true ");
         break;
     default:
-        exit('parent not suported');
+        exit('parent not supported');
         break;
 }
 

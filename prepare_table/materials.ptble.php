@@ -20,7 +20,7 @@ switch ($parameters['parent']) {
 
 
     default:
-        exit('parent not suported x '.$parameters['parent']);
+        exit('parent not supported x '.$parameters['parent']);
         break;
 }
 
