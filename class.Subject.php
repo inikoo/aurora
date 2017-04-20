@@ -182,10 +182,10 @@ class Subject extends DB_Table {
                         ) == 'Telephone'
                             ? ' <i title="'._(
                                 'Main contact number'
-                            ).'" class="fa fa-star discret"></i>'
+                            ).'" class="fa fa-star discreet"></i>'
                             : ' <i onClick="set_this_as_main(this)" title="'._(
                                 'Set as main contact number'
-                            ).'" class="fa fa-star-o discret button"></i>') : ''),
+                            ).'" class="fa fa-star-o discreet button"></i>') : ''),
 
                 );
 
@@ -377,10 +377,10 @@ class Subject extends DB_Table {
                         ) == 'Telephone'
                             ? ' <i title="'._(
                                 'Main contact number'
-                            ).'" class="fa fa-star discret"></i>'
+                            ).'" class="fa fa-star discreet"></i>'
                             : ' <i onClick="set_this_as_main(this)" title="'._(
                                 'Set as main contact number'
-                            ).'" class="fa fa-star-o discret button"></i>') : ''),
+                            ).'" class="fa fa-star-o discreet button"></i>') : ''),
 
                 );
 
@@ -790,7 +790,7 @@ class Subject extends DB_Table {
                                 $this->table_name.' Preferred Contact Number'
                             ) == 'Mobile' ? ' <i title="'._(
                                     'Main contact number'
-                                ).'" class="fa fa-star discret"></i>' : ' <i onClick="set_this_as_main(this)" title="'._('Set as main contact number').'" class="fa fa-star-o discret button"></i>')
+                                ).'" class="fa fa-star discreet"></i>' : ' <i onClick="set_this_as_main(this)" title="'._('Set as main contact number').'" class="fa fa-star-o discreet button"></i>')
                                 : ''),
                         'value'           => $this->get(
                             $this->table_name.' Main Plain Mobile'
@@ -811,7 +811,7 @@ class Subject extends DB_Table {
                                 $this->table_name.' Preferred Contact Number'
                             ) == 'Telephone' ? ' <i title="'._(
                                     'Main contact number'
-                                ).'" class="fa fa-star discret"></i>' : ' <i onClick="set_this_as_main(this)" title="'._('Set as main contact number').'" class="fa fa-star-o discret button"></i>')
+                                ).'" class="fa fa-star discreet"></i>' : ' <i onClick="set_this_as_main(this)" title="'._('Set as main contact number').'" class="fa fa-star-o discreet button"></i>')
                                 : ''),
 
                     );
@@ -886,10 +886,10 @@ class Subject extends DB_Table {
                         ).($this->get($this->table_name.' Main Plain Mobile') != '' ? ($this->get(
                             $this->table_name.' Preferred Contact Number'
                         ) == 'Mobile'
-                            ? ' <i title="'._('Main contact number').'" class="fa fa-star discret"></i>'
+                            ? ' <i title="'._('Main contact number').'" class="fa fa-star discreet"></i>'
                             : ' <i onClick="set_this_as_main(this)" title="'._(
                                 'Set as main contact number'
-                            ).'" class="fa fa-star-o discret button"></i>') : ''),
+                            ).'" class="fa fa-star-o discreet button"></i>') : ''),
                 );
 
                 $this->other_fields_updated[$this->table_name.'_Main_Plain_Telephone']
@@ -905,10 +905,10 @@ class Subject extends DB_Table {
                         ) == 'Telephone'
                             ? ' <i title="'._(
                                 'Main contact number'
-                            ).'" class="fa fa-star discret"></i>'
+                            ).'" class="fa fa-star discreet"></i>'
                             : ' <i onClick="set_this_as_main(this)" title="'._(
                                 'Set as main contact number'
-                            ).'" class="fa fa-star-o discret button"></i>') : ''),
+                            ).'" class="fa fa-star-o discreet button"></i>') : ''),
                 );
 
 
@@ -1553,10 +1553,10 @@ class Subject extends DB_Table {
                         ).($this->get($this->table_name.' Main Plain Mobile') != '' ? ($this->get(
                             $this->table_name.' Preferred Contact Number'
                         ) == 'Mobile'
-                            ? ' <i title="'._('Main contact number').'" class="fa fa-star discret"></i>'
+                            ? ' <i title="'._('Main contact number').'" class="fa fa-star discreet"></i>'
                             : ' <i onClick="set_this_as_main(this)" title="'._(
                                 'Set as main contact number'
-                            ).'" class="fa fa-star-o discret button"></i>') : ''),
+                            ).'" class="fa fa-star-o discreet button"></i>') : ''),
                 ),
                 $this->table_name.'_Main_Plain_Telephone' => array(
                     'field'  => $this->table_name.'_Main_Plain_Telephone',
@@ -1570,10 +1570,10 @@ class Subject extends DB_Table {
                         ) == 'Telephone'
                             ? ' <i title="'._(
                                 'Main contact number'
-                            ).'" class="fa fa-star discret"></i>'
+                            ).'" class="fa fa-star discreet"></i>'
                             : ' <i onClick="set_this_as_main(this)" title="'._(
                                 'Set as main contact number'
-                            ).'" class="fa fa-star-o discret button"></i>') : ''),
+                            ).'" class="fa fa-star-o discreet button"></i>') : ''),
                 )
             );
         }
@@ -1588,10 +1588,10 @@ class Subject extends DB_Table {
                         $this->table_name.' Main Plain Mobile'
                     )
                 ).($this->get($this->table_name.' Main Plain Mobile') != '' ? ($this->get($this->table_name.' Preferred Contact Number') == 'Mobile'
-                    ? ' <i title="'._('Main contact number').'" class="fa fa-star discret"></i>'
+                    ? ' <i title="'._('Main contact number').'" class="fa fa-star discreet"></i>'
                     : ' <i onClick="set_this_as_main(this)" title="'._(
                         'Set as main contact number'
-                    ).'" class="fa fa-star-o discret button"></i>') : ''),
+                    ).'" class="fa fa-star-o discreet button"></i>') : ''),
             'value'           => $this->get(
                 $this->table_name.' Main Plain Mobile'
             ),
@@ -1606,10 +1606,10 @@ class Subject extends DB_Table {
                         $this->table_name.' Main Plain Telephone'
                     )
                 ).($this->get($this->table_name.' Main Plain Telephone') != '' ? ($this->get($this->table_name.' Preferred Contact Number') == 'Telephone'
-                    ? ' <i title="'._('Main contact number').'" class="fa fa-star discret"></i>'
+                    ? ' <i title="'._('Main contact number').'" class="fa fa-star discreet"></i>'
                     : ' <i onClick="set_this_as_main(this)" title="'._(
                         'Set as main contact number'
-                    ).'" class="fa fa-star-o discret button"></i>') : ''),
+                    ).'" class="fa fa-star-o discreet button"></i>') : ''),
             'value'           => $this->get(
                 $this->table_name.' Main Plain Telephone'
             ),
@@ -1856,7 +1856,7 @@ class Subject extends DB_Table {
                                 )
                             ).' <i onClick="set_this_as_main(this)" title="'._(
                                 'Set as main email'
-                            ).'" class="fa fa-star-o very_discret button"></i>',
+                            ).'" class="fa fa-star-o very_discreet button"></i>',
 
 
                     )
@@ -2044,7 +2044,7 @@ class Subject extends DB_Table {
                                 )
                             ).' <i onClick="set_this_as_main(this)" title="'._(
                                 'Set as main telephone'
-                            ).'" class="fa fa-star-o very_discret button"></i>',
+                            ).'" class="fa fa-star-o very_discreet button"></i>',
 
 
                     )

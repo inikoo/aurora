@@ -346,7 +346,7 @@ class Customer extends Subject {
 
                     $validation_data = trim($date.' '.$source.' '.$msg);
                     if ($validation_data != '') {
-                        $validation_data = ' <span class=\'discret\'>('.$validation_data.')</span>';
+                        $validation_data = ' <span class=\'discreet\'>('.$validation_data.')</span>';
                     }
 
                     switch ($this->data['Customer Tax Number Valid']) {

@@ -164,7 +164,7 @@ $product_fields = array(
                 'formatted_value' => $object->get('CPNP Number'),
                 'label'           => ucfirst(
                         $object->get_field_label('Product CPNP Number')
-                    ).($fields_linked ? ' <i  class="discret fa fa-chain"  title="'._(
+                    ).($fields_linked ? ' <i  class="discreet fa fa-chain"  title="'._(
                             'Linked to part value'
                         ).'"></i>' : ''),
                 'invalid_msg'     => get_invalid_message('string'),
@@ -346,7 +346,7 @@ $product_fields = array(
                 'formatted_value' => $object->get('Unit Weight'),
                 'label'           => ucfirst(
                         $object->get_field_label('Product Unit Weight')
-                    ).($fields_linked ? ' <i  class="discret fa fa-chain"  title="'._(
+                    ).($fields_linked ? ' <i  class="discreet fa fa-chain"  title="'._(
                             'Linked to part value'
                         ).'"></i>' : ''),
                 'invalid_msg'     => get_invalid_message('numeric'),
@@ -361,7 +361,7 @@ $product_fields = array(
                 'formatted_value' => $object->get('Unit Dimensions'),
                 'label'           => ucfirst(
                         $object->get_field_label('Product Unit Dimensions')
-                    ).($fields_linked ? ' <i  class="discret fa fa-chain"  title="'._(
+                    ).($fields_linked ? ' <i  class="discreet fa fa-chain"  title="'._(
                             'Linked to part value'
                         ).'"></i>' : ''),
                 'invalid_msg'     => get_invalid_message('numeric'),
@@ -392,7 +392,7 @@ $product_fields = array(
                 'formatted_value' => $object->get('Materials'),
                 'label'           => ucfirst(
                         $object->get_field_label('Product Materials')
-                    ).($fields_linked ? ' <i  class="discret fa fa-chain"  title="'._(
+                    ).($fields_linked ? ' <i  class="discreet fa fa-chain"  title="'._(
                             'Linked to part value'
                         ).'"></i>' : ''),
                 'required'        => false,
@@ -413,7 +413,7 @@ $product_fields = array(
                     ).')' : ''),
                 'label'                    => ucfirst(
                         $object->get_field_label('Product Origin Country Code')
-                    ).($fields_linked ? ' <i  class="discret fa fa-chain"  title="'._(
+                    ).($fields_linked ? ' <i  class="discreet fa fa-chain"  title="'._(
                             'Linked to part value'
                         ).'"></i>' : ''),
                 'required'                 => false,
@@ -427,7 +427,7 @@ $product_fields = array(
                 'formatted_value' => $object->get('Tariff Code'),
                 'label'           => ucfirst(
                         $object->get_field_label('Product Tariff Code')
-                    ).($fields_linked ? ' <i  class="discret fa fa-chain"  title="'._(
+                    ).($fields_linked ? ' <i  class="discreet fa fa-chain"  title="'._(
                             'Linked to part value'
                         ).'"></i>' : ''),
                 'invalid_msg'     => get_invalid_message('string'),
@@ -443,7 +443,7 @@ $product_fields = array(
                 'formatted_value' => $object->get('Duty Rate'),
                 'label'           => ucfirst(
                         $object->get_field_label('Product Duty Rate')
-                    ).($fields_linked ? ' <i  class="discret fa fa-chain"  title="'._(
+                    ).($fields_linked ? ' <i  class="discreet fa fa-chain"  title="'._(
                             'Linked to part value'
                         ).'"></i>' : ''),
                 'invalid_msg'     => get_invalid_message('string'),
@@ -471,7 +471,7 @@ $product_fields = array(
                 'formatted_value' => $object->get('UN Number'),
                 'label'           => ucfirst(
                         $object->get_field_label('Product UN Number')
-                    ).($fields_linked ? ' <i  class="discret fa fa-chain"  title="'._(
+                    ).($fields_linked ? ' <i  class="discreet fa fa-chain"  title="'._(
                             'Linked to part value'
                         ).'"></i>' : ''),
                 'required'        => false,
@@ -487,7 +487,7 @@ $product_fields = array(
                 'formatted_value' => $object->get('UN Class'),
                 'label'           => ucfirst(
                         $object->get_field_label('Product UN Class')
-                    ).($fields_linked ? ' <i  class="discret fa fa-chain"  title="'._(
+                    ).($fields_linked ? ' <i  class="discreet fa fa-chain"  title="'._(
                             'Linked to part value'
                         ).'"></i>' : ''),
                 'required'        => false,
@@ -504,7 +504,7 @@ $product_fields = array(
                 'formatted_value' => $object->get('Packing Group'),
                 'label'           => ucfirst(
                         $object->get_field_label('Product Packing Group')
-                    ).($fields_linked ? ' <i  class="discret fa fa-chain"  title="'._(
+                    ).($fields_linked ? ' <i  class="discreet fa fa-chain"  title="'._(
                             'Linked to part value'
                         ).'"></i>' : ''),
                 'required'        => false,
@@ -520,7 +520,7 @@ $product_fields = array(
                 'formatted_value' => $object->get('Proper Shipping Name'),
                 'label'           => ucfirst(
                         $object->get_field_label('Product Proper Shipping Name')
-                    ).($fields_linked ? ' <i  class="discret fa fa-chain"  title="'._(
+                    ).($fields_linked ? ' <i  class="discreet fa fa-chain"  title="'._(
                             'Linked to part value'
                         ).'"></i>' : ''),
                 'required'        => false,
@@ -540,7 +540,7 @@ $product_fields = array(
                         $object->get_field_label(
                             'Product Hazard Indentification Number'
                         )
-                    ).($fields_linked ? ' <i  class="discret fa fa-chain"  title="'._(
+                    ).($fields_linked ? ' <i  class="discreet fa fa-chain"  title="'._(
                             'Linked to part value'
                         ).'"></i>' : ''),
                 'required'        => false,
@@ -560,9 +560,9 @@ foreach ($product_fields as $key=>$object_field) {
 	foreach ( $object_field['fields'] as $key2=>$fields) {
 		if (array_key_exists($fields['id'], $linked_fields)) {
 			if ($linked_fields[$fields['id']]=='') {
-				$product_fields[$key]['fields'][$key2]['label'].=' <i  class="discret fa fa-chain-borken" title="'._('Value indepedient from part').'"></i>';
+				$product_fields[$key]['fields'][$key2]['label'].=' <i  class="discreet fa fa-chain-borken" title="'._('Value indepedient from part').'"></i>';
 			}else {
-				$product_fields[$key]['fields'][$key2]['label'].=' <i  class="discret fa fa-chain"  title="'._('Linked to part value').'"></i>';
+				$product_fields[$key]['fields'][$key2]['label'].=' <i  class="discreet fa fa-chain"  title="'._('Linked to part value').'"></i>';
 				$product_fields[$key]['fields'][$key2]['linked']=true;
 
 			}
