@@ -812,6 +812,24 @@ function parse_weight($value) {
 }
 
 
+
+function parse_cbm($value) {
+    $unit  = 'm³';
+    $value = _trim($value);
+    if (preg_match('/(liter?s|l)$/i', $value)) {
+        $value = parse_number($value) /1000;
+        $unit  = 'Lb';
+    }else {
+        $value = parse_number($value);
+    }
+
+    return array(
+        $value,
+        $unit
+    );
+}
+
+
 function parse_parcels($value) {
     $unit  = 'Box';
     $value = _trim($value);

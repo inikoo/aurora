@@ -21,22 +21,12 @@ $tipo = $_REQUEST['tipo'];
 switch ($tipo) {
 
     case 'help':
-        $data = prepare_values(
-            $_REQUEST, array(
-
-                'state' => array('type' => 'json array'),
-            )
-        );
+        $data = prepare_values($_REQUEST, array('state' => array('type' => 'json array'),));
 
         get_help($data, $modules, $db, $account, $user, $smarty);
         break;
     case 'show_help':
-        $data                  = prepare_values(
-            $_REQUEST, array(
-
-                'value' => array('type' => 'string'),
-            )
-        );
+        $data                  = prepare_values($_REQUEST, array('value' => array('type' => 'string'),));
         $_SESSION['show_help'] = $data['value'];
         break;
     default:
@@ -81,6 +71,9 @@ function get_title($state, $account, $user) {
         }
     } elseif ($state['tab'] == 'employee.new') {
         return _('Adding an employee');
+
+    }elseif ($state['tab'] == 'warehouse.locations') {
+        return _("Locations list");
 
     }
 

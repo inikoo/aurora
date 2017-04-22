@@ -308,9 +308,8 @@ function get_location_navigation($data, $smarty, $user, $db, $account) {
 
 
             $sql = sprintf(
-                "select `Location Code` object_name,L.`Location Key` as object_key from $table   $where $wheref
-	                and ($_order_field < %s OR ($_order_field = %s AND L.`Location Key` < %d))  order by $_order_field desc , L.`Location Key` desc limit 1",
-
+                "select `Location Code` object_name,L.`Location Key` as object_key from %s
+	                and ($_order_field < %s OR ($_order_field = %s AND L.`Location Key` < %d))  order by $_order_field desc , L.`Location Key` desc limit 1", ' $table   $where $wheref ',
                 prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
             );
             if ($result = $db->query($sql)) {
@@ -322,9 +321,9 @@ function get_location_navigation($data, $smarty, $user, $db, $account) {
 
 
             $sql = sprintf(
-                "select `Location Code` object_name,L.`Location Key` as object_key from $table   $where $wheref
-	                and ($_order_field  > %s OR ($_order_field  = %s AND L.`Location Key` > %d))  order by $_order_field   , L.`Location Key`  limit 1", prepare_mysql($_order_field_value),
-                prepare_mysql($_order_field_value), $object->id
+                "select `Location Code` object_name,L.`Location Key` as object_key from  %s
+	                and ($_order_field  > %s OR ($_order_field  = %s AND L.`Location Key` > %d))  order by $_order_field   , L.`Location Key`  limit 1", ' $table   $where $wheref ',
+                prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
             );
 
             if ($result = $db->query($sql)) {
@@ -383,8 +382,7 @@ function get_location_navigation($data, $smarty, $user, $db, $account) {
                         );
 
                     } else {
-                        $left_buttons[]
-                            = array(
+                        $left_buttons[] = array(
                             'icon'  => 'arrow-right disabled',
                             'title' => '',
                             'url'   => ''
@@ -736,8 +734,9 @@ function get_locations_category_navigation($data, $smarty, $user, $db, $account)
         );
 
     } else {
-        $left_buttons[] = array('icon'  => 'arrow-left disabled',
-                                'title' => ''
+        $left_buttons[] = array(
+            'icon'  => 'arrow-left disabled',
+            'title' => ''
         );
 
     }
@@ -805,7 +804,6 @@ function get_locations_category_navigation($data, $smarty, $user, $db, $account)
 }
 
 
-
 function get_delivery_notes_navigation($data, $smarty, $user, $db, $account) {
 
 
@@ -836,7 +834,6 @@ function get_delivery_notes_navigation($data, $smarty, $user, $db, $account) {
     }
 
     $left_buttons = array();
-
 
 
     if (count($user->warehouses) > 1) {
@@ -917,6 +914,44 @@ function get_delivery_notes_navigation($data, $smarty, $user, $db, $account) {
 
 }
 
+
+function get_deleted_location_navigation($data, $smarty, $user, $db, $account) {
+
+    $warehouse = $data['warehouse'];
+
+
+    $_section     = 'barcodes';
+    $object       = $data['_object'];
+    $left_buttons = array();
+
+    $right_buttons = array();
+    $sections = get_sections('warehouses', $warehouse->id);
+    if (isset($sections[$_section])) {
+        $sections[$_section]['selected'] = true;
+    }
+
+
+    $title = _('Deleted location').' <span class="id Supplier_Code">'.$object->get('Code').'</span>';
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search suppliers')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
 
 
 ?>

@@ -45,7 +45,21 @@ if (!$user->can_view('locations') or !in_array(
     );
 
 
+
+
+
+
+
+
     $table_buttons = array();
+
+    if ($state['warehouse']->get('Warehouse Number Locations') > 0) {
+        $table_buttons[] = array(
+            'icon'  => 'edit',
+            'title' => _("Edit locations"),
+            'id'    => 'edit_table'
+        );
+    }
 
 
     $table_buttons[] = array(
@@ -53,6 +67,25 @@ if (!$user->can_view('locations') or !in_array(
         'title'     => _('New location'),
         'reference' => "locations/".$state['warehouse']->id."/new"
     );
+
+    $smarty->assign('table_buttons', $table_buttons);
+
+    $smarty->assign(
+        'upload_file', array(
+                         'tipo'       => 'edit_objects',
+                         'icon'       => 'fa-cloud-upload',
+                         'parent'     => $state['parent'],
+                         'parent_key' => $state['warehouse']->id,
+                         'object'     => 'location',
+                         'label'      => _("Upload locations")
+
+                     )
+    );
+
+
+
+
+
 
     $smarty->assign('table_buttons', $table_buttons);
 

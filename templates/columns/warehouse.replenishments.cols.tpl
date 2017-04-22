@@ -8,77 +8,58 @@ cell: "string",
 
 },
 {
-name: "location_key",
-label: "",
-editable: false,
-renderable: false,
-cell: "string",
-
-},{
-name: "location",
-label: "{t}Location{/t}",
-editable: false,
-sortType: "toggle",
-
-cell: Backgrid.StringCell.extend({
-
-events: {
-"click": function() {
-change_view('location/' + this.model.get("locate_key"))
-}
-},
-className: "link",
-initialize: function () {
-Backgrid.Cell.prototype.initialize.apply(this, arguments);
-},
-
-render: function () {
-this.$el.empty();
-var rawValue = this.model.get(this.column.get("name"));
-var formattedValue = this.formatter.fromRaw(rawValue, this.model);
-this.$el.append(formattedValue);
-this.delegateEvents();
-return this;
-}
-
-})
-
-},{
 name: "part",
 label: "{t}Part{/t}",
 editable: false,
 sortType: "toggle",
 
-cell: Backgrid.StringCell.extend({
-orderSeparator: '',
-events: {
-"click": function() {
-change_view('part/' + this.model.get("part_sku"))
-}
-},
-className: "link"
+cell: Backgrid.HtmlCell.extend({
+
 
 })
 
 }, {
-name: "stock",
-label: "{t}Stock data{/t}",
-sortType: "toggle",
-{if $sort_key=='stock'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+name: "other_locations_stock",
+label: "{t}Other locations stock{/t}",
 
+sortable: false,
 editable: false,
 
 cell: "html"
-}, {
-name: "pl_data",
-label: "{t}Part location data{/t}",
+},
+
+{
+name: "location",
+label: "{t}Location{/t}",
+editable: false,
 sortType: "toggle",
-{if $sort_key=='pl_data'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+
+cell: Backgrid.HtmlCell.extend({
+
+
+})
+
+},
+{
+name: "quantity",
+label: "{t}SKOs{/t}",
+editable: false,
+
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='quantity'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+
+headerCell: integerHeaderCell
+},
+{
+name: "recommended_quantity",
+label: "{t}Recommended SKOs quantity{/t}",
+sortable: false,
 
 editable: false,
-headerCell: integerHeaderCell,
 
-cell: "html"
+cell: Backgrid.HtmlCell.extend({ } ),
 }
 
 ]

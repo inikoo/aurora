@@ -183,7 +183,7 @@
 		<span id="{$field.id}_formatted_value" class="{$field.id} formatted_value hide" ondblclick="open_edit_field('{$object_name}','{$state.key}','{$field.id}')">{if isset($field.formatted_value)}{$field.formatted_value}{else}{$field.value}{/if}</span>
 		<span id="{$field.id}_value" class="hide " >{$field.value}</span>
 
-		{if $edit=='string' or $edit=='handle' or $edit=='dimensions'  or $edit=='email' or  $edit=='int_unsigned' or $edit=='smallint_unsigned' or $edit=='mediumint_unsigned' or $edit=='int' or $edit=='smallint' or $edit=='mediumint' or $edit=='anything' or  $edit=='percentage' or $edit=='numeric'  or $edit=='amount'  or $edit=='amount_margin'  or $edit=='amount_percentage' }
+		{if $edit=='string' or $edit=='handle' or $edit=='dimensions'  or $edit=='email' or   $edit=='numeric_unsigned' or  $edit=='int_unsigned' or $edit=='smallint_unsigned' or $edit=='mediumint_unsigned' or $edit=='int' or $edit=='smallint' or $edit=='mediumint' or $edit=='anything' or  $edit=='percentage' or $edit=='numeric'  or $edit=='amount'  or $edit=='amount_margin'  or $edit=='amount_percentage' }
 		
 	
 		<input id="{$field.id}" class="input_field " value="{$field.value}" {if $locked}readonly="readonly="{/if}  has_been_valid="0" {if isset($field.placeholder)}placeholder="{$field.placeholder}"{/if}/>
@@ -336,8 +336,12 @@ function input_barcode_to_new_object(field) {
 		
 			
 		
-		<input onClick="show_field_options(this)" id="{$field.id}" class="button" readonly value="{$field.value}" has_been_valid="0"  placeholder="{if isset($field.placeholder)}{$field.placeholder}{/if}" />
-		
+		<input  id="{$field.id}" class="hide" readonly value="{$field.value}" has_been_valid="0"  />
+
+
+		<input onClick="show_field_options(this)" field="{$field.id}" id="{$field.id}_formatted" class="button" readonly value="{$field.formatted_value}"  placeholder="{if isset($field.placeholder)}{$field.placeholder}{/if}" />
+
+
 		<span id="{$field.id}_msg" class="msg"></span>
 		{if isset($field.allow_other) and  $field.allow_other} 
 		<i id="{$field.id}_add_other_option" class="fa fa-plus fw button hide"  onClick="show_add_other_option('{$field.id}')" style="cursor:pointer;float:left;margin-right:5px;padding-top:8px"></i>  
@@ -346,7 +350,7 @@ function input_barcode_to_new_object(field) {
 		<div id="{$field.id}_options" class="dropcontainer  option_multiple_choices" style="clear:both;width:310px" >
 			<ul  id="{$field.id}_options_ul" class="hide" >
 				{foreach from=$field.options item=option key=value} 
-				<li  class="{if $value==$field.value}selected{/if}" onclick="select_option_for_new_object(this,'{$field.id}','{$value}' )">{$option}<i class="fa fa-circle fw padding_left_5 current_mark {if $value==$field.value}current{/if}"></i></li>
+				<li  class="{if $value==$field.value}selected{/if}" onclick="select_option_for_new_object(this,'{$field.id}','{$value}','{$option|strip_tags|trim}' )">{$option}<i class="fa fa-circle fw padding_left_5 current_mark {if $value==$field.value}current{/if}"></i></li>
 				{/foreach} 
 			</ul>
 		</div>

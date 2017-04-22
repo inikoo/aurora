@@ -4254,9 +4254,6 @@ $modules = array(
                     'warehouse.parts'          => array(
                         'label' => _(
                             'Part-Locations'
-                        ),
-                        'title' => _(
-                            'Part-Locations'
                         )
                     ),
                     'warehouse.history'        => array(
@@ -4381,6 +4378,18 @@ $modules = array(
 
             ),
 
+            'deleted_location'        => array(
+                'type' => 'object',
+                'tabs' => array(
+                    'supplier.history' => array(
+                        'label' => _('History'),
+                        'icon'  => 'road'
+                    ),
+
+
+                )
+            ),
+
             'main_category.new' => array(
                 'type' => 'new_object',
                 'tabs' => array(
@@ -4416,6 +4425,18 @@ $modules = array(
                         ),
                         'icon'  => 'map-sings'
                     ),
+
+                )
+
+            ),
+
+            'upload' => array(
+                'type' => 'object',
+                'tabs' => array(
+                    'upload.records' => array(
+                        'label' => _('Records')
+                    ),
+
 
                 )
 

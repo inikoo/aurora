@@ -42,6 +42,7 @@ className: "link"
 },{
 name: "area",
 label: "{t}Area{/t}",
+renderable:false,
 editable: false,
 sortType: "toggle",
 
@@ -58,6 +59,7 @@ className: "link"
 
 }, {
 name: "used_for",
+renderable:false,
 label: "{t}Used for{/t}",
 sortType: "toggle",
 {if $sort_key=='location'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
@@ -74,7 +76,7 @@ sortType: "toggle",
 {if $sort_key=='max_weight'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
 
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 
 }, {
@@ -85,16 +87,27 @@ editable: false,
 defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='max_volume'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
 headerCell: integerHeaderCell
-}, {
+},
+{
 name: "parts",
 label: "{t}Parts{/t}",
 editable: false,
 defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='parts'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.StringCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+},
+{
+name: "stock_value",
+label: "{t}Stock value{/t}",
+editable: false,
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='stock_value'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.StringCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },

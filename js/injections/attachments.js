@@ -10,6 +10,5 @@ function post_table_rendered(otable) {
         // Options will go here
     });
 
-    console.log('x')
 
 }

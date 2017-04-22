@@ -36,25 +36,31 @@ $object = get_object($_REQUEST['object'], 0);
 
 switch ($object->get_object_name()) {
     case 'Staff':
-        $filename = _('upload_employees');
+        $filename = _('new_employees');
         $options  = array();
         break;
     case 'Part':
-
-        $filename = _('upload_part');
-        $options  = array('new'        => true,
-                          'part_scope' => true
+        $filename = _('new_parts');
+        $options  = array(
+            'new'        => true,
+            'part_scope' => true
         );
         break;
     case 'Supplier Part':
 
-        $filename = _('upload_supplier_part');
+        $filename = _('new_supplier_parts');
 
 
         $valid_fields = $export_edit_template_fields['supplier_part'];
         $key_field    = 'Id: Supplier Part Key';
         // $supplier=get_object('Supplier',$_REQUEST['parent_key']);
         // $options=array('parent'=>'supplier','parent_object'=>$supplier,'new'=>true,'supplier_part_scope'=>true);
+        break;
+    case 'Location':
+        $filename = _('new_locations');
+        $valid_fields = $export_edit_template_fields['location'];
+
+        $key_field    = 'Id: Location Key';
         break;
     default:
         exit('Object not defined '.$object->get_object_name());
@@ -79,9 +85,7 @@ $row_index  = 1;
 $char_index = 1;
 
 $char = number2alpha($char_index);
-$objPHPExcel->getActiveSheet()->setCellValue(
-    $char.$row_index, strip_tags($key_field)
-);
+$objPHPExcel->getActiveSheet()->setCellValue($char.$row_index, strip_tags($key_field));
 $objPHPExcel->getActiveSheet()->getStyle($char.$row_index)->applyFromArray(
     array(
         'borders' => array(
@@ -107,25 +111,25 @@ foreach ($valid_fields as $field) {
 
         if ($field['required']) {
             $objPHPExcel->getActiveSheet()->getStyle($char.$row_index)->applyFromArray(
-                    array(
-                        'font' => array(
-                            'color' => array('rgb' => 'EA3C53'),
-
-                        )
-
-                    )
-                );
-        }
-        $objPHPExcel->getActiveSheet()->getStyle($char.$row_index)->applyFromArray(
                 array(
-                    'borders' => array(
-                        'bottom' => array(
-                            'style' => PHPExcel_Style_Border::BORDER_THIN,
-                            'color' => array('rgb' => '777777')
-                        )
+                    'font' => array(
+                        'color' => array('rgb' => 'EA3C53'),
+
                     )
+
                 )
             );
+        }
+        $objPHPExcel->getActiveSheet()->getStyle($char.$row_index)->applyFromArray(
+            array(
+                'borders' => array(
+                    'bottom' => array(
+                        'style' => PHPExcel_Style_Border::BORDER_THIN,
+                        'color' => array('rgb' => '777777')
+                    )
+                )
+            )
+        );
 
 
         $char_index++;
@@ -173,6 +177,7 @@ foreach ($cellIterator as $cell) {
 $objPHPExcel->getActiveSheet()->freezePane('A2');
 
 $download_path = 'server_files/tmp/';
+
 
 switch ($output_type) {
 

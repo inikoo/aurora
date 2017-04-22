@@ -60,9 +60,7 @@ if (!($supplier_part_scope or $new)) {
                 'options'         => $options_status,
                 'value'           => htmlspecialchars($object->get('Part Status')),
                 'formatted_value' => $object->get('Status'),
-                'label'           => ucfirst(
-                    $object->get_field_label('Part Status')
-                ),
+                'label'           => ucfirst($object->get_field_label('Part Status')),
                 'required'        => ($new ? false : true),
                 'type'            => 'skip'
             ),
@@ -104,9 +102,7 @@ if (!($supplier_part_scope or $new)) {
                     $object->get('Part CPNP Number')
                 ),
                 'formatted_value' => $object->get('CPNP Number'),
-                'label'           => ucfirst(
-                    $object->get_field_label('Part CPNP Number')
-                ),
+                'label'           => ucfirst($object->get_field_label('Part CPNP Number')),
                 'required'        => false,
                 'type'            => 'value'
             ),
@@ -199,9 +195,7 @@ $part_fields[] = array(
                 $object->get('Part Unit Description')
             ),
             'formatted_value' => $object->get('Unit Description'),
-            'label'           => ucfirst(
-                $object->get_field_label('Part Unit Description')
-            ),
+            'label'           => ucfirst($object->get_field_label('Part Unit Description')),
             'required'        => true,
             'type'            => 'value'
 
@@ -218,9 +212,7 @@ $part_fields[] = array(
                 $object->get('Part Unit Label')
             ),
             'formatted_value' => $object->get('Unit Label'),
-            'label'           => ucfirst(
-                $object->get_field_label('Part Unit Label')
-            ),
+            'label'           => ucfirst($object->get_field_label('Part Unit Label')),
             'required'        => true,
             'type'            => 'value'
 
@@ -233,9 +225,7 @@ $part_fields[] = array(
 
             'value'           => $object->get('Part Unit Weight'),
             'formatted_value' => $object->get('Unit Weight'),
-            'label'           => ucfirst(
-                $object->get_field_label('Part Unit Weight')
-            ),
+            'label'           => ucfirst($object->get_field_label('Part Unit Weight')),
             'invalid_msg'     => get_invalid_message('numeric'),
             'required'        => false,
             'placeholder'     => 'Kg',

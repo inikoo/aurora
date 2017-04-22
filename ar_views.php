@@ -342,7 +342,15 @@ function get_view($db, $smarty, $user, $account, $modules) {
                     $state['tab']     = 'barcode.history';
 
                 }
-            } elseif ($state['object'] == 'supplier') {
+            }elseif ($state['object'] == 'location') {
+                $_object          = new Location('deleted', $state['key']);
+                $state['_object'] = $_object;
+                if ($_object->id) {
+                    $state['section'] = 'deleted_location';
+                    $state['tab']     = 'location.history';
+
+                }
+            }  elseif ($state['object'] == 'supplier') {
                 $_object          = new Supplier('deleted', $state['key']);
                 $state['_object'] = $_object;
                 if ($_object->id) {
@@ -1795,7 +1803,10 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                         $data, $smarty, $user, $db, $account
                     );
                     break;
-
+                case ('deleted_location'):
+                    return get_deleted_location_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
                 case ('categories'):
                     return get_categories_navigation(
                         $data, $smarty, $user, $db, $account

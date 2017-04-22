@@ -642,7 +642,63 @@ array(
 
 
     ),
+    'location' => array(
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => true,
+            'header'        => 'Code',
+            'name'          => 'Location Code',
+            'label'         => _('Code'),
+            'checked'       => 0,
+            'cell_type'     => 'string'
+        ),
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'Flag',
+            'name'          => 'Location Flag Color',
+            'label'         => _('Flag'),
+            'checked'       => 0,
+            'cell_type'     => 'string'
+        ),
+        /*
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => true,
+            'header'        => 'Used For',
+            'name'          => 'Location Mainly Used For',
+            'label'         => _('Used For'),
+            'checked'       => 0,
+            'cell_type'     => 'string'
+        ),
+        */
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'Max weight',
+            'name'          => 'Location Max Weight',
+            'label'         => ucfirst(_('max weight')).' (Kg)',
+            'checked'       => 0,
+            'cell_type'     => 'string'
+        ),
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'Max volume',
+            'name'          => 'Location Max Volume',
+            'label'         => ucfirst(_('max volume')).' (m³)',
+            'checked'       => 0
+        ),
 
+
+
+
+    ),
 
 );
 

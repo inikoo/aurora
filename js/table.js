@@ -621,4 +621,17 @@ function edit_category_subject(element) {
 
 function post_table_rendered(otable) {
 
+    switch (state.tab){
+        case 'location.parts':
+            $('.table_edit_cell').awesomeCursor('pencil', {
+                color: 'rgba(0, 0, 0, 0.5)',
+                hotspot: 'bottom left'
+            })
+            break;
+
+    }
+
 }
+
+
+

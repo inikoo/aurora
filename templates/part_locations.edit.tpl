@@ -1,38 +1,42 @@
 
 
 {foreach $locations_data item=location_data}
+
+
+
     <tr id="part_location_edit_{$location_data.location_key}" class="locations"  location_key="{$location_data.location_key}" >
         <td style="width:20px" class="unlink_operations hide"><i class="fa fa-fw  fa-unlink button super_discreet"
                                                                  aria-hidden="true" title="{t}Disassociate location{/t}"
                                                                  onclick="disassociate_location(this)"></i></td>
         <td>
-	    <span
-              class=" location_info">
-	        <span class="location_used_for_icon"><i onclick="set_as_picking_location({$part_sku},{$location_data.location_key})" class="fa fa-fw fa-shopping-basket  {if $location_data.can_pick=='No'}super_discreet_on_hover button{else}{/if}   " aria-hidden="true" title="{if $location_data.can_pick=='No'}{t}Set as picking location{/t}{else}{t}Picking location{/t}{/if}" ></i></span>
-	        <span onclick="change_view('/locations/{$location_data.warehouse_key}/{$location_data.location_key}')" class="link location_code">{$location_data.location_code}</span></span>
+	    <span class=" location_info">
+	        <span class="picking_location_icon">
+                <i onclick="set_as_picking_location({$part_sku},{$location_data.location_key})" class="fa fa-fw fa-shopping-basket  {if $location_data.can_pick=='No'}super_discreet_on_hover button{else}{/if}   " aria-hidden="true" title="{if $location_data.can_pick=='No'}{t}Set as picking location{/t}{else}{t}Picking location{/t}{/if}" ></i>
+            </span>
+
+	         <span onclick="change_view('/locations/{$location_data.warehouse_key}/{$location_data.location_key}')" class="link location_code">
+                 {$location_data.location_code}</span>
+        </span>
 
             <span class="very_discreet recommendations">
 	        <span onClick="open_edit_min_max(this)"
-                  class="min_max open_edit_min_max {if $location_data.can_pick=='No'}hide{/if}">{literal}{{/literal}
-                <span class="formatted_recommended_min">{$location_data.formatted_min_qty}</span>,<span
-                        class="formatted_recommended_max">{$location_data.formatted_max_qty}</span>}</span>
-	        <span class="edit_min_max hide"><i onClick="close_edit_min_max(this)"
-                                               class="close_min_max button fa fa-times" aria-hidden="true"></i>
-	        <input class="recommended_min min_max" style="width:30px" ovalue="{$location_data.min_qty}"
-                   value="{$location_data.min_qty}" placeholder="{t}min{/t}"/>
-	        <input class="recommended_max min_max" style="width:30px" ovalue="{$location_data.max_qty}"
-                   value="{$location_data.max_qty}" placeholder="{t}max{/t}"/> <i
-                        onClick="save_recomendations('min_max',this)" class="fa fa-cloud save"
-                        aria-hidden="true"></i></span>
+                  location_key="{$location_data.location_key}" min="{$location_data.min_qty}" max="{$location_data.max_qty}"
+                  title="{t}Recommended min/max stock{/t}"
+
+                  class="button min_max open_edit_min_max {if $location_data.can_pick=='No'}hide{/if}">
+                 ( <span class="formatted_recommended_min">{$location_data.formatted_min_qty}</span> ,
+                   <span class="formatted_recommended_max">{$location_data.formatted_max_qty}</span> )
+            </span>
+
 	        
 	        <span onClick="open_edit_recommended_move(this)"
-                  class=" open_edit_recommended_move {if $location_data.can_pick=='Yes'}hide{/if}">[<span
-                        class="formatted_recommended_move">{$location_data.formatted_move_qty}</span>]</span>
-	        <span class="edit_move hide"><i onClick="close_edit_recommended_move(this)"
-                                            class="close_move button fa fa-times" aria-hidden="true"></i>
-	        <input class="recommended_move" style="width:30px" ovalue="{$location_data.move_qty}"
-                   value="{$location_data.move_qty}"/> <i onClick="save_recomendations('move',this)"
-                                                          class="fa fa-cloud save" aria-hidden="true"></i></span>
+
+                  location_key="{$location_data.location_key}"  recommended_move="{$location_data.move_qty}"
+
+                  title="{t}Recommended replenishment quantity{/t}"
+
+                  class="button open_edit_recommended_move {if $location_data.can_pick=='Yes'}hide{/if}">[ <span class="formatted_recommended_move">{$location_data.formatted_move_qty}</span> ]</span>
+
 
 
 	        </span>
@@ -61,9 +65,10 @@
                                                              aria-hidden="true" title="{t}Disassociate location{/t}"
                                                              onclick="disassociate_location(this)"></i></td>
     <td>
-	    <span class="link location_info">
-	        <span class="location_used_for_icon"></span> 
-	        <span class="location_code"></span></span>
+	    <span class="location_info">
+	        <span class="picking_location_icon"></span>
+	        <span class="location_code link"></span>
+        </span>
 
         <span class="very_discreet recommendations">
 	        <span onClick="open_edit_min_max(this)" class="min_max open_edit_min_max">{literal}{{/literal}<span
@@ -73,7 +78,7 @@
                                                class="close_min_max button fa fa-times" aria-hidden="true"></i> <input
                         class="recommended_min min_max" style="width:30px" ovalue="" value="" placeholder="{t}min{/t}"/><input
                         class="recommended_max min_max" style="width:30px" ovalue="" value="" placeholder="{t}max{/t}"/> <i
-                        onClick="save_recomendations('min_max',this)" class="fa fa-cloud save"
+                        onClick="save_recommendations('min_max',this)" class="fa fa-cloud save"
                         aria-hidden="true"></i></span>
 	        
 	        <span onClick="open_edit_recommended_move(this)" class="recommended_move open_edit_recommended_move">[<span
@@ -81,7 +86,7 @@
 	        <span class="edit_move hide"><i onClick="close_edit_recommended_move(this)"
                                             class="close_move button fa fa-times" aria-hidden="true"></i> <input
                         class="recommended_move" style="width:30px" ovalue="" value=""/> <i
-                        onClick="save_recomendations('move',this)" class="fa fa-cloud save"
+                        onClick="save_recommendations('move',this)" class="fa fa-cloud save"
                         aria-hidden="true"></i></span>
 
 

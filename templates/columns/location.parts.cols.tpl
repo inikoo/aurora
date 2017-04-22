@@ -21,15 +21,7 @@ label: "{t}Reference{/t}",
 editable: false,
 sortType: "toggle",
 
-cell: Backgrid.StringCell.extend({
-events: {
-"click": function() {
-change_view('part/' + this.model.get("part_sku"))
-}
-},
-className: "link"
-
-})
+cell: Backgrid.HtmlCell.extend({ })
 
 },
 {
@@ -46,7 +38,7 @@ cell: Backgrid.StringCell.extend({
 },
 {
 name: "can_pick",
-label: "{t}Can pick{/t}",
+label: "{t}Picking here{/t}",
 editable: false,
 sortType: "toggle",
 
@@ -58,16 +50,43 @@ cell: Backgrid.StringCell.extend({
 },
 {
 name: "quantity",
-label: "{t}Quantity{/t}",
+label: "{t}SKOs{/t}",
 editable: false,
 
 defaultOrder:1,
 sortType: "toggle",
-{if $sort_key=='stock'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='quantity'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
 headerCell: integerHeaderCell
 },
+
+{
+name: "sko_cost",
+label: "{t}Value/SKO{/t}",
+editable: false,
+
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='sko_cost'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+
+headerCell: integerHeaderCell
+},
+
+{
+name: "stock_value",
+label: "{t}Stock value{/t}",
+editable: false,
+
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='stock_value'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+
+headerCell: integerHeaderCell
+},
+
 
 ]
 

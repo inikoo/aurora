@@ -763,12 +763,10 @@ function get_warehouse_locations_elements($db, $data, $user) {
     );
 
 
-    $table = '`Location Dimension`  ';
+    $table = '`Location Dimension` left join `Warehouse Flag Dimension` on (`Warehouse Flag Key`=`Location Warehouse Flag Key`) ';
     switch ($data['parent']) {
         case 'warehouse':
-            $where = sprintf(
-                ' where `Location Warehouse Key`=%d  ', $data['parent_key']
-            );
+            $where = sprintf(' where `Location Warehouse Key`=%d  ', $data['parent_key']);
             break;
 
             break;
@@ -783,14 +781,21 @@ function get_warehouse_locations_elements($db, $data, $user) {
     }
 
 
-    $sql = sprintf(
-        "select count(*) as number,`Warehouse Flag` as element from $table $where  group by `Warehouse Flag` "
-    );
-    foreach ($db->query($sql) as $row) {
+    $sql = sprintf("select count(*) as number,`Warehouse Flag Color` as element from $table $where  group by `Location Warehouse Flag Key` ");
 
-        $elements_numbers['flags'][preg_replace('/\s/', '', $row['element'])] = number($row['number']);
-
+    if ($result=$db->query($sql)) {
+    		foreach ($result as $row) {
+    		    if($row['element']!=''){
+                    $elements_numbers['flags'][preg_replace('/\s/', '', $row['element'])] = number($row['number']);
+                }
+    		}
+    }else {
+    		print_r($error_info=$db->errorInfo());
+    		print "$sql\n";
+    		exit;
     }
+
+
 
 
     $response = array(

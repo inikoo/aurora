@@ -49,13 +49,13 @@ switch ($tipo) {
         areas(get_table_parameters(), $db, $user);
         break;
     case 'locations':
-        locations(get_table_parameters(), $db, $user);
+        locations(get_table_parameters(), $db, $user,$account);
         break;
     case 'replenishments':
         replenishments(get_table_parameters(), $db, $user);
         break;
     case 'parts':
-        parts(get_table_parameters(), $db, $user);
+        parts(get_table_parameters(), $db, $user,$account);
         break;
     case 'stock_transactions':
         stock_transactions(get_table_parameters(), $db, $user);
@@ -152,7 +152,7 @@ function areas($_data, $db, $user) {
 }
 
 
-function locations($_data, $db, $user) {
+function locations($_data, $db, $user,$account) {
 
 
     $rtext_label = 'location';
@@ -162,6 +162,9 @@ function locations($_data, $db, $user) {
     $adata = array();
 
     foreach ($db->query($sql) as $data) {
+
+        /*
+
         switch ($data['Location Mainly Used For']) {
             case 'Picking':
                 $used_for = _('Picking');
@@ -182,17 +185,17 @@ function locations($_data, $db, $user) {
                 $used_for = $data['Location Mainly Used For'];
                 break;
         }
-
+*/
 
         if ($data['Location Max Weight'] == '' or $data['Location Max Weight'] <= 0) {
-            $max_weight = _('Unknown');
+            $max_weight = '<span class="super_discreet italic">'._('Unknown').'</span>';
         } else {
             $max_weight = number($data['Location Max Weight'])._('Kg');
         }
         if ($data['Location Max Volume'] == '' or $data['Location Max Volume'] <= 0) {
-            $max_vol = _('Unknown');
+            $max_vol = '<span class="super_discreet italic">'._('Unknown').'</span>';
         } else {
-            $max_vol = number($data['Location Max Volume'])._('L');
+            $max_vol = number($data['Location Max Volume']).'m³';
         }
 
 
@@ -203,13 +206,15 @@ function locations($_data, $db, $user) {
             'code'               => $data['Location Code'],
             'flag'               => ($data['Warehouse Flag Key'] ? sprintf(
                 '<i class="fa fa-flag %s" aria-hidden="true" title="%s"></i>', strtolower($data['Warehouse Flag Color']), $data['Warehouse Flag Label']
-            ) : '<i class="fa fa-flag-o discret" aria-hidden="true"></i>'),
+            ) : '<i class="fa fa-flag-o super_discreet" aria-hidden="true"></i>'),
             'flag_key'           => $data['Warehouse Flag Key'],
             'area'               => $data['Warehouse Area Code'],
             'max_weight'         => $max_weight,
             'max_volume'         => $max_vol,
             'parts'              => number($data['Location Distinct Parts']),
-            'used_for'           => $used_for
+            'stock_value' => money($data['Location Stock Value'], $account->get('Account Currency')),
+
+           // 'used_for'           => $used_for
         );
 
     }
@@ -242,66 +247,39 @@ function replenishments($_data, $db, $user) {
 
     foreach ($db->query($sql) as $data) {
 
+        $locations_data = preg_split('/,/', $data['location_data']);
 
-        switch ($data['Warehouse Flag']) {
-            case 'Blue':
-                $flag = "<img  src='/art/icons/flag_blue.png' title='".$data['Warehouse Flag']."' />";
-                break;
-            case 'Green':
-                $flag = "<img  src='/art/icons/flag_green.png' title='".$data['Warehouse Flag']."' />";
-                break;
-            case 'Orange':
-                $flag = "<img src='/art/icons/flag_orange.png' title='".$data['Warehouse Flag']."'  />";
-                break;
-            case 'Pink':
-                $flag = "<img  src='/art/icons/flag_pink.png' title='".$data['Warehouse Flag']."'/>";
-                break;
-            case 'Purple':
-                $flag = "<img src='/art/icons/flag_purple.png' title='".$data['Warehouse Flag']."'/>";
-                break;
-            case 'Red':
-                $flag = "<img src='/art/icons/flag_red.png' title='".$data['Warehouse Flag']."'/>";
-                break;
-            case 'Yellow':
-                $flag = "<img src='/art/icons/flag_yellow.png' title='".$data['Warehouse Flag']."'/>";
-                break;
-            default:
-                $flag = '';
-
-        }
 
 
         $stock          = '<div border=0 style="xwidth:150px">';
-        $locations_data = preg_split('/,/', $data['location_data']);
 
         foreach ($locations_data as $raw_location_data) {
             if ($raw_location_data != '') {
                 $_locations_data = preg_split('/\:/', $raw_location_data);
                 if ($_locations_data[0] != $data['Location Key']) {
                     $stock .= '<div style="clear:both">';
-                    $stock .= '<div style="float:left;min-width:100px;"><a href="location.php?id='.$_locations_data[0].'">'.$_locations_data[1]
-                        .'</a></div><div style="float:left;min-width:100px;text-align:right">'.number($_locations_data[3]).'</div>';
+                    $stock .= '<div style="float:left;min-width:100px;">
+<span class="link"  onClick="change_view(\'locations/'.$data['Location Warehouse Key'].'/'.$_locations_data[0].'\')" >'.$_locations_data[1].'</span>
+</div><div style="float:left;min-width:100px;text-align:right">'.number($_locations_data[3]).'</div>';
                     $stock .= '</div>';
                 }
             }
         }
         $stock .= '</div>';
 
-        $pl_data = '<span style="font-weight:800">'.number(
-                $data['Quantity On Hand']
-            ).'</span>  {'.number($data['Minimum Quantity']).','.number(
-                $data['Maximum Quantity']
-            ).'}';
 
 
         $adata[] = array(
             'id'           => (integer)$data['Location Key'],
-            'location'     => $flag.' '.$data['Location Code'],
-            'location_key' => $data['Location Key'],
-            'part'         => $data['Part Reference'],
-            'part_sku'     => $data['Part SKU'],
-            'stock'        => $stock,
-            'pl_data'      => $pl_data
+            'location'     => ($data['Warehouse Flag Key'] ? sprintf(
+            '<i class="fa fa-flag %s" aria-hidden="true" title="%s"></i>', strtolower($data['Warehouse Flag Color']), $data['Warehouse Flag Label']
+        ) : '<i class="fa fa-flag-o super_discreet" aria-hidden="true"></i>').' <span class="link" onClick="change_view(\'locations/'.$data['Location Warehouse Key'].'/'.$data['Location Key'].'\')">'.$data['Location Code'].'</span>',
+            'part'         => sprintf('<span class="link" onCLick="change_view(\'part/%d\')" >%s</span>',$data['Part SKU'],$data['Part Reference']) ,
+            'other_locations_stock'        => $stock,
+
+            'quantity' => number($data['Quantity On Hand']),
+            'recommended_quantity' => ' <span class="padding_left_5">(<span style="display: inline-block;min-width: 20px;text-align: center">'.number($data['Minimum Quantity']).'</span>,<span style="display: inline-block;min-width: 25px;text-align: center">'.number($data['Maximum Quantity']).'</span>)</span>'
+
         );
 
     }
@@ -321,7 +299,8 @@ function replenishments($_data, $db, $user) {
 }
 
 
-function parts($_data, $db, $user) {
+function parts($_data, $db, $user,$account) {
+
 
 
     if ($_data['parameters']['tab'] == 'warehouse.parts') {
@@ -343,19 +322,24 @@ function parts($_data, $db, $user) {
     foreach ($db->query($sql) as $data) {
 
         $adata[] = array(
-            // 'id'=>(integer) $data['Part SKU'],
-            'reference'        => $data['Part Reference'],
-            'unit_description' => $data['Part Unit Description'],
-            'location'         => $data['Location Code'],
-            'location_key'     => $data['Location Key'],
-            'warehouse_key'    => $data['Part Location Warehouse Key'],
-            'part_sku'         => $data['Part SKU'],
-            'can_pick'         => ($data['Can Pick'] == 'Yes'
-                ? _('Yes')
-                : _(
-                    'No'
-                )),
-            'quantity'         => number($data['Quantity On Hand'])
+
+
+            'reference'         => sprintf('<span class="link" onCLick="change_view(\'part/%d\')" >%s</span>',$data['Part SKU'],$data['Part Reference']) ,
+            'location'         => sprintf('<span class="link" onCLick="change_view(\'locations/%d/%d\')" >%s</span>',$data['Part Location Warehouse Key'],$data['Location Key'],$data['Location Code']) ,
+
+
+            'sko_description' => $data['Part Package Description'],
+
+
+            'can_pick' => ($data['Can Pick'] == 'Yes' ? _('Yes') : _('No')),
+
+            'sko_cost' => money($data['Part Cost in Warehouse'], $account->get('Account Currency')),
+            'stock_value' => money($data['Stock Value'], $account->get('Account Currency')),
+            'quantity' => sprintf(
+                '<span style="padding-left:3px;padding-right:7.5px" class="table_edit_cell  location_part_stock" title="%s" part_sku="%d" location_key="%d"  qty="%s" onClick="open_location_part_stock_quantity_dialog(this)">%s</span>', '',
+                $data['Part SKU'], $data['Location Key'], $data['Quantity On Hand'], number($data['Quantity On Hand'])
+            )
+
 
         );
 
@@ -396,7 +380,7 @@ function stock_transactions($_data, $db, $user) {
             $stock = $data['Inventory Transaction Quantity'];
             switch ($data['Inventory Transaction Type']) {
                 case 'OIP':
-                    $type = '<i class="fa  fa-clock-o discret fa-fw" aria-hidden="true"></i>';
+                    $type = '<i class="fa  fa-clock-o discreet fa-fw" aria-hidden="true"></i>';
 
                     if ($parameters['parent'] == 'part') {
                         $note = sprintf(
@@ -562,15 +546,14 @@ function part_locations_to_replenish_picking_location($_data, $db, $user) {
     $table_data = array();
 
 
-
     //print $sql;
 
 
     foreach ($db->query($sql) as $data) {
 
         $table_data[] = array(
-            'reference'        => sprintf('<span class="link"  title="%s" onclick="change_view(\'part/%d\')">%s</span>',$data['Part Package Description'],$data['Part SKU'],$data['Part Reference']),
-            'location'         => sprintf('<span  class="link"  onclick="change_view(\'locations/%d/%d\')">%s</span>',$data['Part Location Warehouse Key'],$data['Location Key'],$data['Location Code']),
+            'reference' => sprintf('<span class="link"  title="%s" onclick="change_view(\'part/%d\')">%s</span>', $data['Part Package Description'], $data['Part SKU'], $data['Part Reference']),
+            'location'  => sprintf('<span  class="link"  onclick="change_view(\'locations/%d/%d\')">%s</span>', $data['Part Location Warehouse Key'], $data['Location Key'], $data['Location Code']),
 
 
             'quantity_in_picking' => number(floor($data['Quantity On Hand'])),
@@ -616,13 +599,13 @@ function part_locations_with_errors($_data, $db, $user) {
 
         $table_data[] = array(
 
-            'reference'        => sprintf('<span class="link" title="%s" onclick="change_view(\'part/%d\')">%s</span>',$data['Part Package Description'],$data['Part SKU'],$data['Part Reference']),
-            'location'         => sprintf('<span  class="link" onclick="change_view(\'locations/%d/%d\')">%s</span>',$data['Part Location Warehouse Key'],$data['Location Key'],$data['Location Code']),
+            'reference' => sprintf('<span class="link" title="%s" onclick="change_view(\'part/%d\')">%s</span>', $data['Part Package Description'], $data['Part SKU'], $data['Part Reference']),
+            'location'  => sprintf('<span  class="link" onclick="change_view(\'locations/%d/%d\')">%s</span>', $data['Part Location Warehouse Key'], $data['Location Key'], $data['Location Code']),
 
 
-
-            'can_pick'         => ($data['Can Pick'] == 'Yes' ? _('Yes') : _('No')),
-            'quantity'         => '<span class="error">'.number($data['Quantity On Hand']), '</span>'
+            'can_pick' => ($data['Can Pick'] == 'Yes' ? _('Yes') : _('No')),
+            'quantity' => '<span class="error">'.number($data['Quantity On Hand']),
+            '</span>'
 
         );
 

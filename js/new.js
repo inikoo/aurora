@@ -621,22 +621,23 @@ function show_field_options(element){
 
 $(element).addClass('hide')
 
-    $('#'+$(element).attr('id')+'_options_ul').removeClass('hide')
+    $('#'+$(element).attr('field')+'_options_ul').removeClass('hide')
 
 }
 
 
-function select_option_for_new_object(element, field, value) {
+function select_option_for_new_object(element, field, value, formatted_value) {
 
 
+    $('#' + field).val(value).addClass('hide')
+    $('#' + field+'_formatted').val(formatted_value).removeClass('hide')
 
-    $('#' + field).val(value)
 
 
     $('#' + field + '_options li').removeClass('selected')
     $(element).addClass('selected')
 
-    $('#'+field).removeClass('hide')
+
 
     $('#'+field+'_options_ul').addClass('hide')
 

@@ -50,7 +50,7 @@ function fork_upload_edit($job) {
     );
 
 
-  //  print_r($_data);
+    //  print_r($_data);
 
     $upload = new Upload('id', $fork_data['upload_key']);
 
@@ -75,6 +75,12 @@ function fork_upload_edit($job) {
             $valid_fields = $export_edit_template_fields['part'];
             $object_name  = 'part';
             break;
+        case 'location':
+            include_once 'class.Location.php';
+            $valid_keys   = array('Location Key');
+            $valid_fields = $export_edit_template_fields['location'];
+            $object_name  = 'location';
+            break;
         case 'product':
             include_once 'class.Product.php';
             $valid_keys   = array('Product ID');
@@ -88,7 +94,7 @@ function fork_upload_edit($job) {
             $object_name  = 'suppier';
             break;
         default:
-            print 'error upload.edit.fork.php';
+            print 'error, Upload Object not set up, check: upload.edit.fork.php';
 
             return;
             break;
@@ -462,7 +468,6 @@ function new_object($account, $db, $user, $editor, $data, $upload, $fork_key) {
             }
 
 
-
             $object = $parent->create_product($data['fields_data']);
             //print_r($object);
 
@@ -470,7 +475,7 @@ function new_object($account, $db, $user, $editor, $data, $upload, $fork_key) {
                 $error          = $parent->error;
                 $error_metadata = (isset($parent->error_metadata) ? $parent->error_metadata : '');
                 $error_code     = $parent->error_code;
-               // print_r($parent);
+                // print_r($parent);
 
             } else {
 
@@ -483,25 +488,16 @@ function new_object($account, $db, $user, $editor, $data, $upload, $fork_key) {
             break;
         case 'supplier_part':
         case 'Supplier Part':
+
             include_once 'class.SupplierPart.php';
-
-
-
-
             $object = $parent->create_supplier_part_record(
                 $data['fields_data']
             );
-
-
-
-            //print_r($object);
-
             if ($parent->error) {
                 $error          = $parent->error;
                 $error_metadata = (isset($parent->error_metadata) ? $parent->error_metadata : '');
                 $error_code     = $parent->error_code;
             }
-
 
             break;
         case 'part':
@@ -563,6 +559,21 @@ function new_object($account, $db, $user, $editor, $data, $upload, $fork_key) {
 
             $parent->get_user_data();
             $object = $parent->create_user($data['fields_data']);
+
+
+            break;
+        case 'Location':
+        case 'location':
+
+            include_once 'class.Location.php';
+            $object = $parent->create_location(
+                $data['fields_data']
+            );
+            if ($parent->error) {
+                $error          = $parent->error;
+                $error_metadata = (isset($parent->error_metadata) ? $parent->error_metadata : '');
+                $error_code     = $parent->error_code;
+            }
 
 
             break;
