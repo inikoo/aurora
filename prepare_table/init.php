@@ -9,6 +9,7 @@
 
 */
 
+
 include_once 'utils/date_functions.php';
 
 
@@ -50,12 +51,16 @@ if (!isset($dont_save_table_state)) {
                                                                      = $number_results;
     $_SESSION['table_state'][$_data['parameters']['tab']]['f_value'] = $f_value;
 }
+
+
 include_once 'prepare_table/'.$_data['parameters']['tab'].'.ptble.php';
 if (!isset($skip_get_table_totals)) {
     list($rtext, $total, $filtered) = get_table_totals($db, $sql_totals, $wheref, $rtext_label, (isset($totals_metadata) ? $totals_metadata : false)
     );
 
 }
+
+
 if (isset($parameters['period']) and $parameters['period'] != 'all') {
     include_once 'utils/date_functions.php';
 

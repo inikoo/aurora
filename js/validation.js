@@ -61,7 +61,7 @@ function validate_address(field) {
             // console.log($(obj).attr('field_name'))
             if ($(obj).val() == '') {
                 invalid_fields++;
-                tr.find('.show_buttons').removeClass('super_discret success').addClass('error')
+                tr.find('.show_buttons').removeClass('super_discreet success').addClass('error')
 
 
                 if ($(obj).attr('field_name') == 'Address Recipient') {
@@ -79,7 +79,7 @@ function validate_address(field) {
                     type: valid_state_type
                 }
             } else {
-                tr.find('.show_buttons').addClass(' success').removeClass('super_discret error')
+                tr.find('.show_buttons').addClass(' success').removeClass('super_discreet error')
 
             }
 
@@ -103,7 +103,7 @@ function validate_address(field) {
 function client_validation(type, required, value, field) {
 
 
-  //  console.log(type + ' ' + value + ' ' + field)
+    console.log(type + ' ' + value + ' ' + field)
 
     var valid_state = {
         class: 'valid',
@@ -511,7 +511,9 @@ function client_validation(type, required, value, field) {
             break;
 
 
-        case 'number_unsigned':
+
+        case 'numeric_unsigned':
+
 
             var res = validate_number(value, 0,4294967295)
             if (res) return res
@@ -583,7 +585,7 @@ function client_validation(type, required, value, field) {
         case 'percentage':
 
 
-            console.log('caca')
+
 
             var comma = ','
             var dot = '.'
@@ -671,6 +673,10 @@ function client_validation(type, required, value, field) {
 
 function validate_barcode(value, min_length, max_length) {
 
+    if(value==''){
+        return false
+    }
+
     if (!$.isNumeric(value)) {
         return {
             class: 'invalid',
@@ -715,12 +721,6 @@ function validate_barcode(value, min_length, max_length) {
 
 function validate_number(value, min, max) {
 
-    var value = parseFloat(value)
-    var min = parseFloat(min)
-    var max = parseFloat(max)
-
-
-    console.log(value)
 
     if (!$.isNumeric(value)) {
         return {
@@ -728,6 +728,13 @@ function validate_number(value, min, max) {
             type: 'no_numeric'
         }
     }
+
+    var value = parseFloat(value)
+    var min = parseFloat(min)
+    var max = parseFloat(max)
+
+
+
 
 
     if (min != undefined && value < min) {

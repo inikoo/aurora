@@ -58,9 +58,18 @@ switch ($parameters['parent']) {
                 );
 
                 break;
+            case 'location':
+                $table
+                       = '  `Upload Record Dimension` as R  left join `Upload File Dimension` F on (F.`Upload File Key`=`Upload Record Upload File Key`)  left join `Location Dimension` O on (O.`Location Key`=R.`Upload Record Object Key`)  left join `Location Deleted Dimension` OD on (OD.`Location Deleted Key`=R.`Upload Record Object Key`) ';
+                $object_field
+                       = ' `Location Code` as object_name,`Location Deleted Code` as object_auxiliar_name,CONCAT("locations/",`Location Warehouse Key`,"/",`Upload Record Object Key`) as link ';
+                $where = sprintf(
+                    " where  `Upload Record Upload Key`=%d ", $parameters['parent_key']
+                );
 
+                break;
             default:
-                exit('object not suported '.$upload->get('Upload Object'));
+                exit('object not supported in upload_records.ptble.php '.$upload->get('Upload Object'));
                 break;
         }
 
@@ -69,7 +78,7 @@ switch ($parameters['parent']) {
 
 
     default:
-        exit('parent not suported');
+        exit('parent not supported');
         break;
 }
 

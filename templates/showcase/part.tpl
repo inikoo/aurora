@@ -1,3 +1,16 @@
+<div id="edit_stock_min_max" location_key="" class="hide " style="position:absolute;border:1px solid #ccc;padding:5px;width:auto;background-color: #fff;z-index: 100">
+    <i style="position: relative;top:-5px;padding-right:5px" onClick="close_edit_min_max(this)" class="close_min_max button fa fa-window-close" aria-hidden="true"></i>
+    <input class="recommended_min min_max" style="width:50px" ovalue=""  value="" placeholder="{t}min{/t}"/>
+    <input class="recommended_max min_max" style="width:50px" ovalue=""  value="" placeholder="{t}max{/t}"/>
+    <i onClick="save_recommendations('min_max',this)" class="fa fa-cloud save" aria-hidden="true"></i>
+</div>
+
+<div id="edit_recommended_move" location_key="" class="hide" style="position:absolute;border:1px solid #ccc;padding:5px;width:auto;background-color: #fff;z-index: 100">
+    <i style="position: relative;top:-5px;padding-right:5px" onClick="close_edit_recommended_move(this)" class="close_recommended_move button fa fa-window-close" aria-hidden="true"></i>
+    <input class="recommended_move min_max" style="width:70px" ovalue=""  value=""/> <i onClick="save_recommendations('move',this)" class="fa fa-cloud save" aria-hidden="true"></i>
+</div>
+
+
 {include file="sticky_note.tpl" value=$part->get('Sticky Note') object="Part" key="{$part->id}" field="Part_Sticky_Note"  }
 
 <div class="name_and_categories">
@@ -240,6 +253,13 @@
                 </tr>
             </table>
 
+
+
+
+
+
+
+
             <table id="locations_table" border="0" class="overview" part_sku="{$part->id}">
 
                 <tr id="move_stock_tr" class="discreet button hide " style="border-bottom:1px solid #ccc" max="">
@@ -310,9 +330,7 @@
 
 <script>
 
-    function category_view() {
-        change_view('category/' + $('#Part_Family_Key').val())
-    }
+
 
 
     var movements = false

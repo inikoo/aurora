@@ -15,7 +15,7 @@ About:
     </div>
     <div class="answer hide">
         <p>
-            {t}Click in the<i class="fa fa-plus"></i>icon at the table header{/t}
+            {t}Click in the <i class="fa fa-plus"></i> icon at the table header{/t}
         </p>
     </div>
 </div>
@@ -25,9 +25,7 @@ About:
     </div>
     <div class="answer hide">
         <p>
-            {t}Click in the
-                <i class="fa fa-upload"></i>
-                icon at the table header to upload a excel or a CSV file with the following fields{/t} — <i
+            {t}Click in the <i class="fa fa-cloud-upload"></i> icon at the table header to upload a excel or a CSV file with the following fields{/t} — <i
                     class="fa fa-file-excel-o"></i> <a title="{t}You can use this file as template{/t}"
                                                        href="/upload_arrangement.php?object=part&parent=account&parent_key=1"> {t}template{/t}</a>
             —

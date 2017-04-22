@@ -42,6 +42,9 @@ function open_edit_field(object, key, field) {
         case 'int_unsigned':
         case 'smallint_unsigned':
         case 'mediumint_unsigned':
+        case 'numeric_unsigned':
+
+
         case 'int':
         case 'smallint':
         case 'mediumint':
@@ -263,6 +266,8 @@ function close_edit_field(field) {
         case 'amount_percentage':
         case 'dimensions':
         case 'percentage':
+        case 'numeric_unsigned':
+
 
             $('#' + field).addClass('hide')
 

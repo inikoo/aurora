@@ -218,7 +218,7 @@ class Warehouse extends DB_Table {
             );
             foreach ($flags as $flag => $flag_label) {
                 $sql = sprintf(
-                    "INSERT INTO `Warehouse Flag Dimension` (`Warehouse Flag Key`, `Warehouse Key`, `Warehouse Flag Color`, `Warehouse Flag Label`, `Warehouse Flag Number Locations`, `Warehouse Flag Active`) VALUES (NULL, %d, %s,%s, '0', 'Yes')",
+                    "INSERT INTO `Warehouse Flag Dimension` (`Warehouse Flag Key`, `Warehouse Flag Warehouse Key`, `Warehouse Flag Color`, `Warehouse Flag Label`, `Warehouse Flag Number Locations`, `Warehouse Flag Active`) VALUES (NULL, %d, %s,%s, '0', 'Yes')",
                     $this->id, prepare_mysql($flag), prepare_mysql($flag_label)
                 );
 
@@ -230,13 +230,17 @@ class Warehouse extends DB_Table {
 
             $this->create_location(array(
                                        'Location Code'=>'Unknown',
-                                       'Location Mainly Used For'=>'Storing'
+                                     //  'Location Mainly Used For'=>'Storing'
                                    ));
 
+
+
+          /*
             $this->create_location(array(
                                        'Location Code'=>'LoadBay',
                                        'Location Mainly Used For'=>'Loading'
                                    ));
+          */
 
 
 
@@ -361,7 +365,7 @@ class Warehouse extends DB_Table {
             exit;
         }
 
-
+/*
         if (!isset($data['Location Mainly Used For']) or $data['Location Mainly Used For'] == '') {
 
 
@@ -391,6 +395,37 @@ class Warehouse extends DB_Table {
             return;
         }
 
+*/
+
+        if(isset($data['Location Flag Color'])){
+
+            if($data['Location Flag Color']!='') {
+
+                $sql = sprintf(
+                    "SELECT `Warehouse Flag Key` FROM  `Warehouse Flag Dimension` WHERE `Warehouse Flag Color`=%s", prepare_mysql(ucfirst($data['Location Flag Color']))
+                );
+
+                if ($result = $this->db->query($sql)) {
+                    if ($row = $result->fetch()) {
+
+                        $data['Location Warehouse Flag Key'] = $row['Warehouse Flag Key'];
+
+                    } else {
+                        $this->error      = true;
+                        $this->msg        = _('Flag invalid colour');
+                        $this->error_code = 'location_flag_color_not_valid';
+
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+            }
+
+        }
+
+
 
         $data['Location Warehouse Key'] = $this->id;
 
@@ -404,6 +439,11 @@ class Warehouse extends DB_Table {
             if ($location->new) {
                 $this->new_object    = true;
                 $this->new_locationt = true;
+
+                if($location->get('Location Warehouse Flag Key')){
+                    $this->update_location_flag_number($location->get('Location Warehouse Flag Key'));
+                }
+
                 $this->update_children();
 
 
@@ -622,7 +662,7 @@ class Warehouse extends DB_Table {
 
 
             $sql = sprintf(
-                "SELECT * FROM  `Warehouse Flag Dimension` WHERE  `Warehouse Flag Key`=%d AND `Warehouse Key`=%d", $flag_key, $this->id
+                "SELECT * FROM  `Warehouse Flag Dimension` WHERE  `Warehouse Flag Key`=%d AND `Warehouse Flag Warehouse Key`=%d", $flag_key, $this->id
             );
 
 
@@ -646,16 +686,19 @@ class Warehouse extends DB_Table {
 
                     if ($field == 'Warehouse Flag Active' and $value == 'No') {
                         $sql = sprintf(
-                            "SELECT `Location Key` FROM `Location Dimension` WHERE `Location Warehouse Key`=%d AND `Warehouse Flag Key`=%d", $this->id, $row['Warehouse Flag Key']
+                            "SELECT `Location Key` FROM `Location Dimension` WHERE `Location Warehouse Key`=%d AND `Location Warehouse Flag Key`=%d", $this->id, $row['Warehouse Flag Key']
 
                         );
 
                         if ($result2 = $this->db->query($sql)) {
                             foreach ($result2 as $row2) {
                                 $location = new Location($row2['Location Key']);
-                                $location->update_warehouse_flag_key(
-                                    $default_flag_key
-                                );
+                                $location->editor=$this->editor;
+                                $location->update(array(
+                                    'Location Warehouse Flag Key'=>$default_flag_key
+                                                  ));
+
+
                             }
                         } else {
                             print_r($error_info = $this->db->errorInfo());
@@ -691,7 +734,7 @@ class Warehouse extends DB_Table {
     function get_default_flag_key() {
         $flag_key = 0;
         $sql      = sprintf(
-            "SELECT `Warehouse Flag Key` FROM  `Warehouse Flag Dimension` WHERE `Warehouse Flag Color`=%s AND `Warehouse Key`=%d", prepare_mysql($this->data['Warehouse Default Flag Color']), $this->id
+            "SELECT `Warehouse Flag Key` FROM  `Warehouse Flag Dimension` WHERE `Warehouse Flag Color`=%s AND `Warehouse Flag Warehouse Key`=%d", prepare_mysql($this->data['Warehouse Default Flag Color']), $this->id
         );
 
 
@@ -713,7 +756,7 @@ class Warehouse extends DB_Table {
     function get_flags_data() {
         $this->flags = array();
         $sql         = sprintf(
-            "SELECT * FROM `Warehouse Flag Dimension` WHERE `Warehouse Key`=%d", $this->id
+            "SELECT * FROM `Warehouse Flag Dimension` WHERE `Warehouse Flag Warehouse Key`=%d", $this->id
         );
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
@@ -864,7 +907,7 @@ class Warehouse extends DB_Table {
 
 
         $sql = sprintf(
-            "SELECT * FROM  `Warehouse Flag Dimension` WHERE `Warehouse Key`=%d  ", $this->id
+            "SELECT `Warehouse Flag Key` FROM  `Warehouse Flag Dimension` WHERE `Warehouse Flag Warehouse Key`=%d  ", $this->id
         );
 
 
@@ -884,7 +927,7 @@ class Warehouse extends DB_Table {
     function update_location_flag_number($flag_key) {
         $num = 0;
         $sql = sprintf(
-            "SELECT count(*) AS num  FROM  `Location Dimension` WHERE `Warehouse Flag Key`=%d ", $flag_key
+            "SELECT count(*) AS num  FROM  `Location Dimension` WHERE `Location Warehouse Flag Key`=%d ", $flag_key
         );
 
 

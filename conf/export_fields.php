@@ -464,7 +464,39 @@ $export_fields = array(
             'label'   => _('VAT registration number validation'),
             'checked' => 0
         ),
-    )
+    ),
+
+    'locations'                       => array(
+        array(
+            'name'    => '`Location Code`',
+            'label'   => _('Code'),
+            'checked' => 1
+        ),
+        /*
+        array(
+            'name'    => '`Location Mainly Used For`',
+            'label'   => _('User for'),
+            'checked' => 1
+        ),
+        */
+        array(
+            'name'    => '`	Location Max Weight`',
+            'label'   => ucfirst(_('max weight')).' (Kg)',
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Location Max Volume`',
+            'label'   => ucfirst(_('max volume')).' (m³)',
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Location Distinct Parts`',
+            'label'   => _('Parts'),
+            'checked' => 1
+        ),
+
+
+    ),
 
 
 );

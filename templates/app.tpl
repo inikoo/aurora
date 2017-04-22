@@ -122,6 +122,7 @@
         <script type="text/javascript" src="/js/libs/amcharts/plugins/export/export.min.js"></script>
         <script type="text/javascript" src="/js/libs/jquery.scannerdetection.js"></script>
         <script type="text/javascript" src="/js/libs/jquery.fancybox.min.js"></script>
+        <script type="text/javascript" src="/js/libs/jquery.awesome-cursor.min.js"></script>
 
 
 

@@ -33,8 +33,8 @@ switch ($tipo) {
 
         $data = prepare_values(
             $_REQUEST, array(
-                         'part_sku'             => array('type' => 'key'),
-                         'location_key'    => array('type' => 'key'),
+                         'part_sku'     => array('type' => 'key'),
+                         'location_key' => array('type' => 'key'),
 
                      )
         );
@@ -48,15 +48,15 @@ switch ($tipo) {
 
         $data = prepare_values(
             $_REQUEST, array(
-                'object'          => array('type' => 'string'),
-                'key'             => array('type' => 'key'),
-                'transaction_key' => array('type' => 'key'),
-                'part_sku'        => array('type' => 'key'),
-                'location_key'    => array('type' => 'key'),
-                'qty'             => array('type' => 'numeric'),
-                'note'            => array('type' => 'string'),
+                         'object'          => array('type' => 'string'),
+                         'key'             => array('type' => 'key'),
+                         'transaction_key' => array('type' => 'key'),
+                         'part_sku'        => array('type' => 'key'),
+                         'location_key'    => array('type' => 'key'),
+                         'qty'             => array('type' => 'numeric'),
+                         'note'            => array('type' => 'string'),
 
-            )
+                     )
         );
 
 
@@ -68,15 +68,30 @@ switch ($tipo) {
 
         $data = prepare_values(
             $_REQUEST, array(
-                'object'       => array('type' => 'string'),
-                'part_sku'     => array('type' => 'key'),
-                'location_key' => array('type' => 'key'),
+                         'object'       => array('type' => 'string'),
+                         'part_sku'     => array('type' => 'key'),
+                         'location_key' => array('type' => 'key'),
 
-            )
+                     )
         );
 
 
         new_part_location($account, $db, $user, $editor, $data, $smarty);
+        break;
+    case 'edit_part_location_stock':
+
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'part_sku'     => array('type' => 'key'),
+                         'location_key' => array('type' => 'key'),
+                         'qty'          => array('type' => 'string'),
+                         'note'         => array('type' => 'string'),
+
+                     )
+        );
+
+
+        edit_part_location_stock($account, $db, $user, $editor, $data, $smarty);
         break;
 
 
@@ -84,14 +99,14 @@ switch ($tipo) {
 
         $data = prepare_values(
             $_REQUEST, array(
-                'object'               => array('type' => 'string'),
-                'key'                  => array('type' => 'key'),
-                //'field'=>array('type'=>'string'),
-                //'value'=>array('type'=>'string'),
-                'parts_locations_data' => array('type' => 'json array'),
-                'movements'            => array('type' => 'json array'),
+                         'object'               => array('type' => 'string'),
+                         'key'                  => array('type' => 'key'),
+                         //'field'=>array('type'=>'string'),
+                         //'value'=>array('type'=>'string'),
+                         'parts_locations_data' => array('type' => 'json array'),
+                         'movements'            => array('type' => 'json array'),
 
-            )
+                     )
         );
 
 
@@ -124,7 +139,7 @@ function new_part_location($account, $db, $user, $editor, $data, $smarty) {
 
     if ($part_location->new) {
 
-
+/*
         switch ($part_location->part->get('Location Mainly Used For')) {
             case 'Picking':
                 $used_for = sprintf(
@@ -141,51 +156,35 @@ function new_part_location($account, $db, $user, $editor, $data, $smarty) {
                     '<i class="fa fa-fw  fa-shopping-basket" aria-hidden="true" title="%s"></i>', $part_location->part->get('Location Mainly Used For')
                 );
         }
+*/
+
+        $picking_location_icon=sprintf('<i onclick="set_as_picking_location(%d,%d)" class="fa fa-fw fa-shopping-basket %s" aria-hidden="true" title="%s" ></i></span>',
+                                       $part_location->part->id,
+                                       $part_location->location->id,
+                                       ($part_location->get('Can Pick')=='Yes'?'':'super_discreet_on_hover button'),
+                                       ($part_location->get('Can Pick')=='Yes'?_('Picking location'):_('Set as picking location'))
+
+        );
+
 
 
         $response = array(
             'state'                  => 200,
             'part_sku'               => $part_location->part->id,
             'location_key'           => $part_location->location->id,
-            'location_code'          => $part_location->location->get(
-                'Code'
-            ),
-            'formatted_stock'        => number(
-                $part_location->get('Quantity On Hand'), 3
-            ),
-            'stock'                  => ($part_location->get(
-                'Quantity On Hand'
-            ) == 0
-                ? ''
-                : $part_location->get(
-                    'Quantity On Hand'
-                )),
-            'location_used_for_icon' => $used_for,
-            'location_used_for'      => $part_location->location->get(
-                'Location Mainly Used For'
-            ),
-            'location_link'          => sprintf(
-                'locations/%d/%d', $part_location->location->get('Warehouse Key'), $part_location->location->id
-            ),
+            'location_code'          => $part_location->location->get('Code'),
+            'formatted_stock'        => number($part_location->get('Quantity On Hand'), 3),
+            'stock'                  => ($part_location->get('Quantity On Hand') == 0 ? '' : $part_location->get('Quantity On Hand')),
+           'picking_location_icon' => $picking_location_icon,
+           // 'location_used_for'      => $part_location->location->get('Location Mainly Used For'),
+            'location_link'          => sprintf('locations/%d/%d', $part_location->location->get('Warehouse Key'), $part_location->location->id),
 
-            'formatted_min_qty'  => ($part_location->get(
-                'Minimum Quantity'
-            ) != '' ? $part_location->get('Minimum Quantity') : '?'),
-            'formatted_max_qty'  => ($part_location->get(
-                'Maximum Quantity'
-            ) != '' ? $part_location->get('Maximum Quantity') : '?'),
-            'formatted_move_qty' => ($part_location->get(
-                'Moving Quantity'
-            ) != '' ? $part_location->get('Moving Quantity') : '?'),
-            'min_qty'            => $part_location->get(
-                'Minimum Quantity'
-            ),
-            'max_qty'            => $part_location->get(
-                'Maximum Quantity'
-            ),
-            'move_qty'           => $part_location->get(
-                'Moving Quantity'
-            ),
+            'formatted_min_qty'  => ($part_location->get('Minimum Quantity') != '' ? $part_location->get('Minimum Quantity') : '?'),
+            'formatted_max_qty'  => ($part_location->get('Maximum Quantity') != '' ? $part_location->get('Maximum Quantity') : '?'),
+            'formatted_move_qty' => ($part_location->get('Moving Quantity') != '' ? $part_location->get('Moving Quantity') : '?'),
+            'min_qty'            => $part_location->get('Minimum Quantity'),
+            'max_qty'            => $part_location->get('Maximum Quantity'),
+            'move_qty'           => $part_location->get('Moving Quantity'),
 
             'can_pick' => $part_location->get('Can Pick')
 
@@ -215,6 +214,46 @@ function new_part_location($account, $db, $user, $editor, $data, $smarty) {
 }
 
 
+function edit_part_location_stock($account, $db, $user, $editor, $data, $smarty) {
+
+    include_once 'class.PartLocation.php';
+
+
+    $part_location         = new PartLocation($data['part_sku'], $data['location_key']);
+    $part_location->editor = $editor;
+
+    if (!$part_location->ok) {
+        $response = array(
+            'state' => 400,
+            'msg'   => _('Error, please try again').' location part not associated'
+        );
+
+
+        echo json_encode($response);
+        exit;
+
+    }
+
+    $part_location->audit(
+        $data['qty'], $data['note'], $editor['Date']
+    );
+
+
+    $update_metadata['location_part_stock_cell'] = sprintf(
+        '<span  class="table_edit_cell location_part_stock" title="%s" part_sku="%d" location_key="%d"  qty="%s" onClick="open_location_part_stock_quantity_dialog(this)">%s</span>', '',
+        $data['part_sku'], $data['location_key'], $part_location->get('Quantity On Hand'), number($part_location->get('Quantity On Hand'))
+    );
+
+
+    $response = array(
+        'state'           => 200,
+        'update_metadata' => $update_metadata
+    );
+    echo json_encode($response);
+
+
+}
+
 function edit_stock($account, $db, $user, $editor, $data, $smarty) {
 
     include_once 'class.PartLocation.php';
@@ -223,13 +262,10 @@ function edit_stock($account, $db, $user, $editor, $data, $smarty) {
     $parts_locations_data = $data['parts_locations_data'];
 
     $movement = $data['movements'];
-//print_r($data);
 
     if (isset($movement['part_sku']) and isset($movement['from_location_key'])) {
 
-        $part_location_from         = new PartLocation(
-            $movement['part_sku'], $movement['from_location_key']
-        );
+        $part_location_from         = new PartLocation($movement['part_sku'], $movement['from_location_key']);
         $part_location_from->editor = $editor;
 
 
@@ -262,9 +298,8 @@ function edit_stock($account, $db, $user, $editor, $data, $smarty) {
 
 
     foreach ($parts_locations_data as $key => $part_locations_data) {
-        $part_location         = new PartLocation(
-            $part_locations_data['part_sku'], $part_locations_data['location_key']
-        );
+
+        $part_location         = new PartLocation($part_locations_data['part_sku'], $part_locations_data['location_key']);
         $part_location->editor = $editor;
 
         if (!$part_location->ok) {
@@ -320,7 +355,7 @@ function edit_stock($account, $db, $user, $editor, $data, $smarty) {
             'Available_Forecast'       => $part->get('Available Forecast'),
             'Part_Locations'           => $part_locations,
             'Part_Status'              => $part->get('Status'),
-            'Part_Cost_in_Warehouse'=>$part->get('Cost in Warehouse')
+            'Part_Cost_in_Warehouse'   => $part->get('Cost in Warehouse')
 
 
         );
@@ -328,7 +363,6 @@ function edit_stock($account, $db, $user, $editor, $data, $smarty) {
 
 
     echo json_encode($response);
-    exit;
 
 
 }
@@ -431,8 +465,7 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
                 );
 
 
-                $result_placement
-                    = $object->update_item_delivery_placed_quantity($_data);
+                $result_placement = $object->update_item_delivery_placed_quantity($_data);
 
                 if ($object->error) {
                     $response = array(
@@ -496,54 +529,49 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
 }
 
 
-function set_as_picking_location($account, $db, $user, $editor, $data, $smarty){
+function set_as_picking_location($account, $db, $user, $editor, $data, $smarty) {
 
-    $part=get_object('part',$data['part_sku']);
+    $part = get_object('part', $data['part_sku']);
 
 
-    $ok=false;
-    foreach($part->get_locations('part_location_object') as $part_location){
-        if($part_location->location_key==$data['location_key']){
-            $ok=true;
+    $ok = false;
+    foreach ($part->get_locations('part_location_object') as $part_location) {
+        if ($part_location->location_key == $data['location_key']) {
+            $ok = true;
         }
     }
 
-  if($ok){
+    if ($ok) {
 
 
-
-      foreach($part->get_locations('part_location_object') as $part_location){
-
+        foreach ($part->get_locations('part_location_object') as $part_location) {
 
 
-          if($part_location->location_key==$data['location_key']){
-              $part_location->update(array('Part Location Can Pick'=>'Yes'));
-          }else{
-              $part_location->update(array('Part Location Can Pick'=>'No'));
-          }
+            if ($part_location->location_key == $data['location_key']) {
+                $part_location->update(array('Part Location Can Pick' => 'Yes'));
+            } else {
+                $part_location->update(array('Part Location Can Pick' => 'No'));
+            }
 
 
+        }
 
-      }
+        $response = array(
+            'state'               => 200,
+            'part_locations_data' => $part->get_locations('data')
 
-      $response = array(
-          'state' => 200,
-          'part_locations_data'=>$part->get_locations('data')
+        );
 
-      );
+    } else {
+        $response = array(
+            'state' => 400,
+            'msg'   => 'location not found'
+        );
 
-  }else{
-      $response = array(
-          'state' => 400,
-          'msg'   => 'location not found'
-      );
-
-  }
-
+    }
 
 
     echo json_encode($response);
-
 
 
 }

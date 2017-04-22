@@ -93,6 +93,27 @@ function fork_export_edit_template($job) {
             }
             break;
 
+        case 'location':
+            include_once 'class.Location.php';
+            $object_id_name = 'Id: Location Key';
+            $download_type  = 'edit_locations';
+            switch ($parent) {
+                case 'warehouse':
+
+                    $sql_count = sprintf(
+                        'SELECT count(*) AS num FROM `Location Dimension` WHERE  `Location Warehouse Key`=%d', $parent_key
+                    );
+                    $sql_data  = sprintf(
+                        'SELECT `Location Key` AS id FROM `Location Dimension` WHERE `Location Warehouse Key`=%d', $parent_key
+                    );
+
+                    break;
+                default:
+
+                    break;
+            }
+            break;
+
         case 'product':
             include_once 'class.Product.php';
             include_once 'class.Store.php';
@@ -153,7 +174,8 @@ function fork_export_edit_template($job) {
 
 
         default:
-            print_r($data);
+            print_r($fork_data);
+            exit;
             break;
     }
 
@@ -192,12 +214,13 @@ function fork_export_edit_template($job) {
             $category
         );
 
-
     $row_index = 1;
+
+
 
     if ($result = $db->query($sql_data)) {
         foreach ($result as $row) {
-            //	print_r($row);
+
             switch ($objects) {
                 case 'supplier_part':
                     $object = new SupplierPart($row['id']);
@@ -221,7 +244,26 @@ function fork_export_edit_template($job) {
                     }
 
                     break;
+                case 'location':
+                    $object = new Location($row['id']);
 
+                    $data_rows = array();
+
+                    $data_rows[] = array(
+                        'cell_type' => 'auto',
+                        'value'     => $object->id
+                    );
+
+                    foreach ($fields as $field) {
+
+                        $data_rows[] = array(
+                            'cell_type' => (isset($field['cell_type']) ? $field['cell_type'] : 'auto'),
+                            'value'     => $object->get($field['name']),
+                            'field'     => $field['name']
+                        );
+                    }
+
+                    break;
                 case 'part':
                     $object = new Part($row['id']);
 
@@ -534,6 +576,9 @@ function fork_export_edit_template($job) {
         $download_path="downloads_$inikoo_account_code/";
     }
 */
+
+
+
     $download_path = 'tmp/';
 
     switch ($output_type) {
@@ -602,6 +647,8 @@ function fork_export_edit_template($job) {
     );
 
     $db->exec($sql);
+
+
 
     return false;
 }

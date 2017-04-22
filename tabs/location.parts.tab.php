@@ -34,6 +34,8 @@ $parameters = array(
 
 );
 
+$smarty->assign('table_top_template', 'location.parts.edit.tpl');
+
 
 include 'utils/get_table_html.php';
 

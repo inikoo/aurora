@@ -14,21 +14,16 @@
             </td>
         </tr>
         <tr class="title">
-            <td colspan=2>{t}Location{/t} <i
-                        onClick="change_view('locations/{$object->get('Location Warehouse Key')}/{$object->id}')"
-                        class="fa fa-map-marker button"></i></td>
+            <td colspan=2>{t}Location{/t} </td>
         </tr>
 
         <tr>
             <td class="label">{$object->get_field_label('Location Code')|capitalize}</td>
             <td>
-                <span onClick="change_view('locations/{$object->get('Location Warehouse Key')}/{$object->id}')">{$object->get('Code')}</span>
+                <span class="marked_link" onClick="change_view('locations/{$object->get('Location Warehouse Key')}/{$object->id}')">{$object->get('Code')}</span>
             </td>
         </tr>
-        <tr>
-            <td class="label">{$object->get_field_label('Location Mainly Used For')|capitalize}</td>
-            <td>{$object->get('Mainly Used For')}</td>
-        </tr>
+
 
 
     </table>

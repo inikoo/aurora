@@ -104,7 +104,8 @@ class PartLocation extends DB_Table {
             $this->location = new Location(1);
             if (!$this->location->id) {
                 $sql
-                    = "INSERT INTO `Location Dimension` (`Location Key` ,`Location Warehouse Key` ,`Location Warehouse Area Key` ,`Location Code` ,`Location Mainly Used For` ,`Location Max Weight` ,`Location Max Volume` ,`Location Max Slots` ,`Location Distinct Parts` ,`Location Has Stock` ,`Location Stock Value`)VALUES ('1', '1', '1','Unknown', 'Picking', NULL , NULL , NULL , '0', 'Unknown', '0.00');";
+                    = "INSERT INTO `Location Dimension` (`Location Key` ,`Location Warehouse Key` ,`Location Warehouse Area Key` ,`Location Code` ,`Location Mainly Used For` ,`Location Max Weight` ,`Location Max Volume` ,`Location Max Slots` ,`Location Distinct Parts` ,`Location Has Stock` ,`Location Stock Value`)
+                    VALUES ('1', '1', '1','Unknown', 'Picking', NULL , NULL , NULL , '0', 'Unknown', '0.00');";
                 $this->db->exec($sql);
                 $this->location = new Location(1);
                 $this->new      = true;
@@ -185,11 +186,7 @@ class PartLocation extends DB_Table {
 
         $location = new Location($this->data['Location Key']);
 
-        if ($location->data['Location Mainly Used For'] == 'Picking') {
-            $this->data['Can Pick'] = 'Yes';
-        } else {
-            $this->data['Can Pick'] = 'No';
-        }
+
 
 
         $keys   = '(';
@@ -209,21 +206,14 @@ class PartLocation extends DB_Table {
             "INSERT INTO `Part Location Dimension` %s %s", $keys, $values
         );
 
-        if (mysql_query($sql)) {
-            $this->id  = mysql_insert_id();
+        if ($this->db->exec($sql)) {
+            $this->id  = $this->db->lastInsertId();
             $this->new = true;
 
             $this->part_sku     = $this->data['Part SKU'];
             $this->location_key = $this->data['Location Key'];
             $this->get_data();
-            $note    = _('Part added to location');
-            $details = _('Part')." ".'<a href="part.php?sku='.$this->part_sku.'">'.$this->part->id.'</a>'.' '._('associated with location').": <a href='location.php?id=".$this->location->id."'>"
-                .$this->location->data['Location Code'].'</a>';
 
-
-            //$date=gmdate("Y-m-d H:i:s");
-
-            //print_r($this->editor);
             if (array_key_exists('Date', $data)) {
                 $date = $data['Date'];
             } elseif (!$this->editor['Date']) {
@@ -235,11 +225,12 @@ class PartLocation extends DB_Table {
             $associate_data = array('date' => $date);
             $this->associate($associate_data);
 
+            if(!$this->part->get_picking_location_key()){
+                $this->update_field_switcher('Part Location Can Pick','Yes','no_history');
+            }
+
 
             $this->new = true;
-            $part      = new Part($this->part_sku);
-
-            $location = new Location($this->location_key);
 
 
         } else {
@@ -252,9 +243,7 @@ class PartLocation extends DB_Table {
 
         $base_data = array(
             'date'         => gmdate('Y-m-d H:i:s'),
-            'note'         => _('Part').' '.$this->part->id.' '._(
-                    'associated with location'
-                ).' '.$this->location->data['Location Code'],
+            'note'         => sprintf(_('Part %s associated with %s'), $this->part->get('Reference'),$this->location->get('Code')  ) ,
             'metadata'     => '',
             'history_type' => 'Admin'
         );
@@ -280,12 +269,8 @@ class PartLocation extends DB_Table {
         $associate_transaction_key = $this->db->lastInsertId();
 
 
-        $audit_key = $this->audit(
-            0, _('Part associated with location'), $base_data['date'], $include_current = false, $parent = 'associate'
-        );
-        $sql       = sprintf(
-            "UPDATE `Inventory Transaction Fact` SET `Relations`=%d WHERE `Inventory Transaction Key`=%d", $associate_transaction_key, $audit_key
-        );
+        $audit_key = $this->audit(0, _('Part associated with location'), $base_data['date'], $include_current = false, $parent = 'associate');
+        $sql       = sprintf("UPDATE `Inventory Transaction Fact` SET `Relations`=%d WHERE `Inventory Transaction Key`=%d", $associate_transaction_key, $audit_key);
         $this->db->exec($sql);
         $this->location->update_parts();
 
@@ -519,7 +504,7 @@ class PartLocation extends DB_Table {
         list($stock, $value, $in_process) = $this->get_stock();
 
         $this->data['Quantity On Hand']    = $stock;
-        $this->data['Stock Value']         = $value;
+        $this->data['Stock Value']         = $stock*$this->part->get('Part Cost in Warehouse');
         $this->data['Quantity In Process'] = $in_process;
 
         $sql = sprintf(
@@ -527,11 +512,14 @@ class PartLocation extends DB_Table {
             $this->part_sku, $this->location_key
         );
         // print $sql;
-        mysql_query($sql);
+
+        $this->db->exec($sql);
+
+
 
         $this->part->update_stock();
+        $this->location->update_stock_value();
 
-        //print_r($this->part->get_production_suppliers('objects'));
 
         foreach (
             $this->part->get_production_suppliers('objects') as $production
@@ -556,35 +544,45 @@ class PartLocation extends DB_Table {
 
 
 			 );
-	     $res=mysql_query($sql);
-	    if($row=mysql_fetch_assoc()){
-		$audit_date=$row['Date'];
-		$audit_stock=$row['Part Stock Location'];
-		$audit_stock_value=$row['Part Stock Value'];
-	    }else{
 
-	    }
-	    */
+        if ($result=$this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $audit_date=$row['Date'];
+                $audit_stock=$row['Part Stock Location'];
+                $audit_stock_value=$row['Part Stock Value'];
+        	}
+        }else {
+        	print_r($error_info=$this->db->errorInfo());
+        	print "$sql\n";
+        	exit;
+        }
+        */
+
+
 
 
         $sql = sprintf(
             "SELECT sum(`Inventory Transaction Quantity`) AS stock ,sum(`Inventory Transaction Amount`) AS value
 			       FROM `Inventory Transaction Fact` WHERE  `Date`<=%s AND `Part SKU`=%d AND `Location Key`=%d", prepare_mysql($date), $this->part_sku, $this->location_key
         );
-        $res = mysql_query($sql);
 
 
-        // print "$sql\n";
+        if ($result=$this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $stock = round($row['stock'], 3);
+                $value = $row['value'];
+        	}else{
+                $stock = 0;
+                $value = 0;
 
-        $stock = 0;
-        $value = 0;
-
-        if ($row = mysql_fetch_array($res)) {
-            $stock = round($row['stock'], 3);
-            $value = $row['value'];
+            }
+        }else {
+        	print_r($error_info=$this->db->errorInfo());
+        	print "$sql\n";
+        	exit;
         }
 
-        //print "$stock\n";
+
         return array(
             $stock,
             $value,
@@ -693,51 +691,6 @@ class PartLocation extends DB_Table {
 
     }
 
-    function get_selling_price($part_sku, $date) {
-
-
-        $sql = sprintf(
-            " SELECT AVG(PD.`Product Price` * PPL.`Parts Per Product`) AS cost FROM `Product Dimension` PD LEFT JOIN `Product Part List` PPL ON (PD.`Product ID`=PPL.`Product ID`)  WHERE `Part SKU`=%s  AND `Product Valid To`>=%s AND  `Product Valid From`<=%s    ",
-            prepare_mysql($part_sku), prepare_mysql($date), prepare_mysql($date)
-        );
-        // print "\n\n\n\n$sql\n";
-        $result = mysql_query($sql);
-        if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-            if (is_numeric($row['cost'])) {
-                return $row['cost'];
-            }
-        }
-
-
-        $sql = sprintf(
-            " SELECT AVG(PD.`Product Price` * PPL.`Parts Per Product`) AS cost FROM `Product Dimension` PD LEFT JOIN `Product Part List` PPL ON (PD.`Product ID`=PPL.`Product ID`)  WHERE `Part SKU`=%s  AND `Product Valid To`<=%s LIMIT 1 ",
-            prepare_mysql($part_sku), prepare_mysql($date)
-        );
-
-        $result = mysql_query($sql);
-        if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-            if (is_numeric($row['cost'])) {
-                return $row['cost'];
-            }
-        }
-
-        $sql = sprintf(
-            " SELECT AVG(PD.`Product Price` * PPL.`Parts Per Product`) AS cost FROM `Product Dimension` PD LEFT JOIN `Product Part List` PPL ON (PD.`Product ID`=PPL.`Product ID`)  WHERE `Part SKU`=%s  ORDER BY  `Product Valid To` DESC ",
-            prepare_mysql($part_sku), prepare_mysql($date)
-        );
-        //   print "\n\n\n\n$sql\n";
-        $result = mysql_query($sql);
-        if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-            if (is_numeric($row['cost'])) {
-                return $row['cost'];
-            }
-        }
-
-
-        exit("error can no found product last selling  ciost\n");
-
-
-    }
 
     function delete() {
         $this->disassociate();
@@ -807,49 +760,27 @@ class PartLocation extends DB_Table {
         $sql       = sprintf(
             "UPDATE `Inventory Transaction Fact` SET `Relations`=%d WHERE `Inventory Transaction Key`=%d", $disassociate_transaction_key, $audit_key
         );
-        mysql_query($sql);
-
+        $this->db->exec($sql);
 
         $this->location->update_parts();
 
 
-    }
+        if(!$this->part->get_picking_location_key()){
 
-    function get_unit_value($date = false) {
+           foreach( $this->part->get_locations('part_location_object') as $_part_location){
 
+               $_part_location->update_field_switcher('Part Location Can Pick','Yes');
 
-        if (!$date) {
-            return $this->get_current_unit_value();
+               break;
+           }
 
         }
 
 
-        list($qty, $value, $in_process) = $this->get_stock($date);
-
-        //print "$qty,$value,$in_process ***";
-
-
-        if (is_numeric($value) and is_numeric($qty) and $qty != 0) {
-            return $value / $qty;
-        } else {
-            return $this->part->data['Part Cost'];
-        }
-
 
     }
 
-    function get_current_unit_value() {
-        $qty   = $this->data['Quantity On Hand'];
-        $value = $this->data['Stock Value'];
 
-
-        if (is_numeric($value) and is_numeric($qty) and $qty != 0) {
-            return $value / $qty;
-        } else {
-            return $this->part->data['Part Cost'];
-        }
-
-    }
 
     function identify_unknown($location_key) {
         if ($this->location_key != 1) {
@@ -891,23 +822,32 @@ class PartLocation extends DB_Table {
     }
 
     function set_audits() {
-        print "WWWWWWWWWW";
+
 
         $sql = sprintf(
             "DELETE FROM  `Inventory Transaction Fact` WHERE `Inventory Transaction Type` IN ('Audit') AND `Part SKU`=%d AND `Location Key`=%d", $this->part_sku, $this->location_key
         );
-        // print "$sql\n";
-        mysql_query($sql);
+
+        $this->db->exec($sql);
+
 
         $sql = sprintf(
             'SELECT `Inventory Audit Key` FROM `Inventory Audit Dimension` WHERE `Inventory Audit Part SKU`=%d AND `Inventory Audit Location Key`=%d ORDER BY `Inventory Audit Date`,`Inventory Audit Key`',
             $this->part_sku, $this->location_key
         );
-        $res = mysql_query($sql);
-        while ($row = mysql_fetch_array($res)) {
-            $this->set_audit($row['Inventory Audit Key']);
 
+
+        if ($result=$this->db->query($sql)) {
+        		foreach ($result as $row) {
+                    $this->set_audit($row['Inventory Audit Key']);
+        		}
+        }else {
+        		print_r($error_info=$this->db->errorInfo());
+        		print "$sql\n";
+        		exit;
         }
+
+
         $this->update_stock();
     }
 
@@ -920,12 +860,18 @@ class PartLocation extends DB_Table {
             "SELECT ifnull(sum(`Inventory Transaction Quantity`),0) AS stock FROM `Inventory Transaction Fact` WHERE  `Date`<=%s AND `Part SKU`=%d AND `Location Key`=%d",
             prepare_mysql($audit->data['Inventory Audit Date']), $this->part_sku, $this->location_key
         );
-        $res = mysql_query($sql);
-        //print $sql;
-        $stock = 0;
-        if ($row = mysql_fetch_array($res)) {
-            $stock = $row['stock'];
+
+        if ($result=$this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $stock = $row['stock'];
+        	}
+        }else {
+        	print_r($error_info=$this->db->errorInfo());
+        	print "$sql\n";
+        	exit;
         }
+
+
 
         $diff = $audit->data['Inventory Audit Quantity'] - $stock;
         //$cost_per_part=$this->part->get_unit_cost($audit->data['Inventory Audit Date']);
@@ -956,8 +902,7 @@ class PartLocation extends DB_Table {
             prepare_mysql($audit->data['Inventory Audit Date']), $this->part_sku, $this->location_key, 0, 0, prepare_mysql($notes)
         );
         // print "$sql\n";
-        mysql_query($sql);
-
+        $this->db->exec($sql);
     }
 
     function add_stock($data, $date) {
@@ -983,6 +928,23 @@ class PartLocation extends DB_Table {
 
     }
 
+
+    function update_stock_value($old_part_cost,$options=''){
+
+        $sql = sprintf(
+            "UPDATE `Part Location Dimension` SET `Stock Value`=%.3f WHERE `Part SKU`=%d AND `Location Key`=%d ",
+            $this->get('Quantity On Hand')*$this->part->get('Part Cost in Warehouse'),
+            $this->part_sku,
+            $this->location_key
+        );
+
+        $update = $this->db->prepare($sql);
+        $update->execute();
+
+        $this->location->update_stock_value();
+
+    }
+
     function stock_transfer($data, $date) {
         // this is real time function
 
@@ -996,10 +958,12 @@ class PartLocation extends DB_Table {
         $qty_change       = $data['Quantity'];
         $transaction_type = $data['Transaction Type'];
 
+
+/*
+
         if (array_key_exists('Value', $data)) {
             $value_change = $data['Value'];
         } else {
-            //$value_change=$qty_change*$this->get_unit_value($date);
             $sql       = sprintf(
                 "SELECT sum(ifnull(`Inventory Transaction Quantity`,0)) AS stock ,ifnull(sum(`Inventory Transaction Amount`),0) AS value FROM `Inventory Transaction Fact` WHERE  `Date`<%s AND `Part SKU`=%d AND `Location Key`=%d",
                 prepare_mysql($date), $this->part_sku, $this->location_key
@@ -1019,24 +983,28 @@ class PartLocation extends DB_Table {
             }
 
 
-            $value_change = $this->get_value_change(
-                $qty_change, $old_qty, $old_value, $date
-            );
+            $value_change = $this->get_value_change($qty_change, $old_qty, $old_value, $date);
 
 
         }
+*/
 
-        $this->value_change = $value_change;
+       // $this->value_change = $value_change;
 
 
-        $_new_value = $this->data['Stock Value'] + $value_change;
+      //  $_new_value = $this->data['Stock Value'] + $value_change;
 
         // print "\n** ".$this->data['Stock Value']."  -> ".$value_change." = $_new_value **\n";
 
 
+
+        $value_change=$this->part->get('Part Cost in Warehouse')*$qty_change;
+
         $sql = sprintf(
             "UPDATE `Part Location Dimension` SET `Quantity On Hand`=%f ,`Stock Value`=%.3f, `Last Updated`=NOW()  WHERE `Part SKU`=%d AND `Location Key`=%d ",
-            $this->data['Quantity On Hand'] + $qty_change, $this->data['Stock Value'] + $value_change, $this->part_sku, $this->location_key
+            $this->data['Quantity On Hand'] + $qty_change,
+            ($this->data['Quantity On Hand'] + $qty_change)*$this->part->get('Part Cost in Warehouse'),
+            $this->part_sku, $this->location_key
         );
         //print $sql;
         $this->db->exec($sql);
@@ -1153,12 +1121,10 @@ class PartLocation extends DB_Table {
 
         $this->part->update_stock();
         $this->location->update_parts();
+        $this->location->update_stock_value();
 
         $this->updated = true;
 
-
-        //     $part=new Part($this->part_sku);
-        //     $part->load('calculate_stock_history','last');
 
         return $transaction_id;
 
@@ -1237,7 +1203,7 @@ class PartLocation extends DB_Table {
                     'Quantity'         => $data['Quantity To Move'],
                     'Transaction Type' => 'Move In',
                     'Origin'           => $this->location->data['Location Code'],
-                    'Value'            => -1 * $this->value_change
+                  //  'Value'            => -1 * $this->value_change
 
                 ), $date
             );
@@ -1278,8 +1244,8 @@ class PartLocation extends DB_Table {
         }
 
 
-        $this->location->load('parts');
-        $destination->location->load('parts');
+        $this->location->update_parts();
+        $destination->location->update_parts();
 
     }
 
@@ -1543,10 +1509,20 @@ class PartLocation extends DB_Table {
         );
         // print "$sql\n";
         $dates  = array();
-        $result = mysql_query($sql);
-        while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $dates[$row['Date']] = $row['Inventory Transaction Type'];
+
+
+        if ($result=$this->db->query($sql)) {
+        		foreach ($result as $row) {
+                    $dates[$row['Date']] = $row['Inventory Transaction Type'];
+        		}
+        }else {
+        		print_r($error_info=$this->db->errorInfo());
+        		print "$sql\n";
+        		exit;
         }
+
+
+
 
         $intervals = array();
 
@@ -1554,16 +1530,12 @@ class PartLocation extends DB_Table {
         foreach ($dates as $date => $type) {
             if ($type == 'Associate') {
                 $intervals[] = array(
-                    'From' => date(
-                        "Y-m-d H:i:s", strtotime($date)
-                    ),
+                    'From' => date("Y-m-d H:i:s", strtotime($date)),
                     'To'   => false
                 );
             }
             if ($type == 'Disassociate') {
-                $intervals[count($intervals) - 1]['To'] = gmdate(
-                    "Y-m-d H:i:s", strtotime($date)
-                );
+                $intervals[count($intervals) - 1]['To'] = gmdate("Y-m-d H:i:s", strtotime($date));
             }
         }
 
@@ -1836,16 +1808,22 @@ print "++++++++++\n";
             "SELECT ifnull(sum(`Inventory Transaction Quantity`),0) AS stock ,ifnull(sum(`Amount In`),0) AS value FROM `Inventory Transaction Fact` WHERE  Date(`Date`)=%s AND `Part SKU`=%d AND `Location Key`=%d AND `Inventory Transaction Type` LIKE 'Sale'",
             prepare_mysql(date('Y-m-d', strtotime($date))), $this->part_sku, $this->location_key
         );
-        $res = mysql_query($sql);
-        //print "$sql\n";
-        $stock = 0;
-        $value = 0;
-        if ($row = mysql_fetch_array($res)) {
-            $stock = -$row['stock'];
-            $value = $row['value'];
+
+        if ($result=$this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $stock = -$row['stock'];
+                $value = $row['value'];
+        	}else{
+                $stock = 0;
+                $value = 0;
+            }
+        }else {
+        	print_r($error_info=$this->db->errorInfo());
+        	print "$sql\n";
+        	exit;
         }
 
-        //print "$stock,$value\n";
+
         return array(
             $stock,
             $value
@@ -1862,14 +1840,22 @@ print "++++++++++\n";
             "SELECT ifnull(sum(`Inventory Transaction Quantity`),0) AS stock ,ifnull(sum(`Inventory Transaction Amount`),0) AS value FROM `Inventory Transaction Fact` WHERE  Date(`Date`)=%s AND `Part SKU`=%d AND `Location Key`=%d AND ( `Inventory Transaction Type` IN ('In','Move In','Move Out') OR  (`Inventory Transaction Type` LIKE 'Audit' AND `Inventory Transaction Quantity`>0 ) )   ",
             prepare_mysql(date('Y-m-d', strtotime($date))), $this->part_sku, $this->location_key
         );
-        $res = mysql_query($sql);
-        //print $sql;
-        $stock = 0;
-        $value = 0;
-        if ($row = mysql_fetch_array($res)) {
-            $stock = $row['stock'];
-            $value = $row['value'];
+
+        if ($result=$this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $stock = $row['stock'];
+                $value = $row['value'];
+            }else{
+                $stock = 0;
+                $value = 0;
+            }
+        }else {
+            print_r($error_info=$this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
+
+
 
         return array(
             $stock,
@@ -1887,13 +1873,20 @@ print "++++++++++\n";
             "SELECT ifnull(sum(`Inventory Transaction Quantity`),0) AS stock ,ifnull(sum(`Inventory Transaction Amount`),0) AS value FROM `Inventory Transaction Fact` WHERE  Date(`Date`)=%s AND `Part SKU`=%d AND `Location Key`=%d AND ( `Inventory Transaction Type` IN ('Broken','Lost') OR  (`Inventory Transaction Type` LIKE 'Audit' AND `Inventory Transaction Quantity`<0 ))    ",
             prepare_mysql(date('Y-m-d', strtotime($date))), $this->part_sku, $this->location_key
         );
-        $res = mysql_query($sql);
-        //print $sql;
-        $stock = 0;
-        $value = 0;
-        if ($row = mysql_fetch_array($res)) {
-            $stock = $row['stock'];
-            $value = $row['value'];
+
+
+        if ($result=$this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $stock = $row['stock'];
+                $value = $row['value'];
+            }else{
+                $stock = 0;
+                $value = 0;
+            }
+        }else {
+            print_r($error_info=$this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
 
         return array(
@@ -1925,26 +1918,34 @@ print "++++++++++\n";
             "SELECT `Inventory Transaction Quantity` AS delta,`Inventory Transaction Amount` AS value_delta  FROM `Inventory Transaction Fact` WHERE  Date(`Date`)=%s AND `Part SKU`=%d AND `Location Key`=%d ORDER BY `Date` ",
             prepare_mysql($date), $this->part_sku, $this->location_key
         );
-        $res = mysql_query($sql);
 
-        while ($row = mysql_fetch_array($res)) {
-            $close += $row['delta'];
-            if ($high < $close) {
-                $high = $close;
-            }
-            if ($low > $close) {
-                $low = $close;
-            }
 
-            $value_close += $row['value_delta'];
-            if ($value_high < $value_close) {
-                $value_high = $value_close;
-            }
-            if ($value_low > $value_close) {
-                $value_low = $value_close;
-            }
+        if ($result=$this->db->query($sql)) {
+        		foreach ($result as $row) {
+                    $close += $row['delta'];
+                    if ($high < $close) {
+                        $high = $close;
+                    }
+                    if ($low > $close) {
+                        $low = $close;
+                    }
 
+                    $value_close += $row['value_delta'];
+                    if ($value_high < $value_close) {
+                        $value_high = $value_close;
+                    }
+                    if ($value_low > $value_close) {
+                        $value_low = $value_close;
+                    }
+        		}
+        }else {
+        		print_r($error_info=$this->db->errorInfo());
+        		print "$sql\n";
+        		exit;
         }
+
+
+
 
         return array(
             $open,
@@ -2002,12 +2003,7 @@ print "++++++++++\n";
 
                 $audit_key = $row['Inventory Transaction Key'];
                 $date      = $row['Date'];
-                //$include_current=false;
-                //$sql=sprintf("select `Inventory Transaction Type` from `Inventory Transaction Fact` where `Inventory Transaction Type` like 'Disassociate' and  `Inventory Transaction Key`=%d  ",$row['Relations']);
-                //$res2=mysql_query($sql);
-                //if ($row2=mysql_fetch_array($res2)) {
-                // $include_current=true;
-                //}
+
                 $include_current = true;
                 $sql             = sprintf(
                     "SELECT `Inventory Transaction Type` FROM `Inventory Transaction Fact` WHERE `Inventory Transaction Type` LIKE 'Associate' AND  `Part SKU`=%d AND `Location Key`=%d AND `Date`=%s  ",

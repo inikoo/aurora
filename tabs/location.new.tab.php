@@ -17,7 +17,7 @@ include_once 'class.Location.php';
 
 
 $object_fields = get_object_fields(
-    $state['_object'], $db, $user, $smarty, array('new' => true)
+    $state['_object'], $db, $user, $smarty, array('new' => true,'warehouse_key'=>$state['warehouse']->id)
 );
 
 

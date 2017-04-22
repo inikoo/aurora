@@ -1096,7 +1096,7 @@ class Part extends Asset {
         }
 
         $sql = sprintf(
-            "SELECT PL.`Location Key`,`Location Code`,`Quantity On Hand`,`Location Warehouse Key`,`Location Mainly Used For`,`Part SKU`,`Minimum Quantity`,`Maximum Quantity`,`Moving Quantity`,`Can Pick` FROM `Part Location Dimension` PL LEFT JOIN `Location Dimension` L ON (L.`Location Key`=PL.`Location Key`)  WHERE `Part SKU`=%d",
+            "SELECT PL.`Location Key`,`Location Code`,`Quantity On Hand`,`Location Warehouse Key`,`Part SKU`,`Minimum Quantity`,`Maximum Quantity`,`Moving Quantity`,`Can Pick` FROM `Part Location Dimension` PL LEFT JOIN `Location Dimension` L ON (L.`Location Key`=PL.`Location Key`)  WHERE `Part SKU`=%d",
             $this->sku
         );
 
@@ -1114,12 +1114,10 @@ class Part extends Asset {
                         $row['Location Key']
                     );
                 } elseif ($scope == 'part_location_object') {
-                    $part_locations[$row['Location Key']] = new  PartLocation(
-                        $this->sku.'_'.$row['Location Key']
-                    );
+                    $part_locations[$row['Location Key']] = new  PartLocation($this->sku.'_'.$row['Location Key']);
                 } else {
 
-
+/*
                     switch ($row['Location Mainly Used For']) {
                         case 'Picking':
                             $used_for = sprintf(
@@ -1136,6 +1134,18 @@ class Part extends Asset {
                                 '<i class="fa fa-fw  fa-map-maker" aria-hidden="true" title="%s"></i>', $row['Location Mainly Used For']
                             );
                     }
+*/
+
+
+
+                    $picking_location_icon=sprintf('<i onclick="set_as_picking_location(%d,%d)" class="fa fa-fw fa-shopping-basket %s" aria-hidden="true" title="%s" ></i></span>',
+                                                   $this->id,
+                                                   $row['Location Key'],
+                        ($row['Can Pick']=='Yes'?'':'super_discreet_on_hover button'),
+                        ($row['Can Pick']=='Yes'?_('Picking location'):_('Set as picking location'))
+
+                    );
+
 
                     $part_locations[] = array(
                         'formatted_stock' => number($row['Quantity On Hand'], 3),
@@ -1148,8 +1158,8 @@ class Part extends Asset {
                         'location_code' => $row['Location Code'],
 
 
-                        'location_used_for_icon' => $used_for,
-                        'location_used_for'      => $row['Location Mainly Used For'],
+                        'picking_location_icon' => $picking_location_icon,
+                        //'location_used_for'      => $row['Location Mainly Used For'],
                         'formatted_min_qty'      => ($row['Minimum Quantity'] != '' ? $row['Minimum Quantity'] : '?'),
                         'formatted_max_qty'      => ($row['Maximum Quantity'] != '' ? $row['Maximum Quantity'] : '?'),
                         'formatted_move_qty'     => ($row['Moving Quantity'] != '' ? $row['Moving Quantity'] : '?'),
@@ -1472,6 +1482,19 @@ class Part extends Asset {
 
         switch ($field) {
 
+
+            case 'Part Cost in Warehouse':
+
+                $old_value = $this->get('Part Cost in Warehouse');
+
+                $this->update_field($field, $value, $options);
+
+
+                foreach ($this->get_locations('part_location_object') as $part_location) {
+                    $part_location->update_stock_value($old_value);
+                }
+
+                break;
 
             case 'Part Barcode Number':
 
@@ -3386,11 +3409,7 @@ class Part extends Asset {
         $data['Supplier Part Currency Code'] = $supplier->get('Supplier Default Currency Code');
 
 
-
-
-
         $supplier_part = new SupplierPart('find', $data, 'create');
-
 
 
         if ($supplier_part->id) {
@@ -3398,12 +3417,6 @@ class Part extends Asset {
 
             if ($supplier_part->new) {
                 $this->new_object = true;
-
-
-
-
-
-
 
 
                 $supplier_part->update(array('Supplier Part Part SKU' => $this->sku));
@@ -3647,29 +3660,16 @@ class Part extends Asset {
 
     }
 
-    function get_picking_locations($qty = 1) {
 
+    function get_picking_location_key() {
 
-        include_once 'class.PartLocation.php';
-
-        $this->unknown_location_associated = false;
-        $locations                         = array();
-        $locations_data                    = array();
-        $sql                               = sprintf("SELECT `Location Key` FROM `Part Location Dimension` WHERE `Part SKU` IN (%s) ORDER BY `Can Pick` ;", $this->sku);
-
-        // print $sql;
-
+        $sql = sprintf("SELECT `Location Key` FROM `Part Location Dimension` WHERE `Part SKU`=%d and `Can Pick`='Yes' ;", $this->sku);
 
         if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                $part_location = new PartLocation($this->sku.'_'.$row['Location Key']);
-                //list($stock,$value,$in_process)=$part_location->get_stock();
-                $stock = $part_location->data['Quantity On Hand'];
-
-                $locations_data[] = array(
-                    'location_key' => $row['Location Key'],
-                    'stock'        => $stock
-                );
+            if ($row = $result->fetch()) {
+                return $row['Location Key'];
+            } else {
+                return false;
             }
         } else {
             print_r($error_info = $this->db->errorInfo());
@@ -3677,38 +3677,8 @@ class Part extends Asset {
             exit;
         }
 
-
-        $number_associated_locations = count($locations_data);
-
-        if ($number_associated_locations == 0) {
-            $this->unknown_location_associated = true;
-            $locations[]                       = array(
-                'location_key' => 1,
-                'qty'          => $qty
-            );
-            //  $qty=0;
-        } else {
-
-            foreach ($locations_data as $location_data) {
-
-                $locations[] = array(
-                    'location_key' => $location_data['location_key'],
-                    'qty'          => $qty
-                );
-                break;
-
-
-            }
-            //print_r($locations);
-            //print "--- $qty\n";
-
-
-        }
-
-        //print_r($locations);
-        return $locations;
-
     }
+
 
 
     function update_products_data() {
@@ -3716,8 +3686,8 @@ class Part extends Asset {
 
         //'InProcess','Active','Suspended',,'Discontinued'
 
-        $active_products =0;
-        $no_active_products =0;
+        $active_products    = 0;
+        $no_active_products = 0;
 
 
         $sql = sprintf(
@@ -3752,7 +3722,7 @@ class Part extends Asset {
 
         $this->update(
             array(
-                'Part Number Active Products' => $active_products,
+                'Part Number Active Products'    => $active_products,
                 'Part Number No Active Products' => $no_active_products,
 
             ), 'no_history'

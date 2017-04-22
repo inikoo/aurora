@@ -5248,6 +5248,22 @@ CREATE TABLE `Locale Dimension` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `Location Deleted Dimension`
+--
+
+DROP TABLE IF EXISTS `Location Deleted Dimension`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Location Deleted Dimension` (
+  `Location Deleted Key` mediumint(9) NOT NULL,
+  `Location Deleted Code` varchar(255) DEFAULT NULL,
+  `Location Deleted Date` datetime DEFAULT NULL,
+  `Location Deleted Metadata` blob,
+  PRIMARY KEY (`Location Deleted Key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `Location Dimension`
 --
 
@@ -5268,19 +5284,20 @@ CREATE TABLE `Location Dimension` (
   `Location Height` float DEFAULT NULL,
   `Location Width` float DEFAULT NULL,
   `Location Max Weight` float DEFAULT NULL COMMENT 'In Kg',
-  `Location Max Volume` float DEFAULT NULL COMMENT 'In Litres',
+  `Location Max Volume` float DEFAULT NULL COMMENT 'CBM',
   `Location Max Slots` smallint(6) DEFAULT NULL,
   `Location Distinct Parts` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Location Has Stock` enum('Yes','No','Unknown') NOT NULL DEFAULT 'Unknown',
+  `Location Has Stock` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Location Has Errors` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Location Stock Value` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Warehouse Flag` enum('Blue','Green','Orange','Pink','Purple','Red','Yellow') NOT NULL DEFAULT 'Blue',
-  `Warehouse Flag Key` tinyint(3) unsigned DEFAULT NULL,
+  `Location Warehouse Flag Key` tinyint(3) unsigned DEFAULT NULL,
   PRIMARY KEY (`Location Key`),
   KEY `Location Warehouse Key` (`Location Warehouse Key`),
   KEY `Location Code` (`Location Code`),
   KEY `Location Mainly Used For` (`Location Mainly Used For`),
-  KEY `Location Flag Key` (`Warehouse Flag Key`),
-  KEY `Location File As` (`Location File As`(16))
+  KEY `Location File As` (`Location File As`(16)),
+  KEY `Location Warehouse Flag Key` (`Location Warehouse Flag Key`),
+  KEY `Location Has Errors` (`Location Has Errors`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -14316,6 +14333,8 @@ CREATE TABLE `Store Dimension` (
   `Store Payments` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Store Family Category Key` mediumint(9) DEFAULT NULL,
   `Store Department Category Key` mediumint(9) DEFAULT NULL,
+  `Store Order Recursion Campaign Key` smallint(5) unsigned DEFAULT NULL,
+  `Store Bulk Discounts Campaign Key` smallint(5) unsigned DEFAULT NULL,
   `Store Acc To Day Updated` datetime DEFAULT NULL COMMENT 'Total, Year to Day, Quarter to day, Week to day ',
   `Store Acc Ongoing Intervals Updated` datetime DEFAULT NULL COMMENT '1 year, 1 quarter ',
   `Store Acc Previous Intervals Updated` datetime DEFAULT NULL COMMENT 'last month, last week, past years, past quarters ',
@@ -17527,6 +17546,7 @@ CREATE TABLE `Warehouse Dimension` (
   `Warehouse Paid Ordered Parts` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Warehouse Tolerable Percentage Paid Ordered Parts To Replenish` float unsigned NOT NULL DEFAULT '0.05',
   `Warehouse Max Percentage Paid Ordered Parts To Replenish` float unsigned NOT NULL DEFAULT '0.2',
+  `Warehouse Unknown Location Key` mediumint(8) unsigned DEFAULT NULL,
   PRIMARY KEY (`Warehouse Key`),
   UNIQUE KEY `Warehouse Code` (`Warehouse Code`),
   UNIQUE KEY `Warehouse Name` (`Warehouse Name`)
@@ -17542,6 +17562,7 @@ DROP TABLE IF EXISTS `Warehouse Flag Dimension`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Warehouse Flag Dimension` (
   `Warehouse Flag Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Warehouse Flag Warehouse Key` smallint(5) unsigned DEFAULT NULL,
   `Warehouse Key` smallint(5) unsigned NOT NULL,
   `Warehouse Flag Color` enum('Blue','Green','Orange','Pink','Purple','Red','Yellow') NOT NULL,
   `Warehouse Flag Label` varchar(16) NOT NULL,
@@ -18100,4 +18121,4 @@ CREATE TABLE `todo_users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-04-18 20:46:53
+-- Dump completed on 2017-04-23  1:07:26

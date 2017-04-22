@@ -45,29 +45,28 @@ $_order = $order;
 $_dir   = $order_direction;
 
 
-if ($order == 'parts') {
-    $order = '`Location Distinct Parts`';
-} elseif ($order == 'max_volumen') {
-    $order = '`Location Max Volume`';
-} elseif ($order == 'max_weight') {
-    $order = '`Location Max Weight`';
-} elseif ($order == 'tipo') {
-    $order = '`Location Mainly Used For`';
-} elseif ($order == 'area') {
-    $order = '`Warehouse Area Code`';
-} elseif ($order == 'warehouse') {
-    $order = '`Warehouse Code`';
-} else {
+
+if ($order == 'part') {
+    $order = '`Part Reference`';
+}elseif ($order == 'location') {
     $order = '`Location File As`';
+}elseif ($order == 'quantity') {
+    $order = '`Quantity On Hand`';
+} else {
+
+    $order = '`Part SKU`';
 }
 
 
+
+
+
 $table
-    = " `Part Location Dimension` PL left join `Location Dimension` L on (PL.`Location Key`=L.`Location Key`) left join `Part Dimension` P on (PL.`Part SKU`=P.`Part SKU`) ";
+    = " `Part Location Dimension` PL left join `Location Dimension` L on (PL.`Location Key`=L.`Location Key`) left join `Part Dimension` P on (PL.`Part SKU`=P.`Part SKU`) left join `Warehouse Flag Dimension` on (`Warehouse Flag Key`=`Location Warehouse Flag Key`) ";
 
 
 $fields
-            = "`Quantity On Hand`,`Minimum Quantity`,`Maximum Quantity`,PL.`Location Key`,`Location Code`,P.`Part Reference`,`Warehouse Flag`,PL.`Part SKU`,IFNULL((select GROUP_CONCAT(L.`Location Key`,':',L.`Location Code`,':',`Can Pick`,':',`Quantity On Hand` SEPARATOR ',') from `Part Location Dimension` PLD  left join `Location Dimension` L on (L.`Location Key`=PLD.`Location Key`) where PLD.`Part SKU`=P.`Part SKU`),'') as location_data";
+            = "`Location Warehouse Key`,`Quantity On Hand`,`Minimum Quantity`,`Maximum Quantity`,PL.`Location Key`,`Location Code`,P.`Part Reference`,`Warehouse Flag Color`,`Warehouse Flag Key`,`Warehouse Flag Label`,PL.`Part SKU`,IFNULL((select GROUP_CONCAT(L.`Location Key`,':',L.`Location Code`,':',`Can Pick`,':',`Quantity On Hand` SEPARATOR ',') from `Part Location Dimension` PLD  left join `Location Dimension` L on (L.`Location Key`=PLD.`Location Key`) where PLD.`Part SKU`=P.`Part SKU`),'') as location_data";
 $sql_totals = "select count(*) as num from $table $where ";
 
 

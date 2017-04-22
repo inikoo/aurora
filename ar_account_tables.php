@@ -619,11 +619,20 @@ function materials($_data, $db, $user, $account) {
 
 function upload_records($_data, $db, $user, $account) {
 
+
+
     $rtext_label = 'record';
     include_once 'prepare_table/init.php';
+
+
     include_once 'utils/natural_language.php';
 
+
+
     $type = $upload->get('Upload Type');
+
+
+
 
     $sql
         = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";

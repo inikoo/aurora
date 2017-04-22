@@ -13,12 +13,17 @@
 function get_location_showcase($data, $smarty, $user, $db) {
 
 
-    $location = new Location($data['key']);
-
+    $location = $data['_object'];
     $smarty->assign('location', $location);
 
-    return $smarty->fetch('showcase/location.tpl');
 
+
+
+    if ($location->deleted) {
+        return $smarty->fetch('showcase/deleted_location.tpl');
+    } else {
+        return $smarty->fetch('showcase/location.tpl');
+    }
 
 }
 

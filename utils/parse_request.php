@@ -2230,6 +2230,28 @@ function parse_request($_data, $db, $modules, $account = '', $user = '',$is_setu
                                 $parent     = 'warehouse';
                                 $parent_key = $key;
 
+                                if (isset($view_path[2])) {
+                                    if ($view_path[2] == 'upload') {
+
+                                        $section    = 'upload';
+                                        $object     = 'upload';
+
+
+                                        if (isset($view_path[3])) {
+
+                                            if (is_numeric($view_path[3])) {
+                                                $key = $view_path[3];
+                                            }
+
+                                        }
+
+                                    }
+
+                                }
+
+
+
+
                             } elseif ($view_path[1] == 'categories') {
                                 $object     = 'warehouse';
                                 $key        = $view_path[0];

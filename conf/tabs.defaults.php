@@ -1437,6 +1437,7 @@ $tab_defaults = array(
         'f_field'       => 'code',
         'elements_type' => each($elements_options['locations']) ['key'],
         'elements'      => $elements_options['locations'],
+        'export_fields' => $export_fields['locations']
     ),
 
     'warehouse.replenishments' => array(

@@ -64,11 +64,10 @@ function get_fork_metadata($job) {
     );
 
 
-
     $inikoo_account_code = $fork_metadata['code'];
     if (!ctype_alnum($inikoo_account_code)) {
 
-       // print_r(AESDecryptCtr(base64_decode($fork_raw_data), $fork_encrypt_key, 256));
+        // print_r(AESDecryptCtr(base64_decode($fork_raw_data), $fork_encrypt_key, 256));
         print_r($fork_metadata);
 
         print "can't find account code y ->".$inikoo_account_code."<-  \n";
@@ -85,21 +84,23 @@ function get_fork_metadata($job) {
     $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
 
-    $default_DB_link = mysql_connect($dns_host, $dns_user, $dns_pwd);
-    if (!$default_DB_link) {
-        print "Error can not connect with database server\n";
+    if (function_exists('mysql_connect')) {
 
-        return false;
+        $default_DB_link = mysql_connect($dns_host, $dns_user, $dns_pwd);
+        if (!$default_DB_link) {
+            print "Error can not connect with database server\n";
+
+            return false;
+        }
+        $db_selected = mysql_select_db($dns_db, $default_DB_link);
+        if (!$db_selected) {
+            print "Error can not access the database\n";
+
+            return false;
+        }
+        mysql_set_charset('utf8');
+        mysql_query("SET time_zone='+0:00'");
     }
-    $db_selected = mysql_select_db($dns_db, $default_DB_link);
-    if (!$db_selected) {
-        print "Error can not access the database\n";
-
-        return false;
-    }
-    mysql_set_charset('utf8');
-    mysql_query("SET time_zone='+0:00'");
-
 
     $account = new Account($db);
 
@@ -141,7 +142,7 @@ function get_fork_data($job) {
     }
 
 
-    if(!file_exists("keyring/dns.$inikoo_account_code.php")){
+    if (!file_exists("keyring/dns.$inikoo_account_code.php")) {
         print "file keyring/dns.$inikoo_account_code.php missing\n";
         exit;
     }
@@ -151,34 +152,28 @@ function get_fork_data($job) {
     require_once "class.Account.php";
 
 
-
-
-
-
-
-
     $fork_key = $fork_metadata['fork_key'];
     $token    = $fork_metadata['token'];
 
     $db = new PDO("mysql:host=$dns_host;dbname=$dns_db;charset=utf8", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';"));
     $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
+    if (function_exists('mysql_connect')) {
+        $default_DB_link = mysql_connect($dns_host, $dns_user, $dns_pwd);
+        if (!$default_DB_link) {
+            print "Error can not connect with database server\n";
 
-    $default_DB_link = mysql_connect($dns_host, $dns_user, $dns_pwd);
-    if (!$default_DB_link) {
-        print "Error can not connect with database server\n";
+            return false;
+        }
+        $db_selected = mysql_select_db($dns_db, $default_DB_link);
+        if (!$db_selected) {
+            print "Error can not access the database\n";
 
-        return false;
+            return false;
+        }
+        mysql_set_charset('utf8');
+        mysql_query("SET time_zone='+0:00'");
     }
-    $db_selected = mysql_select_db($dns_db, $default_DB_link);
-    if (!$db_selected) {
-        print "Error can not access the database\n";
-
-        return false;
-    }
-    mysql_set_charset('utf8');
-    mysql_query("SET time_zone='+0:00'");
-
 
     $account = new Account($db);
 
@@ -190,11 +185,8 @@ function get_fork_data($job) {
 
 
     $sql = sprintf(
-        "SELECT `Fork Process Data` FROM `Fork Dimension` WHERE `Fork Key`=%d AND `Fork Token`=%s",
-        $fork_key,
-        prepare_mysql($token)
+        "SELECT `Fork Process Data` FROM `Fork Dimension` WHERE `Fork Key`=%d AND `Fork Token`=%s", $fork_key, prepare_mysql($token)
     );
-
 
 
     if ($result = $db->query($sql)) {

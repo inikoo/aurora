@@ -6,8 +6,8 @@
             <table border="0" class="overview">
 
                 <tr>
-                    <td>{t}Used for{/t}:</td>
-                    <td class="aright">{$location->get('Mainly Used For')}</td>
+                    <td>{t}Stock value{/t}:</td>
+                    <td class="aright"><span class="Stock_Value">{$location->get('Stock Value')}</span></td>
                 </tr>
 
 
