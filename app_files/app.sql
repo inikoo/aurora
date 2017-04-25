@@ -3973,7 +3973,7 @@ CREATE TABLE `History Dimension` (
   `Subject` enum('Customer','Staff','Supplier','Administrator','System') DEFAULT NULL,
   `Subject Key` mediumint(8) unsigned DEFAULT NULL,
   `Action` enum('sold_since','last_sold','first_sold','placed','wrote','deleted','edited','cancelled','charged','merged','created','associated','disassociate','register','login','logout','fail_login','password_request','password_reset','search') DEFAULT 'edited',
-  `Direct Object` enum('After Sale','Delivery Note','Category','Warehouse','Warehouse Area','Shelf','Location','Company Department','Company Area','Position','Store','User','Product','Address','Customer','Note','Order','Telecom','Email','Company','Contact','FAX','Telephone','Mobile','Work Telephone','Office Fax','Supplier','Family','Department','Attachment','Supplier Product','Part','Site','Page','Invoice','Category Customer','Category Part','Category Invoice','Category Supplier','Category Product','Category Family','Purchase Order','Supplier Delivery Note','Supplier Invoice','Webpage','Website') DEFAULT NULL,
+  `Direct Object` enum('Account','After Sale','Delivery Note','Category','Warehouse','Warehouse Area','Shelf','Location','Company Department','Company Area','Position','Store','User','Product','Address','Customer','Note','Order','Telecom','Email','Company','Contact','FAX','Telephone','Mobile','Work Telephone','Office Fax','Supplier','Family','Department','Attachment','Supplier Product','Part','Site','Page','Invoice','Category Customer','Category Part','Category Invoice','Category Supplier','Category Product','Category Family','Purchase Order','Supplier Delivery Note','Supplier Invoice','Webpage','Website') DEFAULT NULL,
   `Direct Object Key` mediumint(8) unsigned DEFAULT '0',
   `Preposition` enum('about','','to','on','because') DEFAULT NULL,
   `Indirect Object` varchar(128) DEFAULT NULL,
@@ -18123,4 +18123,4 @@ CREATE TABLE `todo_users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-04-25 14:21:24
+-- Dump completed on 2017-04-25 17:52:57
