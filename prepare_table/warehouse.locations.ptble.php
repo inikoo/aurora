@@ -63,7 +63,7 @@ switch ($parameters['elements_type']) {
         if ($_elements == '') {
             $where .= ' and false';
         } elseif ($count_elements < 7) {
-            $where .= ' and `Warehouse Flag` in ('.$_elements.')';
+            $where .= ' and `Warehouse Flag Color` in ('.$_elements.')';
 
 
         }
