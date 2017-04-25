@@ -227,21 +227,29 @@ class Warehouse extends DB_Table {
             }
 
 
+            $unknown_location = $this->create_location(
+                array(
+                    'Location Code' => 'Unknown',
+                    'editor'        => $this->editor
+                    //  'Location Mainly Used For'=>'Storing'
+                )
+            );
 
-            $this->create_location(array(
-                                       'Location Code'=>'Unknown',
-                                     //  'Location Mainly Used For'=>'Storing'
-                                   ));
+
+            $this->update(
+                array(
+                    'Warehouse Unknown Location Key'=>$unknown_location->id
+                ), 'no_history'
+
+            );
 
 
-
-          /*
-            $this->create_location(array(
-                                       'Location Code'=>'LoadBay',
-                                       'Location Mainly Used For'=>'Loading'
-                                   ));
-          */
-
+            /*
+              $this->create_location(array(
+                                         'Location Code'=>'LoadBay',
+                                         'Location Mainly Used For'=>'Loading'
+                                     ));
+            */
 
 
             $history_data = array(
@@ -268,59 +276,12 @@ class Warehouse extends DB_Table {
             );
 
 
-
             return;
         } else {
             $this->msg = _(" Error can not create warehouse");
             print $sql;
             exit;
         }
-    }
-
-    function create_category($raw_data) {
-
-        if (!isset($raw_data['Category Label']) or $raw_data['Category Label'] == '') {
-            $raw_data['Category Label'] = $raw_data['Category Code'];
-        }
-
-        if (!isset($raw_data['Category Locked']) or $raw_data['Category Locked'] == '') {
-            $raw_data['Category Locked'] = 'No';
-        }
-
-        $data = array(
-            'Category Code'           => $raw_data['Category Code'],
-            'Category Label'          => $raw_data['Category Label'],
-            'Category Scope'          => 'Location',
-            'Category Subject'        => $raw_data['Category Subject'],
-            'Category Warehouse Key'  => $this->id,
-            'Category Can Have Other' => $raw_data['Category Locked'],
-            'Category Locked'         => 'No',
-            'Category Branch Type'    => 'Root',
-            'editor'                  => $this->editor
-
-        );
-
-        $category = new Category('find create', $data);
-
-
-        if ($category->id) {
-            $this->new_category_msg = $category->msg;
-
-            if ($category->new) {
-                $this->new_category = true;
-
-            } else {
-                $this->error = true;
-                $this->msg   = $category->msg;
-
-            }
-
-            return $category;
-        } else {
-            $this->error = true;
-            $this->msg   = $category->msg;
-        }
-
     }
 
     function create_location($data) {
@@ -365,41 +326,41 @@ class Warehouse extends DB_Table {
             exit;
         }
 
-/*
-        if (!isset($data['Location Mainly Used For']) or $data['Location Mainly Used For'] == '') {
+        /*
+                if (!isset($data['Location Mainly Used For']) or $data['Location Mainly Used For'] == '') {
 
 
-            $this->error      = true;
-            $this->msg        = _('Location used for missing');
-            $this->error_code = 'location_mainly_used_for_missing';
+                    $this->error      = true;
+                    $this->msg        = _('Location used for missing');
+                    $this->error_code = 'location_mainly_used_for_missing';
 
-            return;
-        }
+                    return;
+                }
 
-        if (!in_array(
-            $data['Location Mainly Used For'], array(
-                                                 'Picking',
-                                                 'Storing',
-                                                 'Loading',
-                                                 'Displaying',
-                                                 'Other'
-                                             )
-        )
-        ) {
+                if (!in_array(
+                    $data['Location Mainly Used For'], array(
+                                                         'Picking',
+                                                         'Storing',
+                                                         'Loading',
+                                                         'Displaying',
+                                                         'Other'
+                                                     )
+                )
+                ) {
 
 
-            $this->error      = true;
-            $this->msg        = _('Location used for not valid');
-            $this->error_code = 'location_mainly_used_for_missing_not_valid';
+                    $this->error      = true;
+                    $this->msg        = _('Location used for not valid');
+                    $this->error_code = 'location_mainly_used_for_missing_not_valid';
 
-            return;
-        }
+                    return;
+                }
 
-*/
+        */
 
-        if(isset($data['Location Flag Color'])){
+        if (isset($data['Location Flag Color'])) {
 
-            if($data['Location Flag Color']!='') {
+            if ($data['Location Flag Color'] != '') {
 
                 $sql = sprintf(
                     "SELECT `Warehouse Flag Key` FROM  `Warehouse Flag Dimension` WHERE `Warehouse Flag Color`=%s", prepare_mysql(ucfirst($data['Location Flag Color']))
@@ -426,7 +387,6 @@ class Warehouse extends DB_Table {
         }
 
 
-
         $data['Location Warehouse Key'] = $this->id;
 
 
@@ -440,7 +400,7 @@ class Warehouse extends DB_Table {
                 $this->new_object    = true;
                 $this->new_locationt = true;
 
-                if($location->get('Location Warehouse Flag Key')){
+                if ($location->get('Location Warehouse Flag Key')) {
                     $this->update_location_flag_number($location->get('Location Warehouse Flag Key'));
                 }
 
@@ -476,6 +436,32 @@ class Warehouse extends DB_Table {
             $this->msg   = $location->msg;
 
         }
+
+    }
+
+    function update_location_flag_number($flag_key) {
+        $num = 0;
+        $sql = sprintf(
+            "SELECT count(*) AS num  FROM  `Location Dimension` WHERE `Location Warehouse Flag Key`=%d ", $flag_key
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $num = $row['num'];
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        $sql = sprintf(
+            "UPDATE  `Warehouse Flag Dimension`  SET `Warehouse Flag Number Locations`=%d WHERE `Warehouse Flag Key`=%d ", $num, $flag_key
+        );
+        $this->db->exec($sql);
+
 
     }
 
@@ -620,6 +606,51 @@ class Warehouse extends DB_Table {
         return '';
     }
 
+    function create_category($raw_data) {
+
+        if (!isset($raw_data['Category Label']) or $raw_data['Category Label'] == '') {
+            $raw_data['Category Label'] = $raw_data['Category Code'];
+        }
+
+        if (!isset($raw_data['Category Locked']) or $raw_data['Category Locked'] == '') {
+            $raw_data['Category Locked'] = 'No';
+        }
+
+        $data = array(
+            'Category Code'           => $raw_data['Category Code'],
+            'Category Label'          => $raw_data['Category Label'],
+            'Category Scope'          => 'Location',
+            'Category Subject'        => $raw_data['Category Subject'],
+            'Category Warehouse Key'  => $this->id,
+            'Category Can Have Other' => $raw_data['Category Locked'],
+            'Category Locked'         => 'No',
+            'Category Branch Type'    => 'Root',
+            'editor'                  => $this->editor
+
+        );
+
+        $category = new Category('find create', $data);
+
+
+        if ($category->id) {
+            $this->new_category_msg = $category->msg;
+
+            if ($category->new) {
+                $this->new_category = true;
+
+            } else {
+                $this->error = true;
+                $this->msg   = $category->msg;
+
+            }
+
+            return $category;
+        } else {
+            $this->error = true;
+            $this->msg   = $category->msg;
+        }
+
+    }
 
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
 
@@ -692,11 +723,13 @@ class Warehouse extends DB_Table {
 
                         if ($result2 = $this->db->query($sql)) {
                             foreach ($result2 as $row2) {
-                                $location = new Location($row2['Location Key']);
-                                $location->editor=$this->editor;
-                                $location->update(array(
-                                    'Location Warehouse Flag Key'=>$default_flag_key
-                                                  ));
+                                $location         = new Location($row2['Location Key']);
+                                $location->editor = $this->editor;
+                                $location->update(
+                                    array(
+                                        'Location Warehouse Flag Key' => $default_flag_key
+                                    )
+                                );
 
 
                             }
@@ -734,7 +767,8 @@ class Warehouse extends DB_Table {
     function get_default_flag_key() {
         $flag_key = 0;
         $sql      = sprintf(
-            "SELECT `Warehouse Flag Key` FROM  `Warehouse Flag Dimension` WHERE `Warehouse Flag Color`=%s AND `Warehouse Flag Warehouse Key`=%d", prepare_mysql($this->data['Warehouse Default Flag Color']), $this->id
+            "SELECT `Warehouse Flag Key` FROM  `Warehouse Flag Dimension` WHERE `Warehouse Flag Color`=%s AND `Warehouse Flag Warehouse Key`=%d",
+            prepare_mysql($this->data['Warehouse Default Flag Color']), $this->id
         );
 
 
@@ -924,32 +958,6 @@ class Warehouse extends DB_Table {
 
     }
 
-    function update_location_flag_number($flag_key) {
-        $num = 0;
-        $sql = sprintf(
-            "SELECT count(*) AS num  FROM  `Location Dimension` WHERE `Location Warehouse Flag Key`=%d ", $flag_key
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                $num = $row['num'];
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        $sql = sprintf(
-            "UPDATE  `Warehouse Flag Dimension`  SET `Warehouse Flag Number Locations`=%d WHERE `Warehouse Flag Key`=%d ", $num, $flag_key
-        );
-        $this->db->exec($sql);
-
-
-    }
-
     function get_field_label($field) {
 
         switch ($field) {
@@ -1019,7 +1027,7 @@ class Warehouse extends DB_Table {
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
                     $timesheet = new Timesheet($row['Timesheet Key']);
-                    $hrs += $timesheet->get_clocked_open_jaw_time() / 3600;
+                    $hrs       += $timesheet->get_clocked_open_jaw_time() / 3600;
                 }
             } else {
                 print_r($error_info = $this->db->errorInfo());
@@ -1038,7 +1046,7 @@ class Warehouse extends DB_Table {
             prepare_mysql($from_date), prepare_mysql($to_date)
         );
 
-      //  print $sql;
+        //  print $sql;
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
@@ -1053,23 +1061,23 @@ class Warehouse extends DB_Table {
         }
 
 
-        if($hrs==0){
-            $kpi='';
-            $formatted_kpi='-';
-        }else{
-            $kpi=$amount / $hrs;
-            $formatted_kpi=number($amount / $hrs, 2).' '.currency_symbol($account->get('Account Currency')).'/h';
+        if ($hrs == 0) {
+            $kpi           = '';
+            $formatted_kpi = '-';
+        } else {
+            $kpi           = $amount / $hrs;
+            $formatted_kpi = number($amount / $hrs, 2).' '.currency_symbol($account->get('Account Currency')).'/h';
         }
 
         //    print $sql;
         return array(
-            'kpi'              => $kpi,
-            'amount'           => $amount,
-            'hrs'              => $hrs,
-            'formatted_kpi'    => $formatted_kpi,
-            'formatted_amount' => money($amount, $account->get('Account Currency')),
-            'formatted_hrs'    => sprintf('%d hours', number($hrs, 1)),
-            'formatted_aux_kpi_data'=>sprintf('%d hours', number($hrs, 1)),
+            'kpi'                    => $kpi,
+            'amount'                 => $amount,
+            'hrs'                    => $hrs,
+            'formatted_kpi'          => $formatted_kpi,
+            'formatted_amount'       => money($amount, $account->get('Account Currency')),
+            'formatted_hrs'          => sprintf('%d hours', number($hrs, 1)),
+            'formatted_aux_kpi_data' => sprintf('%d hours', number($hrs, 1)),
         );
 
 

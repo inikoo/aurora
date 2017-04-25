@@ -773,7 +773,27 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
     switch ($data['object']) {
 
+        case 'Website':
+            include_once 'class.Website.php';
 
+            $data['fields_data']['user'] = $user;
+
+
+            $object = $parent->create_website($data['fields_data']);
+
+
+            if (!$parent->error) {
+
+                $smarty->assign('account', $account);
+                $smarty->assign('parent', $parent);
+
+                $smarty->assign('object', $object);
+
+                $pcard        = '';
+                $redirect='store/'.$object->get('Website Store Key').'/website/'.$object->id;
+                $updated_data = array();
+            }
+            break;
         case 'Deal Campaign':
             include_once 'class.Location.php';
 
@@ -1489,9 +1509,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                 );
                 $updated_data = array();
             }
-            break;
-
-
             break;
 
         default:

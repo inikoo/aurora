@@ -564,8 +564,15 @@ ALTER TABLE `Product Dimension` ADD `Product Number Deals Historic` SMALLINT UNS
 
 ALTER TABLE `Product Category Dimension` ADD `Product Category Number Images` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Product Category Acc Previous Intervals Updated`;
 ALTER TABLE `Product Category Dimension` ADD `Product Category Number History Records` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Product Category Acc Previous Intervals Updated`;
+******
+
+ALTER TABLE `Website Dimension` ADD `Website Alt Family Category Key` MEDIUMINT NULL DEFAULT NULL AFTER `Website Number Users`, ADD `Website Alt Department Category Key` MEDIUMINT NULL DEFAULT NULL AFTER `Website Alt Family Category Key`;
 
 
+ALTER TABLE `Store Dimension` ADD `Store Website Key` SMALLINT UNSIGNED NULL DEFAULT NULL AFTER `Store State`;
+
+ALTER TABLE `Store Dimension` ADD `Store Type` ENUM('B2B','B2C','Dropshipping') NULL DEFAULT NULL AFTER `Store Key`;
+update `Store Dimension` set `Store Type`='B2B';
 
 ===============
 

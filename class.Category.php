@@ -1746,20 +1746,24 @@ class Category extends DB_Table {
                     }
 
 
-                    $fam_data = array(
 
-                        'Product Family Code'                   => $code,
-                        'Product Family Name'                   => $code,
-                        'Product Family Main Department Key'    => $dept_key,
-                        'Product Family Store Key'              => $store->id,
-                        'Product Family Special Characteristic' => $code
-                    );
+                    if(function_exists('mysql_query')) {
 
-                    //print_r($fam_data);
+                        $fam_data = array(
+
+                            'Product Family Code'                   => $code,
+                            'Product Family Name'                   => $code,
+                            'Product Family Main Department Key'    => $dept_key,
+                            'Product Family Store Key'              => $store->id,
+                            'Product Family Special Characteristic' => $code
+                        );
+
+                        //print_r($fam_data);
 
 
-                    $family = new Family('find', $fam_data, 'create');
+                        $family = new Family('find', $fam_data, 'create');
 
+                    }
 
                     $account = new Account($this->db);
 

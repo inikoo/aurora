@@ -1848,7 +1848,7 @@ $modules = array(
                 'type'      => 'navigation',
                 'label'     => _('Website'),
                 'icon'      => 'globe',
-                'reference' => 'website/%d',
+                'reference' => 'store/%d/website',
                 'subtabs_parent' => array(
                     'website.favourites.families'  => 'website.favourites',
                     'website.favourites.products'  => 'website.favourites',
@@ -2084,7 +2084,30 @@ $modules = array(
                 )
             ),
 
+            'website.new' => array(
+                'type' => 'new_object',
+                'tabs' => array(
+                    'website.new' => array(
+                        'label' => _(
+                            'New website'
+                        )
+                    ),
 
+                )
+
+            ),
+
+            'no_website' => array(
+                'type'      => '',
+                'label'     => '',
+                'icon'      => '',
+                'reference' => '',
+                'tabs'      => array(
+                    'no_website' => array()
+                )
+
+
+            ),
 
 
             'marketing'        => array(

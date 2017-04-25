@@ -14,13 +14,12 @@
             </td>
         </tr>
         <tr class="title">
-            <td colspan=2>{t}Employee{/t} <i onClick="change_view('employee/{$employee->id}')"
-                                             class="fa fa-link link"></i></td>
+            <td colspan=2>{t}Employee{/t}</td>
         </tr>
 
         <tr>
             <td class="label">{$employee->get_field_label('Staff Alias')|capitalize}</td>
-            <td>{$employee->get('Alias')}</td>
+            <td> <span  onClick="change_view('employee/{$employee->id}')" class="marked_link" >  {$employee->get('Alias')}  </span> </td>
         </tr>
         <tr>
             <td class="label">{$employee->get_field_label('Staff Name')|capitalize}</td>

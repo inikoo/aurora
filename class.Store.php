@@ -159,17 +159,17 @@ class Store extends DB_Table {
 
 
         $this->new = false;
-        $basedata  = $this->base_data();
+        $base_data  = $this->base_data();
 
         foreach ($data as $key => $value) {
-            if (array_key_exists($key, $basedata)) {
-                $basedata[$key] = _trim($value);
+            if (array_key_exists($key, $base_data)) {
+                $base_data[$key] = _trim($value);
             }
         }
 
         $keys   = '(';
         $values = 'values (';
-        foreach ($basedata as $key => $value) {
+        foreach ($base_data as $key => $value) {
             $keys .= "`$key`,";
             if (preg_match(
                 '/Store Email|Store Telephone|Store Telephone|Slogan|URL|Fax|Sticky Note|Store VAT Number/i', $key
@@ -243,6 +243,9 @@ class Store extends DB_Table {
             $account         = new Account($this->db);
             $account->editor = $this->editor;
 
+
+
+
             $families_category_data = array(
                 'Category Code'      => 'Fam.'.$this->get('Store Code'),
                 'Category Label'     => 'Families',
@@ -277,6 +280,36 @@ class Store extends DB_Table {
                     'Store Department Category Key' => $departments->id,
                 ), 'no_history'
             );
+
+
+            $order_recursion_campaign_data=array(
+                'Deal Campaign Name'=>'Order recursion incentive',
+                'Deal Campaign Valid From'=>gmdate('Y-m-d'),
+                'Deal Campaign Valid To'=>'',
+
+
+            );
+
+            $order_recursion_campaign = $this->create_campaign($order_recursion_campaign_data);
+
+            $bulk_discounts_campaign_data=array(
+                'Deal Campaign Name'=>'Bulk discount',
+                'Deal Campaign Valid From'=>gmdate('Y-m-d'),
+                'Deal Campaign Valid To'=>'',
+
+            );
+
+            $bulk_discounts_campaign = $this->create_campaign($bulk_discounts_campaign_data);
+
+            $this->update(
+                array(
+
+                    'Store Order Recursion Campaign Key'     => $order_recursion_campaign->id,
+                    'Store Bulk Discounts Campaign Key' => $bulk_discounts_campaign->id,
+
+                ), 'no_history'
+            );
+
 
 
             $history_data = array(
@@ -2686,6 +2719,8 @@ class Store extends DB_Table {
 
     function create_campaign($data) {
 
+
+
         include_once 'class.DealCampaign.php';
 
         if (!array_key_exists('Deal Campaign Name', $data) or $data['Deal Campaign Name'] == '') {
@@ -2726,6 +2761,8 @@ class Store extends DB_Table {
             if ($campaign->new) {
                 $this->new_object = true;
                 $this->update_campaigns_data();
+
+
 
             } else {
                 $this->error = true;

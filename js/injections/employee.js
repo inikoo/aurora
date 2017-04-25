@@ -3,6 +3,8 @@
  Copyright (c) 2015, Inikoo
  Version 3.0*/
 
+
+
 function show_user_fields() {
     $('#add_new_user_field').addClass('hide')
     $('#dont_add_new_user_field').removeClass('hide')
@@ -64,4 +66,38 @@ function hide_user_fields() {
     on_changed_value('Staff_User_Handle', '')
 
 
+}
+
+
+function  terminate_employment(element) {
+
+
+
+
+    $(element).find('i.fa').removeClass('fa-hand-scissors-o').addClass('fa-spinner fa-spin')
+
+    var request = '/ar_edit_employees.php?tipo=terminate_employment&object=' + $(element).data('data').object + '&key=' + $(element).data('data').key
+
+
+   console.log(request)
+
+
+
+    $.getJSON(request, function (data) {
+        if (data.state == 200) {
+
+            console.log(data)
+            if (data.request != undefined) {
+                change_view(data.request)
+            } else {
+                change_view(state.request, {
+                    'reload_showcase': 1
+                })
+            }
+
+        } else if (data.state == 400) {
+            $(element).find('i.fa').addClass('fa-hand-scissors-o').removeClass('fa-spinner fa-spin')
+
+        }
+    })
 }

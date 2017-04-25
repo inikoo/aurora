@@ -12,7 +12,7 @@
 */
 
 
-function parse_request($_data, $db, $modules, $account = '', $user = '',$is_setup=false) {
+function parse_request($_data, $db, $modules, $account = '', $user = '', $is_setup = false) {
 
 
     $request = $_data['request'];
@@ -80,6 +80,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '',$is_setu
                 $section = 'store';
                 $object  = 'store';
 
+
                 if (isset($view_path[0])) {
 
                     if (is_numeric($view_path[0])) {
@@ -89,6 +90,60 @@ function parse_request($_data, $db, $modules, $account = '', $user = '',$is_setu
                             if ($view_path[1] == 'dashboard') {
 
                                 $section = 'dashboard';
+
+
+                            } elseif ($view_path[1] == 'website') {
+
+
+                                if (!$user->can_view('sites')) {
+                                    $module  = 'utils';
+                                    $section = 'forbidden';
+                                    break;
+                                }
+
+                                $module  = 'products';
+                                $section = 'website';
+
+
+                                $parent     = 'store';
+                                $parent_key = $key;
+
+                                $object = 'website';
+                                $key    = '';
+
+
+                                if (isset($view_path[2])) {
+                                    if ($view_path[1] == 'page') {
+                                        $section    = 'page';
+                                        $object     = 'page';
+                                        $parent     = 'website';
+                                        $parent_key = $key;
+
+                                        if (is_numeric($view_path[3])) {
+                                            $key = $view_path[3];
+                                        }
+
+
+                                    } elseif ($view_path[2] == 'user') {
+                                        $section    = 'website.user';
+                                        $object     = 'user';
+                                        $parent     = 'website';
+                                        $parent_key = $key;
+
+                                        if (is_numeric($view_path[3])) {
+                                            $key = $view_path[3];
+                                        }
+
+
+                                    }elseif ($view_path[2] == 'new') {
+                                        $section    = 'website.new';
+                                        $object     = 'website';
+
+
+
+                                    }
+
+                                }
 
 
                             }
@@ -2071,22 +2126,20 @@ function parse_request($_data, $db, $modules, $account = '', $user = '',$is_setu
                 $module = 'products';
 
 
-
-                if(isset($view_path[0])){
+                if (isset($view_path[0])) {
                     if (is_numeric($view_path[0])) {
 
                         $parent     = 'store';
                         $parent_key = $view_path[0];
 
-                       $section='marketing';
+                        $section = 'marketing';
 
-                    }elseif($view_path[0]=='all'){
+                    } elseif ($view_path[0] == 'all') {
                         $module  = 'marketing_server';
                         $section = 'marketing';
                     }
 
                 }
-
 
 
                 break;
@@ -2119,7 +2172,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '',$is_setu
                                             $key = $view_path[3];
                                         } elseif ($view_path[3] == 'new') {
 
-                                            $section    = 'deal.new';
+                                            $section = 'deal.new';
 
                                         }
 
@@ -2131,7 +2184,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '',$is_setu
 
 
                         } elseif ($view_path[1] == 'new') {
-                            $object     = 'campaign';
+                            $object  = 'campaign';
                             $section = 'campaign.new';
                         }
 
@@ -2147,17 +2200,15 @@ function parse_request($_data, $db, $modules, $account = '', $user = '',$is_setu
                     $section = 'deals';
 
 
-                    $parent  = 'store';
-                    $parent_key  = $view_path[0];
+                    $parent     = 'store';
+                    $parent_key = $view_path[0];
 
                     if (isset($view_path[1])) {
-                        $object  = 'deal';
+                        $object     = 'deal';
                         $parent     = 'store';
                         $parent_key = $view_path[0];
                         if (is_numeric($view_path[1])) {
                             $key = $view_path[1];
-
-
 
 
                         } elseif ($view_path[1] == 'new') {
@@ -2233,8 +2284,8 @@ function parse_request($_data, $db, $modules, $account = '', $user = '',$is_setu
                                 if (isset($view_path[2])) {
                                     if ($view_path[2] == 'upload') {
 
-                                        $section    = 'upload';
-                                        $object     = 'upload';
+                                        $section = 'upload';
+                                        $object  = 'upload';
 
 
                                         if (isset($view_path[3])) {
@@ -2248,8 +2299,6 @@ function parse_request($_data, $db, $modules, $account = '', $user = '',$is_setu
                                     }
 
                                 }
-
-
 
 
                             } elseif ($view_path[1] == 'categories') {
@@ -3755,11 +3804,11 @@ function parse_request($_data, $db, $modules, $account = '', $user = '',$is_setu
                                 $section = 'setup_root_user';
                                 $object  = 'user_root';
 
-                            }elseif ($view_path[1] == 'setup_account') {
-                                $section    = 'setup_account';
+                            } elseif ($view_path[1] == 'setup_account') {
+                                $section = 'setup_account';
 
-                                $object     = 'account';
-                                $key        = 1;
+                                $object = 'account';
+                                $key    = 1;
 
 
                             } elseif ($view_path[1] == 'add_employees') {

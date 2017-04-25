@@ -31,18 +31,28 @@ $tipo = $_REQUEST['tipo'];
 switch ($tipo) {
 
 
+    case 'terminate_employment':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'key' => array('type' => 'key'),
+
+                     )
+        );
+        terminate_employment($account, $db, $data, $editor);
+        break;
+
 
     case 'recreate_timesheets':
         $data = prepare_values(
             $_REQUEST, array(
-                         'key' => array('type' => 'key'),
-                         'scope'      => array('type' => 'string'),
+                         'key'   => array('type' => 'key'),
+                         'scope' => array('type' => 'string'),
 
                      )
         );
         calculate_sales($account, $db, $data, $editor);
         break;
-   
+
     default:
         $response = array(
             'state' => 405,
@@ -54,16 +64,8 @@ switch ($tipo) {
 }
 
 
-
-
-
-
-
-
 function recreate_timesheets($account, $db, $data, $editor) {
 
-print_r($data);
-exit;
 
     require_once 'utils/new_fork.php';
 
@@ -85,6 +87,22 @@ exit;
 
 }
 
+
+function terminate_employment($account, $db, $data, $editor) {
+
+
+    $employee         = get_object('Staff', $data['key']);
+    $employee->editor = $editor;
+    $employee->terminate_employment();
+
+    $response = array(
+        'state' => 200
+
+    );
+    echo json_encode($response);
+
+
+}
 
 
 ?>
