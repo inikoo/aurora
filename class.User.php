@@ -100,7 +100,6 @@ class User extends DB_Table {
         );
 
 
-
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
                 $this->found     = true;
@@ -149,7 +148,6 @@ class User extends DB_Table {
             $this->get_data('id', $this->found_key);
 
         }
-
 
 
         if (!$this->found and $create) {
@@ -226,7 +224,7 @@ class User extends DB_Table {
             $this->id                    = $this->data['User Key'];
             $this->data['User Password'] = '';
 
-//print $this->data['User Type'];
+            //print $this->data['User Type'];
 
             if ($this->data['User Type'] == 'Staff' or $this->data['User Type'] == 'Contractor' or $this->data['User Type'] == 'Administrator' or $this->data['User Type'] == 'Warehouse') {
 
@@ -234,7 +232,7 @@ class User extends DB_Table {
                     "SELECT * FROM `User Staff Settings Dimension` WHERE `User Key`=%d", $this->id
                 );
 
-//print $sql;
+                //print $sql;
 
 
                 if ($row = $this->db->query($sql)->fetch()) {
@@ -268,7 +266,6 @@ class User extends DB_Table {
     }
 
     function create($data) {
-
 
 
         $this->new = false;
@@ -377,28 +374,41 @@ class User extends DB_Table {
         $sql    = sprintf("INSERT INTO `User Dimension` %s %s", $keys, $values);
 
 
-      //  print $sql;
+
 
         if ($this->db->exec($sql)) {
-
 
             $user_id = $this->db->lastInsertId();
             $this->get_data('id', $user_id);
 
 
-            $this->new    = true;
-            $history_data = array(
-                'History Abstract' => sprintf(
-                    _('%s user record created'), $this->get('Handle')
-                ),
-                'History Details'  => '',
-                'Action'           => 'created'
-            );
+            $this->new = true;
 
-            $this->add_subject_history(
-                $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
-            );
+            if ($this->get('User Type') == 'Administrator') {
 
+                $this->update(array('User Parent Key'=>$this->id),'no_history');
+
+                $history_data = array(
+                    'History Abstract' => sprintf(_('%s user record created'), $this->get('Handle')),
+                    'History Details'  => '',
+                    'Action'           => 'created',
+                    'Subject'          => 'Administrator',
+                    'Subject Key'      => $this->id,
+                    'Author Name'      => 'Aurora'
+                );
+
+            } else {
+                $history_data = array(
+                    'History Abstract' => sprintf(_('%s user record created'), $this->get('Handle')),
+                    'History Details'  => '',
+                    'Action'           => 'created',
+
+                );
+
+            }
+
+
+            $this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id);
 
             $this->msg = _('User added successfully');
 
@@ -415,13 +425,19 @@ class User extends DB_Table {
                 $this->get_data('id', $this->id);
             }
 
-            return;
+
+
+
+            return $this;
         } else {
             $this->error = true;
             $this->msg   = _('Unknown error').' (2)';
 
             return;
         }
+
+
+
 
         $this->get_data('id', $user_id);
 
@@ -462,9 +478,9 @@ class User extends DB_Table {
                 $number_stores = $this->get_number_stores();
 
                 if ($number_stores == 0) {
-                    $stores= '<span class="none very_discreet" >'._('none').'</span>';
+                    $stores = '<span class="none very_discreet" >'._('none').'</span>';
                 } elseif ($number_stores == $account->get('Stores') and $number_stores > 20) {
-                    $stores= '<span class="all" > '._('all').'</span>';
+                    $stores = '<span class="all" > '._('all').'</span>';
                 } else {
 
                     $stores = array();
@@ -477,9 +493,8 @@ class User extends DB_Table {
                         $stores[] = $row['Store Code'];
                     }
 
-                    $stores= join($stores, ', ');
+                    $stores = join($stores, ', ');
                 }
-
 
 
                 return $stores.' <span class="very_discreet italic">('.$number_stores.'/'.$account->get('Stores').')</span>';
@@ -540,11 +555,9 @@ class User extends DB_Table {
                 $number_websites = $this->get_number_websites();
 
                 if ($number_websites == 0) {
-                    $websites
-                        = '<span class="none very_discreet" > '._('none').'</span>';
+                    $websites = '<span class="none very_discreet" > '._('none').'</span>';
                 } elseif ($number_websites == $account->get('Websites')) {
-                    $websites
-                        = '<span class="all" > '._('all').'</span>';
+                    $websites = '<span class="all" > '._('all').'</span>';
                 } else {
 
                     $websites = array();
@@ -577,11 +590,9 @@ class User extends DB_Table {
             case 'Warehouses':
                 $number_warehouses = $this->get_number_warehouses();
                 if ($number_warehouses == 0) {
-                    $warehouses
-                        = '<span class="none very_discreet" > '._('none').'</span>';
+                    $warehouses = '<span class="none very_discreet" > '._('none').'</span>';
                 } elseif ($number_warehouses == $account->get('Warehouses') and $number_warehouses > 20) {
-                    $warehouses
-                        = '<span class="all" ><i class="fa fa-toggle-on"></i> '._('all').'</span>';
+                    $warehouses = '<span class="all" ><i class="fa fa-toggle-on"></i> '._('all').'</span>';
                 } else {
 
                     $warehouses = array();
@@ -622,8 +633,7 @@ class User extends DB_Table {
                 if (array_key_exists(
                     $this->data['User Preferred Locale'], $available_locales
                 )) {
-                    $locale
-                        = $available_locales[$this->data['User Preferred Locale']];
+                    $locale = $available_locales[$this->data['User Preferred Locale']];
 
                     return $locale['Language Name'].($locale['Language Name'] != $locale['Language Original Name'] ? ' ('.$locale['Language Original Name'].')' : '');
                 } else {
@@ -713,13 +723,13 @@ class User extends DB_Table {
 
         if ($number_groups == 0) {
             return '<span class="none" ><i class="fa fa-toggle-off"></i> '._(
-                'none'
-            ).'</span>';
+                    'none'
+                ).'</span>';
         }
         if ($number_groups == 12) {
             return '<span class="all" ><i class="fa fa-toggle-on"></i> '._(
-                'all'
-            ).'</span>';
+                    'all'
+                ).'</span>';
         } else {
 
             include 'conf/user_groups.php';
@@ -845,9 +855,9 @@ class User extends DB_Table {
 
                 if (!in_array(
                     $this->get('User Type'), array(
-                        'Staff',
-                        'Contractor'
-                    )
+                                               'Staff',
+                                               'Contractor'
+                                           )
                 )
                 ) {
                     return;
@@ -867,19 +877,21 @@ class User extends DB_Table {
 
 
                 $this->other_fields_updated = array(
-                    'User_Stores' => array(
-                        'field'           => 'User_Stores',
-                        'render'          => $this->has_scope('Stores')
+                    'User_Stores'      => array(
+                        'field'  => 'User_Stores',
+                        'render' => $this->has_scope('Stores')
                     ),
-                    'User_Warehouses' => array(
-                        'field'           => 'User_Warehouses',
-                        'render'          => $this->has_scope('Warehouses')
-                    ), 'User_Websites' => array(
-                        'field'           => 'User_Websites',
-                        'render'          => $this->has_scope('Websites')
-                    ), 'User_Productions' => array(
-                        'field'           => 'User_Productions',
-                        'render'          => $this->has_scope('Productions')
+                    'User_Warehouses'  => array(
+                        'field'  => 'User_Warehouses',
+                        'render' => $this->has_scope('Warehouses')
+                    ),
+                    'User_Websites'    => array(
+                        'field'  => 'User_Websites',
+                        'render' => $this->has_scope('Websites')
+                    ),
+                    'User_Productions' => array(
+                        'field'  => 'User_Productions',
+                        'render' => $this->has_scope('Productions')
                     )
 
 
@@ -966,6 +978,9 @@ class User extends DB_Table {
 
     function update_groups($value) {
 
+
+
+
         $this->updated = false;
 
         $groups = preg_split('/,/', $value);
@@ -1027,10 +1042,9 @@ class User extends DB_Table {
 
                 if (isset($user_groups[$row['User Group Key']])) {
 
-                    $this->groups[$row['User Group Key']]
-                        = array('User Group Name' => $user_groups[$row['User Group Key']]['Name']);
-                    $this->groups_key_list .= ','.$row['User Group Key'];
-                    $this->groups_key_array[] = $row['User Group Key'];
+                    $this->groups[$row['User Group Key']] = array('User Group Name' => $user_groups[$row['User Group Key']]['Name']);
+                    $this->groups_key_list                .= ','.$row['User Group Key'];
+                    $this->groups_key_array[]             = $row['User Group Key'];
                 }
             }
         } else {
@@ -1065,7 +1079,7 @@ class User extends DB_Table {
 
                 $history_data = array(
                     'History Abstract'    => sprintf(
-                        _("User's was removed from group %s"), $user_groups[$group_key]['Name']
+                        _("User removed from group %s"), $user_groups[$group_key]['Name']
                     ),
                     'History Details'     => '',
                     'Action'              => 'disassociate',
@@ -1111,10 +1125,10 @@ class User extends DB_Table {
 
                     $history_data = array(
                         'History Abstract'    => sprintf(
-                            _("User's was added to group %s"), $user_groups[$group_key]['Name']
+                            _("User added to group %s"), $user_groups[$group_key]['Name']
                         ),
                         'History Details'     => '',
-                        'Action'              => 'disassociate',
+                        'Action'              => 'associate',
                         'Indirect Object'     => 'User Group',
                         'Indirect Object Key' => $group_key
                     );
@@ -1149,6 +1163,27 @@ class User extends DB_Table {
             print_r($error_info = $this->db->errorInfo());
             exit;
         }
+
+
+    }
+
+    function has_scope($scope) {
+
+
+        $groups = $this->get_groups();
+        if ($groups != '') {
+            include 'conf/user_groups.php';
+
+            foreach (preg_split('/,/', $groups) as $group_key) {
+                if (isset($user_groups[$group_key][$scope.'_Scope']) and $user_groups[$group_key][$scope.'_Scope']) {
+                    return true;
+                }
+            }
+
+
+        }
+
+        return false;
 
 
     }
@@ -1200,7 +1235,7 @@ class User extends DB_Table {
                 "DELETE FROM `User Right Scope Bridge` WHERE `User Key`=%d AND `Scope Key`=%d AND `Scope`='Store' ", $this->id, $store_key
             );
             $_changed = $this->db->exec($sql);
-            $changed += $_changed;
+            $changed  += $_changed;
 
             $store = new Store($store_key);
             if ($store->id and $_changed) {
@@ -1353,7 +1388,7 @@ class User extends DB_Table {
                 "DELETE FROM `User Right Scope Bridge` WHERE `User Key`=%d AND `Scope Key`=%d AND `Scope`='Website' ", $this->id, $website_key
             );
             $_changed = $this->db->exec($sql);
-            $changed += $_changed;
+            $changed  += $_changed;
 
             $website = new Website($website_key);
             if ($website->id and $_changed) {
@@ -1489,7 +1524,7 @@ class User extends DB_Table {
                 "DELETE FROM `User Right Scope Bridge` WHERE `User Key`=%d AND `Scope Key`=%d AND `Scope`='Warehouse' ", $this->id, $warehouse_key
             );
             $_changed = $this->db->exec($sql);
-            $changed += $_changed;
+            $changed  += $_changed;
 
             $warehouse = new Warehouse($warehouse_key);
             if ($warehouse->id and $_changed) {
@@ -1531,7 +1566,7 @@ class User extends DB_Table {
             $update_op->execute();
             $affected = $update_op->rowCount();
 
-            if ($affected > 0 and $history )   {
+            if ($affected > 0 and $history) {
                 $changed++;
 
 
@@ -1556,6 +1591,21 @@ class User extends DB_Table {
         return $changed;
 
     }
+
+
+    //function get_number_warehouses() {
+    // return count($this->warehouses);
+    //}
+
+
+    // function get_number_stores() {
+    //  return count($this->stores);
+    // }
+
+
+    // function get_number_websites() {
+    //  return count($this->websites);
+    // }
 
     function update_productions($value) {
 
@@ -1616,21 +1666,6 @@ class User extends DB_Table {
 
     }
 
-
-    //function get_number_warehouses() {
-    // return count($this->warehouses);
-    //}
-
-
-    // function get_number_stores() {
-    //  return count($this->stores);
-    // }
-
-
-    // function get_number_websites() {
-    //  return count($this->websites);
-    // }
-
     function delete_production_supplier($to_delete, $history = true) {
 
         $changed = 0;
@@ -1640,7 +1675,7 @@ class User extends DB_Table {
                 "DELETE FROM `User Right Scope Bridge` WHERE `User Key`=%d AND `Scope Key`=%d AND `Scope`='Production' ", $this->id, $production_key
             );
             $_changed = $this->db->exec($sql);
-            $changed += $_changed;
+            $changed  += $_changed;
 
             $production = new Supplier_Production($production_key);
             if ($production->id and $_changed) {
@@ -2106,8 +2141,7 @@ class User extends DB_Table {
             }
             if ($right_data['Right Type'] == 'Delete') {
                 $this->rights_allow['Delete'][$right_data['Right Name']] = 1;
-                $this->rights[$right_data['Right Name']]['Delete']
-                                                                         = 'Delete';
+                $this->rights[$right_data['Right Name']]['Delete']       = 'Delete';
             }
             if ($right_data['Right Type'] == 'Edit') {
                 $this->rights_allow['Edit'][$right_data['Right Name']] = 1;
@@ -2115,8 +2149,7 @@ class User extends DB_Table {
             }
             if ($right_data['Right Type'] == 'Create') {
                 $this->rights_allow['Create'][$right_data['Right Name']] = 1;
-                $this->rights[$right_data['Right Name']]['Create']
-                                                                         = 'Create';
+                $this->rights[$right_data['Right Name']]['Create']       = 'Create';
             }
 
 
@@ -2280,7 +2313,7 @@ class User extends DB_Table {
 
     }
 
-    function add_image($image_key,$options=false) {
+    function add_image($image_key, $options = false) {
 
         $sql = sprintf(
             "SELECT `Image Key` FROM `Image Bridge` WHERE `Subject Key`=%d AND `Subject Type`='User Profile'", $this->id
@@ -2547,7 +2580,6 @@ class User extends DB_Table {
 
     }
 
-
     function update_request_data() {
         switch ($this->data['User Type']) {
             case 'Customer';
@@ -2585,7 +2617,6 @@ class User extends DB_Table {
 
     }
 
-
     function update_table_export_field($table_key, $fields) {
 
 
@@ -2618,7 +2649,6 @@ class User extends DB_Table {
 
     }
 
-
     function get_tab_defaults($tab) {
 
 
@@ -2636,7 +2666,6 @@ class User extends DB_Table {
         exit("User class: error get_tab_defaults not configured: $tab");
     }
 
-
     function create_api_key($data) {
 
         $data['API Key User Key']   = $this->id;
@@ -2651,7 +2680,6 @@ class User extends DB_Table {
         return $this->api_key;
 
     }
-
 
     function delete() {
 
@@ -2693,50 +2721,30 @@ class User extends DB_Table {
 
     }
 
-
     function get_dashboard_items() {
 
         $dashboard_items = array();
 
-        if ($this->data['User Type'] == 'Staff'  ) {
+        if ($this->data['User Type'] == 'Staff') {
 
             $dashboard_items[] = 'pending_orders';
             $dashboard_items[] = 'sales_overview';
             $dashboard_items[] = 'kpis';
 
-        }else if($this->data['User Type'] == 'Contractor'){
+        } else {
+            if ($this->data['User Type'] == 'Contractor') {
 
 
-        }else if($this->data['User Type'] == 'Administrator'){
+            } else {
+                if ($this->data['User Type'] == 'Administrator') {
 
 
+                }
+            }
         }
 
 
         return $dashboard_items;
-
-
-    }
-
-
-    function has_scope($scope){
-
-
-
-        $groups=$this->get_groups();
-        if($groups!=''){
-            include 'conf/user_groups.php';
-
-            foreach(preg_split('/,/',$groups) as $group_key){
-                if(isset($user_groups[$group_key][$scope.'_Scope'] ) and  $user_groups[$group_key][$scope.'_Scope']){
-                    return true;
-                }
-            }
-
-
-        }
-
-        return false;
 
 
     }

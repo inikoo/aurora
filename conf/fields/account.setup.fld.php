@@ -61,13 +61,9 @@ $object_fields = array(
 
                 'id'              => 'Account_Name',
                 'edit'            => 'string',
-                'value'           => htmlspecialchars(
-                    $object->get('Account Name')
-                ),
+                'value'           => htmlspecialchars($object->get('Account Name')),
                 'formatted_value' => $object->get('Name'),
-                'label'           => ucfirst(
-                    $object->get_field_label('Account Name')
-                ),
+                'label'           => ucfirst($object->get_field_label('Account Name')),
                 'required'        => false
 
 

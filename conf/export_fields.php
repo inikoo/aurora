@@ -480,7 +480,7 @@ $export_fields = array(
         ),
         */
         array(
-            'name'    => '`	Location Max Weight`',
+            'name'    => '`Location Max Weight`',
             'label'   => ucfirst(_('max weight')).' (Kg)',
             'checked' => 1
         ),
@@ -496,8 +496,40 @@ $export_fields = array(
         ),
 
 
-    ),
 
+
+
+),
+
+    'parts'                       => array(
+        array(
+            'name'    => '`Part Reference`',
+            'label'   => _('Reference'),
+            'checked' => 1
+        ),
+
+        array(
+            'name'    => '`Part Package Description`',
+            'label'   =>_('SKO description'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Part Cost in Warehouse`',
+            'label'   => _('Stock value per SKO'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Part SKO Barcode`',
+            'label'   => _('SKO Barcode'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Part Tariff Code`',
+            'label'   => _('Tariff code'),
+            'checked' => 1
+        ),
+
+    ),
 
 );
 

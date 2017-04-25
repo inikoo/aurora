@@ -284,12 +284,15 @@ class Staff extends DB_Table {
                     }
                 }
 
+                $user_data['editor']=$this->editor ;
+
+
                 $staff_user = $this->create_user($user_data);
                 //print_r($this->user);
                 if ($this->create_user_error) {
                     $this->extra_msg = '<span class="warning"><i class="fa fa-exclamation-triangle"></i> '._("System user couldn't be created").' ('.$this->create_user_msg.')</span>';
                 }
-
+                $this->editor = $data['editor'];
                 $this->update_roles($data['Staff Position'], 'no_history');
 
 
@@ -1050,7 +1053,7 @@ class Staff extends DB_Table {
         }
 
 
-        $data['editor'] = $this->editor;
+    //    $data['editor'] = $this->editor;
 
         if (!array_key_exists('User Handle', $data) or $data['User Handle'] == '') {
             $this->create_user_error = true;
@@ -1239,6 +1242,7 @@ class Staff extends DB_Table {
         //print_r($this->data);
         if (isset($this->data['Staff User Key']) and $this->data['Staff User Key']) {
             $staff_user = new User($this->data['Staff User Key']);
+            $staff_user->editor=$this->editor;
             if ($staff_user->id) {
                 $staff_user->update_groups($groups);
             }
