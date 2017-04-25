@@ -574,6 +574,10 @@ ALTER TABLE `Store Dimension` ADD `Store Website Key` SMALLINT UNSIGNED NULL DEF
 ALTER TABLE `Store Dimension` ADD `Store Type` ENUM('B2B','B2C','Dropshipping') NULL DEFAULT NULL AFTER `Store Key`;
 update `Store Dimension` set `Store Type`='B2B';
 
+update `Location Dimension` set `Location Warehouse Flag Key`=`Warehouse Flag Key`;
+ALTER TABLE `Location Dimension` DROP `Warehouse Flag`, DROP `Warehouse Flag Key`;
+ALTER TABLE  `Location Dimension` ADD  `Location Has Errors` ENUM(  'Yes',  'No' ) NOT NULL DEFAULT  'No' AFTER  `Location Has Stock` ;
+
 ===============
 
 
@@ -594,5 +598,6 @@ STICKY:::: --> update `Category Dimension` set `Category Scope`=`Category Subjec
 
 costa important do this:
  update `Page Store Dimension` set `Webpage Launch Date`=`Page Store Creation Date` where   `Page Store Creation Date`!='0000-00-00 00:00:00' and   `Page Store Creation Date` is not NULL and `Webpage State`='Online';
+update `Location Dimension` set `Location Warehouse Flag Key`=`Warehouse Flag Key`;
 
 
