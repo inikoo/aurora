@@ -62,11 +62,16 @@ if ($_data['tipo'] == 'timeserie_records') {
 
 } else {
 
+
     if ($_data['tipo'] == 'billingregion_taxcategory.invoices' or $_data['tipo'] == 'billingregion_taxcategory.refunds') {
         $_tipo = 'invoices';
+    } if ($_data['tipo'] == 'in_process_parts' or $_data['tipo'] == 'active_parts' or $_data['tipo'] == 'discontinuing_parts' or $_data['tipo'] == 'discontinued_parts') {
+        $_tipo = 'parts';
     } else {
         $_tipo = $_data['tipo'];
     }
+
+
     if (!isset($export_fields[$_tipo])) {
         $response = array(
             'state' => 405,
