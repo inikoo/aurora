@@ -61,7 +61,7 @@
 
 
                                 <div id="select_interval_control_panel" class="">
-                                    <div id="select_interval_datepicker" class="datepicker" style="float:left">
+                                    <div id="select_interval_datepicker_edit_object" class="datepicker" style="float:left">
                                     </div>
                                     <div class="date_chooser_form">
                                         <div class="label from">{t}From{/t}</div>
@@ -83,7 +83,7 @@
                 $(function () {
 
 
-                    $("#select_interval_datepicker").datepicker({
+                    $("#select_interval_datepicker_edit_object").datepicker({
 
                         altFormat: "yy-mm-dd",
                         defaultDate: new Date("{$field.from}"),
@@ -94,8 +94,8 @@
 
                         beforeShowDay: function (date) {
 
-                            console.log( $.datepicker._defaults.dateFormat)
-                            console.log( $("#select_interval_from").val())
+                           // console.log( $.datepicker._defaults.dateFormat)
+                          //  console.log( $("#select_interval_from").val())
 
                             var date1 = $.datepicker.parseDate($.datepicker._defaults.dateFormat, $("#select_interval_from").val());
                             var date2 = $.datepicker.parseDate($.datepicker._defaults.dateFormat, $("#select_interval_to").val());

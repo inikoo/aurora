@@ -139,6 +139,10 @@ class Location extends DB_Table {
 
             $this->get_data('id', $this->id);
 
+
+
+            return $this;
+
             /*
 
             $sql = sprintf(

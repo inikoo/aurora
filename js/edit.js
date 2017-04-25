@@ -1550,7 +1550,7 @@ function on_changed_address_value(field, address_field, new_address_field_value)
 
     var new_value = get_address_value(field);
 
-    console.log('xxxxx')
+    //console.log('xxxxx')
     //console.log($('#' + field + '_value').val())
     if (new_value != $('#' + field + '_value').val()) {
         $("#" + field + '_editor').addClass('changed')
@@ -1969,8 +1969,6 @@ function save_object_operation(type, element) {
             $(element).find('i.fa').addClass(icon).removeClass('fa-spinner fa-spin')
 
         }
-
-
     })
 
 

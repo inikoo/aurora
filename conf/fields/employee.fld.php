@@ -424,7 +424,7 @@ $object_fields = array(
                 'edit'   => ($edit ? 'date' : ''),
                 'id'     => 'Staff_Valid_To',
 
-                'time'            => '09:00:00',
+                'time'            => '18:00:00',
                 'value'           => $employee->get('Staff Valid To'),
                 'formatted_value' => $employee->get('Valid To'),
                 'label'           => ucfirst(
@@ -692,9 +692,10 @@ if (!$new) {
             array(
                 'id'        => 'terminate_employment',
                 'class'     => 'operation',
+                'render'=>($object->get('Staff Currently Working')=='Yes'?true:false),
                 'value'     => '',
                 'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name(
-                    ).'", "key":"'.$object->id.'"}\' onClick="terminate_employment(this)" class="delete_object disabled">'._("Terminate employment").' <i class="fa fa-hand-scissors-o  fa-flip-horizontal new_button link"></i></span>',
+                    ).'", "key":"'.$object->id.'"}\' onClick="terminate_employment(this)" class="delete_object disabled">'._("Terminate employment").' <i class="fa fa-hand-scissors-o  fa-flip-horizontal new_button "></i></span>',
                 'reference' => '',
                 'type'      => 'operation'
             ),

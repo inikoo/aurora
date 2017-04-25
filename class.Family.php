@@ -216,6 +216,7 @@ class Family extends DB_Table {
             $data['Product Family Store Key']
         );
 
+
         $result = mysql_query($sql);
         if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
             $this->found     = true;

@@ -28,7 +28,7 @@ class Staff extends DB_Table {
 
         $this->table_name    = 'Staff';
         $this->ignore_fields = array('Staff Key');
-        $this->system_user=false;
+        $this->system_user   = false;
 
         if (is_numeric($arg1)) {
             $this->get_data('id', $arg1);
@@ -188,17 +188,16 @@ class Staff extends DB_Table {
             $this->data['Staff Valid From'] = gmdate('Y-m-d H:i:s');
         }
 
-        if($this->data['Staff PIN']==''){
-            $this->data['Staff PIN']='1234';
+        if ($this->data['Staff PIN'] == '') {
+            $this->data['Staff PIN'] = '1234';
         }
-
 
 
         $keys   = '';
         $values = '';
         foreach ($this->data as $key => $value) {
             $keys .= ",`".$key."`";
-            if ($key == 'Staff Valid To' or $key == 'Staff Birthday' or $key=='Staff Working Hours Per Week' or $key=='Staff Warehouse Key' ) {
+            if ($key == 'Staff Valid To' or $key == 'Staff Birthday' or $key == 'Staff Working Hours Per Week' or $key == 'Staff Warehouse Key') {
                 $values .= ','.prepare_mysql($value, true);
 
             } else {
@@ -218,10 +217,10 @@ class Staff extends DB_Table {
             $from = date('Y-m-d');
             $to   = date(
                 'Y-m-d', strtotime(
-                    date('Y', strtotime('now + 1 year')).'-'.$account->get(
-                        'Account HR Start Year'
-                    )
-                )
+                           date('Y', strtotime('now + 1 year')).'-'.$account->get(
+                               'Account HR Start Year'
+                           )
+                       )
             );
 
             $dates = date_range($from, $to);
@@ -243,14 +242,14 @@ class Staff extends DB_Table {
             if ($this->get('Staff Type') == 'Contractor') {
                 $abstract = sprintf(
                     _('Contractor %s created'), sprintf(
-                        '<span class="button" onClick="change_view(\'contractor/%d\')">%s</span>', $this->id, $this->get('Alias')
-                    )
+                                                  '<span class="button" onClick="change_view(\'contractor/%d\')">%s</span>', $this->id, $this->get('Alias')
+                                              )
                 );
             } else {
                 $abstract = sprintf(
                     _('Employee %s created'), sprintf(
-                        '<span class="button" onClick="change_view(\'employee/%d\')">%s</span>', $this->id, $this->get('Alias')
-                    )
+                                                '<span class="button" onClick="change_view(\'employee/%d\')">%s</span>', $this->id, $this->get('Alias')
+                                            )
                 );
 
             }
@@ -288,8 +287,7 @@ class Staff extends DB_Table {
                 $staff_user = $this->create_user($user_data);
                 //print_r($this->user);
                 if ($this->create_user_error) {
-                    $this->extra_msg
-                        = '<span class="warning"><i class="fa fa-exclamation-triangle"></i> '._("System user couldn't be created").' ('.$this->create_user_msg.')</span>';
+                    $this->extra_msg = '<span class="warning"><i class="fa fa-exclamation-triangle"></i> '._("System user couldn't be created").' ('.$this->create_user_msg.')</span>';
                 }
 
                 $this->update_roles($data['Staff Position'], 'no_history');
@@ -456,7 +454,7 @@ class Staff extends DB_Table {
                     $salary_amount .= money(
                             $salary_data['data']['amount_sunday'], $account->get('Account Currency')
                         ).' '._('Sun').') ';
-                    $compress = false;
+                    $compress      = false;
                 }
                 if ($salary_data['data']['type'] == 'prorata_hour') {
 
@@ -464,14 +462,14 @@ class Staff extends DB_Table {
                     if ($salary_data['data']['frequency'] == 'monthly') {
 
                         if (isset($salary_data['data']['amount'])) {
-                            $average_year_amount
-                                = $salary_data['data']['amount'] * $this->data['Staff Working Hours Per Week'] * 52.1429;
+                            $average_year_amount = $salary_data['data']['amount'] * $this->data['Staff Working Hours Per Week'] * 52.1429;
                         } else {
                             $week_hours_day_breakdown = json_decode(
                                 $this->data['Staff Working Hours Per Week Metadata'], true
                             );
-                            $average_year_amount      = ($salary_data['data']['amount_weekdays'] * $week_hours_day_breakdown['Weekdays'] + $salary_data['data']['amount_saturday']
-                                    * $week_hours_day_breakdown['Saturday'] + $salary_data['data']['amount_sunday'] * $week_hours_day_breakdown['Sunday']) * 52.1429;
+                            $average_year_amount      =
+                                ($salary_data['data']['amount_weekdays'] * $week_hours_day_breakdown['Weekdays'] + $salary_data['data']['amount_saturday'] * $week_hours_day_breakdown['Saturday']
+                                    + $salary_data['data']['amount_sunday'] * $week_hours_day_breakdown['Sunday']) * 52.1429;
 
                         }
 
@@ -496,14 +494,14 @@ class Staff extends DB_Table {
 
 
                         if (isset($salary_data['data']['amount'])) {
-                            $average_year_amount
-                                = $salary_data['data']['amount'] * $this->data['Staff Working Hours Per Week'] * 52.1429;
+                            $average_year_amount = $salary_data['data']['amount'] * $this->data['Staff Working Hours Per Week'] * 52.1429;
                         } else {
                             $week_hours_day_breakdown = json_decode(
                                 $this->data['Staff Working Hours Per Week Metadata'], true
                             );
-                            $average_year_amount      = ($salary_data['data']['amount_weekdays'] * $week_hours_day_breakdown['Weekdays'] + $salary_data['data']['amount_saturday']
-                                    * $week_hours_day_breakdown['Saturday'] + $salary_data['data']['amount_sunday'] * $week_hours_day_breakdown['Sunday']) * 52.1429;
+                            $average_year_amount      =
+                                ($salary_data['data']['amount_weekdays'] * $week_hours_day_breakdown['Weekdays'] + $salary_data['data']['amount_saturday'] * $week_hours_day_breakdown['Saturday']
+                                    + $salary_data['data']['amount_sunday'] * $week_hours_day_breakdown['Sunday']) * 52.1429;
 
                         }
 
@@ -525,8 +523,8 @@ class Staff extends DB_Table {
                         if ($this->data['Staff Working Hours Per Week'] == 0) {
                             return sprintf(
                                 _('%s paid every %s day of the month'), $salary_amount, get_ordinal_suffix(
-                                    $salary_data['data']['payday']
-                                )
+                                                                          $salary_data['data']['payday']
+                                                                      )
                             );
                         }
 
@@ -572,8 +570,8 @@ class Staff extends DB_Table {
 
                     $salary = sprintf(
                         _('%s paid every %s (&#8776;%s per year)'), $salary_amount, $day_names[$salary_data['data']['payday']], money(
-                            $salary_data['data']['amount'] * 52.1429, $account->get('Account Currency')
-                        )
+                                                                      $salary_data['data']['amount'] * 52.1429, $account->get('Account Currency')
+                                                                  )
                     );
 
 
@@ -633,13 +631,13 @@ class Staff extends DB_Table {
 
                         $start = date(
                             'H:i', strtotime(
-                                '2000-01-01 '.$working_hours['data'][6]['s']
-                            )
+                                     '2000-01-01 '.$working_hours['data'][6]['s']
+                                 )
                         );
                         $end   = date(
                             'H:i', strtotime(
-                                '2000-01-01 '.$working_hours['data'][6]['e']
-                            )
+                                     '2000-01-01 '.$working_hours['data'][6]['e']
+                                 )
                         );
 
                         $breaks = $this->get_breaks(
@@ -658,13 +656,13 @@ class Staff extends DB_Table {
                             if ($day_key >= 6) {
                                 $start  = date(
                                     'H:i', strtotime(
-                                        '2000-01-01 '.$day_working_hours['s']
-                                    )
+                                             '2000-01-01 '.$day_working_hours['s']
+                                         )
                                 );
                                 $end    = date(
                                     'H:i', strtotime(
-                                        '2000-01-01 '.$day_working_hours['e']
-                                    )
+                                             '2000-01-01 '.$day_working_hours['e']
+                                         )
                                 );
                                 $breaks = $this->get_breaks(
                                     $day_working_hours['b']
@@ -738,10 +736,14 @@ class Staff extends DB_Table {
 
             case 'Staff User Warehouses':
             case 'Staff User Productions':
-            $field=preg_replace('/^Staff /','',$key);
+                $field = preg_replace('/^Staff /', '', $key);
 
-                if(!is_object( $this->system_user))$this->get_user();
-                if(is_object( $this->system_user)) {return $this->system_user->get($field);}
+                if (!is_object($this->system_user)) {
+                    $this->get_user();
+                }
+                if (is_object($this->system_user)) {
+                    return $this->system_user->get($field);
+                }
                 break;
             case 'User Groups':
             case 'User Stores':
@@ -749,9 +751,11 @@ class Staff extends DB_Table {
 
             case 'User Warehouses':
             case 'User Productions':
-                $field=preg_replace('/^User /','',$key);
-                if(!is_object( $this->system_user))$this->get_user();
-                if(is_object( $this->system_user)) {
+                $field = preg_replace('/^User /', '', $key);
+                if (!is_object($this->system_user)) {
+                    $this->get_user();
+                }
+                if (is_object($this->system_user)) {
                     return $this->system_user->get($field);
                 }
                 break;
@@ -860,8 +864,7 @@ class Staff extends DB_Table {
                         break;
 
                     default:
-                        $formatted_value
-                            = $this->data['Staff Currently Working'];
+                        $formatted_value = $this->data['Staff Currently Working'];
                 }
 
                 return $formatted_value;
@@ -936,8 +939,8 @@ class Staff extends DB_Table {
                         return '<span class="highlight">'._('Clocked out').'</span> '.$clocked_out_time;
                     } else {
                         return '<span class="highlight success">'._(
-                            'Clocked in'
-                        ).'</span> ';
+                                'Clocked in'
+                            ).'</span> ';
                     }
                 }
 
@@ -980,6 +983,30 @@ class Staff extends DB_Table {
         $formatted_breaks = preg_replace('/, $/', '', $formatted_breaks);
 
         return $formatted_breaks.')';
+    }
+
+    function get_user() {
+
+
+        $sql = sprintf(
+            'SELECT `User Key` FROM `User Dimension` WHERE `User Type`=%s AND `User Parent Key`=%d ', prepare_mysql(($this->get('Staff Type') == 'Contractor' ? 'Contractor' : 'Staff')), $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $this->system_user = new User($row['User Key']);
+
+                return $this->system_user;
+            } else {
+                return false;
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
     }
 
     function get_supervisors() {
@@ -1059,33 +1086,6 @@ class Staff extends DB_Table {
         $this->user              = $user;
 
         return $user;
-
-
-    }
-
-
-    function get_user(){
-
-
-
-        $sql = sprintf('SELECT `User Key` FROM `User Dimension` WHERE `User Type`=%s AND `User Parent Key`=%d ',
-                       prepare_mysql( ($this->get('Staff Type') == 'Contractor'?'Contractor':'Staff')  ),
-                       $this->id);
-
-        if ($result=$this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $this->system_user= new User($row['User Key']);
-                return  $this->system_user;
-        	}else{
-                return false;
-            }
-        }else {
-        	print_r($error_info=$this->db->errorInfo());
-        	print "$sql\n";
-        	exit;
-        }
-
-
 
 
     }
@@ -1252,19 +1252,17 @@ class Staff extends DB_Table {
             'new', $data
         );
 
-        $this->create_timesheet_record_error = $this->timesheet_record->error;
-        $this->create_timesheet_record_duplicated
-                                             = $this->timesheet_record->duplicated;
-        $this->create_timesheet_record_msg
-                                             = $this->timesheet_record->msg;
+        $this->create_timesheet_record_error      = $this->timesheet_record->error;
+        $this->create_timesheet_record_duplicated = $this->timesheet_record->duplicated;
+        $this->create_timesheet_record_msg        = $this->timesheet_record->msg;
 
         if ($this->timesheet_record->new) {
 
             $timesheet_data = array(
                 'Timesheet Date'      => date(
                     "Y-m-d", strtotime(
-                        $this->timesheet_record->data['Timesheet Record Date'].' +0:00'
-                    )
+                               $this->timesheet_record->data['Timesheet Record Date'].' +0:00'
+                           )
                 ),
                 'Timesheet Staff Key' => $this->id,
                 'editor'              => $this->editor
@@ -1302,8 +1300,9 @@ class Staff extends DB_Table {
                 if ($value == '') {
                     $formatted_value = '';
                 } else {
-                    list($value, $formatted_value)
-                        = $this->get_formatted_number($value);
+                    list(
+                        $value, $formatted_value
+                        ) = $this->get_formatted_number($value);
                 }
                 $this->update_field($field, $value, 'no_history');
                 $this->update_field(
@@ -1315,17 +1314,20 @@ class Staff extends DB_Table {
                 require_once 'utils/date_functions.php';
 
 
+
+
+                if($this->get('Staff Valid To')!='' and   strtotime($value)>strtotime($this->get('Staff Valid To'))){
+                    $this->error=true;
+                    $this->msg=_("Working from must be before the end of employment ");
+                    return;
+
+                }
+
+
+
                 $this->update_field($field, $value, $options);
-                $from = date(
-                    'Y-m-d', strtotime($this->get('Staff Valid From'))
-                );
-                $to   = date(
-                    'Y-m-d', strtotime(
-                        date('Y', strtotime('now + 1 year')).'-'.$account->get(
-                            'Account HR Start Year'
-                        )
-                    )
-                );
+                $from = date('Y-m-d', strtotime($this->get('Staff Valid From')));
+                $to   = date('Y-m-d', strtotime(date('Y', strtotime('now + 1 year')).'-'.$account->get('Account HR Start Year')));
 
                 if ($from and $to) {
 
@@ -1353,6 +1355,53 @@ class Staff extends DB_Table {
 
 
                 break;
+
+            case 'Staff Valid To':
+                require_once 'utils/date_functions.php';
+
+
+               
+
+                if(strtotime($this->get('Staff Valid From'))>strtotime($value)){
+                    $this->error=true;
+                    $this->msg=_("Working from must be before the end of employment ");
+                    return;
+
+                }
+
+
+
+                $this->update_field($field, $value, $options);
+                $from = date('Y-m-d', strtotime($this->get('Staff Valid From')));
+                $to   = date('Y-m-d', strtotime(date('Y', strtotime('now + 1 year')).'-'.$account->get('Account HR Start Year')));
+
+                if ($from and $to) {
+
+
+                    $dates = date_range($from, $to);
+                    foreach ($dates as $date) {
+                        $timesheet = $this->create_timesheet(
+                            strtotime($date.' 00:00:00'), ''
+                        );
+                        $timesheet->update_number_clocking_records();
+                        $timesheet->process_clocking_records_action_type();
+                        if ($timesheet->get('Timesheet Clocking Records') > 0) {
+
+
+                            $timesheet->update_clocked_time();
+                            $timesheet->update_working_time();
+                            $timesheet->update_unpaid_overtime();
+                        }
+
+
+                    }
+
+
+                }
+
+
+                break;
+
             case('Staff Working Hours'):
                 require_once 'utils/date_functions.php';
 
@@ -1429,7 +1478,7 @@ class Staff extends DB_Table {
                 $this->get_user();
 
 
-                if(is_object( $this->system_user)) {
+                if (is_object($this->system_user)) {
                     $this->system_user->editor = $this->editor;
                     $user_field                = preg_replace('/^Staff /', '', $field);
 
@@ -1442,29 +1491,25 @@ class Staff extends DB_Table {
 
 
                     $this->other_fields_updated = array(
-                        'Staff_User_Stores' => array(
-                            'field'           => 'Staff_User_Stores',
-                            'render'          => $this->system_user->has_scope('Stores')
+                        'Staff_User_Stores'      => array(
+                            'field'  => 'Staff_User_Stores',
+                            'render' => $this->system_user->has_scope('Stores')
                         ),
-                        'Staff_User_Warehouses' => array(
-                            'field'           => 'Staff_User_Warehouses',
-                            'render'          => $this->system_user->has_scope('Warehouses')
-                        ), 'Staff_User_Websites' => array(
-                            'field'           => 'Staff_User_Websites',
-                            'render'          => $this->system_user->has_scope('Websites')
-                        ), 'Staff_User_Productions' => array(
-                            'field'           => 'Staff_User_Productions',
-                            'render'          => $this->system_user->has_scope('Productions')
+                        'Staff_User_Warehouses'  => array(
+                            'field'  => 'Staff_User_Warehouses',
+                            'render' => $this->system_user->has_scope('Warehouses')
                         ),
-
-
-
-
-
+                        'Staff_User_Websites'    => array(
+                            'field'  => 'Staff_User_Websites',
+                            'render' => $this->system_user->has_scope('Websites')
+                        ),
+                        'Staff_User_Productions' => array(
+                            'field'  => 'Staff_User_Productions',
+                            'render' => $this->system_user->has_scope('Productions')
+                        ),
 
 
                     );
-
 
 
                 }
@@ -1744,10 +1789,10 @@ class Staff extends DB_Table {
             $from = date('Y-m-d');
             $to   = date(
                 'Y-m-d', strtotime(
-                    date('Y', strtotime('now + 1 year')).'-'.$account->get(
-                        'Account HR Start Year'
-                    )
-                )
+                           date('Y', strtotime('now + 1 year')).'-'.$account->get(
+                               'Account HR Start Year'
+                           )
+                       )
             );
 
             $dates = date_range($from, $to);
@@ -1833,7 +1878,7 @@ class Staff extends DB_Table {
                 if ($this->data['Staff Type'] == 'Contractor') {
                     $label = _('end of contract');
                 } else {
-                    $label = _('end of employement');
+                    $label = _('end of employment');
                 }
 
                 break;
@@ -1902,7 +1947,6 @@ class Staff extends DB_Table {
             case 'User Productions':
                 $label = _('Authorized manufactures');
                 break;
-
 
 
             default:
@@ -2139,14 +2183,14 @@ class Staff extends DB_Table {
         if ($this->get('Staff Type') == 'Contractor') {
             $abstract = sprintf(
                 _('Contractor %s deleted'), sprintf(
-                    '<span class="button" onClick="change_view(\'contractor/%d\')">%s</span>', $this->id, $this->get('Alias')
-                )
+                                              '<span class="button" onClick="change_view(\'contractor/%d\')">%s</span>', $this->id, $this->get('Alias')
+                                          )
             );
         } else {
             $abstract = sprintf(
                 _('Employee %s deleted'), sprintf(
-                    '<span class="button" onClick="change_view(\'employee/%d\')">%s</span>', $this->id, $this->get('Alias')
-                )
+                                            '<span class="button" onClick="change_view(\'employee/%d\')">%s</span>', $this->id, $this->get('Alias')
+                                        )
             );
 
         }
@@ -2172,6 +2216,34 @@ class Staff extends DB_Table {
 
     }
 
+    function terminate_employment() {
+
+
+        if ($this->get('Staff Currently Working') == 'No') {
+            $this->error = true;
+            $this->msg   = _('Employee is no longer working');
+
+            return;
+
+        }
+
+
+        $this->update(
+            array(
+
+                'Staff Currently Working' => 'No',
+                'Staff User Active'=>'No',
+                'Staff Valid To'          => gmdate('Y-m-d H:i:s')
+
+            )
+
+        );
+
+
+
+
+
+    }
 
 }
 

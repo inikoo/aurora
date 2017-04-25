@@ -47,9 +47,7 @@ $smarty->assign(
         json_encode(
             array(
                 'default_country'     => strtolower($default_country),
-                'preferred_countries' => array_map(
-                    'strtolower', preferred_countries($default_country)
-                ),
+                'preferred_countries' => array_map('strtolower', preferred_countries($default_country)),
             )
         )
     )
@@ -58,6 +56,10 @@ $smarty->assign(
 
 $smarty->assign('state', $state);
 $smarty->assign('object_fields', $object_fields);
+
+$smarty->assign('js_code', 'js/injections/employee.'.(_DEVEL ? '' : 'min.').'js');
+
+
 $html = $smarty->fetch('edit_object.tpl');
 
 ?>
