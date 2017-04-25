@@ -1360,7 +1360,7 @@ class Staff extends DB_Table {
                 require_once 'utils/date_functions.php';
 
 
-               
+
 
                 if(strtotime($this->get('Staff Valid From'))>strtotime($value)){
                     $this->error=true;

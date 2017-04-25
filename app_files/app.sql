@@ -4062,7 +4062,7 @@ CREATE TABLE `Image Dimension` (
   `Image Height` smallint(5) unsigned NOT NULL,
   `Image File Size` mediumint(8) unsigned NOT NULL,
   `Image File Format` enum('jpeg','png','gif') NOT NULL DEFAULT 'jpeg',
-  `Image Original Filename` varchar(255) NOT NULL,
+  `Image Original Filename` varchar(255) DEFAULT NULL COMMENT 'To delete',
   `Image Public` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Last Modify Date` datetime DEFAULT NULL,
   PRIMARY KEY (`Image Key`),
@@ -5296,8 +5296,7 @@ CREATE TABLE `Location Dimension` (
   KEY `Location Code` (`Location Code`),
   KEY `Location Mainly Used For` (`Location Mainly Used For`),
   KEY `Location File As` (`Location File As`(16)),
-  KEY `Location Warehouse Flag Key` (`Location Warehouse Flag Key`),
-  KEY `Location Has Errors` (`Location Has Errors`)
+  KEY `Location Warehouse Flag Key` (`Location Warehouse Flag Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -8131,10 +8130,10 @@ CREATE TABLE `Part Dimension` (
   `Part Acc To Day Updated` datetime DEFAULT NULL,
   `Part Acc Ongoing Intervals Updated` datetime DEFAULT NULL,
   `Part Acc Previous Intervals Updated` datetime DEFAULT NULL,
-  `Part Number No Active Products` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Part Number Deliveries` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Part Number Purchase Orders` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Part Number Supplier Parts` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Part Number No Active Products` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Part Number Active Products` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Part Number History Records` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Part Number Attachments` smallint(5) unsigned NOT NULL DEFAULT '0',
@@ -10796,10 +10795,9 @@ CREATE TABLE `Product Dimension` (
   `Product Acc To Day Updated` datetime DEFAULT NULL,
   `Product Acc Ongoing Intervals Updated` datetime DEFAULT NULL,
   `Product Acc Previous Intervals Updated` datetime DEFAULT NULL,
-  `Product Number Customers Favored` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Product Number Deals Historic` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Product Number Deals` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Product Number Customers Favorite` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Product Number Customers Favored` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Product Number Customers` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Product Number Orders` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Product Number Parts` smallint(5) unsigned NOT NULL DEFAULT '0',
@@ -14208,6 +14206,7 @@ DROP TABLE IF EXISTS `Store Dimension`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Store Dimension` (
   `Store Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Store Type` enum('B2B','B2C','Dropshipping') DEFAULT NULL,
   `Store Code` varchar(16) DEFAULT NULL,
   `Store Name` varchar(255) DEFAULT NULL,
   `Store Contact Name` varchar(64) DEFAULT NULL,
@@ -14220,6 +14219,7 @@ CREATE TABLE `Store Dimension` (
   `Short Marketing Description` varchar(255) DEFAULT NULL,
   `Store Telecom Format` varchar(255) NOT NULL DEFAULT 'GBR',
   `Store State` enum('Normal','Closed') NOT NULL DEFAULT 'Normal',
+  `Store Website Key` smallint(5) unsigned DEFAULT NULL,
   `Store Valid From` datetime DEFAULT NULL,
   `Store Valid To` datetime DEFAULT NULL,
   `Store Number Days on Sale` mediumint(8) unsigned NOT NULL DEFAULT '0',
@@ -17948,6 +17948,8 @@ CREATE TABLE `Website Dimension` (
   `Website Number Products` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Website Number Out of Stock Products` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Website Number Users` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Website Alt Family Category Key` mediumint(9) DEFAULT NULL,
+  `Website Alt Department Category Key` mediumint(9) DEFAULT NULL,
   PRIMARY KEY (`Website Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -18121,4 +18123,4 @@ CREATE TABLE `todo_users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-04-23  1:07:26
+-- Dump completed on 2017-04-25 14:21:24
