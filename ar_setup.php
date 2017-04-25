@@ -120,7 +120,7 @@ switch ($tipo) {
         );
 
         if ($data['step'] == 'root_user') {
-            setup_root_user($data);
+            setup_root_user($data,$editor);
         } elseif (in_array(
             $data['step'], array(
                 'add_employee',
@@ -201,25 +201,21 @@ break;
 
 }
 
-function setup_root_user($data) {
+function setup_root_user($data,$editor) {
 
     include_once 'class.User.php';
 
     $root_user = new User('Administrator');
+    $root_user->editor=$editor;
 
-
-    $root_user->update($data['fields_data']);
+    $root_user->update($data['fields_data'],'no_history');
 
     if (!$root_user->error) {
 
         $account                                   = new Account();
-        $setup_data                                = $account->get(
-            'Setup Metadata'
-        );
+        $setup_data                                = $account->get('Setup Metadata');
         $setup_data['steps']['root_user']['setup'] = true;
-        $account->update(
-            array('Account Setup Metadata' => json_encode($setup_data)), 'no_history'
-        );
+        $account->update(array('Account Setup Metadata' => json_encode($setup_data)), 'no_history');
 
         $done     = true;
         $redirect = 'account/setup/state';

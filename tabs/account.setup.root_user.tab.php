@@ -33,13 +33,9 @@ $object_fields = array(
 
                 'id'              => 'User_Password_Recovery_Email',
                 'edit'            => 'email',
-                'value'           => $root_user->get(
-                    'User Password Recovery Email'
-                ),
+                'value'           => $root_user->get('User Password Recovery Email'),
                 'formatted_value' => $root_user->get('Password Recovery Email'),
-                'label'           => ucfirst(
-                    $root_user->get_field_label('User Password Recovery Email')
-                ),
+                'label'           => ucfirst($root_user->get_field_label('User Password Recovery Email')),
                 'invalid_msg'     => get_invalid_message('email'),
                 'required'        => true,
                 'type'            => 'value'

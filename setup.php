@@ -134,7 +134,27 @@ if (!$account->id) {
     if ($db->exec($sql)) {
         $account = new Account();
 
-        $sql = sprintf(
+
+
+
+        $history_data = array(
+            'History Abstract' => sprintf(_('%s account created'), $account->get('Account Code')),
+            'History Details'  => '',
+            'Action'           => 'created',
+            'Subject'          => 'Administrator',
+            'Subject Key'      => $account->id,
+            'Author Name'      => 'Aurora'
+        );
+
+
+
+        $account->add_subject_history($history_data, true, 'No', 'Changes', $account->get_object_name(), $account->id);
+
+
+
+
+
+    $sql = sprintf(
             "INSERT INTO `Account Data` ( `Account Key`) VALUES (%d)", $account->id
 
         );
@@ -201,8 +221,8 @@ if (!$setup_data['steps']['root_user']['setup']) {
         'User Preferred Locale' => 'en_GB.UTF-8',
         'User Created'          => gmdate('Y-m-d H:i:s'),
         'editor'                => array(
-            'Author Name'  => '',
-            'Author Alias' => '',
+            'Author Name'  => 'Aurora',
+            'Author Alias' => 'Aurora',
             'Author Type'  => '',
             'Author Key'   => '',
             'User Key'     => 0,
@@ -229,10 +249,10 @@ if (!$setup_data['steps']['root_user']['setup']) {
     require_once 'conf/data_sets.php';
 
     $editor = array(
-        'Author Name'  => '',
-        'Author Alias' => '',
-        'Author Type'  => '',
-        'Author Key'   => '',
+        'Author Name'  => $user->data['User Alias'],
+        'Author Alias' => $user->data['User Alias'],
+        'Author Type'  => $user->data['User Type'],
+        'Author Key'   => $user->data['User Parent Key'],
         'User Key'     => $user->id,
         'Date'         => gmdate('Y-m-d H:i:s')
     );

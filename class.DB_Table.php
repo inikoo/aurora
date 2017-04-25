@@ -331,6 +331,8 @@ abstract class DB_Table extends stdClass {
 
         global $account;
 
+        //print_r($raw_data);
+
         $editor_data = $this->get_editor_data();
         if ($this->no_history) {
             return;
@@ -365,8 +367,10 @@ abstract class DB_Table extends stdClass {
             $data['User Key'] = $editor_data['User Key'];
         }
 
+        //  print_r($data);
 
-        if (($data['Subject'] == '' or !$data['Subject Key']) and $data['Subject'] != 'System') {
+
+        if ($data['Subject'] == '' or (!$data['Subject Key']) and in_array($data['Subject'], array('System'))) {
             include_once 'class.User.php';
             $user = new User($data['User Key']);
             if ($user->id) {
@@ -536,7 +540,9 @@ abstract class DB_Table extends stdClass {
             prepare_mysql($data['History Abstract']), prepare_mysql($data['History Details']), $data['User Key'], prepare_mysql($data['Deep']), prepare_mysql($data['Metadata'])
         );
 
-        //  print "$sql\n";
+        //    print "$sql\n";
+
+
         $this->db->exec($sql);
 
         $history_key = $this->db->lastInsertId();
@@ -606,19 +612,19 @@ abstract class DB_Table extends stdClass {
     function update_history_records_data() {
 
 
-        $table=$this->get_object_name().' History Bridge';
+        $table = $this->get_object_name().' History Bridge';
 
-       // $table=($this->get_object_name() == 'Category' ? $this->subject_table_name : $this->get_object_name()).' History Bridge';
+        // $table=($this->get_object_name() == 'Category' ? $this->subject_table_name : $this->get_object_name()).' History Bridge';
 
         switch ($this->get_object_name()) {
 
             case 'Page':
                 $where_field = 'Webpage Key';
-                $table='Webpage History Bridge';
+                $table       = 'Webpage History Bridge';
                 break;
 
             case 'Part':
-               $where_field = 'Part SKU';
+                $where_field = 'Part SKU';
                 break;
             case 'Product':
                 $where_field = 'Product ID';
@@ -629,13 +635,9 @@ abstract class DB_Table extends stdClass {
         }
 
 
-
-
         $sql = sprintf(
             'SELECT count(*) AS num FROM `%s` WHERE  `%s`=%d ', $table, $where_field, $this->id
         );
-
-
 
 
         $number = 0;
@@ -652,7 +654,7 @@ abstract class DB_Table extends stdClass {
 
 
         $this->update(
-            array(  ($this->get_object_name() == 'Category' ? $this->subject_table_name : $this->get_object_name()).' Number History Records' => $number), 'no_history'
+            array(($this->get_object_name() == 'Category' ? $this->subject_table_name : $this->get_object_name()).' Number History Records' => $number), 'no_history'
         );
 
 
@@ -690,9 +692,7 @@ abstract class DB_Table extends stdClass {
 
     function add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $table_name, $table_key) {
 
-        $history_key = $this->add_table_history(
-            $history_data, $force_save, '', '', $table_name, $table_key
-        );
+        $history_key = $this->add_table_history($history_data, $force_save, '', '', $table_name, $table_key);
 
         $sql = sprintf(
             "INSERT INTO `%s History Bridge` VALUES (%d,%d,%s,'No',%s)", $table_name, $table_key, $history_key, prepare_mysql($deletable), prepare_mysql($type)

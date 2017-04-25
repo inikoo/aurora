@@ -578,6 +578,9 @@ update `Location Dimension` set `Location Warehouse Flag Key`=`Warehouse Flag Ke
 ALTER TABLE `Location Dimension` DROP `Warehouse Flag`, DROP `Warehouse Flag Key`;
 ALTER TABLE  `Location Dimension` ADD  `Location Has Errors` ENUM(  'Yes',  'No' ) NOT NULL DEFAULT  'No' AFTER  `Location Has Stock` ;
 
+
+ALTER TABLE `History Dimension` CHANGE `Direct Object` `Direct Object` ENUM('Account','After Sale','Delivery Note','Category','Warehouse','Warehouse Area','Shelf','Location','Company Department','Company Area','Position','Store','User','Product','Address','Customer','Note','Order','Telecom','Email','Company','Contact','FAX','Telephone','Mobile','Work Telephone','Office Fax','Supplier','Family','Department','Attachment','Supplier Product','Part','Site','Page','Invoice','Category Customer','Category Part','Category Invoice','Category Supplier','Category Product','Category Family','Purchase Order','Supplier Delivery Note','Supplier Invoice','Webpage','Website') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+
 ===============
 
 

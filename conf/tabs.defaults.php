@@ -1517,6 +1517,8 @@ $tab_defaults = array(
         'f_period'      => 'ytd',
         'elements_type' => each($elements_options['parts']) ['key'],
         'elements'      => $elements_options['parts'],
+        'export_fields' => $export_fields['parts']
+
     ),
 
     'inventory.parts_no_sko_barcode.wget' => array(
@@ -1537,7 +1539,9 @@ $tab_defaults = array(
         'rpp'         => 100,
         'f_period'    => 'all',
         'rpp_options' => $default_rrp_options,
-        'f_field'     => 'reference'
+        'f_field'     => 'reference',
+        'export_fields' => $export_fields['parts']
+
     ),
     'inventory.discontinuing_parts' => array(
         'view'        => 'overview',
@@ -1546,7 +1550,9 @@ $tab_defaults = array(
         'rpp'         => 100,
         'f_period'    => 'all',
         'rpp_options' => $default_rrp_options,
-        'f_field'     => 'reference'
+        'f_field'     => 'reference',
+        'export_fields' => $export_fields['parts']
+
     ),
     'inventory.in_process_parts'    => array(
         'view'        => 'overview',
@@ -1554,7 +1560,9 @@ $tab_defaults = array(
         'sort_order'  => 1,
         'rpp'         => 100,
         'rpp_options' => $default_rrp_options,
-        'f_field'     => 'reference'
+        'f_field'     => 'reference',
+        'export_fields' => $export_fields['parts']
+
     ),
     'category.part_categories'      => array(
         'view'        => 'overview',
