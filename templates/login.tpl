@@ -1,4 +1,4 @@
-{strip}
+
     <?xml version="1.0" encoding="utf-8"?>
     <!DOCTYPE html
             PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -19,6 +19,9 @@
             <script type="text/javascript" src="js/libs/sha256.js"></script>
             <script type="text/javascript" src="js/libs/aes.js"></script>
             <script type="text/javascript" src="js/login/login.js"></script>
+            <script type="text/javascript" src="js/libs/jquery.backstretch.min.js"></script>
+
+
         {else}
             <link href="/css/libs.min.css" rel="stylesheet">
             <link href="/css/login.min.css" rel="stylesheet">
@@ -57,6 +60,15 @@
             </div>
         </div>
     </div>
+
+
+    <script>
+
+        $.backstretch('{$bg_image}');
+    </script>
+
+
+
+
     </body>
     </html>
-{/strip}

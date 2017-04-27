@@ -62,7 +62,7 @@ class Product extends Asset {
             }
         } elseif ($key == 'store_code') {
             $sql = sprintf(
-                "SELECT * FROM `Product Dimension` WHERE `Product Store Key`=%s  AND `Product Code`=%s   ORDER BY CASE `Product Status`
+                "SELECT * FROM `Product Dimension` WHERE `Product Store Key`=%d  AND `Product Code`=%s   ORDER BY CASE `Product Status`
     WHEN 'Active' THEN 1
     WHEN 'InProcess' THEN 2
     WHEN 'Suspended' THEN 3
@@ -70,7 +70,6 @@ class Product extends Asset {
     ELSE 5
   END; ", $id, prepare_mysql($aux_id)
             );
-
 
 
             if ($this->data = $this->db->query($sql)->fetch()) {
@@ -1205,13 +1204,44 @@ class Product extends Asset {
 
         switch ($field) {
 
+            case 'Product Webpage Name':
+
+
+
+
+
+                if (!is_object($this->webpage)) {
+                    $this->get_webpage();
+                }
+                $this->webpage->update(
+                    array(
+                        'Page Store Title' => $value,
+                        'Page Short Title' => $value,
+                    ), 'no_history'
+                );
+
+                $this->webpage->update(
+                    array(
+
+                        'Webpage Name'       => $value
+                    ), $options
+                );
+
+                $this->updated = $this->webpage->updated;
+
+
+
+
+
+                break;
+
             case 'Product Webpage Browser Title':
                 if (!is_object($this->webpage)) {
                     $this->get_webpage();
                 }
 
-
-                $this->webpage->update(array('Page Title' => $value), $options);
+                $this->webpage->update(array('Page Title' => $value), 'no_history');
+                $this->webpage->update(array('Webpage Browser Title' => $value), $options);
                 $this->updated = $this->webpage->updated;
 
                 break;
@@ -1223,11 +1253,19 @@ class Product extends Asset {
                 $this->webpage->update(
                     array(
                         'Page Store Description' => $value
+                    ), 'no_history'
+                );
+
+
+                $this->webpage->update(
+                    array(
+                        'Webpage Meta Description' => $value
                     ), $options
                 );
 
-                $this->updated = $this->webpage->updated;
 
+
+                $this->updated = $this->webpage->updated;
                 break;
 
 
@@ -1253,19 +1291,7 @@ class Product extends Asset {
                 $this->updated = $this->webpage->updated;
 
                 break;
-            case 'Product Webpage Name':
 
-                $this->webpage->update(
-                    array(
-                        'Page Store Title' => $value,
-                        'Page Short Title' => $value,
-                        'Page Title'       => $value
-                    ), $options
-                );
-
-                $this->updated = $this->webpage->updated;
-
-                break;
             case 'Product Website Node Parent Key':
 
                 $this->get_webpage();
@@ -1858,14 +1884,10 @@ class Product extends Asset {
                 );
                 if ($root_category->id) {
                     $root_category->editor = $this->editor;
-                    $family                = $root_category->create_category(
-                        array('Category Code' => $value)
-                    );
+                    $family                = $root_category->create_category(array('Category Code' => $value));
                     if ($family->id) {
 
-                        $this->update_field_switcher(
-                            'Product Family Category Key', $family->id, $options
-                        );
+                        $this->update_field_switcher('Product Family Category Key', $family->id, $options);
 
 
                     } else {

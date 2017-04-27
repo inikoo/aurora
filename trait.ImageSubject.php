@@ -115,7 +115,10 @@ trait ImageSubject {
                     $content_data = $this->get('Content Data');
                     $image_src    = '/image_root.php?size=small&id='.$image->id;
 
-                    if ($scope_data['section'] == 'items') {
+                    if ($scope_data['section'] == 'mute') {
+                        return $image;
+                    }
+                    elseif ($scope_data['section'] == 'items') {
 
                         foreach ($content_data['sections'] as $section_index => $section) {
 
@@ -166,7 +169,8 @@ trait ImageSubject {
                         $content_data['sections'][$section_index]['items'] = get_website_section_items($this->db, $content_data['sections'][$section_index]);
                         // print_r( $content_data['sections'][$section_index]['items']);
 
-                    } elseif ($scope_data['section'] == 'panels_in_section') {
+                    }
+                    elseif ($scope_data['section'] == 'panels_in_section') {
 
 
                         foreach ($content_data['sections'] as $section_index => $section) {
@@ -190,15 +194,17 @@ trait ImageSubject {
                         //  print_r( $content_data);
 
 
-                    } else {
-                        if ($scope_data['section'] == 'panels') {
+                    }
+                    elseif ($scope_data['section'] == 'panels') {
                             foreach ($content_data['panels'] as $panel_key => $panel) {
                                 if ($panel['id'] == $scope_data['block']) {
                                     $content_data['panels'][$panel_key]['image_src'] = $image_src;
                                 }
                             }
 
-                        } else {
+                        }
+
+                    else {
                             if (isset($content_data[$scope_data['section']]['blocks'][$scope_data['block']])) {
                                 $content_data[$scope_data['section']]['blocks'][$scope_data['block']]['image_src'] = $image_src;
                             } else {
@@ -208,7 +214,7 @@ trait ImageSubject {
                                 );
                             }
                         }
-                    }
+
 
 
                     $this->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');

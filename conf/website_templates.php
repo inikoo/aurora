@@ -17,15 +17,15 @@ function website_templates_config($website_type) {
 
 			'templates'=>array(
 
-				'header'=>array('scope'=>'Header','device'=>'Desktop'),
-				'footer'=>array('scope'=>'Footer','device'=>'Desktop'),
+				//'header'=>array('scope'=>'Header','device'=>'Desktop'),
+				//'footer'=>array('scope'=>'Footer','device'=>'Desktop'),
 				'homepage'=>array('scope'=>'Home','device'=>'Desktop'),
 				'login'=>array('scope'=>'Login','device'=>'Desktop'),
 				'register'=>array('scope'=>'Register','device'=>'Desktop'),
 				'reset_password'=>array('scope'=>'ResetPwd','device'=>'Desktop'),
 				'profile'=>array('scope'=>'Profile','device'=>'Desktop'),
 				'orders'=>array('scope'=>'Orders','device'=>'Desktop'),
-				'hub'=>array('scope'=>'Hub','device'=>'Desktop'),
+				//'hub'=>array('scope'=>'Hub','device'=>'Desktop'),
 				'contact'=>array('scope'=>'Contact','device'=>'Desktop'),
 
 				'basket'=>array('scope'=>'Basket','device'=>'Desktop'),
@@ -35,15 +35,15 @@ function website_templates_config($website_type) {
 				'product'=>array('scope'=>'Product','device'=>'Desktop'),
 				'blank'=>array('scope'=>'Blank','device'=>'Desktop'),
 				
-				'header.mob'=>array('scope'=>'Header','device'=>'Mobile'),
-				'drawer.mob'=>array('scope'=>'Footer','device'=>'Mobile'),
+				//'header.mob'=>array('scope'=>'Header','device'=>'Mobile'),
+				//'drawer.mob'=>array('scope'=>'Footer','device'=>'Mobile'),
 				'homepage.mob'=>array('scope'=>'Home','device'=>'Mobile'),
 				'login.mob'=>array('scope'=>'Login','device'=>'Mobile'),
 				'register.mob'=>array('scope'=>'Register','device'=>'Mobile'),
 				'reset_password.mob'=>array('scope'=>'ResetPwd','device'=>'Mobile'),
 				'profile.mob'=>array('scope'=>'Profile','device'=>'Mobile'),
 				'orders.mob'=>array('scope'=>'Orders','device'=>'Mobile'),
-				'hub.mob'=>array('scope'=>'Hub','device'=>'Mobile'),
+				//'hub.mob'=>array('scope'=>'Hub','device'=>'Mobile'),
 				'contact.mob'=>array('scope'=>'Contact','device'=>'Mobile'),
 				'basket.mob'=>array('scope'=>'Basket','device'=>'Mobile'),
 				'checkout.mob'=>array('scope'=>'Checkout','device'=>'Mobile'),

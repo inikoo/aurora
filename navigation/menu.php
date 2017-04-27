@@ -252,7 +252,7 @@ if ($user->can_view('stores')) {
 
     } else {
         $nav_menu[] = array(
-            '<i class="fa fa-cube fa-fw"></i>',
+            '<i class="fa fa-shopping-bag fa-fw"></i>',
             _('Products'),
             'stores',
             'products',
