@@ -6841,7 +6841,7 @@ CREATE TABLE `Page Store Dimension` (
   `Page Store See Also Type` enum('Auto','Manual') NOT NULL DEFAULT 'Auto',
   `Page Store Content Display Type` enum('Source','Template') NOT NULL DEFAULT 'Source',
   `Page Store Content Template Filename` varchar(128) DEFAULT NULL,
-  `Webpage Template Filename` varchar(128) NOT NULL,
+  `Webpage Template Filename` varchar(128) DEFAULT NULL,
   `Page Use Site Head Include` enum('Yes','No') NOT NULL DEFAULT 'Yes',
   `Page Head Include` text,
   `Page Use Site Body Include` enum('Yes','No') NOT NULL DEFAULT 'Yes',
@@ -18130,4 +18130,4 @@ CREATE TABLE `todo_users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-04-27 15:19:51
+-- Dump completed on 2017-04-27 16:47:42
