@@ -338,7 +338,6 @@ class Category extends DB_Table {
 		*/
 
 
-
             $this->new = true;
 
             $created_msg = _('Category created');
@@ -1004,7 +1003,7 @@ class Category extends DB_Table {
 
                     case 'Parts':
 
-                        return number($this->data['Part Category In Process']  +$this->data['Part Category Active'] +$this->data['Part Category Discontinuing']  );
+                        return number($this->data['Part Category In Process'] + $this->data['Part Category Active'] + $this->data['Part Category Discontinuing']);
                         break;
 
                     case 'In Process':
@@ -1745,9 +1744,10 @@ class Category extends DB_Table {
                         exit;
                     }
 
+                    include_once 'class.Account.php';
+                    $account = new Account($this->db);
 
-
-                    if(function_exists('mysql_query')) {
+                    if (function_exists('mysql_query') and $account->get('Account Code') == 'AW') {
 
                         $fam_data = array(
 
@@ -3028,7 +3028,6 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                     );
 
 
-
                     $this->updated = $this->webpage->updated;
 
                     break;
@@ -3069,7 +3068,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                     $this->webpage->update(
                         array(
 
-                            'Webpage Name'       => $value
+                            'Webpage Name' => $value
                         ), $options
                     );
 
@@ -3141,7 +3140,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
     function associate_subject($subject_key, $force_associate = false, $other_value = '', $options = '') {
 
 
-       // print "caca";
+        // print "caca";
 
         if ($this->data['Category Branch Type'] == 'Root') {
             $this->msg = _("Subject can't be associated with category").' (Node is Root)';
@@ -3155,7 +3154,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
         }
 
 
-     //   print $this->data['Category Subject Multiplicity']."\n";
+        //   print $this->data['Category Subject Multiplicity']."\n";
 
         if ($this->data['Category Subject Multiplicity'] == 'Yes' or $force_associate) {
 
@@ -3189,7 +3188,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                                 ' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']
                             ).' ('.$this->data['Category Label'].')';
 
-           $this->update_part_category_status();
+                        $this->update_part_category_status();
                         break;
                     case('Supplier'):
                         include_once 'class.Supplier.php';
