@@ -562,13 +562,13 @@ class User extends DB_Table {
 
                     $websites = array();
                     $sql      = sprintf(
-                        "SELECT `Scope Key`,`Site Code`,`Site Name` AS `key` FROM `User Right Scope Bridge`  LEFT JOIN `Site Dimension` ON (`Site Key`=`Scope Key`) WHERE `User Key`=%d AND `Scope`='Website'",
+                        "SELECT `Scope Key`,`Website Code`,`Website Name` AS `key` FROM `User Right Scope Bridge`  LEFT JOIN `Website Dimension` ON (`Website Key`=`Scope Key`) WHERE `User Key`=%d AND `Scope`='Website'",
                         $this->id
                     );
 
                     foreach ($this->db->query($sql) as $row) {
-                        if ($row['Site Code'] != '') {
-                            $websites[] = $row['Site Code'];
+                        if ($row['Website Code'] != '') {
+                            $websites[] = $row['Website Code'];
                         }
                     }
                     $websites = join($websites, ', ');

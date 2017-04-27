@@ -2821,7 +2821,8 @@ class Store extends DB_Table {
 
     function create_website($data) {
 
-
+        include_once 'class.Account.php';
+        $account=new Account($this->db);
 
 
         $this->new_object = false;
@@ -2868,6 +2869,9 @@ class Store extends DB_Table {
 
 
                 $this->update_websites_data();
+
+                $account->update_stores_data();
+
             } else {
                 $this->error = true;
                 if ($website->found) {
