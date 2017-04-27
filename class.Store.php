@@ -1135,7 +1135,7 @@ class Store extends DB_Table {
 
         $new = 0;
         $sql = sprintf(
-            'SELECT count(*) AS num FROM `Product Dimension` WHERE `Product Store Key` =%d AND `Product Valid From` >= CURDATE() - INTERVAL 14 DAY', $this->id
+            'SELECT count(*) AS num FROM `Product Dimension` WHERE  `Product Status` in ("Active","Discontinuing") and  `Product Store Key` =%d AND `Product Valid From` >= CURDATE() - INTERVAL 14 DAY', $this->id
 
         );
         if ($result = $this->db->query($sql)) {
@@ -1164,6 +1164,7 @@ class Store extends DB_Table {
 
         $active_products       = 0;
         $suspended_products    = 0;
+        $discontinuing_products=0;
         $discontinued_products = 0;
 
         $elements_active_web_status_numbers = array(
@@ -1186,8 +1187,10 @@ class Store extends DB_Table {
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
-                if ($row['Product Status'] == 'Active' or $row['Product Status'] == 'Discontinuing') {
-                    $active_products += $row['num'];
+                if ($row['Product Status'] == 'Active' ) {
+                    $active_products = $row['num'];
+                } elseif ($row['Product Status'] == 'Discontinuing') {
+                    $discontinuing_products = $row['num'];
                 } elseif ($row['Product Status'] == 'Suspended') {
                     $suspended_products = $row['num'];
                 } elseif ($row['Product Status'] == 'Discontinued') {
@@ -1200,6 +1203,8 @@ class Store extends DB_Table {
             exit;
         }
 
+
+        $active_products=$active_products+$discontinuing_products;
 
         $sql = sprintf(
             "SELECT count(*) AS num ,`Product Web State` AS web_state FROM  `Product Dimension` P WHERE `Product Store Key`=%d AND `Product Status` IN ('Active','Discontinuing') GROUP BY  `Product Web State`   ",
@@ -1227,6 +1232,7 @@ class Store extends DB_Table {
             array(
                 'Store Active Products'         => $active_products,
                 'Store Suspended Products'      => $suspended_products,
+                'Store Discontinuing Products'   => $discontinuing_products,
                 'Store Discontinued Products'   => $discontinued_products,
                 'Store Active Web For Sale'     => $elements_active_web_status_numbers['For Sale'],
                 'Store Active Web Out of Stock' => $elements_active_web_status_numbers['Out of Stock'],
@@ -2558,7 +2564,6 @@ class Store extends DB_Table {
             if ($product->new) {
                 $this->new_object  = true;
                 $this->new_product = true;
-                $this->update_product_data();
 
                 if ($product_parts_data) {
 
@@ -2601,6 +2606,8 @@ class Store extends DB_Table {
                     $website->create_product_webpage($product->id);
                 }
 
+                $this->update_product_data();
+                $this->update_new_products();
 
             } else {
 
