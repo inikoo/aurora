@@ -1192,7 +1192,7 @@ class User extends DB_Table {
 
         $this->updated = false;
 
-        if ($this->data['User Type'] != 'Staff') {
+        if ( !( $this->data['User Type'] == 'Staff' or  $this->data['User Type'] == 'Contractor' ) ) {
             $this->error = true;
 
             return;
@@ -1307,7 +1307,7 @@ class User extends DB_Table {
     function update_websites($value) {
         $this->updated = false;
 
-        if ($this->data['User Type'] != 'Staff') {
+        if ( !( $this->data['User Type'] == 'Staff' or  $this->data['User Type'] == 'Contractor' ) ) {
             $this->error = true;
 
             return;
@@ -1462,7 +1462,7 @@ class User extends DB_Table {
         global $account;
         $this->updated = false;
 
-        if ($this->data['User Type'] != 'Staff') {
+        if ( !( $this->data['User Type'] == 'Staff' or  $this->data['User Type'] == 'Contractor' ) ) {
             $this->error = true;
 
             return;
@@ -1614,7 +1614,7 @@ class User extends DB_Table {
 
         $this->updated = false;
 
-        if ($this->data['User Type'] != 'Staff') {
+        if ( !( $this->data['User Type'] == 'Staff' or  $this->data['User Type'] == 'Contractor' ) ) {
             $this->error = true;
 
             return;
