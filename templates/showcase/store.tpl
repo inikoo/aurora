@@ -125,14 +125,25 @@
                 <tbody class="info">
 
 
+
                 <tr class="main ">
                     <td colspan=2>
                         <table class="mesh" style="width:100%;;margin-bottom:10px;margin-top:10px">
                             <tr >
-                                <td style="width:25%" class="New_Products align_center discreet" title="{t}New products{/t}"><i class="fa fa-child" aria-hidden="true" title="{t}New products (less than 2 weeks){/t}"></i> {$store->get('New Products')}</td>
-                                <td style="width:25%" class="Active_Products align_center" title="{t}Active products{/t}"><i class="fa fa-cube" aria-hidden="true"></i> {$store->get('Active Products')}</td>
-                                <td style="width:25%" class="Discontinuing_Products align_center discreet " title="{t}Suspended products{/t}"><i class="fa fa-cube discreet warning" aria-hidden="true" ></i> {$store->get('Suspended Products')}</td>
-                                <td style=";width:25%;" class="Discontinuing_Products align_center very_discreet" title="{t}Discontinued products{/t}"><i class="fa fa-cube very_discreet" aria-hidden="true""></i> {$store->get('Discontinued Products')}</td>
+                                <td style="width:25%" class="New_Products align_center discreet" title="{t}New products{/t}"><i class="fa fa-child" aria-hidden="true" title="{t}New products (less than 2 weeks){/t}"></i> {$store->get('New Products')}
+
+
+                                </td>
+                                <td style="width:50%" class="Active_Products align_center" title="{t}Active products{/t}"><i class="fa fa-cube" aria-hidden="true"></i> {$store->get('Active Products')}
+                                    <span  class="Discontinuing_Products align_center discreet padding_left_10 " title="{t}Discontinuing products{/t}"> ( <i class="fa fa-cube discreet warning" aria-hidden="true" ></i> {$store->get('Discontinuing Products')} )</span>
+
+
+                                </td>
+                                <td style=";width:25%;" class="Discontinued_Products align_center very_discreet" title="{t}Discontinued products{/t}"><i class="fa fa-cube very_discreet" aria-hidden="true""></i>
+                                    {$store->get('Discontinued Products')}
+                                    <span class='italic' title="{t}Suspended product{/t}">+ {$store->get('Suspended Products')} </span>
+
+                                </td>
                             </tr>
                         </table>
                         <table style="width:100%;;margin-bottom:10px" class="mesh">

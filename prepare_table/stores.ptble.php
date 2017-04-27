@@ -85,6 +85,6 @@ $table
 $sql_totals
     = "select count(Distinct S.`Store Key`) as num from $table  $where  ";
 
-$fields = "*";
+$fields = "`Store Name`,`Store Code`,S.`Store Key`,`Store New Products`,`Store Active Products`,`Store Suspended Products`,`Store Discontinued Products`,`Store Discontinuing Products`";
 
 ?>

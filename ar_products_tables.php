@@ -97,8 +97,12 @@ function stores($_data, $db, $user) {
             'access' => (in_array($data['Store Key'], $user->stores) ? '' : '<i class="fa fa-lock "></i>'),
 
             'id'   => (integer)$data['Store Key'],
-            'code' => $data['Store Code'],
+            'code' => sprintf('<span class="link" onClick="change_view(\'store/%d\')" >%s</span>',$data['Store Key'],$data['Store Code']),
             'name' => $data['Store Name'],
+            'in_process'=>number($data['Store New Products']),
+            'active'=>number($data['Store Active Products']),
+            'discontinuing'=>number($data['Store Discontinuing Products']),
+            'discontinued'=>number($data['Store Discontinued Products']),
 
         );
 
