@@ -548,6 +548,9 @@ function categories($_data, $db, $user) {
     }
 
 
+
+
+
     $response = array(
         'resultset' => array(
             'state'         => 200,
@@ -1350,6 +1353,8 @@ function product_categories_products($_data, $db, $user) {
         );
 
     }
+
+  //  print_r($record_data);
 
     $response = array(
         'resultset' => array(

@@ -581,6 +581,9 @@ ALTER TABLE  `Location Dimension` ADD  `Location Has Errors` ENUM(  'Yes',  'No'
 
 ALTER TABLE `History Dimension` CHANGE `Direct Object` `Direct Object` ENUM('Account','After Sale','Delivery Note','Category','Warehouse','Warehouse Area','Shelf','Location','Company Department','Company Area','Position','Store','User','Product','Address','Customer','Note','Order','Telecom','Email','Company','Contact','FAX','Telephone','Mobile','Work Telephone','Office Fax','Supplier','Family','Department','Attachment','Supplier Product','Part','Site','Page','Invoice','Category Customer','Category Part','Category Invoice','Category Supplier','Category Product','Category Family','Purchase Order','Supplier Delivery Note','Supplier Invoice','Webpage','Website') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 
+ALTER TABLE `Page Store Dimension` CHANGE `Webpage Scope` `Webpage Scope` ENUM('Product','Category Categories','Category Products','System') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+
+
 ===============
 
 

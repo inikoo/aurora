@@ -6825,9 +6825,11 @@ CREATE TABLE `Page Store Dimension` (
   `Webpage Website Key` smallint(5) unsigned DEFAULT NULL,
   `Webpage Type Key` smallint(5) unsigned DEFAULT NULL,
   `Webpage Store Key` smallint(5) unsigned DEFAULT NULL,
-  `Webpage Scope` enum('Product','Category Categories','Category Products') DEFAULT NULL,
+  `Webpage Scope` enum('Product','Category Categories','Category Products','System') DEFAULT NULL,
   `Webpage Scope Key` mediumint(9) DEFAULT NULL,
   `Webpage Scope Metadata` varchar(255) DEFAULT NULL,
+  `Webpage Creation Date` datetime(1) DEFAULT NULL,
+  `Webpage Number See Also Links` tinyint(3) unsigned DEFAULT '0',
   `Page Parent Key` mediumint(8) unsigned NOT NULL,
   `Page Parent Code` varchar(64) DEFAULT NULL,
   `Page Store Section Type` enum('System','Info','Department','Family','Product','FamilyCategory','ProductCategory') NOT NULL DEFAULT 'System',
@@ -6839,6 +6841,7 @@ CREATE TABLE `Page Store Dimension` (
   `Page Store See Also Type` enum('Auto','Manual') NOT NULL DEFAULT 'Auto',
   `Page Store Content Display Type` enum('Source','Template') NOT NULL DEFAULT 'Source',
   `Page Store Content Template Filename` varchar(128) DEFAULT NULL,
+  `Webpage Template Filename` varchar(128) NOT NULL,
   `Page Use Site Head Include` enum('Yes','No') NOT NULL DEFAULT 'Yes',
   `Page Head Include` text,
   `Page Use Site Body Include` enum('Yes','No') NOT NULL DEFAULT 'Yes',
@@ -6880,6 +6883,10 @@ CREATE TABLE `Page Store Dimension` (
   `Page Store Content Data` text,
   `Page Store Content Published Data` text,
   `Webpage Version` tinyint(3) unsigned NOT NULL DEFAULT '1',
+  `Webpage Browser Title` varchar(255) DEFAULT NULL,
+  `Webpage Name` varchar(255) DEFAULT NULL,
+  `Category Webpage Meta Description` text,
+  `Webpage URL` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`Page Key`),
   UNIQUE KEY `Page Site Key_2` (`Page Site Key`,`Page Code`),
   UNIQUE KEY `Webpage Code` (`Webpage Code`,`Page Site Key`) USING BTREE,
@@ -18123,4 +18130,4 @@ CREATE TABLE `todo_users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-04-25 17:52:57
+-- Dump completed on 2017-04-27 15:19:51

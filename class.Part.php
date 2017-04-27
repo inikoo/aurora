@@ -152,8 +152,7 @@ class Part extends Asset {
 
         if (array_key_exists('Part Family Category Code', $data)) {
 
-            $root_category = new Category(
-                $account->get('Account Part Family Category Key')
+            $root_category = new Category($account->get('Account Part Family Category Key')
             );
             if ($root_category->id) {
                 $root_category->editor = $this->editor;

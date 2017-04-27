@@ -3008,15 +3008,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                     $this->updated = $this->webpage->updated;
 
                     break;
-                case 'Category Webpage Browser Title':
-                    if (!is_object($this->webpage)) {
-                        $this->get_webpage();
-                    }
 
-                    $this->webpage->update(array('Page Title' => $value), $options);
-                    $this->updated = $this->webpage->updated;
-
-                    break;
 
                 case 'Category Webpage Meta Description':
                     if (!is_object($this->webpage)) {
@@ -3025,8 +3017,17 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                     $this->webpage->update(
                         array(
                             'Page Store Description' => $value
+                        ), 'no_history'
+                    );
+
+
+                    $this->webpage->update(
+                        array(
+                            'Webpage Meta Description' => $value
                         ), $options
                     );
+
+
 
                     $this->updated = $this->webpage->updated;
 
@@ -3062,13 +3063,31 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                         array(
                             'Page Store Title' => $value,
                             'Page Short Title' => $value,
-                            'Page Title'       => $value
+                        ), 'no_history'
+                    );
+
+                    $this->webpage->update(
+                        array(
+
+                            'Webpage Name'       => $value
                         ), $options
                     );
 
                     $this->updated = $this->webpage->updated;
 
                     break;
+
+                case 'Category Webpage Browser Title':
+                    if (!is_object($this->webpage)) {
+                        $this->get_webpage();
+                    }
+
+                    $this->webpage->update(array('Page Title' => $value), 'no_history');
+                    $this->webpage->update(array('Webpage Browser Title' => $value), $options);
+                    $this->updated = $this->webpage->updated;
+
+                    break;
+
                 case 'Category Website Node Parent Key':
                     $this->get_webpage();
                     $this->get_webpage();

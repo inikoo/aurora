@@ -78,6 +78,13 @@ if ($account->id and $account->get('Account State') == 'Active') {
     }
 
 
+    $bg_image="/art/bg/".strtolower($account->get('Account Country Code')).".jpg";
+
+    $smarty->assign('bg_image', $bg_image);
+
+
+
+
     if ($display_device_version=='mobile') {
         $smarty->display("login.mobile.tpl");
     } else {

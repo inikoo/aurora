@@ -184,6 +184,7 @@ class Website extends DB_Table {
             "INSERT INTO `Website Dimension` %s %s", $keys, $values
         );
 
+
         if ($this->db->exec($sql)) {
             $this->id  = $this->db->lastInsertId();
             $this->msg = _("Website added");
@@ -198,16 +199,16 @@ class Website extends DB_Table {
 
 
             include 'conf/webpage_types.php';
-
             foreach ($webpage_types as $webpage_type) {
-
-
                 $sql = sprintf(
                     'INSERT INTO `Webpage Type Dimension` (`Webpage Type Website Key`,`Webpage Type Code`) VALUES (%d,%s) ', $this->id, prepare_mysql($webpage_type['code'])
                 );
-
                 $this->db->exec($sql);
+            }
 
+            include_once 'conf/website_system_webpages.php';
+            foreach (website_system_webpages_config($this->get('Website Type')) as $website_system_webpages) {
+                $this->create_system_webpage($website_system_webpages);
             }
 
 
@@ -217,6 +218,51 @@ class Website extends DB_Table {
                 $this->db->exec($sql);
 
             }
+
+
+            include_once 'class.Store.php';
+            $store = new Store($this->get('Website Store Key'));
+
+            $account         = new Account($this->db);
+            $account->editor = $this->editor;
+
+            $families_category_data = array(
+                'Category Code'      => 'Web.Fam.'.$store->get('Store Code'),
+                'Category Label'     => 'Web families',
+                'Category Scope'     => 'Product',
+                'Category Subject'   => 'Product',
+                'Category Store Key' => $this->get('Website Store Key')
+
+
+            );
+
+
+
+
+
+            $families = $account->create_category($families_category_data);
+
+
+            $departments_category_data = array(
+                'Category Code'      => 'Web.Dept.'.$store->get('Store Code'),
+                'Category Label'     => 'Web departments',
+                'Category Scope'     => 'Product',
+                'Category Subject'   => 'Category',
+                'Category Store Key' => $this->get('Website Store Key')
+
+
+            );
+
+
+            $departments = $account->create_category($departments_category_data);
+
+            $this->update(
+                array(
+
+                    'Website Alt Family Category Key'     => $families->id,
+                    'Website Alt Department Category Key' => $departments->id,
+                ), 'no_history'
+            );
 
 
             return;
@@ -338,6 +384,75 @@ class Website extends DB_Table {
         }
 
         return '';
+    }
+
+    function create_system_webpage($data) {
+
+        include_once 'class.Webpage_Type.php';
+        include_once 'class.Page.php';
+
+
+        // print_r($data);
+
+        $webpage_type = new Webpage_Type('website_code', $this->id, $data['Webpage Type']);
+
+        unset($data['Webpage Type']);
+
+
+        $page_data = array(
+
+            'Page Code'                            => $data['Webpage Code'],
+            'Page URL'                             => $this->data['Website URL'].'/'.strtolower($data['Webpage Code']),
+            'Page Site Key'                        => $this->id,
+            'Page Type'                            => 'Store',
+            'Page Store Key'                       => $this->get('Website Store Key'),
+            'Page Store Creation Date'             => gmdate('Y-m-d H:i:s'),
+            'Number See Also Links'                => 0,
+            'Page Store Content Display Type'      => $data['Webpage Template Filename'],
+            'Page Store Content Template Filename' => 'product',
+            'Page Title'                           => $data['Webpage Name'],
+            'Page Short Title'                     => $data['Webpage Browser Title'],
+            'Page Parent Key'                      => 0,
+            'Page State'                           => 'Online',
+            'Page Store Description'=>$data['Webpage Meta Description'],
+
+
+            'Webpage Scope'                 => $data['Webpage Scope'],
+            'Webpage Scope Key'             => '',
+            'Webpage Website Key'           => $this->id,
+            'Webpage Store Key'             => $this->get('Website Store Key'),
+            'Webpage Type Key'              => $webpage_type->id,
+            'Webpage Code'                  => $data['Webpage Code'],
+            'Webpage Template Filename'     => $data['Webpage Template Filename'],
+            'Webpage Number See Also Links' => 0,
+            'Webpage Creation Date'         => gmdate('Y-m-d H:i:s'),
+            'Webpage UrL'                   => $this->data['Website URL'].'/'.strtolower($data['Webpage Code']),
+            'Webpage Name'                  => $data['Webpage Name'],
+            'Webpage Browser Title'                 => $data['Webpage Browser Title'],
+            'Webpage State'                 => 'Online',
+            'Webpage Meta Description'=>$data['Webpage Meta Description'],
+
+
+            'editor' => $this->editor,
+        );
+
+
+        $page = new Page('find', $page_data, 'create');
+
+
+        $webpage_type->update_number_webpages();
+
+        $page->update_version();
+
+
+        $this->new_page     = $page->new;
+        $this->new_page_key = $page->id;
+        $this->msg          = $page->msg;
+        $this->error        = $page->error;
+
+
+        return $page->id;
+
     }
 
     function create_no_product_webnodes() {
@@ -755,10 +870,16 @@ class Website extends DB_Table {
         include_once 'class.Page.php';
 
 
+        include_once 'class.Category.php';
+
+        $category = new Category($category_key);
+
         $sql = sprintf(
-            "SELECT `Page Key` FROM `Page Store Dimension` WHERE `Webpage Scope`='Category' AND `Webpage Scope Key`=%d  AND `Webpage Website Key`=%d ", $category_key, $this->id
+            "SELECT `Page Key` FROM `Page Store Dimension` WHERE `Webpage Scope`=%s AND `Webpage Scope Key`=%d  AND `Webpage Website Key`=%d ",
+            prepare_mysql(($category->get('Category Subject') == 'Product' ? 'Category Products' : 'Category Categories')), $category_key, $this->id
         );
 
+        //print "$sql\n";
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
@@ -773,22 +894,22 @@ class Website extends DB_Table {
 
         //-- to delete
 
-        $sql=sprintf('select `Site Default Header Key`,`Site Default Footer Key` from `Site Dimension` where `Site Key`=%d',$this->id);
-        if ($result=$this->db->query($sql)) {
+        $sql = sprintf('SELECT `Site Default Header Key`,`Site Default Footer Key` FROM `Site Dimension` WHERE `Site Key`=%d', $this->id);
+        if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-                $header_key=$row['Site Default Header Key'];
-                $footer_key=$row['Site Default Footer Key'];
+                $header_key = $row['Site Default Header Key'];
+                $footer_key = $row['Site Default Footer Key'];
+            } else {
+                $header_key = 0;
+                $footer_key = 0;
             }
-        }else {
-            print_r($error_info=$this->db->errorInfo());
+        } else {
+            print_r($error_info = $this->db->errorInfo());
             print "$sql\n";
             exit;
         }
         //
 
-        include_once 'class.Category.php';
-
-        $category = new Category($category_key);
 
         $page_code = $this->get_unique_code($category->get('Code'), 'Webpage');
 
@@ -797,25 +918,26 @@ class Website extends DB_Table {
 
 
         $page_data = array(
-            'Page Code'                => $page_code,
-            'Page URL'                 => $this->data['Website URL'].'/'.strtolower($page_code),
-            'Page Site Key'            => $this->id,
-            'Page Type'                => 'Store',
-            'Page Store Key'           => $category->get('Category Store Key'),
-            'Page Store Creation Date' => gmdate('Y-m-d H:i:s'),
-            'Number See Also Links'    => ($category->get('Category Subject') == 'Product' ? 5 : 0),
-            'editor'                   => $this->editor,
-
-
-            'Webpage Scope'                        => ($category->get('Category Subject') == 'Product' ? 'Category Products' : 'Category Categories'),
-            'Webpage Scope Key'                    => $category->id,
-            'Webpage Website Key'                  => $this->id,
-            'Webpage Store Key'                    => $category->get('Category Store Key'),
-            'Webpage Type Key'                     => $webpage_type->id,
-            'Webpage Code'                         => $page_code,
+            'Page Code'                            => $page_code,
+            'Page URL'                             => $this->data['Website URL'].'/'.strtolower($page_code),
+            'Page Site Key'                        => $this->id,
+            'Page Type'                            => 'Store',
+            'Page Store Key'                       => $category->get('Category Store Key'),
+            'Page Store Creation Date'             => gmdate('Y-m-d H:i:s'),
+            'Number See Also Links'                => ($category->get('Category Subject') == 'Product' ? 5 : 0),
             'Page Store Content Display Type'      => 'Template',
             'Page Store Content Template Filename' => ($category->get('Category Subject') == 'Product' ? 'products_showcase' : 'categories_showcase'),
 
+
+            'Webpage Scope'                 => ($category->get('Category Subject') == 'Product' ? 'Category Products' : 'Category Categories'),
+            'Webpage Scope Key'             => $category->id,
+            'Webpage Website Key'           => $this->id,
+            'Webpage Store Key'             => $category->get('Category Store Key'),
+            'Webpage Type Key'              => $webpage_type->id,
+            'Webpage Code'                  => $page_code,
+            'Webpage Template Filename'     => ($category->get('Category Subject') == 'Product' ? 'products_showcase' : 'categories_showcase'),
+            'Webpage Number See Also Links' => ($category->get('Category Subject') == 'Product' ? 5 : 0),
+            'Webpage Creation Date'         => gmdate('Y-m-d H:i:s'),
 
             'Page Parent Key'                        => $category->id,
             'Page Parent Code'                       => $category->get('Code'),
@@ -830,14 +952,21 @@ class Website extends DB_Table {
             'Page Short Title'                       => $category->get('Label'),
             'Page Store Title'                       => $category->get('Label'),
             'Page Header Key'                        => $header_key,
-            'Page Footer Key'                        => $footer_key
+            'Page Footer Key'                        => $footer_key,
             //-------------------
+            'editor'                                 => $this->editor,
 
         );
 
 
         //print_r($page_data);
         $page = new Page('find', $page_data, 'create');
+
+        if ($page->new) {
+            $page->reset_object();
+        }
+
+
         //  print_r($page->data);
 
         $webpage_type->update_number_webpages();
@@ -963,7 +1092,6 @@ class Website extends DB_Table {
         return $suffix;
     }
 
-
     function create_footer($data) {
 
         include_once 'class.WebsiteFooter.php';
@@ -1048,7 +1176,6 @@ class Website extends DB_Table {
 
     }
 
-
     function create_product_webpage($product_id) {
 
         include_once 'class.Webpage_Type.php';
@@ -1056,7 +1183,7 @@ class Website extends DB_Table {
 
 
         //include_once 'class.Site.php';
-       // $site = new Site($this->id);
+        // $site = new Site($this->id);
 
 
         $sql = sprintf(
@@ -1081,19 +1208,21 @@ class Website extends DB_Table {
         $page_code = $this->get_unique_code($product->get('Code'), 'Webpage');
 
 
-
         //-- to delete
 
-        $sql=sprintf('select `Site Default Header Key`,`Site Default Footer Key` from `Site Dimension` where `Site Key`=%d',$this->id);
-        if ($result=$this->db->query($sql)) {
+        $sql = sprintf('SELECT `Site Default Header Key`,`Site Default Footer Key` FROM `Site Dimension` WHERE `Site Key`=%d', $this->id);
+        if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-                $header_key=$row['Site Default Header Key'];
-                $footer_key=$row['Site Default Footer Key'];
-        	}
-        }else {
-        	print_r($error_info=$this->db->errorInfo());
-        	print "$sql\n";
-        	exit;
+                $header_key = $row['Site Default Header Key'];
+                $footer_key = $row['Site Default Footer Key'];
+            } else {
+                $header_key = 0;
+                $footer_key = 0;
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
         //
 
@@ -1102,14 +1231,15 @@ class Website extends DB_Table {
 
 
         $page_data = array(
-            'Page Code'                => $page_code,
-            'Page URL'                 => $this->data['Website URL'].'/'.strtolower($page_code),
-            'Page Site Key'            => $this->id,
-            'Page Type'                => 'Store',
-            'Page Store Key'           => $product->get('Product Store Key'),
-            'Page Store Creation Date' => gmdate('Y-m-d H:i:s'),
-            'Number See Also Links'    => 5,
-            'editor'                   => $this->editor,
+            'Page Code'                            => $page_code,
+            'Page URL'                             => $this->data['Website URL'].'/'.strtolower($page_code),
+            'Page Site Key'                        => $this->id,
+            'Page Type'                            => 'Store',
+            'Page Store Key'                       => $product->get('Product Store Key'),
+            'Page Store Creation Date'             => gmdate('Y-m-d H:i:s'),
+            'Number See Also Links'                => 5,
+            'Page Store Content Display Type'      => 'Template',
+            'Page Store Content Template Filename' => 'product',
 
 
             'Webpage Scope'                          => 'Product',
@@ -1118,8 +1248,9 @@ class Website extends DB_Table {
             'Webpage Store Key'                      => $product->get('Product Store Key'),
             'Webpage Type Key'                       => $webpage_type->id,
             'Webpage Code'                           => $page_code,
-            'Page Store Content Display Type'        => 'Template',
-            'Page Store Content Template Filename'   => 'product',
+            'Webpage Template Filename'              => 'product',
+            'Webpage Number See Also Links'          => 5,
+            'Webpage Creation Date'                  => gmdate('Y-m-d H:i:s'),
 
 
             //--------   to remove ??
@@ -1136,8 +1267,10 @@ class Website extends DB_Table {
             'Page Short Title'                       => $product->get('Name'),
             'Page Store Title'                       => $product->get('Name'),
             'Page Header Key'                        => $header_key,
-            'Page Footer Key'                        => $footer_key
+            'Page Footer Key'                        => $footer_key,
             //-------------------
+
+            'editor' => $this->editor
 
         );
 
@@ -1211,7 +1344,6 @@ class Website extends DB_Table {
 
     }
 
-
     function add_image($raw_data, $options = false) {
 
         include_once 'class.Image.php';
@@ -1236,9 +1368,9 @@ class Website extends DB_Table {
             $options = json_decode($options, true);
         }
 
-       // print_r($data);
-       // print_r($raw_data);
-       // print_r($options);
+        // print_r($data);
+        // print_r($raw_data);
+        // print_r($options);
 
 
         $scope_data = json_decode($raw_data['Image Subject Object Image Scope'], true);
@@ -1265,13 +1397,12 @@ class Website extends DB_Table {
             imagecopyresized($im, $source, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
         }
 
-      //  print_r($im);
+        //  print_r($im);
 
         $sql = sprintf(
             "INSERT INTO `Website Image Dimension`  (`Website Image Website Key`,`Website Image Scope`,`Website Image Scope Key`,`Website Image Data`,`Website Image Date`,`Website Image Format`) VALUES (%d,%s,%s,%s,%s,%s) ",
             $this->id, prepare_mysql($scope_data['scope']), prepare_mysql($scope_data['scope_key'], true), "'".addslashes($image->get_image_blob($im, $image_format))."'",
-            prepare_mysql(gmdate('Y-m-d H;i:s')),
-            prepare_mysql($image_format)
+            prepare_mysql(gmdate('Y-m-d H;i:s')), prepare_mysql($image_format)
 
         );
         $this->db->exec($sql);

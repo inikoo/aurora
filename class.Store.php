@@ -262,7 +262,7 @@ class Store extends DB_Table {
 
             $departments_category_data = array(
                 'Category Code'      => 'Dept.'.$this->get('Store Code'),
-                'Category Label'     => 'Families',
+                'Category Label'     => 'Departments',
                 'Category Scope'     => 'Product',
                 'Category Subject'   => 'Category',
                 'Category Store Key' => $this->id
@@ -2344,7 +2344,7 @@ class Store extends DB_Table {
 
         if (array_key_exists('Family Category Code', $data)) {
             include_once 'class.Category.php';
-            $root_category = new Category($this->get('Store Family Category Key'));
+            $root_category = new Category('id',$this->get('Store Family Category Key'),false,$this->db);
             if ($root_category->id) {
                 $root_category->editor = $this->editor;
                 $family                = $root_category->create_category(array('Category Code' => $data['Family Category Code']));
@@ -2814,13 +2814,35 @@ class Store extends DB_Table {
 
     function create_website($data) {
 
+
+
+
         $this->new_object = false;
 
         $data['editor'] = $this->editor;
 
 
         $data['Website Store Key']  = $this->id;
-        $data['Website Valid From'] = gmdate('Y-m-d H:i:s');
+        $data['Website Locale']  = $this->get('Store Locale');
+
+        $data['Website From'] = gmdate('Y-m-d H:i:s');
+
+
+        switch ($this->get('Store Type')){
+
+            case 'B2B':
+                $data['Website Type']  = 'EcomB2B';
+                break;
+            case 'Dropshipping':
+                $data['Website Type']  = 'EcomDS';
+                break;
+            default:
+                $data['Website Type']  = 'Ecom';
+
+
+        }
+
+
 
 
         $website = new Website('find', $data, 'create');
@@ -2830,6 +2852,14 @@ class Store extends DB_Table {
 
             if ($website->new) {
                 $this->new_object = true;
+
+
+                $this->update_field_switcher('Store Website Key',$this->id,'no_history');
+
+
+
+
+
                 $this->update_websites_data();
             } else {
                 $this->error = true;

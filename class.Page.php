@@ -30,11 +30,14 @@ class Page extends DB_Table {
     var $set_currency_exchange = 1;
 
 
-    function Page($arg1 = false, $arg2 = false, $arg3 = false) {
+    function Page($arg1 = false, $arg2 = false, $arg3 = false, $_db = false) {
 
-
-        global $db;
-        $this->db = $db;
+        if (!$_db) {
+            global $db;
+            $this->db = $db;
+        } else {
+            $this->db = $_db;
+        }
 
         $this->table_name    = 'Page';
         $this->ignore_fields = array('Page Key');
@@ -101,6 +104,7 @@ class Page extends DB_Table {
                 "SELECT * FROM `Page Dimension` WHERE  `Page Key`=%d", $tag
             );
         }
+
 
 
         if ($this->data = $this->db->query($sql)->fetch()) {
@@ -177,16 +181,16 @@ class Page extends DB_Table {
             );
 
 
-            if ($result=$this->db->query($sql)) {
+            if ($result = $this->db->query($sql)) {
                 if ($row = $result->fetch()) {
                     $this->found     = true;
                     $this->found_key = $row['Page Key'];
                     $this->get_data('id', $this->found_key);
-            	}
-            }else {
-            	print_r($error_info=$this->db->errorInfo());
-            	print "$sql\n";
-            	exit;
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
             }
 
 
@@ -264,7 +268,6 @@ class Page extends DB_Table {
 
             );
             $this->db->exec($sql);
-
 
 
 
@@ -364,8 +367,6 @@ class Page extends DB_Table {
             $this->db->exec($sql);
 
 
-
-
             $content = $this->get_plain_content();
 
 
@@ -389,7 +390,7 @@ class Page extends DB_Table {
     }
 
     function store_base_data() {
-        $data   = array();
+        $data = array();
 
 
         $sql = 'show columns from `Page Store Dimension`';
@@ -401,57 +402,6 @@ class Page extends DB_Table {
 
 
         return $data;
-    }
-
-    function update_site_flag_key($value) {
-
-
-        $sql = sprintf(
-            "SELECT `Site Key`,`Site Flag Color` FROM  `Site Flag Dimension` WHERE `Site Flag Key`=%d", $value
-        );
-
-        if ($result=$this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                if ($row['Site Key'] != $this->data['Page Site Key']) {
-                    $this->error = true;
-                    $this->msg   = 'flag key not in this site';
-
-                    return;
-                }
-
-                $old_key = $this->data['Site Flag Key'];
-
-                $sql = sprintf(
-                    "UPDATE `Page Store Dimension` SET `Site Flag Key`=%d ,`Site Flag`=%s WHERE `Page Key`=%d", $value, prepare_mysql($row['Site Flag Color']), $this->id
-                );
-
-                $this->db->exec($sql);
-                $this->data['Site Flag Key'] = $value;
-                $this->new_value             = $this->data['Site Flag Key'];
-                $this->msg                   = _('Site flag changed');
-                $this->updated               = true;
-
-                /*
-                $site = new Site($this->data['Page Site Key']);
-                $site->update_page_flag_number($this->data['Site Flag Key']);
-                if ($old_key) {
-                    $site->update_page_flag_number($old_key);
-
-                }
-                */
-        	}else{
-                $this->error = true;
-                $this->msg   = 'flag key not found';
-            }
-        }else {
-        	print_r($error_info=$this->db->errorInfo());
-        	print "$sql\n";
-        	exit;
-        }
-
-
-
-
     }
 
     function get_plain_content() {
@@ -475,73 +425,11 @@ class Page extends DB_Table {
 
     function get_xhtml_content() {
 
-        if ($this->data['Page Type'] == 'Store') {
-            if ($this->data['Page Store Content Display Type'] == 'Source') {
-                return $this->data['Page Store Source'];
-            } else {
-                $content = '';
-                switch ($this->data['Page Store Section']) {
-                    case 'Product Description':
+        // todo
 
-                        include_once('class.Product.php');
-
-                        $product = new Product(
-                            'id', $this->data['Page Parent Key']
-                        );
-
-                        $content .= $product->data['Product Name'];
-
-                        $content .= ' '.$product->data['Product Description'];
-                        $content .= ' '.$product->data['Product Unit XHTML Materials'];
-                        $content = trim($content);
-
-                        break;
-                    case 'Family Catalogue':
-
-                        $sql = sprintf(
-                            'SELECT * FROM `Product Family Dimension` WHERE `Product Family Key`=%d ', $this->data['Page Parent Key']
-                        );
-                        if ($result = $this->db->query($sql)) {
-                            if ($family = $result->fetch()) {
-                                $content .= $family['Product Family Name'];
-
-                                $content .= ' '.$family['Product Family Description'];
-                                $content = trim($content);
-                            } else {
-                                $content = '';
-                            }
+        return '';
 
 
-                        } else {
-                            print_r($error_info = $this->db->errorInfo());
-                            exit;
-                        }
-
-
-                        break;
-
-                    case 'Department Catalogue':
-
-                        include_once 'class.Department.php';
-
-                        $department = new Department(
-                            $this->data['Page Parent Key']
-                        );
-
-                        $content .= $department->data['Product Department Name'];
-
-                        $content .= ' '.$department->data['Product Department Description'];
-                        $content = trim($content);
-
-                        break;
-                }
-
-                return $content;
-            }
-
-        } else {
-            return '';
-        }
     }
 
     function update_see_also() {
@@ -759,30 +647,36 @@ class Page extends DB_Table {
                 $sql     = sprintf(
                     "SELECT * FROM `Product Sales Correlation` WHERE `Product A ID`=%d ORDER BY `Correlation` DESC", $this->data['Page Parent Key']
                 );
-                $res     = mysql_query($sql);
-                //print $sql;
-                while ($row = mysql_fetch_assoc($res)) {
-                    if (!array_key_exists($row['Product B ID'], $see_also)) {
-                        $_product = new Product('id', $row['Product B ID']);
 
-                        if ($_product->data['Product Web State'] == 'For Sale' and $_product->data['Product Main Image Key']) {
 
-                            $page_keys         = $_product->get_pages();
-                            $see_also_page_key = array_pop($page_keys);
-                            $see_also_page     = new Page($see_also_page_key);
-                            if ($see_also_page->id and $see_also_page->data['Page State'] == 'Online' and $see_also_page->data['Page Stealth Mode'] == 'No') {
-                                $see_also[$see_also_page_key] = array(
-                                    'type'     => 'Sales',
-                                    'value'    => $row['Correlation'],
-                                    'page_key' => $see_also_page_key
-                                );
-                                $number_links                 = count($see_also);
-                                if ($number_links >= $max_links) {
-                                    break;
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+                        if (!array_key_exists($row['Product B ID'], $see_also)) {
+                            $_product = new Product('id', $row['Product B ID']);
+
+                            if ($_product->data['Product Web State'] == 'For Sale' and $_product->data['Product Main Image Key']) {
+
+                                $page_keys         = $_product->get_pages();
+                                $see_also_page_key = array_pop($page_keys);
+                                $see_also_page     = new Page($see_also_page_key);
+                                if ($see_also_page->id and $see_also_page->data['Page State'] == 'Online' and $see_also_page->data['Page Stealth Mode'] == 'No') {
+                                    $see_also[$see_also_page_key] = array(
+                                        'type'     => 'Sales',
+                                        'value'    => $row['Correlation'],
+                                        'page_key' => $see_also_page_key
+                                    );
+                                    $number_links                 = count($see_also);
+                                    if ($number_links >= $max_links) {
+                                        break;
+                                    }
                                 }
                             }
                         }
                     }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
                 }
 
 
@@ -797,35 +691,37 @@ class Page extends DB_Table {
                     $product->data['Product Family Category Key']
                 );
 
-
-                $res = mysql_query($sql);
-
-                while ($row = mysql_fetch_assoc($res)) {
-                    if ($row['Product ID'] == $product->id) {
-                        continue;
-                    }
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+                        if ($row['Product ID'] == $product->id) {
+                            continue;
+                        }
 
 
-                    if (!array_key_exists($row['Product ID'], $see_also)) {
-                        $_product = new Product('id', $row['Product ID']);
+                        if (!array_key_exists($row['Product ID'], $see_also)) {
+                            $_product = new Product('id', $row['Product ID']);
 
 
-                        $page_keys         = $_product->get_pages();
-                        $see_also_page_key = array_pop($page_keys);
-                        $see_also_page     = new Page($see_also_page_key);
-                        if ($see_also_page->id and $see_also_page->data['Page State'] == 'Online' and $see_also_page->data['Page Stealth Mode'] == 'No') {
-                            $see_also[$see_also_page_key] = array(
-                                'type'     => 'Same Family',
-                                'value'    => rand(),
-                                'page_key' => $see_also_page_key
-                            );
-                            $number_links                 = count($see_also);
-                            if ($number_links >= $max_links) {
-                                break;
+                            $page_keys         = $_product->get_pages();
+                            $see_also_page_key = array_pop($page_keys);
+                            $see_also_page     = new Page($see_also_page_key);
+                            if ($see_also_page->id and $see_also_page->data['Page State'] == 'Online' and $see_also_page->data['Page Stealth Mode'] == 'No') {
+                                $see_also[$see_also_page_key] = array(
+                                    'type'     => 'Same Family',
+                                    'value'    => rand(),
+                                    'page_key' => $see_also_page_key
+                                );
+                                $number_links                 = count($see_also);
+                                if ($number_links >= $max_links) {
+                                    break;
+                                }
                             }
                         }
                     }
-
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
                 }
 
 
@@ -838,37 +734,41 @@ class Page extends DB_Table {
 
                     $product->data['Product Store Key'], ($max_links - $number_links)
                 );
-                $res = mysql_query($sql);
 
 
-                while ($row = mysql_fetch_assoc($res)) {
-                    if ($row['Product ID'] == $product->id) {
-                        continue;
-                    }
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+                        if ($row['Product ID'] == $product->id) {
+                            continue;
+                        }
 
 
-                    if (!array_key_exists($row['Product ID'], $see_also)) {
-                        $_product = new Product('id', $row['Product ID']);
+                        if (!array_key_exists($row['Product ID'], $see_also)) {
+                            $_product = new Product('id', $row['Product ID']);
 
 
-                        $page_keys         = $_product->get_pages();
-                        $see_also_page_key = array_pop($page_keys);
-                        $see_also_page     = new Page($see_also_page_key);
+                            $page_keys         = $_product->get_pages();
+                            $see_also_page_key = array_pop($page_keys);
+                            $see_also_page     = new Page($see_also_page_key);
 
 
-                        if ($see_also_page->id and $see_also_page->data['Page State'] == 'Online' and $see_also_page->data['Page Stealth Mode'] == 'No') {
-                            $see_also[$see_also_page_key] = array(
-                                'type'     => 'Same Store',
-                                'value'    => 0.001,
-                                'page_key' => $see_also_page_key
-                            );
-                            $number_links                 = count($see_also);
-                            if ($number_links >= $max_links) {
-                                break;
+                            if ($see_also_page->id and $see_also_page->data['Page State'] == 'Online' and $see_also_page->data['Page Stealth Mode'] == 'No') {
+                                $see_also[$see_also_page_key] = array(
+                                    'type'     => 'Same Store',
+                                    'value'    => 0.001,
+                                    'page_key' => $see_also_page_key
+                                );
+                                $number_links                 = count($see_also);
+                                if ($number_links >= $max_links) {
+                                    break;
+                                }
                             }
                         }
                     }
-
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
                 }
 
 
@@ -937,72 +837,26 @@ class Page extends DB_Table {
         $page_image_source = 'art/nopic.png';
         $image_key         = '';
 
-        switch ($this->data['Page Store Section Type']) {
-            case 'Department':
-                include_once 'class.Department.php';
 
-                $department = new Department($this->data['Page Parent Key']);
-                if ($department->id and $department->data['Product Department Main Image Key']) {
-                    $_page_image = new Image(
-                        $department->data['Product Department Main Image Key']
-                    );
+        switch ($this->data['Webpage Scope']) {
+            case 'Category Categories':
+            case 'Category Products':
+                include_once 'class.Category.php';
+                $category = new Category('id', $this->data['Page Parent Key']);
+                if ($category->id and $category->get('Category Main Image Key')) {
+                    $_page_image = new Image($category->get('Category Main Image Key'));
                     if ($_page_image->id) {
-                        $page_image_source = sprintf(
-                            "images/%07d.%s", $_page_image->data['Image Key'], $_page_image->data['Image File Format']
-                        );
+                        $page_image_source = sprintf("images/%07d.%s", $_page_image->data['Image Key'], $_page_image->data['Image File Format']);
                         $image_key         = $_page_image->id;
                     }
                 }
-
-
-                break;
-            case 'Family':
-
-
-                $sql = sprintf(
-                    'SELECT * FROM `Product Family Dimension` WHERE `Product Family Key`=%d ', $this->data['Page Parent Key']
-                );
-                if ($result = $this->db->query($sql)) {
-                    if ($family = $result->fetch()) {
-
-                        if ($family['Product Family Main Image Key']) {
-                            $_page_image = new Image(
-                                $family['Product Family Main Image Key']
-                            );
-                            if ($_page_image->id) {
-                                $page_image_source = sprintf(
-                                    "images/%07d.%s", $_page_image->data['Image Key'], $_page_image->data['Image File Format']
-                                );
-                                $image_key         = $_page_image->id;
-                            }
-                        }
-
-                    } else {
-                        $this->error = true;
-                        $this->msg   = 'family store and site store dont match';
-
-                        return;
-                    }
-
-
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    exit;
-                }
-
-
-                break;
             case 'Product':
                 include_once 'class.Product.php';
                 $product = new Product('id', $this->data['Page Parent Key']);
-                if ($product->id and $product->data['Product Main Image Key']) {
-                    $_page_image = new Image(
-                        $product->data['Product Main Image Key']
-                    );
+                if ($product->id and $product->get('Product Main Image Key')) {
+                    $_page_image = new Image($product->get('Product Main Image Key'));
                     if ($_page_image->id) {
-                        $page_image_source = sprintf(
-                            "images/%07d.%s", $_page_image->data['Image Key'], $_page_image->data['Image File Format']
-                        );
+                        $page_image_source = sprintf("images/%07d.%s", $_page_image->data['Image Key'], $_page_image->data['Image File Format']);
                         $image_key         = $_page_image->id;
                     }
                 }
@@ -1016,7 +870,7 @@ class Page extends DB_Table {
         $sql = sprintf(
             "UPDATE `Page Store Dimension` SET `Page Store Image Key`=%s ,`Page Store Image URL`=%s   WHERE `Page Key`=%d ", prepare_mysql($image_key), prepare_mysql($page_image_source), $this->id
         );
-        mysql_query($sql);
+        $this->db->exec($sql);
 
         $this->data['Page Store Image Key'] = $image_key;
         $this->data['Page Store Image URL'] = $page_image_source;
@@ -1052,7 +906,8 @@ class Page extends DB_Table {
         $mem->addServer($memcache_ip, 11211);
 
         $mem->set('ECOMP'.md5($account_code.$this->get('Webpage Website Key').'/'.$this->get('Page Code')), $this->id, 172800);
-        $mem->set('ECOMP'.md5($account_code.$this->get('Webpage Website Key').'/'.strtolower($this->get('Page Code'))), $this->id, 172800
+        $mem->set(
+            'ECOMP'.md5($account_code.$this->get('Webpage Website Key').'/'.strtolower($this->get('Page Code'))), $this->id, 172800
         );
 
         return $template_response;
@@ -1243,6 +1098,55 @@ class Page extends DB_Table {
 
     }
 
+    function update_site_flag_key($value) {
+
+
+        $sql = sprintf(
+            "SELECT `Site Key`,`Site Flag Color` FROM  `Site Flag Dimension` WHERE `Site Flag Key`=%d", $value
+        );
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                if ($row['Site Key'] != $this->data['Page Site Key']) {
+                    $this->error = true;
+                    $this->msg   = 'flag key not in this site';
+
+                    return;
+                }
+
+                $old_key = $this->data['Site Flag Key'];
+
+                $sql = sprintf(
+                    "UPDATE `Page Store Dimension` SET `Site Flag Key`=%d ,`Site Flag`=%s WHERE `Page Key`=%d", $value, prepare_mysql($row['Site Flag Color']), $this->id
+                );
+
+                $this->db->exec($sql);
+                $this->data['Site Flag Key'] = $value;
+                $this->new_value             = $this->data['Site Flag Key'];
+                $this->msg                   = _('Site flag changed');
+                $this->updated               = true;
+
+                /*
+                $site = new Site($this->data['Page Site Key']);
+                $site->update_page_flag_number($this->data['Site Flag Key']);
+                if ($old_key) {
+                    $site->update_page_flag_number($old_key);
+
+                }
+                */
+            } else {
+                $this->error = true;
+                $this->msg   = 'flag key not found';
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+    }
+
     function update_version() {
 
         if (in_array(
@@ -1319,10 +1223,6 @@ class Page extends DB_Table {
         }
 
     }
-
-
-
-
 
 
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
@@ -1805,7 +1705,7 @@ class Page extends DB_Table {
                 prepare_mysql($this->get_plain_content(), false), prepare_mysql($this->data['Page Title'], false), prepare_mysql($this->data['Page Store Description'], false),
                 prepare_mysql($this->get_plain_content(), false)
             );
-           $this->db->exec($sql);
+            $this->db->exec($sql);
 
 
         }
@@ -1954,12 +1854,16 @@ class Page extends DB_Table {
                 //     print count($subjects)."sss\n";
 
 
-                foreach ($content_data['sections'] as $section_stack_index => $section_data) {
+                if ($content_data != '') {
 
 
-                    $content_data['sections'][$section_stack_index]['items'] = get_website_section_items($this->db, $section_data);
+                    foreach ($content_data['sections'] as $section_stack_index => $section_data) {
 
 
+                        $content_data['sections'][$section_stack_index]['items'] = get_website_section_items($this->db, $section_data);
+
+
+                    }
                 }
                 $this->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
 
@@ -6944,6 +6848,7 @@ class Page extends DB_Table {
             $panel['image_src'] = '/art/panel_'.$size_tag.'_1.png';
             $panel['link']      = '';
             $panel['caption']   = '';
+            $panel['image_key'] = '';
         } elseif ($panel_data['type'] == 'text') {
 
             $panel['content'] = 'bla bla bla';

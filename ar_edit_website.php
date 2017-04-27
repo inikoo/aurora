@@ -835,6 +835,7 @@ function webpage_content_data($data, $editor, $db, $smarty) {
             $panel['image_src'] = '/art/panel_'.$size_tag.'_1.png';
             $panel['link']      = '';
             $panel['caption']   = '';
+            $panel['image_key']      = '';
         } elseif ($panel_data['type'] == 'text') {
 
             $panel['content'] = 'bla bla bla';
