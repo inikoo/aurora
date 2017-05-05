@@ -32,16 +32,16 @@ function get_currencies($db) {
 
     usort($data, "cmp");
 
-    $formated_data = '[ ';
+    $formatted_data = '[ ';
     foreach ($data as $key => $value) {
-        $formated_data .= sprintf(
+        $formatted_data .= sprintf(
             '{name:"%s",iso2:"%s",code:"%s"},', $value['name'], $value['iso2'], $value['code']
         );
     }
-    $formated_data = preg_replace('/\,$/', '', $formated_data);
-    $formated_data .= ']';;
+    $formatted_data = preg_replace('/\,$/', '', $formatted_data);
+    $formatted_data .= ']';;
 
-    return $formated_data;
+    return $formatted_data;
 
 }
 
@@ -70,17 +70,17 @@ function get_countries($db) {
 
     usort($data, "cmp");
 
-    $formated_data = '[ ';
+    $formatted_data = '[ ';
     foreach ($data as $key => $value) {
-        $formated_data .= sprintf(
+        $formatted_data .= sprintf(
             '{name:"%s",iso2:"%s",code:"%s"},', $value['name'], $value['iso2'], $value['code']
         );
     }
-    $formated_data = preg_replace('/\,$/', '', $formated_data);
+    $formatted_data = preg_replace('/\,$/', '', $formatted_data);
 
-    $formated_data .= ']';
+    $formatted_data .= ']';
 
-    return $formated_data;
+    return $formatted_data;
 
 }
 

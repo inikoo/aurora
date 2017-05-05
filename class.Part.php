@@ -152,7 +152,8 @@ class Part extends Asset {
 
         if (array_key_exists('Part Family Category Code', $data)) {
 
-            $root_category = new Category($account->get('Account Part Family Category Key')
+            $root_category = new Category(
+                $account->get('Account Part Family Category Key')
             );
             if ($root_category->id) {
                 $root_category->editor = $this->editor;
@@ -688,15 +689,30 @@ class Part extends Asset {
                 break;
 
 
-            case 'Next Supplier Shipment':
-                if ($this->data['Part Next Supplier Shipment'] == '') {
+            case 'Next Shipment':
+                if ($this->data['Part Next Shipment Date'] == '') {
                     return '';
                 } else {
-                    return strftime(
-                        "%a, %e %b %y", strtotime(
-                                          $this->data['Part Next Supplier Shipment'].' +0:00'
-                                      )
-                    );
+
+                    $date = strftime("%a, %e %b %y", strtotime($this->data['Part Next Shipment Date'].' +0:00'));
+
+                    if ($this->data['Part Next Shipment Object Key']) {
+
+                        if ($this->data['Part Next Shipment Object'] == 'PurchaseOrder') {
+                            $date = sprintf('<span class="button" onclick="change_view(\'suppliers/order/%d\')">%s</span>', $this->data['Part Next Shipment Object Key'], $date);
+                        } elseif ($this->data['Part Next Shipment Object'] == 'SupplierDelivery') {
+                            $date = sprintf('<span class="button" onclick="change_view(\'suppliers/delivery/%d\')">%s</span>', $this->data['Part Next Shipment Object Key'], $date);
+
+                        }
+
+                    } else {
+
+                    }
+
+
+                    return $date;
+
+
                 }
                 break;
 
@@ -1116,32 +1132,29 @@ class Part extends Asset {
                     $part_locations[$row['Location Key']] = new  PartLocation($this->sku.'_'.$row['Location Key']);
                 } else {
 
-/*
-                    switch ($row['Location Mainly Used For']) {
-                        case 'Picking':
-                            $used_for = sprintf(
-                                '<i class="fa fa-fw fa-shopping-basket" aria-hidden="true" title="%s" ></i>', _('Picking')
-                            );
-                            break;
-                        case 'Storing':
-                            $used_for = sprintf(
-                                '<i class="fa fa-fw  fa-hdd-o" aria-hidden="true" title="%s"></i>', _('Storing')
-                            );
-                            break;
-                        default:
-                            $used_for = sprintf(
-                                '<i class="fa fa-fw  fa-map-maker" aria-hidden="true" title="%s"></i>', $row['Location Mainly Used For']
-                            );
-                    }
-*/
+                    /*
+                                        switch ($row['Location Mainly Used For']) {
+                                            case 'Picking':
+                                                $used_for = sprintf(
+                                                    '<i class="fa fa-fw fa-shopping-basket" aria-hidden="true" title="%s" ></i>', _('Picking')
+                                                );
+                                                break;
+                                            case 'Storing':
+                                                $used_for = sprintf(
+                                                    '<i class="fa fa-fw  fa-hdd-o" aria-hidden="true" title="%s"></i>', _('Storing')
+                                                );
+                                                break;
+                                            default:
+                                                $used_for = sprintf(
+                                                    '<i class="fa fa-fw  fa-map-maker" aria-hidden="true" title="%s"></i>', $row['Location Mainly Used For']
+                                                );
+                                        }
+                    */
 
 
-
-                    $picking_location_icon=sprintf('<i onclick="set_as_picking_location(%d,%d)" class="fa fa-fw fa-shopping-basket %s" aria-hidden="true" title="%s" ></i></span>',
-                                                   $this->id,
-                                                   $row['Location Key'],
-                        ($row['Can Pick']=='Yes'?'':'super_discreet_on_hover button'),
-                        ($row['Can Pick']=='Yes'?_('Picking location'):_('Set as picking location'))
+                    $picking_location_icon = sprintf(
+                        '<i onclick="set_as_picking_location(%d,%d)" class="fa fa-fw fa-shopping-basket %s" aria-hidden="true" title="%s" ></i></span>', $this->id, $row['Location Key'],
+                        ($row['Can Pick'] == 'Yes' ? '' : 'super_discreet_on_hover button'), ($row['Can Pick'] == 'Yes' ? _('Picking location') : _('Set as picking location'))
 
                     );
 
@@ -1159,12 +1172,12 @@ class Part extends Asset {
 
                         'picking_location_icon' => $picking_location_icon,
                         //'location_used_for'      => $row['Location Mainly Used For'],
-                        'formatted_min_qty'      => ($row['Minimum Quantity'] != '' ? $row['Minimum Quantity'] : '?'),
-                        'formatted_max_qty'      => ($row['Maximum Quantity'] != '' ? $row['Maximum Quantity'] : '?'),
-                        'formatted_move_qty'     => ($row['Moving Quantity'] != '' ? $row['Moving Quantity'] : '?'),
-                        'min_qty'                => $row['Minimum Quantity'],
-                        'max_qty'                => $row['Maximum Quantity'],
-                        'move_qty'               => $row['Moving Quantity'],
+                        'formatted_min_qty'     => ($row['Minimum Quantity'] != '' ? $row['Minimum Quantity'] : '?'),
+                        'formatted_max_qty'     => ($row['Maximum Quantity'] != '' ? $row['Maximum Quantity'] : '?'),
+                        'formatted_move_qty'    => ($row['Moving Quantity'] != '' ? $row['Moving Quantity'] : '?'),
+                        'min_qty'               => $row['Minimum Quantity'],
+                        'max_qty'               => $row['Maximum Quantity'],
+                        'move_qty'              => $row['Moving Quantity'],
 
                         'can_pick' => $row['Can Pick'],
                         'label'    => ($row['Can Pick'] == 'Yes' ? _('Picking location') : _('Set as picking location'))
@@ -1462,6 +1475,1324 @@ class Part extends Asset {
             }
         } else {
             print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+    }
+
+    function get_stock_supplier_data() {
+
+        // todo create a way to know what is the supplier based in stock
+
+        $supplier_key               = 0;
+        $supplier_part_key          = 0;
+        $supplier_part_historic_key = 0;
+
+
+        foreach ($this->get_supplier_parts('objects') as $supplier_part) {
+            $supplier_key               = $supplier_part->get('Supplier Part Supplier Key');
+            $supplier_part_key          = $supplier_part->id;
+            $supplier_part_historic_key = $supplier_part->get('Supplier Part Historic Key');
+            break;
+        }
+
+
+        return array(
+            $supplier_key,
+            $supplier_part_key,
+            $supplier_part_historic_key
+        );
+    }
+
+    function get_supplier_parts($scope = 'keys') {
+
+
+        if ($scope == 'objects') {
+            include_once 'class.SupplierPart.php';
+        }
+
+        $sql = sprintf(
+            'SELECT `Supplier Part Key` FROM `Supplier Part Dimension` WHERE `Supplier Part Part SKU`=%d ', $this->id
+        );
+
+        $supplier_parts = array();
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+                if ($scope == 'objects') {
+                    $supplier_parts[$row['Supplier Part Key']] = new SupplierPart('id', $row['Supplier Part Key'], false, $this->db);
+                } else {
+                    $supplier_parts[$row['Supplier Part Key']] = $row['Supplier Part Key'];
+                }
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+        return $supplier_parts;
+    }
+
+    function update_on_demand() {
+
+        $on_demand_available = 'No';
+        foreach ($this->get_supplier_parts('objects') as $supplier_part) {
+            if ($supplier_part->get('Supplier Part On Demand') == 'Yes' and $supplier_part->get('Supplier Part Status') == 'Available') {
+                $on_demand_available = 'Yes';
+                break;
+            }
+        }
+        $this->update_field(
+            'Part On Demand', $on_demand_available, 'no_history'
+        );
+
+
+        foreach ($this->get_products('objects') as $product) {
+            $product->update_availability();
+        }
+    }
+
+    function update_fresh() {
+
+        $fresh_available = 'No';
+        foreach ($this->get_supplier_parts('objects') as $supplier_part) {
+            if ($supplier_part->get('Supplier Part Fresh') == 'Yes' and $supplier_part->get('Supplier Part On Demand') == 'Yes' and $supplier_part->get('Supplier Part Status') == 'Available') {
+                $fresh_available = 'Yes';
+                break;
+            }
+        }
+        $this->update_field('Part Fresh', $fresh_available, 'no_history');
+
+        $this->update_stock_status();
+
+
+        foreach ($this->get_suppliers('objects') as $supplier) {
+            $supplier->update_supplier_parts();
+        }
+
+    }
+
+    function get_suppliers($scope = 'keys') {
+
+
+        if ($scope == 'objects') {
+            include_once 'class.Supplier.php';
+        }
+
+        $sql = sprintf(
+            'SELECT `Supplier Part Supplier Key` FROM `Supplier Part Dimension` WHERE `Supplier Part Part SKU`=%d ', $this->id
+        );
+
+        $suppliers = array();
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+                if ($scope == 'objects') {
+
+
+                    $suppliers[$row['Supplier Part Supplier Key']] = new Supplier('id', $row['Supplier Part Supplier Key'], false, $this->db);
+                } else {
+                    $suppliers[$row['Supplier Part Supplier Key']] = $row['Supplier Part Supplier Key'];
+                }
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+        return $suppliers;
+    }
+
+    function update_weight_dimensions_data($field, $value, $type) {
+
+        include_once 'utils/units_functions.php';
+
+        //print "$field $value |";
+
+        $this->update_field($field, $value);
+        $_new_value = $this->new_value;
+        $_updated   = $this->updated;
+
+        $this->updated   = true;
+        $this->new_value = $value;
+        if ($this->updated) {
+
+            if (preg_match('/Package/i', $field)) {
+                $tag = 'Package';
+            } else {
+                $tag = 'Unit';
+            }
+            if ($field != 'Part '.$tag.' '.$type.' Display Units') {
+                $value_in_standard_units = convert_units(
+                    $value, $this->data['Part '.$tag.' '.$type.' Display Units'], ($type == 'Dimensions' ? 'm' : 'Kg')
+                );
+
+
+                $this->update_field(
+                    preg_replace('/\sDisplay$/', '', $field), $value_in_standard_units, 'nohistory'
+                );
+            } elseif ($field == 'Part '.$tag.' Dimensions Display Units') {
+
+                $width_in_standard_units    = convert_units(
+                    $this->data['Part '.$tag.' Dimensions Width Display'], $value, 'm'
+                );
+                $depth_in_standard_units    = convert_units(
+                    $this->data['Part '.$tag.' Dimensions Depth Display'], $value, 'm'
+                );
+                $length_in_standard_units   = convert_units(
+                    $this->data['Part '.$tag.' Dimensions Length Display'], $value, 'm'
+                );
+                $diameter_in_standard_units = convert_units(
+                    $this->data['Part '.$tag.' Dimensions Diameter Display'], $value, 'm'
+                );
+
+
+                $this->update_field(
+                    'Part '.$tag.' Dimensions Width', $width_in_standard_units, 'nohistory'
+                );
+                $this->update_field(
+                    'Part '.$tag.' Dimensions Depth', $depth_in_standard_units, 'nohistory'
+                );
+                $this->update_field(
+                    'Part '.$tag.' Dimensions Length', $length_in_standard_units, 'nohistory'
+                );
+                $this->update_field(
+                    'Part '.$tag.' Dimensions Diameter', $diameter_in_standard_units, 'nohistory'
+                );
+
+
+            }
+
+            //print "x".$this->updated."<<";
+
+
+            //print "x".$this->updated."< $type <";
+            if ($type == 'Dimensions') {
+                include_once 'utils/geometry_functions.php';
+                $volume = get_volume(
+                    $this->data["Part $tag Dimensions Type"], $this->data["Part $tag Dimensions Width"], $this->data["Part $tag Dimensions Depth"], $this->data["Part $tag Dimensions Length"],
+                    $this->data["Part $tag Dimensions Diameter"]
+                );
+
+                //print "*** $volume $volume";
+                if (is_numeric($volume) and $volume > 0) {
+
+                    $this->update_field(
+                        'Part '.$tag.' Dimensions Volume', $volume, 'nohistory'
+                    );
+                }
+                $this->update_field(
+                    'Part '.$tag.' XHTML Dimensions', $this->get_xhtml_dimensions($tag), 'nohistory'
+                );
+
+            } else {
+                $this->update_field(
+                    'Part '.$tag.' Weight', convert_units(
+                    $this->data['Part '.$tag.' Weight Display'], $this->data['Part '.$tag.' '.$type.' Display Units'], 'Kg'
+                ), 'nohistory'
+                );
+
+            }
+
+
+            $this->updated   = $_updated;
+            $this->new_value = $_new_value;
+        }
+    }
+
+    function get_period($period, $key) {
+        return $this->get($period.' '.$key);
+    }
+
+    function get_unit($number) {
+        //'10','25','100','200','bag','ball','box','doz','dwt','ea','foot','gram','gross','hank','kilo','ib','m','oz','ozt','pair','pkg','set','skein','spool','strand','ten','tube','vial','yd'
+        switch ($this->data['Part Unit']) {
+            case 'bag':
+                $unit = ngettext('bag', 'bags', $number);
+                break;
+            case 'box':
+                $unit = ngettext('box', 'boxes', $number);
+
+                break;
+            case 'doz':
+                $unit = ngettext('dozen', 'dozens', $number);
+
+                break;
+            case 'ea':
+                $unit = ngettext('unit', 'units', $number);
+
+                break;
+            default:
+                $unit = $this->data['Part Unit'];
+                break;
+        }
+
+        return $unit;
+    }
+
+    function get_stock($date) {
+        $stock = 0;
+        $value = 0;
+        $sql   = sprintf(
+            "SELECT ifnull(sum(`Quantity On Hand`), 0) AS stock, ifnull(sum(`Value At Cost`), 0) AS value FROM `Inventory Spanshot Fact` WHERE `Part SKU`=%d AND `Date`=%s", $this->id,
+            prepare_mysql($date)
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $stock = $row['stock'];
+                $value = $row['value'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        return array(
+            $stock,
+            $value
+        );
+    }
+
+    function update_stock_in_paid_orders() {
+
+        $stock_in_paid_orders = 0;
+
+
+        $sql = sprintf(
+            'SELECT sum((`Order Quantity`+`Order Bonus Quantity`)*`Product Part Ratio`) AS required FROM `Order Transaction Fact` OTF LEFT JOIN `Product Part Bridge` PPB ON (OTF.`Product ID`=PPB.`Product Part Product ID`)    WHERE OTF.`Current Dispatching State` IN ("Submitted by Customer","In Process") AND  `Current Payment State` IN ("Paid","No Applicable") AND `Product Part Part SKU`=%d    ',
+
+            $this->id
+        );
+        //print $sql;
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                //  print_r($row);
+                $stock_in_paid_orders = $row['required'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+        // print "$sql\n";
+        $this->update(
+            array(
+                'Part Current Stock Ordered Paid' => $stock_in_paid_orders
+
+            ), 'no_history'
+        );
+
+        if ($this->updated) {
+            $this->update_stock();
+        }
+    }
+
+    function get_barcode_data() {
+
+        switch ($this->data['Part Barcode Data Source']) {
+            case 'SKU':
+                return $this->sku;
+            case 'Reference':
+                return $this->data['Part Reference'];
+            default:
+                return $this->data['Part Barcode Data'];
+
+
+        }
+
+    }
+
+    function get_current_formatted_value_at_cost() {
+        //return number($this->data['Part Current Value'],2);
+        return money($this->data['Part Current Value']);
+    }
+
+    function get_current_formatted_value_at_current_cost() {
+
+        $a = floatval(3.000 * 3.575);
+        $a = round(3.575 + 3.575 + 3.575, 3);
+
+        return money(
+            $this->data['Part Current On Hand Stock'] * $this->data['Part Cost']
+        );
+    }
+
+    function fix_stock_transactions() {
+
+        include_once 'class.PartLocation.php';
+
+        $sql = sprintf(
+            "SELECT `Location Key`  FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d GROUP BY `Location Key`", $this->sku
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $part_location = new PartLocation(
+                    $this->sku.'_'.$row['Location Key']
+                );
+                $part_location->redo_adjusts();
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        $sql = sprintf(
+            "SELECT `Inventory Transaction Key`,`Date`,`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Location Key`,`Note`,`Inventory Transaction Quantity`,`Required`  FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d AND `Inventory Transaction Section` IN ('Out','OIP') ORDER BY `Date`",
+            $this->sku
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+
+                if ($row['Inventory Transaction Section'] == 'OIP') {
+                    $qty = $row['Required'];
+                } else {
+                    $qty = -1 * $row['Inventory Transaction Quantity'];
+                }
+                $picking_locations = $this->get_picking_location_historic(
+                    $row['Date'], $qty
+                );
+
+                if (count($picking_locations == 1) and $picking_locations[0]['location_key'] != $row['Location Key']) {
+
+                    $_location = new Location(
+                        $picking_locations[0]['location_key']
+                    );
+                    $note      = $row['Note'];
+
+                    if (preg_match('/(<.*a> )(.*)/', $note, $matches)) {
+
+                        if ($_location->id == 1) {
+                            $location_note .= ' '._('Taken from an')." ".sprintf(
+                                    "<a href='location.php?id=1'>%s</a>", _('Unknown Location')
+                                );
+                        } else {
+                            $location_note = ' '._('Taken from').": ".sprintf(
+                                    "<a href='location.php?id=%d'>%s</a>", $_location->id, $_location->data['Location Code']
+                                );
+                        }
+
+
+                        $note = $matches[1].$location_note;
+                    } else {
+
+                        $note .= ' (WL)';
+                    }
+
+
+                    $sql = sprintf(
+                        'UPDATE `Inventory Transaction Fact` SET `Location Key`=%d ,`Note`=%s WHERE `Inventory Transaction Key`=%d', $_location->id, prepare_mysql($note),
+                        $row['Inventory Transaction Key']
+                    );
+                    print $sql;
+                    $this->db->exec($sql);
+                    print_r($row);
+                    print_r($picking_locations);
+                }
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        $this->update_stock();
+
+    }
+
+    function update_stock_history() {
+
+
+        $sql = sprintf(
+            "SELECT `Location Key`  FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d GROUP BY `Location Key`", $this->sku
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $part_location = new PartLocation(
+                    $this->sku.'_'.$row['Location Key']
+                );
+                $part_location->update_stock_history();
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+    }
+
+    function update_stock_in_transactions() {
+
+        $locations_data = array();
+        $stock          = 0;
+        $sql            = sprintf(
+            "SELECT `Inventory Transaction Quantity` ,`Inventory Transaction Key`,`Location Key` FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d ORDER BY `Date`,`Event Order`", $this->sku
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                if (array_key_exists($row['Location Key'], $locations_data)) {
+                    $locations_data[$row['Location Key']] += $row['Inventory Transaction Quantity'];
+                } else {
+                    $locations_data[$row['Location Key']] = $row['Inventory Transaction Quantity'];
+                }
+
+                $stock += $row['Inventory Transaction Quantity'];
+                $sql   = sprintf(
+                    "UPDATE `Inventory Transaction Fact` SET `Part Stock`=%f,`Part Location Stock`=%f WHERE `Inventory Transaction Key`=%d", $stock, $locations_data[$row['Location Key']],
+                    $row['Inventory Transaction Key']
+                );
+                $this->db->exec($sql);
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+    }
+
+    function update_sales_from_invoices($interval, $this_year = true, $last_year = true) {
+
+        include_once 'utils/date_functions.php';
+        list(
+            $db_interval, $from_date, $to_date, $from_date_1yb, $to_date_1yb
+            ) = calculate_interval_dates($this->db, $interval);
+
+
+        if ($this_year) {
+
+            $sales_data = $this->get_sales_data($from_date, $to_date);
+
+
+            $data_to_update = array(
+                "Part $db_interval Acc Customers"        => $sales_data['customers'],
+                "Part $db_interval Acc Repeat Customers" => $sales_data['repeat_customers'],
+                "Part $db_interval Acc Deliveries"       => $sales_data['deliveries'],
+                "Part $db_interval Acc Profit"           => $sales_data['profit'],
+                "Part $db_interval Acc Invoiced Amount"  => $sales_data['invoiced_amount'],
+                "Part $db_interval Acc Required"         => $sales_data['required'],
+                "Part $db_interval Acc Dispatched"       => $sales_data['dispatched'],
+                "Part $db_interval Acc Keeping Days"     => $sales_data['keep_days'],
+                "Part $db_interval Acc With Stock Days"  => $sales_data['with_stock_days'],
+            );
+
+
+            $this->update($data_to_update, 'no_history');
+        }
+        if ($from_date_1yb and $last_year) {
+
+
+            $sales_data = $this->get_sales_data($from_date_1yb, $to_date_1yb);
+
+
+            $data_to_update = array(
+
+                "Part $db_interval Acc 1YB Customers"        => $sales_data['customers'],
+                "Part $db_interval Acc 1YB Repeat Customers" => $sales_data['repeat_customers'],
+                "Part $db_interval Acc 1YB Deliveries"       => $sales_data['deliveries'],
+                "Part $db_interval Acc 1YB Profit"           => $sales_data['profit'],
+                "Part $db_interval Acc 1YB Invoiced Amount"  => $sales_data['invoiced_amount'],
+                "Part $db_interval Acc 1YB Required"         => $sales_data['required'],
+                "Part $db_interval Acc 1YB Dispatched"       => $sales_data['dispatched'],
+                "Part $db_interval Acc 1YB Keeping Day"      => $sales_data['keep_days'],
+                "Part $db_interval Acc 1YB With Stock Days"  => $sales_data['with_stock_days'],
+
+            );
+            $this->update($data_to_update, 'no_history');
+
+
+        }
+
+        if (in_array(
+            $db_interval, [
+                            'Total',
+                            'Year To Date',
+                            'Quarter To Date',
+                            'Week To Date',
+                            'Month To Date',
+                            'Today'
+                        ]
+        )) {
+
+            $this->update(['Part Acc To Day Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
+
+        } elseif (in_array(
+            $db_interval, [
+                            '1 Year',
+                            '1 Month',
+                            '1 Week',
+                            '1 Quarter'
+                        ]
+        )) {
+
+            $this->update(['Part Acc Ongoing Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
+        } elseif (in_array(
+            $db_interval, [
+                            'Last Month',
+                            'Last Week',
+                            'Yesterday',
+                            'Last Year'
+                        ]
+        )) {
+
+            $this->update(['Part Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
+        }
+
+
+    }
+
+    function get_sales_data($from_date, $to_date) {
+
+        $sales_data = array(
+            'invoiced_amount'  => 0,
+            'profit'           => 0,
+            'required'         => 0,
+            'dispatched'       => 0,
+            'deliveries'       => 0,
+            'customers'        => 0,
+            'repeat_customers' => 0,
+            'keep_days'        => 0,
+            'with_stock_days'  => 0,
+
+        );
+
+
+        if ($from_date == '' and $to_date == '') {
+            $sales_data['repeat_customers'] = $this->get_customers_total_data();
+        }
+
+
+        $sql = sprintf(
+            "SELECT count(DISTINCT `Delivery Note Customer Key`) AS customers, count( DISTINCT ITF.`Delivery Note Key`) AS deliveries, round(ifnull(sum(`Amount In`),0),2) AS invoiced_amount,round(ifnull(sum(`Amount In`+`Inventory Transaction Amount`),0),2) AS profit,round(ifnull(sum(`Inventory Transaction Quantity`),0),1) AS dispatched,round(ifnull(sum(`Required`),0),1) AS required FROM `Inventory Transaction Fact` ITF  LEFT JOIN `Delivery Note Dimension` DN ON (DN.`Delivery Note Key`=ITF.`Delivery Note Key`) WHERE `Inventory Transaction Type` LIKE 'Sale' AND `Part SKU`=%d %s %s",
+            $this->id, ($from_date ? sprintf('and  `Date`>=%s', prepare_mysql($from_date)) : ''), ($to_date ? sprintf('and `Date`<%s', prepare_mysql($to_date)) : '')
+        );
+
+        //print "$sql\n";
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $sales_data['customers']       = $row['customers'];
+                $sales_data['invoiced_amount'] = $row['invoiced_amount'];
+                $sales_data['profit']          = $row['profit'];
+                $sales_data['dispatched']      = -1.0 * $row['dispatched'];
+                $sales_data['required']        = $row['required'];
+                $sales_data['deliveries']      = $row['deliveries'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        return $sales_data;
+
+    }
+
+    function get_customers_total_data() {
+
+        $repeat_customers = 0;
+
+
+        $sql = sprintf(
+            'SELECT count(`Customer Part Customer Key`) AS num  FROM `Customer Part Bridge` WHERE `Customer Part Delivery Notes`>1 AND `Customer Part Part SKU`=%d    ', $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $repeat_customers = $row['num'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        return $repeat_customers;
+
+    }
+
+    function update_previous_years_data() {
+
+        foreach (range(1, 5) as $i) {
+            $data_iy_ago    = $this->get_sales_data(
+                date('Y-01-01 00:00:00', strtotime('-'.$i.' year')), date('Y-01-01 00:00:00', strtotime('-'.($i - 1).' year'))
+            );
+            $data_to_update = array(
+                "Part $i Year Ago Customers"        => $data_iy_ago['customers'],
+                "Part $i Year Ago Repeat Customers" => $data_iy_ago['repeat_customers'],
+                "Part $i Year Ago Deliveries"       => $data_iy_ago['deliveries'],
+                "Part $i Year Ago Profit"           => $data_iy_ago['profit'],
+                "Part $i Year Ago Invoiced Amount"  => $data_iy_ago['invoiced_amount'],
+                "Part $i Year Ago Required"         => $data_iy_ago['required'],
+                "Part $i Year Ago Dispatched"       => $data_iy_ago['dispatched'],
+                "Part $i Year Ago Keeping Day"      => $data_iy_ago['keep_days'],
+                "Part $i Year Ago With Stock Days"  => $data_iy_ago['with_stock_days'],
+            );
+
+            $this->update($data_to_update, 'no_history');
+        }
+
+    }
+
+    function update_previous_quarters_data() {
+
+
+        include_once 'utils/date_functions.php';
+
+        foreach (range(1, 4) as $i) {
+            $dates     = get_previous_quarters_dates($i);
+            $dates_1yb = get_previous_quarters_dates($i + 4);
+
+
+            $sales_data     = $this->get_sales_data(
+                $dates['start'], $dates['end']
+            );
+            $sales_data_1yb = $this->get_sales_data(
+                $dates_1yb['start'], $dates_1yb['end']
+            );
+
+            $data_to_update = array(
+                "Part $i Quarter Ago Customers"        => $sales_data['customers'],
+                "Part $i Quarter Ago Repeat Customers" => $sales_data['repeat_customers'],
+                "Part $i Quarter Ago Deliveries"       => $sales_data['deliveries'],
+                "Part $i Quarter Ago Profit"           => $sales_data['profit'],
+                "Part $i Quarter Ago Invoiced Amount"  => $sales_data['invoiced_amount'],
+                "Part $i Quarter Ago Required"         => $sales_data['required'],
+                "Part $i Quarter Ago Dispatched"       => $sales_data['dispatched'],
+                "Part $i Quarter Ago Keeping Day"      => $sales_data['keep_days'],
+                "Part $i Quarter Ago With Stock Days"  => $sales_data['with_stock_days'],
+
+                "Part $i Quarter Ago 1YB Customers"        => $sales_data_1yb['customers'],
+                "Part $i Quarter Ago 1YB Repeat Customers" => $sales_data_1yb['repeat_customers'],
+                "Part $i Quarter Ago 1YB Deliveries"       => $sales_data_1yb['deliveries'],
+                "Part $i Quarter Ago 1YB Profit"           => $sales_data_1yb['profit'],
+                "Part $i Quarter Ago 1YB Invoiced Amount"  => $sales_data_1yb['invoiced_amount'],
+                "Part $i Quarter Ago 1YB Required"         => $sales_data_1yb['required'],
+                "Part $i Quarter Ago 1YB Dispatched"       => $sales_data_1yb['dispatched'],
+                "Part $i Quarter Ago 1YB Keeping Day"      => $sales_data_1yb['keep_days'],
+                "Part $i Quarter Ago 1YB With Stock Days"  => $sales_data_1yb['with_stock_days'],
+            );
+            $this->update($data_to_update, 'no_history');
+        }
+
+    }
+
+    function delete($metadata = false) {
+
+
+        $sql = sprintf(
+            'INSERT INTO `Part Deleted Dimension`  (`Part Deleted Key`,`Part Deleted Reference`,`Part Deleted Date`,`Part Deleted Metadata`) VALUES (%d,%s,%s,%s) ', $this->id,
+            prepare_mysql($this->get('Part Reference')), prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql(gzcompress(json_encode($this->data), 9))
+
+        );
+        $this->db->exec($sql);
+
+
+        $sql = sprintf(
+            'DELETE FROM `Part Dimension`  WHERE `Part SKU`=%d ', $this->id
+        );
+        $this->db->exec($sql);
+
+
+        $history_data = array(
+            'History Abstract' => sprintf(
+                _("Part record %s deleted"), $this->data['Part Reference']
+            ),
+            'History Details'  => '',
+            'Action'           => 'deleted'
+        );
+
+        $this->add_subject_history(
+            $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+        );
+
+
+        $this->deleted = true;
+
+
+        $sql = sprintf(
+            'SELECT `Supplier Part Key` FROM `Supplier Part Dimension` WHERE `Supplier Part Part SKU`=%d  ', $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $supplier_part = get_object(
+                    'Supplier Part', $row['Supplier Part Key']
+                );
+                $supplier_part->delete();
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+    }
+
+    function get_field_label($field) {
+        global $account;
+
+        switch ($field) {
+
+            case 'Part SKU':
+                $label = _('SKU');
+                break;
+            case 'Part Status':
+                $label = _('Status');
+                break;
+            case 'Part Reference':
+                $label = _('reference');
+                break;
+            case 'Part Unit Description':
+                $label = _('unit description');
+                break;
+            case 'Part Unit Label':
+                $label = _('unit label');
+                break;
+            case 'Part Package Description':
+                $label = _('SKO description');
+                break;
+            case 'Part Package Description Note':
+                $label = _('SKO description note');
+                break;
+            case 'Part Package Image':
+                $label = _('SKO image');
+                break;
+
+            case 'Part Unit Price':
+                $label = _('unit recommended price');
+                break;
+            case 'Part Unit RRP':
+                $label = _('unit recommended RRP');
+                break;
+
+            case 'Part Package Weight':
+                $label = _('SKO weight');
+                break;
+            case 'Part Package Dimensions':
+                $label = _('SKO dimensions');
+                break;
+            case 'Part Unit Weight':
+                $label = _('unit weight');
+                break;
+            case 'Part Unit Dimensions':
+                $label = _('unit dimensions');
+                break;
+            case 'Part Tariff Code':
+                $label = _('tariff code');
+                break;
+
+            case 'Part Duty Rate':
+                $label = _('duty rate');
+                break;
+
+            case 'Part UN Number':
+                $label = _('UN number');
+                break;
+
+            case 'Part UN Class':
+                $label = _('UN class');
+                break;
+            case 'Part Packing Group':
+                $label = _('packing group');
+                break;
+            case 'Part Proper Shipping Name':
+                $label = _('proper shipping name');
+                break;
+            case 'Part Hazard Indentification Number':
+                $label = _('hazard identification number');
+                break;
+            case 'Part Materials':
+                $label = _('Materials/Ingredients');
+                break;
+            case 'Part Origin Country Code':
+                $label = _('country of origin');
+                break;
+            case 'Part Units Per Package':
+                $label = _('units per SKO');
+                break;
+            case 'Part Barcode Number':
+                $label = _('barcode');
+                break;
+            case 'Part CPNP Number':
+                $label = _('CPNP number');
+                break;
+            case 'Part Cost in Warehouse':
+                $label = _('Stock value (per SKO)');
+                break;
+            default:
+                $label = $field;
+
+        }
+
+        return $label;
+
+    }
+
+    function get_products_data($with_objects = false) {
+
+        include_once 'class.Product.php';
+
+        $sql           = sprintf(
+            "SELECT `Linked Fields`,`Store Product Key`,`Parts Per Product`,`Note` FROM `Store Product Part Bridge` WHERE `Part SKU`=%d ", $this->id
+        );
+        $products_data = array();
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $product_data = $row;
+                if ($product_data['Linked Fields'] == '') {
+                    $product_data['Linked Fields']        = array();
+                    $product_data['Number Linked Fields'] = 0;
+                } else {
+                    $product_data['Linked Fields']        = json_decode(
+                        $row['Linked Fields'], true
+                    );
+                    $product_data['Number Linked Fields'] = count(
+                        $product_data['Linked Fields']
+                    );
+                }
+                if ($with_objects) {
+                    $product_data['Product'] = new Product(
+                        'id', $row['Store Product Key']
+                    );
+                }
+                $products_data[] = $product_data;
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+        return $products_data;
+    }
+
+    function create_supplier_part_record($data) {
+
+
+        include_once 'class.Supplier.php';
+
+        $data['editor'] = $this->editor;
+
+
+        $supplier = new Supplier($data['Supplier Part Supplier Key']);
+        if (!$supplier->id) {
+            $this->error      = true;
+            $this->error_code = 'supplier_not_found';
+            $this->msg        = _('Supplier not found');
+        }
+
+        if ($data['Supplier Part Minimum Carton Order'] == '') {
+            $data['Supplier Part Minimum Carton Order'] = 1;
+        } else {
+            $data['Supplier Part Minimum Carton Order'] = ceil(
+                $data['Supplier Part Minimum Carton Order']
+            );
+        }
+
+
+        $data['Supplier Part Currency Code'] = $supplier->get('Supplier Default Currency Code');
+
+
+        $supplier_part = new SupplierPart('find', $data, 'create');
+
+
+        if ($supplier_part->id) {
+            $this->new_object_msg = $supplier_part->msg;
+
+            if ($supplier_part->new) {
+                $this->new_object = true;
+
+
+                $supplier_part->update(array('Supplier Part Part SKU' => $this->sku));
+                $supplier_part->get_data('id', $supplier_part->id);
+
+                $supplier->update_supplier_parts();
+
+                $this->update_cost();
+                $supplier_part->update_historic_object();
+
+
+            } else {
+
+                $this->error = true;
+                if ($supplier_part->found) {
+
+                    $this->error_code     = 'duplicated_field';
+                    $this->error_metadata = json_encode(
+                        array($supplier_part->duplicated_field)
+                    );
+
+                    if ($supplier_part->duplicated_field == 'Supplier Part Reference') {
+                        $this->msg = _("Duplicated supplier's part reference");
+                    } else {
+                        $this->msg = 'Duplicated '.$supplier_part->duplicated_field;
+                    }
+
+
+                } else {
+                    $this->msg = $supplier_part->msg;
+                }
+            }
+
+            return $supplier_part;
+        } else {
+            $this->error = true;
+
+            if ($supplier_part->found) {
+                $this->error_code     = 'duplicated_field';
+                $this->error_metadata = json_encode(
+                    array($supplier_part->duplicated_field)
+                );
+
+                if ($supplier_part->duplicated_field == 'Part Reference') {
+                    $this->msg = _("Duplicated part reference");
+                } else {
+                    $this->msg = 'Duplicated '.$supplier_part->duplicated_field;
+                }
+
+            } else {
+
+
+                $this->msg = $supplier_part->msg;
+            }
+        }
+
+    }
+
+    function update_cost() {
+
+        $account = new Account($this->db);
+
+        $supplier_parts = $this->get_supplier_parts('objects');
+
+        $cost_available    = array();
+        $cost_no_available = array();
+        $cost_discontinued = array();
+
+
+        foreach ($supplier_parts as $supplier_part) {
+
+
+            if ($supplier_part->get('Supplier Part Currency Code') != $account->get('Account Currency')) {
+                include_once 'utils/currency_functions.php';
+                $exchange = currency_conversion(
+                    $this->db, $supplier_part->get('Supplier Part Currency Code'), $account->get('Account Currency'), '- 15 minutes'
+                );
+
+            } else {
+                $exchange = 1;
+            }
+
+            $_cost = $exchange * ($supplier_part->get('Supplier Part Unit Cost') + $supplier_part->get('Supplier Part Unit Extra Cost'));
+
+
+            if ($supplier_part->get('Supplier Part Status') == 'Available') {
+                $cost_available[] = $_cost;
+
+            } elseif ($supplier_part->get('Supplier Part Status') == 'NoAvailable') {
+                $cost_no_available[] = $_cost;
+
+            } elseif ($supplier_part->get('Supplier Part Status') == 'Discontinued') {
+                $cost_discontinued[] = $_cost;
+
+            }
+
+
+        }
+
+
+        $cost     = 0;
+        $cost_set = false;
+
+
+        if (count($cost_available) > 0) {
+
+            $cost     = array_sum($cost_available) / count($cost_available);
+            $cost_set = true;
+        }
+
+        if (!$cost_set and count($cost_no_available) > 0) {
+            $cost     = array_sum($cost_no_available) / count(
+                    $cost_no_available
+                );
+            $cost_set = true;
+        }
+
+        if (!$cost_set and count($cost_discontinued) > 0) {
+            $cost     = array_sum($cost_discontinued) / count(
+                    $cost_discontinued
+                );
+            $cost_set = true;
+        }
+
+
+        if ($cost_set) {
+            $cost = $cost * $this->data['Part Units Per Package'];
+        }
+
+        $this->update_field('Part Cost', $cost, 'no_history');
+        $this->update_field('Part Number Supplier Parts', count($supplier_parts), 'no_history');
+
+
+        foreach ($this->get_products('objects') as $product) {
+            $product->update_cost();
+        }
+
+
+    }
+
+    function updated_linked_products() {
+        include_once 'class.Image.php';
+        foreach ($this->get_products('objects') as $product) {
+
+            if (count($product->get_parts()) == 1) {
+                $product->editor = $this->editor;
+
+                $product->update(
+                    array(
+                        'Product Tariff Code' => $this->get(
+                            'Part Tariff Code'
+                        )
+                    ), 'no_history from_part'
+                );
+                $product->update(
+                    array('Product Duty Rate' => $this->get('Part Duty Rate')), 'no_history from_part'
+                );
+                $product->update(
+                    array(
+                        'Product Origin Country Code' => $this->get(
+                            'Part Origin Country Code'
+                        )
+                    ), 'no_history from_part'
+                );
+
+
+                $product->update(
+                    array('Product UN Number' => $this->get('Part UN Number')), 'no_history from_part'
+                );
+                $product->update(
+                    array('Product UN Class' => $this->get('Part UN Class')), 'no_history from_part'
+                );
+                $product->update(
+                    array(
+                        'Product Packing Group' => $this->get(
+                            'Part Packing Group'
+                        )
+                    ), 'no_history from_part'
+                );
+                $product->update(
+                    array(
+                        'Product Proper Shipping Name' => $this->get(
+                            'Part Proper Shipping Name'
+                        )
+                    ), 'no_history from_part'
+                );
+                $product->update(
+                    array(
+                        'Product Hazard Indentification Number' => $this->get(
+                            'Part Hazard Indentification Number'
+                        )
+                    ), 'no_history from_part'
+                );
+
+
+                $product->update(
+                    array(
+                        'Product Unit Weight' => $this->get(
+                            'Part Unit Weight'
+                        )
+                    ), 'no_history from_part'
+                );
+
+
+                $product->update(
+                    array(
+                        'Product Unit Dimensions' => $this->get(
+                            'Part Unit Dimensions'
+                        )
+                    ), 'no_history from_part'
+                );
+                $product->update(
+                    array(
+                        'Product Materials' => strip_tags(
+                            $this->get('Materials')
+                        )
+                    ), 'no_history from_part'
+                );
+
+                $sql = sprintf(
+                    'SELECT `Image Subject Image Key` FROM `Image Subject Bridge` WHERE `Image Subject Object`="Part" AND `Image Subject Object Key`=%d  ', $this->id
+                );
+
+                //   print "$sql\n";
+
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+                        //print_r($row);
+                        $product->link_image($row['Image Subject Image Key']);
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    exit;
+                }
+
+
+            }
+
+        }
+
+
+    }
+
+    function get_picking_location_key() {
+
+        $sql = sprintf("SELECT `Location Key` FROM `Part Location Dimension` WHERE `Part SKU`=%d AND `Can Pick`='Yes' ;", $this->sku);
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                return $row['Location Key'];
+            } else {
+                return false;
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+    }
+
+    function update_products_data() {
+
+
+        //'InProcess','Active','Suspended',,'Discontinued'
+
+        $active_products    = 0;
+        $no_active_products = 0;
+
+
+        $sql = sprintf(
+            "SELECT count(*) AS num FROM `Product Part Bridge`  LEFT JOIN `Product Dimension` P ON (P.`Product ID`=`Product Part Product ID`)  WHERE `Product Part Part SKU`=%d  AND `Product Status` IN ('InProcess','Active','Discontinuing') ",
+            $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $active_products = $row['num'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+        $sql = sprintf(
+            "SELECT count(*) AS num FROM `Product Part Bridge`  LEFT JOIN `Product Dimension` P ON (P.`Product ID`=`Product Part Product ID`)  WHERE `Product Part Part SKU`=%d  AND `Product Status` IN ('Suspended','Discontinued') ",
+            $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $no_active_products = $row['num'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+        $this->update(
+            array(
+                'Part Number Active Products'    => $active_products,
+                'Part Number No Active Products' => $no_active_products,
+
+            ), 'no_history'
+
+        );
+
+
+    }
+
+    function update_next_shipment() {
+
+        include_once 'class.PurchaseOrder.php';
+
+        $next_delivery_time   = 0;
+        $next_delivery_po_key = 0;
+
+        $sql = sprintf(
+            'SELECT `Purchase Order Key` FROM  `Supplier Part Dimension` SPD  LEFT JOIN   `Purchase Order Transaction Fact` POTF  ON (SPD.`Supplier Part Key`=POTF.`Supplier Part Key`)  WHERE `Purchase Order Transaction State` IN ("Submitted","Inputted","Dispatched") AND `Supplier Part Part SKU`=%d ',
+            $this->id
+        );
+
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+
+
+
+                $purchase_order        = new PurchaseOrder($row['Purchase Order Key']);
+                $_next_delivery_time   = $purchase_order->get('Estimated Receiving Datetime');
+                $_next_delivery_po_key = $purchase_order->id;
+
+
+
+                if ($_next_delivery_time != '' and strtotime($_next_delivery_time) > gmdate('U')) {
+
+
+                    if (!$next_delivery_time or strtotime($_next_delivery_time.' +0:00') < $next_delivery_time) {
+                        $next_delivery_time   = strtotime($_next_delivery_time.' +0:00');
+                        $next_delivery_po_key = $_next_delivery_po_key;
+
+                    }
+                }
+
+            }
+
+
+
+
+            $this->update_field_switcher('Part Next Shipment Date', (!$next_delivery_time ? '' : gmdate('Y-m-d H:i:s', $next_delivery_time)));
+            $this->update_field_switcher('Part Next Shipment Object', 'PurchaseOrder');
+
+            $this->update_field_switcher('Part Next Shipment Object Key', (!$next_delivery_po_key ? '' : $next_delivery_po_key));
+
+
+            foreach ($this->get_products('objects') as $product) {
+                $product->update_next_shipment();
+            }
+
+
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
             exit;
         }
 
@@ -2309,38 +3640,6 @@ class Part extends Asset {
 
     }
 
-    function get_supplier_parts($scope = 'keys') {
-
-
-        if ($scope == 'objects') {
-            include_once 'class.SupplierPart.php';
-        }
-
-        $sql = sprintf(
-            'SELECT `Supplier Part Key` FROM `Supplier Part Dimension` WHERE `Supplier Part Part SKU`=%d ', $this->id
-        );
-
-        $supplier_parts = array();
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-                if ($scope == 'objects') {
-                    $supplier_parts[$row['Supplier Part Key']] = new SupplierPart('id', $row['Supplier Part Key'], false, $this->db);
-                } else {
-                    $supplier_parts[$row['Supplier Part Key']] = $row['Supplier Part Key'];
-                }
-
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-        return $supplier_parts;
-    }
-
     function get_category_data() {
 
 
@@ -2497,1237 +3796,6 @@ class Part extends Asset {
             }
 
         }
-
-    }
-
-    function get_stock_supplier_data() {
-
-        // todo create a way to know what is the supplier based in stock
-
-        $supplier_key               = 0;
-        $supplier_part_key          = 0;
-        $supplier_part_historic_key = 0;
-
-
-        foreach ($this->get_supplier_parts('objects') as $supplier_part) {
-            $supplier_key               = $supplier_part->get('Supplier Part Supplier Key');
-            $supplier_part_key          = $supplier_part->id;
-            $supplier_part_historic_key = $supplier_part->get('Supplier Part Historic Key');
-            break;
-        }
-
-
-        return array(
-            $supplier_key,
-            $supplier_part_key,
-            $supplier_part_historic_key
-        );
-    }
-
-    function update_on_demand() {
-
-        $on_demand_available = 'No';
-        foreach ($this->get_supplier_parts('objects') as $supplier_part) {
-            if ($supplier_part->get('Supplier Part On Demand') == 'Yes' and $supplier_part->get('Supplier Part Status') == 'Available') {
-                $on_demand_available = 'Yes';
-                break;
-            }
-        }
-        $this->update_field(
-            'Part On Demand', $on_demand_available, 'no_history'
-        );
-
-
-        foreach ($this->get_products('objects') as $product) {
-            $product->update_availability();
-        }
-    }
-
-    function update_fresh() {
-
-        $fresh_available = 'No';
-        foreach ($this->get_supplier_parts('objects') as $supplier_part) {
-            if ($supplier_part->get('Supplier Part Fresh') == 'Yes' and $supplier_part->get('Supplier Part On Demand') == 'Yes' and $supplier_part->get('Supplier Part Status') == 'Available') {
-                $fresh_available = 'Yes';
-                break;
-            }
-        }
-        $this->update_field('Part Fresh', $fresh_available, 'no_history');
-
-        $this->update_stock_status();
-
-
-        foreach ($this->get_suppliers('objects') as $supplier) {
-            $supplier->update_supplier_parts();
-        }
-
-    }
-
-    function get_suppliers($scope = 'keys') {
-
-
-        if ($scope == 'objects') {
-            include_once 'class.Supplier.php';
-        }
-
-        $sql = sprintf(
-            'SELECT `Supplier Part Supplier Key` FROM `Supplier Part Dimension` WHERE `Supplier Part Part SKU`=%d ', $this->id
-        );
-
-        $suppliers = array();
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-                if ($scope == 'objects') {
-
-
-                    $suppliers[$row['Supplier Part Supplier Key']] = new Supplier('id', $row['Supplier Part Supplier Key'], false, $this->db);
-                } else {
-                    $suppliers[$row['Supplier Part Supplier Key']] = $row['Supplier Part Supplier Key'];
-                }
-
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-        return $suppliers;
-    }
-
-    function update_weight_dimensions_data($field, $value, $type) {
-
-        include_once 'utils/units_functions.php';
-
-        //print "$field $value |";
-
-        $this->update_field($field, $value);
-        $_new_value = $this->new_value;
-        $_updated   = $this->updated;
-
-        $this->updated   = true;
-        $this->new_value = $value;
-        if ($this->updated) {
-
-            if (preg_match('/Package/i', $field)) {
-                $tag = 'Package';
-            } else {
-                $tag = 'Unit';
-            }
-            if ($field != 'Part '.$tag.' '.$type.' Display Units') {
-                $value_in_standard_units = convert_units(
-                    $value, $this->data['Part '.$tag.' '.$type.' Display Units'], ($type == 'Dimensions' ? 'm' : 'Kg')
-                );
-
-
-                $this->update_field(
-                    preg_replace('/\sDisplay$/', '', $field), $value_in_standard_units, 'nohistory'
-                );
-            } elseif ($field == 'Part '.$tag.' Dimensions Display Units') {
-
-                $width_in_standard_units    = convert_units(
-                    $this->data['Part '.$tag.' Dimensions Width Display'], $value, 'm'
-                );
-                $depth_in_standard_units    = convert_units(
-                    $this->data['Part '.$tag.' Dimensions Depth Display'], $value, 'm'
-                );
-                $length_in_standard_units   = convert_units(
-                    $this->data['Part '.$tag.' Dimensions Length Display'], $value, 'm'
-                );
-                $diameter_in_standard_units = convert_units(
-                    $this->data['Part '.$tag.' Dimensions Diameter Display'], $value, 'm'
-                );
-
-
-                $this->update_field(
-                    'Part '.$tag.' Dimensions Width', $width_in_standard_units, 'nohistory'
-                );
-                $this->update_field(
-                    'Part '.$tag.' Dimensions Depth', $depth_in_standard_units, 'nohistory'
-                );
-                $this->update_field(
-                    'Part '.$tag.' Dimensions Length', $length_in_standard_units, 'nohistory'
-                );
-                $this->update_field(
-                    'Part '.$tag.' Dimensions Diameter', $diameter_in_standard_units, 'nohistory'
-                );
-
-
-            }
-
-            //print "x".$this->updated."<<";
-
-
-            //print "x".$this->updated."< $type <";
-            if ($type == 'Dimensions') {
-                include_once 'utils/geometry_functions.php';
-                $volume = get_volume(
-                    $this->data["Part $tag Dimensions Type"], $this->data["Part $tag Dimensions Width"], $this->data["Part $tag Dimensions Depth"], $this->data["Part $tag Dimensions Length"],
-                    $this->data["Part $tag Dimensions Diameter"]
-                );
-
-                //print "*** $volume $volume";
-                if (is_numeric($volume) and $volume > 0) {
-
-                    $this->update_field(
-                        'Part '.$tag.' Dimensions Volume', $volume, 'nohistory'
-                    );
-                }
-                $this->update_field(
-                    'Part '.$tag.' XHTML Dimensions', $this->get_xhtml_dimensions($tag), 'nohistory'
-                );
-
-            } else {
-                $this->update_field(
-                    'Part '.$tag.' Weight', convert_units(
-                    $this->data['Part '.$tag.' Weight Display'], $this->data['Part '.$tag.' '.$type.' Display Units'], 'Kg'
-                ), 'nohistory'
-                );
-
-            }
-
-
-            $this->updated   = $_updated;
-            $this->new_value = $_new_value;
-        }
-    }
-
-    function get_period($period, $key) {
-        return $this->get($period.' '.$key);
-    }
-
-    function get_unit($number) {
-        //'10','25','100','200','bag','ball','box','doz','dwt','ea','foot','gram','gross','hank','kilo','ib','m','oz','ozt','pair','pkg','set','skein','spool','strand','ten','tube','vial','yd'
-        switch ($this->data['Part Unit']) {
-            case 'bag':
-                $unit = ngettext('bag', 'bags', $number);
-                break;
-            case 'box':
-                $unit = ngettext('box', 'boxes', $number);
-
-                break;
-            case 'doz':
-                $unit = ngettext('dozen', 'dozens', $number);
-
-                break;
-            case 'ea':
-                $unit = ngettext('unit', 'units', $number);
-
-                break;
-            default:
-                $unit = $this->data['Part Unit'];
-                break;
-        }
-
-        return $unit;
-    }
-
-
-    function get_stock($date) {
-        $stock = 0;
-        $value = 0;
-        $sql   = sprintf(
-            "SELECT ifnull(sum(`Quantity On Hand`), 0) AS stock, ifnull(sum(`Value At Cost`), 0) AS value FROM `Inventory Spanshot Fact` WHERE `Part SKU`=%d AND `Date`=%s", $this->id,
-            prepare_mysql($date)
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $stock = $row['stock'];
-                $value = $row['value'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        return array(
-            $stock,
-            $value
-        );
-    }
-
-    function update_stock_in_paid_orders() {
-
-        $stock_in_paid_orders = 0;
-
-
-        $sql = sprintf(
-            'SELECT sum((`Order Quantity`+`Order Bonus Quantity`)*`Product Part Ratio`) AS required FROM `Order Transaction Fact` OTF LEFT JOIN `Product Part Bridge` PPB ON (OTF.`Product ID`=PPB.`Product Part Product ID`)    WHERE OTF.`Current Dispatching State` IN ("Submitted by Customer","In Process") AND  `Current Payment State` IN ("Paid","No Applicable") AND `Product Part Part SKU`=%d    ',
-
-            $this->id
-        );
-        //print $sql;
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                //  print_r($row);
-                $stock_in_paid_orders = $row['required'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-        // print "$sql\n";
-        $this->update(
-            array(
-                'Part Current Stock Ordered Paid' => $stock_in_paid_orders
-
-            ), 'no_history'
-        );
-
-        if ($this->updated) {
-            $this->update_stock();
-        }
-    }
-
-
-    function get_barcode_data() {
-
-        switch ($this->data['Part Barcode Data Source']) {
-            case 'SKU':
-                return $this->sku;
-            case 'Reference':
-                return $this->data['Part Reference'];
-            default:
-                return $this->data['Part Barcode Data'];
-
-
-        }
-
-    }
-
-    function get_current_formatted_value_at_cost() {
-        //return number($this->data['Part Current Value'],2);
-        return money($this->data['Part Current Value']);
-    }
-
-    function get_current_formatted_value_at_current_cost() {
-
-        $a = floatval(3.000 * 3.575);
-        $a = round(3.575 + 3.575 + 3.575, 3);
-
-        return money(
-            $this->data['Part Current On Hand Stock'] * $this->data['Part Cost']
-        );
-    }
-
-    function fix_stock_transactions() {
-
-        include_once 'class.PartLocation.php';
-
-        $sql = sprintf(
-            "SELECT `Location Key`  FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d GROUP BY `Location Key`", $this->sku
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                $part_location = new PartLocation(
-                    $this->sku.'_'.$row['Location Key']
-                );
-                $part_location->redo_adjusts();
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        $sql = sprintf(
-            "SELECT `Inventory Transaction Key`,`Date`,`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Location Key`,`Note`,`Inventory Transaction Quantity`,`Required`  FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d AND `Inventory Transaction Section` IN ('Out','OIP') ORDER BY `Date`",
-            $this->sku
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-
-                if ($row['Inventory Transaction Section'] == 'OIP') {
-                    $qty = $row['Required'];
-                } else {
-                    $qty = -1 * $row['Inventory Transaction Quantity'];
-                }
-                $picking_locations = $this->get_picking_location_historic(
-                    $row['Date'], $qty
-                );
-
-                if (count($picking_locations == 1) and $picking_locations[0]['location_key'] != $row['Location Key']) {
-
-                    $_location = new Location(
-                        $picking_locations[0]['location_key']
-                    );
-                    $note      = $row['Note'];
-
-                    if (preg_match('/(<.*a> )(.*)/', $note, $matches)) {
-
-                        if ($_location->id == 1) {
-                            $location_note .= ' '._('Taken from an')." ".sprintf(
-                                    "<a href='location.php?id=1'>%s</a>", _('Unknown Location')
-                                );
-                        } else {
-                            $location_note = ' '._('Taken from').": ".sprintf(
-                                    "<a href='location.php?id=%d'>%s</a>", $_location->id, $_location->data['Location Code']
-                                );
-                        }
-
-
-                        $note = $matches[1].$location_note;
-                    } else {
-
-                        $note .= ' (WL)';
-                    }
-
-
-                    $sql = sprintf(
-                        'UPDATE `Inventory Transaction Fact` SET `Location Key`=%d ,`Note`=%s WHERE `Inventory Transaction Key`=%d', $_location->id, prepare_mysql($note),
-                        $row['Inventory Transaction Key']
-                    );
-                    print $sql;
-                    $this->db->exec($sql);
-                    print_r($row);
-                    print_r($picking_locations);
-                }
-
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        $this->update_stock();
-
-    }
-
-    function update_stock_history() {
-
-
-        $sql = sprintf(
-            "SELECT `Location Key`  FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d GROUP BY `Location Key`", $this->sku
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                $part_location = new PartLocation(
-                    $this->sku.'_'.$row['Location Key']
-                );
-                $part_location->update_stock_history();
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-    }
-
-    function update_stock_in_transactions() {
-
-        $locations_data = array();
-        $stock          = 0;
-        $sql            = sprintf(
-            "SELECT `Inventory Transaction Quantity` ,`Inventory Transaction Key`,`Location Key` FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d ORDER BY `Date`,`Event Order`", $this->sku
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                if (array_key_exists($row['Location Key'], $locations_data)) {
-                    $locations_data[$row['Location Key']] += $row['Inventory Transaction Quantity'];
-                } else {
-                    $locations_data[$row['Location Key']] = $row['Inventory Transaction Quantity'];
-                }
-
-                $stock += $row['Inventory Transaction Quantity'];
-                $sql   = sprintf(
-                    "UPDATE `Inventory Transaction Fact` SET `Part Stock`=%f,`Part Location Stock`=%f WHERE `Inventory Transaction Key`=%d", $stock, $locations_data[$row['Location Key']],
-                    $row['Inventory Transaction Key']
-                );
-                $this->db->exec($sql);
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-    }
-
-    function update_sales_from_invoices($interval, $this_year = true, $last_year = true) {
-
-        include_once 'utils/date_functions.php';
-        list(
-            $db_interval, $from_date, $to_date, $from_date_1yb, $to_date_1yb
-            ) = calculate_interval_dates($this->db, $interval);
-
-
-        if ($this_year) {
-
-            $sales_data = $this->get_sales_data($from_date, $to_date);
-
-
-            $data_to_update = array(
-                "Part $db_interval Acc Customers"        => $sales_data['customers'],
-                "Part $db_interval Acc Repeat Customers" => $sales_data['repeat_customers'],
-                "Part $db_interval Acc Deliveries"       => $sales_data['deliveries'],
-                "Part $db_interval Acc Profit"           => $sales_data['profit'],
-                "Part $db_interval Acc Invoiced Amount"  => $sales_data['invoiced_amount'],
-                "Part $db_interval Acc Required"         => $sales_data['required'],
-                "Part $db_interval Acc Dispatched"       => $sales_data['dispatched'],
-                "Part $db_interval Acc Keeping Days"     => $sales_data['keep_days'],
-                "Part $db_interval Acc With Stock Days"  => $sales_data['with_stock_days'],
-            );
-
-
-            $this->update($data_to_update, 'no_history');
-        }
-        if ($from_date_1yb and $last_year) {
-
-
-            $sales_data = $this->get_sales_data($from_date_1yb, $to_date_1yb);
-
-
-            $data_to_update = array(
-
-                "Part $db_interval Acc 1YB Customers"        => $sales_data['customers'],
-                "Part $db_interval Acc 1YB Repeat Customers" => $sales_data['repeat_customers'],
-                "Part $db_interval Acc 1YB Deliveries"       => $sales_data['deliveries'],
-                "Part $db_interval Acc 1YB Profit"           => $sales_data['profit'],
-                "Part $db_interval Acc 1YB Invoiced Amount"  => $sales_data['invoiced_amount'],
-                "Part $db_interval Acc 1YB Required"         => $sales_data['required'],
-                "Part $db_interval Acc 1YB Dispatched"       => $sales_data['dispatched'],
-                "Part $db_interval Acc 1YB Keeping Day"      => $sales_data['keep_days'],
-                "Part $db_interval Acc 1YB With Stock Days"  => $sales_data['with_stock_days'],
-
-            );
-            $this->update($data_to_update, 'no_history');
-
-
-        }
-
-        if (in_array(
-            $db_interval, [
-                            'Total',
-                            'Year To Date',
-                            'Quarter To Date',
-                            'Week To Date',
-                            'Month To Date',
-                            'Today'
-                        ]
-        )) {
-
-            $this->update(['Part Acc To Day Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
-
-        } elseif (in_array(
-            $db_interval, [
-                            '1 Year',
-                            '1 Month',
-                            '1 Week',
-                            '1 Quarter'
-                        ]
-        )) {
-
-            $this->update(['Part Acc Ongoing Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
-        } elseif (in_array(
-            $db_interval, [
-                            'Last Month',
-                            'Last Week',
-                            'Yesterday',
-                            'Last Year'
-                        ]
-        )) {
-
-            $this->update(['Part Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
-        }
-
-
-    }
-
-    function get_sales_data($from_date, $to_date) {
-
-        $sales_data = array(
-            'invoiced_amount'  => 0,
-            'profit'           => 0,
-            'required'         => 0,
-            'dispatched'       => 0,
-            'deliveries'       => 0,
-            'customers'        => 0,
-            'repeat_customers' => 0,
-            'keep_days'        => 0,
-            'with_stock_days'  => 0,
-
-        );
-
-
-        if ($from_date == '' and $to_date == '') {
-            $sales_data['repeat_customers'] = $this->get_customers_total_data();
-        }
-
-
-        $sql = sprintf(
-            "SELECT count(DISTINCT `Delivery Note Customer Key`) AS customers, count( DISTINCT ITF.`Delivery Note Key`) AS deliveries, round(ifnull(sum(`Amount In`),0),2) AS invoiced_amount,round(ifnull(sum(`Amount In`+`Inventory Transaction Amount`),0),2) AS profit,round(ifnull(sum(`Inventory Transaction Quantity`),0),1) AS dispatched,round(ifnull(sum(`Required`),0),1) AS required FROM `Inventory Transaction Fact` ITF  LEFT JOIN `Delivery Note Dimension` DN ON (DN.`Delivery Note Key`=ITF.`Delivery Note Key`) WHERE `Inventory Transaction Type` LIKE 'Sale' AND `Part SKU`=%d %s %s",
-            $this->id, ($from_date ? sprintf('and  `Date`>=%s', prepare_mysql($from_date)) : ''), ($to_date ? sprintf('and `Date`<%s', prepare_mysql($to_date)) : '')
-        );
-
-        //print "$sql\n";
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $sales_data['customers']       = $row['customers'];
-                $sales_data['invoiced_amount'] = $row['invoiced_amount'];
-                $sales_data['profit']          = $row['profit'];
-                $sales_data['dispatched']      = -1.0 * $row['dispatched'];
-                $sales_data['required']        = $row['required'];
-                $sales_data['deliveries']      = $row['deliveries'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        return $sales_data;
-
-    }
-
-    function get_customers_total_data() {
-
-        $repeat_customers = 0;
-
-
-        $sql = sprintf(
-            'SELECT count(`Customer Part Customer Key`) AS num  FROM `Customer Part Bridge` WHERE `Customer Part Delivery Notes`>1 AND `Customer Part Part SKU`=%d    ', $this->id
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $repeat_customers = $row['num'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        return $repeat_customers;
-
-    }
-
-    function update_previous_years_data() {
-
-        foreach (range(1, 5) as $i) {
-            $data_iy_ago    = $this->get_sales_data(
-                date('Y-01-01 00:00:00', strtotime('-'.$i.' year')), date('Y-01-01 00:00:00', strtotime('-'.($i - 1).' year'))
-            );
-            $data_to_update = array(
-                "Part $i Year Ago Customers"        => $data_iy_ago['customers'],
-                "Part $i Year Ago Repeat Customers" => $data_iy_ago['repeat_customers'],
-                "Part $i Year Ago Deliveries"       => $data_iy_ago['deliveries'],
-                "Part $i Year Ago Profit"           => $data_iy_ago['profit'],
-                "Part $i Year Ago Invoiced Amount"  => $data_iy_ago['invoiced_amount'],
-                "Part $i Year Ago Required"         => $data_iy_ago['required'],
-                "Part $i Year Ago Dispatched"       => $data_iy_ago['dispatched'],
-                "Part $i Year Ago Keeping Day"      => $data_iy_ago['keep_days'],
-                "Part $i Year Ago With Stock Days"  => $data_iy_ago['with_stock_days'],
-            );
-
-            $this->update($data_to_update, 'no_history');
-        }
-
-    }
-
-    function update_previous_quarters_data() {
-
-
-        include_once 'utils/date_functions.php';
-
-        foreach (range(1, 4) as $i) {
-            $dates     = get_previous_quarters_dates($i);
-            $dates_1yb = get_previous_quarters_dates($i + 4);
-
-
-            $sales_data     = $this->get_sales_data(
-                $dates['start'], $dates['end']
-            );
-            $sales_data_1yb = $this->get_sales_data(
-                $dates_1yb['start'], $dates_1yb['end']
-            );
-
-            $data_to_update = array(
-                "Part $i Quarter Ago Customers"        => $sales_data['customers'],
-                "Part $i Quarter Ago Repeat Customers" => $sales_data['repeat_customers'],
-                "Part $i Quarter Ago Deliveries"       => $sales_data['deliveries'],
-                "Part $i Quarter Ago Profit"           => $sales_data['profit'],
-                "Part $i Quarter Ago Invoiced Amount"  => $sales_data['invoiced_amount'],
-                "Part $i Quarter Ago Required"         => $sales_data['required'],
-                "Part $i Quarter Ago Dispatched"       => $sales_data['dispatched'],
-                "Part $i Quarter Ago Keeping Day"      => $sales_data['keep_days'],
-                "Part $i Quarter Ago With Stock Days"  => $sales_data['with_stock_days'],
-
-                "Part $i Quarter Ago 1YB Customers"        => $sales_data_1yb['customers'],
-                "Part $i Quarter Ago 1YB Repeat Customers" => $sales_data_1yb['repeat_customers'],
-                "Part $i Quarter Ago 1YB Deliveries"       => $sales_data_1yb['deliveries'],
-                "Part $i Quarter Ago 1YB Profit"           => $sales_data_1yb['profit'],
-                "Part $i Quarter Ago 1YB Invoiced Amount"  => $sales_data_1yb['invoiced_amount'],
-                "Part $i Quarter Ago 1YB Required"         => $sales_data_1yb['required'],
-                "Part $i Quarter Ago 1YB Dispatched"       => $sales_data_1yb['dispatched'],
-                "Part $i Quarter Ago 1YB Keeping Day"      => $sales_data_1yb['keep_days'],
-                "Part $i Quarter Ago 1YB With Stock Days"  => $sales_data_1yb['with_stock_days'],
-            );
-            $this->update($data_to_update, 'no_history');
-        }
-
-    }
-
-
-    function delete($metadata = false) {
-
-
-        $sql = sprintf(
-            'INSERT INTO `Part Deleted Dimension`  (`Part Deleted Key`,`Part Deleted Reference`,`Part Deleted Date`,`Part Deleted Metadata`) VALUES (%d,%s,%s,%s) ', $this->id,
-            prepare_mysql($this->get('Part Reference')), prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql(gzcompress(json_encode($this->data), 9))
-
-        );
-        $this->db->exec($sql);
-
-
-        $sql = sprintf(
-            'DELETE FROM `Part Dimension`  WHERE `Part SKU`=%d ', $this->id
-        );
-        $this->db->exec($sql);
-
-
-        $history_data = array(
-            'History Abstract' => sprintf(
-                _("Part record %s deleted"), $this->data['Part Reference']
-            ),
-            'History Details'  => '',
-            'Action'           => 'deleted'
-        );
-
-        $this->add_subject_history(
-            $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
-        );
-
-
-        $this->deleted = true;
-
-
-        $sql = sprintf(
-            'SELECT `Supplier Part Key` FROM `Supplier Part Dimension` WHERE `Supplier Part Part SKU`=%d  ', $this->id
-        );
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                $supplier_part = get_object(
-                    'Supplier Part', $row['Supplier Part Key']
-                );
-                $supplier_part->delete();
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-    }
-
-    function get_field_label($field) {
-        global $account;
-
-        switch ($field) {
-
-            case 'Part SKU':
-                $label = _('SKU');
-                break;
-            case 'Part Status':
-                $label = _('Status');
-                break;
-            case 'Part Reference':
-                $label = _('reference');
-                break;
-            case 'Part Unit Description':
-                $label = _('unit description');
-                break;
-            case 'Part Unit Label':
-                $label = _('unit label');
-                break;
-            case 'Part Package Description':
-                $label = _('SKO description');
-                break;
-            case 'Part Package Description Note':
-                $label = _('SKO description note');
-                break;
-            case 'Part Package Image':
-                $label = _('SKO image');
-                break;
-
-            case 'Part Unit Price':
-                $label = _('unit recommended price');
-                break;
-            case 'Part Unit RRP':
-                $label = _('unit recommended RRP');
-                break;
-
-            case 'Part Package Weight':
-                $label = _('SKO weight');
-                break;
-            case 'Part Package Dimensions':
-                $label = _('SKO dimensions');
-                break;
-            case 'Part Unit Weight':
-                $label = _('unit weight');
-                break;
-            case 'Part Unit Dimensions':
-                $label = _('unit dimensions');
-                break;
-            case 'Part Tariff Code':
-                $label = _('tariff code');
-                break;
-
-            case 'Part Duty Rate':
-                $label = _('duty rate');
-                break;
-
-            case 'Part UN Number':
-                $label = _('UN number');
-                break;
-
-            case 'Part UN Class':
-                $label = _('UN class');
-                break;
-            case 'Part Packing Group':
-                $label = _('packing group');
-                break;
-            case 'Part Proper Shipping Name':
-                $label = _('proper shipping name');
-                break;
-            case 'Part Hazard Indentification Number':
-                $label = _('hazard identification number');
-                break;
-            case 'Part Materials':
-                $label = _('Materials/Ingredients');
-                break;
-            case 'Part Origin Country Code':
-                $label = _('country of origin');
-                break;
-            case 'Part Units Per Package':
-                $label = _('units per SKO');
-                break;
-            case 'Part Barcode Number':
-                $label = _('barcode');
-                break;
-            case 'Part CPNP Number':
-                $label = _('CPNP number');
-                break;
-            case 'Part Cost in Warehouse':
-                $label = _('Stock value (per SKO)');
-                break;
-            default:
-                $label = $field;
-
-        }
-
-        return $label;
-
-    }
-
-    function get_products_data($with_objects = false) {
-
-        include_once 'class.Product.php';
-
-        $sql           = sprintf(
-            "SELECT `Linked Fields`,`Store Product Key`,`Parts Per Product`,`Note` FROM `Store Product Part Bridge` WHERE `Part SKU`=%d ", $this->id
-        );
-        $products_data = array();
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                $product_data = $row;
-                if ($product_data['Linked Fields'] == '') {
-                    $product_data['Linked Fields']        = array();
-                    $product_data['Number Linked Fields'] = 0;
-                } else {
-                    $product_data['Linked Fields']        = json_decode(
-                        $row['Linked Fields'], true
-                    );
-                    $product_data['Number Linked Fields'] = count(
-                        $product_data['Linked Fields']
-                    );
-                }
-                if ($with_objects) {
-                    $product_data['Product'] = new Product(
-                        'id', $row['Store Product Key']
-                    );
-                }
-                $products_data[] = $product_data;
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-        return $products_data;
-    }
-
-    function create_supplier_part_record($data) {
-
-
-        include_once 'class.Supplier.php';
-
-        $data['editor'] = $this->editor;
-
-
-        $supplier = new Supplier($data['Supplier Part Supplier Key']);
-        if (!$supplier->id) {
-            $this->error      = true;
-            $this->error_code = 'supplier_not_found';
-            $this->msg        = _('Supplier not found');
-        }
-
-        if ($data['Supplier Part Minimum Carton Order'] == '') {
-            $data['Supplier Part Minimum Carton Order'] = 1;
-        } else {
-            $data['Supplier Part Minimum Carton Order'] = ceil(
-                $data['Supplier Part Minimum Carton Order']
-            );
-        }
-
-
-        $data['Supplier Part Currency Code'] = $supplier->get('Supplier Default Currency Code');
-
-
-        $supplier_part = new SupplierPart('find', $data, 'create');
-
-
-        if ($supplier_part->id) {
-            $this->new_object_msg = $supplier_part->msg;
-
-            if ($supplier_part->new) {
-                $this->new_object = true;
-
-
-                $supplier_part->update(array('Supplier Part Part SKU' => $this->sku));
-                $supplier_part->get_data('id', $supplier_part->id);
-
-                $supplier->update_supplier_parts();
-
-                $this->update_cost();
-                $supplier_part->update_historic_object();
-
-
-            } else {
-
-                $this->error = true;
-                if ($supplier_part->found) {
-
-                    $this->error_code     = 'duplicated_field';
-                    $this->error_metadata = json_encode(
-                        array($supplier_part->duplicated_field)
-                    );
-
-                    if ($supplier_part->duplicated_field == 'Supplier Part Reference') {
-                        $this->msg = _("Duplicated supplier's part reference");
-                    } else {
-                        $this->msg = 'Duplicated '.$supplier_part->duplicated_field;
-                    }
-
-
-                } else {
-                    $this->msg = $supplier_part->msg;
-                }
-            }
-
-            return $supplier_part;
-        } else {
-            $this->error = true;
-
-            if ($supplier_part->found) {
-                $this->error_code     = 'duplicated_field';
-                $this->error_metadata = json_encode(
-                    array($supplier_part->duplicated_field)
-                );
-
-                if ($supplier_part->duplicated_field == 'Part Reference') {
-                    $this->msg = _("Duplicated part reference");
-                } else {
-                    $this->msg = 'Duplicated '.$supplier_part->duplicated_field;
-                }
-
-            } else {
-
-
-                $this->msg = $supplier_part->msg;
-            }
-        }
-
-    }
-
-    function update_cost() {
-
-        $account = new Account($this->db);
-
-        $supplier_parts = $this->get_supplier_parts('objects');
-
-        $cost_available    = array();
-        $cost_no_available = array();
-        $cost_discontinued = array();
-
-
-        foreach ($supplier_parts as $supplier_part) {
-
-
-            if ($supplier_part->get('Supplier Part Currency Code') != $account->get('Account Currency')) {
-                include_once 'utils/currency_functions.php';
-                $exchange = currency_conversion(
-                    $this->db, $supplier_part->get('Supplier Part Currency Code'), $account->get('Account Currency'), '- 15 minutes'
-                );
-
-            } else {
-                $exchange = 1;
-            }
-
-            $_cost = $exchange * ($supplier_part->get('Supplier Part Unit Cost') + $supplier_part->get('Supplier Part Unit Extra Cost'));
-
-
-            if ($supplier_part->get('Supplier Part Status') == 'Available') {
-                $cost_available[] = $_cost;
-
-            } elseif ($supplier_part->get('Supplier Part Status') == 'NoAvailable') {
-                $cost_no_available[] = $_cost;
-
-            } elseif ($supplier_part->get('Supplier Part Status') == 'Discontinued') {
-                $cost_discontinued[] = $_cost;
-
-            }
-
-
-        }
-
-
-        $cost     = 0;
-        $cost_set = false;
-
-
-        if (count($cost_available) > 0) {
-
-            $cost     = array_sum($cost_available) / count($cost_available);
-            $cost_set = true;
-        }
-
-        if (!$cost_set and count($cost_no_available) > 0) {
-            $cost     = array_sum($cost_no_available) / count(
-                    $cost_no_available
-                );
-            $cost_set = true;
-        }
-
-        if (!$cost_set and count($cost_discontinued) > 0) {
-            $cost     = array_sum($cost_discontinued) / count(
-                    $cost_discontinued
-                );
-            $cost_set = true;
-        }
-
-
-        if ($cost_set) {
-            $cost = $cost * $this->data['Part Units Per Package'];
-        }
-
-        $this->update_field('Part Cost', $cost, 'no_history');
-        $this->update_field('Part Number Supplier Parts', count($supplier_parts), 'no_history');
-
-
-        foreach ($this->get_products('objects') as $product) {
-            $product->update_cost();
-        }
-
-
-    }
-
-    function updated_linked_products() {
-        include_once 'class.Image.php';
-        foreach ($this->get_products('objects') as $product) {
-
-            if (count($product->get_parts()) == 1) {
-                $product->editor = $this->editor;
-
-                $product->update(
-                    array(
-                        'Product Tariff Code' => $this->get(
-                            'Part Tariff Code'
-                        )
-                    ), 'no_history from_part'
-                );
-                $product->update(
-                    array('Product Duty Rate' => $this->get('Part Duty Rate')), 'no_history from_part'
-                );
-                $product->update(
-                    array(
-                        'Product Origin Country Code' => $this->get(
-                            'Part Origin Country Code'
-                        )
-                    ), 'no_history from_part'
-                );
-
-
-                $product->update(
-                    array('Product UN Number' => $this->get('Part UN Number')), 'no_history from_part'
-                );
-                $product->update(
-                    array('Product UN Class' => $this->get('Part UN Class')), 'no_history from_part'
-                );
-                $product->update(
-                    array(
-                        'Product Packing Group' => $this->get(
-                            'Part Packing Group'
-                        )
-                    ), 'no_history from_part'
-                );
-                $product->update(
-                    array(
-                        'Product Proper Shipping Name' => $this->get(
-                            'Part Proper Shipping Name'
-                        )
-                    ), 'no_history from_part'
-                );
-                $product->update(
-                    array(
-                        'Product Hazard Indentification Number' => $this->get(
-                            'Part Hazard Indentification Number'
-                        )
-                    ), 'no_history from_part'
-                );
-
-
-                $product->update(
-                    array(
-                        'Product Unit Weight' => $this->get(
-                            'Part Unit Weight'
-                        )
-                    ), 'no_history from_part'
-                );
-
-
-                $product->update(
-                    array(
-                        'Product Unit Dimensions' => $this->get(
-                            'Part Unit Dimensions'
-                        )
-                    ), 'no_history from_part'
-                );
-                $product->update(
-                    array(
-                        'Product Materials' => strip_tags(
-                            $this->get('Materials')
-                        )
-                    ), 'no_history from_part'
-                );
-
-                $sql = sprintf(
-                    'SELECT `Image Subject Image Key` FROM `Image Subject Bridge` WHERE `Image Subject Object`="Part" AND `Image Subject Object Key`=%d  ', $this->id
-                );
-
-                //   print "$sql\n";
-
-                if ($result = $this->db->query($sql)) {
-                    foreach ($result as $row) {
-                        //print_r($row);
-                        $product->link_image($row['Image Subject Image Key']);
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    exit;
-                }
-
-
-            }
-
-        }
-
-
-    }
-
-
-    function get_picking_location_key() {
-
-        $sql = sprintf("SELECT `Location Key` FROM `Part Location Dimension` WHERE `Part SKU`=%d and `Can Pick`='Yes' ;", $this->sku);
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                return $row['Location Key'];
-            } else {
-                return false;
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-    }
-
-
-
-    function update_products_data() {
-
-
-        //'InProcess','Active','Suspended',,'Discontinued'
-
-        $active_products    = 0;
-        $no_active_products = 0;
-
-
-        $sql = sprintf(
-            "SELECT count(*) AS num FROM `Product Part Bridge`  LEFT JOIN `Product Dimension` P ON (P.`Product ID`=`Product Part Product ID`)  WHERE `Product Part Part SKU`=%d  AND `Product Status` IN ('InProcess','Active','Discontinuing') ",
-            $this->id
-        );
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $active_products = $row['num'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-        $sql = sprintf(
-            "SELECT count(*) AS num FROM `Product Part Bridge`  LEFT JOIN `Product Dimension` P ON (P.`Product ID`=`Product Part Product ID`)  WHERE `Product Part Part SKU`=%d  AND `Product Status` IN ('Suspended','Discontinued') ",
-            $this->id
-        );
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $no_active_products = $row['num'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-        $this->update(
-            array(
-                'Part Number Active Products'    => $active_products,
-                'Part Number No Active Products' => $no_active_products,
-
-            ), 'no_history'
-
-        );
-
 
     }
 

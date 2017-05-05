@@ -133,10 +133,13 @@
 	    <script>
 	
 	
-	
+	//xx
     
         var initial_country='{$default_country|lower}';
-        
+
+
+
+
         $.fn.countrySelect.setCountryData({$field.countries});
             
         var country_select=$("#{$field.id}_country_select")

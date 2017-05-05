@@ -34,40 +34,33 @@ $customer_fields = array(
             array(
                 'id'              => 'Customer_Company_Name',
                 'edit'            => ($edit ? 'string' : ''),
-                'value'           => htmlspecialchars(
-                    $object->get('Customer Company Name')
-                ),
+                'value'           => htmlspecialchars($object->get('Customer Company Name')),
                 'formatted_value' => $object->get('Company Name'),
-                'label'           => ucfirst(
-                    $object->get_field_label('Customer Company Name')
-                ),
-                'required'        => false
+                'label'           => ucfirst($object->get_field_label('Customer Company Name')),
+                'required'        => false,
+                'type'=>'value'
             ),
 
             array(
 
                 'id'              => 'Customer_Main_Contact_Name',
                 'edit'            => ($edit ? 'string' : ''),
-                'value'           => htmlspecialchars(
-                    $object->get('Customer Main Contact Name')
-                ),
+                'value'           => htmlspecialchars($object->get('Customer Main Contact Name')),
                 'formatted_value' => $object->get('Main Contact Name'),
-                'label'           => ucfirst(
-                    $object->get_field_label('Customer Main Contact Name')
-                ),
-                'required'        => true
+                'label'           => ucfirst($object->get_field_label('Customer Main Contact Name')),
+                'required'        => true,
+                'type'=>'value'
             ),
             array(
                 'id'              => 'Customer_Registration_Number',
                 'edit'            => ($edit ? 'string' : ''),
-                'value'           => $object->get(
-                    'Customer Registration Number'
-                ),
+                'value'           => $object->get('Customer Registration Number'),
                 'formatted_value' => $object->get('Registration Number'),
                 'label'           => ucfirst(
                     $object->get_field_label('Customer Registration Number')
                 ),
-                'required'        => false
+                'required'        => false,
+                'type'=>'value'
             ),
             array(
                 'id'              => 'Customer_Tax_Number',
@@ -77,7 +70,8 @@ $customer_fields = array(
                 'label'           => ucfirst(
                     $object->get_field_label('Customer Tax Number')
                 ),
-                'required'        => false
+                'required'        => false,
+                'type'=>'value'
 
             ),
             array(
@@ -266,13 +260,9 @@ $customer_fields = array(
                 'id'              => 'Customer_Contact_Address',
                 'edit'            => ($edit ? 'address' : ''),
                 'countries'       => $countries,
-                'value'           => htmlspecialchars(
-                    $object->get('Customer Contact Address')
-                ),
+                'value'           => htmlspecialchars($object->get('Customer Contact Address')),
                 'formatted_value' => $object->get('Contact Address'),
-                'label'           => ucfirst(
-                    $object->get_field_label('Customer Contact Address')
-                ),
+                'label'           => ucfirst($object->get_field_label('Customer Contact Address')),
                 'invalid_msg'     => get_invalid_message('address'),
                 'required'        => false
             ),
@@ -282,13 +272,9 @@ $customer_fields = array(
                 'id'              => 'Customer_Invoice_Address',
                 'edit'            => ($edit ? 'address' : ''),
                 'countries'       => $countries,
-                'value'           => htmlspecialchars(
-                    $object->get('Customer Invoice Address')
-                ),
+                'value'           => htmlspecialchars($object->get('Customer Invoice Address')),
                 'formatted_value' => $object->get('Invoice Address'),
-                'label'           => ucfirst(
-                    $object->get_field_label('Customer Invoice Address')
-                ),
+                'label'           => ucfirst($object->get_field_label('Customer Invoice Address')),
                 'required'        => false
             ),
             array(
@@ -359,6 +345,8 @@ $customer_fields = array(
 
 );
 
+
+
 $other_emails = $object->get_other_emails_data();
 if (count($other_emails) > 0) {
     $other_emails_fields = array();
@@ -376,7 +364,8 @@ if (count($other_emails) > 0) {
                 ).' <i onClick="set_this_as_main(this)" title="'._(
                     'Set as main email'
                 ).'" class="fa fa-star-o very_discreet button"></i>',
-            'required'          => false
+            'required'          => false,
+            'type'=>'value'
         );
     }
     array_splice($customer_fields[1]['fields'], 1, 0, $other_emails_fields);
@@ -452,6 +441,7 @@ $other_delivery_addresses_fields[] = array(
 );
 
 array_splice($customer_fields[3]['fields'], 3, 0, $other_delivery_addresses_fields);
+
 
 
 ?>

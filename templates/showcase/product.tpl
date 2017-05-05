@@ -175,6 +175,11 @@
                     <td class="aright Product_Availability">{$product->get('Availability')}</td>
                 </tr>
 
+                <tr class="{if $product->get('Product Next Supplier Shipment')==''}hide{/if}">
+                    <td >{t}Next shipment{/t}</td>
+                    <td class="aright">{$product->get('Next Supplier Shipment')}</td>
+                </tr>
+
             </table>
 
             <table border="0" class="overview" style="">
