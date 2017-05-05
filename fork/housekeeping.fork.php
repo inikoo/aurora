@@ -29,10 +29,12 @@ function fork_housekeeping($job) {
 
             include_once 'class.Store.php';
             $store = new Store($data['store_key']);
+            $store->load_acc_data();
             $store->update_orders_in_basket_data();
+            $account->load_acc_data();
             $account->update_orders_in_basket_data();
 
-            print 'update_orders_in_basket_data';
+
 
             break;
 

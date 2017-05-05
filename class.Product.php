@@ -14,12 +14,12 @@ include_once 'class.Asset.php';
 
 class Product extends Asset {
 
-    function __construct($arg1 = false, $arg2 = false, $arg3 = false,$_db=false) {
+    function __construct($arg1 = false, $arg2 = false, $arg3 = false, $_db = false) {
 
-        if(!$_db) {
+        if (!$_db) {
             global $db;
             $this->db = $db;
-        }else{
+        } else {
             $this->db = $_db;
         }
 
@@ -154,10 +154,9 @@ class Product extends Asset {
 
 
         $sql = sprintf(
-            "SELECT `Product ID` FROM `Product Dimension` WHERE  `Product Store Key`=%s AND `Product Code`=%s  AND `Product Status`!='Discontinued'  ", $data['Product Store Key'], prepare_mysql($data['Product Code'])
+            "SELECT `Product ID` FROM `Product Dimension` WHERE  `Product Store Key`=%s AND `Product Code`=%s  AND `Product Status`!='Discontinued'  ", $data['Product Store Key'],
+            prepare_mysql($data['Product Code'])
         );
-
-
 
 
         if ($result = $this->db->query($sql)) {
@@ -184,8 +183,6 @@ class Product extends Asset {
     }
 
     function create($data) {
-
-
 
 
         include_once 'utils/natural_language.php';
@@ -849,7 +846,18 @@ class Product extends Asset {
                 }
                 break;
 
+            case 'Next Supplier Shipment':
+                if ($this->data['Product Next Supplier Shipment'] == '') {
+                    return '';
+                } else {
 
+                    $date = strftime("%a, %e %b %y", strtotime($this->data['Product Next Supplier Shipment'].' +0:00'));
+                    return $date;
+
+
+
+                }
+                break;
             case 'Acc To Day Updated':
             case 'Acc Ongoing Intervals Updated':
             case 'Acc Previous Intervals Updated':
@@ -865,10 +873,10 @@ class Product extends Asset {
                 return $value;
                 break;
             case 'Customers Numbers':
-                $customer_numbers= number($this->data['Product Number Customers']);
+                $customer_numbers = number($this->data['Product Number Customers']);
 
-                if($this->data['Product Number Customers Favored']>0){
-                $customer_numbers .=', <i class="fa fa-heart" aria-hidden="true"></i>'.number($this->data['Product Number Customers Favored']);
+                if ($this->data['Product Number Customers Favored'] > 0) {
+                    $customer_numbers .= ', <i class="fa fa-heart" aria-hidden="true"></i>'.number($this->data['Product Number Customers Favored']);
                 }
 
                 return $customer_numbers;
@@ -880,7 +888,7 @@ class Product extends Asset {
             case 'Number Orders':
             case 'Number Images':
             case 'Number History Records':
-            number($this->data['Product '.$key]);
+                number($this->data['Product '.$key]);
             default:
 
 
@@ -1196,6 +1204,1206 @@ class Product extends Asset {
 
     }
 
+    function update_order_numbers() {
+
+        $number_orders    = 0;
+        $number_customers = 0;
+
+        $sql = sprintf(
+            'SELECT count(DISTINCT `Order Key`) AS orders,count(DISTINCT `Customer Key`) AS customers FROM `Order Transaction Fact`  WHERE `Product ID`=%d', $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $number_orders    = $row['orders'];
+                $number_customers = $row['customers'];
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        $this->update(
+            array(
+                'Product Number Orders'    => $number_orders,
+                'Product Number Customers' => $number_customers
+
+
+            ), 'no_history'
+        );
+
+
+    }
+
+    function update_customers_favored_numbers() {
+
+        $number_customers_favored = 0;
+
+
+        $sql = sprintf(
+            'SELECT count(DISTINCT `Customer Key`)  customers FROM `Customer Favorite Product Bridge`  WHERE `Product ID`=%d', $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $number_customers_favored = $row['customers'];
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        $this->update(
+            array(
+
+                'Product Number Customers Favored' => $number_customers_favored,
+
+
+            ), 'no_history'
+        );
+
+
+    }
+
+    function get_linked_fields_data() {
+
+        $sql = sprintf(
+            "SELECT `Product Part Part SKU`,`Product Part Linked Fields` FROM `Product Part Bridge` WHERE `Product Part Product ID`=%d", $this->id
+        );
+
+        $linked_fields_data = array();
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                if ($row['Product Part Linked Fields'] != '') {
+                    $linked_fields = json_decode(
+                        $row['Product Part Linked Fields'], true
+                    );
+
+                    foreach ($linked_fields as $key => $value) {
+                        $value                      = preg_replace(
+                            '/\s/', '_', $value
+                        );
+                        $linked_fields_data[$value] = $row['Product Part Part SKU'];
+                    }
+
+                }
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+        return $linked_fields_data;
+
+    }
+
+    function create_time_series($date = false) {
+        if (!$date) {
+            $date = gmdate("Y-m-d");
+        }
+        $sql       = sprintf(
+            "SELECT sum(`Invoice Quantity`) AS outers,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) AS sales,  sum(`Invoice Currency Exchange Rate`*(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)) AS dc_sales, count(DISTINCT `Customer Key`) AS customers , count(DISTINCT `Invoice Key`) AS invoices FROM `Order Transaction Fact` WHERE `Product ID`=%d AND `Current Dispatching State`='Dispatched' AND `Invoice Date`>=%s  AND `Invoice Date`<=%s   ",
+            $this->id, prepare_mysql($date.' 00:00:00'), prepare_mysql($date.' 23:59:59')
+
+        );
+        $outers    = 0;
+        $sales     = 0;
+        $dc_sales  = 0;
+        $customers = 0;
+        $invoices  = 0;
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+
+                $sales     = $row['sales'];
+                $dc_sales  = $row['dc_sales'];
+                $customers = $row['customers'];
+                $invoices  = $row['invoices'];
+                $outers    = $row['outers'];
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        if ($invoices != 0 and $customers != 0 and $sales != 0 and $outers != 0) {
+
+
+            $sql = sprintf(
+                "INSERT INTO `Order Spanshot Fact`(`Date`, `Product ID`, `Availability`, `Outers Out`, `Sales`, `Sales DC`, `Customers`, `Invoices`) VALUES (%s,%d   ,%f,%f, %.2f,%.2f,  %d,%d) ON DUPLICATE KEY UPDATE `Outers Out`=%f,`Sales`=%.2f,`Sales DC`=%.2f,`Customers`=%d,`Invoices`=%d ",
+                prepare_mysql($date),
+
+                $this->id, 1, $outers, $sales, $dc_sales, $customers, $invoices,
+
+                $outers, $sales, $dc_sales, $customers, $invoices
+
+
+            );
+            $this->db->exec($sql);
+
+
+        }
+
+    }
+
+    function update_pages_numbers() {
+
+        $number_pages = 0;
+
+        $sql = sprintf(
+            'SELECT count(DISTINCT `Page Key`) AS num FROM `Page Product Dimension`  WHERE `Product ID`=%d', $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $number_pages = $row['num'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+        $this->update(
+            array(
+                'Product Number Web Pages' => $number_pages,
+
+
+            ), 'no_history'
+        );
+
+    }
+
+    function update_status_from_parts() {
+
+        $status = 'Active';
+
+        $part_objects = $this->get_parts('objects');
+
+        foreach ($part_objects as $part) {
+            if ($part->get('Part Status') == 'Discontinuing') {
+                $status = 'Discontinuing';
+            } elseif ($part->get('Part Status') == 'Not In Use') {
+                $status = 'Discontinued';
+                break;
+            }
+
+
+        }
+
+
+        if ($status == 'Active') {
+            if ($this->get('Product Status') == 'Discontinuing') {
+                $this->update(array('Product Status' => 'Active'), 'no_history');
+
+            }
+        } elseif ($status == 'Discontinuing') {
+            if ($this->get('Product Status') == 'Active') {
+                $this->update(array('Product Status' => 'Discontinuing'), 'no_history');
+
+            }
+        } elseif ($status == 'Discontinued') {
+
+            $this->update(array('Product Status' => 'Discontinued'), 'no_history');
+
+
+        }
+
+
+        $this->update_availability();
+
+
+    }
+
+    function get_parts($scope = 'keys') {
+
+
+        if ($scope == 'objects') {
+            include_once 'class.Part.php';
+        }
+
+        $sql = sprintf(
+            'SELECT `Product Part Part SKU` AS `Part SKU` FROM `Product Part Bridge` WHERE `Product Part Product ID`=%d ', $this->id
+        );
+
+        $parts = array();
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+                if ($scope == 'objects') {
+                    $parts[$row['Part SKU']] = new Part($row['Part SKU']);
+                } else {
+                    $parts[$row['Part SKU']] = $row['Part SKU'];
+                }
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+        return $parts;
+    }
+
+    function update_availability($use_fork = true) {
+
+
+        if ($this->get('Product Number of Parts') > 0) {
+
+            $sql = sprintf(
+                " SELECT `Part Reference`,`Part On Demand`,`Part Stock State`,`Part Current On Hand Stock`-`Part Current Stock In Process`-`Part Current Stock Ordered Paid` AS stock,`Part Current Stock In Process`,`Part Current On Hand Stock`,`Product Part Ratio` FROM     `Product Part Bridge` B LEFT JOIN   `Part Dimension` P   ON (P.`Part SKU`=B.`Product Part Part SKU`)   WHERE B.`Product Part Product ID`=%d   ",
+                $this->id
+            );
+
+
+            $stock       = 99999999999;
+            $tipo        = 'Excess';
+            $change      = false;
+            $stock_error = false;
+
+            $on_demand = '';
+
+
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
+
+                    if ($on_demand == '') {
+                        $on_demand = $row['Part On Demand'];
+
+                    } else {
+
+                        if ($row['Part On Demand'] == 'No') {
+                            $on_demand = 'No';
+                        }
+
+                    }
+
+
+                    if ($row['Part Stock State'] == 'Error') {
+                        $tipo = 'Error';
+                    } elseif ($row['Part Stock State'] == 'OutofStock' and $tipo != 'Error') {
+                        $tipo = 'OutofStock';
+                    } elseif ($row['Part Stock State'] == 'VeryLow' and $tipo != 'Error' and $tipo != 'OutofStock') {
+                        $tipo = 'VeryLow';
+                    } else {
+                        if ($row['Part Stock State'] == 'Low' and $tipo != 'Error' and $tipo != 'OutofStock' and $tipo != 'VeryLow') {
+                            $tipo = 'Low';
+                        } elseif ($row['Part Stock State'] == 'Normal' and $tipo == 'Excess') {
+                            $tipo = 'Normal';
+                        }
+                    }
+
+                    if (is_numeric($row['stock']) and is_numeric(
+                            $row['Product Part Ratio']
+                        ) and $row['Product Part Ratio'] > 0
+                    ) {
+
+                        $_part_stock = $row['stock'];
+
+
+                        if ($row['Part Current On Hand Stock'] == 0 and $row['Part Current Stock In Process'] > 0) {
+                            $_part_stock = 0;
+                        }
+
+                        if ($row['Part On Demand'] == 'Yes') {
+                            $_part_stock = 99999999999;
+                        }
+
+                        $_stock = $_part_stock / $row['Product Part Ratio'];
+                        if ($stock > $_stock) {
+                            $stock  = $_stock;
+                            $change = true;
+                        }
+
+
+                    } else {
+
+                        $stock       = 0;
+                        $stock_error = true;
+                    }
+
+                    // print $row['Part Reference']." $tipo $on_demand  $stock\n";
+
+
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                exit;
+            }
+
+
+            if ($stock < 0) {
+
+                $stock = 0;
+
+            } elseif (!$change or $stock_error) {
+                $stock = 0;
+            } else {
+                if (is_numeric($stock) and $stock < 0) {
+                    $stock = 0;
+                }
+            }
+
+            if ($on_demand == 'Yes') {
+
+                $stock = 99999999999;
+                $tipo  = 'OnDemand';
+            }
+
+        } else {
+            $stock = 0;
+            $tipo  = 'Normal';
+        }
+
+
+        //print $stock;exit;
+
+        $this->update(
+            array(
+                'Product Availability'       => $stock,
+                'Product Availability State' => $tipo,
+
+            ), 'no_history'
+        );
+
+
+        $this->update_web_state($use_fork);
+
+        foreach ($this->get_categories('objects') as $category) {
+            $category->update_product_category_products_data();
+        }
+
+
+        $this->other_fields_updated = array(
+            'Product_Availability' => array(
+                'field'           => 'Product_Availability',
+                'value'           => $this->get('Product Availability'),
+                'formatted_value' => $this->get('Availability'),
+
+
+            ),
+            'Product_Web_State'    => array(
+                'field'           => 'Product_Web_State',
+                'value'           => $this->get('Product Web State'),
+                'formatted_value' => $this->get('Web State'),
+
+
+            )
+        );
+
+
+    }
+
+    function update_web_state($use_fork = true) {
+
+
+        include_once('class.Category.php');
+
+        $old_web_state = $this->get('Product Web State');
+
+
+        if ($old_web_state == 'For Sale') {
+            $old_web_availability = 'Yes';
+        } else {
+            $old_web_availability = 'No';
+        }
+
+        $web_state = $this->get_web_state();
+
+
+        $this->update_field('Product Web State', $web_state, 'no_history');
+
+
+        if ($web_state == 'For Sale') {
+            $web_availability = 'Yes';
+        } else {
+            $web_availability = 'No';
+        }
+
+
+        if ($old_web_state != $web_state) {
+            $this->update_availability($use_fork);
+        }
+
+
+        $web_availability_updated = ($old_web_availability != $web_availability ? true : false);
+
+
+        if ($web_availability_updated) {
+
+
+            $sql = sprintf(
+                'SELECT `Category Key` FROM `Category Bridge` WHERE `Subject Key`=%d AND `Subject`="Product" GROUP BY `Category Key` ', $this->id
+            );
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
+                    $category = new Category($row['Category Key']);
+
+                    //   print_r($category->get('Code'));
+
+                    $category->update_product_category_products_data();
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+
+
+            //print $this->data['Product Store Key'].' '.$this->data['Product Code']." $old_web_availability  $web_availability \n";
+
+            if (isset($this->editor['User Key']) and is_numeric(
+                    $this->editor['User Key']
+                )
+            ) {
+                $user_key = $this->editor['User Key'];
+            } else {
+                $user_key = 0;
+            }
+
+
+            $sql = sprintf(
+                "SELECT UNIX_TIMESTAMP(`Date`) AS date,`Product Availability Key` FROM `Product Availability Timeline` WHERE `Product ID`=%d  ORDER BY `Date`  DESC LIMIT 1", $this->id
+            );
+
+            if ($result = $this->db->query($sql)) {
+                if ($row = $result->fetch()) {
+                    $last_record_key  = $row['Product Availability Key'];
+                    $last_record_date = $row['date'];
+                } else {
+                    $last_record_key  = false;
+                    $last_record_date = false;
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                exit;
+            }
+
+
+            $new_date_formated = gmdate('Y-m-d H:i:s');
+            $new_date          = gmdate('U');
+
+            $sql = sprintf(
+                "INSERT INTO `Product Availability Timeline`  (`Product ID`,`Store Key`,`Department Key`,`Family Key`,`User Key`,`Date`,`Availability`,`Web State`) VALUES (%d,%d,%d,%d,%d,%s,%s,%s) ",
+                $this->id, $this->data['Product Store Key'], $this->data['Product Main Department Key'], $this->data['Product Family Key'], $user_key, prepare_mysql($new_date_formated),
+                prepare_mysql($web_availability), prepare_mysql($web_state)
+
+            );
+            $this->db->exec($sql);
+
+            if ($last_record_key) {
+                $sql = sprintf(
+                    "UPDATE `Product Availability Timeline` SET `Duration`=%d WHERE `Product Availability Key`=%d", $new_date - $last_record_date, $last_record_key
+
+                );
+                $this->db->exec($sql);
+
+            }
+
+
+            if ($web_availability == 'Yes') {
+                $sql = sprintf(
+                    "UPDATE `Email Site Reminder Dimension` SET `Email Site Reminder State`='Ready' WHERE `Email Site Reminder State`='Waiting' AND `Trigger Scope`='Back in Stock' AND `Trigger Scope Key`=%d ",
+                    $this->id
+                );
+
+            } else {
+                $sql = sprintf(
+                    "UPDATE `Email Site Reminder Dimension` SET `Email Site Reminder State`='Waiting' WHERE `Email Site Reminder State`='Ready' AND `Trigger Scope`='Back in Stock' AND `Trigger Scope Key`=%d ",
+                    $this->id
+                );
+
+            }
+            $this->db->exec($sql);
+
+
+        }
+
+
+        if ($use_fork) {
+            include_once 'utils/new_fork.php';
+            $account = new Account($this->db);
+
+            $msg = new_housekeeping_fork(
+                'au_housekeeping', array(
+                'type'                     => 'update_web_state_slow_forks',
+                'web_availability_updated' => $web_availability_updated,
+                'product_id'               => $this->id
+            ), $account->get('Account Code')
+            );
+
+        } else {
+            $this->update_web_state_slow_forks($web_availability_updated);
+        }
+
+
+        foreach ($this->get_parts('objects') as $part) {
+            $part->update_products_web_status();
+        }
+
+
+    }
+
+    function get_web_state() {
+
+
+        if (!($this->data['Product Status'] == 'Active' or $this->data['Product Status'] == 'Discontinuing') or ($this->data['Product Number of Parts'] == 0)) {
+
+            return 'Offline';
+        }
+        switch ($this->data['Product Web Configuration']) {
+
+
+            case 'Offline':
+                return 'Offline';
+                break;
+            case 'Online Force Out of Stock':
+                return 'Out of Stock';
+                break;
+            case 'Online Force For Sale':
+                return 'For Sale';
+                break;
+            case 'Online Auto':
+
+                if ($this->data['Product Number of Parts'] == 0) {
+                    return 'Offline';
+                } else {
+
+                    if ($this->data['Product Availability'] > 0) {
+                        return 'For Sale';
+                    } else {
+                        return 'Out of Stock';
+                    }
+                }
+                break;
+            default:
+                return 'Offline';
+                break;
+        }
+
+    }
+
+    function update_web_state_slow_forks($web_availability_updated) {
+
+
+        if ($web_availability_updated) {
+
+
+            include_once 'class.Page.php';
+
+            include_once 'class.Order.php';
+
+
+            $sql = sprintf(
+                "SELECT `Order Key` FROM `Order Transaction Fact` WHERE `Current Dispatching State`='In Process by Customer' AND `Product ID`=%d ", $this->id
+            );
+
+
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
+
+                    $web_availability = ($this->get_web_state() == 'For Sale' ? 'Yes' : 'No');
+                    if ($web_availability == 'No') {
+                        $order = new Order($row['Order Key']);
+                        $order->remove_out_of_stocks_from_basket($this->id);
+                    }
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                exit;
+            }
+
+
+            $sql = sprintf(
+                "SELECT `Order Key` FROM `Order Transaction Fact` WHERE `Current Dispatching State`='Out of Stock in Basket' AND `Product ID`=%d ", $this->id
+            );
+
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
+                    $web_availability = ($this->get_web_state() == 'For Sale' ? 'Yes' : 'No');
+                    if ($web_availability == 'Yes') {
+                        $order = new Order($row['Order Key']);
+                        $order->restore_back_to_stock_to_basket($this->id);
+                    }
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                exit;
+            }
+
+
+        }
+
+
+        $this->get_data('id', $this->id);
+
+
+        if (!($this->get('Product Status') == 'Active' or $this->get(
+                    'Product Status'
+                ) == 'Discontinuing') or $this->get('Product Web Configuration') == 'Offline'
+        ) {
+            $_state = 'Offline';
+        } else {
+            $_state = 'Online';
+        }
+
+
+        foreach ($this->get_pages('objects') as $page) {
+            $page->update(array('Page State' => $_state), 'no_history');
+        }
+
+    }
+
+    function get_pages($scope = 'keys') {
+
+        if ($scope == 'objects') {
+            include_once 'class.Page.php';
+        }
+
+        $sql = sprintf(
+            "SELECT `Page Key` FROM `Page Store Dimension` WHERE `Page Store Section Type`='Product' AND  `Page Parent Key`=%d", $this->id
+        );
+
+        $pages = array();
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+                if ($scope == 'objects') {
+                    $pages[$row['Page Key']] = new Page($row['Page Key']);
+                } else {
+                    $pages[$row['Page Key']] = $row['Page Key'];
+                }
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+        return $pages;
+
+
+    }
+
+    function get_categories($scope = 'keys') {
+
+        if ($scope == 'objects') {
+            include_once 'class.Category.php';
+        }
+
+
+        $categories = array();
+
+
+        $sql = sprintf(
+            "SELECT B.`Category Key` FROM `Category Dimension` C LEFT JOIN `Category Bridge` B ON (B.`Category Key`=C.`Category Key`) WHERE `Subject`='Product' AND `Subject Key`=%d AND `Category Branch Type`!='Root'",
+            $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+                if ($scope == 'objects') {
+                    $categories[$row['Category Key']] = new Category(
+                        $row['Category Key']
+                    );
+                } else {
+                    $categories[$row['Category Key']] = $row['Category Key'];
+                }
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+        return $categories;
+
+
+    }
+
+    function update_up_today_sales() {
+        $this->update_sales_from_invoices('Total');
+        //$this->update_sales_from_invoices('Today');
+        //$this->update_sales_from_invoices('Week To Day');
+        $this->update_sales_from_invoices('Month To Day');
+        $this->update_sales_from_invoices('Year To Day');
+
+    }
+
+    function update_sales_from_invoices($interval, $this_year = true, $last_year = true) {
+
+        include_once 'utils/date_functions.php';
+
+
+        list($db_interval, $from_date, $to_date, $from_date_1yb, $to_1yb) = calculate_interval_dates($this->db, $interval);
+
+
+        if ($this_year) {
+            $sales_data = $this->get_sales_data($from_date, $to_date);
+
+
+            $data_to_update = array(
+                "Product $db_interval Acc Customers"          => $sales_data['customers'],
+                "Product $db_interval Acc Repeat Customers"   => $sales_data['repeat_customers'],
+                "Product $db_interval Acc Invoices"           => $sales_data['invoices'],
+                "Product $db_interval Acc Profit"             => $sales_data['profit'],
+                "Product $db_interval Acc Invoiced Amount"    => $sales_data['net'],
+                "Product $db_interval Acc Quantity Ordered"   => $sales_data['ordered'],
+                "Product $db_interval Acc Quantity Invoiced"  => $sales_data['invoiced'],
+                "Product $db_interval Acc Quantity Delivered" => $sales_data['delivered'],
+                "Product DC $db_interval Acc Profit"          => $sales_data['dc_profit'],
+                "Product DC $db_interval Acc Invoiced Amount" => $sales_data['dc_net']
+            );
+
+
+            //  print_r($data_to_update);
+
+            $this->update($data_to_update, 'no_history');
+
+
+        }
+        if ($from_date_1yb and $last_year) {
+
+            $sales_data = $this->get_sales_data($from_date_1yb, $to_1yb);
+
+            $data_to_update = array(
+                "Product $db_interval Acc 1YB Customers"          => $sales_data['customers'],
+                "Product $db_interval Acc Repeat Customers"       => $sales_data['repeat_customers'],
+                "Product $db_interval Acc 1YB Invoices"           => $sales_data['invoices'],
+                "Product $db_interval Acc 1YB Profit"             => $sales_data['profit'],
+                "Product $db_interval Acc 1YB Invoiced Amount"    => $sales_data['net'],
+                "Product $db_interval Acc 1YB Quantity Ordered"   => $sales_data['ordered'],
+                "Product $db_interval Acc 1YB Quantity Invoiced"  => $sales_data['invoiced'],
+                "Product $db_interval Acc 1YB Quantity Delivered" => $sales_data['delivered'],
+                "Product DC $db_interval Acc 1YB Profit"          => $sales_data['dc_profit'],
+                "Product DC $db_interval Acc 1YB Invoiced Amount" => $sales_data['dc_net']
+            );
+            $this->update($data_to_update, 'no_history');
+
+        }
+
+        if (in_array(
+            $db_interval, [
+                            'Total',
+                            'Year To Date',
+                            'Quarter To Date',
+                            'Week To Date',
+                            'Month To Date',
+                            'Today'
+                        ]
+        )) {
+
+            $this->update(['Product Acc To Day Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
+
+        } elseif (in_array(
+            $db_interval, [
+                            '1 Year',
+                            '1 Month',
+                            '1 Week',
+                            '1 Quarter'
+                        ]
+        )) {
+
+            $this->update(['Product Acc Ongoing Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
+        } elseif (in_array(
+            $db_interval, [
+                            'Last Month',
+                            'Last Week',
+                            'Yesterday',
+                            'Last Year'
+                        ]
+        )) {
+
+            $this->update(['Product Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
+        }
+
+
+    }
+
+    function get_sales_data($from_date, $to_date) {
+
+
+        $sales_data = array(
+            'customers'        => 0,
+            'repeat_customers' => 0,
+            'invoices'         => 0,
+            'net'              => 0,
+            'profit'           => 0,
+            'ordered'          => 0,
+            'invoiced'         => 0,
+            'delivered'        => 0,
+            'dc_net'           => 0,
+            'dc_profit'        => 0,
+
+        );
+
+        if ($from_date == '' and $to_date == '') {
+            $sales_data['repeat_customers'] = $this->get_customers_total_data();
+        }
+
+
+        $sql = sprintf(
+            "SELECT
+		ifnull(count(DISTINCT `Customer Key`),0) AS customers,
+		ifnull(count(DISTINCT `Invoice Key`),0) AS invoices,
+		round(ifnull(sum( `Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount` +(  `Cost Supplier`/`Invoice Currency Exchange Rate`)  ),0),2) AS profit,
+		round(ifnull(sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`),0),2) AS net ,
+		round(ifnull(sum(`Shipped Quantity`),0),1) AS delivered,
+		round(ifnull(sum(`Order Quantity`),0),1) AS ordered,
+		round(ifnull(sum(`Invoice Quantity`),0),1) AS invoiced,
+		round(ifnull(sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)*`Invoice Currency Exchange Rate`),0),2) AS dc_net,
+		round(ifnull(sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`+`Cost Supplier`)*`Invoice Currency Exchange Rate`),0),2) AS dc_profit
+		FROM `Order Transaction Fact` USE INDEX (`Product ID`,`Invoice Date`) WHERE `Invoice Key` IS NOT NULL AND  `Product ID`=%d %s %s ", $this->id, ($from_date ? sprintf(
+            'and `Invoice Date`>=%s', prepare_mysql($from_date)
+        ) : ''), ($to_date ? sprintf(
+            'and `Invoice Date`<%s', prepare_mysql($to_date)
+        ) : '')
+
+        );
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+
+
+                $sales_data['customers'] = $row['customers'];
+                $sales_data['invoices']  = $row['invoices'];
+                $sales_data['net']       = $row['net'];
+                $sales_data['profit']    = $row['profit'];
+                $sales_data['ordered']   = $row['ordered'];
+                $sales_data['invoiced']  = $row['invoiced'];
+                $sales_data['delivered'] = $row['delivered'];
+                $sales_data['dc_net']    = $row['dc_net'];
+                $sales_data['dc_profit'] = $row['dc_profit'];
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        return $sales_data;
+    }
+
+    function get_customers_total_data() {
+
+        $repeat_customers = 0;
+
+
+        $sql = sprintf(
+            'SELECT count(`Customer Product Customer Key`) AS num  FROM `Customer Product Bridge` WHERE `Customer Product Invoices`>1 AND `Customer Product Product ID`=%d    ', $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $repeat_customers = $row['num'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        return $repeat_customers;
+
+    }
+
+    function update_last_period_sales() {
+
+        //$this->update_sales_from_invoices('Yesterday');
+        //$this->update_sales_from_invoices('Last Week');
+        //$this->update_sales_from_invoices('Last Month');
+    }
+
+    function update_interval_sales() {
+
+        //$this->update_sales_from_invoices('3 Year');
+        $this->update_sales_from_invoices('1 Year');
+        //$this->update_sales_from_invoices('6 Month');
+        $this->update_sales_from_invoices('1 Quarter');
+        //$this->update_sales_from_invoices('1 Month');
+        //$this->update_sales_from_invoices('10 Day');
+        //$this->update_sales_from_invoices('1 Week');
+
+    }
+
+    function update_previous_years_data() {
+
+        $data_1y_ago = $this->get_sales_data(
+            date('Y-01-01 00:00:00', strtotime('-1 year')), date('Y-01-01 00:00:00')
+        );
+        $data_2y_ago = $this->get_sales_data(
+            date('Y-01-01 00:00:00', strtotime('-2 year')), date('Y-01-01 00:00:00', strtotime('-1 year'))
+        );
+        $data_3y_ago = $this->get_sales_data(
+            date('Y-01-01 00:00:00', strtotime('-3 year')), date('Y-01-01 00:00:00', strtotime('-2 year'))
+        );
+        $data_4y_ago = $this->get_sales_data(
+            date('Y-01-01 00:00:00', strtotime('-4 year')), date('Y-01-01 00:00:00', strtotime('-3 year'))
+        );
+        $data_5y_ago = $this->get_sales_data(
+            date('Y-01-01 00:00:00', strtotime('-5 year')), date('Y-01-01 00:00:00', strtotime('-4 year'))
+        );
+
+        $data_to_update = array(
+            "Product 1 Year Ago Customers"          => $data_1y_ago['customers'],
+            "Product 1 Year Ago Repeat Customers"   => $data_1y_ago['repeat_customers'],
+            "Product 1 Year Ago Invoices"           => $data_1y_ago['invoices'],
+            "Product 1 Year Ago Profit"             => $data_1y_ago['profit'],
+            "Product 1 Year Ago Invoiced Amount"    => $data_1y_ago['net'],
+            "Product 1 Year Ago Quantity Ordered"   => $data_1y_ago['ordered'],
+            "Product 1 Year Ago Quantity Invoiced"  => $data_1y_ago['invoiced'],
+            "Product 1 Year Ago Quantity Delivered" => $data_1y_ago['delivered'],
+            "Product DC 1 Year Ago Profit"          => $data_1y_ago['dc_net'],
+            "Product DC 1 Year Ago Invoiced Amount" => $data_1y_ago['dc_profit'],
+
+            "Product 2 Year Ago Customers"          => $data_2y_ago['customers'],
+            "Product 2 Year Ago Repeat Customers"   => $data_2y_ago['repeat_customers'],
+            "Product 2 Year Ago Invoices"           => $data_2y_ago['invoices'],
+            "Product 2 Year Ago Profit"             => $data_2y_ago['profit'],
+            "Product 2 Year Ago Invoiced Amount"    => $data_2y_ago['net'],
+            "Product 2 Year Ago Quantity Ordered"   => $data_2y_ago['ordered'],
+            "Product 2 Year Ago Quantity Invoiced"  => $data_2y_ago['invoiced'],
+            "Product 2 Year Ago Quantity Delivered" => $data_2y_ago['delivered'],
+            "Product DC 2 Year Ago Profit"          => $data_2y_ago['dc_net'],
+            "Product DC 2 Year Ago Invoiced Amount" => $data_2y_ago['dc_profit'],
+
+            "Product 3 Year Ago Customers"          => $data_3y_ago['customers'],
+            "Product 3 Year Ago Repeat Customers"   => $data_3y_ago['repeat_customers'],
+            "Product 3 Year Ago Invoices"           => $data_3y_ago['invoices'],
+            "Product 3 Year Ago Profit"             => $data_3y_ago['profit'],
+            "Product 3 Year Ago Invoiced Amount"    => $data_3y_ago['net'],
+            "Product 3 Year Ago Quantity Ordered"   => $data_3y_ago['ordered'],
+            "Product 3 Year Ago Quantity Invoiced"  => $data_3y_ago['invoiced'],
+            "Product 3 Year Ago Quantity Delivered" => $data_3y_ago['delivered'],
+            "Product DC 3 Year Ago Profit"          => $data_3y_ago['dc_net'],
+            "Product DC 3 Year Ago Invoiced Amount" => $data_3y_ago['dc_profit'],
+
+            "Product 4 Year Ago Customers"          => $data_4y_ago['customers'],
+            "Product 4 Year Ago Repeat Customers"   => $data_4y_ago['repeat_customers'],
+            "Product 4 Year Ago Invoices"           => $data_4y_ago['invoices'],
+            "Product 4 Year Ago Profit"             => $data_4y_ago['profit'],
+            "Product 4 Year Ago Invoiced Amount"    => $data_4y_ago['net'],
+            "Product 4 Year Ago Quantity Ordered"   => $data_4y_ago['ordered'],
+            "Product 4 Year Ago Quantity Invoiced"  => $data_4y_ago['invoiced'],
+            "Product 4 Year Ago Quantity Delivered" => $data_4y_ago['delivered'],
+            "Product DC 4 Year Ago Profit"          => $data_4y_ago['dc_net'],
+            "Product DC 4 Year Ago Invoiced Amount" => $data_4y_ago['dc_profit'],
+
+            "Product 5 Year Ago Customers"          => $data_5y_ago['customers'],
+            "Product 5 Year Ago Repeat Customers"   => $data_5y_ago['repeat_customers'],
+            "Product 5 Year Ago Invoices"           => $data_5y_ago['invoices'],
+            "Product 5 Year Ago Profit"             => $data_5y_ago['profit'],
+            "Product 5 Year Ago Invoiced Amount"    => $data_5y_ago['net'],
+            "Product 5 Year Ago Quantity Ordered"   => $data_5y_ago['ordered'],
+            "Product 5 Year Ago Quantity Invoiced"  => $data_5y_ago['invoiced'],
+            "Product 5 Year Ago Quantity Delivered" => $data_5y_ago['delivered'],
+            "Product DC 5 Year Ago Profit"          => $data_5y_ago['dc_net'],
+            "Product DC 5 Year Ago Invoiced Amount" => $data_5y_ago['dc_profit']
+        );
+        $this->update($data_to_update, 'no_history');
+
+    }
+
+    function update_previous_quarters_data() {
+
+
+        include_once 'utils/date_functions.php';
+
+
+        foreach (range(1, 4) as $i) {
+            $dates     = get_previous_quarters_dates($i);
+            $dates_1yb = get_previous_quarters_dates($i + 4);
+
+
+            $sales_data     = $this->get_sales_data(
+                $dates['start'], $dates['end']
+            );
+            $sales_data_1yb = $this->get_sales_data(
+                $dates_1yb['start'], $dates_1yb['end']
+            );
+
+            $data_to_update = array(
+
+                "Product $i Quarter Ago Customers"          => $sales_data['customers'],
+                "Product $i Quarter Ago Repeat Customers"   => $sales_data['repeat_customers'],
+                "Product $i Quarter Ago Invoices"           => $sales_data['invoices'],
+                "Product $i Quarter Ago Profit"             => $sales_data['profit'],
+                "Product $i Quarter Ago Invoiced Amount"    => $sales_data['net'],
+                "Product $i Quarter Ago Quantity Ordered"   => $sales_data['ordered'],
+                "Product $i Quarter Ago Quantity Invoiced"  => $sales_data['invoiced'],
+                "Product $i Quarter Ago Quantity Delivered" => $sales_data['delivered'],
+                "Product DC $i Quarter Ago Profit"          => $sales_data['dc_net'],
+                "Product DC $i Quarter Ago Invoiced Amount" => $sales_data['dc_profit'],
+
+                "Product $i Quarter Ago 1YB Customers"          => $sales_data_1yb['customers'],
+                "Product $i Quarter Ago 1YB Repeat Customers"   => $sales_data['repeat_customers'],
+                "Product $i Quarter Ago 1YB Invoices"           => $sales_data_1yb['invoices'],
+                "Product $i Quarter Ago 1YB Profit"             => $sales_data_1yb['profit'],
+                "Product $i Quarter Ago 1YB Invoiced Amount"    => $sales_data_1yb['net'],
+                "Product $i Quarter Ago 1YB Quantity Ordered"   => $sales_data_1yb['ordered'],
+                "Product $i Quarter Ago 1YB Quantity Invoiced"  => $sales_data_1yb['invoiced'],
+                "Product $i Quarter Ago 1YB Quantity Delivered" => $sales_data_1yb['delivered'],
+                "Product DC $i Quarter Ago 1YB Profit"          => $sales_data_1yb['dc_net'],
+                "Product DC $i Quarter Ago 1YB Invoiced Amount" => $sales_data_1yb['dc_profit']
+
+
+            );
+            $this->update($data_to_update, 'no_history');
+        }
+
+    }
+
+    function delete() {
+
+        $this->deleted = false;
+
+
+        $sql = sprinft('SELECT `Order Transaction Fact Key` FROM `Order Transaction Fact` WHERE `Product ID`=%d ', $this->id);
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $this->update(array('Product Status' => 'Discontinued'));
+            } else {
+
+
+                $sql = sprintf("DELETE FROM `Product Dimension` WHERE `Product ID`=%d", $this->id);
+                $this->db->exec($sql);
+
+                $sql = sprintf("DELETE FROM `Product History Dimension` WHERE `Product ID`=%d", $this->id);
+                $this->db->exec($sql);
+
+                $sql = sprintf("DELETE FROM `Product Availability Timeline` WHERE `Product ID`=%d", $this->id);
+                $this->db->exec($sql);
+
+                $sql = sprintf("DELETE FROM `Product Data` WHERE `Product ID`=%d", $this->id);
+                $this->db->exec($sql);
+                $sql = sprintf("DELETE FROM `Product DC Data` WHERE `Product ID`=%d", $this->id);
+                $this->db->exec($sql);
+
+
+                $webpage = $this->get_webpage();
+                if ($webpage->id) {
+                    $webpage->delete(false);
+                }
+
+
+                /*
+
+                $history_key = $this->add_history(
+                    array(
+                        'Action'           => 'deleted',
+                        'History Abstract' => sprintf(_('Store %d deleted'), $this->data['Store Name']),
+                        'History Details'  => ''
+                    ), true
+                );
+
+              */
+
+
+                $this->deleted = true;
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+    }
+
+    function get_webpage() {
+
+        include_once 'class.Page.php';
+        // Todo: migrate to new webpage class
+
+        $page_key = 0;
+        $sql      = sprintf('SELECT `Page Key` FROM `Page Store Dimension` WHERE `Page Store Section Type`="Product"  AND  `Page Parent Key`=%d ', $this->id);
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $page_key = $row['Page Key'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        $page = new Page($page_key);
+
+        $this->webpage = $page;
+
+        return $page;
+
+
+    }
+
+    function update_next_shipment() {
+
+
+        $next_delivery_time = 0;
+
+        $sql = sprintf(
+            'SELECT `Part Current On Hand Stock`,`Part Next Shipment Date` FROM  `Product Part Bridge` LEFT JOIN `Part Dimension` ON (`Part SKU`=`Product Part Part SKU`)   WHERE `Product Part Product ID`=%d ',
+            $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+
+                if (($row['Part Current On Hand Stock'] <= 0 or $row['Part Current On Hand Stock'] == '') and $row['Part Next Shipment Date'] == '') {
+                    $next_delivery_time = 0;
+
+                    break;
+                }
+
+                $_next_delivery_time = $row['Part Next Shipment Date'];
+
+
+                if ($_next_delivery_time != '' and strtotime($_next_delivery_time.' +0:00') > gmdate('U')) {
+
+
+                    if (!$next_delivery_time) {
+                        $next_delivery_time = strtotime($_next_delivery_time.' +0:00');
+
+                    } elseif (strtotime($_next_delivery_time) > $next_delivery_time) {
+                        $next_delivery_time = $_next_delivery_time;
+                    }
+                }
+
+            }
+
+
+            $this->update_field_switcher('Product Next Supplier Shipment', (!$next_delivery_time ? '' : gmdate('Y-m-d H:i:s', $next_delivery_time)));
+
+
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+    }
+
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
         if (is_string($value)) {
             $value = _trim($value);
@@ -1205,9 +2413,6 @@ class Product extends Asset {
         switch ($field) {
 
             case 'Product Webpage Name':
-
-
-
 
 
                 if (!is_object($this->webpage)) {
@@ -1223,14 +2428,11 @@ class Product extends Asset {
                 $this->webpage->update(
                     array(
 
-                        'Webpage Name'       => $value
+                        'Webpage Name' => $value
                     ), $options
                 );
 
                 $this->updated = $this->webpage->updated;
-
-
-
 
 
                 break;
@@ -1262,7 +2464,6 @@ class Product extends Asset {
                         'Webpage Meta Description' => $value
                     ), $options
                 );
-
 
 
                 $this->updated = $this->webpage->updated;
@@ -2084,547 +3285,6 @@ class Product extends Asset {
 
     }
 
-    function get_webpage() {
-
-        include_once 'class.Page.php';
-        // Todo: migrate to new webpage class
-
-        $page_key = 0;
-        $sql      = sprintf('SELECT `Page Key` FROM `Page Store Dimension` WHERE `Page Store Section Type`="Product"  AND  `Page Parent Key`=%d ', $this->id);
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $page_key = $row['Page Key'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        $page = new Page($page_key);
-
-        $this->webpage = $page;
-
-        return $page;
-
-
-    }
-
-    function update_web_state($use_fork = true) {
-
-
-        include_once('class.Category.php');
-
-        $old_web_state = $this->get('Product Web State');
-
-
-        if ($old_web_state == 'For Sale') {
-            $old_web_availability = 'Yes';
-        } else {
-            $old_web_availability = 'No';
-        }
-
-        $web_state = $this->get_web_state();
-
-
-        $this->update_field('Product Web State', $web_state, 'no_history');
-
-
-        if ($web_state == 'For Sale') {
-            $web_availability = 'Yes';
-        } else {
-            $web_availability = 'No';
-        }
-
-
-        if ($old_web_state != $web_state) {
-            $this->update_availability($use_fork);
-        }
-
-
-        $web_availability_updated = ($old_web_availability != $web_availability ? true : false);
-
-
-        if ($web_availability_updated) {
-
-
-            $sql = sprintf(
-                'SELECT `Category Key` FROM `Category Bridge` WHERE `Subject Key`=%d AND `Subject`="Product" GROUP BY `Category Key` ', $this->id
-            );
-            if ($result = $this->db->query($sql)) {
-                foreach ($result as $row) {
-                    $category = new Category($row['Category Key']);
-
-                    //   print_r($category->get('Code'));
-
-                    $category->update_product_category_products_data();
-                }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
-            }
-
-
-            //print $this->data['Product Store Key'].' '.$this->data['Product Code']." $old_web_availability  $web_availability \n";
-
-            if (isset($this->editor['User Key']) and is_numeric(
-                    $this->editor['User Key']
-                )
-            ) {
-                $user_key = $this->editor['User Key'];
-            } else {
-                $user_key = 0;
-            }
-
-
-            $sql = sprintf(
-                "SELECT UNIX_TIMESTAMP(`Date`) AS date,`Product Availability Key` FROM `Product Availability Timeline` WHERE `Product ID`=%d  ORDER BY `Date`  DESC LIMIT 1", $this->id
-            );
-
-            if ($result = $this->db->query($sql)) {
-                if ($row = $result->fetch()) {
-                    $last_record_key  = $row['Product Availability Key'];
-                    $last_record_date = $row['date'];
-                } else {
-                    $last_record_key  = false;
-                    $last_record_date = false;
-                }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                exit;
-            }
-
-
-            $new_date_formated = gmdate('Y-m-d H:i:s');
-            $new_date          = gmdate('U');
-
-            $sql = sprintf(
-                "INSERT INTO `Product Availability Timeline`  (`Product ID`,`Store Key`,`Department Key`,`Family Key`,`User Key`,`Date`,`Availability`,`Web State`) VALUES (%d,%d,%d,%d,%d,%s,%s,%s) ",
-                $this->id, $this->data['Product Store Key'], $this->data['Product Main Department Key'], $this->data['Product Family Key'], $user_key, prepare_mysql($new_date_formated),
-                prepare_mysql($web_availability), prepare_mysql($web_state)
-
-            );
-            $this->db->exec($sql);
-
-            if ($last_record_key) {
-                $sql = sprintf(
-                    "UPDATE `Product Availability Timeline` SET `Duration`=%d WHERE `Product Availability Key`=%d", $new_date - $last_record_date, $last_record_key
-
-                );
-                $this->db->exec($sql);
-
-            }
-
-
-            if ($web_availability == 'Yes') {
-                $sql = sprintf(
-                    "UPDATE `Email Site Reminder Dimension` SET `Email Site Reminder State`='Ready' WHERE `Email Site Reminder State`='Waiting' AND `Trigger Scope`='Back in Stock' AND `Trigger Scope Key`=%d ",
-                    $this->id
-                );
-
-            } else {
-                $sql = sprintf(
-                    "UPDATE `Email Site Reminder Dimension` SET `Email Site Reminder State`='Waiting' WHERE `Email Site Reminder State`='Ready' AND `Trigger Scope`='Back in Stock' AND `Trigger Scope Key`=%d ",
-                    $this->id
-                );
-
-            }
-            $this->db->exec($sql);
-
-
-        }
-
-
-        if ($use_fork) {
-            include_once 'utils/new_fork.php';
-            $account = new Account($this->db);
-
-            $msg = new_housekeeping_fork(
-                'au_housekeeping', array(
-                'type'                     => 'update_web_state_slow_forks',
-                'web_availability_updated' => $web_availability_updated,
-                'product_id'               => $this->id
-            ), $account->get('Account Code')
-            );
-
-        } else {
-            $this->update_web_state_slow_forks($web_availability_updated);
-        }
-
-
-        foreach ($this->get_parts('objects') as $part) {
-            $part->update_products_web_status();
-        }
-
-
-    }
-
-    function get_web_state() {
-
-
-        if (!($this->data['Product Status'] == 'Active' or $this->data['Product Status'] == 'Discontinuing') or ($this->data['Product Number of Parts'] == 0)) {
-
-            return 'Offline';
-        }
-        switch ($this->data['Product Web Configuration']) {
-
-
-            case 'Offline':
-                return 'Offline';
-                break;
-            case 'Online Force Out of Stock':
-                return 'Out of Stock';
-                break;
-            case 'Online Force For Sale':
-                return 'For Sale';
-                break;
-            case 'Online Auto':
-
-                if ($this->data['Product Number of Parts'] == 0) {
-                    return 'Offline';
-                } else {
-
-                    if ($this->data['Product Availability'] > 0) {
-                        return 'For Sale';
-                    } else {
-                        return 'Out of Stock';
-                    }
-                }
-                break;
-            default:
-                return 'Offline';
-                break;
-        }
-
-    }
-
-    function update_availability($use_fork = true) {
-
-
-        if ($this->get('Product Number of Parts') > 0) {
-
-            $sql = sprintf(
-                " SELECT `Part Reference`,`Part On Demand`,`Part Stock State`,`Part Current On Hand Stock`-`Part Current Stock In Process`-`Part Current Stock Ordered Paid` AS stock,`Part Current Stock In Process`,`Part Current On Hand Stock`,`Product Part Ratio` FROM     `Product Part Bridge` B LEFT JOIN   `Part Dimension` P   ON (P.`Part SKU`=B.`Product Part Part SKU`)   WHERE B.`Product Part Product ID`=%d   ",
-                $this->id
-            );
-
-
-            $stock       = 99999999999;
-            $tipo        = 'Excess';
-            $change      = false;
-            $stock_error = false;
-
-            $on_demand = '';
-
-
-            if ($result = $this->db->query($sql)) {
-                foreach ($result as $row) {
-
-                    if ($on_demand == '') {
-                        $on_demand = $row['Part On Demand'];
-
-                    } else {
-
-                        if ($row['Part On Demand'] == 'No') {
-                            $on_demand = 'No';
-                        }
-
-                    }
-
-
-                    if ($row['Part Stock State'] == 'Error') {
-                        $tipo = 'Error';
-                    } elseif ($row['Part Stock State'] == 'OutofStock' and $tipo != 'Error') {
-                        $tipo = 'OutofStock';
-                    } elseif ($row['Part Stock State'] == 'VeryLow' and $tipo != 'Error' and $tipo != 'OutofStock') {
-                        $tipo = 'VeryLow';
-                    } else {
-                        if ($row['Part Stock State'] == 'Low' and $tipo != 'Error' and $tipo != 'OutofStock' and $tipo != 'VeryLow') {
-                            $tipo = 'Low';
-                        } elseif ($row['Part Stock State'] == 'Normal' and $tipo == 'Excess') {
-                            $tipo = 'Normal';
-                        }
-                    }
-
-                    if (is_numeric($row['stock']) and is_numeric(
-                            $row['Product Part Ratio']
-                        ) and $row['Product Part Ratio'] > 0
-                    ) {
-
-                        $_part_stock = $row['stock'];
-
-
-                        if ($row['Part Current On Hand Stock'] == 0 and $row['Part Current Stock In Process'] > 0) {
-                            $_part_stock = 0;
-                        }
-
-                        if ($row['Part On Demand'] == 'Yes') {
-                            $_part_stock = 99999999999;
-                        }
-
-                        $_stock = $_part_stock / $row['Product Part Ratio'];
-                        if ($stock > $_stock) {
-                            $stock  = $_stock;
-                            $change = true;
-                        }
-
-
-                    } else {
-
-                        $stock       = 0;
-                        $stock_error = true;
-                    }
-
-                    // print $row['Part Reference']." $tipo $on_demand  $stock\n";
-
-
-                }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                exit;
-            }
-
-
-            if ($stock < 0) {
-
-                $stock = 0;
-
-            } elseif (!$change or $stock_error) {
-                $stock = 0;
-            } else {
-                if (is_numeric($stock) and $stock < 0) {
-                    $stock = 0;
-                }
-            }
-
-            if ($on_demand == 'Yes') {
-
-                $stock = 99999999999;
-                $tipo  = 'OnDemand';
-            }
-
-        } else {
-            $stock = 0;
-            $tipo  = 'Normal';
-        }
-
-
-        //print $stock;exit;
-
-        $this->update(
-            array(
-                'Product Availability'       => $stock,
-                'Product Availability State' => $tipo,
-
-            ), 'no_history'
-        );
-
-
-        $this->update_web_state($use_fork);
-
-        foreach ($this->get_categories('objects') as $category) {
-            $category->update_product_category_products_data();
-        }
-
-
-        $this->other_fields_updated = array(
-            'Product_Availability' => array(
-                'field'           => 'Product_Availability',
-                'value'           => $this->get('Product Availability'),
-                'formatted_value' => $this->get('Availability'),
-
-
-            ),
-            'Product_Web_State'    => array(
-                'field'           => 'Product_Web_State',
-                'value'           => $this->get('Product Web State'),
-                'formatted_value' => $this->get('Web State'),
-
-
-            )
-        );
-
-
-    }
-
-    function get_categories($scope = 'keys') {
-
-        if ($scope == 'objects') {
-            include_once 'class.Category.php';
-        }
-
-
-        $categories = array();
-
-
-        $sql = sprintf(
-            "SELECT B.`Category Key` FROM `Category Dimension` C LEFT JOIN `Category Bridge` B ON (B.`Category Key`=C.`Category Key`) WHERE `Subject`='Product' AND `Subject Key`=%d AND `Category Branch Type`!='Root'",
-            $this->id
-        );
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-                if ($scope == 'objects') {
-                    $categories[$row['Category Key']] = new Category(
-                        $row['Category Key']
-                    );
-                } else {
-                    $categories[$row['Category Key']] = $row['Category Key'];
-                }
-
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-        return $categories;
-
-
-    }
-
-    function update_web_state_slow_forks($web_availability_updated) {
-
-
-        if ($web_availability_updated) {
-
-
-            include_once 'class.Page.php';
-
-            include_once 'class.Order.php';
-
-
-
-
-            $sql = sprintf(
-                "SELECT `Order Key` FROM `Order Transaction Fact` WHERE `Current Dispatching State`='In Process by Customer' AND `Product ID`=%d ", $this->id
-            );
-
-
-            if ($result = $this->db->query($sql)) {
-                foreach ($result as $row) {
-
-                    $web_availability = ($this->get_web_state() == 'For Sale' ? 'Yes' : 'No');
-                    if ($web_availability == 'No') {
-                        $order = new Order($row['Order Key']);
-                        $order->remove_out_of_stocks_from_basket($this->id);
-                    }
-                }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                exit;
-            }
-
-
-            $sql = sprintf(
-                "SELECT `Order Key` FROM `Order Transaction Fact` WHERE `Current Dispatching State`='Out of Stock in Basket' AND `Product ID`=%d ", $this->id
-            );
-
-            if ($result = $this->db->query($sql)) {
-                foreach ($result as $row) {
-                    $web_availability = ($this->get_web_state() == 'For Sale' ? 'Yes' : 'No');
-                    if ($web_availability == 'Yes') {
-                        $order = new Order($row['Order Key']);
-                        $order->restore_back_to_stock_to_basket($this->id);
-                    }
-                }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                exit;
-            }
-
-
-        }
-
-
-        $this->get_data('id', $this->id);
-
-
-        if (!($this->get('Product Status') == 'Active' or $this->get(
-                    'Product Status'
-                ) == 'Discontinuing') or $this->get('Product Web Configuration') == 'Offline'
-        ) {
-            $_state = 'Offline';
-        } else {
-            $_state = 'Online';
-        }
-
-
-        foreach ($this->get_pages('objects') as $page) {
-            $page->update(array('Page State' => $_state), 'no_history');
-        }
-
-    }
-
-    function get_pages($scope = 'keys') {
-
-        if ($scope == 'objects') {
-            include_once 'class.Page.php';
-        }
-
-        $sql = sprintf(
-            "SELECT `Page Key` FROM `Page Store Dimension` WHERE `Page Store Section Type`='Product' AND  `Page Parent Key`=%d", $this->id
-        );
-
-        $pages = array();
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-                if ($scope == 'objects') {
-                    $pages[$row['Page Key']] = new Page($row['Page Key']);
-                } else {
-                    $pages[$row['Page Key']] = $row['Page Key'];
-                }
-
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-        return $pages;
-
-
-    }
-
-    function get_parts($scope = 'keys') {
-
-
-        if ($scope == 'objects') {
-            include_once 'class.Part.php';
-        }
-
-        $sql = sprintf(
-            'SELECT `Product Part Part SKU` AS `Part SKU` FROM `Product Part Bridge` WHERE `Product Part Product ID`=%d ', $this->id
-        );
-
-        $parts = array();
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-                if ($scope == 'objects') {
-                    $parts[$row['Part SKU']] = new Part($row['Part SKU']);
-                } else {
-                    $parts[$row['Part SKU']] = $row['Part SKU'];
-                }
-
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-        return $parts;
-    }
-
     function update_part_list($value, $options = '') {
 
 
@@ -2657,8 +3317,6 @@ class Product extends Asset {
 
             return;
         }
-
-
 
 
         foreach ($value as $product_part) {
@@ -2719,8 +3377,6 @@ class Product extends Asset {
         }
 
 
-
-
         $this->get_data('id', $this->id);
         $this->update_part_numbers();
 
@@ -2758,76 +3414,6 @@ class Product extends Asset {
 
 
     }
-
-
-    function update_order_numbers() {
-
-        $number_orders = 0;
-        $number_customers = 0;
-
-        $sql = sprintf(
-            'SELECT count(Distinct `Order Key`) AS orders,count(Distinct `Customer Key`) AS customers FROM `Order Transaction Fact`  WHERE `Product ID`=%d', $this->id
-        );
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $number_orders = $row['orders'];
-                $number_customers = $row['customers'];
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-
-        $this->update(
-            array(
-                'Product Number Orders' => $number_orders,
-                'Product Number Customers' => $number_customers
-
-
-            ), 'no_history'
-        );
-
-
-    }
-
-
-    function update_customers_favored_numbers() {
-
-        $number_customers_favored = 0;
-
-
-        $sql = sprintf(
-            'SELECT count(Distinct `Customer Key`)  customers FROM `Customer Favorite Product Bridge`  WHERE `Product ID`=%d', $this->id
-        );
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $number_customers_favored = $row['customers'];
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        $this->update(
-            array(
-
-                'Product Number Customers Favored' => $number_customers_favored,
-
-
-            ), 'no_history'
-        );
-
-
-    }
-
-
 
     function update_cost() {
         $cost = 0;
@@ -2897,565 +3483,7 @@ class Product extends Asset {
         return $category_data;
     }
 
-    function get_linked_fields_data() {
-
-        $sql = sprintf(
-            "SELECT `Product Part Part SKU`,`Product Part Linked Fields` FROM `Product Part Bridge` WHERE `Product Part Product ID`=%d", $this->id
-        );
-
-        $linked_fields_data = array();
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                if ($row['Product Part Linked Fields'] != '') {
-                    $linked_fields = json_decode(
-                        $row['Product Part Linked Fields'], true
-                    );
-
-                    foreach ($linked_fields as $key => $value) {
-                        $value                      = preg_replace(
-                            '/\s/', '_', $value
-                        );
-                        $linked_fields_data[$value] = $row['Product Part Part SKU'];
-                    }
-
-                }
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-        return $linked_fields_data;
-
-    }
-
-    function create_time_series($date = false) {
-        if (!$date) {
-            $date = gmdate("Y-m-d");
-        }
-        $sql       = sprintf(
-            "SELECT sum(`Invoice Quantity`) AS outers,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) AS sales,  sum(`Invoice Currency Exchange Rate`*(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)) AS dc_sales, count(DISTINCT `Customer Key`) AS customers , count(DISTINCT `Invoice Key`) AS invoices FROM `Order Transaction Fact` WHERE `Product ID`=%d AND `Current Dispatching State`='Dispatched' AND `Invoice Date`>=%s  AND `Invoice Date`<=%s   ",
-            $this->id, prepare_mysql($date.' 00:00:00'), prepare_mysql($date.' 23:59:59')
-
-        );
-        $outers    = 0;
-        $sales     = 0;
-        $dc_sales  = 0;
-        $customers = 0;
-        $invoices  = 0;
-
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-
-                $sales     = $row['sales'];
-                $dc_sales  = $row['dc_sales'];
-                $customers = $row['customers'];
-                $invoices  = $row['invoices'];
-                $outers    = $row['outers'];
-
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        if ($invoices != 0 and $customers != 0 and $sales != 0 and $outers != 0) {
-
-
-            $sql = sprintf(
-                "INSERT INTO `Order Spanshot Fact`(`Date`, `Product ID`, `Availability`, `Outers Out`, `Sales`, `Sales DC`, `Customers`, `Invoices`) VALUES (%s,%d   ,%f,%f, %.2f,%.2f,  %d,%d) ON DUPLICATE KEY UPDATE `Outers Out`=%f,`Sales`=%.2f,`Sales DC`=%.2f,`Customers`=%d,`Invoices`=%d ",
-                prepare_mysql($date),
-
-                $this->id, 1, $outers, $sales, $dc_sales, $customers, $invoices,
-
-                $outers, $sales, $dc_sales, $customers, $invoices
-
-
-            );
-            $this->db->exec($sql);
-
-
-        }
-
-    }
-
-    function update_pages_numbers() {
-
-        $number_pages = 0;
-
-        $sql = sprintf(
-            'SELECT count(DISTINCT `Page Key`) AS num FROM `Page Product Dimension`  WHERE `Product ID`=%d', $this->id
-        );
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $number_pages = $row['num'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-        $this->update(
-            array(
-                'Product Number Web Pages' => $number_pages,
-
-
-            ), 'no_history'
-        );
-
-    }
-
-    function update_status_from_parts() {
-
-        $status = 'Active';
-
-        $part_objects=$this->get_parts('objects') ;
-
-        foreach ($part_objects as  $part) {
-            if ($part->get('Part Status') == 'Discontinuing') {
-                $status = 'Discontinuing';
-            } elseif ($part->get('Part Status') == 'Not In Use') {
-                $status = 'Discontinued';
-                break;
-            }
-
-
-        }
-
-
-        if ($status == 'Active') {
-            if ($this->get('Product Status') == 'Discontinuing') {
-                $this->update(array('Product Status' => 'Active'), 'no_history');
-
-            }
-        } elseif ($status == 'Discontinuing') {
-            if ($this->get('Product Status') == 'Active') {
-                $this->update(array('Product Status' => 'Discontinuing'), 'no_history');
-
-            }
-        } elseif ($status == 'Discontinued') {
-
-            $this->update(array('Product Status' => 'Discontinued'), 'no_history');
-
-
-        }
-
-
-
-        $this->update_availability();
-
-
-    }
-
-    function update_up_today_sales() {
-        $this->update_sales_from_invoices('Total');
-        //$this->update_sales_from_invoices('Today');
-        //$this->update_sales_from_invoices('Week To Day');
-        $this->update_sales_from_invoices('Month To Day');
-        $this->update_sales_from_invoices('Year To Day');
-
-    }
-
-    function update_sales_from_invoices($interval, $this_year = true, $last_year = true) {
-
-        include_once 'utils/date_functions.php';
-
-
-        list($db_interval, $from_date, $to_date, $from_date_1yb, $to_1yb) = calculate_interval_dates($this->db, $interval);
-
-
-        if ($this_year) {
-            $sales_data = $this->get_sales_data($from_date, $to_date);
-
-
-            $data_to_update = array(
-                "Product $db_interval Acc Customers"          => $sales_data['customers'],
-                "Product $db_interval Acc Repeat Customers"   => $sales_data['repeat_customers'],
-                "Product $db_interval Acc Invoices"           => $sales_data['invoices'],
-                "Product $db_interval Acc Profit"             => $sales_data['profit'],
-                "Product $db_interval Acc Invoiced Amount"    => $sales_data['net'],
-                "Product $db_interval Acc Quantity Ordered"   => $sales_data['ordered'],
-                "Product $db_interval Acc Quantity Invoiced"  => $sales_data['invoiced'],
-                "Product $db_interval Acc Quantity Delivered" => $sales_data['delivered'],
-                "Product DC $db_interval Acc Profit"          => $sales_data['dc_profit'],
-                "Product DC $db_interval Acc Invoiced Amount" => $sales_data['dc_net']
-            );
-
-
-          //  print_r($data_to_update);
-
-            $this->update($data_to_update, 'no_history');
-
-
-        }
-        if ($from_date_1yb and $last_year) {
-
-            $sales_data = $this->get_sales_data($from_date_1yb, $to_1yb);
-
-            $data_to_update = array(
-                "Product $db_interval Acc 1YB Customers"          => $sales_data['customers'],
-                "Product $db_interval Acc Repeat Customers"       => $sales_data['repeat_customers'],
-                "Product $db_interval Acc 1YB Invoices"           => $sales_data['invoices'],
-                "Product $db_interval Acc 1YB Profit"             => $sales_data['profit'],
-                "Product $db_interval Acc 1YB Invoiced Amount"    => $sales_data['net'],
-                "Product $db_interval Acc 1YB Quantity Ordered"   => $sales_data['ordered'],
-                "Product $db_interval Acc 1YB Quantity Invoiced"  => $sales_data['invoiced'],
-                "Product $db_interval Acc 1YB Quantity Delivered" => $sales_data['delivered'],
-                "Product DC $db_interval Acc 1YB Profit"          => $sales_data['dc_profit'],
-                "Product DC $db_interval Acc 1YB Invoiced Amount" => $sales_data['dc_net']
-            );
-            $this->update($data_to_update, 'no_history');
-
-        }
-
-        if (in_array(
-            $db_interval, [
-                            'Total',
-                            'Year To Date',
-                            'Quarter To Date',
-                            'Week To Date',
-                            'Month To Date',
-                            'Today'
-                        ]
-        )) {
-
-            $this->update(['Product Acc To Day Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
-
-        } elseif (in_array(
-            $db_interval, [
-                            '1 Year',
-                            '1 Month',
-                            '1 Week',
-                            '1 Quarter'
-                        ]
-        )) {
-
-            $this->update(['Product Acc Ongoing Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
-        } elseif (in_array(
-            $db_interval, [
-                            'Last Month',
-                            'Last Week',
-                            'Yesterday',
-                            'Last Year'
-                        ]
-        )) {
-
-            $this->update(['Product Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
-        }
-
-
-    }
-
-    function get_sales_data($from_date, $to_date) {
-
-
-        $sales_data = array(
-            'customers'        => 0,
-            'repeat_customers' => 0,
-            'invoices'         => 0,
-            'net'              => 0,
-            'profit'           => 0,
-            'ordered'          => 0,
-            'invoiced'         => 0,
-            'delivered'        => 0,
-            'dc_net'           => 0,
-            'dc_profit'        => 0,
-
-        );
-
-        if ($from_date == '' and $to_date == '') {
-            $sales_data['repeat_customers'] = $this->get_customers_total_data();
-        }
-
-
-        $sql = sprintf(
-            "SELECT
-		ifnull(count(DISTINCT `Customer Key`),0) AS customers,
-		ifnull(count(DISTINCT `Invoice Key`),0) AS invoices,
-		round(ifnull(sum( `Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount` +(  `Cost Supplier`/`Invoice Currency Exchange Rate`)  ),0),2) AS profit,
-		round(ifnull(sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`),0),2) AS net ,
-		round(ifnull(sum(`Shipped Quantity`),0),1) AS delivered,
-		round(ifnull(sum(`Order Quantity`),0),1) AS ordered,
-		round(ifnull(sum(`Invoice Quantity`),0),1) AS invoiced,
-		round(ifnull(sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)*`Invoice Currency Exchange Rate`),0),2) AS dc_net,
-		round(ifnull(sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`+`Cost Supplier`)*`Invoice Currency Exchange Rate`),0),2) AS dc_profit
-		FROM `Order Transaction Fact` USE INDEX (`Product ID`,`Invoice Date`) WHERE `Invoice Key` IS NOT NULL AND  `Product ID`=%d %s %s ", $this->id, ($from_date ? sprintf(
-            'and `Invoice Date`>=%s', prepare_mysql($from_date)
-        ) : ''), ($to_date ? sprintf(
-            'and `Invoice Date`<%s', prepare_mysql($to_date)
-        ) : '')
-
-        );
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-
-
-                $sales_data['customers'] = $row['customers'];
-                $sales_data['invoices']  = $row['invoices'];
-                $sales_data['net']       = $row['net'];
-                $sales_data['profit']    = $row['profit'];
-                $sales_data['ordered']   = $row['ordered'];
-                $sales_data['invoiced']  = $row['invoiced'];
-                $sales_data['delivered'] = $row['delivered'];
-                $sales_data['dc_net']    = $row['dc_net'];
-                $sales_data['dc_profit'] = $row['dc_profit'];
-
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        return $sales_data;
-    }
-
-    function get_customers_total_data() {
-
-        $repeat_customers = 0;
-
-
-        $sql = sprintf(
-            'SELECT count(`Customer Product Customer Key`) AS num  FROM `Customer Product Bridge` WHERE `Customer Product Invoices`>1 AND `Customer Product Product ID`=%d    ', $this->id
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $repeat_customers = $row['num'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        return $repeat_customers;
-
-    }
-
-    function update_last_period_sales() {
-
-        //$this->update_sales_from_invoices('Yesterday');
-        //$this->update_sales_from_invoices('Last Week');
-        //$this->update_sales_from_invoices('Last Month');
-    }
-
-    function update_interval_sales() {
-
-        //$this->update_sales_from_invoices('3 Year');
-        $this->update_sales_from_invoices('1 Year');
-        //$this->update_sales_from_invoices('6 Month');
-        $this->update_sales_from_invoices('1 Quarter');
-        //$this->update_sales_from_invoices('1 Month');
-        //$this->update_sales_from_invoices('10 Day');
-        //$this->update_sales_from_invoices('1 Week');
-
-    }
-
-    function update_previous_years_data() {
-
-        $data_1y_ago = $this->get_sales_data(
-            date('Y-01-01 00:00:00', strtotime('-1 year')), date('Y-01-01 00:00:00')
-        );
-        $data_2y_ago = $this->get_sales_data(
-            date('Y-01-01 00:00:00', strtotime('-2 year')), date('Y-01-01 00:00:00', strtotime('-1 year'))
-        );
-        $data_3y_ago = $this->get_sales_data(
-            date('Y-01-01 00:00:00', strtotime('-3 year')), date('Y-01-01 00:00:00', strtotime('-2 year'))
-        );
-        $data_4y_ago = $this->get_sales_data(
-            date('Y-01-01 00:00:00', strtotime('-4 year')), date('Y-01-01 00:00:00', strtotime('-3 year'))
-        );
-        $data_5y_ago = $this->get_sales_data(
-            date('Y-01-01 00:00:00', strtotime('-5 year')), date('Y-01-01 00:00:00', strtotime('-4 year'))
-        );
-
-        $data_to_update = array(
-            "Product 1 Year Ago Customers"          => $data_1y_ago['customers'],
-            "Product 1 Year Ago Repeat Customers"   => $data_1y_ago['repeat_customers'],
-            "Product 1 Year Ago Invoices"           => $data_1y_ago['invoices'],
-            "Product 1 Year Ago Profit"             => $data_1y_ago['profit'],
-            "Product 1 Year Ago Invoiced Amount"    => $data_1y_ago['net'],
-            "Product 1 Year Ago Quantity Ordered"   => $data_1y_ago['ordered'],
-            "Product 1 Year Ago Quantity Invoiced"  => $data_1y_ago['invoiced'],
-            "Product 1 Year Ago Quantity Delivered" => $data_1y_ago['delivered'],
-            "Product DC 1 Year Ago Profit"          => $data_1y_ago['dc_net'],
-            "Product DC 1 Year Ago Invoiced Amount" => $data_1y_ago['dc_profit'],
-
-            "Product 2 Year Ago Customers"          => $data_2y_ago['customers'],
-            "Product 2 Year Ago Repeat Customers"   => $data_2y_ago['repeat_customers'],
-            "Product 2 Year Ago Invoices"           => $data_2y_ago['invoices'],
-            "Product 2 Year Ago Profit"             => $data_2y_ago['profit'],
-            "Product 2 Year Ago Invoiced Amount"    => $data_2y_ago['net'],
-            "Product 2 Year Ago Quantity Ordered"   => $data_2y_ago['ordered'],
-            "Product 2 Year Ago Quantity Invoiced"  => $data_2y_ago['invoiced'],
-            "Product 2 Year Ago Quantity Delivered" => $data_2y_ago['delivered'],
-            "Product DC 2 Year Ago Profit"          => $data_2y_ago['dc_net'],
-            "Product DC 2 Year Ago Invoiced Amount" => $data_2y_ago['dc_profit'],
-
-            "Product 3 Year Ago Customers"          => $data_3y_ago['customers'],
-            "Product 3 Year Ago Repeat Customers"   => $data_3y_ago['repeat_customers'],
-            "Product 3 Year Ago Invoices"           => $data_3y_ago['invoices'],
-            "Product 3 Year Ago Profit"             => $data_3y_ago['profit'],
-            "Product 3 Year Ago Invoiced Amount"    => $data_3y_ago['net'],
-            "Product 3 Year Ago Quantity Ordered"   => $data_3y_ago['ordered'],
-            "Product 3 Year Ago Quantity Invoiced"  => $data_3y_ago['invoiced'],
-            "Product 3 Year Ago Quantity Delivered" => $data_3y_ago['delivered'],
-            "Product DC 3 Year Ago Profit"          => $data_3y_ago['dc_net'],
-            "Product DC 3 Year Ago Invoiced Amount" => $data_3y_ago['dc_profit'],
-
-            "Product 4 Year Ago Customers"          => $data_4y_ago['customers'],
-            "Product 4 Year Ago Repeat Customers"   => $data_4y_ago['repeat_customers'],
-            "Product 4 Year Ago Invoices"           => $data_4y_ago['invoices'],
-            "Product 4 Year Ago Profit"             => $data_4y_ago['profit'],
-            "Product 4 Year Ago Invoiced Amount"    => $data_4y_ago['net'],
-            "Product 4 Year Ago Quantity Ordered"   => $data_4y_ago['ordered'],
-            "Product 4 Year Ago Quantity Invoiced"  => $data_4y_ago['invoiced'],
-            "Product 4 Year Ago Quantity Delivered" => $data_4y_ago['delivered'],
-            "Product DC 4 Year Ago Profit"          => $data_4y_ago['dc_net'],
-            "Product DC 4 Year Ago Invoiced Amount" => $data_4y_ago['dc_profit'],
-
-            "Product 5 Year Ago Customers"          => $data_5y_ago['customers'],
-            "Product 5 Year Ago Repeat Customers"   => $data_5y_ago['repeat_customers'],
-            "Product 5 Year Ago Invoices"           => $data_5y_ago['invoices'],
-            "Product 5 Year Ago Profit"             => $data_5y_ago['profit'],
-            "Product 5 Year Ago Invoiced Amount"    => $data_5y_ago['net'],
-            "Product 5 Year Ago Quantity Ordered"   => $data_5y_ago['ordered'],
-            "Product 5 Year Ago Quantity Invoiced"  => $data_5y_ago['invoiced'],
-            "Product 5 Year Ago Quantity Delivered" => $data_5y_ago['delivered'],
-            "Product DC 5 Year Ago Profit"          => $data_5y_ago['dc_net'],
-            "Product DC 5 Year Ago Invoiced Amount" => $data_5y_ago['dc_profit']
-        );
-        $this->update($data_to_update, 'no_history');
-
-    }
-
-    function update_previous_quarters_data() {
-
-
-        include_once 'utils/date_functions.php';
-
-
-        foreach (range(1, 4) as $i) {
-            $dates     = get_previous_quarters_dates($i);
-            $dates_1yb = get_previous_quarters_dates($i + 4);
-
-
-            $sales_data     = $this->get_sales_data(
-                $dates['start'], $dates['end']
-            );
-            $sales_data_1yb = $this->get_sales_data(
-                $dates_1yb['start'], $dates_1yb['end']
-            );
-
-            $data_to_update = array(
-
-                "Product $i Quarter Ago Customers"          => $sales_data['customers'],
-                "Product $i Quarter Ago Repeat Customers"   => $sales_data['repeat_customers'],
-                "Product $i Quarter Ago Invoices"           => $sales_data['invoices'],
-                "Product $i Quarter Ago Profit"             => $sales_data['profit'],
-                "Product $i Quarter Ago Invoiced Amount"    => $sales_data['net'],
-                "Product $i Quarter Ago Quantity Ordered"   => $sales_data['ordered'],
-                "Product $i Quarter Ago Quantity Invoiced"  => $sales_data['invoiced'],
-                "Product $i Quarter Ago Quantity Delivered" => $sales_data['delivered'],
-                "Product DC $i Quarter Ago Profit"          => $sales_data['dc_net'],
-                "Product DC $i Quarter Ago Invoiced Amount" => $sales_data['dc_profit'],
-
-                "Product $i Quarter Ago 1YB Customers"          => $sales_data_1yb['customers'],
-                "Product $i Quarter Ago 1YB Repeat Customers"   => $sales_data['repeat_customers'],
-                "Product $i Quarter Ago 1YB Invoices"           => $sales_data_1yb['invoices'],
-                "Product $i Quarter Ago 1YB Profit"             => $sales_data_1yb['profit'],
-                "Product $i Quarter Ago 1YB Invoiced Amount"    => $sales_data_1yb['net'],
-                "Product $i Quarter Ago 1YB Quantity Ordered"   => $sales_data_1yb['ordered'],
-                "Product $i Quarter Ago 1YB Quantity Invoiced"  => $sales_data_1yb['invoiced'],
-                "Product $i Quarter Ago 1YB Quantity Delivered" => $sales_data_1yb['delivered'],
-                "Product DC $i Quarter Ago 1YB Profit"          => $sales_data_1yb['dc_net'],
-                "Product DC $i Quarter Ago 1YB Invoiced Amount" => $sales_data_1yb['dc_profit']
-
-
-            );
-            $this->update($data_to_update, 'no_history');
-        }
-
-    }
-
-    function delete() {
-
-        $this->deleted = false;
-
-
-        $sql=sprinft('select `Order Transaction Fact Key` from `Order Transaction Fact` where `Product ID`=%d ',$this->id);
-        if ($result=$this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $this->update(array('Product Status'=>'Discontinued'));
-        	}else{
-
-
-                $sql = sprintf("DELETE FROM `Product Dimension` WHERE `Product ID`=%d", $this->id);
-                $this->db->exec($sql);
-
-                $sql = sprintf("DELETE FROM `Product History Dimension` WHERE `Product ID`=%d", $this->id);
-                $this->db->exec($sql);
-
-                $sql = sprintf("DELETE FROM `Product Availability Timeline` WHERE `Product ID`=%d", $this->id);
-                $this->db->exec($sql);
-
-                $sql = sprintf("DELETE FROM `Product Data` WHERE `Product ID`=%d", $this->id);
-                $this->db->exec($sql);
-                $sql = sprintf("DELETE FROM `Product DC Data` WHERE `Product ID`=%d", $this->id);
-                $this->db->exec($sql);
-
-
-                $webpage=$this->get_webpage();
-                if($webpage->id){
-                    $webpage->delete(false);
-                }
-
-
-
-                /*
-
-                $history_key = $this->add_history(
-                    array(
-                        'Action'           => 'deleted',
-                        'History Abstract' => sprintf(_('Store %d deleted'), $this->data['Store Name']),
-                        'History Details'  => ''
-                    ), true
-                );
-
-              */
-
-
-                $this->deleted = true;
-
-
-
-            }
-        }else {
-        	print_r($error_info=$this->db->errorInfo());
-        	print "$sql\n";
-        	exit;
-        }
-
-
-
-
-
-
-
-
-
-    }
-
 }
-
 
 
 ?>

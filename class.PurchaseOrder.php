@@ -237,7 +237,77 @@ class PurchaseOrder extends DB_Table {
         }
 
         switch ($key) {
-            case 'State Index':
+
+
+            case 'Estimated Receiving Datetime':
+
+
+                include_once 'utils/object_functions.php';
+
+                if ($this->data['Purchase Order Estimated Receiving Date'] and in_array(
+                        $this->data['Purchase Order State'], array(
+                        'InProcess',
+                        'Submitted',
+                        'Inputted',
+                        'Dispatched'
+                    )
+                    )
+                ) {
+                    return gmdate("Y-m-d H:i:s", strtotime($this->data['Purchase Order Estimated Receiving Date']));
+                } else {
+
+
+                    if (in_array(
+                        $this->data['Purchase Order State'], array(
+                        'InProcess',
+                        'Submitted',
+                        'Inputted',
+                        'Dispatched'
+                    )
+                    )) {
+
+
+                        $parent = get_object($this->data['Purchase Order Parent'], $this->data['Purchase Order Parent Key']);
+
+
+                        if ($parent->get($parent->table_name.' Average Delivery Days') != '' and is_numeric($parent->get($parent->table_name.' Average Delivery Days'))) {
+
+                            //  print 'now +'.$parent->get($parent->table_name.' Average Delivery Days').' days';
+                            if ($this->data['Purchase Order State'] == 'InProcess') {
+                                return gmdate("Y-m-d H:i:s", strtotime('now +'.$parent->get($parent->table_name.' Average Delivery Days').' days'));
+                            } else {
+
+
+                                return gmdate("Y-m-d H:i:s", strtotime($this->get('Purchase Order Submitted Date').' +'.$parent->get($parent->table_name.' Average Delivery Days').' days'));
+
+                            }
+
+                        } else {
+
+
+                            return '';
+                        }
+                    } else {
+
+                        return '';
+                    }
+
+                }
+
+                break;
+
+            case 'Estimated Receiving Formatted Date':
+
+                if ($this->get('Estimated Receiving Datetime')) {
+                    return strftime("%d-%m-%Y", strtotime($this->get('Estimated Receiving Datetime')));
+                } else {
+                    return '';
+                }
+
+
+                break;
+            case
+            'State Index':
 
                 switch ($this->data['Purchase Order State']) {
                     case 'InProcess':
@@ -323,9 +393,7 @@ class PurchaseOrder extends DB_Table {
                 } else {
 
                     if ($this->data['Purchase Order Estimated Receiving Date']) {
-                        return '<span class="discreet"><i class="fa fa-thumb-tack" aria-hidden="true"></i> '.strftime(
-                                "%e %b %Y", strtotime($this->get('Estimated Receiving Date'))
-                            ).'</span>';
+                        return '<span class="discreet"><i class="fa fa-thumb-tack" aria-hidden="true"></i> '.strftime("%e %b %Y", strtotime($this->get('Estimated Receiving Date'))).'</span>';
                     } else {
 
                         $parent = get_object(
@@ -335,21 +403,8 @@ class PurchaseOrder extends DB_Table {
                         if ($this->data['Purchase Order State'] == 'InProcess') {
 
 
-                            if ($parent->get(
-                                    $parent->table_name.' Average Delivery Days'
-                                ) and is_numeric(
-                                    $parent->get(
-                                        $parent->table_name.' Average Delivery Days'
-                                    )
-                                )
-                            ) {
-                                return '<span class="discreet italic">'.strftime(
-                                        "%d %b %Y", strtotime(
-                                                      'now +'.$parent->get(
-                                                          $parent->table_name.' Average Delivery Days'
-                                                      ).' days'
-                                                  )
-                                    ).'</span>';
+                            if ($parent->get($parent->table_name.' Average Delivery Days') and is_numeric($parent->get($parent->table_name.' Average Delivery Days'))) {
+                                return '<span class="discreet italic">'.strftime("%d %b %Y", strtotime('now +'.$parent->get($parent->table_name.' Average Delivery Days').' days')).'</span>';
 
                             } else {
                                 return '&nbsp;';
@@ -584,9 +639,7 @@ class PurchaseOrder extends DB_Table {
         }
 
 
-        if (array_key_exists(
-            $key, $this->data
-        )) {
+        if (array_key_exists($key, $this->data)) {
             return $this->data[$key];
         }
 
@@ -1045,7 +1098,7 @@ class PurchaseOrder extends DB_Table {
             );
             $this->db->exec($sql);
 
-            $this->update_affected_products();
+            $this->update_affected_parts();
 
         }
 
@@ -1068,30 +1121,28 @@ class PurchaseOrder extends DB_Table {
 
     }
 
-    function update_affected_products() {
+    function update_affected_parts() {
 
-        //TODO
-        return;
+        include_once 'class.SupplierPart.php';
 
         $sql = sprintf(
-            "SELECT `Supplier Product ID`,`Purchase Order Quantity` FROM `Purchase Order Transaction Fact` WHERE `Purchase Order Key`=%d", $this->id
+            "SELECT `Supplier Part Key` FROM `Purchase Order Transaction Fact` WHERE `Purchase Order Key`=%d", $this->id
         );
-        $res = mysql_query($sql);
-        while ($row = mysql_fetch_assoc($res)) {
 
-            //print_r($row);
 
-            $supplier_product = new SupplierProduct(
-                'pid', $row['Supplier Product ID']
-            );
-            $parts            = $supplier_product->get_parts();
-            foreach ($parts as $part) {
-                $parts = new Part($part['Part_SKU']);
-                $parts->update_next_supplier_shipment_from_po();
 
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $supplier_part = new SupplierPart($row['Supplier Part Key']);
+                $supplier_part->part->update_next_shipment();
             }
-
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
+
+
     }
 
     function get_deliveries($scope = 'keys') {
@@ -1239,7 +1290,7 @@ class PurchaseOrder extends DB_Table {
 
                         $this->db->exec($sql);
                     }
-*/
+    */
                     $transaction_key = $row['Purchase Order Transaction Fact Key'];
                 } else {
 
@@ -1574,7 +1625,7 @@ class PurchaseOrder extends DB_Table {
         $this->get_data(
             'id', $this->id
         );
-        $this->update_affected_products();
+        $this->update_affected_parts();
 
         $history_data = array(
             'History Abstract' => _('Purchase order marked as confirmed'),
@@ -1611,7 +1662,7 @@ class PurchaseOrder extends DB_Table {
         $this->db->exec($sql);
 
 
-        $this->update_affected_products();
+        $this->update_affected_parts();
 
         $history_data = array(
             'History Abstract' => _('Purchase order submitted'),
@@ -1638,30 +1689,6 @@ class PurchaseOrder extends DB_Table {
 
     }
 
-    function update_estimated_receiving_date($date) {
-
-        include_once 'utils/date_functions.php';
-
-        $date_data = prepare_mysql_datetime(
-            $date, 'date'
-        );
-        if ($date_data['ok']) {
-            $this->update_field(
-                'Purchase Order Estimated Receiving Date', $date_data['mysql_date']
-            );
-            if ($this->updated) {
-
-                $this->update_affected_products();
-            }
-            $this->new_value = $this->get('Estimated Receiving Date');
-        } else {
-            $this->error = true;
-            $this->msg   = $date_data['status'];
-
-        }
-
-
-    }
 
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
         switch ($field) {
@@ -1671,10 +1698,8 @@ class PurchaseOrder extends DB_Table {
                 );
                 break;
             case 'Purchase Order Estimated Receiving Date':
-                $this->update_field(
-                    $field, $value, $options
-                );
-                $this->update_affected_products();
+                $this->update_field($field, $value, $options);
+                $this->update_affected_parts();
 
                 $this->update_metadata = array(
                     'class_html' => array(
@@ -1709,41 +1734,6 @@ class PurchaseOrder extends DB_Table {
 
     }
 
-    function get_estimated_delivery_date() {
-        if ($this->data['Purchase Order Estimated Receiving Date']) {
-            return strftime(
-                "%d-%m-%Y", strtotime(
-                              $this->data['Purchase Order Estimated Receiving Date']
-                          )
-            );
-        } else {
-
-            if ($this->data['Purchase Order State'] == 'InProcess') {
-                $parent = get_object(
-                    $this->data['Purchase Order Parent'], $this->data['Purchase Order Parent Key']
-                );
-                if ($parent->get($parent->table_name.' Delivery Days') and is_numeric(
-                        $parent->get($parent->table_name.' Delivery Days')
-                    )
-                ) {
-                    return strftime(
-                        "%d-%M-%Y", strtotime(
-                                      'now +'.$parent->get(
-                                          $parent->table_name.' Delivery Days'
-                                      ).' days'
-                                  )
-                    );
-
-                } else {
-                    return '';
-                }
-            } else {
-
-                return '';
-            }
-
-        }
-    }
 
     function get_field_label($field) {
 

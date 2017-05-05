@@ -24,8 +24,7 @@ $options_yn = array(
 );
 
 $options_incoterms = array();
-$sql
-                   = "SELECT `Incoterm Transport Type`,`Incoterm Name`,`Incoterm Code` FROM kbase.`Incoterm Dimension` ORDER BY `Incoterm Code` ";
+$sql               = "SELECT `Incoterm Transport Type`,`Incoterm Name`,`Incoterm Code` FROM kbase.`Incoterm Dimension` ORDER BY `Incoterm Code` ";
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
@@ -51,8 +50,7 @@ if ($result = $db->query($sql)) {
 }
 
 $options_currencies = array();
-$sql
-                    = "SELECT `Currency Code`,`Currency Name`,`Currency Symbol` FROM kbase.`Currency Dimension` ORDER BY `Currency Code`";
+$sql                = "SELECT `Currency Code`,`Currency Name`,`Currency Symbol` FROM kbase.`Currency Dimension` ORDER BY `Currency Code`";
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
@@ -329,12 +327,9 @@ $object_fields = array(
                 'edit'      => ($edit ? 'address' : ''),
                 'countries' => get_countries($db),
 
-                'value'           => htmlspecialchars(
-                    $object->get('Supplier Contact Address')
-                ),
+                'value'           => htmlspecialchars($object->get('Supplier Contact Address')),
                 'formatted_value' => $object->get('Contact Address'),
-                'label'           => ucfirst(
-                    $object->get_field_label('Supplier Contact Address')
+                'label'           => ucfirst($object->get_field_label('Supplier Contact Address')
                 ),
                 'invalid_msg'     => get_invalid_message('address'),
                 'required'        => false,

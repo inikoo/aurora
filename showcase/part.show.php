@@ -26,6 +26,9 @@ function get_part_showcase($data, $smarty, $user, $db) {
 
     //	$part->update_stock_in_paid_orders();
 
+    //$part->update_next_shipment();
+    //exit;
+
     if (!$part->id) {
         return "";
     }
