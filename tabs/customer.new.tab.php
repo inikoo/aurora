@@ -38,6 +38,9 @@ $smarty->assign('object_name', $customer->get_object_name());
 $smarty->assign('object_fields', $object_fields);
 
 $store = new Store($state['parent_key']);
+
+$country_2alpha_code= $store->get('Store Home Country Code 2 Alpha');
+
 $smarty->assign(
     'default_country', $store->get('Store Home Country Code 2 Alpha')
 );
@@ -46,6 +49,22 @@ $smarty->assign(
         '", "', preferred_countries($store->get('Store Home Country Code 2 Alpha'))
     ).'"'
 );
+
+
+
+$smarty->assign(
+    'default_telephone_data', base64_encode(
+                                json_encode(
+                                    array(
+                                        'default_country'     => strtolower($country_2alpha_code),
+                                        'preferred_countries' => array_map(
+                                            'strtolower', preferred_countries($country_2alpha_code)
+                                        ),
+                                    )
+                                )
+                            )
+);
+
 
 
 $html = $smarty->fetch('new_object.tpl');

@@ -14,14 +14,12 @@
             </td>
         </tr>
         <tr class="title">
-            <td colspan=2>{t}Customer{/t} <i
-                        onClick="change_view('customers/{$customer->get('Store Key')}/{$customer->id}')"
-                        class="fa fa-link link"></i></td>
+            <td colspan=2>{t}Customer{/t} </td>
         </tr>
 
         <tr>
-            <td class="label">{$customer->get_field_label('Customer Name')|capitalize}</td>
-            <td>{$customer->get('Name')}</td>
+            <td class="label">   {$customer->get_field_label('Customer Name')|capitalize}</td>
+            <td> <span  class="marked_link" onClick="change_view('customers/{$customer->get('Store Key')}/{$customer->id}')" >  {$customer->get('Name')}</span></td>
         </tr>
         <tr>
             <td class="label">{$customer->get_field_label('Customer Main Plain Email')|capitalize}</td>
