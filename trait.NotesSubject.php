@@ -17,7 +17,7 @@ trait NotesSubject {
 
     function add_note($note, $details = '', $date = false, $deletable = 'No', $history_type = 'Notes', $author = false, $subject = false, $subject_key = false,
         $indirect_object=false,$indirect_object_key=false,
-        $subject_history_object=false,$subject_history_object_key=false
+        $subject_history_object=false,$subject_history_object_key=false,$update_history_records_data=true
 
         ) {
 
@@ -67,7 +67,7 @@ trait NotesSubject {
 
 
         $history_key = $this->add_subject_history(
-            $history_data, $force_save = true, $deletable, $history_type, $subject_history_object, $subject_history_object_key
+            $history_data, $force_save = true, $deletable, $history_type, $subject_history_object, $subject_history_object_key,$update_history_records_data
         );
 
         $this->updated   = true;

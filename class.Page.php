@@ -1230,7 +1230,7 @@ class Page extends DB_Table {
 
         switch ($field) {
             case 'History Note':
-                $this->add_note($value, '', '', $metadata['deletable'], 'Notes', false, false, false, 'Webpage', false, 'Webpage Publishing');
+                $this->add_note($value, '', '', $metadata['deletable'], 'Notes', false, false, false, 'Webpage', false, 'Webpage Publishing',false);
 
                 break;
 
@@ -3869,7 +3869,7 @@ class Page extends DB_Table {
 
                 $product['Product Code'], $price,
 
-                $input, $form_id, $counter, number_format($product['Product Price'], 2, '.', ''), $form_id, $counter, $product['Product Code'], clean_accents($product['long_description']),
+                $input, $form_id, $counter, number_format($product['Product Price'], 2, '.', ''), $form_id, $counter, $product['Product Code'], $this->clean_accents($product['long_description']),
                 $description
 
 
@@ -4053,7 +4053,7 @@ class Page extends DB_Table {
                            <td class="description" style="vertical-align:top;">%s</td>
                            </tr>'."\n", $tr_class, $tr_style,
 
-                $counter, number_format($product['Product Price'], 2, '.', ''), $counter, $product['Product Code'], clean_accents($product['long_description']),
+                $counter, number_format($product['Product Price'], 2, '.', ''), $counter, $product['Product Code'], $this->clean_accents($product['long_description']),
 
                 $product['Product Code'], $price,
 
@@ -4169,7 +4169,7 @@ class Page extends DB_Table {
                            <td class="description">%s</td>
                            </tr>'."\n", $tr_class,
 
-                $counter, number_format($product['Product Price'], 2, '.', ''), $counter, $product['Product Code'], clean_accents($product['long_description']),
+                $counter, number_format($product['Product Price'], 2, '.', ''), $counter, $product['Product Code'], $this->clean_accents($product['long_description']),
 
                 $product['Product Code'], $price,
 
@@ -4822,7 +4822,7 @@ class Page extends DB_Table {
                            <td class="description" style="vertical-align:top;">%s</td>
                            </tr>'."\n", $tr_class, $tr_style,
 
-                $counter, number_format($product['Product Price'], 2, '.', ''), $counter, $product['Product Code'], clean_accents($product['long_description']),
+                $counter, number_format($product['Product Price'], 2, '.', ''), $counter, $product['Product Code'], $this->clean_accents($product['long_description']),
 
                 $product['Product Code'], $price,
 
@@ -7117,6 +7117,31 @@ class Page extends DB_Table {
 
     }
 
+}
+
+
+function clean_accents($str) {
+
+
+    $str = preg_replace('/é|è|ê|ë|æ/', 'e', $str);
+    $str = preg_replace('/á|à|â|ã|ä|å|æ|ª/', 'a', $str);
+    $str = preg_replace('/ù|ú|û|ü/', 'u', $str);
+    $str = preg_replace('/ò|ó|ô|õ|ö|ø|°/', 'o', $str);
+    $str = preg_replace('/ì|í|î|ï/', 'i', $str);
+
+    $str = preg_replace('/É|È|Ê|Ë|Æ/', 'E', $str);
+    $str = preg_replace('/Á|À|Â|Ã|Ä|Å|Æ|ª/', 'A', $str);
+    $str = preg_replace('/Ù|Ú|Û|Ü/', 'U', $str);
+    $str = preg_replace('/Ò|Ó|Ô|Õ|Ö|Ø|°/', 'O', $str);
+    $str = preg_replace('/Ì|Í|Î|Ï/', 'I', $str);
+
+    $str = preg_replace('/ñ/', 'n', $str);
+    $str = preg_replace('/Ñ/', 'N', $str);
+    $str = preg_replace('/ç|¢|©/', 'c', $str);
+    $str = preg_replace('/Ç/', 'C', $str);
+    $str = preg_replace('/ß|§/i', 's', $str);
+
+    return $str;
 }
 
 
