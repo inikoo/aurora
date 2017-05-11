@@ -114,4 +114,49 @@ function parse_dimensions($dimension) {
 }
 
 
+
+function parse_weight($value) {
+    $unit  = 'Kg';
+    $value = _trim($value);
+    if (preg_match('/(kg|kilo?|kilograms?)$/i', $value)) {
+        $value = parse_number($value);
+        $unit  = 'Kg';
+    } elseif (preg_match('/(lb?s|pounds?|libras?)$/i', $value)) {
+        $value = parse_number($value) * .4545;
+        $unit  = 'Lb';
+    } elseif (preg_match('/(g|grams?|gms)$/i', $value)) {
+        $value = parse_number($value) * 0.001;
+        $unit  = 'g';
+    } elseif (preg_match('/(tons?|tonnes?|t)$/i', $value)) {
+        $value = parse_number($value) * 1000;
+        $unit  = 't';
+    } else {
+        $value = parse_number($value);
+    }
+
+    return array(
+        $value,
+        $unit
+    );
+}
+
+
+
+function parse_cbm($value) {
+    $unit  = 'm³';
+    $value = _trim($value);
+    if (preg_match('/(liter?s|l)$/i', $value)) {
+        $value = parse_number($value) /1000;
+        $unit  = 'Lb';
+    }else {
+        $value = parse_number($value);
+    }
+
+    return array(
+        $value,
+        $unit
+    );
+}
+
+
 ?>

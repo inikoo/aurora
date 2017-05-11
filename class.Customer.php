@@ -1390,13 +1390,19 @@ class Customer extends Subject {
         $sql       = sprintf(
             "SELECT `Order Key` FROM `Order Dimension` WHERE `Order Customer Key`=%d AND `Order Current Dispatch State` IN (%s) ", $this->id, $dispatch_state_valid_values
         );
-        //print $sql;
-        $res = mysql_query($sql);
-        if ($row = mysql_fetch_assoc($res)) {
-            //print_r($row);
 
-            $order_key = $row['Order Key'];
+
+        if ($result=$this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+
+                $order_key = $row['Order Key'];
+        	}
+        }else {
+        	print_r($error_info=$this->db->errorInfo());
+        	print "$sql\n";
+        	exit;
         }
+
 
         return $order_key;
     }

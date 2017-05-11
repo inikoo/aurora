@@ -377,6 +377,7 @@ class Location extends DB_Table {
            //     break;
             case('Location Max Weight'):
 
+                include_once 'utils/parse_natural_language.php';
 
                 if ($value != '') {
 

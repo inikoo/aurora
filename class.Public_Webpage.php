@@ -134,6 +134,13 @@ class Public_Webpage {
 
         switch ($key) {
 
+            case 'Webpage Website Key':
+            case 'Webpage State':
+            case 'Webpage Template Filename':
+                return $this->data[$key];
+                break;
+
+
             case 'Name':
 
                 return $this->data['Page Short Title'];

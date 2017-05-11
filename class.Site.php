@@ -325,6 +325,7 @@ class Site extends DB_Table {
     }
 
     function create_site_page_sections() {
+        return;
         $sections = getEnumValues('Page Store Dimension', 'Page Store Section');
 
         foreach ($sections as $section) {
