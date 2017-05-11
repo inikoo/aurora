@@ -633,4 +633,56 @@ function get_interval_label($interval) {
 }
 
 
+function translate_written_number($string) {
+
+    $numbers         = array(
+        'zero',
+        'one',
+        'two',
+        'three',
+        'four',
+        'five',
+        'six',
+        'seven',
+        'eight',
+        'nine',
+        'ten',
+        'eleven'
+    );
+    $common_suffixes = array(
+        'hundreds?'  => 100,
+        'thousands?' => 1000,
+        'millons?'   => 100000
+    );
+
+    $number_flat          = join("|", $numbers);
+    $common_suffixes_flat = join("|", $common_suffixes);
+    if (preg_match("/$number_flat/i", $string)) {
+        if (preg_match("/$common_suffixes_flat/i", $string)) {
+            foreach ($numbers as $number => $number_string) {
+                foreach (
+                    $common_suffixes as $common_suffix => $number_common_suffix
+                ) {
+                    $string = _trim(
+                        preg_replace(
+                            '/^(.*\s+|)$number_string\s?$common_suffix(\s+.*|)$/ ', " ".($number * $number_common_suffix)." ", $string
+                        )
+                    );
+                }
+            }
+        } else {
+            foreach ($numbers as $number => $number_string) {
+                $string = _trim(
+                    preg_replace(
+                        '/^(.*\s+|)$number_string(\s+.*|)$/ ', " $number ", $string
+                    )
+                );
+            }
+        }
+    }
+
+    return $string;
+}
+
+
 ?>

@@ -561,6 +561,102 @@ class Family extends DB_Table {
         return $number_products;
     }
 
+
+    function prepare_sentence_similar($a) {
+
+        $a = preg_replace_callback(
+            '/\b\w{1,3}\b/i', create_function(
+            '$matches', '$ignore = array("red","tin","oro","925","eye");
+         if (in_array($matches[0], $ignore)) {
+            return $matches[0];
+         } else {
+            return \'\';
+         }'
+        ), $a
+        );
+
+        $words_to_ignore = array('from');
+
+        $a = _trim($a);
+
+        $a = preg_split('/\s+/', $a);
+
+
+        $a = array_diff($a, $words_to_ignore);
+
+
+        foreach ($a as $key => $value) {
+            $_tmp = preg_replace('~[\W\s]~', '', $value);
+            if ($_tmp == '') {
+                unset($a[$key]);
+            }
+        }
+
+        return $a;
+
+    }
+
+
+    function sentence_similarity($a, $b) {
+
+        $a = $this->prepare_sentence_similar($a);
+        $b = $this->prepare_sentence_similar($b);
+
+
+        $similarity_array = array();
+        $max_sim          = 0;
+
+        foreach ($a as $item_a) {
+
+            foreach ($b as $item_b) {
+                similar_text($item_a, $item_b, $sim);
+                $levenshtein = levenshtein($item_a, $item_b);
+
+                if ($levenshtein >= 0) {
+                    $max_strlen = max(strlen($item_a), strlen($item_b));
+                    $sim1       = ($max_strlen - $levenshtein) / $max_strlen;
+                } else {
+                    $sim1 = 0;
+                }
+
+
+                //print "$item_a, $item_b $sim\n";
+
+                if ($sim > $max_sim) {
+                    $max_sim = $sim;
+                }
+
+                if (array_key_exists($item_a, $similarity_array)) {
+                    if ($similarity_array[$item_a] < $sim) {
+                        $similarity_array[$item_a] = $sim;
+                    }
+
+                } else {
+                    $similarity_array[$item_a] = $sim;
+                }
+
+            }
+
+        }
+
+
+        $weight   = 0;
+        $elements = count($similarity_array);
+        if ($elements) {
+            $weight = array_sum($similarity_array) / $elements;
+        }
+
+        $weight = ($max_sim + $weight) / 2;
+        //print_r($similarity_array);
+        //  print_r($a);
+        // print_r($b);
+        //exit($weight);
+        return $weight;
+
+
+    }
+
+
     function update_similar_families() {
 
         $department_codes = array();
@@ -590,9 +686,7 @@ class Family extends DB_Table {
             $other_finger_print = strtolower(
                 $row['Product Family Code'].' '.$row['Product Family Name']
             );
-            $weight             = sentence_similarity(
-                    $finger_print, $other_finger_print
-                ) / 100;
+            $weight             = $this->sentence_similarity($finger_print, $other_finger_print) / 100;
 
             //print $weight."\n";
             if (!$row['Product Family Main Department Key'] == $department_key) {

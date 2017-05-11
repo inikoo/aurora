@@ -64,6 +64,37 @@ class Public_Customer {
 
 
 
+    function get_order_in_process_key($dispatch_state = 'all') {
+
+        if ($dispatch_state == 'all') {
+            $dispatch_state_valid_values = "'In Process by Customer','Waiting for Payment Confirmation'";
+        } else {
+            $dispatch_state_valid_values = "'In Process by Customer'";
+        }
+
+        $order_key = false;
+        $sql       = sprintf(
+            "SELECT `Order Key` FROM `Order Dimension` WHERE `Order Customer Key`=%d AND `Order Current Dispatch State` IN (%s) ", $this->id, $dispatch_state_valid_values
+        );
+
+
+        if ($result=$this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+
+                $order_key = $row['Order Key'];
+            }
+        }else {
+            print_r($error_info=$this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        return $order_key;
+    }
+
+
+
 }
 
 

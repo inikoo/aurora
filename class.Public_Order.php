@@ -63,6 +63,11 @@ class Public_Order {
     }
 
 
+    function set_display_currency($currency_code, $exchange) {
+        $this->currency_code = $currency_code;
+        $this->exchange      = $exchange;
+
+    }
 
 }
 

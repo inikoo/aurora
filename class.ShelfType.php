@@ -51,6 +51,8 @@ class ShelfType extends DB_Table {
 
     function create($data, $options = '') {
 
+        include_once 'utils/parse_natural_language.php';
+
 
         $this->data = $this->base_data();
         foreach ($data as $key => $value) {
