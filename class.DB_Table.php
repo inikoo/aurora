@@ -619,6 +619,9 @@ abstract class DB_Table extends stdClass {
         switch ($this->get_object_name()) {
 
             case 'Page':
+
+                return;
+
                 $where_field = 'Webpage Key';
                 $table       = 'Webpage History Bridge';
                 break;
@@ -690,7 +693,7 @@ abstract class DB_Table extends stdClass {
 
     }
 
-    function add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $table_name, $table_key) {
+    function add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $table_name, $table_key,$update_history_records_data=true) {
 
         $history_key = $this->add_table_history($history_data, $force_save, '', '', $table_name, $table_key);
 
