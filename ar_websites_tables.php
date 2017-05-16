@@ -918,7 +918,7 @@ function webpages_online($_data, $db, $user) {
 
         $adata[] = array(
             'id'      => (integer)$data['Webpage Key'],
-            'code'    => sprintf('<span class="link" onclick="change_view(\'website/%d/page/%d\')">%s</span>', $data['Webpage Website Key'], $data['Webpage Key'], $data['Webpage Code']),
+            'code'    => sprintf('<span class="link" onclick="change_view(\'website/%d/online/webpage/%d\')">%s</span>', $data['Webpage Website Key'], $data['Webpage Key'], $data['Webpage Code']),
             'state'   => $state,
             'type'    => $type,
             'version' => number_format($data['Webpage Version'], 1),

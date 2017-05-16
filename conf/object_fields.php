@@ -18,8 +18,15 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
     $edit = true;
 
-    switch ($object->get_object_name()) {
 
+
+
+    switch ($object->get_object_name()) {
+        case 'Page':
+            include 'fields/webpage.fld.php';
+
+            return $object_fields;
+            break;
         case 'Account':
 
             if ($options['type'] == 'suppliers.settings') {
@@ -33,8 +40,7 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
             return $object_fields;
             break;
-        case
-        'Material':
+        case 'Material':
             include 'fields/material.fld.php';
 
             return $object_fields;
@@ -344,6 +350,7 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
             break;
 
         default:
+            print $object->get_object_name();
             return '';
             break;
     }

@@ -12,19 +12,21 @@
 
 require_once 'common.php';
 
+if(function_exists('mysql_connect')) {
 
-$default_DB_link = @mysql_connect($dns_host, $dns_user, $dns_pwd);
-if (!$default_DB_link) {
-    print "Error can not connect with database server\n";
-}
-$db_selected = mysql_select_db($dns_db, $default_DB_link);
-if (!$db_selected) {
-    print "Error can not access the database\n";
-    exit;
-}
-mysql_set_charset('utf8');
-mysql_query("SET time_zone='+0:00'");
+    $default_DB_link = @mysql_connect($dns_host, $dns_user, $dns_pwd);
+    if (!$default_DB_link) {
+        print "Error can not connect with database server\n";
+    }
+    $db_selected = mysql_select_db($dns_db, $default_DB_link);
+    if (!$db_selected) {
+        print "Error can not access the database\n";
+        exit;
+    }
+    mysql_set_charset('utf8');
+    mysql_query("SET time_zone='+0:00'");
 
+}
 
 require_once 'utils/get_addressing.php';
 require_once 'utils/parse_natural_language.php';
@@ -88,9 +90,42 @@ if ($result = $db->query($sql)) {
 //migrate_product_pages($db);
 
 
-add_headers_and_footers($db);
+//add_headers_and_footers($db);
 
+add_system_webpages($db);
+
+//========
 //set_scope($db);
+
+function add_system_webpages($db) {
+
+    $sql = sprintf('SELECT `Website Key` FROM `Website Dimension`');
+    print_r($sql);
+
+    if ($result = $db->query($sql)) {
+
+
+        foreach ($result as $row) {
+
+            $website = new Website($row['Website Key']);
+            print_r($website);
+
+            include_once 'conf/website_system_webpages.php';
+            foreach (website_system_webpages_config($website->get('Website Type')) as $website_system_webpages) {
+
+               print_r($website_system_webpages);
+
+                $website->create_system_webpage($website_system_webpages);
+            }
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+
+
+}
 
 
 function add_headers_and_footers($db) {
@@ -107,7 +142,7 @@ function add_headers_and_footers($db) {
     $db->exec($sql);
 
 
-    $sql = sprintf('update `Website Dimension` set `Website Footer Key`=NULL ,`Website Header Key`=NULL ');
+    $sql = sprintf('UPDATE `Website Dimension` SET `Website Footer Key`=NULL ,`Website Header Key`=NULL ');
     $db->exec($sql);
 
     $sql = sprintf('SELECT `Website Key` FROM `Website Dimension`');
@@ -122,33 +157,37 @@ function add_headers_and_footers($db) {
             $footer_data = array(
                 'Website Footer Code' => 'default',
                 'Website Footer Data' => json_encode(get_default_footer_data(1)),
-                'editor'=>$editor
+                'editor'              => $editor
 
             );
             $website->create_footer($footer_data);
 
 
-            $logo_image_key=$website->add_image(array(
-                                    'Image Filename'=>'website.logo.png',
-                                    'Upload Data'                      => array(
-                                        'tmp_name' => 'conf/website.logo.png',
-                                        'type'     => 'png'
-                                    ),
-                                    'Image Subject Object Image Scope'=>json_encode(array(
-                                        'scope'=>'website_logo',
-                                        'scope_key'=>$website->id
+            $logo_image_key = $website->add_image(
+                array(
+                    'Image Filename'                   => 'website.logo.png',
+                    'Upload Data'                      => array(
+                        'tmp_name' => 'conf/website.logo.png',
+                        'type'     => 'png'
+                    ),
+                    'Image Subject Object Image Scope' => json_encode(
+                        array(
+                            'scope'     => 'website_logo',
+                            'scope_key' => $website->id
 
-                                                                                    ))
+                        )
+                    )
 
-                                ));
+                )
+            );
 
 
-            $_header_data=get_default_header_data(1);
-            $_header_data['logo_image_key']=$logo_image_key;
-            $header_data = array(
+            $_header_data                   = get_default_header_data(1);
+            $_header_data['logo_image_key'] = $logo_image_key;
+            $header_data                    = array(
                 'Website Header Code' => 'default',
                 'Website Header Data' => json_encode($_header_data),
-                'editor'=>$editor
+                'editor'              => $editor
 
             );
             $website->create_header($header_data);

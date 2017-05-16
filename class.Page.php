@@ -7117,32 +7117,76 @@ class Page extends DB_Table {
 
     }
 
+
+
+
+    function get_field_label($field) {
+
+
+        switch ($field) {
+
+            case 'Webpage Code':
+                $label = _('code');
+                break;
+            case 'Webpage Name':
+                $label = _('name');
+                break;
+
+            case 'Webpage Locale':
+                $label = _('language');
+                break;
+            case 'Webpage Timezone':
+                $label = _('timezone');
+                break;
+            case 'Webpage Email':
+                $label = _('email');
+                break;
+
+            case 'Webpage Browser Title':
+                $label = _('browser title');
+                break;
+            case 'Webpage Meta Description':
+                $label = _('meta description');
+                break;
+            default:
+                $label = $field;
+
+        }
+
+        return $label;
+
+    }
+
+
+    function clean_accents($str) {
+
+
+        $str = preg_replace('/é|è|ê|ë|æ/', 'e', $str);
+        $str = preg_replace('/á|à|â|ã|ä|å|æ|ª/', 'a', $str);
+        $str = preg_replace('/ù|ú|û|ü/', 'u', $str);
+        $str = preg_replace('/ò|ó|ô|õ|ö|ø|°/', 'o', $str);
+        $str = preg_replace('/ì|í|î|ï/', 'i', $str);
+
+        $str = preg_replace('/É|È|Ê|Ë|Æ/', 'E', $str);
+        $str = preg_replace('/Á|À|Â|Ã|Ä|Å|Æ|ª/', 'A', $str);
+        $str = preg_replace('/Ù|Ú|Û|Ü/', 'U', $str);
+        $str = preg_replace('/Ò|Ó|Ô|Õ|Ö|Ø|°/', 'O', $str);
+        $str = preg_replace('/Ì|Í|Î|Ï/', 'I', $str);
+
+        $str = preg_replace('/ñ/', 'n', $str);
+        $str = preg_replace('/Ñ/', 'N', $str);
+        $str = preg_replace('/ç|¢|©/', 'c', $str);
+        $str = preg_replace('/Ç/', 'C', $str);
+        $str = preg_replace('/ß|§/i', 's', $str);
+
+        return $str;
+    }
+
+
+
 }
 
 
-function clean_accents($str) {
-
-
-    $str = preg_replace('/é|è|ê|ë|æ/', 'e', $str);
-    $str = preg_replace('/á|à|â|ã|ä|å|æ|ª/', 'a', $str);
-    $str = preg_replace('/ù|ú|û|ü/', 'u', $str);
-    $str = preg_replace('/ò|ó|ô|õ|ö|ø|°/', 'o', $str);
-    $str = preg_replace('/ì|í|î|ï/', 'i', $str);
-
-    $str = preg_replace('/É|È|Ê|Ë|Æ/', 'E', $str);
-    $str = preg_replace('/Á|À|Â|Ã|Ä|Å|Æ|ª/', 'A', $str);
-    $str = preg_replace('/Ù|Ú|Û|Ü/', 'U', $str);
-    $str = preg_replace('/Ò|Ó|Ô|Õ|Ö|Ø|°/', 'O', $str);
-    $str = preg_replace('/Ì|Í|Î|Ï/', 'I', $str);
-
-    $str = preg_replace('/ñ/', 'n', $str);
-    $str = preg_replace('/Ñ/', 'N', $str);
-    $str = preg_replace('/ç|¢|©/', 'c', $str);
-    $str = preg_replace('/Ç/', 'C', $str);
-    $str = preg_replace('/ß|§/i', 's', $str);
-
-    return $str;
-}
 
 
 ?>

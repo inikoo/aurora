@@ -2097,6 +2097,8 @@ $modules = array(
 
             ),
 
+
+
             'no_website' => array(
                 'type'      => '',
                 'label'     => '',
@@ -2108,7 +2110,89 @@ $modules = array(
 
 
             ),
+            'webpage' => array(
+                'type'      => 'object',
+                'label'     => _('Web page'),
+                'icon'      => 'globe',
+                'subtabs_parent' => array(
+                    'webpage.favourites.families'  => 'webpage.favourites',
+                    'webpage.favourites.products'  => 'webpage.favourites',
+                    'webpage.favourites.customers' => 'webpage.favourites',
+                    'webpage.search.queries'       => 'webpage.search',
+                    'webpage.search.history'       => 'webpage.search',
+                    'webpage.reminders.requests'   => 'webpage.reminders',
+                    'webpage.reminders.customers'  => 'webpage.reminders',
+                    'webpage.reminders.families'   => 'webpage.reminders',
+                    'webpage.reminders.products'   => 'webpage.reminders',
 
+                    'webpage.root_nodes'           => 'webpage.webpages',
+                    'webpage.online_webpages'      => 'webpage.webpages',
+                    'webpage.offline_webpages'     => 'webpage.webpages',
+                    'webpage.webpage.types'  => 'webpage.webpages',
+                    'webpage.in_process_webpages'  => 'webpage.webpages',
+
+                    'webpage.footer.preview' => 'webpage.templates',
+                    'webpage.header.preview' => 'webpage.templates',
+
+
+                    'webpage.templates'            => 'webpage.templates',
+
+
+                ),
+
+                'tabs' => array(
+
+                    'webpage.analytics' => array(
+                        'label' => _('Analytics'),
+                        'icon'  => 'line-chart',
+
+                        'subtabs' => array(
+                            'webpage.pageviews'  => array(
+                                'label' => _(
+                                    'Pageviews'
+                                ),
+                                'icon'  => 'eye'
+                            ),
+                            'webpage.users'      => array(
+                                'label' => _(
+                                    'Users'
+                                ),
+                                'icon'  => 'terminal'
+                            ),
+
+
+
+
+                        )
+
+
+                    ),
+                    'webpage.details'   => array(
+                        'label' => _(
+                            'Data'
+                        ),
+                        'icon'  => 'database'
+                    ),
+
+
+                    'webpage.preview' => array(
+                        'label' => _('Workshop'),
+                        'icon'  => 'wrench'
+                    ),
+                    'webpage.logbook' => array(
+                        'label' => _('Logbook'),
+                        'icon'  => 'road'
+                    ),
+
+
+
+
+
+
+
+
+                )
+            ),
 
             'marketing'        => array(
                 'type'      => 'navigation',
