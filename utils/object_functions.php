@@ -70,14 +70,16 @@ function get_object($object_name, $key, $load_other_data = false) {
 
         case 'page':
         case 'webpage':
+
+
             include_once 'class.Page.php';
-        $object = new Page($key);
-           // $object = new Webpage($key);
+
+            $object = new Page($key);
 
             break;
         case 'page_version':
         case 'webpage_version':
-            case 'webpage version':
+        case 'webpage version':
             include_once 'class.WebpageVersion.php';
 
             $object = new WebpageVersion($key);

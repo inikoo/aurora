@@ -719,7 +719,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             include_once 'showcase/material.show.php';
             $html = get_showcase($data, $smarty, $user, $db);
             break;
-        case 'page':
+        case 'webpage':
             include_once 'showcase/webpage.show.php';
             $html = get_webpage_showcase($data, $smarty, $user, $db);
             break;
@@ -1106,9 +1106,10 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     break;
 
                 case ('website.node'):
-                    return get_node_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
+                    return get_node_navigation($data, $smarty, $user, $db, $account);
+                    break;
+                case ('webpage'):
+                    return get_webpage_navigation($data, $smarty, $user, $db, $account);
                     break;
                 case ('page'):
                     return get_page_navigation(

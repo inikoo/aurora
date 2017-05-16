@@ -22,9 +22,9 @@ function website_system_webpages_config($website_type) {
                 'Webpage Template Filename' => 'homepage',
                 'Webpage Type'              => 'Info',
                 'Webpage Code'              => 'homepage',
-                'Webpage Browser Title'             => _('Home'),
+                'Webpage Browser Title'     => _('Home'),
                 'Webpage Name'              => _('Home'),
-                'Webpage Meta Description'=>''
+                'Webpage Meta Description'  => ''
 
             ),
             'login'          => array(
@@ -33,9 +33,9 @@ function website_system_webpages_config($website_type) {
                 'Webpage Template Filename' => 'login',
                 'Webpage Type'              => 'Sys',
                 'Webpage Code'              => 'login',
-                'Webpage Browser Title'             => _('Login'),
+                'Webpage Browser Title'     => _('Login'),
                 'Webpage Name'              => _('Login'),
-                'Webpage Meta Description'=>''
+                'Webpage Meta Description'  => ''
             ),
             'register'       => array(
                 'Webpage Scope'             => 'System',
@@ -43,19 +43,19 @@ function website_system_webpages_config($website_type) {
                 'Webpage Template Filename' => 'register',
                 'Webpage Type'              => 'Sys',
                 'Webpage Code'              => 'register',
-                'Webpage Browser Title'             => _('Register'),
+                'Webpage Browser Title'     => _('Register'),
                 'Webpage Name'              => _('Register'),
-                'Webpage Meta Description'=>''
+                'Webpage Meta Description'  => ''
             ),
-             'welcome'       => array(
+            'welcome'        => array(
                 'Webpage Scope'             => 'System',
                 'Webpage Scope Metadata'    => 'welcome',
                 'Webpage Template Filename' => 'welcome',
                 'Webpage Type'              => 'Info',
                 'Webpage Code'              => 'welcome',
-                'Webpage Browser Title'             => _('Welcome'),
+                'Webpage Browser Title'     => _('Welcome'),
                 'Webpage Name'              => _('Welcome'),
-                'Webpage Meta Description'=>''
+                'Webpage Meta Description'  => ''
             ),
             'reset_password' => array(
                 'Webpage Scope'             => 'System',
@@ -63,9 +63,9 @@ function website_system_webpages_config($website_type) {
                 'Webpage Template Filename' => 'reset_password',
                 'Webpage Type'              => 'Sys',
                 'Webpage Code'              => 'reset_password',
-                'Webpage Browser Title'             => _('Reset password'),
+                'Webpage Browser Title'     => _('Reset password'),
                 'Webpage Name'              => _('Reset password'),
-                'Webpage Meta Description'=>''
+                'Webpage Meta Description'  => ''
             ),
             'profile'        => array(
                 'Webpage Scope'             => 'System',
@@ -73,9 +73,9 @@ function website_system_webpages_config($website_type) {
                 'Webpage Template Filename' => 'profile',
                 'Webpage Type'              => 'Sys',
                 'Webpage Code'              => 'profile',
-                'Webpage Browser Title'             => _('Customer section'),
+                'Webpage Browser Title'     => _('Customer section'),
                 'Webpage Name'              => _('Customer section'),
-                'Webpage Meta Description'=>''
+                'Webpage Meta Description'  => ''
             ),
 
             'contact' => array(
@@ -84,9 +84,9 @@ function website_system_webpages_config($website_type) {
                 'Webpage Template Filename' => 'contact',
                 'Webpage Type'              => 'Info',
                 'Webpage Code'              => 'contact',
-                'Webpage Browser Title'             => _('Contact'),
+                'Webpage Browser Title'     => _('Contact'),
                 'Webpage Name'              => _('Contact'),
-                'Webpage Meta Description'=>''
+                'Webpage Meta Description'  => ''
             ),
 
             'basket'    => array(
@@ -95,9 +95,9 @@ function website_system_webpages_config($website_type) {
                 'Webpage Template Filename' => 'basket',
                 'Webpage Type'              => 'Sys',
                 'Webpage Code'              => 'basket',
-                'Webpage Browser Title'             => _('Basket'),
+                'Webpage Browser Title'     => _('Basket'),
                 'Webpage Name'              => _('Basket'),
-                'Webpage Meta Description'=>''
+                'Webpage Meta Description'  => ''
             ),
             'checkout'  => array(
                 'Webpage Scope'             => 'System',
@@ -105,9 +105,9 @@ function website_system_webpages_config($website_type) {
                 'Webpage Template Filename' => 'checkout',
                 'Webpage Type'              => 'Sys',
                 'Webpage Code'              => 'checkout',
-                'Webpage Browser Title'             => _('Checkout'),
+                'Webpage Browser Title'     => _('Checkout'),
                 'Webpage Name'              => _('Checkout'),
-                'Webpage Meta Description'=>''
+                'Webpage Meta Description'  => ''
             ),
             'thanks'    => array(
                 'Webpage Scope'             => 'System',
@@ -115,9 +115,9 @@ function website_system_webpages_config($website_type) {
                 'Webpage Template Filename' => 'thanks',
                 'Webpage Type'              => 'Info',
                 'Webpage Code'              => 'thanks',
-                'Webpage Browser Title'             => _('Thanks for your order'),
+                'Webpage Browser Title'     => _('Thanks for your order'),
                 'Webpage Name'              => _('Thanks'),
-                'Webpage Meta Description'=>''
+                'Webpage Meta Description'  => ''
             ),
             'not_found' => array(
                 'Webpage Scope'             => 'System',
@@ -125,9 +125,29 @@ function website_system_webpages_config($website_type) {
                 'Webpage Template Filename' => 'not_found',
                 'Webpage Type'              => 'Info',
                 'Webpage Code'              => 'not_found',
-                'Webpage Browser Title'             => _('Home'),
+                'Webpage Browser Title'     => _('Home'),
                 'Webpage Name'              => _('Home'),
-                'Webpage Meta Description'=>''
+                'Webpage Meta Description'  => ''
+            ),
+            'offline' => array(
+                'Webpage Scope'             => 'System',
+                'Webpage Scope Metadata'    => 'offline',
+                'Webpage Template Filename' => 'offline',
+                'Webpage Type'              => 'Info',
+                'Webpage Code'              => 'offline',
+                'Webpage Browser Title'     => _('Offline'),
+                'Webpage Name'              => _('Offline'),
+                'Webpage Meta Description'  => ''
+            ),
+            'in_process' => array(
+                'Webpage Scope'             => 'System',
+                'Webpage Scope Metadata'    => 'in_process',
+                'Webpage Template Filename' => 'in_process',
+                'Webpage Type'              => 'Info',
+                'Webpage Code'              => 'in_process',
+                'Webpage Browser Title'     => _('Under construction'),
+                'Webpage Name'              => _('Under construction'),
+                'Webpage Meta Description'  => ''
             ),
             'search'    => array(
                 'Webpage Scope'             => 'System',
@@ -135,9 +155,9 @@ function website_system_webpages_config($website_type) {
                 'Webpage Template Filename' => 'search',
                 'Webpage Type'              => 'Sys',
                 'Webpage Code'              => 'search',
-                'Webpage Browser Title'             => _('Search'),
+                'Webpage Browser Title'     => _('Search'),
                 'Webpage Name'              => _('Search'),
-                'Webpage Meta Description'=>''
+                'Webpage Meta Description'  => ''
             )
 
 
