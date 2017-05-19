@@ -88,7 +88,10 @@ function get_supplier_order_showcase($data, $smarty, $user, $db) {
         }
         $smarty->assign('mindate_send_order', 1000 * $mindate_send_order);
 
-        if ($user->get('User Type') == 'Staff') {
+
+
+
+        if ($user->get('User Type') == 'Staff' or $user->get('User Type') == 'Contractor') {
             return $smarty->fetch('showcase/supplier.order.tpl');
         } elseif ($user->get('User Type') == 'Agent') {
             return $smarty->fetch('showcase/client_order.tpl');
