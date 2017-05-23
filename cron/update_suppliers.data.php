@@ -25,8 +25,8 @@ $sql = sprintf('SELECT `Agent Key` FROM `Agent Dimension`  ');
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
         $agent = new Agent($row['Agent Key']);
-        //$agent->update_supplier_parts();
-        //$agent->update_purchase_orders();
+        $agent->update_supplier_parts();
+        $agent->update_purchase_orders();
 
 
     }
@@ -42,9 +42,9 @@ $sql = sprintf('SELECT `Supplier Key` FROM `Supplier Dimension`  ');
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
         $supplier = new Supplier($row['Supplier Key']);
-        //$supplier->update_supplier_parts();
-       // $supplier->update_history_records_data();
-       // $supplier->update_attachments_data();
+        $supplier->update_supplier_parts();
+        $supplier->update_history_records_data();
+        $supplier->update_attachments_data();
 
         $supplier->update_purchase_orders();
 

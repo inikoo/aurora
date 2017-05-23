@@ -61,7 +61,7 @@ if ($result = $db->query($sql)) {
 //print $sql;
 
 $fields
-       = ' `Timeseries Record Date` as `Date`,`Timeseries Record Float A` as sales ,`Timeseries Record Integer A` as dispatched,`Timeseries Record Integer B` as deliveries';
+       = ' `Timeseries Record Date` as `Date`,`Timeseries Record Float A` as sales ,`Timeseries Record Float D` as purchased_amount ,`Timeseries Record Integer A` as dispatched,`Timeseries Record Integer B` as deliveries,`Timeseries Record Integer C` as supplier_deliveries';
 $where = sprintf(
     "where `Timeseries Record Timeseries Key`=%d", $timeseries_key
 );

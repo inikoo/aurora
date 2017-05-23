@@ -1759,7 +1759,7 @@ class Supplier extends SubjectSupplier {
             $_date      = gmdate('Y-m-d', strtotime($date_frequency_period['from'].' +0:00'));
 
 
-            if ($sales_data['deliveries'] > 0 or $sales_data['dispatched'] > 0 or $sales_data['invoiced_amount'] != 0 or $sales_data['required'] != 0 or $sales_data['profit'] != 0) {
+            if ($sales_data['deliveries'] > 0 or $sales_data['supplier_deliveries'] > 0 or $sales_data['dispatched'] > 0 or $sales_data['invoiced_amount'] != 0 or $sales_data['required'] != 0 or $sales_data['profit'] != 0 or $sales_data['purchased_amount'] != 0) {
 
                 list($timeseries_record_key, $date) = $timeseries->create_record(
                     array('Timeseries Record Date' => $_date)
@@ -1767,8 +1767,13 @@ class Supplier extends SubjectSupplier {
 
 
                 $sql = sprintf(
-                    'UPDATE `Timeseries Record Dimension` SET `Timeseries Record Integer A`=%d ,`Timeseries Record Integer B`=%d ,`Timeseries Record Float A`=%.2f ,  `Timeseries Record Float B`=%f ,`Timeseries Record Float C`=%f ,`Timeseries Record Type`=%s WHERE `Timeseries Record Key`=%d',
-                    $sales_data['dispatched'], $sales_data['deliveries'], $sales_data['invoiced_amount'], $sales_data['required'], $sales_data['profit'], prepare_mysql('Data'), $timeseries_record_key
+                    'UPDATE `Timeseries Record Dimension` SET 
+                              `Timeseries Record Integer A`=%d ,`Timeseries Record Integer B`=%d ,`Timeseries Record Integer C`=%d ,
+                              `Timeseries Record Float A`=%.2f ,  `Timeseries Record Float B`=%f ,`Timeseries Record Float C`=%f ,`Timeseries Record Float D`=%f ,
+                              `Timeseries Record Type`=%s WHERE `Timeseries Record Key`=%d',
+                    $sales_data['dispatched'], $sales_data['deliveries'], $sales_data['supplier_deliveries'],
+                    $sales_data['invoiced_amount'], $sales_data['required'], $sales_data['profit'],$sales_data['purchased_amount'],
+                    prepare_mysql('Data'), $timeseries_record_key
 
                 );
 

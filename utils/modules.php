@@ -3301,7 +3301,8 @@ $modules = array(
 
 
                             'supplier.sales.info' => array(
-                                'label' => _('Info'),
+                                'label'=>'',
+                                'title' => _('Info'),
                                 'icon'  => 'info',
                                 'class' => 'right icon_only'
                             ),

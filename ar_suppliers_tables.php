@@ -2473,8 +2473,12 @@ function sales_history($_data, $db, $user, $account) {
 
             $record_data[$_date] = array(
                 'sales'      => '<span class="very_discreet">'.money(0, $currency).'</span>',
+                'purchased_amount'      => '<span class="very_discreet">'.money(0, $currency).'</span>',
+
                 'dispatched' => '<span class="very_discreet">'.number(0).'</span>',
                 'deliveries' => '<span class="very_discreet">'.number(0).'</span>',
+                'supplier_deliveries' => '<span class="very_discreet">'.number(0).'</span>',
+
                 'date'       => $date
 
 
@@ -2563,7 +2567,10 @@ function sales_history($_data, $db, $user, $account) {
 
                 $record_data[$_date] = array(
                     'sales'      => money($data['sales'], $currency),
+                    'purchased_amount'      => money($data['purchased_amount'], $currency),
+
                     'deliveries' => number($data['deliveries']),
+                    'supplier_deliveries' => number($data['supplier_deliveries']),
                     'dispatched' => number($data['dispatched']),
                     'date'       => $record_data[$_date]['date']
 

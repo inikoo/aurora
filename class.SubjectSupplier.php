@@ -59,7 +59,7 @@ class SubjectSupplier extends Subject {
 
         );
 
-        if (  array_key_exists('agent_key',$_data) and  $_data['agent_key']) {
+        if (array_key_exists('agent_key', $_data) and $_data['agent_key']) {
             include_once 'class.Agent.php';
             $agent = new Agent($_data['agent_key']);
             if ($agent->id) {
@@ -157,15 +157,9 @@ class SubjectSupplier extends Subject {
         }
 
 
-
-
         $sql = sprintf(
-            "UPDATE `%s Dimension` SET `%s Number Purchase Orders`=%d,`%s Number Open Purchase Orders`=%d ,`%s Number Deliveries`=%d,`%s Number Invoices`=%d  WHERE `%s Key`=%d",
-            $this->table_name,
-            $this->table_name, $number_purchase_orders,
-            $this->table_name, $number_open_purchase_orders,
-            $this->table_name, $number_delivery_notes,
-            $this->table_name, $number_invoices,
+            "UPDATE `%s Dimension` SET `%s Number Purchase Orders`=%d,`%s Number Open Purchase Orders`=%d ,`%s Number Deliveries`=%d,`%s Number Invoices`=%d  WHERE `%s Key`=%d", $this->table_name,
+            $this->table_name, $number_purchase_orders, $this->table_name, $number_open_purchase_orders, $this->table_name, $number_delivery_notes, $this->table_name, $number_invoices,
 
             $this->table_name, $this->id
         );
@@ -429,8 +423,6 @@ class SubjectSupplier extends Subject {
                 }
 
                 break;
-
-
 
 
             case('Formatted ID'):
@@ -724,15 +716,17 @@ class SubjectSupplier extends Subject {
     function get_sales_data($from_date, $to_date) {
 
         $sales_data = array(
-            'invoiced_amount'  => 0,
-            'profit'           => 0,
-            'required'         => 0,
-            'dispatched'       => 0,
-            'deliveries'       => 0,
-            'customers'        => 0,
-            'repeat_customers' => 0,
-            'keep_days'        => 0,
-            'with_stock_days'  => 0,
+            'invoiced_amount'     => 0,
+            'purchased_amount'    => 0,
+            'profit'              => 0,
+            'required'            => 0,
+            'dispatched'          => 0,
+            'deliveries'          => 0,
+            'supplier_deliveries' => 0,
+            'customers'           => 0,
+            'repeat_customers'    => 0,
+            'keep_days'           => 0,
+            'with_stock_days'     => 0,
 
         );
 
@@ -745,12 +739,9 @@ class SubjectSupplier extends Subject {
             }
 
 
-
             $sql = sprintf(
                 "SELECT count(DISTINCT `Delivery Note Customer Key`) AS customers, count( DISTINCT ITF.`Delivery Note Key`) AS deliveries, round(ifnull(sum(`Amount In`),0),2) AS invoiced_amount,round(ifnull(sum(`Amount In`+`Inventory Transaction Amount`),0),2) AS profit,round(ifnull(sum(`Inventory Transaction Quantity`),0),1) AS dispatched,round(ifnull(sum(`Required`),0),1) AS required FROM `Inventory Transaction Fact` ITF  LEFT JOIN `Delivery Note Dimension` DN ON (DN.`Delivery Note Key`=ITF.`Delivery Note Key`) WHERE `Inventory Transaction Type` LIKE 'Sale' AND `Part SKU` IN (%s) %s %s",
-                $part_skus, ($from_date ? sprintf(
-                'and  `Date`>=%s', prepare_mysql($from_date)
-            ) : ''), ($to_date ? sprintf('and `Date`<%s', prepare_mysql($to_date)) : '')
+                $part_skus, ($from_date ? sprintf('and  `Date`>=%s', prepare_mysql($from_date)) : ''), ($to_date ? sprintf('and `Date`<%s', prepare_mysql($to_date)) : '')
             );
 
 
@@ -769,6 +760,25 @@ class SubjectSupplier extends Subject {
             }
 
 
+        }
+
+
+        $sql = sprintf(
+            'SELECT sum(`Supplier Delivery Total Amount`*`Supplier Delivery Currency Exchange`) AS invoiced_amount, count(*) AS supplier_deliveries FROM `Supplier Delivery Dimension` WHERE `Supplier Delivery State`="Placed"  AND `Supplier Delivery Parent`=%s AND `Supplier Delivery Parent Key`=%d  %s %s ',
+            prepare_mysql($this->table_name), $this->id, ($from_date ? sprintf('and  `Supplier Delivery Placed Date`>=%s', prepare_mysql($from_date)) : ''),
+            ($to_date ? sprintf('and `Supplier Delivery Placed Date`<%s', prepare_mysql($to_date)) : '')
+
+        );
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $sales_data['supplier_deliveries'] = $row['supplier_deliveries'];
+                $sales_data['purchased_amount']    = $row['invoiced_amount'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
 
         return $sales_data;
