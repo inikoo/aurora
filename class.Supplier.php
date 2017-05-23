@@ -583,7 +583,9 @@ class Supplier extends SubjectSupplier {
             case 'Number System Users':
             case 'Number Attachments':
             case 'Number Purchase Orders':
+            case 'Number Number Open Purchase Orders':
             case 'Number Deliveries':
+            case 'Number Invoices':
             case 'Number Parts':
             case 'Number Attachments':
 

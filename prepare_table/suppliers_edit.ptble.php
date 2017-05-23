@@ -132,7 +132,7 @@ if ($order == 'code') {
 } elseif ($order == 'revenue') {
     $order = "`Supplier $db_period Acc Parts Sold Amount`";
 } elseif ($order == 'pending_pos') {
-    $order = '`Supplier Open Purchase Orders`';
+    $order = '`Supplier Number Open Purchase Orders`';
 } elseif ($order == 'margin') {
     $order = "`Supplier $db_period Acc Parts Margin`";
 } elseif ($order == 'cost') {
@@ -171,7 +171,7 @@ S.`Supplier Key`,`Supplier Code`,`Supplier Name`,`Supplier Main XHTML Mobile`,`S
 `Supplier Products Origin Country Code`,`Supplier $db_period Acc Parts Sold Amount`,`Supplier $db_period Acc 1YB Parts Sold Amount`,
 `Supplier $db_period Acc Parts Profit`,`Supplier $db_period Acc Parts Profit After Storing`,`Supplier $db_period Acc Parts Cost`,`Supplier $db_period Acc Parts Sold`,`Supplier $db_period Acc Parts Required`,`Supplier $db_period Acc Parts Margin`,
 
-`Supplier Average Delivery Days`,`Supplier Open Purchase Orders`,
+`Supplier Average Delivery Days`,`Supplier Number Open Purchase Orders`,
 `Supplier 1 Year Ago Sales Amount`,`Supplier 2 Year Ago Sales Amount`,`Supplier 3 Year Ago Sales Amount`,`Supplier 4 Year Ago Sales Amount`,
 */
 

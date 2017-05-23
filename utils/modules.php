@@ -3276,7 +3276,7 @@ $modules = array(
 
 
                     'supplier.sales' => array(
-                        'label'   => _('Sales'),
+                        'label'   => _('Purchases/Sales'),
                         'subtabs' => array(
                             'supplier.sales.dashboard' => array(
                                 'label' => _(

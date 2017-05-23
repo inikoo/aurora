@@ -122,7 +122,7 @@ class PurchaseOrder extends DB_Table {
 
             $this->new = true;
 
-            $parent->update_orders();
+            $parent->update_purchase_orders();
 
 
             if ($this->get('Purchase Order Parent') == 'Agent') {
@@ -1099,6 +1099,12 @@ class PurchaseOrder extends DB_Table {
             $this->db->exec($sql);
 
             $this->update_affected_parts();
+
+            $parent = get_object($this->data['Purchase Order Parent'], $this->data['Purchase Order Parent Key']);
+
+
+            $parent->update_purchase_orders();
+
 
         }
 

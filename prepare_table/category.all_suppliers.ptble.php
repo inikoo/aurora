@@ -100,7 +100,7 @@ if ($order == 'code') {
 
     }
 } elseif ($order == 'pending_pos') {
-    $order = '`Supplier Open Purchase Orders`';
+    $order = '`Supplier Number Open Purchase Orders`';
 } elseif ($order == 'margin') {
     $order = "`Supplier $db_period Acc Parts Margin`";
 } elseif ($order == 'cost') {

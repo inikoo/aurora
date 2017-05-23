@@ -402,7 +402,7 @@ function suppliers($_data, $db, $user, $account) {
                 //'profit'=>$profit,
                 //'profit_after_storing'=>$profit_after_storing,
                 //'cost'=>$cost,
-                //'pending_pos'=>number($data['Supplier Open Purchase Orders']),
+                //'pending_pos'=>number($data['Supplier Number Open Purchase Orders']),
                 //'margin'=>$margin,
 
 

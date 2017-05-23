@@ -198,7 +198,7 @@ class SupplierDelivery extends DB_Table {
             $this->add_history($history_data);
             $this->new = true;
 
-            $parent->update_orders();
+            $parent->update_purchase_orders();
 
 
         } else {
