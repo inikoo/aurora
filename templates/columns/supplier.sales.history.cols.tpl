@@ -18,9 +18,32 @@ className: "aright width_150"
 headerCell: integerHeaderCell,
 sortType: "toggle",
 },
+
+{
+name: "supplier_deliveries",
+label: "{t}Supplier deliveries{/t}",
+editable: false,
+sortable: false,
+cell: Backgrid.HtmlCell.extend({
+className: "aright"
+}),
+headerCell: integerHeaderCell,
+sortType: "toggle",
+},
+{
+name: "purchased_amount",
+label: "{t}Purchased amount{/t}",
+editable: false,
+sortable: false,
+cell: Backgrid.HtmlCell.extend({
+className: "aright"
+}),
+headerCell: integerHeaderCell,
+sortType: "toggle",
+},
 {
 name: "deliveries",
-label: "{t}Delivery notes{/t}",
+label: "{t}Sale deliveries{/t}",
 editable: false,
 sortable: false,
 cell: Backgrid.HtmlCell.extend({
