@@ -111,7 +111,7 @@ class SubjectSupplier extends Subject {
     }
 
 
-    function update_orders() {
+    function update_purchase_orders() {
         $number_purchase_orders      = 0;
         $number_open_purchase_orders = 0;
         $number_delivery_notes       = 0;
@@ -157,12 +157,20 @@ class SubjectSupplier extends Subject {
         }
 
 
+
+
         $sql = sprintf(
-            "UPDATE `%s Dimension` SET `%s Purchase Orders`=%d,`%s Open Purchase Orders`=%d ,`%s Supplier Deliveries`=%d  WHERE `%s Key`=%d", $this->table_name, $this->table_name,
-            $number_purchase_orders, $this->table_name, $number_open_purchase_orders, $this->table_name, $number_delivery_notes, $this->table_name,
+            "UPDATE `%s Dimension` SET `%s Number Purchase Orders`=%d,`%s Number Open Purchase Orders`=%d ,`%s Number Deliveries`=%d,`%s Number Invoices`=%d  WHERE `%s Key`=%d",
+            $this->table_name,
+            $this->table_name, $number_purchase_orders,
+            $this->table_name, $number_open_purchase_orders,
+            $this->table_name, $number_delivery_notes,
+            $this->table_name, $number_invoices,
 
             $this->table_name, $this->id
         );
+
+
         $this->db->exec($sql);
 
     }
@@ -423,15 +431,7 @@ class SubjectSupplier extends Subject {
                 break;
 
 
-            case('Purchase Orders'):
-            case('Open Purchase Orders'):
-            case('Delivery Notes'):
-            case('Invoices'):
-                return array(
-                    true,
-                    number($this->data[$this->table_name.' '.$key])
-                );
-                break;
+
 
             case('Formatted ID'):
             case("ID"):

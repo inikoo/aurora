@@ -195,7 +195,7 @@ if ($order == 'code') {
 
     }
 } elseif ($order == 'pending_pos') {
-    $order = '`Supplier Open Purchase Orders`';
+    $order = '`Supplier Number Open Purchase Orders`';
 } elseif ($order == 'margin') {
     $order = "`Supplier $db_period Acc Margin`";
 } elseif ($order == 'cost') {
@@ -286,7 +286,7 @@ S.`Supplier Key`,`Supplier Code`,`Supplier Name`,`Supplier Number Active Parts`,
 `Supplier Products Origin Country Code`,`Supplier $db_period Acc Invoiced Amount`,`Supplier $db_period Acc 1Yb Invoiced Amount`,
 `Supplier $db_period Acc Profit`,`Supplier $db_period Acc Profit After Storing`,`Supplier $db_period Acc Cost`,`Supplier $db_period Acc Sold`,`Supplier $db_period Acc Required`,`Supplier $db_period Acc Margin`,
 
-`Supplier Average Delivery Days`,`Supplier Open Purchase Orders`,
+`Supplier Average Delivery Days`,`Supplier Number Open Purchase Orders`,
 `Supplier 1 Year Ago Invoiced Amount`,`Supplier 2 Year Ago Invoiced Amount`,`Supplier 3 Year Ago Invoiced Amount`,`Supplier 4 Year Ago Invoiced Amount`,
 */
 

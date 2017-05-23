@@ -92,7 +92,7 @@ if ($order == 'code') {
 
     }
 } elseif ($order == 'pending_pos') {
-    $order = '`Agent Open Purchase Orders`';
+    $order = '`Agent Number Open Purchase Orders`';
 } elseif ($order == 'margin') {
     $order = "`Agent $db_period Acc Parts Margin`";
 } elseif ($order == 'cost') {
