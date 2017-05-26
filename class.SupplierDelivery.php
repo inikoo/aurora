@@ -131,6 +131,9 @@ class SupplierDelivery extends DB_Table {
 
     function create($data) {
 
+        global $account;
+
+
         include_once 'utils/natural_language.php';
 
         $parent = get_object(
@@ -144,6 +147,12 @@ class SupplierDelivery extends DB_Table {
 
             return;
         }
+
+
+        include_once 'utils/currency_functions.php';
+        $data['Supplier Delivery Currency Exchange'] = currency_conversion(
+            $this->db, $data['Supplier Delivery Currency Code'], $account->get('Account Currency'), '- 15 minutes'
+        );
 
 
         //print_r($data);
