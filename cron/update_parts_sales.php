@@ -59,8 +59,19 @@ function update_parts_sales($db, $print_est) {
             $part->update_sales_from_invoices('Month To Day');
             $part->update_sales_from_invoices('Quarter To Day');
             $part->update_sales_from_invoices('Year To Day');
+
             $part->update_sales_from_invoices('1 Year');
             $part->update_sales_from_invoices('1 Quarter');
+
+            $part->update_sales_from_invoices('Last Week');
+            $part->update_sales_from_invoices('Last Month');
+
+
+            $part->update_previous_quarters_data();
+
+                 $part->update_previous_years_data();
+
+
 
             $contador++;
             $lap_time1 = date('U');
