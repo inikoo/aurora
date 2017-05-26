@@ -49,14 +49,25 @@ function update_parts_sales($db, $print_est) {
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
             $category = new Category($row['Category Key']);
+            $category->load_acc_data();
 
             $category->update_part_category_sales('Total');
             $category->update_part_category_sales('Week To Day');
             $category->update_part_category_sales('Month To Day');
             $category->update_part_category_sales('Quarter To Day');
             $category->update_part_category_sales('Year To Day');
+
             $category->update_part_category_sales('1 Year');
             $category->update_part_category_sales('1 Quarter');
+            $category->update_part_category_sales('Last Week');
+            $category->update_part_category_sales('Last Month');
+
+
+
+            $category->update_part_category_previous_quarters_data();
+
+            $category->update_part_category_previous_years_data();
+
 
             $contador++;
             $lap_time1 = date('U');
