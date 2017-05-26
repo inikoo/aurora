@@ -205,6 +205,9 @@ trait PartCategory {
 
         }
 
+
+
+
         if ($fork_key) {
 
             $sql = sprintf(
@@ -219,6 +222,8 @@ trait PartCategory {
 
     function get_part_timeseries_record_data($timeseries, $date_frequency_period) {
 
+
+        /*
 
         $part_skus = $this->get_part_skus();
 
@@ -251,14 +256,28 @@ trait PartCategory {
             );
         }
 
+        */
+
         if ($timeseries->get('Timeseries Scope') == 'Sales') {
 
+
+            $sales_data= $this->get_part_category_sales_data($date_frequency_period['from'],$date_frequency_period['to']);
+
+            return array(
+                $sales_data['invoiced_amount'],
+                $sales_data['deliveries'],
+                $sales_data['dispatched'],
+            );
+
+
+            /*
 
             $sql = sprintf(
                 "SELECT count(DISTINCT `Delivery Note Key`)  AS deliveries,sum(`Amount In`) net,sum(`Inventory Transaction Quantity`) skos FROM `Inventory Transaction Fact` WHERE `Part SKU` IN (%s) AND `Inventory Transaction Type`='Sale' AND  `Date`>=%s  AND   `Date`<=%s  ",
                 $part_skus, prepare_mysql($date_frequency_period['from']), prepare_mysql($date_frequency_period['to'])
             );
 
+            print "$sql\n";
 
             if ($result = $this->db->query($sql)) {
                 if ($row = $result->fetch()) {
@@ -267,6 +286,11 @@ trait PartCategory {
                     $deliveries = $row['deliveries'];
                     $skos       = round(-1 * $row['skos']);
                     $net        = $row['net'];
+
+
+                    print_r($row);
+
+
                 } else {
                     $deliveries = 0;
                     $skos       = 0;
@@ -285,6 +309,10 @@ trait PartCategory {
                 exit;
             }
 
+
+
+
+            */
 
         }
 
@@ -440,7 +468,7 @@ trait PartCategory {
                     ($to_date ? sprintf('and `Date`<%s', prepare_mysql($to_date)) : '')
             );
 
-            //print "$sql\n";
+          //  print "$sql\n";
 
             if ($result = $this->db->query($sql)) {
                 if ($row = $result->fetch()) {
@@ -456,6 +484,7 @@ trait PartCategory {
                 exit;
             }
         }
+
 
 
         return $sales_data;

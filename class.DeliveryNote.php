@@ -70,11 +70,16 @@ class DeliveryNote extends DB_Table {
             return;
         }
         //   print $sql;
-        $result = mysql_query($sql);
-        if ($this->data = mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $this->id = $this->data['Delivery Note Key'];
 
+
+
+
+        if ($this->data = $this->db->query($sql)->fetch()) {
+            $this->id = $this->data['Delivery Note Key'];
         }
+
+
+
 
     }
 
