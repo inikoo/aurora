@@ -901,6 +901,7 @@ class SupplierPart extends DB_Table {
                 break;
             case 'Supplier Part Packages Per Carton':
 
+
                 if ($value == '') {
                     $this->error = true;
                     $this->msg   = _('Outers (SKO) per carton missing');
@@ -921,6 +922,7 @@ class SupplierPart extends DB_Table {
                 $this->update_field($field, $value, $options);
 
 
+
                 $this->other_fields_updated = array(
                     'Supplier_Part_Unit_Cost' => array(
                         'field'           => 'Supplier_Part_Unit_Cost',
@@ -930,6 +932,12 @@ class SupplierPart extends DB_Table {
                         ),
                         'formatted_value' => $this->get('Unit Cost'),
                     ),
+
+                );
+
+                $this->part->editor=$this->editor;
+                $this->part->update(
+                    array('Part SKOs per Carton'=>$value)
 
                 );
 
