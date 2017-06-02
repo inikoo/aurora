@@ -106,7 +106,6 @@ class Page extends DB_Table {
         }
 
 
-
         if ($this->data = $this->db->query($sql)->fetch()) {
 
             $this->id = $this->data['Page Key'];
@@ -270,7 +269,6 @@ class Page extends DB_Table {
             $this->db->exec($sql);
 
 
-
         } else {
             $this->error = true;
             $this->msg   = 'Can not insert Page Dimension';
@@ -320,7 +318,6 @@ class Page extends DB_Table {
 
 
     function create_store_page($raw_data) {
-        //print_r($raw_data);
 
         $data = $this->store_base_data();
         foreach ($raw_data as $key => $value) {
@@ -354,6 +351,7 @@ class Page extends DB_Table {
         $keys   = preg_replace('/,$/', ')', $keys);
         $values = preg_replace('/,$/', ')', $values);
         $sql    = sprintf("INSERT INTO `Page Store Dimension` %s %s", $keys, $values);
+
 
         if ($this->db->exec($sql)) {
 
@@ -917,6 +915,32 @@ class Page extends DB_Table {
     function get($key) {
         switch ($key) {
 
+            case 'Email':
+            case 'Company Name':
+            case 'VAT Number':
+            case 'Company Number':
+            case 'Telephone':
+            case 'Address':
+            case 'Google Map URL':
+            include_once('class.Store.php');
+            $store = new Store($this->data['Webpage Store Key']);
+
+            return $store->get($key);
+
+            break;
+            case 'Store Email':
+            case 'Store Company Name':
+            case 'Store VAT Number':
+            case 'Store Company Number':
+            case 'Store Telephone':
+            case 'Store Address':
+            case 'Store Google Map URL':
+                include_once('class.Store.php');
+                $store = new Store($this->data['Webpage Store Key']);
+
+                return $store->get($key);
+
+                break;
             case 'Publish':
 
 
@@ -996,6 +1020,21 @@ class Page extends DB_Table {
 
                 return $content_data;
                 break;
+
+            case 'Webpage Launching Date':
+                $content_data = $this->get('Content Data');
+                if (isset($content_data['_launch_date'])) {
+                    return $content_data['_launch_date'];
+                } else {
+                    return '';
+                }
+            case 'Launching Date':
+                $content_data = $this->get('Content Data');
+                if (isset($content_data['_launch_date']) and $content_data['_launch_date'] != '') {
+                    return strftime("%A, %x", strtotime($content_data['_launch_date'].' +0:00'));
+                } else {
+                    return '';
+                }
 
             case 'Webpage Website Key':
                 return $this->get('Page Site Key');
@@ -1229,8 +1268,29 @@ class Page extends DB_Table {
 
 
         switch ($field) {
+
+
+            case 'Store Email':
+            case 'Store Company Name':
+            case 'Store VAT Number':
+            case 'Store Company Number':
+            case 'Store Telephone':
+            case 'Store Address':
+            case 'Store Google Map URL':
+                include_once('class.Store.php');
+                $store         = new Store($this->data['Webpage Store Key']);
+                $store->editor = $this->editor;
+
+                $store->update_field_switcher($field, $value, $options);
+                $this->updated = $store->updated;
+                $this->error   = $store->error;
+                $this->msg     = $store->msg;
+
+                break;
+
+
             case 'History Note':
-                $this->add_note($value, '', '', $metadata['deletable'], 'Notes', false, false, false, 'Webpage', false, 'Webpage Publishing',false);
+                $this->add_note($value, '', '', $metadata['deletable'], 'Notes', false, false, false, 'Webpage', false, 'Webpage Publishing', false);
 
                 break;
 
@@ -1244,8 +1304,30 @@ class Page extends DB_Table {
             case('Webpage Type Key'):
             case 'Webpage Version':
             case 'Webpage Launch Date':
+            case 'Webpage Name':
+            case 'Webpage Browser Title':
 
                 $this->update_field($field, $value, $options);
+                break;
+
+            case('Webpage Launching Date'):
+
+
+                if ($value == '00:00:00') {
+                    $value = '';
+                }
+
+                $this->update_content_data('_launch_date', $value, $options);
+
+                if ($value == '') {
+                    $this->update_content_data('show_countdown', false, 'no_history');
+
+                } else {
+                    $this->update_content_data('show_countdown', true, 'no_history');
+
+                }
+
+
                 break;
 
 
@@ -1515,6 +1597,19 @@ class Page extends DB_Table {
 
 
     }
+
+
+    function update_content_data($field, $value, $options = '') {
+
+        $content_data = $this->get('Content Data');
+
+        $content_data[$field] = $value;
+
+        $this->update_field('Page Store Content Data', json_encode($content_data), $this->no_history);
+
+
+    }
+
 
     function update_found_in($parent_keys) {
 
@@ -2549,42 +2644,34 @@ class Page extends DB_Table {
         $sql           = sprintf(
             "DELETE FROM `Page Dimension` WHERE `Page Key`=%d", $this->id
         );
-        // print "$sql\n";
-        mysql_query($sql);
+
+
+        $this->db->exec($sql);
+
         $sql = sprintf(
             "DELETE FROM `Page Store Dimension` WHERE `Page Key`=%d", $this->id
         );
-        mysql_query($sql);
+        $this->db->exec($sql);
         $sql = sprintf(
             "DELETE FROM `Page Redirection Dimension` WHERE `Page Target Key`=%d", $this->id
         );
-        mysql_query($sql);
+        $this->db->exec($sql);
 
-
-        $sql = sprintf(
-            "SELECT `Page Store External File Key` FROM `Page Store External File Bridge` WHERE `Page Key`=%d", $this->id
-        );
-        $res = mysql_query($sql);
-        while ($row = mysql_fetch_assoc($res)) {
-            $this->delete_external_file($row['Page Store External File Key']);
-        }
-        $sql = sprintf(
-            "DELETE FROM `Page Store External File Bridge` WHERE `Page Key`=%d", $this->id
-        );
-        mysql_query($sql);
 
         $sql = sprintf(
             "DELETE FROM `Page Store Found In Bridge` WHERE `Page Store Key`=%d", $this->id
         );
-        mysql_query($sql);
+        $this->db->exec($sql);
         $sql = sprintf(
             "DELETE FROM `Page Store Found In Bridge` WHERE `Page Store Found In Key`=%d", $this->id
         );
-        mysql_query($sql);
+
+        $this->db->exec($sql);
+
         $sql = sprintf(
             "DELETE FROM  `Page Store See Also Bridge` WHERE `Page Store Key`=%d", $this->id
         );
-        mysql_query($sql);
+        $this->db->exec($sql);
 
 
         $sql = sprintf(
@@ -2592,26 +2679,35 @@ class Page extends DB_Table {
             $this->data['Page Site Key'], prepare_mysql(gmdate('Y-m-d H:i:s'))
 
         );
-        mysql_query($sql);
+        $this->db->exec($sql);
 
 
         $sql = sprintf(
             "delete `Page Product Dimension` where `Page Key`=%d", $this->id
         );
-        mysql_query($sql);
 
+        $this->db->exec($sql);
         $images = array();
         $sql    = sprintf(
             "SELECT `Image Key` FROM `Image Bridge` WHERE `Subject Type`='Page' AND `Subject Key`=%d", $this->id
         );
-        $res    = mysql_query($sql);
-        while ($row = mysql_fetch_assoc($res)) {
-            $images[] = $row['Image Key'];
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $images[] = $row['Image Key'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
+
+
         $sql = sprintf(
             "DELETE FROM  `Image Bridge` WHERE `Subject Type`='Page' AND `Subject Key`=%d", $this->id
         );
-        mysql_query($sql);
+
+        $this->db->exec($sql);
 
         foreach ($images as $image_key) {
             $image = new Image($image_key);
@@ -2626,19 +2722,25 @@ class Page extends DB_Table {
         $sql = sprintf(
             "SELECT `Page Store Key`  FROM  `Page Store See Also Bridge` WHERE `Page Store See Also Key`=%d ", $this->id
         );
-        $res = mysql_query($sql);
-        while ($row = mysql_fetch_assoc($res)) {
-            $_page = new Page ($row['Page Store Key']);
-            $_page->update_see_also();
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $_page = new Page ($row['Page Store Key']);
+                $_page->update_see_also();
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
 
 
         $this->deleted = true;
 
 
-        if (array_key_exists('Page Site Key', $this->data)) {
-            $site = new Site($this->data['Page Site Key']);
-            $site->update_page_totals();
+        if (array_key_exists('Webpage Website Key', $this->data)) {
+            $website = new Website($this->data['Webpage Website Key']);
+            $website->update_webpages();
         }
 
 
@@ -3912,6 +4014,30 @@ class Page extends DB_Table {
         }
 
         return formatted_rrp($data, $options);
+    }
+
+    function clean_accents($str) {
+
+
+        $str = preg_replace('/é|è|ê|ë|æ/', 'e', $str);
+        $str = preg_replace('/á|à|â|ã|ä|å|æ|ª/', 'a', $str);
+        $str = preg_replace('/ù|ú|û|ü/', 'u', $str);
+        $str = preg_replace('/ò|ó|ô|õ|ö|ø|°/', 'o', $str);
+        $str = preg_replace('/ì|í|î|ï/', 'i', $str);
+
+        $str = preg_replace('/É|È|Ê|Ë|Æ/', 'E', $str);
+        $str = preg_replace('/Á|À|Â|Ã|Ä|Å|Æ|ª/', 'A', $str);
+        $str = preg_replace('/Ù|Ú|Û|Ü/', 'U', $str);
+        $str = preg_replace('/Ò|Ó|Ô|Õ|Ö|Ø|°/', 'O', $str);
+        $str = preg_replace('/Ì|Í|Î|Ï/', 'I', $str);
+
+        $str = preg_replace('/ñ/', 'n', $str);
+        $str = preg_replace('/Ñ/', 'N', $str);
+        $str = preg_replace('/ç|¢|©/', 'c', $str);
+        $str = preg_replace('/Ç/', 'C', $str);
+        $str = preg_replace('/ß|§/i', 's', $str);
+
+        return $str;
     }
 
     function get_list_aw_checkout($products) {
@@ -5893,6 +6019,9 @@ class Page extends DB_Table {
 
     }
 
+
+    //======= new methods
+
     function get_families_data() {
         $families = array();
 
@@ -5927,9 +6056,6 @@ class Page extends DB_Table {
         return $families;
 
     }
-
-
-    //======= new methods
 
     function get_product_data() {
         $product_data = array();
@@ -7112,13 +7238,31 @@ class Page extends DB_Table {
             $category->create_stack_index(true);
 
 
+        } else {
+
+            include_once 'class.Website.php';
+
+            include_once 'conf/website_system_webpages.php';
+
+            $website = new Website($this->get('Webpage Website Key'));
+
+            $website_system_webpages = website_system_webpages_config($website->get('Website Type'));
+
+
+            if (isset(
+                $website_system_webpages[$this->get('Webpage Code')]
+            )) {
+
+
+                $this->update(array('Page Store Content Data' => $website_system_webpages[$this->get('Webpage Code')]['Page Store Content Data']), 'no_history');
+
+            }
+
+
         }
 
 
     }
-
-
-
 
     function get_field_label($field) {
 
@@ -7158,35 +7302,7 @@ class Page extends DB_Table {
     }
 
 
-    function clean_accents($str) {
-
-
-        $str = preg_replace('/é|è|ê|ë|æ/', 'e', $str);
-        $str = preg_replace('/á|à|â|ã|ä|å|æ|ª/', 'a', $str);
-        $str = preg_replace('/ù|ú|û|ü/', 'u', $str);
-        $str = preg_replace('/ò|ó|ô|õ|ö|ø|°/', 'o', $str);
-        $str = preg_replace('/ì|í|î|ï/', 'i', $str);
-
-        $str = preg_replace('/É|È|Ê|Ë|Æ/', 'E', $str);
-        $str = preg_replace('/Á|À|Â|Ã|Ä|Å|Æ|ª/', 'A', $str);
-        $str = preg_replace('/Ù|Ú|Û|Ü/', 'U', $str);
-        $str = preg_replace('/Ò|Ó|Ô|Õ|Ö|Ø|°/', 'O', $str);
-        $str = preg_replace('/Ì|Í|Î|Ï/', 'I', $str);
-
-        $str = preg_replace('/ñ/', 'n', $str);
-        $str = preg_replace('/Ñ/', 'N', $str);
-        $str = preg_replace('/ç|¢|©/', 'c', $str);
-        $str = preg_replace('/Ç/', 'C', $str);
-        $str = preg_replace('/ß|§/i', 's', $str);
-
-        return $str;
-    }
-
-
-
 }
-
-
 
 
 ?>

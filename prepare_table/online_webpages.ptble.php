@@ -10,7 +10,7 @@
 */
 
 
-$table = '`Page Store Dimension` ';
+$table = '`Page Store Dimension` P left join `Webpage Type Dimension` WTD on (WTD.`Webpage Type Key`=P.`Webpage Type Key`) ';
 
 $where = 'where `Webpage State`="Online"';
 
@@ -20,7 +20,7 @@ switch ($parameters['parent']) {
         $where .= sprintf(' and  `Webpage Website Key`=%d  ', $parameters['parent_key']);
         break;
     case('webpage_type'):
-        $where .= sprintf(' and  `Webpage Type Key`=%d  ', $parameters['parent_key']);
+        $where .= sprintf(' and  P.`Webpage Type Key`=%d  ', $parameters['parent_key']);
         break;
     case('node'):
         $where .= sprintf(' and  `Webpage Parent Key`=%d  ', $parameters['parent_key']);
@@ -42,7 +42,14 @@ if (isset($parameters['elements_type'])) {
             foreach ($parameters['elements'][$parameters['elements_type']]['items'] as $_key => $_value) {
                 if ($_value['selected']) {
                     $count_elements++;
-                    $_elements .= ','.prepare_mysql(preg_replace('/_/',' ',$_key));
+
+                    if($_key=='Others'){
+                        $_elements.=",'Info','Home','Ordering','Customer','Portfolio','Sys'";
+                    }else{
+                        $_elements .= ','.prepare_mysql(preg_replace('/_/',' ',$_key));
+                    }
+
+
 
                 }
             }
@@ -50,7 +57,7 @@ if (isset($parameters['elements_type'])) {
             if ($_elements == '') {
                 $where .= ' and false';
             } elseif ($count_elements < 5) {
-                $where .= ' and `Webpage Scope` in ('.$_elements.')';
+                $where .= ' and `Webpage Type Code` in ('.$_elements.')';
 
             }
             break;
@@ -113,90 +120,9 @@ $sql_totals = "select count(Distinct `Page Key`) as num from $table  $where  ";
 
 
 
-$fields = "`Page Key` as `Webpage Key` ,`Webpage Code`,`Webpage State`,`Webpage Scope`,`Webpage Website Key`,`Webpage Version`";
+$fields = "`Page Key` as `Webpage Key` ,`Webpage Code`,`Webpage Name`,`Webpage State`,`Webpage Scope`,`Webpage Website Key`,`Webpage Version`,`Webpage Type Code`";
 
 
 
-
-/*
-$table = '`Webpage Dimension` N';
-
-switch ($parameters['parent']) {
-
-    case('website'):
-        $where = sprintf(
-            ' where  `Webpage Website Key`=%d  ', $parameters['parent_key']
-        );
-        break;
-    case('node'):
-        $where = sprintf(
-            ' where  `Webpage Parent Key`=%d  ', $parameters['parent_key']
-        );
-        break;
-    default:
-        exit('parent not configured '.$parameters['parent']);
-
-}
-
-$group = '';
-
-
-if (isset($parameters['elements_type'])) {
-
-    switch ($parameters['elements_type']) {
-        case 'status':
-            $_elements      = '';
-            $count_elements = 0;
-            foreach (
-                $parameters['elements'][$parameters['elements_type']]['items'] as $_key => $_value
-            ) {
-                if ($_value['selected']) {
-                    $count_elements++;
-                    $_elements .= ','.prepare_mysql($_key);
-
-                }
-            }
-
-
-            $_elements = preg_replace('/^\,/', '', $_elements);
-            if ($_elements == '') {
-                $where .= ' and false';
-            } elseif ($count_elements < 2) {
-                $where .= ' and `Webpage Status` in ('.$_elements.')';
-
-            }
-            break;
-
-    }
-}
-
-
-$wheref = '';
-if ($parameters['f_field'] == 'code' and $f_value != '') {
-    $wheref .= " and `Webpage Code` like '".addslashes($f_value)."%'";
-} elseif ($parameters['f_field'] == 'name' and $f_value != '') {
-    $wheref .= " and  `Webpage Name` like '".addslashes($f_value)."%'";
-}
-
-
-$_order = $order;
-$_dir   = $order_direction;
-
-
-if ($order == 'code') {
-    $order = '`Webpage Code`';
-}
-if ($order == 'name') {
-    $order = '`Webpage Name`';
-} else {
-    $order = 'N.`Webpage Key`';
-}
-
-
-$sql_totals = "select count(Distinct N.`Webpage Key`) as num from $table  $where  ";
-
-$fields = "`Webpage Key`,`Webpage Code`,`Webpage Name`";
-
-*/
 
 ?>

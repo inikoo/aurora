@@ -159,7 +159,7 @@ class Store extends DB_Table {
 
 
         $this->new = false;
-        $base_data  = $this->base_data();
+        $base_data = $this->base_data();
 
         foreach ($data as $key => $value) {
             if (array_key_exists($key, $base_data)) {
@@ -244,8 +244,6 @@ class Store extends DB_Table {
             $account->editor = $this->editor;
 
 
-
-
             $families_category_data = array(
                 'Category Code'      => 'Fam.'.$this->get('Store Code'),
                 'Category Label'     => 'Families',
@@ -282,20 +280,20 @@ class Store extends DB_Table {
             );
 
 
-            $order_recursion_campaign_data=array(
-                'Deal Campaign Name'=>'Order recursion incentive',
-                'Deal Campaign Valid From'=>gmdate('Y-m-d'),
-                'Deal Campaign Valid To'=>'',
+            $order_recursion_campaign_data = array(
+                'Deal Campaign Name'       => 'Order recursion incentive',
+                'Deal Campaign Valid From' => gmdate('Y-m-d'),
+                'Deal Campaign Valid To'   => '',
 
 
             );
 
             $order_recursion_campaign = $this->create_campaign($order_recursion_campaign_data);
 
-            $bulk_discounts_campaign_data=array(
-                'Deal Campaign Name'=>'Bulk discount',
-                'Deal Campaign Valid From'=>gmdate('Y-m-d'),
-                'Deal Campaign Valid To'=>'',
+            $bulk_discounts_campaign_data = array(
+                'Deal Campaign Name'       => 'Bulk discount',
+                'Deal Campaign Valid From' => gmdate('Y-m-d'),
+                'Deal Campaign Valid To'   => '',
 
             );
 
@@ -304,12 +302,11 @@ class Store extends DB_Table {
             $this->update(
                 array(
 
-                    'Store Order Recursion Campaign Key'     => $order_recursion_campaign->id,
-                    'Store Bulk Discounts Campaign Key' => $bulk_discounts_campaign->id,
+                    'Store Order Recursion Campaign Key' => $order_recursion_campaign->id,
+                    'Store Bulk Discounts Campaign Key'  => $bulk_discounts_campaign->id,
 
                 ), 'no_history'
             );
-
 
 
             $history_data = array(
@@ -414,6 +411,17 @@ class Store extends DB_Table {
 
 
         switch ($key) {
+
+
+            case('Google Map URL'):
+
+
+                return '<iframe src="'.$this->data['Store Google Map URL'].'" width="1000" height="300" frameborder="0" style="border:0" allowfullscreen></iframe>';
+
+
+                $this->update_field('Store Google Map URL', $value);
+                break;
+
 
             case 'State':
                 switch ($this->data['Store State']) {
@@ -928,6 +936,99 @@ class Store extends DB_Table {
 
     }
 
+    function create_campaign($data) {
+
+
+        include_once 'class.DealCampaign.php';
+
+        if (!array_key_exists('Deal Campaign Name', $data) or $data['Deal Campaign Name'] == '') {
+            $this->error = true;
+            $this->msg   = 'error, no campaign name';
+
+            return;
+        }
+
+        if (!array_key_exists('Deal Campaign Valid From', $data)) {
+            $this->error = true;
+            $this->msg   = 'error, no campaign start date';
+
+            return;
+        }
+
+        if ($data['Deal Campaign Valid From'] == '') {
+            $data['Deal Campaign Valid From'] = gmdate('Y-m-d');
+        }
+
+        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $data['Deal Campaign Valid From'])) {
+            $data['Deal Campaign Valid From'] .= ' 00:00:00';
+        }
+
+        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $data['Deal Campaign Valid To'])) {
+            $data['Deal Campaign Valid To'] .= ' 23:59:59';
+        }
+
+        $data['Deal Campaign Store Key'] = $this->id;
+
+
+        $campaign = new DealCampaign('find create', $data);
+
+
+        if ($campaign->id) {
+            $this->new_object_msg = $campaign->msg;
+
+            if ($campaign->new) {
+                $this->new_object = true;
+                $this->update_campaigns_data();
+
+
+            } else {
+                $this->error = true;
+                if ($campaign->found) {
+
+                    $this->error_code     = 'duplicated_field';
+                    $this->error_metadata = json_encode(array($campaign->duplicated_field));
+
+                    if ($campaign->duplicated_field == 'Deal Campaign Name') {
+                        $this->msg = _('Duplicated campaign name');
+                    }
+
+
+                } else {
+                    $this->msg = $campaign->msg;
+                }
+            }
+
+            return $campaign;
+        } else {
+            $this->error = true;
+            $this->msg   = $campaign->msg;
+        }
+
+    }
+
+    function update_campaigns_data() {
+
+        $campaigns = 0;
+
+        $sql = sprintf(
+            "SELECT count(*) AS num FROM `Deal Campaign Dimension` WHERE `Deal Campaign Store Key`=%d AND `Deal Campaign Status`='Active' ", $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $campaigns = $row['num'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        $this->update(array('Store Active Deal Campaigns' => $campaigns), 'no_history');
+
+    }
+
     function load_acc_data() {
 
         $sql = sprintf("SELECT * FROM `Store Data`  WHERE `Store Key`=%d", $this->id);
@@ -1131,28 +1232,6 @@ class Store extends DB_Table {
 
     }
 
-    function update_new_products() {
-
-        $new = 0;
-        $sql = sprintf(
-            'SELECT count(*) AS num FROM `Product Dimension` WHERE  `Product Status` in ("Active","Discontinuing") and  `Product Store Key` =%d AND `Product Valid From` >= CURDATE() - INTERVAL 14 DAY', $this->id
-
-        );
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $new = $row['num'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        $this->update(array('Store New Products' => $new), 'no_history');
-
-    }
-
     function update_children_data() {
         $this->update_product_data();
 
@@ -1161,11 +1240,10 @@ class Store extends DB_Table {
     function update_product_data() {
 
 
-
-        $active_products       = 0;
-        $suspended_products    = 0;
-        $discontinuing_products=0;
-        $discontinued_products = 0;
+        $active_products        = 0;
+        $suspended_products     = 0;
+        $discontinuing_products = 0;
+        $discontinued_products  = 0;
 
         $elements_active_web_status_numbers = array(
             'For Sale'     => 0,
@@ -1187,7 +1265,7 @@ class Store extends DB_Table {
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
-                if ($row['Product Status'] == 'Active' ) {
+                if ($row['Product Status'] == 'Active') {
                     $active_products = $row['num'];
                 } elseif ($row['Product Status'] == 'Discontinuing') {
                     $discontinuing_products = $row['num'];
@@ -1204,7 +1282,7 @@ class Store extends DB_Table {
         }
 
 
-        $active_products=$active_products+$discontinuing_products;
+        $active_products = $active_products + $discontinuing_products;
 
         $sql = sprintf(
             "SELECT count(*) AS num ,`Product Web State` AS web_state FROM  `Product Dimension` P WHERE `Product Store Key`=%d AND `Product Status` IN ('Active','Discontinuing') GROUP BY  `Product Web State`   ",
@@ -1227,12 +1305,11 @@ class Store extends DB_Table {
         }
 
 
-
         $this->update(
             array(
                 'Store Active Products'         => $active_products,
                 'Store Suspended Products'      => $suspended_products,
-                'Store Discontinuing Products'   => $discontinuing_products,
+                'Store Discontinuing Products'  => $discontinuing_products,
                 'Store Discontinued Products'   => $discontinued_products,
                 'Store Active Web For Sale'     => $elements_active_web_status_numbers['For Sale'],
                 'Store Active Web Out of Stock' => $elements_active_web_status_numbers['Out of Stock'],
@@ -1240,52 +1317,6 @@ class Store extends DB_Table {
 
             ), 'no_history'
         );
-
-
-
-
-    }
-
-    function update_field_switcher($field, $value, $options = '', $metadata = '') {
-
-
-        switch ($field) {
-            case('Store Sticky Note'):
-                $this->update_field_switcher('Sticky Note', $value);
-                break;
-            case('Sticky Note'):
-                $this->update_field('Store '.$field, $value, 'no_null');
-                $this->new_value = html_entity_decode($this->new_value);
-                break;
-
-            case('Store Code'):
-            case('Store Name'):
-
-                if ($value == '') {
-                    $this->error = true;
-                    $this->msg   = _("Value can't be empty");
-                }
-                $this->update_field($field, $value, $options);
-                break;
-
-
-            default:
-                $base_data = $this->base_data();
-                if (array_key_exists($field, $base_data)) {
-                    if ($value != $this->data[$field]) {
-                        $this->update_field($field, $value, $options);
-                    }
-                } elseif (array_key_exists($field, $this->base_data('Store Data'))) {
-                    $this->update_table_field($field, $value, $options, 'Store', 'Store Data', $this->id);
-                } elseif (array_key_exists(
-                    $field, $this->base_data('Store DC Data')
-                )) {
-                    $this->update_table_field(
-                        $field, $value, $options, 'Store', 'Store DC Data', $this->id
-                    );
-                }
-
-        }
 
 
     }
@@ -1889,22 +1920,21 @@ class Store extends DB_Table {
 
     function update_email_campaign_data() {
 
-        $email_campaigns=0;
-        $sql = sprintf("SELECT count(*) AS email_campaign FROM `Email Campaign Dimension` WHERE `Email Campaign Store Key`=%d  ", $this->id);
+        $email_campaigns = 0;
+        $sql             = sprintf("SELECT count(*) AS email_campaign FROM `Email Campaign Dimension` WHERE `Email Campaign Store Key`=%d  ", $this->id);
 
-        if ($result=$this->db->query($sql)) {
+        if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
                 $email_campaigns = $row['email_campaign'];
-        	}
-        }else {
-        	print_r($error_info=$this->db->errorInfo());
-        	print "$sql\n";
-        	exit;
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
 
 
-        $this->update(array('Store Email Campaigns'=>$email_campaigns),'no_history');
-
+        $this->update(array('Store Email Campaigns' => $email_campaigns), 'no_history');
 
 
     }
@@ -1921,20 +1951,20 @@ class Store extends DB_Table {
 
         $deals = 0;
 
-        $sql   = sprintf("SELECT count(*) AS num FROM `Deal Dimension` WHERE `Deal Store Key`=%d AND `Deal Status`='Active' ", $this->id);
+        $sql = sprintf("SELECT count(*) AS num FROM `Deal Dimension` WHERE `Deal Store Key`=%d AND `Deal Status`='Active' ", $this->id);
 
-        if ($result=$this->db->query($sql)) {
+        if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
                 $deals = $row['num'];
             }
-        }else {
-            print_r($error_info=$this->db->errorInfo());
+        } else {
+            print_r($error_info = $this->db->errorInfo());
             print "$sql\n";
             exit;
         }
 
 
-        $this->update(array('Store Active Deals'=>$deals),'no_history');
+        $this->update(array('Store Active Deals' => $deals), 'no_history');
 
 
     }
@@ -1971,7 +2001,6 @@ class Store extends DB_Table {
         $this->db->exec($sql);
 
 
-
     }
 
     function get_tax_rate() {
@@ -1981,14 +2010,14 @@ class Store extends DB_Table {
         );
 
 
-        if ($result=$this->db->query($sql)) {
+        if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
                 $rate = $row['Tax Category Rate'];
-        	}
-        }else {
-        	print_r($error_info=$this->db->errorInfo());
-        	print "$sql\n";
-        	exit;
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
 
 
@@ -2002,17 +2031,15 @@ class Store extends DB_Table {
             $this->id
         );
 
-        if ($result=$this->db->query($sql)) {
+        if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
                 $payment_account_key = $row['Payment Account Key'];
-        	}
-        }else {
-        	print_r($error_info=$this->db->errorInfo());
-        	print "$sql\n";
-        	exit;
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
-
-
 
 
         return $payment_account_key;
@@ -2025,8 +2052,6 @@ class Store extends DB_Table {
             "SELECT * FROM `Payment Account Dimension` PA LEFT JOIN `Payment Account Site Bridge` B ON (PA.`Payment Account Key`=B.`Payment Account Key`) LEFT JOIN `Payment Service Provider Dimension` PSPD ON (PSPD.`Payment Service Provider Key`=PA.`Payment Service Provider Key`)  WHERE  `Status`='Active' AND `Store Key`=%d ",
             $this->id
         );
-
-
 
 
         if ($result = $this->db->query($sql)) {
@@ -2350,7 +2375,7 @@ class Store extends DB_Table {
 
         if (array_key_exists('Family Category Code', $data)) {
             include_once 'class.Category.php';
-            $root_category = new Category('id',$this->get('Store Family Category Key'),false,$this->db);
+            $root_category = new Category('id', $this->get('Store Family Category Key'), false, $this->db);
             if ($root_category->id) {
                 $root_category->editor = $this->editor;
                 $family                = $root_category->create_category(array('Category Code' => $data['Family Category Code']));
@@ -2680,7 +2705,28 @@ class Store extends DB_Table {
         return $websites;
     }
 
+    function update_new_products() {
 
+        $new = 0;
+        $sql = sprintf(
+            'SELECT count(*) AS num FROM `Product Dimension` WHERE  `Product Status` IN ("Active","Discontinuing") AND  `Product Store Key` =%d AND `Product Valid From` >= CURDATE() - INTERVAL 14 DAY',
+            $this->id
+
+        );
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $new = $row['num'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        $this->update(array('Store New Products' => $new), 'no_history');
+
+    }
 
     function create_category($raw_data) {
 
@@ -2724,105 +2770,10 @@ class Store extends DB_Table {
 
     }
 
-    function create_campaign($data) {
-
-
-
-        include_once 'class.DealCampaign.php';
-
-        if (!array_key_exists('Deal Campaign Name', $data) or $data['Deal Campaign Name'] == '') {
-            $this->error = true;
-            $this->msg   = 'error, no campaign name';
-
-            return;
-        }
-
-        if (!array_key_exists('Deal Campaign Valid From', $data)) {
-            $this->error = true;
-            $this->msg   = 'error, no campaign start date';
-
-            return;
-        }
-
-        if ($data['Deal Campaign Valid From'] == '') {
-            $data['Deal Campaign Valid From'] = gmdate('Y-m-d');
-        }
-
-        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $data['Deal Campaign Valid From'])) {
-            $data['Deal Campaign Valid From'] .= ' 00:00:00';
-        }
-
-        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $data['Deal Campaign Valid To'])) {
-            $data['Deal Campaign Valid To'] .= ' 23:59:59';
-        }
-
-        $data['Deal Campaign Store Key'] = $this->id;
-
-
-        $campaign = new DealCampaign('find create', $data);
-
-
-        if ($campaign->id) {
-            $this->new_object_msg = $campaign->msg;
-
-            if ($campaign->new) {
-                $this->new_object = true;
-                $this->update_campaigns_data();
-
-
-
-            } else {
-                $this->error = true;
-                if ($campaign->found) {
-
-                    $this->error_code     = 'duplicated_field';
-                    $this->error_metadata = json_encode(array($campaign->duplicated_field));
-
-                    if ($campaign->duplicated_field == 'Deal Campaign Name') {
-                        $this->msg = _('Duplicated campaign name');
-                    }
-
-
-                } else {
-                    $this->msg = $campaign->msg;
-                }
-            }
-
-            return $campaign;
-        } else {
-            $this->error = true;
-            $this->msg   = $campaign->msg;
-        }
-
-    }
-
-    function update_campaigns_data() {
-
-        $campaigns = 0;
-
-        $sql = sprintf(
-            "SELECT count(*) AS num FROM `Deal Campaign Dimension` WHERE `Deal Campaign Store Key`=%d AND `Deal Campaign Status`='Active' ", $this->id
-        );
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $campaigns = $row['num'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        $this->update(array('Store Active Deal Campaigns' => $campaigns), 'no_history');
-
-    }
-
     function create_website($data) {
 
         include_once 'class.Account.php';
-        $account=new Account($this->db);
+        $account = new Account($this->db);
 
 
         $this->new_object = false;
@@ -2830,27 +2781,25 @@ class Store extends DB_Table {
         $data['editor'] = $this->editor;
 
 
-        $data['Website Store Key']  = $this->id;
-        $data['Website Locale']  = $this->get('Store Locale');
+        $data['Website Store Key'] = $this->id;
+        $data['Website Locale']    = $this->get('Store Locale');
 
         $data['Website From'] = gmdate('Y-m-d H:i:s');
 
 
-        switch ($this->get('Store Type')){
+        switch ($this->get('Store Type')) {
 
             case 'B2B':
-                $data['Website Type']  = 'EcomB2B';
+                $data['Website Type'] = 'EcomB2B';
                 break;
             case 'Dropshipping':
-                $data['Website Type']  = 'EcomDS';
+                $data['Website Type'] = 'EcomDS';
                 break;
             default:
-                $data['Website Type']  = 'Ecom';
+                $data['Website Type'] = 'Ecom';
 
 
         }
-
-
 
 
         $website = new Website('find', $data, 'create');
@@ -2862,10 +2811,7 @@ class Store extends DB_Table {
                 $this->new_object = true;
 
 
-                $this->update_field_switcher('Store Website Key',$this->id,'no_history');
-
-
-
+                $this->update_field_switcher('Store Website Key', $this->id, 'no_history');
 
 
                 $this->update_websites_data();
@@ -2901,6 +2847,68 @@ class Store extends DB_Table {
             $this->error = true;
             $this->msg   = $website->msg;
         }
+    }
+
+    function update_field_switcher($field, $value, $options = '', $metadata = '') {
+
+
+        switch ($field) {
+
+            case('Store Google Map URL'):
+
+
+                $doc = new DOMDocument();
+                @$doc->loadHTML($value);
+
+                $tags = $doc->getElementsByTagName('iframe');
+
+
+                if ($tags->length== 1) {
+                    $value = $tags[0]->getAttribute('src');
+                }
+
+
+                $this->update_field('Store Google Map URL', $value);
+                break;
+
+            case('Store Sticky Note'):
+                $this->update_field_switcher('Sticky Note', $value);
+                break;
+            case('Sticky Note'):
+                $this->update_field('Store '.$field, $value, 'no_null');
+                $this->new_value = html_entity_decode($this->new_value);
+                break;
+
+            case('Store Code'):
+            case('Store Name'):
+
+                if ($value == '') {
+                    $this->error = true;
+                    $this->msg   = _("Value can't be empty");
+                }
+                $this->update_field($field, $value, $options);
+                break;
+
+
+            default:
+                $base_data = $this->base_data();
+                if (array_key_exists($field, $base_data)) {
+                    if ($value != $this->data[$field]) {
+                        $this->update_field($field, $value, $options);
+                    }
+                } elseif (array_key_exists($field, $this->base_data('Store Data'))) {
+                    $this->update_table_field($field, $value, $options, 'Store', 'Store Data', $this->id);
+                } elseif (array_key_exists(
+                    $field, $this->base_data('Store DC Data')
+                )) {
+                    $this->update_table_field(
+                        $field, $value, $options, 'Store', 'Store DC Data', $this->id
+                    );
+                }
+
+        }
+
+
     }
 
     function update_websites_data() {

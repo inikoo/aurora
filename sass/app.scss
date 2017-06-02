@@ -41,7 +41,7 @@ $height_calendar_cell: 16px;
 $height_calendar_th: 20px;
 
 $left_menu_width: 200px;
-$grid_section_width: 1300px;
+$grid_section_width: 1440px;
 
 $font_title: "Ubuntu", "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;
 $font_text: "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;
@@ -296,6 +296,8 @@ input {
 }
 
 #notifications {
+
+
   text-align: left;
   position: relative;
   top: 1px;
@@ -380,6 +382,8 @@ input {
   height: 100%;
   float: left;
   width: 1099px;
+
+  width: 1239px;
   border-right: 1px solid #ccc;
   #navigation {
     margin-top: $height_short_row;
@@ -1026,6 +1030,7 @@ right connector from last child*/
 @import 'dashboard';
 @import '_froala';
 
+
 .adr {
   line-height: $height_short_row;
   //span{display:block}
@@ -1142,3 +1147,6 @@ html, body {
   font-weight: 800;
   font-size:21px;
 }
+
+
+

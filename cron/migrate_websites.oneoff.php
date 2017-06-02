@@ -90,12 +90,32 @@ if ($result = $db->query($sql)) {
 //migrate_product_pages($db);
 
 
-//add_headers_and_footers($db);
+add_headers_and_footers($db);
+
+delete_system_webpages($db);
+
 
 add_system_webpages($db);
 
 //========
 //set_scope($db);
+
+function delete_system_webpages($db){
+
+    $sql=sprintf("select `Page Key` from `Page Store Dimension` where `Webpage Code` like '%%.sys' ");
+    if ($result=$db->query($sql)) {
+    		foreach ($result as $row) {
+                $webpage = new Page($row['Page Key']);
+                $webpage->delete(false);
+            }
+    }else {
+    		print_r($error_info=$db->errorInfo());
+    		print "$sql\n";
+    		exit;
+    }
+
+
+}
 
 function add_system_webpages($db) {
 
@@ -108,7 +128,20 @@ function add_system_webpages($db) {
         foreach ($result as $row) {
 
             $website = new Website($row['Website Key']);
-            print_r($website);
+
+            $db->exec('truncate ``');
+
+            include_once ('conf/webpage_types.php');
+            foreach ($webpage_types as $webpage_type) {
+                $sql = sprintf(
+                    'INSERT INTO `Webpage Type Dimension` (`Webpage Type Website Key`,`Webpage Type Code`) VALUES (%d,%s) ', $website->id, prepare_mysql($webpage_type['code'])
+                );
+                $db->exec($sql);
+            }
+
+
+
+            //print_r($website);
 
             include_once 'conf/website_system_webpages.php';
             foreach (website_system_webpages_config($website->get('Website Type')) as $website_system_webpages) {

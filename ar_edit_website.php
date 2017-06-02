@@ -31,6 +31,19 @@ $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
 
+
+    case 'save_webpage_content':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'key' => array('type' => 'key'),
+                         'content_data' => array('type' => 'string')
+
+
+                     )
+        );
+        save_webpage_content($data, $editor, $smarty, $db);
+        break;
+
     case 'save_footer':
         $data = prepare_values(
             $_REQUEST, array(
@@ -1649,6 +1662,43 @@ function save_footer($data, $editor) {
 
         );
     }
+
+    echo json_encode($response);
+
+
+}
+
+
+function save_webpage_content($data, $editor, $db, $smarty) {
+
+
+
+    include_once('class.Page.php');
+    $webpage = new Page($data['key']);
+
+    $content_data = json_decode(base64_decode($data['content_data']), true);
+
+    $webpage->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
+    $webpage->publish();
+
+    $response = array(
+        'state'   => 200,
+        'content' => (isset($data['value']) ? $data['value'] : ''),
+        'publish' => $webpage->get('Publish'),
+
+
+    );
+
+    if (isset($products_html)) {
+        $response['products'] = $products_html;
+    }
+    if (isset($items_html)) {
+        $response['items_html'] = $items_html;
+    }
+    if (isset($overview_items_html)) {
+        $response['overview_items_html'] = $overview_items_html;
+    }
+
 
     echo json_encode($response);
 

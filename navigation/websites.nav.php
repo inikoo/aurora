@@ -169,6 +169,8 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
     $right_buttons = array();
 
 
+
+
     if (preg_match('/online/', $data['request'])) {
         $request_prefix='online/';
         switch ($data['parent']) {
@@ -184,7 +186,20 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
 
     } elseif (preg_match('/offline/', $data['request'])) {
 
-    } elseif (preg_match('/inprocess/', $data['request'])) {
+    } elseif (preg_match('/in_process/', $data['request'])) {
+
+
+        $request_prefix='in_process/';
+        switch ($data['parent']) {
+
+            case 'website':
+                $tab      = 'website.in_process_webpages';
+                $_section = 'websites';
+                $title    = _('Webpage').' <span class="id Webpage_Code">'.$object->get('Code').'</span>';
+                break;
+
+        }
+
 
     } else {
         $request_prefix='';
@@ -226,6 +241,7 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
     $order=preg_replace('/Webpage Key/','Page Key',$order);
 
 
+
     $_order_field       = $order;
 
 
@@ -242,6 +258,9 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
     $next_key   = 0;
     $sql        = trim($sql_totals." $wheref");
 
+
+
+   // print $sql;
 
     if ($result2 = $db->query($sql)) {
         if ($row2 = $result2->fetch()) {
@@ -303,14 +322,16 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
                         $up_button = array(
                             'icon'      => 'arrow-up',
                             'title'     => _("Website").' ('.$data['_parent']->get('Code').')',
-                            'reference' => 'website/'.$object->get('Page Site Key')
+                            'reference' => 'store/'.$object->get('Webpage Store Key').'/website'
                         );
 
                         if ($prev_key) {
                             $left_buttons[] = array(
                                 'icon'      => 'arrow-left',
                                 'title'     => $prev_title,
-                                'reference' => 'website/'.$data['parent_key'].$request_prefix.'/page/'.$prev_key
+                            'reference' => 'website/'.$data['parent_key'].'/'.$request_prefix.'webpage/'.$prev_key
+
+
                             );
 
                         } else {
@@ -327,7 +348,7 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
                             $left_buttons[] = array(
                                 'icon'      => 'arrow-right',
                                 'title'     => $next_title,
-                                'reference' => 'website/'.$data['parent_key'].'/page/'.$next_key
+                                'reference' => 'website/'.$data['parent_key'].'/'.$request_prefix.'webpage/'.$next_key
                             );
 
                         } else {

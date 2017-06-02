@@ -208,7 +208,7 @@ function change_view(_request, metadata) {
         if (typeof(data.tab) != "undefined" && data.tab !== null) {
 
 
-        //    console.log(data.tab)
+
 
             $('#tab').html(data.tab);
         }

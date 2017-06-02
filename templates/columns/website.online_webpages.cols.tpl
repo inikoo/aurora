@@ -11,7 +11,7 @@ cell: "string"
 name: "type",
 label: '{t}Type{/t}',
 editable: false,
-title: '{t}Online state{/t}',
+title: '{t}Web page group{/t}',
 sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({
 className: ""
@@ -26,18 +26,22 @@ headerCell: HeaderHtmlCell,
 name: "code",
 label: "{t}Code{/t}",
 editable: false,
+sortType: "toggle",
+{if $sort_key=='code'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+
 cell: Backgrid.HtmlCell.extend({ })
 },
 
 {
-name: "version",
-label:"Version",
+name: "name",
+label: "{t}Name{/t}",
 editable: false,
-defaultOrder:1,
 sortType: "toggle",
-{if $sort_key=='version'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='name'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+
 cell: Backgrid.HtmlCell.extend({ })
-}, {
+},
+ {
 name: "users",
 label:"{t}Users{/t}",
 editable: false,

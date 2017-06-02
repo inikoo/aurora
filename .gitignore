@@ -62,3 +62,7 @@ app_files/_sk1.sql
 EcomB2B/keyring/dns.php
 
 EcomB2B/instance_files.tar
+
+cron/fix_modified_supplier_parts_cartons.php
+
+cron/delete_me.php

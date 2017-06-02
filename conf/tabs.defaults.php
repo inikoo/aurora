@@ -659,9 +659,22 @@ $tab_defaults = array(
         'elements_type' => each($elements_options['webpages'])['key'],
         'elements'      => $elements_options['webpages'],
     ),
+
+    'website.in_process_webpages'               => array(
+        'view'          => 'overview',
+        'sort_key'      => 'code',
+        'sort_order'    => 0,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'code',
+        'f_period'      => 'ytd',
+        'elements_type' => each($elements_options['online_webpages'])['key'],
+        'elements'      => $elements_options['online_webpages'],
+    ),
+
     'website.online_webpages'               => array(
         'view'          => 'overview',
-        'sort_key'      => 'id',
+        'sort_key'      => 'code',
         'sort_order'    => 1,
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
@@ -672,11 +685,13 @@ $tab_defaults = array(
     ),
     'website.offline_webpages'               => array(
         'view'          => 'overview',
-        'sort_key'      => 'id',
+        'sort_key'      => 'code',
         'sort_order'    => 1,
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
-        'f_field'       => 'code'
+        'f_field'       => 'code',
+        'elements_type' => each($elements_options['online_webpages'])['key'],
+        'elements'      => $elements_options['online_webpages'],
 
     ),
     'webpage_type.online_webpages'               => array(

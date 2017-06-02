@@ -422,6 +422,34 @@ $part_fields[] = array(
     )
 );
 
+if(!$supplier_part_scope) {
+
+    $part_fields[] = array(
+        'label' => _('Cartons'),
+
+        'show_title' => true,
+        'fields'     => array(
+            array(
+
+                'id'   => 'Part_SKOs_per_Carton',
+                'edit' => ($edit ? 'numeric' : ''),
+                'render' => (!($supplier_part_scope or $new) ? true : false),
+
+                'value'           => $object->get('Part SKOs per Carton'),
+                'formatted_value' => $object->get('SKOs per Carton'),
+                'label'           => ucfirst(
+                    $object->get_field_label('Part SKOs per Carton')
+                ),
+                'invalid_msg'     => get_invalid_message('string'),
+                'required'        => ($supplier_part_scope ? false : true),
+                'type'            => 'value'
+            ),
+
+
+
+        )
+    );
+}
 
 if(!($supplier_part_scope or $new)) {
 

@@ -195,6 +195,56 @@ class Website extends DB_Table {
             $sql = "INSERT INTO `Website Data` (`Website Key`) VALUES(".$this->id.");";
             $this->db->exec($sql);
 
+
+
+            require_once 'conf/footer_data.php';
+            require_once 'conf/header_data.php';
+
+
+            $footer_data = array(
+                'Website Footer Code' => 'default',
+                'Website Footer Data' => json_encode(get_default_footer_data(1)),
+                'editor'              => $this->editor
+
+            );
+            $this->create_footer($footer_data);
+
+
+            $logo_image_key = $website->add_image(
+                array(
+                    'Image Filename'                   => 'website.logo.png',
+                    'Upload Data'                      => array(
+                        'tmp_name' => 'conf/website.logo.png',
+                        'type'     => 'png'
+                    ),
+                    'Image Subject Object Image Scope' => json_encode(
+                        array(
+                            'scope'     => 'website_logo',
+                            'scope_key' => $this->id
+
+                        )
+                    )
+
+                )
+            );
+
+
+            $_header_data                   = get_default_header_data(1);
+            $_header_data['logo_image_key'] = $logo_image_key;
+            $header_data                    = array(
+                'Website Header Code' => 'default',
+                'Website Header Data' => json_encode($_header_data),
+                'editor'              => $this->editor
+
+
+            );
+            $this->create_header($header_data);
+
+
+
+
+
+
             $this->setup_templates();
 
 
@@ -413,7 +463,7 @@ class Website extends DB_Table {
             'Page Title'                           => $data['Webpage Name'],
             'Page Short Title'                     => $data['Webpage Browser Title'],
             'Page Parent Key'                      => 0,
-            'Page State'                           => 'Online',
+            'Page State'                           =>('Online'),
             'Page Store Description'=>$data['Webpage Meta Description'],
 
 
@@ -429,8 +479,9 @@ class Website extends DB_Table {
             'Webpage UrL'                   => $this->data['Website URL'].'/'.strtolower($data['Webpage Code']),
             'Webpage Name'                  => $data['Webpage Name'],
             'Webpage Browser Title'                 => $data['Webpage Browser Title'],
-            'Webpage State'                 => 'Online',
+            'Webpage State'                 => ($data['Webpage Scope']=='HomepageToLaunch'?'Online':'InProcess'),
             'Webpage Meta Description'=>$data['Webpage Meta Description'],
+            'Page Store Content Data'=>(isset($data['Page Store Content Data'])?$data['Page Store Content Data']:''),
 
 
             'editor' => $this->editor,
@@ -442,6 +493,9 @@ class Website extends DB_Table {
 
         $webpage_type->update_number_webpages();
 
+        if($data['Webpage Scope']=='HomepageToLaunch') {
+            $page->publish();
+        }
         $page->update_version();
 
 
@@ -1412,6 +1466,28 @@ class Website extends DB_Table {
         return $image_key;
 
     }
+
+
+}
+
+function reset_element($element) {
+
+
+    switch($element) {
+    case 'website_footer':
+        include_once 'conf/footer_data.php';
+        $this->update(array('Page Store Content Data' => $website_system_webpages[$this->get('Webpage Code')]['Page Store Content Data']), 'no_history');
+
+        break;
+    default:
+        break;
+    }
+
+
+
+
+
+
 
 
 }

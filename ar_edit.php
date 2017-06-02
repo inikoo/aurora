@@ -248,8 +248,16 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
 
     $field = preg_replace('/_/', ' ', $data['field']);
 
+    if($object->get_object_name()=='Page'){
+        $formatted_field = preg_replace('/^Webpage /', '', $field);
+        $formatted_field = preg_replace('/^'.$object->get_object_name().' /', '', $formatted_field);
 
-    $formatted_field = preg_replace('/^'.$object->get_object_name().' /', '', $field);
+    }else{
+        $formatted_field = preg_replace('/^'.$object->get_object_name().' /', '', $field);
+
+    }
+
+
 
 
     if ($field == 'Product Category Department Category Key') {
@@ -672,7 +680,16 @@ function delete_object_component($account, $db, $user, $editor, $data, $smarty) 
 function object_operation($account, $db, $user, $editor, $data, $smarty) {
 
 
-    $object         = get_object($data['object'], $data['key']);
+
+    if($data['object']=='website_footer' or $data['object']=='website_footer'){
+        $object         = get_object('website', $data['key']);
+        $data['operation']='reset_element';
+
+    }else{
+        $object         = get_object($data['object'], $data['key']);
+    }
+
+
     $object->editor = $editor;
 
     if (!$object->id) {
@@ -688,6 +705,9 @@ function object_operation($account, $db, $user, $editor, $data, $smarty) {
     switch ($data['operation']) {
         case 'reset':
             $request = $object->reset_object();
+            break;
+        case 'reset_element':
+            $request = $object->reset_element($data['object']);
             break;
         case 'delete':
             $request = $object->delete();
