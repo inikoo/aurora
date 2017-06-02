@@ -26,6 +26,8 @@ $_dir   = $order_direction;
 
 if ($order == 'code') {
     $order = '`Webpage Type Code`';
+} elseif ($order == 'in_process_webpages') {
+    $order = '`Webpage Type In Process Webpages`';
 } elseif ($order == 'online_webpages') {
     $order = '`Webpage Type Online Webpages`';
 } elseif ($order == 'offline_webpages') {
@@ -37,6 +39,6 @@ if ($order == 'code') {
 
 $sql_totals = "select count(*) as num from $table  $where  ";
 
-$fields = "`Webpage Type Key`,`Webpage Type Code`,`Webpage Type Website Key`,`Webpage Type Online Webpages`,`Webpage Type Offline Webpages`";
+$fields = "`Webpage Type Key`,`Webpage Type Code`,`Webpage Type Website Key`,`Webpage Type Online Webpages`,`Webpage Type In Process Webpages`,`Webpage Type Offline Webpages`";
 
 ?>

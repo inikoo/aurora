@@ -1248,24 +1248,21 @@ $elements_options = array(
         'type'    => array(
             'label' => _('Type'),
             'items' => array(
-                'Info'                => array(
-                    'label'    => _('Info'),
+
+                'Cats' => array(
+                    'label'    => _('Departments'),
                     'selected' => true
                 ),
-                'Category_Categories' => array(
-                    'label'    => _('Categories'),
+                'Prods'   => array(
+                    'label'    => _('Families'),
                     'selected' => true
                 ),
-                'Category_Products'   => array(
+                'Prod'             => array(
                     'label'    => _('Products'),
                     'selected' => true
                 ),
-                'Product'             => array(
-                    'label'    => _('Product'),
-                    'selected' => true
-                ),
-                'Operations'                => array(
-                    'label'    => _('Operations'),
+                'Others'                => array(
+                    'label'    => _('Other'),
                     'selected' => true
                 ),
 
@@ -1291,9 +1288,11 @@ $elements_options = array(
         ),
     ),
 
-    //'Product','Category Categories','Category Products','Info','Operations'
+
 
     'online_webpages_in_webpage_type'=>array(
+
+
 
     'version' => array(
         'label' => _('Version'),
@@ -1317,24 +1316,21 @@ $elements_options = array(
         'type'    => array(
             'label' => _('Type'),
             'items' => array(
-                'Info'                => array(
-                    'label'    => _('Info'),
+
+                'Cats' => array(
+                    'label'    => _('Departments'),
                     'selected' => true
                 ),
-                'Category_Categories' => array(
-                    'label'    => _('Categories'),
+                'Prods'   => array(
+                    'label'    => _('Families'),
                     'selected' => true
                 ),
-                'Category_Products'   => array(
+                'Prod'             => array(
                     'label'    => _('Products'),
                     'selected' => true
                 ),
-                'Product'             => array(
-                    'label'    => _('Product'),
-                    'selected' => true
-                ),
-                'Operations'                => array(
-                    'label'    => _('Operations'),
+                'Others'                => array(
+                    'label'    => _('Other'),
                     'selected' => true
                 ),
 

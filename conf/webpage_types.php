@@ -9,27 +9,56 @@
 
 */
 
+
 $webpage_types = array(
-    'Product'             => array(
+    'Prod'             => array(
         'code'  => 'Prod',
         'title' => _('Product'),
+        'icon'=>'fa-leaf'
     ),
     'Info'                => array(
         'code'  => 'Info',
         'title' => _('Info'),
+        'icon'=>'fa-info'
     ),
-    'Operations'          => array(
-        'code'  => 'Sys',
-        'title' => _('Operations'),
+    'Home'                => array(
+        'code'  => 'Home',
+        'title' => _('Homepage'),
+        'icon'=>'fa-home'
     ),
-    'Category Categories' => array(
+
+    'Ordering'          => array(
+        'code'  => 'Ordering',
+        'title' => _('Ordering'),
+        'icon'=>'fa-shopping-cart'
+    ),
+    'Customer'          => array(
+        'code'  => 'Customer',
+        'title' => _('Customer operations'),
+        'icon'=>'fa-user'
+
+    ),
+    'Portfolio'          => array(
+        'code'  => 'Portfolio',
+        'title' => _('Portfolio'),
+        'icon'=>'fa-paw'
+
+    ),
+    'Cats' => array(
         'code'  => 'Cats',
-        'title' => _('Categories'),
+        'title' => _('Departments'),
+        'icon'=>'fa-tree'
     ),
-    'Category Products'   => array(
+    'Prods'   => array(
         'code'  => 'Prods',
-        'title' => _('Products'),
-    )
+        'title' => _('Families'),
+        'icon'=>'fa-pagelines'
+    ),
+    'Sys'          => array(
+        'code'  => 'Sys',
+        'title' => _('System'),
+        'icon'=>'fa-exclamation-circle'
+    ),
 );
 
 ?>

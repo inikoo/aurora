@@ -59,6 +59,9 @@ switch ($tipo) {
     case 'webpages':
         webpages(get_table_parameters(), $db, $user);
         break;
+    case 'in_process_webpages':
+        webpages_in_process(get_table_parameters(), $db, $user);
+        break;
     case 'online_webpages':
         webpages_online(get_table_parameters(), $db, $user);
         break;
@@ -873,10 +876,12 @@ function webpages($_data, $db, $user) {
 }
 
 
-function webpages_online($_data, $db, $user) {
 
-    $rtext_label = 'webpage online';
+function webpages_in_process($_data, $db, $user) {
+
+    $rtext_label = 'webpage in_process';
     include_once 'prepare_table/init.php';
+    include_once 'conf/webpage_types.php';
 
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
@@ -892,33 +897,71 @@ function webpages_online($_data, $db, $user) {
 
         }
 
-        switch ($data['Webpage Scope']) {
-            case 'Product':
-                $type = sprintf('<i class="fa fa-leaf padding_left_10" aria-hidden="true" title="" ></i>', _('Product'));
-                break;
-            case 'Info':
-                $type = sprintf('<i class="fa fa-info padding_left_10" aria-hidden="true" title="" ></i>', _('Info'));
-                break;
-            case 'Category Products':
-                $type = sprintf('<i class="fa fa-pagelines padding_left_10" aria-hidden="true" title="" ></i>', _('Products'));
+        $type_label=$webpage_types[$data['Webpage Type Code']]['title'];
+        $type_icon=$webpage_types[$data['Webpage Type Code']]['icon'];
+        $type=sprintf('<i class="fa fa-fw %s padding_left_10" aria-hidden="true" title="%s" ></i>',$type_icon, $type_label);
 
-                break;
-            case 'Category Categories':
-                $type = sprintf('<i class="fa fa-tree padding_left_10" aria-hidden="true" title="" ></i>', _('Categories'));
 
-                break;
-            case 'Operations':
-                $type = sprintf('<i class="fa fa-keyboard-o padding_left_10" aria-hidden="true" title="" ></i>', _('Operations'));
+        $adata[] = array(
+            'id'      => (integer)$data['Webpage Key'],
+            'code'    => sprintf('<span class="link" onclick="change_view(\'website/%d/in_process/webpage/%d\')">%s</span>', $data['Webpage Website Key'], $data['Webpage Key'], $data['Webpage Code']),
+            'state'   => $state,
+            'type'    => $type,
+            'name'    => $data['Webpage Name'],
+            'template'    => $data['Webpage Template Filename'],
 
-                break;
-            default:
-                $type = $data['Webpage State'];
-                break;
+
+        );
+
+    }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function webpages_online($_data, $db, $user) {
+
+    $rtext_label = 'webpage online';
+    include_once 'prepare_table/init.php';
+    include_once 'conf/webpage_types.php';
+
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+//print $sql;
+    $adata = array();
+
+    foreach ($db->query($sql) as $data) {
+
+        if ($data['Webpage State'] == 'Online') {
+            $state = '<i class="fa fa-globe" aria-hidden="true"></i>';
+        } else {
+            $state = '<i class="fa fa-globe very_discreet" aria-hidden="true"></i>';
+
         }
+
+
+
+
+        $type_label=$webpage_types[$data['Webpage Type Code']]['title'];
+        $type_icon=$webpage_types[$data['Webpage Type Code']]['icon'];
+        $type=sprintf('<i class="fa fa-fw %s padding_left_10" aria-hidden="true" title="%s" ></i>',$type_icon, $type_label);
 
         $adata[] = array(
             'id'      => (integer)$data['Webpage Key'],
             'code'    => sprintf('<span class="link" onclick="change_view(\'website/%d/online/webpage/%d\')">%s</span>', $data['Webpage Website Key'], $data['Webpage Key'], $data['Webpage Code']),
+            'name'      => $data['Webpage Name'],
+
             'state'   => $state,
             'type'    => $type,
             'version' => number_format($data['Webpage Version'], 1),
@@ -944,6 +987,8 @@ function webpages_online($_data, $db, $user) {
 
 
 function webpages_offline($_data, $db, $user) {
+
+
 
     $rtext_label = 'webpage offline';
     include_once 'prepare_table/init.php';
@@ -1013,10 +1058,12 @@ function webpages_offline($_data, $db, $user) {
 }
 
 
+
 function webpage_types($_data, $db, $user) {
 
     // $rtext_label = 'job position';
     include_once 'prepare_table/init.php';
+    include_once 'conf/webpage_types.php';
 
 
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
@@ -1025,33 +1072,18 @@ function webpage_types($_data, $db, $user) {
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
 
-            switch ($data['Webpage Type Code']) {
-                case 'Ops':
-                    $label = _('System');
-                    break;
-                case 'Info':
-                    $label = _('Info');
-                    break;
-                case 'Prods':
-                    $label = _('Products');
-                    break;
-                case 'Prod':
-                    $label = _('Product');
-                    break;
-                case 'Cats':
-                    $label = _('Categories');
-                    break;
-                default:
-                    $label = $data['Webpage Type Code'];
-                    break;
-            }
 
+
+            $label=$webpage_types[$data['Webpage Type Code']]['title'];
+            $icon=$webpage_types[$data['Webpage Type Code']]['icon'];
 
             $adata[] = array(
                 'id'              => $data['Webpage Type Key'],
-                'code'           => sprintf('<span class="button" onClick="change_view(\'/webpages/%d/type/%d\')">%s</span>', $data['Webpage Type Website Key'], $data['Webpage Type Key'], $data['Webpage Type Code']),
+                'icon'           => '<i class="fa '.$icon.' fa-fw padding_left_5" aria-hidden="true"></i>',
                 'label'           => sprintf('<span class="button" onClick="change_view(\'/webpages/%d/type/%d\')">%s</span>', $data['Webpage Type Website Key'], $data['Webpage Type Key'], $label),
-                'online_webpages' => number($data['Webpage Type Online Webpages'])
+                'in_process_webpages' => number($data['Webpage Type In Process Webpages']),
+                'online_webpages' => number($data['Webpage Type Online Webpages']),
+                'offline_webpages' => number($data['Webpage Type Offline Webpages'])
             );
 
         }

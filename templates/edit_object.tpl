@@ -648,11 +648,12 @@
                                 {elseif $edit=='date' }
                                     <input id="{$field.id}" type="hidden" value="{$field.value}" has_been_valid="0"/>
                                     <input id="{$field.id}_time" type="hidden" value="{$field.time}"/>
-                                    <input id="{$field.id}_formatted" class="option_input_field hide"
-                                           value="{$field.formatted_value}"/>
-                                    <i id="{$field.id}_save_button" class="fa fa-cloud save {$edit} hide"
-                                       onclick="save_field('{$state._object->get_object_name()}','{$state.key}','{$field.id}')"></i>
+                                    <input id="{$field.id}_formatted" class="option_input_field hide" value="{$field.formatted_value}"/>
+                                    <i id="{$field.id}_eraser" onClick="erase_date_field('{$field.id}')"  display="{if isset($field.display_eraser)}yes{/if}"   class="fa fa-eraser padding_right_10 button  hide" aria-hidden="true"></i>
+
+                                    <i id="{$field.id}_save_button" class="fa fa-cloud save {$edit} hide" onclick="save_field('{$state._object->get_object_name()}','{$state.key}','{$field.id}')"></i>
                                     <span id="{$field.id}_msg" class="msg"></span>
+
                                     <div id="{$field.id}_datepicker" class="hide datepicker"></div>
                                     <script>
                                         $(function () {
@@ -662,6 +663,10 @@
                                                 defaultDate: new Date('{$field.value}'),
                                                 altField: "#{$field.id}",
                                                 altFormat: "yy-mm-dd",
+
+                                                {if isset($field.min_date)}   minDate: {$field.min_date},{/if}
+                                                {if isset($field.max_date)}   maxDate: {$field.max_date},{/if}
+
                                                 onSelect: function () {
                                                     $('#{$field.id}').change();
                                                     $('#{$field.id}_formatted').val($.datepicker.formatDate("dd/mm/yy", $(this).datepicker("getDate")))
@@ -694,6 +699,7 @@
                                         });
 
                                     </script>
+
                                 {elseif $edit=='' }
                                 {if $class=='new'}
                                     <span id="{$field.id}_msg" class="msg"></span>

@@ -1015,7 +1015,8 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                         }
 
 
-                    } elseif ($view_path[1] == 'online') {
+                    }
+                    elseif ($view_path[1] == 'online') {
 
 
                         if ($view_path[2] == 'webpage') {
@@ -1032,7 +1033,44 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                         }
 
 
-                        } elseif ($view_path[1] == 'user') {
+                        }
+                    elseif ($view_path[1] == 'offline') {
+
+
+                        if ($view_path[2] == 'webpage') {
+                            $section    = 'webpage';
+                            $object     = 'webpage';
+                            $parent     = 'website';
+                            $parent_key = $key;
+
+                            if (is_numeric($view_path[3])) {
+                                $key = $view_path[3];
+                            }
+
+
+                        }
+
+
+                    }
+                    elseif ($view_path[1] == 'in_process') {
+
+
+                        if ($view_path[2] == 'webpage') {
+                            $section    = 'webpage';
+                            $object     = 'webpage';
+                            $parent     = 'website';
+                            $parent_key = $key;
+
+                            if (is_numeric($view_path[3])) {
+                                $key = $view_path[3];
+                            }
+
+
+                        }
+
+
+                    }
+                    elseif ($view_path[1] == 'user') {
                         $section    = 'website.user';
                         $object     = 'user';
                         $parent     = 'website';

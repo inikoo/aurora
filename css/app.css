@@ -152,13 +152,13 @@ input {
       color: #FFF; }
 
 .grid {
-  padding-left: 1300px;
+  padding-left: 1440px;
   height: 100%; }
 
 .grid > section {
   float: left;
-  width: 1300px;
-  margin-left: -1300px;
+  width: 1440px;
+  margin-left: -1440px;
   height: 100%; }
 
 .grid > aside {
@@ -261,6 +261,7 @@ input {
   height: 100%;
   float: left;
   width: 1099px;
+  width: 1239px;
   border-right: 1px solid #ccc; }
   #app_main #navigation {
     margin-top: 22px;
@@ -1810,6 +1811,10 @@ tr.invalid input {
     background-color: #fff; }
   tr.invalid input.valid {
     background-color: #fff; }
+
+textarea {
+  width: 700px;
+  heihjt: 350px; }
 
 .edit_object {
   margin-bottom: 100px;
@@ -8035,11 +8040,11 @@ input.input_file {
 
 @media screen and (max-width: 1550px) {
   .grid {
-    padding-left: 1140px; }
+    padding-left: 1280px; }
 
   .grid > section {
-    width: 1140px;
-    margin-left: -1140px; }
+    width: 1280px;
+    margin-left: -1280px; }
 
   #app_leftmenu {
     width: 40px; }

@@ -183,10 +183,19 @@ function get_view($db, $smarty, $user, $account, $modules) {
 
             break;
         case 'website':
+
+            include_once 'class.Store.php';
+
             $_parent                  = get_object('Website', $state['parent_key']);
             $website                  = $_parent;
             $state['current_website'] = $_parent->id;
-            $website                  = $_parent;
+
+
+
+            $store = new Store($_parent->get('Website Store Key'));
+            $state['current_store'] = $store->id;
+
+
 
             break;
         case 'page':
@@ -714,6 +723,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
     }
 
 
+
     switch ($showcase) {
         case 'material':
             include_once 'showcase/material.show.php';
@@ -728,6 +738,10 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             $html = get_webpage_version_showcase($data, $smarty, $user, $db);
             break;
         case 'website':
+            include_once 'showcase/website.show.php';
+            $html = get_website_showcase($data, $smarty, $user, $db);
+            break;
+
         case 'dashboard':
             $html = '';
             break;
@@ -2901,9 +2915,33 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
                 $branch[] = array(
                     'label'     => '<span class="id Website_Code">'.$state['website']->get('Code').'</span>',
-                    'icon'      => '',
-                    'reference' => 'website/'.$state['website']->id
+                    'icon'      => 'globe',
+                    'reference' => ''
                 );
+            } elseif ($state['section'] == 'webpage') {
+
+                $branch[]               = array(
+                    'label'     => _('Store').' <span class="Store_Code id">'.$state['store']->get('Code').'</span>',
+                    'icon'      => 'shopping-bag',
+                    'reference' => 'store/'.$state['store']->id
+                );
+                $state['current_store'] = $state['store']->id;
+
+                $branch[] = array(
+                    'label'     => '<span class=" Website_Code">'.$state['website']->get('Code').'</span>',
+                    'icon'      => 'globe',
+                    'reference' => 'store/'.$state['store']->id.'/website'
+                );
+
+
+                $branch[] = array(
+                    'label'     => '<span class="id Webpage_Code">'.$state['_object']->get('Code').'</span>',
+                    'icon'      => 'file-text',
+                    'reference' => ''
+                );
+
+
+
             } elseif ($state['section'] == 'website.new') {
 
 

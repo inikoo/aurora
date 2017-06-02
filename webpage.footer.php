@@ -27,9 +27,6 @@ $footer_data = $website->get('Footer Data');
 $footer_key=$website->get('Website Footer Key');
 
 
-
-
-
 $smarty->assign('footer_data', $footer_data);
 $smarty->assign('footer_key', $footer_key);
 

@@ -72,7 +72,19 @@ switch ($tab) {
     case 'webpage_type.online_webpages':
 
         $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
-        get_online_webpages_element_numbers($db, $data['parameters'], $user);
+        get_webpages_by_state_element_numbers($db, $data['parameters'], $user, 'Online');
+        break;
+    case 'website.offline_webpages':
+    case 'webpage_type.offline_webpages':
+
+        $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
+        get_webpages_by_state_element_numbers($db, $data['parameters'], $user, 'Offline');
+        break;
+    case 'website.in_process_webpages':
+    case 'webpage_type.in_process_webpages':
+
+        $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
+        get_webpages_by_state_element_numbers($db, $data['parameters'], $user, 'InProcess');
         break;
 
     case 'website.nodes':
@@ -783,19 +795,17 @@ function get_warehouse_locations_elements($db, $data, $user) {
 
     $sql = sprintf("select count(*) as number,`Warehouse Flag Color` as element from $table $where  group by `Location Warehouse Flag Key` ");
 
-    if ($result=$db->query($sql)) {
-    		foreach ($result as $row) {
-    		    if($row['element']!=''){
-                    $elements_numbers['flags'][preg_replace('/\s/', '', $row['element'])] = number($row['number']);
-                }
-    		}
-    }else {
-    		print_r($error_info=$db->errorInfo());
-    		print "$sql\n";
-    		exit;
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+            if ($row['element'] != '') {
+                $elements_numbers['flags'][preg_replace('/\s/', '', $row['element'])] = number($row['number']);
+            }
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
     }
-
-
 
 
     $response = array(
@@ -1092,7 +1102,7 @@ function get_customers_element_numbers($db, $data) {
         case 'product':
             $table = '`Order Transaction Fact` OTF  left join `Customer Dimension` C on (OTF.`Customer Key`=C.`Customer Key`) ';
 
-            $where = sprintf(' where  `Product ID`=%d ',  $data['parent_key']);
+            $where = sprintf(' where  `Product ID`=%d ', $data['parent_key']);
 
             break;
 
@@ -1101,7 +1111,7 @@ function get_customers_element_numbers($db, $data) {
             $table = '`Customer Favorite Product Bridge` F  left join `Customer Dimension` C   on (C.`Customer Key`=F.`Customer Key`)  ';
 
 
-            $where = sprintf(' where  F.`Product ID`=%d ',$data['parent_key']);
+            $where = sprintf(' where  F.`Product ID`=%d ', $data['parent_key']);
 
             break;
         default:
@@ -2635,16 +2645,15 @@ function get_webpages_element_numbers($db, $data, $user) {
 }
 
 
-function get_online_webpages_element_numbers($db, $data, $user) {
+function get_webpages_by_state_element_numbers($db, $data, $user, $state) {
 
 
     $elements_numbers = array(
         'type'    => array(
-            'Info'                => 0,
-            'Category_Categories' => 0,
-            'Category_Products'   => 0,
-            'Product'             => 0,
-            'Operations'          => 0,
+            'Cats' => 0,
+            'Prods'   => 0,
+            'Prod'             => 0,
+            'Others'              => 0,
 
         ),
         'version' => array(
@@ -2653,7 +2662,7 @@ function get_online_webpages_element_numbers($db, $data, $user) {
         ),
 
     );
-    $where            = ' where `Webpage State`="Online"';
+    $where            = ' where `Webpage State`="'.$state.'"';
 
     switch ($data['parent']) {
         case 'website':
@@ -2673,10 +2682,23 @@ function get_online_webpages_element_numbers($db, $data, $user) {
     }
 
 
-    $sql = sprintf("select count(*) as number,`Webpage Scope` as element from `Page Store Dimension`  $where  group by `Webpage Scope` ");
+    $sql = sprintf("select count(*) as number,`Webpage Type Code` as element from `Page Store Dimension` P left join `Webpage Type Dimension` WTD on (WTD.`Webpage Type Key`=P.`Webpage Type Key`)  $where  group by P.`Webpage Type Key` ");
+
+
+
     foreach ($db->query($sql) as $row) {
-        $elements_numbers['type'][preg_replace('/ /', '_', $row['element'])] = number($row['number']);
+
+        if($row['element']=='Cats' or $row['element']=='Prods' or $row['element']=='Prod'  ){
+            $elements_numbers['type'][$row['element']] = number($row['number']);
+        }else{
+            $elements_numbers['type']['Others'] += $row['number'];
+        }
+
+        $elements_numbers['type']['Others']=number($elements_numbers['type']['Others']);
+
+
     }
+    $elements_numbers['type']['Others']=number($elements_numbers['type']['Others']);
 
 
     $sql = sprintf("select count(*) as number,`Webpage Version` as element from `Page Store Dimension`  $where  group by `Webpage Version` ");

@@ -114,32 +114,42 @@ class Webpage_Type extends DB_Table {
     function update_number_webpages() {
 
         $online_webpages  = 0;
+        $in_process_webpages = 0;
         $offline_webpages = 0;
-        $deletes_webpages = 0;
+        $deleted_webpages = 0;
 
 
         $sql = sprintf('select `Webpage State`, count(*) as num from `Page Store Dimension` where `Webpage Type Key`=%d  group by `Webpage State` ', $this->id);
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
+
+      if ($result=$this->db->query($sql)) {
+      		foreach ($result as $row) {
                 if ($row['Webpage State'] == 'Online') {
                     $online_webpages = $row['num'];
 
-                } else {
+                } elseif ($row['Webpage State'] == 'InProcess') {
+                    $in_process_webpages = $row['num'];
+
+                }  elseif ($row['Webpage State'] == 'Offline') {
                     $offline_webpages = $row['num'];
 
                 }
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
+      		}
+      }else {
+      		print_r($error_info=$this->db->errorInfo());
+      		print "$sql\n";
+      		exit;
+      }
+
+
+
 
         $this->update(
             array(
+                'Webpage Type In Process Webpages' => $in_process_webpages,
+
                 'Webpage Type Online Webpages'  => $online_webpages,
                 'Webpage Type Offline Webpages' => $offline_webpages,
-                'Webpage Type Deleted Webpages' => $deletes_webpages,
+                'Webpage Type Deleted Webpages' => $deleted_webpages,
 
 
             ), 'no_history'

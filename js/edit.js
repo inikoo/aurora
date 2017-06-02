@@ -177,6 +177,13 @@ function open_edit_field(object, key, field) {
             $('#' + field + '_datepicker').removeClass('hide')
             $('#' + field + '_save_button').removeClass('hide')
 
+
+
+            if($('#' + field + '_eraser').attr('display')=='yes' &&  $('#' + field+'_formatted' ).val()!='' ){
+                $('#' + field + '_eraser').removeClass('hide')
+            }
+
+
             break;
 
         case 'working_hours':
@@ -433,6 +440,7 @@ function close_edit_field(field) {
         case 'date':
             $('#' + field + '_formatted').addClass('hide')
             $('#' + field + '_datepicker').addClass('hide')
+            $('#' + field + '_eraser').addClass('hide')
 
 
             $('#' + field + '_formatted').val($('#' + field + '_formatted_value').html())
@@ -441,6 +449,7 @@ function close_edit_field(field) {
 
             var value = date.toISOString().slice(0, 10)
             $('#' + field + '_datepicker').datepicker("setDate", date);
+
 
 
             break;
@@ -2093,3 +2102,12 @@ $('#publish').removeClass('changed valid')
 
 
 }
+ function erase_date_field(field){
+
+    console.log(field)
+
+     $('#'+field).val('')
+     $('#'+field+'_formatted').val('')
+     on_changed_value(field, $('#'.field).val())
+
+ }

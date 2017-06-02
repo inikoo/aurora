@@ -1847,6 +1847,7 @@ $modules = array(
             'website' => array(
                 'type'      => 'navigation',
                 'label'     => _('Website'),
+                'showcase'  => 'website',
                 'icon'      => 'globe',
                 'reference' => 'store/%d/website',
                 'subtabs_parent' => array(
@@ -1877,6 +1878,13 @@ $modules = array(
 
                 'tabs' => array(
 
+
+                    'website.details'   => array(
+                        'label' => _(
+                            'Data'
+                        ),
+                        'icon'  => 'database'
+                    ),
                     'website.analytics' => array(
                         'label' => _('Analytics'),
                         'icon'  => 'line-chart',
@@ -1988,13 +1996,6 @@ $modules = array(
 
 
                     ),
-                    'website.details'   => array(
-                        'label' => _(
-                            'Data'
-                        ),
-                        'icon'  => 'database'
-                    ),
-
 
                     'website.templates' => array(
                         'label'   => _('Look & feel'),
@@ -2142,6 +2143,21 @@ $modules = array(
 
                 'tabs' => array(
 
+
+                    'webpage.details'   => array(
+                        'label' => _(
+                            'Data'
+                        ),
+                        'icon'  => 'database'
+                    ),
+
+
+
+                    'webpage.preview' => array(
+                        'label' => _('Workshop'),
+                        'icon'  => 'wrench'
+                    ),
+
                     'webpage.analytics' => array(
                         'label' => _('Analytics'),
                         'icon'  => 'line-chart',
@@ -2167,18 +2183,7 @@ $modules = array(
 
 
                     ),
-                    'webpage.details'   => array(
-                        'label' => _(
-                            'Data'
-                        ),
-                        'icon'  => 'database'
-                    ),
 
-
-                    'webpage.preview' => array(
-                        'label' => _('Workshop'),
-                        'icon'  => 'wrench'
-                    ),
                     'webpage.logbook' => array(
                         'label' => _('Logbook'),
                         'icon'  => 'road'

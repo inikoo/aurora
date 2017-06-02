@@ -27,7 +27,6 @@ if (!isset($_REQUEST['tipo'])) {
 }
 
 
-
 $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
@@ -96,11 +95,14 @@ switch ($tipo) {
                              'type'     => 'string',
                              'optional' => true
                          ),
-                         'options' => array(
+                         'options'             => array(
                              'type'     => 'string',
                              'optional' => true
                          ),
-                         'response_type'              => array('type' => 'string', 'optional' => true),
+                         'response_type'       => array(
+                             'type'     => 'string',
+                             'optional' => true
+                         ),
                      )
         );
 
@@ -335,8 +337,6 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
     }
 
 
-
-
     if (empty($_FILES) && empty($_POST) && isset($_SERVER['REQUEST_METHOD']) && strtolower($_SERVER['REQUEST_METHOD']) == 'post') { //catch file overload error...
         $postMax  = ini_get('post_max_size'); //grab the size limits...
         $msg      = sprintf(
@@ -370,22 +370,18 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
     $uploads   = 0;
 
 
-    if(isset($_FILES['file'])){
-        $_FILES['files']['name'][0]=$_FILES['file']['name'];
-        $_FILES['files']['size'][0]=$_FILES['file']['size'];
-        $_FILES['files']['tmp_name'][0]=$_FILES['file']['tmp_name'];
-        $_FILES['files']['type'][0]=$_FILES['file']['type'];
-        $_FILES['files']['error'][0]=$_FILES['file']['error'];
-
+    if (isset($_FILES['file'])) {
+        $_FILES['files']['name'][0]     = $_FILES['file']['name'];
+        $_FILES['files']['size'][0]     = $_FILES['file']['size'];
+        $_FILES['files']['tmp_name'][0] = $_FILES['file']['tmp_name'];
+        $_FILES['files']['type'][0]     = $_FILES['file']['type'];
+        $_FILES['files']['error'][0]    = $_FILES['file']['error'];
 
 
     }
 
 
-
     foreach ($_FILES['files']['name'] as $file_key => $name) {
-
-
 
 
         $error    = $_FILES['files']['error'][$file_key];
@@ -434,8 +430,7 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
         );
 
 
-
-        $image = $parent->add_image($image_data,$options);
+        $image = $parent->add_image($image_data, $options);
 
 
         if ($parent->error) {
@@ -455,17 +450,19 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
     }
 
 
-    if(isset($data['response_type']) and  $data['response_type']=='froala'){
-        echo json_encode(array('link'=>sprintf('/image_root.php?id=%d', $image->id)));
-    }elseif(isset($data['response_type']) and  $data['response_type']=='website'){
+    if (isset($data['response_type']) and $data['response_type'] == 'froala') {
+        echo json_encode(array('link' => sprintf('/image_root.php?id=%d', $image->id)));
+    } elseif (isset($data['response_type']) and $data['response_type'] == 'website') {
         echo json_encode(
             array(
-                'state'=>200,
-                'web_image_key'=>$image,
-                'image_src'=>sprintf('/web_image.php?id=%d', $image
+                'state'         => 200,
+                'web_image_key' => $image,
+                'image_src'     => sprintf(
+                    '/web_image.php?id=%d', $image
                 )
-            ));
-    }else{
+            )
+        );
+    } else {
         if ($uploads > 0) {
             $msg = '<i class="fa fa-check"></i> '._('Success');
         } else {
@@ -482,20 +479,19 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
             'number_images'  => $parent->get_number_images(),
             'main_image_key' => $parent->get_main_image_key(),
             'image_src'      => sprintf('/image_root.php?id=%d', $image->id),
-            'thumbnail'      => sprintf('<img src="/image_root.php?id=%d&size=thumbnail">', $image->id)
-
+            'thumbnail'      => sprintf('<img src="/image_root.php?id=%d&size=thumbnail">', $image->id),
+            'img_key'        => $image->id
 
         );
 
         // todo remove parent->get_object_name()=='Page' when new class is used
-        if($parent->get_object_name()=='Page' or  $parent->get_object_name()=='Webpage'){
-            $response['publish'] =$parent->get('Publish');
+        if ($parent->get_object_name() == 'Page' or $parent->get_object_name() == 'Webpage') {
+            $response['publish'] = $parent->get('Publish');
         }
 
         echo json_encode($response);
 
     }
-
 
 
 }
@@ -858,7 +854,7 @@ function create_upload_file($db, $upload_key, $upload_file_data) {
     $keys   = '(';
     $values = 'values(';
     foreach ($upload_file_data as $key => $value) {
-        $keys .= "`$key`,";
+        $keys   .= "`$key`,";
         $values .= prepare_mysql($value).",";
     }
     $keys   = preg_replace('/,$/', ')', $keys);

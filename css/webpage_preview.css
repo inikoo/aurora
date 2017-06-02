@@ -1,0 +1,15 @@
+.like_button{
+
+cursor:pointer;
+
+}
+
+.hide{
+
+display:none
+}
+
+
+.fake_form_checkbox{
+	 font: 14px/1.55 'Open Sans', Helvetica, Arial, sans-serif;position:relative;top:1px;font-size:15px;color:#404040
+ }

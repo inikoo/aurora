@@ -6,30 +6,59 @@ editable: false,
 renderable: false,
 cell: "string"
 },
+
 {
-name: "code",
-label:"{t}Code{/t}",
+name: "icon",
+label: '',
 editable: false,
-defaultOrder:1,
+title: '{t}Web page group{/t}',
 sortType: "toggle",
-{if $sort_key=='code'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.HtmlCell.extend({  }),
+cell: Backgrid.HtmlCell.extend({
+className: ""
+}),
+headerCell: HeaderHtmlCell,
+
 },
+
   {
 name: "label",
-label:"{t}Label{/t}",
+label:"{t}Name{/t}",
 editable: false,
 sortable:false,
 cell: Backgrid.HtmlCell.extend({  }),
 },
  {
+name: "in_process_webpages",
+label: "{t}In Process{/t}",
+editable: false,
+
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='in_process_webpages'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.StringCell.extend({ className: "aright"} ),
+
+headerCell: integerHeaderCell
+},
+{
 name: "online_webpages",
-label: "{t}Online web pages{/t}",
+label: "{t}Online{/t}",
 editable: false,
 
 defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='online_webpages'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.StringCell.extend({ className: "aright"} ),
+
+headerCell: integerHeaderCell
+},
+{
+name: "offline_webpages",
+label: "{t}Offline{/t}",
+editable: false,
+
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='offline_webpages'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.StringCell.extend({ className: "aright"} ),
 
 headerCell: integerHeaderCell
