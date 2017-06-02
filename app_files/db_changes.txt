@@ -638,3 +638,8 @@ costa important do this:
 update `Location Dimension` set `Location Warehouse Flag Key`=`Warehouse Flag Key`;
 
 
+
+
+ALTER TABLE `Page Store Dimension` CHANGE `Webpage State` `Webpage State` ENUM('InProcess','Online','Offline') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT 'InProcess';
+
+

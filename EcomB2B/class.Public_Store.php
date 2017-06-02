@@ -23,7 +23,7 @@ class Public_Store  {
         } else {
             $this->db = $_db;
         }
-
+        $this->id         = false;
         $this->table_name    = 'Store';
         $this->ignore_fields = array('Store Key');
 
@@ -37,6 +37,8 @@ class Public_Store  {
 
 
     function get_data($tipo, $tag) {
+
+
 
         if ($tipo == 'id') {
             $sql = sprintf(

@@ -19,16 +19,18 @@ if (preg_match('/\.(jpg|png|gif|xml|txt|ico|css|js)$/i', $not_found_current_page
     exit();
 }
 
-//print_r($_REQUEST);
 
 
 include_once('common.php');
-$webpage_key = $website->get_system_webpage('not_found');
+$webpage_key = $website->get_system_webpage('not_found.sys');
 
 if (!$webpage_key) {
     header("HTTP/1.0 404 Not Found");
     exit;
 }
+
+
+
 
 
 //exit("::: Not found");

@@ -19,6 +19,7 @@ class Public_Website {
         global $db;
         $this->db = $db;
 
+        $this->id         = false;
         $this->table_name    = 'Website';
         $this->ignore_fields = array('Website Key');
 
@@ -33,22 +34,24 @@ class Public_Website {
     }
 
 
-    function get_data($key, $tag) {
+    function get_data($tag,$key ) {
 
 
-        if ($key == 'id') {
+
+        if ($tag == 'id') {
             $sql = sprintf(
-                "SELECT * FROM `Website Dimension` WHERE `Website Key`=%d", $tag
+                "SELECT * FROM `Website Dimension` WHERE `Website Key`=%d", $key
             );
         } else {
-            if ($key == 'code') {
+            if ($tag == 'code') {
                 $sql = sprintf(
-                    "SELECT  * FROM `Website Dimension` WHERE `Website Code`=%s ", prepare_mysql($tag)
+                    "SELECT  * FROM `Website Dimension` WHERE `Website Code`=%s ", prepare_mysql($key)
                 );
             } else {
                 return;
             }
         }
+
 
 
         if ($this->data = $this->db->query($sql)->fetch()) {
@@ -158,12 +161,13 @@ class Public_Website {
     }
 
 
-    function get_system_webpage($scope){
+    function get_system_webpage($code){
 
-        $sql=sprintf('select `Page Key` from `Page Store Dimension` where `Webpage Scope`="System" and `Webpage Scope Metadata`=%s and `Webpage Website Key`=%d  ',
-            prepare_mysql($scope),
+        $sql=sprintf('select `Page Key` from `Page Store Dimension` where `Webpage Code`=%s and `Webpage Website Key`=%d  ',
+            prepare_mysql($code),
         $this->id
             );
+
 
 
         if ($result=$this->db->query($sql)) {

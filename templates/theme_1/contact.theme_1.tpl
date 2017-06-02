@@ -24,9 +24,12 @@
         <div class="content_fullwidth less2">
 
             <div class="one_full">
-                <iframe class="google-map2" src="{$store->get('Store Google Map URL')}" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
-                <br/>
+                <iframe     class="google-map2" src="{$store->get('Store Google Map URL')}" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" allowfullscreen></iframe>
+
             </div>
+
+
+
 
             <div class="clearfix marb10"></div>
 

@@ -77,6 +77,9 @@ if (!$is_cached) {
         $url = preg_replace('/\?.*$/', '', $url);
 
         $original_url = $url;
+
+
+
         header("Location: /404.php?&url=$url&original_url=$original_url");
 
         exit;

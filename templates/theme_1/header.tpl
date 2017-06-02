@@ -19,19 +19,14 @@
         position: absolute;
         z-index: -1;
     }
-
-
     .save{
         color:#0EBFE9;
-
     }
     .italic {
         font-style: italic
     }
 
-
     .control_panel{
-
         color:#444
     }
 
@@ -42,18 +37,14 @@
     .editables_block {
         border: 1px solid transparent;
     }
-.editables_block:hover {
-    border: 1px solid yellow;
-}
-
+        .editables_block:hover {
+        border: 1px solid yellow;
+    }
 
     .input_container{
         position:absolute;top:60px;left:10px;z-index: 100;border:1px solid #ccc;background-color: white;padding:10px 10px 10px 5px
 
     }
-
-
-
 
 
     .input_container input{
@@ -62,11 +53,11 @@
 
     .editing{
         color:yellow;
-
     }
-.add_link, .add_item{
-    opacity:.1
-}
+
+    .add_link, .add_item{
+        opacity:.1
+    }
 
     .qlinks:hover .add_link,.faddress:hover .add_item {
         opacity:.5;
@@ -83,7 +74,6 @@
     }
 
     #item_types div{
-
         padding:5px 5px;cursor:pointer;text-align: center;float:left;width:30px
     }
 
