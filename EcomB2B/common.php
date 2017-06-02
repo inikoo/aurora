@@ -72,11 +72,17 @@ if (!$is_cached) {
     include_once 'class.Public_Order.php';
 
     $account = new Public_Account($db);
+
+
+
     $website           = new Public_Website(SITE_KEY);
+
+
     $store_key      = $website->get('Website Store Key');
+
+
+
     $store          = new Public_Store($store_key);
-
-
 
 
 

@@ -94,7 +94,6 @@ add_headers_and_footers($db);
 
 delete_system_webpages($db);
 
-
 add_system_webpages($db);
 
 //========

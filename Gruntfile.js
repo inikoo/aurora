@@ -296,6 +296,19 @@ module.exports = function (grunt) {
 
                 }
             },
+            b2becom: {
+                options: {
+                    local_path: 'ecom/',
+                    deploy_path: '/home/inikoo/ecom',
+                    host: '<%= secret.ecom.host %>',
+                    username: '<%= secret.ecom.username %>',
+                    password: '<%= secret.ecom.password %>',
+                    port: '<%= secret.ecom.port %>',
+                    debug: true,
+                    releases_to_keep: '3'
+
+                }
+            },
 
 
         },

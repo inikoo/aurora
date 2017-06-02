@@ -2865,6 +2865,13 @@ class Store extends DB_Table {
 
                 if ($tags->length== 1) {
                     $value = $tags[0]->getAttribute('src');
+
+                    foreach ($tags as $tag) {
+                        $value = $tag->getAttribute('src');
+                        break;
+                    }
+
+
                 }
 
 

@@ -44,7 +44,10 @@ if (is_numeric($result)) {
     } else {
         $protocol = 'http';
     }
-    header("Location: $protocol://$result");
+
+
+
+    header("Location: $protocol://".$_SERVER['SERVER_NAME']."$result");
     exit;
 
 }
@@ -99,7 +102,7 @@ function get_url($site_key, $url, $dns_host, $dns_user, $dns_pwd, $dns_db) {
     }
 
 
-    $original_url = $site_url.'/'.$original_url;
+    $original_url = '/'.$original_url;
     $path         = '';
     $file         = '';
     $url_array    = explode("/", $url);
@@ -141,7 +144,10 @@ function get_url($site_key, $url, $dns_host, $dns_user, $dns_pwd, $dns_db) {
 
 
         } else {
-            return $site_url."/404.php?url=$url&original_url=$original_url";
+
+
+
+            return "/404.php?url=$url&original_url=$original_url";
         }
     }
 
