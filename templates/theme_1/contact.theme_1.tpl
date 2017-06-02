@@ -46,11 +46,13 @@
                         <p>
 
                             {if $store->get('Company Name')!=''}<strong>{$store->get('Company Name')}</strong><br/>{/if}
-                            {if $store->get('Company Address')!=''}{$store->get('Company Address')}<br/><br/>{/if}
+                            {if $store->get('Address')!=''}{$store->get('Address')}<br/>{/if}
+                            {if $store->get('Company Number')!=''}<span id="_company_number_label" contenteditable="true" >{$content._company_number_label}</span>: {$store->get('Company Number')}<br/>{/if}
+                            {if $store->get('VAT Number')!=''}<span id="_vat_number_label" contenteditable="true" >{$content._vat_number_label}</span>: {$store->get('VAT Number')}<br/>{/if}
 
 
 
-
+                            <br/><br/>
                             {if $store->get('Telephone')!=''}<span id="_telephone_label" contenteditable="true" >{$content._telephone_label}</span>: <strong>{$store->get('Telephone')}</strong><br/>{/if}
                             {if $store->get('FAX')!=''}<span id="_fax_label" contenteditable="true" >{$content._fax_label}</span>: <strong>{$store->get('FAX')}</strong><br/>{/if}
 

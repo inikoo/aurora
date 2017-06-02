@@ -733,19 +733,16 @@ function website_system_webpages_config($website_type) {
                 'Webpage Meta Description'  => '',
                 'Page Store Content Data'   => json_encode(
                     array(
-                        '_map'           => 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2483.6459680494163!2d-0.14407868364807086!3d51.50136397963397!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x48760520cd5b5eb5%3A0xa26abf514d902a7!2sBuckingham+Palace!5e0!3m2!1sen!2s!4v1495506605968',
                         '_text'          => '<p>Feel free to talk to our online representative at any time you please using our Live Chat system on our website or one of the below instant messaging programs.</p><br /><p>Please be patient while waiting for response. (24/7 Support!) <strong>Phone General Inquiries: 1-888-123-4567-8900</strong></p>',
-                        '_address_label' => _('Address label'),
-                        '_company'       => _('Company name'),
-                        '_address'       => 'Westminster, London SW1A 1AA, UK',
+                        '_address_label' => _('Our Details'),
 
                         '_telephone_label' => _('Telephone'),
                         '_fax_label'       => _('FAX'),
-                        '_email_label'     => _('E-mail'),
-                        '_email_skype'     => _('Skype'),
+                        '_vat_number_label' => _('Vat No.'),
+                        '_company_number_label'       => _('Company No.'),
+                        '_email_label' => _('Email'),
 
-                        '_telephone' => '+1 1234-567-89000',
-                        '_email'     => 'sales@examaple.com',
+
 
 
                     )
