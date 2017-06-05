@@ -1831,6 +1831,64 @@ class Supplier extends SubjectSupplier {
 
     }
 
+    function update_supplier_paid_ordered_parts() {
+
+        $paid_ordered_parts                               = 0;
+        $to_replenish_picking_location_paid_ordered_parts = 0;
+
+
+
+        $sql = sprintf(
+            'SELECT count(DISTINCT P.`Part SKU`) AS num FROM 
+              `Part Dimension` P  LEFT JOIN `Supplier Part Dimension` SP ON (SP.`Supplier Part Part SKU`=P.`Part SKU`) 
+              WHERE  `Supplier Part Supplier Key`=%d', $this->id
+        );
+        //print $sql;
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $paid_ordered_parts = $row['num'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+
+        $sql = sprintf(
+            'SELECT count(DISTINCT P.`Part SKU`) AS num FROM 
+              `Part Dimension` P LEFT JOIN `Part Location Dimension` PL ON (PL.`Part SKU`=P.`Part SKU`)  LEFT JOIN `Supplier Part Dimension` SP ON (SP.`Supplier Part Part SKU`=P.`Part SKU`) 
+              WHERE (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>`Quantity On Hand`   AND (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>0   AND `Can Pick`="Yes"   AND `Supplier Part Supplier Key`=%d ',
+            $this->id
+        );
+
+
+
+
+      
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $to_replenish_picking_location_paid_ordered_parts = $row['num'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        $this->update(
+            array(
+                'Supplier Paid Ordered Parts'              => $paid_ordered_parts,
+                'Supplier Paid Ordered Parts To Replenish' => $to_replenish_picking_location_paid_ordered_parts
+
+            ), 'no_history'
+        );
+
+
+    }
+
 
 }
 

@@ -14,7 +14,7 @@
 $supplier = $state['_object'];
 
 
-
+$supplier->update_supplier_paid_ordered_parts();
 
 
 $smarty->assign('supplier_production',$state['_object']);

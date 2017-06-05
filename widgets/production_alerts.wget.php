@@ -72,6 +72,32 @@ function get_production_alerts($supplier, $db, $account, $user, $smarty) {
     }
 
 
+
+
+
+
+    $data = get_widget_data(
+        $supplier->get('Supplier Paid Ordered Parts To Replenish'),
+        $supplier->get('Supplier Paid Ordered Parts'),
+        $supplier->get('Supplier Tolerable Percentage Paid Ordered Parts To Replenish'),
+        $supplier->get('Supplier Max Percentage Paid Ordered Parts To Replenish')
+
+    );
+
+
+    if ($data['ok']) {
+
+
+        $smarty->assign('data', $data);
+        $html .= $smarty->fetch(
+            'dashboard/supplier.parts_to_replenish.dbard.tpl'
+        );
+    }
+
+
+
+
+
     return $html;
 
 }
