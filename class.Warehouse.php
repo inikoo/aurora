@@ -1084,7 +1084,7 @@ class Warehouse extends DB_Table {
     }
 
 
-    function update_paid_ordered_parts() {
+    function update_warehouse_paid_ordered_parts() {
 
         $paid_ordered_parts                               = 0;
         $to_replenish_picking_location_paid_ordered_parts = 0;

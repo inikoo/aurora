@@ -30,6 +30,9 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
+    case 'parts_to_replenish_picking_location':
+        part_locations_to_replenish_picking_location(get_table_parameters(), $db, $user);
+        break;
     case 'agent_parts':
         agent_parts(get_table_parameters(), $db, $user, $account);
         break;
@@ -3273,6 +3276,55 @@ $required=false;
     );
     echo json_encode($response);
 }
+
+
+function part_locations_to_replenish_picking_location($_data, $db, $user) {
+
+
+    $rtext_label = 'picking locations needed to replenish for ordered parts';
+
+
+    include_once 'prepare_table/init.php';
+
+    $sql        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $table_data = array();
+
+
+    //print $sql;
+
+
+    foreach ($db->query($sql) as $data) {
+
+        $table_data[] = array(
+            'reference' => sprintf('<span class="link"  title="%s" onclick="change_view(\'part/%d\')">%s</span>', $data['Part Package Description'], $data['Part SKU'], $data['Part Reference']),
+            'location'  => sprintf('<span  class="link"  onclick="change_view(\'locations/%d/%d\')">%s</span>', $data['Part Location Warehouse Key'], $data['Location Key'], $data['Location Code']),
+
+
+            'quantity_in_picking' => number(floor($data['Quantity On Hand'])),
+            'to_pick'             => number(ceil($data['to_pick'])),
+
+            'total_stock'       => number(floor($data['Part Current Stock'])),
+            'storing_locations' => $data['storing_locations']
+
+
+        );
+
+    }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $table_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
 
 
 ?>

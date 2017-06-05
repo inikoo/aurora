@@ -2519,6 +2519,16 @@ $tab_defaults = array(
         'f_field'     => 'reference',
 
     ),
+    'supplier.parts_to_replenish_picking_location.wget' => array(
+        'view'        => 'overview',
+        'sort_key'    => 'reference',
+        'sort_order'  => 1,
+        'rpp'         => 500,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'reference',
+
+    ),
+
     'supplier.part_locations_with_errors.wget' => array(
         'view'        => 'overview',
         'sort_key'    => 'reference',
