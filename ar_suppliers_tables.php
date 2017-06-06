@@ -3369,7 +3369,7 @@ function replenishments($_data, $db, $user) {
             'part'                  => sprintf('<span class="link" onCLick="change_view(\'part/%d\')" >%s</span>', $data['Part SKU'], $data['Part Reference']),
             'other_locations_stock' => $stock,
 
-            'quantity'             => number($data['Quantity On Hand']).' '.number($data['Part Current On Hand Stock']),
+            'quantity'             => number($data['Quantity On Hand']),
             'ordered_quantity'     => number($data['ordered_quantity']),
             'effective_stock'      => number($data['effective_stock']),
             'recommended_quantity' => ' <span class="padding_left_5">(<span style="display: inline-block;min-width: 20px;text-align: center">'.number($data['Minimum Quantity'])
