@@ -42,9 +42,10 @@
     .editables_block {
         border: 1px solid transparent;
     }
-.editables_block:hover {
-    border: 1px solid yellow;
-}
+
+    .editables_block:hover {
+        border: 1px solid yellow;
+    }
 
 
     .input_container{
@@ -62,11 +63,11 @@
 
     .editing{
         color:yellow;
-
     }
-.add_link, .add_item{
-    opacity:.1
-}
+
+    .add_link, .add_item{
+        opacity:.1
+    }
 
     .qlinks:hover .add_link,.faddress:hover .add_item {
         opacity:.5;
@@ -187,7 +188,7 @@
 
 
 <div id="block_type_1" class="input_container block_type  hide" style="">
-    <div onClick="change_block_type(this)" class="type_items"><span>{t}Items{/t} <span class="italic">({t}Contact info{/t})</span></span></div>
+    <div onClick="change_block_type(this)" class="type_address"><span>{t}Items{/t} <span class="italic">({t}Contact info{/t})</span></span></div>
     <div   onClick="change_block_type(this)" class="type_text"><span>{t}Text{/t} <span class="italic">({t}About us{/t})</span></span></div>
     <div onClick="change_block_type(this)"  class="type_links"><span>{t}Links{/t}</span></div>
     <div onClick="change_block_type(this)"  class="type_nothing"><span>{t}Nothing{/t}</span></div>
@@ -203,10 +204,10 @@
 </div>
 
 <div id="item_types" class="input_container  hide  " style="">
-    <div onClick="add_item_type(this)" ><i  class="button fa fa-fw fa-star" aria-hidden="true" label="{t}My company name{/t}"></i> </div>
 
     <div onClick="add_item_type(this)" ><i  class="button fa fa-fw fa-building-o" aria-hidden="true" label="{t}My company name{/t}"></i> </div>
     <div onClick="add_item_type(this)" ><i  class="button fa fa-fw fa-industry" aria-hidden="true" label="{t}My company name{/t}"></i> </div>
+    <div onClick="add_item_type(this)" ><i  class="button fa fa-fw fa-balance-scale" aria-hidden="true" label="{t}Tax number{/t}"></i> </div>
 
         <div onClick="add_item_type(this)" ><i  class="button fa fa-fw fa-map-marker" aria-hidden="true" label="110 Southmoor Road, Oxford OX2 6RB, UK"></i> </div>
         <div  onClick="add_item_type(this)"><i  class="button fa fa-fw  fa-phone" aria-hidden="true" label="+1-541-754-3010"></i> </div>
@@ -215,6 +216,9 @@
         <div  onClick="add_item_type(this)"><i class="button fa fa-fw  fa-skype" aria-hidden="true" label="{t}Skype username{/t}"></i> </div>
         <div  onClick="add_item_type(this)"><i  class="button fa fa-fw  fa-envelope" aria-hidden="true" label="info@yourdomain.com"></i> </div>
         <div  onClick="add_item_type(this)"> <i  class="button fa fa-fw  fa-picture-o" aria-hidden="true"  label=""  ></i> </div>
+    <div onClick="add_item_type(this)" ><i  class="button fa fa-fw fa-star" aria-hidden="true" label="{t}Custom text{/t}"></i> </div>
+    <div onClick="add_item_type(this)" ><i  class="button fa fa-fw fa-circle" aria-hidden="true" label="{t}Custom text{/t}"></i> </div>
+    <div onClick="add_item_type(this)" ><i  class="button fa fa-fw fa-circle-o" aria-hidden="true" label="{t}Custom text{/t}"></i> </div>
 
 
 </div>
@@ -234,19 +238,6 @@
 
 
 <div>
-
-<div style="padding:20px;" class="control_panel">
-    <span class="hide"><i class="fa fa-toggle-on" aria-hidden="true"></i> {t}Logged in{/t}</span>
-    <span id="drag_mode" class="button drag_mode" onClick="change_drag_mode(this)">
-        <i class="fa fa-hand-rock-o discreet" style="margin-left:20px" aria-hidden="true"></i> {t}Drag / Block edit mode{/t} <i class="fa fa-check-circle invisible" aria-hidden="true"></i>
-    </span>
-
-
-
-    <span id="save_button" class="" style="float:right" onClick="save_footer()"><i class="fa fa-cloud  " aria-hidden="true"></i> {t}Save{/t}</span>
-
-
-</div>
 
 
 
@@ -342,6 +333,10 @@
     </div>
 
   <footer class="footer">
+
+
+
+
       <div class="top_footer empty"></div><!-- end footer top section -->
       <div class="clearfix"></div>
 
@@ -353,15 +348,23 @@
 
 
 
+
           {foreach from=$row.columns item=column name=main_4}
 
 
               {if $column.type=='address'}
 
+
+
                   <div class="one_fourth   editable_block {if $smarty.foreach.main_4.last}last{/if}" >
+
+
+
+
 
                       <i class="fa fa-hand-rock-o editing hide dragger" aria-hidden="true" style="position:absolute;top:-25px"></i>
                       <i onclick="open_block_type_options(this,'block_type_1','{$column.type}')" class="fa fa-recycle editing hide button recycler" aria-hidden="true" style="position:absolute;top:-23px;left:20px"></i>
+
 
 
                       <ul class="footer_block faddress">
@@ -369,13 +372,29 @@
                               {if $item.type=='logo'}
                                   <li  class="item _logo"><img  onclick="edit_item_image(this)" src="{$item.src}" title=" {$item.title}" /></li>
                               {elseif $item.type=='text'}
-                                  <li   class="item _text" icon="{$item.icon}"><i onclick="edit_item(this)"  class="fa fa-fw {$item.icon}"></i> <span contenteditable>{$item.text}</span></li>
+                                  <li   class="item _text" icon="{$item.icon}"><i onclick="edit_item(this)"  class="fa fa-fw {$item.icon}"></i> <span contenteditable>
+                                          {if $item.text=='#tel' and  $store->get('Telephone')!=''}{$store->get('Telephone')}
+                                          {elseif $item.text=='#email' and  $store->get('Email')!=''}{$store->get('Email')}
+                                          {elseif $item.text=='#address' and  $store->get('Address')!=''}{$store->get('Address')}
+                                          {else}{$item.text}{/if}
+                                      </span></li>
                               {elseif $item.type=='email'}
-                                  <li  class="item _email"><i onclick="edit_item(this)" class="fa fa-fw fa-envelope"></i> <span contenteditable>{$item.text}</span></li>
+                                  <li  class="item _email"><i onclick="edit_item(this)" class="fa fa-fw fa-envelope"></i> <span contenteditable>
+                                          {if $item.text=='#email' and  $store->get('Email')!=''}{$store->get('Email')}
+                                           {else}{$item.text}{/if}
+
+                                      </span></li>
                               {/if}
                           {/foreach}
-                          <li onClick="add_item(this)"  class="ui-state-disabled add_item"><a href="{$item.url}"><i class="fa fa-fw fa-plus editing link_icon" onClick="update_link(this)"></i> <span class="editing" ondrop="return false;" >{t}Add item{/t}<span></span></a></li>
+                          <li onClick="add_item(this)"  class="button add_item"   >
+                              <i class="fa fa-fw fa-plus editing " ></i> <span class="editing" ondrop="return false;" >{t}Add item{/t}<span></span></li>
+
+
+
                       </ul>
+
+
+
                   </div>
               {elseif $column.type=='links'}
                   <div class="one_fourth links  editable_block {if $smarty.foreach.main_4.last}last{/if}" >
@@ -394,7 +413,7 @@
 
                               {/foreach}
 
-                              <li onClick="add_link(this)"  class="ui-state-disabled add_link"><a href="{$item.url}"><i class="fa fa-fw fa-plus editing link_icon" onClick="update_link(this)"></i> <span class="editing" ondrop="return false;" >{t}Add link{/t}<span></span></a></li>
+                              <li onClick="add_link(this)"  class="add_link"><a href="{$item.url}"><i class="fa fa-fw fa-plus editing link_icon" onClick="update_link(this)"></i> <span class="editing" ondrop="return false;" >{t}Add link{/t}<span></span></a></li>
 
                           </ul>
 
@@ -530,20 +549,32 @@ var current_editing_item_id=false
 
 
 
-
         var option_dialog=$('#'+option_id)
 
-
-        var block=$(element).next('.footer_block')
+        var block = $(element).next('.footer_block')
 
         block.uniqueId()
-        var id= block.attr('id')
+        var id = block.attr('id')
 
 
-        option_dialog.removeClass('hide').offset({ top:$(element).offset().top-5, left:$(element).offset().left+20  }).attr('block_id',id)
+        if(!option_dialog.hasClass('hide') && option_dialog.attr('block_id')==id  ){
 
-        $('#'+option_id+' div').removeClass('selected')
-        option_dialog.find('.type_'+current_block_type).addClass('selected')
+            option_dialog.addClass('hide')
+        }else {
+
+
+
+
+
+            option_dialog.removeClass('hide').offset({
+                top: $(element).offset().top - 5, left: $(element).offset().left + 20}).attr('block_id', id)
+
+            $('#' + option_id + ' div').removeClass('selected')
+
+
+            option_dialog.find('.type_' + current_block_type).addClass('selected')
+
+        }
 
     }
 
@@ -630,6 +661,9 @@ var current_editing_item_id=false
 
     function add_item(element){
 
+
+        console.log('caca')
+
         if( $('#item_types').hasClass('hide')) {
             $(element).uniqueId()
             $('#item_types').removeClass('hide').offset({
@@ -648,6 +682,8 @@ var current_editing_item_id=false
 
         $(element).uniqueId()
         var id= $(element).attr('id')
+
+        $('#change_image').addClass('hide')
 
 
         if( $('#delete_item').hasClass('hide')) {
@@ -739,28 +775,10 @@ var current_editing_item_id=false
     }
 
 
-    function change_drag_mode(element){
+    function drag_mode_on(element){
 
-        if($(element).hasClass('on')){
+        console.log('xxxxx')
 
-            $('.links_list').sortable({
-                disabled: true
-            });
-
-            $('.faddress').sortable({
-                disabled: true
-            });
-
-            $('.sortable_container').sortable({
-                disabled: true
-
-            });
-            $('.dragger').addClass('hide')
-            $('.recycler').addClass('hide')
-            $(element).removeClass('on')
-            $(element).find('.fa-check-circle').addClass('invisible')
-
-        }else{
 
             $('.links_list').sortable({
                 disabled: false,
@@ -784,16 +802,67 @@ var current_editing_item_id=false
                 }
 
             });
+
+
             $('.dragger').removeClass('hide')
-            $('.recycler').removeClass('hide')
-            $(element).addClass('on')
-            $(element).find('.fa-check-circle').removeClass('invisible')
+
+
+
+            $('.add_item').addClass('invisible')
+            $('.add_link').addClass('invisible')
+             $('.recycler').addClass('hide')
 
 
 
 
         }
-    }
+
+        function block_edit_mode_on(element){
+
+
+            $('.links_list').sortable({
+                disabled: true
+            });
+
+            $('.faddress').sortable({
+                disabled: true
+            });
+
+            $('.sortable_container').sortable({
+                disabled: true
+
+            });
+            $('.dragger').addClass('hide')
+            $('.recycler').removeClass('hide')
+
+            $('.add_item').addClass('invisible')
+            $('.add_link').addClass('invisible')
+
+        }
+
+
+        function edit_mode_on(element){
+
+
+                $('.links_list').sortable({
+                    disabled: true
+                });
+
+                $('.faddress').sortable({
+                    disabled: true
+                });
+
+                $('.sortable_container').sortable({
+                    disabled: true
+
+                });
+                $('.dragger').addClass('hide')
+                $('.recycler').addClass('hide')
+
+            $('.add_item').removeClass('invisible')
+            $('.add_link').removeClass('invisible')
+
+        }
 
 
 function add_link(element){
@@ -940,16 +1009,16 @@ console.log(link.html())
     }
 
     $("body").on('DOMSubtreeModified', ".footer", function() {
-        $('#save_button').addClass('save button')
+        $('#save_button', window.parent.document).addClass('save button changed valid')
     });
 
     function save_footer(){
 
-       if(! $('#save_button').hasClass('save')){
+       if(! $('#save_button', window.parent.document).hasClass('save')){
          //  return;
        }
 
-        $('#save_button').find('i').addClass('fa-spinner fa-spin')
+        $('#save_button', window.parent.document).find('i').addClass('fa-spinner fa-spin')
 
 
         var cols_main_4=[];
@@ -1157,7 +1226,7 @@ console.log(link.html())
         $.getJSON(request, function (data) {
 
 
-            $('#save_button').removeClass('save').find('i').removeClass('fa-spinner fa-spin')
+            $('#save_button', window.parent.document).removeClass('save').find('i').removeClass('fa-spinner fa-spin')
 
         })
 

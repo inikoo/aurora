@@ -72,6 +72,14 @@ class Public_Store  {
      
         switch ($key) {
 
+
+            case 'Telephone':
+            case 'Email':
+            case 'Address':
+                return $this->data['Store '.$key];
+                break;
+
+
             case 'Store Currency Code':
                 return $this->data[$key];
                 break;
