@@ -4359,11 +4359,13 @@ $modules = array(
                         ),
                         'icon'  => 'database'
                     ),
+                    /*
                     'warehouse.replenishments' => array(
                         'label' => _(
                             "Replenishment"
                         )
                     ),
+                    */
                     'warehouse.parts'          => array(
                         'label' => _(
                             'Part-Locations'

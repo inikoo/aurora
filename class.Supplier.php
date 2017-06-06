@@ -1866,7 +1866,7 @@ class Supplier extends SubjectSupplier {
 
 
 
-      
+
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
                 $to_replenish_picking_location_paid_ordered_parts = $row['num'];
@@ -1882,6 +1882,89 @@ class Supplier extends SubjectSupplier {
             array(
                 'Supplier Paid Ordered Parts'              => $paid_ordered_parts,
                 'Supplier Paid Ordered Parts To Replenish' => $to_replenish_picking_location_paid_ordered_parts
+
+            ), 'no_history'
+        );
+
+
+    }
+
+
+
+    function update_supplier_part_locations_to_replenish() {
+
+        $replenishable_part_locations = 0;
+        $part_locations_to_replenish  = 0;
+
+
+        $sql = sprintf(
+            'SELECT count(*) AS num FROM `Part Location Dimension`   PLD  left join 
+            `Part Dimension` P on (PLD.`Part SKU`=P.`Part SKU`) 
+            
+            LEFT JOIN `Supplier Part Dimension` SP ON (SP.`Supplier Part Part SKU`=P.`Part SKU`)   WHERE   `Supplier Part Supplier Key`=%d     AND  `Minimum Quantity`>=0 AND `Can Pick`="Yes"   ', $this->id
+        );
+        //print $sql;
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $replenishable_part_locations = $row['num'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+        /*
+            if ($production_suppliers != '') {
+
+                $sql = sprintf(
+                    'SELECT count(DISTINCT P.`Part SKU`) AS num FROM
+                      `Part Dimension` P LEFT JOIN `Part Location Dimension` PL ON (PL.`Part SKU`=P.`Part SKU`)  LEFT JOIN `Supplier Part Dimension` SP ON (SP.`Supplier Part Part SKU`=P.`Part SKU`)
+                      WHERE (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>`Quantity On Hand`   AND (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>0   AND `Part Location Warehouse Key`=%d AND `Can Pick`="Yes"   AND `Supplier Part Supplier Key` NOT IN (%s) ',
+                    $this->id, $production_suppliers
+                );
+
+            } else {
+                $sql = sprintf(
+                    'SELECT count(DISTINCT P.`Part SKU`) AS num FROM
+                      `Part Dimension` P LEFT JOIN `Part Location Dimension` PL ON (PL.`Part SKU`=P.`Part SKU`)
+                      WHERE (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>`Quantity On Hand`  AND (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>0    AND `Part Location Warehouse Key`=%d AND `Can Pick`="Yes" ',
+                    $this->id
+                );
+
+
+            }
+
+        */
+        $sql = sprintf(
+            " 
+ SELECT count(*) AS num  from
+ `Part Location Dimension` PL  left join `Part Dimension` P on (PL.`Part SKU`=P.`Part SKU`)   LEFT JOIN `Supplier Part Dimension` SP ON (SP.`Supplier Part Part SKU`=P.`Part SKU`) 
+ 
+  where `Can Pick`='Yes' and `Minimum Quantity`>=0 and   `Minimum Quantity`>=(`Quantity On Hand`- `Part Current Stock In Process`- `Part Current Stock Ordered Paid` )  
+   and `Supplier Part Supplier Key`=%d
+
+", $this->id
+        );
+
+
+        //print $sql;
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $part_locations_to_replenish = $row['num'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+
+        $this->update(
+            array(
+                'Supplier Replenishable Part Locations' => $replenishable_part_locations,
+                'Supplier Part Locations To Replenish'  => $part_locations_to_replenish
 
             ), 'no_history'
         );

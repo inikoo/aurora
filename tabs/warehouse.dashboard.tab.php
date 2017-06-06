@@ -15,6 +15,10 @@ $account->load_acc_data();
 $warehouse=$state['_object'];
 $warehouse->update_children();
 $warehouse->update_warehouse_paid_ordered_parts();
+$warehouse->update_warehouse_part_locations_to_replenish();
+
+
+
 include_once 'widgets/warehouse_alerts.wget.php';
 
 //$state['_object']->get_kpi('Month To Day');

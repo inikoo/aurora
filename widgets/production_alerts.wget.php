@@ -97,6 +97,22 @@ function get_production_alerts($supplier, $db, $account, $user, $smarty) {
 
 
 
+    $data = get_widget_data(
+        $supplier->get('Supplier Part Locations To Replenish'),
+        $supplier->get('Supplier Replenishable Part Locations'),
+        $supplier->get('Supplier Tolerable Percentage Part Locations To Replenish'),
+        $supplier->get('Supplier Max Percentage Part Locations To Replenish')
+
+    );
+    if ($data['ok']) {
+
+
+        $smarty->assign('data', $data);
+        $html .= $smarty->fetch('dashboard/supplier.location_parts_to_replenish.dbard.tpl');
+    }
+
+
+
 
     return $html;
 

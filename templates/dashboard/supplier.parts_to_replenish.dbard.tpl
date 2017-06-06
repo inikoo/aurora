@@ -13,7 +13,7 @@
      onClick="get_widget_details(this,'supplier.parts_to_replenish.wget',{ parent: 'supplier','parent_key':{$supplier->id}})">
     <div id="parts_to_replenish"
          style="padding-top: 10px;padding-right: 10px;padding-left: 10px;padding-bottom: 10px;"></div>
-    <div style="color:#aaa">{t}Ordered to replenish{/t}</div>
+    <div style="color:#aaa">{t}Insufficient picking stock{/t}</div>
 </div>
 
 <script type="text/javascript">

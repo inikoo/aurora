@@ -10,25 +10,19 @@
 */
 
 $where
-    = ' where `Can Pick`="Yes" and `Minimum Quantity`>=0 and   `Minimum Quantity`>=(`Quantity On Hand`- `Part Current Stock In Process`- `Part Current Stock Ordered Paid` ) and (P.`Part Current On Hand Stock`-`Quantity On Hand`)>=0  ';
+    = ' where `Can Pick`="Yes" and `Minimum Quantity`>=0 and   `Minimum Quantity`>=(`Quantity On Hand`- `Part Current Stock In Process`- `Part Current Stock Ordered Paid` )   ';
+
 
 
 switch ($parameters['parent']) {
-    case('warehouse'):
+    case('supplier'):
         $where .= sprintf(
-            ' and `Part Location Warehouse Key`=%d', $parameters['parent_key']
+            ' and `Supplier Part Supplier Key`=%d', $parameters['parent_key']
         );
         break;
-    case('warehouse_area'):
-        $where .= sprintf(
-            ' and `Part Location Warehouse Area Key`=%d', $parameters['parent_key']
-        );
-        break;
-    case('shelf'):
-        $where .= sprintf(
-            ' and `Part Location Shelf Key`=%d', $parameters['parent_key']
-        );
-        break;
+    default:
+        exit('no parent set');
+
 }
 
 
@@ -69,7 +63,7 @@ if ($order == 'part') {
 
 $table
     = "
-    `Part Location Dimension` PL left join `Location Dimension` L on (PL.`Location Key`=L.`Location Key`) left join `Part Dimension` P on (PL.`Part SKU`=P.`Part SKU`) left join `Warehouse Flag Dimension` on (`Warehouse Flag Key`=`Location Warehouse Flag Key`)
+    `Part Location Dimension` PL left join `Location Dimension` L on (PL.`Location Key`=L.`Location Key`) left join `Part Dimension` P on (PL.`Part SKU`=P.`Part SKU`) LEFT JOIN `Supplier Part Dimension` SP ON (SP.`Supplier Part Part SKU`=P.`Part SKU`) left join `Warehouse Flag Dimension` on (`Warehouse Flag Key`=`Location Warehouse Flag Key`)
      ";
 
 
