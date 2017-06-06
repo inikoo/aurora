@@ -1,13 +1,13 @@
 <div  class="button widget"
-     onClick="get_widget_details(this,'warehouse.parts_to_replenish.wget',{ parent: 'warehouse','parent_key':{$warehouse->id}})">
-    <div id="parts_to_replenish"
+     onClick="get_widget_details(this,'warehouse.part_locations_to_replenish.wget',{ parent: 'warehouse','parent_key':{$warehouse->id}})">
+    <div id="part_locations_to_replenish"
          style="padding-top: 10px;padding-right: 10px;padding-left: 10px;padding-bottom: 10px;"></div>
-    <div style="color:#aaa">{t}Insufficient picking stock{/t}</div>
+    <div style="color:#aaa">{t}To replenish{/t}</div>
 </div>
 
 <script type="text/javascript">
     // // globals
-    var dial = new AlertDial('#parts_to_replenish', {
+    var dial = new AlertDial('#part_locations_to_replenish', {
         ringBackgroundColor: ['{$data['color_min']}', '{$data['color_max']}'],
         frameBackgroundColor: 'white',
         frameSize: 100,

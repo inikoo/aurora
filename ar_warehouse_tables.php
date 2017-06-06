@@ -49,13 +49,13 @@ switch ($tipo) {
         areas(get_table_parameters(), $db, $user);
         break;
     case 'locations':
-        locations(get_table_parameters(), $db, $user,$account);
+        locations(get_table_parameters(), $db, $user, $account);
         break;
     case 'replenishments':
         replenishments(get_table_parameters(), $db, $user);
         break;
     case 'parts':
-        parts(get_table_parameters(), $db, $user,$account);
+        parts(get_table_parameters(), $db, $user, $account);
         break;
     case 'stock_transactions':
         stock_transactions(get_table_parameters(), $db, $user);
@@ -152,7 +152,7 @@ function areas($_data, $db, $user) {
 }
 
 
-function locations($_data, $db, $user,$account) {
+function locations($_data, $db, $user, $account) {
 
 
     $rtext_label = 'location';
@@ -212,9 +212,9 @@ function locations($_data, $db, $user,$account) {
             'max_weight'         => $max_weight,
             'max_volume'         => $max_vol,
             'parts'              => number($data['Location Distinct Parts']),
-            'stock_value' => money($data['Location Stock Value'], $account->get('Account Currency')),
+            'stock_value'        => money($data['Location Stock Value'], $account->get('Account Currency')),
 
-           // 'used_for'           => $used_for
+            // 'used_for'           => $used_for
         );
 
     }
@@ -250,8 +250,7 @@ function replenishments($_data, $db, $user) {
         $locations_data = preg_split('/,/', $data['location_data']);
 
 
-
-        $stock          = '<div border=0 style="xwidth:150px">';
+        $stock = '<div border=0 style="xwidth:150px">';
 
         foreach ($locations_data as $raw_location_data) {
             if ($raw_location_data != '') {
@@ -268,17 +267,20 @@ function replenishments($_data, $db, $user) {
         $stock .= '</div>';
 
 
-
         $adata[] = array(
-            'id'           => (integer)$data['Location Key'],
-            'location'     => ($data['Warehouse Flag Key'] ? sprintf(
-            '<i class="fa fa-flag %s" aria-hidden="true" title="%s"></i>', strtolower($data['Warehouse Flag Color']), $data['Warehouse Flag Label']
-        ) : '<i class="fa fa-flag-o super_discreet" aria-hidden="true"></i>').' <span class="link" onClick="change_view(\'locations/'.$data['Location Warehouse Key'].'/'.$data['Location Key'].'\')">'.$data['Location Code'].'</span>',
-            'part'         => sprintf('<span class="link" onCLick="change_view(\'part/%d\')" >%s</span>',$data['Part SKU'],$data['Part Reference']) ,
-            'other_locations_stock'        => $stock,
+            'id'                    => (integer)$data['Location Key'],
+            'location'              => ($data['Warehouse Flag Key'] ? sprintf(
+                    '<i class="fa fa-flag %s" aria-hidden="true" title="%s"></i>', strtolower($data['Warehouse Flag Color']), $data['Warehouse Flag Label']
+                ) : '<i class="fa fa-flag-o super_discreet" aria-hidden="true"></i>').' <span class="link" onClick="change_view(\'locations/'.$data['Location Warehouse Key'].'/'.$data['Location Key']
+                .'\')">'.$data['Location Code'].'</span>',
+            'part'                  => sprintf('<span class="link" onCLick="change_view(\'part/%d\')" >%s</span>', $data['Part SKU'], $data['Part Reference']),
+            'other_locations_stock' => $stock,
 
-            'quantity' => number($data['Quantity On Hand']),
-            'recommended_quantity' => ' <span class="padding_left_5">(<span style="display: inline-block;min-width: 20px;text-align: center">'.number($data['Minimum Quantity']).'</span>,<span style="display: inline-block;min-width: 25px;text-align: center">'.number($data['Maximum Quantity']).'</span>)</span>'
+            'quantity'             => number($data['Quantity On Hand']).' '.number($data['Part Current On Hand Stock']),
+            'ordered_quantity'     => number($data['ordered_quantity']),
+            'effective_stock'      => number($data['effective_stock']),
+            'recommended_quantity' => ' <span class="padding_left_5">(<span style="display: inline-block;min-width: 20px;text-align: center">'.number($data['Minimum Quantity'])
+                .'</span>,<span style="display: inline-block;min-width: 25px;text-align: center">'.number($data['Maximum Quantity']).'</span>)</span>'
 
         );
 
@@ -299,8 +301,7 @@ function replenishments($_data, $db, $user) {
 }
 
 
-function parts($_data, $db, $user,$account) {
-
+function parts($_data, $db, $user, $account) {
 
 
     if ($_data['parameters']['tab'] == 'warehouse.parts') {
@@ -324,8 +325,8 @@ function parts($_data, $db, $user,$account) {
         $adata[] = array(
 
 
-            'reference'         => sprintf('<span class="link" onCLick="change_view(\'part/%d\')" >%s</span>',$data['Part SKU'],$data['Part Reference']) ,
-            'location'         => sprintf('<span class="link" onCLick="change_view(\'locations/%d/%d\')" >%s</span>',$data['Part Location Warehouse Key'],$data['Location Key'],$data['Location Code']) ,
+            'reference' => sprintf('<span class="link" onCLick="change_view(\'part/%d\')" >%s</span>', $data['Part SKU'], $data['Part Reference']),
+            'location'  => sprintf('<span class="link" onCLick="change_view(\'locations/%d/%d\')" >%s</span>', $data['Part Location Warehouse Key'], $data['Location Key'], $data['Location Code']),
 
 
             'sko_description' => $data['Part Package Description'],
@@ -333,11 +334,11 @@ function parts($_data, $db, $user,$account) {
 
             'can_pick' => ($data['Can Pick'] == 'Yes' ? _('Yes') : _('No')),
 
-            'sko_cost' => money($data['Part Cost in Warehouse'], $account->get('Account Currency')),
+            'sko_cost'    => money($data['Part Cost in Warehouse'], $account->get('Account Currency')),
             'stock_value' => money($data['Stock Value'], $account->get('Account Currency')),
-            'quantity' => sprintf(
-                '<span style="padding-left:3px;padding-right:7.5px" class="table_edit_cell  location_part_stock" title="%s" part_sku="%d" location_key="%d"  qty="%s" onClick="open_location_part_stock_quantity_dialog(this)">%s</span>', '',
-                $data['Part SKU'], $data['Location Key'], $data['Quantity On Hand'], number($data['Quantity On Hand'])
+            'quantity'    => sprintf(
+                '<span style="padding-left:3px;padding-right:7.5px" class="table_edit_cell  location_part_stock" title="%s" part_sku="%d" location_key="%d"  qty="%s" onClick="open_location_part_stock_quantity_dialog(this)">%s</span>',
+                '', $data['Part SKU'], $data['Location Key'], $data['Quantity On Hand'], number($data['Quantity On Hand'])
             )
 
 

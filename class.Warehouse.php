@@ -238,7 +238,7 @@ class Warehouse extends DB_Table {
 
             $this->update(
                 array(
-                    'Warehouse Unknown Location Key'=>$unknown_location->id
+                    'Warehouse Unknown Location Key' => $unknown_location->id
                 ), 'no_history'
 
             );
@@ -1162,6 +1162,97 @@ class Warehouse extends DB_Table {
     }
 
 
+    function update_warehouse_part_locations_to_replenish() {
+
+        $replenishable_part_locations = 0;
+        $part_locations_to_replenish  = 0;
+
+        /*
+
+            $production_suppliers = '';
+            $sql                  = sprintf('SELECT group_concat(`Supplier Production Supplier Key`) AS  production_suppliers FROM `Supplier Production Dimension`');
+            if ($result = $this->db->query($sql)) {
+                if ($row = $result->fetch()) {
+                    $production_suppliers = $row['production_suppliers'];
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+
+        */
+
+        $sql = sprintf(
+            'SELECT count(*) AS num FROM `Part Location Dimension`  WHERE  `Part Location Warehouse Key`=%d  AND  `Minimum Quantity`>=0 AND `Can Pick`="Yes"   ', $this->id
+        );
+        //print $sql;
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $replenishable_part_locations = $row['num'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+        /*
+            if ($production_suppliers != '') {
+
+                $sql = sprintf(
+                    'SELECT count(DISTINCT P.`Part SKU`) AS num FROM
+                      `Part Dimension` P LEFT JOIN `Part Location Dimension` PL ON (PL.`Part SKU`=P.`Part SKU`)  LEFT JOIN `Supplier Part Dimension` SP ON (SP.`Supplier Part Part SKU`=P.`Part SKU`)
+                      WHERE (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>`Quantity On Hand`   AND (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>0   AND `Part Location Warehouse Key`=%d AND `Can Pick`="Yes"   AND `Supplier Part Supplier Key` NOT IN (%s) ',
+                    $this->id, $production_suppliers
+                );
+
+            } else {
+                $sql = sprintf(
+                    'SELECT count(DISTINCT P.`Part SKU`) AS num FROM
+                      `Part Dimension` P LEFT JOIN `Part Location Dimension` PL ON (PL.`Part SKU`=P.`Part SKU`)
+                      WHERE (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>`Quantity On Hand`  AND (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>0    AND `Part Location Warehouse Key`=%d AND `Can Pick`="Yes" ',
+                    $this->id
+                );
+
+
+            }
+
+        */
+        $sql = sprintf(
+            " 
+ SELECT count(*) AS num  from
+ `Part Location Dimension` PL  left join `Part Dimension` P on (PL.`Part SKU`=P.`Part SKU`) 
+ 
+  where `Can Pick`='Yes' and `Minimum Quantity`>=0 and   `Minimum Quantity`>=(`Quantity On Hand`- `Part Current Stock In Process`- `Part Current Stock Ordered Paid` ) and (P.`Part Current On Hand Stock`-`Quantity On Hand`)>=0  and `Part Location Warehouse Key`=%d
+
+", $this->id
+        );
+
+
+        //print $sql;
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $part_locations_to_replenish = $row['num'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+
+        $this->update(
+            array(
+                'Warehouse Replenishable Part Locations' => $replenishable_part_locations,
+                'Warehouse Part Locations To Replenish'  => $part_locations_to_replenish
+
+            ), 'no_history'
+        );
+
+
+    }
 }
 
 

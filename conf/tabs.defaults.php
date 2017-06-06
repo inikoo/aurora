@@ -2529,6 +2529,24 @@ $tab_defaults = array(
 
     ),
 
+    'warehouse.part_locations_to_replenish.wget' => array(
+        'view'        => 'overview',
+        'sort_key'    => 'location',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'location'
+    ),
+
+    'supplier.part_locations_to_replenish.wget' => array(
+        'view'        => 'overview',
+        'sort_key'    => 'location',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'location'
+    ),
+
     'supplier.part_locations_with_errors.wget' => array(
         'view'        => 'overview',
         'sort_key'    => 'reference',

@@ -51,10 +51,24 @@ function get_warehouse_alerts( $db, $warehouse,$account, $user, $smarty) {
 
         $smarty->assign('data', $data);
         $html .= $smarty->fetch(
-            'dashboard/warehouse.parts_to_replenish.dbard.tpl'
+            'dashboard/warehouse.parts_to_replenish_urgent.dbard.tpl'
         );
     }
 
+
+    $data = get_widget_data(
+        $warehouse->get('Warehouse Part Locations To Replenish'),
+        $warehouse->get('Warehouse Replenishable Part Locations'),
+        $warehouse->get('Warehouse Tolerable Percentage Part Locations To Replenish'),
+        $warehouse->get('Warehouse Max Percentage Part Locations To Replenish')
+
+    );
+    if ($data['ok']) {
+
+
+        $smarty->assign('data', $data);
+        $html .= $smarty->fetch('dashboard/warehouse.location_parts_to_replenish.dbard.tpl');
+    }
 
 
 

@@ -14,27 +14,27 @@ function get_table_parameters() {
 
     return prepare_values(
         $_REQUEST, array(
-            'parameters' => array('type' => 'json array'),
-            'nr'         => array('type' => 'number'),
-            'page'       => array('type' => 'number'),
-            'o'          => array(
-                'type'     => 'string',
-                'optional' => true
-            ),
-            'od'         => array(
-                'type'     => 'string',
-                'optional' => true
-            ),
-            'f_value'    => array(
-                'type'     => 'string',
-                'optional' => true
-            ),
-            'f_field'    => array(
-                'type'     => 'string',
-                'optional' => true
-            ),
+                     'parameters' => array('type' => 'json array'),
+                     'nr'         => array('type' => 'number'),
+                     'page'       => array('type' => 'number'),
+                     'o'          => array(
+                         'type'     => 'string',
+                         'optional' => true
+                     ),
+                     'od'         => array(
+                         'type'     => 'string',
+                         'optional' => true
+                     ),
+                     'f_value'    => array(
+                         'type'     => 'string',
+                         'optional' => true
+                     ),
+                     'f_field'    => array(
+                         'type'     => 'string',
+                         'optional' => true
+                     ),
 
-        )
+                 )
     );
 }
 
@@ -346,7 +346,7 @@ function get_rtext($record_label, $total_records) {
         return sprintf(
             ngettext('%s material', '%s materials', $total_records), number($total_records)
         );
-    }elseif ($record_label == 'picking locations needed to replenish for ordered parts') {
+    } elseif ($record_label == 'picking locations needed to replenish for ordered parts') {
         return sprintf(
             ngettext('%s picking location needed to replenish for ordered parts', '%s picking locations needed to replenish for ordered parts', $total_records), number($total_records)
         );
@@ -354,17 +354,20 @@ function get_rtext($record_label, $total_records) {
         return sprintf(
             ngettext('%s online web page', '%s online web pages', $total_records), number($total_records)
         );
-    }elseif ($record_label == 'webpage offline') {
+    } elseif ($record_label == 'webpage offline') {
         return sprintf(
             ngettext('%s online web page', '%s offline web pages', $total_records), number($total_records)
         );
-    }else {
+    } elseif ($record_label == 'replenishment') {
+        return sprintf(
+            ngettext('%s replenishment', '%s replenishments', $total_records), number($total_records)
+        );
+    } else {
         return sprintf(
             ngettext('%s record', '%s records', $total_records), number($total_records)
         );
     }
 }
-
 
 
 function get_rtext_with_filter($record_label, $total_with_filter, $total_no_filter) {
@@ -672,7 +675,7 @@ function get_rtext_with_filter($record_label, $total_with_filter, $total_no_filt
                 '%s material of %s', '%s materials of %s', $total_with_filter
             ), number($total_with_filter), number($total_no_filter)
         );
-    }  elseif ($record_label == 'picking locations needed to replenish for ordered parts') {
+    } elseif ($record_label == 'picking locations needed to replenish for ordered parts') {
         return sprintf(
             ngettext(
                 '%s picking location needed to replenish for ordered parts of %s', '%s picking locations needed to replenish for ordered parts of %s', $total_with_filter
@@ -684,20 +687,24 @@ function get_rtext_with_filter($record_label, $total_with_filter, $total_no_filt
                 '%s online web page of %s', '%s online web pages of %s', $total_with_filter
             ), number($total_with_filter), number($total_no_filter)
         );
-    }   elseif ($record_label == 'webpage offline') {
+    } elseif ($record_label == 'webpage offline') {
         return sprintf(
             ngettext(
                 '%s offline web page of %s', '%s offline web pages of %s', $total_with_filter
             ), number($total_with_filter), number($total_no_filter)
         );
-    }  else {
+    } elseif ($record_label == 'replenishment') {
+        return sprintf(
+            ngettext(
+                '%s replenishment of %s', '%s replenishments of %s', $total_with_filter
+            ), number($total_with_filter), number($total_no_filter)
+        );
+    } else {
         return sprintf(
             ngettext('%s record of %s', '%s records of %s', $total_with_filter), number($total_with_filter), number($total_no_filter)
         );
     }
 }
-
-
 
 
 ?>
