@@ -127,6 +127,29 @@ $object_fields = array(
 
         )
     ),
+
+    array(
+        'label'      => _('Website'),
+        'show_title' => true,
+        'fields'     => array(
+
+
+            array(
+                'edit' => ($edit ? 'string' : ''),
+
+                'id'              => 'Store_URL',
+                'value'           => $object->get('Store URL'),
+                'formatted_value' => $object->get('Store URL'),
+                'label'           => ucfirst(
+                    $object->get_field_label('Store URL')
+                ),
+                'invalid_msg'     => get_invalid_message('string'),
+                'required'        => false,
+                'type'            => 'value'
+            ),
+
+        )
+    ),
     array(
         'label'      => _('Contact'),
         'show_title' => true,
@@ -170,20 +193,7 @@ $object_fields = array(
                 'invalid_msg'     => get_invalid_message('string'),
                 'required'        => false,
                 'type'            => 'value'
-            ),
-            array(
-                'edit' => ($edit ? 'string' : ''),
-
-                'id'              => 'Store_URL',
-                'value'           => $object->get('Store URL'),
-                'formatted_value' => $object->get('Store URL'),
-                'label'           => ucfirst(
-                    $object->get_field_label('Store URL')
-                ),
-                'invalid_msg'     => get_invalid_message('string'),
-                'required'        => false,
-                'type'            => 'value'
-            ),
+            )
 
         )
     )
@@ -272,7 +282,29 @@ $object_fields = array(
         )
     ),
     array(
-        'label'      => _('Contact'),
+        'label'      => _('Website'),
+        'show_title' => true,
+        'fields'     => array(
+
+
+            array(
+                'edit' => ($edit ? 'string' : ''),
+
+                'id'              => 'Store_URL',
+                'value'           => $object->get('Store URL'),
+                'formatted_value' => $object->get('Store URL'),
+                'label'           => ucfirst(
+                    $object->get_field_label('Store URL')
+                ),
+                'invalid_msg'     => get_invalid_message('string'),
+                'required'        => false,
+                'type'            => 'value'
+            ),
+
+        )
+    ),
+    array(
+        'label'      => _('Contact/Details'),
         'show_title' => true,
         'fields'     => array(
 
@@ -316,13 +348,36 @@ $object_fields = array(
                 'type'            => 'value'
             ),
             array(
-                'edit' => ($edit ? 'string' : ''),
-
-                'id'              => 'Store_URL',
-                'value'           => $object->get('Store URL'),
-                'formatted_value' => $object->get('Store URL'),
+                'edit'            => ($edit ? 'string' : ''),
+                'id'              => 'Store_Company_Name',
+                'value'           => $object->get('Store Company Name'),
+                'formatted_value' => $object->get('Company Name'),
                 'label'           => ucfirst(
-                    $object->get_field_label('Store URL')
+                    $object->get_field_label('Store Company Name')
+                ),
+                'invalid_msg'     => get_invalid_message('string'),
+                'required'        => false,
+                'type'            => 'value'
+            ),
+            array(
+                'edit'            => ($edit ? 'string' : ''),
+                'id'              => 'Store_Company_Number',
+                'value'           => $object->get('Store Company Number'),
+                'formatted_value' => $object->get('Company Number'),
+                'label'           => ucfirst(
+                    $object->get_field_label('Store Company Number')
+                ),
+                'invalid_msg'     => get_invalid_message('string'),
+                'required'        => false,
+                'type'            => 'value'
+            ),
+            array(
+                'edit'            => ($edit ? 'string' : ''),
+                'id'              => 'Store_VAT_Number',
+                'value'           => $object->get('Store VAT Number'),
+                'formatted_value' => $object->get('VAT Number'),
+                'label'           => ucfirst(
+                    $object->get_field_label('Store VAT Number')
                 ),
                 'invalid_msg'     => get_invalid_message('string'),
                 'required'        => false,

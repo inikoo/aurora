@@ -35,16 +35,16 @@ function get_default_footer_data($template) {
                                 array(
                                     'type' => 'text',
                                     'icon' => 'fa-map-marker ',
-                                    'text' => '110 London Road, Oxford,  OX2 6RB, UK'
+                                    'text' => '#address'
                                 ),
                                 array(
                                     'type' => 'text',
                                     'icon' => 'fa-phone',
-                                    'text' => '+1-541-754-3010'
+                                    'text' => '#tel'
                                 ),
                                 array(
                                     'type' => 'email',
-                                    'text' => 'info@yourdomain.com'
+                                    'text' => '#email'
                                 ),
                                 array(
                                     'type'  => 'logo',

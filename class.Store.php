@@ -2155,6 +2155,21 @@ class Store extends DB_Table {
             case 'Store Telephone':
                 $label = _('telephone');
                 break;
+            case 'Store Address':
+                $label = _('address');
+                break;
+            case 'Store VAT Number':
+                $label = _('VAT number');
+                break;
+            case 'Store Company Name':
+                $label = _('company name');
+                break;
+            case 'Store Company Number':
+                $label = _('company number');
+                break;
+            case 'Store URL':
+                $label = _('website URL');
+                break;
 
             default:
                 $label = $field;

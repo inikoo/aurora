@@ -9,9 +9,10 @@
 
 */
 
-
+$theme='theme_1';
 
 $smarty->assign('website',$state['_object']);
+$smarty->assign('theme',$theme);
 
 $html = $smarty->fetch('footer_preview.tpl');
 

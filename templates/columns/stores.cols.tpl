@@ -28,7 +28,7 @@ cell: Backgrid.HtmlCell.extend({
 name: "name",
 label: "{t}Name{/t}",
 editable: false,
-cell: Backgrid.Cell.extend({
+cell: Backgrid.HtmlCell.extend({
 
 
 })

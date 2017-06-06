@@ -72,8 +72,53 @@ class Public_Website {
 
         switch ($key) {
 
+            case 'Footer Data':
+            case 'Footer Published Data':
+
+                $sql = sprintf('SELECT `Website %s` AS data FROM `Website Footer Dimension` WHERE `Website Footer Key`=%d  ', $key, $this->get('Website Footer Key'));
+
+
+
+
+                if ($result = $this->db->query($sql)) {
+                    if ($row = $result->fetch()) {
+
+
+
+
+                        return json_decode($row['data'], true);
+                    } else {
+                        return false;
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+                break;
+            case 'Header Data':
+            case 'Header Published Data':
+
+                $sql = sprintf('SELECT `Website %s` AS data FROM `Website Header Dimension` WHERE `Website Header Key`=%d  ', $key, $this->get('Website Header Key'));
+                if ($result = $this->db->query($sql)) {
+                    if ($row = $result->fetch()) {
+                        return json_decode($row['data'], true);
+                    } else {
+                        return false;
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+                break;
+
+
+
             case 'Website Store Key':
             case 'Website Locale':
+                case 'Website Footer Key';
+            case 'Website Header Key';
                 return $this->data[$key];
                 break;
 

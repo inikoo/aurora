@@ -196,7 +196,6 @@ class Website extends DB_Table {
             $this->db->exec($sql);
 
 
-
             require_once 'conf/footer_data.php';
             require_once 'conf/header_data.php';
 
@@ -241,10 +240,6 @@ class Website extends DB_Table {
             $this->create_header($header_data);
 
 
-
-
-
-
             $this->setup_templates();
 
 
@@ -287,9 +282,6 @@ class Website extends DB_Table {
             );
 
 
-
-
-
             $families = $account->create_category($families_category_data);
 
 
@@ -323,45 +315,88 @@ class Website extends DB_Table {
         }
     }
 
-    function setup_templates() {
+    function create_footer($data) {
 
-        include_once('class.TemplateScope.php');
-        include_once('class.Template.php');
-        include_once('conf/website_templates.php');
+        include_once 'class.WebsiteFooter.php';
 
-        $templates = website_templates_config($this->get('Website Type'));
+        if (!isset($data['Website Footer Code'])) {
+            $this->error = true;
+            $this->msg   = 'no footer code';
 
-        //print_r($templates);
+            return;
+        }
 
-        foreach ($templates['templates'] as $template_code => $_template_data) {
-            // print_r($_template_data);
+        if ($data['Website Footer Code'] == '') {
+            $this->error = true;
+            $this->msg   = 'footer code empty';
 
-            $template_scope_data = array(
-                'Template Scope Website Key' => $this->id,
-                'Template Scope Code'        => $_template_data['scope'],
+            return;
+        }
 
-                'editor' => $this->editor
+        $data['Website Footer Code'] = $this->get_unique_code($data['Website Footer Code'], 'Footer');
+
+        $data['Website Footer Website Key'] = $this->id;
+
+
+        $footer = new WebsiteFooter('find', $data, 'create');
+        if (!$footer->id) {
+            $this->error = true;
+            $this->msg   = $footer->msg;
+
+            return;
+        }
+
+        if (!$this->get('Website Footer Key')) {
+
+            $this->update(
+                array('Website Footer Key' => $footer->id), 'no_history'
 
             );
-
-            $template_scope = new TemplateScope('find', $template_scope_data, 'create');
-
-
-            $template_data = array(
-                'Template Code'   => $template_code,
-                'Template Base'   => 'Yes',
-                'Template Device' => (isset($_template_data['device']) ? $_template_data['device'] : 'desktop'),
-                'editor'          => $this->editor
-
-            );
-
-            $template_scope->create_template($template_data);
-
-            // $template=new Template('find',$template_data,'create');
 
         }
 
+    }
 
+    function get_unique_code($code, $type) {
+
+
+        for ($i = 1; $i <= 200; $i++) {
+
+            if ($i == 1) {
+                $suffix = '';
+            } elseif ($i <= 100) {
+                $suffix = $i;
+            } else {
+                $suffix = uniqid('', true);
+            }
+
+            if ($type == 'Webpage') {
+                $sql = sprintf("SELECT `Page Key` FROM `Page Store Dimension`  WHERE `Webpage Website Key`=%d AND `Page Code`=%s  ", $this->id, prepare_mysql($code.$suffix));
+            } elseif ($type == 'Footer') {
+                $sql = sprintf(
+                    "SELECT `Website Footer Key` FROM `Website Footer Dimension`  WHERE `Website Footer Website Key`=%d AND `Website Footer Code`=%s  ", $this->id, prepare_mysql($code.$suffix)
+                );
+            } elseif ($type == 'Header') {
+                $sql = sprintf(
+                    "SELECT `Website Header Key` FROM `Website Header Dimension`  WHERE `Website Header Website Key`=%d AND `Website Header Code`=%s  ", $this->id, prepare_mysql($code.$suffix)
+                );
+            } else {
+                exit('error unknown type in get_unique_code ');
+            }
+
+
+            if ($result = $this->db->query($sql)) {
+                if ($row = $result->fetch()) {
+
+                } else {
+                    return $code.$suffix;
+                }
+            }
+
+
+        }
+
+        return $suffix;
     }
 
     function get($key, $data = false) {
@@ -436,6 +471,89 @@ class Website extends DB_Table {
         return '';
     }
 
+    function create_header($data) {
+
+        include_once 'class.WebsiteHeader.php';
+
+        if (!isset($data['Website Header Code'])) {
+            $this->error = true;
+            $this->msg   = 'no header code';
+
+            return;
+        }
+
+        if ($data['Website Header Code'] == '') {
+            $this->error = true;
+            $this->msg   = 'header code empty';
+
+            return;
+        }
+
+        $data['Website Header Code'] = $this->get_unique_code($data['Website Header Code'], 'Header');
+
+        $data['Website Header Website Key'] = $this->id;
+
+
+        $header = new WebsiteHeader('find', $data, 'create');
+        if (!$header->id) {
+            $this->error = true;
+            $this->msg   = $header->msg;
+
+            return;
+        }
+
+        if (!$this->get('Website Header Key')) {
+
+            $this->update(
+                array('Website Header Key' => $header->id), 'no_history'
+
+            );
+
+        }
+
+    }
+
+    function setup_templates() {
+
+        include_once('class.TemplateScope.php');
+        include_once('class.Template.php');
+        include_once('conf/website_templates.php');
+
+        $templates = website_templates_config($this->get('Website Type'));
+
+        //print_r($templates);
+
+        foreach ($templates['templates'] as $template_code => $_template_data) {
+            // print_r($_template_data);
+
+            $template_scope_data = array(
+                'Template Scope Website Key' => $this->id,
+                'Template Scope Code'        => $_template_data['scope'],
+
+                'editor' => $this->editor
+
+            );
+
+            $template_scope = new TemplateScope('find', $template_scope_data, 'create');
+
+
+            $template_data = array(
+                'Template Code'   => $template_code,
+                'Template Base'   => 'Yes',
+                'Template Device' => (isset($_template_data['device']) ? $_template_data['device'] : 'desktop'),
+                'editor'          => $this->editor
+
+            );
+
+            $template_scope->create_template($template_data);
+
+            // $template=new Template('find',$template_data,'create');
+
+        }
+
+
+    }
+
     function create_system_webpage($data) {
 
         include_once 'class.Webpage_Type.php';
@@ -463,8 +581,8 @@ class Website extends DB_Table {
             'Page Title'                           => $data['Webpage Name'],
             'Page Short Title'                     => $data['Webpage Browser Title'],
             'Page Parent Key'                      => 0,
-            'Page State'                           =>('Online'),
-            'Page Store Description'=>$data['Webpage Meta Description'],
+            'Page State'                           => ('Online'),
+            'Page Store Description'               => $data['Webpage Meta Description'],
 
 
             'Webpage Scope'                 => $data['Webpage Scope'],
@@ -478,10 +596,10 @@ class Website extends DB_Table {
             'Webpage Creation Date'         => gmdate('Y-m-d H:i:s'),
             'Webpage UrL'                   => $this->data['Website URL'].'/'.strtolower($data['Webpage Code']),
             'Webpage Name'                  => $data['Webpage Name'],
-            'Webpage Browser Title'                 => $data['Webpage Browser Title'],
-            'Webpage State'                 => ($data['Webpage Scope']=='HomepageToLaunch'?'Online':'InProcess'),
-            'Webpage Meta Description'=>$data['Webpage Meta Description'],
-            'Page Store Content Data'=>(isset($data['Page Store Content Data'])?$data['Page Store Content Data']:''),
+            'Webpage Browser Title'         => $data['Webpage Browser Title'],
+            'Webpage State'                 => ($data['Webpage Scope'] == 'HomepageToLaunch' ? 'Online' : 'InProcess'),
+            'Webpage Meta Description'      => $data['Webpage Meta Description'],
+            'Page Store Content Data'       => (isset($data['Page Store Content Data']) ? $data['Page Store Content Data'] : ''),
 
 
             'editor' => $this->editor,
@@ -493,7 +611,7 @@ class Website extends DB_Table {
 
         $webpage_type->update_number_webpages();
 
-        if($data['Webpage Scope']=='HomepageToLaunch') {
+        if ($data['Webpage Scope'] == 'HomepageToLaunch') {
             $page->publish();
         }
         $page->update_version();
@@ -1104,132 +1222,6 @@ class Website extends DB_Table {
 
     }
 
-    function get_unique_code($code, $type) {
-
-
-        for ($i = 1; $i <= 200; $i++) {
-
-            if ($i == 1) {
-                $suffix = '';
-            } elseif ($i <= 100) {
-                $suffix = $i;
-            } else {
-                $suffix = uniqid('', true);
-            }
-
-            if ($type == 'Webpage') {
-                $sql = sprintf("SELECT `Page Key` FROM `Page Store Dimension`  WHERE `Webpage Website Key`=%d AND `Page Code`=%s  ", $this->id, prepare_mysql($code.$suffix));
-            } elseif ($type == 'Footer') {
-                $sql = sprintf(
-                    "SELECT `Website Footer Key` FROM `Website Footer Dimension`  WHERE `Website Footer Website Key`=%d AND `Website Footer Code`=%s  ", $this->id, prepare_mysql($code.$suffix)
-                );
-            } elseif ($type == 'Header') {
-                $sql = sprintf(
-                    "SELECT `Website Header Key` FROM `Website Header Dimension`  WHERE `Website Header Website Key`=%d AND `Website Header Code`=%s  ", $this->id, prepare_mysql($code.$suffix)
-                );
-            } else {
-                exit('error unknown type in get_unique_code ');
-            }
-
-
-            if ($result = $this->db->query($sql)) {
-                if ($row = $result->fetch()) {
-
-                } else {
-                    return $code.$suffix;
-                }
-            }
-
-
-        }
-
-        return $suffix;
-    }
-
-    function create_footer($data) {
-
-        include_once 'class.WebsiteFooter.php';
-
-        if (!isset($data['Website Footer Code'])) {
-            $this->error = true;
-            $this->msg   = 'no footer code';
-
-            return;
-        }
-
-        if ($data['Website Footer Code'] == '') {
-            $this->error = true;
-            $this->msg   = 'footer code empty';
-
-            return;
-        }
-
-        $data['Website Footer Code'] = $this->get_unique_code($data['Website Footer Code'], 'Footer');
-
-        $data['Website Footer Website Key'] = $this->id;
-
-
-        $footer = new WebsiteFooter('find', $data, 'create');
-        if (!$footer->id) {
-            $this->error = true;
-            $this->msg   = $footer->msg;
-
-            return;
-        }
-
-        if (!$this->get('Website Footer Key')) {
-
-            $this->update(
-                array('Website Footer Key' => $footer->id), 'no_history'
-
-            );
-
-        }
-
-    }
-
-    function create_header($data) {
-
-        include_once 'class.WebsiteHeader.php';
-
-        if (!isset($data['Website Header Code'])) {
-            $this->error = true;
-            $this->msg   = 'no header code';
-
-            return;
-        }
-
-        if ($data['Website Header Code'] == '') {
-            $this->error = true;
-            $this->msg   = 'header code empty';
-
-            return;
-        }
-
-        $data['Website Header Code'] = $this->get_unique_code($data['Website Header Code'], 'Header');
-
-        $data['Website Header Website Key'] = $this->id;
-
-
-        $header = new WebsiteHeader('find', $data, 'create');
-        if (!$header->id) {
-            $this->error = true;
-            $this->msg   = $header->msg;
-
-            return;
-        }
-
-        if (!$this->get('Website Header Key')) {
-
-            $this->update(
-                array('Website Header Key' => $header->id), 'no_history'
-
-            );
-
-        }
-
-    }
-
     function create_product_webpage($product_id) {
 
         include_once 'class.Webpage_Type.php';
@@ -1366,6 +1358,47 @@ class Website extends DB_Table {
 
     }
 
+
+    function reset_element($type) {
+
+        if ($type == 'website_footer') {
+
+
+            include_once 'class.WebsiteFooter.php';
+            require_once 'conf/footer_data.php';
+
+            $footer         = new WebsiteFooter($this->get('Website Footer Key'));
+            $footer->editor = $this->editor;
+
+
+            $footer->update(
+                array(
+                    'Website Footer Data' => get_default_footer_data(1)
+                ), 'no_history'
+            );
+
+
+        } elseif ($type == 'website_header') {
+
+
+            include_once 'class.WebsiteHeader.php';
+            require_once 'conf/header_data.php';
+
+            $header         = new WebsiteHeader($this->get('Website Header Key'));
+            $header->editor = $this->editor;
+
+
+            $header->update(
+                array(
+                    'Website Header Data' => get_default_header_data(1)
+                ), 'no_history'
+            );
+
+
+        }
+    }
+
+
     function set_footer_template($template) {
 
 
@@ -1473,22 +1506,37 @@ class Website extends DB_Table {
 function reset_element($element) {
 
 
-    switch($element) {
-    case 'website_footer':
-        include_once 'conf/footer_data.php';
-        $this->update(array('Page Store Content Data' => $website_system_webpages[$this->get('Webpage Code')]['Page Store Content Data']), 'no_history');
+    switch ($element) {
+        case 'website_footer':
+            include_once 'conf/footer_data.php';
+            $this->update(array('Page Store Content Data' => $website_system_webpages[$this->get('Webpage Code')]['Page Store Content Data']), 'no_history');
 
-        break;
-    default:
-        break;
+            break;
+        default:
+            break;
     }
 
 
+    function get_system_webpage($code) {
+
+        $sql = sprintf(
+            'SELECT `Page Key` FROM `Page Store Dimension` WHERE `Webpage Code`=%s AND `Webpage Website Key`=%d  ', prepare_mysql($code), $this->id
+        );
 
 
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                return $row['Page Key'];
+            } else {
+                return 0;
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
 
-
-
+    }
 
 }
 
