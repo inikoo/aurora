@@ -40,7 +40,11 @@ function fork_export($job) {
 
     $output_filename = 'export_'.$inikoo_account_code.'_'.$fork_key.'_'.$fork_data['table'];
 
-    //print $sql_count;
+
+
+
+
+
 
     $number_rows = 0;
 

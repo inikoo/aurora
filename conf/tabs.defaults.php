@@ -1470,6 +1470,7 @@ $tab_defaults = array(
         'rpp'         => 100,
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'reference',
+        'export_fields' => $export_fields['part_locations']
 
     ),
     'warehouse.part_locations_with_errors.wget' => array(

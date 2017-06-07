@@ -110,6 +110,8 @@ $fields = preg_replace('/,$/', '', $fields);
 $sql
     = "select $fields from $table $where $wheref  $group_by order by $order $order_direction ";
 
+
+
 if ($_data['type'] == 'excel') {
     $output = 'xls';
 } else {
@@ -126,6 +128,7 @@ $export_data = array(
     'fields'     => $_data['fields'],
     'field_set'  => $field_set
 );
+
 
 
 list($fork_key, $msg) = new_fork(

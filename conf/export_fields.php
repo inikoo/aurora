@@ -358,7 +358,7 @@ $export_fields = array(
 
 
     ),
-    'agent_parts'               => array(
+    'agent_parts'                  => array(
         array(
             'name'    => '`Supplier Part Reference`',
             'label'   => _("Supplier's SKU"),
@@ -466,7 +466,7 @@ $export_fields = array(
         ),
     ),
 
-    'locations'                       => array(
+    'locations' => array(
         array(
             'name'    => '`Location Code`',
             'label'   => _('Code'),
@@ -496,12 +496,9 @@ $export_fields = array(
         ),
 
 
+    ),
 
-
-
-),
-
-    'parts'                       => array(
+    'parts' => array(
         array(
             'name'    => '`Part Reference`',
             'label'   => _('Reference'),
@@ -510,7 +507,7 @@ $export_fields = array(
 
         array(
             'name'    => '`Part Package Description`',
-            'label'   =>_('SKO description'),
+            'label'   => _('SKO description'),
             'checked' => 1
         ),
         array(
@@ -528,6 +525,36 @@ $export_fields = array(
             'label'   => _('Tariff code'),
             'checked' => 1
         ),
+
+    ),
+
+    'part_locations' => array(
+        array(
+            'name'    => '`Part Reference`',
+            'label'   => _('Part reference'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Location Code`',
+            'label'   => _('Location code'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Can Pick`',
+            'label'   => _('Picking location'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Quantity On Hand`',
+            'label'   => _('Stock'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Stock Value`',
+            'label'   => _('Stock value'),
+            'checked' => 1
+        ),
+
 
     ),
 
