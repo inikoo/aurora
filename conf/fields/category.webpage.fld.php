@@ -153,9 +153,9 @@ $category_fields = array(
                 'id'   => 'Category_Webpage_Meta_Description',
                 'edit' => ($edit ? 'textarea' : ''),
 
-                'value'           => htmlspecialchars($object->get('Category Webpage Meta Description')),
+                'value'           => htmlspecialchars($object->get('Webpage Meta Description')),
                 'formatted_value' => $object->get('Webpage Meta Description'),
-                'label'           => ucfirst($object->get_field_label('Category Webpage Meta Description')),
+                'label'           => ucfirst($object->get_field_label('Webpage Meta Description')),
                 'required'        => true,
                 'type'            => ''
 

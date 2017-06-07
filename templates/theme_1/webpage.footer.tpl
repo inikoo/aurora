@@ -15,34 +15,14 @@
 
   <body>
   <div class="wrapper_boxed">
-
-
       <div class="site_wrapper">
-
-
-
-
         <div class="clearfix "></div>
-
-
           {include file="theme_1/footer.tpl"}
-
-
-
-
-        <a href="#" class="scrollup">Scroll</a><!-- end scroll to top of the page-->
-
-
-
-
-    </div>
+      </div>
 </div>
 
 
-<!-- ######### JS FILES ######### -->
 
-<!-- animations -->
-<script  src="theme_1/animations/js/animations.min.js" type="text/javascript"></script>
 
 
 

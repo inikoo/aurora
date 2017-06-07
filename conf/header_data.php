@@ -16,6 +16,16 @@ function get_default_header_data($template) {
 
 
         return array(
+
+            'menu'=>array(
+                'columns'=>array(
+                    array(
+                        'label'=>_('Home')
+                    )
+
+                )
+
+            )
            
 
 

@@ -9,8 +9,10 @@
 
 */
 
+$theme='theme_1';
 
 $smarty->assign('website',$state['_object']);
+$smarty->assign('theme',$theme);
 
 $html = $smarty->fetch('header_preview.tpl');
 

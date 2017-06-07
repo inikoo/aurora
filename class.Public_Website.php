@@ -19,7 +19,7 @@ class Public_Website {
         global $db;
         $this->db = $db;
 
-        $this->id         = false;
+        $this->id            = false;
         $this->table_name    = 'Website';
         $this->ignore_fields = array('Website Key');
 
@@ -34,8 +34,7 @@ class Public_Website {
     }
 
 
-    function get_data($tag,$key ) {
-
+    function get_data($tag, $key) {
 
 
         if ($tag == 'id') {
@@ -53,7 +52,6 @@ class Public_Website {
         }
 
 
-
         if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id   = $this->data['Website Key'];
             $this->code = $this->data['Website Code'];
@@ -61,72 +59,6 @@ class Public_Website {
 
 
     }
-
-    function get($key = '') {
-
-
-        if (!$this->id) {
-            return '';
-        }
-
-
-        switch ($key) {
-
-            case 'Footer Data':
-            case 'Footer Published Data':
-
-                $sql = sprintf('SELECT `Website %s` AS data FROM `Website Footer Dimension` WHERE `Website Footer Key`=%d  ', $key, $this->get('Website Footer Key'));
-
-
-
-
-                if ($result = $this->db->query($sql)) {
-                    if ($row = $result->fetch()) {
-
-
-
-
-                        return json_decode($row['data'], true);
-                    } else {
-                        return false;
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
-                }
-                break;
-            case 'Header Data':
-            case 'Header Published Data':
-
-                $sql = sprintf('SELECT `Website %s` AS data FROM `Website Header Dimension` WHERE `Website Header Key`=%d  ', $key, $this->get('Website Header Key'));
-                if ($result = $this->db->query($sql)) {
-                    if ($row = $result->fetch()) {
-                        return json_decode($row['data'], true);
-                    } else {
-                        return false;
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
-                }
-                break;
-
-
-
-            case 'Website Store Key':
-            case 'Website Locale':
-                case 'Website Footer Key';
-            case 'Website Header Key';
-                return $this->data[$key];
-                break;
-
-        }
-
-
-    }
-
 
     function get_webpage($code) {
 
@@ -205,30 +137,133 @@ class Public_Website {
 
     }
 
+    function get_system_webpage($code) {
 
-    function get_system_webpage($code){
-
-        $sql=sprintf('select `Page Key` from `Page Store Dimension` where `Webpage Code`=%s and `Webpage Website Key`=%d  ',
-            prepare_mysql($code),
-        $this->id
-            );
+        $sql = sprintf(
+            'SELECT `Page Key` FROM `Page Store Dimension` WHERE `Webpage Code`=%s AND `Webpage Website Key`=%d  ', prepare_mysql($code), $this->id
+        );
 
 
-
-        if ($result=$this->db->query($sql)) {
+        if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
                 return $row['Page Key'];
-        	}else{
+            } else {
                 return 0;
             }
-        }else {
-        	print_r($error_info=$this->db->errorInfo());
-        	print "$sql\n";
-        	exit;
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
 
     }
 
+    function get_categories($type = 'families', $output = 'data') {
+
+        $categories = array();
+
+
+        switch ($type) {
+            case 'departments':
+                $sql = sprintf(
+                    'SELECT  `Webpage Code`,`Webpage Name` FROM  `Category Dimension` C   LEFT JOIN `Page Store Dimension` P ON (P.`Webpage Scope Key`=C.`Category Key` AND `Webpage Scope`="Category Categories" ) WHERE   C.`Category Parent Key`=%d ',
+
+                    $this->get('Website Alt Department Category Key')
+                );
+
+
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+
+                        switch ($output) {
+                            case 'menu':
+                                $categories[] = array(
+                                    'url'   => $row['Webpage Code'],
+                                    'label' => $row['Webpage Name'],
+                                    'new'   => false
+
+                                );
+                                break;
+                        }
+
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+
+                return $categories;
+
+                break;
+        }
+
+
+    }
+
+    function get($key = '') {
+
+
+        if (!$this->id) {
+            return '';
+        }
+
+
+        switch ($key) {
+
+            case 'Footer Data':
+            case 'Footer Published Data':
+
+                $sql = sprintf('SELECT `Website %s` AS data FROM `Website Footer Dimension` WHERE `Website Footer Key`=%d  ', $key, $this->get('Website Footer Key'));
+
+
+                if ($result = $this->db->query($sql)) {
+                    if ($row = $result->fetch()) {
+
+
+                        return json_decode($row['data'], true);
+                    } else {
+                        return false;
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+                break;
+            case 'Header Data':
+            case 'Header Published Data':
+
+                $sql = sprintf('SELECT `Website %s` AS data FROM `Website Header Dimension` WHERE `Website Header Key`=%d  ', $key, $this->get('Website Header Key'));
+                if ($result = $this->db->query($sql)) {
+                    if ($row = $result->fetch()) {
+                        return json_decode($row['data'], true);
+                    } else {
+                        return false;
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+                break;
+
+
+            case 'Website Store Key':
+            case 'Website Locale':
+            case 'Website Footer Key';
+            case 'Website Header Key';
+            case 'Website Alt Department Category Key':
+            case 'Website Alt Family Category Key':
+
+                return $this->data[$key];
+                break;
+
+        }
+
+
+    }
 
 }
 

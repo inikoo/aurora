@@ -44,30 +44,29 @@
     <!-- ######### CSS STYLES ######### -->
 
 
-        <link href="/css/jquery-ui.css" rel="stylesheet">
-
-
-
+    <link href="/css/jquery-ui.css" rel="stylesheet">
     <link href="/css/editor/froala_editor.css" rel="stylesheet"/>
     <link href="/css/editor/froala_style.css" rel="stylesheet"/>
 
-    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"> -->
-    <link rel="stylesheet" href="/theme_1/local/bootstrap.css" type="text/css"/>
 
 
 
 
-  <link rel="stylesheet" href="/theme_1/css/reset.css" type="text/css"/>
-  <link rel="stylesheet" href="/theme_1/css/style.css" type="text/css"/>
+     <link rel="stylesheet" href="/theme_1/css/reset.css" type="text/css"/>
+     <link rel="stylesheet" href="/theme_1/css/style.css" type="text/css"/>
 
-    <!-- <link rel="stylesheet" href="https://use.fontawesome.com/3052dece40.css"> -->
+       <!-- <link rel="stylesheet" href="https://use.fontawesome.com/3052dece40.css"> -->
     <link rel="stylesheet" href="/theme_1/local/font-awesome/css/font-awesome.min.css">
 
+    <!--
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+ -->
+
+   <link href="/theme_1/mainmenu/bootstrap.min4.css" rel="stylesheet">
+   <link href="/theme_1/mainmenu/menu-5.css" rel="stylesheet">
 
 
-
-
-    <!-- animations -->
+   <!-- animations -->
     <link href="/theme_1/animations/css/animations.min.css" rel="stylesheet" type="text/css" media="all"/>
 
     <link rel="stylesheet" media="screen" href="/theme_1/css/responsive-layouts.css" type="text/css"/>
@@ -121,6 +120,7 @@
      <script type="text/javascript" src="/theme_1/tooltips/jquery.darktooltip.js"></script>
 
      <script src="/theme_1/aninum/jquery.animateNumber.min.js"></script>
+    <script  src="/theme_1/animations/js/animations.min.js" type="text/javascript"></script>
 
      <script type="text/javascript" src="/theme_1/cubeportfolio/js/jquery.cubeportfolio.min.js"></script>
          <script type="text/javascript" src="/js/libs/jquery-ui.js"></script>

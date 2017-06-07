@@ -613,6 +613,13 @@ ALTER TABLE `Page Store Dimension` CHANGE `Webpage Scope` `Webpage Scope` VARCHA
 ALTER TABLE `Store Dimension` ADD `Store Google Map URL` TEXT NULL DEFAULT NULL AFTER `Store Address`;
 
 
+============= migration web[ages
+
+update `Page Store Dimension` set `Webpage Code`=LOWER(`Webpage Code`);
+update `Page Store Dimension` set `Webpage Name`=`Page Store Title` where `Webpage Name` is NULL or `Webpage Name`='' ;
+//update `Page Store Dimension`  P  left join `Page Dimension` PP on (PP.`Page Key`=P.`Page Key`)  set `Webpage Browser Title`=`Page Title` where `Webpage Browser Title` is NULL or `Webpage Browser Title`='' ;
+update `Page Store Dimension` set `Webpage Browser Title`=`Webpage Name`;
+update `Page Store Dimension` set `Webpage Meta Description`=`Store Description` where `Webpage Meta Description` is NULL or `Webpage Meta Description`='' ;
 
 
 ===============

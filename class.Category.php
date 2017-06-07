@@ -790,15 +790,14 @@ class Category extends DB_Table {
                         break;
 
 
-                    case 'Category Webpage Meta Description':
                     case 'Webpage Meta Description':
-                        return $this->webpage->get('Page Store Description');
+                        return $this->webpage->get('Webpage Meta Description');
 
                         break;
 
                     case 'Category Webpage Browser Title':
                     case 'Webpage Browser Title':
-                        return $this->webpage->get('Page Title');
+                        return $this->webpage->get('Webpage Browser Title');
 
                         break;
 
@@ -806,7 +805,7 @@ class Category extends DB_Table {
                     case 'Webpage Name':
 
 
-                        return $this->webpage->get('Page Store Title');
+                        return $this->webpage->get('Webpage Name');
 
                         break;
                     case 'Website Node Parent Key':
@@ -3010,7 +3009,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                     break;
 
 
-                case 'Category Webpage Meta Description':
+                case 'Webpage Meta Description':
                     if (!is_object($this->webpage)) {
                         $this->get_webpage();
                     }
@@ -3857,7 +3856,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
             case 'Category Webpage Browser Title':
                 $label = _('browser title');
                 break;
-            case 'Category Webpage Meta Description':
+            case 'Webpage Meta Description':
                 $label = _('meta description');
                 break;
             case 'Part Category Status':
