@@ -79,7 +79,8 @@ if ($state['module'] == 'inventory') {
 
     $smarty->assign('table_buttons', $table_buttons);
 
-} elseif ($state['module'] == 'products') {
+}
+elseif ($state['module'] == 'products') {
 
 
     if ($state['_object']->get('Category Subject') == 'Product') {
@@ -147,7 +148,8 @@ if ($state['module'] == 'inventory') {
 
         );
 
-    } elseif ($state['_object']->get('Category Subject') == 'Category') {
+    }
+    elseif ($state['_object']->get('Category Subject') == 'Category') {
 
 
 

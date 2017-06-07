@@ -1,4 +1,5 @@
 <?php
+
 /*
 
   About:
@@ -11,8 +12,7 @@
 */
 
 
-
-class Public_Store  {
+class Public_Store {
 
 
     function Public_Store($a1, $a2 = false, $a3 = false, $_db = false) {
@@ -23,7 +23,7 @@ class Public_Store  {
         } else {
             $this->db = $_db;
         }
-        $this->id         = false;
+        $this->id            = false;
         $this->table_name    = 'Store';
         $this->ignore_fields = array('Store Key');
 
@@ -37,7 +37,6 @@ class Public_Store  {
 
 
     function get_data($tipo, $tag) {
-
 
 
         if ($tipo == 'id') {
@@ -61,6 +60,50 @@ class Public_Store  {
 
     }
 
+    function get_categories($type = 'families', $output = 'data') {
+
+        $categories = array();
+
+
+        switch ($type) {
+            case 'departments':
+                $sql = sprintf(
+                    'SELECT  `Webpage Code`,`Webpage Name` FROM  `Category Dimension` C   LEFT JOIN `Page Store Dimension` P ON (P.`Webpage Scope Key`=C.`Category Key` AND `Webpage Scope`="Category Categories" ) WHERE   C.`Category Parent Key`=%d ',
+
+                    $this->get('Store Department Category Key')
+                );
+
+
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+
+                        switch ($output) {
+                            case 'menu':
+                                $categories[] = array(
+                                    'url'   => $row['Webpage Code'],
+                                    'label' => $row['Webpage Name'],
+                                    'new'   => false
+
+                                );
+                                break;
+                        }
+
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+
+                return $categories;
+
+                break;
+        }
+
+
+    }
+
     function get($key = '') {
 
 
@@ -69,7 +112,6 @@ class Public_Store  {
         }
 
 
-     
         switch ($key) {
 
 
@@ -81,18 +123,15 @@ class Public_Store  {
 
 
             case 'Store Currency Code':
+            case 'Store Department Category Key':
+            case 'Store Family Category Key':
                 return $this->data[$key];
                 break;
 
         }
 
 
-
-
     }
-
-
-
 
 
 }

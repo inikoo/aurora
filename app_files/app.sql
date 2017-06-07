@@ -6885,7 +6885,7 @@ CREATE TABLE `Page Store Dimension` (
   `Webpage Version` tinyint(3) unsigned NOT NULL DEFAULT '1',
   `Webpage Browser Title` varchar(255) DEFAULT NULL,
   `Webpage Name` varchar(255) DEFAULT NULL,
-  `Category Webpage Meta Description` text,
+  `Webpage Meta Description` text,
   `Webpage URL` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`Page Key`),
   UNIQUE KEY `Page Site Key_2` (`Page Site Key`,`Page Code`),

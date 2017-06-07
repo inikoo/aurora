@@ -244,18 +244,6 @@
 
 <div>
 
-<div style="padding:20px;" class="control_panel">
-    <span class="hide"><i class="fa fa-toggle-on" aria-hidden="true"></i> {t}Logged in{/t}</span>
-    <span id="drag_mode" class="button drag_mode" onClick="change_drag_mode(this)">
-        <i class="fa fa-hand-rock-o discreet" style="margin-left:20px" aria-hidden="true"></i> {t}Drag / Block edit mode{/t} <i class="fa fa-check-circle invisible" aria-hidden="true"></i>
-    </span>
-
-
-
-    <span id="save_button" class="" style="float:right" onClick="save_header()"><i class="fa fa-cloud  " aria-hidden="true"></i> {t}Save{/t}</span>
-
-
-</div>
 
 
 
@@ -369,7 +357,7 @@
 
                         </div><!-- end left -->
 
-                        <div class="right">
+                        <div class="right hide">
 
                             <a href="mailto:info@yourwebsite.com"><i class="fa fa-envelope"></i>&nbsp; info@yourwebsite.com</a>
                             <i class="fa fa-phone-square"></i>&nbsp; +88 123 456 7890
@@ -382,7 +370,18 @@
                                 <li><a href="#"><i class="fa fa-rss"></i></a></li>
                             </ul>
 
-                        </div><!-- end right -->
+                        </div>
+
+                        <div class="right ">
+
+
+                                <div style="float:right;background-color: black;height:30px;width: 30px ;text-align: center">
+                                    <i class="fa fa-search" style="color:#fff;font-size:20px;position: relative;top:4px" aria-hidden="true"></i></div>
+                                <input style="width: 250px;float:right;border: 1px solid black;padding:2px"/>
+
+
+
+                        </div>
 
                     </div>
                 </div><!-- end top links -->
@@ -412,7 +411,10 @@
 
                                 <ul class="nav navbar-nav three">
 
-                                    <li class="dropdown yamm-fw"><a href="index.html" data-toggle="dropdown" class="dropdown-toggle active">Home</a>
+
+
+
+                                    <li class="dropdown yamm-fw"><a href="index.html" data-toggle="dropdown" class="dropdown-toggle active">Catalogue</a>
                                         <ul class="dropdown-menu">
                                             <li>
                                                 <div class="yamm-content">
@@ -420,50 +422,44 @@
 
                                                         <ul class="col-sm-6 col-md-4 list-unstyled two">
                                                             <li>
-                                                                <p>Header Styles</p>
+                                                                <p>{t}Store Departments{/t}</p>
                                                             </li>
-                                                            <li><a href="index1.html"><i class="fa fa-caret-right"></i> Header Style 1</a></li>
-                                                            <li><a href="index2.html"><i class="fa fa-caret-right"></i> Header Style 2</a></li>
-                                                            <li><a href="index3.html"><i class="fa fa-caret-right"></i> Header Style 3</a></li>
-                                                            <li><a href="index4.html"><i class="fa fa-caret-right"></i> Header Style 4</a></li>
-                                                            <li><a href="index5.html"><i class="fa fa-caret-right"></i> Header Style 5</a></li>
-                                                            <li><a href="index6.html"><i class="fa fa-caret-right"></i> Header Style 6</a></li>
-                                                            <li><a href="index.html"><i class="fa fa-caret-right"></i> Header Style 7</a></li>
-                                                            <li><a href="index10.html"><i class="fa fa-caret-right"></i> Header Style 8</a></li>
-                                                            <li><a href="index11.html"><i class="fa fa-caret-right"></i> Header Style 9</a><b class="mitemnew">New</b></li>
-                                                            <li><a href="http://gsrthemes.com/aaika/onepage/index.html"><i class="fa fa-caret-right"></i> One Page Theme</a><b class="mitemnew">New</b></li>
+
+                                                            {foreach from=$store->get_categories('departments','menu') item=department}
+                                                                <li><a href="{$department['url']}"><i class="fa fa-caret-right"></i> {$department['label']}</a> {if $department['new']}<b class="mitemnew">{t}New{/t}</b>{/if}</li>
+                                                            {/foreach}
+
+
+
                                                         </ul>
 
                                                         <ul class="col-sm-6 col-md-4 list-unstyled two">
                                                             <li>
-                                                                <p>Home Page Styles</p>
+                                                                <p>{t}Web Departments{/t}</p>
                                                             </li>
-                                                            <li><a href="index-layout1.html"><i class="fa fa-caret-right"></i> Home Layout 1</a></li>
-                                                            <li><a href="index-layout2.html"><i class="fa fa-caret-right"></i> Home Layout 2</a></li>
-                                                            <li><a href="index-layout3.html"><i class="fa fa-caret-right"></i> Home Layout 3</a></li>
-                                                            <li><a href="index-layout4.html"><i class="fa fa-caret-right"></i> Home Layout 4</a></li>
-                                                            <li><a href="index-layout5.html"><i class="fa fa-caret-right"></i> Home Layout 5</a></li>
-                                                            <li><a href="index-layout6.html"><i class="fa fa-caret-right"></i> Home Layout 6</a></li>
-                                                            <li><a href="index-layout7.html"><i class="fa fa-caret-right"></i> Home Layout 7</a></li>
-                                                            <li><a href="index-layout8.html"><i class="fa fa-caret-right"></i> Home Layout 8</a></li>
-                                                            <li><a href="index-layout9.html"><i class="fa fa-caret-right"></i> Home Layout 9</a></li>
-                                                            <li><a href="index-layout10.html"><i class="fa fa-caret-right"></i> Home Layout 10</a></li>
+
+                                                            {foreach from=$website->get_categories('departments','menu') item=department}
+                                                                <li><a href="{$department['url']}"><i class="fa fa-caret-right"></i> {$department['label']}</a> {if $department['new']}<b class="mitemnew">{t}New{/t}</b>{/if}</li>
+                                                            {/foreach}
+
+
+
                                                         </ul>
 
                                                         <ul class="col-sm-6 col-md-4 list-unstyled two">
                                                             <li>
-                                                                <p>&nbsp;</p>
+                                                                <p>{t}Web Families{/t}</p>
                                                             </li>
-                                                            <li><a href="index-layout11.html"><i class="fa fa-caret-right"></i> Home Layout 11</a></li>
-                                                            <li><a href="index-layout12.html"><i class="fa fa-caret-right"></i> Home Layout 12</a></li>
-                                                            <li><a href="index-layout13.html"><i class="fa fa-caret-right"></i> Home Layout 13</a></li>
-                                                            <li><a href="index.html"><i class="fa fa-caret-right"></i> Home Layout 14</a></li>
-                                                            <li><a href="index10.html"><i class="fa fa-caret-right"></i> Text Slider</a><b class="mitemnew">New</b></li>
-                                                            <li><a href="index9.html"><i class="fa fa-caret-right"></i> Header with Portfolio</a><b class="mitemnew">New</b></li>
-                                                            <li><a href="index7.html"><i class="fa fa-caret-right"></i> Slider with Form</a><b class="mitemnew">New</b></li>
-                                                            <li><a href="index8.html"><i class="fa fa-caret-right"></i> Form in Header</a><b class="mitemnew">New</b></li>
+
+                                                            {foreach from=$website->get_categories('families','menu') item=families}
+                                                                <li><a href="{$families['url']}"><i class="fa fa-caret-right"></i> {$families['label']}</a> {if $families['new']}<b class="mitemnew">{t}New{/t}</b>{/if}</li>
+                                                            {/foreach}
+
+
 
                                                         </ul>
+
+
 
 
                                                     </div>
@@ -472,7 +468,7 @@
                                         </ul>
                                     </li>
 
-                                    <li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Pages</a>
+                                    <li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Info pages</a>
                                         <ul class="dropdown-menu multilevel" role="menu">
                                             <li><a href="about.html">About Style 1</a></li>
                                             <li><a href="about2.html">About Style 2</a></li>
@@ -497,7 +493,7 @@
                                         </ul>
                                     </li>
 
-                                    <li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Sliders</a>
+                                    <li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Offers</a>
                                         <ul class="dropdown-menu multilevel" role="menu">
                                             <li><a href="index1.html">Slider Style 1</a></li>
                                             <li><a href="index5.html">Slider Style 2</a></li>
@@ -569,7 +565,7 @@
                                         </ul>
                                     </li>
 
-                                    <li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Portfolio</a>
+                                    <li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Inspiration</a>
                                         <ul class="dropdown-menu" role="menu">
                                             <li> <a href="portfolio-1.html">Single Item</a> </li>
                                             <li> <a href="portfolio-5.html">Portfolio Masonry</a> </li>
@@ -656,9 +652,8 @@
 
                     <div class="menu_right2">
                         <div class="search_hwrap two">
-                            <form action="index.html" autocomplete="on">
-                                <input id="search" name="search" type="text" placeholder="Search the site..."><input id="search_submit" value="Rechercher" type="submit">
-                            </form>
+
+
                         </div>
                     </div><!-- end search bar -->
 
