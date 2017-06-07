@@ -61,7 +61,7 @@ if ($order == 'reference') {
     $order = '`Quantity On Hand`';
 } else {
 
-    $order = '`Part SKU`';
+    $order = 'P.`Part SKU`';
 }
 
 

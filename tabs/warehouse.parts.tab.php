@@ -12,7 +12,7 @@
 
 $tab     = 'warehouse.parts';
 $ar_file = 'ar_warehouse_tables.php';
-$tipo    = 'parts';
+$tipo    = 'part_locations';
 
 $default = $user->get_tab_defaults($tab);
 
