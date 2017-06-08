@@ -2,7 +2,7 @@
 <!--
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 23 May 2017 at 14:09:03 GMT+8, Cyberjaya, Malaysia
+ Created: 8 June 2017 at 16:15:46 GMT+7, Phuket, Thailand
  Copyright (c) 2017, Inikoo
 
  Version 3
