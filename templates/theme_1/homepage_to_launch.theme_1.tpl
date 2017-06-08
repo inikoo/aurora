@@ -23,6 +23,8 @@
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic,700,700italic,800,800italic' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,500italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
     <link href="https://fonts.googleapis.com/css?family=Dancing+Script:700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Kaushan+Script" rel="stylesheet">
+
     <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
@@ -32,24 +34,24 @@
     <link rel="stylesheet" href="/theme_1/css/reset.css" type="text/css"/>
     <link rel="stylesheet" href="/theme_1/css/style_full.css" type="text/css"/>
 
-    <link rel="stylesheet" href="/theme_1/font-awesome.css" type="text/css">
+    <link rel="stylesheet" href="/theme_1/local/font-awesome/css/font-awesome.min.css">
 
     <!-- animations -->
-    <link href="/theme_1/css/animations.min.css" rel="stylesheet" type="text/css" media="all"/>
+    <link href="/theme_1/animations/css/animations.min.css" rel="stylesheet" type="text/css" media="all"/>
 
     <!-- responsive devices styles -->
-    <link rel="stylesheet" media="screen" href="/theme_1/css/responsive-leyouts.css" type="text/css"/>
+    <link rel="stylesheet" media="screen" href="/theme_1/css/responsive-layouts.css" type="text/css"/>
 
     <!-- shortcodes -->
     <link rel="stylesheet" media="screen" href="/theme_1/css/shortcodes.css" type="text/css"/>
 
-    <link rel="stylesheet" media="screen" href="/theme_1/css/comingsoon/csoon.css" type="text/css"/>
+    <link rel="stylesheet" media="screen" href="/theme_1/comingsoon/csoon.css" type="text/css"/>
 
     <link rel="stylesheet" href="/css/webpage_preview.css" type="text/css"/>
 
 
     <script src="http://code.jquery.com/jquery-1.9.0.min.js"></script>
-    <script type="text/javascript" src="/theme_1/js/comingsoon/jquery.bcat.bgswitcher.js"></script>
+    <script type="text/javascript" src="/theme_1/comingsoon/jquery.bcat.bgswitcher.js"></script>
 
 
     <script>
@@ -89,7 +91,7 @@
 
                 <div class="clearfix"></div>
 
-                <h5 contenteditable="true" id="_title">{$content._title}</h5>
+                <h5 contenteditable="true" id="_title" >{$content._title}</h5>
 
             </div><!-- end section -->
 
@@ -296,10 +298,10 @@
 </script>
 
 <!-- ######### JS FILES ######### -->
-<script type="text/javascript" src="/theme_1/js/comingsoon/jquery.flipTimer.js"></script>
+<script type="text/javascript" src="/theme_1/comingsoon/jquery.flipTimer.js"></script>
 
 <!-- animations -->
-<script src="/theme_1/js/animations/js/animations.min.js" type="text/javascript"></script>
+<script src="/theme_1/animations/js/animations.min.js" type="text/javascript"></script>
 
 <script>
 
