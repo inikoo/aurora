@@ -789,7 +789,7 @@ class Category extends DB_Table {
 
                         break;
 
-
+                    case 'Category Webpage Meta Description':
                     case 'Webpage Meta Description':
                         return $this->webpage->get('Webpage Meta Description');
 
@@ -2491,6 +2491,9 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
         // print_r($this->base_data('Product Category Data'));
         // exit;
 
+
+
+
         if (array_key_exists($field, $this->base_data())) {
 
 
@@ -2536,7 +2539,11 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                 $this->update_field($field, $value, $options);
 
             }
-        } elseif (array_key_exists($field, $this->base_data('Product Category Dimension'))) {
+        }
+        elseif (array_key_exists($field, $this->base_data('Product Category Dimension'))) {
+
+
+
 
             switch ($field) {
 
@@ -2884,6 +2891,9 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
         } elseif (array_key_exists($field, $this->base_data('Supplier Category Dimension'))) {
             $this->update_table_field($field, $value, $options, 'Supplier Category', 'Supplier Category Dimension', $this->id);
         } else {
+
+
+
             switch ($field) {
 
 
@@ -3008,11 +3018,15 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
                     break;
 
-
+                case 'Category Webpage Meta Description':
                 case 'Webpage Meta Description':
                     if (!is_object($this->webpage)) {
                         $this->get_webpage();
                     }
+
+
+
+
                     $this->webpage->update(
                         array(
                             'Page Store Description' => $value
