@@ -281,28 +281,7 @@ $object_fields = array(
 
         )
     ),
-    array(
-        'label'      => _('Website'),
-        'show_title' => true,
-        'fields'     => array(
 
-
-            array(
-                'edit' => ($edit ? 'string' : ''),
-
-                'id'              => 'Store_URL',
-                'value'           => $object->get('Store URL'),
-                'formatted_value' => $object->get('Store URL'),
-                'label'           => ucfirst(
-                    $object->get_field_label('Store URL')
-                ),
-                'invalid_msg'     => get_invalid_message('string'),
-                'required'        => false,
-                'type'            => 'value'
-            ),
-
-        )
-    ),
     array(
         'label'      => _('Contact/Details'),
         'show_title' => true,
