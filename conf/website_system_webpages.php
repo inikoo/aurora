@@ -921,7 +921,24 @@ function website_system_webpages_config($website_type) {
                 'Webpage Browser Title'     => _('Shipping info'),
                 'Webpage Name'              => _('Shipping info'),
                 'Webpage Meta Description'  => ''
+            ),
+            'about.sys'        => array(
+                'Webpage Scope'             => 'About',
+                'Webpage Scope Metadata'    => '',
+                'Webpage Template Filename' => 'about',
+                'Webpage Type'              => 'Info',
+                'Webpage Code'              => 'about.sys',
+                'Webpage Browser Title'     => _('About us'),
+                'Webpage Name'              => _('About us'),
+                'Webpage Meta Description'  => '',
+                'Page Store Content Data'   => json_encode(
+                    array(
+                        '_title' => _('About us'),
+                        '_text'  => _('bla bla bla')
+                    )
+                )
             )
+
 
 
         ),
