@@ -933,8 +933,24 @@ function website_system_webpages_config($website_type) {
                 'Webpage Meta Description'  => '',
                 'Page Store Content Data'   => json_encode(
                     array(
-                        '_title' => _('About us'),
-                        '_text'  => _('bla bla bla')
+
+                        'show_thanks'        => true,
+                        'show_about'         => true,
+                        'show_telephone'     => true,
+                        '_welcome_image'     => '',
+                        '_welcome_image_key' => '',
+                        '_welcome_title'     => _('About us!'),
+                        '_welcome_subtitle'  => 'Will cover many web sites still in their infancy various versions have evolved packages over the years.',
+                        '_welcome_text'      => 'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don\'t look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn\'t anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet anything embarrassing hidden in the middle many web sites.',
+
+                        '_about_title' => _('About us'),
+                        '_about_text'  => 'When an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also electronics typesetting, remaining essentially believable.',
+
+                        '_telephone_title' => 'Need help? Ready to Help you with Whatever you Need',
+                        '_telephone'       => '#tel',
+                        '_telephone_msg'   => 'Answer Desk is Ready!',
+
+
                     )
                 )
             )
