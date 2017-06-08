@@ -681,7 +681,7 @@ function object_operation($account, $db, $user, $editor, $data, $smarty) {
 
 
 
-    if($data['object']=='website_footer' or $data['object']=='website_footer'){
+    if($data['object']=='website_footer' or $data['object']=='website_header'){
         $object         = get_object('website', $data['key']);
         $data['operation']='reset_element';
 
@@ -810,7 +810,9 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                 $smarty->assign('object', $object);
 
                 $pcard        = '';
-                $redirect='store/'.$object->get('Website Store Key').'/website/'.$object->id;
+
+
+                $redirect='store/'.$object->get('Website Store Key').'/website/';
                 $updated_data = array();
             }
             break;

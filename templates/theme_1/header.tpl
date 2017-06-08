@@ -135,8 +135,9 @@
     /* real scructural css */
 
     #logo {
+        border:1px solid transparent;
+        background:url(theme_1/images/header_logo.png ) no-repeat left top;
 
-        background:url( web_image.php?id={$header_data['logo_image_key']}) no-repeat left top;
     }
 
 </style>
@@ -353,7 +354,7 @@
                         <div class="left">
 
                             <!-- Logo -->
-                            <a href="index.html" id="logo"></a>
+                            <a href="index.html" id="logo"> <img src="/theme_1/images/header_logo.png" alt="logo"/> </a>
 
                         </div><!-- end left -->
 
@@ -412,55 +413,76 @@
                                 <ul class="nav navbar-nav three">
 
 
+                                    {foreach from=$header_data.menu.columns item=column key=key}
 
 
-                                    <li class="dropdown yamm-fw"><a href="index.html" data-toggle="dropdown" class="dropdown-toggle active">Catalogue</a>
+
+
+                                    {if $column.type=='three_columns'}
+
+                                        <li class="dropdown yamm-fw on" id="menu_column_{$key}" ><a  href="" data-toggle="dropdown" class="dropdown-toggle first"><i class="fa {$column.icon} padding_right_5  "  aria-hidden="true"></i>  <span contenteditable="true">{$column.label}</span></a>
                                         <ul class="dropdown-menu">
                                             <li>
                                                 <div class="yamm-content">
                                                     <div class="row">
-
-                                                        <ul class="col-sm-6 col-md-4 list-unstyled two">
-                                                            <li>
-                                                                <p>{t}Store Departments{/t}</p>
-                                                            </li>
-
-                                                            {foreach from=$store->get_categories('departments','menu') item=department}
-                                                                <li><a href="{$department['url']}"><i class="fa fa-caret-right"></i> {$department['label']}</a> {if $department['new']}<b class="mitemnew">{t}New{/t}</b>{/if}</li>
-                                                            {/foreach}
+                                                        {foreach from=$column.sub_columns item=sub_column}
 
 
 
-                                                        </ul>
-
-                                                        <ul class="col-sm-6 col-md-4 list-unstyled two">
-                                                            <li>
-                                                                <p>{t}Web Departments{/t}</p>
-                                                            </li>
-
-                                                            {foreach from=$website->get_categories('departments','menu') item=department}
-                                                                <li><a href="{$department['url']}"><i class="fa fa-caret-right"></i> {$department['label']}</a> {if $department['new']}<b class="mitemnew">{t}New{/t}</b>{/if}</li>
-                                                            {/foreach}
 
 
 
-                                                        </ul>
-
-                                                        <ul class="col-sm-6 col-md-4 list-unstyled two">
-                                                            <li>
-                                                                <p>{t}Web Families{/t}</p>
-                                                            </li>
-
-                                                            {foreach from=$website->get_categories('families','menu') item=families}
-                                                                <li><a href="{$families['url']}"><i class="fa fa-caret-right"></i> {$families['label']}</a> {if $families['new']}<b class="mitemnew">{t}New{/t}</b>{/if}</li>
-                                                            {/foreach}
 
 
+                                                            {if $sub_column.type=='items'}
 
-                                                        </ul>
+                                                                <ul class="col-sm-6 col-md-4 list-unstyled two">
+                                                                    {foreach from=$sub_column.items item=item}
+                                                                        <li><a href="{$item.url}"><i class="fa fa-fw {$item.icon}"></i> <span contenteditable="true">{$item.label}</span></a></li>
+                                                                    {/foreach}
+
+                                                                </ul>
+                                                            {elseif $sub_column.type=='text1'}
+                                                                <ul class="col-sm-6 col-md-4 list-unstyled two">
+                                                                    <li>
+                                                                        <p  contenteditable="true">{$sub_column.title}</p>
+                                                                    </li>
+                                                                    <li class="dart">
+                                                                        <img src="{if $sub_column.image==''}http://placehold.it/230x80{else}{$sub_column.image}{/if}" alt="" class="rimg marb1" />
+                                                                        <span contenteditable="true">{$sub_column.text}</span>
+                                                                    </li>
+                                                                </ul>
+                                                            {elseif $sub_column.type=='text2'}
+                                                                <ul class="col-sm-6 col-md-4 list-unstyled two">
+                                                                    <li>
+                                                                        <p  contenteditable="true">{$sub_column.title}</p>
+                                                                    </li>
+                                                                    <li class="dart">
+                                                                        <img src="{if $sub_column.image==''}http://placehold.it/230x160{else}{$sub_column.image}{/if}" alt="" class="rimg marb1" />
+
+                                                                    </li>
+                                                                </ul>
+                                                            {elseif $sub_column.type=='catalogue'}
+                                                                <ul class="col-sm-6 col-md-4 list-unstyled two">
+                                                                    <li>
+                                                                        <p contenteditable="true">{$sub_column.label}</p>
+                                                                    </li>
+
+                                                                    {foreach from=$store->get_categories({$sub_column.scope},'menu') item=item}
+                                                                        <li><a href="{$item['url']}"><i class="fa fa-caret-right"></i> <span contenteditable="true">{$item['label']}</span></a> {if $item['new']}<b class="mitemnew">{t}New{/t}</b>{/if}</li>
+                                                                    {/foreach}
 
 
 
+                                                                </ul>
+
+
+                                                            {/if}
+
+
+
+
+                                                        {/foreach}
 
                                                     </div>
                                                 </div>
@@ -468,179 +490,48 @@
                                         </ul>
                                     </li>
 
-                                    <li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Info pages</a>
-                                        <ul class="dropdown-menu multilevel" role="menu">
-                                            <li><a href="about.html">About Style 1</a></li>
-                                            <li><a href="about2.html">About Style 2</a></li>
-                                            <li><a href="about3.html">About Style 3</a></li>
-                                            <li><a href="about4.html">About Style 4</a></li>
-                                            <li><a href="about5.html">About Style 5</a></li>
-                                            <li><a href="services.html">Services Style 1</a></li>
-                                            <li><a href="services2.html">Services Style 2</a></li>
-                                            <li><a href="services3.html">Services Style 3</a></li>
-                                            <li><a href="services4.html">Services Style 4</a></li>
-                                            <li><a href="services5.html">Services Style 5</a></li>
-                                            <li><a href="team.html">Our Team Style 1</a></li>
-                                            <li><a href="team2.html">Our Team Style 2</a></li>
-                                            <li><a href="team3.html">Our Team Style 3</a></li>
-                                            <li class="dropdown-submenu mul"> <a tabindex="-1" href="#">Multi Level Submenu +</a>
-                                                <ul class="dropdown-menu">
-                                                    <li><a href="#">Menu Item 1</a></li>
-                                                    <li><a href="#">Menu Item 2</a></li>
-                                                    <li><a href="#">Menu Item 3</a></li>
-                                                </ul>
-                                            </li>
-                                        </ul>
-                                    </li>
 
-                                    <li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Offers</a>
-                                        <ul class="dropdown-menu multilevel" role="menu">
-                                            <li><a href="index1.html">Slider Style 1</a></li>
-                                            <li><a href="index5.html">Slider Style 2</a></li>
-                                            <li><a href="index4.html">Slider Style 3</a></li>
-                                            <li><a href="index-layout14.html">Slider Style 4</a></li>
-                                            <li><a href="index10.html">Slider Style 5</a></li>
-                                            <li><a href="index11.html">Slider Style 6</a></li>
-                                            <li><a href="index8.html">Slider Style 7</a></li>
-                                            <li><a href="index9.html">Slider Style 8</a></li>
-                                            <li><a href="index7.html">Slider Style 9</a></li>
-                                            <li><a href="index.html">Slider Style 10</a></li>
-                                        </ul>
-                                    </li>
 
-                                    <li class="dropdown yamm-fw"> <a href="#" data-toggle="dropdown" class="dropdown-toggle">Features</a>
-                                        <ul class="dropdown-menu">
-                                            <li>
-                                                <div class="yamm-content">
-                                                    <div class="row">
+                                    {elseif $column.type=='single_column'}
+                                        <li class="dropdown" id="menu_column_{$key}" ><a  href="#" data-toggle="dropdown" class="dropdown-toggle">Extra column</a>
+                                            <ul class="dropdown-menu multilevel sortable" role="menu">
 
-                                                        <ul class="col-sm-6 col-md-4 list-unstyled two">
-                                                            <li>
-                                                                <p>Useful Pages</p>
-                                                            </li>
-                                                            <li><a href="left-sidebar.html"><i class="fa fa-angle-right"></i>Left Sidebar</a></li>
-                                                            <li><a href="right-sidebar.html"><i class="fa fa-angle-right"></i>Right Sidebar</a></li>
-                                                            <li><a href="left-nav.html"><i class="fa fa-angle-right"></i>Left Navigation</a></li>
-                                                            <li><a href="right-nav.html"><i class="fa fa-angle-right"></i>Right Navigation</a></li>
-                                                            <li><a href="login.html"><i class="fa fa-angle-right"></i>Login Form</a></li>
-                                                            <li><a href="register.html"><i class="fa fa-angle-right"></i>Registration Form</a></li>
-                                                            <li><a href="404.html"><i class="fa fa-angle-right"></i>404 Error Page</a></li>
-                                                            <li><a href="faq.html"><i class="fa fa-angle-right"></i>FAQs Page</a></li>
-                                                            <li><a href="video-bg.html"><i class="fa fa-angle-right"></i>Video Backgrounds</a></li>
-                                                        </ul>
 
-                                                        <ul class="col-sm-6 col-md-4 list-unstyled two">
-                                                            <li>
-                                                                <p>Diffrent Websites</p>
-                                                            </li>
-                                                            <li><a href="coming-soon.html" target="_blank"><i class="fa fa-angle-right"></i>Coming Soon</a></li>
-                                                            <li><a href="history.html"><i class="fa fa-angle-right"></i>History Timeline</a></li>
-                                                            <li><a href="index-layout14.html"><i class="fa fa-angle-right"></i>Video BG Slider</a></li>
-                                                            <li><a href="template17.html"><i class="fa fa-angle-right"></i>Header Styles</a></li>
-                                                            <li><a href="template18.html"><i class="fa fa-angle-right"></i>Header Styles</a></li>
-                                                            <li><a href="#"><i class="fa fa-angle-right"></i>Masonry Gallerys</a> </li>
-                                                            <li><a href="#"><i class="fa fa-angle-right"></i>Parallax Backgrounds</a> </li>
-                                                            <li><a href="#"><i class="fa fa-angle-right"></i>Background Videos</a> </li>
-                                                            <li><a href="#"><i class="fa fa-angle-right"></i>Create your Own</a> </li>
-                                                        </ul>
+                                                {foreach from=$column.items item=item}
+                                                    {if $item.type=='item'}
+                                                        <li><a href="{$item['url']}"><span contenteditable="true">{$item['label']}</span></a></li>
+                                                    {elseif $item.type=='submenu'}
+                                                        <li class="dropdown-submenu mul"> <a tabindex="-1" href="#">{$item['label']}</a>
+                                                            <ul class="dropdown-menu sortable">
+                                                                {foreach from=$item.sub_items item=sub_item}
+                                                                    <li><a href="{$sub_item.url}">{$sub_item.label}</a></li>
+                                                                {/foreach}
 
-                                                        <ul class="col-sm-6 col-md-4 list-unstyled two">
-                                                            <li>
-                                                                <p>More Features</p>
-                                                            </li>
-                                                            <li><a href="#"><i class="fa fa-angle-right"></i>Mega Menu</a></li>
-                                                            <li><a href="#"><i class="fa fa-angle-right"></i>Diffrent Websites</a></li>
-                                                            <li><a href="#"><i class="fa fa-angle-right"></i>Cross Browser Check</a></li>
-                                                            <li><a href="#"><i class="fa fa-angle-right"></i>Premium Sliders</a></li>
-                                                            <li><a href="#"><i class="fa fa-angle-right"></i>Diffrent Slide Shows</a></li>
-                                                            <li><a href="#"><i class="fa fa-angle-right"></i>Video BG Effects</a></li>
-                                                            <li><a href="#"><i class="fa fa-angle-right"></i>100+ Feature Sections</a></li>
-                                                            <li><a href="#"><i class="fa fa-angle-right"></i>Use for any Website</a></li>
-                                                            <li><a href="#"><i class="fa fa-angle-right"></i>Free Updates</a></li>
-                                                        </ul>
 
-                                                    </div>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                    </li>
+                                                            </ul>
+                                                        </li>
+                                                    {/if}
+                                                {/foreach}
 
-                                    <li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Inspiration</a>
-                                        <ul class="dropdown-menu" role="menu">
-                                            <li> <a href="portfolio-1.html">Single Item</a> </li>
-                                            <li> <a href="portfolio-5.html">Portfolio Masonry</a> </li>
-                                            <li> <a href="portfolio-4.html">Portfolio Columns 4</a> </li>
-                                            <li> <a href="portfolio-3.html">Portfolio Columns 3</a> </li>
-                                            <li> <a href="portfolio-2.html">Portfolio Columns 2</a> </li>
-                                            <li> <a href="portfolio-6.html">Portfolio + Sidebar</a> </li>
-                                            <li> <a href="portfolio-7.html">Portfolio Full Width</a> </li>
-                                            <li> <a href="portfolio-8.html">Image Gallery</a> </li>
-                                        </ul>
-                                    </li>
 
-                                    <li class="dropdown"> <a href="#" data-toggle="dropdown" class="dropdown-toggle">Blog </a>
-                                        <ul class="dropdown-menu multilevel" role="menu">
-                                            <li> <a href="blog-4.html">With Masonry</a> </li>
-                                            <li> <a href="blog.html">With Large Image</a> </li>
-                                            <li> <a href="blog-2.html">With Medium Image</a> </li>
-                                            <li> <a href="blog-3.html">With Small Image</a> </li>
-                                            <li> <a href="blog-post.html">Single Post</a> </li>
-                                        </ul>
-                                    </li>
+                                            </ul>
+                                        </li>
+                                    {/if}
 
-                                    <li class="dropdown yamm-fw"> <a href="#" data-toggle="dropdown" class="dropdown-toggle">Shortcodes</a>
-                                        <ul class="dropdown-menu">
-                                            <li>
-                                                <div class="yamm-content">
-                                                    <div class="row">
 
-                                                        <ul class="col-sm-6 col-md-4 list-unstyled two">
-                                                            <li><a href="template1.html"><i class="fa fa-plus-square"></i> Accordion &amp; Toggle</a></li>
-                                                            <li><a href="template2.html"><i class="fa fa-leaf"></i> Title Styles</a></li>
-                                                            <li><a href="template3.html"><i class="fa fa-bars"></i> List of Dividers</a></li>
-                                                            <li><a href="template4.html"><i class="fa fa-exclamation-triangle"></i> Boxes Alert</a></li>
-                                                            <li><a href="template5.html"><i class="fa fa-hand-o-up"></i> List of Buttons</a></li>
-                                                            <li><a href="template6.html"><i class="fa fa-cog"></i> Carousel Sliders</a></li>
-                                                            <li><a href="template7.html"><i class="fa fa-file-text"></i> Page Columns</a></li>
-                                                            <li><a href="template8.html"><i class="fa fa-rocket"></i> Animated Counters</a></li>
-                                                            <li><a href="template17.html"><i class="fa fa-question"></i> Faqs Page</a></li>
-                                                        </ul>
 
-                                                        <ul class="col-sm-6 col-md-4 list-unstyled two">
-                                                            <li><a href="template9.html"><i class="fa fa-pie-chart"></i> Pie Charts</a></li>
-                                                            <li><a href="template10.html"><i class="fa fa-flag"></i> Font Icons</a></li>
-                                                            <li><a href="template11.html"><i class="fa fa-umbrella"></i> Flip Boxes</a></li>
-                                                            <li><a href="template12.html"><i class="fa fa-picture-o"></i> Image Frames</a></li>
-                                                            <li><a href="template13.html"><i class="fa fa-table"></i> Pricing Tables</a></li>
-                                                            <li><a href="template14.html"><i class="fa fa-line-chart"></i> Progress Bars</a></li>
-                                                            <li><a href="template15.html"><i class="fa fa-toggle-on"></i> List of Tabs</a></li>
-                                                            <li><a href="template16.html"><i class="fa fa-paper-plane"></i> Popover &amp; Tooltip</a></li>
-                                                            <li><a href="template18.html"><i class="fa fa-play-circle"></i> Video Backgrounds</a></li>
-                                                        </ul>
 
-                                                        <ul class="col-sm-6 col-md-4 list-unstyled two">
-                                                            <li>
-                                                                <p>About Website</p>
-                                                            </li>
-                                                            <li class="dart">
-                                                                <img src="http://placehold.it/230x80" alt="" class="rimg marb1" />
-                                                                There are many variations passages available the majority have alteration in some form, by injected humour on randomised words if you are going to use a passage of lorem anything.
-                                                            </li>
-                                                        </ul>
+                                    {/foreach}
 
-                                                    </div>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                    </li>
 
-                                    <li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Contact</a>
-                                        <ul class="dropdown-menu" role="menu">
-                                            <li> <a href="contact.html">Contact Style 1</a> </li>
-                                            <li> <a href="contact2.html">Contact Style 2</a> </li>
-                                            <li> <a href="contact3.html">Contact Style 3</a> </li>
-                                        </ul>
-                                    </li>
+
+
+
+
+
+
+
+
 
                                 </ul>
 
@@ -1401,6 +1292,21 @@ console.log(link.html())
 
     });
 
+
+
+    //$('.sortable').sortable();
+
+    function trigger_click(key) {
+
+        $("#menu_column_" + key).find('.dropdown-menu').css('display', 'block')
+
+
+        $('.yamm ul.nav li.dropdown').removeClass('on')
+
+
+
+
+    }
 
 
     </script>

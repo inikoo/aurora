@@ -11,8 +11,18 @@
 
 $theme='theme_1';
 
-$smarty->assign('website',$state['_object']);
+$website=$state['_object'];
+
+$smarty->assign('website',$website);
 $smarty->assign('theme',$theme);
+
+$header_data = $website->get('Header Data');
+$header_key=$website->get('Website Header Key');
+
+
+$smarty->assign('header_data', $header_data);
+$smarty->assign('header_key', $header_key);
+
 
 $html = $smarty->fetch('header_preview.tpl');
 

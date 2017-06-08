@@ -257,6 +257,14 @@ function get_object($object_name, $key, $load_other_data = false) {
             require_once "class.Webpage_Type.php";
             $object = new Webpage_Type($key);
             break;
+        case 'website_footer':
+            require_once "class.WebsiteFooter.php";
+            $object = new WebsiteFooter($key);
+            break;
+        case 'website_header':
+            require_once "class.WebsiteHeader.php";
+            $object = new WebsiteHeader($key);
+            break;
         default:
             exit('need to complete E1: >'.strtolower($object_name)."<\n");
             break;
