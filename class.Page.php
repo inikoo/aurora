@@ -1306,6 +1306,7 @@ class Page extends DB_Table {
             case 'Webpage Launch Date':
             case 'Webpage Name':
             case 'Webpage Browser Title':
+            case 'Webpage Meta Description':
 
                 $this->update_field($field, $value, $options);
                 break;
