@@ -1,0 +1,81 @@
+html{
+background: url(binding_dark.png) repeat;
+
+}
+
+.comingsoon_page {
+	float: left;
+	width: 100%;
+}
+.topcontsoon {
+	margin-top:80px;
+	float: left;
+	width: 100%;
+	position: relative;
+	text-align: center;
+	margin-bottom: 59px;
+}
+
+.topcontsoon h5 {
+	color: #e3e3e3;
+	margin: 35px 0px 0px 0px;
+	font-family: 'Kaushan Script', cursive;
+	font-size: 60px;
+	line-height: 80%;
+}
+
+p{
+	font-size: 20px;
+	line-height: normal;
+}
+
+
+.countdown_dashboard {
+
+	text-align: center;
+}
+
+
+.clock {
+
+	margin: 0 auto;
+	text-align: center;
+width:620px;
+}
+
+.flip-clock-label{display:none}
+
+
+.text_email {
+	width: 40%;
+	position: relative;
+	text-align: center;
+	margin: 25px auto 0 auto;
+	padding-top: 40px;
+	border-top: 1px solid rgba(255,255,255,.2);
+}
+
+
+
+.comingsoon_page .newslesoon {
+	float: left;
+	width: 70%;
+	padding: 10px 20px;
+	border: 1px solid rgba(255, 255, 255, 0.3);
+	background: none;
+	color: #999;
+}
+.comingsoon_page .newslesubmit {
+	float: left;
+	padding: 9px 20px;
+	border: 1px solid #727272;
+	border-top: 2px solid #727272;
+	background: rgba(255, 255, 255, 0.3);
+	color: #fff;
+	cursor: pointer;
+	transition: all 0.3s ease;
+}
+.comingsoon_page .newslesubmit:hover {
+	background: rgba(255, 255, 255, 0.4);
+}
+
