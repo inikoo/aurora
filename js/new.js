@@ -236,8 +236,16 @@ function save_new_object(object, form_type) {
             if (data.state == 200) {
 
 
-                if(data.pcard=='' && data.updated_data.redirect!= undefined){
-                    change_view(data.updated_data.redirect)
+
+
+
+                if(data.pcard=='' && data.redirect!= ''){
+
+                    console.log(data.updated_data.redirect)
+                    change_view(data.redirect)
+                    return;
+
+
                 }
 
                 $('#result').html(data.pcard).removeClass('hide')

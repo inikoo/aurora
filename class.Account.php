@@ -114,7 +114,7 @@ class Account extends DB_Table {
         );
 
 
-        if ($result = $db->this->query($sql)) {
+        if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
 
                 if ($smarty) {
@@ -225,6 +225,15 @@ class Account extends DB_Table {
             $data['Store Currency Code']                  = $data['Store Currency Code'];
 
         }
+
+
+
+        if(!isset($data['Store Type']) or $data['Store Type']==''){
+            $data['Store Type']                  ='B2B';
+
+        }
+
+
 
         $data['Store Home Country Code 2 Alpha'] = substr($data['Store Locale'], -2);
 
@@ -1077,6 +1086,10 @@ class Account extends DB_Table {
     }
 
     function create_category($raw_data) {
+
+        include_once 'class.Category.php';
+
+
 
         if (!isset($raw_data['Category Label']) or $raw_data['Category Label'] == '') {
             $raw_data['Category Label'] = $raw_data['Category Code'];
