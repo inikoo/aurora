@@ -158,6 +158,9 @@ class Website extends DB_Table {
     function create($data) {
 
 
+
+
+
         $this->new = false;
         $base_data = $this->base_data();
 
@@ -209,7 +212,7 @@ class Website extends DB_Table {
             $this->create_footer($footer_data);
 
 
-            $logo_image_key = $website->add_image(
+            $logo_image_key = $this->add_image(
                 array(
                     'Image Filename'                   => 'website.logo.png',
                     'Upload Data'                      => array(
@@ -1386,6 +1389,7 @@ class Website extends DB_Table {
 
             $header         = new WebsiteHeader($this->get('Website Header Key'));
             $header->editor = $this->editor;
+
 
 
             $header->update(

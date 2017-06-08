@@ -272,11 +272,11 @@
 }
 .top_nav .left {
 	float: left;
-	width: 30%;
+	width: 50%;
 }
 .top_nav .right {
 	float: left;
-	width: 70%;
+	width: 50%;
 	text-align: right;
 	padding-top: 14px;
 }

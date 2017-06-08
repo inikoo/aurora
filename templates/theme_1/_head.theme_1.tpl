@@ -31,12 +31,12 @@
 
     <!-- Google fonts - witch you want to use - (rest you can just remove) -->
 
-    <!--
+
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic,700,700italic,800,800italic' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=Raleway:400,100,200,300,500,600,700,800,900' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=Dancing+Script:400,700' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=Josefin+Sans:400,100,100italic,300,300italic,400italic,600,600italic,700,700italic' rel='stylesheet' type='text/css'>
-    -->
+
     <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
@@ -105,13 +105,18 @@
     <link rel="stylesheet" type="text/css" href="/theme_1/tabs/assets/css/responsive-tabs3.css">
 
 
+    <link rel="stylesheet" href="/theme_1/css/aurora.css">
+
+
+
     <!--  <script src="http://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script> -->
       <script src="/theme_1/local/jquery.js"></script>
 
 
 
     <!--  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script> -->
-    <script src="/theme_1/local/bootstrap.js"></script>
+
+    <!--  <script src="/theme_1/local/bootstrap.js"></script> -->
 
 
 
@@ -123,7 +128,22 @@
     <script  src="/theme_1/animations/js/animations.min.js" type="text/javascript"></script>
 
      <script type="text/javascript" src="/theme_1/cubeportfolio/js/jquery.cubeportfolio.min.js"></script>
-         <script type="text/javascript" src="/js/libs/jquery-ui.js"></script>
+
+
+    <!-- mega menu -->
+
+    <script src="/theme_1/mainmenu/customeUI.js"></script>
+
+
+    <!-- sticky menu -->
+    <script type="text/javascript" src="/theme_1/mainmenu/sticky.js"></script>
+    <script type="text/javascript" src="/theme_1/mainmenu/modernizr.custom.75180.js"></script>
+
+
+    <script type="text/javascript" src="/js/libs/jquery-ui.js"></script>
+
+
+
 
 
  </head>

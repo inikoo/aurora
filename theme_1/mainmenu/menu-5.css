@@ -520,7 +520,7 @@ a.registerbut:hover{
 
     }
 
-    .yamm ul.nav li.dropdown:hover > ul.dropdown-menu {
+    .yamm ul.nav li.dropdown.on:hover > ul.dropdown-menu {
         display: block;
 
         /*-webkit-transition: all 0.5s ease;
