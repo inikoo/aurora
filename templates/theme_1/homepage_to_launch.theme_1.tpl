@@ -45,25 +45,22 @@
     <!-- shortcodes -->
     <link rel="stylesheet" media="screen" href="/theme_1/css/shortcodes.css" type="text/css"/>
 
-    <link rel="stylesheet" media="screen" href="/theme_1/comingsoon/csoon.css" type="text/css"/>
+
+    <link rel="stylesheet" media="screen" href="/theme_1/comingsoon/flipTimer.css" type="text/css"/>
+
+
+
+
 
     <link rel="stylesheet" href="/css/webpage_preview.css" type="text/css"/>
 
 
-    <script src="http://code.jquery.com/jquery-1.9.0.min.js"></script>
-    <script type="text/javascript" src="/theme_1/comingsoon/jquery.bcat.bgswitcher.js"></script>
+    <link rel="stylesheet" href="/theme_1/flipclock/flipclock.css">
+    <link rel="stylesheet" media="screen" href="/theme_1/comingsoon/homepage_to_launch.css" type="text/css"/>
 
 
-    <script>
-        $(document).ready(function () {
-            //Callback works only with direction = "down"
-            $('.flipTimer').flipTimer({
-                direction: 'down', date: '{$content._launch_date}', callback: function () {
-
-                }
-            });
-        });
-    </script>
+    <script src="/theme_1/local/jquery.js" type="text/javascript"></script>
+    <script src="/theme_1/local/moment.min.js" type="text/javascript"></script>
 
 
 </head>
@@ -75,7 +72,7 @@
 <div class="site_wrapper">
 
     <div class="comingsoon_page">
-        <div class="container">
+        <div class="container" style=""  >
 
             <div class="topcontsoon">
 
@@ -93,42 +90,31 @@
 
                 <h5 contenteditable="true" id="_title" >{$content._title}</h5>
 
+
+
             </div><!-- end section -->
+            <div class="clearfix"></div>
 
 
 
-
-            <div class="countdown_dashboard">
                 <div id="show_countdown" launch_date="{$content._launch_date}"  class="show_div {if !$content.show_countdown  or $content._launch_date=='' }hide{/if}">
-                <div class="flipTimer">
 
-                    <div class="days"></div>
 
-                    <div class="hours"></div>
+                    <div class="countdown_dashboard" style="" >
 
-                    <div class="minutes"></div>
+                        <div class="clock" ></div>
 
-                    <div class="seconds"></div>
-
-                    <div class="clearfix"></div>
-
-                    <div class="fttext" contenteditable="true" id="_day_label">{$content._day_label}</div>
-                    <div class="fttext" contenteditable="true" id="_hrs_label">{$content._hrs_label}</div>
-                    <div class="fttext" contenteditable="true" id="_min_label">{$content._min_label}</div>
-                    <div class="fttext" contenteditable="true" id="_sec_label">{$content._sec_label}</div>
 
 
                 </div>
 
-
-            </div><!-- end section -->
             </div>
 
             <div class="clearfix"></div>
 
 
 
-            <div class="socialiconssoon">
+            <div class="text_email">
 
                 <p contenteditable="true" id="_text">{$content._text}</p>
                 <div id="show_email_form" class="show_div {if !$content.show_email_form}hide{/if}">
@@ -297,20 +283,29 @@
 
 </script>
 
-<!-- ######### JS FILES ######### -->
-<script type="text/javascript" src="/theme_1/comingsoon/jquery.flipTimer.js"></script>
-
 <!-- animations -->
+
+
 <script src="/theme_1/animations/js/animations.min.js" type="text/javascript"></script>
 
-<script>
+
+<script src="/theme_1/flipclock/flipclock.min.js"></script>
 
 
-    //  $('[contenteditable=true]').on('input paste',function(event){
-    //      $('#save_button', window.parent.document).addClass('save button changed valid')
-    //  });
+<script type="text/javascript">
 
 
+
+
+    var seconds = -1*moment().diff("{$content._launch_date}", 'seconds');
+
+
+    console.log(seconds)
+
+    var clock = $('.clock').FlipClock(seconds, {
+        clockFace: 'DailyCounter',
+        countdown: true
+    });
 </script>
 
 

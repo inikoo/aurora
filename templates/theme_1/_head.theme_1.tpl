@@ -25,7 +25,7 @@
 
     <!-- Favicon -->
     <link rel="shortcut icon" href="images/favicon.ico">
-
+cs
     <!-- this styles only adds some repairs on idevices  -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
