@@ -43,7 +43,7 @@ if (!array_key_exists('website_key', $_SESSION) or !$_SESSION['website_key']) {
         $_SESSION['website_key'] = 10;
     } else {
 
-        require_once '../keyring/dns.php';
+        require_once 'keyring/dns.php';
 
         $db = new PDO(
             "mysql:host=$dns_host;dbname=$dns_db;charset=utf8", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
@@ -99,11 +99,11 @@ if (    (!isset($_SESSION['logged_in']) or !$_SESSION['logged_in']) and isset($p
 
 if (!$is_cached) {
 
-    require_once '../keyring/key.php';
+    require_once 'keyring/key.php';
 
     if(!isset($db)) {
 
-        require_once '../keyring/dns.php';
+        require_once 'keyring/dns.php';
 
         $db = new PDO(
             "mysql:host=$dns_host;dbname=$dns_db;charset=utf8", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
