@@ -1285,13 +1285,13 @@ function order_items($_data, $db, $user, $account) {
 
 
             $units_per_carton = $data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'];
+            $skos_per_carton = $data['Supplier Part Packages Per Carton'];
 
 
             $subtotals = sprintf('<span  class="subtotals" style="font-size:90%%"  >');
             if ($data['Purchase Order Quantity'] > 0) {
 
-                $subtotals .=''.$data['Purchase Order Quantity'] * $units_per_carton.'u. ';
-
+                $subtotals .=$data['Purchase Order Quantity'] * $units_per_carton.'u., '.$skos_per_carton.'skos ';
 
 
                 $amount = $data['Purchase Order Quantity'] * $units_per_carton * $data['Supplier Part Unit Cost'];
