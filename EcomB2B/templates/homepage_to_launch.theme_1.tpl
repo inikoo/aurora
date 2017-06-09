@@ -138,8 +138,7 @@
                 <div id="show_email_form" class="show_div {if !$content.show_email_form}hide{/if}">
 
                 <div class="clearfix marb4"></div>
-                <span class="newslesoon" style="text-align: left;opacity:.7"  id="_email_placeholder">{$content._email_placeholder}</span>
-                <span class="newslesubmit"  id="_email_submit_label">{$content._email_submit_label}</span>
+                
                 </div>
                 <div class="clearfix"></div>
 
