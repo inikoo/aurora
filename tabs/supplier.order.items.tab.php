@@ -11,7 +11,7 @@
 
 $tab     = 'supplier.order.items';
 $ar_file = 'ar_suppliers_tables.php';
-$tipo    = 'order.items';
+$tipo    = 'supplier.order.items';
 
 $default = $user->get_tab_defaults($tab);
 
