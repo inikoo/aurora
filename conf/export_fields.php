@@ -558,6 +558,44 @@ $export_fields = array(
 
     ),
 
+    'supplier.order.items' => array(
+        array(
+            'name'    => '`Supplier Part Reference`',
+            'label'   => _('Supplier product code'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Part Unit Description`',
+            'label'   => _('Unit description'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Purchase Order Quantity`*`Supplier Part Packages Per Carton`*`Part Units Per Package`',
+            'label'   => _('Units'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Purchase Order Quantity`*`Supplier Part Packages Per Carton`',
+            'label'   => _('Packs'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Purchase Order Quantity`',
+            'label'   => _('Cartons'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Purchase Order Quantity`*`Supplier Part Packages Per Carton`*`Part Units Per Package`*`Supplier Part Unit Cost`  ',
+            'label'   => _('Amount'),
+            'checked' => 1
+        ),
+
+
+
+    ),
+
+
+
 );
 
 ?>

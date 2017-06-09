@@ -39,7 +39,7 @@ switch ($tipo) {
     case 'agent_parts':
         agent_parts(get_table_parameters(), $db, $user, $account);
         break;
-    case 'order.items':
+    case 'supplier.order.items':
         order_items(get_table_parameters(), $db, $user, $account);
         break;
     case 'invoice.items':
