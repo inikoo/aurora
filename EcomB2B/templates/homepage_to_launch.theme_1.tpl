@@ -100,7 +100,7 @@
 
             <div class="topcontsoon">
 
-                {if $content._img!='' }
+                {if $content._img!=''  and  $content._img!='art/image_350x150.png'  }
                 <div id="show_img" class="show_div   {if !$content.show_img   }hide{/if}">
 
 
