@@ -39,6 +39,9 @@ $sql = sprintf(
 );
 
 
+
+
+
 if ($result = $db->query($sql)) {
 
     if ($row = $result->fetch()) {
