@@ -256,7 +256,7 @@ class Public_Website {
             case 'Website Header Key';
             case 'Website Alt Department Category Key':
             case 'Website Alt Family Category Key':
-
+            case 'Website Status';
                 return $this->data[$key];
                 break;
 
