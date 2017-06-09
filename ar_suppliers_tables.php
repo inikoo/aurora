@@ -1345,9 +1345,10 @@ function order_items($_data, $db, $user, $account) {
             $description ='<div style="font-size:90%" >'. ($data['Supplier Part Reference'] != $data['Part Reference'] ? $data['Part Reference'].', ' : '');
 
 
-            $description .= $data['Part Unit Description'].' <span class="discreet" title="'._('Units per carton').'">('.number($units_per_carton).'/C) <span class="" title="'._('Carton cost').'">'.money(
+            $description .= $data['Part Unit Description'].'<br/> 
+             <span class="discreet">(<span  title="'._('Units per carton').'">'.number($units_per_carton).'u./C</span>, '.sprintf(_('packed in %ds'),$data['Part Units Per Package']).')</span> <span class="" title="'._('Carton cost').'">'.money(
                     $units_per_carton*$data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code')
-                ).'</span></span>';
+                ).'/C</span></span>';
 
 
             if ($data['Supplier Part Minimum Carton Order'] > 0 and $data['Supplier Part Minimum Carton Order']!=1  ) {
