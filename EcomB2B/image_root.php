@@ -10,13 +10,14 @@
 */
 
 
-require_once 'common.php';
+require_once 'keyring/dns.php';
 
-//if (!$user->can_view('account')) {
-//	header('HTTP/1.0 403 Forbidden');
-//	echo _('Forbidden');
-//	exit;
-//}
+$db = new PDO(
+    "mysql:host=$dns_host;dbname=$dns_db;charset=utf8", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
+);
+$db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+
+
 
 
 if (!isset($_REQUEST['id'])) {
