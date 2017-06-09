@@ -1291,7 +1291,7 @@ function order_items($_data, $db, $user, $account) {
             $subtotals = sprintf('<span  class="subtotals" style="font-size:90%%"  >');
             if ($data['Purchase Order Quantity'] > 0) {
 
-                $subtotals .=$data['Purchase Order Quantity'] * $units_per_carton.'u., '.$skos_per_carton.'skos ';
+                $subtotals .=$data['Purchase Order Quantity'] * $units_per_carton.'u., '.$data['Purchase Order Quantity'] * $skos_per_carton.'pkg. ';
 
 
                 $amount = $data['Purchase Order Quantity'] * $units_per_carton * $data['Supplier Part Unit Cost'];
@@ -1465,9 +1465,7 @@ function order_items($_data, $db, $user, $account) {
                 'parent_key'        => $purchase_order->get(
                     'Purchase Order Parent Key'
                 ),
-                'parent_type'       => strtolower(
-                    $purchase_order->get('Purchase Order Parent')
-                ),
+                'parent_type'       => strtolower($purchase_order->get('Purchase Order Parent')),
                 'supplier_part_key' => (integer)$data['Supplier Part Key'],
                 'supplier_key'      => (integer)$data['Supplier Key'],
                 'checkbox'          => sprintf(
