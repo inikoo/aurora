@@ -55,7 +55,7 @@ if (!array_key_exists('website_key', $_SESSION) or !$_SESSION['website_key']) {
             'SELECT `Website Key`  FROM `Website Dimension` WHERE `Website URL`=%s', prepare_mysql($_SERVER['SERVER_NAME'])
         );
 
-        if ($result = $this->db->query($sql)) {
+        if ($result = $db->query($sql)) {
             if ($row = $result->fetch()) {
                 $_SESSION['website_key'] = $row['Website Key'];
             } else {
