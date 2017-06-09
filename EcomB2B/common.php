@@ -33,7 +33,49 @@ $smarty->clearAllCache();
 //$smarty->clear_cache('index.tpl');
 
 
+
 session_start();
+
+if (!array_key_exists('website_key', $_SESSION) or !$_SESSION['website_key']) {
+
+
+    if ($_SERVER['SERVER_NAME'] == 'ecom.bali') {
+        $_SESSION['website_key'] = 10;
+    } else {
+
+        require_once '../keyring/dns.php';
+
+        $db = new PDO(
+            "mysql:host=$dns_host;dbname=$dns_db;charset=utf8", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
+        );
+        $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+
+
+        $sql = sprintf(
+            'SELECT `Website Key`  FROM `Website Dimension` WHERE `Website URL`=%s', prepare_mysql($_SERVER['SERVER_NAME'])
+        );
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $_SESSION['website_key'] = $row['Website Key'];
+            } else {
+                print 'E1 SERVER_NAME '.$_SERVER['SERVER_NAME'];
+                exit;
+            }
+        } else {
+            print 'E2 SERVER_NAME '.$_SERVER['SERVER_NAME'];
+            exit;
+
+        }
+
+
+    }
+
+
+}
+
+
+
 
 
 $is_cached = false;
@@ -54,18 +96,25 @@ if (    (!isset($_SESSION['logged_in']) or !$_SESSION['logged_in']) and isset($p
 */
 
 
+
 if (!$is_cached) {
 
-    require_once 'keyring/dns.php';
+    require_once '../keyring/key.php';
 
-    $db = new PDO(
-        "mysql:host=$dns_host;dbname=$dns_db;charset=utf8", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
-    );
-    $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+    if(!isset($db)) {
 
+        require_once '../keyring/dns.php';
+
+        $db = new PDO(
+            "mysql:host=$dns_host;dbname=$dns_db;charset=utf8", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
+        );
+        $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+    }
 
     include_once 'class.Public_Account.php';
     include_once 'class.Public_Website.php';
+    include_once 'class.Public_Webpage.php';
+
     include_once 'class.Public_Store.php';
     include_once 'class.Public_Website_User.php';
     include_once 'class.Public_Customer.php';
@@ -73,19 +122,12 @@ if (!$is_cached) {
 
     $account = new Public_Account($db);
 
-
-
-    $website           = new Public_Website(SITE_KEY);
-
-
+    $website           = new Public_Website($_SESSION['website_key']);
     $store_key      = $website->get('Website Store Key');
-
-
-
     $store          = new Public_Store($store_key);
 
 
-
+    date_default_timezone_set($store->get('Store Timezone'));
 
 
 
@@ -341,7 +383,23 @@ if (!$is_cached) {
     $smarty->assign('language', $language);
 
 
+    $theme='theme_1';
 
+
+    if($website->get('Website Status')=='InProcess'){
+        $webpage_key = $website->get_system_webpage('launching.sys');
+        $webpage=new Public_Webpage($webpage_key);
+        $content=$webpage->get('Content Data');
+
+        $smarty->assign('webpage',$webpage);
+
+        $smarty->assign('content',$content);
+        $smarty->display('homepage_to_launch.'.$theme.'.tpl', $webpage_key);
+
+
+
+        exit ;
+    }
 
 
 

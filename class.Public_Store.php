@@ -125,6 +125,7 @@ class Public_Store {
             case 'Store Currency Code':
             case 'Store Department Category Key':
             case 'Store Family Category Key':
+            case 'Store Timezone':
                 return $this->data[$key];
                 break;
 
