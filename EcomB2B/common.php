@@ -51,8 +51,10 @@ if (!array_key_exists('website_key', $_SESSION) or !$_SESSION['website_key']) {
         $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
 
+        $server_name=preg_replace('/^www\./','',$_SERVER['SERVER_NAME']);
+
         $sql = sprintf(
-            'SELECT `Website Key`  FROM `Website Dimension` WHERE `Website URL`=%s', prepare_mysql($_SERVER['SERVER_NAME'])
+            'SELECT `Website Key`  FROM `Website Dimension` WHERE `Website URL`=%s', prepare_mysql($server_name)
         );
 
         if ($result = $db->query($sql)) {
