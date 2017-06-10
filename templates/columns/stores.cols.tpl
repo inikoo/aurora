@@ -34,7 +34,15 @@ cell: Backgrid.HtmlCell.extend({
 })
 },
 
+ {
+name: "website",
+label: "{t}Website{/t}",
+editable: false,
+cell: Backgrid.HtmlCell.extend({
 
+
+})
+},
 {
 name: "in_process",
 label: '<i class="fa fa-child" aria-hidden="true"></i>',
