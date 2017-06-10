@@ -72,6 +72,8 @@ if ($order == 'families') {
     $order = '`Store Low Availability Products`';
 } elseif ($order == 'critical') {
     $order = '`Store Critical Availability Products`';
+} elseif ($order == 'website') {
+    $order = '`Website Code`';
 } elseif ($order == 'new') {
     $order = '`Store New Products`';
 } else {
@@ -80,11 +82,11 @@ if ($order == 'families') {
 
 
 $table
-    = '`Store Dimension` S left join `Store Data` D on (D.`Store Key`=S.`Store Key`) left join `Store DC Data` DC on DC.`Store Key`=S.`Store Key`';
+    = '`Store Dimension` S left join `Store Data` D on (D.`Store Key`=S.`Store Key`) left join `Store DC Data` DC on DC.`Store Key`=S.`Store Key` left join `Website Dimension` on `Store Website Key`=`Website Key`  ';
 
 $sql_totals
     = "select count(Distinct S.`Store Key`) as num from $table  $where  ";
 
-$fields = "`Store Name`,`Store Code`,S.`Store Key`,`Store New Products`,`Store Active Products`,`Store Suspended Products`,`Store Discontinued Products`,`Store Discontinuing Products`";
+$fields = "`Store Name`,`Store Code`,S.`Store Key`,`Store New Products`,`Store Active Products`,`Store Suspended Products`,`Store Discontinued Products`,`Store Discontinuing Products`,`Website URL`,`Website Key`,`Website Code`";
 
 ?>
