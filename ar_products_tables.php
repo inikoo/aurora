@@ -99,7 +99,7 @@ function stores($_data, $db, $user) {
             'id'   => (integer)$data['Store Key'],
             'code' => sprintf('<span class="link" onClick="change_view(\'store/%d\')" >%s</span>',$data['Store Key'],$data['Store Code']),
             'name' => sprintf('<span class="link" onClick="change_view(\'store/%d\')" >%s</span>',$data['Store Key'],$data['Store Name']),
-            'website' => sprintf('<span class="link" onClick="change_view(\'store/%d/website\')" >%s</span>',$data['Store Key'],$data['Website Code']),
+            'website' => sprintf('<span class="link" onClick="change_view(\'store/%d/website\')" title="%s" >%s</span>',$data['Store Key'],$data['Website Name'],$data['Website Code']),
 
             'in_process'=>number($data['Store New Products']),
             'active'=>number($data['Store Active Products']),
