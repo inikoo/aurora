@@ -2,7 +2,7 @@
 <!--
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 29 May 2017 at 19:40:24 GMT+8, Cyberjaya, Malaysia
+ Created: 10 June 2017 at 13:14:58 GMT+7, Phuket, Thailand
  Copyright (c) 2017, Inikoo
 
  Version 3
@@ -24,85 +24,36 @@
 
 
 
-            <div class="container">
 
 
-
-                <div class="one_third">
-                    <h5 id="_invoice_address_label" contenteditable="true">{$content._invoice_address_label}</h5>
-                    <p>
-                        The Business Centre </br>
-                        61 Wellfield Road</br>
-                        Roath</br>
-                        Cardiff</br>
-                        CF24 3DG</br>
-                    </p>
-                </div><!-- end section -->
+            <div class="clearfix"></div>
 
 
-                <div class="one_third last">
-                    <h5 id="_delivery_address_label" contenteditable="true">{$content._delivery_address_label}</h5>
-                    <p>
-                        The Business Centre</br>
-                        61 Wellfield Road</br>
-                        Roath</br>
-                        Cardiff</br>
-                        CF24 3DG </br>                   </p>
-                </div><!-- end section -->
+            <div class="content_fullwidth less">
 
-                <div class="one_third text-right" style="padding-left:20px">
-                    <h5 id="_totals_label" contenteditable="true">{$content._totals_label}</h5>
+                <div class="clearfix marb7"></div>
 
-
-
-                    <table class="table">
-
-                        <tbody>
-                        <tr>
-                            <td>-ABB1</td>
-
-                            <td class="text-right">£10.00</td>
-                        </tr>
-                        <tr>
-                            <td>HHT-04</td>
-
-                            <td class="text-right">£6.00</td>
-                        </tr>
-                        <tr>
-                            <td>LLX-10a</td>
-
-                            <td class="text-right">£1.99</td>
-                        </tr>
-                        </tbody>
-                    </table>
-
-                </div><!-- end section -->
-
-
-                <div class="clearfix margin_top10"></div>
-
-
-
-                <div class="container order">
-
-
-               {include file="theme_1/_order.theme_1.tpl"}
-
-
+                <div id="filters-container" class="cbp-l-filters-alignCenter">
+                    <div data-filter="*" class="cbp-filter-item-active cbp-filter-item">All</div>
+                    <div data-filter=".identity" class="cbp-filter-item">Identity</div>
+                    <div data-filter=".web-design" class="cbp-filter-item">Web Design</div>
+                    <div data-filter=".graphic" class="cbp-filter-item">Graphic</div>
+                    <div data-filter=".video" class="cbp-filter-item">Video</div>
                 </div>
 
-                <div class="clearfix "></div>
+                <div class="clearfix"></div>
+
+
+
+
+            </div><!-- end content area -->
+
+            <div class="clearfix marb12"></div>
 
 
 
 
 
-
-
-        </div>
-
-
-        <div class="clearfix marb12"></div>
 
     </div>
 </div>
@@ -236,6 +187,17 @@
 
 
 </script>
+
+    <!-- cubeportfolio -->
+    <script type="text/javascript" src="/theme_1/cubeportfolio/js/jquery.cubeportfolio.min.js"></script>
+    <script type="text/javascript">
+        jQuery(document).ready( function() {
+            jQuery('#grid-container').cubeportfolio({
+                filters: '#filters-container',
+            });
+        });
+    </script>
+
 
 </body>
 

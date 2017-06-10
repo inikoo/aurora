@@ -1190,7 +1190,7 @@ console.log(link.html())
 
      //   console.log(header_data)
 
-        var request = '/ar_edit_website.php?tipo=save_header&header_key={$header_key}&header_data=' +encodeURIComponent(btoa(JSON.stringify(header_data)));
+        var request = '/ar_edit_website.php?tipo=save_header&header_key={$header_key}&header_data=' +encodeURIComponent(Base64.encode(JSON.stringify(header_data)));
 
 
         $.getJSON(request, function (data) {

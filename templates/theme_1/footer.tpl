@@ -1220,7 +1220,7 @@ console.log(link.html())
 
      //   console.log(footer_data)
 
-        var request = '/ar_edit_website.php?tipo=save_footer&footer_key={$footer_key}&footer_data=' +encodeURIComponent(btoa(JSON.stringify(footer_data)));
+        var request = '/ar_edit_website.php?tipo=save_footer&footer_key={$footer_key}&footer_data=' +encodeURIComponent(Base64.encode(JSON.stringify(footer_data)));
 
 
         $.getJSON(request, function (data) {

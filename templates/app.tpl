@@ -123,6 +123,7 @@
         <script type="text/javascript" src="/js/libs/jquery.scannerdetection.js"></script>
         <script type="text/javascript" src="/js/libs/jquery.fancybox.min.js"></script>
         <script type="text/javascript" src="/js/libs/jquery.awesome-cursor.min.js"></script>
+        <script type="text/javascript" src="/js/libs/base64.js"></script>
 
 
 
@@ -135,9 +136,9 @@
         <script type="text/javascript" src="/utils/country_data.js.php?locale={$locale}"></script>
     {/if}
 
-    {if false}
+
         <script src="https://app-rsrc.getbee.io/plugin/BeePlugin.js" type="text/javascript"></script>
-    {/if}
+
 </head>
 <body>
 <input type="hidden" id="_request" value="{$_request}">

@@ -18,6 +18,12 @@
         // attached this instance to obj
         $.data(t.obj, 'cubeportfolio', t);
 
+        // rename options
+        if (options.sortToPreventGaps !== undefined) {
+            options.sortByDimension = options.sortToPreventGaps;
+            delete options.sortToPreventGaps;
+        }
+
         // extend options
         t.options = $.extend({}, $.fn.cubeportfolio.options, options, t.$obj.data('cbp-options'));
 
@@ -78,6 +84,10 @@
         // used by the filters plugin. @todo - remove from here and create proper API with position for plugins
         t.triggerEvent('afterPlugins');
 
+        // usful when width & height is defined for an image and to keep the same aspect ratio on all devices
+        // on resize. e.g. from mobile to desktop
+        t.removeAttrAfterStoreData = $.Deferred();
+
         // wait to load all images and then go further
         t.loadImages(t.$obj, t.display);
     }
@@ -115,6 +125,8 @@
                     pack: false,
                 });
             });
+
+            this.removeAttrAfterStoreData.resolve();
         },
 
 
@@ -147,9 +159,11 @@
         },
 
         removeAttrImage: function(img) {
-            img.removeAttribute('width');
-            img.removeAttribute('height');
-            img.removeAttribute('style');
+            this.removeAttrAfterStoreData.then(function() {
+                img.removeAttribute('width');
+                img.removeAttribute('height');
+                img.removeAttribute('style');
+            });
         },
 
 
@@ -260,14 +274,19 @@
         display: function() {
             var t = this;
 
-            // store to data values of t.blocks
-            t.storeData(t.blocks);
+            // update the current grid width
+            t.width = t.$obj.outerWidth();
 
             t.triggerEvent('initStartRead');
             t.triggerEvent('initStartWrite');
 
-            // make layout
-            t.layoutAndAdjustment();
+            if (t.width > 0) {
+                // store to data values of t.blocks
+                t.storeData(t.blocks);
+
+                // make layout
+                t.layoutAndAdjustment();
+            }
 
             t.triggerEvent('initEndRead');
             t.triggerEvent('initEndWrite');
@@ -308,7 +327,11 @@
                     // used by wp fullWidth force option
                     t.triggerEvent('beforeResizeGrid');
 
-                    if (t.width !== t.$obj.outerWidth()) {
+                    var newWidth = t.$obj.outerWidth();
+
+                    if (t.width !== newWidth) {
+                        // update the current grid width
+                        t.width = newWidth;
 
                         if (t.options.gridAdjustment === 'alignCenter') {
                             t.wrapper[0].style.maxWidth = '';
@@ -328,9 +351,6 @@
 
         gridAdjust: function() {
             var t = this;
-
-            // update the current grid width
-            t.width = t.$obj.outerWidth();
 
             // if responsive
             if (t.options.gridAdjustment === 'responsive') {
@@ -363,8 +383,13 @@
         },
 
 
-        layoutAndAdjustment: function() {
+        layoutAndAdjustment: function(updateWidth) {
             var t = this;
+
+            if (updateWidth) {
+                // update the current grid width
+                t.width = t.$obj.outerWidth();
+            }
 
             t.gridAdjust();
 
@@ -510,7 +535,17 @@
 
             t.blocks.each(function(index, el) {
                 $.each($(el).find('img').filter('[width][height]'), function(index, el) {
-                    var width = $(el).parent().width();
+                    var width = 0;
+
+                    $(el).parentsUntil('.cbp-item').each(function(index, el) {
+                        var currentWidth = $(el).width();
+
+                        if (currentWidth > 0) {
+                            width = currentWidth;
+                            return false;
+                        }
+                    });
+
                     var imgWidth = parseInt(el.getAttribute('width'), 10);
                     var imgHeight = parseInt(el.getAttribute('height'), 10);
                     var ratio = parseFloat((imgWidth / imgHeight).toFixed(10));
@@ -828,7 +863,7 @@
 
                 t.triggerEvent('addItemsToDOM', items);
 
-                t.layoutAndAdjustment();
+                t.layoutAndAdjustment(true);
 
                 // if show count was actived, call show count function again
                 if (t.elems) {
@@ -891,7 +926,7 @@
                 $(el).data('cbp').index = index;
             });
 
-            t.layoutAndAdjustment();
+            t.layoutAndAdjustment(true);
 
             // if show count was actived, call show count function again
             if (t.elems) {
@@ -949,7 +984,7 @@
             t.blocksOn.each(function(index, el) {
                 $(el).data('cbp').pack = false;
 
-                if (t.options.sortToPreventGaps) {
+                if (t.options.sortByDimension) {
                     el.style.height = '';
                 }
             });
@@ -1002,7 +1037,7 @@
         /**
          * Chose from freeSpaces the best space available
          * Find block by verifying if it can fit in bestSpace(top-left space available)
-         * If block doesn't fit in the first space available & t.options.sortToPreventGaps
+         * If block doesn't fit in the first space available & t.options.sortByDimension
          * is set to true then sort the blocks and start the layout once again
          * Decide the free rectangle Fi from F to pack the rectangle R into.
          */
@@ -1038,8 +1073,8 @@
                     }
                 });
 
-                // if first space don't have a block and sortToPreventGaps is true => return from loop
-                if (!t.blocksAreSorted && t.options.sortToPreventGaps && index1 > 0) {
+                // if first space don't have a block and sortByDimension is true => return from loop
+                if (!t.blocksAreSorted && t.options.sortByDimension && index1 > 0) {
                     spaceIndexAndBlock = null;
 
                     return false;
@@ -1447,11 +1482,11 @@ jQuery.fn.cubeportfolio.options = {
     layoutMode: 'grid',
 
     /**
-     *  Sort the items (bigger to smallest) if there are gaps in grid
+     *  Sort the items by dimension (bigger to smallest) if there are gaps in grid
      *  Option available only for `layoutMode: 'mosaic'`
      *  Values: true or false
      */
-    sortToPreventGaps: false,
+    sortByDimension: false,
 
     /**
      *  Mouse and touch drag support
@@ -1623,7 +1658,7 @@ jQuery.fn.cubeportfolio.options = {
     displayType: 'fadeIn',
 
     /**
-     *  Defines the speed of displaying the items (when `displayType == default` this option will have no effect)
+     *  Defines the speed of displaying the items (when `displayType: 'default'` this option will have no effect)
      *  Values: only integers, values in ms (ex: 200, 300, 500)
      */
     displayTypeSpeed: 400,
@@ -2142,6 +2177,39 @@ jQuery.fn.cubeportfolio.options = {
                 });
             } else {
                 t.removeItems(items, callback);
+            }
+        },
+
+        /*
+         * Relayout all elements in the current grid.
+         * Useful when all/some items need to be laid out again, or grid width is changed.
+         */
+        layout: function(callback) {
+            var t = CubePortfolio.private.checkInstance.call(this, 'layout');
+
+            // update the current grid width
+            t.width = t.$obj.outerWidth();
+
+            if (t.isAnimating || (t.width <= 0)) {
+                if ($.isFunction(callback)) {
+                    callback.call(t);
+                }
+
+                return;
+            }
+
+            if (t.options.gridAdjustment === 'alignCenter') {
+                t.wrapper[0].style.maxWidth = '';
+            }
+
+            // store to data values of t.blocks
+            t.storeData(t.blocks);
+
+            // reposition the blocks
+            t.layoutAndAdjustment();
+
+            if ($.isFunction(callback)) {
+                callback.call(t);
             }
         },
     };
@@ -3085,8 +3153,8 @@ if (typeof Object.create !== 'function') {
                     }
                 });
 
-                // reposition the blocks
-                parent.layoutAndAdjustment();
+                // reposition the blocks and set param to update width of grid
+                parent.layoutAndAdjustment(true);
 
                 // set activeWrap to 0 so I can start animation in the next frame
                 activeWrap.css(startStyle);
@@ -3124,11 +3192,15 @@ if (typeof Object.create !== 'function') {
     var CubePortfolio = $.fn.cubeportfolio.constructor;
 
     function Plugin(parent) {
-        var deferred = $.Deferred();
-
-        parent.pushQueue('delayFrame', deferred);
-
         parent.registerEvent('initEndWrite', function() {
+            if (parent.width <= 0) {
+                return;
+            }
+
+            var deferred = $.Deferred();
+
+            parent.pushQueue('delayFrame', deferred);
+
             parent.blocksOn.each(function(index, el) {
                 el.style[CubePortfolio.private.animationDelay] = (index * parent.options.displayTypeSpeed) + 'ms';
             });
@@ -3163,11 +3235,15 @@ if (typeof Object.create !== 'function') {
     var CubePortfolio = $.fn.cubeportfolio.constructor;
 
     function Plugin(parent) {
-        var deferred = $.Deferred();
-
-        parent.pushQueue('delayFrame', deferred);
-
         parent.registerEvent('initEndWrite', function() {
+            if (parent.width <= 0) {
+                return;
+            }
+
+            var deferred = $.Deferred();
+
+            parent.pushQueue('delayFrame', deferred);
+
             parent.obj.style[CubePortfolio.private.animationDuration] = parent.options.displayTypeSpeed + 'ms';
 
             parent.$obj.addClass('cbp-displayType-fadeIn');
@@ -3197,11 +3273,15 @@ if (typeof Object.create !== 'function') {
     var CubePortfolio = $.fn.cubeportfolio.constructor;
 
     function Plugin(parent) {
-        var deferred = $.Deferred();
-
-        parent.pushQueue('delayFrame', deferred);
-
         parent.registerEvent('initEndWrite', function() {
+            if (parent.width <= 0) {
+                return;
+            }
+
+            var deferred = $.Deferred();
+
+            parent.pushQueue('delayFrame', deferred);
+
             parent.obj.style[CubePortfolio.private.animationDuration] = parent.options.displayTypeSpeed + 'ms';
 
             parent.$obj.addClass('cbp-displayType-fadeInToTop');
@@ -3231,11 +3311,15 @@ if (typeof Object.create !== 'function') {
     var CubePortfolio = $.fn.cubeportfolio.constructor;
 
     function Plugin(parent) {
-        var deferred = $.Deferred();
-
-        parent.pushQueue('delayFrame', deferred);
-
         parent.registerEvent('initEndWrite', function() {
+            if (parent.width <= 0) {
+                return;
+            }
+
+            var deferred = $.Deferred();
+
+            parent.pushQueue('delayFrame', deferred);
+
             parent.blocksOn.each(function(index, el) {
                 el.style[CubePortfolio.private.animationDelay] = (index * parent.options.displayTypeSpeed) + 'ms';
             });
@@ -3683,7 +3767,7 @@ if (typeof Object.create !== 'function') {
          *  Define the wrapper for loadMore
          *  Values: strings that represent the elements in the document (DOM selector).
          */
-        selector: '',
+        element: '',
 
         /**
          *  How the loadMore functionality should behave. Load on click on the button or
@@ -3708,7 +3792,7 @@ if (typeof Object.create !== 'function') {
 
         t.options = $.extend({}, options, t.parent.options.plugins.loadMore);
 
-        t.loadMore = $(t.options.selector).find('.cbp-l-loadMore-link');
+        t.loadMore = $(t.options.element).find('.cbp-l-loadMore-link');
 
         // load click or auto action
         if (t.loadMore.length === 0) {
@@ -3962,7 +4046,7 @@ if (typeof Object.create !== 'function') {
                 plugins.loadMore = {};
             }
 
-            plugins.loadMore.selector = parent.options.loadMore;
+            plugins.loadMore.element = parent.options.loadMore;
         }
 
         // backward compatibility
@@ -3974,7 +4058,13 @@ if (typeof Object.create !== 'function') {
             plugins.loadMore.action = parent.options.loadMoreAction;
         }
 
-        if (!plugins.loadMore || !plugins.loadMore.selector) {
+        // rename options
+        if (plugins.loadMore && plugins.loadMore.selector !== undefined) {
+            plugins.loadMore.element = plugins.loadMore.selector;
+            delete plugins.loadMore.selector;
+        }
+
+        if (!plugins.loadMore || !plugins.loadMore.element) {
             return null;
         }
 

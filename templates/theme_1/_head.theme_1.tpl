@@ -25,7 +25,7 @@
 
     <!-- Favicon -->
     <link rel="shortcut icon" href="images/favicon.ico">
-cs
+
     <!-- this styles only adds some repairs on idevices  -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -135,13 +135,14 @@ cs
     <script src="/theme_1/mainmenu/customeUI.js"></script>
 
 
-    <!-- sticky menu -->
+   {if isset($header)}
     <script type="text/javascript" src="/theme_1/mainmenu/sticky.js"></script>
     <script type="text/javascript" src="/theme_1/mainmenu/modernizr.custom.75180.js"></script>
-
+   {/if}
 
     <script type="text/javascript" src="/js/libs/jquery-ui.js"></script>
 
+    <script type="text/javascript" src="/js/libs/base64.js"></script>
 
 
 
