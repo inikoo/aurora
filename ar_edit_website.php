@@ -1681,7 +1681,6 @@ function save_webpage_content($data, $editor, $db, $smarty) {
 
     $content_data = json_decode(base64_decode($data['content_data']), true);
 
-    print_r(base64_decode($data['content_data']));
 
 
     $webpage->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
