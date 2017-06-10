@@ -14,9 +14,6 @@ include('keyring/dns.php');
 
 include_once('external_libs/bee.io/BeeFree.php');
 
-include_once('external_libs/bee.io/BeeFree.php');
-
-
 $beefree = new BeeFree($bee_io_id, $bee_io_key);
 $result  = $beefree->getCredentials();
 

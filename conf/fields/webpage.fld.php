@@ -146,8 +146,7 @@ if (in_array(
 )) {
 
 
-    $object_fields[] =
-        array(
+    $object_fields[] = array(
         'label'      => _('Webpage settings'),
         'show_title' => true,
         'fields'     => array(
@@ -158,7 +157,7 @@ if (in_array(
                 'time'            => '00:00:00',
                 'min_date'        => '1',
                 'max_date'        => '100',
-                'display_eraser'=>true,
+                'display_eraser'  => true,
                 'value'           => $object->get('Webpage Launching Date'),
                 'formatted_value' => $object->get('Launching Date'),
 
@@ -172,16 +171,9 @@ if (in_array(
 }
 
 
+if (in_array($object->get('Webpage Scope'), array('Contact'))) {
 
-
-
-if (in_array(
-    $object->get('Webpage Scope'), array(
-                                     'Contact'
-                                 )
-)) {
-
-    $object_fields[] =  array(
+    $object_fields[] = array(
         'label'      => _('Contact'),
         'show_title' => true,
         'fields'     => array(
@@ -193,7 +185,7 @@ if (in_array(
                 'label'       => _('Company Name'),
                 'invalid_msg' => get_invalid_message('string'),
                 'required'    => false,
-                'type' => 'value'
+                'type'        => 'value'
             ),
             array(
                 'edit'        => ($edit ? 'string' : ''),
@@ -202,7 +194,7 @@ if (in_array(
                 'label'       => _('VAT Number'),
                 'invalid_msg' => get_invalid_message('string'),
                 'required'    => false,
-                'type' => 'value'
+                'type'        => 'value'
             ),
             array(
                 'edit'        => ($edit ? 'string' : ''),
@@ -211,7 +203,7 @@ if (in_array(
                 'label'       => _('Company Number'),
                 'invalid_msg' => get_invalid_message('string'),
                 'required'    => false,
-                'type' => 'value'
+                'type'        => 'value'
             ),
             array(
                 'edit'        => ($edit ? 'email' : ''),
@@ -220,14 +212,14 @@ if (in_array(
                 'label'       => _('Email'),
                 'invalid_msg' => get_invalid_message('email'),
                 'required'    => false,
-                'type' => 'value'
+                'type'        => 'value'
             ),
             array(
                 'edit'            => ($edit ? 'string' : ''),
                 'id'              => 'Store_Telephone',
                 'value'           => $object->get('Store Telephone'),
                 'formatted_value' => $object->get('Telephone'),
-                'label'           =>_('Telephone'),
+                'label'           => _('Telephone'),
                 'invalid_msg'     => get_invalid_message('telephone'),
                 'required'        => false,
                 'type'            => 'value'
@@ -254,6 +246,47 @@ if (in_array(
                 'required'        => false,
                 'type'            => 'value'
             ),
+
+
+        )
+    );
+
+
+}
+
+
+
+
+if (in_array($object->get('Webpage Scope'), array('Category Categories'))) {
+
+        $template_options = array(
+            'responsive_categories_showcase'    => _('Responsive grid'),
+            'categories_showcase'    => _('Fixed grid')
+        );
+
+
+
+
+
+    $object_fields[] = array(
+        'label'      => _('Template'),
+        'show_title' => true,
+        'fields'     => array(
+
+            array(
+                'edit' => ($edit ? 'option' : ''),
+
+                'id'              => 'Webpage_Template_Filename',
+                'value'           => $object->get('Webpage Template Filename'),
+                'formatted_value' => $object->get('Template Filename'),
+                'options'         => $template_options,
+                'label'           => _('Template'),
+                'invalid_msg'     => get_invalid_message('string'),
+                'required'        => true,
+                'type'            => 'value'
+            ),
+
+
 
 
         )

@@ -1,8 +1,8 @@
 /*!
  * Cube Portfolio - Responsive jQuery Grid Plugin
  *
- * version: 4.1.1 (20 March, 2017)
- * require: jQuery v1.7+
+ * version: 4.2.0 (2 June, 2017)
+ * require: jQuery v1.8+
  *
  * Copyright 2013-2017, Mihai Buricea (http://scriptpie.com/cubeportfolio/live-preview/)
  * Licensed under CodeCanyon License (http://codecanyon.net/licenses)
@@ -484,11 +484,11 @@
   transition: transform .35s; }
 
 .cbp-caption-overlayBottomAlong .cbp-caption-activeWrap {
-  height: 60px; }
+  height: auto; }
 
 .cbp-caption-overlayBottomAlong .cbp-caption:hover .cbp-caption-defaultWrap {
-  -webkit-transform: translateY(-30px);
-  transform: translateY(-30px); }
+  -webkit-transform: translateY(-34px);
+  transform: translateY(-34px); }
 
 .cbp-caption-overlayBottomAlong .cbp-caption:hover .cbp-caption-activeWrap {
   -webkit-transform: translateY(-100%);
@@ -500,17 +500,17 @@
   transition: transform .25s; }
 
 .cbp-caption-overlayBottomPush .cbp-caption-activeWrap {
-  height: 61px;
+  height: 69px;
   -webkit-transform: translateY(0);
   transform: translateY(0); }
 
 .cbp-caption-overlayBottomPush .cbp-caption:hover .cbp-caption-defaultWrap {
-  -webkit-transform: translateY(-60px);
-  transform: translateY(-60px); }
+  -webkit-transform: translateY(-68px);
+  transform: translateY(-68px); }
 
 .cbp-caption-overlayBottomPush .cbp-caption:hover .cbp-caption-activeWrap {
-  -webkit-transform: translateY(-61px);
-  transform: translateY(-61px); }
+  -webkit-transform: translateY(-69px);
+  transform: translateY(-69px); }
 
 .cbp-caption-overlayBottomReveal .cbp-caption-defaultWrap {
   z-index: 2;
@@ -520,11 +520,11 @@
 .cbp-caption-overlayBottomReveal .cbp-caption-activeWrap {
   bottom: 0;
   z-index: 1;
-  height: 60px; }
+  height: auto; }
 
 .cbp-caption-overlayBottomReveal .cbp-caption:hover .cbp-caption-defaultWrap {
-  -webkit-transform: translateY(-60px);
-  transform: translateY(-60px); }
+  -webkit-transform: translateY(-68px);
+  transform: translateY(-68px); }
 
 .cbp-caption-overlayRightAlong .cbp-caption-defaultWrap,
 .cbp-caption-overlayRightAlong .cbp-caption-activeWrap {
@@ -652,12 +652,12 @@
 .cbp-caption-opacity .cbp-caption:hover .cbp-caption-activeWrap {
   top: 0; }
 
+.cbp-caption-expand .cbp-caption {
+  border-bottom: 1px dotted #eaeaea; }
+
 .cbp-caption-expand .cbp-caption-activeWrap {
   height: auto;
   background-color: transparent; }
-
-.cbp-caption-expand .cbp-caption {
-  border-bottom: 1px dotted #eaeaea; }
 
 .cbp-caption-expand .cbp-caption-defaultWrap {
   cursor: pointer;

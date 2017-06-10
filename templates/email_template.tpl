@@ -8,6 +8,13 @@
  Version 3
 -->
 *}
+
+<div>
+    <span onclick="save_email()"  >xxx</span>
+
+</div>
+
+
 <div id="bee_plugin_container" style="height:2000px"></div>
 
 
@@ -22,7 +29,7 @@
 //mergeTags: mergeTags, // [optional, default:[]] Array of Object to specify special merge Tags
 //mergeContents: mergeContents, // [optional, default:[]] Array of Object to specify merge content
 //preventClose: false, // [optional, default:false] if true an alert is shown before browser closure
-//onSave: function(jsonFile, htmlFile) { /* Implements function for save */ }, // [optional]
+onSave: function(jsonFile, htmlFile) { console.log('caca') }, // [optional]
 //onSaveAsTemplate: function(jsonFile) { /* Implements function for save as template */}, // [optional]
 //onAutoSave: function(jsonFile) { /* Implements function for auto save */ }, // [optional]
 //onSend: function(htmlFile) { /* Implements function to send message */ }, // [optional]
@@ -38,10 +45,18 @@
                         var templateString = data;
                         var template = JSON.parse(templateString);
                         beePluginInstance.start(template);
+
                     }
                 });
 
             }
     );
+
+
+    function save_email(){
+        console.log(BeePlugin)
+
+
+    }
 
 </script>
