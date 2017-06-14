@@ -1727,6 +1727,8 @@ function sales_history($_data, $db, $user, $account) {
                 'sales'     => '<span class="very_discreet">'.money(
                         0, $currency
                     ).'</span>',
+                'picks' => '<span class="very_discreet">'.number(0).'</span>',
+
                 'customers' => '<span class="very_discreet">'.number(0).'</span>',
                 'invoices'  => '<span class="very_discreet">'.number(0).'</span>',
                 'date'      => $date
@@ -1835,6 +1837,7 @@ function sales_history($_data, $db, $user, $account) {
                 $record_data[$_date] = array(
 
                     'sales'      => money($data['sales'], $currency),
+                    'picks' => number(-1*$data['picks']),
                     'deliveries' => number($data['deliveries']),
                     'date'       => $record_data[$_date]['date']
 
