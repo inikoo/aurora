@@ -31,6 +31,11 @@ if ($result = $db->query($sql)) {
 
         $cartons = '';
         foreach ($part->get_supplier_parts('objects') as $sp) {
+
+            if(!is_object($sp)){
+                continue;
+            }
+
             if ($sp->get('Supplier Part Status') == 'Available' and $sp->get('Supplier Part Packages Per Carton') > 0) {
                 $cartons = $sp->get('Supplier Part Packages Per Carton');
             }
@@ -39,6 +44,10 @@ if ($result = $db->query($sql)) {
 
         if (!$cartons) {
             foreach ($part->get_supplier_parts('object') as $sp) {
+                if(!is_object($sp)){
+                    continue;
+                }
+
                 if ($sp->get('Supplier Part Packages Per Carton') > 0) {
                     $cartons = $sp->get('Supplier Part Packages Per Carton');
                 }
