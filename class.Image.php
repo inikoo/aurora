@@ -422,9 +422,9 @@ class Image {
 
     function create_thumbnail() {
 
-        if ($this->data['Image Thumbnail Data'] != '') {
-            return;
-        }
+       // if ($this->data['Image Thumbnail Data'] != '') {
+       //     return;
+       // }
 
         $thumbnail_im = $this->transformToFit(
             $this->thumbnail_size[0], $this->thumbnail_size[1]
@@ -446,6 +446,7 @@ class Image {
     }
 
     function transformToFit($newX, $newY) {
+
         $x = $this->data['Image Width'];
         $y = $this->data['Image Height'];
         if ($x == 0) {
@@ -482,11 +483,11 @@ class Image {
 
     function create_small() {
 
-        if ($this->data['Image Small Data'] != '') {
-            return;
-        }
+        //if ($this->data['Image Small Data'] != '') {
+        //    return;
+        //}
 
-        if ($this->data['Image Width'] < 320 or $this->data['Image Height'] < 280) {
+        if ($this->data['Image Width'] < 375 and $this->data['Image Height'] < 250) {
             $sql = sprintf(
                 "UPDATE `Image Dimension` SET `Image Small Data`=NULL WHERE `Image Key`=%d", $this->id
             );
@@ -495,7 +496,7 @@ class Image {
             return;
         }
 
-        $small_im = $this->transformToFit(320, 280);
+        $small_im = $this->transformToFit(375, 250);
         if ($this->error) {
             $this->msg = _('Can not resize image');
 
@@ -679,16 +680,7 @@ class Image {
         return $code;
     }
 
-    function update_other_size_data() {
-        $subjects = $this->get_subjects_types('string');
-        if ($subjects == 'Page' or $subjects == '') {
-            $this->remove_other_sizes_data();
 
-        } else {
-            $this->create_other_size_data();
-        }
-
-    }
 
     function get_subjects_types($result_type = 'array') {
         $subject_types = array();

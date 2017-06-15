@@ -113,7 +113,7 @@
 
 
 
-        var request = '/ar_edit_website.php?tipo=edit_webpage&key=' + {$webpage->id} + '&field=css&value=' + btoa(css)
+        var request = '/ar_edit_website.php?tipo=edit_webpage&key=' + {$webpage->id} + '&field=css&value=' + Base64.encode(css)
        // console.log(request)
         $.getJSON(request, function (data) {
             console.log(data)

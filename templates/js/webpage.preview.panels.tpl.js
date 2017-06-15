@@ -474,7 +474,7 @@
         var editor=  $('#code_editor').data('CodeMirrorInstance');
 
 
-        btoa(editor.getValue())
+        Base64.encode(editor.getValue())
 
 
         if( $('#items_container').hasClass('cats')    ){
@@ -484,7 +484,7 @@
         }
 
 
-        var request = '/ar_edit_website.php?tipo=webpage_content_data&parent=page&parent_key=' + $('#webpage_preview').attr('webpage_key')  +'&section='+section+'&block=' + block + '&type='+type+'&value=' + encodeURIComponent(btoa(editor.getValue()))
+        var request = '/ar_edit_website.php?tipo=webpage_content_data&parent=page&parent_key=' + $('#webpage_preview').attr('webpage_key')  +'&section='+section+'&block=' + block + '&type='+type+'&value=' + encodeURIComponent(Base64.encode(editor.getValue()))
         console.log(request)
 
         $.getJSON(request, function (data) {

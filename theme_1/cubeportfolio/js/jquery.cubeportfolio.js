@@ -2023,10 +2023,13 @@ jQuery.fn.cubeportfolio.options = {
             var t = CubePortfolio.private.checkInstance.call(this, 'filter'),
                 expression;
 
+            console.log('filters')
+
             if (t.isAnimating) {
+             console.log('animationss')
                 return;
             }
-
+            console.log('filters3')
             t.isAnimating = true;
 
             // register callback function
@@ -2077,6 +2080,9 @@ jQuery.fn.cubeportfolio.options = {
             if ($.isFunction(callback)) {
                 t.registerEvent('showCounterFinish', callback, true);
             }
+
+
+
 
             t.elems = elems;
 
@@ -2186,6 +2192,8 @@ jQuery.fn.cubeportfolio.options = {
          */
         layout: function(callback) {
             var t = CubePortfolio.private.checkInstance.call(this, 'layout');
+
+            console.log('uuuu')
 
             // update the current grid width
             t.width = t.$obj.outerWidth();
@@ -3436,6 +3444,8 @@ if (typeof Object.create !== 'function') {
                 var item = $(this);
 
                 if (item.hasClass('cbp-filter-item-active') || parent.isAnimating) {
+
+                   console.log(parent)
                     return;
                 }
 
@@ -3807,6 +3817,10 @@ if (typeof Object.create !== 'function') {
 
         parent.registerEvent('filterStart', function(filter) {
             t.populateItems().then(function() {
+
+
+
+
                 var itemsLen = t.items.filter(filter).length;
 
                 if (itemsLen > 0) {

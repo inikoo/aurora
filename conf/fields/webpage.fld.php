@@ -19,7 +19,7 @@ if (isset($options['new']) and $options['new']) {
 $can_update_code = false;
 
 $can_change_state = ($object->get('Webpage Scope') == 'System' ? false : true);
-$can_delete       = ($object->get('Webpage Scope') == 'System' ? false : true);
+$can_delete       = false;
 
 
 $content_data = $object->get('Content Data');
@@ -260,7 +260,7 @@ if (in_array($object->get('Webpage Scope'), array('Contact'))) {
 if (in_array($object->get('Webpage Scope'), array('Category Categories'))) {
 
         $template_options = array(
-            'responsive_categories_showcase'    => _('Responsive grid'),
+            'categories_classic_showcase'    => _('Responsive grid'),
             'categories_showcase'    => _('Fixed grid')
         );
 
@@ -296,6 +296,32 @@ if (in_array($object->get('Webpage Scope'), array('Category Categories'))) {
 }
 
 
+$operations      = array(
+    'label'      => _('Operations'),
+    'show_title' => true,
+    'class'      => 'operations',
+    'fields'     => array(
+
+
+        array(
+            'id'        => 'reset_webpage',
+            'class'     => 'operation',
+            'value'     => '',
+            'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "webpage", "key":"'
+                .$object->id.'"}\' onClick="reset_object(this)" class="delete_object disabled ">'._("Reset webpage").' <i class="fa fa-recycle  "></i></span>',
+            'reference' => '',
+            'type'      => 'operation'
+        ),
+
+
+    )
+
+);
+$object_fields[] = $operations;
+
+
+/*
+
 if (in_array(
     $object->get('Webpage Scope'), array(
                                      'Category Categories',
@@ -316,7 +342,7 @@ if (in_array(
                     'class'     => 'operation',
                     'value'     => '',
                     'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'
-                        .$object->get_object_name().'", "key":"'.$object->id.'"}\' onClick="delete_object(this)" class="delete_object disabled">'._("Delete webpage version")
+                        .$object->get_object_name().'", "key":"'.$object->id.'"}\' onClick="delete_object(this)" class="delete_object disabled">'._("Delete webpage")
                         .' <i class="fa fa-trash new_button link"></i></span>',
                     'reference' => '',
                     'type'      => 'operation'
@@ -357,5 +383,7 @@ if (in_array(
 
 
 }
+
+*/
 
 ?>

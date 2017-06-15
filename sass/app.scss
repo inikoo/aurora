@@ -27,6 +27,7 @@ $color_highlight: #08728b;
 $color_success: #26A65B;
 $color_warning: #ED9121;
 $color_error: tomato;
+$color_active: #ffc822;
 
 $color_background_selected: #edf3f8;
 $color_background_error: #ffe5e5;
@@ -807,6 +808,11 @@ right connector from last child*/
 
 .error {
   color: $color_error
+}
+
+.active{
+  color: $color_active;
+
 }
 
 .error_box {

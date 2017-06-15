@@ -9,7 +9,7 @@
 
 */
 
-$theme='theme_1';
+$theme=$state['_object']->get('Website Theme');
 
 $smarty->assign('website',$state['_object']);
 $smarty->assign('theme',$theme);

@@ -385,7 +385,7 @@ if (!$is_cached) {
     $smarty->assign('language', $language);
 
 
-    $theme='theme_1';
+    $theme=$website->get('Website Theme');
 
 
     if($website->get('Website Status')=='InProcess'){

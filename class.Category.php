@@ -629,6 +629,9 @@ class Category extends DB_Table {
 
                 $image_key = $this->data['Category Main Image Key'];
 
+
+
+
                 if ($image_key) {
                     $img = '/image_root.php?size=small&id='.$image_key;
                 } else {
