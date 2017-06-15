@@ -37,6 +37,7 @@ function get_website_section_items($db, $section_data) {
 
 
 
+
     $categories = array();
 
     $stack_index          = 0;

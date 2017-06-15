@@ -2799,6 +2799,12 @@ class Store extends DB_Table {
         $data['Website Store Key'] = $this->id;
         $data['Website Locale']    = $this->get('Store Locale');
 
+
+        if(!isset($data['Website Theme'])){
+            $data['Website Theme'] = 'theme_1';
+        }
+
+
         $data['Website From'] = gmdate('Y-m-d H:i:s');
 
 

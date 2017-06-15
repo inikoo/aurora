@@ -1043,8 +1043,6 @@ class Website extends DB_Table {
 
         include_once 'class.Webpage_Type.php';
         include_once 'class.Page.php';
-
-
         include_once 'class.Category.php';
 
         $category = new Category($category_key);
@@ -1092,6 +1090,26 @@ class Website extends DB_Table {
         $webpage_type = new Webpage_Type('website_code', $this->id, ($category->get('Category Subject') == 'Product' ? 'Prods' : 'Cats'));
 
 
+        if($category->get('Category Subject') == 'Product'){
+
+            if($this->get('Website Theme')=='theme_1'){
+                $template='products_classic_showcase';
+            }else{
+                $template='products_showcase';
+            }
+
+        }else{
+            if($this->get('Website Theme')=='theme_1'){
+                $template='categories_classic_showcase';
+            }else{
+                $template='categories_showcase';
+            }
+
+        }
+
+
+
+
         $page_data = array(
             'Page Code'                            => $page_code,
             'Page URL'                             => $this->data['Website URL'].'/'.strtolower($page_code),
@@ -1101,7 +1119,7 @@ class Website extends DB_Table {
             'Page Store Creation Date'             => gmdate('Y-m-d H:i:s'),
             'Number See Also Links'                => ($category->get('Category Subject') == 'Product' ? 5 : 0),
             'Page Store Content Display Type'      => 'Template',
-            'Page Store Content Template Filename' => ($category->get('Category Subject') == 'Product' ? 'products_showcase' : 'categories_showcase'),
+            'Page Store Content Template Filename' => $template,
 
 
             'Webpage Scope'                 => ($category->get('Category Subject') == 'Product' ? 'Category Products' : 'Category Categories'),
@@ -1110,7 +1128,7 @@ class Website extends DB_Table {
             'Webpage Store Key'             => $category->get('Category Store Key'),
             'Webpage Type Key'              => $webpage_type->id,
             'Webpage Code'                  => $page_code,
-            'Webpage Template Filename'     => ($category->get('Category Subject') == 'Product' ? 'products_showcase' : 'categories_showcase'),
+            'Webpage Template Filename'     => $template,
             'Webpage Number See Also Links' => ($category->get('Category Subject') == 'Product' ? 5 : 0),
             'Webpage Creation Date'         => gmdate('Y-m-d H:i:s'),
 
@@ -1137,6 +1155,8 @@ class Website extends DB_Table {
         //print_r($page_data);
         $page = new Page('find', $page_data, 'create');
 
+        $category->update(array('Product Category Webpage Key' => $page->id), 'no_history');
+
         if ($page->new) {
             $page->reset_object();
         }
@@ -1159,64 +1179,72 @@ class Website extends DB_Table {
         $this->error        = $page->error;
 
 
-        if ($category->get('Category Subject') == 'Product') {
 
 
-            $title = $category->get('Label');
-            if ($title == '') {
-                $title = $category->get('Code');
-            }
-            if ($title == '') {
-                $title = _('Title');
-            }
 
-            $description = $category->get('Product Category Description');
-            if ($description == '') {
-                $description = $category->get('Label');
-            }
-            if ($description == '') {
-                $description = $category->get('Code');
-            }
-            if ($description == '') {
-                $description = _('Description');
-            }
+        if($this->get('Website Theme')=='theme_1') {
+
+        }else {
+
+            if ($category->get('Category Subject') == 'Product') {
 
 
-            $image_src = $category->get('Image');
+                $title = $category->get('Label');
+                if ($title == '') {
+                    $title = $category->get('Code');
+                }
+                if ($title == '') {
+                    $title = _('Title');
+                }
 
-            $content_data = array(
-                'description_block' => array(
-                    'class' => '',
+                $description = $category->get('Product Category Description');
+                if ($description == '') {
+                    $description = $category->get('Label');
+                }
+                if ($description == '') {
+                    $description = $category->get('Code');
+                }
+                if ($description == '') {
+                    $description = _('Description');
+                }
 
-                    'blocks' => array(
 
-                        'webpage_content_header_image' => array(
-                            'type'      => 'image',
-                            'image_src' => $image_src,
-                            'caption'   => '',
-                            'class'     => ''
+                $image_src = $category->get('Image');
 
-                        ),
+                $content_data = array(
+                    'description_block' => array(
+                        'class' => '',
 
-                        'webpage_content_header_text' => array(
-                            'class'   => '',
-                            'type'    => 'text',
-                            'content' => sprintf('<h1 class="description_title">%s</h1><div class="description">%s</div>', $title, $description)
+                        'blocks' => array(
+
+                            'webpage_content_header_image' => array(
+                                'type'      => 'image',
+                                'image_src' => $image_src,
+                                'caption'   => '',
+                                'class'     => ''
+
+                            ),
+
+                            'webpage_content_header_text' => array(
+                                'class'   => '',
+                                'type'    => 'text',
+                                'content' => sprintf('<h1 class="description_title">%s</h1><div class="description">%s</div>', $title, $description)
+
+                            )
 
                         )
-
                     )
-                )
 
-            );
+                );
 
-            //print_r($content_data);
-            $page->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
+                //print_r($content_data);
+                $page->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
 
 
-            $category->create_stack_index(true);
+
+                $category->create_stack_index(true);
+            }
         }
-
 
         //$this->update_product_totals();
         //$this->update_page_totals();
@@ -1278,6 +1306,12 @@ class Website extends DB_Table {
 
         $webpage_type = new Webpage_Type('website_code', $this->id, 'Prod');
 
+        if($this->get('Website Theme')=='theme_1'){
+            $template='product_classic';
+        }else{
+            $template='product';
+        }
+
 
         $page_data = array(
             'Page Code'                            => $page_code,
@@ -1288,7 +1322,7 @@ class Website extends DB_Table {
             'Page Store Creation Date'             => gmdate('Y-m-d H:i:s'),
             'Number See Also Links'                => 5,
             'Page Store Content Display Type'      => 'Template',
-            'Page Store Content Template Filename' => 'product',
+            'Page Store Content Template Filename' => $template,
 
 
             'Webpage Scope'                          => 'Product',
@@ -1297,7 +1331,7 @@ class Website extends DB_Table {
             'Webpage Store Key'                      => $product->get('Product Store Key'),
             'Webpage Type Key'                       => $webpage_type->id,
             'Webpage Code'                           => $page_code,
-            'Webpage Template Filename'              => 'product',
+            'Webpage Template Filename'              => $template,
             'Webpage Number See Also Links'          => 5,
             'Webpage Creation Date'                  => gmdate('Y-m-d H:i:s'),
 

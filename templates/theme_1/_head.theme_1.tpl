@@ -65,8 +65,10 @@
    <link href="/theme_1/mainmenu/bootstrap.min4.css" rel="stylesheet">
    <link href="/theme_1/mainmenu/menu-5.css" rel="stylesheet">
 
+    <link href="/css/sweetalert.css" rel="stylesheet">
 
-   <!-- animations -->
+
+    <!-- animations -->
     <link href="/theme_1/animations/css/animations.min.css" rel="stylesheet" type="text/css" media="all"/>
 
     <link rel="stylesheet" media="screen" href="/theme_1/css/responsive-layouts.css" type="text/css"/>
@@ -92,7 +94,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.4.1/css/simple-line-icons.css">
 
 
-    <link rel="stylesheet" href="/css/webpage_preview.css" type="text/css"/>
 
 
     <link rel="stylesheet" href="/theme_1/cubeportfolio/css/cubeportfolio.min.css">
@@ -106,6 +107,7 @@
 
 
     <link rel="stylesheet" href="/theme_1/css/aurora.css">
+    <link rel="stylesheet" href="/css/webpage_preview.css" type="text/css"/>
 
 
 
@@ -119,6 +121,7 @@
     <!--  <script src="/theme_1/local/bootstrap.js"></script> -->
 
 
+    <script type="text/javascript" src="/js/libs/sweetalert.min.js"></script>
 
 
     <script type="text/javascript" src="/js/libs/editor/froala_editor.min.js"></script>
@@ -127,7 +130,7 @@
      <script src="/theme_1/aninum/jquery.animateNumber.min.js"></script>
     <script  src="/theme_1/animations/js/animations.min.js" type="text/javascript"></script>
 
-     <script type="text/javascript" src="/theme_1/cubeportfolio/js/jquery.cubeportfolio.min.js"></script>
+     <script type="text/javascript" src="/theme_1/cubeportfolio/js/jquery.cubeportfolio.js"></script>
 
 
     <!-- mega menu -->
@@ -144,6 +147,9 @@
 
     <script type="text/javascript" src="/js/libs/base64.js"></script>
 
+    <script type="text/javascript" src="/js/edit.js"></script>
+    <script type="text/javascript" src="/js/validation.js"></script>
+    <script type="text/javascript" src="/js/common_webpage_preview.js"></script>
 
 
 

@@ -10,25 +10,33 @@
 */
 
 include_once 'common.php';
-include_once 'class.Page.php';
-include_once 'class.Store.php';
-include_once 'class.Website.php';
+include_once 'class.Public_Webpage.php';
+include_once 'class.Public_Store.php';
+include_once 'class.Public_Website.php';
 
 
-if(!isset($_REQUEST['webpage_key']) or !is_numeric($_REQUEST['webpage_key'])){
+if (!isset($_REQUEST['webpage_key']) or !is_numeric($_REQUEST['webpage_key'])) {
     exit;
 }
 
-if(!isset($_REQUEST['theme']) or !in_array($_REQUEST['theme'],array('theme_1'))   ){
-    exit;
+if (!isset($_REQUEST['theme']) or !preg_match('/^theme\_\d+$/', $_REQUEST['theme'])) {
+
+    print 'no theme set up';
+
+    return;
+
 }
 
 
-$webpage_key=$_REQUEST['webpage_key'];
-$theme=$_REQUEST['theme'];
 
-$webpage=new Page($webpage_key);
-$store=new Store($webpage->get('Webpage Store Key'));
+$webpage_key = $_REQUEST['webpage_key'];
+$theme       = $_REQUEST['theme'];
+
+$webpage = new Public_Webpage($webpage_key);
+$website = new Public_Website($webpage_key);
+
+$store   = new Public_Store($webpage->get('Webpage Store Key'));
+
 
 
 $content_data = $webpage->get('Content Data');
@@ -36,12 +44,22 @@ $content_data = $webpage->get('Content Data');
 
 $smarty->assign('content', $content_data);
 
-
+//print_r($content_data);
 
 $smarty->assign('webpage', $webpage);
 $smarty->assign('store', $store);
+$smarty->assign('website', $website);
+
+$smarty->assign('theme', $theme);
+$smarty->assign('template', $webpage->get('Webpage Template Filename'));
 
 
-$smarty->display($theme.'/'.$webpage->get('Webpage Template Filename').'.'.$theme.'.tpl');
+$template = $theme.'/'.$webpage->get('Webpage Template Filename').'.'.$theme.'.tpl';
+
+if (file_exists('templates/'.$template)) {
+    $smarty->display($template);
+} else {
+    printf("template %s not found",$template);
+}
 
 ?>

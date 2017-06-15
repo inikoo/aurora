@@ -322,6 +322,9 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
         $options = '';
     }
 
+
+
+
     $parent         = get_object($data['parent'], $data['parent_key']);
     $parent->editor = $editor;
 
@@ -416,6 +419,28 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
         }
 
 
+        list($width, $height) = getimagesize($tmp_name);
+
+
+
+        $_options = json_decode($options, true);
+
+
+        if (isset($_options['width']) and isset($_options['height'])) {
+            if ($_options['width'] != $width or $_options['height'] != $height) {
+                $msg      = sprintf(_('Image dimensions must to be %sx%s (px)'), $_options['width'], $_options['height']);
+                $response = array(
+                    'state' => 400,
+                    'title' => _('Wrong image dimensions'),
+                    'msg'   => $msg,
+                    'key'   => 'attach'
+                );
+                echo json_encode($response);
+                exit;
+            }
+        }
+
+
         $data['fields_data']['Filename']                      = $tmp_name;
         $data['fields_data']['Attachment File Original Name'] = $name;
 
@@ -480,9 +505,15 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
             'main_image_key' => $parent->get_main_image_key(),
             'image_src'      => sprintf('/image_root.php?id=%d', $image->id),
             'thumbnail'      => sprintf('<img src="/image_root.php?id=%d&size=thumbnail">', $image->id),
+            'small_image'    => sprintf('<img src="/image_root.php?id=%d&size=small">', $image->id),
             'img_key'        => $image->id
 
         );
+
+        if (isset($data['response_type']) and $data['response_type'] == 'upload_item_image') {
+            $response['images']=$parent->get_images_slidesshow();
+
+        }
 
         // todo remove parent->get_object_name()=='Page' when new class is used
         if ($parent->get_object_name() == 'Page' or $parent->get_object_name() == 'Webpage') {

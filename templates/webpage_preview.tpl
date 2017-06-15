@@ -11,7 +11,7 @@
 
 
 
-<div style="padding:20px;" class="control_panel">
+<div style="padding:20px;border-bottom:1px solid #ccc" class="control_panel">
 
 
     {if isset($control_template)}

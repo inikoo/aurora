@@ -1783,7 +1783,6 @@ function get_dropdown_select(dropdown_input, new_value) {
         if (data.number_results > 0) {
 
 
-            console.log('#' + field + '_results_container')
 
 
             $('#' + field + '_results_container').removeClass('hide').addClass('show')
@@ -1796,6 +1795,7 @@ function get_dropdown_select(dropdown_input, new_value) {
 
             if (new_value.length > 0) {
 
+                console.log('caca')
 
                 if ($('#' + dropdown_input).attr('create_new') == 1) {
 
@@ -1813,12 +1813,13 @@ function get_dropdown_select(dropdown_input, new_value) {
                     on_changed_value(field, '__error__')
                 }
             } else {
+                $('#' + field + '_results_container').addClass('hide').removeClass('show')
+
 
                 $('#' + field).val('')
                 on_changed_value(field, '')
             }
         }
-        console.log("#" + field + "_results")
 
 
         $("#" + field + "_results .result").remove();

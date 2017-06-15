@@ -1,0 +1,91 @@
+<?php
+/*
+ About:
+ Author: Raul Perusquia <raul@inikoo.com>
+ Created: 13 June 2017 at 16:19:59 GMT+8, Cyberjaya, Malaysia
+ Copyright (c) 2015, Inikoo
+
+ Version 3
+
+*/
+
+require_once 'common.php';
+require_once 'utils/ar_common.php';
+require_once 'utils/table_functions.php';
+require_once 'utils/date_functions.php';
+
+
+if (!$user->can_view('stores')) {
+    echo json_encode(
+        array(
+            'state' => 405,
+            'resp'  => 'Forbidden'
+        )
+    );
+    exit;
+}
+
+
+if (!isset($_REQUEST['tipo'])) {
+    $response = array(
+        'state' => 405,
+        'resp'  => 'Non acceptable request (t)'
+    );
+    echo json_encode($response);
+    exit;
+}
+
+
+$tipo = $_REQUEST['tipo'];
+
+switch ($tipo) {
+    case 'category_data':
+
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'key' => array('type' => 'key')
+                     )
+        );
+
+        category_data($data, $db, $user);
+        break;
+
+    default:
+        $response = array(
+            'state' => 405,
+            'resp'  => 'Tipo not found '.$tipo
+        );
+        echo json_encode($response);
+        exit;
+        break;
+}
+
+
+function category_data($data, $db, $user) {
+
+    include_once('class.Category.php');
+    include_once 'class.Public_Webpage.php';
+
+    $category = new Category($data['key']);
+
+    // TODO replace with $category->get('Product Category Webpage Key')
+    $subject_webpage = new Public_Webpage('scope', ($category->get('Category Subject') == 'Category' ? 'Category Categories' : 'Category Products'), $category->id);
+    $webpage_key=$subject_webpage->id;
+
+
+    $response = array(
+        'state' => 200,
+        'data'  => array(
+            'category_key'   => $category->id,
+            'webpage_key'   => $webpage_key,
+            'code'   => $category->get('Code'),
+            'label'  => $category->get('Label'),
+            'images' => $category->get_images_slidesshow()
+        )
+    );
+    echo json_encode($response);
+
+}
+
+
+?>

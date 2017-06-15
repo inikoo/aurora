@@ -1676,14 +1676,14 @@ function save_webpage_content($data, $editor, $db, $smarty) {
     include_once('class.Page.php');
     $webpage = new Page($data['key']);
 
+   // print_r( $webpage->get('Content Data'));
 
 
+  //  print_r( json_decode($data['content_data'],true));
 
-    $content_data = json_decode(base64_decode($data['content_data']), true);
+   // exit;
 
-
-
-    $webpage->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
+    $webpage->update(array('Page Store Content Data' => $data['content_data']), 'no_history');
     $webpage->publish();
 
     $response = array(

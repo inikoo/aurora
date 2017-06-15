@@ -79,7 +79,7 @@ if ($result = $db->query($sql)) {
 
     } else {
         header("HTTP/1.0 404 Not Found");
-        echo "Attachment not found";
+        echo "Image not found";
 
         exit;
     }

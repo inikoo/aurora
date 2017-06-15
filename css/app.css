@@ -645,6 +645,9 @@ right connector from last child*/
 .error {
   color: tomato; }
 
+.active {
+  color: #ffc822; }
+
 .error_box {
   color: tomato;
   padding: 30px;

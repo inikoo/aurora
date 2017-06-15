@@ -11,7 +11,7 @@ var on_my_Submit = function () {
 
     console.log(blow_fish.val())
     console.log(pwd)
-    var epwd = btoa(AESEncryptCtr(blow_fish.val(), pwd, 256));
+    var epwd = Base64.encode(AESEncryptCtr(blow_fish.val(), pwd, 256));
 
 
     input_pwd.val('secret');
@@ -45,7 +45,7 @@ $(document).ready(function () {
     $("#login_form").submit(function (event) {
        // var pwd = sha256_digest($('#login__password').val());
        // var epwd = AESEncryptCtr($('#ep').val(), pwd, 256);
-       // $('#ep').val(btoa(epwd))
+       // $('#ep').val(Base64.encode(epwd))
        // $('#login__password').val('secret')
         console.log('caca')
     });

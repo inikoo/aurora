@@ -10,6 +10,182 @@ display:none
 }
 
 
+.active{
+  color: #000
+
+}
+
+.error{
+  color: tomato
+
+}
+
+.ok{
+  color: #26A65B
+}
+
+.warning{
+color: #ffba00
+}
+
+.discreet {
+  opacity: .9;
+  color: #777
+}
+
+.very_discreet {
+  opacity: .6;
+  color: #777
+}
+
+.super_discreet {
+  opacity: .3;
+  color: #777
+}
+
+
 .fake_form_checkbox{
 	 font: 14px/1.55 'Open Sans', Helvetica, Arial, sans-serif;position:relative;top:1px;font-size:15px;color:#404040
  }
+ 
+ 
+ .cbp-l-filters-alignCenter {
+  margin-bottom: 30px;
+  text-align: center;
+  font: 400 12px/21px sans-serif;
+  color: #DADADA; }
+  .cbp-l-filters-alignCenter .cbp-filter-item-edit {
+    color: #949494;
+    cursor: pointer;
+    font: 400 13px/21px "Open Sans", sans-serif;
+    padding: 0 12px;
+    position: relative;
+    overflow: visible;
+    margin: 0 0 10px;
+    display: inline-block;
+   }
+    .cbp-l-filters-alignCenter .cbp-filter-item-edit:hover {
+      color: #2D2C2C; }
+      .cbp-l-filters-alignCenter .cbp-filter-item-edit:hover .cbp-filter-counter {
+        -webkit-transform: translateY(-30px);
+        transform: translateY(-30px); }
+    .cbp-l-filters-alignCenter .cbp-filter-item-link.cbp-filter-item-edit-active {
+      color: #2D2C2C;
+      }
+  .cbp-l-filters-alignCenter .cbp-filter-counter {
+    background-color: #626161; }
+    .cbp-l-filters-alignCenter .cbp-filter-counter:after {
+      border-top: 4px solid #626161; }
+
+.cbp-l-filters-alignLeft {
+  margin-bottom: 30px; }
+  .cbp-l-filters-alignLeft .cbp-filter-item-edit {
+    background-color: #fff;
+    border: 1px solid #cdcdcd;
+    cursor: pointer;
+    font: 400 12px/30px "Open Sans", sans-serif;
+    padding: 0 13px;
+    position: relative;
+    overflow: visible;
+    margin: 0 4px 10px 4px;
+    display: inline-block;
+    color: #888888;
+    }
+    .cbp-l-filters-alignLeft .cbp-filter-item-edit:hover {
+      color: #111; }
+    .cbp-l-filters-alignLeft .cbp-filter-item-link.cbp-filter-item-edit-active {
+      background-color: #6C7A89;
+      border: 1px solid #6C7A89;
+      color: #fff;
+      }
+    .cbp-l-filters-alignLeft .cbp-filter-item-edit:first-child {
+      margin-left: 0; }
+    .cbp-l-filters-alignLeft .cbp-filter-item-edit:last-child {
+      margin-right: 0; }
+  .cbp-l-filters-alignLeft .cbp-filter-counter {
+    display: inline; }
+
+@media only screen and (max-width: 480px) {
+  .cbp-l-filters-alignLeft {
+    text-align: center; } }
+
+.cbp-l-filters-alignRight {
+  margin-bottom: 30px;
+  text-align: right; }
+  .cbp-l-filters-alignRight .cbp-filter-item-edit {
+    background-color: transparent;
+    color: #8B8B8B;
+    cursor: pointer;
+    font: 400 11px/31px "Open Sans", sans-serif;
+    padding: 0 14px;
+    position: relative;
+    overflow: visible;
+    margin: 0 3px 10px 3px;
+    border: 1px solid #E4E2E2;
+    text-transform: uppercase;
+    display: inline-block;
+   }
+    .cbp-l-filters-alignRight .cbp-filter-item-edit:hover {
+      color: #2B3444; }
+    .cbp-l-filters-alignRight .cbp-filter-item-link.cbp-filter-item-edit-active {
+      color: #FFFFFF;
+      background-color: #049372;
+      border-color: #049372;
+      }
+    .cbp-l-filters-alignRight .cbp-filter-item-edit:first-child {
+      margin-left: 0; }
+    .cbp-l-filters-alignRight .cbp-filter-item-edit:last-child {
+      margin-right: 0; }
+  .cbp-l-filters-alignRight .cbp-filter-counter {
+    background-color: #049372; }
+    .cbp-l-filters-alignRight .cbp-filter-counter:after {
+      border-top: 4px solid #049372; }
+
+@media only screen and (max-width: 480px) {
+  .cbp-l-filters-alignRight {
+    text-align: center; } }
+    
+    
+    
+.search_results_container {
+  z-index: 100;
+  position: absolute;
+  width: 750px; 
+  
+   left: -450px; 
+}
+
+.search_results_container table {
+    border: 1px solid #ccc;
+    background: #FFF;
+    width: 100%;
+}
+    .search_results_container table tr {
+      cursor: pointer;
+      border-bottom: 1px solid #eee; }
+      .search_results_container table tr:last-of-type {
+        border-bottom: none; }
+    .search_results_container table td.label {
+      padding-left: 20px; }
+    .search_results_container table tr:hover, .search_results_container table tr.selected {
+      background: #edf3f8; }
+
+
+
+  input::-webkit-input-placeholder {
+    color: #ddd; }
+  input:-moz-placeholder {
+    color: #ddd; }
+  input::-moz-placeholder {
+    color: #ddd; }
+  input:-ms-input-placeholder {
+    color: #ddd; }
+    
+    
+       [contenteditable="true"]:empty {
+        background-color: #f4f4f4;
+        padding: 10px;
+    }
+    
+    
+  

@@ -35,15 +35,23 @@ trait ImageSubject {
         );
 
 
-        if (isset($raw_data['Image Subject Object Image Scope'])) {
+        if (isset($raw_data['Image Subject Object Image Scope']) and $raw_data['Image Subject Object Image Scope']!='' ) {
 
             if ($this->table_name == 'Page') {
 
-                $scope_data         = json_decode($raw_data['Image Subject Object Image Scope'], true);
-                $object_image_scope = $scope_data['scope'];
+                json_decode($raw_data['Image Subject Object Image Scope']);
+                if(json_last_error() == JSON_ERROR_NONE){
+                    $scope_data         = json_decode($raw_data['Image Subject Object Image Scope'], true);
+                    $object_image_scope = $scope_data['scope'];
+                }else{
+                    $scope_data=array('scope'=>'');
+                    $object_image_scope=$raw_data['Image Subject Object Image Scope'];
+                }
 
 
-            } else {
+
+
+            } else{
                 $object_image_scope = $raw_data['Image Subject Object Image Scope'];
             }
 
@@ -51,6 +59,7 @@ trait ImageSubject {
         } else {
             $object_image_scope = 'Default';
         }
+
 
 
         $image = new Image('find', $data, 'create');
@@ -76,8 +85,7 @@ trait ImageSubject {
                     }
                 }
 
-            }
-            elseif ($this->table_name == 'Category') {
+            } elseif ($this->table_name == 'Category') {
                 $account = new Account();
                 if ($this->get('Category Scope') == 'Part' and $this->get('Category Root Key') == $account->get('Account Part Family Category Key')) {
 
@@ -117,8 +125,7 @@ trait ImageSubject {
 
                     if ($scope_data['section'] == 'mute') {
                         return $image;
-                    }
-                    elseif ($scope_data['section'] == 'items') {
+                    } elseif ($scope_data['section'] == 'items') {
 
                         foreach ($content_data['sections'] as $section_index => $section) {
 
@@ -169,8 +176,7 @@ trait ImageSubject {
                         $content_data['sections'][$section_index]['items'] = get_website_section_items($this->db, $content_data['sections'][$section_index]);
                         // print_r( $content_data['sections'][$section_index]['items']);
 
-                    }
-                    elseif ($scope_data['section'] == 'panels_in_section') {
+                    } elseif ($scope_data['section'] == 'panels_in_section') {
 
 
                         foreach ($content_data['sections'] as $section_index => $section) {
@@ -194,27 +200,23 @@ trait ImageSubject {
                         //  print_r( $content_data);
 
 
+                    } elseif ($scope_data['section'] == 'panels') {
+                        foreach ($content_data['panels'] as $panel_key => $panel) {
+                            if ($panel['id'] == $scope_data['block']) {
+                                $content_data['panels'][$panel_key]['image_src'] = $image_src;
+                            }
+                        }
+
+                    } else {
+                        if (isset($content_data[$scope_data['section']]['blocks'][$scope_data['block']])) {
+                            $content_data[$scope_data['section']]['blocks'][$scope_data['block']]['image_src'] = $image_src;
+                        } else {
+                            $content_data[$data['section']]['blocks'][$data['block']] = array(
+                                'image_src' => $image_src,
+                                'type'      => 'image'
+                            );
+                        }
                     }
-                    elseif ($scope_data['section'] == 'panels') {
-                            foreach ($content_data['panels'] as $panel_key => $panel) {
-                                if ($panel['id'] == $scope_data['block']) {
-                                    $content_data['panels'][$panel_key]['image_src'] = $image_src;
-                                }
-                            }
-
-                        }
-
-                    else {
-                            if (isset($content_data[$scope_data['section']]['blocks'][$scope_data['block']])) {
-                                $content_data[$scope_data['section']]['blocks'][$scope_data['block']]['image_src'] = $image_src;
-                            } else {
-                                $content_data[$data['section']]['blocks'][$data['block']] = array(
-                                    'image_src' => $image_src,
-                                    'type'      => 'image'
-                                );
-                            }
-                        }
-
 
 
                     $this->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
@@ -258,6 +260,8 @@ trait ImageSubject {
             );
 
 
+
+
             if ($result = $this->db->query($sql)) {
                 if ($row = $result->fetch()) {
                     $this->nochange = true;
@@ -281,10 +285,10 @@ trait ImageSubject {
 
             if (in_array(
                 $subject, array(
-                'Product',
-                'Part',
-                'Webpage'
-            )
+                            'Product',
+                            'Part',
+                            'Webpage'
+                        )
             )) {
                 $is_public = 'Yes';
             } else {
@@ -297,6 +301,10 @@ trait ImageSubject {
                 prepare_mysql($is_public)
 
             );
+
+
+
+
             $this->db->exec($sql);
 
             $this->update_images_data();
@@ -389,38 +397,31 @@ trait ImageSubject {
     }
 
 
-
-
     function update_images_data() {
 
-        $number_images=0;
+        $number_images = 0;
 
         $subject = $this->table_name;
 
-        $sql              = sprintf(
+        $sql = sprintf(
             "SELECT count(*) AS num FROM `Image Subject Bridge` WHERE `Image Subject Object`=%s AND `Image Subject Object Key`=%d ", prepare_mysql($subject), $this->id
         );
 
 
-
-
-        if ($result=$this->db->query($sql)) {
+        if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-                $number_images=$row['num'];
+                $number_images = $row['num'];
             }
-        }else {
-            print_r($error_info=$this->db->errorInfo());
+        } else {
+            print_r($error_info = $this->db->errorInfo());
             print "$sql\n";
             exit;
         }
 
 
-
         $this->update(
-            array( ($this->get_object_name()=='Category' ? $this->subject_table_name :  $this->get_object_name()).' Number Images'=>$number_images),
-            'no_history'
+            array(($this->get_object_name() == 'Category' ? $this->subject_table_name : $this->get_object_name()).' Number Images' => $number_images), 'no_history'
         );
-
 
 
     }
@@ -564,6 +565,7 @@ trait ImageSubject {
     }
 
     function get_images_slidesshow() {
+
         include_once 'utils/natural_language.php';
 
 
@@ -580,18 +582,22 @@ trait ImageSubject {
             foreach ($result as $row) {
 
                 if ($row['Image Height'] != 0) {
-                    $ratio = $row['Image Width'] / $row['Image Height'];
+                    $ratio           = sprintf('%.5f', $row['Image Width'] / $row['Image Height']);
+                    $formatted_ratio = sprintf('%.2f', $row['Image Width'] / $row['Image Height']);
                 } else {
-                    $ratio = 1;
+                    $ratio           = 1;
+                    $formatted_ratio = '-';
                 }
                 // print_r($row);
                 $images_slideshow[] = array(
-                    'name'              => $row['Image Filename'],
-                    'small_url'         => 'image_root.php?id='.$row['Image Key'].'&size=small',
-                    'thumbnail_url'     => 'image_root.php?id='.$row['Image Key'].'&size=thumbnail',
-                    'normal_url'        => 'image_root.php?id='.$row['Image Key'],
-                    'filename'          => $row['Image Filename'],
-                    'ratio'             => $ratio,
+                    'name'            => $row['Image Filename'],
+                    'small_url'       => 'image_root.php?id='.$row['Image Key'].'&size=small',
+                    'thumbnail_url'   => 'image_root.php?id='.$row['Image Key'].'&size=thumbnail',
+                    'normal_url'      => 'image_root.php?id='.$row['Image Key'],
+                    'filename'        => $row['Image Filename'],
+                    'ratio'           => $ratio,
+                    'formatted_ratio' => $formatted_ratio,
+
                     'caption'           => $row['Image Subject Image Caption'],
                     'is_principal'      => $row['Image Subject Is Principal'],
                     'id'                => $row['Image Key'],
@@ -685,24 +691,22 @@ trait ImageSubject {
 
     }
 
-    function set_as_principal($key,$look_up='image_bridge_key') {
+    function set_as_principal($key, $look_up = 'image_bridge_key') {
 
 
-        if($look_up=='image_key'){
+        if ($look_up == 'image_key') {
             $sql = sprintf(
-                'UPDATE  `Image Subject Bridge` SET `Image Subject Order`=0  WHERE   `Image Subject Object`=%s and `Image Subject Object Key`=%d and  `Image Subject Image Key`=%d ',
-                prepare_mysql($this->table_name),
-                $this->id,
-                $key
+                'UPDATE  `Image Subject Bridge` SET `Image Subject Order`=0  WHERE   `Image Subject Object`=%s AND `Image Subject Object Key`=%d AND  `Image Subject Image Key`=%d ',
+                prepare_mysql($this->table_name), $this->id, $key
             );
-        }else{
+        } else {
             $sql = sprintf(
                 'UPDATE  `Image Subject Bridge` SET `Image Subject Order`=0  WHERE `Image Subject Key`=%d ', $key
             );
         }
 
 
-      //  print "$sql\n";
+        //  print "$sql\n";
 
 
         $this->db->exec($sql);

@@ -15,6 +15,7 @@ $smarty->assign('webpage',$state['_object']);
 $webpage = $state['_object'];
 
 
+
 if (!$webpage->id) {
     $html = '<div style="padding:40px">'.'Webpage not found'.'</div>';
 
@@ -22,7 +23,9 @@ if (!$webpage->id) {
 }
 
 
-$theme = 'theme_1';
+$website=new Website($webpage->get('Webpage Website Key'));
+
+$theme = $website->get('Website Theme');
 
 $smarty->assign('theme', $theme);
 $smarty->assign('webpage', $webpage);
