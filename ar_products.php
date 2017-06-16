@@ -80,7 +80,8 @@ function category_data($data, $db, $user) {
             'webpage_key'   => $webpage_key,
             'code'   => $category->get('Code'),
             'label'  => $category->get('Label'),
-            'images' => $category->get_images_slidesshow()
+            'images' => $category->get_images_slidesshow(),
+            'webpage_link'=>'website/'.$subject_webpage->get('Webpage Website Key').'/webpage/'.$webpage_key
         )
     );
     echo json_encode($response);
