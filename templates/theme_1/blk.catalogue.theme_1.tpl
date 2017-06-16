@@ -206,14 +206,11 @@
 
 
     <div class="container" style="padding-bottom 5px;text-align: right;padding-right: 20px">
-        <span id="disassociate_category" class="like_button hide" style="margin-right:20px">{t}Remove category{/t} <i class="fa fa-trash-o  " style="" aria-hidden="true"></i></span> <span id="insert_category"
-                                                                                                                                                                                            class="like_button">{t}Insert category{/t}
-            <i class="fa fa-flip-horizontal" style="position:relative;top:3px"><i class="fa fa-reply fa-rotate-270   " style="margin-left:20px" aria-hidden="true"></i></i></span> <i id="prev_item"
-                                                                                                                                                                                      class="fa fa-arrow-left like_button"
-                                                                                                                                                                                      style="margin-left:20px"
-                                                                                                                                                                                      aria-hidden="true"></i> <i
-                id="next_item" class="fa fa-arrow-right like_button" style="margin-left:10px" aria-hidden="true"></i> <i class="fa fa-window-close like_button" onclick="hide_image_dialog()" style="margin-left:20px"
-                                                                                                                         aria-hidden="true"></i>
+        <span id="disassociate_category" class="like_button hide" style="margin-right:20px">{t}Remove category{/t} <i class="fa fa-trash-o  " style="" aria-hidden="true"></i></span>
+        <span id="insert_category" class="like_button">{t}Insert category{/t} <i class="fa fa-flip-horizontal" style="position:relative;top:3px"><i class="fa fa-reply fa-rotate-270   " style="margin-left:20px" aria-hidden="true"></i></i></span>
+        <i id="prev_item" class="fa fa-arrow-left like_button" style="margin-left:20px"  aria-hidden="true"></i>
+        <i id="next_item" class="fa fa-arrow-right like_button" style="margin-left:10px" aria-hidden="true"></i>
+        <i class="fa fa-window-close like_button" onclick="hide_image_dialog()" style="margin-left:20px"  aria-hidden="true"></i>
 
     </div>
 
@@ -241,7 +238,7 @@
 
         <div style="float:right;width: 700px;margin-right:20px">
 
-            <h4 style="padding:0px;margin:0px"><span style="color:#777">{t}Category{/t}:</span> <span id="catalogue_code"></span></h4>
+            <h4 style="padding:0px;margin:0px"><span style="color:#777">{t}Category{/t}:</span> <span id="catalogue_code"></span> <i id="catalogue_webpage_link" class="fa fa-file-text-o like_button" style="color:#777;font-size:60%;position: relative;top:-2px" aria-hidden="true"></i></h4>
             <span id="catalogue_name"></span>
 
 
@@ -544,6 +541,14 @@
 
             $('#catalogue_code').html(r.data.code).data('category_key', r.data.category_key)
             $('#catalogue_name').html(r.data.label)
+
+
+            $('#catalogue_webpage_link').click(function() {
+               parent.change_view(r.data.webpage_link)
+            });
+
+
+
             render_category_images(r.data.images)
         })
     }
@@ -844,6 +849,11 @@
 
             $('#catalogue_code').html(r.data.code).data('category_key', r.data.category_key)
             $('#catalogue_name').html(r.data.label)
+
+            $('#catalogue_webpage_link').click(function() {
+                parent,change_view(r.data.webpage_link)
+            });
+
             render_category_images(r.data.images)
 
             $('#disassociate_category').removeClass('hide')
@@ -967,7 +977,6 @@ console.log(anchor_item_key)
     $('#grid-filters-container').on('input paste', '.cbp-filter-item-edit-label', function () {
 
 
-console.log($(this).data('linked_label'))
         $('#'+$(this).data('linked_label')).find('.filter_label').html($(this).html())
 
 
@@ -1037,7 +1046,6 @@ console.log($(this).data('linked_label'))
         return catalogue_data;
 
     }
-
 
 
 
