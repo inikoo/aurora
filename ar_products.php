@@ -49,6 +49,16 @@ switch ($tipo) {
 
         category_data($data, $db, $user);
         break;
+    case 'product_data':
+
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'key' => array('type' => 'key')
+                     )
+        );
+
+        product_data($data, $db, $user);
+        break;
 
     default:
         $response = array(
@@ -68,8 +78,7 @@ function category_data($data, $db, $user) {
 
     $category = new Category($data['key']);
 
-    // TODO replace with $category->get('Product Category Webpage Key')
-    $subject_webpage = new Public_Webpage('scope', ($category->get('Category Subject') == 'Category' ? 'Category Categories' : 'Category Products'), $category->id);
+    $subject_webpage = new Public_Webpage($category->get('Product Category Webpage Key'));
     $webpage_key=$subject_webpage->id;
 
 
@@ -81,6 +90,34 @@ function category_data($data, $db, $user) {
             'code'   => $category->get('Code'),
             'label'  => $category->get('Label'),
             'images' => $category->get_images_slidesshow(),
+            'webpage_link'=>'website/'.$subject_webpage->get('Webpage Website Key').'/webpage/'.$webpage_key
+        )
+    );
+    echo json_encode($response);
+
+}
+
+
+function product_data($data, $db, $user) {
+
+    include_once('class.Product.php');
+    include_once 'class.Public_Webpage.php';
+
+    $product = new Product($data['key']);
+
+    $subject_webpage = new Public_Webpage($product->get('Product Webpage Key'));
+    $webpage_key=$subject_webpage->id;
+
+
+    $response = array(
+        'state' => 200,
+        'data'  => array(
+            'category_key'   => $product->id,
+            'webpage_key'   => $webpage_key,
+            'code'   => $product->get('Code'),
+            'label'  => $product->get('Name'),
+            'price'  => $product->get('Price'),
+            'images' => $product->get_images_slidesshow(),
             'webpage_link'=>'website/'.$subject_webpage->get('Webpage Website Key').'/webpage/'.$webpage_key
         )
     );

@@ -435,6 +435,25 @@ class Product extends Asset {
         }
 
         switch ($key) {
+
+            case 'Image':
+
+
+                $image_key = $this->data['Product Main Image Key'];
+
+
+
+
+                if ($image_key) {
+                    $img = '/image_root.php?size=small&id='.$image_key;
+                } else {
+                    $img = '/art/nopic.png';
+
+                }
+
+                return $img;
+                break;
+
             case 'Product Webpage Meta Description':
             case 'Webpage Meta Description':
                 return $this->webpage->get('Page Store Description');

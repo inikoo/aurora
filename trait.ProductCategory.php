@@ -1003,33 +1003,123 @@ trait ProductCategory {
 
         if ($this->get('Category Subject') == 'Product') {
 
+            include_once 'class.Product.php';
+
             $this->get_webpage();
 
-            $null_stacks = false;
+            if (!$this->webpage->id) {
+                return;
+            }
+
+
+            $sql = sprintf('DELETE FROM  `Product Category Index` WHERE `Product Category Index Website Key`=%d  ', $this->webpage->id);
+            $this->db->exec($sql);
+
+
+
+            if ($this->webpage->get('Webpage State') == 'InProcess') {
+                $state = "'Online','InProcess','Out of Stock '";
+            } else {
+                $state = "'Online','Out of Stock '";
+            }
 
             $sql = sprintf(
-                "SELECT `Product Category Index Product ID`,`Product Category Index Category Key`,`Product Category Index Stack`, P.`Product ID`,`Product Code`,`Product Web State` FROM `Category Bridge` B  LEFT JOIN `Product Dimension` P ON (`Subject Key`=P.`Product ID`)  LEFT JOIN `Product Category Index` S ON (`Subject Key`=S.`Product Category Index Product ID` AND S.`Product Category Index Category Key`=B.`Category Key`)    WHERE  `Category Key`=%d  ORDER BY ifnull(`Product Category Index Stack`,99999999),`Product Code File As`",
-                $this->id
+                "SELECT  P.`Product ID`,`Product Code`,`Product Web State` ,`Product Webpage Key`
+                    FROM `Category Bridge` B  
+                    LEFT JOIN `Product Dimension` P ON (`Subject Key`=P.`Product ID`)  
+                    LEFT JOIN `Page Store Dimension` W ON (W.`Page Key`=P.`Product Webpage Key`)   
+                        WHERE  `Category Key`=%d    AND `Product Public`='Yes' AND   `Webpage State` IN (%s)   ORDER BY `Product Code File As`",
+                $this->id,$state
             );
 
 
+            include_once 'class.Image.php';
+
+            $stack=0;
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
 
-                    if ($row['Product Category Index Product ID'] == '') {
-                        $null_stacks = true;
+                    $product=new Product($row['Product ID']);
+
+                    /*
+
+                    $image_375x250     = '';
+                    $images_slides_show = $product->get_images_slidesshow();
+
+                    foreach ($images_slides_show as $image_data) {
+                        if ($image_data['ratio'] == 1.5 and $image_375x250 == '') {
+                            $image_375x250 = '/image_root.php?id='.$image_data['id'];
+                        }
+                    }
+
+                    foreach ($images_slides_show as $image_data) {
+                        if ($image_data['ratio'] < 1.6 and $image_data['ratio'] > 1.4 and $image_375x250 == '') {
+                            $image_375x250 = '/image_root.php?id='.$image_data['id'];
+                        }
+                    }
+
+                    */
+
+
+                    $image=new Image($product->get('Product Main Image Key'));
+
+                    $_image_filename=uniqid('tmp_ftc_image_');
+
+                    $image->save_image_to_file('server_files/tmp',$_image_filename,$image->fit_to_canvas(375,275));
+
+                    $image_filename='server_files/tmp/'.$_image_filename.'.jpeg';
+                    $image_data=array(
+                        'Upload Data'=>array('tmp_name'=>$image_filename,'type'=>'image/jpeg'),
+                        'Image Filename'=>$image->get('Image Filename'),
+                        'Image Subject Object Image Scope'=>'Item'
+
+                    );
+
+                   // print_r($image_data);
+                    $image=$this->webpage->add_image($image_data);
+
+                    if(!$image){
+                        print_r($this->webpage->msg);
+                        exit;
+                    }
+
+                  //  print "========";
+
+                   // print_r($image);
+
+
+                    $image_375x250 = '/image_root.php?id='.$image->id;
+
+                    unlink($image_filename);
+
+                    $_data = array(
+                        'code'   => $product->get('Code'),
+                        'label'   => $product->get('Name'),
+                        'hover_code'   => $product->get('Code'),
+                        'hover_label'   => $product->get('Name'),
+                        'image_375x250' => $image_375x250,
+
+
+                        'product_id' => $product->id,
+                        'webpage_key'=> $row['Product Webpage Key'],
+                        'tags'=>'',
+                        'guest'=>false,
+
+
+                    );
+
+                   // print_r($_data);
+
 
                         $sql = sprintf(
-                            'INSERT INTO `Product Category Index` (`Product Category Index Category Key`,`Product Category Index Product ID`,`Product Category Index Website Key`) VALUES (%d,%d,%d) ',
-                            $this->id, $row['Product ID'], $this->webpage->id
+                            'INSERT INTO `Product Category Index` (`Product Category Index Category Key`,`Product Category Index Product ID`,`Product Category Index Website Key`,`Product Category Index Product Webpage Key`,`Product Category Index Content Data`,`Product Category Index Stack`) VALUES (%d,%d,%d,%d,%s,%d) ',
+                            $this->id, $row['Product ID'], $this->webpage->id,$row['Product Webpage Key'], prepare_mysql(json_encode($_data)),$stack
                         );
                         $this->db->exec($sql);
 
-                    }
 
-                    if ($row['Product Category Index Stack'] == '') {
-                        $null_stacks = true;
-                    }
+
+
 
                 }
             } else {
@@ -1039,35 +1129,7 @@ trait ProductCategory {
             }
 
 
-            //   exit;
 
-            $stack_index = 0;
-            if ($null_stacks or $force_reindex) {
-
-                $sql = sprintf(
-                    "SELECT `Product Category Index Key`,`Product Category Index Product ID`,`Product Category Index Category Key`,`Product Category Index Stack`, P.`Product ID`,`Product Code`,`Product Web State` FROM `Category Bridge` B  LEFT JOIN `Product Dimension` P ON (`Subject Key`=P.`Product ID`)  LEFT JOIN `Product Category Index` S ON (`Subject Key`=S.`Product Category Index Product ID` AND S.`Product Category Index Category Key`=B.`Category Key`)    WHERE  `Category Key`=%d  ORDER BY ifnull(`Product Category Index Stack`,99999999),`Product Code File As`",
-                    $this->id
-                );
-
-
-                if ($result = $this->db->query($sql)) {
-                    foreach ($result as $row) {
-
-                        //     print_r($row);
-
-                        $stack_index++;
-                        $sql = sprintf(
-                            'UPDATE `Product Category Index` SET `Product Category Index Stack`=%d WHERE `Product Category Index Key`=%d', $stack_index, $row['Product Category Index Key']
-                        );
-                        $this->db->exec($sql);
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
-                }
-
-            }
 
 
         } else {
@@ -1092,14 +1154,20 @@ trait ProductCategory {
 
                 $anchor_section_key = 0;
 
+                if ($this->webpage->get('Webpage State') == 'InProcess') {
+                    $state = "'Online','InProcess'";
+                } else {
+                    $state = "'Online'";
+                }
 
                 $sql = sprintf(
-                    "SELECT  `Subject Key` ,`Category Code`
+                    "SELECT  `Subject Key` ,`Category Code`,`Product Category Webpage Key`
                         FROM `Category Bridge` B 
                         LEFT JOIN `Category Dimension` CAT ON (B.`Subject Key`=CAT.`Category Key`)  
-                        LEFT JOIN `Product Category Dimension` P ON (B.`Subject Key`=P.`Product Category Key`)   
-                        WHERE B.`Category Key`=%d AND  `Product Category Public`='Yes'   ORDER BY  `Category Code`  ",
-                    $this->id
+                        LEFT JOIN `Product Category Dimension` P ON (B.`Subject Key`=P.`Product Category Key`) 
+                        LEFT JOIN `Page Store Dimension` W ON (W.`Page Key`=P.`Product Category Webpage Key`)   
+                        WHERE B.`Category Key`=%d AND  `Product Category Public`='Yes'  AND   `Webpage State` IN (%s)   ORDER BY  `Category Code`  ",
+                    $this->id,$state
                 );
 
                $stack=0;
@@ -1113,14 +1181,9 @@ trait ProductCategory {
 
 
 
-                        // TODO replace with $category->get('Product Category Webpage Key')
-
-                        $subject_webpage = new Public_Webpage('scope', ($subject->get('Category Subject') == 'Category' ? 'Category Categories' : 'Category Products'), $subject->id);
-                        $subject_webpage_key=$subject_webpage->id;
 
 
-
-                        if ($subject_webpage->id) {
+                        if ($row['Product Category Webpage Key']) {
 
                             $image_375x250     = '';
                             $images_slides_show = $subject->get_images_slidesshow();
@@ -1144,7 +1207,7 @@ trait ProductCategory {
                                 'hover_label'   => $subject->get('Label'),
                                 'image_375x250' => $image_375x250,
                                 'category_key' => $subject->id,
-                                'webpage_key'=> $subject_webpage_key,
+                                'webpage_key'=> $row['Product Category Webpage Key'],
                                 'tags'=>'',
                                 'guest'=>false,
 
@@ -1153,7 +1216,7 @@ trait ProductCategory {
 
                             $sql = sprintf(
                                 'INSERT INTO `Category Webpage Index` (`Category Webpage Index Section Key`,`Category Webpage Index Content Data`,`Category Webpage Index Parent Category Key`,`Category Webpage Index Category Key`,`Category Webpage Index Webpage Key`,`Category Webpage Index Category Webpage Key`,`Category Webpage Index Stack`) VALUES (%d,%s,%d,%d,%d,%d,%d) ',
-                                $anchor_section_key, prepare_mysql(json_encode($_data)), $this->id, $row['Subject Key'], $this->webpage->id, $subject_webpage_key,$stack
+                                $anchor_section_key, prepare_mysql(json_encode($_data)), $this->id, $row['Subject Key'], $this->webpage->id,$row['Product Category Webpage Key'],$stack
                             );
 
 

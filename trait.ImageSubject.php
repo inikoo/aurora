@@ -20,6 +20,8 @@ trait ImageSubject {
 
         include_once 'utils/units_functions.php';
 
+        //print_r($raw_data);
+
 
         $data = array(
             'Image Width'         => 0,
@@ -226,7 +228,8 @@ trait ImageSubject {
             }
 
             return $image;
-        } else {
+        }
+        else {
 
 
             $this->error = true;
