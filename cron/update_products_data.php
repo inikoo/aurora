@@ -57,6 +57,8 @@ function update_products_data($db) {
             $product->update_history_records_data();
             $product->update_images_data();
 
+            $product->update(array('Product Parts Data'=>json_encode($this->get_parts_data())),'no_history');
+
         }
 
     } else {
