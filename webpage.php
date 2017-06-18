@@ -33,6 +33,9 @@ $webpage_key = $_REQUEST['webpage_key'];
 $theme       = $_REQUEST['theme'];
 
 $webpage = new Public_Webpage($webpage_key);
+
+$webpage->load_scope();
+
 $website = new Public_Website($webpage_key);
 
 $store   = new Public_Store($webpage->get('Webpage Store Key'));
@@ -42,6 +45,18 @@ $store   = new Public_Store($webpage->get('Webpage Store Key'));
 $content_data = $webpage->get('Content Data');
 
 
+
+
+if($webpage->get('Webpage Template Filename')=='products_showcase'){
+    include_once 'class.Public_Product.php';
+
+    foreach($content_data['products'] as $key=>$value){
+        $product=new Public_Product($value['product_id']);
+        $content_data['products'][$key]['object']= $product;
+    }
+
+
+}
 $smarty->assign('content', $content_data);
 
 //print_r($content_data);
@@ -55,6 +70,7 @@ $smarty->assign('template', $webpage->get('Webpage Template Filename'));
 
 
 $template = $theme.'/'.$webpage->get('Webpage Template Filename').'.'.$theme.'.tpl';
+
 
 if (file_exists('templates/'.$template)) {
     $smarty->display($template);

@@ -144,7 +144,7 @@ class Image {
 
         if (preg_match('/\.\.\//', $raw_data['upload_data']['tmp_name'])) {
             $this->error = true;
-            $this->msg   = _('Invalid filename, return paths forbiden');
+            $this->msg   = 'Invalid filename, return paths forbidden';
 
             return;
         }
@@ -197,7 +197,7 @@ class Image {
 
     function create($data) {
 
-        // print_r($data);
+        //print_r($data);
 
         $tmp_file = $data['upload_data']['tmp_name'];
         unset($data['upload_data']);
@@ -213,7 +213,7 @@ class Image {
         $data['Image Width']  = imagesx($im);
         $data['Image Height'] = imagesy($im);
 
-        unset($data['upload_data']);
+
 
 
         if ($data['Image File Format'] == 'gif' and $this->is_animated_gif($tmp_file)) {
@@ -445,6 +445,50 @@ class Image {
         $this->data['Image Thumbnail Data'] = $image_blob;
     }
 
+
+    function fit_to_canvas($canvas_w,$canvas_h){
+
+        $w = $this->data['Image Width'];
+        $h = $this->data['Image Height'];
+
+        $r = $w / $h;
+
+        $r_canvas=$canvas_w/$canvas_h;
+
+        if($r < $r_canvas) {
+            $fit_h = $canvas_h;
+            $fit_w = $w * ($fit_h / $h);
+            $canvas_y = 0;
+            $canvas_x = ($canvas_w - $fit_w) / 2;
+        }elseif($r > $r_canvas) {
+            $fit_w = $canvas_w;
+            $fit_h = $h * ($fit_w / $w);
+
+            $canvas_x = 0;
+            $canvas_y = ($canvas_h - $fit_h) / 2;
+        }else{
+            $fit_h = $canvas_h;
+            $fit_w = $canvas_w;
+            $canvas_x = 0;
+            $canvas_y = 0;
+
+        }
+
+
+       // print " $w $h  ---  $fit_h   $fit_w $canvas_x  $canvas_y   ";
+
+
+        $canvas = imagecreatetruecolor($canvas_w, $canvas_h);
+        $white = imagecolorallocate($canvas, 255, 255, 255);
+        imagefill($canvas, 0, 0, $white);
+
+        imagecopyresampled($canvas, imagecreatefromstring($this->data['Image Data']), $canvas_x, $canvas_y, 0, 0, $fit_w, $fit_h, $w, $h);
+
+        return $canvas;
+
+    }
+
+
     function transformToFit($newX, $newY) {
 
         $x = $this->data['Image Width'];
@@ -580,37 +624,28 @@ class Image {
     }
 
 
-    function save_image_to_file($path, $filename = false) {
+    function save_image_to_file($path, $filename = false,$im=false) {
 
+
+        if (!$im) {
+            $image_data = $this->data['Image Data'];
+        }else{
+            $image_data = $this->get_image_blob($im);
+        }
 
         if (!$filename) {
             $filename = $this->id;
         }
 
-
-
-
-
-        file_put_contents($path.'/'.$filename.'.'.$this->data['Image File Format'], $this->data['Image Data']);
+        file_put_contents($path.'/'.$filename.'.'.$this->data['Image File Format'], $image_data);
 
         return $filename.'.'.$this->data['Image File Format'];
 
     }
 
 
-    // speaks for itself
 
-    function saveImage($im, $destImage) {
 
-        if ($this->data['Image File Format'] == 'jpeg' or $this->data['Image File Format'] == 'psd') {
-            imagejpeg($im, $destImage, $this->jpgCompression);
-
-        } elseif ($this->data['Image File Format'] == 'png' or $this->data['Image File Format'] == 'wbmp') {
-            imagepng($im, $destImage);
-        } elseif ($this->data['Image File Format'] == 'gif') {
-            imagegif($im, $destImage);
-        }
-    }
 
     function setCompression($val = 70) {
         if ($val > 0 && $val < 10) {
