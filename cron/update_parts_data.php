@@ -41,6 +41,7 @@ function update_parts_data($db) {
             $part->update_attachments_data();
             $part->update_images_data();
 
+
             if ($part->get('Part Cost') <= 0 and $part->get('Part Status')!='Not In Use' ) {
                 print $part->get('Reference')." ".$part->get('Part Cost')."\n";
 

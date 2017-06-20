@@ -1154,5 +1154,32 @@ html, body {
   font-size:21px;
 }
 
+[contenteditable]:focus {
+  outline: 0px solid transparent;
+}
 
+
+.table_item_editable.editing{
+  background-color: #edf5f8;
+}
+
+
+.table_item_editable.editing.edited{
+  background-color: #c9e3ec;
+}
+
+.table_item_editable.editing.success{
+  background-color: #c8eed8;
+}
+
+
+.table_item_editable.editing.error{
+  background-color: #faa9a9;
+}
+
+#table{
+  [contenteditable="true"]:empty {
+    padding: 0px 10px;
+  }
+}
 

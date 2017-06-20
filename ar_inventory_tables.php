@@ -940,6 +940,8 @@ function supplier_parts($_data, $db, $user, $account) {
 
             $record_data[] = array(
                 'id'               => (integer)$data['Supplier Part Key'],
+                'data'    => '<span id="item_data_'.$data['Supplier Part Key'].'" class="item_data" data-key="'. $data['Supplier Part Key'] .'" ></span>',
+
                 'supplier_key'     => (integer)$data['Supplier Part Supplier Key'],
                 'supplier_code'    => sprintf('<span class="link" onClick="change_view(\'supplier/%d/\')" >%s</span>',$data['Supplier Part Supplier Key'],$data['Supplier Code']),
                 'part_key'         => (integer)$data['Supplier Part Part SKU'],
@@ -950,7 +952,7 @@ function supplier_parts($_data, $db, $user, $account) {
                 'barcode_sko'=>$data['Part SKO Barcode'],
 
 
-                'description'    => $data['Part Unit Description'],
+                'description'    => '<span  data-field="Part Unit Description"  data-item_class="item_Part_Unit_Description" class="table_item_editable item_Part_Unit_Description"  >'.$data['Part Unit Description'].'</span>',
                 'status'         => $status,
                 'cost'           => sprintf('<span class="part_cost"  pid="%d" cost="%s"  currency="%s"   onClick="open_edit_cost(this)">%s</span>' ,
                                             $data['Supplier Part Key'],$data['Supplier Part Unit Cost'],$data['Supplier Part Currency Code'],money($data['Supplier Part Unit Cost'], $data['Supplier Part Currency Code'])

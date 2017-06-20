@@ -28,6 +28,7 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo = $_REQUEST['tipo'];
 
+
 switch ($tipo) {
 
 
@@ -248,16 +249,14 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
 
     $field = preg_replace('/_/', ' ', $data['field']);
 
-    if($object->get_object_name()=='Page'){
+    if ($object->get_object_name() == 'Page') {
         $formatted_field = preg_replace('/^Webpage /', '', $field);
         $formatted_field = preg_replace('/^'.$object->get_object_name().' /', '', $formatted_field);
 
-    }else{
+    } else {
         $formatted_field = preg_replace('/^'.$object->get_object_name().' /', '', $field);
 
     }
-
-
 
 
     if ($field == 'Product Category Department Category Key') {
@@ -311,7 +310,6 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
 
 
     }
-
 
 
     if ($object->error) {
@@ -476,8 +474,7 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
             'update_metadata'    => $update_metadata,
             'directory_field'    => $directory_field,
             'directory'          => $directory,
-            'items_in_directory' => $items_in_directory,
-
+            'items_in_directory' => $items_in_directory
         );
 
 
@@ -680,13 +677,12 @@ function delete_object_component($account, $db, $user, $editor, $data, $smarty) 
 function object_operation($account, $db, $user, $editor, $data, $smarty) {
 
 
+    if ($data['object'] == 'website_footer' or $data['object'] == 'website_header') {
+        $object            = get_object('website', $data['key']);
+        $data['operation'] = 'reset_element';
 
-    if($data['object']=='website_footer' or $data['object']=='website_header'){
-        $object         = get_object('website', $data['key']);
-        $data['operation']='reset_element';
-
-    }else{
-        $object         = get_object($data['object'], $data['key']);
+    } else {
+        $object = get_object($data['object'], $data['key']);
     }
 
 
@@ -755,16 +751,18 @@ function object_operation($account, $db, $user, $editor, $data, $smarty) {
                 }
             }
 
-        }else if ($object->get_object_name() == 'Deal Campaign') {
+        } else {
+            if ($object->get_object_name() == 'Deal Campaign') {
 
-            $response['request'] = sprintf('campaigns/%d', $object->get('Deal Campaign Store Key'));
+                $response['request'] = sprintf('campaigns/%d', $object->get('Deal Campaign Store Key'));
 
-        }  else {
+            } else {
 
-            if (is_string($request) and $request != '') {
-                $response['request'] = $request;
+                if (is_string($request) and $request != '') {
+                    $response['request'] = $request;
+                }
+
             }
-
         }
 
 
@@ -789,7 +787,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
     $parent->editor = $editor;
 
     $metadata = array();
-    $redirect='';
+    $redirect = '';
 
     switch ($data['object']) {
 
@@ -809,10 +807,10 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
                 $smarty->assign('object', $object);
 
-                $pcard        = '';
+                $pcard = '';
 
 
-                $redirect='store/'.$object->get('Website Store Key').'/website/';
+                $redirect     = 'store/'.$object->get('Website Store Key').'/website/';
                 $updated_data = array();
             }
             break;

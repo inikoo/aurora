@@ -45,6 +45,13 @@ cell: Backgrid.HtmlCell.extend({} ),
 
 },
 
+{
+name: "name",
+label: "{t}Name{/t}",
+editable: false,
+sortType: "toggle",
+cell: "html"
+},
 
 
 {
@@ -344,11 +351,12 @@ close_columns_period_options()
 $('#columns_period').addClass('hide');
 
 
-grid.columns.findWhere({ name: 'parts'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'status'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'price'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'margin'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'rrp'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'name'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'parts'} ).set("renderable", false)
 
 grid.columns.findWhere({ name: 'web_state'} ).set("renderable", false)
 
@@ -377,7 +385,8 @@ grid.columns.findWhere({ name: 'percentage_repeat_customer_total'} ).set("render
 
 
 if(view=='overview'){
-grid.columns.findWhere({ name: 'parts'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'name'} ).set("renderable", true)
+
 grid.columns.findWhere({ name: 'price'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'status'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'web_state'} ).set("renderable", true)
@@ -424,7 +433,8 @@ grid.columns.findWhere({ name: 'sales_quarter2'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'sales_quarter3'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'sales_quarter4'} ).set("renderable", true)
 
-}else if(view=='stock'){
+}else if(view=='parts'){
+grid.columns.findWhere({ name: 'parts'} ).set("renderable", false)
 
 
 }

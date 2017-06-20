@@ -2948,6 +2948,16 @@ class Part extends Asset {
                     exit;
                 }
                 $this->update_field($field, $value, $options);
+
+
+
+                foreach ($this->get_products('objects') as $product){
+                    $product->update(array('Product Parts Data'=>json_encode($product->get_parts_data())),'no_history');
+
+                }
+
+
+
                 break;
             case 'Part Unit Price':
 

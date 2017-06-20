@@ -32,10 +32,13 @@ if ($category->get('Category Scope') == 'Product') {
 
         $table_views = array(
             'overview'    => array('label' => _('Overview')),
+            'price'    => array('label' => _('Price')),
+
             'performance' => array('label' => _('Performance')),
             'sales'       => array('label' => _('Sales')),
             'sales_y'     => array('label' => _('Invoiced amount (Yrs)')),
             'sales_q'     => array('label' => _('Invoiced amount (Qs)')),
+
 
         );
 

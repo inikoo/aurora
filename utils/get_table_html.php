@@ -227,6 +227,7 @@ if (isset($table_views[$table_view])) {
 }
 
 
+
 $smarty->assign('table_views', $table_views);
 
 $html = $smarty->fetch('table.tpl');
