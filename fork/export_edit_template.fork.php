@@ -175,7 +175,8 @@ function fork_export_edit_template($job) {
 
         default:
             print_r($fork_data);
-            exit;
+            return;
+         //   exit;
             break;
     }
 

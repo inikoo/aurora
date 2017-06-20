@@ -1105,6 +1105,16 @@ right connector from last child*/
   padding-bottom: 10px;
   line-height: 70%; }
 
+#edit_table_dialog {
+  position: absolute;
+  background-color: #fff;
+  z-index: 200;
+  border: 1px solid #ccc;
+  padding: 10px;
+  min-width: 450px; }
+  #edit_table_dialog table td {
+    padding: 4px 16px; }
+
 .new_object table, .presentation_card table, .showcase table, .export_dialog table {
   width: 100%; }
   .new_object table .adr, .presentation_card table .adr, .showcase table .adr, .export_dialog table .adr {
@@ -1243,28 +1253,29 @@ table .totals td {
 
 .export_dialog {
   position: absolute;
+  z-index: 201;
   background: #fff;
   border: 1px solid #ccc;
   padding: 10px 20px; }
   .export_dialog .fa {
     margin-right: 5px; }
 
-#export_dialog_config {
+#export_dialog_config, #download_edit_items_dialog_config {
   min-width: 400px; }
 
-#export_dialog {
+#export_dialog, #download_edit_items_dialog {
   min-width: 220px; }
-  #export_dialog .export_progress_bar_container {
+  #export_dialog .export_progress_bar_container, #download_edit_items_dialog .export_progress_bar_container {
     width: 120px;
     align: center;
     padding: 0px;
     position: relative; }
-    #export_dialog .export_progress_bar_container .export_progress_bar_bg {
+    #export_dialog .export_progress_bar_container .export_progress_bar_bg, #download_edit_items_dialog .export_progress_bar_container .export_progress_bar_bg {
       position: absolute;
       top: 1px;
       color: #ddd;
       z-index: 10; }
-    #export_dialog .export_progress_bar_container .export_progress_bar, #export_dialog .export_progress_bar_container .export_download {
+    #export_dialog .export_progress_bar_container .export_progress_bar, #export_dialog .export_progress_bar_container .export_download, #download_edit_items_dialog .export_progress_bar_container .export_progress_bar, #download_edit_items_dialog .export_progress_bar_container .export_download {
       position: absolute;
       top: 6px;
       background: green;
@@ -1276,7 +1287,7 @@ table .totals td {
       line-height: 22px;
       -webkit-transition: width 1s;
       transition: width 1s; }
-    #export_dialog .export_progress_bar_container .export_download {
+    #export_dialog .export_progress_bar_container .export_download, #download_edit_items_dialog .export_progress_bar_container .export_download {
       text-align: center;
       cursor: pointer;
       width: 100%; }
@@ -8100,5 +8111,23 @@ html, body {
 .alert-title {
   font-weight: 800;
   font-size: 21px; }
+
+[contenteditable]:focus {
+  outline: 0px solid transparent; }
+
+.table_item_editable.editing {
+  background-color: #edf5f8; }
+
+.table_item_editable.editing.edited {
+  background-color: #c9e3ec; }
+
+.table_item_editable.editing.success {
+  background-color: #c8eed8; }
+
+.table_item_editable.editing.error {
+  background-color: #faa9a9; }
+
+#table [contenteditable="true"]:empty {
+  padding: 0px 10px; }
 
 /*# sourceMappingURL=app.css.map */

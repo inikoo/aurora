@@ -5,7 +5,17 @@ editable: false,
 renderable: false,
 cell: "string",
 
-}, {
+},
+{
+name: "data",
+label: "",
+editable: false,
+renderable: false,
+cell: Backgrid.HtmlCell.extend({
+})
+
+},
+{
 name: "supplier_code",
 label: "{t}Supplier{/t}",
 editable: false,

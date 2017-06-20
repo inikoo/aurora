@@ -392,6 +392,72 @@ function show_export_dialog() {
 
 }
 
+function show_download_edit_items_dialog() {
+    if ($('#download_edit_items_dialog').hasClass('hide')) {
+
+
+
+        $('#download_edit_items_dialog').removeClass('hide')
+        $('#download_edit_items_dialog_config').removeClass('hide')
+
+
+
+
+        $("#download_edit_items_dialog").offset({ top:  $('#edit_table_dialog').offset().top,
+            left:  $('#edit_table_dialog').offset().left + $('#edit_table_dialog').width()-$("#download_edit_items_dialog").width()  })
+
+        $("#download_edit_items_dialog_config").offset({ top:  $('#edit_table_dialog').offset().top, left:  $('#download_edit_items_dialog').offset().left -$("#download_edit_items_dialog_config").width() -30    })
+        $('#edit_table_dialog').addClass('hide')
+
+
+    } else {
+
+    }
+
+}
+
+
+
+
+
+function show_edit_table_dialog() {
+//
+
+    if ($('#edit_table_dialog').hasClass('hide')) {
+        $('#edit_table_dialog').removeClass('hide')
+        $("#edit_table_dialog").offset({ top:  $('#show_edit_table_dialog_button').offset().top+$('#show_edit_table_dialog_button').height()-3, left:  $('#show_edit_table_dialog_button').offset().left-$('#edit_table_dialog').width()+20 })
+
+
+    } else {
+        $('#edit_table_dialog').addClass('hide')
+    }
+}
+
+
+function table_edit_view(){
+    $('#table .table_item_editable').attr('contenteditable',true).addClass('editing')
+   $('#inline_edit_table_items_buttons').removeClass('hide')
+    $('#show_edit_table_dialog_button').addClass('hide')
+
+    $('.table_item_editable.editing').each(function(i, obj) {
+
+        $(obj).attr('ovalue',$(obj).html())
+
+    });
+
+
+
+    show_edit_table_dialog()
+
+
+}
+
+
+
+
+
+
+
 function hide_export_dialog() {
     $('#export_dialog').addClass('hide')
     hide_export_config_dialog()
@@ -482,7 +548,7 @@ function export_table(type) {
 
     var request = "/ar_export.php?ar_file=" + rows.ar_file + "&tipo=" + rows.tipo + "&parameters=" + rows.parameters + '&type=' + type + '&state=' + JSON.stringify(state) + '&fields=' + JSON.stringify(fields)
 
-    // console.log(request)
+     console.log(request)
     $.getJSON(request, function (data) {
         if (data.state == 200) {
             get_export_process_bar(data.fork_key, data.tipo, type,'_export');
@@ -498,7 +564,7 @@ function stop_export(type) {
 
 function get_export_process_bar(fork_key, tag, type,suffix) {
 
-    console.log(type+' xx '+suffix)
+   // console.log(type+' xx '+suffix)
     
     
     request = '/ar_fork.php?tipo=get_process_bar&fork_key=' + fork_key + '&tag=' + tag
@@ -554,6 +620,8 @@ function get_export_process_bar(fork_key, tag, type,suffix) {
                 $('#stop_export_table_' + type+suffix).addClass('hide')
 
 
+                console.log('cacacaca')
+
             }
 
 
@@ -565,8 +633,13 @@ function get_export_process_bar(fork_key, tag, type,suffix) {
 
 function download_exported_file(type,suffix) {
 
+
     if(suffix=='_export'){
         $("#download_" + type+suffix)[0].click();
+        $('#table_edit_items_file_upload2_button').removeClass('disabled')
+
+
+
     }else{
         $("#download_" + type)[0].click();
         $('#upload_icon').removeClass('very_discreet').addClass('valid_save')
@@ -635,3 +708,34 @@ function post_table_rendered(otable) {
 
 
 
+
+function get_editable_data(element,type) {
+
+    console.log($(element).data('data'))
+
+    _data=$(element).data('data')
+
+    $('#export_progress_bar_bg_' + type).removeClass('hide').html('&nbsp;' + $('#export_queued_msg').html())
+
+    $('#export_table_excel').removeClass('link').addClass('disabled')
+    $('#export_table_csv').removeClass('link').addClass('disabled')
+    $('.field_export').removeClass('button').addClass('disabled')
+    $('#stop_export_table_' + type).removeClass('hide')
+    $('#stop_export_table_' + type).attr('stop', 0);
+
+    var fields = []
+    $('#download_edit_items_dialog_config .field_export i.object_field').each(function (index, obj) {
+        if ($(obj).hasClass('fa-check-square-o')) fields.push($(obj).attr('key'))
+    });
+
+    var request = "/ar_export_edit_template.php?parent="+_data.parent+"&parent_key="+_data.parent_key+"&parent_code="+_data.parent_code+"&objects="+_data.object+"&fields=" + JSON.stringify(fields) + '&type=' + type + '&metadata=' + JSON.stringify({})
+
+    console.log(request)
+
+    $.getJSON(request, function (data) {
+        if (data.state == 200) {
+            get_export_process_bar(data.fork_key, data.tipo, type,'');
+        }
+    })
+
+}

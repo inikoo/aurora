@@ -1006,7 +1006,7 @@ class Product extends Asset {
         include_once 'class.Part.php';
 
         $sql = sprintf(
-            "SELECT `Product Part Key`,`Product Part Linked Fields`,`Product Part Part SKU`,`Product Part Ratio`,`Product Part Note` FROM `Product Part Bridge` WHERE `Product Part Product ID`=%d ",
+            "SELECT `Part Reference`,`Product Part Key`,`Product Part Linked Fields`,`Product Part Part SKU`,`Product Part Ratio`,`Product Part Note` FROM `Product Part Bridge` left join `Part Dimension` on (`Part SKU`=`Product Part Part SKU`)  WHERE `Product Part Product ID`=%d ",
             $this->id
         );
 
@@ -1014,13 +1014,14 @@ class Product extends Asset {
         $parts_data = array();
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
-                $part_data = $row;
+
 
                 $part_data = array(
                     'Key'      => $row['Product Part Key'],
                     'Ratio'    => $row['Product Part Ratio'],
                     'Note'     => $row['Product Part Note'],
                     'Part SKU' => $row['Product Part Part SKU'],
+                    'Part Reference' => $row['Part Reference'],
                 );
 
 
@@ -1028,17 +1029,13 @@ class Product extends Asset {
                     $part_data['Linked Fields']        = array();
                     $part_data['Number Linked Fields'] = 0;
                 } else {
-                    $part_data['Linked Fields']        = json_decode(
-                        $row['Product Part Linked Fields'], true
-                    );
+                    $part_data['Linked Fields']        = json_decode($row['Product Part Linked Fields'], true);
                     $part_data['Number Linked Fields'] = count(
                         $part_data['Linked Fields']
                     );
                 }
                 if ($with_objects) {
-                    $part_data['Part'] = new Part(
-                        $row['Product Part Part SKU']
-                    );
+                    $part_data['Part'] = new Part($row['Product Part Part SKU']);
                 }
 
 
@@ -3397,8 +3394,11 @@ class Product extends Asset {
 
 
         $this->get_data('id', $this->id);
-        $this->update_part_numbers();
 
+
+        $this->update(array('Product Parts Data'=>json_encode($this->get_parts_data())),'no_history');
+
+        $this->update_part_numbers();
         $this->update_availability();
         $this->update_cost();
 

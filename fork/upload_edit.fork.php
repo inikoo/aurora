@@ -50,7 +50,7 @@ function fork_upload_edit($job) {
     );
 
 
-    //  print_r($_data);
+
 
     $upload = new Upload('id', $fork_data['upload_key']);
 
@@ -91,7 +91,7 @@ function fork_upload_edit($job) {
             include_once 'class.Supplier.php';
             $valid_keys   = array('Supplier Key');
             $valid_fields = $export_edit_template_fields['supplier'];
-            $object_name  = 'suppier';
+            $object_name  = 'supplier';
             break;
         default:
             print 'error, Upload Object not set up, check: upload.edit.fork.php';
@@ -108,6 +108,7 @@ function fork_upload_edit($job) {
 
     $key_index     = -1;
     $valid_indexes = array();
+
 
 
     foreach ($fields as $key => $value) {
@@ -129,6 +130,8 @@ function fork_upload_edit($job) {
 
         }
     }
+
+
 
 
     if ($key_index < 0) {
@@ -165,6 +168,8 @@ function fork_upload_edit($job) {
     $sql = sprintf(
         "SELECT `Upload Record Key`, uncompress(`Upload Record Data`) AS data  FROM `Upload Record Dimension` WHERE `Upload Record Upload Key`=%d AND `Upload Record Status`='InProcess' ", $upload->id
     );
+
+
 
 
     if ($result = $db->query($sql)) {

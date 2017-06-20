@@ -162,13 +162,16 @@ function products($_data, $db, $user, $account) {
 
             switch ($data['Product Status']) {
                 case 'Active':
-                    $status = _('Active');
+                    $status = sprintf('<i class="fa fa-cube" aria-hidden="true" title="%s"></i>',_('Active'));
                     break;
                 case 'Suspended':
-                    $status = _('Suspended');
+                    $status = sprintf('<i class="fa fa-cube warning" aria-hidden="true" title="%s"></i>',_('Suspended'));
                     break;
                 case 'Discontinued':
-                    $status = _('Discontinued');
+                    $status = sprintf('<i class="fa fa-cube very_discreet" aria-hidden="true" title="%s"></i>',_('Discontinued'));
+                    break;
+                case 'Suspended':
+                    $status = sprintf('<i class="fa fa-cube error" aria-hidden="true" title="%s"></i>',_('Suspended'));
                     break;
                 default:
                     $status = $data['Product Status'];
@@ -261,7 +264,7 @@ function products($_data, $db, $user, $account) {
 
 
             //  print_r($_data);
-            $name = $data['Product Units Per Case'].'x '.$data['Product Name'];
+            $name = '<span >'.$data['Product Units Per Case'].'</span>x <span>'.$data['Product Name'].'</span>';
 
 
             switch ($_data['parameters']['parent']) {
