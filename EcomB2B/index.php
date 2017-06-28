@@ -13,6 +13,24 @@
 
 include_once 'common.php';
 
+if ($logged_in ) {
+
+    $webpage_key = $website->get_system_webpage_key('home.sys');
+    $template='homepage.'.$theme.'.tpl';
+
+
+}else{
+    $webpage_key = $website->get_system_webpage_key('home_logout.sys');
+    $template=$theme.'/homepage_logout.'.$theme.'.'.$website->get('Website Type').'.tpl';
+}
+
+$webpage=new Public_Webpage($webpage_key);
+$content=$webpage->get('Content Data');
+
+$smarty->assign('webpage',$webpage);
+
+$smarty->assign('content',$content);
+$smarty->display($template, $webpage_key);
 
 
 

@@ -584,7 +584,7 @@ class Website extends DB_Table {
             'Page Title'                           => $data['Webpage Name'],
             'Page Short Title'                     => $data['Webpage Browser Title'],
             'Page Parent Key'                      => 0,
-            'Page State'                           => ('Online'),
+            'Page State'                           => 'Online',
             'Page Store Description'               => $data['Webpage Meta Description'],
 
 
@@ -597,7 +597,7 @@ class Website extends DB_Table {
             'Webpage Template Filename'     => $data['Webpage Template Filename'],
             'Webpage Number See Also Links' => 0,
             'Webpage Creation Date'         => gmdate('Y-m-d H:i:s'),
-            'Webpage UrL'                   => $this->data['Website URL'].'/'.strtolower($data['Webpage Code']),
+            'Webpage URL'                   => $this->data['Website URL'].'/'.strtolower($data['Webpage Code']),
             'Webpage Name'                  => $data['Webpage Name'],
             'Webpage Browser Title'         => $data['Webpage Browser Title'],
             'Webpage State'                 => ($data['Webpage Scope'] == 'HomepageToLaunch' ? 'Online' : 'InProcess'),
@@ -1540,23 +1540,8 @@ class Website extends DB_Table {
     }
 
 
-}
 
-function reset_element($element) {
-
-
-    switch ($element) {
-        case 'website_footer':
-            include_once 'conf/footer_data.php';
-            $this->update(array('Page Store Content Data' => $website_system_webpages[$this->get('Webpage Code')]['Page Store Content Data']), 'no_history');
-
-            break;
-        default:
-            break;
-    }
-
-
-    function get_system_webpage($code) {
+    function get_system_webpage_key($code) {
 
         $sql = sprintf(
             'SELECT `Page Key` FROM `Page Store Dimension` WHERE `Webpage Code`=%s AND `Webpage Website Key`=%d  ', prepare_mysql($code), $this->id
@@ -1577,7 +1562,58 @@ function reset_element($element) {
 
     }
 
+
+    function launch(){
+
+        include_once 'class.Page.php';
+
+        /*
+        if($this->get('Website Status')!='InProcess'){
+            $this->error;
+            $this->msg='Website is already launched';
+            return;
+        }
+        */
+
+        $this->update(array('Website Status'=>'Active'));
+
+        $sql=sprintf("select `Page Key` from `Page Store Dimension`  P left join `Webpage Type Dimension` WTD on (WTD.`Webpage Type Key`=P.`Webpage Type Key`)  where `Webpage Website Key`=%d and `Webpage Type Code` in ('Info','Home','Ordering','Customer','Portfolio','Sys')  ",
+            $this->id
+            );
+
+       if ($result=$this->db->query($sql)) {
+       		foreach ($result as $row) {
+
+       		    $webpage=new Page($row['Page Key']);
+       		    $webpage->editor=$this->editor;
+
+       		    if($webpage->get('Webpage Code')=='launching.sys'){
+                    $webpage->update(array('Webpage State'=>'Offline'));
+                }else{
+                    $webpage->update(array('Webpage State'=>'Online'));
+                    $webpage->update(array('Webpage Launch Date'=>gmdate('Y-m-d H:i:s')),'no_history');
+                }
+
+
+
+
+       		}
+       }else {
+       		print_r($error_info=$this->db->errorInfo());
+       		print "$sql\n";
+       		exit;
+       }
+
+
+
+    }
+
+
 }
+
+
+
+
 
 
 ?>

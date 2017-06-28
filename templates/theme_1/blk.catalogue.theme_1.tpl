@@ -668,7 +668,6 @@
     $('#edit_item_container').on('change', '#upload_item_image', function () {
 
 
-        console.log('caca')
 
         var ajaxData = new FormData();
 

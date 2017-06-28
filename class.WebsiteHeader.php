@@ -10,10 +10,14 @@
 */
 
 
+
 include_once 'class.DB_Table.php';
+include_once 'trait.ImageSubject.php';
+
 
 class WebsiteHeader extends DB_Table {
 
+    use ImageSubject;
 
     function WebsiteHeader($a1, $a2 = false, $a3 = false) {
 

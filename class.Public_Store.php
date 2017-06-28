@@ -60,46 +60,85 @@ class Public_Store {
 
     }
 
-    function get_categories($type = 'families', $output = 'data') {
+    function get_categories($type = 'families', $pages = '1-10', $output = 'data') {
 
         $categories = array();
 
 
+        $limit = preg_split('/-/', $pages);
+
+        // print_r($pages);
+
         switch ($type) {
             case 'departments':
                 $sql = sprintf(
-                    'SELECT  `Webpage Code`,`Webpage Name` FROM  `Category Dimension` C   LEFT JOIN `Page Store Dimension` P ON (P.`Webpage Scope Key`=C.`Category Key` AND `Webpage Scope`="Category Categories" ) WHERE   C.`Category Parent Key`=%d ',
+                    'SELECT  `Webpage Code`,`Webpage Name` FROM  `Category Dimension` C   LEFT JOIN `Page Store Dimension` P ON (P.`Webpage Scope Key`=C.`Category Key` AND `Webpage Scope`="Category Categories" ) WHERE   C.`Category Parent Key`=%d  order by `Webpage Name` LIMIT %d,%d ',
+                    $this->get('Store Department Category Key'), $limit[0], $limit[1]
+                );
 
-                    $this->get('Store Department Category Key')
+                break;
+            case 'families':
+                $sql = sprintf(
+                    'SELECT  `Webpage Code`,`Webpage Name` FROM  `Category Dimension` C   LEFT JOIN `Page Store Dimension` P ON (P.`Webpage Scope Key`=C.`Category Key` AND `Webpage Scope`="Category Products" ) WHERE   C.`Category Parent Key`=%d order by `Webpage Name` LIMIT %d,%d ',
+                    $this->get('Store Family Category Key'), $limit[0], $limit[1]
                 );
 
 
-                if ($result = $this->db->query($sql)) {
-                    foreach ($result as $row) {
-
-                        switch ($output) {
-                            case 'menu':
-                                $categories[] = array(
-                                    'url'   => $row['Webpage Code'],
-                                    'label' => $row['Webpage Name'],
-                                    'new'   => false
-
-                                );
-                                break;
-                        }
-
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
-                }
-
-
-                return $categories;
 
                 break;
+            case 'web_departments':
+                include_once 'class.Public_Website.php';
+                $website=new Public_Website($this->get('Store Website Key'));
+
+
+                $sql = sprintf(
+                    'SELECT  `Webpage Code`,`Webpage Name` FROM  `Category Dimension` C   LEFT JOIN `Page Store Dimension` P ON (P.`Webpage Scope Key`=C.`Category Key` AND `Webpage Scope`="Category Categories" ) WHERE   C.`Category Parent Key`=%d order by `Webpage Name` LIMIT %d,%d ',
+                    $website->get('Website Alt Department Category Key'), $limit[0], $limit[1]
+                );
+
+
+                break;
+            case 'web_families':
+
+                include_once 'class.Public_Website.php';
+                $website=new Public_Website($this->get('Store Website Key'));
+
+                $sql = sprintf(
+                    'SELECT  `Webpage Code`,`Webpage Name` FROM  `Category Dimension` C   LEFT JOIN `Page Store Dimension` P ON (P.`Webpage Scope Key`=C.`Category Key` AND `Webpage Scope`="Category Products" ) WHERE   C.`Category Parent Key`=%d order by `Webpage Name` LIMIT %d,%d ',
+                    $website->get('Website Alt Family Category Key'), $limit[0], $limit[1]
+                );
+
+                break;
+            default:
+
+                print $type;
+
         }
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+                switch ($output) {
+                    case 'menu':
+                        $categories[] = array(
+                            'url'   => $row['Webpage Code'],
+                            'label' => $row['Webpage Name'],
+                            'new'   => false
+
+                        );
+                        break;
+                }
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        return $categories;
 
 
     }
@@ -127,8 +166,9 @@ class Public_Store {
             case 'Store Family Category Key':
             case 'Store Timezone':
             case 'Store Key':
+            case 'Store Website Key':
 
-            return $this->data[$key];
+                return $this->data[$key];
                 break;
 
         }

@@ -39,6 +39,18 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
+    case 'store_categories':
+
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'key' => array('type' => 'key'),
+                         'type'=> array('type' => 'string'),
+                         'page'=> array('type' => 'string'),
+                     )
+        );
+
+        store_categories($data, $db, $user);
+        break;
     case 'category_data':
 
         $data = prepare_values(
@@ -68,6 +80,21 @@ switch ($tipo) {
         echo json_encode($response);
         exit;
         break;
+}
+
+
+function store_categories($data, $db, $user) {
+
+    include_once('class.Public_Store.php');
+
+    $store = new Public_Store($data['key']);
+
+    $response = array(
+        'state' => 200,
+        'items'=>$store->get_categories($data['type'],$data['page'],'menu')
+    );
+    echo json_encode($response);
+
 }
 
 

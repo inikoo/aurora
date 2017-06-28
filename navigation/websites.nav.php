@@ -72,10 +72,10 @@ function get_website_navigation($data, $smarty, $user, $db, $account) {
 
 
         list($prev_key, $next_key) = get_prev_next(
-            $website->id, $user->websites
+            $website->get('Website Store Key'), $user->stores
         );
         $sql = sprintf(
-            "SELECT `Website Code` FROM `Website Dimension` WHERE `Website Key`=%d", $prev_key
+            "SELECT `Website Code` FROM `Website Dimension` WHERE `Website Store Key`=%d", $prev_key
         );
 
 
@@ -92,7 +92,7 @@ function get_website_navigation($data, $smarty, $user, $db, $account) {
 
 
         $sql = sprintf(
-            "SELECT `Website Code` FROM `Website Dimension` WHERE `Website Key`=%d", $next_key
+            "SELECT `Website Code` FROM `Website Dimension` WHERE `Website Store Key`=%d", $next_key
         );
         if ($result = $db->query($sql)) {
             if ($row = $result->fetch()) {
@@ -109,7 +109,7 @@ function get_website_navigation($data, $smarty, $user, $db, $account) {
         $left_buttons[] = array(
             'icon'      => 'arrow-left',
             'title'     => $prev_title,
-            'reference' => 'website/'.$prev_key
+            'reference' =>'store/'.$prev_key.'/website'
         );
         $left_buttons[] = array(
             'icon'      => 'arrow-up',
@@ -121,7 +121,7 @@ function get_website_navigation($data, $smarty, $user, $db, $account) {
         $left_buttons[] = array(
             'icon'      => 'arrow-right',
             'title'     => $next_title,
-            'reference' => 'website/'.$next_key
+            'reference' => 'store/'.$next_key.'/website'
         );
     }
 

@@ -426,12 +426,91 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
         $_options = json_decode($options, true);
 
 
+
         if (isset($_options['width']) and isset($_options['height'])) {
             if ($_options['width'] != $width or $_options['height'] != $height) {
                 $msg      = sprintf(_('Image dimensions must to be %sx%s (px)'), $_options['width'], $_options['height']);
                 $response = array(
                     'state' => 400,
                     'title' => _('Wrong image dimensions'),
+                    'msg'   => $msg,
+                    'key'   => 'attach'
+                );
+                echo json_encode($response);
+                exit;
+            }
+        }elseif (isset($_options['width'])) {
+            if ($_options['width'] != $width ) {
+                $msg      = sprintf(_('Image width must to be %s (px)'), $_options['width']);
+                $response = array(
+                    'state' => 400,
+                    'title' => _('Wrong image width'),
+                    'msg'   => $msg,
+                    'key'   => 'attach'
+                );
+                echo json_encode($response);
+                exit;
+            }
+        }elseif (isset($_options['height'])) {
+            if ( $_options['height'] != $height) {
+                $msg      = sprintf(_('Image height must to be %s (px)'),  $_options['height']);
+                $response = array(
+                    'state' => 400,
+                    'title' => _('Wrong image height'),
+                    'msg'   => $msg,
+                    'key'   => 'attach'
+                );
+                echo json_encode($response);
+                exit;
+            }
+        }
+
+        if (isset($_options['max_width'])) {
+            if ($_options['max_width'] < $width ) {
+                $msg      = sprintf(_('Image max width is %s (px)'), $_options['max_width']);
+                $response = array(
+                    'state' => 400,
+                    'title' => _('Image too large'),
+                    'msg'   => $msg,
+                    'key'   => 'attach'
+                );
+                echo json_encode($response);
+                exit;
+            }
+        }
+        if (isset($_options['max_height'])) {
+            if ( $_options['max_height'] < $height) {
+                $msg      = sprintf(_('Image max height is %s (px)'),  $_options['max_height']);
+                $response = array(
+                    'state' => 400,
+                    'title' => _('Image too large'),
+                    'msg'   => $msg,
+                    'key'   => 'attach'
+                );
+                echo json_encode($response);
+                exit;
+            }
+        }
+
+        if (isset($_options['min_width'])) {
+            if ($_options['min_width'] > $width ) {
+                $msg      = sprintf(_('Image min width is %s (px)'), $_options['min_width']);
+                $response = array(
+                    'state' => 400,
+                    'title' => _('Image too small'),
+                    'msg'   => $msg,
+                    'key'   => 'attach'
+                );
+                echo json_encode($response);
+                exit;
+            }
+        }
+        if (isset($_options['min_height'])) {
+            if ( $_options['min_height'] > $height) {
+                $msg      = sprintf(_('Image min height is %s (px)'),  $_options['min_height']);
+                $response = array(
+                    'state' => 400,
+                    'title' => _('Image too small'),
                     'msg'   => $msg,
                     'key'   => 'attach'
                 );

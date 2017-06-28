@@ -258,10 +258,12 @@ function get_object($object_name, $key, $load_other_data = false) {
             $object = new Webpage_Type($key);
             break;
         case 'website_footer':
+        case 'footer':
             require_once "class.WebsiteFooter.php";
             $object = new WebsiteFooter($key);
             break;
         case 'website_header':
+        case 'header':
             require_once "class.WebsiteHeader.php";
             $object = new WebsiteHeader($key);
             break;

@@ -74,7 +74,6 @@
 
             ajaxData.append("tipo", 'save_webpage_content')
             ajaxData.append("key", '{$webpage->id}')
-            //ajaxData.append("content_data", encodeURIComponent(Base64.encode(JSON.stringify(content_data))))
             ajaxData.append("content_data", JSON.stringify(content_data))
 
 

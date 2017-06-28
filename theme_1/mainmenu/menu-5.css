@@ -1,3 +1,10 @@
+
+#logo {
+    background-repeat:no-repeat;
+    background-origin: left top;
+
+}
+
 ul.nav>li>a.active {
     color:#ffffff;
     background: #c54242;
@@ -303,6 +310,7 @@ ul.nav .dropdown li:hover a.active {
 .dropdown-menu {
     min-width: 220px;
 }
+
 .dropdown-menu>li>a {
     padding: 10px 20px;
     border-bottom: 1px solid #e6e6e6;
@@ -493,6 +501,10 @@ a.registerbut:hover{
 }
 
 @media (min-width: 1000px) {
+
+  .navbar-nav>li>a{padding-top:4px;padding-bottom:4px}
+
+
     .yamm ul.nav li.dropdown > ul.dropdown-menu {
 
         /*opacity: 0;
@@ -500,6 +512,8 @@ a.registerbut:hover{
         /* -webkit-transition: all 0.5s ease;
         -moz-transition: all 0.5s ease;
         -o-transition: all 0.5s ease;*/
+
+
     }
 
 

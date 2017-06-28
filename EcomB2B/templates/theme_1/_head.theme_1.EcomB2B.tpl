@@ -44,11 +44,6 @@
     <!-- ######### CSS STYLES ######### -->
 
 
-    <link href="/css/jquery-ui.css" rel="stylesheet">
-    <link href="/css/editor/froala_editor.css" rel="stylesheet"/>
-    <link href="/css/editor/froala_style.css" rel="stylesheet"/>
-
-
 
 
 
@@ -106,12 +101,10 @@
     <link rel="stylesheet" type="text/css" href="/theme_1/tabs/assets/css/responsive-tabs3.css">
 
 
-    <link rel="stylesheet" href="/theme_1/css/aurora.css">
-    <link rel="stylesheet" href="/css/webpage_preview.css" type="text/css"/>
 
 
 
-       <!--  <script src="http://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script> -->
+    <!--  <script src="http://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script> -->
       <script src="/theme_1/local/jquery.js"></script>
 
 
@@ -121,10 +114,9 @@
     <!--  <script src="/theme_1/local/bootstrap.js"></script> -->
 
 
-    <script type="text/javascript" src="/js/libs/sweetalert.min.js"></script>
+    <script type="text/javascript" src="/js/sweetalert.min.js"></script>
 
 
-    <script type="text/javascript" src="/js/libs/editor/froala_editor.min.js"></script>
      <script type="text/javascript" src="/theme_1/tooltips/jquery.darktooltip.js"></script>
 
      <script src="/theme_1/aninum/jquery.animateNumber.min.js"></script>
@@ -138,24 +130,18 @@
     <script src="/theme_1/mainmenu/customeUI.js"></script>
 
 
-   {if isset($header)}
+
     <script type="text/javascript" src="/theme_1/mainmenu/sticky.js"></script>
     <script type="text/javascript" src="/theme_1/mainmenu/modernizr.custom.75180.js"></script>
-   {/if}
 
-    <script type="text/javascript" src="/js/libs/jquery-ui.js"></script>
 
-    <script type="text/javascript" src="/js/libs/base64.js"></script>
 
-    <script type="text/javascript" src="/js/edit.js"></script>
+    <script type="text/javascript" src="/js/base64.js"></script>
+
     <script type="text/javascript" src="/js/validation.js"></script>
-    <script type="text/javascript" src="/js/common_webpage_preview.js"></script>
-
-    <script type="text/javascript" src="/js/libs/tinycolorpicker.js"></script>
 
 
 
-
-</head>
+ </head>
 
 

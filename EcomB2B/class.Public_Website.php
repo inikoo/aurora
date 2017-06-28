@@ -137,7 +137,7 @@ class Public_Website {
 
     }
 
-    function get_system_webpage($code) {
+    function get_system_webpage_key($code) {
 
         $sql = sprintf(
             'SELECT `Page Key` FROM `Page Store Dimension` WHERE `Webpage Code`=%s AND `Webpage Website Key`=%d  ', prepare_mysql($code), $this->id
@@ -257,6 +257,8 @@ class Public_Website {
             case 'Website Alt Department Category Key':
             case 'Website Alt Family Category Key':
             case 'Website Status';
+            case 'Website Theme':
+            case 'Website Type':
                 return $this->data[$key];
                 break;
 
