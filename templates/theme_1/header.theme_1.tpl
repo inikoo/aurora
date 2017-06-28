@@ -1107,6 +1107,9 @@
             $('#icons_control_center').addClass('hide')
 
 
+            $('#save_button', window.parent.document).addClass('save button changed valid')
+
+
         })
 
 
