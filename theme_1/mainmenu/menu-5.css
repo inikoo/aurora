@@ -121,7 +121,14 @@ ul.nav .dropdown li:hover a.active {
     transition-timing-function: ease-out;
 }
 
-.list-unstyled a:hover {
+
+ul.list-unstyled li:hover a {
+
+    background-color: transparent;
+
+}
+
+.list-unstyledx a:hover {
     color: #272727;
     background-color: #eee;
     text-decoration: none;
@@ -132,7 +139,7 @@ ul.nav .dropdown li:hover a.active {
     border-radius: 3px;
 }
 
-.list-unstyled a:before {
+.list-unstyledzz a:before {
     font-size: 12px;
     margin-right: 5px;
 }
@@ -172,7 +179,7 @@ ul.nav .dropdown li:hover a.active {
         color: #BBBBBB;
     }
 
-    .list-unstyled a:hover {
+    .list-unstyledx a:hover {
         color: #fff;
         background-color: #eee;
     }
@@ -483,7 +490,7 @@ a.registerbut:hover{
 }
 .navbar-toggle > span {color:#fff;}
 .navbar-default .navbar-toggle:hover, .navbar-default .navbar-toggle:focus {
-    background-color: #272727;
+    xbackground-color: #272727;
 }
 .navbar-collapse {border-top: 0;}
 
