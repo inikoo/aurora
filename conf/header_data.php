@@ -17,29 +17,51 @@ function get_default_header_data($template) {
 
         return array(
 
+            'logo'                  => 'theme_1/images/logo.png',
+            'background_image'      => '',
+            'background_repeat'     => '',
+            'logo_show'             => true,
+            'background_image_show' => true,
+            'color'                 => array(
+                'header'            => '#FFF',
+                'header_background' => '#333',
+                'menu'              => '#FFF',
+                'menu_background'   => '#e54c4c',
+                'menu_background_highlight'=>'#c54242',
+                'items'             => '#777',
+                'items_title'       => '#454545',
+                'items_background'  => '#FFF',
+                'items_background_border'=>'#CCC'
+            ),
+
+
             'menu' => array(
                 'columns' => array(
                     array(
                         'type'        => 'three_columns',
+                        'show'        => true,
                         'label'       => _('Catalogue'),
                         'icon'        => 'fa-th-large',
                         'sub_columns' => array(
                             array(
-                                'type'  => 'catalogue',
-                                'scope'  => 'departments_1_25',
-                                'label' => _('Departments')
+                                'type'       => 'departments',
+                                'page'       => '0-10',
+                                'page_label' => '1-10',
+                                'label'      => _('Departments')
 
                             ),
                             array(
-                                'type'  => 'catalogue',
-                                'scope'  => 'web_departments_1_25',
-                                'label' => _('Special Departments')
+                                'type'       => 'web_departments',
+                                'page'       => '0-10',
+                                'page_label' => '1-10',
+                                'label'      => _('Special Departments')
 
                             ),
                             array(
-                                'type'  => 'catalogue',
-                                'scope'  => 'web_families_1_25',
-                                'label' => _('Special Families')
+                                'type'       => 'web_families',
+                                'page'       => '0-10',
+                                'page_label' => '1-10',
+                                'label'      => _('Special Families')
 
                             )
 
@@ -48,6 +70,7 @@ function get_default_header_data($template) {
                     ),
                     array(
                         'type'        => 'three_columns',
+                        'show'        => true,
                         'label'       => _('Info pages'),
                         'icon'        => 'fa-info-circle',
                         'sub_columns' => array(
@@ -58,22 +81,22 @@ function get_default_header_data($template) {
                                     array(
                                         'label' => _('Homepage'),
                                         'icon'  => 'fa-home',
-                                        'url'   => '/'
+                                        'url'   => ''
                                     ),
                                     array(
                                         'label' => _('About us'),
                                         'icon'  => 'fa-smile-o',
-                                        'url'   => '/'
+                                        'url'   => ''
                                     ),
                                     array(
                                         'label' => _('Contact'),
                                         'icon'  => 'fa-phone',
-                                        'url'   => '/'
+                                        'url'   => ''
                                     ),
                                     array(
                                         'label' => _('Terms & Conditions'),
                                         'icon'  => 'fa-file-text-o',
-                                        'url'   => '/'
+                                        'url'   => ''
                                     )
                                 )
 
@@ -85,32 +108,33 @@ function get_default_header_data($template) {
                                     array(
                                         'label' => _('Catalogue'),
                                         'icon'  => 'fa-th-large',
-                                        'url'   => '/'
+                                        'url'   => ''
                                     ),
                                     array(
                                         'label' => _('Search'),
                                         'icon'  => 'fa-search',
-                                        'url'   => '/'
+                                        'url'   => ''
                                     ),
                                     array(
                                         'label' => _('Delivery'),
                                         'icon'  => 'fa-truck',
-                                        'url'   => '/'
+                                        'url'   => ''
                                     ),
                                     array(
                                         'label' => _('FAQ'),
                                         'icon'  => 'fa-question',
-                                        'url'   => '/'
+                                        'url'   => ''
                                     ),
 
                                 )
 
                             ),
                             array(
-                                'type'  => 'text1',
+                                'type'  => 'text',
                                 'title' => _('About Website'),
-                                'image'=>'',
-                                'text'=>'There are many variations passages available the majority have alteration in some form, by injected humour on randomised words if you are going to use a passage of lorem anything.'
+                                'image' => '',
+                                'url'   => '',
+                                'text'  => 'There are many variations passages available the majority have alteration in some form, by injected humour on randomised words if you are going to use a passage of lorem anything.'
 
 
                             ),
@@ -120,6 +144,7 @@ function get_default_header_data($template) {
                     ),
                     array(
                         'type'        => 'three_columns',
+                        'show'        => true,
                         'label'       => _('Offers'),
                         'icon'        => 'fa-tag',
                         'sub_columns' => array(
@@ -130,41 +155,43 @@ function get_default_header_data($template) {
                                     array(
                                         'label' => _('Link to offer 1'),
                                         'icon'  => 'fa-tag',
-                                        'url'   => '/'
+                                        'url'   => ''
                                     ),
                                     array(
                                         'label' => _('Link to offer 2'),
                                         'icon'  => 'fa-tag',
-                                        'url'   => '/'
+                                        'url'   => ''
                                     ),
                                     array(
                                         'label' => _('Link to offer 3'),
                                         'icon'  => 'fa-tag',
-                                        'url'   => '/'
+                                        'url'   => ''
                                     ),
                                     array(
                                         'label' => _('Link to offer 4'),
                                         'icon'  => 'fa-tag',
-                                        'url'   => '/'
+                                        'url'   => ''
                                     )
                                 )
 
                             ),
 
                             array(
-                                'type'  => 'text2',
+                                'type' => 'image',
+
                                 'title' => _('Big offer A'),
-                                'image'=>'',
-                                'text'=>'There are many variations passages available the majority have alteration in some form, by injected humour on randomised words if you are going to use a passage of lorem anything.'
+                                'image' => '',
+                                'url'   => '',
 
 
                             ),
 
                             array(
-                                'type'  => 'text1',
+                                'type'  => 'text',
                                 'title' => _('Big offer B'),
-                                'image'=>'',
-                                'text'=>'There are many variations passages available the majority have alteration in some form, by injected humour on randomised words if you are going to use a passage of lorem anything.'
+                                'image' => '',
+                                'url'   => '',
+                                'text'  => 'There are many variations passages available the majority have alteration in some form, by injected humour on randomised words if you are going to use a passage of lorem anything.'
 
 
                             ),
@@ -174,25 +201,27 @@ function get_default_header_data($template) {
                     ),
                     array(
                         'type'        => 'three_columns',
+                        'show'        => true,
                         'label'       => _('Inspiration'),
                         'icon'        => 'fa-lightbulb-o',
                         'sub_columns' => array(
 
 
                             array(
-                                'type'  => 'text2',
+                                'type'  => 'image',
                                 'title' => _('Big Idea A'),
-                                'image'=>'',
-                                'text'=>'There are many variations passages available the majority have alteration in some form, by injected humour on randomised words if you are going to use a passage of lorem anything.'
+                                'image' => '',
+                                'url'   => '',
 
 
                             ),
 
                             array(
-                                'type'  => 'text1',
+                                'type'  => 'text',
                                 'title' => _('Big Idea B'),
-                                'image'=>'',
-                                'text'=>'There are many variations passages available the majority have alteration in some form, by injected humour on randomised words if you are going to use a passage of lorem anything.'
+                                'image' => '',
+                                'url'   => '',
+                                'text'  => 'There are many variations passages available the majority have alteration in some form, by injected humour on randomised words if you are going to use a passage of lorem anything.'
 
 
                             ),
@@ -203,42 +232,42 @@ function get_default_header_data($template) {
                                     array(
                                         'label' => _('List of bright ideas'),
                                         'icon'  => 'fa-bolt',
-                                        'url'   => '/'
+                                        'url'   => ''
                                     ),
                                     array(
-                                        'label' => _('Warm wellcoming stuff'),
+                                        'label' => _('Warm welcoming stuff'),
                                         'icon'  => 'fa-sun-o',
-                                        'url'   => '/'
+                                        'url'   => ''
                                     ),
                                     array(
                                         'label' => _('Eco friendly lifestyle'),
                                         'icon'  => 'fa-leaf',
-                                        'url'   => '/'
+                                        'url'   => ''
                                     ),
                                     array(
                                         'label' => _('Rocket science inspiration'),
                                         'icon'  => 'fa-rocket',
-                                        'url'   => '/'
+                                        'url'   => ''
                                     ),
                                     array(
                                         'label' => _('Link 1'),
                                         'icon'  => 'fa-bolt',
-                                        'url'   => '/'
+                                        'url'   => ''
                                     ),
                                     array(
                                         'label' => _('Link 2'),
                                         'icon'  => 'fa-tree',
-                                        'url'   => '/'
+                                        'url'   => ''
                                     ),
                                     array(
                                         'label' => _('Link 3'),
                                         'icon'  => 'fa-thumbs-o-up',
-                                        'url'   => '/'
+                                        'url'   => ''
                                     ),
                                     array(
                                         'label' => _('Link 4'),
                                         'icon'  => 'fa-paper-plane-o',
-                                        'url'   => '/'
+                                        'url'   => ''
                                     )
                                 )
 
@@ -248,67 +277,68 @@ function get_default_header_data($template) {
                         )
                     ),
                     array(
-                        'type'        => 'single_column',
-                        'label'       => _('Extra column'),
-                        'icon'        => '',
+                        'type'  => 'single_column',
+                        'show'  => true,
+                        'label' => _('Extra column'),
+                        'icon'  => '',
                         'items' => array(
                             array(
-                                'type'=>'item',
+                                'type'  => 'item',
                                 'label' => _('Link').' 1',
-                                'url'   => '/'
+                                'url'   => ''
                             ),
                             array(
-                                'type'=>'item',
+                                'type'  => 'item',
                                 'label' => _('Link').' 2',
-                                'url'   => '/'
+                                'url'   => ''
                             ),
                             array(
-                                'type'=>'item',
+                                'type'  => 'item',
                                 'label' => _('Link').' 3',
-                                'url'   => '/'
+                                'url'   => ''
                             ),
                             array(
-                                'type'=>'item',
+                                'type'  => 'item',
                                 'label' => _('Link').' 4',
-                                'url'   => '/'
+                                'url'   => ''
                             ),
                             array(
-                                'type'=>'submenu',
-                                'label' => _('Submenu').' +',
+                                'type'      => 'submenu',
+                                'label'     => _('Submenu'),
                                 'sub_items' => array(
                                     array(
                                         'label' => _('Link').' &alpha;	',
-                                        'url'   => '/'
+                                        'url'   => ''
                                     ),
                                     array(
                                         'label' => _('Link').' &beta;	',
-                                        'url'   => '/'
+                                        'url'   => ''
                                     ),
                                     array(
                                         'label' => _('Link').' &gamma;	',
-                                        'url'   => '/'
+                                        'url'   => ''
                                     )
                                 )
                             ),
                             array(
-                                'type'=>'item',
+                                'type'  => 'item',
                                 'label' => _('Link').' A	',
-                                'url'   => '/'
+                                'url'   => ''
                             ),
                             array(
-                                'type'=>'item',
+                                'type'  => 'item',
                                 'label' => _('Link').' B	',
-                                'url'   => '/'
+                                'url'   => ''
                             ),
                             array(
-                                'type'=>'item',
+                                'type'  => 'item',
                                 'label' => _('Link').' C	',
-                                'url'   => '/'
+                                'url'   => ''
                             ),
                             array(
-                                'type'=>'item',
+                                'type'  => 'item',
                                 'label' => _('Link').' D	',
-                                'url'   => '/'
+                                'url'   => ''
                             )
                         )
                     ),

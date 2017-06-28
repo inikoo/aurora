@@ -116,7 +116,11 @@ function get_view($db, $smarty, $user, $account, $modules) {
     }
 
 
+
+
+
     if (isset($data['metadata']['reload']) and $data['metadata']['reload']) {
+
         $reload = true;
     } else {
         $reload = false;

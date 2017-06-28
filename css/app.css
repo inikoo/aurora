@@ -37,6 +37,8 @@ html, body, textarea {
     text-decoration: underline; }
   html .button, body .button, textarea .button {
     cursor: pointer; }
+  html .handle, body .handle, textarea .handle {
+    cursor: move; }
   html i.button.edit, body i.button.edit, textarea i.button.edit {
     opacity: .75; }
     html i.button.edit:hover, body i.button.edit:hover, textarea i.button.edit:hover {
@@ -57,6 +59,14 @@ html, body, textarea {
     display: none; }
   html .strikethrough, body .strikethrough, textarea .strikethrough {
     text-decoration: line-through; }
+
+.unselectable {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none; }
 
 .panel {
   border: 1px solid #ccc;

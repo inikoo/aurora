@@ -18,9 +18,11 @@ if(!isset($_REQUEST['website_key']) or !is_numeric($_REQUEST['website_key'])){
     exit;
 }
 
-if(!isset($_REQUEST['theme']) or !in_array($_REQUEST['theme'],array('theme_1'))   ){
-    exit;
+if (!isset($_REQUEST['theme']) or !preg_match('/^theme\_\d+$/', $_REQUEST['theme'])) {
+    print 'no theme set up';
+    return;
 }
+
 
 $website_key=$_REQUEST['website_key'];
 $theme=$_REQUEST['theme'];
@@ -32,6 +34,9 @@ $store=new Public_Store($website->get('Website Store Key'));
 
 
 $header_data = $website->get('Header Data');
+
+
+
 $header_key=$website->get('Website Header Key');
 
 
@@ -39,7 +44,7 @@ $smarty->assign('header_data', $header_data);
 $smarty->assign('header_key', $header_key);
 
 
-$webpage_key=$website->get_system_webpage('home.sys');
+$webpage_key=$website->get_system_webpage_key('home.sys');
 
 $webpage=new Public_Webpage($webpage_key);
 
@@ -48,5 +53,14 @@ $smarty->assign('website', $website);
 $smarty->assign('store', $store);
 
 
-$smarty->display('webpage.header.tpl');
+
+
+$template = $theme.'/header.'.$theme.'.tpl';
+
+if (file_exists('templates/'.$template)) {
+    $smarty->display($template);
+} else {
+    printf("template %s not found",$template);
+}
+
 ?>

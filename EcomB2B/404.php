@@ -22,7 +22,7 @@ if (preg_match('/\.(jpg|png|gif|xml|txt|ico|css|js)$/i', $not_found_current_page
 
 
 include_once('common.php');
-$webpage_key = $website->get_system_webpage('not_found.sys');
+$webpage_key = $website->get_system_webpage_key('not_found.sys');
 
 if (!$webpage_key) {
     header("HTTP/1.0 404 Not Found");

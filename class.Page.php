@@ -1295,7 +1295,7 @@ class Page extends DB_Table {
             case('Webpage Scope Metadata'):
             case('Webpage Website Key'):
             case('Webpage Store Key'):
-            case('Webpage State'):
+
             case('Webpage Code'):
             case('Webpage Type Key'):
             case 'Webpage Version':
@@ -1579,7 +1579,7 @@ class Page extends DB_Table {
                     'Page Store Content Template Filename', $value, $options
                 );
                 break;
-
+            case('Webpage State'):
             case('Page State'):
                 $this->update_state($value, $options);
                 // $this->refresh_cache();
@@ -1790,21 +1790,33 @@ class Page extends DB_Table {
 
     function update_state($value, $options = '') {
 
-        $old_state = $this->data['Page State'];
+        $old_state = $this->data['Webpage State'];
 
 
         $this->update_field('Page State', $value, $options);
         $this->update_field('Webpage State', $value, 'no_history');
 
 
-        if ($old_state != $this->data['Page State']) {
+
+
+
+        if ($old_state != $this->data['Webpage State']) {
+
+
+            if($this->data['Webpage State']=='Offline'){
+
+                $this->update_field('Webpage Take Down Date', gmdate('Y-m-d H:i:s'), 'no_history');
+
+            }
+
             $sql = sprintf(
-                "INSERT INTO `Page State Timeline`  (`Page Key`,`Site Key`,`Store Key`,`Date`,`State`,`Operation`) VALUES (%d,%d,%d,%s,%s,'Change') ", $this->id, $this->data['Page Site Key'],
-                $this->data['Page Site Key'], prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql($this->data['Page State'])
+                "INSERT INTO `Page State Timeline`  (`Page Key`,`Site Key`,`Store Key`,`Date`,`State`,`Operation`) VALUES (%d,%d,%d,%s,%s,'Change') ", $this->id, $this->data['Webpage Website Key'],
+                $this->data['Webpage Store Key'], prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql($this->data['Webpage State'])
 
             );
 
             $this->db->exec($sql);
+
 
 
             $sql = sprintf(

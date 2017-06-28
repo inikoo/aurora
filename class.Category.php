@@ -3000,7 +3000,10 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                     }
 
 
-                    $this->webpage->update('Webpage Template Filename');
+
+
+
+                    $this->webpage->update(array('Webpage Template Filename'=>$value),$options);
 
 
 

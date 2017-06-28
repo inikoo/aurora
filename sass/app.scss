@@ -129,6 +129,10 @@ html, body, textarea {
     cursor: pointer;
   }
 
+  .handle{
+    cursor:move
+  }
+
   i.button.edit {
    opacity: .75;
     &:hover{
@@ -165,6 +169,11 @@ html, body, textarea {
   }
 
 
+}
+
+
+.unselectable{
+  @include unselectable;
 }
 
 .panel {

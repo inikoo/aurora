@@ -55,7 +55,17 @@ switch ($tipo) {
         );
         save_footer($data, $editor, $smarty, $db);
         break;
+    case 'save_header':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'header_key' => array('type' => 'key'),
+                         'header_data' => array('type' => 'string')
 
+
+                     )
+        );
+        save_header($data, $editor, $smarty, $db);
+        break;
 
     case 'create_webpage':
 
@@ -316,7 +326,15 @@ switch ($tipo) {
 
         break;
 
+    case 'launch_website':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'key'    => array('type' => 'key')
+                     )
+        );
+        launch_website($account, $db, $user, $editor, $data, $smarty);
 
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -1669,6 +1687,48 @@ function save_footer($data, $editor) {
 }
 
 
+function save_header($data, $editor) {
+
+    include_once('class.WebsiteHeader.php');
+
+
+    $header_data = json_decode(base64_decode($data['header_data']), true);
+
+    //print_r($header_data);
+    //exit;
+
+    $header         = new WebsiteHeader($data['header_key']);
+    $header->editor = $editor;
+    $header->update(
+        array(
+            'Website Header Data' => $header_data
+        )
+    );
+
+
+    if (!$header->error) {
+
+        $response = array(
+            'state'       => 200
+
+
+        );
+    } else {
+
+        $response = array(
+            'state' => 400,
+            'msg'   => $header->msg
+
+
+        );
+    }
+
+    echo json_encode($response);
+
+
+}
+
+
 function save_webpage_content($data, $editor, $db, $smarty) {
 
 
@@ -1709,5 +1769,27 @@ function save_webpage_content($data, $editor, $db, $smarty) {
 
 
 }
+
+
+function launch_website($account, $db, $user, $editor, $data, $smarty) {
+
+
+
+    $website         = get_object('website', $data['key']);
+    $website->editor = $editor;
+
+    $website->launch();
+
+
+
+
+    $response = array(
+        'state'                 => 200,
+
+    );
+    echo json_encode($response);
+
+}
+
 
 ?>

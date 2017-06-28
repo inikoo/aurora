@@ -388,8 +388,9 @@ if (!$is_cached) {
     $theme=$website->get('Website Theme');
 
 
+
     if($website->get('Website Status')=='InProcess'){
-        $webpage_key = $website->get_system_webpage('launching.sys');
+        $webpage_key = $website->get_system_webpage_key('launching.sys');
         $webpage=new Public_Webpage($webpage_key);
         $content=$webpage->get('Content Data');
 
@@ -403,8 +404,20 @@ if (!$is_cached) {
         exit ;
     }
 
+    $store=new Public_Store($website->get('Website Store Key'));
 
 
+
+    $smarty->assign('website', $website);
+    $smarty->assign('store', $store);
+
+
+    $footer_data = $website->get('Footer Data');
+    $header_data = $website->get('Header Data');
+
+
+    $smarty->assign('footer_data', $footer_data);
+    $smarty->assign('header_data', $header_data);
 
 
 }
