@@ -36,11 +36,12 @@ $smarty->clearAllCache();
 
 session_start();
 
+
 if (!array_key_exists('website_key', $_SESSION) or !$_SESSION['website_key']) {
 
 
     if ($_SERVER['SERVER_NAME'] == 'ecom.bali') {
-        $_SESSION['website_key'] = 10;
+        $_SESSION['website_key'] = 12;
     } else {
 
         require_once 'keyring/dns.php';

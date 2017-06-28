@@ -89,6 +89,11 @@
 
     }
 
+    #menu_active_edit{
+        background-color: {$header_data.color.menu_background_highlight};
+        color:{$header_data.color.menu_text_background_highlight};
+    }
+
     #topHeader_edit {
 
         background-color: {$header_data.color.header_background};
@@ -308,7 +313,12 @@
         </div>
         <div id="trueHeader_edit" style="height: 42px;width: 600px;color:{$header_data.color.menu};background: {$header_data.color.menu_background};position: relative">
 
-            <span style="position: relative;top:7px;left:20px">{t}Menu{/t}</span>
+            <span style="position: relative;top:7px;left:20px">{t}Column{/t}</span>
+
+            <span id="menu_active_edit" style=";padding:7px 20px 14px 20px ; position: relative;top:7px;left:40px">{t}Column{/t}</span>
+
+            <span style="position: relative;top:7px;left:70px">{t}Column{/t}</span>
+
 
             <div id="colorPicker_menu" class="colorPicker" style="right:10px;top:5px">
                 <a class="color" style=" background-color: {$header_data.color.menu_background};"><div class="colorInner"></div></a>
@@ -316,6 +326,7 @@
                 <ul class="dropdown"><li></li></ul>
                 <input type="hidden" class="colorInput"/>
             </div>
+
 
 
 
@@ -669,7 +680,6 @@
 
             <header id="header"  >
 
-                <!-- Top header bar -->
                 <div id="topHeader" bg="{$header_data.background_image}" onclick="$('#style_dialog').removeClass('hide')"  >
 
                     <div class="wrapper">
@@ -679,10 +689,10 @@
 
                                 <div class="left">
 
-                                    <!-- Logo -->
+
                                     <a href="index.html" id="logo" class="logo" bg="{$header_data.logo}"  >  </a>
 
-                                </div><!-- end left -->
+                                </div>
 
 
 
@@ -698,23 +708,16 @@
                                 </div>
 
                             </div>
-                        </div><!-- end top links -->
+                        </div>
 
                     </div>
 
-                </div><!-- end top navigations -->
-
-
+                </div>
                 <div id="trueHeader">
-
                     <div class="wrapper">
-
                         <div class="container">
-
                             <nav class="menu_main2">
-
                                 <div class="navbar yamm navbar-default">
-
                                     <div class="navbar-header">
                                         <div class="navbar-toggle .navbar-collapse .pull-right " data-toggle="collapse" data-target="#navbar-collapse-1"  > <span>Menu</span>
                                             <button type="button" > <i class="fa fa-bars"></i></button>
@@ -729,8 +732,6 @@
                                             {foreach from=$header_data.menu.columns item=column key=key}
 
                                             <li  id="menu_column_{$key}" class="dropdown {if !$column.show}hide{/if} on _column {if $column.type=='three_columns'}yamm-fw  3_columns{else}single_column{/if}  " >
-
-
                                                 <a  href="" data-toggle="dropdown" class="dropdown-toggle ">
                                                     <i class="fa _column_label_icon {if $column.icon==''}fa-ban {else}{$column.icon}{/if} item_icon padding_right_5  " icon="{$column.icon}" aria-hidden="true"></i>  <span class="_column_label" contenteditable="true">{$column.label}</span>
                                                 </a>
@@ -1150,6 +1151,10 @@
             color['menu']=rgb2hex($('#trueHeader').css('color'))
             color['menu_background']=rgb2hex($('#trueHeader').css('background-color'))
             color['menu_background_highlight']=rgb2hex($('#trueHeader').css('border-bottom-color'))
+            color['menu_text_background_highlight']=rgb2hex($('#menu_active_edit').css('color'))
+
+
+
 
             color['items']=rgb2hex($('#items_color_edit').css('color'))
             color['items_color_edit_title']=rgb2hex($('#items_color_edit_title').css('color'))
@@ -1632,7 +1637,7 @@
 
             //console.log(yiq)
 
-            return (yiq >= 128) ? '#272727' : 'white';
+            return (yiq >= 128) ? '#555' : '#ddd';
         }
 
 
@@ -1654,20 +1659,35 @@
             } else if ($(this).attr('id') == 'colorPicker_menu') {
 
 
-                $('#trueHeader').css("background-color", color)
-                $('#trueHeader').css("border-bottom-color", ColorLuminance(color,-.25))
-                $('#trueHeader').css("color", getContrastYIQ(color))
+                var menu_color=getContrastYIQ(color)
+                var menu_background=color
+                var menu_background_highlight= ColorLuminance(color,-.25)
+                var menu_text_background_highlight=getContrastYIQ(menu_background_highlight)
 
-                $('#trueHeader_edit').css("background-color", color)
-                $('#trueHeader_edit').css("color", getContrastYIQ(color))
+                $('#trueHeader').css("background-color", menu_background)
+                $('#trueHeader').css("border-bottom-color", menu_background_highlight)
+                $('#trueHeader').css("color", menu_color)
+
+                $('#trueHeader_edit').css("background-color", menu_background)
+                $('#trueHeader_edit').css("color", menu_color)
+
+                $('#trueHeader_edit').css("border-bottom-color", menu_background_highlight)
+
+
+                $('#menu_active_edit').css("background-color", menu_background_highlight)
+                $('#menu_active_edit').css("color", menu_text_background_highlight)
+
+
 
             }else if ($(this).attr('id') == 'colorPicker_items') {
 
 
+
                 var color_border=ColorLuminance(color,-.25)
                 var text_color=getContrastYIQ(color)
-                var text_color_title= ColorLuminance(text_color,-.25)
+                var text_color_title= ColorLuminance(text_color,-.3)
 
+                console.log(text_color)
 
 
                 $('.yamm .dropdown-menu').css("background-color", color)

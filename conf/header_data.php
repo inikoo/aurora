@@ -28,6 +28,7 @@ function get_default_header_data($template) {
                 'menu'              => '#FFF',
                 'menu_background'   => '#e54c4c',
                 'menu_background_highlight'=>'#c54242',
+                'menu_text_background_highlight'=>'#FFF',
                 'items'             => '#777',
                 'items_title'       => '#454545',
                 'items_background'  => '#FFF',
