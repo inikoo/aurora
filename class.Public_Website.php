@@ -248,7 +248,16 @@ class Public_Website {
                     exit;
                 }
                 break;
+            case 'Localised Labels':
 
+                if ($this->data['Website '.$key] == '') {
+                    $labels = array();
+                } else {
+                    $labels = json_decode($this->data['Website '.$key], true);
+                }
+
+                return $labels;
+                break;
 
             case 'Website Store Key':
             case 'Website Locale':

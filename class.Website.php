@@ -411,6 +411,18 @@ class Website extends DB_Table {
 
         switch ($key) {
 
+
+            case 'Localised Labels':
+
+                if ($this->data['Website '.$key] == '') {
+                    $labels = array();
+                } else {
+                    $labels = json_decode($this->data['Website '.$key], true);
+                }
+
+                return $labels;
+                break;
+            case 'Localised Labels':
             case 'Data':
 
                 if ($this->data['Website '.$key] == '') {
@@ -829,6 +841,24 @@ class Website extends DB_Table {
     function update_website_nodes_data() {
 
     }
+
+    function update_labels_in_localised_labels($labels,$operation='append') {
+
+        $localised_labels=$this->get('Localised Labels');
+        switch ($operation){
+            case 'append':
+                $localised_labels=array_merge($localised_labels,$labels);
+
+
+        }
+
+
+
+        $this->update(array('Website Localised Labels'=>json_encode($localised_labels)),'no_history');
+
+
+    }
+
 
     function create_product_webnodes() {
 

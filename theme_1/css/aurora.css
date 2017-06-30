@@ -1,3 +1,14 @@
+<!--
+
+ About:
+ Author: Raul Perusquia <raul@inikoo.com>
+ Created: 7 June 2017 at 13:51:00 GMT+8, Cyberjaya, Malaysia
+ Copyright (c) 2017, Inikoo
+
+ Version 3
+
+-->
+
 .padding_left_10{
 padding-left:10px;
 }
@@ -10,3 +21,54 @@ padding-right:10px;
 .padding_right_5{
 padding-right:5px;
 }
+
+
+
+
+.sky-form {
+
+    box-shadow: 0 0 2px rgba(0,0,0,.3);
+
+}
+
+.sky-form fielset.last{
+    border-top: 1px solid rgba(0,0,0,.5);
+}
+
+.reg_form {
+	margin: 20px auto 0 auto;
+	width: 550px;
+	
+}
+
+
+@media only screen and (min-width: 480px) and (max-width: 767px){
+	
+
+.reg_form {
+	margin: 10px auto 0 auto;
+	width: 400px;
+	padding: 18px 20px 13px 20px;
+}
+
+
+	
+}
+
+
+@media only screen and (max-width: 479px){
+	
+.login_form {
+	margin: 0px auto 0 auto;
+	width: 250px;
+	padding: 13px 20px 13px 20px;
+}
+
+.reg_form {
+	margin: 10px auto 0 auto;
+	width: 280px;
+	padding: 8px 10px 13px 10px;
+}
+
+}
+

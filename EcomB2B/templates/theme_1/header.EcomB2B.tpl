@@ -49,6 +49,11 @@
     }
 */
 
+
+    #menu_control_panel .button {
+        background-color:  {$header_data.color.menu_background_highlight};
+    }
+
     #logo {
         background-image: url({$header_data.logo});
 
@@ -90,6 +95,16 @@
         color: {$header_data.color.items}
     }
 
+
+    #trueHeader a {
+        color: {$header_data.color.menu};
+        cursor: pointer;
+
+    }
+    #trueHeader a:hover {
+        color: {$header_data.color.menu_text_background_highlight};
+
+    }
 
 
 
@@ -270,14 +285,19 @@
 
                         </div>
 
-                    </nav><!-- end Navigation Menu -->
+                    </nav>
 
-                    <div class="menu_right2">
-                        <div class="search_hwrap two">
+                    <div id="menu_control_panel" >
+                        {if $logged_in}
 
+                        {else}
+                            <p>
+                            <a href="login.sys" class="button" ><i class="fa fa-sign-in" aria-hidden="true"></i> {t}Login{/t}</a>
+                            <a href="register.sys"class="button" ><i class="fa fa-user-plus" aria-hidden="true"></i> {t}Register{/t}</a>
+                            </p>
+                        {/if}
 
-                        </div>
-                    </div><!-- end search bar -->
+                    </div>
 
                 </div>
 

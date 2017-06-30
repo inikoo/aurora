@@ -56,10 +56,9 @@
     <!--
    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
  -->
+    <link href="/theme_1/mainmenu/bootstrap.min4.css" rel="stylesheet">
 
-   <link href="/theme_1/mainmenu/bootstrap.min4.css" rel="stylesheet">
-   <link href="/theme_1/mainmenu/menu-5.css" rel="stylesheet">
-
+    <link href="/theme_1/mainmenu/menu-5.css" rel="stylesheet">
     <link href="/css/sweetalert.css" rel="stylesheet">
 
 
@@ -89,11 +88,15 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.4.1/css/simple-line-icons.css">
 
 
-
-
     <link rel="stylesheet" href="/theme_1/cubeportfolio/css/cubeportfolio.min.css">
 
-    <link rel="stylesheet" href="/theme_1/sky_forms/sky-forms2.css" type="text/css" media="all">
+
+
+    <link rel="stylesheet" href="/theme_1/sky_forms/css/sky-forms.css" type="text/css" media="all">
+    <!--[if lt IE 9]>
+    <link rel="stylesheet" href="css/sky-forms-ie8.css">
+    <![endif]-->
+
 
 
     <link rel="stylesheet" type="text/css" href="/theme_1/tabs/assets/css/responsive-tabs.css">
@@ -101,6 +104,9 @@
     <link rel="stylesheet" type="text/css" href="/theme_1/tabs/assets/css/responsive-tabs3.css">
 
 
+
+
+    <link rel="stylesheet" href="/theme_1/css/aurora.css" type="text/css"/>
 
 
 

@@ -29,7 +29,6 @@
     <!-- this styles only adds some repairs on idevices  -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Google fonts - witch you want to use - (rest you can just remove) -->
 
 
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic,700,700italic,800,800italic' rel='stylesheet' type='text/css'>
@@ -98,7 +97,19 @@
 
     <link rel="stylesheet" href="/theme_1/cubeportfolio/css/cubeportfolio.min.css">
 
-    <link rel="stylesheet" href="/theme_1/sky_forms/sky-forms2.css" type="text/css" media="all">
+
+
+    <!--
+    <link rel="stylesheet" href="/theme_1/sky_forms_old/sky-forms2.css" type="text/css" media="all">
+
+       -->
+
+    <link rel="stylesheet" href="/theme_1/sky_forms/css/sky-forms.css" type="text/css" media="all">
+
+
+
+
+
 
 
     <link rel="stylesheet" type="text/css" href="/theme_1/tabs/assets/css/responsive-tabs.css">
