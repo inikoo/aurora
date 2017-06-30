@@ -14,6 +14,20 @@ trait LocaleResolverTrait
     protected $definitionPath;
 
     /**
+     * The default locale.
+     *
+     * @var string
+     */
+    protected $defaultLocale = 'en';
+
+    /**
+     * The fallback locale.
+     *
+     * @var string
+     */
+    protected $fallbackLocale = null;
+
+    /**
      * Common locale aliases.
      *
      * @var array
@@ -91,14 +105,21 @@ trait LocaleResolverTrait
         // List all possible variants (i.e. en-US gives "en-US" and "en").
         $localeVariants = $this->getLocaleVariants($locale);
         // A fallback locale was provided, add it to the end of the chain.
+        $fallbackLocale = $fallbackLocale ?: $this->getFallbackLocale();
         if (isset($fallbackLocale)) {
             $localeVariants[] = $fallbackLocale;
         }
 
         // Try to resolve a locale by finding a matching definition file.
         $resolvedLocale = null;
+        
+      
+        
         foreach ($localeVariants as $localeVariant) {
             $path = $this->definitionPath . $localeVariant . '.json';
+            
+          
+            
             if (file_exists($path)) {
                 $resolvedLocale = $localeVariant;
                 break;
@@ -168,9 +189,39 @@ trait LocaleResolverTrait
      *
      * @return string The default locale.
      */
-    protected function getDefaultLocale()
+    public function getDefaultLocale()
     {
-        return 'en';
+        return $this->defaultLocale;
+    }
+
+    /**
+     * Sets the default locale.
+     *
+     * @return void
+     */
+    public function setDefaultLocale($locale)
+    {
+        $this->defaultLocale = $locale;
+    }
+
+    /**
+     * Gets the fallback locale.
+     *
+     * @return string The fallback locale.
+     */
+    public function getFallbackLocale()
+    {
+        return $this->fallbackLocale;
+    }
+
+    /**
+     * Sets the fallback locale.
+     *
+     * @return void
+     */
+    public function setFallbackLocale($locale)
+    {
+        $this->fallbackLocale = $locale;
     }
 
     /**
