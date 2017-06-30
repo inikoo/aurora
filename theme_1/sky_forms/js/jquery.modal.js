@@ -1,6 +1,3 @@
-(function($) {
- "use strict";
-
 $(function()
 {
 	$('.modal-opener').on('click', function()
@@ -31,5 +28,3 @@ $(function()
 		return false;
 	});
 });
-
-})(jQuery);
