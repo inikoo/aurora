@@ -24,14 +24,7 @@ if ($logged_in ) {
     $template=$theme.'/homepage_logout.'.$theme.'.'.$website->get('Website Type').'.tpl';
 }
 
-$webpage=new Public_Webpage($webpage_key);
-$content=$webpage->get('Content Data');
-
-$smarty->assign('webpage',$webpage);
-
-$smarty->assign('content',$content);
-$smarty->display($template, $webpage_key);
-
+include_once 'webpage.php';
 
 
 

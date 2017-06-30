@@ -17,24 +17,33 @@
 require_once 'keyring/dns.php';
 
 
-date_default_timezone_set(TIMEZONE);
+//date_default_timezone_set(TIMEZONE);
 
 $mem = new Memcached();
 $mem->addServer($memcache_ip, 11211);
 
-$result = $mem->get('ECOMP'.md5(INIKOO_ACCOUNT.SITE_KEY.$_SERVER['REQUEST_URI']));
+
+include ('utils/find_website_key.include.php');
+
+
+$result = $mem->get('ECOMP'.md5($_SERVER['SERVER_NAME'].'_'.$_SERVER['REQUEST_URI']));
 $result = false;
 if (!$result) {
-    $result = get_url(SITE_KEY, $_SERVER['REQUEST_URI'], $dns_host, $dns_user, $dns_pwd, $dns_db);
-    $mem->set('ECOMP'.md5(INIKOO_ACCOUNT.SITE_KEY.$_SERVER['REQUEST_URI']), $result, 172800);
+
+
+
+
+    $result = get_url($_SESSION['website_key'], $_SERVER['REQUEST_URI'], $dns_host, $dns_user, $dns_pwd, $dns_db);
+    $mem->set('ECOMP'.md5($_SERVER['SERVER_NAME'].'_'.$_SERVER['REQUEST_URI']), $result, 172800);
 }
 
 
 
 
 if (is_numeric($result)) {
+
+    include_once 'common.php';
     $webpage_key = $result;
-    include 'common.php';
     include 'webpage.php';
     exit;
 } else {
@@ -160,6 +169,8 @@ function get_page_key_from_code($site_key, $code, $db) {
     $sql      = sprintf(
         "SELECT `Page Key` FROM `Page Store Dimension` WHERE `Webpage Website Key`=%d AND `Webpage Code`=%s ", $site_key, _prepare_mysql($code)
     );
+
+
 
 
     if ($result = $db->query($sql)) {

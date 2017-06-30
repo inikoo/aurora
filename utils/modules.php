@@ -1270,461 +1270,461 @@ $modules = array(
         )
 
     ),
-/*
+    /*
 
-    'websites'         => array(
-        'section'     => 'dashboard',
-        'parent'      => 'website',
-        'parent_type' => 'key',
-        'sections'    => array(
-
-
-            'website' => array(
-                'type'           => 'navigation',
-                'label'          => '',
-                'title'          => _('Website'),
-                'icon'           => 'globe',
-                'reference'      => 'website/%d',
-                'class'          => 'icon_only',
-                'subtabs_parent' => array(
-                    'website.favourites.families'  => 'website.favourites',
-                    'website.favourites.products'  => 'website.favourites',
-                    'website.favourites.customers' => 'website.favourites',
-                    'website.search.queries'       => 'website.search',
-                    'website.search.history'       => 'website.search',
-                    'website.reminders.requests'   => 'website.reminders',
-                    'website.reminders.customers'  => 'website.reminders',
-                    'website.reminders.families'   => 'website.reminders',
-                    'website.reminders.products'   => 'website.reminders',
-                    'website.root_nodes'           => 'website.content',
-                    'website.online_webpages'      => 'website.content',
-                    'website.offline_webpages'     => 'website.content',
-
-                    'website.footer.preview' => 'website.footer',
-                    //    'website.footer.templates' => 'website.footer',
-                    'website.header.preview' => 'website.header',
-                    //     'website.header.templates' => 'website.header',
+        'websites'         => array(
+            'section'     => 'dashboard',
+            'parent'      => 'website',
+            'parent_type' => 'key',
+            'sections'    => array(
 
 
-                    'website.templates.categories' => 'website.templates',
-                    'website.templates'            => 'website.templates',
+                'website' => array(
+                    'type'           => 'navigation',
+                    'label'          => '',
+                    'title'          => _('Website'),
+                    'icon'           => 'globe',
+                    'reference'      => 'website/%d',
+                    'class'          => 'icon_only',
+                    'subtabs_parent' => array(
+                        'website.favourites.families'  => 'website.favourites',
+                        'website.favourites.products'  => 'website.favourites',
+                        'website.favourites.customers' => 'website.favourites',
+                        'website.search.queries'       => 'website.search',
+                        'website.search.history'       => 'website.search',
+                        'website.reminders.requests'   => 'website.reminders',
+                        'website.reminders.customers'  => 'website.reminders',
+                        'website.reminders.families'   => 'website.reminders',
+                        'website.reminders.products'   => 'website.reminders',
+                        'website.root_nodes'           => 'website.content',
+                        'website.online_webpages'      => 'website.content',
+                        'website.offline_webpages'     => 'website.content',
+
+                        'website.footer.preview' => 'website.footer',
+                        //    'website.footer.templates' => 'website.footer',
+                        'website.header.preview' => 'website.header',
+                        //     'website.header.templates' => 'website.header',
 
 
+                        'website.templates.categories' => 'website.templates',
+                        'website.templates'            => 'website.templates',
+
+
+                    ),
+
+                    'tabs' => array(
+
+                        'website.analytics' => array(
+                            'label' => _('Analytics'),
+                            'icon'  => 'line-chart',
+
+                            'subtabs' => array(
+                                'website.pageviews'  => array(
+                                    'label' => _(
+                                        'Pageviews'
+                                    ),
+                                    'icon'  => 'eye'
+                                ),
+                                'website.users'      => array(
+                                    'label' => _(
+                                        'Users'
+                                    ),
+                                    'icon'  => 'terminal'
+                                ),
+                                'website.search'     => array(
+                                    'label'   => _(
+                                        'Queries'
+                                    ),
+                                    'title'   => _(
+                                        'Search Queries'
+                                    ),
+                                    'icon'    => 'search',
+                                    'subtabs' => array(
+                                        'website.search.queries' => array(
+                                            'label' => _(
+                                                'Queries'
+                                            ),
+                                            'title' => _(
+                                                'Search queries goruped by keywords'
+                                            )
+                                        ),
+                                        'website.search.history' => array(
+                                            'label' => _(
+                                                'Search History'
+                                            ),
+                                            'title' => _(
+                                                'List of all search queries'
+                                            )
+                                        ),
+
+                                    )
+
+                                ),
+                                'website.favourites' => array(
+                                    'label'   => _(
+                                        'Favourites'
+                                    ),
+                                    'title'   => _(
+                                        'Favourites'
+                                    ),
+                                    'icon'    => 'heart-o',
+                                    'subtabs' => array(
+                                        'website.favourites.products'  => array(
+                                            'label' => _(
+                                                'Products'
+                                            )
+                                        ),
+                                        'website.favourites.customers' => array(
+                                            'label' => _(
+                                                'Customers'
+                                            )
+                                        ),
+
+                                    )
+
+                                ),
+                                'website.reminders'  => array(
+                                    'label'   => _(
+                                        'OOS Reminders'
+                                    ),
+                                    'title'   => _(
+                                        'Out of stock reminders'
+                                    ),
+                                    'icon'    => 'hand-paper-o',
+                                    'subtabs' => array(
+                                        'website.reminders.requests'  => array(
+                                            'label' => _(
+                                                'Requests'
+                                            ),
+                                            'title' => _(
+                                                'Out of stock notifications requests'
+                                            )
+                                        ),
+                                        'website.reminders.customers' => array(
+                                            'label' => _(
+                                                'Customers'
+                                            ),
+                                            'title' => _(
+                                                'Customers who ask for a out of stock notification'
+                                            )
+                                        ),
+                                        'website.reminders.products'  => array(
+                                            'label' => _(
+                                                'Products'
+                                            ),
+                                            'title' => _(
+                                                'Out of stock notifications grouped by product'
+                                            )
+                                        ),
+
+                                    )
+
+                                ),
+
+                            )
+
+
+                        ),
+                        'website.details'   => array(
+                            'label' => _(
+                                'Data'
+                            ),
+                            'icon'  => 'database'
+                        ),
+
+
+                        'website.templates' => array(
+                            'label'   => _('Templates'),
+                            'icon'    => 'code',
+                            'subtabs' => array(
+                                'website.templates.categories' => array(
+                                    'label' => _(
+                                        "Template categories"
+                                    ),
+                                    'icon'  => 'sitemap'
+                                ),
+                                'website.templates'            => array(
+                                    'label' => _(
+                                        'Templates'
+                                    ),
+                                    'icon'  => 'code',
+
+                                )
+
+                            ),
+
+                        ),
+
+                        'website.header' => array(
+                            'label'   => _(
+                                'Header'
+                            ),
+                            'icon'    => 'header',
+                            'subtabs' => array(
+                                'website.header.preview' => array(
+                                    'label' => _(
+                                        'Preview'
+                                    ),
+                                    'icon'  => 'eye'
+                                )
+
+                            ),
+
+                        ),
+                        'website.footer' => array(
+                            'label'   => _(
+                                'Footer'
+                            ),
+                            'icon'    => 'minus',
+                            'subtabs' => array(
+                                'website.footer.preview' => array(
+                                    'label' => _(
+                                        'Preview'
+                                    ),
+                                    'icon'  => 'eye'
+                                )
+
+                            ),
+
+                        ),
+
+
+                    )
                 ),
 
-                'tabs' => array(
 
-                    'website.analytics' => array(
-                        'label' => _('Analytics'),
-                        'icon'  => 'line-chart',
+                'webpages' => array(
+                    'type'      => 'navigation',
+                    'label'     => _('Web pages'),
+                    'icon'      => 'files-o',
+                    'reference' => 'webpages/%d',
 
-                        'subtabs' => array(
-                            'website.pageviews'  => array(
-                                'label' => _(
-                                    'Pageviews'
-                                ),
-                                'icon'  => 'eye'
-                            ),
-                            'website.users'      => array(
-                                'label' => _(
-                                    'Users'
-                                ),
-                                'icon'  => 'terminal'
-                            ),
-                            'website.search'     => array(
-                                'label'   => _(
-                                    'Queries'
-                                ),
-                                'title'   => _(
-                                    'Search Queries'
-                                ),
-                                'icon'    => 'search',
-                                'subtabs' => array(
-                                    'website.search.queries' => array(
-                                        'label' => _(
-                                            'Queries'
-                                        ),
-                                        'title' => _(
-                                            'Search queries goruped by keywords'
-                                        )
-                                    ),
-                                    'website.search.history' => array(
-                                        'label' => _(
-                                            'Search History'
-                                        ),
-                                        'title' => _(
-                                            'List of all search queries'
-                                        )
-                                    ),
-
-                                )
-
-                            ),
-                            'website.favourites' => array(
-                                'label'   => _(
-                                    'Favourites'
-                                ),
-                                'title'   => _(
-                                    'Favourites'
-                                ),
-                                'icon'    => 'heart-o',
-                                'subtabs' => array(
-                                    'website.favourites.products'  => array(
-                                        'label' => _(
-                                            'Products'
-                                        )
-                                    ),
-                                    'website.favourites.customers' => array(
-                                        'label' => _(
-                                            'Customers'
-                                        )
-                                    ),
-
-                                )
-
-                            ),
-                            'website.reminders'  => array(
-                                'label'   => _(
-                                    'OOS Reminders'
-                                ),
-                                'title'   => _(
-                                    'Out of stock reminders'
-                                ),
-                                'icon'    => 'hand-paper-o',
-                                'subtabs' => array(
-                                    'website.reminders.requests'  => array(
-                                        'label' => _(
-                                            'Requests'
-                                        ),
-                                        'title' => _(
-                                            'Out of stock notifications requests'
-                                        )
-                                    ),
-                                    'website.reminders.customers' => array(
-                                        'label' => _(
-                                            'Customers'
-                                        ),
-                                        'title' => _(
-                                            'Customers who ask for a out of stock notification'
-                                        )
-                                    ),
-                                    'website.reminders.products'  => array(
-                                        'label' => _(
-                                            'Products'
-                                        ),
-                                        'title' => _(
-                                            'Out of stock notifications grouped by product'
-                                        )
-                                    ),
-
-                                )
-
-                            ),
-
-                        )
-
-
-                    ),
-                    'website.details'   => array(
-                        'label' => _(
-                            'Data'
+                    'tabs' => array(
+                        'website.online_webpages'  => array(
+                            'label' => _('Online web pages'),
+                            'icon'  => 'files-o'
                         ),
-                        'icon'  => 'database'
-                    ),
-
-
-                    'website.templates' => array(
-                        'label'   => _('Templates'),
-                        'icon'    => 'code',
-                        'subtabs' => array(
-                            'website.templates.categories' => array(
-                                'label' => _(
-                                    "Template categories"
-                                ),
-                                'icon'  => 'sitemap'
-                            ),
-                            'website.templates'            => array(
-                                'label' => _(
-                                    'Templates'
-                                ),
-                                'icon'  => 'code',
-
-                            )
-
+                        'website.webpage.types'    => array(
+                            'label' => _('Web pages by type'),
+                            'icon'  => 'server'
+                        ),
+                        'website.root_nodes'       => array(
+                            'label' => _('Sitemap'),
+                            'icon'  => 'sitemap',
+                            'class' => 'hide'
+                        ),
+                        'website.offline_webpages' => array(
+                            'label' => _('Offline web pages'),
+                            'class' => 'right icon_only',
+                            'icon'  => 'eye-slash'
                         ),
 
-                    ),
-
-                    'website.header' => array(
-                        'label'   => _(
-                            'Header'
-                        ),
-                        'icon'    => 'header',
-                        'subtabs' => array(
-                            'website.header.preview' => array(
-                                'label' => _(
-                                    'Preview'
-                                ),
-                                'icon'  => 'eye'
-                            )
-
-                        ),
-
-                    ),
-                    'website.footer' => array(
-                        'label'   => _(
-                            'Footer'
-                        ),
-                        'icon'    => 'minus',
-                        'subtabs' => array(
-                            'website.footer.preview' => array(
-                                'label' => _(
-                                    'Preview'
-                                ),
-                                'icon'  => 'eye'
-                            )
-
-                        ),
-
-                    ),
-
-
-                )
-            ),
-
-
-            'webpages' => array(
-                'type'      => 'navigation',
-                'label'     => _('Web pages'),
-                'icon'      => 'files-o',
-                'reference' => 'webpages/%d',
-
-                'tabs' => array(
-                    'website.online_webpages'  => array(
-                        'label' => _('Online web pages'),
-                        'icon'  => 'files-o'
-                    ),
-                    'website.webpage.types'    => array(
-                        'label' => _('Web pages by type'),
-                        'icon'  => 'server'
-                    ),
-                    'website.root_nodes'       => array(
-                        'label' => _('Sitemap'),
-                        'icon'  => 'sitemap',
-                        'class' => 'hide'
-                    ),
-                    'website.offline_webpages' => array(
-                        'label' => _('Offline web pages'),
-                        'class' => 'right icon_only',
-                        'icon'  => 'eye-slash'
-                    ),
-
-                )
-
-            ),
-
-
-            'webpage_type' => array(
-                'type' => 'object',
-                'tabs' => array(
-
-
-                    'webpage_type.webpages' => array(
-                        'label' => _(
-                            'Versions'
-                        ),
-                        'icon'  => 'files-o'
-                    ),
-
-                )
-            ),
-
-            'page' => array(
-                'type' => 'object',
-                'tabs' => array(
-
-
-                    'page.analytics' => array(
-                        'label' => _(
-                            'Analytics'
-                        ),
-                        'icon'  => 'line-chart'
-                    ),
-                    'page.details'   => array(
-                        'label' => _('Data'),
-                        'icon'  => 'database'
-                    ),
-                    'page.versions'  => array(
-                        'label' => _(
-                            'Versions'
-                        ),
-                        'icon'  => 'code-fork'
-                    ),
-                    'page.preview'   => array(
-                        'label' => _(
-                            'Preview'
-                        ),
-                        'icon'  => 'eye'
-                    ),
-                    'page.blocks'    => array(
-                        'label' => _(
-                            'Blocks'
-                        ),
-                        'icon'  => 'align-justify'
-                    ),
-                )
-            ),
-
-            'page_version' => array(
-                'type' => 'object',
-                'tabs' => array(
-
-
-                    'page_version.analytics' => array(
-                        'label' => _(
-                            'Analytics'
-                        ),
-                        'icon'  => 'line-chart'
-                    ),
-                    'page_version.details'   => array(
-                        'label' => _('Data'),
-                        'icon'  => 'database'
-                    ),
-
-                    'page_version.preview' => array(
-                        'label' => _(
-                            'Preview'
-                        ),
-                        'icon'  => 'eye'
-                    ),
-
-                )
-            ),
-
-            'website.node' => array(
-                'type' => 'object',
-
-                'subtabs_parent' => array(
-                    'website.node.analytics.pageviews' => 'website.node.analytics',
-                    'website.node.analytics.users'     => 'website.node.analytics',
-                    'website.node.page.preview'        => 'website.node.page',
-                    'website.node.page.versions'       => 'website.node.page',
-
+                    )
 
                 ),
 
 
-                'tabs' => array(
+                'webpage_type' => array(
+                    'type' => 'object',
+                    'tabs' => array(
 
 
-                    'website.node.analytics' => array(
-                        'label' => _(
-                            'Analytics'
+                        'webpage_type.webpages' => array(
+                            'label' => _(
+                                'Versions'
+                            ),
+                            'icon'  => 'files-o'
                         ),
-                        'icon'  => 'line-chart',
 
-                        'subtabs' => array(
-                            'website.node.analytics.pageviews' => array(
-                                'label' => _(
-                                    'Pageviews'
-                                ),
-                                'icon'  => ''
-                            ),
-                            'website.node.analytics.users'     => array(
-                                'label' => _(
-                                    'Users'
-                                ),
-                                'icon'  => 'terminal'
-                            ),
+                    )
+                ),
 
-                        )
+                'page' => array(
+                    'type' => 'object',
+                    'tabs' => array(
+
+
+                        'page.analytics' => array(
+                            'label' => _(
+                                'Analytics'
+                            ),
+                            'icon'  => 'line-chart'
+                        ),
+                        'page.details'   => array(
+                            'label' => _('Data'),
+                            'icon'  => 'database'
+                        ),
+                        'page.versions'  => array(
+                            'label' => _(
+                                'Versions'
+                            ),
+                            'icon'  => 'code-fork'
+                        ),
+                        'page.preview'   => array(
+                            'label' => _(
+                                'Preview'
+                            ),
+                            'icon'  => 'eye'
+                        ),
+                        'page.blocks'    => array(
+                            'label' => _(
+                                'Blocks'
+                            ),
+                            'icon'  => 'align-justify'
+                        ),
+                    )
+                ),
+
+                'page_version' => array(
+                    'type' => 'object',
+                    'tabs' => array(
+
+
+                        'page_version.analytics' => array(
+                            'label' => _(
+                                'Analytics'
+                            ),
+                            'icon'  => 'line-chart'
+                        ),
+                        'page_version.details'   => array(
+                            'label' => _('Data'),
+                            'icon'  => 'database'
+                        ),
+
+                        'page_version.preview' => array(
+                            'label' => _(
+                                'Preview'
+                            ),
+                            'icon'  => 'eye'
+                        ),
+
+                    )
+                ),
+
+                'website.node' => array(
+                    'type' => 'object',
+
+                    'subtabs_parent' => array(
+                        'website.node.analytics.pageviews' => 'website.node.analytics',
+                        'website.node.analytics.users'     => 'website.node.analytics',
+                        'website.node.page.preview'        => 'website.node.page',
+                        'website.node.page.versions'       => 'website.node.page',
+
+
                     ),
-                    'website.node.details'   => array(
-                        'label' => _(
-                            'Data'
-                        ),
-                        'icon'  => 'database'
-                    ),
 
-                    'website.node.page'  => array(
-                        'label'   => _(
-                            'Webpage'
-                        ),
-                        'icon'    => 'file-o',
-                        'subtabs' => array(
-                            'website.node.page.preview'  => array(
-                                'label' => _(
-                                    'Preview'
-                                ),
-                                'icon'  => 'eye'
+
+                    'tabs' => array(
+
+
+                        'website.node.analytics' => array(
+                            'label' => _(
+                                'Analytics'
                             ),
-                            'website.node.page.versions' => array(
-                                'label' => _(
-                                    'Versions'
+                            'icon'  => 'line-chart',
+
+                            'subtabs' => array(
+                                'website.node.analytics.pageviews' => array(
+                                    'label' => _(
+                                        'Pageviews'
+                                    ),
+                                    'icon'  => ''
                                 ),
-                                'icon'  => 'code-fork',
+                                'website.node.analytics.users'     => array(
+                                    'label' => _(
+                                        'Users'
+                                    ),
+                                    'icon'  => 'terminal'
+                                ),
 
                             )
-
+                        ),
+                        'website.node.details'   => array(
+                            'label' => _(
+                                'Data'
+                            ),
+                            'icon'  => 'database'
                         ),
 
-                    ),
-                    'website.node.nodes' => array(
-                        'label' => _(
-                            'Subnodes'
+                        'website.node.page'  => array(
+                            'label'   => _(
+                                'Webpage'
+                            ),
+                            'icon'    => 'file-o',
+                            'subtabs' => array(
+                                'website.node.page.preview'  => array(
+                                    'label' => _(
+                                        'Preview'
+                                    ),
+                                    'icon'  => 'eye'
+                                ),
+                                'website.node.page.versions' => array(
+                                    'label' => _(
+                                        'Versions'
+                                    ),
+                                    'icon'  => 'code-fork',
+
+                                )
+
+                            ),
+
                         ),
-                        'icon'  => 'pagelines'
-                    ),
+                        'website.node.nodes' => array(
+                            'label' => _(
+                                'Subnodes'
+                            ),
+                            'icon'  => 'pagelines'
+                        ),
+                    )
+                ),
+
+                'website.user' => array(
+                    'type' => 'object',
+                    'tabs' => array(
+                        'website.user.details'       => array(
+                            'label' => _(
+                                'Data'
+                            ),
+                            'icon'  => 'database',
+                            'title' => _(
+                                'Details'
+                            )
+                        ),
+                        'website.user.history'       => array(
+                            'label' => _(
+                                'History, notes'
+                            ),
+                            'icon'  => 'sticky-note-o'
+                        ),
+                        'website.user.login_history' => array(
+                            'label' => _(
+                                'Sessions'
+                            ),
+                            'title' => _(
+                                'Login history'
+                            ),
+                            'icon'  => 'login'
+                        ),
+                        'website.user.pageviews'     => array(
+                            'label' => _(
+                                'Pageviews'
+                            ),
+                            'icon'  => 'eye'
+                        ),
+
+                    )
                 )
-            ),
 
-            'website.user' => array(
-                'type' => 'object',
-                'tabs' => array(
-                    'website.user.details'       => array(
-                        'label' => _(
-                            'Data'
-                        ),
-                        'icon'  => 'database',
-                        'title' => _(
-                            'Details'
-                        )
-                    ),
-                    'website.user.history'       => array(
-                        'label' => _(
-                            'History, notes'
-                        ),
-                        'icon'  => 'sticky-note-o'
-                    ),
-                    'website.user.login_history' => array(
-                        'label' => _(
-                            'Sessions'
-                        ),
-                        'title' => _(
-                            'Login history'
-                        ),
-                        'icon'  => 'login'
-                    ),
-                    'website.user.pageviews'     => array(
-                        'label' => _(
-                            'Pageviews'
-                        ),
-                        'icon'  => 'eye'
-                    ),
 
-                )
+                //'categories'=>array('label'=>_('Categories'),'title'=>_('Categories'),'icon'=>'sitemap','reference'=>'orders/categories/%d'),
             )
+        ),
 
 
-            //'categories'=>array('label'=>_('Categories'),'title'=>_('Categories'),'icon'=>'sitemap','reference'=>'orders/categories/%d'),
-        )
-    ),
+        */
 
 
-    */
-
-
-    'products'         => array(
+    'products'        => array(
         'section'  => 'products',
         'sections' => array(
             /*
@@ -1830,7 +1830,7 @@ $modules = array(
             ),
 
 
-            'categories'        => array(
+            'categories' => array(
                 'type'      => 'navigation',
                 'label'     => _('Categories'),
                 'title'     => _("Products categories"),
@@ -1845,11 +1845,11 @@ $modules = array(
 
 
             'website' => array(
-                'type'      => 'navigation',
-                'label'     => _('Website'),
-                'showcase'  => 'website',
-                'icon'      => 'globe',
-                'reference' => 'store/%d/website',
+                'type'           => 'navigation',
+                'label'          => _('Website'),
+                'showcase'       => 'website',
+                'icon'           => 'globe',
+                'reference'      => 'store/%d/website',
                 'subtabs_parent' => array(
                     'website.favourites.families'  => 'website.favourites',
                     'website.favourites.products'  => 'website.favourites',
@@ -1861,17 +1861,19 @@ $modules = array(
                     'website.reminders.families'   => 'website.reminders',
                     'website.reminders.products'   => 'website.reminders',
 
-                    'website.root_nodes'           => 'website.webpages',
-                    'website.online_webpages'      => 'website.webpages',
-                    'website.offline_webpages'     => 'website.webpages',
-                    'website.webpage.types'  => 'website.webpages',
-                    'website.in_process_webpages'  => 'website.webpages',
+                    'website.root_nodes'          => 'website.webpages',
+                    'website.online_webpages'     => 'website.webpages',
+                    'website.offline_webpages'    => 'website.webpages',
+                    'website.webpage.types'       => 'website.webpages',
+                    'website.in_process_webpages' => 'website.webpages',
+
+                    'website.fonts' => 'website.style',
+                    'website.colours' => 'website.style',
+                    'website.localization'      => 'website.style',
 
                     'website.footer.preview' => 'website.templates',
                     'website.header.preview' => 'website.templates',
-
-
-                    'website.templates'            => 'website.templates',
+                    'website.templates'      => 'website.templates',
 
 
                 ),
@@ -1997,27 +1999,60 @@ $modules = array(
 
                     ),
 
-                    'website.templates' => array(
+                    'website.style' => array(
                         'label'   => _('Look & feel'),
                         'icon'    => 'paint-brush',
                         'subtabs' => array(
 
+                            'website.colours' => array(
+                                'label' => _('Colours'),
+                                'icon'  => 'tint',
+
+
+                            ),
+
+                            'website.fonts' => array(
+                                'label' => _('Fonts'),
+                                'icon'  => 'font',
+
+
+                            ),
+
+
+                            'website.localization' => array(
+                                'label' => _('Localization'),
+                                'icon'  => 'language',
+
+
+                            ),
+
+
+                        ),
+
+                    ),
+
+                    'website.templates' => array(
+                        'label'   => _('Templates'),
+                        'icon'    => 'code',
+                        'subtabs' => array(
+
 
                             'website.header.preview' => array(
-                                'label'   => _('Header'),
-                                'icon'    => 'header',
+                                'label' => _('Header'),
+                                'icon'  => 'header',
 
 
                             ),
                             'website.footer.preview' => array(
-                                'label'   => _('Footer'),
-                                'icon'    => 'minus',
+                                'label' => _('Footer'),
+                                'icon'  => 'minus',
 
 
                             ),
 
-                            'website.templates'            => array(
-                                'label'   =>'',
+
+                            'website.templates' => array(
+                                'label' => '',
                                 'title' => _('Templates'),
                                 'icon'  => 'code',
                                 'class' => 'right icon_only',
@@ -2030,23 +2065,20 @@ $modules = array(
                     ),
 
 
-
-
                     'website.webpages' => array(
-                        'label'     => _('Web pages'),
-                        'icon'      => 'files-o',
+                        'label' => _('Web pages'),
+                        'icon'  => 'files-o',
 
 
                         'subtabs' => array(
 
 
-
-                            'website.in_process_webpages'  => array(
+                            'website.in_process_webpages' => array(
                                 'label' => _('In process web pages'),
                                 'icon'  => 'child'
                             ),
 
-                            'website.online_webpages'  => array(
+                            'website.online_webpages' => array(
                                 'label' => _('Online web pages'),
                                 'icon'  => 'rocket '
                             ),
@@ -2062,8 +2094,8 @@ $modules = array(
                             ),
 
 
-                            'website.webpage.types'    => array(
-                                'label'=>'',
+                            'website.webpage.types' => array(
+                                'label' => '',
                                 'title' => _("Web pages's groups"),
                                 'icon'  => 'server',
                                 'class' => 'right icon_only',
@@ -2072,14 +2104,6 @@ $modules = array(
                         )
 
                     ),
-
-
-
-
-
-
-
-
 
 
                 )
@@ -2099,7 +2123,6 @@ $modules = array(
             ),
 
 
-
             'no_website' => array(
                 'type'      => '',
                 'label'     => '',
@@ -2111,10 +2134,10 @@ $modules = array(
 
 
             ),
-            'webpage' => array(
-                'type'      => 'object',
-                'label'     => _('Web page'),
-                'icon'      => 'globe',
+            'webpage'    => array(
+                'type'           => 'object',
+                'label'          => _('Web page'),
+                'icon'           => 'globe',
                 'subtabs_parent' => array(
                     'webpage.favourites.families'  => 'webpage.favourites',
                     'webpage.favourites.products'  => 'webpage.favourites',
@@ -2126,17 +2149,17 @@ $modules = array(
                     'webpage.reminders.families'   => 'webpage.reminders',
                     'webpage.reminders.products'   => 'webpage.reminders',
 
-                    'webpage.root_nodes'           => 'webpage.webpages',
-                    'webpage.online_webpages'      => 'webpage.webpages',
-                    'webpage.offline_webpages'     => 'webpage.webpages',
-                    'webpage.webpage.types'  => 'webpage.webpages',
-                    'webpage.in_process_webpages'  => 'webpage.webpages',
+                    'webpage.root_nodes'          => 'webpage.webpages',
+                    'webpage.online_webpages'     => 'webpage.webpages',
+                    'webpage.offline_webpages'    => 'webpage.webpages',
+                    'webpage.webpage.types'       => 'webpage.webpages',
+                    'webpage.in_process_webpages' => 'webpage.webpages',
 
                     'webpage.footer.preview' => 'webpage.templates',
                     'webpage.header.preview' => 'webpage.templates',
 
 
-                    'webpage.templates'            => 'webpage.templates',
+                    'webpage.templates' => 'webpage.templates',
 
 
                 ),
@@ -2144,13 +2167,12 @@ $modules = array(
                 'tabs' => array(
 
 
-                    'webpage.details'   => array(
+                    'webpage.details' => array(
                         'label' => _(
                             'Data'
                         ),
                         'icon'  => 'database'
                     ),
-
 
 
                     'webpage.preview' => array(
@@ -2163,20 +2185,18 @@ $modules = array(
                         'icon'  => 'line-chart',
 
                         'subtabs' => array(
-                            'webpage.pageviews'  => array(
+                            'webpage.pageviews' => array(
                                 'label' => _(
                                     'Pageviews'
                                 ),
                                 'icon'  => 'eye'
                             ),
-                            'webpage.users'      => array(
+                            'webpage.users'     => array(
                                 'label' => _(
                                     'Users'
                                 ),
                                 'icon'  => 'terminal'
                             ),
-
-
 
 
                         )
@@ -2190,28 +2210,22 @@ $modules = array(
                     ),
 
 
-
-
-
-
-
-
                 )
             ),
 
-            'marketing'        => array(
-                'type'      => 'navigation',
-                'label'     => _('Marketing'),
+            'marketing' => array(
+                'type'  => 'navigation',
+                'label' => _('Marketing'),
 
                 'icon'      => 'bullhorn',
                 'reference' => 'marketing/%d',
                 'tabs'      => array(
                     'campaigns' => array(
                         'label' => _('Campaigns'),
-                        'icon'      => 'tags',
+                        'icon'  => 'tags',
                     ),
-                    'deals'    => array(
-                        'label'     => _('Offers'),
+                    'deals'     => array(
+                        'label' => _('Offers'),
                         'icon'  => 'tag'
                     ),
 
@@ -2338,11 +2352,7 @@ $modules = array(
                     ),
 
 
-
-
-
-
-                    'category.webpage'    => array(
+                    'category.webpage' => array(
                         'label'   => _('Website'),
                         'icon'    => 'globe',
                         'subtabs' => array(
@@ -2368,7 +2378,7 @@ $modules = array(
                         )
                     ),
 
-                    'category.sales'      => array(
+                    'category.sales' => array(
                         'label'   => _('Sales'),
                         'subtabs' => array(
                             'category.product.sales.plot'     => array(
@@ -2396,7 +2406,7 @@ $modules = array(
 
                     ),
 
-                    'category.subjects'   => array('label' => ''),
+                    'category.subjects' => array('label' => ''),
 
 
                     'category.history' => array(
@@ -2406,8 +2416,8 @@ $modules = array(
                             'object' => '_object',
                             'field'  => 'Number History Records'
                         ),
-                        'icon'  => 'road',
-                        'class' => 'right icon_only'
+                        'icon'          => 'road',
+                        'class'         => 'right icon_only'
                     ),
                     'category.images'  => array(
                         'title'         => _('Images'),
@@ -2416,8 +2426,8 @@ $modules = array(
                             'object' => '_object',
                             'field'  => 'Number Images'
                         ),
-                        'icon'  => 'camera-retro',
-                        'class' => 'right icon_only'
+                        'icon'          => 'camera-retro',
+                        'class'         => 'right icon_only'
                     ),
 
 
@@ -2548,7 +2558,7 @@ $modules = array(
 
         )
     ),
-    'products_server'  => array(
+    'products_server' => array(
 
         'parent'      => 'none',
         'parent_type' => 'none',
@@ -2606,7 +2616,6 @@ $modules = array(
                 'tabs'      => array(
 
 
-
                     'products' => array(
                         'label' => _(
                             'Products'
@@ -2619,7 +2628,6 @@ $modules = array(
 
         )
     ),
-
 
 
     'marketingx'        => array(
@@ -2815,10 +2823,6 @@ $modules = array(
         )
 
     ),
-
-
-
-
 
 
     'production_server' => array(
@@ -3306,7 +3310,7 @@ $modules = array(
 
 
                             'supplier.sales.info' => array(
-                                'label'=>'',
+                                'label' => '',
                                 'title' => _('Info'),
                                 'icon'  => 'info',
                                 'class' => 'right icon_only'
@@ -4352,7 +4356,7 @@ $modules = array(
                 'reference' => 'warehouse/%d',
 
                 'tabs' => array(
-                    'warehouse.details'        => array(
+                    'warehouse.details' => array(
                         'label' => _('Data'),
                         'title' => _(
                             'Warehouse details'
@@ -4366,12 +4370,12 @@ $modules = array(
                         )
                     ),
                     */
-                    'warehouse.parts'          => array(
+                    'warehouse.parts'   => array(
                         'label' => _(
                             'Part-Locations'
                         )
                     ),
-                    'warehouse.history'        => array(
+                    'warehouse.history' => array(
                         'label' => _(
                             'History/Notes'
                         ),
@@ -4493,7 +4497,7 @@ $modules = array(
 
             ),
 
-            'deleted_location'        => array(
+            'deleted_location' => array(
                 'type' => 'object',
                 'tabs' => array(
                     'supplier.history' => array(

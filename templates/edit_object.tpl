@@ -445,79 +445,60 @@
                                     <div class="address_edit_fields_container">
                                         <table id="{$field.id}" border=0 class="address hide" field="{$field.id}">
                                             <tr id="{$field.id}_recipient" class="recipient">
-                                                <td class="show_buttons error super_discreet"><i
-                                                            class="fa fa-asterisk"></i></td>
+                                                <td class="show_buttons error super_discreet"><i class="fa fa-asterisk"></i></td>
                                                 <td class="label">{t}Recipient{/t}</td>
-                                                <td><input value="" class="address_input_field"
-                                                           field_name="Address Recipient"></td>
+                                                <td><input value="" class="address_input_field" field_name="Address Recipient"></td>
                                             </tr>
                                             <tr id="{$field.id}_organization" class="organization">
-                                                <td class="show_buttons error super_discreet"><i
-                                                            class="fa fa-asterisk"></i></td>
+                                                <td class="show_buttons error super_discreet"><i class="fa fa-asterisk"></i></td>
                                                 <td class="label">{t}Organization{/t}</td>
-                                                <td><input value="" class="address_input_field"
-                                                           field_name="Address Organization"></td>
+                                                <td><input value="" class="address_input_field" field_name="Address Organization"></td>
                                             </tr>
                                             <tr id="{$field.id}_addressLine1" class="addressLine1">
-                                                <td class="show_buttons error super_discreet"><i
-                                                            class="fa fa-asterisk"></i></td>
+                                                <td class="show_buttons error super_discreet"><i class="fa fa-asterisk"></i></td>
                                                 <td>{t}Line 1{/t}</td>
-                                                <td><input value="" class="address_input_field"
-                                                           field_name="Address Line 1"></td>
+                                                <td><input value="" class="address_input_field" field_name="Address Line 1"></td>
                                             </tr>
 
                                             <tr id="{$field.id}_addressLine2" class="addressLine2">
-                                                <td class="show_buttons error super_discreet"><i
-                                                            class="fa fa-asterisk"></i></td>
+                                                <td class="show_buttons error super_discreet"><i class="fa fa-asterisk"></i></td>
                                                 <td class="label">{t}Line 2{/t}</td>
-                                                <td><input value="" class="address_input_field"
-                                                           field_name="Address Line 2"></td>
+                                                <td><input value="" class="address_input_field" field_name="Address Line 2"></td>
                                             </tr>
                                             <tr id="{$field.id}_sortingCode" class="sortingCode">
-                                                <td class="show_buttons error super_discreet"><i
-                                                            class="fa fa-asterisk"></i></td>
+                                                <td class="show_buttons error super_discreet"><i class="fa fa-asterisk"></i></td>
                                                 <td class="label">{t}Sorting code{/t}</td>
-                                                <td><input value="" class="address_input_field"
-                                                           field_name="Address Sorting Code"></td>
+                                                <td><input value="" class="address_input_field" field_name="Address Sorting Code"></td>
                                             </tr>
 
                                             <tr id="{$field.id}_postalCode" class="postalCode">
-                                                <td class="show_buttons error super_discreet"><i
-                                                            class="fa fa-asterisk"></i></td>
+                                                <td class="show_buttons error super_discreet"><i class="fa fa-asterisk"></i></td>
                                                 <td class="label">{t}Postal code{/t}</td>
-                                                <td><input value="" class="address_input_field"
-                                                           field_name="Address Postal Code"></td>
+                                                <td><input value="" class="address_input_field" field_name="Address Postal Code"></td>
                                             </tr>
                                             <tr id="{$field.id}_dependentLocality" class="dependentLocality">
-                                                <td class="show_buttons error super_discreet"><i
-                                                            class="fa fa-asterisk"></i></td>
+                                                <td class="show_buttons error super_discreet"><i class="fa fa-asterisk"></i></td>
                                                 <td class="label">{t}Dependent locality{/t}</td>
-                                                <td><input value="" class="address_input_field"
-                                                           field_name="Address Dependent Locality"></td>
+                                                <td><input value="" class="address_input_field" field_name="Address Dependent Locality"></td>
                                             </tr>
                                             <tr id="{$field.id}_locality" class="locality">
-                                                <td class="show_buttons error super_discreet"><i
-                                                            class="fa fa-asterisk"></i></td>
+                                                <td class="show_buttons error super_discreet"><i class="fa fa-asterisk"></i></td>
                                                 <td class="label">{t}Locality (City){/t}</td>
                                                 <td><input value="" class="address_input_field"
                                                            field_name="Address Locality"></td>
                                             </tr>
                                             <tr id="{$field.id}_administrativeArea" class="administrativeArea">
-                                                <td class="show_buttons error super_discreet"><i
-                                                            class="fa fa-asterisk"></i></td>
+                                                <td class="show_buttons error super_discreet"><i class="fa fa-asterisk"></i></td>
                                                 <td class="label">{t}Administrative area{/t}</td>
-                                                <td><input value="" class="address_input_field"
-                                                           field_name="Address Administrative Area"></td>
+                                                <td><input value="" class="address_input_field" field_name="Address Administrative Area"></td>
                                             </tr>
                                             <tr id="{$field.id}_country" class="country">
                                                 <td class="show_buttons error super_discreet"><i
                                                             class="fa fa-asterisk"></i></td>
                                                 <td class="label">{t}Country{/t}</td>
                                                 <td>
-                                                    <input value="" class="address_input_field" type="hidden"
-                                                           field_name="Address Country 2 Alpha Code">
-                                                    <input id="{$field.id}_country_select" value=""
-                                                           class="country_select">
+                                                    <input value="" class="address_input_field" type="hidden" field_name="Address Country 2 Alpha Code">
+                                                    <input id="{$field.id}_country_select" value="" class="country_select">
                                                 </td>
                                             </tr>
                                             <tr>

@@ -167,6 +167,7 @@ class Public_Store {
             case 'Store Timezone':
             case 'Store Key':
             case 'Store Website Key':
+            case 'Store Home Country Code 2 Alpha':
 
                 return $this->data[$key];
                 break;

@@ -1,4 +1,21 @@
 
+.menu_main2{
+    width: 850px;
+}
+
+#menu_control_panel {
+    float:right;height:43px;text-align: right
+}
+
+#menu_control_panel p {
+    line-height:43px
+}
+
+#menu_control_panel .button {
+    padding:5px 10px
+}
+
+
 #logo {
     background-repeat:no-repeat;
     background-origin: left top;

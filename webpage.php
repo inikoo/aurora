@@ -21,9 +21,9 @@ if (!isset($_REQUEST['webpage_key']) or !is_numeric($_REQUEST['webpage_key'])) {
 
 if (!isset($_REQUEST['theme']) or !preg_match('/^theme\_\d+$/', $_REQUEST['theme'])) {
     print 'no theme set up';
+
     return;
 }
-
 
 
 $webpage_key = $_REQUEST['webpage_key'];
@@ -33,30 +33,54 @@ $webpage = new Public_Webpage($webpage_key);
 
 $webpage->load_scope();
 
-$website = new Public_Website($webpage_key);
+$website = new Public_Website($webpage->get('Webpage Website Key'));
 
-$store   = new Public_Store($webpage->get('Webpage Store Key'));
-
+$store = new Public_Store($webpage->get('Webpage Store Key'));
 
 
 $content_data = $webpage->get('Content Data');
 
 
-
-
-if($webpage->get('Webpage Template Filename')=='products_showcase'){
+if ($webpage->get('Webpage Template Filename') == 'products_showcase') {
     include_once 'class.Public_Product.php';
 
-    foreach($content_data['products'] as $key=>$value){
-        $product=new Public_Product($value['product_id']);
-        $content_data['products'][$key]['object']= $product;
+    foreach ($content_data['products'] as $key => $value) {
+        $product                                  = new Public_Product($value['product_id']);
+        $content_data['products'][$key]['object'] = $product;
     }
 
 
-}
-$smarty->assign('content', $content_data);
+} elseif ($webpage->get('Webpage Template Filename') == 'register') {
 
-//print_r($content_data);
+    require_once 'utils/get_addressing.php';
+    $country_code='GB';
+
+
+    list($address_format,$address_labels,$used_fields)=get_address_form_data($store->get('Store Home Country Code 2 Alpha'),$website->get('Website Locale') );
+
+
+    $countries=get_countries_form_data($website->get('Website Locale'));
+
+    $smarty->assign('address_labels', $address_labels);
+
+    $smarty->assign('used_address_fields', $used_fields);
+    $smarty->assign('countries', $countries);
+    $smarty->assign('selected_country', $store->get('Store Home Country Code 2 Alpha'));
+
+//print_r($address_labels);
+
+  //  exit;
+
+
+}
+
+
+$smarty->assign('content', $content_data);
+$smarty->assign('labels', $website->get('Localised Labels'));
+
+
+
+//print_r($website->get('Localised Labels'));
 
 $smarty->assign('webpage', $webpage);
 $smarty->assign('store', $store);
@@ -72,7 +96,7 @@ $template = $theme.'/'.$webpage->get('Webpage Template Filename').'.'.$theme.'.t
 if (file_exists('templates/'.$template)) {
     $smarty->display($template);
 } else {
-    printf("template %s not found",$template);
+    printf("template %s not found", $template);
 }
 
 ?>

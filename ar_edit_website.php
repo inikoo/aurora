@@ -35,8 +35,12 @@ switch ($tipo) {
     case 'save_webpage_content':
         $data = prepare_values(
             $_REQUEST, array(
-                         'key' => array('type' => 'key'),
-                         'content_data' => array('type' => 'string')
+                         'key'          => array('type' => 'key'),
+                         'content_data' => array('type' => 'string'),
+                         'labels'       => array(
+                             'type'     => 'string',
+                             'optional' => true
+                         )
 
 
                      )
@@ -47,7 +51,7 @@ switch ($tipo) {
     case 'save_footer':
         $data = prepare_values(
             $_REQUEST, array(
-                         'footer_key' => array('type' => 'key'),
+                         'footer_key'  => array('type' => 'key'),
                          'footer_data' => array('type' => 'string')
 
 
@@ -58,7 +62,7 @@ switch ($tipo) {
     case 'save_header':
         $data = prepare_values(
             $_REQUEST, array(
-                         'header_key' => array('type' => 'key'),
+                         'header_key'  => array('type' => 'key'),
                          'header_data' => array('type' => 'string')
 
 
@@ -329,7 +333,7 @@ switch ($tipo) {
     case 'launch_website':
         $data = prepare_values(
             $_REQUEST, array(
-                         'key'    => array('type' => 'key')
+                         'key' => array('type' => 'key')
                      )
         );
         launch_website($account, $db, $user, $editor, $data, $smarty);
@@ -463,14 +467,14 @@ function webpage_content_data($data, $editor, $db, $smarty) {
     if ($data['type'] == 'text') {
 
 
-       // $data['value'] = str_replace('<div class="ui-resizable-handle ui-resizable-e" style="z-index: 90; display: block;"></div>', '', $data['value']);
-       // $data['value'] = str_replace('<div class="ui-resizable-handle ui-resizable-s" style="z-index: 90; display: block;"></div>', '', $data['value']);
-       // $data['value'] = str_replace('<div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90; display: block;"></div>', '', $data['value']);
+        // $data['value'] = str_replace('<div class="ui-resizable-handle ui-resizable-e" style="z-index: 90; display: block;"></div>', '', $data['value']);
+        // $data['value'] = str_replace('<div class="ui-resizable-handle ui-resizable-s" style="z-index: 90; display: block;"></div>', '', $data['value']);
+        // $data['value'] = str_replace('<div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90; display: block;"></div>', '', $data['value']);
 
 
-       // $data['value'] = str_replace('<div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"><br></div>', '', $data['value']);
-       // $data['value'] = str_replace('<div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"><br></div>', '', $data['value']);
-       // $data['value'] = str_replace('<div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"><br></div>', '', $data['value']);
+        // $data['value'] = str_replace('<div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"><br></div>', '', $data['value']);
+        // $data['value'] = str_replace('<div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"><br></div>', '', $data['value']);
+        // $data['value'] = str_replace('<div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"><br></div>', '', $data['value']);
 
 
         if ($data['section'] == 'panels_in_section') {
@@ -866,7 +870,7 @@ function webpage_content_data($data, $editor, $db, $smarty) {
             $panel['image_src'] = '/art/panel_'.$size_tag.'_1.png';
             $panel['link']      = '';
             $panel['caption']   = '';
-            $panel['image_key']      = '';
+            $panel['image_key'] = '';
         } elseif ($panel_data['type'] == 'text') {
 
             $panel['content'] = 'bla bla bla';
@@ -1129,7 +1133,7 @@ function publish_webpage($data, $editor, $db) {
 
     // todo migrate to Webpage & WebpageVersion classes
     include_once('class.Page.php');
-    $webpage = new Page($data['parent_key']);
+    $webpage         = new Page($data['parent_key']);
     $webpage->editor = $editor;
 
     $webpage->publish();
@@ -1153,7 +1157,7 @@ function unpublish_webpage($data, $editor, $db) {
 
     // todo migrate to Webpage & WebpageVersion classes
     include_once('class.Page.php');
-    $webpage = new Page($data['parent_key']);
+    $webpage         = new Page($data['parent_key']);
     $webpage->editor = $editor;
 
     $webpage->unpublish();
@@ -1430,7 +1434,7 @@ function update_webpage_section_order($data, $editor, $smarty, $db) {
         $smarty->assign('section_data', $section);
 
         $overview .= $smarty->fetch('webpage.preview.categories_showcase.overview_section.tpl');
-        $items .= $smarty->fetch('webpage.preview.categories_showcase.section.tpl');
+        $items    .= $smarty->fetch('webpage.preview.categories_showcase.section.tpl');
 
     }
 
@@ -1667,7 +1671,7 @@ function save_footer($data, $editor) {
     if (!$footer->error) {
 
         $response = array(
-            'state'       => 200
+            'state' => 200
 
 
         );
@@ -1709,7 +1713,7 @@ function save_header($data, $editor) {
     if (!$header->error) {
 
         $response = array(
-            'state'       => 200
+            'state' => 200
 
 
         );
@@ -1732,16 +1736,25 @@ function save_header($data, $editor) {
 function save_webpage_content($data, $editor, $db, $smarty) {
 
 
-
     include_once('class.Page.php');
     $webpage = new Page($data['key']);
 
-   // print_r( $webpage->get('Content Data'));
 
 
-  //  print_r( json_decode($data['content_data'],true));
 
-   // exit;
+    if (isset($data['labels'])) {
+        include_once('class.Website.php');
+        $website = new Website($webpage->get('Webpage Website Key'));
+        $website->update_labels_in_localised_labels(json_decode($data['labels'],true));
+    }
+
+
+    // print_r( $webpage->get('Content Data'));
+
+
+    //  print_r( json_decode($data['content_data'],true));
+
+    // exit;
 
     $webpage->update(array('Page Store Content Data' => $data['content_data']), 'no_history');
     $webpage->publish();
@@ -1774,17 +1787,14 @@ function save_webpage_content($data, $editor, $db, $smarty) {
 function launch_website($account, $db, $user, $editor, $data, $smarty) {
 
 
-
     $website         = get_object('website', $data['key']);
     $website->editor = $editor;
 
     $website->launch();
 
 
-
-
     $response = array(
-        'state'                 => 200,
+        'state' => 200,
 
     );
     echo json_encode($response);
