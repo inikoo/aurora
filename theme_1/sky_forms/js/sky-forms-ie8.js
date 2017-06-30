@@ -1,6 +1,3 @@
-(function($) {
- "use strict";
-
 $(function()
 {
 	$('input[type="checkbox"]:checked, input[type="radio"]:checked').addClass('checked');
@@ -16,5 +13,3 @@ $(function()
 		$(this).toggleClass('checked');
 	});
 });
-
-})(jQuery);
