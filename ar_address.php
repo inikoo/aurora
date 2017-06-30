@@ -51,7 +51,6 @@ switch ($tipo) {
 
 function get_fields_data($db, $data) {
 
-
     if (strlen($data['country_code']) == 3) {
 
         include_once 'class.Country.php';
@@ -60,6 +59,8 @@ function get_fields_data($db, $data) {
     } else {
         $country_2alpha_code = $data['country_code'];
     }
+
+    $country_2alpha_code=strtoupper($country_2alpha_code);
 
     $address_format       = get_address_format($country_2alpha_code);
     $address_subdivisions = get_address_subdivisions(
