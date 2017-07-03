@@ -238,6 +238,7 @@ class PurchaseOrder extends DB_Table {
 
         switch ($key) {
 
+           
 
             case 'Estimated Receiving Datetime':
 
@@ -1766,6 +1767,10 @@ class PurchaseOrder extends DB_Table {
             case 'Purchase Order Account Number':
                 $label = _('Account number');
                 break;
+            case 'Purchase Order Warehouse Address':
+                $label = _('Delivery address');
+                break;
+
 
 
             default:
