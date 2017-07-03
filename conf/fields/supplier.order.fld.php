@@ -67,15 +67,9 @@ $object_fields = array(
                 'edit' => ($edit ? 'date' : ''),
 
                 'time'            => '00:00:00',
-                'value'           => $object->get(
-                    'Purchase Order Estimated Receiving Date'
-                ),
+                'value'           => $object->get('Purchase Order Estimated Receiving Date'),
                 'formatted_value' => $object->get('Estimated Receiving Date'),
-                'label'           => ucfirst(
-                    $object->get_field_label(
-                        'Purchase Order Estimated Receiving Date'
-                    )
-                ),
+                'label'           => ucfirst($object->get_field_label('Purchase Order Estimated Receiving Date')),
                 'invalid_msg'     => get_invalid_message('date'),
                 'required'        => false,
                 'type'            => 'value'
@@ -149,6 +143,15 @@ $object_fields = array(
                 'label'           => ucfirst(
                     $object->get_field_label('Purchase Order Port of Import')
                 ),
+                'required'        => false,
+                'type'            => 'value'
+            ),
+            array(
+                'id'              => 'Purchase_Order_Warehouse_Address',
+                'edit'            => ($edit ? 'textarea' : ''),
+                'value'           => htmlspecialchars($object->get('Purchase Order Warehouse Address')),
+                'formatted_value' => $object->get('Port of Import'),
+                'label'           => ucfirst($object->get_field_label('Purchase Order Warehouse Address')),
                 'required'        => false,
                 'type'            => 'value'
             ),
