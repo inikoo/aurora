@@ -22,6 +22,49 @@
 </style>
 
 
+<div id="handle_input_editor" class="editor hide" style="z-index:100;position:absolute;padding:10px;border:1px solid #ccc;background-color: #fff;width:560px">
+<table style="width:100%;">
+    <tr>
+        <td style="width:150px"><i class="fa fa-exclamation-triangle warning" aria-hidden="true"></i> {t}Missing email{/t}
+        </td>
+        <td><input id="validation_handle_missing" value="{if isset($labels.validation_handle_missing) and $labels.validation_handle_missing!=''}{$labels.validation_handle_missing}{else}{t}Please enter your registered email address{/t}{/if}" style="width:100%"/>
+        </td>
+
+    </tr>
+    <tr>
+        <td ><i class="fa fa-exclamation-triangle warning" aria-hidden="true"></i> {t}Invalid email{/t}
+        </td>
+        <td><input id="validation_email_invalid" value="{if isset($labels.validation_email_invalid) and $labels.validation_email_invalid!=''}{$labels.validation_email_invalid}{else}{t}Please enter a valid email address{/t}{/if}" style="width:100%"/>
+        </td>
+
+    </tr>
+    <tr>
+        <td></td>
+        <td style="padding-right:10px;text-align: right"><span style="cursor:pointer" onclick="save_input_editor(this)" ><i class="fa fa-check "></i>&nbsp; {t}Ok{/t}</span>
+        </td>
+    </tr>
+</table>
+</div>
+
+
+<div id="password_input_editor" class="editor hide" style="z-index:100;position:absolute;padding:10px;border:1px solid #ccc;background-color: #fff;width:560px">
+    <table style="width:100%;">
+        <tr>
+            <td ><i class="fa fa-exclamation-triangle warning" aria-hidden="true"></i> {t}Missing password{/t}
+            </td>
+            <td><input id="validation_password_missing" value="{if isset($labels.validation_password_missing) and $labels.validation_password_missing!=''}{$labels.validation_password_missing}{else}{t}Please enter your password"{/t}{/if}" style="width:100%"/>
+            </td>
+
+        </tr>
+      
+        <tr>
+            <td></td>
+            <td style="padding-right:10px;text-align: right"><span style="cursor:pointer" onclick="save_input_editor(this)" ><i class="fa fa-check "></i>&nbsp; {t}Ok{/t}</span>
+            </td>
+        </tr>
+    </table>
+</div>
+
 <div class="wrapper_boxed">
 
     <div class="site_wrapper">
@@ -32,7 +75,11 @@
 
 
 
-                <div class="login_form">
+                <div id="login_form_container" class="login_form" style="position:relative">
+
+                     <div class="like_button " style="color:#333;position: absolute;left:470px;top:200px;width: 200px;" onclick="show_password_recovery()" >
+                        <i class="fa fa-language " style="margin-right: 5px;" aria-hidden="true"></i>   {t}forgot password{/t}
+                    </div>
 
                     <form id="sky-form" class="sky-form">
 
@@ -50,7 +97,7 @@
 
                                     <div class="col col-8">
 
-                                        <label class="input">
+                                        <label class="input" editor="handle_input_editor" style="cursor:pointer" onclick="show_edit_input(this)">
 
                                             <i class="icon-append icon-user"></i>
 
@@ -74,7 +121,7 @@
 
                                     <div class="col col-8">
 
-                                        <label class="input">
+                                        <label class="input" editor="password_input_editor" style="cursor:pointer" onclick="show_edit_input(this)">
 
                                             <i class="icon-append icon-lock"></i>
 
@@ -82,7 +129,8 @@
 
                                         </label>
 
-                                        <div class="note"><a href=""  id="_forgot_password_label" contenteditable="true">{$content._forgot_password_label}</a></div>
+                                        <div ><span href=""  id="_forgot_password_label" contenteditable="true">{$content._forgot_password_label}</span>
+                                        </div>
 
                                     </div>
 
@@ -92,7 +140,7 @@
 
 
 
-                            <section>
+                            <section class="hide">
 
                                 <div class="row">
 
@@ -113,10 +161,11 @@
                         <footer>
 
                             <div class="fright">
+                                <button type="submit" class="button" id="_log_in_label" contenteditable="true">{$content._log_in_label}</button>
+
 
                                 <a href="register.html" class="button button-secondary" id="_register_label" contenteditable="true">{$content._register_label}</a>
 
-                                <button type="submit" class="button" id="_log_in_label" contenteditable="true">{$content._log_in_label}</button>
 
                             </div>
 
@@ -129,18 +178,59 @@
                 </div>
 
 
+                <div id="recovery_form_container" class="login_form hide" style="position:relative">
 
-                <form action="demo-recovery.php" id="sky-form2" class="sky-form sky-form-modal">
 
-                    <header>Password recovery</header>
+                    <div id="show_login_form" class="like_button" style="position:absolute;left:470px;width:300px;top:0px" onclick="hide_password_recovery()">
+                        <span class=" " style="color:#333"  >
+                        <i class="fa fa-language " style="margin-right: 5px" aria-hidden="true"></i>   {t}login form{/t}
+                        </span><br>
 
+
+
+                    </div>
+
+                    <div id="show_password_recovery" class="like_button hide" style="position:absolute;left:470px;width:300px;top:0px" onclick="show_password_recovery()">
+                        <span class=" " style="color:#333"  >
+                        <i class="fa fa-language " style="margin-right: 5px" aria-hidden="true"></i>   {t}forgot password{/t}
+                        </span><br>
+
+
+
+                    </div>
+
+
+                    <div style="position:absolute;left:470px;width:300px;top:200px">
+                        <span class=" " style="color:#333"  >
+                        <i class="fa fa-language " style="margin-right: 5px" aria-hidden="true"></i>   {t}Messages{/t}
+                        </span><br>
+
+
+                        <div style="font-size: 80%">
+                        <span class="like_button " style="color:#333" onclick="show_password_recovery_success()" >
+                       <i class="fa fa-check  ok" aria-hidden="true"></i>  {t}Recovery email send{/t}
+                        </span><br>
+                            <span class="like_button " style="color:#333" onclick="show_password_recovery_email_not_register_error()" >
+                         <i class="fa fa-exclamation-triangle error" aria-hidden="true"></i> {t}Email not registered{/t}
+                        </span><br>
+                            <span class="like_button " style="color:#333" onclick="show_password_recovery_unknown_error()" >
+                          <i class="fa fa-exclamation-triangle error" aria-hidden="true"></i> {t}Unknown error{/t}
+                        </span>
+                        </div>
+                    </div>
+
+
+                <form  id="password_recovery_form" style="display:block"  class="sky-form ">
+
+
+                    <header id="_title_recovery" contenteditable="true">{$content._title_recovery}</header>
 
 
                     <fieldset>
 
                         <section>
 
-                            <label class="label">E-mail</label>
+                            <label class="label " id="_email_recovery_label" contenteditable="true">{$content._email_recovery_label}</label>
 
                             <label class="input">
 
@@ -158,25 +248,37 @@
 
                     <footer>
 
-                        <button type="submit" name="submit" class="button">Submit</button>
+                        <button type="submit" class="button" id="_submit_label" contenteditable="true">{$content._submit_label}</button>
 
-                        <a href="#" class="button button-secondary modal-closer">Close</a>
+                        <a href="#" d="_close_label" class="button button-secondary modal-closer" contenteditable="true">{$content._close_label}</a>
+
+
 
                     </footer>
 
 
 
-                    <div class="message">
+                    <div class="message" >
 
-                        <i class="icon-ok"></i>
 
-                        <p>Your request successfully sent!<br><a href="#" class="modal-closer">Close window</a></p>
+
+                        <i class="fa fa-check"></i>
+
+
+                        <span class="password_recovery_msg " id="password_recovery_success_msg"  contenteditable="true">{$content._password_recovery_success_msg}</span>
+                        <span class="password_recovery_msg error" id="password_recovery_email_not_register_error_msg"  contenteditable="true">{$content._password_recovery_email_not_register_error_msg}</span>
+                        <span class="password_recovery_msg error" id="password_recovery_unknown_error_msg"  contenteditable="true">{$content._password_recovery_unknown_error_msg}</span>
+                        <br>
+                            <a id="password_recovery_go_back" class="marked_link" contenteditable="true">{$content._password_recovery_go_back}</a>
+
 
                     </div>
 
+
+
                 </form>
 
-
+                </div>
 
 
 
@@ -273,33 +375,82 @@
 // do things
     });
 
-
     function show_edit_input(element) {
 
-        console.log($(element).attr('id'))
 
         offset = $(element).closest('section').offset();
-        $('#input_editor').removeClass('hide').offset({
-            top: offset.top, left: offset.left - 40}).attr('element_id', $(element).attr('id'));
-        $('#input_editor_placeholder').val($(element).next('input').attr('placeholder'))
-        $('#input_editor_tooltip').val($(element).closest('section').find('b').html())
+        $('#'+$(element).attr('editor')).removeClass('hide').offset({
+            top: offset.top, left: offset.left - 105})
 
+         }
 
-    }
-
-    function save_edit_input() {
-        $('#input_editor').addClass('hide')
-
-        var element = $('#' + $('#input_editor').attr('element_id'))
-        element.next('input').attr('placeholder', $('#input_editor_placeholder').val())
-        element.closest('section').find('b').html($('#input_editor_tooltip').val())
-
-        console.log($('#input_editor').attr('id'))
+    function save_input_editor(element) {
+        $(element).closest('.editor').addClass('hide')
 
         $('#save_button', window.parent.document).addClass('save button changed valid')
+    }
+
+
+    function show_password_recovery_success(){
+
+        $('#show_login_form').addClass('hide')
+        $('#show_password_recovery').removeClass('hide')
+
+        $('#password_recovery_go_back').addClass('hide')
+        $('.password_recovery_msg').addClass('hide')
+        $('#password_recovery_success_msg').removeClass('hide').prev('i').addClass('fa-check').removeClass('error fa-exclamation')
+        $('#password_recovery_form').addClass('submited')
+        $('#password_recovery_form').find('.message').removeClass('error')
+
+    }
+
+    function show_password_recovery_email_not_register_error(){
+
+        $('#show_login_form').addClass('hide')
+        $('#show_password_recovery').removeClass('hide')
+
+        $('#password_recovery_go_back').removeClass('hide')
+        $('.password_recovery_msg').addClass('hide').prev('i').removeClass('fa-check').addClass('error fa-exclamation')
+        $('#password_recovery_email_not_register_error_msg').removeClass('hide')
+
+        $('#password_recovery_form').addClass('submited ')
+        $('#password_recovery_form').find('.message').addClass('error')
 
 
     }
+
+    function show_password_recovery_unknown_error(){
+
+        $('#show_login_form').addClass('hide')
+        $('#show_password_recovery').removeClass('hide')
+
+        $('#password_recovery_go_back').removeClass('hide')
+
+        $('.password_recovery_msg').addClass('hide')
+        $('#password_recovery_unknown_error_msg').removeClass('hide').prev('i').removeClass('fa-check').addClass('error fa-exclamation')
+        $('#password_recovery_form').addClass('submited ')
+        $('#password_recovery_form').find('.message').addClass('error')
+
+    }
+
+
+    function  show_password_recovery(){
+        $('#show_login_form').removeClass('hide')
+        $('#show_password_recovery').addClass('hide')
+
+
+        $('#login_form_container').addClass('hide')
+        $('#recovery_form_container').removeClass('hide')
+        $('#password_recovery_form').removeClass('submited ')
+
+    }
+
+    function hide_password_recovery(){
+        $('#login_form_container').removeClass('hide')
+        $('#recovery_form_container').addClass('hide')
+
+    }
+
 
 </script>
 

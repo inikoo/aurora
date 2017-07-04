@@ -72,6 +72,7 @@ require_once 'utils/modules.php';
 session_start();
 
 
+
 require 'external_libs/Smarty/Smarty.class.php';
 $smarty               = new Smarty();
 $smarty->template_dir = 'templates';
@@ -134,6 +135,7 @@ if ($user->data['User Type'] == 'Supplier') {
     $user->read_suppliers();
 
 }
+
 
 
 $smarty->assign('user', $user);

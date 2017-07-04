@@ -58,6 +58,7 @@ $('.item_header_text').dblclick(function() {
     }).on('froalaEditor.save.after', function (e, editor, response) {
 
 
+
         var data=jQuery.parseJSON(response)
 
         if(data.state==200){

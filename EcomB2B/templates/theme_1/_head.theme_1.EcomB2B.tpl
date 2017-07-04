@@ -7,8 +7,7 @@
 
  Version 3
 -->
-*}
-<!doctype html><!--[if IE 7 ]>
+*}<!doctype html><!--[if IE 7 ]>
 <html lang="en-gb" class="isie ie7 oldie no-js"> <![endif]--><!--[if IE 8 ]>
 <html lang="en-gb" class="isie ie8 oldie no-js"> <![endif]--><!--[if IE 9 ]>
 <html lang="en-gb" class="isie ie9 no-js"> <![endif]--><!--[if (gt IE 9)|!(IE)]><!-->
@@ -112,7 +111,19 @@
 
     <!--  <script src="http://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script> -->
       <script src="/theme_1/local/jquery.js"></script>
+    <script src="/theme_1/local/jquery-ui.js"></script>
 
+
+
+
+    <script src="/theme_1/sky_forms/js/jquery.form.min.js"></script>
+    <script src="/theme_1/sky_forms/js/jquery.validate.min.js"></script>
+    <!--[if lt IE 10]>
+    <script src="/theme_1/sky_formsjs/jquery.placeholder.min.js"></script>
+    <![endif]-->
+    <!--[if lt IE 9]>
+    <script src="/theme_1/sky_formsjs/sky-forms-ie8.js"></script>
+    <![endif]-->
 
 
     <!--  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script> -->
@@ -142,9 +153,9 @@
 
 
 
-    <script type="text/javascript" src="/js/base64.js"></script>
-
-    <script type="text/javascript" src="/js/validation.js"></script>
+    <script type="text/javascript" src="/js/jquery.form.min.js"></script>
+    <script type="text/javascript" src="/js/sha256.js"></script>
+    <script type="text/javascript" src="/js/aurora.js"></script>
 
 
 

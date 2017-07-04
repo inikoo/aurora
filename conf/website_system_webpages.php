@@ -546,17 +546,29 @@ function website_system_webpages_config($website_type) {
                 'Page Store Content Data'   => json_encode(
                     array(
                         '_title' => _('Login form'),
+                        '_title_recovery' => _('Password recovery'),
 
 
                         '_email_label'    => _('E-mail'),
                         '_password_label' => _('Password'),
+                        '_email_recovery_label'    => _('E-mail'),
+
 
                         '_forgot_password_label' => _('Forgot password?'),
                         '_keep_logged_in_label'  => _('Keep me logged in'),
 
 
                         '_register_label' => _('Register'),
-                        '_log_in_label'   => _('Log in')
+                        '_log_in_label'   => _('Log in'),
+                        '_submit_label'   => _('Submit'),
+                        '_close_label'   => _('Close'),
+
+                        '_password_recovery_success_msg'=>_('Your request successfully sent!'),
+                        '_password_recovery_email_not_register_error_msg'=>_('Email is not registered in our system'),
+                        '_password_recovery_unknown_error_msg'=>_("Recovery email could't be send, please contact customer services"),
+                        '_password_recovery_go_back'=>_('Try again'),
+
+
 
 
                     )
@@ -582,7 +594,7 @@ function website_system_webpages_config($website_type) {
                         '_password_tooltip'     => _("Don't forget your password"),
 
                         '_password_confirm_placeholder' => _('Confirm password'),
-                        '_password_conform_tooltip'     => _("Don't forget your password"),
+                        '_password_confirm_tooltip'     => _("Confirm your password"),
 
                         '_mobile_placeholder' => _('Mobile'),
                         '_mobile_tooltip'     => _('Needed to enter your mobile/telephone'),
@@ -591,11 +603,14 @@ function website_system_webpages_config($website_type) {
                         '_contact_name_tooltip'     => _('Needed to enter your name'),
 
                         '_company_placeholder' => _('Company'),
-                        '_company_tooltip'     => _('Enter your account company name (optional)'),
+                        '_company_tooltip'     => _('Enter your account company name'),
 
                         '_subscription' => _('I want to receive news and special offers'),
                         '_terms'        => _('I agree with the <span class="marked_link">Terms and Conditions</span>'),
-                        '_submit_label' => _('Submit')
+                        '_submit_label' => _('Submit'),
+
+                        'redirect'=>'welcome',
+                        'send_email'=>true,
 
                     )
                 )

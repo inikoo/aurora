@@ -260,8 +260,6 @@
     {include file="js/webpage.preview.description_block.tpl.js" }
     {include file="js/webpage.preview.sections.tpl.js" }
     {include file="js/webpage.preview.categories.tpl.js" }
-
-
     {include file="js/webpage.preview.panels.tpl.js" }
 
 

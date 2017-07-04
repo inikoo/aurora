@@ -9,6 +9,14 @@
 
 -->
 
+.button,.like_button{
+	cursor: pointer ;
+
+
+}
+
+	
+	
 .padding_left_10{
 padding-left:10px;
 }
@@ -23,11 +31,45 @@ padding-right:5px;
 }
 
 
+input::-webkit-input-placeholder {
+	color: #bbb; }
+input:-moz-placeholder {
+	color: #bbb; }
+input::-moz-placeholder {
+	color: #bbb; }
+input:-ms-input-placeholder {
+	color: #bbb; }
 
 
-.sky-form {
 
-    box-shadow: 0 0 2px rgba(0,0,0,.3);
+.sky-form .message.error {
+	color: #ee9393;
+}
+
+.sky-form .message.error i {
+
+	border: 1px solid #ee9393;
+
+}
+
+
+
+.sky-form .like_button,.sky-form .button{
+
+	 cursor: pointer ;
+
+ }
+
+.sky-form .like_link{
+	cursor: pointer ;
+}
+.sky-form .like_link:hover{
+	text-decoration: underline;
+}
+
+.sky-form .marked_link {
+	text-decoration: underline;
+	cursor: pointer ;
 
 }
 
@@ -35,17 +77,23 @@ padding-right:5px;
     border-top: 1px solid rgba(0,0,0,.5);
 }
 
-.reg_form {
+.reg_form  {
 	margin: 20px auto 0 auto;
 	width: 550px;
-	
+
+}
+
+.login_form  {
+	margin: 20px auto 0 auto;
+	width: 440px;
+
 }
 
 
 @media only screen and (min-width: 480px) and (max-width: 767px){
 	
 
-.reg_form {
+.reg_form,.login_form {
 	margin: 10px auto 0 auto;
 	width: 400px;
 	padding: 18px 20px 13px 20px;

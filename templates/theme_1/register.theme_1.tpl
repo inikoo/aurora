@@ -217,7 +217,7 @@
                             <section>
                                 <label id="_password_confirm" class="input "   style="cursor:pointer" onclick="show_edit_input(this)">
                                     <i  class="icon-append icon-lock"  style="cursor:pointer" ></i>
-                                    <input class="register_field" type="password" name="password" id="_password_confirm_placeholder" placeholder="{$content._password_confirm_placeholder}" >
+                                    <input class="register_field" type="password" name="password_confirm" id="_password_confirm_placeholder" placeholder="{$content._password_confirm_placeholder}" >
                                     <b id="_password_confirm_tooltip"  class="tooltip tooltip-bottom-right">{$content._password_confirm_tooltip}</b>
                                 </label>
                             </section>
@@ -227,7 +227,7 @@
 
                             <section>
                                 <label id="_mobile" class="input "   style="cursor:pointer" onclick="show_edit_input(this)">
-                                    <i class="icon-append fa fa-mobile"  style="cursor:pointer" ></i>
+                                    <i class="icon-append fa fa-mobile" ></i>
                                     <input class="register_field" type="text" name="mobile" id="_mobile_placeholder" placeholder="{$content._mobile_placeholder}">
                                     <b id="_mobile_tooltip"  class="tooltip tooltip-bottom-right">{$content._mobile_tooltip}</b>
                                 </label>
@@ -328,7 +328,7 @@
                                 <section class="col col-6 " >
                                     <label class="input">
                                         <input type="text" name="locality" placeholder="{if isset($labels["locality_`$address_labels.locality.code`"]) and $labels["locality_`$address_labels.locality.code`"]!=''}{$labels["locality_`$address_labels.locality.code`"]}{else}{$address_labels.locality.label}{/if}">
-                                        <b class="tooltip tooltip-bottom-right"></b>
+                                        <b class="tooltip tooltip-bottom-right">{if isset($labels["locality_`$address_labels.locality.code`"]) and $labels["locality_`$address_labels.locality.code`"]!=''}{$labels["locality_`$address_labels.locality.code`"]}{else}{$address_labels.locality.label}{/if}</b>
                                     </label>
                                 </section>
 
@@ -427,6 +427,7 @@
 
 
         $('.tooltip').each(function (i, obj) {
+            if($(obj).attr('id')!=undefined)
             content_data[$(obj).attr('id')] = $(obj).html()
         })
 
@@ -439,7 +440,12 @@
 
         })
 
+        console.log($('#redirect', window.parent.document).attr('type'))
 
+        content_data['redirect']=$('#redirect', window.parent.document).attr('type')
+            content_data['send_email']=$('#send_email', window.parent.document).hasClass('success')
+
+console.log(content_data)
 
         var ajaxData = new FormData();
 
@@ -488,7 +494,6 @@
         e.preventDefault();
         e.returnValue = false;
 
-// do things
     });
 
 
@@ -539,7 +544,7 @@
         var selected=$( "#country_select option:selected" )
         console.log(selected.val())
 
-        var request= "arw_addressing.php?tipo=address_format&country_code="+selected.val()+'&website_key={$website->id}'
+        var request= "ar_web_addressing.php?tipo=address_format&country_code="+selected.val()+'&website_key={$website->id}'
 
         console.log(request)
         $.getJSON(request, function( data ) {
@@ -565,6 +570,8 @@
 
 
     });
+
+
 
 
 </script>

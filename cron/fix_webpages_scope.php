@@ -50,26 +50,20 @@ $editor = array(
 );
 
 
-
-
 set_scope($db);
-
-
 
 
 function set_scope($db) {
 
 
-
-
-    $sql = sprintf('update  `Page Store Dimension`  set `Webpage Code`=`Page Code`  WHERE `Webpage Code` IS NULL  ');
-$db->exec($sql);
-
-
-    $sql = sprintf('update  `Page Store Dimension`  set `Webpage Website Key`=`Page Site Key`  WHERE `Webpage Website Key` IS NULL  ');
+    $sql = sprintf('UPDATE  `Page Store Dimension`  SET `Webpage Code`=`Page Code`  WHERE `Webpage Code` IS NULL  ');
     $db->exec($sql);
 
-    $sql = sprintf('update  `Page Store Dimension`  set `Webpage Store Key`=`Page Store Key`  WHERE `Webpage Store Key` IS NULL  ');
+
+    $sql = sprintf('UPDATE  `Page Store Dimension`  SET `Webpage Website Key`=`Page Site Key`  WHERE `Webpage Website Key` IS NULL  ');
+    $db->exec($sql);
+
+    $sql = sprintf('UPDATE  `Page Store Dimension`  SET `Webpage Store Key`=`Page Store Key`  WHERE `Webpage Store Key` IS NULL  ');
     $db->exec($sql);
 
     $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE `Webpage Scope Key` IS NULL OR  `Webpage Scope Key`=0 ');
@@ -96,8 +90,7 @@ $db->exec($sql);
                 $scope       = new Public_Category($webpage->data['Page Parent Key']);
                 $scope_found = 'Category';
 
-            }
-            elseif ($webpage->data['Page Store Section'] == 'Family Catalogue') {
+            } elseif ($webpage->data['Page Store Section'] == 'Family Catalogue') {
 
                 include_once('class.Store.php');
 
@@ -239,8 +232,7 @@ $db->exec($sql);
 
                 }
 
-            }
-            else {
+            } else {
 
                 if ($row['Page Store Section'] == 'Family Catalogue') {
                     //  print "Family ".$row['Page Parent Code']."\n";
@@ -253,9 +245,6 @@ $db->exec($sql);
                 }
 
 
-
-
-
             }
             $webpage->update_version();
 
@@ -266,32 +255,32 @@ $db->exec($sql);
         exit;
     }
 
-/*
-    $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` ');
+    /*
+        $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` ');
 
 
-    if ($result = $db->query($sql)) {
-        foreach ($result as $row) {
-            $webpage = new Page($row['Page Key']);
-            $webpage->update_version();
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
+                $webpage = new Page($row['Page Key']);
+                $webpage->update_version();
 
 
 
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print "$sql\n";
+            exit;
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        print "$sql\n";
-        exit;
-    }
-*/
-    $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` where `Webpage Scope`="Category Categories" and `Page Key`=51 ');
-    $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` where `Webpage Scope`="Category Categories" ');
+    */
+    $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE `Webpage Scope`="Category Categories" AND `Page Key`=51 ');
+    $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE `Webpage Scope`="Category Categories" ');
 
 
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
             $webpage = new Page($row['Page Key']);
-          //  print $webpage->id.' '.$webpage->get('Code')."\n";
+            //  print $webpage->id.' '.$webpage->get('Code')."\n";
             $webpage->reindex_items();
             $webpage->publish();
 

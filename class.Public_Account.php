@@ -61,6 +61,14 @@ class Public_Account  {
 
         switch ($key) {
 
+            case 'Account Code':
+            case 'Account Locale':
+            case 'Account Country 2 Alpha Code':
+
+                return $this->data[$key];
+
+            break;
+
             case ('Currency'):
 
                 if ($this->data['Account Currency'] != '') {
@@ -100,18 +108,7 @@ class Public_Account  {
                 break;
 
 
-            case 'Productions':
 
-                $number = 0;
-                $sql    = sprintf(
-                    "SELECT count(*) AS num FROM `Supplier Production Dimension`", $this->id
-                );
-                if ($row = $this->db->query($sql)->fetch()) {
-                    $number = $row['num'];
-                }
-
-                return $number;
-                break;
 
             case('Locale'):
 
@@ -131,154 +128,12 @@ class Public_Account  {
                 break;
 
 
-            case 'Setup Metadata':
-                return json_decode($this->data['Account Setup Metadata'], true);
-                break;
-            case 'National Employment Code Label':
-
-                switch ($this->data['Account Country 2 Alpha Code']) {
-                    case 'GB':
-                        return _('National insurance number');
-                        break;
-                    case 'ES':
-                        return _('DNI');
-                        break;
-                    default:
-                        return '';
-                        break;
-                }
-
-                break;
-
-            case 'Delta Today Start Orders In Warehouse Number':
-
-                $start = $this->data['Account Today Start Orders In Warehouse Number'];
-                $end   = $this->data['Account Orders In Warehouse Number'] + $this->data['Account Orders Packed Number'] + $this->data['Account Orders In Dispatch Area Number'];
-
-                $diff = $end - $start;
-
-                $delta = ($diff > 0 ? '+' : '').number($diff).delta_icon($end, $start, $inverse = true);
-
-
-                return $delta;
-
-            case 'Today Orders Dispatched':
-
-                $number = 0;
-
-                $sql = sprintf(
-                    'SELECT count(*) AS num FROM `Order Dimension` WHERE `Order Current Dispatch State`="Dispatched" AND `Order Dispatched Date`>%s   AND  `Order Dispatched Date`<%s   ',
-                    prepare_mysql(date('Y-m-d 00:00:00')), prepare_mysql(date('Y-m-d 23:59:59'))
-                );
-
-                if ($result = $this->db->query($sql)) {
-                    if ($row = $result->fetch()) {
-                        $number = $row['num'];
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
-                }
-
-
-                return number($number);
-
             default:
 
 
-                if (preg_match('/^(DC Orders|Orders|Last|Yesterday|Total|1|10|6|3|4|2|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit) Minify$/', $key)) {
-
-                    $field = 'Account '.preg_replace('/ Minify$/', '', $key);
-                    $field = preg_replace('/DC Orders/', 'Orders', $field);
-
-                    $suffix          = '';
-                    $fraction_digits = 'NO_FRACTION_DIGITS';
-                    if ($this->data[$field] >= 1000000) {
-                        $suffix          = 'M';
-                        $fraction_digits = 'DOUBLE_FRACTION_DIGITS';
-                        $_amount         = $this->data[$field] / 1000000;
-                    } elseif ($this->data[$field] >= 10000) {
-                        $suffix  = 'K';
-                        $_amount = $this->data[$field] / 1000;
-                    } elseif ($this->data[$field] > 100) {
-                        $fraction_digits = 'SINGLE_FRACTION_DIGITS';
-                        $suffix          = 'K';
-                        $_amount         = $this->data[$field] / 1000;
-                    } else {
-                        $_amount = $this->data[$field];
-                    }
-
-                    $amount = money($_amount, $this->get('Account Currency'), $locale = false, $fraction_digits).$suffix;
-
-                    return $amount;
-                }
 
 
-                if (preg_match('/^(DC Orders|Orders|Last|Yesterday|Total|1|10|6|3|4|2|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit) Soft Minify$/', $key)) {
 
-                    $field = 'Account '.preg_replace('/ Soft Minify$/', '', $key);
-
-
-                    $field = preg_replace('/DC Orders/', 'Orders', $field);
-
-                    $suffix          = '';
-                    $fraction_digits = 'NO_FRACTION_DIGITS';
-                    $_amount         = $this->data[$field];
-
-                    $amount = money($_amount, $this->get('Account Currency'), $locale = false, $fraction_digits).$suffix;
-
-                    return $amount;
-                }
-                if (preg_match('/^(Orders|Last|Yesterday|Total|1|10|6|3|2|4|5|Year To|Quarter To|Month To|Today|Week To).*(Quantity Invoiced|Invoices|Number)$/', $key)) {
-
-                    $field = 'Account '.$key;
-
-
-                    return number($this->data[$field]);
-                }
-                if (preg_match('/^(Orders|Last|Yesterday|Total|1|10|6|3|2|4|5|Year To|Quarter To|Month To|Today|Week To).*(Quantity Invoiced|Invoices) Minify$/', $key)) {
-
-                    $field = 'Account '.preg_replace('/ Minify$/', '', $key);
-
-                    $suffix          = '';
-                    $fraction_digits = 0;
-                    if ($this->data[$field] >= 10000) {
-                        $suffix  = 'K';
-                        $_number = $this->data[$field] / 1000;
-                    } elseif ($this->data[$field] > 100) {
-                        $fraction_digits = 1;
-                        $suffix          = 'K';
-                        $_number         = $this->data[$field] / 1000;
-                    } else {
-                        $_number = $this->data[$field];
-                    }
-
-                    return number($_number, $fraction_digits).$suffix;
-                }
-                if (preg_match('/^(Orders|Last|Yesterday|Total|1|10|6|3|2|4|5|Year To|Quarter To|Month To|Today|Week To).*(Quantity Invoiced|Invoices|Number) Soft Minify$/', $key)) {
-                    $field   = 'Account '.preg_replace('/ Soft Minify$/', '', $key);
-                    $_number = $this->data[$field];
-
-                    return number($_number, 0);
-                }
-
-                if (preg_match('/^(DC Orders|Orders|Total|1).*(Amount|Profit)$/', $key)) {
-
-                    $field = 'Account '.$key;
-                    $field = preg_replace('/DC Orders/', 'Orders', $field);
-
-
-                    return money($this->data[$field], $this->get('Account Currency'));
-                }
-
-                if (array_key_exists($key, $this->data)) {
-                    return $this->data[$key];
-                }
-
-                if (array_key_exists('Account '.$key, $this->data)) {
-                    return $this->data['Account '.$key];
-                }
         }
 
         return '';

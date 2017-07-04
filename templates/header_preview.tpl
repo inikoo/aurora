@@ -11,23 +11,7 @@
 
 <style>
 
-    .options_dialog{
-        position:absolute;
-        background-color: white;
-        border:1px solid #ccc;
-        padding: 10px;
-        z-index: 2000;
-    }
 
-    .options tr{
-       height: auto;
-    }
-    .options td{
-        padding:2px 15px;border:1px solid #ccc;cursor:pointer;color: dimgrey;
-    }
-    .options td:hover {
-        color: #333
-    }
 
     .columns{
          margin:0px;position: relative;top:-5px;padding:0px

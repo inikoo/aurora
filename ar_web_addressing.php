@@ -66,7 +66,7 @@ function address_format($db, $data) {
 
     $country_2alpha_code=strtoupper($country_2alpha_code);
 
-    list($address_format,$address_labels,$used_fields,$hidden_fields)=get_address_form_data($country_2alpha_code,$locale );
+    list($address_format,$address_labels,$used_fields,$hidden_fields,$required_fields,$no_required_fields)=get_address_form_data($country_2alpha_code,$locale );
 
 
 
@@ -85,6 +85,9 @@ function address_format($db, $data) {
         'address_labels' => $address_labels,
         'used_fields' => $used_fields,
         'hidden_fields' => $hidden_fields,
+        'required_fields' => $required_fields,
+        'no_required_fields' => $no_required_fields,
+
         'labels' => $labels,
 
     );

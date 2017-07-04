@@ -121,20 +121,10 @@ class Customer extends Subject {
             }
         }
 
-        $type_of_search = 'complete';
-        if (preg_match('/fuzzy/i', $options)) {
-            $type_of_search = 'fuzzy';
-        } elseif (preg_match('/fast/i', $options)) {
-            $type_of_search = 'fast';
-        }
-
         $create = '';
-        $update = '';
+
         if (preg_match('/create/i', $options)) {
             $create = 'create';
-        }
-        if (preg_match('/update/i', $options)) {
-            $update = 'update';
         }
 
 
@@ -154,9 +144,7 @@ class Customer extends Subject {
             if ($row = $result->fetch()) {
                 $this->error = true;
                 $this->found = true;
-                $this->msg   = _(
-                    'Another customer with same email has been found'
-                );
+                $this->msg   = _('Another customer with same email has been found');
 
                 return;
             }
@@ -186,9 +174,7 @@ class Customer extends Subject {
         $this->editor = $raw_data['editor'];
 
         if ($this->data['Customer First Contacted Date'] == '') {
-            $this->data['Customer First Contacted Date'] = gmdate(
-                'Y-m-d H:i:s'
-            );
+            $this->data['Customer First Contacted Date'] = gmdate('Y-m-d H:i:s');
         }
 
 
@@ -227,9 +213,7 @@ class Customer extends Subject {
 
 
             $history_data = array(
-                'History Abstract' => sprintf(
-                    _('%s customer record created'), $this->get('Name')
-                ),
+                'History Abstract' => sprintf(_('%s customer record created'), $this->get('Name')),
                 'History Details'  => '',
                 'Action'           => 'created'
             );
@@ -818,7 +802,6 @@ class Customer extends Subject {
 
 
                 $base_data = $this->base_data();
-                //print_r($base_data);
                 if (array_key_exists($field, $base_data)) {
                     if ($value != $this->data[$field]) {
                         $this->update_field($field, $value, $options);

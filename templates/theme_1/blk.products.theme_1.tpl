@@ -712,7 +712,8 @@
             url: "/ar_upload.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
 
 
-            complete: function () {
+            complete: function ()
+            {
             }, success: function (data) {
 
                 if (data.state == '200') {

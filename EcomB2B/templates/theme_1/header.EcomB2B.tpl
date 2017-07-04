@@ -31,23 +31,42 @@
         color: {$header_data.color.menu};
     }
 
+
+
+    #trueHeader a {
+        color: {$header_data.color.menu};
+        cursor: pointer;
+
+    }
+    #trueHeader a:hover {
+        color: {$header_data.color.menu_text_background_highlight};
+
+    }
+
     #_columns  .dropdown a:hover {
         background-color: transparent;
     }
 
     #_columns  .dropdown li.item_li:hover > a * {
-        color:{$header_data.color.items_color_edit_title};
+        color:{$header_data.color.items_title};
     }
 
-    /*
-  #_columns  .dropdown li.item_li:hover {
-      background-color: {$header_data.color.menu_background};
+
+    #trueHeader .dropdown-menu{
+
+        color: {$header_data.color.items};
     }
 
-   #_columns  .dropdown li.item_li:hover > a * {
-       color:{$header_data.color.menu};
+    #trueHeader .dropdown-menu a{
+
+        color: {$header_data.color.items};
     }
-*/
+
+    #trueHeader .dropdown-menu a:hover{
+
+        color: {$header_data.color.items_title};
+    }
+
 
 
     #menu_control_panel .button {
@@ -96,19 +115,12 @@
     }
 
 
-    #trueHeader a {
-        color: {$header_data.color.menu};
-        cursor: pointer;
-
-    }
-    #trueHeader a:hover {
-        color: {$header_data.color.menu_text_background_highlight};
-
-    }
 
 
 
 </style>
+
+<span id="webpage_data" style="display:none" webpage_key="{$webpage->id}"  ></span>
 
 
 <header id="header">
@@ -214,8 +226,8 @@
                                                                     </li>
                                                                     {foreach from=$store->get_categories({$sub_column.type},{$sub_column.page},'menu') item=item}
                                                                         <li class="item">
-                                                                                            <span><i class="fa fa-caret-right" style="margin-right:5px" ></i> <span>{$item['label']}</span>
-                                                                                                {if $item['new']}<b class="mitemnew">{t}New{/t}</b>{/if}</li>
+                                                                            <a href="{$item['url']}"><i class="fa fa-caret-right" style="margin-right:5px" ></i>{$item['label']} {if $item['new']}<b class="mitemnew">{t}New{/t}</b>{/if}</a>
+                                                                        </li>
                                                                     {/foreach}
 
                                                                 </ul>
@@ -238,13 +250,13 @@
 
 
 
-                                    {elseif $column.type=='single_column'}
+                                        {elseif $column.type=='single_column'}
                                             <ul class="dropdown-menu multilevel sortable" role="menu">
 
 
                                                 {foreach from=$column.items item=item}
                                                     {if $item.type=='item'}
-                                                        <li><a href="{$item['url']}"><span >{$item['label']}</span></a></li>
+                                                        <li><a href="{$item['url']}">{$item['label']}</a></li>
                                                     {elseif $item.type=='submenu'}
                                                         <li class="dropdown-submenu mul"> <a tabindex="-1" href="#">{$item['label']}</a>
                                                             <ul class="dropdown-menu sortable">
@@ -261,7 +273,7 @@
 
                                             </ul>
 
-                                    {/if}
+                                        {/if}
                                     </li>
 
 
@@ -289,7 +301,9 @@
 
                     <div id="menu_control_panel" >
                         {if $logged_in}
-
+                            <p>
+                                <i id="logout" class="fa fa-sign-out fa-flip-horizontal button " style="cursor:pointer"   title="{t}Log out{/t}"  aria-hidden="true"></i>
+                            </p>
                         {else}
                             <p>
                             <a href="login.sys" class="button" ><i class="fa fa-sign-in" aria-hidden="true"></i> {t}Login{/t}</a>
