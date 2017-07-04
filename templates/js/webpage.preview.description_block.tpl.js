@@ -318,6 +318,7 @@ var position=$(this).position();
 
     var request = '/ar_edit_website.php?tipo=webpage_content_data&parent=page&parent_key=' + {$webpage->id} +'&section=description_block&block='+text.attr('id')+'&type=text&value='+text.html()
 
+        console.log(request)
 
     $.getJSON(request, function (data) {
 

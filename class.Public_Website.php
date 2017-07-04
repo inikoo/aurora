@@ -13,6 +13,13 @@
 
 class Public_Website {
 
+    public $editor = array(
+        'Author Name'  => false,
+        'Author Alias' => false,
+        'Author Key'   => 0,
+        'User Key'     => 0,
+        'Date'         => false
+    );
 
     function Public_Website($a1, $a2 = false, $a3 = false) {
 
@@ -275,6 +282,46 @@ class Public_Website {
 
 
     }
+
+
+
+    function create_user($data) {
+
+        include_once 'class.Public_Website_User.php';
+
+        $this->new = false;
+
+        $data['editor']             = $this->editor;
+        $data['Website User Website Key'] = $this->id;
+        $data['Website User Active'] = 'Yes';
+
+
+        $user = new Public_Website_User('new', $data);
+
+        if ($user->id) {
+
+            if ($user->new) {
+
+
+               return $user;
+
+
+
+
+            } else {
+                $this->error = true;
+                $this->msg   = $user->msg;
+
+            }
+
+            return $customer;
+        } else {
+            $this->error = true;
+            $this->msg   = $user->msg;
+        }
+    }
+
+
 
 }
 

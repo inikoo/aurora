@@ -105,16 +105,10 @@ if($new){
                 array(
                     'id'                => 'Customer_Main_Plain_Email',
                     'edit'              => ($edit ? 'email' : ''),
-                    'value'             => $object->get(
-                        'Customer Main Plain Email'
-                    ),
+                    'value'             => $object->get('Customer Main Plain Email'),
                     'formatted_value'   => $object->get('Main Plain Email'),
-                    'server_validation' => json_encode(
-                        array('tipo' => 'check_for_duplicates')
-                    ),
-                    'label'             => ucfirst(
-                        $object->get_field_label('Customer Main Plain Email')
-                    ),
+                    'server_validation' => json_encode(array('tipo' => 'check_for_duplicates')),
+                    'label'             => ucfirst($object->get_field_label('Customer Main Plain Email')),
                     'invalid_msg'       => get_invalid_message('email'),
                     'required'          => true,
                     'type'              => 'value'

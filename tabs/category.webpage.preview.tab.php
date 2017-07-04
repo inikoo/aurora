@@ -121,6 +121,9 @@ if($webpage->get('Page Store Content Display Type')=='Template') {
             $category->create_stack_index(true);
 
 
+
+
+
             $html = '';
 
 

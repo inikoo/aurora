@@ -2,18 +2,31 @@
 <!--
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 2 January 2017 at 18:37:23 CET, Mijas Costa, Spain
- Copyright (c) 2016, Inikoo
+ Created: 3 July 2017 at 19:51:47 GMT+8, Cyberjaya, Malaysia
+ Copyright (c) 2017, Inikoo
 
  Version 3
 -->
-*}
+*}{include file="theme_1/_head.theme_1.EcomB2B.tpl"}
 
-<span id="ordering_settings" class="hide" data-labels='{ "ordered":"<i class=\"fa fa-thumbs-o-up fa-flip-horizontal \" aria-hidden=\"true\"></i> {t}Ordered{/t}", "order":"<i class=\"fa fa-hand-pointer-o\" aria-hidden=\"true\"></i>  {t}Order now{/t}", "update":"<i class=\"fa fa-hand-pointer-o\" aria-hidden=\"true\"></i>  {t}Update{/t}"  }'></span>
-{include file="style.tpl" css=$category->webpage->get('Published CSS') }
+{include file="style.tpl" css=$webpage->get('Published CSS') }
 
 
-<div id="page_content">
+<body xmlns="http://www.w3.org/1999/html">
+
+
+<div class="wrapper_boxed">
+
+    <div class="site_wrapper">
+
+        {include file="theme_1/header.EcomB2B.tpl"}
+
+        <div class="content_fullwidth less2">
+            <div class="container">
+
+                <span id="ordering_settings" class="hide" data-labels='{ "ordered":"<i class=\"fa fa-thumbs-o-up fa-flip-horizontal \" aria-hidden=\"true\"></i> {t}Ordered{/t}", "order":"<i class=\"fa fa-hand-pointer-o\" aria-hidden=\"true\"></i>  {t}Order now{/t}", "update":"<i class=\"fa fa-hand-pointer-o\" aria-hidden=\"true\"></i>  {t}Update{/t}"  }'></span>
+
+                <div id="page_content">
 
 
 
@@ -190,3 +203,21 @@
 
 </div>
 
+
+
+            </div>
+        </div>
+
+
+        <div class="clearfix marb12"></div>
+
+        {include file="theme_1/footer.EcomB2B.tpl"}
+
+    </div>
+
+</div>
+
+
+</body>
+
+</html>

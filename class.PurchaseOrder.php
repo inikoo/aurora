@@ -238,7 +238,7 @@ class PurchaseOrder extends DB_Table {
 
         switch ($key) {
 
-           
+
 
             case 'Estimated Receiving Datetime':
 

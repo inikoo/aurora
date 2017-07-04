@@ -37,6 +37,7 @@ $smarty->clearAllCache();
 session_start();
 
 
+
 if (!array_key_exists('website_key', $_SESSION) or !$_SESSION['website_key']) {
 
     include ('utils/find_website_key.include.php');
@@ -152,9 +153,7 @@ if (!$is_cached) {
         'pl_PL'
     );
 
-
-
-
+    /*
 
     if (!isset($_SESSION['site_locale'])) {
         $_SESSION['site_locale'] = $website->get('Website Locale');
@@ -192,14 +191,10 @@ if (!$is_cached) {
 
     }
 
+$language = substr($site_locale, 0, 2);
+*/
 
-
-
-
-    $language = substr($site_locale, 0, 2);
-
-
-    $locale = $site_locale.'.UTF-8';
+    $locale = $website->get('Website Locale').'.UTF-8';
 
     setlocale(LC_TIME, $locale);
     setlocale(LC_MESSAGES, $locale);
@@ -210,15 +205,98 @@ if (!$is_cached) {
 
 
 
-    if (!isset($_SESSION['logged_in']) or !$_SESSION['logged_in']) {
+
+    //$customer  = new Public_Customer(0);
+    /*
+    if (!isset($_SESSION['site_key'])) {
+        unset($_SESSION['user_key']);
+        unset($_SESSION['customer_key']);
+        unset($_SESSION['user_log_key']);
+        $_SESSION['logged_in'] = 0;
+        $logged_in             = false;
+        $St                    = get_sk();
+    }
+*/
+    /*
+
+    if ($logged_in) {
+        if ($_SESSION['site_key'] != $website->id) {
+            unset($_SESSION['user_key']);
+            unset($_SESSION['customer_key']);
+            unset($_SESSION['user_log_key']);
+            $_SESSION['logged_in'] = 0;
+            $_SESSION['_state']    = 'c';
+            $logged_in             = false;
+            $St                    = get_sk();
+        } else {
+
+            $user = new Public_User($_SESSION['user_key']);
+
+
+            $customer = new Public_Customer($_SESSION['customer_key']);
+
+            //print_r($customer);
+        }
+
+    } else {
+        unset($_SESSION['user_key']);
+        unset($_SESSION['customer_key']);
+        unset($_SESSION['user_log_key']);
+        $_SESSION['logged_in'] = 0;
+        $_SESSION['_state']    = 'd';
+        $logged_in             = false;
+        $St                    = get_sk();
+    }
+
+
+*/
+    /*
+    if ($logged_in and ($customer->get('Customer Store Key') != $website->get('Website Store Key'))) {
+        header('Location:  logout.php');
+        exit;
+    }
+
+*/
+    /*
+
+    $order_in_process     = false;
+    $order_in_process_key = $customer->get_order_in_process_key();
+    $order_in_process     = new Public_Order ($order_in_process_key);
+    $order_in_process->set_display_currency($_SESSION['set_currency'], $_SESSION['set_currency_exchange']);
+
+
+    $smarty->assign('site_locale', $site_locale);
+    $smarty->assign('language', $language);
+
+*/
+
+
+    $theme=$website->get('Website Theme');
+
+
+
+    if($website->get('Website Status')=='InProcess'){
+        $webpage_key = $website->get_system_webpage_key('launching.sys');
+        $webpage=new Public_Webpage($webpage_key);
+        $content=$webpage->get('Content Data');
+        $smarty->assign('webpage',$webpage);
+        $smarty->assign('content',$content);
+        $smarty->display('homepage_to_launch.'.$theme.'.tpl', $webpage_key);
+        exit ;
+    }
+
+
+    $logged_in = !empty($_SESSION['logged_in']);
+
+
+    /*
+    if (!$logged_in) {
 
         if (isset($_REQUEST['p'])) {
 
             header('Location: reset.php?x=x&master_key='.$_REQUEST['p']);
             exit;
         }
-
-
         if (isset($_REQUEST['masterkey'])) {
 
             $dencrypted_secret_data = AESDecryptCtr(base64_decode($_REQUEST['masterkey']), $secret_key, 256);
@@ -258,7 +336,8 @@ if (!$is_cached) {
             }
 
 
-        } elseif (isset($_COOKIE['user_handle'])) {
+        }
+        elseif (isset($_COOKIE['user_handle'])) {
 
             //print_r($_COOKIE);
 
@@ -291,101 +370,138 @@ if (!$is_cached) {
         }
 
     }
-
-    $customer  = new Public_Customer(0);
-    $logged_in = (isset($_SESSION['logged_in']) and $_SESSION['logged_in'] ? true : false);
-
-    if (!isset($_SESSION['site_key'])) {
-        unset($_SESSION['user_key']);
-        unset($_SESSION['customer_key']);
-        unset($_SESSION['user_log_key']);
-        $_SESSION['logged_in'] = 0;
-        $logged_in             = false;
-        $St                    = get_sk();
-    }
-
-    if ($logged_in) {
-        if ($_SESSION['site_key'] != $website->id) {
-            unset($_SESSION['user_key']);
-            unset($_SESSION['customer_key']);
-            unset($_SESSION['user_log_key']);
-            $_SESSION['logged_in'] = 0;
-            $_SESSION['_state']    = 'c';
-            $logged_in             = false;
-            $St                    = get_sk();
-        } else {
-
-            $user = new Public_User($_SESSION['user_key']);
+    */
 
 
-            $customer = new Public_Customer($_SESSION['customer_key']);
 
-            //print_r($customer);
+
+    if($logged_in){
+
+        if(empty($_SESSION['customer_key']) or empty($_SESSION['website_user_key'])  or  empty($_SESSION['website_user_log_key']) ){
+
+            exit('caca1');
+            session_regenerate_id();
+            session_destroy();
+            unset($_SESSION);
+            setcookie('rmb', 'x:x', time() - 864000, '/'
+            //,'',
+            //true, // TLS-only
+            //true  // http-only
+            );
+            header('Location: /index.php');
+            exit;
         }
 
-    } else {
-        unset($_SESSION['user_key']);
-        unset($_SESSION['customer_key']);
-        unset($_SESSION['user_log_key']);
-        $_SESSION['logged_in'] = 0;
-        $_SESSION['_state']    = 'd';
-        $logged_in             = false;
-        $St                    = get_sk();
+        include_once('class.Public_Customer.php');
+        $customer=new Public_Customer($_SESSION['customer_key']);
+
+        if($customer->id and $customer->get('Customer Store Key')==$store->id) {
+
+            $website_user=new Public_Website_User($_SESSION['website_user_key']);
+            if($website_user->id and $website_user->get('Website User Customer Key')==$customer->id){
+                $smarty->assign('website_user', $website_user);
+
+            }else{
+                exit('caca2');
+                session_regenerate_id();
+                session_destroy();
+                unset($_SESSION);
+                setcookie('rmb', 'x:x', time() - 864000, '/'
+                //,'',
+                //true, // TLS-only
+                //true  // http-only
+                );
+                header('Location: /index.php');
+                exit;
+            }
+
+
+            $smarty->assign('customer', $customer);
+
+            if(empty($_COOKIE['rmb'])){
+
+                require_once "external_libs/random/lib/random.php";
+                $selector = base64_encode(random_bytes(9));
+                $authenticator = random_bytes(33);
+
+                setcookie(
+                    'rmb',
+                    $selector.':'.base64_encode($authenticator),
+                    time() + 864000,
+                    '/'
+                //,'',
+                //true, // TLS-only
+                //true  // http-only
+                );
+
+
+                $sql=sprintf('insert into `Website Auth Token Dimension` (`Website Auth Token Website Key`,`Website Auth Token Selector`,`Website Auth Token Hash`,`Website Auth Token Website User Key`,`Website Auth Token Customer Key`,`Website Auth Token Website User Log Key`,`Website Auth Token Expire`) 
+            values (%d,%s,%s,%d,%d,%d,%s)',
+                             $website->id,
+                             prepare_mysql($selector),
+                             prepare_mysql(hash('sha256', $authenticator)),
+                             $website_user->id,
+                             $customer->id,
+                             $_SESSION['website_user_log_key'],
+                             prepare_mysql(date('Y-m-d H:i:s', time() + 864000))
+
+                );
+
+                $db->exec($sql);
+
+            }
+
+
+        }else{
+
+
+            session_regenerate_id();
+            session_destroy();
+            unset($_SESSION);
+            setcookie('rmb', 'x:x', time() - 864000, '/'
+            //,'',
+            //true, // TLS-only
+            //true  // http-only
+            );
+            header('Location: /index.php');
+            exit;
+        }
+
+    }
+    elseif(!empty($_COOKIE['rmb'])){
+
+
+
+
+        include_once('class.WebAuth.php');
+
+        $auth = new WebAuth();
+        list($selector, $authenticator) = explode(':', $_COOKIE['rmb']);
+
+
+
+        list($logged_in,$result,$customer_key,$website_user_key,$website_user_log_key)=$auth->authenticate_from_remember($selector, $authenticator,$website->id);
+
+        if($logged_in){
+
+            $_SESSION['logged_in']=true;
+            $_SESSION['customer_key']=$customer_key;
+            $_SESSION['website_user_key']=$website_user_key;
+            $_SESSION['website_user_log_key']=$website_user_log_key;
+
+        }
+
+
+
     }
 
-
-
-
-
-    if ($logged_in and ($customer->get('Customer Store Key') != $website->get('Website Store Key'))) {
-        header('Location:  logout.php');
-        exit;
-    }
-
-    $order_in_process     = false;
-    $order_in_process_key = $customer->get_order_in_process_key();
-    $order_in_process     = new Public_Order ($order_in_process_key);
-    $order_in_process->set_display_currency($_SESSION['set_currency'], $_SESSION['set_currency_exchange']);
-
-
-    $smarty->assign('site_locale', $site_locale);
-    $smarty->assign('language', $language);
-
-
-    $theme=$website->get('Website Theme');
-
-
-
-    if($website->get('Website Status')=='InProcess'){
-        $webpage_key = $website->get_system_webpage_key('launching.sys');
-        $webpage=new Public_Webpage($webpage_key);
-        $content=$webpage->get('Content Data');
-
-        $smarty->assign('webpage',$webpage);
-
-        $smarty->assign('content',$content);
-        $smarty->display('homepage_to_launch.'.$theme.'.tpl', $webpage_key);
-
-
-
-        exit ;
-    }
-
-    $store=new Public_Store($website->get('Website Store Key'));
 
 
 
     $smarty->assign('website', $website);
     $smarty->assign('store', $store);
-
-
-    $footer_data = $website->get('Footer Data');
-    $header_data = $website->get('Header Data');
-
-
-    $smarty->assign('footer_data', $footer_data);
-    $smarty->assign('header_data', $header_data);
-
+    $smarty->assign('footer_data', $website->get('Footer Data'));
+    $smarty->assign('header_data', $website->get('Header Data'));
     $smarty->assign('logged_in', $logged_in);
 
 
@@ -393,11 +509,7 @@ if (!$is_cached) {
 
 }
 
-function get_sk() {
-    $Sk = "skstart|".(gmdate('U') + 300000)."|".ip()."|".IKEY."|".sha1(mt_rand()).sha1(mt_rand());
-    $St = AESEncryptCtr($Sk, SKEY, 256);
 
-    return $St;
-}
+
 
 ?>

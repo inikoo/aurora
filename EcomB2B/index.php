@@ -16,7 +16,7 @@ include_once 'common.php';
 if ($logged_in ) {
 
     $webpage_key = $website->get_system_webpage_key('home.sys');
-    $template='homepage.'.$theme.'.tpl';
+    $template=$theme.'/homepage.'.$theme.'.'.$website->get('Website Type').'.tpl';
 
 
 }else{

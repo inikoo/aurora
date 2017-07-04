@@ -24,6 +24,19 @@ function fork_housekeeping($job) {
 
     switch ($data['type']) {
 
+        case 'customer_created':
+            include_once 'class.Store.php';
+            include_once 'class.Customer.php';
+
+            $customer = new Customer($data['customer_key']);
+            $store    = new Store($customer->get('Customer Store Key'));
+
+            $customer->update_full_search();
+            $customer->update_location_type();
+            $store->update_customers_data();
+
+            break;
+
 
         case 'update_orders_in_basket_data':
 
@@ -33,7 +46,6 @@ function fork_housekeeping($job) {
             $store->update_orders_in_basket_data();
             $account->load_acc_data();
             $account->update_orders_in_basket_data();
-
 
 
             break;

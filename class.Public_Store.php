@@ -14,6 +14,13 @@
 
 class Public_Store {
 
+    public $editor = array(
+        'Author Name'  => false,
+        'Author Alias' => false,
+        'Author Key'   => 0,
+        'User Key'     => 0,
+        'Date'         => false
+    );
 
     function Public_Store($a1, $a2 = false, $a3 = false, $_db = false) {
 
@@ -122,7 +129,7 @@ class Public_Store {
                 switch ($output) {
                     case 'menu':
                         $categories[] = array(
-                            'url'   => $row['Webpage Code'],
+                            'url'   => strtolower($row['Webpage Code']),
                             'label' => $row['Webpage Name'],
                             'new'   => false
 
@@ -175,6 +182,123 @@ class Public_Store {
         }
 
 
+    }
+
+
+    function create_customer($data,$user_data) {
+
+        include_once 'class.Public_Customer.php';
+
+        $this->new_customer = false;
+        $this->new_website_user=false;
+
+        $data['editor']             = $this->editor;
+        $data['Customer Store Key'] = $this->id;
+
+
+        $address_fields = array(
+            'Address Recipient'            => $data['Customer Main Contact Name'],
+            'Address Organization'         => $data['Customer Company Name'],
+            'Address Line 1'               => '',
+            'Address Line 2'               => '',
+            'Address Sorting Code'         => '',
+            'Address Postal Code'          => '',
+            'Address Dependent Locality'   => '',
+            'Address Locality'             => '',
+            'Address Administrative Area'  => '',
+            'Address Country 2 Alpha Code' => $data['Customer Contact Address country'],
+
+        );
+        unset($data['Customer Contact Address country']);
+
+        if (isset($data['Customer Contact Address addressLine1'])) {
+            $address_fields['Address Line 1'] = $data['Customer Contact Address addressLine1'];
+            unset($data['Customer Contact Address addressLine1']);
+        }
+        if (isset($data['Customer Contact Address addressLine2'])) {
+            $address_fields['Address Line 2'] = $data['Customer Contact Address addressLine2'];
+            unset($data['Customer Contact Address addressLine2']);
+        }
+        if (isset($data['Customer Contact Address sortingCode'])) {
+            $address_fields['Address Sorting Code'] = $data['Customer Contact Address sortingCode'];
+            unset($data['Customer Contact Address sortingCode']);
+        }
+        if (isset($data['Customer Contact Address postalCode'])) {
+            $address_fields['Address Postal Code'] = $data['Customer Contact Address postalCode'];
+            unset($data['Customer Contact Address postalCode']);
+        }
+
+        if (isset($data['Customer Contact Address dependentLocality'])) {
+            $address_fields['Address Dependent Locality'] = $data['Customer Contact Address dependentLocality'];
+            unset($data['Customer Contact Address dependentLocality']);
+        }
+
+        if (isset($data['Customer Contact Address locality'])) {
+            $address_fields['Address Locality'] = $data['Customer Contact Address locality'];
+            unset($data['Customer Contact Address locality']);
+        }
+
+        if (isset($data['Customer Contact Address administrativeArea'])) {
+            $address_fields['Address Administrative Area'] = $data['Customer Contact Address administrativeArea'];
+            unset($data['Customer Contact Address administrativeArea']);
+        }
+
+        //print_r($address_fields);
+        // print_r($data);
+
+        //exit;
+
+        $customer = new Public_Customer('new', $data, $address_fields);
+
+        if ($customer->id) {
+            $this->new_customer_msg = $customer->msg;
+
+            if ($customer->new) {
+
+                include_once 'class.Public_Website.php';
+
+                $website=new Public_Website($this->get('Store Website Key'));
+
+                $user_data['Website User Handle']=$customer->get('Customer Main Plain Email');
+                $user_data['Website User Customer Key']=$customer->id;
+
+
+
+                $website_user=$website->create_user($user_data);
+
+                include_once 'utils/new_fork.php';
+
+                global $account;
+
+                $this->new_customer = true;
+
+                $this->new_website_user = $website_user->new;
+
+
+                new_housekeeping_fork(
+                    'au_housekeeping', array(
+                    'type'     => 'customer_created',
+                    'customer_key' => $customer->id,
+                    'website_user_key' => $website_user->id
+                ), $account->get('Account Code')
+                );
+
+                //$customer->update_full_search();
+                //$customer->update_location_type();
+               // $store->update_customers_data();
+
+
+            } else {
+                $this->error = true;
+                $this->msg   = $customer->msg;
+
+            }
+
+            return array($customer,$website_user);
+        } else {
+            $this->error = true;
+            $this->msg   = $customer->msg;
+        }
     }
 
 
