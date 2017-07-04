@@ -107,7 +107,7 @@ if ($category->get('Category Scope') == 'Product') {
 
             $tab     = 'category.all_parts';
             $ar_file = 'ar_inventory_tables.php';
-            $tipo    = 'category_all_availeable_parts';
+            $tipo    = 'category_all_available_parts';
 
             $default = $user->get_tab_defaults($tab);
 

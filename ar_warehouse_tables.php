@@ -55,6 +55,7 @@ switch ($tipo) {
         replenishments(get_table_parameters(), $db, $user);
         break;
     case 'part_locations':
+    case 'parts':
         parts(get_table_parameters(), $db, $user, $account);
         break;
     case 'stock_transactions':

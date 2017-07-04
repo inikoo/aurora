@@ -1721,9 +1721,7 @@ print "++++++++++\n";
 
 
                 //$commercial_value_unit_cost=$this->part->get_unit_commercial_value($row['Date'].' 23:59:59');
-                $commercial_value_unit_cost = $this->part->get(
-                    'Part Unit Price'
-                );
+                $commercial_value_unit_cost = $this->part->get('Part Unit Price');
                 $value_day_cost_unit_cost   = $this->part->get('Part Cost');
                 $value_day_cost             = $stock * $value_day_cost_unit_cost;
                 $commercial_value           = $stock * $commercial_value_unit_cost;
