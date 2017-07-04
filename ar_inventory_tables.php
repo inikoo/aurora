@@ -76,8 +76,8 @@ switch ($tipo) {
     case 'product_families':
         product_families(get_table_parameters(), $db, $user);
         break;
-    case 'category_all_availeable_parts':
-        category_all_availeable_parts(get_table_parameters(), $db, $user);
+    case 'category_all_available_parts':
+        category_all_available_parts(get_table_parameters(), $db, $user);
         break;
     case 'category_all_parts':
         category_all_parts(get_table_parameters(), $db, $user);
@@ -1434,7 +1434,7 @@ function categories($_data, $db, $user) {
 }
 
 
-function category_all_availeable_parts($_data, $db, $user) {
+function category_all_available_parts($_data, $db, $user) {
 
 
     $rtext_label = 'part';
