@@ -628,12 +628,25 @@ function get_view($db, $smarty, $user, $account, $modules) {
             }
 
         }
+    }elseif ($state['module'] == 'products' and $state['section'] == 'webpage') {
+
+       // print_r($state);
+
+        if(!($state['_object']->get('Webpage Code')=='register.sys')){
+
+            if($state['subtab']=='webpage.email_template'){
+                $state['subtab']='webpage.preview';
+            }
+
+        }else{
+
+        }
+
+
     }
 
 
-    list($state, $response['tabs']) = get_tabs(
-        $state, $db, $account, $modules, $user, $smarty
-    );// todo only calculate when is subtabs in the section
+    list($state, $response['tabs']) = get_tabs($state, $db, $account, $modules, $user, $smarty);// todo only calculate when is subtabs in the section
 
 
     if ($state['object'] != '' and ($modules[$state['module']]['sections'][$state['section']]['type'] == 'object' or isset($modules[$state['module']]['sections'][$state['section']]['showcase']))) {
@@ -687,6 +700,8 @@ function get_view($db, $smarty, $user, $account, $modules) {
 function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state = false, $metadata = false) {
 
 
+    $html='';
+
     $_tab    = $tab;
     $_subtab = $subtab;
 
@@ -701,7 +716,8 @@ function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state = false, $
         $html = 'Tab Not found: >'.$actual_tab.'.tab.php<';
 
     }
-    //print $tab;
+
+
     if (is_array($state) and !(preg_match('/\_edit$/', $tab) or preg_match(
                 '/\.wget$/', $tab
             ) or $tab == 'part_family.product_family.new')
@@ -2351,6 +2367,8 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
     );
 
 
+    //print_r($_content);
+
     if ($data['section'] == 'category') {
 
         if ($data['_object']->get('Category Scope') == 'Product') {
@@ -2458,7 +2476,8 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
         //print_r($_content);
 
 
-    } elseif ($data['module'] == 'suppliers' and $data['section'] == 'order') {
+    }
+    elseif ($data['module'] == 'suppliers' and $data['section'] == 'order') {
         if ($data['_object']->get('Purchase Order State') == 'InProcess') {
 
             //$data['tab']='supplier.order.items';
@@ -2478,6 +2497,20 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
 
         }
     }
+    elseif ($data['module'] == 'products' and $data['section'] == 'webpage') {
+
+        if(!($data['_object']->get('Webpage Code')=='register.sys')){
+            $_content['subtabs']='';
+
+        }else{
+
+        }
+
+
+    }
+
+
+
     //print_r($_content['tabs']);
     // print_r($_content['subtabs']);
 

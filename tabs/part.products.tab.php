@@ -80,10 +80,7 @@ $smarty->assign('supplier_part', array_pop($supplier_parts)  );
 }
 
 
-
-$smarty->assign(
-    'products_without_auto_web_configuration', $products_without_auto_web_configuration
-);
+$smarty->assign('products_without_auto_web_configuration', $products_without_auto_web_configuration);
 
 $smarty->assign('table_top_template', 'part.products.edit.tpl');
 

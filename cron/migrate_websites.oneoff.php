@@ -90,6 +90,7 @@ if ($result = $db->query($sql)) {
 //migrate_product_pages($db);
 
 
+
 add_headers_and_footers($db);
 
 delete_system_webpages($db);
@@ -98,6 +99,7 @@ add_system_webpages($db);
 
 //========
 //set_scope($db);
+
 
 function delete_system_webpages($db){
 

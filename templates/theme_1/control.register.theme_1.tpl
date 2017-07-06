@@ -32,8 +32,8 @@
 
 <span class="success very_discreet " style="margin-left:20px;margin-right:20px;font-style: italic">@{t}Success{/t}:</span>
 
-<span id="welcome_email" class="button  {if $content.send_email!=1}very_discreet{/if}">
-    <span onclick="change_view(state.request + '&tab=etemplates.welcome')"><i class="fa fa-envelope-o discreet"   aria-hidden="true"></i> {t}Welcome email{/t}</span> <i id="send_email" class="fa fa-check {if $content.send_email==1}success{/if}" aria-hidden="true"></i>
+<span id="welcome_email" class="button  {if !($content.send_email==1 and $metadata.welcome_email.published_key>0 and $metadata.welcome_email.key>0)}very_discreet{/if}">
+    <span    onclick="change_view(state.request + '&subtab=webpage.email_template')"><i class="fa fa-envelope-o discreet"   aria-hidden="true"></i> {t}Welcome email{/t}</span> <i id="send_email"  class="fa fa-check {if $content.send_email==1 and $metadata.welcome_email.published_key>0 and $metadata.welcome_email.key>0}success{/if}" aria-hidden="true"></i>
     </span>
 
 
@@ -61,12 +61,19 @@
 
 
     $('#send_email').on( "click", function() {
+
+        {if $metadata.welcome_email.published_key>0 and $metadata.welcome_email.key>0}
+
         if( $(this).hasClass('success')){
             $(this).removeClass('success').closest('#welcome_email').addClass('very_discreet')
         }else{
             $(this).addClass('success').closest('#welcome_email').removeClass('very_discreet')
         }
         $('#save_button').addClass('save button changed valid')
+
+        {else}
+        change_view(state.request + '&tab=email_template')
+        {/if}
 
     });
 
