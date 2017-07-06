@@ -1031,10 +1031,22 @@ class Page extends DB_Table {
                 break;
 
             case 'Content Data':
-                if ($this->data['Page Store Content Data'] == '') {
+                if ($this->data['Page Store '.$key] == '') {
                     $content_data = false;
                 } else {
-                    $content_data = json_decode($this->data['Page Store Content Data'], true);
+                    $content_data = json_decode($this->data['Page Store '.$key], true);
+                }
+
+                return $content_data;
+                break;
+
+
+            case 'Scope Metadata':
+
+                if ($this->data['Webpage '.$key] == '') {
+                    $content_data = false;
+                } else {
+                    $content_data = json_decode($this->data['Webpage '.$key], true);
                 }
 
                 return $content_data;

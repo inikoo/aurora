@@ -9,7 +9,7 @@
 
 */
 
-include('keyring/dns.php');
+include_once('keyring/dns.php');
 
 
 include_once('external_libs/bee.io/BeeFree.php');

@@ -22,7 +22,7 @@ if (!$result ) {
 
 if (is_numeric($result)) {
 	$page_key=$result;
-	include 'conf/dns.php';
+	include_once 'conf/dns.php';
 	include 'common.php';
 	include 'page.php';
 	exit;

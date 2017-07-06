@@ -610,7 +610,7 @@ function website_system_webpages_config($website_type) {
                         '_submit_label' => _('Submit'),
 
                         'redirect'=>'welcome',
-                        'send_email'=>true,
+                        'send_email'=>false,
 
                     )
                 )

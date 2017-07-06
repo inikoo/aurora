@@ -808,7 +808,7 @@ class User extends DB_Table {
     }
 
     function get_staff_key() {
-        $staff_key = 0;
+
         if ($this->data['User Type'] == 'Staff' or $this->data['User Type'] == 'Contractor') {
             $staff_key = $this->data['User Parent Key'];
         } else {
@@ -1897,22 +1897,46 @@ class User extends DB_Table {
     }
 
     function get_staff_alias() {
+
+        include_once 'class.Staff.php';
+
+
         $staff_alias = '';
         $staff_key   = $this->get_staff_key();
         if ($staff_key) {
             $staff       = new Staff($staff_key);
-            $staff_alias = $staff->data['Staff Alias'];
+            $staff_alias = $staff->get('Staff Alias');
         }
 
         return $staff_alias;
     }
 
+    function get_staff_email() {
+
+        include_once 'class.Staff.php';
+
+        $staff_email = '';
+        $staff_key   = $this->get_staff_key();
+
+
+        if ($staff_key) {
+            $staff       = new Staff($staff_key);
+            $staff_email = $staff->get('Staff Email');
+        }
+
+        return $staff_email;
+    }
+
     function get_staff_name() {
+
+        include_once 'class.Staff.php';
+
+
         $staff_name = '';
         $staff_key  = $this->get_staff_key();
         if ($staff_key) {
             $staff      = new Staff($staff_key);
-            $staff_name = $staff->data['Staff Name'];
+            $staff_name =  $staff->get('Staff Name');
         }
 
         return $staff_name;

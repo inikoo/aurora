@@ -267,6 +267,20 @@ function get_object($object_name, $key, $load_other_data = false) {
             require_once "class.WebsiteHeader.php";
             $object = new WebsiteHeader($key);
             break;
+        case 'email_blueprint':
+            require_once "class.Email_Blueprint.php";
+            $object = new Email_Blueprint($key);
+            break;
+        case 'email_template':
+            require_once "class.Email_Template.php";
+            $object = new Email_Template($key);
+            break;
+        case 'published_email_template':
+            require_once "class.Published_Email_Template.php";
+            $object = new Published_Email_Template($key);
+            break;
+
+
         default:
             exit('need to complete E1: >'.strtolower($object_name)."<\n");
             break;

@@ -1867,9 +1867,9 @@ $modules = array(
                     'website.webpage.types'       => 'website.webpages',
                     'website.in_process_webpages' => 'website.webpages',
 
-                    'website.fonts' => 'website.style',
-                    'website.colours' => 'website.style',
-                    'website.localization'      => 'website.style',
+                    'website.fonts'        => 'website.style',
+                    'website.colours'      => 'website.style',
+                    'website.localization' => 'website.style',
 
                     'website.footer.preview' => 'website.templates',
                     'website.header.preview' => 'website.templates',
@@ -2158,6 +2158,9 @@ $modules = array(
                     'webpage.footer.preview' => 'webpage.templates',
                     'webpage.header.preview' => 'webpage.templates',
 
+                    'webpage.preview'        => 'webpage.workshop',
+                    'webpage.email_template' => 'webpage.workshop',
+
 
                     'webpage.templates' => 'webpage.templates',
 
@@ -2175,9 +2178,21 @@ $modules = array(
                     ),
 
 
-                    'webpage.preview' => array(
+                    'webpage.workshop' => array(
                         'label' => _('Workshop'),
-                        'icon'  => 'wrench'
+                        'icon'  => 'wrench',
+
+                        'subtabs' => array(
+                            'webpage.preview'        => array(
+                                'label' => _('Webpage'),
+                                'icon'  => 'file-text-o'
+                            ),
+                            'webpage.email_template' => array(
+                                'label' => _('Email'),
+                                'icon'  => 'envelope-o'
+                            )
+                        )
+
                     ),
 
                     'webpage.analytics' => array(

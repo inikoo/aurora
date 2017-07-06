@@ -9,54 +9,458 @@
 -->
 *}
 
-<div>
-    <span onclick="save_email()"  >xxx</span>
+<div style="position: relative">
+
+    <div id="send_email_dialog" style="border:1px solid #ccc;background-color: #fff;position: absolute;;padding:20px;top:170px;left:210px;z-index: 2000" class=" hide">
+
+        <i onclick="$(this).closest('div').addClass('hide')" style="position:relative;left:-10px;top:-10px" class="fa fa-window-close button" aria-hidden="true"></i>
+
+        {t}Email{/t} <input id="send_email_to" value="{$send_email_to}" style="width:300px"  > <i  style="margin-left:5px" id="send_email" onclick="send_email()"  class=" fa fa-paper-plane save {if $send_email_to!=''}valid changed{/if} aria-hidden="true"></i>
+
+    </div>
+
+
+    <div id="send_email_ok" style="border:1px solid #ccc;background-color: #fff;position: absolute;;padding:20px;top:170px;left:210px;z-index: 2000" class=" hide">
+        <i onclick="$(this).closest('div').addClass('hide')" style="position:relative;left:-10px;top:-10px" class="fa fa-window-close button" aria-hidden="true"></i>
+
+        {t}Email send{/t} <i class="fa fa-thumbs-o-up padding_left_5 padding_right_10" aria-hidden="true"></i>
+
+    </div>
+
+
+    <div id="save_as_blueprint_dialog" style="border:1px solid #ccc;background-color: #fff;position: absolute;;padding:20px;top:200px;left:210px;z-index: 2000" class="save_as_blueprint_dialog hide">
+
+    <i onclick="$(this).closest('div').addClass('hide')" style="position:relative;left:-10px;top:-10px" class="fa fa-window-close button" aria-hidden="true"></i>
+
+    {t}Template name{/t} <input class="template_name" value="" style="width:300px"  > <i  style="margin-left:5px" class="save_template fa fa-cloud save " aria-hidden="true"></i>
+
+</div>
+
+    <div id="save_as_blueprint_dialog2" style="border:1px solid #ccc;background-color: #fff;position: absolute;;padding:20px;top:55px;right:0px;z-index: 2000" class="save_as_blueprint_dialog hide">
+
+        <i onclick="$(this).closest('div').addClass('hide')" style="position:relative;left:-10px;top:-10px" class="fa fa-window-close button" aria-hidden="true"></i>
+
+        {t}Template name{/t} <input id="template_name2" class="template_name" value="" style="width:300px"  > <i  style="margin-left:5px" class="save_template fa fa-cloud save " aria-hidden="true"></i>
+
+    </div>
+
+
+    <div id="save_email_template_dialog" style="border:1px solid #ccc;background-color: #fff;position: absolute;;padding:20px;top:55px;right:0px;z-index: 2000" class="hide">
+        <i onclick="$(this).closest('div').addClass('hide')" style="position:relative;left:-10px;top:-10px" class="fa fa-window-close button" aria-hidden="true"></i>
+
+        <span id="show_save_as_blueprint_dialog_from_save"   class="button"  style="border:1px solid #ccc;padding:5px 10px;margin-left:5px"   >{t}Save as template{/t}</span>
+        <span onclick="save_template_email()"  class="button"  style="border:1px solid #ccc;padding:5px 10px;margin-left:20px" title="{t}Save and continue editing later{/t}"  >{t}Save{/t}</span>
+        <span id="save_email_template_html" onclick="publish_email_template()"  class="button"  style="border:1px solid #ccc;padding:5px 10px;margin-left:10px"   >
+       {t}Save & Publish email{/t}
+</span>
+    </div>
 
 </div>
 
 
-<div id="bee_plugin_container" style="height:2000px"></div>
+
+
+{if isset($control_template)}
+    {include file=$control_template}
+
+{/if}
+</div>
+
+<div id="email_template_html_container" style="height:1000px"></div>
+
+<div id="email_template_text_container" style="height:1000px" class="hide">
+    <textarea id="email_template_text" style="width:1155px;min-height:600px;resize: vertical;padding:5px 20px;;margin:20px 20px">{$email_template->get('Email Template Text')}</textarea>
+
+</div>
 
 
 <script>
 
+
     var beeConfig = {
         uid: 'CmsUserName', // [mandatory] identifies the set of resources to load
-        container: 'bee_plugin_container', // [mandatory] the id of div element that contains BEE Plugin
-//autosave: 30, // [optional, default:false] in seconds, allowed min-value: 15
-//language: 'en-US', // [optional, default:'en-US'] if language is not supported the default language is loaded (value must follow ISO 639-1  format)
-//specialLinks: specialLinks, // [optional, default:[]] Array of Object to specify special links
-//mergeTags: mergeTags, // [optional, default:[]] Array of Object to specify special merge Tags
-//mergeContents: mergeContents, // [optional, default:[]] Array of Object to specify merge content
-//preventClose: false, // [optional, default:false] if true an alert is shown before browser closure
-onSave: function(jsonFile, htmlFile) { console.log('caca') }, // [optional]
-//onSaveAsTemplate: function(jsonFile) { /* Implements function for save as template */}, // [optional]
-//onAutoSave: function(jsonFile) { /* Implements function for auto save */ }, // [optional]
-//onSend: function(htmlFile) { /* Implements function to send message */ }, // [optional]
-//onError: function(errorMessage) { /* Implements function to handle error messages */ } // [optional]
+        container: 'email_template_html_container', // [mandatory] the id of div element that contains BEE Plugin
+        autosave: 15, // [optional, default:false] in seconds, allowed min-value: 15
+        //language: 'en-US', // [optional, default:'en-US'] if language is not supported the default language is loaded (value must follow ISO 639-1  format)
+        //specialLinks: specialLinks, // [optional, default:[]] Array of Object to specify special links
+        //mergeTags: mergeTags, // [optional, default:[]] Array of Object to specify special merge Tags
+        //mergeContents: mergeContents, // [optional, default:[]] Array of Object to specify merge content
+        //preventClose: false, // [optional, default:false] if true an alert is shown before browser closure
+        onSave: open_save_email_template_dialog,
+        onSaveAsTemplate:open_save_as_blueprint_dialog,
+        onAutoSave:autosave,
+        onSend: open_send_email_dialog,
+        //onError: function(errorMessage) { /* Implements function to handle error messages */ } // [optional]
     };
 
-    BeePlugin.create({$bee_token}, beeConfig,
+    $.getJSON('/ar_edit_email_template.php?tipo=bee_token', function( data ) {
+
+
+        BeePlugin.create(
+            data.token, beeConfig,
             function (beePluginInstance) {
 
                 $.ajax({
-                    url: 'https://rsrc.getbee.io/api/templates/m-bee',
+                    url: '/ar_email_template.php?tipo=template_data&field=json&key={$email_template_key}',
                     success: function (data) {
+
+
                         var templateString = data;
                         var template = JSON.parse(templateString);
+                        // console.log(data)
                         beePluginInstance.start(template);
 
                     }
                 });
 
             }
-    );
+        );
+
+    });
 
 
-    function save_email(){
-        console.log(BeePlugin)
+
+    $("#email_template_text_button,#email_template_html_button").on('click', function(){
+
+
+        if($('#email_template_html_container').hasClass('hide')){
+            $('#email_template_html_container').removeClass('hide')
+            $('#email_template_text_container').addClass('hide')
+            $("#email_template_text_button").removeClass('hide')
+            $("#email_template_html_button").addClass('hide')
+
+        }else{
+            $('#email_template_html_container').addClass('hide')
+            $('#email_template_text_container').removeClass('hide')
+            $("#email_template_text_button").addClass('hide')
+            $("#email_template_html_button").removeClass('hide')
+
+        }
+
+    });
+
+
+
+
+
+
+    function open_send_email_dialog(htmlFile){
+
+        $('#send_email_dialog').removeClass('hide')
+        $('#send_email_to').data('html',htmlFile)
+
+
+        $('#send_email_ok').addClass('hide')
 
 
     }
+
+    function send_email(){
+
+        $('#send_email').addClass('fa-spinner fa-spin').removeClass('valid changed fa-paper-plane')
+
+
+        var ajaxData = new FormData();
+
+        ajaxData.append("tipo", 'send_test_email')
+        ajaxData.append("email_template_key", '{$email_template_key}')
+        ajaxData.append("html", $('#send_email_to').data('html'))
+        ajaxData.append("email",$('#send_email_to').val())
+
+
+
+        $.ajax({
+            url: "/ar_edit_email_template.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+            complete: function () {
+            }, success: function (data) {
+
+                if (data.state == '200') {
+
+                    $('#send_email').removeClass('fa-spinner fa-spin').addClass('valid changed fa-paper-plane')
+                    $('#send_email_dialog').addClass('hide')
+
+$('#send_email_ok').removeClass('hide')
+
+
+                } else if (data.state == '400') {
+
+                }
+
+
+
+            }, error: function () {
+
+            }
+        });
+
+    }
+
+
+    function open_save_as_blueprint_dialog(jsonFile){
+
+
+
+        $('#save_as_blueprint_dialog').removeClass('hide')
+        $('#save_as_blueprint_dialog').find('input').val('').focus().data('jsonFile',jsonFile).data('htmlFile','')
+
+    }
+
+    function open_save_email_template_dialog(jsonFile,htmlFile){
+
+        $('#save_email_template_dialog').removeClass('hide')
+        $('#template_name2').data('jsonFile',jsonFile).data('htmlFile',htmlFile)
+
+
+    }
+
+
+    function autosave(jsonFile) {
+
+
+
+        var ajaxData = new FormData();
+
+        ajaxData.append("tipo", 'save_email_template_editing_json')
+        ajaxData.append("email_template_key", '{$email_template_key}')
+        ajaxData.append("json",jsonFile)
+
+
+
+        $.ajax({
+            url: "/ar_edit_email_template.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+            complete: function () {
+            }, success: function (data) {
+
+                if (data.state == '200') {
+
+
+                    $('#email_template_info').html(data.email_template_info)
+
+
+                } else if (data.state == '400') {
+
+                }
+
+
+
+            }, error: function () {
+
+            }
+        });
+
+    }
+    function save_as_blueprint(element) {
+
+        var ajaxData = new FormData();
+
+        ajaxData.append("tipo", 'save_blueprint')
+        ajaxData.append("email_template_key", '{$email_template_key}')
+        ajaxData.append("json", element.data('jsonFile'))
+        ajaxData.append("html", element.data('htmlFile'))
+
+        ajaxData.append("name", element.val())
+
+       // element.closest('div').addClass('hide')
+
+        $.ajax({
+            url: "/ar_edit_email_template.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+            complete: function () {
+            }, success: function (data) {
+
+                if (data.state == '200') {
+
+                    $('.save_as_blueprint_dialog').addClass('hide')
+
+
+
+                } else if (data.state == '400') {
+                    swal({
+                        title: data.title, text: data.msg, confirmButtonText: "OK"
+                    });
+                }
+
+
+
+            }, error: function () {
+
+            }
+        });
+
+    }
+
+    function save_template_email(){
+
+        $('#save_email_template_dialog').addClass('hide')
+        autosave($('#template_name2').data('jsonFile'))
+
+    }
+
+
+    function publish_email_template(element) {
+
+        $('#save_email_template_dialog').addClass('hide')
+
+
+        var ajaxData = new FormData();
+
+        ajaxData.append("tipo", 'publish_email_template')
+        ajaxData.append("email_template_key", '{$email_template_key}')
+        ajaxData.append("json", $('#template_name2').data('jsonFile'))
+        ajaxData.append("html", $('#template_name2').data('htmlFile'))
+
+        //$('#save_email_template_dialog').closest('div').addClass('hide')
+
+
+
+        $.ajax({
+            url: "/ar_edit_email_template.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+            complete: function () {
+            }, success: function (data) {
+
+                if (data.state == '200') {
+
+                    $('#email_template_info').html(data.email_template_info)
+
+                } else if (data.state == '400') {
+                    swal({
+                        title: data.title, text: data.msg, confirmButtonText: "OK"
+                    });
+                }
+
+
+
+            }, error: function () {
+
+            }
+        });
+
+    }
+
+
+    $(".template_name").on('input propertychange', function(){
+
+        if($(this).val()!=''){
+
+            $(this).next('i').addClass('changed valid')
+
+        }else{
+            $(this).next('i').removeClass('changed valid')
+        }
+
+    });
+
+    $(".save_template").on('click', function(){
+
+        if($(this).hasClass('valid')){
+            save_as_blueprint($(this).prev('input'))
+        }
+
+    });
+
+
+
+
+
+    $("#show_save_as_blueprint_dialog_from_save").on('click', function(){
+
+       $('#save_email_template_dialog').addClass('hide')
+
+
+        $('#save_as_blueprint_dialog2').removeClass('hide')
+        $('#save_as_blueprint_dialog2').find('input').val('').focus()
+
+
+    });
+
+    $("#email_template_subject").on("input propertychange", function (evt) {
+        if (window.event && event.type == "propertychange" && event.propertyName != "value")
+            return;
+
+        window.clearTimeout($(this).data("timeout"));
+        $(this).data("timeout", setTimeout(function () {
+
+            var ajaxData = new FormData();
+
+            ajaxData.append("tipo", 'save_email_template_subject')
+            ajaxData.append("email_template_key", '{$email_template_key}')
+            ajaxData.append("subject",$("#email_template_subject").val())
+
+
+
+            $.ajax({
+                url: "/ar_edit_email_template.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+                complete: function () {
+                }, success: function (data) {
+
+                    if (data.state == '200') {
+
+
+                        $('#email_template_info').html(data.email_template_info)
+
+
+                    } else if (data.state == '400') {
+
+                    }
+
+
+
+                }, error: function () {
+
+                }
+            });
+
+
+        }, 200));
+    });
+
+    $("#email_template_text").on("input propertychange", function (evt) {
+        if (window.event && event.type == "propertychange" && event.propertyName != "value")
+            return;
+
+        window.clearTimeout($(this).data("timeout"));
+        $(this).data("timeout", setTimeout(function () {
+
+            if($("#email_template_text").val()==''){
+                $('#email_template_text_button').addClass('error very_discreet')
+            }else{
+                $('#email_template_text_button').removeClass('error very_discreet')
+            }
+
+            var ajaxData = new FormData();
+
+            ajaxData.append("tipo", 'save_email_template_text')
+            ajaxData.append("email_template_key", '{$email_template_key}')
+            ajaxData.append("text",$("#email_template_text").val())
+
+
+
+
+
+            $.ajax({
+                url: "/ar_edit_email_template.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+                complete: function () {
+                }, success: function (data) {
+
+                    if (data.state == '200') {
+
+
+                        $('#email_template_info').html(data.email_template_info)
+
+
+                    } else if (data.state == '400') {
+
+                    }
+
+
+
+                }, error: function () {
+
+                }
+            });
+
+
+        }, 200));
+    });
+
 
 </script>

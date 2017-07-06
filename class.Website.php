@@ -64,6 +64,7 @@ class Website extends DB_Table {
 
 
     function find($raw_data, $options) {
+
         if (isset($raw_data['editor'])) {
             foreach ($raw_data['editor'] as $key => $value) {
                 if (array_key_exists($key, $this->editor)) {
@@ -76,7 +77,7 @@ class Website extends DB_Table {
         $this->found_key = false;
 
         $create = '';
-        $update = '';
+
         if (preg_match('/create/i', $options)) {
             $create = 'create';
         }
@@ -308,6 +309,7 @@ class Website extends DB_Table {
                     'Website Alt Department Category Key' => $departments->id,
                 ), 'no_history'
             );
+
 
 
             return;
