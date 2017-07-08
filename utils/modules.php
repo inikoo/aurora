@@ -2160,9 +2160,11 @@ $modules = array(
 
                     'webpage.preview'        => 'webpage.workshop',
                     'webpage.email_template' => 'webpage.workshop',
+                    'webpage.email_blueprints' => 'webpage.workshop',
 
 
-                    'webpage.templates' => 'webpage.templates',
+
+                        'webpage.templates' => 'webpage.templates',
 
 
                 ),
@@ -2190,7 +2192,13 @@ $modules = array(
                             'webpage.email_template' => array(
                                 'label' => _('Email'),
                                 'icon'  => 'envelope-o'
+                            ),
+                            'webpage.email_blueprints'=> array(
+                                'label' => _('Email HTML templates'),
+                                'icon'  => 'html5'
                             )
+
+
                         )
 
                     ),

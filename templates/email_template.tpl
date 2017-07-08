@@ -11,7 +11,9 @@
 
 <div style="position: relative">
 
-    <div id="send_email_dialog" style="border:1px solid #ccc;background-color: #fff;position: absolute;;padding:20px;top:170px;left:210px;z-index: 2000" class=" hide">
+
+
+    <div id="send_email_dialog" style="border:1px solid #ccc;background-color: #fff;position: absolute;;padding:20px;top:170px;left:210px;z-index: 2000" class="popup_dialog hide">
 
         <i onclick="$(this).closest('div').addClass('hide')" style="position:relative;left:-10px;top:-10px" class="fa fa-window-close button" aria-hidden="true"></i>
 
@@ -19,13 +21,13 @@
 
     </div>
 
-
-    <div id="send_email_ok" style="border:1px solid #ccc;background-color: #fff;position: absolute;;padding:20px;top:170px;left:210px;z-index: 2000" class=" hide">
+    <div id="send_email_ok" style="border:1px solid #ccc;background-color: #fff;position: absolute;;padding:20px;top:170px;left:210px;z-index: 2000" class="popup_dialog hide">
         <i onclick="$(this).closest('div').addClass('hide')" style="position:relative;left:-10px;top:-10px" class="fa fa-window-close button" aria-hidden="true"></i>
 
         {t}Email send{/t} <i class="fa fa-thumbs-o-up padding_left_5 padding_right_10" aria-hidden="true"></i>
 
     </div>
+
 
 
     <div id="save_as_blueprint_dialog" style="border:1px solid #ccc;background-color: #fff;position: absolute;;padding:20px;top:200px;left:210px;z-index: 2000" class="save_as_blueprint_dialog hide">
@@ -64,15 +66,33 @@
     {include file=$control_template}
 
 {/if}
+
+
+<div id="email_template_text_controls"  style="padding:15px 20px;border-bottom:1px solid #ccc;position: relative" class="{if $email_template->get('Email Template Type')=='HTML'}hide{/if}  control_panel">
+
+
+
+     <span id="change_template" onclick="open_send_email_dialog('')" class="button" style="float:left;border:1px solid #ccc;padding:5px 10px;margin-right:40px">
+      {t}Send test email{/t}
+    </span>
+    <span id="publish_email_template_from_text_controls" onclick="publish_email_template()" class=" {if $email_template->get('Email Template Editing Checksum')==$email_template->get('Email Template Published Checksum')}super_discreet{else}button{/if}  " style="float:right;border:1px solid #ccc;padding:5px 10px;margin-right:0px">
+      {t}Publish email{/t}
+    </span>
+
+    <div style="clear: both"></div>
+
 </div>
 
-<div id="email_template_html_container" style="height:1000px"></div>
+<div id="email_template_html_container" style="height:1000px"  class="{if $email_template->get('Email Template Type')=='Text'}hide{/if}"></div>
 
-<div id="email_template_text_container" style="height:1000px" class="hide">
-    <textarea id="email_template_text" style="width:1155px;min-height:600px;resize: vertical;padding:5px 20px;;margin:20px 20px">{$email_template->get('Email Template Text')}</textarea>
+<div id="email_template_text_container" style="height:1000px;position:relative" class="{if $email_template->get('Email Template Type')=='HTML'}hide{/if}">
+
+
+    <span id="email_template_set_as_text" class="small marked_link  {if $email_template->get('Email Template Type')=='Text'}hide{/if}" style="position: absolute;top:7px;right:30px;" onclick="update_email_template_type('Text')" >{t}Set as text only email{/t}</span>
+
+    <textarea id="email_template_text" style="width:1155px;min-height:600px;resize: vertical;padding:5px 20px;;margin:25px 20px 20px 20px">{$email_template->get('Email Template Text')}</textarea>
 
 </div>
-
 
 <script>
 
@@ -80,7 +100,7 @@
     var beeConfig = {
         uid: 'CmsUserName', // [mandatory] identifies the set of resources to load
         container: 'email_template_html_container', // [mandatory] the id of div element that contains BEE Plugin
-        autosave: 15, // [optional, default:false] in seconds, allowed min-value: 15
+        //autosave: 15, // [optional, default:false] in seconds, allowed min-value: 15
         //language: 'en-US', // [optional, default:'en-US'] if language is not supported the default language is loaded (value must follow ISO 639-1  format)
         //specialLinks: specialLinks, // [optional, default:[]] Array of Object to specify special links
         //mergeTags: mergeTags, // [optional, default:[]] Array of Object to specify special merge Tags
@@ -146,7 +166,15 @@
 
     function open_send_email_dialog(htmlFile){
 
-        $('#send_email_dialog').removeClass('hide')
+
+        if($('#email_template_text_controls').hasClass('hide')){
+            $('#send_email_dialog').removeClass('hide').css({ top:'170px',left:'210px' })
+        }else{
+            $('#send_email_dialog').removeClass('hide').css({ top:'64px',left:'160px' })
+        }
+
+
+
         $('#send_email_to').data('html',htmlFile)
 
 
@@ -179,7 +207,15 @@
                     $('#send_email').removeClass('fa-spinner fa-spin').addClass('valid changed fa-paper-plane')
                     $('#send_email_dialog').addClass('hide')
 
-$('#send_email_ok').removeClass('hide')
+
+
+                    if($('#email_template_text_controls').hasClass('hide')){
+                        $('#send_email_ok').removeClass('hide').css({ top:'170px',left:'210px' })
+                    }else{
+                        $('#send_email_ok').removeClass('hide').css({ top:'64px',left:'160px' })
+                    }
+
+
 
 
                 } else if (data.state == '400') {
@@ -235,7 +271,12 @@ $('#send_email_ok').removeClass('hide')
 
 
                     $('#email_template_info').html(data.email_template_info)
+                    if(data.published){
+                        $('#publish_email_template_from_text_controls').addClass('super_discreet').removeClass('button')
+                    }else{
+                        $('#publish_email_template_from_text_controls').removeClass('super_discreet').addClass('button')
 
+                    }
 
                 } else if (data.state == '400') {
 
@@ -296,7 +337,7 @@ $('#send_email_ok').removeClass('hide')
     }
 
 
-    function publish_email_template(element) {
+    function publish_email_template() {
 
         $('#save_email_template_dialog').addClass('hide')
 
@@ -320,6 +361,12 @@ $('#send_email_ok').removeClass('hide')
                 if (data.state == '200') {
 
                     $('#email_template_info').html(data.email_template_info)
+                    if(data.published){
+                        $('#publish_email_template_from_text_controls').addClass('super_discreet').removeClass('button')
+                    }else{
+                        $('#publish_email_template_from_text_controls').removeClass('super_discreet').addClass('button')
+
+                    }
 
                 } else if (data.state == '400') {
                     swal({
@@ -396,6 +443,12 @@ $('#send_email_ok').removeClass('hide')
 
 
                         $('#email_template_info').html(data.email_template_info)
+                        if(data.published){
+                            $('#publish_email_template_from_text_controls').addClass('super_discreet').removeClass('button')
+                        }else{
+                            $('#publish_email_template_from_text_controls').removeClass('super_discreet').addClass('button')
+
+                        }
 
 
                     } else if (data.state == '400') {
@@ -426,7 +479,7 @@ $('#send_email_ok').removeClass('hide')
                 $('#email_template_text_button').removeClass('error very_discreet')
             }
 
-            var ajaxData = new FormData();
+                       var ajaxData = new FormData();
 
             ajaxData.append("tipo", 'save_email_template_text')
             ajaxData.append("email_template_key", '{$email_template_key}')
@@ -445,6 +498,13 @@ $('#send_email_ok').removeClass('hide')
 
 
                         $('#email_template_info').html(data.email_template_info)
+                        if(data.published){
+                            $('#publish_email_template_from_text_controls').addClass('super_discreet').removeClass('button')
+                        }else{
+                            $('#publish_email_template_from_text_controls').removeClass('super_discreet').addClass('button')
+
+                        }
+
 
 
                     } else if (data.state == '400') {
@@ -461,6 +521,86 @@ $('#send_email_ok').removeClass('hide')
 
         }, 200));
     });
+
+    function update_email_template_type(value){
+
+        var ajaxData = new FormData();
+
+        ajaxData.append("tipo", 'set_email_template_type')
+        ajaxData.append("email_template_key", '{$email_template_key}')
+        ajaxData.append("value",value)
+
+
+
+
+
+        $.ajax({
+            url: "/ar_edit_email_template.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+            complete: function () {
+            }, success: function (data) {
+
+                if (data.state == '200') {
+
+
+                    $('.popup_dialog').addClass('hide');
+
+                if(value=='HTML'){
+
+                    if(data.has_html_json){
+                        $('#email_template_add_html_section').addClass('hide')
+                        $('#email_template_text_container').addClass('hide')
+                        $('#email_template_text_controls').addClass('hide')
+
+                        $('#email_template_set_as_text').removeClass('hide')
+                        $('#email_template_html_container').removeClass('hide')
+                        $('#change_template').removeClass('hide')
+
+
+
+                        $('#email_template_text_button').removeClass('hide')
+                        $('#email_template_html_button').addClass('hide')
+
+                    }else{
+                        change_view(state.request + '{$email_template_redirect}')
+                    }
+
+
+
+
+
+
+
+                }else{
+                    $('#email_template_add_html_section').removeClass('hide')
+                    $('#email_template_text_container').removeClass('hide')
+                    $('#email_template_text_controls').removeClass('hide')
+
+                    $('#email_template_set_as_text').addClass('hide')
+                    $('#email_template_html_container').addClass('hide')
+                    $('#change_template').addClass('hide')
+
+                    $('#email_template_text_button').addClass('hide')
+                    $('#email_template_html_button').addClass('hide')
+
+
+                }
+
+
+                } else if (data.state == '400') {
+
+                }
+
+
+
+            }, error: function () {
+
+            }
+        });
+
+
+
+
+    }
 
 
 </script>

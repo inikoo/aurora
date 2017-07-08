@@ -151,7 +151,7 @@ function website_system_webpages_config($website_type) {
                 'Webpage Name'              => _("Visitor's homepage"),
                 'Webpage Meta Description'  => '',
 
-                'Page Store Content Data'   => json_encode(
+                'Page Store Content Data' => json_encode(
                     array(
                         'show_slider'     => true,
                         'show_features'   => true,
@@ -534,7 +534,7 @@ function website_system_webpages_config($website_type) {
             ),
 
 
-            'login.sys'          => array(
+            'login.sys' => array(
                 'Webpage Scope'             => 'Login',
                 'Webpage Scope Metadata'    => '',
                 'Webpage Template Filename' => 'login',
@@ -543,15 +543,26 @@ function website_system_webpages_config($website_type) {
                 'Webpage Browser Title'     => _('Login'),
                 'Webpage Name'              => _('Login'),
                 'Webpage Meta Description'  => '',
+                'Webpage Scope Metadata'    => json_encode(
+                    array(
+                        'emails' => array(
+
+                            'reset_password' => array(
+                                'key'           => '',
+                                'published_key' => false
+                            )
+                        )
+                    )
+                ),
                 'Page Store Content Data'   => json_encode(
                     array(
-                        '_title' => _('Login form'),
+                        '_title'          => _('Login form'),
                         '_title_recovery' => _('Password recovery'),
 
 
-                        '_email_label'    => _('E-mail'),
-                        '_password_label' => _('Password'),
-                        '_email_recovery_label'    => _('E-mail'),
+                        '_email_label'          => _('E-mail'),
+                        '_password_label'       => _('Password'),
+                        '_email_recovery_label' => _('E-mail'),
 
 
                         '_forgot_password_label' => _('Forgot password?'),
@@ -561,21 +572,19 @@ function website_system_webpages_config($website_type) {
                         '_register_label' => _('Register'),
                         '_log_in_label'   => _('Log in'),
                         '_submit_label'   => _('Submit'),
-                        '_close_label'   => _('Close'),
+                        '_close_label'    => _('Close'),
 
-                        '_password_recovery_success_msg'=>_('Your request successfully sent!'),
-                        '_password_recovery_email_not_register_error_msg'=>_('Email is not registered in our system'),
-                        '_password_recovery_unknown_error_msg'=>_("Recovery email could't be send, please contact customer services"),
-                        '_password_recovery_go_back'=>_('Try again'),
-
-
+                        '_password_recovery_success_msg'                  => _('Your request successfully sent!'),
+                        '_password_recovery_email_not_register_error_msg' => _('Email is not registered in our system'),
+                        '_password_recovery_unknown_error_msg'            => _("Recovery email could't be send, please contact customer services"),
+                        '_password_recovery_go_back'                      => _('Try again'),
 
 
                     )
                 )
             ),
 
-            'register.sys'       => array(
+            'register.sys' => array(
                 'Webpage Scope'             => 'Register',
                 'Webpage Scope Metadata'    => '',
                 'Webpage Template Filename' => 'register',
@@ -584,7 +593,19 @@ function website_system_webpages_config($website_type) {
                 'Webpage Browser Title'     => _('Register'),
                 'Webpage Name'              => _('Register'),
                 'Webpage Meta Description'  => '',
-                'Page Store Content Data'   => json_encode(
+                'Webpage Scope Metadata'    => json_encode(
+                    array(
+                        'emails' => array(
+
+                            'welcome' => array(
+                                'key'           => '',
+                                'published_key' => false
+                            )
+                        )
+                    )
+                ),
+
+                'Page Store Content Data' => json_encode(
                     array(
                         '_title'             => _('Registration form'),
                         '_email_placeholder' => _('Email address'),
@@ -609,14 +630,14 @@ function website_system_webpages_config($website_type) {
                         '_terms'        => _('I agree with the <span class="marked_link">Terms and Conditions</span>'),
                         '_submit_label' => _('Submit'),
 
-                        'redirect'=>'welcome',
-                        'send_email'=>false,
+                        'redirect'   => 'welcome',
+                        'send_email' => false,
 
                     )
                 )
             ),
 
-            'welcome.sys'        => array(
+            'welcome.sys'   => array(
                 'Webpage Scope'             => 'Welcome',
                 'Webpage Scope Metadata'    => '',
                 'Webpage Template Filename' => 'welcome',
@@ -674,7 +695,7 @@ function website_system_webpages_config($website_type) {
                     )
                 )
             ),
-            'profile.sys'        => array(
+            'profile.sys'   => array(
                 'Webpage Scope'             => 'UserProfile',
                 'Webpage Scope Metadata'    => '',
                 'Webpage Template Filename' => 'profile',
@@ -751,13 +772,11 @@ function website_system_webpages_config($website_type) {
                         '_text'          => '<p>Feel free to talk to our online representative at any time you please using our Live Chat system on our website or one of the below instant messaging programs.</p><br /><p>Please be patient while waiting for response. (24/7 Support!) <strong>Phone General Inquiries: 1-888-123-4567-8900</strong></p>',
                         '_address_label' => _('Our Details'),
 
-                        '_telephone_label' => _('Telephone'),
-                        '_fax_label'       => _('FAX'),
-                        '_vat_number_label' => _('Vat No.'),
-                        '_company_number_label'       => _('Company No.'),
-                        '_email_label' => _('Email'),
-
-
+                        '_telephone_label'      => _('Telephone'),
+                        '_fax_label'            => _('FAX'),
+                        '_vat_number_label'     => _('Vat No.'),
+                        '_company_number_label' => _('Company No.'),
+                        '_email_label'          => _('Email'),
 
 
                     )
@@ -766,7 +785,7 @@ function website_system_webpages_config($website_type) {
 
             ),
 
-            'basket.sys'               => array(
+            'basket.sys'     => array(
                 'Webpage Scope'             => 'Basket',
                 'Webpage Scope Metadata'    => '',
                 'Webpage Template Filename' => 'basket',
@@ -788,7 +807,7 @@ function website_system_webpages_config($website_type) {
                     )
                 )
             ),
-            'checkout.sys'             => array(
+            'checkout.sys'   => array(
                 'Webpage Scope'             => 'Checkout',
                 'Webpage Scope Metadata'    => '',
                 'Webpage Template Filename' => 'checkout',
@@ -797,6 +816,19 @@ function website_system_webpages_config($website_type) {
                 'Webpage Browser Title'     => _('Checkout'),
                 'Webpage Name'              => _('Checkout'),
                 'Webpage Meta Description'  => '',
+                'Webpage Scope Metadata'    => json_encode(
+                    array(
+                        'emails' => array(
+
+                            'order_confirmation' => array(
+                                'key'           => '',
+                                'published_key' => false
+                            )
+                        )
+                    )
+                ),
+
+
                 'Page Store Content Data'   => json_encode(
                     array(
                         '_invoice_address_label'  => _('Invoice address'),
@@ -810,7 +842,7 @@ function website_system_webpages_config($website_type) {
                     )
                 )
             ),
-            'thanks.sys'               => array(
+            'thanks.sys'     => array(
                 'Webpage Scope'             => 'Thanks',
                 'Webpage Scope Metadata'    => '',
                 'Webpage Template Filename' => 'thanks',
@@ -838,7 +870,7 @@ function website_system_webpages_config($website_type) {
                     )
                 )
             ),
-            'not_found.sys'            => array(
+            'not_found.sys'  => array(
                 'Webpage Scope'             => 'NotFound',
                 'Webpage Scope Metadata'    => '',
                 'Webpage Template Filename' => 'not_found',
@@ -858,7 +890,7 @@ function website_system_webpages_config($website_type) {
                     )
                 )
             ),
-            'offline.sys'              => array(
+            'offline.sys'    => array(
                 'Webpage Scope'             => 'Offline',
                 'Webpage Scope Metadata'    => '',
                 'Webpage Template Filename' => 'offline',
@@ -881,7 +913,7 @@ function website_system_webpages_config($website_type) {
                     )
                 )
             ),
-            'in_process.sys'           => array(
+            'in_process.sys' => array(
                 'Webpage Scope'             => 'InProcess',
                 'Webpage Scope Metadata'    => '',
                 'Webpage Template Filename' => 'in_process',
@@ -897,7 +929,7 @@ function website_system_webpages_config($website_type) {
                     )
                 )
             ),
-            'search.sys'               => array(
+            'search.sys'     => array(
                 'Webpage Scope'             => 'Search',
                 'Webpage Scope Metadata'    => '',
                 'Webpage Template Filename' => 'search',
@@ -907,7 +939,7 @@ function website_system_webpages_config($website_type) {
                 'Webpage Name'              => _('Search'),
                 'Webpage Meta Description'  => ''
             ),
-            'catalogue.sys'            => array(
+            'catalogue.sys'  => array(
                 'Webpage Scope'             => 'Catalogue',
                 'Webpage Scope Metadata'    => '',
                 'Webpage Template Filename' => 'catalogue',
@@ -917,7 +949,7 @@ function website_system_webpages_config($website_type) {
                 'Webpage Name'              => _('Catalogue'),
                 'Webpage Meta Description'  => ''
             ),
-            'tac.sys' => array(
+            'tac.sys'        => array(
                 'Webpage Scope'             => 'TandC',
                 'Webpage Scope Metadata'    => '',
                 'Webpage Template Filename' => 'terms_and_conditions',
@@ -927,7 +959,7 @@ function website_system_webpages_config($website_type) {
                 'Webpage Name'              => _('Terms & Conditions'),
                 'Webpage Meta Description'  => ''
             ),
-            'shipping.sys'        => array(
+            'shipping.sys'   => array(
                 'Webpage Scope'             => 'ShippingInfo',
                 'Webpage Scope Metadata'    => '',
                 'Webpage Template Filename' => 'shipping',
@@ -937,7 +969,7 @@ function website_system_webpages_config($website_type) {
                 'Webpage Name'              => _('Shipping info'),
                 'Webpage Meta Description'  => ''
             ),
-            'about.sys'        => array(
+            'about.sys'      => array(
                 'Webpage Scope'             => 'About',
                 'Webpage Scope Metadata'    => '',
                 'Webpage Template Filename' => 'about',
@@ -969,7 +1001,6 @@ function website_system_webpages_config($website_type) {
                     )
                 )
             )
-
 
 
         ),

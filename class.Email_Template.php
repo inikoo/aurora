@@ -40,11 +40,11 @@ class Email_Template extends DB_Table {
     function get_data($key, $tag) {
 
 
-        if ($key == 'id') {
+
             $sql = sprintf(
                 "SELECT * FROM `Email Template Dimension` WHERE `Email Template Key`=%d", $tag
             );
-        }
+
 
 
         if ($this->data = $this->db->query($sql)->fetch()) {
@@ -87,6 +87,17 @@ class Email_Template extends DB_Table {
             $this->msg = "Email Template added";
             $this->get_data('id', $this->id);
             $this->new = true;
+
+
+            $checksum = md5(($this->get('Email Template Type') == 'Text'  ? '' : $this->get('Email Template Editing JSON')).'|'.$this->get('Email Template Text').'|'.$this->get('Email Template Subject'));
+
+
+            $this->update(
+                array(
+                    'Email Template Editing Checksum' => $checksum,
+                ), 'no_history'
+            );
+
 
             return $this;
         } else {
@@ -200,6 +211,8 @@ class Email_Template extends DB_Table {
 
     }
 
+
+
     function get($key, $data = false) {
 
         if (!$this->id) {
@@ -208,6 +221,9 @@ class Email_Template extends DB_Table {
 
 
         switch ($key) {
+
+
+
 
             case 'Published Info':
                 $data = array(
@@ -293,13 +309,24 @@ class Email_Template extends DB_Table {
         $data['editor'] = $this->editor;
 
 
+
+
+        if($this->get('Email Template Type')=='Text'){
+            $data['Published Email Template JSON']='';
+            $data['Published Email Template HTML']='';
+
+
+
+        }
+
+
         $current_published_template = new Published_Email_Template($this->get('Email Template Published Email Key'));
 
         if ($current_published_template->id) {
 
             $checksum = md5($data['Published Email Template JSON'].'|'.$this->get('Email Template Text').'|'.$this->get('Email Template Subject'));
 
-        ;
+
 
 
             if ($checksum == $current_published_template->get('Published Email Template Checksum')) {

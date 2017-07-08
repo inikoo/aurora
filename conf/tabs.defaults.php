@@ -2616,7 +2616,7 @@ $tab_defaults = array(
         'elements'      => $elements_options['webpage_publishing_history']
     ),
 
-    'transactional.email_blueprints'                       => array(
+    'webpage.email_blueprints'                       => array(
         'view'        => 'overview',
         'sort_key'    => 'id',
         'sort_order'  => 1,

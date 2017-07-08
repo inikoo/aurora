@@ -10,32 +10,35 @@
 */
 
 
-    $email_templates_data = array(
+$email_templates_data = array(
 
 
-        'welcome' => array(
+    'Welcome' => array(
+        'key'=>'welcome',
+        'name'=>_('Welcome'),
+        'subject'=>_('Welcome'),
+        'sender'=>'Store'
 
-            'fields'    => array(
+    ),
+    'Reset_Password' => array(
+        'key'=>'reset_password',
+        'name'=>_('Password reset'),
+        'subject'=>_('Password reset'),
+        'text'=> "[Greetings]\n\n We received request to reset the password associated with this email account.\n\nIf you did not request to have your password reset, you can safely ignore this email. We assure that yor customer account is safe.\n\nCopy and paste the following link to your browser's address window.\n\n[Reset_Password_URL]\n\n Once you have returned our page you will be asked to choose a new password\n\nThank you \n\n[Signature]",
+        'sender'=>'Store'
 
-                'Email Template Filename'  => 'welcome.minimalistic',
-                'Email Template Name'      => _('Welcome'),
-                'Email Template Role Type' => 'Transactional',
-                'Email Template Role'      => 'Welcome',
-                'Email Template Scope'     => 'Website',
+    ),
+    'Order_Confirmation' => array(
+        'key'=>'order_confirmation',
+        'name'=>_('Order confirmation'),
+        'subject'=>_('Order confirmation'),
+        'sender'=>'Store'
 
-            ),
-            'website_types'=>array('EcomB2B'),
-
-            'templates' => array(
-                'welcome.minimalistic',
-                'welcome.yummy'
-            )
-
-
-        )
+    )
 
 
-    );
+
+);
 
 
 ?>

@@ -915,6 +915,14 @@ class Page extends DB_Table {
     function get($key) {
         switch ($key) {
 
+
+            case 'Send Email Address':
+                include_once 'class.Store.php';
+                $store=new Store($this->data['Webpage Store Key']);
+                return $store->get('Store Email');
+
+                break;
+
             case 'Email':
             case 'Company Name':
             case 'VAT Number':
@@ -1300,6 +1308,13 @@ class Page extends DB_Table {
             case 'History Note':
                 $this->add_note($value, '', '', $metadata['deletable'], 'Notes', false, false, false, 'Webpage', false, 'Webpage Publishing', false);
 
+                break;
+
+
+
+            case 'Scope Metadata':
+
+                $this->update_field('Webpage '.$field, $value, $options);
                 break;
 
             case('Webpage Scope'):
@@ -1809,13 +1824,10 @@ class Page extends DB_Table {
         $this->update_field('Webpage State', $value, 'no_history');
 
 
-
-
-
         if ($old_state != $this->data['Webpage State']) {
 
 
-            if($this->data['Webpage State']=='Offline'){
+            if ($this->data['Webpage State'] == 'Offline') {
 
                 $this->update_field('Webpage Take Down Date', gmdate('Y-m-d H:i:s'), 'no_history');
 
@@ -1828,7 +1840,6 @@ class Page extends DB_Table {
             );
 
             $this->db->exec($sql);
-
 
 
             $sql = sprintf(
@@ -2419,6 +2430,51 @@ class Page extends DB_Table {
             'Page Store Content Display Type', $value, $options
         );
         $this->update_store_search();
+    }
+
+    function update_category_webpage_index() {
+
+
+        if ($this->get('Webpage Scope') == 'Category Categories') {
+
+            include_once 'class.Website.php';
+            $website = new Website($this->get('Webpage Website Key'));
+
+            if ($website->get('Website Theme') == 'theme_1') {
+
+
+                $sql = sprintf('DELETE FROM  `Category Webpage Index` WHERE `Category Webpage Index Webpage Key`=%d  ', $this->id);
+                $this->db->exec($sql);
+
+
+                $content_data = $this->get('Content Data');
+
+                $stack              = 0;
+                $anchor_section_key = 0;
+
+                foreach ($content_data['catalogue']['items'] as $item) {
+
+
+                    $sql = sprintf(
+                        'INSERT INTO `Category Webpage Index` (`Category Webpage Index Section Key`,`Category Webpage Index Content Data`,
+                          `Category Webpage Index Parent Category Key`,`Category Webpage Index Category Key`,`Category Webpage Index Webpage Key`,`Category Webpage Index Category Webpage Key`,`Category Webpage Index Stack`) VALUES (%d,%s,%d,%d,%d,%d,%d) ',
+                        $anchor_section_key, prepare_mysql(json_encode($item)), $this->get('Webpage Scope Key'), $item['category_key'], $this->id, $item['webpage_key'], $stack
+                    );
+
+
+                    $this->db->exec($sql);
+                    $stack++;
+
+
+                }
+
+
+            }
+
+
+        }
+
+
     }
 
     function display_found_in() {
@@ -6068,6 +6124,9 @@ class Page extends DB_Table {
 
     }
 
+
+    //======= new methods
+
     function get_departments_data() {
         $departments = array();
 
@@ -6104,9 +6163,6 @@ class Page extends DB_Table {
         return $departments;
 
     }
-
-
-    //======= new methods
 
     function get_families_data() {
         $families = array();
@@ -7230,7 +7286,6 @@ class Page extends DB_Table {
         $website = new Website($this->get('Webpage Website Key'));
 
 
-
         if ($this->get('Webpage Scope') == 'Category Products') {
 
             include_once 'class.Category.php';
@@ -7247,7 +7302,7 @@ class Page extends DB_Table {
 
 
                     'blocks' => array(
-                        'intro'     => 1,
+                        'intro'    => 1,
                         'products' => 1
 
                     ),
@@ -7280,8 +7335,7 @@ class Page extends DB_Table {
                 $this->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
 
 
-            }
-            else{
+            } else {
                 include_once 'class.Public_Product.php';
 
 
@@ -7336,19 +7390,13 @@ class Page extends DB_Table {
                 //print_r($content_data);
                 $this->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
 
-                $content_data=$this->get('Content Data');
-
-
-
-
+                $content_data = $this->get('Content Data');
 
 
             }
 
 
-
-        }
-        elseif ($this->get('Webpage Scope') == 'Category Categories') {
+        } elseif ($this->get('Webpage Scope') == 'Category Categories') {
 
             include_once 'class.Category.php';
 
@@ -7396,8 +7444,6 @@ class Page extends DB_Table {
 
 
             } else {
-
-
 
 
                 include_once 'class.Category.php';
@@ -7499,9 +7545,7 @@ class Page extends DB_Table {
             }
 
 
-        }
-
-        else {
+        } else {
 
             include_once 'class.Website.php';
 
@@ -7512,13 +7556,9 @@ class Page extends DB_Table {
             $website_system_webpages = website_system_webpages_config($website->get('Website Type'));
 
 
-            if (isset(
-                $website_system_webpages[$this->get('Webpage Code')]
-            )) {
-
+            if (isset($website_system_webpages[$this->get('Webpage Code')]['Page Store Content Data'])) {
 
                 $this->update(array('Page Store Content Data' => $website_system_webpages[$this->get('Webpage Code')]['Page Store Content Data']), 'no_history');
-
             }
 
 
@@ -7554,77 +7594,32 @@ class Page extends DB_Table {
             }
 
 
+        } else {
+            if ($this->get('Webpage Scope') == 'Category Categories') {
 
-        }else if ($this->get('Webpage Scope') == 'Category Categories') {
-
-            $sql = sprintf(
-                "SELECT `Category Webpage Index Content Data` FROM `Category Webpage Index` CWI
+                $sql = sprintf(
+                    "SELECT `Category Webpage Index Content Data` FROM `Category Webpage Index` CWI
                  WHERE  `Category Webpage Index Webpage Key`=%d   ORDER BY  ifnull(`Category Webpage Index Stack`,99999999)", $this->id
 
 
-            );
+                );
 
 
-            if ($result = $this->db->query($sql)) {
-                foreach ($result as $row) {
-                    $items[] = json_decode($row['Category Webpage Index Content Data'], true);
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+                        $items[] = json_decode($row['Category Webpage Index Content Data'], true);
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
+
             }
-
         }
-
 
 
         return $items;
-
-    }
-
-    function update_category_webpage_index() {
-
-
-        if ($this->get('Webpage Scope') == 'Category Categories') {
-
-            include_once 'class.Website.php';
-            $website = new Website($this->get('Webpage Website Key'));
-
-            if ($website->get('Website Theme') == 'theme_1') {
-
-
-                $sql = sprintf('DELETE FROM  `Category Webpage Index` WHERE `Category Webpage Index Webpage Key`=%d  ', $this->id);
-                $this->db->exec($sql);
-
-
-                $content_data = $this->get('Content Data');
-
-                $stack              = 0;
-                $anchor_section_key = 0;
-
-                foreach ($content_data['catalogue']['items'] as $item) {
-
-
-                    $sql = sprintf(
-                        'INSERT INTO `Category Webpage Index` (`Category Webpage Index Section Key`,`Category Webpage Index Content Data`,
-                          `Category Webpage Index Parent Category Key`,`Category Webpage Index Category Key`,`Category Webpage Index Webpage Key`,`Category Webpage Index Category Webpage Key`,`Category Webpage Index Stack`) VALUES (%d,%s,%d,%d,%d,%d,%d) ',
-                        $anchor_section_key, prepare_mysql(json_encode($item)), $this->get('Webpage Scope Key'), $item['category_key'], $this->id, $item['webpage_key'], $stack
-                    );
-
-
-                    $this->db->exec($sql);
-                    $stack++;
-
-
-                }
-
-
-            }
-
-
-        }
-
 
     }
 
