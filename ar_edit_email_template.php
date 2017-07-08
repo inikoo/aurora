@@ -33,6 +33,15 @@ $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
 
+    case 'set_email_template_type':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'value'              => array('type' => 'string'),
+                         'email_template_key' => array('type' => 'key'),
+                     )
+        );
+        set_email_template_type($data, $editor, $smarty, $db);
+        break;
     case 'bee_token':
         bee_token();
 
@@ -120,7 +129,18 @@ switch ($tipo) {
         select_blueprint($data, $editor, $smarty, $db);
         break;
 
+    case 'create_text_only_email_template':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'role'      => array('type' => 'string'),
+                         'scope'     => array('type' => 'string'),
+                         'scope_key' => array('type' => 'key'),
 
+
+                     )
+        );
+        create_text_only_email_template($data, $editor, $smarty, $db);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -149,14 +169,35 @@ function bee_token() {
 
 function send_test_email($data, $editor, $smarty, $db) {
 
-   
 
     require 'external_libs/aws.phar';
 
     include_once 'class.Email_Template.php';
 
-    $email_template         = new Email_Template($data['email_template_key']);
-    $email_template->editor = $editor;
+    $email_template = new Email_Template($data['email_template_key']);
+
+    if ($email_template->get('Email Template Subject') == '') {
+        $response = array(
+            'state' => 400,
+            'msg'   => _('Empty email subject')
+        );
+        echo json_encode($response);
+        exit;
+    }
+
+
+    $scope_object = get_object($email_template->get('Email Template Scope'), $email_template->get('Email Template Scope Key'));
+
+    $sender_email_address = $scope_object->get('Send Email Address');
+
+    if ($sender_email_address == '') {
+        $response = array(
+            'state' => 400,
+            'msg'   => _('Sender email address not configured')
+        );
+        echo json_encode($response);
+        exit;
+    }
 
 
     $client = SesClient::factory(
@@ -170,19 +211,27 @@ function send_test_email($data, $editor, $smarty, $db) {
         )
     );
 
+
     $request                                    = array();
-    $request['Source']                          = $email_template->get('Email Template Sender');
+    $request['Source']                          = $sender_email_address;
     $request['Destination']['ToAddresses']      = array($data['email']);
     $request['Message']['Subject']['Data']      = $email_template->get('Email Template Subject');
-    $request['Message']['Body']['Html']['Data'] =$data['html'];
-    $request['Message']['Body']['Text']['Data'] =$email_template->get('Email Template Text');
+    $request['Message']['Body']['Text']['Data'] = $email_template->get('Email Template Text');
 
 
+    if ($email_template->get('Email Template Scope') == 'HTML') {
+        $request['Message']['Body']['Html']['Data'] = $data['html'];
+
+    }
+
+
+    //print_r($request);
+    //exit;
 
     try {
         $result    = $client->sendEmail($request);
         $messageId = $result->get('MessageId');
-        $response = array(
+        $response  = array(
             'state' => 200
 
 
@@ -190,16 +239,16 @@ function send_test_email($data, $editor, $smarty, $db) {
 
 
     } catch (Exception $e) {
-       // echo("The email was not sent. Error message: ");
-       // echo($e->getMessage()."\n");
+        // echo("The email was not sent. Error message: ");
+        // echo($e->getMessage()."\n");
         $response = array(
             'state' => 400,
-            'msg'=>"Error, email not send"
+            'msg'   => "Error, email not send",
+            'code'  => $e->getMessage()
 
 
         );
     }
-
 
 
     echo json_encode($response);
@@ -219,7 +268,9 @@ function save_email_template_text($data, $editor, $smarty, $db) {
     if ($data['text'] != $email_template->get('Email Template Text')) {
 
 
-        $checksum = md5($email_template->get('Email Template Editing JSON').'|'.$data['text'].'|'.$email_template->get('Email Template Subject'));
+        $checksum = md5(
+            ($email_template->get('Email Template Type') == 'Text' ? '' : $email_template->get('Email Template Editing JSON')).'|'.$data['text'].'|'.$email_template->get('Email Template Subject')
+        );
 
 
         $update_data = array(
@@ -240,7 +291,8 @@ function save_email_template_text($data, $editor, $smarty, $db) {
 
     $response = array(
         'state'               => 200,
-        'email_template_info' => $smarty->fetch('email_template.control.info.tpl')
+        'email_template_info' => $smarty->fetch('email_template.control.info.tpl'),
+        'published'           => ($email_template->get('Email Template Editing Checksum') == $email_template->get('Email Template Published Checksum') ? true : false)
 
 
     );
@@ -261,7 +313,10 @@ function save_email_template_subject($data, $editor, $smarty, $db) {
 
     if ($data['subject'] != $email_template->get('Email Template Subject')) {
 
-        $checksum = md5($email_template->get('Email Template Editing JSON').'|'.$email_template->get('Email Template Text').'|'.$data['subject']);
+
+        $checksum = md5(
+            ($email_template->get('Email Template Type') == 'Text' ? '' : $email_template->get('Email Template Editing JSON')).'|'.$email_template->get('Email Template Text').'|'.$data['subject']
+        );
 
 
         $update_data = array(
@@ -281,7 +336,8 @@ function save_email_template_subject($data, $editor, $smarty, $db) {
 
     $response = array(
         'state'               => 200,
-        'email_template_info' => $smarty->fetch('email_template.control.info.tpl')
+        'email_template_info' => $smarty->fetch('email_template.control.info.tpl'),
+        'published'           => ($email_template->get('Email Template Editing Checksum') == $email_template->get('Email Template Published Checksum') ? true : false)
 
 
     );
@@ -289,6 +345,58 @@ function save_email_template_subject($data, $editor, $smarty, $db) {
 
 
 }
+
+function set_email_template_type($data, $editor, $smarty, $db) {
+
+
+    include_once 'class.Email_Template.php';
+
+    $email_template         = new Email_Template($data['email_template_key']);
+    $email_template->editor = $editor;
+
+    $valid_values = array(
+        'HTML',
+        'Text'
+    );
+
+    if (!in_array($data['value'], $valid_values)) {
+        $response = array(
+            'state' => 400,
+            'msg'   => 'wrong value'
+        );
+        echo json_encode($response);
+        exit;
+    }
+
+    $checksum = md5(
+        ($email_template->get('Email Template Type') == $data['value'] ? '' : $email_template->get('Email Template Editing JSON')).'|'.$email_template->get('Email Template Text').'|'
+        .$email_template->get('Email Template Subject')
+    );
+
+
+    $email_template->update(
+        array(
+            'Email Template Type'             => $data['value'],
+            'Email Template Editing Checksum' => $checksum,
+        ), 'no_history'
+    );
+
+    $smarty->assign('data', $email_template->get('Published Info'));
+
+    $response = array(
+        'state'               => 200,
+        'email_template_info' => $smarty->fetch('email_template.control.info.tpl'),
+        'published'           => ($email_template->get('Email Template Editing Checksum') == $email_template->get('Email Template Published Checksum') ? true : false),
+        'has_html_json'       => ($email_template->get('Email Template Editing JSON') == '' ? false : true)
+
+    );
+
+
+    echo json_encode($response);
+
+
+}
+
 
 function save_email_template_editing_json($data, $editor, $smarty, $db) {
 
@@ -321,12 +429,12 @@ function save_email_template_editing_json($data, $editor, $smarty, $db) {
 
     $response = array(
         'state'               => 200,
-        'email_template_info' => $smarty->fetch('email_template.control.info.tpl')
+        'email_template_info' => $smarty->fetch('email_template.control.info.tpl'),
+        'published'           => ($email_template->get('Email Template Editing Checksum') == $email_template->get('Email Template Published Checksum') ? true : false)
 
 
     );
     echo json_encode($response);
-
 
 }
 
@@ -354,7 +462,8 @@ function publish_email_template($data, $editor, $smarty, $db) {
 
         $response = array(
             'state'               => 200,
-            'email_template_info' => $smarty->fetch('email_template.control.info.tpl')
+            'email_template_info' => $smarty->fetch('email_template.control.info.tpl'),
+            'published'           => ($email_template->get('Email Template Editing Checksum') == $email_template->get('Email Template Published Checksum') ? true : false)
 
 
         );
@@ -444,64 +553,142 @@ function select_blueprint($data, $editor, $db) {
         $blueprint_json = file_get_contents($filename);
     }
 
-    switch ($data['role']) {
-        case 'Welcome':
-            include_once 'class.Page.php';
-            $webpage  = new Page($data['scope_key']);
-            $metadata = $webpage->get('Scope Metadata');
+    include 'conf/email_templates_data.php';
+
+    $key = $email_templates_data[$data['role']]['key'];
 
 
-            // print_r($metadata);
+    $scope = get_object($data['scope'], $data['scope_key']);
 
 
-            if ($metadata['welcome_email']['key'] > 0) {
-
-                $email_template = new Email_Template($metadata['welcome_email']['key']);
+    $metadata = $scope->get('Scope Metadata');
 
 
-                $email_template_data = array(
-                    'Email Template JSON' => $blueprint_json
-                );
+    if ($metadata['emails'][$key]['key'] > 0) {
+        $email_template = new Email_Template($metadata['emails'][$key]['key']);
+        $email_template->update(
+            array(
+                'Email Template Editing JSON' => $blueprint_json,
+                'Email Template Type'         => 'HTML'
+            ), 'no_history'
+        );
 
-                $email_template->update($email_template_data, 'no_history');
-
-
-            } else {
-
-
-                $email_template_data = array(
-
-                    'Email Template Name'      => _('Welcome'),
-                    'Email Template Role Type' => 'Transactional',
-                    'Email Template Role'      => 'Welcome',
-                    'Email Template Scope'     => $data['scope'],
-                    'Email Template Scope Key' => $data['scope_key'],
-                    'Email Template JSON'      => $blueprint_json
-                );
-
-                //  print_r($email_template_data);
-
-                $email_template = new Email_Template('find', $email_template_data, 'create');
+        $checksum = md5(
+            ($email_template->get('Email Template Type') == 'Text' ? '' : $email_template->get('Email Template Editing JSON')).'|'.$email_template->get('Email Template Text').'|'.$email_template->get(
+                'Email Template Subject'
+            )
+        );
 
 
-            }
-            $metadata['welcome_email']['key'] = $email_template->id;
+        $email_template->update(
+            array(
+                'Email Template Editing Checksum' => $checksum,
+            ), 'no_history'
+        );
+
+    } else {
 
 
-            $webpage->update(
-                array(
-                    'Webpage Scope Metadata' => json_encode($metadata)
-                ), 'no_history'
-            );
-            break;
-        default:
-            break;
+        $text    = (isset($email_templates_data[$data['role']]['text']) ? $email_templates_data[$data['role']]['text'] : '');
+        $subject = (isset($email_templates_data[$data['role']]['subject']) ? $email_templates_data[$data['role']]['subject'] : $data['role']);
+        $name    = (isset($email_templates_data[$data['role']]['name']) ? $email_templates_data[$data['role']]['name'] : $data['role']);
+
+
+        $email_template_data = array(
+            'Email Template Name'      => $name,
+            'Email Template Role Type' => 'Transactional',
+            'Email Template Role'      => $data['role'],
+            'Email Template Scope'     => $data['scope'],
+            'Email Template Scope Key' => $data['scope_key'],
+            'Email Template Text'      => $text,
+            'Email Template Subject'   => $subject,
+
+
+            'Email Template Editing JSON' => $blueprint_json
+        );
+
+
+        $email_template = new Email_Template('find', $email_template_data, 'create');
     }
+    $metadata['emails'][$key]['key'] = $email_template->id;
+
+    $scope->update(array('Scope Metadata' => json_encode($metadata)), 'no_history');
+
 
     $response = array(
-        'state'   => 200,
-        'content' => (isset($data['value']) ? $data['value'] : ''),
-        'publish' => $webpage->get('Publish')
+        'state' => 200,
+
+
+    );
+
+    echo json_encode($response);
+
+}
+
+
+function create_text_only_email_template($data, $editor, $db) {
+
+    include_once 'class.Email_Template.php';
+    include 'conf/email_templates_data.php';
+
+    $key = $email_templates_data[$data['role']]['key'];
+
+
+    $scope = get_object($data['scope'], $data['scope_key']);
+
+
+    $metadata = $scope->get('Scope Metadata');
+
+
+    if ($metadata['emails'][$key]['key'] > 0) {
+        $email_template = new Email_Template($metadata['emails'][$key]['key']);
+        $email_template->update(array('Email Template Type' => 'Text'), 'no_history');
+
+
+        $checksum = md5(
+            ($email_template->get('Email Template Type') == 'Text' ? '' : $email_template->get('Email Template Editing JSON')).'|'.$email_template->get('Email Template Text').'|'.$email_template->get(
+                'Email Template Subject'
+            )
+        );
+
+
+        $email_template->update(
+            array(
+                'Email Template Editing Checksum' => $checksum,
+            ), 'no_history'
+        );
+
+
+    } else {
+
+
+        $text    = (isset($email_templates_data[$data['role']]['text']) ? $email_templates_data[$data['role']]['text'] : '');
+        $subject = (isset($email_templates_data[$data['role']]['subject']) ? $email_templates_data[$data['role']]['subject'] : $data['role']);
+        $name    = (isset($email_templates_data[$data['role']]['name']) ? $email_templates_data[$data['role']]['name'] : $data['role']);
+
+
+        $email_template_data = array(
+            'Email Template Name'         => $name,
+            'Email Template Type'         => 'Text',
+            'Email Template Role Type'    => 'Transactional',
+            'Email Template Role'         => $data['role'],
+            'Email Template Scope'        => $data['scope'],
+            'Email Template Scope Key'    => $data['scope_key'],
+            'Email Template Text'         => $text,
+            'Email Template Subject'      => $subject,
+            'Email Template Editing JSON' => ''
+        );
+
+
+        $email_template = new Email_Template('find', $email_template_data, 'create');
+    }
+    $metadata['emails'][$key]['key'] = $email_template->id;
+
+    $scope->update(array('Scope Metadata' => json_encode($metadata)), 'no_history');
+
+
+    $response = array(
+        'state' => 200,
 
 
     );

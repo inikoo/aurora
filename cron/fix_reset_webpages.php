@@ -56,25 +56,26 @@ $editor = array(
 
 include_once 'class.Page.php';
 
-$sql = sprintf('SELECT `Page Key` FROM `Page Store Dimension` WHERE `Webpage Code`="register.sys" ');
+include_once 'class.Website.php';
+include_once 'conf/website_system_webpages.php';
+
+
+$db->exec('truncate `Email Template Dimension`;truncate `Published Email Template Dimension`');
+
+$sql = sprintf('SELECT `Page Key` FROM `Page Store Dimension` WHERE `Webpage Scope` not in ("Product","Category Categories","Category Products","HomepageToLaunch") ');
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
 
         $webpage = new Page($row{'Page Key'});
+        $website = new Website($webpage->get('Webpage Website Key'));
+        $website_system_webpages = website_system_webpages_config($website->get('Website Type'));
 
-        $webpage->update(
-            array(
-                'Webpage Scope Metadata' => json_encode(
-                    array(
-                        'welcome_email' => array(
-                            'key' => '',
-                            'published_key'          => false
-                        )
-                    )
-                )
-            ), 'no_history'
-        );
+        $webpage->reset_object();
+
+        if (isset($website_system_webpages[$webpage->get('Webpage Code')]['Webpage Scope Metadata'])) {
+            $webpage->update(array('Webpage Scope Metadata' => $website_system_webpages[$webpage->get('Webpage Code')]['Webpage Scope Metadata']), 'no_history');
+        }
 
     }
 } else {

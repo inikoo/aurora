@@ -66,8 +66,14 @@
         <img src="/conf/etemplates/welcome_simple.png"  />
         <div style="text-align: center">{t}Simple{/t}</div>
     </div>
-
+    {else}
+        <div blueprint='empty' class="blueprint_option">
+            <img src="/conf/etemplates/empty.png"  />
+            <div style="text-align: center">{t}Empty{/t}</div>
+        </div>
     {/if}
+
+
 
 <div style="clear:both"></div>
 
@@ -100,7 +106,43 @@
 
                 if (data.state == '200') {
 
-                   change_view(state.request + '&tab=email_template')
+                   change_view(state.request  + '{$email_template_redirect}')
+                } else if (data.state == '400') {
+                    label.html(label.data('label'))
+                    swal(data.msg);
+                }
+
+
+
+            }, error: function () {
+
+            }
+        });
+
+    });
+
+    $('#create_text_only_email_template').click(function() {
+
+
+
+        var ajaxData = new FormData();
+
+        ajaxData.append("tipo", 'create_text_only_email_template')
+        ajaxData.append("role", '{$role}')
+        ajaxData.append("scope", '{$scope}')
+        ajaxData.append("scope_key", '{$scope_key}')
+
+
+
+        $.ajax({
+            url: "/ar_edit_email_template.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+            complete: function () {
+            }, success: function (data) {
+
+
+                if (data.state == '200') {
+
+                    change_view(state.request + '{$email_template_redirect}')
                 } else if (data.state == '400') {
                     label.html(label.data('label'))
                     swal(data.msg);

@@ -2274,7 +2274,7 @@ class User extends DB_Table {
 
             $plain_message = $customer->get('greetings')
                 ."\n\n We received request to reset the password associated with this email account.\n\nIf you did not request to have your password reset, you can safely ignore this email. We assure that yor customer account is safe.\n\nCopy and paste the following link to your browser's address window.\n\n "
-                .$url."?p=".$encrypted_secret_data."\n\n Once you hace returned our page you will be asked to choose a new password\n\nThank you \n\n".$signature_name."\n".$signature_company;
+                .$url."?p=".$encrypted_secret_data."\n\n Once you have returned our page you will be asked to choose a new password\n\nThank you \n\n".$signature_name."\n".$signature_company;
 
 
             $html_message = $customer->get('greetings')."<br/>We received request to reset the password associated with this email account.<br><br>

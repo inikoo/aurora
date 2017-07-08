@@ -630,15 +630,18 @@ function get_view($db, $smarty, $user, $account, $modules) {
         }
     }elseif ($state['module'] == 'products' and $state['section'] == 'webpage') {
 
-       // print_r($state);
+     //  print_r($state);
 
-        if(!($state['_object']->get('Webpage Code')=='register.sys')){
+        if(!  in_array($state['_object']->get('Webpage Code'),array('register.sys','login.sys','checkout.sys'))){
 
-            if($state['subtab']=='webpage.email_template'){
+
+
+            if($state['subtab']=='webpage.email_template' or $state['subtab']=='webpage.email_blueprints' ){
                 $state['subtab']='webpage.preview';
             }
 
-        }else{
+           // print_r($state);
+
 
         }
 
@@ -2499,7 +2502,8 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
     }
     elseif ($data['module'] == 'products' and $data['section'] == 'webpage') {
 
-        if(!($data['_object']->get('Webpage Code')=='register.sys')){
+
+        if(!  in_array($data['_object']->get('Webpage Code'),array('register.sys','login.sys','checkout.sys'))){
             $_content['subtabs']='';
 
         }else{
