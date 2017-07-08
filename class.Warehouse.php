@@ -971,6 +971,10 @@ class Warehouse extends DB_Table {
             case 'Warehouse Address':
                 $label = _('address');
                 break;
+            case 'Warehouse Email Template Signature':
+                $label = '[Signature]';
+                break;
+
 
             default:
 

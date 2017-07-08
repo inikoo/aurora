@@ -86,6 +86,30 @@ $object_fields = array(
     ),
 
 
+    array(
+        'label'      => _('Emails templates'),
+        'show_title' => true,
+        'fields'     => array(
+
+            array(
+                'edit'        => ($edit ? 'textarea' : ''),
+                'id'          => 'Warehouse_Email_Template_Signature',
+                'value'       => $object->get('Warehouse Email Template Signature'),
+                'label'       => ucfirst(
+                    $object->get_field_label('Warehouse Email Template Signature')
+                ),
+                'required'    => false,
+
+                'type' => 'value'
+
+
+            ),
+
+
+        )
+    )
+
+
 );
 
 
