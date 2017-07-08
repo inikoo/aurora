@@ -66,6 +66,19 @@
         <img src="/conf/etemplates/welcome_simple.png"  />
         <div style="text-align: center">{t}Simple{/t}</div>
     </div>
+
+    {elseif $role=='Reset_Password'}
+
+        <div blueprint='empty' class="blueprint_option">
+            <img src="/conf/etemplates/empty.png"  />
+            <div style="text-align: center">{t}Empty{/t}</div>
+        </div>
+
+        <div blueprint='reset_password' class="blueprint_option">
+            <img src="/conf/etemplates/reset_password.png"  />
+            <div style="text-align: center">{t}Reset password{/t}</div>
+        </div>
+
     {else}
         <div blueprint='empty' class="blueprint_option">
             <img src="/conf/etemplates/empty.png"  />
