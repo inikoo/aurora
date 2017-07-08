@@ -2171,6 +2171,10 @@ class Store extends DB_Table {
                 $label = _('website URL');
                 break;
 
+            case 'Store Email Template Signature':
+                $label = '[Signature]';
+                break;
+
             default:
                 $label = $field;
 
