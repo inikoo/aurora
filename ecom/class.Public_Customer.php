@@ -14,7 +14,7 @@
 include_once 'class.DBW_Table.php';
 
 
-class Public_Customer extends DB_Table {
+class Public_Customer extends DBW_Table {
 
 
     function __construct($arg1 = false, $arg2 = false, $arg3 = false) {
@@ -449,6 +449,35 @@ class Public_Customer extends DB_Table {
 
         }
     }
+
+
+    function get_greetings($locale = false) {
+
+        if ($locale) {
+
+            if (preg_match('/^es_/', $locale)) {
+                $unknown_name    = 'A quien corresponda';
+                $greeting_prefix = 'Estimado';
+            } else {
+                $unknown_name    = _('To whom it corresponds');
+                $greeting_prefix = _('Dear');
+            }
+        } else {
+            $unknown_name    = _('To whom it corresponds');
+            $greeting_prefix = _('Dear');
+        }
+        if ($this->data[$this->table_name.' Name'] == '' and $this->data[$this->table_name.' Main Contact Name'] == '') {
+            return $unknown_name;
+        }
+        $greeting = $greeting_prefix.' '.$this->data[$this->table_name.' Main Contact Name'];
+        if ($this->data[$this->table_name.' Company Name'] != '') {
+            $greeting .= ', '.$this->data[$this->table_name.' Name'];
+        }
+
+        return $greeting;
+
+    }
+
 }
 
 ?>

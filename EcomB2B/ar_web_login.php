@@ -107,10 +107,26 @@ function login($db, $data, $editor) {
         exit;
 
     }else{
+
+        switch ($result){
+            case 'handle':
+                $msg=_('Email not registered');
+                break;
+            case 'handle_active':
+                $msg=_('This account is banned');
+                break;
+            case 'password':
+                $msg=_('Incorrect password');
+                break;
+            default:
+                $msg=_('Invalid login credentials');
+        }
+
+
         echo json_encode(
             array(
                 'state' => 400,
-                'error_type'   => $result
+                'msg'   =>$msg
             )
         );
         exit;

@@ -200,7 +200,7 @@
                     </div>
 
 
-                    <div style="position:absolute;left:470px;width:300px;top:200px">
+                    <div style="position:absolute;left:470px;width:300px;top:160px">
                         <span class=" " style="color:#333"  >
                         <i class="fa fa-language " style="margin-right: 5px" aria-hidden="true"></i>   {t}Messages{/t}
                         </span><br>
@@ -268,6 +268,7 @@
                         <span class="password_recovery_msg " id="password_recovery_success_msg"  contenteditable="true">{$content._password_recovery_success_msg}</span>
                         <span class="password_recovery_msg error" id="password_recovery_email_not_register_error_msg"  contenteditable="true">{$content._password_recovery_email_not_register_error_msg}</span>
                         <span class="password_recovery_msg error" id="password_recovery_unknown_error_msg"  contenteditable="true">{$content._password_recovery_unknown_error_msg}</span>
+
                         <br>
                             <a id="password_recovery_go_back" class="marked_link" contenteditable="true">{$content._password_recovery_go_back}</a>
 
@@ -389,6 +390,7 @@
 
         $('#save_button', window.parent.document).addClass('save button changed valid')
     }
+
 
 
     function show_password_recovery_success(){

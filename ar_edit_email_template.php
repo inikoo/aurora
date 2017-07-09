@@ -212,16 +212,23 @@ function send_test_email($data, $editor, $smarty, $db) {
     );
 
 
+
+    $placeholders = array(
+        '[Greetings]'=>'John Smith',
+        '[Reset_Password_URL]'=>'http://my.website.com/reset/'.md5(date()),
+        '[Signature]'=>$scope_object->get('Signature'),
+    );
+
+
     $request                                    = array();
     $request['Source']                          = $sender_email_address;
     $request['Destination']['ToAddresses']      = array($data['email']);
     $request['Message']['Subject']['Data']      = $email_template->get('Email Template Subject');
-    $request['Message']['Body']['Text']['Data'] = $email_template->get('Email Template Text');
+    $request['Message']['Body']['Text']['Data'] = strtr($email_template->get('Email Template Text'), $placeholders);
 
 
-    if ($email_template->get('Email Template Scope') == 'HTML') {
+    if ($email_template->get('Email Template Type') == 'HTML') {
         $request['Message']['Body']['Html']['Data'] = $data['html'];
-
     }
 
 
@@ -249,7 +256,6 @@ function send_test_email($data, $editor, $smarty, $db) {
 
         );
     }
-
 
     echo json_encode($response);
 

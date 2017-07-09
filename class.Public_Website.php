@@ -275,6 +275,7 @@ class Public_Website {
             case 'Website Status';
             case 'Website Theme':
             case 'Website Type':
+            case 'Website URL':
                 return $this->data[$key];
                 break;
 

@@ -9964,19 +9964,7 @@ VALUES (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
         return $items_info;
     }
 
-    function get_name_for_grettings() {
 
-        if ($this->data['Order Customer Name'] == '' and $this->data['Order Customer Contact Name'] == '') {
-            return _('Customer');
-        }
-        $greeting = $this->data['Order Customer Contact Name'];
-        if ($greeting and $this->data['Order Customer Name'] != $this->data['Order Customer Contact Name']) {
-            $greeting .= ', '.$this->data['Order Customer Name'];
-        }
-
-
-        return $greeting;
-    }
 
     function get_formatted_pending_payment_amount_from_account_balance() {
         return money(

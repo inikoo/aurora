@@ -1736,6 +1736,7 @@ function save_header($data, $editor) {
 function save_webpage_content($data, $editor, $db, $smarty) {
 
 
+
     include_once('class.Page.php');
     $webpage = new Page($data['key']);
 

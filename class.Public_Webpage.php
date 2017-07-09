@@ -166,10 +166,33 @@ class Public_Webpage {
     }
 
 
-
     function get($key, $arg1 = '') {
 
         switch ($key) {
+
+            case 'Signature':
+                $store = get_object('Store', $this->data['Webpage Store Key']);
+
+                return $store->get('Store Email Template Signature');
+
+                break;
+            case 'Send Email Address':
+
+                $store = get_object('Store', $this->data['Webpage Store Key']);
+
+                return $store->get('Store Email');
+
+                break;
+            case 'Scope Metadata':
+
+                if ($this->data['Webpage '.$key] == '') {
+                    $content_data = false;
+                } else {
+                    $content_data = json_decode($this->data['Webpage '.$key], true);
+                }
+
+                return $content_data;
+                break;
 
             case 'Webpage Website Key':
             case 'Webpage State':
@@ -178,6 +201,7 @@ class Public_Webpage {
             case 'Webpage Scope Key':
             case 'Webpage Website Key':
             case 'Webpage Template Filename':
+            case 'Website URL':
                 return $this->data[$key];
                 break;
 

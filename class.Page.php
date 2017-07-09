@@ -922,6 +922,12 @@ class Page extends DB_Table {
                 return $store->get('Store Email');
 
                 break;
+            case 'Send Email Signature':
+                include_once 'class.Store.php';
+                $store=new Store($this->data['Webpage Store Key']);
+                return $store->get('Store Email Template Signature');
+
+                break;
 
             case 'Email':
             case 'Company Name':

@@ -83,7 +83,7 @@ input:-ms-input-placeholder {
 
 }
 
-.login_form  {
+.login_form , .password_reset_form {
 	margin: 20px auto 0 auto;
 	width: 440px;
 
@@ -93,7 +93,7 @@ input:-ms-input-placeholder {
 @media only screen and (min-width: 480px) and (max-width: 767px){
 	
 
-.reg_form,.login_form {
+.reg_form,.login_form,    .password_reset_form  {
 	margin: 10px auto 0 auto;
 	width: 400px;
 	padding: 18px 20px 13px 20px;
