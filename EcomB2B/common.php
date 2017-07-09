@@ -15,6 +15,7 @@ error_reporting(E_ALL ^ E_DEPRECATED);
 
 include_once 'utils/natural_language.php';
 include_once 'utils/general_functions.php';
+include_once 'utils/public_object_functions.php';
 
 include_once 'utils/detect_agent.php';
 include_once 'utils/aes.php';
@@ -33,19 +34,16 @@ $smarty->clearAllCache();
 //$smarty->clear_cache('index.tpl');
 
 
-
 session_start();
+
 
 
 
 if (!array_key_exists('website_key', $_SESSION) or !$_SESSION['website_key']) {
 
-    include ('utils/find_website_key.include.php');
+    include('utils/find_website_key.include.php');
 
 }
-
-
-
 
 
 $is_cached = false;
@@ -66,12 +64,11 @@ if (    (!isset($_SESSION['logged_in']) or !$_SESSION['logged_in']) and isset($p
 */
 
 
-
 if (!$is_cached) {
 
     require_once 'keyring/key.php';
 
-    if(!isset($db)) {
+    if (!isset($db)) {
 
         require_once 'keyring/dns.php';
 
@@ -92,61 +89,61 @@ if (!$is_cached) {
 
     $account = new Public_Account($db);
 
-    $website           = new Public_Website($_SESSION['website_key']);
-    $store_key      = $website->get('Website Store Key');
-    $store          = new Public_Store($store_key);
+    $website   = new Public_Website($_SESSION['website_key']);
+    $store_key = $website->get('Website Store Key');
+    $store     = new Public_Store($store_key);
 
 
     date_default_timezone_set($store->get('Store Timezone'));
 
 
-
-    $valid_currencies=array(
-        'GBP'=>array(
-            'name'=>'Pound sterling',
-            'native_name'=>'Pound sterling',
-            'symbol'=>'£',
+    $valid_currencies = array(
+        'GBP' => array(
+            'name'        => 'Pound sterling',
+            'native_name' => 'Pound sterling',
+            'symbol'      => '£',
         ),
-        'USD'=>array(
-            'name'=>'US Dollar',
-            'native_name'=>'US Dollar',
-            'symbol'=>'£',
+        'USD' => array(
+            'name'        => 'US Dollar',
+            'native_name' => 'US Dollar',
+            'symbol'      => '£',
         ),
-        'EUR'=>array(
-            'name'=>'Euro',
-            'native_name'=>'Euro',
-            'symbol'=>'€',
+        'EUR' => array(
+            'name'        => 'Euro',
+            'native_name' => 'Euro',
+            'symbol'      => '€',
         ),
-        'DKK'=>array(
-            'name'=>'Danish krone',
-            'native_name'=>'Dansk krone',
-            'symbol'=>'kr.',
+        'DKK' => array(
+            'name'        => 'Danish krone',
+            'native_name' => 'Dansk krone',
+            'symbol'      => 'kr.',
         ),
-        'NOK'=>array(
-            'name'=>'Norwegian krone',
-            'native_name'=>'Norsk krone',
-            'symbol'=>'kr',
+        'NOK' => array(
+            'name'        => 'Norwegian krone',
+            'native_name' => 'Norsk krone',
+            'symbol'      => 'kr',
         ),
-        'PLN'=>array(
-            'name'=>'Polish złoty',
-            'native_name'=>'Polski złoty',
-            'symbol'=>'zł',
+        'PLN' => array(
+            'name'        => 'Polish złoty',
+            'native_name' => 'Polski złoty',
+            'symbol'      => 'zł',
         ),
-        'SEK'=>array(
-            'name'=>'Swedish krona',
-            'native_name'=>'Svensk krona',
-            'symbol'=>'kr',
+        'SEK' => array(
+            'name'        => 'Swedish krona',
+            'native_name' => 'Svensk krona',
+            'symbol'      => 'kr',
         ),
-        'CHF'=>array(
-            'name'=>'Swiss franc',
-            'native_name'=>'Swiss franc',//'Schweizer Franken/Franc suisse/Franco svizzero',
-            'symbol'=>'CHF',
+        'CHF' => array(
+            'name'        => 'Swiss franc',
+            'native_name' => 'Swiss franc',
+            //'Schweizer Franken/Franc suisse/Franco svizzero',
+            'symbol'      => 'CHF',
         ),
 
     );
 
 
-    $valid_locales=array(
+    $valid_locales = array(
         'de_DE',
         'fr_FR',
         'it_IT',
@@ -202,8 +199,6 @@ $language = substr($site_locale, 0, 2);
     bindtextdomain("inikoosites", "./locale");
     textdomain("inikoosites");
     bind_textdomain_codeset("inikoosites", 'UTF-8');
-
-
 
 
     //$customer  = new Public_Customer(0);
@@ -271,18 +266,17 @@ $language = substr($site_locale, 0, 2);
 */
 
 
-    $theme=$website->get('Website Theme');
+    $theme = $website->get('Website Theme');
 
 
-
-    if($website->get('Website Status')=='InProcess'){
+    if ($website->get('Website Status') == 'InProcess') {
         $webpage_key = $website->get_system_webpage_key('launching.sys');
-        $webpage=new Public_Webpage($webpage_key);
-        $content=$webpage->get('Content Data');
-        $smarty->assign('webpage',$webpage);
-        $smarty->assign('content',$content);
+        $webpage     = new Public_Webpage($webpage_key);
+        $content     = $webpage->get('Content Data');
+        $smarty->assign('webpage', $webpage);
+        $smarty->assign('content', $content);
         $smarty->display('homepage_to_launch.'.$theme.'.tpl', $webpage_key);
-        exit ;
+        exit;
     }
 
 
@@ -373,17 +367,18 @@ $language = substr($site_locale, 0, 2);
     */
 
 
+    if ($logged_in) {
+
+        if (empty($_SESSION['customer_key']) or empty($_SESSION['website_user_key']) or empty($_SESSION['website_user_log_key'])) {
 
 
-    if($logged_in){
 
-        if(empty($_SESSION['customer_key']) or empty($_SESSION['website_user_key'])  or  empty($_SESSION['website_user_log_key']) ){
 
-            exit('caca1');
             session_regenerate_id();
             session_destroy();
             unset($_SESSION);
-            setcookie('rmb', 'x:x', time() - 864000, '/'
+            setcookie(
+                'rmb', 'x:x', time() - 864000, '/'
             //,'',
             //true, // TLS-only
             //true  // http-only
@@ -393,20 +388,21 @@ $language = substr($site_locale, 0, 2);
         }
 
         include_once('class.Public_Customer.php');
-        $customer=new Public_Customer($_SESSION['customer_key']);
+        $customer = new Public_Customer($_SESSION['customer_key']);
 
-        if($customer->id and $customer->get('Customer Store Key')==$store->id) {
+        if ($customer->id and $customer->get('Customer Store Key') == $store->id) {
 
-            $website_user=new Public_Website_User($_SESSION['website_user_key']);
-            if($website_user->id and $website_user->get('Website User Customer Key')==$customer->id){
-                $smarty->assign('website_user', $website_user);
+            $website_user = new Public_Website_User($_SESSION['website_user_key']);
+            if ($website_user->id and $website_user->get('Website User Customer Key') == $customer->id) {
 
-            }else{
+
+            } else {
                 exit('caca2');
                 session_regenerate_id();
                 session_destroy();
                 unset($_SESSION);
-                setcookie('rmb', 'x:x', time() - 864000, '/'
+                setcookie(
+                    'rmb', 'x:x', time() - 864000, '/'
                 //,'',
                 //true, // TLS-only
                 //true  // http-only
@@ -416,34 +412,26 @@ $language = substr($site_locale, 0, 2);
             }
 
 
-            $smarty->assign('customer', $customer);
 
-            if(empty($_COOKIE['rmb'])){
+
+            if (empty($_COOKIE['rmb'])) {
 
                 require_once "external_libs/random/lib/random.php";
-                $selector = base64_encode(random_bytes(9));
+                $selector      = base64_encode(random_bytes(9));
                 $authenticator = random_bytes(33);
 
                 setcookie(
-                    'rmb',
-                    $selector.':'.base64_encode($authenticator),
-                    time() + 864000,
-                    '/'
+                    'rmb', $selector.':'.base64_encode($authenticator), time() + 864000, '/'
                 //,'',
                 //true, // TLS-only
                 //true  // http-only
                 );
 
 
-                $sql=sprintf('insert into `Website Auth Token Dimension` (`Website Auth Token Website Key`,`Website Auth Token Selector`,`Website Auth Token Hash`,`Website Auth Token Website User Key`,`Website Auth Token Customer Key`,`Website Auth Token Website User Log Key`,`Website Auth Token Expire`) 
-            values (%d,%s,%s,%d,%d,%d,%s)',
-                             $website->id,
-                             prepare_mysql($selector),
-                             prepare_mysql(hash('sha256', $authenticator)),
-                             $website_user->id,
-                             $customer->id,
-                             $_SESSION['website_user_log_key'],
-                             prepare_mysql(date('Y-m-d H:i:s', time() + 864000))
+                $sql = sprintf(
+                    'INSERT INTO `Website Auth Token Dimension` (`Website Auth Token Website Key`,`Website Auth Token Selector`,`Website Auth Token Hash`,`Website Auth Token Website User Key`,`Website Auth Token Customer Key`,`Website Auth Token Website User Log Key`,`Website Auth Token Expire`) 
+            VALUES (%d,%s,%s,%d,%d,%d,%s)', $website->id, prepare_mysql($selector), prepare_mysql(hash('sha256', $authenticator)), $website_user->id, $customer->id, $_SESSION['website_user_log_key'],
+                    prepare_mysql(date('Y-m-d H:i:s', time() + 864000))
 
                 );
 
@@ -452,13 +440,14 @@ $language = substr($site_locale, 0, 2);
             }
 
 
-        }else{
+        } else {
 
 
             session_regenerate_id();
             session_destroy();
             unset($_SESSION);
-            setcookie('rmb', 'x:x', time() - 864000, '/'
+            setcookie(
+                'rmb', 'x:x', time() - 864000, '/'
             //,'',
             //true, // TLS-only
             //true  // http-only
@@ -467,10 +456,7 @@ $language = substr($site_locale, 0, 2);
             exit;
         }
 
-    }
-    elseif(!empty($_COOKIE['rmb'])){
-
-
+    } elseif (!empty($_COOKIE['rmb'])) {
 
 
         include_once('class.WebAuth.php');
@@ -479,23 +465,35 @@ $language = substr($site_locale, 0, 2);
         list($selector, $authenticator) = explode(':', $_COOKIE['rmb']);
 
 
+        list($logged_in, $result, $customer_key, $website_user_key, $website_user_log_key) = $auth->authenticate_from_remember($selector, $authenticator, $website->id);
 
-        list($logged_in,$result,$customer_key,$website_user_key,$website_user_log_key)=$auth->authenticate_from_remember($selector, $authenticator,$website->id);
+        if ($logged_in) {
 
-        if($logged_in){
-
-            $_SESSION['logged_in']=true;
-            $_SESSION['customer_key']=$customer_key;
-            $_SESSION['website_user_key']=$website_user_key;
-            $_SESSION['website_user_log_key']=$website_user_log_key;
-
+            $_SESSION['logged_in']            = true;
+            $_SESSION['customer_key']         = $customer_key;
+            $_SESSION['website_user_key']     = $website_user_key;
+            $_SESSION['website_user_log_key'] = $website_user_log_key;
         }
-
-
 
     }
 
+    if ($logged_in) {
 
+
+
+        if(!isset($website_user)){
+            $website_user = get_object('User',$_SESSION['website_user_key']);
+
+        }
+
+        if(!isset($customer)){
+            $customer = get_object('Customer',$_SESSION['customer_key']);
+        }
+
+
+        $smarty->assign('website_user', $website_user);
+        $smarty->assign('customer', $customer);
+    }
 
 
     $smarty->assign('website', $website);
@@ -505,11 +503,7 @@ $language = substr($site_locale, 0, 2);
     $smarty->assign('logged_in', $logged_in);
 
 
-
-
 }
-
-
 
 
 ?>

@@ -173,9 +173,11 @@ class Public_Store {
             case 'Store Family Category Key':
             case 'Store Timezone':
             case 'Store Key':
+            case 'Store Email':
             case 'Store Website Key':
             case 'Store Home Country Code 2 Alpha':
-
+            case 'Store Email':
+            case 'Store Email Template Signature':
                 return $this->data[$key];
                 break;
 

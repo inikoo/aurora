@@ -71,20 +71,6 @@ class Subject extends DB_Table {
     }
 
 
-    function get_name_for_grettings() {
-
-        if ($this->data[$this->table_name.' Name'] == '' and $this->data[$this->table_name.' Main Contact Name'] == '') {
-            return '';
-        }
-        $greeting = $this->data[$this->table_name.' Main Contact Name'];
-        if ($greeting and $this->data[$this->table_name.' Company Name'] != '') {
-            $greeting .= ', '.$this->data[$this->table_name.' Company Name'];
-        }
-
-
-        return $greeting;
-    }
-
 
     function set_as_main($field, $other_key) {
 

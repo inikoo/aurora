@@ -125,15 +125,24 @@
 </div>
 <script>
 
+    {if $display=='forgot_password'}
+    open_recovery()
+    {/if}
+
 
     $('#open_recovery').on('click', function (e) {
 
-        $('#login_form_container').addClass('hide')
-        $('#recovery_form_container').removeClass('hide')
 
-        $('#recovery_email').val($('#handle').val())
+        open_recovery()
 
     });
+
+    function open_recovery() {
+        $('#login_form_container').addClass('hide')
+        $('#recovery_form_container').removeClass('hide')
+        $('#recovery_email').val($('#handle').val())
+
+    }
 
     $('#password_recovery_go_back').on('click', function (e) {
 
@@ -261,6 +270,8 @@
 
             ajaxData.append("tipo", 'recover_password')
             ajaxData.append("website_key", '{$website->id}')
+            ajaxData.append("webpage_key", '{$webpage->id}')
+
             ajaxData.append("recovery_email", $('#recovery_email').val())
 
 

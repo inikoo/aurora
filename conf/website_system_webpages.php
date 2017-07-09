@@ -680,16 +680,28 @@ function website_system_webpages_config($website_type) {
                 'Webpage Meta Description'  => '',
                 'Page Store Content Data'   => json_encode(
                     array(
-                        '_title' => _('Password recovery'),
+                        '_title' => _('Reset password'),
 
 
-                        '_go_back_label'             => _('Go back'),
-                        '_submit_label'              => _('Submit'),
-                        '_email_label'               => _('E-mail'),
+                        '_submit_label' => _('Save'),
+
                         '_success_msg'               => _('Your request successfully sent!'),
                         '_error_email_msg'           => _('Provide a valid email please'),
                         '_error_email_not_found_msg' => _('Email not registered'),
                         '_error_captcha_msg'         => _('Error validating reCAPTCHA'),
+
+
+                        '_password_tooltip'             => _('Password'),
+                        '_password_confirm_tooltip'     => _('Confirm password'),
+                        '_password_placeholder'         => _('password'),
+                        '_password_confirm_placeholder' => _('Confirm password'),
+
+                        'password_reset_success_msg'             => _('Your password has been changed successfully'),
+                        'password_reset_expired_token_error_msg' => _('Sorry, password reset expired'),
+                        'password_reset_error_msg'               => _("Sorry, password reset incorrect or expired days ago"),
+                        'password_reset_logged_in_error_msg'=>_('You are already logged in'),
+                        'password_reset_go_back'                 => _('Try again'),
+                        'password_reset_go_home'                 => _('Go to our homepage'),
 
 
                     )
@@ -829,7 +841,7 @@ function website_system_webpages_config($website_type) {
                 ),
 
 
-                'Page Store Content Data'   => json_encode(
+                'Page Store Content Data' => json_encode(
                     array(
                         '_invoice_address_label'  => _('Invoice address'),
                         '_delivery_address_label' => _('Delivery address'),

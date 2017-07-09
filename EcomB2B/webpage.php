@@ -39,9 +39,8 @@ if ($webpage->get('Webpage Template Filename') == 'register') {
         'validation_minlength_password' => _("Enter at least 8 characters"),
         'validation_accept_terms'       => _("Please accept our terms and conditions to proceed"),
         'validation_handle_registered'  => _("Email address is already in registered"),
-        'validation_email_invalid'      => _("Please enter a valid email address")
-
-
+        'validation_email_invalid'      => _("Please enter a valid email address"),
+        'validation_password_missing'   => _("Please enter your password")
     );
 
 
@@ -63,11 +62,18 @@ if ($webpage->get('Webpage Template Filename') == 'register') {
     $smarty->assign('selected_country', $country_code);
 
 
-} elseif ($webpage->get('Webpage Template Filename') == 'login') {
+}
+elseif ($webpage->get('Webpage Template Filename') == 'login') {
 
     if ($logged_in) {
         header('Location: /index.php');
         exit;
+    }
+
+    if(isset($_REQUEST['fp'])){
+        $smarty->assign('display','forgot_password');
+    }else{
+        $smarty->assign('display','login');
     }
 
     $labels_fallback = array(
@@ -80,7 +86,8 @@ if ($webpage->get('Webpage Template Filename') == 'register') {
     $smarty->assign('labels_fallback', $labels_fallback);
 
 
-} elseif ($webpage->get('Webpage Template Filename') == 'welcome') {
+}
+elseif ($webpage->get('Webpage Template Filename') == 'welcome') {
 
     if (!$logged_in) {
         header('Location: /index.php');
@@ -88,7 +95,8 @@ if ($webpage->get('Webpage Template Filename') == 'register') {
     }
 
 
-} elseif ($webpage->get('Webpage Template Filename') == 'categories_showcase') {
+}
+elseif ($webpage->get('Webpage Template Filename') == 'categories_showcase') {
 
     include_once 'class.Public_Category.php';
     $category = new Public_Category($webpage->get('Webpage Scope Key'));
@@ -107,7 +115,6 @@ elseif ($webpage->get('Webpage Template Filename') == 'products_showcase') {
     include_once 'class.Public_Product.php';
 
     $category = new Public_Category($webpage->get('Webpage Scope Key'));
-
 
 
     if (isset($content_data['panels'])) {
@@ -313,7 +320,6 @@ elseif ($webpage->get('Webpage Template Filename') == 'products_showcase') {
     $smarty->assign('related_products', $related_products);
 
 
-
     $content_data = $webpage->get('Content Data');
 
     $smarty->assign('content_data', $content_data);
@@ -321,7 +327,7 @@ elseif ($webpage->get('Webpage Template Filename') == 'products_showcase') {
 
 
 }
-elseif ($webpage->get('Webpage Template Filename') == 'product'){
+elseif ($webpage->get('Webpage Template Filename') == 'product') {
 
     include_once 'class.Public_Product.php';
 
@@ -329,6 +335,9 @@ elseif ($webpage->get('Webpage Template Filename') == 'product'){
     $smarty->assign('product', $product);
 
 
+}
+elseif ($webpage->get('Webpage Template Filename') == 'reset_password') {
+    include 'reset_password.inc.php';
 }
 
 $content = $webpage->get('Content Data');

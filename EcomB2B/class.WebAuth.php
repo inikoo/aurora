@@ -25,31 +25,33 @@ class WebAuth {
     function authenticate_from_register($website_user_key, $customer_key, $website_key) {
 
 
-        $website_user_log_key=$this->log_login('Register', $website_key, $website_user_key, $customer_key, $remember_me = false);
+        $website_user_log_key = $this->log_login('Register', $website_key, $website_user_key, $customer_key);
 
 
-        return array(true,$website_user_log_key);
+        return array(
+            true,
+            $website_user_log_key
+        );
 
 
     }
 
-    function log_login($authentication_type, $website_key, $web_user_key, $customer_key, $remember_me) {
+    function log_login($authentication_type, $website_key, $web_user_key, $customer_key) {
 
 
         $ip   = ip();
         $date = gmdate('Y-m-d H:i:s');
         $sql  = sprintf(
-            "INSERT INTO `Website User Log Dimension` (`Website User Log User Key`,`Website User Log Session ID`, `Website User Log IP`, `Website User Log Start Date`,`Website User Log Last Visit Date`, `Website User Log Logout Date`,`Website User Log Remember Cookie`,`Website User Log Website Key`) VALUES (%d, %s, %s, %s,%s, %s,%s,%d)",
-            $web_user_key, prepare_mysql(session_id()), prepare_mysql($ip), prepare_mysql($date), prepare_mysql($date), 'NULL', prepare_mysql(($remember_me ? 'Yes' : 'No')), $website_key
+            "INSERT INTO `Website User Log Dimension` (`Website User Log User Key`,`Website User Log Session ID`, `Website User Log IP`, `Website User Log Start Date`,`Website User Log Last Visit Date`, `Website User Log Logout Date`,`Website User Log Website Key`) VALUES (%d, %s, %s, %s,%s,%s,%d)",
+            $web_user_key, prepare_mysql(session_id()), prepare_mysql($ip), prepare_mysql($date), prepare_mysql($date), 'NULL', $website_key
         );
-
 
         $this->db->exec($sql);
 
         $website_user_log_key = $this->db->lastInsertId();
 
 
-        if ($authentication_type == 'Login') {
+        if ($authentication_type == 'Login' or $authentication_type == 'Reset_Password') {
 
             $sql = sprintf("SELECT `Website User Login Count` FROM `Website User Data`  WHERE `Website User Key`=%d", $web_user_key);
 
@@ -135,7 +137,7 @@ class WebAuth {
 
     }
 
-    function authenticate_from_login($handle, $password, $website_key, $remember_me) {
+    function authenticate_from_login($handle, $password, $website_key) {
 
         $pass_tests = true;
         $tests      = array(
@@ -188,7 +190,7 @@ class WebAuth {
         if ($pass_tests) {
 
 
-            $website_user_log_key = $this->log_login('Login', $website_key, $website_user_key, $customer_key, $remember_me);
+            $website_user_log_key = $this->log_login('Login', $website_key, $website_user_key, $customer_key);
 
             return array(
                 true,
@@ -199,7 +201,7 @@ class WebAuth {
             );
 
         } else {
-            $this->log_failed_login($handle, $website_user_key, $fail_test, $tests, $customer_key, $website_key);
+            $this->log_failed_login('Login',$handle, $website_user_key, $fail_test, $customer_key, $website_key);
 
             return array(
                 false,
@@ -213,16 +215,15 @@ class WebAuth {
 
     }
 
-    function log_failed_login($handle, $website_user_key, $main_reason, $tests, $customer_key, $website_key) {
+    function log_failed_login($type,$handle, $website_user_key, $main_reason, $customer_key, $website_key) {
         $date = gmdate("Y-m-d H:i:s");
         $ip   = ip();
         $sql  = sprintf(
             "INSERT INTO `Website Failed Log Dimension` 
 (
-              `Website Failed Log Handle`,`Website Failed Log User Key`,`Website Failed Log Date`,`Website Failed Log IP`,
-              `Website Failed Log Fail Reason`,`Website Failed Log Handle OK`,`Website Failed Log Handle Active OK`,`Website Failed Log Password OK`)  
-            VALUES (%s,%s,%s,%s, %s,%s,%s,%s)", prepare_mysql($handle), prepare_mysql($website_user_key), prepare_mysql($date), prepare_mysql($ip), prepare_mysql($main_reason),
-            prepare_mysql(($tests['handle'] ? 'Yes' : 'No')), prepare_mysql(($tests['handle_active'] ? 'Yes' : 'No')), prepare_mysql(($tests['password'] ? 'Yes' : 'No'))
+              `Website Failed Log Type`,`Website Failed Log Handle`,`Website Failed Log User Key`,`Website Failed Log Date`,`Website Failed Log IP`,
+              `Website Failed Log Fail Reason`)  
+            VALUES (%s,%s,%s,%s,%s, %s)",prepare_mysql($type),  prepare_mysql($handle), prepare_mysql($website_user_key), prepare_mysql($date), prepare_mysql($ip), prepare_mysql($main_reason)
 
         );
 
@@ -311,7 +312,7 @@ class WebAuth {
 
 
         $pass_tests = false;
-        $fail_test = 'cookie_error';
+        $fail_test  = 'cookie_error';
 
         $website_user_key     = '';
         $customer_key         = '';
@@ -354,7 +355,7 @@ class WebAuth {
                     );
 
                     $sql = sprintf(
-                        'delete from `Website Auth Token Dimension` where `Website Auth Token Key`=%d ',$row['Website Auth Token Key']
+                        'DELETE FROM `Website Auth Token Dimension` WHERE `Website Auth Token Key`=%d ', $row['Website Auth Token Key']
 
                     );
 
@@ -364,7 +365,7 @@ class WebAuth {
                         'INSERT INTO `Website Auth Token Dimension` (`Website Auth Token Website Key`,`Website Auth Token Selector`,`Website Auth Token Hash`,`Website Auth Token Website User Key`,`Website Auth Token Customer Key`,`Website Auth Token Website User Log Key`,`Website Auth Token Expire`) 
                       VALUES (%d,%s,%s,%d,%d,%d,%s)',
 
-                        $website_key,prepare_mysql($selector), prepare_mysql(hash('sha256', $authenticator)), $website_user_key, $customer_key, $website_user_log_key,
+                        $website_key, prepare_mysql($selector), prepare_mysql(hash('sha256', $authenticator)), $website_user_key, $customer_key, $website_user_log_key,
                         prepare_mysql(date('Y-m-d H:i:s', time() + 864000))
 
                     );
@@ -372,18 +373,15 @@ class WebAuth {
                     $this->db->exec($sql);
 
 
-
-
                 } else {
 
 
-
-                    setcookie('rmb', 'x:x', time() - 864000, '/'
+                    setcookie(
+                        'rmb', 'x:x', time() - 864000, '/'
                     //,'',
                     //true, // TLS-only
                     //true  // http-only
                     );
-
 
 
                 }
@@ -391,12 +389,12 @@ class WebAuth {
             } else {
 
 
-                setcookie('rmb', 'x:x', time() - 864000, '/'
+                setcookie(
+                    'rmb', 'x:x', time() - 864000, '/'
                 //,'',
                 //true, // TLS-only
                 //true  // http-only
                 );
-
 
 
             }
@@ -420,7 +418,7 @@ class WebAuth {
             );
 
         } else {
-            $this->log_failed_login('Cookie', $website_user_key, $fail_test, $tests, $customer_key, $website_key);
+            $this->log_failed_login('Cookie', '',$website_user_key, $tests, $customer_key, $website_key);
 
             return array(
                 false,
@@ -434,90 +432,74 @@ class WebAuth {
 
     }
 
-    function extend_log($website_user_log_key, $website_user_key, $customer_key){
-
-
+    function extend_log($website_user_log_key, $website_user_key, $customer_key) {
 
 
     }
 
 
-
-    function authenticate_from_master_key($data, $same_ip = false) {
-
+    function authenticate_from_reset_password($selector, $authenticator, $website_key) {
 
         $pass_tests = false;
-        $this->pass = array(
-            'handle'        => 'No',
-            'handle_in_use' => 'No',
-            'handle_key'    => 0,
-            'password'      => 'Unknown',
-            'time'          => 'Unknown',
-            'ip'            => 'Unknown',
-            'ikey'          => 'Unknown',
-            'main_reason'   => 'masterkey_not_found'
+        $fail_test  = 'cookie_error';
+
+        $website_user_key     = '';
+        $customer_key         = '';
+
+
+
+
+        $sql = sprintf(
+            "SELECT `Website Recover Token Key`, `Website Recover Token Hash`,`Website Recover Token Website Key`,`Website Recover Token Website User Key`,`Website Recover Token Customer Key`,`Website Recover Token Expire`  FROM `Website Recover Token Dimension` WHERE `Website Recover Token Selector`=%s  ", prepare_mysql($selector)
         );
-
-        //'cookie_error','handle','password','logging_timeout','ip','ikey','masterkey_not_found','masterkey_used','masterkey_expired'
-
-        $this->authentication_type = 'masterkey';
-        $sql                       =
-            sprintf("SELECT `User Key`,`Valid Until`,`MasterKey Key`,`Used`,`Fails Already Used`,`Fails Expired`  FROM `MasterKey Dimension` M  WHERE `Key`=%s  ", prepare_mysql($data));
-
-        //  if ($same_ip) {$sql.=sprintf(" and `IP`=%s",prepare_mysql(ip()));}
-
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-                $user                          = new User($row['User Key']);
-                $this->handle                  = $user->data['User Handle'];
-                $this->pass['handle_key']      = $user->id;
-                $this->pass['user_parent_key'] = $user->data['User Parent Key'];
-                if ($row['Used'] == 'No') {
+
+                $website_user_key = $row['Website Recover Token Website User Key'];
 
 
-                    if (gmdate('U') < date('U', strtotime($row['Valid Until'].' +00:00'))) {
 
-                        $sql = sprintf("UPDATE `MasterKey Dimension` SET `Used`='Yes' ,`Date Used`=%s WHERE  `MasterKey Key`=%d", prepare_mysql(gmdate('Y-m-d H:i:s')), $row['MasterKey Key']);
+                if (hash_equals($row['Website Recover Token Hash'], hash('sha256',$authenticator
+
+                    )) and $website_key == $row['Website Recover Token Website Key']) {
 
 
-                        $this->db->exec($sql);
+                    if ($row['Website Recover Token Expire'] < gmdate('Y-m-d H:i:s')  ) {
 
-                        if ($user->id) {
-                            $pass_tests            = true;
-                            $this->status          = true;
-                            $this->user_key        = $user->id;
-                            $this->user_handle     = $user->data['User Handle'];
-                            $this->user_parent_key = $user->data['User Parent Key'];
-                            $this->log_login();
-                        } else {
-                            $this->pass['main_reason'] = 'handle';
-                        }
+                        $fail_test = 'selector_expired';
+
                     } else {
-                        $sql = sprintf("UPDATE `MasterKey Dimension` SET `Fails Expired`=%d WHERE  `MasterKey Key`=%d", $row['Fails Expired'] + 1, $row['MasterKey Key']);
-                        $this->db->exec($sql);
-                        $this->pass['main_reason'] = 'masterkey_expired';
-                        $this->pass['time']        = 'No';
-                        $this->pass['password']    = 'Yes';
-                        $this->pass['handle']      = 'Yes';
-                        $this->pass['ikey']        = 'Yes';
+
+                        $pass_tests       = true;
+                        $website_user_key = $row['Website Recover Token Website User Key'];
+                        $customer_key     = $row['Website Recover Token Customer Key'];
+
+
+                        $sql = sprintf(
+                            'DELETE FROM `Website Recover Token Dimension` WHERE `Website Recover Token Key`=%d ', $row['Website Recover Token Key']
+
+                        );
+
+                       // print $sql;
+                       $this->db->exec($sql);
+
 
                     }
+
+
                 } else {
 
-                    $this->pass['password'] = 'Yes';
-                    $this->pass['handle']   = 'Yes';
-                    $this->pass['ikey']     = 'Yes';
-
-                    $sql = sprintf("UPDATE `MasterKey Dimension` SET `Fails Already Used`=%d WHERE  `MasterKey Key`=%d", $row['Fails Already Used'] + 1, $row['MasterKey Key']);
-                    $this->db->exec($sql);
-                    $this->pass['main_reason'] = 'masterkey_used';
-
+                    $fail_test = 'wrong_hash';
 
                 }
 
-            } else {
-                // $this->log_failed_login();
+            }
+
+            else {
+                $fail_test  = 'selector_not_found';
+
+
             }
         } else {
             print_r($error_info = $this->db->errorInfo());
@@ -526,9 +508,32 @@ class WebAuth {
         }
 
 
-        if (!$pass_tests) {
 
-            $this->log_failed_login();
+
+        if ($pass_tests) {
+            $website_user_log_key = $this->log_login('Reset_Password', $website_key, $website_user_key, $customer_key);
+
+
+
+            return array(
+                true,
+                'success',
+                $customer_key,
+                $website_user_key,
+                $website_user_log_key
+            );
+
+
+        } else {
+            $this->log_failed_login('Reset_Password', '',$website_user_key, $fail_test, $customer_key, $website_key);
+
+            return array(
+                false,
+                $fail_test,
+                '',
+                '',
+                ''
+            );
         }
 
 
