@@ -1070,6 +1070,24 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
 
                     }
+                    elseif ($view_path[1] == 'ready') {
+
+
+                        if ($view_path[2] == 'webpage') {
+                            $section    = 'webpage';
+                            $object     = 'webpage';
+                            $parent     = 'website';
+                            $parent_key = $key;
+
+                            if (is_numeric($view_path[3])) {
+                                $key = $view_path[3];
+                            }
+
+
+                        }
+
+
+                    }
                     elseif ($view_path[1] == 'user') {
                         $section    = 'website.user';
                         $object     = 'user';
@@ -1098,57 +1116,34 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
 
                 break;
-            case 'node':
+
+            case 'webpage':
                 if (!$user->can_view('sites')) {
                     $module  = 'utils';
                     $section = 'forbidden';
                     break;
                 }
 
-                $module  = 'websites';
-                $section = 'website.node';
-                $object  = 'node';
-                $key     = $view_path[0];
-                if (isset($view_path[1])) {
-                    if ($view_path[1] == 'version') {
-                        $section    = 'page';
-                        $object     = 'page';
-                        $parent     = 'node';
-                        $parent_key = $key;
-
-                        if (is_numeric($view_path[2])) {
-                            $key = $view_path[2];
-                        }
+                $module  = 'products';
+                $section = 'webpage';
+                $object  = 'webpage';
+                $parent='website';
 
 
-                    } elseif ($view_path[1] == 'user') {
-                        $section    = 'website.user';
-                        $object     = 'user';
-                        $parent     = 'page';
-                        $parent_key = $key;
 
-                        if (is_numeric($view_path[2])) {
-                            $key = $view_path[2];
-                        }
+                $parent_key='';
 
 
-                    } elseif ($view_path[1] == 'node') {
-                        $section    = 'website.node';
-                        $object     = 'node';
-                        $parent     = 'node';
-                        $parent_key = $key;
+                if (isset($view_path[0])) {
 
-                        if (is_numeric($view_path[2])) {
-                            $key = $view_path[2];
-                        }
-
-
-                    }
-
+                    $key = $view_path[0];
+                    $webpage=get_object('Webpage',$key);
+                    $parent_key=$webpage->get('Webpage Website Key');
 
                 }
 
                 break;
+
             case 'customer':
                 if (!$user->can_view('customers')) {
                     $module  = 'utils';

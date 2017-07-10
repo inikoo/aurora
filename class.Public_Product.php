@@ -294,7 +294,7 @@ class Public_Product {
                     $this->load_webpage();
                 }
 
-                return $this->webpage->get('Page Store Title');
+                return $this->webpage->get('Webpage Name');
 
                 break;
             case 'Website Node Parent Key':

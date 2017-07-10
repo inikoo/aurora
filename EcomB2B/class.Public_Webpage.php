@@ -208,11 +208,11 @@ class Public_Webpage {
 
             case 'Name':
 
-                return $this->data['Page Short Title'];
+                return $this->data['Webpage Name'];
                 break;
             case 'URL':
 
-                return $this->data['Page URL'];
+                return $this->data['Webpage URL'];
                 break;
 
             case 'CSS':

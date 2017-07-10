@@ -2,7 +2,7 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 22 May 2017 at 12:11:28 GMT+8, Cyberjaya, Malaydia
+ Created: 10 July 2017 at 17:39:38 GMT+8, Cyberjaya, Malaydia
  Copyright (c) 2017, Inikoo
 
  Version 3
@@ -12,7 +12,7 @@
 
 $table = '`Page Store Dimension` P left join `Webpage Type Dimension` WTD on (WTD.`Webpage Type Key`=P.`Webpage Type Key`) ';
 
-$where = 'where `Webpage State`="InProcess"';
+$where = 'where `Webpage State`="Ready"';
 
 switch ($parameters['parent']) {
 

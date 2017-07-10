@@ -52,11 +52,11 @@ if ($order == 'customer') {
 } elseif ($order == 'user') {
     $order = '`User Handle`';
 } elseif ($order == 'page') {
-    $order = '`Page Code`';
+    $order = '`Webpage Code`';
 } elseif ($order == 'date') {
     $order = '`Date`';
 } elseif ($order == 'title') {
-    $order = '`Page Store Title`';
+    $order = '`Webpage Name`';
 } else {
     $order = 'URD.`User Request Key`';
 }
@@ -65,7 +65,7 @@ if ($order == 'customer') {
 $sql_totals = "select count(*) as num from $table  $where  ";
 
 $fields
-    = "`Page Parent Key`,`Page Parent Code`,`Page Store Section`,`Page Store Title`,`Page Site Key`,`User Request Key`,URD.`Page Key`,`Page Code`,`User Site Key`,`User Alias`,`User Parent Key`,`User Handle`,U.`User Key`,`Date`";
+    = "`Page Parent Key`,`Page Parent Code`,`Page Name`,`Page Site Key`,`User Request Key`,URD.`Page Key`,`Page Code`,`User Site Key`,`User Alias`,`User Parent Key`,`User Handle`,U.`User Key`,`Date`";
 
 
 //	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";

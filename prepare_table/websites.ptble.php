@@ -102,6 +102,6 @@ $sql_totals
 
 
 $fields
-    = "`Website Number Products`,`Website Number Out of Stock Products`,`Website Number WebPages with Out of Stock Products`,`Website Number WebPages with Products`,`Website Number WebPages`,`Website Total Acc Requests`,`Website Total Acc Sessions`,`Website Total Acc Visitors`,`Website Total Acc Users`,`Website Code`,`Website Name`,W.`Website Key`,`Website URL`
+    = "`Website Store Key`,`Website Number Products`,`Website Number Out of Stock Products`,`Website Number WebPages with Out of Stock Products`,`Website Number WebPages with Products`,`Website Number WebPages`,`Website Total Acc Requests`,`Website Total Acc Sessions`,`Website Total Acc Visitors`,`Website Total Acc Users`,`Website Code`,`Website Name`,W.`Website Key`,`Website URL`
 ";
 ?>

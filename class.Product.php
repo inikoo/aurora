@@ -528,7 +528,7 @@ class Product extends Asset {
             case 'Webpage Name':
 
 
-                return $this->webpage->get('Page Store Title');
+                return $this->webpage->get('Webpage Name');
 
                 break;
             case 'Website Node Parent Key':
@@ -2345,23 +2345,8 @@ class Product extends Asset {
 
     function get_webpage() {
 
-        include_once 'class.Page.php';
-        // Todo: migrate to new webpage class
 
-        $page_key = 0;
-        $sql      = sprintf('SELECT `Page Key` FROM `Page Store Dimension` WHERE `Page Store Section Type`="Product"  AND  `Page Parent Key`=%d ', $this->id);
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $page_key = $row['Page Key'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        $page = new Page($page_key);
+        $page = get_object('Webpage',$this->get('Product Webpage Key'));
 
         $this->webpage = $page;
 
@@ -2434,12 +2419,7 @@ class Product extends Asset {
                 if (!is_object($this->webpage)) {
                     $this->get_webpage();
                 }
-                $this->webpage->update(
-                    array(
-                        'Page Store Title' => $value,
-                        'Page Short Title' => $value,
-                    ), 'no_history'
-                );
+
 
                 $this->webpage->update(
                     array(
@@ -2458,7 +2438,6 @@ class Product extends Asset {
                     $this->get_webpage();
                 }
 
-                $this->webpage->update(array('Page Title' => $value), 'no_history');
                 $this->webpage->update(array('Webpage Browser Title' => $value), $options);
                 $this->updated = $this->webpage->updated;
 
@@ -2468,12 +2447,6 @@ class Product extends Asset {
                 if (!is_object($this->webpage)) {
                     $this->get_webpage();
                 }
-                $this->webpage->update(
-                    array(
-                        'Page Store Description' => $value
-                    ), 'no_history'
-                );
-
 
                 $this->webpage->update(
                     array(

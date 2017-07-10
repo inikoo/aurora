@@ -144,9 +144,9 @@ case 'flags':
 
 $wheref = '';
 if ($parameters['f_field'] == 'code' and $f_value != '') {
-    $wheref .= " and `Page Code` like '".addslashes($f_value)."%'";
+    $wheref .= " and `Webpage Code` like '".addslashes($f_value)."%'";
 } elseif ($parameters['f_field'] == 'title' and $f_value != '') {
-    $wheref .= " and  `Page Store Title` like '".addslashes($f_value)."%'";
+    $wheref .= " and  `Webpage Name` like '".addslashes($f_value)."%'";
 }
 
 
@@ -171,9 +171,9 @@ if ($order == 'code') {
 } elseif ($order == 'requests') {
     $order = "`Page Store Total Acc Requests`";
 } elseif ($order == 'title') {
-    $order = '`Page Store Title`';
+    $order = '`Webpage Browser Title`';
 } elseif ($order == 'link_title') {
-    $order = '`Page Short Title`';
+    $order = '`Webpage Name`';
 } elseif ($order == 'products') {
     $order = '`Page Store Number Products`';
 } elseif ($order == 'list_products') {
@@ -199,6 +199,6 @@ $sql_totals
     = "select count(Distinct PS.`Page Key`) as num from $table  $where  ";
 
 $fields
-    = "*,`Site SSL`,(`Page Store Number Out of Stock Products`/`Page Store Number Products`) as percentage_out_of_stock,`Site Code`,S.`Site Key`,`Page Short Title`,`Page Preview Snapshot Image Key`,`Page Store Section`,`Page Parent Code`,`Page Parent Key`,`Page URL`,P.`Page Key`,`Page Store Title`,`Page Code`
+    = "*,`Site SSL`,(`Page Store Number Out of Stock Products`/`Page Store Number Products`) as percentage_out_of_stock,`Site Code`,S.`Site Key`,`Page Short Title`,`Page Preview Snapshot Image Key`,`Page Store Section`,`Page Parent Code`,`Page Parent Key`,`Page URL`,P.`Page Key`,`Webpage Name`,`Webpage Code`
 ";
 ?>

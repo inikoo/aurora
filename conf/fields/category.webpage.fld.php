@@ -12,6 +12,7 @@
 
 
 $object->get_webpage();
+$website=get_object('Website',$object->webpage->get('Webpage Website Key'));
 
 
 
@@ -62,9 +63,8 @@ $subject_render          = true;
 
 $category_fields = array(
 
-
     array(
-        'label'      => _('Webpage state').' <span class="padding_left_10 Webpage_State_Edit_Label"><i class="fa fa-globe '.($object->webpage->get('Webpage State')=='Online'?'success':'super_discreet').'" aria-hidden="true"></i></span>',
+        'label'      => _('Webpage state'),
         'class'      => 'operations',
 
         'show_title' => true,
@@ -73,37 +73,57 @@ $category_fields = array(
 
             array(
                 'id'        => 'launch_webpage',
-                'render'=>($object->webpage->get('Webpage Launch Date')!=''?false:true),
+                'render'=>( $website->get('Website Status')=='Active' and $object->webpage->get('Webpage State')=='InProcess' ?true:false),
                 'class'     => 'operation',
                 'value'     => '',
-                'label'     => ' <span webpage_key="'.$object->webpage->id.'" onClick="publish(this,\'publish_webpage\')" class="save changed valid">'._("Launch web page").' <i class="fa fa-rocket save changed valid"></i></span>',
+                'label'     => ' <span style="margin:10px 0px;padding:10px;border:1px solid #ccc"  webpage_key="'.$object->webpage->id.'" onClick="publish(this,\'publish_webpage\')" class="save changed valid">'._("Launch web page").' <i class="fa fa-rocket save changed valid"></i></span>',
                 'reference' => '',
                 'type'      => 'operation'
             ),
 
             array(
                 'id'        => 'unpublish_webpage',
-                'render'=>(($object->webpage->get('Webpage Launch Date')=='' or $object->webpage->get('Webpage State')=='Offline' ) ?false:true),
+                'render'=>(  $website->get('Website Status')=='Active' and   $object->webpage->get('Webpage State')=='Online'  ?true:false),
                 'class'     => 'operation',
                 'value'     => '',
-                'label'     => ' <span webpage_key="'.$object->webpage->id.'" onClick="publish(this,\'unpublish_webpage\')" class="error button ">'._("Unpublish web page").' <i class="fa fa-rocket  fa-flip-vertical error button"></i></span>',
+                'label'     => ' <span style="margin:10px 0px;padding:10px;border:1px solid #ccc" webpage_key="'.$object->webpage->id.'" onClick="publish(this,\'unpublish_webpage\')" class="error button ">'._("Unpublish web page").' <i class="fa fa-rocket  fa-flip-vertical error button"></i></span>',
                 'reference' => '',
                 'type'      => 'operation'
             ),
             array(
                 'id'        => 'republish_webpage',
-                'render'=>(($object->webpage->get('Webpage Launch Date')!='' and $object->webpage->get('Webpage State')=='Offline' ) ?true:false),
+                'render'=>(  $website->get('Website Status')=='Active' and   $object->webpage->get('Webpage State')=='Offline'  ?true:false),
                 'class'     => 'operation',
                 'value'     => '',
-                'label'     => ' <span webpage_key="'.$object->webpage->id.'" onClick="publish(this,\'publish_webpage\')" class=" button ">'._("Republish web page").' <i class="fa fa-rocket   button"></i></span>',
+                'label'     => '<span style="margin:10px 0px;padding:10px;border:1px solid #ccc" webpage_key="'.$object->webpage->id.'" onClick="publish(this,\'publish_webpage\')" class=" button ">'._("Republish web page").' <i class="fa fa-rocket   button"></i></span>',
                 'reference' => '',
                 'type'      => 'operation'
             ),
 
 
+            array(
+                'id'        => 'set_as_not_ready_webpage',
+                'render'=>(  $website->get('Website Status')=='InProcess' and  $object->webpage->get('Webpage State')=='Ready'  ?true:false),
+                'class'     => 'operation',
+                'value'     => '',
+                'label'     => ' <span style="margin:10px 0px;padding:10px;border:1px solid #ccc" webpage_key="'.$object->webpage->id.'" onClick="publish(this,\'set_webpage_as_not_ready\')" class="discreet button ">'._("Set as not ready").' <i class="fa fa-child button"></i></span>',
+                'reference' => '',
+                'type'      => 'operation'
+            ),
+            array(
+                'id'        => 'set_as_ready_webpage',
+                'render'=>(  $website->get('Website Status')=='InProcess' and  $object->webpage->get('Webpage State')!='Ready'  ?true:false),
+                'class'     => 'operation',
+                'value'     => '',
+                'label'     => '<span style="margin:10px 0px;padding:10px;border:1px solid #ccc" webpage_key="'.$object->webpage->id.'" onClick="publish(this,\'set_webpage_as_ready\')" class=" button ">'._("Set as ready").' <i class="fa fa-check-circle padding_left_5  button"></i></span>',
+                'reference' => '',
+                'type'      => 'operation'
+
+
+
+            )
         )
     ),
-
     array(
         'label'      => _('Webpage'),
         'show_title' => true,

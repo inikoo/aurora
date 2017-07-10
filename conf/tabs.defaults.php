@@ -672,6 +672,18 @@ $tab_defaults = array(
         'elements'      => $elements_options['online_webpages'],
     ),
 
+    'website.ready_webpages'               => array(
+        'view'          => 'overview',
+        'sort_key'      => 'code',
+        'sort_order'    => 0,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'code',
+        'f_period'      => 'ytd',
+        'elements_type' => each($elements_options['online_webpages'])['key'],
+        'elements'      => $elements_options['online_webpages'],
+    ),
+
     'website.online_webpages'               => array(
         'view'          => 'overview',
         'sort_key'      => 'code',

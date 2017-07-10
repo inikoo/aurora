@@ -22,6 +22,7 @@ function get_product_showcase($data, $smarty, $user, $db) {
     }
 
     $product->load_acc_data();
+    $product->get_webpage();
 
     //$product->update_availability();
 

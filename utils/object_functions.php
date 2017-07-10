@@ -62,12 +62,6 @@ function get_object($object_name, $key, $load_other_data = false) {
             $object = new Website($key);
             break;
         case 'old_page':
-            include_once 'class.Page.php';
-
-            $object = new Page($key);
-
-            break;
-
         case 'page':
         case 'webpage':
 

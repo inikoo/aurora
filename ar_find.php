@@ -1902,146 +1902,6 @@ function new_purchase_order_options($db, $data) {
 }
 
 
-function find_web_node($db, $account, $memcache_ip, $data) {
-
-
-    $cache       = false;
-    $max_results = 5;
-    $user        = $data['user'];
-    $q           = trim($data['query']);
-
-
-    if ($q == '') {
-        $response = array(
-            'state'   => 200,
-            'results' => 0,
-            'data'    => ''
-        );
-        echo json_encode($response);
-
-        return;
-    }
-
-    $where = '';
-    switch ($data['parent']) {
-        case 'website':
-            $where = sprintf(' and `Page Site Key`=%d', $data['parent_key']);
-            break;
-        default:
-
-            break;
-    }
-
-    $where .= ' and `Page State`="Online" ';
-
-    $memcache_fingerprint = $account->get('Account Code').'FIND_WN'.md5($q);
-
-    $cache = new Memcached();
-    $cache->addServer($memcache_ip, 11211);
-
-
-    if (strlen($q) <= 2) {
-        $memcache_time = 295200;
-    }
-    if (strlen($q) <= 3) {
-        $memcache_time = 86400;
-    }
-    if (strlen($q) <= 4) {
-        $memcache_time = 3600;
-    } else {
-        $memcache_time = 300;
-
-    }
-
-
-    $results_data = $cache->get($memcache_fingerprint);
-
-
-    if (!$results_data or true) {
-
-
-        $candidates = array();
-
-        $candidates_data = array();
-
-
-        $sql = sprintf(
-            "select `Page Key`,`Page Code`,`Page Store Title` from `Page Store Dimension` where  `Page Code` like '%s%%' %s order by `Page Code` limit $max_results ", $q, $where
-        );
-        if ($result = $db->query($sql)) {
-            foreach ($result as $row) {
-
-                if ($row['Page Code'] == $q) {
-                    $candidates[$row['Page Key']] = 1000;
-                } else {
-
-                    $len_name                     = strlen($row['Page Key']);
-                    $len_q                        = strlen($q);
-                    $factor                       = $len_q / $len_name;
-                    $candidates[$row['Page Key']] = 500 * $factor;
-                }
-
-                $candidates_data[$row['Page Key']] = array(
-                    'Page Code'        => $row['Page Code'],
-                    'Page Store Title' => $row['Page Store Title']
-                );
-
-            }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            exit;
-        }
-
-
-        arsort($candidates);
-
-
-        $total_candidates = count($candidates);
-
-        if ($total_candidates == 0) {
-            $response = array(
-                'state'   => 200,
-                'results' => 0,
-                'data'    => ''
-            );
-            echo json_encode($response);
-
-            return;
-        }
-
-
-        $results = array();
-        foreach ($candidates as $product_sku => $candidate) {
-
-            $results[$product_sku] = array(
-                'code'            => $candidates_data[$product_sku]['Page Code'],
-                'description'     => $candidates_data[$product_sku]['Page Store Title'],
-                'value'           => $product_sku,
-                'formatted_value' => $candidates_data[$product_sku]['Page Code']
-            );
-
-        }
-
-        $results_data = array(
-            'n' => count($results),
-            'd' => $results
-        );
-        $cache->set($memcache_fingerprint, $results_data, $memcache_time);
-
-
-    }
-    $response = array(
-        'state'          => 200,
-        'number_results' => $results_data['n'],
-        'results'        => $results_data['d'],
-        'q'              => $q
-    );
-
-    echo json_encode($response);
-
-}
-
-
 function find_webpages($db, $account, $memcache_ip, $data) {
 
 
@@ -2066,7 +1926,7 @@ function find_webpages($db, $account, $memcache_ip, $data) {
     $where = '';
     switch ($data['parent']) {
         case 'website':
-            $where = sprintf(' and `Page Site Key`=%d', $data['parent_key']);
+            $where = sprintf(' and `Webpage Website Key`=%d', $data['parent_key']);
             break;
         default:
 
@@ -2077,7 +1937,7 @@ function find_webpages($db, $account, $memcache_ip, $data) {
     if (isset($data['metadata']['option'])) {
         switch ($data['metadata']['option']) {
             case 'only_online':
-                $where .= sprintf(' and `Page State`="Online"');
+                $where .= sprintf(' and `Webpage State`="Online"');
                 break;
             default:
 
@@ -2126,7 +1986,7 @@ function find_webpages($db, $account, $memcache_ip, $data) {
 
 
         $sql = sprintf(
-            "select `Page Key`,`Page Code`,`Page Store Title` from `Page Store Dimension` where  `Page Code` like '%s%%' %s order by `Page Code` limit $max_results ", $q, $where
+            "select `Page Key`,`Webpage Code`,`Webpage Name` from `Page Store Dimension` where  `Webpage Code` like '%s%%' %s order by `Webpage Code` limit $max_results ", $q, $where
         );
 
 
@@ -2145,7 +2005,7 @@ function find_webpages($db, $account, $memcache_ip, $data) {
 
                 $candidates_data[$row['Page Key']] = array(
                     'Page Code'        => $row['Page Code'],
-                    'Page Store Title' => $row['Page Store Title']
+                    'Webpage Name' => $row['Webpage Name']
                 );
 
             }
@@ -2176,10 +2036,10 @@ function find_webpages($db, $account, $memcache_ip, $data) {
         foreach ($candidates as $product_sku => $candidate) {
 
             $results[$product_sku] = array(
-                'code'            => $candidates_data[$product_sku]['Page Code'],
-                'description'     => $candidates_data[$product_sku]['Page Store Title'],
+                'code'            => $candidates_data[$product_sku]['Webpage Code'],
+                'description'     => $candidates_data[$product_sku]['Webpage Name'],
                 'value'           => $product_sku,
-                'formatted_value' => $candidates_data[$product_sku]['Page Code']
+                'formatted_value' => $candidates_data[$product_sku]['Webpage Code']
             );
 
         }
@@ -2288,7 +2148,7 @@ function find_product_webpages($db, $account, $memcache_ip, $data) {
 
 
         $sql = sprintf(
-            "select `Product ID`,`Product Code`,`Product Name`,`Page Store Title` from `Page Store Dimension`  left join `Product Dimension` on (`Page Parent Key`=`Product ID` and `Page Store Section Type`='Product')  where  `Product Code` like '%s%%' %s order by `Product Code` limit $max_results ",
+            "select `Product ID`,`Product Code`,`Product Name`,`Webpage Name` from `Page Store Dimension`  left join `Product Dimension` on (`Page Parent Key`=`Product ID` and `Page Store Section Type`='Product')  where  `Product Code` like '%s%%' %s order by `Product Code` limit $max_results ",
             $q, $where
         );
 
