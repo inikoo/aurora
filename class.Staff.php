@@ -284,7 +284,7 @@ class Staff extends DB_Table {
                     }
                 }
 
-                $user_data['editor']=$this->editor ;
+                $user_data['editor'] = $this->editor;
 
 
                 $staff_user = $this->create_user($user_data);
@@ -350,6 +350,18 @@ class Staff extends DB_Table {
 
 
             $timesheet = new Timesheet('find', $timesheet_data, 'create');
+
+
+            if ($options == 'force') {
+
+                $sql = sprintf(
+                    "DELETE FROM `Timesheet Record Dimension`  WHERE `Timesheet Record Type` IN ('WorkingHoursMark','OvertimeMark','BreakMark') AND `Timesheet Record Timesheet Key`=%d  ",
+                    $timesheet->id
+                );
+
+                $this->db->exec($sql);
+            }
+
 
             if ($timesheet->get('Timesheet Working Hours Records') >= 2 and $options == '') {
                 $timesheet->update_number_records('WorkingHoursMark');
@@ -1053,7 +1065,7 @@ class Staff extends DB_Table {
         }
 
 
-    //    $data['editor'] = $this->editor;
+        //    $data['editor'] = $this->editor;
 
         if (!array_key_exists('User Handle', $data) or $data['User Handle'] == '') {
             $this->create_user_error = true;
@@ -1241,8 +1253,8 @@ class Staff extends DB_Table {
 
         //print_r($this->data);
         if (isset($this->data['Staff User Key']) and $this->data['Staff User Key']) {
-            $staff_user = new User($this->data['Staff User Key']);
-            $staff_user->editor=$this->editor;
+            $staff_user         = new User($this->data['Staff User Key']);
+            $staff_user->editor = $this->editor;
             if ($staff_user->id) {
                 $staff_user->update_groups($groups);
             }
@@ -1318,15 +1330,13 @@ class Staff extends DB_Table {
                 require_once 'utils/date_functions.php';
 
 
+                if ($this->get('Staff Valid To') != '' and strtotime($value) > strtotime($this->get('Staff Valid To'))) {
+                    $this->error = true;
+                    $this->msg   = _("Working from must be before the end of employment ");
 
-
-                if($this->get('Staff Valid To')!='' and   strtotime($value)>strtotime($this->get('Staff Valid To'))){
-                    $this->error=true;
-                    $this->msg=_("Working from must be before the end of employment ");
                     return;
 
                 }
-
 
 
                 $this->update_field($field, $value, $options);
@@ -1364,15 +1374,13 @@ class Staff extends DB_Table {
                 require_once 'utils/date_functions.php';
 
 
+                if (strtotime($this->get('Staff Valid From')) > strtotime($value)) {
+                    $this->error = true;
+                    $this->msg   = _("Working from must be before the end of employment ");
 
-
-                if(strtotime($this->get('Staff Valid From'))>strtotime($value)){
-                    $this->error=true;
-                    $this->msg=_("Working from must be before the end of employment ");
                     return;
 
                 }
-
 
 
                 $this->update_field($field, $value, $options);
@@ -2236,15 +2244,12 @@ class Staff extends DB_Table {
             array(
 
                 'Staff Currently Working' => 'No',
-                'Staff User Active'=>'No',
+                'Staff User Active'       => 'No',
                 'Staff Valid To'          => gmdate('Y-m-d H:i:s')
 
             )
 
         );
-
-
-
 
 
     }
