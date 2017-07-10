@@ -329,7 +329,11 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
         $items_in_directory = '';
 
 
-        if ($object->updated or true) {
+
+
+
+        if ($object->updated or true)
+        {
             $msg = sprintf(
                 '<span class="success"><i class="fa fa-check " onClick="hide_edit_field_msg(\'%s\')" ></i> %s</span>', $data['field'], _('Updated')
             );

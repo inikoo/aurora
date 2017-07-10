@@ -87,6 +87,13 @@ switch ($tab) {
         get_webpages_by_state_element_numbers($db, $data['parameters'], $user, 'InProcess');
         break;
 
+    case 'website.ready_webpages':
+    case 'webpage_type.ready_webpages':
+
+        $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
+        get_webpages_by_state_element_numbers($db, $data['parameters'], $user, 'Ready');
+        break;
+
     case 'website.nodes':
         $data = prepare_values(
             $_REQUEST, array(

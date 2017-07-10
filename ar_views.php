@@ -130,7 +130,7 @@ function get_view($db, $smarty, $user, $account, $modules) {
     $state = parse_request($data, $db, $modules, $account, $user);
 
 
-    //print_r($state);
+
 
     $state['current_store']     = $_SESSION['current_store'];
     $state['current_website']   = $_SESSION['current_website'];
@@ -189,6 +189,8 @@ function get_view($db, $smarty, $user, $account, $modules) {
         case 'website':
 
             include_once 'class.Store.php';
+
+
 
             $_parent                  = get_object('Website', $state['parent_key']);
             $website                  = $_parent;
@@ -2370,7 +2372,7 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
     );
 
 
-    //print_r($_content);
+
 
     if ($data['section'] == 'category') {
 
@@ -2509,6 +2511,21 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
         }else{
 
         }
+
+
+    }
+    elseif ( $data['section'] == 'website') {
+
+
+        if($data['website']->get('Website Status')=='Active'){
+            $_content['subtabs']['website.ready_webpages']['class']    = 'hide';
+        }else{
+            $_content['subtabs']['website.offline_webpages']['class']    = 'hide';
+            $_content['subtabs']['website.online_webpages']['class']    = 'hide';
+
+        }
+
+
 
 
     }

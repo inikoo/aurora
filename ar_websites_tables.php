@@ -62,6 +62,9 @@ switch ($tipo) {
     case 'in_process_webpages':
         webpages_in_process(get_table_parameters(), $db, $user);
         break;
+    case 'ready_webpages':
+        webpages_ready(get_table_parameters(), $db, $user);
+        break;
     case 'online_webpages':
         webpages_online(get_table_parameters(), $db, $user);
         break;
@@ -236,9 +239,9 @@ function websites($_data, $db, $user) {
 
         $adata[] = array(
             'id'                            => (integer)$data['Website Key'],
-            'code'                          => $data['Website Code'],
+            'code'                          => sprintf('<span class="link" onclick="change_view(\'store/%d/website\')">%s</span>',$data['Website Store Key'],$data['Website Code']),
             'name'                          => $data['Website Name'],
-            'url'                           => $data['Website URL'],
+            'url'                           => 'https://'.$data['Website URL'],
             'users'                         => number(
                 $data['Website Total Acc Users']
             ),
@@ -297,92 +300,6 @@ function websites($_data, $db, $user) {
     echo json_encode($response);
 }
 
-
-function pages($_data, $db, $user) {
-
-    $rtext_label = 'page';
-    include_once 'prepare_table/init.php';
-
-    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-    $adata = array();
-
-    // print $sql;
-
-    $interval_db = get_interval_db_name($parameters['f_period']);
-    foreach ($db->query($sql) as $data) {
-        /*
-                $period_visitors=number($data["Page Store $interval_db Acc Visitors"]);
-                $period_sessions=number($data["Page Store $interval_db Acc Sessions"]);
-                $period_requests=number($data["Page Store $interval_db Acc Requests"]);
-                $period_users=number($data["Page Store $interval_db Acc Users"]);
-
-                $users=number($data["Page Store Total Acc Users"]);
-                $requests=number($data["Page Store Total Acc Requests"]);
-
-
-
-
-
-
-                switch ($data['Page State']) {
-                case 'Online':
-                    //$state='<img src="/art/icons/world.png" alt='._('Online').'/>';
-                    $state=_('Online');
-                    break;
-                case 'Offline':
-                    //$state='<img src="/art/icons/world_bw.png" alt='._('Offline').'/>';
-                    $state=_('Offline');
-                    break;
-                default:
-                    $state='';
-                }
-
-
-                $products=number($data['Page Store Number Products']);
-                $products_out_of_stock=number($data['Page Store Number Out of Stock Products']);
-                $products_sold_out=number($data['Page Store Number Sold Out Products']);
-                $percentage_products_out_of_stock=percentage($data['Page Store Number Out of Stock Products'], $data['Page Store Number Products']);
-                $list_products=number($data['Page Store Number List Products']);
-                $button_products=number($data['Page Store Number Button Products']);
-
-                if ($data['Page State']=='Offline') {
-                    $products='<span style="color:#777;font-style:italic">'.$products.'</span>';
-                    $products_out_of_stock='<span style="color:#777;font-style:italic">'.$products_out_of_stock.'</span>';
-                    $products_sold_out='<span style="color:#777;font-style:italic">'.$products_sold_out.'</span>';
-                    $percentage_products_out_of_stock='<span style="color:#777;font-style:italic">'.$percentage_products_out_of_stock.'</span>';
-                    $list_products='<span style="color:#777;font-style:italic">'.$list_products.'</span>';
-                    $button_products='<span style="color:#777;font-style:italic">'.$button_products.'</span>';
-
-                }
-        */
-        $adata[] = array(
-            'id'      => (integer)$data['Webpage Key'],
-            'code'    => $data['Webpage Code'],
-            'name'    => $data['Webpage Name'],
-            'display' => percentage($data['Webpage Display Probability'], 1),
-            //'type'=>$type,
-            //'url'=>($data['Website SSL']=='Yes'?'https://':'http://').$data['Page URL'],
-            //'title'=>$data['Page Store Title'],
-            //'state'=>$state,
-            //'users'=>$users,
-            //'requests'=>$requests,
-        );
-
-    }
-
-    $response = array(
-        'resultset' => array(
-            'state'         => 200,
-            'data'          => $adata,
-            'rtext'         => $rtext,
-            'sort_key'      => $_order,
-            'sort_dir'      => $_dir,
-            'total_records' => $total
-
-        )
-    );
-    echo json_encode($response);
-}
 
 
 function pageviews($_data, $db, $user) {
@@ -464,8 +381,8 @@ function pageviews($_data, $db, $user) {
 
         $adata[] = array(
             'id'    => (integer)$data['User Request Key'],
-            'page'  => $data['Page Code'],
-            'title' => $data['Page Store Title'],
+            'page'  => $data['Webpage Code'],
+            'title' => $data['Webpage Browsert Title'],
             'type'  => $type,
 
             'page_key' => $data['Page Key'],
@@ -473,83 +390,6 @@ function pageviews($_data, $db, $user) {
             'date'     => strftime(
                 "%a %e %b %Y %H:%M:%S %Z", strtotime($data['Date'])
             ),
-
-        );
-
-    }
-
-    $response = array(
-        'resultset' => array(
-            'state'         => 200,
-            'data'          => $adata,
-            'rtext'         => $rtext,
-            'sort_key'      => $_order,
-            'sort_dir'      => $_dir,
-            'total_records' => $total
-
-        )
-    );
-    echo json_encode($response);
-}
-
-
-function root_nodes($_data, $db, $user) {
-
-    $rtext_label = 'section';
-    include_once 'prepare_table/init.php';
-
-    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-    $adata = array();
-
-    foreach ($db->query($sql) as $data) {
-
-        if ($data['Webpage State'] == 'Online') {
-            $state = '<i class="fa fa-globe" aria-hidden="true"></i>';
-        } else {
-            $state = '<i class="fa fa-globe very_discreet" aria-hidden="true"></i>';
-
-        }
-
-        $adata[] = array(
-            'id'    => (integer)$data['Website Node Key'],
-            'code'  => $data['Webpage Code'],
-            'name'  => $data['Webpage Name'],
-            'state' => $state
-
-
-        );
-
-    }
-
-    $response = array(
-        'resultset' => array(
-            'state'         => 200,
-            'data'          => $adata,
-            'rtext'         => $rtext,
-            'sort_key'      => $_order,
-            'sort_dir'      => $_dir,
-            'total_records' => $total
-
-        )
-    );
-    echo json_encode($response);
-}
-
-function nodes($_data, $db, $user) {
-
-    $rtext_label = 'section';
-    include_once 'prepare_table/init.php';
-
-    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-    $adata = array();
-
-    foreach ($db->query($sql) as $data) {
-
-        $adata[] = array(
-            'id'   => (integer)$data['Website Node Key'],
-            'code' => $data['Webpage Code'],
-            'name' => $data['Webpage Name'],
-
 
         );
 
@@ -906,6 +746,54 @@ function webpages_in_process($_data, $db, $user) {
             'id'      => (integer)$data['Webpage Key'],
             'code'    => sprintf('<span class="link" onclick="change_view(\'website/%d/in_process/webpage/%d\')">%s</span>', $data['Webpage Website Key'], $data['Webpage Key'], $data['Webpage Code']),
             'state'   => $state,
+            'type'    => $type,
+            'name'    => $data['Webpage Name'],
+            'template'    => $data['Webpage Template Filename'],
+
+
+        );
+
+    }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+
+
+function webpages_ready($_data, $db, $user) {
+
+    $rtext_label = 'webpage ready';
+    include_once 'prepare_table/init.php';
+    include_once 'conf/webpage_types.php';
+
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+
+    $adata = array();
+
+    foreach ($db->query($sql) as $data) {
+
+
+        $type_label=$webpage_types[$data['Webpage Type Code']]['title'];
+        $type_icon=$webpage_types[$data['Webpage Type Code']]['icon'];
+        $type=sprintf('<i class="fa fa-fw %s padding_left_10" aria-hidden="true" title="%s" ></i>',$type_icon, $type_label);
+
+
+        $adata[] = array(
+            'id'      => (integer)$data['Webpage Key'],
+            'code'    => sprintf('<span class="link" onclick="change_view(\'website/%d/ready/webpage/%d\')">%s</span>', $data['Webpage Website Key'], $data['Webpage Key'], $data['Webpage Code']),
             'type'    => $type,
             'name'    => $data['Webpage Name'],
             'template'    => $data['Webpage Template Filename'],

@@ -278,44 +278,6 @@ class Page extends DB_Table {
 
     }
 
-    function update_valid_url() {
-        $old_value                    = $this->data['Page Valid URL'];
-        $this->data['Page Valid URL'] = ($this->is_valid_url($this->data['Page URL']) ? 'Yes' : 'No');
-        if ($old_value != $this->data['Page Valid URL']) {
-            $sql = sprintf("UPDATE `Page Dimension` SET `Page Valid URL`=%s WHERE `Page Key`=%d", prepare_mysql($this->data['Page Valid URL']), $this->id);
-            $this->db->exec($sql);
-        }
-
-    }
-
-    function is_valid_url($url) {
-        if (preg_match("/^(http(s?):\\/\\/|ftp:\\/\\/{1})((\w+\.)+)\w{2,}(\/?)$/i", $url)) {
-            return true;
-        } else {
-            return false;
-        }
-
-    }
-
-    function update_working_url() {
-        $old_value                      = $this->data['Page Working URL'];
-        $this->data['Page Working URL'] = $this->get_url_state(
-            $this->data['Page URL']
-        );
-        if ($old_value != $this->data['Page Working URL']) {
-            $sql = sprintf("UPDATE `Page Dimension` SET `Page Working URL`=%s WHERE `Page Key`=%d", prepare_mysql($this->data['Page Working URL']), $this->id);
-            $this->db->exec($sql);
-        }
-
-    }
-
-    function get_url_state($url) {
-        $state = 'Unknown';
-
-        return $state;
-
-    }
-
 
     function create_store_page($raw_data) {
 
@@ -369,8 +331,8 @@ class Page extends DB_Table {
 
 
             $sql = sprintf(
-                "INSERT INTO `Page Store Search Dimension` VALUES (%d,%d,%s,%s,%s,%s)", $this->id, $this->data['Page Site Key'], prepare_mysql($this->data['Page URL']),
-                prepare_mysql($this->data['Page Store Title'], false), prepare_mysql($this->data['Page Store Description'], false), prepare_mysql($content, false)
+                "INSERT INTO `Page Store Search Dimension` VALUES (%d,%d,%s,%s,%s,%s)", $this->id, $this->data['Webpage Website Key'], prepare_mysql($this->data['Webpage URL']),
+                prepare_mysql($this->data['Webpage Name'], false), prepare_mysql($this->data['Webpage Meta Description'], false), prepare_mysql($content, false)
             );
             $this->db->exec($sql);
 
@@ -918,13 +880,15 @@ class Page extends DB_Table {
 
             case 'Send Email Address':
                 include_once 'class.Store.php';
-                $store=new Store($this->data['Webpage Store Key']);
+                $store = new Store($this->data['Webpage Store Key']);
+
                 return $store->get('Store Email');
 
                 break;
             case 'Send Email Signature':
                 include_once 'class.Store.php';
-                $store=new Store($this->data['Webpage Store Key']);
+                $store = new Store($this->data['Webpage Store Key']);
+
                 return $store->get('Store Email Template Signature');
 
                 break;
@@ -1135,6 +1099,10 @@ class Page extends DB_Table {
                 if (isset($this->data[$key])) {
                     return $this->data[$key];
                 }
+
+                if (isset($this->data['Webpage '.$key])) {
+                    return $this->data['Webpage '.$key];
+                }
         }
 
         if (preg_match('/ Acc /', $key)) {
@@ -1292,6 +1260,31 @@ class Page extends DB_Table {
         switch ($field) {
 
 
+            case 'Webpage Browser Title':
+
+                $sql = sprintf('UPDATE `Page Dimension` SET `Page Title`=%s WHERE `Page Key`=%d ', prepare_mysql($value), $this->id);
+                $this->db->exec($sql);
+                $this->update_field($field, $value, $options);
+                break;
+            case 'Webpage Name':
+
+
+                $sql = sprintf('UPDATE `Page Dimension` SET `Page Short Title`=%s WHERE `Page Key`=%d ', prepare_mysql($value), $this->id);
+                $this->db->exec($sql);
+                $sql = sprintf('UPDATE `Page Store Dimension` SET `Page Store Title`=%s WHERE `Page Key`=%d ', prepare_mysql($value), $this->id);
+                $this->db->exec($sql);
+                $this->update_field($field, $value, $options);
+                break;
+
+            case 'Webpage Meta Description':
+
+
+                $sql = sprintf('UPDATE `Page Store Dimension` SET `Page Store Description`=%s WHERE `Page Key`=%d ', prepare_mysql($value), $this->id);
+                $this->db->exec($sql);
+                $this->update_field($field, $value, $options);
+                break;
+
+
             case 'Store Email':
             case 'Store Company Name':
             case 'Store VAT Number':
@@ -1315,7 +1308,6 @@ class Page extends DB_Table {
                 $this->add_note($value, '', '', $metadata['deletable'], 'Notes', false, false, false, 'Webpage', false, 'Webpage Publishing', false);
 
                 break;
-
 
 
             case 'Scope Metadata':
@@ -1523,30 +1515,7 @@ class Page extends DB_Table {
                 }
                 break;
 
-            case('code'):
-            case('page_code'):
-            case('Page Code'):
-                $this->update_code($value);
-                $this->refresh_cache();
-                break;
-            case('Page Header Key'):
-                $this->update_header_key($value);
-                break;
-            case('Page Footer Key'):
-                $this->update_footer_key($value);
-                break;
-            case('url'):
-                return;
-                break;
-            case('page_title'):
-            case('title'):
-            case('Page Title'):
 
-                $this->update_field('Page Title', $value, $options);
-
-                $this->refresh_cache();
-
-                break;
             case('Page See Also Last Updated'):
 
                 $this->update_field($field, $value, $options);
@@ -1554,66 +1523,10 @@ class Page extends DB_Table {
 
                 break;
 
-            case('footer_type'):
-                $this->update_field('Page Footer Type', $value, $options);
-                break;
 
-            case('link_title'):
-                $this->update_field('Page Short Title', $value, $options);
-                break;
-            case('Page Stealth Mode'):
-                $this->update_field('Page Stealth Mode', $value, $options);
-
-                $sql = sprintf(
-                    "SELECT `Page Store Key`  FROM `Page Store See Also Bridge` WHERE `Page Store See Also Key`=%d ", $this->id
-                );
-                $res = mysql_query($sql);
-                while ($row = mysql_fetch_assoc($res)) {
-                    $_page = new Page ($row['Page Store Key']);
-                    $_page->update_see_also();
-                }
-
-                break;
-            case('Page Store Description'):
-            case('description'):
-            case('page_html_head_resume'):
-                $this->update_field('Page Store Description', $value, $options);
-                $this->update_store_search();
-                break;
-            case('Page Keywords'):
-            case('keywords'):
-            case('page_keywords'):
-                $this->update_field('Page Keywords', $value, $options);
-                break;
-            case('Page Store Title'):
-
-            case('store_title'):
-
-
-                $this->update_field('Page Store Title', $value, $options);
-                $this->update_store_search();
-                $this->refresh_cache();
-                break;
-            case('description'):
-            case('resume'):
-                $this->update_field('Page Store Description', $value, $options);
-                break;
-            case('Page Store Content Display Type'):
-                $this->update_content_display_type($value, $options);
-                break;
-            case('display_type'):
-                $this->update_field(
-                    'Page Store Content Display Type', $value, $options
-                );
-                break;
-            case('filename'):
-            case('Page Store Content Template Filename'):
-                $this->update_field(
-                    'Page Store Content Template Filename', $value, $options
-                );
-                break;
             case('Webpage State'):
-            case('Page State'):
+
+
                 $this->update_state($value, $options);
                 // $this->refresh_cache();
                 break;
@@ -1622,13 +1535,6 @@ class Page extends DB_Table {
             case('Number See Also Links'):
             case('Number Found In Links'):
             case('Page Footer Height'):
-            case('Page Header Height'):
-            case('Page Content Height'):
-            case('Page Head Include'):
-            case('Page Body Include'):
-            case('Page Store Title'):
-
-            case('Page Store Source'):
                 $this->update_field($field, $value, $options);
                 $this->update_store_search();
                 break;
@@ -1698,6 +1604,14 @@ class Page extends DB_Table {
     function publish($note = '') {
 
 
+        $website=get_object('Website',$this->get('Webpage Website Key'));
+
+        if($website->get('Website Status')!='Active'){
+            $this->error=true;
+            $this->msg='Website not active';
+            return;
+        }
+
         if ($this->get('Webpage State') == 'Offline') {
             $this->update_state('Online');
 
@@ -1761,6 +1675,9 @@ class Page extends DB_Table {
                     if ($webpage->id) {
 
 
+
+
+
                         if ($webpage->get('Webpage Launch Date') == '') {
 
 
@@ -1804,9 +1721,26 @@ class Page extends DB_Table {
         }
 
 
+
+        if ($this->get('Webpage State') == 'Online') {
+            $icon = 'fa-rocket';
+        } elseif ($this->get('Webpage State') == 'Offline') {
+            $icon = ' fa-rocket discreet fa-flip-vertical';
+        } elseif ($this->get('Webpage State') == 'Ready') {
+            $icon = 'fa-check-circle';
+
+        } elseif ($this->get('Webpage State') == 'InProcess') {
+            $icon = 'fa-child';
+
+
+        }
+
+
+
+
         $this->update_metadata = array(
             'class_html'    => array(
-                'Webpage_State_Edit_Label' => '<i class="fa fa-globe '.($this->get('Webpage State') == 'Online' ? 'success' : 'super_discreet').'" aria-hidden="true"></i>',
+                'webpage_state_icon'    => '<i class="fa  '.$icon.' " aria-hidden="true"></i>',
                 'preview_publish_label'    => _('Publish')
 
             ),
@@ -1900,6 +1834,38 @@ class Page extends DB_Table {
             $this->updated = true;
 
         }
+
+        $show=array();
+        $hide=array();
+
+
+        if ($this->get('Webpage State') == 'Online') {
+            $icon = 'fa-rocket';
+        } elseif ($this->get('Webpage State') == 'Offline') {
+            $icon = ' fa-rocket discreet fa-flip-vertical';
+        } elseif ($this->get('Webpage State') == 'Ready') {
+            $icon = 'fa-check-circle';
+            $show=array('set_as_not_ready_webpage_field');
+            $hide=array('set_as_ready_webpage_field');
+        } elseif ($this->get('Webpage State') == 'InProcess') {
+            $icon = 'fa-child';
+
+            $show=array('set_as_ready_webpage_field');
+            $hide=array('set_as_not_ready_webpage_field');
+        }
+
+
+
+        $this->update_metadata = array(
+            'class_html' => array(
+                'webpage_state_icon'    => '<i class="fa  '.$icon.' " aria-hidden="true"></i>',
+
+            ),
+            'hide_by_id' =>$hide,
+            'show_by_id' =>$show
+
+
+    );
 
 
     }
@@ -2292,6 +2258,72 @@ class Page extends DB_Table {
 
     }
 
+    function update_store_search() {
+
+
+        //todo redo this
+
+        if ($this->data['Page Type'] == 'Store') {
+
+
+            $sql = sprintf(
+                "INSERT INTO `Page Store Search Dimension` VALUES (%d,%d,%s,%s,%s,%s)  ON DUPLICATE KEY UPDATE `Page Store Title`=%s ,`Page Store Resume`=%s ,`Page Store Content`=%s  ", $this->id,
+                $this->data['Page Site Key'], prepare_mysql($this->data['Page URL']), prepare_mysql($this->data['Page Title'], false), prepare_mysql($this->data['Page Store Description'], false),
+                prepare_mysql($this->get_plain_content(), false), prepare_mysql($this->data['Page Title'], false), prepare_mysql($this->data['Page Store Description'], false),
+                prepare_mysql($this->get_plain_content(), false)
+            );
+            $this->db->exec($sql);
+
+
+        }
+
+    }
+
+    function update_category_webpage_index() {
+
+
+        if ($this->get('Webpage Scope') == 'Category Categories') {
+
+            include_once 'class.Website.php';
+            $website = new Website($this->get('Webpage Website Key'));
+
+            if ($website->get('Website Theme') == 'theme_1') {
+
+
+                $sql = sprintf('DELETE FROM  `Category Webpage Index` WHERE `Category Webpage Index Webpage Key`=%d  ', $this->id);
+                $this->db->exec($sql);
+
+
+                $content_data = $this->get('Content Data');
+
+                $stack              = 0;
+                $anchor_section_key = 0;
+
+                foreach ($content_data['catalogue']['items'] as $item) {
+
+
+                    $sql = sprintf(
+                        'INSERT INTO `Category Webpage Index` (`Category Webpage Index Section Key`,`Category Webpage Index Content Data`,
+                          `Category Webpage Index Parent Category Key`,`Category Webpage Index Category Key`,`Category Webpage Index Webpage Key`,`Category Webpage Index Category Webpage Key`,`Category Webpage Index Stack`) VALUES (%d,%s,%d,%d,%d,%d,%d) ',
+                        $anchor_section_key, prepare_mysql(json_encode($item)), $this->get('Webpage Scope Key'), $item['category_key'], $this->id, $item['webpage_key'], $stack
+                    );
+
+
+                    $this->db->exec($sql);
+                    $stack++;
+
+
+                }
+
+
+            }
+
+
+        }
+
+
+    }
+
     function update_code($value, $options = '') {
 
 
@@ -2402,24 +2434,6 @@ class Page extends DB_Table {
 
     }
 
-    function update_store_search() {
-
-        if ($this->data['Page Type'] == 'Store') {
-
-
-            $sql = sprintf(
-                "INSERT INTO `Page Store Search Dimension` VALUES (%d,%d,%s,%s,%s,%s)  ON DUPLICATE KEY UPDATE `Page Store Title`=%s ,`Page Store Resume`=%s ,`Page Store Content`=%s  ", $this->id,
-                $this->data['Page Site Key'], prepare_mysql($this->data['Page URL']), prepare_mysql($this->data['Page Title'], false), prepare_mysql($this->data['Page Store Description'], false),
-                prepare_mysql($this->get_plain_content(), false), prepare_mysql($this->data['Page Title'], false), prepare_mysql($this->data['Page Store Description'], false),
-                prepare_mysql($this->get_plain_content(), false)
-            );
-            $this->db->exec($sql);
-
-
-        }
-
-    }
-
     function update_content_display_type($value, $options) {
 
 
@@ -2436,51 +2450,6 @@ class Page extends DB_Table {
             'Page Store Content Display Type', $value, $options
         );
         $this->update_store_search();
-    }
-
-    function update_category_webpage_index() {
-
-
-        if ($this->get('Webpage Scope') == 'Category Categories') {
-
-            include_once 'class.Website.php';
-            $website = new Website($this->get('Webpage Website Key'));
-
-            if ($website->get('Website Theme') == 'theme_1') {
-
-
-                $sql = sprintf('DELETE FROM  `Category Webpage Index` WHERE `Category Webpage Index Webpage Key`=%d  ', $this->id);
-                $this->db->exec($sql);
-
-
-                $content_data = $this->get('Content Data');
-
-                $stack              = 0;
-                $anchor_section_key = 0;
-
-                foreach ($content_data['catalogue']['items'] as $item) {
-
-
-                    $sql = sprintf(
-                        'INSERT INTO `Category Webpage Index` (`Category Webpage Index Section Key`,`Category Webpage Index Content Data`,
-                          `Category Webpage Index Parent Category Key`,`Category Webpage Index Category Key`,`Category Webpage Index Webpage Key`,`Category Webpage Index Category Webpage Key`,`Category Webpage Index Stack`) VALUES (%d,%s,%d,%d,%d,%d,%d) ',
-                        $anchor_section_key, prepare_mysql(json_encode($item)), $this->get('Webpage Scope Key'), $item['category_key'], $this->id, $item['webpage_key'], $stack
-                    );
-
-
-                    $this->db->exec($sql);
-                    $stack++;
-
-
-                }
-
-
-            }
-
-
-        }
-
-
     }
 
     function display_found_in() {
@@ -2580,9 +2549,25 @@ class Page extends DB_Table {
         $this->update_state('Offline');
 
 
+
+
+        if ($this->get('Webpage State') == 'Online') {
+            $icon = 'fa-rocket';
+        } elseif ($this->get('Webpage State') == 'Offline') {
+            $icon = ' fa-rocket discreet fa-flip-vertical';
+        } elseif ($this->get('Webpage State') == 'Ready') {
+            $icon = 'fa-check-circle';
+
+        } elseif ($this->get('Webpage State') == 'InProcess') {
+            $icon = 'fa-child';
+
+
+        }
+
+
         $this->update_metadata = array(
             'class_html'      => array(
-                'Webpage_State_Edit_Label' => '<i class="fa fa-globe '.($this->get('Webpage State') == 'Online' ? 'success' : 'super_discreet').'" aria-hidden="true"></i>',
+                'webpage_state_icon'    => '<i class="fa  '.$icon.' " aria-hidden="true"></i>',
                 'preview_publish_label'    => _('Republish')
 
             ),
@@ -2897,15 +2882,15 @@ class Page extends DB_Table {
             $data = array(
                 'Page Code'          => $this->data['Page Code'],
                 'Page Key'           => $this->id,
-                'Site Key'           => $this->data['Page Site Key'],
+                'Site Key'           => $this->data['Webpage Website Key'],
                 'Store Key'          => $this->data['Page Store Key'],
                 'Page Store Section' => $this->data['Page Store Section'],
                 'Page Parent Key'    => $this->data['Page Parent Key'],
                 'Page Parent Code'   => $this->data['Page Parent Code'],
-                'Page Title'         => $this->data['Page Store Title'],
-                'Page Short Title'   => $this->data['Page Short Title'],
-                'Page Description'   => $this->data['Page Store Description'],
-                'Page URL'           => $this->data['Page URL'],
+                'Page Title'         => $this->data['Webpage Browser Title'],
+                'Page Short Title'   => $this->data['Webpage name'],
+                'Page Description'   => $this->data['Webpage MetaDescription'],
+                'Page URL'           => $this->data['Webpage URL'],
                 'Page Valid To'      => gmdate('Y-m-d H:i:s'),
 
             );
@@ -5128,13 +5113,6 @@ class Page extends DB_Table {
         return $form;
     }
 
-    function display_title() {
-        if ($this->set_title) {
-            return $this->set_title;
-        } else {
-            return $this->get('Page Store Title');
-        }
-    }
 
     function display_top_bar() {
 
@@ -7666,6 +7644,14 @@ class Page extends DB_Table {
 
     }
 
+    function update_url() {
+
+        $website = get_object('website', $this->get('Webpage Website Key'));
+
+        $this->update(array('Website URL' => 'https://'.$website->get('Website URL').'/'.strtolower($this->get('Code'))), 'no_history');
+
+
+    }
 
 }
 

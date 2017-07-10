@@ -17,6 +17,8 @@ require_once 'keyring/dns.php';
 require_once 'keyring/key.php';
 require_once 'utils/i18n.php';
 require_once 'utils/general_functions.php';
+require_once 'utils/object_functions.php';
+
 require_once "class.Account.php";
 
 

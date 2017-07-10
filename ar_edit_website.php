@@ -197,8 +197,6 @@ switch ($tipo) {
         $data = prepare_values(
             $_REQUEST, array(
                          'parent_key' => array('type' => 'key'),
-
-
                      )
         );
         publish_webpage($data, $editor, $db);
@@ -208,11 +206,28 @@ switch ($tipo) {
         $data = prepare_values(
             $_REQUEST, array(
                          'parent_key' => array('type' => 'key'),
-
-
                      )
         );
         unpublish_webpage($data, $editor, $db);
+        break;
+
+    case 'set_webpage_as_ready':
+
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'parent_key' => array('type' => 'key'),
+                     )
+        );
+        set_webpage_as_ready($data, $editor, $db);
+        break;
+    case 'set_webpage_as_not_ready':
+
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'parent_key' => array('type' => 'key'),
+                     )
+        );
+        set_webpage_as_not_ready($data, $editor, $db);
         break;
 
     case 'update_product_category_index':
@@ -1131,9 +1146,7 @@ function update_webpage_related_product($data, $editor, $db) {
 
 function publish_webpage($data, $editor, $db) {
 
-    // todo migrate to Webpage & WebpageVersion classes
-    include_once('class.Page.php');
-    $webpage         = new Page($data['parent_key']);
+    $webpage         = get_object('Webpage',$data['parent_key']);
     $webpage->editor = $editor;
 
     $webpage->publish();
@@ -1155,9 +1168,8 @@ function publish_webpage($data, $editor, $db) {
 
 function unpublish_webpage($data, $editor, $db) {
 
-    // todo migrate to Webpage & WebpageVersion classes
-    include_once('class.Page.php');
-    $webpage         = new Page($data['parent_key']);
+    $webpage         = get_object('Webpage',$data['parent_key']);
+
     $webpage->editor = $editor;
 
     $webpage->unpublish();
@@ -1175,6 +1187,60 @@ function unpublish_webpage($data, $editor, $db) {
 
 
 }
+
+
+function set_webpage_as_ready($data, $editor, $db) {
+
+    $webpage         = get_object('Webpage',$data['parent_key']);
+    $webpage->editor = $editor;
+
+
+    $website=get_object('Website',$webpage->get('Webpage Website Key'));
+
+    if($website->get('Website Status')=='InProcess') {
+        $webpage->update(array('Webpage State' => 'Ready'));
+    }
+
+    $response = array(
+        'state'           => 200,
+        'other_fields'    => $webpage->get_other_fields_update_info(),
+        'new_fields'      => $webpage->get_new_fields_info(),
+        'deleted_fields'  => $webpage->get_deleted_fields_info(),
+        'update_metadata' => $webpage->get_update_metadata()
+
+    );
+    echo json_encode($response);
+
+
+}
+
+
+function set_webpage_as_not_ready($data, $editor, $db) {
+
+    $webpage         = get_object('Webpage',$data['parent_key']);
+
+    $webpage->editor = $editor;
+
+    $website=get_object('Website',$webpage->get('Webpage Website Key'));
+
+    if($website->get('Website Status')=='InProcess') {
+        $webpage->update(array('Webpage State' => 'InProcess'));
+    }
+
+
+    $response = array(
+        'state'           => 200,
+        'other_fields'    => $webpage->get_other_fields_update_info(),
+        'new_fields'      => $webpage->get_new_fields_info(),
+        'deleted_fields'  => $webpage->get_deleted_fields_info(),
+        'update_metadata' => $webpage->get_update_metadata()
+
+    );
+    echo json_encode($response);
+
+
+}
+
 
 
 function update_webpage_section_data($data, $editor, $db, $smarty) {

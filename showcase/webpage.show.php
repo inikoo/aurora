@@ -13,24 +13,40 @@
 function get_webpage_showcase($data, $smarty) {
 
 
-    $node = $data['_object'];
-    if (!$node->id) {
+    $webpage = $data['_object'];
+    if (!$webpage->id) {
         return "";
     }
 
-    /*
-      $images=$node->get_images_slidesshow();
 
-      if (count($images)>0) {
-          $main_image=$images[0];
-      }else {
-          $main_image='';
-      }
-  */
+    switch ($webpage->get('Webpage Scope')) {
+        case 'Product':
 
-    $smarty->assign('node', $node);
+            $product = get_object('Product', $webpage->get('Webpage Scope Key'));
+            $smarty->assign('product', $product);
 
-    return $smarty->fetch('showcase/webpage.tpl');
+            $template = 'showcase/webpage.product.tpl';
+            break;
+        case 'Category Products':
+
+            $category = get_object('Category', $webpage->get('Webpage Scope Key'));
+            $smarty->assign('category', $category);
+
+            $template = 'showcase/webpage.category_products.tpl';
+            break;
+        case 'Category Categories':
+
+            $category = get_object('Category', $webpage->get('Webpage Scope Key'));
+            $smarty->assign('category', $category);
+
+            $template = 'showcase/webpage.category.tpl';
+            break;
+        default:
+            $template = 'showcase/webpage.tpl';
+    }
+    $smarty->assign('webpage', $webpage);
+
+    return $smarty->fetch($template);
 
 
 }

@@ -2045,22 +2045,33 @@ function publish(element,type){
     if(icon.hasClass('fa-spin')) return;
 
 
-    icon.removeClass('fa-rocket').addClass('fa-spinner fa-spin')
+    icon.addClass('fa-spinner fa-spin')
 
     var request = '/ar_edit_website.php?tipo='+type+'&parent_key=' + $(element).attr('webpage_key')
     console.log(request)
     $.getJSON(request, function (data) {
 
-        icon.addClass('fa-rocket').removeClass('fa-spinner fa-spin')
+        console.log(data)
 
+
+        $('#publish').addClass('changed valid')
 
 
         if(type=='publish_webpage'){
-$('#publish').removeClass('changed valid')
+            icon.addClass('fa-rocket').removeClass('fa-spinner fa-spin')
+
+        }else if(type=='set_webpage_as_ready'){
+
+            icon.addClass('fa-check-circle').removeClass('fa-spinner fa-spin')
+
+        }else if(type=='set_webpage_as_not_ready'){
+
+            icon.addClass('fa-child').removeClass('fa-spinner fa-spin')
 
         }else if(type=='unpublish_webpage'){
 
-            $('#publish').addClass('changed valid')
+
+            icon.addClass('fa-rocket').removeClass('fa-spinner fa-spin')
 
         }
 

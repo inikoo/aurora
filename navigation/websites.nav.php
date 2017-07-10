@@ -170,7 +170,6 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
 
 
 
-
     if (preg_match('/online/', $data['request'])) {
         $request_prefix='online/';
         switch ($data['parent']) {
@@ -184,9 +183,11 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
         }
 
 
-    } elseif (preg_match('/offline/', $data['request'])) {
+    }
+    elseif (preg_match('/offline/', $data['request'])) {
 
-    } elseif (preg_match('/in_process/', $data['request'])) {
+    }
+    elseif (preg_match('/in_process/', $data['request'])) {
 
 
         $request_prefix='in_process/';
@@ -201,7 +202,24 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
         }
 
 
-    } else {
+    }
+    elseif (preg_match('/ready/', $data['request'])) {
+
+
+        $request_prefix='ready/';
+        switch ($data['parent']) {
+
+            case 'website':
+                $tab      = 'website.ready_webpages';
+                $_section = 'websites';
+                $title    = _('Webpage').' <span class="id Webpage_Code">'.$object->get('Code').'</span>';
+                break;
+
+        }
+
+
+    }
+    else {
         $request_prefix='';
         switch ($data['parent']) {
 

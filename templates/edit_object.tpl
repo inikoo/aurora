@@ -39,8 +39,8 @@
                             <td colspan="3" id="{$field.id}_directory" class="with_vertical_padding">{$field.formatted_value}</td>
                         </tr>
                     {elseif $class=='operation'}
-                        <tr id="{$field.id}_field" class="{if !$render}hide{/if} ">
-                            <td colspan="3" class="label">{$field.label}</td>
+                        <tr id="{$field.id}_field" class="{if !$render}hide{/if} " style="height:auto;padding:10px" >
+                            <td colspan="3" class="label" style="height:auto;padding:10px" >{$field.label}</td>
                         </tr>
 
 

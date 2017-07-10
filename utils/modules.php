@@ -1290,7 +1290,8 @@ $modules = array(
                         'website.favourites.families'  => 'website.favourites',
                         'website.favourites.products'  => 'website.favourites',
                         'website.favourites.customers' => 'website.favourites',
-                        'website.search.queries'       => 'website.search',
+                        'website.search.queries'       => 'website.search'
+    ,
                         'website.search.history'       => 'website.search',
                         'website.reminders.requests'   => 'website.reminders',
                         'website.reminders.customers'  => 'website.reminders',
@@ -1861,7 +1862,7 @@ $modules = array(
                     'website.reminders.families'   => 'website.reminders',
                     'website.reminders.products'   => 'website.reminders',
 
-                    'website.root_nodes'          => 'website.webpages',
+                    'website.ready_webpages'     => 'website.webpages',
                     'website.online_webpages'     => 'website.webpages',
                     'website.offline_webpages'    => 'website.webpages',
                     'website.webpage.types'       => 'website.webpages',
@@ -2078,16 +2079,17 @@ $modules = array(
                                 'icon'  => 'child'
                             ),
 
+                            'website.ready_webpages' => array(
+                                'label' => _('Ready web pages'),
+                                'icon'  => 'check-circle '
+                            ),
+
                             'website.online_webpages' => array(
                                 'label' => _('Online web pages'),
                                 'icon'  => 'rocket '
                             ),
 
-                            'website.root_nodes'       => array(
-                                'label' => _('Sitemap'),
-                                'icon'  => 'sitemap',
-                                'class' => 'hide'
-                            ),
+
                             'website.offline_webpages' => array(
                                 'label' => _('Offline web pages'),
                                 'icon'  => 'rocket fa-flip-vertical'

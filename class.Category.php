@@ -3020,12 +3020,6 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
 
 
-                    $this->webpage->update(
-                        array(
-                            'Page Store Description' => $value
-                        ), 'no_history'
-                    );
-
 
                     $this->webpage->update(
                         array(
@@ -3064,12 +3058,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                     break;
                 case 'Category Webpage Name':
                     $this->get_webpage();
-                    $this->webpage->update(
-                        array(
-                            'Page Store Title' => $value,
-                            'Page Short Title' => $value,
-                        ), 'no_history'
-                    );
+
 
                     $this->webpage->update(
                         array(
@@ -3087,7 +3076,6 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                         $this->get_webpage();
                     }
 
-                    $this->webpage->update(array('Page Title' => $value), 'no_history');
                     $this->webpage->update(array('Webpage Browser Title' => $value), $options);
                     $this->updated = $this->webpage->updated;
 

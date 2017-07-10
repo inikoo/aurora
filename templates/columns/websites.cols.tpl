@@ -9,34 +9,10 @@ cell: "string"
 name: "code",
 label: "{t}Code{/t}",
 editable: false,
-cell: Backgrid.Cell.extend({
-orderSeparator: '',
-events: {
-"click": function() {
-change_view('website/' + this.model.get("id") )
-}
-},
-className: "link",
+cell: Backgrid.HtmlCell.extend({
 
-render: function () {
-this.constructor.__super__.render.apply(this, arguments);
+}),
 
-
-this.$el.empty();
-var rawValue = this.model.get(this.column.get("name"));
-var formattedValue = this.formatter.fromRaw(rawValue, this.model);
-this.$el.append(formattedValue);
-this.delegateEvents();
-
-
-if(this.model.get('id')==''){
-this.$el.removeClass('link');
-}
-return this;
-}
-
-
-})
 }, {
 name: "name",
 label:"{t}Website name{/t}",

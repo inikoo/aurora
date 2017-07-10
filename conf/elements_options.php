@@ -1270,22 +1270,7 @@ $elements_options = array(
 
 
         ),
-        'version' => array(
-            'label' => _('Version'),
-            'items' => array(
-                'I' => array(
-                    'label'    => 'Version 1',
-                    'selected' => true
-                ),
-                'II' => array(
-                    'label'    => 'Version 2',
-                    'selected' => true
-                ),
 
-            )
-
-
-        ),
     ),
 
 
@@ -1294,22 +1279,7 @@ $elements_options = array(
 
 
 
-    'version' => array(
-        'label' => _('Version'),
-        'items' => array(
-            'I' => array(
-                'label'    => 'Version 1',
-                'selected' => true
-            ),
-            'II' => array(
-                'label'    => 'Version 2',
-                'selected' => true
-            ),
 
-        )
-
-
-    ),
 ),
 
     'online_webpages' => array(
@@ -1337,23 +1307,7 @@ $elements_options = array(
             )
 
 
-        ),
-        'version' => array(
-            'label' => _('Version'),
-            'items' => array(
-                'I' => array(
-                    'label'    => 'Version 1',
-                    'selected' => true
-                ),
-                'II' => array(
-                    'label'    => 'Version 2',
-                    'selected' => true
-                ),
-
-            )
-
-
-        ),
+        )
     ),
 
     'category_root_subjects' => array(

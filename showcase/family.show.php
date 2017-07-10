@@ -27,7 +27,7 @@ function get_family_showcase($data, $smarty) {
     }
 
     $category->load_acc_data();
-
+    $category->get_webpage();
     $smarty->assign('category', $category);
 
     $images = $category->get_images_slidesshow();
