@@ -14,6 +14,8 @@ require_once 'common.php';
 require_once 'class.Staff.php';
 require_once 'utils/date_functions.php';
 
+
+
 $sql = sprintf(
     'SELECT `Staff Key` FROM `Staff Dimension` WHERE `Staff Type`!="Contractor"  ORDER BY `Staff Key` DESC '
 );
@@ -21,7 +23,10 @@ $sql = sprintf(
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
         $employee = new Staff($row['Staff Key']);
-       
+
+
+
+
         $to = date('Y-m-d', strtotime(date('Y', strtotime('now + 1 year')).'-'.$account->get('Account HR Start Year')));
 
                 $from = date('Y-m-d');
@@ -31,6 +36,9 @@ if ($result = $db->query($sql)) {
 
                     $dates = date_range($from, $to);
                     foreach ($dates as $date) {
+
+
+
                         $timesheet = $employee->create_timesheet(strtotime($date.' 00:00:00'), 'force');
                         $timesheet->update_number_clocking_records();
                         $timesheet->process_clocking_records_action_type();
