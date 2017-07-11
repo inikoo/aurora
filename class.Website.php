@@ -159,9 +159,6 @@ class Website extends DB_Table {
     function create($data) {
 
 
-
-
-
         $this->new = false;
         $base_data = $this->base_data();
 
@@ -309,7 +306,6 @@ class Website extends DB_Table {
                     'Website Alt Department Category Key' => $departments->id,
                 ), 'no_history'
             );
-
 
 
             return;
@@ -486,6 +482,75 @@ class Website extends DB_Table {
         }
 
         return '';
+    }
+
+    function add_image($raw_data, $options = false) {
+
+        include_once 'class.Image.php';
+
+        include_once 'utils/units_functions.php';
+
+
+        $data = array(
+            'Image Width'         => 0,
+            'Image Height'        => 0,
+            'Image File Size'     => 0,
+            'Image File Checksum' => '',
+            'Image Filename'      => $raw_data['Image Filename'],
+            'Image File Format'   => '',
+            'Image Data'          => '',
+
+            'upload_data' => $raw_data['Upload Data'],
+            'editor'      => $this->editor
+        );
+
+        if ($options) {
+            $options = json_decode($options, true);
+        }
+
+        // print_r($data);
+        // print_r($raw_data);
+        // print_r($options);
+
+
+        $scope_data = json_decode($raw_data['Image Subject Object Image Scope'], true);
+
+        $image    = new Image('find', $data);
+        $tmp_file = $data['upload_data']['tmp_name'];
+
+        $image_format = $image->guess_file_format($tmp_file);
+        $im           = $image->get_image_from_file($image_format, $tmp_file);
+
+        $width  = imagesx($im);
+        $height = imagesy($im);
+
+        if (isset($options['max_width']) and is_numeric($options['max_width']) and $width > $options['max_width']) {
+
+
+            $new_width  = $options['max_width'];
+            $new_height = $height * $options['max_width'] / $width;
+
+            $source = $im;
+            $im     = imagecreatetruecolor($new_width, $new_height);
+
+
+            imagecopyresized($im, $source, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
+        }
+
+        //  print_r($im);
+
+        $sql = sprintf(
+            "INSERT INTO `Website Image Dimension`  (`Website Image Website Key`,`Website Image Scope`,`Website Image Scope Key`,`Website Image Data`,`Website Image Date`,`Website Image Format`) VALUES (%d,%s,%s,%s,%s,%s) ",
+            $this->id, prepare_mysql($scope_data['scope']), prepare_mysql($scope_data['scope_key'], true), "'".addslashes($image->get_image_blob($im, $image_format))."'",
+            prepare_mysql(gmdate('Y-m-d H;i:s')), prepare_mysql($image_format)
+
+        );
+        $this->db->exec($sql);
+        $image_key = $this->db->lastInsertId();
+
+
+        return $image_key;
+
     }
 
     function create_header($data) {
@@ -844,23 +909,21 @@ class Website extends DB_Table {
 
     }
 
-    function update_labels_in_localised_labels($labels,$operation='append') {
+    function update_labels_in_localised_labels($labels, $operation = 'append') {
 
-        $localised_labels=$this->get('Localised Labels');
-        switch ($operation){
+        $localised_labels = $this->get('Localised Labels');
+        switch ($operation) {
             case 'append':
-                $localised_labels=array_merge($localised_labels,$labels);
+                $localised_labels = array_merge($localised_labels, $labels);
 
 
         }
 
 
-
-        $this->update(array('Website Localised Labels'=>json_encode($localised_labels)),'no_history');
+        $this->update(array('Website Localised Labels' => json_encode($localised_labels)), 'no_history');
 
 
     }
-
 
     function create_product_webnodes() {
 
@@ -1122,24 +1185,22 @@ class Website extends DB_Table {
         $webpage_type = new Webpage_Type('website_code', $this->id, ($category->get('Category Subject') == 'Product' ? 'Prods' : 'Cats'));
 
 
-        if($category->get('Category Subject') == 'Product'){
+        if ($category->get('Category Subject') == 'Product') {
 
-            if($this->get('Website Theme')=='theme_1'){
-                $template='products_classic_showcase';
-            }else{
-                $template='products_showcase';
+            if ($this->get('Website Theme') == 'theme_1') {
+                $template = 'products_classic_showcase';
+            } else {
+                $template = 'products_showcase';
             }
 
-        }else{
-            if($this->get('Website Theme')=='theme_1'){
-                $template='categories_classic_showcase';
-            }else{
-                $template='categories_showcase';
+        } else {
+            if ($this->get('Website Theme') == 'theme_1') {
+                $template = 'categories_classic_showcase';
+            } else {
+                $template = 'categories_showcase';
             }
 
         }
-
-
 
 
         $page_data = array(
@@ -1164,7 +1225,7 @@ class Website extends DB_Table {
             'Webpage Number See Also Links' => ($category->get('Category Subject') == 'Product' ? 5 : 0),
             'Webpage Creation Date'         => gmdate('Y-m-d H:i:s'),
             'Webpage Name'                  => $category->get('Label'),
-            'Webpage Browser Title'                  => $category->get('Label'),
+            'Webpage Browser Title'         => $category->get('Label'),
 
 
             'Page Parent Key'                        => $category->id,
@@ -1214,12 +1275,9 @@ class Website extends DB_Table {
         $this->error        = $page->error;
 
 
+        if ($this->get('Website Theme') == 'theme_1') {
 
-
-
-        if($this->get('Website Theme')=='theme_1') {
-
-        }else {
+        } else {
 
             if ($category->get('Category Subject') == 'Product') {
 
@@ -1274,7 +1332,6 @@ class Website extends DB_Table {
 
                 //print_r($content_data);
                 $page->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
-
 
 
                 $category->create_stack_index(true);
@@ -1341,10 +1398,10 @@ class Website extends DB_Table {
 
         $webpage_type = new Webpage_Type('website_code', $this->id, 'Prod');
 
-        if($this->get('Website Theme')=='theme_1'){
-            $template='product_classic';
-        }else{
-            $template='product';
+        if ($this->get('Website Theme') == 'theme_1') {
+            $template = 'product_classic';
+        } else {
+            $template = 'product';
         }
 
 
@@ -1369,7 +1426,7 @@ class Website extends DB_Table {
             'Webpage Template Filename'              => $template,
             'Webpage Number See Also Links'          => 5,
             'Webpage Creation Date'                  => gmdate('Y-m-d H:i:s'),
-            'Webpage Name'                  => $product->get('Name'),
+            'Webpage Name'                           => $product->get('Name'),
             'Webpage Browser Title'                  => $product->get('Name'),
 
             //--------   to remove ??
@@ -1396,7 +1453,7 @@ class Website extends DB_Table {
 
         $page = new Page('find', $page_data, 'create');
 
-        $product->update(array('Product Webpage Key'=>$page->id),'no_history');
+        $product->update(array('Product Webpage Key' => $page->id), 'no_history');
 
         $webpage_type->update_number_webpages();
 
@@ -1432,7 +1489,6 @@ class Website extends DB_Table {
 
     }
 
-
     function reset_element($type) {
 
         if ($type == 'website_footer') {
@@ -1462,7 +1518,6 @@ class Website extends DB_Table {
             $header->editor = $this->editor;
 
 
-
             $header->update(
                 array(
                     'Website Header Data' => get_default_header_data(1)
@@ -1472,7 +1527,6 @@ class Website extends DB_Table {
 
         }
     }
-
 
     function set_footer_template($template) {
 
@@ -1506,77 +1560,6 @@ class Website extends DB_Table {
 
     }
 
-    function add_image($raw_data, $options = false) {
-
-        include_once 'class.Image.php';
-
-        include_once 'utils/units_functions.php';
-
-
-        $data = array(
-            'Image Width'         => 0,
-            'Image Height'        => 0,
-            'Image File Size'     => 0,
-            'Image File Checksum' => '',
-            'Image Filename'      => $raw_data['Image Filename'],
-            'Image File Format'   => '',
-            'Image Data'          => '',
-
-            'upload_data' => $raw_data['Upload Data'],
-            'editor'      => $this->editor
-        );
-
-        if ($options) {
-            $options = json_decode($options, true);
-        }
-
-        // print_r($data);
-        // print_r($raw_data);
-        // print_r($options);
-
-
-        $scope_data = json_decode($raw_data['Image Subject Object Image Scope'], true);
-
-        $image    = new Image('find', $data);
-        $tmp_file = $data['upload_data']['tmp_name'];
-
-        $image_format = $image->guess_file_format($tmp_file);
-        $im           = $image->get_image_from_file($image_format, $tmp_file);
-
-        $width  = imagesx($im);
-        $height = imagesy($im);
-
-        if (isset($options['max_width']) and is_numeric($options['max_width']) and $width > $options['max_width']) {
-
-
-            $new_width  = $options['max_width'];
-            $new_height = $height * $options['max_width'] / $width;
-
-            $source = $im;
-            $im     = imagecreatetruecolor($new_width, $new_height);
-
-
-            imagecopyresized($im, $source, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
-        }
-
-        //  print_r($im);
-
-        $sql = sprintf(
-            "INSERT INTO `Website Image Dimension`  (`Website Image Website Key`,`Website Image Scope`,`Website Image Scope Key`,`Website Image Data`,`Website Image Date`,`Website Image Format`) VALUES (%d,%s,%s,%s,%s,%s) ",
-            $this->id, prepare_mysql($scope_data['scope']), prepare_mysql($scope_data['scope_key'], true), "'".addslashes($image->get_image_blob($im, $image_format))."'",
-            prepare_mysql(gmdate('Y-m-d H;i:s')), prepare_mysql($image_format)
-
-        );
-        $this->db->exec($sql);
-        $image_key = $this->db->lastInsertId();
-
-
-        return $image_key;
-
-    }
-
-
-
     function get_system_webpage_key($code) {
 
         $sql = sprintf(
@@ -1599,7 +1582,7 @@ class Website extends DB_Table {
     }
 
 
-    function launch(){
+    function launch() {
 
         include_once 'class.Page.php';
 
@@ -1611,45 +1594,76 @@ class Website extends DB_Table {
         }
         */
 
-        $this->update(array('Website Status'=>'Active'));
+        $this->update(array('Website Status' => 'Active'));
 
-        $sql=sprintf("select `Page Key` from `Page Store Dimension`  P left join `Webpage Type Dimension` WTD on (WTD.`Webpage Type Key`=P.`Webpage Type Key`)  where `Webpage Website Key`=%d and `Webpage Type Code` in ('Info','Home','Ordering','Customer','Portfolio','Sys')  ",
+        $sql = sprintf(
+            "SELECT `Page Key` FROM `Page Store Dimension`  P LEFT JOIN `Webpage Type Dimension` WTD ON (WTD.`Webpage Type Key`=P.`Webpage Type Key`)  WHERE `Webpage Website Key`=%d AND `Webpage Type Code` IN ('Info','Home','Ordering','Customer','Portfolio','Sys')   ",
             $this->id
-            );
+        );
 
-       if ($result=$this->db->query($sql)) {
-       		foreach ($result as $row) {
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
 
-       		    $webpage=new Page($row['Page Key']);
-       		    $webpage->editor=$this->editor;
+                $webpage         = new Page($row['Page Key']);
+                $webpage->editor = $this->editor;
 
-       		    if($webpage->get('Webpage Code')=='launching.sys'){
-                    $webpage->update(array('Webpage State'=>'Offline'));
-                }else{
-                    $webpage->update(array('Webpage State'=>'Online'));
-                    $webpage->update(array('Webpage Launch Date'=>gmdate('Y-m-d H:i:s')),'no_history');
+                if ($webpage->get('Webpage Code') == 'launching.sys') {
+                    $webpage->update(array('Webpage State' => 'Offline'));
+                } else {
+                    $webpage->update(array('Webpage State' => 'Online'));
+                    $webpage->update(array('Webpage Launch Date' => gmdate('Y-m-d H:i:s')), 'no_history');
                 }
 
 
+            }
+        }
+
+        $sql = sprintf(
+            "SELECT `Page Key` FROM `Page Store Dimension`  P LEFT JOIN `Webpage Type Dimension` WTD ON (WTD.`Webpage Type Key`=P.`Webpage Type Key`)  WHERE `Webpage Website Key`=%d AND `Webpage Scope` NOT IN ('Category Products','Category Categories') AND `Webpage State`='Ready'  ",
+            $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+                $webpage         = new Page($row['Page Key']);
+                $webpage->editor = $this->editor;
+
+                if ($webpage->get('Webpage State') == 'Ready') {
+                    $webpage->publish();
+
+                }
 
 
-       		}
-       }else {
-       		print_r($error_info=$this->db->errorInfo());
-       		print "$sql\n";
-       		exit;
-       }
+            }
+        }
 
+
+        $sql = sprintf(
+            "SELECT `Page Key` FROM `Page Store Dimension`  P LEFT JOIN `Webpage Type Dimension` WTD ON (WTD.`Webpage Type Key`=P.`Webpage Type Key`)  WHERE `Webpage Website Key`=%d AND `Webpage Scope` NOT IN ('Product') AND `Webpage State`='Ready'  ",
+            $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+                $webpage         = new Page($row['Page Key']);
+                $webpage->editor = $this->editor;
+
+                if ($webpage->get('Webpage State') == 'Ready') {
+                    $webpage->publish();
+
+                }
+
+
+            }
+        }
 
 
     }
 
 
 }
-
-
-
-
 
 
 ?>

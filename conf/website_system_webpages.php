@@ -158,113 +158,128 @@ function website_system_webpages_config($website_type) {
                         'blocks' => array(
 
                             array(
-                                'type'=>'sliders',
-                                'label' => _('Sliders'),
-                                'icon'  => 'fa-sliders',
+                                'type'=>'iframe',
+                                'label' => 'iFrame',
+                                'icon'  => 'fa-window-restore',
                                 'show'=>1,
+                                'height'=>250,
+                                'src'=>'cdn.bannersnack.com/banners/bxmldll37/embed/index.html?userId=30149291&t=1499779573'
 
-                                'sliders' => array(
-
-                                    array(
-
-                                        'image'       => 'art/image_1920x750.png',
-                                        'title'       => 'Because we love What we Do',
-                                        'text'        => 'Many web sites still their infancy various versions have packages sure there anything over the years.',
-                                        'link_label'  => 'Read More',
-                                        'link_type'   => 'button',
-                                        'link_url'    => '#',
-                                        'title_class' => 'centext  white',
-                                        'title_style' => 'top:270px',
-                                        'text_class'  => 'centext  white',
-                                        'text_style'  => 'top:349px',
-                                        'link_class'  => 'centext',
-                                        'link_style'  => 'top:435px'
-
-                                    ),
-                                    array(
-                                        'image'       => 'art/image_1920x750.png',
-                                        'title'       => 'Professional. Creative. Clean.',
-                                        'text'        => 'Many web sites still their infancy various versions have packages sure there anything over the years.',
-                                        'link_label'  => 'Read More',
-                                        'link_type'   => 'button',
-                                        'link_url'    => '#',
-                                        'title_class' => 'centext  white',
-                                        'title_style' => 'top:270px',
-                                        'text_class'  => 'centext  white',
-                                        'text_style'  => 'top:349px',
-                                        'link_class'  => 'centext',
-                                        'link_style'  => 'top:435px',
-
-                                    ),
-                                    array(
-                                        'image'       => 'art/image_1920x750.png',
-                                        'title'       => 'Build your Own Website :)',
-                                        'text'        => 'Many web sites still their infancy various versions have packages sure there anything over the years.',
-                                        'link_label'  => 'Read More',
-                                        'link_type'   => 'button',
-                                        'link_url'    => '#',
-                                        'title_class' => '  white',
-                                        'title_style' => 'left:180px; top:270px"',
-                                        'text_class'  => '  white',
-                                        'text_style'  => 'left:180px; top:349px;',
-                                        'link_class'  => '',
-                                        'link_style'  => 'left:180px; top:435px',
-
-                                    ),
-
-                                ),
 
 
                             ),
+                            
+
                             /*
-                            array(
-                                'type'=>'features',
-                                'label' => _('Features'),
-                                'icon'  => 'fa-th-large',
-                                'show'=>1
-                            ),
-                            array(
-                                'type'=>'counter',
-                                'label' => _('Counter'),
-                                'icon'  => 'fa-sort-numeric-asc',
 
-                            ),
-                            array(
-                                'type'=>'catalogue',
-                                'label' => _('Catalogue'),
-                                'icon'  => 'fa-shopping-bag',
-                                'show'=>1
+                          array(
+                              'type'=>'sliders',
+                              'label' => _('Sliders'),
+                              'icon'  => 'fa-sliders',
+                              'show'=>1,
 
-                            ),
-                            array(
+                              'sliders' => array(
 
-                                'type'=>'why_us',
-                                'label' => _('What us'),
-                                'icon'  => 'fa-diamond',
-                                'show'=>1
+                                  array(
 
-                            ),
-                            array(
-                                'type'=>'image',
-                                'label' => _('Image'),
-                                'icon'  => 'fa-image',
-                                'show'=>1
+                                      'image'       => 'art/image_1920x750.png',
+                                      'title'       => 'Because we love What we Do',
+                                      'text'        => 'Many web sites still their infancy various versions have packages sure there anything over the years.',
+                                      'link_label'  => 'Read More',
+                                      'link_type'   => 'button',
+                                      'link_url'    => '#',
+                                      'title_class' => 'centext  white',
+                                      'title_style' => 'top:270px',
+                                      'text_class'  => 'centext  white',
+                                      'text_style'  => 'top:349px',
+                                      'link_class'  => 'centext',
+                                      'link_style'  => 'top:435px'
 
-                            ),
-                            array(
-                                'type'=>'register',
-                                'label' => _('Register'),
-                                'icon'  => 'fa-register',
-                                'show'=>1
+                                  ),
+                                  array(
+                                      'image'       => 'art/image_1920x750.png',
+                                      'title'       => 'Professional. Creative. Clean.',
+                                      'text'        => 'Many web sites still their infancy various versions have packages sure there anything over the years.',
+                                      'link_label'  => 'Read More',
+                                      'link_type'   => 'button',
+                                      'link_url'    => '#',
+                                      'title_class' => 'centext  white',
+                                      'title_style' => 'top:270px',
+                                      'text_class'  => 'centext  white',
+                                      'text_style'  => 'top:349px',
+                                      'link_class'  => 'centext',
+                                      'link_style'  => 'top:435px',
 
-                            ),
-                            array(
-                                'type'=>'products',
-                                'label' => _('Products'),
-                                'icon'  => 'fa-leaf',
-                                'show'=>1
+                                  ),
+                                  array(
+                                      'image'       => 'art/image_1920x750.png',
+                                      'title'       => 'Build your Own Website :)',
+                                      'text'        => 'Many web sites still their infancy various versions have packages sure there anything over the years.',
+                                      'link_label'  => 'Read More',
+                                      'link_type'   => 'button',
+                                      'link_url'    => '#',
+                                      'title_class' => '  white',
+                                      'title_style' => 'left:180px; top:270px"',
+                                      'text_class'  => '  white',
+                                      'text_style'  => 'left:180px; top:349px;',
+                                      'link_class'  => '',
+                                      'link_style'  => 'left:180px; top:435px',
 
-                            ),
+                                  ),
+
+                              ),
+
+
+                          ),
+
+                          array(
+                              'type'=>'features',
+                              'label' => _('Features'),
+                              'icon'  => 'fa-th-large',
+                              'show'=>1
+                          ),
+                          array(
+                              'type'=>'counter',
+                              'label' => _('Counter'),
+                              'icon'  => 'fa-sort-numeric-asc',
+
+                          ),
+                          array(
+                              'type'=>'catalogue',
+                              'label' => _('Catalogue'),
+                              'icon'  => 'fa-shopping-bag',
+                              'show'=>1
+
+                          ),
+                          array(
+
+                              'type'=>'why_us',
+                              'label' => _('What us'),
+                              'icon'  => 'fa-diamond',
+                              'show'=>1
+
+                          ),
+                          array(
+                              'type'=>'image',
+                              'label' => _('Image'),
+                              'icon'  => 'fa-image',
+                              'show'=>1
+
+                          ),
+                          array(
+                              'type'=>'register',
+                              'label' => _('Register'),
+                              'icon'  => 'fa-register',
+                              'show'=>1
+
+                          ),
+                          array(
+                              'type'=>'products',
+                              'label' => _('Products'),
+                              'icon'  => 'fa-leaf',
+                              'show'=>1
+
+                          ),
 
 */
 
