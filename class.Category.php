@@ -630,8 +630,6 @@ class Category extends DB_Table {
                 $image_key = $this->data['Category Main Image Key'];
 
 
-
-
                 if ($image_key) {
                     $img = '/image_root.php?size=small&id='.$image_key;
                 } else {
@@ -720,11 +718,8 @@ class Category extends DB_Table {
                         // todo migrate to new webpage and webpage version classes
 
 
-                        if ($this->webpage->get('Page Store Content Display Type') == 'Source') {
-                            return 'blank';
-                        } else {
-                            return $this->webpage->get('Page Store Content Template Filename');
-                        }
+                        $this->webpage->get('Webpage Template Filename');
+
 
                     case 'Webpage Template':
                         // todo migrate to new webpage and webpage version classes
@@ -733,23 +728,23 @@ class Category extends DB_Table {
                             $this->get_webpage();
                         }
 
-                        if ($this->webpage->get('Page Store Content Display Type') == 'Source') {
-                            return _('White canvas');
-                        } else {
-                            switch ($this->webpage->get('Page Store Content Template Filename')) {
-                                case 'family_buttons':
-                                    return '<span class="italic discreet" >Old products showcase (unsupported)</span>';
-                                    break;
-                                case 'products_showcase':
-                                    return _("Products showcase");
-                                    break;
-                                case 'categories_showcase':
-                                    return _("Categories showcase");
-                                    break;
-                                default:
-                                    return $this->webpage->get('Page Store Content Template Filename');
-                                    break;
-                            }
+
+                        switch ($this->webpage->get('Page Store Content Template Filename')) {
+                            case 'family_buttons':
+                                return 'Old products showcase (unsupported)';
+                                break;
+                            case 'products_showcase':
+                                return _("Products showcase");
+                                break;
+                            case 'categories_showcase':
+                                return _("Categories showcase");
+                                break;
+                            case '':
+                                return 'Very old products showcase (unsupported)<';
+                                break;
+                            default:
+                                return $this->webpage->get('Page Store Content Template Filename');
+                                break;
                         }
 
 
@@ -2495,8 +2490,6 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
         // exit;
 
 
-
-
         if (array_key_exists($field, $this->base_data())) {
 
 
@@ -2542,10 +2535,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                 $this->update_field($field, $value, $options);
 
             }
-        }
-        elseif (array_key_exists($field, $this->base_data('Product Category Dimension'))) {
-
-
+        } elseif (array_key_exists($field, $this->base_data('Product Category Dimension'))) {
 
 
             switch ($field) {
@@ -2896,7 +2886,6 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
         } else {
 
 
-
             switch ($field) {
 
 
@@ -3000,11 +2989,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                     }
 
 
-
-
-
-                    $this->webpage->update(array('Webpage Template Filename'=>$value),$options);
-
+                    $this->webpage->update(array('Webpage Template Filename' => $value), $options);
 
 
                     $this->updated = $this->webpage->updated;
@@ -3016,9 +3001,6 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                     if (!is_object($this->webpage)) {
                         $this->get_webpage();
                     }
-
-
-
 
 
                     $this->webpage->update(
