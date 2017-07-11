@@ -60,6 +60,8 @@ if($state['_object']->get('Webpage Template Filename')=='products_showcase'  or 
         $smarty->assign('control_template', $theme.'/control.webpage_blocks.'.$theme.'.tpl');
     }
 
+   // print_r( $webpage->get('Content Data'));
+
     $html = $smarty->fetch('webpage_preview.tpl');
 
 }

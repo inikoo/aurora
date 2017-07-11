@@ -15,14 +15,18 @@
 
 </style>
 
-<div class=" edit_block_buttons  " style="width:1100px;" >
-    <ul id="columns" class="sortable2 columns " >
+
+
+
+
+<div class=" edit_block_buttons  "  >
+    <ul id="columns" class="sortable2 columns " style="width:1100px;" >
 
 
 
     {foreach from=$content.blocks item=$block key=key}
 
-        <li class="column  unselectable  {if !$block.show}very_discreet{/if}"  key="{$key}">
+        <li class="column  unselectable  {if !$block.show}very_discreet{/if}"  key="{$key}" block="{$block.type}" >
             <span class="button open_edit">
             <i class="fa   {$block.icon}" aria-hidden="true"></i>
              <span class="label  ">{$block.label}</span>
@@ -33,9 +37,9 @@
     {/foreach}
     </ul>
 
-    <div id="edit_columns" class="xhide">
+    <div id="edit_columns" class="hide" style="height: 27px;margin-bottom:10px" >
 
-        <div style="float:left">
+        <div style="float:left;position: relative;top:2.5px">
             <i id="edit_prev_column" onClick="edit_prev_column(this)" key="" class="edit_column_button fa button fa-arrow-left " aria-hidden="true"></i>
             <i id="exit_edit_column" style="margin-left:5px;margin-right: 5px"  onClick="exit_edit_column(this)" key="" class="edit_column_button fa button fa-window-close fa-flip-horizontal " aria-hidden="true"></i>
             <i id="edit_next_column" style="margin-right: 10px" onClick="edit_next_column(this)" key="" class="edit_column_button fa button fa-arrow-right " aria-hidden="true"></i>
@@ -49,7 +53,7 @@
 
 
 
-                    <div style="float:left;min-width: 200px">
+                    <div style="float:left;min-width: 200px;position: relative;top:2px">
                     <i class="fa fa-fw {$block.icon}" style="margin-left:10px" aria-hidden="true" title="{$block.label}"></i>
                     <span class="label">{$block.label}</span>
                     </div>
@@ -82,8 +86,25 @@
                             </div>
                             {/foreach}
 
+                        {elseif $block.type=='iframe'}
+
+                            <div id="iframe_height_edit_block" class="hide edit_block" style="position:absolute;padding:10px;background-color: #FFF;border:1px solid #ccc">
+                                 {t}Height{/t} <input value="{$block.height}" style="width: 30px">px <i class="apply_changes fa button fa-check-square" style="margin-left: 10px" aria-hidden="true"></i>
+                            </div>
+                            <div id="iframe_src_edit_block" class="hide edit_block" style="position:absolute;padding:10px;background-color: #FFF;border:1px solid #ccc">
+                                {t}Src{/t} https://<input value="{$block.src}" style="width: 900px">  <i class="apply_changes  fa button fa-check-square" style="margin-left: 10px" aria-hidden="true"></i>
+                            </div>
+
+                            <span >
+                                {t}Width{/t} 1240px {t}Height{/t} <span id="iframe_height_{$key}" class="button iframe_height" style="border:1px solid #ccc;padding:2px 4px">{$block.height}px</span> r=<span class="iframe_ratio">{math equation="w/h" w=1240 h=$block.height format="%.2f"}</span>
+
+                                <span  style="margin-left:20px"> src:<span id="iframe_src{$key}" class="button iframe_src"   style="border:1px solid #ccc;padding:2px 4px;">https://{$block.src|truncate:60}</span>
+                            </span>
 
                         {/if}
+
+
+
 
                 </div>
 
@@ -102,60 +123,6 @@
 </div>
 
 
-<div class="hide">
-
-<span id="edit_slider" class="webpage_block_label active_label  {if !$content.show_slider==1}very_discreet{else}button{/if}">
-    <i class="fa fa-fw fa-smile-o discreet" style="margin-left:20px" aria-hidden="true"></i> {t}Intro{/t} </span>
-<i id="show_slider" onClick="change_webpage_element_visibility(this)" class="fa button fa-check {if $content.show_slider==1}success{else}very_discreet{/if}" aria-hidden="true"></i>
-</span>
-
-
-
-
-
-
-<span class="edit_features_buttons edit_block_buttons  ">
-        <i class="fa fa-th-large discreet" style="margin-left:20px" aria-hidden="true"></i> {t}Features{/t}
-    <i id="show_features" onClick="change_webpage_element_visibility(this)" class=" fa button fa-check {if $content.show_features==1}success{else}very_discreet{/if}" aria-hidden="true"></i>
-    </span>
-
-
-<span class="edit_counter_buttons edit_block_buttons  ">
-        <i class="fa fa-sort-numeric-asc   discreet" style="margin-left:20px" aria-hidden="true"></i> {t}Counter{/t}
-    <i id="show_counter" onClick="change_webpage_element_visibility(this)" class="fa button fa-check {if $content.show_counter==1}success{else}very_discreet{/if}" aria-hidden="true"></i>
-    </span>
-
-
-<span class="edit_catalogue_buttons edit_block_buttons  ">
-        <i class="fa fa-shopping-bag   discreet" style="margin-left:20px" aria-hidden="true"></i> {t}Catalogue{/t}
-    <i id="show_catalogue" onClick="change_webpage_element_visibility(this)" class="fa button fa-check {if $content.show_counter==1}success{else}very_discreet{/if}" aria-hidden="true"></i>
-    </span>
-
-
-<span class="edit_what_we_do_buttons edit_block_buttons  ">
-        <i class="fa fa-diamond discreet" style="margin-left:20px" aria-hidden="true"></i> {t}Why us{/t}
-    <i id="show_what_we_do" onClick="change_webpage_element_visibility(this)" class="fa button fa-check {if $content.show_counter==1}success{else}very_discreet{/if}" aria-hidden="true"></i>
-    </span>
-
-
-<span class="edit_image_buttons edit_block_buttons  ">
-        <i class="fa fa-picture-o discreet" style="margin-left:20px" aria-hidden="true"></i> {t}Image{/t}
-    <i id="show_image" onClick="change_webpage_element_visibility(this)" class="fa button fa-check {if $content.show_image==1}success{else}very_discreet{/if}" aria-hidden="true"></i>
-    </span>
-
-
-<span class="edit_register_buttons edit_block_buttons  ">
-        <i class="fa fa-sign-in  discreet" style="margin-left:20px" aria-hidden="true"></i> {t}Register{/t}
-    <i id="show_register" onClick="change_webpage_element_visibility(this)" class="fa button fa-check {if $content.show_register==1}success{else}very_discreet{/if}" aria-hidden="true"></i>
-    </span>
-
-
-<span class="edit_products_buttons edit_block_buttons  ">
-        <i class="fa fa-cube  discreet" style="margin-left:20px" aria-hidden="true"></i> {t}Products{/t}
-    <i id="show_products" onClick="change_webpage_element_visibility(this)" class="fa button fa-check {if $content.show_products==1}success{else}very_discreet{/if}" aria-hidden="true"></i>
-    </span>
-
-</div>
 <script>
 
     $(document).on('click', '.slider_preview', function (e) {
@@ -236,12 +203,20 @@
         if($(this).hasClass('fa-eye')){
             var key=$(this).removeClass('fa-eye').addClass('fa-eye-slash').closest('li').addClass('very_discreet').attr('key')
 
+            $("#preview").contents().find("#block_"+$(this).closest('.column').attr('key')).addClass('hide')
 
             //$('#preview')[0].contentWindow.hide_column_label(key);
             //$('#preview')[0].contentWindow.hide_column(key);
 
         }else{
             var key=$(this).addClass('fa-eye').removeClass('fa-eye-slash').closest('li').removeClass('very_discreet').attr('key')
+
+            $("#preview").contents().find("#block_"+$(this).closest('.column').attr('key')).removeClass('hide')
+
+            if( $(this).closest('.column').attr('block') =='iframe'){
+                $("#preview")[0].contentWindow.resize_banners();
+            }
+
             //$('#preview')[0].contentWindow.show_column_label(key);
             //$('#preview')[0].contentWindow.show_column(key);
         }
@@ -266,13 +241,9 @@
 
     })
 
-
-
-
-
     function edit_column(key) {
 
-
+        $('.edit_block').addClass('hide')
 
 
         $('#columns').addClass('hide')
@@ -288,7 +259,7 @@
 
         $('.options_dialog').addClass('hide')
 
-
+        $('#save_button').addClass('hide')
 
 
     }
@@ -300,6 +271,8 @@
 
         $('.options_dialog').addClass('hide')
 
+        $('#save_button').removeClass('hide')
+
 
         //$('#preview')[0].contentWindow.hide_column($(element).attr('key'));
 
@@ -308,69 +281,78 @@
 
 
 
+    // =============================== Slider ======================================================
 
-    $("#edit_slider").hover(function () {
-        if (!$(this).hasClass('editing')) {
-            $(this).find('i').removeClass("fa-smile-o").addClass('fa-pencil-square-o')
+    // =============================== Iframe ======================================================
+
+    $(document).on('click', '.iframe_height', function (e) {
+
+        $('.edit_block').addClass('hide')
+        $('#iframe_height_edit_block').data('element',$(this)).removeClass('hide').offset({
+            left: $(this).offset().left
+        }).find('input').focus()
+
+
+
+
+
+    })
+
+
+    $(document).on('click', '.iframe_src', function (e) {
+        $('.edit_block').addClass('hide')
+        $('#iframe_src_edit_block').data('element',$(this)).removeClass('hide').find('input').focus()
+    })
+
+    $(document).on('click', '.apply_changes', function (e) {
+
+
+        $('.edit_block').addClass('hide')
+
+        switch ($(this).closest('div').attr('id')){
+            case 'iframe_height_edit_block':
+
+                value=parseInt($(this).prev('input').val())
+
+                $(this).closest('div').data('element').html(value+'px').next('span.iframe_ratio').html((1240/value).toFixed(2))
+
+                $("#preview").contents().find("#block_"+$(this).closest('.edit_mode').attr('key')).attr('h',value);
+                $("#preview")[0].contentWindow.resize_banners();
+
+
+                break;
+            case 'iframe_src_edit_block':
+
+                var value=$(this).prev('input').val()
+
+
+                var tmp=$('<div>' + value + '</div>').find('iframe').attr('src');
+
+
+
+                if(tmp==undefined) {
+                    value = value.replace(/(^\w+:|^)\/\//, '');
+                }else{
+                    value = tmp.replace(/(^\w+:|^)\/\//, '');
+
+                }
+
+                console.log(value)
+
+                $(this).closest('div').data('element').html('https://'+ truncateWithEllipses(  value,60)   )
+                $("#preview").contents().find("#block_"+$(this).closest('.edit_mode').attr('key')).find('iframe').attr('src','https://'+value);
+
+                console.log($("#preview").contents().find("#block_"+$(this).closest('.edit_mode').attr('key')).find('iframe'))
+
+                break;
+
         }
-    }, function () {
 
-        if (!$(this).hasClass('editing')) {
-            $(this).find('i').removeClass("fa-pencil-square-o discreet").addClass('fa-smile-o')
-        }
+        $('#save_button').addClass('save button changed valid')
 
 
-    });
+    })
 
 
-    $("#edit_slider").click(function () {
-        if (!$(this).hasClass('editing')) {
-            $('.edit_block_buttons').addClass('hide')
-
-            $(this).closest('.edit_block_buttons').removeClass('hide')
-
-            $('#edit_slider_buttons').removeClass('hide')
-
-            $(this).addClass('editing').find('i').removeClass("discreet fa-smile-o ").addClass('fa-pencil-square-o')
-            $('#preview')[0].contentWindow.edit_slider()
-
-
-        } else {
-            $('.edit_block_buttons').removeClass('hide')
-
-
-            $('#edit_slider_buttons').addClass('hide')
-
-
-
-            $(this).removeClass('editing').find('i').removeClass("discreet fa-pencil-square-o ").addClass('fa-smile-o')
-            $('#preview')[0].contentWindow.close_edit_slider()
-
-        }
-
-    });
-
-
-    function change_webpage_element_visibility(element) {
-
-
-        if ($(element).hasClass('success')) {
-            $(element).removeClass('success').addClass('very_discreet')
-
-            $(element).prev('.webpage_block_label').addClass('very_discreet')
-
-            $('#preview')[0].contentWindow.change_webpage_element_visibility($(element).attr('id'), 'hide')
-
-
-        } else {
-            $(element).addClass('success').removeClass('very_discreet')
-            $('#preview')[0].contentWindow.change_webpage_element_visibility($(element).attr('id'), 'show')
-            $(element).prev('.webpage_block_label').removeClass('very_discreet')
-
-
-        }
-
-
-    }
 
 </script>

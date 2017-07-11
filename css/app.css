@@ -8035,7 +8035,6 @@ input.input_file {
 .control_panel .columns {
   margin: 0px;
   position: relative;
-  top: -5px;
   padding: 0px;
   float: left; }
 .control_panel .sortable2 {
