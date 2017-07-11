@@ -9,12 +9,61 @@
 -->
 *}
 
+
+
 <div class="container" style="min-height:200px;padding:5px 20px">
 
-    <h4>{$webpage->get('Webpage URL')}</h4>
+    <div class="name_and_categories">
 
-    <i class="fa fa-cube" aria-hidden="true" title="{t}Webpage for product{/t}"></i> <span onclick="change_view('products/{$product->get('Store Key')}/{$product->id}')" class="link">{$product->get('Code')}</span> {$product->get('Name')}
+        <h4>{$webpage->get('Webpage URL')}</h4>
 
+
+    </div>
+
+
+
+    <div class="asset_container">
+
+        <div class="block picture">
+        </div>
+
+        <div class="block sales_data">
+        </div>
+
+        <div class="block info">
+            <div id="overviews">
+
+                <table border="0" class="overview">
+
+
+                    <tr class="top">
+                        <td ></td>
+                        <td class=" aright Webpage_State">{$webpage->get('State')}</td>
+                    </tr>
+
+
+                    <tr>
+                        <td  title="{t}Status{/t}">{t}Product{/t}</td>
+                        <td class="aright"><span onclick="change_view('products/{$product->get('Store Key')}/{$product->id}')" class="link">{$product->get('Code')}</span></td>
+
+                    </tr>
+
+                    <tr>
+                        <td  colspan="2" style="text-align: right">{$product->get('Name')}</td>
+                    </tr>
+
+
+                </table>
+
+
+
+
+
+            </div>
+        </div>
+        <div style="clear:both">
+        </div>
+    </div>
 
 
 </div>

@@ -456,13 +456,13 @@ class Product extends Asset {
 
             case 'Product Webpage Meta Description':
             case 'Webpage Meta Description':
-                return $this->webpage->get('Page Store Description');
+                return $this->webpage->get('Webpage Meta Description');
 
                 break;
 
             case 'Product Webpage Browser Title':
             case 'Webpage Browser Title':
-                return $this->webpage->get('Page Title');
+                return $this->webpage->get('Webpage Browser Title');
 
                 break;
 

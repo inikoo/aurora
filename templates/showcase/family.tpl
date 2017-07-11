@@ -193,8 +193,8 @@
                     <tr class="main">
                         <td>{t}Webpage{/t}</td>
                         <td class="aright ">
-                        <span class="webpage_state_icon">
-                        <i class="fa padding_right_5 fa-fw {if $category->webpage->get('Webpage State')=='Online'}fa-rocket {elseif $category->webpage->get('Webpage State')=='Ready'} fa-check-circle{elseif $category->webpage->get('Webpage State')=='Offline'} fa-rocket discreet fa-flip-vertical{else} fa-child{/if}" aria-hidden="true"></i>
+                        <span class="Webpage_State_Icon">
+                            {$category->webpage->get('State Icon')}
                         </span>
                             <span onclick="change_view('webpage/{$category->webpage->id}')" class="link">{$category->webpage->get('Code')|lower}</span>
 

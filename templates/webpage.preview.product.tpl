@@ -19,9 +19,24 @@
 
     <span class="button " onclick="toggle_logged_in_view(this)"><i class="fa fa-toggle-on " aria-hidden="true" alt="{t}On{/t}"></i> <span class="unselectable">{t}Logged in{/t}</span></span>
 
-    <a target="_blank" href="http://{$webpage->get('Page URL')}" ><i class="fa fa-external-link" aria-hidden="true"  style="float:right;margin-left:20px;position:relative;top:2px"></i>   </a>
 
-    <span id="publish" webpage_key="{$webpage->id}" class="button save {if $webpage->get('Publish')}changed valid{/if}" style="float:right" onclick="publish(this,'publish_webpage')"><span class="unselectable">{t}Publish{/t}</span> <i class="fa fa-rocket" aria-hidden="true"></i></span>
+
+    {if $website->get('Website Status')=='Active'}
+
+        <a id="link_to_live_webpage" target="_blank"  class="{if $webpage->get('Webpage State')=='Offline'}invisible{/if}"  href="http://{$webpage->get('Page URL')}" ><i class="fa fa-external-link" aria-hidden="true"  style="float:right;margin-left:20px;position:relative;top:2px"></i>   </a>
+
+
+        <span id="publish" webpage_key="{$webpage->id}" class="button save {if $webpage->get('Publish')}changed valid{/if}" style="float:right" onclick="publish(this,'publish_webpage')"><span class="unselectable">{t}Publish{/t}</span> <i class="fa fa-rocket" aria-hidden="true"></i></span>
+
+    {elseif $website->get('Website Status')=='InProcess'}
+
+        <span id="set_as_ready_webpage_field" style="margin:10px 0px;padding:10px;border:1px solid #ccc;float:right;position: relative;top:-22px" webpage_key="{$webpage->id}" onClick="publish(this,'set_webpage_as_ready')" class=" button   {if $webpage->get('Webpage State')=='Ready'}hide{/if} ">{t}Set as Ready{/t} <i class="fa fa-check-circle padding_left_5  button  "></i></span>
+        <span id="set_as_not_ready_webpage_field" style="margin:10px 0px;padding:10px;border:1px solid #ccc;float:right;position: relative;top:-22px" webpage_key="{$webpage->id}" onClick="publish(this,'set_webpage_as_not_ready')" class=" button super_discreet {if $webpage->get('Webpage State')=='InProcess'}hide{/if} ">{t}Set as not Ready{/t} <i class="fa fa-child padding_left_5 hide button"></i></span>
+
+    {/if}
+
+
+
 
 
 </div>

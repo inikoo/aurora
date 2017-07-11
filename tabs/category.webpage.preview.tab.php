@@ -30,11 +30,12 @@ if ($category->get('Product Category Public')=='No') {
 
 $webpage  = $category->get_webpage();
 
-
+$website=get_object('Website',$webpage->get('Webpage Website Key'));
 
 
 $smarty->assign('webpage', $webpage);
 
+$smarty->assign('website', $website);
 
 if (!$webpage->id) {
     $html = '<div style="padding:40px">'._("This category don't have webpage").'</div>';
