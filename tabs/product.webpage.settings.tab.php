@@ -23,13 +23,59 @@ $product = $state['_object'];
 $webpage=$product->get_webpage();
 
 
+
+
+
+
 if(!$webpage->id){
 
-    $html='<div style="padding:40px">'._("This product don't have webpage").'</div>';
+
+
+    if($category->get('Product Category Public')=='Yes'){
+
+
+
+        $html='<div style="padding:40px"><span class="button save valid changed" onclick="create_webpage()"><i class="fa fa-plus" aria-hidden="true"></i> '._("Create web page").'</span></div>
+        <script>
+        function create_webpage(){
+        
+          var request = \'/ar_edit_website.php?tipo=create_webpage&parent=product&parent_key=' . $product->id.'\'
+
+        $.getJSON(request, function (data) {
+
+            if (data.state == 200) {
+
+               change_view(state.request)
+
+            }
+
+        })
+
+
+        
+        
+        }
+        </script>
+        
+        ';
+
+
+
+        //    $html='<div style="padding:40px">'._("This category has no webpage").'</div>';
+
+
+    }else{
+        $html='<div style="padding:40px">'._("This category is not public").'</div>';
+    }
+
+
 
     return;
 
 }
+
+
+
 
 if($product->get('Product Web Configuration')=='Offline'){
 
