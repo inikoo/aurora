@@ -1642,11 +1642,9 @@ class Page extends DB_Table {
 
     function publish($note = '') {
 
-print 'xx';
         $website = get_object('Website', $this->get('Webpage Website Key'));
 
 
-        print $website->get('Website Status') ;
 
         if ($website->get('Website Status') != 'Active') {
             $this->error = true;
@@ -1655,11 +1653,9 @@ print 'xx';
             return;
         }
 
-        print 'yy'.$this->get('Webpage State');
 
 
-        if ($this->get('Webpage State') == 'Offline') {
-print 'zz';
+        if ($this->get('Webpage State') == 'Offline' or  $this->get('Webpage State') == 'InProcess'  ) {
 
 
             $this->update_state('Online');
