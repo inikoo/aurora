@@ -189,7 +189,8 @@
         }, stop: function (event, ui) {
 
             post = ui.item.index();
-            $('#preview')[0].contentWindow.move_column_label(pre,post);
+            $('#preview')[0].contentWindow.move_block(pre,post);
+            $('#save_button').addClass('save button changed valid')
         }
 
 
