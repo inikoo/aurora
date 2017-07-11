@@ -1374,21 +1374,30 @@ class Page extends DB_Table {
 
             case 'Webpage Template Filename':
 
+
+
                 if ($value == 'blank') {
-                    $this->update(array('Page Store Content Display Type' => 'Source'), $options);
+
+
+                    $sql = sprintf('UPDATE `Page Store Dimension` SET `Page Store Content Display Type`="Source" WHERE `Page Key`=%d ', $this->id);
+                    $this->db->exec($sql);
 
                 } else {
 
 
-                    $this->update(
-                        array(
-                            'Page Store Content Display Type'      => 'Template',
-                            'Page Store Content Template Filename' => $value
-                        ), $options
-                    );
+
+
+                    $sql = sprintf('UPDATE `Page Store Dimension` SET `Page Store Content Display Type`="Template" WHERE `Page Key`=%d ', $this->id);
+                    $this->db->exec($sql);
+
+                    $sql = sprintf('UPDATE `Page Store Dimension` SET `Page Store Content Template Filename`=%s WHERE `Page Key`=%d ', prepare_mysql($value), $this->id);
+                    $this->db->exec($sql);
 
 
                 }
+
+
+
                 $this->update_field($field, $value, $options);
 
 
