@@ -2054,11 +2054,13 @@ function publish(element,type){
 
 
 
-        $('#publish').addClass('changed valid')
 
 
         if(type=='publish_webpage'){
             icon.addClass('fa-rocket').removeClass('fa-spinner fa-spin')
+
+            $('#publish').removeClass('changed valid')
+
 
         }else if(type=='set_webpage_as_ready'){
 
@@ -2072,6 +2074,7 @@ function publish(element,type){
 
 
             icon.addClass('fa-rocket').removeClass('fa-spinner fa-spin')
+            $('#publish').addClass('changed valid')
 
         }
 
