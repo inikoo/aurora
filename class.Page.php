@@ -1642,8 +1642,11 @@ class Page extends DB_Table {
 
     function publish($note = '') {
 
-
+print 'xx';
         $website = get_object('Website', $this->get('Webpage Website Key'));
+
+
+        print $website->get('Website Status') ;
 
         if ($website->get('Website Status') != 'Active') {
             $this->error = true;
@@ -1652,8 +1655,11 @@ class Page extends DB_Table {
             return;
         }
 
-        if ($this->get('Webpage State') == 'Offline') {
+        print 'yy'.$this->get('Webpage State');
 
+
+        if ($this->get('Webpage State') == 'Offline') {
+print 'zz';
 
 
             $this->update_state('Online');
@@ -1789,7 +1795,7 @@ class Page extends DB_Table {
         $this->update_field('Webpage State', $value, 'no_history');
 
 
-        print $value;
+
 
 
         if ($old_state != $this->data['Webpage State']) {
