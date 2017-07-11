@@ -13,46 +13,6 @@
 
 
 
-    .columns{
-         margin:0px;position: relative;top:-5px;padding:0px
-        float:left;
-    }
-
-    .columns li {
-        float: left;
-        list-style: none;
-        text-align: center;
-        margin-right: 10px;
-        min-width: 100px;
-        border;1px solid #ccc
-
-    }
-
-    .sortable2{
-        margin:0px;padding: 0px;
-        float:left;
-    }
-
-    .sortable2 li {
-        float: left;
-        list-style: none;
-        text-align: center;
-        margin-right: 10px;
-        min-width: 100px;
-        border;1px solid #ccc;
-        white-space:nowrap;
-
-    }
-
-
-
-    .column_label{
-        border:1px solid #ccc;padding:4px 8px;white-space:nowrap;
-    }
-    .column_extra_label{
-        border:1px solid #ccc;padding:4px 8px;
-    }
-
 
 
 </style>
@@ -116,15 +76,17 @@
     <span class="hide"><i class="fa fa-toggle-on" aria-hidden="true"></i> {t}Logged in{/t}</span>
 
 
-    <ul id="columns" class="sortable2" >
+    <ul id="columns" class="sortable2 columns" >
 
         {foreach from=$header_data.menu.columns item=column key=key}
 
-                <li style="float:left;border:1px solid #ccc;padding:4px 16px 4px 8px;margin-right: 10px" class="button unselectable {if !$column.show}very_discreet{/if}" key="{$key}">
-                    <i class="fa fa-fw open_edit {if $column.icon==''}} fa-ban very_discreet {else}{$column.icon}{/if}" style="margin-left:10px" aria-hidden="true" title="{$column.label}"></i>
-                    <span class="label open_edit">{$column.label}</span>
+                <li class="column" style="" class="button unselectable {if !$column.show}very_discreet{/if}" key="{$key}">
+                    <span class="button open_edit">
+                    <i class="fa fa-fw  {if $column.icon==''}} fa-ban very_discreet {else}{$column.icon}{/if}"  aria-hidden="true" title="{$column.label}"></i>
+                    <span class="label ">{$column.label}</span>
+                     </span>
                     <i class="fa {if $column.show}fa-eye{else}fa-eye-slash{/if} column_show" style="margin-left:10px;" aria-hidden="true"></i>
-                    <i class="fa fa-arrows handle2" style="margin-left:5px;cursor: move" aria-hidden="true"></i>
+                    <i class="fa fa-arrows handle2"  aria-hidden="true"></i>
                 </li>
 
 
@@ -450,14 +412,7 @@
 
             post = ui.item.index();
             $('#preview')[0].contentWindow.move_column($('#exit_edit_column').attr('key'),pre,post);
-
-
-
-
         }
-
-
-
     });
 
     $('.sortable2').sortable({
@@ -468,9 +423,6 @@
 
             post = ui.item.index();
             $('#preview')[0].contentWindow.move_column_label(pre,post);
-
-
-
         }
 
 

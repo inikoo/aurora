@@ -17,6 +17,7 @@ function get_webpage_showcase($data, $smarty) {
     if (!$webpage->id) {
         return "";
     }
+    $website=get_object('Website',$webpage->get('Webpage Website Key'));
 
 
     switch ($webpage->get('Webpage Scope')) {
@@ -45,6 +46,7 @@ function get_webpage_showcase($data, $smarty) {
             $template = 'showcase/webpage.tpl';
     }
     $smarty->assign('webpage', $webpage);
+    $smarty->assign('website', $website);
 
     return $smarty->fetch($template);
 

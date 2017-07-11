@@ -16,9 +16,11 @@ $logged = true;
 
 $product = $state['_object'];
 $webpage = $product->get_webpage();
+$website=get_object('Website',$webpage->get('Webpage Website Key'));
 
 
 $smarty->assign('webpage', $webpage);
+$smarty->assign('website', $website);
 
 
 if (!$webpage->id) {

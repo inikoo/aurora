@@ -1,29 +1,28 @@
-//dev\slider\header.js 
- 
-/*!
+/*! 
  * Master Slider – Responsive Touch Swipe Slider
- * @author Averta (www.averta.net)
- * Copyright © All Rights Reserved, Averta Ltd.
+ * Copyright © 2017 All Rights Reserved. 
  *
- * @version 2.0.0
- * @date August 2014
+ * @author Averta [www.averta.net]
+ * @version 2.51.2
+ * @date Jun 2017
  */
-//dev\slider\tools\base.js 
- 
+
+
+/* ================== bin-debug/js/pro/tools/base.js =================== */
 window.averta = {};
 
 ;(function($){
-	
+
 	//"use strict";
-	
+
 	window.package = function(name){
 		if(!window[name]) window[name] = {};
 	};
-	
+
 	var extend = function(target , object){
 		for(var key in object)	target[key] = object[key];
 	};
-	
+
 	Function.prototype.extend = function(superclass){
 		if(typeof superclass.prototype.constructor === "function"){
 			extend(this.prototype , superclass.prototype);
@@ -31,9 +30,9 @@ window.averta = {};
 		}else{
 			this.prototype.extend(superclass);
 			this.prototype.constructor = this;
-		}	
+		}
 	};
-	
+
 	// Converts JS prefix to CSS prefix
 	var trans = {
 		'Moz'    : '-moz-',
@@ -43,8 +42,8 @@ window.averta = {};
 		'ms'	 : '-ms-',
 		'Icab'   : '-icab-'
 	};
-	
-	window._mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) 
+
+	window._mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
 	window._touch  = 'ontouchstart' in document;
 	$(document).ready(function(){
 		window._jcsspfx 		= getVendorPrefix();	   // JS CSS VendorPrefix
@@ -53,29 +52,31 @@ window.averta = {};
 		window._css3d   		= supports3DTransforms();
 		window._css2d   		= supportsTransforms();
 	});
-	
-	
+
+
 	// Thanks to LEA VEROU
 	// http://lea.verou.me/2009/02/find-the-vendor-prefix-of-the-current-browser/
 	function getVendorPrefix() {
-	
+
 		if('result' in arguments.callee) return arguments.callee.result;
-	
+
 		var regex = /^(Moz|Webkit|Khtml|O|ms|Icab)(?=[A-Z])/;
-	
+
 		var someScript = document.getElementsByTagName('script')[0];
-	
-		for(var prop in someScript.style)
-			if(regex.test(prop))
+
+		for(var prop in someScript.style){
+			if(regex.test(prop)){
 				return arguments.callee.result = prop.match(regex)[0];
-	
+			}
+		}
+
 		if('WebkitOpacity' in someScript.style) return arguments.callee.result = 'Webkit';
 		if('KhtmlOpacity' in someScript.style) return arguments.callee.result = 'Khtml';
-	
+
 		return arguments.callee.result = '';
 	}
-	
-	
+
+
 	// Thanks to Steven Benner.
 	// http://stevenbenner.com/2010/03/javascript-regex-trick-parse-a-query-string-into-an-object/
 	window.parseQueryString = function(url){
@@ -84,16 +85,16 @@ window.averta = {};
 		    new RegExp("([^?=&]+)(=([^&]*))?", "g"),
 		    function($0, $1, $2, $3) { queryString[$1] = $3; }
 		);
-		
+
 		return queryString;
 	};
-	
+
 	function checkStyleValue(prop){
 		 var b = document.body || document.documentElement;
 	    var s = b.style;
 	    var p = prop;
 	    if(typeof s[p] == 'string') {return true; }
-	
+
 	    // Tests for vendor specific prop
 	    v = ['Moz', 'Webkit', 'Khtml', 'O', 'ms'],
 	    p = p.charAt(0).toUpperCase() + p.substr(1);
@@ -102,15 +103,15 @@ window.averta = {};
 	    }
 	    return false;
 	}
-	
+
 	function supportsTransitions() {
 	   return checkStyleValue('transition');
 	}
-	
+
 	function supportsTransforms(){
 	   return checkStyleValue('transform');
 	}
-	
+
 	function supports3DTransforms(){
 		if(!supportsTransforms()) return false;
 	    var el = document.createElement('i'),
@@ -124,48 +125,48 @@ window.averta = {};
 	        'Transform':'transform',
 	        'transform':'transform'
 	    };
-		
+
 		el.style.display = 'block';
 
 	    // Add it to the body to get the computed style
 	    document.body.insertBefore(el, null);
-		
+
 	    for(var t in transforms){
 	        if( el.style[t] !== undefined ){
 	            el.style[t] = 'translate3d(1px,1px,1px)';
 	            has3d = window.getComputedStyle(el).getPropertyValue(transforms[t]);
 	        }
 	    }
-	
+
 	    document.body.removeChild(el);
-	
+
 	    return (has3d != null && has3d.length > 0 && has3d !== "none");
 	}
-	
+
 	/**
 	 * Provides requestAnimationFrame in a cross browser way.
 	 * @author paulirish / http://paulirish.com/
 	 */
 	var fps60 = 50/3;
-	
+
 	if ( !window.requestAnimationFrame ) {
-	 
+
 		window.requestAnimationFrame = ( function() {
-	 
+
 			return window.webkitRequestAnimationFrame ||
 			window.mozRequestAnimationFrame ||
 			window.oRequestAnimationFrame ||
 			window.msRequestAnimationFrame ||
 			function( /* function FrameRequestCallback */ callback, /* DOMElement Element */ element ) {
-	 
+
 				window.setTimeout( callback, fps60 );
-	 
+
 			};
-	 
+
 		} )();
-	 
+
 	}
-	
+
 	if (!window.getComputedStyle) {
 	    window.getComputedStyle = function(el, pseudo) {
 	        this.el = el;
@@ -204,41 +205,93 @@ window.averta = {};
 	    return -1;
 	  };
 	}
-	
+
+
+	/**
+	 * check ie browser
+	 * @param  {Number | string}  version
+	 * @return {Boolean}
+	 */
+	window.isMSIE = function ( version ) {
+		if ( !$.browser.msie ) {
+			return false;
+		} else if ( !version ) {
+			return true;
+		}
+		var ieVer = $.browser.version.slice(0 , $.browser.version.indexOf('.'));
+		if ( typeof version === 'string' ) {
+			if ( version.indexOf('<') !== -1  || version.indexOf('>') !== -1) {
+				return eval( ieVer + version );
+			} else {
+				return eval( version + '==' + ieVer );
+			}
+		} else {
+			return version == ieVer;
+		}
+	}
+
+	$.removeDataAttrs = function($target, exclude) {
+	    var i,
+	        attrName,
+	        dataAttrsToDelete = [],
+	        dataAttrs = $target[0].attributes,
+	        dataAttrsLen = dataAttrs.length;
+
+	    exclude = exclude || [];
+
+	    // loop through attributes and make a list of those
+	    // that begin with 'data-'
+	    for (i=0; i<dataAttrsLen; i++) {
+	    	attrName = dataAttrs[i].name;
+	        if ( 'data-' === attrName.substring(0,5) && exclude.indexOf(attrName) === -1 ) {
+	            // Why don't you just delete the attributes here?
+	            // Deleting an attribute changes the indices of the
+	            // others wreaking havoc on the loop we are inside
+	            // b/c dataAttrs is a NamedNodeMap (not an array or obj)
+	            dataAttrsToDelete.push(dataAttrs[i].name);
+	        }
+	    }
+	    // delete each of the attributes we found above
+	    // i.e. those that start with "data-"
+	    $.each( dataAttrsToDelete, function( index, attrName ) {
+	        $target.removeAttr( attrName );
+	    })
+	};
+
 	if(jQuery){
 		$.jqLoadFix = function(){
 			if(this.complete){
 				var that = this;
-				setTimeout(function(){$(that).load();} , 1);
-			}	
+				setTimeout(function(){$(that).trigger('load');} , 1);
+			}
 		};
-		
+
 		jQuery.uaMatch = jQuery.uaMatch || function( ua ) {
 			ua = ua.toLowerCase();
-		
+
 			var match = /(chrome)[ \/]([\w.]+)/.exec( ua ) ||
 				/(webkit)[ \/]([\w.]+)/.exec( ua ) ||
 				/(opera)(?:.*version|)[ \/]([\w.]+)/.exec( ua ) ||
 				/(msie) ([\w.]+)/.exec( ua ) ||
 				ua.indexOf("compatible") < 0 && /(mozilla)(?:.*? rv:([\w.]+)|)/.exec( ua ) ||
 				[];
-		
+
 			return {
 				browser: match[ 1 ] || "",
 				version: match[ 2 ] || "0"
 			};
 		};
-		
+
 		// Don't clobber any existing jQuery.browser in case it's different
 		//if ( !jQuery.browser ) {
 			matched = jQuery.uaMatch( navigator.userAgent );
 			browser = {};
-		
+
 			if ( matched.browser ) {
 				browser[ matched.browser ] = true;
 				browser.version = matched.version;
 			}
-		
+
 			// Chrome is Webkit, but Webkit is also Safari.
 			if ( browser.chrome ) {
 				browser.webkit = true;
@@ -246,7 +299,7 @@ window.averta = {};
 				browser.safari = true;
 			}
 
-			// hofix for IE11 detection 
+			// hofix for IE11 detection
 			var isIE11 = !!navigator.userAgent.match(/Trident\/7\./);
 			if (isIE11) {
 				browser.msie = "true";
@@ -254,9 +307,9 @@ window.averta = {};
 			}
 
 			jQuery.browser = browser;
-			
+
 		//}
-		
+
 		$.fn.preloadImg = function(src , _event){
 			this.each(function(){
 				var $this = $(this);
@@ -267,6 +320,8 @@ window.averta = {};
 					$this.attr('src' , src);
 					event.width = img.width;
 					event.height = img.height;
+					$this.data('width', img.width);
+					$this.data('height', img.height);
 					setTimeout(function(){_event.call(self , event);},50);
 					img = null;
 				};
@@ -276,8 +331,8 @@ window.averta = {};
 		};
 	}
 })(jQuery);
-//dev\slider\tools\EventDispatcher.js 
- 
+
+/* ================== bin-debug/js/pro/tools/EventDispatcher.js =================== */
 ;(function(){
 	
 	"use strict";
@@ -304,234 +359,259 @@ window.averta = {};
 		
 		removeEventListener : function(event , listener , ref){
 			if(this.listeners[event]){
-				for(var i = 0 , l = this.listeners[event].length; i < l ; ++i)
-					if(listener == this.listeners[event][i].listener && ref == this.listeners[event][i].ref){	
-						this.listeners[event].splice(i,0);
+
+				for(var i = 0; i < this.listeners[event].length ; ++i){
+					
+					if(listener === this.listeners[event][i].listener && ref === this.listeners[event][i].ref){	
+						this.listeners[event].splice(i--,1);
 					}
+				}
 				
-				if (this.listeners[event].length == 0)
-					delete this.listeners[event];
+				if (this.listeners[event].length === 0){
+					this.listeners[event] = null;
+				}
 			}
 		},
 		
 		dispatchEvent : function (event) {
 			event.target = this;
-			if(this.listeners[event.type])
+			if(this.listeners[event.type]){
 				for(var i = 0 , l = this.listeners[event.type].length; i < l ; ++i){
 					this.listeners[event.type][i].listener.call(this.listeners[event.type][i].ref , event);	
 				}
+			}
 		}
 	};
 
 })();
-//dev\slider\tools\TouchSwipe.js 
- 
+
+/* ================== bin-debug/js/pro/tools/TouchSwipe.js =================== */
 ;(function($){
-	
-	"use strict";
-	
-	var isTouch 	= 'ontouchstart' in document,
-		isPointer 	= window.navigator.pointerEnabled,
-		isMSPoiner 	= !isPointer && window.navigator.msPointerEnabled,
-		usePointer  = isPointer || isMSPoiner,
-	// Events	
-		ev_start  = (isPointer ? 'pointerdown ' : '' ) + (isMSPoiner ? 'MSPointerDown ' : '' ) + (isTouch ? 'touchstart ' : '' ) + 'mousedown',
-		ev_move   = (isPointer ? 'pointermove ' : '' ) + (isMSPoiner ? 'MSPointerMove ' : '' ) + (isTouch ? 'touchmove '  : '' ) + 'mousemove',
-		ev_end    = (isPointer ? 'pointerup '   : '' ) + (isMSPoiner ? 'MSPointerUp '   : '' ) + (isTouch ? 'touchend '   : '' ) + 'mouseup', 
-		ev_cancel = (isPointer ? 'pointercancel '   : '' ) + (isMSPoiner ? 'MSPointerCancel ': '' ) + 'touchcancel';
-	
 
-	averta.TouchSwipe = function($element){
-		this.$element = $element;
-		this.enabled = true;
+    "use strict";
 
-		$element.bind(ev_start  , {target: this} , this.__touchStart);
+    var isTouch     = 'ontouchstart' in document,
+        isPointer   = window.navigator.pointerEnabled,
+        isMSPoiner  = !isPointer && window.navigator.msPointerEnabled,
+        usePointer  = isPointer || isMSPoiner,
+    // Events
+        ev_start  = (isPointer ? 'pointerdown ' : '' ) + (isMSPoiner ? 'MSPointerDown ' : '' ) + (isTouch ? 'touchstart ' : '' ) + 'mousedown',
+        ev_move   = (isPointer ? 'pointermove ' : '' ) + (isMSPoiner ? 'MSPointerMove ' : '' ) + (isTouch ? 'touchmove '  : '' ) + 'mousemove',
+        ev_end    = (isPointer ? 'pointerup '   : '' ) + (isMSPoiner ? 'MSPointerUp '   : '' ) + (isTouch ? 'touchend '   : '' ) + 'mouseup',
+        ev_cancel = (isPointer ? 'pointercancel '   : '' ) + (isMSPoiner ? 'MSPointerCancel ': '' ) + 'touchcancel';
 
-		$element[0].swipe = this;
-		
-		this.onSwipe    = null;
-		this.swipeType  = 'horizontal';
-		
-		this.lastStatus = {};
-	
-	};
-	
-	var p = averta.TouchSwipe.prototype;
-	
- 	/*-------------- METHODS --------------*/
-	
-	p.getDirection = function(new_x , new_y){
-		switch(this.swipeType){
-			case 'horizontal':
-				return new_x <= this.start_x ? 'left' : 'right';
-			break;
-			case 'vertical':
-				return new_y <= this.start_y ? 'up' : 'down';
-			break;
-			case 'all':
-				if(Math.abs(new_x - this.start_x) > Math.abs(new_y - this.start_y))
-					return new_x <= this.start_x ? 'left' : 'right';
-				else
-					return new_y <= this.start_y ? 'up' : 'down';
-			break;
-		}
-	};
-	
-	p.priventDefultEvent = function(new_x , new_y){
-		//if(this.priventEvt != null) return this.priventEvt;
-		var dx = Math.abs(new_x - this.start_x);
-		var dy = Math.abs(new_y - this.start_y);
-		
-		var horiz =  dx > dy;
-		
-		return (this.swipeType === 'horizontal' && horiz) ||
-			   (this.swipeType === 'vertical' && !horiz);
 
-		//return this.priventEvt;
-	};
-	
-	p.createStatusObject = function(evt){
-		var status_data = {} , temp_x , temp_y;
-		
-		temp_x = this.lastStatus.distanceX || 0;
-		temp_y = this.lastStatus.distanceY || 0;
-		
-		status_data.distanceX = evt.pageX - this.start_x;
-		status_data.distanceY = evt.pageY - this.start_y;
-		status_data.moveX = status_data.distanceX - temp_x;
-		status_data.moveY = status_data.distanceY - temp_y;
-		
-		status_data.distance  = parseInt( Math.sqrt(Math.pow(status_data.distanceX , 2) + Math.pow(status_data.distanceY , 2)) );
-		
-		status_data.duration  = new Date().getTime() - this.start_time;
-		status_data.direction = this.getDirection(evt.pageX , evt.pageY);
-		
-		return status_data;
-	};
-	
-	
-	p.__reset = function(event , jqevt){
-		this.reset = false;
-		this.lastStatus = {};
-		this.start_time = new Date().getTime();
-		this.start_x = isTouch ? event.touches[0].pageX : (usePointer ? event.pageX : jqevt.pageX);
-		this.start_y = isTouch ? event.touches[0].pageY : (usePointer ? event.pageY : jqevt.pageY);
-	};
-	
-	p.__touchStart = function(event){
-		
-		var swipe = event.data.target;
-		var jqevt = event;
-		if(!swipe.enabled) return;
-		event = event.originalEvent;
-		
-		if( usePointer ) {
-			$(this).css('-ms-touch-action', swipe.swipeType === 'horizontal' ? 'pan-y' : 'pan-x');
-		}
+    averta.TouchSwipe = function($element){
+        this.$element = $element;
+        this.enabled = true;
 
-		if(!swipe.onSwipe) {
-			$.error('Swipe listener is undefined');
-			return;
-		}
-		
-		if(swipe.touchStarted) return;
-		
-		swipe.start_x = isTouch ? event.touches[0].pageX : (usePointer ? event.pageX : jqevt.pageX);
-		swipe.start_y = isTouch ? event.touches[0].pageY : (usePointer ? event.pageY : jqevt.pageY);
-		
-		swipe.start_time = new Date().getTime(); 
-		
-		$(document).bind(ev_end    , {target: swipe} , swipe.__touchEnd).
-		 		    bind(ev_move   , {target: swipe} , swipe.__touchMove).
-					bind(ev_cancel , {target: swipe} , swipe.__touchCancel);
+        $element.bind(ev_start  , {target: this} , this.__touchStart);
 
-		var evt = isTouch ? event.touches[0] : (usePointer ? event : jqevt);
-		var status = swipe.createStatusObject(evt);
-		status.phase = 'start';
-		
-		swipe.onSwipe.call(null , status);
-		
-		if(!isTouch)
-			jqevt.preventDefault();
-		
-		swipe.lastStatus = status;
-		swipe.touchStarted = true;
-	};
-	
-	p.__touchMove = function(event){
-		var swipe = event.data.target;
-		var jqevt = event;
-		event = event.originalEvent;
-		
-		if(!swipe.touchStarted) return;
-		
-		clearTimeout(swipe.timo);
-		swipe.timo = setTimeout(function(){swipe.__reset(event , jqevt);} , 60);
-				
-		var evt = isTouch ? event.touches[0] : (usePointer ? event : jqevt);
+        $element[0].swipe = this;
 
-		var status = swipe.createStatusObject(evt);
-		
-		if(swipe.priventDefultEvent(evt.pageX , evt.pageY))
-			jqevt.preventDefault();
-		
-		status.phase = 'move';
-		
-		//if(swipe.lastStatus.direction !== status.direction) swipe.__reset(event , jqevt);
-		
-		swipe.lastStatus = status;
-		
-		swipe.onSwipe.call(null , status);
-	};
-	
-	p.__touchEnd = function(event){
-		
-		var swipe = event.data.target;
-		var jqevt = event;
-		event = event.originalEvent;
-		
-		clearTimeout(swipe.timo);
-		
-		var evt = isTouch ? event.touches[0] : (usePointer ? event : jqevt);
-		
-		var status = swipe.lastStatus;
-		
-		if(!isTouch)
-			jqevt.preventDefault();
-		
-		status.phase = 'end';
-		
-		swipe.touchStarted = false;
-		swipe.priventEvt   = null;
-		
-		$(document).unbind(ev_end     , swipe.__touchEnd).
-		 		    unbind(ev_move    , swipe.__touchMove).
-					unbind(ev_cancel  , swipe.__touchCancel);
-		
-		status.speed = status.distance / status.duration;
-				
-		swipe.onSwipe.call(null , status);
-		
-	};
-	
-	p.__touchCancel = function(event){
-		var swipe = event.data.target;
-		swipe.__touchEnd(event);
-	};
-	
-	p.enable = function(){
-		if(this.enabled) return;
-		this.enabled = true;
-	};
-	
-	p.disable = function(){
-		if(!this.enabled) return;
-		this.enabled = false;
-	};
-	
+        this.onSwipe    = null;
+        this.swipeType  = 'horizontal';
+        this.noSwipeSelector = 'input, textarea, button, .no-swipe, .ms-no-swipe';
+
+        this.lastStatus = {};
+
+    };
+
+    var p = averta.TouchSwipe.prototype;
+
+    /*-------------- METHODS --------------*/
+
+    p.getDirection = function(new_x , new_y){
+        switch(this.swipeType){
+            case 'horizontal':
+                return new_x <= this.start_x ? 'left' : 'right';
+            break;
+            case 'vertical':
+                return new_y <= this.start_y ? 'up' : 'down';
+            break;
+            case 'all':
+                if(Math.abs(new_x - this.start_x) > Math.abs(new_y - this.start_y))
+                    return new_x <= this.start_x ? 'left' : 'right';
+                else
+                    return new_y <= this.start_y ? 'up' : 'down';
+            break;
+        }
+    };
+
+    p.priventDefultEvent = function(new_x , new_y){
+        //if(this.priventEvt != null) return this.priventEvt;
+        var dx = Math.abs(new_x - this.start_x);
+        var dy = Math.abs(new_y - this.start_y);
+
+        var horiz =  dx > dy;
+
+        return (this.swipeType === 'horizontal' && horiz) ||
+               (this.swipeType === 'vertical' && !horiz);
+
+        //return this.priventEvt;
+    };
+
+    p.createStatusObject = function(evt){
+        var status_data = {} , temp_x , temp_y;
+
+        temp_x = this.lastStatus.distanceX || 0;
+        temp_y = this.lastStatus.distanceY || 0;
+
+        status_data.distanceX = evt.pageX - this.start_x;
+        status_data.distanceY = evt.pageY - this.start_y;
+        status_data.moveX = status_data.distanceX - temp_x;
+        status_data.moveY = status_data.distanceY - temp_y;
+
+        status_data.distance  = parseInt( Math.sqrt(Math.pow(status_data.distanceX , 2) + Math.pow(status_data.distanceY , 2)) );
+
+        status_data.duration  = new Date().getTime() - this.start_time;
+        status_data.direction = this.getDirection(evt.pageX , evt.pageY);
+
+        return status_data;
+    };
+
+
+    p.__reset = function(event , jqevt){
+        this.reset = false;
+        this.lastStatus = {};
+        this.start_time = new Date().getTime();
+
+        var point = this.__getPoint( event, jqevt );
+        this.start_x = point.pageX;
+        this.start_y = point.pageY;
+    };
+
+    p.__touchStart = function(event){
+
+        var swipe = event.data.target;
+        var jqevt = event;
+        if(!swipe.enabled) return;
+
+        if ( $(event.target).closest(swipe.noSwipeSelector, swipe.$element).length > 0 ) {
+            return;
+        }
+
+        event = event.originalEvent;
+
+        if( usePointer ) {
+            $(this).css('-ms-touch-action', swipe.swipeType === 'horizontal' ? 'pan-y' : 'pan-x');
+        }
+
+        if(!swipe.onSwipe) {
+            $.error('Swipe listener is undefined');
+            return;
+        }
+
+        // don't catch the touch start again, also don't go further if the delay between touchstart and mousedown is small
+        // if ( swipe.touchStarted ) {
+        if ( swipe.touchStarted || isTouch && swipe.start_time && event.type === 'mousedown' &&  new Date().getTime() - swipe.start_time < 600 ) {
+            return;
+        }
+
+        var point = swipe.__getPoint( event, jqevt );
+        swipe.start_x = point.pageX;
+        swipe.start_y = point.pageY;
+
+        swipe.start_time = new Date().getTime();
+
+        $(document).bind(ev_end    , {target: swipe} , swipe.__touchEnd).
+                    bind(ev_move   , {target: swipe} , swipe.__touchMove).
+                    bind(ev_cancel , {target: swipe} , swipe.__touchCancel);
+
+        var status = swipe.createStatusObject(point);
+        status.phase = 'start';
+
+        swipe.onSwipe.call(null , status);
+
+        if(!isTouch)
+            jqevt.preventDefault();
+
+        swipe.lastStatus = status;
+        swipe.touchStarted = true;
+    };
+
+    p.__touchMove = function(event){
+        var swipe = event.data.target;
+        var jqevt = event;
+        event = event.originalEvent;
+
+        if(!swipe.touchStarted) return;
+
+        clearTimeout(swipe.timo);
+        swipe.timo = setTimeout(function(){swipe.__reset(event , jqevt);} , 60);
+
+        var point = swipe.__getPoint( event, jqevt );
+
+        var status = swipe.createStatusObject(point);
+
+        if(swipe.priventDefultEvent(point.pageX , point.pageY))
+            jqevt.preventDefault();
+
+        status.phase = 'move';
+
+        //if(swipe.lastStatus.direction !== status.direction) swipe.__reset(event , jqevt);
+
+        swipe.lastStatus = status;
+
+        swipe.onSwipe.call(null , status);
+    };
+
+    p.__touchEnd = function(event){
+
+        var swipe = event.data.target;
+        var jqevt = event;
+        event = event.originalEvent;
+
+        clearTimeout(swipe.timo);
+
+        var status = swipe.lastStatus;
+
+        if(!isTouch)
+            jqevt.preventDefault();
+
+        status.phase = 'end';
+
+        swipe.touchStarted = false;
+        swipe.priventEvt   = null;
+
+        $(document).unbind(ev_end     , swipe.__touchEnd).
+                    unbind(ev_move    , swipe.__touchMove).
+                    unbind(ev_cancel  , swipe.__touchCancel);
+
+        status.speed = status.distance / status.duration;
+
+        swipe.onSwipe.call(null , status);
+
+    };
+
+    p.__touchCancel = function(event){
+        var swipe = event.data.target;
+        swipe.__touchEnd(event);
+    };
+
+    p.__getPoint = function( event, jqEvent ) {
+        if ( isTouch && event.type.indexOf('mouse') === -1 ) {
+            return event.touches[0];
+        } else if ( usePointer ) {
+            return event;
+        } else {
+            return jqEvent;
+        }
+    };
+
+    p.enable = function(){
+        if(this.enabled) return;
+        this.enabled = true;
+    };
+
+    p.disable = function(){
+        if(!this.enabled) return;
+        this.enabled = false;
+    };
+
 })(jQuery);
-//dev\slider\tools\Timer.js 
- 
+
+/* ================== bin-debug/js/pro/tools/Timer.js =================== */
 /**
  * 	Ticker Class
  * 	Author: Averta Ltd
@@ -652,134 +732,136 @@ window.averta = {};
 		
 	};
 })();
-//dev\slider\tools\CSSTweener.js 
- 
+
+/* ================== bin-debug/js/pro/tools/CSSTweener.js =================== */
 ;(function(){
-	
+
 	"use strict";
-	
+
 	var evt = null;
-	
+
 	window.CSSTween = function(element , duration , delay , ease){
-		
+
 		this.$element 	= element;
 		this.duration 	= duration  || 1000;
 		this.delay 		= delay 	|| 0;
 		this.ease 		= ease 		|| 'linear';
-		
+
 		/*if(!evt){
 			if(window._jcsspfx === 'O')
 				evt = 'otransitionend';
 			else if(window._jcsspfx == 'Webkit')
 				evt = 'webkitTransitionEnd';
-			else 
+			else
 				evt = 'transitionend' ;
 		}*/
-		
+
 	};
-	
+
 	var p = CSSTween.prototype;
-	
+
 	/*-------------- METHODS --------------*/
-	
+
 	p.to = function(callback , target){
 		this.to_cb 			= callback;
 		this.to_cb_target 	= target;
-		
+
 		return this;
 	};
 
 	p.from = function(callback , target ){
 		this.fr_cb 			= callback;
 		this.fr_cb_target 	= target;
-		
+
 		return this;
 	};
-	
+
 	p.onComplete = function(callback ,target){
 		this.oc_fb 			= callback;
 		this.oc_fb_target 	= target;
-		
+
 		return this;
 	};
-	
+
 	p.chain = function(csstween){
 		this.chained_tween = csstween;
 		return this;
 	};
-	
+
 	p.reset = function(){
-		//this.$element[0].removeEventListener(evt , this.onTransComplete , true);
+		//element.removeEventListener(evt , this.onTransComplete , true);
 		clearTimeout(this.start_to);
 		clearTimeout(this.end_to);
 	};
-	
+
 	p.start = function(){
-	
+		var element = this.$element[0];
+
 		clearTimeout(this.start_to);
 		clearTimeout(this.end_to);
-		
+
 		this.fresh = true;
-		
+
 		if(this.fr_cb){
-			this.$element.css(window._jcsspfx + 'TransitionDuration' , '0ms');
+			element.style[window._jcsspfx + 'TransitionDuration'] = '0ms';
 			this.fr_cb.call(this.fr_cb_target);
 		}
-		
+
 		var that = this;
-		
+
 		this.onTransComplete = function(event){
-			
+
 			if(!that.fresh) return;
-			
+
 			//that.$element[0].removeEventListener(evt , this.onTransComplete, true);
 			//event.stopPropagation();
-			
+
+
 			that.reset();
-			
-			this.$element.css(window._jcsspfx + 'TransitionDuration' , '').
-						  css(window._jcsspfx + 'TransitionProperty' , '').
-						  css(window._jcsspfx + 'TransitionTimingFunction' , '').
-						  css(window._jcsspfx + 'TransitionDelay' , '');
-						
+
+			element.style[window._jcsspfx + 'TransitionDuration'] = '';
+			element.style[window._jcsspfx + 'TransitionProperty'] = '';
+			element.style[window._jcsspfx + 'TransitionTimingFunction'] = '';
+			element.style[window._jcsspfx + 'TransitionDelay'] = '';
+
 			that.fresh = false;
 			if(that.chained_tween) that.chained_tween.start();
 			if(that.oc_fb)	that.oc_fb.call(that.oc_fb_target);
-			
+
 		};
-			
+
 		this.start_to = setTimeout(function(){
 			if ( !that.$element ) return;
-			that.$element.css(window._jcsspfx + 'TransitionDuration' , that.duration + 'ms').
-						  css(window._jcsspfx + 'TransitionProperty' , 'all');
-						  
-			if(that.delay > 0)	that.$element.css(window._jcsspfx + 'TransitionDelay' , that.delay + 'ms');
-			else				that.$element.css(window._jcsspfx + 'TransitionDelay' , '');
-					
-			that.$element.css(window._jcsspfx + 'TransitionTimingFunction' , that.ease);
+			element.style[window._jcsspfx + 'TransitionDuration'] = that.duration + 'ms';
+			element.style[window._jcsspfx + 'TransitionProperty'] = that.transProperty || 'all';
+
+			if(that.delay > 0)	element.style[window._jcsspfx + 'TransitionDelay'] = that.delay + 'ms';
+			else				element.style[window._jcsspfx + 'TransitionDelay'] = '';
+
+			element.style[window._jcsspfx + 'TransitionTimingFunction'] = that.ease;
 
 			if(that.to_cb)	that.to_cb.call(that.to_cb_target);
-			
+
 			//that.$element[0].addEventListener(evt , that.onTransComplete , true );
-			
+
 			that.end_to = setTimeout(function(){that.onTransComplete();} , that.duration + (that.delay || 0));
-		} , 100);
-			
+		} , 1);
+
 		return this;
 	};
-		
+
 })();
 
 /**
  *	Cross Tween Class
  */
 ;(function(){
-	
+
 	"use strict";
-	
+
 	var _cssanim = null;
 	window.CTween = {};
-	
+
 	function transPos(element, properties){
 		if(properties.x !== undefined || properties.y !== undefined){
 			if(_cssanim){
@@ -788,7 +870,7 @@ window.averta = {};
 					properties[trans] = (properties[trans] || '') + ' translateX('+properties.x+'px)';
 					delete properties.x;
 				}
-				
+
 				if(properties.y !== undefined){
 					properties[trans] = (properties[trans] || '') + ' translateY('+properties.y+'px)';
 					delete properties.y;
@@ -800,7 +882,7 @@ window.averta = {};
 					properties[posx] = /*element[0].bx + */properties.x + 'px';
 					delete properties.x;
 				}
-				
+
 				if(properties.y !== undefined){
 					var posy = element.css('bottom') !== 'auto' ? 'bottom' : 'top';
 					//if(!element[0].by) element[0].by = parseInt(element.css(posy));
@@ -811,66 +893,76 @@ window.averta = {};
 		}
 		return properties;
 	}
-	
+
 	CTween.setPos = function(element , pos){
 		element.css(transPos(element , pos));
 	};
-	
+
 	CTween.animate = function(element , duration , properties , options){
 		if(_cssanim == null) _cssanim = window._cssanim;
-		
+
 		options = options || {};
-		
+
 		transPos(element , properties);
-		
+
 		if(_cssanim){
 			var tween = new CSSTween(element , duration , options.delay , EaseDic[options.ease]);
-			tween.to(function(){ element.css(properties);});	
+			if ( options.transProperty ) {
+				tween.transProperty = options.transProperty;
+			}
+			tween.to(function(){ element.css(properties);});
 			if(options.complete) tween.onComplete(options.complete , options.target);
 			tween.start();
 			tween.stop = tween.reset;
 			return tween;
 		}
-		
+
 		var onCl;
-		
+
 		if(options.delay) element.delay(options.delay);
-		if(options.complete) 
+		if(options.complete)
 			onCl = function(){
 				options.complete.call(options.target);
 			};
 
 		element.stop(true).animate(properties , duration , options.ease || 'linear' , onCl);
-				
+
 		return element;
-	};	
-	
+	};
+
 	CTween.fadeOut = function(target , duration , remove) {
 		var options = {};
-		if(remove) options.complete = function(){target.remove();};		
-		
+		if(remove === true) {
+			options.complete = function(){target.remove();};
+		} else if ( remove === 2 ) {
+			options.complete = function(){target.css('display', 'none');};
+		}
+
 		CTween.animate(target , duration || 1000 , {opacity : 0} , options);
 	};
-	
-	CTween.fadeIn = function(target , duration){
-		target.css('opacity' , 0);
+
+	CTween.fadeIn = function(target , duration, reset){
+		if( reset !== false ) {
+			target.css('opacity' , 0).css('display', '');
+		}
+
 		CTween.animate(target , duration || 1000 , {opacity : 1});
 	};
-	
+
 })();
 
 ;(function(){
-	
+
 	// Thanks to matthewlein
 	// https://github.com/matthewlein/Ceaser
-	
+
 	window.EaseDic = {
 		'linear'            : 'linear',
 	    'ease'              : 'ease',
 	    'easeIn'            : 'ease-in',
 	    'easeOut'           : 'ease-out',
 	    'easeInOut'         : 'ease-in-out',
-	    
+
 	    'easeInCubic'       : 'cubic-bezier(.55,.055,.675,.19)',
 	    'easeOutCubic'      : 'cubic-bezier(.215,.61,.355,1)',
 	    'easeInOutCubic'    : 'cubic-bezier(.645,.045,.355,1)',
@@ -898,29 +990,28 @@ window.averta = {};
 	};
 })();
 
-//dev\slider\tools\Aligner.js 
- 
+/* ================== bin-debug/js/pro/tools/Aligner.js =================== */
 ;(function(){
-	
+
 	"use strict";
-	
+
 	window.MSAligner = function(type , $container , $img ){
-		
+
 		this.$container = $container;
-		this.$img	    = $img;	
-	
+		this.$img	    = $img;
+
 		this.type 		= type || 'stretch'; // fill , fit , stretch , tile , center
-		
+
 		this.widthOnly = false;
 		this.heightOnly = false;
 	};
-	
+
 	var p = MSAligner.prototype;
-	
+
 	/*-------------- METHODS --------------*/
-	
+
 	p.init = function(w , h){
-		
+
 		this.baseWidth = w;
 		this.baseHeight = h;
 		this.imgRatio = w / h;
@@ -946,58 +1037,190 @@ window.averta = {};
 				});
 			break;
 			case 'fill':
-			case 'fit' :				
+			case 'fit' :
 				this.needAlign = true;
 				this.align();
 			break;
 		}
-		
+
 	};
-	
+
 	p.align = function(){
 		if(!this.needAlign) return;
 
-		var cont_w = this.$container.width();
-		var cont_h = this.$container.height();
+		var cont_w = this.$container[0].offsetWidth;
+		var cont_h = this.$container[0].offsetHeight;
 
 		var contRatio = cont_w / cont_h;
-		
+
 		if(this.type == 'fill'){
 			if(this.imgRatio < contRatio ){
 				this.$img.width(cont_w);
-				this.$img.height(cont_w * this.imgRatio2);				
+				this.$img.height(cont_w * this.imgRatio2);
 			}else{
 				this.$img.height(cont_h);
 				this.$img.width(cont_h * this.imgRatio);
 			}
-				
+
 		}else if(this.type == 'fit'){
-			
+
 			if(this.imgRatio < contRatio){
 				this.$img.height(cont_h);
-				this.$img.width(cont_h * this.imgRatio);				
+				this.$img.width(cont_h * this.imgRatio);
 			}else{
 				this.$img.width(cont_w);
-				this.$img.height(cont_w * this.imgRatio2);	
+				this.$img.height(cont_w * this.imgRatio2);
 			}
 		}
-		
+
 		this.setMargin();
-		
+
 	};
 
 	p.setMargin = function(){
 
-		var cont_w = this.$container.width();
-		var cont_h = this.$container.height();
-		
+		var cont_w = this.$container[0].offsetWidth;
+		var cont_h = this.$container[0].offsetHeight;
+
 		this.$img.css('margin-top' , (cont_h - this.$img[0].offsetHeight) / 2 + 'px');
 		this.$img.css('margin-left', (cont_w - this.$img[0].offsetWidth ) / 2 + 'px');
 	}
-	
+
 })();
-//dev\slider\controls\controller.js 
- 
+
+/* ================== bin-debug/js/pro/tools/pointer-events-polyfill.js =================== */
+/**
+ * CSS pointer-events polyfill
+ * Adds support for `pointer-events: none;` for browsers not supporting this property
+ * Requires jQuery@~1.9
+ *
+ * @copyright Sebastian Langer 2016
+ * @license MIT
+ * @author Sebastian Langer <sl@scn.cx>
+ */
+(function($){
+    /**
+     * Polyfill main-method
+     * @param  {object} userOptions override default options
+     */
+    var Polyfill = function(userOptions){
+        this.options = $.extend({}, Polyfill.defaultOptions, userOptions);
+
+        this.isEnabled = false;
+
+        if(this.options.forcePolyfill || !this.supportsPointerEvents()){
+            this.registerEvents();
+            this.isEnabled = true;
+        }
+    };
+
+    Polyfill.defaultOptions = {
+        forcePolyfill: false,
+        selector: '*',
+        listenOn: ['click', 'dblclick', 'mousedown', 'mouseup'],
+        pointerEventsNoneClass: null,
+        pointerEventsAllClass: null,
+        eventNamespace: 'pointer-events-polyfill'
+    };
+
+    /**
+     * registers events needed for the polyfill to work properly
+     */
+    Polyfill.prototype.registerEvents = function(){
+        $(document).on(this.getEventNames(), this.options.selector, $.proxy(this.onElementClick, this));
+    };
+
+    /**
+     * get all events as a jquery-compatible event string
+     * @return {String} namespaced jquery-events
+     */
+    Polyfill.prototype.getEventNames = function(){
+        var eventNamespace = this.options.eventNamespace ? '.' + this.options.eventNamespace : '';
+        return this.options.listenOn.join(eventNamespace + ' ') + eventNamespace;
+    };
+
+    /**
+     * detects support for css pointer-events
+     * stolen from modernizr - https://github.com/Modernizr/Modernizr/blob/1f8af59/feature-detects/css/pointerevents.js
+     * @return {boolean} indicates support
+     */
+    Polyfill.prototype.supportsPointerEvents = function(){
+        var style = document.createElement('a').style;
+        style.cssText = 'pointer-events:auto';
+        return style.pointerEvents === 'auto';
+    };
+
+    /**
+     * recursively checks parent nodes if they have a pointer-events css-property
+     * @param  {jQuery} $el element to test
+     * @return {boolean}    indicates click-through-ability of the given element
+     */
+    Polyfill.prototype.isClickThrough = function($el){
+        var elPointerEventsCss = $el.css('pointer-events');
+        if($el.length === 0 || elPointerEventsCss === 'all' || $el.is(':root') || $el.hasClass(this.options.pointerEventsAllClass)){
+            return false;
+        }
+        if(elPointerEventsCss === 'none' || $el.hasClass(this.options.pointerEventsNoneClass) || this.isClickThrough($el.parent())){
+            return true;
+        }
+        return false;
+    };
+
+    /**
+     * proxies click-through to underlying element if necessary
+     * @param  {Event} e click-event
+     * @return {boolean} preventDefault
+     */
+    Polyfill.prototype.onElementClick = function(e){
+        var $elOrg = $(e.target);
+
+        if(!this.isClickThrough($elOrg)){
+            return true;
+        }
+
+        // retrieve element below the clicked one
+        $elOrg.hide();
+        var elBelow = document.elementFromPoint(e.clientX, e.clientY);
+
+        // trigger the original element on the one below
+        e.target = elBelow;
+        $(elBelow).trigger(e);
+
+        // open links
+        if(elBelow.tagName === 'A') {
+            // middle click (sometimes the browser blocks it as popup)
+            if(e.which === 2) {
+                window.open(elBelow.getAttribute('href'), '_blank');
+            } else {
+                elBelow.click();
+            }
+        }
+
+        // restore clicked element
+        $elOrg.show();
+
+        return false;
+    };
+
+    /**
+     * destroys the plugin - removes listeners and data
+     */
+    Polyfill.prototype.destroy = function(){
+        $(document).off(this.getEventNames());
+        this.isEnabled = false;
+    };
+
+    /**
+     * make polyfill available globally
+     * @param  {object} userOptions override default options
+     * @return {Polyfill}           polyfill-object
+     */
+    window.pointerEventsPolyfill = function(userOptions){
+        return new Polyfill(userOptions);
+    };
+})(jQuery);
+
+/* ================== bin-debug/js/pro/controls/controller.js =================== */
 /**
  *  Touch List Control
  * 	version 1.1.2
@@ -1408,7 +1631,7 @@ window.averta = {};
 				self._deceleration = false;
 				self.__isout = false;
 				
-				if(this.__needsSnap && self.options.snapping && !self.options.paging){
+				if(self.__needsSnap && self.options.snapping && !self.options.paging){
 					self.value = self._checkLimits(self.end_loc + self.__extraMove);
 				}else{
 					self.value = Math.round(self.value);
@@ -1424,8 +1647,654 @@ window.averta = {};
 	
 	window.Controller = Controller;
 	
-})();//dev\slider\controls\LayerEffects.js 
- 
+})();
+
+/* ================== bin-debug/js/pro/layers/LayerController.js =================== */
+/**
+ * Master Slider Layer Controller
+ * @author averta
+ * @package Master Slider jQuery PRO
+ * @since 2.11.1
+ */
+;(function(window, document, $){
+
+	/**
+	 * Layer Controller constructor
+	 * @param {MSSlide} slide layer controller's slide.
+	 */
+	window.MSLayerController = function (slide) {
+		this.slide = slide;
+		this.slider = slide.slider;
+		this.layers = [];
+		this.layersCount = 0;
+		this.preloadCount = 0;
+		this.$layers = $('<div></div>').addClass('ms-slide-layers');
+		this.$staticLayers = $('<div></div>').addClass('ms-static-layers');
+		this.$fixedLayers = $('<div></div>').addClass('ms-fixed-layers');
+		this.$animLayers = $('<div></div>').addClass('ms-anim-layers');
+
+	};
+
+	var p = MSLayerController.prototype;
+
+
+	/*-----------------------------------------*\
+		Public Methods
+	\*-----------------------------------------*/
+
+	/**
+	 * Adds new layer to the controller and slide
+	 * @param {MSLayerElement} layer
+	 */
+	p.addLayer = function (layer) {
+		layer.slide = this.slide;
+		layer.controller = this;
+
+		// append layer element to the layers container based on `data-position` attribute.
+		switch ( layer.$element.data('position') ) {
+			case 'static':
+				this.hasStaticLayer = true;
+				layer.$element.appendTo(this.$staticLayers);
+				break;
+			case 'fixed':
+				this.hasFixedLayer = true;
+				layer.$element.appendTo(this.$fixedLayers);
+				break;
+			default:
+				layer.$element.appendTo(this.$animLayers);
+				break;
+		}
+
+		layer.create();
+		this.layers.push(layer);
+		this.layersCount ++;
+
+		// @since 1.7.0
+		if( layer.parallax ){
+			this.hasParallaxLayer = true;
+		}
+
+		if ( layer.needPreload ) {
+			this.preloadCount ++;
+		}
+	};
+
+	/**
+	 * add layers over slide
+	 * it calls after addLayer
+	 */
+	p.create = function () {
+		this.slide.$element.append(this.$layers);
+		this.$layers.append(this.$animLayers);
+
+		if ( this.hasStaticLayer ) {
+			this.$layers.append(this.$staticLayers);
+		}
+
+		if(this.slider.options.layersMode == 'center'){
+			this.$layers.css('max-width' , this.slider.options.width + 'px');
+
+			if ( this.hasFixedLayer ) {
+				this.$fixedLayers.css('max-width' , this.slider.options.width + 'px');
+			}
+		}
+	};
+
+	/**
+	 * load layers that requires preloading
+	 * @param {Function} callback onload callback function
+	 */
+	p.loadLayers = function (callback) {
+		this._onReadyCallback = callback;
+
+		if ( this.preloadCount === 0 ) {
+			this._onlayersReady();
+			return;
+		}
+
+		for(var i = 0 ; i !== this.layersCount; ++i){
+			if(this.layers[i].needPreload) {
+				this.layers[i].loadImage();
+			}
+		}
+	};
+
+	/**
+	 * prepare layers to show over slide, this method will be called via `prepareToSelect` method of slide.
+	 */
+	p.prepareToShow = function () {
+		if ( this.hasParallaxLayer ) {
+			this._enableParallaxEffect();
+		}
+
+		if ( this.hasFixedLayer ) {
+			this.$fixedLayers.prependTo(this.slide.view.$element);
+		}
+	};
+
+	/**
+	 * show layers over slide
+	 */
+	p.showLayers = function(){
+		if ( this.layersHideTween ) {
+			this.layersHideTween.stop(true);
+		}
+
+		if ( this.fixedLayersHideTween ) {
+			this.fixedLayersHideTween.stop(true);
+		}
+
+		this._resetLayers();
+		this.$animLayers.css('opacity', '').css('display', '');
+
+		if ( this.hasFixedLayer ){
+			this.$fixedLayers.css('opacity', '').css('display', '');
+		}
+
+		if ( this.ready ) {
+			this._initLayers();
+			this._locateLayers();
+			this._startLayers();
+		}
+	};
+
+	/**
+	 * hideLayers this method will be called via slide class.
+	 */
+	p.hideLayers = function () {
+
+		if( this.slide.selected || this.slider.options.instantStartLayers ){
+			var that = this;
+			that.layersHideTween = CTween.animate(this.$animLayers, 500, {opacity: 0}, {
+				complete:function(){
+					that._resetLayers();
+				}
+			});
+
+			if ( this.hasFixedLayer ) {
+				this.fixedLayersHideTween = CTween.animate(this.$fixedLayers, 500, {opacity: 0}, {
+					complete:function(){
+						that.$fixedLayers.detach();
+					}
+				});
+			}
+
+			// disables parallax effect
+			// @since 1.6.0
+			if ( this.hasParallaxLayer ) {
+				this._disableParallaxEffect();
+			}
+		}
+	};
+
+	/**
+	 * hide layers from slide
+	 */
+	p.animHideLayers = function(){
+		if ( !this.ready ) {
+			return;
+		}
+
+		for(var i = 0; i !== this.layersCount; ++i){
+			this.layers[i].hide();
+		}
+	};
+
+	/**
+	 * calculate new size of layers containers and locate layers
+	 * @param {Number} width  slider width
+	 * @param {Number} height slider height
+	 * @param {Boolean} hard  whether call init layers.
+	 */
+	p.setSize = function (width, height, hard) {
+
+		if ( this.ready && (this.slide.selected || this.hasStaticLayer) ) {
+			if ( hard ) {
+				this._initLayers(true);
+			}
+			this._locateLayers(!this.slide.selected);
+		}
+
+		if ( this.slider.options.autoHeight ) {
+			this.updateHeight();
+		}
+
+		if ( this.slider.options.layersMode == 'center' ) {
+			var left = Math.max( 0 ,  (width - this.slider.options.width) / 2 ) + 'px';
+			this.$layers[0].style.left = left;
+			this.$fixedLayers[0].style.left = left;
+		}
+
+	};
+
+	/**
+	 * updates layers container height
+	 */
+	p.updateHeight = function () {
+		// var h = this.slide.getHeight() + 'px';
+		// this.$layers[0].style.height = h;
+		// this.$fixedLayers[0].style.height = h;
+	};
+
+	/**
+	 * This method will be called by the last layer after loading all of layers.
+	 */
+	p._onlayersReady = function(){
+		this.ready = true;
+
+		if ( this.hasStaticLayer && !this.slide.isSleeping ) {
+			this._initLayers(false, true);
+		}
+
+		this._onReadyCallback.call(this.slide);
+	};
+
+	/**
+	 * this method will be called by slide when it starts sleeping
+	 */
+	p.onSlideSleep = function () {
+
+	};
+
+	/**
+	 * this method will be called by slide after waking up
+	 */
+	p.onSlideWakeup = function () {
+		if ( this.hasStaticLayer && this.ready ) {
+			this._initLayers(false, true);
+		}
+	};
+
+    /**
+     * get the layer object by the id attribute
+     */
+    p.getLayerById = function( layerId ) {
+        if ( !layerId ) {
+            return null;
+        }
+
+        for(var i = 0; i < this.layersCount; ++i){
+            if ( this.layers[i].id === layerId ) {
+                return this.layers[i];
+            }
+        }
+
+        return null;
+    };
+
+	/**
+	 * destroy layer controller and stop layer animations
+	 */
+	p.destroy = function () {
+		if ( this.slide.selected && this.hasParallaxLayer ) {
+			this._disableParallaxEffect();
+		}
+
+		for(var i = 0; i < this.layersCount; ++i){
+			this.layers[i].$element.stop(true).remove();
+		}
+
+		this.$layers.remove();
+		this.$staticLayers.remove();
+		this.$fixedLayers.remove();
+		this.$animLayers.remove();
+	};
+
+
+	/*-----------------------------------------*\
+		Private Methods
+	\*-----------------------------------------*/
+
+	/**
+	 * start layer effect
+	 */
+	p._startLayers = function(){
+		for(var i = 0; i !== this.layersCount; ++i){
+            var layer = this.layers[i];
+            if ( !layer.waitForAction ) {
+			    layer.start();
+            }
+		}
+	};
+
+	/**
+	 * call init method of all layers
+	 * @param  {Boolean} force
+	 */
+	p._initLayers = function(force, onlyStatics){
+
+		if ( this.init && !force || this.slider.init_safemode ) {
+			return;
+		}
+
+		this.init = onlyStatics !== true;
+
+		var i = 0;
+		if ( onlyStatics && !this.staticsInit ) {  // init only static layers
+			this.staticsInit = true;
+			for ( ;i !== this.layersCount; ++i ) {
+				if ( this.layers[i].staticLayer ) {
+					this.layers[i].init();
+				}
+			}
+		} else if ( this.staticsInit && !force ) { // statics are already initiated, init dynamics
+			for ( ;i !== this.layersCount; ++i ) {
+				if ( !this.layers[i].staticLayer ){
+					this.layers[i].init();
+				}
+			}
+		} else {	 // init all
+			for ( ;i !== this.layersCount; ++i ) {
+				this.layers[i].init();
+			}
+		}
+	};
+
+	/**
+	 * locate layers over slide
+	 */
+	p._locateLayers = function (onlyStatics){
+		var i = 0;
+		if ( onlyStatics ) {
+			for ( ;i !== this.layersCount; ++i ) {
+				if ( this.layers[i].staticLayer ) {
+					this.layers[i].locate();
+				}
+			}
+		} else {
+			for ( ;i !== this.layersCount; ++i ) {
+				this.layers[i].locate();
+			}
+		}
+	};
+
+	/**
+	 * rest layers
+	 */
+	p._resetLayers = function(){
+		this.$animLayers.css('display', 'none').css('opacity',  1);
+		for ( var i = 0; i !== this.layersCount; ++i ) {
+			this.layers[i].reset();
+		}
+	};
+
+	/**
+	 * moves layers based on x and y
+	 * @param  {Number} x
+	 * @param  {Number} y
+	 * @param  {Boolean} fast whether animate or not
+	 */
+	p._applyParallax = function(x, y, fast){
+		for(var i = 0 ; i !== this.layersCount; ++i){
+			if( this.layers[i].parallax != null ){
+				this.layers[i].moveParallax(x, y, fast);
+			}
+		}
+	};
+
+	/**
+	 * enable parallax moving layers
+	 */
+	p._enableParallaxEffect = function(){
+		if( this.slider.options.parallaxMode === 'swipe' ){
+			this.slide.view.addEventListener(MSViewEvents.SCROLL, this._swipeParallaxMove, this);
+		} else {
+			this.slide.$element.on('mousemove' , {that:this}, this._mouseParallaxMove)
+						 .on('mouseleave', {that:this}, this._resetParalax);
+			/**
+			 * Calculates new position of parallax based on device orintation gamma and beta
+			 * @param  {Event} e
+			 * @since 1.6.0
+			 */
+			/*if( window._mobile && window.DeviceOrientationEvent ){
+
+				var that = this;
+				this.orientationParallaxMove = function(e){
+					var beta = Math.round(e.beta),
+						gamma = Math.round(e.gamma);
+
+					that._applyParallax(beta * that.__width / 360 , -gamma * that.__height / 360);
+				};
+
+				window.addEventListener('deviceorientation', this.orientationParallaxMove, false);
+			}*/
+		}
+	};
+
+	/**
+	 * disable parallax effect
+	 */
+	p._disableParallaxEffect = function(){
+		if( this.slider.options.parallaxMode === 'swipe' ){
+			this.slide.view.removeEventListener(MSViewEvents.SCROLL, this._swipeParallaxMove, this);
+		} else {
+			this.slide.$element.off('mousemove', this._mouseParallaxMove)
+						 .off('mouseleave', this._resetParalax);
+
+			/*if( window._mobile && window.DeviceOrientationEvent ){
+				window.removeEventListener('deviceorientation', this.orientationParallaxMove);
+			}*/
+		}
+	};
+
+	/**
+	 * reset layers parallax position to 0, 0
+	 */
+	p._resetParalax = function(e){
+		var that = e.data.that;
+		that._applyParallax(0,0);
+	};
+
+	/**
+	 * Calculates new mouse position over slide and moves layers
+	 * @since 1.6.0
+	 */
+	p._mouseParallaxMove = function(e){
+		var that = e.data.that,
+			os = that.slide.$element.offset(),
+			slider = that.slider;
+
+			if( slider.options.parallaxMode !== 'mouse:y-only' ){
+				var x = e.pageX - os.left - that.slide.__width  / 2;
+			} else {
+				var x = 0;
+			}
+
+			if( slider.options.parallaxMode !== 'mouse:x-only' ){
+				var y = e.pageY - os.top  - that.slide.__height / 2;
+			} else {
+				var y = 0;
+			}
+
+		that._applyParallax(-x, -y);
+	};
+
+
+	/**
+	 * Calculates new position of parallax based on slide position
+	 * @param  {Event} e
+	 * @since 1.6.0
+	 */
+	p._swipeParallaxMove = function(e){
+		var value = this.slide.position - this.slide.view.__contPos;
+
+		if ( this.slider.options.dir === 'v' ) {
+			this._applyParallax(0, value, true);
+		} else {
+			this._applyParallax(value, 0, true);
+		}
+	};
+
+
+})(window, document, jQuery);
+
+/* ================== bin-debug/js/pro/layers/OverlayLayerController.js =================== */
+/**
+ * Overlaye layer controller extends layer controller
+ * @since 2.50.0
+ */
+;(function ( $, window, document, undefined ) {
+    "use strict";
+
+
+    window.MSOverlayLayerController = function( slide ){
+        MSLayerController.apply( this, arguments );
+    }
+
+    /* ------------------------------------------------------------------------------ */
+    MSOverlayLayerController.extend(MSLayerController);
+    var p = MSOverlayLayerController.prototype;
+    var _super = MSLayerController.prototype;
+    /* ------------------------------------------------------------------------------ */
+
+    /**
+     * @override
+     */
+    p.addLayer = function (layer) {
+        var showOnSlides = layer.$element.data('show-on'),
+            hideOnSlides = layer.$element.data('hide-on');
+
+        if (hideOnSlides ) {
+            layer.hideOnSlides = hideOnSlides.replace(/\s+/g, '').split(',');
+        }
+
+        if (showOnSlides ) {
+            layer.showOnSlides = showOnSlides.replace(/\s+/g, '').split(',');
+        }
+
+        _super.addLayer.apply( this, arguments );
+    };
+
+    /**
+     * @override
+     */
+    p.create = function () {
+        _super.create.apply( this, arguments );
+        this.slider.api.addEventListener( MSSliderEvent.CHANGE_START, this.checkLayers.bind(this) );
+    };
+
+    p.checkLayers = function(){
+        if ( !this.ready ) {
+            return;
+        }
+
+        for(var i = 0; i !== this.layersCount; ++i){
+            var layer = this.layers[i];
+            if ( !layer.waitForAction ) {
+                if ( this._checkForShow( layer ) ) {
+                    layer.start();
+                } else {
+                    layer.hide();
+                }
+            }
+        }
+    };
+
+    /**
+     * enable parallax effect, overlay layars doesn't support swipe parallax
+     */
+    p._enableParallaxEffect = function(){
+        this.slider.view.$element.on('mousemove' , {that:this}, this._mouseParallaxMove)
+                                 .on('mouseleave', {that:this}, this._resetParalax);
+    };
+
+    /**
+     * disable parallax effect
+     * overlay layers doesn't support swipe parallax
+     */
+    p._disableParallaxEffect = function(){
+        this.slider.view.$element.off('mousemove', this._mouseParallaxMove)
+                                 .off('mouseleave', this._resetParalax);
+    };
+
+    /* ------------------------------------------------------------------------------ */
+    /**
+     * start layer effect
+     */
+    p._startLayers = function(){
+        for(var i = 0; i !== this.layersCount; ++i){
+            var layer = this.layers[i];
+
+            if ( this._checkForShow( layer ) && !layer.waitForAction ) {
+                layer.start();
+            }
+        }
+    };
+
+    p._checkForShow = function( layer ) {
+        var slideId = this.slider.api.currentSlide.id,
+            layerHideOn = layer.hideOnSlides,
+            layerShowOn = layer.showOnSlides;
+
+        if ( layerShowOn ) {
+            return !!slideId && layerShowOn.indexOf( slideId ) !== -1;
+        }
+
+        return !slideId || !layerHideOn || ( layerHideOn.length && layerHideOn.indexOf( slideId ) === -1 );
+    };
+
+})(jQuery, window, document);
+
+/* ================== bin-debug/js/pro/layers/OverlayLayers.js =================== */
+/**
+ * Master Slider overlay layers
+ *
+ */
+;(function ( $, window, document, undefined ) {
+    "use strict";
+
+    window.MSOverlayLayers = function( slider ){
+        this.slider = slider;
+    };
+
+    /* ------------------------------------------------------------------------------ */
+    var p = MSOverlayLayers.prototype;
+
+    p.setupLayerController = function(){
+        this.layerController = new MSOverlayLayerController(this);
+        this.slider.api.addEventListener( MSSliderEvent.RESIZE, this.setSize.bind(this) );
+        this.slider.api.addEventListener( MSSliderEvent.CHANGE_START, this.setSize.bind(this) );
+        this.setSize();
+    };
+
+    p.setSize = function(){
+        this.__width = this.$element.width();
+        this.__height = this.$element.height();
+
+        this.layerController.setSize( this.__width, this.__height );
+    };
+
+    p.create = function(){
+        this.layerController.create();
+        this.layerController.loadLayers(this._onLayersLoad);
+        this.layerController.prepareToShow();
+
+        if ( window.pointerEventsPolyfill ) {
+            window.pointerEventsPolyfill( {selector: '#' + this.slider.$element.attr('id') + ' ' + '.ms-overlay-layers', forcePolyfill:false } );
+        }
+    };
+
+    p.getHeight = function() {
+        return this.slider.api.currentSlide.getHeight();
+    };
+
+    p.destroy = function(){
+        this.layerController.destroy();
+    };
+
+    /* ------------------------------------------------------------------------------ */
+
+    p._onLayersLoad = function () {
+        this.ready = true;
+        this.selected = true;
+        this.layersLoaded = true;
+        this.setSize();
+        this.layerController.showLayers();
+    };
+
+})(jQuery, window, document);
+
+/* ================== bin-debug/js/pro/layers/LayerEffects.js =================== */
 ;(function($){
 	
 	window.MSLayerEffects = {};
@@ -1444,7 +2313,7 @@ window.averta = {};
 			o					= $.browser.opera; // Opera sucks :|
 			_2d					= window._css2d && window._cssanim && !o;
 		
-		st.defaultValues = {left : 0 , top: 0 , opacity:1 , right:0 , bottom:0};
+		st.defaultValues = {left : 0 , top: 0 , opacity:(isMSIE('<=9')?1:'') , right:0 , bottom:0};
 		st.defaultValues[transform_css] 	 = '';
 		//st.defaultValues[transform_orig_css] = '';
 		st.rf = 1;
@@ -1813,154 +2682,98 @@ window.averta = {};
 		}			
 	};
 })(jQuery);
-//dev\slider\controls\LayerElement.js 
- 
+
+/* ================== bin-debug/js/pro/layers/LayerElement.js =================== */
+/**
+ * Master Slider Layer Element
+ * @author Averta
+ * @package Master Slider jQuery
+ */
+
 ;(function($){
-	
+
+	/**
+	 * master slider layer element constructor
+	 */
 	window.MSLayerElement = function(){
-		
-		//this.$element = $('<div></div>').addClass('layer-element');
-		this.$cont	  = $('<div></div>').addClass('layer-cont');//.append(this.$element);
-			
+
+		// default layer start animation
 		this.start_anim = {
 			name		: 'fade',
 			duration	: 1000,
 			ease 		: 'linear',
-			delay		: 0		
+			delay		: 0
 		};
-		
+
+		// default layer end animation
 		this.end_anim = {
 			duration	: 1000,
 			ease 		: 'linear'
 		};
-		
+
+		// default layer type
 		this.type = 'text'; // video , image
-		
+
 		//this.swipe 		= true;
 		this.resizable 	= true;
 		this.minWidth 	= -1;
-			
+		this.isVisible  = true;
+
+		// list of styles which should stores initial values and changes based on screen size for resizable layers
 		this.__cssConfig = [
 			'margin-top' 	,      'padding-top'	,
 			'margin-bottom'	,      'padding-left'	,
 			'margin-right'	,      'padding-right'	,
 			'margin-left'	,      'padding-bottom' ,
-			
-			
+
+
 			'font-size' 	,  		'line-height'	,
-			/*'height'		, */	'width'			,			
-			'left'			,       'right'			, 
-			'top'			,       'bottom'		
+			/*'height'		, */	'width'			,
+			'left'			,       'right'			,
+			'top'			,       'bottom'
 		];
-		
+
 		this.baseStyle = {};
 	};
-	
+
 	var p = MSLayerElement.prototype;
-	
-	/*-------------- METHODS --------------*/	
-	p.__playAnimation = function(animation , css){	
-		var options = {};
-		//if(animation.delay > 0) options.delay = animation.delay;
-		if(animation.ease)		options.ease = animation.ease;
-		
-		this.show_tween = CTween.animate(this.$element, animation.duration , css , options);					
-	};
-	
-	p._randomParam = function(value){
-		var min = Number(value.slice(0,value.indexOf('|')));
-		var max = Number(value.slice(value.indexOf('|')+1));
-		
-		return min + Math.random() * (max - min);
-	};
-	
-	p._parseEff = function(eff_name){
-		
-		var eff_params = [];
-		
-		if(eff_name.indexOf('(') !== -1){
-			var temp   = eff_name.slice(0 , eff_name.indexOf('(')).toLowerCase();
-			var	value;
-			
-			eff_params = eff_name.slice(eff_name.indexOf('(') + 1 , -1).replace(/\"|\'|\s/g , '').split(',');
-			eff_name   = temp;
-		
-			for(var i = 0 , l = eff_params.length; i < l ; ++i){
-				value = eff_params[i];
-				
-				if(value in MSLayerEffects.presetEffParams)
-					value = MSLayerEffects.presetEffParams[value];
-				
-				eff_params[i] = value;
-			}
-		}
-		
-		return {eff_name:eff_name , eff_params:eff_params};
-	};
-	
-	p._parseEffParams = function(params){
-		var eff_params = [];
-		for(var i = 0 , l = params.length; i < l ; ++i){
-			var value = params[i];
-			if(typeof value === 'string' && value.indexOf('|') !== -1) value = this._randomParam(value);
-			
-			eff_params[i] = value;
-		}
-		
-		return eff_params;
-	};
-	
-	p._checkPosKey = function(key , style){		
-		if(key === 'left' && !(key in this.baseStyle) && 'right' in this.baseStyle){
-			 style.right = -parseInt(style.left) + 'px';
-			 delete style.left;
-			 return true;
-		}
-		
-		if(key === 'top'  && !(key in this.baseStyle) && 'bottom' in this.baseStyle){
-			style.bottom = -parseInt(style.top) + 'px';
-			delete style.top;
-			return true;
-		} 
-		
-		return false;
-	};
-	
-	
-	/*
-	---------------------------------------------------
-	 					Public Methods
-	---------------------------------------------------
-	*/	
-	p.setStartAnim = function(anim){ 
-		$.extend(this.start_anim , anim); $.extend(this.start_anim  , this._parseEff(this.start_anim.name)); 
+
+	/*--------------------------------------------------*\
+		Public Methods
+	\*--------------------------------------------------*/
+
+	/**
+	 * determine start animation for the layer
+	 * @param {Objec} anim
+	 */
+	p.setStartAnim = function(anim){
+		$.extend(this.start_anim , anim); $.extend(this.start_anim, this._parseEff(this.start_anim.name));
 		this.$element.css('visibility' , 'hidden');
 	};
-	p.setEndAnim   = function(anim){ $.extend(this.end_anim   , anim ); };
-	
+
+	/**
+	 * determine end/hide animation for the layer
+	 * @param {Object} anim
+	 */
+	p.setEndAnim = function(anim){
+		$.extend(this.end_anim, anim);
+	};
+
+	/**
+	 * create layer object from layer element
+	 */
 	p.create = function(){
-		this.$element.css('display', 'none')
-					 .removeAttr('data-delay')
-					 .removeAttr('data-effect')
-					 .removeAttr('data-duration')
-					 .removeAttr('data-type');
-		
+		this.$element.css('display', 'none');
+
 		// resizable layer
-		if( this.$element.data('resize') !== undefined ) {
-			this.resizable = this.$element.data('resize');
-			this.$element.removeAttr('data-resize');
-		}
+		this.resizable = this.$element.data('resize') !== false;
 
 		// fixed positioning
-		if( this.$element.data('fixed') !== undefined ){
-			this.fixed = this.$element.data('fixed');
-			this.$element.removeAttr('data-fixed');
-		}
+		this.fixed = this.$element.data('fixed') === true;
 
 		// hide under parameter
 		if( this.$element.data('widthlimit') !== undefined ) {
 			this.minWidth = this.$element.data('widthlimit');
-			this.$element.removeAttr('data-widthlimit');
 		}
 
 		if( !this.end_anim.name ) {
@@ -1971,112 +2784,449 @@ window.averta = {};
 			this.autoHide = true;//this.end_anim.delay = this.slide.delay * 1000 - this.end_anim.duration;
 		}
 
+		// is this layer static?
+		this.staticLayer = this.$element.data('position') === 'static';
+		this.fixedLayer = this.$element.data('position') === 'fixed';
+		this.layersCont = this.controller.$layers;
+
+		// make it visible if it's static
+		if ( this.staticLayer ) {
+			this.$element.css('display', '')
+						 .css('visibility', '');
+		}
+
 		// create action event
 		// @since v1.7.2
 		if( this.$element.data('action') !== undefined ) {
 			var slideController = this.slide.slider.slideController;
-			this.$element.on('click', function(event){
+			this.$element.on( this.$element.data('action-event') || 'click' , function(event){
 				slideController.runAction($(this).data('action'));
 				event.preventDefault();
 			}).addClass('ms-action-layer');
-		} 
-		
+		}
+
 		$.extend(this.end_anim  , this._parseEff(this.end_anim.name));
 		this.slider = this.slide.slider;
-		
-		// new alignment method
-		// @since v1.6.1
-		var layerOrigin = this.layerOrigin = this.$element.data('origin');
-		if ( layerOrigin ){
 
-			var vOrigin  = layerOrigin.charAt(0),
-				hOrigin  = layerOrigin.charAt(1),
-				offsetX  = this.$element.data('offset-x'),
-				offsetY  = this.$element.data('offset-y');
+        // masked layer
+        if ( this.masked ) {
+            this.$mask = $('<div></div>').addClass('ms-layer-mask');
 
-			if( offsetY !== undefined ){
-				this.$element.removeAttr('data-offset-y');
-			} else {
-				offsetY = 0;
-			}
+            if ( this.link ) {
+                this.link.wrap(this.$mask);
+                this.$mask = this.link.parent();
+            } else {
+                this.$element.wrap(this.$mask);
+                this.$mask = this.$element.parent();
+            }
 
-			switch ( vOrigin ){
-				case 't':
-					this.$element[0].style.top = offsetY + 'px';
-					break;
-				case 'b':
-					this.$element[0].style.bottom = offsetY + 'px';
-					break;
-				case 'm':
-					this.$element[0].style.top = offsetY + 'px';
-					this.middleAlign = true;
-			}
-			
-			if( offsetX !== undefined ){
-				this.$element.removeAttr('data-offset-x');
-			} else {
-				offsetX = 0;
-			}
+            if ( this.maskWidth ) {
+                this.$mask.width(this.maskWidth);
+            }
 
-			switch ( hOrigin ){
-				case 'l':
-					this.$element[0].style.left = offsetX + 'px';
-					break;
-				case 'r':
-					this.$element[0].style.right = offsetX + 'px';
-					break;
-				case 'c':
-					this.$element[0].style.left = offsetX + 'px';
-					this.centerAlign = true;
-			}
+            if ( this.maskHeight ) {
+                this.$mask.height(this.maskHeight);
 
-			this.$element.removeAttr('data-origin');
-		}
+                // add height to css check
+                if ( this.__cssConfig.indexOf('height') === -1 ) {
+                    this.__cssConfig.push('height');
+                }
+            }
+        }
 
-		// parallax effect 
-		// @since v1.6.0
-		this.parallax = this.$element.data('parallax')
-		if( this.parallax != null ) {
-			this.parallax /= 100;
-			this.$parallaxElement = $('<div></div>').addClass('ms-parallax-layer');
-			if( this.link ) { // only for image layer
-				this.link.wrap(this.$parallaxElement);
-				this.$parallaxElement = this.link.parent();
-			} else {
-				this.$element.wrap(this.$parallaxElement);
-				this.$parallaxElement = this.$element.parent();
-			}
-			
-			this._lastParaX = 0;
-			this._lastParaY = 0;
-			this._paraX = 0;
-			this._paraY = 0;
+        // new alignment method
+        // @since v1.6.1
+        var layerOrigin = this.layerOrigin = this.$element.data('origin');
+
+        if ( layerOrigin ){
+
+            var vOrigin  = layerOrigin.charAt(0),
+                hOrigin  = layerOrigin.charAt(1),
+                offsetX  = this.$element.data('offset-x'),
+                offsetY  = this.$element.data('offset-y'),
+                layerEle = this.masked ? this.$mask[0] : this.$element[0];
+
+            if( offsetY === undefined ){
+                offsetY = 0;
+            }
+
+            switch ( vOrigin ){
+                case 't':
+                    layerEle.style.top = offsetY + 'px';
+                    break;
+                case 'b':
+                    layerEle.style.bottom = offsetY + 'px';
+                    break;
+                case 'm':
+                    layerEle.style.top = offsetY + 'px';
+                    this.middleAlign = true;
+            }
+
+            if( offsetX === undefined ){
+                offsetX = 0;
+            }
 
 
-			// add bottom 0 to the parallax element if layer origin specified to the bottom
-			this.alignedToBot = this.layerOrigin && this.layerOrigin.indexOf('b') !== -1;
-			if( this.alignedToBot ) {
-				this.$parallaxElement.css('bottom', 0);
-			}
+            switch ( hOrigin ){
+                case 'l':
+                    layerEle.style.left = offsetX + 'px';
+                    break;
+                case 'r':
+                    layerEle.style.right = offsetX + 'px';
+                    break;
+                case 'c':
+                    layerEle.style.left = offsetX + 'px';
+                    this.centerAlign = true;
+            }
+        }
 
-			if( window._css3d ){
-				this.parallaxRender = this.parallaxCSS3DRenderer;	
-			} else if ( window._css2d ){
-				this.parallaxRender = this.parallaxCSS2DRenderer;
-			} else {
-				this.parallaxRender = this.parallax2DRenderer;
-			}
+        // parallax effect
+        // @since v1.6.0
+        this.parallax = this.$element.data('parallax')
+        if( this.parallax != null ) {
+            this.parallax /= 100;
+            this.$parallaxElement = $('<div></div>').addClass('ms-parallax-layer');
 
-			if( this.slider.options.parallaxMode !== 'swipe' ){ // mouse mode
-				averta.Ticker.add(this.parallaxRender, this);
-			}
-		}
+            if( this.masked ) {
+                this.$mask.wrap(this.$parallaxElement);
+                this.$parallaxElement = this.$mask.parent();
+            } else if( this.link ) { // only for image layer
+                this.link.wrap(this.$parallaxElement);
+                this.$parallaxElement = this.link.parent();
+            } else {
+                this.$element.wrap(this.$parallaxElement);
+                this.$parallaxElement = this.$element.parent();
+            }
+
+            this._lastParaX = 0;
+            this._lastParaY = 0;
+            this._paraX = 0;
+            this._paraY = 0;
+
+
+            // add bottom 0 to the parallax element if layer origin specified to the bottom
+            this.alignedToBot = this.layerOrigin && this.layerOrigin.indexOf('b') !== -1;
+            if( this.alignedToBot ) {
+                this.$parallaxElement.css('bottom', 0);
+            }
+
+            if( window._css3d ){
+                this.parallaxRender = this._parallaxCSS3DRenderer;
+            } else if ( window._css2d ){
+                this.parallaxRender = this._parallaxCSS2DRenderer;
+            } else {
+                this.parallaxRender = this._parallax2DRenderer;
+            }
+
+            if( this.slider.options.parallaxMode !== 'swipe' ){ // mouse mode
+                averta.Ticker.add(this.parallaxRender, this);
+            }
+        }
+
+        // remove all data- attributes excluding data-src
+        $.removeDataAttrs(this.$element, ['data-src']);
+    };
+
+    /**
+     * initialize layer
+     */
+    p.init = function(){
+        //if(this.initialized) return;
+        this.initialized = true;
+
+        var value;
+
+        this.$element.css('visibility' , '');
+        // store initial layer styles
+        for(var i = 0 , l = this.__cssConfig.length; i < l ; i ++){
+            var key = this.__cssConfig[i];
+            if ( this._isPosition(key) && this.masked ) {
+                value = this.$mask.css(key);
+            } else if( this.type === 'text' && key === 'width' && !this.masked && !this.maskWidth ){ // in some browsers using computed style for width in text layer causes unexpected word wrapping
+                value = this.$element[0].style.width;
+            } else {
+
+                value = this.$element.css(key);
+                var isSize = key === 'width' || key === 'height';
+
+                if ( isSize && this.masked ){
+                    if ( this.maskWidth && key === 'width' ) {
+                        value = this.maskWidth + 'px';
+                    } else if ( this.maskHeight && key === 'height') {
+                        value = this.maskHeight + 'px';
+                    }
+                }
+
+                // fix for Google Chrome in ios, sometimes image layers over first slide not showing correctly.
+                if ( isSize && value === '0px' ) {
+                    value = this.$element.data(key) + 'px';
+                }
+            }
+
+            // skip unnecessary positioning styles
+            if ( this.layerOrigin && (
+                 ( key === 'top'    && this.layerOrigin.indexOf('t') === -1 && this.layerOrigin.indexOf('m') === -1 ) ||
+                 ( key === 'bottom' && this.layerOrigin.indexOf('b') === -1 ) ||
+                 ( key === 'left'   && this.layerOrigin.indexOf('l') === -1 && this.layerOrigin.indexOf('c') === -1 ) ||
+                 ( key === 'right'  && this.layerOrigin.indexOf('r') === -1 )  )
+            ) {
+                continue;
+            }
+
+            if( value != 'auto' && value != "" && value != "normal" ) {
+                this.baseStyle[key] = parseInt(value);
+            }
+        }
+
+        // @since v1.6.0
+        if ( this.middleAlign ){
+            this.baseHeight = this.$element.outerHeight(false);//this.$element.height();
+        }
+
+        if ( this.centerAlign ){
+            // in some browsers using computed style for width in text layer causes unexpected word wrapping
+            //if ( this.type === 'text' ){
+            //  this.baseWidth = parseInt(this.$element[0].style.width);
+            //} else {
+                this.baseWidth = this.$element.outerWidth(false);
+            //}
+        }
+
+    };
+
+    /**
+     * locate layer over slider
+     */
+    p.locate = function(){
+
+        // is slide ready?
+        if ( !this.slide.ready ) {
+            return;
+        }
+
+        var width       = parseFloat(this.layersCont.css('width')),
+            height      = parseFloat(this.layersCont.css('height')),
+            factor, isPosition, isSize;
+
+        if( !this.staticLayer && this.$element.css('display') === 'none' && this.isVisible) {
+            this.$element.css('display', '')
+                         .css('visibility', 'hidden');
+        }
+
+        if ( this.staticLayer ) {
+            this.$element.addClass('ms-hover-active');
+        }
+
+        factor = this.resizeFactor  = width / this.slide.slider.options.width;
+
+        var $layerEle = this.masked ? this.$mask : this.$element;
+
+        // updated @since v1.6.1
+        for (var key in this.baseStyle) {
+
+            isPosition = this._isPosition(key);
+            isSize = key === 'width' || key === 'height';
+
+            //switch resize/position factor
+            if( this.fixed && isPosition ){
+                factor = 1;
+            } else {
+                factor = this.resizeFactor;
+            }
+
+            if( !this.resizable && !isPosition ){
+                continue;
+            }
+
+            if ( key === 'top' && this.middleAlign ){
+                $layerEle[0].style.top = '0px';
+                this.baseHeight = $layerEle.outerHeight(false);
+                $layerEle[0].style.top = this.baseStyle['top'] * factor + (height - this.baseHeight) / 2  + 'px';
+            } else if ( key === 'left' && this.centerAlign ){
+                $layerEle[0].style.left = '0px';
+                this.baseWidth = $layerEle.outerWidth(false);
+                $layerEle[0].style.left = this.baseStyle['left'] * factor + (width - this.baseWidth) / 2  + 'px';
+            } else if ( isPosition && this.masked ) {
+                $layerEle[0].style[key] = this.baseStyle[key] * factor + 'px';
+            } else if ( isSize && ( (key === 'width' && this.maskWidth) || (key === 'height' && this.maskHeight) ) ) {
+                $layerEle[0].style[key] = this.baseStyle[key] * factor + 'px';
+            } else {
+                this.$element.css(key , this.baseStyle[key] * factor + 'px');
+            }
+        }
+
+
+		this.visible(this.minWidth < width);
 	};
 
-	/*---------------------------------------------------------*/
 	/**
-	 * Change the detestation of parallax position 
-	 * @param  {Number} x 
+	 * start layer animation
+	 */
+	p.start = function(){
+
+		// is it already showing or is it a static layer?
+		if ( this.isShowing || this.staticLayer ) {
+			return;
+		}
+
+		this.isShowing = true;
+        this.$element.removeClass('ms-hover-active');
+
+        var key , base;
+
+        // reads css value form LayerEffects
+        MSLayerEffects.rf = this.resizeFactor;
+        var effect_css = MSLayerEffects[this.start_anim.eff_name].apply(null , this._parseEffParams(this.start_anim.eff_params));
+
+        // checkes effect css and defines TO css values
+        var start_css_eff = {};
+
+        // set from position
+        for(key in effect_css){
+
+            // check the position key (top, left, right or bottom) for animatin
+            // It mostly will be used in old browsers
+            // In effect left:100, layer base style right:300 -> effect changes to right:100
+            if( this._checkPosKey(key , effect_css) ){
+                continue;
+            }
+
+            // set default value from Layer Effects Class
+            if( MSLayerEffects.defaultValues[key] != null ){
+                start_css_eff[key] = MSLayerEffects.defaultValues[key];
+            }
+
+            if( key in this.baseStyle ){
+                base = this.baseStyle[key];
+
+                // updated @since v1.6.1
+                if ( this.middleAlign && key === 'top' ){
+                    base += (parseInt(this.layersCont.height()) - this.$element.outerHeight(false)) / 2;
+                }
+
+                if ( this.centerAlign && key === 'left' ){
+                    base += (parseInt(this.layersCont.width()) - this.$element.outerWidth(false)) / 2;
+                }
+                //----------------------
+
+                effect_css[key] = base + parseFloat(effect_css[key]) + 'px';
+                start_css_eff[key] = base + 'px';
+            }
+
+            this.$element.css(key , effect_css[key]);
+        }
+
+        var that = this;
+
+        clearTimeout(this.to);
+        clearTimeout(this.clHide);
+        this.to = setTimeout(function(){
+            //that.locate();
+            that.$element.css('visibility', '');
+            that._playAnimation(that.start_anim , start_css_eff);
+        } , that.start_anim.delay || 0.01);
+
+
+        this.clTo = setTimeout(function(){
+            that.show_cl = true;
+            that.$element.addClass('ms-hover-active');
+        },(this.start_anim.delay || 0.01) + this.start_anim.duration + 1);
+
+        if( this.autoHide ){
+            clearTimeout(this.hto);
+            this.hto = setTimeout(function(){that.hide();} , that.end_anim.time );
+        }
+
+    };
+
+    /**
+     * starts hide animation
+     */
+    p.hide = function(){
+
+        // static layers doesn't support animations
+        if ( this.staticLayer ) {
+            return;
+        }
+
+        this.$element.removeClass('ms-hover-active');
+
+        this.isShowing = false;
+
+        // reads css value form LayerEffects
+        var effect_css = MSLayerEffects[this.end_anim.eff_name].apply(null , this._parseEffParams(this.end_anim.eff_params));
+
+        for(key in effect_css){
+
+            if(this._checkPosKey(key , effect_css)) continue;
+
+            if( key === window._jcsspfx + 'TransformOrigin' ){
+                this.$element.css(key , effect_css[key]);
+            }
+
+            if(key in this.baseStyle){
+                effect_css[key] = this.baseStyle[key] + parseFloat(effect_css[key]) +  'px';
+            }
+
+        }
+
+        this._playAnimation(this.end_anim , effect_css);
+
+        clearTimeout(this.clHide);
+
+        if ( effect_css.opacity === 0 ) {
+            this.clHide = setTimeout( function(){ this.$element.css('visibility', 'hidden'); }.bind(this), this.end_anim.duration + 1 );
+        }
+
+		clearTimeout(this.to);
+		clearTimeout(this.hto);
+		clearTimeout(this.clTo);
+	};
+
+	/**
+	 * reset layer
+	 */
+	p.reset = function(){
+		if ( this.staticLayer ) {
+			return;
+		}
+
+		this.isShowing = false;
+		//this.$element.css(window._csspfx + 'animation-name', ''	);
+		this.$element[0].style.display = 'none';
+		this.$element.css('opacity', '');
+		this.$element[0].style['transitionDuration'] = '';
+
+		if(this.show_tween)
+			this.show_tween.stop(true);
+
+		clearTimeout(this.to);
+		clearTimeout(this.hto);
+	};
+
+	/**
+	 * destroy layer
+	 */
+	p.destroy = function(){
+		this.reset();
+		this.$element.remove();
+	};
+
+	/**
+	 * change the visibility status
+	 * @param  {Boolean} value
+	 */
+	p.visible = function(value){
+		if(this.isVisible == value) return;
+
+		this.isVisible = value;
+
+		this.$element.css('display' , (value ? '' : 'none'));
+	};
+
+	/**
+	 * Change the detestation of parallax position
+	 * @param  {Number} x
 	 * @param  {Number} y
 	 * @since  1.6.0
 	 */
@@ -2090,7 +3240,125 @@ window.averta = {};
 		}
 	};
 
-	p.parallaxCalc = function(){
+	/*------------------------------------*\
+		Private Methods
+	\*------------------------------------*/
+
+	/**
+	 * play layer animation
+	 * @param  {Obeject} animation layer animation object
+	 * @param  {Object} css       animation css object
+	 */
+	p._playAnimation = function(animation , css){
+		var options = {};
+
+		if(animation.ease){
+			options.ease = animation.ease;
+		}
+
+		options.transProperty = window._csspfx + 'transform,opacity';
+
+        if( this.show_tween ) {
+            this.show_tween.stop(true);
+        }
+
+		this.show_tween = CTween.animate(this.$element, animation.duration , css , options);
+	};
+
+	/**
+	 * generate random value
+	 * @param  {String} value the pattern value min|max
+	 * @return {Number}
+	 */
+	p._randomParam = function(value){
+		var min = Number(value.slice(0,value.indexOf('|')));
+		var max = Number(value.slice(value.indexOf('|')+1));
+
+		return min + Math.random() * (max - min);
+	};
+
+	/**
+	 * parse effect function
+	 * @param  {String} eff_name effect function
+	 * @return {Object}
+	 */
+	p._parseEff = function(eff_name){
+
+		var eff_params = [];
+
+		if ( eff_name.indexOf('(') !== -1 ) {
+			var temp   = eff_name.slice(0 , eff_name.indexOf('(')).toLowerCase();
+			var	value;
+
+			eff_params = eff_name.slice(eff_name.indexOf('(') + 1 , -1).replace(/\"|\'|\s/g , '').split(',');
+			eff_name   = temp;
+
+			for ( var i = 0, l = eff_params.length; i < l; ++i) {
+				value = eff_params[i];
+
+				if ( value in MSLayerEffects.presetEffParams) {
+					value = MSLayerEffects.presetEffParams[value];
+				}
+
+				eff_params[i] = value;
+			}
+		}
+
+		return {eff_name:eff_name , eff_params:eff_params};
+	};
+
+	/**
+	 * parse effect function parameters
+	 * @param  {Aarray} params effect parameters
+	 * @return {Array}
+	 */
+	p._parseEffParams = function(params){
+		var eff_params = [];
+		for(var i = 0 , l = params.length; i < l ; ++i){
+			var value = params[i];
+			if(typeof value === 'string' && value.indexOf('|') !== -1) value = this._randomParam(value);
+
+			eff_params[i] = value;
+		}
+
+		return eff_params;
+	};
+
+	/**
+	 * calculates layer position based on initial positioning style and layer effect
+	 * @param  {string} key   positioning key
+	 * @param  {Object} style style object
+	 * @return {Boolean}
+	 */
+	p._checkPosKey = function(key , style){
+		if(key === 'left' && !(key in this.baseStyle) && 'right' in this.baseStyle){
+			 style.right = -parseInt(style.left) + 'px';
+			 delete style.left;
+			 return true;
+		}
+
+		if(key === 'top'  && !(key in this.baseStyle) && 'bottom' in this.baseStyle){
+			style.bottom = -parseInt(style.top) + 'px';
+			delete style.top;
+			return true;
+		}
+
+		return false;
+	};
+
+    /**
+     * checks for position key
+     * @param  {String}  key
+     * @return {Boolean}     [description]
+     */
+    p._isPosition = function( key ) {
+        return  key === 'top' || key === 'left' || key === 'bottom' || key === 'right';
+    };
+
+	/**
+	 * calculate parallax position
+	 */
+	p._parallaxCalc = function(){
 		var x_def = this._paraX - this._lastParaX,
 			y_def = this._paraY - this._lastParaY;
 
@@ -2110,263 +3378,68 @@ window.averta = {};
 	/**
 	 * Parallax move ticker function
 	 */
-	p.parallaxCSS3DRenderer = function(){
-		this.parallaxCalc();
+	p._parallaxCSS3DRenderer = function(){
+		this._parallaxCalc();
 		this.$parallaxElement[0].style[window._jcsspfx + 'Transform'] = 'translateX(' + this._lastParaX * this.parallax + 'px) translateY(' + this._lastParaY * this.parallax + 'px) translateZ(0)';
 	};
 
-	p.parallaxCSS2DRenderer = function(){
-		this.parallaxCalc();
+	/**
+	 * parallax move ticker for CSS2 browsers
+	 * @return {[type]} [description]
+	 */
+	p._parallaxCSS2DRenderer = function(){
+		this._parallaxCalc();
 		this.$parallaxElement[0].style[window._jcsspfx + 'Transform'] = 'translateX(' + this._lastParaX * this.parallax + 'px) translateY(' + this._lastParaY * this.parallax + 'px)';
 	};
 
-	p.parallax2DRenderer = function(){
-		this.parallaxCalc();
-		
+	/**
+	 * parallax move ticker for zombie browsers
+	 */
+	p._parallax2DRenderer = function(){
+		this._parallaxCalc();
+
 		// change bottom instead of top if layer aligned to the bottom (origin)
 		if( this.alignedToBot ) {
 			this.$parallaxElement[0].style.bottom  = this._lastParaY * this.parallax + 'px';
-		} else { 
+		} else {
 			this.$parallaxElement[0].style.top  = this._lastParaY * this.parallax + 'px';
 		}
-		
+
 		this.$parallaxElement[0].style.left = this._lastParaX * this.parallax + 'px';
 	};
 
-	/*---------------------------------------------------------*/
-
-	p.init = function(){
-		//if(this.initialized) return;
-		this.initialized = true;
-
-		var value;
-		
-		this.$element.css('visibility' , '');
-		// store initial layer styles
-		for(var i = 0 , l = this.__cssConfig.length; i < l ; i ++){
-			var key = this.__cssConfig[i];
-			if( this.type === 'text' && key === 'width'){ // in some browsers using computed style for width in text layer causes unexpected word wrapping 
-				value = this.$element[0].style.width;
-			} else {
-				value = this.$element.css(key);
-			}
-			
-			if(value != 'auto' && value != "" && value != "normal") 
-				this.baseStyle[key] = parseInt(value);
-		}
-
-		// @since v1.6.0
-		if ( this.middleAlign ){
-			this.baseHeight = this.$element.outerHeight(false);//this.$element.height();
-		}
-
-		if ( this.centerAlign ){
-			// in some browsers using computed style for width in text layer causes unexpected word wrapping 
-			//if ( this.type === 'text' ){
-			//	this.baseWidth = parseInt(this.$element[0].style.width);
-			//} else {
-				this.baseWidth = this.$element.outerWidth(false);
-			//}
-		}
-
-
-	};
-	
-	p.locate = function(){
-		
-		var layer_cont 	= this.slide.$layers,
-			width 		= parseFloat(layer_cont.css('width')),
-			height 		= parseFloat(layer_cont.css('height')),
-			factor, isPosition;
-		this.visible(this.minWidth < width);
-		
-		//if(!this.resizable) return;
-		
-		factor = this.resizeFactor 	= width / this.slide.slider.options.width;
-
-		// updated @since v1.6.1
-		for(var key in this.baseStyle){
-
-			isPosition = key === 'top' || key === 'left' || key === 'bottom' || key === 'right';
-
-			//switch resize/position factor
-			if( this.fixed && isPosition ){
-				factor = 1;
-			} else {
-				factor = this.resizeFactor;
-			}
-
-			if( !this.resizable && !isPosition ){
-				continue;
-			}
-
-			if ( key === 'top' && this.middleAlign ){
-				this.baseHeight = this.$element.outerHeight(false);
-				this.$element.css(key , this.baseStyle[key] * factor + (height - this.baseHeight * factor) / 2  + 'px');
-			} else if ( key === 'left' && this.centerAlign ){
-				this.baseWidth = this.$element.outerWidth(false);
-				this.$element.css(key , this.baseStyle[key] * factor + (width - this.baseWidth * factor) / 2  + 'px');
-			} else { 
-				this.$element.css(key , this.baseStyle[key] * factor + 'px');
-			}
-		}
-		
-	};
-	
-	p.start = function(){
-
-		if(this.isShowing) return;
-		this.isShowing = true;
-		
-		var key , base, layer_cont = this.slide.$layers;
-
-		// reads css value form LayerEffects
-		MSLayerEffects.rf = this.resizeFactor;
-		var effect_css = MSLayerEffects[this.start_anim.eff_name].apply(null , this._parseEffParams(this.start_anim.eff_params));
-		
-		// checkes effect css and defines TO css values
-		var start_css_eff = {};
-		
-		// set from position
-		for(key in effect_css){
-
-			// check the position key (top, left, right or bottom) for animatin
-			// It mostly will be used in old browsers
-			// In effect left:100, layer base style right:300 -> effect changes to right:100
-			if( this._checkPosKey(key , effect_css) ){
-				continue;
-			}
-
-			// set default value from Layer Effects Class
-			if( MSLayerEffects.defaultValues[key] != null ){
-				start_css_eff[key] = MSLayerEffects.defaultValues[key];
-			}
-
-			if( key in this.baseStyle ){
-				base = this.baseStyle[key];
-
-				// updated @since v1.6.1
-				if ( this.middleAlign && key === 'top' ){
-					base += (parseInt(layer_cont.height()) - this.baseHeight * this.resizeFactor) / 2;				
-				}
-
-				if ( this.centerAlign && key === 'left' ){
-					base += (parseInt(layer_cont.width()) - this.baseWidth * this.resizeFactor) / 2;				
-				}
-				//----------------------
-
-				effect_css[key] = base + parseFloat(effect_css[key]) + 'px';
-				start_css_eff[key] = base + 'px';
-			}
-
-			this.$element.css(key , effect_css[key]);
-		}
-		
-		var that = this;
-		clearTimeout(this.to);
-		this.to = setTimeout(function(){
-			that.$element.css('display' , '');
-			that.__playAnimation(that.start_anim , start_css_eff);
-		} , that.start_anim.delay || 0.01);
-		
-		
-		this.cl_to = setTimeout(function(){
-			that.show_cl = true;
-		},(this.start_anim.delay || 0.01) + this.start_anim.duration);
-		 
-		if( this.autoHide ){
-			clearTimeout(this.hto);
-			this.hto = setTimeout(function(){that.hide();} , that.end_anim.time );
-		}
-	};
-	
-	p.hide = function(){
-		this.isShowing = false;
-		
-		// reads css value form LayerEffects
-		var effect_css = MSLayerEffects[this.end_anim.eff_name].apply(null , this._parseEffParams(this.end_anim.eff_params));
-		
-		for(key in effect_css){
-			
-			if(this._checkPosKey(key , effect_css)) continue;
-			
-			if( key === window._jcsspfx + 'TransformOrigin' ){
-				this.$element.css(key , effect_css[key]);
-			}
-
-			if(key in this.baseStyle){
-				effect_css[key] = this.baseStyle[key] + parseFloat(effect_css[key]) +  'px';
-			}
-				
-		}
-		
-		this.__playAnimation(this.end_anim , effect_css);
-		
-		clearTimeout(this.to);
-		clearTimeout(this.hto);		
-		clearTimeout(this.cl_to);		
-	};
-	
-	p.reset = function(){
-		this.isShowing = false;
-		//this.$element.css(window._csspfx + 'animation-name', ''	);
-		this.$element[0].style.display = 'none';
-		this.$element.css('opacity', '100');
-		this.$element[0].style['transitionDuration'] = '0ms';
-		
-		if(this.show_tween)
-			this.show_tween.stop(true);
-		
-		clearTimeout(this.to);
-		clearTimeout(this.hto);
-	};
-		
-	p.destroy = function(){
-		this.reset();
-		this.$element.remove();
-		this.$cont.remove();
-	};
-	
-	p.visible = function(value){
-		if(this.isVisible == value) return;
-		
-		this.isVisible = value;
-		
-		this.$element.css('display' , (value ? '' : 'none'));		
-	};
-	
 })(jQuery);
-//dev\slider\controls\ImageLayerElement.js 
- 
+
+/* ================== bin-debug/js/pro/layers/ImageLayerElement.js =================== */
 ;(function($){
-	
+
 	window.MSImageLayerElement = function(){
 		MSLayerElement.call(this);
 		this.needPreload = true;
-		
+
 		this.__cssConfig = [
+			'width'			,		'height'		,
 			'margin-top' 	,      'padding-top'	,
 			'margin-bottom'	,      'padding-left'	,
 			'margin-right'	,      'padding-right'	,
 			'margin-left'	,      'padding-bottom' ,
-			
-			'left'			,       'right'			, 
-			'top'			,       'bottom'		,
-			'width'			,		'height'
+
+			'left'			,       'right'			,
+			'top'			,       'bottom'
 		];
-		
+
 		this.type = 'image';
 	};
-	
+
 	MSImageLayerElement.extend(MSLayerElement);
-	
+
 	var p = MSImageLayerElement.prototype;
 	var _super = MSLayerElement.prototype;
-	
+
 	/*-------------- METHODS --------------*/
-	
+
 	p.create = function(){
-		
+
 		if(this.link){
 			var p = this.$element.parent();
 			p.append(this.link);
@@ -2377,34 +3450,36 @@ window.averta = {};
 		}
 
 		_super.create.call(this);
-		
+
 		if(this.$element.data('src') != undefined){
 			this.img_src = this.$element.data('src');
 			this.$element.removeAttr('data-src');
 		}else{
 			var that = this;
 			this.$element.on('load', function(event){
-				that.slide.preloadCount--;
-				if(that.slide.preloadCount === 0)
-					that.slide.___onlayersReady();
+				that.controller.preloadCount--;
+				if(that.controller.preloadCount === 0)
+					that.controller._onlayersReady();
 			}).each($.jqLoadFix);
 		}
-		
+
 		if($.browser.msie)
 			this.$element.on('dragstart', function(event) { event.preventDefault(); }); // disable native dragging
 	};
-	
+
 	p.loadImage = function(){
 		var that = this;
+
 		this.$element.preloadImg(this.img_src , function(event){
-			that.slide.preloadCount--;
-			if(that.slide.preloadCount === 0) that.slide.___onlayersReady();
+			//this.$element.width(event.width).height(event.height);
+			that.controller.preloadCount--;
+			if(that.controller.preloadCount === 0) that.controller._onlayersReady();
 		});
 	};
-	
+
 })(jQuery);
-//dev\slider\controls\VideoLayerElement.js 
- 
+
+/* ================== bin-debug/js/pro/layers/VideoLayerElement.js =================== */
 ;(function($){
 	
 	window.MSVideoLayerElement = function(){
@@ -2424,8 +3499,8 @@ window.averta = {};
 	
 	/*-------------- METHODS --------------*/
 	p.__playVideo = function(){
-		if(this.img)CTween.fadeOut(this.img , 500 , false);
-		CTween.fadeOut(this.video_btn , 500 , false);
+		if(this.img)CTween.fadeOut(this.img , 500 , 2);
+		CTween.fadeOut(this.video_btn , 500 , 2);
 		this.video_frame.attr('src' , 'about:blank').css('display' , 'block');
 		if(this.video_url.indexOf('?') == -1) this.video_url += '?';
 		this.video_frame.attr('src' , this.video_url + '&autoplay=1');
@@ -2443,12 +3518,12 @@ window.averta = {};
 		_super.reset.call(this);
 		
 		if(this.needPreload || this.$element.data('btn')){
-			this.video_btn.css('opacity' , 1);
+			this.video_btn.css('opacity' , 1).css('display', 'block');
 			this.video_frame.attr('src' , 'about:blank').css('display' , 'none');
 		}
 		
 		if(this.needPreload){
-			this.img.css('opacity' , 1);	
+			this.img.css('opacity' , 1).css('display', 'block');	
 			return;
 		}
 		
@@ -2486,9 +3561,9 @@ window.averta = {};
 		}else{
 			var that = this;
 			this.img.attr('src' , this.img_src).on('load', function(event) {
-				that.slide.preloadCount--;
-				if(that.slide.preloadCount == 0)
-					that.slide.___onlayersReady();
+				that.controller.preloadCount--;
+				if(that.controller.preloadCount === 0)
+					that.controller._onlayersReady();
 			}).each($.jqLoadFix);
 		}
 		
@@ -2499,14 +3574,14 @@ window.averta = {};
 	p.loadImage = function(){
 		var that = this;
 		this.img.preloadImg(this.img_src, function(event) {
-			that.slide.preloadCount--;
-			if(that.slide.preloadCount == 0) that.slide.___onlayersReady();
+			that.controller.preloadCount--;
+			if(that.controller.preloadCount === 0) that.controller._onlayersReady();
 		});
 	};
 	
 })(jQuery);
-//dev\slider\controls\HotspotLayer.js 
- 
+
+/* ================== bin-debug/js/pro/layers/HotspotLayer.js =================== */
 ;(function($){
 
 	"use strict";
@@ -2668,6 +3743,7 @@ window.averta = {};
 				}
 				
 			break;
+			
 			case 'right':
 				this.base_l = this.pos_x + arrow_w + space;
 				this.base_t = this.pos_y - this.tt.outerHeight(false) / 2;
@@ -2710,7 +3786,6 @@ window.averta = {};
 		
 		this.tt.css(this.from);		
 		
-		
 	};
 	
 	p.start = function(){
@@ -2725,10 +3800,53 @@ window.averta = {};
 		this.tt.detach();
 	};
 	
+	/**
+	 * locate hotspot over slide
+	 * @override LayerElement.locate
+	 * @since 2.2.0
+	 */
+/*	p.locate = function(){
+		_super.locate.call(this);
+
+		if ( this.relativeToBG ) {
+			console.log(this.baseOffsetX , this.slide.$bg_img.width()  , this.slide.bgWidth)
+			this.$element[0].style.left = this.baseOffsetX * this.slide.$bg_img.width()  / this.slide.bgWidth + 'px';
+			this.$element[0].style.top  = this.baseOffsetY * this.slide.$bg_img.height() / this.slide.bgHeight + 'px';
+		} 
+
+	};
+*/
 	p.create = function(){
 		var that = this;
 		
-		_super.create.call(this);
+		//@since 2.2.0
+		//chnage offset progin to top left
+	/*	this.relativeToBG = this.$element.data('relative') && (this.slide.fillMode === 'fill' || this.slide.fillMode === 'fit');
+		if ( this.relativeToBG ) {
+
+			var origin = this.$element.data('origin'),
+				osy = this.$element.data('offset-y'), 
+				osx = this.$element.data('offset-x');
+
+			if ( origin ) {
+				if ( origin.charAt(0) === 'b' ){
+					osy = this.slide.slider.options.height - this.$element.data('offset-y');
+					this.$element.data('offset-y',  osy);
+				}
+
+				if ( origin.charAt(1) === 'r' ){
+					osx = this.slide.slider.options.width - this.$element.data('offset-x');
+					this.$element.data('offset-x', osx);
+				}
+
+			}
+
+			this.$element.data('origin', 'tl');
+
+			this.baseOffsetX = osx;
+			this.baseOffsetY = osy;
+		}*/
+
 		
 		this._orgAlign = this.align = this.$element.data('align') !== undefined ? this.$element.data('align') : 'top';
 		
@@ -2783,11 +3901,13 @@ window.averta = {};
 				that._hideTT();
 			});
 		}
+
+		_super.create.call(this);
 	};
 
 })(jQuery);
-//dev\slider\controls\ButtonLayer.js 
- 
+
+/* ================== bin-debug/js/pro/layers/ButtonLayer.js =================== */
 /**
  * Master Slider Button Layer
  * @author Averta
@@ -2834,8 +3954,9 @@ window.averta = {};
 					   .height(this.$element.outerHeight(true));
 	};
 	
-})(jQuery);//dev\slider\SliderEvent.js 
- 
+})(jQuery);
+
+/* ================== bin-debug/js/pro/controls/SliderEvent.js =================== */
 window.MSSliderEvent = function (type){
 	this.type = type;
 };
@@ -2847,782 +3968,767 @@ MSSliderEvent.AUTOPLAY_CHANGE   	= 'ms_autoplaychange';
 MSSliderEvent.VIDEO_PLAY		   	= 'ms_videoPlay';
 MSSliderEvent.VIDEO_CLOSE		   	= 'ms_videoclose';
 MSSliderEvent.INIT					= 'ms_init';
+MSSliderEvent.HARD_UPDATE			= 'ms_hard_update';
 MSSliderEvent.RESIZE				= 'ms_resize';
 MSSliderEvent.RESERVED_SPACE_CHANGE = 'ms_rsc'; // internal use
-MSSliderEvent.DESTROY				= 'ms_destroy';//dev\slider\Slide.js 
- 
+MSSliderEvent.DESTROY				= 'ms_destroy';
+
+/* ================== bin-debug/js/pro/controls/Slide.js =================== */
+/**
+ * Master Slider Slide Class
+ * @author averta
+ * @package Master Slider jQuery
+ */
+;(function(window, document, $){
+
+    "use strict";
+
+    window.MSSlide = function(){
+
+        this.$element = null;
+        this.$loading = $('<div></div>').addClass('ms-slide-loading');
+
+        this.view       = null;
+        this.index      = -1;
+
+        this.__width    = 0;
+        this.__height   = 0;
+
+        this.fillMode = 'fill'; // fill , fit , stretch , tile , center
+
+        this.selected = false;
+        this.pselected = false;
+        this.autoAppend = true;
+        this.isSleeping = true;
+
+        this.moz = $.browser.mozilla;
+    };
+
+    var p = MSSlide.prototype;
+
+    /**
+     * on swipe start handler
+     */
+    p.onSwipeStart = function(){
+        //this.$layers.css(window._csspfx + 'transition-duration' , '0ms');
+        if ( this.link ) {
+            this.linkdis = true;
+        }
+
+        if ( this.video ) {
+            this.videodis = true;
+        }
+    };
+
+    /**
+     * on swipe move handler
+     */
+    p.onSwipeMove = function (e) {
+        var move = Math.max(Math.abs(e.data.distanceX), Math.abs(e.data.distanceY));
+        this.swipeMoved = move > 4;
+    };
+
+    /**
+     * on swipe cancel handler
+     */
+    p.onSwipeCancel = function(e){
+        if ( this.swipeMoved ) {
+            this.swipeMoved = false;
+            return;
+        }
+
+        if ( this.link ) {
+            this.linkdis = false;
+        }
+
+        if ( this.video ) {
+            this.videodis = false;
+        }
+        //this.$layers.css(window._csspfx + 'transition-duration' , this.view.__slideDuration + 'ms');
+    };
+
+    /**
+     * setup layer controller for the slide
+     * @since 2.11.0
+     */
+    p.setupLayerController = function () {
+        this.hasLayers = true;
+        this.layerController = new MSLayerController(this);
+    };
+    /**
+     * this method called after loading all assets related to this slide
+     */
+    p.assetsLoaded = function(){
+        this.ready = true;
+        this.slider.api._startTimer();
+
+        if( this.selected || (this.pselected && this.slider.options.instantStartLayers) ){
+
+            if ( this.hasLayers ) {
+                this.layerController.showLayers();
+            }
+
+            if(this.vinit){
+                this.bgvideo.play();
+                if( !this.autoPauseBgVid ) {
+                    this.bgvideo.currentTime = 0;
+                }
+            }
+
+        }
+        if ( !this.isSleeping ) {
+            this.setupBG();
+        }
+
+        CTween.fadeOut(this.$loading , 300 , true);
+
+        //sequence loading
+        if ( (this.slider.options.preload === 0 || this.slider.options.preload === 'all') && this.index < this.view.slideList.length - 1 ) {
+            this.view.slideList[this.index + 1].loadImages();
+        } else if ( this.slider.options.preload === 'all' && this.index === this.view.slideList.length - 1 ){
+            this.slider._removeLoading();
+        }
+
+    };
+
+    /**
+     * adds backgroun image to the slider
+     * @param {Element} img slide image element
+     */
+    p.setBG = function(img){
+        this.hasBG = true;
+        var that = this;
+
+        this.$imgcont = $('<div></div>').addClass('ms-slide-bgcont');
+
+        this.$element.append(this.$loading)
+                     .append(this.$imgcont);
+
+        this.$bg_img = $(img).css('visibility' , 'hidden');
+        this.$imgcont.append(this.$bg_img);
+
+        this.bgAligner = new MSAligner(that.fillMode , that.$imgcont, that.$bg_img );
+        this.bgAligner.widthOnly = this.slider.options.autoHeight;
+
+        if ( that.slider.options.autoHeight && (that.pselected || that.selected) ) {
+            that.slider.setHeight(that.slider.options.height);
+        }
+
+        if ( this.$bg_img.data('src') !== undefined ) {
+            this.bg_src = this.$bg_img.data('src');
+            this.$bg_img.removeAttr('data-src');
+        } else {
+            this.$bg_img.one('load', function(event) {that._onBGLoad(event);})
+                        .each($.jqLoadFix);
+        }
+
+    };
+
+    /**
+     * align and resize backgrund image over slide
+     */
+    p.setupBG = function(){
+
+        //if(this.isSettedup) return;
+        //this.isSettedup = true;
+
+        if ( !this.initBG && this.bgLoaded ) {
+            this.initBG = true;
+            this.$bg_img.css('visibility' , '');
+            this.bgWidth  = this.bgNatrualWidth  || this.$bg_img.width();
+            this.bgHeight = this.bgNatrualHeight || this.$bg_img.height();
+
+            CTween.fadeIn(this.$imgcont , 300);
+
+            if(this.slider.options.autoHeight){
+                this.$imgcont.height(this.bgHeight * this.ratio);
+            }
+
+            this.bgAligner.init(this.bgWidth  , this.bgHeight);
+            this.setSize(this.__width , this.__height);
+
+            if(this.slider.options.autoHeight && (this.pselected || this.selected))
+                this.slider.setHeight(this.getHeight());
+        }
+
+    };
+
+
+
+    /**
+     * start loading images
+     */
+    p.loadImages = function(){
+        if ( this.ls ) {
+            return;
+        }
+
+        this.ls = true;
+
+        if ( this.bgvideo ) {
+            this.bgvideo.load();
+        }
+        if ( this.hasBG && this.bg_src ) {
+            var that = this;
+            this.$bg_img.preloadImg(this.bg_src , function(event) {that._onBGLoad(event);});
+        }
+
+        if ( this.hasLayers ) {
+            this.layerController.loadLayers(this._onLayersLoad);
+        }
+        // There is nothing to preload? so slide is ready to show.
+        if( !this.hasBG && !this.hasLayers ) {
+            this.assetsLoaded();
+        }
+
+    };
+
+    /**
+     * layerController on assets load callback
+     */
+    p._onLayersLoad = function () {
+        this.layersLoaded = true;
+        if ( !this.hasBG || this.bgLoaded ) {
+            this.assetsLoaded();
+        }
+    };
+    /**
+     * on background image loaded
+     * @param  {Event} event
+     */
+    p._onBGLoad = function(event){
+        this.bgNatrualWidth = event.width;
+        this.bgNatrualHeight = event.height;
+
+        this.bgLoaded = true;
+
+        if ( $.browser.msie ) {
+            this.$bg_img.on('dragstart', function(event) { event.preventDefault(); }); // disables native dragging
+        }
+
+        if ( !this.hasLayers || this.layerController.ready ) {
+            this.assetsLoaded();
+        }
+    };
+
+    /* -----------------------------------------------------*/
+
+    /**
+     * add video background to the slide
+     * @param {jQuery Element} $video
+     */
+    p.setBGVideo = function($video){
+
+        if ( !$video[0].play ) {
+            return;
+        }
+
+        // disables video in mobile devices
+        if ( window._mobile && !this.slider.options.mobileBGVideo) {
+            $video.remove();
+            return;
+        }
+
+        this.bgvideo  = $video[0];
+        var that = this;
+
+        $video.addClass('ms-slide-bgvideo');
+
+        if ( $video.data('loop') !== false ) {
+            this.bgvideo.addEventListener('ended' , function(){
+                //that.bgvideo.currentTime = -1;
+                that.bgvideo.play();
+            });
+        }
+
+        if ( $video.data('mute') !== false ) {
+            this.bgvideo.muted = true;
+        }
+
+        if ( $video.data('autopause') === true ) {
+            this.autoPauseBgVid = true;
+        }
+
+        this.bgvideo_fillmode = $video.data('fill-mode') || 'fill'; // fill , fit , none
+
+        if ( this.bgvideo_fillmode !== 'none' ) {
+            this.bgVideoAligner = new MSAligner(this.bgvideo_fillmode , this.$element, $video );
+
+            this.bgvideo.addEventListener('loadedmetadata' , function(){
+                if(that.vinit) return;
+
+                that.vinit = true;
+                that.video_aspect = that.bgVideoAligner.baseHeight/that.bgVideoAligner.baseWidth;
+                that.bgVideoAligner.init(that.bgvideo.videoWidth , that.bgvideo.videoHeight);
+                that._alignBGVideo();
+                CTween.fadeIn($(that.bgvideo) , 200);
+
+                if ( that.selected ) {
+                    that.bgvideo.play();
+                }
+            });
+        }
+
+        $video.css('opacity' , 0);
+
+        this.$bgvideocont = $('<div></div>').addClass('ms-slide-bgvideocont').append($video);
+
+        if ( this.hasBG ) {
+            this.$imgcont.before(this.$bgvideocont);
+        } else {
+            this.$bgvideocont.appendTo(this.$element);
+        }
+    };
+
+    /**
+     * align video in slide
+     */
+    p._alignBGVideo = function () {
+        if ( !this.bgvideo_fillmode || this.bgvideo_fillmode === 'none' ) {
+            return;
+        }
+        this.bgVideoAligner.align();
+    };
+
+    /* -----------------------------------------------------*/
+
+    /**
+     * resize slide
+     * @param {Number} width
+     * @param {Number} height
+     * @param {Boolean} hard   after resizing reinitializes layers
+     */
+    p.setSize = function(width, height, hard) {
+
+        this.__width  = width;
+
+        if ( this.slider.options.autoHeight ) {
+            if ( this.bgLoaded ) {
+                this.ratio = this.__width / this.bgWidth;
+                height = Math.floor(this.ratio * this.bgHeight);
+                this.$imgcont.height(height);
+            } else {
+                this.ratio = width / this.slider.options.width;
+                height = this.slider.options.height * this.ratio;
+            }
+        }
+
+        this.__height = height;
+        this.$element.width(width).height(height);
+
+        if(this.hasBG && this.bgLoaded)this.bgAligner.align();
+
+        this._alignBGVideo();
+
+        if ( this.hasLayers ) {
+            this.layerController.setSize(width, height, hard);
+        }
+    };
+
+    /**
+     * calculates slide height
+     * @return {Number} slide height
+     */
+    p.getHeight = function(){
+
+        if ( this.hasBG && this.bgLoaded ) {
+            return this.bgHeight * this.ratio;
+        }
+
+        return Math.max(this.$element[0].clientHeight, this.slider.options.height * this.ratio);
+    };
+
+    /* -----------------------------------------------------*/
+    // YouTube and Vimeo videos
+
+    /**
+     * playe embeded video
+     */
+    p.__playVideo = function (){
+
+        if ( this.vplayed || this.videodis ) {
+            return;
+        }
+
+        this.vplayed = true;
+
+        if ( !this.slider.api.paused ) {
+            this.slider.api.pause();
+            this.roc = true; // resume on close;
+        }
+
+        this.vcbtn.css('display' , '');
+        CTween.fadeOut(this.vpbtn   , 500 , false);
+        CTween.fadeIn(this.vcbtn    , 500);
+        CTween.fadeIn(this.vframe   , 500);
+        this.vframe.css('display' , 'block').attr('src' , this.video + '&autoplay=1');
+        this.view.$element.addClass('ms-def-cursor');
+
+        // remove perspective style from view if it's Firefox.
+        // it fixes video fullscreen issue in Firefox
+        if ( this.moz ) {
+            this.view.$element.css('perspective', 'none');
+        }
+
+        // if swipe navigation enabled
+        if ( this.view.swipeControl ) {
+            this.view.swipeControl.disable();
+        }
+
+        this.slider.slideController.dispatchEvent(new MSSliderEvent(MSSliderEvent.VIDEO_PLAY));
+    };
+
+    /**
+     * close embeded video
+     */
+    p.__closeVideo = function(){
+
+        if ( !this.vplayed ) {
+            return;
+        }
+
+        this.vplayed = false;
+
+        if(this.roc){
+            this.slider.api.resume();
+        }
+
+        var that = this;
+
+        CTween.fadeIn(this.vpbtn    , 500);
+        CTween.animate(this.vcbtn   , 500 , {opacity:0} , {complete:function(){ that.vcbtn.css  ('display'  , 'none'); }});
+        CTween.animate(this.vframe  , 500 , {opacity:0} , {complete:function(){ that.vframe.attr('src'  , 'about:blank').css('display'  , 'none');}});
+
+        //  video fullscreen issue in Firefox
+        if ( this.moz ) {
+            this.view.$element.css('perspective', '');
+        }
+
+        // if swipe navigation enabled
+        if ( this.view.swipeControl ) {
+            this.view.swipeControl.enable();
+        }
+
+        this.view.$element.removeClass('ms-def-cursor');
+        this.slider.slideController.dispatchEvent(new MSSliderEvent(MSSliderEvent.VIDEO_CLOSE));
+    };
+
+    /* -----------------------------------------------------*/
+
+    /**
+     * create slide - it adds requierd elements over slide
+     */
+    p.create = function(){
+        var that = this;
+
+        if ( this.hasLayers ) {
+            this.layerController.create();
+        }
+        if ( this.link ) {
+            this.link.addClass('ms-slide-link').html('').click(function(e){
+                if ( that.linkdis ) {
+                    e.preventDefault();
+                }
+            });
+
+            // this.$element.css('cursor' , 'pointer')
+            //           .click(function(){ if(!that.linkdis) window.open(that.link , that.link_targ || '_self'); });
+        }
+
+        if ( this.video ) {
+
+            if ( this.video.indexOf('?') === -1 ) {
+                this.video += '?';
+            }
+
+            this.vframe = $('<iframe></iframe>')
+                          .addClass('ms-slide-video')
+                          .css({width:'100%' , height:'100%' , display:'none'})
+                          .attr('src' , 'about:blank')
+                          .attr('allowfullscreen', 'true')
+                          .appendTo(this.$element);
+
+            this.vpbtn = $('<div></div>')
+                        .addClass('ms-slide-vpbtn')
+                        .click(function(){that.__playVideo();})
+                        .appendTo(this.$element);
+
+            this.vcbtn = $('<div></div>')
+                        .addClass('ms-slide-vcbtn')
+                        .click(function(){that.__closeVideo();})
+                        .appendTo(this.$element)
+                        .css('display','none');
+
+            if ( window._touch ) {
+                this.vcbtn.removeClass('ms-slide-vcbtn')
+                          .addClass('ms-slide-vcbtn-mobile')
+                          .append('<div class="ms-vcbtn-txt">Close video</div>')
+                          .appendTo(this.view.$element.parent());
+            }
+        }
+
+        if ( !this.slider.options.autoHeight && this.hasBG ) {
+            this.$imgcont.css('height' , '100%');
+
+            if ( this.fillMode === 'center' || this.fillMode === 'stretch' ){
+                this.fillMode = 'fill';
+            }
+        }
+
+        if ( this.slider.options.autoHeight ) {
+            this.$element.addClass('ms-slide-auto-height');
+        }
+
+        this.sleep(true);
+    };
+
+    /**
+     * destory the slide
+     */
+    p.destroy = function(){
+        if ( this.hasLayers ) {
+            this.layerController.destroy();
+            this.layerController = null;
+        }
+        this.$element.remove();
+        this.$element = null;
+    };
+
+    /**
+     * everything require to do before selecting slide
+     */
+    p.prepareToSelect = function(){
+
+        if ( this.pselected || this.selected ) {
+            return;
+        }
+
+        this.pselected = true;
+
+        if ( this.link || this.video ) {
+            this.view.addEventListener(MSViewEvents.SWIPE_START  , this.onSwipeStart  , this);
+            this.view.addEventListener(MSViewEvents.SWIPE_MOVE  , this.onSwipeMove  , this);
+            this.view.addEventListener(MSViewEvents.SWIPE_CANCEL , this.onSwipeCancel , this);
+            this.linkdis = false;
+            this.swipeMoved = false;
+        }
+
+        this.loadImages();
+
+        if ( this.hasLayers ) {
+            this.layerController.prepareToShow();
+        }
+
+        if ( this.ready ) {
+            if( this.bgvideo ){
+                this.bgvideo.play();
+            }
+
+            if ( this.hasLayers && this.slider.options.instantStartLayers ){
+                this.layerController.showLayers();
+            }
+        }
+        if( this.moz ){
+            this.$element.css('margin-top' , '');
+        }
+
+
+    };
+
+    /*p.prepareToUnselect = function(){
+        if(!this.pselected || !this.selected) return;
+
+        this.pselected = false;
+
+    };*/
+
+    /**
+     * select slide
+     */
+    p.select = function(){
+        if ( this.selected ) {
+            return;
+        }
+
+        this.selected = true;
+        this.pselected = false;
+        this.$element.addClass('ms-sl-selected');
+
+        if(this.hasLayers){
+
+            if ( this.slider.options.autoHeight ) {
+                this.layerController.updateHeight();
+            }
+
+            if( !this.slider.options.instantStartLayers ) {
+                this.layerController.showLayers();
+            }
+
+            //this.view.addEventListener(MSViewEvents.SCROLL        , this.updateLayers  , this)
+        }
+
+
+        if( this.ready && this.bgvideo ) {
+            this.bgvideo.play();
+        }
+        // @since 1.8.0
+        // Autoplay iframe video
+        if ( this.videoAutoPlay ) {
+            this.videodis = false;
+            this.vpbtn.trigger('click');
+        }
+
+    };
+
+    /**
+     * remove selected status
+     */
+    p.unselect = function(){
+        this.pselected = false;
+
+        if ( this.moz ) {
+            this.$element.css('margin-top' , '0.1px');
+        }
+
+        if ( this.link || this.video ) {
+            this.view.removeEventListener(MSViewEvents.SWIPE_START   , this.onSwipeStart  , this);
+            this.view.removeEventListener(MSViewEvents.SWIPE_MOVE  , this.onSwipeMove  , this);
+            this.view.removeEventListener(MSViewEvents.SWIPE_CANCEL  , this.onSwipeCancel , this);
+        }
+
+        if (this.bgvideo ) {
+            this.bgvideo.pause();
+            if(!this.autoPauseBgVid && this.vinit)
+                this.bgvideo.currentTime = 0;
+        }
+
+        // hide layers
+        if ( this.hasLayers ) {
+            this.layerController.hideLayers();
+        }
+        if ( !this.selected ) {
+            return;
+        }
+
+        this.selected = false;
+
+        this.$element.removeClass('ms-sl-selected');
+        if(this.video && this.vplayed){
+            this.__closeVideo();
+            this.roc = false;
+        }
+
+    };
+
+    /**
+     * remove slide from DOM
+     */
+    p.sleep = function(force){
+        if ( this.isSleeping && !force ) {
+            return;
+        }
+
+        this.isSleeping = true;
+
+        if ( this.autoAppend ) {
+            this.$element.detach();
+        }
+
+        if ( this.hasLayers ) {
+            this.layerController.onSlideSleep();
+        }
+    };
+
+    /**
+     * add slide to the DOM
+     */
+    p.wakeup = function(){
+        if ( !this.isSleeping ) {
+            return;
+        }
+
+        this.isSleeping = false;
+
+        if ( this.autoAppend ) {
+            this.view.$slideCont.append(this.$element);
+        }
+
+        if ( this.moz ){
+            this.$element.css('margin-top' , '0.1px');
+        }
+
+        this.setupBG();
+
+        // aling bg
+        if ( this.hasBG ){
+            this.bgAligner.align();
+        }
+
+        if ( this.hasLayers ) {
+            this.layerController.onSlideWakeup();
+        }
+    };
+
+})(window, document, jQuery);
+
+/* ================== bin-debug/js/pro/controls/SlideController.js =================== */
 ;(function($){
-	
+
 	"use strict";
-	
-	window.MSSlide = function(){
-		
-		this.$element = null;
-		
-		this.$loading = $('<div></div>').addClass('ms-slide-loading');
-		
-		this.layers = [];
-		
-		this.view 		= null;
-		this.index 		= -1;
-		
-		this.__width 	= 0;
-		this.__height 	= 0;
-		
-		this.preloadCount = 0;
-		
-		this.fillMode = 'fill'; // fill , fit , stretch , tile , center
-		
-		this.selected = false;
-		this.pselected = false;
-		this.autoAppend = true;
-		this.isSleeping = true;
-		
-		this.moz = $.browser.mozilla;
-	};
-	
-	var p = MSSlide.prototype;
-		
-	/*-------------- METHODS --------------*/
-	
-	
-	/* -----------------------------------------------------
-	 * 				Slide Swipe Reaction
-	 -----------------------------------------------------*/
-	p.onSwipeStart = function(){
-		//this.$layers.css(window._csspfx + 'transition-duration' , '0ms');
-		if(this.link)  this.linkdis = true;
-		if(this.video) this.videodis = true;
-	};
-		
-	p.onSwipeCancel = function(){
-		if(this.link) this.linkdis = false;
-		if(this.video) this.videodis = false;
-		//this.$layers.css(window._csspfx + 'transition-duration' , this.view.__slideDuration + 'ms');
-	};
 
-	/* -----------------------------------------------------
-	 * 					Slide Layers
-	 -----------------------------------------------------*/
-	
-	p.addLayer = function(layer){
-		if(!this.hasLayers)
-			this.$layers  = $('<div></div>').addClass('ms-slide-layers');
-		
-		this.hasLayers = true;
-		
-		this.$layers.append(layer.$element);
-		this.layers.push(layer);
-		layer.slide = this;
-		layer.create();
-		
-		// @since 1.7.0
-		if( layer.parallax ){
-			this.hasParallaxLayer = true;
-		}
-
-		if(layer.needPreload) this.preloadCount ++;		
-	};
-	
-	// This method will be called by the last layer after loading all of layers.
-	p.___onlayersReady = function(){
-		this.ready = true;
-		this.slider.api._startTimer();
-		
-		if(this.selected){
-			/*this.initLayers();
-			this.locateLayers();
-			this.startLayers();*/
-
-			this.showLayers();
-
-			if(this.vinit){
-				this.bgvideo.play();
-				if( !this.autoPauseBgVid ) {
-					this.bgvideo.currentTime = 0;
-				}
-			}
-
-		}		
-
-		if(!this.isSleeping)
-			this.setup();
-
-		CTween.fadeOut(this.$loading , 300 , true);
-		
-		//sequence loading
-		if((this.slider.options.preload === 0 || this.slider.options.preload === 'all') && this.index < this.view.slideList.length - 1){
-			this.view.slideList[this.index + 1].loadImages();
-		}
-		else if(this.slider.options.preload === 'all' && this.index === this.view.slideList.length - 1)
-			this.slider._removeLoading();
-		
-	};
-
-	/*
-	p.updateLayers = function(){
-		if(!this.hasLayers) return;
-		
-		var value = -parseInt(this.$element.css('left')) - this.view.__contPos;
-		
-		this.$layers[0].style.opacity = (1 - Math.abs(value / this.__width));
-		//this.$layers.css('opacity' ,  1 - Math.abs(value / this.__width));
-	};
-	*/
-
-	p.startLayers = function(){
-		for(var i = 0 , l = this.layers.length; i < l; ++i)
-			this.layers[i].start();
-	};
-	
-	p.initLayers = function(force){
-		if(this.init && !force || this.slider.init_safemode) return;
-		this.init = true;
-		for(var i = 0 , l = this.layers.length; i < l; ++i)
-			this.layers[i].init();
-	};
-	
-	p.locateLayers = function(){
-		for(var i = 0 , l = this.layers.length; i < l; ++i)
-			this.layers[i].locate();
-	};
-	
-	p.resetLayers = function(){
-		this.$layers.css('display' , 'none');
-		this.$layers.css('opacity' ,  1);
-		for(var i = 0 , l = this.layers.length; i < l; ++i)
-			this.layers[i].reset();
-	};
-	
-	p.hideLayers = function(){
-		if(this.preloadCount !== 0) return;
-		for(var i = 0 , l = this.layers.length; i < l; ++i)
-			this.layers[i].hide();
-	};
-
-	p.showLayers = function(){
-		if(!this.hasLayers) return;
-
-		if(this.lht){
-			if(this.lht.reset)
-				this.lht.reset();
-			else
-				this.lht.stop('true');
-		}
-		
-
-		this.resetLayers();
-		this.$layers.css('opacity' ,  1)
-					.css('display' , '');
-		
-
-		if(this.preloadCount === 0){
-			this.initLayers();
-			this.locateLayers();
-			this.startLayers();
-		} 
-	}
-	
-	/* -----------------------------------------------------*/
-	p.applyParallax = function(x, y, fast){
-		for(var i = 0 , l = this.layers.length; i !== l; ++i){
-			if( this.layers[i].parallax != null ){
-				this.layers[i].moveParallax(x, y, fast);
-			}  
-		}
-	};
-
-	p.enableParallaxEffect = function(){
-		
-		if( !this.hasParallaxLayer ){
-			return;
-		}
-
-		if( this.slider.options.parallaxMode === 'swipe' ){
-			this.view.addEventListener(MSViewEvents.SCROLL, this.swipeParallaxMove, this);
-		} else {
-			this.$element.on('mousemove' , {that:this}, this.mouseParallaxMove)
-						 .on('mouseleave', {that:this}, this.resetParalax);
-			/**
-			 * Calculates new position of parallax based on device orintation gamma and beta
-			 * @param  {Event} e 
-			 * @since 1.6.0
-			 */
-			/*if( window._mobile && window.DeviceOrientationEvent ){
-				
-				var that = this;
-				this.orientationParallaxMove = function(e){
-					var beta = Math.round(e.beta),
-						gamma = Math.round(e.gamma);
-					
-					that.applyParallax(beta * that.__width / 360 , -gamma * that.__height / 360);
-				};
-
-				window.addEventListener('deviceorientation', this.orientationParallaxMove, false);
-			}*/
-		}
-	};
-
-	p.disableParallaxEffect = function(){
-
-		if( !this.hasParallaxLayer ){
-			return;
-		}
-
-		if( this.slider.options.parallaxMode === 'swipe' ){
-			this.view.removeEventListener(MSViewEvents.SCROLL, this.swipeParallaxMove, this);
-		} else {
-			this.$element.off('mousemove', this.mouseParallaxMove)
-						 .off('mouseleave', this.resetParalax);
-			
-			/*if( window._mobile && window.DeviceOrientationEvent ){
-				window.removeEventListener('deviceorientation', this.orientationParallaxMove);
-			}*/
-		}
-	};
-
-	p.resetParalax = function(e){
-		var that = e.data.that;
-		that.applyParallax(0,0);
-	};
-
-	/**
-	 * Calculates new mouse position over slide and moves layers
-	 * @since 1.6.0
-	 */
-	p.mouseParallaxMove = function(e){
-		var that = e.data.that,
-			os = that.$element.offset(),
-			slider = that.slider;
-
-			if( slider.options.parallaxMode !== 'mouse:y-only' ){
-				var x = e.clientX - os.left - that.__width  / 2;
-			} else {
-				var x = 0;
-			}
-
-			if( slider.options.parallaxMode !== 'mouse:x-only' ){
-				var y = e.clientY - os.top  - that.__height / 2;
-			} else {
-				var y = 0;
-			}
-
-		that.applyParallax(-x, -y);
-	};
-
-
-	/**
-	 * Calculates new position of parallax based on slide position
-	 * @param  {Event} e
-	 * @since 1.6.0
-	 */
-	p.swipeParallaxMove = function(e){
-		var value = this.position - this.view.__contPos;
-		this.applyParallax(value, 0, true);
-	};
-
-	/* -----------------------------------------------------*/
-	
-	p.setBG = function(img){
-		this.hasBG = true;	
-		var that = this;
-		
-		this.$imgcont = $('<div></div>').addClass('ms-slide-bgcont');
-		
-		this.$element.append(this.$loading)
-			   		 .append(this.$imgcont);
-		
-		this.$bg_img = $(img).css('visibility' , 'hidden');
-		this.$imgcont.append(this.$bg_img);
-		
-		this.bgAligner = new MSAligner(that.fillMode , that.$imgcont, that.$bg_img );
-		this.bgAligner.widthOnly = this.slider.options.autoHeight;
-			
-		if(that.slider.options.autoHeight && (that.pselected || that.selected))
-			 that.slider.setHeight(that.slider.options.height);
-		
-		if(this.$bg_img.data('src') !== undefined){
-			this.bg_src = this.$bg_img.data('src');
-			this.$bg_img.removeAttr('data-src');
-		}else{
-			this.$bg_img.one('load', function(event) {that._onBGLoad(event);})
-						.each($.jqLoadFix);
-		}
-		
-		this.preloadCount++;	
-	};
-	
-	p._onBGLoad = function(event){
-		this.bgNatrualWidth = event.width;
-		this.bgNatrualHeight = event.height;
-
-		this.bgLoaded = true;
-		
-		if($.browser.msie)
-			this.$bg_img.on('dragstart', function(event) { event.preventDefault(); }); // disables native dragging
-		
-		this.preloadCount--;
-		if(this.preloadCount === 0){
-			this.___onlayersReady();
-		}
-	};
-	
-	p.loadImages = function(){
-		if(this.ls)return;
-
-		this.ls = true;
-		
-		// @since 1.7.0 
-		// There is nothing to preload? so slide is ready to show.
-		if( this.preloadCount === 0 ){
-			this.___onlayersReady();
-		}
-
-		if(this.bgvideo)
-			this.bgvideo.load();
-
-		if(this.hasBG && this.bg_src){
-			var that = this;
-			this.$bg_img.preloadImg(this.bg_src , function(event) {that._onBGLoad(event);});
-		}
-		
-		for(var i = 0 , l = this.layers.length; i < l; ++i){
-			if(this.layers[i].needPreload)this.layers[i].loadImage();
-		}
-
-	};
-	
-	/* -----------------------------------------------------*/
-
-	p.setBGVideo = function($video){
-		if(!$video[0].play) return;
-
-		// disables video in mobile devices
-		if(window._mobile){
-			$video.remove();
-			return;
-		}
-
-		this.bgvideo  = $video[0];
-		var that = this;
-
-		$video.addClass('ms-slide-bgvideo');
-		
-		if($video.data('loop') !== false){
-			this.bgvideo.addEventListener('ended' , function(){
-				//that.bgvideo.currentTime = -1;
-				that.bgvideo.play();
-			});
-		}	
-
-		if($video.data('mute') !== false){
-			this.bgvideo.muted = true;
-		}
-
-		if($video.data('autopause') === true){
-			this.autoPauseBgVid = true;
-		}
-
-		this.bgvideo_fillmode = $video.data('fill-mode') || 'fill'; // fill , fit , none
-		
-		if(this.bgvideo_fillmode !== 'none') {
-			this.bgVideoAligner = new MSAligner(this.bgvideo_fillmode , this.$element, $video );
-			
-			this.bgvideo.addEventListener('loadedmetadata' , function(){
-				if(that.vinit) return;
-
-				that.vinit = true;
-				that.video_aspect = that.bgVideoAligner.baseHeight/that.bgVideoAligner.baseWidth;
-				that.bgVideoAligner.init(that.bgvideo.videoWidth , that.bgvideo.videoHeight);
-
-				//alert(that.bgvideo.videoWidth + ' ' + that.selected)
-				that._alignBGVideo();
-				CTween.fadeIn($(that.bgvideo) , 200);
-				if(that.selected)
-					that.bgvideo.play();
-			});
-		}
-
-		$video.css('opacity' , 0);
-
-		this.$bgvideocont = $('<div></div>').addClass('ms-slide-bgvideocont').append($video);
-
-		if(this.hasBG){
-			this.$imgcont.before(this.$bgvideocont);
-		}else{
-			this.$bgvideocont.appendTo(this.$element);
-		}
-	};
-
-	p._alignBGVideo = function(){
-		if(!this.bgvideo_fillmode || this.bgvideo_fillmode === 'none') return;
-		this.bgVideoAligner.align();
-	};
-
-	/* -----------------------------------------------------*/
-	
-	p.setSize = function(width , height , hard){
-		
-		this.__width  = width;
-		
-		if(this.slider.options.autoHeight){
-			if(this.bgLoaded){
-				this.ratio = this.__width / this.bgWidth;
-				height = Math.floor(this.ratio * this.bgHeight);
-				this.$imgcont.height(height);
-			}else{
-				this.ratio = width / this.slider.options.width;
-				height = this.slider.options.height * this.ratio;
-			}
-		}
-	
-		this.__height = height;
-		this.$element.width(width).height(height);
-			
-
-		if(this.hasBG && this.bgLoaded)this.bgAligner.align();
-		this._alignBGVideo();
-		
-		if(hard && this.selected) this.initLayers(hard);
-		if(this.selected) this.locateLayers();
-		
-		if(this.hasLayers){
-			if(this.slider.options.autoHeight){
-				this.$layers[0].style.height = this.getHeight() + 'px';
-			}
-			
-			if(this.slider.options.layersMode == 'center') 
-				this.$layers[0].style.left = Math.max( 0 ,  (this.__width - this.slider.options.width) / 2 ) + 'px';
-		}
-	};
-
-	
-	p.getHeight = function(){
-		if( this.hasBG && this.bgLoaded ) return this.bgHeight * this.ratio;
-		return Math.max(this.$element[0].clientHeight, this.slider.options.height * this.ratio);
-	};
-
-	/* -----------------------------------------------------*/
-	// YouTube and Vimeo videos	
-	p.__playVideo = function(){
-		if(this.vplayed || this.videodis) return;
-		this.vplayed = true;
-		if(!this.slider.api.paused){
-			this.slider.api.pause();
-			this.roc = true; // resume on close;
-		}
-		this.vcbtn.css('display' , '');
-		CTween.fadeOut(this.vpbtn 	, 500 , false);
-		CTween.fadeIn(this.vcbtn 	, 500);
-		CTween.fadeIn(this.vframe 	, 500);
-		this.vframe.css('display' , 'block').attr('src' , this.video + '&autoplay=1');
-		this.view.$element.addClass('ms-def-cursor');
-		this.view.swipeControl.disable();
-		
-		this.slider.slideController.dispatchEvent(new MSSliderEvent(MSSliderEvent.VIDEO_PLAY));
-	};
-	
-	p.__closeVideo = function(){
-		if(!this.vplayed) return;
-		this.vplayed = false;
-		if(this.roc)
-			this.slider.api.resume();
-		var that = this;
-		
-		CTween.fadeIn(this.vpbtn	, 500);
-		CTween.animate(this.vcbtn   , 500 , {opacity:0} , {complete:function(){	that.vcbtn.css  ('display'  , 'none'); }});
-		CTween.animate(this.vframe  , 500 , {opacity:0} , {complete:function(){	that.vframe.attr('src'  , 'about:blank').css('display'  , 'none');}});
-		
-		this.view.swipeControl.enable();
-		this.view.$element.removeClass('ms-def-cursor');
-		this.slider.slideController.dispatchEvent(new MSSliderEvent(MSSliderEvent.VIDEO_CLOSE));
-	};
-
-	/* -----------------------------------------------------*/
-
-	p.create = function(){
-		var that = this;
-		if(this.hasLayers){			
-			this.$element.append(this.$layers);
-			
-			if(this.slider.options.layersMode == 'center')
-				this.$layers.css('max-width' , this.slider.options.width + 'px');
-		}
-
-		if(this.link){
-			this.$element.css('cursor' , 'pointer')
-						 .click(function(){ if(!that.linkdis) window.open(that.link , that.link_targ || '_self'); });
-		}
-		
-		if(this.video){
-
-			if(this.video.indexOf('?') === -1) this.video += '?';
-			this.vframe = $('<iframe></iframe>')
-						  .addClass('ms-slide-video')
-						  .css({width:'100%' , height:'100%' , display:'none'})
-						  .attr('src' , 'about:blank')
-						  .appendTo(this.$element);
-			
-			this.vpbtn = $('<div></div>')
-						.addClass('ms-slide-vpbtn')
-						.click(function(){that.__playVideo();})
-						.appendTo(this.$element);	
-			
-			this.vcbtn = $('<div></div>')
-						.addClass('ms-slide-vcbtn')
-						.click(function(){that.__closeVideo();})
-						.appendTo(this.$element)
-						.css('display','none');
-
-			if(window._touch){
-				this.vcbtn.removeClass('ms-slide-vcbtn')
-						  .addClass('ms-slide-vcbtn-mobile')
-						  .append('<div class="ms-vcbtn-txt">Close video</div>')
-						  .appendTo(this.view.$element.parent());
-			}
-		}	
-		
-		if(!this.slider.options.autoHeight && this.hasBG){
-			this.$imgcont.css('height' , '100%');
-			
-			if(this.fillMode === 'center' || this.fillMode === 'stretch')
-				this.fillMode = 'fill';		
-		}
-
-		if( this.slider.options.autoHeight ) { 
-			this.$element.addClass('ms-slide-auto-height');
-		}
-
-
-		this.sleep(true);
-	};
-	
-	
-	p.destroy = function(){
-		for(var i = 0 , l = this.layers.length; i < l; ++i)
-			this.layers[i].$element.stop(true).remove();
-		this.$element.remove();
-		this.$element = null;
-	};
-	
-	p.setup = function(){
-
-		//if(this.isSettedup) return;
-		//this.isSettedup = true;
-
-		if(!this.initBG && this.bgLoaded){
-			this.initBG = true;
-			this.$bg_img.css('visibility' , '');
-			this.bgWidth  = this.bgNatrualWidth  || this.$bg_img.width();
-			this.bgHeight = this.bgNatrualHeight || this.$bg_img.height();
-
-			CTween.fadeIn(this.$imgcont , 300);	
-
-			if(this.slider.options.autoHeight)
-			this.$imgcont.height(this.bgHeight * this.ratio);
-			
-			this.bgAligner.init(this.bgWidth  , this.bgHeight );
-			this.setSize(this.__width , this.__height);
-			
-			if(this.slider.options.autoHeight && (this.pselected || this.selected))
-			 	this.slider.setHeight(this.getHeight());
-		}
-		
-	};
-
-	p.prepareToSelect = function(){
-
-
-		if(this.pselected || this.selected) return;
-		this.pselected = true;		
-		
-		if(this.link || this.video){
-			this.view.addEventListener(MSViewEvents.SWIPE_START  , this.onSwipeStart  , this);
-			this.view.addEventListener(MSViewEvents.SWIPE_CANCEL , this.onSwipeCancel , this);
-		}
-
-		this.loadImages();
-			
-		if(this.preloadCount === 0){
-			if( this.bgvideo ){
-				this.bgvideo.play();
-			}
-
-			if( this.slider.options.instantStartLayers){
-				this.showLayers();
-			}
-		}
-
-		// enables parallax effect 
-		// @since 1.6.0
-		this.enableParallaxEffect();
-
-		if( this.moz ){
-			this.$element.css('margin-top' , '');
-		}
-
-	};
-	
-	/*p.prepareToUnselect = function(){
-		if(!this.pselected || !this.selected) return;
-		
-		this.pselected = false;
-		
-	};*/
-	
-	p.select = function(){
-		if(this.selected) return;
-		this.selected = true;
-		this.pselected = false;
-				
-		this.$element.addClass('ms-sl-selected');
-		
-		if(this.hasLayers){
-			if(this.slider.options.autoHeight)
-				this.$layers[0].style.height = this.getHeight() + 'px';
-			
-			if( !this.slider.options.instantStartLayers ) {
-				this.showLayers();
-			}
-
-			//this.view.addEventListener(MSViewEvents.SCROLL 		, this.updateLayers  , this)
-		} 	
-
-		if( this.preloadCount === 0 && this.bgvideo ) {
-			this.bgvideo.play();
-		}
-		
-		// @since 1.8.0 
-		// Autoplay iframe video
-		if ( this.videoAutoPlay ) {
-			this.videodis = false;
-			this.vpbtn.trigger('click');
-		}
-
-	};
-	
-	p.unselect = function(){
-		this.pselected = false;
-
-		if(this.moz)
-			this.$element.css('margin-top' , '0.1px');
-
-		if(this.link || this.video){
-			this.view.removeEventListener(MSViewEvents.SWIPE_START 	, this.onSwipeStart  , this);
-			this.view.removeEventListener(MSViewEvents.SWIPE_CANCEL  , this.onSwipeCancel , this);
-		}
-
-		if(this.bgvideo){
-			this.bgvideo.pause();
-			if(!this.autoPauseBgVid && this.vinit)
-				this.bgvideo.currentTime = 0;
-		}
-
-		// hide layers
-		if( this.hasLayers && (this.selected || this.slider.options.instantStartLayers) ){
-			var that = this;
-			that.lht = CTween.animate(this.$layers ,500 , {opacity:0} , {complete:function(){	that.resetLayers();	}});
-			//this.view.removeEventListener(MSViewEvents.SCROLL 		, this.updateLayers  , this);
-			
-			// disables parallax effect
-			// @since 1.6.0
-			this.disableParallaxEffect();
-		}
-			
-		if(!this.selected) return;
-		this.selected = false;
-
-		this.$element.removeClass('ms-sl-selected');		
-		if(this.video && this.vplayed){
-			this.__closeVideo();
-			this.roc = false;
-		}	
-		
-	};	
-
-	p.sleep = function(force){
-		if(this.isSleeping && !force) return;
-		this.isSleeping = true;
-		if(this.autoAppend)
-			this.$element.detach();
-	};
-	
-	p.wakeup = function(){
-		if(!this.isSleeping) return;
-		this.isSleeping = false;
-		
-		if(this.autoAppend)
-			this.view.$slideCont.append(this.$element);
-
-		if(this.moz)
-			this.$element.css('margin-top' , '0.1px');
-		
-		this.setup();
-
-		// aling bg
-		if(this.hasBG)
-			this.bgAligner.align();
-	};
-
-})(jQuery);//dev\slider\SlideController.js 
- 
-;(function($){
-	
-	"use strict";
-	
 	var SliderViewList = {};
-	
+
 	window.MSSlideController = function(slider){
-		
+
 		this._delayProgress		= 0;
-		
+
 		this._timer 			= new averta.Timer(100);
 		this._timer.onTimer 	= this.onTimer;
 		this._timer.refrence 	= this;
-		
+
 		this.currentSlide		= null;
-		
+
 		this.slider 	= slider;
 		this.so 		= slider.options;
-		
+
 		averta.EventDispatcher.call(this);
-		
+
 	};
-	
+
 	MSSlideController.registerView = function(name , _class){
 		if(name in SliderViewList){
 			 throw new Error( name + ', is already registered.');
 			 return;
 		}
-		
+
 		SliderViewList[name] = _class;
 	};
-	
+
 	MSSlideController.SliderControlList = {};
 	MSSlideController.registerControl = function(name , _class){
 		if(name in MSSlideController.SliderControlList){
 			 throw new Error( name + ', is already registered.');
 			 return;
 		}
-		
+
 		MSSlideController.SliderControlList[name] = _class;
-	};	
-	
+	};
+
 	var p = MSSlideController.prototype;
-	
+
 	/*-------------- METHODS --------------*/
-	
+
 
 	p.setupView = function(){
 
 		var that = this;
 		this.resize_listener = function(){that.__resize();};
-		
+
 		// in @version 1.5.7 it will be added in Masterslider.js _setupSliderLayout function
 		//$(window).bind('resize', this.resize_listener);
-		
+
 		//if(this.so.smoothHeight) this.so.autoHeight = true;
-	
+
 		var viewOptions = {
 			spacing: 		this.so.space,
 			mouseSwipe:		this.so.mouse,
@@ -3633,18 +4739,18 @@ MSSliderEvent.DESTROY				= 'ms_destroy';//dev\slider\Slide.js
 			dir:			this.so.dir,
 			viewNum: 		this.so.inView,
 			critMargin: 	this.so.critMargin
-		};	
-		
+		};
+
 		if(this.so.viewOptions)
 			$.extend(viewOptions , this.so.viewOptions);
-				
+
 		if(this.so.autoHeight) this.so.heightLimit = false;
-	
+
 		//this.view.slideDuration = this.so.duration;
 
 		var viewClass = SliderViewList[this.slider.options.view] || MSBasicView;
 		if(viewClass._3dreq && (!window._css3d || $.browser.msie) ) viewClass = viewClass._fallback || MSBasicView;
-		
+
 		this.view = new viewClass(viewOptions);
 
 		if(this.so.overPause){
@@ -3657,11 +4763,10 @@ MSSliderEvent.DESTROY				= 'ms_destroy';//dev\slider\Slide.js
 				that._startTimer();
 			});
 		}
-
 	};
 
 	p.onChangeStart = function(){
-		
+
 		this.change_started = true;
 
 		if(this.currentSlide) this.currentSlide.unselect();
@@ -3673,48 +4778,57 @@ MSSliderEvent.DESTROY				= 'ms_destroy';//dev\slider\Slide.js
 			//this._timer.reset();
 			this.skipTimer();
 		}
-		
+
 		if(this.so.autoHeight){
 			this.slider.setHeight(this.currentSlide.getHeight());
 		}
 
+		if ( this.so.deepLink ) {
+			this.__updateWindowHash();
+		}
+
 		this.dispatchEvent(new MSSliderEvent(MSSliderEvent.CHANGE_START));
 	};
-	
+
 	p.onChangeEnd = function(){
 		//if(!this.currentSlide.selected)
 		//	this._timer.reset();
 		this.change_started = false;
-		
+
 		this._startTimer();
 		this.currentSlide.select();
-		
+
 		if(this.so.preload > 1){
-			var loc ,i , l = this.so.preload - 1;
-			
+			var loc ,i , l = this.so.preload - 1, slide;
+
 			// next slides
 			for(i=1;i<=l;++i){
 				loc = this.view.index + i;
-				
+
 				if(loc >= this.view.slideList.length) {
 					if(this.so.loop){
 						loc = loc - this.view.slideList.length;
 					}else{
-						i = l; 
+						i = l;
 						continue;
 					}
 				}
-				this.view.slideList[loc].loadImages();
+
+				slide = this.view.slideList[loc];
+				if ( slide ) {
+					slide.loadImages();
+				}
+
 			}
-			
+
 			// previous slides
-			if(l > this.view.slideList.length/2) 
+			if(l > this.view.slideList.length/2)
 				l = Math.floor(this.view.slideList.length/2);
-			
+
 			for(i=1;i<=l;++i){
-				
+
 				loc = this.view.index - i;
-				
+
 				if(loc < 0){
 					if(this.so.loop){
 						loc = this.view.slideList.length + loc;
@@ -3722,20 +4836,25 @@ MSSliderEvent.DESTROY				= 'ms_destroy';//dev\slider\Slide.js
 						i = l;
 						continue;
 					}
-				} 
-				this.view.slideList[loc].loadImages();
+				}
+
+				slide = this.view.slideList[loc];
+				if ( slide ) {
+					slide.loadImages();
+				}
+
 			}
 		}
-		
+
 		this.dispatchEvent(new MSSliderEvent(MSSliderEvent.CHANGE_END));
-		
+
 	};
-		
+
 	p.onSwipeStart = function(){
 		//this._timer.reset();
 		this.skipTimer();
 	};
-	
+
 	p.skipTimer = function(){
 		this._timer.reset();
 		this._delayProgress  = 0;
@@ -3743,7 +4862,7 @@ MSSliderEvent.DESTROY				= 'ms_destroy';//dev\slider\Slide.js
 	};
 
 	p.onTimer = function(time) {
-		
+
 		if(this._timer.getTime() >= this.view.currentSlide.delay * 1000){
 			//this._timer.reset();
 			this.skipTimer();
@@ -3751,20 +4870,23 @@ MSSliderEvent.DESTROY				= 'ms_destroy';//dev\slider\Slide.js
 			this.hideCalled = false;
 		}
 		this._delayProgress = this._timer.getTime() / (this.view.currentSlide.delay * 10);
-		
+
 		if(this.so.hideLayers && !this.hideCalled && this.view.currentSlide.delay * 1000 - this._timer.getTime() <= 300){
-			this.view.currentSlide.hideLayers();
+			var currentSlide = this.view.currentSlide;
+			if ( currentSlide.hasLayers ) {
+				currentSlide.layerController.animHideLayers();
+			}
 			this.hideCalled = true;
 		}
-		
+
 		this.dispatchEvent(new MSSliderEvent(MSSliderEvent.WAITING));
 	};
-	
+
 	p._stopTimer = function(){
 		if(this._timer)
 			this._timer.stop();
 	};
-	
+
 	p._startTimer = function(){
 		if(!this.paused && !this.is_over && this.currentSlide && this.currentSlide.ready && !this.change_started)
 			this._timer.start();
@@ -3790,12 +4912,12 @@ MSSliderEvent.DESTROY				= 'ms_destroy';//dev\slider\Slide.js
 		// next slides
 		for(i=1;i<=l;++i){
 			loc = this.view.index + i;
-			
+
 			if(loc >= this.view.slideList.length) {
 				if(this.so.loop){
 					loc = loc - this.view.slideList.length;
 				}else{
-					i = l; 
+					i = l;
 					continue;
 				}
 			}
@@ -3805,15 +4927,15 @@ MSSliderEvent.DESTROY				= 'ms_destroy';//dev\slider\Slide.js
 			this.view.appendSlide(slide);
 
 		}
-		
+
 		// previous slides
-		if(l > this.view.slideList.length/2) 
+		if(l > this.view.slideList.length/2)
 			l = Math.floor(this.view.slideList.length/2);
-		
+
 		for(i=1;i<=l;++i){
-			
+
 			loc = this.view.index - i;
-			
+
 			if(loc < 0){
 				if(this.so.loop){
 					loc = this.view.slideList.length + loc;
@@ -3821,8 +4943,8 @@ MSSliderEvent.DESTROY				= 'ms_destroy';//dev\slider\Slide.js
 					i = l;
 					continue;
 				}
-			} 
-			
+			}
+
 			slide = this.view.slideList[loc];
 			slide.detached = false;
 			this.view.appendSlide(slide);
@@ -3834,12 +4956,12 @@ MSSliderEvent.DESTROY				= 'ms_destroy';//dev\slider\Slide.js
 		if(!this.created) return;
 
 		this.width = this.slider.$element[0].clientWidth || this.so.width;
-		
-		if(!this.so.fullwidth){ 
+
+		if(!this.so.fullwidth){
 			this.width = Math.min(this.width , this.so.width);
 			//this.view.$element.css('left' , (this.slider.$element[0].clientWidth - this.width) / 2 + 'px');
 		}
-		
+
 		if( this.so.fullheight ){
 			this.so.heightLimit = false;
 			this.so.autoHeight = false;
@@ -3847,89 +4969,203 @@ MSSliderEvent.DESTROY				= 'ms_destroy';//dev\slider\Slide.js
 		} else {
 			this.height = this.width / this.slider.aspect;
 		}
-		
 		if( this.so.autoHeight ){
 			this.currentSlide.setSize(this.width , null , hard);
 			this.view.setSize(this.width , this.currentSlide.getHeight() , hard);
 		} else {
-			this.view.setSize(this.width , (this.so.heightLimit ? Math.min(this.height , this.so.height) : this.height) , hard);
+			this.view.setSize(this.width , ( Math.max( this.so.minHeight, ( this.so.heightLimit ? Math.min(this.height , this.so.height) :  this.height ) ) ) , hard);
 		}
-		
+
 		if(this.slider.$controlsCont){
 			if(this.so.centerControls && this.so.fullwidth) {
 				this.view.$element.css('left' , Math.min(0,-(this.slider.$element[0].clientWidth - this.so.width) / 2) + 'px');
 			}
 		}
-		
+
 		this.dispatchEvent(new MSSliderEvent(MSSliderEvent.RESIZE));
 	};
 
 	p.__dispatchInit = function(){
 		this.dispatchEvent(new MSSliderEvent(MSSliderEvent.INIT));
 	};
-		
+
+	/**
+	 * used by deep link feature, uptades window hash value on slide changes
+	 * @since 2.1.0
+	 */
+	p.__updateWindowHash = function(){
+		var hash = window.location.hash,
+			dl = this.so.deepLink,
+			dlt = this.so.deepLinkType,
+			eq = dlt === 'path' ? '\/' : '=',
+			sep = dlt === 'path' ? '\/' : '&',
+			sliderHash = dl + eq + (this.view.index + 1),
+			regTest = new RegExp( dl + eq + '[0-9]+', 'g');
+
+		if ( hash === '' ) {
+			window.location.hash = sep + sliderHash;
+		} else if( regTest.test(hash) ) {
+			window.location.hash = hash.replace(regTest, sliderHash);
+		} else {
+			window.location.hash = hash + sep + sliderHash;
+		}
+	};
+
+	p.__curentSlideInHash = function(){
+		var hash = window.location.hash,
+			dl = this.so.deepLink,
+			dlt = this.so.deepLinkType,
+			eq = dlt === 'path' ? '\/' : '=',
+			regTest = new RegExp( dl + eq + '[0-9]+', 'g' );
+
+		if ( regTest.test(hash) ) {
+			var index = Number(hash.match(regTest)[0].match(/[0-9]+/g).pop());
+			if ( !isNaN(index) ) {
+				return index - 1;
+			}
+		}
+
+		return -1;
+	};
+
+	p.__onHashChanged = function(){
+		var index = this.__curentSlideInHash();
+		if ( index !== -1 ){
+			this.gotoSlide(index);
+		}
+	};
+
+    p.__findLayerById = function( layerId ) {
+
+        if ( !this.currentSlide) {
+            return null;
+        }
+        var layer;
+
+        if ( this.currentSlide.layerController ) {
+            layer = this.currentSlide.layerController.getLayerById( layerId );
+        }
+
+        if ( !layer && this.slider.overlayLayers ) {
+            return this.slider.overlayLayers.layerController.getLayerById( layerId );
+        }
+
+        return layer;
+    };
+
 	p.setup = function(){
-		
+
 		this.created = true;
 		this.paused = !this.so.autoplay;
 
 		//this.slider.$element.append(this.view.$element);
 		this.view.addEventListener(MSViewEvents.CHANGE_START , this.onChangeStart , this);
 		this.view.addEventListener(MSViewEvents.CHANGE_END   , this.onChangeEnd   , this);
-		this.view.addEventListener(MSViewEvents.SWIPE_START  , this.onSwipeStart  , this);	
-		
+		this.view.addEventListener(MSViewEvents.SWIPE_START  , this.onSwipeStart  , this);
+
 		//this.currentSlide = this.view.slides[this.so.start - 1];
 		this.currentSlide = this.view.slideList[this.so.start - 1];
 		this.__resize();
-		this.view.create(this.so.start - 1);
-		
-		if(this.so.preload === 0)
+
+		var slideInHash = this.__curentSlideInHash(),
+			startSlide = slideInHash !== -1 ? slideInHash : this.so.start - 1;
+		this.view.create(startSlide);
+
+		if(this.so.preload === 0){
 			this.view.slideList[0].loadImages();
-			
+		}
+
 		this.scroller = this.view.controller;
 
 		if(this.so.wheel){
 			var that = this;
 			var last_time = new Date().getTime();
 			this.wheellistener = function(event){
-				var current_time = new Date().getTime();
-				if(current_time - last_time < 350) return;
-				last_time = current_time;
+
 				var e = window.event || event.orginalEvent || event;
-				var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
-				if(delta < 0)		that.next();
-				else if(delta > 0)	that.previous();
+				e.preventDefault();
+
+				var current_time = new Date().getTime();
+				if(current_time - last_time < 400) return;
+				last_time = current_time;
+
+				var delta = Math.abs(e.detail || e.wheelDelta);
+
+				if ( $.browser.mozilla ) {
+					delta *= 100;
+				}
+
+				var scrollThreshold = 15;
+
+				// --- Scrolling up ---
+				if (e.detail < 0 || e.wheelDelta > 0) {
+					if ( delta >= scrollThreshold) {
+						that.previous(true);
+					}
+				}
+				// --- Scrolling down ---
+				else {
+					if (delta >= scrollThreshold) {
+						that.next(true);
+					}
+				}
+
 				return false;
 			};
-			
+
 			if($.browser.mozilla) this.slider.$element[0].addEventListener('DOMMouseScroll' , this.wheellistener);
 			else this.slider.$element.bind('mousewheel', this.wheellistener);
 		}
+
+		// if(this.so.wheel){
+		// 	var that = this;
+		// 	var last_time = new Date().getTime();
+		// 	this.wheellistener = function(event){
+		// 		var current_time = new Date().getTime();
+		// 		if(current_time - last_time < 550) return;
+		// 		last_time = current_time;
+		// 		var e = window.event || event.orginalEvent || event;
+		// 		var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
+		// 		if(delta < 0)		that.next();
+		// 		else if(delta > 0)	that.previous();
+		// 		return false;
+		// 	};
+
+		// 	if($.browser.mozilla) this.slider.$element[0].addEventListener('DOMMouseScroll' , this.wheellistener);
+		// 	else this.slider.$element.bind('mousewheel', this.wheellistener);
+		// }
 
 		if(this.slider.$element[0].clientWidth === 0)
 			this.slider.init_safemode = true;
 
 		this.__resize();
+
+		var that = this;
+		if( this.so.deepLink ) {
+			$(window).on('hashchange', function() {
+			  that.__onHashChanged();
+			});
+		}
 	};
-	
+
 	p.index = function(){
 		return this.view.index;
 	};
-	
+
 	p.count = function(){
 		return this.view.slidesCount;
 	};
-	
-	p.next = function(){
+
+	p.next = function(checkLoop){
 		this.skipTimer();
-		this.view.next();
+		this.view.next(checkLoop);
 	};
-	
-	p.previous = function(){
+
+	p.previous = function(checkLoop){
 		this.skipTimer();
-		this.view.previous();
+		this.view.previous(checkLoop);
 	};
-	
+
 	p.gotoSlide = function(index) {
 		index = Math.min(index, this.count()-1);
 		this.skipTimer();
@@ -3937,37 +5173,37 @@ MSSliderEvent.DESTROY				= 'ms_destroy';//dev\slider\Slide.js
 	};
 
 	p.destroy = function(reset){
-		this.slider.destroy(reset);
 		this.dispatchEvent(new MSSliderEvent(MSSliderEvent.DESTROY));
+		this.slider.destroy(reset);
 	};
 
 	p._destroy = function(){
 		this._timer.reset();
 		this._timer = null;
-		
+
 		$(window).unbind('resize', this.resize_listener);
 		this.view.destroy();
 		this.view = null;
-		
+
 		if(this.so.wheel){
 			if($.browser.mozilla) this.slider.$element[0].removeEventListener('DOMMouseScroll' , this.wheellistener);
 			else this.slider.$element.unbind('mousewheel', this.wheellistener);
 			this.wheellistener = null;
 		}
-			
+
 		this.so = null;
 	};
 
 	/**
 	 * run layer actions like next, previous,...
 	 * @param  {String} action
-	 * @since v1.7.2 
+	 * @since v1.7.2
 	 */
 	p.runAction = function(action){
 		var actionParams = [];
 
 		if( action.indexOf('(') !== -1 ){
-			var temp = action.slice(0 , action.indexOf('('));			
+			var temp = action.slice(0 , action.indexOf('('));
 			actionParams = action.slice(action.indexOf('(') + 1 , -1).replace(/\"|\'|\s/g , '').split(',');
 			action   = temp;
 		}
@@ -3983,18 +5219,23 @@ MSSliderEvent.DESTROY				= 'ms_destroy';//dev\slider\Slide.js
 		if(this.slider.init_safemode && hard)
 			this.slider.init_safemode = false;
 		this.__resize(hard);
+
+		if ( hard ) {
+			this.dispatchEvent(new MSSliderEvent(MSSliderEvent.HARD_UPDATE));
+		}
+
 	};
-		
+
 	p.locate = function(){
 		this.__resize();
 	};
-	
+
 	p.resume = function(){
 		if(!this.paused) return;
 		this.paused = false;
 		this._startTimer();
 	};
-	
+
 	p.pause = function(){
 		if(this.paused) return;
 		this.paused = true;
@@ -4004,21 +5245,78 @@ MSSliderEvent.DESTROY				= 'ms_destroy';//dev\slider\Slide.js
 	p.currentTime = function(){
 		return this._delayProgress;
 	};
-	
+
+
+    p.showLayer = function( layerId, delay ) {
+        var layer = this.__findLayerById( layerId );
+        if ( layer ) {
+            if ( !delay ) {
+                    layer.start();
+            } else {
+                clearTimeout( layer.actionTimeout );
+                layer.actionTimeout = setTimeout( this.showLayer, delay , layerId , 0 );
+            }
+        }
+    };
+
+    p.hideLayer = function( layerId, delay ) {
+        var layer = this.__findLayerById( layerId );
+        if ( layer ) {
+            if ( !delay ) {
+                    layer.hide();
+            } else {
+                clearTimeout( layer.actionTimeout );
+                layer.actionTimeout = setTimeout( this.hideLayer, delay , layerId , 0 );
+            }
+        }
+    }
+
+    p.toggleLayer = function( layerId, delay ) {
+        var layer = this.__findLayerById( layerId );
+        if ( layer ) {
+            if ( !delay ) {
+                    layer.isShowing ? layer.hide() : layer.start();
+            } else {
+                clearTimeout( layer.actionTimeout );
+                layer.actionTimeout = setTimeout( this.toggleLayer, delay , layerId , 0 );
+            }
+        }
+    }
+
+    p.showLayers = function( layerIds, delay ) {
+        var self = this;
+        $.each( layerIds.replace( /\s+/g , '' ).split('|'), function( index, layerId ) {
+            self.showLayer(layerId, delay);
+        });
+    };
+
+
+    p.hideLayers = function( layerIds, delay ) {
+        var self = this;
+        $.each( layerIds.replace( /\s+/g , '' ).split('|'), function( index, layerId ) {
+            self.hideLayer(layerId, delay);
+        });
+    };
+
+    p.toggleLayers = function( layerIds, delay ) {
+        var self = this;
+        $.each( layerIds.replace( /\s+/g , '' ).split('|'), function( index, layerId ) {
+            self.toggleLayer(layerId, delay);
+        });
+    };
+
 	averta.EventDispatcher.extend(p);
 })(jQuery);
-//dev\slider\MasterSlider.js 
- 
+
+/* ================== bin-debug/js/pro/MasterSlider.js =================== */
 /**
  * Master Slider Main JavaScript File
- * @version 2.0.0
- * @author Averta Ltd.
  */
 
 ;(function($){
-	
+
 	"use strict";
-	
+
 	var LayerTypes = {
 		'image' 	: MSImageLayerElement,
 		'text'  	: MSLayerElement,
@@ -4026,27 +5324,29 @@ MSSliderEvent.DESTROY				= 'ms_destroy';//dev\slider\Slide.js
 		'hotspot'	: MSHotspotLayer,
 		'button'	: MSButtonLayer
 	};
-	
 	window.MasterSlider = function(){
-		
+
 		// Default Options
 		this.options = {
+            forceInit           : true,       // Force calling init even an error occurs in jQuery's dom ready method.
 			autoplay 			: false,      // Enables the autoplay slideshow.
 			loop 				: false,	  // Enables the continuous sliding mode.
 			mouse				: true,		  // Whether the user can use mouse drag navigation.
 			swipe				: true,		  // Whether the drag/swipe navigation is enabled.
 			grabCursor			: true,		  // Whether the slider uses grab mouse cursor.
 			space  				: 0,		  // The spacing value between slides in pixels.
-			fillMode			: 'fill',  	  // Specifies the slide background scaling method. Its acceptable values are "fill", "fit", "stretch", "center" and "tile". 
+			fillMode			: 'fill',  	  // Specifies the slide background scaling method. Its acceptable values are "fill", "fit", "stretch", "center" and "tile".
 			start				: 1,		  // The slider starting slide number.
-			view				: 'basic',	  // The slide changing transition. 
+			view				: 'basic',	  // The slide changing transition.
 			width				: 300,		  // The base width of slides. It helps the slider to resize in correct ratio.
 			height				: 150,		  // The base height of slides, It helps the slider to resize in correct ratio.
 			inView				: 15, 		  // Specifies number of slides which will be added at a same time in DOM.
-			critMargin			: 1,		  // 
+            critMargin          : 1,          //
+			mobileBGVideo       : false,	  // Whether show background videos in mobile devices.
 			heightLimit			: true,		  // It force the slide to use max height value as its base specified height value.
 			smoothHeight		: true,		  // Whether the slider uses smooth animation while its height changes.
 			autoHeight			: false,      // Whether the slider adapts its height to each slide height or not. It overrides heightLimit option.
+			minHeight 			: -1,		  // @since 2.13.0, Specifies min height value for the slider, it prevents slider to shows too narrow in small screens.
 			fullwidth			: false,	  // It enables the slider to adapt width to its parent element. It's very useful for creating full-width sliders. In default it takes max width as its base width value.
 			fullheight			: false,	  // It enables the slider to adapt height to its parent element.
 			autofill			: false,	  // It enables the slider to adapt width and height to its parent element, It's very useful for creating fullscreen or fullwindow slider.
@@ -4061,17 +5361,22 @@ MSSliderEvent.DESTROY				= 'ms_destroy';//dev\slider\Slide.js
 			preload				: 0,		  // Specifies number of slides which will be loaded by slider. 0 value means the slider loads slides in sequence.
 			wheel				: false,	  // Whether slider uses mouse wheel for navigation.
 			layout				: 'boxed',	  // It accepts 'fullwidth', 'fullscreen', 'fillwidth', 'autofill', 'partialview', 'boxed'. It overrides 'fullwidth' and 'autofill' (added in v1.5.6)
-			fullscreenMargin	: 0,		
+			autofillTarget 		: null,		  // @since 2.13.0, Specifies the parent element of slider width jQuery selector, it used for sizing slider with autofill layout. Default value is the first parent element of slider.
+			fullscreenMargin	: 0,		  // Specifies margin amount to the bottom of slider, it's only effective on fullscreen slider.
 			instantStartLayers	: false, 	  // @since 1.5.0, Whether instantly shows slide layers.
 			parallaxMode 		: 'mouse',	  // @since 1.6.0, Specifies mode of parallax effect accepts: "mouse", "mouse:x-only", "mouse:y-only" and "swipe"
-			rtl 				: false 	  // @since 1.8.0, Whether Right-to-left direction slider.		
+			rtl 				: false,	  // @since 1.8.0, Whether Right-to-left direction slider.
+			deepLink			: null,       // @since 2.1.0, null value disables slider deep-linking any string values identifies the slider in page's url like /#msslider-1
+			deepLinkType 		: 'path', 	  // @since 2.1.0, type of hash value in page's url possible values, path and query (  #gallery/1 || #gallery=4 )
+			disablePlugins      : []		  // @since 2.9.6, list of disabled Master Slider plugin names for this instance.
 		};
-		
-		this.slides = [];		
+
+		this.slides = [];
+		this.activePlugins = [];
 		this.$element = null;
 
 		// used by new layout method. to force fullwidth or fullscreen
-		this.lastMargin = 0; 
+		this.lastMargin = 0;
 
 		// Reserved side spaces of slider
 		this.leftSpace = 0;
@@ -4079,18 +5384,30 @@ MSSliderEvent.DESTROY				= 'ms_destroy';//dev\slider\Slide.js
 		this.rightSpace = 0;
 		this.bottomSpace = 0;
 
+		// hold on stack
+		this._holdOn = 0;
+
 		var that = this;
 		this.resize_listener = function(){that._resize();};
 		$(window).bind('resize', this.resize_listener);
-				
+
 	};
-	
+
 	MasterSlider.author  		= 'Averta Ltd. (www.averta.net)';
-	MasterSlider.version 		= '2.0.0';
-	MasterSlider.releaseDate 	= 'August 2014';
-	
+	MasterSlider.version 		= '2.51.2';
+	MasterSlider.releaseDate 	= 'Jun 2017';
+
+	// Master Slider plugins.
+	MasterSlider._plugins = []
+	var MS = MasterSlider;
+	MS.registerPlugin = function ( plugin ) {
+		if ( MS._plugins.indexOf(plugin) === -1 ) {
+			MS._plugins.push(plugin);
+		}
+	};
+
 	var p = MasterSlider.prototype;
-	
+
 	/*-------------- METHODS --------------*/
 
 	/**
@@ -4102,34 +5419,34 @@ MSSliderEvent.DESTROY				= 'ms_destroy';//dev\slider\Slide.js
 		var that = this,
 			new_slide,
 			ind = 0;
-		
+
 		this.$element.children('.ms-slide').each(function(index) {
-			
+
 			var $slide_ele = $(this);
-			
+
 			new_slide 			= new MSSlide();
 			new_slide.$element 	= $slide_ele;
 			new_slide.slider 	= that;
 			new_slide.delay  	= $slide_ele.data('delay') 		!== undefined ? $slide_ele.data('delay') 		: 3;
 			new_slide.fillMode 	= $slide_ele.data('fill-mode')	!== undefined ? $slide_ele.data('fill-mode') 	: that.options.fillMode;
 			new_slide.index 	= ind++;
+            new_slide.id        = $slide_ele.data('id');
 
 			// Slide Background Image
 			var slide_img = $slide_ele.children('img:not(.ms-layer)');
 			if( slide_img.length > 0 ){
 				new_slide.setBG(slide_img[0]);
 			}
-			
+
 			// Slide Video Background
 			var slide_video = $slide_ele.children('video');
 			if( slide_video.length > 0 ) new_slide.setBGVideo(slide_video);
-
 			// controls
 			if(that.controls){
 				for(var i = 0 , l = that.controls.length; i<l ; ++i)
 					that.controls[i].slideAction(new_slide);
 			}
-			
+
 			// Slide Link and Video
 			var slide_link = $slide_ele.children('a').each(function(index) {
 			  var $this = $(this);
@@ -4137,69 +5454,95 @@ MSSliderEvent.DESTROY				= 'ms_destroy';//dev\slider\Slide.js
 				new_slide.video = this.getAttribute('href');
 
 				new_slide.videoAutoPlay = $this.data('autoplay');
-				
+
 				$this.remove();
 			  }else if(!$this.hasClass('ms-layer')) {
-				new_slide.link  = this.getAttribute('href');
-				new_slide.link_targ = this.getAttribute('target');
-				$this.remove();
+				new_slide.link  = $(this);
+				//new_slide.link_targ = this.getAttribute('target');
+				//$this.remove();
 			  }
 			});//.remove();
-			
-			// Slide Layers
-			that.__createSlideLayers(new_slide , $slide_ele.find('.ms-layer'));
-			
-			that.slides.push(new_slide);
-			that.slideController.view.addSlide(new_slide);
 
-		});
-	};
-	
+			// Slide Layers
+            that.__createSlideLayers(new_slide , $slide_ele.find('.ms-layer'));
+            that.slides.push(new_slide);
+            that.slideController.view.addSlide(new_slide);
+
+        });
+    };
+
+    /**
+     * Setups the overlay layers to the slider
+     * @since 2.50
+     */
+    p._setupOverlayLayers = function() {
+        var self = this,
+            $ollayers = this.$element.children( '.ms-overlay-layers' ).eq(0);
+
+        if ( !$ollayers.length ) {
+            return;
+        }
+
+        var overlayLayers = new MSOverlayLayers( this );
+        overlayLayers.$element = $ollayers;
+        self.__createSlideLayers(overlayLayers , $ollayers.find('.ms-layer'));
+
+        this.view.$element.prepend( $ollayers );
+        this.overlayLayers = overlayLayers;
+        overlayLayers.create();
+    };
+
 	/**
 	 * Creates layers of specified layer
-	 * @param  {MSSlide} slide  
+	 * @param  {MSSlide} slide
 	 * @param  {Array} layers
 	 * @since 1.0
 	 * @private
 	 */
 	p.__createSlideLayers = function(slide , layers) {
 		if(layers.length == 0) return;
-		
+		slide.setupLayerController();
+
 		layers.each(function(index , domEle){
 			var $layer_element = $(this),
 				$parent_ele;
-			
+
 			if( domEle.nodeName === 'A' && $layer_element.find('>img').data('type') === 'image' ) {
 				$parent_ele = $(this);
 				$layer_element = $parent_ele.find('img');
 			}
-			
-			var layer = new (LayerTypes[$layer_element.data('type') || 'text']) ();
-			layer.$element = $layer_element;
-			layer.link = $parent_ele;
-			
-			var eff_parameters = {},
-				end_eff_parameters = {};
-		
-			if($layer_element.data('effect') 	!== undefined)		eff_parameters.name 			= $layer_element.data('effect');
-			if($layer_element.data('ease')		!== undefined) 		eff_parameters.ease 			= $layer_element.data('ease');
-			if($layer_element.data('duration')  !== undefined)  	eff_parameters.duration 		= $layer_element.data('duration');
-			if($layer_element.data('delay')   	!== undefined)   	eff_parameters.delay			= $layer_element.data('delay');
 
-			if($layer_element.data('hide-effect'))		    		end_eff_parameters.name 		= $layer_element.data('hide-effect');
-			if($layer_element.data('hide-ease'))		   			end_eff_parameters.ease 		= $layer_element.data('hide-ease');
-			if($layer_element.data('hide-duration') !== undefined)  end_eff_parameters.duration		= $layer_element.data('hide-duration');
-			if($layer_element.data('hide-time') 	!== undefined)  end_eff_parameters.time 		= $layer_element.data('hide-time');
+			var layer = new (LayerTypes[$layer_element.data('type') || 'text']) ();
+			layer.$element      = $layer_element;
+			layer.link          = $parent_ele;
+            layer.id            = layer.$element.data('id');
+            layer.waitForAction = layer.$element.data('wait');
+            layer.masked        = layer.$element.data('masked');
+            layer.maskWidth     = layer.$element.data('mask-width');
+            layer.maskHeight    = layer.$element.data('mask-height');
+
+            var eff_parameters = {},
+                end_eff_parameters = {};
+
+            if($layer_element.data('effect')    !== undefined)      eff_parameters.name             = $layer_element.data('effect');
+            if($layer_element.data('ease')      !== undefined)      eff_parameters.ease             = $layer_element.data('ease');
+            if($layer_element.data('duration')  !== undefined)      eff_parameters.duration         = $layer_element.data('duration');
+            if($layer_element.data('delay')     !== undefined)      eff_parameters.delay            = $layer_element.data('delay');
+
+            if($layer_element.data('hide-effect'))                  end_eff_parameters.name         = $layer_element.data('hide-effect');
+            if($layer_element.data('hide-ease'))                    end_eff_parameters.ease         = $layer_element.data('hide-ease');
+            if($layer_element.data('hide-duration') !== undefined)  end_eff_parameters.duration     = $layer_element.data('hide-duration');
+            if($layer_element.data('hide-time')     !== undefined)  end_eff_parameters.time         = $layer_element.data('hide-time');
+
 
 			layer.setStartAnim(eff_parameters);
 			layer.setEndAnim(end_eff_parameters);
-			
-			slide.addLayer(layer);
-			
+
+			slide.layerController.addLayer(layer);
+
 		});
-		
+
 	};
-	
 	/**
 	 * remove slider initialize loading
 	 * @since 1.0
@@ -4217,7 +5560,7 @@ MSSliderEvent.DESTROY				= 'ms_destroy';//dev\slider\Slide.js
 		if(this.slideController)
 			this.slideController.__resize();
 	};
-	
+
 	/**
 	 * resize listener, it only used for aligning slider loading and after slider init it will be removed
 	 * @param  {Event} e
@@ -4228,12 +5571,12 @@ MSSliderEvent.DESTROY				= 'ms_destroy';//dev\slider\Slide.js
 		if(this.$loading){
 			var h = this.$loading[0].clientWidth / this.aspect;
 			h = this.options.heightLimit ? Math.min(h , this.options.height) : h;
-			
+
 			this.$loading.height(h);
-			this.$element.height(h);		
+			this.$element.height(h);
 		}
 	};
-	
+
 	/**
 	 * changes the order of slides element before setup slides
 	 * @since 1.0
@@ -4253,35 +5596,42 @@ MSSliderEvent.DESTROY				= 'ms_destroy';//dev\slider\Slide.js
 
 	/**
 	 * New method of setting up the layout of slider
-	 * @since 1.5.6 
+	 * @since 1.5.6
 	 */
 	p._setupSliderLayout = function(){
 
 		// create side spaces
 		this._updateSideMargins();
 		this.lastMargin = this.leftSpace;
-		
+
 		var lo = this.options.layout;
+
 
 		if( lo !== 'boxed' && lo !== 'partialview' ){
 			this.options.fullwidth = true;  // enable slider fullscreen for fullwidth, fillwidth, autofill and fullscreen layouts.
-		} 
-
+		}
 		if( lo === 'fullscreen' || lo === 'autofill' ){
 			this.options.fullheight = true;
+
+			if ( lo === 'autofill' ) {
+				this.$autofillTarget = $(this.options.autofillTarget);
+				if ( this.$autofillTarget.length === 0 ) {
+					this.$autofillTarget = this.$element.parent();
+				}
+			}
+
 		}
 
-		// partial view 
+		// partial view
 		if ( lo === 'partialview' ){
 			this.$element.addClass('ms-layout-partialview');
 		}
-
-		if( lo === 'fullscreen' ||  lo === 'fullwidth' ){
+		if( lo === 'fullscreen' ||  lo === 'fullwidth' || lo === 'autofill' ){
 			$(window).bind('resize', {that:this}, this._updateLayout);
 			this._updateLayout();
 		}
 
-		// bind resize handler of slidecontroller __resize 
+		// bind resize handler of slidecontroller __resize
 		$(window).bind('resize', this.slideController.resize_listener);
 	};
 
@@ -4293,31 +5643,40 @@ MSSliderEvent.DESTROY				= 'ms_destroy';//dev\slider\Slide.js
 	p._updateLayout = function(event){
 		var that = event? event.data.that : this,
 			lo = that.options.layout,
-			$element = that.$element;
-
-		// width 
-		$element.width($('body').innerWidth() - that.leftSpace - that.rightSpace);
-		var margin = -$element.offset().left + that.leftSpace + that.lastMargin;
-		$element.css('margin-left', margin );
-		that.lastMargin = margin;
+			$element = that.$element,
+			$win = $(window);
 
 		// height
 		if( lo === 'fullscreen' ){
-			$element.height(window.innerHeight - that.options.fullscreenMargin - that.topSpace - that.bottomSpace);
+			document.body.style.overflow = 'hidden';
+			$element.height( $win.height() - that.options.fullscreenMargin - that.topSpace - that.bottomSpace);
+			document.body.style.overflow = '';
+		} else if ( lo === 'autofill' ) {
+			$element.height(that.$autofillTarget.height() - that.options.fullscreenMargin - that.topSpace - that.bottomSpace)
+					.width(that.$autofillTarget.width() - that.leftSpace - that.rightSpace);
+			return;
 		}
+		// width
+		$element.width($win.width() - that.leftSpace - that.rightSpace);
+		var margin = -$element.offset().left + that.leftSpace + that.lastMargin;
+		$element.css('margin-left', margin );
+		that.lastMargin = margin;
+//
 	};
 
 
 	/**
 	 * initialize the slider, called by document ready
-	 * <code>preventInit</code> property prevents auto initialize slider after document ready it used by plugins of slider like Flickr
+	 * <code>holdOn</code> property prevents auto initialize slider after document ready it used by plugins of slider like Flickr
 	 * @since 1.0
 	 * @protected
 	 */
 	p._init = function(){
-		
-		if(this.preventInit) return;
-		
+
+		if ( this._holdOn > 0 || !this._docReady ) {
+			return;
+		}
+
 		this.initialized = true;
 
 		if(this.options.preload !== 'all'){
@@ -4325,14 +5684,13 @@ MSSliderEvent.DESTROY				= 'ms_destroy';//dev\slider\Slide.js
 		}
 		//else
 		//	this.$element.css('width' , this.$loading[0].clientWidth);
-		
+
 		if(this.options.shuffle) 	this._shuffleSlides();
 
 		MSLayerEffects.setup();
-
 		this.slideController.setupView();
 		this.view = this.slideController.view;
-				
+
 		this.$controlsCont = $('<div></div>').addClass('ms-inner-controls-cont');//.appendTo(this.$element);
 		if(this.options.centerControls){
 			this.$controlsCont.css('max-width' , this.options.width + 'px');
@@ -4341,12 +5699,12 @@ MSSliderEvent.DESTROY				= 'ms_destroy';//dev\slider\Slide.js
 		this.$controlsCont.prepend(this.view.$element);
 
 		this.$msContainer = $('<div></div>').addClass('ms-container').prependTo(this.$element).append(this.$controlsCont);
-		
+
 		if(this.controls){
 			for(var i = 0 , l = this.controls.length; i<l ; ++i){
 				this.controls[i].setup();
 			}
-		}	
+		}
 		/*else{
 			this.$element.append(this.view.$element);
 		}*/
@@ -4354,35 +5712,45 @@ MSSliderEvent.DESTROY				= 'ms_destroy';//dev\slider\Slide.js
 		this._setupSliderLayout();
 		this.__setupSlides();
 		this.slideController.setup();
-		
+        this._setupOverlayLayers();
+
 		if(this.controls){
 			for(i = 0 , l = this.controls.length; i<l ; ++i)
 				this.controls[i].create();
 		}
-		
+
 		if(this.options.autoHeight){
 			this.slideController.view.$element.height(this.slideController.currentSlide.getHeight());
 		}
-			
+
 		// add grab cursor
 		if(this.options.swipe && !window._touch && this.options.grabCursor && this.options.mouse){
 			var $view = this.view.$element;
-			
+
 			$view.mousedown(function(){
 				$view.removeClass('ms-grab-cursor');
 				$view.addClass('ms-grabbing-cursor');
+
+				if ( $.browser.msie && window.ms_grabbing_curosr ) {
+					$view[0].style.cursor = 'url(' + window.ms_grabbing_curosr + '), move';
+				}
+
 			}).addClass('ms-grab-cursor');
-			
+
 			$(document).mouseup(function(){
 				$view.removeClass('ms-grabbing-cursor');
 				$view.addClass('ms-grab-cursor');
+
+				if ( $.browser.msie && window.ms_grab_curosr ) {
+					$view[0].style.cursor = 'url(' + window.ms_grab_curosr + '), move';
+				}
+
 			});
 		}
 
 		this.slideController.__dispatchInit();
-		
 	};
-	
+
 	/**
 	 * changes the height of slider, it used in autoheight slider
 	 * @param {Number} value
@@ -4394,16 +5762,16 @@ MSSliderEvent.DESTROY				= 'ms_destroy';//dev\slider\Slide.js
 			if(this.htween){
 				if(this.htween.reset)this.htween.reset();
 				else	 			 this.htween.stop(true);
-			} 
+			}
 			this.htween = CTween.animate(this.slideController.view.$element , 500 , {height:value} , {ease:'easeOutQuart'});
 		}else
 			this.slideController.view.$element.height(value);
 	};
-	
+
 	/**
 	 * reserves white space in sides of slider, it used by controls
 	 * @param  {String} side  left|right|top|bottom
-	 * @param  {Number} space 
+	 * @param  {Number} space
 	 * @returns {Number} start position in space.
 	 * @since 1.5.7
 	 * @public
@@ -4413,7 +5781,7 @@ MSSliderEvent.DESTROY				= 'ms_destroy';//dev\slider\Slide.js
 			pos = this[sideSpace];
 
 		this[sideSpace] += space;
-		
+
 		this._updateSideMargins();
 
 		return pos;
@@ -4421,10 +5789,10 @@ MSSliderEvent.DESTROY				= 'ms_destroy';//dev\slider\Slide.js
 
 	/**
 	 * returns the reserved space, it used by controls and called when aligned control hides
-	 * @param  {String} side  
-	 * @param  {Number} space 
+	 * @param  {String} side
+	 * @param  {Number} space
 	 * @since 1.5.7
-	 * @public 
+	 * @public
 	 */
 	/*p.returnSpace = function(side, space){
 		var sideSpace = side+'Space';
@@ -4459,14 +5827,32 @@ MSSliderEvent.DESTROY				= 'ms_destroy';//dev\slider\Slide.js
 		var ins = new MSSlideController.SliderControlList[control](options);
 		ins.slider = this;
 		this.controls.push(ins);
-		
+
 		return this;
 	};
-	
+
+	/**
+	 * Hold on slider from initialization
+	 * @since 2.9.6
+	 * @public
+	 */
+	p.holdOn = function () {
+		this._holdOn ++;
+	};
+
+	/**
+	 * Let the slider to initialize
+	 * @since 2.9.6
+	 */
+	p.release = function () {
+		this._holdOn --;
+		this._init();
+	};
+
 	/**
 	 * setup slider
 	 * @param  {String|jQuery object} id
-	 * @param  {Object} options 
+	 * @param  {Object} options
 	 * @since 1.0
 	 * @public
 	 */
@@ -4488,11 +5874,17 @@ MSSliderEvent.DESTROY				= 'ms_destroy';//dev\slider\Slide.js
 		this.$element.addClass('master-slider').addClass('before-init');
 
 		// IE prefix class
+		// add browser prefix class name
 		if($.browser.msie){
 			this.$element.addClass('ms-ie')
 						 .addClass('ms-ie' + $.browser.version.slice(0 , $.browser.version.indexOf('.')));
+		} else if ( $.browser.webkit ) {
+			this.$element.addClass('ms-wk');
+		} else if ( $.browser.mozilla ) {
+			this.$element.addClass('ms-moz');
 		}
-		
+
+
 		// Android prefix class
 		var ua = navigator.userAgent.toLowerCase();
 		var isAndroid = ua.indexOf("android") > -1;
@@ -4502,59 +5894,83 @@ MSSliderEvent.DESTROY				= 'ms_destroy';//dev\slider\Slide.js
 
 		var that = this;
 		$.extend(this.options, options);
-		
+
 		this.aspect = this.options.width / this.options.height;
-		
+
 		this.$loading = $('<div></div>').
 						addClass('ms-loading-container').
 						insertBefore(this.$element).
 						append($('<div></div>').addClass('ms-loading'));
 
 		this.$loading.parent().css('position' , 'relative');
-				
-		// old methods 
+
+		// old methods
 		if(this.options.autofill){
 			this.options.fullwidth = true;
 			this.options.fullheight = true;
 		}
-		
+
 		if(this.options.fullheight){
 			this.$element.addClass('ms-fullheight');
 		}
 
-		//this._setupSliderLayout();	
+		//this._setupSliderLayout();
 		this._resize();
-		
+
 		// define slide controller and api
 		this.slideController = new MSSlideController(this);
 		this.api = this.slideController;
 
-		$(document).ready(function(){that._init();});
+		// setup plugins
+		for ( var i = 0, l = MS._plugins.length; i !== l; i++ ) {
+			var plugin = MS._plugins[i];
+
+			if ( this.options.disablePlugins.indexOf(plugin.name) === -1 ) {
+				this.activePlugins.push(new plugin(this));
+			}
+		}
+
+        if ( this.options.forceInit ) {
+            MasterSlider.addJQReadyErrorCheck( this );
+        }
+
+		$(document).ready(function(){
+            if ( !that.initialized ) {
+    			that._docReady = true;
+    			that._init();
+            }
+		});
 
 		return this;
 	};
-	
+
 	/**
-	 * destroy the slider instance 
+	 * destroy the slider instance
 	 * @param  {Boolean} insertMarkup	 whether add slider markup after destroy.
 	 * @since 1.4
 	 * @public
 	 */
 	p.destroy = function(insertMarkup){
-		
+
+		// destroy active plugins
+		for ( var i = 0, l = this.activePlugins.length; i !== l; i++ ) {
+			this.activePlugins[i].destroy();
+		}
+
 		if(this.controls){
-			for(var i = 0 , l = this.controls.length; i!==l ; i++)
+			for( i = 0, l = this.controls.length; i !== l; i++ )
 				this.controls[i].destroy();
 		}
-		
+
 		if(this.slideController) this.slideController._destroy();
 
 		if(this.$loading) this.$loading.remove();
 
-		if(insertMarkup) 
+		if ( insertMarkup ) {
 			this.$element.html(this.setupMarkup).css('visibility' , 'hidden');
-		else    		 
+		} else {
 			this.$element.remove();
+		}
 
 		var lo = this.options.layout;
 		if( lo === 'fullscreen' ||  lo === 'fullwidth' ){
@@ -4567,8 +5983,11 @@ MSSliderEvent.DESTROY				= 'ms_destroy';//dev\slider\Slide.js
 		this.slideController = null;
 		this.api = null;
 		this.resize_listener = null;
+
+
+		this.activePlugins = null;
 	};
-		
+
 })(jQuery);
 
 /**
@@ -4595,8 +6014,8 @@ MSSliderEvent.DESTROY				= 'ms_destroy';//dev\slider\Slide.js
 			init : function () {
 
 				var self = this;
-				
-				// create new instance form Master Slider	
+
+				// create new instance form Master Slider
 				this._slider = new MasterSlider();
 
 				// add controls
@@ -4615,14 +6034,14 @@ MSSliderEvent.DESTROY				= 'ms_destroy';//dev\slider\Slide.js
 
 			},
 
-			api : function() { 
-				return this._slider.api; 
+			api : function() {
+				return this._slider.api;
 			},
-			
+
 			slider : function() {
 				return this._slider;
 			}
-		
+
 		});
 
 		$.fn[pluginName] = function ( options ) {
@@ -4661,7 +6080,7 @@ MSSliderEvent.DESTROY				= 'ms_destroy';//dev\slider\Slide.js
 						// Call the method of our plugin instance,
 						// and pass it the supplied arguments.
 						returns = instance[options].apply( instance, Array.prototype.slice.call( args, 1 ) );
-					} 
+					}
 
 					// Map slider api functions to slider jq plugin
 					if ( instance instanceof MasterSliderPlugin && typeof instance._slider.api[options] === 'function' ) {
@@ -4681,28 +6100,70 @@ MSSliderEvent.DESTROY				= 'ms_destroy';//dev\slider\Slide.js
 			}
 		};
 
-})( jQuery, window, document );//dev\slider\views\ViewEvents.js 
- 
-window.MSViewEvents = function (type){
+})( jQuery, window, document );
+
+;(function ( $, window, document, undefined ) {
+    "use strict";
+
+    /* ------------------------------------------------------------------------------ */
+
+    var sliderInstances = [];
+    MasterSlider.addJQReadyErrorCheck = function ( slider ) {
+        sliderInstances.push( slider );
+    };
+
+    var _ready = $.fn.ready,
+        _onerror = window.onerror;
+
+    // override jQuery ready
+    $.fn.ready = function() {
+
+        // override window on load event
+        window.onerror = function() {
+
+            if ( sliderInstances.length !== 0 ) {
+                for ( var i = 0, l = sliderInstances.length; i !== l; i++ ) {
+                    var slider = sliderInstances[i];
+                    if ( !slider.initialized ) {
+                        slider._docReady = true;
+                        slider._init();
+                    }
+                }
+            }
+
+            if ( _onerror ) {
+                return _onerror.apply( this, arguments );
+            }
+
+            return false;
+        }
+
+        return _ready.apply( this, arguments );
+    };
+
+})(jQuery, window, document);
+
+/* ================== bin-debug/js/pro/views/ViewEvents.js =================== */
+window.MSViewEvents = function (type, data){
 	this.type = type;
+	this.data = data;
 };
 
-MSViewEvents.SWIPE_START      = 'swipeStart';
-MSViewEvents.SWIPE_END        = 'swipeEnd';
-MSViewEvents.SWIPE_MOVE		 = 'swipeMove';
-MSViewEvents.SWIPE_CANCEL   	 = 'swipeCancel';
-MSViewEvents.SCROLL 			 = 'scoll';
-MSViewEvents.CHANGE_START     = 'slideChangeStart';
-MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
+MSViewEvents.SWIPE_START      	= 'swipeStart';
+MSViewEvents.SWIPE_END       	= 'swipeEnd';
+MSViewEvents.SWIPE_MOVE			= 'swipeMove';
+MSViewEvents.SWIPE_CANCEL   	= 'swipeCancel';
+MSViewEvents.SCROLL 			= 'scroll';
+MSViewEvents.CHANGE_START   	= 'slideChangeStart';
+MSViewEvents.CHANGE_END	     	= 'slideChangeEnd';
 
-//dev\slider\views\BasicView.js 
- 
+/* ================== bin-debug/js/pro/views/BasicView.js =================== */
 ;(function($){
-	
+
 	"use strict";
-	
+
 	window.MSBasicView = function(options){
-		
+
 		this.options = {
 			loop 			: false,
 			dir  			: 'h',
@@ -4715,13 +6176,13 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 			viewNum			: 20,
 			critMargin		: 1
 		};
-		
+
 		$.extend(this.options , options);
-		
+
 		this.dir		= this.options.dir;
 		this.loop   	= this.options.loop;
 		this.spacing	= this.options.spacing;
-		
+
 		this.__width  = 0;
 		this.__height = 0;
 
@@ -4733,19 +6194,21 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 
 		this.$slideCont	= $('<div></div>').addClass('ms-slide-container');
 		this.$element 	= $('<div></div>').addClass('ms-view').addClass('ms-basic-view').append(this.$slideCont);
-	
+
 		this.currentSlide 	= null;
 		this.index 			= -1;
 		this.slidesCount	= 0;
 
 		this.slides			= [];
 		this.slideList		= []; // All of slides with added priority sort;
-		this.viewSlidesList = []; 
-			
+		this.viewSlidesList = [];
+
 		this.css3 			= window._cssanim;
 		this.start_buffer = 0;
 		this.firstslide_snap = 0;
-		
+
+		this.slideChanged 	= false;
+
 		this.controller 	 = new Controller(0 , 0 , {
 			snapping	     : true,
 			snapsize		 : 100,
@@ -4754,32 +6217,36 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 			friction		 : (100 - this.options.speed * 0.5) / 100,
 			endless			 : this.loop
 		});
-		
+
 		this.controller.renderCallback(this.dir === 'h'? this._horizUpdate : this._vertiUpdate , this);
 		this.controller.snappingCallback(this.__snapUpdate , this);
 		this.controller.snapCompleteCallback(this.__snapCompelet , this);
-		
+
 		averta.EventDispatcher.call(this);
 	};
-	
+
 	var p = MSBasicView.prototype;
-		
+
 	/*-------------- METHODS --------------*/
-	
+
 	p.__snapCompelet = function(snap , type){
 		// if(this.loop && Math.abs(this.__contPos) > 20000){
 		// 	this.__locateSlides();
 		// 	this.gotoSlide(this.index , true);
 		// }
+		//
+
+		if ( !this.slideChanged ) {
+			return;
+		}
+
+		this.slideChanged = false;
 
 		this.__locateSlides();
 		this.start_buffer = 0;
-		
-		//console.log(this.currentSlide.index);
-
-		this.dispatchEvent(new MSViewEvents(MSViewEvents.CHANGE_END));	
+		this.dispatchEvent(new MSViewEvents(MSViewEvents.CHANGE_END));
 	};
-	
+
 	p.__snapUpdate = function(controller , snap , change){
 
 		if(this.loop){
@@ -4788,13 +6255,13 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 
 			if(target_index >= this.slidesCount)	target_index = target_index - this.slidesCount;
 			if(target_index <  0)					target_index = this.slidesCount + target_index;
-		
+
 			this.index = target_index;
 		}else{
 			if(snap < 0 ||  snap >= this.slidesCount) return
 			this.index = snap;
 		}
-		
+
 		this._checkCritMargins();
 
 		if($.browser.mozilla){
@@ -4806,9 +6273,13 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 		var new_slide = this.slideList[this.index];
 		if(new_slide === this.currentSlide)return;
 		this.currentSlide = new_slide;
-		this.__updateSlidesZindex();
 
-		this.dispatchEvent(new MSViewEvents(MSViewEvents.CHANGE_START));	
+		if ( this.autoUpdateZIndex ) {
+			this.__updateSlidesZindex();
+		}
+
+		this.slideChanged = true;
+		this.dispatchEvent(new MSViewEvents(MSViewEvents.CHANGE_START));
 	};
 
 
@@ -4825,7 +6296,7 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 				size *= (inView - hlf);
 				this.__locateSlides(false ,  size + this.start_buffer );
 				this.start_buffer += size;
-			}	
+			}
 
 			return;
 		}
@@ -4838,31 +6309,31 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 
 
 	p._vertiUpdate = function(controller , value){
-		
+
 		this.__contPos = value;
 		this.dispatchEvent(new MSViewEvents(MSViewEvents.SCROLL));
-		
+
 		if(this.css3){
 			this.$slideCont[0].style[window._jcsspfx + 'Transform'] = 'translateY('+-value+'px)' + this.__translate_end;
 			return;
 		}
 
 		this.$slideCont[0].style.top = -value + 'px';
-		
+
 	};
-	
+
 	p._horizUpdate = function(controller , value){
 
 		this.__contPos = value;
 		this.dispatchEvent(new MSViewEvents(MSViewEvents.SCROLL));
-		
+
 		if(this.css3) {
 			this.$slideCont[0].style[window._jcsspfx + 'Transform'] = 'translateX('+-value+'px)'+ this.__translate_end;
 			return;
 		}
-		
+
 		this.$slideCont[0].style.left = -value + 'px';
-		
+
 	};
 
 
@@ -4875,8 +6346,8 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 
 		var temp = this.viewSlidesList.slice();
 
-		// update view list 
-		this.viewSlidesList = [];	
+		// update view list
+		this.viewSlidesList = [];
 		var i = 0 , hlf = Math.floor(this.options.viewNum / 2) , l;
 
 		if(this.loop){
@@ -4885,7 +6356,7 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 		}else{
 			// before
 			for(i = 0 ; i !== hlf && this.index - i !== -1 ; i++)
-				this.viewSlidesList.unshift(this.slideList[this.index - i]);	
+				this.viewSlidesList.unshift(this.slideList[this.index - i]);
 			// after
 			for(i = 1; i !== hlf && this.index + i !== this.slidesCount; i++)
 				this.viewSlidesList.push(this.slideList[this.index + i]);
@@ -4901,23 +6372,23 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 			this.__updateSlidesZindex();
 		}
 	};
-	
+
 	p.__locateSlides = function(move , start){
 
 		this.__updateViewList();
 
-		start = !this.loop ? this.slides.indexOf(this.viewSlidesList[0]) * (this[this.__dimension] + this.spacing ) : start || 0; 
+		start = !this.loop ? this.slides.indexOf(this.viewSlidesList[0]) * (this[this.__dimension] + this.spacing ) : start || 0;
 
 		// old method
 		/*for(i = 0; i < this.slidesCount ; ++i){
 			var pos =  i * (this[this.__dimension] + this.spacing);
-			
+
 			this.slides[i].position = pos;
 			this.slides[i].$element[0].style[this.__cssProb] =  pos + 'px';
 		}*/
 
 		var l = this.viewSlidesList.length , slide;
-		
+
 		for(var i = 0; i !== l ; i++){
 			var pos =  start + i * (this[this.__dimension] + this.spacing );
 			slide = this.viewSlidesList[i];
@@ -4929,63 +6400,63 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 		if(move !== false)this.controller.changeTo( this.slideList[this.index].position , false , null , null , false);
 
 	};
-		
-	p.__createLoopList = function(){ 
+
+	p.__createLoopList = function(){
 		var return_arr = [];
 		var i = 0,
 			count = this.slidesCount / 2;
-		
+
 		var before_count  = (this.slidesCount % 2 === 0)? count - 1	: Math.floor(count);
 		var after_count	  = (this.slidesCount % 2 === 0)? count 	: Math.floor(count);
-		
+
 		this.currentSlideLoc = before_count;
 
 		// before
 		for(i = 1 ; i <= before_count ; ++i)
 			return_arr.unshift(this.slideList[(this.index - i < 0)? this.slidesCount -  i + this.index: this.index - i]);
-		
+
 		// current
 		return_arr.push(this.slideList[this.index]);
-		
+
 		// after
 		for(i = 1; i <= after_count; ++i)
 			return_arr.push(this.slideList[(this.index + i >= this.slidesCount)? this.index + i - this.slidesCount : this.index + i]);
-		
+
 		return return_arr;
-		
+
 	};
-	
+
 	/*
 	 * Calculate shortest distance from index to target.
 	 * It will used in loop gesture.
-	 * 
+	 *
 	 * Negative values means left direction.
 	 */
-	
-	p.__getSteps = function(index , target){ 
+
+	p.__getSteps = function(index , target){
 		var right = (target < index)?  this.slidesCount - index + target : target - index;
 		var left  = Math.abs(this.slidesCount - right);
-		
-		return (right < left)? right : -left;		
+
+		return (right < left)? right : -left;
 	};
-	
-	p.__pushEnd = function(){ 
+
+	p.__pushEnd = function(){
 		var first_slide = this.slides.shift();
 		var last_slide = this.slides[this.slidesCount - 2];
-		
+
 		this.slides.push(first_slide);
-		
+
 		if(!this.normalMode) return;
 
 		var pos = last_slide.$element[0][this.__offset] + this.spacing + this[this.__dimension];
 		first_slide.$element[0].style[this.__cssProb] = pos + 'px';
 		first_slide.position = pos;
 	};
-	
-	p.__pushStart = function(){ 
+
+	p.__pushStart = function(){
 		var last_slide =  this.slides.pop();
 		var first_slide = this.slides[0];
-		
+
 		this.slides.unshift(last_slide);
 
 		if(!this.normalMode) return;
@@ -4998,9 +6469,7 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 	// @since 1.7.0
 	// adds z-index to slides
 	p.__updateSlidesZindex = function(){
-		if ( !this.autoUpdateZIndex ) {
-			return;
-		}
+
 
 		var slide,
 			l = this.viewSlidesList.length,
@@ -5013,10 +6482,10 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 				this.viewSlidesList[i].$element.css('z-index', i<=loc ? i+1 : l-i);
 			}
 		} else {
-			
+
 			var beforeNum = this.currentSlide.index - this.viewSlidesList[0].index,
 				afterNum = l - beforeNum,
-				diff = beforeNum - afterNum; 
+				diff = beforeNum - afterNum;
 
 			for ( var i = 0; i!==l; i++ ){
 				this.viewSlidesList[i].$element.css('z-index', i<=beforeNum ? i+1 : l-i);
@@ -5024,16 +6493,16 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 
 			this.currentSlide.$element.css('z-index', l);
 		}
-		
+
 	};
 
-	p.addSlide = function(slide){ 
+	p.addSlide = function(slide){
 		slide.view = this;
 		this.slides.push(slide);
 		this.slideList.push(slide);
 		this.slidesCount++;
 	};
-	
+
 	p.appendSlide = function(slide){
 		this.$slideCont.append(slide.$element);
 	};
@@ -5041,47 +6510,61 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 	p.updateLoop = function(index){
 		if(this.loop){
 			var steps = this.__getSteps(this.index , index);
-			
+
 			for(var i = 0 , l = Math.abs(steps) ; i < l ; ++ i){
 				if(steps < 0) 	this.__pushStart();
 				else			this.__pushEnd();
 			}
 		}
 	};
-	
+
 	p.gotoSlide = function(index , fast){
 		this.updateLoop(index);
 		this.index = index;
-		
+
 		var target_slide = this.slideList[index];
 
 		this._checkCritMargins();
 
 		this.controller.changeTo( target_slide.position , !fast , null , null , false);
 		if(target_slide === this.currentSlide) return;
-		
+		this.slideChanged = true;
 		this.currentSlide = target_slide;
-		this.__updateSlidesZindex();
+
+		if ( this.autoUpdateZIndex ) {
+			this.__updateSlidesZindex();
+		}
+
 		this.dispatchEvent(new MSViewEvents(MSViewEvents.CHANGE_START));
-		if(fast)this.dispatchEvent(new MSViewEvents(MSViewEvents.CHANGE_END));	
-	}; 
-	
-	p.next = function(){ 
+		if(fast)this.dispatchEvent(new MSViewEvents(MSViewEvents.CHANGE_END));
+	};
+
+	p.next = function(checkLoop){
+		if ( checkLoop && !this.loop && this.index + 1 >= this.slidesCount ) {
+			this.controller.bounce(10);
+			return;
+		}
+
 		this.gotoSlide((this.index + 1 >= this.slidesCount)? 0 : this.index + 1);
 	};
-	
-	p.previous = function(){ 
+
+	p.previous = function(checkLoop){
+		if ( checkLoop && !this.loop && this.index - 1 < 0 ) {
+			this.controller.bounce(-10);
+			return;
+		}
+
 		this.gotoSlide((this.index - 1 < 0)? this.slidesCount - 1 : this.index - 1);
 	};
-	
-	/* --------------- Swipe control ------------------*/	
-	
-	p.setupSwipe = function(){ 
-		
+
+	/* --------------- Swipe control ------------------*/
+
+	p.setupSwipe = function(){
+
 		this.swipeControl = new averta.TouchSwipe(this.$element);
 		this.swipeControl.swipeType = this.dir === 'h'? 'horizontal' : 'vertical';
 		var that = this;
-		
+
 		if(this.dir === 'h'){
 			this.swipeControl.onSwipe = function(status){
 				that.horizSwipeMove(status);
@@ -5091,219 +6574,224 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 				that.vertSwipeMove(status);
 			};
 		}
-		
+
 	};
-	
+
 	p.vertSwipeMove = function(status){
 		var phase = status.phase;
 		if(phase === 'start'){
 			this.controller.stop();
-			this.dispatchEvent(new MSViewEvents(MSViewEvents.SWIPE_START));		
+			this.dispatchEvent(new MSViewEvents(MSViewEvents.SWIPE_START, status));
 		}else if(phase === 'move' && (!this.loop || Math.abs(this.currentSlide.position - this.controller.value + status.moveY ) < this.cont_size / 2)){
 			this.controller.drag(status.moveY);
+			this.dispatchEvent(new MSViewEvents(MSViewEvents.SWIPE_MOVE, status));
 		}else if(phase === 'end' || phase === 'cancel'){
-			
-			var speed = status.distanceY / status.duration * 50/3;
-			
-			if(Math.abs(speed) > 0.1){
+
+            var speed = status.distanceY / status.duration * 50/3,
+			    speedh = Math.abs( status.distanceY / status.duration * 50/3 );
+
+			if ( Math.abs(speed) > 0.1 && Math.abs(speed) >= speedh ){
 				this.controller.push(-speed);
 				if(speed > this.controller.options.snappingMinSpeed)
-					this.dispatchEvent(new MSViewEvents(MSViewEvents.SWIPE_END));
-			}else{
+				this.dispatchEvent(new MSViewEvents(MSViewEvents.SWIPE_END, status));
+			}else {
 				this.controller.cancel();
-				this.dispatchEvent(new MSViewEvents(MSViewEvents.SWIPE_CANCEL));
+				this.dispatchEvent(new MSViewEvents(MSViewEvents.SWIPE_CANCEL, status));
 			}
-			
+
 		}
 	};
-	
-	p.horizSwipeMove = function(status){	
+
+	p.horizSwipeMove = function(status){
 		var phase = status.phase;
-		//console.log(this.loop)
+
 		if(phase === 'start'){
 			this.controller.stop();
-			this.dispatchEvent(new MSViewEvents(MSViewEvents.SWIPE_START));		
+			this.dispatchEvent(new MSViewEvents(MSViewEvents.SWIPE_START, status));
 		}else if(phase === 'move' && (!this.loop || Math.abs(this.currentSlide.position - this.controller.value + status.moveX ) < this.cont_size / 2)){
 			this.controller.drag(status.moveX);
+			this.dispatchEvent(new MSViewEvents(MSViewEvents.SWIPE_MOVE, status));
 		}else if(phase === 'end' || phase === 'cancel'){
-			
-			var speed = status.distanceX / status.duration * 50/3;
-			
-			if(Math.abs(speed) > 0.1){
+
+			var speed = status.distanceX / status.duration * 50/3,
+                speedv = Math.abs( status.distanceY / status.duration * 50/3 );
+
+			if ( Math.abs(speed) > 0.1 && Math.abs(speed) >= speedv ) {
 				this.controller.push(-speed );
 				if(speed > this.controller.options.snappingMinSpeed)
-					this.dispatchEvent(new MSViewEvents(MSViewEvents.SWIPE_END));
+				this.dispatchEvent(new MSViewEvents(MSViewEvents.SWIPE_END, status));
 			}else{
 				this.controller.cancel();
-				this.dispatchEvent(new MSViewEvents(MSViewEvents.SWIPE_CANCEL));
+				this.dispatchEvent(new MSViewEvents(MSViewEvents.SWIPE_CANCEL, status));
 			}
-			
+
 		}
 	};
-		
-	/* ------------------------------------------------*/	
-	
+
+	/* ------------------------------------------------*/
+
 	p.setSize = function(width , height , hard){
 		if(this.lastWidth === width && height === this.lastHeight && !hard) return;
 
 		this.$element.width(width).height(height);
-		
+
 		for(var i = 0; i < this.slidesCount ; ++i)
 				this.slides[i].setSize(width , height , hard);
-				
+
 		this.__width 	= width;
 		this.__height 	= height;
-			
-		if(this.__created){	
+
+		if(this.__created){
 			this.__locateSlides();
-			
+
 			this.cont_size = (this.slidesCount - 1) * (this[this.__dimension] + this.spacing);
 			if(!this.loop) 	this.controller._max_value = this.cont_size;
-				
+
 			this.controller.options.snapsize = this[this.__dimension] + this.spacing;
 			this.controller.changeTo(this.currentSlide.position , false , null , null , false );
 			this.controller.cancel();
-			
+
 			this.lastWidth = width;
 			this.lastHeight = height;
 		}
 	};
-	
+
 	p.create = function(index){
-		
+
 		this.__created = true;
-		
+
 		this.index = Math.min((index || 0), this.slidesCount - 1);
-		
+		this.lastSnap = this.index; // it will be used to check snap changed or not on snap complete
+
 		if(this.loop)
 			this.slides = this.__createLoopList();
 
 		this.normalMode = this.slidesCount <= this.options.viewNum;
-				
+
 		for(var i = 0; i < this.slidesCount ; ++i)
 			this.slides[i].create();
-		
+
 		this.__locateSlides();
-			
-		this.controller.options.snapsize = this[this.__dimension] + this.spacing;		
+
+		this.controller.options.snapsize = this[this.__dimension] + this.spacing;
 		if(!this.loop)	this.controller._max_value = (this.slidesCount - 1) * (this[this.__dimension] + this.spacing);
-		
+
 		this.gotoSlide(this.index , true);
-		
+
 		if(this.options.swipe && (window._touch || this.options.mouseSwipe))
 			this.setupSwipe();
 
 	};
-	
+
 	p.destroy = function(){
 		if(!this.__created) return;
-		
+
 		for(var i = 0; i < this.slidesCount ; ++i)
 			this.slides[i].destroy();
-			
+
 		this.slides = null;
 		this.slideList = null;
 		this.$element.remove();
-		
+
 		this.controller.destroy();
 		this.controller = null;
 	};
-	
+
 	averta.EventDispatcher.extend(p);
-	
+
 	MSSlideController.registerView('basic' , MSBasicView);
-	
+
 })(jQuery);
-//dev\slider\views\WaveView.js 
- 
+
+/* ================== bin-debug/js/pro/views/WaveView.js =================== */
 ;(function($){
-	
+
 	"use strict";
-	
+
 	window.MSWaveView = function(options){
 		MSBasicView.call(this , options);
 		this.$element.removeClass('ms-basic-view').addClass('ms-wave-view');
 		this.$slideCont.css(window._csspfx + 'transform-style' , 'preserve-3d');
 
-		// Auto update z index of slides 
+		// Auto update z index of slides
 		// @since 1.7
 		this.autoUpdateZIndex = true;
 	};
-	
+
 	MSWaveView.extend(MSBasicView);
 	MSWaveView._3dreq = true;
 	MSWaveView._fallback = MSBasicView;
-	
+
 	var p  = MSWaveView.prototype;
 	var _super  = MSBasicView.prototype;
-	 
+
 	/*-------------- METHODS --------------*/
-	
+
 	/*p.__setSlideTransDuration = function(value){
 		for(var i=0; i<this.slidesCount; ++i)
 			this.slides[i].$element.css(window._csspfx + 'transition-duration' , value + 'ms');
 	};*/
-	
+
 	p._horizUpdate = function(controller , value){
-		
+
 		_super._horizUpdate.call(this, controller , value);
-		
+
 		var cont_scroll = -value;
 		var slide_pos , slide , distance;
-		
+
 		for(var i = 0; i < this.slidesCount; ++i){
 			slide = this.slideList[i];
 			//slide_pos = parseInt(slide.$element.css('left'));
 			distance = -cont_scroll - slide.position;
 			this.__updateSlidesHoriz(slide , distance);
 		}
-		
+
 	};
-	
+
 	p._vertiUpdate = function(controller , value){
-		
+
 		_super._vertiUpdate.call(this, controller , value);
-		
+
 		var cont_scroll = -value;
 		var slide_pos , slide , distance;
-		
+
 		for(var i = 0; i < this.slidesCount; ++i){
 			slide = this.slideList[i];
 			//slide_pos = parseInt(slide.$element.css('left'));
 			distance = -cont_scroll - slide.position;
 			this.__updateSlidesVertic(slide , distance);
 		}
-		
+
 	};
-	
-	
+
+
 	p.__updateSlidesHoriz = function(slide , distance){
 		var value =  Math.abs(distance * 100 / this.__width);
 		//var value2 = Math.min(value , 100);
 	//	var sp = Math.min(100 , )
 		//slide.$bg_img.css('opacity' , (100 -  Math.abs(distance * 120 / this.__width / 3)) / 100);
-		slide.$element.css(window._csspfx + 'transform' , 'translateZ('+ -value * 3 +'px) rotateY(0.01deg)'/* translateX('+(distance < 0 ? 1 : -1) * -value * 5+'px)'*/);
+		slide.$element[0].style[window._csspfx + 'transform'] = 'translateZ('+ -value * 3 +'px) rotateY(0.01deg)'/* translateX('+(distance < 0 ? 1 : -1) * -value * 5+'px)'*/;
 	};
-	
+
 	p.__updateSlidesVertic = function(slide , distance){
 		this.__updateSlidesHoriz(slide , distance);
 	};
-	
+
 	/*
 	p.swipeMove = function(status){
-		
+
 		if(status.phase == 'start'){
 			this.__setSlideTransDuration(0);
 		}else if(status.phase == 'end'){
 			this.__setSlideTransDuration(this.__slideDuration);
 		}
-		
+
 		_super.swipeMove.call(this , status);
 	};
-	
+
 	p.create = function(index){
 		_super.create.call(this , index);
-		
+
 		for(var i = 0; i<this.slidesCount ; ++i){
 			this.slides[i].$element.css(window._csspfx + 'transition-property' , window._csspfx 		+ 'transform');
 			this.slides[i].$element.css(window._csspfx + 'transition-duration' , this.slideDuration + 'ms');
@@ -5313,8 +6801,7 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 	MSSlideController.registerView('wave' , MSWaveView);
 })(jQuery);
 
-//dev\slider\views\FadeBasicView.js 
- 
+/* ================== bin-debug/js/pro/views/FadeBasicView.js =================== */
 /**
  * Master Slider Fade Basic view
  * @author averta
@@ -5348,8 +6835,9 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 	
 	MSSlideController.registerView('fadeBasic' , MSFadeBasicView);
 	MSWaveView._fallback = MSFadeBasicView;
-})();//dev\slider\views\FadeWaveView.js 
- 
+})();
+
+/* ================== bin-debug/js/pro/views/FadeWaveView.js =================== */
 /**
  * Master Slider Fade Wave View
  * @author averta
@@ -5376,7 +6864,7 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 		var value =  Math.abs(distance * 100 / this.__width);
 		 value = Math.min(value , 100);
 		slide.$element.css('opacity' , 1-value/300);
-		slide.$element.css(window._csspfx + 'transform' , 'scale('+ (1 - value/800) +') rotateY(0.01deg) ');
+		slide.$element[0].style[window._jcsspfx + 'Transform'] = 'scale('+ (1 - value/800) +') rotateY(0.01deg) ';
 	};
 	
 	p.__updateSlidesVertic = function(slide , distance){
@@ -5385,8 +6873,9 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 	
 	MSSlideController.registerView('fadeWave' , MSFadeWaveView);
 	
-})();//dev\slider\views\FlowView.js 
- 
+})();
+
+/* ================== bin-debug/js/pro/views/FlowView.js =================== */
 ;(function($){
 	
 	"use strict";
@@ -5425,8 +6914,7 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 	MSSlideController.registerView('flow' , MSFlowView);
 })(jQuery);
 
-//dev\slider\views\FadeFlowView.js 
- 
+/* ================== bin-debug/js/pro/views/FadeFlowView.js =================== */
 /**
  * Master Slider Fade Flow View
  * @author averta
@@ -5457,19 +6945,21 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 	p.__updateSlidesHoriz = function(slide , distance){
 		var clc = this.__calculate(distance);
 		slide.$element.css('opacity' , 1-clc.value/300);
-		slide.$element[0].style[window._csspfx + 'transform'] = 'translateZ('+ -clc.value +'px) rotateY(' + clc.rvalue + 'deg) ';
+		console.log(window._jcsspfx + 'transform','translateZ('+ -clc.value +'px) rotateY(' + clc.rvalue + 'deg) ')
+		slide.$element[0].style[window._jcsspfx + 'Transform'] = 'translateZ('+ -clc.value +'px) rotateY(' + clc.rvalue + 'deg) ';
 	};
 	
 	p.__updateSlidesVertic = function(slide , distance){
 		var clc = this.__calculate(distance);
 		slide.$element.css('opacity' , 1-clc.value/300);
-		slide.$element[0].style[window._csspfx + 'transform'] = 'translateZ('+ -clc.value +'px) rotateX(' + -clc.rvalue + 'deg) ';
+		slide.$element[0].style[window._jcsspfx + 'Transform'] = 'translateZ('+ -clc.value +'px) rotateX(' + -clc.rvalue + 'deg) ';
 	};
 	
 	MSSlideController.registerView('fadeFlow' , MSFadeFlowView);
 	
-})();//dev\slider\views\MaskView.js 
- 
+})();
+
+/* ================== bin-debug/js/pro/views/MaskView.js =================== */
 ;(function($){
 	
 	"use strict";
@@ -5650,6 +7140,7 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 
 
 	p.__locateSlides = function(move , start){ // OK
+
 		this.__updateViewList();
 
 		start = !this.loop ? this.slides.indexOf(this.viewSlidesList[0]) * (this[this.__dimension] + this.spacing ) : start || 0; 
@@ -5671,6 +7162,13 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 			this.$slideCont.append(slide.$frame);
 			slide.wakeup(false);
 			slide.position = pos;
+
+			if ( slide.selected && slide.bgvideo ) {
+				try{
+					slide.bgvideo.play();
+				} catch (e) {}
+			}
+
 			slide.$frame[0].style[this.__cssProb] =  pos + 'px';
 		}
 
@@ -5680,8 +7178,68 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 	
 	MSSlideController.registerView('mask' , MSMaskView);
 })(jQuery);
-//dev\slider\views\FadeView.js 
- 
+
+/* ================== bin-debug/js/pro/views/ParallaxMaskView.js =================== */
+;(function($){
+	
+	"use strict";
+	
+	window.MSParallaxMaskView = function(options){
+		MSMaskView.call(this , options);
+		this.$element.removeClass('ms-basic-view').addClass('ms-parallax-mask-view');
+		
+	};
+	
+	MSParallaxMaskView.extend(MSMaskView);
+	MSParallaxMaskView.parallaxAmount = 0.5;
+
+	var p  = MSParallaxMaskView.prototype;
+	var _super  = MSBasicView.prototype;
+		
+	/*-------------- METHODS --------------*/
+	
+	p._horizUpdate = function(controller , value){
+		_super._horizUpdate.call(this , controller , value);
+		
+		var i = 0;
+		
+		if(this.css3) {
+			for(i = 0 ; i < this.slidesCount ; ++i){
+				this.slideList[i].$element[0].style[window._jcsspfx + 'Transform'] = 'translateX('+(value - this.slideList[i].position) * MSParallaxMaskView.parallaxAmount +'px)'+ this.__translate_end;
+			}
+			return;
+		}
+		
+		for(i = 0 ; i < this.slidesCount ; ++i){
+			this.slideList[i].$element[0].style.left = (value - this.slideList[i].position) * MSParallaxMaskView.parallaxAmount  + 'px';	
+		}
+			
+	};
+	
+	p._vertiUpdate = function(controller , value){
+		
+		_super._vertiUpdate.call(this , controller , value);
+		
+		var i = 0;
+		
+		if(this.css3) {
+			for(i = 0 ; i < this.slidesCount ; ++i){
+				this.slideList[i].$element[0].style[window._jcsspfx + 'Transform'] = 'translateY('+(value - this.slideList[i].position) * MSParallaxMaskView.parallaxAmount +'px)'+ this.__translate_end;
+			}
+			return;
+		}
+		
+		for(i = 0 ; i < this.slidesCount ; ++i){
+			this.slideList[i].$element[0].style.top = (value - this.slideList[i].position) * MSParallaxMaskView.parallaxAmount  + 'px';	
+		}
+			
+	};
+	
+	
+	MSSlideController.registerView('parallaxMask' , MSParallaxMaskView);
+})(jQuery);
+
+/* ================== bin-debug/js/pro/views/FadeView.js =================== */
 ;(function($){
 	
 	"use strict";
@@ -5764,8 +7322,9 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 	};
 	
 	MSSlideController.registerView('fade' , MSFadeView);
-})(jQuery);//dev\slider\views\ScaleView.js 
- 
+})(jQuery);
+
+/* ================== bin-debug/js/pro/views/ScaleView.js =================== */
 ;(function($){
 	
 	"use strict";
@@ -5805,8 +7364,83 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 	};
 	
 	MSSlideController.registerView('scale' , MSScaleView);
-})(jQuery);//dev\slider\views\FocusView.js 
- 
+})(jQuery);
+
+/* ================== bin-debug/js/pro/views/StackView.js =================== */
+/**
+ * Master Slider Stack View 
+ * @package Master Slider jQuery
+ * @author Averta
+ */
+
+;(function($){
+	
+	"use strict";
+	
+	window.MSStackView = function(options){
+		MSBasicView.call(this , options);
+		this.$element.removeClass('ms-basic-view').addClass('ms-stack-view');
+		this.controller.renderCallback(this.__update , this);
+		this.autoUpdateZIndex = true;
+	};
+	
+	MSStackView.extend(MSFadeView);
+	MSStackView._3dreq = true;
+	MSStackView._fallback = MSFadeView;
+	
+	var p  = MSStackView.prototype;
+	var _super  = MSFadeView.prototype;
+	 
+	/*-------------- METHODS --------------*/
+
+	/**
+	 * Updates slides z index
+	 */
+	p.__updateSlidesZindex = function () {
+		var slide,
+			l = this.viewSlidesList.length;
+
+		for ( var i = 0; i!==l; i++ ){
+			slide = this.viewSlidesList[i];
+			this.viewSlidesList[i].$element.css('z-index', l-i);
+		}
+		
+	};
+
+	
+	p.__updateSlides = function(slide , distance){
+		var value =  Math.abs(distance / this[this.__dimension]),
+			element = slide.$element[0]; 
+
+		if(1 - value <= 0){
+			element.style.opacity = 1;
+			element.style.visibility = 'hidden';
+			element.style[window._jcsspfx + 'Transform'] = '';
+		}else{
+			element.style.visibility = '';
+			
+			if ( distance < 0 ) {
+				element.style[window._jcsspfx + 'Transform'] = 'perspective(2000px) translateZ('+ (value * -300) +'px)';
+			} else {
+				element.style[window._jcsspfx + 'Transform'] = this.__translate + '(' + ( -value * this[this.__dimension] ) +'px)';
+			}
+
+		}
+		
+	};
+	
+
+	p.create = function(index){
+		_super.create.call(this , index);
+		this.controller.options.minValidDist = 0.03;
+		this.__translate = this.dir === 'h' ? 'translateX' : 'translateY';
+	};
+
+	
+	MSSlideController.registerView('stack' , MSStackView);
+})(jQuery);
+
+/* ================== bin-debug/js/pro/views/FocusView.js =================== */
 /**
  * Master Slider Focus View
  * @version 1.1
@@ -5844,19 +7478,20 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 	p.__updateSlidesHoriz = function(slide , distance){
 		var value =  Math.abs(distance * 100 / this.__width);
 		value = -Math.min(value , 100)* 15;
-		slide.$element.css(window._csspfx + 'transform' , 'translateZ('+ value  +'px) rotateY(0.01deg) translateX('+ (distance < 0 ? 1 : -1) * (-this.__calcview(value, this.__width) * this.options.centerSpace )+'px)');
+		slide.$element.css(window._csspfx + 'transform' , 'translateZ('+ (value + 1) +'px) rotateY(0.01deg) translateX('+ (distance < 0 ? 1 : -1) * (-this.__calcview(value, this.__width) * this.options.centerSpace )+'px)');
 	};
 	
 	p.__updateSlidesVertic = function(slide , distance){
 		var value =  Math.abs(distance * 100 / this.__width);
 		value = -Math.min(value , 100)* 15;
-		slide.$element.css(window._csspfx + 'transform' , 'translateZ('+ value  +'px) rotateY(0.01deg) translateY('+ (distance < 0 ? 1 : -1) * (-this.__calcview(value, this.__width) * this.options.centerSpace )+'px)');
+		slide.$element.css(window._csspfx + 'transform' , 'translateZ('+ (value + 1) +'px) rotateY(0.01deg) translateY('+ (distance < 0 ? 1 : -1) * (-this.__calcview(value, this.__width) * this.options.centerSpace )+'px)');
 	};
 	
 	MSSlideController.registerView('focus' , MSFocusView);
 	
-})();//dev\slider\views\PartialWaveView.js 
- 
+})();
+
+/* ================== bin-debug/js/pro/views/PartialWaveView.js =================== */
 /**
  * Master Slider Partial Wave View
  * @version 1.0
@@ -5898,8 +7533,56 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 	
 	MSSlideController.registerView('partialWave' , MSPartialWaveView);
 	
-})();//dev\slider\uicontrols\BaseControl.js 
- 
+})();
+
+/* ================== bin-debug/js/pro/views/BoxView.js =================== */
+;(function($){
+
+    "use strict";
+
+    window.MSBoxView = function(options){
+        MSBasicView.call(this , options);
+        this.$element.removeClass('ms-basic-view').addClass('ms-box-view');
+        this.controller.renderCallback(this.__update , this);
+    };
+
+    MSBoxView.extend(MSFadeView);
+    MSBoxView._3dreq = true;
+
+    var p  = MSBoxView.prototype;
+    var _super  = MSFadeView.prototype;
+
+    /*-------------- METHODS --------------*/
+
+    p.__updateSlides = function(slide , distance){
+        var value =  Math.abs(distance / this[this.__dimension]),
+            element = slide.$element[0];
+
+        if(1 - value <= 0){
+            //element.style.opacity = 0.5;
+            element.style.visibility = 'hidden';
+            element.style[window._jcsspfx + 'Transform'] = '';
+        }else{
+            //element.style.opacity = 0.5 + (1 - value) * 0.5;
+            element.style.visibility = '';
+            element.style[window._jcsspfx + 'Transform'] = 'rotate' + this._rotateDir + '('+(value* (distance < 0 ? 1 : -1)) * 90 * this._calcFactor +'deg)';
+            element.style[window._jcsspfx + 'TransformOrigin'] = '50% 50% -' + ( slide[this.__dimension] / 2 ) + 'px' ;
+            element.style.zIndex = Math.ceil((1 - value) * 2);
+        }
+    };
+
+    p.create = function(index){
+        _super.create.call(this , index);
+        this.controller.options.minValidDist = 0.03;
+        this._rotateDir = this.options.dir === 'h' ? 'Y' : 'X';
+        this._calcFactor = this.options.dir === 'h' ? 1 :  -1;
+
+    };
+
+    MSSlideController.registerView('box' , MSBoxView);
+})(jQuery);
+
+/* ================== bin-debug/js/pro/uicontrols/BaseControl.js =================== */
 ;(function($){
 	
 	"use strict";
@@ -5908,7 +7591,8 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 		this.options = {
 			prefix:'ms-',
 			autohide:true,
-			overVideo:true	
+			overVideo:true,
+			customClass: null
 		};
 	};
 	
@@ -5924,12 +7608,15 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 		this.cont = this.options.insertTo ? $(this.options.insertTo) : this.slider.$controlsCont;
 		if(!this.options.overVideo) this._hideOnvideoStarts();
 
+	};
+
+	p.checkHideUnder = function(){
 		if(this.options.hideUnder){
 			//this.slider.api.addEventListener(MSSliderEvent.RESIZE, this.onSliderResize, this);
+			this.needsRealign = !this.options.insetTo && (this.options.align === 'left' || this.options.align === 'right') && this.options.inset === false;
 			$(window).bind('resize', {that:this}, this.onResize);
 			this.onResize();
 
-			this.needsRealign = !this.options.insetTo && (this.options.align === 'left' || this.options.align === 'right') && this.options.inset === false;
 		}
 	};
 
@@ -5954,26 +7641,75 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 	
 	p.create = function(){
 		var that = this;
-		if(this.options.autohide && !window._touch){
+		if(this.options.autohide ){
 			
 			this.hide(true);
 			
-			this.slider.$controlsCont.mouseenter(function(){
-				if(!that._disableAH && !that.mdown)that.visible();
-				that.mleave = false;
-			}).mouseleave(function(){
-				that.mleave = true;
-				if(!that.mdown)that.hide();
-			}).mousedown(function(){
-				that.mdown = true;
-			});
-			
-			$(document).mouseup(function(){
-				if(that.mdown && that.mleave)that.hide();
-				that.mdown = false;
-			});
+			this.slider.$controlsCont.mouseenter($.proxy(this._onMouseEnter, this))
+									 .mouseleave($.proxy(this._onMouseLeave, this))
+									 .mousedown($.proxy(this._onMouseDown, this));
+
+			if ( this.$element ) {
+				this.$element.mouseenter($.proxy(this._onMouseEnter, this))
+							 .mouseleave($.proxy(this._onMouseLeave, this))
+							 .mousedown($.proxy(this._onMouseDown, this));
+			}
+
+			$(document).mouseup($.proxy(this._onMouseUp, this));
+		}
+		
+		if ( this.options.align ) {
+			this.$element.addClass('ms-align-' + this.options.align);
 		}
 
+		// add custom class to control 
+		if ( this.options.customClass && this.$element ) {
+			this.$element.addClass(this.options.customClass);
+		}
+	};
+
+	/**
+	 * Mouse Enter Listener 
+	 * @since 2.2
+	 */
+	p._onMouseEnter = function(){
+		if ( !this._disableAH && !this.mdown ){
+			this.visible();
+		}
+		
+		this.mleave = false;
+	};
+
+	/**
+	 * Mouse Leave Listener 
+	 * @since 2.2
+	 */
+	p._onMouseLeave = function(){
+		if ( !this.mdown ){
+			this.hide();
+		}
+
+		this.mleave = true;
+	};
+
+	/**
+	 * Mouse Down Listener 
+	 * @since 2.2
+	 */
+	p._onMouseDown = function(){
+		this.mdown = true;
+	};
+
+	/**
+	 * Mouse Up Listener 
+	 * @since 2.2
+	 */
+	p._onMouseUp = function(){
+		if ( this.mdown && this.mleave ) { 
+			this.hide();
+		}
+		
+		this.mdown = false;
 	};
 
 	/**
@@ -5998,12 +7734,12 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 	
 	p._hideOnvideoStarts = function(){
 		var that = this;
-		slider.api.addEventListener(MSSliderEvent.VIDEO_PLAY , function(){
+		this.slider.api.addEventListener(MSSliderEvent.VIDEO_PLAY , function(){
    			 that._disableAH = true;
    			 that.hide();
 		});
 		 
-		slider.api.addEventListener(MSSliderEvent.VIDEO_CLOSE , function(){
+		this.slider.api.addEventListener(MSSliderEvent.VIDEO_CLOSE , function(){
 		     that._disableAH = false;
    			 that.visible();
 		});
@@ -6014,7 +7750,11 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 			this.$element.css('opacity' , 0);
 			this.$element.css('display' , 'none');
 		} else {
-			 CTween.fadeOut(this.$element , 400 , false);
+			clearTimeout(this.hideTo);
+			var $element = this.$element;
+			this.hideTo = setTimeout(function(){
+				CTween.fadeOut($element , 400 , false);
+			}, 20);
 		}
 
 		this.$element.addClass('ms-ctrl-hide');
@@ -6022,8 +7762,9 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 	
 	p.visible = function(){
 		if(this.detached) return;
+		clearTimeout(this.hideTo);
 		this.$element.css('display' , '');
-		CTween.fadeIn(this.$element , 400 );
+		CTween.fadeIn(this.$element , 400 , false);
 		this.$element.removeClass('ms-ctrl-hide');
 	};
 	
@@ -6038,8 +7779,8 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 	window.BaseControl = BaseControl;
 	
 })(jQuery);
-//dev\slider\uicontrols\Arrows.js 
- 
+
+/* ================== bin-debug/js/pro/uicontrols/Arrows.js =================== */
 ;(function($){
 	
 	"use strict";
@@ -6063,10 +7804,7 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 					.addClass(this.options.prefix + 'nav-next')
 					//.appendTo(this.cont)
 					.bind('click' , function(){
-						if(!that.slider.options.loop && that.slider.api.index() === that.slider.api.count() - 1)
-							that.slider.view.controller.bounce(10);
-						else
-							that.slider.api.next();
+							that.slider.api.next(true);
 					});
 				
 		
@@ -6074,16 +7812,15 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 					.addClass(this.options.prefix + 'nav-prev')
 					//.appendTo(this.cont)
 					.bind('click' , function(){
-						if(!that.slider.options.loop && that.slider.api.index() === 0)
-							that.slider.view.controller.bounce(-10);
-						else
-							that.slider.api.previous();
+						that.slider.api.previous(true);
 					});
 		
 		_super.setup.call(this);
 
 		this.cont.append(this.$next);
 		this.cont.append(this.$prev);
+
+		this.checkHideUnder(); // super method
 	};
 	
 	p.hide = function(fast){
@@ -6117,8 +7854,8 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 	window.MSArrows = MSArrows;
 	MSSlideController.registerControl('arrows' , MSArrows);
 })(jQuery);
-//dev\slider\uicontrols\Thumblist.js 
- 
+
+/* ================== bin-debug/js/pro/uicontrols/Thumblist.js =================== */
 ;(function($){
 	
 	"use strict";
@@ -6129,7 +7866,7 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 		// default options
 		this.options.dir 	= 'h';
 		this.options.wheel	= options.dir === 'v';
-		this.options.arrows = true;
+		this.options.arrows = false;
 		this.options.speed  = 17;
 		this.options.align  = null;
 		this.options.inset = false;
@@ -6138,6 +7875,7 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 		this.options.width = 100;
 		this.options.height = 100;
 		this.options.type = 'thumbs'; // tabs
+		this.options.hover = false;
 		
 		
 		$.extend(this.options , options);
@@ -6216,11 +7954,13 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 				this.$element.height(this.options.height);
 			}
 		}
+
+		this.checkHideUnder(); // super method
 	
 	};
 	
 	/**
-	 * calls by "RESERVED_SPACE_CHGANE" realigns the control in slider
+	 * calls by "RESERVED_SPACE_CHANGE" realigns the control in slider
 	 * @since 1.5.7
 	 */
 	p.align = function(event){
@@ -6233,16 +7973,16 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 	};
 
 	p.slideAction = function(slide){
-		var thumb_ele = $(slide.$element.find('.ms-thumb'));
+		var thumb_ele = slide.$element.find('.ms-thumb');
 		var that = this;
 		var thumb_frame = $('<div></div>')
 					.addClass('ms-thumb-frame')
 					.append(thumb_ele)
 					.append($('<div class="ms-thumb-ol"></div>'))
-					.bind('click' , function(){that.changeSlide(thumb_frame);});
+					.bind(this.options.hover? 'hover' : 'click' , function(){that.changeSlide(thumb_frame);});
 
 		if( this.options.align ){
-			thumb_frame.width(this.options.width)
+			thumb_frame.width(this.options.width - (this.options.dir === 'v' && this.options.type === 'tabs' ? 12 : 0))  // less arrow size 12px
 					.height(this.options.height)
 					.css('margin-'+(this.options.dir === 'v' ? 'bottom' : 'right'), this.options.space); 
 		}			
@@ -6307,6 +8047,7 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 		}
 		
 		this.slider.api.addEventListener(MSSliderEvent.CHANGE_START , this.update , this);
+		this.slider.api.addEventListener(MSSliderEvent.HARD_UPDATE, this.realignThumbs, this);
 		this.cindex =  this.slider.api.index();
 		this.select(this.thumbs[this.cindex]);
 		
@@ -6390,6 +8131,14 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 		if(!this.dTouch)this.updateThumbscroll();
 	};
 
+	p.realignThumbs = function () {
+		this.$element.find('.ms-thumb').each( function (index, thumb) {
+			if ( thumb.aligner ) {
+				thumb.aligner.align();	
+			} 
+		} );
+	};
+
 	p.updateThumbscroll = function(){
 		var thumb_size;
 		
@@ -6470,8 +8219,8 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 	MSSlideController.registerControl('thumblist' , MSThumblist);
 	
 })(jQuery);
-//dev\slider\uicontrols\Bullets.js 
- 
+
+/* ================== bin-debug/js/pro/uicontrols/Bullets.js =================== */
 ;(function($){
 	
 	"use strict";
@@ -6482,6 +8231,7 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 		this.options.dir 	= 'h';
 		this.options.inset  = true;
 		this.options.margin = 10;
+		this.options.space = 10;
 		
 
 		$.extend(this.options , options);
@@ -6508,22 +8258,17 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 		this.$bullet_cont = $('<div></div>')
 						.addClass('ms-bullets-count')
 						.appendTo(this.$element);
-		
 
-		
 		if( !this.options.insetTo && this.options.align ){
-			// reset old styles
-			this.$element.css({
-				top:'auto',
-				bottom:'auto'
-			})
 
 			var align = this.options.align;
 			if( this.options.inset ){
-				this.$element.css(align, this.options.margin );
+				this.$element.css(align, this.options.margin);
 			}
+
 		}
 
+		this.checkHideUnder(); // super method
 	};
 	
 	p.create = function(){
@@ -6538,10 +8283,18 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 			bullet.on('click', function(){that.changeSlide(this.index);});
 			this.$bullet_cont.append(bullet);
 			this.bullets.push(bullet);
+			if( this.options.dir === 'h' ) {
+				bullet.css('margin', this.options.space/2);
+			}else {
+				bullet.css('margin', this.options.space);
+			}
 		}
 		
-		if(this.options.dir === 'h') 
+		if(this.options.dir === 'h') {
 			this.$element.width(bullet.outerWidth(true) * this.slider.api.count());
+		} else {
+			this.$element.css('margin-top', -this.$element.outerHeight(true)/2);
+		}
 		
 		this.select(this.bullets[this.cindex]);
 	};
@@ -6579,8 +8332,8 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 	MSSlideController.registerControl('bullets' , MSBulltes);
 	
 })(jQuery);
-//dev\slider\uicontrols\Scrollbar.js 
- 
+
+/* ================== bin-debug/js/pro/uicontrols/Scrollbar.js =================== */
 ;(function($){
 	
 	"use strict";
@@ -6680,6 +8433,8 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 				this.align();
 			}
 		}
+
+		this.checkHideUnder(); // super method
 	};
 
 	/**
@@ -6766,8 +8521,8 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 	window.MSScrollbar = MSScrollbar;
 	MSSlideController.registerControl('scrollbar' , MSScrollbar);
 })(jQuery);
-//dev\slider\uicontrols\Timebar.js 
- 
+
+/* ================== bin-debug/js/pro/uicontrols/Timebar.js =================== */
 ;(function($){
 	
 	"use strict";
@@ -6847,6 +8602,8 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 				this.align();
 			}
 		}
+
+		this.checkHideUnder(); // super method
 		
 	};
 
@@ -6884,8 +8641,8 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 	window.MSTimerbar = MSTimerbar;
 	MSSlideController.registerControl('timebar' , MSTimerbar);
 })(jQuery);
-//dev\slider\uicontrols\CircleTimer.js 
- 
+
+/* ================== bin-debug/js/pro/uicontrols/CircleTimer.js =================== */
 ;(function($){
 	
 	"use strict";
@@ -6937,6 +8694,8 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 		this.__w = (this.options.radius + this.options.stroke/2) * 2;
 		this.$canvas[0].width  = this.__w;
 		this.$canvas[0].height = this.__w;
+
+		this.checkHideUnder(); // super method
 	};
 	
 	p.create = function(){
@@ -6982,8 +8741,8 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 	window.MSCircleTimer = MSCircleTimer;
 		MSSlideController.registerControl('circletimer' , MSCircleTimer);
 })(jQuery);
-//dev\slider\uicontrols\Lightbox.js 
- 
+
+/* ================== bin-debug/js/pro/uicontrols/Lightbox.js =================== */
 ;(function($){
 	
 	"use strict";
@@ -7003,13 +8762,14 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 	var _super = BaseControl.prototype;
 	
 	/* -------------------------------- */	
-		p.setup = function(){
+	p.setup = function(){
 		_super.setup.call(this);
 
 		this.$element = $('<div></div>')
 						.addClass(this.options.prefix + 'lightbox-btn')
 						.appendTo(this.cont);
 		
+		this.checkHideUnder(); // super method
 	};
 	
 	p.slideAction = function(slide){
@@ -7028,8 +8788,8 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 
 	MSSlideController.registerControl('lightbox' , MSLightbox);
 })(jQuery);
-//dev\slider\uicontrols\SlideInfo.js 
- 
+
+/* ================== bin-debug/js/pro/uicontrols/SlideInfo.js =================== */
 ;(function($){
 	
 	"use strict";
@@ -7063,7 +8823,7 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 		_super.setup.call(this);	
 
 		if( this.slider.$controlsCont === this.cont ){
-			this.$element.appendTo(this.slider.$element); // insert in outter container out of overflow hidden
+			this.$element.appendTo(this.slider.$element); // insert in outer container out of overflow hidden
 		}else{
 			this.$element.appendTo(this.cont);
 		}
@@ -7095,6 +8855,7 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 			}
 		}
 
+		this.checkHideUnder(); // super method
 	};
 
 	/**
@@ -7181,8 +8942,8 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 	
 	MSSlideController.registerControl('slideinfo' , MSSlideInfo);
 })(jQuery);
-//dev\slider\plugins\MSGallery.js 
- 
+
+/* ================== bin-debug/js/pro/plugins/MSGallery.js =================== */
 /**
  *	Master Slider, Gallery Template v1.0
  * 	@author: Averta Ltd.
@@ -7252,8 +9013,8 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 	
 	
 })(jQuery);
-//dev\slider\plugins\MSFlickrV2.js 
- 
+
+/* ================== bin-debug/js/pro/plugins/MSFlickrV2.js =================== */
 /**
  * Master Slider Flickr Plugin Version 2
  * @version 2.0.0
@@ -7269,7 +9030,7 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 	 * @return {String}
 	 */
 	var getPhotosetURL = function(key , id , count){
-		return 'https://api.flickr.com/services/rest/?method=flickr.photosets.getPhotos&api_key=' + key + '&photoset_id='+ id +'&per_page='+ count +'&extras=description,date_taken,owner_name,views&format=json&jsoncallback=?';
+		return 'https://api.flickr.com/services/rest/?method=flickr.photosets.getPhotos&api_key=' + key + '&photoset_id='+ id +'&per_page='+ count +'&extras=url_o,description,date_taken,owner_name,views&format=json&jsoncallback=?';
 	};
 	
 	/**
@@ -7280,7 +9041,7 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 	 * @return {String}
 	 */
 	var getUserPublicURL = function(key , id , count){
-		return 'https://api.flickr.com/services/rest/?&method=flickr.people.getPublicPhotos&api_key=' + key + '&user_id='+ id +'&per_page='+ count +'&extras=description,date_taken,owner_name,views&format=json&jsoncallback=?';
+		return 'https://api.flickr.com/services/rest/?&method=flickr.people.getPublicPhotos&api_key=' + key + '&user_id='+ id +'&per_page='+ count +'&extras=url_o,description,date_taken,owner_name,views&format=json&jsoncallback=?';
 	};
 	
 	/**
@@ -7292,7 +9053,11 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 	 * @param  {String} size   
 	 * @return {String}        
 	 */
-	var getImageSource = function(fid , server , id , secret , size){
+	var getImageSource = function(fid , server , id , secret , size, data){
+		if ( size === '_o' && data ) {
+			return data.url_o;
+		}
+
 		return 'https://farm' + fid + '.staticflickr.com/'+ server + '/' + id + '_' + secret + size + '.jpg';
 	};
 
@@ -7318,7 +9083,7 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 		};
 
 		this.slider = slider;
-		this.slider.preventInit = true;
+		this.slider.holdOn();
 		
 		if( !options.key ){
 			this.errMsg('Flickr API Key required. Please add it in settings.');
@@ -7369,7 +9134,7 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 				if( shortCodes[match] ) {
 					return shortCodes[match](item, that);
 				} else {
-					return '['+match+']';
+					return '{{'+match+'}}';
 				}
 
 			});
@@ -7390,14 +9155,13 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 	};
 	
 	p._initSlider = function(){
-		this.slider.preventInit = false;
-		this.slider._init();
+		this.slider.release();
 	};
 
 	// a list of functions that generates data from short codes
 	var shortCodes = {
 		'image': function(data, that){
-			return getImageSource(data.farm , data.server , data.id , data.secret , that.options.imgSize);
+			return getImageSource(data.farm , data.server , data.id , data.secret , that.options.imgSize, data);
 		},
 
 		'thumb': function(data, that){
@@ -7425,8 +9189,9 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 		}
 	};
 
-})(jQuery);//dev\slider\plugins\MSFacebookGallery.js 
- 
+})(jQuery);
+
+/* ================== bin-debug/js/pro/plugins/MSFacebookGallery.js =================== */
 /**
  * Master Slider Facebook Gallery plugin
  * @author Averta Ltd.
@@ -7442,32 +9207,34 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
  			/*
  			orginal/960/720/600/480/320/130
  			 */
-			thumbSize	:'320',  
-			
+			thumbSize	:'320',
+
 			/*
  			orginal/960/720/600/480/320/130
  			 */
 			imgSize		: 'orginal',
 
-			https: false
+			https: false,
+            token: ''
 		};
 
 		this.slider = slider;
-		this.slider.preventInit = true;
+		this.slider.holdOn();
 
 		$.extend(_options , options);
 		this.options = _options;
 
-		this.graph = this.options.https ? 'https://graph.facebook.com' : 'http://graph.facebook.com';
+        //this.graph = this.options.https ? 'https://graph.facebook.com' : 'http://graph.facebook.com';
+		this.graph = 'https://graph.facebook.com';
 
 		var that = this;
-		
+
 		if(this.options.type === 'photostream'){
-			$.getJSON(this.graph + '/' + this.options.username + '/photos/uploaded/?fields=source,name,link,images,from&limit=' + this.options.count , function(data){
+			$.getJSON(this.graph + '/' + this.options.username + '/photos/uploaded/?fields=source,name,link,images,from&limit=' + this.options.count + '&access_token=' + this.options.token , function(data){
 				that._photosData(data);
 			});
 		}else{
-			$.getJSON(this.graph + '/' + this.options.albumId + '/photos?fields=source,name,link,images,from&limit=' + this.options.count , function(data){
+			$.getJSON(this.graph + '/' + this.options.albumId + '/photos?fields=source,name,link,images,from&limit=' + this.options.count + '&access_token=' + this.options.token , function(data){
 				that._photosData(data);
 			});
 		}
@@ -7480,15 +9247,15 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 	var p = MSFacebookGallery.prototype;
 
 	p._photosData = function(content){
-		
+
 		if(content.error){
 			this.errMsg('Facebook API ERROR#' + content.error.code + '(' + content.error.type + ')' + ': ' + content.error.message);
 			return;
 		}
-		
+
 		var that = this;
 		var getInfo = this.options.author || this.options.desc;
-		
+
 		for(var i=0,l=content.data.length;i!==l;i++){
 
 			var slide_cont = that.slideTemplate.replace(/{{[\w-]+}}/g, function(match){
@@ -7503,7 +9270,7 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 
 			$(slide_cont).appendTo(that.slider.$element);
 		}
-		
+
 		that._initSlider();
 	};
 
@@ -7511,17 +9278,16 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 		this.slider.$element.css('display', 'block');
 		if(!this.errEle)
 			this.errEle = $('<div style="font-family:Arial; color:red; font-size:12px; position:absolute; top:10px; left:10px"></div>').appendTo(this.slider.$loading);
-		
+
 		this.errEle.html(msg);
 	};
-	
+
 	p._initSlider = function(){
-		this.slider.preventInit = false;
-		this.slider._init();
+		this.slider.release();
 	};
 
 	var getImageSource = function(images, size){
-		
+
 		if( size === 'orginal' ) {
 			return images[0].source;
 		}
@@ -7530,14 +9296,14 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 			if( images[i].source.indexOf(size + 'x' + size) !== -1 )
 				return images[i].source;
 		}
-
-		return images[l-3].source;
+      //  console.log(images)
+		return images[0].source;
 	};
 
 	// a list of functions that generates data from short codes
 	var shortCodes = {
 		'image': function(data, that){
-			
+
 			return getImageSource(data.images, that.options.imgSize);
 		},
 
@@ -7558,8 +9324,9 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 		}
 	};
 
-})(jQuery);//dev\slider\plugins\MSScrollParallax.js 
- 
+})(jQuery);
+
+/* ================== bin-debug/js/pro/plugins/MSScrollParallax.js =================== */
 /**
  * Master Slider Parallax Layers Fade
  * @description Moves and fades layers of current slide while scrolling window.
@@ -7590,8 +9357,8 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 			return;
 		}
 
-		if( prallax == null ) {
-			prallax = 50;
+		if( parallax == null ) {
+			parallax = 50;
 		}
 		
 		if( bgparallax == null ){
@@ -7612,9 +9379,9 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 			slide;
 		for(var i = 0, l = slides.length; i!==l ; i++) {
 			slide = slides[i];
-			if( slide.$layers ) {
-				slide.$layers.wrap('<div class="ms-scroll-parallax-cont"></div>');
-				slide.$scrollParallaxCont = slide.$layers.parent();
+			if( slide.hasLayers ) {
+				slide.layerController.$layers.wrap('<div class="ms-scroll-parallax-cont"></div>');
+				slide.$scrollParallaxCont = slide.layerController.$layers.parent();
 			}
 		}
 		
@@ -7632,12 +9399,19 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 			if( layers ){
 				layers[0].style[window._jcsspfx + 'Transform'] = '';
 			}
-			this.lastSlide.$imgcont[0].style[window._jcsspfx + 'Transform'] = '';
+
+			if ( this.lastSlide.hasBG ) {
+				this.lastSlide.$imgcont[0].style[window._jcsspfx + 'Transform'] = '';
+			}
+
 		} else {
 			if( layers ){
 				layers[0].style.top = '';
 			}
-			this.lastSlide.$imgcont[0].style.top = '0px';
+
+			if ( this.lastSlide.hasBG ) {
+				this.lastSlide.$imgcont[0].style.top = '0px';
+			}
 		}
 	};
 
@@ -7654,14 +9428,13 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 			offset = that.sliderOffset,
 			scrollTop = $(window).scrollTop(),
 			layers = that.currentSlide.$scrollParallaxCont,
-			bg = that.currentSlide.$imgcont,
 			out = offset - scrollTop;
 
 		if( out <= 0 ) {
 			
 			if( layers ){
 				if ( window._css3d ) {
-					layers[0].style[window._jcsspfx + 'Transform'] = 'translateY(' + -out * that.parallax + 'px) translateZ(0)';
+					layers[0].style[window._jcsspfx + 'Transform'] = 'translateY(' + -out * that.parallax + 'px) translateZ(0.4px)';
 				} else if ( window._css2d ){
 					layers[0].style[window._jcsspfx + 'Transform'] = 'translateY(' + -out * that.parallax + 'px)';
 				} else {
@@ -7699,8 +9472,15 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 			position = ( fixed &&  !$.browser.msie && !$.browser.opera ? 'fixed' : '');
 
 		for(var i = 0, l = slides.length; i!==l ; i++) {
-			slides[i].$imgcont[0].style.position = position; 
-			slides[i].$imgcont[0].style.top = pos;
+			if ( slides[i].hasBG ) {
+				slides[i].$imgcont[0].style.position = position; 
+				slides[i].$imgcont[0].style.top = pos;
+			}
+
+			if ( slides[i].$bgvideocont ){
+				slides[i].$bgvideocont[0].style.position = position; 
+				slides[i].$bgvideocont[0].style.top = pos;
+			}
 		}
 
 	};
@@ -7714,3 +9494,345 @@ MSViewEvents.CHANGE_END	     = 'slideChangeEnd';
 	};
 
 })(jQuery);
+
+/* ================== bin-debug/js/pro/plugins/MSKeyboardNav.js =================== */
+/**
+ * Keyboard navigation plugin for Master Slider.
+ * @version  1.0.0
+ * @author Averta
+ * @package MasterSlider jQuery
+ */
+;(function($, document, window){
+	var PId = 0;
+
+	// check if master slider is available
+	if ( !window.MasterSlider ) {
+		return;
+	}
+
+	var KeyboardNav = function ( slider ) {
+		this.slider = slider;
+		this.PId = PId++;
+
+		if ( this.slider.options.keyboard ) {
+			slider.api.addEventListener(MSSliderEvent.INIT, this.init, this);
+		}
+	};
+
+	KeyboardNav.name = 'MSKeyboardNav';
+	var p = KeyboardNav.prototype;
+
+	/**
+	 * initiate the plugin
+	 */
+	p.init = function (){
+		var api = this.slider.api;
+
+		$(document).on('keydown.kbnav' + this.PId , function(event){
+			var which = event.which;
+
+			if ( which === 37 || which === 40 ) {
+				api.previous(true);
+			} else if ( which === 38 || which === 39 ) {
+				api.next(true);
+			}
+
+		});
+
+	};
+
+	/**
+	 * destroy the plugin
+	 */
+	p.destroy = function(){
+		$(document).off('keydown.kbnav' + this.PId);
+		this.slider.api.removeEventListener(MSSliderEvent.INIT, this.init, this);
+	};
+
+	// install plugin to master slider
+	MasterSlider.registerPlugin( KeyboardNav );
+
+})(jQuery, document, window);
+
+/* ================== bin-debug/js/pro/plugins/MSStartOnAppear.js =================== */
+/**
+ * Start on appear plugin for Master Slider.
+ * 
+ * @description This plugin prevents slider automatically initialization and inits slider when it appears inside of the browser window.
+ * @version  1.0.0
+ * @author Averta
+ * @package MasterSlider jQuery
+ */
+
+;(function($, document, window){
+	var PId = 0,
+		$window = $(window),
+		$doc = $(document);
+
+	// check if master slider is available
+	if ( !window.MasterSlider ) {
+		return;
+	}
+
+	var StartOnAppear = function ( slider ) {
+		this.PId = PId++;
+		this.slider = slider;
+		this.$slider = slider.$element;
+		
+		if ( this.slider.options.startOnAppear ) {
+			// hold on slider
+			slider.holdOn();
+			$doc.ready($.proxy(this.init, this));
+		}
+	};
+
+	StartOnAppear.name = 'MSStartOnAppear';
+	var p = StartOnAppear.prototype;
+
+	/**
+	 * initiate the plugin
+	 */
+	p.init = function (){
+		var api = this.slider.api;
+		$window.on('scroll.soa' + this.PId , $.proxy(this._onScroll, this)).trigger('scroll');
+	};
+
+	p._onScroll = function () {
+		// check slider position
+		var vpBottom = $window.scrollTop() + $window.height(),
+			top = this.$slider.offset().top ;
+
+		if ( top < vpBottom ) {
+			$window.off('scroll.soa' + this.PId);
+			this.slider.release();
+		}
+	};
+
+	/**
+	 * destroy the plugin
+	 */
+	p.destroy = function(){};
+
+	// install plugin to master slider
+	MasterSlider.registerPlugin( StartOnAppear );
+
+})(jQuery, document, window);
+
+/* ================== bin-debug/js/pro/plugins/MSFilters.js =================== */
+/**
+ * Master Slider Filters Plugin
+ * This plugin adds CSS3 filters to the slides, like brightness, grayscale, sepia, ... It works in major browser and devices but in IE `opacity` only supported.
+ * 
+ * @package Master Slider jQuery
+ * @author Averta
+ * @version  1.0.0a
+ */
+
+;(function (document, window, jQuery){
+
+	var filterUnits = {
+		'hue-rotate' 	: 'deg',
+		'blur' 			: 'px'
+	}, initialValues = {
+		'opacity' 		: 1,
+		'contrast'		: 1,
+		'brightness'	: 1,
+		'saturate'		: 1,
+		'hue-rotate'	: 0,
+		'invert'		: 0,
+		'sepia'			: 0,
+		'blur'			: 0,
+		'grayscale'		: 0
+	}
+
+	// check if master slider is available
+	if ( !window.MasterSlider ) {
+		return;
+	}
+
+	var Filters = function ( slider ) {
+		this.slider = slider;
+
+		if ( this.slider.options.filters ) {
+			slider.api.addEventListener(MSSliderEvent.INIT, this.init, this);
+		}
+	};
+
+	Filters.name = 'MSFilters';
+	var p = Filters.prototype;
+
+	/**
+	 * initiate the plugin
+	 */
+	p.init = function (){
+		var api = this.slider.api,
+			view = api.view;
+
+		this.filters 		= this.slider.options.filters;
+		this.slideList 		= view.slideList;
+		this.slidesCount 	= view.slidesCount;
+		this.dimension 		= view[view.__dimension];
+		this.target 		= this.slider.options.filterTarget === 'slide' ? '$element' : '$bg_img';
+		this.filterName 	= $.browser.webkit ? 'WebkitFilter' : 'filter';
+
+		// override controller update callback
+		var superFun = view.controller.__renderHook.fun,
+			superRef = view.controller.__renderHook.ref;
+		view.controller.renderCallback( function (controller, value) {
+			superFun.call(superRef, controller, value);
+			this.applyEffect(value);
+		} , this);
+		this.applyEffect(view.controller.value);
+
+	};
+
+	/**
+	 * Apply css effect to slides based on slide position.
+	 * @param  {Number} value Current position of slider controller
+	 */
+	p.applyEffect = function (value) { 
+		var factor, slide;
+
+		for( var i = 0; i < this.slidesCount; ++i ) {
+			slide = this.slideList[i];
+			factor = Math.min(1 , Math.abs(value - slide.position) / this.dimension);
+			
+			if ( slide[this.target] ) {
+				if ( !$.browser.msie ) {
+					slide[this.target][0].style[this.filterName] = this.generateStyle(factor);
+				} else if ( this.filters.opacity != null ) {
+					slide[this.target].opacity( 1 - this.filters.opacity * factor);
+				}
+			}		
+		}
+	};
+
+	/**
+	 * Generate filter style based on slide distance factor
+	 * @param  {Number} factor 
+	 * @return {String} CSS style
+	 */
+	p.generateStyle = function (factor) {
+		var style = '',
+			unit;
+
+		for ( var filter in this.filters ) {
+			unit = filterUnits[filter] || '';
+			style += filter + '(' + ( initialValues[filter] + (this.filters[filter] - initialValues[filter]) * factor) + ') ';			
+		}
+
+		return style;
+	};
+
+	/**
+	 * destroy the plugin
+	 */
+	p.destroy = function(){
+		this.slider.api.removeEventListener(MSSliderEvent.INIT, this.init, this);
+	};
+
+	// install plugin to master slider
+	MasterSlider.registerPlugin( Filters );
+
+
+})(document, window, jQuery);
+
+/* ================== bin-debug/js/pro/plugins/MSScrollToAction.js =================== */
+/**
+ * Master Slider Scroll To Action Plugin.
+ * 
+ * @description This plugins adds page scrolling actions to the layer actions list.
+ * @version  1.0.0
+ * @author Averta
+ * @package MasterSlider jQuery
+ */
+
+;(function($, document, window){
+
+	// check if master slider is available
+	if ( !window.MasterSlider ) {
+		return;
+	}
+
+	var ScrollToAction = function ( slider ) {
+		this.slider = slider;
+		slider.api.addEventListener(MSSliderEvent.INIT, this.init, this);
+	};
+
+	ScrollToAction.name = 'MSScrollToAction';
+	var p = ScrollToAction.prototype;
+
+	/**
+	 * initiate the plugin
+	 */
+	p.init = function (){
+		var api = this.slider.api;
+		
+		// define actions
+		api.scrollToEnd = _scrollToEnd;
+		api.scrollTo = _scrollTo;
+	};
+
+	/**
+	 * destroy the plugin
+	 */
+	p.destroy = function(){};
+
+	/**
+	 * Scroll window to the target element in page
+	 * @param {Number} duration animation duration (seconds)
+	 */
+	var _scrollTo = function ( target, duration ) {
+		var sliderEle = this.slider.$element,
+			target = $(target).eq(0);
+
+		if ( target.length === 0 ) {
+			return;
+		}
+		console.log(target.offset().top, duration )
+
+		if( duration == null ) {
+			duration = 1.4;
+		}
+
+		$('html, body').animate({
+			scrollTop: target.offset().top
+		}, duration * 1000, 'easeInOutQuad');
+	};
+
+	/**
+	 * Scroll window to the bottom of slider
+	 * @param {Number} duration animation duration (seconds)
+	 */
+	var _scrollToEnd = function ( duration ) {
+		var sliderEle = this.slider.$element;
+
+		if( duration == null ) {
+			duration = 1.4;
+		}
+
+		$('html, body').animate({
+			scrollTop: sliderEle.offset().top + sliderEle.outerHeight(false)
+		}, duration * 1000, 'easeInOutQuad');
+	}
+
+	// install plugin to master slider
+	MasterSlider.registerPlugin( ScrollToAction );
+
+})(jQuery, document, window);
+
+/* ================== bin-debug/js/pro/plugins/MSReadyCheck.js =================== */
+;(function ( $, window, document, undefined ) {
+    "use strict";
+
+    // sample of using MSReady
+    // ( window.MSReady = MSReady || [] ).push( function( jQuery ) {
+
+    // });
+
+    if ( window.MSReady ) {
+        for ( var i = 0, l = MSReady.length; i !== l; i++ ) {
+            MSReady[i].call( null, $ );
+        }
+    }
+})(jQuery, window, document);

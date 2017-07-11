@@ -878,6 +878,47 @@ class Page extends DB_Table {
         switch ($key) {
 
 
+            case 'Browser Title':
+
+                return $this->data['Webpage '.$key];
+                break;
+            case 'State Icon':
+
+                switch ($this->data['Webpage State']) {
+                    case 'InProcess':
+                        return '<i class="fa fa-fw fa-child" aria-hidden="true"></i>';
+                    case 'Ready':
+                        return '<i class="fa fa-fw  fa-check-circle" aria-hidden="true"></i>';
+                    case 'Online':
+                        return '<i class="fa fa-fw fa-rocket" aria-hidden="true"></i>';
+                    case 'Offline':
+                        return '<i class="fa fa-fw fa-rocket discreet fa-flip-vertical" aria-hidden="true"></i>';
+
+                    default:
+                        return $this->data['Webpage State'];
+                }
+
+                break;
+
+
+            case 'State':
+
+                switch ($this->data['Webpage State']) {
+                    case 'InProcess':
+                        return $this->get('State Icon').' '._('In process');
+                    case 'Ready':
+                        return $this->get('State Icon').' '._('Ready');
+                    case 'Online':
+                        return $this->get('State Icon').' '._('Online');
+                    case 'Offline':
+                        return '<span class="very_discreet">'.$this->get('State Icon').' '._('Offline').'</span>';
+
+                    default:
+                        return $this->data['Webpage State'];
+                }
+
+                break;
+
             case 'Send Email Address':
                 include_once 'class.Store.php';
                 $store = new Store($this->data['Webpage Store Key']);
@@ -1604,11 +1645,12 @@ class Page extends DB_Table {
     function publish($note = '') {
 
 
-        $website=get_object('Website',$this->get('Webpage Website Key'));
+        $website = get_object('Website', $this->get('Webpage Website Key'));
 
-        if($website->get('Website Status')!='Active'){
-            $this->error=true;
-            $this->msg='Website not active';
+        if ($website->get('Website Status') != 'Active') {
+            $this->error = true;
+            $this->msg   = 'Website not active';
+
             return;
         }
 
@@ -1675,9 +1717,6 @@ class Page extends DB_Table {
                     if ($webpage->id) {
 
 
-
-
-
                         if ($webpage->get('Webpage Launch Date') == '') {
 
 
@@ -1722,26 +1761,11 @@ class Page extends DB_Table {
 
 
 
-        if ($this->get('Webpage State') == 'Online') {
-            $icon = 'fa-rocket';
-        } elseif ($this->get('Webpage State') == 'Offline') {
-            $icon = ' fa-rocket discreet fa-flip-vertical';
-        } elseif ($this->get('Webpage State') == 'Ready') {
-            $icon = 'fa-check-circle';
-
-        } elseif ($this->get('Webpage State') == 'InProcess') {
-            $icon = 'fa-child';
-
-
-        }
-
-
-
-
         $this->update_metadata = array(
             'class_html'    => array(
-                'webpage_state_icon'    => '<i class="fa  '.$icon.' " aria-hidden="true"></i>',
-                'preview_publish_label'    => _('Publish')
+                'Webpage_State_Icon' => $this->get('State Icon'),
+                'Webpage_State'      => $this->get('State'),
+                'preview_publish_label' => _('Publish')
 
             ),
             'hide_by_id'    => array(
@@ -1835,37 +1859,34 @@ class Page extends DB_Table {
 
         }
 
-        $show=array();
-        $hide=array();
+        $show = array();
+        $hide = array();
 
 
-        if ($this->get('Webpage State') == 'Online') {
-            $icon = 'fa-rocket';
-        } elseif ($this->get('Webpage State') == 'Offline') {
-            $icon = ' fa-rocket discreet fa-flip-vertical';
-        } elseif ($this->get('Webpage State') == 'Ready') {
-            $icon = 'fa-check-circle';
-            $show=array('set_as_not_ready_webpage_field');
-            $hide=array('set_as_ready_webpage_field');
+        if ($this->get('Webpage State') == 'Ready') {
+
+            $show = array('set_as_not_ready_webpage_field');
+            $hide = array('set_as_ready_webpage_field');
         } elseif ($this->get('Webpage State') == 'InProcess') {
-            $icon = 'fa-child';
 
-            $show=array('set_as_ready_webpage_field');
-            $hide=array('set_as_not_ready_webpage_field');
+
+            $show = array('set_as_ready_webpage_field');
+            $hide = array('set_as_not_ready_webpage_field');
         }
-
 
 
         $this->update_metadata = array(
             'class_html' => array(
-                'webpage_state_icon'    => '<i class="fa  '.$icon.' " aria-hidden="true"></i>',
+                'Webpage_State_Icon' => $this->get('State Icon'),
+                'Webpage_State'      => $this->get('State'),
+
 
             ),
-            'hide_by_id' =>$hide,
-            'show_by_id' =>$show
+            'hide_by_id' => $hide,
+            'show_by_id' => $show
 
 
-    );
+        );
 
 
     }
@@ -2549,8 +2570,6 @@ class Page extends DB_Table {
         $this->update_state('Offline');
 
 
-
-
         if ($this->get('Webpage State') == 'Online') {
             $icon = 'fa-rocket';
         } elseif ($this->get('Webpage State') == 'Offline') {
@@ -2567,8 +2586,9 @@ class Page extends DB_Table {
 
         $this->update_metadata = array(
             'class_html'      => array(
-                'webpage_state_icon'    => '<i class="fa  '.$icon.' " aria-hidden="true"></i>',
-                'preview_publish_label'    => _('Republish')
+                'Webpage_State_Icon' => $this->get('State Icon'),
+                'Webpage_State'      => $this->get('State'),
+                'preview_publish_label' => _('Republish')
 
             ),
             'hide_by_id'      => array(

@@ -1300,10 +1300,6 @@ CREATE TABLE `Agent Dimension` (
   `Agent Discontinued Products` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Agent Average Delivery Days` float DEFAULT NULL,
   `Agent Number Suppliers` smallint(5) unsigned NOT NULL,
-  `Agent Purchase Orders` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Agent Open Purchase Orders` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Agent Purchase Delivery Notes` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Agent Purchase Invoices` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Agent Valid From` datetime DEFAULT NULL,
   `Agent Valid To` datetime DEFAULT NULL,
   `Agent Sticky Note` text,
@@ -1324,6 +1320,10 @@ CREATE TABLE `Agent Dimension` (
   `Agent Acc To Day Updated` datetime DEFAULT NULL,
   `Agent Acc Ongoing Intervals Updated` datetime DEFAULT NULL,
   `Agent Acc Previous Intervals Updated` datetime DEFAULT NULL,
+  `Agent Number Purchase Orders` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Agent Number Open Purchase Orders` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Agent Number Deliveries` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Agent Number Invoices` smallint(5) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`Agent Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -3254,6 +3254,28 @@ CREATE TABLE `Download Dimension` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `Email Blueprint Dimension`
+--
+
+DROP TABLE IF EXISTS `Email Blueprint Dimension`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Email Blueprint Dimension` (
+  `Email Blueprint Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Email Blueprint Role` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  `Email Blueprint Scope` varchar(128) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `Email Blueprint Scope Key` mediumint(8) unsigned DEFAULT NULL,
+  `Email Blueprint Name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `Email Blueprint JSON` mediumtext COLLATE utf8_unicode_ci,
+  `Email Blueprint HTML` mediumtext COLLATE utf8_unicode_ci,
+  `Email Blueprint Image Key` mediumint(8) unsigned DEFAULT NULL,
+  `Email Blueprint Created` datetime DEFAULT NULL,
+  `Email Blueprint Created By` mediumint(8) unsigned DEFAULT NULL,
+  PRIMARY KEY (`Email Blueprint Key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `Email Bridge`
 --
 
@@ -3760,10 +3782,26 @@ DROP TABLE IF EXISTS `Email Template Dimension`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Email Template Dimension` (
   `Email Template Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Email Template Published Email Key` mediumint(8) unsigned DEFAULT NULL,
   `Email Template Name` varchar(64) NOT NULL,
-  `Email Template Type` enum('Basic','Newsletter Left','Newsletter Right','Postcard') NOT NULL,
-  `Email Template Metadata` mediumtext NOT NULL,
-  `Email Template Source Code` mediumtext NOT NULL,
+  `Email Template Type` enum('HTML','Text') NOT NULL DEFAULT 'HTML',
+  `Email Template Role Type` enum('Transactional','Marketing') DEFAULT NULL,
+  `Email Template Role` varchar(64) DEFAULT NULL,
+  `Email Template Scope` varchar(64) NOT NULL,
+  `Email Template Scope Key` mediumint(8) unsigned NOT NULL,
+  `Email Template Subject` varchar(70) DEFAULT NULL,
+  `Email Template Text` text,
+  `Email Template Editing JSON` mediumtext,
+  `Email Template Editing Checksum` varchar(64) DEFAULT NULL,
+  `Email Template Published Checksum` varchar(64) DEFAULT NULL,
+  `Email Template Text Last Edited` datetime DEFAULT NULL,
+  `Email Template Last Edited` datetime DEFAULT NULL,
+  `Email Template Last Edited By` mediumint(8) unsigned DEFAULT NULL,
+  `Email Template Deliveries` int(10) unsigned NOT NULL DEFAULT '0',
+  `Email Template Reads` int(10) unsigned DEFAULT NULL,
+  `Email Template Bounces` int(10) unsigned NOT NULL DEFAULT '0',
+  `Email Template Complains` int(10) unsigned NOT NULL DEFAULT '0',
+  `Email Template Rejects` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`Email Template Key`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -4372,9 +4410,9 @@ CREATE TABLE `Inventory Warehouse Spanshot Fact` (
   `Warehouse Key` smallint(5) unsigned NOT NULL DEFAULT '1',
   `Parts` mediumint(8) unsigned NOT NULL,
   `Locations` mediumint(8) unsigned NOT NULL,
-  `Value At Cost` decimal(9,2) DEFAULT NULL,
-  `Value At Day Cost` decimal(9,2) DEFAULT NULL,
-  `Value Commercial` decimal(9,2) DEFAULT NULL,
+  `Value At Cost` decimal(16,2) DEFAULT NULL,
+  `Value At Day Cost` decimal(16,2) DEFAULT NULL,
+  `Value Commercial` decimal(16,2) DEFAULT NULL,
   `Value At Cost Open` float NOT NULL DEFAULT '0',
   `Value At Cost High` float NOT NULL DEFAULT '0',
   `Value At Cost Low` float NOT NULL DEFAULT '0',
@@ -5277,7 +5315,7 @@ CREATE TABLE `Location Dimension` (
   `Location Shelf Key` mediumint(9) DEFAULT NULL,
   `Location Code` varchar(16) NOT NULL,
   `Location File As` varchar(255) NOT NULL,
-  `Location Mainly Used For` enum('Picking','Storing','Loading','Displaying','Other','Default') NOT NULL DEFAULT 'Picking',
+  `Location Mainly Used For` enum('Picking','Storing','Loading','Displaying','Other','Default') DEFAULT NULL,
   `Location Shape Type` enum('Box','Cylinder','Unknown') NOT NULL DEFAULT 'Unknown',
   `Location Radius` float DEFAULT NULL,
   `Location Deep` float DEFAULT NULL,
@@ -6821,11 +6859,11 @@ CREATE TABLE `Page Store Dimension` (
   `Page Stealth Mode` enum('Yes','No') CHARACTER SET ucs2 NOT NULL DEFAULT 'No',
   `Page Site Key` mediumint(8) unsigned NOT NULL,
   `Page Store Key` smallint(5) unsigned NOT NULL,
-  `Webpage State` enum('Online','Offline') DEFAULT 'Offline',
+  `Webpage State` enum('InProcess','Online','Offline','Ready') DEFAULT 'InProcess',
   `Webpage Website Key` smallint(5) unsigned DEFAULT NULL,
   `Webpage Type Key` smallint(5) unsigned DEFAULT NULL,
   `Webpage Store Key` smallint(5) unsigned DEFAULT NULL,
-  `Webpage Scope` enum('Product','Category Categories','Category Products','System') DEFAULT NULL,
+  `Webpage Scope` varchar(64) DEFAULT NULL,
   `Webpage Scope Key` mediumint(9) DEFAULT NULL,
   `Webpage Scope Metadata` varchar(255) DEFAULT NULL,
   `Webpage Creation Date` datetime(1) DEFAULT NULL,
@@ -6856,6 +6894,7 @@ CREATE TABLE `Page Store Dimension` (
   `Page Store Javascript` longtext,
   `Page Store Creation Date` datetime DEFAULT NULL,
   `Webpage Launch Date` datetime DEFAULT NULL,
+  `Webpage Take Down Date` datetime DEFAULT NULL,
   `Page Store Last Update Date` datetime DEFAULT NULL,
   `Page Store Last Structural Change Date` datetime DEFAULT NULL,
   `Number See Also Links` tinyint(3) unsigned NOT NULL,
@@ -8029,6 +8068,7 @@ CREATE TABLE `Part Dimension` (
   `Part Package Description` varchar(255) DEFAULT NULL,
   `Part Package Description Note` varchar(255) DEFAULT NULL,
   `Part Unit Description` text,
+  `Part SKOs per Carton` smallint(5) unsigned DEFAULT NULL,
   `Part SKO Barcode` varchar(128) DEFAULT NULL,
   `Part Barcode Type` enum('none','ean8','ean13',' code11','code39','code128','codabar') NOT NULL DEFAULT 'code128',
   `Part Barcode Data Source` enum('SKU','Reference','Other') NOT NULL DEFAULT 'SKU',
@@ -8104,6 +8144,9 @@ CREATE TABLE `Part Dimension` (
   `Part XHTML Available For Forecast` text,
   `Part Average Future Cost Per Unit` float DEFAULT NULL,
   `Part Minimum Future Cost Per Unit` float DEFAULT NULL,
+  `Part Next Shipment Object` enum('PurchaseOrder','SupplierDelivery') DEFAULT NULL,
+  `Part Next Shipment Object Key` mediumint(8) unsigned DEFAULT NULL,
+  `Part Next Shipment Date` datetime DEFAULT NULL,
   `Part Next Shipment State` enum('None','Set','Overdue') NOT NULL DEFAULT 'None',
   `Part Next Supplier Shipment from PO` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Part Next Supplier Shipment` datetime DEFAULT NULL,
@@ -9166,6 +9209,7 @@ DROP TABLE IF EXISTS `Product Category Dimension`;
 CREATE TABLE `Product Category Dimension` (
   `Product Category Key` mediumint(8) unsigned NOT NULL,
   `Product Category Store Key` mediumint(8) unsigned NOT NULL DEFAULT '1',
+  `Product Category Webpage Key` mediumint(8) unsigned DEFAULT NULL,
   `Product Category Status` enum('In Process','Active','Suspended','Discontinued','Discontinuing') NOT NULL DEFAULT 'In Process',
   `Product Category Description` mediumtext NOT NULL,
   `Product Category Valid From` datetime DEFAULT NULL,
@@ -9233,6 +9277,7 @@ CREATE TABLE `Product Category Index` (
   `Product Category Index Category Key` mediumint(8) unsigned NOT NULL,
   `Product Category Index Website Key` mediumint(8) unsigned DEFAULT NULL,
   `Product Category Index Product ID` mediumint(8) unsigned NOT NULL,
+  `Product Category Index Product Webpage Key` mediumint(8) unsigned DEFAULT NULL,
   `Product Category Index Stack` smallint(5) unsigned DEFAULT NULL,
   `Product Category Index Published Stack` smallint(5) unsigned DEFAULT NULL,
   `Product Category Index Content Data` text,
@@ -10650,6 +10695,7 @@ DROP TABLE IF EXISTS `Product Dimension`;
 CREATE TABLE `Product Dimension` (
   `Product ID` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `Product Current Key` mediumint(8) unsigned DEFAULT NULL,
+  `Product Webpage Key` int(10) unsigned DEFAULT NULL,
   `Product Status` enum('InProcess','Active','Suspended','Discontinuing','Discontinued') DEFAULT 'Active',
   `Product Public` enum('Yes','No') NOT NULL DEFAULT 'Yes',
   `Product Type` enum('Product','Service') NOT NULL DEFAULT 'Product',
@@ -10832,7 +10878,8 @@ CREATE TABLE `Product Dimension` (
   KEY `Product Number of Parts` (`Product Number of Parts`),
   KEY `Product Name` (`Product Name`(64)),
   KEY `Product Status` (`Product Status`),
-  KEY `Product Public` (`Product Public`)
+  KEY `Product Public` (`Product Public`),
+  KEY `Product Webpage Key` (`Product Webpage Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -12058,6 +12105,35 @@ CREATE TABLE `Promotion Dimension` (
   `Promotion Begin Date` datetime NOT NULL,
   `Promotion End Date` datetime NOT NULL,
   PRIMARY KEY (`Promotion Key`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Published Email Template Dimension`
+--
+
+DROP TABLE IF EXISTS `Published Email Template Dimension`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Published Email Template Dimension` (
+  `Published Email Template Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Published Email Template Email Template Key` mediumint(8) unsigned NOT NULL,
+  `Published Email Template JSON` mediumtext,
+  `Published Email Template Subject` varchar(70) DEFAULT NULL,
+  `Published Email Template HTML` mediumtext,
+  `Published Email Template Text` text,
+  `Published Email Template Checksum` varchar(64) NOT NULL,
+  `Published Email Template From` datetime DEFAULT NULL,
+  `Published Email Template To` datetime DEFAULT NULL,
+  `Published Email Template Published By` mediumint(8) unsigned DEFAULT NULL,
+  `Published Email Template Deliveries` int(10) unsigned NOT NULL DEFAULT '0',
+  `Published Email Template Reads` int(10) unsigned DEFAULT NULL,
+  `Published Email Template Bounces` int(10) unsigned NOT NULL DEFAULT '0',
+  `Published Email Template Complains` int(10) unsigned NOT NULL DEFAULT '0',
+  `Published Email Template Rejects` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`Published Email Template Key`),
+  KEY `Published Email Template Email Template Key` (`Published Email Template Email Template Key`),
+  KEY `Published Email Template Published By` (`Published Email Template Published By`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -14223,6 +14299,7 @@ CREATE TABLE `Store Dimension` (
   `Store Fax` varchar(255) NOT NULL,
   `Store Slogan` varchar(64) NOT NULL DEFAULT '',
   `Store Address` varchar(255) DEFAULT NULL,
+  `Store Google Map URL` text,
   `Short Marketing Description` varchar(255) DEFAULT NULL,
   `Store Telecom Format` varchar(255) NOT NULL DEFAULT 'GBR',
   `Store State` enum('Normal','Closed') NOT NULL DEFAULT 'Normal',
@@ -14249,6 +14326,7 @@ CREATE TABLE `Store Dimension` (
   `Store Active Products` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Store Suspended Products` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Store Not For Sale Products` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Store Discontinuing Products` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Store Discontinued Products` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Store Unknown Sales State Products` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Store Surplus Availability Products` smallint(5) unsigned NOT NULL DEFAULT '0',
@@ -14345,6 +14423,7 @@ CREATE TABLE `Store Dimension` (
   `Store Acc To Day Updated` datetime DEFAULT NULL COMMENT 'Total, Year to Day, Quarter to day, Week to day ',
   `Store Acc Ongoing Intervals Updated` datetime DEFAULT NULL COMMENT '1 year, 1 quarter ',
   `Store Acc Previous Intervals Updated` datetime DEFAULT NULL COMMENT 'last month, last week, past years, past quarters ',
+  `Store Email Template Signature` text,
   PRIMARY KEY (`Store Key`),
   UNIQUE KEY `Store Name` (`Store Name`),
   KEY `code` (`Store Code`),
@@ -15453,10 +15532,6 @@ CREATE TABLE `Supplier Dimension` (
   `Supplier To Be Discontinued Products` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Supplier Discontinued Products` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Supplier Average Delivery Days` float DEFAULT NULL,
-  `Supplier Purchase Orders` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Supplier Open Purchase Orders` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Supplier Purchase Delivery Notes` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Supplier Purchase Invoices` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Supplier Valid From` datetime DEFAULT NULL,
   `Supplier Valid To` datetime DEFAULT NULL,
   `Supplier Sticky Note` text,
@@ -15486,9 +15561,19 @@ CREATE TABLE `Supplier Dimension` (
   `Supplier Acc Previous Intervals Updated` datetime DEFAULT NULL,
   `Supplier Number Deliveries` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Supplier Number Purchase Orders` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Supplier Number Invoices` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Supplier Number Open Purchase Orders` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Supplier Number History Records` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Supplier Number System Users` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Supplier Number Attachments` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Supplier Paid Ordered Parts To Replenish` mediumint(9) NOT NULL DEFAULT '0',
+  `Supplier Paid Ordered Parts` mediumint(9) NOT NULL DEFAULT '0',
+  `Supplier Tolerable Percentage Paid Ordered Parts To Replenish` float NOT NULL DEFAULT '0',
+  `Supplier Max Percentage Paid Ordered Parts To Replenish` float NOT NULL DEFAULT '0',
+  `Supplier Replenishable Part Locations` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Supplier Part Locations To Replenish` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Supplier Tolerable Percentage Part Locations To Replenish` float NOT NULL DEFAULT '0.1',
+  `Supplier Max Percentage Part Locations To Replenish` float NOT NULL DEFAULT '0.2',
   PRIMARY KEY (`Supplier Key`),
   UNIQUE KEY `Supplier Code` (`Supplier Code`),
   KEY `Supplier Most Recent` (`Supplier Active`),
@@ -17554,6 +17639,11 @@ CREATE TABLE `Warehouse Dimension` (
   `Warehouse Tolerable Percentage Paid Ordered Parts To Replenish` float unsigned NOT NULL DEFAULT '0.05',
   `Warehouse Max Percentage Paid Ordered Parts To Replenish` float unsigned NOT NULL DEFAULT '0.2',
   `Warehouse Unknown Location Key` mediumint(8) unsigned DEFAULT NULL,
+  `Warehouse Replenishable Part Locations` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Warehouse Part Locations To Replenish` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Warehouse Tolerable Percentage Part Locations To Replenish` float NOT NULL DEFAULT '0.1',
+  `Warehouse Max Percentage Part Locations To Replenish` float NOT NULL DEFAULT '0.2',
+  `Warehouse Email Template Signature` text,
   PRIMARY KEY (`Warehouse Key`),
   UNIQUE KEY `Warehouse Code` (`Warehouse Code`),
   UNIQUE KEY `Warehouse Name` (`Warehouse Name`)
@@ -17622,6 +17712,24 @@ CREATE TABLE `Warehouse Receipts Fact` (
   `Received Quantity` float NOT NULL,
   PRIMARY KEY (`Warehouse Receipts Key`),
   KEY `Supplier Product Key` (`Supplier Product Key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Webpage Alias Dimension`
+--
+
+DROP TABLE IF EXISTS `Webpage Alias Dimension`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Webpage Alias Dimension` (
+  `Webpage Alias Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Webpage Alias Website Key` mediumint(8) unsigned NOT NULL,
+  `Webpage Alias Webpage Key` mediumint(8) unsigned NOT NULL,
+  `Webpage Alias Tag` varchar(255) NOT NULL,
+  PRIMARY KEY (`Webpage Alias Key`),
+  UNIQUE KEY `Webpage Alias Website Key` (`Webpage Alias Website Key`,`Webpage Alias Webpage Key`,`Webpage Alias Tag`) USING BTREE,
+  KEY `Webpage Alias Website Key_2` (`Webpage Alias Website Key`,`Webpage Alias Tag`(64))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -17763,9 +17871,10 @@ CREATE TABLE `Webpage Type Dimension` (
   `Webpage Type Key` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `Webpage Type Code` varchar(16) NOT NULL,
   `Webpage Type Website Key` smallint(5) unsigned NOT NULL,
-  `Webpage Type Online Webpages` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Webpage Type Offline Webpages` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Webpage Type Deleted Webpages` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Webpage Type In Process Webpages` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Webpage Type Online Webpages` smallint(8) unsigned NOT NULL DEFAULT '0',
+  `Webpage Type Offline Webpages` smallint(8) unsigned NOT NULL DEFAULT '0',
+  `Webpage Type Deleted Webpages` smallint(8) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`Webpage Type Key`),
   UNIQUE KEY `Webpage Type Code_2` (`Webpage Type Code`,`Webpage Type Website Key`),
   KEY `Webpage Type Code` (`Webpage Type Code`),
@@ -17812,6 +17921,26 @@ CREATE TABLE `Webpage Version Dimension` (
   KEY `Webpage Version Webpage Key` (`Webpage Version Webpage Key`),
   KEY `Webpage Version Code` (`Webpage Version Code`,`Webpage Version Webpage Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Website Auth Token Dimension`
+--
+
+DROP TABLE IF EXISTS `Website Auth Token Dimension`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Website Auth Token Dimension` (
+  `Website Auth Token Key` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `Website Auth Token Website Key` smallint(5) unsigned NOT NULL,
+  `Website Auth Token Selector` varchar(12) COLLATE utf8_unicode_ci NOT NULL,
+  `Website Auth Token Hash` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  `Website Auth Token Website User Key` mediumint(8) unsigned NOT NULL,
+  `Website Auth Token Customer Key` mediumint(8) unsigned NOT NULL,
+  `Website Auth Token Website User Log Key` int(10) unsigned NOT NULL,
+  `Website Auth Token Expire` datetime NOT NULL,
+  PRIMARY KEY (`Website Auth Token Key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -17941,12 +18070,15 @@ CREATE TABLE `Website Dimension` (
   `Website Store Key` smallint(5) unsigned NOT NULL,
   `Website Type` enum('Ecom','EcomB2B','EcomDS') DEFAULT NULL,
   `Website From` datetime DEFAULT NULL,
-  `Website Active` enum('Yes','No') NOT NULL DEFAULT 'Yes',
+  `Website Launched` datetime DEFAULT NULL,
+  `Website Status` enum('InProcess','Active','Maintenance','Closed') NOT NULL DEFAULT 'InProcess',
   `Website Code` varchar(8) NOT NULL,
   `Website Name` varchar(128) NOT NULL,
   `Website URL` varchar(255) NOT NULL,
   `Website Locale` varchar(5) NOT NULL DEFAULT 'en_GB',
   `Website Data` text,
+  `Website Localised Labels` text,
+  `Website Theme` varchar(64) DEFAULT NULL,
   `Website Header Key` mediumint(9) DEFAULT NULL,
   `Website Footer Key` int(11) DEFAULT NULL,
   `Website Number Webpages` mediumint(8) unsigned NOT NULL DEFAULT '0',
@@ -17958,6 +18090,29 @@ CREATE TABLE `Website Dimension` (
   `Website Alt Family Category Key` mediumint(9) DEFAULT NULL,
   `Website Alt Department Category Key` mediumint(9) DEFAULT NULL,
   PRIMARY KEY (`Website Key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Website Failed Log Dimension`
+--
+
+DROP TABLE IF EXISTS `Website Failed Log Dimension`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Website Failed Log Dimension` (
+  `Website Failed Log Key` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `Website Failed Log Type` enum('Register','Login','Reset_Password') DEFAULT NULL,
+  `Website Failed Log Handle` varchar(255) DEFAULT NULL,
+  `Website Failed Log User Key` mediumint(8) unsigned DEFAULT NULL,
+  `Website Failed Log Date` datetime NOT NULL,
+  `Website Failed Log IP` varchar(64) NOT NULL,
+  `Website Failed Log Fail Reason` enum('cookie_error','handle','handle_inactive','password','selector_not_found','selector_expired','wrong_hash') NOT NULL,
+  PRIMARY KEY (`Website Failed Log Key`),
+  KEY `Website Failed Log Fail Reason` (`Website Failed Log Fail Reason`),
+  KEY `Website Failed Log Handle` (`Website Failed Log Handle`(64)),
+  KEY `Website Failed Log User Key` (`Website Failed Log User Key`),
+  KEY `Website Failed Log Type` (`Website Failed Log Type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -17983,6 +18138,25 @@ CREATE TABLE `Website Footer Dimension` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `Website Footer History Bridge`
+--
+
+DROP TABLE IF EXISTS `Website Footer History Bridge`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Website Footer History Bridge` (
+  `Website Footer Key` mediumint(8) unsigned NOT NULL,
+  `History Key` int(10) unsigned NOT NULL,
+  `Deletable` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Strikethrough` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Type` enum('Notes','Changes') NOT NULL,
+  PRIMARY KEY (`Website Footer Key`,`History Key`),
+  KEY `Website Footer Key` (`Website Footer Key`),
+  KEY `History Key` (`History Key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `Website Header Dimension`
 --
 
@@ -18000,6 +18174,25 @@ CREATE TABLE `Website Header Dimension` (
   UNIQUE KEY `Website Header Website Key_2` (`Website Header Website Key`,`Website Header Code`),
   KEY `Website Header Code` (`Website Header Code`),
   KEY `Website Header Website Key` (`Website Header Website Key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Website Header History Bridge`
+--
+
+DROP TABLE IF EXISTS `Website Header History Bridge`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Website Header History Bridge` (
+  `Website Header Key` mediumint(8) unsigned NOT NULL,
+  `History Key` int(10) unsigned NOT NULL,
+  `Deletable` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Strikethrough` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Type` enum('Notes','Changes') NOT NULL,
+  PRIMARY KEY (`Website Header Key`,`History Key`),
+  KEY `Website Header Key` (`Website Header Key`),
+  KEY `History Key` (`History Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -18072,6 +18265,116 @@ CREATE TABLE `Website Node Dimension` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `Website Recover Token Dimension`
+--
+
+DROP TABLE IF EXISTS `Website Recover Token Dimension`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Website Recover Token Dimension` (
+  `Website Recover Token Key` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `Website Recover Token Website Key` smallint(5) unsigned NOT NULL,
+  `Website Recover Token Selector` varchar(12) COLLATE utf8_unicode_ci NOT NULL,
+  `Website Recover Token Hash` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  `Website Recover Token Website User Key` mediumint(8) unsigned NOT NULL,
+  `Website Recover Token Customer Key` mediumint(8) unsigned NOT NULL,
+  `Website Recover Token Expire` datetime NOT NULL,
+  `Website Recover Token IP` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `Website Recover Token Device` varchar(64) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`Website Recover Token Key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Website User Data`
+--
+
+DROP TABLE IF EXISTS `Website User Data`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Website User Data` (
+  `Website User Key` mediumint(8) unsigned NOT NULL,
+  `Website User Login Count` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Website User Last Login` datetime DEFAULT NULL,
+  `Website User Last Login IP` varchar(64) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0',
+  `Website User Failed Login Count` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Website User Last Failed Login IP` varchar(64) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `Website User Last Failed Login` datetime DEFAULT NULL,
+  `Website User Sessions Count` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Website User Requests Count` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Website User Last Request` datetime DEFAULT NULL,
+  PRIMARY KEY (`Website User Key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Website User Dimension`
+--
+
+DROP TABLE IF EXISTS `Website User Dimension`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Website User Dimension` (
+  `Website User Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Website User Handle` varchar(128) NOT NULL,
+  `Website User Password` varchar(128) DEFAULT NULL,
+  `Website User Password Hash` varchar(255) NOT NULL,
+  `Website User Active` enum('Yes','No') NOT NULL DEFAULT 'Yes',
+  `Website User Customer Key` mediumint(9) NOT NULL,
+  `Website User Website Key` smallint(6) NOT NULL,
+  `Website User Created` datetime NOT NULL,
+  `Website User Has Login` enum('Yes','No') NOT NULL DEFAULT 'No',
+  PRIMARY KEY (`Website User Key`),
+  UNIQUE KEY `Website User Handle` (`Website User Handle`,`Website User Website Key`),
+  KEY `Website User Customer Key` (`Website User Customer Key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Website User History Bridge`
+--
+
+DROP TABLE IF EXISTS `Website User History Bridge`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Website User History Bridge` (
+  `Website User Key` mediumint(8) unsigned NOT NULL,
+  `History Key` int(10) unsigned NOT NULL,
+  `Deletable` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Strikethrough` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Type` enum('Notes','Changes','Weblog') NOT NULL DEFAULT 'Notes',
+  PRIMARY KEY (`Website User Key`,`History Key`),
+  KEY `Website User Key` (`Website User Key`),
+  KEY `History Key` (`History Key`),
+  KEY `Deletable` (`Deletable`),
+  KEY `Type` (`Type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Website User Log Dimension`
+--
+
+DROP TABLE IF EXISTS `Website User Log Dimension`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Website User Log Dimension` (
+  `Website User Log Key` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `Website User Log Type` enum('Register','Login','Reset_Password') NOT NULL DEFAULT 'Login',
+  `Website User Log Status` enum('Open','Close') NOT NULL DEFAULT 'Open',
+  `Website User Log User Key` mediumint(8) unsigned NOT NULL,
+  `Website User Log Website Key` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Website User Log Session ID` varchar(40) NOT NULL,
+  `Website User Log IP` varchar(64) NOT NULL,
+  `Website User Log Start Date` datetime NOT NULL,
+  `Website User Log Last Visit Date` datetime DEFAULT NULL,
+  `Website User Log Logout Date` datetime DEFAULT NULL,
+  `Website User Log Remember Cookie` enum('Yes','No','Unknown') NOT NULL DEFAULT 'Yes',
+  PRIMARY KEY (`Website User Log Key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `Widget Dimension`
 --
 
@@ -18130,4 +18433,4 @@ CREATE TABLE `todo_users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-04-27 16:47:42
+-- Dump completed on 2017-07-11 13:53:08

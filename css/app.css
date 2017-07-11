@@ -8032,6 +8032,59 @@ input.input_file {
 .options td:hover {
   color: #333; }
 
+.control_panel .columns {
+  margin: 0px;
+  position: relative;
+  top: -5px;
+  padding: 0px;
+  float: left; }
+.control_panel .sortable2 {
+  margin: 0px;
+  padding: 0px;
+  float: left; }
+.control_panel .sortable2 li {
+  float: left;
+  list-style: none;
+  text-align: center;
+  margin-right: 10px;
+  min-width: 100px;
+  border: 1px solid #ccc;
+  white-space: nowrap; }
+.control_panel .column_label {
+  border: 1px solid #ccc;
+  padding: 4px 8px;
+  white-space: nowrap; }
+.control_panel .column_extra_label {
+  border: 1px solid #ccc;
+  padding: 4px 8px; }
+.control_panel .columns li {
+  float: left;
+  list-style: none;
+  text-align: center;
+  margin-right: 10px;
+  min-width: 100px;
+  border: 1px solid #ccc;
+  padding: 4px 16px 4px 8px;
+  margin-bottom: 10px; }
+.control_panel .handle2 {
+  margin-left: 5px;
+  cursor: move; }
+.control_panel .block_show {
+  margin-left: 10px; }
+.control_panel .open_edit i {
+  margin-left: 10px;
+  margin-right: 5px; }
+
+.slider_preview {
+  float: left;
+  margin-right: 5px;
+  width: 40px;
+  height: 20px;
+  border: 1px solid #ccc; }
+
+.slider_preview.selected {
+  border: 1px solid #aaa; }
+
 .adr {
   line-height: 22px; }
 

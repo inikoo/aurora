@@ -153,167 +153,124 @@ function website_system_webpages_config($website_type) {
 
                 'Page Store Content Data' => json_encode(
                     array(
-                        'show_slider'     => true,
-                        'show_features'   => true,
-                        'show_counter'    => true,
-                        'show_image'      => true,
-                        'show_catalogue'  => true,
-                        'show_what_we_do' => true,
-                        'show_register'   => true,
-                        'show_products'   => true,
 
 
-                        'sliders' => array(
+                        'blocks' => array(
+
                             array(
-                                'image'       => 'art/image_1920x750.png',
-                                'title'       => 'Because we love What we Do',
-                                'text'        => 'Many web sites still their infancy various versions have packages sure there anything over the years.',
-                                'link_label'  => 'Read More',
-                                'link_type'   => 'button',
-                                'link_url'    => '#',
-                                'title_class' => 'centext  white',
-                                'title_style' => 'top:270px',
-                                'text_class'  => 'centext  white',
-                                'text_style'  => 'top:349px',
-                                'link_class'  => 'centext',
-                                'link_style'  => 'top:435px',
+                                'type'=>'sliders',
+                                'label' => _('Sliders'),
+                                'icon'  => 'fa-sliders',
+                                'show'=>1,
+
+                                'sliders' => array(
+
+                                    array(
+
+                                        'image'       => 'art/image_1920x750.png',
+                                        'title'       => 'Because we love What we Do',
+                                        'text'        => 'Many web sites still their infancy various versions have packages sure there anything over the years.',
+                                        'link_label'  => 'Read More',
+                                        'link_type'   => 'button',
+                                        'link_url'    => '#',
+                                        'title_class' => 'centext  white',
+                                        'title_style' => 'top:270px',
+                                        'text_class'  => 'centext  white',
+                                        'text_style'  => 'top:349px',
+                                        'link_class'  => 'centext',
+                                        'link_style'  => 'top:435px'
+
+                                    ),
+                                    array(
+                                        'image'       => 'art/image_1920x750.png',
+                                        'title'       => 'Professional. Creative. Clean.',
+                                        'text'        => 'Many web sites still their infancy various versions have packages sure there anything over the years.',
+                                        'link_label'  => 'Read More',
+                                        'link_type'   => 'button',
+                                        'link_url'    => '#',
+                                        'title_class' => 'centext  white',
+                                        'title_style' => 'top:270px',
+                                        'text_class'  => 'centext  white',
+                                        'text_style'  => 'top:349px',
+                                        'link_class'  => 'centext',
+                                        'link_style'  => 'top:435px',
+
+                                    ),
+                                    array(
+                                        'image'       => 'art/image_1920x750.png',
+                                        'title'       => 'Build your Own Website :)',
+                                        'text'        => 'Many web sites still their infancy various versions have packages sure there anything over the years.',
+                                        'link_label'  => 'Read More',
+                                        'link_type'   => 'button',
+                                        'link_url'    => '#',
+                                        'title_class' => '  white',
+                                        'title_style' => 'left:180px; top:270px"',
+                                        'text_class'  => '  white',
+                                        'text_style'  => 'left:180px; top:349px;',
+                                        'link_class'  => '',
+                                        'link_style'  => 'left:180px; top:435px',
+
+                                    ),
+
+                                ),
+
+
+                            ),
+                            /*
+                            array(
+                                'type'=>'features',
+                                'label' => _('Features'),
+                                'icon'  => 'fa-th-large',
+                                'show'=>1
+                            ),
+                            array(
+                                'type'=>'counter',
+                                'label' => _('Counter'),
+                                'icon'  => 'fa-sort-numeric-asc',
 
                             ),
                             array(
-                                'image'       => 'art/image_1920x750.png',
-                                'title'       => 'Professional. Creative. Clean.',
-                                'text'        => 'Many web sites still their infancy various versions have packages sure there anything over the years.',
-                                'link_label'  => 'Read More',
-                                'link_type'   => 'button',
-                                'link_url'    => '#',
-                                'title_class' => 'centext  white',
-                                'title_style' => 'top:270px',
-                                'text_class'  => 'centext  white',
-                                'text_style'  => 'top:349px',
-                                'link_class'  => 'centext',
-                                'link_style'  => 'top:435px',
+                                'type'=>'catalogue',
+                                'label' => _('Catalogue'),
+                                'icon'  => 'fa-shopping-bag',
+                                'show'=>1
 
                             ),
                             array(
-                                'image'       => 'art/image_1920x750.png',
-                                'title'       => 'Build your Own Website :)',
-                                'text'        => 'Many web sites still their infancy various versions have packages sure there anything over the years.',
-                                'link_label'  => 'Read More',
-                                'link_type'   => 'button',
-                                'link_url'    => '#',
-                                'title_class' => '  white',
-                                'title_style' => 'left:180px; top:270px"',
-                                'text_class'  => '  white',
-                                'text_style'  => 'left:180px; top:349px;',
-                                'link_class'  => '',
-                                'link_style'  => 'left:180px; top:435px',
+
+                                'type'=>'why_us',
+                                'label' => _('What us'),
+                                'icon'  => 'fa-diamond',
+                                'show'=>1
+
+                            ),
+                            array(
+                                'type'=>'image',
+                                'label' => _('Image'),
+                                'icon'  => 'fa-image',
+                                'show'=>1
+
+                            ),
+                            array(
+                                'type'=>'register',
+                                'label' => _('Register'),
+                                'icon'  => 'fa-register',
+                                'show'=>1
+
+                            ),
+                            array(
+                                'type'=>'products',
+                                'label' => _('Products'),
+                                'icon'  => 'fa-leaf',
+                                'show'=>1
 
                             ),
 
-                        ),
+*/
 
 
-                        'features' => array(
 
-                            'columns' => array(
-
-                                array(
-                                    array(
-                                        'icon'  => 'icon-cursor',
-                                        'title' => 'Several Design Options',
-                                        'text'  => 'Many desktop publishing packages and web page editors now use Ipsum their defau mode various versions have over the years.',
-                                    ),
-                                    array(
-                                        'icon'  => 'icon-basket-loaded',
-                                        'title' => 'Build Own Website',
-                                        'text'  => 'Many desktop publishing packages and web page editors now use Ipsum their defau mode various versions have over the years.',
-                                    )
-
-                                ),
-
-                                array(
-                                    array(
-                                        'icon'  => 'icon-badge',
-                                        'title' => 'Clean &amp; Modern Design',
-                                        'text'  => 'Many desktop publishing packages and web page editors now use Ipsum their defau mode various versions have over the years.',
-                                    ),
-                                    array(
-                                        'icon'  => 'icon-social-dropbox',
-                                        'title' => 'Useful Shortcut\'s',
-                                        'text'  => 'Many desktop publishing packages and web page editors now use Ipsum their defau mode various versions have over the years.',
-                                    )
-
-                                ),
-
-                                array(
-                                    array(
-                                        'icon'  => 'icon-settings',
-                                        'title' => 'Icon Fonts Easy to Use',
-                                        'text'  => 'Many desktop publishing packages and web page editors now use Ipsum their defau mode various versions have over the years.',
-                                    ),
-                                    array(
-                                        'icon'  => 'icon-bulb',
-                                        'title' => 'Excellent Customer Services',
-                                        'text'  => 'Many desktop publishing packages and web page editors now use Ipsum their defau mode various versions have over the years.',
-                                    )
-
-                                ),
-
-
-                            )
-
-
-                        ),
-
-
-                        'counter' => array(
-
-                            'columns' => array(
-                                array(
-                                    'label'  => 'Projects',
-                                    'number' => 270,
-                                ),
-                                array(
-                                    'label'  => 'Clients',
-                                    'number' => 225,
-                                ),
-                                array(
-                                    'label'  => 'Likes',
-                                    'number' => 4500,
-                                ),
-                                array(
-                                    'label'  => 'Days',
-                                    'number' => 365,
-                                )
-
-                            )
-                        ),
-
-
-                        'catalogue' => array(
-
-                            'items' => array(
-
-                                'image' => 'http://placehold.it/800x600',
-                                'title' => 'Dashboard',
-
-
-                            )
-
-
-                        ),
-
-
-                        '_img_key'            => '',
-                        '_title'              => _("We're launching soon"),
-                        '_text'               => _('Our website is under construction. We\'ll be here soon with our new awesome site'),
-                        '_launch_date'        => '',
-                        '_email_placeholder'  => _('Enter email ...'),
-                        '_email_submit_label' => _('Submit'),
-                        '_day_label'          => _('Days'),
-                        '_hrs_label'          => _('Hours'),
-                        '_min_label'          => _('Minutes'),
-                        '_sec_label'          => _('Seconds'),
+                        )
 
 
                     )
@@ -699,7 +656,7 @@ function website_system_webpages_config($website_type) {
                         'password_reset_success_msg'             => _('Your password has been changed successfully'),
                         'password_reset_expired_token_error_msg' => _('Sorry, password reset expired'),
                         'password_reset_error_msg'               => _("Sorry, password reset incorrect or expired days ago"),
-                        'password_reset_logged_in_error_msg'=>_('You are already logged in'),
+                        'password_reset_logged_in_error_msg'     => _('You are already logged in'),
                         'password_reset_go_back'                 => _('Try again'),
                         'password_reset_go_home'                 => _('Go to our homepage'),
 

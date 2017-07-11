@@ -11,7 +11,8 @@
 
 
 
-<div style="padding:20px;border-bottom:1px solid #ccc" class="control_panel">
+<div style="padding:20px 20px 0px 20px;border-bottom:1px solid #ccc" class="control_panel">
+    <span id="save_button" class="" style="float:right;padding:0px 0px 20px 0px" onClick="$('#preview')[0].contentWindow.save()"><i class="fa fa-cloud  " aria-hidden="true"></i> {t}Save{/t}</span>
 
 
     {if isset($control_template)}
@@ -21,7 +22,6 @@
 
 
 
-    <span id="save_button" class="" style="float:right" onClick="$('#preview')[0].contentWindow.save()"><i class="fa fa-cloud  " aria-hidden="true"></i> {t}Save{/t}</span>
 
     <div style="clear:both"></div>
 

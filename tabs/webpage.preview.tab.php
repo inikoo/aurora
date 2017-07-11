@@ -48,11 +48,16 @@ if($state['_object']->get('Webpage Template Filename')=='products_showcase'  or 
     $smarty->assign('metadata', $webpage->get('Scope MetaData'));
 
 
+
     $control_template = $theme.'/control.'.$webpage->get('Webpage Template Filename').'.'.$theme.'.tpl';
 
     if (file_exists('templates/'.$control_template)) {
         $smarty->assign('control_template', $control_template);
 
+    }else{
+
+
+        $smarty->assign('control_template', $theme.'/control.webpage_blocks.'.$theme.'.tpl');
     }
 
     $html = $smarty->fetch('webpage_preview.tpl');

@@ -2051,7 +2051,7 @@ function publish(element,type){
     console.log(request)
     $.getJSON(request, function (data) {
 
-        console.log(data)
+
 
 
         $('#publish').addClass('changed valid')
@@ -2075,6 +2075,8 @@ function publish(element,type){
 
         }
 
+        console.log(data)
+
         if (data.other_fields) {
             for (var key in data.other_fields) {
                 update_field(data.other_fields[key])
@@ -2088,6 +2090,10 @@ function publish(element,type){
         }
 
         for (var key in data.update_metadata.class_html) {
+
+            console.log('.' + key)
+            console.log(data.update_metadata.class_html[key])
+
             $('.' + key).html(data.update_metadata.class_html[key])
         }
 

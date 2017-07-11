@@ -53,10 +53,10 @@ if ($webpage->get('Webpage Template Filename') == 'products_showcase') {
 } elseif ($webpage->get('Webpage Template Filename') == 'register') {
 
     require_once 'utils/get_addressing.php';
-    list($address_format,$address_labels,$used_fields,$hidden_fields,$required_fields)=get_address_form_data($store->get('Store Home Country Code 2 Alpha'),$website->get('Website Locale') );
+    list($address_format, $address_labels, $used_fields, $hidden_fields, $required_fields) = get_address_form_data($store->get('Store Home Country Code 2 Alpha'), $website->get('Website Locale'));
 
     require_once 'utils/get_countries.php';
-    $countries=get_countries($website->get('Website Locale'));
+    $countries = get_countries($website->get('Website Locale'));
 
 
     $smarty->assign('address_labels', $address_labels);
@@ -64,25 +64,26 @@ if ($webpage->get('Webpage Template Filename') == 'products_showcase') {
     $smarty->assign('countries', $countries);
     $smarty->assign('selected_country', $store->get('Store Home Country Code 2 Alpha'));
 
+}elseif( in_array($webpage->get('Webpage Template Filename'),array('homepage_logout')) ){
+    $template = $theme.'/webpage_blocks.'.$theme.'.tpl';
+
+}else{
+    $template = $theme.'/'.$webpage->get('Webpage Template Filename').'.'.$theme.'.tpl';
+
 }
 
 
 $smarty->assign('content', $content_data);
 $smarty->assign('labels', $website->get('Localised Labels'));
-
-
-
-//print_r($website->get('Localised Labels'));
-
 $smarty->assign('webpage', $webpage);
 $smarty->assign('store', $store);
 $smarty->assign('website', $website);
-
 $smarty->assign('theme', $theme);
 $smarty->assign('template', $webpage->get('Webpage Template Filename'));
 
 
-$template = $theme.'/'.$webpage->get('Webpage Template Filename').'.'.$theme.'.tpl';
+
+
 
 
 if (file_exists('templates/'.$template)) {
