@@ -203,7 +203,7 @@ function send_test_email($data, $editor, $smarty, $db) {
     $client = SesClient::factory(
         array(
             'version'     => 'latest',
-            'region'      => 'us-east-1',
+            'region'      => 'eu-west-1',
             'credentials' => [
                 'key'    => AWS_ACCESS_KEY_ID,
                 'secret' => AWS_SECRET_ACCESS_KEY,

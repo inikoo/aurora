@@ -253,8 +253,6 @@ class Page extends DB_Table {
             $this->id = $this->db->lastInsertId();
             $this->get_data('id', $this->id);
 
-            $this->update_valid_url();
-            $this->update_working_url();
 
             if ($this->data['Page Type'] == 'Store') {
                 $this->create_store_page($raw_data);
