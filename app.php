@@ -21,7 +21,7 @@ $smarty->assign(
 require_once 'external_libs/mobile_detect/Mobile_Detect.php';
 $detect = new Mobile_Detect;
 
-if ($detect->isMobile()) {
+if ($detect->isMobile() and false) {
     $display_device_version = 'mobile';
     $detected_device = 'mobile';
 } else {
