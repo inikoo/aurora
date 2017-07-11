@@ -1653,6 +1653,9 @@ class Page extends DB_Table {
         }
 
         if ($this->get('Webpage State') == 'Offline') {
+
+
+
             $this->update_state('Online');
 
         }
@@ -1784,6 +1787,9 @@ class Page extends DB_Table {
 
         $this->update_field('Page State', $value, $options);
         $this->update_field('Webpage State', $value, 'no_history');
+
+
+        print $value;
 
 
         if ($old_state != $this->data['Webpage State']) {
