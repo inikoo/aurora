@@ -168,7 +168,65 @@ function website_system_webpages_config($website_type) {
 
 
                             ),
-                            
+                            array(
+                                'type'=>'six_pack',
+                                'label' => _('Six-Pack'),
+                                'icon'  => 'fa-th-large',
+                                'show'=>1,
+
+
+
+                                    'columns' => array(
+
+                                        array(
+                                            array(
+                                                'icon'  => 'icon-cursor',
+                                                'title' => 'Several Design Options',
+                                                'text'  => 'Many desktop publishing packages and web page editors now use Ipsum their defau mode various versions have over the years.',
+                                            ),
+                                            array(
+                                                'icon'  => 'icon-basket-loaded',
+                                                'title' => 'Build Own Website',
+                                                'text'  => 'Many desktop publishing packages and web page editors now use Ipsum their defau mode various versions have over the years.',
+                                            )
+
+                                        ),
+
+                                        array(
+                                            array(
+                                                'icon'  => 'icon-badge',
+                                                'title' => 'Clean &amp; Modern Design',
+                                                'text'  => 'Many desktop publishing packages and web page editors now use Ipsum their defau mode various versions have over the years.',
+                                            ),
+                                            array(
+                                                'icon'  => 'icon-social-dropbox',
+                                                'title' => 'Useful Shortcut\'s',
+                                                'text'  => 'Many desktop publishing packages and web page editors now use Ipsum their defau mode various versions have over the years.',
+                                            )
+
+                                        ),
+
+                                        array(
+                                            array(
+                                                'icon'  => 'icon-settings',
+                                                'title' => 'Icon Fonts Easy to Use',
+                                                'text'  => 'Many desktop publishing packages and web page editors now use Ipsum their defau mode various versions have over the years.',
+                                            ),
+                                            array(
+                                                'icon'  => 'icon-bulb',
+                                                'title' => 'Excellent Customer Services',
+                                                'text'  => 'Many desktop publishing packages and web page editors now use Ipsum their defau mode various versions have over the years.',
+                                            )
+
+                                        ),
+
+
+                                    )
+
+
+
+
+                            ),
 
                             /*
 
