@@ -130,6 +130,46 @@ function website_system_webpages_config($website_type) {
 
                 )
             ),
+
+            array(
+                'type'=>'three_pack',
+                'label' => _('Three-Pack'),
+                'icon'  => 'fa-bars fa-rotate-90',
+                'show'=>1,
+                'title'=>'What We Do',
+                'subtitle'=>'Aipsum therefore always',
+
+
+
+                'columns' => array(
+
+                    array(
+                        'icon'  => 'icon-screen-desktop',
+                        'title' => 'Modern Design',
+                        'text'  => 'Mombined with handful model sentence structures to generate which looks.',
+                    ),
+                    array(
+                        'icon'  => 'icon-social-dropbox',
+                        'title' => 'Mega Blobs',
+                        'text'  => 'Mombined with handful model sentence structures to generate which looks.',
+                    ),
+                    array(
+                        'icon'  => 'icon-cup',
+                        'title' => 'Diffrent Prods',
+                        'text'  => 'Mombined with handful model sentence structures to generate which looks.',
+                    ),
+
+                    )
+
+
+
+
+
+
+
+            ),
+
+
             /*
 
           array(
