@@ -64,11 +64,16 @@ if ($webpage->get('Webpage Template Filename') == 'products_showcase') {
     $smarty->assign('countries', $countries);
     $smarty->assign('selected_country', $store->get('Store Home Country Code 2 Alpha'));
 
-}elseif( in_array($webpage->get('Webpage Template Filename'),array('homepage_logout')) ){
-    $template = $theme.'/webpage_blocks.'.$theme.'.tpl';
+} else {
 
-}else{
+
     $template = $theme.'/'.$webpage->get('Webpage Template Filename').'.'.$theme.'.tpl';
+
+    if (!file_exists('templates/'.$template)) {
+        $template = $theme.'/webpage_blocks.'.$theme.'.tpl';
+
+    }
+
 
 }
 
@@ -80,10 +85,6 @@ $smarty->assign('store', $store);
 $smarty->assign('website', $website);
 $smarty->assign('theme', $theme);
 $smarty->assign('template', $webpage->get('Webpage Template Filename'));
-
-
-
-
 
 
 if (file_exists('templates/'.$template)) {
