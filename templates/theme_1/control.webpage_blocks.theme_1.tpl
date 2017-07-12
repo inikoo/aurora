@@ -88,25 +88,25 @@
 
                         {elseif $block.type=='iframe'}
 
-                            <div id="iframe_height_edit_block" class="hide edit_block" style="position:absolute;padding:10px;background-color: #FFF;border:1px solid #ccc">
+                            <div id="iframe_height_edit_block_{$key}" name="iframe_height_edit_block" class="hide edit_block" style="position:absolute;padding:10px;background-color: #FFF;border:1px solid #ccc">
                                  {t}Height{/t} <input value="{$block.height}" style="width: 30px">px <i class="apply_changes fa button fa-check-square" style="margin-left: 10px" aria-hidden="true"></i>
                             </div>
-                            <div id="iframe_src_edit_block" class="hide edit_block" style="position:absolute;padding:10px;background-color: #FFF;border:1px solid #ccc">
+                            <div id="iframe_src_edit_block_{$key}" name="iframe_height_edit_block"  class="hide edit_block" style="position:absolute;padding:10px;background-color: #FFF;border:1px solid #ccc">
                                 {t}Src{/t} https://<input value="{$block.src}" style="width: 900px">  <i class="apply_changes  fa button fa-check-square" style="margin-left: 10px" aria-hidden="true"></i>
                             </div>
 
                             <span >
-                                {t}Width{/t} 1240px {t}Height{/t} <span id="iframe_height_{$key}" class="button iframe_height" style="border:1px solid #ccc;padding:2px 4px">{$block.height}px</span> r=<span class="iframe_ratio">{math equation="w/h" w=1240 h=$block.height format="%.2f"}</span>
+                                {t}Width{/t} 1240px {t}Height{/t} <span id="iframe_height_{$key}" class="button iframe_height"  key="{$key}" style="border:1px solid #ccc;padding:2px 4px">{$block.height}px</span> r=<span class="iframe_ratio">{math equation="w/h" w=1240 h=$block.height format="%.2f"}</span>
 
-                                <span  style="margin-left:20px"> src:<span id="iframe_src{$key}" class="button iframe_src"   style="border:1px solid #ccc;padding:2px 4px;">https://{$block.src|truncate:60}</span>
+                                <span  style="margin-left:20px"> src:<span id="iframe_src{$key}" class="button iframe_src" key="{$key}"  style="border:1px solid #ccc;padding:2px 4px;">https://{$block.src|truncate:60}</span>
                             </span>
 
                         {elseif $block.type=='image'}
 
-                            <div id="image_tooltip_edit_block" class="hide edit_block" style="position:absolute;padding:10px;background-color: #FFF;border:1px solid #ccc;z-index: 4000">
+                            <div id="image_tooltip_edit_block_{$key}"  name="image_tooltip_edit_block" class="hide edit_block" style="position:absolute;padding:10px;background-color: #FFF;border:1px solid #ccc;z-index: 4000">
                                 <input value="{$block.tooltip}" style="width: 900px">  <i class="apply_changes  fa button fa-check-square" style="margin-left: 10px" aria-hidden="true"></i>
                             </div>
-                            <div id="image_link_edit_block" class="hide edit_block" style="position:absolute;padding:10px;background-color: #FFF;border:1px solid #ccc;z-index: 4000">
+                            <div id="image_link_edit_block_{$key}"  name="image_link_edit_block" class="hide edit_block" style="position:absolute;padding:10px;background-color: #FFF;border:1px solid #ccc;z-index: 4000">
                                 <input value="{$block.link}" style="width: 450px">  <i class="apply_changes  fa button fa-check-square" style="margin-left: 10px" aria-hidden="true"></i>
                             </div>
 
@@ -117,7 +117,7 @@
                                                                                             <label style="margin-left:10px;font-weight: normal;cursor: pointer"  for="update_image_{$key}"><i class="fa fa-upload" aria-hidden="true"></i>  {t}Upload{/t}</label>
 
 
-                               <span id="image_tooltip_{$key}" class="image_tooltip button"  style="margin-left:30px">
+                               <span id="image_tooltip_{$key}" class="image_tooltip button"  key="{$key}"   style="margin-left:30px">
                                    <i   class="fa   {if $block.tooltip=='' } fa-comment-o very_discreet{else} fa-comment {/if} " aria-hidden="true"></i>
                                    <span  class="   {if $block.tooltip=='' }hide{/if}"   style="border:1px solid #ccc;padding:2px 4px;">{$block.tooltip|truncate:30}</span>
                                </span>
@@ -128,7 +128,25 @@
                                    <span  class="button  {if $block.link=='' }hide{/if} "   style="border:1px solid #ccc;padding:2px 4px;">{$block.link|truncate:30}</span>
                                 </span>
 
-                        {/if}
+                         {elseif $block.type=='counter'}
+
+
+
+                                {foreach from=$block.columns key=column_key  item=column }
+
+                                    <div id="counter_link_edit_block_{$key}_{$column_key}" name="counter_link_edit_block" class="hide edit_block" style="position:absolute;padding:10px;background-color: #FFF;border:1px solid #ccc;z-index: 4000">
+                                        <input value="{$column.link}" style="width: 450px">  <i class="apply_changes  fa button fa-check-square" style="margin-left: 10px" aria-hidden="true"></i>
+                                    </div>
+                                    
+                                    <input  id="counter_number_{$key}_{$column_key}" type="number"  key="{$key}" column_key="{$column_key}"   value="{$column.number}" style="width: 60px" class="counter_number"  />
+                                    <i id="counter_link_{$key}_{$column_key}" style="margin-right: 10px"  key="{$key}" column_key="{$column_key}"      class="fa fa-link button counter_link  {if $column.link=='' }very_discreet{/if} "  aria-hidden="true"></i>
+
+
+
+
+                                {/foreach}
+
+                         {/if}
 
 
 
@@ -322,7 +340,7 @@
     $(document).on('click', '.iframe_height', function (e) {
 
         $('.edit_block').addClass('hide')
-        $('#iframe_height_edit_block').data('element',$(this)).removeClass('hide').offset({
+        $('#iframe_height_edit_block_'+$(this).attr('key')).data('element',$(this)).removeClass('hide').offset({
             left: $(this).offset().left
         }).find('input').focus()
 
@@ -335,7 +353,7 @@
 
     $(document).on('click', '.iframe_src', function (e) {
         $('.edit_block').addClass('hide')
-        $('#iframe_src_edit_block').data('element',$(this)).removeClass('hide').find('input').focus()
+        $('#iframe_src_edit_block_'+$(this).attr('key')).data('element',$(this)).removeClass('hide').find('input').focus()
     })
 
     $(document).on('click', '.apply_changes', function (e) {
@@ -343,7 +361,7 @@
 
         $('.edit_block').addClass('hide')
 
-        switch ($(this).closest('div').attr('id')){
+        switch ($(this).closest('div').attr('name')){
             case 'iframe_height_edit_block':
 
                 value=parseInt($(this).prev('input').val())
@@ -391,7 +409,7 @@
     $(document).on('click', '.image_link', function (e) {
 
         $('.edit_block').addClass('hide')
-        $('#image_link_edit_block').data('element',$(this)).removeClass('hide').offset({
+        $('#image_link_edit_block_'+$(this).attr('key')).data('element',$(this)).removeClass('hide').offset({
             left: $(this).offset().left
         }).find('input').focus()
 
@@ -404,7 +422,7 @@
 
     $(document).on('click', '.image_tooltip', function (e) {
         $('.edit_block').addClass('hide')
-        $('#image_tooltip_edit_block').data('element',$(this)).removeClass('hide').find('input').focus()
+        $('#image_tooltip_edit_block_'+$(this).attr('key')).data('element',$(this)).removeClass('hide').find('input').focus()
     })
 
     $(document).on('click', '.apply_changes', function (e) {
@@ -412,7 +430,7 @@
 
         $('.edit_block').addClass('hide')
 
-        switch ($(this).closest('div').attr('id')){
+        switch ($(this).closest('div').attr('name')){
             case 'image_link_edit_block':
 
                 value=$(this).prev('input').val()
@@ -539,6 +557,82 @@
 
     });
 
+    // =============================== Counter ======================================================
+
+    $(document).on('click', '.counter_link', function (e) {
+
+
+        console.log($('#counter_link_edit_block_'+$(this).attr('key')+'_'+$(this).attr('column_key')))
+        console.log($(this).attr('column_key'))
+
+        $('.edit_block').addClass('hide')
+        $('#counter_link_edit_block_'+$(this).attr('key')+'_'+$(this).attr('column_key')).data('element',$(this)).removeClass('hide').offset({
+            left: $(this).offset().left
+        }).find('input').focus()
+
+
+
+
+
+    })
+
+
+    $(document).on('input propertychange', '.counter_number', function (evt) {
+
+
+        value=parseInt($(this).val())
+
+
+
+        var counter_id=$("#preview").contents().find("#block_"+$(this).closest('.edit_mode').attr('key')+' .counters1 ._counter:eq('+$(this).attr('column_key')  +') '  ).attr('number',value).find('span').attr('id')
+        $('#preview')[0].contentWindow.stop_counter(counter_id)
+
+        $("#preview").contents().find("#block_"+$(this).closest('.edit_mode').attr('key')+' .counters1 ._counter:eq('+$(this).attr('column_key')  +') '  ).attr('number',value).find('span').html(value)
+
+
+        $('#save_button').addClass('save button changed valid')
+
+
+    });
+
+
+
+    $(document).on('click', '.apply_changes', function (e) {
+
+
+        $('.edit_block').addClass('hide')
+
+        switch ($(this).closest('div').attr('name')){
+            case 'counter_link_edit_block':
+
+                value=$(this).prev('input').val()
+
+                console.log(value)
+
+                if(value==''){
+                    $(this).closest('div').data('element').addClass('very_discreet')
+
+                }else{
+                    $(this).closest('div').data('element').removeClass('very_discreet')
+
+
+                }
+
+
+
+                $("#preview").contents().find("#block_"+$(this).closest('.edit_mode').attr('key')+' .counters1 ._counter:eq('+$(this).closest('div').data('element').attr('column_key')  +') '  ).attr('link',value);
+
+
+
+                break;
+
+
+        }
+
+        $('#save_button').addClass('save button changed valid')
+
+
+    })
 
 
 </script>

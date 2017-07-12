@@ -249,6 +249,8 @@
 
                     break;
 
+
+
                 case 'six_pack':
 
                     var columns=[]
@@ -284,6 +286,41 @@
                         type: 'six_pack',
                         label: '{t}Siz-Pack{/t}',
                         icon: 'fa-th-large',
+                        show: ($(obj).hasClass('hide') ? 0 : 1 ),
+                        columns:columns
+
+                    })
+
+                    break;
+
+                case 'counter':
+
+                    var columns=[]
+
+
+
+
+                    $('._counter', obj).each(function(i, col) {
+
+
+
+                        _col={
+                            label  : $(col).find('h4').html(),
+                            number : $(col).attr('number'),
+                            link:$(col).attr('link')
+                        }
+
+
+                        columns.push(_col)
+
+                    });
+
+
+
+                    blocks.push({
+                        type: 'counter',
+                        label: '{t}Counter{/t}',
+                        icon: 'fa-sort-numeric-asc',
                         show: ($(obj).hasClass('hide') ? 0 : 1 ),
                         columns:columns
 

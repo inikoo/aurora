@@ -97,7 +97,39 @@ function website_system_webpages_config($website_type) {
                 'link'=>'',
 
             ),
+            array(
+                'type'=>'counter',
+                'label' => _('Counter'),
+                'icon'  => 'fa-sort-numeric-asc',
 
+                'show'=>1,
+                'columns' => array(
+                    array(
+                        'label'  => 'Projects',
+                        'number' => 270,
+                        'link'=>''
+                    ),
+                    array(
+                        'label'  => 'Clients',
+                        'number' => 225,
+                        'link'=>''
+
+                    ),
+                    array(
+                        'label'  => 'Likes',
+                        'number' => 4500,
+                        'link'=>''
+
+                    ),
+                    array(
+                        'label'  => 'Days',
+                        'number' => 365,
+                        'link'=>''
+
+                    )
+
+                )
+            ),
             /*
 
           array(
