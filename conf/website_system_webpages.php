@@ -11,6 +11,214 @@
 
 function website_system_webpages_config($website_type) {
 
+
+    $home_content_data=  array(
+
+
+        'blocks' => array(
+
+            array(
+                'type'=>'iframe',
+                'label' => 'iFrame',
+                'icon'  => 'fa-window-restore',
+                'show'=>1,
+                'height'=>250,
+                'src'=>'cdn.bannersnack.com/banners/bxmldll37/embed/index.html?userId=30149291&t=1499779573'
+
+
+
+            ),
+            array(
+                'type'=>'six_pack',
+                'label' => _('Six-Pack'),
+                'icon'  => 'fa-th-large',
+                'show'=>1,
+
+
+
+                'columns' => array(
+
+                    array(
+                        array(
+                            'icon'  => 'icon-cursor',
+                            'title' => 'Several Design Options',
+                            'text'  => 'Many desktop publishing packages and web page editors now use Ipsum their defau mode various versions have over the years.',
+                        ),
+                        array(
+                            'icon'  => 'icon-basket-loaded',
+                            'title' => 'Build Own Website',
+                            'text'  => 'Many desktop publishing packages and web page editors now use Ipsum their defau mode various versions have over the years.',
+                        )
+
+                    ),
+
+                    array(
+                        array(
+                            'icon'  => 'icon-badge',
+                            'title' => 'Clean &amp; Modern Design',
+                            'text'  => 'Many desktop publishing packages and web page editors now use Ipsum their defau mode various versions have over the years.',
+                        ),
+                        array(
+                            'icon'  => 'icon-social-dropbox',
+                            'title' => 'Useful Shortcut\'s',
+                            'text'  => 'Many desktop publishing packages and web page editors now use Ipsum their defau mode various versions have over the years.',
+                        )
+
+                    ),
+
+                    array(
+                        array(
+                            'icon'  => 'icon-settings',
+                            'title' => 'Icon Fonts Easy to Use',
+                            'text'  => 'Many desktop publishing packages and web page editors now use Ipsum their defau mode various versions have over the years.',
+                        ),
+                        array(
+                            'icon'  => 'icon-bulb',
+                            'title' => 'Excellent Customer Services',
+                            'text'  => 'Many desktop publishing packages and web page editors now use Ipsum their defau mode various versions have over the years.',
+                        )
+
+                    ),
+
+
+                )
+
+
+
+
+            ),
+            array(
+                'type'=>'image',
+                'label' => _('Image'),
+                'icon'  => 'fa-image',
+                'show'=>1,
+                'src'=>'',
+                'tooltip'=>'',
+                'link'=>'',
+
+            ),
+
+            /*
+
+          array(
+              'type'=>'sliders',
+              'label' => _('Sliders'),
+              'icon'  => 'fa-sliders',
+              'show'=>1,
+
+              'sliders' => array(
+
+                  array(
+
+                      'image'       => 'art/image_1920x750.png',
+                      'title'       => 'Because we love What we Do',
+                      'text'        => 'Many web sites still their infancy various versions have packages sure there anything over the years.',
+                      'link_label'  => 'Read More',
+                      'link_type'   => 'button',
+                      'link_url'    => '#',
+                      'title_class' => 'centext  white',
+                      'title_style' => 'top:270px',
+                      'text_class'  => 'centext  white',
+                      'text_style'  => 'top:349px',
+                      'link_class'  => 'centext',
+                      'link_style'  => 'top:435px'
+
+                  ),
+                  array(
+                      'image'       => 'art/image_1920x750.png',
+                      'title'       => 'Professional. Creative. Clean.',
+                      'text'        => 'Many web sites still their infancy various versions have packages sure there anything over the years.',
+                      'link_label'  => 'Read More',
+                      'link_type'   => 'button',
+                      'link_url'    => '#',
+                      'title_class' => 'centext  white',
+                      'title_style' => 'top:270px',
+                      'text_class'  => 'centext  white',
+                      'text_style'  => 'top:349px',
+                      'link_class'  => 'centext',
+                      'link_style'  => 'top:435px',
+
+                  ),
+                  array(
+                      'image'       => 'art/image_1920x750.png',
+                      'title'       => 'Build your Own Website :)',
+                      'text'        => 'Many web sites still their infancy various versions have packages sure there anything over the years.',
+                      'link_label'  => 'Read More',
+                      'link_type'   => 'button',
+                      'link_url'    => '#',
+                      'title_class' => '  white',
+                      'title_style' => 'left:180px; top:270px"',
+                      'text_class'  => '  white',
+                      'text_style'  => 'left:180px; top:349px;',
+                      'link_class'  => '',
+                      'link_style'  => 'left:180px; top:435px',
+
+                  ),
+
+              ),
+
+
+          ),
+
+          array(
+              'type'=>'features',
+              'label' => _('Features'),
+              'icon'  => 'fa-th-large',
+              'show'=>1
+          ),
+          array(
+              'type'=>'counter',
+              'label' => _('Counter'),
+              'icon'  => 'fa-sort-numeric-asc',
+
+          ),
+          array(
+              'type'=>'catalogue',
+              'label' => _('Catalogue'),
+              'icon'  => 'fa-shopping-bag',
+              'show'=>1
+
+          ),
+          array(
+
+              'type'=>'why_us',
+              'label' => _('What us'),
+              'icon'  => 'fa-diamond',
+              'show'=>1
+
+          ),
+          array(
+              'type'=>'image',
+              'label' => _('Image'),
+              'icon'  => 'fa-image',
+              'show'=>1
+
+          ),
+          array(
+              'type'=>'register',
+              'label' => _('Register'),
+              'icon'  => 'fa-register',
+              'show'=>1
+
+          ),
+          array(
+              'type'=>'products',
+              'label' => _('Products'),
+              'icon'  => 'fa-leaf',
+              'show'=>1
+
+          ),
+
+*/
+
+
+
+        )
+
+
+    );
+
+
     $website_system_webpages = array(
 
         'EcomB2B' => array(
@@ -124,16 +332,6 @@ function website_system_webpages_config($website_type) {
                         ),
 
 
-                        '_img_key'            => '',
-                        '_title'              => _("We're launching soon"),
-                        '_text'               => _('Our website is under construction. We\'ll be here soon with our new awesome site'),
-                        '_launch_date'        => '',
-                        '_email_placeholder'  => _('Enter email ...'),
-                        '_email_submit_label' => _('Submit'),
-                        '_day_label'          => _('Days'),
-                        '_hrs_label'          => _('Hours'),
-                        '_min_label'          => _('Minutes'),
-                        '_sec_label'          => _('Seconds'),
 
 
                     )
@@ -152,201 +350,7 @@ function website_system_webpages_config($website_type) {
                 'Webpage Meta Description'  => '',
 
                 'Page Store Content Data' => json_encode(
-                    array(
-
-
-                        'blocks' => array(
-
-                            array(
-                                'type'=>'iframe',
-                                'label' => 'iFrame',
-                                'icon'  => 'fa-window-restore',
-                                'show'=>1,
-                                'height'=>250,
-                                'src'=>'cdn.bannersnack.com/banners/bxmldll37/embed/index.html?userId=30149291&t=1499779573'
-
-
-
-                            ),
-                            array(
-                                'type'=>'six_pack',
-                                'label' => _('Six-Pack'),
-                                'icon'  => 'fa-th-large',
-                                'show'=>1,
-
-
-
-                                    'columns' => array(
-
-                                        array(
-                                            array(
-                                                'icon'  => 'icon-cursor',
-                                                'title' => 'Several Design Options',
-                                                'text'  => 'Many desktop publishing packages and web page editors now use Ipsum their defau mode various versions have over the years.',
-                                            ),
-                                            array(
-                                                'icon'  => 'icon-basket-loaded',
-                                                'title' => 'Build Own Website',
-                                                'text'  => 'Many desktop publishing packages and web page editors now use Ipsum their defau mode various versions have over the years.',
-                                            )
-
-                                        ),
-
-                                        array(
-                                            array(
-                                                'icon'  => 'icon-badge',
-                                                'title' => 'Clean &amp; Modern Design',
-                                                'text'  => 'Many desktop publishing packages and web page editors now use Ipsum their defau mode various versions have over the years.',
-                                            ),
-                                            array(
-                                                'icon'  => 'icon-social-dropbox',
-                                                'title' => 'Useful Shortcut\'s',
-                                                'text'  => 'Many desktop publishing packages and web page editors now use Ipsum their defau mode various versions have over the years.',
-                                            )
-
-                                        ),
-
-                                        array(
-                                            array(
-                                                'icon'  => 'icon-settings',
-                                                'title' => 'Icon Fonts Easy to Use',
-                                                'text'  => 'Many desktop publishing packages and web page editors now use Ipsum their defau mode various versions have over the years.',
-                                            ),
-                                            array(
-                                                'icon'  => 'icon-bulb',
-                                                'title' => 'Excellent Customer Services',
-                                                'text'  => 'Many desktop publishing packages and web page editors now use Ipsum their defau mode various versions have over the years.',
-                                            )
-
-                                        ),
-
-
-                                    )
-
-
-
-
-                            ),
-
-                            /*
-
-                          array(
-                              'type'=>'sliders',
-                              'label' => _('Sliders'),
-                              'icon'  => 'fa-sliders',
-                              'show'=>1,
-
-                              'sliders' => array(
-
-                                  array(
-
-                                      'image'       => 'art/image_1920x750.png',
-                                      'title'       => 'Because we love What we Do',
-                                      'text'        => 'Many web sites still their infancy various versions have packages sure there anything over the years.',
-                                      'link_label'  => 'Read More',
-                                      'link_type'   => 'button',
-                                      'link_url'    => '#',
-                                      'title_class' => 'centext  white',
-                                      'title_style' => 'top:270px',
-                                      'text_class'  => 'centext  white',
-                                      'text_style'  => 'top:349px',
-                                      'link_class'  => 'centext',
-                                      'link_style'  => 'top:435px'
-
-                                  ),
-                                  array(
-                                      'image'       => 'art/image_1920x750.png',
-                                      'title'       => 'Professional. Creative. Clean.',
-                                      'text'        => 'Many web sites still their infancy various versions have packages sure there anything over the years.',
-                                      'link_label'  => 'Read More',
-                                      'link_type'   => 'button',
-                                      'link_url'    => '#',
-                                      'title_class' => 'centext  white',
-                                      'title_style' => 'top:270px',
-                                      'text_class'  => 'centext  white',
-                                      'text_style'  => 'top:349px',
-                                      'link_class'  => 'centext',
-                                      'link_style'  => 'top:435px',
-
-                                  ),
-                                  array(
-                                      'image'       => 'art/image_1920x750.png',
-                                      'title'       => 'Build your Own Website :)',
-                                      'text'        => 'Many web sites still their infancy various versions have packages sure there anything over the years.',
-                                      'link_label'  => 'Read More',
-                                      'link_type'   => 'button',
-                                      'link_url'    => '#',
-                                      'title_class' => '  white',
-                                      'title_style' => 'left:180px; top:270px"',
-                                      'text_class'  => '  white',
-                                      'text_style'  => 'left:180px; top:349px;',
-                                      'link_class'  => '',
-                                      'link_style'  => 'left:180px; top:435px',
-
-                                  ),
-
-                              ),
-
-
-                          ),
-
-                          array(
-                              'type'=>'features',
-                              'label' => _('Features'),
-                              'icon'  => 'fa-th-large',
-                              'show'=>1
-                          ),
-                          array(
-                              'type'=>'counter',
-                              'label' => _('Counter'),
-                              'icon'  => 'fa-sort-numeric-asc',
-
-                          ),
-                          array(
-                              'type'=>'catalogue',
-                              'label' => _('Catalogue'),
-                              'icon'  => 'fa-shopping-bag',
-                              'show'=>1
-
-                          ),
-                          array(
-
-                              'type'=>'why_us',
-                              'label' => _('What us'),
-                              'icon'  => 'fa-diamond',
-                              'show'=>1
-
-                          ),
-                          array(
-                              'type'=>'image',
-                              'label' => _('Image'),
-                              'icon'  => 'fa-image',
-                              'show'=>1
-
-                          ),
-                          array(
-                              'type'=>'register',
-                              'label' => _('Register'),
-                              'icon'  => 'fa-register',
-                              'show'=>1
-
-                          ),
-                          array(
-                              'type'=>'products',
-                              'label' => _('Products'),
-                              'icon'  => 'fa-leaf',
-                              'show'=>1
-
-                          ),
-
-*/
-
-
-
-                        )
-
-
-                    )
+                    $home_content_data
                 )
 
 
@@ -512,16 +516,7 @@ function website_system_webpages_config($website_type) {
                         ),
 
 
-                        '_img_key'            => '',
-                        '_title'              => _("We're launching soon"),
-                        '_text'               => _('Our website is under construction. We\'ll be here soon with our new awesome site'),
-                        '_launch_date'        => '',
-                        '_email_placeholder'  => _('Enter email ...'),
-                        '_email_submit_label' => _('Submit'),
-                        '_day_label'          => _('Days'),
-                        '_hrs_label'          => _('Hours'),
-                        '_min_label'          => _('Minutes'),
-                        '_sec_label'          => _('Seconds'),
+
 
 
                     )

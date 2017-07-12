@@ -101,6 +101,33 @@
                                 <span  style="margin-left:20px"> src:<span id="iframe_src{$key}" class="button iframe_src"   style="border:1px solid #ccc;padding:2px 4px;">https://{$block.src|truncate:60}</span>
                             </span>
 
+                        {elseif $block.type=='image'}
+
+                            <div id="image_tooltip_edit_block" class="hide edit_block" style="position:absolute;padding:10px;background-color: #FFF;border:1px solid #ccc;z-index: 4000">
+                                <input value="{$block.tooltip}" style="width: 900px">  <i class="apply_changes  fa button fa-check-square" style="margin-left: 10px" aria-hidden="true"></i>
+                            </div>
+                            <div id="image_link_edit_block" class="hide edit_block" style="position:absolute;padding:10px;background-color: #FFF;border:1px solid #ccc;z-index: 4000">
+                                <input value="{$block.link}" style="width: 450px">  <i class="apply_changes  fa button fa-check-square" style="margin-left: 10px" aria-hidden="true"></i>
+                            </div>
+
+                               <span style="font-style: italic">{t}Min width{/t} 1240px  </span>
+
+
+                                <input style="display:none" type="file" block_key="{$key}" name="update_image_block" id="update_image_{$key}" class="image_upload" data-options='{ "min_width":"1240p"}'/>
+                                                                                            <label style="margin-left:10px;font-weight: normal;cursor: pointer"  for="update_image_{$key}"><i class="fa fa-upload" aria-hidden="true"></i>  {t}Upload{/t}</label>
+
+
+                               <span id="image_tooltip_{$key}" class="image_tooltip button"  style="margin-left:30px">
+                                   <i   class="fa   {if $block.tooltip=='' } fa-comment-o very_discreet{else} fa-comment {/if} " aria-hidden="true"></i>
+                                   <span  class="   {if $block.tooltip=='' }hide{/if}"   style="border:1px solid #ccc;padding:2px 4px;">{$block.tooltip|truncate:30}</span>
+                               </span>
+
+                               <span id="image_link_{$key}" class="image_link button" style="margin-left:10px">
+
+                                <i  class="fa fa-link   {if $block.link=='' }very_discreet{/if} "  aria-hidden="true"></i>
+                                   <span  class="button  {if $block.link=='' }hide{/if} "   style="border:1px solid #ccc;padding:2px 4px;">{$block.link|truncate:30}</span>
+                                </span>
+
                         {/if}
 
 
@@ -263,6 +290,12 @@
         $('#save_button').addClass('hide')
 
 
+        $("#preview").contents().find('._block').addClass('hide')
+        $("#preview").contents().find('#block_'+key).removeClass('hide')
+
+
+
+
     }
 
     function exit_edit_column(element) {
@@ -275,7 +308,7 @@
         $('#save_button').removeClass('hide')
 
 
-        //$('#preview')[0].contentWindow.hide_column($(element).attr('key'));
+        $("#preview").contents().find('._block').removeClass('hide')
 
 
     }
@@ -353,6 +386,158 @@
 
 
     })
+    // =============================== Image ======================================================
+
+    $(document).on('click', '.image_link', function (e) {
+
+        $('.edit_block').addClass('hide')
+        $('#image_link_edit_block').data('element',$(this)).removeClass('hide').offset({
+            left: $(this).offset().left
+        }).find('input').focus()
+
+
+
+
+
+    })
+
+
+    $(document).on('click', '.image_tooltip', function (e) {
+        $('.edit_block').addClass('hide')
+        $('#image_tooltip_edit_block').data('element',$(this)).removeClass('hide').find('input').focus()
+    })
+
+    $(document).on('click', '.apply_changes', function (e) {
+
+
+        $('.edit_block').addClass('hide')
+
+        switch ($(this).closest('div').attr('id')){
+            case 'image_link_edit_block':
+
+                value=$(this).prev('input').val()
+
+                $(this).closest('div').data('element').find('span').html(value)
+                if(value==''){
+                    $(this).closest('div').data('element').find('span').addClass('hide')
+                    $(this).closest('div').data('element').find('i').addClass('very_discreet')
+                    $("#preview").contents().find("#block_"+$(this).closest('.edit_mode').attr('key')).find('img').removeClass('like_button');
+
+                }else{
+                    $(this).closest('div').data('element').find('span').removeClass('hide')
+                    $(this).closest('div').data('element').find('i').removeClass('very_discreet')
+                    $("#preview").contents().find("#block_"+$(this).closest('.edit_mode').attr('key')).find('img').addClass('like_button');
+
+
+                }
+
+
+                $("#preview").contents().find("#block_"+$(this).closest('.edit_mode').attr('key')).find('img').attr('link',value);
+
+
+                break;
+            case 'image_tooltip_edit_block':
+
+                var value=$(this).prev('input').val()
+
+                $(this).closest('div').data('element').find('span').html(value)
+                if(value==''){
+                    $(this).closest('div').data('element').find('span').addClass('hide')
+
+                    $(this).closest('div').data('element').find('i').addClass('very_discreet fa-comment-o').removeClass('fa-comment')
+
+                }else{
+                    $(this).closest('div').data('element').find('span').removeClass('hide')
+
+                    $(this).closest('div').data('element').find('i').removeClass('very_discreet fa-comment-o').addClass('fa-comment')
+
+
+                }
+
+                $("#preview").contents().find("#block_"+$(this).closest('.edit_mode').attr('key')).find('img').attr('title',value).attr('alt',value);
+
+                break;
+
+        }
+
+        $('#save_button').addClass('save button changed valid')
+
+
+    })
+
+    var droppedFiles = false;
+
+
+    $(document).on('change', '.image_upload', function (e) {
+
+
+
+        var ajaxData = new FormData();
+
+        //var ajaxData = new FormData( );
+        if (droppedFiles) {
+            $.each(droppedFiles, function (i, file) {
+                ajaxData.append('files', file);
+                return false;
+            });
+        }
+
+
+        $.each($(this).prop("files"), function (i, file) {
+            ajaxData.append("files[" + i + "]", file);
+            return false;
+        });
+
+
+        ajaxData.append("tipo", 'upload_images')
+        ajaxData.append("parent", 'webpage')
+        ajaxData.append("parent_key", '{$webpage->id}')
+        ajaxData.append("options", JSON.stringify($(this).data('options')))
+        ajaxData.append("response_type", 'webpage')
+
+        var element=$(this)
+
+        $.ajax({
+            url: "/ar_upload.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+
+
+            complete: function () {
+
+            }, success: function (data) {
+
+                // console.log(data)
+
+                if (data.state == '200') {
+
+
+
+                    if(element.attr('name')=='update_image_block'){
+
+                        console.log("#block_"+$(this).attr('block_key'))
+
+
+                        $("#preview").contents().find("#block_"+element.attr('block_key')).find('img').attr('src',data.image_src);
+
+
+                    }
+
+                    //$('#save_button', window.parent.document).addClass('save button changed valid')
+
+                } else if (data.state == '400') {
+                    swal({
+                        title: data.title, text: data.msg, confirmButtonText: "{t}OK{/t}"
+                    });
+                }
+
+                element.val('')
+
+            }, error: function () {
+
+            }
+        });
+
+
+    });
 
 
 
