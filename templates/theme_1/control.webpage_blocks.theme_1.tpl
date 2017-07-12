@@ -117,12 +117,12 @@
                                                                                             <label style="margin-left:10px;font-weight: normal;cursor: pointer"  for="update_image_{$key}"><i class="fa fa-upload" aria-hidden="true"></i>  {t}Upload{/t}</label>
 
 
-                               <span id="image_tooltip_{$key}" class="image_tooltip button"  key="{$key}"   style="margin-left:30px">
+                               <span id="image_tooltip_{$key}" key="{$key}" class="image_tooltip button"  key="{$key}"   style="margin-left:30px">
                                    <i   class="fa   {if $block.tooltip=='' } fa-comment-o very_discreet{else} fa-comment {/if} " aria-hidden="true"></i>
                                    <span  class="   {if $block.tooltip=='' }hide{/if}"   style="border:1px solid #ccc;padding:2px 4px;">{$block.tooltip|truncate:30}</span>
                                </span>
 
-                               <span id="image_link_{$key}" class="image_link button" style="margin-left:10px">
+                               <span id="image_link_{$key}" key="{$key}" class="image_link button" style="margin-left:10px">
 
                                 <i  class="fa fa-link   {if $block.link=='' }very_discreet{/if} "  aria-hidden="true"></i>
                                    <span  class="button  {if $block.link=='' }hide{/if} "   style="border:1px solid #ccc;padding:2px 4px;">{$block.link|truncate:30}</span>
@@ -145,6 +145,20 @@
 
 
                                 {/foreach}
+                                {elseif $block.type=='button'}
+
+                              
+                            <div id="button_link_edit_block_{$key}"  name="button_link_edit_block" class="hide edit_block" style="position:absolute;padding:10px;background-color: #FFF;border:1px solid #ccc;z-index: 4000">
+                                <input value="{$block.link}" style="width: 450px">  <i class="apply_changes  fa button fa-check-square" style="margin-left: 10px" aria-hidden="true"></i>
+                            </div>
+
+
+                               <span id="button_link_{$key}"   key="{$key}" class="button_link button" style="margin-left:10px">
+
+                                <i  class="fa fa-link   {if $block.link=='' }very_discreet{/if} "  aria-hidden="true"></i>
+                                   <span  class="button  {if $block.link=='' }hide{/if} "   style="border:1px solid #ccc;padding:2px 4px;">{$block.link|truncate:30}</span>
+                                </span>
+                                
 
                          {/if}
 
@@ -622,6 +636,63 @@
 
                 $("#preview").contents().find("#block_"+$(this).closest('.edit_mode').attr('key')+' .counters1 ._counter:eq('+$(this).closest('div').data('element').attr('column_key')  +') '  ).attr('link',value);
 
+
+
+                break;
+
+
+        }
+
+        $('#save_button').addClass('save button changed valid')
+
+
+    })
+
+    // =============================== Button ======================================================
+
+    $(document).on('click', '.button_link', function (e) {
+
+
+        console.log('xxx')
+
+        $('.edit_block').addClass('hide')
+        $('#button_link_edit_block_'+$(this).attr('key')).data('element',$(this)).removeClass('hide').offset({
+            left: $(this).offset().left
+        }).find('input').focus()
+
+
+
+
+
+    })
+
+
+
+
+    $(document).on('click', '.apply_changes', function (e) {
+
+
+        $('.edit_block').addClass('hide')
+
+        switch ($(this).closest('div').attr('name')){
+            case 'button_link_edit_block':
+
+                value=$(this).prev('input').val()
+
+                $(this).closest('div').data('element').find('span').html(value)
+                if(value==''){
+                    $(this).closest('div').data('element').find('span').addClass('hide')
+                    $(this).closest('div').data('element').find('i').addClass('very_discreet')
+
+                }else{
+                    $(this).closest('div').data('element').find('span').removeClass('hide')
+                    $(this).closest('div').data('element').find('i').removeClass('very_discreet')
+
+
+                }
+
+
+                $("#preview").contents().find("#block_"+$(this).closest('.edit_mode').attr('key')).find('a').attr('link',value);
 
 
                 break;
