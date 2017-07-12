@@ -178,6 +178,7 @@ class Public_Store {
             case 'Store Home Country Code 2 Alpha':
             case 'Store Email':
             case 'Store Email Template Signature':
+            case 'Store Google Map URL':
                 return $this->data[$key];
                 break;
 

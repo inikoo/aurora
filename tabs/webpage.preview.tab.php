@@ -51,6 +51,8 @@ if($state['_object']->get('Webpage Template Filename')=='products_showcase'  or 
 
     $control_template = $theme.'/control.'.$webpage->get('Webpage Template Filename').'.'.$theme.'.tpl';
 
+   // print $control_template;
+
     if (file_exists('templates/'.$control_template)) {
         $smarty->assign('control_template', $control_template);
 

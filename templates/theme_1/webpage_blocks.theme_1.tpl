@@ -435,6 +435,56 @@
 
                     break;
 
+                case 'two_one':
+
+                    var columns=[]
+
+
+
+
+                    $('._two_one', obj).each(function(i, col) {
+
+
+
+                        _col={
+                            type  : $(col).attr('type'),
+
+                            _title  : $(col).find('._title').html(),
+                            _text :  $(col).find('._text').html(),
+                        }
+
+
+                        columns.push(_col)
+
+                    });
+
+
+
+                    blocks.push({
+                        type: 'two_one',
+                        label: '{t}Two-One{/t}',
+                        icon: 'fa-window-maximize fa-rotate-90',
+                        show: ($(obj).hasClass('hide') ? 0 : 1 ),
+
+                        columns:columns
+
+                    })
+
+                    console.log(columns)
+
+                    break;
+                case 'map':
+
+                    blocks.push({
+                        type: 'map',
+                        label: '{t}Map{/t}',
+                        icon: 'fa-map-marker',
+                        show: ($(obj).hasClass('hide') ? 0 : 1 ),
+
+                        src:$(obj).find('iframe').attr('_src')
+                    })
+
+
             }
 
         });
