@@ -28,6 +28,35 @@ function website_system_webpages_config($website_type) {
 
 
             ),
+
+
+            array(
+                'type'=>'button',
+                'label' => _('Button'),
+                'icon'  => 'fa-hand-pointer-o',
+                'show'=>1,
+                'title'=>'Great Value to Get the Dash on TF Only',
+                'text'=>'Packages and web page editors search versions have over the years sometimes.',
+                'button_label'=>'Read More',
+                'link'=>'',
+                'bg_image'=>'',
+                'bg_color'=>'',
+                'text_color'=>'',
+                'button_bg_color'=>'',
+                'button_text_color'=>'',
+
+
+
+
+
+
+
+
+
+            ),
+
+
+
             array(
                 'type'=>'six_pack',
                 'label' => _('Six-Pack'),

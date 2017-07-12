@@ -364,6 +364,33 @@
                     })
 
                     break;
+
+                case 'button':
+
+
+                    blocks.push({
+                        type: 'button',
+                        label: '{t}Button{/t}',
+                        icon: 'fa-hand-pointer-o',
+                        show: ($(obj).hasClass('hide') ? 0 : 1 ),
+
+                        title: $(obj).find('._title').html(),
+                        text: $(obj).find('._text').html(),
+                        button_label: $(obj).find('._button').html(),
+
+                        link:  $(obj).find('._button').attr('link'),
+
+                        bg_image : '',
+                        bg_color : '',
+                        text_color : '',
+                        button_bg_color : '',
+                        button_text_color : '',
+
+
+                    })
+
+                    break;
+
             }
 
         });
