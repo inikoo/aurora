@@ -285,7 +285,9 @@
 
         <div id="show_image" class="{if !$content.show_image}hide{/if}">
 
-            <div class="container"><img src="http://placehold.it/1170x320" alt="" class="img_left rimg"></div>
+            <div class="container">
+                <img src="http://placehold.it/1240pxx250" alt="" class="img_left rimg">
+            </div>
 
             <div class="clearfix"></div>
         </div>

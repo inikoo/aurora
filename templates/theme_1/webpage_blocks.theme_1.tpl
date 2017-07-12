@@ -234,6 +234,20 @@
                     })
 
                     break;
+                case 'image':
+
+
+                    blocks.push({
+                        type: 'image',
+                        label: '{t}Image{/t}',
+                        icon: 'fa-image',
+                        show: ($(obj).hasClass('hide') ? 0 : 1 ),
+                        tooltip: $(obj).find('img').attr('title'),
+                        link: $(obj).find('img').attr('link'),
+                        src:$(obj).find('img').attr('src')
+                    })
+
+                    break;
 
                 case 'six_pack':
 
