@@ -269,7 +269,7 @@
 
                             <span aria-hidden="true" class="icon-cup"></span>
                             <br/><br/>
-                            <h5>Mega Menu</h5>
+                            <h5>Mega Blobs</h5>
                             <p>Mombined with handful model sentence structures to generate which looks.</p>
 
                         </div><!-- end section -->
@@ -277,7 +277,7 @@
                     </div><!-- end all sections -->
 
                 </div>
-            </div><!-- end features section 3 -->
+            </div>
 
             <div class="clearfix"></div>
 
