@@ -114,7 +114,7 @@
 
 
                                 <input style="display:none" type="file" block_key="{$key}" name="update_image_block" id="update_image_{$key}" class="image_upload" data-options='{ "min_width":"1240p"}'/>
-                                                                                            <label style="margin-left:10px;font-weight: normal;cursor: pointer"  for="update_image_{$key}"><i class="fa fa-upload" aria-hidden="true"></i>  {t}Upload{/t}</label>
+                                <label style="margin-left:10px;font-weight: normal;cursor: pointer"  for="update_image_{$key}"><i class="fa fa-upload" aria-hidden="true"></i>  {t}Upload{/t}</label>
 
 
                                <span id="image_tooltip_{$key}" key="{$key}" class="image_tooltip button"  key="{$key}"   style="margin-left:30px">

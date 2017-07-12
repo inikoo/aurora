@@ -236,7 +236,6 @@
                     break;
                 case 'image':
 
-
                     blocks.push({
                         type: 'image',
                         label: '{t}Image{/t}',
@@ -248,8 +247,6 @@
                     })
 
                     break;
-
-
 
                 case 'six_pack':
 
@@ -391,6 +388,53 @@
 
                     break;
 
+                case 'two_pack':
+
+                    blocks.push({
+                        type: 'two_pack',
+                        label: '{t}Two-Pack{/t}',
+                        icon: 'fa-pause',
+                        show: ($(obj).hasClass('hide') ? 0 : 1 ),
+
+                        _image: $(obj).find('._image').attr('src'),
+                        _image_key: $(obj).find('._image').attr('image_key'),
+                        _title:$(obj).find('._title').html(),
+                        _subtitle:$(obj).find('._subtitle').html(),
+                        _text:$(obj).find('._text').html()
+                    })
+
+                    break;
+                case 'one_pack':
+
+                    blocks.push({
+                        type: 'one_pack',
+                        label: '{t}One-Pack{/t}',
+                        icon: 'fa-minus',
+                        show: ($(obj).hasClass('hide') ? 0 : 1 ),
+
+
+                        _title:$(obj).find('._title').html(),
+                        _text:$(obj).find('._text').html()
+                    })
+
+                    break;
+
+                case 'telephone':
+
+                    blocks.push({
+                        type: 'telephone',
+                        label: '{t}Telephone{/t}',
+                        icon: 'fa-phone',
+                        show: ($(obj).hasClass('hide') ? 0 : 1 ),
+
+                        _title:$(obj).find('._title').html(),
+                        _text:$(obj).find('._text').html(),
+                        _telephone:$(obj).find('._telephone').html(),
+
+                    })
+
+                    break;
+
             }
 
         });
@@ -437,6 +481,78 @@
 
     $('[contenteditable=true]').on('input paste', function (event) {
         $('#save_button', window.parent.document).addClass('save button changed valid')
+    });
+
+
+    var droppedFiles = false;
+
+
+    $(document).on('change', '.image_upload', function (e) {
+
+
+
+        var ajaxData = new FormData();
+
+        //var ajaxData = new FormData( );
+        if (droppedFiles) {
+            $.each(droppedFiles, function (i, file) {
+                ajaxData.append('files', file);
+                return false;
+            });
+        }
+
+
+        $.each($(this).prop("files"), function (i, file) {
+            ajaxData.append("files[" + i + "]", file);
+            return false;
+        });
+
+
+        ajaxData.append("tipo", 'upload_images')
+        ajaxData.append("parent", 'webpage')
+        ajaxData.append("parent_key", '{$webpage->id}')
+        ajaxData.append("options", JSON.stringify($(this).data('options')))
+        ajaxData.append("response_type", 'webpage')
+
+        var element=$(this)
+
+        $.ajax({
+            url: "/ar_upload.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+
+
+            complete: function () {
+
+            }, success: function (data) {
+
+                if (data.state == '200') {
+
+                    $('#save_button', window.parent.document).addClass('save button changed valid')
+
+
+                    if(element.attr('name')=='two_pack'){
+
+
+                        $(element).closest('.one_half').find('img').attr('src',data.image_src).attr('image_key',data.img_key)
+
+
+                    }
+
+                    //$('#save_button', window.parent.document).addClass('save button changed valid')
+
+                } else if (data.state == '400') {
+                    swal({
+                        title: data.title, text: data.msg, confirmButtonText: "{t}OK{/t}"
+                    });
+                }
+
+                element.val('')
+
+            }, error: function () {
+
+            }
+        });
+
+
     });
 
 
