@@ -63,18 +63,35 @@
             })
 
 
-        var request = '/ar_edit_website.php?tipo=save_webpage_content&key={$webpage->id}&content_data=' + encodeURIComponent(Base64.encode(JSON.stringify(content_data)));
+        var ajaxData = new FormData();
+
+        ajaxData.append("tipo", 'save_webpage_content')
+        ajaxData.append("key", '{$webpage->id}')
+        ajaxData.append("content_data", JSON.stringify(content_data))
 
 
-        console.log(request)
+        $.ajax({
+            url: "/ar_edit_website.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+            complete: function () {
+            }, success: function (data) {
+
+                if (data.state == '200') {
+
+                    $('#save_button', window.parent.document).removeClass('save').find('i').removeClass('fa-spinner fa-spin')
+
+                } else if (data.state == '400') {
+                    swal({
+                        title: data.title, text: data.msg, confirmButtonText: "OK"
+                    });
+                }
 
 
-        $.getJSON(request, function (data) {
 
+            }, error: function () {
 
-            $('#save_button', window.parent.document).removeClass('save').find('i').removeClass('fa-spinner fa-spin')
+            }
+        });
 
-        })
 
 
     }

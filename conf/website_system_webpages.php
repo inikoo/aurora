@@ -22,9 +22,6 @@ function website_system_webpages_config($website_type) {
                 'show'=>1,
                 'height'=>250,
                 'src'=>'cdn.bannersnack.com/banners/bxmldll37/embed/index.html?userId=30149291&t=1499779573'
-
-
-
             ),
 
 
@@ -339,10 +336,7 @@ function website_system_webpages_config($website_type) {
                 'show'=>1,
                 '_title' => _('About us'),
                 '_text'  => 'When an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also electronics typesetting, remaining essentially believable.',
-
-
             ),
-
             array(
                 'type'=>'telephone',
                 'label' => _('Phone'),
@@ -351,18 +345,65 @@ function website_system_webpages_config($website_type) {
                 '_title' => 'Need help? Ready to Help you with Whatever you Need',
                 '_telephone'       => '+88 123 456 7890',
                 '_text'   => 'Answer Desk is Ready!',
-
-
             ),
-
-
-
-
         )
 
 
     );
 
+    $contact_content_data=  array(
+        'blocks' => array(
+
+
+            array(
+                'type'=>'map',
+                'label' => _('Map'),
+                'icon'  => 'fa-map-marker',
+                'show'=>1,
+                'src'=>'#map'
+            ),
+
+            array(
+                'type'=>'two_one',
+                'label' => _('Two-One'),
+                'icon'  => ' fa-window-maximize fa-rotate-90',
+                'show'=>1,
+
+                'columns'=>array(
+                    array(
+                        'type'=>'two_third',
+                        '_title'=>'',
+                        '_text'          => '<p>Feel free to talk to our online representative at any time you please using our Live Chat system on our website or one of the below instant messaging programs.</p><br /><p>Please be patient while waiting for response. (24/7 Support!) <strong>Phone General Inquiries: 1-888-123-4567-8900</strong></p>',
+                    ),
+                      array(
+                          'type'=>'one_third',
+                          '_title'=>_('Our Details'),
+                          '_text'=>'Telephone<br/>#tel<br/><br/>Email<br/>#email<br/><br/>Address<br/>#adr<br/><br/> '
+                      )
+
+                )
+
+
+
+
+
+            ),
+
+
+        ),
+
+        '_text'          => '<p>Feel free to talk to our online representative at any time you please using our Live Chat system on our website or one of the below instant messaging programs.</p><br /><p>Please be patient while waiting for response. (24/7 Support!) <strong>Phone General Inquiries: 1-888-123-4567-8900</strong></p>',
+        '_address_label' => _('Our Details'),
+
+        '_telephone_label'      => _('Telephone'),
+        '_fax_label'            => _('FAX'),
+        '_vat_number_label'     => _('Vat No.'),
+        '_company_number_label' => _('Company No.'),
+        '_email_label'          => _('Email'),
+
+
+
+    );
 
 
     $EcomB2B=array(
@@ -925,20 +966,7 @@ function website_system_webpages_config($website_type) {
             'Webpage Browser Title'     => _('Contact'),
             'Webpage Name'              => _('Contact'),
             'Webpage Meta Description'  => '',
-            'Page Store Content Data'   => json_encode(
-                array(
-                    '_text'          => '<p>Feel free to talk to our online representative at any time you please using our Live Chat system on our website or one of the below instant messaging programs.</p><br /><p>Please be patient while waiting for response. (24/7 Support!) <strong>Phone General Inquiries: 1-888-123-4567-8900</strong></p>',
-                    '_address_label' => _('Our Details'),
-
-                    '_telephone_label'      => _('Telephone'),
-                    '_fax_label'            => _('FAX'),
-                    '_vat_number_label'     => _('Vat No.'),
-                    '_company_number_label' => _('Company No.'),
-                    '_email_label'          => _('Email'),
-
-
-                )
-            )
+            'Page Store Content Data' => json_encode($contact_content_data)
 
 
         ),

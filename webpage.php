@@ -63,6 +63,7 @@ if ($webpage->get('Webpage Template Filename') == 'products_showcase') {
     $smarty->assign('used_address_fields', $used_fields);
     $smarty->assign('countries', $countries);
     $smarty->assign('selected_country', $store->get('Store Home Country Code 2 Alpha'));
+    $template = $theme.'/'.$webpage->get('Webpage Template Filename').'.'.$theme.'.tpl';
 
 } else {
 
@@ -76,6 +77,7 @@ if ($webpage->get('Webpage Template Filename') == 'products_showcase') {
 
 
 }
+
 
 
 $smarty->assign('content', $content_data);
