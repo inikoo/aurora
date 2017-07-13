@@ -1187,18 +1187,10 @@ class Website extends DB_Table {
 
         if ($category->get('Category Subject') == 'Product') {
 
-            if ($this->get('Website Theme') == 'theme_1') {
-                $template = 'products_classic_showcase';
-            } else {
-                $template = 'products_showcase';
-            }
+            $template = 'products_showcase';
 
         } else {
-            if ($this->get('Website Theme') == 'theme_1') {
-                $template = 'categories_classic_showcase';
-            } else {
-                $template = 'categories_showcase';
-            }
+            $template = 'categories_showcase';
 
         }
 
@@ -1275,9 +1267,7 @@ class Website extends DB_Table {
         $this->error        = $page->error;
 
 
-        if ($this->get('Website Theme') == 'theme_1') {
-
-        } else {
+      
 
             if ($category->get('Category Subject') == 'Product') {
 
@@ -1336,7 +1326,7 @@ class Website extends DB_Table {
 
                 $category->create_stack_index(true);
             }
-        }
+
 
         //$this->update_product_totals();
         //$this->update_page_totals();
@@ -1398,11 +1388,7 @@ class Website extends DB_Table {
 
         $webpage_type = new Webpage_Type('website_code', $this->id, 'Prod');
 
-        if ($this->get('Website Theme') == 'theme_1') {
-            $template = 'product_classic';
-        } else {
-            $template = 'product';
-        }
+        $template = 'product';
 
 
         $page_data = array(
