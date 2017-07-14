@@ -19,14 +19,14 @@ include_once 'class.Public_Category.php';;
 
 
 $sql = sprintf(
-    "SELECT `Product ID` FROM `Product Dimension` where `Product Webpage Key` is null "
+    "SELECT `Product ID` FROM `Product Dimension` where `Product Webpage Key` is null   order by `Product ID` desc"
 );
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
 
         $product = new Product($row['Product ID']);
 
-        print $product->get('Code')."\n";
+        print $product->id.' '.$product->get('Code')."\n";
         $subject_webpage     = new Public_Webpage('scope', 'Product', $product->id);
         $subject_webpage_key = $subject_webpage->id;
 
