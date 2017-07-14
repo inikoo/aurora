@@ -19,7 +19,7 @@ include_once 'class.Public_Category.php';;
 
 
 $sql = sprintf(
-    "SELECT `Product ID` FROM `Product Dimension` "
+    "SELECT `Product ID` FROM `Product Dimension` where `Product Webpage Key` is null "
 );
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
