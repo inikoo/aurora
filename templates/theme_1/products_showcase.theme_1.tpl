@@ -98,6 +98,7 @@
                             class="unselectable">{t}Publish{/t}</span> <i class="fa fa-rocket" aria-hidden="true"></i></span>
 
 
+
                 <span style="float:right;margin-right:60px">
     <i id="description_block_on" class="fa toggle_description_block fa-header fa-fw button" aria-hidden="true"></i>
 
