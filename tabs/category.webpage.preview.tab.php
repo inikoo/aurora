@@ -325,7 +325,7 @@ if($webpage->get('Page Store Content Display Type')=='Template') {
             }
 
 
-            //  print_r($products);
+           //   print_r($content_data);
 
             $smarty->assign('products', $products);
             $smarty->assign('related_products', $related_products);
@@ -350,7 +350,6 @@ if($webpage->get('Page Store Content Display Type')=='Template') {
 
 
             // print_r( $webpage);
-
 
             // todo remove this when all descriptions are moved inside webpage content data
 

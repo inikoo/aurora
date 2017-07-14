@@ -537,9 +537,16 @@ function webpage_content_data($data, $editor, $db, $smarty) {
 
 
         } else {
+
+
             if (isset($content_data[$data['section']]['blocks'][$data['block']])) {
 
-                $content_data[$data['section']]['blocks'][$data['block']]['content'] = $data['value'];
+                // TODO quick hack due to a bug in froala auto save, remove the if when we set up no auto save
+                if ($data['value'] != '') {
+                    $content_data[$data['section']]['blocks'][$data['block']]['content'] = $data['value'];
+                }
+
+
             } else {
                 $content_data[$data['section']]['blocks'][$data['block']] = array(
                     'content' => $data['value'],
@@ -1146,7 +1153,7 @@ function update_webpage_related_product($data, $editor, $db) {
 
 function publish_webpage($data, $editor, $db) {
 
-    $webpage         = get_object('Webpage',$data['parent_key']);
+    $webpage         = get_object('Webpage', $data['parent_key']);
     $webpage->editor = $editor;
 
     $webpage->publish();
@@ -1168,7 +1175,7 @@ function publish_webpage($data, $editor, $db) {
 
 function unpublish_webpage($data, $editor, $db) {
 
-    $webpage         = get_object('Webpage',$data['parent_key']);
+    $webpage = get_object('Webpage', $data['parent_key']);
 
     $webpage->editor = $editor;
 
@@ -1191,13 +1198,13 @@ function unpublish_webpage($data, $editor, $db) {
 
 function set_webpage_as_ready($data, $editor, $db) {
 
-    $webpage         = get_object('Webpage',$data['parent_key']);
+    $webpage         = get_object('Webpage', $data['parent_key']);
     $webpage->editor = $editor;
 
 
-    $website=get_object('Website',$webpage->get('Webpage Website Key'));
+    $website = get_object('Website', $webpage->get('Webpage Website Key'));
 
-    if($website->get('Website Status')=='InProcess') {
+    if ($website->get('Website Status') == 'InProcess') {
         $webpage->update(array('Webpage State' => 'Ready'));
     }
 
@@ -1217,13 +1224,13 @@ function set_webpage_as_ready($data, $editor, $db) {
 
 function set_webpage_as_not_ready($data, $editor, $db) {
 
-    $webpage         = get_object('Webpage',$data['parent_key']);
+    $webpage = get_object('Webpage', $data['parent_key']);
 
     $webpage->editor = $editor;
 
-    $website=get_object('Website',$webpage->get('Webpage Website Key'));
+    $website = get_object('Website', $webpage->get('Webpage Website Key'));
 
-    if($website->get('Website Status')=='InProcess') {
+    if ($website->get('Website Status') == 'InProcess') {
         $webpage->update(array('Webpage State' => 'InProcess'));
     }
 
@@ -1240,7 +1247,6 @@ function set_webpage_as_not_ready($data, $editor, $db) {
 
 
 }
-
 
 
 function update_webpage_section_data($data, $editor, $db, $smarty) {
@@ -1802,17 +1808,14 @@ function save_header($data, $editor) {
 function save_webpage_content($data, $editor, $db, $smarty) {
 
 
-
     include_once('class.Page.php');
     $webpage = new Page($data['key']);
-
-
 
 
     if (isset($data['labels'])) {
         include_once('class.Website.php');
         $website = new Website($webpage->get('Webpage Website Key'));
-        $website->update_labels_in_localised_labels(json_decode($data['labels'],true));
+        $website->update_labels_in_localised_labels(json_decode($data['labels'], true));
     }
 
 
