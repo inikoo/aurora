@@ -160,14 +160,18 @@ if ($order == 'code') {
     $order = "`Product Category Active Web Out of Stock`";
 } elseif ($order == 'percentage_out_of_stock') {
     $order = "`Product Category Active Web Out of Stock`/online";
+}  elseif ($order == 'webpage') {
+    $order = "`Webpage Code";
+}elseif ($order == 'webpage_state') {
+    $order = "`Webpage State";
 } else {
     $order = '`Category Code`';
 }
 
 
 $fields = "
-`Page Key`,`Page Code`,`Page State`,
-`Product Category Active Web For Sale`,`Product Category Active Web Out of Stock`,`Product Category Active Web For Sale`+`Product Category Active Web Out of Stock` as online,`Webpage State`,`Product Category Public`,
+`Page Key`,`Webpage Code`,`Webpage State`,
+`Product Category Active Web For Sale`,`Product Category Active Web Out of Stock`,`Product Category Active Web For Sale`+`Product Category Active Web Out of Stock` as online,`Product Category Public`,
     P.`Product Category Key`,C.`Category Code`,`Category Label`,C.`Category Key`,`Category Store Key`,
     (`Product Category Active Products`+`Product Category Discontinuing Products`) as products,
     `Category Number Subjects` as subjects,

@@ -1012,6 +1012,8 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                         if (is_numeric($view_path[2])) {
                             $key = $view_path[2];
+                        }elseif($view_path[2]=='new'){
+                            $section    = 'webpage.new';
                         }
 
 

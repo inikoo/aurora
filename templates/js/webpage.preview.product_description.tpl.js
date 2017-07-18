@@ -66,7 +66,7 @@ $('#page_content').on( "dblclick", ".product_description_block", function() {
 
 
     if(! $('#text_edit_toolbar').hasClass('hide')){
-        console.log('caca')
+        console.log('cacxxxa')
         return
     }
 
@@ -111,7 +111,8 @@ $('#page_content').on( "dblclick", ".product_description_block", function() {
             parent_key:  {$webpage->id},
             section: 'product_description',
             block: $(this).attr('id'),
-            type: 'text'
+            type: 'text',
+            zzz: 'zzz'
 
         }
 

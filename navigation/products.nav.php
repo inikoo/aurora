@@ -2133,4 +2133,57 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
 }
 
 
+
+
+function get_new_webpage_navigation($data, $smarty, $user, $db, $account) {
+
+    $left_buttons = array();
+
+
+
+    switch ($data['parent']) {
+        case 'website':
+            $title                            = sprintf(_('New webpage for %s'), '<span class="id">'.$data['website']->get('Code').'</span>');
+            $sections                         = get_sections(
+                'products', $data['parent_key']
+            );
+            $left_buttons[]                   = array(
+                'icon'      => 'arrow-up',
+                'title'     => _('Website').': '.$data['website']->get('Code'),
+                'reference' => 'store/'.$data['store']->id.'/website',
+                'parent'    => ''
+            );
+            $sections['website']['selected'] = true;
+            break;
+        default:
+            exit('error in products.nav.php');
+            break;
+    }
+
+
+    $right_buttons = array();
+
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search website')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+
+}
+
+
 ?>

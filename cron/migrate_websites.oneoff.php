@@ -121,7 +121,7 @@ function delete_system_webpages($db){
 function add_system_webpages($db) {
 
     $sql = sprintf('SELECT `Website Key` FROM `Website Dimension`');
-    print_r($sql);
+
 
     if ($result = $db->query($sql)) {
 

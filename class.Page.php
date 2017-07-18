@@ -172,11 +172,11 @@ class Page extends DB_Table {
         }
 
 
-        if ($raw_data['Page Type'] == 'Store') {
+
 
             $sql = sprintf(
-                "SELECT P.`Page Key` FROM `Page Dimension` P LEFT JOIN `Page Store Dimension` PS ON (P.`Page Key`=PS.`Page Key`)   WHERE `Page URL`=%s AND `Page Site Key`=%d ",
-                prepare_mysql($raw_data['Page URL']), $raw_data['Page Site Key']
+                "SELECT P.`Page Key` FROM `Page Store Dimension` P  WHERE `Webpage Code`=%s AND `Webpage Website Key`=%d ",
+                prepare_mysql($raw_data['Webpage Code']), $raw_data['Webpage Website Key']
             );
 
 
@@ -193,7 +193,7 @@ class Page extends DB_Table {
             }
 
 
-        }
+
 
         if (!$this->found and $create) {
             $this->create($raw_data);
@@ -2323,7 +2323,7 @@ class Page extends DB_Table {
             include_once 'class.Website.php';
             $website = new Website($this->get('Webpage Website Key'));
 
-            if ($website->get('Website Theme') == 'theme_1') {
+            if ($website->get('Website Theme') == 'theme_1' and false  ) {
 
 
                 $sql = sprintf('DELETE FROM  `Category Webpage Index` WHERE `Category Webpage Index Webpage Key`=%d  ', $this->id);
@@ -7305,6 +7305,8 @@ class Page extends DB_Table {
         $website = new Website($this->get('Webpage Website Key'));
 
 
+
+
         if ($this->get('Webpage Scope') == 'Category Products') {
 
             include_once 'class.Category.php';
@@ -7415,7 +7417,8 @@ class Page extends DB_Table {
             }
 
 
-        } elseif ($this->get('Webpage Scope') == 'Category Categories') {
+        }
+        elseif ($this->get('Webpage Scope') == 'Category Categories') {
 
             include_once 'class.Category.php';
 
@@ -7462,7 +7465,8 @@ class Page extends DB_Table {
                 $this->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
 
 
-            } else {
+            }
+            else {
 
 
                 include_once 'class.Category.php';
@@ -7555,6 +7559,7 @@ class Page extends DB_Table {
 
                 $content_data['sections'][] = $section;
                 $this->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
+
 
 
                 $category->create_stack_index(true);

@@ -120,3 +120,7 @@ input:-ms-input-placeholder {
 
 }
 
+
+.text-right{
+	text-align: right;
+}

@@ -61,7 +61,10 @@
     <i class="fa fa-mobile" aria-hidden="true"></i>
 </span>
 
-<span class="button " onclick="toggle_logged_in_view(this)"><i class="fa fa-toggle-on " aria-hidden="true" alt="{t}On{/t}"></i> <span class="unselectable">{t}Logged in{/t}</span></span>
+
+    <span style="border:1px solid #ccc;padding:10px 10px "   ><i class="fa fa-diamond" aria-hidden="true"></i>  {t}Category Description{/t}</span>
+    <span style="border:1px solid #ccc;padding:10px 10px "   ><i class="fa fa-cubes" aria-hidden="true"></i> {t}Products{/t}</span>
+
 
     {if $website->get('Website Status')=='Active'}
 
@@ -81,7 +84,14 @@
 
 
     <span style="float:right;margin-right:60px" >
-    <i id="description_block_on" class="fa toggle_description_block fa-header fa-fw button" aria-hidden="true"  ></i>
+
+
+
+
+
+<span class="button " onclick="toggle_logged_in_view(this)"><i class="fa fa-toggle-on " aria-hidden="true" alt="{t}On{/t}"></i> <span class="unselectable">{t}Logged in{/t}</span></span>
+
+    <i id="description_block_on" class="hide fa toggle_description_block fa-header fa-fw button" aria-hidden="true"  ></i>
 
 
     <span id="description_block_off"  class="toggle_description_block fa-stack hide button" style="position:relative;top:-5px;left:5px"  >
@@ -127,8 +137,8 @@
     <div id="description_block" class="section description_block {$content_data.description_block.class} " >
 
 
-        <i class="create_text fa fa-align-center fa-fw button" aria-hidden="true" style="position:absolute;left:-40px;top:10px"></i>
-        <i class="create_image fa fa-picture-o fa-fw button" aria-hidden="true" style="position:absolute;left:-40px;top:30px"></i>
+        <i class="_description_block_edit  create_text fa fa-align-center fa-fw button" aria-hidden="true" style="position:absolute;left:-40px;top:10px"></i>
+        <i class="_description_block_edit create_image fa fa-picture-o fa-fw button" aria-hidden="true" style="position:absolute;left:-40px;top:30px"></i>
 
 
 

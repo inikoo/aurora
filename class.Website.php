@@ -642,7 +642,31 @@ class Website extends DB_Table {
         include_once 'class.Page.php';
 
 
-        // print_r($data);
+
+
+
+        if(empty($data['Webpage Code'])){
+            $this->error=true;
+            $this->msg='Webpage code empty';
+            return;
+        }
+
+        if(empty($data['Webpage Name'])){
+            $this->error=true;
+            $this->msg='Webpage name empty';
+            return;
+        }
+
+        if(empty($data['Webpage Browser Title'])){
+            $this->error=true;
+            $this->msg='Webpage Browser Title empty';
+            return;
+        }
+
+        if(empty($data['Webpage Meta Description'])){
+            $data['Webpage Meta Description']='';
+        }
+
 
         $webpage_type = new Webpage_Type('website_code', $this->id, $data['Webpage Type']);
 
@@ -658,8 +682,8 @@ class Website extends DB_Table {
             'Page Store Key'                       => $this->get('Website Store Key'),
             'Page Store Creation Date'             => gmdate('Y-m-d H:i:s'),
             'Number See Also Links'                => 0,
-            'Page Store Content Display Type'      => $data['Webpage Template Filename'],
-            'Page Store Content Template Filename' => 'product',
+            'Page Store Content Display Type'      =>'Template',
+            'Page Store Content Template Filename' =>  $data['Webpage Template Filename'],
             'Page Title'                           => $data['Webpage Name'],
             'Page Short Title'                     => $data['Webpage Browser Title'],
             'Page Parent Key'                      => 0,
@@ -705,209 +729,11 @@ class Website extends DB_Table {
         $this->error        = $page->error;
 
 
-        return $page->id;
+        return $page;
 
     }
 
-    function create_no_product_webnodes() {
 
-        include_once 'class.WebsiteNode.php';
-        include_once 'class.Website.php';
-
-        $home_webnode = $this->create_webnode(
-            array(
-                'Webpage Code'        => 'p.Home',
-                'Webpage Name'        => _('Home'),
-                'Webpage Scope'       => 'Home',
-                'Webpage Locked'      => 'Yes',
-                'Website Node Locked' => 'Yes',
-                'Website Node Type'   => 'Root',
-                'Website Node Icon'   => 'home'
-
-
-            )
-        );
-        $page         = new Webpage($home_webnode->get('Website Node Webpage Key'));
-        $page->update(
-            array(
-                'Webpage Properties' => json_encode(
-                    array('body_classes' => 'common-home page-common-home layout-fullwidth')
-                )
-            ), 'no_history'
-        );
-
-
-        $mya_webnode = $home_webnode->create_subnode(
-            array(
-                'Webpage Code'        => 'p.MyA',
-                'Webpage Name'        => _('My account'),
-                'Webpage Scope'       => 'Hub',
-                'Webpage Locked'      => 'Yes',
-                'Website Node Locked' => 'Yes',
-                'Website Node Type'   => 'Root',
-                'Website Node Icon'   => 'user',
-
-            )
-        );
-
-        $home_webnode->create_subnode(
-            array(
-                'Webpage Code'        => 'p.Login',
-                'Webpage Name'        => _('Login'),
-                'Website Node Locked' => 'Yes',
-                'Webpage Scope'       => 'Login',
-                'Webpage Locked'      => 'Yes',
-                'Website Node Type'   => 'Head'
-            )
-        );
-        $home_webnode->create_subnode(
-            array(
-                'Webpage Code'        => 'p.Register',
-                'Webpage Name'        => _('Register'),
-                'Website Node Locked' => 'Yes',
-                'Webpage Scope'       => 'Register',
-                'Webpage Locked'      => 'Yes',
-                'Website Node Type'   => 'Head'
-            )
-        );
-        $home_webnode->create_subnode(
-            array(
-                'Webpage Code'        => 'p.Pwd',
-                'Webpage Name'        => _('Forgotten password'),
-                'Website Node Locked' => 'Yes',
-                'Webpage Scope'       => 'ResetPwd',
-                'Webpage Locked'      => 'Yes',
-                'Website Node Type'   => 'Head'
-            )
-        );
-        $mya_webnode->create_subnode(
-            array(
-                'Webpage Code'        => 'p.Profile',
-                'Webpage Name'        => _('My account'),
-                'Website Node Locked' => 'Yes',
-                'Webpage Scope'       => 'Profile',
-                'Webpage Locked'      => 'Yes',
-                'Website Node Type'   => 'Head'
-            )
-        );
-        $mya_webnode->create_subnode(
-            array(
-                'Webpage Code'        => 'p.Orders',
-                'Webpage Name'        => _('My orders'),
-                'Website Node Locked' => 'Yes',
-                'Webpage Scope'       => 'Orders',
-                'Webpage Locked'      => 'Yes',
-                'Website Node Type'   => 'Head'
-            )
-        );
-
-
-        $cs_webnode = $home_webnode->create_subnode(
-            array(
-                'Webpage Code'        => 'p.CS',
-                'Webpage Name'        => _('Customer services'),
-                'Website Node Locked' => 'Yes',
-                'Website Node Type'   => 'Root',
-                'Website Node Icon'   => 'thumbs-o-up',
-                'Webpage Scope'       => 'Hub'
-            )
-        );
-
-
-        $node = $cs_webnode->create_subnode(
-            array(
-                'Webpage Code'        => 'p.Contact',
-                'Webpage Name'        => _('Contact us'),
-                'Website Node Locked' => 'Yes',
-                'Webpage Scope'       => 'Contact',
-                'Website Node Type'   => 'Head'
-            )
-        );
-
-
-        $node = $cs_webnode->create_subnode(
-            array(
-                'Webpage Code'        => 'p.Delivery',
-                'Webpage Name'        => _('Delivery'),
-                'Website Node Locked' => 'No',
-                'Website Node Type'   => 'Head',
-                'Webpage Scope'       => 'Blank',
-                'Website Node Icon'   => 'truck fa-flip-horizontal'
-            )
-        );
-
-
-        $node = $cs_webnode->create_subnode(
-            array(
-                'Webpage Code'        => 'p.GTC',
-                'Webpage Name'        => _('Terms & Conditions'),
-                'Website Node Locked' => 'Yes',
-                'Webpage Locked'      => 'Yes',
-                'Webpage Scope'       => 'Blank',
-                'Website Node Type'   => 'Head'
-            )
-        );
-
-
-        //$home_webnode->create_subnode(array('Webpage Code'=>'p.Insp', 'Webpage Name'=>_('Inspiration'), 'Website Node Locked'=>'No', 'Website Node Type'=>'Root'));
-
-
-    }
-
-    function create_webnode($data) {
-
-        $this->new_object = false;
-
-        $data['editor'] = $this->editor;
-
-        $data['Website Node Store Key']   = $this->get('Store Key');
-        $data['Website Node Website Key'] = $this->id;
-        $data['Website Node Valid From']  = gmdate('Y-m-d H:i:s');
-
-
-        $website_node = new WebsiteNode('find', $data, 'create');
-
-        if ($website_node->id) {
-            $this->new_object_msg = $website_node->msg;
-
-            if ($website_node->new) {
-                $this->new_object = true;
-                $website_node->update(
-                    array(
-                        'Website Node Parent Key' => $website_node->id
-                    ), 'no_history'
-                );
-
-                $this->update_website_nodes_data();
-            } else {
-                $this->error = true;
-                if ($website_node->found) {
-
-                    $this->error_code     = 'duplicated_field';
-                    $this->error_metadata = json_encode(
-                        array($website_node->duplicated_field)
-                    );
-
-                    //if ($website_node->duplicated_field=='Webpage Code') {
-                    // $this->msg=_('Duplicated Webpage Code');
-                    //}
-
-
-                } else {
-                    $this->msg = $website_node->msg;
-                }
-            }
-
-            return $website_node;
-        } else {
-            $this->error = true;
-            $this->msg   = $website_node->msg;
-        }
-    }
-
-    function update_website_nodes_data() {
-
-    }
 
     function update_labels_in_localised_labels($labels, $operation = 'append') {
 
@@ -924,69 +750,6 @@ class Website extends DB_Table {
 
 
     }
-
-    function create_product_webnodes() {
-
-        $homepage = new Webpage('website_code', $this->id, 'p.Home');
-
-
-        $home_webnode = new WebsiteNode($homepage->get('Webpage Website Node Key'));
-
-        $store = new Store($this->get('Website Store Key'));
-
-        $catalogue = $home_webnode->create_subnode(
-            array(
-                'Webpage Code'        => 'p.Cat',
-                'Webpage Name'        => _('Catalogue'),
-                'Webpage Locked'      => 'Yes',
-                'Website Node Locked' => 'Yes',
-                'Website Node Type'   => 'Root',
-                'Website Node Icon'   => 'th',
-                'Webpage Scope'       => 'Categories',
-                'Webpage Object'      => 'Category',
-                'Webpage Object Key'  => $store->get('Store Department Category Key')
-            )
-        );
-
-        /*
-        $sql=sprintf('select `Category Label`,`Category Code`,`Category Key` from `Category Dimension` where `Category Root Key`=%d ',
-                     $store->get('Store Department Category Key')
-                     );
-        print $sql;
-
-        if ($result=$this->db->query($sql)) {
-        		foreach ($result as $row) {
-
-
-
-                    $department=$catalogue->create_subnode(
-                        array(
-                            'Webpage Code'        => 'd.'.$row['Category Code'],
-                            'Webpage Name'        => $row['Category Label'],
-                            'Webpage Locked'      => 'Yes',
-                            'Website Node Locked' => 'Yes',
-                            'Website Node Type'   => 'Branch',
-                            'Website Node Icon'   => 'th',
-                            'Webpage Scope'       => 'Categories',
-                            'Webpage Object'      => 'Category',
-                            'Webpage Object Key'  => $row['Category Key']
-                        )
-                    );
-
-                    print "end create department ".$row['Category Label']."\n";
-        		}
-        }else {
-        		print_r($error_info=$this->db->errorInfo());
-        		print "$sql\n";
-        		exit;
-        }
-
-        print "xxxend\n";
-        */
-
-
-    }
-
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
 
 
@@ -1267,7 +1030,7 @@ class Website extends DB_Table {
         $this->error        = $page->error;
 
 
-      
+
 
             if ($category->get('Category Subject') == 'Product') {
 
@@ -1480,35 +1243,20 @@ class Website extends DB_Table {
         if ($type == 'website_footer') {
 
 
-            include_once 'class.WebsiteFooter.php';
-            require_once 'conf/footer_data.php';
 
-            $footer         = new WebsiteFooter($this->get('Website Footer Key'));
+
+            $footer         = get_object('footer',$this->get('Website Footer Key'));
             $footer->editor = $this->editor;
-
-
-            $footer->update(
-                array(
-                    'Website Footer Data' => get_default_footer_data(1)
-                ), 'no_history'
-            );
-
+            $footer->reset();
 
         } elseif ($type == 'website_header') {
 
 
-            include_once 'class.WebsiteHeader.php';
-            require_once 'conf/header_data.php';
 
-            $header         = new WebsiteHeader($this->get('Website Header Key'));
+            $header         = get_object('header',$this->get('Website Header Key'));
             $header->editor = $this->editor;
+            $header->reset();
 
-
-            $header->update(
-                array(
-                    'Website Header Data' => get_default_header_data(1)
-                ), 'no_history'
-            );
 
 
         }
@@ -1645,6 +1393,49 @@ class Website extends DB_Table {
             }
         }
 
+
+    }
+
+    function create_user($data) {
+
+        include_once 'class.Website_User.php';
+
+        $this->new = false;
+
+        $data['editor']             = $this->editor;
+        $data['Website User Website Key'] = $this->id;
+        $data['Website User Active'] = 'Yes';
+
+
+        $website_user = new Website_User('new', $data);
+
+
+        if ($website_user->id) {
+
+            if ($website_user->new) {
+
+
+
+
+
+
+
+            } else {
+                $this->error = true;
+                $this->msg   = $website_user->msg;
+
+
+            }
+
+            return $website_user;
+        } else {
+            $this->error = true;
+            $this->msg   = $website_user->msg;
+        }
+    }
+
+    function update_users_data(){
+        // todo collect user/customers stats here, call when a user is created
 
     }
 

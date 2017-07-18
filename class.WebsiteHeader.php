@@ -247,6 +247,18 @@ class WebsiteHeader extends DB_Table {
 
     }
 
+    function reset(){
+        require_once 'conf/header_data.php';
+        $this->update(
+            array(
+                'Website Header Data' => get_default_header_data(1)
+            ), 'no_history'
+        );
+
+
+    }
+
+
 }
 
 

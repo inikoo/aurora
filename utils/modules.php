@@ -2123,7 +2123,18 @@ $modules = array(
                 )
 
             ),
+            'webpage.new' => array(
+                'type' => 'new_object',
+                'tabs' => array(
+                    'webpage.new' => array(
+                        'label' => _(
+                            'New Webpage'
+                        )
+                    ),
 
+                )
+
+            ),
 
             'no_website' => array(
                 'type'      => '',

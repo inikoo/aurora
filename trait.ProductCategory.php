@@ -1319,7 +1319,8 @@ trait ProductCategory {
             }
 
 
-        } elseif ($this->get('Category Subject') == 'Category') {
+        }
+        elseif ($this->get('Category Subject') == 'Category') {
 
 
             include_once 'class.Public_Webpage.php';
@@ -1366,8 +1367,13 @@ trait ProductCategory {
             );
 
 
+
+
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
+
+
+
 
                     if ($row['Category Webpage Index Category Key'] == '') {
                         $null_stacks = true;
@@ -1438,6 +1444,7 @@ trait ProductCategory {
                 );
 
 
+
                 if ($result = $this->db->query($sql)) {
                     foreach ($result as $row) {
 
@@ -1467,6 +1474,9 @@ trait ProductCategory {
                 }
             }
 
+
+
+            print_r($content_data);
 
             $this->webpage->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
 

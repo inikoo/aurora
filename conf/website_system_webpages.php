@@ -12,401 +12,18 @@
 function website_system_webpages_config($website_type) {
 
 
-    $home_content_data=  array(
-        'blocks' => array(
+    include_once 'conf/webpage_blocks.php';
+    $blocks = get_webpage_blocks();
 
-            array(
-                'type'=>'iframe',
-                'label' => 'iFrame',
-                'icon'  => 'fa-window-restore',
-                'show'=>1,
-                'height'=>250,
-                'src'=>'cdn.bannersnack.com/banners/bxmldll37/embed/index.html?userId=30149291&t=1499779573'
-            ),
+    $contact_content_data                                      = $blocks['two_one'];
+    $contact_content_data['blocks'][1]['columns'][0]['_title'] = '';
+    $contact_content_data['blocks'][1]['columns'][0]['_text']  =
+        '<p>Feel free to talk to our online representative at any time you please using our Live Chat system on our website or one of the below instant messaging programs.</p><br /><p>Please be patient while waiting for response. (24/7 Support!) <strong>Phone General Inquiries: 1-888-123-4567-8900</strong></p>';
+    $contact_content_data['blocks'][1]['columns'][1]['_title'] = _('Our Details');
+    $contact_content_data['blocks'][1]['columns'][1]['_text']  = 'Telephone<br/>#tel<br/><br/>Email<br/>#email<br/><br/>Address<br/>#adr<br/><br/> ';
 
 
-            array(
-                'type'=>'button',
-                'label' => _('Button'),
-                'icon'  => 'fa-hand-pointer-o',
-                'show'=>1,
-                'title'=>'Great Value to Get the Dash on TF Only',
-                'text'=>'Packages and web page editors search versions have over the years sometimes.',
-                'button_label'=>'Read More',
-                'link'=>'',
-                'bg_image'=>'',
-                'bg_color'=>'',
-                'text_color'=>'',
-                'button_bg_color'=>'',
-                'button_text_color'=>'',
-
-
-
-
-
-
-
-
-
-            ),
-
-
-
-            array(
-                'type'=>'six_pack',
-                'label' => _('Six-Pack'),
-                'icon'  => 'fa-th-large',
-                'show'=>1,
-
-
-
-                'columns' => array(
-
-                    array(
-                        array(
-                            'icon'  => 'icon-cursor',
-                            'title' => 'Several Design Options',
-                            'text'  => 'Many desktop publishing packages and web page editors now use Ipsum their defau mode various versions have over the years.',
-                        ),
-                        array(
-                            'icon'  => 'icon-basket-loaded',
-                            'title' => 'Build Own Website',
-                            'text'  => 'Many desktop publishing packages and web page editors now use Ipsum their defau mode various versions have over the years.',
-                        )
-
-                    ),
-
-                    array(
-                        array(
-                            'icon'  => 'icon-badge',
-                            'title' => 'Clean &amp; Modern Design',
-                            'text'  => 'Many desktop publishing packages and web page editors now use Ipsum their defau mode various versions have over the years.',
-                        ),
-                        array(
-                            'icon'  => 'icon-social-dropbox',
-                            'title' => 'Useful Shortcut\'s',
-                            'text'  => 'Many desktop publishing packages and web page editors now use Ipsum their defau mode various versions have over the years.',
-                        )
-
-                    ),
-
-                    array(
-                        array(
-                            'icon'  => 'icon-settings',
-                            'title' => 'Icon Fonts Easy to Use',
-                            'text'  => 'Many desktop publishing packages and web page editors now use Ipsum their defau mode various versions have over the years.',
-                        ),
-                        array(
-                            'icon'  => 'icon-bulb',
-                            'title' => 'Excellent Customer Services',
-                            'text'  => 'Many desktop publishing packages and web page editors now use Ipsum their defau mode various versions have over the years.',
-                        )
-
-                    ),
-
-
-                )
-
-
-
-
-            ),
-            array(
-                'type'=>'image',
-                'label' => _('Image'),
-                'icon'  => 'fa-image',
-                'show'=>1,
-                'src'=>'',
-                'tooltip'=>'',
-                'link'=>'',
-
-            ),
-            array(
-                'type'=>'counter',
-                'label' => _('Counter'),
-                'icon'  => 'fa-sort-numeric-asc',
-
-                'show'=>1,
-                'columns' => array(
-                    array(
-                        'label'  => 'Projects',
-                        'number' => 270,
-                        'link'=>''
-                    ),
-                    array(
-                        'label'  => 'Clients',
-                        'number' => 225,
-                        'link'=>''
-
-                    ),
-                    array(
-                        'label'  => 'Likes',
-                        'number' => 4500,
-                        'link'=>''
-
-                    ),
-                    array(
-                        'label'  => 'Days',
-                        'number' => 365,
-                        'link'=>''
-
-                    )
-
-                )
-            ),
-
-            array(
-                'type'=>'three_pack',
-                'label' => _('Three-Pack'),
-                'icon'  => 'fa-bars fa-rotate-90',
-                'show'=>1,
-                'title'=>'What We Do',
-                'subtitle'=>'Aipsum therefore always',
-
-
-
-                'columns' => array(
-
-                    array(
-                        'icon'  => 'icon-screen-desktop',
-                        'title' => 'Modern Design',
-                        'text'  => 'Mombined with handful model sentence structures to generate which looks.',
-                    ),
-                    array(
-                        'icon'  => 'icon-social-dropbox',
-                        'title' => 'Mega Blobs',
-                        'text'  => 'Mombined with handful model sentence structures to generate which looks.',
-                    ),
-                    array(
-                        'icon'  => 'icon-cup',
-                        'title' => 'Diffrent Prods',
-                        'text'  => 'Mombined with handful model sentence structures to generate which looks.',
-                    ),
-
-                    )
-
-
-
-
-
-
-
-            ),
-
-
-            /*
-
-          array(
-              'type'=>'sliders',
-              'label' => _('Sliders'),
-              'icon'  => 'fa-sliders',
-              'show'=>1,
-
-              'sliders' => array(
-
-                  array(
-
-                      'image'       => 'art/image_1920x750.png',
-                      'title'       => 'Because we love What we Do',
-                      'text'        => 'Many web sites still their infancy various versions have packages sure there anything over the years.',
-                      'link_label'  => 'Read More',
-                      'link_type'   => 'button',
-                      'link_url'    => '#',
-                      'title_class' => 'centext  white',
-                      'title_style' => 'top:270px',
-                      'text_class'  => 'centext  white',
-                      'text_style'  => 'top:349px',
-                      'link_class'  => 'centext',
-                      'link_style'  => 'top:435px'
-
-                  ),
-                  array(
-                      'image'       => 'art/image_1920x750.png',
-                      'title'       => 'Professional. Creative. Clean.',
-                      'text'        => 'Many web sites still their infancy various versions have packages sure there anything over the years.',
-                      'link_label'  => 'Read More',
-                      'link_type'   => 'button',
-                      'link_url'    => '#',
-                      'title_class' => 'centext  white',
-                      'title_style' => 'top:270px',
-                      'text_class'  => 'centext  white',
-                      'text_style'  => 'top:349px',
-                      'link_class'  => 'centext',
-                      'link_style'  => 'top:435px',
-
-                  ),
-                  array(
-                      'image'       => 'art/image_1920x750.png',
-                      'title'       => 'Build your Own Website :)',
-                      'text'        => 'Many web sites still their infancy various versions have packages sure there anything over the years.',
-                      'link_label'  => 'Read More',
-                      'link_type'   => 'button',
-                      'link_url'    => '#',
-                      'title_class' => '  white',
-                      'title_style' => 'left:180px; top:270px"',
-                      'text_class'  => '  white',
-                      'text_style'  => 'left:180px; top:349px;',
-                      'link_class'  => '',
-                      'link_style'  => 'left:180px; top:435px',
-
-                  ),
-
-              ),
-
-
-          ),
-
-          array(
-              'type'=>'features',
-              'label' => _('Features'),
-              'icon'  => 'fa-th-large',
-              'show'=>1
-          ),
-          array(
-              'type'=>'counter',
-              'label' => _('Counter'),
-              'icon'  => 'fa-sort-numeric-asc',
-
-          ),
-          array(
-              'type'=>'catalogue',
-              'label' => _('Catalogue'),
-              'icon'  => 'fa-shopping-bag',
-              'show'=>1
-
-          ),
-          array(
-
-              'type'=>'why_us',
-              'label' => _('What us'),
-              'icon'  => 'fa-diamond',
-              'show'=>1
-
-          ),
-          array(
-              'type'=>'image',
-              'label' => _('Image'),
-              'icon'  => 'fa-image',
-              'show'=>1
-
-          ),
-          array(
-              'type'=>'register',
-              'label' => _('Register'),
-              'icon'  => 'fa-register',
-              'show'=>1
-
-          ),
-          array(
-              'type'=>'products',
-              'label' => _('Products'),
-              'icon'  => 'fa-leaf',
-              'show'=>1
-
-          ),
-
-*/
-
-
-
-        )
-    );
-
-    $welcome_content_data=  array(
-        'blocks' => array(
-
-
-            array(
-                'type'=>'two_pack',
-                'label' => _('Two-Pack'),
-                'icon'  => 'fa-pause',
-                'show'=>1,
-
-                '_image'     => '',
-                '_image_key' => '',
-                '_title'     => _('Thanks for joining us!'),
-                '_subtitle'  => 'Will cover many web sites still in their infancy various versions have evolved packages over the years.',
-                '_text'      => 'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don\'t look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn\'t anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet anything embarrassing hidden in the middle many web sites.',
-            ),
-
-            array(
-                'type'=>'one_pack',
-                'label' => _('One-Pack'),
-                'icon'  => 'fa-minus',
-                'show'=>1,
-                '_title' => _('About us'),
-                '_text'  => 'When an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also electronics typesetting, remaining essentially believable.',
-            ),
-            array(
-                'type'=>'telephone',
-                'label' => _('Phone'),
-                'icon'  => 'fa-phone',
-                'show'=>1,
-                '_title' => 'Need help? Ready to Help you with Whatever you Need',
-                '_telephone'       => '+88 123 456 7890',
-                '_text'   => 'Answer Desk is Ready!',
-            ),
-        )
-
-
-    );
-
-    $contact_content_data=  array(
-        'blocks' => array(
-
-
-            array(
-                'type'=>'map',
-                'label' => _('Map'),
-                'icon'  => 'fa-map-marker',
-                'show'=>1,
-                'src'=>'#map'
-            ),
-
-            array(
-                'type'=>'two_one',
-                'label' => _('Two-One'),
-                'icon'  => ' fa-window-maximize fa-rotate-90',
-                'show'=>1,
-
-                'columns'=>array(
-                    array(
-                        'type'=>'two_third',
-                        '_title'=>'',
-                        '_text'          => '<p>Feel free to talk to our online representative at any time you please using our Live Chat system on our website or one of the below instant messaging programs.</p><br /><p>Please be patient while waiting for response. (24/7 Support!) <strong>Phone General Inquiries: 1-888-123-4567-8900</strong></p>',
-                    ),
-                      array(
-                          'type'=>'one_third',
-                          '_title'=>_('Our Details'),
-                          '_text'=>'Telephone<br/>#tel<br/><br/>Email<br/>#email<br/><br/>Address<br/>#adr<br/><br/> '
-                      )
-
-                )
-
-
-
-
-
-            ),
-
-
-        ),
-
-        '_text'          => '<p>Feel free to talk to our online representative at any time you please using our Live Chat system on our website or one of the below instant messaging programs.</p><br /><p>Please be patient while waiting for response. (24/7 Support!) <strong>Phone General Inquiries: 1-888-123-4567-8900</strong></p>',
-        '_address_label' => _('Our Details'),
-
-        '_telephone_label'      => _('Telephone'),
-        '_fax_label'            => _('FAX'),
-        '_vat_number_label'     => _('Vat No.'),
-        '_company_number_label' => _('Company No.'),
-        '_email_label'          => _('Email'),
-
-
-
-    );
-
-
-    $EcomB2B=array(
+    $EcomB2B = array(
 
 
         'home.sys' => array(
@@ -420,104 +37,16 @@ function website_system_webpages_config($website_type) {
 
             'Page Store Content Data' => json_encode(
                 array(
-                    'show_slider'     => true,
-                    'show_features'   => true,
-                    'show_counter'    => true,
-                    'show_image'      => true,
-                    'show_catalogue'  => true,
-                    'show_what_we_do' => true,
-                    'show_products'   => true,
+                    'blocks' => array(
 
 
-                    'sliders' => array(
-                        array(
-                            'image'       => 'art/image_1920x750.png',
-                            'title'       => 'Because we love What we Do',
-                            'text'        => 'Many web sites still their infancy various versions have packages sure there anything over the years.',
-                            'link_label'  => 'Read More',
-                            'link_type'   => 'button',
-                            'link_url'    => '#',
-                            'title_class' => 'centext  white',
-                            'title_style' => 'top:270px',
-                            'text_class'  => 'centext  white',
-                            'text_style'  => 'top:349px',
-                            'link_class'  => 'centext',
-                            'link_style'  => 'top:435px',
+                        $blocks['iframe'],
+                        $blocks['six_pack'],
+                        $blocks['image'],
+                        $blocks['counter'],
+                        $blocks['three_pack'],
 
-                        ),
-                        array(
-                            'image'       => 'art/image_1920x750.png',
-                            'title'       => 'Professional. Creative. Clean.',
-                            'text'        => 'Many web sites still their infancy various versions have packages sure there anything over the years.',
-                            'link_label'  => 'Read More',
-                            'link_type'   => 'button',
-                            'link_url'    => '#',
-                            'title_class' => 'centext  white',
-                            'title_style' => 'top:270px',
-                            'text_class'  => 'centext  white',
-                            'text_style'  => 'top:349px',
-                            'link_class'  => 'centext',
-                            'link_style'  => 'top:435px',
-
-                        ),
-                        array(
-                            'image'       => 'art/image_1920x750.png',
-                            'title'       => 'Build your Own Website :)',
-                            'text'        => 'Many web sites still their infancy various versions have packages sure there anything over the years.',
-                            'link_label'  => 'Read More',
-                            'link_type'   => 'button',
-                            'link_url'    => '#',
-                            'title_class' => '  white',
-                            'title_style' => 'left:180px; top:270px"',
-                            'text_class'  => '  white',
-                            'text_style'  => 'left:180px; top:349px;',
-                            'link_class'  => '',
-                            'link_style'  => 'left:180px; top:435px',
-
-                        ),
-
-                    ),
-
-
-                    'counter' => array(
-
-                        'columns' => array(
-                            array(
-                                'label'  => 'Projects',
-                                'number' => 270,
-                            ),
-                            array(
-                                'label'  => 'Clients',
-                                'number' => 225,
-                            ),
-                            array(
-                                'label'  => 'Likes',
-                                'number' => 4500,
-                            ),
-                            array(
-                                'label'  => 'Days',
-                                'number' => 365,
-                            )
-
-                        )
-                    ),
-
-
-                    'catalogue' => array(
-
-                        'items' => array(
-
-                            'image' => 'http://placehold.it/800x600',
-                            'title' => 'Dashboard',
-
-
-                        )
-
-
-                    ),
-
-
-
+                    )
 
                 )
             )
@@ -534,7 +63,23 @@ function website_system_webpages_config($website_type) {
             'Webpage Name'              => _("Visitor's homepage"),
             'Webpage Meta Description'  => '',
 
-            'Page Store Content Data' => json_encode($home_content_data)
+            'Page Store Content Data' => json_encode(
+                array(
+                    'blocks' => array(
+
+
+                        $blocks['iframe'],
+                        $blocks['button'],
+
+                        $blocks['six_pack'],
+                        $blocks['image'],
+                        $blocks['counter'],
+                        $blocks['three_pack'],
+
+                    )
+
+                )
+            )
 
 
         ),
@@ -548,159 +93,14 @@ function website_system_webpages_config($website_type) {
             'Webpage Meta Description'  => '',
             'Page Store Content Data'   => json_encode(
                 array(
-                    'show_slider'     => true,
-                    'show_features'   => true,
-                    'show_counter'    => true,
-                    'show_image'      => true,
-                    'show_catalogue'  => true,
-                    'show_what_we_do' => true,
-                    'show_register'   => true,
-                    'show_products'   => true,
+                    'blocks' => array(
+                        $blocks['iframe'],
+                        $blocks['six_pack'],
+                        $blocks['image'],
+                        $blocks['counter'],
+                        $blocks['three_pack'],
 
-
-                    'sliders' => array(
-                        array(
-                            'image'       => 'art/image_1920x750.png',
-                            'title'       => 'Because we love What we Do',
-                            'text'        => 'Many web sites still their infancy various versions have packages sure there anything over the years.',
-                            'link_label'  => 'Read More',
-                            'link_type'   => 'button',
-                            'link_url'    => '#',
-                            'title_class' => 'centext  white',
-                            'title_style' => 'top:270px',
-                            'text_class'  => 'centext  white',
-                            'text_style'  => 'top:349px',
-                            'link_class'  => 'centext',
-                            'link_style'  => 'top:435px',
-
-                        ),
-                        array(
-                            'image'       => 'art/image_1920x750.png',
-                            'title'       => 'Professional. Creative. Clean.',
-                            'text'        => 'Many web sites still their infancy various versions have packages sure there anything over the years.',
-                            'link_label'  => 'Read More',
-                            'link_type'   => 'button',
-                            'link_url'    => '#',
-                            'title_class' => 'centext  white',
-                            'title_style' => 'top:270px',
-                            'text_class'  => 'centext  white',
-                            'text_style'  => 'top:349px',
-                            'link_class'  => 'centext',
-                            'link_style'  => 'top:435px',
-
-                        ),
-                        array(
-                            'image'       => 'art/image_1920x750.png',
-                            'title'       => 'Build your Own Website :)',
-                            'text'        => 'Many web sites still their infancy various versions have packages sure there anything over the years.',
-                            'link_label'  => 'Read More',
-                            'link_type'   => 'button',
-                            'link_url'    => '#',
-                            'title_class' => '  white',
-                            'title_style' => 'left:180px; top:270px"',
-                            'text_class'  => '  white',
-                            'text_style'  => 'left:180px; top:349px;',
-                            'link_class'  => '',
-                            'link_style'  => 'left:180px; top:435px',
-
-                        ),
-
-                    ),
-
-
-                    'features' => array(
-
-                        'columns' => array(
-
-                            array(
-                                array(
-                                    'icon'  => 'icon-cursor',
-                                    'title' => 'Several Design Options',
-                                    'text'  => 'Many desktop publishing packages and web page editors now use Ipsum their defau mode various versions have over the years.',
-                                ),
-                                array(
-                                    'icon'  => 'icon-basket-loaded',
-                                    'title' => 'Build Own Website',
-                                    'text'  => 'Many desktop publishing packages and web page editors now use Ipsum their defau mode various versions have over the years.',
-                                )
-
-                            ),
-
-                            array(
-                                array(
-                                    'icon'  => 'icon-badge',
-                                    'title' => 'Clean &amp; Modern Design',
-                                    'text'  => 'Many desktop publishing packages and web page editors now use Ipsum their defau mode various versions have over the years.',
-                                ),
-                                array(
-                                    'icon'  => 'icon-social-dropbox',
-                                    'title' => 'Useful Shortcut\'s',
-                                    'text'  => 'Many desktop publishing packages and web page editors now use Ipsum their defau mode various versions have over the years.',
-                                )
-
-                            ),
-
-                            array(
-                                array(
-                                    'icon'  => 'icon-settings',
-                                    'title' => 'Icon Fonts Easy to Use',
-                                    'text'  => 'Many desktop publishing packages and web page editors now use Ipsum their defau mode various versions have over the years.',
-                                ),
-                                array(
-                                    'icon'  => 'icon-bulb',
-                                    'title' => 'Excellent Customer Services',
-                                    'text'  => 'Many desktop publishing packages and web page editors now use Ipsum their defau mode various versions have over the years.',
-                                )
-
-                            ),
-
-
-                        )
-
-
-                    ),
-
-
-                    'counter' => array(
-
-                        'columns' => array(
-                            array(
-                                'label'  => 'Projects',
-                                'number' => 270,
-                            ),
-                            array(
-                                'label'  => 'Clients',
-                                'number' => 225,
-                            ),
-                            array(
-                                'label'  => 'Likes',
-                                'number' => 4500,
-                            ),
-                            array(
-                                'label'  => 'Days',
-                                'number' => 365,
-                            )
-
-                        )
-                    ),
-
-
-                    'catalogue' => array(
-
-                        'items' => array(
-
-                            'image' => 'http://placehold.it/800x600',
-                            'title' => 'Dashboard',
-
-
-                        )
-
-
-                    ),
-
-
-
-
+                    )
 
                 )
             )
@@ -854,7 +254,20 @@ function website_system_webpages_config($website_type) {
             'Webpage Browser Title'     => _('Welcome'),
             'Webpage Name'              => _('Welcome'),
             'Webpage Meta Description'  => '',
-            'Page Store Content Data' => json_encode($welcome_content_data)
+            'Page Store Content Data'   => json_encode(
+                array(
+                    'blocks' => array(
+
+                        $blocks['two_pack'],
+                        $blocks['one_pack'],
+                        $blocks['telephone'],
+
+                    )
+
+
+                )
+
+            )
         ),
         'reset_pwd.sys' => array(
             'Webpage Scope'             => 'ResetPwd',
@@ -966,12 +379,20 @@ function website_system_webpages_config($website_type) {
             'Webpage Browser Title'     => _('Contact'),
             'Webpage Name'              => _('Contact'),
             'Webpage Meta Description'  => '',
-            'Page Store Content Data' => json_encode($contact_content_data)
+            'Page Store Content Data'   => json_encode(
+
+                array(
+
+                    'blocks' => $contact_content_data
+
+
+                )
+            )
 
 
         ),
 
-        'basket.sys'     => array(
+        'basket.sys'   => array(
             'Webpage Scope'             => 'Basket',
             'Webpage Scope Metadata'    => '',
             'Webpage Template Filename' => 'basket',
@@ -982,18 +403,49 @@ function website_system_webpages_config($website_type) {
             'Webpage Meta Description'  => '',
             'Page Store Content Data'   => json_encode(
                 array(
-                    '_invoice_address_label'  => _('Invoice address'),
-                    '_delivery_address_label' => _('Delivery address'),
 
-                    '_totals_label' => _('Totals'),
+                    'blocks'=>array(
 
-                    '_go_checkout_label' => _('Go to checkout'),
-                    '_voucher_label'     => _('Add/Edit Vouchers'),
+                        array(
+                            'locked'=>true,
+                            'type'   => 'basket',
+                            'label'  => _('fa-basket'),
+                            'icon'   => 'fa-minus',
+                            'show'   => 1,
+
+                            '_invoice_address_label'  => _('Invoice address'),
+                            '_delivery_address_label' => _('Delivery address'),
+
+
+                            '_items_gross' => _('Items Gross'),
+                            '_discounts' => _('Discounts'),
+                            '_items_net' => _('Items Net'),
+                            '_charges' => _('Charges'),
+                            '_shipping' => _('Shipping'),
+                            '_net' => _('Net'),
+                            '_tax' => _('Tax'),
+
+                            '_total' => _('Totals'),
+
+                            '_special_instructions'=>_('Special Instructions'),
+                            '_voucher' => _('Voucher'),
+
+
+                            '_go_checkout_label' => _('Go to checkout'),
+                            '_voucher_label'     => _('Add Voucher'),
+
+                        )
+
+
+                    )
+
+
+
 
                 )
             )
         ),
-        'checkout.sys'   => array(
+        'checkout.sys' => array(
             'Webpage Scope'             => 'Checkout',
             'Webpage Scope Metadata'    => '',
             'Webpage Template Filename' => 'checkout',
@@ -1028,7 +480,8 @@ function website_system_webpages_config($website_type) {
                 )
             )
         ),
-        'thanks.sys'     => array(
+
+        'thanks.sys' => array(
             'Webpage Scope'             => 'Thanks',
             'Webpage Scope Metadata'    => '',
             'Webpage Template Filename' => 'thanks',
@@ -1038,24 +491,21 @@ function website_system_webpages_config($website_type) {
             'Webpage Name'              => _('Thanks'),
             'Webpage Meta Description'  => '',
             'Page Store Content Data'   => json_encode(
-                array(
+
+                    array(
+                        'blocks' => array(
+                            $blocks['one_pack'],
+                            $blocks['telephone'],
+                        )
+
+                    )
+
+            ),
 
 
-                    'show_thanks'    => true,
-                    'show_order'     => true,
-                    'show_telephone' => true,
-
-                    '_thanks_title' => _('Thanks for your order'),
-                    '_thanks_text'  => 'When an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also electronics typesetting, remaining essentially believable.',
-
-                    '_telephone_title' => 'Need help? Ready to Help you with Whatever you Need',
-                    '_telephone'       => '+88 123 456 7890',
-                    '_telephone_msg'   => 'Answer Desk is Ready!',
-
-
-                )
-            )
         ),
+
+
         'not_found.sys'  => array(
             'Webpage Scope'             => 'NotFound',
             'Webpage Scope Metadata'    => '',
@@ -1143,7 +593,15 @@ function website_system_webpages_config($website_type) {
             'Webpage Code'              => 'tac.sys',
             'Webpage Browser Title'     => _('Terms & Conditions'),
             'Webpage Name'              => _('Terms & Conditions'),
-            'Webpage Meta Description'  => ''
+            'Webpage Meta Description'  => '',
+            'Page Store Content Data'   => json_encode(
+                array(
+                    'blocks' => array(
+                        $blocks['one_pack'],
+                    )
+
+                )
+            )
         ),
         'shipping.sys'   => array(
             'Webpage Scope'             => 'ShippingInfo',
@@ -1153,9 +611,18 @@ function website_system_webpages_config($website_type) {
             'Webpage Code'              => 'shipping.sys',
             'Webpage Browser Title'     => _('Shipping info'),
             'Webpage Name'              => _('Shipping info'),
-            'Webpage Meta Description'  => ''
+            'Webpage Meta Description'  => '',
+            'Page Store Content Data'   => json_encode(
+                array(
+                    'blocks' => array(
+                        $blocks['one_pack'],
+                    )
+
+                )
+            ),
         ),
-        'about.sys'      => array(
+
+        'about.sys' => array(
             'Webpage Scope'             => 'About',
             'Webpage Scope Metadata'    => '',
             'Webpage Template Filename' => 'about',
@@ -1165,26 +632,14 @@ function website_system_webpages_config($website_type) {
             'Webpage Name'              => _('About us'),
             'Webpage Meta Description'  => '',
             'Page Store Content Data'   => json_encode(
-                array(
 
-                    'show_thanks'        => true,
-                    'show_about'         => true,
-                    'show_telephone'     => true,
-                    '_welcome_image'     => '',
-                    '_welcome_image_key' => '',
-                    '_welcome_title'     => _('About us!'),
-                    '_welcome_subtitle'  => 'Will cover many web sites still in their infancy various versions have evolved packages over the years.',
-                    '_welcome_text'      => 'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don\'t look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn\'t anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet anything embarrassing hidden in the middle many web sites.',
+                    array(
+                        'blocks' => array(
+                            $blocks['two_pack'],
+                            $blocks['one_pack'],
+                        )
+                    )
 
-                    '_about_title' => _('About us'),
-                    '_about_text'  => 'When an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also electronics typesetting, remaining essentially believable.',
-
-                    '_telephone_title' => 'Need help? Ready to Help you with Whatever you Need',
-                    '_telephone'       => '#tel',
-                    '_telephone_msg'   => 'Answer Desk is Ready!',
-
-
-                )
             )
         )
 
@@ -1195,7 +650,6 @@ function website_system_webpages_config($website_type) {
     $website_system_webpages = array(
 
         'EcomB2B' => $EcomB2B
-
 
 
     );

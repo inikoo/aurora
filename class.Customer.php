@@ -207,9 +207,9 @@ class Customer extends Subject {
             $this->update_field('Customer Name', $customer_name, 'no_history');
 
 
-            $this->update_address('Contact', $address_raw_data);
-            $this->update_address('Invoice', $address_raw_data);
-            $this->update_address('Delivery', $address_raw_data);
+            $this->update_address('Contact', $address_raw_data, 'no_history');
+            $this->update_address('Invoice', $address_raw_data, 'no_history');
+            $this->update_address('Delivery', $address_raw_data, 'no_history');
 
 
             $history_data = array(
@@ -230,8 +230,9 @@ class Customer extends Subject {
             $this->msg   = 'Error inserting customer record';
         }
 
-        $this->update_full_search();
-        $this->update_location_type();
+
+        //$this->update_full_search();
+        // $this->update_location_type();
 
     }
 
@@ -389,10 +390,16 @@ class Customer extends Subject {
                 $sql   = sprintf(
                     "SELECT count(*) AS total FROM  `Customer History Bridge`     WHERE `Customer Key`=%d AND `Type`='Notes'  ", $this->id
                 );
-                $res   = mysql_query($sql);
                 $notes = 0;
-                if ($row = mysql_fetch_assoc($res)) {
-                    $notes = $row['total'];
+
+                if ($result = $this->db->query($sql)) {
+                    if ($row = $result->fetch()) {
+                        $notes = $row['total'];
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
                 }
 
 
@@ -428,9 +435,6 @@ class Customer extends Subject {
                     return _('ND');
                 }
                 break;
-
-
-
 
 
             case('Order Interval'):
@@ -520,10 +524,17 @@ class Customer extends Subject {
         $sql  = sprintf(
             "SELECT `Tax Category Rate` FROM `Tax Category Dimension` WHERE `Tax Category Code`=%s", prepare_mysql($this->data['Customer Tax Category Code'])
         );
-        $res  = mysql_query($sql);
-        if ($row = mysql_fetch_array($res)) {
-            $rate = $row['Tax Category Rate'];
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $rate = $row['Tax Category Rate'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
+
 
         return $rate;
     }
@@ -697,6 +708,7 @@ class Customer extends Subject {
             'editor'                        => $this->editor
         );
 
+
         $order = new Order('new', $order_data);
 
 
@@ -857,7 +869,7 @@ class Customer extends Subject {
         );
 
 
-        $address = $address->withRecipient($fields['Address Recipient'])->withOrganization($fields['Address Organization'])->withAddressLine1($fields['Address Line 1'])->withAddressLine2(
+        $address = $address->withFamilyName($fields['Address Recipient'])->withOrganization($fields['Address Organization'])->withAddressLine1($fields['Address Line 1'])->withAddressLine2(
             $fields['Address Line 2']
         )->withSortingCode($fields['Address Sorting Code'])->withPostalCode($fields['Address Postal Code'])->withDependentLocality($fields['Address Dependent Locality'])->withLocality(
             $fields['Address Locality']
@@ -1145,7 +1157,7 @@ class Customer extends Subject {
             );
 
 
-            $address = $address->withRecipient($address_fields['Address Recipient'])->withOrganization($address_fields['Address Organization'])->withAddressLine1($address_fields['Address Line 1'])
+            $address = $address->withFamilyName($address_fields['Address Recipient'])->withOrganization($address_fields['Address Organization'])->withAddressLine1($address_fields['Address Line 1'])
                 ->withAddressLine2($address_fields['Address Line 2'])->withSortingCode($address_fields['Address Sorting Code'])->withPostalCode($address_fields['Address Postal Code'])
                 ->withDependentLocality(
                     $address_fields['Address Dependent Locality']
@@ -1204,17 +1216,18 @@ class Customer extends Subject {
         $sql       = sprintf(
             "SELECT `Order Key` FROM `Order Dimension` WHERE `Order Customer Key`=%d ORDER BY `Order Date` DESC  ", $this->id
         );
-        // $sql=sprintf("select *  from `Order Dimension` limit 10");
-        // print "$sql\n";
-        $res = mysql_query($sql);
 
-        if ($row = mysql_fetch_array($res, MYSQL_ASSOC)) {
-            //   print_r($row);
-            $order_key = $row['Order Key'];
-            //print "****************$order_key\n";
 
-            //  exit;
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $order_key = $row['Order Key'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
+
 
         return $order_key;
     }
@@ -1227,84 +1240,6 @@ class Customer extends Subject {
         );
     }
 
-    function users_last_login() {
-
-        $user_keys = array();
-        $sql       = sprintf(
-            "SELECT max(`User Last Login`) AS last_login FROM `User Dimension` U      WHERE  `User Type`='Customer' AND `User Parent Key`=%d ", $this->id
-
-        );
-        $result    = mysql_query($sql);
-        while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-
-            return strftime('%x', strtotime($row['last_login']));
-        }
-
-        return '';
-    }
-
-    function users_last_failed_login() {
-
-        $user_keys = array();
-        $sql       = sprintf(
-            "SELECT max(`User Last Failed Login`) AS last_login FROM `User Dimension` U      WHERE  `User Type`='Customer' AND `User Parent Key`=%d ", $this->id
-
-        );
-        $result    = mysql_query($sql);
-        while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-
-            return strftime('%x', strtotime($row['last_login']));
-        }
-
-        return '';
-    }
-
-    function users_number_logins() {
-
-        $user_keys = array();
-        $sql       = sprintf(
-            "SELECT sum(`User Login Count`) AS logins FROM `User Dimension` U      WHERE  `User Type`='Customer' AND `User Parent Key`=%d ", $this->id
-
-        );
-        $result    = mysql_query($sql);
-        while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-
-            return number($row['logins']);
-        }
-
-        return 0;
-    }
-
-    function users_number_failed_logins() {
-
-        $user_keys = array();
-        $sql       = sprintf(
-            "SELECT sum(`User Failed Login Count`) AS logins FROM `User Dimension` U      WHERE  `User Type`='Customer' AND `User Parent Key`=%d ", $this->id
-
-        );
-        $result    = mysql_query($sql);
-        while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-
-            return number($row['logins']);
-        }
-
-        return 0;
-    }
-
-    function get_main_email_user_key() {
-        $user_key = 0;
-        $sql      = sprintf(
-            "SELECT `User Key` FROM  `User Dimension` WHERE `User Handle`=%s AND `User Type`='Customer' AND `User Parent Key`=%d "
-
-            , prepare_mysql($this->data['Customer Main Plain Email']), $this->id
-        );
-        $result   = mysql_query($sql);
-        if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $user_key = $row['User Key'];
-        }
-
-        return $user_key;
-    }
 
     function get_other_delivery_addresses_data() {
         $sql = sprintf(
@@ -1335,22 +1270,6 @@ class Customer extends Subject {
 
     }
 
-    function get_other_email_login_handle() {
-        $other_login_handle_emails = array();
-        foreach ($this->get_other_emails_data() as $email) {
-            $sql = sprintf(
-                "SELECT `User Key` FROM `User Dimension` WHERE `User Handle`='%s'", $email['email']
-            );
-
-            $result = mysql_query($sql);
-
-            if ($row = mysql_fetch_array($result)) {
-                $other_login_handle_emails[$email['email']] = $email['email'];
-            }
-        }
-
-        return $other_login_handle_emails;
-    }
 
     function is_tax_number_valid() {
         if ($this->data['Customer Tax Number'] == '') {
@@ -1375,15 +1294,15 @@ class Customer extends Subject {
         );
 
 
-        if ($result=$this->db->query($sql)) {
+        if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
 
                 $order_key = $row['Order Key'];
-        	}
-        }else {
-        	print_r($error_info=$this->db->errorInfo());
-        	print "$sql\n";
-        	exit;
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
 
 
@@ -1402,13 +1321,17 @@ class Customer extends Subject {
         $sql        = sprintf(
             "SELECT `Order Key` FROM `Order Dimension` WHERE `Order Customer Key`=%d AND `Order Current Dispatch State` IN (%s) ", $this->id, $dispatch_state_valid_values
         );
-        //print $sql;
-        $res = mysql_query($sql);
-        if ($row = mysql_fetch_assoc($res)) {
-            //print_r($row);
 
-            $order_keys[$row['Order Key']] = $row['Order Key'];
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $order_keys[$row['Order Key']] = $row['Order Key'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
+
 
         return $order_keys;
     }
@@ -1426,13 +1349,18 @@ class Customer extends Subject {
         $sql        = sprintf(
             "SELECT `Order Key` FROM `Order Dimension` WHERE `Order Customer Key`=%d AND `Order Current Dispatch State` IN (%s) ", $this->id, $dispatch_state_valid_values
         );
-        //print $sql;
-        $res = mysql_query($sql);
-        if ($row = mysql_fetch_assoc($res)) {
-            //print_r($row);
 
-            $order_keys[$row['Order Key']] = $row['Order Key'];
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $order_keys[$row['Order Key']] = $row['Order Key'];
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
+
 
         return $order_keys;
     }
@@ -1452,36 +1380,21 @@ class Customer extends Subject {
         $sql = sprintf(
             "SELECT sum(`Credit Saved`) AS value FROM `Order Post Transaction Dimension` WHERE `Customer Key`=%d AND `State`='Saved' ", $this->id
         );
-        $res = mysql_query($sql);
-        if ($row = mysql_fetch_assoc($res)) {
-            $credits = $row['value'];
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $credits = $row['value'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
+
 
         return $credits;
     }
 
-    function add_history_login($data) {
-        $history_data = array(
-            // 'login','logout','fail_login','password_request','password_reset'
-            'Date' => $data['Date'],
-
-            'Direct Object'     => 'Website',
-            'Direct Object Key' => $data['Site Key'],
-            'History Details'   => $data['Details'],
-            'History Abstract'  => $data['Note'],
-            'Action'            => $data['Action'],
-            'Preposition'       => 'Preposition',
-            'Indirect Object'   => $data['Indirect Object'],
-            'User Key'          => $data['User Key']
-        );
-
-        $history_key = $this->add_history($history_data, $force_save = true);
-        $sql         = sprintf(
-            "INSERT INTO `Customer History Bridge` VALUES (%d,%d,'No','No','WebLog')", $this->id, $history_key
-        );
-
-        mysql_query($sql);
-    }
 
     function add_history_new_order($order, $text_locale = 'en_GB') {
 
@@ -1498,6 +1411,7 @@ class Customer extends Subject {
                 $note = sprintf(
                     '%s <a href="order.php?id=%d">%s</a> (In Process)', _('Order Processed'), $order->data ['Order Key'], $order->data ['Order Public ID']
                 );
+
                 if ($order->data['Order Original Data MIME Type'] = 'application/inikoo') {
 
                     if ($this->editor['Author Alias'] != '' and $this->editor['Author Key']) {
@@ -1518,16 +1432,7 @@ class Customer extends Subject {
                         '%s (<a href="customer.php?id=%d">%s</a>) place an order on %s', $this->get('Customer Name'), $this->id, $this->get('Formatted ID'), $tz_date
                     );
                 }
-                if ($order->data['Order Original Data MIME Type'] = 'application/vnd.ms-excel') {
-                    if ($order->data['Order Original Data Filename'] != '') {
 
-                        $details .= '<div >'._('Original Source').":<img src='art/icons/page_excel.png'> ".$order->data['Order Original Data MIME Type']."</div>";
-
-                        $details .= '<div>'._('Original Source Filename').": ".$order->data['Order Original Data Filename']."</div>";
-
-
-                    }
-                }
 
         }
         $history_data = array(
@@ -1546,7 +1451,8 @@ class Customer extends Subject {
             "INSERT INTO `Customer History Bridge` VALUES (%d,%d,'No','No','Orders')", $this->id, $history_key
         );
 
-        mysql_query($sql);
+        $this->db->exec($sql);
+
 
     }
 
@@ -1556,7 +1462,7 @@ class Customer extends Subject {
         $sql = sprintf(
             "INSERT INTO `Customer History Bridge` VALUES (%d,%d,'No','No','Orders')", $this->id, $history_key
         );
-        mysql_query($sql);
+        $this->db->exec($sql);
 
 
     }
@@ -1619,12 +1525,12 @@ class Customer extends Subject {
         $sql = sprintf(
             "UPDATE `History Dimension` SET `Deep`=2 WHERE `Subject`='Customer' AND `Subject Key`=%d  AND `Direct Object`='Order' AND `Direct Object Key`=%d ", $this->id, $order->id
         );
-        mysql_query($sql);
+        $this->db->exec($sql);
         $history_key = $order->add_history($history_data);
         $sql         = sprintf(
             "INSERT INTO `Customer History Bridge` VALUES (%d,%d,'No','No','Orders')", $this->id, $history_key
         );
-        mysql_query($sql);
+        $this->db->exec($sql);
 
 
         switch ($lang) {
@@ -1638,7 +1544,7 @@ class Customer extends Subject {
             "UPDATE `History Dimension` SET `History Abstract`=%s WHERE `Subject`='Customer' AND `Subject Key`=%d  AND `Direct Object`='Order' AND `Direct Object Key`=%d AND `Metadata`='Process'",
             prepare_mysql($note_created), $this->id, $order->id
         );
-        mysql_query($sql);
+        $this->db->exec($sql);
 
     }
 
@@ -1696,7 +1602,7 @@ class Customer extends Subject {
         $sql         = sprintf(
             "INSERT INTO `Customer History Bridge` VALUES (%d,%d,'No','No','Orders')", $this->id, $history_key
         );
-        mysql_query($sql);
+        $this->db->exec($sql);
 
 
     }
@@ -1737,7 +1643,7 @@ class Customer extends Subject {
             'Action'            => 'created',
             'Direct Object'     => 'Invoice',
             'Direct Object Key' => $refund->id,
-            'Preposition'        => 'on',
+            'Preposition'       => 'on',
             // 'Indirect Object'=>'User'
             //'Indirect Object Key'=>0,
             'Date'              => $refund->data ['Invoice Date']
@@ -1788,18 +1694,8 @@ class Customer extends Subject {
 
             prepare_mysql($note), $this->id, $order->id
         );
-        mysql_query($sql);
+        $this->db->exec($sql);
 
-        /*
-		$sql=sprintf("update `History Dimension` set `History Date`=%s, `History Abstract`=%s where `Subject`='Customer' and `Subject Key`=%d  and `Direct Object`='Order' and `Direct Object Key`=%d and `Metadata`='Process'",
-			prepare_mysql($date),
-			prepare_mysql($note),
-			$this->id,
-			$order->id
-		);
-		mysql_query($sql);
-		//print "$sql\n";
-		*/
 
     }
 
@@ -1864,7 +1760,7 @@ class Customer extends Subject {
         $sql          = sprintf(
             "INSERT INTO `Customer History Bridge` VALUES (%d,%d,'No','No','Orders')", $this->id, $history_key
         );
-        mysql_query($sql);
+        $this->db->exec($sql);
 
     }
 
@@ -1873,10 +1769,17 @@ class Customer extends Subject {
             "SELECT count(*) AS number FROM `Order Dimension` WHERE `Order Customer Key`=%d ", $this->id
         );
         $number = 0;
-        $res    = mysql_query($sql);
-        if ($row = mysql_fetch_assoc($res)) {
-            $number = $row['number'];
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $number = $row['number'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
+
 
         return $number;
 
@@ -1884,205 +1787,15 @@ class Customer extends Subject {
     }
 
     function close_account() {
+
+        // todo deactivate the website user too
+
         $sql = sprintf(
             "UPDATE `Customer Dimension` SET `Customer Account Operative`='No' WHERE `Customer Key`=%d ", $this->id
         );
-        mysql_query();
-
-    }
-
-    function merge($customer_key, $customer_id_prefix = '') {
-        $this->merged = false;
-
-        $customer_to_merge         = new Customer($customer_key);
-        $customer_to_merge->editor = $this->editor;
-
-        if (!$customer_to_merge->id) {
-            $this->error = true;
-            $this->msg   = 'Customer not found';
-
-            return;
-        }
-
-        if ($this->id == $customer_to_merge->id) {
-            $this->error = true;
-            $this->msg   = _('Same Customer');
-
-            return;
-        }
+        $this->db->exec($sql);
 
 
-        if ($this->data['Customer Store Key'] != $customer_to_merge->data['Customer Store Key']) {
-            $this->error = true;
-            $this->msg   = _('Customers from different stores');
-
-            return;
-        }
-
-        // Deactivate to_marge_users & change the customer key
-
-        $users_to_desactivate = $customer_to_merge->get_users_keys();
-        foreach ($users_to_desactivate as $_user_key) {
-            $_user = new User($_user_key);
-            if ($_user->id) {
-                $_user->deactivate();
-            }
-        }
-
-        foreach ($users_to_desactivate as $_user_key) {
-
-            $sql = sprintf(
-                "UPDATE `User Dimension` SET `User Parent Key`=%d WHERE `User Key`=%d  ", $this->id, $_user_key
-            );
-            mysql_query($sql);
-        }
-
-
-        $sql = sprintf(
-            "SELECT `History Key` FROM `Customer History Bridge` WHERE `Type` IN ('Orders','Notes') AND `Customer Key`=%d ", $customer_to_merge->id
-        );
-        $res = mysql_query($sql);
-        while ($row = mysql_fetch_assoc($res)) {
-            $history_key = $row['History Key'];
-            $sql         = sprintf(
-                "SELECT * FROM `History Dimension` WHERE `History Key`=%d ", $history_key
-            );
-            $res2        = mysql_query($sql);
-            if ($row2 = mysql_fetch_assoc($res2)) {
-                $sql = sprintf(
-                    "UPDATE `History Dimension` SET `Subject Key`=%d   WHERE `History Key`=%d AND `Subject`='Customer' ", $this->id, $history_key
-                );
-                mysql_query($sql);
-                $sql = sprintf(
-                    "UPDATE `History Dimension` SET `Direct Object Key`=%d   WHERE `History Key`=%d AND `Direct Object`='Customer' ", $this->id, $history_key
-                );
-                mysql_query($sql);
-                $sql = sprintf(
-                    "UPDATE `History Dimension` SET `Indirect Object Key`=%d  WHERE `History Key`=%d AND `Indirect Object`='Customer' ", $this->id, $history_key
-                );
-                mysql_query($sql);
-            }
-        }
-        $sql = sprintf(
-            "UPDATE `Customer History Bridge` SET `Customer Key`=%d WHERE `Type` IN ('Orders','Notes') AND `Customer Key`=%d ", $this->id, $customer_to_merge->id
-        );
-        $res = mysql_query($sql);
-
-        $sql = sprintf(
-            "UPDATE `Customer History Bridge` SET `Customer Key`=%d WHERE `Type` IN ('Orders','Notes') AND `Customer Key`=%d ", $this->id, $customer_to_merge->id
-        );
-        $res = mysql_query($sql);
-
-        $sql = sprintf(
-            "UPDATE `Customer Ship To Bridge` SET `Customer Key`=%d WHERE `Customer Key`=%d ", $this->id, $customer_to_merge->id
-        );
-        $res = mysql_query($sql);
-        $sql = sprintf(
-            "UPDATE `Customer Billing To Bridge` SET `Customer Key`=%d WHERE `Customer Key`=%d ", $this->id, $customer_to_merge->id
-        );
-        $res = mysql_query($sql);
-
-        $sql = sprintf(
-            "UPDATE `Delivery Note Dimension` SET `Delivery Note Customer Key`=%d WHERE `Delivery Note Customer Key`=%d ", $this->id, $customer_to_merge->id
-        );
-        $res = mysql_query($sql);
-
-        $sql = sprintf(
-            "UPDATE `Invoice Dimension` SET `Invoice Customer Key`=%d WHERE `Invoice Customer Key`=%d ", $this->id, $customer_to_merge->id
-        );
-        $res = mysql_query($sql);
-
-        $sql = sprintf(
-            "UPDATE `Order Dimension` SET `Order Customer Key`=%d WHERE `Order Customer Key`=%d ", $this->id, $customer_to_merge->id
-        );
-        $res = mysql_query($sql);
-
-        $sql = sprintf(
-            "UPDATE `Order Transaction Fact` SET `Customer Key`=%d WHERE `Customer Key`=%d ", $this->id, $customer_to_merge->id
-        );
-        $res = mysql_query($sql);
-
-
-        if (strtotime($customer_to_merge->data['Customer First Contacted Date']) < strtotime($this->data['Customer First Contacted Date'])) {
-            $customer->data['Customer First Contacted Date'] = $customer_to_merge->data['Customer First Contacted Date'];
-            $sql                                             = sprintf(
-                "UPDATE `Customer Dimension` SET `Customer First Contacted Date`=%s WHERE `Customer Key`=%d ", prepare_mysql($customer->data['Customer First Contacted Date']), $this->id
-            );
-            $res                                             = mysql_query($sql);
-            $sql                                             = sprintf(
-                "UPDATE `History Dimension` SET `History Date`=%s   WHERE `Action`='created' AND `Direct Object`='Customer' AND `Direct Object Key`=%d  AND `Indirect Object`='' ",
-                prepare_mysql($customer->data['Customer First Contacted Date']), $this->id
-            );
-            $res                                             = mysql_query($sql);
-
-        }
-
-
-        $history_data = array(
-            'History Abstract'    => _('Customer').' '.$customer_to_merge->get_formatted_id_link($customer_id_prefix).' '._('merged'),
-            'History Details'     => _('Orders Transfered').':'.$customer_to_merge->get('Orders').'<br/>'._('Notes Transfered').':'.$customer_to_merge->get('Notes').'<br/>',
-            'Direct Object'       => 'Customer',
-            'Direct Object Key'   => $customer_to_merge->id,
-            'Indirect Object'     => 'Customer',
-            'Indirect Object Key' => $this->id,
-            'Action'              => 'merged',
-            'Preposition'         => 'to'
-        );
-        $this->add_subject_history($history_data);
-
-
-        $customer_to_merge->update_orders();
-
-        $this->update_orders();
-
-        $store = new Store($this->data['Customer Store Key']);
-        $store->update_customer_activity_interval();
-
-        $this->update_activity();
-        $this->update_is_new();
-
-        $customer_to_merge->delete('', $customer_id_prefix);
-
-
-        $sql = sprintf(
-            "UPDATE `Customer Merge Bridge` SET `Customer Key`=%d,`Date Merged`=%s WHERE `Customer Key`=%d ", $this->id, prepare_mysql($this->editor['Date']), $customer_to_merge->id
-        );
-        $res = mysql_query($sql);
-
-        $sql = sprintf(
-            "INSERT INTO  `Customer Merge Bridge` VALUES(%d,%d,%s) ", $customer_to_merge->id, $this->id, prepare_mysql($this->editor['Date'])
-        );
-        $res = mysql_query($sql);
-
-        $store = new Store($this->data['Customer Store Key']);
-        $store->update_customer_activity_interval();
-
-
-        $this->merged = true;;
-
-        //Customer Key
-
-
-        //Email Campaign Mailing List
-
-    }
-
-    function get_users_keys() {
-        $user_keys = array();
-        $sql       = sprintf(
-            "SELECT `User Key` FROM `User Dimension` U
-        WHERE  `User Type`='Customer' AND `User Parent Key`=%d ", $this->id
-
-        );
-
-
-        $result = mysql_query($sql);
-        while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-
-            $user_keys[$row['User Key']] = $row['User Key'];
-        }
-
-        return $user_keys;
     }
 
     public function update_orders() {
@@ -2120,10 +1833,17 @@ class Customer extends Subject {
         $sql = sprintf(
             "SELECT count(*) AS num FROM `Order Dimension` WHERE `Order Customer Key`=%d AND `Order Current Dispatch State`='Cancelled' ", $this->id
         );
-        $res = mysql_query($sql);
-        if ($row = mysql_fetch_assoc($res)) {
-            $this->data['Customer Orders Cancelled'] = $row['num'];
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $this->data['Customer Orders Cancelled'] = $row['num'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
+
 
         $sql = sprintf(
             "SELECT count(*) AS num ,
@@ -2132,11 +1852,18 @@ class Customer extends Subject {
 
 		FROM `Order Dimension` WHERE `Order Customer Key`=%d AND `Order Invoiced`='Yes'  ", $this->id
         );
-        $res = mysql_query($sql);
-        if ($row = mysql_fetch_assoc($res)) {
-            $this->data['Customer Orders Invoiced']           = $row['num'];
-            $this->data['Customer First Invoiced Order Date'] = $row['first_order_date'];
-            $this->data['Customer Last Invoiced Order Date']  = $row['last_order_date'];
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $this->data['Customer Orders Invoiced']           = $row['num'];
+                $this->data['Customer First Invoiced Order Date'] = $row['first_order_date'];
+                $this->data['Customer Last Invoiced Order Date']  = $row['last_order_date'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
 
 
@@ -2144,17 +1871,25 @@ class Customer extends Subject {
             $sql        = "SELECT `Order Date` AS date FROM `Order Dimension` WHERE `Order Invoiced`='Yes'  AND `Order Customer Key`=".$this->id." ORDER BY `Order Date`";
             $last_order = false;
             $intervals  = array();
-            $result2    = mysql_query($sql);
-            while ($row2 = mysql_fetch_array($result2, MYSQL_ASSOC)) {
-                $this_date = gmdate('U', strtotime($row2['date']));
-                if ($last_order) {
-                    $intervals[] = ($this_date - $last_date);
+
+
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
+                    $this_date = gmdate('U', strtotime($row['date']));
+                    if ($last_order) {
+                        $intervals[] = ($this_date - $last_date);
+                    }
+
+                    $last_date  = $this_date;
+                    $last_order = true;
                 }
-
-                $last_date  = $this_date;
-                $last_order = true;
-
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
             }
+
+
             $this->data['Customer Order Interval']     = average($intervals);
             $this->data['Customer Order Interval STD'] = deviation($intervals);
 
@@ -2170,11 +1905,16 @@ class Customer extends Subject {
             "SELECT max(`Order Dispatched Date`) AS last_order_dispatched_date FROM `Order Dimension` WHERE `Order Customer Key`=%d  AND `Order Current Dispatch State`='Dispatched' AND `Order Invoiced`='Yes'",
             $this->id
         );
-        // print $sql."\n";
-        $res = mysql_query($sql);
-        if ($row = mysql_fetch_assoc($res)) {
-            $this->data['Customer Last Invoiced Dispatched Date'] = $row['last_order_dispatched_date'];
 
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $this->data['Customer Last Invoiced Dispatched Date'] = $row['last_order_dispatched_date'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
 
 
@@ -2195,32 +1935,34 @@ class Customer extends Subject {
         );
 
 
-        $res = mysql_query($sql);
-        if ($row = mysql_fetch_assoc($res)) {
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+
+                $this->data['Customer Orders'] = $row['orders'];
+
+                $this->data['Customer Net Balance']             = $row['net_balance'];
+                $this->data['Customer Net Refunds']             = $row['net_refunds'];
+                $this->data['Customer Net Payments']            = $row['net_balance'] - $row['net_outstanding'];
+                $this->data['Customer Outstanding Net Balance'] = $row['net_outstanding'];
+
+                $this->data['Customer Tax Balance']             = $row['tax_balance'];
+                $this->data['Customer Tax Refunds']             = $row['tax_refunds'];
+                $this->data['Customer Tax Payments']            = $row['tax_balance'] - $row['tax_outstanding'];
+                $this->data['Customer Outstanding Tax Balance'] = $row['tax_outstanding'];
+
+                $this->data['Customer Profit'] = $row['profit'];
 
 
-            $this->data['Customer Orders'] = $row['orders'];
-
-            $this->data['Customer Net Balance']             = $row['net_balance'];
-            $this->data['Customer Net Refunds']             = $row['net_refunds'];
-            $this->data['Customer Net Payments']            = $row['net_balance'] - $row['net_outstanding'];
-            $this->data['Customer Outstanding Net Balance'] = $row['net_outstanding'];
-
-            $this->data['Customer Tax Balance']             = $row['tax_balance'];
-            $this->data['Customer Tax Refunds']             = $row['tax_refunds'];
-            $this->data['Customer Tax Payments']            = $row['tax_balance'] - $row['tax_outstanding'];
-            $this->data['Customer Outstanding Tax Balance'] = $row['tax_outstanding'];
-
-            $this->data['Customer Profit'] = $row['profit'];
-
-
-            if ($this->data['Customer Orders'] > 0) {
-                $this->data['Customer First Order Date'] = $row['first_order_date'];
-                $this->data['Customer Last Order Date']  = $row['last_order_date'];
-                $this->data['Customer With Orders']      = 'Yes';
+                if ($this->data['Customer Orders'] > 0) {
+                    $this->data['Customer First Order Date'] = $row['first_order_date'];
+                    $this->data['Customer Last Order Date']  = $row['last_order_date'];
+                    $this->data['Customer With Orders']      = 'Yes';
+                }
             }
-
-
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
 
 
@@ -2238,8 +1980,8 @@ class Customer extends Subject {
 
             , $this->id
         );
-        mysql_query($sql);
-        //print "$sql\n\n";
+
+        $this->db->exec($sql);
 
 
     }
@@ -2322,11 +2064,8 @@ class Customer extends Subject {
             prepare_mysql($this->data['Customer Type by Activity']), prepare_mysql($this->data['Customer Lost Date']), $this->id
         );
 
-        //   print "\n $orders\n$sql\n";
-        //  exit;
-        if (!mysql_query($sql)) {
-            exit("\n$sql\n error");
-        }
+        $this->db->exec($sql);
+
 
     }
 
@@ -2347,10 +2086,7 @@ class Customer extends Subject {
         $sql = sprintf(
             "UPDATE `Customer Dimension` SET `Customer New`=%s WHERE `Customer Key`=%d", prepare_mysql($this->data['Customer New']), $this->id
         );
-        // if($this->data['Customer New']=='Yes')
-        //    print (gmdate('U')." ".strtotime($this->data['Customer First Contacted Date']))." $interval  \n";
-        //    print $sql;
-        mysql_query($sql);
+        $this->db->exec($sql);
 
 
     }
@@ -2370,12 +2106,19 @@ class Customer extends Subject {
 
         $has_orders = false;
         $sql        = "SELECT count(*) AS total  FROM `Order Dimension` WHERE `Order Customer Key`=".$this->id;
-        $result     = mysql_query($sql);
-        if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-            if ($row['total'] > 0) {
-                $has_orders = true;
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                if ($row['total'] > 0) {
+                    $has_orders = true;
+                }
             }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
+
 
         if ($has_orders) {
             $this->msg = _("Customer can't be deleted");
@@ -2383,9 +2126,6 @@ class Customer extends Subject {
             return;
         }
 
-        $address_to_delete = $this->get_address_keys();
-        $emails_to_delete  = $this->get_email_keys();
-        $telecom_to_delete = $this->get_telecom_keys();
 
         $history_data = array(
             'History Abstract' => _('Customer Deleted'),
@@ -2394,12 +2134,6 @@ class Customer extends Subject {
         );
 
         $this->add_history($history_data, $force_save = true);
-
-
-        $company_keys = array();
-
-        $contact_keys = $this->get_contact_keys();
-        $company_keys = $this->get_company_keys();
 
 
         $sql = sprintf(
@@ -2468,13 +2202,8 @@ class Customer extends Subject {
         $this->db->exec($sql);
 
 
-        $users_to_desactivate = $this->get_users_keys();
-        foreach ($users_to_desactivate as $_user_key) {
-            $_user = new User($_user_key);
-            if ($_user->id) {
-                $_user->deactivate();
-            }
-        }
+        $website_user = get_object('Website_User', $this->get('Customer Website User Key'));
+        $website_user->delete();
 
 
         // Delete if the email has not been send yet
@@ -2517,50 +2246,9 @@ class Customer extends Subject {
                 return -1;
             }
         } else {
-            print_r($error_info = $db->errorInfo());
+            print_r($error_info = $this->db->errorInfo());
             exit;
         }
-
-
-    }
-
-    function get_image_src() {
-        $image = false;
-
-        $user_keys = $this->get_users_keys();
-
-        if (count($user_keys) > 0) {
-
-            $sql = sprintf(
-                "SELECT `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` FROM `Image Bridge` PIB LEFT JOIN `Image Dimension` ID ON (PIB.`Image Key`=ID.`Image Key`) WHERE `Subject Type`='User Profile' AND   `Subject Key` IN (%s)",
-                join($user_keys)
-            );
-            $res = mysql_query($sql);
-
-
-            $image = false;
-
-
-            if ($result = $this->db->query($sql)) {
-                if ($row = $result->fetch()) {
-                    if ($row['Image Key']) {
-
-                        $image = 'image.php?id='.$row['Image Key'].'&size=small';
-
-
-                        return $image;
-                    }
-                }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                exit;
-            }
-
-
-            return $image;
-        }
-
-        return false;
 
 
     }
@@ -2658,54 +2346,86 @@ class Customer extends Subject {
         $sql             = sprintf(
             "SELECT count(*) AS customers FROM `Customer Dimension` WHERE `Customer Store Key`=%d", $this->data['Customer Store Key']
         );
-        $result          = mysql_query($sql);
-        if ($row = mysql_fetch_assoc($result)) {
-            $total_customers = $row['customers'];
 
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $total_customers = $row['customers'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
 
 
-        $sql    = sprintf(
+        $sql = sprintf(
             "SELECT count(*) AS customers FROM `Customer Dimension` USE INDEX (`Customer Orders Invoiced`)  WHERE `Customer Store Key`=%d AND `Customer Orders Invoiced`<%d",
             $this->data['Customer Store Key'], $this->data['Customer Orders Invoiced']
 
         );
-        $result = mysql_query($sql);
-        if ($row = mysql_fetch_assoc($result)) {
-            $total_customers_with_less_invoices = $row['customers'];
 
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $total_customers_with_less_invoices = $row['customers'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
-        $sql    = sprintf(
+
+
+        $sql = sprintf(
             "SELECT count(*) AS customers FROM `Customer Dimension` USE INDEX (`Customer Orders`) WHERE `Customer Store Key`=%d AND `Customer Orders`<%d", $this->data['Customer Store Key'],
 
             $this->data['Customer Orders']
         );
-        $result = mysql_query($sql);
-        if ($row = mysql_fetch_assoc($result)) {
-            $total_customers_with_less_orders = $row['customers'];
 
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $total_customers_with_less_orders = $row['customers'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
 
 
-        $sql    = sprintf(
+        $sql = sprintf(
             "SELECT count(*) AS customers FROM `Customer Dimension` USE INDEX (`Customer Net Balance`) WHERE `Customer Store Key`=%d AND `Customer Net Balance`<%f", $this->data['Customer Store Key'],
 
             $this->data['Customer Net Balance']
         );
-        $result = mysql_query($sql);
-        if ($row = mysql_fetch_assoc($result)) {
-            $total_customers_with_less_balance = $row['customers'];
 
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $total_customers_with_less_balance = $row['customers'];
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
-        $sql    = sprintf(
+
+
+        $sql = sprintf(
             "SELECT count(*) AS customers FROM `Customer Dimension` USE INDEX (`Customer Profit`) WHERE `Customer Store Key`=%d AND `Customer Profit`<%f", $this->data['Customer Store Key'],
             $this->data['Customer Profit']
         );
-        $result = mysql_query($sql);
-        if ($row = mysql_fetch_assoc($result)) {
-            $total_customers_with_less_profit = $row['customers'];
 
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $total_customers_with_less_profit = $row['customers'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
+
 
         $this->data['Customer Invoices Top Percentage'] = ($total_customers == 0 ? 0 : $total_customers_with_less_invoices / $total_customers);
         $this->data['Customer Orders Top Percentage']   = ($total_customers == 0 ? 0 : $total_customers_with_less_orders / $total_customers);
@@ -2719,41 +2439,8 @@ class Customer extends Subject {
 
             $this->id
         );
-        mysql_query($sql);
-        //print "$sql\n";
 
-    }
-
-    function update_postal_address() {
-        $store  = new Store($this->data['Customer Store Key']);
-        $locale = $store->data['Store Locale'];
-
-        $address = new Address($this->data['Customer Main Address Key']);
-
-        $separator      = "\n";
-        $postal_address = '';
-        if ($this->data['Customer Name'] == $this->data['Customer Main Contact Name']) {
-            $postal_address = $this->data['Customer Name'];
-        } else {
-            $postal_address = _trim($this->data['Customer Name']);
-            if ($postal_address != '') {
-                $postal_address .= $separator;
-            }
-            $postal_address .= _trim($this->data['Customer Main Contact Name']);
-
-        }
-        if ($postal_address != '') {
-            $postal_address .= $separator;
-        }
-        $postal_address .= $address->display('postal', $locale);
-
-        $this->data['Customer Main Postal Address'] = _trim($postal_address);
-
-        $sql = sprintf(
-            "UPDATE `Customer Dimension` SET `Customer Main Postal Address`=%s WHERE `Customer Key`=%d", prepare_mysql($this->data['Customer Main Postal Address']), $this->id
-        );
-
-        mysql_query($sql);
+        $this->db->exec($sql);
 
     }
 
@@ -2791,11 +2478,17 @@ class Customer extends Subject {
             $billing_to_key, $ship_to_key
         );
 
-        $res = mysql_query($sql);
-        if ($row = mysql_fetch_assoc($res)) {
 
-            $number_saved_credit_cards = $row['number'];
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $number_saved_credit_cards = $row['number'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
+
 
         return $number_saved_credit_cards;
     }
@@ -2811,17 +2504,20 @@ class Customer extends Subject {
             $ship_to_key
         );
 
-        $res = mysql_query($sql);
-        while ($row = mysql_fetch_assoc($res)) {
 
-            $_card_data       = json_decode(
-                AESDecryptCtr($row['Metadata'], $key, 256), true
-            );
-            $_card_data['id'] = $row['Customer Credit Card Token Key'];
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $_card_data       = json_decode(AESDecryptCtr($row['Metadata'], $key, 256), true);
+                $_card_data['id'] = $row['Customer Credit Card Token Key'];
 
-            $card_data[] = $_card_data;
-
+                $card_data[] = $_card_data;
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
+
 
         return $card_data;
 
@@ -2838,28 +2534,41 @@ class Customer extends Subject {
             $card_key
         );
 
-        $res = mysql_query($sql);
-        if ($row = mysql_fetch_assoc($res)) {
 
-
-            $sql = sprintf(
-                'SELECT `Customer Credit Card Token Key`,`Billing To Key`,`Ship To Key` FROM `Customer Credit Card Token Dimension`  WHERE `Customer Key`=%d AND `CCUI`=%s', $this->id,
-                prepare_mysql($row['CCUI'])
-            );
-
-            $res2 = mysql_query($sql);
-            while ($row2 = mysql_fetch_assoc($res2)) {
-                $tokens[] = $this->get_credit_card_token(
-                    $row2['Customer Credit Card Token Key'], $row2['Billing To Key'], $row2['Ship To Key']
-                );
-
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
                 $sql = sprintf(
-                    'DELETE FROM `Customer Credit Card Token Dimension`  WHERE `Customer Credit Card Token Key`=%d', $row2['Customer Credit Card Token Key']
+                    'SELECT `Customer Credit Card Token Key`,`Billing To Key`,`Ship To Key` FROM `Customer Credit Card Token Dimension`  WHERE `Customer Key`=%d AND `CCUI`=%s', $this->id,
+                    prepare_mysql($row['CCUI'])
                 );
 
-                mysql_query($sql);
+
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row2) {
+                        $tokens[] = $this->get_credit_card_token(
+                            $row2['Customer Credit Card Token Key'], $row2['Billing To Key'], $row2['Ship To Key']
+                        );
+
+                        $sql = sprintf(
+                            'DELETE FROM `Customer Credit Card Token Dimension`  WHERE `Customer Credit Card Token Key`=%d', $row2['Customer Credit Card Token Key']
+                        );
+
+                        $this->db->exec($sql);
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+
             }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
+
 
         return $tokens;
 
@@ -2876,15 +2585,18 @@ class Customer extends Subject {
             $this->id, $billing_to_key, $ship_to_key, $card_key
         );
 
-        $res = mysql_query($sql);
-        while ($row = mysql_fetch_assoc($res)) {
 
-            $_card_data = json_decode(
-                AESDecryptCtr($row['Metadata'], $key, 256), true
-            );
-            $token      = $_card_data['Token'];
-
+        if ($result=$this->db->query($sql)) {
+        		foreach ($result as $row) {
+                    $_card_data = json_decode(AESDecryptCtr($row['Metadata'], $key, 256), true);
+                    $token      = $_card_data['Token'];
+        		}
+        }else {
+        		print_r($error_info=$this->db->errorInfo());
+        		print "$sql\n";
+        		exit;
         }
+
 
         return $token;
 
@@ -2915,26 +2627,21 @@ class Customer extends Subject {
 
         $sql = sprintf(
             "INSERT INTO `Customer Credit Card Token Dimension` (`Customer Key`,`Billing To Key`,`Ship To Key`,`CCUI`,`Metadata`,`Created`,`Updated`,`Valid Until`,`Vault`) VALUES (%d,%d,%d,%s,%s,%s,%s,%s,%s)
-		ON DUPLICATE KEY UPDATE `Metadata`=%s , `Updated`=%s,`Valid Until`=%s
-		 ", $this->id, $billing_to_key, $ship_to_key, prepare_mysql($card_info['uniqueNumberIdentifier']), prepare_mysql($card_data), prepare_mysql(gmdate('Y-m-d H:i:s')),
-            prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql(
-                gmdate(
-                    'Y-m-d H:i:s', strtotime(
-                                     $card_info['expirationYear'].'-'.$card_info['expirationMonth'].'-01 +1 month'
-                                 )
-                )
-            ), prepare_mysql($vault),
-
-            prepare_mysql($card_data), prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql(
-                gmdate(
-                    'Y-m-d H:i:s', strtotime(
-                                     $card_info['expirationYear'].'-'.$card_info['expirationMonth'].'-01 +1 month'
-                                 )
-                )
-            )
+		      ON DUPLICATE KEY UPDATE `Metadata`=%s , `Updated`=%s,`Valid Until`=%s",
+            $this->id,
+            $billing_to_key,
+            $ship_to_key,
+            prepare_mysql($card_info['uniqueNumberIdentifier']),
+            prepare_mysql($card_data), prepare_mysql(gmdate('Y-m-d H:i:s')),
+            prepare_mysql(gmdate('Y-m-d H:i:s')),
+            prepare_mysql(gmdate('Y-m-d H:i:s', strtotime($card_info['expirationYear'].'-'.$card_info['expirationMonth'].'-01 +1 month'))),
+            prepare_mysql($vault),
+            prepare_mysql($card_data), prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql(gmdate('Y-m-d H:i:s', strtotime($card_info['expirationYear'].'-'.$card_info['expirationMonth'].'-01 +1 month')))
 
         );
-        mysql_query($sql);
+
+        $this->db->exec($sql);
+
 
     }
 
@@ -2945,22 +2652,38 @@ class Customer extends Subject {
         $sql          = sprintf(
             "SELECT * FROM `Custom Field Dimension` WHERE `Custom Field In Showcase`='Yes' AND `Custom Field Table`='Customer'"
         );
-        $res          = mysql_query($sql);
-        while ($row = mysql_fetch_array($res)) {
-            $custom_field[$row['Custom Field Key']] = $row['Custom Field Name'];
+
+        if ($result=$this->db->query($sql)) {
+        		foreach ($result as $row) {
+                    $custom_field[$row['Custom Field Key']] = $row['Custom Field Name'];
+        		}
+        }else {
+        		print_r($error_info=$this->db->errorInfo());
+        		print "$sql\n";
+        		exit;
         }
+
+
+
+
 
         $show_case = array();
-        $sql       = sprintf(
-            "SELECT * FROM `Customer Custom Field Dimension` WHERE `Customer Key`=%d", $this->id
-        );
-        $res       = mysql_query($sql);
-        if ($row = mysql_fetch_array($res)) {
+        $sql       = sprintf("SELECT * FROM `Customer Custom Field Dimension` WHERE `Customer Key`=%d", $this->id);
 
-            foreach ($custom_field as $key => $value) {
-                $show_case[$value] = $row[$key];
-            }
+
+        if ($result=$this->db->query($sql)) {
+        		foreach ($result as $row) {
+                    foreach ($custom_field as $key => $value) {
+                        $show_case[$value] = $row[$key];
+                    }
+        		}
+        }else {
+        		print_r($error_info=$this->db->errorInfo());
+        		print "$sql\n";
+        		exit;
         }
+
+
 
         return $show_case;
 

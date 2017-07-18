@@ -53,6 +53,8 @@ function get_form_validation_state(submitting) {
 
     });
 
+
+
     return form_validation
 
 }
