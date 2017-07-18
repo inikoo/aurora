@@ -794,7 +794,36 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
     $redirect = '';
 
     switch ($data['object']) {
+        case 'Page':
+        case 'Webpage':
+            include_once 'class.Page.php';
 
+            //$data['fields_data']['user'] = $user;
+
+
+
+
+          $data['fields_data']['Webpage Type']='Info';
+        $data['fields_data']['Webpage Template Filename']='blocks';
+        $data['fields_data']['Webpage Scope']='Info';
+
+            $object = $parent->create_system_webpage($data['fields_data']);
+
+
+            if (!$parent->error) {
+
+                $smarty->assign('account', $account);
+                $smarty->assign('parent', $parent);
+
+                $smarty->assign('object', $object);
+
+                $pcard = '';
+
+
+                $redirect     = 'website/'.$object->get('Webpage Website Key').'/in_process/webpage/'.$object->id;
+                $updated_data = array();
+            }
+            break;
         case 'Website':
             include_once 'class.Website.php';
 
@@ -1441,9 +1470,11 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
         case 'Customer':
             include_once 'class.Customer.php';
             if (!$parent->error) {
-                $object = $parent->create_customer($data['fields_data']);
+                list($customer,$website_user) = $parent->create_customer($data['fields_data']);
+                $object=$customer;
                 $smarty->assign('account', $account);
-                $smarty->assign('object', $object);
+                $smarty->assign('customer', $customer);
+                $smarty->assign('website_user', $website_user);
 
                 $pcard        = $smarty->fetch(
                     'presentation_cards/customer.pcard.tpl'

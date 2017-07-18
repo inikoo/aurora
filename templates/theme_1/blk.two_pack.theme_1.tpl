@@ -18,8 +18,8 @@
             <div class="one_half">
 
                 <input style="display:none" type="file" block_key="{$key}" name="{$data.type}" id="update_image_{$key}" class="image_upload" data-options='{ }'/>
-                <label style="margin-left:10px;font-weight: normal;cursor: pointer"  for="update_image_{$key}">
-                    <img style="max-width:562px "  class="button _image" image_key="{$data._image_key}"  src="{if $data._image!=''}{$data._image}{else}/art/image_562x280.png{/if}" alt="" class="rimg">
+                <label style="margin-left:10px;font-weight: normal;cursor: pointer;width:100%"  for="update_image_{$key}">
+                    <img   class="button _image rimg" image_key="{$data._image_key}"  src="{if $data._image!=''}{$data._image}{else}/art/image_562x280.png{/if}" alt="" >
                 </label>
 
             </div>

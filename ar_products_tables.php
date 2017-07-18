@@ -1183,7 +1183,7 @@ function product_categories_products($_data, $db, $user) {
     include_once 'class.Store.php';
 
 
-    // print_r($_data);
+    //print_r($_data);
 
     $parent = new Category($_data['parameters']['parent_key']);
     $store  = new Store($parent->get('Category Store Key'));
@@ -1234,8 +1234,16 @@ function product_categories_products($_data, $db, $user) {
 
         if ($data['Page Key'] > 0 and $data['Product Category Public']=='Yes') {
             $webpage = sprintf(
-                '<span class="%s">%s</span>', ($data['Page State'] == 'Offline' ? 'discreet strikethrough' : ''), $data['Page Code']
+                '<span onclick="change_view(\'webpage/%d\')" class="link %s">%s</span>',$data['Page Key'],
+                ($data['Webpage State'] == 'Offline' ? 'discreet strikethrough' : ''),
+                $data['Webpage Code']
             );
+
+            if($data['Webpage State'] =='InProcess'){
+               $webpage.='  <i class="fa fa-child" aria-hidden="true"></i>';
+
+               }
+
         } else {
             $webpage = '<span class="super_discreet">-</span>';
         }

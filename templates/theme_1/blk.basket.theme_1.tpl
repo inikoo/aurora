@@ -29,29 +29,31 @@
 
 
                 <div class="one_third">
-                    <h5 id="_invoice_address_label" contenteditable="true">{$content._invoice_address_label}</h5>
+                    <h5 id="_invoice_address_label" contenteditable="true">{$data._invoice_address_label}</h5>
                     <p>
                         The Business Centre </br>
                         61 Wellfield Road</br>
                         Roath</br>
                         Cardiff</br>
                         CF24 3DG</br>
+                        United Kingdom</br>
                     </p>
                 </div><!-- end section -->
 
 
-                <div class="one_third last">
-                    <h5 id="_delivery_address_label" contenteditable="true">{$content._delivery_address_label}</h5>
+                <div class="one_third ">
+                    <h5 id="_delivery_address_label" contenteditable="true">{$data._delivery_address_label}</h5>
                     <p>
                         The Business Centre</br>
                         61 Wellfield Road</br>
                         Roath</br>
                         Cardiff</br>
-                        CF24 3DG </br>                   </p>
+                        CF24 3DG </br>
+                        United Kingdom</br>
+                    </p>
                 </div><!-- end section -->
 
-                <div class="one_third text-right" style="padding-left:20px">
-                    <h5 id="_totals_label" contenteditable="true">{$content._totals_label}</h5>
+                <div class="one_third text-right last" style="padding-left:20px">
 
 
 
@@ -59,47 +61,122 @@
 
                         <tbody>
                         <tr>
-                            <td>-ABB1</td>
+                            <td>{$data._items_gross}</td>
 
-                            <td class="text-right">£10.00</td>
+                            <td class="text-right">£295.52</td>
                         </tr>
                         <tr>
-                            <td>HHT-04</td>
+                            <td>{$data._discounts}</td>
 
-                            <td class="text-right">£6.00</td>
+                            <td class="text-right">-£27.20</td>
                         </tr>
                         <tr>
-                            <td>LLX-10a</td>
+                            <td>{$data._items_net}</td>
 
-                            <td class="text-right">£1.99</td>
+                            <td class="text-right">£268.32</td>
                         </tr>
+                        <tr>
+                            <td>{$data._charges}</td>
+
+                            <td class="text-right">£0.00</td>
+                        </tr>
+                        <tr>
+                            <td>{$data._shipping}</td>
+
+                            <td class="text-right">£0.00</td>
+                        </tr>
+                        <tr>
+                            <td>{$data._net}</td>
+
+                            <td class="text-right">£268.32</td>
+                        </tr>
+                        <tr>
+                            <td>{$data._tax}</td>
+
+                            <td class="text-right">£53.66</td>
+                        </tr>
+                        <tr>
+                            <td>{$data._total}</td>
+
+                            <td class="text-right">£321.98</td>
+                        </tr>
+
                         </tbody>
                     </table>
 
                 </div><!-- end section -->
 
 
-                <div class="clearfix margin_top10"></div>
+                <div class="clearfix "></div>
 
 
 
                 <div class="container order">
 
-
-               {include file="theme_1/_order.theme_1.tpl"}
+                    {include file="theme_1/_order.theme_1.tpl" hide_title=true }
 
 
                 </div>
 
                 <div class="clearfix "></div>
 
+                <div class="one_half">
+
+                    <form action="" method="post" enctype="multipart/form-data"  class="sky-form"
+                    style="box-shadow: none"
+
+
+                    <section>
+
+                        <div class="row">
+                            <section class="col col-6">
+                                <label class="input">
+                                    <i class="icon-append fa fa-tag"></i>
+                                    <input type="text" name="name" id="name" placeholder="{$data._voucher}">
+                                </label>
+                            </section>
+                            <section class="col col-6">
+                                <button style="margin:0px" type="submit" class="button">{$data._voucher_label}</button>
+
+                            </section>
+                        </div>
 
 
 
 
+                    </section>
+
+                    <section style="border: none">
+                                <label class="textarea">
+
+                                    <textarea rows="5" name="comment" placeholder="{$data._special_instructions}"></textarea>
+                                </label>
+                            </section>
 
 
-        </div>
+                    </form>
+
+
+
+                </div>
+
+                <div class="one_half last">
+
+
+                    <form action="" method="post" enctype="multipart/form-data"  class="sky-form"
+                          style="box-shadow: none"
+
+
+
+
+                    </form>
+
+                </div>
+
+
+
+
+            </div>
 
 
         <div class="clearfix marb12"></div>

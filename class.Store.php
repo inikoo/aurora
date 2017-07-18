@@ -2185,7 +2185,9 @@ class Store extends DB_Table {
     }
 
     function create_customer($data) {
+
         $this->new_customer = false;
+        $this->new_website_user=false;
 
         $data['editor']             = $this->editor;
         $data['Customer Store Key'] = $this->id;
@@ -2244,24 +2246,64 @@ class Store extends DB_Table {
         //exit;
 
         $customer = new Customer('new', $data, $address_fields);
+        $website_user=false;
+        $website_user_key=false;
 
         if ($customer->id) {
             $this->new_customer_msg = $customer->msg;
 
             if ($customer->new) {
                 $this->new_customer = true;
-                $this->update_customers_data();
+
+                include_once 'utils/new_fork.php';
+
+                global $account;
+
+                if($customer->get('Customer Main Plain Email')!='') {
+
+
+                    $website = get_object('website', $this->get('Store Website Key'));
+
+                    $user_data['Website User Handle']       = $customer->get('Customer Main Plain Email');
+                    $user_data['Website User Customer Key'] = $customer->id;
+                    $website_user                           = $website->create_user($user_data);
+
+
+
+                    $this->new_customer = true;
+
+                    $this->new_website_user = $website_user->new;
+                    $website_user_key=$website_user->id;
+
+                }
+
+                new_housekeeping_fork(
+                    'au_housekeeping', array(
+                    'type'     => 'customer_created',
+                    'customer_key' => $customer->id,
+                    'website_user_key' => $website_user_key
+                ), $account->get('Account Code')
+                );
+
+
+                // $this->update_customers_data();
+
+
+
             } else {
                 $this->error = true;
                 $this->msg   = $customer->msg;
 
             }
 
-            return $customer;
+            return array($customer,$website_user);
         } else {
             $this->error = true;
             $this->msg   = $customer->msg;
         }
+
+
+
     }
 
     function create_product($data) {

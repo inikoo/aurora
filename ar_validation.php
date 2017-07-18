@@ -73,6 +73,7 @@ function check_for_duplicates($data, $db, $user, $account) {
     $options_where = '';
 
 
+
     switch ($data['object']) {
         case 'User':
             switch ($field) {
@@ -707,6 +708,28 @@ function check_for_duplicates($data, $db, $user, $account) {
         case 'PurchaseOrder':
             $data['object'] = 'Purchase Order';
             break;
+        case 'Page':
+        case 'Webpage':
+
+            switch ($field) {
+                case 'Webpage Code':
+
+
+                    $invalid_msg              = _('Webpage code already used');
+                    $sql                      = sprintf(
+                        "SELECT P.`Page Key` AS `key` ,`Webpage Code` AS field FROM `Page Store Dimension` P WHERE  `Webpage Code`=%s  AND `Webpage Website Key`=%s  ",
+                        prepare_mysql($data['value']), $data['parent_key']
+
+                    );
+                    $validation_sql_queries[] = array(
+                        'sql'         => $sql,
+                        'invalid_msg' => $invalid_msg
+                    );
+
+            }
+
+            break;
+
         default:
 
 

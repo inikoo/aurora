@@ -16,12 +16,10 @@ include_once 'common.php';
 if ($logged_in ) {
 
     $webpage_key = $website->get_system_webpage_key('home.sys');
-    $template=$theme.'/homepage.'.$theme.'.'.$website->get('Website Type').'.tpl';
 
 
 }else{
     $webpage_key = $website->get_system_webpage_key('home_logout.sys');
-    $template=$theme.'/homepage_logout.'.$theme.'.'.$website->get('Website Type').'.tpl';
 }
 
 include_once 'webpage.php';

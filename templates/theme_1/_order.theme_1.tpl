@@ -10,7 +10,7 @@
 *}
 
 
-<h2>{t}Order number{/t} <span class="order_number">342342</span></h2>
+<h2 class="{if $hide_title}hide{/if}"  >{t}Order number{/t} <span class="order_number">342342</span></h2>
 
 <table class="table">
     <thead>

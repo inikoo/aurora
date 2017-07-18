@@ -1150,6 +1150,9 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                 case ('webpage'):
                     return get_webpage_navigation($data, $smarty, $user, $db, $account);
                     break;
+                case ('webpage.new'):
+                    return get_new_webpage_navigation($data, $smarty, $user, $db, $account);
+                    break;
                 case ('page'):
                     return get_page_navigation(
                         $data, $smarty, $user, $db, $account
@@ -3000,7 +3003,30 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 
 
-            } elseif ($state['section'] == 'website.new') {
+            } elseif ($state['section'] == 'webpage.new') {
+
+
+                $branch[]               = array(
+                    'label'     => _('Store').' <span class="Store_Code id">'.$state['store']->get('Code').'</span>',
+                    'icon'      => 'shopping-bag',
+                    'reference' => 'store/'.$state['store']->id
+                );
+                $state['current_store'] = $state['store']->id;
+
+
+
+                $branch[] = array(
+                    'label'     => '<span class=" Website_Code">'.$state['website']->get('Code').'</span>',
+                    'icon'      => 'globe',
+                    'reference' => 'store/'.$state['store']->id.'/website'
+                );
+
+                $branch[] = array(
+                    'label'     => _('New webpage'),
+                    'icon'      => '',
+                    'reference' => '',
+                );
+            }elseif ($state['section'] == 'website.new') {
 
 
                 $branch[]               = array(

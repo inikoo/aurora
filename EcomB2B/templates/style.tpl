@@ -127,12 +127,17 @@ width:100%;
 
           .hide{
          display:none}
-     p{
+
+
+
+
+
+          #page_content  p{
          margin: 1em 0px;
 
      }
 
-input {
+          #page_content input {
   position: relative;
   bottom: 2px;
 
@@ -154,7 +159,7 @@ input {
   }
 
 
-h1{
+          #page_content h1{
 
     font-family: "Ubuntu",Helvetica,Arial,sans-serif;
     font-weight: 800;
@@ -367,7 +372,7 @@ h1{
 
 
 
-     .title{
+          #page_content   .title{
          font-weight:800;font-size:120%;padding-bottom:10px;margin-left:20px
      }
 

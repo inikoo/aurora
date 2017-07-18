@@ -246,6 +246,18 @@ class WebsiteFooter extends DB_Table {
 
     }
 
+
+    function reset(){
+        require_once 'conf/footer_data.php';
+        $this->update(
+            array(
+                'Website Footer Data' => get_default_footer_data(1)
+            ), 'no_history'
+        );
+
+
+    }
+
 }
 
 

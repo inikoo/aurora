@@ -63,27 +63,62 @@ include_once 'conf/website_system_webpages.php';
 $db->exec('truncate `Email Template Dimension`;truncate `Published Email Template Dimension`');
 
 
-$sql = sprintf('SELECT `Website Header Key` FROM `Website Header Dimensionn` ');
+$sql = sprintf('SELECT `Website Key` FROM `Website Dimension`');
+
+
+if ($result = $db->query($sql)) {
+
+
+    foreach ($result as $row) {
+
+        $website = new Website($row['Website Key']);
+
+
+
+
+
+        include_once 'conf/website_system_webpages.php';
+        foreach (website_system_webpages_config($website->get('Website Type')) as $website_system_webpages) {
+
+
+            $website->create_system_webpage($website_system_webpages);
+        }
+    }
+} else {
+    print_r($error_info = $db->errorInfo());
+    print "$sql\n";
+    exit;
+}
+
+
+
+
+$sql = sprintf('SELECT `Website Header Key` FROM `Website Header Dimension` ');
+
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
 
-        $header = get_object('header',$row{'Website Header Key'});
+        $header = get_object('header',$row['Website Header Key']);
+
+
         $header->reset();
 
     }
 }
 
-$sql = sprintf('SELECT `Footer Header Key` FROM `Footer Header Dimensionn` ');
+$sql = sprintf('SELECT `Footer Header Key` FROM `Footer Header Dimension` ');
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
 
-        $footer = get_object('footer',$row{'Footer Header Key'});
+        $footer = get_object('footer',$row['Footer Header Key']);
         $footer->reset();
 
     }
 }
+
+
 
 
 $sql = sprintf('SELECT `Page Key` FROM `Page Store Dimension` WHERE `Webpage Scope` not in ("Product","Category Categories","Category Products","HomepageToLaunch") ');

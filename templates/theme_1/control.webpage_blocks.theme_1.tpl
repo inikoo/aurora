@@ -16,161 +16,48 @@
 </style>
 
 
+<div id="blocks_showcase" class="hide" style="z-index: 2000;background-color: #fff;padding:20px;border:1px solid #ccc;width: 300px;position: absolute;">
+    <div style="margin-bottom:5px">  <i  onClick="$('#blocks_showcase').addClass('hide')" style="position:relative;top:-5px" class="button fa fa-fw fa-window-close" aria-hidden="true"></i>  </div>
 
+    <table style="width:100%;border-bottom: 1px solid #ccc;margin-top: 10px">
+        {foreach from=$blocks item=$block key=key}
+        <tr><td style="border-top: 1px solid #ccc"  class="add_webpage_block button" block="{$key}" ><span  ><i class="fa {$block.icon} fa-fw " style="margin-right: 50px " aria-hidden="true"></i>  {$block.label}</span> </td></tr>
+        {/foreach}
+    </table>
+
+</div>
 
 
 <div class=" edit_block_buttons  "  >
     <ul id="columns" class="sortable2 columns " style="width:1100px;" >
 
 
-
     {foreach from=$content.blocks item=$block key=key}
-
-        <li class="column  unselectable  {if !$block.show}very_discreet{/if}"  key="{$key}" block="{$block.type}" >
-            <span class="button open_edit">
-            <i class="fa   {$block.icon}" aria-hidden="true"></i>
-             <span class="label  ">{$block.label}</span>
-            </span>
-            <i class="fa button  {if $block.show}fa-eye{else}fa-eye-slash{/if} block_show" aria-hidden="true"></i>
-            <i class="fa handle2 fa-arrows" aria-hidden="true"></i>
-        </li>
+        {assign var="block_type" value=$block['type']}
+        {include file="theme_1/blk.control_label.theme_1.tpl" }
     {/foreach}
+        <li class="column  unselectable button  new_block "  style="min-width:auto;padding:4px 16px 4px 16px;" ><i class="fa fa-plus" aria-hidden="true"></i></li>
+
     </ul>
 
-    <div id="edit_columns" class="hide" style="height: 27px;margin-bottom:10px" >
+    <div id="edit_columns" class="hide" style="height: 27px;margin-bottom:10px"  current_key=""  >
+
+        <i style="float:right"  class="fa button delete_block  fa-trash-o" aria-hidden="true"></i>
+
 
         <div style="float:left;position: relative;top:2.5px">
             <i id="edit_prev_column" onClick="edit_prev_column(this)" key="" class="edit_column_button fa button fa-arrow-left " aria-hidden="true"></i>
-            <i id="exit_edit_column" style="margin-left:5px;margin-right: 5px"  onClick="exit_edit_column(this)" key="" class="edit_column_button fa button fa-window-close fa-flip-horizontal " aria-hidden="true"></i>
+            <i id="exit_edit_column" style="margin-left:5px;margin-right: 5px"  onClick="exit_edit_column()" key="" class="edit_column_button fa button fa-window-close fa-flip-horizontal " aria-hidden="true"></i>
             <i id="edit_next_column" style="margin-right: 10px" onClick="edit_next_column(this)" key="" class="edit_column_button fa button fa-arrow-right " aria-hidden="true"></i>
         </div>
 
-
+        <div id="blk_control_container">
         {foreach from=$content.blocks item=$block key=key}
-            <div id="edit_mode_{$key}" class=" edit_mode "  type="{$block.type}" key="{$key}" style="height: 22px;line-height: 22px" >
-                <div style="float:left;margin-right:20px;min-width: 200px;">
-
-
-
-
-                    <div style="float:left;min-width: 200px;position: relative;top:2px">
-                    <i class="fa fa-fw {$block.icon}" style="margin-left:10px" aria-hidden="true" title="{$block.label}"></i>
-                    <span class="label">{$block.label}</span>
-                    </div>
-
-
-
-                        {if $block.type=='sliders'}
-
-
-                            <div style="float:left">
-                            {foreach from=$block.sliders key=slider_key  item=slider name=sliders}
-                                <div   key="{$slider_key}"  style="" class="button slider_preview   "></div>
-
-
-
-
-                            {/foreach}
-                            </div>
-
-
-                            {foreach from=$block.sliders key=slider_key  item=slider name=sliders}
-                            <div id="slider_preview_options_{$slider_key}" class="hide slider_preview_options" style="float:left;height: 22px;line-height: 22px">
-                                <span class="button" style="margin-left:50px;margin-right: 20px"><i class="fa fa-television" aria-hidden="true"></i> {t}Background{/t}</span>
-
-                                <i class="fa fa-align-center" aria-hidden="true" style="margin-right: 5px" ></i>
-                                <i class="fa fa-link" aria-hidden="true"  style="margin-right: 5px"></i>
-                                <i class="fa fa-youtube-play" aria-hidden="true" title="{t}Button{/t}"  style="margin-right: 5px"></i>
-                                <i class="fa fa-arrows-alt " aria-hidden="true" title="{t}Click anywhere{/t}"  style="margin-right: 5px"></i>
-
-                            </div>
-                            {/foreach}
-
-                        {elseif $block.type=='iframe'}
-
-                            <div id="iframe_height_edit_block_{$key}" name="iframe_height_edit_block" class="hide edit_block" style="position:absolute;padding:10px;background-color: #FFF;border:1px solid #ccc">
-                                 {t}Height{/t} <input value="{$block.height}" style="width: 30px">px <i class="apply_changes fa button fa-check-square" style="margin-left: 10px" aria-hidden="true"></i>
-                            </div>
-                            <div id="iframe_src_edit_block_{$key}" name="iframe_height_edit_block"  class="hide edit_block" style="position:absolute;padding:10px;background-color: #FFF;border:1px solid #ccc">
-                                {t}Src{/t} https://<input value="{$block.src}" style="width: 900px">  <i class="apply_changes  fa button fa-check-square" style="margin-left: 10px" aria-hidden="true"></i>
-                            </div>
-
-                            <span >
-                                {t}Width{/t} 1240px {t}Height{/t} <span id="iframe_height_{$key}" class="button iframe_height"  key="{$key}" style="border:1px solid #ccc;padding:2px 4px">{$block.height}px</span> r=<span class="iframe_ratio">{math equation="w/h" w=1240 h=$block.height format="%.2f"}</span>
-
-                                <span  style="margin-left:20px"> src:<span id="iframe_src{$key}" class="button iframe_src" key="{$key}"  style="border:1px solid #ccc;padding:2px 4px;">https://{$block.src|truncate:60}</span>
-                            </span>
-
-                        {elseif $block.type=='image'}
-
-                            <div id="image_tooltip_edit_block_{$key}"  name="image_tooltip_edit_block" class="hide edit_block" style="position:absolute;padding:10px;background-color: #FFF;border:1px solid #ccc;z-index: 4000">
-                                <input value="{$block.tooltip}" style="width: 900px">  <i class="apply_changes  fa button fa-check-square" style="margin-left: 10px" aria-hidden="true"></i>
-                            </div>
-                            <div id="image_link_edit_block_{$key}"  name="image_link_edit_block" class="hide edit_block" style="position:absolute;padding:10px;background-color: #FFF;border:1px solid #ccc;z-index: 4000">
-                                <input value="{$block.link}" style="width: 450px">  <i class="apply_changes  fa button fa-check-square" style="margin-left: 10px" aria-hidden="true"></i>
-                            </div>
-
-                               <span style="font-style: italic">{t}Min width{/t} 1240px  </span>
-
-
-                                <input style="display:none" type="file" block_key="{$key}" name="update_image_block" id="update_image_{$key}" class="image_upload" data-options='{ "min_width":"1240p"}'/>
-                                <label style="margin-left:10px;font-weight: normal;cursor: pointer"  for="update_image_{$key}"><i class="fa fa-upload" aria-hidden="true"></i>  {t}Upload{/t}</label>
-
-
-                               <span id="image_tooltip_{$key}" key="{$key}" class="image_tooltip button"  key="{$key}"   style="margin-left:30px">
-                                   <i   class="fa   {if $block.tooltip=='' } fa-comment-o very_discreet{else} fa-comment {/if} " aria-hidden="true"></i>
-                                   <span  class="   {if $block.tooltip=='' }hide{/if}"   style="border:1px solid #ccc;padding:2px 4px;">{$block.tooltip|truncate:30}</span>
-                               </span>
-
-                               <span id="image_link_{$key}" key="{$key}" class="image_link button" style="margin-left:10px">
-
-                                <i  class="fa fa-link   {if $block.link=='' }very_discreet{/if} "  aria-hidden="true"></i>
-                                   <span  class="button  {if $block.link=='' }hide{/if} "   style="border:1px solid #ccc;padding:2px 4px;">{$block.link|truncate:30}</span>
-                                </span>
-
-                         {elseif $block.type=='counter'}
-
-
-
-                                {foreach from=$block.columns key=column_key  item=column }
-
-                                    <div id="counter_link_edit_block_{$key}_{$column_key}" name="counter_link_edit_block" class="hide edit_block" style="position:absolute;padding:10px;background-color: #FFF;border:1px solid #ccc;z-index: 4000">
-                                        <input value="{$column.link}" style="width: 450px">  <i class="apply_changes  fa button fa-check-square" style="margin-left: 10px" aria-hidden="true"></i>
-                                    </div>
-                                    
-                                    <input  id="counter_number_{$key}_{$column_key}" type="number"  key="{$key}" column_key="{$column_key}"   value="{$column.number}" style="width: 60px" class="counter_number"  />
-                                    <i id="counter_link_{$key}_{$column_key}" style="margin-right: 10px"  key="{$key}" column_key="{$column_key}"      class="fa fa-link button counter_link  {if $column.link=='' }very_discreet{/if} "  aria-hidden="true"></i>
-
-
-
-
-                                {/foreach}
-                                {elseif $block.type=='button'}
-
-                              
-                            <div id="button_link_edit_block_{$key}"  name="button_link_edit_block" class="hide edit_block" style="position:absolute;padding:10px;background-color: #FFF;border:1px solid #ccc;z-index: 4000">
-                                <input value="{$block.link}" style="width: 450px">  <i class="apply_changes  fa button fa-check-square" style="margin-left: 10px" aria-hidden="true"></i>
-                            </div>
-
-
-                               <span id="button_link_{$key}"   key="{$key}" class="button_link button" style="margin-left:10px">
-
-                                <i  class="fa fa-link   {if $block.link=='' }very_discreet{/if} "  aria-hidden="true"></i>
-                                   <span  class="button  {if $block.link=='' }hide{/if} "   style="border:1px solid #ccc;padding:2px 4px;">{$block.link|truncate:30}</span>
-                                </span>
-                                
-
-                         {/if}
-
-
-
-
-                </div>
-
-                <div style="clear: both"></div>
-
-            </div>
+            {assign var="block_type" value=$block['type']}
+            {include file="theme_1/blk.control.$block_type.theme_1.tpl" }
         {/foreach}
+
+
 
 
 
@@ -183,6 +70,51 @@
 
 
 <script>
+
+    $(document).on('click', '.delete_block', function (e) {
+
+
+        var key= $('#edit_columns').attr('current_key')
+
+        $('#edit_mode_'+key).remove()
+        $('#block_label_'+key).remove()
+        $("#preview").contents().find("#block_"+key).remove()
+
+       exit_edit_column()
+        $('#save_button').addClass('save button changed valid')
+
+    })
+
+
+    $(document).on('click', '.new_block', function (e) {
+        $('#blocks_showcase').removeClass('hide').offset({
+            top:$(this).offset().top-69 ,
+            left:$(this).offset().left+$(this).width()+30    }).data('item',$(this))
+    })
+
+
+    $(document).on('click', '.add_webpage_block', function (e) {
+
+
+        var request='/ar_website.php?tipo=webpage_block&code='+$(this).attr('block')+'&theme={$theme}'
+
+        $.getJSON( request, function( data ) {
+
+            console.log(data)
+
+            $('#blk_control_container').append(data.controls)
+            $('#columns ').prepend(data.button)
+            $("#preview").contents().find("#blocks").append(data.block)
+
+
+$('#blocks_showcase').addClass('hide')
+
+        });
+
+
+    })
+
+
 
     $(document).on('click', '.slider_preview', function (e) {
 
@@ -205,7 +137,7 @@
     function edit_next_column(element){
 
         var next_key=parseFloat($('#exit_edit_column').attr('key'))+1
-        exit_edit_column($('#exit_edit_column'))
+        exit_edit_column()
         var next= $('#edit_mode_'+next_key)
 
 
@@ -223,7 +155,7 @@
         var prev_key=parseFloat($('#exit_edit_column').attr('key'))-1
 
 
-        exit_edit_column($('#exit_edit_column'))
+        exit_edit_column()
 
 
         if(prev_key>=0){
@@ -240,6 +172,9 @@
 
 
     }
+
+
+
 
     $('.sortable2').sortable({
         handle:'.handle2',
@@ -307,7 +242,7 @@
 
 
         $('#columns').addClass('hide')
-        $('#edit_columns').removeClass('hide')
+        $('#edit_columns').removeClass('hide').attr('current_key',key)
 
         $('.edit_mode').addClass('hide')
         $('#edit_mode_'+key).removeClass('hide')
@@ -330,9 +265,9 @@
 
     }
 
-    function exit_edit_column(element) {
+    function exit_edit_column() {
         $('#columns').removeClass('hide')
-        $('#edit_columns').addClass('hide')
+        $('#edit_columns').addClass('hide').attr('current_key','')
 
 
         $('.options_dialog').addClass('hide')

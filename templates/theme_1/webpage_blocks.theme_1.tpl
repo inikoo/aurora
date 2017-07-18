@@ -9,6 +9,7 @@
 -->
 *}
 
+
 <style>
     #simple_line_icons_control_center{
         z-index:3000;position: absolute;background-color: #fff;border:1px solid #ccc;padding: 10px 20px 20px 20px
@@ -21,7 +22,6 @@
 
 {include file="theme_1/_head.theme_1.tpl"}
 
-{assign "iframe_resize" false}
 
 
 
@@ -121,15 +121,9 @@
 
 
     <div id="blocks" class="site_wrapper">
-
         {foreach from=$content.blocks item=$block key=key}
-
             {include file="{$theme}/blk.{$block.type}.{$theme}.tpl" data=$block key=$key  }
-
-
         {/foreach}
-
-
     </div>
 
 </div>
@@ -529,9 +523,12 @@
 
     }
 
-    $('[contenteditable=true]').on('input paste', function (event) {
+
+
+    $(document).on('input paste','[contenteditable=true]', function (e) {
         $('#save_button', window.parent.document).addClass('save button changed valid')
     });
+
 
 
     var droppedFiles = false;

@@ -252,21 +252,17 @@ class Public_Store {
         //exit;
 
         $customer = new Public_Customer('new', $data, $address_fields);
-
+        $website_user='';
         if ($customer->id) {
             $this->new_customer_msg = $customer->msg;
 
             if ($customer->new) {
 
-                include_once 'class.Public_Website.php';
 
-                $website=new Public_Website($this->get('Store Website Key'));
+                $website=get_object('website',$this->get('Store Website Key'));
 
                 $user_data['Website User Handle']=$customer->get('Customer Main Plain Email');
                 $user_data['Website User Customer Key']=$customer->id;
-
-
-
                 $website_user=$website->create_user($user_data);
 
                 include_once 'utils/new_fork.php';

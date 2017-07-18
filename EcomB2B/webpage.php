@@ -13,11 +13,7 @@
 
 $webpage = new Public_Webpage($webpage_key);
 
-if (!isset($template)) {
-    $template = $theme.'/'.$webpage->get('Webpage Template Filename').'.'.$theme.'.'.$website->get('Website Type').'.tpl';
 
-
-}
 
 if ($webpage->get('Webpage Template Filename') == 'register') {
 
@@ -60,7 +56,7 @@ if ($webpage->get('Webpage Template Filename') == 'register') {
     $smarty->assign('used_address_fields', $used_fields);
     $smarty->assign('countries', $countries);
     $smarty->assign('selected_country', $country_code);
-
+    $template = $theme.'/register.'.$theme.'.'.$website->get('Website Type').'.tpl';
 
 }
 elseif ($webpage->get('Webpage Template Filename') == 'login') {
@@ -85,7 +81,7 @@ elseif ($webpage->get('Webpage Template Filename') == 'login') {
     );
     $smarty->assign('labels_fallback', $labels_fallback);
 
-
+    $template = $theme.'/login.'.$theme.'.'.$website->get('Website Type').'.tpl';
 }
 elseif ($webpage->get('Webpage Template Filename') == 'welcome') {
 
@@ -107,7 +103,7 @@ elseif ($webpage->get('Webpage Template Filename') == 'categories_showcase') {
     $smarty->assign('content_data', $content_data);
     $smarty->assign('category', $category);
 
-
+    $template = $theme.'/categories_showcase.'.$theme.'.'.$website->get('Website Type').'.tpl';
 }
 elseif ($webpage->get('Webpage Template Filename') == 'products_showcase') {
 
@@ -324,6 +320,7 @@ elseif ($webpage->get('Webpage Template Filename') == 'products_showcase') {
 
     $smarty->assign('content_data', $content_data);
     $smarty->assign('category', $category);
+    $template = $theme.'/products_showcase.'.$theme.'.'.$website->get('Website Type').'.tpl';
 
 
 }
@@ -333,12 +330,23 @@ elseif ($webpage->get('Webpage Template Filename') == 'product') {
 
     $product = new Public_Product($webpage->get('Webpage Scope Key'));
     $smarty->assign('product', $product);
+    $template = $theme.'/product.'.$theme.'.'.$website->get('Website Type').'.tpl';
 
 
 }
 elseif ($webpage->get('Webpage Template Filename') == 'reset_password') {
     include 'reset_password.inc.php';
+    $template = $theme.'/reset_password.'.$theme.'.'.$website->get('Website Type').'.tpl';
+
+}else{
+
+
+
+    $template = $theme.'/webpage_blocks.'.$theme.'.'.$website->get('Website Type').'.tpl';
 }
+
+
+
 
 $content = $webpage->get('Content Data');
 

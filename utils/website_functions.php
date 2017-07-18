@@ -20,7 +20,7 @@ function get_website_section_items($db, $section_data) {
 
 
     $sql = sprintf(
-        "SELECT `Product Category Public`,`Webpage State`,`Category Webpage Index Key`,`Page Code`,`Category Webpage Index Category Webpage Key`,`Category Webpage Index Subject Type`,`Category Webpage Index Stack`,`Product Category Active Products`,`Category Webpage Index Category Key`,`Category Code`,`Category Webpage Index Content Data`,`Category Webpage Index Key` 
+        "SELECT  `Webpage State`,`Product Category Public`,`Webpage State`,`Category Webpage Index Key`,`Page Code`,`Category Webpage Index Category Webpage Key`,`Category Webpage Index Subject Type`,`Category Webpage Index Stack`,`Product Category Active Products`,`Category Webpage Index Category Key`,`Category Code`,`Category Webpage Index Content Data`,`Category Webpage Index Key` 
             FROM `Category Webpage Index` CWI
             LEFT JOIN `Product Category Dimension` P ON (`Category Webpage Index Category Key`=P.`Product Category Key`)   
             LEFT JOIN `Category Dimension` Cat ON (Cat.`Category Key`=`Category Webpage Index Category Key`)     
@@ -28,14 +28,16 @@ function get_website_section_items($db, $section_data) {
             LEFT JOIN `Page Store Dimension` CatWeb ON (CatWeb.`Page Key`=`Category Webpage Index Category Webpage Key`)     
 
             
-            WHERE  `Category Webpage Index Section Key`=%d AND (`Product Category Active Products`+`Product Category Discontinuing Products`+`Product Category In Process Products`)>0  AND `Product Category Public`='Yes' and   `Webpage State`='Online'   ORDER BY  ifnull(`Category Webpage Index Stack`,99999999)",
+            WHERE  `Category Webpage Index Section Key`=%d  AND `Product Category Public`='Yes'      ORDER BY  ifnull(`Category Webpage Index Stack`,99999999)",
         $section_key
 
 
     );
+//AND (`Product Category Active Products`+`Product Category Discontinuing Products`+`Product Category In Process Products`)>0
 
+// and `Webpage State`='Online'
 
-
+print $sql;
 
 
     $categories = array();
