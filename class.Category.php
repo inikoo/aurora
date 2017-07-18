@@ -65,7 +65,7 @@ class Category extends DB_Table {
 
     function get_data($tipo, $tag, $tag2 = false) {
         switch ($tipo) {
-            case 'rootkey_code':
+            case 'root_key_code':
                 $sql = sprintf(
                     "SELECT * FROM `Category Dimension` WHERE `Category Root Key`=%d AND `Category Code`=%s ", $tag, prepare_mysql($tag2)
                 );
@@ -343,6 +343,9 @@ class Category extends DB_Table {
             $created_msg = _('Category created');
 
 
+
+
+
             if ($this->data['Category Scope'] == 'Invoice') {
                 $sql = sprintf(
                     "INSERT INTO `Invoice Category Dimension` (`Invoice Category Key`,`Invoice Category Store Key`) VALUES (%d,%d)", $this->id, $this->data['Category Store Key']
@@ -387,10 +390,12 @@ class Category extends DB_Table {
                 $store = new Store($this->data['Category Store Key']);
 
                 $sql = sprintf(
-                    "INSERT INTO `Product Category Dimension` (`Product Category Key`,`Product Category Store Key`,`Product Category Currency Code`,`Product Category Valid From`) VALUES (%d,%d,%s,%s)",
-                    $this->id, $store->id, prepare_mysql($store->get('Store Currency Code')), prepare_mysql(gmdate('Y-m-d H:i:s'))
+                    "INSERT INTO `Product Category Dimension` (`Product Category Key`,`Product Category Status`,`Product Category Store Key`,`Product Category Currency Code`,`Product Category Valid From`) VALUES (%d,%s,%d,%s,%s)",
+                    $this->id,prepare_mysql('Active'), $store->id, prepare_mysql($store->get('Store Currency Code')), prepare_mysql(gmdate('Y-m-d H:i:s'))
                 );
                 $this->db->exec($sql);
+
+
 
 
                 $sql = sprintf(
@@ -446,6 +451,8 @@ class Category extends DB_Table {
             if ($parent_category->id) {
                 $parent_category->update_children_data();
             }
+
+
 
 
         }
@@ -1694,6 +1701,9 @@ class Category extends DB_Table {
         // $data['editor']
 
 
+
+
+
         $subcategory = new Category('find create', $data);
 
 
@@ -1717,6 +1727,10 @@ class Category extends DB_Table {
             //-----Migration ---
 
             if ($this->get('Category Scope') == 'Product') {
+
+
+
+
                 include_once 'class.Family.php';
                 include_once 'class.Store.php';
                 include_once 'class.Department.php';
