@@ -1035,6 +1035,8 @@ function get_product_categories_element_numbers_bis($db, $data, $user) {
     $sql = sprintf("select count(*) as number,`Product Category Status` as element from $table $where  group by `Product Category Status` ");
 
 
+
+
     foreach ($db->query($sql) as $row) {
         if ($row['element'] == 'In Process') {
             $row['element'] = 'InProcess';

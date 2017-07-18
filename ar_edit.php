@@ -1053,15 +1053,9 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             include_once 'class.Product.php';
 
             if (isset($data['fields_data']['Store Product Code'])) {
-
-
-                $object = new Product(
-                    'store_code', $parent->get('Category Store Key'), $data['fields_data']['Store Product Code']
-                );
+                $object = new Product('store_code', $parent->get('Category Store Key'), $data['fields_data']['Store Product Code']);
             } else {
-                $object = new Product(
-                    $data['fields_data']['Store Product Key']
-                );
+                $object = new Product($data['fields_data']['Store Product Key']);
 
             }
 
@@ -1070,132 +1064,44 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                 $parent->associate_subject($object->id);
 
 
-                // Migration -----
-                /*
-                $category=$parent;
-                if ($category->get('Category Scope')=='Product') {
-                    if ($category->get('Category Subject')=='Product') {
+            } else {
 
-                        $sql=sprintf("select * from `Product Family Dimension` where `Product Family Store Key`=%d and `Product Family Code`=%s",
-                            $category->get('Category Store Key'),
-                            prepare_mysql($category->get('Category Code'))
-                        );
+                $response = array(
+                    'state' => 400,
+                    'resp'  => _('Product not found')
+                );
+                echo json_encode($response);
+                exit;
+            }
+            $pcard        = '';
+            $updated_data = array();
 
+            break;
 
-                        if ($result=$db->query($sql)) {
-                            if ($row = $result->fetch()) {
+        case 'Category_Category':
 
-                                $sql=sprintf("update `Product Dimension`set `Product Family Key`=%d, `Product Family Code`=%s, `Product Family Name`=%s,`Product Main Department Key`=%d,
-                         `Product Main Department Code`=%s,
-                         `Product Main Department Name`=%s
-                         where `Product ID`=%d",
-                                    $row['Product Family Key'],
-                                    prepare_mysql($row['Product Family Code']),
-                                    prepare_mysql($row['Product Family Name']),
-                                    $row['Product Family Main Department Key'],
-                                    prepare_mysql($row['Product Family Main Department Code']),
-                                    prepare_mysql($row['Product Family Main Department Name']),
-                                    $object->id
-                                );
-
-                                $db->exec($sql);
-                                // print $sql;
-                            }
-                        }else {
-                            print_r($error_info=$db->errorInfo());
-                            print $sql;
-                            exit;
-                        }
+            include_once 'class.Category.php';
 
 
+            $store=get_object('Store',$parent->get('Store Key'));
 
+            if (isset($data['fields_data']['Store Category Code'])) {
+                $object = new Category('root_key_code', $store->get('Store Family Category Key'), $data['fields_data']['Store Category Code']);
+            } else {
+                $object = new Category($data['fields_data']['Store Category Key']);
 
+            }
 
-                    }else {
-                        // DEpartment
+            if ($object->id) {
 
-
-                        $sql=sprintf("select * from `Product Department Dimension` where `Product Department Store Key`=%d and `Product Department Code`=%s",
-                            $category->get('Category Store Key'),
-                            prepare_mysql($category->get('Category Code'))
-                        );
-
-
-                        if ($result=$db->query($sql)) {
-                            if ($department = $result->fetch()) {
-                                $department_key=$department['Product Department Key'];
-                            }else {
-                                $department_key=false;
-                            }
-                        }else {
-                            print_r($error_info=$db->errorInfo());
-                            exit;
-                        }
-
-
-                        $family=new Category($object->id);
-
-
-                        $sql=sprintf("select * from `Product Family Dimension` where `Product Family Store Key`=%d and `Product Family Code`=%s",
-                            $family->get('Category Store Key'),
-                            prepare_mysql($family->get('Category Code'))
-                        );
-
-
-                        if ($result=$db->query($sql)) {
-                            if ($family = $result->fetch()) {
-                                $family_key=$department['Product Department Key'];
-                            }else {
-                                $family_key=false;
-                            }
-                        }else {
-                            print_r($error_info=$db->errorInfo());
-                            exit;
-                        }
-
-
-                        if ($family_key and $department_key) {
-
-
-                            $sql=sprintf("update `Product Family Dimension` set `Product Family Main Department Key`=%d, `Product Family Main Department Code`=%s, `Product Family Main Department Name`=%s where `Product Family Key`=%d",
-                                0,
-                                '',
-                                '',
-                                $family_key);
-
-
-                            $db->exec($sql);
-
-                            $sql=sprintf("update `Product Dimension` set `Product Main Department Key`=%d, `Product Main Department Code`=%s, `Product Main Department Name`=%s where `Product Family Key`=%d",
-                                0,
-                                '',
-                                '',
-                                $family_key
-                            );
-                            $db->exec($sql);
-
-                        }
-
-
-
-
-
-
-
-                    }
-
-
-                }
-
-    */
-                // -----------
+                $parent->associate_subject($object->id);
 
 
             } else {
 
                 $response = array(
                     'state' => 400,
-                    'resp'  => _('Product not found')
+                    'resp'  => _('Category not found')
                 );
                 echo json_encode($response);
                 exit;

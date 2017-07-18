@@ -565,7 +565,7 @@ trait ProductCategory {
         );
 
 
-        $category_status = 'Empty';
+        $category_status = 'In Process';
 
         $product_ids = $this->get_product_ids();
 

@@ -1047,7 +1047,7 @@ function product_categories_categories($_data, $db, $user) {
 
             switch ($data['Product Category Status']) {
                 case 'In Process':
-                    $status = _('Empty');
+                    $status = _('In process');
                     break;
                 case 'Active':
                     $status = _('Active');

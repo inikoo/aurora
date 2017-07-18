@@ -583,7 +583,7 @@ $elements_options = array(
             'label' => _('Status'),
             'items' => array(
                 'InProcess'     => array(
-                    'label'    => _('Empty'),
+                    'label'    => _('In process'),
                     'selected' => true
                 ),
                 'Active'        => array(

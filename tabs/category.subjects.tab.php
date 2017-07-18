@@ -105,7 +105,8 @@ if ($category->get('Category Scope') == 'Product') {
         $smarty->assign('table_buttons', $table_buttons);
 
 
-    } else {
+    }
+    else {
 
 
 
@@ -141,6 +142,43 @@ if ($category->get('Category Scope') == 'Product') {
             'parent_key' => $state['key'],
 
         );
+
+
+        $table_buttons[] = array(
+            'icon'       => 'sitemap',
+            'title'      => _('All categories'),
+            'change_tab' => 'category.all_subjects',
+            'class'      => 'move_left'
+        );
+
+
+        $table_buttons[] = array(
+            'icon'              => 'link',
+            'title'             => _('Associate family'),
+            'id'                => 'new_record',
+            'inline_new_object' => array(
+                'field_id'                 => 'Store_Category_Code',
+                'field_label'              => _('Associate family').':',
+                'field_edit'               => 'dropdown',
+                'object'                   => 'Category_Category',
+                'parent'                   => $state['object'],
+                'parent_key'               => $state['key'],
+                'placeholder'              => _("Family's code"),
+                'dropdown_select_metadata' => base64_encode(
+                    json_encode(
+                        array(
+                            'scope'      => 'families',
+                            'parent'     => 'root_key',
+                            'parent_key' => $state['store']->get('Store Family Category Key'),
+                            'options'    => array()
+                        )
+                    )
+                )
+            )
+
+        );
+        $smarty->assign('table_buttons', $table_buttons);
+
 
 
     }
