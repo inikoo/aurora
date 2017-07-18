@@ -2256,7 +2256,6 @@ class Store extends DB_Table {
                 $this->new_customer = true;
 
                 include_once 'utils/new_fork.php';
-
                 global $account;
 
                 if($customer->get('Customer Main Plain Email')!='') {
@@ -2286,7 +2285,8 @@ class Store extends DB_Table {
                 );
 
 
-                // $this->update_customers_data();
+
+
 
 
 
