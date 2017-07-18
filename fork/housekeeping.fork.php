@@ -24,9 +24,62 @@ function fork_housekeeping($job) {
 
     switch ($data['type']) {
 
+
+        case 'website_launched':
+            
+            $website = get_object('Website',$data['website_key']);
+            $website->editor=$data['editor'];
+
+
+            $sql = sprintf(
+                "SELECT `Page Key` FROM `Page Store Dimension`  P LEFT JOIN `Webpage Type Dimension` WTD ON (WTD.`Webpage Type Key`=P.`Webpage Type Key`)  WHERE `Webpage Website Key`=%d AND `Webpage Scope`  IN ('Category Products','Category Categories') AND `Webpage State`='Ready'  ",
+                $website->id
+            );
+
+            if ($result = $website->db->query($sql)) {
+                foreach ($result as $row) {
+
+                    $webpage         =  get_object('Webpage',$row['Page Key']);
+                    $webpage->editor = $website->editor;
+
+                   // print $webpage->get('Webpage Code')."\n";
+
+                    if ($webpage->get('Webpage State') == 'Ready') {
+                        $webpage->publish();
+
+                    }
+
+
+                }
+            }
+
+
+            $sql = sprintf(
+                "SELECT `Page Key` FROM `Page Store Dimension`  P LEFT JOIN `Webpage Type Dimension` WTD ON (WTD.`Webpage Type Key`=P.`Webpage Type Key`)  WHERE `Webpage Website Key`=%d AND `Webpage Scope`  IN ('Product') AND `Webpage State`='Ready'  ",
+                $website->id
+            );
+
+            if ($result = $website->db->query($sql)) {
+                foreach ($result as $row) {
+
+                    $webpage         = get_object('Webpage',$row['Page Key']);
+                    $webpage->editor = $website->editor;
+                   // print $webpage->get('Webpage Code')." ** \n";
+
+                    if ($webpage->get('Webpage State') == 'Ready') {
+                        $webpage->publish();
+
+                    }
+
+
+                }
+            }
+          
+
+            break;
+
         case 'customer_created':
-            include_once 'class.Store.php';
-            include_once 'class.Customer.php';
+           
 
             $customer = get_object('Customer',$data['customer_key']);
             $store    = get_object('Store',$customer->get('Customer Store Key'));

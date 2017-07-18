@@ -1320,15 +1320,11 @@ class Website extends DB_Table {
 
         include_once 'class.Page.php';
 
-        /*
-        if($this->get('Website Status')!='InProcess'){
-            $this->error;
-            $this->msg='Website is already launched';
-            return;
-        }
-        */
+
 
         $this->update(array('Website Status' => 'Active'));
+
+
 
         $sql = sprintf(
             "SELECT `Page Key` FROM `Page Store Dimension`  P LEFT JOIN `Webpage Type Dimension` WTD ON (WTD.`Webpage Type Key`=P.`Webpage Type Key`)  WHERE `Webpage Website Key`=%d AND `Webpage Type Code` IN ('Info','Home','Ordering','Customer','Portfolio','Sys')   ",
@@ -1352,46 +1348,16 @@ class Website extends DB_Table {
             }
         }
 
-        $sql = sprintf(
-            "SELECT `Page Key` FROM `Page Store Dimension`  P LEFT JOIN `Webpage Type Dimension` WTD ON (WTD.`Webpage Type Key`=P.`Webpage Type Key`)  WHERE `Webpage Website Key`=%d AND `Webpage Scope` NOT IN ('Category Products','Category Categories') AND `Webpage State`='Ready'  ",
-            $this->id
+        include_once 'utils/new_fork.php';
+        global $account;
+        new_housekeeping_fork(
+            'au_housekeeping', array(
+            'type'     => 'website_launched',
+            'website_key' => $this->id,
+            'editor'=>$this->editor,
+
+        ), $account->get('Account Code')
         );
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-                $webpage         = new Page($row['Page Key']);
-                $webpage->editor = $this->editor;
-
-                if ($webpage->get('Webpage State') == 'Ready') {
-                    $webpage->publish();
-
-                }
-
-
-            }
-        }
-
-
-        $sql = sprintf(
-            "SELECT `Page Key` FROM `Page Store Dimension`  P LEFT JOIN `Webpage Type Dimension` WTD ON (WTD.`Webpage Type Key`=P.`Webpage Type Key`)  WHERE `Webpage Website Key`=%d AND `Webpage Scope` NOT IN ('Product') AND `Webpage State`='Ready'  ",
-            $this->id
-        );
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-                $webpage         = new Page($row['Page Key']);
-                $webpage->editor = $this->editor;
-
-                if ($webpage->get('Webpage State') == 'Ready') {
-                    $webpage->publish();
-
-                }
-
-
-            }
-        }
 
 
     }
