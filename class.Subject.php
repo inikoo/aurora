@@ -564,7 +564,8 @@ class Subject extends DB_Table {
             = get_address_formatter($country, $locale);
 
 
-        $address = $address->withRecipient($this->get($type.' Address Recipient'))->withOrganization($this->get($type.' Address Organization'))->withAddressLine1($this->get($type.' Address Line 1'))
+
+        $address = $address->withFamilyName($this->get($type.' Address Recipient'))->withOrganization($this->get($type.' Address Organization'))->withAddressLine1($this->get($type.' Address Line 1'))
             ->withAddressLine2($this->get($type.' Address Line 2'))->withSortingCode($this->get($type.' Address Sorting Code'))->withPostalCode($this->get($type.' Address Postal Code'))
             ->withDependentLocality(
                 $this->get($type.' Address Dependent Locality')

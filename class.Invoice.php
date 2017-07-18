@@ -2494,37 +2494,7 @@ class Invoice extends DB_Table {
         );
     }
 
-    function update_xhtml_sale_representatives() {
 
-        $xhtml_sale_representatives = '';
-        $tag                        = '&view=csr';
-        $sql                        = sprintf(
-            "SELECT S.`Staff Key`,`Staff Alias` FROM `Invoice Sales Representative Bridge` B  LEFT JOIN `Staff Dimension` S ON (B.`Staff Key`=S.`Staff Key`) WHERE `Invoice Key`=%s", $this->id
-        );
-        //print $sql;
-        $result = mysql_query($sql) or die('xx1  Query failed: '.mysql_error());
-        if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $id       = $row['Staff Key'];
-            $ids[$id] = $id;
-
-            $xhtml_sale_representatives .= sprintf(
-                ', <a href="staff.php?id=%d%s">%s</a>', $id, $tag, mb_ucwords($row['Staff Alias'])
-            );
-
-        }
-        $xhtml_sale_representatives = preg_replace(
-            "/^\,\s*/", "", $xhtml_sale_representatives
-        );
-        if ($xhtml_sale_representatives == '') {
-            $xhtml_sale_representatives = _('Unknown');
-        }
-
-        $sql = sprintf(
-            "UPDATE `Invoice Dimension` SET `Invoice XHTML Sales Representative`=%s WHERE `Invoice Key`=%d", prepare_mysql($xhtml_sale_representatives), $this->id
-        );
-        //print $sql;
-        mysql_query($sql);
-    }
 
     function update_xhtml_processed_by() {
 

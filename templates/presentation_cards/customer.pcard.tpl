@@ -1,4 +1,3 @@
-{assign "customer" $object}
 <div class="presentation_card">
 
     <table>
@@ -21,10 +20,22 @@
             <td class="label">   {$customer->get_field_label('Customer Name')|capitalize}</td>
             <td> <span  class="marked_link" onClick="change_view('customers/{$customer->get('Store Key')}/{$customer->id}')" >  {$customer->get('Name')}</span></td>
         </tr>
-        <tr>
-            <td class="label">{$customer->get_field_label('Customer Main Plain Email')|capitalize}</td>
-            <td>{$customer->get('Main Plain Email')}</td>
+
+
+        {if $website_user}
+
+
+        <tr class="title">
+            <td colspan=2>{t}Website user{/t} </td>
         </tr>
+
+        <tr>
+            <td class="label">{t}Login{/t}</td>
+            <td> <span  class="marked_link" onClick="change_view('website/{$website_user->get('Website User Website Key')}/user/{$website_user->id}')" >{$website_user->get('Website User Handle')}</span></td>
+        </tr>
+
+        {/if}
+
 
 
     </table>

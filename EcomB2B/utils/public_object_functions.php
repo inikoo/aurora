@@ -27,7 +27,7 @@ function get_object($object_name, $key, $load_other_data = false) {
             break;
             break;
         case 'user':
-        case 'webpage_user':
+        case 'website_user':
             include_once 'class.Public_Website_User.php';
             $object = new Public_Website_User('id', $key);
             break;

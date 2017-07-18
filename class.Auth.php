@@ -219,46 +219,7 @@ class Auth {
         );
         $this->db->exec($sql);
 
-        //print $sql;
-        // if ($this->log_page=='customer' or $this->log_page=='masterkey') {
-        if ($this->log_page == 'customer') {
 
-            $customer = new Customer($this->user_parent_key);
-            $details  = '
-			   <div class="table">
-				<div class="field tr"><div>'._('Time').':</div><div>'.strftime(
-                    "%c %Z", strtotime($date.' +00:00')
-                ).'</div></div>
-				<div class="field tr"><div>'._('IP Address').':</div><div>'.$ip.'</div></div>
-				<div class="field tr"><div>'._('User Agent').':</div><div>'.(isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '').'</div></div>
-				</div>';
-
-            switch ($this->authentication_type) {
-                case('masterkey'):
-                    $note = _('Logged in from reset password email');
-                    break;
-                default:
-                    $note = _('Logged in');
-            }
-
-            if ($this->remember) {
-                $note .= ', '._('remember me cookie set');
-            }
-
-            $history_data = array(
-                'Date'            => $date,
-                'Site Key'        => $this->site_key,
-                'Note'            => $note,
-                'Details'         => $details,
-                'Action'          => 'login',
-                'Indirect Object' => '',
-                'User Key'        => $this->user_key
-            );
-
-            $customer->add_history_login($history_data);
-            $customer->update_web_data();
-
-        }
 
     }
 
@@ -300,54 +261,7 @@ class Auth {
             );
             $this->db->exec($sql);
 
-            if ($this->log_page == 'customer') {
 
-                if (!array_key_exists('user_parent_key', $this->pass)) {
-
-                    $_user                         = new User($this->pass['handle_key']);
-                    $this->pass['user_parent_key'] = $_user->data['User Parent Key'];
-                }
-
-                $customer = new Customer($this->pass['user_parent_key']);
-                switch ($this->pass['main_reason']) {
-                    case('password'):
-                        $formatted_reason = _('wrong password');
-                        break;
-                    case('masterkey_used'):
-                        $formatted_reason = _('reset password link already used');
-                        break;
-                    case('masterkey_expired'):
-                        $formatted_reason = _('reset password link expired');
-                        break;
-                    default:
-                        $formatted_reason = $this->pass['main_reason'];
-                }
-
-                $details = '
-				<div class="table">
-				<tr><td style="width:120px">'._('Time').':</div><div>'.strftime(
-                        "%c", strtotime($date.' +00:00')
-                    ).'</div></div>
-				<div class="field tr"><div>'._('Handle').':</div><div>'.$this->handle.'</div></div>
-				<div class="field tr"><div>'._('IP Address').':</div><div>'.$ip.'</div></div>
-			    <div class="field tr"><div>'._('User Agent').':</div><div>'.(isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '').'</div></div>
-				</div>';
-
-                $history_data = array(
-                    'Date'            => $date,
-                    'Site Key'        => $this->site_key,
-                    'Note'            => _('Failed Login')." ($formatted_reason) ip:".$ip,
-                    'Details'         => $details,
-                    'Action'          => 'fail_login',
-                    'Preposition'     => 'because',
-                    'Indirect Object' => $this->pass['main_reason'],
-                    'User Key'        => $this->pass['handle_key']
-                );
-
-                $customer->add_history_login($history_data);
-                $customer->update_web_data();
-
-            }
 
         }
     }

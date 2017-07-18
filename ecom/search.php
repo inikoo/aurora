@@ -49,23 +49,6 @@ if ($q!='') {
 	if ($user) {
 		$user_key=$user->id;
 
-		if ($customer->id) {
-
-
-			$note=_('Search for').' '.$q;
-			$details=_('Search for').' '.$q.', '.number($_number_results).' '.ngettext('result found','results found',$_number_results).'. '.$result['did_you_mean'];
-			$history_data=array(
-				'Date'=>gmdate("Y-m-d H:i:s"),
-				'Site Key'=>$site->id,
-				'Note'=>$note,
-				'Details'=>$details,
-				'Action'=>'search',
-				'Indirect Object'=>'',
-				'User Key'=>$user_key
-			);
-
-			$customer->add_history_login($history_data);
-		}
 
 
 	} else {
