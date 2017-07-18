@@ -15,6 +15,9 @@ class TaxCategory extends DB_Table {
 
     function TaxCategory($a1, $a2 = false, $a3 = false) {
 
+        global $db;
+        $this->db = $db;
+
         $this->table_name    = 'Tax Category';
         $this->ignore_fields = array();
 
@@ -42,13 +45,14 @@ class TaxCategory extends DB_Table {
         } else {
             return;
         }
-        // print $sql;
-        $result = mysql_query($sql);
-        if ($this->data = mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+
+        if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id   = $this->data['Tax Category Key'];
             $this->code = $this->data['Tax Category Code'];
-
         }
+
+
 
     }
 
@@ -101,12 +105,20 @@ class TaxCategory extends DB_Table {
         $sql = sprintf(
             "SELECT * FROM `Tax Category Dimension` WHERE `Tax Category Code`=%s  ", prepare_mysql($data['Tax Category Code'])
         );
-        //   print $sql;
-        $result = mysql_query($sql);
-        if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $this->found     = true;
-            $this->found_key = $row['Tax Category Code'];
+
+
+        if ($result=$this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $this->found     = true;
+                $this->found_key = $row['Tax Category Code'];
+        	}
+        }else {
+        	print_r($error_info=$this->db->errorInfo());
+        	print "$sql\n";
+        	exit;
         }
+
+
 
         if ($create and !$this->found) {
             $this->create($data);
@@ -144,8 +156,8 @@ class TaxCategory extends DB_Table {
         $sql    = sprintf(
             "INSERT INTO `Tax Category Dimension` %s %s", $keys, $values
         );
-        if (mysql_query($sql)) {
-            $this->id  = mysql_insert_id();
+        if ($this->db->exec($sql)) {
+            $this->id  = $this->db->lastInsertId();
             $this->msg = _("Tax Category Added");
             $this->get_data('id', $this->id);
             $this->new = true;
@@ -190,33 +202,40 @@ class TaxCategory extends DB_Table {
                     $sql = sprintf(
                         "SELECT `European Union` FROM kbase.`Country Dimension` WHERE `Country Code`=%s      ", prepare_mysql($country)
                     );
-                    //print $sql;
-                    $res = mysql_query($sql);
-                    if ($row = mysql_fetch_array($res)) {
-                        if ($row['European Union'] == "Yes") {
-                            $customer = new Customer(
-                                $this->data['Order Customer Key']
-                            );
 
-                            if ($customer->is_tax_number_valid()) {
+
+                    if ($result=$this->db->query($sql)) {
+                        if ($row = $result->fetch()) {
+                            if ($row['European Union'] == "Yes") {
+                                $customer = new Customer(
+                                    $this->data['Order Customer Key']
+                                );
+
+                                if ($customer->is_tax_number_valid()) {
+                                    $tax_rate = 0;
+                                    $tax_code = 'GBR.EuroFree';
+                                } else {
+                                    $tax_rate = 0.175;
+                                    $tax_code = 'GBR.S';
+
+                                }
+                            }
+                            else {
                                 $tax_rate = 0;
-                                $tax_code = 'GBR.EuroFree';
-                            } else {
-                                $tax_rate = 0.175;
-                                $tax_code = 'GBR.S';
+                                $tax_code = 'GBR.OffEuroFree';
 
                             }
-                        } else {
-                            $tax_rate = 0;
-                            $tax_code = 'GBR.OffEuroFree';
-
+                    	}else{
+                            $tax_rate = 0.175;
+                            $tax_code = 'GBR.S';
                         }
-
-
-                    } else {
-                        $tax_rate = 0.175;
-                        $tax_code = 'GBR.S';
+                    }else {
+                    	print_r($error_info=$this->db->errorInfo());
+                    	print "$sql\n";
+                    	exit;
                     }
+
+
 
 
                 }

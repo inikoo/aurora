@@ -28,12 +28,23 @@ function fork_housekeeping($job) {
             include_once 'class.Store.php';
             include_once 'class.Customer.php';
 
-            $customer = new Customer($data['customer_key']);
-            $store    = new Store($customer->get('Customer Store Key'));
+            $customer = get_object('Customer',$data['customer_key']);
+            $store    = get_object('Store',$customer->get('Customer Store Key'));
+            $website_user = get_object('Website_User',$data['website_user_key']);
+
+
 
             $customer->update_full_search();
             $customer->update_location_type();
             $store->update_customers_data();
+
+            if($website_user->id){
+                $website    = get_object('Website',$website_user->get('Website User Website Key'));
+
+                $website->update_users_data();
+
+            }
+
 
             break;
 
