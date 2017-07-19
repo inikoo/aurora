@@ -11,13 +11,6 @@
 */
 
 require_once 'common.php';
-require_once 'utils/object_functions.php';
-
-
-$website_key=$_REQUEST['website_key'];
-$theme=$_REQUEST['theme'];
-
-$website=get_object('Website',$website_key);
 
 
 

@@ -54,8 +54,8 @@
 
      <link rel="stylesheet" href="/theme_1/css/reset.css" type="text/css"/>
      <link rel="stylesheet" href="/theme_1/css/style.css" type="text/css"/>
-t
-    <link rel="stylesheet" href="/website.color.css.php?website_key={$website->id}&theme=theme_1" type="text/css"/>
+    <link rel="stylesheet" media="screen" href="/theme_1/css/shortcodes.css" type="text/css"/>
+
 
 
 
@@ -79,7 +79,6 @@ t
 
     <link rel="stylesheet" media="screen" href="/theme_1/css/responsive-layouts.css" type="text/css"/>
 
-    <link rel="stylesheet" media="screen" href="/theme_1/css/shortcodes.css" type="text/css"/>
 
 
     <link rel="stylesheet" href="/theme_1/masterslider/style/masterslider.css"/>
@@ -176,6 +175,7 @@ t
 
     <script type="text/javascript" src="/js/libs/tinycolorpicker.js"></script>
 
+    <link rel="stylesheet" href="/website.color.css.php?website_key={$website->id}&theme=theme_1" type="text/css"/>
 
 
 

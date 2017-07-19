@@ -1278,12 +1278,18 @@ function product_categories_products($_data, $db, $user) {
         }
 
 
+        $code=sprintf(
+            '<span class="link" onClick="change_view(\'products/%d/category/%d>%d\')">%s</span>', $data['Category Store Key'],
+            $parent->id,
+            $data['Product Category Key'], $data['Category Code']
+        );
+
+
+
         $record_data[] = array(
             'id'                      => (integer)$data['Product Category Key'],
             'store_key'               => (integer)$data['Category Store Key'],
-            'code'                    => sprintf(
-                '<span class="link" onClick="change_view(\'products/%d/category/%d\')">%s</span>', $data['Category Store Key'], $data['Product Category Key'], $data['Category Code']
-            ),
+            'code'                    => $code,
             'label'                   => $data['Category Label'],
             'status'                  => $status,
             'products'                => number($data['products']),

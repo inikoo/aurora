@@ -10,23 +10,19 @@
 */
 
 
+if ($state['_object']->get('Webpage Template Filename') == 'products_showcase' or $state['_object']->get('Webpage Template Filename') == 'categories_showcase') {
 
-
-
-if($state['_object']->get('Webpage Template Filename')=='products_showcase'  or  $state['_object']->get('Webpage Template Filename')=='categories_showcase'){
-
-    $state['_object']=get_object('Category',$state['_object']->get('Webpage Scope Key'));
+    $state['_object'] = get_object('Category', $state['_object']->get('Webpage Scope Key'));
 
     include 'category.webpage.preview.tab.php';
 
-}elseif($state['_object']->get('Webpage Template Filename')=='product'  ){
+} elseif ($state['_object']->get('Webpage Template Filename') == 'product') {
 
-    $state['_object']=get_object('Product',$state['_object']->get('Webpage Scope Key'));
+    $state['_object'] = get_object('Product', $state['_object']->get('Webpage Scope Key'));
 
     include 'product.webpage.preview.tab.php';
 
-}else {
-
+} else {
 
 
     $webpage = $state['_object'];
@@ -49,23 +45,26 @@ if($state['_object']->get('Webpage Template Filename')=='products_showcase'  or 
 
 
 
+
     $control_template = $theme.'/control.'.$webpage->get('Webpage Template Filename').'.'.$theme.'.tpl';
 
-   // print $control_template;
+    // print $control_template;
 
     if (file_exists('templates/'.$control_template)) {
         $smarty->assign('control_template', $control_template);
 
-    }else{
+    } else {
 
         include_once 'conf/webpage_blocks.php';
-        $blocks=get_webpage_blocks();
+        $blocks = get_webpage_blocks();
         $smarty->assign('blocks', $blocks);
+
+
 
         $smarty->assign('control_template', $theme.'/control.webpage_blocks.'.$theme.'.tpl');
     }
 
-   // print_r( $webpage->get('Content Data'));
+    // print_r( $webpage->get('Content Data'));
 
     $html = $smarty->fetch('webpage_preview.tpl');
 

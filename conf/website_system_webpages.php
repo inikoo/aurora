@@ -16,11 +16,13 @@ function website_system_webpages_config($website_type) {
     $blocks = get_webpage_blocks();
 
     $contact_content_data                                      = $blocks['two_one'];
-    $contact_content_data['blocks'][1]['columns'][0]['_title'] = '';
-    $contact_content_data['blocks'][1]['columns'][0]['_text']  =
-        '<p>Feel free to talk to our online representative at any time you please using our Live Chat system on our website or one of the below instant messaging programs.</p><br /><p>Please be patient while waiting for response. (24/7 Support!) <strong>Phone General Inquiries: 1-888-123-4567-8900</strong></p>';
-    $contact_content_data['blocks'][1]['columns'][1]['_title'] = _('Our Details');
-    $contact_content_data['blocks'][1]['columns'][1]['_text']  = 'Telephone<br/>#tel<br/><br/>Email<br/>#email<br/><br/>Address<br/>#adr<br/><br/> ';
+    $contact_content_data['columns'][0]['_title'] = '';
+    $contact_content_data['columns'][0]['_text']  ='<p>Feel free to talk to our online representative at any time you please using our Live Chat system on our website or one of the below instant messaging programs.</p><br /><p>Please be patient while waiting for response. (24/7 Support!) <strong>Phone General Inquiries: 1-888-123-4567-8900</strong></p>';
+    $contact_content_data['columns'][1]['_title'] = _('Our Details');
+    $contact_content_data['columns'][1]['_text']  = 'Telephone<br/>#tel<br/><br/>Email<br/>#email<br/><br/>Address<br/>#adr<br/><br/> ';
+
+
+
 
 
     $EcomB2B = array(
@@ -83,7 +85,7 @@ function website_system_webpages_config($website_type) {
 
 
         ),
-        'homepage_no_orders' => array(
+        'home_rookie.sys' => array(
             'Webpage Scope'             => 'HomepageNoOrders',
             'Webpage Template Filename' => 'homepage_no_orders',
             'Webpage Type'              => 'Home',
@@ -383,7 +385,12 @@ function website_system_webpages_config($website_type) {
 
                 array(
 
-                    'blocks' => $contact_content_data
+                    'blocks' =>
+                        array(
+                            $blocks['map'],
+                            $contact_content_data
+                        )
+
 
 
                 )
