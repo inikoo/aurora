@@ -15,12 +15,26 @@ function get_webpage_blocks($theme = '') {
     $blocks = array(
 
 
+        'static_banner'  => array(
+            'type'   => 'static_banner',
+            'label'  => _('Header'),
+            'icon'   => 'fa-header',
+            'show'   => 1,
+            '_top_text_left' => 'customize',
+            '_top_text_right' => 'your own',
+            '_title' => 'Chic &amp; Unique Header',
+            '_text' => 'in easy peasy steps',
+            'link'=>'',
+            'bg_image'=>''
+        ),
+
         'one_pack'  => array(
             'type'   => 'one_pack',
             'label'  => _('One-Pack'),
             'icon'   => 'fa-minus',
             'show'   => 1,
-            '_title' => _('About us'),
+            '_title' => _('Title'),
+            '_subtitle' => 'Here goes an abstract of your content',
             '_text'  => 'When an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also electronics typesetting, remaining essentially believable.',
         ),
         'two_pack'   => array(
