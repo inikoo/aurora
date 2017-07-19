@@ -488,14 +488,22 @@ $('#blocks_showcase').addClass('hide')
                         $("#preview").contents().find("#block_"+element.attr('block_key')).find('img').attr('src',data.image_src);
 
 
+                    }else if(element.attr('name')=='button_bg'){
+
+
+                        console.log('xx')
+                        $("#preview").contents().find("#block_"+element.attr('block_key')).find('div.button_block').css('background-image', 'url(' + data.image_src + ')').attr('button_bg', data.image_src);
+
+                        //   $("#preview").contents().find('._block').removeClass('hide')
+
                     }
 
-                    //$('#save_button', window.parent.document).addClass('save button changed valid')
+                    $('#save_button', window.parent.document).addClass('save button changed valid')
 
                 } else if (data.state == '400') {
-                    swal({
-                        title: data.title, text: data.msg, confirmButtonText: "{t}OK{/t}"
-                    });
+                    swal(
+                        data.msg
+                    );
                 }
 
                 element.val('')

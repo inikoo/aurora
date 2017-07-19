@@ -371,14 +371,19 @@
 
                         link:  $(obj).find('._button').attr('link'),
 
-                        bg_image : '',
-                        bg_color : '',
+                        bg_color : '' ,
+
+
+                        bg_image : $(obj).find('.button_block').attr('button_bg'),
+
                         text_color : '',
                         button_bg_color : '',
                         button_text_color : '',
 
 
                     })
+
+
 
                     break;
 
@@ -583,6 +588,7 @@
 
 
                     }
+
 
                     //$('#save_button', window.parent.document).addClass('save button changed valid')
 

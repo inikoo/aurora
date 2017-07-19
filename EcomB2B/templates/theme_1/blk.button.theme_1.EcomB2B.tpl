@@ -11,7 +11,7 @@
 
 <div id="block_{$key}" block="{$data.type}" class="{$data.type} _block ">
 
-            <div class="parallax_section4">
+            <div class="parallax_section4" style="{if $data.bg_image!==''}background-image:url('{$data.bg_image}'){/if}">
                 <div class="container">
                     <h2 class="_title">{$data.title}</h2>
                     <p   class="_text">{$data.text}</p>
