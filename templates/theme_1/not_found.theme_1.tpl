@@ -59,6 +59,10 @@
     });
 
 
+    $('a').click(function(e) {
+        e.preventDefault();
+    });
+
     function save() {
 
         if (!$('#save_button', window.parent.document).hasClass('save')) {
