@@ -61,6 +61,76 @@ $object_fields = array(
         )
     ),
 
+    array(
+        'label'      => _('Look & feel'),
+        'show_title' => true,
+        'fields'     => array(
+
+
+            array(
+                'id'                => 'Website_Palette',
+                'edit'              => ($edit ? 'string' : ''),
+                'value'             => $object->get('Website Palette'),
+                'formatted_value'             => $object->get('Palette'),
+                'label'             => ucfirst($object->get_field_label('Palette')),
+                'invalid_msg'       => get_invalid_message('string'),
+                'required'          => true,
+                'type'              => 'value',
+
+            ),
+
+            array(
+                'id'                => 'Website_Primary_Color',
+                'edit'              => ($edit ? 'string' : ''),
+                'value'             => $object->get('Website Primary Color'),
+                'label'             => ucfirst($object->get_field_label('Website Primary Color')),
+                'invalid_msg'       => get_invalid_message('color'),
+                'required'          => true,
+                'type'              => 'value'
+            ),
+
+            array(
+                'id'                => 'Website_Secondary_Color',
+                'edit'              => ($edit ? 'string' : ''),
+                'value'             => $object->get('Website Secondary Color'),
+                'label'             => ucfirst($object->get_field_label('Website Secondary Color')),
+                'invalid_msg'       => get_invalid_message('color'),
+                'required'          => true,
+                'type'              => 'value'
+            ),
+
+            array(
+                'id'                => 'Website_Accent_Color',
+                'edit'              => ($edit ? 'string' : ''),
+                'value'             => $object->get('Website Accent Color'),
+                'label'             => ucfirst($object->get_field_label('Website Accent Color')),
+                'invalid_msg'       => get_invalid_message('color'),
+                'required'          => true,
+                'type'              => 'value'
+            ),
+
+            array(
+                'id'                => 'Website_Title_Font',
+                'edit'              => ($edit ? 'string' : ''),
+                'value'             => $object->get('Website Title Font'),
+                'label'             => ucfirst($object->get_field_label('Title Font')),
+                'required'          => true,
+                'type'              => 'value',
+
+            ),
+            array(
+                'id'                => 'Website_Text_Font',
+                'edit'              => ($edit ? 'string' : ''),
+                'value'             => $object->get('Website Text Font'),
+                'label'             => ucfirst($object->get_field_label('Text Font')),
+                'required'          => true,
+                'type'              => 'value',
+
+            ),
+
+        )
+    ),
+
 
 );
 

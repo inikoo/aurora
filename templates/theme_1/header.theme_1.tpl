@@ -135,7 +135,7 @@
 
 
     .colorPicker .track {
-        background:     #EFEFEF url(../art/palettes/text-color.png) no-repeat 50% 50%;
+        background:     #EFEFEF url(../{$website->get('Website Palette')}) no-repeat 50% 50%;
         height:         150px;
         width:          150px;
         padding:        10px;
