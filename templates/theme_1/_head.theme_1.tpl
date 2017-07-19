@@ -54,6 +54,12 @@
 
      <link rel="stylesheet" href="/theme_1/css/reset.css" type="text/css"/>
      <link rel="stylesheet" href="/theme_1/css/style.css" type="text/css"/>
+t
+    <link rel="stylesheet" href="/website.color.css.php?website_key={$website->id}&theme=theme_1" type="text/css"/>
+
+
+
+
 
        <!-- <link rel="stylesheet" href="https://use.fontawesome.com/3052dece40.css"> -->
     <link rel="stylesheet" href="/theme_1/local/font-awesome/css/font-awesome.min.css">

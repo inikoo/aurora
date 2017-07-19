@@ -10,6 +10,8 @@
 */
 
 include_once 'common.php';
+include_once 'utils/object_functions.php';
+
 include_once 'class.Public_Website.php';
 include_once 'class.Public_Webpage.php';
 include_once 'class.Public_Store.php';
@@ -27,7 +29,7 @@ if (!isset($_REQUEST['theme']) or !preg_match('/^theme\_\d+$/', $_REQUEST['theme
 $website_key=$_REQUEST['website_key'];
 $theme=$_REQUEST['theme'];
 
-$website=new Public_Website($website_key);
+$website=get_object('Website',$website_key);
 $store=new Public_Store($website->get('Website Store Key'));
 
 

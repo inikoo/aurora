@@ -408,7 +408,11 @@ class Website extends DB_Table {
 
 
         switch ($key) {
+            case 'Palette':
 
+                return '<img style="width:150px;height:150px;" src="/'.$this->data['Website Palette'].'"/>';
+
+                break;
 
             case 'Localised Labels':
 

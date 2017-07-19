@@ -613,6 +613,14 @@ ALTER TABLE `Page Store Dimension` CHANGE `Webpage Scope` `Webpage Scope` VARCHA
 ALTER TABLE `Store Dimension` ADD `Store Google Map URL` TEXT NULL DEFAULT NULL AFTER `Store Address`;
 
 
+here
+
+ALTER TABLE `Website Dimension` ADD `Website Palette` VARCHAR(255) NOT NULL DEFAULT 'art/palettes/simple.png' AFTER `Website Alt Department Category Key`, ADD `Website Primary Color` VARCHAR(64) NOT NULL AFTER `Website Palette`, ADD `Website Secondary Color` VARCHAR(64) NOT NULL AFTER `Website Primary Color`, ADD `Website Title Font` VARCHAR(255) NOT NULL DEFAULT '\"Open Sans\",Helvetica,Arial,sans-serif' AFTER `Website Secondary Color`, ADD `Website Text Font` VARCHAR(255) NOT NULL DEFAULT '\"Open Sans\",Helvetica,Arial,sans-serif' AFTER `Website Title Font`, ADD `Website Text Background` TEXT NOT NULL AFTER `Website Text Font`;
+
+ALTER TABLE `Website Dimension` ADD `Website Accent Color` VARCHAR(64) NOT NULL AFTER `Website Secondary Color`;
+ALTER TABLE `Website Dimension` CHANGE `Website Primary Color` `Website Primary Color` VARCHAR(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '#3183d7';
+
+
 ============= migration web[ages
 
 update `Page Store Dimension` set `Webpage Code`=LOWER(`Webpage Code`);
