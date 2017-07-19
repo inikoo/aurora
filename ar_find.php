@@ -1942,6 +1942,9 @@ function find_webpages($db, $account, $memcache_ip, $data) {
             case 'only_online':
                 $where .= sprintf(' and `Webpage State`="Online"');
                 break;
+            case 'only_online_and_in_process':
+                $where .= sprintf(' and `Webpage State` in  ("Online" ,"InProcess" ');
+                break;
             default:
 
                 break;
@@ -2088,10 +2091,12 @@ function find_product_webpages($db, $account, $memcache_ip, $data) {
     }
 
 
+
+
     $where = sprintf("  and `Product Status` in ('Active','Discontinuing') ");
     switch ($data['parent']) {
         case 'website':
-            $where = sprintf(' and `Page Site Key`=%d', $data['parent_key']);
+            $where = sprintf(' and `Webpage Website Key`=%d', $data['parent_key']);
             break;
         default:
 
@@ -2102,7 +2107,11 @@ function find_product_webpages($db, $account, $memcache_ip, $data) {
     if (isset($data['metadata']['option'])) {
         switch ($data['metadata']['option']) {
             case 'only_online':
-                $where .= sprintf(' and `Page State`="Online"');
+                $where .= sprintf(' and `Webpage State`="Online"');
+                break;
+
+            case 'only_online_and_in_process':
+                $where .= sprintf(' and `Webpage State` in  ("Online" ,"InProcess") ');
                 break;
             default:
 
@@ -2155,7 +2164,7 @@ function find_product_webpages($db, $account, $memcache_ip, $data) {
             $q, $where
         );
 
-        //	print $sql;
+        	//print $sql;
         if ($result = $db->query($sql)) {
             foreach ($result as $row) {
 

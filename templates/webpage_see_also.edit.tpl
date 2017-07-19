@@ -142,7 +142,7 @@
 
 
         var request = '/ar_find.php?tipo=find_object&query=' + fixedEncodeURIComponent(new_value) + '&scope=' + scope + '&parent=' + parent + '&parent_key=' + parent_key + '&state=' + JSON.stringify(state) + '&metadata=' + JSON.stringify({
-                    option: 'only_online',
+                    option: 'only_online_and_in_process',
                     'exclude': current_manual_webpages
                 })
         //  console.log(request)
