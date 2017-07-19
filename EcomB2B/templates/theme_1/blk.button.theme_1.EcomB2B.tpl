@@ -13,8 +13,8 @@
 
             <div class="parallax_section4" style="{if $data.bg_image!==''}background-image:url('{$data.bg_image}'){/if}">
                 <div class="container">
-                    <h2 class="_title">{$data.title}</h2>
-                    <p   class="_text">{$data.text}</p>
+                    <h2>{$data.title}</h2>
+                    <p>{$data.text}</p>
                     <a href="{$data.link}" class="button transp2 _button "  >{$data.button_label}</a>
 
                 </div>

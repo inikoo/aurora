@@ -123,6 +123,9 @@
     <div id="blocks" class="site_wrapper">
         {foreach from=$content.blocks item=$block key=key}
             {include file="{$theme}/blk.{$block.type}.{$theme}.tpl" data=$block key=$key  }
+
+
+
         {/foreach}
     </div>
 
@@ -212,6 +215,9 @@
 
         var blocks=[]
 
+
+
+
         $('._block').each(function (i, obj) {
 
             switch ($(obj).attr('block')) {
@@ -225,6 +231,26 @@
                         show: ($(obj).hasClass('hide') ? 0 : 1 ),
                         height: $(obj).attr('h'),
                         src:$(obj).find('iframe').attr('src').replace(/(^\w+:|^)\/\//, '')
+                    })
+
+                    break;
+                case 'static_banner':
+
+                    blocks.push({
+                        type: 'static_banner',
+                        label: '{t}Image{/t}',
+                        icon: 'fa-image',
+                        show: ($(obj).hasClass('hide') ? 0 : 1 ),
+                        _top_text_left:'customize',
+                        _top_text_right:'your own',
+                        _title:'Chic &amp; Unique Header',
+                        _text:'in easy peasy steps :)',
+                        link:'',
+                        bg_image:'',
+
+
+
+
                     })
 
                     break;
@@ -405,6 +431,12 @@
                     break;
                 case 'one_pack':
 
+
+                    var text=$(obj).find('._text').froalaEditor('html.get')
+
+
+                    console.log(text)
+
                     blocks.push({
                         type: 'one_pack',
                         label: '{t}One-Pack{/t}',
@@ -412,8 +444,10 @@
                         show: ($(obj).hasClass('hide') ? 0 : 1 ),
 
 
+
                         _title:$(obj).find('._title').html(),
-                        _text:$(obj).find('._text').html()
+                        _subtitle:$(obj).find('._subtitle').html(),
+                        _text:text
                     })
 
                     break;
@@ -609,6 +643,102 @@
     });
 
 
+
+
+    function create_static_banner() {
+
+
+        var slider = new MasterSlider();
+
+
+        slider.setup("masterslider", {
+            width: 1300, height: 768, minHeight: 0,
+
+            fullwidth: true, space: 5
+            //autoHeight:true,
+            //view:"mask"
+
+            //space           : 0,
+            //start           : 1,
+            //grabCursor      : false,
+            //swipe           : false,
+            //mouse           : false,
+            //keyboard        : false,
+            //layout          : "fullwidth",
+            //wheel           : false,
+            //autoplay        : false,
+            //instantStartLayers:false,
+            //loop            : false,
+            //shuffle         : false,
+            //preload         : 0,
+            //heightLimit     : true,
+            //autoHeight      : false,
+            //smoothHeight    : true,
+            //endPause        : false,
+            //overPause       : false,
+            //fillMode        : "fill",
+            //centerControls  : true,
+            //startOnAppear   : false,
+            //layersMode      : "center",
+            //autofillTarget  : "",
+            //hideLayers      : false,
+            //fullscreenMargin: 0,
+            //speed           : 20,
+            //dir             : "h",
+            //parallaxMode    : 'swipe',
+            //view            : "basic"
+        });
+        slider.control('arrows');
+        slider.control('bullets', {
+            autohide: false, dir: "v", align: "top"
+        });
+        MSScrollParallax.setup(slider, 66, 69, true);
+
+    }
+
+
+
+
+
+
+    function  set_up_one_column_editor(key){
+
+
+        console.log(key)
+
+        $('#block_'+key+'_editor').froalaEditor({
+
+
+            toolbarInline: true,
+            charCounterCount: false,
+            toolbarButtons:['fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|', 'fontFamily', 'fontSize', 'color', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', '-', 'insertLink', 'insertImage', 'insertVideo', 'insertFile', 'insertTable', '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'spellChecker', 'help', 'html', '|', 'undo', 'redo'],
+            toolbarButtonsMD:['fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|', 'fontFamily', 'fontSize', 'color', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', '-', 'insertLink', 'insertImage', 'insertVideo', 'insertFile', 'insertTable', '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'spellChecker', 'help', 'html', '|', 'undo', 'redo'],
+            toolbarButtonsSM:['fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|', 'fontFamily', 'fontSize', 'color', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', '-', 'insertLink', 'insertImage', 'insertVideo', 'insertFile', 'insertTable', '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'spellChecker', 'help', 'html', '|', 'undo', 'redo'],
+            toolbarButtonsXS:['fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|', 'fontFamily', 'fontSize', 'color', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', '-', 'insertLink', 'insertImage', 'insertVideo', 'insertFile', 'insertTable', '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'spellChecker', 'help', 'html', '|', 'undo', 'redo'],
+
+            defaultImageDisplay: 'inline',
+
+
+            zIndex: 1000,
+
+
+
+        })
+
+
+
+
+        $('#block_{$key}_editor').on('froalaEditor.contentChanged', function (e, editor, keyupEvent) {
+            $('#save_button', window.parent.document).addClass('save button changed valid')
+        });
+
+    }
+
+    {foreach from=$content.blocks item=$block key=key}
+    {if $block.type=='one_pack'}
+    set_up_one_column_editor('{$key}')
+{/if}
+    {/foreach}
 
 </script>
 

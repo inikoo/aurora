@@ -71,7 +71,7 @@ function webpage_block($data, $db, $user,$smarty) {
     $block = $blocks[$data['code']];
 
 
-    $block_id=uniqid('web_block',true);
+    $block_id=preg_replace('/\./','_',uniqid('web_block',true));
 
     $smarty->assign('key', $block_id);
 
@@ -85,7 +85,9 @@ function webpage_block($data, $db, $user,$smarty) {
         'state' => 200,
         'button'=>$smarty->fetch($data['theme'].'/blk.control_label.'.$data['theme'].'.tpl'),
         'controls'=>$smarty->fetch($data['theme'].'/blk.control.'.$data['code'].'.'.$data['theme'].'.tpl'),
-        'block'=>$smarty->fetch($data['theme'].'/blk.'.$data['code'].'.'.$data['theme'].'.tpl')
+        'block'=>$smarty->fetch($data['theme'].'/blk.'.$data['code'].'.'.$data['theme'].'.tpl'),
+        'type'=>$data['code'],
+        'block_key'=>$block_id
     );
     echo json_encode($response);
 
