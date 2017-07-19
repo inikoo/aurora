@@ -342,7 +342,11 @@ elseif ($webpage->get('Webpage Template Filename') == 'reset_password') {
 
 
 
+
     $template = $theme.'/webpage_blocks.'.$theme.'.'.$website->get('Website Type').'.tpl';
+
+
+
 }
 
 
@@ -353,6 +357,9 @@ $content = $webpage->get('Content Data');
 $smarty->assign('webpage', $webpage);
 $smarty->assign('content', $content);
 $smarty->assign('labels', $website->get('Localised Labels'));
+
+
+
 
 
 $smarty->display($template, $webpage_key);

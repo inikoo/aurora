@@ -53,6 +53,8 @@
 
         <div id="blk_control_container">
         {foreach from=$content.blocks item=$block key=key}
+
+
             {assign var="block_type" value=$block['type']}
             {include file="theme_1/blk.control.$block_type.theme_1.tpl" }
         {/foreach}

@@ -46,6 +46,8 @@
 
 <script>
 
+
+
     $( document ).ready(function() {
         resize_banners();
     });
@@ -56,12 +58,15 @@
     });
 
     function resize_banners(){
+
+
+
         $('.iframe').each(function(i, obj) {
             $(this).css({ height: $(this).width()*$(this).attr('h')/$(this).attr('w') })
         });
     }
 
-</sript>
+</script>
 
 
     </body>

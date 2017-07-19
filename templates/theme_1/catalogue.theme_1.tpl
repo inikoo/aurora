@@ -422,8 +422,6 @@
 
 </script>
 
-    <!-- cubeportfolio -->
-    <script type="text/javascript" src="/theme_1/cubeportfolio/js/jquery.cubeportfolio.min.js"></script>
     <script type="text/javascript">
         jQuery(document).ready( function() {
             jQuery('#grid-container').cubeportfolio({

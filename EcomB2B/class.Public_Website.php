@@ -276,6 +276,10 @@ class Public_Website {
             case 'Website Theme':
             case 'Website Type':
             case 'Website URL':
+
+            case 'Website Primary Color':
+            case 'Website Secondary Color':
+            case 'Website Accent Color':
                 return $this->data[$key];
                 break;
 
