@@ -94,7 +94,10 @@ switch ($tipo) {
                 if ($data['metadata']['scope'] == 'supplier_part') {
                     find_supplier_parts($db, $account, $memcache_ip, $data);
 
-                }
+                }else if ($data['metadata']['scope'] == 'product') {
+                find_products($db, $account, $memcache_ip, $data);
+
+            }
 
 
                 break;
@@ -909,6 +912,11 @@ function find_products($db, $account, $memcache_ip, $data) {
 
     }
 
+    if (!isset($data['metadata']['options']['for_order'])) {
+        $where .= "  and  `Product Status` not in ( 'Suspended','Discontinued')  ";
+    }
+
+
 
 
 
@@ -946,7 +954,7 @@ function find_products($db, $account, $memcache_ip, $data) {
 
 
         $sql = sprintf(
-            "select `Product ID`,`Product Code`,`Product Name` from `Product Dimension` where  `Product Code` like '%s%%' %s order by `Product Code` limit $max_results ", $q, $where
+            "select `Product ID`,`Product Code`,`Product Name`,`Product Current Key` from `Product Dimension` where  `Product Code` like '%s%%' %s order by `Product Code` limit $max_results ", $q, $where
         );
 
         if ($result = $db->query($sql)) {
@@ -966,7 +974,9 @@ function find_products($db, $account, $memcache_ip, $data) {
 
                 $candidates_data[$row['Product ID']] = array(
                     'Product Code' => $row['Product Code'],
-                    'Product Name' => $row['Product Name']
+                    'Product Name' => $row['Product Name'],
+                    'Product Current Key' => $row['Product Current Key']
+
                 );
 
             }
@@ -999,6 +1009,8 @@ function find_products($db, $account, $memcache_ip, $data) {
             $results[$product_sku] = array(
                 'code'            => $candidates_data[$product_sku]['Product Code'],
                 'description'     => $candidates_data[$product_sku]['Product Name'],
+                'item_historic_key'     => $candidates_data[$product_sku]['Product Current Key'],
+
                 'value'           => $product_sku,
                 'formatted_value' => $candidates_data[$product_sku]['Product Code']
             );
@@ -2160,7 +2172,7 @@ function find_product_webpages($db, $account, $memcache_ip, $data) {
 
 
         $sql = sprintf(
-            "select `Product ID`,`Product Code`,`Product Name`,`Webpage Name` from `Page Store Dimension`  left join `Product Dimension` on (`Page Parent Key`=`Product ID` and `Page Store Section Type`='Product')  where  `Product Code` like '%s%%' %s order by `Product Code` limit $max_results ",
+            "select `Product ID`,`Product Code`,`Product Name`,`Webpage Name`,`Product Current Key` from `Page Store Dimension`  left join `Product Dimension` on (`Page Parent Key`=`Product ID` and `Page Store Section Type`='Product')  where  `Product Code` like '%s%%' %s order by `Product Code` limit $max_results ",
             $q, $where
         );
 
@@ -2180,7 +2192,7 @@ function find_product_webpages($db, $account, $memcache_ip, $data) {
 
                 $candidates_data[$row['Product ID']] = array(
                     'Product Code' => $row['Product Code'],
-                    'Product Name' => $row['Product Name']
+                    'Product Name' => $row['Product Name'],
                 );
 
             }

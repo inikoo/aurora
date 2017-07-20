@@ -39,7 +39,7 @@ switch ($tipo) {
 
                      )
         );
-        create_delivery_note($data, $editor, $smarty, $db,$account);
+        create_delivery_note($data, $editor, $smarty, $db, $account);
         break;
 
     case 'set_state':
@@ -47,8 +47,8 @@ switch ($tipo) {
             $_REQUEST, array(
                          'object' => array('type' => 'string'),
 
-                         'key' => array('type' => 'key'),
-                         'value'         => array('type' => 'string'),
+                         'key'   => array('type' => 'key'),
+                         'value' => array('type' => 'string'),
 
                      )
         );
@@ -62,7 +62,7 @@ switch ($tipo) {
 
                      )
         );
-        set_order_handler('Picker',$data, $editor, $smarty, $db);
+        set_order_handler('Picker', $data, $editor, $smarty, $db);
         break;
 
     case 'set_packer':
@@ -73,7 +73,7 @@ switch ($tipo) {
 
                      )
         );
-        set_order_handler('Packer',$data, $editor, $smarty, $db);
+        set_order_handler('Packer', $data, $editor, $smarty, $db);
         break;
     case 'edit_item_in_order':
         $data = prepare_values(
@@ -82,16 +82,19 @@ switch ($tipo) {
                          'parent'            => array('type' => 'string'),
                          'parent_key'        => array('type' => 'key'),
                          'item_key'          => array('type' => 'key'),
-                         'item_historic_key' => array('type' => 'key','optional'=>true),
+                         'item_historic_key' => array(
+                             'type'     => 'key',
+                             'optional' => true
+                         ),
                          'transaction_key'   => array(
                              'type'     => 'numeric',
                              'optional' => true
                          ),
-                         'picker_key'   => array(
+                         'picker_key'        => array(
                              'type'     => 'numeric',
                              'optional' => true
                          ),
-                         'packer_key'   => array(
+                         'packer_key'        => array(
                              'type'     => 'numeric',
                              'optional' => true
                          ),
@@ -118,6 +121,36 @@ function edit_item_in_order($account, $db, $user, $editor, $data, $smarty) {
     $parent         = get_object($data['parent'], $data['parent_key']);
     $parent->editor = $editor;
 
+
+    if ($data['parent'] == 'order') {
+
+        $parent->skip_update_after_individual_transaction=false;
+
+        if (in_array(
+            $parent->data['Order Current Dispatch State'], array(
+            'Ready to Pick',
+            'Picking & Packing',
+            'Packed',
+            'Packed Done',
+            'Packing'
+        )
+        )) {
+            $dispatching_state = 'Ready to Pick';
+        } else {
+
+            $dispatching_state = 'In Process';
+        }
+
+        $payment_state = 'Waiting Payment';
+
+        $data['Current Dispatching State'] = $dispatching_state;
+        $data['Current Payment State']     = $payment_state;
+        $data['Metadata']                  = '';
+
+
+    }
+
+
     $transaction_data = $parent->update_item($data);
 
     if ($parent->error) {
@@ -137,7 +170,7 @@ function edit_item_in_order($account, $db, $user, $editor, $data, $smarty) {
 
 }
 
-function set_order_handler($type,$data, $editor, $smarty, $db) {
+function set_order_handler($type, $data, $editor, $smarty, $db) {
 
 
     $dn         = get_object('delivery_note', $data['delivery_note_key']);
@@ -157,10 +190,10 @@ function set_order_handler($type,$data, $editor, $smarty, $db) {
             'staff_alias' => $staff->get('Alias'),
             'staff_key'   => $staff->id
         );
-    }else{
+    } else {
         $response = array(
-            'state'       => 400,
-            'msg' => 'Staff not found'
+            'state' => 400,
+            'msg'   => 'Staff not found'
         );
     }
 
@@ -169,65 +202,64 @@ function set_order_handler($type,$data, $editor, $smarty, $db) {
 
 }
 
-function set_state($data, $editor, $smarty, $db){
+function set_state($data, $editor, $smarty, $db) {
 
 
-    $object        = get_object($data['object'], $data['key']);
+    $object         = get_object($data['object'], $data['key']);
     $object->editor = $editor;
-
 
 
     $object->set_state($data['value']);
 
 
-
     $response = array(
-        'state'       => 200,
-        'metadata'         => $object->get_update_metadata()
+        'state'    => 200,
+        'metadata' => $object->get_update_metadata()
     );
 
     echo json_encode($response);
 
 }
 
-function create_delivery_note($data, $editor, $smarty, $db,$account){
+function create_delivery_note($data, $editor, $smarty, $db, $account) {
 
 
-    $order        = get_object('order', $data['key']);
+    $order         = get_object('order', $data['key']);
     $order->editor = $editor;
 
 
-
-
-
-    $dn=$order->send_to_warehouse();
-
-
-
-
+    $dn = $order->send_to_warehouse();
 
 
     if (!$order->error) {
         include 'utils/new_fork.php';
-        $msg=new_housekeeping_fork('send_to_warehouse',array('type'=>'send_to_warehouse','delivery_note_key'=>$dn->id),$account->get('Account Code'));
+        $msg = new_housekeeping_fork(
+            'send_to_warehouse', array(
+            'type'              => 'send_to_warehouse',
+            'delivery_note_key' => $dn->id
+        ), $account->get('Account Code')
+        );
 
-        $response=array(
-            'state'=>200,
-            'order_key'=>$order->id,
-            'dn_key'=>$dn->id,
-          //  'dispatch_state'=>get_order_formated_dispatch_state($order->get('Order Current Dispatch State'),$order->id),
-           // 'operations'=>get_orders_operations($order->data,$user)
+        $response = array(
+            'state'     => 200,
+            'order_key' => $order->id,
+            'dn_key'    => $dn->id,
+            //  'dispatch_state'=>get_order_formated_dispatch_state($order->get('Order Current Dispatch State'),$order->id),
+            // 'operations'=>get_orders_operations($order->data,$user)
 
         );
 
     } else {
 
-        $response=array('state'=>400,'msg'=>$order->msg,'number_items'=>$order->get('Order Number Items'),'order_key'=>$order->id);
+        $response = array(
+            'state'        => 400,
+            'msg'          => $order->msg,
+            'number_items' => $order->get('Order Number Items'),
+            'order_key'    => $order->id
+        );
 
 
     }
-
-
 
 
     echo json_encode($response);

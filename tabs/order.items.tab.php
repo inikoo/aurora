@@ -48,21 +48,49 @@ $parameters = array(
 
 $table_buttons   = array();
 $table_buttons[] = array(
-    'icon'              => 'plus',
-    'title'             => _('New barcode'),
-    'id'                => 'new_record',
-    'inline_new_object' => array(
-        'field_id'    => 'Barcode_Range',
-        'field_label' => _('Add barcodes').':',
-        'field_edit'  => 'barcode_range',
-        'object'      => 'Barcode',
-        'parent'      => $state['parent'],
-        'parent_key'  => $state['parent_key'],
+    'icon'     => 'plus',
+    'title'    => _('New item'),
+    'id'       => 'new_item',
+    'class'    => 'items_operation'.($state['_object']->get('Order Current Dispatch State') != 'In Process' ? ' hide' : ''),
+    'add_item' => array(
+
+        'field_label' => _("Product").':',
+        'metadata'    => base64_encode(
+            json_encode(
+                array(
+                    'scope'      => 'product',
+                    'parent'     => 'Store',
+                    'parent_key' => $state['_object']->get('Store Key'),
+                    'options'    => array('for_order')
+                )
+            )
+        )
 
     )
 
 );
+
+
+
 $smarty->assign('table_buttons', $table_buttons);
+
+$smarty->assign(
+    'table_metadata', base64_encode(
+                        json_encode(
+                            array(
+                                'parent'     => $state['object'],
+                                'parent_key' => $state['key'],
+                                'field'      => 'Order Quantity'
+                            )
+                        )
+                    )
+);
+
+
+
+$smarty->assign(
+    'js_code', 'js/injections/order.'.(_DEVEL ? '' : 'min.').'js'
+);
 
 
 include('utils/get_table_html.php');

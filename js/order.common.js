@@ -265,12 +265,15 @@ function save_order_operation(element) {
 
 function save_item_qty_change(element) {
 
-    $(element).addClass('fa-spinner fa-spin');
+    $(element).addClass('fa-spinner fa-spin')
 
     var input = $(element).closest('span').find('input')
     var icon=$(element)
 
     if ($(element).hasClass('fa-plus')) {
+
+
+        var _icon='fa-plus'
 
         if (isNaN(input.val()) || input.val() == '') {
             var qty = 1
@@ -290,10 +293,18 @@ function save_item_qty_change(element) {
 
         input.val(qty).addClass('discreet')
 
+        var _icon='fa-minus'
+
     } else {
         qty = parseFloat(input.val())
 
+        var _icon='fa-cloud'
+
     }
+
+    console.log(_icon)
+
+    $(element).addClass(_icon)
 
     if (qty == '') qty = 0;
 
@@ -362,6 +373,8 @@ function save_item_qty_change(element) {
 
     form_data.append("qty", qty)
 
+
+
     var request = $.ajax({
 
         url: "/ar_edit_orders.php",
@@ -374,21 +387,37 @@ function save_item_qty_change(element) {
     })
 
 
+
+
+
     request.done(function (data) {
 
 
 
-        $(element).removeClass('fa-spinner fa-spin')
-
+        $(element).removeClass('fa-spinner fa-spin fa-cloud').addClass('fa-plus')
 
 
         if (data.state == 200) {
 
             console.log(data)
+            console.log(table_metadata)
+
+
 
             input.val(data.transaction_data.qty).removeClass('discreet')
             input.attr('ovalue',data.transaction_data.qty)
-            if(table_metadata.parent=='delivery_note'){
+            if(table_metadata.parent=='order'){
+
+
+
+                $(element).closest('tr').find('._order_item_net').html(data.transaction_data.to_charge)
+
+
+
+
+
+
+            }else if(table_metadata.parent=='delivery_note'){
 
                 console.log(data.metadata.location_components)
                 console.log(data.metadata.picked_quantity_components)

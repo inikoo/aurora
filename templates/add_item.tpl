@@ -61,7 +61,9 @@
 
         $.getJSON(request, function (data) {
 
-console.log('ss')
+
+            console.log(data)
+
             if (data.number_results > 0) {
                 $('#add_item_results_container').removeClass('hide').addClass('show')
                 $('#add_item').removeClass('invalid')
@@ -172,14 +174,14 @@ console.log('ss')
 
 
         if (invalid) {
-            $('#add_item_save').addClass('invalid').removeClass('super_discreet valid button')
+            $('#add_item_save').addClass('invalid').removeClass('super_discreet valid button changed')
         } else {
             $('#add_item_save').removeClass('invalid')
 
             if ($('#save_add_item').attr('item_key') != '' && $('#add_item_qty').val() != '') {
-                $('#add_item_save').addClass('valid button').removeClass('super_discreet')
+                $('#add_item_save').addClass('valid button changed').removeClass('super_discreet')
             } else {
-                $('#add_item_save').removeClass('valid button').addClass('super_discreet')
+                $('#add_item_save').removeClass('valid button changed').addClass('super_discreet')
             }
 
         }
@@ -217,10 +219,12 @@ console.log('ss')
     function save_add_item() {
 
 
-        console.log('xxx')
+        console.log($('#table').data("metadata"))
 
 
         $('#add_item_save').addClass('fa-spinner fa-spin');
+
+
         var table_metadata = JSON.parse(atob($('#table').data("metadata")))
 
 
