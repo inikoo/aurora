@@ -1406,7 +1406,7 @@ trait ProductCategory {
                                 'footer_text'   => $subject->get('Code'),
                             );
 
-                           
+
 
                             $sql = sprintf(
                                 'INSERT INTO `Category Webpage Index` (`Category Webpage Index Section Key`,`Category Webpage Index Content Data`,`Category Webpage Index Parent Category Key`,`Category Webpage Index Category Key`,`Category Webpage Index Webpage Key`,`Category Webpage Index Category Webpage Key`) VALUES (%d,%s,%d,%d,%d,%d) ',

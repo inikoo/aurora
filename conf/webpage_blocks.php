@@ -14,7 +14,7 @@ function get_webpage_blocks($theme = '') {
 
     $blocks = array(
 
-
+/*
         'static_banner'  => array(
             'type'   => 'static_banner',
             'label'  => _('Header'),
@@ -27,7 +27,7 @@ function get_webpage_blocks($theme = '') {
             'link'=>'',
             'bg_image'=>''
         ),
-
+*/
         'one_pack'  => array(
             'type'   => 'one_pack',
             'label'  => _('One-Pack'),
