@@ -370,31 +370,35 @@
     <div class="block " style="align-items: stretch;flex: 1 ">
         <table border="0" class="totals" style="position:relative;top:-5px">
 
-            <tr>
+            <tr>_
                 <td class="label">{t}Items{/t}</td>
-                <td class="aright Order_Total_Amount">{$order->get('Items Net Amount')}</td>
+                <td class="aright Items_Net_Amount">{$order->get('Items Net Amount')}</td>
+            </tr>
+            <tr>
+                <td class="label">{t}Charges{/t}</td>
+                <td class="aright Charges_Net_Amount">{$order->get('Charges Net Amount')}</td>
             </tr>
             <tr>
                 <td class="label">{t}Shipping{/t}</td>
-                <td class="aright Order_Total_Amount">{$order->get('Shipping Net Amount')}</td>
+                <td class="aright Shipping_Net_Amount">{$order->get('Shipping Net Amount')}</td>
             </tr>
             <tr class="subtotal">
                 <td class="label">{t}Net{/t}</td>
-                <td class="aright Order_Total_Amount">{$order->get('Total Net Amount')}</td>
+                <td class="aright Total_Net_Amount">{$order->get('Total Net Amount')}</td>
             </tr>
 
             <tr class="subtotal">
                 <td class="label">{t}Tax{/t}</td>
-                <td class="aright Order_Total_Amount">{$order->get('Total Tax Amount')}</td>
+                <td class="aright Total_Tax_Amount">{$order->get('Total Tax Amount')}</td>
             </tr>
 
             <tr class="total">
                 <td class="label">{t}Total{/t}</td>
-                <td class="aright Order_Total_Amount">{$order->get('Total Amount')}</td>
+                <td class="aright Total_Amount">{$order->get('Total Amount')}</td>
             </tr>
             <tr class="{if $account->get('Account Currency')==$order->get('Order Currency Code')}hide{/if}">
                 <td colspan="2"
-                    class="Order_Total_Amount_Account_Currency aright ">{$order->get('Total Amount Account Currency')}</td>
+                    class="Total_Amount_Account_Currency aright ">{$order->get('Total Amount Account Currency')}</td>
             </tr>
 
         </table>

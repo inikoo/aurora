@@ -19,13 +19,7 @@ renderable: false
 name: "code",
 label: "{t}Code{/t}",
 editable: false,
-cell: Backgrid.StringCell.extend({
-events: {
-"click": function() {
-change_view("order/{$data['key']}/item/"+this.model.get("id"))
-}
-},
-className: "link"
+cell: Backgrid.HtmlCell.extend({
 }),
 },{
 name: "description",
@@ -40,7 +34,7 @@ defaultOrder:1,
 editable: false,
 sortType: "toggle",
 {if $sort_key=='quantity'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 }, {
 name: "net",
@@ -49,7 +43,7 @@ defaultOrder:1,
 editable: false,
 sortType: "toggle",
 {if $sort_key=='net'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 }
 ]

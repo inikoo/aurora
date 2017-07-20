@@ -75,6 +75,8 @@
         <script type="text/javascript" src="/js/table.js"></script>
         <script type="text/javascript" src="/js/validation.js"></script>
         <script type="text/javascript" src="/js/edit.js"></script>
+        <script type="text/javascript" src="/js/edit_webpage_edit.js"></script>
+
         <script type="text/javascript" src="/js/new.js"></script>
         <script type="text/javascript" src="/js/order.common.js"></script>
         <script type="text/javascript" src="/js/supplier.order.js"></script>

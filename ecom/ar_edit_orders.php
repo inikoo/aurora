@@ -494,7 +494,7 @@ function edit_new_order() {
 	$disconted_products=$order->get_discounted_products();
 	$order->skip_update_after_individual_transaction=false;
 
-	$transaction_data=$order->add_order_transaction($data);
+	$transaction_data=$order->add_order_transaction_to_delete($data);
 
 	if (!$transaction_data['updated']) {
 		$response= array('state'=>200,'newvalue'=>$_REQUEST['oldvalue'],'key'=>$_REQUEST['id']);
@@ -808,7 +808,7 @@ function update_meta_bonus($data) {
 
 				$order->skip_update_after_individual_transaction=true;
 
-				$transaction_data=$order->add_order_transaction($_data);
+				$transaction_data=$order->add_order_transaction_to_delete($_data);
 
 				$sql=sprintf("update `Order Meta Transaction Deal Dimension` set
 				`Bonus Quantity`=%f,`Bonus Product Key`=%d,`Bonus Product ID`=%d ,`Bonus Product Family Key`=%d ,
@@ -1027,7 +1027,7 @@ function remove_all_products($data) {
 		);
 
 
-		$transaction_data=$order->add_order_transaction($_data);
+		$transaction_data=$order->add_order_transaction_to_delete($_data);
 
 
 		$basket_history=array(
@@ -1337,7 +1337,7 @@ function import_transaction($order_key,$transactions_data) {
 
 			$order->skip_update_after_individual_transaction=false;
 
-			$transaction_data=$order->add_order_transaction($_data);
+			$transaction_data=$order->add_order_transaction_to_delete($_data);
 
 			if ($transaction_data['updated']) {
 				if ($transaction_found) {
