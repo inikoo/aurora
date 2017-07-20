@@ -1248,12 +1248,21 @@ class Order extends DB_Table {
                                 "SELECT sum(`Order Transaction Net Amount`*(`Delivery Note Quantity`/`Order Quantity`)) AS amount FROM `Order Transaction Fact` WHERE `Order Key`=%d AND `Delivery Note Key`=%d AND `Order Quantity`!=0",
                                 $this->id, $dn_key
                             );
-                            $res = mysql_query($sql);
-                            if ($row2 = mysql_fetch_assoc($res)) {
-                                $order_amount = $row2['amount'];
-                            } else {
-                                $order_amount = 0;
+
+
+                            if ($result=$this->db->query($sql)) {
+                                if ($row = $result->fetch()) {
+                                    $order_amount = $row2['amount'];
+                            	}else{
+                                    $order_amount = 0;
+                                }
+                            }else {
+                            	print_r($error_info=$this->db->errorInfo());
+                            	print "$sql\n";
+                            	exit;
                             }
+
+
                             break;
 
 
@@ -1263,12 +1272,20 @@ class Order extends DB_Table {
                                 "SELECT sum(`Order Transaction Gross Amount`*(`Delivery Note Quantity`/`Order Quantity`)) AS amount FROM `Order Transaction Fact` WHERE `Order Key`=%d AND `Delivery Note Key`=%d AND `Order Quantity`!=0",
                                 $this->id, $dn_key
                             );
-                            $res = mysql_query($sql);
-                            if ($row2 = mysql_fetch_assoc($res)) {
+
+                        if ($result=$this->db->query($sql)) {
+                            if ($row = $result->fetch()) {
                                 $order_amount = $row2['amount'];
-                            } else {
+                            }else{
                                 $order_amount = 0;
                             }
+                        }else {
+                            print_r($error_info=$this->db->errorInfo());
+                            print "$sql\n";
+                            exit;
+                        }
+
+
                             break;
                     }
                 }
@@ -2435,12 +2452,20 @@ class Order extends DB_Table {
             "SELECT sum(`Transaction Net Amount`) AS net , sum(`Transaction Tax Amount`) AS tax FROM `Order No Product Transaction Fact` WHERE `Order Key`=%d AND `Transaction Type`='Shipping' ",
             $this->id
         );
-        $res = mysql_query($sql);
-        if ($row = mysql_fetch_assoc($res)) {
-            //print_r($row);
-            $this->data['Order Shipping Net Amount'] = ($row['net'] == '' ? 0 : $row['net']);
-            $this->data['Order Shipping Tax Amount'] = ($row['tax'] == '' ? 0 : $row['tax']);
+
+
+        if ($result=$this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $this->data['Order Shipping Net Amount'] = ($row['net'] == '' ? 0 : $row['net']);
+                $this->data['Order Shipping Tax Amount'] = ($row['tax'] == '' ? 0 : $row['tax']);
+        	}
+        }else {
+        	print_r($error_info=$this->db->errorInfo());
+        	print "$sql\n";
+        	exit;
         }
+
+
 
         $sql = sprintf(
             "UPDATE `Order Dimension` SET `Order Shipping Net Amount`=%.2f ,`Order Shipping Tax Amount`=%.2f WHERE `Order Key`=%d", $this->data['Order Shipping Net Amount'],
@@ -2458,11 +2483,19 @@ class Order extends DB_Table {
             $this->id
         );
         //print "$sql\n";
-        $res = mysql_query($sql);
-        if ($row = mysql_fetch_assoc($res)) {
-            $this->data['Order Charges Net Amount'] = ($row['net'] == '' ? 0 : $row['net']);
-            $this->data['Order Charges Tax Amount'] = ($row['tax'] == '' ? 0 : $row['tax']);
+
+        if ($result=$this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $this->data['Order Charges Net Amount'] = ($row['net'] == '' ? 0 : $row['net']);
+                $this->data['Order Charges Tax Amount'] = ($row['tax'] == '' ? 0 : $row['tax']);
+        	}
+        }else {
+        	print_r($error_info=$this->db->errorInfo());
+        	print "$sql\n";
+        	exit;
         }
+
+
 
         $sql = sprintf(
             "UPDATE `Order Dimension` SET `Order Charges Net Amount`=%.2f ,`Order Charges Tax Amount`=%.2f WHERE `Order Key`=%d", $this->data['Order Charges Net Amount'],
@@ -2479,11 +2512,21 @@ class Order extends DB_Table {
             $this->id
         );
         //print "$sql\n";
-        $res = mysql_query($sql);
-        if ($row = mysql_fetch_assoc($res)) {
-            $this->data['Order Insurance Net Amount'] = ($row['net'] == '' ? 0 : $row['net']);
-            $this->data['Order Insurance Tax Amount'] = ($row['tax'] == '' ? 0 : $row['tax']);
+
+
+
+        if ($result=$this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $this->data['Order Insurance Net Amount'] = ($row['net'] == '' ? 0 : $row['net']);
+                $this->data['Order Insurance Tax Amount'] = ($row['tax'] == '' ? 0 : $row['tax']);
+        	}
+        }else {
+        	print_r($error_info=$this->db->errorInfo());
+        	print "$sql\n";
+        	exit;
         }
+
+
 
         $sql = sprintf(
             "UPDATE `Order Dimension` SET `Order Insurance Net Amount`=%.2f ,`Order Insurance Tax Amount`=%.2f WHERE `Order Key`=%d", $this->data['Order Insurance Net Amount'],
@@ -2600,6 +2643,18 @@ class Order extends DB_Table {
 
 
 	FROM `Order Transaction Fact`    WHERE  `Order Key`=".$this->id;
+
+
+        if ($result=$this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+
+        	}
+        }else {
+        	print_r($error_info=$this->db->errorInfo());
+        	print "$sql\n";
+        	exit;
+        }
+
 
         $result = mysql_query($sql);
         //print "\n$sql\n";
@@ -7244,7 +7299,7 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,
     function update_item($data) {
 
 
-       
+
 
         if (!isset($data ['ship to key'])) {
             $ship_to_keys = preg_split('/,/', $this->data['Order Ship To Keys']);

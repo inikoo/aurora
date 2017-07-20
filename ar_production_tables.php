@@ -404,9 +404,7 @@ function supplier_parts($_data, $db, $user, $account) {
 
 
             if ($exchange < 0) {
-                $exchange = currency_conversion(
-                    $db, $data['Supplier Part Currency Code'], $account->get('Account Currency'), '- 1 day'
-                );
+                $exchange = currency_conversion($db, $data['Supplier Part Currency Code'], $account->get('Account Currency'), '- 1 day');
             }
 
             if ($exchange != 1) {
