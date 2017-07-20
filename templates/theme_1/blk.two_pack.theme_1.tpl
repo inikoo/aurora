@@ -43,7 +43,11 @@
 
                 <h5 class="gray _subtitle"  contenteditable="true">{$data._subtitle}</h5>
 
-                <p class="_text" contenteditable="true">{$data._text}</p>
+
+
+                <div id="block_{$key}_editor" class="_text" >
+                    {$data._text}
+                </div>
 
                 <div class="clearfix marb12"></div>
 
