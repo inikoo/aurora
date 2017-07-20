@@ -888,10 +888,14 @@ function find_products($db, $account, $memcache_ip, $data) {
 
     $where = '';
 
+
+
     if(isset($data['metadata']['parent'])){
         switch ($data['metadata']['parent']) {
+            case 'Store':
             case 'store':
-                $where = sprintf(' and `Product Store Key`=%d', $data['metadata']['parent_key']
+
+            $where = sprintf(' and `Product Store Key`=%d', $data['metadata']['parent_key']
                 );
                 break;
             default:
@@ -957,6 +961,9 @@ function find_products($db, $account, $memcache_ip, $data) {
             "select `Product ID`,`Product Code`,`Product Name`,`Product Current Key` from `Product Dimension` where  `Product Code` like '%s%%' %s order by `Product Code` limit $max_results ", $q, $where
         );
 
+
+
+
         if ($result = $db->query($sql)) {
             foreach ($result as $row) {
 
@@ -984,6 +991,10 @@ function find_products($db, $account, $memcache_ip, $data) {
             print_r($error_info = $db->errorInfo());
             exit;
         }
+
+
+
+
 
 
         arsort($candidates);

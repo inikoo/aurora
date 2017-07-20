@@ -3734,7 +3734,29 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
 
                     $object = '';
-                    if ($view_path[0] == 'users') {
+
+                    if ($view_path[0] == '1') {
+
+                        if (isset($view_path[1])) {
+                            if ($view_path[1] == 'order') {
+                                $module  = 'orders';
+                                $section = 'order';
+                                $object  = 'order';
+                                $parent  = 'account';
+                                $parent_key  = 1;
+                                if (isset($view_path[2])) {
+                                    if ( is_numeric($view_path[2])) {
+                                        $key=$view_path[2];
+                                    }
+                                }
+
+
+                            }
+
+                        }
+
+
+                    }elseif ($view_path[0] == 'users') {
                         $section = 'users';
 
                         if (isset($view_path[1])) {

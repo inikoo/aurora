@@ -1878,7 +1878,7 @@ class Order extends DB_Table {
         // print_r($this->data);
 
         $tax_category = new TaxCategory($this->data['Order Tax Code']);
-        $tax_rate     = $tax_category->data['Tax Category Rate'];
+        $tax_rate     = $tax_category->get('Tax Category Rate');
 
 
         $this->data ['Order Total Tax Amount'] =
@@ -7243,6 +7243,8 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,
 
     function update_item($data) {
 
+
+       
 
         if (!isset($data ['ship to key'])) {
             $ship_to_keys = preg_split('/,/', $this->data['Order Ship To Keys']);
