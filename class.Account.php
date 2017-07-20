@@ -233,6 +233,8 @@ class Account extends DB_Table {
 
         }
 
+        $data['Store Telecom Format']  =$this->get('Account Country Code');
+        $data['Store Tax Country Code']  =$this->get('Account Country Code');
 
 
         $data['Store Home Country Code 2 Alpha'] = substr($data['Store Locale'], -2);

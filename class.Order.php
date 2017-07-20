@@ -503,6 +503,8 @@ class Order extends DB_Table {
         $customer = new Customer($this->data['Order Customer Key']);
 
 
+
+
         switch ($store->data['Store Tax Country Code']) {
             case 'ESP':
 
@@ -925,6 +927,181 @@ class Order extends DB_Table {
 
 
                 break;
+            case 'SVK':
+
+                $tax_category = array();
+
+                $sql = sprintf(
+                    "SELECT `Tax Category Code`,`Tax Category Type`,`Tax Category Name`,`Tax Category Rate` FROM `Tax Category Dimension`  WHERE `Tax Category Country Code`='SVK' AND `Tax Category Active`='Yes'"
+                );
+
+
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+
+
+                        switch ($row['Tax Category Name']) {
+                            case 'Outside the scope of VAT':
+                                $tax_category_name = _('Outside the scope of VAT');
+                                break;
+
+                            case 'VAT 20%':
+                                $tax_category_name = _('VAT').' 20%';
+                                break;
+                            case 'No Tax':
+                                $tax_category_name = _('No Tax');
+                                break;
+                            case 'Exempt from VAT':
+                                $tax_category_name = _('Exempt from VAT');
+                                break;
+
+
+                            default:
+                                $tax_category_name = $row['Tax Category Name'];
+                        }
+
+
+                        $tax_category[$row['Tax Category Type']] = array(
+                            'code' => $row['Tax Category Code'],
+                            'name' => $tax_category_name,
+                            'rate' => $row['Tax Category Rate']
+                        );
+
+
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    exit;
+                }
+
+
+                if (in_array(
+                    $this->data['Order Delivery Address Country 2 Alpha Code'], array(
+                    'SK',
+                    'XX'
+                )
+                )) {
+
+                    return array(
+                        'code'       => $tax_category['Standard']['code'],
+                        'name'       => $tax_category['Standard']['name'],
+                        'rate'       => $tax_category['Standard']['rate'],
+                        'state'      => 'delivery to SVK',
+                        'operations' => ''
+
+                    );
+                } elseif (in_array(
+                    $this->data['Order Invoice Address Country 2 Alpha Code'], array(
+                                                                                 'SVK',
+                                                                                 'UNK'
+                                                                             )
+                )) {
+
+                    return array(
+                        'code'       => $tax_category['Standard']['code'],
+                        'name'       => $tax_category['Standard']['name'],
+                        'rate'       => $tax_category['Standard']['rate'],
+                        'state'      => 'billing to SVK',
+                        'operations' => ''
+                    );
+                } elseif (in_array(
+                    $this->data['Order Invoice Address Country 2 Alpha Code'], get_countries_EC_Fiscal_VAT_area($this->db)
+                )) {
+
+
+                    if ($this->data['Order Tax Number Valid'] == 'Yes') {
+
+
+                        $response = array(
+                            'code'       => $tax_category['Outside']['code'],
+                            'name'       => $tax_category['Outside']['name'].'<div>'._('Valid tax number').'<br>'.$this->data['Order Tax Number'].'</div>',
+                            'rate'       => $tax_category['Outside']['rate'],
+                            'state'      => 'EC with valid tax number',
+                            'operations' => ''
+
+                        );
+
+                    } else {
+
+                        if ($this->data['Order Tax Number'] == '') {
+
+
+                            $response = array(
+                                'code'       => $tax_category['Standard']['code'],
+                                'name'       => $tax_category['Standard']['name'],
+                                'rate'       => $tax_category['Standard']['rate'],
+                                'state'      => 'EC no tax number',
+                                'operations' => '<div><img  style="width:12px;position:relative:bottom:2px" src="/art/icons/information.png"/><span style="font-size:90%"> '._(
+                                        'VAT might be exempt with a valid tax number'
+                                    ).'</span> <div class="buttons small"><button id="set_tax_number" style="margin:0px" onClick="show_set_tax_number_dialog()">'._('Set up tax number')
+                                    .'</button></div></div>'
+
+                            );
+
+                        } else {
+
+
+                            $response = array(
+                                'code'  => $tax_category['Standard']['code'],
+                                'name'  => $tax_category['Standard']['name'],
+                                'rate'  => $tax_category['Standard']['rate'],
+                                'state' => 'EC with invalid tax number',
+
+                                'operations' => '<div>
+					<img style="width:12px;position:relative;bottom:-1px" src="/art/icons/error.png">
+					<span style="font-size:90%;"  >'._('Invalid tax number').'</span>
+					<img style="cursor:pointer;position:relative;top:4px"  onClick="check_tax_number_from_tax_info()"  id="check_tax_number" src="/art/validate.png" alt="('._('Validate').')" title="'
+                                    ._('Validate').'">
+					<br/>
+					<img id="set_tax_number" style="width:14px;cursor:pointer;position:relative;top:2px" src="/art/icons/edit.gif"  onClick="show_set_tax_number_dialog()" title="'._('Edit tax number')
+                                    .'"/>
+
+					<span id="tax_number">'.$this->data['Order Tax Number'].'</span>
+				</div>'
+
+                            );
+
+
+                        }
+
+                    }
+
+
+                    return $response;
+
+                } else {
+
+
+                    if (in_array(
+                        $this->data['Order Delivery Address Country 2 Alpha Code'], get_countries_EC_Fiscal_VAT_area($this->db)
+                    )) {
+
+
+                        return array(
+                            'code'       => $tax_category['Standard']['code'],
+                            'name'       => $tax_category['Standard']['name'],
+                            'rate'       => $tax_category['Standard']['rate'],
+                            'state'      => 'delivery to EC with no EC billing',
+                            'operations' => ''
+
+                        );
+
+                    } else {
+                        return array(
+                            'code'       => $tax_category['Outside']['code'],
+                            'name'       => $tax_category['Outside']['name'],
+                            'rate'       => $tax_category['Outside']['rate'],
+                            'state'      => 'ouside EC',
+                            'operations' => '<div>'._('Outside EC fiscal area').'</div>'
+
+                        );
+
+                    }
+
+                }
+
+
+                break;
         }
 
 
@@ -963,7 +1140,7 @@ class Order extends DB_Table {
         }
 
         if ($this->data = $this->db->query($sql)->fetch()) {
-            $this->id   = $this->data['Order Key'];
+            $this->id = $this->data['Order Key'];
         }
 
 
@@ -1057,106 +1234,104 @@ class Order extends DB_Table {
         );
 
 
-        if ($result=$this->db->query($sql)) {
-        		foreach ($result as $row) {
-                    $apply_charge = false;
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $apply_charge = false;
 
-                    $order_amount = $this->data[$row['Charge Terms Type']];
-
-
-                    if ($dn_key) {
-                        switch ($row['Charge Terms Type']) {
-
-                            case 'Order Items Net Amount':
-
-                                $sql = sprintf(
-                                    "SELECT sum(`Order Transaction Net Amount`*(`Delivery Note Quantity`/`Order Quantity`)) AS amount FROM `Order Transaction Fact` WHERE `Order Key`=%d AND `Delivery Note Key`=%d AND `Order Quantity`!=0",
-                                    $this->id, $dn_key
-                                );
-                                $res = mysql_query($sql);
-                                if ($row2 = mysql_fetch_assoc($res)) {
-                                    $order_amount = $row2['amount'];
-                                } else {
-                                    $order_amount = 0;
-                                }
-                                break;
+                $order_amount = $this->data[$row['Charge Terms Type']];
 
 
-                            case 'Order Items Gross Amount':
-                            default:
-                                $sql = sprintf(
-                                    "SELECT sum(`Order Transaction Gross Amount`*(`Delivery Note Quantity`/`Order Quantity`)) AS amount FROM `Order Transaction Fact` WHERE `Order Key`=%d AND `Delivery Note Key`=%d AND `Order Quantity`!=0",
-                                    $this->id, $dn_key
-                                );
-                                $res = mysql_query($sql);
-                                if ($row2 = mysql_fetch_assoc($res)) {
-                                    $order_amount = $row2['amount'];
-                                } else {
-                                    $order_amount = 0;
-                                }
-                                break;
+                if ($dn_key) {
+                    switch ($row['Charge Terms Type']) {
+
+                        case 'Order Items Net Amount':
+
+                            $sql = sprintf(
+                                "SELECT sum(`Order Transaction Net Amount`*(`Delivery Note Quantity`/`Order Quantity`)) AS amount FROM `Order Transaction Fact` WHERE `Order Key`=%d AND `Delivery Note Key`=%d AND `Order Quantity`!=0",
+                                $this->id, $dn_key
+                            );
+                            $res = mysql_query($sql);
+                            if ($row2 = mysql_fetch_assoc($res)) {
+                                $order_amount = $row2['amount'];
+                            } else {
+                                $order_amount = 0;
+                            }
+                            break;
+
+
+                        case 'Order Items Gross Amount':
+                        default:
+                            $sql = sprintf(
+                                "SELECT sum(`Order Transaction Gross Amount`*(`Delivery Note Quantity`/`Order Quantity`)) AS amount FROM `Order Transaction Fact` WHERE `Order Key`=%d AND `Delivery Note Key`=%d AND `Order Quantity`!=0",
+                                $this->id, $dn_key
+                            );
+                            $res = mysql_query($sql);
+                            if ($row2 = mysql_fetch_assoc($res)) {
+                                $order_amount = $row2['amount'];
+                            } else {
+                                $order_amount = 0;
+                            }
+                            break;
+                    }
+                }
+
+
+                $terms_components = preg_split(
+                    '/;/', $row['Charge Terms Metadata']
+                );
+                $operator         = $terms_components[0];
+                $amount           = $terms_components[1];
+
+                //print_r($order_amount);
+
+
+                switch ($operator) {
+                    case('<'):
+                        if ($order_amount < $amount) {
+                            $apply_charge = true;
                         }
-                    }
+                        break;
+                    case('>'):
+                        if ($order_amount > $amount) {
+                            $apply_charge = true;
+                        }
+                        break;
+                    case('<='):
+                        if ($order_amount <= $amount) {
+                            $apply_charge = true;
+                        }
+                        break;
+                    case('>='):
+                        if ($order_amount >= $amount) {
+                            $apply_charge = true;
+                        }
+                        break;
+                }
 
 
-                    $terms_components = preg_split(
-                        '/;/', $row['Charge Terms Metadata']
+                if ($row['Charge Type'] == 'Amount') {
+                    $charge_net_amount = $row['Charge Metadata'];
+                    $charge_tax_amount = $row['Charge Metadata'] * $this->data['Order Tax Rate'];
+                } else {
+
+                    exit("still to do");
+                }
+
+
+                if ($apply_charge) {
+                    $charges[] = array(
+                        'Charge Net Amount'  => $charge_net_amount,
+                        'Charge Tax Amount'  => $charge_tax_amount,
+                        'Charge Key'         => $row['Charge Key'],
+                        'Charge Description' => $row['Charge Name']
                     );
-                    $operator         = $terms_components[0];
-                    $amount           = $terms_components[1];
-
-                    //print_r($order_amount);
-
-
-                    switch ($operator) {
-                        case('<'):
-                            if ($order_amount < $amount) {
-                                $apply_charge = true;
-                            }
-                            break;
-                        case('>'):
-                            if ($order_amount > $amount) {
-                                $apply_charge = true;
-                            }
-                            break;
-                        case('<='):
-                            if ($order_amount <= $amount) {
-                                $apply_charge = true;
-                            }
-                            break;
-                        case('>='):
-                            if ($order_amount >= $amount) {
-                                $apply_charge = true;
-                            }
-                            break;
-                    }
-
-
-                    if ($row['Charge Type'] == 'Amount') {
-                        $charge_net_amount = $row['Charge Metadata'];
-                        $charge_tax_amount = $row['Charge Metadata'] * $this->data['Order Tax Rate'];
-                    } else {
-
-                        exit("still to do");
-                    }
-
-
-                    if ($apply_charge) {
-                        $charges[] = array(
-                            'Charge Net Amount'  => $charge_net_amount,
-                            'Charge Tax Amount'  => $charge_tax_amount,
-                            'Charge Key'         => $row['Charge Key'],
-                            'Charge Description' => $row['Charge Name']
-                        );
-                    }
-        		}
-        }else {
-        		print_r($error_info=$this->db->errorInfo());
-        		print "$sql\n";
-        		exit;
+                }
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
-
-
 
 
         return $charges;
@@ -1291,7 +1466,7 @@ class Order extends DB_Table {
         );
 
 
-        if ($result=$this->db->query($sql)) {
+        if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
 
                 list($shipping, $method) = $this->get_shipping_from_method(
@@ -1303,14 +1478,12 @@ class Order extends DB_Table {
                     $row['Shipping Key'],
                     $method
                 );
-        	}
-        }else {
-        	print_r($error_info=$this->db->errorInfo());
-        	print "$sql\n";
-        	exit;
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
-
-
 
 
         $sql = sprintf(
@@ -1560,8 +1733,7 @@ class Order extends DB_Table {
         );
 
 
-
-        if ($result=$this->db->query($sql)) {
+        if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
 
                 $total_not_dispatch_net = $row['out_of_stock_net'] + $row['not_authorized_net'] + $row['not_found_net'] + $row['not_due_other_net'];
@@ -1580,13 +1752,11 @@ class Order extends DB_Table {
                 $this->data ['Order Dispatched Estimated Weight'] = $row ['disp_estimated_weight'];
 
             }
-        }else {
-        	print_r($error_info=$this->db->errorInfo());
-        	print "$sql\n";
-        	exit;
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
-
-
 
 
     }
@@ -1604,18 +1774,16 @@ class Order extends DB_Table {
             $this->id
         );
 
-        if ($result=$this->db->query($sql)) {
+        if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
                 $this->data['Order Shipping Net Amount'] = ($row['net'] == '' ? 0 : $row['net']);
                 $this->data['Order Shipping Tax Amount'] = ($row['tax'] == '' ? 0 : $row['tax']);
-        	}
-        }else {
-        	print_r($error_info=$this->db->errorInfo());
-        	print "$sql\n";
-        	exit;
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
-
-
 
 
         $sql = sprintf(
@@ -1635,15 +1803,15 @@ class Order extends DB_Table {
         );
 
 
-        if ($result=$this->db->query($sql)) {
+        if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
                 $this->data['Order Charges Net Amount'] = ($row['net'] == '' ? 0 : $row['net']);
                 $this->data['Order Charges Tax Amount'] = ($row['tax'] == '' ? 0 : $row['tax']);
-        	}
-        }else {
-        	print_r($error_info=$this->db->errorInfo());
-        	print "$sql\n";
-        	exit;
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
 
 
@@ -1663,17 +1831,16 @@ class Order extends DB_Table {
         );
 
 
-        if ($result=$this->db->query($sql)) {
+        if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
                 $this->data['Order Insurance Net Amount'] = ($row['net'] == '' ? 0 : $row['net']);
                 $this->data['Order Insurance Tax Amount'] = ($row['tax'] == '' ? 0 : $row['tax']);
-        	}
-        }else {
-        	print_r($error_info=$this->db->errorInfo());
-        	print "$sql\n";
-        	exit;
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
-
 
 
         $sql = sprintf(
@@ -1799,7 +1966,7 @@ class Order extends DB_Table {
 	FROM `Order Transaction Fact`    WHERE  `Order Key`=".$this->id;
 
 
-        if ($result=$this->db->query($sql)) {
+        if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
 
                 $number_otfs = $row['number_otfs'];
@@ -1848,13 +2015,12 @@ class Order extends DB_Table {
 
                 $this->data['Order Invoiced Profit Amount'] = $this->data['Order Invoiced Balance Net Amount'] - $this->data['Order Invoiced Outstanding Balance Net Amount'] - $row['costs'];
                 $this->data['Order Profit Amount']          = $this->data['Order Balance Net Amount'] - $this->data['Order Outstanding Balance Net Amount'] - $row['costs'];
-        	}
-        }else {
-        	print_r($error_info=$this->db->errorInfo());
-        	print "$sql\n";
-        	exit;
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
-
 
 
         //  sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) as discount,
@@ -1898,56 +2064,52 @@ class Order extends DB_Table {
         );
 
 
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $ordered       = $row['Order Quantity'];
+                $no_dispatched = $row['No Shipped Due Out of Stock'] + $row['No Shipped Due No Authorized'] + $row['No Shipped Due Not Found'] + $row['No Shipped Due Other'];
+
+                $chargeable_qty = $ordered - $no_dispatched;
 
 
-        if ($result=$this->db->query($sql)) {
-        		foreach ($result as $row) {
-                    $ordered       = $row['Order Quantity'];
-                    $no_dispatched = $row['No Shipped Due Out of Stock'] + $row['No Shipped Due No Authorized'] + $row['No Shipped Due Not Found'] + $row['No Shipped Due Other'];
+                $discount_fraction = 0;
 
-                    $chargeable_qty = $ordered - $no_dispatched;
-
-
-                    $discount_fraction = 0;
-
-                    if ($row['Order Transaction Gross Amount'] > 0) {
-                        $discount_fraction = $row['Order Transaction Total Discount Amount'] / $row['Order Transaction Gross Amount'];
-                    }
+                if ($row['Order Transaction Gross Amount'] > 0) {
+                    $discount_fraction = $row['Order Transaction Total Discount Amount'] / $row['Order Transaction Gross Amount'];
+                }
 
 
-                    // $discount_fraction=$row['discount_fraction'];
+                // $discount_fraction=$row['discount_fraction'];
 
-                    $gross_chargeable_amount = $chargeable_qty * $row['Product History Price'];
+                $gross_chargeable_amount = $chargeable_qty * $row['Product History Price'];
 
-                    $discount = round($gross_chargeable_amount * $discount_fraction, 2);
+                $discount = round($gross_chargeable_amount * $discount_fraction, 2);
 
-                    $chargeable_amount   = $gross_chargeable_amount - $discount;
-                    $gross               += $row['Order Quantity'] * $row['Product History Price'];
-                    $out_of_stock_amount += ($row['No Shipped Due Out of Stock']) * $row['Product History Price'];
-                    $discounts           += $discount;
-                    $chargeable_amount   = round($chargeable_amount, 2);
-
-
-                    $_refund_tax = round(
-                        $row['Invoice Transaction Tax Refund Items'], 2
-                    );
-                    $_refund_net = round(
-                        $row['Invoice Transaction Net Refund Items'], 2
-                    );
+                $chargeable_amount   = $gross_chargeable_amount - $discount;
+                $gross               += $row['Order Quantity'] * $row['Product History Price'];
+                $out_of_stock_amount += ($row['No Shipped Due Out of Stock']) * $row['Product History Price'];
+                $discounts           += $discount;
+                $chargeable_amount   = round($chargeable_amount, 2);
 
 
-                    $tax += round(
-                        $_refund_tax + ($chargeable_amount * $row['Transaction Tax Rate']), 2
-                    );
-                    $net += round($chargeable_amount + $_refund_net, 2);
-        		}
-        }else {
-        		print_r($error_info=$this->db->errorInfo());
-        		print "$sql\n";
-        		exit;
+                $_refund_tax = round(
+                    $row['Invoice Transaction Tax Refund Items'], 2
+                );
+                $_refund_net = round(
+                    $row['Invoice Transaction Net Refund Items'], 2
+                );
+
+
+                $tax += round(
+                    $_refund_tax + ($chargeable_amount * $row['Transaction Tax Rate']), 2
+                );
+                $net += round($chargeable_amount + $_refund_net, 2);
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
-
-
 
 
         $this->data['Order Balance Net Amount'] = $net - $this->data['Order Deal Amount Off'];
@@ -1977,73 +2139,68 @@ class Order extends DB_Table {
         );
 
 
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                //print_r($row);
+                $this->data['Order Invoiced Balance Net Amount']               += $row['Transaction Invoice Net Amount'];
+                $this->data['Order Invoiced Balance Tax Amount']               += $row['Transaction Invoice Tax Amount'];
+                $this->data['Order Invoiced Balance Total Amount']             += $row['Transaction Invoice Net Amount'] + $row['Transaction Invoice Tax Amount'];
+                $this->data['Order Invoiced Outstanding Balance Net Amount']   += $row['Transaction Outstanding Net Amount Balance'];
+                $this->data['Order Invoiced Outstanding Balance Tax Amount']   += $row['Transaction Outstanding Tax Amount Balance'];
+                $this->data['Order Invoiced Outstanding Balance Total Amount'] += $row['Transaction Outstanding Net Amount Balance'] + $row['Transaction Outstanding Tax Amount Balance'];
+                $this->data['Order Invoiced Refund Net Amount']                += round(
+                    $row['Transaction Refund Net Amount'], 2
+                );
+                $this->data['Order Invoiced Refund Tax Amount']                += round(
+                    $row['Transaction Refund Tax Amount'], 2
+                );
 
-        if ($result=$this->db->query($sql)) {
-        		foreach ($result as $row) {
-                    //print_r($row);
-                    $this->data['Order Invoiced Balance Net Amount']               += $row['Transaction Invoice Net Amount'];
-                    $this->data['Order Invoiced Balance Tax Amount']               += $row['Transaction Invoice Tax Amount'];
-                    $this->data['Order Invoiced Balance Total Amount']             += $row['Transaction Invoice Net Amount'] + $row['Transaction Invoice Tax Amount'];
-                    $this->data['Order Invoiced Outstanding Balance Net Amount']   += $row['Transaction Outstanding Net Amount Balance'];
-                    $this->data['Order Invoiced Outstanding Balance Tax Amount']   += $row['Transaction Outstanding Tax Amount Balance'];
-                    $this->data['Order Invoiced Outstanding Balance Total Amount'] += $row['Transaction Outstanding Net Amount Balance'] + $row['Transaction Outstanding Tax Amount Balance'];
-                    $this->data['Order Invoiced Refund Net Amount']                += round(
-                        $row['Transaction Refund Net Amount'], 2
-                    );
-                    $this->data['Order Invoiced Refund Tax Amount']                += round(
-                        $row['Transaction Refund Tax Amount'], 2
-                    );
+                // print "xx ".$row['Transaction Net Amount']." \n";
+                $this->data['Order Balance Net Amount'] += round(
+                    $row['Transaction Net Amount'] + $row['Transaction Refund Net Amount'], 2
+                );
+                $this->data['Order Balance Tax Amount'] += round(
+                    $row['Transaction Tax Amount'] + $row['Transaction Refund Tax Amount'], 2
+                );
 
-                    // print "xx ".$row['Transaction Net Amount']." \n";
-                    $this->data['Order Balance Net Amount'] += round(
-                        $row['Transaction Net Amount'] + $row['Transaction Refund Net Amount'], 2
-                    );
-                    $this->data['Order Balance Tax Amount'] += round(
-                        $row['Transaction Tax Amount'] + $row['Transaction Refund Tax Amount'], 2
-                    );
-
-                    //print "Tax : ".$this->data['Order Balance Tax Amount'].' '.round($row['Transaction Tax Amount']+$row['Transaction Refund Tax Amount'],2)." tax ship\n";
-                    $this->data['Order Balance Total Amount']             += $row['Transaction Net Amount'] + $row['Transaction Tax Amount'] + $row['Transaction Refund Net Amount']
-                        + $row['Transaction Refund Tax Amount'];
-                    $this->data['Order Outstanding Balance Net Amount']   += $row['Transaction Net Amount'] - $row['Transaction Invoice Net Amount'] + $row['Transaction Outstanding Net Amount Balance'];
-                    $this->data['Order Outstanding Balance Tax Amount']   += $row['Transaction Tax Amount'] - $row['Transaction Invoice Tax Amount'] + $row['Transaction Outstanding Tax Amount Balance'];
-                    $this->data['Order Outstanding Balance Total Amount'] += $row['Transaction Net Amount'] - $row['Transaction Invoice Net Amount'] + $row['Transaction Outstanding Net Amount Balance']
-                        + $row['Transaction Tax Amount'] - $row['Transaction Invoice Tax Amount'] + $row['Transaction Outstanding Tax Amount Balance'];
-
-
-                    if ($row['Transaction Type'] == 'Adjust') {
-
-                        $this->data['Order Invoiced Net Amount'] += $row['Transaction Invoice Net Amount'];
-                        $this->data['Order Invoiced Tax Amount'] += $row['Transaction Invoice Tax Amount'];
-
-                    }
+                //print "Tax : ".$this->data['Order Balance Tax Amount'].' '.round($row['Transaction Tax Amount']+$row['Transaction Refund Tax Amount'],2)." tax ship\n";
+                $this->data['Order Balance Total Amount']             += $row['Transaction Net Amount'] + $row['Transaction Tax Amount'] + $row['Transaction Refund Net Amount']
+                    + $row['Transaction Refund Tax Amount'];
+                $this->data['Order Outstanding Balance Net Amount']   += $row['Transaction Net Amount'] - $row['Transaction Invoice Net Amount'] + $row['Transaction Outstanding Net Amount Balance'];
+                $this->data['Order Outstanding Balance Tax Amount']   += $row['Transaction Tax Amount'] - $row['Transaction Invoice Tax Amount'] + $row['Transaction Outstanding Tax Amount Balance'];
+                $this->data['Order Outstanding Balance Total Amount'] += $row['Transaction Net Amount'] - $row['Transaction Invoice Net Amount'] + $row['Transaction Outstanding Net Amount Balance']
+                    + $row['Transaction Tax Amount'] - $row['Transaction Invoice Tax Amount'] + $row['Transaction Outstanding Tax Amount Balance'];
 
 
-                    if ($row['Transaction Type'] == 'Credit') {
-                        $this->data['Order Tax Credited Amount']        += $row['Transaction Tax Amount'];
-                        $this->data['Order Net Credited Amount']        += $row['Transaction Net Amount'];
-                        $this->data['Order Invoiced Refund Net Amount'] += $row['Transaction Invoice Net Amount'];
-                        $this->data['Order Invoiced Refund Tax Amount'] += $row['Transaction Invoice Tax Amount'];
+                if ($row['Transaction Type'] == 'Adjust') {
 
-                    } elseif ($row['Transaction Type'] == 'Refund') {
-                        $this->data['Order Tax Refund Amount']          += $row['Transaction Tax Amount'];
-                        $this->data['Order Net Refund Amount']          += $row['Transaction Net Amount'];
-                        $this->data['Order Invoiced Refund Net Amount'] += $row['Transaction Refund Net Amount'];
-                        $this->data['Order Invoiced Refund Tax Amount'] += $row['Transaction Refund Tax Amount'];
-                    } elseif ($row['Transaction Type'] == 'Adjust') {
-                        $this->data['Order Invoiced Total Net Adjust Amount'] += $row['Transaction Invoice Net Amount'];
-                        $this->data['Order Invoiced Total Tax Adjust Amount'] += $row['Transaction Invoice Tax Amount'];
-                    }
-        		}
-        }else {
-        		print_r($error_info=$this->db->errorInfo());
-        		print "$sql\n";
-        		exit;
+                    $this->data['Order Invoiced Net Amount'] += $row['Transaction Invoice Net Amount'];
+                    $this->data['Order Invoiced Tax Amount'] += $row['Transaction Invoice Tax Amount'];
+
+                }
+
+
+                if ($row['Transaction Type'] == 'Credit') {
+                    $this->data['Order Tax Credited Amount']        += $row['Transaction Tax Amount'];
+                    $this->data['Order Net Credited Amount']        += $row['Transaction Net Amount'];
+                    $this->data['Order Invoiced Refund Net Amount'] += $row['Transaction Invoice Net Amount'];
+                    $this->data['Order Invoiced Refund Tax Amount'] += $row['Transaction Invoice Tax Amount'];
+
+                } elseif ($row['Transaction Type'] == 'Refund') {
+                    $this->data['Order Tax Refund Amount']          += $row['Transaction Tax Amount'];
+                    $this->data['Order Net Refund Amount']          += $row['Transaction Net Amount'];
+                    $this->data['Order Invoiced Refund Net Amount'] += $row['Transaction Refund Net Amount'];
+                    $this->data['Order Invoiced Refund Tax Amount'] += $row['Transaction Refund Tax Amount'];
+                } elseif ($row['Transaction Type'] == 'Adjust') {
+                    $this->data['Order Invoiced Total Net Adjust Amount'] += $row['Transaction Invoice Net Amount'];
+                    $this->data['Order Invoiced Total Tax Adjust Amount'] += $row['Transaction Invoice Tax Amount'];
+                }
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
-
-
-
-
 
 
         //print_r($this->data);
@@ -2055,24 +2212,21 @@ class Order extends DB_Table {
         );
 
 
-        if ($result=$this->db->query($sql)) {
-        		foreach ($result as $row) {
-                    $this->data['Order Invoiced Refund Net Amount'] += $row['Transaction Invoice Net Amount'];
-                    $this->data['Order Invoiced Refund Tax Amount'] += $row['Transaction Invoice Tax Amount'];
-                    $oustanding_invoiced_refund_net                 += $row['Transaction Outstanding Net Amount Balance'];
-                    $oustanding_invoiced_refund_tax                 += $row['Transaction Outstanding Tax Amount Balance'];
-                    if ($row['Transaction Description'] != '') {
-                        $this->data['Order Invoiced Refund Notes'] .= '<br/>'.$row['Transaction Description'];
-                    }
-        		}
-        }else {
-        		print_r($error_info=$this->db->errorInfo());
-        		print "$sql\n";
-        		exit;
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $this->data['Order Invoiced Refund Net Amount'] += $row['Transaction Invoice Net Amount'];
+                $this->data['Order Invoiced Refund Tax Amount'] += $row['Transaction Invoice Tax Amount'];
+                $oustanding_invoiced_refund_net                 += $row['Transaction Outstanding Net Amount Balance'];
+                $oustanding_invoiced_refund_tax                 += $row['Transaction Outstanding Tax Amount Balance'];
+                if ($row['Transaction Description'] != '') {
+                    $this->data['Order Invoiced Refund Notes'] .= '<br/>'.$row['Transaction Description'];
+                }
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
-
-
-
 
 
         if ($number_otfs == 0) {
@@ -2084,16 +2238,16 @@ class Order extends DB_Table {
             );
 
 
-            if ($result=$this->db->query($sql)) {
-            		foreach ($result as $row) {
-                        $this->data['Order Invoiced Shipping Amount'] = $row['amount'];
-                        $net                                          += $row['amount'];
-                        $tax                                          += $row['tax'];
-            		}
-            }else {
-            		print_r($error_info=$this->db->errorInfo());
-            		print "$sql\n";
-            		exit;
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
+                    $this->data['Order Invoiced Shipping Amount'] = $row['amount'];
+                    $net                                          += $row['amount'];
+                    $tax                                          += $row['tax'];
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
             }
 
 
@@ -2103,26 +2257,23 @@ class Order extends DB_Table {
             );
 
 
-            if ($result=$this->db->query($sql)) {
-            		foreach ($result as $row) {
-                        $this->data['Order Invoiced Charges Amount'] = $row['amount'];
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
+                    $this->data['Order Invoiced Charges Amount'] = $row['amount'];
 
 
-                        $this->data['Order Charges Net Amount'] = $row['amount'];
-                        $this->data['Order Charges Tax Amount'] = $row['tax'];
+                    $this->data['Order Charges Net Amount'] = $row['amount'];
+                    $this->data['Order Charges Tax Amount'] = $row['tax'];
 
 
-                        $net += $row['amount'];
-                        $tax += $row['tax'];
-            		}
-            }else {
-            		print_r($error_info=$this->db->errorInfo());
-            		print "$sql\n";
-            		exit;
+                    $net += $row['amount'];
+                    $tax += $row['tax'];
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
             }
-
-
-
 
 
             $sql = sprintf(
@@ -2131,26 +2282,23 @@ class Order extends DB_Table {
             );
 
 
-            if ($result=$this->db->query($sql)) {
-            		foreach ($result as $row) {
-                        $this->data['Order Invoiced Charges Amount'] = $row['amount'];
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
+                    $this->data['Order Invoiced Charges Amount'] = $row['amount'];
 
 
-                        $this->data['Order Insurance Net Amount'] = $row['amount'];
-                        $this->data['Order Insurance Tax Amount'] = $row['tax'];
+                    $this->data['Order Insurance Net Amount'] = $row['amount'];
+                    $this->data['Order Insurance Tax Amount'] = $row['tax'];
 
 
-                        $net += $row['amount'];
-                        $tax += $row['tax'];
-            		}
-            }else {
-            		print_r($error_info=$this->db->errorInfo());
-            		print "$sql\n";
-            		exit;
+                    $net += $row['amount'];
+                    $tax += $row['tax'];
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
             }
-
-
-
 
 
             $this->data['Order Invoiced Net Amount'] = $net;
@@ -2862,19 +3010,15 @@ class Order extends DB_Table {
         );
         $current_amount_completed_payments = 0.00;
 
-      if ($result=$this->db->query($sql)) {
-          if ($row = $result->fetch()) {
-              $current_amount_completed_payments = $row['amount'];
-      	}
-      }else {
-      	print_r($error_info=$this->db->errorInfo());
-      	print "$sql\n";
-      	exit;
-      }
-
-
-
-
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $current_amount_completed_payments = $row['amount'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
 
 
         $order_amount = round(
@@ -2891,20 +3035,18 @@ class Order extends DB_Table {
             );
 
 
-            if ($result=$this->db->query($sql)) {
+            if ($result = $this->db->query($sql)) {
                 if ($row = $result->fetch()) {
                     $_payment_key                                = $row['Payment Key'];
                     $current_amount_in_customer_account_payments = $row['Amount'];
-            	}else{
+                } else {
                     return;
                 }
-            }else {
-            	print_r($error_info=$this->db->errorInfo());
-            	print "$sql\n";
-            	exit;
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
             }
-
-
 
 
             $_balance = $order_amount + $current_amount_in_customer_account_payments;
@@ -2951,21 +3093,19 @@ class Order extends DB_Table {
             );
 
 
-            if ($result=$this->db->query($sql)) {
+            if ($result = $this->db->query($sql)) {
                 if ($row = $result->fetch()) {
                     $current_amount_in_customer_account_payments = $row['Amount'];
 
-                }else {
+                } else {
 
                     $current_amount_in_customer_account_payments = 0;
                 }
-            }else {
-            	print_r($error_info=$this->db->errorInfo());
-            	print "$sql\n";
-            	exit;
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
             }
-
-
 
 
             $customer_account_available_amount = round(
@@ -3003,16 +3143,15 @@ class Order extends DB_Table {
                 );
 
 
-                if ($result=$this->db->query($sql)) {
+                if ($result = $this->db->query($sql)) {
                     if ($row = $result->fetch()) {
                         $payment_key = $row['Payment Key'];
-                	}
-                }else {
-                	print_r($error_info=$this->db->errorInfo());
-                	print "$sql\n";
-                	exit;
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
                 }
-
 
 
                 if ($payment_key) {
@@ -3109,32 +3248,30 @@ class Order extends DB_Table {
         );
 
 
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $number_payments++;
+                $payments_amount += $row['Payment Amount'];
 
-        if ($result=$this->db->query($sql)) {
-        		foreach ($result as $row) {
-                    $number_payments++;
-                    $payments_amount += $row['Payment Amount'];
+                $payments_info .= sprintf(
+                    '<div>%s (%s)',
 
+                    $row['Payment Service Provider Name'], money($row['Payment Amount'], $row['Payment Currency Code'])
+
+                );
+                if ($row['Payment Transaction ID'] != '') {
                     $payments_info .= sprintf(
-                        '<div>%s (%s)',
-
-                        $row['Payment Service Provider Name'], money($row['Payment Amount'], $row['Payment Currency Code'])
+                        ', %s: %s', _('Reference'), $row['Payment Transaction ID']
 
                     );
-                    if ($row['Payment Transaction ID'] != '') {
-                        $payments_info .= sprintf(
-                            ', %s: %s', _('Reference'), $row['Payment Transaction ID']
-
-                        );
-                    }
-                    $payments_info .= '</div>';
-        		}
-        }else {
-        		print_r($error_info=$this->db->errorInfo());
-        		print "$sql\n";
-        		exit;
+                }
+                $payments_info .= '</div>';
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
-
 
 
         $sql = sprintf(
@@ -3142,33 +3279,30 @@ class Order extends DB_Table {
             $this->id
         );
 
-        if ($result=$this->db->query($sql)) {
-        		foreach ($result as $row) {
-                    $number_payments++;
-                    $payments_amount += $row['Payment Amount'];
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $number_payments++;
+                $payments_amount += $row['Payment Amount'];
 
+                $payments_info .= sprintf(
+                    '<div>%s (%s)',
+
+                    $row['Payment Service Provider Name'], money($row['Payment Amount'], $row['Payment Currency Code'])
+
+                );
+                if ($row['Payment Transaction ID'] != '') {
                     $payments_info .= sprintf(
-                        '<div>%s (%s)',
-
-                        $row['Payment Service Provider Name'], money($row['Payment Amount'], $row['Payment Currency Code'])
+                        ', %s: %s', _('Reference'), $row['Payment Transaction ID']
 
                     );
-                    if ($row['Payment Transaction ID'] != '') {
-                        $payments_info .= sprintf(
-                            ', %s: %s', _('Reference'), $row['Payment Transaction ID']
-
-                        );
-                    }
-                    $payments_info .= '</div>';
-        		}
-        }else {
-        		print_r($error_info=$this->db->errorInfo());
-        		print "$sql\n";
-        		exit;
+                }
+                $payments_info .= '</div>';
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
-
-
-
 
 
         $payments_amount = round($payments_amount, 2);
@@ -4528,8 +4662,6 @@ class Order extends DB_Table {
 
 
         $this->db->exec($sql);
-
-
 
 
         $this->update_payment_state();
@@ -7212,7 +7344,6 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,
             "UPDATE `Order Dimension` SET `Order Current XHTML Payment State`=%s WHERE `Order Key`=%d", prepare_mysql($dn_txt), $this->id
         );
         $this->db->exec($sql);
-
 
 
         $sql = sprintf(
