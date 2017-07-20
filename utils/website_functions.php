@@ -28,7 +28,7 @@ function get_website_section_items($db, $section_data) {
             LEFT JOIN `Page Store Dimension` CatWeb ON (CatWeb.`Page Key`=`Category Webpage Index Category Webpage Key`)     
 
             
-            WHERE  `Category Webpage Index Section Key`=%d  AND `Product Category Public`='Yes'      ORDER BY  ifnull(`Category Webpage Index Stack`,99999999)",
+            WHERE  `Category Webpage Index Section Key`=%d  AND `Product Category Public`='Yes'  and `Webpage State` in ('Online','Ready')    ORDER BY  ifnull(`Category Webpage Index Stack`,99999999)",
         $section_key
 
 
