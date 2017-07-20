@@ -100,27 +100,23 @@
     $(document).on('click', '.add_webpage_block', function (e) {
 
 
-        var request='/ar_website.php?tipo=webpage_block&code='+$(this).attr('block')+'&theme={$theme}'
-console.log(request)
+        var request = '/ar_website.php?tipo=webpage_block&code=' + $(this).attr('block') + '&theme={$theme}'
+        console.log(request)
 
-        $.getJSON( request, function( data ) {
+        $.getJSON(request, function (data) {
 
-
-
+console.log(data)
             $('#blk_control_container').prepend(data.controls)
 
             $('#columns ').prepend(data.button)
             $("#preview").contents().find("#blocks").prepend(data.block)
             $('#blocks_showcase').addClass('hide')
 
-        if(data.type=='static_banner'){
-            $('#preview')[0].contentWindow.create_static_banner()
-        }else if(data.type=='one_pack'){
+            if (data.type == 'static_banner') {
+                $('#preview')[0].contentWindow.create_static_banner()
+            } else if (data.type == 'one_pack') {
                 $('#preview')[0].contentWindow.set_up_one_column_editor(data.block_key)
             }
-
-
-
 
 
             $('#save_button').addClass('save button changed valid')
