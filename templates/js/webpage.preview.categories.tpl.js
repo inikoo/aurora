@@ -36,7 +36,7 @@ $('.item_header_text').dblclick(function() {
         defaultImageDisplay: 'inline',
         saveInterval: 500,
         saveParam: 'value',
-
+        pastePlain: true,
         saveURL: '/ar_edit_website.php',
 
         saveMethod: 'POST',

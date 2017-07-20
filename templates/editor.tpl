@@ -18,7 +18,7 @@
                     saveParam: 'value',
                     saveURL: '/ar_edit.php',
                     saveMethod: 'GET',
-
+                    pastePlain: true,
                     saveInterval: 36000000,
 
                     saveParams: editor_data.metadata,
