@@ -94,6 +94,8 @@
 
             for (var result_key in data.results) {
 
+
+
                 var clone = $("#add_item_search_result_template").clone()
                 clone.prop('id', 'add_item_result_' + result_key);
                 clone.addClass('result').removeClass('hide')

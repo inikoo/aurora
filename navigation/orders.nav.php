@@ -820,231 +820,32 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
     $right_buttons = array();
 
 
-    if ($data['parent']) {
-
-        switch ($data['parent']) {
-            case 'customer':
-                $tab      = 'customer.orders';
-                $_section = 'customers';
-                break;
-            case 'store':
+    $search_placeholder = _('Search orders');
 
 
+    switch ($data['parent']) {
+        case 'account':
+            $tab      = 'orders_server';
+            $_section = 'orders';
+            $sections = get_sections('orders_server');
 
-                switch ($object->get('Order Class')) {
-                    case 'Archived':
-                        $tab = 'orders.archived';
-                        break;
-                    case 'InProcess':
-                        $tab = 'orders.pending';
-                        break;
-                    case 'InWebsite':
-                        $tab = 'orders.website';
-                        break;
-                    default:
-                        exit("Error order don't have class");
-                        break;
-                }
-
-
-                $_section = 'orders';
-                break;
-            case 'delivery_note':
-                $tab      = 'delivery_note.orders';
-                $_section = 'delivery_notes';
-                break;
-            case 'invoice':
-                $tab      = 'invoice.orders';
-                $_section = 'invoices';
-                break;
-        }
-
-
-        if (isset($_SESSION['table_state'][$tab])) {
-            $number_results  = $_SESSION['table_state'][$tab]['nr'];
-            $start_from      = 0;
-            $order           = $_SESSION['table_state'][$tab]['o'];
-            $order_direction = ($_SESSION['table_state'][$tab]['od'] == 1 ? 'desc' : '');
-            $f_value         = $_SESSION['table_state'][$tab]['f_value'];
-            $parameters      = $_SESSION['table_state'][$tab];
-        } else {
-
-            $default                  = $user->get_tab_defaults($tab);
-            $number_results           = $default['rpp'];
-            $start_from               = 0;
-            $order                    = $default['sort_key'];
-            $order_direction          = ($default['sort_order'] == 1 ? 'desc' : '');
-            $f_value                  = '';
-            $parameters               = $default;
-            $parameters['parent']     = $data['parent'];
-            $parameters['parent_key'] = $data['parent_key'];
-        }
-
-
-        include_once 'prepare_table/'.$tab.'.ptble.php';
-
-        $_order_field       = $order;
-        $order              = preg_replace('/^.*\.`/', '', $order);
-        $order              = preg_replace('/^`/', '', $order);
-        $order              = preg_replace('/`$/', '', $order);
-        $_order_field_value = $object->get($order);
-
-
-        $prev_title = '';
-        $next_title = '';
-        $prev_key   = 0;
-        $next_key   = 0;
-        $sql        = trim($sql_totals." $wheref");
-
-        if ($result2 = $db->query($sql)) {
-            if ($row2 = $result2->fetch()) {
-                if ($row2['num'] > 1) {
-
-
-                    $sql = sprintf(
-                        "select `Order Public ID` object_name,O.`Order Key` as object_key from $table   $where $wheref
-	                and ($_order_field < %s OR ($_order_field = %s AND O.`Order Key` < %d))  order by $_order_field desc , O.`Order Key` desc limit 1",
-
-                        prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
-                    );
-
-                    if ($result = $db->query($sql)) {
-                        if ($row = $result->fetch()) {
-                            $prev_key   = $row['object_key'];
-                            $prev_title = _("Order").' '.$row['object_name'].' ('.$row['object_key'].')';
-                        }
-                    } else {
-                        print_r($error_info = $db->errorInfo());
-                        exit;
-                    }
-
-                    // print "$sql ";
-
-                    $sql = sprintf(
-                        "select `Order Public ID` object_name,O.`Order Key` as object_key from $table   $where $wheref
-	                and ($_order_field  > %s OR ($_order_field  = %s AND O.`Order Key` > %d))  order by $_order_field   , O.`Order Key`  limit 1", prepare_mysql($_order_field_value),
-                        prepare_mysql($_order_field_value), $object->id
-                    );
-
-                    if ($result = $db->query($sql)) {
-                        if ($row = $result->fetch()) {
-                            $next_key   = $row['object_key'];
-                            $next_title = _("Order").' '.$row['object_name'].' ('.$row['object_key'].')';
-
-                        }
-                    } else {
-                        print_r($error_info = $db->errorInfo());
-                        exit;
-                    }
-                    //  print "$sql ";
-
-                    if ($order_direction == 'desc') {
-                        $_tmp1      = $prev_key;
-                        $_tmp2      = $prev_title;
-                        $prev_key   = $next_key;
-                        $prev_title = $next_title;
-                        $next_key   = $_tmp1;
-                        $next_title = $_tmp2;
-                    }
-
-
-                }
-
-
-            }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            exit;
-        }
-
-
-        if ($data['parent'] == 'customer') {
-
-
-            $up_button = array(
-                'icon'      => 'arrow-up',
-                'title'     => _("Customer").' '.$object->get(
-                        'Order Customer Name'
-                    ),
-                'reference' => 'customers/'.$object->get(
-                        'Order Store Key'
-                    ).'/'.$object->get('Order Customer Key')
-            );
-
-            if ($prev_key) {
-                $left_buttons[] = array(
-                    'icon'      => 'arrow-left',
-                    'title'     => $prev_title,
-                    'reference' => 'customer/'.$object->get(
-                            'Order Customer Key'
-                        ).'/order/'.$prev_key
-                );
-
-            } else {
-                $left_buttons[] = array(
-                    'icon'  => 'arrow-left disabled',
-                    'title' => '',
-                    'url'   => ''
-                );
-
-            }
-            $left_buttons[] = $up_button;
-
-
-            if ($next_key) {
-                $left_buttons[] = array(
-                    'icon'      => 'arrow-right',
-                    'title'     => $next_title,
-                    'reference' => 'customer/'.$object->get(
-                            'Order Customer Key'
-                        ).'/order/'.$next_key
-                );
-
-            } else {
-                $left_buttons[] = array(
-                    'icon'  => 'arrow-right disabled',
-                    'title' => '',
-                    'url'   => ''
-                );
-
-            }
-            $sections           = get_sections(
-                'customers', $object->get('Order Store Key')
-            );
-            $search_placeholder = _('Search customers');
-
-
-        }
-        elseif ($data['parent'] == 'store') {
-            $store     = new Store($data['parent_key']);
-
-
+            break;
+        case 'customer':
+            $tab      = 'customer.orders';
+            $_section = 'customers';
+            break;
+        case 'store':
 
 
             switch ($object->get('Order Class')) {
                 case 'Archived':
-                    $up_button = array(
-                        'icon'      => 'arrow-up',
-                        'title'     => _("Archived orders").' ('.$store->get('Store Code').')',
-                        'reference' => 'orders/'.$data['parent_key']
-                    );
-
+                    $tab = 'orders.archived';
                     break;
                 case 'InProcess':
-                    $up_button = array(
-                        'icon'      => 'arrow-up',
-                        'title'     => _("Pending orders").' ('.$store->get('Store Code').')',
-                        'reference' => 'orders/'.$data['parent_key'].'/flow'
-                    );
-
+                    $tab = 'orders.pending';
                     break;
                 case 'InWebsite':
-                    $up_button = array(
-                        'icon'      => 'arrow-up',
-                        'title'     => _("Orders in website").' ('.$store->get('Store Code').')',
-                        'reference' => 'orders/'.$data['parent_key'].'/website'
-                    );
-
+                    $tab = 'orders.website';
                     break;
                 default:
                     exit("Error order don't have class");
@@ -1052,157 +853,402 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
             }
 
 
+            $_section = 'orders';
+            break;
+        case 'delivery_note':
+            $tab      = 'delivery_note.orders';
+            $_section = 'delivery_notes';
+            break;
+        case 'invoice':
+            $tab      = 'invoice.orders';
+            $_section = 'invoices';
+            break;
+    }
 
 
+    if (isset($_SESSION['table_state'][$tab])) {
+        $number_results  = $_SESSION['table_state'][$tab]['nr'];
+        $start_from      = 0;
+        $order           = $_SESSION['table_state'][$tab]['o'];
+        $order_direction = ($_SESSION['table_state'][$tab]['od'] == 1 ? 'desc' : '');
+        $f_value         = $_SESSION['table_state'][$tab]['f_value'];
+        $parameters      = $_SESSION['table_state'][$tab];
+    } else {
+
+        $default                  = $user->get_tab_defaults($tab);
+        $number_results           = $default['rpp'];
+        $start_from               = 0;
+        $order                    = $default['sort_key'];
+        $order_direction          = ($default['sort_order'] == 1 ? 'desc' : '');
+        $f_value                  = '';
+        $parameters               = $default;
+        $parameters['parent']     = $data['parent'];
+        $parameters['parent_key'] = $data['parent_key'];
+    }
 
 
+    include_once 'prepare_table/'.$tab.'.ptble.php';
 
-            if ($prev_key) {
-                $left_buttons[] = array(
-                    'icon'      => 'arrow-left',
-                    'title'     => $prev_title,
-                    'reference' => 'orders/'.$data['parent_key'].'/'.$prev_key
+    $_order_field       = $order;
+    $order              = preg_replace('/^.*\.`/', '', $order);
+    $order              = preg_replace('/^`/', '', $order);
+    $order              = preg_replace('/`$/', '', $order);
+    $_order_field_value = $object->get($order);
+
+
+    $prev_title = '';
+    $next_title = '';
+    $prev_key   = 0;
+    $next_key   = 0;
+    $sql        = trim($sql_totals." $wheref");
+
+
+    if ($result2 = $db->query($sql)) {
+        if ($row2 = $result2->fetch()) {
+
+
+            if ($row2['num'] > 1) {
+
+
+                $sql = sprintf(
+                    "select `Order Public ID` object_name,O.`Order Key` as object_key from $table   $where $wheref
+	                and ($_order_field < %s OR ($_order_field = %s AND O.`Order Key` < %d))  order by $_order_field desc , O.`Order Key` desc limit 1",
+
+                    prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
                 );
 
-            } else {
-                $left_buttons[] = array(
-                    'icon'  => 'arrow-left disabled',
-                    'title' => '',
-                    'url'   => ''
+                if ($result = $db->query($sql)) {
+                    if ($row = $result->fetch()) {
+                        $prev_key   = $row['object_key'];
+                        $prev_title = _("Order").' '.$row['object_name'].' ('.$row['object_key'].')';
+                    }
+                } else {
+                    print_r($error_info = $db->errorInfo());
+                    exit;
+                }
+
+                // print "$sql ";
+
+                $sql = sprintf(
+                    "select `Order Public ID` object_name,O.`Order Key` as object_key from $table   $where $wheref
+	                and ($_order_field  > %s OR ($_order_field  = %s AND O.`Order Key` > %d))  order by $_order_field   , O.`Order Key`  limit 1", prepare_mysql($_order_field_value),
+                    prepare_mysql($_order_field_value), $object->id
                 );
 
-            }
-            $left_buttons[] = $up_button;
+                if ($result = $db->query($sql)) {
+                    if ($row = $result->fetch()) {
+                        $next_key   = $row['object_key'];
+                        $next_title = _("Order").' '.$row['object_name'].' ('.$row['object_key'].')';
 
+                    }
+                } else {
+                    print_r($error_info = $db->errorInfo());
+                    exit;
+                }
+                //  print "$sql ";
 
-            if ($next_key) {
-                $left_buttons[] = array(
-                    'icon'      => 'arrow-right',
-                    'title'     => $next_title,
-                    'reference' => 'orders/'.$data['parent_key'].'/'.$next_key
-                );
+                if ($order_direction == 'desc') {
+                    $_tmp1      = $prev_key;
+                    $_tmp2      = $prev_title;
+                    $prev_key   = $next_key;
+                    $prev_title = $next_title;
+                    $next_key   = $_tmp1;
+                    $next_title = $_tmp2;
+                }
 
-            } else {
-                $left_buttons[] = array(
-                    'icon'  => 'arrow-right disabled',
-                    'title' => '',
-                    'url'   => ''
-                );
-
-            }
-
-
-            $sections = get_sections('orders', $object->get('Order Store Key'));
-
-            $search_placeholder = _('Search orders');
-
-
-        } elseif ($data['parent'] == 'delivery_note') {
-            $delivery_note = new DeliveryNote($data['parent_key']);
-            $up_button     = array(
-                'icon'      => 'arrow-up',
-                'title'     => _("Delivery Note").' ('.$delivery_note->get(
-                        'Delivery Note ID'
-                    ).')',
-                'reference' => '/delivery_notes/'.$delivery_note->get('Delivery Note Store Key').'/'.$data['parent_key']
-            );
-
-            if ($prev_key) {
-                $left_buttons[] = array(
-                    'icon'      => 'arrow-left',
-                    'title'     => $prev_title,
-                    'reference' => 'order/'.$data['parent_key'].'/invoice/'.$prev_key
-                );
-
-            } else {
-                $left_buttons[] = array(
-                    'icon'  => 'arrow-left disabled',
-                    'title' => '',
-                    'url'   => ''
-                );
-
-            }
-            $left_buttons[] = $up_button;
-
-
-            if ($next_key) {
-                $left_buttons[] = array(
-                    'icon'      => 'arrow-right',
-                    'title'     => $next_title,
-                    'reference' => 'order/'.$data['parent_key'].'/invoice/'.$next_key
-                );
-
-            } else {
-                $left_buttons[] = array(
-                    'icon'  => 'arrow-right disabled',
-                    'title' => '',
-                    'url'   => ''
-                );
-
-            }
-
-
-            $sections           = get_sections(
-                'delivery_notes', $delivery_note->get('Delivery Note Store Key')
-            );
-            $search_placeholder = _('Search delivery notes');
-
-
-        } elseif ($data['parent'] == 'invoice') {
-            $invoice   = new Invoice($data['parent_key']);
-            $up_button = array(
-                'icon'      => 'arrow-up',
-                'title'     => _("Invoice").' ('.$invoice->get(
-                        'Invoice Public ID'
-                    ).')',
-                'reference' => '/delivery_notes/'.$invoice->get('Invoice Store Key').'/'.$data['parent_key']
-            );
-
-            if ($prev_key) {
-                $left_buttons[] = array(
-                    'icon'      => 'arrow-left',
-                    'title'     => $prev_title,
-                    'reference' => 'order/'.$data['parent_key'].'/invoice/'.$prev_key
-                );
-
-            } else {
-                $left_buttons[] = array(
-                    'icon'  => 'arrow-left disabled',
-                    'title' => '',
-                    'url'   => ''
-                );
-
-            }
-            $left_buttons[] = $up_button;
-
-
-            if ($next_key) {
-                $left_buttons[] = array(
-                    'icon'      => 'arrow-right',
-                    'title'     => $next_title,
-                    'reference' => 'order/'.$data['parent_key'].'/invoice/'.$next_key
-                );
-
-            } else {
-                $left_buttons[] = array(
-                    'icon'  => 'arrow-right disabled',
-                    'title' => '',
-                    'url'   => ''
-                );
 
             }
 
-
-            $sections = get_sections(
-                'invoices', $invoice->get('Invoice Store Key')
-            );
-
-            $search_placeholder = _('Search invoices');
 
         }
     } else {
-        $_section = 'staff';
-        $sections = get_sections('orders', '');
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    if ($data['parent'] == 'customer') {
+
+
+        $up_button = array(
+            'icon'      => 'arrow-up',
+            'title'     => _("Customer").' '.$object->get(
+                    'Order Customer Name'
+                ),
+            'reference' => 'customers/'.$object->get(
+                    'Order Store Key'
+                ).'/'.$object->get('Order Customer Key')
+        );
+
+        if ($prev_key) {
+            $left_buttons[] = array(
+                'icon'      => 'arrow-left',
+                'title'     => $prev_title,
+                'reference' => 'customer/'.$object->get(
+                        'Order Customer Key'
+                    ).'/order/'.$prev_key
+            );
+
+        } else {
+            $left_buttons[] = array(
+                'icon'  => 'arrow-left disabled',
+                'title' => '',
+                'url'   => ''
+            );
+
+        }
+        $left_buttons[] = $up_button;
+
+
+        if ($next_key) {
+            $left_buttons[] = array(
+                'icon'      => 'arrow-right',
+                'title'     => $next_title,
+                'reference' => 'customer/'.$object->get(
+                        'Order Customer Key'
+                    ).'/order/'.$next_key
+            );
+
+        } else {
+            $left_buttons[] = array(
+                'icon'  => 'arrow-right disabled',
+                'title' => '',
+                'url'   => ''
+            );
+
+        }
+        $sections           = get_sections(
+            'customers', $object->get('Order Store Key')
+        );
+        $search_placeholder = _('Search customers');
+
+
+    } elseif ($data['parent'] == 'store') {
+        $store = new Store($data['parent_key']);
+
+
+        switch ($object->get('Order Class')) {
+            case 'Archived':
+                $up_button = array(
+                    'icon'      => 'arrow-up',
+                    'title'     => _("Archived orders").' ('.$store->get('Store Code').')',
+                    'reference' => 'orders/'.$data['parent_key']
+                );
+
+                break;
+            case 'InProcess':
+                $up_button = array(
+                    'icon'      => 'arrow-up',
+                    'title'     => _("Pending orders").' ('.$store->get('Store Code').')',
+                    'reference' => 'orders/'.$data['parent_key'].'/flow'
+                );
+
+                break;
+            case 'InWebsite':
+                $up_button = array(
+                    'icon'      => 'arrow-up',
+                    'title'     => _("Orders in website").' ('.$store->get('Store Code').')',
+                    'reference' => 'orders/'.$data['parent_key'].'/website'
+                );
+
+                break;
+            default:
+                exit("Error order don't have class");
+                break;
+        }
+
+
+        if ($prev_key) {
+            $left_buttons[] = array(
+                'icon'      => 'arrow-left',
+                'title'     => $prev_title,
+                'reference' => 'orders/'.$data['parent_key'].'/'.$prev_key
+            );
+
+        } else {
+            $left_buttons[] = array(
+                'icon'  => 'arrow-left disabled',
+                'title' => '',
+                'url'   => ''
+            );
+
+        }
+        $left_buttons[] = $up_button;
+
+
+        if ($next_key) {
+            $left_buttons[] = array(
+                'icon'      => 'arrow-right',
+                'title'     => $next_title,
+                'reference' => 'orders/'.$data['parent_key'].'/'.$next_key
+            );
+
+        } else {
+            $left_buttons[] = array(
+                'icon'  => 'arrow-right disabled',
+                'title' => '',
+                'url'   => ''
+            );
+
+        }
+
+
+        $sections = get_sections('orders', $object->get('Order Store Key'));
+
+        $search_placeholder = _('Search orders');
+
+
+    } elseif ($data['parent'] == 'delivery_note') {
+        $delivery_note = new DeliveryNote($data['parent_key']);
+        $up_button     = array(
+            'icon'      => 'arrow-up',
+            'title'     => _("Delivery Note").' ('.$delivery_note->get(
+                    'Delivery Note ID'
+                ).')',
+            'reference' => '/delivery_notes/'.$delivery_note->get('Delivery Note Store Key').'/'.$data['parent_key']
+        );
+
+        if ($prev_key) {
+            $left_buttons[] = array(
+                'icon'      => 'arrow-left',
+                'title'     => $prev_title,
+                'reference' => 'order/'.$data['parent_key'].'/invoice/'.$prev_key
+            );
+
+        } else {
+            $left_buttons[] = array(
+                'icon'  => 'arrow-left disabled',
+                'title' => '',
+                'url'   => ''
+            );
+
+        }
+        $left_buttons[] = $up_button;
+
+
+        if ($next_key) {
+            $left_buttons[] = array(
+                'icon'      => 'arrow-right',
+                'title'     => $next_title,
+                'reference' => 'order/'.$data['parent_key'].'/invoice/'.$next_key
+            );
+
+        } else {
+            $left_buttons[] = array(
+                'icon'  => 'arrow-right disabled',
+                'title' => '',
+                'url'   => ''
+            );
+
+        }
+
+
+        $sections           = get_sections(
+            'delivery_notes', $delivery_note->get('Delivery Note Store Key')
+        );
+        $search_placeholder = _('Search delivery notes');
+
+
+    } elseif ($data['parent'] == 'invoice') {
+        $invoice   = new Invoice($data['parent_key']);
+        $up_button = array(
+            'icon'      => 'arrow-up',
+            'title'     => _("Invoice").' ('.$invoice->get(
+                    'Invoice Public ID'
+                ).')',
+            'reference' => '/delivery_notes/'.$invoice->get('Invoice Store Key').'/'.$data['parent_key']
+        );
+
+        if ($prev_key) {
+            $left_buttons[] = array(
+                'icon'      => 'arrow-left',
+                'title'     => $prev_title,
+                'reference' => 'order/'.$data['parent_key'].'/invoice/'.$prev_key
+            );
+
+        } else {
+            $left_buttons[] = array(
+                'icon'  => 'arrow-left disabled',
+                'title' => '',
+                'url'   => ''
+            );
+
+        }
+        $left_buttons[] = $up_button;
+
+
+        if ($next_key) {
+            $left_buttons[] = array(
+                'icon'      => 'arrow-right',
+                'title'     => $next_title,
+                'reference' => 'order/'.$data['parent_key'].'/invoice/'.$next_key
+            );
+
+        } else {
+            $left_buttons[] = array(
+                'icon'  => 'arrow-right disabled',
+                'title' => '',
+                'url'   => ''
+            );
+
+        }
+
+
+        $sections = get_sections(
+            'invoices', $invoice->get('Invoice Store Key')
+        );
+
+        $search_placeholder = _('Search invoices');
+
+    }
+    elseif ($data['parent'] == 'account') {
+
+
+        $account = get_object('Account', 1);
+
+
+        $up_button = array(
+            'icon'      => 'arrow-up',
+            'title'     => _("Orders").' ('._('All stores').')',
+            'reference' => 'orders/all'
+        );
+
+
+        if ($prev_key) {
+            $left_buttons[] = array(
+                'icon'      => 'arrow-left',
+                'title'     => $prev_title,
+                'reference' => 'account/'.$data['parent_key'].'/order/'.$prev_key
+            );
+
+        } else {
+            $left_buttons[] = array(
+                'icon'  => 'arrow-left disabled',
+                'title' => '',
+                'url'   => ''
+            );
+
+        }
+        $left_buttons[] = $up_button;
+
+
+        if ($next_key) {
+            $left_buttons[] = array(
+                'icon'      => 'arrow-right',
+                'title'     => $next_title,
+                'reference' => 'account/'.$data['parent_key'].'/order/'.$next_key
+            );
+
+        } else {
+            $left_buttons[] = array(
+                'icon'  => 'arrow-right disabled',
+                'title' => '',
+                'url'   => ''
+            );
+
+        }
+
+        //    print $data['parent'];
 
 
     }

@@ -405,13 +405,28 @@ function orders($_data, $db, $user) {
     $adata = array();
 
 
+
+
+
+    if($parameters['parent']=='store'){
+        $link_format='/orders/%d/%d';
+    }else{
+        $link_format='/'.$parameters['parent'].'/'.$parameters['parent_key'].'/order/%d';
+    }
+
+
+
     foreach ($db->query($sql) as $data) {
+
+
+
+
 
 
         $adata[] = array(
             'id'             => (integer)$data['Order Key'],
             'store_key'      => (integer)$data['Order Store Key'],
-            'public_id'      => $data['Order Public ID'],
+            'public_id'      =>        sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%s</span>'  , $parameters['parent_key'], $data['Order Public ID']),
             'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
             'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
             'customer'       => sprintf('<span class="link" onClick="change_view(\'customers/%d\')">%s</span>', $data['Order Customer Key'], $data['Order Customer Name']),
@@ -870,7 +885,7 @@ function order_items($_data, $db, $user) {
 
             'id'          => (integer)$data['Order Transaction Fact Key'],
             'product_pid' => (integer)$data['Product ID'],
-            'code'        => $data['Product Code'],
+            'code'        =>  sprintf('<span class="link" onclick="change_view(\'/products/%d/%d\')">%s</span>',$customer_order->get('Order Store Key'),$data['Product ID'], $data['Product Code']  ),
             'description' => $description,
             'quantity'    => $quantity,
 
