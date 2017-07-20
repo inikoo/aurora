@@ -442,6 +442,11 @@
 
                         _image: $(obj).find('._image').attr('src'),
                         _image_key: $(obj).find('._image').attr('image_key'),
+
+
+
+                        _image_tooltip: $(obj).find('._image_tooltip').attr('tooltip'),
+
                         _title:$(obj).find('._title').html(),
                         _subtitle:$(obj).find('._subtitle').html(),
                         _text:$(obj).find('._text').html()
@@ -761,6 +766,36 @@
     {/if}
 
     {/foreach}
+
+
+    $(document).on('click', '._image_tooltip', function (e) {
+
+        if( $('#image_tooltip_edit').hasClass('hide')){
+
+            $('#image_tooltip_edit').removeClass('hide').offset({
+                top:$(this).offset().top -30,
+                left:$(this).offset().left+$(this).width()+10    }).data('element',$(this)).find('input').val($(this).attr('tooltip')).focus()
+        }else{
+            set_image_tooltip()
+        }
+
+    })
+
+    function set_image_tooltip(){
+
+        value=$('#image_tooltip_edit').find('input').val()
+        $('#image_tooltip_edit').addClass('hide').data('element').attr('tooltip',value)
+
+        if(value==''){
+            $('#image_tooltip_edit').data('element').removeClass('fa-commenting-o').addClass('fa-comment-o')
+        }else{
+            $('#image_tooltip_edit').data('element').addClass('fa-commenting-o').removeClass('fa-comment-o')
+
+        }
+        $('#save_button', window.parent.document).addClass('save button changed valid')
+
+
+    }
 
 </script>
 
