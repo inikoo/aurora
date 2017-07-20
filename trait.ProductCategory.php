@@ -1368,7 +1368,6 @@ trait ProductCategory {
 
 
 
-
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
 
@@ -1403,8 +1402,11 @@ trait ProductCategory {
                                 'category_key'  => $subject->id,
                                 'header_text'   => $subject->get('Label'),
                                 'image_375x250' => $image_375x250,
+                                'image_src'=>$subject->get('Image'),
                                 'footer_text'   => $subject->get('Code'),
                             );
+
+                           
 
                             $sql = sprintf(
                                 'INSERT INTO `Category Webpage Index` (`Category Webpage Index Section Key`,`Category Webpage Index Content Data`,`Category Webpage Index Parent Category Key`,`Category Webpage Index Category Key`,`Category Webpage Index Webpage Key`,`Category Webpage Index Category Webpage Key`) VALUES (%d,%s,%d,%d,%d,%d) ',
@@ -1476,7 +1478,7 @@ trait ProductCategory {
 
 
 
-            print_r($content_data);
+            //print_r($content_data);
 
             $this->webpage->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
 

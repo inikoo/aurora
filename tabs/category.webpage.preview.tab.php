@@ -500,13 +500,16 @@ if($webpage->get('Page Store Content Display Type')=='Template') {
 
             }
 
-            //    $category->create_stack_index($force_reindex = false);
+            $category->create_stack_index($force_reindex = false);
 
 
           //  $webpage->reindex_items();
 
 
             $smarty->assign('sections', $content_data['sections']);
+
+          //  print_r($content_data['sections']);
+
 
             $smarty->assign('content_data', $content_data);
 
