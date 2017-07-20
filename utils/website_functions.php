@@ -87,7 +87,8 @@ function get_website_section_items($db, $section_data) {
             if ($row['Category Webpage Index Content Data'] == '') {
                 $item_content_data = array(
                     'header_text' => '',
-                    'footer_text' => ''
+                    'footer_text' => '',
+                     'image_src' => ''
 
                 );
             } else {
@@ -119,7 +120,7 @@ function get_website_section_items($db, $section_data) {
                 'webpage_code'         => $row['Page Code'],
                 'header_text'          => (isset($item_content_data['header_text']) ? $item_content_data['header_text'] : ''),
                 'footer_text'          => (isset($item_content_data['footer_text']) ? $item_content_data['footer_text'] : ''),
-                'image_src'            => $item_content_data['image_src'],
+                'image_src'            =>(isset($item_content_data['image_src']) ? $item_content_data['image_src'] : ''),
                 'category_stack_index' => $row['Category Webpage Index Stack'],
                 'item_type'            => $row['Category Webpage Index Subject Type'],
                 
