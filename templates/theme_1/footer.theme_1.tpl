@@ -251,7 +251,7 @@
 
           <ul  class="hide">
 
-              <li id="link_stem_cell" class="item"><a href="#"><i class="fa fa-fw fa-angle-right link_icon" onClick="update_link(this)"></i> <span ondrop="return false;" contenteditable>{t}New link{/t}<span></span></a></li>
+              <li id="link_stem_cell" class="item"><a href="#"><i class="fa fa-fw fa-angle-right link_icon" onClick="update_link(this)"></i> <span ondrop="return false;" contenteditable  class="item_label" >{t}New link{/t}<span></span></a></li>
 
               <li id="item_email_stem_cell" ><i class="fa fa-fw fa-envelope"></i> <span contenteditable>info@yourdomain.com</span></li>
               <li id="item_stem_cell"><i class="fa fa-fw "></i> <span contenteditable></span></li>
@@ -307,7 +307,7 @@
                       <li class="item"><a href="#"><i class="fa fa-fw fa-angle-right link_icon" onClick="update_link(this)"></i> <span class="item_label" ondrop="return false;" contenteditable>{t}Home Page Variations{/t}<span></span></a></li>
                       <li class="item"><a href="#"><i class="fa fa-fw fa-angle-right link_icon" onClick="update_link(this)"></i> <span class="item_label" ondrop="return false;" contenteditable>{t}Awesome Products{/t}<span></span></a></li>
                       <li class="item"><a href="#"><i class="fa fa-fw fa-angle-right link_icon" onClick="update_link(this)"></i> <span class="item_label" ondrop="return false;" contenteditable>{t}Features and Benefits{/t}<span></span></a></li>
-                      <li onClick="add_link(this)"  class="ui-state-disabled add_link"><a href="{$item.url}"><i class="fa fa-fw fa-plus editing link_icon" onClick="update_link(this)"></i> <span class="editing" ondrop="return false;" >{t}Add link{/t}<span></span></a></li>
+                      <li onClick="add_link(this)"  class="ui-state-disabled add_link"><a href="#"><i class="fa fa-fw fa-plus editing link_icon" onClick="update_link(this)"></i> <span class="editing" ondrop="return false;" >{t}Add link{/t}<span></span></a></li>
                   </ul>
 
               </div>
@@ -955,23 +955,32 @@
                       current_editing_link_id=id
 
                       $('#input_container_link').removeClass('hide').offset({ top:$(element).offset().top-55, left:$(element).offset().left+20  }).find('input').val($(element).closest('a').attr("href"))
-                      $('#delete_link').removeClass('hide').offset({ top:$(element).offset().top, left:$(element).offset().left-15  }).attr('link_id',id)
-                      $(element).addClass('editing fa-window-close').next('span').addClass('editing')
+                      $('#delete_link').removeClass('hide').offset({ top:$(element).offset().top, left:$(element).offset().left-15  }).attr('link_id',id).data('element',$(element))
+                      $(element).removeClass('fa-angle-right').addClass('editing fa-check-circle').next('span').addClass('editing')
+
+
+
                   }else{
 
-                      console.log(id)
+
+
+
+
+                      $('#delete_link').data('element').closest('a').attr("href",$('#input_container_link').find('input').val())
+
+
 
                       if(current_editing_link_id==id){
                           $('#input_container_link').addClass('hide')
                           $('#delete_link').addClass('hide')
-                          $(element).removeClass('editing fa-window-close').next('span').removeClass('editing')
+                          $(element).addClass('fa-angle-right').removeClass('editing fa-check-circle').next('span').removeClass('editing')
                       }else{
-                          $('#'+current_editing_link_id).removeClass('editing fa-window-close').next('span').removeClass('editing')
+                          $('#'+current_editing_link_id).addClass('fa-angle-right').removeClass('editing fa-check-circle').next('span').removeClass('editing')
                           current_editing_link_id=id
 
                           $('#input_container_link').removeClass('hide').offset({ top:$(element).offset().top-55, left:$(element).offset().left+20  }).find('input').val($(element).closest('a').attr("href"))
                           $('#delete_link').removeClass('hide').offset({ top:$(element).offset().top, left:$(element).offset().left-15  }).attr('link_id',id)
-                          $(element).addClass('editing fa-window-close').next('span').addClass('editing')
+                          $(element).removeClass('fa-angle-right').addClass('editing fa-check-circle').next('span').addClass('editing')
 
                       }
 
