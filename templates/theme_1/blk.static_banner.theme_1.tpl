@@ -10,10 +10,10 @@
 *}
 
 
+<div id="block_{$key}" block="{$data.type}" class="{$data.type} _block {if !$data.show}hide{/if} "  >
 
 
 <div id="P_masterslider" class="master-slider-parent animated-mouse ms-parent-id-26" >
-    <!-- MasterSlider Main -->
     <div id="masterslider" class="master-slider ms-skin-default" >
         <div class="ms-slide"   >
             <img src="/theme_1/masterslider/images/blank.gif" alt="" title="" data-src="/theme_1/masterslider/images/heroheader1-bg.jpg" />
@@ -42,7 +42,7 @@
                  data-offset-y="-67"
                  data-origin="mc"
                  data-position="normal"
-                 data-masked="true">customize</div>
+                 data-masked="true">{$data._top_text_left}</div>
             <div class="ms-layer msp-cn-135-9"
                  style=""
                  data-effect="t(true,-200,n,n,n,n,n,n,n,n,n,n,n,n,n)"
@@ -53,7 +53,7 @@
                  data-offset-y="-67"
                  data-origin="mc"
                  data-position="normal"
-                 data-masked="true">your own</div>
+                 data-masked="true">{$data._top_text_right}</div>
             <div class="ms-layer msp-cn-135-8"
                  style=""
                  data-effect="t(true,n,n,500,-1,n,n,n,1.2,n,n,n,n,n,n)"
@@ -63,7 +63,7 @@
                  data-offset-x="0"
                  data-offset-y="8"
                  data-origin="mc"
-                 data-position="normal" >Chic &amp; Unique Header</div>
+                 data-position="normal" >{$data._title}</div>
             <div class="ms-layer msp-cn-135-6"
                  style=""
                  data-effect="t(true,n,100,n,n,n,n,n,n,n,n,n,n,n,n)"
@@ -74,7 +74,7 @@
                  data-offset-y="99"
                  data-origin="mc"
                  data-position="normal"
-                 data-masked="true">in easy peasy steps</div>
+                 data-masked="true">{$data._text}</div>
             <img class="ms-layer"
                  src="/theme_1/masterslider/images/blank.gif"
                  data-src="/theme_1/masterslider/images/mouse-scroll-b-icon-w.png"
@@ -200,56 +200,6 @@
         </div>
     </div>
 
-
-    <!-- END MasterSlider Main -->
 </div>
-<!-- END MasterSlider -->
-<script>
-    var slider = new MasterSlider();
-
-
-    slider.setup("masterslider", {
-        width           : 1300,
-        height          : 768,
-        minHeight       : 0,
-
-        fullwidth:true,
-        space:5
-        //autoHeight:true,
-        //view:"mask"
-
-        //space           : 0,
-        //start           : 1,
-        //grabCursor      : false,
-        //swipe           : false,
-        //mouse           : false,
-        //keyboard        : false,
-        //layout          : "fullwidth",
-        //wheel           : false,
-        //autoplay        : false,
-        //instantStartLayers:false,
-        //loop            : false,
-        //shuffle         : false,
-        //preload         : 0,
-        //heightLimit     : true,
-        //autoHeight      : false,
-        //smoothHeight    : true,
-        //endPause        : false,
-        //overPause       : false,
-        //fillMode        : "fill",
-        //centerControls  : true,
-        //startOnAppear   : false,
-        //layersMode      : "center",
-        //autofillTarget  : "",
-        //hideLayers      : false,
-        //fullscreenMargin: 0,
-        //speed           : 20,
-        //dir             : "h",
-        //parallaxMode    : 'swipe',
-        //view            : "basic"
-    });
-    slider.control('arrows');
-    slider.control('bullets' , {
-        autohide:false  , dir:"v", align:"top"});
-    MSScrollParallax.setup( slider, 66, 69, true );
-</script>
+    <div class="clearfix"></div>
+</div>

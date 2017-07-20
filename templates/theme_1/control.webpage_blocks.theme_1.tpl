@@ -107,9 +107,10 @@ console.log(request)
 
 
 
-            $('#blk_control_container').append(data.controls)
+            $('#blk_control_container').prepend(data.controls)
+
             $('#columns ').prepend(data.button)
-            $("#preview").contents().find("#blocks").append(data.block)
+            $("#preview").contents().find("#blocks").prepend(data.block)
             $('#blocks_showcase').addClass('hide')
 
         if(data.type=='static_banner'){
