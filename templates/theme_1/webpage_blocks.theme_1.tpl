@@ -434,22 +434,21 @@
 
                 case 'two_pack':
 
+                    var text=$(obj).find('._text').froalaEditor('html.get')
+
+
                     blocks.push({
                         type: 'two_pack',
                         label: '{t}Two-Pack{/t}',
                         icon: 'fa-pause',
                         show: ($(obj).hasClass('hide') ? 0 : 1 ),
-
                         _image: $(obj).find('._image').attr('src'),
                         _image_key: $(obj).find('._image').attr('image_key'),
-
-
-
                         _image_tooltip: $(obj).find('._image_tooltip').attr('tooltip'),
 
                         _title:$(obj).find('._title').html(),
                         _subtitle:$(obj).find('._subtitle').html(),
-                        _text:$(obj).find('._text').html()
+                        _text:text
                     })
 
                     break;
@@ -724,7 +723,7 @@
 
 
 
-    function  set_up_one_column_editor(key){
+    function  set_up_froala_editor(key){
 
 
         console.log(key)
@@ -757,9 +756,13 @@
 
     }
 
+
+
+
+
     {foreach from=$content.blocks item=$block key=key}
-    {if $block.type=='one_pack'}
-    set_up_one_column_editor('{$key}')
+    {if $block.type=='one_pack' or  $block.type=='two_pack'  }
+    set_up_froala_editor('{$key}')
      {elseif $block.type=='static_banner'}
 
     create_static_banner('{$key}')

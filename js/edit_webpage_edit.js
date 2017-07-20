@@ -48,8 +48,8 @@ $(document).on('click', '.add_webpage_block', function (e) {
 
         if (data.type == 'static_banner') {
             $('#preview')[0].contentWindow.create_static_banner()
-        } else if (data.type == 'one_pack') {
-            $('#preview')[0].contentWindow.set_up_one_column_editor(data.block_key)
+        } else if (data.type == 'one_pack' || data.type == 'two_pack' ) {
+            $('#preview')[0].contentWindow.set_up_froala_editor(data.block_key)
         }
 
 
