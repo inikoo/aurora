@@ -220,6 +220,9 @@
 
         $('._block').each(function (i, obj) {
 
+
+            console.log($(obj).attr('block'))
+
             switch ($(obj).attr('block')) {
                 case 'iframe':
 
@@ -238,8 +241,8 @@
 
                     blocks.push({
                         type: 'static_banner',
-                        label: '{t}Image{/t}',
-                        icon: 'fa-image',
+                        label: '{t}Header{/t}',
+                        icon: 'fa-header',
                         show: ($(obj).hasClass('hide') ? 0 : 1 ),
                         _top_text_left:'customize',
                         _top_text_right:'your own',
@@ -435,7 +438,6 @@
                     var text=$(obj).find('._text').froalaEditor('html.get')
 
 
-                    console.log(text)
 
                     blocks.push({
                         type: 'one_pack',
@@ -737,7 +739,11 @@
     {foreach from=$content.blocks item=$block key=key}
     {if $block.type=='one_pack'}
     set_up_one_column_editor('{$key}')
-{/if}
+     {elseif $block.type=='static_banner'}
+
+    create_static_banner('{$key}')
+    {/if}
+
     {/foreach}
 
 </script>
