@@ -97,8 +97,10 @@ class Page extends DB_Table {
         } elseif ($tipo == 'scope') {
             $sql = sprintf(
                 "SELECT * FROM `Page Store Dimension` PS LEFT JOIN `Page Dimension` P  ON (P.`Page Key`=PS.`Page Key`) WHERE `Webpage Scope`=%s AND `Webpage Scope Key`=%d ", prepare_mysql($tag), $tag2
+
             );
 
+           // print "$sql\n";
         } else {
             $sql = sprintf(
                 "SELECT * FROM `Page Dimension` WHERE  `Page Key`=%d", $tag
@@ -1654,7 +1656,6 @@ class Page extends DB_Table {
         $website = get_object('Website', $this->get('Webpage Website Key'));
 
 
-
         if ($website->get('Website Status') != 'Active') {
             $this->error = true;
             $this->msg   = 'Website not active';
@@ -1664,7 +1665,7 @@ class Page extends DB_Table {
 
 
 
-        if ($this->get('Webpage State') == 'Offline' or  $this->get('Webpage State') == 'InProcess'  ) {
+        if ($this->get('Webpage State') == 'Offline' or  $this->get('Webpage State') == 'InProcess' or  $this->get('Webpage State') == 'Ready'  ) {
 
 
             $this->update_state('Online');
@@ -1720,20 +1721,26 @@ class Page extends DB_Table {
             $sql = sprintf('SELECT `Product Category Index Product ID` FROM `Product Category Index`    WHERE `Product Category Index Website Key`=%d', $this->id);
 
 
+            //print "$sql\n";
+
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
 
                     $webpage = new Page('scope', 'Product', $row['Product Category Index Product ID']);
 
+                   // print_r($webpage);
+                    //exit;
 
                     if ($webpage->id) {
 
 
-                        if ($webpage->get('Webpage Launch Date') == '') {
+                       // if ($webpage->get('Webpage Launch Date') == '') {
 
+
+                          //  print $webpage->get('Webpage Code')."\n";
 
                             $webpage->publish();
-                        }
+                      //  }
                     }
 
                 }

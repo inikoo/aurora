@@ -371,6 +371,9 @@ function edit_stock($account, $db, $user, $editor, $data, $smarty) {
 function place_part($account, $db, $user, $editor, $data, $smarty) {
 
     include_once 'class.PartLocation.php';
+    include_once 'utils/currency_functions.php';
+
+    $account=get_object('Account',1);
 
 
     $part_location_data = array(
@@ -388,10 +391,11 @@ function place_part($account, $db, $user, $editor, $data, $smarty) {
         $origin .= ' <i class="fa fa-sticky-note-o" aria-hidden="true"></i> '.$data['note'];
     }
 
+
+
+
     $sql = sprintf(
-        'SELECT `Purchase Order Transaction Fact Key`,`Supplier Delivery Checked Quantity`,`Supplier Delivery Placed Quantity` ,`Supplier Part Packages Per Carton`
-	FROM
-	  `Purchase Order Transaction Fact` POTF
+        'SELECT POTF.`Currency Code`,SP.`Supplier Part Key`,`Supplier Part Unit Extra Cost Percentage`,`Supplier Delivery Quantity`,`Supplier Delivery Net Amount`,`Purchase Order Transaction Fact Key`,`Supplier Delivery Checked Quantity`,`Supplier Delivery Placed Quantity` ,`Supplier Part Packages Per Carton` FROM	  `Purchase Order Transaction Fact` POTF
 LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Historic Key`=SPH.`Supplier Part Historic Key`)
  LEFT JOIN  `Supplier Part Dimension` SP ON (POTF.`Supplier Part Key`=SP.`Supplier Part Key`)
 
@@ -403,13 +407,13 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
         if ($row = $result->fetch()) {
 
 
+
+
             if ($row['Supplier Delivery Placed Quantity'] == '') {
                 $row['Supplier Delivery Placed Quantity'] = 0;
             }
 
-            $part_location = new PartLocation(
-                'find', $part_location_data, 'create'
-            );
+            $part_location = new PartLocation('find', $part_location_data, 'create');
 
             if (!$part_location) {
                 $response = array(
@@ -421,12 +425,11 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
             } else {
 
 
+
                 if (($data['qty'] / $row['Supplier Part Packages Per Carton']) > ($row['Supplier Delivery Checked Quantity'] - $row['Supplier Delivery Placed Quantity'])) {
                     $response = array(
                         'state' => 400,
-                        'msg'   => _(
-                            'Placement quantity greater than the checked quantity'
-                        )
+                        'msg'   => _('Placement quantity greater than the checked quantity')
                     );
                     echo json_encode($response);
                     exit;
@@ -439,6 +442,9 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
                         'Origin'   => $origin
                     ), gmdate('Y-m-d H:i:s')
                 );
+                $exchange = currency_conversion($db, $row['Currency Code'], $account->get('Account Currency'), '-  30 minutes');
+
+                $part_location->part->update(array('Part Cost in Warehouse'=> $exchange*(1+ $row['Supplier Part Unit Extra Cost Percentage'] )*    $row['Supplier Delivery Net Amount']/$row['Supplier Delivery Quantity']/$row['Supplier Part Packages Per Carton']     ));
 
 
                 if ($part_location->error) {
@@ -455,9 +461,7 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
                     'qty'             => $data['qty'],
                     'placement_data'  => array(
                         'oif_key' => $oif_key,
-                        'wk'      => $part_location->location->get(
-                            'Location Warehouse Key'
-                        ),
+                        'wk'      => $part_location->location->get('Location Warehouse Key'),
                         'lk'      => $part_location->location->id,
                         'l'       => $part_location->location->get('Code'),
                         'qty'     => $data['qty']

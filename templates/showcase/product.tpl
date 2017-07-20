@@ -233,7 +233,7 @@
                         <span class="Webpage_State_Icon">
                             {$product->webpage->get('State Icon')}
                         </span>
-                        <span onclick="change_view('products/{$product->get('Store Key')}/{$product->webpage->id}')" class="link">{$product->webpage->get('Code')|lower}</span>
+                        <span onclick="change_view('webpage/{$product->webpage->id}')" class="link">{$product->webpage->get('Code')|lower}</span>
 
                     </td>
                 </tr>
