@@ -217,6 +217,9 @@ console.log('ss')
     function save_add_item() {
 
 
+        console.log('xxx')
+
+
         $('#add_item_save').addClass('fa-spinner fa-spin');
         var table_metadata = JSON.parse(atob($('#table').data("metadata")))
 

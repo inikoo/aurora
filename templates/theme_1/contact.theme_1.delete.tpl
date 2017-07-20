@@ -151,6 +151,7 @@ console.log(content_data)
     $(function() {
         $('div#_text').froalaEditor({
             toolbarInline: true,
+            pastePlain: true,
             charCounterCount: false,
             toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'color', 'emoticons', '-', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'indent', 'outdent', '-', 'insertImage', 'insertLink', 'insertFile', 'insertVideo', 'undo', 'redo']
         })
