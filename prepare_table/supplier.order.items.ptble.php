@@ -16,14 +16,14 @@ $where  = sprintf(
 );
 $wheref = '';
 if ($parameters['f_field'] == 'code' and $f_value != '') {
-    $wheref .= " and OTF.`Product Code` like '".addslashes($f_value)."%'";
+    $wheref .= " and `Supplier Part Reference` like '".addslashes($f_value)."%'";
 }
 
 $_order = $order;
 $_dir   = $order_direction;
 
 if ($order == 'code') {
-    $order = 'OTF.`Product Code`';
+    $order = '`Supplier Part Reference`';
 } elseif ($order == 'created') {
     $order = '`Order Date`';
 } elseif ($order == 'last_updated') {
