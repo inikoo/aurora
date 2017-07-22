@@ -4016,6 +4016,9 @@ $modules = array(
                             'Product families'
                         )
                     ),
+                    'part_family.products' => array(
+                        'label' => _('Products')
+                    ),
 
                     'category.images'  => array(
                         'title'         => _('Images'),

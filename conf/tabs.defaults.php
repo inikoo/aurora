@@ -1382,6 +1382,7 @@ $tab_defaults = array(
         'elements'      => $elements_options['products'],
 
     ),
+
     'part.attachments'     => array(
         'view'        => 'overview',
         'sort_key'    => 'date',
@@ -1729,6 +1730,18 @@ $tab_defaults = array(
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'code',
         'f_period'    => 'ytd'
+    ),
+    'part_family.products'        => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 500,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'code',
+        'f_period'      => 'ytd',
+        'elements_type' => each($elements_options['products']) ['key'],
+        'elements'      => $elements_options['products'],
+
     ),
     'barcode.history'              => array(
         'view'        => 'overview',

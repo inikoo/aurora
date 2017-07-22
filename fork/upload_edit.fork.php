@@ -62,6 +62,9 @@ function fork_upload_edit($job) {
     $db->exec($sql);
 
 
+
+
+
     switch ($upload->get('Upload Object')) {
         case 'supplier_part':
             include_once 'class.SupplierPart.php';
@@ -258,9 +261,7 @@ function fork_upload_edit($job) {
 
                 } else {
 
-                    $object = get_object(
-                        $object_name, $record_data[$key_index]
-                    );
+                    $object = get_object($object_name, $record_data[$key_index]);
 
                     if (!$object->id) {
 
@@ -291,8 +292,7 @@ function fork_upload_edit($job) {
 
                     foreach ($valid_indexes as $index => $field) {
 
-                        //   print "$field ->".$record_data[$index]."  ".$object->get_object_name()." \n";
-
+                   //       print "$field ->".$record_data[$index]."  ".$object->get_object_name()." \n";
 
                         $object->update(array($field => $record_data[$index]));
 
@@ -316,6 +316,8 @@ function fork_upload_edit($job) {
 
 
                     }
+
+                   // exit;
                     // print "\n";
                     $msg = preg_replace('/, $/', '', $msg);
 

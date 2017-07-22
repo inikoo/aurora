@@ -121,6 +121,9 @@ function fork_export_edit_template($job) {
             $object_id_name = 'Id: Product ID';
             $download_type  = 'edit_products';
 
+
+
+
             switch ($parent) {
                 case 'part_category':
                     include_once 'class.Part.php';
@@ -142,9 +145,7 @@ function fork_export_edit_template($job) {
                     $family = new Category($parent_key);
 
 
-                    $exchange = currency_conversion(
-                        $db, $account->get('Account Currency'), $store->get('Store Currency Code')
-                    );
+                    $exchange = currency_conversion($db, $account->get('Account Currency'), $store->get('Store Currency Code'));
 
 
                     break;
@@ -166,6 +167,18 @@ function fork_export_edit_template($job) {
 
 
                     break;
+                case 'part_family':
+                    $sql_count = sprintf(
+                        "SELECT count(DISTINCT P.`Product ID`) AS num FROM `Category Bridge` LEFT JOIN `Part Dimension` ON (`Subject Key`=`Part SKU`) LEFT JOIN `Product Part Bridge` ON (`Product Part Part SKU`=`Part SKU`) LEFT JOIN `Product Dimension` P ON (`Product Part Product ID`=`Product ID`) LEFT JOIN `Product Data` PD ON (PD.`Product ID`=P.`Product ID`) LEFT JOIN `Product DC Data` PDCD ON (PDCD.`Product ID`=P.`Product ID`) LEFT JOIN `Store Dimension` S ON (`Product Store Key`=`Store Key`) WHERE P.`Product Type`='Product' AND`Subject`='Part' AND `Category Key`=%d ",
+                        $parent_key
+                    );
+
+                    $sql_data = sprintf(
+                        "SELECT P.`Product ID` AS id FROM `Category Bridge` LEFT JOIN `Part Dimension` ON (`Subject Key`=`Part SKU`) LEFT JOIN `Product Part Bridge` ON (`Product Part Part SKU`=`Part SKU`) LEFT JOIN `Product Dimension` P ON (`Product Part Product ID`=`Product ID`) LEFT JOIN `Product Data` PD ON (PD.`Product ID`=P.`Product ID`) LEFT JOIN `Product DC Data` PDCD ON (PDCD.`Product ID`=P.`Product ID`) LEFT JOIN `Store Dimension` S ON (`Product Store Key`=`Store Key`) WHERE P.`Product Type`='Product' AND`Subject`='Part' AND `Category Key`=%d ",
+                        $parent_key
+                    );
+
+                    break;
 
                 default:
                     break;
@@ -174,11 +187,12 @@ function fork_export_edit_template($job) {
 
 
         default:
-            print_r($fork_data);
-            return;
-         //   exit;
+
+            //   exit;
             break;
     }
+
+
 
 
     if ($result = $db->query($sql_count)) {
@@ -212,11 +226,10 @@ function fork_export_edit_template($job) {
 
 
     $objPHPExcel->getProperties()->setCreator($creator)->setLastModifiedBy($creator)->setTitle($title)->setSubject($subject)->setDescription($description)->setKeywords($keywords)->setCategory(
-            $category
-        );
+        $category
+    );
 
     $row_index = 1;
-
 
 
     if ($result = $db->query($sql_data)) {
@@ -293,6 +306,7 @@ function fork_export_edit_template($job) {
 
 
                         case 'category':
+                        case 'part_family':
 
                             $object = new Product($row['id']);
 
@@ -348,8 +362,7 @@ function fork_export_edit_template($job) {
                                         }
                                         if (!$object->get(
                                                 'Part Current On Hand Stock'
-                                            ) > 0
-                                        ) {
+                                            ) > 0) {
                                             $op .= 'NO STOCK, ';
 
                                         }
@@ -406,8 +419,7 @@ function fork_export_edit_template($job) {
                                             case 'Product Price':
                                                 if ($object->get(
                                                         'Part Unit Price'
-                                                    ) == ''
-                                                ) {
+                                                    ) == '') {
                                                     $value = '';
                                                 } else {
                                                     $value = round(
@@ -423,8 +435,7 @@ function fork_export_edit_template($job) {
 
                                                 if ($object->get(
                                                         'Part Unit RRP'
-                                                    ) == ''
-                                                ) {
+                                                    ) == '') {
                                                     $value = '';
                                                 } else {
                                                     $value = round(
@@ -504,15 +515,15 @@ function fork_export_edit_template($job) {
                         );
                     }
                     $objPHPExcel->getActiveSheet()->getStyle($char.$row_index)->applyFromArray(
-                            array(
-                                'borders' => array(
-                                    'bottom' => array(
-                                        'style' => PHPExcel_Style_Border::BORDER_THIN,
-                                        'color' => array('rgb' => '777777')
-                                    )
+                        array(
+                            'borders' => array(
+                                'bottom' => array(
+                                    'style' => PHPExcel_Style_Border::BORDER_THIN,
+                                    'color' => array('rgb' => '777777')
                                 )
                             )
-                        );
+                        )
+                    );
 
 
                     $char_index++;
@@ -577,7 +588,6 @@ function fork_export_edit_template($job) {
         $download_path="downloads_$inikoo_account_code/";
     }
 */
-
 
 
     $download_path = 'tmp/';
@@ -648,7 +658,6 @@ function fork_export_edit_template($job) {
     );
 
     $db->exec($sql);
-
 
 
     return false;

@@ -36,6 +36,7 @@ $parameters = array(
 
 );
 
+
 $smarty->assign(
     'js_code', 'js/injections/part_family.product_families.'.(_DEVEL ? '' : 'min.').'js'
 );

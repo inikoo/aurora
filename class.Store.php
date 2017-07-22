@@ -181,9 +181,7 @@ class Store extends DB_Table {
         }
         $keys   = preg_replace('/,$/', ')', $keys);
         $values = preg_replace('/,$/', ')', $values);
-        $sql    = sprintf(
-            "INSERT INTO `Store Dimension` %s %s", $keys, $values
-        );
+
 
         $sql = "insert into `Store Dimension` $keys  $values";
 

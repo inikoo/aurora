@@ -19,7 +19,7 @@ cell: Backgrid.HtmlCell.extend({ })
 name: "store",
 label: "{t}Store{/t}",
 
-renderable: {if $data['object']=='part' or  $data['object']=='' }true{else}false{/if},
+renderable: {if $data['object']=='part' or  $data['object']=='' or $tab=='part_family.products'   }true{else}false{/if},
 editable: false,
 sortType: "toggle",
 cell: Backgrid.HtmlCell.extend([])
