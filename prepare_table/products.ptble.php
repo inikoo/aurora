@@ -120,16 +120,26 @@ switch ($parameters['parent']) {
         include_once 'class.Category.php';
         $category = new Category($parameters['parent_key']);
 
-        if (!in_array($category->data['Category Store Key'], $user->stores)) {
-            return;
+
+        if($category->get('Category Scope')=='Product'){
+            if (!in_array($category->data['Category Store Key'], $user->stores)) {
+                return;
+            }
+
+            $where = sprintf(" where P.`Product Type`='Product' and`Subject`='Product' and  `Category Key`=%d", $parameters['parent_key']);
+            $table = ' `Category Bridge` left join  `Product Dimension` P on (`Subject Key`=`Product ID`) left join `Product Data` PD on (PD.`Product ID`=P.`Product ID`)  left join `Product DC Data` PDCD on (PDCD.`Product ID`=P.`Product ID`)  left join `Store Dimension` S on (`Product Store Key`=`Store Key`)';
+
+        }elseif($category->get('Category Scope')=='Part'){
+
+            $where = sprintf(" where P.`Product Type`='Product' and`Subject`='Part' and  `Category Key`=%d", $parameters['parent_key']);
+            $table = ' `Category Bridge`  left join `Part Dimension` on    (`Subject Key`=`Part SKU`)  left join `Product Part Bridge` on (`Product Part Part SKU`=`Part SKU`)         left join  `Product Dimension` P on (`Product Part Product ID`=`Product ID`) left join `Product Data` PD on (PD.`Product ID`=P.`Product ID`)  left join `Product DC Data` PDCD on (PDCD.`Product ID`=P.`Product ID`)  left join `Store Dimension` S on (`Product Store Key`=`Store Key`)';
+
         }
 
-        $where = sprintf(
-            " where P.`Product Type`='Product' and`Subject`='Product' and  `Category Key`=%d", $parameters['parent_key']
-        );
-        $table
-               = ' `Category Bridge` left join  `Product Dimension` P on (`Subject Key`=`Product ID`) left join `Product Data` PD on (PD.`Product ID`=P.`Product ID`)  left join `Product DC Data` PDCD on (PDCD.`Product ID`=P.`Product ID`)  left join `Store Dimension` S on (`Product Store Key`=`Store Key`)';
-        break;
+
+
+
+         break;
     default:
 
 
@@ -341,6 +351,7 @@ if ($order == 'stock') {
 
 $sql_totals
     = "select count(distinct  P.`Product ID`) as num from $table $where";
+
 
 $fields
     = "P.`Product ID`,`Product Code`,`Product Name`,`Product Price`,`Store Currency Code`,`Store Code`,`Store Key`,`Store Name`,`Product Web Configuration`,`Product Availability`,`Product Web State`,`Product Cost`,`Product Number of Parts`,P.`Product Status`,`Product Units Per Case`,

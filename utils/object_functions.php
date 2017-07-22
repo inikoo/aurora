@@ -150,6 +150,8 @@ function get_object($object_name, $key, $load_other_data = false) {
             $object = new Overtime($key);
             break;
         case 'category':
+        case 'part_family': // needed for export edit products in part family
+
             require_once "class.Category.php";
             $object = new Category($key);
             break;

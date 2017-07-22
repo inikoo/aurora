@@ -2411,6 +2411,8 @@ class Product extends Asset {
         }
 
 
+
+
         switch ($field) {
 
             case 'Product Webpage Name':
@@ -3038,7 +3040,43 @@ class Product extends Asset {
                 break;
 
 
+            case 'Parts':
+
+
+                $sql = sprintf(
+                    'DELETE FROM `Product Part Bridge` WHERE  `Product Part Product ID`=%d ',  $this->id
+                );
+
+                $this->db->exec($sql);
+
+
+                include_once 'class.Part.php';
+                $product_parts = array();
+                foreach (preg_split('/\,/', $value) as $part_data) {
+                    $part_data = _trim($part_data);
+                    if (preg_match('/(\d+)x\s+/', $part_data, $matches)) {
+
+                        $ratio     = $matches[1];
+                        $part_data = preg_replace('/(\d+)x\s+/', '', $part_data);
+                    } else {
+                        $ratio = 1;
+                    }
+
+                    $part = new Part('reference', _trim($part_data));
+
+                    $product_parts[] = array(
+                        'Ratio'    => $ratio,
+                        'Part SKU' => $part->id,
+                        'Note'     => ''
+                    );
+
+                }
+
+                $this->update_part_list(json_encode($product_parts), $options);
+
+                break;
             case 'Product Parts':
+
 
                 $this->update_part_list($value, $options);
 
@@ -3277,7 +3315,14 @@ class Product extends Asset {
     function update_part_list($value, $options = '') {
 
 
+
+
+        //print_r($value);
+
+
         $value = json_decode($value, true);
+
+
 
 
         $part_list = $this->get_parts_data();
