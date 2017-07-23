@@ -698,6 +698,8 @@ function get_view($db, $smarty, $user, $account, $modules) {
     $response['state'] = $state;
 
 
+
+
     echo json_encode($response);
 
 }

@@ -18,7 +18,6 @@
 
 
 
-
         // If string given, call onComplete callback
         if (typeof options === "string") {
             this.each(function () {
@@ -39,7 +38,7 @@
             onComplete: false, // Callback after detection of a successfull scanning (scanned string in parameter)
             onError: false, // Callback after detection of a unsuccessfull scanning (scanned string in parameter)
             onReceive: false, // Callback after receive a char (scanned char in parameter)
-            timeBeforeScanTest: 100, // Wait duration (ms) after keypress event to check if scanning is finished
+            timeBeforeScanTest: 200, // Wait duration (ms) after keypress event to check if scanning is finished
             avgTimeByChar: 30, // Average time (ms) between 2 chars. Used to do difference between keyboard typing and scanning
             minLength: 6, // Minimum length for a scanning
             endChar: [9, 13], // Chars to remove and means end of scanning

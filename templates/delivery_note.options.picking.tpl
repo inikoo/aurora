@@ -68,7 +68,7 @@
                 <i  class="fa fa-barcode" aria-hidden="true" style="position:absolute;top:10px;right:10px"></i>
 
 
-                <div class="hide">
+                <div class="">
 
                 <div style="display:flex;"  >
                     <div style="align-items: stretch;flex: 0">
