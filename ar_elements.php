@@ -208,6 +208,7 @@ switch ($tab) {
 
     case 'orders':
     case 'product.orders':
+    case 'customer.orders':
         $data = prepare_values(
             $_REQUEST, array(
                          'parameters' => array('type' => 'json array')
@@ -1560,6 +1561,13 @@ function get_orders_element_numbers($db, $data, $user) {
         case 'store':
             $table = '`Order Dimension` O';
             $where = sprintf('where  `Order Store Key`=%d', $parent_key);
+
+            $object = get_object('store', $parent_key);
+
+            break;
+        case 'customer':
+            $table = '`Order Dimension` O';
+            $where = sprintf('where  `Order Customer Key`=%d', $parent_key);
 
             $object = get_object('store', $parent_key);
 

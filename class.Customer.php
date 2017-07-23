@@ -699,14 +699,77 @@ class Customer extends Subject {
     function create_order() {
 
         global $account;
+        
+        
+        
+        
+        
 
         $order_data = array(
 
-            'Customer Key'                  => $this->id,
             'Order Original Data MIME Type' => 'application/aurora',
             'Order Type'                    => 'Order',
-            'editor'                        => $this->editor
+            'editor'                        => $this->editor,
+
+
+
+
         );
+
+
+        $order_data['Order Class']          = 'InWebsite';
+
+
+       $order_data['Order Customer Key']          = $this->id;
+       $order_data['Order Customer Name']         = $this->data['Customer Name'];
+       $order_data['Order Customer Contact Name'] = $this->data['Customer Main Contact Name'];
+       $order_data['Order Tax Number']            = $this->data['Customer Tax Number'];
+       $order_data['Order Tax Number Valid']      = $this->data['Customer Tax Number Valid'];
+       $order_data['Order Customer Fiscal Name']  = $this->get('Fiscal Name');
+       $order_data['Order Email']                 = $this->data['Customer Main Plain Email'];
+       $order_data['Order Telephone']             = $this->data['Customer Main Plain Mobile'];
+
+
+       $order_data['Order Invoice Address Recipient']            = $this->data['Customer Invoice Address Recipient'];
+       $order_data['Order Invoice Address Organization']         = $this->data['Customer Invoice Address Organization'];
+       $order_data['Order Invoice Address Line 1']               = $this->data['Customer Invoice Address Line 1'];
+       $order_data['Order Invoice Address Line 2']               = $this->data['Customer Invoice Address Line 2'];
+       $order_data['Order Invoice Address Sorting Code']         = $this->data['Customer Invoice Address Sorting Code'];
+       $order_data['Order Invoice Address Postal Code']          = $this->data['Customer Invoice Address Postal Code'];
+       $order_data['Order Invoice Address Dependent Locality']   = $this->data['Customer Invoice Address Dependent Locality'];
+       $order_data['Order Invoice Address Locality']             = $this->data['Customer Invoice Address Locality'];
+       $order_data['Order Invoice Address Administrative Area']  = $this->data['Customer Invoice Address Administrative Area'];
+       $order_data['Order Invoice Address Country 2 Alpha Code'] = $this->data['Customer Invoice Address Country 2 Alpha Code'];
+       $order_data['Order Invoice Address Checksum']             = $this->data['Customer Invoice Address Recipient'];
+       $order_data['Order Invoice Address Formatted']            = $this->data['Customer Invoice Address Formatted'];
+       $order_data['Order Invoice Address Postal Label']         = $this->data['Customer Invoice Address Postal Label'];
+
+
+       $order_data['Order Delivery Address Recipient']            = $this->data['Customer Delivery Address Recipient'];
+       $order_data['Order Delivery Address Organization']         = $this->data['Customer Delivery Address Organization'];
+       $order_data['Order Delivery Address Line 1']               = $this->data['Customer Delivery Address Line 1'];
+       $order_data['Order Delivery Address Line 2']               = $this->data['Customer Delivery Address Line 2'];
+       $order_data['Order Delivery Address Sorting Code']         = $this->data['Customer Delivery Address Sorting Code'];
+       $order_data['Order Delivery Address Postal Code']          = $this->data['Customer Delivery Address Postal Code'];
+       $order_data['Order Delivery Address Dependent Locality']   = $this->data['Customer Delivery Address Dependent Locality'];
+       $order_data['Order Delivery Address Locality']             = $this->data['Customer Delivery Address Locality'];
+       $order_data['Order Delivery Address Administrative Area']  = $this->data['Customer Delivery Address Administrative Area'];
+       $order_data['Order Delivery Address Country 2 Alpha Code'] = $this->data['Customer Delivery Address Country 2 Alpha Code'];
+       $order_data['Order Delivery Address Checksum']             = $this->data['Customer Delivery Address Recipient'];
+       $order_data['Order Delivery Address Formatted']            = $this->data['Customer Delivery Address Formatted'];
+       $order_data['Order Delivery Address Postal Label']         = $this->data['Customer Delivery Address Postal Label'];
+
+
+       $order_data['Order Customer Order Number'] = $this->get_number_of_orders() + 1;
+
+        $store = get_object('Store',$this->get('Customer Store Key'));
+
+       $order_data['Order Store Key']               = $store->id;
+       $order_data['Order Currency']                = $store->get('Store Currency Code');
+       $order_data['Order Show in Warehouse Orders'] = $store->get('Store Show in Warehouse Orders');
+       $order_data['public_id_format'] =  $store->get('Store Order Public ID Format');
+
+
 
 
         $order = new Order('new', $order_data);

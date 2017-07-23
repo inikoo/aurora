@@ -230,9 +230,7 @@ switch ($tipo) {
 function edit_field($account, $db, $user, $editor, $data, $smarty) {
 
 
-    $object = get_object(
-        $data['object'], $data['key'], $load_other_data = true
-    );
+    $object = get_object($data['object'], $data['key']);
 
 
     if (!$object->id) {

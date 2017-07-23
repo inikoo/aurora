@@ -18,9 +18,8 @@ function get_object($object_name, $key, $load_other_data = false) {
     }
 
 
-    global $account, $db;
 
-    switch (strtolower($object_name)) {
+    switch (strtolower($object_name.'_'.$load_other_data)) {
         case 'account':
             include_once 'class.Public_Account.php';
             $object = new Public_Account();
@@ -44,6 +43,13 @@ function get_object($object_name, $key, $load_other_data = false) {
             include_once 'class.Public_Product.php';
             $object = new Public_Product('id', $key);
             break;
+
+
+        case 'product-historic_key':
+            include_once 'class.Public_Product.php';
+            $object = new Product('historic_key', $key);
+            break;
+
         case 'order':
             include_once 'class.Public_Order.php';
             $object = new Public_Order($key);

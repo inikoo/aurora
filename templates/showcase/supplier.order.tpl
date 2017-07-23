@@ -227,11 +227,13 @@
                             <tr class="changed buttons">
                                 <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true"
                                        onclick="close_dialog('delete')"></i></td>
-                                <td class="aright"><span data-data='{ "object": "PurchaseOrder", "key":"{$order->id}"}'
+                                <td class="aright">
+                                    <span data-data='{ "object": "PurchaseOrder", "key":"{$order->id}"}'
                                                          id="delete_save_buttons" class="error save button"
-                                                         onclick="delete_object(this)"><span
-                                                class="label">{t}Delete{/t}</span> <i class="fa fa-trash fa-fw  "
-                                                                                      aria-hidden="true"></i></span>
+                                                         onclick="delete_object(this)">
+                                        <span class="label">{t}Delete{/t}</span>
+                                        <i class="fa fa-trash fa-fw  " aria-hidden="true"></i>
+                                    </span>
                                 </td>
                             </tr>
                         </table>
@@ -247,14 +249,17 @@
                                 <td class="label" colspan="2">{t}Cancel purchase order{/t}</td>
                             </tr>
                             <tr class="changed buttons">
-                                <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true"
-                                       onclick="close_dialog('cancel')"></i></td>
-                                <td class="aright"><span
+                                <td>
+                                    <i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('cancel')"></i>
+                                </td>
+                                <td class="aright">
+                                    <span
                                             data-data='{  "field": "Purchase Order State","value": "Cancelled","dialog_name":"cancel"}'
                                             id="cancel_save_buttons" class="error save button"
-                                            onclick="save_order_operation(this)"><span
-                                                class="label">{t}Cancel{/t}</span> <i class="fa fa-cloud fa-fw  "
-                                                                                      aria-hidden="true"></i></span>
+                                            onclick="save_order_operation(this)">
+                                        <span class="label">{t}Cancel{/t}</span>
+                                        <i class="fa fa-cloud fa-fw" aria-hidden="true"></i>
+                                    </span>
                                 </td>
                             </tr>
                         </table>

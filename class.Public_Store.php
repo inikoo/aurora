@@ -169,6 +169,8 @@ class Public_Store {
 
 
             case 'Store Currency Code':
+            case 'Store Show in Warehouse Orders':
+            case 'Store Order Public ID Format':
             case 'Store Department Category Key':
             case 'Store Family Category Key':
             case 'Store Timezone':

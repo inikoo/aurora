@@ -51,7 +51,7 @@
 
 
                     </div>
-                {else if $product->get('Web State')=='For Sale'}
+                {elseif $product->get('Web State')=='For Sale'}
 
                 <div class="ordering log_in " >
                     <input maxlength=6  class='order_input ' id='but_qty{$product->id}'   type="text" size='2'  value='{$product->get('Ordered Quantity')}' ovalue='{$product->get('Ordered Quantity')}'>

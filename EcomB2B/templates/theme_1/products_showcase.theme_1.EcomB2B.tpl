@@ -43,7 +43,7 @@
             <i class="fa fa-frown-o padding_right_20" aria-hidden="true"></i> {t}Discontinued{/t} <i class="fa fa-frown-o padding_left_20" aria-hidden="true"></i>
         </div>
     {/if}
- 
+
 <span id="ordering_settings" class="hide" data-labels='{
     "ordered":"<i class=\"fa fa-thumbs-o-up fa-flip-horizontal fa-fw \" aria-hidden=\"true\"></i> <span class=\"order_button_text\">{t}Ordered{/t}</span>",
     "order":"<i class=\"fa fa-hand-pointer-o fa-fw \" aria-hidden=\"true\"></i>  <span class=\"order_button_text\">{t}Order now{/t}</span>",
@@ -55,10 +55,10 @@
 
 
         {foreach from=$content_data.description_block.blocks key=id item=data}
-       
-        
+
+
         {if $data.type=='text'}
-           
+
         <div id="{$id}" class="webpage_content_header fr-view text">
             {$data.content}
         </div>
@@ -118,7 +118,7 @@
                <div class="wrap_to_center product_image" >
 
 
-                    <img draggable="false" src="{$product->get('Image')}" />
+                    <img  src="{$product->get('Image')}" />
                  </div>
                 </a>
 
@@ -151,20 +151,15 @@
 
 
                     {assign 'reminder_key' {$product->get('Reminder Key',{$user->id})} }
-<div  class="out_of_stock_row {$product->get('Out of Stock Class')}"  >
-    <span class="label">
-    {$product->get('Out of Stock Label')}
-    <span  class="label sim_button " > <i reminder_key="{$reminder_key}" title="{if $reminder_key>0}{t}Click to remove notification{/t}{else}{t}Click to be notified by email{/t}{/if}"   class="reminder fa {if $reminder_key>0}fa-envelope{else}fa-envelope-o{/if}" aria-hidden="true"></i>  </span>
-    </span>
-</div>
+                    <div  class="out_of_stock_row {$product->get('Out of Stock Class')}"  >
+                        <span class="label">
+                        {$product->get('Out of Stock Label')}
+                        <span  class="label sim_button " > <i reminder_key="{$reminder_key}" title="{if $reminder_key>0}{t}Click to remove notification{/t}{else}{t}Click to be notified by email{/t}{/if}"   class="reminder fa {if $reminder_key>0}fa-envelope{else}fa-envelope-o{/if}" aria-hidden="true"></i>  </span>
+                        </span>
+                    </div>
 
-
-
-
-
-
-                {else if $product->get('Web State')=='For Sale'}
-                    {assign 'quantity_ordered' $product->get('Ordered Quantity',$order->id) }
+                {elseif $product->get('Web State')=='For Sale'}
+                    {assign 'quantity_ordered' $product->get('Ordered Quantity',$order_key) }
                 <div class="order_row {if $quantity_ordered!=''}ordered{else}empty{/if}"      >
                     <input maxlength=6  style="" class='order_input ' id='but_qty{$product->id}'   type="text"' size='2'  value='{$quantity_ordered}' ovalue='{$quantity_ordered}'>
                     {if $quantity_ordered==''}
@@ -180,6 +175,8 @@
 
 
                 {/if}
+
+
                 {else}
                 <div class=" order_row " style="display:flex;" >
                     <div class="mark_on_hover" style="flex-grow:1;text-align:center;border-right:1px solid #fff;  font-weight: 800;" ><span onClick="location.href='login.php?from={$page->id}'" class="sim_button" >{t}Login{/t}</span></div>
@@ -282,7 +279,7 @@
                             <div class="wrap_to_center product_image" >
 
 
-                                <img draggable="false" src="{$product->get('Image')}" />
+                                <img  src="{$product->get('Image')}" />
                             </div>
                         </a>
 
@@ -322,7 +319,7 @@
 
 
                             {else if $product->get('Web State')=='For Sale'}
-                                {assign 'quantity_ordered' $product->get('Ordered Quantity',$order->id) }
+                                {assign 'quantity_ordered' $product->get('Ordered Quantity',$order_key) }
                                 <div class="order_row {if $quantity_ordered!=''}ordered{else}empty{/if}"      >
                                     <input maxlength=6  style="" class='order_input ' id='but_qty{$product->id}'   type="text"' size='2'  value='{$quantity_ordered}' ovalue='{$quantity_ordered}'>
                                     {if $quantity_ordered==''}

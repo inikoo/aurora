@@ -18,6 +18,7 @@ class Public_Order {
         global $db;
         $this->db = $db;
         $this->id = false;
+        $this->exchange = 1;
 
 
         $this->table_name = 'Order';
@@ -42,6 +43,7 @@ class Public_Order {
             );
             if ($this->data = $this->db->query($sql)->fetch()) {
                 $this->id          = $this->data['Order Key'];
+                $this->currency_code=$this->data['Order Currency'];
             }
         } else {
 
@@ -53,8 +55,39 @@ class Public_Order {
 
     function get($key, $arg1 = '') {
 
+
+        if (preg_match(
+            '/^(Balance (Total|Net|Tax)|Invoiced Total Net Adjust|Invoiced Total Tax Adjust|Invoiced Refund Net|Invoiced Refund Tax|Total|Items|Invoiced Items|Invoiced Tax|Invoiced Net|Invoiced Charges|Payments|To Pay|Invoiced Shipping|Invoiced Insurance |(Shipping |Charges |Insurance )?Net).*(Amount)$/',
+            $key
+        )) {
+            $amount = 'Order '.$key;
+
+            return money(
+                $this->exchange * $this->data[$amount], $this->currency_code
+            );
+        }
+        if (preg_match('/^Number (Items|Products)$/', $key)) {
+
+            $amount = 'Order '.$key;
+
+            return number($this->data[$amount]);
+        }
+
+
+
         switch ($key) {
-           
+            case 'Order Items Discount Amount':
+            case 'Order Charges Net Amount':
+                return $this->data[$key];
+                break;
+
+            case 'Products':
+                return number($this->data['Order Number Items']);
+                break;
+            case 'Total':
+                return money($this->data['Order Total Amount'], $this->data['Order Currency']);
+                break;
+
             default:
 
 
