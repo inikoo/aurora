@@ -30,21 +30,15 @@ $object_fields = array(
             array(
                 'id'                => 'Purchase_Order_Public_ID',
                 'edit'              => ($edit ? 'string' : ''),
-                'value'             => htmlspecialchars(
-                    $object->get('Purchase Order Public ID')
-                ),
+                'value'             => htmlspecialchars($object->get('Purchase Order Public ID')),
                 'formatted_value'   => $object->get('Public ID'),
-                'label'             => ucfirst(
-                    $object->get_field_label('Purchase Order Public ID')
-                ),
+                'label'             => ucfirst($object->get_field_label('Purchase Order Public ID')),
                 'required'          => true,
                 'server_validation' => json_encode(
                     array(
                         'tipo'       => 'check_for_duplicates',
                         'parent'     => $object->get('Purchase Order Parent'),
-                        'parent_key' => $object->get(
-                            'Purchase Order Parent Key'
-                        ),
+                        'parent_key' => $object->get('Purchase Order Parent Key'),
                         'object'     => 'PurchaseOrder',
                         'key'        => $object->id
                     )
