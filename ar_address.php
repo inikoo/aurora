@@ -75,9 +75,13 @@ function get_fields_data($db, $data) {
     $_address_format = $address_format->getFormat();
     $_address_format = preg_replace('/\//', ' ', $_address_format);
 
-    $used_fields = preg_split(
-        '/\s+/', preg_replace('/(%|,)/', '', $_address_format)
-    );
+    $_address_format = preg_replace('/familyName/', 'recipient', $_address_format);
+
+
+    $used_fields = preg_split('/\s+/', preg_replace('/(%|,)/', '', $_address_format));
+
+
+
     $labels      = array(
         'postalCode'         => $address_format->getPostalCodeType(),
         'dependentLocality'  => $address_format->getDependentLocalityType(),
@@ -134,6 +138,8 @@ function get_fields_data($db, $data) {
         ),
 
     );
+
+
 
     foreach ($used_fields as $used_field) {
         $address_fields[$used_field]['render'] = true;

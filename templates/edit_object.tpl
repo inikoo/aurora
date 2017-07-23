@@ -444,6 +444,7 @@
 
                                     <div class="address_edit_fields_container">
                                         <table id="{$field.id}" border=0 class="address hide" field="{$field.id}">
+
                                             <tr id="{$field.id}_recipient" class="recipient">
                                                 <td class="show_buttons error super_discreet"><i class="fa fa-asterisk"></i></td>
                                                 <td class="label">{t}Recipient{/t}</td>
@@ -522,6 +523,9 @@
 
 
                                         var address_fields = jQuery.parseJSON($('#{$field.id}_value').val())
+
+
+
 
 
                                         $('#{$field.id}_recipient  input ').val(decodeEntities(address_fields['Address Recipient']))

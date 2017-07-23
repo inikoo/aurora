@@ -2,6 +2,8 @@
 {assign invoices $order->get_invoices('objects')}
 {assign payments $order->get_payments('objects')}
 
+
+
 <div class="timeline_horizontal with_time  {if $order->get('Order Current Dispatch State')=='Cancelled'}hide{/if}  ">
 
     <ul class="timeline hide" id="timeline">
@@ -122,22 +124,39 @@
 <div id="order" class="order" style="display: flex;" data-object="{$object_data}" order_key="{$order->id}">
     <div class="block" style=" align-items: stretch;flex: 1">
         <div class="data_container" style="padding:5px 10px">
-            <div class="data_field">
+            <div class="data_field  "   style="margin-bottom:10px"  >
+
+              <span class="button" onclick="change_view('customers/{$order->get('Order Store Key')}/{$order->get('Order Customer Key')}')">
                 <i class="fa fa-user fa-fw" aria-hidden="true" title="{t}Customer{/t}"></i> <span
-                        onclick="change_view('customers/{$order->get('Order Store Key')}/{$order->get('Order Customer Key')}')"
+
                         class="button Order_Customer_Name">{$order->get('Order Customer Name')}</span> <span
-                        onclick="change_view('customers/{$order->get('Order Store Key')}/{$order->get('Order Customer Key')}')"
+
                         class="link Order_Customer_Key">{$order->get('Order Customer Key')|string_format:"%05d"}</span>
+              </span>
             </div>
+
+            <div class="data_field small {if $order->get('Telephone')==''}hide{/if}  " style="margin-top:5px"   >
+                <div class=""><i class="fa fa-phone fa-fw" aria-hidden="true" title="{t}Customer{/t}"></i><span class="Order_Telephone">{$order->get('Telephone')}</span></div>
+
+
+
+            </div>
+
+            <div class="data_field small {if $order->get('Email')==''}hide{/if}" style="margin-top:5px" >
+
+
+                <div class=""><i class="fa fa-envelope fa-fw" aria-hidden="true" title="{t}Customer{/t}"></i><span class="Order_Email">{$order->get('Email')}</span></div>
+
+            </div>
+
             <div class="data_field  " style="padding:10px 0px 20px 0px;">
                 <div style="float:left;padding-bottom:20px;padding-right:20px" class="Delivery_Address">
                     <div style="margin-bottom:10px"><i class="fa fa-truck button" aria-hidden="true""></i>{t}Deliver to{/t}</div>
-                    <div class="small" style="max-width: 140px;">{$order->get('Order Delivery Address Formatted')}</div>
+                    <div class="small Order_Delivery_Address " style="max-width: 140px;" >{$order->get('Order Delivery Address Formatted')}</div>
                 </div>
-                <div style="float:right;padding-bottom:20px;p" class="Billing_Address">
-                    <div style="margin-bottom:10px"><i class="fa fa-dollar button" aria-hidden="true"
-                        "></i>{t}Billed to{/t}</div>
-                    <div class="small" style="max-width: 140px;">{$order->get('Order Invoice Address Formatted')}</div>
+                <div style="float:right;padding-bottom:20px;" class="Billing_Address">
+                    <div style="margin-bottom:10px"><i class="fa fa-dollar button" aria-hidden="true""></i>{t}Billed to{/t}</div>
+                    <div class="small Order_Invoice_Address" style="max-width: 140px;">{$order->get('Order Invoice Address Formatted')}</div>
                 </div>
                 <div style="clear:both">
                 </div>
