@@ -1653,6 +1653,8 @@ function get_delivery_note_navigation($data, $smarty, $user, $db, $account) {
 
     $html = $smarty->fetch('navigation.tpl');
 
+
+
     return $html;
 
 }

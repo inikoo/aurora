@@ -13,8 +13,6 @@
 function get_delivery_note_showcase($data) {
 
 
-
-
     global $smarty, $user;
 
     if (!$data['_object']->id) {
@@ -27,7 +25,10 @@ function get_delivery_note_showcase($data) {
 
     $delivery_note->update_totals();
 
-$order=new Order($delivery_note->get('Delivery Note Order Key'));
+
+
+
+    $order = new Order('id',$delivery_note->get('Delivery Note Order Key'));
 
     $parcels     = $delivery_note->get('Parcels');
     $weight      = $delivery_note->data['Delivery Note Weight'];

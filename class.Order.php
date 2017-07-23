@@ -410,6 +410,8 @@ class Order extends DB_Table {
             $sql = sprintf("SELECT * FROM `Order Dimension` WHERE `Order Public ID`=%s", prepare_mysql($id));
         }
 
+
+
         if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id = $this->data['Order Key'];
         }

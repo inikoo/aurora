@@ -115,6 +115,11 @@ $smarty->assign(
     )
 );
 
+$smarty->assign('dn', $state['_object']);
+
+
+$smarty->assign('table_top_template', 'supplier.delivery.options.tpl');
+
 
 include 'utils/get_table_html.php';
 
