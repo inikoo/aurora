@@ -10,7 +10,7 @@
 */
 
 require_once 'common.php';
-require_once 'utils/ar_common.php';
+require_once 'utils/ar_web_common.php';
 require_once 'utils/get_addressing.php';
 
 

@@ -114,9 +114,9 @@
       
             var order_qty=input.val()
             $(this).find('i').removeClass('fa-hand-pointer-o').addClass('fa-spinner fa-spin  ')
-         input.prop('readonly', true);
+            input.prop('readonly', true);
 
-            var order_key='{$order->id}';
+            var order_key='{$order_key}';
             if(order_key=='')order_key=0;
 
             if(order_qty>0){
@@ -128,8 +128,9 @@
 
            
 
-        var request = 'ar_basket.php?tipo=edit_order_transaction&pid=' + $(this).closest('.product_container').attr('product_id') + '&order_key=' + order_key+ '&qty=' + order_qty+'&page_key='+{$webpage->id}+'&page_section_type=Family'
-console.log(request)
+        var request = 'ar_web_basket.php?tipo=update_item&key=' + $(this).closest('.product_container').attr('product_id') + '&order_key=' + order_key+ '&qty=' + order_qty+'&webpage_key='+{$webpage->id}+'&page_section_type=Family'
+
+        console.log(request)
         $.getJSON(request, function (data) {
         
           

@@ -56,8 +56,10 @@ class Public_Product {
             }
         } elseif ($key == 'historic_key') {
             $sql = sprintf(
-                "SELECT * FROM `Product History Dimension` WHERE `Product Key`=%s", $id
+                "SELECT * FROM `Product History Dimension` WHERE `Product Key`=%d", $id
             );
+
+
             if ($this->data = $this->db->query($sql)->fetch()) {
                 $this->historic_id = $this->data['Product Key'];
                 $this->id          = $this->data['Product ID'];
@@ -112,6 +114,23 @@ class Public_Product {
     function get($key, $arg1 = '') {
 
         switch ($key) {
+
+            case 'Status':
+            case 'Barcode Number':
+            case 'CPNP Number':
+            case 'Code':
+            case 'Web State':
+            case 'Description':
+            case 'Current Key':
+                return $this->data['Product '.$key];
+                break;
+
+
+            case 'Product Current Key':
+                return $this->data[$key];
+                break;
+
+
             case 'Ordered Quantity':
 
 
@@ -122,7 +141,9 @@ class Public_Product {
                 if ($result = $this->db->query($sql)) {
                     if ($row = $result->fetch()) {
                         $ordered_quantity = $row['Order Quantity'];
-                        if( $ordered_quantity ==0)  $ordered_quantity = '';
+                        if ($ordered_quantity == 0) {
+                            $ordered_quantity = '';
+                        }
                     } else {
                         $ordered_quantity = '';
 
@@ -140,9 +161,9 @@ class Public_Product {
             case 'Reminder Key':
 
 
-            $sql=sprintf("select `Email Site Reminder Key` from `Email Site Reminder Dimension` where `Trigger Scope`='Back in Stock' and `Trigger Scope Key`=%d and `User Key`=%d and `Email Site Reminder In Process`='Yes' ",
-                             $this->id,
-                             $arg1
+                $sql = sprintf(
+                    "SELECT `Email Site Reminder Key` FROM `Email Site Reminder Dimension` WHERE `Trigger Scope`='Back in Stock' AND `Trigger Scope Key`=%d AND `User Key`=%d AND `Email Site Reminder In Process`='Yes' ",
+                    $this->id, $arg1
 
                 );
 
@@ -158,8 +179,6 @@ class Public_Product {
                     print "$sql\n";
                     exit;
                 }
-
-
 
 
                 return $reminder_key;
@@ -190,22 +209,15 @@ class Public_Product {
 
             case 'Name':
 
-                if($this->data['Product Units Per Case']>1){
+                if ($this->data['Product Units Per Case'] > 1) {
                     return $this->data['Product Units Per Case'].'x '.$this->data['Product Name'];
-                }else{
+                } else {
                     return $this->data['Product Name'];
                 }
 
 
                 break;
-            case 'Status':
-            case 'Barcode Number':
-            case 'CPNP Number':
-            case 'Code':
-            case 'Web State':
-            case 'Description':
-                return $this->data['Product '.$key];
-                break;
+
             case 'Origin':
                 if ($this->data['Product Origin Country Code']) {
                     include_once 'class.Country.php';
@@ -316,11 +328,12 @@ class Public_Product {
 
             case 'Price':
 
-                $price = preg_replace('/PLN/','zł ',money($this->data['Product Price'], $this->data['Store Currency Code']));
+                $price = preg_replace('/PLN/', 'zł ', money($this->data['Product Price'], $this->data['Store Currency Code']));
 
                 if ($this->data['Product Units Per Case'] != 1) {
 
-                    $price .= ' ('.preg_replace('/PLN/','zł ',money($this->data['Product Price'] / $this->data['Product Units Per Case'], $this->data['Store Currency Code'])).'/'.$this->data['Product Unit Label'].')';
+                    $price .= ' ('.preg_replace('/PLN/', 'zł ', money($this->data['Product Price'] / $this->data['Product Units Per Case'], $this->data['Store Currency Code'])).'/'
+                        .$this->data['Product Unit Label'].')';
 
 
                     //$price.=' ('.sprintf(_('%s per %s'), money($this->data['Product Price']/$this->data['Product Units Per Case'], $this->data['Store Currency Code']), $this->data['Product Unit Label']).')';
@@ -337,7 +350,7 @@ class Public_Product {
                     return '';
                 }
 
-                $rrp = preg_replace('/PLN/','zł ',money($this->data['Product RRP'] / $this->data['Product Units Per Case'], $this->data['Store Currency Code']));
+                $rrp = preg_replace('/PLN/', 'zł ', money($this->data['Product RRP'] / $this->data['Product Units Per Case'], $this->data['Store Currency Code']));
                 if ($this->get('Product Units Per Case') != 1) {
                     $rrp .= '/'.$this->data['Product Unit Label'];
                 }
@@ -350,21 +363,17 @@ class Public_Product {
                 if ($this->data['Product Total Acc Quantity Ordered'] > 0) {
 
 
+                    if ($this->data['Product Next Supplier Shipment'] != '') {
+                        $title = _('Expected').': '.strftime("%a %e %b %Y", strtotime($this->data['Product Next Supplier Shipment'].' +0:00'));
 
 
-                    if($this->data['Product Next Supplier Shipment']!=''){
-                        $title=_('Expected').': '.strftime("%a %e %b %Y",strtotime($this->data['Product Next Supplier Shipment'].' +0:00'));
-
-
-
-
-                        $label=_('Out of stock').' <span style="font-size:80%" title="'.$title.'">('.$this->get('Next Supplier Shipment').')</span>';
-                    }else{
-                        $label=_('Out of stock');
+                        $label = _('Out of stock').' <span style="font-size:80%" title="'.$title.'">('.$this->get('Next Supplier Shipment').')</span>';
+                    } else {
+                        $label = _('Out of stock');
                     }
 
 
-                    return  $label;
+                    return $label;
                 } else {
                     return _('Launching soon');
                 }
@@ -401,22 +410,21 @@ class Public_Product {
 
             case 'Product Next Supplier Shipment':
 
-                return ($this->data['Product Availability State']=='0000-00-00 00:00:00'?'':$this->data['Product Availability State']);
+                return ($this->data['Product Availability State'] == '0000-00-00 00:00:00' ? '' : $this->data['Product Availability State']);
 
                 break;
             case 'Next Supplier Shipment':
 
-                return strftime("%e %b %y",strtotime($this->data['Product Next Supplier Shipment'].' +0:00'));
+                return strftime("%e %b %y", strtotime($this->data['Product Next Supplier Shipment'].' +0:00'));
 
                 break;
-
 
 
             case 'Unit Weight':
                 include_once 'utils/natural_language.php';
 
 
-                return  weight($this->data['Product Unit Weight']);
+                return weight($this->data['Product Unit Weight']);
                 break;
 
             case 'Unit Dimensions':
@@ -434,7 +442,6 @@ class Public_Product {
                         $this->data[$this->table_name.' '.$key], true
                     );
                     include_once 'utils/units_functions.php';
-
 
 
                     switch ($data['type']) {
@@ -555,9 +562,9 @@ class Public_Product {
                 }
 
 
-                return   $dimensions;
+                return $dimensions;
 
-break;
+                break;
 
             case 'Materials':
 
@@ -606,7 +613,7 @@ break;
 
 
                 } else {
-                    return  '';
+                    return '';
                 }
                 break;
 
@@ -624,39 +631,40 @@ break;
         $this->webpage = new Public_Webpage('scope', 'Product', $this->id);
     }
 
-    function get_attachments(){
+    function get_attachments() {
 
-        $attachments=array();
-
-
-        $sql=sprintf('select `Attachment Subject Type`, `Attachment Bridge Key`,`Attachment Caption`  from `Product Part Bridge`  left join `Attachment Bridge` AB  on (AB.`Subject Key`=`Product Part Part SKU`)    where AB.`Subject`="Part" and  `Product Part Product ID`=%d  and `Attachment Public`="Yes" and `Attachment Subject Type`="MSDS" ',
-                     $this->id);
+        $attachments = array();
 
 
+        $sql = sprintf(
+            'SELECT `Attachment Subject Type`, `Attachment Bridge Key`,`Attachment Caption`  FROM `Product Part Bridge`  LEFT JOIN `Attachment Bridge` AB  ON (AB.`Subject Key`=`Product Part Part SKU`)    WHERE AB.`Subject`="Part" AND  `Product Part Product ID`=%d  AND `Attachment Public`="Yes" AND `Attachment Subject Type`="MSDS" ',
+            $this->id
+        );
 
-        if ($result2=$this->db->query($sql)) {
+
+        if ($result2 = $this->db->query($sql)) {
             foreach ($result2 as $row2) {
 
-                if($row2['Attachment Subject Type']=='MSDS'){
-                    $label='<span title="'._('Material safety data sheet').'">MSDS</span>';
-                }else{
-                    $label=_('Attachment');
+                if ($row2['Attachment Subject Type'] == 'MSDS') {
+                    $label = '<span title="'._('Material safety data sheet').'">MSDS</span>';
+                } else {
+                    $label = _('Attachment');
                 }
 
 
-                $attachments[]=array(
-                    'id'=>$row2['Attachment Bridge Key'],
-                    'label'=>$label,
-                    'name'=>$row2['Attachment Caption']);
+                $attachments[] = array(
+                    'id'    => $row2['Attachment Bridge Key'],
+                    'label' => $label,
+                    'name'  => $row2['Attachment Caption']
+                );
             }
-        }else {
-            print_r($error_info=$this->db->errorInfo());
+        } else {
+            print_r($error_info = $this->db->errorInfo());
             exit;
         }
 
 
         return $attachments;
-
 
 
     }
@@ -666,8 +674,7 @@ break;
         include_once 'utils/natural_language.php';
 
 
-            $image_subject_type = $this->table_name;
-
+        $image_subject_type = $this->table_name;
 
 
         $sql = sprintf(
@@ -676,16 +683,16 @@ break;
         );
 
 
-       // print $sql;
+        // print $sql;
 
-        $subject_order=0;
+        $subject_order = 0;
 
         //print $sql;
         $images_slideshow = array();
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
 
-                if($row['Image Key']) {
+                if ($row['Image Key']) {
 
                     if ($row['Image Height'] != 0) {
                         $ratio = $row['Image Width'] / $row['Image Height'];

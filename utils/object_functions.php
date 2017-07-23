@@ -17,10 +17,20 @@ function get_object($object_name, $key, $load_other_data = false) {
         return false;
     }
 
+    if($load_other_data!=''){
+        $load_other_data='-'.$load_other_data;
+
+    }
+
+
+
 
     global $account, $db;
 
-    switch (strtolower($object_name)) {
+
+
+
+    switch (strtolower($object_name.$load_other_data)) {
         case 'account':
             include_once 'class.Account.php';
             $object = new Account();
@@ -41,10 +51,19 @@ function get_object($object_name, $key, $load_other_data = false) {
             $object = new Product('id', $key);
             $object->get_webpage();
             break;
+
+
+        case 'product-historic_key':
+            include_once 'class.Product.php';
+            $object = new Product('historic_key', $key);
+            break;
+
         case 'order':
             include_once 'class.Order.php';
             $object = new Order($key);
             break;
+
+
         case 'invoice':
             include_once 'class.Invoice.php';
             $object = new Invoice($key);

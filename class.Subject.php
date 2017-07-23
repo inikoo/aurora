@@ -2076,35 +2076,16 @@ class Subject extends DB_Table {
 
                 $address_fields = array(
 
-                    'Address Recipient'            => $this->get(
-                        $type.' Address Recipient'
-                    ),
-                    'Address Organization'         => $this->get(
-                        $type.' Address Organization'
-                    ),
-                    'Address Line 1'               => $this->get(
-                        $type.' Address Line 1'
-                    ),
-                    'Address Line 2'               => $this->get(
-                        $type.' Address Line 2'
-                    ),
-                    'Address Sorting Code'         => $this->get(
-                        $type.' Address Sorting Code'
-                    ),
-                    'Address Postal Code'          => $this->get(
-                        $type.' Address Postal Code'
-                    ),
-                    'Address Dependent Locality'   => $this->get(
-                        $type.' Address Dependent Locality'
-                    ),
-                    'Address Locality'             => $this->get(
-                        $type.' Address Locality'
-                    ),
-                    'Address Administrative Area'  => $this->get(
-                        $type.' Address Administrative Area'
-                    ),
-                    'Address Country 2 Alpha Code' => $this->get(
-                        $type.' Address Country 2 Alpha Code'
+                    'Address Recipient'            => $this->get($type.' Address Recipient'),
+                    'Address Organization'         => $this->get($type.' Address Organization'),
+                    'Address Line 1'               => $this->get($type.' Address Line 1'),
+                    'Address Line 2'               => $this->get($type.' Address Line 2'),
+                    'Address Sorting Code'         => $this->get($type.' Address Sorting Code'),
+                    'Address Postal Code'          => $this->get($type.' Address Postal Code'),
+                    'Address Dependent Locality'   => $this->get($type.' Address Dependent Locality'),
+                    'Address Locality'             => $this->get($type.' Address Locality'),
+                    'Address Administrative Area'  => $this->get($type.' Address Administrative Area'),
+                    'Address Country 2 Alpha Code' => $this->get($type.' Address Country 2 Alpha Code'
                     ),
 
 

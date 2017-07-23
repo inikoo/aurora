@@ -2,9 +2,24 @@
 {assign invoices $order->get_invoices('objects')}
 {assign payments $order->get_payments('objects')}
 
-<div class="timeline_horizontal with_time">
+<div class="timeline_horizontal with_time  {if $order->get('Order Current Dispatch State')=='Cancelled'}hide{/if}  ">
+
+    <ul class="timeline hide" id="timeline">
+        <li id="submitted_node" class="li {if $order->get('State Index')>=30}complete{/if}">
+            <div class="label">
+                <span class="state ">{t}Submitted{/t}</span>
+            </div>
+            <div class="timestamp">
+                <span class="Order_Submitted_Date">&nbsp;{$order->get('Submitted by Customer Date')}</span> <span
+                        class="start_date">{$order->get('Created Date')}</span>
+            </div>
+            <div class="dot">
+            </div>
+        </li>
+    </ul>
+
     {foreach from=$deliveries item=dn name=delivery_notes}
-    <ul class="timeline" id="timeline">
+    <ul class="timeline hide" id="timeline">
         <li id="submitted_node" class="li {if $order->get('State Index')>=30}complete{/if}">
             <div class="label">
                 <span class="state ">{t}Submitted{/t}</span>
@@ -74,6 +89,36 @@
     {/foreach}
 </div>
 
+
+<div class="timeline_horizontal  {if $order->get('Order Current Dispatch State')!='Cancelled'}hide{/if}">
+    <ul class="timeline" id="timeline">
+        <li id="submitted_node" class="li complete">
+            <div class="label">
+                <span class="state ">{t}Submitted{/t}</span>
+            </div>
+            <div class="timestamp">
+                <span class="Purchase_Order_Submitted_Date">&nbsp;{$order->get('Submitted Date')}</span> <span
+                        class="start_date">{$order->get('Created Date')} </span>
+            </div>
+            <div class="dot">
+            </div>
+        </li>
+
+        <li id="send_node" class="li  cancelled">
+            <div class="label">
+                <span class="state ">{t}Cancelled{/t} <span></i></span></span>
+            </div>
+            <div class="timestamp">
+                <span class="Cancelled_Date">{$order->get('Cancelled Date')} </span>
+            </div>
+            <div class="dot">
+            </div>
+        </li>
+
+
+    </ul>
+</div>
+
 <div id="order" class="order" style="display: flex;" data-object="{$object_data}" order_key="{$order->id}">
     <div class="block" style=" align-items: stretch;flex: 1">
         <div class="data_container" style="padding:5px 10px">
@@ -82,18 +127,17 @@
                         onclick="change_view('customers/{$order->get('Order Store Key')}/{$order->get('Order Customer Key')}')"
                         class="button Order_Customer_Name">{$order->get('Order Customer Name')}</span> <span
                         onclick="change_view('customers/{$order->get('Order Store Key')}/{$order->get('Order Customer Key')}')"
-                        class="link Order_Customer_Key">{$order->get('Order Customer Key')}</span>
+                        class="link Order_Customer_Key">{$order->get('Order Customer Key')|string_format:"%05d"}</span>
             </div>
             <div class="data_field  " style="padding:10px 0px 20px 0px;">
                 <div style="float:left;padding-bottom:20px;padding-right:20px" class="Delivery_Address">
-                    <div style="margin-bottom:10px"><i class="fa fa-truck button" aria-hidden="true"
-                        "></i>{t}Address{/t}</div>
-                    <div class="small" style="max-width: 140px;">{$order->get('Order XHTML Ship Tos')}</div>
+                    <div style="margin-bottom:10px"><i class="fa fa-truck button" aria-hidden="true""></i>{t}Deliver to{/t}</div>
+                    <div class="small" style="max-width: 140px;">{$order->get('Order Delivery Address Formatted')}</div>
                 </div>
                 <div style="float:right;padding-bottom:20px;p" class="Billing_Address">
                     <div style="margin-bottom:10px"><i class="fa fa-dollar button" aria-hidden="true"
-                        "></i>{t}Address{/t}</div>
-                    <div class="small" style="max-width: 140px;">{$order->get('Order XHTML Billing Tos')}</div>
+                        "></i>{t}Billed to{/t}</div>
+                    <div class="small" style="max-width: 140px;">{$order->get('Order Invoice Address Formatted')}</div>
                 </div>
                 <div style="clear:both">
                 </div>
@@ -108,7 +152,7 @@
         <div class="state" style="height:30px;margin-bottom:10px;position:relative;top:-5px">
             <div id="back_operations">
                 <div id="delete_operations"
-                     class="order_operation {if $order->get('Order State')!='InProcess'}hide{/if}">
+                     class="order_operation {if $order->get('Order Current Dispatch State')!='InProcess'}hide{/if}">
                     <div class="square_button left" xstyle="padding:0;margin:0;position:relative;top:-5px"
                          title="{t}delete{/t}">
                         <i class="fa fa-trash very_discreet " aria-hidden="true"
@@ -132,7 +176,7 @@
                     </div>
                 </div>
                 <div id="cancel_operations"
-                     class="order_operation {if $order->get('Order State')=='InProcess'}hide{/if}">
+                     class="order_operation {if $order->get('Order Current Dispatch State')=='Cancelled'}hide{/if}">
                     <div class="square_button left" title="{t}Cancel{/t}">
                         <i class="fa fa-minus-circle error " aria-hidden="true"
                            onclick="toggle_order_operation_dialog('cancel')"></i>
@@ -140,20 +184,25 @@
                             <tr class="top">
                                 <td colspan="2">{t}Cancel order{/t}</td>
                             </tr>
-                            <tr class="changed">
-                                <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true"
-                                       onclick="close_dialog('cancel')"></i></td>
-                                <td class="aright"><span id="received_save_buttons" class="error save button"
-                                                         onclick="save_order_operation('cancel','Cancelled')"><span
-                                                class="label">{t}Cancel{/t}</span> <i class="fa fa-cloud fa-fw  "
-                                                                                      aria-hidden="true"></i></span>
+                            <tr class="changed buttons">
+                                <td>
+                                    <i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('cancel')"></i>
+                                </td>
+                                <td class="aright">
+                                    <span
+                                            data-data='{ "field": "Order Current Dispatch State","value": "Cancelled","dialog_name":"cancel"}'
+                                            id="cancel_save_buttons" class="error save button"
+                                            onclick="save_order_operation(this)">
+                                        <span class="label">{t}Cancel{/t}</span>
+                                        <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i>
+                                    </span>
                                 </td>
                             </tr>
                         </table>
                     </div>
                 </div>
                 <div id="undo_submit_operations"
-                     class="order_operation {if $order->get('Order State')!='Submitted'}hide{/if}">
+                     class="order_operation {if $order->get('Order Current Dispatch State')!='Submitted'}hide{/if}">
                     <div class="square_button left" title="{t}Undo submit{/t}">
 												<span class="fa-stack"
                                                       onclick="toggle_order_operation_dialog('undo_submit')">
@@ -178,7 +227,7 @@
                         </table>
                     </div>
                 </div>
-                <div id="undo_send_operations" class="order_operation {if $order->get('Order State')!='Send'}hide{/if}">
+                <div id="undo_send_operations" class="order_operation {if $order->get('Order Current Dispatch State')!='Send'}hide{/if}">
                     <div class="square_button left" xstyle="padding:0;margin:0;position:relative;top:-5px"
                          title="{t}Unmark as send{/t}">
 						<span class="fa-stack" onclick="toggle_order_operation_dialog('undo_send')">
@@ -205,7 +254,7 @@
                   class="Order_State"> {$order->get('State')} </span>
             <div id="forward_operations">
                 <div id="submit_operations"
-                     class="order_operation {if $order->get('Order State')!='InProcess'}hide{/if}">
+                     class="order_operation {if $order->get('Order Current Dispatch State')!='InProcess'}hide{/if}">
                     <div id="submit_operation"
                          class="square_button right {if $order->get('Order Number Items')==0}hide{/if} "
                          title="{t}Submit{/t}">
@@ -308,7 +357,7 @@
                 <div id="forward_operations">
 
                     <div id="received_operations"
-                         class="order_operation {if !($order->get('Order State')=='Submitted' or  $order->get('Order State')=='Send') }hide{/if}">
+                         class="order_operation {if !($order->get('Order Current Dispatch State')=='Submitted' or  $order->get('Order Current Dispatch State')=='Send') }hide{/if}">
                         <div class="square_button right" style="padding:0;margin:0;position:relative;top:0px"
                              title="{t}Input delivery note{/t}">
                             <i class="fa fa-plus" aria-hidden="true" onclick="show_create_delivery()"></i>
@@ -370,7 +419,7 @@
     <div class="block " style="align-items: stretch;flex: 1 ">
         <table border="0" class="totals" style="position:relative;top:-5px">
 
-            <tr>_
+            <tr>
                 <td class="label">{t}Items{/t}</td>
                 <td class="aright Items_Net_Amount">{$order->get('Items Net Amount')}</td>
             </tr>

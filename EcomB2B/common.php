@@ -37,8 +37,6 @@ $smarty->clearAllCache();
 session_start();
 
 
-
-
 if (!array_key_exists('website_key', $_SESSION) or !$_SESSION['website_key']) {
 
     include('utils/find_website_key.include.php');
@@ -372,8 +370,6 @@ $language = substr($site_locale, 0, 2);
         if (empty($_SESSION['customer_key']) or empty($_SESSION['website_user_key']) or empty($_SESSION['website_user_log_key'])) {
 
 
-
-
             session_regenerate_id();
             session_destroy();
             unset($_SESSION);
@@ -410,8 +406,6 @@ $language = substr($site_locale, 0, 2);
                 header('Location: /index.php');
                 exit;
             }
-
-
 
 
             if (empty($_COOKIE['rmb'])) {
@@ -480,22 +474,37 @@ $language = substr($site_locale, 0, 2);
     if ($logged_in) {
 
 
-
-        if(!isset($website_user)){
-            $website_user = get_object('User',$_SESSION['website_user_key']);
+        if (!isset($website_user)) {
+            $website_user = get_object('User', $_SESSION['website_user_key']);
 
         }
 
-        if(!isset($customer)){
-            $customer = get_object('Customer',$_SESSION['customer_key']);
+        if (!isset($customer)) {
+            $customer = get_object('Customer', $_SESSION['customer_key']);
         }
 
 
         $smarty->assign('website_user', $website_user);
         $smarty->assign('customer', $customer);
+
+
+        $order_key = $customer->get_order_in_process_key();
+
+        if ($order_key) {
+            $order = get_object('Order', $order_key);
+            if($order->id){
+                $smarty->assign('order', $order);
+            }
+
+
+        }
+
+
+    } else {
+        $order_key = 0;
     }
 
-
+    $smarty->assign('order_key', $order_key);
     $smarty->assign('website', $website);
     $smarty->assign('store', $store);
     $smarty->assign('footer_data', $website->get('Footer Data'));

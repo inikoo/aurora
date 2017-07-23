@@ -40,7 +40,7 @@ cell: Backgrid.HtmlCell.extend({
 
 {
 name: "cost",
-label: "{t}Cost{/t}",
+label: "{t}Unit cost{/t}",
 editable: false,
 sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
@@ -48,7 +48,7 @@ headerCell: integerHeaderCell
 
 }, {
 name: "delivered_cost",
-label: "{t}Delivered Cost{/t}",
+label: "{t}Delivered unit cost{/t}",
 editable: false,
 sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),

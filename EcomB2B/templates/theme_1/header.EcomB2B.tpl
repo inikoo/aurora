@@ -302,8 +302,19 @@
                     <div id="menu_control_panel" >
                         {if $logged_in}
                             <p>
-                                <i id="logout" class="fa fa-sign-out fa-flip-horizontal button " style="cursor:pointer"   title="{t}Log out{/t}"  aria-hidden="true"></i>
+                                <i id="logout" class="fa fa-sign-out fa-flip-horizontal button " style="cursor:pointer;margin-right:20px"   title="{t}Log out{/t}"  aria-hidden="true"></i>
+
+                                <i class="fa fa-user fa-flip-horizontal button " style="cursor:pointer;margin-right:10px"   title="{t}Profile{/t}"  aria-hidden="true"></i>
+                                <i class="fa fa-heart fa-flip-horizontal button " style="cursor:pointer;margin-right:20px"   title="{t}My favorites{/t}"  aria-hidden="true"></i>
+                                <a href="basket.sys" class="button" >
+                                    <span  id="header_order_products">{$order->get('Products')}</span>
+                                    <i style="padding-right:5px;padding-left:5px" class="fa fa-shopping-cart fa-flip-horizontal  " style="cursor:pointer"   title="{t}Basket{/t}"  aria-hidden="true"></i>
+                                    <span id="header_order_total_amount" style="padding-right:10px" id="basket_total">{$order->get('Total')}</span>
+                                </a>
+
+
                             </p>
+
                         {else}
                             <p>
                             <a href="login.sys" class="button" ><i class="fa fa-sign-in" aria-hidden="true"></i> {t}Login{/t}</a>

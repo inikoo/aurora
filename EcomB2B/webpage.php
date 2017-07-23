@@ -90,6 +90,7 @@ elseif ($webpage->get('Webpage Template Filename') == 'welcome') {
         exit;
     }
 
+    $template = $theme.'/webpage_blocks.'.$theme.'.'.$website->get('Website Type').'.tpl';
 
 }
 elseif ($webpage->get('Webpage Template Filename') == 'categories_showcase') {

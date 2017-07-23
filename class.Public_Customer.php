@@ -38,13 +38,13 @@ class Public_Customer extends DBW_Table {
             return;
         }
 
-        $this->get_data($arg1, $arg2,$arg3);
+        $this->get_data($arg1, $arg2, $arg3);
 
 
     }
 
 
-    function get_data($key, $id,$id2=false) {
+    function get_data($key, $id, $id2 = false) {
 
         if ($key == 'id') {
             $sql = sprintf(
@@ -53,7 +53,7 @@ class Public_Customer extends DBW_Table {
 
         } elseif ($key == 'key_store') {
             $sql = sprintf(
-                "SELECT * FROM `Customer Dimension` WHERE `Customer Key`=%d  and `Cusstomer Store Key`=%d ", $id,$id2
+                "SELECT * FROM `Customer Dimension` WHERE `Customer Key`=%d  AND `Cusstomer Store Key`=%d ", $id, $id2
             );
 
         } else {
@@ -125,9 +125,6 @@ class Public_Customer extends DBW_Table {
     function create($raw_data, $address_raw_data) {
 
 
-
-
-
         $this->data = $this->base_data();
         foreach ($raw_data as $key => $value) {
             if (array_key_exists($key, $this->data)) {
@@ -173,9 +170,9 @@ class Public_Customer extends DBW_Table {
                 'History Abstract' => sprintf(_('Customer %s registered'), $this->get('Name')),
                 'History Details'  => '',
                 'Action'           => 'created',
-                'Subject'=>'Customer',
-                'Subject Key'=>$this->id,
-                'Author Name'=>_('Customer')
+                'Subject'          => 'Customer',
+                'Subject Key'      => $this->id,
+                'Author Name'      => _('Customer')
             );
 
             $this->add_subject_history(
@@ -189,9 +186,6 @@ class Public_Customer extends DBW_Table {
             $this->error = true;
             $this->msg   = 'Error inserting customer record';
         }
-
-
-
 
 
     }
@@ -280,8 +274,7 @@ class Public_Customer extends DBW_Table {
 
                 if ($type == 'Contact' and $old_checksum == $this->get(
                         $this->table_name.' Invoice Address Checksum'
-                    )
-                ) {
+                    )) {
                     $this->update_address('Invoice', $fields, $options);
                 }
 
@@ -295,6 +288,20 @@ class Public_Customer extends DBW_Table {
     function get($key) {
 
         switch ($key) {
+
+            case 'Fiscal Name':
+            case 'Invoice Name':
+
+                if ($this->data['Customer Invoice Address Organization'] != '') {
+                    return $this->data['Customer Invoice Address Organization'];
+                }
+                if ($this->data['Customer Invoice Address Recipient'] != '') {
+                    return $this->data['Customer Invoice Address Recipient'];
+                }
+
+                return $this->data['Customer Name'];
+
+                break;
 
 
             default:
@@ -475,6 +482,73 @@ class Public_Customer extends DBW_Table {
         }
 
         return $greeting;
+
+    }
+
+
+    function create_order($raw_data=array()) {
+
+        include_once 'class.Order.php';
+        global $account;
+
+        $order_data = array(
+
+            'Customer Key'                  => $this->id,
+            'Order Original Data MIME Type' => 'application/aurora',
+            'Order Type'                    => 'Order',
+            'Order Email'                   => $this->get('Customer Plain Email'),
+            'editor'                        => $this->editor
+        );
+
+
+        if(!empty($raw_data['Order Current Dispatch State'])){
+            $order_data['Order Current Dispatch State'] =$raw_data['Order Current Dispatch State'];
+        }
+
+
+        $order = new Order('new', $order_data);
+
+
+        if ($order->error) {
+            $this->error = true;
+            $this->msg   = $order->msg;
+
+            return $order;
+        }
+
+
+        require_once 'utils/new_fork.php';
+        list($fork_key, $msg) = new_fork(
+            'housekeeping', array(
+            'type'        => 'order_created',
+            'subject_key' => $order->id,
+            'editor'      => $order->editor
+        ), $account->get('Account Code'), $this->db
+        );
+
+        return $order;
+
+    }
+
+    function get_number_of_orders() {
+        $sql    = sprintf(
+            "SELECT count(*) AS number FROM `Order Dimension` WHERE `Order Customer Key`=%d ", $this->id
+        );
+        $number = 0;
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $number = $row['number'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        return $number;
+
 
     }
 
