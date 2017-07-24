@@ -1782,17 +1782,29 @@ function delivery_checking_items($_data, $db, $user) {
                     $data['Purchase Order Quantity']
                 ),
                 'qty'                       => number($quantity),
+
+
+
+
+
+
                 'c_sko_u'                   => sprintf(
-                    '<span  barcode="%s" data-metadata=\'{"qty":%d}\' onClick="copy_qty(this)" class="button part_sko_item"  ><span class="very_discreet">%s/</span> <span>%s</span> <span class="super_discreet">/%s</span></span>',
+                    '<span    data-barcode_settings=\'{"reference":"%s","description":"%s" ,"image_src":"%s" ,"qty":"%s" ,"cartons":"%s"  , "skos":"%s"  ,"units":"%s"}\'    barcode="%s" data-metadata=\'{"qty":%d}\' onClick="copy_qty(this)" class="button part_sko_item"  ><span class="very_discreet">%s/</span> <span>%s</span> <span class="super_discreet">/%s</span></span>',
+
+                    $data['Part Reference'],
+                    $data['Part Package Description'],
+                    $data['Part SKO Image Key'],
+                    $data['Supplier Part Packages Per Carton'] * $data['Supplier Delivery Quantity'],
+                    number($data['Supplier Delivery Quantity']),
+                    number($data['Supplier Part Packages Per Carton'] * $data['Supplier Delivery Quantity']),
+                    number($data['Supplier Part Packages Per Carton'] * $data['Part Units Per Package'] * $data['Supplier Delivery Quantity']),
 
                     $data['Part SKO Barcode'],
                     $data['Supplier Part Packages Per Carton'] * $data['Supplier Delivery Quantity'],
 
-                    number($data['Supplier Delivery Quantity']), number(
-                        $data['Supplier Part Packages Per Carton'] * $data['Supplier Delivery Quantity']
-                    ), number(
-                        $data['Supplier Part Packages Per Carton'] * $data['Part Units Per Package'] * $data['Supplier Delivery Quantity']
-                    )
+                    number($data['Supplier Delivery Quantity']),
+                    number($data['Supplier Part Packages Per Carton'] * $data['Supplier Delivery Quantity']),
+                    number($data['Supplier Part Packages Per Carton'] * $data['Part Units Per Package'] * $data['Supplier Delivery Quantity'])
                 ),
                 'placement'                 => $placement
             );

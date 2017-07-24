@@ -238,7 +238,7 @@
                                 <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true"
                                        onclick="close_dialog('undo_submit')"></i></td>
                                 <td class="aright"><span
-                                            data-data='{  "field": "Order State","value": "InProcess","dialog_name":"undo_submit"}'
+                                            data-data='{  "field": "Order Current Dispatch State","value": "InProcess","dialog_name":"undo_submit"}'
                                             id="undo_submit_save_buttons" class="valid save button"
                                             onclick="save_order_operation(this)"><span class="label">{t}Save{/t}</span> <i
                                                 class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>
@@ -272,8 +272,10 @@
             <span style="float:left;padding-left:10px;padding-top:5px"
                   class="Order_State"> {$order->get('State')} </span>
             <div id="forward_operations">
+
+
                 <div id="submit_operations"
-                     class="order_operation {if $order->get('Order Current Dispatch State')!='InProcess'}hide{/if}">
+                     class="order_operation {if $order->get('Order Current Dispatch State')!='In Process'}hide{/if}">
                     <div id="submit_operation"
                          class="square_button right {if $order->get('Order Number Items')==0}hide{/if} "
                          title="{t}Submit{/t}">
@@ -287,7 +289,7 @@
                                 <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true"
                                        onclick="close_dialog('submit')"></i></td>
                                 <td class="aright"><span
-                                            data-data='{  "field": "Order State","value": "Submitted","dialog_name":"submit"}'
+                                            data-data='{  "field": "Order Current Dispatch State","value": "Submitted by Customer","dialog_name":"submit"}'
                                             id="submit_save_buttons" class="valid save button"
                                             onclick="save_order_operation(this)"><span class="label">{t}Save{/t}</span> <i
                                                 class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>
@@ -322,6 +324,8 @@
 
     </div>
     <div class="block " style="align-items: stretch;flex: 1 ">
+
+        {$order->get('State Index')}
 
         <div class="delivery_notes" style="margin-bottom:10px;position:relative;top:-5px;">
             <div id="create_delivery"
