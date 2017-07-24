@@ -4,6 +4,94 @@
  Version 3.0*/
 
 
+
+
+function edit_image_scope(image_bridge_key) {
+
+
+    var cell=$('#edit_image_scope_' + image_bridge_key)
+    $('#edit_image_scope').removeClass('hide').offset({
+        top:cell.offset().top -5,
+        left:cell.offset().left -200  }).attr('image_bridge_key',image_bridge_key)
+
+}
+
+
+function edit_image_caption(image_bridge_key) {
+
+
+    var cell=$('#edit_image_caption_' + image_bridge_key)
+
+
+
+
+    $('#edit_image_caption').removeClass('hide').offset({
+        top:cell.offset().top -5,
+        left:cell.offset().left -200  }).data('item',$(this)).find('input').val(cell.find('.caption').html()).focus().attr('image_bridge_key',image_bridge_key)
+
+
+}
+
+
+function save_image_scope(value) {
+
+    image_bridge_key=$('#edit_image_scope').attr('image_bridge_key')
+
+    // tr.addClass('deleted_tr')
+
+    var request = '/ar_edit.php?tipo=edit_image&field=scope&image_bridge_key=' + image_bridge_key+'&value='+value
+
+
+    console.log(request)
+
+    $.getJSON(request, function (data) {
+
+
+        if (data.state == 200) {
+
+            console.log(data)
+
+            $('#edit_image_scope').addClass('hide')
+
+            $('#edit_image_scope_'+ image_bridge_key).html(data.value)
+
+        } else if (data.state == 400) {
+
+        }
+    })
+}
+
+
+
+function save_image_caption(element) {
+
+    image_bridge_key=$(element).closest('div').find('input').attr('image_bridge_key')
+
+    // tr.addClass('deleted_tr')
+    //return;
+    var request = '/ar_edit.php?tipo=edit_image&field=caption&image_bridge_key=' + image_bridge_key+'&value='+$(element).closest('div').find('input').val()
+
+
+    console.log(request)
+
+    $.getJSON(request, function (data) {
+
+
+        if (data.state == 200) {
+
+            console.log(data)
+
+            $('#edit_image_caption').addClass('hide')
+
+            $('#edit_image_caption_'+ image_bridge_key).find('.caption').html(data.value)
+
+        } else if (data.state == 400) {
+
+        }
+    })
+}
+
+
 function delete_image(image_bridge_key) {
 
     var tr = $('#delete_image_button_' + image_bridge_key).closest('tr')

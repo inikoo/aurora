@@ -39,7 +39,7 @@ function scanned_barcode_in_supplier_delivery_note(value) {
 
             var found = false;
 
-            $('#table .picking').each(function (i, obj) {
+            $('#table .part_sko_item').each(function (i, obj) {
 
 
                 console.log('bad >' + $(obj).attr('barcode') + '< >' + value + '<')
@@ -47,9 +47,9 @@ function scanned_barcode_in_supplier_delivery_note(value) {
                     console.log($(obj).attr('barcode') + ' ' + value)
                     var settings = $(obj).closest('span').data('settings')
                     console.log(settings)
-                    $('#picking_barcode_part_reference').html(settings.reference)
-                    $('#picking_barcode_part_description').html(atob(settings.description))
-                    $('#picking_barcode_part_image_src').html(settings.image_src)
+                    $('#booking_in_barcode_part_reference').html(settings.reference)
+                    $('#booking_in_barcode_part_description').html(atob(settings.description))
+                    $('#booking_in_barcode_part_image_src').html(settings.image_src)
                     found=true;
                     return false
                 }
@@ -67,11 +67,21 @@ function scanned_barcode_in_supplier_delivery_note(value) {
                 picking_barcode_feedback.find('.not_found_barcode_number').html(value)
 
 
-
-                var request = '/ar_inventory.php?tipo=part&barcode=' + value
+                var request = '/ar_find.php?tipo=find_object&scope=part&field=barcode&parent=warehouse&parent_key='+state.current_warehouse+'&query=' + value+'&state=' + JSON.stringify(state)
                 console.log(request)
                 $.getJSON(request, function (data) {
 
+
+if(data.results==1){
+       $('#booking_in_barcode_feedback .assign_barcode').addClass('hide')
+    $('#booking_in_barcode_feedback .find_outside_order').removeClass('hide')
+
+}else{
+
+    $('#booking_in_barcode_feedback .assign_barcode').removeClass('hide')
+    $('#booking_in_barcode_feedback .find_outside_order').addClass('hide')
+
+}
 
 
 

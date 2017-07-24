@@ -66,7 +66,7 @@ function get_placement_locations_select(object) {
 
     object.removeClass('invalid')
 
-    var request = '/ar_find.php?tipo=find_object&query=' + fixedEncodeURIComponent(object.val()) + '&scope=locations&state=' + JSON.stringify(state)
+    var request = '/ar_find.php?tipo=find_objects&query=' + fixedEncodeURIComponent(object.val()) + '&scope=locations&state=' + JSON.stringify(state)
     console.log(request)
     $.getJSON(request, function (data) {
 

@@ -53,6 +53,9 @@ function images($_data, $db, $user) {
         = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
 
+    //print_r($_data);
+
+
   //  print $sql;
 
     $adata = array();
@@ -90,6 +93,10 @@ function images($_data, $db, $user) {
             }
 
 
+          //  $operations .= sprintf(
+          //      '<span class="button" id="edit_image_%d" onClick="change_view(\'image/%d\')"><i class="fa fa-pencil"></i> %s</span><br>', $data['Image Subject Key'], $data['Image Subject Key'], _('Edit')
+          //  );
+
             $operations .= sprintf(
                 '<span class="button" id="delete_image_button_%d" onClick="delete_image(%d)"><i class="fa fa-trash"></i> %s</span>', $data['Image Subject Key'], $data['Image Subject Key'], _('Delete')
             );
@@ -123,6 +130,24 @@ function images($_data, $db, $user) {
             }
 
 
+
+            if($data['Image Subject Object']=='Part'){
+                $object_image_scope=sprintf('<span id="edit_image_scope_%d" class="button" onclick="edit_image_scope(%d)" >%s</span>', $data['Image Subject Key'], $data['Image Subject Key'],$object_image_scope);
+
+            }
+
+
+
+            if($data['Image Subject Image Caption']!=''){
+                $caption='<span class="caption">'.$data['Image Subject Image Caption'].'</span>';
+            }else{
+                $caption='<i class="fa fa-plus" aria-hidden="true"></i><span class="caption"></span>';
+            }
+
+
+            $caption=sprintf('<span id="edit_image_caption_%d" class="button" onclick="edit_image_caption(%d)" >%s</span>', $data['Image Subject Key'], $data['Image Subject Key'],$caption);
+
+
             $adata[] = array(
                 'id'          => (integer)$data['Image Subject Key'],
                 'image'       => sprintf(
@@ -137,7 +162,7 @@ function images($_data, $db, $user) {
                 ),
 
                 'filename'    => $data['Image Filename'],
-                'caption'     => $data['Image Subject Image Caption'],
+                'caption'     => $caption,
                 'size'        => file_size($data['Image File Size']),
                 'dimensions'  => $data['Image Width'].'x'.$data['Image Height'],
                 'operations'  => $operations,

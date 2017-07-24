@@ -757,24 +757,8 @@ class Part extends Asset {
                 break;
             case 'Package Description Image':
 
-                $image = '';
 
-                $sql = sprintf(
-                    'SELECT `Image Subject Image Key`  FROM `Image Subject Bridge` WHERE `Image Subject Object` = "Part" AND `Image Subject Object Key` =%d AND `Image Subject Object Image Scope`="SKO"  ',
-                    $this->id
-                );
-
-
-                if ($result = $this->db->query($sql)) {
-                    foreach ($result as $row) {
-                        $image .= sprintf('<img src="/image_root.php?id=%d&size=thumbnail"> ', $row['Image Subject Image Key']);
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
-                }
-
+                $image = sprintf('<img src="/image_root.php?id=%d&size=thumbnail"> ', $this->data['Part SKO Image Key']);
 
                 return $image;
 
@@ -968,6 +952,34 @@ class Part extends Asset {
 
         return $categories;
 
+
+    }
+
+
+    function update_sko_image_key(){
+
+
+
+        $image_key = '';
+
+        $sql = sprintf(
+            'SELECT `Image Subject Image Key`  FROM `Image Subject Bridge` WHERE `Image Subject Object` = "Part" AND `Image Subject Object Key` =%d AND `Image Subject Object Image Scope`="SKO"  ',
+            $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $image_key=$row['Image Subject Image Key'];
+                break;
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+        $this->update(array('Part SKO Image Key'=>$image_key),'no_history');
 
     }
 

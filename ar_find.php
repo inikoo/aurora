@@ -60,7 +60,56 @@ switch ($tipo) {
         new_agent_delivery_options($db, $data);
 
         break;
+
     case 'find_object':
+
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'query'      => array('type' => 'string'),
+                         'scope'      => array('type' => 'string'),
+                         'field'      => array(
+                             'type'     => 'string',
+                             'optional' => true
+                         ),
+                         'parent'     => array(
+                             'type'     => 'string',
+                             'optional' => true
+                         ),
+                         'parent_key' => array(
+                             'type'     => 'numeric',
+                             'optional' => true
+                         ),
+                         'state'      => array('type' => 'json array'),
+                         'metadata'   => array(
+                             'type'     => 'json array',
+                             'optional' => true
+                         )
+                     )
+        );
+
+        $data['user'] = $user;
+
+        switch ($data['scope']) {
+
+            case 'part':
+                find_part($db, $account, $memcache_ip, $data);
+                break;
+            case 'location':
+                find_location($db, $account, $memcache_ip, $data);
+                break;
+            default:
+                $response = array(
+                    'state' => 405,
+                    'resp'  => 'Scope not found '.$data['scope']
+                );
+                echo json_encode($response);
+                exit;
+        }
+
+
+        break;
+
+    case 'find_objects':
 
         $data = prepare_values(
             $_REQUEST, array(
@@ -89,15 +138,24 @@ switch ($tipo) {
         $data['user'] = $user;
 
         switch ($data['scope']) {
+
+            case 'part_in_supplier_delivery':
+
+                find_parts($db, $account, $memcache_ip, $data);
+
+                break;
+
             case 'item':
 
                 if ($data['metadata']['scope'] == 'supplier_part') {
                     find_supplier_parts($db, $account, $memcache_ip, $data);
 
-                }else if ($data['metadata']['scope'] == 'product') {
-                find_products($db, $account, $memcache_ip, $data);
+                } else {
+                    if ($data['metadata']['scope'] == 'product') {
+                        find_products($db, $account, $memcache_ip, $data);
 
-            }
+                    }
+                }
 
 
                 break;
@@ -610,7 +668,7 @@ function find_locations($db, $account, $memcache_ip, $data) {
         ' and `Location Warehouse Key` in (%s)', join(',', $user->warehouses)
     );
 
-    $memcache_fingerprint = $account->get('Account Code').'FIND_LOCATION'.md5(
+    $memcache_fingerprint = $account->get('Account Code').'FIND_LOCATIONS'.md5(
             $q
         );
 
@@ -889,24 +947,25 @@ function find_products($db, $account, $memcache_ip, $data) {
     $where = '';
 
 
-
-    if(isset($data['metadata']['parent'])){
+    if (isset($data['metadata']['parent'])) {
         switch ($data['metadata']['parent']) {
             case 'Store':
             case 'store':
 
-            $where = sprintf(' and `Product Store Key`=%d', $data['metadata']['parent_key']
+                $where = sprintf(
+                    ' and `Product Store Key`=%d', $data['metadata']['parent_key']
                 );
                 break;
             default:
 
                 break;
         }
-    }else{
+    } else {
 
         switch ($data['parent']) {
             case 'store':
-                $where = sprintf(' and `Product Store Key`=%d', $data['parent_key']
+                $where = sprintf(
+                    ' and `Product Store Key`=%d', $data['parent_key']
                 );
                 break;
             default:
@@ -919,9 +978,6 @@ function find_products($db, $account, $memcache_ip, $data) {
     if (!isset($data['metadata']['options']['for_order'])) {
         $where .= "  and  `Product Status` not in ( 'Suspended','Discontinued')  ";
     }
-
-
-
 
 
     $memcache_fingerprint = $account->get('Account Code').'FIND_PRODUCTS'.md5(
@@ -958,10 +1014,9 @@ function find_products($db, $account, $memcache_ip, $data) {
 
 
         $sql = sprintf(
-            "select `Product ID`,`Product Code`,`Product Name`,`Product Current Key` from `Product Dimension` where  `Product Code` like '%s%%' %s order by `Product Code` limit $max_results ", $q, $where
+            "select `Product ID`,`Product Code`,`Product Name`,`Product Current Key` from `Product Dimension` where  `Product Code` like '%s%%' %s order by `Product Code` limit $max_results ", $q,
+            $where
         );
-
-
 
 
         if ($result = $db->query($sql)) {
@@ -980,8 +1035,8 @@ function find_products($db, $account, $memcache_ip, $data) {
                 }
 
                 $candidates_data[$row['Product ID']] = array(
-                    'Product Code' => $row['Product Code'],
-                    'Product Name' => $row['Product Name'],
+                    'Product Code'        => $row['Product Code'],
+                    'Product Name'        => $row['Product Name'],
                     'Product Current Key' => $row['Product Current Key']
 
                 );
@@ -991,10 +1046,6 @@ function find_products($db, $account, $memcache_ip, $data) {
             print_r($error_info = $db->errorInfo());
             exit;
         }
-
-
-
-
 
 
         arsort($candidates);
@@ -1018,9 +1069,9 @@ function find_products($db, $account, $memcache_ip, $data) {
         foreach ($candidates as $product_sku => $candidate) {
 
             $results[$product_sku] = array(
-                'code'            => $candidates_data[$product_sku]['Product Code'],
-                'description'     => $candidates_data[$product_sku]['Product Name'],
-                'item_historic_key'     => $candidates_data[$product_sku]['Product Current Key'],
+                'code'              => $candidates_data[$product_sku]['Product Code'],
+                'description'       => $candidates_data[$product_sku]['Product Name'],
+                'item_historic_key' => $candidates_data[$product_sku]['Product Current Key'],
 
                 'value'           => $product_sku,
                 'formatted_value' => $candidates_data[$product_sku]['Product Code']
@@ -1085,7 +1136,7 @@ function find_supplier_parts($db, $account, $memcache_ip, $data) {
     }
 
 
-    $memcache_fingerprint = $account->get('Account Code').'FIND_PART'.md5($q);
+    $memcache_fingerprint = $account->get('Account Code').'FIND_PARTS'.md5($q);
 
     $cache = new Memcached();
     $cache->addServer($memcache_ip, 11211);
@@ -1273,7 +1324,6 @@ function find_special_category($type, $db, $account, $memcache_ip, $data) {
         $where_root_categories = sprintf(' and `Category Branch Type`="Head"  and `Category Scope`="Product"  and `Category Store Key`=%d ', $data['parent_key']);
 
 
-
     } elseif ($type == 'PartFamily') {
         $root_keys             = $account->get('Account Part Family Category Key');
         $where_root_categories = sprintf(' and `Category Root Key`=%d', $root_keys);
@@ -1442,21 +1492,23 @@ function find_special_category($type, $db, $account, $memcache_ip, $data) {
         }
 
 
-            $sql = sprintf(
+        $sql = sprintf(
             "SELECT `Category Code`,`Category Key`,`Category Label`,`Category Root Key` FROM `Category Dimension` C WHERE `Category Key` IN (%s)", $product_keys
         );
 
         if ($result = $db->query($sql)) {
             foreach ($result as $row) {
 
-                $code=$row['Category Code'];
+                $code = $row['Category Code'];
                 if ($type == 'product_categories') {
-                    $code=$row['Category Code'];
+                    $code = $row['Category Code'];
 
-                    if($row['Category Root Key']==$store->get('Store Family Category Key')){
-                        $code.=' (F)';
-                    }else if($row['Category Root Key']==$store->get('Store Department Category Key')){
-                        $code.=' (D)';
+                    if ($row['Category Root Key'] == $store->get('Store Family Category Key')) {
+                        $code .= ' (F)';
+                    } else {
+                        if ($row['Category Root Key'] == $store->get('Store Department Category Key')) {
+                            $code .= ' (D)';
+                        }
                     }
 
 
@@ -1977,8 +2029,7 @@ function find_webpages($db, $account, $memcache_ip, $data) {
 
     if (isset($data['metadata']['exclude']) and count(
             $data['metadata']['exclude']
-        ) > 0
-    ) {
+        ) > 0) {
         $where .= sprintf(
             ' and `Page Key` not in (%s) ', join(',', $data['metadata']['exclude'])
         );
@@ -2033,7 +2084,7 @@ function find_webpages($db, $account, $memcache_ip, $data) {
                 }
 
                 $candidates_data[$row['Page Key']] = array(
-                    'Page Code'        => $row['Page Code'],
+                    'Page Code'    => $row['Page Code'],
                     'Webpage Name' => $row['Webpage Name']
                 );
 
@@ -2114,8 +2165,6 @@ function find_product_webpages($db, $account, $memcache_ip, $data) {
     }
 
 
-
-
     $where = sprintf("  and `Product Status` in ('Active','Discontinuing') ");
     switch ($data['parent']) {
         case 'website':
@@ -2145,8 +2194,7 @@ function find_product_webpages($db, $account, $memcache_ip, $data) {
 
     if (isset($data['metadata']['exclude']) and count(
             $data['metadata']['exclude']
-        ) > 0
-    ) {
+        ) > 0) {
         $where .= sprintf(
             ' and `Product ID` not in (%s) ', join(',', $data['metadata']['exclude'])
         );
@@ -2187,7 +2235,7 @@ function find_product_webpages($db, $account, $memcache_ip, $data) {
             $q, $where
         );
 
-        	//print $sql;
+        //print $sql;
         if ($result = $db->query($sql)) {
             foreach ($result as $row) {
 
@@ -2770,10 +2818,9 @@ function find_families($db, $account, $memcache_ip, $data) {
 
     $where = '';
 
-    if(isset($data['metadata']['parent'])){
+    if (isset($data['metadata']['parent'])) {
         switch ($data['metadata']['parent']) {
             case 'root_key':
-
 
 
                 $where = sprintf(' and `Category Root Key`=%d', $data['metadata']['parent_key']);
@@ -2782,14 +2829,13 @@ function find_families($db, $account, $memcache_ip, $data) {
             case 'store':
 
 
-
                 $where = sprintf(" and `Category Store Key`=%d and  `Category Scope`='Product'  and `Category Branch Type`='Head'", $data['metadata']['parent_key']);
                 break;
             default:
 
                 break;
         }
-    }else{
+    } else {
 
         switch ($data['parent']) {
             case 'store':
@@ -2801,8 +2847,6 @@ function find_families($db, $account, $memcache_ip, $data) {
         }
 
     }
-
-
 
 
     $memcache_fingerprint = $account->get('Account Code').'FIND_PRODUCTS'.md5(
@@ -2842,7 +2886,7 @@ function find_families($db, $account, $memcache_ip, $data) {
             "select `Category Key`,`Category Code`,`Category Label` from `Category Dimension` where   `Category Code` like '%s%%' %s order by `Category Code` limit $max_results ", $q, $where
         );
 
-    //    print $sql;
+        //    print $sql;
 
         if ($result = $db->query($sql)) {
             foreach ($result as $row) {
@@ -2851,16 +2895,16 @@ function find_families($db, $account, $memcache_ip, $data) {
                     $candidates[$row['Category Key']] = 1000;
                 } else {
 
-                    $len_name                       = strlen(
+                    $len_name                         = strlen(
                         $row['Category Key']
                     );
-                    $len_q                          = strlen($q);
-                    $factor                         = $len_q / $len_name;
+                    $len_q                            = strlen($q);
+                    $factor                           = $len_q / $len_name;
                     $candidates[$row['Category Key']] = 500 * $factor;
                 }
 
                 $candidates_data[$row['Category Key']] = array(
-                    'Category Code' => $row['Category Code'],
+                    'Category Code'  => $row['Category Code'],
                     'Category Label' => $row['Category Label']
                 );
 
@@ -2919,6 +2963,359 @@ function find_families($db, $account, $memcache_ip, $data) {
 
 }
 
+
+function find_part($db, $account, $memcache_ip, $data) {
+
+    $cache       = false;
+    $max_results = 5;
+    $user        = $data['user'];
+    $q           = trim($data['query']);
+
+
+    if ($q == '') {
+        $response = array(
+            'state'   => 200,
+            'results' => 0,
+            'data'    => ''
+        );
+        echo json_encode($response);
+
+        return;
+    }
+
+    $memcache_fingerprint = $account->get('Account Code').'FIND_PART'.md5($q);
+
+    $cache = new Memcached();
+    $cache->addServer($memcache_ip, 11211);
+
+
+    if (strlen($q) <= 2) {
+        $memcache_time = 295200;
+    } elseif (strlen($q) <= 3) {
+        $memcache_time = 86400;
+    } elseif (strlen($q) <= 4) {
+        $memcache_time = 3600;
+    } else {
+        $memcache_time = 300;
+
+    }
+
+
+    $results_data = $cache->get($memcache_fingerprint);
+
+
+    if (!$results_data or true) {
+
+
+        $candidates = array();
+
+        $candidates_data = array();
+
+
+        switch ($data['field']) {
+            case 'barcode':
+                $sql = sprintf(
+                    "SELECT `Part SKU`,`Part Reference`,`Part Package Description` FROM `Part Dimension` WHERE  `Part SKO Barcode` =%s  ", prepare_mysql($q)
+                );
+                break;
+            default:
+                $response = array(
+                    'state' => 405,
+                    'resp'  => 'Field not found '.$data['field']
+                );
+                echo json_encode($response);
+                exit;
+
+        }
+
+
+        if ($result = $db->query($sql)) {
+            if ($row = $result->fetch()) {
+
+
+                $part=get_object('Part',$row['Part SKU']);
+
+                $object_data = array(
+                    'reference' => $row['Part Reference'],
+                    'description' => $row['Part SKO Description'],
+                    'image'=>$part->get('Package Description Image')
+
+                );
+
+                $response = array(
+                    'state'   => 200,
+                    'results' => 1,
+                    'data'    => $object_data
+                );
+                echo json_encode($response);
+
+                return;
+            } else {
+                $response = array(
+                    'state'   => 200,
+                    'results' => 0,
+                    'data'    => ''
+                );
+                echo json_encode($response);
+
+                return;
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
+
+                if ($row['Part Reference'] == $q) {
+                    $candidates[$row['Part SKU']] = 1000;
+                } else {
+
+                    $len_name                     = strlen($row['Part SKU']);
+                    $len_q                        = strlen($q);
+                    $factor                       = $len_q / $len_name;
+                    $candidates[$row['Part SKU']] = 500 * $factor;
+                }
+
+                $candidates_data[$row['Part SKU']] = array(
+                    'Part Reference'        => $row['Part Reference'],
+                    'Part Unit Description' => $row['Part Unit Description']
+                );
+
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            exit;
+        }
+
+
+        arsort($candidates);
+
+
+        $total_candidates = count($candidates);
+
+        if ($total_candidates == 0) {
+            $response = array(
+                'state'   => 200,
+                'results' => 0,
+                'data'    => ''
+            );
+            echo json_encode($response);
+
+            return;
+        }
+
+
+        $results = array();
+        foreach ($candidates as $part_sku => $candidate) {
+
+            $results[$part_sku] = array(
+                'code'            => $candidates_data[$part_sku]['Part Reference'],
+                'description'     => $candidates_data[$part_sku]['Part Unit Description'],
+                'value'           => $part_sku,
+                'formatted_value' => $candidates_data[$part_sku]['Part Reference']
+            );
+
+        }
+
+        $results_data = array(
+            'n' => count($results),
+            'd' => $results
+        );
+        $cache->set($memcache_fingerprint, $results_data, $memcache_time);
+
+
+    }
+    $response = array(
+        'state'          => 200,
+        'number_results' => $results_data['n'],
+        'results'        => $results_data['d'],
+        'q'              => $q
+    );
+
+    echo json_encode($response);
+
+}
+
+
+
+function find_location($db, $account, $memcache_ip, $data) {
+
+    $cache       = false;
+    $max_results = 5;
+    $user        = $data['user'];
+    $q           = trim($data['query']);
+
+
+    if ($q == '') {
+        $response = array(
+            'state'   => 200,
+            'results' => 0,
+            'data'    => ''
+        );
+        echo json_encode($response);
+
+        return;
+    }
+
+    $memcache_fingerprint = $account->get('Account Code').'FIND_LOCATION'.md5($q);
+
+    $cache = new Memcached();
+    $cache->addServer($memcache_ip, 11211);
+
+
+    if (strlen($q) <= 2) {
+        $memcache_time = 295200;
+    } elseif (strlen($q) <= 3) {
+        $memcache_time = 86400;
+    } elseif (strlen($q) <= 4) {
+        $memcache_time = 3600;
+    } else {
+        $memcache_time = 300;
+
+    }
+
+
+    $results_data = $cache->get($memcache_fingerprint);
+
+
+    if (!$results_data or true) {
+
+
+        $candidates = array();
+
+        $candidates_data = array();
+
+
+        switch ($data['field']) {
+            case 'code':
+                $sql = sprintf(
+                    "SELECT `Location Key`,`Location Code` FROM `Location Dimension` WHERE  `Location Code` =%s  ", prepare_mysql($q)
+                );
+                break;
+            default:
+                $response = array(
+                    'state' => 405,
+                    'resp'  => 'Field not found '.$data['field']
+                );
+                echo json_encode($response);
+                exit;
+
+        }
+
+
+        if ($result = $db->query($sql)) {
+            if ($row = $result->fetch()) {
+
+
+                //$location=get_object('Location',$row['Location Key']);
+
+                $object_data = array(
+                    'code' => $row['Location Code'],
+                    'key' => $row['Location Key'],
+
+                );
+
+                $response = array(
+                    'state'   => 200,
+                    'results' => 1,
+                    'data'    => $object_data
+                );
+                echo json_encode($response);
+
+                return;
+            } else {
+                $response = array(
+                    'state'   => 200,
+                    'results' => 0,
+                    'data'    => ''
+                );
+                echo json_encode($response);
+
+                return;
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
+
+                if ($row['Part Reference'] == $q) {
+                    $candidates[$row['Part SKU']] = 1000;
+                } else {
+
+                    $len_name                     = strlen($row['Part SKU']);
+                    $len_q                        = strlen($q);
+                    $factor                       = $len_q / $len_name;
+                    $candidates[$row['Part SKU']] = 500 * $factor;
+                }
+
+                $candidates_data[$row['Part SKU']] = array(
+                    'Part Reference'        => $row['Part Reference'],
+                    'Part Unit Description' => $row['Part Unit Description']
+                );
+
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            exit;
+        }
+
+
+        arsort($candidates);
+
+
+        $total_candidates = count($candidates);
+
+        if ($total_candidates == 0) {
+            $response = array(
+                'state'   => 200,
+                'results' => 0,
+                'data'    => ''
+            );
+            echo json_encode($response);
+
+            return;
+        }
+
+
+        $results = array();
+        foreach ($candidates as $part_sku => $candidate) {
+
+            $results[$part_sku] = array(
+                'code'            => $candidates_data[$part_sku]['Part Reference'],
+                'description'     => $candidates_data[$part_sku]['Part Unit Description'],
+                'value'           => $part_sku,
+                'formatted_value' => $candidates_data[$part_sku]['Part Reference']
+            );
+
+        }
+
+        $results_data = array(
+            'n' => count($results),
+            'd' => $results
+        );
+        $cache->set($memcache_fingerprint, $results_data, $memcache_time);
+
+
+    }
+    $response = array(
+        'state'          => 200,
+        'number_results' => $results_data['n'],
+        'results'        => $results_data['d'],
+        'q'              => $q
+    );
+
+    echo json_encode($response);
+
+}
 
 
 ?>

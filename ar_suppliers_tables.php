@@ -1648,7 +1648,7 @@ function delivery_checking_items($_data, $db, $user) {
 
             $description = $data['Part Package Description'].' ('.number(
                     $units_per_carton
-                ).'/'.number($data['Supplier Part Packages Per Carton']).'/C)';
+                ).'/'.number($data['Supplier Part Packages Per Carton']).'/C)    '.($data['Part SKO Barcode']!=''?'<br><i class="fa fa-barcode" aria-hidden="true"></i> '.$data['Part SKO Barcode']:'' );
 
             $number_locations = 0;
             $locations        = '';
@@ -1670,14 +1670,19 @@ function delivery_checking_items($_data, $db, $user) {
                 $locations .= '<div style="clear:both"></div></div>';
             }
 
+            if($locations!=''){
+                $description .= '<br><i style="margin-left:4px" class="fa fa-map-marker button discreet  hide'.($number_locations == 0 ? 'hide' : '').'" aria-hidden="true" title="'._('Show locations')
+                    .'"  show_title="'._('Show locations').'" hide_title="'._(
+                        'Hide locations'
+                    ).'"    onClick="show_part_locations(this)" ></i>';
 
-            $description .= ' <i style="margin-left:4px" class="fa fa-map-marker button discreet  hide'.($number_locations == 0 ? 'hide' : '').'" aria-hidden="true" title="'._('Show locations')
-                .'"  show_title="'._('Show locations').'" hide_title="'._(
-                    'Hide locations'
-                ).'"    onClick="show_part_locations(this)" ></i>';
+
+                $description .= $locations;
+
+            }
 
 
-            $description .= $locations;
+
 
             /*
             $delivery_quantity = sprintf(
@@ -1778,8 +1783,12 @@ function delivery_checking_items($_data, $db, $user) {
                 ),
                 'qty'                       => number($quantity),
                 'c_sko_u'                   => sprintf(
-                    '<span data-metadata=\'{"qty":%d}\' onClick="copy_qty(this)" class="button"><span class="very_discreet">%s/</span> <span>%s</span> <span class="super_discreet">/%s</span></span>',
-                    $data['Supplier Part Packages Per Carton'] * $data['Supplier Delivery Quantity'], number($data['Supplier Delivery Quantity']), number(
+                    '<span  barcode="%s" data-metadata=\'{"qty":%d}\' onClick="copy_qty(this)" class="button part_sko_item"  ><span class="very_discreet">%s/</span> <span>%s</span> <span class="super_discreet">/%s</span></span>',
+
+                    $data['Part SKO Barcode'],
+                    $data['Supplier Part Packages Per Carton'] * $data['Supplier Delivery Quantity'],
+
+                    number($data['Supplier Delivery Quantity']), number(
                         $data['Supplier Part Packages Per Carton'] * $data['Supplier Delivery Quantity']
                     ), number(
                         $data['Supplier Part Packages Per Carton'] * $data['Part Units Per Package'] * $data['Supplier Delivery Quantity']

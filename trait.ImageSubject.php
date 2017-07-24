@@ -89,7 +89,7 @@ trait ImageSubject {
 
             } elseif ($this->table_name == 'Category') {
                 $account = new Account();
-                if ($this->get('Category Scope') == 'Part' and $this->get('Category Root Key') == $account->get('Account Part Family Category Key')) {
+                if ($this->get('Category Scope') == 'Part' and $this->get('Category Root Key') == $account->get('Account Part Family Category Key')  and $object_image_scope=='Marketing' ) {
 
                     $sql = sprintf(
                         'SELECT `Category Key` FROM `Category Dimension` WHERE `Category Scope`="Product" AND `Category Code`=%s  ', prepare_mysql($this->get('Code'))

@@ -66,7 +66,7 @@ name: "object_image_scope",
 label: "{t}Scope{/t}",
 sortType: "toggle",
 editable: false,
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 
 
 className: ""
@@ -78,7 +78,7 @@ name: "caption",
 label: "{t}Caption{/t}",
 sortType: "toggle",
 editable: false,
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 
 
 className: ""
