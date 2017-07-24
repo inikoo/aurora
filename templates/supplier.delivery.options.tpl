@@ -23,7 +23,7 @@
         <table style="width:50%;float:right;width:100%;min-height: 100px;" border="0">
             <tbody class="{if $dn->get('State Index')>=50}hide{/if}">
             <tr>
-                <td class="invisible" style="width: 50%;padding:10px;border-right:1px solid whitesmoke" >
+                <td class="invisible" style="width: 30%;padding:10px;border-right:1px solid whitesmoke" >
 
                     <label>{t}Checked/placed by{/t}</label>
 
@@ -85,7 +85,7 @@
 
                 </td>
 
-                <td id="booking_in_barcode_feedback" style="position:relative;padding:0px">
+                <td id="booking_in_barcode_feedback" style="position:relative;padding:0px;padding-right:50px">
                     <i  class="fa fa-barcode button" aria-hidden="true"   onclick="$(this).css({ opacity:1})" style="opacity:.5;position:absolute;top:10px;right:10px"></i>
 
 
@@ -101,10 +101,20 @@
                                 <span id="booking_in_barcode_part_reference"></span>
                                 <p style="padding:0px;margin: 0px;margin-bottom:4px;font-size:90%" id="booking_in_barcode_part_description"></p>
 
-                                <span class="ordered_quantity"  style="padding:0px 10px"></span> <input val="" style="width: 50px"> <i class="fa fa-plus" aria-hidden="true"></i>
+                                <span id="copy_qty_from_barcode_feedback" onclick="copy_qty_from_barcode_feedback(this)"  qty=""  class="button" >   <span>
+                            </div>
+                            <div style="align-items: stretch;flex: 1">
+
+                                 <input id="booking_in_barcode_qty_input" val="" style="width: 50px"> <i class="fa fa-plus" aria-hidden="true"></i>
 
                             </div>
 
+                            <div style="align-items: stretch;flex: 1">
+
+                                <i id="reading_location_barcode" class="fa fa-barcode invisible"  aria-hidden="true"></i> <i class="fa fa-map-marker" aria-hidden="true"></i>
+                                <input id="booking_in_barcode_location_input" val="" style="width: 150px"> <i class="fa fa-cloud" aria-hidden="true"></i>
+
+                            </div>
 
                         </div>
 

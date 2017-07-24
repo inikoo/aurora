@@ -3151,40 +3151,7 @@ class Order extends DB_Table {
 
     }
 
-    function checkout_submit_order() {
 
-        $date = gmdate("Y-m-d H:i:s");
-
-        if (!($this->data['Order Current Dispatch State'] == 'In Process by Customer' or $this->data['Order Current Dispatch State'] == 'Waiting for Payment Confirmation')) {
-            $this->error = true;
-            $this->msg   = 'Order is not in process by customer: xx  '.$this->id.' '.$this->data['Order Current Dispatch State'];
-
-            return;
-
-        }
-        $this->data['Order Current Dispatch State']       = 'Submitted by Customer';
-        $this->data['Order Current XHTML Dispatch State'] = 'Submitted by Customer';
-
-
-        $sql = sprintf(
-            "UPDATE `Order Dimension` SET `Order Submitted by Customer Date`=%s,`Order Date`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML Dispatch State`=%s  WHERE `Order Key`=%d",
-            prepare_mysql($date), prepare_mysql($date), prepare_mysql($this->data['Order Current Dispatch State']), prepare_mysql($this->data['Order Current XHTML Dispatch State'])
-
-            , $this->id
-        );
-
-
-        $this->db->exec($sql);
-        $this->update_payment_state();
-
-
-        $history_data = array(
-            'History Abstract' => _('Order submited from basket'),
-            'History Details'  => '',
-        );
-        $this->add_subject_history($history_data);
-
-    }
 
     function send_to_warehouse($date = false, $extra_data = false) {
 
@@ -10459,9 +10426,9 @@ VALUES (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 
 
 
+print $value;
 
-
-        if ($old_value != $value or true) {
+        if ($old_value != $value ) {
 
             switch ($value) {
 
@@ -10470,6 +10437,13 @@ VALUES (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 
 
                  $this->updated=$this->cancel();
+                 break;
+
+                case 'Submitted by Customer':
+
+
+                    $this->updated=$this->submit_by_customer();
+                    break;
 
                 break;
                 default:
@@ -10502,6 +10476,46 @@ VALUES (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 
     }
 
+
+
+    function submit_by_customer() {
+
+        $date = gmdate("Y-m-d H:i:s");
+
+
+
+        if (!($this->data['Order Current Dispatch State'] == 'In Process by Customer' or  $this->data['Order Current Dispatch State'] == 'In Process' or $this->data['Order Current Dispatch State'] == 'Waiting for Payment Confirmation')) {
+            $this->error = true;
+            $this->msg   = 'Order is not in process by customer: xx  '.$this->id.' '.$this->data['Order Current Dispatch State'];
+
+            return;
+
+        }
+        $this->data['Order Current Dispatch State']       = 'Submitted by Customer';
+        $this->data['Order Current XHTML Dispatch State'] = 'Submitted by Customer';
+
+
+        $sql = sprintf(
+            "UPDATE `Order Dimension` SET `Order Submitted by Customer Date`=%s,`Order Date`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML Dispatch State`=%s  WHERE `Order Key`=%d",
+            prepare_mysql($date), prepare_mysql($date), prepare_mysql($this->data['Order Current Dispatch State']), prepare_mysql($this->data['Order Current XHTML Dispatch State'])
+
+            , $this->id
+        );
+
+
+        $this->db->exec($sql);
+        $this->update_payment_state();
+
+
+        $history_data = array(
+            'History Abstract' => _('Order submited'),
+            'History Details'  => '',
+        );
+        $this->add_subject_history($history_data);
+
+    }
+
+
     function cancel($note = '', $date = false, $force = false, $by_customer = false) {
 
 
@@ -10517,7 +10531,7 @@ VALUES (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 
         }
         if (preg_match(
-            '/Cancdelled/', $this->data['Order Current Dispatch State']
+            '/Cancelled/', $this->data['Order Current Dispatch State']
         )) {
             $this->msg = _('Order is already cancelled');
 

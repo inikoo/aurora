@@ -505,7 +505,6 @@ function save_item_qty_change(element) {
 
 }
 
-
 function save_item_out_of_stock_qty_change(element) {
 
     $(element).addClass('fa-spinner fa-spin');

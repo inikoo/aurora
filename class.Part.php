@@ -758,7 +758,14 @@ class Part extends Asset {
             case 'Package Description Image':
 
 
-                $image = sprintf('<img src="/image_root.php?id=%d&size=thumbnail"> ', $this->data['Part SKO Image Key']);
+                if(!$this->data['Part SKO Image Key']){
+                    $image = '/art/nopic.png';
+
+                }else{
+                    $image = sprintf('<img src="/image_root.php?id=%d&size=thumbnail"> ', $this->data['Part SKO Image Key']);
+
+                }
+
 
                 return $image;
 

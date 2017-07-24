@@ -2018,7 +2018,7 @@ function find_webpages($db, $account, $memcache_ip, $data) {
                 $where .= sprintf(' and `Webpage State`="Online"');
                 break;
             case 'only_online_and_in_process':
-                $where .= sprintf(' and `Webpage State` in  ("Online" ,"InProcess" ');
+                $where .= sprintf(' and `Webpage State` in  ("Online" ,"InProcess") ');
                 break;
             default:
 
@@ -2070,10 +2070,13 @@ function find_webpages($db, $account, $memcache_ip, $data) {
         );
 
 
+     //   print $sql;
+
+
         if ($result = $db->query($sql)) {
             foreach ($result as $row) {
 
-                if ($row['Page Code'] == $q) {
+                if ($row['Webpage Code'] == $q) {
                     $candidates[$row['Page Key']] = 1000;
                 } else {
 
@@ -2084,7 +2087,7 @@ function find_webpages($db, $account, $memcache_ip, $data) {
                 }
 
                 $candidates_data[$row['Page Key']] = array(
-                    'Page Code'    => $row['Page Code'],
+                    'Webpage Code'    => $row['Webpage Code'],
                     'Webpage Name' => $row['Webpage Name']
                 );
 
