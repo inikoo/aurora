@@ -13,6 +13,13 @@
 include_once 'utils/static_data.php';
 
 
+$options_valid_tax_number = array(
+    'Yes'     => _('Valid'),
+    'No'      => _('Not Valid'),
+    'Unknown' => _('Unknown'),
+    'Auto'    => _('Check online'),
+);
+
 
 $countries = get_countries($db);
 
@@ -51,7 +58,27 @@ $object_fields = array(
                 'label' => _('Email'),
                 'invalid_msg'       => get_invalid_message('email'),
                 'required'          => false,
-            )
+            ),
+            array(
+                'id'              => 'Order_Tax_Number',
+                'edit'            => ($edit ? 'string' : ''),
+                'value'           => $object->get('Order Tax Number'),
+                'formatted_value' => $object->get('Tax Number'),
+                'label'           => ucfirst($object->get_field_label('Order Tax Number')),
+                'required'        => false,
+                'type'            => 'value'
+
+            ),
+            array(
+                'render'          => ($object->get('Order Tax Number') == '' ? false : true),
+                'id'              => 'Order_Tax_Number_Valid',
+                'edit'            => ($edit ? 'option' : ''),
+                'options'         => $options_valid_tax_number,
+                'value'           => $object->get('Order Tax Number Valid'),
+                'formatted_value' => $object->get('Tax Number Valid'),
+                'label'           => ucfirst($object->get_field_label('Order Tax Number Valid')
+                ),
+            ),
 
 
 

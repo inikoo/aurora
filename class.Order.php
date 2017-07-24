@@ -3257,6 +3257,12 @@ class Order extends DB_Table {
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
 
         switch ($field) {
+            case('Order Tax Number'):
+                $this->update_tax_number($value);
+                break;
+            case('Order Tax Number Valid'):
+                $this->update_tax_number_valid($value);
+                break;
             case 'Order Invoice Address':
                 $this->update_address('Invoice', json_decode($value, true));
                 break;
@@ -3270,9 +3276,8 @@ class Order extends DB_Table {
             case 'auto_account_payments':
                 $this->auto_account_payments($value, $options);
                 break;
-            case('Order Tax Number'):
-                $this->update_field($field, $value, $options);
-                $this->update_tax();
+
+
                 break;
             case('Order XHTML Invoices'):
                 $this->update_xhtml_invoices();
@@ -3365,32 +3370,37 @@ class Order extends DB_Table {
         );
 
 
-        $res = mysql_query($sql);
-        while ($row = mysql_fetch_assoc($res)) {
+        if ($result=$this->db->query($sql)) {
+        		foreach ($result as $row) {
+                    if ($row['Transaction Type'] == 'Insurance') {
+                        // this to be removed!!!!
 
-            if ($row['Transaction Type'] == 'Insurance') {
-                // this to be removed!!!!
 
+                        $_transaction_tax_category = new TaxCategory('code', 'EX');
+                        $sql                       = sprintf(
+                            "UPDATE `Order No Product Transaction Fact` SET `Transaction Tax Amount`=%f,`Tax Category Code`=%s WHERE `Order No Product Transaction Fact Key`=%d",
+                            $row['Transaction Net Amount'] * $_transaction_tax_category->data['Tax Category Rate'], prepare_mysql(
+                                $_transaction_tax_category->data['Tax Category Code']
+                            ), $row['Order No Product Transaction Fact Key']
+                        );
 
-                $_transaction_tax_category = new TaxCategory('code', 'EX');
-                $sql                       = sprintf(
-                    "UPDATE `Order No Product Transaction Fact` SET `Transaction Tax Amount`=%f,`Tax Category Code`=%s WHERE `Order No Product Transaction Fact Key`=%d",
-                    $row['Transaction Net Amount'] * $_transaction_tax_category->data['Tax Category Rate'], prepare_mysql(
-                        $_transaction_tax_category->data['Tax Category Code']
-                    ), $row['Order No Product Transaction Fact Key']
-                );
+                        $this->db->exec($sql);
+                    } elseif ($row['Tax Category Code'] == $old_tax_code) {
 
-                $this->db->exec($sql);
-            } elseif ($row['Tax Category Code'] == $old_tax_code) {
+                        $sql = sprintf(
+                            "UPDATE `Order No Product Transaction Fact` SET `Transaction Tax Amount`=%f,`Tax Category Code`=%s WHERE `Order No Product Transaction Fact Key`=%d",
+                            $row['Transaction Net Amount'] * $this->data['Order Tax Rate'], prepare_mysql($this->data['Order Tax Code']), $row['Order No Product Transaction Fact Key']
+                        );
+                        $this->db->exec($sql);
 
-                $sql = sprintf(
-                    "UPDATE `Order No Product Transaction Fact` SET `Transaction Tax Amount`=%f,`Tax Category Code`=%s WHERE `Order No Product Transaction Fact Key`=%d",
-                    $row['Transaction Net Amount'] * $this->data['Order Tax Rate'], prepare_mysql($this->data['Order Tax Code']), $row['Order No Product Transaction Fact Key']
-                );
-                $this->db->exec($sql);
-
-            }
+                    }
+        		}
+        }else {
+        		print_r($error_info=$this->db->errorInfo());
+        		print "$sql\n";
+        		exit;
         }
+
 
         $sql = sprintf(
             "UPDATE `Order Dimension` SET `Order Tax Code`=%s ,`Order Tax Rate`=%f,`Order Tax Name`=%s,`Order Tax Operations`=%s,`Order Tax Selection Type`=%s WHERE `Order Key`=%d",
@@ -7338,7 +7348,77 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,
 
 
         switch ($key) {
+            case('Tax Number Valid'):
+                if ($this->data['Order Tax Number'] != '') {
 
+                    if ($this->data['Order Tax Number Validation Date'] != '') {
+                        $_tmp = gmdate("U") - gmdate(
+                                "U", strtotime(
+                                       $this->data['Order Tax Number Validation Date'].' +0:00'
+                                   )
+                            );
+                        if ($_tmp < 3600) {
+                            $date = strftime(
+                                "%e %b %Y %H:%M:%S %Z", strtotime(
+                                                          $this->data['Order Tax Number Validation Date'].' +0:00'
+                                                      )
+                            );
+
+                        } elseif ($_tmp < 86400) {
+                            $date = strftime(
+                                "%e %b %Y %H:%M %Z", strtotime(
+                                                       $this->data['Order Tax Number Validation Date'].' +0:00'
+                                                   )
+                            );
+
+                        } else {
+                            $date = strftime(
+                                "%e %b %Y", strtotime(
+                                              $this->data['Order Tax Number Validation Date'].' +0:00'
+                                          )
+                            );
+                        }
+                    } else {
+                        $date = '';
+                    }
+
+
+
+                   // print_r($this->data);
+
+                    $msg = $this->data['Order Tax Number Validation Message'];
+
+                    if ($this->data['Order Tax Number Validation Source'] == 'Online') {
+                        $source = '<i title=\''._('Validated online').'\' class=\'fa fa-globe\'></i>';
+
+
+                    } elseif ($this->data['Order Tax Number Validation Source'] == 'Manual') {
+                        $source = '<i title=\''._('Set up manually').'\' class=\'fa fa-hand-rock-o\'></i>';
+                    } else {
+                        $source = '';
+                    }
+
+                    $validation_data = trim($date.' '.$source.' '.$msg);
+                    if ($validation_data != '') {
+                        $validation_data = ' <span class=\'discreet\'>('.$validation_data.')</span>';
+                    }
+
+                    switch ($this->data['Order Tax Number Valid']) {
+                        case 'Unknown':
+                            return _('Not validated').$validation_data;
+                            break;
+                        case 'Yes':
+                            return _('Validated').$validation_data;
+                            break;
+                        case 'No':
+                            return _('Not valid').$validation_data;
+                        default:
+                            return $this->data['Order Tax Number Valid'].$validation_data;
+
+                            break;
+                    }
+                }
+                break;
 
             case 'Order Invoice Address':
             case 'Order Delivery Address':
@@ -10895,6 +10975,97 @@ VALUES (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
         );
 
     }
+
+    function update_tax_number($value) {
+
+        include_once 'utils/validate_tax_number.php';
+
+        $this->update_field('Order Tax Number', $value);
+
+
+        if ($this->updated) {
+
+            $tax_validation_data = validate_tax_number($this->data['Order Tax Number'], $this->data['Order Invoice Address Country 2 Alpha Code']);
+
+            $this->update(
+                array(
+                    'Order Tax Number Valid'              => $tax_validation_data['Tax Number Valid'],
+                    'Order Tax Number Details Match'      => $tax_validation_data['Tax Number Details Match'],
+                    'Order Tax Number Validation Date'    => $tax_validation_data['Tax Number Validation Date'],
+                    'Order Tax Number Validation Source'  => 'Online',
+                    'Order Tax Number Validation Message' => $tax_validation_data['Tax Number Validation Message'],
+                ), 'no_history'
+            );
+
+
+            $this->new_value = $value;
+
+            $this->update_tax();
+
+
+        }
+
+        $this->other_fields_updated = array(
+            'Order_Tax_Number_Valid' => array(
+                'field'           => 'Order_Tax_Number_Valid',
+                'render'          => ($this->get('Order Tax Number') == '' ? false : true),
+                'value'           => $this->get('Order Tax Number Valid'),
+                'formatted_value' => $this->get('Tax Number Valid'),
+
+
+            )
+        );
+
+
+    }
+
+    function update_tax_number_valid($value) {
+
+        include_once 'utils/validate_tax_number.php';
+
+        if ($value == 'Auto') {
+
+            $tax_validation_data = validate_tax_number(
+                $this->data['Order Tax Number'], $this->data['Order Invoice Address Country 2 Alpha Code']
+            );
+
+            $this->update(
+                array(
+                    'Order Tax Number Valid'              => $tax_validation_data['Tax Number Valid'],
+                    'Order Tax Number Details Match'      => $tax_validation_data['Tax Number Details Match'],
+                    'Order Tax Number Validation Date'    => $tax_validation_data['Tax Number Validation Date'],
+                    'Order Tax Number Validation Source'  => 'Online',
+                    'Order Tax Number Validation Message' => $tax_validation_data['Tax Number Validation Message'],
+                ), 'no_history'
+            );
+
+        } else {
+            $this->update_field('Order Tax Number Valid', $value);
+            $this->update(
+                array(
+                    'Order Tax Number Details Match'      => 'Unknown',
+                    'Order Tax Number Validation Date'    => $this->editor['Date'],
+                    'Order Tax Number Validation Source'  => 'Manual',
+                    'Order Tax Number Validation Message' => $this->editor['Author Name'],
+                ), 'no_history'
+            );
+        }
+
+
+        $this->other_fields_updated = array(
+            'Order_Tax_Number' => array(
+                'field'           => 'Order_Tax_Number',
+                'render'          => true,
+                'value'           => $this->get('Order Tax Number'),
+                'formatted_value' => $this->get('Tax Number'),
+
+
+            )
+        );
+
+
+    }
+
 
 
 }

@@ -725,7 +725,18 @@ class Customer extends Subject {
        $order_data['Order Customer Contact Name'] = $this->data['Customer Main Contact Name'];
        $order_data['Order Tax Number']            = $this->data['Customer Tax Number'];
        $order_data['Order Tax Number Valid']      = $this->data['Customer Tax Number Valid'];
-       $order_data['Order Customer Fiscal Name']  = $this->get('Fiscal Name');
+        $order_data['Order Tax Number Validation Date']      = $this->data['Customer Tax Number Validation Date'];
+        $order_data['Order Tax Number Validation Source']      = $this->data['Customer Tax Number Validation Source'];
+        $order_data['Order Tax Number Details Match']      = $this->data['Customer Tax Number Details Match'];
+        $order_data['Order Tax Number Registered Name']      = $this->data['Customer Tax Number Registered Name'];
+        $order_data['Order Tax Number Registered Address']      = $this->data['Customer Tax Number Registered Address'];
+
+
+
+
+
+
+        $order_data['Order Customer Fiscal Name']  = $this->get('Fiscal Name');
        $order_data['Order Email']                 = $this->data['Customer Main Plain Email'];
        $order_data['Order Telephone']             = $this->data['Customer Main Plain Mobile'];
 
@@ -1054,9 +1065,7 @@ class Customer extends Subject {
 
         if ($this->updated) {
 
-            $tax_validation_data = validate_tax_number(
-                $this->data['Customer Tax Number'], $this->data['Customer Billing Address 2 Alpha Country Code']
-            );
+            $tax_validation_data = validate_tax_number($this->data['Customer Tax Number'], $this->data['Customer Invoice Address Country 2 Alpha Code']);
 
             $this->update(
                 array(
@@ -1095,7 +1104,7 @@ class Customer extends Subject {
         if ($value == 'Auto') {
 
             $tax_validation_data = validate_tax_number(
-                $this->data['Customer Tax Number'], $this->data['Customer Billing Address 2 Alpha Country Code']
+                $this->data['Customer Tax Number'], $this->data['Customer Invoice Address Country 2 Alpha Code']
             );
 
             $this->update(
