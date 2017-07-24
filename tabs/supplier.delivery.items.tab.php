@@ -17,7 +17,7 @@ if ($state['_object']->get('State Index') >= 40) {
     $tipo = 'delivery.checking_items';
 
     $table_views = array(
-        'overview' => array('label' => _("Item's descriptins")),
+        'overview' => array('label' => _("Item's descriptions")),
         // 'placement_notes'=>array('label'=>_('Placement notes')),
 
     );

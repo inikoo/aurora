@@ -99,7 +99,7 @@
         input_element = $('#' + form_element.attr('field_id'))
 
 
-        var request = '/ar_find.php?tipo=find_object&query=' + fixedEncodeURIComponent(input_element.val()) + '&scope=' + jQuery.parseJSON(atob(form_element.data("dropdown_select_metadata"))).scope + '&metadata=' + atob(form_element.data("dropdown_select_metadata")) + '&state=' + JSON.stringify(state)
+        var request = '/ar_find.php?tipo=find_objects&query=' + fixedEncodeURIComponent(input_element.val()) + '&scope=' + jQuery.parseJSON(atob(form_element.data("dropdown_select_metadata"))).scope + '&metadata=' + atob(form_element.data("dropdown_select_metadata")) + '&state=' + JSON.stringify(state)
 
         $.getJSON(request, function (data) {
 

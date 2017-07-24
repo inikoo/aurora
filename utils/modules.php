@@ -3120,7 +3120,12 @@ $modules = array(
             'order' => array(
                 'type' => 'object',
                 'tabs' => array(
-
+                    'supplier.order.items'      => array(
+                        'label' => _(
+                            'Items'
+                        ),
+                        'icon'  => 'bars'
+                    ),
                     'supplier.order.details' => array(
                         'label' => _(
                             'Data'
@@ -3128,12 +3133,7 @@ $modules = array(
                         'icon'  => 'database'
                     ),
 
-                    'supplier.order.items'      => array(
-                        'label' => _(
-                            'Items'
-                        ),
-                        'icon'  => 'bars'
-                    ),
+
                     // 'supplier.order.supplier_parts'=>array('label'=>_('Parts'), 'icon'=>'stop'),
                     // 'supplier.order.invoices'=>array('label'=>_('Invoices'),  'icon'=>'file-text-o'),
                     'supplier.order.tac.editor' => array(
@@ -5868,7 +5868,12 @@ $modules = array(
             'order_to_delete' => array(
                 'type' => 'object',
                 'tabs' => array(
-
+                    'supplier.order.items'      => array(
+                        'label' => _(
+                            'Items'
+                        ),
+                        'icon'  => 'bars'
+                    ),
                     'supplier.order.details' => array(
                         'label' => _(
                             'Data'
@@ -5876,12 +5881,7 @@ $modules = array(
                         'icon'  => 'database'
                     ),
 
-                    'supplier.order.items'      => array(
-                        'label' => _(
-                            'Items'
-                        ),
-                        'icon'  => 'bars'
-                    ),
+
                     // 'supplier.order.supplier_parts'=>array('label'=>_('Parts'), 'icon'=>'stop'),
                     // 'supplier.order.invoices'=>array('label'=>_('Invoices'),  'icon'=>'file-text-o'),
                     'supplier.order.tac.editor' => array(

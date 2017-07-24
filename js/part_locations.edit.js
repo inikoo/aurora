@@ -549,7 +549,7 @@ function get_locations_select() {
 
     $('#add_location_tr').removeClass('invalid')
 
-    var request = '/ar_find.php?tipo=find_object&query=' + fixedEncodeURIComponent($('#add_location').val()) + '&scope=locations&state=' + JSON.stringify(state)
+    var request = '/ar_find.php?tipo=find_objects&query=' + fixedEncodeURIComponent($('#add_location').val()) + '&scope=locations&state=' + JSON.stringify(state)
 
     $.getJSON(request, function (data) {
 

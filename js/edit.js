@@ -1766,7 +1766,7 @@ function get_dropdown_select(dropdown_input, new_value) {
         metadata={}
     }
 
-    var request = '/ar_find.php?tipo=find_object&query=' + fixedEncodeURIComponent(new_value) + '&scope=' + scope + '&parent=' + parent + '&parent_key=' + parent_key + '&metadata=' + JSON.stringify(metadata)+ '&state=' + JSON.stringify(state)
+    var request = '/ar_find.php?tipo=find_objects&query=' + fixedEncodeURIComponent(new_value) + '&scope=' + scope + '&parent=' + parent + '&parent_key=' + parent_key + '&metadata=' + JSON.stringify(metadata)+ '&state=' + JSON.stringify(state)
 
 
 

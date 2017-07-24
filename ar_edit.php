@@ -188,6 +188,20 @@ switch ($tipo) {
 
         set_as_principal_image($account, $db, $user, $editor, $data, $smarty);
         break;
+
+    case 'edit_image':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'image_bridge_key' => array('type' => 'key'),
+                         'field'            => array('type' => 'string'),
+                         'value'            => array('type' => 'string'),
+                     )
+        );
+
+        edit_image($account, $db, $user, $editor, $data, $smarty);
+        break;
+
+
     case 'delete_attachment':
         $data = prepare_values(
             $_REQUEST, array(
@@ -327,11 +341,7 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
         $items_in_directory = '';
 
 
-
-
-
-        if ($object->updated or true)
-        {
+        if ($object->updated or true) {
             $msg = sprintf(
                 '<span class="success"><i class="fa fa-check " onClick="hide_edit_field_msg(\'%s\')" ></i> %s</span>', $data['field'], _('Updated')
             );
@@ -799,11 +809,9 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             //$data['fields_data']['user'] = $user;
 
 
-
-
-          $data['fields_data']['Webpage Type']='Info';
-        $data['fields_data']['Webpage Template Filename']='blocks';
-        $data['fields_data']['Webpage Scope']='Info';
+            $data['fields_data']['Webpage Type']              = 'Info';
+            $data['fields_data']['Webpage Template Filename'] = 'blocks';
+            $data['fields_data']['Webpage Scope']             = 'Info';
 
             $object = $parent->create_system_webpage($data['fields_data']);
 
@@ -1081,7 +1089,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             include_once 'class.Category.php';
 
 
-            $store=get_object('Store',$parent->get('Store Key'));
+            $store = get_object('Store', $parent->get('Store Key'));
 
             if (isset($data['fields_data']['Store Category Code'])) {
                 $object = new Category('root_key_code', $store->get('Store Family Category Key'), $data['fields_data']['Store Category Code']);
@@ -1374,8 +1382,8 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
         case 'Customer':
             include_once 'class.Customer.php';
             if (!$parent->error) {
-                list($customer,$website_user) = $parent->create_customer($data['fields_data']);
-                $object=$customer;
+                list($customer, $website_user) = $parent->create_customer($data['fields_data']);
+                $object = $customer;
                 $smarty->assign('account', $account);
                 $smarty->assign('customer', $customer);
                 $smarty->assign('website_user', $website_user);
@@ -2300,6 +2308,118 @@ function calculate_sales($account, $db, $data, $editor) {
     echo json_encode($response);
 
 
+}
+
+
+function edit_image($account, $db, $user, $editor, $data, $smarty) {
+
+    include_once 'class.Image.php';
+
+
+    $sql = sprintf(
+        'SELECT `Image Subject Object`,`Image Subject Object Key`,`Image Subject Image Key` FROM `Image Subject Bridge` WHERE `Image Subject Key`=%d ', $data['image_bridge_key']
+    );
+    if ($result = $db->query($sql)) {
+        if ($row = $result->fetch()) {
+
+            $object         = get_object(
+                $row['Image Subject Object'], $row['Image Subject Object Key']
+            );
+            $object->editor = $editor;
+
+            if (!$object->id) {
+                $msg      = 'object key not found';
+                $response = array(
+                    'state' => 400,
+                    'msg'   => $msg
+                );
+                echo json_encode($response);
+                exit;
+            }
+
+            switch ($data['field']) {
+                case 'caption':
+                    $sql = sprintf('UPDATE  `Image Subject Bridge` SET `Image Subject Image Caption`=%s WHERE `Image Subject Key`=%d ', prepare_mysql($data['value']), $data['image_bridge_key']);
+                    $db->exec($sql);
+                    $formatted_value=$data['value'];
+                    break;
+                case 'scope':
+                    $sql = sprintf('UPDATE  `Image Subject Bridge` SET `Image Subject Object Image Scope`=%s WHERE `Image Subject Key`=%d ', prepare_mysql($data['value']), $data['image_bridge_key']);
+                    $db->exec($sql);
+
+
+
+
+
+                    if($object->get_object_name()=='Part' and $data['value']=='Marketing' ){
+
+
+                        $sql = sprintf(
+                            'SELECT `Product ID` FROM `Product Dimension` WHERE  `Category Code`=%s  ', prepare_mysql($object->get('Reference'))
+                        );
+
+
+                        if ($result = $this->db->query($sql)) {
+                            foreach ($result as $row) {
+
+                                $product         = get_object('Product',$row['Product ID']);
+                                $product->editor = $this->editor;
+                                $product->link_image($image->id, $object_image_scope);
+
+                            }
+
+                        } else {
+                            print_r($error_info = $db->errorInfo());
+                            print $sql;
+                            exit;
+                        }
+
+
+                    }
+
+
+                    switch ($data['value']){
+                        case 'SKO':
+                            $formatted_value=_('SKO image');
+                            break;
+                        case 'Marketing':
+                            $formatted_value=_('SKO image');
+                            break;
+
+                        default:
+                        $formatted_value=$data['value'];
+
+                    }
+
+                    break;
+
+                default:
+                    break;
+            }
+
+
+            $response = array(
+                'state' => 200,
+                'msg'   => 'Image changed',
+                'value'=>$formatted_value
+
+            );
+            echo json_encode($response);
+            exit;
+
+        } else {
+            $msg      = _('Image not found');
+            $response = array(
+                'state' => 400,
+                'msg'   => $msg
+            );
+            echo json_encode($response);
+            exit;
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
 }
 
 

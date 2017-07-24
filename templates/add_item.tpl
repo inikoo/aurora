@@ -57,7 +57,7 @@
         $('#add_item_form').removeClass('invalid')
 
 
-        var request = '/ar_find.php?tipo=find_object&query=' + fixedEncodeURIComponent($('#add_item').val()) + '&scope=item' + '&metadata=' + atob($('#add_item_form').data("metadata")) + '&state=' + JSON.stringify(state)
+        var request = '/ar_find.php?tipo=find_objects&query=' + fixedEncodeURIComponent($('#add_item').val()) + '&scope=item' + '&metadata=' + atob($('#add_item_form').data("metadata")) + '&state=' + JSON.stringify(state)
 
         $.getJSON(request, function (data) {
 
