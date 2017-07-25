@@ -141,6 +141,10 @@ function scanned_barcode_in_supplier_delivery_note(value) {
 
         if(!$('#booking_in_barcode_feedback').hasClass('hide')) {
 
+
+            $('.booking_in_barcode_feedback_block').addClass('hide')
+
+
             $('#ready_for_scan_label').addClass('hide')
 
             if ($('#reading_location_barcode').hasClass('invisible')) {
@@ -386,7 +390,7 @@ function scanned_barcode_in_supplier_delivery_note(value) {
                                     $('.booking_in_barcode_feedback_block').addClass('hide')
 
                                     $('#booking_in_barcode_feedback .placement_success').removeClass('hide').find('.placement').html(data.update_metadata.placement)
-
+                                    $('#reading_location_barcode').addClass('invisible')
 
                                 })
 
