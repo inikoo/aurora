@@ -13,6 +13,7 @@ require_once 'common.php';
 require_once 'utils/ar_common.php';
 require_once 'utils/table_functions.php';
 require_once 'utils/text_functions.php';
+require_once 'utils/object_functions.php';
 
 
 if (!isset($_REQUEST['tipo'])) {
@@ -3085,8 +3086,9 @@ function find_part($db, $account, $memcache_ip, $data) {
                 $part=get_object('Part',$row['Part SKU']);
 
                 $object_data = array(
+                    'key' => $row['Part SKU'],
                     'reference' => $row['Part Reference'],
-                    'description' => $row['Part SKO Description'],
+                    'description' => $row['Part Package Description'],
                     'image'=>$part->get('Package Description Image')
 
                 );
@@ -3245,6 +3247,7 @@ function find_location($db, $account, $memcache_ip, $data) {
                     "SELECT `Location Key`,`Location Code` FROM `Location Dimension` WHERE  `Location Code` =%s  ", prepare_mysql($q)
                 );
                 break;
+
             default:
                 $response = array(
                     'state' => 405,
