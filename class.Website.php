@@ -1206,6 +1206,9 @@ class Website extends DB_Table {
 
         $page = new Page('find', $page_data, 'create');
 
+
+        print $page->id;
+
         $product->update(array('Product Webpage Key' => $page->id), 'no_history');
 
         $webpage_type->update_number_webpages();
