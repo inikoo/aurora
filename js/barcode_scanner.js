@@ -43,6 +43,9 @@ function process_supplier_delivery_sko_barcode(value){
             console.log($(obj).attr('barcode') + ' ' + value)
             var settings = $(obj).closest('span').data('barcode_settings')
 
+            console.log(settings)
+
+
              found_tr=$(obj).closest('tr')
             $('#booking_in_barcode_feedback').data('tr',$(obj).closest('tr'))
 
@@ -50,7 +53,7 @@ function process_supplier_delivery_sko_barcode(value){
              checked=$(obj).closest('span').attr('_checked')
 
             $('#booking_in_barcode_part_reference').html(settings.reference)
-            $('#booking_in_barcode_part_description').html(settings.description)
+            $('#booking_in_barcode_part_description').html(atob(settings.description))
 
             if (settings.image_src > 0) {
                 $('#booking_in_barcode_part_image_src').attr('src', settings.image_src)

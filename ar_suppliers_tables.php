@@ -1793,7 +1793,7 @@ function delivery_checking_items($_data, $db, $user) {
 
                     $data['Part SKU'],
                     $data['Part Reference'],
-                    $data['Part Package Description'],
+                    base64_encode($data['Part Package Description']),
                     $data['Part SKO Image Key'],
                     $data['Supplier Part Packages Per Carton'] * $data['Supplier Delivery Quantity'],
                     number($data['Supplier Delivery Quantity']),
