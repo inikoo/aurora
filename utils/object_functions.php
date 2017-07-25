@@ -303,7 +303,7 @@ function get_object($object_name, $key, $load_other_data = false) {
 
 
         default:
-            exit('need to complete E1: >'.strtolower($object_name)."<\n");
+            exit('need to complete E1: x>'.strtolower($object_name)."<\n");
             break;
     }
 
