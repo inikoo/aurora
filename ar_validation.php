@@ -595,15 +595,35 @@ function check_for_duplicates($data, $db, $user, $account) {
 
 
 
-                    $invalid_msg              = _('Part barcode already used');
+                   // $invalid_msg              =
                     $sql                      = sprintf(
-                        "SELECT P.`Part SKU` AS `key` ,`Part Barcode Number` AS field FROM `Part Dimension` P WHERE  `Part Barcode Number`=%s   ", prepare_mysql($data['value'])
+                        "SELECT P.`Part SKU` AS `key` ,`Part Barcode Number` AS field  ,`Part Reference` as name FROM `Part Dimension` P WHERE  `Part Barcode Number`=%s   ", prepare_mysql($data['value'])
                     );
 
-                    $validation_sql_queries[] = array(
-                        'sql'         => $sql,
-                        'invalid_msg' => $invalid_msg
-                    );
+
+
+                    if ($result=$db->query($sql)) {
+                        if ($row = $result->fetch()) {
+                            $response = array(
+                                'state'      => 200,
+                                'validation' => 'invalid',
+                                'msg'        =>  sprintf(_('Part barcode already used by %s'),'<span class="link error" style="color:red"  onclick="change_view(\'/part/'.$row['key'].'\')" >'.$row['name'].'</span>')
+                            );
+
+                    	}else{
+                            $response = array(
+                                'state'      => 200,
+                                'validation' => 'valid',
+                                'msg'        =>  ''
+                            );
+                        }
+                        echo json_encode($response);
+                        exit;
+                    }else {
+                    	print_r($error_info=$db->errorInfo());
+                    	print "$sql\n";
+                    	exit;
+                    }
 
 
                     break;
