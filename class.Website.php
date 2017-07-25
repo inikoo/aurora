@@ -1108,6 +1108,8 @@ class Website extends DB_Table {
         include_once 'class.Page.php';
 
 
+
+
         //include_once 'class.Site.php';
         // $site = new Site($this->id);
 
@@ -1120,7 +1122,13 @@ class Website extends DB_Table {
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
+                include_once 'class.Product.php';
+                $product = new Product($product_id);
+
+                $product->update(array('Product Webpage Key' => $row['Page Key']), 'no_history');
                 return $row['Page Key'];
+
+
             }
         } else {
             print_r($error_info = $this->db->errorInfo());
@@ -1202,6 +1210,9 @@ class Website extends DB_Table {
             'editor' => $this->editor
 
         );
+
+
+
 
 
         $page = new Page('find', $page_data, 'create');
