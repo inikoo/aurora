@@ -435,6 +435,13 @@ function save_item_qty_change(element) {
 
 
             }else{
+
+
+                $(element).closest('tr').find('.part_sko_item').attr('_checked',data.transaction_data.qty)
+
+
+
+
                 $(element).closest('tr').find('.subtotals').html(data.transaction_data.subtotals)
                 $(element).closest('tr').find('.placement').html(data.metadata.placement)
                 $(element).closest('.checked_quantity').find('.checked_qty').attr('ovalue', data.transaction_data.qty)
