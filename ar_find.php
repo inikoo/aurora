@@ -796,7 +796,7 @@ function find_locations($db, $account, $memcache_ip, $data) {
 function find_parts($db, $account, $memcache_ip, $data) {
 
     $cache       = false;
-    $max_results = 5;
+    $max_results = 10;
     $user        = $data['user'];
     $q           = trim($data['query']);
 
@@ -831,6 +831,7 @@ function find_parts($db, $account, $memcache_ip, $data) {
 
     }
 
+   // print_r($data);
 
     $results_data = $cache->get($memcache_fingerprint);
 
@@ -843,10 +844,41 @@ function find_parts($db, $account, $memcache_ip, $data) {
         $candidates_data = array();
 
 
+        if(!empty($data['metadata']['with_no_sko_barcodes'])){
+            $scope='barcodes';
+
+        }else{
+            $scope='';
+        }
+
+
+
+
+        // todo a way t only displays parts in Purchase order (Supplier Delivery)
+        if(empty($data['metadata']['supplier_delivery_key'])){
+
+
+
+        }else{
+
+
+
+
+        }
+
+
+
+
+        $where=" and `Part Status` in ('In Use','Discontinuing','In Process')";
         $sql = sprintf(
-            "select `Part SKU`,`Part Reference`,`Part Unit Description` from `Part Dimension` where  `Part Reference` like '%s%%' and `Part Status` in ('In Use','Discontinuing')   order by `Part Reference` limit $max_results ",
-            $q
+            "select `Part SKU`,`Part Reference`,`Part Unit Description`,`Part SKO Barcode` from `Part Dimension`  where  `Part Reference` like '%s%%'  %s   order by `Part Reference` limit $max_results ",
+            $q,
+            $where
         );
+
+
+
+
 
 
         if ($result = $db->query($sql)) {
@@ -864,7 +896,8 @@ function find_parts($db, $account, $memcache_ip, $data) {
 
                 $candidates_data[$row['Part SKU']] = array(
                     'Part Reference'        => $row['Part Reference'],
-                    'Part Unit Description' => $row['Part Unit Description']
+                    'Part Unit Description' => $row['Part Unit Description'],
+                    'Part SKO Barcode' => $row['Part SKO Barcode']
                 );
 
             }
@@ -894,11 +927,24 @@ function find_parts($db, $account, $memcache_ip, $data) {
         $results = array();
         foreach ($candidates as $part_sku => $candidate) {
 
+
+            if($scope=='barcodes'){
+                $description= '<span class="'.($candidates_data[$part_sku]['Part SKO Barcode']!=''?'strikethrough  discreet ':'').'" >'.$candidates_data[$part_sku]['Part Unit Description'].' '.($candidates_data[$part_sku]['Part SKO Barcode']==''?'':'  <i class="fa fa-barcode" aria-hidden="true"></i> '.$candidates_data[$part_sku]['Part SKO Barcode']).'  </span>';
+               $code='<span class="'.($candidates_data[$part_sku]['Part SKO Barcode']!=''?'strikethrough  discreet ':'').'" >'.$candidates_data[$part_sku]['Part Reference'].'</span>';
+
+            }else{
+                $description= $candidates_data[$part_sku]['Part Unit Description'];
+                $code=$candidates_data[$part_sku]['Part Reference'];
+            }
+
+
+
             $results[$part_sku] = array(
-                'code'            => $candidates_data[$part_sku]['Part Reference'],
-                'description'     => $candidates_data[$part_sku]['Part Unit Description'],
+                'code'            => $code,
+                'description'     => $description,
                 'value'           => $part_sku,
-                'formatted_value' => $candidates_data[$part_sku]['Part Reference']
+                'formatted_value' => $candidates_data[$part_sku]['Part Reference'],
+                'barcode'=>$candidates_data[$part_sku]['Part SKO Barcode']
             );
 
         }
@@ -2842,7 +2888,7 @@ function find_families($db, $account, $memcache_ip, $data) {
 
         switch ($data['parent']) {
             case 'store':
-                $where = sprintf(" and `Category Store Key`=%d   `Category Scope`='Product'  and `Category Branch Type`='Head' ", $data['parent_key']);
+                $where = sprintf(" and `Category Store Key`=%d   and `Category Scope`='Product'  and `Category Branch Type`='Head' ", $data['parent_key']);
                 break;
             default:
 
