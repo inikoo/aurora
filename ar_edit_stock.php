@@ -335,7 +335,7 @@ function edit_stock($account, $db, $user, $editor, $data, $smarty) {
 
     if ($data['object'] == 'part') {
         $part = get_object(
-            $data['object'], $data['key'], $load_other_data = true
+            $data['object'], $data['key']
         );
 
         $smarty->assign('part_sku', $part->id);
