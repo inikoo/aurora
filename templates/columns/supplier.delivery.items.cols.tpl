@@ -37,14 +37,6 @@ renderable: {if $data['_object']->get('State Index')>=40}false{else}true{/if},
 
 editable: false,
 cell: Backgrid.StringCell.extend({
-events: {
-"click": function() {
-{if $data['parent']=='supplier'}
-    change_view("supplier/{$data['parent_key']}/order/{$data['key']}/item/"+this.model.get("id"))
-{/if}
-}
-},
-className: "link"
 }),
 },{
 name: "part_reference",
@@ -53,14 +45,7 @@ renderable: {if $data['_object']->get('State Index')>=40}true{else}false{/if},
 
 editable: false,
 cell: Backgrid.StringCell.extend({
-events: {
-"click": function() {
-{if $data['parent']=='supplier'}
-    change_view("supplier/{$data['parent_key']}/order/{$data['key']}/item/"+this.model.get("id"))
-{/if}
-}
-},
-className: "link"
+
 }),
 },{
 name: "description",

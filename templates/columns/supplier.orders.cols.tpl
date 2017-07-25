@@ -11,20 +11,7 @@ name: "public_id",
 label: "{t}Number{/t}",
 editable: false,
 sortType: "toggle",
-cell: Backgrid.StringCell.extend({
-events: {
-"click": function() {
-{if $tab=='suppliers.orders'}
-    change_view("suppliers/order/" + this.model.get("id")  )
-{elseif $tab=='supplier_part.supplier.orders'}
-    change_view("supplier/{$data['_object']->get('Supplier Part Supplier Key')}/part/{$data['key']}/order/" + this.model.get("id")  )
-{else}
-    change_view("{$data['object']}/{$data['key']}/order/" + this.model.get("id")  )
-
-{/if}
-}
-},
-className: "link",
+cell: Backgrid.HtmlCell.extend({
 })
 },
 {
@@ -33,15 +20,7 @@ label: "{t}Supplier/Agent{/t}",
 renderable:{if ($data['object']=='supplier' or $data['object']=='agent'  )}false{else}true{/if},
 sortType: "toggle",
 editable: false,
-cell: Backgrid.StringCell.extend({
-events: {
-"click": function() {
-
-
-change_view( this.model.get("parent_type")+'/' + this.model.get("parent_key")  )
-}
-},
-className: "link",
+cell: Backgrid.HtmlCell.extend({
 })
 },
 {
