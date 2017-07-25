@@ -804,28 +804,19 @@ function orders($_data, $db, $user) {
                     break;
             }
 
+
+
+
+
+
             $table_data[] = array(
                 'id'          => (integer)$data['Purchase Order Key'],
-                'parent_key'  => (integer)$data['Purchase Order Parent Key'],
-                'parent_type' => strtolower($data['Purchase Order Parent']),
-                'parent'      => strtolower(
-                    $data['Purchase Order Parent Name']
-                ),
-
-                'public_id' => $data['Purchase Order Public ID'],
-                'date'      => strftime(
-                    "%e %b %Y", strtotime($data['Purchase Order Creation Date'].' +0:00')
-                ),
-                'last_date' => strftime(
-                    "%a %e %b %Y %H:%M %Z", strtotime(
-                                              $data['Purchase Order Last Updated Date'].' +0:00'
-                                          )
-                ),
+                'parent'      => sprintf('<span class="link" onclick="change_view(\'/%s/%d\')" >%s</span>  ', strtolower($data['Purchase Order Parent']),$data['Purchase Order Parent Key'],$data['Purchase Order Parent Name']),
+                'public_id' => sprintf('<span class="link" onclick="change_view(\'suppliers/order/%d\')" >%s</span>  ', $data['Purchase Order Key'],$data['Purchase Order Public ID']),
+                'date'      => strftime("%e %b %Y", strtotime($data['Purchase Order Creation Date'].' +0:00')),
+                'last_date' => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Purchase Order Last Updated Date'].' +0:00')),
                 'state'     => $state,
-
-                'total_amount' => money(
-                    $data['Purchase Order Total Amount'], $data['Purchase Order Currency Code']
-                )
+                'total_amount' => money($data['Purchase Order Total Amount'], $data['Purchase Order Currency Code'])
 
 
             );
@@ -1463,19 +1454,18 @@ function order_items($_data, $db, $user, $account) {
 
                 'id'                => (integer)$data['Purchase Order Transaction Fact Key'],
                 'item_index'        => $data['Purchase Order Item Index'],
-                'parent_key'        => $purchase_order->get(
-                    'Purchase Order Parent Key'
-                ),
+                'parent_key'        => $purchase_order->get('Purchase Order Parent Key'),
                 'parent_type'       => strtolower($purchase_order->get('Purchase Order Parent')),
                 'supplier_part_key' => (integer)$data['Supplier Part Key'],
                 'supplier_key'      => (integer)$data['Supplier Key'],
-                'checkbox'          => sprintf(
-                    '<i key="%d" class="invisible fa fa-fw fa-square-o button" aria-hidden="true"></i>', $data['Purchase Order Transaction Fact Key']
-                ),
-                'operations'        => sprintf(
-                    '<i key="%d" class="fa fa-fw fa-truck fa-flip-horizontal button" aria-hidden="true" onClick="change_on_delivery(this)"></i>', $data['Purchase Order Transaction Fact Key']
-                ),
+                'checkbox'          => sprintf('<i key="%d" class="invisible fa fa-fw fa-square-o button" aria-hidden="true"></i>', $data['Purchase Order Transaction Fact Key']),
+                'operations'        => sprintf('<i key="%d" class="fa fa-fw fa-truck fa-flip-horizontal button" aria-hidden="true" onClick="change_on_delivery(this)"></i>', $data['Purchase Order Transaction Fact Key']),
                 'reference'         => $data['Supplier Part Reference'],
+
+
+                'reference'      => sprintf('<span class="link" onclick="change_view(\'/%s/%d/part/%d\')" >%s</span>  ', strtolower($purchase_order->get('Purchase Order Parent')),$purchase_order->get('Purchase Order Parent Key'),$data['Supplier Part Key'],$data['Supplier Part Reference']),
+
+
                 'description'       => $description,
                 'description_sales'       => $description_sales,
                 'quantity'          => sprintf(
@@ -1770,8 +1760,17 @@ function delivery_checking_items($_data, $db, $user) {
                     '<i key="%d" class="fa fa-fw fa-truck fa-flip-horizontal button" aria-hidden="true" onClick="change_on_delivery(this)"></i>', $data['Purchase Order Transaction Fact Key']
                 ),
 
-                'reference'      => $data['Supplier Part Reference'],
-                'part_reference' => $data['Part Reference'],
+
+                'reference'      => sprintf('<span class="link" onclick="change_view(\'/%s/%d/part/%d\')" >%s</span>  ', strtolower($supplier_delivery->get('Supplier Delivery Parent')),$supplier_delivery->get('Supplier Delivery Parent Key'),$data['Supplier Part Key'],$data['Supplier Part Reference']),
+
+
+              //  'reference'      => $data['Supplier Part Reference'],
+
+
+                'part_reference'      => sprintf('<span class="link" onclick="change_view(\'/part/%d\')" >%s</span>  ', $data['Part SKU'],$data['Part Reference']),
+
+
+               // 'part_reference' => $data['Part Reference'],
                 'description'    => $description,
 
                 'sko_edit_checked_quantity' => $edit_sko_checked_quantity,

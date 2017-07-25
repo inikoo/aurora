@@ -36,33 +36,15 @@ label: "",
 renderable:false,
 
 editable: false,
-cell: Backgrid.StringCell.extend({
-events: {
-"click": function() {
-{if $data['parent']=='supplier'}
-    change_view("supplier/{$data['parent_key']}/order/{$data['key']}/item/"+this.model.get("id"))
-{else if $data['parent']=='agent'}
-    change_view("agent/{$data['parent_key']}/order/{$data['key']}/item/"+this.model.get("id"))
-{/if}
-}
-},
-className: "button"
-}),
+cell: Backgrid.HtmlCell.extend({
+})
 },
 {
 name: "reference",
 label: "{t}S. Code{/t}",
 editable: false,
-cell: Backgrid.StringCell.extend({
-events: {
-"click": function() {
-change_view("supplier/"+this.model.get("supplier_key")+"/part/"+this.model.get("supplier_part_key"))
-
-
-}
-},
-className: "link"
-}),
+cell: Backgrid.HtmlCell.extend({
+})
 },
 {
 name: "description",
