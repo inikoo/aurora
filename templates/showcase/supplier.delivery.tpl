@@ -464,6 +464,17 @@
 </div>
 
 
+<div id="assign_barcode_to_part_results_container" class="search_results_container" style="width:420px;">
+    <table id="assign_barcode_to_part_results" border="0" style="background:white;">
+        <tr class="hide" style=";" id="assign_barcode_to_part_search_result_template" field="" value="" formatted_value=""
+            onclick="select_assign_barcode_to_part_option(this)">
+            <td class="code" style="padding-left:5px;"></td>
+            <td class="label" style="padding-left:5px;"></td>
+        </tr>
+    </table>
+</div>
+
+
 <script>
 
     $('#new_delivery').on('input propertychange', '.new_delivery_field', function (evt) {
