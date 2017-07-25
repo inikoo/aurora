@@ -391,6 +391,7 @@ function scanned_barcode_in_supplier_delivery_note(value) {
 
                                     $('#booking_in_barcode_feedback .placement_success').removeClass('hide').find('.placement').html(data.update_metadata.placement)
                                     $('#reading_location_barcode').addClass('invisible')
+                                    $('#booking_in_barcode_location_input').val('')
 
                                 })
 
