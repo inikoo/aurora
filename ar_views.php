@@ -2041,7 +2041,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
             switch ($data['section']) {
                 case ('payment_service_provider'):
                     return get_payment_service_provider_navigation(
-                        $data, $user, $smarty
+                        $data, $user, $smarty,$db
                     );
                     break;
                 case ('payment_service_providers'):

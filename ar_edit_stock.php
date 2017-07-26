@@ -426,7 +426,7 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
 
 
 
-                if (($data['qty'] / $row['Supplier Part Packages Per Carton']) > ($row['Supplier Delivery Checked Quantity'] - $row['Supplier Delivery Placed Quantity'])) {
+                if (  round($data['qty'] / $row['Supplier Part Packages Per Carton'],2) >    round($row['Supplier Delivery Checked Quantity'] - $row['Supplier Delivery Placed Quantity'],2)  ) {
                     $response = array(
                         'state' => 400,
                         'msg'   => _('Placement quantity greater than the checked quantity')

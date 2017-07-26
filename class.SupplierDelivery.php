@@ -1133,10 +1133,16 @@ class SupplierDelivery extends DB_Table {
         $transaction_key = $data['transaction_key'];
 
 
+       // print $supplier_part->get('Supplier Part Packages Per Carton');
+
+
         $qty = $data['qty'] / $supplier_part->get('Supplier Part Packages Per Carton');
         if ($qty < 0) {
             $qty = 0;
         }
+
+
+      //  print $qty;
 
         $placement = '';
 
@@ -1157,9 +1163,9 @@ class SupplierDelivery extends DB_Table {
                 $placement_qty = $this->get_placement_quantity($transaction_key) / $supplier_part->get('Supplier Part Packages Per Carton');
 
 
-                // print  $qty.' '.$placement_qty ;
+               // print  $qty.' '.$placement_qty ;
 
-                if ($qty < $placement_qty) {
+                if (round($qty,2) < round($placement_qty,2)) {
                     $this->error = true;
                     $this->msg   = sprintf(_("%d SKOs have been already placed, checked SKOs can't be set up to %d"),
                                            $placement_qty*$supplier_part->get('Supplier Part Packages Per Carton'),
@@ -1176,14 +1182,14 @@ class SupplierDelivery extends DB_Table {
                 //$this->db->exec($sql);
                 if ($qty == 0) {
 
-                    if ($placement_qty > $qty) {
+                    if (round($placement_qty,2) > round($qty,2)) {
                         $placed = 'Yes';
                     } else {
                         $placed = 'NA';
                     }
                 } else {
 
-                    if ($placement_qty >= $qty) {
+                    if (round($placement_qty,2) >= round($qty,2)) {
                         $placed = 'Yes';
                     } else {
                         $placed = 'No';
@@ -1196,6 +1202,9 @@ class SupplierDelivery extends DB_Table {
                     "UPDATE `Purchase Order Transaction Fact` SET  `Supplier Delivery Checked Quantity`=%f,`Supplier Delivery Last Updated Date`=%s ,`Supplier Delivery Transaction Placed`=%s WHERE  `Purchase Order Transaction Fact Key`=%d ",
                     $qty, prepare_mysql($date), prepare_mysql($placed), $transaction_key
                 );
+
+
+
 
                 $this->db->exec($sql);
 
@@ -1353,7 +1362,7 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
                 }
 
 
-                if ($row['Supplier Delivery Checked Quantity'] < $qty) {
+                if (round($row['Supplier Delivery Checked Quantity'],2) < round($qty,2)) {
                     $this->error = true;
                     $this->msg   = 'Placed qty > than delivery qty';
 
@@ -1514,7 +1523,6 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
 
         //'InProcess','Dispatched','Received','Checked','Placed','Cancelled'
 
-
         if (in_array(
             $this->get('Supplier Delivery State'), array(
                                                      'InProcess',
@@ -1537,6 +1545,9 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
             );
 
             if ($result = $this->db->query($sql)) {
+
+                $items_no_received=0;
+
                 foreach ($result as $row) {
 
                     $items++;
@@ -1555,8 +1566,11 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
                         } else {
 
 
-                            if ($row['Supplier Delivery Checked Quantity'] > $row['Supplier Delivery Placed Quantity']) {
+                           // print $row['Supplier Delivery Checked Quantity'].' ' ;
+                           // print $row['Supplier Delivery Placed Quantity']." \n" ;
 
+                            if (  round($row['Supplier Delivery Checked Quantity'],2) > round($row['Supplier Delivery Placed Quantity'],2)  ) {
+//exit;
                                 $state = 'Checked';
                                 break;
                             } else {

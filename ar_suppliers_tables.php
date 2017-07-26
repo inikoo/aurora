@@ -1719,9 +1719,7 @@ function delivery_checking_items($_data, $db, $user) {
 
                     $placement .= '<div style="clear:both;">
 				<div class="data w150 aright link" onClick="change_view(\'locations/'.$placement_data['wk'].'/'.$placement_data['lk'].'\')" >'.$placement_data['l'].'</div>
-				<div  class=" data w75 aleft"  >'.$placement_data['qty'].' '._(
-                            'SKO'
-                        ).' <i class="fa fa-sign-out" aria-hidden="true"></i></div>
+				<div  class=" data w75 aleft"  >'.$placement_data['qty'].' '._('SKO').' <i class="fa fa-sign-out" aria-hidden="true"></i></div>
 				</div>';
 
 
@@ -1736,7 +1734,7 @@ function delivery_checking_items($_data, $db, $user) {
 
 			    '.$placement_note.'
 
-			    <input class="place_qty width_50 changed" value="'.($quantity + 0).'" ovalue="'.($quantity + 0).'"  min="1" max="'.($quantity + 0).'"  >
+			    <input class="place_qty width_50 changed" value="'.($quantity + 0).'" ovalue="'.($quantity + 0).'"  min="1" max="'.round($quantity,2).'"  >
 				<input class="location_code"  placeholder="'._('Location code').'"  >
 				<i  class="place_item_button  fa  fa-cloud  fa-fw save " aria-hidden="true" title="'._('Place to location').'"  location_key="" onClick="place_item(this)"  ></i>
                 </div>
