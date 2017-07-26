@@ -1187,22 +1187,19 @@ function deliveries($_data, $db, $user) {
 
             $table_data[] = array(
                 'id'          => (integer)$data['Supplier Delivery Key'],
-                'parent_key'  => (integer)$data['Supplier Delivery Parent Key'],
-                'public_id'   => $data['Supplier Delivery Public ID'],
-                'date'        => strftime(
-                    "%e %b %Y", strtotime($data['Supplier Delivery Creation Date'].' +0:00')
-                ),
-                'last_date'   => strftime(
-                    "%a %e %b %Y %H:%M %Z", strtotime(
-                                              $data['Supplier Delivery Last Updated Date'].' +0:00'
-                                          )
-                ),
-                'parent_name' => $data['Supplier Delivery Parent Name'],
-                'state'       => $state,
 
-                'total_amount' => money(
-                    $data['Supplier Delivery Total Amount'], $data['Supplier Delivery Currency Code']
-                )
+                //'public_id'   => $data['Supplier Delivery Public ID'],
+                'date'        => strftime("%e %b %Y", strtotime($data['Supplier Delivery Creation Date'].' +0:00')),
+                'last_date'   => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Supplier Delivery Last Updated Date'].' +0:00')),
+               // 'parent_name' => $data['Supplier Delivery Parent Name'],
+
+
+                'parent'   => sprintf('<span class="link" onclick="change_view(\'/%s/%d\')" >%s</span>  ', strtolower($data['Supplier Delivery Parent']),$data['Supplier Delivery Parent Key'],$data['Supplier Delivery Parent Name']),
+                'public_id'=> sprintf('<span class="link" onclick="change_view(\'%s/%d/delivery/%d\')" >%s</span>  ', strtolower($data['Supplier Delivery Parent']),$data['Supplier Delivery Parent Key'],$data['Supplier Delivery Key'],$data['Supplier Delivery Public ID']),
+
+
+                'state'       => $state,
+                'total_amount' => money($data['Supplier Delivery Total Amount'], $data['Supplier Delivery Currency Code'])
 
 
             );
