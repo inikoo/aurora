@@ -3163,8 +3163,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
 
                 break;
-
-            case 'deliveries':
+            case 'agent_deliveries':
                 if ($user->get('User Type') != 'Agent') {
                     $module  = 'utils';
                     $section = 'forbidden';
@@ -3172,6 +3171,16 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                 }
 
                 $module  = 'agent_client_deliveries';
+                $section = 'deliveries';
+                break;
+            case 'deliveries':
+                if (!$user->can_view('suppliers')) {
+                    $module  = 'utils';
+                    $section = 'forbidden';
+                    break;
+                }
+
+                $module  = 'suppliers';
                 $section = 'deliveries';
                 break;
 
