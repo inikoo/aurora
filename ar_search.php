@@ -43,6 +43,10 @@ switch ($tipo) {
             agent_search($db, $account, $user, $memcache_ip, $data);
         } else {
 
+
+           // print_r($data);
+
+
             if ($data['state']['module'] == 'customers') {
                 if ($data['state']['current_store']) {
                     $data['scope']     = 'store';
@@ -66,7 +70,17 @@ switch ($tipo) {
                 } else {
                     $data['scope'] = 'stores';
                 }
-                search_products($db, $account, $memcache_ip, $data);
+
+                if(  in_array($data['state']['section'],array('website','webpage','',''))) {
+                    search_webpages($db, $account, $memcache_ip, $data);
+                }else{
+                    search_products($db, $account, $memcache_ip, $data);
+                }
+
+              //  print_r($data['state']);
+
+
+
             } elseif ($data['state']['module'] == 'products_server') {
 
                 $data['scope'] = 'stores';
@@ -3375,6 +3389,300 @@ function agent_search($db, $account, $user, $memcache_ip, $data) {
     echo json_encode($response);
 
 }
+
+
+
+function search_webpages($db, $account, $memcache_ip, $data) {
+
+
+    $cache       = false;
+    $max_results = 16;
+    $user        = $data['user'];
+    $queries     = trim($data['query']);
+
+    if ($queries == '') {
+        $response = array(
+            'state'   => 200,
+            'results' => 0,
+            'data'    => ''
+        );
+        echo json_encode($response);
+
+        return;
+    }
+
+
+
+
+    if ($data['scope'] == 'store') {
+        if (in_array($data['scope_key'], $user->stores)) {
+            $stores          = $data['scope_key'];
+            $where_store     = sprintf(' and `Webpage Store Key`=%d', $data['scope_key']);
+
+        } else {
+            $where_store     = ' and false';
+        }
+    } else {
+        if (count($user->stores) == $account->get('Account Stores')) {
+            $where_store     = '';
+        } else {
+            $where_store     = sprintf(' and `Webpage Store Key` in (%s)', join(',', $user->stores));
+        }
+
+        $stores = join(',', $user->stores);
+    }
+    $memcache_fingerprint = $account->get('Account Code').'SEARCH_WEBPAGES--'.$stores.md5($queries);
+
+    $cache = new Memcached();
+    $cache->addServer($memcache_ip, 11211);
+
+
+    if (strlen($queries) <= 2) {
+        $memcache_time = 295200;
+    }elseif (strlen($queries) <= 3) {
+        $memcache_time = 86400;
+    }elseif (strlen($queries) <= 4) {
+        $memcache_time = 3600;
+    } else {
+        $memcache_time = 300;
+
+    }
+
+
+    $results_data = $cache->get($memcache_fingerprint);
+
+
+    if (!$results_data or true) {
+
+
+        $candidates = array();
+
+        $query_array    = preg_split('/\s+/', $queries);
+        //$number_queries = count($query_array);
+
+       
+
+
+        foreach ($query_array as $q) {
+
+
+            $sql = sprintf(
+                "select `Page Key`,`Webpage Code`,`Webpage Name` ,`Webpage State` from `Page Store Dimension` where true $where_store and `Webpage Code` like '%s%%' limit 20 ", $q
+            );
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+
+                    if ($row['Webpage Code'] == $q) {
+                        if ($row['Webpage State'] == 'Offline') {
+
+                            if (isset($candidates['P'.$row['Page Key']])) {
+                                $candidates['P'.$row['Page Key']] += 550;
+                            } else {
+                                $candidates['P'.$row['Page Key']] = 550;
+                            }
+
+
+                        } else {
+
+                            if (isset($candidates['P'.$row['Page Key']])) {
+                                $candidates['P'.$row['Page Key']] += 1000;
+                            } else {
+                                $candidates['P'.$row['Page Key']] = 1000;
+                            }
+
+                        }
+                    } else {
+
+                        $len_name = strlen($row['Webpage Code']);
+                        $len_q    = strlen($q);
+                        $factor   = $len_q / $len_name;
+                        if ($row['Webpage State'] == 'Offline') {
+
+                            if (isset($candidates['P'.$row['Page Key']])) {
+                                $candidates['P'.$row['Page Key']] += 270 * $factor;
+                            } else {
+                                $candidates['P'.$row['Page Key']] = 270 * $factor;
+                            }
+
+                        } else {
+
+
+                            if (isset($candidates['P'.$row['Page Key']])) {
+                                $candidates['P'.$row['Page Key']] += 500 * $factor;
+                            } else {
+                                $candidates['P'.$row['Page Key']] = 500 * $factor;
+                            }
+                        }
+
+                    }
+
+                }
+            } else {
+                print_r($error_info = $db->errorInfo());
+                exit;
+            }
+
+            $sql = sprintf(
+                "select `Page Key`,`Webpage Code`,`Webpage Name`  ,`Webpage State`  from `Page Store Dimension` where true $where_store and `Webpage Name`  REGEXP '[[:<:]]%s' limit 100 ", $q
+            );
+
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+                    if ($row['Webpage Name'] == $q) {
+
+                        if (isset($candidates['P'.$row['Page Key']])) {
+                            $candidates['P'.$row['Page Key']] += 55;
+                        } else {
+                            $candidates['P'.$row['Page Key']] = 55;
+                        }
+
+                    } else {
+
+                        $len_name = strlen($row['Webpage Name']);
+                        $len_q    = strlen($q);
+                        $factor   = $len_q / $len_name;
+
+                        if (isset($candidates['P'.$row['Page Key']])) {
+                            $candidates['P'.$row['Page Key']] += 50 * $factor;
+                        } else {
+                            $candidates['P'.$row['Page Key']] = 50 * $factor;
+                        }
+
+                    }
+
+                }
+            } else {
+                print_r($error_info = $db->errorInfo());
+                exit;
+            }
+
+
+        }
+     //   print_r($candidates);
+
+        arsort($candidates);
+
+        //print_r($candidates);
+
+        $total_candidates = count($candidates);
+
+        if ($total_candidates == 0) {
+            $response = array(
+                'state'   => 200,
+                'results' => 0,
+                'data'    => ''
+            );
+            echo json_encode($response);
+
+            return;
+        }
+
+        $counter       = 0;
+        $product_keys  = '';
+        $category_keys = '';
+
+        $results                = array();
+        $number_products_keys   = 0;
+        $number_categories_keys = 0;
+
+        foreach ($candidates as $_key => $val) {
+            $counter++;
+
+            if ($_key[0] == 'P') {
+                $key = preg_replace('/^P/', '', $_key);
+                $product_keys .= ','.$key;
+                $results[$_key] = '';
+                $number_products_keys++;
+
+            } elseif ($_key[0] == 'C') {
+                $key = preg_replace('/^C/', '', $_key);
+                $category_keys .= ','.$key;
+                $results[$_key] = '';
+                $number_categories_keys++;
+
+            }
+
+            if ($counter > $max_results) {
+                break;
+            }
+        }
+        $product_keys  = preg_replace('/^,/', '', $product_keys);
+
+
+        if ($number_products_keys) {
+            $sql = sprintf(
+                "SELECT `Webpage State`,`Website Code`,`Website Key`,`Page Key`,`Webpage Code`,`Webpage Name` FROM `Page Store Dimension` LEFT JOIN `Website Dimension` W ON (`Webpage Website Key`=W.`Website Key`) WHERE `Page Key` IN (%s)",
+                $product_keys
+            );
+
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+
+
+                    if ($row['Webpage State'] == 'Offline') {
+                        $icon = '<i class="fa fa-file-o fa-fw padding_right_5 discreet" aria-hidden="true" ></i> ';
+                        $code= '<span class="strikethrough">'.$icon.highlightkeyword(sprintf('%s', strtolower($row['Webpage Code'])), $queries).'</span>';
+
+
+                    } elseif ($row['Webpage State'] == 'InProcess') {
+                        $icon = '<i class="fa fa-file-o fa-fw padding_right_5 " aria-hidden="true" ></i> ';
+                        $code= $icon.highlightkeyword(sprintf('%s', strtolower($row['Webpage Code'])), $queries);
+
+
+                    }elseif ($row['Webpage State'] == 'Ready') {
+                        $icon = '<i class="fa fa-file-o  fa-fw padding_right_5 " aria-hidden="true" ></i> ';
+                        $code= $icon.highlightkeyword(sprintf('%s', strtolower($row['Webpage Code'])), $queries);
+
+
+                    } else {
+                        $icon = '<i class="fa fa-file-o fa-fw padding_right_5" aria-hidden="true" ></i> ';
+                        $code= $icon.highlightkeyword(sprintf('%s', strtolower($row['Webpage Code'])), $queries);
+
+                    }
+
+
+
+                    $results['P'.$row['Page Key']] = array(
+                        'website'   => $row['Website Code'],
+                        'label'   => $code,
+                        'details' => highlightkeyword($row['Webpage Name'], $queries),
+                        'view'    => sprintf('website/%d/webpage/%d', $row['Website Key'], $row['Page Key'])
+
+
+                    );
+                }
+            } else {
+                print_r($error_info = $db->errorInfo());
+                print $sql;
+                exit;
+            }
+        }
+
+
+        $results_data = array(
+            'n' => count($results),
+            'd' => $results
+        );
+        $cache->set($memcache_fingerprint, $results_data, $memcache_time);
+
+
+    }
+
+
+    $response = array(
+        'state'          => 200,
+        'number_results' => $results_data['n'],
+        'results'        => $results_data['d'],
+        'q'              => $queries,
+        'show_stores'    => ($data['scope'] == 'stores' ? true : false)
+    );
+
+    echo json_encode($response);
+
+}
+
+
+
 
 
 ?>
