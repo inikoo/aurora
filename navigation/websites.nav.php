@@ -159,7 +159,9 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
     $object = $data['_object'];
     //$object->load_data();
 
-    $block_view = $data['section'];
+
+
+    $block_view = 'website';
 
 
     $sections_class = '';
@@ -392,8 +394,8 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
 
 
     $sections = get_sections('products', $object->get('Webpage Store Key'));
-    if (isset($sections[$data['section']])) {
-        $sections[$data['section']]['selected'] = true;
+    if (isset($sections[$block_view])) {
+        $sections[$block_view]['selected'] = true;
     }
 
 
