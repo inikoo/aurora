@@ -411,9 +411,9 @@ class Public_Customer extends DBW_Table {
     function get_order_in_process_key($dispatch_state = 'all') {
 
         if ($dispatch_state == 'all') {
-            $dispatch_state_valid_values = "'In Process by Customer','Waiting for Payment Confirmation'";
+            $dispatch_state_valid_values = "'In Process','Waiting for Payment Confirmation'";
         } else {
-            $dispatch_state_valid_values = "'In Process by Customer'";
+            $dispatch_state_valid_values = "'In Process'";
         }
 
         $order_key = false;
@@ -486,26 +486,94 @@ class Public_Customer extends DBW_Table {
     }
 
 
-    function create_order($raw_data=array()) {
 
-        include_once 'class.Order.php';
+    function create_order() {
+
         global $account;
+
+
+
+
+
 
         $order_data = array(
 
-            'Customer Key'                  => $this->id,
             'Order Original Data MIME Type' => 'application/aurora',
             'Order Type'                    => 'Order',
-            'Order Email'                   => $this->get('Customer Plain Email'),
-            'editor'                        => $this->editor
+            'editor'                        => $this->editor,
+
+
+
+
         );
 
 
-        if(!empty($raw_data['Order Current Dispatch State'])){
-            $order_data['Order Current Dispatch State'] =$raw_data['Order Current Dispatch State'];
-        }
+        $order_data['Order Class']          = 'InWebsite';
 
 
+        $order_data['Order Customer Key']          = $this->id;
+        $order_data['Order Customer Name']         = $this->data['Customer Name'];
+        $order_data['Order Customer Contact Name'] = $this->data['Customer Main Contact Name'];
+        $order_data['Order Tax Number']            = $this->data['Customer Tax Number'];
+        $order_data['Order Tax Number Valid']      = $this->data['Customer Tax Number Valid'];
+        $order_data['Order Tax Number Validation Date']      = $this->data['Customer Tax Number Validation Date'];
+        $order_data['Order Tax Number Validation Source']      = $this->data['Customer Tax Number Validation Source'];
+        $order_data['Order Tax Number Details Match']      = $this->data['Customer Tax Number Details Match'];
+        $order_data['Order Tax Number Registered Name']      = $this->data['Customer Tax Number Registered Name'];
+        $order_data['Order Tax Number Registered Address']      = $this->data['Customer Tax Number Registered Address'];
+
+
+
+
+
+
+        $order_data['Order Customer Fiscal Name']  = $this->get('Fiscal Name');
+        $order_data['Order Email']                 = $this->data['Customer Main Plain Email'];
+        $order_data['Order Telephone']             = $this->data['Customer Main Plain Mobile'];
+
+
+        $order_data['Order Invoice Address Recipient']            = $this->data['Customer Invoice Address Recipient'];
+        $order_data['Order Invoice Address Organization']         = $this->data['Customer Invoice Address Organization'];
+        $order_data['Order Invoice Address Line 1']               = $this->data['Customer Invoice Address Line 1'];
+        $order_data['Order Invoice Address Line 2']               = $this->data['Customer Invoice Address Line 2'];
+        $order_data['Order Invoice Address Sorting Code']         = $this->data['Customer Invoice Address Sorting Code'];
+        $order_data['Order Invoice Address Postal Code']          = $this->data['Customer Invoice Address Postal Code'];
+        $order_data['Order Invoice Address Dependent Locality']   = $this->data['Customer Invoice Address Dependent Locality'];
+        $order_data['Order Invoice Address Locality']             = $this->data['Customer Invoice Address Locality'];
+        $order_data['Order Invoice Address Administrative Area']  = $this->data['Customer Invoice Address Administrative Area'];
+        $order_data['Order Invoice Address Country 2 Alpha Code'] = $this->data['Customer Invoice Address Country 2 Alpha Code'];
+        $order_data['Order Invoice Address Checksum']             = $this->data['Customer Invoice Address Recipient'];
+        $order_data['Order Invoice Address Formatted']            = $this->data['Customer Invoice Address Formatted'];
+        $order_data['Order Invoice Address Postal Label']         = $this->data['Customer Invoice Address Postal Label'];
+
+
+        $order_data['Order Delivery Address Recipient']            = $this->data['Customer Delivery Address Recipient'];
+        $order_data['Order Delivery Address Organization']         = $this->data['Customer Delivery Address Organization'];
+        $order_data['Order Delivery Address Line 1']               = $this->data['Customer Delivery Address Line 1'];
+        $order_data['Order Delivery Address Line 2']               = $this->data['Customer Delivery Address Line 2'];
+        $order_data['Order Delivery Address Sorting Code']         = $this->data['Customer Delivery Address Sorting Code'];
+        $order_data['Order Delivery Address Postal Code']          = $this->data['Customer Delivery Address Postal Code'];
+        $order_data['Order Delivery Address Dependent Locality']   = $this->data['Customer Delivery Address Dependent Locality'];
+        $order_data['Order Delivery Address Locality']             = $this->data['Customer Delivery Address Locality'];
+        $order_data['Order Delivery Address Administrative Area']  = $this->data['Customer Delivery Address Administrative Area'];
+        $order_data['Order Delivery Address Country 2 Alpha Code'] = $this->data['Customer Delivery Address Country 2 Alpha Code'];
+        $order_data['Order Delivery Address Checksum']             = $this->data['Customer Delivery Address Recipient'];
+        $order_data['Order Delivery Address Formatted']            = $this->data['Customer Delivery Address Formatted'];
+        $order_data['Order Delivery Address Postal Label']         = $this->data['Customer Delivery Address Postal Label'];
+
+
+        $order_data['Order Customer Order Number'] = $this->get_number_of_orders() + 1;
+
+        $store = get_object('Store',$this->get('Customer Store Key'));
+
+        $order_data['Order Store Key']               = $store->id;
+        $order_data['Order Currency']                = $store->get('Store Currency Code');
+        $order_data['Order Show in Warehouse Orders'] = $store->get('Store Show in Warehouse Orders');
+        $order_data['public_id_format'] =  $store->get('Store Order Public ID Format');
+
+
+        // todo chage to Public_Order
+        include_once 'class.Order.php';
         $order = new Order('new', $order_data);
 
 
@@ -530,6 +598,7 @@ class Public_Customer extends DBW_Table {
 
     }
 
+
     function get_number_of_orders() {
         $sql    = sprintf(
             "SELECT count(*) AS number FROM `Order Dimension` WHERE `Order Customer Key`=%d ", $this->id
@@ -551,6 +620,197 @@ class Public_Customer extends DBW_Table {
 
 
     }
+
+
+
+
+    function save_credit_card($vault, $card_info, $delivery_address_checksum, $invoice_address_checksum) {
+        include_once 'utils/aes.php';
+
+        $key = md5($this->id.','.$delivery_address_checksum.','.$invoice_address_checksum.','.CKEY);
+
+        $card_data = AESEncryptCtr(
+            json_encode(
+                array(
+                    'Token'           => $card_info['token'],
+                    'Card Type'       => preg_replace('/\s/', '', $card_info['cardType']),
+                    'Card Number'     => substr($card_info['bin'], 0, 4).' ****  **** '.$card_info['last4'],
+                    'Card Expiration' => $card_info['expirationMonth'].'/'.$card_info['expirationYear'],
+                    'Card CVV Length' => ($card_info['cardType'] == 'American Express' ? 4 : 3),
+                    'Random'          => password_hash(time(), PASSWORD_BCRYPT)
+
+                )
+            ), $key, 256
+        );
+
+
+        $sql = sprintf(
+            "INSERT INTO `Customer Credit Card Dimension` (`Customer Credit Card Customer Key`,`Customer Credit Card Invoice Address Checksum`,`Customer Credit Card Delivery Address Checksum`,`Customer Credit Card CCUI`,`Customer Credit Card Metadata`,`Customer Credit Card Created`,`Customer Credit Card Updated`,`Customer Credit Card Valid Until`,`Customer Credit Card Vault`) 
+              VALUES (%d,%s,%s,%s,%s,%s,%s,%s,%s)
+		      ON DUPLICATE KEY UPDATE `Metadata`=%s , `Updated`=%s,`Valid Until`=%s",
+            $this->id,
+            prepare_mysql($invoice_address_checksum),
+            prepare_mysql($delivery_address_checksum),
+            prepare_mysql($card_info['uniqueNumberIdentifier']),
+            prepare_mysql($card_data), prepare_mysql(gmdate('Y-m-d H:i:s')),
+            prepare_mysql(gmdate('Y-m-d H:i:s')),
+            prepare_mysql(gmdate('Y-m-d H:i:s', strtotime($card_info['expirationYear'].'-'.$card_info['expirationMonth'].'-01 +1 month'))),
+            prepare_mysql($vault),
+            prepare_mysql($card_data), prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql(gmdate('Y-m-d H:i:s', strtotime($card_info['expirationYear'].'-'.$card_info['expirationMonth'].'-01 +1 month')))
+
+        );
+
+        $this->db->exec($sql);
+
+
+    }
+
+    function get_credit_card_token($card_key, $delivery_address_checksum, $invoice_address_checksum) {
+
+        $key = md5($this->id.','.$delivery_address_checksum.','.$invoice_address_checksum.','.CKEY);
+
+        $token = false;
+        $sql   = sprintf(
+            "SELECT `Customer Credit Card Metadata` FROM `Customer Credit Card Dimension` WHERE `Customer Credit Card Customer Key`=%d AND `Customer Credit Card Invoice Address Checksum`=%s AND `Customer Credit Card Delivery Address Checksum`=%s AND   `Customer Credit Card Valid Until`>NOW() AND  `Customer Credit Card Key`=%d ",
+            $this->id, prepare_mysql($invoice_address_checksum), prepare_mysql($delivery_address_checksum), $card_key
+        );
+
+
+        if ($result=$this->db->query($sql)) {
+            foreach ($result as $row) {
+                $_card_data = json_decode(AESDecryptCtr($row['Customer Credit Card Metadata'], $key, 256), true);
+                $token      = $_card_data['Token'];
+            }
+        }else {
+            print_r($error_info=$this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        return $token;
+
+    }
+
+    function get_number_saved_credit_cards($delivery_address_checksum, $invoice_address_checksum) {
+
+        $number_saved_credit_cards = 0;
+        $sql                       = sprintf(
+            "SELECT count(*) AS number FROM `Customer Credit Card Dimension` WHERE `Customer Credit Card Customer Key`=%d AND `Customer Credit Card Invoice Address Checksum`=%s AND `Customer Credit Card Delivery Address Checksum`=%s AND   `Customer Credit Card Valid Until`>NOW()  ",
+            $this->id, prepare_mysql($invoice_address_checksum), prepare_mysql($delivery_address_checksum)
+        );
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $number_saved_credit_cards = $row['number'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        return $number_saved_credit_cards;
+    }
+
+    function get_saved_credit_cards($delivery_address_checksum, $invoice_address_checksum) {
+
+        $key = md5($this->id.','.$delivery_address_checksum.','.$invoice_address_checksum.','.CKEY);
+
+        $card_data = array();
+        $sql       = sprintf(
+            "SELECT * FROM `Customer Credit Card Dimension` WHERE `Customer Credit Card Customer Key`=%d AND `Customer Credit Card Invoice Address Checksum`=%s AND `Customer Credit Card Delivery Address Checksum`=%s AND   `Customer Credit Card Valid Until`>NOW()  ",
+            $this->id, prepare_mysql($invoice_address_checksum), prepare_mysql($delivery_address_checksum)
+
+
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $_card_data       = json_decode(AESDecryptCtr($row['Customer Credit Card Metadata'], $key, 256), true);
+                $_card_data['id'] = $row['Customer Credit Card Key'];
+
+                $card_data[] = $_card_data;
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        $card_data[]=array(
+            'id'=>1,
+'Card Number'=>'XXXX XXXX XXXX 3423',
+            'Card Expiration'=>'11/33'
+
+        );
+
+        $card_data[]=array(
+            'id'=>2,
+            'Card Number'=>'XXXX XXXX XXXX 1234',
+            'Card Expiration'=>'21/33'
+
+
+        );
+
+        return $card_data;
+
+    }
+
+    function delete_credit_card($card_key) {
+
+
+        $tokens = array();
+        $sql    = sprintf(
+            "SELECT `Customer Credit Card CCUI` FROM `Customer Credit Card Dimension` WHERE `Customer Credit Card Customer Key`=%d  AND `Customer Credit Card Key`=%d ", $this->id,
+
+            $card_key
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $sql = sprintf(
+                    'SELECT `Customer Credit Card Key`,`Customer Credit Card Invoice Address Checksum`,`Customer Credit Card Delivery Address Checksum` FROM `Customer Credit Card Dimension`  WHERE `Customer Credit Card Customer Key`=%d AND `Customer Credit Card CCUI`=%s',
+                    $this->id,
+                    prepare_mysql($row['Customer Credit Card CCUI'])
+                );
+
+
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row2) {
+                        $tokens[] = $this->get_credit_card_token(
+                            $row2['Customer Credit Card Key'], $row2['Customer Credit Card Invoice Address Checksum'], $row2['Customer Credit Card Delivery Address Checksum']
+                        );
+
+                        $sql = sprintf(
+                            'DELETE FROM `Customer Credit Card Dimension`  WHERE `Customer Credit Card Key`=%d', $row2['Customer Credit Card Key']
+                        );
+
+                        $this->db->exec($sql);
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        return $tokens;
+
+    }
+
 
 }
 

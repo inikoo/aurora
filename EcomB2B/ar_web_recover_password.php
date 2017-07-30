@@ -75,15 +75,8 @@ function recover_password($db, $data, $editor,$website) {
             $customer=get_object('Customer',$row['Website User Customer Key']);
 
             require_once "external_libs/random/lib/random.php";
-            $selector      = base64_encode(random_bytes(9));
-
-
-
-
-
-
-
-            $authenticator=strtr(base64_encode(random_bytes(33)), '+/=', '-_~');
+            $selector      = base64_url_encode(random_bytes(9));
+            $authenticator=base64_url_encode(random_bytes(33));
 
 
 
@@ -108,11 +101,15 @@ function recover_password($db, $data, $editor,$website) {
 
             $scope_metadata = $webpage->get('Scope Metadata');
 
-            // print_r($webpage);
 
-            $email_template = get_object('email_template',$scope_metadata['emails']['reset_password']);
+            $email_template = get_object('email_template',$scope_metadata['emails']['reset_password']['key']);
 
             $published_email_template= get_object('published_email_template',$email_template->get('Email Template Published Email Key'));
+
+            //print_r($scope_metadata['emails']['reset_password']);
+            //print_r($email_template);
+            //print_r($published_email_template);
+
 
             if ($email_template->get('Email Template Subject') == '') {
                 $response = array(

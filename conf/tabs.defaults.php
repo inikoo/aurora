@@ -2250,6 +2250,26 @@ $tab_defaults = array(
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'reference'
     ),
+    'payment_account.stores' => array(
+        'view'        => 'overview',
+        'sort_key'    => 'code',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'code'
+    ),
+    'payment_account.websites' => array(
+        'view'        => 'overview',
+        'sort_key'    => 'code',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'code'
+    ),
+
+
+
+
     'payment.history'          => array(
         'view'        => 'overview',
         'sort_key'    => 'date',

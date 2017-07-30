@@ -89,7 +89,6 @@ function stores($_data, $db, $user) {
     $sql         = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $record_data = array();
 
-    // print $sql;
     foreach ($db->query($sql) as $data) {
 
 

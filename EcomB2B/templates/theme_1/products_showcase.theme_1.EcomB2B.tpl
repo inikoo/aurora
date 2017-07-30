@@ -379,7 +379,6 @@
     </div>
 
 
-{include file="order_products.js.tpl" }
 
 
 

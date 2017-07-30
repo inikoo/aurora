@@ -996,6 +996,11 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             include_once 'showcase/webpage_type.show.php';
             $html = get_showcase($data, $smarty, $user, $db);
             break;
+
+        case 'payment_account':
+            include_once 'showcase/payment_account.show.php';
+            $html = get_payment_account_showcase($data, $smarty, $user, $db);
+            break;
         default:
             $html = $data['object'].' -> '.$data['key'];
             break;
@@ -2050,9 +2055,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     );
                     break;
                 case ('payment_account'):
-                    return get_payment_account_navigation(
-                        $data, $user, $smarty
-                    );
+                    return get_payment_account_navigation($data, $user, $smarty,$db);
                     break;
                 case ('payment_accounts'):
                     return get_payment_accounts_navigation(

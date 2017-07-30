@@ -2204,7 +2204,7 @@ $sql = 'SELECT word FROM words_list
         $payment_options_data = array();
 
         $sql = sprintf(
-            "SELECT * FROM `Payment Account Dimension` PA LEFT JOIN `Payment Service Provider Dimension` PSP ON  (PA.`Payment Service Provider Key`=PSP.`Payment Service Provider Key`) LEFT JOIN `Payment Account Site Bridge`  B ON (PA.`Payment Account Key`=B.`Payment Account Key`) WHERE  `Show In Cart`='Yes' AND `Site Key`=%d ORDER BY `Show Cart Order`",
+            "SELECT * FROM `Payment Account Dimension` PA LEFT JOIN `Payment Service Provider Dimension` PSP ON  (PA.`Payment Service Provider Key`=PSP.`Payment Service Provider Key`) LEFT JOIN `Payment Account Store Bridge`  B ON (PA.`Payment Account Key`=B.`Payment Account Key`) WHERE  `Show In Cart`='Yes' AND `Site Key`=%d ORDER BY `Show Cart Order`",
             $this->id
 
         );

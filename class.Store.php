@@ -1505,13 +1505,14 @@ class Store extends DB_Table {
         );
 
         $sql = sprintf(
-            "SELECT count(*) AS num,ifnull(sum(`Order Total Net Amount`),0) AS amount,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE `Order Store Key`=%d AND `Order Number Items`>0 AND `Order Current Dispatch State`  IN ('In Process by Customer','In Process')  ",
+            "SELECT count(*) AS num,ifnull(sum(`Order Total Net Amount`),0) AS amount,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE `Order Store Key`=%d AND `Order Number Items`>0 AND `Order Current Dispatch State`  IN ('In Process')  ",
             $this->id
         );
 
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
+
 
 
                 $data['in_basket']['number']    = $row['num'];
@@ -2025,7 +2026,7 @@ class Store extends DB_Table {
     function get_payment_account_key() {
         $payment_account_key = 0;
         $sql                 = sprintf(
-            "SELECT PA.`Payment Account Key` FROM `Payment Account Dimension` PA LEFT JOIN `Payment Account Site Bridge` B ON (PA.`Payment Account Key`=B.`Payment Account Key`)  WHERE `Payment Type`='Account' AND `Store Key`=%d ",
+            "SELECT PA.`Payment Account Key` FROM `Payment Account Dimension` PA LEFT JOIN `Payment Account Store Bridge` B ON (PA.`Payment Account Key`=B.`Payment Account Key`)  WHERE `Payment Type`='Account' AND `Store Key`=%d ",
             $this->id
         );
 
@@ -2047,7 +2048,7 @@ class Store extends DB_Table {
     function get_payment_accounts_data() {
         $payment_accounts_data = array();
         $sql                   = sprintf(
-            "SELECT * FROM `Payment Account Dimension` PA LEFT JOIN `Payment Account Site Bridge` B ON (PA.`Payment Account Key`=B.`Payment Account Key`) LEFT JOIN `Payment Service Provider Dimension` PSPD ON (PSPD.`Payment Service Provider Key`=PA.`Payment Service Provider Key`)  WHERE  `Status`='Active' AND `Store Key`=%d ",
+            "SELECT * FROM `Payment Account Dimension` PA LEFT JOIN `Payment Account Store Bridge` B ON (PA.`Payment Account Key`=B.`Payment Account Store Bridge Payment Account Key`) LEFT JOIN `Payment Service Provider Dimension` PSPD ON (PSPD.`Payment Service Provider Key`=PA.`Payment Service Provider Key`)  WHERE  `Payment Account Store Bridge Status`='Active' AND `Payment Account Store Bridge Store Key`=%d ",
             $this->id
         );
 
@@ -2058,9 +2059,9 @@ class Store extends DB_Table {
                 if ($row['Payment Type'] == 'Account') {
                     continue;
                 }
-                $payment_service_provider = new Payment_Service_Provider(
-                    $row['Payment Service Provider Key']
-                );
+
+
+                $payment_service_provider = new Payment_Service_Provider($row['Payment Service Provider Key']);
 
                 $payment_accounts_data[] = array(
                     'key'                   => $row['Payment Account Key'],

@@ -230,8 +230,7 @@
         content_data = { };
 
         var blocks=[]
-
-
+        var labels= { };
 
 
         $('._block').each(function (i, obj) {
@@ -240,6 +239,44 @@
             console.log($(obj).attr('block'))
 
             switch ($(obj).attr('block')) {
+                case 'basket':
+
+
+
+
+
+                    var content_data = {
+                        type: 'basket',
+                        label: '{t}Basket{/t}',
+                        icon: 'fa-basket',
+                        show: 1,
+
+
+                    }
+
+                        $('[contenteditable=true]').each(function (i, obj) {
+
+                            if($(obj).hasClass('website_localized_label')){
+                                labels[$(obj).attr('id')] = $(obj).html()
+                            }else{
+                                content_data[$(obj).attr('id')] = $(obj).html()
+                            }
+
+
+                        })
+
+
+                    content_data['_voucher']=$('#_voucher').val()
+                    content_data['_special_instructions']=$('#_special_instructions').val()
+
+
+
+
+
+
+
+                    blocks.push(content_data)
+                    break;
                 case 'iframe':
 
 
@@ -554,6 +591,7 @@
         ajaxData.append("tipo", 'save_webpage_content')
         ajaxData.append("key", '{$webpage->id}')
         ajaxData.append("content_data", JSON.stringify(content_data))
+        ajaxData.append("labels", JSON.stringify(labels))
 
 
         $.ajax({
@@ -799,6 +837,11 @@
 
 
     }
+
+    $("form").on('submit', function (e) {
+        e.preventDefault();
+        e.returnValue = false;
+    });
 
 </script>
 

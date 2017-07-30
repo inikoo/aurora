@@ -74,6 +74,8 @@
 
 }
 
+          /*
+
 .asset_container p {
        line-height: normal;
        font-family: "Ubuntu",Helvetica,Arial,sans-serif;
@@ -82,7 +84,7 @@
 
 }
 
-
+*/
 
           .product_description_block{
                  border:1px dashed transparent; margin-top:25px;margin-bottom:10px;padding:0px;cursor:text
@@ -131,12 +133,12 @@ width:100%;
 
 
 
-
+/*
           #page_content  p{
          margin: 1em 0px;
 
      }
-
+*/
           #page_content input {
   position: relative;
   bottom: 2px;

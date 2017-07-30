@@ -109,16 +109,18 @@ class Public_Webpage {
 
         } elseif ($tipo == 'store_page_code') {
             $sql = sprintf(
-                "SELECT * FROM `Page Store Dimension` PS LEFT JOIN `Page Dimension` P  ON (P.`Page Key`=PS.`Page Key`) WHERE `Page Code`=%s AND `Page Store Key`=%d ", prepare_mysql($tag2), $tag
+                "SELECT * FROM `Page Store Dimension` PS LEFT JOIN `Page Dimension` P  ON (P.`Page Key`=PS.`Page Key`) WHERE `Webpage Code`=%s AND `Page Store Key`=%d ", prepare_mysql($tag2), $tag
             );
-        } elseif ($tipo == 'site_code') {
+        } elseif ($tipo == 'site_code' or $tipo == 'website_code') {
             $sql = sprintf(
-                "SELECT * FROM `Page Store Dimension` PS LEFT JOIN `Page Dimension` P  ON (P.`Page Key`=PS.`Page Key`) WHERE `Page Code`=%s AND PS.`Page Site Key`=%d ", prepare_mysql($tag2), $tag
+                "SELECT * FROM `Page Store Dimension` PS LEFT JOIN `Page Dimension` P  ON (P.`Page Key`=PS.`Page Key`) WHERE `Webpage Code`=%s AND PS.`Webpage Website Key`=%d ", prepare_mysql($tag2), $tag
             );
 
         } else {
             $sql = sprintf("SELECT * FROM `Page Store Dimension` PS LEFT JOIN `Page Dimension` P  ON (P.`Page Key`=PS.`Page Key`) WHERE  PS.`Page Key`=%d", $tag);
         }
+
+       // print $sql;
 
 
         if ($this->data = $this->db->query($sql)->fetch()) {

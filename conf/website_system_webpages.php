@@ -15,14 +15,12 @@ function website_system_webpages_config($website_type) {
     include_once 'conf/webpage_blocks.php';
     $blocks = get_webpage_blocks();
 
-    $contact_content_data                                      = $blocks['two_one'];
+    $contact_content_data                         = $blocks['two_one'];
     $contact_content_data['columns'][0]['_title'] = '';
-    $contact_content_data['columns'][0]['_text']  ='<p>Feel free to talk to our online representative at any time you please using our Live Chat system on our website or one of the below instant messaging programs.</p><br /><p>Please be patient while waiting for response. (24/7 Support!) <strong>Phone General Inquiries: 1-888-123-4567-8900</strong></p>';
+    $contact_content_data['columns'][0]['_text']  =
+        '<p>Feel free to talk to our online representative at any time you please using our Live Chat system on our website or one of the below instant messaging programs.</p><br /><p>Please be patient while waiting for response. (24/7 Support!) <strong>Phone General Inquiries: 1-888-123-4567-8900</strong></p>';
     $contact_content_data['columns'][1]['_title'] = _('Our Details');
     $contact_content_data['columns'][1]['_text']  = 'Telephone<br/>#tel<br/><br/>Email<br/>#email<br/><br/>Address<br/>#adr<br/><br/> ';
-
-
-
 
 
     $EcomB2B = array(
@@ -56,7 +54,7 @@ function website_system_webpages_config($website_type) {
 
         ),
 
-        'home_logout.sys'    => array(
+        'home_logout.sys' => array(
             'Webpage Scope'             => 'HomepageLogout',
             'Webpage Template Filename' => 'homepage_logout',
             'Webpage Type'              => 'Home',
@@ -385,12 +383,10 @@ function website_system_webpages_config($website_type) {
 
                 array(
 
-                    'blocks' =>
-                        array(
-                            $blocks['map'],
-                            $contact_content_data
-                        )
-
+                    'blocks' => array(
+                        $blocks['map'],
+                        $contact_content_data
+                    )
 
 
                 )
@@ -411,31 +407,39 @@ function website_system_webpages_config($website_type) {
             'Page Store Content Data'   => json_encode(
                 array(
 
-                    'blocks'=>array(
+                    'blocks' => array(
 
                         array(
-                            'locked'=>true,
+                            'locked' => true,
                             'type'   => 'basket',
-                            'label'  => _('fa-basket'),
-                            'icon'   => 'fa-minus',
+                            'label'  => _('Basket'),
+                            'icon'   => 'fa-basket',
                             'show'   => 1,
+
+
+                            '_order_number_label' => _('Order number'),
+
 
                             '_invoice_address_label'  => _('Invoice address'),
                             '_delivery_address_label' => _('Delivery address'),
 
 
                             '_items_gross' => _('Items Gross'),
-                            '_discounts' => _('Discounts'),
-                            '_items_net' => _('Items Net'),
-                            '_charges' => _('Charges'),
-                            '_shipping' => _('Shipping'),
-                            '_net' => _('Net'),
-                            '_tax' => _('Tax'),
+                            '_discounts'   => _('Discounts'),
+                            '_items_net'   => _('Items Net'),
+                            '_charges'     => _('Charges'),
+                            '_shipping'    => _('Shipping'),
+                            '_net'         => _('Net'),
+                            '_tax'         => _('Tax'),
+                            '_total'       => _('Total'),
 
-                            '_total' => _('Totals'),
 
-                            '_special_instructions'=>_('Special Instructions'),
-                            '_voucher' => _('Voucher'),
+                            '_credit'       => _('Credit'),
+                            '_total_to_pay' => _('To pay'),
+
+
+                            '_special_instructions' => _('Special Instructions'),
+                            '_voucher'              => _('Voucher'),
 
 
                             '_go_checkout_label' => _('Go to checkout'),
@@ -445,8 +449,6 @@ function website_system_webpages_config($website_type) {
 
 
                     )
-
-
 
 
                 )
@@ -476,13 +478,42 @@ function website_system_webpages_config($website_type) {
 
             'Page Store Content Data' => json_encode(
                 array(
-                    '_invoice_address_label'  => _('Invoice address'),
-                    '_delivery_address_label' => _('Delivery address'),
 
-                    '_totals_label' => _('Totals'),
 
-                    '_go_checkout_label' => _('Go to checkout'),
-                    '_voucher_label'     => _('Add/Edit Vouchers'),
+                    '_credit_card_label' => _('Credit card'),
+                    '_bank_label'        => _('Bank transfer'),
+
+                    '_credit_card_number'                      => _('Card number'),
+                    '_credit_card_ccv'                         => _('CVV'),
+                    '_credit_card_expiration_date'             => _('Expiration date'),
+                    '_credit_card_expiration_date_month_label' => _('Month'),
+                    '_credit_card_expiration_date_year_label'  => _('Year'),
+                    '_credit_card_save'                        => _('Save card'),
+
+
+                    '_form_title_credit_card' => _('Checkout form'),
+                    '_form_title_paypal'      => _('Checkout form'),
+                    '_form_title_cond'        => _('Checkout form'),
+                    '_form_title_sofort'      => _('Checkout form'),
+                    '_form_title_bank'        => _('Checkout form'),
+                    '_form_title_other'       => _('Checkout form'),
+
+
+                    '_bank_header' => _('After placing your order, please go to your bank and make this payment to our bank account, details below'),
+                    '_bank_footer' => _('Remember to state the order number in the payment reference').' [Order Number] . '._(
+                            'Please note, we cannot process your order until payment arrives in our account'
+                        ),
+
+
+                    '_back_to_basket' => _('Go back to basket'),
+
+                    '_place_order'                  => _('Place order'),
+                    '_place_order_from_bank'        => _('Place order'),
+                    '_place_order_from_credit_card' => _('Place order'),
+                    '_place_order_from_paypal'      => _('Place order'),
+                    '_place_order_from_sofort'      => _('Place order'),
+                    '_place_order_from_cond'        => _('Place order'),
+
 
                 )
             )
@@ -499,13 +530,13 @@ function website_system_webpages_config($website_type) {
             'Webpage Meta Description'  => '',
             'Page Store Content Data'   => json_encode(
 
-                    array(
-                        'blocks' => array(
-                            $blocks['one_pack'],
-                            $blocks['telephone'],
-                        )
-
+                array(
+                    'blocks' => array(
+                        $blocks['one_pack'],
+                        $blocks['telephone'],
                     )
+
+                )
 
             ),
 
@@ -640,12 +671,12 @@ function website_system_webpages_config($website_type) {
             'Webpage Meta Description'  => '',
             'Page Store Content Data'   => json_encode(
 
-                    array(
-                        'blocks' => array(
-                            $blocks['two_pack'],
-                            $blocks['one_pack'],
-                        )
+                array(
+                    'blocks' => array(
+                        $blocks['two_pack'],
+                        $blocks['one_pack'],
                     )
+                )
 
             )
         )

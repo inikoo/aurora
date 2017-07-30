@@ -91,7 +91,25 @@ if ($email_template->id and ! ($email_template->get('Email Template Type')=='HTM
     $smarty->assign('email_template', $email_template);
 
 
+
+
+
     $smarty->assign('send_email_to', $user->get_staff_email());
+
+
+    $merge_tags='';
+
+
+
+    if($email_template->get('[Email Template Role')=='Reset_Password'){
+        $merge_tags="{name: "._('Reset password URL').",value: '[Reset_Password_URL]'}";
+
+    }
+
+
+    $smarty->assign('merge_tags', $merge_tags);
+
+
 
 
     $html = $smarty->fetch('email_template.tpl');

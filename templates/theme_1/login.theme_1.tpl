@@ -382,11 +382,8 @@
 
 
     $("form").on('submit', function (e) {
-
         e.preventDefault();
         e.returnValue = false;
-
-// do things
     });
 
     function show_edit_input(element) {

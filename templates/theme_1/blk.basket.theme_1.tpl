@@ -9,27 +9,18 @@
 -->
 *}
 
+<div id="block_{$key}" block="{$data.type}" class="{$data.type} _block  " style="Width:100%;" >
 
-
-{include file="theme_1/_head.theme_1.tpl"}
-
-
-<body>
-
-<div class="wrapper_boxed">
-
-    <div class="site_wrapper">
-
-        <div class="content_fullwidth less2">
-
-
-
+    <div class="clearfix marb5 "></div>
             <div class="container">
 
 
 
                 <div class="one_third">
-                    <h5 id="_invoice_address_label" contenteditable="true">{$data._invoice_address_label}</h5>
+                    <h5>
+                    <i class="fa fa-fw fa-truck" aria-hidden="true"></i>
+                     <span id="_delivery_address_label" class="website_localized_label" contenteditable="true">{if isset($labels._delivery_address_label) and $labels._delivery_address_label!=''}{$labels._delivery_address_label}{else}{t}Delivery Address{/t}{/if}</span>
+                </h5>
                     <p>
                         The Business Centre </br>
                         61 Wellfield Road</br>
@@ -38,12 +29,16 @@
                         CF24 3DG</br>
                         United Kingdom</br>
                     </p>
-                </div><!-- end section -->
+                </div>
 
 
                 <div class="one_third ">
-                    <h5 id="_delivery_address_label" contenteditable="true">{$data._delivery_address_label}</h5>
-                    <p>
+
+                    <h5>
+                        <i class="fa fa-fw fa-usd" aria-hidden="true"></i>
+                    <span id="_invoice_address_label" class="website_localized_label" contenteditable="true">{if isset($labels._invoice_address_label) and $labels._invoice_address_label!=''}{$labels._invoice_address_label}{else}{t}Invoice Address{/t}{/if}</span>
+                    </h5>
+                        <p>
                         The Business Centre</br>
                         61 Wellfield Road</br>
                         Roath</br>
@@ -51,7 +46,7 @@
                         CF24 3DG </br>
                         United Kingdom</br>
                     </p>
-                </div><!-- end section -->
+                </div>
 
                 <div class="one_third text-right last" style="padding-left:20px">
 
@@ -61,50 +56,71 @@
 
                         <tbody>
                         <tr>
-                            <td>{$data._items_gross}</td>
+                            <td  id="_items_gross"  class="website_localized_label" contenteditable="true" >{if isset($labels._items_gross) and $labels._items_gross!=''}{$labels._items_gross}{else}{t}Items Gross{/t}{/if}</td>
 
                             <td class="text-right">£295.52</td>
                         </tr>
                         <tr>
-                            <td>{$data._discounts}</td>
+                            <td  id="_items_discounts"  class="website_localized_label" contenteditable="true" >{if isset($labels._items_discounts) and $labels._items_discounts!=''}{$labels._items_discounts}{else}{t}Discounts{/t}{/if}</td>
+
 
                             <td class="text-right">-£27.20</td>
                         </tr>
                         <tr>
-                            <td>{$data._items_net}</td>
+                            <td  id="_items_net"  class="website_localized_label" contenteditable="true" >{if isset($labels._items_net) and $labels._items_net!=''}{$labels._items_net}{else}{t}Items Net{/t}{/if}</td>
 
                             <td class="text-right">£268.32</td>
                         </tr>
                         <tr>
-                            <td>{$data._charges}</td>
+                            <td  id="_items_charges"  class="website_localized_label" contenteditable="true" >{if isset($labels._items_charges) and $labels._items_charges!=''}{$labels._items_charges}{else}{t}Charges{/t}{/if}</td>
+
 
                             <td class="text-right">£0.00</td>
                         </tr>
                         <tr>
-                            <td>{$data._shipping}</td>
+                            <td  id="_items_shipping"  class="website_localized_label" contenteditable="true" >{if isset($labels._items_shipping) and $labels._items_shipping!=''}{$labels._items_shipping}{else}{t}Shipping{/t}{/if}</td>
+
 
                             <td class="text-right">£0.00</td>
                         </tr>
                         <tr>
-                            <td>{$data._net}</td>
+                            <td  id="_total_net"  class="website_localized_label" contenteditable="true" >{if isset($labels._total_net) and $labels._total_net!=''}{$labels._total_net}{else}{t}Net{/t}{/if}</td>
+
 
                             <td class="text-right">£268.32</td>
                         </tr>
                         <tr>
-                            <td>{$data._tax}</td>
+                            <td  id="_total_tax"  class="website_localized_label" contenteditable="true" >{if isset($labels._total_tax) and $labels._total_tax!=''}{$labels._total_tax}{else}{t}Tax{/t}{/if}</td>
+
 
                             <td class="text-right">£53.66</td>
                         </tr>
                         <tr>
-                            <td>{$data._total}</td>
+                            <td  id="_total"  class="website_localized_label" contenteditable="true" >{if isset($labels._total) and $labels._total!=''}{$labels._total}{else}{t}Total{/t}{/if}</td>
+
 
                             <td class="text-right">£321.98</td>
+                        </tr>
+                        <tr>
+
+                            <td  id="_credit"  class="website_localized_label" contenteditable="true" >{if isset($labels._credit) and $labels._credit!=''}{$labels._credit}{else}{t}Credit{/t}{/if}</td>
+
+
+                            <td class="text-right">-£20</td>
+                        </tr>
+                        <tr>
+                            <td  id="_total_to_pay"  class="website_localized_label" contenteditable="true" >{if isset($labels._total_to_pay) and $labels._total_to_pay!=''}{$labels._total_to_pay}{else}{t}To pay{/t}{/if}</td>
+
+
+                            <td class="text-right">£301.98</td>
                         </tr>
 
                         </tbody>
                     </table>
 
-                </div><!-- end section -->
+                </div>
+
+            </div>
 
 
                 <div class="clearfix "></div>
@@ -120,6 +136,8 @@
 
                 <div class="clearfix "></div>
 
+             <div class="container">
+
                 <div class="one_half">
 
                     <form action="" method="post" enctype="multipart/form-data"  class="sky-form"
@@ -132,15 +150,14 @@
                             <section class="col col-6">
                                 <label class="input">
                                     <i class="icon-append fa fa-tag"></i>
-                                    <input type="text" name="name" id="name" placeholder="{$data._voucher}">
+                                    <input style="color:lightgrey" type="text" name="name" id="_voucher" value="{$data._voucher}" >
                                 </label>
                             </section>
                             <section class="col col-6">
-                                <button style="margin:0px" type="submit" class="button">{$data._voucher_label}</button>
+                                <button style="margin:0px" type="submit" class="button" id="_voucher_label" contenteditable="true" > {$data._voucher_label}</button>
 
                             </section>
                         </div>
-
 
 
 
@@ -149,10 +166,10 @@
                     <section style="border: none">
                                 <label class="textarea">
 
-                                    <textarea rows="5" name="comment" placeholder="{$data._special_instructions}"></textarea>
+                                    <textarea style="color:lightgrey"  id="_special_instructions" rows="5" name="comment" >{$data._special_instructions}</textarea>
                                 </label>
                             </section>
-
+s
 
                     </form>
 
@@ -162,14 +179,16 @@
 
                 <div class="one_half last">
 
+                    <form action="" method="post" enctype="multipart/form-data"  class="sky-form" style="box-shadow: none">
 
-                    <form action="" method="post" enctype="multipart/form-data"  class="sky-form"
-                          style="box-shadow: none"
+                        <section class="col col-6">
+                            <button id="_go_checkout_label" contenteditable="true"  style="margin:0px" class="button">{$data._go_checkout_label}</button>
 
-
+                        </section>
 
 
                     </form>
+
 
                 </div>
 
@@ -179,143 +198,15 @@
             </div>
 
 
-        <div class="clearfix marb12"></div>
-
-    </div>
 </div>
 
 <script>
 
-    $('[contenteditable=true]').on('input paste', function (event) {
-        $('#save_button', window.parent.document).addClass('save button changed valid')
-    });
-
-
-    function save() {
-
-        if (!$('#save_button', window.parent.document).hasClass('save')) {
-            return;
-        }
-
-        $('#save_button', window.parent.document).find('i').addClass('fa-spinner fa-spin')
-
-
-        content_data = {}
-
-            $('[contenteditable=true]').each(function (i, obj) {
-
-
-                content_data[$(obj).attr('id')] = $(obj).html()
-            })
-
-        $('.show_div').each(function (i, obj) {
-            content_data[$(obj).attr('id')] = ($(obj).hasClass('hide') ? false : true)
-        })
-
-
-
-        var request = '/ar_edit_website.php?tipo=save_webpage_content&key={$webpage->id}&content_data=' + encodeURIComponent(Base64.encode(JSON.stringify(content_data)));
-
-
-        console.log(request)
-
-
-        $.getJSON(request, function (data) {
-
-
-            $('#save_button', window.parent.document).removeClass('save').find('i').removeClass('fa-spinner fa-spin')
-
-        })
-
-
-    }
-
-
-    var droppedFiles = false;
-
-    $('#file_upload').on('change', function (e) {
-
-
-        var ajaxData = new FormData();
-
-        //var ajaxData = new FormData( );
-        if (droppedFiles) {
-            $.each(droppedFiles, function (i, file) {
-                ajaxData.append('files', file);
-            });
-        }
-
-
-        $.each($('#file_upload').prop("files"), function (i, file) {
-            ajaxData.append("files[" + i + "]", file);
-
-        });
-
-
-        ajaxData.append("tipo", 'upload_images')
-        ajaxData.append("parent", 'webpage')
-        ajaxData.append("parent_key", '{$webpage->id}')
-
-        ajaxData.append("options", JSON.stringify({
-            max_width: 350
-
-        }))
-
-        ajaxData.append("response_type", 'webpage')
-
-
-        //   var image = $('#' + $('#image_edit_toolbar').attr('block') + ' img')
-
-
-        $.ajax({
-            url: "/ar_upload.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
-
-
-            complete: function () {
-
-            }, success: function (data) {
-
-                console.log(data)
-
-                if (data.state == '200') {
-
-                    console.log(data)
-
-                    $('#_thanks_image').attr('src', data.image_src).attr('image_key', data.img_key)
-
-
-                } else if (data.state == '400') {
-
-                }
-
-
-            }, error: function () {
-
-            }
-        });
-
-
-    });
-
-
-    function change_webpage_element_visibility(id, value) {
-
-
-        if (value == 'hide') {
-            $('#' + id).addClass('hide')
-        } else {
-            $('#' + id).removeClass('hide')
-        }
+    $("#_special_instructions,#_voucher").on('input propertychange', function() {
         $('#save_button', window.parent.document).addClass('save button changed valid')
 
-
-    }
-
+    });
 
 </script>
-
-</body>
-
-</html>
 
 

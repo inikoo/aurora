@@ -24,7 +24,7 @@ switch ($parameters['parent']) {
         break;
     case 'store':
         $table
-               = '`Payment Account Dimension` PA  left join `Payment Account Site Bridge` B on (PA.`Payment Account Key`=B.`Payment Account Key`)';
+               = '`Payment Account Dimension` PA  left join `Payment Account Store Bridge` B on (PA.`Payment Account Key`=B.`Payment Account Key`)';
         $where = sprintf("where `Store Key`=%d", $parameters['parent_key']);
         break;
     case 'account':

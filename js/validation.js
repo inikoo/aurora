@@ -103,7 +103,7 @@ function validate_address(field) {
 function client_validation(type, required, value, field) {
 
 
-    console.log(type + ' ' + value + ' ' + field)
+    //console.log(type + ' ' + value + ' ' + field)
 
     var valid_state = {
         class: 'valid',
@@ -264,7 +264,7 @@ function client_validation(type, required, value, field) {
                 }
 
                 res = validate_barcode(barcodes[1], 12, 12)
-                console.log(barcodes)
+                //console.log(barcodes)
                 if (res) return res
 
 
@@ -312,7 +312,7 @@ function client_validation(type, required, value, field) {
 
                 if (!$('#' + field).intlTelInput("isValidNumber")) {
                     var error = $('#' + field).intlTelInput("getValidationError");
-                    console.log(error)
+                    //console.log(error)
                     if (error == intlTelInputUtils.validationError.TOO_SHORT) {
                         return {
                             class: 'potentially_valid',
@@ -381,7 +381,7 @@ function client_validation(type, required, value, field) {
 
                 }
                 if (tmp.match(/^([^@]*@){2,}[^@]*$/g)) {
-                    console.log('error')
+                    //console.log('error')
 
                     return {
                         class: 'invalid',
@@ -748,8 +748,8 @@ function validate_number(value, min, max) {
 
     if (max != undefined && value > max) {
 
-        console.log(value)
-        console.log(max)
+        //console.log(value)
+        //console.log(max)
 
         return {
             class: 'invalid',
@@ -842,7 +842,7 @@ function server_validation(settings, parent, parent_key, object, key, field, val
 
     }
 
-    console.log(request)
+    //console.log(request)
     $.getJSON(request, function (data) {
 
 

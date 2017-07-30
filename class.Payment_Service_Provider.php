@@ -50,6 +50,19 @@ class Payment_Service_Provider extends DB_Table {
             $sql = sprintf(
                 "SELECT * FROM `Payment Service Provider Dimension` WHERE `Payment Service Provider Key`=%d", $tag
             );
+        }
+        elseif ($tipo == 'type') {
+            $sql = sprintf(
+                "SELECT * FROM `Payment Service Provider Dimension` WHERE `Payment Service Provider Type`=%s", prepare_mysql($tag)
+            );
+        }elseif ($tipo == 'code') {
+            $sql = sprintf(
+                "SELECT * FROM `Payment Service Provider Dimension` WHERE `Payment Service Provider Code`=%s", prepare_mysql($tag)
+            );
+        } elseif ($tipo == 'block') {
+            $sql = sprintf(
+                "SELECT * FROM `Payment Service Provider Dimension` WHERE `Payment Service Provider Block`=%s", prepare_mysql($tag)
+            );
         } else {
             return;
         }
@@ -59,6 +72,7 @@ class Payment_Service_Provider extends DB_Table {
 
 
     }
+
 
     function find($raw_data, $options) {
 
@@ -94,32 +108,22 @@ class Payment_Service_Provider extends DB_Table {
         }
         //print $sql;
 
-        $result      = mysql_query($sql);
-        $num_results = mysql_num_rows($result);
-        if ($num_results == 0) {
-            // address not found
-            $this->found = false;
 
-
-        } else {
-            if ($num_results == 1) {
-                $row = mysql_fetch_array($result, MYSQL_ASSOC);
-
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
                 $this->get_data('id', $row['Payment Service Provider Key']);
                 $this->found     = true;
                 $this->found_key = $row['Payment Service Provider Key'];
 
-            } else {// Found in mora than one
-                print("Warning several payment service providers $sql\n");
-                $row = mysql_fetch_array($result, MYSQL_ASSOC);
-
-                $this->get_data('id', $row['Payment Service Provider Key']);
-                $this->found     = true;
-                $this->found_key = $row['Payment Service Provider Key'];
-
-
+            } else {
+                $this->found = false;
             }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
+
 
         if (!$this->found and $create) {
             $this->create($data);
@@ -141,7 +145,7 @@ class Payment_Service_Provider extends DB_Table {
                 continue;
             }
 
-            $keys .= ",`".$key."`";
+            $keys   .= ",`".$key."`";
             $values .= ','.prepare_mysql($value, false);
 
 
@@ -151,13 +155,11 @@ class Payment_Service_Provider extends DB_Table {
         $values = preg_replace('/^,/', '', $values);
         $keys   = preg_replace('/^,/', '', $keys);
 
-        $sql
-            = "insert into `Payment Service Provider Dimension` ($keys) values ($values)";
-        //print $sql;
-        if (mysql_query($sql)) {
-            $this->id                  = mysql_insert_id();
-            $this->data['Address Key'] = $this->id;
-            $this->new                 = true;
+        $sql = "insert into `Payment Service Provider Dimension` ($keys) values ($values)";
+        if ($this->db->exec($sql)) {
+            $this->id                                   = $this->db->lastInsertId();
+            $this->data['Payment Service Provider Key'] = $this->id;
+            $this->new                                  = true;
             $this->get_data('id', $this->id);
         } else {
             print "Error can not create payment service provider\n";
@@ -195,6 +197,90 @@ class Payment_Service_Provider extends DB_Table {
 
     }
 
+    function get_valid_payment_methods() {
+        $valid_payment_method = array();
+        $sql                  = sprintf(
+            "SELECT `Payment Method` FROM `Payment Service Provider Payment Method Bridge` WHERE `Payment Service Provider Key`=%d ", $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $valid_payment_method[] = $row['Payment Method'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        return $valid_payment_method;
+    }
+
+    function create_payment_account($data) {
+
+        include_once 'class.Payment_Account.php';
+
+        $this->new_account = false;
+
+
+        $data['editor']                       = $this->editor;
+        $data['Payment Account Service Provider Key'] = $this->id;
+
+        if(empty($data['Payment Account Block'])){
+            $data['Payment Account Block']=$this->get('Payment Service Provider Block');
+        }
+
+
+
+        if($data['Payment Account Block']=='Paypal'){
+            $data['Payment Account URL Link']='https://www.paypal.com/cgi-bin/webscr';
+            $data['Payment Account Refund URL Link']='https://api-3t.paypal.com/nvp';
+        }else if($data['Payment Account Block']=='Sofort'){
+            $data['Payment Account URL Link']='https://www.sofort.com/payment/start';
+        }
+
+
+
+
+
+        $payment_account = new Payment_Account('new', $data);
+
+
+
+
+        if ($payment_account->id) {
+            $this->new_account_msg = $payment_account->msg;
+
+            if ($payment_account->new) {
+                $this->new_account = true;
+
+
+
+
+
+                $this->update_accounts_data();
+
+
+            } else {
+                $this->error = true;
+                $this->msg   = $payment_account->msg;
+
+            }
+
+            return $payment_account;
+        } else {
+            $this->error = true;
+            $this->msg   = $account->msg;
+        }
+
+
+    }
+
+
+
+
     function get($key = '') {
 
 
@@ -208,25 +294,10 @@ class Payment_Service_Provider extends DB_Table {
         if (isset($this->data[$_key])) {
             return $this->data[$_key];
         }
-        print "Error $key not found in get from Payment Service Provider\n";
 
         return false;
 
     }
-
-    function get_valid_payment_methods() {
-        $valid_payment_method = array();
-        $sql                  = sprintf(
-            "SELECT `Payment Method` FROM `Payment Service Provider Payment Method Bridge` WHERE `Payment Service Provider Key`=%d ", $this->id
-        );
-        $res                  = mysql_query($sql);
-        while ($row = mysql_fetch_assoc($res)) {
-            $valid_payment_method[] = $row['Payment Method'];
-        }
-
-        return $valid_payment_method;
-    }
-
 
     function update_accounts_data() {
         $number_accounts = 0;
@@ -241,7 +312,7 @@ class Payment_Service_Provider extends DB_Table {
             $this->id
         );
         if ($row = $this->db->query($sql)->fetch()) {
-            print_r($row);
+
             $number_accounts = $row['num'];
             $transactions    = $row['transactions'];
             $payments        = $row['payments'];
@@ -253,7 +324,7 @@ class Payment_Service_Provider extends DB_Table {
         $this->update(
             array(
                 'Payment Service Provider Accounts'        => $number_accounts,
-                'Payment Service Provider Currency'        => $currencies,
+      //          'Payment Service Provider Currency'        => $currencies,
                 'Payment Service Provider Transactions'    => $transactions,
                 'Payment Service Provider Payments Amount' => $payments,
                 'Payment Service Provider Refunds Amount'  => $refunds,

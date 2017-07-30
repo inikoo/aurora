@@ -32,7 +32,6 @@
 
 
         if ($(evt.target).attr('id') == 'add_item') {
-
             var delay = 100;
             if (window.event && event.type == "propertychange" && event.propertyName != "value") return;
             delayed_on_change_add_item_field($(this), delay)

@@ -42,7 +42,7 @@ switch ($tipo) {
     case 'update_item':
         $data = prepare_values(
             $_REQUEST, array(
-                         'key'               => array('type' => 'key'),
+                         'product_id'               => array('type' => 'key'),
                          'qty'               => array('type' => 'numeric'),
                          'order_key'         => array('type' => 'numeric'),
                          'webpage_key'       => array('type' => 'numeric'),
@@ -96,7 +96,7 @@ function update_item($_data, $customer, $website, $editor) {
     }
 
 
-    $product_pid = $_data['key'];
+    $product_pid = $_data['product_id'];
     $quantity    = $_data['qty'];
 
 
@@ -112,7 +112,7 @@ function update_item($_data, $customer, $website, $editor) {
             $dispatching_state = 'Ready to Pick';
         } else {
 
-            $dispatching_state = 'In Process by Customer';
+            $dispatching_state = 'In Process';
         }
 
         $payment_state = 'Waiting Payment';
@@ -134,6 +134,9 @@ function update_item($_data, $customer, $website, $editor) {
         //print_r($data);
         $transaction_data = $order->update_item($data);
 
+
+       /*
+
         if (!$transaction_data['updated']) {
             $response = array(
                 'state'    => 200,
@@ -145,6 +148,7 @@ function update_item($_data, $customer, $website, $editor) {
             return;
         }
 
+*/
 
         $basket_history = array(
             'otf_key'                 => $transaction_data['otf_key'],
@@ -201,7 +205,7 @@ function update_item($_data, $customer, $website, $editor) {
         }
 
 
-        $updated_data = array(
+        $class_html = array(
             'order_items_gross'            => $order->get('Items Gross Amount'),
             'order_items_discount'         => $order->get('Items Discount Amount'),
             'order_items_net'              => $order->get('Items Net Amount'),
@@ -210,9 +214,11 @@ function update_item($_data, $customer, $website, $editor) {
             'order_charges'                => $order->get('Charges Net Amount'),
             'order_credits'                => $order->get('Net Credited Amount'),
             'order_shipping'               => $order->get('Shipping Net Amount'),
-            'order_total'                  => $order->get('Total'),
+            'order_total'                  => $order->get('Total Amount'),
             'ordered_products_number'      => $order->get('Number Items'),
         );
+
+        //print_r($updated_data);
 
         $response = array(
             'state'               => 200,
@@ -221,7 +227,10 @@ function update_item($_data, $customer, $website, $editor) {
             'description'         => $product->data['Product Units Per Case'].'x '.$product->data['Product Name'],
             'discount_percentage' => $transaction_data['discount_percentage'],
             'key'                 => $order->id,
-            'data'                => $updated_data,
+
+            'metadata'=>array('class_html'=>$class_html),
+
+
             'to_charge'           => $transaction_data['to_charge'],
             'discount_data'       => $adata,
             'discounts'           => ($order->data['Order Items Discount Amount'] != 0 ? true : false),
@@ -260,34 +269,16 @@ function update_item($_data, $customer, $website, $editor) {
 function create_order($editor, $customer) {
 
 
-    $inikoo_account = get_object('Account', 1);
-    $account_code   = $inikoo_account->get('Account Code');
-
 
     $order_data = array(
-        'Order Current Dispatch State' => 'In Process by Customer',
+        'Order Current Dispatch State' => 'In Process',
+        'editor'=>$editor
     );
 
 
     $order = $customer->create_order($order_data);
 
 
-    $ship_to = $customer->get_ship_to();
-    $order->update_ship_to($ship_to->id);
-
-    $billing_to = $customer->get_billing_to();
-    $order->update_billing_to($billing_to->id);
-
-    include 'splinters/new_fork.php';
-    list(
-        $fork_key, $msg
-        ) = new_fork(
-        'housekeeping', array(
-        'type'        => 'order_created',
-        'subject_key' => $order->id,
-        'editor'      => $order->editor
-    ), $account_code
-    );
 
 
     return $order;

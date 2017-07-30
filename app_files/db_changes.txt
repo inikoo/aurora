@@ -613,12 +613,30 @@ ALTER TABLE `Page Store Dimension` CHANGE `Webpage Scope` `Webpage Scope` VARCHA
 ALTER TABLE `Store Dimension` ADD `Store Google Map URL` TEXT NULL DEFAULT NULL AFTER `Store Address`;
 
 
-here
+
 
 ALTER TABLE `Website Dimension` ADD `Website Palette` VARCHAR(255) NOT NULL DEFAULT 'art/palettes/simple.png' AFTER `Website Alt Department Category Key`, ADD `Website Primary Color` VARCHAR(64) NOT NULL AFTER `Website Palette`, ADD `Website Secondary Color` VARCHAR(64) NOT NULL AFTER `Website Primary Color`, ADD `Website Title Font` VARCHAR(255) NOT NULL DEFAULT '\"Open Sans\",Helvetica,Arial,sans-serif' AFTER `Website Secondary Color`, ADD `Website Text Font` VARCHAR(255) NOT NULL DEFAULT '\"Open Sans\",Helvetica,Arial,sans-serif' AFTER `Website Title Font`, ADD `Website Text Background` TEXT NOT NULL AFTER `Website Text Font`;
 
 ALTER TABLE `Website Dimension` ADD `Website Accent Color` VARCHAR(64) NOT NULL AFTER `Website Secondary Color`;
 ALTER TABLE `Website Dimension` CHANGE `Website Primary Color` `Website Primary Color` VARCHAR(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '#3183d7';
+
+
+
+here
+
+ALTER TABLE `Payment Account Dimension` ADD `Payment Account From` DATETIME NULL DEFAULT NULL AFTER `Payment Account Balance Amount`;
+
+ALTER TABLE `Payment Service Provider Dimension` ADD `Payment Service Provider Block` VARCHAR(16) NULL DEFAULT NULL AFTER `Payment Service Provider Type`;
+
+ALTER TABLE `Payment Account Dimension` ADD `Payment Account Block` VARCHAR(64) NULL DEFAULT NULL AFTER `Payment Service Provider Key`;
+
+update `Payment Service Provider Dimension` set `Payment Service Provider Block`=`Payment Service Provider Code`;
+ALTER TABLE `Payment Account Dimension` ADD `Payment Account Service Provider Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Payment Account Key`;
+update `Payment Account Dimension` set `Payment Account Service Provider Key`=`Payment Service Provider Key`;
+
+ALTER TABLE `Payment Account Dimension` DROP `Payment Account Type`;
+
+ALTER TABLE `Payment Account Dimension` ADD `Payment Account Number Stores` SMALLINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Payment Account From`, ADD `Payment Account Number Websites` SMALLINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Payment Account Number Stores`;
 
 
 ============= migration web[ages

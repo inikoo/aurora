@@ -321,6 +321,10 @@ elseif ($webpage->get('Webpage Template Filename') == 'products_showcase') {
 
     $smarty->assign('content_data', $content_data);
     $smarty->assign('category', $category);
+
+    //print $theme.'/products_showcase.'.$theme.'.'.$website->get('Website Type').'.tpl';
+    //exit;
+
     $template = $theme.'/products_showcase.'.$theme.'.'.$website->get('Website Type').'.tpl';
 
 
@@ -338,6 +342,30 @@ elseif ($webpage->get('Webpage Template Filename') == 'product') {
 elseif ($webpage->get('Webpage Template Filename') == 'reset_password') {
     include 'reset_password.inc.php';
     $template = $theme.'/reset_password.'.$theme.'.'.$website->get('Website Type').'.tpl';
+
+}elseif ($webpage->get('Webpage Template Filename') == 'not_found') {
+    $template = $theme.'/not_found.'.$theme.'.'.$website->get('Website Type').'.tpl';
+}elseif ($webpage->get('Webpage Template Filename') == 'checkout') {
+
+
+
+
+if(isset($order) and $order->id){
+    $template = $theme.'/checkout.'.$theme.'.'.$website->get('Website Type').'.tpl';
+}else{
+
+
+    $template = $theme.'/checkout_no_order.'.$theme.'.'.$website->get('Website Type').'.tpl';
+}
+
+
+
+
+
+
+
+
+
 
 }else{
 
@@ -484,6 +512,9 @@ if (!$is_cached) {
     //$webpage->currency        = $store->data['Store Currency Code'];
     //$webpage->currency_symbol = currency_symbol($store->data['Store Currency Code']);
     //$webpage->customer        = $customer;
+
+
+    $smarty->assign('labels', $website->get('Localised Labels'));
 
 
     $smarty->assign('store', $store);

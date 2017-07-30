@@ -60,15 +60,47 @@ class Payment_Account extends DB_Table {
     }
 
 
+    function load_acc_data() {
+
+
+        //todo
+        return;
+
+        $sql = sprintf("SELECT * FROM `Payment Account Data`  WHERE `Payment Account Key`=%d", $this->id);
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                foreach ($row as $key => $value) {
+                    $this->data[$key] = $value;
+                }
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+        $sql = sprintf("SELECT * FROM `Payment Account DC Data`  WHERE `Payment Account Key`=%d", $this->id);
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                foreach ($row as $key => $value) {
+                    $this->data[$key] = $value;
+                }
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+    }
+
     function find($raw_data, $options) {
 
         $create = '';
-        $update = '';
+
         if (preg_match('/create/i', $options)) {
             $create = 'create';
-        }
-        if (preg_match('/update/i', $options)) {
-            $update = 'update';
         }
 
         $data = $this->base_data();
@@ -81,12 +113,12 @@ class Payment_Account extends DB_Table {
 
         }
 
-        // print_r($raw_data);
+
         //  print_r($data);
         //  exit("s");
 
 
-        $fields = array('Payment Account Code',);
+        $fields = array('Payment Account Code');
 
         $sql = sprintf(
             "SELECT * FROM `Payment Account Dimension` WHERE TRUE  "
@@ -98,32 +130,21 @@ class Payment_Account extends DB_Table {
         }
         //print $sql;
 
-        $result      = mysql_query($sql);
-        $num_results = mysql_num_rows($result);
-        if ($num_results == 0) {
-            // address not found
-            $this->found = false;
 
-
-        } else {
-            if ($num_results == 1) {
-                $row = mysql_fetch_array($result, MYSQL_ASSOC);
-
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
                 $this->get_data('id', $row['Payment Account Key']);
                 $this->found     = true;
                 $this->found_key = $row['Payment Account Key'];
-
-            } else {// Found in mora than one
-                print("Warning several payments accounts $sql\n");
-                $row = mysql_fetch_array($result, MYSQL_ASSOC);
-
-                $this->get_data('id', $row['Payment Account Key']);
-                $this->found     = true;
-                $this->found_key = $row['Payment Account Key'];
-
-
+            } else {
+                $this->found = false;
             }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
+
 
         if (!$this->found and $create) {
             $this->create($data);
@@ -135,29 +156,41 @@ class Payment_Account extends DB_Table {
 
     function create($data) {
 
-        $this->data = $data;
+
 
         $keys   = '';
         $values = '';
 
-        foreach ($this->data as $key => $value) {
+$data['Payment Account From']=gmdate('Y-m-d H:i:s');
+
+        unset($data['Payment Account Last Used Date']);
 
 
-            $keys .= ",`".$key."`";
+     //   print_r($data);
+
+
+        foreach ($data as $key => $value) {
+
+
+            $keys   .= ",`".$key."`";
             $values .= ','.prepare_mysql($value, false);
 
 
         }
 
 
+
         $values = preg_replace('/^,/', '', $values);
         $keys   = preg_replace('/^,/', '', $keys);
 
-        $sql
-            = "insert into `Payment Account Dimension` ($keys) values ($values)";
-        //print $sql;
-        if (mysql_query($sql)) {
-            $this->id                  = mysql_insert_id();
+
+
+        $sql = "insert into `Payment Account Dimension` ($keys) values ($values)";
+
+
+
+        if ($this->db->exec($sql)) {
+            $this->id                  = $this->db->lastInsertId();
             $this->data['Address Key'] = $this->id;
             $this->new                 = true;
             $this->get_data('id', $this->id);
@@ -176,100 +209,32 @@ class Payment_Account extends DB_Table {
         }
 
         switch ($key) {
+            case 'Transactions':
+            case 'Number Stores':
+            case 'Number Websites':
+                return number($this->data['Payment Account '.$key]);
+
         }
-        $_key = ucfirst($key);
-        if (isset($this->data[$_key])) {
-            return $this->data[$_key];
+
+        if (isset($this->data[$key])) {
+            return $this->data[$key];
         }
-        print "Error $key not found in get from Payment Account\n";
+
+        if (array_key_exists('Payment Account '.$key, $this->data)) {
+            return $this->data[$this->table_name.' '.$key];
+        }
 
         return false;
 
     }
 
-    function in_store($site_key) {
-        $is_in_store = false;
-        $sql         = sprintf(
-            "SELECT count(*) AS num FROM `Payment Account Site Bridge` WHERE `Store Key`=%d AND `Payment Account Key`=%d ", $site_key, $this->id
-        );
-
-        $res = mysql_query($sql);
-        if ($row = mysql_fetch_assoc($res)) {
-            if ($row['num']) {
-                $is_in_store = true;
-            }
-        }
-
-        return $is_in_store;
-    }
 
 
-    function in_site($site_key) {
-        $is_in_site = false;
-        $sql        = sprintf(
-            "SELECT count(*) AS num FROM `Payment Account Site Bridge` WHERE `Site Key`=%d AND `Payment Account Key`=%d ", $site_key, $this->id
-        );
-
-        $res = mysql_query($sql);
-        if ($row = mysql_fetch_assoc($res)) {
-            if ($row['num']) {
-                $is_in_site = true;
-            }
-        }
-
-        return $is_in_site;
-    }
 
 
-    function is_active_in_site($site_key) {
-        $is_active_in_site = false;
-        $sql               = sprintf(
-            "SELECT count(*) AS num FROM `Payment Account Site Bridge` WHERE `Site Key`=%d AND `Payment Account Key`=%d AND `Status`='Active'  ", $site_key, $this->id
-        );
-        $res               = mysql_query($sql);
-        if ($row = mysql_fetch_assoc($res)) {
-            if ($row['num']) {
-                $is_active_in_site = true;
-            }
-        }
-
-        return $is_active_in_site;
-    }
 
 
-    function get_formatted_bank_data() {
 
-        //print_r($this->data);
-
-        $data = '';
-        $data .= _('Beneficiary').': <b>'.$this->data['Payment Account Recipient Holder'].'</b><br>';
-        $data .= _('Bank').': <b>'.$this->data['Payment Account Recipient Bank Name'].'</b><br>';
-        if ($this->data['Payment Account Recipient Address'] != '') {
-
-            $data .= _('Address').': <b>'.$this->data['Payment Account Recipient Address'].'</b><br>';
-
-        }
-        if ($this->data['Payment Account Recipient Bank Account Number'] != '') {
-            $data .= _('Account Number').': <b>'.$this->data['Payment Account Recipient Bank Account Number'].'</b><br>';
-        }
-        if ($this->data['Payment Account Recipient Bank Code'] != '') {
-            $data .= _('Bank Code').': <b>'.$this->data['Payment Account Recipient Bank Code'].'</b><br>';
-        }
-        if ($this->data['Payment Account Recipient Bank Swift'] != '') {
-            $data .= _('Swift').': <b>'.$this->data['Payment Account Recipient Bank Swift'].'</b><br>';
-        }
-        if ($this->data['Payment Account Recipient Bank IBAN'] != '') {
-            $data .= _('IBAN').': <b>'.$this->data['Payment Account Recipient Bank IBAN'].'</b><br>';
-        }
-
-        return $data;
-    }
-
-
-    function get_settings() {
-        return json_decode($this->data['Payment Account Settings'], true);
-
-    }
 
 
     function update_payments_data() {
@@ -306,6 +271,72 @@ class Payment_Account extends DB_Table {
         );
 
     }
+
+    function assign_to_store($data) {
+
+        $store = get_object('Store', $data['Store Key']);
+        //$data['Website Key']=$store->get('Store Website Key');
+
+
+        $sql = sprintf(
+            'INSERT INTO  `Payment Account Store Bridge`  (`Payment Account Store Payment Account Key`,`Payment Account Store Website Key`,`Payment Account Store Store Key`,`Payment Account Store Valid From`,`Payment Account Store Status`,`Payment Account Store Show In Cart`,`Payment Account Store Show Cart Order`) 
+          VALUES (%d,%d,%d,%s,%s,%s,%d) ', $this->id, $store->id, $store->get('Store Website Key'), prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql($data['Status']), prepare_mysql($data['Show In Cart']),
+            $data['Show Cart Order']
+        );
+
+
+
+
+        $this->db->exec($sql);
+
+
+    }
+
+
+
+    function get_field_label($field) {
+
+        switch ($field) {
+
+            case 'Payment Account Code':
+                $label = _('code');
+                break;
+            case 'Payment Account Name':
+                $label = _('name');
+                break;
+            case 'Payment Account Recipient Holder':
+                $label = _('Account beneficiary');
+                break;
+            case 'Payment Account Recipient Address':
+                $label = _('Bank address');
+                break;
+            case 'Payment Account Recipient Bank Account Number':
+                $label = _('account number');
+                break;
+            case 'Payment Account Recipient Bank Code':
+                $label = _('Bank code');
+                break;
+            case 'Payment Account Recipient Bank Name':
+                $label = _('bank name');
+                break;
+            case 'Payment Account Recipient Bank Swift':
+                $label = 'Bank SWIFT/BIC code';
+                break;
+            case 'Payment Account Recipient Bank IBAN':
+                $label = _('Account IBAN');
+                break;
+
+
+
+            default:
+                $label = $field;
+
+        }
+
+        return $label;
+
+    }
+
 
 
 }

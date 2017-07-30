@@ -167,12 +167,7 @@
 
     });
 
-    $("form").on('submit', function (e) {
 
-        e.preventDefault();
-        e.returnValue = false;
-
-    });
 
 
     $("#login_form").validate({

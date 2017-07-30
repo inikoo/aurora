@@ -33,6 +33,9 @@ switch ($tipo) {
     case 'accounts':
         payment_accounts(get_table_parameters(), $db, $user);
         break;
+    case 'stores':
+        stores(get_table_parameters(), $db, $user);
+        break;
     case 'payments':
         payments(get_table_parameters(), $db, $user);
         break;
@@ -248,6 +251,94 @@ function payments($_data, $db, $user) {
         'resultset' => array(
             'state'         => 200,
             'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+function stores($_data, $db, $user) {
+
+
+    $rtext_label = 'store';
+
+    include_once 'prepare_table/init.php';
+
+    $sql         = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $record_data = array();
+
+
+    $max_length=36;
+
+    foreach ($db->query($sql) as $data) {
+
+
+
+        if($data['payment_account_data']==''){
+            $data['Payment Account Store Key']='';
+            $data['Payment Account Store Status']='';
+            $data['Payment Account Store Show In Cart']='';
+        }else{
+            list($data['Payment Account Store Key'],$data['Payment Account Store Status'],$data['Payment Account Store Show In Cart'])=preg_split('/,/',$data['payment_account_data']);
+
+        }
+
+
+
+
+
+        $name = (strlen($data['Store Name']) > $max_length ? substr($data['Store Name'],0,$max_length)."..." : $data['Store Name']);
+
+
+        if($data['Payment Account Store Status']=='') {
+            $accepted=sprintf('<span class="very_discreet ">%s</span>',_('No applicable'));
+            $shown_in_website='';
+        }else if($data['Payment Account Store Status']=='Active'){
+            $accepted=sprintf('<span class="success button ">%s</span>',_('Yes'));
+
+            if($data['Payment Account Store Show In Cart']=='Yes'){
+                $shown_in_website=sprintf('<span class="success button ">%s</span>',_('Yes'));
+
+            }else{
+                $shown_in_website=sprintf('<span class="error discreet button ">%s</span>',_('No'));
+            }
+
+        }else{
+            $accepted=sprintf('<span class="error discreet button ">%s</span>',_('No'));
+            $shown_in_website='';
+        }
+
+
+
+
+
+
+
+        $record_data[] = array(
+            'access' => (in_array($data['Store Key'], $user->stores) ? '' : '<i class="fa fa-lock "></i>'),
+
+            'id'   => (integer)$data['Store Key'],
+            'code' => sprintf('<span class="link" onClick="change_view(\'store/%d\')" >%s</span>',$data['Store Key'],$data['Store Code']),
+            'name' => sprintf('<span class="link" onClick="change_view(\'store/%d\')" >%s</span>',$data['Store Key'],$name),
+            'website' => sprintf('<span class="link" onClick="change_view(\'store/%d/website\')" title="%s" >%s</span>',$data['Store Key'],$data['Website Name'],$data['Website Code']),
+
+           'accepted'=>$accepted,
+            'shown_in_website'=>$shown_in_website
+
+
+
+        );
+
+    }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $record_data,
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,

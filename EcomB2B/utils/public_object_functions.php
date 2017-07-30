@@ -18,8 +18,13 @@ function get_object($object_name, $key, $load_other_data = false) {
     }
 
 
+    if($load_other_data!=''){
+        $load_other_data='-'.$load_other_data;
 
-    switch (strtolower($object_name.'_'.$load_other_data)) {
+    }
+
+
+    switch (strtolower($object_name.$load_other_data)) {
         case 'account':
             include_once 'class.Public_Account.php';
             $object = new Public_Account();
@@ -82,9 +87,14 @@ function get_object($object_name, $key, $load_other_data = false) {
             $object = new Public_Published_Email_Template($key);
             break;
 
+        case 'payment_account':
+            require_once "class.Public_Payment_Account.php";
+            $object = new Public_Payment_Account($key);
+            break;
+
 
         default:
-            exit('need to complete E1: >'.strtolower($object_name)."<\n");
+            exit('need to complete E1: >'.strtolower($object_name.' '.$load_other_data)."<\n");
             break;
     }
 

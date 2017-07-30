@@ -143,7 +143,7 @@ function get_payments_navigation($data, $user) {
 }
 
 
-function get_payment_service_provider_navigation($data, $user) {
+function get_payment_service_provider_navigation($data, $user,$smarty,$db) {
 
     global $smarty;
 
@@ -198,50 +198,68 @@ function get_payment_service_provider_navigation($data, $user) {
         $next_key   = 0;
         $sql        = trim($sql_totals." $wheref");
 
-        $res2 = mysql_query($sql);
-        if ($row2 = mysql_fetch_assoc($res2) and $row2['num'] > 1) {
 
-            $sql = sprintf(
-                "select `Payment Service Provider Name` object_name,PSP.`Payment Service Provider Key` as object_key from $table   $where $wheref
+
+        if ($result2=$db->query($sql)) {
+            if ($row2= $result2->fetch()) {
+                $sql = sprintf(
+                    "select `Payment Service Provider Name` object_name,PSP.`Payment Service Provider Key` as object_key from $table   $where $wheref
 	                and ($_order_field < %s OR ($_order_field = %s AND PSP.`Payment Service Provider Key` < %d))  order by $_order_field desc , PSP.`Payment Service Provider Key` desc limit 1",
 
-                prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
-            );
+                    prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+                );
 
 
-            $res = mysql_query($sql);
-            if ($row = mysql_fetch_assoc($res)) {
-                $prev_key   = $row['object_key'];
-                $prev_title = _("Payment option").' '.$row['object_name'].' ('.$row['object_key'].')';
+                if ($result=$db->query($sql)) {
+                    if ($row = $result->fetch()) {
+                        $prev_key   = $row['object_key'];
+                        $prev_title = _("Payment option").' '.$row['object_name'].' ('.$row['object_key'].')';
+                	}
+                }else {
+                	print_r($error_info=$db->errorInfo());
+                	print "$sql\n";
+                	exit;
+                }
 
-            }
 
-            $sql = sprintf(
-                "select `Payment Service Provider Name` object_name,PSP.`Payment Service Provider Key` as object_key from $table   $where $wheref
+
+                $sql = sprintf(
+                    "select `Payment Service Provider Name` object_name,PSP.`Payment Service Provider Key` as object_key from $table   $where $wheref
 	                and ($_order_field  > %s OR ($_order_field  = %s AND PSP.`Payment Service Provider Key` > %d))  order by $_order_field   , PSP.`Payment Service Provider Key`  limit 1",
-                prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
-            );
+                    prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+                );
+
+                if ($result=$db->query($sql)) {
+                    if ($row = $result->fetch()) {
+
+                	}  $next_key   = $row['object_key'];
+                    $next_title = _("Payment option").' '.$row['object_name'].' ('.$row['object_key'].')';
+                }else {
+                	print_r($error_info=$db->errorInfo());
+                	print "$sql\n";
+                	exit;
+                }
 
 
-            $res = mysql_query($sql);
-            if ($row = mysql_fetch_assoc($res)) {
-                $next_key   = $row['object_key'];
-                $next_title = _("Payment option").' '.$row['object_name'].' ('.$row['object_key'].')';
-
-            }
 
 
-            if ($order_direction == 'desc') {
-                $_tmp1      = $prev_key;
-                $_tmp2      = $prev_title;
-                $prev_key   = $next_key;
-                $prev_title = $next_title;
-                $next_key   = $_tmp1;
-                $next_title = $_tmp2;
-            }
-
-
+                if ($order_direction == 'desc') {
+                    $_tmp1      = $prev_key;
+                    $_tmp2      = $prev_title;
+                    $prev_key   = $next_key;
+                    $prev_title = $next_title;
+                    $next_key   = $_tmp1;
+                    $next_title = $_tmp2;
+                }
+        	}
+        }else {
+        	print_r($error_info=$db->errorInfo());
+        	print "$sql\n";
+        	exit;
         }
+
+
+      
 
         if ($data['parent'] == 'account') {
 
@@ -326,7 +344,7 @@ function get_payment_service_provider_navigation($data, $user) {
 }
 
 
-function get_payment_account_navigation($data, $user, $smarty) {
+function get_payment_account_navigation($data, $user, $smarty,$db) {
 
 
     $object        = $data['_object'];
@@ -397,50 +415,63 @@ function get_payment_account_navigation($data, $user, $smarty) {
         $next_key   = 0;
         $sql        = trim($sql_totals." $wheref");
 
-        $res2 = mysql_query($sql);
-        if ($row2 = mysql_fetch_assoc($res2) and $row2['num'] > 1) {
 
-            $sql = sprintf(
-                "select `Payment Account Name` object_name,PA.`Payment Account Key` as object_key from $table   $where $wheref
+
+if ($result2=$db->query($sql)) {
+    if ($row2 = $result2->fetch()) {
+        $sql = sprintf(
+            "select `Payment Account Name` object_name,PA.`Payment Account Key` as object_key from $table   $where $wheref
 	                and ($_order_field < %s OR ($_order_field = %s AND PA.`Payment Account Key` < %d))  order by $_order_field desc , PA.`Payment Account Key` desc limit 1",
 
-                prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
-            );
+            prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+        );
 
-
-            $res = mysql_query($sql);
-            if ($row = mysql_fetch_assoc($res)) {
+        if ($result=$db->query($sql)) {
+            if ($row = $result->fetch()) {
                 $prev_key   = $row['object_key'];
                 $prev_title = _("Payment option").' '.$row['object_name'].' ('.$row['object_key'].')';
-
             }
-
-            $sql = sprintf(
-                "select `Payment Account Name` object_name,PA.`Payment Account Key` as object_key from $table   $where $wheref
-	                and ($_order_field  > %s OR ($_order_field  = %s AND PA.`Payment Account Key` > %d))  order by $_order_field   , PA.`Payment Account Key`  limit 1",
-                prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
-            );
-
-
-            $res = mysql_query($sql);
-            if ($row = mysql_fetch_assoc($res)) {
-                $next_key   = $row['object_key'];
-                $next_title = _("Payment option").' '.$row['object_name'].' ('.$row['object_key'].')';
-
-            }
-
-
-            if ($order_direction == 'desc') {
-                $_tmp1      = $prev_key;
-                $_tmp2      = $prev_title;
-                $prev_key   = $next_key;
-                $prev_title = $next_title;
-                $next_key   = $_tmp1;
-                $next_title = $_tmp2;
-            }
-
-
+        }else {
+            print_r($error_info=$db->errorInfo());
+            print "$sql\n";
+            exit;
         }
+
+
+        $sql = sprintf(
+            "select `Payment Account Name` object_name,PA.`Payment Account Key` as object_key from $table   $where $wheref
+	                and ($_order_field  > %s OR ($_order_field  = %s AND PA.`Payment Account Key` > %d))  order by $_order_field   , PA.`Payment Account Key`  limit 1",
+            prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+        );
+
+        if ($result=$db->query($sql)) {
+            if ($row = $result->fetch()) {
+
+            }  $next_key   = $row['object_key'];
+            $next_title = _("Payment option").' '.$row['object_name'].' ('.$row['object_key'].')';
+        }else {
+            print_r($error_info=$db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+
+        if ($order_direction == 'desc') {
+            $_tmp1      = $prev_key;
+            $_tmp2      = $prev_title;
+            $prev_key   = $next_key;
+            $prev_title = $next_title;
+            $next_key   = $_tmp1;
+            $next_title = $_tmp2;
+        }
+    }
+}
+
+
+
+
+
 
         if ($data['parent'] == 'account') {
 

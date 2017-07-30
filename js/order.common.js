@@ -283,7 +283,8 @@ function save_item_qty_change(element) {
 
         input.val(qty).addClass('discreet')
 
-    } else if ($(element).hasClass('fa-minus')) {
+    }
+    else if ($(element).hasClass('fa-minus')) {
 
         if (isNaN(input.val()) || input.val() == '' || input.val() == 0) {
             var qty = 0
@@ -295,7 +296,8 @@ function save_item_qty_change(element) {
 
         var _icon='fa-minus'
 
-    } else {
+    }
+    else {
         qty = parseFloat(input.val())
 
         var _icon='fa-cloud'

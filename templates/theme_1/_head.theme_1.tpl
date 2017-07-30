@@ -154,6 +154,10 @@
     <!--  <script src="/theme_1/local/bootstrap.js"></script> -->
 
 
+
+    <script type="text/javascript" src="/theme_1/tabs/assets/js/responsive-tabs.min.js"></script>
+
+
     <script type="text/javascript" src="/js/libs/sweetalert.min.js"></script>
 
 
