@@ -64,6 +64,10 @@ if (    (!isset($_SESSION['logged_in']) or !$_SESSION['logged_in']) and isset($p
 
 if (!$is_cached) {
 
+
+    $order_key = 0;
+    $customer_key =0;
+
     require_once 'keyring/key.php';
 
     if (!isset($db)) {
@@ -278,6 +282,8 @@ $language = substr($site_locale, 0, 2);
     }
 
 
+
+
     $logged_in = !empty($_SESSION['logged_in']);
 
 
@@ -484,8 +490,10 @@ $language = substr($site_locale, 0, 2);
         }
 
 
+        $customer_key = $customer->id;
         $smarty->assign('website_user', $website_user);
         $smarty->assign('customer', $customer);
+
 
 
         $order_key = $customer->get_order_in_process_key();
@@ -500,9 +508,13 @@ $language = substr($site_locale, 0, 2);
         }
 
 
-    } else {
-        $order_key = 0;
     }
+
+
+    $smarty->assign('zero_amount', money(0,$store->get('Store Currency Code')));
+
+
+    $smarty->assign('customer_key', $customer_key);
 
     $smarty->assign('order_key', $order_key);
     $smarty->assign('website', $website);

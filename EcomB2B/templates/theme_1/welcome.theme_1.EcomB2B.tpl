@@ -21,28 +21,13 @@
         <div class="content_fullwidth less2">
             <div class="container">
 
-
-
-
             </div>
         </div>
-
-
         <div class="clearfix marb12"></div>
-
         {include file="theme_1/footer.EcomB2B.tpl"}
-
     </div>
 
 </div>
-<script>
-
-
-
-
-</script>
-
 </body>
-
 </html>
 

@@ -190,7 +190,7 @@ if (isset($parameters['elements_type'])) {
                     $num_elements_checked++;
 
                     if ($_key == 'Basket') {
-                        $_where.=" or (`Order Number Items`>0 AND `Order Current Dispatch State`  IN ('In Process by Customer','In Process') ) ";
+                        $_where.=" or (`Order Number Items`>0 AND `Order Current Dispatch State`  IN ('In Process') ) ";
 
                     }
                     if ($_key == 'Submitted_Unpaid') {
@@ -255,10 +255,10 @@ if (isset($parameters['elements_type'])) {
                 if ($_value) {
                     $num_elements_checked++;
                     if ($_key == 'InProcessCustomer') {
-                        $_elements .= ",'In Process by Customer','Waiting for Payment Confirmation'";
+                        $_elements .= ",'In Process','Waiting for Payment Confirmation'";
 
                     } elseif ($_key == 'InProcess') {
-                        $_elements .= ",'In Process','Submitted by Customer'";
+                        $_elements .= ",'Submitted by Customer'";
                     } elseif ($_key == 'Warehouse') {
                         $_elements .= ",'Ready to Pick','Picking & Packing','Ready to Ship','Packing','Packed','Packed Done'";
                     } elseif ($_key == 'Dispatched') {

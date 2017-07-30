@@ -24,6 +24,9 @@ if($logged_in) {
 
     $auth = new WebAuth();
 
+
+
+
     list($logged_in, $result, $customer_key, $website_user_key, $website_user_log_key) = $auth->authenticate_from_reset_password(
         $_REQUEST['s'], $_REQUEST['a'], $website->id
     );

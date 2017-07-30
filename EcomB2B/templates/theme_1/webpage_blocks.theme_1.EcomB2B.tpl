@@ -28,7 +28,17 @@
 
             {foreach from=$content.blocks item=$block key=key}
                 {if $block.show}
-                    {include file="theme_1/blk.{$block.type}.theme_1.EcomB2B.tpl" data=$block key=$key  }
+
+                    {if $block.type=='basket' and   !isset($order)  }
+
+
+                        {include file="theme_1/blk.basket_no_order.theme_1.EcomB2B.tpl" data=$block key=$key  }
+
+                    {else}
+                        {include file="theme_1/blk.{$block.type}.theme_1.EcomB2B.tpl" data=$block key=$key  }
+
+                    {/if}
+
                 {/if}
             {/foreach}
 

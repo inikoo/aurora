@@ -145,6 +145,7 @@
     <!-- mega menu -->
 
     <script src="/theme_1/mainmenu/customeUI.js"></script>
+    <script type="text/javascript" src="/theme_1/tabs/assets/js/responsive-tabs.min.js"></script>
 
 
 
@@ -156,6 +157,9 @@
     <script type="text/javascript" src="/js/jquery.form.min.js"></script>
     <script type="text/javascript" src="/js/sha256.js"></script>
     <script type="text/javascript" src="/js/aurora.js"></script>
+    <script type="text/javascript" src="/js/validation.js"></script>
+
+    <script type="text/javascript" src="/js/ordering.js"></script>
 
     <link rel="stylesheet" href="/website.color.EcomB2B.css.php?&theme=theme_1" type="text/css"/>
 

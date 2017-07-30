@@ -37,12 +37,17 @@ class Public_Email_Template {
     }
 
 
-    function get_data($key) {
+    function get_data($tag, $key) {
 
+        if ($tag == 'id') {
 
-        $sql = sprintf(
-            "SELECT * FROM `Email Template Dimension` WHERE `Email Template Key`=%d", $key
-        );
+            $sql = sprintf(
+                "SELECT * FROM `Email Template Dimension` WHERE `Email Template Key`=%d", $key
+            );
+        } else {
+            return;
+        }
+
 
 
         if ($this->data = $this->db->query($sql)->fetch()) {

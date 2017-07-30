@@ -199,17 +199,7 @@ $export_fields = array(
             'name'    => '`Invoice Total Tax Amount`',
             'label'   => _('Tax'),
             'checked' => 1
-        ),
-        array(
-            'name'    => '`Payment Type`',
-            'label'   => _('Payment type'),
-            'checked' => 1
-        ),
-        array(
-            'name'    => '`Payment Account Name`',
-            'label'   => _('Payment Account'),
-            'checked' => 1
-        ),
+        )
 
     ),
     'timeserie_records'            => array(

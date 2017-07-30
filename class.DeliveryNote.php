@@ -369,7 +369,7 @@ class DeliveryNote extends DB_Table {
 
             $sql = sprintf(
                 'SELECT OTF.`Product Code`,OTF.`Order Quantity`,`No Shipped Due No Authorized`,OTF.`Product ID`,`Product Package Weight`,`Order Quantity`,`Supplier Metadata`,`Order Bonus Quantity`,`Order Transaction Fact Key` FROM `Order Transaction Fact` OTF LEFT JOIN `Product History Dimension` PH  ON (OTF.`Product Key`=PH.`Product Key`)  LEFT JOIN `Product Dimension` P  ON (PH.`Product ID`=P.`Product ID`)
-		WHERE `Order Key`=%d  AND `Current Dispatching State` IN ("Submitted by Customer","In Process","In Process by Customer")  ', $order->id
+		WHERE `Order Key`=%d  AND `Current Dispatching State` IN ("Submitted by Customer","In Process")  ', $order->id
             );
 
 

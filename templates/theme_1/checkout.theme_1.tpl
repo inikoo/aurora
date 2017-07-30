@@ -25,70 +25,115 @@
 
             <div class="container">
 
-                <h2>{t}Order number{/t} <span class="order_number">342342</span></h2>
+                <h2><span id="_order_number_label" class="website_localized_label" contenteditable="true">{if isset($labels._order_number_label) and $labels._order_number_label!=''}{$labels._order_number_label}{else}{t}Order number{/t}{/if}</span> <span class="order_number">342342</span>
+                </h2>
 
 
                 <div class="one_third">
-                    <h5 id="_invoice_address_label" contenteditable="true">{$content._invoice_address_label}</h5>
+                    <h5>
+                        <i class="fa fa-fw fa-truck" aria-hidden="true"></i>
+                        <span id="_delivery_address_label" class="website_localized_label"
+                              contenteditable="true">{if isset($labels._delivery_address_label) and $labels._delivery_address_label!=''}{$labels._delivery_address_label}{else}{t}Delivery Address{/t}{/if}</span>
+                    </h5>
                     <p>
                         The Business Centre </br>
                         61 Wellfield Road</br>
                         Roath</br>
                         Cardiff</br>
                         CF24 3DG</br>
+                        United Kingdom</br>
                     </p>
-                </div><!-- end section -->
+                </div>
 
 
-                <div class="one_third last">
-                    <h5 id="_delivery_address_label" contenteditable="true">{$content._delivery_address_label}</h5>
+                <div class="one_third ">
+
+                    <h5>
+                        <i class="fa fa-fw fa-usd" aria-hidden="true"></i>
+                        <span id="_invoice_address_label" class="website_localized_label"
+                              contenteditable="true">{if isset($labels._invoice_address_label) and $labels._invoice_address_label!=''}{$labels._invoice_address_label}{else}{t}Invoice Address{/t}{/if}</span>
+                    </h5>
                     <p>
                         The Business Centre</br>
                         61 Wellfield Road</br>
                         Roath</br>
                         Cardiff</br>
-                        CF24 3DG </br>                   </p>
-                </div><!-- end section -->
+                        CF24 3DG </br>
+                        United Kingdom</br>
+                    </p>
+                </div>
 
-                <div class="one_third text-right" style="padding-left:20px">
-                    <h5 id="_totals_label" contenteditable="true">{$content._totals_label}</h5>
+                <div class="one_third text-right last" style="padding-left:20px">
 
 
                     <table class="table">
 
                         <tbody>
-                        <tr>
-                            <td>-ABB1</td>
 
-                            <td class="text-right">£10.00</td>
+                        <tr>
+                            <td id="_items_charges" class="website_localized_label"
+                                contenteditable="true">{if isset($labels._items_charges) and $labels._items_charges!=''}{$labels._items_charges}{else}{t}Charges{/t}{/if}</td>
+
+
+                            <td class="text-right">£0.00</td>
                         </tr>
                         <tr>
-                            <td>HHT-04</td>
+                            <td id="_items_shipping" class="website_localized_label"
+                                contenteditable="true">{if isset($labels._items_shipping) and $labels._items_shipping!=''}{$labels._items_shipping}{else}{t}Shipping{/t}{/if}</td>
 
-                            <td class="text-right">£6.00</td>
+
+                            <td class="text-right">£0.00</td>
                         </tr>
                         <tr>
-                            <td>LLX-10a</td>
+                            <td id="_total_net" class="website_localized_label" contenteditable="true">{if isset($labels._total_net) and $labels._total_net!=''}{$labels._total_net}{else}{t}Net{/t}{/if}</td>
 
-                            <td class="text-right">£1.99</td>
+
+                            <td class="text-right">£268.32</td>
                         </tr>
+                        <tr>
+                            <td id="_total_tax" class="website_localized_label" contenteditable="true">{if isset($labels._total_tax) and $labels._total_tax!=''}{$labels._total_tax}{else}{t}Tax{/t}{/if}</td>
+
+
+                            <td class="text-right">£53.66</td>
+                        </tr>
+                        <tr>
+                            <td id="_total" class="website_localized_label" contenteditable="true">{if isset($labels._total) and $labels._total!=''}{$labels._total}{else}{t}Total{/t}{/if}</td>
+
+
+                            <td class="text-right">£321.98</td>
+                        </tr>
+                        <tr>
+
+                            <td id="_credit" class="website_localized_label" contenteditable="true">{if isset($labels._credit) and $labels._credit!=''}{$labels._credit}{else}{t}Credit{/t}{/if}</td>
+
+
+                            <td class="text-right">-£20</td>
+                        </tr>
+                        <tr>
+                            <td id="_total_to_pay" class="website_localized_label"
+                                contenteditable="true">{if isset($labels._total_to_pay) and $labels._total_to_pay!=''}{$labels._total_to_pay}{else}{t}To pay{/t}{/if}</td>
+
+
+                            <td class="text-right">£301.98</td>
+                        </tr>
+
                         </tbody>
                     </table>
 
-                </div><!-- end section -->
-
-
-                <div class="clearfix margin_top10"></div>
+                </div>
 
             </div>
+
+
+            <div class="clearfix "></div>
 
 
             <div class="container">
 
                 <ul class="tabs3">
-                    <li><a href="#example-3-tab-1" target="_self"><i class="fa fa-credit-card" aria-hidden="true"></i>&nbsp; {t}Credit Card{/t}</a></li>
+                    <li><a href="#example-3-tab-1" target="_self"><i class="fa fa-credit-card" aria-hidden="true"></i> <span contenteditable="true" id="_credit_card_label">{$content._credit_card_label}</span></a></li>
                     <li><a href="#example-3-tab-2" target="_self"><i class="fa fa-paypal" aria-hidden="true"></i>&nbsp; Paypal</a></li>
-                    <li><a href="#example-3-tab-3" target="_self"><i class="fa fa-university" aria-hidden="true"></i>&nbsp; {t}Bank Transfer{/t}</a></li>
+                    <li><a href="#example-3-tab-3" target="_self"><i class="fa fa-university" aria-hidden="true"></i>&nbsp; <span contenteditable="true" id="_bank_label">{{$content._bank_label}}</span></a></li>
                 </ul>
 
                 <div class="tabs-content3 two">
@@ -96,114 +141,127 @@
                     <div id="example-3-tab-1" class="tabs-panel3">
 
 
-                        <form action="" class="sky-form"  style="max-width: 500px;"  >
-                            <header>Checkout form</header>
-
+                        <form action="" class="sky-form" style="max-width: 500px;">
+                            <header id="_form_title_credit_card" contenteditable="true">{$content._form_title_credit_card}</header>
 
 
                             <fieldset>
 
 
-                                <section>
-                                    <label class="input">
-                                        <input type="text" placeholder="Name on card">
-                                    </label>
-                                </section>
-
                                 <div class="row">
-                                    <section class="col col-10">
+                                    <section class="col col-9">
                                         <label class="input">
-                                            <input type="text" placeholder="Card numberd">
-                                        </label>
-                                    </section>
-                                    <section class="col col-2">
-                                        <label class="input">
-                                            <input type="text" maxlength="3" placeholder="CVV2">
-                                        </label>
-                                    </section>
-                                </div>
-
-                                <div class="row">
-                                    <label class="label col col-4">Expiration date</label>
-                                    <section class="col col-5">
-                                        <label class="select">
-                                            <select>
-                                                <option value="0" selected disabled>Month</option>
-                                                <option value="1">January</option>
-                                                <option value="1">February</option>
-                                                <option value="3">March</option>
-                                                <option value="4">April</option>
-                                                <option value="5">May</option>
-                                                <option value="6">June</option>
-                                                <option value="7">July</option>
-                                                <option value="8">August</option>
-                                                <option value="9">September</option>
-                                                <option value="10">October</option>
-                                                <option value="11">November</option>
-                                                <option value="12">December</option>
-                                            </select>
-                                            <i></i>
+                                            <input type="text" id="_credit_card_number" style="color:lightgrey" value="{$content._credit_card_number}">
                                         </label>
                                     </section>
                                     <section class="col col-3">
                                         <label class="input">
-                                            <input type="text" maxlength="4" placeholder="Year">
+                                            <input type="text" maxlength="4" id="_credit_card_ccv" style="color:lightgrey" value="{$content._credit_card_ccv}">
                                         </label>
                                     </section>
                                 </div>
+
+                                <div class="row">
+                                    <label class="label col col-4" id="_credit_card_expiration_date" contenteditable="true">{$content._credit_card_expiration_date}</label>
+                                    <section class="col col-5">
+                                        <label class="input">
+                                            <input type="text" id="_credit_card_expiration_date_month_label" style="color:lightgrey" value="{$content._credit_card_expiration_date_month_label}">
+                                        </label>
+                                    </section>
+                                    <section class="col col-3">
+                                        <label class="input">
+                                            <input type="text" maxlength="4" id="_credit_card_expiration_date_year_label" style="color:lightgrey" value="{$content._credit_card_expiration_date_year_label}">
+                                        </label>
+                                    </section>
+                                </div>
+
+
+                                <div class="row">
+
+                                    <section class="col col-5">
+                                        <label class="checkbox"><input type="checkbox" name="subscription" id="subscription"><i></i> </label>
+                                        <span style="margin-left:27px;	font: 14px/1.55 'Open Sans', Helvetica, Arial, sans-serif;position:relative;top:-22px;font-size:15px;color:#404040" id="_credit_card_save"
+                                              contenteditable="true">{$content._credit_card_save}</span>
+
+                                    </section>
+
+
+                                </div>
+
+
                             </fieldset>
 
                             <footer>
-                                <button type="submit" class="button">Continue</button>
+                                <button class="button" id="_place_order_from_credit_card" contenteditable="true">{$content._place_order_from_credit_card}</button>
                             </footer>
                         </form>
-
-
 
 
                     </div><!-- end tab 1 -->
 
                     <div id="example-3-tab-2" class="tabs-panel3">
 
+                        <form action="" class="sky-form" style="max-width: 500px;">
+                            <header id="_form_title_bank" contenteditable="true">{$content._form_title_paypal}</header>
+
+
+                            <fieldset>
+
+
+                                <img src="/art/paypal_mockup_button.png">
+
+                            </fieldset>
+
+                            <footer>
+
+                            </footer>
+                        </form>
+
                     </div><!-- end tab 2 -->
 
                     <div id="example-3-tab-3" class="tabs-panel3">
 
-                        <p>After placing your order, please go to your bank and make this payment to our bank account, details below.</p>
 
-                        <br>
-                            Beneficiary: Ancient Wisdom Marketing Limited<br/>
-                        Bank: <b>Natwest</b><br/>
-                        Address: 72 Middlewood Road Hillsborough Sheffield S6 4PB<br/>
-                        Account Number: 71336850<br/>
-                        Bank Code: 60-19-43<br/>
-                        Swift: NWBKGB2L<br/>
-                        IBAN: GB53 NWBK 6019437 1336 850<br/>
-                        </p>
-                        <p>
-                            Remember to state the order number in the payment reference. [286015]
-                        </p>
-                        <p>
-                        Please note, we cannot process your order until payment arrives in our account.
-                        </p>
+                        <form action="" class="sky-form" style="max-width: 500px;">
+                            <header id="_form_title_bank" contenteditable="true">{$content._form_title_bank}</header>
+
+
+                            <div style="padding:20px">
+                                <p id="_bank_header" contenteditable="true">{$content._bank_header}</p>
+
+
+                                </h2>
+
+
+                                <br>
+                                <span id="_bank_beneficiary_label" class="website_localized_label" contenteditable="true">{if isset($labels._bank_beneficiary_label) and $labels._bank_beneficiary_label!=''}{$labels._bank_beneficiary_label}{else}{t}Beneficiary{/t}{/if}</span>: XXX<br/>
+                                <span id="_bank_account_number_label" class="website_localized_label" contenteditable="true">{if isset($labels._bank_account_number_label) and $labels._bank_account_number_label!=''}{$labels._bank_account_number_label}{else}{t}Account Number{/t}{/if}</span>: XXX<br/>
+                                <span>IBAN</span>: XXX<br/>
+
+
+                                <span id="_bank_name_label" class="website_localized_label" contenteditable="true">{if isset($labels.website_localized_label) and $labels.website_localized_label!=''}{$labels.website_localized_label}{else}{t}Bank{/t}{/if}</span>: <b>XXX</b><br/>
+                                <span id="_bank_sort_code" class="website_localized_label" contenteditable="true">{if isset($labels._bank_sort_code) and $labels._bank_sort_code!=''}{$labels._bank_sort_code}{else}{t}Bank Code{/t}{/if}</span>: XXX<br/>
+                                <span>Swift</span>: XXX<br/>
+                                <span id="_bank_address_label" class="website_localized_label" contenteditable="true">{if isset($labels._bank_address_label) and $labels._bank_address_label!=''}{$labels._bank_address_label}{else}{t}Address{/t}{/if}</span>: XXX<br/>
+
+                                </span>
+
+                                <br>
+                                <p id="_bank_footer" contenteditable="true">{$content._bank_footer}</p>
+                            </div>
+
+
+                            <footer>
+                                <button class="button" id="_place_order_from_bank" contenteditable="true">{$content._place_order_from_bank}</button>
+                            </footer>
+                        </form>
+
+
                     </div><!-- end tab 3 -->
 
-                    <div id="example-3-tab-4" class="tabs-panel3">
-                        <img src="http://placehold.it/1170x450" alt="" class="rimg"/>
-                        <br/><br/>
-                        <p>Development dolor sit amet, consectetur adipiscing elit. Phasellus ac fringilla nulla, sit amet consequat eros. Pellentesque pharetra blandit commodo. Phasellus massa nisl, feugiat ac bibendum
-                            et, dictum id ipsum. Quisque sit amet accumsan tortor It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged many web sites
-                            still in their infanc versions have evolved over the years. the Internet tend to repeat predefined chunks as necessary, making this the first true randomised words which generator on the
-                            Internet.</p><br/>
-                        <p>Manu desktop you need to be sure there anythin embarrassing hidden in the middle of text in the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this
-                            the first true generator on the Internet.</p>
 
-                    </div><!-- end tab 4 -->
 
                 </div><!-- end all tabs -->
-
-
-                <div class="clearfix divider_line10"></div>
 
 
             </div>
@@ -221,6 +279,18 @@
         });
 
 
+        $(document).delegate('a', 'click', function (e) {
+
+            return false
+        })
+
+
+        $("form").on('submit', function (e) {
+            e.preventDefault();
+            e.returnValue = false;
+        });
+
+
         function save() {
 
             if (!$('#save_button', window.parent.document).hasClass('save')) {
@@ -230,91 +300,48 @@
             $('#save_button', window.parent.document).find('i').addClass('fa-spinner fa-spin')
 
 
-            content_data = {}
+            var content_data = { }
+            var labels= { };
 
                 $('[contenteditable=true]').each(function (i, obj) {
 
+                    if($(obj).hasClass('website_localized_label')){
+                        labels[$(obj).attr('id')] = $(obj).html()
+                    }else{
+                        content_data[$(obj).attr('id')] = $(obj).html()
+                    }
 
-                    content_data[$(obj).attr('id')] = $(obj).html()
+
+
                 })
 
-            $('.show_div').each(function (i, obj) {
-                content_data[$(obj).attr('id')] = ($(obj).hasClass('hide') ? false : true)
-            })
 
-
-            var request = '/ar_edit_website.php?tipo=save_webpage_content&key={$webpage->id}&content_data=' + encodeURIComponent(Base64.encode(JSON.stringify(content_data)));
-
-
-            console.log(request)
-
-
-            $.getJSON(request, function (data) {
-
-
-                $('#save_button', window.parent.document).removeClass('save').find('i').removeClass('fa-spinner fa-spin')
-
-            })
-
-
-        }
-
-
-        var droppedFiles = false;
-
-        $('#file_upload').on('change', function (e) {
+            content_data['_credit_card_number'] = $('#_credit_card_number').val()
+            content_data['_credit_card_ccv'] = $('#_credit_card_ccv').val()
+            content_data['_credit_card_expiration_date_month_label'] = $('#_credit_card_expiration_date_month_label').val()
+            content_data['_credit_card_expiration_date_year_label'] = $('#_credit_card_expiration_date_year_label').val()
 
 
             var ajaxData = new FormData();
 
-            //var ajaxData = new FormData( );
-            if (droppedFiles) {
-                $.each(droppedFiles, function (i, file) {
-                    ajaxData.append('files', file);
-                });
-            }
-
-
-            $.each($('#file_upload').prop("files"), function (i, file) {
-                ajaxData.append("files[" + i + "]", file);
-
-            });
-
-
-            ajaxData.append("tipo", 'upload_images')
-            ajaxData.append("parent", 'webpage')
-            ajaxData.append("parent_key", '{$webpage->id}')
-
-            ajaxData.append("options", JSON.stringify({
-                max_width: 350
-
-            }))
-
-            ajaxData.append("response_type", 'webpage')
-
-
-            //   var image = $('#' + $('#image_edit_toolbar').attr('block') + ' img')
+            ajaxData.append("tipo", 'save_webpage_content')
+            ajaxData.append("key", '{$webpage->id}')
+            ajaxData.append("content_data", JSON.stringify(content_data))
+            ajaxData.append("labels", JSON.stringify(labels))
 
 
             $.ajax({
-                url: "/ar_upload.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
-
-
-                complete: function () {
-
+                url: "/ar_edit_website.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false, complete: function () {
                 }, success: function (data) {
-
-                    console.log(data)
 
                     if (data.state == '200') {
 
-                        console.log(data)
-
-                        $('#_thanks_image').attr('src', data.image_src).attr('image_key', data.img_key)
-
+                        $('#save_button', window.parent.document).removeClass('save').find('i').removeClass('fa-spinner fa-spin')
 
                     } else if (data.state == '400') {
-
+                        swal({
+                            title: data.title, text: data.msg, confirmButtonText: "OK"
+                        });
                     }
 
 
@@ -324,26 +351,10 @@
             });
 
 
-        });
-
-
-        function change_webpage_element_visibility(id, value) {
-
-
-            if (value == 'hide') {
-                $('#' + id).addClass('hide')
-            } else {
-                $('#' + id).removeClass('hide')
-            }
-            $('#save_button', window.parent.document).addClass('save button changed valid')
-
-
         }
 
 
     </script>
-
-    <script src="/theme_1/tabs/assets/js/responsive-tabs.min.js" type="text/javascript"></script>
 
 
 </body>

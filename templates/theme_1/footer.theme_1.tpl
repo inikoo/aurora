@@ -251,7 +251,7 @@
 
           <ul  class="hide">
 
-              <li id="link_stem_cell" class="item"><a href="#"><i class="fa fa-fw fa-angle-right link_icon" onClick="update_link(this)"></i> <span ondrop="return false;" contenteditable  class="item_label" >{t}New link{/t}<span></span></a></li>
+              <li id="link_stem_cell" class="item"><a href="/"><i class="fa fa-fw fa-angle-right link_icon" onClick="update_link(this)"></i> <span ondrop="return false;" contenteditable  class="item_label" >{t}New link{/t}<span></span></a></li>
 
               <li id="item_email_stem_cell" ><i class="fa fa-fw fa-envelope"></i> <span contenteditable>info@yourdomain.com</span></li>
               <li id="item_stem_cell"    ><i class="fa fa-fw "></i> <span contenteditable></span></li>
@@ -264,7 +264,7 @@
 
           <div id="block_copyright_bundle_stem_cell" class="hide">
               <div onClick="edit_copyright_bundle(this)"  class="footer_copyright_bundle">
-                  {t}Copyright{/t} © {"%Y"|strftime} <span class="copyright_bundle_owner">Aurora</span>. {t}All rights reserved{/t}. <span class="copyright_bundle_links"> <a class="copyright_bundle_link" href="#"> Terms of Use</a> | <a class="copyright_bundle_link" href="#"> Privacy Policy</a></span>
+                  {t}Copyright{/t} © {"%Y"|strftime} <span class="copyright_bundle_owner">Aurora</span>. {t}All rights reserved{/t}. <span class="copyright_bundle_links"> <a class="copyright_bundle_link" href="/"> Terms of Use</a> | <a class="copyright_bundle_link" href="/"> Privacy Policy</a></span>
               </div>
           </div>
           <div id="block_low_text_stem_cell" class="hide">
@@ -274,9 +274,9 @@
           <div id="block_social_links_stem_cell" class="hide">
               <ul  onClick="edit_social_links(this)"  class="footer_social_links">
 
-                  <li class="" icon="fa-facebook"  ><a href="#"><i class="fa fa-facebook"></i></a></li>
-                  <li class="" icon="fa-twitter"  ><a href="#"><i class="fa fa-twitter"></i></a></li>
-                  <li class="" icon="fa-linkedin"  ><a href="#"><i class="fa fa-linkedin"></i></a></li>
+                  <li class="" icon="fa-facebook"  ><a href="/"><i class="fa fa-facebook"></i></a></li>
+                  <li class="" icon="fa-twitter"  ><a href="/"><i class="fa fa-twitter"></i></a></li>
+                  <li class="" icon="fa-linkedin"  ><a href="/"><i class="fa fa-linkedin"></i></a></li>
 
 
               </ul>
@@ -300,14 +300,16 @@
               </div>
           </div>
 
+
+
           <div id="block_links_stem_cell" class="hide">
               <div class="footer_block qlinks">
                   <h4 class="lmb" contenteditable>{t}Useful Links{/t}</h4>
                   <ul class="links_list">
-                      <li class="item"><a href="#"><i class="fa fa-fw fa-angle-right link_icon" onClick="update_link(this)"></i> <span class="item_label" ondrop="return false;" contenteditable>{t}Home Page Variations{/t}<span></span></a></li>
-                      <li class="item"><a href="#"><i class="fa fa-fw fa-angle-right link_icon" onClick="update_link(this)"></i> <span class="item_label" ondrop="return false;" contenteditable>{t}Awesome Products{/t}<span></span></a></li>
-                      <li class="item"><a href="#"><i class="fa fa-fw fa-angle-right link_icon" onClick="update_link(this)"></i> <span class="item_label" ondrop="return false;" contenteditable>{t}Features and Benefits{/t}<span></span></a></li>
-                      <li onClick="add_link(this)"  class="ui-state-disabled add_link"><a href="#"><i class="fa fa-fw fa-plus editing link_icon" onClick="update_link(this)"></i> <span class="editing" ondrop="return false;" >{t}Add link{/t}<span></span></a></li>
+                      <li class="item"><a href="/"><i class="fa fa-fw fa-angle-right link_icon" onClick="update_link(this)"></i> <span class="item_label" ondrop="return false;" contenteditable>{t}Home Page Variations{/t}<span></span></a></li>
+                      <li class="item"><a href="/"><i class="fa fa-fw fa-angle-right link_icon" onClick="update_link(this)"></i> <span class="item_label" ondrop="return false;" contenteditable>{t}Awesome Products{/t}<span></span></a></li>
+                      <li class="item"><a href="/"><i class="fa fa-fw fa-angle-right link_icon" onClick="update_link(this)"></i> <span class="item_label" ondrop="return false;" contenteditable>{t}Features and Benefits{/t}<span></span></a></li>
+                      <li onClick="add_link(this)"  class="ui-state-disabled add_link"><a href="/"><i class="fa fa-fw fa-plus editing link_icon" onClick="update_link(this)"></i> <span class="editing" ondrop="return false;" >{t}Add link{/t}<span></span></a></li>
                   </ul>
 
               </div>

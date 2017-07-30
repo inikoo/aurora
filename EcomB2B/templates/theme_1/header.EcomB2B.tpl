@@ -120,12 +120,16 @@
 
 </style>
 
-<span id="webpage_data" style="display:none" webpage_key="{$webpage->id}"  ></span>
+<span id="webpage_data" style="display:none"
+      webpage_key="{$webpage->id}"
+      customer_key="{$customer_key}"
+      order_key="{$order_key}"
+></span>
 
 
 <header id="header">
         <div id="topHeader">
-            <div class="wrapper">
+            <div class="wrapper" style="position: relative" >
                 <div class="top_nav">
                     <div class="container">
                         <div class="left">
@@ -299,6 +303,9 @@
 
                     </nav>
 
+
+
+
                     <div id="menu_control_panel" >
                         {if $logged_in}
                             <p>
@@ -307,9 +314,9 @@
                                 <i class="fa fa-user fa-flip-horizontal button " style="cursor:pointer;margin-right:10px"   title="{t}Profile{/t}"  aria-hidden="true"></i>
                                 <i class="fa fa-heart fa-flip-horizontal button " style="cursor:pointer;margin-right:20px"   title="{t}My favorites{/t}"  aria-hidden="true"></i>
                                 <a href="basket.sys" class="button" >
-                                    <span  id="header_order_products">{$order->get('Products')}</span>
+                                    <span  id="header_order_products"  class="ordered_products_number" >{if isset($order)}{$order->get('Products')}{else}0{/if}</span>
                                     <i style="padding-right:5px;padding-left:5px" class="fa fa-shopping-cart fa-flip-horizontal  " style="cursor:pointer"   title="{t}Basket{/t}"  aria-hidden="true"></i>
-                                    <span id="header_order_total_amount" style="padding-right:10px" id="basket_total">{$order->get('Total')}</span>
+                                    <span id="header_order_total_amount" class="order_total" style="padding-right:10px" >{if isset($order)}{$order->get('Total')}{else}{/if}</span>
                                 </a>
 
 

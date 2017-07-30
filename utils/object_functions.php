@@ -300,10 +300,15 @@ function get_object($object_name, $key, $load_other_data = false) {
             require_once "class.Published_Email_Template.php";
             $object = new Published_Email_Template($key);
             break;
+        case 'payment_account':
+        case 'payment account':
+            require_once "class.Payment_Account.php";
+            $object = new Payment_Account($key);
+            break;
 
 
         default:
-            exit('need to complete E1: x>'.strtolower($object_name)."<\n");
+            exit('need to complete E1: x>'.strtolower($object_name.' '.$load_other_data)."<\n");
             break;
     }
 

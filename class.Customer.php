@@ -696,6 +696,9 @@ class Customer extends Subject {
 
     }
 
+
+
+
     function create_order() {
 
         global $account;
@@ -1355,9 +1358,9 @@ class Customer extends Subject {
     function get_order_in_process_key($dispatch_state = 'all') {
 
         if ($dispatch_state == 'all') {
-            $dispatch_state_valid_values = "'In Process by Customer','Waiting for Payment Confirmation'";
+            $dispatch_state_valid_values = "'In Process','Waiting for Payment Confirmation'";
         } else {
-            $dispatch_state_valid_values = "'In Process by Customer'";
+            $dispatch_state_valid_values = "'In Process'";
         }
 
         $order_key = false;
@@ -1384,9 +1387,9 @@ class Customer extends Subject {
     function get_order_in_process_keys($dispatch_state = 'all') {
 
         if ($dispatch_state == 'all') {
-            $dispatch_state_valid_values = "'In Process by Customer','Waiting for Payment Confirmation'";
+            $dispatch_state_valid_values = "'In Process','Waiting for Payment Confirmation'";
         } else {
-            $dispatch_state_valid_values = "'In Process by Customer'";
+            $dispatch_state_valid_values = "'In Process'";
         }
 
         $order_keys = array();
@@ -2542,14 +2545,14 @@ class Customer extends Subject {
         return $pending_amount;
     }
 
-    function get_number_saved_credit_cards($billing_to_key, $ship_to_key) {
+
+    function get_number_saved_credit_cards($delivery_address_checksum, $invoice_address_checksum) {
 
         $number_saved_credit_cards = 0;
         $sql                       = sprintf(
-            "SELECT count(*) AS number FROM `Customer Credit Card Token Dimension` WHERE `Customer Key`=%d AND `Billing To Key`=%d AND `Ship To Key`=%d AND `Valid Until`>NOW()", $this->id,
-            $billing_to_key, $ship_to_key
+            "SELECT count(*) AS number FROM `Customer Credit Card Dimension` WHERE `Customer Credit Card Customer Key`=%d AND `Customer Credit Card Invoice Address Checksum`=%s AND `Customer Credit Card Delivery Address Checksum`=%s AND   `Customer Credit Card Valid Until`>NOW()  ",
+            $this->id, prepare_mysql($invoice_address_checksum), prepare_mysql($delivery_address_checksum)
         );
-
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
@@ -2566,21 +2569,23 @@ class Customer extends Subject {
     }
 
 
-    function get_saved_credit_cards($billing_to_key, $ship_to_key) {
+    function get_saved_credit_cards($delivery_address_checksum, $invoice_address_checksum) {
 
-        $key = md5($this->id.','.$billing_to_key.','.$ship_to_key.','.CKEY);
+        $key = md5($this->id.','.$delivery_address_checksum.','.$invoice_address_checksum.','.CKEY);
 
         $card_data = array();
         $sql       = sprintf(
-            "SELECT * FROM `Customer Credit Card Token Dimension` WHERE `Customer Key`=%d AND `Billing To Key`=%d AND `Ship To Key`=%d AND `Valid Until`>NOW()", $this->id, $billing_to_key,
-            $ship_to_key
+            "SELECT * FROM `Customer Credit Card Dimension` WHERE `Customer Credit Card Customer Key`=%d AND `Customer Credit Card Invoice Address Checksum`=%s AND `Customer Credit Card Delivery Address Checksum`=%s AND   `Customer Credit Card Valid Until`>NOW()  ",
+            $this->id, prepare_mysql($invoice_address_checksum), prepare_mysql($delivery_address_checksum)
+
+
         );
 
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
-                $_card_data       = json_decode(AESDecryptCtr($row['Metadata'], $key, 256), true);
-                $_card_data['id'] = $row['Customer Credit Card Token Key'];
+                $_card_data       = json_decode(AESDecryptCtr($row['Customer Credit Card Metadata'], $key, 256), true);
+                $_card_data['id'] = $row['Customer Credit Card Key'];
 
                 $card_data[] = $_card_data;
             }
@@ -2595,13 +2600,39 @@ class Customer extends Subject {
 
     }
 
+    function get_credit_card_token($card_key, $delivery_address_checksum, $invoice_address_checksum) {
+
+        $key = md5($this->id.','.$delivery_address_checksum.','.$invoice_address_checksum.','.CKEY);
+
+        $token = false;
+        $sql   = sprintf(
+            "SELECT `Customer Credit Card Metadata` FROM `Customer Credit Card Dimension` WHERE `Customer Credit Card Customer Key`=%d AND `Customer Credit Card Invoice Address Checksum`=%s AND `Customer Credit Card Delivery Address Checksum`=%s AND   `Customer Credit Card Valid Until`>NOW() AND  `Customer Credit Card Key`=%d ",
+            $this->id, prepare_mysql($invoice_address_checksum), prepare_mysql($delivery_address_checksum), $card_key
+        );
+
+
+        if ($result=$this->db->query($sql)) {
+            foreach ($result as $row) {
+                $_card_data = json_decode(AESDecryptCtr($row['Customer Credit Card Metadata'], $key, 256), true);
+                $token      = $_card_data['Token'];
+            }
+        }else {
+            print_r($error_info=$this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        return $token;
+
+    }
 
     function delete_credit_card($card_key) {
 
 
         $tokens = array();
         $sql    = sprintf(
-            "SELECT `CCUI` FROM `Customer Credit Card Token Dimension` WHERE `Customer Key`=%d  AND `Customer Credit Card Token Key`=%d ", $this->id,
+            "SELECT `Customer Credit Card CCUI` FROM `Customer Credit Card Dimension` WHERE `Customer Credit Card Customer Key`=%d  AND `Customer Credit Card Key`=%d ", $this->id,
 
             $card_key
         );
@@ -2610,19 +2641,20 @@ class Customer extends Subject {
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
                 $sql = sprintf(
-                    'SELECT `Customer Credit Card Token Key`,`Billing To Key`,`Ship To Key` FROM `Customer Credit Card Token Dimension`  WHERE `Customer Key`=%d AND `CCUI`=%s', $this->id,
-                    prepare_mysql($row['CCUI'])
+                    'SELECT `Customer Credit Card Key`,`Customer Credit Card Invoice Address Checksum`,`Customer Credit Card Delivery Address Checksum` FROM `Customer Credit Card Dimension`  WHERE `Customer Credit Card Customer Key`=%d AND `Customer Credit Card CCUI`=%s',
+                    $this->id,
+                    prepare_mysql($row['Customer Credit Card CCUI'])
                 );
 
 
                 if ($result = $this->db->query($sql)) {
                     foreach ($result as $row2) {
                         $tokens[] = $this->get_credit_card_token(
-                            $row2['Customer Credit Card Token Key'], $row2['Billing To Key'], $row2['Ship To Key']
+                            $row2['Customer Credit Card Key'], $row2['Customer Credit Card Invoice Address Checksum'], $row2['Customer Credit Card Delivery Address Checksum']
                         );
 
                         $sql = sprintf(
-                            'DELETE FROM `Customer Credit Card Token Dimension`  WHERE `Customer Credit Card Token Key`=%d', $row2['Customer Credit Card Token Key']
+                            'DELETE FROM `Customer Credit Card Dimension`  WHERE `Customer Credit Card Key`=%d', $row2['Customer Credit Card Key']
                         );
 
                         $this->db->exec($sql);
@@ -2645,78 +2677,6 @@ class Customer extends Subject {
         return $tokens;
 
     }
-
-
-    function get_credit_card_token($card_key, $billing_to_key, $ship_to_key) {
-
-        $key = md5($this->id.','.$billing_to_key.','.$ship_to_key.','.CKEY);
-
-        $token = false;
-        $sql   = sprintf(
-            "SELECT `Metadata` FROM `Customer Credit Card Token Dimension` WHERE `Customer Key`=%d AND `Billing To Key`=%d AND `Ship To Key`=%d AND   `Valid Until`>NOW() AND  `Customer Credit Card Token Key`=%d ",
-            $this->id, $billing_to_key, $ship_to_key, $card_key
-        );
-
-
-        if ($result=$this->db->query($sql)) {
-        		foreach ($result as $row) {
-                    $_card_data = json_decode(AESDecryptCtr($row['Metadata'], $key, 256), true);
-                    $token      = $_card_data['Token'];
-        		}
-        }else {
-        		print_r($error_info=$this->db->errorInfo());
-        		print "$sql\n";
-        		exit;
-        }
-
-
-        return $token;
-
-    }
-
-
-    function save_credit_card($vault, $card_info, $billing_to_key, $ship_to_key) {
-        include_once 'aes.php';
-
-        $key = md5($this->id.','.$billing_to_key.','.$ship_to_key.','.CKEY);
-
-        $card_data = AESEncryptCtr(
-            json_encode(
-                array(
-                    'Token'           => $card_info['token'],
-                    'Card Type'       => preg_replace(
-                        '/\s/', '', $card_info['cardType']
-                    ),
-                    'Card Number'     => substr($card_info['bin'], 0, 4).' ****  **** '.$card_info['last4'],
-                    'Card Expiration' => $card_info['expirationMonth'].'/'.$card_info['expirationYear'],
-                    'Card CVV Length' => ($card_info['cardType'] == 'American Express' ? 4 : 3),
-                    'Random'          => password_hash(time(), PASSWORD_BCRYPT)
-
-                )
-            ), $key, 256
-        );
-
-
-        $sql = sprintf(
-            "INSERT INTO `Customer Credit Card Token Dimension` (`Customer Key`,`Billing To Key`,`Ship To Key`,`CCUI`,`Metadata`,`Created`,`Updated`,`Valid Until`,`Vault`) VALUES (%d,%d,%d,%s,%s,%s,%s,%s,%s)
-		      ON DUPLICATE KEY UPDATE `Metadata`=%s , `Updated`=%s,`Valid Until`=%s",
-            $this->id,
-            $billing_to_key,
-            $ship_to_key,
-            prepare_mysql($card_info['uniqueNumberIdentifier']),
-            prepare_mysql($card_data), prepare_mysql(gmdate('Y-m-d H:i:s')),
-            prepare_mysql(gmdate('Y-m-d H:i:s')),
-            prepare_mysql(gmdate('Y-m-d H:i:s', strtotime($card_info['expirationYear'].'-'.$card_info['expirationMonth'].'-01 +1 month'))),
-            prepare_mysql($vault),
-            prepare_mysql($card_data), prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql(gmdate('Y-m-d H:i:s', strtotime($card_info['expirationYear'].'-'.$card_info['expirationMonth'].'-01 +1 month')))
-
-        );
-
-        $this->db->exec($sql);
-
-
-    }
-
 
     function get_custmon_fields() {
 

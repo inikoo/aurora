@@ -450,8 +450,10 @@ class WebAuth {
 
 
         $sql = sprintf(
-            "SELECT `Website Recover Token Key`, `Website Recover Token Hash`,`Website Recover Token Website Key`,`Website Recover Token Website User Key`,`Website Recover Token Customer Key`,`Website Recover Token Expire`  FROM `Website Recover Token Dimension` WHERE `Website Recover Token Selector`=%s  ", prepare_mysql($selector)
+            "SELECT `Website Recover Token Key`, `Website Recover Token Hash`,`Website Recover Token Website Key`,`Website Recover Token Website User Key`,`Website Recover Token Customer Key`,`Website Recover Token Expire`  FROM `Website Recover Token Dimension` WHERE `Website Recover Token Selector`=%s  ",
+            prepare_mysql($selector)
         );
+
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {

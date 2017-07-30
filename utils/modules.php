@@ -442,9 +442,7 @@ $modules = array(
                         'icon'  => 'database'
                     ),
                     'customer.history'   => array(
-                        'label' => _(
-                            'History, notes'
-                        ),
+                        'label' => _('History, notes'),
                         'icon'  => 'sticky-note-o'
                     ),
                     'customer.orders'    => array('label' => _('Orders')),
@@ -1143,7 +1141,7 @@ $modules = array(
 
             'payment_accounts' => array(
                 'type'      => 'navigation',
-                'label'     => _("Payment Accounts"),
+                'label'     => _("Payment accounts"),
                 'icon'      => 'cc',
                 'reference' => 'payment_accounts/%s',
                 'tabs'      => array(
@@ -1208,18 +1206,37 @@ $modules = array(
                         )
                     ),
                     'payment_account.history'  => array(
-                        'label' => _(
-                            'History, notes'
+                        'title'         => _('History, notes'),
+                        'label'         => '',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number History Records'
                         ),
-                        'icon'  => 'sticky-note-o'
+
+                        'icon'  => 'road',
+                        'class' => 'right icon_only'
                     ),
                     'payment_account.payments' => array(
-                        'label' => _(
-                            'Payments'
+                        'label'         => _('Transactions'),
+                        'title'         => _('Payments transactions'),
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Transactions'
                         ),
-                        'title' => _(
-                            'Payments transactions'
-                        )
+                    ),
+                    'payment_account.stores' => array(
+                        'label'         => _('Stores'),
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number Stores'
+                        ),
+                    ),
+                    'payment_account.websites' => array(
+                        'label'         => _('Websites'),
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number Websites'
+                        ),
                     ),
 
                 )
@@ -1862,7 +1879,7 @@ $modules = array(
                     'website.reminders.families'   => 'website.reminders',
                     'website.reminders.products'   => 'website.reminders',
 
-                    'website.ready_webpages'     => 'website.webpages',
+                    'website.ready_webpages'      => 'website.webpages',
                     'website.online_webpages'     => 'website.webpages',
                     'website.offline_webpages'    => 'website.webpages',
                     'website.webpage.types'       => 'website.webpages',
@@ -2171,13 +2188,12 @@ $modules = array(
                     'webpage.footer.preview' => 'webpage.templates',
                     'webpage.header.preview' => 'webpage.templates',
 
-                    'webpage.preview'        => 'webpage.workshop',
-                    'webpage.email_template' => 'webpage.workshop',
+                    'webpage.preview'          => 'webpage.workshop',
+                    'webpage.email_template'   => 'webpage.workshop',
                     'webpage.email_blueprints' => 'webpage.workshop',
 
 
-
-                        'webpage.templates' => 'webpage.templates',
+                    'webpage.templates' => 'webpage.templates',
 
 
                 ),
@@ -2198,15 +2214,15 @@ $modules = array(
                         'icon'  => 'wrench',
 
                         'subtabs' => array(
-                            'webpage.preview'        => array(
+                            'webpage.preview'          => array(
                                 'label' => _('Webpage'),
                                 'icon'  => 'file-text-o'
                             ),
-                            'webpage.email_template' => array(
+                            'webpage.email_template'   => array(
                                 'label' => _('Email'),
                                 'icon'  => 'envelope-o'
                             ),
-                            'webpage.email_blueprints'=> array(
+                            'webpage.email_blueprints' => array(
                                 'label' => _('Email HTML templates'),
                                 'icon'  => 'html5'
                             )
@@ -3126,7 +3142,7 @@ $modules = array(
                         ),
                         'icon'  => 'bars'
                     ),
-                    'supplier.order.details' => array(
+                    'supplier.order.details'    => array(
                         'label' => _(
                             'Data'
                         ),
@@ -4016,7 +4032,7 @@ $modules = array(
                             'Product families'
                         )
                     ),
-                    'part_family.products' => array(
+                    'part_family.products'         => array(
                         'label' => _('Products')
                     ),
 
@@ -5874,7 +5890,7 @@ $modules = array(
                         ),
                         'icon'  => 'bars'
                     ),
-                    'supplier.order.details' => array(
+                    'supplier.order.details'    => array(
                         'label' => _(
                             'Data'
                         ),

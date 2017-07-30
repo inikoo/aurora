@@ -53,7 +53,7 @@ function get_form_validation_state(submitting) {
 
     });
 
-
+console.log(form_validation)
 
     return form_validation
 

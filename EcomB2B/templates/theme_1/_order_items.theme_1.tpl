@@ -15,31 +15,25 @@
 <table class="table">
     <thead>
     <tr>
-        <th>{t}Code{/t}</th>
-        <th>{t}Description{/t}</th>
+        <th class="text-left">{t}Code{/t}</th>
+        <th class="text-left">{t}Description{/t}</th>
         <th class="text-right">{t}Quantity{/t}</th>
-        <th class="text-right">{t}Amount{/t}</th>
+        <th class="text-right">{t}Amount net{/t}</th>
     </tr>
     </thead>
     <tbody>
+
+    {foreach from=$order->get_items() item="item" }
+
     <tr>
-        <td>-ABB1</td>
-        <td>Doe Spanner</td>
-        <td class="text-right">2</td>
-        <td class="text-right">£10.00</td>
+        <td>{$item.code}</td>
+        <td>{$item.description}</td>
+        <td class="text-right">{$item.edit_qty}</td>
+        <td class="text-right">{$item.amount}</td>
     </tr>
-    <tr>
-        <td>HHT-04</td>
-        <td>Moe Screwdriver</td>
-        <td class="text-right">3</td>
-        <td class="text-right">£6.00</td>
-    </tr>
-    <tr>
-        <td>LLX-10a</td>
-        <td>Dooley Hammer</td>
-        <td class="text-right">1</td>
-        <td class="text-right">£1.99</td>
-    </tr>
+
+
+    {/foreach}
     </tbody>
 </table>
 

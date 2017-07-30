@@ -289,6 +289,68 @@ class Public_Website {
     }
 
 
+    function get_payment_accounts() {
+
+        $payments_accounts = array();
+
+        $sql = sprintf(
+            'SELECT `Payment Account Store Payment Account Key` FROM `Payment Account Store Bridge` WHERE `Payment Account Store Website Key`=%d AND `Payment Account Store Status`="Active" AND `Payment Account Store Show in Cart`="Yes"  ORDER BY `Payment Account Store Show Cart Order`    ', $this->id
+        );
+
+       
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+
+                $payment_account = get_object('Payment_Account', $row['Payment Account Store Payment Account Key']);
+                switch ($payment_account->get('Payment Account Block')) {
+                    case 'BTree':
+                        $icon            = 'fa-credit-card';
+                        $tab_label_index = '_credit_card_label';
+                        $tab_label       = '';
+                        break;
+                    case 'BTreePaypal':
+                        $icon            = 'fa-paypal';
+                        $tab_label       = 'Paypal';
+                        $tab_label_index = '';
+                        break;
+                    case 'Paypal':
+                        $icon            = 'fa-paypal';
+                        $tab_label       = 'Paypal';
+                        $tab_label_index = '';
+                        break;
+                    case 'Bank':
+                        $icon            = 'fa-university';
+                        $tab_label_index = '_bank_label';
+                        $tab_label       = '';
+                        break;
+                    default:
+
+
+                }
+
+
+                $payments_accounts[] = array(
+                    'object'          => $payment_account,
+                    'icon'            => $icon,
+                    'tab_label_index' => $tab_label_index,
+                    'tab_label'       => $tab_label
+                );
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+      //  print_r($payments_accounts);
+
+        return $payments_accounts;
+
+    }
+
 
     function create_user($data) {
 
@@ -296,9 +358,9 @@ class Public_Website {
 
         $this->new = false;
 
-        $data['editor']             = $this->editor;
+        $data['editor']                   = $this->editor;
         $data['Website User Website Key'] = $this->id;
-        $data['Website User Active'] = 'Yes';
+        $data['Website User Active']      = 'Yes';
 
 
         $user = new Public_Website_User('new', $data);
@@ -308,9 +370,7 @@ class Public_Website {
             if ($user->new) {
 
 
-               return $user;
-
-
+                return $user;
 
 
             } else {
@@ -325,7 +385,6 @@ class Public_Website {
             $this->msg   = $user->msg;
         }
     }
-
 
 
 }
