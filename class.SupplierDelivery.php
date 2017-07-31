@@ -871,7 +871,6 @@ class SupplierDelivery extends DB_Table {
         }
 
 
-        151215
 
     }
 
