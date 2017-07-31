@@ -83,6 +83,18 @@ elseif ($webpage->get('Webpage Template Filename') == 'login') {
 
     $template = $theme.'/login.'.$theme.'.'.$website->get('Website Type').'.tpl';
 }
+elseif ($webpage->get('Webpage Template Filename') == 'search') {
+
+if(!empty($_REQUEST['q'])){
+    $search_query=$_REQUEST['q'];
+}else{
+    $search_query='';
+}
+    $smarty->assign('search_query', $search_query);
+
+    $template = $theme.'/search.'.$theme.'.'.$website->get('Website Type').'.tpl';
+}
+
 elseif ($webpage->get('Webpage Template Filename') == 'welcome') {
 
     if (!$logged_in) {

@@ -139,12 +139,11 @@
 
 
 
-                        <div class="right ">
-
+                        <div class="right {if $webpage->get('Webpage Code')=='search.sys'}hide{/if} ">
 
                                 <div style="float:right;background-color: black;height:30px;width: 30px ;text-align: center">
-                                    <i class="fa fa-search" style="color:#fff;font-size:20px;position: relative;top:4px" aria-hidden="true"></i></div>
-                                <input style="width: 250px;float:right;border: 1px solid black;padding:2px"/>
+                                    <i id="header_search_icon" class=" fa fa-search" style="color:#fff;font-size:20px;position: relative;top:4px;cursor: pointer;" aria-hidden="true"  ></i></div>
+                                <input id="header_search_input" style="width: 250px;float:right;border: 1px solid black;padding:2px"/>
 
 
 

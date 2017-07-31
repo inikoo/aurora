@@ -622,9 +622,11 @@ ALTER TABLE `Website Dimension` CHANGE `Website Primary Color` `Website Primary 
 
 
 
-here
 
 ALTER TABLE `Payment Account Dimension` ADD `Payment Account From` DATETIME NULL DEFAULT NULL AFTER `Payment Account Balance Amount`;
+
+
+
 
 ALTER TABLE `Payment Service Provider Dimension` ADD `Payment Service Provider Block` VARCHAR(16) NULL DEFAULT NULL AFTER `Payment Service Provider Type`;
 
@@ -634,10 +636,11 @@ update `Payment Service Provider Dimension` set `Payment Service Provider Block`
 ALTER TABLE `Payment Account Dimension` ADD `Payment Account Service Provider Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Payment Account Key`;
 update `Payment Account Dimension` set `Payment Account Service Provider Key`=`Payment Service Provider Key`;
 
-ALTER TABLE `Payment Account Dimension` DROP `Payment Account Type`;
 
 ALTER TABLE `Payment Account Dimension` ADD `Payment Account Number Stores` SMALLINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Payment Account From`, ADD `Payment Account Number Websites` SMALLINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Payment Account Number Stores`;
 
+
+here
 
 ============= migration web[ages
 
@@ -646,6 +649,7 @@ update `Page Store Dimension` set `Webpage Name`=`Page Store Title` where `Webpa
 //update `Page Store Dimension`  P  left join `Page Dimension` PP on (PP.`Page Key`=P.`Page Key`)  set `Webpage Browser Title`=`Page Title` where `Webpage Browser Title` is NULL or `Webpage Browser Title`='' ;
 update `Page Store Dimension` set `Webpage Browser Title`=`Webpage Name`;
 update `Page Store Dimension` set `Webpage Meta Description`=`Store Description` where `Webpage Meta Description` is NULL or `Webpage Meta Description`='' ;
+ALTER TABLE `Payment Account Dimension` DROP `Payment Account Type`;
 
 
 ===============
