@@ -1728,7 +1728,11 @@ function save_footer($data, $editor) {
     include_once('class.WebsiteFooter.php');
 
 
-    $footer_data = json_decode(base64_decode($data['footer_data']), true);
+
+
+    $footer_data = json_decode($data['footer_data'],true);
+
+
 
 
     $footer         = new WebsiteFooter($data['footer_key']);
@@ -1768,7 +1772,10 @@ function save_header($data, $editor) {
     include_once('class.WebsiteHeader.php');
 
 
-    $header_data = json_decode(base64_decode($data['header_data']), true);
+
+    $header_data = json_decode($data['header_data'],true);
+
+
 
     //print_r($header_data);
     //exit;
