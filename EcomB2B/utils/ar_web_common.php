@@ -11,6 +11,8 @@ and isset($customer) and is_object($customer)
         'Author Alias' =>$customer->get('Name'),
         'Author Type'  => 'Customer',
         'Author Key'   => $customer->id,
+        'Subject'  => 'Customer',
+        'Subject Key'   => $customer->id,
         'User Key'     => 0,
         'Date'         => gmdate('Y-m-d H:i:s')
     );

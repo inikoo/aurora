@@ -99,6 +99,73 @@ abstract class DBW_Table extends stdClass {
         return $data;
     }
 
+    function post_add_history($history_key, $type = false) {
+        return false;
+    }
+
+    function set_editor($raw_data) {
+        if (isset($raw_data['editor'])) {
+            foreach ($raw_data['editor'] as $key => $value) {
+
+                if (array_key_exists($key, $this->editor)) {
+                    $this->editor[$key] = $value;
+                }
+
+            }
+        }
+
+    }
+
+    function add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $table_name, $table_key, $update_history_records_data = true) {
+
+        $history_key = $this->add_table_history($history_data, $force_save, '', '', $table_name, $table_key);
+
+        $sql = sprintf(
+            "INSERT INTO `%s History Bridge` VALUES (%d,%d,%s,'No',%s)", $table_name, $table_key, $history_key, prepare_mysql($deletable), prepare_mysql($type)
+        );
+
+        $this->db->exec($sql);
+
+        $this->update_history_records_data();
+
+        return $history_key;
+    }
+
+    function get_update_metadata() {
+
+        if (isset($this->update_metadata)) {
+            return $this->update_metadata;
+        } else {
+            return array();
+        }
+
+    }
+
+    function get_other_fields_update_info() {
+
+        if (isset($this->other_fields_updated)) {
+            return $this->other_fields_updated;
+        } else {
+            return false;
+        }
+    }
+
+    function get_new_fields_info() {
+        if (isset($this->new_fields_info)) {
+            return $this->new_fields_info;
+        } else {
+            return false;
+        }
+    }
+
+    function get_deleted_fields_info() {
+        if (isset($this->deleted_fields_info)) {
+            return $this->deleted_fields_info;
+        } else {
+            return false;
+        }
+    }
+
     protected function update_field($field, $value, $options = '') {
         $this->update_table_field($field, $value, $options, $this->table_name, $this->table_name.' Dimension', $this->id);
 
@@ -128,32 +195,6 @@ abstract class DBW_Table extends stdClass {
         //$old_value=_('Unknown');
         $key_field = $table_name." Key";
 
-        if ($table_name == 'Page' or $table_name == 'Page Store') {
-            $key_field = "Page Key";
-        }
-
-        if ($table_name == 'Page' and $this->type == 'Store') {
-            $extra_data = $this->store_base_data();
-
-
-            if (array_key_exists($field, $extra_data)) {
-                $table_full_name = 'Page Store Dimension';
-            }
-
-
-        } else {
-            if ($table_name == 'Part' or $table_full_name == 'Part Data') {
-                $key_field = 'Part SKU';
-            } else {
-                if ($table_name == 'Product' or $table_full_name == 'Product Data' or $table_full_name == 'Product DC Data') {
-                    $key_field = 'Product ID';
-                } else {
-                    if ($table_name == 'Supplier Production') {
-                        $key_field = 'Supplier Production Supplier Key';
-                    }
-                }
-            }
-        }
 
         if (preg_match('/^custom_field_part/i', $field)) {
             $field1 = preg_replace('/^custom_field_part_/', '', $field);
@@ -204,17 +245,7 @@ abstract class DBW_Table extends stdClass {
         $old_formatted_value = $this->get($formatted_field);
 
 
-        if (preg_match('/^custom_field_part/i', $field)) {
-            if (is_string($value)) {
-                $sql = sprintf(
-                    "UPDATE `Part Custom Field Dimension` SET `%s`='%s' WHERE `Part SKU`=%d", $field1, $value, $table_key
-                );
-            } else {
-                $sql = sprintf(
-                    "UPDATE `Part Custom Field Dimension` SET `%s`='%d' WHERE `Part SKU`=%d", $field1, $value, $table_key
-                );
-            }
-        } elseif (preg_match('/^custom_field_customer/i', $field)) {
+        if (preg_match('/^custom_field_customer/i', $field)) {
             if (is_string($value)) {
                 $sql = sprintf(
                     "UPDATE `Customer Custom Field Dimension` SET `%s`='%s' WHERE `Customer Key`=%d", $r['Custom Field Key'], $value, $table_key
@@ -237,7 +268,12 @@ abstract class DBW_Table extends stdClass {
 
         $update_op = $this->db->prepare($sql);
         $update_op->execute();
+
+
         $affected = $update_op->rowCount();
+
+       // print "$sql $affected  \n";
+
 
         if ($affected == 0) {
 
@@ -264,8 +300,7 @@ abstract class DBW_Table extends stdClass {
             if (preg_match(
                     '/deal|deal campaign|attachment bridge|location|site|page|part|barcode|agent|customer|contact|company|order|staff|supplier|address|telecom|user|store|product|company area|company department|position|category/i',
                     $table_name
-                ) and !$this->new and $save_history
-            ) {
+                ) and !$this->new and $save_history) {
 
 
                 $old_formatted_value = htmlentities($old_formatted_value);
@@ -291,22 +326,18 @@ abstract class DBW_Table extends stdClass {
 
         );
 
+
         $history_key = $this->add_history($history_data, false, false, $options);
 
 
-        if (!in_array($table_name, array())) {
+        $sql = sprintf(
+            "INSERT INTO `%s History Bridge` VALUES (%d,%d,'No','No','Changes')", $table_name, $table_key, $history_key
+        );
+        $this->db->exec($sql);
 
 
-            $sql = sprintf(
-                "INSERT INTO `%s History Bridge` VALUES (%d,%d,'No','No','Changes')", $table_name, $table_key, $history_key
-            );
-            // print "$sql\n";
-            $this->db->exec($sql);
+        $this->update_history_records_data();
 
-
-            $this->update_history_records_data();
-
-        }
 
     }
 
@@ -318,11 +349,10 @@ abstract class DBW_Table extends stdClass {
 
     function add_table_history($raw_data, $force, $post_arg1, $options = '', $table_name, $table_key) {
 
-        global $account;
 
-       // print_r($raw_data);
+        $editor_data = $this->editor;
 
-        $editor_data = $this->get_editor_data();
+
         if ($this->no_history) {
             return;
         }
@@ -359,21 +389,6 @@ abstract class DBW_Table extends stdClass {
         //  print_r($data);
 
 
-        if ($data['Subject'] == '' or (!$data['Subject Key']) and in_array($data['Subject'], array('System'))) {
-            include_once 'class.User.php';
-            $user = new User($data['User Key']);
-            if ($user->id) {
-
-                $data['Subject']     = $user->data['User Type'];
-                $data['Subject Key'] = $user->data['User Parent Key'];
-                $data['Author Name'] = $user->data['User Alias'];
-            } else {
-                $data['Subject']     = 'Staff';
-                $data['Subject Key'] = 0;
-                $data['Author Name'] = _('Unknown');
-            }
-
-        }
         if (!isset($data['Date']) or $data['Date'] == '') {
             $data['Date'] = $editor_data['Date'];
         }
@@ -446,60 +461,21 @@ abstract class DBW_Table extends stdClass {
         }
 
 
-        if (!array_key_exists('Author Name', $data)) {
-            $data['Author Name'] = '';
-        }
-
-
-        if ($data['Author Name'] == '') {
-
-
-            if ($data['Subject'] == 'Customer') {
-                include_once 'class.Customer.php';
-                $customer            = new Customer($data['Subject Key']);
-                $data['Author Name'] = $customer->data['Customer Name'];
-            } elseif ($data['Subject'] == 'Staff') {
-                include_once 'class.Staff.php';
-                $staff               = new Staff($data['Subject Key']);
-                $data['Author Name'] = $staff->data['Staff Alias'];
-            } elseif ($data['Subject'] == 'Supplier') {
-                include_once 'class.Supplier.php';
-
-                $supplier            = new Supplier($data['Subject Key']);
-                $data['Author Name'] = $staff->data['Supplier Name'];
-            } elseif ($data['Subject'] == 'System') {
-
-                $data['Author Name'] = _('System');
-            }
-
-
-        }
-
-
         if ($data['Action'] == 'created') {
             $data['Preposition'] = '';
         }
 
-        if (isset($this->label) and $this->label) {
-            $label = $this->label;
-        } else {
-            $label = $table_name;
-        }
+
         if ($data['History Details'] == '') {
             if (isset($raw_data['old_value']) and isset($raw_data['new_value'])) {
 
                 $data['History Details'] = '
 				<div class="table">
-				<div class="field tr"><div>'._('Time').':</div><div>'.strftime(
-                        "%a %e %b %Y %H:%M:%S %Z"
-                    ).'</div></div>xx
-				<div class="field tr"><div>'._('User').':</div><div>'.$this->editor['Author Alias'].'</div></div>
-				<div class="field tr"><div>'._('Action').':</div><div>'._(
-                        'Changed'
-                    ).'</div></div>
+				<div class="field tr"><div>'._('Updated by customer').'</div><div></div></div>
+				<div class="field tr"><div>'._('Time').':</div><div>'.strftime("%a %e %b %Y %H:%M:%S %Z").'</div></div>
+				<div class="field tr"><div>'._('Action').':</div><div>'._('Changed').'</div></div>
 				<div class="field tr"><div>'._('Old value').':</div><div>'.$raw_data['old_value'].'</div></div>
 				<div class="field tr"><div>'._('New value').':</div><div>'.$raw_data['new_value'].'</div></div>
-				<div class="field tr"><div>'.$label.':</div><div>'.$this->get_name().'</div></div>
                 </div>';
 
 
@@ -507,15 +483,10 @@ abstract class DBW_Table extends stdClass {
 
                 $data['History Details'] = '
 				<div class="table">
-				<div class="field tr"><div>'._('Time').':</div><div>'.strftime(
-                        "%a %e %b %Y %H:%M:%S %Z"
-                    ).'</div></div>
-				<div class="field tr"><div>'._('User').':</div><div>'.$this->editor['Author Alias'].'</div></div>
-				<div class="field tr"><div>'._('Action').':</div><div>'._(
-                        'Associated'
-                    ).'</div></div>
+								<div class="field tr"><div>'._('Updated by customer').'</div><div></div></div>
+				<div class="field tr"><div>'._('Time').':</div><div>'.strftime("%a %e %b %Y %H:%M:%S %Z").'</div></div>
+				<div class="field tr"><div>'._('Action').':</div><div>'._('Associated').'</div></div>
 				<div class="field tr"><div>'._('New value').':</div><div>'.$raw_data['new_value'].'</div></div>
-				<div class="field tr"><div>'.$label.':</div><div>'.$this->get_name().'</div></div>
 				</div>';
 
             }
@@ -539,34 +510,6 @@ abstract class DBW_Table extends stdClass {
         return $history_key;
 
 
-    }
-
-    protected function get_editor_data() {
-
-        if (isset($this->editor['Date']) and preg_match(
-                '/^\d{4}-\d{2}-\d{2}/', $this->editor['Date']
-            )
-        ) {
-            $date = $this->editor['Date'];
-        } else {
-            $date = gmdate("Y-m-d H:i:s");
-        }
-
-        $user_key = 1;
-
-        if (isset($this->editor['User Key']) and is_numeric(
-                $this->editor['User Key']
-            )
-        ) {
-            $user_key = $this->editor['User Key'];
-        } else {
-            $user_key = 0;
-        }
-
-        return array(
-            'User Key' => $user_key,
-            'Date'     => $date
-        );
     }
 
     function base_history_data() {
@@ -636,9 +579,13 @@ abstract class DBW_Table extends stdClass {
         }
 
 
-        $this->update(
-            array(($this->get_object_name() == 'Category' ? $this->subject_table_name : $this->get_object_name()).' Number History Records' => $number), 'no_history'
+        $sql = sprintf(
+            "UPDATE `".$this->get_object_name()." Dimension` SET `".$this->get_object_name()." Number History Records`=%d WHERE `".$this->get_object_name()." Key`=%d", $number, $this->id
         );
+
+       // print $sql;
+
+        $this->db->exec($sql);
 
 
     }
@@ -646,73 +593,6 @@ abstract class DBW_Table extends stdClass {
     function get_object_name() {
         return $this->table_name;
 
-    }
-
-    function post_add_history($history_key, $type = false) {
-        return false;
-    }
-
-    function set_editor($raw_data) {
-        if (isset($raw_data['editor'])) {
-            foreach ($raw_data['editor'] as $key => $value) {
-
-                if (array_key_exists($key, $this->editor)) {
-                    $this->editor[$key] = $value;
-                }
-
-            }
-        }
-
-    }
-
-    function add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $table_name, $table_key,$update_history_records_data=true) {
-
-        $history_key = $this->add_table_history($history_data, $force_save, '', '', $table_name, $table_key);
-
-        $sql = sprintf(
-            "INSERT INTO `%s History Bridge` VALUES (%d,%d,%s,'No',%s)", $table_name, $table_key, $history_key, prepare_mysql($deletable), prepare_mysql($type)
-        );
-
-        $this->db->exec($sql);
-
-        $this->update_history_records_data();
-
-        return $history_key;
-    }
-
-    function get_update_metadata() {
-
-        if (isset($this->update_metadata)) {
-            return $this->update_metadata;
-        } else {
-            return array();
-        }
-
-    }
-
-    function get_other_fields_update_info() {
-
-        if (isset($this->other_fields_updated)) {
-            return $this->other_fields_updated;
-        } else {
-            return false;
-        }
-    }
-
-    function get_new_fields_info() {
-        if (isset($this->new_fields_info)) {
-            return $this->new_fields_info;
-        } else {
-            return false;
-        }
-    }
-
-    function get_deleted_fields_info() {
-        if (isset($this->deleted_fields_info)) {
-            return $this->deleted_fields_info;
-        } else {
-            return false;
-        }
     }
 
 

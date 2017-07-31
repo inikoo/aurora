@@ -34,7 +34,7 @@
             <div class="container">
 
                 <div class="reg_form" >
-                    <form id="sky-form" class="sky-form">
+                    <form id="registration_form" class="sky-form">
                         <header id="_title" contenteditable="true">{$content._title}</header>
 
                         <fieldset>
@@ -302,7 +302,7 @@
     });
 
 
-    $("#sky-form").validate(
+    $("#registration_form").validate(
         {
 
             submitHandler: function(form)

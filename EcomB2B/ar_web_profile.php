@@ -26,7 +26,22 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo = $_REQUEST['tipo'];
 
+
+//print_r($_REQUEST);
+
 switch ($tipo) {
+
+    case 'contact_details':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'data' => array('type' => 'json array'),
+
+                     )
+        );
+        contact_details($db, $data, $customer, $editor);
+        break;
+
+
     case 'update_password':
         $data = prepare_values(
             $_REQUEST, array(
@@ -48,8 +63,47 @@ switch ($tipo) {
         break;
 }
 
-function update_password($db, $data, $editor) {
+function contact_details($db, $data, $customer, $editor) {
 
+
+
+    $update_data = array();
+
+    foreach ($data['data'] as $key => $value) {
+
+        if ($key == 'company') {
+            $key = 'Customer Company Name';
+        } elseif ($key == 'contact_name') {
+            $key = 'Customer Main Contact Name';
+        } elseif ($key == 'email') {
+            $key = 'Customer Main Plain Email';
+        } elseif ($key == 'mobile') {
+            $key = 'Customer Main Plain Mobile';
+        } elseif ($key == 'registration_number') {
+            $key = 'Customer Registration Number';
+        } elseif ($key == 'tax_number') {
+            $key = 'Customer Tax Number';
+            $update_data[$key] = $value;
+
+        }
+
+    }
+
+
+    $customer->editor = $editor;
+    $customer->update($update_data);
+
+
+    echo json_encode(
+        array(
+            'state' => 200
+        )
+    );
+
+
+}
+
+function update_password($db, $data, $editor) {
 
 
     $website_user         = get_object('User', $_SESSION['website_user_key']);
@@ -60,11 +114,18 @@ function update_password($db, $data, $editor) {
 
         $website_user->update(
             array(
-                'Website User Password'      => $data['pwd'],
                 'Website User Password Hash' => password_hash($data['pwd'], PASSWORD_DEFAULT, array('cost' => 12)),
 
 
             )
+        );
+
+        $website_user->update(
+            array(
+                'Website User Password'      => $data['pwd'],
+
+
+            ),'no_history'
         );
 
 

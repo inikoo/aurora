@@ -330,7 +330,8 @@ function website_system_webpages_config($website_type) {
 
                     '_contact_details_title' => _('Contact details'),
                     '_email_placeholder'     => _('Email address'),
-                    '_email_tooltip'         => _('Needed to verify your account'),
+                    '_email_label'     => _('Email address (this is also your login name)'),
+                    '_email_tooltip'         => _('Needed to login to your account'),
 
 
                     '_login_details_title' => _('Login details'),
@@ -344,27 +345,50 @@ function website_system_webpages_config($website_type) {
                     '_delivery_addresses_save_label' => _('Save'),
 
 
-                    '_password_placeholder' => _('Password'),
-                    '_password_tooltip'     => _("Don't forget your password"),
+                    '_password_placeholder' => _('New password'),
+                    '_password_label' => _('Password'),
 
-                    '_password_confirm_placeholder' => _('Confirm password'),
+                    '_password_tooltip'     => _("Write new password"),
+
+                    '_password_confirm_placeholder' => _('Confirm new password'),
+                    '_password_confirm_label' => _('Confirm new password'),
+
                     '_password_conform_tooltip'     => _("Don't forget your password"),
 
                     '_mobile_placeholder' => _('Mobile'),
+                    '_mobile_label' => _('Mobile'),
+
                     '_mobile_tooltip'     => _('Needed to enter your mobile/telephone'),
 
                     '_contact_name_placeholder' => _('Contact name'),
+                    '_contact_name_label' => _('Contact name'),
+
                     '_contact_name_tooltip'     => _('Needed to enter your name'),
 
                     '_company_placeholder' => _('Company'),
+                    '_company_label' => _('Company'),
+
                     '_company_tooltip'     => _('Enter your account company name (optional)'),
 
                     '_tax_number_placeholder' => _('VAT number'),
+                    '_tax_number_label' => _('VAT number'),
+
                     '_tax_number_tooltip'     => _('Enter your VAT number (optional)'),
 
-                    '_subscription' => _('I want to receive news and special offers'),
-                    '_terms'        => _('I agree with the <span class="marked_link">Terms and Conditions</span>'),
-                    '_submit_label' => _('Submit')
+                    '_registration_number_placeholder' => _('Registration number'),
+                    '_registration_number_label' => _('Registration number'),
+
+                    '_registration_number_tooltip'     => _('Enter your company registration number (optional)'),
+
+
+                    '_save_contact_details_label' => _('Save'),
+                    '_save_login_details_label' => _('Save'),
+                    '_save_invoice_address_details_label' => _('Save'),
+                    '_save_delivery_address_details_label' => _('Save'),
+
+
+                    '_username_info'=>_('Your username is your email address')
+
 
                 )
             )

@@ -303,7 +303,73 @@ class Public_Customer extends DBW_Table {
 
                 break;
 
+            case('Tax Number Valid'):
+                if ($this->data['Customer Tax Number'] != '') {
 
+                    if ($this->data['Customer Tax Number Validation Date'] != '') {
+                        $_tmp = gmdate("U") - gmdate(
+                                "U", strtotime(
+                                       $this->data['Customer Tax Number Validation Date'].' +0:00'
+                                   )
+                            );
+                        if ($_tmp < 3600) {
+                            $date = strftime(
+                                "%e %b %Y %H:%M:%S %Z", strtotime(
+                                                          $this->data['Customer Tax Number Validation Date'].' +0:00'
+                                                      )
+                            );
+
+                        } elseif ($_tmp < 86400) {
+                            $date = strftime(
+                                "%e %b %Y %H:%M %Z", strtotime(
+                                                       $this->data['Customer Tax Number Validation Date'].' +0:00'
+                                                   )
+                            );
+
+                        } else {
+                            $date = strftime(
+                                "%e %b %Y", strtotime(
+                                              $this->data['Customer Tax Number Validation Date'].' +0:00'
+                                          )
+                            );
+                        }
+                    } else {
+                        $date = '';
+                    }
+
+                    $msg = $this->data['Customer Tax Number Validation Message'];
+
+                    if ($this->data['Customer Tax Number Validation Source'] == 'Online') {
+                        $source = '<i title=\''._('Validated online').'\' class=\'fa fa-globe\'></i>';
+
+
+                    } elseif ($this->data['Customer Tax Number Validation Source'] == 'Manual') {
+                        $source = '<i title=\''._('Set up manually').'\' class=\'fa fa-hand-rock-o\'></i>';
+                    } else {
+                        $source = '';
+                    }
+
+                    $validation_data = trim($date.' '.$source.' '.$msg);
+                    if ($validation_data != '') {
+                        $validation_data = ' <span class=\'discreet\'>('.$validation_data.')</span>';
+                    }
+
+                    switch ($this->data['Customer Tax Number Valid']) {
+                        case 'Unknown':
+                            return _('Not validated').$validation_data;
+                            break;
+                        case 'Yes':
+                            return _('Validated').$validation_data;
+                            break;
+                        case 'No':
+                            return _('Not valid').$validation_data;
+                        default:
+                            return $this->data['Customer Tax Number Valid'].$validation_data;
+
+                            break;
+                    }
+                }
+                break;
             default:
 
                 if (array_key_exists($key, $this->data)) {
@@ -445,16 +511,79 @@ class Public_Customer extends DBW_Table {
         }
 
 
+
+
         switch ($field) {
+            case 'Customer Company Name':
+            case 'Customer Main Contact Name':
+            case 'Customer Main Plain Mobile':
+            case 'Customer Main Plain Email':
+            case 'Customer Registration Number':
+
+
             case 'Customer Location':
-            case 'Customer Number History Records':
-                $this->update_field($field, $value, $options);
+            case 'Customer Tax Number Valid':
+            case 'Customer Tax Number Details Match':
+            case 'Customer Tax Number Validation Date':
+            case 'Customer Tax Number Validation Source':
+            case 'Customer Tax Number Validation Message':
+
+
+            $this->update_field($field, $value, $options);
 
                 break;
+
+            case 'Customer Tax Number':
+                $this->update_tax_number($value);
+                break;
             default:
-                print $field."\n";
+                print ">>>".$field."\n";
 
         }
+    }
+
+    function update_tax_number($value) {
+
+        include_once 'utils/validate_tax_number.php';
+
+
+
+
+        $this->update_field('Customer Tax Number', $value);
+
+        if ($this->updated) {
+
+
+            $tax_validation_data = validate_tax_number($this->data['Customer Tax Number'], $this->data['Customer Invoice Address Country 2 Alpha Code']);
+
+            $this->update(
+                array(
+                    'Customer Tax Number Valid'              => $tax_validation_data['Tax Number Valid'],
+                    'Customer Tax Number Details Match'      => $tax_validation_data['Tax Number Details Match'],
+                    'Customer Tax Number Validation Date'    => $tax_validation_data['Tax Number Validation Date'],
+                    'Customer Tax Number Validation Source'  => 'Online',
+                    'Customer Tax Number Validation Message' => $tax_validation_data['Tax Number Validation Message'],
+                ), 'no_history'
+            );
+
+
+            $this->new_value = $value;
+
+
+        }
+
+        $this->other_fields_updated = array(
+            'Customer_Tax_Number_Valid' => array(
+                'field'           => 'Customer_Tax_Number_Valid',
+                'render'          => ($this->get('Customer Tax Number') == '' ? false : true),
+                'value'           => $this->get('Customer Tax Number Valid'),
+                'formatted_value' => $this->get('Tax Number Valid'),
+
+
+            )
+        );
+
+
     }
 
 
@@ -486,14 +615,9 @@ class Public_Customer extends DBW_Table {
     }
 
 
-
     function create_order() {
 
         global $account;
-
-
-
-
 
 
         $order_data = array(
@@ -503,33 +627,27 @@ class Public_Customer extends DBW_Table {
             'editor'                        => $this->editor,
 
 
-
-
         );
 
 
-        $order_data['Order Class']          = 'InWebsite';
+        $order_data['Order Class'] = 'InWebsite';
 
 
-        $order_data['Order Customer Key']          = $this->id;
-        $order_data['Order Customer Name']         = $this->data['Customer Name'];
-        $order_data['Order Customer Contact Name'] = $this->data['Customer Main Contact Name'];
-        $order_data['Order Tax Number']            = $this->data['Customer Tax Number'];
-        $order_data['Order Tax Number Valid']      = $this->data['Customer Tax Number Valid'];
-        $order_data['Order Tax Number Validation Date']      = $this->data['Customer Tax Number Validation Date'];
-        $order_data['Order Tax Number Validation Source']      = $this->data['Customer Tax Number Validation Source'];
+        $order_data['Order Customer Key']                  = $this->id;
+        $order_data['Order Customer Name']                 = $this->data['Customer Name'];
+        $order_data['Order Customer Contact Name']         = $this->data['Customer Main Contact Name'];
+        $order_data['Order Tax Number']                    = $this->data['Customer Tax Number'];
+        $order_data['Order Tax Number Valid']              = $this->data['Customer Tax Number Valid'];
+        $order_data['Order Tax Number Validation Date']    = $this->data['Customer Tax Number Validation Date'];
+        $order_data['Order Tax Number Validation Source']  = $this->data['Customer Tax Number Validation Source'];
         $order_data['Order Tax Number Details Match']      = $this->data['Customer Tax Number Details Match'];
-        $order_data['Order Tax Number Registered Name']      = $this->data['Customer Tax Number Registered Name'];
-        $order_data['Order Tax Number Registered Address']      = $this->data['Customer Tax Number Registered Address'];
+        $order_data['Order Tax Number Registered Name']    = $this->data['Customer Tax Number Registered Name'];
+        $order_data['Order Tax Number Registered Address'] = $this->data['Customer Tax Number Registered Address'];
 
 
-
-
-
-
-        $order_data['Order Customer Fiscal Name']  = $this->get('Fiscal Name');
-        $order_data['Order Email']                 = $this->data['Customer Main Plain Email'];
-        $order_data['Order Telephone']             = $this->data['Customer Main Plain Mobile'];
+        $order_data['Order Customer Fiscal Name'] = $this->get('Fiscal Name');
+        $order_data['Order Email']                = $this->data['Customer Main Plain Email'];
+        $order_data['Order Telephone']            = $this->data['Customer Main Plain Mobile'];
 
 
         $order_data['Order Invoice Address Recipient']            = $this->data['Customer Invoice Address Recipient'];
@@ -564,12 +682,12 @@ class Public_Customer extends DBW_Table {
 
         $order_data['Order Customer Order Number'] = $this->get_number_of_orders() + 1;
 
-        $store = get_object('Store',$this->get('Customer Store Key'));
+        $store = get_object('Store', $this->get('Customer Store Key'));
 
-        $order_data['Order Store Key']               = $store->id;
-        $order_data['Order Currency']                = $store->get('Store Currency Code');
+        $order_data['Order Store Key']                = $store->id;
+        $order_data['Order Currency']                 = $store->get('Store Currency Code');
         $order_data['Order Show in Warehouse Orders'] = $store->get('Store Show in Warehouse Orders');
-        $order_data['public_id_format'] =  $store->get('Store Order Public ID Format');
+        $order_data['public_id_format']               = $store->get('Store Order Public ID Format');
 
 
         // todo chage to Public_Order
@@ -622,8 +740,6 @@ class Public_Customer extends DBW_Table {
     }
 
 
-
-
     function save_credit_card($vault, $card_info, $delivery_address_checksum, $invoice_address_checksum) {
         include_once 'utils/aes.php';
 
@@ -647,16 +763,10 @@ class Public_Customer extends DBW_Table {
         $sql = sprintf(
             "INSERT INTO `Customer Credit Card Dimension` (`Customer Credit Card Customer Key`,`Customer Credit Card Invoice Address Checksum`,`Customer Credit Card Delivery Address Checksum`,`Customer Credit Card CCUI`,`Customer Credit Card Metadata`,`Customer Credit Card Created`,`Customer Credit Card Updated`,`Customer Credit Card Valid Until`,`Customer Credit Card Vault`) 
               VALUES (%d,%s,%s,%s,%s,%s,%s,%s,%s)
-		      ON DUPLICATE KEY UPDATE `Metadata`=%s , `Updated`=%s,`Valid Until`=%s",
-            $this->id,
-            prepare_mysql($invoice_address_checksum),
-            prepare_mysql($delivery_address_checksum),
-            prepare_mysql($card_info['uniqueNumberIdentifier']),
-            prepare_mysql($card_data), prepare_mysql(gmdate('Y-m-d H:i:s')),
-            prepare_mysql(gmdate('Y-m-d H:i:s')),
-            prepare_mysql(gmdate('Y-m-d H:i:s', strtotime($card_info['expirationYear'].'-'.$card_info['expirationMonth'].'-01 +1 month'))),
-            prepare_mysql($vault),
-            prepare_mysql($card_data), prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql(gmdate('Y-m-d H:i:s', strtotime($card_info['expirationYear'].'-'.$card_info['expirationMonth'].'-01 +1 month')))
+		      ON DUPLICATE KEY UPDATE `Metadata`=%s , `Updated`=%s,`Valid Until`=%s", $this->id, prepare_mysql($invoice_address_checksum), prepare_mysql($delivery_address_checksum),
+            prepare_mysql($card_info['uniqueNumberIdentifier']), prepare_mysql($card_data), prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql(gmdate('Y-m-d H:i:s')),
+            prepare_mysql(gmdate('Y-m-d H:i:s', strtotime($card_info['expirationYear'].'-'.$card_info['expirationMonth'].'-01 +1 month'))), prepare_mysql($vault), prepare_mysql($card_data),
+            prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql(gmdate('Y-m-d H:i:s', strtotime($card_info['expirationYear'].'-'.$card_info['expirationMonth'].'-01 +1 month')))
 
         );
 
@@ -676,13 +786,13 @@ class Public_Customer extends DBW_Table {
         );
 
 
-        if ($result=$this->db->query($sql)) {
+        if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
                 $_card_data = json_decode(AESDecryptCtr($row['Customer Credit Card Metadata'], $key, 256), true);
                 $token      = $_card_data['Token'];
             }
-        }else {
-            print_r($error_info=$this->db->errorInfo());
+        } else {
+            print_r($error_info = $this->db->errorInfo());
             print "$sql\n";
             exit;
         }
@@ -741,17 +851,17 @@ class Public_Customer extends DBW_Table {
         }
 
 
-        $card_data[]=array(
-            'id'=>1,
-'Card Number'=>'XXXX XXXX XXXX 3423',
-            'Card Expiration'=>'11/33'
+        $card_data[] = array(
+            'id'              => 1,
+            'Card Number'     => 'XXXX XXXX XXXX 3423',
+            'Card Expiration' => '11/33'
 
         );
 
-        $card_data[]=array(
-            'id'=>2,
-            'Card Number'=>'XXXX XXXX XXXX 1234',
-            'Card Expiration'=>'21/33'
+        $card_data[] = array(
+            'id'              => 2,
+            'Card Number'     => 'XXXX XXXX XXXX 1234',
+            'Card Expiration' => '21/33'
 
 
         );
@@ -775,8 +885,7 @@ class Public_Customer extends DBW_Table {
             if ($row = $result->fetch()) {
                 $sql = sprintf(
                     'SELECT `Customer Credit Card Key`,`Customer Credit Card Invoice Address Checksum`,`Customer Credit Card Delivery Address Checksum` FROM `Customer Credit Card Dimension`  WHERE `Customer Credit Card Customer Key`=%d AND `Customer Credit Card CCUI`=%s',
-                    $this->id,
-                    prepare_mysql($row['Customer Credit Card CCUI'])
+                    $this->id, prepare_mysql($row['Customer Credit Card CCUI'])
                 );
 
 
@@ -811,6 +920,78 @@ class Public_Customer extends DBW_Table {
 
     }
 
+    function get_field_label($field) {
+
+
+        switch ($field) {
+
+            case 'Customer Registration Number':
+                $label = _('registration number');
+                break;
+            case 'Customer Tax Number':
+                $label = _('tax number');
+                break;
+            case 'Customer Tax Number Valid':
+                $label = _('tax number validity');
+                break;
+            case 'Customer Company Name':
+                $label = _('company name');
+                break;
+            case 'Customer Main Contact Name':
+                $label = _('contact name');
+                break;
+            case 'Customer Main Plain Email':
+                $label = _('email');
+                break;
+            case 'Customer Main Email':
+                $label = _('main email');
+                break;
+            case 'Customer Other Email':
+                $label = _('other email');
+                break;
+            case 'Customer Main Plain Telephone':
+            case 'Customer Main XHTML Telephone':
+                $label = _('telephone');
+                break;
+            case 'Customer Main Plain Mobile':
+            case 'Customer Main XHTML Mobile':
+                $label = _('mobile');
+                break;
+            case 'Customer Main Plain FAX':
+            case 'Customer Main XHTML Fax':
+                $label = _('fax');
+                break;
+            case 'Customer Other Telephone':
+                $label = _('other telephone');
+                break;
+            case 'Customer Preferred Contact Number':
+                $label = _('main contact number');
+                break;
+            case 'Customer Fiscal Name':
+                $label = _('fiscal name');
+                break;
+
+            case 'Customer Contact Address':
+                $label = _('contact address');
+                break;
+
+            case 'Customer Invoice Address':
+                $label = _('invoice address');
+                break;
+            case 'Customer Delivery Address':
+                $label = _('delivery address');
+                break;
+            case 'Customer Other Delivery Address':
+                $label = _('other delivery address');
+                break;
+            default:
+                $label = $field;
+
+        }
+
+        return $label;
+
+    }
 
 }
 

@@ -14,7 +14,6 @@
 $webpage = new Public_Webpage($webpage_key);
 
 
-
 if ($webpage->get('Webpage Template Filename') == 'register') {
 
     if ($logged_in) {
@@ -58,18 +57,17 @@ if ($webpage->get('Webpage Template Filename') == 'register') {
     $smarty->assign('selected_country', $country_code);
     $template = $theme.'/register.'.$theme.'.'.$website->get('Website Type').'.tpl';
 
-}
-elseif ($webpage->get('Webpage Template Filename') == 'login') {
+} elseif ($webpage->get('Webpage Template Filename') == 'login') {
 
     if ($logged_in) {
         header('Location: /index.php');
         exit;
     }
 
-    if(isset($_REQUEST['fp'])){
-        $smarty->assign('display','forgot_password');
-    }else{
-        $smarty->assign('display','login');
+    if (isset($_REQUEST['fp'])) {
+        $smarty->assign('display', 'forgot_password');
+    } else {
+        $smarty->assign('display', 'login');
     }
 
     $labels_fallback = array(
@@ -82,20 +80,17 @@ elseif ($webpage->get('Webpage Template Filename') == 'login') {
     $smarty->assign('labels_fallback', $labels_fallback);
 
     $template = $theme.'/login.'.$theme.'.'.$website->get('Website Type').'.tpl';
-}
-elseif ($webpage->get('Webpage Template Filename') == 'search') {
+} elseif ($webpage->get('Webpage Template Filename') == 'search') {
 
-if(!empty($_REQUEST['q'])){
-    $search_query=$_REQUEST['q'];
-}else{
-    $search_query='';
-}
+    if (!empty($_REQUEST['q'])) {
+        $search_query = $_REQUEST['q'];
+    } else {
+        $search_query = '';
+    }
     $smarty->assign('search_query', $search_query);
 
     $template = $theme.'/search.'.$theme.'.'.$website->get('Website Type').'.tpl';
-}
-
-elseif ($webpage->get('Webpage Template Filename') == 'welcome') {
+} elseif ($webpage->get('Webpage Template Filename') == 'welcome') {
 
     if (!$logged_in) {
         header('Location: /index.php');
@@ -104,8 +99,7 @@ elseif ($webpage->get('Webpage Template Filename') == 'welcome') {
 
     $template = $theme.'/webpage_blocks.'.$theme.'.'.$website->get('Website Type').'.tpl';
 
-}
-elseif ($webpage->get('Webpage Template Filename') == 'categories_showcase') {
+} elseif ($webpage->get('Webpage Template Filename') == 'categories_showcase') {
 
     include_once 'class.Public_Category.php';
     $category = new Public_Category($webpage->get('Webpage Scope Key'));
@@ -117,8 +111,7 @@ elseif ($webpage->get('Webpage Template Filename') == 'categories_showcase') {
     $smarty->assign('category', $category);
 
     $template = $theme.'/categories_showcase.'.$theme.'.'.$website->get('Website Type').'.tpl';
-}
-elseif ($webpage->get('Webpage Template Filename') == 'products_showcase') {
+} elseif ($webpage->get('Webpage Template Filename') == 'products_showcase') {
 
     include_once 'class.Public_Category.php';
     include_once 'class.Public_Product.php';
@@ -340,8 +333,7 @@ elseif ($webpage->get('Webpage Template Filename') == 'products_showcase') {
     $template = $theme.'/products_showcase.'.$theme.'.'.$website->get('Website Type').'.tpl';
 
 
-}
-elseif ($webpage->get('Webpage Template Filename') == 'product') {
+} elseif ($webpage->get('Webpage Template Filename') == 'product') {
 
     include_once 'class.Public_Product.php';
 
@@ -379,47 +371,79 @@ elseif ($webpage->get('Webpage Template Filename') == 'product') {
     $template = $theme.'/product.'.$theme.'.'.$website->get('Website Type').'.tpl';
 
 
-}
-elseif ($webpage->get('Webpage Template Filename') == 'reset_password') {
+} elseif ($webpage->get('Webpage Template Filename') == 'reset_password') {
     include 'reset_password.inc.php';
     $template = $theme.'/reset_password.'.$theme.'.'.$website->get('Website Type').'.tpl';
 
-}elseif ($webpage->get('Webpage Template Filename') == 'not_found') {
+} elseif ($webpage->get('Webpage Template Filename') == 'not_found') {
     $template = $theme.'/not_found.'.$theme.'.'.$website->get('Website Type').'.tpl';
-}elseif ($webpage->get('Webpage Template Filename') == 'checkout') {
+} elseif ($webpage->get('Webpage Template Filename') == 'checkout') {
+
+
+    if (isset($order) and $order->id) {
+        $template = $theme.'/checkout.'.$theme.'.'.$website->get('Website Type').'.tpl';
+    } else {
+
+
+        $template = $theme.'/checkout_no_order.'.$theme.'.'.$website->get('Website Type').'.tpl';
+    }
+
+}elseif ($webpage->get('Webpage Template Filename') == 'profile') {
+
+    if (!$logged_in) {
+        header('Location: /index.php');
+        exit;
+    }
+
+
+    if (array_key_exists("HTTP_CF_IPCOUNTRY", $_SERVER) and $_SERVER["HTTP_CF_IPCOUNTRY"] != 'XX') {
+        $country_code = $_SERVER["HTTP_CF_IPCOUNTRY"];
+    } else {
+        $country_code = $store->get('Store Home Country Code 2 Alpha');
+    }
+
+    $labels_fallback = array(
+        'validation_required'           => _('This field is required'),
+        'validation_same_password'      => _("Enter the same password as above"),
+        'validation_minlength_password' => _("Enter at least 8 characters"),
+        'validation_accept_terms'       => _("Please accept our terms and conditions to proceed"),
+        'validation_handle_registered'  => _("Email address is already in registered"),
+        'validation_email_invalid'      => _("Please enter a valid email address"),
+        'validation_password_missing'   => _("Please enter your password")
+    );
+
+
+    require_once 'utils/get_addressing.php';
+    list($address_format, $address_labels, $used_fields, $hidden_fields, $required_fields, $no_required_fields) = get_address_form_data($country_code, $website->get('Website Locale'));
+
+
+    require_once 'utils/get_countries.php';
+    $countries = get_countries($website->get('Website Locale'));
+
+
+    $smarty->assign('address_labels', $address_labels);
+    $smarty->assign('labels_fallback', $labels_fallback);
+    $smarty->assign('required_fields', $required_fields);
+    $smarty->assign('no_required_fields', $no_required_fields);
+
+    $smarty->assign('used_address_fields', $used_fields);
+    $smarty->assign('countries', $countries);
+    $smarty->assign('selected_country', $country_code);
+
+
+
+    $template = $theme.'/profile.'.$theme.'.'.$website->get('Website Type').'.tpl';
 
 
 
 
-if(isset($order) and $order->id){
-    $template = $theme.'/checkout.'.$theme.'.'.$website->get('Website Type').'.tpl';
-}else{
-
-
-    $template = $theme.'/checkout_no_order.'.$theme.'.'.$website->get('Website Type').'.tpl';
-}
-
-
-
-
-
-
-
-
-
-
-}else{
-
-
+}else {
 
 
     $template = $theme.'/webpage_blocks.'.$theme.'.'.$website->get('Website Type').'.tpl';
 
 
-
 }
-
-
 
 
 $content = $webpage->get('Content Data');
@@ -429,7 +453,7 @@ $smarty->assign('content', $content);
 $smarty->assign('labels', $website->get('Localised Labels'));
 
 
-
+//print_r($website->get('Localised Labels'));
 
 
 $smarty->display($template, $webpage_key);
