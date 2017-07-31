@@ -1465,17 +1465,35 @@
 
 
 
-                  //   console.log(footer_data)
 
-                  var request = '/ar_edit_website.php?tipo=save_footer&footer_key={$footer_key}&footer_data=' +encodeURIComponent(Base64.encode(JSON.stringify(footer_data)));
+                  var ajaxData = new FormData();
+
+                  ajaxData.append("tipo", 'save_footer')
+                  ajaxData.append("footer_key", '{$footer_key}')
+                  ajaxData.append("footer_data", JSON.stringify(footer_data))
 
 
-                  $.getJSON(request, function (data) {
+                  $.ajax({
+                      url: "/ar_edit_website.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+                      complete: function () {
+                      }, success: function (data) {
+
+                          if (data.state == '200') {
+
+                              $('#save_button', window.parent.document).removeClass('save').find('i').removeClass('fa-spinner fa-spin')
+                          } else if (data.state == '400') {
+                              swal(data.msg);
+                          }
 
 
-                      $('#save_button', window.parent.document).removeClass('save').find('i').removeClass('fa-spinner fa-spin')
 
-                  })
+                      }, error: function () {
+
+                      }
+                  });
+
+
+
 
 
               }

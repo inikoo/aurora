@@ -1283,16 +1283,33 @@
 
 
 
+            var ajaxData = new FormData();
 
-            var request = '/ar_edit_website.php?tipo=save_header&header_key={$header_key}&header_data=' +encodeURIComponent(Base64.encode(JSON.stringify(header_data)));
+            ajaxData.append("tipo", 'save_header')
+            ajaxData.append("header_key", '{$header_key}')
+            ajaxData.append("header_data", JSON.stringify(header_data))
 
 
-            $.getJSON(request, function (data) {
+            $.ajax({
+                url: "/ar_edit_website.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+                complete: function () {
+                }, success: function (data) {
+
+                    if (data.state == '200') {
+
+                        $('#save_button', window.parent.document).removeClass('save').find('i').removeClass('fa-spinner fa-spin')
+                    } else if (data.state == '400') {
+                        swal(data.msg);
+                    }
 
 
-                $('#save_button', window.parent.document).removeClass('save').find('i').removeClass('fa-spinner fa-spin')
 
-            })
+                }, error: function () {
+
+                }
+            });
+
+
 
 
         }
