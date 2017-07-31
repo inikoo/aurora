@@ -347,6 +347,35 @@ elseif ($webpage->get('Webpage Template Filename') == 'product') {
 
     $product = new Public_Product($webpage->get('Webpage Scope Key'));
     $smarty->assign('product', $product);
+
+
+    $origin              = $product->get('Origin');
+    $cpnp                = $product->get('CPNP Number');
+    $materials           = $product->get('Materials');
+    $weight              = $product->get('Unit Weight');
+    $dimensions          = $product->get('Unit Dimensions');
+    $product_attachments = $product->get_attachments();
+    $barcode             = $product->get('Barcode Number');
+
+    $smarty->assign('CPNP', $cpnp);
+    $smarty->assign('Materials', $materials);
+    $smarty->assign('Weight', $weight);
+    $smarty->assign('Dimensions', $dimensions);
+    $smarty->assign('Origin', $origin);
+    $smarty->assign('product_attachments', $product_attachments);
+    $smarty->assign('Barcode', $barcode);
+
+
+    if ($weight != '' or $dimensions != '' or $origin != '' or $cpnp != '' or $materials != '' or count($product_attachments) > 0) {
+        $has_properties_tab = true;
+    } else {
+        $has_properties_tab = false;
+
+    }
+
+    $smarty->assign('has_properties_tab', $has_properties_tab);
+
+
     $template = $theme.'/product.'.$theme.'.'.$website->get('Website Type').'.tpl';
 
 
