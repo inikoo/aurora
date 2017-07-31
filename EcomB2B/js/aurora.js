@@ -41,5 +41,45 @@ $(function() {
 
     });
 
+
+
+
+
+    $('#header_search_icon').on( "click", function() {
+
+        window.location.href = "search.sys?q="+encodeURIComponent($('#header_search_input').val());
+
+
+
+    });
+
+    $('#search_icon').on( "click", function() {
+
+      search($('#search_input').val());
+
+
+
+    });
+
+
+
+
+
 });
+
+
+function search(query){
+
+
+    var request = "/ar_web_search.php?tipo=search&query=" +encodeURIComponent(query)
+    console.log(request)
+
+    $.getJSON(request, function (data) {
+
+      $('#search_results').html(data.results)
+
+
+    })
+
+}
 

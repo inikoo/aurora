@@ -246,7 +246,7 @@
 
 	</section>
 
-				{include file="order_products.js.tpl" }
+
 
 
 			</div>

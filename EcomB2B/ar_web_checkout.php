@@ -79,7 +79,7 @@ function place_order_pay_later($_data, $customer, $website, $editor) {
 
     );
 
-   
+
 
     echo json_encode($response);
 

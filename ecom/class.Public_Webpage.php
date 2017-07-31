@@ -198,6 +198,7 @@ class Public_Webpage {
 
             case 'Webpage Website Key':
             case 'Webpage State':
+            case 'Webpage Code':
             case 'Webpage Scope':
             case 'Webpage Store Key':
             case 'Webpage Scope Key':

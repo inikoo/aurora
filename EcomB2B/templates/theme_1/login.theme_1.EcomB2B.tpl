@@ -7,10 +7,7 @@
 
  Version 3
 -->
-*}
-
-
-{include file="theme_1/_head.theme_1.EcomB2B.tpl"}
+*}{include file="theme_1/_head.theme_1.EcomB2B.tpl"}
 
 {if isset($labels.validation_handle_missing) and $labels.validation_handle_missing!=''}{assign "validation_handle_missing" $labels.validation_handle_missing }{else}{assign "validation_handle_missing"  $labels_fallback.validation_handle_missing  }{/if}
 {if isset($labels.validation_email_invalid) and $labels.validation_email_invalid!=''}{assign "validation_email_invalid" $labels.validation_email_invalid }{else}{assign "validation_email_invalid"  $labels_fallback.validation_email_invalid  }{/if}

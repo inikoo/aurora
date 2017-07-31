@@ -336,6 +336,8 @@ class Page extends DB_Table {
             );
             $this->db->exec($sql);
 
+            $this->update_url();
+
             $this->update_see_also();
             $this->update_image_key();
             $this->refresh_cache();
@@ -1369,6 +1371,7 @@ class Page extends DB_Table {
             case 'Webpage Name':
             case 'Webpage Browser Title':
             case 'Webpage Meta Description':
+            case 'Webpage URL':
 
                 $this->update_field($field, $value, $options);
                 break;
@@ -7695,7 +7698,8 @@ class Page extends DB_Table {
 
         $website = get_object('website', $this->get('Webpage Website Key'));
 
-        $this->update(array('Website URL' => 'https://'.$website->get('Website URL').'/'.strtolower($this->get('Code'))), 'no_history');
+
+        $this->update(array('Webpage URL' => 'https://'.$website->get('Website URL').'/'.strtolower($this->get('Code'))), 'no_history');
 
 
     }
