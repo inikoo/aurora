@@ -88,6 +88,7 @@
 
 
     <link rel="stylesheet" href="/theme_1/cubeportfolio/css/cubeportfolio.min.css">
+    <link href="/css/fotorama.css" rel="stylesheet">
 
 
 
@@ -160,6 +161,7 @@
     <script type="text/javascript" src="/js/validation.js"></script>
 
     <script type="text/javascript" src="/js/ordering.js"></script>
+    <script type="text/javascript" src="/js/fotorama.js"></script>
 
     <link rel="stylesheet" href="/website.color.EcomB2B.css.php?&theme=theme_1" type="text/css"/>
 
