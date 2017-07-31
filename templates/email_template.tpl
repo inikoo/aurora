@@ -107,7 +107,7 @@
         name: '{t}Customer name{/t}',
         value: '[Customer Name]'
     },{
-        name: '{t}CContact name{/t}',
+        name: '{t}Contact name{/t}',
         value: '[Name]'
     }
     {$merge_tags}

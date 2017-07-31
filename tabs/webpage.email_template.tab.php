@@ -101,8 +101,8 @@ if ($email_template->id and ! ($email_template->get('Email Template Type')=='HTM
 
 
 
-    if($email_template->get('[Email Template Role')=='Reset_Password'){
-        $merge_tags="{name: "._('Reset password URL').",value: '[Reset_Password_URL]'}";
+    if($email_template->get('Email Template Role')=='Reset_Password'){
+        $merge_tags=",{ name: '"._('Reset password URL')."',value: '[Reset_Password_URL]'}";
 
     }
 
