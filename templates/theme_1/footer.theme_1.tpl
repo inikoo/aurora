@@ -309,7 +309,7 @@
                       <li class="item"><a href="/"><i class="fa fa-fw fa-angle-right link_icon" onClick="update_link(this)"></i> <span class="item_label" ondrop="return false;" contenteditable>{t}Home Page Variations{/t}<span></span></a></li>
                       <li class="item"><a href="/"><i class="fa fa-fw fa-angle-right link_icon" onClick="update_link(this)"></i> <span class="item_label" ondrop="return false;" contenteditable>{t}Awesome Products{/t}<span></span></a></li>
                       <li class="item"><a href="/"><i class="fa fa-fw fa-angle-right link_icon" onClick="update_link(this)"></i> <span class="item_label" ondrop="return false;" contenteditable>{t}Features and Benefits{/t}<span></span></a></li>
-                      <li onClick="add_link(this)"  class="ui-state-disabled add_link"><a href="/"><i class="fa fa-fw fa-plus editing link_icon" onClick="update_link(this)"></i> <span class="editing" ondrop="return false;" >{t}Add link{/t}<span></span></a></li>
+                      <li onClick="add_link(this)"  class="ui-state-disabled add_link"><a href="/"><i class="fa fa-fw fa-plus editing link_icon" )"></i> <span class="editing" ondrop="return false;" >{t}Add link{/t}<span></span></a></li>
                   </ul>
 
               </div>
@@ -417,7 +417,7 @@
 
                                                       {/foreach}
 
-                                                      <li onClick="add_link(this)"  class="add_link"><a href="{$item.url}"><i class="fa fa-fw fa-plus editing link_icon" onClick="update_link(this)"></i> <span class="editing" ondrop="return false;" >{t}Add link{/t}<span></span></a></li>
+                                                      <li onClick="add_link(this)"  class="add_link"><a href="{$item.url}"><i class="fa fa-fw fa-plus editing link_icon" "></i> <span class="editing" ondrop="return false;" >{t}Add link{/t}<span></span></a></li>
 
                                                   </ul>
 
@@ -624,7 +624,7 @@
 
                                               {/foreach}
 
-                                              <li onClick="add_link(this)"  class="add_link"><a href="{$item.url}"><i class="fa fa-fw fa-plus editing link_icon" onClick="update_link(this)"></i> <span class="editing" ondrop="return false;" >{t}Add link{/t}<span></span></a></li>
+                                              <li onClick="add_link(this)"  class="add_link"><a href="{$item.url}"><i class="fa fa-fw fa-plus editing link_icon" "></i> <span class="editing" ondrop="return false;" >{t}Add link{/t}<span></span></a></li>
 
                                           </ul>
 
@@ -975,6 +975,10 @@
 
 
               function update_link(element){
+
+
+
+
                   $(element).uniqueId()
                   var id= $(element).attr('id')
 
@@ -995,8 +999,9 @@
 
 
 
-
                       $('#delete_link').data('element').closest('a').attr("href",$('#input_container_link').find('input').val())
+
+
 
 
 
@@ -1004,12 +1009,16 @@
                           $('#input_container_link').addClass('hide')
                           $('#delete_link').addClass('hide')
                           $(element).addClass('fa-angle-right').removeClass('editing fa-check-circle').next('span').removeClass('editing')
+
+
                       }else{
+
+
                           $('#'+current_editing_link_id).addClass('fa-angle-right').removeClass('editing fa-check-circle').next('span').removeClass('editing')
                           current_editing_link_id=id
 
                           $('#input_container_link').removeClass('hide').offset({ top:$(element).offset().top-55, left:$(element).offset().left+20  }).find('input').val($(element).closest('a').attr("href"))
-                          $('#delete_link').removeClass('hide').offset({ top:$(element).offset().top, left:$(element).offset().left-15  }).attr('link_id',id)
+                          $('#delete_link').removeClass('hide').offset({ top:$(element).offset().top, left:$(element).offset().left-15  }).attr('link_id',id).data('element',$(element))
                           $(element).removeClass('fa-angle-right').addClass('editing fa-check-circle').next('span').addClass('editing')
 
                       }
@@ -1360,8 +1369,11 @@
                                   label: $(obj2).find('.item_label').html(),
                               });
 
-
+                              console.log($(obj2).find('a').attr('href'))
+                              console.log($(obj2).find('.item_label').html())
                           });
+
+
 
 
                           cols_main_4.push(
