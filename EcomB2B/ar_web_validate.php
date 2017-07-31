@@ -38,6 +38,15 @@ switch ($tipo) {
         validate_email_registered($db, $data);
         break;
 
+    case 'validate_update_email':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'email'     => array('type' => 'string')
+                     )
+        );
+        validate_update_email($db, $data,$website_key,$website_user_key);
+        break;
+
 
     default:
         $response = array(
@@ -47,6 +56,37 @@ switch ($tipo) {
         echo json_encode($response);
         exit;
         break;
+}
+
+
+function validate_update_email($db, $data,$website_key,$website_user_key) {
+
+
+    $sql = sprintf(
+        "SELECT `Website User Key` from `Website User Dimension` WHERE  `Website User Handle`=%s AND `Website User Website Key`=%d  and `Website User Key`!=%d  ",
+        prepare_mysql($data['email']), $website_key,$website_user_key
+
+    );
+
+
+
+    if ($result=$db->query($sql)) {
+        if ($row = $result->fetch()) {
+            echo "false";
+        }else{
+            echo "true";
+        }
+    }else {
+        print_r($error_info=$db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+
+
+
+
+
+
 }
 
 function validate_email_registered($db, $data) {

@@ -92,6 +92,9 @@ if (!$is_cached) {
     $account = new Public_Account($db);
 
     $website   = new Public_Website($_SESSION['website_key']);
+    $website_key=$website->id;
+
+
     $store_key = $website->get('Website Store Key');
     $store     = new Public_Store($store_key);
 
@@ -491,6 +494,7 @@ $language = substr($site_locale, 0, 2);
 
 
         $customer_key = $customer->id;
+        $website_user_key = $website_user->id;
         $smarty->assign('website_user', $website_user);
         $smarty->assign('customer', $customer);
 

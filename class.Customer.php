@@ -2772,7 +2772,7 @@ class Customer extends Subject {
 
 
     function get_field_label($field) {
-        global $account;
+
 
         switch ($field) {
 

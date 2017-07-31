@@ -115,6 +115,7 @@
     ];
 
 
+
     var beeConfig = {
         uid: 'CmsUserName', // [mandatory] identifies the set of resources to load
         container: 'email_template_html_container', // [mandatory] the id of div element that contains BEE Plugin

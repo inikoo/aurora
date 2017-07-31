@@ -20,8 +20,7 @@ class Public_Website_User extends DBW_Table {
         global $db;
         $this->db = $db;
 
-        $this->table_name    = 'Website User';
-
+        $this->table_name = 'Website User';
 
 
         if (($a1 == 'new') and is_array($a2)) {
@@ -29,7 +28,6 @@ class Public_Website_User extends DBW_Table {
 
             return;
         }
-
 
 
         if (is_numeric($a1) and !$a2) {
@@ -45,39 +43,7 @@ class Public_Website_User extends DBW_Table {
         return;
     }
 
-
-    function get_data($type, $key) {
-
-
-        if ($type == 'handle') {
-            $sql = sprintf(
-                "SELECT * FROM  `Website User Dimension` WHERE `Website User Handle`=%s ", prepare_mysql($key)
-            );
-        }  else {
-            $sql = sprintf(
-                "SELECT * FROM `Website User Dimension` WHERE `Website User Key`=%d", $key
-            );
-        }
-
-
-
-        if ($this->data = $this->db->query($sql)->fetch()) {
-
-
-            $this->id                    = $this->data['Website User Key'];
-            $this->data['Website User Password'] = '';
-
-
-
-        }
-
-
-    }
-
-
-
     function create($data) {
-
 
 
         $this->new = false;
@@ -93,7 +59,6 @@ class Public_Website_User extends DBW_Table {
         $this->editor = $data['editor'];
 
 
-
         if ($base_data['Website User Handle'] == '') {
             $this->msg = "Login can't be empty";
 
@@ -101,15 +66,10 @@ class Public_Website_User extends DBW_Table {
         }
 
 
-
-
-
-
         $sql = sprintf(
-            "SELECT count(*) AS num  FROM `Website User Dimension` WHERE `Website User Handle`=%s and `Website User Website Key`=%d ",
-            prepare_mysql($base_data['Website User Handle']), $base_data['Website User Website Key']
+            "SELECT count(*) AS num  FROM `Website User Dimension` WHERE `Website User Handle`=%s AND `Website User Website Key`=%d ", prepare_mysql($base_data['Website User Handle']),
+            $base_data['Website User Website Key']
         );
-
 
 
         if ($result = $this->db->query($sql)) {
@@ -128,16 +88,14 @@ class Public_Website_User extends DBW_Table {
 
         $base_data['Website User Created'] = gmdate("Y-m-d H:i:s");
 
-        $base_data['Website User Password Hash'] =password_hash($base_data['Website User Password'], PASSWORD_DEFAULT, array('cost'=>12));
-
-
+        $base_data['Website User Password Hash'] = password_hash($base_data['Website User Password'], PASSWORD_DEFAULT, array('cost' => 12));
 
 
         $keys   = '(';
         $values = 'values(';
         foreach ($base_data as $key => $value) {
-            $keys .= "`$key`,";
-                $values .= prepare_mysql($value).",";
+            $keys   .= "`$key`,";
+            $values .= prepare_mysql($value).",";
 
         }
         $keys   = preg_replace('/,$/', ')', $keys);
@@ -145,14 +103,12 @@ class Public_Website_User extends DBW_Table {
         $sql    = sprintf("INSERT INTO `Website User Dimension` %s %s", $keys, $values);
 
 
-
-
         if ($this->db->exec($sql)) {
 
             $user_key = $this->db->lastInsertId();
             $this->get_data('id', $user_key);
 
-            $sql    = sprintf("INSERT INTO `Website User Data` (`Website User Key`) values (%d)", $user_key);
+            $sql = sprintf("INSERT INTO `Website User Data` (`Website User Key`) VALUES (%d)", $user_key);
             $this->db->exec($sql);
 
             $this->new = true;
@@ -162,21 +118,16 @@ class Public_Website_User extends DBW_Table {
                 'History Abstract' => sprintf(_('Website user %s created'), $this->get('Handle')),
                 'History Details'  => '',
                 'Action'           => 'created',
-                'Subject'=>'Customer',
-                'Subject Key'=>$this->data['Website User Customer Key'],
-                'Author Name'=>_('Customer')
+                'Subject'          => 'Customer',
+                'Subject Key'      => $this->data['Website User Customer Key'],
+                'Author Name'      => _('Customer')
 
             );
-
-
 
 
             $this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id);
 
             $this->msg = 'User added successfully';
-
-
-
 
 
             return $this;
@@ -188,6 +139,30 @@ class Public_Website_User extends DBW_Table {
         }
 
 
+    }
+
+    function get_data($type, $key) {
+
+
+        if ($type == 'handle') {
+            $sql = sprintf(
+                "SELECT * FROM  `Website User Dimension` WHERE `Website User Handle`=%s ", prepare_mysql($key)
+            );
+        } else {
+            $sql = sprintf(
+                "SELECT * FROM `Website User Dimension` WHERE `Website User Key`=%d", $key
+            );
+        }
+
+
+        if ($this->data = $this->db->query($sql)->fetch()) {
+
+
+            $this->id                            = $this->data['Website User Key'];
+            $this->data['Website User Password'] = '';
+
+
+        }
 
 
     }
@@ -213,8 +188,6 @@ class Public_Website_User extends DBW_Table {
     }
 
 
-
-
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
 
 
@@ -223,14 +196,14 @@ class Public_Website_User extends DBW_Table {
         }
 
         switch ($field) {
+            case 'Website User Password':
+            case 'Website User Password Hash':
 
-
-
-
+                $this->update_field($field, $value, $options);
+                break;
 
 
             default:
-
 
 
         }
@@ -359,8 +332,23 @@ class Public_Website_User extends DBW_Table {
 
     }
 
+    function get_field_label($field) {
 
 
+        switch ($field) {
+
+            case 'Website User Password':
+                $label = _('password');
+                break;
+
+            default:
+                $label = $field;
+
+        }
+
+        return $label;
+
+    }
 
 }
 
