@@ -249,6 +249,8 @@ $(document).on('click', '.slider_preview', function (e) {
 
         $('.edit_block').addClass('hide')
 
+
+        console.log($(this).closest('div').attr('name'))
         switch ($(this).closest('div').attr('name')){
             case 'iframe_height_edit_block':
 

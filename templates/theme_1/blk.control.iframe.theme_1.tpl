@@ -21,12 +21,11 @@
         <div id="iframe_height_edit_block_{$key}" name="iframe_height_edit_block" class="hide edit_block" style="position:absolute;padding:10px;background-color: #FFF;border:1px solid #ccc">
             {t}Height{/t} <input value="{$block.height}" style="width: 30px">px <i class="apply_changes fa button fa-check-square" style="margin-left: 10px" aria-hidden="true"></i>
         </div>
-        <div id="iframe_src_edit_block_{$key}" name="iframe_height_edit_block" class="hide edit_block" style="position:absolute;padding:10px;background-color: #FFF;border:1px solid #ccc">
+        <div id="iframe_src_edit_block_{$key}" name="iframe_src_edit_block" class="hide edit_block" style="position:absolute;padding:10px;background-color: #FFF;border:1px solid #ccc">
             {t}Src{/t} https://<input value="{$block.src}" style="width: 900px"> <i class="apply_changes  fa button fa-check-square" style="margin-left: 10px" aria-hidden="true"></i>
         </div>
 
-        <span>
-                                {t}Width{/t} 1240px {t}Height{/t} <span id="iframe_height_{$key}" class="button iframe_height" key="{$key}" style="border:1px solid #ccc;padding:2px 4px">{$block.height}px</span> r=<span
+        <span>{t}Width{/t} 1240px {t}Height{/t} <span id="iframe_height_{$key}" class="button iframe_height" key="{$key}" style="border:1px solid #ccc;padding:2px 4px">{$block.height}px</span> r=<span
                     class="iframe_ratio">{math equation="w/h" w=1240 h=$block.height format="%.2f"}</span>
 
                                 <span style="margin-left:20px"> src:<span id="iframe_src{$key}" class="button iframe_src" key="{$key}"
