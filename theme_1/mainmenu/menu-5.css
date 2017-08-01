@@ -1,6 +1,6 @@
 
 .menu_main2{
-    width: 850px;
+  //  width: 850px;
 }
 
 #menu_control_panel {
@@ -170,8 +170,14 @@ ul.list-unstyled li:hover a {
     padding-bottom: 10px;
 }
 
+
+/*
+
 @media (max-width:767px)
 {
+
+
+
     .list-unstyled li:first-child {
 
         border-bottom: 0px ;
@@ -220,7 +226,7 @@ ul.list-unstyled li:hover a {
     }
 }
 
-
+*/
 
 @media (max-width:999px)
 {
@@ -511,6 +517,8 @@ a.registerbut:hover{
 }
 .navbar-collapse {border-top: 0;}
 
+
+
 @media only screen and (min-width: 99px) and (max-width: 999px){
     li.dropdown ul.dropdown-menu li a {color: #fff; }
 
@@ -524,7 +532,10 @@ a.registerbut:hover{
 
 }
 
-@media (min-width: 1000px) {
+
+
+
+ @media (min-width: 1000px) {
 
   .navbar-nav>li>a{padding-top:4px;padding-bottom:4px}
 
@@ -619,7 +630,9 @@ a.registerbut:hover{
     .navbar-default .navbar-nav>.open>a, .navbar-default .navbar-nav>.open>a:hover, .navbar-default .navbar-nav>.open>a:focus {
         /*    padding: 22px 18px;*/
     }
-}
+ }
+
+
 
 .navbar-toggle > button {
     background: none;
@@ -734,6 +747,9 @@ pre { margin: 0; padding: 10px 20px !important;}
 
 }
 
+
+/*
+
 @media only screen and (min-width: 768px) and (max-width: 999px){
 
     #header .container { width: auto; max-width: 98%; }
@@ -765,6 +781,8 @@ pre { margin: 0; padding: 10px 20px !important;}
     }
 
 }
+
+*/
 
 @media only screen and (min-width: 640px) and (max-width: 767px){
 
@@ -899,3 +917,4 @@ body{font:12px/28px ;}
 
 <!-- end sticky navigation styles -->
 
+}
