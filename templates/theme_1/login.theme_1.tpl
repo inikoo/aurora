@@ -410,7 +410,7 @@
 
         $('#password_recovery_go_back').addClass('hide')
         $('.password_recovery_msg').addClass('hide')
-        $('#password_recovery_success_msg').removeClass('hide').prev('i').addClass('fa-check').removeClass('error fa-exclamation')
+        $('#_password_recovery_success_msg').removeClass('hide').prev('i').addClass('fa-check').removeClass('error fa-exclamation')
         $('#password_recovery_form').addClass('submited')
         $('#password_recovery_form').find('.message').removeClass('error')
 
@@ -423,7 +423,7 @@
 
         $('#password_recovery_go_back').removeClass('hide')
         $('.password_recovery_msg').addClass('hide').prev('i').removeClass('fa-check').addClass('error fa-exclamation')
-        $('#password_recovery_email_not_register_error_msg').removeClass('hide')
+        $('#_password_recovery_email_not_register_error_msg').removeClass('hide')
 
         $('#password_recovery_form').addClass('submited ')
         $('#password_recovery_form').find('.message').addClass('error')
@@ -439,7 +439,7 @@
         $('#password_recovery_go_back').removeClass('hide')
 
         $('.password_recovery_msg').addClass('hide')
-        $('#password_recovery_unknown_error_msg').removeClass('hide').prev('i').removeClass('fa-check').addClass('error fa-exclamation')
+        $('#_password_recovery_unknown_error_msg').removeClass('hide').prev('i').removeClass('fa-check').addClass('error fa-exclamation')
         $('#password_recovery_form').addClass('submited ')
         $('#password_recovery_form').find('.message').addClass('error')
 
