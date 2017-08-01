@@ -162,15 +162,36 @@
 
                 <div class="container">
 
-                    <nav class="menu_main2">
+                    <nav class="menu_main2" style="float:left">
 
-                        <div class="navbar yamm navbar-default">
+                        <div id="menu_control_panel"  style=";float:right;">
+                            {if $logged_in}
+                                <p>
+                                    <i id="logout" class="fa fa-sign-out fa-flip-horizontal button " style="cursor:pointer;margin-right:20px"   title="{t}Log out{/t}"  aria-hidden="true"></i>
 
-                            <div class="navbar-header">
-                                <div class="navbar-toggle .navbar-collapse .pull-right " data-toggle="collapse" data-target="#navbar-collapse-1"  > <span>Menu</span>
-                                    <button type="button" > <i class="fa fa-bars"></i></button>
-                                </div>
-                            </div>
+                                    <a href="profile.sys"  ><i class="fa fa-user fa-flip-horizontal button " style="cursor:pointer;margin-right:10px"   title="{t}Profile{/t}"  aria-hidden="true"></i></a>
+                                    <i class="hide fa fa-heart fa-flip-horizontal button " style="cursor:pointer;margin-right:20px"   title="{t}My favorites{/t}"  aria-hidden="true"></i>
+                                    <a href="basket.sys" class="button" >
+                                        <span  id="header_order_products"  class="ordered_products_number" >{if isset($order)}{$order->get('Products')}{else}0{/if}</span>
+                                        <i style="padding-right:5px;padding-left:5px" class="fa fa-shopping-cart fa-flip-horizontal  " style="cursor:pointer"   title="{t}Basket{/t}"  aria-hidden="true"></i>
+                                        <span id="header_order_total_amount" class="order_total" style="padding-right:10px" >{if isset($order)}{$order->get('Total')}{else}{/if}</span>
+                                    </a>
+
+
+                                </p>
+
+                            {else}
+                                <p>
+                                    <a href="/login.sys" class="button" ><i class="fa fa-sign-in" aria-hidden="true"></i> {t}Login{/t}</a>
+                                    <a href="/register.sys"class="button" ><i class="fa fa-user-plus" aria-hidden="true"></i> {t}Register{/t}</a>
+                                </p>
+                            {/if}
+
+                        </div>
+
+                        <div class="navbar yamm navbar-default" >
+
+
 
                             <div id="navbar-collapse-1" class="navbar-collapse collapse">
 
@@ -300,35 +321,14 @@
 
                         </div>
 
+
+
                     </nav>
 
 
 
 
-                    <div id="menu_control_panel" >
-                        {if $logged_in}
-                            <p>
-                                <i id="logout" class="fa fa-sign-out fa-flip-horizontal button " style="cursor:pointer;margin-right:20px"   title="{t}Log out{/t}"  aria-hidden="true"></i>
 
-                                <a href="profile.sys"  ><i class="fa fa-user fa-flip-horizontal button " style="cursor:pointer;margin-right:10px"   title="{t}Profile{/t}"  aria-hidden="true"></i></a>
-                                <i class="hide fa fa-heart fa-flip-horizontal button " style="cursor:pointer;margin-right:20px"   title="{t}My favorites{/t}"  aria-hidden="true"></i>
-                                <a href="basket.sys" class="button" >
-                                    <span  id="header_order_products"  class="ordered_products_number" >{if isset($order)}{$order->get('Products')}{else}0{/if}</span>
-                                    <i style="padding-right:5px;padding-left:5px" class="fa fa-shopping-cart fa-flip-horizontal  " style="cursor:pointer"   title="{t}Basket{/t}"  aria-hidden="true"></i>
-                                    <span id="header_order_total_amount" class="order_total" style="padding-right:10px" >{if isset($order)}{$order->get('Total')}{else}{/if}</span>
-                                </a>
-
-
-                            </p>
-
-                        {else}
-                            <p>
-                            <a href="/login.sys" class="button" ><i class="fa fa-sign-in" aria-hidden="true"></i> {t}Login{/t}</a>
-                            <a href="/register.sys"class="button" ><i class="fa fa-user-plus" aria-hidden="true"></i> {t}Register{/t}</a>
-                            </p>
-                        {/if}
-
-                    </div>
 
                 </div>
 

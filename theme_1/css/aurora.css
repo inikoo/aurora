@@ -1,4 +1,4 @@
-<!--
+/*
 
  About:
  Author: Raul Perusquia <raul@inikoo.com>
@@ -7,7 +7,9 @@
 
  Version 3
 
--->
+*/
+
+
 
 .button,.like_button{
 	cursor: pointer !important;
@@ -100,6 +102,7 @@ input:-ms-input-placeholder {
 	width: 440px;
 
 }
+.text_right{  text-align: right}
 
 
 @media only screen and (min-width: 480px) and (max-width: 767px){
@@ -133,6 +136,48 @@ input:-ms-input-placeholder {
 }
 
 
-.text-right{
-	text-align: right;
+/* mobile */
+
+  #header{ display:none;}
+
+
+
+
+/*  Little larger screen */
+@media only screen and (min-width: 480px) {
+
+
+
+
+}
+
+/*  Pads and larger phones */
+@media only screen and (min-width: 600px) {
+
+
+    #header{ display:block}
+
+}
+
+/*  Larger pads */
+@media only screen and (min-width: 768px) {
+
+}
+
+/*  Horizontal pads and laptops  */
+@media only screen and (min-width: 992px) {
+
+}
+
+/*   Really large screens */
+@media only screen and (min-width: 1382px) {
+
+}
+
+/* 2X size (iPhone 4 etc) */
+@media only screen and
+(-webkit-min-device-pixel-ratio: 1.5), only screen and
+(-o-min-device-pixel-ratio: 3/2), only screen and
+(min-device-pixel-ratio: 1.5) {
+
 }
