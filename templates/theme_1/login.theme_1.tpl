@@ -265,12 +265,12 @@
                         <i class="fa fa-check"></i>
 
 
-                        <span class="password_recovery_msg " id="password_recovery_success_msg"  contenteditable="true">{$content._password_recovery_success_msg}</span>
-                        <span class="password_recovery_msg error" id="password_recovery_email_not_register_error_msg"  contenteditable="true">{$content._password_recovery_email_not_register_error_msg}</span>
-                        <span class="password_recovery_msg error" id="password_recovery_unknown_error_msg"  contenteditable="true">{$content._password_recovery_unknown_error_msg}</span>
+                        <span class="password_recovery_msg " id="_password_recovery_success_msg"  contenteditable="true">{$content._password_recovery_success_msg}</span>
+                        <span class="password_recovery_msg error" id="_password_recovery_email_not_register_error_msg"  contenteditable="true">{$content._password_recovery_email_not_register_error_msg}</span>
+                        <span class="password_recovery_msg error" id="_password_recovery_unknown_error_msg"  contenteditable="true">{$content._password_recovery_unknown_error_msg}</span>
 
                         <br>
-                            <a id="password_recovery_go_back" class="marked_link" contenteditable="true">{$content._password_recovery_go_back}</a>
+                            <a id="_password_recovery_go_back" class="marked_link" contenteditable="true">{$content._password_recovery_go_back}</a>
 
 
                     </div>

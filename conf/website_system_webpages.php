@@ -180,7 +180,7 @@ function website_system_webpages_config($website_type) {
                     '_register_label' => _('Register'),
                     '_log_in_label'   => _('Log in'),
                     '_submit_label'   => _('Submit'),
-                    '_close_label'    => _('Close'),
+                    '_close_label'    => _('Go back'),
 
                     '_password_recovery_success_msg'                  => _('Your request successfully sent!'),
                     '_password_recovery_email_not_register_error_msg' => _('Email is not registered in our system'),
