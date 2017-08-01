@@ -68,7 +68,7 @@
                         </fieldset>
                         <footer>
                             <button type="submit" class="button">{$content._log_in_label}</button>
-                            <a href="#" class="button button-secondary">{$content._register_label}</a>
+                            <a href="/register.sys" class="button button-secondary">{$content._register_label}</a>
                         </footer>
                     </form>
 
