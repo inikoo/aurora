@@ -10792,7 +10792,51 @@ VALUES (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
         return $page_key;
     }
 
-    function get_items_info() {
+    function get_items() {
+
+        $sql = sprintf(
+            'SELECT OTF.`Product ID`,OTF.`Product Key`,`Order Transaction Fact Key`,`Order Currency Code`,`Order Transaction Amount`,`Order Quantity`,`Product History Name`,`Product History Units Per Case`,PD.`Product Code`,`Product Name`,`Product Units Per Case` FROM `Order Transaction Fact` OTF LEFT JOIN `Product History Dimension` PHD ON (OTF.`Product Key`=PHD.`Product Key`) LEFT JOIN `Product Dimension` PD ON (PD.`Product ID`=PHD.`Product ID`)  WHERE `Order Key`=%d  ORDER BY `Product Code File As` ',
+            $this->id
+        );
+
+        $items = array();
+
+
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+                $edit_quantity = sprintf(
+                    '<span    data-settings=\'{"field": "Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   ><input class="order_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-plus fa-fw like_button button"  style="cursor:pointer" aria-hidden="true"></i></span>',
+                    $row['Order Transaction Fact Key'], $row['Product ID'], $row['Product Key'], $row['Order Quantity'] + 0, $row['Order Quantity'] + 0
+                );
+
+
+
+                $items[] = array(
+                    'code'        => $row['Product Code'],
+                    'description' => $row['Product History Units Per Case'].'x '.$row['Product History Name'],
+                    'qty'         => number($row['Order Quantity']),
+                    'edit_qty'    => $edit_quantity,
+                    'amount'      => '<span class="item_amount">'.money($row['Order Transaction Amount'], $row['Order Currency Code']).'</span>'
+
+                );
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        return $items;
+
+    }
+
+    function get_items_info_to_delete() {
         $items_info = array();
         $sql        = sprintf(
             "SELECT (SELECT `Page Key` FROM `Page Product Dimension` B  WHERE B.`State`='Online' AND  B.`Product ID`=OTF.`Product ID` LIMIT 1 ) `Page Key`,(SELECT `Page URL` FROM `Page Product Dimension` B LEFT JOIN `Page Dimension`  PA  ON (PA.`Page Key`=B.`Page Key`) WHERE B.`State`='Online' AND  B.`Product ID`=OTF.`Product ID` LIMIT 1 ) `Page URL`,`Order Last Updated Date`,`Order Date`,`Order Bonus Quantity`,`Order Quantity`,`Order Transaction Gross Amount`,`Order Currency Code`,`Order Transaction Total Discount Amount`,OTF.`Product ID`,OTF.`Product Code`,`Product XHTML Short Description`,`Product Tariff Code`,(SELECT GROUP_CONCAT(`Deal Info`) FROM `Order Transaction Deal Bridge` OTDB WHERE OTDB.`Order Key`=OTF.`Order Key` AND OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) AS `Deal Info` FROM `Order Transaction Fact` OTF LEFT JOIN `Product Dimension` P ON (P.`Product ID`=OTF.`Product ID`)  WHERE `Order Key`=%d ORDER BY OTF.`Product Code` ",

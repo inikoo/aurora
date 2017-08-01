@@ -1,0 +1,1 @@
+../../templates/payment_bank_details.inc.tpl
