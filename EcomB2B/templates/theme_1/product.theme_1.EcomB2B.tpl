@@ -141,8 +141,8 @@
 
 
                                     <div class=" log_in_buttons_individual_product " style="margin-top:10px;">
-                                        <div class="mark_on_hover"><span onClick="location.href='/login.sys'">{t}Login{/t}</span></div>
-                                        <div class="mark_on_hover"><span onClick="location.href='/register.sys'" style="height: 30px">{t}Register{/t}</span></div>
+                                        <div class="mark_on_hover"><a href='/login.sys'>{t}Login{/t}</a></div>
+                                        <div class="mark_on_hover"><a href='/register.sys' style="height: 30px">{t}Register{/t}</a></div>
                                     </div>
 
 

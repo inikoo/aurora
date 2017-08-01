@@ -84,7 +84,7 @@
                             <span   class=" {if $form_error!='logged_in' }hide{/if}" >{$content.password_reset_logged_in_error_msg}</span>
 
                             <br>
-                            <a href="login.sys?fp" class=" {if ($form_error=='' or $form_error=='logged_in')   }hide{/if}">{$content.password_reset_go_back}</a>
+                            <a href="/login.sys?fp" class=" {if ($form_error=='' or $form_error=='logged_in')   }hide{/if}">{$content.password_reset_go_back}</a>
                             <a href='/' class=" {if !($form_error=='' or $form_error=='logged_in')   }hide{/if}">{$content.password_reset_go_home}</a>
 
 
