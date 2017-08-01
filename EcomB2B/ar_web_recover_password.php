@@ -93,8 +93,6 @@ function recover_password($db, $data, $editor,$website) {
             $db->exec($sql);
 
 
-            include_once 'class.Public_Email_Template.php';
-            include_once 'class.Public_Webpage.php';
 
 
             $webpage = get_object('webpage', $data['webpage_key']);
@@ -106,9 +104,6 @@ function recover_password($db, $data, $editor,$website) {
 
             $published_email_template= get_object('published_email_template',$email_template->get('Email Template Published Email Key'));
 
-            //print_r($scope_metadata['emails']['reset_password']);
-            //print_r($email_template);
-            //print_r($published_email_template);
 
 
             if ($email_template->get('Email Template Subject') == '') {
