@@ -250,7 +250,7 @@
 
                         <button type="submit" class="button" id="_submit_label" contenteditable="true">{$content._submit_label}</button>
 
-                        <a href="#" d="_close_label" class="button button-secondary modal-closer" contenteditable="true">{$content._close_label}</a>
+                        <a href="#" id="_close_label" class="button button-secondary modal-closer" contenteditable="true">{$content._close_label}</a>
 
 
 

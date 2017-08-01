@@ -280,23 +280,10 @@
 
 
                                     <div style="padding:20px">
-                                        <p id="_bank_header">{$content._bank_header|replace:'[Order Number]':$order->get('Public ID')}</p>
 
-                                        <br>
-                                        <span >{if isset($labels._bank_beneficiary_label) and $labels._bank_beneficiary_label!=''}{$labels._bank_beneficiary_label}{else}{t}Beneficiary{/t}{/if}</span>: {$payment_account.object->get("Payment Account Recipient Holder")}<br/>
-                                        <span >{if isset($labels._bank_account_number_label) and $labels._bank_account_number_label!=''}{$labels._bank_account_number_label}{else}{t}Account Number{/t}{/if}</span>: {$payment_account.object->get("Payment Account Recipient Bank Account Number")}<br/>
-                                        {if $payment_account.object->get("Payment Account Recipient Bank IBAN")!=''}<span>IBAN</span>: {$payment_account.object->get("Payment Account Recipient Bank IBAN")}<br/>{/if}
+                                        {include  file='payment_bank_details.inc.tpl'  bank_payment_account=$payment_account.object }
 
 
-                                        <span >{if isset($labels.website_localized_label) and $labels.website_localized_label!=''}{$labels.website_localized_label}{else}{t}Bank{/t}{/if}</span>: <b>{$payment_account.object->get("Payment Account Recipient Bank Name")}</b><br/>
-                                        {if $payment_account.object->get("Payment Account Recipient Bank Code")!=''}<span >{if isset($labels._bank_sort_code) and $labels._bank_sort_code!=''}{$labels._bank_sort_code}{else}{t}Bank Code{/t}{/if}</span>: {$payment_account.object->get("Payment Account Recipient Bank Code")}<br/>{/if}
-                                        {if $payment_account.object->get("Payment Account Recipient Bank Swift")!=''}<span>Swift</span>: {$payment_account.object->get("Payment Account Recipient Bank Swift")}<br/>{/if}
-                                        {if $payment_account.object->get("Payment Account Recipient Address")!=''}<span >{if isset($labels._bank_address_label) and $labels._bank_address_label!=''}{$labels._bank_address_label}{else}{t}Address{/t}{/if}</span>: {$payment_account.object->get("Payment Account Recipient Address")}<br/>{/if}
-
-                                        </span>
-
-                                        <br>
-                                        <p id="_bank_footer">{$content._bank_footer|replace:'[Order Number]':$order->get('Public ID')}</p>
                                     </div>
 
 

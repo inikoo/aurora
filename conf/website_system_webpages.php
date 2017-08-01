@@ -523,7 +523,7 @@ function website_system_webpages_config($website_type) {
                     '_form_title_other'       => _('Checkout form'),
 
 
-                    '_bank_header' => _('After placing your order, please go to your bank and make this payment to our bank account, details below'),
+                    '_bank_header' => _('Please go to your bank and make a payment of <b>[Order Amount]</b>  to our bank account, details below'),
                     '_bank_footer' => _('Remember to state the order number in the payment reference').' [Order Number] . '._(
                             'Please note, we cannot process your order until payment arrives in our account'
                         ),

@@ -94,6 +94,11 @@ class Page extends DB_Table {
                 "SELECT * FROM `Page Store Dimension` PS LEFT JOIN `Page Dimension` P  ON (P.`Page Key`=PS.`Page Key`) WHERE `Page Code`=%s AND PS.`Page Site Key`=%d ", prepare_mysql($tag2), $tag
             );
 
+        }  elseif ($tipo == 'website_code') {
+            $sql = sprintf(
+                "SELECT * FROM `Page Store Dimension` PS LEFT JOIN `Page Dimension` P  ON (P.`Page Key`=PS.`Page Key`) WHERE `Website Code`=%s AND PS.`Webpage Website Key`=%d ", prepare_mysql($tag2), $tag
+            );
+
         } elseif ($tipo == 'scope') {
             $sql = sprintf(
                 "SELECT * FROM `Page Store Dimension` PS LEFT JOIN `Page Dimension` P  ON (P.`Page Key`=PS.`Page Key`) WHERE `Webpage Scope`=%s AND `Webpage Scope Key`=%d ", prepare_mysql($tag), $tag2

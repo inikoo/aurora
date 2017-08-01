@@ -27,7 +27,7 @@ if ($webpage->get('Webpage Code') == 'register.sys') {
 } elseif ($webpage->get('Webpage Code') == 'checkout.sys') {
 
     $email_template_key = $scope_metadata['emails']['order_confirmation']['key'];
-    $role               = 'Order_Conformation';
+    $role               = 'Order_Confirmation';
 
 } else {
     return;

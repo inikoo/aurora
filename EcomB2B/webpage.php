@@ -14,6 +14,9 @@
 $webpage = new Public_Webpage($webpage_key);
 
 
+$content = $webpage->get('Content Data');
+
+
 if ($webpage->get('Webpage Template Filename') == 'register') {
 
     if ($logged_in) {
@@ -380,7 +383,28 @@ if ($webpage->get('Webpage Template Filename') == 'register') {
 } elseif ($webpage->get('Webpage Template Filename') == 'checkout') {
 
 
+
+
+
     if (isset($order) and $order->id) {
+
+
+        $placeholders = array(
+
+            '[Order Number]'       => $order->get('Public ID'),
+            '[Order Amount]'       => $order->get('Amount'),
+
+        );
+
+        if(isset($content['_bank_header'])) {
+            $content['_bank_header'] = strtr($content['_bank_header'], $placeholders);
+        }
+         if(isset($content['_bank_footer'])) {
+             $content['_bank_footer'] = strtr($content['_bank_footer'], $placeholders);
+         }
+
+
+
         $template = $theme.'/checkout.'.$theme.'.'.$website->get('Website Type').'.tpl';
     } else {
 
@@ -446,7 +470,6 @@ if ($webpage->get('Webpage Template Filename') == 'register') {
 }
 
 
-$content = $webpage->get('Content Data');
 
 $smarty->assign('webpage', $webpage);
 $smarty->assign('content', $content);
