@@ -179,8 +179,8 @@
 
                 {else}
                 <div class=" order_row " style="display:flex;" >
-                    <div class="mark_on_hover" style="flex-grow:1;text-align:center;border-right:1px solid #fff;  font-weight: 800;" ><a href='/login.sys' class="sim_button" >{t}Login{/t}</a></div>
-                    <div  class="mark_on_hover" style="flex-grow:1;text-align:center;border-left:1px solid #fff;  font-weight: 800;" ><a href='/register.sys' class="sim_button" >{t}Register{/t}</a></div>
+                    <div onclick='window.location.href = "/login.sys"' class="mark_on_hover" class="mark_on_hover" style="flex-grow:1;text-align:center;border-right:1px solid #fff;  font-weight: 800;" ><span  class="sim_button" >{t}Login{/t}</span></div>
+                    <div onclick='window.location.href = "/register.sys"'  class="mark_on_hover" style="flex-grow:1;text-align:center;border-left:1px solid #fff;  font-weight: 800;" ><span  class="sim_button" >{t}Register{/t}</span></div>
                 </div>
                 {/if}
 
@@ -331,14 +331,15 @@
                                 </div>
 
 
-
+                                <div   onclick='window.location.href = "/login.sys"' class="mark_on_hover"><span  >{t}Login{/t}</span></div>
+                                <div  onclick='window.location.href = "/register.sys"' class="mark_on_hover"><span  style="height: 30px">{t}Register{/t}</span></div>
 
 
                             {/if}
                         {else}
                             <div class=" order_row " style="display:flex;" >
-                                <div class="mark_on_hover"  style="flex-grow:1;text-align:center;border-right:1px solid #fff;  font-weight: 800;" ><a href='/login.sys' class="sim_button" >{t}Login{/t}</a></div>
-                                <div class="mark_on_hover"  style="flex-grow:1;text-align:center;border-left:1px solid #fff;  font-weight: 800;" ><a href='/register.sys' class="sim_button" >{t}Register{/t}</a></div>
+                                <div  onclick='window.location.href = "/login.sys"' class="mark_on_hover"  style="flex-grow:1;text-align:center;border-right:1px solid #fff;  font-weight: 800;" ><span  class="sim_button" >{t}Login{/t}</span></div>
+                                <div  onclick='window.location.href = "/register.sys"' class="mark_on_hover"  style="flex-grow:1;text-align:center;border-left:1px solid #fff;  font-weight: 800;" ><span  class="sim_button" >{t}Register{/t}</span></div>
                             </div>
                         {/if}
 
