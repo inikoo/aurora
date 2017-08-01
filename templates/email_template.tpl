@@ -114,7 +114,9 @@
 
     ];
 
-
+    var mergeContents = [
+        {$merge_contents}
+    ]
 
     var beeConfig = {
         uid: 'CmsUserName', // [mandatory] identifies the set of resources to load
@@ -123,7 +125,7 @@
         //language: 'en-US', // [optional, default:'en-US'] if language is not supported the default language is loaded (value must follow ISO 639-1  format)
         //specialLinks: specialLinks, // [optional, default:[]] Array of Object to specify special links
         mergeTags: mergeTags, // [optional, default:[]] Array of Object to specify special merge Tags
-        //mergeContents: mergeContents, // [optional, default:[]] Array of Object to specify merge content
+        mergeContents: mergeContents, // [optional, default:[]] Array of Object to specify merge content
         //preventClose: false, // [optional, default:false] if true an alert is shown before browser closure
         onSave: open_save_email_template_dialog,
         onSaveAsTemplate:open_save_as_blueprint_dialog,

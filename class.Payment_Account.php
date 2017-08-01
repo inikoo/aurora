@@ -50,6 +50,10 @@ class Payment_Account extends DB_Table {
             $sql = sprintf(
                 "SELECT * FROM `Payment Account Dimension` WHERE `Payment Account Key`=%d", $tag
             );
+        }else if ($tipo == 'block') {
+            $sql = sprintf(
+                "SELECT * FROM `Payment Account Dimension` WHERE `Payment Account Block`=%s", prepare_mysql($tag)
+            );
         } else {
             return;
         }

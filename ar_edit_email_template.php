@@ -212,12 +212,23 @@ function send_test_email($data, $editor, $smarty, $db) {
     );
 
 
-
     $placeholders = array(
-        '[Greetings]'=>'John Smith',
-        '[Reset_Password_URL]'=>'http://my.website.com/reset/'.md5(date()),
-        '[Signature]'=>$scope_object->get('Signature'),
+        '[Greetings]'          => 'Dear John Smith',
+        '[Name,Company]'       => 'John Smith, Acme Inc.',
+        '[Customer Name]'      => 'Acme Inc.',
+        '[Name]'               => 'John Smith',
+
+        '[Order Number]'       => '434534',
+        '[Order Amount]'       => '£54.00',
+        '[Reset_Password_URL]' => 'http://my.website.com/reset/'.md5(date('U')),
+        '[Signature]'          => $scope_object->get('Signature'),
     );
+
+    if($email_template->get('Email Template Role')=='Order_Confirmation'){
+        $placeholders['[Pay Info]']=get_mock_pay_info(($email_template->get('Email Template Scope Key')),$smarty  );
+        $placeholders['[Order]']=get_mock_order_info();
+    }
+
 
 
     $request                                    = array();
@@ -228,7 +239,7 @@ function send_test_email($data, $editor, $smarty, $db) {
 
 
     if ($email_template->get('Email Template Type') == 'HTML') {
-        $request['Message']['Body']['Html']['Data'] = $data['html'];
+        $request['Message']['Body']['Html']['Data'] = strtr($data['html'] ,$placeholders);
     }
 
 
@@ -561,6 +572,9 @@ function select_blueprint($data, $editor, $db) {
 
     include 'conf/email_templates_data.php';
 
+
+
+
     $key = $email_templates_data[$data['role']]['key'];
 
 
@@ -702,6 +716,191 @@ function create_text_only_email_template($data, $editor, $db) {
     echo json_encode($response);
 
 }
+
+function get_mock_order_info() {
+
+
+    $order_items_info = array(
+
+        array(
+            'code_plain'  => 'ABB1',
+            'description' => 'Doe Spanner	',
+            'quantity'    => '2',
+            'to_charge'   => '£5.00',
+
+        ),
+        array(
+            'code_plain'  => 'HHT-04',
+            'description' => 'Moe Screwdriver',
+            'quantity'    => '3',
+            'to_charge'   => '£25.00',
+
+        ),
+        array(
+            'code_plain'  => 'LLX-10a	',
+            'description' => 'DDooley Hammer',
+            'quantity'    => '1',
+            'to_charge'   => '£20.00',
+
+        ),
+
+
+    );
+
+
+    $order_info = '<table  cellpadding="0">';
+    $order_info .= sprintf(
+        '<tr style="border-bottom:1px solid #cccccc">
+	<td style="padding:5px;border-bottom:1px solid #777777">%s</td>
+	<td style="padding:5px;border-bottom:1px solid #777777">%s</td>
+	<td style="padding:5px;border-bottom:1px solid #777777">%s</td>
+	<td style="padding:5px;border-bottom:1px solid #777777">%s</td>
+	</tr>', _('Code'), _('Description'), _('Quantity'), _('Amount')
+
+    );
+
+    foreach ($order_items_info as $data) {
+        $order_info .= sprintf(
+            '<tr style="border-bottom:1px solid #cccccc">
+		<td style="padding:5px;vertical-align:top;border-bottom:1px solid #cccccc">%s</td>
+		<td style="padding:5px;vertical-align:top;border-bottom:1px solid #cccccc">%s</td>
+		<td style="padding:5px;vertical-align:top;text-align:right;border-bottom:1px solid #cccccc">%s</td>
+		<td style="padding:5px;vertical-align:top;text-align:right;border-bottom:1px solid #cccccc">%s</td></tr>', $data['code_plain'], $data['description'], $data['quantity'], $data['to_charge']
+
+        );
+    }
+
+
+    $order_info .= sprintf(
+        '<tr style="border-bottom:1px solid #cccccc">
+		<td colspan=2></td>
+		<td style="text-align:right;padding:5px;vertical-align:top;border-bottom:1px solid #cccccc">%s</td>
+		<td style="padding:5px;vertical-align:top;text-align:right;border-bottom:1px solid #cccccc">%s</td></tr>', _('Items Net'), '£50.00'
+
+
+    );
+
+    $order_info .= sprintf(
+        '<tr style="border-bottom:1px solid #cccccc">
+		<td colspan=2></td>
+		<td style="text-align:right;padding:5px;vertical-align:top;border-bottom:1px solid #cccccc">%s</td>
+		<td style="padding:5px;vertical-align:top;text-align:right;border-bottom:1px solid #cccccc">%s</td></tr>', _('Credits'), '-£20'
+
+    );
+
+
+    $order_info .= sprintf(
+        '<tr style="border-bottom:1px solid #cccccc">
+		<td colspan=2></td>
+		<td style="text-align:right;padding:5px;vertical-align:top;border-bottom:1px solid #cccccc">%s</td>
+		<td style="padding:5px;vertical-align:top;text-align:right;border-bottom:1px solid #cccccc">%s</td></tr>', _('Charges'), '£5.00'
+
+    );
+
+
+    $order_info .= sprintf(
+        '<tr style="border-bottom:1px solid #cccccc">
+		<td colspan=2></td>
+		<td style="text-align:right;padding:5px;vertical-align:top;border-bottom:1px solid #cccccc">%s</td>
+		<td style="padding:5px;vertical-align:top;text-align:right;border-bottom:1px solid #cccccc">%s</td></tr>', _('Shipping'), '£10.00'
+
+    );
+
+
+    $order_info .= sprintf(
+        '<tr style="border-bottom:1px solid #cccccc">
+		<td colspan=2></td>
+		<td style="text-align:right;padding:5px;vertical-align:top;border-bottom:1px solid #cccccc">%s</td>
+		<td style="padding:5px;vertical-align:top;text-align:right;border-bottom:1px solid #cccccc">%s</td></tr>', _('Net'), '£45.00'
+
+    );
+
+    $order_info .= sprintf(
+        '<tr style="border-bottom:1px solid #cccccc">
+		<td colspan=2></td>
+		<td style="text-align:right;padding:5px;vertical-align:top;border-bottom:1px solid #cccccc">%s</td>
+		<td style="padding:5px;vertical-align:top;text-align:right;border-bottom:1px solid #cccccc">%s</td></tr>', _('Tax'), '£9.00'
+
+    );
+
+    $order_info .= sprintf(
+        '<tr style="border-bottom:1px solid #cccccc">
+		<td colspan=2></td>
+		<td style="text-align:right;padding:5px;vertical-align:top;border-bottom:1px solid #cccccc">%s</td>
+		<td style="padding:5px;vertical-align:top;text-align:right;border-bottom:1px solid #cccccc">%s</td></tr>', _('Total'), '£54.00'
+
+    );
+
+
+    $order_info .= sprintf(
+        '<tr style="border-bottom:1px solid #cccccc">
+		<td colspan=2></td>
+		<td style="text-align:right;padding:5px;vertical-align:top;border-bottom:1px solid #cccccc">%s</td>
+		<td style="padding:5px;vertical-align:top;text-align:right;border-bottom:1px solid #cccccc">%s</td></tr>', _('Paid'), '£54.00'
+
+    );
+    $order_info .= sprintf(
+        '<tr style="border-bottom:1px solid #cccccc">
+		<td colspan=2></td>
+		<td style="text-align:right;padding:5px;vertical-align:top;border-bottom:1px solid #cccccc">%s</td>
+		<td style="padding:5px;vertical-align:top;text-align:right;border-bottom:1px solid #cccccc">%s</td></tr>', _('To Pay Amount'), '£0.00'
+
+    );
+
+
+    $order_info .= '</table>';
+
+
+    return $order_info;
+
+
+}
+
+
+
+function get_mock_pay_info($webpage_key,$smarty){
+
+
+    $webpage=get_object('Webpage',$webpage_key);
+    $website=get_object('Website',$webpage->get('Webpage Website Key'));
+
+
+    $bank_payment_account=get_object('Payment_Account','Bank','Block');
+
+
+
+
+    $content = $webpage->get('Content Data');
+
+    $placeholders = array(
+
+        '[Order Number]'       => '434534',
+        '[Order Amount]'       => '£54.00',
+
+    );
+
+
+
+    if(isset($content['_bank_header'])) {
+        $content['_bank_header'] = strtr($content['_bank_header'], $placeholders);
+    }
+    if(isset($content['_bank_footer'])) {
+        $content['_bank_footer'] = strtr($content['_bank_footer'], $placeholders);
+    }
+
+
+    $smarty->assign('content',$content);
+    $smarty->assign('labels', $website->get('Localised Labels'));
+    $smarty->assign('bank_payment_account',$bank_payment_account);
+
+
+
+
+    return $smarty->fetch('payment_bank_details.inc.tpl');
+
+
+}
+
 
 
 ?>

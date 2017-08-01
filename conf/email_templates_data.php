@@ -34,6 +34,13 @@ $email_templates_data = array(
         'subject'=>_('Order confirmation'),
         'sender'=>'Store'
 
+    ),
+    'Dispatch_Confirmation' => array(
+        'key'=>'dispatch_confirmation',
+        'name'=>_('Dispatch confirmation'),
+        'subject'=>_('Dispatch confirmation'),
+        'sender'=>'Store'
+
     )
 
 

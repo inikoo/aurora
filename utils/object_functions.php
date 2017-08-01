@@ -305,10 +305,15 @@ function get_object($object_name, $key, $load_other_data = false) {
             require_once "class.Payment_Account.php";
             $object = new Payment_Account($key);
             break;
+        case 'payment_account-block':
+        case 'payment account-block':
+            require_once "class.Payment_Account.php";
+            $object = new Payment_Account('block',$key);
+            break;
 
 
         default:
-            exit('need to complete E1: x>'.strtolower($object_name.' '.$load_other_data)."<\n");
+            exit('need to complete E1: x>'.strtolower($object_name.'++'.$load_other_data)."<\n");
             break;
     }
 

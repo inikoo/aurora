@@ -228,11 +228,6 @@
 
                             <div style="padding:20px">
                                 <p id="_bank_header" contenteditable="true">{$content._bank_header}</p>
-
-
-                                </h2>
-
-
                                 <br>
                                 <span id="_bank_beneficiary_label" class="website_localized_label" contenteditable="true">{if isset($labels._bank_beneficiary_label) and $labels._bank_beneficiary_label!=''}{$labels._bank_beneficiary_label}{else}{t}Beneficiary{/t}{/if}</span>: XXX<br/>
                                 <span id="_bank_account_number_label" class="website_localized_label" contenteditable="true">{if isset($labels._bank_account_number_label) and $labels._bank_account_number_label!=''}{$labels._bank_account_number_label}{else}{t}Account Number{/t}{/if}</span>: XXX<br/>
@@ -243,9 +238,6 @@
                                 <span id="_bank_sort_code" class="website_localized_label" contenteditable="true">{if isset($labels._bank_sort_code) and $labels._bank_sort_code!=''}{$labels._bank_sort_code}{else}{t}Bank Code{/t}{/if}</span>: XXX<br/>
                                 <span>Swift</span>: XXX<br/>
                                 <span id="_bank_address_label" class="website_localized_label" contenteditable="true">{if isset($labels._bank_address_label) and $labels._bank_address_label!=''}{$labels._bank_address_label}{else}{t}Address{/t}{/if}</span>: XXX<br/>
-
-                                </span>
-
                                 <br>
                                 <p id="_bank_footer" contenteditable="true">{$content._bank_footer}</p>
                             </div>

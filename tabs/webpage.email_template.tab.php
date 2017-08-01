@@ -92,23 +92,29 @@ if ($email_template->id and ! ($email_template->get('Email Template Type')=='HTM
 
 
 
+    $send_email_to=$user->get_staff_email();
 
 
-    $smarty->assign('send_email_to', $user->get_staff_email());
 
 
     $merge_tags='';
-
+    $merge_contents='';
 
 
     if($email_template->get('Email Template Role')=='Reset_Password'){
         $merge_tags=",{ name: '"._('Reset password URL')."',value: '[Reset_Password_URL]'}";
 
+    }elseif($email_template->get('Email Template Role')=='Order_Confirmation'){
+        $merge_tags=",{ name: '"._('Order number')."',value: '[Order Number]'},{ name: '"._('Order Amount')."',value: '[Order Amount]'}";
+        $merge_contents="{ name: '"._('Payment information')."',value: '[Pay Info]'},{ name: '"._('Order')."',value: '[Order]'}";
+
     }
 
 
     $smarty->assign('merge_tags', $merge_tags);
+    $smarty->assign('merge_contents', $merge_contents);
 
+    $smarty->assign('send_email_to', $send_email_to);
 
 
 
