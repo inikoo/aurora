@@ -14,7 +14,9 @@
         $_SESSION['website_key'] = 12;
     } else {
 
-        require_once 'keyring/dns.php';
+      include_onee 'utils/general_functions.php';
+
+      require_once 'keyring/dns.php';
 
         $db = new PDO(
             "mysql:host=$dns_host;dbname=$dns_db;charset=utf8", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
