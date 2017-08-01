@@ -179,8 +179,8 @@
 
                 {else}
                 <div class=" order_row " style="display:flex;" >
-                    <div class="mark_on_hover" style="flex-grow:1;text-align:center;border-right:1px solid #fff;  font-weight: 800;" ><span onClick="location.href='login.php?from={$page->id}'" class="sim_button" >{t}Login{/t}</span></div>
-                    <div  class="mark_on_hover" style="flex-grow:1;text-align:center;border-left:1px solid #fff;  font-weight: 800;" ><span onClick="location.href='registration.php'" class="sim_button" >{t}Register{/t}</span></div>
+                    <div class="mark_on_hover" style="flex-grow:1;text-align:center;border-right:1px solid #fff;  font-weight: 800;" ><span onClick="location.href='/login.sys" class="sim_button" >{t}Login{/t}</span></div>
+                    <div  class="mark_on_hover" style="flex-grow:1;text-align:center;border-left:1px solid #fff;  font-weight: 800;" ><span onClick="location.href='/register.sys'" class="sim_button" >{t}Register{/t}</span></div>
                 </div>
                 {/if}
 
@@ -337,8 +337,8 @@
                             {/if}
                         {else}
                             <div class=" order_row " style="display:flex;" >
-                                <div class="mark_on_hover"  style="flex-grow:1;text-align:center;border-right:1px solid #fff;  font-weight: 800;" ><span onClick="location.href='login.php?from={$page->id}'" class="sim_button" >{t}Login{/t}</span></div>
-                                <div class="mark_on_hover"  style="flex-grow:1;text-align:center;border-left:1px solid #fff;  font-weight: 800;" ><span onClick="location.href='registration.php'" class="sim_button" >{t}Register{/t}</span></div>
+                                <div class="mark_on_hover"  style="flex-grow:1;text-align:center;border-right:1px solid #fff;  font-weight: 800;" ><span onClick="location.href='/login.sys'" class="sim_button" >{t}Login{/t}</span></div>
+                                <div class="mark_on_hover"  style="flex-grow:1;text-align:center;border-left:1px solid #fff;  font-weight: 800;" ><span onClick="location.href='/register.sys'" class="sim_button" >{t}Register{/t}</span></div>
                             </div>
                         {/if}
 

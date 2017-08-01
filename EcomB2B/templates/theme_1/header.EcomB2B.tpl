@@ -223,7 +223,7 @@
                                                                     </li>
                                                                 </ul>
                                                             {elseif $sub_column.type=='departments' or   $sub_column.type=='families' or  $sub_column.type=='web_departments' or   $sub_column.type=='web_families'}
-                                                                <ul id="_3c_col{$key}_{$col_key}" class="col-sm-6 col-md-4 list-unstyled two _3c_col {$sub_column.type}" type="{$sub_column.type}" page="{$sub_column.page}" page_label="{$sub_column.page_label}"  >
+                                                                <ul  class="col-sm-6 col-md-4 list-unstyled two _3c_col {$sub_column.type}" type="{$sub_column.type}" page="{$sub_column.page}" page_label="{$sub_column.page_label}"  >
                                                                     <li class="title">
                                                                         <p >{$sub_column.label}</p>
                                                                     </li>
@@ -235,7 +235,7 @@
 
                                                                 </ul>
                                                             {elseif $sub_column.type=='empty'}
-                                                                <ul id="_3c_col{$key}_{$col_key}" class="col-sm-6 col-md-4 list-unstyled two _3c_col {$sub_column.type} ">
+                                                                <ul  class="col-sm-6 col-md-4 list-unstyled two _3c_col {$sub_column.type} ">
                                                                 </ul>
 
                                                             {/if}
