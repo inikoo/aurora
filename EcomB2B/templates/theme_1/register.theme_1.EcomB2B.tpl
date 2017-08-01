@@ -311,14 +311,14 @@
 
                 var register_data={ }
 
-                $("#sky-form input:not(.ignore)").each(function(i, obj) {
+                $("#registration_form input:not(.ignore)").each(function(i, obj) {
                     if(!$(obj).attr('name')==''){
                         register_data[$(obj).attr('name')]=$(obj).val()
                     }
 
                 });
 
-                $("#sky-form select:not(.ignore)").each(function(i, obj) {
+                $("#registration_form select:not(.ignore)").each(function(i, obj) {
                     if(!$(obj).attr('name')==''){
 
 
@@ -326,6 +326,7 @@
                     }
 
                 });
+
 
 
                 register_data['password']=sha256_digest(register_data['password']);

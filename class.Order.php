@@ -1233,6 +1233,7 @@ class Order extends DB_Table {
         }
 
 
+
         if ($dn_key and $order_picked) {
             list(
                 $shipping, $shipping_key, $shipping_method
@@ -1339,8 +1340,7 @@ class Order extends DB_Table {
         )) {
             include_once 'utils/geography_functions.php';
 
-            $postcode = gbr_postcode_first_part(
-                $this->data['Order Ship To Postal Code']
+            $postcode = gbr_postcode_first_part($this->data['Order Ship To Postal Code']
             );
         } else {
             $postcode = $this->data['Order Ship To Postal Code'];
@@ -1374,9 +1374,12 @@ class Order extends DB_Table {
         }
 
 
+
+
+
         $sql = sprintf(
-            "SELECT `Shipping Key`,`Shipping Metadata`,`Shipping Price Method` FROM `Shipping Dimension` WHERE  `Shipping Destination Type`='Country' AND `Shipping Destination Code`=%s  AND   `Shipping Secondary Destination Check`='None'  AND `Store Key`=%d  ",
-            prepare_mysql($this->data['Order Ship To Country Code']), $this->data['Order Store Key']
+            "SELECT `Shipping Key`,`Shipping Metadata`,`Shipping Price Method` FROM `Shipping Dimension`  left join kbase.`Country Dimension` on (`Country Code`=`Shipping Destination Code`)   WHERE  `Shipping Destination Type`='Country' AND `Country 2 Alpha Code`=%s  AND   `Shipping Secondary Destination Check`='None'  AND `Store Key`=%d  ",
+            prepare_mysql($this->data['Order Delivery Address Country 2 Alpha Code']), $this->data['Order Store Key']
         );
 
 
@@ -8321,6 +8324,7 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
 
 
         if (!$this->skip_update_after_individual_transaction) {
+
 
 
             $this->update_number_products();
