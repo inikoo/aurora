@@ -25,6 +25,9 @@
         {include file="theme_1/header.EcomB2B.tpl"}
 
         <div class="content_fullwidth less2">
+
+
+
             <div class="container">
 
                 <span id="ordering_settings" class="hide" data-labels='{ "ordered":"<i class=\"fa fa-thumbs-o-up fa-flip-horizontal \" aria-hidden=\"true\"></i> {t}Ordered{/t}", "order":"<i class=\"fa fa-hand-pointer-o\" aria-hidden=\"true\"></i>  {t}Order now{/t}", "update":"<i class=\"fa fa-hand-pointer-o\" aria-hidden=\"true\"></i>  {t}Update{/t}"  }'></span>
@@ -77,7 +80,7 @@
 
 
                             {if $category_data.type=='category'}
-                                <a href="page.php?id={$category_data.webpage_key}">
+                                <a href="/{$category_data.webpage_code|lower}">
                                 <div   class="category_block category_showcase button" style="position:relative"  >
 
 

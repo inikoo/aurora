@@ -14,10 +14,10 @@
 <table class="table">
     <thead>
     <tr>
-        <th id="_items_code" class="text-left website_localized_label" contenteditable="true" >{if isset($labels.items_code) and $labels.items_code!=''}{$labels.items_code}{else}{t}Code{/t}{/if}</th>
-        <th id="_items_description" class="text-left website_localized_label" contenteditable="true" >{if isset($labels.items_code) and $labels.items_code!=''}{$labels.items_code}{else}{t}Description{/t}{/if}</th>
-        <th id="_items_quantity" class="text-right website_localized_label" contenteditable="true" >{if isset($labels.items_code) and $labels.items_code!=''}{$labels.items_code}{else}{t}Quantity{/t}{/if}</th>
-        <th id="_items_amount" class="text-right website_localized_label" contenteditable="true" >{if isset($labels.items_code) and $labels.items_code!=''}{$labels.items_code}{else}{t}Amount{/t}{/if}</th>
+        <th id="_items_code" class="text-left website_localized_label" contenteditable="true" >{if isset($labels._items_code) and $labels._items_code!=''}{$labels._items_code}{else}{t}Code{/t}{/if}</th>
+        <th id="_items_description" class="text-left website_localized_label" contenteditable="true" >{if isset($labels._items_description) and $labels._items_description!=''}{$labels._items_description}{else}{t}Description{/t}{/if}</th>
+        <th id="_items_quantity" class="text-right website_localized_label" contenteditable="true" >{if isset($labels._items_quantity) and $labels._items_quantity!=''}{$labels._items_quantity}{else}{t}Quantity{/t}{/if}</th>
+        <th id="_items_amount" class="text-right website_localized_label" contenteditable="true" >{if isset($labels._items_amount) and $labels._items_amount!=''}{$labels._items_amount}{else}{t}Amount{/t}{/if}</th>
 
 
     </tr>
