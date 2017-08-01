@@ -14,7 +14,7 @@
         $_SESSION['website_key'] = 12;
     } else {
 
-      include_onee 'utils/general_functions.php';
+      include_once 'utils/general_functions.php';
 
       require_once 'keyring/dns.php';
 
