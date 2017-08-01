@@ -24,7 +24,7 @@
 
         {include file="theme_1/header.EcomB2B.tpl"}
 
-        <div class="content_fullwidth less2">
+        <div class="content_fullwidth less">
 
             {foreach from=$content.blocks item=$block key=key}
                 {if $block.show}
