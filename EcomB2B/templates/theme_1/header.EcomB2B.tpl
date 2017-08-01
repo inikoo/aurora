@@ -323,8 +323,8 @@
 
                         {else}
                             <p>
-                            <a href="login.sys" class="button" ><i class="fa fa-sign-in" aria-hidden="true"></i> {t}Login{/t}</a>
-                            <a href="register.sys"class="button" ><i class="fa fa-user-plus" aria-hidden="true"></i> {t}Register{/t}</a>
+                            <a href="/login.sys" class="button" ><i class="fa fa-sign-in" aria-hidden="true"></i> {t}Login{/t}</a>
+                            <a href="/register.sys"class="button" ><i class="fa fa-user-plus" aria-hidden="true"></i> {t}Register{/t}</a>
                             </p>
                         {/if}
 
