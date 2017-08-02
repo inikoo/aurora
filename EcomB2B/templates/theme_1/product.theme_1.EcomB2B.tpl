@@ -186,12 +186,12 @@
                             </tr>
 
                             <tr class="{if $Weight==''}hide{/if}">
-                                <td>{$product->get_field_label('Product Unit Weight')|ucfirst}</td>
                                 <td>{if empty($labels._product_weight)}{t}Weight{/t}{else}{$labels._product_weight}{/if}</td>
+                                <td>{$Weight}</td>
                             </tr>
                             <tr class="{if $Dimensions==''}hide{/if}">
-                                <td>{$product->get_field_label('Product Unit Dimensions')|ucfirst}</td>
                                 <td>{if empty($labels._product_dimensions)}{t}Dimensions{/t}{else}{$labels._product_dimensions}{/if}</td>
+                                <td>{$Dimensions}</td>
                             </tr>
                             <tr class="{if $Materials==''}hide{/if}">
                                 <td>{if empty($labels._product_materials)}{t}Materials{/t}/{t}Ingredients{/t}{else}{$labels._product_materials}{/if}</td>
@@ -204,8 +204,9 @@
                                 <td>{$CPNP}</td>
                             </tr>
                             <tr class="{if $Barcode==''}hide{/if}">
-                                <td>{$product->get_field_label('Product Barcode Number')|ucfirst}</td>
                                 <td>{if empty($labels._product_barcode)}{t}Barcode{/t}{else}{$labels._product_barcode}{/if}</td>
+                                <td>{$Barcode}</td>
+
                             </tr>
 
                             {foreach from=$product_attachments item=attachment}
