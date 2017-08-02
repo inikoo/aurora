@@ -20,10 +20,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="keywords" content=""/>
     <meta name="description" content=""/>
-    <link rel="shortcut icon" type="image/png" href="images/favicon.png"/>
+    <link rel="shortcut icon" type="image/png" href="art/favicon.png"/>
 
-    <!-- Favicon -->
+    <!--
     <link rel="shortcut icon" href="images/favicon.ico">
+ Favicon -->
+
 
     <!-- this styles only adds some repairs on idevices  -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">

@@ -66,3 +66,5 @@ EcomB2B/instance_files.tar
 cron/fix_modified_supplier_parts_cartons.php
 
 cron/delete_me.php
+
+EcomB2B/art/favicon.png
