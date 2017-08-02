@@ -30,7 +30,7 @@
 
 
                 <span id="ordering_settings" class="hide"
-                      data-labels='{ "ordered":"<i class=\"fa fa-thumbs-o-up fa-flip-horizontal \" aria-hidden=\"true\"></i> {t}Ordered{/t}", "order":"<i class=\"fa fa-hand-pointer-o\" aria-hidden=\"true\"></i>  {t}Order now{/t}", "update":"<i class=\"fa fa-hand-pointer-o\" aria-hidden=\"true\"></i>  {t}Update{/t}"  }'></span>
+                      data-labels='{ "ordered":"<i class=\"fa fa-thumbs-o-up fa-flip-horizontal \" aria-hidden=\"true\"></i> {if empty($labels._ordering_ordered)}{t}Ordered{/t}{else}{$labels._ordering_ordered}{/if}", "order":"<i class=\"fa fa-hand-pointer-o\" aria-hidden=\"true\"></i>  {if empty($labels._ordering_order_now)}{t}Order now{/t}{else}{$labels._ordering_order_now}{/if}", "update":"<i class=\"fa fa-hand-pointer-o\" aria-hidden=\"true\"></i>  {if empty($labels._ordering_click_to_update)}{t}Click to update{/t}{else}{$labels._ordering_click_to_update}{/if}"  }'></span>
 
                 <div id="page_content" style="position:relative">
                 <div id="product_bd" style="padding:5px 20px 0px 20px;clear:both;" class="product_container" product_id="{$product->id}">
@@ -71,7 +71,7 @@
                             </h1>
                             <div class="">
                                 <div style="float:left;margin-right:4px;min-width:200px">
-                                    {t}Product code{/t}: <span class="code">{$product->get('Code')} </span>
+                                    {if empty($labels._product_code)}{t}Product code{/t}{else}{$labels._product_code}{/if}: <span class="code">{$product->get('Code')} </span>
                                 </div>
 
                             </div>
@@ -80,10 +80,10 @@
                                 <div class="ordering-container  log_in" style="margin-top:40px;">
 
                                     <div class=" product_price " style="margin-left:0px;padding-left:0px;width:250px;margin-bottom:10px">
-                                        <div class="product_price">{t}Price{/t}: {$product->get('Price')}</div>
+                                        <div class="product_price">{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}: {$product->get('Price')}</div>
                                         {assign 'rrp' $product->get('RRP')}
                                         {if $rrp!=''}
-                                            <div class="product_price" style="margin-top:4px">{t}RRP{/t}: {$rrp}</div>{/if}
+                                            <div class="product_price" style="margin-top:4px">{if empty($labels._product_rrp)}{t}RRP{/t}{else}{$labels._product_rrp}{/if}: {$rrp}</div>{/if}
                                         <div style="clear:both"></div>
                                     </div>
 
@@ -113,9 +113,9 @@
                                                 ovalue='{$quantity_ordered}'>
 
                                                 {if $quantity_ordered==''}
-                                                    <div class="label sim_button" style="margin-left:57px"><i class="fa fa-hand-pointer-o fa-fw" aria-hidden="true"></i> <span class="">{t}Order now{/t}</span></div>
+                                                    <div class="label sim_button" style="margin-left:57px"><i class="fa fa-hand-pointer-o fa-fw" aria-hidden="true"></i> <span class="">{if empty($labels._ordering_order_now)}{t}Order now{/t}{else}{$labels._ordering_order_now}{/if}</span></div>
                                                 {else}
-                                                    <span class="label sim_button"><i class="fa  fa-thumbs-o-up fa-flip-horizontal fa-fw" aria-hidden="true"></i> <span class="">{t}Ordered{/t}</span></span>
+                                                    <span class="label sim_button"><i class="fa  fa-thumbs-o-up fa-flip-horizontal fa-fw" aria-hidden="true"></i> <span class="">{if empty($labels._ordering_ordered)}{t}Ordered{/t}{else}{$labels._ordering_ordered}{/if}</span></span>
                                                 {/if}
 
                                             </div>
@@ -181,31 +181,31 @@
 
                         <table class="properties">
                             <tr class="{if $Origin==''}hide{/if}">
-                                <td>{t}Origin{/t}</td>
+                                <td>{if empty($labels._product_origin)}{t}Origin{/t}{else}{$labels._product_origin}{/if}</td>
                                 <td>{$Origin}</td>
                             </tr>
 
                             <tr class="{if $Weight==''}hide{/if}">
                                 <td>{$product->get_field_label('Product Unit Weight')|ucfirst}</td>
-                                <td>{$Weight}</td>
+                                <td>{if empty($labels._product_weight)}{t}Weight{/t}{else}{$labels._product_weight}{/if}</td>
                             </tr>
                             <tr class="{if $Dimensions==''}hide{/if}">
                                 <td>{$product->get_field_label('Product Unit Dimensions')|ucfirst}</td>
-                                <td>{$Dimensions}</td>
+                                <td>{if empty($labels._product_dimensions)}{t}Dimensions{/t}{else}{$labels._product_dimensions}{/if}</td>
                             </tr>
                             <tr class="{if $Materials==''}hide{/if}">
-                                <td>{t}Materials{/t}/{t}Ingredients{/t}</td>
+                                <td>{if empty($labels._product_materials)}{t}Materials{/t}/{t}Ingredients{/t}{else}{$labels._product_materials}{/if}</td>
                                 <td>
                                     <section style="width:70%"> {$Materials}</section>
                                 </td>
                             </tr>
                             <tr class="{if $CPNP==''}hide{/if}">
-                                <td title="{t}Cosmetic Products Notification Portal{/t} - Europa.eu">CPNP</td>
+                                <td title="{if empty($labels._product_cpnp)}{t}Cosmetic Products Notification Portal{/t}{else}{$labels._product_cpnp}{/if} - Europa.eu">CPNP</td>
                                 <td>{$CPNP}</td>
                             </tr>
                             <tr class="{if $Barcode==''}hide{/if}">
                                 <td>{$product->get_field_label('Product Barcode Number')|ucfirst}</td>
-                                <td>{$Barcode}</td>
+                                <td>{if empty($labels._product_barcode)}{t}Barcode{/t}{else}{$labels._product_barcode}{/if}</td>
                             </tr>
 
                             {foreach from=$product_attachments item=attachment}
@@ -221,11 +221,7 @@
                     </div>
 
 
-                    <input id="tab-new" type="radio" name="grp"/>
-                    <label class="hide" for="tab-new">{t}New tab{/t}</label>
-                    <div>
-                        bla bla bla
-                    </div>
+
 
 
                 </section>

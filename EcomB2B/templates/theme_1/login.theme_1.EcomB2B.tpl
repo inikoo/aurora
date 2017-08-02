@@ -9,10 +9,6 @@
 -->
 *}{include file="theme_1/_head.theme_1.EcomB2B.tpl"}
 
-{if isset($labels.validation_handle_missing) and $labels.validation_handle_missing!=''}{assign "validation_handle_missing" $labels.validation_handle_missing }{else}{assign "validation_handle_missing"  $labels_fallback.validation_handle_missing  }{/if}
-{if isset($labels.validation_email_invalid) and $labels.validation_email_invalid!=''}{assign "validation_email_invalid" $labels.validation_email_invalid }{else}{assign "validation_email_invalid"  $labels_fallback.validation_email_invalid  }{/if}
-{if isset($labels.validation_password_missing) and $labels.validation_password_missing!=''}{assign "validation_password_missing" $labels.validation_password_missing }{else}{assign "validation_password_missing"  $labels_fallback.validation_password_missing  }{/if}
-
 
 
 <body xmlns="http://www.w3.org/1999/html">
@@ -233,12 +229,12 @@
 
                     email:
                         {
-                            required: '{$validation_handle_missing|escape}',
-                                email: '{$validation_email_invalid|escape}',
+                            required: '{if empty($labels._validation_handle_missing)}{t}Please enter your registered email address{/t}{else}{$labels._validation_handle_missing|escape}{/if}',
+                        email: '{if empty($labels._validation_email_invalid)}{t}Please enter a valid email address{/t}{else}{$labels._validation_email_invalid|escape}{/if}',
                         },
                     password:
                         {
-                            required: '{$validation_password_missing|escape}',
+                            required: '{if empty($labels._validation_password_missing)}{t}Please enter your password{/t}{else}{$labels._validation_password_missing|escape}{/if}',
 
                         }
 
@@ -313,13 +309,6 @@
                         email: true,
 
 
-                    },
-                password:
-                    {
-                        required: true,
-
-
-
                     }
 
 
@@ -331,13 +320,8 @@
 
                 email:
                     {
-                        required: '{$validation_handle_missing|escape}',
-                        email: '{$validation_email_invalid|escape}',
-                    },
-                password:
-                    {
-                        required: '{$validation_password_missing|escape}',
-
+                        required: '{if empty($labels._validation_handle_missing)}{t}Please enter your registered email address{/t}{else}{$labels._validation_handle_missing}{/if}',
+                        email: '{if empty($labels._validation_email_invalid)}{t}Please enter a valid email address{/t}{else}{$labels._validation_email_invalid}{/if}',
                     }
 
 

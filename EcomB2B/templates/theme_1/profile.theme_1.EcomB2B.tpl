@@ -1060,20 +1060,21 @@
 
                     email:
                         {
-                            required: '{if isset($labels.validation_required)}{$validation_required|escape}{else}{t}Field required{/t}{/if}',
-                            email: '{if isset($labels.validation_email_invalid)}{$validation_email_invalid|escape}{else}{t}Invalid email{/t}{/if}',
-                            remote: '{if isset($labels.validation_handle_registered)}{$validation_handle_registered|escape}{else}{t}Email already in the system{/t}{/if}',
+                            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                            email: '{if empty($labels._validation_email_invalid)}{t}Invalid email{/t}{else}{$labels._validation_email_invalid|escape}{/if}',
+                            remote: '{if empty($labels._validation_handle_registered)}{t}Email address is already in registered{/t}{else}{$labels._validation_handle_registered|escape}{/if}',
+
 
 
                         },
 
                     contact_name:
                         {
-                            required: '{if isset($labels.validation_required)}{$validation_required|escape}{else}{t}Field required{/t}{/if}',
+                            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
                         },
                     mobile:
                         {
-                            required: '{if isset($labels.validation_required)}{$validation_required|escape}{else}{t}Field required{/t}{/if}',
+                            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
                         }
 
 
@@ -1171,18 +1172,18 @@
         {
 
 
-            required: '{if isset($labels.validation_required)}{$labels.validation_required|escape}{else}{t}Field required{/t}{/if}',
-            minlength: '{if isset($labels.validation_minlength_password)}{$labels.validation_minlength_password|escape}{else}{t}Password should be more than 8 characters{/t}{/if}',
+            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+            minlength: '{if empty($labels._validation_minlength_password)}{t}Enter at least 8 characters{/t}{else}{$labels._validation_minlength_password|escape}{/if}',
 
 
 
         },
         password_confirm:
         {
-            required: '{if isset($labels.validation_required)}{$labels.validation_required|escape}{else}{t}Field required{/t}{/if}',
-            equalTo: '{if isset($labels.validation_same_password)}{$labels.validation_same_password|escape}{else}{t}Enter the same password as above{/t}{/if}',
+            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+            equalTo: '{if empty($labels._validation_same_password)}{t}Enter the same password as above{/t}{else}{$labels._validation_same_password|escape}{/if}',
 
-            minlength: '{if isset($labels.validation_minlength_password)}{$labels.validation_minlength_password|escape}{else}{t}Password should be more than 8 characters{/t}{/if}',
+            minlength: '{if empty($labels._validation_minlength_password)}{t}Enter at least 8 characters{/t}{else}{$labels._validation_minlength_password|escape}{/if}',
         }
 
 

@@ -49,7 +49,7 @@
 
 {include file="category.webpage.preview.style.tpl" }
 
-<span id="ordering_settings" class="hide" data-labels='{ "ordered":"<i class=\"fa fa-thumbs-o-up fa-flip-horizontal \" aria-hidden=\"true\"></i> {t}Ordered{/t}", "order":"<i class=\"fa fa-hand-pointer-o\" aria-hidden=\"true\"></i>  {t}Order now{/t}", "update":"<i class=\"fa fa-hand-pointer-o\" aria-hidden=\"true\"></i>  {t}Update{/t}"  }'></span>
+<span id="ordering_settings" class="hide" data-labels='{ "ordered":"<i class=\"fa fa-thumbs-o-up fa-flip-horizontal \" aria-hidden=\"true\"></i> {if empty($labels._ordering_ordered)}{t}Ordered{/t}{else}{$labels._ordering_ordered}{/if}", "order":"<i class=\"fa fa-hand-pointer-o\" aria-hidden=\"true\"></i>   {if empty($labels._ordering_order_now)}{t}Order now{/t}{else}{$labels._ordering_order_now}{/if}", "update":"<i class=\"fa fa-hand-pointer-o\" aria-hidden=\"true\"></i>  {if empty($labels._ordering_click_to_update)}{t}Click to update{/t}{else}{$labels._ordering_click_to_update}{/if}"  }'></span>
 
 
 <div id="page_content" style="position:relative">
@@ -94,15 +94,15 @@
                     <div class="ordering-container  log_in" style="display: flex;margin-top:40px;" >
 
                     <div class="product_prices log_in " style="margin-left:0px;padding-left:0px;font-size: 120%;width:250px" >
-                        <div class="product_price">{t}Price{/t}: {$public_product->get('Price')}</div>
+                        <div class="product_price">{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}: {$public_product->get('Price')}</div>
                         {assign 'rrp' $public_product->get('RRP')}
-                        {if $rrp!=''}<div style="margin-top:4px">{t}RRP{/t}: {$rrp}</div>{/if}
+                        {if $rrp!=''}<div style="margin-top:4px">{if empty($labels._product_rrp)}{t}RRP{/t}{else}{$labels._product_rrp}{/if}: {$rrp}</div>{/if}
                     </div>
 
                     <div style="margin-left:10px;">
                         <div class="ordering log_in " >
                             <input maxlength=6  class='order_input ' id='but_qty{$public_product->id}'   type="text" size='2'  value='{$public_product->get('Ordered Quantity')}' ovalue='{$public_product->get('Ordered Quantity')}'>
-                            <span class="product_footer order_button"   ><i class="fa fa-hand-pointer-o" aria-hidden="true"></i> {t}Order now{/t}</span>
+                            <span class="product_footer order_button"   ><i class="fa fa-hand-pointer-o" aria-hidden="true"></i> {if empty($labels._ordering_order_now)}{t}Order now{/t}{else}{$labels._ordering_order_now}{/if}</span>
 
 
 
@@ -143,7 +143,7 @@
     <section class="product_tabs" style="margin-top:20px">
 
         <input id="tab-properties" type="radio" name="grp" class="{if !$has_properties_tab}hide{/if}" {if $has_properties_tab}checked="checked"{/if} />
-        <label for="tab-properties">{t}Properties{/t}</label>
+        <label for="tab-properties"  id="_tab_label_propierties" >   {t}Properties{/t}</label>
         <div>
 
 
