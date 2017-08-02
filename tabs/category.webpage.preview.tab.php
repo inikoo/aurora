@@ -37,6 +37,9 @@ $smarty->assign('webpage', $webpage);
 
 $smarty->assign('website', $website);
 
+$smarty->assign('labels', $website->get('Localised Labels'));
+
+
 if (!$webpage->id) {
     $html = '<div style="padding:40px">'._("This category don't have webpage").'</div>';
 

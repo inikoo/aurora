@@ -259,6 +259,45 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
 
     $object->editor = $editor;
 
+
+
+
+
+    if($data['object']=='Website' and preg_match('/^Localised_Labels/',$data['field']) ){
+
+
+
+
+
+
+
+        $object->update_labels_in_localised_labels(array(  preg_replace('/^Localised_Labels/','',$data['field']) => $data['value']  ));
+
+
+        $response = array(
+            'state'              => 200,
+            'msg'                => '',
+            'action'             => '',
+            'formatted_value'    => $data['value'] ,
+            'value'              => $data['value'] ,
+            'other_fields'       => $object->get_other_fields_update_info(),
+            'new_fields'         => $object->get_new_fields_info(),
+            'deleted_fields'     => $object->get_deleted_fields_info(),
+            'update_metadata'    => '',
+            'directory_field'    => '',
+            'directory'          => '',
+            'items_in_directory' => ''
+        );
+
+        echo json_encode($response);
+
+
+        return;
+
+    }
+
+
+
     $field = preg_replace('/_/', ' ', $data['field']);
 
     if ($object->get_object_name() == 'Page') {

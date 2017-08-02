@@ -113,7 +113,7 @@
 
 
                     <div class="product_prices log_out hide" >
-                        <div >{t}For prices, please login or register{/t}</div>
+                        <div >{if empty($labels._login_to_see)}{t}For prices, please login or register{/t}{else}{$labels._login_to_see}{/if}</div>
                     </div>
 
 

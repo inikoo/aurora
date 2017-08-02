@@ -148,7 +148,17 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
             return $object_fields;
             break;
         case 'Website':
-            include 'fields/website.fld.php';
+
+
+            if (!empty($options['localization']) ) {
+                include 'fields/website_localization.fld.php';
+
+
+            }else{
+                include 'fields/website.fld.php';
+            }
+
+
 
             return $object_fields;
             break;
