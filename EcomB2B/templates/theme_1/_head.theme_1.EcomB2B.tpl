@@ -37,7 +37,7 @@
     <link href='http://fonts.googleapis.com/css?family=Josefin+Sans:400,100,100italic,300,300italic,400italic,600,600italic,700,700italic' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" id="ms-fonts" href="https://fonts.googleapis.com/css?family=Kaushan+Script:regular|Raleway:regular|Playfair+Display:700" type="text/css" media="all" />
 
-
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu:300,700" rel="stylesheet">
 
 
     <!--[if lt IE 9]>
