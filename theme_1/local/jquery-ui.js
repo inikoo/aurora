@@ -1,1 +1,1 @@
-/Users/raul/au/js/libs/jquery-ui.js
+../../../js/libs/jquery-ui.js
