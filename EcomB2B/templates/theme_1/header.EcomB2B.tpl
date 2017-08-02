@@ -164,7 +164,7 @@
 
                     <nav class="menu_main2" style="float:left">
 
-                        <div id="menu_control_panel"  style=";float:right;">
+                        <div id="menu_control_panel"  style=";float:right;z-index: 2000">
                             {if $logged_in}
                                 <p>
                                     <i id="logout" class="fa fa-sign-out fa-flip-horizontal button " style="cursor:pointer;margin-right:20px"   title="{t}Log out{/t}"  aria-hidden="true"></i>
@@ -189,13 +189,13 @@
 
                         </div>
 
-                        <div class="navbar yamm navbar-default" >
+                        <div class="navbar yamm navbar-default"  style="width:700px" >
 
 
 
                             <div id="navbar-collapse-1" class="navbar-collapse collapse">
 
-                                <ul id="_columns" class="nav navbar-nav three">
+                                <ul id="_columns" class="nav navbar-nav three"    style="width:700px"   >
                                     {foreach from=$header_data.menu.columns item=column key=key}
                                     <li  id="menu_column_{$key}" class="dropdown {if !$column.show}hide{/if} on _column {if $column.type=='three_columns'}yamm-fw  3_columns{else}single_column{/if}  " >
                                         <a  href="" data-toggle="dropdown" class="dropdown-toggle ">
