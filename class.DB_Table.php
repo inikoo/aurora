@@ -246,6 +246,7 @@ abstract class DB_Table extends stdClass {
         }
 
 
+
         $update_op = $this->db->prepare($sql);
         $update_op->execute();
         $affected = $update_op->rowCount();
