@@ -109,7 +109,7 @@ function process_search($q, $db, $website) {
 
 
         $sql = sprintf(
-            'SELECT  `Page Key` ,`Product Main Image Key`,`Product Web State`,`Webpage URL`,`Webpage Name`,`Product Name`,`Product Code`,`Webpage Meta Description`
+            'SELECT  `Webpage Code`,`Page Key` ,`Product Main Image Key`,`Product Web State`,`Webpage URL`,`Webpage Name`,`Product Name`,`Product Code`,`Webpage Meta Description`
      FROM  `Product Dimension` P  LEFT JOIN `Page Store Dimension` PAS ON (PAS.`Page Key`=P.`Product Webpage Key`)
 
 
@@ -119,6 +119,10 @@ function process_search($q, $db, $website) {
 
         if ($result = $db->query($sql)) {
             foreach ($result as $row) {
+
+
+
+
                 if ($row['Product Main Image Key'] > 0) {
                     $image = sprintf('image_root.php?size=small&id=%d', $row['Product Main Image Key']);
                 } else {
@@ -136,7 +140,7 @@ function process_search($q, $db, $website) {
                 $candidates[$row['Page Key']]['scope']             = 'Product';
                 $candidates[$row['Page Key']]['image']             = $image;
                 $candidates[$row['Page Key']]['score']             = $score_match_product_code;
-                $candidates[$row['Page Key']]['url']               = $row['Webpage URL'];
+                $candidates[$row['Page Key']]['url']               = '/'.strtolower($row['Webpage Code']);
                 $candidates[$row['Page Key']]['title']             = $row['Webpage Name'];
                 $candidates[$row['Page Key']]['code']             = $row['Product Code'];
 
@@ -152,7 +156,7 @@ function process_search($q, $db, $website) {
 
 
         $sql = sprintf(
-            'SELECT   `Page Key` ,`Category Main Image Key`,`Webpage URL`,`Webpage Name`,`Category Label`,`Category Code`,`Webpage Meta Description`
+            'SELECT  `Webpage Code`, `Page Key` ,`Category Main Image Key`,`Webpage URL`,`Webpage Name`,`Category Label`,`Category Code`,`Webpage Meta Description`
 		     FROM   `Product Category Dimension` PC LEFT JOIN    `Category Dimension` C    ON (PC.`Product Category Key`=C.`Category Key`)  LEFT JOIN `Page Store Dimension` PAS ON (PAS.`Page Key`=PC.`Product Category Webpage Key`)
             WHERE `Webpage Website Key`=%d AND `Category Code` LIKE %s  AND  `Webpage State`="Online"   ', $website->id, prepare_mysql($code_q)
         );
@@ -161,6 +165,9 @@ function process_search($q, $db, $website) {
 
         if ($result = $db->query($sql)) {
             foreach ($result as $row) {
+
+             //   print_r($row);
+
                 if ($row['Category Main Image Key'] > 0) {
                     $image = sprintf('image_root.php?size=small&id=%d', $row['Category Main Image Key']);
                 } else {
@@ -180,7 +187,7 @@ function process_search($q, $db, $website) {
                     $candidates[$row['Page Key']]['image']             = $image;
                     $candidates[$row['Page Key']]['score']             = $score_match_family_code;
                     $page_scores[$row['Page Key']]                     = $score_match_family_code;
-                    $candidates[$row['Page Key']]['url']               = $row['Webpage URL'];
+                    $candidates[$row['Page Key']]['url']               = '/'.strtolower($row['Webpage Code']);
                     $candidates[$row['Page Key']]['title']             = $row['Webpage Name'];
                     $candidates[$row['Page Key']]['code']             = $row['Category Code'];
 
@@ -199,7 +206,7 @@ function process_search($q, $db, $website) {
 
 
             $sql = sprintf(
-                'SELECT  `Page Key` ,`Product Main Image Key`,`Product Web State`,`Webpage URL`,`Webpage Name`,`Product Name`,`Product Code`,`Webpage Meta Description`
+                'SELECT  `Webpage Code`,`Page Key` ,`Product Main Image Key`,`Product Web State`,`Webpage URL`,`Webpage Name`,`Product Name`,`Product Code`,`Webpage Meta Description`
      FROM  `Product Dimension` P  LEFT JOIN `Page Store Dimension` PAS ON (PAS.`Page Key`=P.`Product Webpage Key`)
 
 
@@ -226,7 +233,7 @@ function process_search($q, $db, $website) {
                     $candidates[$row['Page Key']]['scope']             = 'Product';
                     $candidates[$row['Page Key']]['image']             = $image;
                     $candidates[$row['Page Key']]['score']             = $score_match_product_code;
-                    $candidates[$row['Page Key']]['url']               = $row['Webpage URL'];
+                    $candidates[$row['Page Key']]['url']               = '/'.strtolower($row['Webpage Code']);
                     $candidates[$row['Page Key']]['title']             = $row['Webpage Name'];
                     $candidates[$row['Page Key']]['description']       = $row['Webpage Meta Description'];
                     $candidates[$row['Page Key']]['asset_description'] = '<span class="code">'.$row['Product Code'].'</span> '.$row['Product Name'];
@@ -240,7 +247,7 @@ function process_search($q, $db, $website) {
 
 
             $sql = sprintf(
-                'SELECT   `Page Key` ,`Category Main Image Key`,`Webpage URL`,`Webpage Name`,`Category Label`,`Category Code`,`Webpage Meta Description`
+                'SELECT   `Webpage Code`,`Page Key` ,`Category Main Image Key`,`Webpage URL`,`Webpage Name`,`Category Label`,`Category Code`,`Webpage Meta Description`
 		     FROM   `Product Category Dimension` PC LEFT JOIN    `Category Dimension` C    ON (PC.`Product Category Key`=C.`Category Key`)  LEFT JOIN `Page Store Dimension` PAS ON (PAS.`Page Key`=PC.`Product Category Webpage Key`)
             WHERE `Webpage Website Key`=%d AND  `Category Label`  REGEXP \'[[:<:]]%s\'    AND  `Webpage State`="Online"   ', $website->id, $_q
             );
@@ -268,7 +275,7 @@ function process_search($q, $db, $website) {
                         $candidates[$row['Page Key']]['image']             = $image;
                         $candidates[$row['Page Key']]['score']             = $score_match_family_code;
                         $page_scores[$row['Page Key']]                     = $score_match_family_code;
-                        $candidates[$row['Page Key']]['url']               = $row['Webpage URL'];
+                        $candidates[$row['Page Key']]['url']               = '/'.strtolower($row['Webpage Code']);
                         $candidates[$row['Page Key']]['title']             = $row['Webpage Name'];
                         $candidates[$row['Page Key']]['description']       = $row['Webpage Meta Description'];
                         $candidates[$row['Page Key']]['asset_description'] = '<span class="code">'.$row['Category Code'].'</span> '.$row['Category Label'];
@@ -333,7 +340,7 @@ function process_search($q, $db, $website) {
                     $candidates[$row['Page Key']]['image']             = $image;
                     $candidates[$row['Page Key']]['score']             = $row['score'] * $number_query_words * $score_boolean_factor;
                     $page_scores[$row['Page Key']]                     = $row['score'] * $number_query_words * $score_boolean_factor;
-                    $candidates[$row['Page Key']]['url']               = 'http://'.$row['Page URL'];
+                    $candidates[$row['Page Key']]['url']               = '/'.strtolower($row['Webpage Code']);
                     $candidates[$row['Page Key']]['title']             = $row['Page Store Title'];
                     $candidates[$row['Page Key']]['description']       = $row['Page Store Description'];
                     $candidates[$row['Page Key']]['asset_description'] = '<span class="code">'.$row['Product Code'].'</span> '.$row['Product Name'];
