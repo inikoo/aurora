@@ -229,7 +229,7 @@
                                                                         <p  >{$sub_column.title}</p>
                                                                     </li>
                                                                     <li class="dart">
-                                                                        <img src="{if $sub_column.image==''}http://placehold.it/230x80{else}{$sub_column.image}{/if}" alt="" class="rimg marb1" />
+                                                                        <img src="{if $sub_column.image==''}https://placehold.it/230x80{else}{$sub_column.image}{/if}" alt="" class="rimg marb1" />
                                                                         <span >{$sub_column.text}</span>
                                                                     </li>
                                                                 </ul>
@@ -239,7 +239,7 @@
                                                                         <p  >{$sub_column.title}</p>
                                                                     </li>
                                                                     <li class="dart">
-                                                                        <img src="{if $sub_column.image==''}http://placehold.it/230x160{else}{$sub_column.image}{/if}" alt="" class="rimg marb1" />
+                                                                        <img src="{if $sub_column.image==''}https://placehold.it/230x160{else}{$sub_column.image}{/if}" alt="" class="rimg marb1" />
 
                                                                     </li>
                                                                 </ul>

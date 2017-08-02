@@ -48,9 +48,9 @@
                     <ul>
 
                         <li class="cbp-item identity cbp-l-grid-masonry-height4">
-                            <a class="cbp-caption cbp-lightbox" data-title="Easy Note<br>by GSRthemes9" href="http://placehold.it/600x900">
+                            <a class="cbp-caption cbp-lightbox" data-title="Easy Note<br>by GSRthemes9" href="https://placehold.it/600x900">
                                 <div class="cbp-caption-defaultWrap">
-                                    <img src="http://placehold.it/600x900" alt="">
+                                    <img src="https://placehold.it/600x900" alt="">
                                 </div>
                                 <div class="cbp-caption-activeWrap">
                                     <div class="cbp-l-caption-alignCenter">
@@ -64,9 +64,9 @@
                         </li><!-- end item -->
 
                         <li class="cbp-item web-design cbp-l-grid-masonry-height1">
-                            <a class="cbp-caption cbp-lightbox" data-title="Easy Note<br>by GSRthemes9" href="http://placehold.it/1000x600">
+                            <a class="cbp-caption cbp-lightbox" data-title="Easy Note<br>by GSRthemes9" href="https://placehold.it/1000x600">
                                 <div class="cbp-caption-defaultWrap">
-                                    <img src="http://placehold.it/1000x600" alt="">
+                                    <img src="https://placehold.it/1000x600" alt="">
                                 </div>
                                 <div class="cbp-caption-activeWrap">
                                     <div class="cbp-l-caption-alignCenter">
@@ -80,9 +80,9 @@
                         </li><!-- end item -->
 
                         <li class="cbp-item identity cbp-l-grid-masonry-height1">
-                            <a class="cbp-caption cbp-lightbox" data-title="Easy Note<br>by GSRthemes9" href="http://placehold.it/1000x600">
+                            <a class="cbp-caption cbp-lightbox" data-title="Easy Note<br>by GSRthemes9" href="https://placehold.it/1000x600">
                                 <div class="cbp-caption-defaultWrap">
-                                    <img src="http://placehold.it/1000x600" alt="">
+                                    <img src="https://placehold.it/1000x600" alt="">
                                 </div>
                                 <div class="cbp-caption-activeWrap">
                                     <div class="cbp-l-caption-alignCenter">
@@ -96,9 +96,9 @@
                         </li><!-- end item -->
 
                         <li class="cbp-item web-design cbp-l-grid-masonry-height1">
-                            <a class="cbp-caption cbp-lightbox" data-title="Easy Note<br>by GSRthemes9" href="http://placehold.it/1000x600">
+                            <a class="cbp-caption cbp-lightbox" data-title="Easy Note<br>by GSRthemes9" href="https://placehold.it/1000x600">
                                 <div class="cbp-caption-defaultWrap">
-                                    <img src="http://placehold.it/1000x600" alt="">
+                                    <img src="https://placehold.it/1000x600" alt="">
                                 </div>
                                 <div class="cbp-caption-activeWrap">
                                     <div class="cbp-l-caption-alignCenter">
@@ -112,9 +112,9 @@
                         </li><!-- end item -->
 
                         <li class="cbp-item graphic cbp-l-grid-masonry-height1">
-                            <a class="cbp-caption cbp-lightbox" data-title="Easy Note<br>by GSRthemes9" href="http://placehold.it/1000x600">
+                            <a class="cbp-caption cbp-lightbox" data-title="Easy Note<br>by GSRthemes9" href="https://placehold.it/1000x600">
                                 <div class="cbp-caption-defaultWrap">
-                                    <img src="http://placehold.it/1000x600" alt="">
+                                    <img src="https://placehold.it/1000x600" alt="">
                                 </div>
                                 <div class="cbp-caption-activeWrap">
                                     <div class="cbp-l-caption-alignCenter">
@@ -128,9 +128,9 @@
                         </li><!-- end item -->
 
                         <li class="cbp-item graphic cbp-l-grid-masonry-height2">
-                            <a class="cbp-caption cbp-lightbox" data-title="Easy Note<br>by GSRthemes9" href="http://placehold.it/1000x860">
+                            <a class="cbp-caption cbp-lightbox" data-title="Easy Note<br>by GSRthemes9" href="https://placehold.it/1000x860">
                                 <div class="cbp-caption-defaultWrap">
-                                    <img src="http://placehold.it/1000x860" alt="">
+                                    <img src="https://placehold.it/1000x860" alt="">
                                 </div>
                                 <div class="cbp-caption-activeWrap">
                                     <div class="cbp-l-caption-alignCenter">
@@ -147,7 +147,7 @@
                         <li class="cbp-item video cbp-l-grid-masonry-height4">
                             <a class="cbp-caption cbp-lightbox" data-title="Easy Note<br>by GSRthemes9" href="http://vimeo.com/156783#">
                                 <div class="cbp-caption-defaultWrap">
-                                    <img src="http://placehold.it/600x900" alt="">
+                                    <img src="https://placehold.it/600x900" alt="">
                                 </div>
                                 <div class="cbp-caption-activeWrap">
                                     <div class="cbp-l-caption-alignCenter">
@@ -161,9 +161,9 @@
                         </li><!-- end item -->
 
                         <li class="cbp-item identity cbp-l-grid-masonry-height1">
-                            <a class="cbp-caption cbp-lightbox" data-title="Easy Note<br>by GSRthemes9" href="http://placehold.it/1000x600">
+                            <a class="cbp-caption cbp-lightbox" data-title="Easy Note<br>by GSRthemes9" href="https://placehold.it/1000x600">
                                 <div class="cbp-caption-defaultWrap">
-                                    <img src="http://placehold.it/1000x600" alt="">
+                                    <img src="https://placehold.it/1000x600" alt="">
                                 </div>
                                 <div class="cbp-caption-activeWrap">
                                     <div class="cbp-l-caption-alignCenter">
@@ -179,7 +179,7 @@
                         <li class="cbp-item video cbp-l-grid-masonry-height1">
                             <a class="cbp-caption cbp-lightbox" data-title="Easy Note<br>by GSRthemes9" href="https://www.youtube.com/watch?v=dChhzNGHgnA">
                                 <div class="cbp-caption-defaultWrap">
-                                    <img src="http://placehold.it/1000x600" alt="">
+                                    <img src="https://placehold.it/1000x600" alt="">
                                 </div>
                                 <div class="cbp-caption-activeWrap">
                                     <div class="cbp-l-caption-alignCenter">
@@ -193,9 +193,9 @@
                         </li><!-- end item -->
 
                         <li class="cbp-item identity cbp-l-grid-masonry-height1">
-                            <a class="cbp-caption cbp-lightbox" data-title="Easy Note<br>by GSRthemes9" href="http://placehold.it/1000x600">
+                            <a class="cbp-caption cbp-lightbox" data-title="Easy Note<br>by GSRthemes9" href="https://placehold.it/1000x600">
                                 <div class="cbp-caption-defaultWrap">
-                                    <img src="http://placehold.it/1000x600" alt="">
+                                    <img src="https://placehold.it/1000x600" alt="">
                                 </div>
                                 <div class="cbp-caption-activeWrap">
                                     <div class="cbp-l-caption-alignCenter">
@@ -212,7 +212,7 @@
                         <li class="cbp-item video cbp-l-grid-masonry-height4">
                             <a class="cbp-caption cbp-lightbox" data-title="Easy Note<br>by GSRthemes9" href="http://vimeo.com/156783#">
                                 <div class="cbp-caption-defaultWrap">
-                                    <img src="http://placehold.it/600x900" alt="">
+                                    <img src="https://placehold.it/600x900" alt="">
                                 </div>
                                 <div class="cbp-caption-activeWrap">
                                     <div class="cbp-l-caption-alignCenter">
@@ -226,9 +226,9 @@
                         </li><!-- end item -->
 
                         <li class="cbp-item identity cbp-l-grid-masonry-height1">
-                            <a class="cbp-caption cbp-lightbox" data-title="Easy Note<br>by GSRthemes9" href="http://placehold.it/1000x600">
+                            <a class="cbp-caption cbp-lightbox" data-title="Easy Note<br>by GSRthemes9" href="https://placehold.it/1000x600">
                                 <div class="cbp-caption-defaultWrap">
-                                    <img src="http://placehold.it/1000x600" alt="">
+                                    <img src="https://placehold.it/1000x600" alt="">
                                 </div>
                                 <div class="cbp-caption-activeWrap">
                                     <div class="cbp-l-caption-alignCenter">
@@ -244,7 +244,7 @@
                         <li class="cbp-item video cbp-l-grid-masonry-height1">
                             <a class="cbp-caption cbp-lightbox" data-title="Easy Note<br>by GSRthemes9" href="https://www.youtube.com/watch?v=dChhzNGHgnA">
                                 <div class="cbp-caption-defaultWrap">
-                                    <img src="http://placehold.it/1000x600" alt="">
+                                    <img src="https://placehold.it/1000x600" alt="">
                                 </div>
                                 <div class="cbp-caption-activeWrap">
                                     <div class="cbp-l-caption-alignCenter">
@@ -258,9 +258,9 @@
                         </li><!-- end item -->
 
                         <li class="cbp-item identity cbp-l-grid-masonry-height1">
-                            <a class="cbp-caption cbp-lightbox" data-title="Easy Note<br>by GSRthemes9" href="http://placehold.it/1000x600">
+                            <a class="cbp-caption cbp-lightbox" data-title="Easy Note<br>by GSRthemes9" href="https://placehold.it/1000x600">
                                 <div class="cbp-caption-defaultWrap">
-                                    <img src="http://placehold.it/1000x600" alt="">
+                                    <img src="https://placehold.it/1000x600" alt="">
                                 </div>
                                 <div class="cbp-caption-activeWrap">
                                     <div class="cbp-l-caption-alignCenter">
