@@ -203,7 +203,8 @@
 
                             <section>
                                 <label class="checkbox"><input type="checkbox" name="subscription" id="subscription"><i></i>{$content._subscription}</label>
-                                <label class="checkbox"><input type="checkbox" name="terms" id="terms"><i></i>{$content._terms}</label>
+                                <label class="checkbox"><input type="checkbox" name="terms" id="terms"><i></i>{$content._terms}  <a href="/tac.sys" target="_blank" ><icon class="fa fa-external-link padding_left_5" aria-hidden="true"></icon>
+                                    </a> </label>
 
 
                             </section>
