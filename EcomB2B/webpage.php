@@ -31,16 +31,6 @@ if ($webpage->get('Webpage Template Filename') == 'register') {
         $country_code = $store->get('Store Home Country Code 2 Alpha');
     }
 
-    $labels_fallback = array(
-        'validation_required'           => _('This field is required'),
-        'validation_same_password'      => _("Enter the same password as above"),
-        'validation_minlength_password' => _("Enter at least 8 characters"),
-        'validation_accept_terms'       => _("Please accept our terms and conditions to proceed"),
-        'validation_handle_registered'  => _("Email address is already in registered"),
-        'validation_email_invalid'      => _("Please enter a valid email address"),
-        'validation_password_missing'   => _("Please enter your password")
-    );
-
 
     require_once 'utils/get_addressing.php';
     list($address_format, $address_labels, $used_fields, $hidden_fields, $required_fields, $no_required_fields) = get_address_form_data($country_code, $website->get('Website Locale'));
@@ -51,7 +41,7 @@ if ($webpage->get('Webpage Template Filename') == 'register') {
 
 
     $smarty->assign('address_labels', $address_labels);
-    $smarty->assign('labels_fallback', $labels_fallback);
+
     $smarty->assign('required_fields', $required_fields);
     $smarty->assign('no_required_fields', $no_required_fields);
 
@@ -73,14 +63,6 @@ if ($webpage->get('Webpage Template Filename') == 'register') {
         $smarty->assign('display', 'login');
     }
 
-    $labels_fallback = array(
-        'validation_email_invalid'    => _("Please enter a valid email address"),
-        'validation_handle_missing'   => _("Please enter your registered email address"),
-        'validation_password_missing' => _("Please enter your password"),
-
-
-    );
-    $smarty->assign('labels_fallback', $labels_fallback);
 
     $template = $theme.'/login.'.$theme.'.'.$website->get('Website Type').'.tpl';
 } elseif ($webpage->get('Webpage Template Filename') == 'search') {
@@ -426,15 +408,6 @@ if ($webpage->get('Webpage Template Filename') == 'register') {
         $country_code = $store->get('Store Home Country Code 2 Alpha');
     }
 
-    $labels_fallback = array(
-        'validation_required'           => _('This field is required'),
-        'validation_same_password'      => _("Enter the same password as above"),
-        'validation_minlength_password' => _("Enter at least 8 characters"),
-        'validation_accept_terms'       => _("Please accept our terms and conditions to proceed"),
-        'validation_handle_registered'  => _("Email address is already in registered"),
-        'validation_email_invalid'      => _("Please enter a valid email address"),
-        'validation_password_missing'   => _("Please enter your password")
-    );
 
 
     require_once 'utils/get_addressing.php';
@@ -446,7 +419,6 @@ if ($webpage->get('Webpage Template Filename') == 'register') {
 
 
     $smarty->assign('address_labels', $address_labels);
-    $smarty->assign('labels_fallback', $labels_fallback);
     $smarty->assign('required_fields', $required_fields);
     $smarty->assign('no_required_fields', $no_required_fields);
 

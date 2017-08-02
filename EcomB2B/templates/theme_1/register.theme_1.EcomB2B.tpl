@@ -12,14 +12,6 @@
 
 {include file="theme_1/_head.theme_1.EcomB2B.tpl"}
 
-{if isset($labels.validation_required) and $labels.validation_required!=''}{assign "validation_required" $labels.validation_required }{else}{assign "validation_required"  $labels_fallback.validation_required}{/if}
-{if isset($labels.validation_same_password) and $labels.validation_same_password!=''}{assign "validation_same_password" $labels.validation_same_password }{else}{assign "validation_same_password"  $labels_fallback.validation_same_password  }{/if}
-{if isset($labels.validation_minlength_password) and $labels.validation_minlength_password!=''}{assign "validation_minlength_password" $labels.validation_minlength_password }{else}{assign "validation_minlength_password"  $labels_fallback.validation_minlength_password  }{/if}
-{if isset($labels.validation_handle_registered) and $labels.validation_handle_registered!=''}{assign "validation_handle_registered" $labels.validation_handle_registered }{else}{assign "validation_handle_registered"  $labels_fallback.validation_handle_registered  }{/if}
-{if isset($labels.validation_email_invalid) and $labels.validation_email_invalid!=''}{assign "validation_email_invalid" $labels.validation_email_invalid }{else}{assign "validation_email_invalid"  $labels_fallback.validation_email_invalid  }{/if}
-{if isset($labels.validation_accept_terms) and $labels.validation_accept_terms!=''}{assign "validation_accept_terms" $labels.validation_accept_terms }{else}{assign "validation_accept_terms"  $labels_fallback.validation_accept_terms  }{/if}
-
-
 
 <body xmlns="http://www.w3.org/1999/html">
 
@@ -426,61 +418,69 @@
 
                     email:
                         {
-                            required: '{$validation_required|escape}',
-                                email: '{$validation_email_invalid|escape}',
-                                remote: '{$validation_handle_registered|escape}',
+
+                            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                                email: '{if empty($labels._validation_email_invalid)}{t}Invalid email{/t}{else}{$labels._validation_email_invalid|escape}{/if}',
+                            remote: '{if empty($labels._validation_handle_registered)}{t}Email address is already in registered{/t}{else}{$labels._validation_handle_registered|escape}{/if}',
+
+
                         },
                     password:
                         {
-                            required: '{$validation_required|escape}',
-                                minlength: '{$validation_minlength_password|escape}',
+                            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                                minlength: '{if empty($labels._validation_minlength_password)}{t}Enter at least 8 characters{/t}{else}{$labels._validation_minlength_password|escape}{/if}',
+
+
 
                         },
                     password_confirm:
                         {
-                            required: '{$validation_required|escape}',
-                                equalTo: '{$validation_same_password|escape}',
-                                minlength: '{$validation_minlength_password|escape}',
+                            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                            equalTo: '{if empty($labels._validation_same_password)}{t}Enter the same password as above{/t}{else}{$labels._validation_same_password|escape}{/if}',
+
+                            minlength: '{if empty($labels._validation_minlength_password)}{t}Enter at least 8 characters{/t}{else}{$labels._validation_minlength_password|escape}{/if}',
                         },
                     contact_name:
                         {
-                            required: '{$validation_required|escape}'
+                            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
                         },
                     mobile:
                         {
-                            required: '{$validation_required|escape}'
+                           required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
                         },
                     terms:
                         {
-                            required: '{$validation_accept_terms|escape}'
+                            required: '{if empty($labels._validation_accept_terms)}{t}Please accept our terms and conditions to proceed{/t}{else}{$labels._validation_accept_terms|escape}{/if}',
+
+
                         },
                     administrativeArea:
                         {
-                            required: '{$validation_required|escape}'
+                            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
                         },
                     locality:
                         {
-                            required: '{$validation_required|escape}'
+                            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
                         },
                     dependentLocality:
                         {
-                            required: '{$validation_required|escape}'
+                            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
                         },
                     postalCode:
                         {
-                            required: '{$validation_required|escape}'
+                            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
                         },
                     addressLine1:
                         {
-                            required: '{$validation_required|escape}'
+                            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
                         },
                     addressLine2:
                         {
-                            required: '{$validation_required|escape}'
+                            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
                         },
                     sortingCode:
                         {
-                            required: '{$validation_required|escape}'
+                            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
                         }
 
 

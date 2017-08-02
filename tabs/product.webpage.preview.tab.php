@@ -22,6 +22,7 @@ $website=get_object('Website',$webpage->get('Webpage Website Key'));
 $smarty->assign('webpage', $webpage);
 $smarty->assign('website', $website);
 
+$smarty->assign('labels', $website->get('Localised Labels'));
 
 if (!$webpage->id) {
     $html = '<div style="padding:40px">'._("This product don't have webpage").'</div>';

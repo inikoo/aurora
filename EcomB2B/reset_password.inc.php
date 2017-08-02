@@ -77,15 +77,6 @@ $smarty->assign('form_error', $form_error);
 
 
 
-$labels_fallback = array(
-    'validation_required'           => _('This field is required'),
-    'validation_same_password'      => _("Enter the same password as above"),
-    'validation_minlength_password' => _("Enter at least 8 characters"),
-    'validation_password_missing'   => _("Please enter your password")
-);
-
-$smarty->assign('labels_fallback', $labels_fallback);
-
 
 
 

@@ -27,14 +27,14 @@
     <tr>
         <td style="width:150px"><i class="fa fa-exclamation-triangle warning" aria-hidden="true"></i> {t}Missing email{/t}
         </td>
-        <td><input id="validation_handle_missing" value="{if isset($labels.validation_handle_missing) and $labels.validation_handle_missing!=''}{$labels.validation_handle_missing}{else}{t}Please enter your registered email address{/t}{/if}" style="width:100%"/>
+        <td><input id="_validation_handle_missing" value="{if isset($labels._validation_handle_missing) and $labels._validation_handle_missing!=''}{$labels._validation_handle_missing}{else}{t}Please enter your registered email address{/t}{/if}" style="width:100%"/>
         </td>
 
     </tr>
     <tr>
         <td ><i class="fa fa-exclamation-triangle warning" aria-hidden="true"></i> {t}Invalid email{/t}
         </td>
-        <td><input id="validation_email_invalid" value="{if isset($labels.validation_email_invalid) and $labels.validation_email_invalid!=''}{$labels.validation_email_invalid}{else}{t}Please enter a valid email address{/t}{/if}" style="width:100%"/>
+        <td><input id="_validation_email_invalid" value="{if isset($labels._validation_email_invalid) and $labels._validation_email_invalid!=''}{$labels._validation_email_invalid}{else}{t}Please enter a valid email address{/t}{/if}" style="width:100%"/>
         </td>
 
     </tr>
@@ -52,7 +52,7 @@
         <tr>
             <td ><i class="fa fa-exclamation-triangle warning" aria-hidden="true"></i> {t}Missing password{/t}
             </td>
-            <td><input id="validation_password_missing" value="{if isset($labels.validation_password_missing) and $labels.validation_password_missing!=''}{$labels.validation_password_missing}{else}{t}Please enter your password"{/t}{/if}" style="width:100%"/>
+            <td><input id="_validation_password_missing" value="{if isset($labels._validation_password_missing) and $labels._validation_password_missing!=''}{$labels._validation_password_missing}{else}{t}Please enter your password"{/t}{/if}" style="width:100%"/>
             </td>
 
         </tr>

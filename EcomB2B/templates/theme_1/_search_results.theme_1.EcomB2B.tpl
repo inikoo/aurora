@@ -36,7 +36,7 @@
                     </p>
                 </div>
                 <div class="hide one_fourth last">
-                    {t}Price{/t} £1.00 <br>
+                    {if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if} £1.00 <br>
                     <input> <button>Buy</button>
 
                 </div>
