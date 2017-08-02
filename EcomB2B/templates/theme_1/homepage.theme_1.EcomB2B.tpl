@@ -180,7 +180,7 @@
                         <a href="#" title="custom title 2">
                         <div class="cbp-caption">
                             <div class="cbp-caption-defaultWrap">
-                                <img src="http://placehold.it/280x130" alt="" width="100%">
+                                <img src="https://placehold.it/280x130" alt="" width="100%">
                             </div>
                             <div class="cbp-caption-activeWrap">
                                 <span>Caption that is active on hover</span>
@@ -191,33 +191,33 @@
                     </div>
                     <div class="cbp-item">
                         <a href="#" title="custom title 2">
-                            <img src="http://placehold.it/280x130" alt="custom alt 2" width="100%">
+                            <img src="https://placehold.it/280x130" alt="custom alt 2" width="100%">
                         </a>
                     </div>
                     <div class="cbp-item">
                         <a href="#" title="custom title 3">
-                            <img src="http://placehold.it/280x260" alt="custom alt 3" width="100%">
+                            <img src="https://placehold.it/280x260" alt="custom alt 3" width="100%">
                         </a>
                     </div>
                     <div class="cbp-item">
                         <a href="#" title="custom title 3">
-                            <img src="http://placehold.it/280x130" alt="custom alt 3" width="100%">
+                            <img src="https://placehold.it/280x130" alt="custom alt 3" width="100%">
                         </a>
                     </div>
 
                     <div class="cbp-item">
                         <a href="#" title="custom title 1">
-                            <img src="http://placehold.it/280x130" alt="custom alt 1" width="100%">
+                            <img src="https://placehold.it/280x130" alt="custom alt 1" width="100%">
                         </a>
                     </div>
                     <div class="cbp-item">
                         <a href="#" title="custom title 2">
-                            <img src="http://placehold.it/280x130" alt="custom alt 2" width="100%">
+                            <img src="https://placehold.it/280x130" alt="custom alt 2" width="100%">
                         </a>
                     </div>
                     <div class="cbp-item">
                         <a href="#" title="custom title 3">
-                            <img src="http://placehold.it/280x260" alt="custom alt 3" width="100%">
+                            <img src="https://placehold.it/280x260" alt="custom alt 3" width="100%">
                         </a>
                     </div>
 
@@ -288,7 +288,7 @@
 
         <div id="show_image" class="{if !$content.show_image}hide{/if}">
 
-            <div class="container"><img src="http://placehold.it/1170x320" alt="" class="img_left rimg"></div>
+            <div class="container"><img src="https://placehold.it/1170x320" alt="" class="img_left rimg"></div>
 
             <div class="clearfix"></div>
         </div>
@@ -324,7 +324,7 @@
 
                         <div class="lblogs">
 
-                            <div class="lbimg"><img src="http://placehold.it/280x130" alt=""/> <span><strong>DEC</strong> 14</span></div>
+                            <div class="lbimg"><img src="https://placehold.it/280x130" alt=""/> <span><strong>DEC</strong> 14</span></div>
 
                             <h5>Have evolved many web sites</h5>
 
@@ -340,7 +340,7 @@
 
                         <div class="lblogs last">
 
-                            <div class="lbimg"><img src="http://placehold.it/280x130" alt=""/> <span><strong>DEC</strong> 13</span></div>
+                            <div class="lbimg"><img src="https://placehold.it/280x130" alt=""/> <span><strong>DEC</strong> 13</span></div>
 
                             <h5>Desktop publishing packages</h5>
 
@@ -368,7 +368,7 @@
 
                                 <div class="box">
 
-                                    <div class="ppimg"><img src="http://placehold.it/80x80" alt=""/> <h6>Kelvin Leonard <em>www.websitenames.com</em></h6></div>
+                                    <div class="ppimg"><img src="https://placehold.it/80x80" alt=""/> <h6>Kelvin Leonard <em>www.websitenames.com</em></h6></div>
 
                                     <p>Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their
                                         infancy
@@ -380,7 +380,7 @@
 
                                 <div class="box">
 
-                                    <div class="ppimg"><img src="http://placehold.it/80x80" alt=""/> <h6>Maci Cameron <em>www.websitenames.com</em></h6></div>
+                                    <div class="ppimg"><img src="https://placehold.it/80x80" alt=""/> <h6>Maci Cameron <em>www.websitenames.com</em></h6></div>
 
                                     <p>Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their
                                         infancy
@@ -392,7 +392,7 @@
 
                                 <div class="box">
 
-                                    <div class="ppimg"><img src="http://placehold.it/80x80" alt=""/> <h6>Bruce Anderson <em>www.websitenames.com</em></h6></div>
+                                    <div class="ppimg"><img src="https://placehold.it/80x80" alt=""/> <h6>Bruce Anderson <em>www.websitenames.com</em></h6></div>
 
                                     <p>Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their
                                         infancy
@@ -404,7 +404,7 @@
 
                                 <div class="box">
 
-                                    <div class="ppimg"><img src="http://placehold.it/80x80" alt=""/> <h6>Katy Elizabeth <em>www.websitenames.com</em></h6></div>
+                                    <div class="ppimg"><img src="https://placehold.it/80x80" alt=""/> <h6>Katy Elizabeth <em>www.websitenames.com</em></h6></div>
 
                                     <p>Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their
                                         infancy

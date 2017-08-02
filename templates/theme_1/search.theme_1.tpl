@@ -70,7 +70,7 @@
                             <div class="margin_top1"></div>
 
                             <div class="three_fourth">
-                                <img src="http://placehold.it/150x150" alt="" class="pull-left "  style="margin-right: 10px;"  />
+                                <img src="https://placehold.it/150x150" alt="" class="pull-left "  style="margin-right: 10px;"  />
                                 <p>Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing
                                     packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have
                                     evolved over the years <a href="#">read more...</a></p>
@@ -90,7 +90,7 @@
                     <h5 class="light">About the Author</h5>
                     <div class="about_author">
 
-                        <img src="http://placehold.it/80x80" alt=""/>
+                        <img src="https://placehold.it/80x80" alt=""/>
 
                         <a href="http://themeforest.net/user/gsrthemes9/portfolio" target="_blank">GSR Themes</a><br/>
                         I'm a freelance designer with satisfied clients worldwide. I design simple, clean websites and develop easy-to-use applications. Web Design is not just my job it's my passion. You need
@@ -106,19 +106,19 @@
 
                             <ul class="recent_posts_list">
                                 <li>
-                                    <span><a href="#"><img src="http://placehold.it/50x50" alt=""/></a></span>
+                                    <span><a href="#"><img src="https://placehold.it/50x50" alt=""/></a></span>
                                     <a href="#">Many desktop uncure publish package webpages simple on internet</a>
                                     <i>December 18, 2014</i>
                                 </li>
 
                                 <li>
-                                    <span><a href="#"><img src="http://placehold.it/50x50" alt=""/></a></span>
+                                    <span><a href="#"><img src="https://placehold.it/50x50" alt=""/></a></span>
                                     <a href="#">Many desktop uncure publish package webpages simple on internet</a>
                                     <i>December 17, 2014</i>
                                 </li>
 
                                 <li>
-                                    <span><a href="#"><img src="http://placehold.it/50x50" alt=""/></a></span>
+                                    <span><a href="#"><img src="https://placehold.it/50x50" alt=""/></a></span>
                                     <a href="#">Many desktop uncure publish package webpages simple on internet</a>
                                     <i>December 16, 2014</i>
                                 </li>

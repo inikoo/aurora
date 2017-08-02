@@ -430,7 +430,7 @@
             </div>
 
 
-            <img src="http://placehold.it/360x120" alt="" class="rimg marb1" image_key="" data-src=""  />
+            <img src="https://placehold.it/360x120" alt="" class="rimg marb1" image_key="" data-src=""  />
 
 
             <span class="_text" contenteditable="true">There are many variations passages available the majority have alteration in some form, by injected humour on randomised words if you are going to use a passage of lorem anything.</span>
@@ -449,7 +449,7 @@
                 <div style="float:right" class="button image_link" url=""><i class="fa fa-link" aria-hidden="true"></i> {t}link{/t}</div>
             </div>
 
-            <img src="http://placehold.it/360x240" alt="" class="rimg marb1" image_key="" data-src=""  />
+            <img src="https://placehold.it/360x240" alt="" class="rimg marb1" image_key="" data-src=""  />
 
         </li>
     </ul>
@@ -782,7 +782,7 @@
                                                                                         </div>
 
 
-                                                                                        <img src="{if $sub_column.image==''}http://placehold.it/360x120{else}{$sub_column.image}{/if}" alt="" class="rimg marb1" image_key="" data-src="{$sub_column.image}"  />
+                                                                                        <img src="{if $sub_column.image==''}https://placehold.it/360x120{else}{$sub_column.image}{/if}" alt="" class="rimg marb1" image_key="" data-src="{$sub_column.image}"  />
 
 
                                                                                         <span class="_text" contenteditable="true">{$sub_column.text}</span>
@@ -801,7 +801,7 @@
                                                                                             <div style="float:right" class="button image_link" url="{$sub_column.url}"><i class="fa fa-link" aria-hidden="true"></i> {t}link{/t}</div>
                                                                                         </div>
 
-                                                                                        <img src="{if $sub_column.image==''}http://placehold.it/360x240{else}{$sub_column.image}{/if}" alt="" class="rimg marb1" image_key="" data-src="{$sub_column.image}"  />
+                                                                                        <img src="{if $sub_column.image==''}https://placehold.it/360x240{else}{$sub_column.image}{/if}" alt="" class="rimg marb1" image_key="" data-src="{$sub_column.image}"  />
 
                                                                                     </li>
                                                                                 </ul>
