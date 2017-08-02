@@ -28,7 +28,12 @@
     <tr>
         <td>{$item.code}</td>
         <td>{$item.description}</td>
+        {if $edit}
         <td class="text-right">{$item.edit_qty}</td>
+        {else}
+            <td class="text-right">{$item.qty}</td>
+
+        {/if}
         <td class="text-right">{$item.amount}</td>
     </tr>
 
