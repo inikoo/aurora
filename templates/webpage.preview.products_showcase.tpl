@@ -248,7 +248,7 @@
         </div>
 
         <div class="product_prices log_out hide" >
-            <div >{t}For prices, please login or register{/t}</div>
+            <div >{if empty($labels._login_to_see)}{t}For prices, please login or register{/t}{else}{$labels._login_to_see}{/if}</div>
         </div>
 
 
@@ -274,8 +274,8 @@
 
         {/if}
         <div class="ordering log_out hide" >
-            <div ><span class="login_button" >{t}Login{/t}</span></div>
-            <div ><span class="register_button" >{t}Register{/t}</span></div>
+            <div ><span class="login_button" >{if empty($labels._Login)}{t}Login{/t}{else}{$labels._Login}{/if}</span></div>
+            <div ><span class="register_button" > {if empty($labels._Register)}{t}Register{/t}{else}{$labels._Register}{/if}</span></div>
         </div>
 
 

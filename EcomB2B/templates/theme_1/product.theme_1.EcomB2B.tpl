@@ -137,12 +137,12 @@
                                 <div class="product_prices log_out " style="clear:both;margin-top:40px;width:500px;text-align: left">
 
 
-                                    <div>{t}For prices, please login or register{/t}</div>
+                                    <div>{if empty($labels._login_to_see)}{t}For prices, please login or register{/t}{else}{$labels._login_to_see}{/if}</div>
 
 
                                     <div class=" log_in_buttons_individual_product " style="margin-top:10px;">
-                                        <div   onclick='window.location.href = "/login.sys"' class="mark_on_hover"><span  >{t}Login{/t}</span></div>
-                                        <div  onclick='window.location.href = "/register.sys"' class="mark_on_hover"><span  style="height: 30px">{t}Register{/t}</span></div>
+                                        <div   onclick='window.location.href = "/login.sys"' class="mark_on_hover"><span  >{if empty($labels._Login)}{t}Login{/t}{else}{$labels._Login}{/if}</span></div>
+                                        <div  onclick='window.location.href = "/register.sys"' class="mark_on_hover"><span  style="height: 30px">{if empty($labels._Register)}{t}Register{/t}{else}{$labels._Register}{/if}</span></div>
                                     </div>
 
 
