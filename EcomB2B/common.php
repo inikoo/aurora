@@ -91,6 +91,8 @@ if (!$is_cached) {
 
     $account = new Public_Account($db);
 
+    $smarty->assign('analytics_id',$account->get('Account Analytics ID'));
+
     $website   = new Public_Website($_SESSION['website_key']);
     $website_key=$website->id;
 
