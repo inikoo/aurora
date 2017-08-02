@@ -7,15 +7,13 @@
 
  Version 3
 -->
-*}
-
-
-{include file="theme_1/_head.theme_1.EcomB2B.tpl"}
+*}{include file="theme_1/_head.theme_1.EcomB2B.tpl"}
 
 {include file="style.tpl" css=$webpage->get('Published CSS') }
 
 
 <body xmlns="http://www.w3.org/1999/html">
+{include file="analytics.tpl"}
 
 
 <div class="wrapper_boxed">
