@@ -189,13 +189,13 @@
 
                         </div>
 
-                        <div class="navbar yamm navbar-default"  style="width:700px" >
+                        <div class="navbar yamm navbar-default"  style="width:850px" >
 
 
 
                             <div id="navbar-collapse-1" class="navbar-collapse collapse">
 
-                                <ul id="_columns" class="nav navbar-nav three"    style="width:700px"   >
+                                <ul id="_columns" class="nav navbar-nav three"    style="width:850px"   >
                                     {foreach from=$header_data.menu.columns item=column key=key}
                                     <li  id="menu_column_{$key}" class="dropdown {if !$column.show}hide{/if} on _column {if $column.type=='three_columns'}yamm-fw  3_columns{else}single_column{/if}  " >
                                         <a  href="" data-toggle="dropdown" class="dropdown-toggle ">

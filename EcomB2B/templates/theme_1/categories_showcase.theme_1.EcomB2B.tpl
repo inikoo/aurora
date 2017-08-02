@@ -28,7 +28,7 @@
 
 
 
-            <div class="container">
+            <div id="page_content" class="container">
 
                 <span id="ordering_settings" class="hide" data-labels='{ "ordered":"<i class=\"fa fa-thumbs-o-up fa-flip-horizontal \" aria-hidden=\"true\"></i> {t}Ordered{/t}", "order":"<i class=\"fa fa-hand-pointer-o\" aria-hidden=\"true\"></i>  {t}Order now{/t}", "update":"<i class=\"fa fa-hand-pointer-o\" aria-hidden=\"true\"></i>  {t}Update{/t}"  }'></span>
 
@@ -51,7 +51,6 @@
             </div>
         {/if}
     {/foreach}
-
 
 
 
@@ -84,17 +83,12 @@
                                 <div   class="category_block category_showcase button" style="position:relative"  >
 
 
-                                    <div class="category_header_text fr-view"  style="text-align: center">
-                                        {$category_data.header_text}
-                                    </div>
+                                    <div class="item_header_text fr-view"  style="text-align: center">{$category_data.header_text}</div>
                                     <div class="wrap_to_center " >
-                                        <img draggable="false" src="{$category_data.image_src}" />
+                                        <img  src="{$category_data.image_src}" />
                                     </div>
 
-                                    <div style=" display: none;border-top:1px solid #ccc;margin-top:5px" >
-                                        <span style="width: 50%;text-align: center;border-right :1px solid #ccc">{$category_data.category_code}</span>
-                                        <span style="width: 50%;text-align: center"> {$category_data.number_products} <i class="fa fa-cube" aria-hidden="true"></i></span>
-                                    </div>
+
 
                                 </div>
                                </a>

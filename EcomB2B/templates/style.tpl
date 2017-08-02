@@ -139,6 +139,22 @@ width:100%;
 
      }
 */
+
+
+          #page_content{
+              line-height: normal;
+              font-family: "Ubuntu",Helvetica,Arial,sans-serif;
+
+          }
+
+          #page_content  p{
+
+              line-height: normal;
+              font-family: "Ubuntu",Helvetica,Arial,sans-serif;
+              margin: 1em 0px;
+          }
+
+
           #page_content input {
   position: relative;
   bottom: 2px;
@@ -409,7 +425,6 @@ width:100%;
 
 
 
-
      .product_header_text{
          padding:4px;height:30px;color:brown ;
          border:1px solid transparent;cursor:text;
@@ -654,6 +669,21 @@ width:100%;
             font-weight: 800;
             font-size:21px;
      }
+
+
+          .item_header_text{
+              padding:8px;margin-bottom:5px;
+              border:1px solid transparent;cursor:text;padding-top:10px;padding-bottom:0px;
+              font-family: "Ubuntu",Helvetica,Arial,sans-serif;
+              font-weight: 800;
+
+          }
+
+          .item_header_text p{
+              padding:0px ; margin:0px;text-align: center;
+              z-index: 100;position:relative;
+          }
+
      
        {$css}
        
