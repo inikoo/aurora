@@ -534,7 +534,7 @@ function place_order(element) {
                 $('.ordered_products_number').html('0')
                 $('.order_total').html('')
 
-                window.location.replace("thanks.sys");
+                window.location.replace("thanks.sys?order_key="+data.order_key);
 
             } else if (data.state == '400') {
                 swal("Error!", data.msg, "error")

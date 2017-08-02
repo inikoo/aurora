@@ -436,6 +436,56 @@ if ($webpage->get('Webpage Template Filename') == 'register') {
 }else {
 
 
+    if($webpage->get('Webpage Code')=='thanks.sys'){
+
+
+
+
+        if(empty($_REQUEST['order_key'])  or !is_numeric($_REQUEST['order_key'])  or !$logged_in ){
+            header('Location: /index.php');
+            exit;
+        }
+
+        $placed_order=get_object('Order',$_REQUEST['order_key']);
+
+        if(!$placed_order->id OR $placed_order->get('Order Customer Key')!=$customer->id ){
+            header('Location: /index.php');
+            exit;
+        }
+        require_once 'utils/placed_order_functions.php';
+
+
+        $smarty->assign('placed_order',$placed_order);
+
+        $placeholders = array(
+            '[Greetings]'     => $customer->get_greetings(),
+            '[Customer Name]' => $customer->get('Name'),
+            '[Name]'          => $customer->get('Customer Main Contact Name'),
+            '[Name,Company]'  => preg_replace(
+                '/^, /', '', $customer->get('Customer Main Contact Name').($customer->get('Customer Company Name') == '' ? '' : ', '.$customer->get('Customer Company Name'))
+            ),
+            '[Signature]'     => $webpage->get('Signature'),
+            '[Order Number]'  => $placed_order->get('Public ID'),
+            '[Order Amount]'  => $placed_order->get('Total'),
+            '[Pay Info]'      => get_pay_info($placed_order, $website, $smarty),
+            '[Order]'         => $smarty->fetch($theme.'/placed_order.'.$theme.'.EcomB2B.tpl')
+
+
+        );
+
+        foreach($content['blocks'] as $block_key=>$block){
+
+            if(isset($content['blocks'][$block_key]['_text'])){
+                $content['blocks'][$block_key]['_text']=strtr($content['blocks'][$block_key]['_text'], $placeholders);
+            }
+
+        }
+
+
+
+    }
+
+
     $template = $theme.'/webpage_blocks.'.$theme.'.'.$website->get('Website Type').'.tpl';
 
 
