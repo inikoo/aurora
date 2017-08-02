@@ -5140,7 +5140,7 @@ class Order extends DB_Table {
               'Order Submitted by Customer Date'=>prepare_mysql($date),
               'Order Date'=>prepare_mysql($date),
               'Order Current Dispatch State'=>'Submitted by Customer',
-              'Order Class'=>'',
+              'Order Class'=>'InProcess',
 
           )
             ,'no_history'

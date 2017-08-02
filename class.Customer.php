@@ -799,7 +799,7 @@ class Customer extends Subject {
 
         require_once 'utils/new_fork.php';
         list($fork_key, $msg) = new_fork(
-            'housekeeping', array(
+            'au_housekeeping', array(
             'type'        => 'order_created',
             'subject_key' => $order->id,
             'editor'      => $order->editor
