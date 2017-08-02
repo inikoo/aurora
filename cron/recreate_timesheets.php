@@ -17,7 +17,7 @@ require_once 'utils/date_functions.php';
 
 
 $sql = sprintf(
-    'SELECT `Staff Key` FROM `Staff Dimension` WHERE `Staff Type`!="Contractor"  ORDER BY `Staff Key` DESC '
+    'SELECT `Staff Key` FROM `Staff Dimension` WHERE `Staff Type`!="Contractor"  ORDER BY `Staff Key` DESC     '
 );
 
 if ($result = $db->query($sql)) {
@@ -31,6 +31,14 @@ if ($result = $db->query($sql)) {
 
                 $from = date('Y-m-d');
 
+
+
+        $from = date('Y-m-d', strtotime(date('Y', strtotime('now ')).'-'.$account->get('Account HR Start Year')));
+
+
+        $from='2017-07-01';
+     //   print $from;
+
                 if ($from and $to) {
 
 
@@ -40,6 +48,10 @@ if ($result = $db->query($sql)) {
 
 
                         $timesheet = $employee->create_timesheet(strtotime($date.' 00:00:00'), 'force');
+
+
+
+
                         $timesheet->update_number_clocking_records();
                         $timesheet->process_clocking_records_action_type();
                         if ($timesheet->get('Timesheet Clocking Records') > 0) {
@@ -52,6 +64,10 @@ if ($result = $db->query($sql)) {
 
 
                     }
+
+
+                    //print_r($timesheet);
+                    //exit;
 
 
                 }
