@@ -37,9 +37,6 @@ $worker->addFunction("au_housekeeping", "fork_housekeeping");
 $worker->addFunction("au_asset_sales", "fork_asset_sales");
 $worker->addFunction("au_time_series", "fork_time_series");
 $worker->addFunction("au_calculate_sales", "fork_calculate_sales");
-$worker->addFunction("au_housekeeping2", "fork_housekeeping2");
-$worker->addFunction("au_housekeeping3", "fork_housekeeping3");
-$worker->addFunction("au_housekeeping4", "fork_housekeeping4");
 
 
 $db      = false;
@@ -106,9 +103,16 @@ function get_fork_metadata($job) {
 
     if ($account->get('Timezone')) {
         date_default_timezone_set($account->get('Timezone'));
+        define("TIMEZONE", $account->data['Account Timezone']);
+
     } else {
         setTimezone('UTC');
+        define("TIMEZONE", 'UTC');
+
     }
+
+
+
 
     return array(
         $account,

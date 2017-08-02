@@ -703,14 +703,19 @@ class Public_Customer extends DBW_Table {
         }
 
 
+
+
         require_once 'utils/new_fork.php';
-        list($fork_key, $msg) = new_fork(
+        new_housekeeping_fork(
             'au_housekeeping', array(
             'type'        => 'order_created',
             'subject_key' => $order->id,
             'editor'      => $order->editor
         ), $account->get('Account Code'), $this->db
         );
+
+
+
 
         return $order;
 
