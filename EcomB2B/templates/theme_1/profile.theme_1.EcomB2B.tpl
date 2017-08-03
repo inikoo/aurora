@@ -90,7 +90,7 @@
                 <div class="content_right">
 
 
-                    <div id="_contact_details" class="block reg_form">
+                    <div id="_contact_details" class="block reg_form hide">
                         <form id="contact_details" class="sky-form">
                             <header class="mirror_master" id="_contact_details_title">{$content._contact_details_title}</header>
 
@@ -169,7 +169,7 @@
 
 
                             <footer>
-                                <button type="submit" class="button " id="_submit_label">{$content._save_contact_details_label}</button>
+                                <button type="submit" class="button invisible " id="_save_contact_details_label">{$content._save_contact_details_label}</button>
                             </footer>
                         </form>
                     </div>
@@ -203,7 +203,7 @@
 
                             </fieldset>
                             <footer>
-                                <button type="submit" class="button " id="_submit_label">{$content._save_login_details_label}</button>
+                                <button type="submit" class="button invisible" id="_save_login_details_label">{$content._save_login_details_label}</button>
 
                             </footer>
                         </form>
@@ -214,37 +214,37 @@
 
                         <div class="address_form" >
                             <form id="invoice_address_form" class="sky-form">
-                                <header id="_title" contenteditable="true">{$content._invoice_address_title}</header>
+                                <header id="_title">{$content._invoice_address_title}</header>
 
 
 
 
 
-                                <fieldset id="address_fields" style="position:relative">
+                                <fieldset id="invoice_address_fields" style="position:relative">
 
 
 
-                                    <section id="addressLine1" class="{if 'addressLine1'|in_array:$used_address_fields}{else}hide{/if}">
+                                    <section id="invoice_addressLine1" class="{if 'addressLine1'|in_array:$invoice_used_address_fields}{else}hide{/if}">
 
                                         <label for="file" class="input">
-                                            <input value="{$customer->get(''))}" type="text"  name="addressLine1" class="{if 'addressLine1'|in_array:$used_address_fields}{else}ignore{/if}" placeholder="{if isset($labels.address_addressLine1) and $labels.address_addressLine1!=''}{$labels.address_addressLine1}{else}{t}Address Line 1{/t}{/if}">
+                                            <input value="{$customer->get('Customer Contact Address Line 1')}" type="text"  name="addressLine1" class="{if 'addressLine1'|in_array:$invoice_used_address_fields}{else}ignore{/if}" placeholder="{if isset($labels.address_addressLine1) and $labels.address_addressLine1!=''}{$labels.address_addressLine1}{else}{t}Address Line 1{/t}{/if}">
                                             <b class="tooltip tooltip-bottom-right">{if isset($labels.address_addressLine1) and $labels.address_addressLine1!=''}{$labels.address_addressLine1}{else}{t}Address Line 1{/t}{/if}</b>
                                         </label>
                                     </section>
 
-                                    <section id="addressLine2" class="{if 'addressLine2'|in_array:$used_address_fields}{else}hide{/if}">
+                                    <section id="invoice_addressLine2" class="{if 'addressLine2'|in_array:$invoice_used_address_fields}{else}hide{/if}">
                                         <label for="file" class="input">
-                                            <input type="text" name="addressLine2" class="{if 'addressLine2'|in_array:$used_address_fields}{else}ignore{/if}" placeholder="{if isset($labels.address_addressLine2) and $labels.address_addressLine2!=''}{$labels.address_addressLine2}{else}{t}Address Line 2{/t}{/if}">
+                                            <input  value="{$customer->get('Customer Contact Address Line 2')}"  type="text" name="addressLine2" class="{if 'addressLine2'|in_array:$invoice_used_address_fields}{else}ignore{/if}" placeholder="{if isset($labels.address_addressLine2) and $labels.address_addressLine2!=''}{$labels.address_addressLine2}{else}{t}Address Line 2{/t}{/if}">
                                             <b class="tooltip tooltip-bottom-right">{if isset($labels.address_addressLine2) and $labels.address_addressLine2!=''}{$labels.address_addressLine2}{else}{t}Address Line 2{/t}{/if}</b>
                                         </label>
                                     </section>
 
 
 
-                                    <div id="sortingCode" class="row {if 'sortingCode'|in_array:$used_address_fields}{else}hide{/if}">
+                                    <div id="invoice_sortingCode" class="row {if 'sortingCode'|in_array:$invoice_used_address_fields}{else}hide{/if}">
                                         <section class="col col-6 " >
                                             <label class="input">
-                                                <input type="text" name="sortingCode" class="{if 'sortingCode'|in_array:$used_address_fields}{else}ignore{/if}" placeholder="{if isset($labels.address_sorting_code) and $labels.address_sorting_code!=''}{$labels.address_sorting_code}{else}{t}Sorting code{/t}{/if}">
+                                                <input value="{$customer->get('Customer Invoice Address Sorting Code')}"  type="text" name="sortingCode" class="{if 'sortingCode'|in_array:$invoice_used_address_fields}{else}ignore{/if}" placeholder="{if isset($labels.address_sorting_code) and $labels.address_sorting_code!=''}{$labels.address_sorting_code}{else}{t}Sorting code{/t}{/if}">
                                                 <b class="tooltip tooltip-bottom-right">{if isset($labels.address_sorting_code) and $labels.address_sorting_code!=''}{$labels.address_sorting_code}{else}{t}Sorting code{/t}{/if}</b>
                                             </label>
                                         </section>
@@ -252,10 +252,10 @@
 
                                     </div>
 
-                                    <div id="postalCode" class="row {if 'postalCode'|in_array:$used_address_fields}{else}hide{/if}">
+                                    <div id="invoice_postalCode" class="row {if 'postalCode'|in_array:$invoice_used_address_fields}{else}hide{/if}">
                                         <section class="col col-6 " >
                                             <label class="input">
-                                                <input type="text" name="postalCode" class="{if 'postalCode'|in_array:$used_address_fields}{else}ignore{/if}" placeholder="{if isset($labels["postalCode_`$address_labels.postalCode.code`"]) and $labels["postalCode_`$address_labels.postalCode.code`"]!=''}{$labels["postalCode_`$address_labels.postalCode.code`"]}{else}{$address_labels.postalCode.label}{/if}">
+                                                <input value="{$customer->get('Customer Invoice Address Postal Code')}"  type="text" name="postalCode" class="{if 'postalCode'|in_array:$invoice_used_address_fields}{else}ignore{/if}" placeholder="{if isset($labels["postalCode_`$address_labels.postalCode.code`"]) and $labels["postalCode_`$address_labels.postalCode.code`"]!=''}{$labels["postalCode_`$address_labels.postalCode.code`"]}{else}{$address_labels.postalCode.label}{/if}">
                                                 <b class="tooltip tooltip-bottom-right">{if isset($labels["postalCode_`$address_labels.postalCode.code`"]) and $labels["postalCode_`$address_labels.postalCode.code`"]!=''}{$labels["postalCode_`$address_labels.postalCode.code`"]}{else}{$address_labels.postalCode.label}{/if}</b>
                                             </label>
                                         </section>
@@ -263,20 +263,20 @@
 
                                     </div>
 
-                                    <div id="dependentLocality" class="row {if 'dependentLocality'|in_array:$used_address_fields}{else}hide{/if}">
+                                    <div id="invoice_dependentLocality" class="row {if 'dependentLocality'|in_array:$invoice_used_address_fields}{else}hide{/if}">
                                         <section class="col col-6 " >
                                             <label class="input">
-                                                <input type="text" name="dependentLocality" class="{if 'dependentLocality'|in_array:$used_address_fields}{else}ignore{/if}" placeholder="{if isset($labels["dependentLocality_`$address_labels.dependentLocality.code`"]) and $labels["dependentLocality_`$address_labels.dependentLocality.code`"]!=''}{$labels["dependentLocality_`$address_labels.dependentLocality.code`"]}{else}{$address_labels.dependentLocality.label}{/if}">
+                                                <input value="{$customer->get('Customer Invoice Address Dependent Locality')}"  type="text" name="dependentLocality" class="{if 'dependentLocality'|in_array:$invoice_used_address_fields}{else}ignore{/if}" placeholder="{if isset($labels["dependentLocality_`$address_labels.dependentLocality.code`"]) and $labels["dependentLocality_`$address_labels.dependentLocality.code`"]!=''}{$labels["dependentLocality_`$address_labels.dependentLocality.code`"]}{else}{$address_labels.dependentLocality.label}{/if}">
                                                 <b class="tooltip tooltip-bottom-right">{if isset($labels["dependentLocality_`$address_labels.dependentLocality.code`"]) and $labels["dependentLocality_`$address_labels.dependentLocality.code`"]!=''}{$labels["dependentLocality_`$address_labels.dependentLocality.code`"]}{else}{$address_labels.dependentLocality.label}{/if}</b>
                                             </label>
                                         </section>
 
                                     </div>
 
-                                    <div id="locality" class="row {if 'locality'|in_array:$used_address_fields}{else}hide{/if}">
+                                    <div id="invoice_locality" class="row {if 'locality'|in_array:$invoice_used_address_fields}{else}hide{/if}">
                                         <section class="col col-6 " >
                                             <label class="input">
-                                                <input type="text" name="locality" class="{if 'locality'|in_array:$used_address_fields}{else}ignore{/if}" placeholder="{if isset($labels["locality_`$address_labels.locality.code`"]) and $labels["locality_`$address_labels.locality.code`"]!=''}{$labels["locality_`$address_labels.locality.code`"]}{else}{$address_labels.locality.label}{/if}">
+                                                <input value="{$customer->get('Customer Invoice Address Locality')}"  type="text" name="locality" class="{if 'locality'|in_array:$invoice_used_address_fields}{else}ignore{/if}" placeholder="{if isset($labels["locality_`$address_labels.locality.code`"]) and $labels["locality_`$address_labels.locality.code`"]!=''}{$labels["locality_`$address_labels.locality.code`"]}{else}{$address_labels.locality.label}{/if}">
                                                 <b class="tooltip tooltip-bottom-right"></b>
                                             </label>
                                         </section>
@@ -284,10 +284,10 @@
                                     </div>
 
 
-                                    <div id="administrativeArea" class="row {if 'administrativeArea'|in_array:$used_address_fields}{else}hide{/if}">
+                                    <div id="invoice_administrativeArea" class="row {if 'administrativeArea'|in_array:$invoice_used_address_fields}{else}hide{/if}">
                                         <section class="col col-6 " >
                                             <label class="input">
-                                                <input type="text" name="administrativeArea" class="{if 'administrativeArea'|in_array:$used_address_fields}{else}ignore{/if}" placeholder="{if isset($labels["administrativeArea_`$address_labels.administrativeArea.code`"]) and $labels["administrativeArea_`$address_labels.administrativeArea.code`"]!=''}{$labels["administrativeArea_`$address_labels.administrativeArea.code`"]}{else}{$address_labels.administrativeArea.label}{/if}">
+                                                <input value="{$customer->get('Customer Invoice Address Administrative Area')}"  type="text" name="administrativeArea" class="{if 'administrativeArea'|in_array:$invoice_used_address_fields}{else}ignore{/if}" placeholder="{if isset($labels["administrativeArea_`$address_labels.administrativeArea.code`"]) and $labels["administrativeArea_`$address_labels.administrativeArea.code`"]!=''}{$labels["administrativeArea_`$address_labels.administrativeArea.code`"]}{else}{$address_labels.administrativeArea.label}{/if}">
                                                 <b class="tooltip tooltip-bottom-right">{if isset($labels["administrativeArea_`$address_labels.administrativeArea.code`"]) and $labels["administrativeArea_`$address_labels.administrativeArea.code`"]!=''}{$labels["administrativeArea_`$address_labels.administrativeArea.code`"]}{else}{$address_labels.administrativeArea.label}{/if}</b>
                                             </label>
                                         </section>
@@ -298,11 +298,11 @@
                                     <div class="row" >
                                         <section class="col col-5">
                                             <label class="select">
-                                                <select id="country_select" name="country">
+                                                <select id="invoice_country_select" name="country">
                                                     <option value="0" selected disabled>{if isset($labels.address_country) and $labels.address_country!=''}{$labels.address_country}{else}{t}Country{/t}{/if}</option>
 
                                                     {foreach from=$countries item=country}
-                                                        <option value="{$country.2alpha}" {if $country.2alpha==$selected_country}selected{/if} >{$country.name}</option>
+                                                        <option value="{$country.2alpha}" {if $country.2alpha==$customer->get('Customer Invoice Address Country 2 Alpha Code')}selected{/if} >{$country.name}</option>
                                                     {/foreach}
 
 
@@ -318,7 +318,7 @@
 
 
                                 <footer>
-                                    <button type="submit" class="button" id="_submit_label" contenteditable="true">{$content._save_invoice_address_details_label}</button>
+                                    <button type="submit" class="button invisible" id="_save_invoice_address_details_label" >{$content._save_invoice_address_details_label}</button>
                                 </footer>
                             </form>
                         </div>
@@ -326,319 +326,129 @@
 
                     </div>
 
-                    <div id="_delivery_addresses_details" class="block hide reg_form">
-                        <form action="" id="sky-form" class="sky-form">
-                            <header class="mirror_master" id="_delivery_addresses_title">{$content._delivery_addresses_title}</header>
+                    <div id="_delivery_addresses_details" class="block xhide reg_form">
+                        <div class="address_form" >
+                            <form id="delivery_address_form" class="sky-form">
+                                <header id="_title">{$content._delivery_addresses_title}</header>
 
 
-                            <section>
-                                <label class="checkbox"><input onChange="change_delivery_addresses_same_as_invoice_label()" type="checkbox" checked name="subscription" id="subscription"><i></i> </label>
-                                <span style="margin-left:27px;	" class="fake_form_checkbox" id="_delivery_addresses_same_as_invoice_label"
-                                     >{$content._delivery_addresses_same_as_invoice_label}</span>
+                                <fieldset c>
 
 
-                            </section>
+                                    <section>
+                                        <label class="checkbox"><input class="ignored " type="checkbox"   {if $customer->get('Customer Delivery Address Link')=='Billing'}checked{/if} name="delivery_address_link" id="delivery_address_link"><i></i>{if empty($content._delivery_address_link)}{t}Deliver to invoice address{/t}{else}{$content._delivery_address_link}{/if}</label>
+                                            </a> </label>
 
 
-                            <fieldset id="new_delivery_address" class="hide">
-                                <div class="row">
-                                    <section class="col col-5">
-                                        <label class="select">
-                                            <select name="country">
-                                                <option value="0" selected disabled>Country</option>
-                                                <option value="244">Aaland Islands</option>
-                                                <option value="1">Afghanistan</option>
-                                                <option value="2">Albania</option>
-                                                <option value="3">Algeria</option>
-                                                <option value="4">American Samoa</option>
-                                                <option value="5">Andorra</option>
-                                                <option value="6">Angola</option>
-                                                <option value="7">Anguilla</option>
-                                                <option value="8">Antarctica</option>
-                                                <option value="9">Antigua and Barbuda</option>
-                                                <option value="10">Argentina</option>
-                                                <option value="11">Armenia</option>
-                                                <option value="12">Aruba</option>
-                                                <option value="13">Australia</option>
-                                                <option value="14">Austria</option>
-                                                <option value="15">Azerbaijan</option>
-                                                <option value="16">Bahamas</option>
-                                                <option value="17">Bahrain</option>
-                                                <option value="18">Bangladesh</option>
-                                                <option value="19">Barbados</option>
-                                                <option value="20">Belarus</option>
-                                                <option value="21">Belgium</option>
-                                                <option value="22">Belize</option>
-                                                <option value="23">Benin</option>
-                                                <option value="24">Bermuda</option>
-                                                <option value="25">Bhutan</option>
-                                                <option value="26">Bolivia</option>
-                                                <option value="245">Bonaire, Sint Eustatius and Saba</option>
-                                                <option value="27">Bosnia and Herzegovina</option>
-                                                <option value="28">Botswana</option>
-                                                <option value="29">Bouvet Island</option>
-                                                <option value="30">Brazil</option>
-                                                <option value="31">British Indian Ocean Territory</option>
-                                                <option value="32">Brunei Darussalam</option>
-                                                <option value="33">Bulgaria</option>
-                                                <option value="34">Burkina Faso</option>
-                                                <option value="35">Burundi</option>
-                                                <option value="36">Cambodia</option>
-                                                <option value="37">Cameroon</option>
-                                                <option value="38">Canada</option>
-                                                <option value="251">Canary Islands</option>
-                                                <option value="39">Cape Verde</option>
-                                                <option value="40">Cayman Islands</option>
-                                                <option value="41">Central African Republic</option>
-                                                <option value="42">Chad</option>
-                                                <option value="43">Chile</option>
-                                                <option value="44">China</option>
-                                                <option value="45">Christmas Island</option>
-                                                <option value="46">Cocos (Keeling) Islands</option>
-                                                <option value="47">Colombia</option>
-                                                <option value="48">Comoros</option>
-                                                <option value="49">Congo</option>
-                                                <option value="50">Cook Islands</option>
-                                                <option value="51">Costa Rica</option>
-                                                <option value="52">Cote D'Ivoire</option>
-                                                <option value="53">Croatia</option>
-                                                <option value="54">Cuba</option>
-                                                <option value="246">Curacao</option>
-                                                <option value="55">Cyprus</option>
-                                                <option value="56">Czech Republic</option>
-                                                <option value="237">Democratic Republic of Congo</option>
-                                                <option value="57">Denmark</option>
-                                                <option value="58">Djibouti</option>
-                                                <option value="59">Dominica</option>
-                                                <option value="60">Dominican Republic</option>
-                                                <option value="61">East Timor</option>
-                                                <option value="62">Ecuador</option>
-                                                <option value="63">Egypt</option>
-                                                <option value="64">El Salvador</option>
-                                                <option value="65">Equatorial Guinea</option>
-                                                <option value="66">Eritrea</option>
-                                                <option value="67">Estonia</option>
-                                                <option value="68">Ethiopia</option>
-                                                <option value="69">Falkland Islands (Malvinas)</option>
-                                                <option value="70">Faroe Islands</option>
-                                                <option value="71">Fiji</option>
-                                                <option value="72">Finland</option>
-                                                <option value="74">France, skypolitan</option>
-                                                <option value="75">French Guiana</option>
-                                                <option value="76">French Polynesia</option>
-                                                <option value="77">French Southern Territories</option>
-                                                <option value="126">FYROM</option>
-                                                <option value="78">Gabon</option>
-                                                <option value="79">Gambia</option>
-                                                <option value="80">Georgia</option>
-                                                <option value="81">Germany</option>
-                                                <option value="82">Ghana</option>
-                                                <option value="83">Gibraltar</option>
-                                                <option value="84">Greece</option>
-                                                <option value="85">Greenland</option>
-                                                <option value="86">Grenada</option>
-                                                <option value="87">Guadeloupe</option>
-                                                <option value="88">Guam</option>
-                                                <option value="89">Guatemala</option>
-                                                <option value="241">Guernsey</option>
-                                                <option value="90">Guinea</option>
-                                                <option value="91">Guinea-Bissau</option>
-                                                <option value="92">Guyana</option>
-                                                <option value="93">Haiti</option>
-                                                <option value="94">Heard and Mc Donald Islands</option>
-                                                <option value="95">Honduras</option>
-                                                <option value="96">Hong Kong</option>
-                                                <option value="97">Hungary</option>
-                                                <option value="98">Iceland</option>
-                                                <option value="99">India</option>
-                                                <option value="100">Indonesia</option>
-                                                <option value="101">Iran (Islamic Republic of)</option>
-                                                <option value="102">Iraq</option>
-                                                <option value="103">Ireland</option>
-                                                <option value="104">Israel</option>
-                                                <option value="105">Italy</option>
-                                                <option value="106">Jamaica</option>
-                                                <option value="107">Japan</option>
-                                                <option value="240">Jersey</option>
-                                                <option value="108">Jordan</option>
-                                                <option value="109">Kazakhstan</option>
-                                                <option value="110">Kenya</option>
-                                                <option value="111">Kiribati</option>
-                                                <option value="113">Korea, Republic of</option>
-                                                <option value="114">Kuwait</option>
-                                                <option value="115">Kyrgyzstan</option>
-                                                <option value="116">Lao People's Democratic Republic</option>
-                                                <option value="117">Latvia</option>
-                                                <option value="118">Lebanon</option>
-                                                <option value="119">Lesotho</option>
-                                                <option value="120">Liberia</option>
-                                                <option value="121">Libyan Arab Jamahiriya</option>
-                                                <option value="122">Liechtenstein</option>
-                                                <option value="123">Lithuania</option>
-                                                <option value="124">Luxembourg</option>
-                                                <option value="125">Macau</option>
-                                                <option value="127">Madagascar</option>
-                                                <option value="128">Malawi</option>
-                                                <option value="129">Malaysia</option>
-                                                <option value="130">Maldives</option>
-                                                <option value="131">Mali</option>
-                                                <option value="132">Malta</option>
-                                                <option value="133">Marshall Islands</option>
-                                                <option value="134">Martinique</option>
-                                                <option value="135">Mauritania</option>
-                                                <option value="136">Mauritius</option>
-                                                <option value="137">Mayotte</option>
-                                                <option value="138">Mexico</option>
-                                                <option value="139">Micronesia, Federated States of</option>
-                                                <option value="140">Moldova, Republic of</option>
-                                                <option value="141">Monaco</option>
-                                                <option value="142">Mongolia</option>
-                                                <option value="242">Montenegro</option>
-                                                <option value="143">Montserrat</option>
-                                                <option value="144">Morocco</option>
-                                                <option value="145">Mozambique</option>
-                                                <option value="146">Myanmar</option>
-                                                <option value="147">Namibia</option>
-                                                <option value="148">Nauru</option>
-                                                <option value="149">Nepal</option>
-                                                <option value="150">Netherlands</option>
-                                                <option value="151">Netherlands Antilles</option>
-                                                <option value="152">New Caledonia</option>
-                                                <option value="153">New Zealand</option>
-                                                <option value="154">Nicaragua</option>
-                                                <option value="155">Niger</option>
-                                                <option value="156">Nigeria</option>
-                                                <option value="157">Niue</option>
-                                                <option value="158">Norfolk Island</option>
-                                                <option value="112">North Korea</option>
-                                                <option value="159">Northern Mariana Islands</option>
-                                                <option value="160">Norway</option>
-                                                <option value="161">Oman</option>
-                                                <option value="162">Pakistan</option>
-                                                <option value="163">Palau</option>
-                                                <option value="247">Palestinian Territory, Occupied</option>
-                                                <option value="164">Panama</option>
-                                                <option value="165">Papua New Guinea</option>
-                                                <option value="166">Paraguay</option>
-                                                <option value="167">Peru</option>
-                                                <option value="168">Philippines</option>
-                                                <option value="169">Pitcairn</option>
-                                                <option value="170">Poland</option>
-                                                <option value="171">Portugal</option>
-                                                <option value="172">Puerto Rico</option>
-                                                <option value="173">Qatar</option>
-                                                <option value="174">Reunion</option>
-                                                <option value="175">Romania</option>
-                                                <option value="176">Russian Federation</option>
-                                                <option value="177">Rwanda</option>
-                                                <option value="178">Saint Kitts and Nevis</option>
-                                                <option value="179">Saint Lucia</option>
-                                                <option value="180">Saint Vincent and the Grenadines</option>
-                                                <option value="181">Samoa</option>
-                                                <option value="182">San Marino</option>
-                                                <option value="183">Sao Tome and Principe</option>
-                                                <option value="184">Saudi Arabia</option>
-                                                <option value="185">Senegal</option>
-                                                <option value="243">Serbia</option>
-                                                <option value="186">Seychelles</option>
-                                                <option value="187">Sierra Leone</option>
-                                                <option value="188">Singapore</option>
-                                                <option value="189">Slovak Republic</option>
-                                                <option value="190">Slovenia</option>
-                                                <option value="191">Solomon Islands</option>
-                                                <option value="192">Somalia</option>
-                                                <option value="193">South Africa</option>
-                                                <option value="194">South Georgia &amp; South Sandwich Islands</option>
-                                                <option value="248">South Sudan</option>
-                                                <option value="195">Spain</option>
-                                                <option value="196">Sri Lanka</option>
-                                                <option value="249">St. Barthelemy</option>
-                                                <option value="197">St. Helena</option>
-                                                <option value="250">St. Martin (French part)</option>
-                                                <option value="198">St. Pierre and Miquelon</option>
-                                                <option value="199">Sudan</option>
-                                                <option value="200">Suriname</option>
-                                                <option value="201">Svalbard and Jan Mayen Islands</option>
-                                                <option value="202">Swaziland</option>
-                                                <option value="203">Sweden</option>
-                                                <option value="204">Switzerland</option>
-                                                <option value="205">Syrian Arab Republic</option>
-                                                <option value="206">Taiwan</option>
-                                                <option value="207">Tajikistan</option>
-                                                <option value="208">Tanzania, United Republic of</option>
-                                                <option value="209">Thailand</option>
-                                                <option value="210">Togo</option>
-                                                <option value="211">Tokelau</option>
-                                                <option value="212">Tonga</option>
-                                                <option value="213">Trinidad and Tobago</option>
-                                                <option value="214">Tunisia</option>
-                                                <option value="215">Turkey</option>
-                                                <option value="216">Turkmenistan</option>
-                                                <option value="217">Turks and Caicos Islands</option>
-                                                <option value="218">Tuvalu</option>
-                                                <option value="219">Uganda</option>
-                                                <option value="220">Ukraine</option>
-                                                <option value="221">United Arab Emirates</option>
-                                                <option value="222">United Kingdom</option>
-                                                <option value="223">United States</option>
-                                                <option value="224">United States Minor Outlying Islands</option>
-                                                <option value="225">Uruguay</option>
-                                                <option value="226">Uzbekistan</option>
-                                                <option value="227">Vanuatu</option>
-                                                <option value="228">Vatican City State (Holy See)</option>
-                                                <option value="229">Venezuela</option>
-                                                <option value="230">Viet Nam</option>
-                                                <option value="231">Virgin Islands (British)</option>
-                                                <option value="232">Virgin Islands (U.S.)</option>
-                                                <option value="233">Wallis and Futuna Islands</option>
-                                                <option value="234">Western Sahara</option>
-                                                <option value="235">Yemen</option>
-                                                <option value="238">Zambia</option>
-                                                <option value="239">Zimbabwe</option>
-                                                <select>
-                                                    <i></i>
+                                    </section>
+
+
+
+                                </fieldset>
+
+
+                                <fieldset id="delivery_address_fields" class="{if $customer->get('Customer Delivery Address Link')=='Billing'}hide{/if}" style="position:relative">
+
+
+
+                                    <section id="delivery_addressLine1" class="{if 'addressLine1'|in_array:$delivery_used_address_fields}{else}hide{/if}">
+
+                                        <label for="file" class="input">
+                                            <input value="{$customer->get('Customer Contact Address Line 1')}" type="text"  name="addressLine1" class="{if 'addressLine1'|in_array:$delivery_used_address_fields}{else}ignore{/if}" placeholder="{if isset($labels.address_addressLine1) and $labels.address_addressLine1!=''}{$labels.address_addressLine1}{else}{t}Address Line 1{/t}{/if}">
+                                            <b class="tooltip tooltip-bottom-right">{if isset($labels.address_addressLine1) and $labels.address_addressLine1!=''}{$labels.address_addressLine1}{else}{t}Address Line 1{/t}{/if}</b>
                                         </label>
                                     </section>
 
-                                    <section class="col col-4">
-                                        <label class="input">
-                                            <input type="text" name="city" placeholder="City">
+                                    <section id="delivery_addressLine2" class="{if 'addressLine2'|in_array:$delivery_used_address_fields}{else}hide{/if}">
+                                        <label for="file" class="input">
+                                            <input  value="{$customer->get('Customer Contact Address Line 2')}"  type="text" name="addressLine2" class="{if 'addressLine2'|in_array:$delivery_used_address_fields}{else}ignore{/if}" placeholder="{if isset($labels.address_addressLine2) and $labels.address_addressLine2!=''}{$labels.address_addressLine2}{else}{t}Address Line 2{/t}{/if}">
+                                            <b class="tooltip tooltip-bottom-right">{if isset($labels.address_addressLine2) and $labels.address_addressLine2!=''}{$labels.address_addressLine2}{else}{t}Address Line 2{/t}{/if}</b>
                                         </label>
                                     </section>
 
-                                    <section class="col col-3">
-                                        <label class="input">
-                                            <input type="text" name="code" placeholder="Post code">
-                                        </label>
-                                    </section>
-                                </div>
-
-                                <section>
-                                    <label for="file" class="input">
-                                        <input type="text" name="address" placeholder="Address line 1">
-                                    </label>
-                                </section>
-
-                                <section>
-                                    <label for="file" class="input">
-                                        <input type="text" name="address" placeholder="Address line 2">
-                                    </label>
-                                </section>
-
-                                <section>
-                                    <label for="file" class="input">
-                                        <input type="text" name="address" placeholder="Address line 3">
-                                    </label>
-                                </section>
 
 
-                            </fieldset>
+                                    <div id="delivery_sortingCode" class="row {if 'sortingCode'|in_array:$delivery_used_address_fields}{else}hide{/if}">
+                                        <section class="col col-6 " >
+                                            <label class="input">
+                                                <input value="{$customer->get('Customer Delivery Address Sorting Code')}"  type="text" name="sortingCode" class="{if 'sortingCode'|in_array:$delivery_used_address_fields}{else}ignore{/if}" placeholder="{if isset($labels.address_sorting_code) and $labels.address_sorting_code!=''}{$labels.address_sorting_code}{else}{t}Sorting code{/t}{/if}">
+                                                <b class="tooltip tooltip-bottom-right">{if isset($labels.address_sorting_code) and $labels.address_sorting_code!=''}{$labels.address_sorting_code}{else}{t}Sorting code{/t}{/if}</b>
+                                            </label>
+                                        </section>
 
 
-                            <footer>
-                                <button type="submit" class="like_button hide" id="_delivery_addresses_save_label">{$content._delivery_addresses_save_label}</button>
-                            </footer>
-                        </form>
+                                    </div>
+
+                                    <div id="delivery_postalCode" class="row {if 'postalCode'|in_array:$delivery_used_address_fields}{else}hide{/if}">
+                                        <section class="col col-6 " >
+                                            <label class="input">
+                                                <input value="{$customer->get('Customer Delivery Address Postal Code')}"  type="text" name="postalCode" class="{if 'postalCode'|in_array:$delivery_used_address_fields}{else}ignore{/if}" placeholder="{if isset($labels["postalCode_`$address_labels.postalCode.code`"]) and $labels["postalCode_`$address_labels.postalCode.code`"]!=''}{$labels["postalCode_`$address_labels.postalCode.code`"]}{else}{$address_labels.postalCode.label}{/if}">
+                                                <b class="tooltip tooltip-bottom-right">{if isset($labels["postalCode_`$address_labels.postalCode.code`"]) and $labels["postalCode_`$address_labels.postalCode.code`"]!=''}{$labels["postalCode_`$address_labels.postalCode.code`"]}{else}{$address_labels.postalCode.label}{/if}</b>
+                                            </label>
+                                        </section>
+
+
+                                    </div>
+
+                                    <div id="delivery_dependentLocality" class="row {if 'dependentLocality'|in_array:$delivery_used_address_fields}{else}hide{/if}">
+                                        <section class="col col-6 " >
+                                            <label class="input">
+                                                <input value="{$customer->get('Customer Delivery Address Dependent Locality')}"  type="text" name="dependentLocality" class="{if 'dependentLocality'|in_array:$delivery_used_address_fields}{else}ignore{/if}" placeholder="{if isset($labels["dependentLocality_`$address_labels.dependentLocality.code`"]) and $labels["dependentLocality_`$address_labels.dependentLocality.code`"]!=''}{$labels["dependentLocality_`$address_labels.dependentLocality.code`"]}{else}{$address_labels.dependentLocality.label}{/if}">
+                                                <b class="tooltip tooltip-bottom-right">{if isset($labels["dependentLocality_`$address_labels.dependentLocality.code`"]) and $labels["dependentLocality_`$address_labels.dependentLocality.code`"]!=''}{$labels["dependentLocality_`$address_labels.dependentLocality.code`"]}{else}{$address_labels.dependentLocality.label}{/if}</b>
+                                            </label>
+                                        </section>
+
+                                    </div>
+
+                                    <div id="delivery_locality" class="row {if 'locality'|in_array:$delivery_used_address_fields}{else}hide{/if}">
+                                        <section class="col col-6 " >
+                                            <label class="input">
+                                                <input value="{$customer->get('Customer Delivery Address Locality')}"  type="text" name="locality" class="{if 'locality'|in_array:$delivery_used_address_fields}{else}ignore{/if}" placeholder="{if isset($labels["locality_`$address_labels.locality.code`"]) and $labels["locality_`$address_labels.locality.code`"]!=''}{$labels["locality_`$address_labels.locality.code`"]}{else}{$address_labels.locality.label}{/if}">
+                                                <b class="tooltip tooltip-bottom-right"></b>
+                                            </label>
+                                        </section>
+
+                                    </div>
+
+
+                                    <div id="delivery_administrativeArea" class="row {if 'administrativeArea'|in_array:$delivery_used_address_fields}{else}hide{/if}">
+                                        <section class="col col-6 " >
+                                            <label class="input">
+                                                <input value="{$customer->get('Customer Delivery Address Administrative Area')}"  type="text" name="administrativeArea" class="{if 'administrativeArea'|in_array:$delivery_used_address_fields}{else}ignore{/if}" placeholder="{if isset($labels["administrativeArea_`$address_labels.administrativeArea.code`"]) and $labels["administrativeArea_`$address_labels.administrativeArea.code`"]!=''}{$labels["administrativeArea_`$address_labels.administrativeArea.code`"]}{else}{$address_labels.administrativeArea.label}{/if}">
+                                                <b class="tooltip tooltip-bottom-right">{if isset($labels["administrativeArea_`$address_labels.administrativeArea.code`"]) and $labels["administrativeArea_`$address_labels.administrativeArea.code`"]!=''}{$labels["administrativeArea_`$address_labels.administrativeArea.code`"]}{else}{$address_labels.administrativeArea.label}{/if}</b>
+                                            </label>
+                                        </section>
+
+                                    </div>
+
+
+                                    <div class="row" >
+                                        <section class="col col-5">
+                                            <label class="select">
+                                                <select id="delivery_country_select" name="country">
+                                                    <option value="0" selected disabled>{if isset($labels.address_country) and $labels.address_country!=''}{$labels.address_country}{else}{t}Country{/t}{/if}</option>
+
+                                                    {foreach from=$countries item=country}
+                                                        <option value="{$country.2alpha}" {if $country.2alpha==$customer->get('Customer Delivery Address Country 2 Alpha Code')}selected{/if} >{$country.name}</option>
+                                                    {/foreach}
+
+
+                                                    <select><i></i>
+                                            </label>
+                                        </section>
+
+
+                                    </div>
+
+
+                                </fieldset>
+
+
+                                <footer>
+                                    <button type="submit" class="button invisible"  id="_save_delivery_address_details_label" >{$content._save_delivery_address_details_label}</button>
+                                </footer>
+                            </form>
+                        </div>
 
                     </div>
 
@@ -649,36 +459,7 @@
 
                         <h3 class="mirror_master" id="_orders_title">{$content._orders_title}</h3>
 
-                        <table class="table">
-                            <thead>
-                            <tr>
-                                <th>{t}Number{/t}</th>
-                                <th>{t}Date{/t}</th>
-                                <th>{t}Status{/t}</th>
-                                <th class="text-right">{t}Total{/t}</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td class="like_button">88792</td>
-                                <td>{"yesterday"|date_format:"%A, %e %B %Y"}</td>
-                                <td>{t}Dispatched{/t}</td>
-                                <td class="text-right">£120.40</td>
-                            </tr>
-                            <tr>
-                                <td class="like_button">88233</td>
-                                <td>{"-50 days"|date_format:"%A, %e %B %Y"}</td>
-                                <td>{t}Dispatched{/t}</td>
-                                <td class="text-right">£600.00</td>
-                            </tr>
-                            <tr>
-                                <td class="like_button">87989</td>
-                                <td>{"-100 days"|date_format:"%A, %e %B %Y"}</td>
-                                <td>{t}Dispatched{/t}</td>
-                                <td class="text-right">£75.50</td>
-                            </tr>
-                            </tbody>
-                        </table>
+
 
 
                     </div>
@@ -710,60 +491,6 @@
         $(element).addClass('selected')
     }
 
-
-    $( "#country_select" ).change(function() {
-
-        var selected=$( "#country_select option:selected" )
-       // console.log(selected.val())
-
-        var request= "ar_web_addressing.php?tipo=address_format&country_code="+selected.val()+'&website_key={$website->id}'
-
-        console.log(request)
-        $.getJSON(request, function( data ) {
-            console.log(data)
-            $.each(data.hidden_fields, function(index, value) {
-                $('#'+value).addClass('hide')
-                $('#'+value).find('input').addClass('ignore')
-
-            });
-
-            $.each(data.used_fields, function(index, value) {
-                $('#'+value).removeClass('hide')
-                $('#'+value).find('input').removeClass('ignore')
-
-            });
-
-            $.each(data.labels, function(index, value) {
-                $('#'+index).find('input').attr('placeholder',value)
-                $('#'+index).find('b').html(value)
-
-            });
-
-            $.each(data.no_required_fields, function(index, value) {
-
-
-               // console.log(value)
-
-                    $('#'+value+' input').rules( "remove" );
-
-
-
-
-            });
-
-            $.each(data.required_fields, function(index, value) {
-                console.log($('#'+value))
-                //console.log($('#'+value+' input').rules())
-
-                $('#'+value+' input').rules( "add", { required: true});
-
-            });
-
-
-        });
-
-
-    });
 
 
     $("form").on('submit', function (e) {
@@ -901,6 +628,13 @@
         });
 
 
+  
+
+
+    $(document).on('keyup paste change', "#contact_details :input", function(ev){
+        $('#_save_contact_details_label').removeClass('invisible')
+    });
+
     $("#login_details").validate(
         {
 
@@ -1009,7 +743,399 @@
     });
 
 
+    $(document).on('keyup paste change', "#login_details :input", function(ev){
+        $('#_save_login_details_label').removeClass('invisible')
+    });
 
+    $(document).on('keyup paste change', "#invoice_address_form :input", function(ev){
+        $('#_save_invoice_address_details_label').removeClass('invisible')
+    });
+
+    $(document).on('keyup paste change', "#delivery_address_form :input", function(ev){
+        $('#_save_delivery_address_details_label').removeClass('invisible')
+    });
+
+
+    $(document).on('change', "#delivery_address_link", function(ev){
+
+        if($(this).is(':checked')){
+            $('#delivery_address_fields').addClass('hide')
+
+        }else{
+            $('#delivery_address_fields').removeClass('hide')
+
+        }
+    });
+
+    $( "#invoice_country_select" ).change(function() {
+
+        var selected=$( "#invoice_country_select option:selected" )
+        // console.log(selected.val())
+
+        var request= "ar_web_addressing.php?tipo=address_format&country_code="+selected.val()+'&website_key={$website->id}'
+
+        console.log(request)
+        $.getJSON(request, function( data ) {
+            console.log(data)
+            $.each(data.hidden_fields, function(index, value) {
+                $('#invoice_'+value).addClass('hide')
+                $('#invoice_'+value).find('input').addClass('ignore')
+
+            });
+
+            $.each(data.used_fields, function(index, value) {
+                $('#invoice_'+value).removeClass('hide')
+                $('#invoice_'+value).find('input').removeClass('ignore')
+
+            });
+
+            $.each(data.labels, function(index, value) {
+                $('#invoice_'+index).find('input').attr('placeholder',value)
+                $('#invoice_'+index).find('b').html(value)
+
+            });
+
+            $.each(data.no_required_fields, function(index, value) {
+
+
+                // console.log(value)
+
+                $('#invoice_'+value+' input').rules( "remove" );
+
+
+
+
+            });
+
+            $.each(data.required_fields, function(index, value) {
+                console.log($('#'+value))
+                //console.log($('#'+value+' input').rules())
+
+                $('#invoice_'+value+' input').rules( "add", { required: true});
+
+            });
+
+
+        });
+
+
+    });
+
+
+  
+
+
+    $("#invoice_address_form").validate(
+        {
+
+            submitHandler: function(form)
+            {
+
+
+                var register_data={ }
+
+                $("#invoice_address_form input:not(.ignore)").each(function(i, obj) {
+                    if(!$(obj).attr('name')==''){
+                        register_data[$(obj).attr('name')]=$(obj).val()
+                    }
+
+                });
+
+                $("#invoice_address_form select:not(.ignore)").each(function(i, obj) {
+                    if(!$(obj).attr('name')==''){
+
+
+                        register_data[$(obj).attr('name')]=$(obj).val()
+                    }
+
+                });
+
+
+
+                var ajaxData = new FormData();
+
+                ajaxData.append("tipo", 'invoice_address')
+                ajaxData.append("data", JSON.stringify(register_data))
+
+
+                $.ajax({
+                    url: "/ar_web_profile.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+                    complete: function () {
+                    }, success: function (data) {
+
+                        console.log(data)
+
+                        if (data.state == '200') {
+
+
+
+
+                        } else if (data.state == '400') {
+                            swal("{t}Error{/t}!", data.msg, "error")
+                        }
+
+
+
+                    }, error: function () {
+
+                    }
+                });
+
+
+            },
+
+            // Rules for form validation
+            rules:
+                {
+
+                 
+
+    {foreach from=$invoice_required_fields item=required_field }
+    {$required_field}: { required: true },
+    {/foreach}
+
+    {foreach from=$invoice_no_required_fields item=no_required_field }
+    {$no_required_field}:{   required: false},
+    {/foreach}
+
+    },
+
+    // Messages for form validation
+    messages:
+    {
+
+     
+        administrativeArea:
+        {
+            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+        },
+        locality:
+        {
+            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+        },
+        dependentLocality:
+        {
+            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+        },
+        postalCode:
+        {
+            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+        },
+        addressLine1:
+        {
+            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+        },
+        addressLine2:
+        {
+            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+        },
+        sortingCode:
+        {
+            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+        }
+
+
+
+
+    },
+
+    // Do not change code below
+    errorPlacement: function(error, element)
+    {
+        error.insertAfter(element.parent());
+    }
+    });
+
+
+    $( "#delivery_country_select" ).change(function() {
+
+        var selected=$( "#delivery_country_select option:selected" )
+        // console.log(selected.val())
+
+        var request= "ar_web_addressing.php?tipo=address_format&country_code="+selected.val()+'&website_key={$website->id}'
+
+        console.log(request)
+        $.getJSON(request, function( data ) {
+            console.log(data)
+            $.each(data.hidden_fields, function(index, value) {
+                $('#delivery_'+value).addClass('hide')
+                $('#delivery_'+value).find('input').addClass('ignore')
+
+            });
+
+            $.each(data.used_fields, function(index, value) {
+                $('#delivery_'+value).removeClass('hide')
+                $('#delivery_'+value).find('input').removeClass('ignore')
+
+            });
+
+            $.each(data.labels, function(index, value) {
+                $('#delivery_'+index).find('input').attr('placeholder',value)
+                $('#delivery_'+index).find('b').html(value)
+
+            });
+
+            $.each(data.no_required_fields, function(index, value) {
+
+
+                // console.log(value)
+
+                $('#delivery_'+value+' input').rules( "remove" );
+
+
+
+
+            });
+
+            $.each(data.required_fields, function(index, value) {
+                console.log($('#'+value))
+                //console.log($('#'+value+' input').rules())
+
+                $('#delivery_'+value+' input').rules( "add", { required: true});
+
+            });
+
+
+        });
+
+
+    });
+
+
+
+
+
+    $("#delivery_address_form").validate(
+        {
+
+            submitHandler: function(form)
+            {
+
+
+                var register_data={ }
+
+                $("#delivery_address_form input:not(.ignore)").each(function(i, obj) {
+                    if(!$(obj).attr('name')==''){
+                        register_data[$(obj).attr('name')]=$(obj).val()
+                    }
+
+                });
+
+                $("#delivery_address_form select:not(.ignore)").each(function(i, obj) {
+                    if(!$(obj).attr('name')==''){
+
+
+                        register_data[$(obj).attr('name')]=$(obj).val()
+                    }
+
+                });
+
+                register_data['delivery_address_link']=$('#delivery_address_link').is(':checked')
+
+
+                console.log(register_data)
+
+                var ajaxData = new FormData();
+
+                ajaxData.append("tipo", 'delivery_address')
+                ajaxData.append("data", JSON.stringify(register_data))
+
+
+                $.ajax({
+                    url: "/ar_web_profile.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+                    complete: function () {
+                    }, success: function (data) {
+
+                        console.log(data)
+
+                        if (data.state == '200') {
+
+
+
+
+                        } else if (data.state == '400') {
+                            swal("{t}Error{/t}!", data.msg, "error")
+                        }
+
+
+
+                    }, error: function () {
+
+                    }
+                });
+
+
+            },
+
+            // Rules for form validation
+            rules:
+                {
+
+
+
+    {foreach from=$delivery_required_fields item=required_field }
+    {$required_field}: { required: true },
+    {/foreach}
+
+    {foreach from=$delivery_no_required_fields item=no_required_field }
+    {$no_required_field}:{   required: false},
+    {/foreach}
+
+    },
+
+    // Messages for form validation
+    messages:
+    {
+
+
+        administrativeArea:
+        {
+            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+        },
+        locality:
+        {
+            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+        },
+        dependentLocality:
+        {
+            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+        },
+        postalCode:
+        {
+            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+        },
+        addressLine1:
+        {
+            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+        },
+        addressLine2:
+        {
+            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+        },
+        sortingCode:
+        {
+            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+        }
+
+
+
+
+    },
+
+    // Do not change code below
+    errorPlacement: function(error, element)
+    {
+        error.insertAfter(element.parent());
+    }
+    });
+
+
+
+
+
+
+
+    
 </script>
 
 </body>

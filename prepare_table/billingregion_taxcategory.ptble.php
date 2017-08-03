@@ -93,7 +93,7 @@ if ($order == 'tax_code') {
 $group_by = 'group by `Invoice Billing Region`,`Invoice Tax Code`';
 
 $table
-    = '  `Invoice Dimension` as I  left join `Tax Category Dimension` TC on (TC.`Tax Category Code`=`Invoice Tax Code`) ';
+    = '  `Invoice Dimension` as I  left join kbase.`Tax Category Dimension` TC on (TC.`Tax Category Code`=`Invoice Tax Code`) ';
 
 $sql_totals = "";
 

@@ -384,7 +384,7 @@ class Order extends DB_Table {
 
 
                 $sql = sprintf(
-                    "SELECT `Tax Category Code`,`Tax Category Type`,`Tax Category Name`,`Tax Category Rate` FROM `Tax Category Dimension`  WHERE `Tax Category Country Code`='ESP' AND `Tax Category Active`='Yes'"
+                    "SELECT `Tax Category Code`,`Tax Category Type`,`Tax Category Name`,`Tax Category Rate` FROM kbase.`Tax Category Dimension`  WHERE `Tax Category Country Code`='ESP' AND `Tax Category Active`='Yes'"
                 );
 
 
@@ -620,7 +620,7 @@ class Order extends DB_Table {
                 $tax_category = array();
 
                 $sql = sprintf(
-                    "SELECT `Tax Category Code`,`Tax Category Type`,`Tax Category Name`,`Tax Category Rate` FROM `Tax Category Dimension`  WHERE `Tax Category Country Code`='GBR' AND `Tax Category Active`='Yes'"
+                    "SELECT `Tax Category Code`,`Tax Category Type`,`Tax Category Name`,`Tax Category Rate` FROM kbase.`Tax Category Dimension`  WHERE `Tax Category Country Code`='GBR' AND `Tax Category Active`='Yes'"
                 );
 
 
@@ -804,7 +804,7 @@ class Order extends DB_Table {
                 $tax_category = array();
 
                 $sql = sprintf(
-                    "SELECT `Tax Category Code`,`Tax Category Type`,`Tax Category Name`,`Tax Category Rate` FROM `Tax Category Dimension`  WHERE `Tax Category Country Code`='SVK' AND `Tax Category Active`='Yes'"
+                    "SELECT `Tax Category Code`,`Tax Category Type`,`Tax Category Name`,`Tax Category Rate` FROM kbase.`Tax Category Dimension`  WHERE `Tax Category Country Code`='SVK' AND `Tax Category Active`='Yes'"
                 );
 
 
@@ -847,6 +847,9 @@ class Order extends DB_Table {
                 }
 
 
+             //   print_r($tax_category);
+
+
                 if (in_array(
                     $this->data['Order Delivery Address Country 2 Alpha Code'], array(
                                                                                   'SK',
@@ -864,8 +867,8 @@ class Order extends DB_Table {
                     );
                 } elseif (in_array(
                     $this->data['Order Invoice Address Country 2 Alpha Code'], array(
-                                                                                 'SVK',
-                                                                                 'UNK'
+                                                                                 'SK',
+                                                                                 'XX'
                                                                              )
                 )) {
 
@@ -4074,7 +4077,7 @@ class Order extends DB_Table {
 
         if ($type == 'Delivery') {
 
-            $account = new Account();
+            $account = get_object('Account',1);
             $country = $account->get('Account Country 2 Alpha Code');
             $locale  = $account->get('Account Locale');
         } else {
@@ -4084,7 +4087,7 @@ class Order extends DB_Table {
                 $country = $store->get('Store Home Country Code 2 Alpha');
                 $locale  = $store->get('Store Locale');
             } else {
-                $account = new Account();
+                $account = et_object('Account',1);
                 $country = $account->get('Account Country 2 Alpha Code');
                 $locale  = $account->get('Account Locale');
             }

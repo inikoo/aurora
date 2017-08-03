@@ -533,7 +533,7 @@ class Customer extends Subject {
     function get_tax_rate() {
         $rate = 0;
         $sql  = sprintf(
-            "SELECT `Tax Category Rate` FROM `Tax Category Dimension` WHERE `Tax Category Code`=%s", prepare_mysql($this->data['Customer Tax Category Code'])
+            "SELECT `Tax Category Rate` FROM kbase.`Tax Category Dimension` WHERE `Tax Category Code`=%s", prepare_mysql($this->data['Customer Tax Category Code'])
         );
 
         if ($result = $this->db->query($sql)) {
@@ -858,7 +858,7 @@ class Customer extends Subject {
                 $this->update_address('Invoice', json_decode($value, true),$options);
 
 
-
+//print_r(json_decode($value, true));
 
                 if(  empty($metadata['no_propagate_addresses'])  ) {
 
