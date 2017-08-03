@@ -2192,6 +2192,13 @@ class Store extends DB_Table {
         $data['Customer Store Key'] = $this->id;
 
 
+
+
+
+        $data['Customer Billing Address Link'] = 'Contact';
+        $data['Customer Delivery Address Link'] = 'Billing';
+
+
         $address_fields = array(
             'Address Recipient'            => $data['Customer Main Contact Name'],
             'Address Organization'         => $data['Customer Company Name'],
