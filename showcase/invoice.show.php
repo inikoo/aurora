@@ -25,7 +25,7 @@ function get_invoice_showcase($data) {
 
     $tax_data = array();
     $sql      = sprintf(
-        "SELECT `Tax Category Name`,`Tax Category Rate`,`Tax Amount` FROM  `Invoice Tax Bridge` B  LEFT JOIN `Tax Category Dimension` T ON (T.`Tax Category Code`=B.`Tax Code`)  WHERE B.`Invoice Key`=%d ",
+        "SELECT `Tax Category Name`,`Tax Category Rate`,`Tax Amount` FROM  `Invoice Tax Bridge` B  LEFT JOIN kbase.`Tax Category Dimension` T ON (T.`Tax Category Code`=B.`Tax Code`)  WHERE B.`Invoice Key`=%d ",
         $invoice->id
     );
 

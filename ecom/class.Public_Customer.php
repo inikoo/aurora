@@ -190,29 +190,47 @@ class Public_Customer extends DBW_Table {
 
     }
 
+    function update_delivery_address_link($value, $options) {
+
+        $this->update_field('Customer Delivery Address Link',$value,$options);
+
+        if($value=='Billing'){
+            $address_data=array(
+                'Address Line 1'=>$this->get('Customer Invoice Address Line 1'),
+                'Address Line 2'=>$this->get('Customer Invoice Address Line 2'),
+                'Address Sorting Code'=>$this->get('Customer Invoice Address Sorting Code'),
+                'Address Postal Code'=>$this->get('Customer Invoice Address Postal Code'),
+                'Address Dependent Locality'=>$this->get('Customer Invoice Address Dependent Locality'),
+                'Address Locality'=>$this->get('Customer Invoice Address Locality'),
+                'Address Administrative Area'=>$this->get('Customer Invoice Address Administrative Area'),
+                'Address Country 2 Alpha Code'=>$this->get('Customer Invoice Address Country 2 Alpha Code'),
+
+            );
+            $this->update_address('Delivery',$address_data,$options);
+
+        }
+
+    }
+
     function update_address($type, $fields, $options = '') {
 
 
-        $old_value    = $this->get("$type Address");
-        $old_checksum = $this->get("$type Address Checksum");
+        $old_value = $this->get("$type Address");
+        //$old_checksum = $this->get("$type Address Checksum");
 
 
-        $address_fields           = array();
-        $updated_fields_number    = 0;
-        $updated_recipient_fields = false;
-        $updated_address_fields   = false;
+        $updated_fields_number = 0;
+
 
         foreach ($fields as $field => $value) {
+
+
             $this->update_field(
                 $this->table_name.' '.$type.' '.$field, $value, 'no_history'
             );
             if ($this->updated) {
                 $updated_fields_number++;
-                if ($field == 'Address Recipient' or $field == 'Address Organization') {
-                    $updated_recipient_fields = true;
-                } else {
-                    $updated_address_fields = true;
-                }
+
             }
         }
 
@@ -267,16 +285,6 @@ class Public_Customer extends DBW_Table {
                         )
                     ), 'no_history'
                 );
-
-            }
-
-            if ($this->table_name == 'Customer') {
-
-                if ($type == 'Contact' and $old_checksum == $this->get(
-                        $this->table_name.' Invoice Address Checksum'
-                    )) {
-                    $this->update_address('Invoice', $fields, $options);
-                }
 
             }
 
@@ -432,6 +440,7 @@ class Public_Customer extends DBW_Table {
             }
         }
 
+
         list($address, $formatter, $postal_label_formatter) = get_address_formatter($country, $locale);
 
 
@@ -511,9 +520,113 @@ class Public_Customer extends DBW_Table {
         }
 
 
-
-
         switch ($field) {
+
+            case 'Customer Delivery Address Link':
+
+                $this->update_delivery_address_link($value, $options);
+
+                break;
+
+            case 'Customer Contact Address':
+
+                $this->update_address('Contact', json_decode($value, true), $options);
+
+
+                if (empty($metadata['no_propagate_addresses'])) {
+
+
+                    if ($this->data['Customer Billing Address Link'] == 'Contact') {
+
+                        $this->update_field_switcher('Customer Invoice Address', $value, $options, array('no_propagate_addresses' => true));
+
+                        if ($this->data['Customer Delivery Address Link'] == 'Billing') {
+                            $this->update_field_switcher('Customer Delivery Address', $value, $options, array('no_propagate_addresses' => true));
+
+                        }
+
+
+                    }
+                    if ($this->data['Customer Delivery Address Link'] == 'Contact') {
+
+                        $this->update_field_switcher('Customer Delivery Address', $value, $options, array('no_propagate_addresses' => true));
+                    }
+
+                }
+
+                break;
+
+
+            case 'Customer Invoice Address':
+
+                $this->update_address('Invoice', json_decode($value, true), $options);
+
+
+                //print_r(json_decode($value, true));
+
+                if (empty($metadata['no_propagate_addresses'])) {
+
+
+                    if ($this->data['Customer Billing Address Link'] == 'Contact') {
+
+                        $this->update_field_switcher('Customer Contact Address', $value, $options, array('no_propagate_addresses' => true));
+
+                        if ($this->data['Customer Delivery Address Link'] == 'Contact') {
+                            $this->update_field_switcher('Customer Delivery Address', $value, $options, array('no_propagate_addresses' => true));
+
+                        }
+
+
+                    }
+                    if ($this->data['Customer Delivery Address Link'] == 'Billing') {
+
+
+                        $this->update_field_switcher('Customer Delivery Address', $value, $options, array('no_propagate_addresses' => true));
+                    }
+
+                }
+
+                $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order Class`="InProcess" AND `Order Customer Key`=%d ', $this->id);
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+                        // todo change to puclic order when ready
+                        //$order=get_object('Order',$row['Order Key']);
+                        include_once 'class.Order.php';
+                        $order = new Order($row['Order Key']);
+
+
+                        $order->update(array('Order Invoice Address' => $value), $options, array('no_propagate_customer' => true));
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+                break;
+            case 'Customer Delivery Address':
+
+
+                $this->update_address('Delivery', json_decode($value, true));
+
+                $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order Class`="InProcess" AND `Order Customer Key`=%d ', $this->id);
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+                        // todo change to puclic order when ready
+                        //$order=get_object('Order',$row['Order Key']);
+                        include_once 'class.Order.php';
+                        $order = new Order($row['Order Key']);
+                        $order->update(array('Order Delivery Address' => $value), $options, array('no_propagate_customer' => true));
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+
+                break;
+
             case 'Customer Company Name':
             case 'Customer Main Contact Name':
             case 'Customer Main Plain Mobile':
@@ -529,7 +642,7 @@ class Public_Customer extends DBW_Table {
             case 'Customer Tax Number Validation Message':
 
 
-            $this->update_field($field, $value, $options);
+                $this->update_field($field, $value, $options);
 
                 break;
 
@@ -545,8 +658,6 @@ class Public_Customer extends DBW_Table {
     function update_tax_number($value) {
 
         include_once 'utils/validate_tax_number.php';
-
-
 
 
         $this->update_field('Customer Tax Number', $value);
@@ -703,8 +814,6 @@ class Public_Customer extends DBW_Table {
         }
 
 
-
-
         require_once 'utils/new_fork.php';
         new_housekeeping_fork(
             'au_housekeeping', array(
@@ -713,8 +822,6 @@ class Public_Customer extends DBW_Table {
             'editor'      => $order->editor
         ), $account->get('Account Code'), $this->db
         );
-
-
 
 
         return $order;

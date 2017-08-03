@@ -549,19 +549,27 @@
                                         //caca
                                         $.fn.countrySelect.setCountryData({$field.countries});
 
-                                        var country_select = $("#{$field.id}_country_select")
+                                        var {$field.id}country_select = $("#{$field.id}_country_select")
 
-                                        country_select.countrySelect();
-                                        country_select.countrySelect("selectCountry", initial_country);
+                                        {$field.id}country_select.countrySelect();
+                                        {$field.id}country_select.countrySelect("selectCountry", initial_country);
 
                                         update_address_fields('{$field.id}', initial_country, hide_recipient_fields = false)
                                         $('#{$field.id}_country  input.address_input_field ').val(initial_country.toUpperCase())
 
-                                        country_select.on("change", function (event, arg) {
-                                            var country_code = country_select.countrySelect("getSelectedCountryData").iso2
+                                        {$field.id}country_select.on("change", function (event, arg) {
+
+
+
+
+                                            var country_code = {$field.id}country_select.countrySelect("getSelectedCountryData").iso2
+
+                                            console.log(country_code)
+
                                             update_address_fields('{$field.id}', country_code, hide_recipient_fields = false)
-                                            on_changed_address_value("{$field.id}", '{$field.id}_country', country_code)
                                             $('#{$field.id}_country  input.address_input_field ').val(country_code.toUpperCase())
+                                            on_changed_address_value("{$field.id}", '{$field.id}_country', country_code)
+
                                         })
 
                                     </script>

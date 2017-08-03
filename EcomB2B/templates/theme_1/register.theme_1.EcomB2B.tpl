@@ -24,7 +24,7 @@
 
                 <div class="reg_form" >
                     <form id="registration_form" class="sky-form">
-                        <header id="_title" contenteditable="true">{$content._title}</header>
+                        <header id="_title">{$content._title}</header>
 
                         <fieldset>
 
@@ -210,7 +210,7 @@
 
                         </fieldset>
                         <footer>
-                            <button type="submit" class="button" id="_submit_label" contenteditable="true">{$content._submit_label}</button>
+                            <button type="submit" class="button" id="_submit_label">{$content._submit_label}</button>
                         </footer>
                     </form>
                 </div>

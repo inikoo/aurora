@@ -401,30 +401,30 @@ if ($webpage->get('Webpage Template Filename') == 'register') {
         exit;
     }
 
-
-    if (array_key_exists("HTTP_CF_IPCOUNTRY", $_SERVER) and $_SERVER["HTTP_CF_IPCOUNTRY"] != 'XX') {
-        $country_code = $_SERVER["HTTP_CF_IPCOUNTRY"];
-    } else {
-        $country_code = $store->get('Store Home Country Code 2 Alpha');
-    }
-
-
-
     require_once 'utils/get_addressing.php';
-    list($address_format, $address_labels, $used_fields, $hidden_fields, $required_fields, $no_required_fields) = get_address_form_data($country_code, $website->get('Website Locale'));
-
-
     require_once 'utils/get_countries.php';
+
+    list($invoice_address_format, $invoice_address_labels, $invoice_used_fields, $invoice_hidden_fields, $invoice_required_fields, $invoice_no_required_fields) = get_address_form_data($customer->get('Customer Invoice Address Country 2 Alpha Code'), $website->get('Website Locale'));
+    
+    $smarty->assign('invoice_address_labels', $invoice_address_labels);
+    $smarty->assign('invoice_required_fields', $invoice_required_fields);
+    $smarty->assign('invoice_no_required_fields', $invoice_no_required_fields);
+    $smarty->assign('invoice_used_address_fields', $invoice_used_fields);
+
+
+    print_r($invoice_required_fields);
+
+    list($delivery_address_format, $delivery_address_labels, $delivery_used_fields, $delivery_hidden_fields, $delivery_required_fields, $delivery_no_required_fields) = get_address_form_data($customer->get('Customer Invoice Address Country 2 Alpha Code'), $website->get('Website Locale'));
+
+    $smarty->assign('delivery_address_labels', $delivery_address_labels);
+    $smarty->assign('delivery_required_fields', $delivery_required_fields);
+    $smarty->assign('delivery_no_required_fields', $delivery_no_required_fields);
+    $smarty->assign('delivery_used_address_fields', $delivery_used_fields);
+    
+    
+    
     $countries = get_countries($website->get('Website Locale'));
-
-
-    $smarty->assign('address_labels', $address_labels);
-    $smarty->assign('required_fields', $required_fields);
-    $smarty->assign('no_required_fields', $no_required_fields);
-
-    $smarty->assign('used_address_fields', $used_fields);
     $smarty->assign('countries', $countries);
-    $smarty->assign('selected_country', $country_code);
 
 
 

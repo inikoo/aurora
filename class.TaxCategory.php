@@ -36,11 +36,11 @@ class TaxCategory extends DB_Table {
 
         if ($key == 'code') {
             $sql = sprintf(
-                "SELECT *   FROM `Tax Category Dimension` WHERE `Tax Category Code`=%s ", prepare_mysql($tag)
+                "SELECT *   FROM kbase.`Tax Category Dimension` WHERE `Tax Category Code`=%s ", prepare_mysql($tag)
             );
         } elseif ($key == 'id') {
             $sql = sprintf(
-                "SELECT *   FROM `Tax Category Dimension` WHERE `Tax Category Key`=%d ", $tag
+                "SELECT *   FROM kbase.`Tax Category Dimension` WHERE `Tax Category Key`=%d ", $tag
             );
         } else {
             return;
@@ -68,15 +68,7 @@ class TaxCategory extends DB_Table {
         $this->found     = false;
         $this->found_key = false;
 
-        $create = '';
-        $update = '';
-        if (preg_match('/create/i', $options)) {
 
-            $create = true;
-        }
-        if (preg_match('/update/i', $options)) {
-            $update = true;
-        }
 
         $data = $this->base_data();
         foreach ($raw_data as $key => $value) {
@@ -103,7 +95,7 @@ class TaxCategory extends DB_Table {
             $data['Tax Category Type'] = $data['Tax Category Code'];
         }
         $sql = sprintf(
-            "SELECT * FROM `Tax Category Dimension` WHERE `Tax Category Code`=%s  ", prepare_mysql($data['Tax Category Code'])
+            "SELECT * FROM kbase.`Tax Category Dimension` WHERE `Tax Category Code`=%s  ", prepare_mysql($data['Tax Category Code'])
         );
 
 
@@ -120,53 +112,14 @@ class TaxCategory extends DB_Table {
 
 
 
-        if ($create and !$this->found) {
-            $this->create($data);
 
-            return;
-        }
         if ($this->found) {
             $this->get_data('code', $this->found_key);
         }
-        if ($update and $this->found) {
-
-        }
-
 
     }
 
-    function create($data) {
-        $this->new = false;
-        $base_data = $this->base_data();
 
-        foreach ($data as $key => $value) {
-            if (array_key_exists($key, $base_data)) {
-                $base_data[$key] = _trim($value);
-            }
-        }
-
-        $keys   = '(';
-        $values = 'values(';
-        foreach ($base_data as $key => $value) {
-            $keys .= "`$key`,";
-            $values .= prepare_mysql($value).",";
-        }
-        $keys   = preg_replace('/,$/', ')', $keys);
-        $values = preg_replace('/,$/', ')', $values);
-        $sql    = sprintf(
-            "INSERT INTO `Tax Category Dimension` %s %s", $keys, $values
-        );
-        if ($this->db->exec($sql)) {
-            $this->id  = $this->db->lastInsertId();
-            $this->msg = _("Tax Category Added");
-            $this->get_data('id', $this->id);
-            $this->new = true;
-
-            return;
-        } else {
-            $this->msg = _(" Error can not create tax category");
-        }
-    }
 
 
     function get($key, $data = false) {

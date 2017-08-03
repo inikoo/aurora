@@ -2005,7 +2005,7 @@ class Store extends DB_Table {
     function get_tax_rate() {
         $rate = 0;
         $sql  = sprintf(
-            "SELECT `Tax Category Rate` FROM `Tax Category Dimension` WHERE `Tax Category Code`=%s", prepare_mysql($this->data['Store Tax Category Code'])
+            "SELECT `Tax Category Rate` FROM kbase.`Tax Category Dimension` WHERE `Tax Category Code`=%s", prepare_mysql($this->data['Store Tax Category Code'])
         );
 
 

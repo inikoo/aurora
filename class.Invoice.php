@@ -1574,7 +1574,7 @@ class Invoice extends DB_Table {
             if ($tax_category->data['Composite'] == 'Yes') {
 
                 $sql = sprintf(
-                    "SELECT `Tax Category Rate`,`Tax Category Code` FROM `Tax Category Dimension` WHERE `Tax Category Key` IN (%s) ", $tax_category->data['Composite Metadata']
+                    "SELECT `Tax Category Rate`,`Tax Category Code` FROM kbase.`Tax Category Dimension` WHERE `Tax Category Key` IN (%s) ", $tax_category->data['Composite Metadata']
                 );
                 $res = mysql_query($sql);
 
@@ -1709,7 +1709,7 @@ class Invoice extends DB_Table {
 
         //print_r($tax_sum_by_code);
         $sql = sprintf(
-            "SELECT IFNULL(ONPTF.`Tax Category Code`,'UNK') AS tax_code,sum(`Transaction Invoice Net Amount`) AS net_amount, `Tax Category Rate` FROM `Order No Product Transaction Fact` ONPTF LEFT JOIN `Tax Category Dimension` TCD  ON (TCD.`Tax Category Code`=ONPTF.`Tax Category Code`)  WHERE `Invoice Key`=%d AND `Transaction Type`!='Adjust'  GROUP BY ONPTF.`Tax Category Code`",
+            "SELECT IFNULL(ONPTF.`Tax Category Code`,'UNK') AS tax_code,sum(`Transaction Invoice Net Amount`) AS net_amount, `Tax Category Rate` FROM `Order No Product Transaction Fact` ONPTF LEFT JOIN kbase.`Tax Category Dimension` TCD  ON (TCD.`Tax Category Code`=ONPTF.`Tax Category Code`)  WHERE `Invoice Key`=%d AND `Transaction Type`!='Adjust'  GROUP BY ONPTF.`Tax Category Code`",
             $this->id
         );
         // print "$sql\n";
@@ -1734,7 +1734,7 @@ class Invoice extends DB_Table {
             if ($tax_category->data['Composite'] == 'Yes') {
 
                 $sql = sprintf(
-                    "SELECT `Tax Category Rate`,`Tax Category Code` FROM `Tax Category Dimension` WHERE `Tax Category Key` IN (%s) ", $tax_category->data['Composite Metadata']
+                    "SELECT `Tax Category Rate`,`Tax Category Code` FROM kbase.`Tax Category Dimension` WHERE `Tax Category Key` IN (%s) ", $tax_category->data['Composite Metadata']
                 );
                 $res = mysql_query($sql);
 
@@ -2218,7 +2218,7 @@ class Invoice extends DB_Table {
             if ($tax_category->data['Composite'] == 'Yes') {
 
                 $sql = sprintf(
-                    "SELECT `Tax Category Rate`,`Tax Category Code` FROM `Tax Category Dimension` WHERE `Tax Category Key` IN (%s) ", $tax_category->data['Composite Metadata']
+                    "SELECT `Tax Category Rate`,`Tax Category Code` FROM kbase.`Tax Category Dimension` WHERE `Tax Category Key` IN (%s) ", $tax_category->data['Composite Metadata']
                 );
                 $res = mysql_query($sql);
 
@@ -2670,7 +2670,7 @@ class Invoice extends DB_Table {
         switch ($item) {
             case 'shipping':
                 $sql = sprintf(
-                    "SELECT `Tax Category Rate` FROM `Tax Category Dimension` WHERE `Tax Category Code`=%s", prepare_mysql($this->data['Invoice Tax Shipping Code'])
+                    "SELECT `Tax Category Rate` FROM kbase.`Tax Category Dimension` WHERE `Tax Category Code`=%s", prepare_mysql($this->data['Invoice Tax Shipping Code'])
                 );
                 $res = mysql_query($sql);
 
@@ -2683,7 +2683,7 @@ class Invoice extends DB_Table {
                 break;
             case('charges'):
                 $sql  = sprintf(
-                    "SELECT `Tax Category Rate` FROM `Tax Category Dimension` WHERE `Tax Category Code`=%s", prepare_mysql($this->data['Invoice Tax Charges Code'])
+                    "SELECT `Tax Category Rate` FROM kbase.`Tax Category Dimension` WHERE `Tax Category Code`=%s", prepare_mysql($this->data['Invoice Tax Charges Code'])
                 );
                 $res  = mysql_query($sql);
                 $rate = 0;
@@ -2705,7 +2705,7 @@ class Invoice extends DB_Table {
                         if ($row2 = mysql_fetch_assoc($res2)) {
 
                             $sql  = sprintf(
-                                "SELECT `Tax Category Rate` FROM `Tax Category Dimension` WHERE `Tax Category Code`=%s", prepare_mysql($row2['Transaction Tax Code'])
+                                "SELECT `Tax Category Rate` FROM kbase.`Tax Category Dimension` WHERE `Tax Category Code`=%s", prepare_mysql($row2['Transaction Tax Code'])
                             );
                             $res  = mysql_query($sql);
                             $rate = 0;
