@@ -403,13 +403,13 @@ class Subject extends DB_Table {
 
 
         $old_value    = $this->get("$type Address");
-        $old_checksum = $this->get("$type Address Checksum");
+        //$old_checksum = $this->get("$type Address Checksum");
 
 
-        $address_fields           = array();
+        //$address_fields           = array();
         $updated_fields_number    = 0;
-        $updated_recipient_fields = false;
-        $updated_address_fields   = false;
+       // $updated_recipient_fields = false;
+       // $updated_address_fields   = false;
 
         foreach ($fields as $field => $value) {
             $this->update_field(
@@ -417,11 +417,14 @@ class Subject extends DB_Table {
             );
             if ($this->updated) {
                 $updated_fields_number++;
+
+               /*
                 if ($field == 'Address Recipient' or $field == 'Address Organization') {
                     $updated_recipient_fields = true;
                 } else {
                     $updated_address_fields = true;
                 }
+               */
             }
         }
 
@@ -429,6 +432,9 @@ class Subject extends DB_Table {
         if ($updated_fields_number > 0) {
             $this->updated = true;
         }
+
+
+
 
 
         if ($this->updated) {
@@ -443,6 +449,8 @@ class Subject extends DB_Table {
                 );
 
             }
+
+
 
 
             if ($type == 'Contact') {
@@ -479,17 +487,17 @@ class Subject extends DB_Table {
 
             }
 
+            /*
+
             if ($this->table_name == 'Customer') {
 
-                if ($type == 'Contact' and $old_checksum == $this->get(
-                        $this->table_name.' Invoice Address Checksum'
-                    )
+                if ($type == 'Contact' and $old_checksum == $this->get($this->table_name.' Invoice Address Checksum')
                 ) {
                     $this->update_address('Invoice', $fields, $options);
                 }
 
             }
-
+*/
 
         }
 

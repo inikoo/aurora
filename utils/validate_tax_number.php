@@ -61,7 +61,6 @@ function validate_tax_number($tax_number, $country_2alpha_code) {
         $tax_number = preg_replace('/[^a-z^0-9]/i', '', $tax_number);
 
 
-        print $country_2alpha_code;
 
         return check_european_tax_number($country_2alpha_code, $tax_number);
 

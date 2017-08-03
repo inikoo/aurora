@@ -364,7 +364,7 @@ class DeliveryNote extends DB_Table {
             }
 
 
-            //$order->update_xhtml_delivery_notes();
+
 
 
             $sql = sprintf(
@@ -1006,12 +1006,7 @@ class DeliveryNote extends DB_Table {
 
                 $this->set_weight($value);
                 break;
-            case('Delivery Note XHTML Invoices'):
-                $this->update_xhtml_invoices();
-                break;
-            case('Delivery Note XHTML Orders'):
-                $this->update_xhtml_orders();
-                break;
+
             default:
                 $base_data = $this->base_data();
                 if (array_key_exists($field, $base_data)) {
@@ -1694,16 +1689,6 @@ class DeliveryNote extends DB_Table {
         }
 
 
-        //foreach ($orders as $order) {
-        //    $order->update_xhtml_delivery_notes();
-        //}
-
-        //foreach ($invoices as $invoice) {
-        //    $invoice->update_xhtml_delivery_notes();
-        // }
-
-        // $store=new Store($store_key);
-        // $store->update_orders();
 
 
         return 'orders/'.$order->get('Order Store Key').'/'.$order->id;

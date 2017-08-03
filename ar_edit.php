@@ -329,6 +329,8 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
     }
 
 
+
+
     if (isset($data['metadata'])) {
 
 

@@ -250,6 +250,17 @@ class Customer extends Subject {
 
         switch ($key) {
 
+            case 'Delivery Address Link':
+
+                if ($this->data['Customer Delivery Address Link'] == 'Billing') {
+                    return _('Same as invoice address');
+                } elseif ($this->data['Customer Delivery Address Link'] == 'None') {
+                    return _('Unrelated to invoice address');
+                }else{
+                    return _('Unrelated to contact address');
+                }
+
+                break;
             case 'Fiscal Name':
             case 'Invoice Name':
 
@@ -697,16 +708,10 @@ class Customer extends Subject {
     }
 
 
-
-
     function create_order() {
 
         global $account;
-        
-        
-        
-        
-        
+
 
         $order_data = array(
 
@@ -715,75 +720,67 @@ class Customer extends Subject {
             'editor'                        => $this->editor,
 
 
-
-
         );
 
 
-        $order_data['Order Class']          = 'InWebsite';
+        $order_data['Order Class'] = 'InWebsite';
 
 
-       $order_data['Order Customer Key']          = $this->id;
-       $order_data['Order Customer Name']         = $this->data['Customer Name'];
-       $order_data['Order Customer Contact Name'] = $this->data['Customer Main Contact Name'];
-       $order_data['Order Tax Number']            = $this->data['Customer Tax Number'];
-       $order_data['Order Tax Number Valid']      = $this->data['Customer Tax Number Valid'];
-        $order_data['Order Tax Number Validation Date']      = $this->data['Customer Tax Number Validation Date'];
-        $order_data['Order Tax Number Validation Source']      = $this->data['Customer Tax Number Validation Source'];
+        $order_data['Order Customer Key']                  = $this->id;
+        $order_data['Order Customer Name']                 = $this->data['Customer Name'];
+        $order_data['Order Customer Contact Name']         = $this->data['Customer Main Contact Name'];
+        $order_data['Order Tax Number']                    = $this->data['Customer Tax Number'];
+        $order_data['Order Tax Number Valid']              = $this->data['Customer Tax Number Valid'];
+        $order_data['Order Tax Number Validation Date']    = $this->data['Customer Tax Number Validation Date'];
+        $order_data['Order Tax Number Validation Source']  = $this->data['Customer Tax Number Validation Source'];
         $order_data['Order Tax Number Details Match']      = $this->data['Customer Tax Number Details Match'];
-        $order_data['Order Tax Number Registered Name']      = $this->data['Customer Tax Number Registered Name'];
-        $order_data['Order Tax Number Registered Address']      = $this->data['Customer Tax Number Registered Address'];
+        $order_data['Order Tax Number Registered Name']    = $this->data['Customer Tax Number Registered Name'];
+        $order_data['Order Tax Number Registered Address'] = $this->data['Customer Tax Number Registered Address'];
 
 
+        $order_data['Order Customer Fiscal Name'] = $this->get('Fiscal Name');
+        $order_data['Order Email']                = $this->data['Customer Main Plain Email'];
+        $order_data['Order Telephone']            = $this->data['Customer Main Plain Mobile'];
 
 
+        $order_data['Order Invoice Address Recipient']            = $this->data['Customer Invoice Address Recipient'];
+        $order_data['Order Invoice Address Organization']         = $this->data['Customer Invoice Address Organization'];
+        $order_data['Order Invoice Address Line 1']               = $this->data['Customer Invoice Address Line 1'];
+        $order_data['Order Invoice Address Line 2']               = $this->data['Customer Invoice Address Line 2'];
+        $order_data['Order Invoice Address Sorting Code']         = $this->data['Customer Invoice Address Sorting Code'];
+        $order_data['Order Invoice Address Postal Code']          = $this->data['Customer Invoice Address Postal Code'];
+        $order_data['Order Invoice Address Dependent Locality']   = $this->data['Customer Invoice Address Dependent Locality'];
+        $order_data['Order Invoice Address Locality']             = $this->data['Customer Invoice Address Locality'];
+        $order_data['Order Invoice Address Administrative Area']  = $this->data['Customer Invoice Address Administrative Area'];
+        $order_data['Order Invoice Address Country 2 Alpha Code'] = $this->data['Customer Invoice Address Country 2 Alpha Code'];
+        $order_data['Order Invoice Address Checksum']             = $this->data['Customer Invoice Address Recipient'];
+        $order_data['Order Invoice Address Formatted']            = $this->data['Customer Invoice Address Formatted'];
+        $order_data['Order Invoice Address Postal Label']         = $this->data['Customer Invoice Address Postal Label'];
 
 
-        $order_data['Order Customer Fiscal Name']  = $this->get('Fiscal Name');
-       $order_data['Order Email']                 = $this->data['Customer Main Plain Email'];
-       $order_data['Order Telephone']             = $this->data['Customer Main Plain Mobile'];
+        $order_data['Order Delivery Address Recipient']            = $this->data['Customer Delivery Address Recipient'];
+        $order_data['Order Delivery Address Organization']         = $this->data['Customer Delivery Address Organization'];
+        $order_data['Order Delivery Address Line 1']               = $this->data['Customer Delivery Address Line 1'];
+        $order_data['Order Delivery Address Line 2']               = $this->data['Customer Delivery Address Line 2'];
+        $order_data['Order Delivery Address Sorting Code']         = $this->data['Customer Delivery Address Sorting Code'];
+        $order_data['Order Delivery Address Postal Code']          = $this->data['Customer Delivery Address Postal Code'];
+        $order_data['Order Delivery Address Dependent Locality']   = $this->data['Customer Delivery Address Dependent Locality'];
+        $order_data['Order Delivery Address Locality']             = $this->data['Customer Delivery Address Locality'];
+        $order_data['Order Delivery Address Administrative Area']  = $this->data['Customer Delivery Address Administrative Area'];
+        $order_data['Order Delivery Address Country 2 Alpha Code'] = $this->data['Customer Delivery Address Country 2 Alpha Code'];
+        $order_data['Order Delivery Address Checksum']             = $this->data['Customer Delivery Address Recipient'];
+        $order_data['Order Delivery Address Formatted']            = $this->data['Customer Delivery Address Formatted'];
+        $order_data['Order Delivery Address Postal Label']         = $this->data['Customer Delivery Address Postal Label'];
 
 
-       $order_data['Order Invoice Address Recipient']            = $this->data['Customer Invoice Address Recipient'];
-       $order_data['Order Invoice Address Organization']         = $this->data['Customer Invoice Address Organization'];
-       $order_data['Order Invoice Address Line 1']               = $this->data['Customer Invoice Address Line 1'];
-       $order_data['Order Invoice Address Line 2']               = $this->data['Customer Invoice Address Line 2'];
-       $order_data['Order Invoice Address Sorting Code']         = $this->data['Customer Invoice Address Sorting Code'];
-       $order_data['Order Invoice Address Postal Code']          = $this->data['Customer Invoice Address Postal Code'];
-       $order_data['Order Invoice Address Dependent Locality']   = $this->data['Customer Invoice Address Dependent Locality'];
-       $order_data['Order Invoice Address Locality']             = $this->data['Customer Invoice Address Locality'];
-       $order_data['Order Invoice Address Administrative Area']  = $this->data['Customer Invoice Address Administrative Area'];
-       $order_data['Order Invoice Address Country 2 Alpha Code'] = $this->data['Customer Invoice Address Country 2 Alpha Code'];
-       $order_data['Order Invoice Address Checksum']             = $this->data['Customer Invoice Address Recipient'];
-       $order_data['Order Invoice Address Formatted']            = $this->data['Customer Invoice Address Formatted'];
-       $order_data['Order Invoice Address Postal Label']         = $this->data['Customer Invoice Address Postal Label'];
+        $order_data['Order Customer Order Number'] = $this->get_number_of_orders() + 1;
 
+        $store = get_object('Store', $this->get('Customer Store Key'));
 
-       $order_data['Order Delivery Address Recipient']            = $this->data['Customer Delivery Address Recipient'];
-       $order_data['Order Delivery Address Organization']         = $this->data['Customer Delivery Address Organization'];
-       $order_data['Order Delivery Address Line 1']               = $this->data['Customer Delivery Address Line 1'];
-       $order_data['Order Delivery Address Line 2']               = $this->data['Customer Delivery Address Line 2'];
-       $order_data['Order Delivery Address Sorting Code']         = $this->data['Customer Delivery Address Sorting Code'];
-       $order_data['Order Delivery Address Postal Code']          = $this->data['Customer Delivery Address Postal Code'];
-       $order_data['Order Delivery Address Dependent Locality']   = $this->data['Customer Delivery Address Dependent Locality'];
-       $order_data['Order Delivery Address Locality']             = $this->data['Customer Delivery Address Locality'];
-       $order_data['Order Delivery Address Administrative Area']  = $this->data['Customer Delivery Address Administrative Area'];
-       $order_data['Order Delivery Address Country 2 Alpha Code'] = $this->data['Customer Delivery Address Country 2 Alpha Code'];
-       $order_data['Order Delivery Address Checksum']             = $this->data['Customer Delivery Address Recipient'];
-       $order_data['Order Delivery Address Formatted']            = $this->data['Customer Delivery Address Formatted'];
-       $order_data['Order Delivery Address Postal Label']         = $this->data['Customer Delivery Address Postal Label'];
-
-
-       $order_data['Order Customer Order Number'] = $this->get_number_of_orders() + 1;
-
-        $store = get_object('Store',$this->get('Customer Store Key'));
-
-       $order_data['Order Store Key']               = $store->id;
-       $order_data['Order Currency']                = $store->get('Store Currency Code');
-       $order_data['Order Show in Warehouse Orders'] = $store->get('Store Show in Warehouse Orders');
-       $order_data['public_id_format'] =  $store->get('Store Order Public ID Format');
-
-
+        $order_data['Order Store Key']                = $store->id;
+        $order_data['Order Currency']                 = $store->get('Store Currency Code');
+        $order_data['Order Show in Warehouse Orders'] = $store->get('Store Show in Warehouse Orders');
+        $order_data['public_id_format']               = $store->get('Store Order Public ID Format');
 
 
         $order = new Order('new', $order_data);
@@ -825,11 +822,103 @@ class Customer extends Subject {
 
         switch ($field) {
 
+
+
+            case 'Customer Contact Address':
+
+                $this->update_address('Contact', json_decode($value, true),$options);
+
+
+                if(  empty($metadata['no_propagate_addresses'])  ) {
+
+
+                    if ($this->data['Customer Billing Address Link'] == 'Contact') {
+
+                        $this->update_field_switcher('Customer Invoice Address', $value, $options, array('no_propagate_addresses'=>true));
+
+                        if ($this->data['Customer Delivery Address Link'] == 'Billing') {
+                            $this->update_field_switcher('Customer Delivery Address', $value, $options, array('no_propagate_addresses'=>true));
+
+                        }
+
+
+                    }
+                    if ($this->data['Customer Delivery Address Link'] == 'Contact') {
+
+                        $this->update_field_switcher('Customer Delivery Address', $value, $options, array('no_propagate_addresses'=>true));
+                    }
+
+                }
+
+                break;
+
+
             case 'Customer Invoice Address':
-                $this->update_address('Invoice', json_decode($value, true));
+
+                $this->update_address('Invoice', json_decode($value, true),$options);
+
+
+
+
+                if(  empty($metadata['no_propagate_addresses'])  ) {
+
+
+                    if ($this->data['Customer Billing Address Link'] == 'Contact') {
+
+                        $this->update_field_switcher('Customer Contact Address', $value, $options, array('no_propagate_addresses'=>true));
+
+                        if ($this->data['Customer Delivery Address Link'] == 'Contact') {
+                            $this->update_field_switcher('Customer Delivery Address', $value, $options, array('no_propagate_addresses'=>true));
+
+                        }
+
+
+                    }
+                    if ($this->data['Customer Delivery Address Link'] == 'Billing') {
+
+
+
+                        $this->update_field_switcher('Customer Delivery Address', $value, $options, array('no_propagate_addresses'=>true));
+                    }
+
+                }
+
+                $sql=sprintf('select `Order Key` from `Order Dimension` where  `Order Class`="InProcess" and `Order Customer Key`=%d ',$this->id);
+                if ($result=$this->db->query($sql)) {
+                    foreach ($result as $row) {
+                        $order=get_object('Order',$row['Order Key']);
+
+
+                        $order->update(array('Order Invoice Address'=>$value),$options,array('no_propagate_customer'=>true) );
+                    }
+                }else {
+                    print_r($error_info=$this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
                 break;
             case 'Customer Delivery Address':
+
+
+
                 $this->update_address('Delivery', json_decode($value, true));
+
+                $sql=sprintf('select `Order Key` from `Order Dimension` where  `Order Class`="InProcess" and `Order Customer Key`=%d ',$this->id);
+                if ($result=$this->db->query($sql)) {
+                		foreach ($result as $row) {
+                           $order=get_object('Order',$row['Order Key']);
+                           $order->update(array('Order Delivery Address'=>$value),$options,array('no_propagate_customer'=>true) );
+                		}
+                }else {
+                		print_r($error_info=$this->db->errorInfo());
+                		print "$sql\n";
+                		exit;
+                }
+
+
+
+
                 break;
             case 'new delivery address':
                 $this->add_other_delivery_address(json_decode($value, true));
@@ -2076,14 +2165,12 @@ class Customer extends Subject {
             $this->data['Customer Active']           = 'Yes';
             if (strtotime('now') - strtotime(
                     $this->data['Customer First Contacted Date']
-                ) > $store->data['Store Losing Customer Interval']
-            ) {
+                ) > $store->data['Store Losing Customer Interval']) {
                 $this->data['Customer Type by Activity'] = 'Losing';
             }
             if (strtotime('now') - strtotime(
                     $this->data['Customer First Contacted Date']
-                ) > $store->data['Store Lost Customer Interval']
-            ) {
+                ) > $store->data['Store Lost Customer Interval']) {
                 $this->data['Customer Type by Activity'] = 'Lost';
                 $this->data['Customer Active']           = 'No';
             }
@@ -2114,14 +2201,12 @@ class Customer extends Subject {
             $this->data['Customer Active']           = 'Yes';
             if (strtotime('now') - strtotime(
                     $this->data['Customer Last Order Date']
-                ) > $losing_interval
-            ) {
+                ) > $losing_interval) {
                 $this->data['Customer Type by Activity'] = 'Losing';
             }
             if (strtotime('now') - strtotime(
                     $this->data['Customer Last Order Date']
-                ) > $lost_interval
-            ) {
+                ) > $lost_interval) {
                 $this->data['Customer Type by Activity'] = 'Lost';
                 $this->data['Customer Active']           = 'No';
             }
@@ -2150,8 +2235,7 @@ class Customer extends Subject {
                 $this->data['Customer First Contacted Date']
             );
 
-        if ($interval < $new_interval
-            //        or $this->data['Customer Type by Activity']=='Lost'
+        if ($interval < $new_interval//        or $this->data['Customer Type by Activity']=='Lost'
         ) {
             $this->data['Customer New'] = 'Yes';
         } else {
@@ -2611,13 +2695,13 @@ class Customer extends Subject {
         );
 
 
-        if ($result=$this->db->query($sql)) {
+        if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
                 $_card_data = json_decode(AESDecryptCtr($row['Customer Credit Card Metadata'], $key, 256), true);
                 $token      = $_card_data['Token'];
             }
-        }else {
-            print_r($error_info=$this->db->errorInfo());
+        } else {
+            print_r($error_info = $this->db->errorInfo());
             print "$sql\n";
             exit;
         }
@@ -2642,8 +2726,7 @@ class Customer extends Subject {
             if ($row = $result->fetch()) {
                 $sql = sprintf(
                     'SELECT `Customer Credit Card Key`,`Customer Credit Card Invoice Address Checksum`,`Customer Credit Card Delivery Address Checksum` FROM `Customer Credit Card Dimension`  WHERE `Customer Credit Card Customer Key`=%d AND `Customer Credit Card CCUI`=%s',
-                    $this->id,
-                    prepare_mysql($row['Customer Credit Card CCUI'])
+                    $this->id, prepare_mysql($row['Customer Credit Card CCUI'])
                 );
 
 
@@ -2685,36 +2768,32 @@ class Customer extends Subject {
             "SELECT * FROM `Custom Field Dimension` WHERE `Custom Field In Showcase`='Yes' AND `Custom Field Table`='Customer'"
         );
 
-        if ($result=$this->db->query($sql)) {
-        		foreach ($result as $row) {
-                    $custom_field[$row['Custom Field Key']] = $row['Custom Field Name'];
-        		}
-        }else {
-        		print_r($error_info=$this->db->errorInfo());
-        		print "$sql\n";
-        		exit;
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $custom_field[$row['Custom Field Key']] = $row['Custom Field Name'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
-
-
-
 
 
         $show_case = array();
         $sql       = sprintf("SELECT * FROM `Customer Custom Field Dimension` WHERE `Customer Key`=%d", $this->id);
 
 
-        if ($result=$this->db->query($sql)) {
-        		foreach ($result as $row) {
-                    foreach ($custom_field as $key => $value) {
-                        $show_case[$value] = $row[$key];
-                    }
-        		}
-        }else {
-        		print_r($error_info=$this->db->errorInfo());
-        		print "$sql\n";
-        		exit;
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                foreach ($custom_field as $key => $value) {
+                    $show_case[$value] = $row[$key];
+                }
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
-
 
 
         return $show_case;
@@ -2776,6 +2855,12 @@ class Customer extends Subject {
 
         switch ($field) {
 
+            case 'Customer Delivery Address Link':
+                $label = _('delivery address link');
+                break;
+            case 'Customer Billing Address Link':
+                $label = _('invoice address link');
+                break;
             case 'Customer Registration Number':
                 $label = _('registration number');
                 break;
