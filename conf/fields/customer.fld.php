@@ -25,6 +25,12 @@ $options_valid_tax_number = array(
 );
 
 
+$options_delivery_address_link            = array(
+    'Billing'       => _('Same as invoice address'),
+    'None'    => _('Unrelated to invoice address'),
+);
+
+
 if (isset($options['new']) and $options['new']) {
     $new = true;
 } else {
@@ -470,6 +476,7 @@ if($new){
                 array(
                     'id'              => 'Customer_Contact_Address',
                     'edit'            => ($edit ? 'address' : ''),
+                    'render'=>($object->get('Customer Billing Address Link')=='Contact'?false:true),
                     'countries'       => $countries,
                     'value'           => htmlspecialchars($object->get('Customer Contact Address')),
                     'formatted_value' => $object->get('Contact Address'),
@@ -490,17 +497,30 @@ if($new){
                     'label'           => ucfirst($object->get_field_label('Customer Invoice Address')),
                     'required'        => false
                 ),
+
+
+
+
+
+
+                 array(
+                     'id'              => 'Customer_Delivery_Address_Link',
+                     'edit'            => ($edit ? 'option' : ''),
+                     'value'           => htmlspecialchars($object->get('Customer Delivery Address Link')),
+                     'formatted_value' => $object->get('Delivery Address Link'),
+                     'label'           => ucfirst($object->get_field_label('Customer Delivery Address Link')),
+                     'options'         => $options_delivery_address_link,
+                     'required'        => true
+                 ),
+
                 array(
                     'id'              => 'Customer_Delivery_Address',
                     'edit'            => ($edit ? 'address' : ''),
+                    'render'=>($object->get('Customer Delivery Address Link')!='None'?false:true),
                     'countries'       => $countries,
-                    'value'           => htmlspecialchars(
-                        $object->get('Customer Delivery Address')
-                    ),
+                    'value'           => htmlspecialchars($object->get('Customer Delivery Address')),
                     'formatted_value' => $object->get('Delivery Address'),
-                    'label'           => ucfirst(
-                        $object->get_field_label('Customer Delivery Address')
-                    ),
+                    'label'           => ucfirst($object->get_field_label('Customer Delivery Address')),
                     'invalid_msg'     => get_invalid_message('address'),
                     'required'        => false
                 ),
@@ -529,6 +549,9 @@ if($new){
                 ),
                 array(
                     'id'        => 'show_new_delivery_address',
+                    'render'=>($object->get('Customer Delivery Address Link')!='None'?false:true),
+
+
                     'class'     => 'new',
                     'value'     => '',
                     'label'     => _('Add delivery address').' <i class="fa fa-plus new_button button"></i>',

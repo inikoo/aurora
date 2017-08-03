@@ -410,10 +410,10 @@ class Invoice extends DB_Table {
             );
             mysql_query($sql);
             //print $sql;
-            $this->update_xhtml_orders();
+
         }
 
-        $this->update_xhtml_orders();
+
         //$this->categorize();
         $this->update_title();
     }
@@ -678,28 +678,7 @@ class Invoice extends DB_Table {
 
     }
 
-    function update_xhtml_orders() {
-        $state                               = '';
-        $this->data ['Invoice XHTML Orders'] = '';
-        $sql                                 = sprintf(
-            "SELECT O.`Order Key`,`Order Public ID` FROM `Order Invoice Bridge` B LEFT JOIN `Order Dimension` O ON (O.`Order Key`=B.`Order Key`) WHERE `Invoice Key`=%d", $this->id
-        );
-        $res                                 = mysql_query($sql);
-        while ($row = mysql_fetch_assoc($res)) {
-            $this->data ['Invoice XHTML Orders'] .= sprintf(
-                '%s <a href="order.php?id=%d">%s</a>, ', $state, $row['Order Key'], $row['Order Public ID']
-            );
 
-        }
-        $this->data ['Invoice XHTML Orders'] = _trim(
-            preg_replace('/\, $/', '', $this->data ['Invoice XHTML Orders'])
-        );
-
-        $sql = sprintf(
-            "UPDATE `Invoice Dimension` SET `Invoice XHTML Orders`=%s WHERE `Invoice Key`=%d ", prepare_mysql($this->data['Invoice XHTML Orders']), $this->id
-        );
-        mysql_query($sql);
-    }
 
     function update_title() {
 
@@ -3093,7 +3072,6 @@ class Invoice extends DB_Table {
             $order->update_payment_state();
             $order->update_totals();
             $order->update_full_search();
-            $order->update_xhtml_invoices();
             if ($this->data['Invoice Type'] == 'Refund' or $this->data['Invoice Type'] == 'CreditNote') {
                 $customer = new Customer($this->data['Invoice Customer Key']);
                 $customer->add_history_order_refunded($this);
@@ -3102,10 +3080,7 @@ class Invoice extends DB_Table {
 
 
         }
-        foreach ($this->get_delivery_notes_objects() as $key => $dn) {
-            $dn->update_xhtml_invoices();
 
-        }
     }
 
     function pay_full_amount($data) {
@@ -3266,12 +3241,7 @@ class Invoice extends DB_Table {
 
         switch ($field) {
 
-            case('Invoice XHTML Orders'):
-                $this->update_xhtml_orders();
-                break;
-            case('Invoice XHTML Delivery Notes'):
-                $this->update_xhtml_delivery_notes();
-                break;
+
             default:
                 $base_data = $this->base_data();
                 if (array_key_exists($field, $base_data)) {
@@ -3282,45 +3252,6 @@ class Invoice extends DB_Table {
         }
     }
 
-    function update_xhtml_delivery_notes() {
-        $prefix                                      = '';
-        $this->data ['Invoice XHTML Delivery Notes'] = '';
-        foreach ($this->get_delivery_notes_objects() as $delivery_note) {
-            //  $this->data ['Invoice XHTML Delivery Notes'] .= sprintf( '%s <a href="dn.php?id=%d">%s</a>, ', $prefix, $delivery_note->data ['Delivery Note Key'], $delivery_note->data ['Delivery Note ID'] );
-            // }
-            // $this->data ['Invoice XHTML Delivery Notes'] =_trim(preg_replace('/\, $/','',$this->data ['Invoice XHTML Delivery Notes']));
-
-
-            if ($delivery_note->get('Delivery Note State') == 'Dispatched') {
-                $state = '<img src="/art/icons/lorry.png" style="height:14px">';
-            } elseif ($delivery_note->get('Delivery Note State') == 'Packed Done') {
-                $state
-                    = '<img src="/art/icons/package.png" style="height:14px">';
-            } elseif ($delivery_note->get('Delivery Note State') == 'Approved') {
-                $state
-                    = '<img src="/art/icons/package_green.png" style="height:14px">';
-            } else {
-                $state = '<img src="/art/icons/cart.png" style="width:14px">';
-            }
-
-            $this->data ['Invoice XHTML Delivery Notes'] .= sprintf(
-                '%s <a href="dn.php?id=%d">%s%s</a> <a href="dn.pdf.php?id=%d" target="_blank"><img style="height:10px;position:relative;bottom:2.5px" src="/art/pdf.gif" alt=""></a><br/>', $state,
-                $delivery_note->data ['Delivery Note Key'], $prefix, $delivery_note->data ['Delivery Note ID'], $delivery_note->data ['Delivery Note Key']
-            );
-        }
-
-        $this->data ['Invoice XHTML Delivery Notes'] = _trim(
-            preg_replace(
-                '/\<br\/\>$/', '', $this->data ['Invoice XHTML Delivery Notes']
-            )
-        );
-
-
-        $sql = sprintf(
-            "UPDATE `Invoice Dimension` SET `Invoice XHTML Delivery Notes`=%s WHERE `Invoice Key`=%d ", prepare_mysql($this->data['Invoice XHTML Delivery Notes']), $this->id
-        );
-        mysql_query($sql);
-    }
 
     function add_refund_no_product_transaction($refund_transaction_data) {
 
@@ -3656,7 +3587,7 @@ class Invoice extends DB_Table {
 
         foreach ($dns as $dn) {
 
-            $dn->update_xhtml_invoices();
+
             $dn->update(
                 array(
                     'Delivery Note Invoiced'                    => 'No',
@@ -3709,7 +3640,7 @@ class Invoice extends DB_Table {
             if ($this->data['Invoice Type'] == 'Invoice') {
                 $order->update(array('Order Invoiced' => 'No'));
             }
-            $order->update_xhtml_invoices();
+
             $order->update_totals();
 
 
