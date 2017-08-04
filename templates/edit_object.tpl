@@ -441,7 +441,6 @@
                                                   has_been_valid="0">{$field.value}</textarea>
                                     </div>
                                 {elseif $edit=='address'  or $edit=='new_delivery_address' or $edit=='address_to_clone' }
-
                                     <div class="address_edit_fields_container">
                                         <table id="{$field.id}" border=0 class="address hide" field="{$field.id}">
 

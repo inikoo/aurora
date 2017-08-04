@@ -9,11 +9,25 @@
 
 */
 
-
+include_once 'utils/country_functions.php';
 include_once 'utils/invalid_messages.php';
 include_once 'conf/object_fields.php';
 
 $store = $state['_object'];
+
+
+
+
+
+$smarty->assign(
+    'default_country', $store->get('Store Home Country Code 2 Alpha')
+);
+$smarty->assign(
+    'preferred_countries', '"'.join(
+                             '", "', preferred_countries($store->get('Store Home Country Code 2 Alpha'))
+                         ).'"'
+);
+
 
 $object_fields = get_object_fields($store, $db, $user, $smarty, array());
 $smarty->assign('object_fields', $object_fields);

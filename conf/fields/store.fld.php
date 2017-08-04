@@ -10,13 +10,23 @@
  Version 3.0
 */
 
+
+include_once 'utils/static_data.php';
+
+
+$countries = get_countries($db);
+
 if (isset($options['new']) and $options['new']) {
     $new = true;
 } else {
     $new = false;
 }
 
+$options_yes_no = array(
+    'Yes' => _('Yes'),
+    'No'  => _('No')
 
+);
 
 $options_locale = array(
     'en_GB' => 'en_GB '._('British English'),
@@ -193,10 +203,12 @@ $object_fields = array(
                 'invalid_msg'     => get_invalid_message('string'),
                 'required'        => false,
                 'type'            => 'value'
-            )
+            ),
+
 
         )
-    )
+    ),
+
 
 );
 
@@ -319,9 +331,7 @@ $object_fields = array(
                 'id'              => 'Store_Address',
                 'value'           => $object->get('Store Address'),
                 'formatted_value' => $object->get('Address'),
-                'label'           => ucfirst(
-                    $object->get_field_label('Store Address')
-                ),
+                'label'           => ucfirst($object->get_field_label('Store Address')),
                 'invalid_msg'     => get_invalid_message('string'),
                 'required'        => false,
                 'type'            => 'value'
@@ -366,28 +376,58 @@ $object_fields = array(
         )
     ),
 
-     array(
-         'label'      => _('Emails templates'),
-         'show_title' => true,
-         'fields'     => array(
+    array(
+        'label'      => _('Collection'),
+        'show_title' => true,
+        'fields'     => array(
 
-             array(
-                 'edit'        => ($edit ? 'textarea' : ''),
-                 'id'          => 'Store_Email_Template_Signature',
-                 'value'       => $object->get('Store Email Template Signature'),
-                 'label'       => ucfirst(
-                     $object->get_field_label('Store Email Template Signature')
-                 ),
-                 'required'    => false,
+            array(
+                'id'              => 'Store_Can_Collect',
+                'edit'            => ($edit ? 'option' : ''),
+                'options'         => $options_yes_no,
+                'value'           => $object->get('Store Can Collect'),
+                'formatted_value' => $object->get('Can Collect'),
+                'label'           => _('Accept orders for collection'),
+                'type'            => 'value'
+            ),
+            array(
+                'id'              => 'Store_Collect_Address',
+                'edit'            => 'address',
+                'render'=>($object->get('Store Can Collect')=='Yes'?true:false),
+                'countries'       => $countries,
+                'value'           => htmlspecialchars($object->get('Store Collect Address')),
+                'formatted_value' => $object->get('Collect Address'),
+                'label'           => ucfirst($object->get_field_label('Store Collect Address')),
+                'invalid_msg'     => get_invalid_message('address'),
+                'required'        => false
+            ),
 
-                 'type' => 'value'
+        )
+    ),
 
 
-             ),
+    array(
+        'label'      => _('Emails templates'),
+        'show_title' => true,
+        'fields'     => array(
+
+            array(
+                'edit'     => ($edit ? 'textarea' : ''),
+                'id'       => 'Store_Email_Template_Signature',
+                'value'    => $object->get('Store Email Template Signature'),
+                'label'    => ucfirst(
+                    $object->get_field_label('Store Email Template Signature')
+                ),
+                'required' => false,
+
+                'type' => 'value'
 
 
-         )
-     )
+            ),
+
+
+        )
+    )
 
 );
 
@@ -403,7 +443,9 @@ if (!$new) {
                 'id'        => 'delete_store',
                 'class'     => 'operation',
                 'value'     => '',
-                'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id.'"}\' onClick="delete_object(this)" class="delete_object disabled">'.($object->get('Store Contacts')>0?_('Close store'): _("Delete store")).' <i class="fa fa-trash new_button link"></i></span>',
+                'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name(
+                    ).'", "key":"'.$object->id.'"}\' onClick="delete_object(this)" class="delete_object disabled">'.($object->get('Store Contacts') > 0 ? _('Close store') : _("Delete store"))
+                    .' <i class="fa fa-trash new_button link"></i></span>',
                 'reference' => '',
                 'type'      => 'operation'
             ),
@@ -415,7 +457,6 @@ if (!$new) {
 
     $object_fields[] = $operations;
 }
-
 
 
 ?>
