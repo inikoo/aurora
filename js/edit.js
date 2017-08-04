@@ -1320,11 +1320,15 @@ function delete_field(data) {
 
 function update_field(data) {
 
-    console.log(data)
+
 
     var field = data.field
     var type = $('#' + field + '_container').attr('field_type')
+    console.log(data)
 
+
+    console.log(data.render)
+    console.log(field)
 
     if (data.render) {
         $('#' + field + '_field').removeClass('hide')

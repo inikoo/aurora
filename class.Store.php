@@ -409,7 +409,34 @@ class Store extends DB_Table {
 
 
         switch ($key) {
+            case $this->table_name.' Collect Address':
 
+                $type = 'Collect';
+
+                $address_fields = array(
+
+                    'Address Recipient'            => $this->get($type.' Address Recipient'),
+                    'Address Organization'         => $this->get($type.' Address Organization'),
+                    'Address Line 1'               => $this->get($type.' Address Line 1'),
+                    'Address Line 2'               => $this->get($type.' Address Line 2'),
+                    'Address Sorting Code'         => $this->get($type.' Address Sorting Code'),
+                    'Address Postal Code'          => $this->get($type.' Address Postal Code'),
+                    'Address Dependent Locality'   => $this->get($type.' Address Dependent Locality'),
+                    'Address Locality'             => $this->get($type.' Address Locality'),
+                    'Address Administrative Area'  => $this->get($type.' Address Administrative Area'),
+                    'Address Country 2 Alpha Code' => $this->get($type.' Address Country 2 Alpha Code'
+                    ),
+
+
+                );
+
+                return  json_encode($address_fields);
+                break;
+            case 'Collect Address':
+
+
+                return    $this->get($this->table_name.' '.$key.' Formatted');
+                break;
 
             case('Google Map URL'):
 
@@ -2174,6 +2201,10 @@ class Store extends DB_Table {
                 $label = '[Signature]';
                 break;
 
+            case 'Store Collect Address':
+                $label = _("Collection address");
+                break;
+
             default:
                 $label = $field;
 
@@ -2927,6 +2958,45 @@ class Store extends DB_Table {
 
         switch ($field) {
 
+
+            case 'Store Can Collect':
+
+                $this->update_field($field, $value, $options);
+
+
+                $this->other_fields_updated = array(
+                    'Store_Collect_Address' => array(
+                        'field'           => 'Store_Collect_Address',
+                        'render'          => ($this->get('Store Can Collect') == 'Yes' ? true : false),
+
+
+
+                    )
+                );
+
+            break;
+
+            case 'Store Collect Address':
+
+
+                $this->update_address('Collect', json_decode($value, true));
+
+                $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order Class`="InProcess"  and `Order For Collection`="Yes"  AND `Order Customer Key`=%d ', $this->id);
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+                        $order=get_object('Order',$row['Order Key']);
+                        $order->update(array('Order Delivery Address' => $value), $options, array('no_propagate_customer' => true));
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+
+                break;
+
+
             case('Store Google Map URL'):
 
 
@@ -3025,6 +3095,132 @@ class Store extends DB_Table {
         return $sql;
 
     }
+
+
+    function update_address($type, $fields, $options = '') {
+
+
+        $old_value = $this->get("$type Address");
+        //$old_checksum = $this->get("$type Address Checksum");
+
+
+        $updated_fields_number = 0;
+
+
+
+        foreach ($fields as $field => $value) {
+
+            $this->update_field(
+                $this->table_name.' '.$type.' '.$field, $value, 'no_history'
+            );
+            if ($this->updated) {
+                $updated_fields_number++;
+
+            }
+        }
+
+
+        if ($updated_fields_number > 0) {
+            $this->updated = true;
+        }
+
+
+        if ($this->updated) {
+
+            $this->update_address_formatted_fields($type, $options);
+
+
+            if (!preg_match('/no( |\_)history|nohistory/i', $options)) {
+
+                $this->add_changelog_record(
+                    $this->table_name." $type Address", $old_value, $this->get("$type Address"), '', $this->table_name, $this->id
+                );
+
+            }
+
+
+
+
+
+        }
+
+    }
+
+    function update_address_formatted_fields($type, $options) {
+
+
+        include_once 'utils/get_addressing.php';
+
+        $new_checksum = md5(
+            json_encode(
+                array(
+                    'Address Recipient'            => $this->get($type.' Address Recipient'),
+                    'Address Organization'         => $this->get($type.' Address Organization'),
+                    'Address Line 1'               => $this->get($type.' Address Line 1'),
+                    'Address Line 2'               => $this->get($type.' Address Line 2'),
+                    'Address Sorting Code'         => $this->get($type.' Address Sorting Code'),
+                    'Address Postal Code'          => $this->get($type.' Address Postal Code'),
+                    'Address Dependent Locality'   => $this->get($type.' Address Dependent Locality'),
+                    'Address Locality'             => $this->get($type.' Address Locality'),
+                    'Address Administrative Area'  => $this->get($type.' Address Administrative Area'),
+                    'Address Country 2 Alpha Code' => $this->get($type.' Address Country 2 Alpha Code'),
+                )
+            )
+        );
+
+
+        $this->update_field(
+            $this->table_name.' '.$type.' Address Checksum', $new_checksum, 'no_history'
+        );
+
+
+
+
+        $country = $this->get('Store Home Country Code 2 Alpha');
+        $locale  = $this->get('Store Locale');
+
+        list($address, $formatter, $postal_label_formatter) = get_address_formatter($country, $locale);
+
+
+        $address = $address->withFamilyName($this->get($type.' Address Recipient'))->withOrganization($this->get($type.' Address Organization'))->withAddressLine1($this->get($type.' Address Line 1'))
+            ->withAddressLine2($this->get($type.' Address Line 2'))->withSortingCode($this->get($type.' Address Sorting Code'))->withPostalCode($this->get($type.' Address Postal Code'))
+            ->withDependentLocality($this->get($type.' Address Dependent Locality'))->withLocality($this->get($type.' Address Locality'))->withAdministrativeArea(
+                $this->get($type.' Address Administrative Area')
+            )->withCountryCode($this->get($type.' Address Country 2 Alpha Code'));
+
+
+        $xhtml_address = $formatter->format($address);
+
+
+        if ($this->get($type.' Address Recipient') == $this->get('Main Contact Name')) {
+            $xhtml_address = preg_replace('/(class="recipient">.+<\/span>)<br>/', '$1', $xhtml_address);
+        }
+
+        if ($this->get($type.' Address Organization') == $this->get('Company Name')) {
+            $xhtml_address = preg_replace('/(class="organization">.+<\/span>)<br>/', '$1', $xhtml_address);
+        }
+
+        $xhtml_address = preg_replace(
+            '/class="recipient"/', 'class="recipient fn '.($this->get($type.' Address Recipient') == $this->get('Main Contact Name') ? 'hide' : '').'"', $xhtml_address
+        );
+
+
+        $xhtml_address = preg_replace('/class="organization"/', 'class="organization org '.($this->get($type.' Address Organization') == $this->get('Company Name') ? 'hide' : '').'"', $xhtml_address);
+        $xhtml_address = preg_replace('/class="address-line1"/', 'class="address-line1 street-address"', $xhtml_address);
+        $xhtml_address = preg_replace('/class="address-line2"/', 'class="address-line2 extended-address"', $xhtml_address);
+        $xhtml_address = preg_replace('/class="sort-code"/', 'class="sort-code postal-code"', $xhtml_address);
+        $xhtml_address = preg_replace('/class="country"/', 'class="country country-name"', $xhtml_address);
+
+
+        $xhtml_address = preg_replace('/(class="address-line1 street-address"><\/span>)<br>/', '$1', $xhtml_address);
+
+
+        //print $xhtml_address;
+        $this->update_field($this->table_name.' '.$type.' Address Formatted', $xhtml_address, 'no_history');
+        $this->update_field($this->table_name.' '.$type.' Address Postal Label', $postal_label_formatter->format($address), 'no_history');
+
+    }
+
 
 
 }
