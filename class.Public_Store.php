@@ -181,6 +181,19 @@ class Public_Store {
             case 'Store Email':
             case 'Store Email Template Signature':
             case 'Store Google Map URL':
+            case 'Store Can Collect':
+            case 'Store Collect Address Line 1':
+            case 'Store Collect Address Line 2':
+            case 'Store Collect Address Sorting Code':
+            case 'Store Collect Address Postal Code':
+            case 'Store Collect Address Dependent Locality':
+            case 'Store Collect Address Locality':
+            case 'Store Collect Address Administrative Area':
+            case 'Store Collect Address Country 2 Alpha Code':
+
+
+
+
                 return $this->data[$key];
                 break;
 

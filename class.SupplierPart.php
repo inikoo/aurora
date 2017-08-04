@@ -625,7 +625,7 @@ class SupplierPart extends DB_Table {
                 $history_data = array(
                     'Action'           => 'edited',
                     'History Abstract' => sprintf(
-                        "Suppier's part %s supplier moved to supplier %s%s", sprintf(
+                        "Supplier's part %s supplier moved to supplier %s%s", sprintf(
                         '<span class="button" onClick="change_view(\'supplier/%d/part/%d\')">%s</span>', $supplier->id, $this->id, $this->get('Reference')
                     ), sprintf(
                             '<span class="button" onClick="change_view(\'supplier/%d\')">%s</span>', $supplier->id, $supplier->get('Code')
