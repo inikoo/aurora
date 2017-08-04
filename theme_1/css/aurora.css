@@ -10,6 +10,49 @@
 */
 
 
+.highlight {
+	font-weight: 800;
+}
+
+.discreet {
+	opacity: .9;
+	color: #777
+}
+
+.very_discreet {
+	opacity: .6;
+	color: #777
+}
+
+.super_discreet {
+	opacity: .3;
+	color: #777
+}
+
+
+
+.discreet_on_hover{
+	opacity: .9;
+	color: #777
+}
+
+
+.discreet_on_hover:hover{
+	opacity: 1;
+	color: #777
+}
+
+.super_discreet_on_hover{
+	opacity: .0;
+	color: #777
+}
+
+
+.super_discreet_on_hover:hover{
+	opacity: .3;
+	color: #777
+}
+
 
 .button,.like_button{
 	cursor: pointer !important;

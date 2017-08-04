@@ -883,18 +883,20 @@ class Customer extends Subject {
 
                 }
 
-                $sql=sprintf('select `Order Key` from `Order Dimension` where  `Order Class`="InProcess" and `Order Customer Key`=%d ',$this->id);
-                if ($result=$this->db->query($sql)) {
-                    foreach ($result as $row) {
-                        $order=get_object('Order',$row['Order Key']);
+                if(  empty($metadata['no_propagate_orders'])  ) {
+                    $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order Class`="InProcess" AND `Order Customer Key`=%d ', $this->id);
+                    if ($result = $this->db->query($sql)) {
+                        foreach ($result as $row) {
+                            $order = get_object('Order', $row['Order Key']);
 
 
-                        $order->update(array('Order Invoice Address'=>$value),$options,array('no_propagate_customer'=>true) );
+                            $order->update(array('Order Invoice Address' => $value), $options, array('no_propagate_customer' => true));
+                        }
+                    } else {
+                        print_r($error_info = $this->db->errorInfo());
+                        print "$sql\n";
+                        exit;
                     }
-                }else {
-                    print_r($error_info=$this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
                 }
 
                 break;

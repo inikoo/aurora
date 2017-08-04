@@ -54,6 +54,25 @@ switch ($tipo) {
 
 
         break;
+
+    case 'invoice_address':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'data' => array('type' => 'json array'),
+
+                     )
+        );
+        invoice_address($db, $data, $order, $editor);
+        break;
+    case 'delivery_address':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'data' => array('type' => 'json array'),
+
+                     )
+        );
+        delivery_address($db, $data, $order, $editor);
+        break;
 }
 
 function update_item($_data, $customer, $website, $editor) {
@@ -218,7 +237,6 @@ function update_item($_data, $customer, $website, $editor) {
             'ordered_products_number'      => $order->get('Number Items'),
         );
 
-        //print_r($updated_data);
 
         $response = array(
             'state'               => 200,
@@ -283,6 +301,200 @@ function create_order($editor, $customer) {
 
     return $order;
 }
+
+
+function invoice_address($db, $data, $order, $editor) {
+
+
+
+    // to do replace to native public order
+    include_once 'class.Order.php';
+    $order=new Order($order->id);
+
+
+    $address_data=array(
+        'Address Line 1'=>'',
+        'Address Line 2'=>'',
+        'Address Sorting Code'=>'',
+        'Address Postal Code'=>'',
+        'Address Dependent Locality'=>'',
+        'Address Locality'=>'',
+        'Address Administrative Area'=>'',
+        'Address Country 2 Alpha Code'=>'',
+    );
+
+
+    foreach($data['data'] as $key=>$value){
+
+        if ($key == 'addressLine1') {
+            $key = 'Address Line 1';
+        } elseif ($key == 'addressLine2') {
+            $key = 'Address Line 2';
+        } elseif ($key == 'sortingCode') {
+            $key = 'Address Sorting Code';
+        } elseif ($key == 'postalCode') {
+            $key = 'Address Postal Code';
+        } elseif ($key == 'dependentLocality') {
+            $key = 'Address Dependent Locality';
+        } elseif ($key == 'locality') {
+            $key = 'Address Locality';
+        }elseif ($key == 'administrativeArea') {
+            $key = 'Address Administrative Area';
+        }elseif ($key == 'country') {
+            $key = 'Address Country 2 Alpha Code';
+        }
+
+        $address_data[$key]=$value;
+
+    }
+
+
+
+    $order->editor = $editor;
+    $order->update(array('Order Invoice Address'=>json_encode($address_data)));
+
+
+
+    $class_html = array(
+        'order_items_gross'            => $order->get('Items Gross Amount'),
+        'order_items_discount'         => $order->get('Items Discount Amount'),
+        'order_items_net'              => $order->get('Items Net Amount'),
+        'order_net'                    => $order->get('Total Net Amount'),
+        'order_tax'                    => $order->get('Total Tax Amount'),
+        'order_charges'                => $order->get('Charges Net Amount'),
+        'order_credits'                => $order->get('Net Credited Amount'),
+        'order_shipping'               => $order->get('Shipping Net Amount'),
+        'order_total'                  => $order->get('Total Amount'),
+        'ordered_products_number'      => $order->get('Number Items'),
+
+
+        'formatted_invoice_address'=>$order->get('Order Invoice Address Formatted'),
+
+
+
+
+    );
+
+
+    $response = array(
+        'state'               => 200,
+        'metadata'=>array(
+            'class_html'=>$class_html,
+            'for_collection'=>$order->get('Order For Collection')
+        ),
+
+    );
+    echo json_encode($response);
+
+
+}
+
+function delivery_address($db, $data, $order, $editor) {
+
+
+    // to do replace to native public order
+    include_once 'class.Order.php';
+    $order=new Order($order->id);
+
+
+
+
+    $order->editor = $editor;
+
+
+
+    if($data['data']['order_for_collection']){
+        $order->update(array('Order For Collection'=>'Yes'));
+
+    }else{
+        $order->update(array('Order For Collection'=>'No'));
+
+        $address_data=array(
+            'Address Line 1'=>'',
+            'Address Line 2'=>'',
+            'Address Sorting Code'=>'',
+            'Address Postal Code'=>'',
+            'Address Dependent Locality'=>'',
+            'Address Locality'=>'',
+            'Address Administrative Area'=>'',
+            'Address Country 2 Alpha Code'=>'',
+        );
+
+
+        foreach($data['data'] as $key=>$value){
+
+            if ($key == 'addressLine1') {
+                $key = 'Address Line 1';
+            } elseif ($key == 'addressLine2') {
+                $key = 'Address Line 2';
+            } elseif ($key == 'sortingCode') {
+                $key = 'Address Sorting Code';
+            } elseif ($key == 'postalCode') {
+                $key = 'Address Postal Code';
+            } elseif ($key == 'dependentLocality') {
+                $key = 'Address Dependent Locality';
+            } elseif ($key == 'locality') {
+                $key = 'Address Locality';
+            }elseif ($key == 'administrativeArea') {
+                $key = 'Address Administrative Area';
+            }elseif ($key == 'country') {
+                $key = 'Address Country 2 Alpha Code';
+            }
+
+            $address_data[$key]=$value;
+
+        }
+
+        $order->update(array('Order Delivery Address'=>json_encode($address_data)));
+
+    }
+
+
+
+    $class_html = array(
+        'order_items_gross'            => $order->get('Items Gross Amount'),
+        'order_items_discount'         => $order->get('Items Discount Amount'),
+        'order_items_net'              => $order->get('Items Net Amount'),
+        'order_net'                    => $order->get('Total Net Amount'),
+        'order_tax'                    => $order->get('Total Tax Amount'),
+        'order_charges'                => $order->get('Charges Net Amount'),
+        'order_credits'                => $order->get('Net Credited Amount'),
+        'order_shipping'               => $order->get('Shipping Net Amount'),
+        'order_total'                  => $order->get('Total Amount'),
+        'ordered_products_number'      => $order->get('Number Items'),
+
+
+        'formatted_delivery_address'=>$order->get('Order Delivery Address Formatted'),
+
+
+
+
+    );
+
+
+    $response = array(
+        'state'               => 200,
+        'metadata'=>array(
+            'class_html'=>$class_html,
+            'for_collection'=>$order->get('Order For Collection')
+        ),
+
+    );
+
+
+
+
+
+
+
+
+
+
+    echo json_encode($response);
+
+
+}
+
 
 
 ?>

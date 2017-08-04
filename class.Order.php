@@ -1512,6 +1512,13 @@ class Order extends DB_Table {
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
 
         switch ($field) {
+
+
+
+            case('Order For Collection'):
+
+                $this->update_for_collection($value,$options);
+                break;
             case('Order Tax Number'):
                 $this->update_tax_number($value);
                 break;
@@ -1520,6 +1527,13 @@ class Order extends DB_Table {
                 break;
             case 'Order Invoice Address':
                 $this->update_address('Invoice', json_decode($value, true));
+
+
+                $customer=get_object('Customer',$this->data['Order Customer Key']);
+                $customer->update_field_switcher('Customer Invoice Address',$value,'',array('no_propagate_orders' => true));
+
+
+
                 break;
             case 'Order Delivery Address':
                 $this->update_address('Delivery', json_decode($value, true));
@@ -4126,7 +4140,8 @@ class Order extends DB_Table {
 
         $xhtml_address = preg_replace('/(class="address-line1 street-address"><\/span>)<br>/', '$1', $xhtml_address);
 
-        //  print $xhtml_address;
+
+        $xhtml_address = preg_replace('/<br>/', '<br/>', $xhtml_address);
 
 
         $this->update_field($this->table_name.' '.$type.' Address Formatted', $xhtml_address, 'no_history');
@@ -9674,84 +9689,75 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
 
     }
 
-    function update_order_is_for_collection($value) {
+    function update_for_collection($value,$options) {
 
         if ($value != 'Yes') {
             $value = 'No';
         }
 
         $old_value = $this->data['Order For Collection'];
-        if ($old_value != $value) {
+
+
+
+        if ($old_value != $value or true) {
+
+
 
             if ($value == 'Yes') {
-                $store              = new Store($this->data['Order Store Key']);
-                $collection_address = new Address(
-                    $store->data['Store Collection Address Key']
-                );
-                if ($collection_address->id) {
-                    $store_2_alpha_country_code = $collection_address->data['Address Country 2 Alpha Code'];
-                    $store_country_code         = $collection_address->data['Address Country Code'];
-                    $store_town_code            = $collection_address->data['Address Town'];
-                    $store_world_region_code    = $collection_address->get(
-                        'Address World Region Code'
-                    );
-                    $store_postal_code          = $collection_address->data['Address Postal Code'];
-                    $store_address              = '<div style="font-weight:800">'._('For collection').'</div>'.$collection_address->display('xhtml');
+                $store              =  get_object('Store',$this->data['Order Store Key']);
 
 
-                } else {
 
-                    include_once 'class.Country.php';
-                    $country = new Country(
-                        '2alpha', $store->data['Store Home Country Code 2 Alpha']
+                    $address_data=array(
+                        'Address Recipient'=>'',
+                        'Address Organization'=>$store->get('Store Name'),
+                        'Address Line 1'=>$store->get('Store Collect Address Line 1'),
+                        'Address Line 2'=>$store->get('Store Collect Address Line 2'),
+                        'Address Sorting Code'=>$store->get('Store Collect Address Sorting Code'),
+                        'Address Postal Code'=>$store->get('Store Collect Address Postal Code'),
+                        'Address Dependent Locality'=>$store->get('Store Collect Address Dependent Locality'),
+                        'Address Locality'=>$store->get('Store Collect Address Locality'),
+                        'Address Administrative Area'=>$store->get('Store Collect Address Administrative Area'),
+                        'Address Country 2 Alpha Code'=>$store->get('Store Collect Address Country 2 Alpha Code'),
+
                     );
 
-                    $store_2_alpha_country_code = $country->data['Country 2 Alpha Code'];
-                    $store_country_code         = $country->data['Country Code'];
-                    $store_town_code            = '';
-                    $store_world_region_code    = $country->data['World Region Code'];
-                    $store_postal_code          = '';
-                    $store_address              = '<div style="font-weight:800">'._(
-                            'For collection'
-                        ).'</div>';
+
+                    $this->update_address('Delivery',$address_data,$options);
+
+                
 
 
-                }
-                $sql = sprintf(
-                    "UPDATE `Order Dimension` SET `Order For Collection`='Yes' ,
-				`Order Ship To Country Code`=%s,
-				`Order Ship To Country 2 Alpha Code`=%s,
-				`Order Ship To World Region Code`=%s,
-				`Order Ship To Town`=%s,
-				`Order Ship To Postal Code`=%s,
-				`Order XHTML Ship Tos`=%s,
-				`Order Ship To Keys`=''
-				WHERE `Order Key`=%d", prepare_mysql($store_country_code), prepare_mysql($store_2_alpha_country_code), prepare_mysql($store_world_region_code), prepare_mysql($store_town_code),
-                    prepare_mysql($store_postal_code), prepare_mysql($store_address), $this->id
-                );
-                $this->db->exec($sql);
 
 
             } else {
-                $customer = new Customer($this->data['Order Customer Key']);
 
-                $ship_to = $customer->set_current_ship_to('return object');
+                $customer=get_object('Customer',$this->get('Order Customer Key'));
 
+                $address_data=array(
+                    'Address Recipient'=>$customer->get('Customer Main Contact Name'),
+                    'Address Organization'=>$customer->get('Customer Company Name'),
+                    'Address Line 1'=>$customer->get('Customer Delivery Address Line 1'),
+                    'Address Line 2'=>$customer->get('Customer Delivery Address Line 2'),
+                    'Address Sorting Code'=>$customer->get('Customer Delivery Address Sorting Code'),
+                    'Address Postal Code'=>$customer->get('Customer Delivery Address Postal Code'),
+                    'Address Dependent Locality'=>$customer->get('Customer Delivery Address Dependent Locality'),
+                    'Address Locality'=>$customer->get('Customer Delivery Address Locality'),
+                    'Address Administrative Area'=>$customer->get('Customer Delivery Address Administrative Area'),
+                    'Address Country 2 Alpha Code'=>$customer->get('Customer Delivery Address Country 2 Alpha Code'),
 
-                $sql = sprintf(
-                    "UPDATE `Order Dimension` SET `Order For Collection`='No' ,
-				`Order Ship To Country 2 Alpha Code`=%s,
-				`Order Ship To Country Code`=%s,`Order XHTML Ship Tos`=%s,`Order Ship To Keys`=%s  ,`Order Ship To World Region Code`=%s,`Order Ship To Town`=%s,`Order Ship To Postal Code`=%s      WHERE `Order Key`=%d",
-                    prepare_mysql(
-                        $ship_to->data['Ship To Country 2 Alpha Code']
-                    ), prepare_mysql($ship_to->data['Ship To Country Code']), prepare_mysql($ship_to->data['Ship To XHTML Address']), prepare_mysql($ship_to->id),
-                    prepare_mysql($ship_to->get('World Region Code')), prepare_mysql($ship_to->data['Ship To Town']), prepare_mysql($ship_to->data['Ship To Postal Code']), $this->id
                 );
-                $this->db->exec($sql);
+
+               // print_r($address_data);
+
+                $this->update_address('Delivery',$address_data,$options);
+
+
             }
-            $this->get_data('id', $this->id);
-            $this->new_value = $value;
-            $this->updated   = true;
+
+
+
+            $this->update_field('Order For Collection',$value,$options);
 
             $this->update_shipping();
             $this->update_tax();

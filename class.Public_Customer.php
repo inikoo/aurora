@@ -569,10 +569,12 @@ class Public_Customer extends DBW_Table {
 
                     if ($this->data['Customer Billing Address Link'] == 'Contact') {
 
-                        $this->update_field_switcher('Customer Contact Address', $value, $options, array('no_propagate_addresses' => true));
+                        $metadata['no_propagate_addresses']=true;
+                        $this->update_field_switcher('Customer Contact Address', $value, $options, $metadata);
 
                         if ($this->data['Customer Delivery Address Link'] == 'Contact') {
-                            $this->update_field_switcher('Customer Delivery Address', $value, $options, array('no_propagate_addresses' => true));
+
+                            $this->update_field_switcher('Customer Delivery Address', $value, $options, $metadata);
 
                         }
 
@@ -581,26 +583,31 @@ class Public_Customer extends DBW_Table {
                     if ($this->data['Customer Delivery Address Link'] == 'Billing') {
 
 
-                        $this->update_field_switcher('Customer Delivery Address', $value, $options, array('no_propagate_addresses' => true));
+                        $metadata['no_propagate_addresses']=true;
+
+                        $this->update_field_switcher('Customer Delivery Address', $value, $options, $metadata);
                     }
 
                 }
 
-                $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order Class`="InProcess" AND `Order Customer Key`=%d ', $this->id);
-                if ($result = $this->db->query($sql)) {
-                    foreach ($result as $row) {
-                        // todo change to puclic order when ready
-                        //$order=get_object('Order',$row['Order Key']);
-                        include_once 'class.Order.php';
-                        $order = new Order($row['Order Key']);
+                if(  empty($metadata['no_propagate_orders'])  ) {
+
+                    $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order Class`="InProcess" AND `Order Customer Key`=%d ', $this->id);
+                    if ($result = $this->db->query($sql)) {
+                        foreach ($result as $row) {
+                            // todo change to puclic order when ready
+                            //$order=get_object('Order',$row['Order Key']);
+                            include_once 'class.Order.php';
+                            $order = new Order($row['Order Key']);
 
 
-                        $order->update(array('Order Invoice Address' => $value), $options, array('no_propagate_customer' => true));
+                            $order->update(array('Order Invoice Address' => $value), $options, array('no_propagate_customer' => true));
+                        }
+                    } else {
+                        print_r($error_info = $this->db->errorInfo());
+                        print "$sql\n";
+                        exit;
                     }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
                 }
 
                 break;
