@@ -28,6 +28,11 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
             return $object_fields;
             break;
+        case 'Payment':
+            include 'fields/payment.fld.php';
+
+            return $object_fields;
+            break;
 
         case 'Page':
             include 'fields/webpage.fld.php';

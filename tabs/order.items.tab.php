@@ -51,7 +51,7 @@ $table_buttons[] = array(
     'icon'     => 'plus',
     'title'    => _('New item'),
     'id'       => 'new_item',
-    'class'    => 'items_operation'.($state['_object']->get('Order Current Dispatch State') != 'In Process' ? ' hide' : ''),
+    'class'    => 'items_operation'.($state['_object']->get('State Index')>0 and  $state['_object']->get('State Index')<80   ? ' hide' : ''),
     'add_item' => array(
 
         'field_label' => _("Product").':',

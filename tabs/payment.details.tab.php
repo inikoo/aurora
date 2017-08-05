@@ -9,58 +9,34 @@
 
 */
 
-$payment = $state['_object'];
-
-$object_fields = array(
-    array(
-        'label'      => _('Id'),
-        'show_title' => true,
-        'fields'     => array(
 
 
-            array(
-                'class' => 'string',
-                'id'    => 'Payment_Key',
-                'value' => $payment->get('Payment Key'),
-                'label' => _('Id')
-            ),
-            array(
-                'class' => 'string',
-                'id'    => 'Payment_Transaction_ID',
-                'value' => $payment->get('Payment Transaction ID'),
-                'label' => _('Reference')
-            ),
+include_once 'conf/object_fields.php';
 
 
-        )
-    ),
-    array(
-        'label'      => _('Amount'),
-        'show_title' => true,
-        'fields'     => array(
+if (!$user->can_view('orders') or !in_array(
+    $state['store']->id, $user->stores
+)
+) {
+    $html = '';
+} else {
+
+    include_once 'utils/invalid_messages.php';
 
 
-            array(
-                'class' => 'string',
-                'id'    => 'Payment_Currency_Code',
-                'value' => $payment->get('Payment Currency Code'),
-                'label' => _('Currency')
-            ),
-            array(
-                'class' => 'string',
-                'id'    => 'Payment_Amount',
-                'value' => $payment->get('Amount'),
-                'label' => _('Amount')
-            ),
 
-        )
-    ),
+    $object_fields = get_object_fields($state['_object'], $db, $user, $smarty);
+
+    $smarty->assign('object', $state['_object']);
+    $smarty->assign('key', $state['key']);
+
+    $smarty->assign('object_fields', $object_fields);
+    $smarty->assign('state', $state);
+
+    $html = $smarty->fetch('edit_object.tpl');
+
+}
 
 
-);
-$smarty->assign('object_fields', $object_fields);
-$smarty->assign('state', $state);
-
-$html = $smarty->fetch('edit_object.tpl');
 
 ?>

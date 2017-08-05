@@ -1960,7 +1960,8 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                 }
 
 
-                            } elseif ($view_path[1] == 'delivery_note') {
+                            }
+                            elseif ($view_path[1] == 'delivery_note') {
                                 $section    = 'delivery_note';
                                 $object     = 'delivery_note';
                                 $parent     = 'order';
@@ -1971,7 +1972,8 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                 }
 
 
-                            } elseif ($view_path[1] == 'pick_aid') {
+                            }
+                            elseif ($view_path[1] == 'pick_aid') {
                                 $section    = 'pick_aid';
                                 $object     = 'pick_aid';
                                 $parent     = 'order';
@@ -1985,6 +1987,17 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                             } elseif ($view_path[1] == 'invoice') {
                                 $section    = 'invoice';
                                 $object     = 'invoice';
+                                $parent     = 'order';
+                                $parent_key = $key;
+
+                                if (is_numeric($view_path[2])) {
+                                    $key = $view_path[2];
+                                }
+
+
+                            } elseif ($view_path[1] == 'payment') {
+                                $section    = 'payment';
+                                $object     = 'payment';
                                 $parent     = 'order';
                                 $parent_key = $key;
 

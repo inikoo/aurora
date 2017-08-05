@@ -72,13 +72,9 @@ class DeliveryNote extends DB_Table {
         //   print $sql;
 
 
-
-
         if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id = $this->data['Delivery Note Key'];
         }
-
-
 
 
     }
@@ -87,231 +83,40 @@ class DeliveryNote extends DB_Table {
     protected function create($dn_data, $order) {
 
 
-        if (isset($dn_data ['Delivery Note Date'])) {
-            $this->data ['Delivery Note Date'] = $dn_data ['Delivery Note Date'];
-        } else {
-            $this->data ['Delivery Note Date'] = gmdate('Y-m-d H:i:s');
-        }
 
 
-        if (isset($dn_data ['Delivery Note Dispatch Method'])) {
-            $this->data ['Delivery Note Dispatch Method'] = $dn_data ['Delivery Note Dispatch Method'];
-        } else {
-            $this->data ['Delivery Note Dispatch Method'] = 'Unknown';
-        }
+        $base_data = $this->base_data();
 
-        if (isset($dn_data ['Delivery Note Weight'])) {
-            $this->data ['Delivery Note Weight'] = $dn_data ['Delivery Note Weight'];
-        } else {
-            $this->data ['Delivery Note Weight'] = '';
-        }
-
-        if (isset($dn_data ['Delivery Note Order Date Placed'])) {
-            $this->data ['Delivery Note Order Date Placed'] = $dn_data ['Delivery Note Order Date Placed'];
-        } else {
-            $this->data ['Delivery Note Order Date Placed'] = '';
-        }
-
-
-        if (isset($dn_data ['Delivery Note Customer Contact Name'])) {
-            $this->data ['Delivery Note Customer Contact Name'] = $dn_data ['Delivery Note Customer Contact Name'];
-        } else {
-            $this->data ['Delivery Note Customer Contact Name'] = '';
-        }
-
-        if (isset($dn_data ['Delivery Note Telephone'])) {
-            $this->data ['Delivery Note Telephone'] = $dn_data ['Delivery Note Telephone'];
-        } else {
-            $this->data ['Delivery Note Telephone'] = '';
-        }
-
-        if (isset($dn_data ['Delivery Note Email'])) {
-            $this->data ['Delivery Note Email'] = $dn_data ['Delivery Note Email'];
-        } else {
-            $this->data ['Delivery Note Email'] = '';
-        }
-
-
-        if (isset($dn_data ['Delivery Note XHTML Pickers'])) {
-            $this->data ['Delivery Note XHTML Pickers'] = $dn_data ['Delivery Note XHTML Pickers'];
-        } else {
-            $this->data ['Delivery Note XHTML Pickers'] = '';
-        }
-
-        if (isset($dn_data ['Delivery Note Number Pickers'])) {
-            $this->data ['Delivery Note Number Pickers'] = $dn_data ['Delivery Note Number Pickers'];
-        } else {
-            $this->data ['Delivery Note Number Pickers'] = '';
-        }
-
-        if (isset($dn_data ['Delivery Note Pickers IDs'])) {
-            $this->data ['Delivery Note Pickers IDs'] = $dn_data ['Delivery Note Pickers IDs'];
-        } else {
-            $this->data ['Delivery Note Pickers IDs'] = '';
-        }
-
-        if (isset($dn_data ['Delivery Note Warehouse Key'])) {
-            $this->data ['Delivery Note Warehouse Key'] = $dn_data ['Delivery Note Warehouse Key'];
-        } else {
-            $this->data ['Delivery Note Warehouse Key'] = 1;
-        }
-
-
-        if (isset($dn_data ['Delivery Note XHTML Packers'])) {
-            $this->data ['Delivery Note XHTML Packers'] = $dn_data ['Delivery Note XHTML Packers'];
-        } else {
-            $this->data ['Delivery Note XHTML Packers'] = '';
-        }
-
-        if (isset($dn_data ['Delivery Note Number Packers'])) {
-            $this->data ['Delivery Note Number Packers'] = $dn_data ['Delivery Note Number Packers'];
-        } else {
-            $this->data ['Delivery Note Number Packers'] = '';
-        }
-
-        if (isset($dn_data ['Delivery Note Packers IDs'])) {
-            $this->data ['Delivery Note Packers IDs'] = $dn_data ['Delivery Note Packers IDs'];
-        } else {
-            $this->data ['Delivery Note Packers IDs'] = '';
-        }
-
-        $this->data ['Delivery Note ID']      = $dn_data ['Delivery Note ID'];
-        $this->data ['Delivery Note File As'] = $dn_data ['Delivery Note File As'];
-
-        $customer = new Customer ($dn_data['Delivery Note Customer Key']);
-
-
-        $this->data ['Delivery Note Customer Key']  = $customer->id;
-        $this->data ['Delivery Note Customer Name'] = $customer->data['Customer Name'];
-        $this->data ['Delivery Note Store Key']     = $customer->data['Customer Store Key'];
-        $store                                      = new Store($this->data ['Delivery Note Store Key']);
-
-        $this->data['Delivery Note Show in Warehouse Orders'] = $store->data['Store Show in Warehouse Orders'];
-
-
-        if (isset($dn_data ['Delivery Note Metadata'])) {
-            $this->data ['Delivery Note Metadata'] = $dn_data ['Delivery Note Metadata'];
-        } else {
-
-
-            $this->data ['Delivery Note Metadata'] = $order->data ['Order Original Metadata'];
-
-        }
-
-        if (isset($dn_data ['Delivery Note Date Created'])) {
-            $this->data ['Delivery Note Date Created'] = $dn_data ['Delivery Note Date Created'];
-        } else {
-            $this->data ['Delivery Note Date Created'] = gmdate('Y-m-d H:i:s');
-        }
-        if (isset($dn_data ['Delivery Note State'])) {
-            $this->data ['Delivery Note State'] = $dn_data ['Delivery Note State'];
-        } else {
-            $this->data ['Delivery Note State'] = 'Ready to be Picked';
-        }
-
-
-        $this->data ['Delivery Note Type']  = $dn_data ['Delivery Note Type'];
-        $this->data ['Delivery Note Title'] = $dn_data ['Delivery Note Title'];
-
-        $this->data ['Delivery Note Dispatch Method'] = $dn_data ['Delivery Note Dispatch Method'];
-
-
-        if ($this->data ['Delivery Note Dispatch Method'] == 'Collection') {
-
-
-            $this->data ['Delivery Note Shipper Code'] = '';
-
-
-            include_once 'class.Country.php';
-            $country = new Country('2alpha', $store->data['Store Home Country Code 2 Alpha']);
-
-
-            $this->data ['Delivery Note Country 2 Alpha Code'] = $country->data['Country 2 Alpha Code'];
-            $this->data ['Delivery Note Country Code']         = $country->data['Country Code'];
-            $this->data ['Delivery Note World Region Code']    = $country->data['World Region Code'];
-            $this->data ['Delivery Note Town']                 = '';
-            $this->data ['Delivery Note Postal Code']          = '';
-            $this->data ['Delivery Note XHTML Ship To']        = '<div><b>'._('For collection').'</b></div>';
-
-
-            $this->data ['Delivery Note Ship To Key'] = 0;
-
-
-        } else {
-
-            if (isset($dn_data ['Delivery Note Shipper Code'])) {
-                $this->data ['Delivery Note Shipper Code'] = $dn_data ['Delivery Note Shipper Code'];
-            } else {
-                $this->data ['Delivery Note Shipper Code'] = '';
+        foreach ($dn_data as $key => $value) {
+            if (array_key_exists($key, $base_data)) {
+                $base_data[$key] = _trim($value);
             }
-
-
-            if ($order->data ['Order Ship To Key To Deliver']) {
-                $ship_to = new Ship_To($order->data ['Order Ship To Key To Deliver']);
-            } else {
-                $ship_to = $customer->get_ship_to($this->data ['Delivery Note Date Created']);
-            }
-
-            $this->data ['Delivery Note Ship To Key']          = $ship_to->id;
-            $this->data ['Delivery Note XHTML Ship To']        = $ship_to->data['Ship To XHTML Address'];
-            $this->data ['Delivery Note Country 2 Alpha Code'] = ($ship_to->data['Ship To Country 2 Alpha Code'] == '' ? 'XX' : $ship_to->data['Ship To Country 2 Alpha Code']);
-
-            $this->data ['Delivery Note Country Code']      = ($ship_to->data['Ship To Country Code'] == '' ? 'UNK' : $ship_to->data['Ship To Country Code']);
-            $this->data ['Delivery Note World Region Code'] = $ship_to->get('World Region Code');
-            $this->data ['Delivery Note Town']              = $ship_to->data['Ship To Town'];
-            $this->data ['Delivery Note Postal Code']       = $ship_to->data['Ship To Postal Code'];
-
-
         }
 
+        $keys   = '(';
+        $values = 'values (';
+        foreach ($base_data as $key => $value) {
+            $keys .= "`$key`,";
+            if (preg_match('/xxxxxx/i', $key)) {
+                $values .= prepare_mysql($value, false).",";
+            } else {
+                $values .= prepare_mysql($value).",";
+            }
+        }
 
-        $sql = sprintf(
-            "INSERT INTO `Delivery Note Dimension` (
-`Delivery Note Order Key`,
-		`Delivery Note Customer Contact Name`,`Delivery Note Telephone`,`Delivery Note Email`,
-		`Delivery Note Order Date Placed`,`Delivery Note Show in Warehouse Orders`,`Delivery Note Warehouse Key`,`Delivery Note State`,`Delivery Note Date Created`,`Delivery Note Dispatch Method`,`Delivery Note Store Key`,`Delivery Note XHTML Orders`,`Delivery Note XHTML Invoices`,`Delivery Note Date`,`Delivery Note ID`,`Delivery Note File As`,`Delivery Note Customer Key`,`Delivery Note Customer Name`,`Delivery Note XHTML Ship To`,`Delivery Note Ship To Key`,`Delivery Note Metadata`,`Delivery Note Weight`,`Delivery Note XHTML Pickers`,`Delivery Note Number Pickers`,`Delivery Note XHTML Packers`,`Delivery Note Number Packers`,`Delivery Note Type`,`Delivery Note Title`,`Delivery Note Shipper Code`,
-                         `Delivery Note Country 2 Alpha Code`,
-                         `Delivery Note Country Code`,
-                         `Delivery Note World Region Code`,
-                         `Delivery Note Town`,
-                         `Delivery Note Postal Code`
-
-                        ) VALUES (%d,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,'','',%s,%s,%s,%s,%s,%s,%s,%s,%f,%s,%d,%s,%d,%s,%s,%s,%s      ,%s,%s,%s,%s )"
-
-            , $order->id
-
-            , prepare_mysql($this->data ['Delivery Note Customer Contact Name']), prepare_mysql($this->data ['Delivery Note Telephone']), prepare_mysql($this->data ['Delivery Note Email'])
+        $keys   = preg_replace('/,$/', ')', $keys);
+        $values = preg_replace('/,$/', ')', $values);
 
 
-            , prepare_mysql($this->data ['Delivery Note Order Date Placed'])
+        $sql = "insert into `Delivery Note Dimension` $keys  $values";
 
-            , prepare_mysql(
-                $this->data ['Delivery Note Show in Warehouse Orders']
-            ), $this->data ['Delivery Note Warehouse Key']
 
-            , prepare_mysql($this->data ['Delivery Note State'])
-
-            , prepare_mysql($this->data ['Delivery Note Date Created']), prepare_mysql($this->data ['Delivery Note Dispatch Method']), prepare_mysql($this->data ['Delivery Note Store Key']),
-            prepare_mysql($this->data ['Delivery Note Date']), prepare_mysql($this->data ['Delivery Note ID']), prepare_mysql($this->data ['Delivery Note File As']),
-            prepare_mysql($this->data ['Delivery Note Customer Key']), prepare_mysql($this->data ['Delivery Note Customer Name'], false), prepare_mysql($this->data ['Delivery Note XHTML Ship To']),
-            prepare_mysql($this->data ['Delivery Note Ship To Key']), prepare_mysql($this->data ['Delivery Note Metadata']), $this->data ['Delivery Note Weight'],
-            prepare_mysql($this->data ['Delivery Note XHTML Pickers']), $this->data ['Delivery Note Number Pickers'], prepare_mysql($this->data ['Delivery Note XHTML Packers']),
-            $this->data ['Delivery Note Number Packers'], prepare_mysql($this->data ['Delivery Note Type']), prepare_mysql($this->data ['Delivery Note Title']),
-            prepare_mysql($this->data ['Delivery Note Shipper Code'])
-
-            , prepare_mysql($this->data ['Delivery Note Country 2 Alpha Code']), prepare_mysql($this->data ['Delivery Note Country Code']),
-            prepare_mysql($this->data ['Delivery Note World Region Code']), prepare_mysql($this->data ['Delivery Note Town']), prepare_mysql($this->data ['Delivery Note Postal Code'])
-
-        );
 
         if ($this->db->exec($sql)) {
             $this->id = $this->db->lastInsertId();
             $this->get_data('id', $this->id);
 
 
-            $line_number = 0;
-            $amount      = 0;
-            $discounts   = 0;
 
             $total_estimated_weight = 0;
             $distinct_items         = 0;
@@ -329,10 +134,10 @@ class DeliveryNote extends DB_Table {
                     $distinct_items++;
                     $sql = sprintf(
                         "UPDATE  `Order Transaction Fact` SET `Estimated Weight`=%f,`Order Last Updated Date`=%s,`Delivery Note ID`=%s,`Delivery Note Key`=%d ,`Destination Country 2 Alpha Code`=%s WHERE `Order Transaction Fact Key`=%d",
-                        $estimated_weight, prepare_mysql($this->data ['Delivery Note Date Created']), prepare_mysql($this->data ['Delivery Note ID'])
+                        $estimated_weight, prepare_mysql($this->data['Delivery Note Date Created']), prepare_mysql($this->data['Delivery Note ID'])
 
 
-                        , $this->data ['Delivery Note Key'], prepare_mysql($this->data ['Delivery Note Country 2 Alpha Code']), $row['Order Transaction Fact Key']
+                        , $this->data['Delivery Note Key'], prepare_mysql($this->data['Delivery Note Country 2 Alpha Code']), $row['Order Transaction Fact Key']
 
                     );
                     $this->db->exec($sql);
@@ -352,7 +157,7 @@ class DeliveryNote extends DB_Table {
                 foreach ($result as $row) {
                     $sql = sprintf(
                         "UPDATE  `Order No Product Transaction Fact` SET `Delivery Note Date`=%s,`Delivery Note Key`=%d WHERE `Order No Product Transaction Fact Key`=%d",
-                        prepare_mysql($this->data ['Delivery Note Date Created']), $this->id, $row['Order No Product Transaction Fact Key']
+                        prepare_mysql($this->data['Delivery Note Date Created']), $this->id, $row['Order No Product Transaction Fact Key']
 
                     );
                     $this->db->exec($sql);
@@ -362,9 +167,6 @@ class DeliveryNote extends DB_Table {
                 print "$sql\n";
                 exit;
             }
-
-
-
 
 
             $sql = sprintf(
@@ -414,15 +216,8 @@ class DeliveryNote extends DB_Table {
 
         $part_list = $product->get_parts_data();
 
-
-        if (count($part_list) == 0) {
-            //print "xxx $product_key,$map_to_otf_key,  -> $to_sell_quantity,$supplier_metadata_array xxx\n";
-            //print $product->data['Product Code']." ".$product->data['Product ID']." $date $map_to_otf_key $to_sell_quantity\n";
-            //print_r($part_list);
-
-        }
-
         $state = 'Ready to Pick';
+
         $sql   = sprintf(
             "UPDATE `Order Transaction Fact` SET `Current Dispatching State`=%s WHERE `Order Transaction Fact Key`=%d  ", prepare_mysql($state),
 
@@ -431,6 +226,7 @@ class DeliveryNote extends DB_Table {
         $this->db->exec($sql);
 
         $part_index = 0;
+        $location_index=0;
         //  $debug_txt=sprintf("creating itf %s %s",$product->data['Product Code'],$sql);
         //  $xsql=sprintf("insert into debugtable (`text`,`date`) values (%s,NOW())",prepare_mysql($debug_txt));mysql_query($xsql);
 
@@ -445,11 +241,6 @@ class DeliveryNote extends DB_Table {
 
 
             $part = new Part ('sku', $part_data['Part SKU']);
-
-            //$debug_txt=sprintf("creating itf2 %s %s",$part->data['Part SKU'],$part_data['Parts Per Product']);
-            //$xsql=sprintf("insert into debugtable (`text`,`date`) values (%s,NOW())",prepare_mysql($debug_txt));mysql_query($xsql);
-
-
             if ($part->sku) {
 
                 $quantity_to_be_taken = $part_data['Ratio'] * $to_sell_quantity;
@@ -520,7 +311,7 @@ class DeliveryNote extends DB_Table {
 
                 $sql = sprintf(
                     "INSERT INTO `Inventory Transaction Fact`  (
-					`Map To Order Transaction Fact Parts Multiplicity`,`Map To Order Transaction Fact XHTML Info`,`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Dispatch Country Code`,`Picking Note`,
+					`Map To Order Transaction Fact Parts Multiplicity`,`Map To Order Transaction Fact XHTML Info`,`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Inventory Transaction Fact Delivery 2 Alpha Code`,`Picking Note`,
 
 					`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,
 
@@ -532,7 +323,7 @@ class DeliveryNote extends DB_Table {
 					%f,%s,%s,%d,%s,%d,
 					%s,%s,%.2f,%f,%f,%f,
 
-					%s,%s,%d,%d,%d,%d,%s) ", $multipart_data_multiplicity, prepare_mysql($multipart_data), "'Movement'", "'OIP'", prepare_mysql($this->data['Delivery Note Country Code']),
+					%s,%s,%d,%d,%d,%d,%s) ", $multipart_data_multiplicity, prepare_mysql($multipart_data), "'Movement'", "'OIP'", prepare_mysql($this->data['Delivery Note Address Country 2 Alpha Code']),
                     prepare_mysql($picking_note),
 
                     $weight, prepare_mysql($this->get('Delivery Note Date')), prepare_mysql($this->get('Delivery Note Date')), $this->id, prepare_mysql($part_data['Part SKU']), $location_key,
@@ -541,7 +332,7 @@ class DeliveryNote extends DB_Table {
                     0, "'Order In Process'", 0, $required, $given, 0,
 
 
-                    prepare_mysql($this->data ['Delivery Note Metadata']), prepare_mysql($note),
+                    prepare_mysql($this->data['Delivery Note Metadata']), prepare_mysql($note),
 
                     $supplier_part_key,
 
@@ -552,7 +343,7 @@ class DeliveryNote extends DB_Table {
                 $this->db->exec($sql);
 
 
-                //  print $sql;
+                 print $sql;
 
 
                 if ($this->update_stock) {
@@ -1664,10 +1455,10 @@ class DeliveryNote extends DB_Table {
 
         if (in_array(
             $this->data['Delivery Note Type'], array(
-            'Replacement & Shortages',
-            'Replacement',
-            'Shortages'
-        )
+                                                 'Replacement & Shortages',
+                                                 'Replacement',
+                                                 'Shortages'
+                                             )
         )) {
             $sql = sprintf(
                 "UPDATE `Order Post Transaction Dimension` SET `State`=%s  WHERE `Delivery Note Key`=%d   ", prepare_mysql('In Process'), $this->id
@@ -1687,8 +1478,6 @@ class DeliveryNote extends DB_Table {
             );
 
         }
-
-
 
 
         return 'orders/'.$order->get('Order Store Key').'/'.$order->id;
