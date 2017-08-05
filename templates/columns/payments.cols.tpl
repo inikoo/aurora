@@ -9,21 +9,7 @@ cell: "string"
 name: "formatted_id",
 label: "{t}Id{/t}",
 editable: false,
-cell: Backgrid.Cell.extend({
-orderSeparator: '',
-events: {
-"click": function() {
-{if $data['parent']=='store'}
-    change_view('payment/{$data['parent_key']}/' + this.model.get("id") )
-
-{else}
-    change_view('{$data['object']}/{$data['key']}/payment/' + this.model.get("id") )
-{/if}
-}
-},
-className: "link",
-
-
+cell: Backgrid.HtmlCell.extend({
 })
 },{
 name: "reference",

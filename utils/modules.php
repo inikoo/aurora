@@ -697,6 +697,27 @@ $modules = array(
                 )
 
             ),
+            'payment'                  => array(
+                'type' => 'object',
+                'tabs' => array(
+                    'payment.details' => array(
+                        'label' => _(
+                            'Data'
+                        ),
+                        'icon'  => 'database',
+                        'title' => _(
+                            'Details'
+                        )
+                    ),
+                    'payment.history' => array(
+                        'label' => _(
+                            'History, notes'
+                        ),
+                        'icon'  => 'sticky-note-o'
+                    ),
+
+                )
+            )
 
         )
     ),

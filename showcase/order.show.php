@@ -17,12 +17,18 @@ function get_order_showcase($data, $smarty, $user, $db) {
     }
 
 
-
-    $smarty->assign('order', $data['_object']);
-
     $order = $data['_object'];
 
+    $smarty->assign('order',$order);
+
+    $smarty->assign('store', get_object('store',$order->get('Store Key')));
+    $smarty->assign('customer', get_object('customer',$order->get('Customer Key')));
+
+
     $order->update_totals();
+
+
+
 
 
     $smarty->assign(

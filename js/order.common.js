@@ -415,7 +415,13 @@ function save_item_qty_change(element) {
                 $(element).closest('tr').find('._order_item_net').html(data.transaction_data.to_charge)
 
 
+            if(data.metadata.to_pay==0){
+                $('.Order_To_Pay_Amount').removeClass('button').attr('amount',data.metadata.to_pay)
 
+            }else{
+                $('.Order_To_Pay_Amount').addClass('button').attr('amount',data.metadata.to_pay)
+
+            }
 
 
 

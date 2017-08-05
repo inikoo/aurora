@@ -219,6 +219,8 @@ function payments($_data, $db, $user) {
             $notes = '';
 
 
+
+
             $adata[] = array(
                 'id'           => (integer)$data['Payment Key'],
                 'reference'    => $data['Payment Transaction ID'],
@@ -229,7 +231,7 @@ function payments($_data, $db, $user) {
                 'date'         => money(
                     $data['Payment Amount'], $data['Payment Currency Code']
                 ),
-                'formatted_id' => sprintf("%05d", $data['Payment Key']),
+                'formatted_id' => sprintf("<span class='link' onclick='change_view(\"/%s/%d/payment/%d\")' >%05d", $parameters['parent'],$parameters['parent_key'],$data['Payment Key'],$data['Payment Key']),
                 'type'         => $type,
                 'status'       => $status,
                 'notes'        => $notes,

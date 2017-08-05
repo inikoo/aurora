@@ -1,23 +1,21 @@
 <?php
 chdir('../');
+require_once 'utils/object_functions.php';
 
 require_once 'common.php';
-require_once 'class.Store.php';
-
-require_once 'class.Invoice.php';
-require_once 'class.DeliveryNote.php';
 
 
 $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : '';
 if (!$id) {
     exit("no id");
 }
-$delivery_note = new DeliveryNote($id);
+$delivery_note =  get_object('DeliveryNote',$id);
 if (!$delivery_note->id) {
     exit("no dn");
 }
-$store    = new Store($delivery_note->data['Delivery Note Store Key']);
-$customer = new Customer($delivery_note->data['Delivery Note Customer Key']);
+$store    = get_object('Store',$delivery_note->get('Delivery Note Store Key'));
+$customer    = get_object('Customer',$delivery_note->get('Delivery Note Customer Key'));
+
 
 
 include "external_libs/mpdf/mpdf.php";
@@ -52,17 +50,20 @@ FROM
 `Part Location Dimension` PLD ON (ITF.`Location Key`=PLD.`Location Key` AND ITF.`Part SKU`=PLD.`Part SKU`) 
 WHERE `Delivery Note Key`=%d ORDER BY `Location File As`,`Part Reference` ", $delivery_note->id
 );
-$result = mysql_query($sql);
-while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-    $stock_in_picking = $row['stock_in_picking'];
-    $total_stock      = $row['total_stock'];
 
-    $row['stock']   = sprintf(
-        "[<b>%d</b>,%d]", $stock_in_picking, $total_stock
-    );
-    $transactions[] = $row;
+if ($result=$db->query($sql)) {
+		foreach ($result as $row) {
+            $stock_in_picking = $row['stock_in_picking'];
+            $total_stock      = $row['total_stock'];
+
+            $row['stock']   = sprintf("[<b>%d</b>,%d]", $stock_in_picking, $total_stock);
+            $transactions[] = $row;
+		}
+}else {
+		print_r($error_info=$db->errorInfo());
+		print "$sql\n";
+		exit;
 }
-
 
 $smarty->assign('transactions', $transactions);
 
@@ -71,10 +72,16 @@ $number_of_picks = 0;
 $sql             = sprintf(
     "SELECT count(*) AS items,sum(`Required`+`Given`) AS picks FROM `Inventory Transaction Fact`  WHERE `Delivery Note Key`=%d ", $delivery_note->id
 );
-$result          = mysql_query($sql);
-if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-    $number_of_items = $row['items'];
-    $number_of_picks = $row['picks'];
+
+if ($result=$db->query($sql)) {
+    if ($row = $result->fetch()) {
+        $number_of_items = $row['items'];
+        $number_of_picks = $row['picks'];
+	}
+}else {
+	print_r($error_info=$db->errorInfo());
+	print "$sql\n";
+	exit;
 }
 
 //print $sql;
