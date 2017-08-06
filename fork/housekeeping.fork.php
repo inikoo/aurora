@@ -20,9 +20,21 @@ function fork_housekeeping($job) {
 
     list($account, $db, $data) = $_data;
 
-    	//print_r($data);
+    //print_r($data);
 
     switch ($data['type']) {
+
+        case 'payment_created':
+        case 'payment_updated':
+
+
+            $payment         = get_object('Payment', $data['payment_key']);
+            $payment_account = get_object('Payment_Account', $payment->get('Payment Account Key'));
+        $payment_service_provider = get_object('Payment_Service_Provider', $payment->get('	Payment Service Provider Key'));
+
+            $payment_account->update_payments_data();
+        $payment_service_provider->update_payments_data();
+            break;
 
         case 'order_created':
             include_once 'class.Order.php';
@@ -30,13 +42,12 @@ function fork_housekeeping($job) {
             include_once 'class.Store.php';
             $order = new Order($data['subject_key']);
 
-            $customer=new Customer($order->get('Order Customer Key'));
-            $customer->editor=$data['editor'];
+            $customer         = new Customer($order->get('Order Customer Key'));
+            $customer->editor = $data['editor'];
             $customer->add_history_new_order($order);
             $customer->update_orders();
-            $store=new Store($order->get('Order Store Key'));
+            $store = new Store($order->get('Order Store Key'));
             $store->load_acc_data();
-
 
 
             $store->update_orders();
@@ -46,11 +57,8 @@ function fork_housekeeping($job) {
         case 'website_launched':
 
 
-
-
-
-            $website = get_object('Website',$data['website_key']);
-            $website->editor=$data['editor'];
+            $website         = get_object('Website', $data['website_key']);
+            $website->editor = $data['editor'];
 
 
             $sql = sprintf(
@@ -66,10 +74,10 @@ function fork_housekeeping($job) {
             if ($result = $website->db->query($sql)) {
                 foreach ($result as $row) {
 
-                    $webpage         =  get_object('Webpage',$row['Page Key']);
+                    $webpage         = get_object('Webpage', $row['Page Key']);
                     $webpage->editor = $website->editor;
 
-                   // print $webpage->get('Webpage Code')."\n";
+                    // print $webpage->get('Webpage Code')."\n";
 
                     if ($webpage->get('Webpage State') == 'Ready') {
                         $webpage->publish();
@@ -89,9 +97,9 @@ function fork_housekeeping($job) {
             if ($result = $website->db->query($sql)) {
                 foreach ($result as $row) {
 
-                    $webpage         = get_object('Webpage',$row['Page Key']);
+                    $webpage         = get_object('Webpage', $row['Page Key']);
                     $webpage->editor = $website->editor;
-                   // print $webpage->get('Webpage Code')." ** \n";
+                    // print $webpage->get('Webpage Code')." ** \n";
 
                     if ($webpage->get('Webpage State') == 'Ready') {
                         $webpage->publish();
@@ -101,25 +109,24 @@ function fork_housekeeping($job) {
 
                 }
             }
-          
+
 
             break;
 
         case 'customer_created':
-           
 
-            $customer = get_object('Customer',$data['customer_key']);
-            $store    = get_object('Store',$customer->get('Customer Store Key'));
-            $website_user = get_object('Website_User',$data['website_user_key']);
 
+            $customer     = get_object('Customer', $data['customer_key']);
+            $store        = get_object('Store', $customer->get('Customer Store Key'));
+            $website_user = get_object('Website_User', $data['website_user_key']);
 
 
             $customer->update_full_search();
             $customer->update_location_type();
             $store->update_customers_data();
 
-            if($website_user->id){
-                $website    = get_object('Website',$website_user->get('Website User Website Key'));
+            if ($website_user->id) {
+                $website = get_object('Website', $website_user->get('Website User Website Key'));
 
                 $website->update_users_data();
 

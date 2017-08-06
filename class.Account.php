@@ -488,6 +488,11 @@ class Account extends DB_Table {
 
         switch ($key) {
 
+            case 'Currency Code':
+            case 'Account Currency Code':
+                return $this->data['Account Currency'];
+                break;
+
             case ('Currency'):
 
                 if ($this->data['Account Currency'] != '') {
@@ -1577,7 +1582,7 @@ class Account extends DB_Table {
         );
 
         $sql = sprintf(
-            "SELECT count(*) AS num ,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE  `Order Number Items`>0  AND `Order Current Dispatch State`  IN ('In Process by Customer','In Process')  ",
+            "SELECT count(*) AS num ,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE  `Order Number Items`>0  AND `Order Current Dispatch State`  IN ('In Process')  ",
             $this->id
         );
 

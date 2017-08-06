@@ -12,6 +12,9 @@
 */
 
 
+include_once 'class.DB_Table.php';
+
+
 class Payment extends DB_Table {
 
 
@@ -23,21 +26,18 @@ class Payment extends DB_Table {
         $this->table_name    = 'Payment';
         $this->ignore_fields = array('Payment Key');
 
+
         if (is_numeric($arg1)) {
             $this->get_data('id', $arg1);
 
             return;
         }
         if (preg_match('/^(create|new)/i', $arg1)) {
-            $this->find($arg2, 'create');
+            $this->create($arg2, 'create');
 
             return;
         }
-        if (preg_match('/find/i', $arg1)) {
-            $this->find($arg2, $arg1);
 
-            return;
-        }
         $this->get_data($arg1, $arg2);
 
         return;
@@ -47,6 +47,7 @@ class Payment extends DB_Table {
 
     function get_data($tipo, $tag) {
 
+
         if ($tipo == 'id') {
             $sql = sprintf(
                 "SELECT * FROM `Payment Dimension` WHERE `Payment Key`=%d", $tag
@@ -55,9 +56,8 @@ class Payment extends DB_Table {
             return;
         }
 
-        // print $sql;
-        $result = mysql_query($sql);
-        if ($this->data = mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+        if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id = $this->data['Payment Key'];
         }
 
@@ -65,16 +65,11 @@ class Payment extends DB_Table {
     }
 
 
-    function find($raw_data, $options) {
+    function create($raw_data) {
 
-        $create = '';
-        $update = '';
-        if (preg_match('/create/i', $options)) {
-            $create = 'create';
-        }
-        if (preg_match('/update/i', $options)) {
-            $update = 'update';
-        }
+
+        $this->editor = $raw_data['editor'];
+
 
         $data = $this->base_data();
         foreach ($raw_data as $key => $value) {
@@ -83,29 +78,17 @@ class Payment extends DB_Table {
             }
 
         }
-        $this->found = false;
-        if (!$this->found and $create) {
-            $this->create($data);
 
-        }
-
-
-    }
-
-    function create($data) {
-
-        $this->data = $data;
 
         $keys   = '';
         $values = '';
 
 
-        foreach ($this->data as $key => $value) {
+        foreach ($data as $key => $value) {
 
             $keys .= ",`".$key."`";
             if ($key == 'Payment Completed Date' or $key == 'Payment Last Updated Date' or $key == 'Payment Cancelled Date' or $key == 'Payment Order Key' or $key == 'Payment Invoice Key' or $key
-                == 'Payment Site Key'
-            ) {
+                == 'Payment Site Key') {
                 $values .= ','.prepare_mysql($value, true);
 
             } else {
@@ -118,11 +101,11 @@ class Payment extends DB_Table {
 
         $sql = "insert into `Payment Dimension` ($keys) values ($values)";
 
+        //   print "$sql\n";
 
-        if (mysql_query($sql)) {
-            $this->id                  = mysql_insert_id();
-            $this->data['Address Key'] = $this->id;
-            $this->new                 = true;
+        if ($this->db->exec($sql)) {
+            $this->id  = $this->db->lastInsertId();
+            $this->new = true;
             $this->get_data('id', $this->id);
         } else {
             print "Error can not create payment\n";
@@ -133,16 +116,17 @@ class Payment extends DB_Table {
 
     function get($key = '') {
 
-        if (isset($this->data[$key])) {
-            return $this->data[$key];
+
+        if (!$this->id) {
+            return;
         }
+
 
         switch ($key) {
 
             case('Max Payment to Refund'):
                 return round(
-                    $this->data['Payment Amount'] + $this->data['Payment Refund'], 2
-                );
+                    $this->data['Payment Transaction Amount'] - $this->data['Payment Transaction Amount Refunded'], 2);
                 break;
             case 'Transaction Status':
                 switch ($this->data['Payment Transaction Status']) {
@@ -205,10 +189,8 @@ class Payment extends DB_Table {
 
                 break;
 
-            case('Amount'):
-                return money(
-                    $this->data['Payment '.$key], $this->data['Payment Currency Code']
-                );
+            case('Transaction Amount'):
+                return money($this->data['Payment '.$key], $this->data['Payment Currency Code']);
                 break;
             case('Completed Date'):
             case('Cancelled Date'):
@@ -219,14 +201,102 @@ class Payment extends DB_Table {
                 break;
 
         }
-        $_key = ucfirst($key);
-        if (isset($this->data[$_key])) {
-            return $this->data[$_key];
+
+        if (array_key_exists($key, $this->data)) {
+            return $this->data[$key];
+        }
+
+        if (array_key_exists('Payment '.$key, $this->data)) {
+            return $this->data['Payment '.$key];
         }
 
         return false;
 
     }
+
+    function update_field_switcher($field, $value, $options = '', $metadata = '') {
+
+
+        if (is_string($value)) {
+            $value = _trim($value);
+        }
+
+
+        switch ($field) {
+
+            case 'Payment Transaction Amount':
+
+
+                if( $value< ($this->data['Payment Transaction Amount Refunded']+$this->data['Payment Transaction Amount Credited'])){
+
+                    $this->error=true;
+                    $this->msg=_("Payment amount can't be smaller than its refunds or credits");
+        return;
+                }
+
+
+
+
+
+                $this->update_field($field, $value, $options);
+
+                $this->update_parents();
+
+
+                break;
+
+
+            default:
+                $base_data = $this->base_data();
+                if (array_key_exists($field, $base_data)) {
+                    if ($value != $this->data[$field]) {
+                        $this->update_field($field, $value, $options);
+                    }
+                }
+        }
+    }
+
+    function update_parents() {
+        $order = get_object('Order', $this->data['Payment Order Key']);
+        $order->update_totals();
+
+
+        $account=get_object('Account',1);
+        require_once 'utils/new_fork.php';
+        new_housekeeping_fork(
+            'au_housekeeping', array(
+            'type'        => 'payment_updated',
+            'payment_key' => $this->id,
+        ), $account->get('Account Code'), $this->db
+        );
+
+    }
+
+    function delete() {
+
+        if($this->data['Payment Transaction Amount Refunded']!=0 or $this->data['Payment Transaction Amount Credited']!=0 ){
+
+            $this->error=true;
+            $this->msg=_("Payment can't be cancelled if it has refunds or credits");
+            return;
+
+        }
+
+
+        $this->update(
+            array(
+                'Payment Transaction Status' => 'Cancelled',
+                'Payment Cancelled Date'     => gmdate('Y-m-d H:i:s'),
+                'Payment Last Updated Date'  => gmdate('Y-m-d H:i:s'),
+            )
+
+        );
+
+        $this->update_parents();
+
+
+    }
+
 
     function get_formatted_time_lapse($key) {
         include_once 'utils/date_functions.php';
@@ -247,8 +317,8 @@ class Payment extends DB_Table {
             case 'Pending':
                 $info = sprintf(
                     "%s %s %s %s, %s %s", _('A payment of'), money(
-                        $this->data['Payment Amount'], $this->data['Payment Currency Code']
-                    ), _('using'), $this->payment_service_provider->data['Payment Service Provider Name'], _('payment service provider'), _('is in process')
+                    $this->data['Payment Transaction Amount'], $this->data['Payment Currency Code']
+                ), _('using'), $this->payment_service_provider->data['Payment Service Provider Name'], _('payment service provider'), _('is in process')
 
                 );
 
@@ -258,16 +328,16 @@ class Payment extends DB_Table {
                 if ($this->data['Payment Method'] == 'Account') {
                     $info = sprintf(
                         "%s %s", money(
-                            $this->data['Payment Amount'], $this->data['Payment Currency Code']
-                        ), _('has been paid from the customer account')
+                        $this->data['Payment Transaction Amount'], $this->data['Payment Currency Code']
+                    ), _('has been paid from the customer account')
 
                     );
 
                 } else {
                     $info = sprintf(
                         "%s %s %s %s %s %s. %s: %s", _('A payment of'), money(
-                            $this->data['Payment Amount'], $this->data['Payment Currency Code']
-                        ), _('using'), $this->payment_service_provider->data['Payment Service Provider Name'], _('payment service provider'), _('has been completed sucessfully'), _('Reference'),
+                        $this->data['Payment Transaction Amount'], $this->data['Payment Currency Code']
+                    ), _('using'), $this->payment_service_provider->data['Payment Service Provider Name'], _('payment service provider'), _('has been completed sucessfully'), _('Reference'),
                         $this->data['Payment Transaction ID']
 
                     );
@@ -276,8 +346,8 @@ class Payment extends DB_Table {
             case 'Cancelled':
                 $info = sprintf(
                     "%s %s %s %s %s %s", _('A payment of'), money(
-                        $this->data['Payment Amount'], $this->data['Payment Currency Code']
-                    ), _('using'), $this->payment_service_provider->data['Payment Service Provider Name'], _('payment service provider'), _('has been cancelled')
+                    $this->data['Payment Transaction Amount'], $this->data['Payment Currency Code']
+                ), _('using'), $this->payment_service_provider->data['Payment Service Provider Name'], _('payment service provider'), _('has been cancelled')
 
                 );
 
@@ -285,8 +355,8 @@ class Payment extends DB_Table {
             case 'Error':
                 $info = sprintf(
                     "%s %s %s %s %s %s", _('A payment of'), money(
-                        $this->data['Payment Amount'], $this->data['Payment Currency Code']
-                    ), _('using'), $this->payment_service_provider->data['Payment Service Provider Name'], _('payment service provider'), _('has had an error')
+                    $this->data['Payment Transaction Amount'], $this->data['Payment Currency Code']
+                ), _('using'), $this->payment_service_provider->data['Payment Service Provider Name'], _('payment service provider'), _('has had an error')
 
                 );
 
@@ -330,7 +400,7 @@ class Payment extends DB_Table {
                 $info = sprintf(
                     "%s, %s, %s: ",
 
-                    $this->payment_service_provider->data['Payment Service Provider Name'], _('payment completed sucessfully'), _('Reference'), $this->data['Payment Transaction ID']
+                    $this->payment_service_provider->data['Payment Service Provider Name'], _('payment completed successfully'), _('Reference'), $this->data['Payment Transaction ID']
 
                 );
 
@@ -358,65 +428,6 @@ class Payment extends DB_Table {
         }
 
         return $info;
-
-    }
-
-
-    function update_balance() {
-        $invoiced_amount = 0;
-        $sql             = sprintf(
-            "SELECT ifnull(sum(`Amount`),0) AS amount FROM `Invoice Payment Bridge` WHERE `Payment Key`=%d", $this->id
-        );
-        $res             = mysql_query($sql);
-        if ($row = mysql_fetch_assoc($res)) {
-            $invoiced_amount = $row['amount'];
-        }
-
-        $this->data['Payment Amount Invoiced'] = $invoiced_amount;
-
-
-        $refunded_amount = 0;
-        $sql             = sprintf(
-            "SELECT ifnull(sum(`Payment Amount`),0) AS amount FROM `Payment Dimension` WHERE `Payment Related Payment Key`=%d  AND `Payment Transaction Status`!='Cancelled' ", $this->id
-        );
-        $res             = mysql_query($sql);
-        if ($row = mysql_fetch_assoc($res)) {
-            $refunded_amount = $row['amount'];
-        }
-
-        $this->data['Payment Refund'] = $refunded_amount;
-
-        $this->data['Payment Balance'] = $this->data['Payment Amount'] - $this->data['Payment Refund'] - $this->data['Payment Amount Invoiced'];
-
-
-        $sql = sprintf(
-            "UPDATE `Payment Dimension` SET `Payment Refund`=%.2f,`Payment Amount Invoiced`=%.2f,`Payment Balance`=%.2f WHERE `Payment Key`=%d", $this->data['Payment Refund'],
-            $this->data['Payment Amount Invoiced'], $this->data['Payment Balance'], $this->id
-
-        );
-        //print $sql;
-        mysql_query($sql);
-
-    }
-
-
-    function get_parent_info() {
-        $parent_info = '';
-        if ($this->data['Payment Type'] == 'Refund') {
-            $parent_info = '<b>'._('Refund').'</b>: '.sprintf(
-                    '%s (<a href="payment.php?id=%d">%s</a>)', $this->data['Payment Related Payment Transaction ID'], $this->data['Payment Related Payment Key'],
-                    $this->data['Payment Related Payment Key']
-                );
-
-        } elseif ($this->data['Payment Type'] == 'Credit') {
-            $parent_info = '<b>'._('Credit').'</b>: '.sprintf(
-                    '%s (<a href="payment.php?id=%d">%s</a>)', $this->data['Payment Related Payment Transaction ID'], $this->data['Payment Related Payment Key'],
-                    $this->data['Payment Related Payment Key']
-                );
-
-        }
-
-        return $parent_info;
 
     }
 

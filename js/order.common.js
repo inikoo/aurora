@@ -85,12 +85,7 @@ function save_order_operation(element) {
 
     var request = $.ajax({
 
-        url: "/ar_edit.php",
-        data: form_data,
-        processData: false,
-        contentType: false,
-        type: 'POST',
-        dataType: 'json'
+        url: "/ar_edit.php", data: form_data, processData: false, contentType: false, type: 'POST', dataType: 'json'
 
     })
 
@@ -167,8 +162,7 @@ function save_order_operation(element) {
                 }
 
 
-            }
-            else if (object == 'purchase_order') {
+            } else if (object == 'purchase_order') {
                 if (data.update_metadata.state_index >= 30) {
                     $('#submitted_node').addClass('complete')
                 }
@@ -268,12 +262,12 @@ function save_item_qty_change(element) {
     $(element).addClass('fa-spinner fa-spin')
 
     var input = $(element).closest('span').find('input')
-    var icon=$(element)
+    var icon = $(element)
 
     if ($(element).hasClass('fa-plus')) {
 
 
-        var _icon='fa-plus'
+        var _icon = 'fa-plus'
 
         if (isNaN(input.val()) || input.val() == '') {
             var qty = 1
@@ -283,8 +277,7 @@ function save_item_qty_change(element) {
 
         input.val(qty).addClass('discreet')
 
-    }
-    else if ($(element).hasClass('fa-minus')) {
+    } else if ($(element).hasClass('fa-minus')) {
 
         if (isNaN(input.val()) || input.val() == '' || input.val() == 0) {
             var qty = 0
@@ -294,13 +287,12 @@ function save_item_qty_change(element) {
 
         input.val(qty).addClass('discreet')
 
-        var _icon='fa-minus'
+        var _icon = 'fa-minus'
 
-    }
-    else {
+    } else {
         qty = parseFloat(input.val())
 
-        var _icon='fa-cloud'
+        var _icon = 'fa-cloud'
 
     }
 
@@ -317,34 +309,30 @@ function save_item_qty_change(element) {
     var table_metadata = JSON.parse(atob($('#table').data("metadata")))
 
 
-
-
-
-
-    if(settings.field=='Picked' &&  $('#dn_data').attr('picker_key')=='') {
+    if (settings.field == 'Picked' && $('#dn_data').attr('picker_key') == '') {
         $(element).removeClass('fa-spinner fa-spin')
         sweetAlert($('#dn_data').attr('no_picker_msg'));
         return;
     }
 
-    if(settings.field=='Packed' &&  $('#dn_data').attr('packer_key')=='') {
+    if (settings.field == 'Packed' && $('#dn_data').attr('packer_key') == '') {
         $(element).removeClass('fa-spinner fa-spin')
         sweetAlert($('#dn_data').attr('no_packer_msg'));
         return;
     }
 
-    var request = '/ar_edit_orders.php?tipo=edit_item_in_order&parent=' + table_metadata.parent + '&field=' + settings.field + '&parent_key=' + table_metadata.parent_key + '&item_key=' + settings.item_key  + '&qty=' + qty + '&transaction_key=' + settings.transaction_key
+    var request = '/ar_edit_orders.php?tipo=edit_item_in_order&parent=' + table_metadata.parent + '&field=' + settings.field + '&parent_key=' + table_metadata.parent_key + '&item_key=' + settings.item_key + '&qty=' + qty + '&transaction_key=' + settings.transaction_key
 
-    if(settings.item_historic_key!=undefined){
-        request=request+'&item_historic_key=' + settings.item_historic_key
+    if (settings.item_historic_key != undefined) {
+        request = request + '&item_historic_key=' + settings.item_historic_key
     }
 
-    if(settings.field=='Picked'){
-        request=request+'&picker_key=' +  $('#dn_data').attr('picker_key')
+    if (settings.field == 'Picked') {
+        request = request + '&picker_key=' + $('#dn_data').attr('picker_key')
     }
 
-    if(settings.field=='Packed'){
-        request=request+'&packer_key=' +  $('#dn_data').attr('packer_key')
+    if (settings.field == 'Packed') {
+        request = request + '&packer_key=' + $('#dn_data').attr('packer_key')
     }
 
     console.log(request)
@@ -358,14 +346,14 @@ function save_item_qty_change(element) {
     form_data.append("parent", table_metadata.parent)
     form_data.append("parent_key", table_metadata.parent_key)
     form_data.append("item_key", settings.item_key)
-    if(settings.item_historic_key!=undefined){
+    if (settings.item_historic_key != undefined) {
         form_data.append("item_historic_key", settings.item_historic_key)
     }
 
-    if(settings.field=='Picked'){
+    if (settings.field == 'Picked') {
         form_data.append("picker_key", $('#dn_data').attr('picker_key'))
     }
-    if(settings.field=='Packed'){
+    if (settings.field == 'Packed') {
         form_data.append("packer_key", $('#dn_data').attr('packer_key'))
     }
 
@@ -376,24 +364,14 @@ function save_item_qty_change(element) {
     form_data.append("qty", qty)
 
 
-
     var request = $.ajax({
 
-        url: "/ar_edit_orders.php",
-        data: form_data,
-        processData: false,
-        contentType: false,
-        type: 'POST',
-        dataType: 'json'
+        url: "/ar_edit_orders.php", data: form_data, processData: false, contentType: false, type: 'POST', dataType: 'json'
 
     })
 
 
-
-
-
     request.done(function (data) {
-
 
 
         $(element).removeClass('fa-spinner fa-spin fa-cloud').addClass('fa-plus')
@@ -405,27 +383,58 @@ function save_item_qty_change(element) {
             console.log(table_metadata)
 
 
-
             input.val(data.transaction_data.qty).removeClass('discreet')
-            input.attr('ovalue',data.transaction_data.qty)
-            if(table_metadata.parent=='order'){
-
+            input.attr('ovalue', data.transaction_data.qty)
+            if (table_metadata.parent == 'order') {
 
 
                 $(element).closest('tr').find('._order_item_net').html(data.transaction_data.to_charge)
 
 
-            if(data.metadata.to_pay==0){
-                $('.Order_To_Pay_Amount').removeClass('button').attr('amount',data.metadata.to_pay)
 
-            }else{
-                $('.Order_To_Pay_Amount').addClass('button').attr('amount',data.metadata.to_pay)
-
-            }
+                $('.Total_Amount').attr('amount', data.metadata.to_pay)
+                $('.Order_To_Pay_Amount').attr('amount', data.metadata.to_pay)
 
 
 
-            }else if(table_metadata.parent=='delivery_note'){
+
+                if( data.metadata.to_pay==0 || data.metadata.payments==0  ){
+                    $('.Order_Payments_Amount').addClass('hide')
+                    $('.Order_To_Pay_Amount').addClass('hide')
+
+                }else{
+                    $('.Order_Payments_Amount').removeClass('hide')
+                    $('.Order_To_Pay_Amount').removeClass('hide')
+
+                }
+
+                if( data.metadata.to_pay!=0 || data.metadata.payments==0  ){
+                    $('.Order_Paid').addClass('hide')
+                }else{
+                    $('.Order_Paid').removeClass('hide')
+                }
+
+                if( data.metadata.to_pay<=0 ){
+                    $('.payment_operation').addClass('hide')
+
+                }else{
+                    $('.payment_operation').removeClass('hide')
+                }
+
+
+
+                if (data.metadata.to_pay == 0) {
+                    $('.Order_To_Pay_Amount').removeClass('button').attr('amount', data.metadata.to_pay)
+
+                } else {
+                    $('.Order_To_Pay_Amount').addClass('button').attr('amount', data.metadata.to_pay)
+
+                }
+
+
+
+
+            } else if (table_metadata.parent == 'delivery_note') {
 
                 console.log(data.metadata.location_components)
                 console.log(data.metadata.picked_quantity_components)
@@ -441,13 +450,10 @@ function save_item_qty_change(element) {
                 }
 
 
-
-            }else{
-
-
-                $(element).closest('tr').find('.part_sko_item').attr('_checked',data.transaction_data.qty)
+            } else {
 
 
+                $(element).closest('tr').find('.part_sko_item').attr('_checked', data.transaction_data.qty)
 
 
                 $(element).closest('tr').find('.subtotals').html(data.transaction_data.subtotals)
@@ -472,15 +478,10 @@ function save_item_qty_change(element) {
                     if (state.tab == 'supplier.delivery.items') {
                         change_tab('supplier.delivery.items')
                     }
-                }else{
+                } else {
                     $('#placed_node').removeClass('complete')
                 }
             }
-
-
-
-
-
 
 
             for (var key in data.metadata.class_html) {
@@ -501,7 +502,6 @@ function save_item_qty_change(element) {
 
             sweetAlert(data.msg);
             input.val(input.attr('ovalue'))
-
 
 
         }
@@ -525,7 +525,7 @@ function save_item_out_of_stock_qty_change(element) {
     $(element).addClass('fa-spinner fa-spin');
 
 
-    var input =  $('#set_out_of_stock_items_dialog').find('input')
+    var input = $('#set_out_of_stock_items_dialog').find('input')
 
     if ($(element).hasClass('fa-plus')) {
 
@@ -555,14 +555,7 @@ function save_item_out_of_stock_qty_change(element) {
     if (qty == '') qty = 0;
 
 
-
-
-
     var table_metadata = JSON.parse(atob($('#table').data("metadata")))
-
-
-
-
 
 
     var request = '/ar_edit_orders.php?tipo=edit_item_in_order&parent=' + table_metadata.parent + '&field=Out_of_stock&parent_key=' + table_metadata.parent_key + '&item_key=' + $('#set_out_of_stock_items_dialog').attr('item_key') + '&qty=' + qty + '&transaction_key=' + $('#set_out_of_stock_items_dialog').attr('transaction_key')
@@ -578,7 +571,7 @@ function save_item_out_of_stock_qty_change(element) {
     form_data.append("field", 'Out_of_stock')
     form_data.append("parent", table_metadata.parent)
     form_data.append("parent_key", table_metadata.parent_key)
-    form_data.append("item_key", $('#set_out_of_stock_items_dialog').attr('item_key') )
+    form_data.append("item_key", $('#set_out_of_stock_items_dialog').attr('item_key'))
     form_data.append("transaction_key", $('#set_out_of_stock_items_dialog').attr('transaction_key'))
 
 
@@ -586,12 +579,7 @@ function save_item_out_of_stock_qty_change(element) {
 
     var request = $.ajax({
 
-        url: "/ar_edit_orders.php",
-        data: form_data,
-        processData: false,
-        contentType: false,
-        type: 'POST',
-        dataType: 'json'
+        url: "/ar_edit_orders.php", data: form_data, processData: false, contentType: false, type: 'POST', dataType: 'json'
 
     })
 
@@ -607,24 +595,13 @@ function save_item_out_of_stock_qty_change(element) {
             input.val(data.transaction_data.qty).removeClass('discreet')
 
 
+            $(element).closest('tr').find('.location_components').html(data.metadata.location_components)
+            $(element).closest('tr').find('.picked_quantity_components').html(data.metadata.picked_quantity_components)
 
 
-
-                $(element).closest('tr').find('.location_components').html(data.metadata.location_components)
-                $(element).closest('tr').find('.picked_quantity_components').html(data.metadata.picked_quantity_components)
-
-
-                if (data.metadata.state_index >= 30) {
-                    $('#picked_node').addClass('complete')
-                }
-
-
-
-
-
-
-
-
+            if (data.metadata.state_index >= 30) {
+                $('#picked_node').addClass('complete')
+            }
 
 
             for (var key in data.metadata.class_html) {

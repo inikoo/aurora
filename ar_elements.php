@@ -1694,9 +1694,9 @@ function get_orders_element_numbers($db, $data, $user) {
                 continue;
             }
 
-            if ($row['element'] == 'In Process by Customer' or $row['element'] == 'Waiting for Payment Confirmation') {
+            if ($row['element'] == 'In Process' or $row['element'] == 'Waiting for Payment Confirmation') {
                 $_element = 'InProcessCustomer';
-            } elseif ($row['element'] == 'In Process' or $row['element'] == 'Submitted by Customer') {
+            } elseif ( $row['element'] == 'Submitted by Customer') {
                 $_element = 'InProcess';
             } elseif ($row['element'] == 'Ready to Pick' or $row['element'] == 'Picking & Packing' or $row['element'] == 'Ready to Ship' or $row['element'] == 'Packing' or $row['element'] == 'Packed'
                 or $row['element'] == 'Packed Done'

@@ -355,7 +355,7 @@ class Product extends Asset {
 
         $states_to_change = '';
         if ($change_orders_in_basket) {
-            $states_to_change = "'In Process by Customer','In Process','Out of Stock in Basket',";
+            $states_to_change = "'In Process','Out of Stock in Basket',";
         }
         if ($change_orders_in_process) {
             $states_to_change .= "'Submitted by Customer','Ready to Pick','Picking','Ready to Pack','Ready to Ship','Packing','Packed','Packed Done','No Picked Due Out of Stock','No Picked Due No Authorised','No Picked Due Not Found','No Picked Due Other'";
@@ -1820,7 +1820,7 @@ class Product extends Asset {
 
 
             $sql = sprintf(
-                "SELECT `Order Key` FROM `Order Transaction Fact` WHERE `Current Dispatching State`='In Process by Customer' AND `Product ID`=%d ", $this->id
+                "SELECT `Order Key` FROM `Order Transaction Fact` WHERE `Current Dispatching State`='In Process' AND `Product ID`=%d ", $this->id
             );
 
 

@@ -154,17 +154,6 @@ function pending_orders($_data, $db, $user) {
 
             $operations .= '</div>';
 
-        } elseif ($data['Order Current Dispatch State'] == 'In Process by Customer') {
-
-            $operations .= '<div class="buttons small '.$class.'">';
-            $operations .= sprintf(
-                "<button onClick=\"open_cancel_dialog_from_list(this,%d,'%s, %s')\"><img style='height:12px;width:12px' src='art/icons/cross.png'> %s</button>", $data['Order Key'],
-                $data['Order Public ID'], $data['Order Customer Name'], _('Delete')
-            );
-            $operations .= ' <button   onClick="location.href=\`order.php?id='.$data['Order Key'].'&modify=1\`">'._('Modify Order in Basket')."</button>";
-
-            $operations .= '</div>';
-
         } elseif ($data['Order Current Dispatch State'] == 'Submitted by Customer') {
             $operations .= '<div class="buttons small '.$class.'">';
             $operations .= sprintf(
@@ -861,7 +850,6 @@ function order_items($_data, $db, $user) {
 
         if (in_array(
             $customer_order->get('Order Current Dispatch State'), array(
-            'In Process by Customer',
             'In Process',
             'Submitted by Customer',
             'Ready to Pick',

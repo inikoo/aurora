@@ -64,7 +64,7 @@ if (isset($parameters['elements_type'])) {
                     $num_elements_checked++;
 
                     if ($_key == 'Basket') {
-                        $_where .= " or (`Order Number Items`>0 AND `Order Current Dispatch State`  IN ('In Process by Customer','In Process') ) ";
+                        $_where .= " or (`Order Number Items`>0 AND `Order Current Dispatch State`  IN ('In Process') ) ";
 
                     }
                     if ($_key == 'Submitted_Unpaid') {

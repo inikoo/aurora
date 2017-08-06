@@ -63,7 +63,7 @@ $_dir   = $order_direction;
 if ($order == 'reference') {
     $order = 'P.`Payment Transaction ID`';
 } elseif ($order == 'amount') {
-    $order = 'P.`Payment Amount`';
+    $order = 'P.`Payment Transaction Amount`';
 } elseif ($order == 'date') {
     $order = 'P.`Payment Last Updated Date`';
 } elseif ($order == 'type') {
@@ -79,7 +79,7 @@ $table = '`Payment Dimension` P ';
 
 $sql_totals = "select count(P.`Payment Key`) as num from $table  $where  ";
 $fields
-            = "`Payment Key`,`Payment Transaction ID`,`Payment Currency Code`,`Payment Amount`,`Payment Type`,`Payment Last Updated Date`,`Payment Transaction Status`";
+            = "`Payment Key`,`Payment Transaction ID`,`Payment Currency Code`,`Payment Transaction Amount`,`Payment Type`,`Payment Last Updated Date`,`Payment Transaction Status`";
 
 
 ?>

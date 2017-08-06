@@ -1,11 +1,11 @@
 {assign deliveries $order->get_deliveries('objects')}
 {assign invoices $order->get_invoices('objects')}
-{assign payments $order->get_payments('objects')}
+{assign payments $order->get_payments('objects','Completed')}
 
 {$order->get('State Index')}
 <div class="timeline_horizontal with_time   {if $order->get('Order Current Dispatch State')=='Cancelled'}hide{/if}  ">
 
-    <ul class=" {if $order->get('State Index')>=40}hide{else}timeline{/if}" >
+    <ul class=" {if $order->get('State Index')>=40}hide{else}timeline{/if}">
         <li id="submitted_node" class="li {if $order->get('State Index')>=30}complete{/if}">
             <div class="label">
                 <span class="state ">{t}Submitted{/t}</span>
@@ -18,7 +18,7 @@
     </ul>
 
     {foreach from=$deliveries item=dn name=delivery_notes}
-        <ul class="timeline hide" >
+        <ul class="timeline hide">
 
             <li id="submitted_node" class="li {if $order->get('State Index')>=30}complete{/if}">
                 <div class="label">
@@ -274,9 +274,8 @@
     <div class="block " style="align-items: stretch;flex: 1 ">
 
 
-        <div class="delivery_notes" style="margin-bottom:10px;position:relative;top:-5px;">
-            <div id="create_delivery" class="delivery_node {if {$order->get('State Index')|intval}>30 or ( {$order->get('State Index')|intval}<10)   }hide{/if}"
-                 style="height:30px;clear:both;border-bottom:1px solid #ccc">
+        <div class="delivery_notes {if {$order->get('State Index')|intval}>30 or ( {$order->get('State Index')|intval}<=10)   }hide{/if}" style="margin-bottom:10px;position:relative;top:-5px;">
+            <div id="create_delivery" class="delivery_node " style="height:30px;clear:both;border-bottom:1px solid #ccc">
 
                 <div id="back_operations"></div>
                 <span style="float:left;padding-left:10px;padding-top:5px" class="very_discreet italic"><i class="fa fa-truck  button" aria-hidden="true"></i> {t}Delivery note{/t} </span>
@@ -295,7 +294,7 @@
 
         </div>
         {foreach from=$deliveries item=dn}
-            <div class="delivery_node {if !$dn->id}hide{/if}" style="height:30px;clear:both;border-bottom:1px solid #ccc">
+            <div class="delivery_node {if !$dn->id}hide{/if}" style="height:30px;clear:both;border-bottom:1px solid #ccc;">
                     <span style="float:left;padding-left:10px;padding-top:5px"> <span class="button" onClick="change_view('delivery_notes/{$dn->get('Delivery Note Store Key')}/{$dn->id}')"> <i class="fa fa-truck fa-fw "
                                                                                                                                                                                                  aria-hidden="true"></i> {$dn->get('ID')}</span> ({$dn->get('Abbreviated State')}
                         ) </span>
@@ -310,9 +309,8 @@
             </div>
         {/foreach}
     </div>
-    <div class="invoices" style="margin-bottom:10px">
-        <div id="create_invoice" class="delivery_node {if {$order->get('State Index')|intval}<30 or ($order->get('Order Ordered Number Items')-$order->get('Order Number Supplier Delivery Items'))==0  }hide{/if}"
-             style="height:30px;clear:both;border-top:1px solid #ccc;border-bottom:1px solid #ccc">
+    <div class="invoices {if {$order->get('State Index')|intval}<30 or ($order->get('Order Ordered Number Items')-$order->get('Order Number Supplier Delivery Items'))==0  }hide{/if}" style="margin-bottom:10px">
+        <div id="create_invoice" class="delivery_node " style="height:30px;clear:both;border-top:1px solid #ccc;border-bottom:1px solid #ccc">
 
             <div id="back_operations"></div>
             <span style="float:left;padding-left:10px;padding-top:5px" class="very_discreet italic"><i class="fa fa-truck  button" aria-hidden="true"></i> {t}Delivery note{/t} </span>
@@ -338,39 +336,37 @@
         {/foreach}
     </div>
 
-    <div class="payments" style="margin-bottom:20px">
-        <div id="create_payment" class="delivery_node" style="height:30px;clear:both;border-top:1px solid #ccc;border-bottom:1px solid #ccc">
 
-            <div ></div>
-            <span    style="float:left;padding-left:10px;padding-top:5px" class="very_discreet italic">{t}Payments{/t}</span>
-            <div >
+    <div class="payments  {if $order->get('State Index')==10}in_process{/if}">
+        <div id="create_payment" class="payment node"">
 
-                <div class="payment_operation {if $order->get('Order To Pay Amount')<=0}hide{/if}  ">
-                    <div class="square_button right" style="padding:0;margin:0;position:relative;top:0px" title="{t}add payment{/t}">
-                        <i class="fa fa-plus" aria-hidden="true" onclick="show_add_payment_to_order()"></i>
+        <div></div>
+        <span style="float:left;padding-left:10px;padding-top:5px" class="very_discreet italic">{t}Payments{/t}</span>
+        <div>
 
-                    </div>
+            <div class="payment_operation {if $order->get('Order To Pay Amount')<=0     }hide{/if}  ">
+                <div class="square_button right" style="padding:0;margin:0;position:relative;top:0px" title="{t}add payment{/t}">
+                    <i class="fa fa-plus" aria-hidden="true" onclick="show_add_payment_to_order()"></i>
+
                 </div>
-
-
             </div>
+
 
         </div>
 
+    </div>
 
+    <div id="payment_nodes">
         {foreach from=$payments item=payment}
-            <div class="payment" style="height:30px;clear:both;border-bottom:1px solid #ccc">
-
-
-                <span style="float:left;padding-left:10px;padding-top:5px"> <span class="button"
-                                                                                  onClick="change_view('{$order->get('Order Parent')|lower}/{$order->get('Order Parent Key')}/delivery/{$invoice->id}')">{$payment->get('Payment Account Code')}</span> </span>
-                <span style="float:right;padding-right:10px;padding-top:5px"> {$payment->get('Amount')}</span>
+            <div class="payment node">
+                <span class="node_label"> <span class="link" onClick="change_view('order/{$order->id}/payment/{$payment->id}')">{$payment->get('Payment Account Code')}</span> </span>
+                <span class="node_amount"> {$payment->get('Transaction Amount')}</span>
             </div>
         {/foreach}
     </div>
-
-    <div style="clear:both"></div>
 </div>
+
+<div style="clear:both"></div></div>
 <div class="block " style="align-items: stretch;flex: 1 ">
     <table border="0" class="totals" style="position:relative;top:-5px">
 
@@ -398,23 +394,26 @@
 
         <tr class="total">
             <td class="label">{t}Total{/t}</td>
-            <td class="aright Total_Amount">{$order->get('Total Amount')}</td>
+            <td class="aright Total_Amount  button " amount="{$order->get('Order To Pay Amount')}" onclick="try_to_pay(this)">{$order->get('Total Amount')}</td>
         </tr>
-        <tr class="{if $account->get('Account Currency')==$order->get('Order Currency Code')}hide{/if}">
+
+
+        <tr class="   {if $account->get('Account Currency')==$order->get('Order Currency Code')}hide{/if}">
             <td colspan="2" class="Total_Amount_Account_Currency aright ">{$order->get('Total Amount Account Currency')}</td>
         </tr>
-        <tr class="total   {if $order->get('Order To Pay Amount')==0}hide{/if}  ">
+        <tr class="total Order_Payments_Amount  {if $order->get('Order To Pay Amount')==0   or $order->get('Order Payments Amount')==0  }hide{/if}  ">
             <td class="label">{t}Paid{/t}</td>
             <td class="aright Payments_Amount">{$order->get('Payments Amount')}</td>
         </tr>
-        <tr class="total  Order_To_Pay_Amount {if $order->get('Order To Pay Amount')==0}hide{/if} button" amount="{$order->get('Order To Pay Amount')}" onclick="try_to_pay(this)">
+        <tr class="total  Order_To_Pay_Amount {if $order->get('Order To Pay Amount')==0  or $order->get('Order Payments Amount')==0   }hide{/if} button" amount="{$order->get('Order To Pay Amount')}"
+            onclick="try_to_pay(this)">
             <td class="label">{t}To pay{/t}</td>
             <td class="aright To_Pay_Amount   ">{$order->get('To Pay Amount')}</td>
         </tr>
 
-        <tr class="total success   {if $order->get('Order To Pay Amount')!=0}hide{/if}"  >
+        <tr class="total success  Order_Paid {if $order->get('Order To Pay Amount')!=0 or $order->get('Order Total Amount')==0 }hide{/if}">
 
-            <td colspan="2" class="align_center Order_Paid"><i class="fa fa-check-circle" aria-hidden="true"></i> {t}Paid{/t}</td>
+            <td colspan="2" class="align_center "><i class="fa fa-check-circle" aria-hidden="true"></i> {t}Paid{/t}</td>
         </tr>
 
 
@@ -438,36 +437,37 @@
                 <td>
                     <div id="new_payment_payment_account_buttons">
                         {foreach from=$store->get_payment_accounts('objects','Active') item=payment_account}
-                        <div onclick="select_payment_account(this)"
-                             data-settings='{ "payment_account_key":"{$payment_account->id}", "max_amount":"" , "payment_method":"{$payment_account->get('Default Payment Method')}" }' class="new_payment_payment_account_button unselectable
+                            <div onclick="select_payment_account(this)"
+                                 data-settings='{ "payment_account_key":"{$payment_account->id}", "max_amount":"" , "payment_method":"{$payment_account->get('Default Payment Method')}" }' class="new_payment_payment_account_button unselectable
                         button {if $payment_account->get('Payment Account Block')=='Accounts' and $customer->get('Customer Account Balance')<=0  }hide{/if}" style="border:1px solid #ccc;padding:10px
                         5px;margin-bottom:2px">{$payment_account->get('Name')}</div>
-                    {/foreach}
-    </div>
-    <input type="hidden" id="new_payment_payment_account_key" value="">
+                        {/foreach}
+                    </div>
+                    <input type="hidden" id="new_payment_payment_account_key" value="">
                     <input type="hidden" id="new_payment_payment_method" value="">
 
 
-    </td>
+                </td>
 
-    <td class="payment_fields " style="padding-left:30px;width: 300px">
-        <table>
-            <tr>
-                <td> {t}Amount{/t}</td>
-                <td style="padding-left:20px"><input disabled=true class="new_payment_field" id="new_payment_amount" placeholder="{t}Amount{/t}"></td>
+                <td class="payment_fields " style="padding-left:30px;width: 300px">
+                    <table>
+                        <tr>
+                            <td> {t}Amount{/t}</td>
+                            <td style="padding-left:20px"><input disabled=true class="new_payment_field" id="new_payment_amount" placeholder="{t}Amount{/t}"></td>
+                        </tr>
+                        <tr>
+                            <td>  {t}Reference{/t}</td>
+                            <td style="padding-left:20px"><input disabled=true class="new_payment_field" id="new_payment_reference" placeholder="{t}Reference{/t}"></td>
+                        </tr>
+                    </table>
+                </td>
+
+                <td id="save_new_payment" class="buttons save" onclick="save_new_payment()"><span>{t}Save{/t}</span> <i class=" fa fa-cloud fa-flip-horizontal " aria-hidden="true"></i></td>
             </tr>
-            <tr>
-                <td>  {t}Reference{/t}</td>
-                <td style="padding-left:20px"><input disabled=true class="new_payment_field" id="new_payment_reference" placeholder="{t}Reference{/t}"></td>
-            </tr>
+
         </table>
-    </td>
-
-    <td id="save_new_payment" class="buttons save" onclick="save_new_payment()"><span>{t}Save{/t}</span> <i class=" fa fa-cloud fa-flip-horizontal " aria-hidden="true"></i></td>
-    </tr>
-
-    </table>
-</div></div>
+    </div>
+</div>
 
 <script>
 
@@ -496,7 +496,7 @@
 
     function select_payment_account(element) {
 
-var settings=$(element).data('settings')
+        var settings = $(element).data('settings')
 
         console.log(settings)
         $('#new_payment_payment_account_key').val(settings.payment_account_key)
@@ -594,42 +594,89 @@ var settings=$(element).data('settings')
 
     }
 
-    function save_new_payment(){
+    function save_new_payment() {
 
         var ajaxData = new FormData();
 
         ajaxData.append("tipo", 'new_payment')
-        ajaxData.append("parent",'order' )
+        ajaxData.append("parent", 'order')
 
-        ajaxData.append("parent_key",'{$order->id}' )
+        ajaxData.append("parent_key", '{$order->id}')
         ajaxData.append("payment_account_key", $('#new_payment_payment_account_key').val())
-        ajaxData.append("amount",$('#new_payment_amount').val())
-        ajaxData.append("payment_method",$('#new_payment_payment_method').val())
+        ajaxData.append("amount", $('#new_payment_amount').val())
+        ajaxData.append("payment_method", $('#new_payment_payment_method').val())
 
-        ajaxData.append("reference", $('#new_payment_reference').val() )
-
-
-
-
-
-
+        ajaxData.append("reference", $('#new_payment_reference').val())
 
 
         $.ajax({
-            url: "/ar_edit_orders.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
-            complete: function () {
+            url: "/ar_edit_orders.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false, complete: function () {
             }, success: function (data) {
 
 
-
+                console.log(data)
 
                 if (data.state == '200') {
+
+                    $('.Total_Amount').attr('amount', data.metadata.to_pay)
+                    $('.Order_To_Pay_Amount').attr('amount', data.metadata.to_pay)
+
+
+
+
+                    if( data.metadata.to_pay==0 || data.metadata.payments==0  ){
+                        $('.Order_Payments_Amount').addClass('hide')
+                        $('.Order_To_Pay_Amount').addClass('hide')
+
+                    }else{
+                        $('.Order_Payments_Amount').removeClass('hide')
+                        $('.Order_To_Pay_Amount').removeClass('hide')
+
+                    }
+
+                    if( data.metadata.to_pay!=0 || data.metadata.payments==0  ){
+                        $('.Order_Paid').addClass('hide')
+                    }else{
+                        $('.Order_Paid').removeClass('hide')
+                    }
+
+                    if( data.metadata.to_pay<=0 ){
+                        $('.payment_operation').addClass('hide')
+
+                    }else{
+                        $('.payment_operation').removeClass('hide')
+                    }
+
+
+
+                    if (data.metadata.to_pay == 0) {
+                        $('.Order_To_Pay_Amount').removeClass('button').attr('amount', data.metadata.to_pay)
+
+                    } else {
+                        $('.Order_To_Pay_Amount').addClass('button').attr('amount', data.metadata.to_pay)
+
+                    }
+
+
+                    $('#payment_nodes').html(data.metadata.payments_xhtml)
+
+
+                    for (var key in data.metadata.class_html) {
+                        $('.' + key).html(data.metadata.class_html[key])
+                    }
+
+
+                    for (var key in data.metadata.hide) {
+                        $('#' + data.metadata.hide[key]).addClass('hide')
+                    }
+                    for (var key in data.metadata.show) {
+                        $('#' + data.metadata.show[key]).removeClass('hide')
+                    }
 
 
                 } else if (data.state == '400') {
                     swal("{t}Error{/t}!", data.msg, "error")
                 }
-
 
 
             }, error: function () {
@@ -638,10 +685,7 @@ var settings=$(element).data('settings')
         });
 
 
-
-
     }
-
 
 
 </script>
