@@ -338,7 +338,8 @@
 
 
     <div class="payments  {if $order->get('State Index')==10}in_process{/if}">
-        <div id="create_payment" class="payment node"">
+        <div id="create_payment" class="payment node"
+        ">
 
         <div></div>
         <span style="float:left;padding-left:10px;padding-top:5px" class="very_discreet italic">{t}Payments{/t}</span>
@@ -462,7 +463,7 @@
                     </table>
                 </td>
 
-                <td id="save_new_payment" class="buttons save" onclick="save_new_payment()"><span>{t}Save{/t}</span> <i class=" fa fa-cloud fa-flip-horizontal " aria-hidden="true"></i></td>
+                <td id="save_new_payment" class="buttons save" onclick="save_new_payment()"><span>{t}Save{/t}</span> <i class=" fa fa-cloud " aria-hidden="true"></i></td>
             </tr>
 
         </table>
@@ -596,6 +597,15 @@
 
     function save_new_payment() {
 
+
+        if ($('#save_new_payment').hasClass('wait')) {
+            return;
+        }
+        $('#save_new_payment').addClass('wait')
+
+        $('#save_new_payment i').removeClass('fa-cloud').addClass('fa-spinner fa-spin');
+
+
         var ajaxData = new FormData();
 
         ajaxData.append("tipo", 'new_payment')
@@ -614,39 +624,45 @@
             }, success: function (data) {
 
 
+                $('#save_new_payment').removeClass('wait')
+                $('#save_new_payment i').addClass('fa-cloud').removeClass('fa-spinner fa-spin');
+
+
                 console.log(data)
 
                 if (data.state == '200') {
+
+                    $('#new_payment_amount').val('')
+                    $('#new_payment_reference').val('')
+
+                    validate_new_payment()
 
                     $('.Total_Amount').attr('amount', data.metadata.to_pay)
                     $('.Order_To_Pay_Amount').attr('amount', data.metadata.to_pay)
 
 
-
-
-                    if( data.metadata.to_pay==0 || data.metadata.payments==0  ){
+                    if (data.metadata.to_pay == 0 || data.metadata.payments == 0) {
                         $('.Order_Payments_Amount').addClass('hide')
                         $('.Order_To_Pay_Amount').addClass('hide')
 
-                    }else{
+                    } else {
                         $('.Order_Payments_Amount').removeClass('hide')
                         $('.Order_To_Pay_Amount').removeClass('hide')
 
                     }
 
-                    if( data.metadata.to_pay!=0 || data.metadata.payments==0  ){
+                    if (data.metadata.to_pay != 0 || data.metadata.payments == 0) {
                         $('.Order_Paid').addClass('hide')
-                    }else{
+                    } else {
                         $('.Order_Paid').removeClass('hide')
                     }
 
-                    if( data.metadata.to_pay<=0 ){
+                    if (data.metadata.to_pay <= 0) {
                         $('.payment_operation').addClass('hide')
 
-                    }else{
+                    } else {
                         $('.payment_operation').removeClass('hide')
                     }
-
 
 
                     if (data.metadata.to_pay == 0) {
@@ -680,6 +696,8 @@
                         });
                     }
 
+                    close_add_payment_to_order()
+
 
                 } else if (data.state == '400') {
                     swal("{t}Error{/t}!", data.msg, "error")
@@ -687,6 +705,8 @@
 
 
             }, error: function () {
+                $('#save_new_payment').removeClass('wait')
+                $('#save_new_payment i').addClass('fa-cloud').removeClass('fa-spinner fa-spin');
 
             }
         });
