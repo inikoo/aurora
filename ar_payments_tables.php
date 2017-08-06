@@ -219,25 +219,20 @@ function payments($_data, $db, $user) {
             $notes = '';
 
 
+            $amount= '<span class="'. ($data['Payment Transaction Status']!='Completed'?'strikethrough':'').'" >'.money($data['Payment Transaction Amount'], $data['Payment Currency Code']).'</span>';
+
 
 
             $adata[] = array(
                 'id'           => (integer)$data['Payment Key'],
                 'reference'    => $data['Payment Transaction ID'],
                 'currency'     => $data['Payment Currency Code'],
-                'amount'       => money(
-                    $data['Payment Amount'], $data['Payment Currency Code']
-                ),
-                'date'         => money(
-                    $data['Payment Amount'], $data['Payment Currency Code']
-                ),
+                'amount'       =>$amount,
                 'formatted_id' => sprintf("<span class='link' onclick='change_view(\"/%s/%d/payment/%d\")' >%05d", $parameters['parent'],$parameters['parent_key'],$data['Payment Key'],$data['Payment Key']),
                 'type'         => $type,
                 'status'       => $status,
                 'notes'        => $notes,
-                'date'         => strftime(
-                    "%a %e %b %Y %H:%M %Z", strtotime($data['Payment Last Updated Date'].' +0:00')
-                ),
+                'date'         => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Payment Last Updated Date'].' +0:00')),
 
             );
 

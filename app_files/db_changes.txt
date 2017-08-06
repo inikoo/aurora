@@ -642,6 +642,10 @@ ALTER TABLE `Payment Account Dimension` ADD `Payment Account Number Stores` SMAL
 
 here
 
+ALTER TABLE `Payment Dimension` ADD `Payment Transaction Amount` DECIMAL(16,2) NULL DEFAULT NULL AFTER `Payment Type`;
+ALTER TABLE `Payment Dimension` CHANGE `Payment Balance` `Payment Balance` DECIMAL(12,2) NULL DEFAULT NULL, CHANGE `Payment Amount` `Payment Amount` DECIMAL(12,2) NULL DEFAULT NULL, CHANGE `Payment Refund` `Payment Refund` DECIMAL(12,2) NULL DEFAULT NULL;
+ALTER TABLE `Payment Dimension` ADD `Payment Transaction Amount Refunded` DECIMAL(16,2) NULL DEFAULT '0.00' AFTER `Payment Transaction Amount`;
+
 ============= migration web[ages
 
 update `Page Store Dimension` set `Webpage Code`=LOWER(`Webpage Code`);

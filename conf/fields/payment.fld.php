@@ -48,11 +48,11 @@ $object_fields = array(
         'show_title' => true,
         'fields'     => array(
             array(
-                'id'              => 'Payment_Amount',
+                'id'              => 'Payment_Transaction_Amount',
                 'edit'            => ($edit ? 'amount' : ''),
-                'value'           => $object->get('Payment Amount'),
-                'formatted_value' => $object->get('Amount'),
-                'label'           => ucfirst($object->get_field_label('Payment Amount')),
+                'value'           => $object->get('Payment Transaction Amount'),
+                'formatted_value' => $object->get('Transaction Amount'),
+                'label'           => ucfirst($object->get_field_label('Payment Transaction Amount')),
                 'type'            => 'value'
             ),
 
@@ -79,7 +79,7 @@ if (!$new) {
                 'class'     => 'operation',
                 'value'     => '',
                 'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name(
-                    ).'", "key":"'.$object->id.'"}\' onClick="delete_object(this)" class="delete_object disabled">'._('Delete payment')
+                    ).'", "key":"'.$object->id.'"}\' onClick="delete_object(this)" class="delete_object disabled">'._('Cancel payment')
                     .' <i class="fa fa-trash new_button link"></i></span>',
                 'reference' => '',
                 'type'      => 'operation'

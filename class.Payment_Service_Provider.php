@@ -50,12 +50,11 @@ class Payment_Service_Provider extends DB_Table {
             $sql = sprintf(
                 "SELECT * FROM `Payment Service Provider Dimension` WHERE `Payment Service Provider Key`=%d", $tag
             );
-        }
-        elseif ($tipo == 'type') {
+        } elseif ($tipo == 'type') {
             $sql = sprintf(
                 "SELECT * FROM `Payment Service Provider Dimension` WHERE `Payment Service Provider Type`=%s", prepare_mysql($tag)
             );
-        }elseif ($tipo == 'code') {
+        } elseif ($tipo == 'code') {
             $sql = sprintf(
                 "SELECT * FROM `Payment Service Provider Dimension` WHERE `Payment Service Provider Code`=%s", prepare_mysql($tag)
             );
@@ -225,29 +224,25 @@ class Payment_Service_Provider extends DB_Table {
         $this->new_account = false;
 
 
-        $data['editor']                       = $this->editor;
+        $data['editor']                               = $this->editor;
         $data['Payment Account Service Provider Key'] = $this->id;
 
-        if(empty($data['Payment Account Block'])){
-            $data['Payment Account Block']=$this->get('Payment Service Provider Block');
+        if (empty($data['Payment Account Block'])) {
+            $data['Payment Account Block'] = $this->get('Payment Service Provider Block');
         }
 
 
-
-        if($data['Payment Account Block']=='Paypal'){
-            $data['Payment Account URL Link']='https://www.paypal.com/cgi-bin/webscr';
-            $data['Payment Account Refund URL Link']='https://api-3t.paypal.com/nvp';
-        }else if($data['Payment Account Block']=='Sofort'){
-            $data['Payment Account URL Link']='https://www.sofort.com/payment/start';
+        if ($data['Payment Account Block'] == 'Paypal') {
+            $data['Payment Account URL Link']        = 'https://www.paypal.com/cgi-bin/webscr';
+            $data['Payment Account Refund URL Link'] = 'https://api-3t.paypal.com/nvp';
+        } else {
+            if ($data['Payment Account Block'] == 'Sofort') {
+                $data['Payment Account URL Link'] = 'https://www.sofort.com/payment/start';
+            }
         }
-
-
-
 
 
         $payment_account = new Payment_Account('new', $data);
-
-
 
 
         if ($payment_account->id) {
@@ -255,9 +250,6 @@ class Payment_Service_Provider extends DB_Table {
 
             if ($payment_account->new) {
                 $this->new_account = true;
-
-
-
 
 
                 $this->update_accounts_data();
@@ -277,8 +269,6 @@ class Payment_Service_Provider extends DB_Table {
 
 
     }
-
-
 
 
     function get($key = '') {
@@ -301,38 +291,29 @@ class Payment_Service_Provider extends DB_Table {
 
     function update_accounts_data() {
         $number_accounts = 0;
-        $transactions    = 0;
-        $payments        = 0;
-        $refunds         = 0;
-        $balance         = 0;
-        $currencies      = '';
+
 
         $sql = sprintf(
-            "SELECT count(*) AS num, sum(`Payment Account Transactions`) AS transactions, sum(`Payment Account Payments Amount`) AS payments, sum(`Payment Account Refunds Amount`) AS refunds, sum(`Payment Account Balance Amount`) AS balance FROM `Payment Account Dimension` WHERE `Payment Service Provider Key`=%d ",
-            $this->id
+            "SELECT count(*) AS num  FROM `Payment Account Dimension` WHERE `Payment Service Provider Key`=%d ", $this->id
         );
         if ($row = $this->db->query($sql)->fetch()) {
 
             $number_accounts = $row['num'];
-            $transactions    = $row['transactions'];
-            $payments        = $row['payments'];
-            $refunds         = $row['refunds'];
-            $balance         = $row['balance'];
-            //$currencies=$row['currencies'];
+
         }
 
         $this->update(
             array(
-                'Payment Service Provider Accounts'        => $number_accounts,
-      //          'Payment Service Provider Currency'        => $currencies,
-                'Payment Service Provider Transactions'    => $transactions,
-                'Payment Service Provider Payments Amount' => $payments,
-                'Payment Service Provider Refunds Amount'  => $refunds,
-                'Payment Service Provider Balance Amount'  => $balance,
-
+                'Payment Service Provider Accounts' => $number_accounts,
             ), 'no_history'
         );
 
+    }
+
+
+    function update_payments_data() {
+
+        //todo update_payments_data in service provider
     }
 
 

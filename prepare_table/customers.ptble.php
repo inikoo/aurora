@@ -442,9 +442,8 @@ function customers_awhere($awhere) {
     $where_orders   = '';
     if ($where_data['pending_orders'] == 'Yes') {
         $use_order = true;
-        //$where_orders=" and `Order Current Dispatch State` in ('In Process by Customer','In Process','Submitted by Customer','Ready to Pick','Picking & Packing','Ready to Ship','Packing','Packed','Packed Done')";
         $where_orders
-            = " and `Order Current Dispatch State` in ('In Process by Customer')";
+            = " and `Order Current Dispatch State` in ('In Process')";
 
         $tmp = '';
         foreach ($where_data['pending_order_payment_method'] as $payment_method) {

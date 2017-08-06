@@ -70,7 +70,37 @@ table.totals {
 
     }
 
+    .node{
+      height:30px;clear:both;border-bottom:1px solid #ccc
+    }
+
+    .payments{
+      margin-bottom:20px;border-top:1px solid #ccc
+
+
+    }
+
+    .payments.in_process{
+    position:relative;top:-5px;border-top:none
+    }
+
+
+    .node_label{
+      float:left;padding-left:10px;padding-top:5px
+    }
+
+    .node_amount{
+      float:right;padding-right:10px;padding-top:5px
+    }
+
+
+
+
   }
+
+
+
+
 
 }
 

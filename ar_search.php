@@ -2125,9 +2125,7 @@ function search_orders($db, $account, $memcache_ip, $data) {
                     case 'In Process':
                         $details = _('In Process');
                         break;
-                    case 'In Process by Customer':
-                        $details = _('In Process by Customer');
-                        break;
+
                     case 'Submitted by Customer':
                         $details = _('Submitted by Customer');
                         break;
