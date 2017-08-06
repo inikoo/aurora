@@ -852,9 +852,8 @@ function order_items($_data, $db, $user) {
             $customer_order->get('Order Current Dispatch State'), array(
             'In Process',
             'Submitted by Customer',
-            'Ready to Pick',
-            'Picking & Packing',
-            'Packed',
+            'In Warehouse',
+
             'Packed Done',
             'Packing'
         )
