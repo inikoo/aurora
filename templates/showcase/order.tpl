@@ -674,6 +674,13 @@
                     }
 
 
+                    if (state.tab == 'order.payments') {
+                        rows.fetch({
+                            reset: true
+                        });
+                    }
+
+
                 } else if (data.state == '400') {
                     swal("{t}Error{/t}!", data.msg, "error")
                 }
