@@ -74,15 +74,12 @@ table.totals {
       height:30px;clear:both;border-bottom:1px solid #ccc
     }
 
-    .payments{
-      margin-bottom:20px;border-top:1px solid #ccc
+  .payments{
+      margin-bottom:20px;border-top:1px solid #ccc;position:relative;top:-5px;border-top:none
 
 
     }
 
-    .payments.in_process{
-    position:relative;top:-5px;border-top:none
-    }
 
 
     .node_label{

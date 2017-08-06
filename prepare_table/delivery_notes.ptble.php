@@ -89,9 +89,7 @@ elseif ($parameters['parent'] == 'list') {
 
 } elseif ($parameters['parent'] == 'order') {
 
-    $table
-           = '`Order Delivery Note Bridge` B left join  `Delivery Note Dimension` D  on (D.`Delivery Note Key`=B.`Delivery Note Key`)  ';
-    $where = sprintf('where  B.`Order Key`=%d  ', $parameters['parent_key']);
+     $where = sprintf('where  `Delivery Note Order Key`=%d  ', $parameters['parent_key']);
 
 
 } elseif ($parameters['parent'] == 'invoice') {

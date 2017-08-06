@@ -83,8 +83,6 @@ class DeliveryNote extends DB_Table {
     protected function create($dn_data, $order) {
 
 
-
-
         $base_data = $this->base_data();
 
         foreach ($dn_data as $key => $value) {
@@ -111,11 +109,9 @@ class DeliveryNote extends DB_Table {
         $sql = "insert into `Delivery Note Dimension` $keys  $values";
 
 
-
         if ($this->db->exec($sql)) {
             $this->id = $this->db->lastInsertId();
             $this->get_data('id', $this->id);
-
 
 
             $total_estimated_weight = 0;
@@ -179,13 +175,12 @@ class DeliveryNote extends DB_Table {
                 foreach ($result as $row) {
 
 
-                    //     print_r($row);
 
-                    $items_to_dispatch = $row['Order Quantity'] + $row['Order Bonus Quantity'] - $row['No Shipped Due No Authorized'];
 
 
                     $this->create_inventory_transaction_fact_item(
-                        $row['Product ID'], $row['Order Transaction Fact Key'], $items_to_dispatch, $this->get('Delivery Note Date'), $row['Supplier Metadata'], $row['Order Bonus Quantity']
+                        $row['Product ID'], $row['Order Transaction Fact Key'], $row['Order Quantity'] - $row['No Shipped Due No Authorized'], $row['Order Bonus Quantity'] ,
+                        $this->get('Delivery Note Date'), $row['Supplier Metadata']
                     );
 
 
@@ -209,7 +204,7 @@ class DeliveryNote extends DB_Table {
 
     }
 
-    function create_inventory_transaction_fact_item($product_id, $map_to_otf_key, $to_sell_quantity, $date, $supplier_metadata_array, $bonus_qty) {
+    function create_inventory_transaction_fact_item($product_id, $map_to_otf_key, $to_sell_quantity, $bonus_qty, $date, $supplier_metadata_array) {
 
 
         $product = new Product('id', $product_id);
@@ -218,15 +213,12 @@ class DeliveryNote extends DB_Table {
 
         $state = 'Ready to Pick';
 
-        $sql   = sprintf(
-            "UPDATE `Order Transaction Fact` SET `Current Dispatching State`=%s WHERE `Order Transaction Fact Key`=%d  ", prepare_mysql($state),
-
-            $map_to_otf_key
+        $sql = sprintf(
+            "UPDATE `Order Transaction Fact` SET `Current Dispatching State`=%s WHERE `Order Transaction Fact Key`=%d  ", prepare_mysql($state), $map_to_otf_key
         );
         $this->db->exec($sql);
 
         $part_index = 0;
-        $location_index=0;
         //  $debug_txt=sprintf("creating itf %s %s",$product->data['Product Code'],$sql);
         //  $xsql=sprintf("insert into debugtable (`text`,`date`) values (%s,NOW())",prepare_mysql($debug_txt));mysql_query($xsql);
 
@@ -243,7 +235,9 @@ class DeliveryNote extends DB_Table {
             $part = new Part ('sku', $part_data['Part SKU']);
             if ($part->sku) {
 
-                $quantity_to_be_taken = $part_data['Ratio'] * $to_sell_quantity;
+                $required = $part_data['Ratio'] * $to_sell_quantity;
+                $given    = $part_data['Ratio'] * $bonus_qty;
+                $weight   = $part->get('Part Package Weight') * ($required + $given);
 
 
                 $location_key = $part->get_picking_location_key();
@@ -280,33 +274,10 @@ class DeliveryNote extends DB_Table {
                 }
 
 
-                //  $quantity_taken_from_location = $location_data['qty'];
-
-                if ($bonus_qty > 0) {
-                    if ($bonus_qty >= $quantity_to_be_taken) {
-                        $given     = $quantity_to_be_taken;
-                        $required  = 0;
-                        $bonus_qty = $quantity_to_be_taken - $bonus_qty;
-                    } else {
-                        $given     = $bonus_qty;
-                        $required  = $quantity_to_be_taken - $given;
-                        $bonus_qty = 0;
-                    }
-
-
-                } else {
-                    $given    = 0;
-                    $required = $quantity_to_be_taken;
-
-                }
-
-
                 $note = '';
 
 
                 $picking_note = $part_data['Note'];
-
-                $weight = $part->get('Part Package Weight') * ($required + $given);
 
 
                 $sql = sprintf(
@@ -323,8 +294,8 @@ class DeliveryNote extends DB_Table {
 					%f,%s,%s,%d,%s,%d,
 					%s,%s,%.2f,%f,%f,%f,
 
-					%s,%s,%d,%d,%d,%d,%s) ", $multipart_data_multiplicity, prepare_mysql($multipart_data), "'Movement'", "'OIP'", prepare_mysql($this->data['Delivery Note Address Country 2 Alpha Code']),
-                    prepare_mysql($picking_note),
+					%s,%s,%d,%d,%d,%d,%s) ", $multipart_data_multiplicity, prepare_mysql($multipart_data), "'Movement'", "'OIP'",
+                    prepare_mysql($this->data['Delivery Note Address Country 2 Alpha Code']), prepare_mysql($picking_note),
 
                     $weight, prepare_mysql($this->get('Delivery Note Date')), prepare_mysql($this->get('Delivery Note Date')), $this->id, prepare_mysql($part_data['Part SKU']), $location_key,
 
@@ -338,12 +309,12 @@ class DeliveryNote extends DB_Table {
 
                     $supplier_part_historic_key,
 
-                    $supplier_key, $map_to_otf_key, prepare_mysql($part_index.';'.$part_data['Ratio'].';'.$location_index)
+                    $supplier_key, $map_to_otf_key, prepare_mysql($part_index.';'.$part_data['Ratio'].';0')
                 );
                 $this->db->exec($sql);
 
 
-                 print $sql;
+                //  print $sql;
 
 
                 if ($this->update_stock) {
@@ -353,7 +324,6 @@ class DeliveryNote extends DB_Table {
                     //$part_location->update_stock();
                 }
                 //print "$sql\n";
-                $location_index++;
 
 
                 $part_index++;
@@ -371,6 +341,85 @@ class DeliveryNote extends DB_Table {
 
 
     }
+
+    function update_inventory_transaction_fact($otf_key, $quantity_to_sell,$bonus_quantity) {
+
+        $date = gmdate("Y-m-d H:i:s");
+
+        $sql = sprintf(
+            "SELECT `Inventory Transaction Key`,`Map To Order Transaction Fact Metadata`,`Part SKU` FROM `Inventory Transaction Fact` WHERE `Delivery Note Key`=%d AND `Map To Order Transaction Fact Key`=%d ", $this->id, $otf_key
+        );
+
+
+        $transactions = 0;
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+
+
+                $transactions++;
+
+                $metadata=preg_split('/\;/',$row['Map To Order Transaction Fact Metadata']);
+                $ratio=$metadata[1];
+                $part=get_object('Part',$row['Part SKU']);
+
+                $required=$quantity_to_sell*$ratio;
+                $given=$bonus_quantity*$ratio;
+
+
+
+
+                $weight=$part->get('Part Package Weight') * ($required + $given);
+
+                $sql = sprintf(
+                    "UPDATE `Inventory Transaction Fact` SET `Required`=%f,`Given`=%f,`Inventory Transaction Weight`=%f WHERE `Inventory Transaction Key`=%d ",
+                    $required,
+                    $given,
+                    $weight,
+
+                    $row['Inventory Transaction Key']
+
+                );
+
+
+                $this->db->exec($sql);
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+
+        if($transactions==0){
+
+            $sql = sprintf(
+                'SELECT `No Shipped Due No Authorized`,OTF.`Product ID`,`Product Package Weight`,`Order Bonus Quantity`,`Order Quantity`,`Supplier Metadata`,`Order Bonus Quantity`,`Order Transaction Fact Key` FROM `Order Transaction Fact` OTF LEFT JOIN `Product History Dimension` PH  ON (OTF.`Product Key`=PH.`Product Key`)  LEFT JOIN `Product Dimension` P  ON (PH.`Product ID`=P.`Product ID`)     WHERE `Order Transaction Fact Key`=%d ',
+                $otf_key
+            );
+
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
+
+
+                    $this->create_inventory_transaction_fact_item(
+                        $row['Product ID'], $row['Order Transaction Fact Key'], $row['Order Quantity'] + $row['Order Bonus Quantity'] - $row['No Shipped Due No Authorized'], $date,
+                        $row['Supplier Metadata'], $row['Order Bonus Quantity']
+                    );
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+        }
+
+
+    }
+
 
     function get($key) {
 

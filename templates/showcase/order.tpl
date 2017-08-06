@@ -5,7 +5,7 @@
 {$order->get('State Index')}
 <div class="timeline_horizontal with_time   {if $order->get('Order Current Dispatch State')=='Cancelled'}hide{/if}  ">
 
-    <ul class=" {if $order->get('State Index')>=40}hide{else}timeline{/if}">
+    <ul class="timeline">
         <li id="submitted_node" class="li {if $order->get('State Index')>=30}complete{/if}">
             <div class="label">
                 <span class="state ">{t}Submitted{/t}</span>
@@ -15,10 +15,58 @@
             </div>
             <div class="dot"></div>
         </li>
+
+        <li id="in_warehouse_node" class="li {if $order->get('State Index')>=40}complete{/if} ">
+            <div class="label">
+                <span class="state" >&nbsp;{t}In warehouse{/t}&nbsp;<span></i></span></span>
+            </div>
+            <div class="timestamp">
+			<span class="Order_In_Warehouse" ">&nbsp;
+
+                    <span class="Order_Send_to_Warehouse_Date">&nbsp;{$order->get('Send to Warehouse Date')}</span>
+
+                &nbsp;</span>
+            </div>
+            <div class="dot"></div>
+        </li>
+
+        <li class="li ">
+            <div class="label">
+                <span class="state">{t}Packed{/t}</span>
+            </div>
+            <div class="timestamp">
+                <span>&nbsp;<span class="Order_Packed_Date_or_Percentage">&nbsp;{$order->get('Packed Date or Percentage')}</span>
+                    </span>
+            </div>
+            <div class="dot"></div>
+        </li>
+
+        <li class="li ">
+            <div class="label">
+                <span class="state">{t}Invoiced{/t}</span>
+            </div>
+            <div class="timestamp">
+                <span>&nbsp;<span class=""></span>
+                    &nbsp;</span>
+            </div>
+            <div class="dot"></div>
+        </li>
+
+        <li class="li ">
+            <div class="label">
+                <span class="state">{t}Dispatched{/t}</span>
+            </div>
+            <div class="timestamp">
+                <span>&nbsp;<span class=""></span>
+                    &nbsp;</span>
+            </div>
+            <div class="dot"></div>
+        </li>
+
     </ul>
 
     {foreach from=$deliveries item=dn name=delivery_notes}
-        <ul class="timeline hide">
+        <ul class="timelinex hide">
 
             <li id="submitted_node" class="li {if $order->get('State Index')>=30}complete{/if}">
                 <div class="label">
@@ -136,7 +184,7 @@
 
             <div class="data_field  " style="padding:10px 0px 20px 0px;">
                 <div style="float:left;padding-bottom:20px;padding-right:20px" class="Delivery_Address">
-                    <div style="margin-bottom:10px"><i class="fa fa-truck button" aria-hidden="true""></i>{t}Deliver to{/t}</div>
+                    <div style="margin-bottom:10px"><i class="fa fa-truck fa-flip-horizontal button" aria-hidden="true""></i>{t}Deliver to{/t}</div>
                     <div class="small Order_Delivery_Address " style="max-width: 140px;">{$order->get('Order Delivery Address Formatted')}</div>
                 </div>
                 <div style="float:right;padding-bottom:20px;" class="Billing_Address">
@@ -233,10 +281,24 @@
             </div>
             <span style="float:left;padding-left:10px;padding-top:5px" class="Order_State"> {$order->get('State')} </span>
             <div id="forward_operations">
+                <div id="send_to_warehouse_operations" class="order_operation {if {$order->get('State Index')|intval}>30 or  {$order->get('State Index')|intval}<10   or $order->get('Order Number Items')==0   }hide{/if}">
+                    <div  class="square_button right  " title="{t}Send to warehouse{/t}">
+                        <i class="fa fa-map   " aria-hidden="true" onclick="toggle_order_operation_dialog('send_to_warehouse')"></i>
+                        <table id="send_to_warehouse_dialog" border="0" class="order_operation_dialog hide">
+                            <tr class="top">
+                                <td class="label" colspan="2">{t}Send to warehouse{/t}</td>
+                            </tr>
+                            <tr class="changed buttons">
+                                <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('send_to_warehouse')"></i></td>
+                                <td class="aright"><span data-data='{  "field": "Order Current Dispatch State","value": "In Warehouse","dialog_name":"send_to_warehouse"}' id="send_to_warehouse_save_buttons" class="valid save button"
+                                                         onclick="save_order_operation(this)"><span class="label">{t}Save{/t}</span> <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
 
-
-                <div id="submit_operations" class="order_operation {if $order->get('Order Current Dispatch State')!='In Process'}hide{/if}">
-                    <div id="submit_operation" class="square_button right {if $order->get('Order Number Items')==0}hide{/if} " title="{t}Submit{/t}">
+                <div id="submit_operations" class="order_operation {if $order->get('State Index')!=10   or  $order->get('Order Number Items')==0 }hide{/if}">
+                    <div  class="square_button right  " title="{t}Submit{/t}">
                         <i class="fa fa-paper-plane-o   " aria-hidden="true" onclick="toggle_order_operation_dialog('submit')"></i>
                         <table id="submit_dialog" border="0" class="order_operation_dialog hide">
                             <tr class="top">
@@ -250,6 +312,8 @@
                         </table>
                     </div>
                 </div>
+
+
             </div>
         </div>
 
@@ -273,47 +337,26 @@
     </div>
     <div class="block " style="align-items: stretch;flex: 1 ">
 
-
-        <div class="delivery_notes {if {$order->get('State Index')|intval}>30 or ( {$order->get('State Index')|intval}<=10)   }hide{/if}" style="margin-bottom:10px;position:relative;top:-5px;">
-            <div id="create_delivery" class="delivery_node " style="height:30px;clear:both;border-bottom:1px solid #ccc">
-
-                <div id="back_operations"></div>
-                <span style="float:left;padding-left:10px;padding-top:5px" class="very_discreet italic"><i class="fa fa-truck  button" aria-hidden="true"></i> {t}Delivery note{/t} </span>
-                <div id="forward_operations"
-                ">
-
-                <div id="received_operations" class="order_operation ">
-                    <div class="square_button right" style="padding:0;margin:0;position:relative;top:0px" title="{t}Send to warehouse{/t}">
-                        <i class="fa fa-plus" aria-hidden="true" onclick="create_delivery_note()"></i>
-
-                    </div>
-                </div>
+        <div id="delivery_notes" class="delivery_notes {if $deliveries|@count == 0}hide{/if}" style="margin-bottom:10px;position:relative;top:-5px;">
 
 
-            </div>
 
-        </div>
         {foreach from=$deliveries item=dn}
-            <div class="delivery_node {if !$dn->id}hide{/if}" style="height:30px;clear:both;border-bottom:1px solid #ccc;">
-                    <span style="float:left;padding-left:10px;padding-top:5px"> <span class="button" onClick="change_view('delivery_notes/{$dn->get('Delivery Note Store Key')}/{$dn->id}')"> <i class="fa fa-truck fa-fw "
-                                                                                                                                                                                                 aria-hidden="true"></i> {$dn->get('ID')}</span> ({$dn->get('Abbreviated State')}
-                        ) </span>
 
-                <div id="forward_operations" class="order_operation {if $dn->get('Delivery Note State')!='Packed'  }hide{/if}">
-                    <div class="square_button right" style="padding:0;margin:0;position:relative;top:0px" title="{t}Approve dispatch{/t}">
-                        <i class="fa fa-thumbs-up" aria-hidden="true" dn_key="{$dn->id}" onclick="approve_dispatch(this)"></i>
-                    </div>
-
-                </div>
-
+            <div class="node" id="delivery_node_{$dn->id}">
+                    <span class="node_label" >
+                         <i class="fa fa-truck fa-flip-horizontal fa-fw " aria-hidden="true"></i> <span class="link" onClick="change_view('delivery_notes/{$dn->get('Delivery Note Store Key')}/{$dn->id}')">{$dn->get('ID')}</span>
+                        (<span class="Delivery_Note_State">{$dn->get('Abbreviated State')}</span>)
+                    </span>
             </div>
         {/foreach}
+
     </div>
-    <div class="invoices {if {$order->get('State Index')|intval}<30 or ($order->get('Order Ordered Number Items')-$order->get('Order Number Supplier Delivery Items'))==0  }hide{/if}" style="margin-bottom:10px">
+        <div class="invoices {if {$order->get('State Index')|intval}<30 or ($order->get('Order Ordered Number Items')-$order->get('Order Number Supplier Delivery Items'))==0  }hide{/if}" style="margin-bottom:10px">
         <div id="create_invoice" class="delivery_node " style="height:30px;clear:both;border-top:1px solid #ccc;border-bottom:1px solid #ccc">
 
             <div id="back_operations"></div>
-            <span style="float:left;padding-left:10px;padding-top:5px" class="very_discreet italic"><i class="fa fa-truck  button" aria-hidden="true"></i> {t}Delivery note{/t} </span>
+            <span style="float:left;padding-left:10px;padding-top:5px" class="very_discreet italic"><i class="fa fa-truck fa-flip-horizontal  button" aria-hidden="true"></i> {t}Delivery note{/t} </span>
             <div id="forward_operations">
 
                 <div id="received_operations" class="order_operation {if !($order->get('Order Current Dispatch State')=='Submitted' or  $order->get('Order Current Dispatch State')=='Send') }hide{/if}">
@@ -337,13 +380,12 @@
     </div>
 
 
-    <div class="payments  {if $order->get('State Index')==10}in_process{/if}">
-        <div id="create_payment" class="payment node"
-        ">
+        <div class="payments {if $order->get('Order Number Items')==0}hide{/if}  "  >
+        <div id="create_payment" class="payment node"">
 
-        <div></div>
-        <span style="float:left;padding-left:10px;padding-top:5px" class="very_discreet italic">{t}Payments{/t}</span>
-        <div>
+
+        <span class="node_label very_discreet italic">{t}Payments{/t}</span>
+
 
             <div class="payment_operation {if $order->get('Order To Pay Amount')<=0     }hide{/if}  ">
                 <div class="square_button right" style="padding:0;margin:0;position:relative;top:0px" title="{t}add payment{/t}">
@@ -353,19 +395,19 @@
             </div>
 
 
+
+
+    </div>
+
+        <div id="payment_nodes">
+            {foreach from=$payments item=payment}
+                <div class="payment node">
+                    <span class="node_label"> <span class="link" onClick="change_view('order/{$order->id}/payment/{$payment->id}')">{$payment->get('Payment Account Code')}</span> </span>
+                    <span class="node_amount"> {$payment->get('Transaction Amount')}</span>
+                </div>
+            {/foreach}
         </div>
-
     </div>
-
-    <div id="payment_nodes">
-        {foreach from=$payments item=payment}
-            <div class="payment node">
-                <span class="node_label"> <span class="link" onClick="change_view('order/{$order->id}/payment/{$payment->id}')">{$payment->get('Payment Account Code')}</span> </span>
-                <span class="node_amount"> {$payment->get('Transaction Amount')}</span>
-            </div>
-        {/foreach}
-    </div>
-</div>
 
 <div style="clear:both"></div></div>
 <div class="block " style="align-items: stretch;flex: 1 ">
@@ -411,7 +453,6 @@
             <td class="label">{t}To pay{/t}</td>
             <td class="aright To_Pay_Amount   ">{$order->get('To Pay Amount')}</td>
         </tr>
-
         <tr class="total success  Order_Paid {if $order->get('Order To Pay Amount')!=0 or $order->get('Order Total Amount')==0 }hide{/if}">
 
             <td colspan="2" class="align_center "><i class="fa fa-check-circle" aria-hidden="true"></i> {t}Paid{/t}</td>

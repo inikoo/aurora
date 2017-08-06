@@ -127,7 +127,27 @@ function save_order_operation(element) {
             $('.timeline .li').removeClass('complete')
 
 
-            if (object == 'supplierdelivery') {
+            if(object == 'order'){
+
+                if (data.update_metadata.state_index >= 30) {
+                    $('#submitted_node').addClass('complete')
+                }
+                if (data.update_metadata.state_index >= 40) {
+                    $('#in_warehouse_node').addClass('complete')
+                }
+
+
+                $('#delivery_notes').html(data.update_metadata.deliveries_xhtml)
+
+                if(data.update_metadata.number_deliveries==0){
+                    $('#delivery_notes').addClass('hide')
+                }else{
+                    $('#delivery_notes').removeClass('hide')
+
+                }
+
+
+            }else if (object == 'supplierdelivery') {
 
                 $('#inputted_node').addClass('complete')
                 $('#purchase_order_node').addClass('complete')
@@ -162,7 +182,8 @@ function save_order_operation(element) {
                 }
 
 
-            } else if (object == 'purchase_order') {
+            }
+            else if (object == 'purchase_order') {
                 if (data.update_metadata.state_index >= 30) {
                     $('#submitted_node').addClass('complete')
                 }
@@ -239,8 +260,9 @@ function save_order_operation(element) {
 
 
         } else if (data.state == 400) {
-            console.log(data)
 
+
+            swal($('#_labels').data('labels').error, data.msg, "error")
         }
 
     })
@@ -391,36 +413,32 @@ function save_item_qty_change(element) {
                 $(element).closest('tr').find('._order_item_net').html(data.transaction_data.to_charge)
 
 
-
                 $('.Total_Amount').attr('amount', data.metadata.to_pay)
                 $('.Order_To_Pay_Amount').attr('amount', data.metadata.to_pay)
 
 
-
-
-                if( data.metadata.to_pay==0 || data.metadata.payments==0  ){
+                if (data.metadata.to_pay == 0 || data.metadata.payments == 0) {
                     $('.Order_Payments_Amount').addClass('hide')
                     $('.Order_To_Pay_Amount').addClass('hide')
 
-                }else{
+                } else {
                     $('.Order_Payments_Amount').removeClass('hide')
                     $('.Order_To_Pay_Amount').removeClass('hide')
 
                 }
 
-                if( data.metadata.to_pay!=0 || data.metadata.payments==0  ){
+                if (data.metadata.to_pay != 0 || data.metadata.payments == 0) {
                     $('.Order_Paid').addClass('hide')
-                }else{
+                } else {
                     $('.Order_Paid').removeClass('hide')
                 }
 
-                if( data.metadata.to_pay<=0 ){
+                if (data.metadata.to_pay <= 0) {
                     $('.payment_operation').addClass('hide')
 
-                }else{
+                } else {
                     $('.payment_operation').removeClass('hide')
                 }
-
 
 
                 if (data.metadata.to_pay == 0) {
@@ -432,6 +450,23 @@ function save_item_qty_change(element) {
                 }
 
 
+                if (data.metadata.items == 0) {
+                    $('.payments').addClass('hide')
+                    $('#submit_operation').addClass('hide')
+                    $('#send_to_warehouse_operation').addClass('hide')
+
+
+
+
+
+                }
+                else {
+
+
+                    $('.payments').removeClass('hide')
+                    $('#submit_operation').removeClass('hide')
+                    $('#send_to_warehouse_operation').removeClass('hide')
+                }
 
 
             } else if (table_metadata.parent == 'delivery_note') {

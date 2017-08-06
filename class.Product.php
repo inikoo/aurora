@@ -405,8 +405,6 @@ class Product extends Asset {
                     $order->update_deal_bridge();
                     $order->update_totals();
                     $order->update_number_products();
-                    $order->apply_payment_from_customer_account();
-                    $order->update_payment_state();
                 }
 
 

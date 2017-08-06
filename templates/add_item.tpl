@@ -270,12 +270,70 @@
                 $('#add_item_save').addClass('super_discreet').removeClass('invalid valid button')
 
 
+
+
+
+                $('.Total_Amount').attr('amount', data.metadata.to_pay)
+                $('.Order_To_Pay_Amount').attr('amount', data.metadata.to_pay)
+
+
+                if (data.metadata.to_pay == 0 || data.metadata.payments == 0) {
+                    $('.Order_Payments_Amount').addClass('hide')
+                    $('.Order_To_Pay_Amount').addClass('hide')
+
+                } else {
+                    $('.Order_Payments_Amount').removeClass('hide')
+                    $('.Order_To_Pay_Amount').removeClass('hide')
+
+                }
+
+                if (data.metadata.to_pay != 0 || data.metadata.payments == 0) {
+                    $('.Order_Paid').addClass('hide')
+                } else {
+                    $('.Order_Paid').removeClass('hide')
+                }
+
+                if (data.metadata.to_pay <= 0) {
+                    $('.payment_operation').addClass('hide')
+
+                } else {
+                    $('.payment_operation').removeClass('hide')
+                }
+
+
+                if (data.metadata.to_pay == 0) {
+                    $('.Order_To_Pay_Amount').removeClass('button').attr('amount', data.metadata.to_pay)
+
+                } else {
+                    $('.Order_To_Pay_Amount').addClass('button').attr('amount', data.metadata.to_pay)
+
+                }
+
+
+                if (data.metadata.items == 0) {
+                    $('.payments').addClass('hide')
+                    $('#submit_operation').addClass('hide')
+                    $('#send_to_warehouse_operation').addClass('hide')
+
+
+
+
+
+                }
+                else {
+
+
+                    $('.payments').removeClass('hide')
+                    $('#submit_operation').removeClass('hide')
+                    $('#send_to_warehouse_operation').removeClass('hide')
+                }
+
+
                 rows.fetch({
                     reset: true
                 });
 
                 for (var key in data.metadata.class_html) {
-                    console.log(key)
                     $('.' + key).html(data.metadata.class_html[key])
                 }
 
@@ -285,6 +343,10 @@
                 for (var key in data.metadata.show) {
                     $('#' + data.metadata.show[key]).removeClass('hide')
                 }
+
+
+
+
 
 
             } else if (data.state == 400) {

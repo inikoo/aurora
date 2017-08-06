@@ -148,6 +148,7 @@
     <div id="view_position">
     </div>
 </div>
+<input  type="hidden" id="_labels" data-labels='{ "error":"{t}Error{/t}"}' >
 <div class="grid">
     <section>
         <div id="app_leftmenu">
