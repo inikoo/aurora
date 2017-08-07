@@ -117,7 +117,8 @@ function get_url($site_key, $url, $dns_host, $dns_user, $dns_pwd, $dns_db) {
 
     if (preg_match('/^sitemap\.xml$/', $url, $match)) {
 
-      
+        print $url;
+        exit('xxxx');
 
 
         return '/sitemap_index.xml.php';
