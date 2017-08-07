@@ -28,7 +28,7 @@ include ('utils/find_website_key.include.php');
 
 $result = $mem->get('ECOMP'.md5($_SERVER['SERVER_NAME'].'_'.$_SERVER['REQUEST_URI']));
 $result = false;
-if (!$result) {
+if (!$result ) {
 
 
 
@@ -36,7 +36,6 @@ if (!$result) {
     $result = get_url($_SESSION['website_key'], $_SERVER['REQUEST_URI'], $dns_host, $dns_user, $dns_pwd, $dns_db);
     $mem->set('ECOMP'.md5($_SERVER['SERVER_NAME'].'_'.$_SERVER['REQUEST_URI']), $result, 172800);
 }
-
 
 
 
@@ -112,10 +111,10 @@ function get_url($site_key, $url, $dns_host, $dns_user, $dns_pwd, $dns_db) {
 
 
     $original_url = '/'.$original_url;
-    $path         = '';
-    $file         = '';
+
     $url_array    = explode("/", $url);
     $file         = array_pop($url_array);
+
     if (preg_match('/\.(php|html)$/', $file)) {
         $path = join('/', $url_array);
     } else {
@@ -123,18 +122,24 @@ function get_url($site_key, $url, $dns_host, $dns_user, $dns_pwd, $dns_db) {
         $path = $url;
     }
 
-    $path = preg_replace('/\/$/', '', $path);
 
-    if (preg_match('/^sitemap\.xml$/', $path, $match)) {
 
-        return $_SERVER['HTTP_HOST'].'/sitemap_index.xml.php';
+    if (preg_match('/^sitemap\.xml$/', $url, $match)) {
+
+
+
+        return '/sitemap_index.xml.php';
 
     }
 
-    if (preg_match('/^sitemap(\d+)\.xml$/', $path, $match)) {
+
+    if (preg_match('/^sitemap(\d+)\.xml$/', $url, $match)) {
         $sitemap_key = $match[1];
 
-        return $_SERVER['HTTP_HOST'].'/sitemap.xml.php?id='.$sitemap_key;
+
+
+
+        return '/sitemap.xml.php?id='.$sitemap_key;
 
     }
     $sql = sprintf(

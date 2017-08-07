@@ -14,6 +14,8 @@ function get_website_showcase($data, $smarty) {
 
 
     $website = $data['_object'];
+
+    $website->update_sitemap();
     if (!$website->id) {
         return "";
     }
