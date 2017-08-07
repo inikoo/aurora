@@ -28,7 +28,7 @@ include ('utils/find_website_key.include.php');
 
 $result = $mem->get('ECOMP'.md5($_SERVER['SERVER_NAME'].'_'.$_SERVER['REQUEST_URI']));
 $result = false;
-if (!$result or true ) {
+if (!$result  ) {
 
 
 
@@ -64,7 +64,6 @@ if (is_numeric($result)) {
 function get_url($site_key, $url, $dns_host, $dns_user, $dns_pwd, $dns_db) {
 
 
-$xxx=$url;
 
     $db = new PDO(
         "mysql:host=$dns_host;dbname=$dns_db;charset=utf8", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
@@ -109,8 +108,7 @@ $xxx=$url;
 
 
 
-    print $xxx;
-    if (preg_match('/^sitemap\.xml$/', $url, $match)) {
+    if (preg_match('/^sitemap_index\.xml$/', $url, $match)) {
 
 
 
@@ -148,7 +146,6 @@ $xxx=$url;
 
 
 
-exit;
 
             return "/404.php?x=x&url=$url&original_url=$original_url";
         }
