@@ -113,7 +113,6 @@ function get_url($site_key, $url, $dns_host, $dns_user, $dns_pwd, $dns_db) {
 
 
 
-        return '/sitemap_index.xml.php';
 
     }
 
@@ -122,9 +121,15 @@ function get_url($site_key, $url, $dns_host, $dns_user, $dns_pwd, $dns_db) {
         $sitemap_key = $match[1];
 
 
+    if($sitemap_key==0){
+        return '/sitemap_index.xml.php';
 
-
+    }else{
         return '/sitemap.xml.php?id='.$sitemap_key;
+    }
+
+
+
 
     }
     $sql = sprintf(
