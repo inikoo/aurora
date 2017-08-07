@@ -78,6 +78,21 @@
 
                             <td class="text-right order_total">{$order->get('Total')}</td>
                         </tr>
+                        <tr class="payments_amount_tr {if $order->get('Order Payments Amount')==0}hide{/if}" >
+                            <td>{if isset($labels._order_paid_amount) and $labels._order_paid_amount!=''}{$labels._order_paid_amount}{else}{t}Paid{/t}{/if}</td>
+
+                            <td class="text-right payments_amount">{$order->get('Payments Amount')}</td>
+                        </tr>
+                        <tr class="available_credit_amount_tr {if $order->get('Order Available Credit Amount')==0}hide{/if}" >
+                            <td>{if isset($labels._order_available_credit_amount) and $labels._order_available_credit_amount!=''}{$labels._order_available_credit_amount}{else}{t}Credit{/t}{/if}</td>
+
+                            <td class="text-right available_credit_amount ">{$order->get('Available Credit Amount')}</td>
+                        </tr>
+                        <tr class="to_pay_amount_tr {if $order->get('Order Payments Amount')==0 and $order->get('Order Available Credit Amount')==0 }hide{/if}" >
+                            <td>{if isset($labels._order_to_pay_amount) and $_order_to_pay_amoount._total!=''}{$labels._order_to_pay_amoount}{else}{t}To pay{/t}{/if}</td>
+
+                            <td class="text-right to_pay_amount">{$order->get('Basket To Pay Amount')}</td>
+                        </tr>
 
                         </tbody>
                     </table>
@@ -121,8 +136,9 @@
 
 
                             {if $block=='BTree' }
-                                <form action="" class="sky-form" style="max-width: 500px;">
+                                <form id="BTree_credit_card_form" action="" class="sky-form" style="max-width: 500px;">
                                     <header>{$content._form_title_credit_card}</header>
+
 
 
 
@@ -180,15 +196,16 @@
                                     <fieldset    class=" credit_card_form  {if $number_saved_cards>0}hide{/if}" >
 
 
+
                                         <div class="row">
                                             <section class="col col-9">
                                                 <label class="input">
-                                                    <input type="text" placeholder="{$content._credit_card_number}">
+                                                    <input type="text" name="credit_card_number" id="credit_card_number" value="" placeholder="{$content._credit_card_number}">
                                                 </label>
                                             </section>
                                             <section class="col col-3">
                                                 <label class="input">
-                                                    <input type="text" maxlength="4" placeholder="{$content._credit_card_ccv}">
+                                                    <input type="text" maxlength="4" name="credit_card_ccv" id="credit_card_ccv" value=""  placeholder="{$content._credit_card_ccv}">
                                                 </label>
                                             </section>
                                         </div>
@@ -197,7 +214,7 @@
                                             <label class="label col col-4">{$content._credit_card_expiration_date}</label>
                                             <section class="col col-5">
                                                 <label class="select">
-                                                    <select>
+                                                    <select name="credit_card_util_month" id="credit_card_util_month">
                                                         <option value="0" selected disabled>{$content._credit_card_expiration_date_month_label}</option>
 
                                                         <option value="1">{'2000-01-01'|date_format:"%B"}</option>
@@ -218,15 +235,15 @@
                                             </section>
                                             <section class="col col-3">
                                                 <label class="input">
-                                                    <input type="text" maxlength="4" placeholder="{$content._credit_card_expiration_date_year_label}">
+                                                    <input type="text" maxlength="4" name="credit_card_util_year" id="credit_card_util_year" value="" placeholder="{$content._credit_card_expiration_date_year_label}">
                                                 </label>
                                             </section>
                                         </div>
 
                                         <div class="row">
 
-                                            <section class="col col-5">
-                                                <label class="checkbox"><input type="checkbox" name="subscription" id="subscription"><i></i> </label>
+                                            <section class="col col-5" >
+                                                <label class="checkbox"><input type="checkbox"  id="save_card"><i></i> </label>
                                                 <span style="margin-left:27px;	font: 14px/1.55 'Open Sans', Helvetica, Arial, sans-serif;position:relative;top:-22px;font-size:15px;color:#404040" id="_credit_card_save"
                                                      >{$content._credit_card_save}</span>
 
@@ -253,6 +270,138 @@
                                         <button type="submit" class="button  {if $number_saved_cards>0} state-disabled{/if}  ">{$content._place_order_from_credit_card}</button>
                                     </footer>
                                 </form>
+
+                                <input type="hidden" id="braintree_credit_card_token" value="{$payment_account.object->get('Block Data')}"/>
+                                <input type="hidden" id="credit_card_postal_code" value="{$order->get('Order Invoice Address Postal Code')}"/>
+
+
+                                <script>
+
+                                    var braintree_client = new braintree.api.Client({
+                                        clientToken: $('#braintree_credit_card_token').val()
+                                    });
+
+
+
+
+
+                                    $("#BTree_credit_card_form").validate(
+                                        {
+
+                                            submitHandler: function(form)
+                                            {
+
+
+                                                braintree_client.tokenizeCard({
+                                                    number: $("#credit_card_number").val(),
+                                                    expirationMonth: $('#credit_card_util_month').val(),
+                                                    expirationYear: $('#credit_card_util_year').val(),
+                                                    cvv: $("#credit_card_ccv").val(),
+                                                    billingAddress: {
+                                                        postalCode: $('#credit_card_postal_code').val()
+                                                    }
+
+                                                }, onCardTokenization);
+
+
+
+
+
+
+                                            },
+
+                                            // Rules for form validation
+                                            rules:
+                                                {
+
+
+
+
+                                    },
+
+                                    // Messages for form validation
+                                    messages:
+                                    {
+
+
+
+
+
+
+                                    },
+
+                                    // Do not change code below
+                                    errorPlacement: function(error, element)
+                                    {
+                                        error.insertAfter(element.parent());
+                                    }
+                                    });
+
+
+                                    function onCardTokenization(err, nonce) {
+                                        if (err) {
+                                            return;
+                                        }
+
+
+                                        var register_data={ }
+
+
+                                        register_data['nonce']=nonce
+
+                                        register_data['save_card']=$('#save_card').is(':checked')
+
+
+                                        var ajaxData = new FormData();
+
+                                        ajaxData.append("tipo", 'place_order_pay_braintree')
+
+                                        ajaxData.append("payment_account_key",'{$payment_account.object->id}' )
+                                        ajaxData.append("data", JSON.stringify(register_data))
+
+
+
+
+
+                                        console.log(JSON.stringify(register_data))
+
+
+                                        $.ajax({
+                                            url: "/ar_web_checkout.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+                                            complete: function () {
+                                            }, success: function (data) {
+
+
+
+
+                                                if (data.state == '200') {
+                                                    $('.ordered_products_number').html('0')
+                                                    $('.order_total').html('')
+
+                                                    window.location.replace("thanks.sys?order_key="+data.order_key);
+
+
+                                                } else if (data.state == '400') {
+                                                    swal("{t}Error{/t}!", data.msg, "error")
+                                                }
+
+
+
+                                            }, error: function () {
+
+                                            }
+                                        });
+
+
+
+
+
+
+
+                                    }
+
+
+                                </script>
 
                             {elseif $block=='BTreePaypal'}
                                 <form action="" class="sky-form" style="max-width: 500px;">

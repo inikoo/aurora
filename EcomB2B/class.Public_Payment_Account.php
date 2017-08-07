@@ -12,7 +12,7 @@
 */
 
 
-class Public_Payment_Account  {
+class Public_Payment_Account {
 
 
     function Public_Payment_Account($arg1 = false, $arg2 = false) {
@@ -27,13 +27,12 @@ class Public_Payment_Account  {
 
             return;
         }
-       
+
         $this->get_data($arg1, $arg2);
 
         return;
 
     }
-
 
     function get_data($tipo, $tag) {
 
@@ -51,15 +50,51 @@ class Public_Payment_Account  {
     }
 
 
-   
+    function create_payment($data) {
 
- 
-    function get($key = '',$arg='') {
+        $data['Payment Account Key']          = $this->id;
+        $data['Payment Account Code']         = $this->data['Payment Account Code'];
+        $data['Payment Service Provider Key'] = $this->data['Payment Account Service Provider Key'];
+        $data['editor']                       = $this->editor;
 
 
-        if (isset($this->data[$key])) {
-            return $this->data[$key];
+        $account=get_object('Account',1);
+        if ($account->get('Currency Code') != $data['Payment Currency Code']) {
+            include_once 'utils/currency_functions.php';
+            $data['Payment Currency Exchange Rate'] = currency_conversion($this->db, $data['Payment Currency Code'], $account->get('Currency Code'));
+        } else {
+            $data['Payment Currency Exchange Rate'] = 1;
         }
+
+
+
+        include_once 'class.Public_Payment.php';
+
+        $payment = new Public_Payment('new', $data);
+        if ($payment->error) {
+            $this->error = true;
+            $this->msg   = $payment->msg;
+
+            return $payment;
+        }
+
+
+
+        require_once 'utils/new_fork.php';
+        new_housekeeping_fork(
+            'au_housekeeping', array(
+            'type'        => 'payment_created',
+            'subject_key' => $payment->id,
+            'editor'      => $payment->editor
+        ), $account->get('Account Code'), $this->db
+        );
+
+
+        return $payment;
+
+    }
+
+    function get($key = '', $arg = '') {
 
 
 
@@ -68,34 +103,57 @@ class Public_Payment_Account  {
             case 'Block Data':
 
 
-                if($this->data['Payment Account Block']='BTreePaypal'){
+                if ($this->data['Payment Account Block'] == 'BTreePaypal') {
 
 
-
-
-
-                    $paypal_data=base64_url_encode(AESEncryptCtr(
-                                                   json_encode(
-                                                       array(
-                                                           'braintree_account_key'=>$this->id,
-                                                           'Payment Account ID'=>$this->get('Payment Account ID'),
-                                                           'Payment Account Login'=>$this->get('Payment Account Login'),
-                                                           'Payment Account Password'=>$this->get('Payment Account Password'),
-                                                           'order_key'=>$arg->id,
-                                                           'amount'=>$arg->get('Order To Pay Amount'),
-                                                           'currency'=>$arg->get('Order Currency'),
-                                                           'Random'=>password_hash(time(), PASSWORD_BCRYPT)
-                                                       )
-                                                   ),md5('83edh3847203942,'.CKEY),256));
+                    $paypal_data = base64_url_encode(
+                        AESEncryptCtr(
+                            json_encode(
+                                array(
+                                    'braintree_account_key'    => $this->id,
+                                    'Payment Account ID'       => $this->get('Payment Account ID'),
+                                    'Payment Account Login'    => $this->get('Payment Account Login'),
+                                    'Payment Account Password' => $this->get('Payment Account Password'),
+                                    'order_key'                => $arg->id,
+                                    'amount'                   => $arg->get('Order To Pay Amount'),
+                                    'currency'                 => $arg->get('Order Currency'),
+                                    'Random'                   => password_hash(time(), PASSWORD_BCRYPT)
+                                )
+                            ), md5('83edh3847203942,'.CKEY), 256
+                        )
+                    );
 
 
                     return $paypal_data;
 
+                } elseif ($this->data['Payment Account Block'] = 'BTree') {
+
+
+                    require_once 'external_libs/braintree-php-3.2.0/lib/Braintree.php';
+
+
+                    Braintree_Configuration::environment('production');
+                    Braintree_Configuration::merchantId($this->data['Payment Account ID']);
+                    Braintree_Configuration::publicKey($this->data['Payment Account Login']);
+                    Braintree_Configuration::privateKey($this->data['Payment Account Password']);
+
+
+                    try {
+                        return Braintree_ClientToken::generate();
+                    } catch (Exception $e) {
+
+                        return 'error';
+
+                    }
+
+
                 }
 
-            break;
+                break;
 
         }
+
+
 
         if (isset($this->data[$key])) {
             return $this->data[$key];
@@ -108,8 +166,6 @@ class Public_Payment_Account  {
         return false;
 
     }
-
-
 
 
     function in_website($website_key) {
@@ -156,12 +212,10 @@ class Public_Payment_Account  {
     }
 
 
-
     function get_settings() {
         return json_decode($this->data['Payment Account Settings'], true);
 
     }
-
 
 
     function get_field_label($field) {
@@ -197,7 +251,6 @@ class Public_Payment_Account  {
                 break;
 
 
-
             default:
                 $label = $field;
 
@@ -206,7 +259,6 @@ class Public_Payment_Account  {
         return $label;
 
     }
-
 
 
 }

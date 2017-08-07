@@ -17,7 +17,6 @@ require_once 'utils/ar_web_common.php';
 require_once 'utils/placed_order_functions.php';
 
 
-
 if (!isset($_REQUEST['tipo'])) {
     $response = array(
         'state' => 407,
@@ -51,39 +50,387 @@ switch ($tipo) {
                      )
         );
 
-        place_order_pay_later($data, $customer, $website, $editor,$smarty);
+        place_order($order,$data['payment_account_key'], $customer, $website, $editor, $smarty);
+
+
+        break;
+
+    case 'place_order_pay_braintree':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'payment_account_key' => array('type' => 'key'),
+
+                         'data' => array('type' => 'json array'),
+
+                     )
+        );
+
+        place_order_pay_braintree($data, $order, $customer, $website,$editor, $smarty);
 
 
         break;
 }
 
-function place_order_pay_later($_data, $customer, $website, $editor,$smarty) {
+function place_order_pay_braintree($_data, $order, $customer, $website,$editor, $smarty) {
+
+    require_once 'external_libs/braintree-php-3.2.0/lib/Braintree.php';
+
+    include_once 'external_libs/contact_name_parser.php';
+
+    $payment_account = get_object('Payment_Account', $_data['payment_account_key']);
+    $payment_account->editor=$editor;
+
+
+
+    if (empty($_data['data']['nonce']) and  isset($_REQUEST['data']['card_id']) and isset($_REQUEST['data']['cvv']) ) {
+
+        $nonce = false;
+        $save_payment = false;
+        $token = $customer->get_credit_card_token($_data['data']['card_id'], $order->get('Order Delivery Address Checksum'), $order->get('Order Invoice Address Checksum'));
+
+
+    } else{
+
+        $nonce        = $_data['data']['nonce'];
+        $save_payment = $_data['data']['save_card'];
+        $token        = '';
+    }
+
+
+    $parser = new FullNameParser();
+
+
+    $billing_contact_name  = $parser->parse_name($order->get('Order Invoice Address Recipient'));
+    $delivery_contact_name = $parser->parse_name($order->get('Order Delivery Address Recipient'));
+
+
+    $braintree_customer = false;
+    if ($save_payment) {
+
+        try {
+            $braintree_customer = Braintree_Customer::find($customer->id);
+            //print_r($braintree_customer);
+        } catch (Exception $e) {
+            //echo 'Message: ' .$e->getMessage();
+        }
+
+
+    }
+
+
+    Braintree_Configuration::environment('production');
+    Braintree_Configuration::merchantId($payment_account->get('Payment Account ID'));
+    Braintree_Configuration::publicKey($payment_account->get('Payment Account Login'));
+    Braintree_Configuration::privateKey($payment_account->get('Payment Account Password'));
+
+
+
+    $braintree_data = [
+        'merchantAccountId' => $payment_account->get('Payment Account Cart ID'),
+        'amount'            => $order->get('Order To Pay Amount'), // todo make sure you substraction the credits
+        'orderId'           => $order->get('Order Public ID'),
+        'customer'          => [
+
+            'firstName' => $billing_contact_name['fname'],
+            'lastName'  => $billing_contact_name['lname'],
+            'company'   => $order->get('Order Invoice Address Organization'),
+            'email'     => $order->get('Order Email')
+        ],
+
+        'billing'  => [
+            'firstName'         => $billing_contact_name['fname'],
+            'lastName'          => $billing_contact_name['lname'],
+            'company'           => $order->get('Order Invoice Address Organization'),
+            'streetAddress'     => $order->get('Order Invoice Address Line 1'),
+            'extendedAddress'   => $order->get('Order Invoice Address Line 2'),
+            'locality'          => $order->get('Order Invoice Address Locality'),
+            'region'            => $order->get('Order Invoice Address  Administrative Area'),
+            'postalCode'        => $order->get('Order Invoice Address Postal Code'),
+            'countryCodeAlpha2' => $order->get('Order Invoice Address Country 2 Alpha Code'),
+        ],
+        'shipping' => [
+            'firstName'         => $delivery_contact_name['fname'],
+            'lastName'          => $delivery_contact_name['lname'],
+            'company'           => $order->get('Order Delivery Address Organization'),
+            'streetAddress'     => $order->get('Order Delivery Address Line 1'),
+            'extendedAddress'   => $order->get('Order Delivery Address Line 2'),
+            'locality'          => $order->get('Order Delivery Address Locality'),
+            'region'            => $order->get('Order Delivery Address  Administrative Area'),
+            'postalCode'        => $order->get('Order Delivery Address Postal Code'),
+            'countryCodeAlpha2' => $order->get('Order Delivery Address Country 2 Alpha Code'),
+        ],
+
+
+        'options' => [
+            'submitForSettlement'   => true,
+            'storeInVaultOnSuccess' => $save_payment,
+        ]
+    ];
+
+
+    if ($save_payment and !$braintree_customer) {
+        $braintree_data['customer']['id'] = $customer->id;
+    }
+
+
+    if ($nonce) {
+        $braintree_data['paymentMethodNonce'] = $nonce;
+
+    } else {
+        $braintree_data['paymentMethodToken'] = $token;
+
+
+    }
+
+
+  //  print_r($braintree_data);
+
+
+
+    try {
+        $result = Braintree_Transaction::sale($braintree_data);
+    } catch (Exception $e) {
+
+
+        $msg = _('There was a problem processing your credit card; please double check your payment information and try again').'.';
+
+        $response = array(
+
+            'state' => 400,
+            'msg'   => $msg
+
+        );
+        echo json_encode($response);
+        exit;
+
+        //echo 'Message: ' .$e->getMessage();
+    }
+
+
+
+    switch ($result->transaction->paymentInstrumentType) {
+        case 'credit_card':
+
+            $payment_method = 'Credit Card';
+            $payment_metadata = AESEncryptCtr(json_encode($result->transaction->creditCard),  md5('Payment'.CKEY), 256);
+
+            break;
+        case 'paypal_account':
+
+            $payment_method = 'Paypal';
+            break;
+
+        default:
+            $payment_method = 'Other';
+            break;
+    }
+
+
+
+
+    if ($result->success) {
+
+//print_r($result);
+        include_once 'utils/aes.php';
+
+
+
+
+
+
+
+        $payment_metadata='';
+
+
+        $payment_data = array(
+            'Payment Store Key'=>$order->get('Order Store Key'),
+            'Payment Website Key'=>$website->id,
+            'Payment Customer Key'=>$customer->id,
+            'Payment Transaction Amount'=>$result->transaction->amount,
+            'Payment Currency Code'=>$result->transaction->currencyIsoCode,
+            'Payment Sender'                      => trim($result->transaction->customer['firstName'].' '.$result->transaction->customer['lastName']),
+            'Payment Sender Country 2 Alpha Code' => $result->transaction->billing['countryCodeAlpha2'],
+            'Payment Sender Email'                => $result->transaction->customer['email'],
+            'Payment Sender Card Type'            => $result->transaction->creditCard['cardType'],
+            'Payment Created Date'              => $result->transaction->createdAt->format('Y-m-d H:i:s'),
+
+            'Payment Completed Date'              => $result->transaction->createdAt->format('Y-m-d H:i:s'),
+            'Payment Last Updated Date'           => $result->transaction->updatedAt->format('Y-m-d H:i:s'),
+            'Payment Transaction Status'          => 'Completed',
+            'Payment Transaction ID'              => $result->transaction->id,
+            'Payment Method'                      => $payment_method,
+            'Payment Location'                      => 'Basket',
+            'Payment Metadata'                      => $payment_metadata
+
+        );
+
+
+        $payment=$payment_account->create_payment($payment_data);
+
+        if ($result->transaction->creditCard['token'] != '' and $save_payment) {
+            $customer->save_credit_card('Braintree',$result->transaction->creditCard, $order->get('Order Delivery Address Checksum'), $order->get('Order Invoice Address Checksum'));
+        }
+
+      //  print_r($payment);
+
+        $order->add_payment($payment);
+
+
+        place_order($order,$payment_account->id, $customer, $website, $editor, $smarty);
+
+
+
+
+    }
+    else {
+
+
+
+        $error_messages         = array();
+        $error_private_messages = array();
+
+        foreach ($result->errors->deepAll() as $error) {
+            $_msg = get_errror_message($error->code, $error->message);
+
+            if (!(in_array(
+                $error->code, array(
+                                '81714',
+                                '81715',
+                                '81716',
+                                '81736',
+                                '81737',
+                            )
+            ))) {
+                $_msg .= ' ('.$error->code.')';
+            }
+
+
+            $error_messages[$_msg]    = $_msg;
+            $error_private_messages[] = $error->message.' ('.$error->code.')';
+
+        }
+
+        if (count($error_messages) > 0) {
+
+            $msg = '<ul>';
+            foreach ($error_messages as $error_message) {
+                $msg .= '<li>'.$error_message.'</li>';
+            }
+            $msg .= '</ul>';
+
+            $private_message = join(', ', $error_private_messages);
+        }
+        else {
+
+
+            $msg = _('There was a problem processing your credit card; please double check your payment information and try again').'. ('.$result->transaction->id.')';
+
+            if ($result->transaction->status == 'processor_declined') {
+
+                $private_message = $result->transaction->processorResponseText.' ('.$result->transaction->processorResponseCode.')';
+            } elseif ($result->transaction->status == 'settlement_declined') {
+                $private_message = $result->processorSettlementResponseText->processorResponseText.' ('.$result->transaction->processorSettlementResponseCode.')';
+            } elseif ($result->transaction->status == 'gateway_rejected') {
+                $private_message = 'Rejected by gateway due to: '.$result->transaction->gatewayRejectionReason;
+            } else {
+                $private_message = $result->message;
+            }
+
+        }
+
+
+
+
+
+        $payment_metadata='';
+
+
+        $payment_data = array(
+            'Payment Store Key'=>$order->get('Order Store Key'),
+            'Payment Website Key'=>$website->id,
+            'Payment Customer Key'=>$customer->id,
+            'Payment Transaction Amount'=>$result->transaction->amount,
+            'Payment Currency Code'=>$result->transaction->currencyIsoCode,
+            'Payment Sender'                      => trim($result->transaction->customer['firstName'].' '.$result->transaction->customer['lastName']),
+            'Payment Sender Country 2 Alpha Code' => $result->transaction->billing['countryCodeAlpha2'],
+            'Payment Sender Email'                => $result->transaction->customer['email'],
+            'Payment Sender Card Type'            => $result->transaction->creditCard['cardType'],
+            'Payment Created Date'              => $result->transaction->createdAt->format('Y-m-d H:i:s'),
+
+            'Payment Last Updated Date'           => $result->transaction->updatedAt->format('Y-m-d H:i:s'),
+            'Payment Transaction Status'          => 'Declined',
+            'Payment Transaction ID'              => $result->transaction->id,
+            'Payment Method'                      => $payment_method,
+            'Payment Location'                      => 'Basket',
+            'Payment Metadata'                      => $payment_metadata,
+            'Payment Transaction Status Info'=>$private_message
+
+        );
+
+
+        $payment=$payment_account->create_payment($payment_data);
+
+
+        $order->add_payment($payment);
+
+
+
+
+
+
+
+
+
+
+
+        $response = array(
+            'state'     => 400,
+            'msg' =>$msg
+           // 'private_message'=>$private_message,
+           // 'transaction_id'=>$transaction_id
+
+        );
+        echo json_encode($response);
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+}
+
+
+function place_order($order,$payment_account_key, $customer, $website, $editor, $smarty) {
 
 
     $customer->editor = $editor;
 
 
-    $order_key = $_data['order_key'];
-
-    //$order=get_object('Order',$order_key);
-    include_once 'class.Order.php';
-    $order = new Order($order_key);
 
 
     $order->update(
         array(
-            'Order Current Dispatch State' => 'Submitted by Customer',
-            'Order Checkout Block Payment Account Key' => $_data['payment_account_key']
+           'Order Current Dispatch State'             => 'Submitted by Customer',
+            'Order Checkout Block Payment Account Key' => $payment_account_key
         ), 'no_history'
     );
 
 
-    send_order_confirmation_email($website, $customer, $order,$smarty);
+    send_order_confirmation_email($website, $customer, $order, $smarty);
 
 
     $response = array(
-        'state' => 200,
-        'order_key'   => $order->id,
+        'state'     => 200,
+        'order_key' => $order->id,
 
     );
 
@@ -92,7 +439,7 @@ function place_order_pay_later($_data, $customer, $website, $editor,$smarty) {
 
 }
 
-function send_order_confirmation_email($website, $customer, $order,$smarty) {
+function send_order_confirmation_email($website, $customer, $order, $smarty) {
     require 'external_libs/aws.phar';
 
 
@@ -147,6 +494,9 @@ function send_order_confirmation_email($website, $customer, $order,$smarty) {
     );
 
 
+
+
+
     $placeholders = array(
         '[Greetings]'     => $customer->get_greetings(),
         '[Customer Name]' => $customer->get('Name'),
@@ -163,6 +513,7 @@ function send_order_confirmation_email($website, $customer, $order,$smarty) {
 
     );
 
+  //  print_r($placeholders);
 
     $request                                    = array();
     $request['Source']                          = $sender_email_address;
@@ -177,8 +528,7 @@ function send_order_confirmation_email($website, $customer, $order,$smarty) {
 
     }
 
-
-
+ //   print_r($request);
 
     try {
         $result    = $client->sendEmail($request);
@@ -205,8 +555,6 @@ function send_order_confirmation_email($website, $customer, $order,$smarty) {
 
 
 }
-
-
 
 
 ?>

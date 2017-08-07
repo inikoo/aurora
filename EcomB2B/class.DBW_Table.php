@@ -79,6 +79,23 @@ abstract class DBW_Table extends stdClass {
         }
     }
 
+
+    protected function update_field_switcher($field, $value, $options = '', $metadata = '') {
+
+
+        $base_data = $this->base_data();
+
+
+       if (array_key_exists($field, $base_data)) {
+
+            if ($value != $this->data[$field]) {
+                $this->update_field($field, $value, $options,$metadata );
+
+            }
+        }
+
+    }
+
     function base_data($table_name = '') {
 
 
@@ -594,6 +611,8 @@ abstract class DBW_Table extends stdClass {
         return $this->table_name;
 
     }
+
+
 
 
 }

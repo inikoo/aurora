@@ -172,6 +172,7 @@
     <link rel="stylesheet" href="/website.color.EcomB2B.css.php?&theme=theme_1" type="text/css"/>
 
 
+    <script type="text/javascript" src="/js/braintree.js"></script>
 
 
 </head>

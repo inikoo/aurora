@@ -52,7 +52,7 @@ function get_object($object_name, $key, $load_other_data = false) {
 
         case 'product-historic_key':
             include_once 'class.Public_Product.php';
-            $object = new Product('historic_key', $key);
+            $object = new Public_Product('historic_key', $key);
             break;
 
         case 'order':
@@ -91,7 +91,14 @@ function get_object($object_name, $key, $load_other_data = false) {
             require_once "class.Public_Payment_Account.php";
             $object = new Public_Payment_Account($key);
             break;
-
+        case 'tax_category':
+            require_once "class.TaxCategory.php";
+            $object = new TaxCategory($key);
+            break;
+        case 'tax_category-key':
+            require_once "class.TaxCategory.php";
+            $object = new TaxCategory('key',$key);
+            break;
 
         default:
             exit('need to complete E1: >'.strtolower($object_name.' '.$load_other_data)."<\n");

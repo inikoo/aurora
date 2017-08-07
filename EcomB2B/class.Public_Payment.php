@@ -6,26 +6,25 @@
  Author: Raul Perusquia <raul@inikoo.com>
 
  Copyright (c) 2014, Inikoo
- Created: 26 May 2014 16:55:05 CEST, Malaga , Spain
+ Created: 4 August 2017 at 16:02:46 CEST, Tranava, Slovakia
 
  Version 2.0
 */
 
 
-include_once 'class.DB_Table.php';
+include_once 'class.DBW_Table.php';
 
 
-class Payment extends DB_Table {
+class Public_Payment extends DBW_Table {
 
 
-    function Payment($arg1 = false, $arg2 = false) {
+    function Public_Payment($arg1 = false, $arg2 = false) {
 
         global $db;
         $this->db = $db;
 
         $this->table_name    = 'Payment';
         $this->ignore_fields = array('Payment Key');
-
 
         if (is_numeric($arg1)) {
             $this->get_data('id', $arg1);
@@ -47,7 +46,6 @@ class Payment extends DB_Table {
 
     function get_data($tipo, $tag) {
 
-
         if ($tipo == 'id') {
             $sql = sprintf(
                 "SELECT * FROM `Payment Dimension` WHERE `Payment Key`=%d", $tag
@@ -55,7 +53,6 @@ class Payment extends DB_Table {
         } else {
             return;
         }
-
 
         if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id = $this->data['Payment Key'];
@@ -84,18 +81,17 @@ class Payment extends DB_Table {
         $values = '';
 
 
-
         foreach ($data as $key => $value) {
 
             $keys .= ",`".$key."`";
             if (
 
-            in_array($key,array('Payment Completed Date','Payment Last Updated Date','Payment Cancelled Date','Payment Order Key','Payment Invoice Key','Payment Site Key','Payment Fees',
-                                'Payment Balance','Payment Amount','Payment Refund','Payment Related Payment Key','Payment User Key'
+                in_array($key,array('Payment Completed Date','Payment Last Updated Date','Payment Cancelled Date','Payment Order Key','Payment Invoice Key','Payment Site Key','Payment Fees',
+                    'Payment Balance','Payment Amount','Payment Refund','Payment Related Payment Key','Payment User Key'
 
-            ))
+                    ))
 
-            ) {
+             ) {
                 $values .= ','.prepare_mysql($value, true);
 
             } else {
@@ -108,7 +104,7 @@ class Payment extends DB_Table {
 
         $sql = "insert into `Payment Dimension` ($keys) values ($values)";
 
-        //   print "$sql\n";
+
 
         if ($this->db->exec($sql)) {
             $this->id  = $this->db->lastInsertId();
@@ -123,18 +119,13 @@ class Payment extends DB_Table {
 
     function get($key = '') {
 
-
-        if (!$this->id) {
-            return;
+        if (isset($this->data[$key])) {
+            return $this->data[$key];
         }
-
 
         switch ($key) {
 
-            case('Max Payment to Refund'):
-                return round(
-                    $this->data['Payment Transaction Amount'] - $this->data['Payment Transaction Amount Refunded'], 2);
-                break;
+
             case 'Transaction Status':
                 switch ($this->data['Payment Transaction Status']) {
                     case 'Pending':
@@ -196,8 +187,10 @@ class Payment extends DB_Table {
 
                 break;
 
-            case('Transaction Amount'):
-                return money($this->data['Payment '.$key], $this->data['Payment Currency Code']);
+            case('Amount'):
+                return money(
+                    $this->data['Payment '.$key], $this->data['Payment Currency Code']
+                );
                 break;
             case('Completed Date'):
             case('Cancelled Date'):
@@ -208,18 +201,15 @@ class Payment extends DB_Table {
                 break;
 
         }
-
-        if (array_key_exists($key, $this->data)) {
-            return $this->data[$key];
-        }
-
-        if (array_key_exists('Payment '.$key, $this->data)) {
-            return $this->data['Payment '.$key];
+        $_key = ucfirst($key);
+        if (isset($this->data[$_key])) {
+            return $this->data[$_key];
         }
 
         return false;
 
     }
+
 
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
 
@@ -231,77 +221,22 @@ class Payment extends DB_Table {
 
         switch ($field) {
 
-            case 'Payment Transaction Amount':
+            case 'Payment Order Key':
 
-
-                if( $value< ($this->data['Payment Transaction Amount Refunded']+$this->data['Payment Transaction Amount Credited'])){
-
-                    $this->error=true;
-                    $this->msg=_("Payment amount can't be smaller than its refunds or credits");
-        return;
-                }
-
-
-
-
-
-                $this->update_field($field, $value, $options);
-
-                $this->update_parents();
-
+                $this->update_field($field,$value, $options);
 
                 break;
 
 
+
+
+
+                break;
+
             default:
-                $base_data = $this->base_data();
-                if (array_key_exists($field, $base_data)) {
-                    if ($value != $this->data[$field]) {
-                        $this->update_field($field, $value, $options);
-                    }
-                }
-        }
-    }
-
-    function update_parents() {
-        $order = get_object('Order', $this->data['Payment Order Key']);
-        $order->update_totals();
-
-
-        $account=get_object('Account',1);
-        require_once 'utils/new_fork.php';
-        new_housekeeping_fork(
-            'au_housekeeping', array(
-            'type'        => 'payment_updated',
-            'payment_key' => $this->id,
-        ), $account->get('Account Code'), $this->db
-        );
-
-    }
-
-    function delete() {
-
-        if($this->data['Payment Transaction Amount Refunded']!=0 or $this->data['Payment Transaction Amount Credited']!=0 ){
-
-            $this->error=true;
-            $this->msg=_("Payment can't be cancelled if it has refunds or credits");
-            return;
+                print "Public payment can't update >>>".$field."\n";
 
         }
-
-
-        $this->update(
-            array(
-                'Payment Transaction Status' => 'Cancelled',
-                'Payment Cancelled Date'     => gmdate('Y-m-d H:i:s'),
-                'Payment Last Updated Date'  => gmdate('Y-m-d H:i:s'),
-            )
-
-        );
-
-        $this->update_parents();
-
-
     }
 
 

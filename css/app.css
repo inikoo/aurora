@@ -608,6 +608,9 @@ right connector from last child*/
 .realce {
   color: #08728b; }
 
+.just_hinted {
+  opacity: 0.3; }
+
 .success {
   color: #26A65B; }
 
@@ -1352,30 +1355,30 @@ tr.deleting_tr {
 .table div.tr > div {
   float: left; }
 
-.backgrid .mini_table {
+.mini_table {
   padding: 10px 0px; }
-  .backgrid .mini_table.no_padding {
+  .mini_table.no_padding {
     padding: 0px; }
-  .backgrid .mini_table > div:first-of-type .data {
+  .mini_table > div:first-of-type .data {
     border-top: 1px solid #eee; }
-  .backgrid .mini_table .data {
+  .mini_table .data {
     padding: 2px 0px;
     border-bottom: 1px solid #eee;
     float: left; }
-  .backgrid .mini_table.right .data {
+  .mini_table.right .data {
     float: right; }
-  .backgrid .mini_table .w150 {
+  .mini_table .w150 {
     min-width: 150px;
     max-width: 200px; }
-  .backgrid .mini_table .w30 {
+  .mini_table .w30 {
     min-width: 30px; }
-  .backgrid .mini_table .w100 {
+  .mini_table .w100 {
     min-width: 100px; }
-  .backgrid .mini_table .w200 {
+  .mini_table .w200 {
     min-width: 200px; }
-  .backgrid .mini_table .w75 {
+  .mini_table .w75 {
     min-width: 75px; }
-  .backgrid .mini_table .part_stock {
+  .mini_table .part_stock {
     text-align: right; }
 
 .as_table {
@@ -1467,6 +1470,24 @@ table.totals .total td {
         border-top: 1px solid #aaa; }
       .order .block > table .bottom-strong-border {
         border-bottom: 1px solid #aaa; }
+    .order .block .node {
+      height: 30px;
+      clear: both;
+      border-bottom: 1px solid #ccc; }
+    .order .block .payments {
+      margin-bottom: 20px;
+      border-top: 1px solid #ccc;
+      position: relative;
+      top: -5px;
+      border-top: none; }
+    .order .block .node_label {
+      float: left;
+      padding-left: 10px;
+      padding-top: 5px; }
+    .order .block .node_amount {
+      float: right;
+      padding-right: 10px;
+      padding-top: 5px; }
 
 .xorder, .invoice, .xdelivery_note {
   border-bottom: 1px solid #ccc; }

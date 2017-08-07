@@ -10,10 +10,23 @@
 
 */
 
+include_once 'trait.OrderShippingOperations.php';
+include_once 'trait.OrderChargesOperations.php';
+include_once 'trait.OrderDiscountOperations.php';
+include_once 'trait.OrderItems.php';
+include_once 'trait.OrderPayments.php';
+include_once 'trait.OrderCalculateTotals.php';
+include_once 'trait.OrderBasketOperations.php';
+include_once 'trait.OrderTax.php';
 
-class Public_Order {
 
-    function __construct($arg1 = false, $arg2 = false, $arg3 = false) {
+include_once 'class.DBW_Table.php';
+
+
+class Public_Order extends DBW_Table {
+    use OrderShippingOperations, OrderChargesOperations, OrderDiscountOperations, OrderItems, OrderPayments, OrderCalculateTotals,OrderBasketOperations,OrderTax;
+
+    function Public_Order($arg1 = false, $arg2 = false, $arg3 = false) {
 
         global $db;
         $this->db       = $db;
@@ -22,6 +35,14 @@ class Public_Order {
 
 
         $this->table_name = 'Order';
+
+
+        if (preg_match('/new/i', $arg1)) {
+            $this->create_order($arg2);
+
+            return;
+        }
+
 
         if (is_numeric($arg1)) {
             $this->get_data('id', $arg1);
@@ -53,25 +74,128 @@ class Public_Order {
 
     }
 
+    function set_display_currency($currency_code, $exchange) {
+        $this->currency_code = $currency_code;
+        $this->exchange      = $exchange;
+
+    }
+
+    function update_field_switcher($field, $value, $options = '', $metadata = '') {
+
+        switch ($field) {
+
+
+            case('Order Tax Number'):
+                $this->update_tax_number($value);
+                break;
+            case('Order Tax Number Valid'):
+                $this->update_tax_number_valid($value);
+                break;
+            case 'Order Invoice Address':
+                $this->update_address('Invoice', json_decode($value, true));
+
+
+                $customer = get_object('Customer', $this->data['Order Customer Key']);
+                $customer->update_field_switcher('Customer Invoice Address', $value, '', array('no_propagate_orders' => true));
+
+
+                break;
+            case 'Order Delivery Address':
+                $this->update_address('Delivery', json_decode($value, true));
+                break;
+
+            case('Order Current Dispatch State'):
+                $this->update_state($value, $options, $metadata);
+                break;
+            case 'auto_account_payments':
+            default:
+                $base_data = $this->base_data();
+
+
+                if (array_key_exists($field, $base_data)) {
+                    // print "xxx-> $field : $value -> ".$this->data[$field]." \n";
+
+                    if ($value != $this->data[$field]) {
+
+                        $this->update_field($field, $value, $options);
+                    }
+                }
+        }
+
+    }
+
+    function update_state($value, $options = '', $metadata = array()) {
+        $date = gmdate('Y-m-d H:i:s');
+
+
+        $old_value         = $this->get('Order State');
+        $operations        = array();
+        $deliveries_xhtml  = '';
+        $number_deliveries = 0;
+
+        if ($old_value != $value) {
+
+            switch ($value) {
+
+
+                case 'Submitted by Customer':
+
+
+                    if (!($this->data['Order Current Dispatch State'] == 'In Process' or $this->data['Order Current Dispatch State'] == 'Waiting for Payment Confirmation')) {
+                        $this->error = true;
+                        $this->msg   = 'Order is not in process: :(  '.$this->data['Order Current Dispatch State'];
+
+                        return;
+
+                    }
+
+
+                    $this->update_field('Order Current Dispatch State', $value, 'no_history');
+                    $this->update_field('Order Submitted by Customer Date', $date, 'no_history');
+                    $this->update_field('Order Date', $date, 'no_history');
+                    $this->update_field('Order Class', 'InProcess', 'no_history');
+
+
+                    $history_data = array(
+                        'History Abstract' => _('Order submited'),
+                        'History Details'  => '',
+                    );
+                    $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
+
+                    $operations = array('send_to_warehouse');
+
+
+                    break;
+
+                default:
+                    $this->error = true;
+                    $this->msg   = 'Unknown error';
+
+                    return;
+                    break;
+            }
+
+
+        }
+
+        $this->update_metadata = array(
+            'class_html'        => array(
+                'Order_State'                  => $this->get('State'),
+                'Order_Submitted_Date'         => '&nbsp;'.$this->get('Submitted by Customer Date'),
+                'Order_Send_to_Warehouse_Date' => '&nbsp;'.$this->get('Send to Warehouse Date'),
+
+
+            ),
+            'operations'        => $operations,
+            'state_index'       => $this->get('State Index'),
+            'deliveries_xhtml'  => $deliveries_xhtml,
+            'number_deliveries' => $number_deliveries
+        );
+
+
+    }
+
     function get($key, $arg1 = '') {
-
-
-        if (preg_match(
-            '/^(Balance (Total|Net|Tax)|Invoiced Total Net Adjust|Invoiced Total Tax Adjust|Invoiced Refund Net|Invoiced Refund Tax|Total|Items|Invoiced Items|Invoiced Tax|Invoiced Net|Invoiced Charges|Payments|To Pay|Invoiced Shipping|Invoiced Insurance |(Shipping |Charges |Insurance )?Net).*(Amount)$/',
-            $key
-        )) {
-            $amount = 'Order '.$key;
-
-            return money(
-                $this->exchange * $this->data[$amount], $this->currency_code
-            );
-        }
-        if (preg_match('/^Number (Items|Products)$/', $key)) {
-
-            $amount = 'Order '.$key;
-
-            return number($this->data[$amount]);
-        }
 
 
         switch ($key) {
@@ -109,19 +233,42 @@ class Public_Order {
                 return $this->get('Order '.$key.' Formatted');
                 break;
 
-            case 'Order Items Discount Amount':
-            case 'Order Charges Net Amount':
-                return $this->data[$key];
+            case 'Basket To Pay Amount':
+                return money($this->data['Order Total Amount'] - $this->data['Order Available Credit Amount'], $this->data['Order Currency']);
+                break;
+
+            case 'Order Basket To Pay Amount':
+                return $this->data['Order Total Amount'] - $this->data['Order Available Credit Amount'];
                 break;
 
             case 'Products':
                 return number($this->data['Order Number Items']);
                 break;
+
             case 'Total':
                 return money($this->data['Order Total Amount'], $this->data['Order Currency']);
                 break;
 
             default:
+
+
+                if (preg_match(
+                    '/^(Balance (Total|Net|Tax)|Invoiced Total Net Adjust|Invoiced Total Tax Adjust|Invoiced Refund Net|Invoiced Refund Tax|Total|Items|Invoiced Items|Invoiced Tax|Invoiced Net|Invoiced Charges|Payments|To Pay|Invoiced Shipping|Invoiced Insurance |(Shipping |Charges |Insurance )?Net).*(Amount)$/',
+                    $key
+                )) {
+                    $amount = 'Order '.$key;
+
+                    return money(
+                        $this->exchange * $this->data[$amount], $this->currency_code
+                    );
+                }
+                if (preg_match('/^Number (Items|Products)$/', $key)) {
+
+                    $amount = 'Order '.$key;
+
+                    return number($this->data[$amount]);
+                }
+
                 $_key = ucwords($key);
                 if (array_key_exists($_key, $this->data)) {
                     return $this->data[$_key];
@@ -135,57 +282,6 @@ class Public_Order {
 
     }
 
-
-    function set_display_currency($currency_code, $exchange) {
-        $this->currency_code = $currency_code;
-        $this->exchange      = $exchange;
-
-    }
-
-
-    function get_items() {
-
-        $sql = sprintf(
-            'SELECT OTF.`Product ID`,OTF.`Product Key`,`Order Transaction Fact Key`,`Order Currency Code`,`Order Transaction Amount`,`Order Quantity`,`Product History Name`,`Product History Units Per Case`,PD.`Product Code`,`Product Name`,`Product Units Per Case` FROM `Order Transaction Fact` OTF LEFT JOIN `Product History Dimension` PHD ON (OTF.`Product Key`=PHD.`Product Key`) LEFT JOIN `Product Dimension` PD ON (PD.`Product ID`=PHD.`Product ID`)  WHERE `Order Key`=%d  ORDER BY `Product Code File As` ',
-            $this->id
-        );
-
-        $items = array();
-
-
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-                $edit_quantity = sprintf(
-                    '<span    data-settings=\'{"field": "Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   ><input class="order_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-plus fa-fw like_button button"  style="cursor:pointer" aria-hidden="true"></i></span>',
-                    $row['Order Transaction Fact Key'], $row['Product ID'], $row['Product Key'], $row['Order Quantity'] + 0, $row['Order Quantity'] + 0
-                );
-
-
-
-                $items[] = array(
-                    'code'        => $row['Product Code'],
-                    'description' => $row['Product History Units Per Case'].'x '.$row['Product History Name'],
-                    'qty'         => number($row['Order Quantity']),
-                    'edit_qty'    => $edit_quantity,
-                    'amount'      => '<span class="item_amount">'.money($row['Order Transaction Amount'], $row['Order Currency Code']).'</span>'
-
-                );
-
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        return $items;
-
-    }
 
 }
 

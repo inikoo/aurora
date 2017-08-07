@@ -24,7 +24,6 @@ function get_object($object_name, $key, $load_other_data = false) {
 
 
 
-
     global $account, $db;
 
 
@@ -310,7 +309,14 @@ function get_object($object_name, $key, $load_other_data = false) {
             require_once "class.Payment_Account.php";
             $object = new Payment_Account('block',$key);
             break;
-
+        case 'tax_category':
+            require_once "class.TaxCategory.php";
+            $object = new TaxCategory($key);
+            break;
+        case 'tax_category-key':
+            require_once "class.TaxCategory.php";
+            $object = new TaxCategory('key',$key);
+            break;
 
         default:
             exit('need to complete E1: x>'.strtolower($object_name.'++'.$load_other_data)."<\n");

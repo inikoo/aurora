@@ -190,28 +190,6 @@ class Public_Customer extends DBW_Table {
 
     }
 
-    function update_delivery_address_link($value, $options) {
-
-        $this->update_field('Customer Delivery Address Link',$value,$options);
-
-        if($value=='Billing'){
-            $address_data=array(
-                'Address Line 1'=>$this->get('Customer Invoice Address Line 1'),
-                'Address Line 2'=>$this->get('Customer Invoice Address Line 2'),
-                'Address Sorting Code'=>$this->get('Customer Invoice Address Sorting Code'),
-                'Address Postal Code'=>$this->get('Customer Invoice Address Postal Code'),
-                'Address Dependent Locality'=>$this->get('Customer Invoice Address Dependent Locality'),
-                'Address Locality'=>$this->get('Customer Invoice Address Locality'),
-                'Address Administrative Area'=>$this->get('Customer Invoice Address Administrative Area'),
-                'Address Country 2 Alpha Code'=>$this->get('Customer Invoice Address Country 2 Alpha Code'),
-
-            );
-            $this->update_address('Delivery',$address_data,$options);
-
-        }
-
-    }
-
     function update_address($type, $fields, $options = '') {
 
 
@@ -569,7 +547,7 @@ class Public_Customer extends DBW_Table {
 
                     if ($this->data['Customer Billing Address Link'] == 'Contact') {
 
-                        $metadata['no_propagate_addresses']=true;
+                        $metadata['no_propagate_addresses'] = true;
                         $this->update_field_switcher('Customer Contact Address', $value, $options, $metadata);
 
                         if ($this->data['Customer Delivery Address Link'] == 'Contact') {
@@ -583,22 +561,20 @@ class Public_Customer extends DBW_Table {
                     if ($this->data['Customer Delivery Address Link'] == 'Billing') {
 
 
-                        $metadata['no_propagate_addresses']=true;
+                        $metadata['no_propagate_addresses'] = true;
 
                         $this->update_field_switcher('Customer Delivery Address', $value, $options, $metadata);
                     }
 
                 }
 
-                if(  empty($metadata['no_propagate_orders'])  ) {
+                if (empty($metadata['no_propagate_orders'])) {
 
                     $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order Class`="InProcess" AND `Order Customer Key`=%d ', $this->id);
                     if ($result = $this->db->query($sql)) {
                         foreach ($result as $row) {
-                            // todo change to puclic order when ready
-                            //$order=get_object('Order',$row['Order Key']);
-                            include_once 'class.Order.php';
-                            $order = new Order($row['Order Key']);
+                            $order=get_object('Order',$row['Order Key']);
+
 
 
                             $order->update(array('Order Invoice Address' => $value), $options, array('no_propagate_customer' => true));
@@ -619,10 +595,8 @@ class Public_Customer extends DBW_Table {
                 $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order Class`="InProcess" AND `Order Customer Key`=%d ', $this->id);
                 if ($result = $this->db->query($sql)) {
                     foreach ($result as $row) {
-                        // todo change to puclic order when ready
-                        //$order=get_object('Order',$row['Order Key']);
-                        include_once 'class.Order.php';
-                        $order = new Order($row['Order Key']);
+                        $order=get_object('Order',$row['Order Key']);
+
                         $order->update(array('Order Delivery Address' => $value), $options, array('no_propagate_customer' => true));
                     }
                 } else {
@@ -660,6 +634,28 @@ class Public_Customer extends DBW_Table {
                 print ">>>".$field."\n";
 
         }
+    }
+
+    function update_delivery_address_link($value, $options) {
+
+        $this->update_field('Customer Delivery Address Link', $value, $options);
+
+        if ($value == 'Billing') {
+            $address_data = array(
+                'Address Line 1'               => $this->get('Customer Invoice Address Line 1'),
+                'Address Line 2'               => $this->get('Customer Invoice Address Line 2'),
+                'Address Sorting Code'         => $this->get('Customer Invoice Address Sorting Code'),
+                'Address Postal Code'          => $this->get('Customer Invoice Address Postal Code'),
+                'Address Dependent Locality'   => $this->get('Customer Invoice Address Dependent Locality'),
+                'Address Locality'             => $this->get('Customer Invoice Address Locality'),
+                'Address Administrative Area'  => $this->get('Customer Invoice Address Administrative Area'),
+                'Address Country 2 Alpha Code' => $this->get('Customer Invoice Address Country 2 Alpha Code'),
+
+            );
+            $this->update_address('Delivery', $address_data, $options);
+
+        }
+
     }
 
     function update_tax_number($value) {
@@ -761,7 +757,7 @@ class Public_Customer extends DBW_Table {
         $order_data['Order Tax Number Details Match']      = $this->data['Customer Tax Number Details Match'];
         $order_data['Order Tax Number Registered Name']    = $this->data['Customer Tax Number Registered Name'];
         $order_data['Order Tax Number Registered Address'] = $this->data['Customer Tax Number Registered Address'];
-
+        $order_data['Order Available Credit Amount']       = $this->data['Customer Account Balance'];
 
         $order_data['Order Customer Fiscal Name'] = $this->get('Fiscal Name');
         $order_data['Order Email']                = $this->data['Customer Main Plain Email'];
@@ -808,9 +804,9 @@ class Public_Customer extends DBW_Table {
         $order_data['public_id_format']               = $store->get('Store Order Public ID Format');
 
 
-        // todo chage to Public_Order
-        include_once 'class.Order.php';
-        $order = new Order('new', $order_data);
+
+        include_once 'class.Public_Order.php';
+        $order = new Public_Order('new', $order_data);
 
 
         if ($order->error) {
@@ -894,33 +890,6 @@ class Public_Customer extends DBW_Table {
 
     }
 
-    function get_credit_card_token($card_key, $delivery_address_checksum, $invoice_address_checksum) {
-
-        $key = md5($this->id.','.$delivery_address_checksum.','.$invoice_address_checksum.','.CKEY);
-
-        $token = false;
-        $sql   = sprintf(
-            "SELECT `Customer Credit Card Metadata` FROM `Customer Credit Card Dimension` WHERE `Customer Credit Card Customer Key`=%d AND `Customer Credit Card Invoice Address Checksum`=%s AND `Customer Credit Card Delivery Address Checksum`=%s AND   `Customer Credit Card Valid Until`>NOW() AND  `Customer Credit Card Key`=%d ",
-            $this->id, prepare_mysql($invoice_address_checksum), prepare_mysql($delivery_address_checksum), $card_key
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                $_card_data = json_decode(AESDecryptCtr($row['Customer Credit Card Metadata'], $key, 256), true);
-                $token      = $_card_data['Token'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        return $token;
-
-    }
-
     function get_number_saved_credit_cards($delivery_address_checksum, $invoice_address_checksum) {
 
         $number_saved_credit_cards = 0;
@@ -969,21 +938,23 @@ class Public_Customer extends DBW_Table {
             exit;
         }
 
+        /*
+                $card_data[] = array(
+                    'id'              => 1,
+                    'Card Number'     => 'XXXX XXXX XXXX 3423',
+                    'Card Expiration' => '11/33'
 
-        $card_data[] = array(
-            'id'              => 1,
-            'Card Number'     => 'XXXX XXXX XXXX 3423',
-            'Card Expiration' => '11/33'
+                );
 
-        );
-
-        $card_data[] = array(
-            'id'              => 2,
-            'Card Number'     => 'XXXX XXXX XXXX 1234',
-            'Card Expiration' => '21/33'
+                $card_data[] = array(
+                    'id'              => 2,
+                    'Card Number'     => 'XXXX XXXX XXXX 1234',
+                    'Card Expiration' => '21/33'
 
 
-        );
+                );
+
+        */
 
         return $card_data;
 
@@ -1036,6 +1007,33 @@ class Public_Customer extends DBW_Table {
 
 
         return $tokens;
+
+    }
+
+    function get_credit_card_token($card_key, $delivery_address_checksum, $invoice_address_checksum) {
+
+        $key = md5($this->id.','.$delivery_address_checksum.','.$invoice_address_checksum.','.CKEY);
+
+        $token = false;
+        $sql   = sprintf(
+            "SELECT `Customer Credit Card Metadata` FROM `Customer Credit Card Dimension` WHERE `Customer Credit Card Customer Key`=%d AND `Customer Credit Card Invoice Address Checksum`=%s AND `Customer Credit Card Delivery Address Checksum`=%s AND   `Customer Credit Card Valid Until`>NOW() AND  `Customer Credit Card Key`=%d ",
+            $this->id, prepare_mysql($invoice_address_checksum), prepare_mysql($delivery_address_checksum), $card_key
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $_card_data = json_decode(AESDecryptCtr($row['Customer Credit Card Metadata'], $key, 256), true);
+                $token      = $_card_data['Token'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        return $token;
 
     }
 

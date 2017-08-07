@@ -11,7 +11,6 @@
 */
 
 
-
 function get_order_info($order) {
 
 
@@ -139,12 +138,12 @@ function get_order_info($order) {
 
 function get_pay_info($order, $website, $smarty) {
 
-    $payment_info_for_customer ='';
+    $payment_info_for_customer = '';
 
-    $payment_account          = get_object('Payment_Account', $order->get('Order Checkout Block Payment Account Key'));
+    $payment_account = get_object('Payment_Account', $order->get('Order Checkout Block Payment Account Key'));
 
 
-    switch($payment_account->get('Payment Account Block')){
+    switch ($payment_account->get('Payment Account Block')) {
 
         //todo add other payment methods
 
@@ -153,10 +152,10 @@ function get_pay_info($order, $website, $smarty) {
             //todo add here credits
 
 
-$webpage_key = $website->get_system_webpage_key('checkout.sys');
+            $webpage_key = $website->get_system_webpage_key('checkout.sys');
 
 
-    $webpage = get_object('webpage', $webpage_key);
+            $webpage = get_object('webpage', $webpage_key);
 
 
             $content = $webpage->get('Content Data');
@@ -164,7 +163,7 @@ $webpage_key = $website->get_system_webpage_key('checkout.sys');
             $placeholders = array(
 
                 '[Order Number]' => $order->get('Public ID'),
-                '[Order Amount]' => $order->get('Total'),
+                '[Order Amount]' => $order->get('To Pay Amount'),
 
             );
 
@@ -186,15 +185,7 @@ $webpage_key = $website->get_system_webpage_key('checkout.sys');
             break;
 
 
-
-
     }
-
-
-
-
-
-
 
 
     return $payment_info_for_customer;

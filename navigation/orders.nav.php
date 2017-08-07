@@ -1259,6 +1259,10 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
     }
 
 
+
+
+
+
     $title = _('Order').' <span class="id">'.$object->get('Order Public ID').'</span>';
 
 

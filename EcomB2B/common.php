@@ -37,7 +37,7 @@ $smarty->clearAllCache();
 session_start();
 
 
-if (!array_key_exists('website_key', $_SESSION) or !$_SESSION['website_key']) {
+if (!array_key_exists('website_key', $_SESSION) or !$_SESSION['website_key']    ) {
 
     include('utils/find_website_key.include.php');
 
