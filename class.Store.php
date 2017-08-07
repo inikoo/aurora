@@ -660,6 +660,13 @@ class Store extends DB_Table {
             return $amount;
         }
 
+        if (array_key_exists($key, $this->data)) {
+            return $this->data[$key];
+        }
+
+        if (array_key_exists('Store '.$key, $this->data)) {
+            return $this->data['Store '.$key];
+        }
 
         if (preg_match('/^(Orders|Last|Yesterday|Total|1|10|6|3|4|2|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit) Soft Minify$/', $key)) {
 
@@ -724,6 +731,10 @@ class Store extends DB_Table {
             return number($this->data[$amount]);
         }
 
+
+
+
+
         if (preg_match('/(Orders|Delivery Notes|Invoices) Acc$/', $key)) {
 
             $amount = 'Store '.$key;
@@ -739,13 +750,7 @@ class Store extends DB_Table {
         }
 
 
-        if (array_key_exists($key, $this->data)) {
-            return $this->data[$key];
-        }
 
-        if (array_key_exists('Store '.$key, $this->data)) {
-            return $this->data['Store '.$key];
-        }
 
 
     }
@@ -1059,6 +1064,8 @@ class Store extends DB_Table {
 
         $sql = sprintf("SELECT * FROM `Store Data`  WHERE `Store Key`=%d", $this->id);
 
+
+
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
                 foreach ($row as $key => $value) {
@@ -1082,6 +1089,7 @@ class Store extends DB_Table {
             print_r($error_info = $this->db->errorInfo());
             exit;
         }
+
 
 
     }
