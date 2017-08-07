@@ -1424,6 +1424,122 @@ class Website extends DB_Table {
     }
 
 
+
+    function update_sitemap() {
+
+
+
+        include_once 'class.Sitemap.php';
+        $sitemap = new Sitemap($this->id);
+        $sitemap->page('info');
+
+
+        //ENUM('About','Basket','Catalogue','Category Categories','Category Products','Checkout','Contact','Homepage','HomepageLogout','HomepageNoOrders','HomepageToLaunch','Info','InProcess','Login','NotFound','Offline','Product','Register','ResetPwd','Search','ShippingInfo','TandC','Thanks','UserProfile','Welcome') NOT NULL
+
+
+        $sql = sprintf(
+            "SELECT `Webpage Launch Date`,`Webpage URL` FROM `Page Store Dimension`  WHERE `Webpage Website Key`=%d  and  `Webpage Scope`  IN  ('About','HomepageLogout','Info','ShippingInfo','TandC') AND `Webpage State`='Online'   ",
+            $this->id
+        );
+
+        if ($result=$this->db->query($sql)) {
+        		foreach ($result as $row) {
+                    $updated = $row['Webpage Launch Date'];
+                    $sitemap->url($row['Webpage URL'], $updated, 'monthly');
+        		}
+        }else {
+        		print_r($error_info=$this->db->errorInfo());
+        		print "$sql\n";
+        		exit;
+        }
+
+
+
+        $sitemap->page('products');
+
+        $sql = sprintf(
+            "SELECT `Webpage Launch Date`,`Webpage URL` FROM `Page Store Dimension`  WHERE `Webpage Website Key`=%d  and  `Webpage Scope`  IN  ('Category Categories','Category Products','Product') AND `Webpage State`='Online'   ",
+            $this->id
+        );
+
+        if ($result=$this->db->query($sql)) {
+        		foreach ($result as $row) {
+                    $updated = $row['Webpage Launch Date'];
+                    $sitemap->url($row['Webpage URL'], $updated, 'weekly');
+        		}
+        }else {
+        		print_r($error_info=$this->db->errorInfo());
+        		print "$sql\n";
+        		exit;
+        }
+
+
+
+
+        $sitemap->close();
+        unset ($sitemap);
+
+
+        $this->update_field('Website Sitemap Last Update',gmdate("Y-m-d H:i:s"),'no_history');
+
+
+
+
+    }
+
+
+    function ping_sitemap() {
+
+        $sitemap           = 'https://'.$this->get('Website URL').'/sitemap_index.xml.php';
+        $engines           = array();
+        $engines['Google'] = array(
+            'host' => 'www.google.com',
+            'path' => '/webmasters/tools/ping?sitemap='.urlencode($sitemap)
+        );
+        $engines['Bing']   = array(
+            'host' => 'www.bing.com',
+            'path' => '/webmaster/ping.aspx?siteMap='.urlencode($sitemap)
+        );
+        $engines['Ask']    = array(
+            'host' => 'submissions.ask.com',
+            'path' => '/ping?sitemap='.urlencode($sitemap)
+        );
+        foreach ($engines as $engine_code => $data) {
+
+            $host = $data['host'];
+            $path = $data['path'];
+            if ($fp = fsockopen($host, 80)) {
+                $send = "HEAD $path HTTP/1.1\r\n";
+                $send .= "HOST: $host\r\n";
+                $send .= "CONNECTION: Close\r\n\r\n";
+                fwrite($fp, $send);
+                $http_response = fgets($fp, 128);
+                fclose($fp);
+                list($response, $code) = explode(' ', $http_response);
+                $date = gmdate("Y-m-d H:i:s");
+                if ($code -= 200) {
+                    $msg = "OK";
+                } else {
+                    $msg
+                        = "{$host} ping was unsuccessful.<br />Code: {$code}<br />Response: {$response}";
+                }
+
+
+                //$this->data['Site Sitemap Last Ping '.$engine_code]   = $date;
+                //$this->data['Site Sitemap '.$engine_code.' Response'] = $msg;
+                //$sql = sprintf(
+                //    "update `Site Dimension` set `Site Sitemap Last Ping $engine_code`=%s, `Site Sitemap $engine_code Response`=%s where `Site Key`=%d", prepare_mysql($date), prepare_mysql($msg),
+                //    $this->id
+                //);
+                //mysql_query($sql);
+            }
+        }
+
+
+    }
+
+
+
 }
 
 

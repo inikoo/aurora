@@ -1,22 +1,16 @@
 <?php
 
 /*
- *    author:		Kyle Gadd
- *    documentation:	http://www.php-ease.com/classes/sitemap.html
- *
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation, either version 3 of the License, or
- *    (at your option) any later version.
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+
+ About:
+ Author: Raul Perusquia <rulovico@gmail.com>
+    Refurnished: 7 August 2017 at 15:06:04 CEST, Tranava, Slovakia
+
+ Copyright (c) 2013, Inikoo
+
+ Version 2.0
+*/
+
 
 class Sitemap {
 
@@ -26,13 +20,17 @@ class Sitemap {
     private $count = 1;
     private $urls = array();
     private $save_type = 'db';
-    private $site_key = 0;
+    private $website_key = 0;
 
 
-    public function __construct($site_key, $compress = true) {
+    public function __construct($website_key, $compress = true) {
+
+        global $db;
+        $this->db = $db;
+
         //  ini_set('memory_limit', '75M'); // 50M required per tests
         $this->compress = ($compress) ? '.gz' : '';
-        $this->site_key = $site_key;
+        $this->website_key = $website_key;
     }
 
     public function page($name) {
@@ -188,22 +186,23 @@ class Sitemap {
         // fclose($fp);
 
         $sql = sprintf(
-            "INSERT INTO `Sitemap Dimension` (`Sitemap Site Key`,`Sitemap Date`,`Sitemap Name`,`Sitemap Number`,`Sitemap Content`) VALUES (%d,NOW(),%s,%d,%s) ON DUPLICATE KEY UPDATE `Sitemap Date`=NOW(), `Sitemap Content`=%s",
-            $this->site_key, prepare_mysql($file), $this->index, prepare_mysql($xml), prepare_mysql($xml)
+            "INSERT INTO `Sitemap Dimension` (`Sitemap Website Key`,`Sitemap Date`,`Sitemap Name`,`Sitemap Number`,`Sitemap Content`) VALUES (%d,NOW(),%s,%d,%s) ON DUPLICATE KEY UPDATE `Sitemap Date`=NOW(), `Sitemap Content`=%s",
+            $this->website_key, prepare_mysql($file), $this->index, prepare_mysql($xml), prepare_mysql($xml)
 
 
         );
 
-        mysql_query($sql);
+        $this->db->exec($sql);
+
 
         $this->index++;
         $this->count = 1;
         $num         = $this->index; // should have already been incremented
 
         $sql = sprintf(
-            "DELETE FROM `Sitemap Dimension` WHERE `Sitemap Site Key`=%d AND `Sitemap Number`>=%d ", $this->site_key, $this->index
+            "DELETE FROM `Sitemap Dimension` WHERE `Sitemap Website Key`=%d AND `Sitemap Number`>=%d ", $this->website_key, $this->index
         );
-        mysql_query($sql);
+        $this->db->exec($sql);
 
         //$this->index($file);
     }
