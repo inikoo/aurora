@@ -1,6 +1,7 @@
 Options +FollowSymLinks  
 RewriteEngine On  
 
+RewriteRule ^sitemap\.xml$ sitemap.xml.php [L]
 
 RewriteCond %{SCRIPT_FILENAME} !-d  
 RewriteCond %{SCRIPT_FILENAME} !-f  
