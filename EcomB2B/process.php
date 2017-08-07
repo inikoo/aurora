@@ -98,16 +98,6 @@ function get_url($site_key, $url, $dns_host, $dns_user, $dns_pwd, $dns_db) {
         //exit("$_tmp_url");
         //header("Location: http://".$target);
     }
-    $sql = sprintf(
-        "SELECT `Site URL` FROM `Site Dimension` WHERE `Site Key`=%d ", $site_key
-    );
-
-
-    if ($result = $db->query($sql)) {
-        if ($row = $result->fetch()) {
-            $site_url = $row['Site URL'];
-        }
-    }
 
 
     $original_url = '/'.$original_url;
@@ -122,6 +112,9 @@ function get_url($site_key, $url, $dns_host, $dns_user, $dns_pwd, $dns_db) {
         $path = $url;
     }
 
+
+    print $url;
+    exit;
 
 
     if (preg_match('/^sitemap\.xml$/', $url, $match)) {
