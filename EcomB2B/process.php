@@ -146,7 +146,7 @@ function get_url($site_key, $url, $dns_host, $dns_user, $dns_pwd, $dns_db) {
 
         } else {
 
-
+exit;
 
             return "/404.php?x=x&url=$url&original_url=$original_url";
         }
