@@ -1893,7 +1893,7 @@ trait OrderDiscountOperations {
 
 
             $this->update_totals();
-            $this->apply_payment_from_customer_account();
+           // $this->apply_payment_from_customer_account();
 
             return array(
                 'updated'             => true,

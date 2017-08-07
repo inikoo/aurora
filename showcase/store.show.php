@@ -16,11 +16,13 @@ function get_store_showcase($data, $smarty) {
     $store = $data['_object'];
     $store->load_acc_data();
 
+
     if (!$store->id) {
         return "";
     }
 
     $smarty->assign('store', $store);
+
 
 
     $smarty->assign(
@@ -187,6 +189,7 @@ function get_store_showcase($data, $smarty) {
                           ),
                       )
     );
+
     $smarty->assign(
         'year_data', array(
                        array(
@@ -351,7 +354,7 @@ function get_store_showcase($data, $smarty) {
         'header_total_sales', sprintf(_('All sales since: %s'), $store->get('Valid From'))
     );
 
-
+;
     return $smarty->fetch('showcase/store.tpl');
 
 

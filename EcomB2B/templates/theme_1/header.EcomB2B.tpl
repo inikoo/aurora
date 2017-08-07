@@ -229,7 +229,13 @@
                                                                         <p  >{$sub_column.title}</p>
                                                                     </li>
                                                                     <li class="dart">
-                                                                        <img src="{if $sub_column.image==''}https://placehold.it/230x80{else}{$sub_column.image}{/if}" alt="" class="rimg marb1" />
+                                                                        {if  $sub_column.url!=''}
+                                                                            <a href="{$sub_column.url}"><img src="{if $sub_column.image==''}https://placehold.it/230x80{else}{$sub_column.image}{/if}" alt="" class="rimg marb1" /></a>
+
+                                                                        {else}
+                                                                            <img src="{if $sub_column.image==''}https://placehold.it/230x80{else}{$sub_column.image}{/if}" alt="" class="rimg marb1" />
+
+                                                                        {/if}
                                                                         <span >{$sub_column.text}</span>
                                                                     </li>
                                                                 </ul>
@@ -239,8 +245,12 @@
                                                                         <p  >{$sub_column.title}</p>
                                                                     </li>
                                                                     <li class="dart">
-                                                                        <img src="{if $sub_column.image==''}https://placehold.it/230x160{else}{$sub_column.image}{/if}" alt="" class="rimg marb1" />
+                                                            {if  $sub_column.url!=''}
+                                                                <a href="{$sub_column.url}"><img src="{if $sub_column.image==''}https://placehold.it/230x160{else}{$sub_column.image}{/if}" alt="" class="rimg marb1" /></a>
+                                                            {else}
+                                                                <img src="{if $sub_column.image==''}https://placehold.it/230x160{else}{$sub_column.image}{/if}" alt="" class="rimg marb1" />
 
+                                                            {/if}
                                                                     </li>
                                                                 </ul>
                                                             {elseif $sub_column.type=='departments' or   $sub_column.type=='families' or  $sub_column.type=='web_departments' or   $sub_column.type=='web_families'}

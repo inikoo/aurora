@@ -412,6 +412,7 @@ function place_order_pay_braintree($_data, $order, $customer, $website,$editor, 
 function place_order($order,$payment_account_key, $customer, $website, $editor, $smarty) {
 
 
+
     $customer->editor = $editor;
 
 

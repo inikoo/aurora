@@ -55,6 +55,15 @@ switch ($tipo) {
 
         break;
 
+    case 'special_instructions':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'value' => array('type' => 'string'),
+
+                     )
+        );
+        update_special_instructions($db, $data, $order, $editor);
+        break;
     case 'invoice_address':
         $data = prepare_values(
             $_REQUEST, array(
@@ -308,11 +317,6 @@ function invoice_address($db, $data, $order, $editor) {
 
 
 
-    // to do replace to native public order
-    include_once 'class.Order.php';
-    $order=new Order($order->id);
-
-
     $address_data=array(
         'Address Line 1'=>'',
         'Address Line 2'=>'',
@@ -391,12 +395,6 @@ function invoice_address($db, $data, $order, $editor) {
 }
 
 function delivery_address($db, $data, $order, $editor) {
-
-
-    // to do replace to native public order
-    include_once 'class.Order.php';
-    $order=new Order($order->id);
-
 
 
 
@@ -496,6 +494,24 @@ function delivery_address($db, $data, $order, $editor) {
 
 }
 
+
+function update_special_instructions($db, $data, $order, $editor) {
+
+
+  $order->editor=$editor;
+
+  $order->update(
+      array('Order Customer Message'=>$data['value']),'no_history'
+
+  );
+    $response = array(
+        'state'               => 200,
+
+
+    );
+    echo json_encode($response);
+
+}
 
 
 ?>

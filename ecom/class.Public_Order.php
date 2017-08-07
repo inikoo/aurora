@@ -82,7 +82,9 @@ class Public_Order extends DBW_Table {
 
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
 
+
         switch ($field) {
+
 
 
             case('Order Tax Number'):
@@ -107,7 +109,7 @@ class Public_Order extends DBW_Table {
             case('Order Current Dispatch State'):
                 $this->update_state($value, $options, $metadata);
                 break;
-            case 'auto_account_payments':
+
             default:
                 $base_data = $this->base_data();
 

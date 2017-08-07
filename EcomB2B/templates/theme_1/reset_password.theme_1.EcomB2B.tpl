@@ -57,7 +57,7 @@
                         <footer>
 
 
-                            <button type="submit" name="submit" class="button" id="_submit_label" >{$content._submit_label}</button>
+                            <button type="submit" name="submit" class="button" id="change_password_button" >{$content._submit_label}  <i  class="margin_left_10 fa fa-fw fa-floppy-o" aria-hidden="true"></i>  </button>
 
 
                         </footer>
@@ -122,6 +122,18 @@
             submitHandler: function(form)
             {
 
+
+                var button=$('#change_password_button');
+
+                if(button.hasClass('wait')){
+                    return;
+                }
+
+                button.addClass('wait')
+                button.find('i').removeClass('fa-floppy-o').addClass('fa-spinner fa-spin')
+
+
+
                 var ajaxData = new FormData();
 
                 ajaxData.append("tipo", 'update_password')
@@ -142,10 +154,12 @@
                             swal("{t}Error{/t}!", data.msg, "error")
                         }
 
-
+                        button.removeClass('wait')
+                        button.find('i').addClass('fa-floppy-o').removeClass('fa-spinner fa-spin')
 
                     }, error: function () {
-
+                        button.removeClass('wait')
+                        button.find('i').addClass('fa-floppy-o').removeClass('fa-spinner fa-spin')
                     }
                 });
 
