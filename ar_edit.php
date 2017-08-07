@@ -1087,7 +1087,19 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             break;
         case 'Order':
             include_once 'class.Order.php';
-            $object = $parent->create_order($data['fields_data']);
+
+
+            $order_key = $parent->get_order_in_process_key();
+            if($order_key){
+                $object=get_object('Order',$order_key);
+            }
+
+            if( !( isset($object) and $object->id) ){
+                $object = $parent->create_order($data['fields_data']);
+            }
+
+
+
             if (!$parent->error) {
 
                 $pcard        = '';
