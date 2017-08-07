@@ -1,7 +1,7 @@
 <?php
 /*
  About:
- Autor: Raul Perusquia <raul@inikoo.com>
+ Author: Raul Perusquia <raul@inikoo.com>
     Refurnished: 7 August 2017 at 15:18:52 CEST, Tranava, Slovakia
 
  Copyright (c) 2013, Inikoo

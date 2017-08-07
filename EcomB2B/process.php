@@ -28,7 +28,7 @@ include ('utils/find_website_key.include.php');
 
 $result = $mem->get('ECOMP'.md5($_SERVER['SERVER_NAME'].'_'.$_SERVER['REQUEST_URI']));
 $result = false;
-if (!$result ) {
+if (!$result or true ) {
 
 
 
