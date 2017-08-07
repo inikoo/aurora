@@ -105,12 +105,6 @@ function get_url($site_key, $url, $dns_host, $dns_user, $dns_pwd, $dns_db) {
     $url_array    = explode("/", $url);
     $file         = array_pop($url_array);
 
-    if (preg_match('/\.(php|html)$/', $file)) {
-        $path = join('/', $url_array);
-    } else {
-        $file = 'index.php';
-        $path = $url;
-    }
 
 
     print $url;
@@ -154,7 +148,7 @@ function get_url($site_key, $url, $dns_host, $dns_user, $dns_pwd, $dns_db) {
 
 
 
-            return "/404.php?url=$url&original_url=$original_url";
+            return "/404.php?x=x&url=$url&original_url=$original_url";
         }
     }
 
