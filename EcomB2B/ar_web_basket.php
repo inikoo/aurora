@@ -89,19 +89,20 @@ function update_item($_data, $customer, $website, $editor) {
 
     if (!$order_key) {
 
-
         $order = create_order($editor, $customer);
         $order->update(array('Order Website Key' => $website->id), 'no_history');
 
 
     } else {
         //$order=get_object('Order',$order_key);
-        include_once 'class.Order.php';
-        $order = new Order($order_key);
+
+        $order =get_object('Order',$order_key);
     }
 
 
     //$order->set_display_currency($_SESSION['set_currency'],$_SESSION['set_currency_exchange']);
+
+
 
 
     if ($order->data['Order Current Dispatch State'] == 'Waiting for Payment Confirmation') {

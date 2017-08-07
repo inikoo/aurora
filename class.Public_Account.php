@@ -60,11 +60,15 @@ class Public_Account  {
 
 
         switch ($key) {
-
+            case 'Currency Code':
+            case 'Account Currency Code':
+                return $this->data['Account Currency'];
+                break;
             case 'Account Code':
             case 'Account Locale':
             case 'Account Country 2 Alpha Code':
             case 'Account Analytics ID':
+            case 'Apply Tax Method':
 
                 return $this->data[$key];
 

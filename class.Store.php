@@ -403,9 +403,6 @@ class Store extends DB_Table {
         }
 
 
-        if (isset($this->data[$key])) {
-            return $this->data[$key];
-        }
 
 
         switch ($key) {
@@ -580,6 +577,10 @@ class Store extends DB_Table {
 
                 return number($number);
 
+            case 'Show in Warehouse Orders':
+            case 'Store Show in Warehouse Orders':
+                    return $this->data[$key];
+                break;
 
         }
 
@@ -2050,70 +2051,46 @@ class Store extends DB_Table {
         return $rate;
     }
 
-    function get_payment_account_key() {
-        $payment_account_key = 0;
+    function get_payment_accounts($type='objects',$filter='') {
+
+
+        if($filter=='Active'){
+            $where=' and `Payment Account Store Status`="Active" ';
+        }else{
+            $where='';
+        }
+
+        $payment_accounts = array();
         $sql                 = sprintf(
-            "SELECT PA.`Payment Account Key` FROM `Payment Account Dimension` PA LEFT JOIN `Payment Account Store Bridge` B ON (PA.`Payment Account Key`=B.`Payment Account Key`)  WHERE `Payment Type`='Account' AND `Store Key`=%d ",
-            $this->id
-        );
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $payment_account_key = $row['Payment Account Key'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        return $payment_account_key;
-
-    }
-
-    function get_payment_accounts_data() {
-        $payment_accounts_data = array();
-        $sql                   = sprintf(
-            "SELECT * FROM `Payment Account Dimension` PA LEFT JOIN `Payment Account Store Bridge` B ON (PA.`Payment Account Key`=B.`Payment Account Store Bridge Payment Account Key`) LEFT JOIN `Payment Service Provider Dimension` PSPD ON (PSPD.`Payment Service Provider Key`=PA.`Payment Service Provider Key`)  WHERE  `Payment Account Store Bridge Status`='Active' AND `Payment Account Store Bridge Store Key`=%d ",
-            $this->id
+            "SELECT PA.`Payment Account Key` FROM `Payment Account Dimension` PA LEFT JOIN `Payment Account Store Bridge` B ON (PA.`Payment Account Key`=B.`Payment Account Store Payment Account Key`)   where `Payment Account Store Store Key`=%d  %s ",
+            $this->id,
+            $where
         );
 
 
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
 
-                if ($row['Payment Type'] == 'Account') {
-                    continue;
-                }
-
-
-                $payment_service_provider = new Payment_Service_Provider($row['Payment Service Provider Key']);
-
-                $payment_accounts_data[] = array(
-                    'key'                   => $row['Payment Account Key'],
-                    'code'                  => $row['Payment Account Code'],
-                    'type'                  => $row['Payment Type'],
-                    'service_provider_code' => $row['Payment Service Provider Code'],
-                    'service_provider_name' => $row['Payment Service Provider Name'],
-                    'valid_payment_methods' => join(
-                        ',', preg_replace(
-                               '/\s/', '', $payment_service_provider->get_valid_payment_methods()
-                           )
-                    )
-
-                );
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
+        if ($result=$this->db->query($sql)) {
+        		foreach ($result as $row) {
+                    if($type=='objects'){
+                        $payment_accounts[] =get_object('Payment_Account',$row['Payment Account Key']);
+                    }else{
+                        $payment_accounts[] = $row['Payment Account Key'];
+                    }
+        		}
+        }else {
+        		print_r($error_info=$this->db->errorInfo());
+        		print "$sql\n";
+        		exit;
         }
 
 
-        return $payment_accounts_data;
+
+
+
+        return $payment_accounts;
 
     }
+
 
     function cancel_old_orders_in_basket() {
         include_once 'common_natural_language.php';

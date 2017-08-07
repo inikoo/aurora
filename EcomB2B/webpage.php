@@ -374,7 +374,7 @@ if ($webpage->get('Webpage Template Filename') == 'register') {
         $placeholders = array(
 
             '[Order Number]'       => $order->get('Public ID'),
-            '[Order Amount]'       => $order->get('Amount'),
+            '[Order Amount]'       => $order->get('Basket To Pay Amount'),
 
         );
 
@@ -465,7 +465,7 @@ if ($webpage->get('Webpage Template Filename') == 'register') {
             ),
             '[Signature]'     => $webpage->get('Signature'),
             '[Order Number]'  => $placed_order->get('Public ID'),
-            '[Order Amount]'  => $placed_order->get('Total'),
+            '[Order Amount]'  => $placed_order->get('To Pay'),
             '[Pay Info]'      => get_pay_info($placed_order, $website, $smarty),
             '[Order]'         => $smarty->fetch($theme.'/placed_order.'.$theme.'.EcomB2B.tpl')
 

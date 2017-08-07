@@ -736,6 +736,7 @@ class Customer extends Subject {
         $order_data['Order Tax Number Details Match']      = $this->data['Customer Tax Number Details Match'];
         $order_data['Order Tax Number Registered Name']    = $this->data['Customer Tax Number Registered Name'];
         $order_data['Order Tax Number Registered Address'] = $this->data['Customer Tax Number Registered Address'];
+        $order_data['Order Available Credit Amount']       = $this->data['Customer Account Balance'];
 
 
         $order_data['Order Customer Fiscal Name'] = $this->get('Fiscal Name');
@@ -1508,7 +1509,7 @@ class Customer extends Subject {
 
         if ($dispatch_state == 'all') {
 
-            $dispatch_state_valid_values .= ",'In Process','In Process by Customer','Waiting for Payment Confirmation'";
+            $dispatch_state_valid_values .= ",'In Process','Waiting for Payment Confirmation'";
         }
 
         $order_keys = array();
@@ -2096,7 +2097,7 @@ class Customer extends Subject {
 		min(`Order Date`) AS first_order_date ,
 		max(`Order Date`) AS last_order_date,
 		count(*) AS orders
-		FROM `Order Dimension` WHERE `Order Customer Key`=%d  AND `Order Current Dispatch State` NOT IN ('Cancelled','Cancelled by Customer','In Process by Customer','Waiting for Payment') ",
+		FROM `Order Dimension` WHERE `Order Customer Key`=%d  AND `Order Current Dispatch State` NOT IN ('Cancelled','Cancelled by Customer','In Process','Waiting for Payment') ",
             $this->id
         );
 

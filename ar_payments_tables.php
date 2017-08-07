@@ -204,17 +204,22 @@ function payments($_data, $db, $user) {
                 case 'Cancelled':
                     $status = _('Cancelled');
                     break;
+
                 case 'Error':
                     $status = _('Error');
                     break;
                 case 'Declined':
-                    $status = _('Declined');
+                    $status = '<span class="error">'._('Declined').'</span>';
                     break;
                 default:
                     $status = $data['Payment Transaction Status'];
                     break;
             }
 
+
+
+
+            $status.='<br><span class="small">'.$data['Payment Transaction Status Info'].'</span>';
 
             $notes = '';
 

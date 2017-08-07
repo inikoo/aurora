@@ -2844,20 +2844,18 @@ class Invoice extends DB_Table {
 
         $payment_date_to_update = array(
             'Payment Invoice Key' => $this->id,
-            // 'Payment Balance'=>$payment_amount_not_used,
-            //  'Payment Amount Invoiced'=>$payment_amount_used
+
         );
         //print_r($payment_date_to_update);
         $payment->update($payment_date_to_update);
 
         $sql = sprintf(
             "INSERT INTO `Invoice Payment Bridge`  (`Invoice Key`,`Payment Key`,`Payment Account Key`,`Payment Service Provider Key`,`Amount`) VALUES (%d,%d,%d,%d,%.2f) ", $this->id, $payment->id,
-            $payment->data['Payment Account Key'], $payment->data['Payment Service Provider Key'], $payment->data['Payment Amount']
+            $payment->data['Payment Account Key'], $payment->data['Payment Service Provider Key'], $payment->data['Payment Transaction Amount']
         );
         mysql_query($sql);
 
 
-        $this->update_payment_state();
 
 
         return 0;
@@ -3351,49 +3349,6 @@ class Invoice extends DB_Table {
         $this->update_refund_totals();
     }
 
-    function get_payment_objects($status = '', $load_payment_account = false, $load_payment_service_provider = false) {
-
-
-        $payments = array();
-
-        if ($status) {
-            $where = ' and `Payment Transaction Status`='.prepare_mysql(
-                    $status
-                );
-        } else {
-            $where = '';
-        }
-
-        $sql = sprintf(
-            "SELECT `Payment Currency Code`,B.`Payment Key`,`Amount` FROM `Payment Dimension` PD LEFT JOIN `Invoice Payment Bridge` B ON (B.`Payment Key`=PD.`Payment Key`)  WHERE `Invoice Key`=%d %s",
-            $this->id, $where
-        );
-
-
-        $res = mysql_query($sql);
-        while ($row = mysql_fetch_assoc($res)) {
-
-            $payment = new Payment($row['Payment Key']);
-            if ($load_payment_account) {
-                $payment->load_payment_account();
-            }
-            if ($load_payment_service_provider) {
-                $payment->load_payment_service_provider();
-            }
-
-            $payment->amount                   = $row['Amount'];
-            $payment->formatted_invoice_amount = money(
-                $row['Amount'], $row['Payment Currency Code']
-            );
-
-
-            $payments[$row['Payment Key']] = $payment;
-        }
-
-        return $payments;
-
-
-    }
 
     function get_number_payments($status = '') {
 
@@ -3666,6 +3621,12 @@ class Invoice extends DB_Table {
     function get($key) {
 
         switch ($key) {
+
+            case 'Currency Code':
+
+                return $this->data['Invoice Currency'];
+                break;
+
             case('Items Gross Amount'):
             case('Items Discount Amount'):
             case('Items Net Amount'):

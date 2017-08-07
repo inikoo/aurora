@@ -29,6 +29,37 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
+    case 'new_payment':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'parent'         => array('type' => 'string'),
+                         'parent_key'     => array('type' => 'key'),
+                         'reference'      => array('type' => 'string'),
+                         'payment_method' => array('type' => 'string'),
+
+                         'amount'              => array('type' => 'string'),
+                         'payment_account_key' => array('type' => 'key'),
+
+
+                     )
+        );
+
+        if ($data['parent'] == 'order') {
+            add_payment_to_order($data, $editor, $smarty, $db, $account);
+        } elseif ($data['parent'] == 'order') {
+            add_payment_to_invoice($data, $editor, $smarty, $db, $account);
+        } else {
+            $response = array(
+                'state' => 400,
+                'msg'   => 'Unsupported parent for create new payment '.$parent->get_object_name()
+
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+
+        break;
 
     case 'create_delivery_note':
         $data = prepare_values(
@@ -124,16 +155,16 @@ function edit_item_in_order($account, $db, $user, $editor, $data, $smarty) {
 
     if ($data['parent'] == 'order') {
 
-        $parent->skip_update_after_individual_transaction=false;
+        $parent->skip_update_after_individual_transaction = false;
 
         if (in_array(
             $parent->data['Order Current Dispatch State'], array(
-            'Ready to Pick',
-            'Picking & Packing',
-            'Packed',
-            'Packed Done',
-            'Packing'
-        )
+                                                             'Ready to Pick',
+                                                             'Picking & Packing',
+                                                             'Packed',
+                                                             'Packed Done',
+                                                             'Packing'
+                                                         )
         )) {
             $dispatching_state = 'Ready to Pick';
         } else {
@@ -213,8 +244,9 @@ function set_state($data, $editor, $smarty, $db) {
 
 
     $response = array(
-        'state'    => 200,
-        'metadata' => $object->get_update_metadata()
+        'state'       => 200,
+        'metadata'    => $object->get_update_metadata(),
+        'state_index' => $object->get('State Index')
     );
 
     echo json_encode($response);
@@ -228,7 +260,7 @@ function create_delivery_note($data, $editor, $smarty, $db, $account) {
     $order->editor = $editor;
 
 
-    $dn = $order->send_to_warehouse();
+    $dn = $order->send_to_warehouse(array('Warehouse Key' => 1));
 
 
     if (!$order->error) {
@@ -263,6 +295,199 @@ function create_delivery_note($data, $editor, $smarty, $db, $account) {
 
 
     echo json_encode($response);
+
+}
+
+
+function add_payment_to_order($data, $editor, $smarty, $db, $account) {
+
+
+    $order         = get_object($data['parent'], $data['parent_key']);
+    $order->editor = $editor;
+
+    $payment_account         = get_object('Payment_Account', $data['payment_account_key']);
+    $payment_account->editor = $editor;
+
+
+    $sender_field  = 'Order Invoice Address Recipient';
+    $country_field = 'Order Invoice Address Country 2 Alpha Code';
+
+
+    $payment_data = array(
+        'Payment Store Key'                   => $order->get('Store Key'),
+        'Payment Customer Key'                => $order->get('Customer Key'),
+        'Payment Transaction Amount'          => $data['amount'],
+        'Payment Currency Code'               => $order->get('Currency Code'),
+        'Payment Sender'                      => $order->get($sender_field),
+        'Payment Sender Country 2 Alpha Code' => $order->get($country_field),
+        'Payment Sender Email'                => $order->get('Email'),
+        'Payment Sender Card Type'            => '',
+        'Payment Created Date'                => gmdate('Y-m-d H:i:s'),
+
+        'Payment Completed Date'     => gmdate('Y-m-d H:i:s'),
+        'Payment Last Updated Date'  => gmdate('Y-m-d H:i:s'),
+        'Payment Transaction Status' => 'Completed',
+        'Payment Transaction ID'     => $data['reference'],
+        'Payment Method'             => $data['payment_method'],
+        'Payment Location'           => 'Order',
+        'Payment Metadata'           => '',
+
+
+    );
+
+
+    $payment = $payment_account->create_payment($payment_data);
+
+    $order->add_payment($payment);
+    $order->update_totals();
+
+
+    $operations = array();
+
+
+    $payments_xhtml = '';
+
+    foreach ($order->get_payments('objects','Completed') as $payment) {
+        $payments_xhtml .= sprintf(
+            '<div class="payment node"><span class="node_label link" onClick="change_view(\'%s\')" >%s</span><span class="node_amount" >%s</span></div>',
+            '/order/'.$order->id.'/payment/'.$payment->id,
+            $payment->get('Payment Account Code'),
+            $payment->get('Transaction Amount')
+
+        );
+    }
+
+
+    $metadata = array(
+        'to_pay' => $order->get('Order To Pay Amount'),
+
+        'class_html'    => array(
+            'Order_State'                   => $order->get('State'),
+            'Items_Net_Amount'              => $order->get('Items Net Amount'),
+            'Shipping_Net_Amount'           => $order->get('Shipping Net Amount'),
+            'Charges_Net_Amount'            => $order->get('Charges Net Amount'),
+            'Total_Net_Amount'              => $order->get('Total Net Amount'),
+            'Total_Tax_Amount'              => $order->get('Total Tax Amount'),
+            'Total_Amount'                  => $order->get('Total Amount'),
+            'Total_Amount_Account_Currency' => $order->get('Total Amount Account Currency'),
+            'To_Pay_Amount'                 => $order->get('To Pay Amount'),
+            'Payments_Amount'               => $order->get('Payments Amount'),
+
+
+            'Order_Number_items' => $order->get('Number Items')
+
+        ),
+        'operations'    => $operations,
+        'state_index'   => $order->get('State Index'),
+        'to_pay'        => $order->get('Order To Pay Amount'),
+        'total'         => $order->get('Order Total Amount'),
+        'payments'         => $order->get('Order Payments Amount'),
+
+        'payments_xhtml' => $payments_xhtml
+    );
+
+
+    $response = array(
+        'state'    => 200,
+        'metadata' => $metadata
+    );
+    echo json_encode($response);
+
+
+}
+
+function add_payment_to_invoice($data, $editor, $smarty, $db, $account) {
+
+    //todo add_payment_to_invoice
+
+    $parent         = get_object($data['parent'], $data['parent_key']);
+    $parent->editor = $editor;
+
+    $payment_account         = get_object('Payment_Account', $data['payment_account_key']);
+    $payment_account->editor = $editor;
+
+    if ($parent->get_object_name() == 'Order') {
+        $sender_field  = 'Order Invoice Address Recipient';
+        $country_field = 'Order Invoice Address Country 2 Alpha Code';
+    } elseif ($parent->get_object_name() == 'Order') {
+        $sender_field  = 'Order Invoice Address Recipient';
+        $country_field = 'Order Invoice Address Country 2 Alpha Code';
+    } else {
+        $response = array(
+            'state' => 400,
+            'msg'   => 'Unsupported parent for create new payment '.$parent->get_object_name()
+
+        );
+        echo json_encode($response);
+        exit;
+    }
+
+
+    $payment_data = array(
+        'Payment Store Key'                   => $parent->get('Store Key'),
+        'Payment Customer Key'                => $parent->get('Customer Key'),
+        'Payment Transaction Amount'          => $data['amount'],
+        'Payment Currency Code'               => $parent->get('Currency Code'),
+        'Payment Sender'                      => $parent->get($sender_field),
+        'Payment Sender Country 2 Alpha Code' => $parent->get($country_field),
+        'Payment Sender Email'                => $parent->get('Email'),
+        'Payment Sender Card Type'            => '',
+        'Payment Created Date'                => gmdate('Y-m-d H:i:s'),
+
+        'Payment Completed Date'     => gmdate('Y-m-d H:i:s'),
+        'Payment Last Updated Date'  => gmdate('Y-m-d H:i:s'),
+        'Payment Transaction Status' => 'Completed',
+        'Payment Transaction ID'     => $data['reference'],
+        'Payment Method'             => $data['payment_method'],
+        'Payment Location'           => 'Order',
+        'Payment Metadata'           => '',
+
+
+    );
+
+
+    $payment = $payment_account->create_payment($payment_data);
+
+    $parent->add_payment($payment);
+    $parent->update_totals();
+
+    if ($parent->get_object_name() == 'Order') {
+
+        $metadata = array(
+            'to_pay' => $parent->get('Order To Pay Amount'),
+
+            'class_html'  => array(
+                'Order_State'                   => $this->get('State'),
+                'Items_Net_Amount'              => $this->get('Items Net Amount'),
+                'Shipping_Net_Amount'           => $this->get('Shipping Net Amount'),
+                'Charges_Net_Amount'            => $this->get('Charges Net Amount'),
+                'Total_Net_Amount'              => $this->get('Total Net Amount'),
+                'Total_Tax_Amount'              => $this->get('Total Tax Amount'),
+                'Total_Amount'                  => $this->get('Total Amount'),
+                'Total_Amount_Account_Currency' => $this->get('Total Amount Account Currency'),
+                'To_Pay_Amount'                 => $this->get('To Pay Amount'),
+                'Payments_Amount'               => $this->get('Payments Amount'),
+
+
+                'Order_Number_items' => $this->get('Number Items')
+
+            ),
+            'operations'  => $operations,
+            'state_index' => $this->get('State Index'),
+
+        );
+
+
+        $response = array(
+            'state'    => 200,
+            'metadata' => $metadata
+        );
+        echo json_encode($response);
+
+    } else {
+
+    }
+
 
 }
 

@@ -694,7 +694,15 @@ abstract class DB_Table extends stdClass {
 
     }
 
-    function add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $table_name, $table_key,$update_history_records_data=true) {
+    function add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $table_name='', $table_key='',$update_history_records_data=true) {
+
+
+        if($table_name==''){
+            $table_name=$this->get_object_name();
+        }
+        if($table_key==''){
+            $table_key=$this->id;
+        }
 
         $history_key = $this->add_table_history($history_data, $force_save, '', '', $table_name, $table_key);
 
