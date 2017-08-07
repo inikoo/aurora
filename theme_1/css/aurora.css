@@ -88,6 +88,21 @@ padding-right:5px;
 }
 
 
+
+.margin_left_10{
+	margin-left:10px;
+}
+.margin_left_5{
+	margin-left:5px;
+}
+.margin_right_10{
+	margin-right:10px;
+}
+.margin_right_5{
+	margin-right:5px;
+}
+
+
 input::-webkit-input-placeholder {
 	color: #bbb; }
 input:-moz-placeholder {

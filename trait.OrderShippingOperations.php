@@ -26,7 +26,7 @@ trait OrderShippingOperations {
         $this->new_value = $value;
 
         $this->update_totals();
-        $this->apply_payment_from_customer_account();
+       //$this->apply_payment_from_customer_account();
 
     }
 
@@ -316,7 +316,7 @@ trait OrderShippingOperations {
         $this->update_shipping();
         $this->updated = true;
         $this->update_totals();
-        $this->apply_payment_from_customer_account();
+        //$this->apply_payment_from_customer_account();
         $this->new_value = $this->data['Order Shipping Net Amount'];
 
     }

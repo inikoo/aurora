@@ -512,6 +512,18 @@ function cancel_use_this_card(element){
 
 function place_order(element) {
 
+
+    var button=$(element);
+
+    if(button.hasClass('wait')){
+        return;
+    }
+
+    button.addClass('wait')
+    button.find('i').removeClass('fa-arrow-right').addClass('fa-spinner fa-spin')
+
+
+
     var settings=$(element).data('settings')
 
     var ajaxData = new FormData();
@@ -537,6 +549,8 @@ function place_order(element) {
                 window.location.replace("thanks.sys?order_key="+data.order_key);
 
             } else if (data.state == '400') {
+                button.removeClass('wait')
+                button.find('i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
                 swal("Error!", data.msg, "error")
             }
 

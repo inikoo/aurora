@@ -500,7 +500,7 @@ class Order extends DB_Table {
             $this->update_tax();
             $this->update_totals();
 
-            $this->apply_payment_from_customer_account();
+        //    $this->apply_payment_from_customer_account();
 
 
         } else {
@@ -508,66 +508,6 @@ class Order extends DB_Table {
 
         }
 
-
-    }
-
-    function update_address($type, $fields, $options = '') {
-
-
-        $old_value = $this->get("$type Address");
-
-
-        $updated_fields_number = 0;
-
-        foreach ($fields as $field => $value) {
-            $this->update_field(
-                $this->table_name.' '.$type.' '.$field, $value, 'no_history'
-            );
-            if ($this->updated) {
-                $updated_fields_number++;
-
-            }
-        }
-
-
-        if ($updated_fields_number > 0) {
-            $this->updated = true;
-        }
-
-
-        if ($this->updated) {
-
-            $this->update_address_formatted_fields($type, $options);
-
-
-            if (!preg_match('/no( |\_)history|nohistory/i', $options)) {
-
-                $this->add_changelog_record(
-                    $this->table_name." $type Address", $old_value, $this->get("$type Address"), '', $this->table_name, $this->id
-                );
-
-            }
-
-
-            if ($type == 'Invoice') {
-
-
-                $this->update_tax_number_validation();
-
-                $this->update_tax();
-
-
-            } elseif ($type == 'Delivery') {
-
-
-                $this->update_shipping();
-                $this->update_tax();
-
-
-            }
-
-
-        }
 
     }
 
@@ -1025,96 +965,6 @@ class Order extends DB_Table {
 
         return false;
     }
-
-    function update_address_formatted_fields($type, $options) {
-
-        include_once 'utils/get_addressing.php';
-
-        $new_checksum = md5(
-            json_encode(
-                array(
-                    'Address Recipient'            => $this->get($type.' Address Recipient'),
-                    'Address Organization'         => $this->get($type.' Address Organization'),
-                    'Address Line 1'               => $this->get($type.' Address Line 1'),
-                    'Address Line 2'               => $this->get($type.' Address Line 2'),
-                    'Address Sorting Code'         => $this->get($type.' Address Sorting Code'),
-                    'Address Postal Code'          => $this->get($type.' Address Postal Code'),
-                    'Address Dependent Locality'   => $this->get($type.' Address Dependent Locality'),
-                    'Address Locality'             => $this->get($type.' Address Locality'),
-                    'Address Administrative Area'  => $this->get($type.' Address Administrative Area'),
-                    'Address Country 2 Alpha Code' => $this->get($type.' Address Country 2 Alpha Code'),
-                )
-            )
-        );
-
-
-        $this->update_field(
-            $this->table_name.' '.$type.' Address Checksum', $new_checksum, 'no_history'
-        );
-
-
-        if ($type == 'Delivery') {
-
-            $account = get_object('Account', 1);
-            $country = $account->get('Account Country 2 Alpha Code');
-            $locale  = $account->get('Account Locale');
-        } else {
-
-            if ($this->get('Store Key')) {
-                $store   = new Store($this->get('Store Key'));
-                $country = $store->get('Store Home Country Code 2 Alpha');
-                $locale  = $store->get('Store Locale');
-            } else {
-                $account = et_object('Account', 1);
-                $country = $account->get('Account Country 2 Alpha Code');
-                $locale  = $account->get('Account Locale');
-            }
-        }
-
-        list($address, $formatter, $postal_label_formatter) = get_address_formatter($country, $locale);
-
-
-        $address = $address->withFamilyName($this->get($type.' Address Recipient'))->withOrganization($this->get($type.' Address Organization'))->withAddressLine1($this->get($type.' Address Line 1'))
-            ->withAddressLine2($this->get($type.' Address Line 2'))->withSortingCode($this->get($type.' Address Sorting Code'))->withPostalCode($this->get($type.' Address Postal Code'))
-            ->withDependentLocality(
-                $this->get($type.' Address Dependent Locality')
-            )->withLocality($this->get($type.' Address Locality'))->withAdministrativeArea(
-                $this->get($type.' Address Administrative Area')
-            )->withCountryCode(
-                $this->get($type.' Address Country 2 Alpha Code')
-            );
-
-
-        $xhtml_address = $formatter->format($address);
-
-
-        $xhtml_address = preg_replace(
-            '/class="family-name"/', 'class="recipient fn '.($this->get($type.' Address Recipient') == $this->get('Main Contact Name') and $type == 'Contact' ? 'hide' : '').'"', $xhtml_address
-        );
-
-
-        $xhtml_address = preg_replace(
-            '/class="organization"/', 'class="organization org '.($this->get($type.' Address Organization') == $this->get('Company Name') and $type == 'Contact' ? 'hide' : '').'"', $xhtml_address
-        );
-        $xhtml_address = preg_replace('/class="address-line1"/', 'class="address-line1 street-address"', $xhtml_address);
-        $xhtml_address = preg_replace('/class="address-line2"/', 'class="address-line2 extended-address"', $xhtml_address);
-        $xhtml_address = preg_replace('/class="sort-code"/', 'class="sort-code postal-code"', $xhtml_address);
-        $xhtml_address = preg_replace('/class="country"/', 'class="country country-name"', $xhtml_address);
-
-
-        $xhtml_address = preg_replace('/(class="address-line1 street-address"><\/span>)<br>/', '$1', $xhtml_address);
-
-
-        $xhtml_address = preg_replace('/<br>/', '<br/>', $xhtml_address);
-
-
-        $this->update_field($this->table_name.' '.$type.' Address Formatted', $xhtml_address, 'no_history');
-        $this->update_field(
-            $this->table_name.' '.$type.' Address Postal Label', $postal_label_formatter->format($address), 'no_history'
-        );
-
-    }
-
 
 
     function update_state($value, $options = '', $metadata = array()) {
@@ -1659,7 +1509,7 @@ class Order extends DB_Table {
 
 
         if ($value == 'Yes') {
-            $this->apply_payment_from_customer_account();
+          //  $this->apply_payment_from_customer_account();
         } else {
 
 
@@ -1914,7 +1764,7 @@ class Order extends DB_Table {
 
         $this->update_number_products();
 
-        $this->apply_payment_from_customer_account();
+        //$this->apply_payment_from_customer_account();
 
 
         $customer = new Customer($this->data['Order Customer Key']);
@@ -2929,7 +2779,7 @@ class Order extends DB_Table {
             $this->new_value = $this->data['Order Charges Net Amount'];
 
             $this->update_totals();
-            $this->apply_payment_from_customer_account();
+          //  $this->apply_payment_from_customer_account();
 
 
         }
@@ -2962,7 +2812,7 @@ class Order extends DB_Table {
         mysql_query($sql);
 
         $this->update_totals();
-        $this->apply_payment_from_customer_account();
+       // $this->apply_payment_from_customer_account();
     }
 
     function add_insurance($insurance_key, $dn_key = false) {
@@ -2992,7 +2842,7 @@ class Order extends DB_Table {
 
                 $this->update_totals();
 
-                $this->apply_payment_from_customer_account();
+             //   $this->apply_payment_from_customer_account();
             } else {
                 $onptf_key = $valid_insurances[$insurance_key]['Order No Product Transaction Fact Key'];
             }
@@ -3899,7 +3749,7 @@ VALUES (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 
             $this->update_number_products();
 
-            $this->apply_payment_from_customer_account();
+          //  $this->apply_payment_from_customer_account();
         }
 
 
@@ -3970,7 +3820,7 @@ VALUES (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 
             $this->update_number_products();
 
-            $this->apply_payment_from_customer_account();
+            //$this->apply_payment_from_customer_account();
 
 
         }

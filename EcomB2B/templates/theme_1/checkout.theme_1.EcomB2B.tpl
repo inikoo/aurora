@@ -267,7 +267,7 @@
 
                                             {if isset($content._show_saved_cards) and $labels._show_saved_cards!=''}{$labels._show_saved_cards}{else}{t}Show saved cards list{/t}{/if}
                                         </section>
-                                        <button type="submit" class="button  {if $number_saved_cards>0} state-disabled{/if}  ">{$content._place_order_from_credit_card}</button>
+                                        <button id="place_order_braintree" type="submit" class="button  {if $number_saved_cards>0} state-disabled{/if}  ">{$content._place_order_from_credit_card}  <i class="margin_left_10 fa fa-fw fa-arrow-right" aria-hidden="true"></i>  </button>
                                     </footer>
                                 </form>
 
@@ -290,6 +290,19 @@
 
                                             submitHandler: function(form)
                                             {
+
+
+
+                                                var button=$('#place_order_braintree');
+
+                                                if(button.hasClass('wait')){
+                                                    return;
+                                                }
+
+                                                button.addClass('wait')
+                                                button.find('i').removeClass('fa-arrow-right').addClass('fa-spinner fa-spin')
+
+
 
 
                                                 braintree_client.tokenizeCard({
@@ -382,12 +395,19 @@
 
 
                                                 } else if (data.state == '400') {
+                                                    var button=$('#place_order_braintree');
+                                                    button.removeClass('wait')
+                                                    button.find('i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
+
                                                     swal("{t}Error{/t}!", data.msg, "error")
                                                 }
 
 
 
                                             }, error: function () {
+                                                var button=$('#place_order_braintree');
+                                                button.removeClass('wait')
+                                                button.find('i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
 
                                             }
                                         });
@@ -437,7 +457,7 @@
 
 
                                     <footer>
-                                        <button  data-settings='{ "tipo":"place_order_pay_later", "payment_account_key":"{$payment_account.object->id}", "order_key":"{$order->id}"}' onclick="place_order(this)" class="button" id="_place_order_from_bank">{$content._place_order_from_bank}</button>
+                                        <button  data-settings='{ "tipo":"place_order_pay_later", "payment_account_key":"{$payment_account.object->id}", "order_key":"{$order->id}"}' onclick="place_order(this)" class="button" id="_place_order_from_bank">{$content._place_order_from_bank} <i class="margin_left_10 fa fa-fw fa-arrow-right" aria-hidden="true"></i> </button>
                                     </footer>
                                 </form>
                                 

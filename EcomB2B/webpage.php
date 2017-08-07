@@ -485,29 +485,39 @@ if ($webpage->get('Webpage Template Filename') == 'register') {
     }elseif($webpage->get('Webpage Code')=='basket.sys'){
 
 
-        require_once 'utils/get_addressing.php';
-        require_once 'utils/get_countries.php';
+        if (isset($order) and $order->id) {
 
-        list($invoice_address_format, $invoice_address_labels, $invoice_used_fields, $invoice_hidden_fields, $invoice_required_fields, $invoice_no_required_fields) = get_address_form_data($order->get('Order Invoice Address Country 2 Alpha Code'), $website->get('Website Locale'));
+            require_once 'utils/get_addressing.php';
+            require_once 'utils/get_countries.php';
 
-        $smarty->assign('invoice_address_labels', $invoice_address_labels);
-        $smarty->assign('invoice_required_fields', $invoice_required_fields);
-        $smarty->assign('invoice_no_required_fields', $invoice_no_required_fields);
-        $smarty->assign('invoice_used_address_fields', $invoice_used_fields);
+            list(
+                $invoice_address_format, $invoice_address_labels, $invoice_used_fields, $invoice_hidden_fields, $invoice_required_fields, $invoice_no_required_fields
+                ) = get_address_form_data($order->get('Order Invoice Address Country 2 Alpha Code'), $website->get('Website Locale'));
 
-
-
-        list($delivery_address_format, $delivery_address_labels, $delivery_used_fields, $delivery_hidden_fields, $delivery_required_fields, $delivery_no_required_fields) = get_address_form_data($order->get('Order Invoice Address Country 2 Alpha Code'), $website->get('Website Locale'));
-
-        $smarty->assign('delivery_address_labels', $delivery_address_labels);
-        $smarty->assign('delivery_required_fields', $delivery_required_fields);
-        $smarty->assign('delivery_no_required_fields', $delivery_no_required_fields);
-        $smarty->assign('delivery_used_address_fields', $delivery_used_fields);
+            $smarty->assign('invoice_address_labels', $invoice_address_labels);
+            $smarty->assign('invoice_required_fields', $invoice_required_fields);
+            $smarty->assign('invoice_no_required_fields', $invoice_no_required_fields);
+            $smarty->assign('invoice_used_address_fields', $invoice_used_fields);
 
 
+            list(
+                $delivery_address_format, $delivery_address_labels, $delivery_used_fields, $delivery_hidden_fields, $delivery_required_fields, $delivery_no_required_fields
+                ) = get_address_form_data($order->get('Order Invoice Address Country 2 Alpha Code'), $website->get('Website Locale'));
 
-        $countries = get_countries($website->get('Website Locale'));
-        $smarty->assign('countries', $countries);
+            $smarty->assign('delivery_address_labels', $delivery_address_labels);
+            $smarty->assign('delivery_required_fields', $delivery_required_fields);
+            $smarty->assign('delivery_no_required_fields', $delivery_no_required_fields);
+            $smarty->assign('delivery_used_address_fields', $delivery_used_fields);
+
+
+            $countries = get_countries($website->get('Website Locale'));
+            $smarty->assign('countries', $countries);
+
+        }else {
+
+
+            $template = $theme.'/basket_no_order.'.$theme.'.'.$website->get('Website Type').'.tpl';
+        }
 
 
     }

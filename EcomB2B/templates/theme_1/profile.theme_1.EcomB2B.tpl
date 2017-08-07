@@ -73,7 +73,7 @@
                                 <span class="block_link    selected">
                                     <i class="fa fa-angle-right"></i>
                                     <span class="_orders_title">{$content._orders_title}</span>
-                                    <i block="_orders" onClick="change_block(this)" class="padding_left_10 fa like_button fa-arrow-right"></i>
+                                    <i block="_orders" onClick="change_block(this)" class="padding_left_10 fa like_button fa-floppy-o"></i>
                                 </span>
                             </li>
 
@@ -90,7 +90,7 @@
                 <div class="content_right">
 
 
-                    <div id="_contact_details" class="block reg_form hide">
+                    <div id="_contact_details" class="block reg_form">
                         <form id="contact_details" class="sky-form">
                             <header class="mirror_master" id="_contact_details_title">{$content._contact_details_title}</header>
 
@@ -169,7 +169,7 @@
 
 
                             <footer>
-                                <button type="submit" class="button invisible " id="_save_contact_details_label">{$content._save_contact_details_label}</button>
+                                <button id="save_contact_details_button" type="submit" class="button invisible " >{$content._save_contact_details_label} <i  class="margin_left_10 fa fa-fw fa-floppy-o" aria-hidden="true"></i> </button>
                             </footer>
                         </form>
                     </div>
@@ -203,7 +203,7 @@
 
                             </fieldset>
                             <footer>
-                                <button type="submit" class="button invisible" id="_save_login_details_label">{$content._save_login_details_label}</button>
+                                <button type="submit" class="button invisible" id="save_login_details_button">{$content._save_login_details_label} <i  class="margin_left_10 fa fa-fw fa-floppy-o" aria-hidden="true"></i> </button>
 
                             </footer>
                         </form>
@@ -227,6 +227,8 @@
                                     <section id="invoice_addressLine1" class="{if 'addressLine1'|in_array:$invoice_used_address_fields}{else}hide{/if}">
 
                                         <label for="file" class="input">
+                                            <label class="label">{if isset($labels.address_addressLine1) and $labels.address_addressLine1!=''}{$labels.address_addressLine1}{else}{t}Address Line 1{/t}{/if}</label>
+
                                             <input value="{$customer->get('Customer Invoice Address Line 1')}" type="text"  name="addressLine1" class="{if 'addressLine1'|in_array:$invoice_used_address_fields}{else}ignore{/if}" placeholder="{if isset($labels.address_addressLine1) and $labels.address_addressLine1!=''}{$labels.address_addressLine1}{else}{t}Address Line 1{/t}{/if}">
                                             <b class="tooltip tooltip-bottom-right">{if isset($labels.address_addressLine1) and $labels.address_addressLine1!=''}{$labels.address_addressLine1}{else}{t}Address Line 1{/t}{/if}</b>
                                         </label>
@@ -234,6 +236,8 @@
 
                                     <section id="invoice_addressLine2" class="{if 'addressLine2'|in_array:$invoice_used_address_fields}{else}hide{/if}">
                                         <label for="file" class="input">
+                                            <label class="label">{if isset($labels.address_addressLine2) and $labels.address_addressLine2!=''}{$labels.address_addressLine2}{else}{t}Address Line 2{/t}{/if}</label>
+
                                             <input  value="{$customer->get('Customer Invoice Address Line 2')}"  type="text" name="addressLine2" class="{if 'addressLine2'|in_array:$invoice_used_address_fields}{else}ignore{/if}" placeholder="{if isset($labels.address_addressLine2) and $labels.address_addressLine2!=''}{$labels.address_addressLine2}{else}{t}Address Line 2{/t}{/if}">
                                             <b class="tooltip tooltip-bottom-right">{if isset($labels.address_addressLine2) and $labels.address_addressLine2!=''}{$labels.address_addressLine2}{else}{t}Address Line 2{/t}{/if}</b>
                                         </label>
@@ -244,6 +248,8 @@
                                     <div id="invoice_sortingCode" class="row {if 'sortingCode'|in_array:$invoice_used_address_fields}{else}hide{/if}">
                                         <section class="col col-6 " >
                                             <label class="input">
+                                                <label class="label">{if isset($labels.address_sorting_code) and $labels.address_sorting_code!=''}{$labels.address_sorting_code}{else}{t}Sorting code{/t}{/if}</label>
+
                                                 <input value="{$customer->get('Customer Invoice Address Sorting Code')}"  type="text" name="sortingCode" class="{if 'sortingCode'|in_array:$invoice_used_address_fields}{else}ignore{/if}" placeholder="{if isset($labels.address_sorting_code) and $labels.address_sorting_code!=''}{$labels.address_sorting_code}{else}{t}Sorting code{/t}{/if}">
                                                 <b class="tooltip tooltip-bottom-right">{if isset($labels.address_sorting_code) and $labels.address_sorting_code!=''}{$labels.address_sorting_code}{else}{t}Sorting code{/t}{/if}</b>
                                             </label>
@@ -255,6 +261,8 @@
                                     <div id="invoice_postalCode" class="row {if 'postalCode'|in_array:$invoice_used_address_fields}{else}hide{/if}">
                                         <section class="col col-6 " >
                                             <label class="input">
+                                                <label class="label">{if isset($labels["postalCode_`$delivery_address_labels.postalCode.code`"]) and $labels["postalCode_`$delivery_address_labels.postalCode.code`"]!=''}{$labels["postalCode_`$delivery_address_labels.postalCode.code`"]}{else}{$address_labels.postalCode.label}{/if}</label>
+
                                                 <input value="{$customer->get('Customer Invoice Address Postal Code')}"  type="text" name="postalCode" class="{if 'postalCode'|in_array:$invoice_used_address_fields}{else}ignore{/if}" placeholder="{if isset($labels["postalCode_`$invoice_address_labels.postalCode.code`"]) and $labels["postalCode_`$invoice_address_labels.postalCode.code`"]!=''}{$labels["postalCode_`$invoice_address_labels.postalCode.code`"]}{else}{$address_labels.postalCode.label}{/if}">
                                                 <b class="tooltip tooltip-bottom-right">{if isset($labels["postalCode_`$invoice_address_labels.postalCode.code`"]) and $labels["postalCode_`$invoice_address_labels.postalCode.code`"]!=''}{$labels["postalCode_`$invoice_address_labels.postalCode.code`"]}{else}{$address_labels.postalCode.label}{/if}</b>
                                             </label>
@@ -266,6 +274,8 @@
                                     <div id="invoice_dependentLocality" class="row {if 'dependentLocality'|in_array:$invoice_used_address_fields}{else}hide{/if}">
                                         <section class="col col-6 " >
                                             <label class="input">
+                                                <label class="label">{if isset($labels["dependentLocality_`$delivery_address_labels.dependentLocality.code`"]) and $labels["dependentLocality_`$delivery_address_labels.dependentLocality.code`"]!=''}{$labels["dependentLocality_`$delivery_address_labels.dependentLocality.code`"]}{else}{$address_labels.dependentLocality.label}{/if}</label>
+
                                                 <input value="{$customer->get('Customer Invoice Address Dependent Locality')}"  type="text" name="dependentLocality" class="{if 'dependentLocality'|in_array:$invoice_used_address_fields}{else}ignore{/if}" placeholder="{if isset($labels["dependentLocality_`$invoice_address_labels.dependentLocality.code`"]) and $labels["dependentLocality_`$invoice_address_labels.dependentLocality.code`"]!=''}{$labels["dependentLocality_`$invoice_address_labels.dependentLocality.code`"]}{else}{$address_labels.dependentLocality.label}{/if}">
                                                 <b class="tooltip tooltip-bottom-right">{if isset($labels["dependentLocality_`$invoice_address_labels.dependentLocality.code`"]) and $labels["dependentLocality_`$invoice_address_labels.dependentLocality.code`"]!=''}{$labels["dependentLocality_`$invoice_address_labels.dependentLocality.code`"]}{else}{$address_labels.dependentLocality.label}{/if}</b>
                                             </label>
@@ -276,8 +286,11 @@
                                     <div id="invoice_locality" class="row {if 'locality'|in_array:$invoice_used_address_fields}{else}hide{/if}">
                                         <section class="col col-6 " >
                                             <label class="input">
+                                                <label class="label">{if isset($labels["locality_`$delivery_address_labels.locality.code`"]) and $labels["locality_`$delivery_address_labels.locality.code`"]!=''}{$labels["locality_`$delivery_address_labels.locality.code`"]}{else}{$address_labels.locality.label}{/if}</label>
+
                                                 <input value="{$customer->get('Customer Invoice Address Locality')}"  type="text" name="locality" class="{if 'locality'|in_array:$invoice_used_address_fields}{else}ignore{/if}" placeholder="{if isset($labels["locality_`$invoice_address_labels.locality.code`"]) and $labels["locality_`$invoice_address_labels.locality.code`"]!=''}{$labels["locality_`$invoice_address_labels.locality.code`"]}{else}{$address_labels.locality.label}{/if}">
-                                                <b class="tooltip tooltip-bottom-right"></b>
+                                                <b class="tooltip tooltip-bottom-right">{if isset($labels["locality_`$delivery_address_labels.locality.code`"]) and $labels["locality_`$delivery_address_labels.locality.code`"]!=''}{$labels["locality_`$delivery_address_labels.locality.code`"]}{else}{$address_labels.locality.label}{/if}</b>
+
                                             </label>
                                         </section>
 
@@ -287,6 +300,8 @@
                                     <div id="invoice_administrativeArea" class="row {if 'administrativeArea'|in_array:$invoice_used_address_fields}{else}hide{/if}">
                                         <section class="col col-6 " >
                                             <label class="input">
+                                                <label class="label">{if isset($labels["administrativeArea_`$delivery_address_labels.administrativeArea.code`"]) and $labels["administrativeArea_`$delivery_address_labels.administrativeArea.code`"]!=''}{$labels["administrativeArea_`$delivery_address_labels.administrativeArea.code`"]}{else}{$address_labels.administrativeArea.label}{/if}</label>
+
                                                 <input value="{$customer->get('Customer Invoice Address Administrative Area')}"  type="text" name="administrativeArea" class="{if 'administrativeArea'|in_array:$invoice_used_address_fields}{else}ignore{/if}" placeholder="{if isset($labels["administrativeArea_`$invoice_address_labels.administrativeArea.code`"]) and $labels["administrativeArea_`$invoice_address_labels.administrativeArea.code`"]!=''}{$labels["administrativeArea_`$invoice_address_labels.administrativeArea.code`"]}{else}{$address_labels.administrativeArea.label}{/if}">
                                                 <b class="tooltip tooltip-bottom-right">{if isset($labels["administrativeArea_`$invoice_address_labels.administrativeArea.code`"]) and $labels["administrativeArea_`$invoice_address_labels.administrativeArea.code`"]!=''}{$labels["administrativeArea_`$invoice_address_labels.administrativeArea.code`"]}{else}{$address_labels.administrativeArea.label}{/if}</b>
                                             </label>
@@ -318,7 +333,7 @@
 
 
                                 <footer>
-                                    <button type="submit" class="button invisible" id="_save_invoice_address_details_label" >{$content._save_invoice_address_details_label}</button>
+                                    <button type="submit" class="button invisible" id="save_invoice_address_details_button" >{$content._save_invoice_address_details_label} <i  class="margin_left_10 fa fa-fw fa-floppy-o" aria-hidden="true"></i> </button>
                                 </footer>
                             </form>
                         </div>
@@ -326,7 +341,7 @@
 
                     </div>
 
-                    <div id="_delivery_addresses_details" class="block xhide reg_form">
+                    <div id="_delivery_addresses_details" class="block hide reg_form">
                         <div class="address_form" >
                             <form id="delivery_address_form" class="sky-form">
                                 <header id="_title">{$content._delivery_addresses_title}</header>
@@ -354,6 +369,8 @@
                                     <section id="delivery_addressLine1" class="{if 'addressLine1'|in_array:$delivery_used_address_fields}{else}hide{/if}">
 
                                         <label for="file" class="input">
+                                            <label class="label">{if isset($labels.address_addressLine1) and $labels.address_addressLine1!=''}{$labels.address_addressLine1}{else}{t}Address Line 1{/t}{/if}</label>
+
                                             <input value="{$customer->get('Customer Delivery Address Line 1')}" type="text"  name="addressLine1" class="{if 'addressLine1'|in_array:$delivery_used_address_fields}{else}ignore{/if}" placeholder="{if isset($labels.address_addressLine1) and $labels.address_addressLine1!=''}{$labels.address_addressLine1}{else}{t}Address Line 1{/t}{/if}">
                                             <b class="tooltip tooltip-bottom-right">{if isset($labels.address_addressLine1) and $labels.address_addressLine1!=''}{$labels.address_addressLine1}{else}{t}Address Line 1{/t}{/if}</b>
                                         </label>
@@ -361,6 +378,8 @@
 
                                     <section id="delivery_addressLine2" class="{if 'addressLine2'|in_array:$delivery_used_address_fields}{else}hide{/if}">
                                         <label for="file" class="input">
+                                            <label class="label">{if isset($labels.address_addressLine2) and $labels.address_addressLine2!=''}{$labels.address_addressLine2}{else}{t}Address Line 2{/t}{/if}</label>
+
                                             <input  value="{$customer->get('Customer Delivery Address Line 2')}"  type="text" name="addressLine2" class="{if 'addressLine2'|in_array:$delivery_used_address_fields}{else}ignore{/if}" placeholder="{if isset($labels.address_addressLine2) and $labels.address_addressLine2!=''}{$labels.address_addressLine2}{else}{t}Address Line 2{/t}{/if}">
                                             <b class="tooltip tooltip-bottom-right">{if isset($labels.address_addressLine2) and $labels.address_addressLine2!=''}{$labels.address_addressLine2}{else}{t}Address Line 2{/t}{/if}</b>
                                         </label>
@@ -371,6 +390,8 @@
                                     <div id="delivery_sortingCode" class="row {if 'sortingCode'|in_array:$delivery_used_address_fields}{else}hide{/if}">
                                         <section class="col col-6 " >
                                             <label class="input">
+                                                <label class="label">{if isset($labels.address_sorting_code) and $labels.address_sorting_code!=''}{$labels.address_sorting_code}{else}{t}Sorting code{/t}{/if}</label>
+
                                                 <input value="{$customer->get('Customer Delivery Address Sorting Code')}"  type="text" name="sortingCode" class="{if 'sortingCode'|in_array:$delivery_used_address_fields}{else}ignore{/if}" placeholder="{if isset($labels.address_sorting_code) and $labels.address_sorting_code!=''}{$labels.address_sorting_code}{else}{t}Sorting code{/t}{/if}">
                                                 <b class="tooltip tooltip-bottom-right">{if isset($labels.address_sorting_code) and $labels.address_sorting_code!=''}{$labels.address_sorting_code}{else}{t}Sorting code{/t}{/if}</b>
                                             </label>
@@ -382,6 +403,8 @@
                                     <div id="delivery_postalCode" class="row {if 'postalCode'|in_array:$delivery_used_address_fields}{else}hide{/if}">
                                         <section class="col col-6 " >
                                             <label class="input">
+                                                <label class="label">{if isset($labels["postalCode_`$delivery_address_labels.postalCode.code`"]) and $labels["postalCode_`$delivery_address_labels.postalCode.code`"]!=''}{$labels["postalCode_`$delivery_address_labels.postalCode.code`"]}{else}{$address_labels.postalCode.label}{/if}</label>
+
                                                 <input value="{$customer->get('Customer Delivery Address Postal Code')}"  type="text" name="postalCode" class="{if 'postalCode'|in_array:$delivery_used_address_fields}{else}ignore{/if}" placeholder="{if isset($labels["postalCode_`$delivery_address_labels.postalCode.code`"]) and $labels["postalCode_`$delivery_address_labels.postalCode.code`"]!=''}{$labels["postalCode_`$delivery_address_labels.postalCode.code`"]}{else}{$address_labels.postalCode.label}{/if}">
                                                 <b class="tooltip tooltip-bottom-right">{if isset($labels["postalCode_`$delivery_address_labels.postalCode.code`"]) and $labels["postalCode_`$delivery_address_labels.postalCode.code`"]!=''}{$labels["postalCode_`$delivery_address_labels.postalCode.code`"]}{else}{$address_labels.postalCode.label}{/if}</b>
                                             </label>
@@ -393,6 +416,8 @@
                                     <div id="delivery_dependentLocality" class="row {if 'dependentLocality'|in_array:$delivery_used_address_fields}{else}hide{/if}">
                                         <section class="col col-6 " >
                                             <label class="input">
+                                                <label class="label">{if isset($labels["dependentLocality_`$delivery_address_labels.dependentLocality.code`"]) and $labels["dependentLocality_`$delivery_address_labels.dependentLocality.code`"]!=''}{$labels["dependentLocality_`$delivery_address_labels.dependentLocality.code`"]}{else}{$address_labels.dependentLocality.label}{/if}</label>
+
                                                 <input value="{$customer->get('Customer Delivery Address Dependent Locality')}"  type="text" name="dependentLocality" class="{if 'dependentLocality'|in_array:$delivery_used_address_fields}{else}ignore{/if}" placeholder="{if isset($labels["dependentLocality_`$delivery_address_labels.dependentLocality.code`"]) and $labels["dependentLocality_`$delivery_address_labels.dependentLocality.code`"]!=''}{$labels["dependentLocality_`$delivery_address_labels.dependentLocality.code`"]}{else}{$address_labels.dependentLocality.label}{/if}">
                                                 <b class="tooltip tooltip-bottom-right">{if isset($labels["dependentLocality_`$delivery_address_labels.dependentLocality.code`"]) and $labels["dependentLocality_`$delivery_address_labels.dependentLocality.code`"]!=''}{$labels["dependentLocality_`$delivery_address_labels.dependentLocality.code`"]}{else}{$address_labels.dependentLocality.label}{/if}</b>
                                             </label>
@@ -403,8 +428,10 @@
                                     <div id="delivery_locality" class="row {if 'locality'|in_array:$delivery_used_address_fields}{else}hide{/if}">
                                         <section class="col col-6 " >
                                             <label class="input">
+                                                <label class="label">{if isset($labels["locality_`$delivery_address_labels.locality.code`"]) and $labels["locality_`$delivery_address_labels.locality.code`"]!=''}{$labels["locality_`$delivery_address_labels.locality.code`"]}{else}{$address_labels.locality.label}{/if}</label>
+
                                                 <input value="{$customer->get('Customer Delivery Address Locality')}"  type="text" name="locality" class="{if 'locality'|in_array:$delivery_used_address_fields}{else}ignore{/if}" placeholder="{if isset($labels["locality_`$delivery_address_labels.locality.code`"]) and $labels["locality_`$delivery_address_labels.locality.code`"]!=''}{$labels["locality_`$delivery_address_labels.locality.code`"]}{else}{$address_labels.locality.label}{/if}">
-                                                <b class="tooltip tooltip-bottom-right"></b>
+                                                <b class="tooltip tooltip-bottom-right">{if isset($labels["locality_`$delivery_address_labels.locality.code`"]) and $labels["locality_`$delivery_address_labels.locality.code`"]!=''}{$labels["locality_`$delivery_address_labels.locality.code`"]}{else}{$address_labels.locality.label}{/if}</b>
                                             </label>
                                         </section>
 
@@ -414,6 +441,8 @@
                                     <div id="delivery_administrativeArea" class="row {if 'administrativeArea'|in_array:$delivery_used_address_fields}{else}hide{/if}">
                                         <section class="col col-6 " >
                                             <label class="input">
+                                                <label class="label">{if isset($labels["administrativeArea_`$delivery_address_labels.administrativeArea.code`"]) and $labels["administrativeArea_`$delivery_address_labels.administrativeArea.code`"]!=''}{$labels["administrativeArea_`$delivery_address_labels.administrativeArea.code`"]}{else}{$address_labels.administrativeArea.label}{/if}</label>
+
                                                 <input value="{$customer->get('Customer Delivery Address Administrative Area')}"  type="text" name="administrativeArea" class="{if 'administrativeArea'|in_array:$delivery_used_address_fields}{else}ignore{/if}" placeholder="{if isset($labels["administrativeArea_`$delivery_address_labels.administrativeArea.code`"]) and $labels["administrativeArea_`$delivery_address_labels.administrativeArea.code`"]!=''}{$labels["administrativeArea_`$delivery_address_labels.administrativeArea.code`"]}{else}{$address_labels.administrativeArea.label}{/if}">
                                                 <b class="tooltip tooltip-bottom-right">{if isset($labels["administrativeArea_`$delivery_address_labels.administrativeArea.code`"]) and $labels["administrativeArea_`$delivery_address_labels.administrativeArea.code`"]!=''}{$labels["administrativeArea_`$delivery_address_labels.administrativeArea.code`"]}{else}{$address_labels.administrativeArea.label}{/if}</b>
                                             </label>
@@ -425,7 +454,16 @@
                                     <div class="row" >
                                         <section class="col col-5">
                                             <label class="select">
-                                                <fieldset></label>
+                                                <select id="invoice_country_select" name="country">
+                                                    <option value="0" selected disabled>{if isset($labels.address_country) and $labels.address_country!=''}{$labels.address_country}{else}{t}Country{/t}{/if}</option>
+
+                                                    {foreach from=$countries item=country}
+                                                        <option value="{$country.2alpha}" {if $country.2alpha==$customer->get('Customer Delivery Address Country 2 Alpha Code')}selected{/if} >{$country.name}</option>
+                                                    {/foreach}
+
+
+                                                    <select><i></i>
+                                            </label>
                                         </section>
 
 
@@ -436,7 +474,7 @@
 
 
                                 <footer>
-                                    <button type="submit" class="button invisible"  id="_save_delivery_address_details_label" >{$content._save_delivery_address_details_label}</button>
+                                    <button type="submit" class="button invisible"  id="save_delivery_address_details_button" >{$content._save_delivery_address_details_label} <i  class="margin_left_10 fa fa-fw fa-floppy-o" aria-hidden="true"></i> </button>
 
                                 </footer>
                             </form>
@@ -500,6 +538,16 @@
             {
 
 
+                var button=$('#save_contact_details_button');
+
+                if(button.hasClass('wait')){
+                    return;
+                }
+
+                button.addClass('wait')
+                button.find('i').removeClass('fa-floppy-o').addClass('fa-spinner fa-spin')
+
+
                 var register_data={ }
 
                 $("#contact_details input:not(.ignore)").each(function(i, obj) {
@@ -544,8 +592,13 @@
                         }
 
 
+                        button.removeClass('wait').addClass('invisible')
+                        button.find('i').addClass('fa-floppy-o').removeClass('fa-spinner fa-spin')
+
 
                     }, error: function () {
+                        button.removeClass('wait')
+                        button.find('i').addClass('fa-floppy-o').removeClass('fa-spinner fa-spin')
 
                     }
                 });
@@ -624,7 +677,7 @@
 
 
     $(document).on('keyup paste change', "#contact_details :input", function(ev){
-        $('#_save_contact_details_label').removeClass('invisible')
+        $('#save_contact_details_button').removeClass('invisible')
     });
 
     $("#login_details").validate(
@@ -632,6 +685,15 @@
 
             submitHandler: function(form)
             {
+
+                var button=$('#save_login_details_button');
+
+                if(button.hasClass('wait')){
+                    return;
+                }
+
+                button.addClass('wait')
+                button.find('i').removeClass('fa-floppy-o').addClass('fa-spinner fa-spin')
 
 
                 var register_data={ }
@@ -677,10 +739,12 @@
                             swal("{t}Error{/t}!", data.msg, "error")
                         }
 
-
+                        button.removeClass('wait').addClass('invisible')
+                        button.find('i').addClass('fa-floppy-o').removeClass('fa-spinner fa-spin')
 
                     }, error: function () {
-
+                        button.removeClass('wait').addClass('invisible')
+                        button.find('i').addClass('fa-floppy-o').removeClass('fa-spinner fa-spin')
                     }
                 });
 
@@ -736,15 +800,15 @@
 
 
     $(document).on('keyup paste change', "#login_details :input", function(ev){
-        $('#_save_login_details_label').removeClass('invisible')
+        $('#save_login_details_button').removeClass('invisible')
     });
 
     $(document).on('keyup paste change', "#invoice_address_form :input", function(ev){
-        $('#_save_invoice_address_details_label').removeClass('invisible')
+        $('#save_invoice_address_details_button').removeClass('invisible')
     });
 
     $(document).on('keyup paste change', "#delivery_address_form :input", function(ev){
-        $('#_save_delivery_address_details_label').removeClass('invisible')
+        $('#save_delivery_address_details_button').removeClass('invisible')
     });
 
 
@@ -823,6 +887,16 @@
             submitHandler: function(form)
             {
 
+                var button=$('#save_invoice_address_details_button');
+
+                if(button.hasClass('wait')){
+                    return;
+                }
+
+                button.addClass('wait')
+                button.find('i').removeClass('fa-floppy-o').addClass('fa-spinner fa-spin')
+
+
 
                 var register_data={ }
 
@@ -866,9 +940,13 @@
                             swal("{t}Error{/t}!", data.msg, "error")
                         }
 
-
+                        button.removeClass('wait').addClass('invisible')
+                        button.find('i').addClass('fa-floppy-o').removeClass('fa-spinner fa-spin')
 
                     }, error: function () {
+
+                        button.removeClass('wait').addClass('invisible')
+                        button.find('i').addClass('fa-floppy-o').removeClass('fa-spinner fa-spin')
 
                     }
                 });
@@ -941,6 +1019,9 @@
 
     $( "#delivery_country_select" ).change(function() {
 
+
+
+
         var selected=$( "#delivery_country_select option:selected" )
         // console.log(selected.val())
 
@@ -1004,6 +1085,16 @@
             {
 
 
+                var button=$('#save_delivery_address_details_button');
+
+                if(button.hasClass('wait')){
+                    return;
+                }
+
+                button.addClass('wait')
+                button.find('i').removeClass('fa-floppy-o').addClass('fa-spinner fa-spin')
+
+
                 var register_data={ }
 
                 $("#delivery_address_form input:not(.ignore)").each(function(i, obj) {
@@ -1049,10 +1140,12 @@
                             swal("{t}Error{/t}!", data.msg, "error")
                         }
 
-
+                        button.removeClass('wait').addClass('invisible')
+                        button.find('i').addClass('fa-floppy-o').removeClass('fa-spinner fa-spin')
 
                     }, error: function () {
-
+                        button.removeClass('wait').addClass('invisible')
+                        button.find('i').addClass('fa-floppy-o').removeClass('fa-spinner fa-spin')
                     }
                 });
 

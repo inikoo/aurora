@@ -210,7 +210,7 @@
 
                         </fieldset>
                         <footer>
-                            <button type="submit" class="button" id="_submit_label">{$content._submit_label}</button>
+                            <button  id="register_button" type="submit" class="button" ">{$content._submit_label}  <i  class="fa fa-fw  fa-arrow-right" aria-hidden="true"></i> </button>
                         </footer>
                     </form>
                 </div>
@@ -299,6 +299,13 @@
             {
 
 
+                if($('#register_button').hasClass('wait')){
+                    return;
+                }
+
+                $('#register_button').addClass('wait')
+                $('#register_button i').removeClass('fa-arrow-right').addClass('fa-spinner fa-spin')
+
                 var register_data={ }
 
                 $("#registration_form input:not(.ignore)").each(function(i, obj) {
@@ -333,7 +340,8 @@
                     complete: function () {
                     }, success: function (data) {
 
-                        console.log(data)
+
+
 
                         if (data.state == '200') {
 
@@ -345,9 +353,16 @@
                             swal("{t}Error{/t}!", data.msg, "error")
                         }
 
+                        $('#register_button').removeClass('wait')
+                        $('#register_button i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
 
 
                     }, error: function () {
+
+
+                        $('#register_button').removeClass('wait')
+                        $('#register_button i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
+
 
                     }
                 });

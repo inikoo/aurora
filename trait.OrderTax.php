@@ -152,7 +152,7 @@ trait OrderTax {
         $this->db->exec($sql);
 
         $this->update_totals();
-        $this->apply_payment_from_customer_account();
+       // $this->apply_payment_from_customer_account();
 
     }
 

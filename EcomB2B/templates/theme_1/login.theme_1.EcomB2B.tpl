@@ -63,7 +63,7 @@
                             </section>
                         </fieldset>
                         <footer>
-                            <button type="submit" class="button">{$content._log_in_label}</button>
+                            <button id="login_button" type="submit" class="button">{$content._log_in_label}  <i  class="fa fa-fw  fa-arrow-right" aria-hidden="true"></i> </button>
                             <a href="/register.sys" class="button button-secondary">{$content._register_label}</a>
                         </footer>
                     </form>
@@ -85,7 +85,7 @@
                         </fieldset>
 
                         <footer>
-                            <button type="submit" name="submit" class="button">{$content._submit_label}</button>
+                            <button id="recovery_button" type="submit" name="submit" class="button">{$content._submit_label} <i  class="fa fa-fw  fa-arrow-right" aria-hidden="true"></i> </button>
                             <button id="close_recovery" class="button button-secondary modal-closer">{$content._close_label}</button>
                         </footer>
 
@@ -96,7 +96,7 @@
                             <span class="password_recovery_msg error hide" id="password_recovery_unknown_error_msg" >{$content._password_recovery_unknown_error_msg}</span>
 
                             <br>
-                            <a href="login"  class="modal-closer" id="password_recovery_go_back" >{$content._password_recovery_go_back}</a href="login">
+                            <a href="login"  class="modal-closer" id="password_recovery_go_back" >{$content._password_recovery_go_back}</a>
 
 
                         </div>
@@ -168,6 +168,18 @@
             submitHandler: function(form)
             {
 
+
+                var button=$('#login_button');
+
+                if(button.hasClass('wait')){
+                    return;
+                }
+
+                button.addClass('wait')
+                button.find('i').removeClass('fa-arrow-right').addClass('fa-spinner fa-spin')
+
+
+
                 var ajaxData = new FormData();
 
                 ajaxData.append("tipo", 'login')
@@ -192,8 +204,12 @@
                         }
 
 
+                        button.removeClass('wait')
+                        button.find('i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
 
                     }, error: function () {
+                        button.removeClass('wait')
+                        button.find('i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin f')
 
                     }
                 });
@@ -254,6 +270,15 @@
         submitHandler: function(form)
         {
 
+
+            if($('#recovery_button').hasClass('wait')){
+                return;
+            }
+
+            $('#recovery_button').addClass('wait')
+            $('#recovery_button i').removeClass('fa-arrow-right').addClass('fa-spinner fa-spin')
+
+
             var ajaxData = new FormData();
 
             ajaxData.append("tipo", 'recover_password')
@@ -268,6 +293,8 @@
                 url: "/ar_web_recover_password.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
                 complete: function () {
                 }, success: function (data) {
+
+
 
                     $("#password_recovery_form").addClass('submited')
 
@@ -289,9 +316,14 @@
                         $('#password_recovery_go_back').removeClass('hide')
                     }
 
+                    $('#recovery_button').removeClass('wait')
+                    $('#recovery_button i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
 
 
                 }, error: function () {
+
+                    $('#recovery_button').removeClass('wait')
+                    $('#recovery_button i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
 
                 }
             });
