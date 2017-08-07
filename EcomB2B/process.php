@@ -64,7 +64,7 @@ if (is_numeric($result)) {
 function get_url($site_key, $url, $dns_host, $dns_user, $dns_pwd, $dns_db) {
 
 
-
+$xxx=$url;
 
     $db = new PDO(
         "mysql:host=$dns_host;dbname=$dns_db;charset=utf8", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
@@ -109,12 +109,10 @@ function get_url($site_key, $url, $dns_host, $dns_user, $dns_pwd, $dns_db) {
 
 
 
-    print $original_url;
-
+    print $xxx;
     if (preg_match('/^sitemap\.xml$/', $url, $match)) {
 
 
-        exit('xxxx');
 
 
         return '/sitemap_index.xml.php';
@@ -147,6 +145,8 @@ function get_url($site_key, $url, $dns_host, $dns_user, $dns_pwd, $dns_db) {
 
 
         } else {
+
+
 
 exit;
 
