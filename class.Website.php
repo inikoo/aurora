@@ -1429,6 +1429,15 @@ class Website extends DB_Table {
 
 
 
+        $sql = sprintf(
+            "DELETE FROM `Sitemap Dimension` WHERE `Sitemap Website Key`=%d  ", $this->id
+        );
+
+        
+
+        $this->db->exec($sql);
+
+
         include_once 'class.Sitemap.php';
         $sitemap = new Sitemap($this->id);
         $sitemap->page('info');
