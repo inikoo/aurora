@@ -12,693 +12,97 @@
 
 
 $webpage = new Public_Webpage($webpage_key);
+if($webpage->id) {
 
 
-$content = $webpage->get('Content Data');
+    $content = $webpage->get('Content Data');
 
 
-if ($webpage->get('Webpage Template Filename') == 'register') {
+    if ($webpage->get('Webpage Template Filename') == 'register') {
 
-    if ($logged_in) {
-        header('Location: /index.php');
-        exit;
-    }
-
-
-    if (array_key_exists("HTTP_CF_IPCOUNTRY", $_SERVER) and $_SERVER["HTTP_CF_IPCOUNTRY"] != 'XX') {
-        $country_code = $_SERVER["HTTP_CF_IPCOUNTRY"];
-    } else {
-        $country_code = $store->get('Store Home Country Code 2 Alpha');
-    }
-
-
-    require_once 'utils/get_addressing.php';
-    list($address_format, $address_labels, $used_fields, $hidden_fields, $required_fields, $no_required_fields) = get_address_form_data($country_code, $website->get('Website Locale'));
-
-
-    require_once 'utils/get_countries.php';
-    $countries = get_countries($website->get('Website Locale'));
-
-
-    $smarty->assign('address_labels', $address_labels);
-
-    $smarty->assign('required_fields', $required_fields);
-    $smarty->assign('no_required_fields', $no_required_fields);
-
-    $smarty->assign('used_address_fields', $used_fields);
-    $smarty->assign('countries', $countries);
-    $smarty->assign('selected_country', $country_code);
-    $template = $theme.'/register.'.$theme.'.'.$website->get('Website Type').'.tpl';
-
-} elseif ($webpage->get('Webpage Template Filename') == 'login') {
-
-    if ($logged_in) {
-        header('Location: /index.php');
-        exit;
-    }
-
-    if (isset($_REQUEST['fp'])) {
-        $smarty->assign('display', 'forgot_password');
-    } else {
-        $smarty->assign('display', 'login');
-    }
-
-
-    $template = $theme.'/login.'.$theme.'.'.$website->get('Website Type').'.tpl';
-} elseif ($webpage->get('Webpage Template Filename') == 'search') {
-
-    if (!empty($_REQUEST['q'])) {
-        $search_query = $_REQUEST['q'];
-    } else {
-        $search_query = '';
-    }
-    $smarty->assign('search_query', $search_query);
-
-    $template = $theme.'/search.'.$theme.'.'.$website->get('Website Type').'.tpl';
-} elseif ($webpage->get('Webpage Template Filename') == 'welcome') {
-
-    if (!$logged_in) {
-        header('Location: /index.php');
-        exit;
-    }
-
-    $template = $theme.'/webpage_blocks.'.$theme.'.'.$website->get('Website Type').'.tpl';
-
-} elseif ($webpage->get('Webpage Template Filename') == 'categories_showcase') {
-
-    include_once 'class.Public_Category.php';
-    $category = new Public_Category($webpage->get('Webpage Scope Key'));
-
-    $content_data = $webpage->get('Content Data');
-
-    $smarty->assign('sections', $content_data['sections']);
-    $smarty->assign('content_data', $content_data);
-    $smarty->assign('category', $category);
-
-    $template = $theme.'/categories_showcase.'.$theme.'.'.$website->get('Website Type').'.tpl';
-} elseif ($webpage->get('Webpage Template Filename') == 'products_showcase') {
-
-    include_once 'class.Public_Category.php';
-    include_once 'class.Public_Product.php';
-
-    $category = new Public_Category($webpage->get('Webpage Scope Key'));
-
-
-    if (isset($content_data['panels'])) {
-        $panels = $content_data['panels'];
-    } else {
-        $panels = array();
-    }
-
-    // print_r($panels);
-
-    ksort($panels);
-    $products = array();
-
-    $sql = sprintf(
-        "SELECT `Product Category Index Key`,`Product Category Index Content Data`,`Product Category Index Product ID`,`Product Category Index Category Key`,`Product Category Index Stack`, P.`Product ID`,`Product Code`,`Product Web State` FROM `Category Bridge` B  LEFT JOIN `Product Dimension` P ON (`Subject Key`=P.`Product ID`)  LEFT JOIN `Product Category Index` S ON (`Subject Key`=S.`Product Category Index Product ID` AND S.`Product Category Index Category Key`=B.`Category Key`)  WHERE  `Category Key`=%d  AND `Product Web State` IN  ('For Sale','Out of Stock')   ORDER BY `Product Web State`,   ifnull(`Product Category Index Stack`,99999999)",
-        $category->id
-    );
-
-
-    $stack_index         = 0;
-    $product_stack_index = 0;
-    if ($result = $db->query($sql)) {
-
-        foreach ($result as $row) {
-
-
-            if (isset($panels[$stack_index])) {
-                $products[] = array(
-                    'type' => 'panel',
-                    'data' => $panels[$stack_index]
-                );
-
-                $size = floatval($panels[$stack_index]['size']);
-
-
-                unset($panels[$stack_index]);
-                $stack_index += $size;
-
-                list($stack_index, $products) = get_next_panel($stack_index, $products, $panels);
-
-            }
-
-
-            if ($row['Product Category Index Content Data'] == '') {
-                $product_content_data = array('header_text' => '');
-            } else {
-                $product_content_data = json_decode($row['Product Category Index Content Data'], true);
-
-            }
-
-            $products[] = array(
-                'type'                => 'product',
-                'object'              => new Public_Product($row['Product ID']),
-                'index_key'           => $row['Product Category Index Key'],
-                'header_text'         => (isset($product_content_data['header_text']) ? $product_content_data['header_text'] : ''),
-                'product_stack_index' => $product_stack_index
-            );
-            $product_stack_index++;
-            $stack_index++;
-        }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        print "$sql\n";
-        exit;
-    }
-
-    // print_r($products);
-
-
-    $panel_rows          = array();
-    $max_row_free_slots  = array();
-    $max_cell_free_slots = array();
-
-    $row_index = -1;
-
-    $stack_index = -1;
-
-    foreach ($products as $key => $item) {
-
-
-        if ($item['type'] == 'product') {
-            $stack_index++;
-        } else {
-            $stack_index += floatval($item['data']['size']);
-        }
-        $products[$key]['stack_index'] = $stack_index;
-
-
-        $current_row = floor($stack_index / 4);
-        if ($row_index != $current_row) {
-            //       print "- $current_row \n";
-            $row_index          = $current_row;
-            $max_free_slots     = 0;
-            $current_free_slots = 0;
-
-
-        }
-
-        if ($item['type'] == 'product') {
-            $current_free_slots++;
-            if ($current_free_slots > $max_free_slots) {
-                $max_free_slots = $current_free_slots;
-            }
-        } else {
-
-            //$key+=floatval($item['data']['size'])-1;
-
-            if ($current_free_slots > $max_free_slots) {
-                $max_free_slots = $current_free_slots;
-            }
-            $current_free_slots = 0;
-        }
-
-
-        //      print "$stack_index ".($stack_index%4)." ".floor($stack_index/4)." | $current_free_slots $max_free_slots  \n";
-        if ($item['type'] == 'panel') {
-
-
-            if (isset($panel_rows[floor($stack_index / 4)])) {
-                $panel_rows[floor($stack_index / 4)] += floatval($item['data']['size']);
-            } else {
-                $panel_rows[floor($stack_index / 4)] = floatval($item['data']['size']);
-            }
-
-        }
-
-        $max_row_free_slots[$current_row] = $max_free_slots;
-
-
-        if ($stack_index % 4 == 1 and $item['type'] != 'product' and $products[$stack_index - 1]['type'] == 'product') {
-            $max_cell_free_slots[$stack_index - 1] = 1;
-
-        }
-
-
-    }
-
-    //   print_r(  $max_row_free_slots);
-    //    print_r(  $max_cell_free_slots);
-
-    $stack_index = -1;
-    foreach ($products as $key => $item) {
-
-        if ($item['type'] == 'product') {
-            $stack_index++;
-        } else {
-            $stack_index += floatval($item['data']['size']);
-        }
-
-        $current_row = floor($stack_index / 4);
-        if (isset($panel_rows[$current_row])) {
-            $panels_in_row = $panel_rows[$current_row];
-        } else {
-            $panels_in_row = 0;
-        }
-        $products[$key]['data']['panels_in_row']  = $panels_in_row;
-        $products[$key]['data']['max_free_slots'] = $max_row_free_slots[$current_row];
-        if (isset($max_cell_free_slots[$stack_index])) {
-            $products[$stack_index]['data']['max_free_slots'] = $max_cell_free_slots[$stack_index];
-        }
-
-
-    }
-    // print_r($panel_rows);
-    // print_r($products);
-
-
-    $related_products = array();
-
-    $sql = sprintf(
-        "SELECT `Webpage Related Product Key`,`Webpage Related Product Product ID`,`Webpage Related Product Content Data`  FROM `Webpage Related Product Bridge` B  LEFT JOIN `Product Dimension` P ON (`Webpage Related Product Product ID`=P.`Product ID`)  WHERE  `Webpage Related Product Page Key`=%d  AND `Product Web State` IN  ('For Sale','Out of Stock')   ORDER BY `Webpage Related Product Order`",
-        $webpage->id
-    );
-
-    if ($result = $db->query($sql)) {
-        foreach ($result as $row) {
-
-            if ($row['Webpage Related Product Content Data'] == '') {
-                $product_content_data = array('header_text' => '');
-            } else {
-                $product_content_data = json_decode($row['Webpage Related Product Content Data'], true);
-
-            }
-
-            $related_products[] = array(
-                'header_text' => (isset($product_content_data['header_text']) ? $product_content_data['header_text'] : ''),
-                'object'      => new Public_Product($row['Webpage Related Product Product ID']),
-                'index_key'   => $row['Webpage Related Product Key'],
-
-
-            );
-        }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        print "$sql\n";
-        exit;
-    }
-
-
-    //  print_r($products);
-
-    $smarty->assign('products', $products);
-    $smarty->assign('related_products', $related_products);
-
-
-    $content_data = $webpage->get('Content Data');
-
-    $smarty->assign('content_data', $content_data);
-    $smarty->assign('category', $category);
-
-    //print $theme.'/products_showcase.'.$theme.'.'.$website->get('Website Type').'.tpl';
-    //exit;
-
-    $template = $theme.'/products_showcase.'.$theme.'.'.$website->get('Website Type').'.tpl';
-
-
-} elseif ($webpage->get('Webpage Template Filename') == 'product') {
-
-    include_once 'class.Public_Product.php';
-
-    $product = new Public_Product($webpage->get('Webpage Scope Key'));
-    $smarty->assign('product', $product);
-
-
-    $origin              = $product->get('Origin');
-    $cpnp                = $product->get('CPNP Number');
-    $materials           = $product->get('Materials');
-    $weight              = $product->get('Unit Weight');
-    $dimensions          = $product->get('Unit Dimensions');
-    $product_attachments = $product->get_attachments();
-    $barcode             = $product->get('Barcode Number');
-
-    $smarty->assign('CPNP', $cpnp);
-    $smarty->assign('Materials', $materials);
-    $smarty->assign('Weight', $weight);
-    $smarty->assign('Dimensions', $dimensions);
-    $smarty->assign('Origin', $origin);
-    $smarty->assign('product_attachments', $product_attachments);
-    $smarty->assign('Barcode', $barcode);
-
-
-    if ($weight != '' or $dimensions != '' or $origin != '' or $cpnp != '' or $materials != '' or count($product_attachments) > 0) {
-        $has_properties_tab = true;
-    } else {
-        $has_properties_tab = false;
-
-    }
-
-    $smarty->assign('has_properties_tab', $has_properties_tab);
-
-
-    $template = $theme.'/product.'.$theme.'.'.$website->get('Website Type').'.tpl';
-
-
-} elseif ($webpage->get('Webpage Template Filename') == 'reset_password') {
-    include 'reset_password.inc.php';
-    $template = $theme.'/reset_password.'.$theme.'.'.$website->get('Website Type').'.tpl';
-
-} elseif ($webpage->get('Webpage Template Filename') == 'not_found') {
-    $template = $theme.'/not_found.'.$theme.'.'.$website->get('Website Type').'.tpl';
-} elseif ($webpage->get('Webpage Template Filename') == 'checkout') {
-
-
-
-
-
-    if (isset($order) and $order->id) {
-
-
-        $placeholders = array(
-
-            '[Order Number]'       => $order->get('Public ID'),
-            '[Order Amount]'       => $order->get('Basket To Pay Amount'),
-
-        );
-
-        if(isset($content['_bank_header'])) {
-            $content['_bank_header'] = strtr($content['_bank_header'], $placeholders);
-        }
-         if(isset($content['_bank_footer'])) {
-             $content['_bank_footer'] = strtr($content['_bank_footer'], $placeholders);
-         }
-
-
-
-        $template = $theme.'/checkout.'.$theme.'.'.$website->get('Website Type').'.tpl';
-    } else {
-
-
-        $template = $theme.'/checkout_no_order.'.$theme.'.'.$website->get('Website Type').'.tpl';
-    }
-
-}elseif ($webpage->get('Webpage Template Filename') == 'profile') {
-
-    if (!$logged_in) {
-        header('Location: /index.php');
-        exit;
-    }
-
-    require_once 'utils/get_addressing.php';
-    require_once 'utils/get_countries.php';
-
-    list($invoice_address_format, $invoice_address_labels, $invoice_used_fields, $invoice_hidden_fields, $invoice_required_fields, $invoice_no_required_fields) = get_address_form_data($customer->get('Customer Invoice Address Country 2 Alpha Code'), $website->get('Website Locale'));
-    
-    $smarty->assign('invoice_address_labels', $invoice_address_labels);
-    $smarty->assign('invoice_required_fields', $invoice_required_fields);
-    $smarty->assign('invoice_no_required_fields', $invoice_no_required_fields);
-    $smarty->assign('invoice_used_address_fields', $invoice_used_fields);
-
-
-
-    list($delivery_address_format, $delivery_address_labels, $delivery_used_fields, $delivery_hidden_fields, $delivery_required_fields, $delivery_no_required_fields) = get_address_form_data($customer->get('Customer Invoice Address Country 2 Alpha Code'), $website->get('Website Locale'));
-
-    $smarty->assign('delivery_address_labels', $delivery_address_labels);
-    $smarty->assign('delivery_required_fields', $delivery_required_fields);
-    $smarty->assign('delivery_no_required_fields', $delivery_no_required_fields);
-    $smarty->assign('delivery_used_address_fields', $delivery_used_fields);
-    
-    
-    
-    $countries = get_countries($website->get('Website Locale'));
-    $smarty->assign('countries', $countries);
-
-
-
-    $template = $theme.'/profile.'.$theme.'.'.$website->get('Website Type').'.tpl';
-
-
-
-
-}else {
-
-
-    if($webpage->get('Webpage Code')=='thanks.sys'){
-
-
-
-
-        if(empty($_REQUEST['order_key'])  or !is_numeric($_REQUEST['order_key'])  or !$logged_in ){
+        if ($logged_in) {
             header('Location: /index.php');
             exit;
         }
 
-        $placed_order=get_object('Order',$_REQUEST['order_key']);
 
-        if(!$placed_order->id OR $placed_order->get('Order Customer Key')!=$customer->id ){
+        if (array_key_exists("HTTP_CF_IPCOUNTRY", $_SERVER) and $_SERVER["HTTP_CF_IPCOUNTRY"] != 'XX') {
+            $country_code = $_SERVER["HTTP_CF_IPCOUNTRY"];
+        } else {
+            $country_code = $store->get('Store Home Country Code 2 Alpha');
+        }
+
+
+        require_once 'utils/get_addressing.php';
+        list($address_format, $address_labels, $used_fields, $hidden_fields, $required_fields, $no_required_fields) = get_address_form_data($country_code, $website->get('Website Locale'));
+
+
+        require_once 'utils/get_countries.php';
+        $countries = get_countries($website->get('Website Locale'));
+
+
+        $smarty->assign('address_labels', $address_labels);
+
+        $smarty->assign('required_fields', $required_fields);
+        $smarty->assign('no_required_fields', $no_required_fields);
+
+        $smarty->assign('used_address_fields', $used_fields);
+        $smarty->assign('countries', $countries);
+        $smarty->assign('selected_country', $country_code);
+        $template = $theme.'/register.'.$theme.'.'.$website->get('Website Type').'.tpl';
+
+    } elseif ($webpage->get('Webpage Template Filename') == 'login') {
+
+        if ($logged_in) {
             header('Location: /index.php');
             exit;
         }
-        require_once 'utils/placed_order_functions.php';
 
-
-        $smarty->assign('placed_order',$placed_order);
-
-        $placeholders = array(
-            '[Greetings]'     => $customer->get_greetings(),
-            '[Customer Name]' => $customer->get('Name'),
-            '[Name]'          => $customer->get('Customer Main Contact Name'),
-            '[Name,Company]'  => preg_replace(
-                '/^, /', '', $customer->get('Customer Main Contact Name').($customer->get('Customer Company Name') == '' ? '' : ', '.$customer->get('Customer Company Name'))
-            ),
-            '[Signature]'     => $webpage->get('Signature'),
-            '[Order Number]'  => $placed_order->get('Public ID'),
-            '[Order Amount]'  => $placed_order->get('To Pay'),
-            '[Pay Info]'      => get_pay_info($placed_order, $website, $smarty),
-            '[Order]'         => $smarty->fetch($theme.'/placed_order.'.$theme.'.EcomB2B.tpl')
-
-
-        );
-
-        foreach($content['blocks'] as $block_key=>$block){
-
-            if(isset($content['blocks'][$block_key]['_text'])){
-                $content['blocks'][$block_key]['_text']=strtr($content['blocks'][$block_key]['_text'], $placeholders);
-            }
-
+        if (isset($_REQUEST['fp'])) {
+            $smarty->assign('display', 'forgot_password');
+        } else {
+            $smarty->assign('display', 'login');
         }
 
 
+        $template = $theme.'/login.'.$theme.'.'.$website->get('Website Type').'.tpl';
+    } elseif ($webpage->get('Webpage Template Filename') == 'search') {
 
-    }elseif($webpage->get('Webpage Code')=='basket.sys'){
+        if (!empty($_REQUEST['q'])) {
+            $search_query = $_REQUEST['q'];
+        } else {
+            $search_query = '';
+        }
+        $smarty->assign('search_query', $search_query);
 
+        $template = $theme.'/search.'.$theme.'.'.$website->get('Website Type').'.tpl';
+    } elseif ($webpage->get('Webpage Template Filename') == 'welcome') {
 
-        if (isset($order) and $order->id) {
-
-            require_once 'utils/get_addressing.php';
-            require_once 'utils/get_countries.php';
-
-            list(
-                $invoice_address_format, $invoice_address_labels, $invoice_used_fields, $invoice_hidden_fields, $invoice_required_fields, $invoice_no_required_fields
-                ) = get_address_form_data($order->get('Order Invoice Address Country 2 Alpha Code'), $website->get('Website Locale'));
-
-            $smarty->assign('invoice_address_labels', $invoice_address_labels);
-            $smarty->assign('invoice_required_fields', $invoice_required_fields);
-            $smarty->assign('invoice_no_required_fields', $invoice_no_required_fields);
-            $smarty->assign('invoice_used_address_fields', $invoice_used_fields);
-
-
-            list(
-                $delivery_address_format, $delivery_address_labels, $delivery_used_fields, $delivery_hidden_fields, $delivery_required_fields, $delivery_no_required_fields
-                ) = get_address_form_data($order->get('Order Invoice Address Country 2 Alpha Code'), $website->get('Website Locale'));
-
-            $smarty->assign('delivery_address_labels', $delivery_address_labels);
-            $smarty->assign('delivery_required_fields', $delivery_required_fields);
-            $smarty->assign('delivery_no_required_fields', $delivery_no_required_fields);
-            $smarty->assign('delivery_used_address_fields', $delivery_used_fields);
-
-
-            $countries = get_countries($website->get('Website Locale'));
-            $smarty->assign('countries', $countries);
-
-        }else {
-
-
-            $template = $theme.'/basket_no_order.'.$theme.'.'.$website->get('Website Type').'.tpl';
+        if (!$logged_in) {
+            header('Location: /index.php');
+            exit;
         }
 
+        $template = $theme.'/webpage_blocks.'.$theme.'.'.$website->get('Website Type').'.tpl';
 
-    }
-
-
-
-
-    $template = $theme.'/webpage_blocks.'.$theme.'.'.$website->get('Website Type').'.tpl';
-
-
-}
-
-
-
-$smarty->assign('webpage', $webpage);
-$smarty->assign('content', $content);
-$smarty->assign('labels', $website->get('Localised Labels'));
-
-
-//print_r($website->get('Localised Labels'));
-
-
-$smarty->display($template, $webpage_key);
-
-
-exit;
-
-
-include_once 'class.Public_Webpage.php';
-
-
-if (!isset($webpage_key) and isset($_REQUEST['id'])) {
-    $webpage_key = $_REQUEST['id'];
-}
-
-if (!isset($webpage_key)) {
-    header('Location: index.php?no_page_key');
-    exit;
-}
-
-if (!isset($skip_common)) {
-    include_once 'common.php';
-}
-
-
-if (!$is_cached) {
-
-    $webpage = new Public_Webpage($webpage_key);
-
-
-    if (!$webpage->id) {
-
-        header('Location: index.php?no_page');
-        exit;
-    }
-
-
-    if ($webpage->get('Webpage Website Key') != $website->id) {
-        header('Location: index.php?site_page_not_match');
-        //    exit("No site/page not match");
-        exit;
-    }
-
-    /*
-
-
-    if ($webpage->get('Webpage Scope Metadata') == 'search') {
-        header('Location: search.php');
-        exit;
-    }
-
-    if ($webpage->get('Webpage Scope Metadata') == 'register') {
-        header('Location: registration.php');
-        exit;
-    }
-    if ($webpage->get('Webpage Scope Metadata') == 'login') {
-        header('Location: login.php');
-        exit;
-    }
-    if ($webpage->get('Webpage Scope Metadata') == 'reset_password') {
-        header('Location: reset.php');
-        exit;
-    }
-
-    if ($webpage->get('Webpage Scope Metadata') == 'profile') {
-        header('Location: profile.php');
-        exit;
-    }
-
-*/
-
-    if ($webpage->get('Webpage State') == 'Offline') {
-
-
-        $url = $_SERVER['REQUEST_URI'];
-        $url = preg_replace('/^\//', '', $url);
-        $url = preg_replace('/\?.*$/', '', $url);
-
-        $original_url = $url;
-
-
-        header("Location: /404.php?&url=$url&original_url=$original_url");
-
-        exit;
-    }
-
-    //'System','Info','Department','Family','Product','FamilyCategory','ProductCategory','Thanks'
-
-    /*
-
-   if (in_array(
-       $webpage->data['Page Store Section Type'], array(
-                                                    'Family',
-                                                    'Product'
-                                                )
-   )) {
-
-       if ($order_in_process and $order_in_process->id) {
-           if ($order_in_process->data['Order Current Dispatch State'] == 'Waiting for Payment Confirmation') {
-               header('Location: waiting_payment_confirmation.php');
-               exit;
-
-           }
-       }
-   }
-   $template_suffix = '';
-
-    */
-
-    if ($logged_in) {
-        $webpage->customer = $customer;
-        $webpage->order    = $order_in_process;
-    }
-
-    //$smarty->assign('logged', $logged_in);
-
-
-    //$webpage->site            = $site;
-    //$webpage->user            = $user;
-    //$webpage->logged          = $logged_in;
-    //$webpage->currency        = $store->data['Store Currency Code'];
-    //$webpage->currency_symbol = currency_symbol($store->data['Store Currency Code']);
-    //$webpage->customer        = $customer;
-
-
-    $smarty->assign('labels', $website->get('Localised Labels'));
-
-
-    $smarty->assign('store', $store);
-    $smarty->assign('webpage', $webpage);
-    $smarty->assign('website', $website);
-
-    /*
-
-    if ($webpage->data['Webpage Scope'] == 'Category Products') {
-
+    } elseif ($webpage->get('Webpage Template Filename') == 'categories_showcase') {
 
         include_once 'class.Public_Category.php';
-        include_once 'class.Public_Webpage.php';
+        $category = new Public_Category($webpage->get('Webpage Scope Key'));
+
+        $content_data = $webpage->get('Content Data');
+
+        $smarty->assign('sections', $content_data['sections']);
+        $smarty->assign('content_data', $content_data);
+        $smarty->assign('category', $category);
+
+        $template = $theme.'/categories_showcase.'.$theme.'.'.$website->get('Website Type').'.tpl';
+    } elseif ($webpage->get('Webpage Template Filename') == 'products_showcase') {
+
+        include_once 'class.Public_Category.php';
         include_once 'class.Public_Product.php';
-        include_once 'class.Public_Customer.php';
-        include_once 'class.Public_Order.php';
-        include_once 'class.Public_Website_User.php';
 
-        $category = new Public_Category($webpage->data['Webpage Scope Key']);
-
-
-        $category->load_webpage();
-
-        $public_customer = new Public_Customer($customer->id);
-        $public_order    = new Public_Order($order_in_process->id);
-
-
-        if ($user == '') {
-            $public_user = new Public_Website_User(0);
-        } else {
-            $public_user = new Public_Website_User($user->id);
-        }
-
-
-        $content_data = $category->webpage->get('Content Data');
+        $category = new Public_Category($webpage->get('Webpage Scope Key'));
 
 
         if (isset($content_data['panels'])) {
@@ -707,20 +111,23 @@ if (!$is_cached) {
             $panels = array();
         }
 
+        // print_r($panels);
 
+        ksort($panels);
         $products = array();
 
         $sql = sprintf(
-            "SELECT  P.`Product ID`,`Product Category Index Content Published Data` FROM `Category Bridge` B  LEFT JOIN `Product Dimension` P ON (`Subject Key`=P.`Product ID`)  LEFT JOIN `Product Category Index` S ON (`Subject Key`=S.`Product Category Index Product ID` AND S.`Product Category Index Category Key`=B.`Category Key`)  WHERE  `Category Key`=%d  AND `Product Web State` IN  ('For Sale','Out of Stock')   ORDER BY `Product Web State`, ifnull(`Product Category Index Published Stack`,99999999),`Product Code File As` ",
+            "SELECT `Product Category Index Key`,`Product Category Index Content Data`,`Product Category Index Product ID`,`Product Category Index Category Key`,`Product Category Index Stack`, P.`Product ID`,`Product Code`,`Product Web State` FROM `Category Bridge` B  LEFT JOIN `Product Dimension` P ON (`Subject Key`=P.`Product ID`)  LEFT JOIN `Product Category Index` S ON (`Subject Key`=S.`Product Category Index Product ID` AND S.`Product Category Index Category Key`=B.`Category Key`)  WHERE  `Category Key`=%d  AND `Product Web State` IN  ('For Sale','Out of Stock')   ORDER BY `Product Web State`,   ifnull(`Product Category Index Stack`,99999999)",
             $category->id
         );
 
-        $stack_index = 0;
+
+        $stack_index         = 0;
+        $product_stack_index = 0;
         if ($result = $db->query($sql)) {
+
             foreach ($result as $row) {
 
-
-                //	print $stack_index."\n";
 
                 if (isset($panels[$stack_index])) {
                     $products[] = array(
@@ -739,18 +146,21 @@ if (!$is_cached) {
                 }
 
 
-                if ($row['Product Category Index Content Published Data'] == '') {
+                if ($row['Product Category Index Content Data'] == '') {
                     $product_content_data = array('header_text' => '');
                 } else {
-                    $product_content_data = json_decode($row['Product Category Index Content Published Data'], true);
+                    $product_content_data = json_decode($row['Product Category Index Content Data'], true);
 
                 }
 
                 $products[] = array(
-                    'type'        => 'product',
-                    'object'      => new Public_Product($row['Product ID']),
-                    'header_text' => (isset($product_content_data['header_text']) ? $product_content_data['header_text'] : '')
+                    'type'                => 'product',
+                    'object'              => new Public_Product($row['Product ID']),
+                    'index_key'           => $row['Product Category Index Key'],
+                    'header_text'         => (isset($product_content_data['header_text']) ? $product_content_data['header_text'] : ''),
+                    'product_stack_index' => $product_stack_index
                 );
+                $product_stack_index++;
                 $stack_index++;
             }
         } else {
@@ -759,22 +169,121 @@ if (!$is_cached) {
             exit;
         }
 
+        // print_r($products);
+
+
+        $panel_rows          = array();
+        $max_row_free_slots  = array();
+        $max_cell_free_slots = array();
+
+        $row_index = -1;
+
+        $stack_index = -1;
+
+        foreach ($products as $key => $item) {
+
+
+            if ($item['type'] == 'product') {
+                $stack_index++;
+            } else {
+                $stack_index += floatval($item['data']['size']);
+            }
+            $products[$key]['stack_index'] = $stack_index;
+
+
+            $current_row = floor($stack_index / 4);
+            if ($row_index != $current_row) {
+                //       print "- $current_row \n";
+                $row_index          = $current_row;
+                $max_free_slots     = 0;
+                $current_free_slots = 0;
+
+
+            }
+
+            if ($item['type'] == 'product') {
+                $current_free_slots++;
+                if ($current_free_slots > $max_free_slots) {
+                    $max_free_slots = $current_free_slots;
+                }
+            } else {
+
+                //$key+=floatval($item['data']['size'])-1;
+
+                if ($current_free_slots > $max_free_slots) {
+                    $max_free_slots = $current_free_slots;
+                }
+                $current_free_slots = 0;
+            }
+
+
+            //      print "$stack_index ".($stack_index%4)." ".floor($stack_index/4)." | $current_free_slots $max_free_slots  \n";
+            if ($item['type'] == 'panel') {
+
+
+                if (isset($panel_rows[floor($stack_index / 4)])) {
+                    $panel_rows[floor($stack_index / 4)] += floatval($item['data']['size']);
+                } else {
+                    $panel_rows[floor($stack_index / 4)] = floatval($item['data']['size']);
+                }
+
+            }
+
+            $max_row_free_slots[$current_row] = $max_free_slots;
+
+
+            if ($stack_index % 4 == 1 and $item['type'] != 'product' and $products[$stack_index - 1]['type'] == 'product') {
+                $max_cell_free_slots[$stack_index - 1] = 1;
+
+            }
+
+
+        }
+
+        //   print_r(  $max_row_free_slots);
+        //    print_r(  $max_cell_free_slots);
+
+        $stack_index = -1;
+        foreach ($products as $key => $item) {
+
+            if ($item['type'] == 'product') {
+                $stack_index++;
+            } else {
+                $stack_index += floatval($item['data']['size']);
+            }
+
+            $current_row = floor($stack_index / 4);
+            if (isset($panel_rows[$current_row])) {
+                $panels_in_row = $panel_rows[$current_row];
+            } else {
+                $panels_in_row = 0;
+            }
+            $products[$key]['data']['panels_in_row']  = $panels_in_row;
+            $products[$key]['data']['max_free_slots'] = $max_row_free_slots[$current_row];
+            if (isset($max_cell_free_slots[$stack_index])) {
+                $products[$stack_index]['data']['max_free_slots'] = $max_cell_free_slots[$stack_index];
+            }
+
+
+        }
+        // print_r($panel_rows);
+        // print_r($products);
+
 
         $related_products = array();
 
         $sql = sprintf(
-            "SELECT `Webpage Related Product Key`,`Webpage Related Product Product ID`,`Webpage Related Product Content Published Data`  FROM `Webpage Related Product Bridge` B  LEFT JOIN `Product Dimension` P ON (`Webpage Related Product Product ID`=P.`Product ID`)  WHERE  `Webpage Related Product Page Key`=%d  AND `Product Web State` IN  ('For Sale','Out of Stock')   ORDER BY `Webpage Related Product Published Order`",
-            $category->webpage->id
+            "SELECT `Webpage Related Product Key`,`Webpage Related Product Product ID`,`Webpage Related Product Content Data`  FROM `Webpage Related Product Bridge` B  LEFT JOIN `Product Dimension` P ON (`Webpage Related Product Product ID`=P.`Product ID`)  WHERE  `Webpage Related Product Page Key`=%d  AND `Product Web State` IN  ('For Sale','Out of Stock')   ORDER BY `Webpage Related Product Order`",
+            $webpage->id
         );
 
         if ($result = $db->query($sql)) {
             foreach ($result as $row) {
 
-
-                if ($row['Webpage Related Product Content Published Data'] == '') {
+                if ($row['Webpage Related Product Content Data'] == '') {
                     $product_content_data = array('header_text' => '');
                 } else {
-                    $product_content_data = json_decode($row['Webpage Related Product Content Published Data'], true);
+                    $product_content_data = json_decode($row['Webpage Related Product Content Data'], true);
 
                 }
 
@@ -785,8 +294,6 @@ if (!$is_cached) {
 
 
                 );
-
-
             }
         } else {
             print_r($error_info = $db->errorInfo());
@@ -794,141 +301,242 @@ if (!$is_cached) {
             exit;
         }
 
-        //print_r($products);
+
+        //  print_r($products);
 
         $smarty->assign('products', $products);
         $smarty->assign('related_products', $related_products);
+
+
+        $content_data = $webpage->get('Content Data');
+
+        $smarty->assign('content_data', $content_data);
         $smarty->assign('category', $category);
-        $smarty->assign('customer', $public_customer);
-        $smarty->assign('order', $public_order);
-        $smarty->assign('user', $public_user);
 
-        $smarty->assign('webpage', $category->webpage);
+        //print $theme.'/products_showcase.'.$theme.'.'.$website->get('Website Type').'.tpl';
+        //exit;
 
-    }
-    else {
-        if ($webpage->data['Webpage Scope'] == 'Category Categories') {
+        $template = $theme.'/products_showcase.'.$theme.'.'.$website->get('Website Type').'.tpl';
 
 
-            include_once 'class.Public_Category.php';
-            include_once 'class.Public_Webpage.php';
-            include_once 'class.Public_Product.php';
-            include_once 'class.Public_Customer.php';
-            include_once 'class.Public_Order.php';
-            include_once 'class.Public_Website_User.php';
+    } elseif ($webpage->get('Webpage Template Filename') == 'product') {
+
+        include_once 'class.Public_Product.php';
+
+        $product = new Public_Product($webpage->get('Webpage Scope Key'));
+        $smarty->assign('product', $product);
 
 
-            $public_webpage = new Public_Webpage($webpage->id);
-            $public_webpage->load_scope();
+        $origin              = $product->get('Origin');
+        $cpnp                = $product->get('CPNP Number');
+        $materials           = $product->get('Materials');
+        $weight              = $product->get('Unit Weight');
+        $dimensions          = $product->get('Unit Dimensions');
+        $product_attachments = $product->get_attachments();
+        $barcode             = $product->get('Barcode Number');
 
-            $category = $public_webpage->scope;
-
-            //  $category=new Public_Category('root_key_code', $store->get('Store Department Category Key'), $department->get('Product Department Code'));
-
-
-            $category->load_webpage();
-
-
-            $public_customer = new Public_Customer($customer->id);
-            $public_order    = new Public_Order($order_in_process->id);
-
-
-            if ($user == '') {
-                $public_user = new Public_Website_User(0);
-            } else {
-                $public_user = new Public_Website_User($user->id);
-            }
+        $smarty->assign('CPNP', $cpnp);
+        $smarty->assign('Materials', $materials);
+        $smarty->assign('Weight', $weight);
+        $smarty->assign('Dimensions', $dimensions);
+        $smarty->assign('Origin', $origin);
+        $smarty->assign('product_attachments', $product_attachments);
+        $smarty->assign('Barcode', $barcode);
 
 
-            $content_data = $category->webpage->get('Content Data');
-
-            $smarty->assign('content_data', $content_data);
-
-            $smarty->assign('sections', $content_data['sections']);
-
-
-            $smarty->assign('category', $category);
-            $smarty->assign('customer', $public_customer);
-            $smarty->assign('order', $public_order);
-            $smarty->assign('user', $public_user);
-
-
+        if ($weight != '' or $dimensions != '' or $origin != '' or $cpnp != '' or $materials != '' or count($product_attachments) > 0) {
+            $has_properties_tab = true;
         } else {
-            if ($webpage->data['Webpage Scope'] == 'Product') {
-                $smarty->assign('product', $webpage->get_product_data());
+            $has_properties_tab = false;
+
+        }
+
+        $smarty->assign('has_properties_tab', $has_properties_tab);
 
 
-                include_once 'class.Public_Category.php';
-                include_once 'class.Public_Webpage.php';
-                include_once 'class.Public_Product.php';
-                include_once 'class.Public_Customer.php';
-                include_once 'class.Public_Order.php';
-                include_once 'class.Public_Website_User.php';
-
-                $public_product = new Public_Product($webpage->get('Webpage Scope Key'));
+        $template = $theme.'/product.'.$theme.'.'.$website->get('Website Type').'.tpl';
 
 
-                $public_product->load_webpage();
+    } elseif ($webpage->get('Webpage Template Filename') == 'reset_password') {
+        include 'reset_password.inc.php';
+        $template = $theme.'/reset_password.'.$theme.'.'.$website->get('Website Type').'.tpl';
 
-                $public_customer = new Public_Customer($customer->id);
-                $public_order    = new Public_Order($order_in_process->id);
+    } elseif ($webpage->get('Webpage Template Filename') == 'not_found') {
+        $template = $theme.'/not_found.'.$theme.'.'.$website->get('Website Type').'.tpl';
+    } elseif ($webpage->get('Webpage Template Filename') == 'checkout') {
 
 
-                if ($user == '') {
-                    $public_user = new Public_Website_User(0);
-                } else {
-                    $public_user = new Public_Website_User($user->id);
+        if (isset($order) and $order->id) {
+
+
+            $placeholders = array(
+
+                '[Order Number]' => $order->get('Public ID'),
+                '[Order Amount]' => $order->get('Basket To Pay Amount'),
+
+            );
+
+            if (isset($content['_bank_header'])) {
+                $content['_bank_header'] = strtr($content['_bank_header'], $placeholders);
+            }
+            if (isset($content['_bank_footer'])) {
+                $content['_bank_footer'] = strtr($content['_bank_footer'], $placeholders);
+            }
+
+
+            $template = $theme.'/checkout.'.$theme.'.'.$website->get('Website Type').'.tpl';
+        } else {
+
+
+            $template = $theme.'/checkout_no_order.'.$theme.'.'.$website->get('Website Type').'.tpl';
+        }
+
+    } elseif ($webpage->get('Webpage Template Filename') == 'profile') {
+
+        if (!$logged_in) {
+            header('Location: /index.php');
+            exit;
+        }
+
+        require_once 'utils/get_addressing.php';
+        require_once 'utils/get_countries.php';
+
+        list(
+            $invoice_address_format, $invoice_address_labels, $invoice_used_fields, $invoice_hidden_fields, $invoice_required_fields, $invoice_no_required_fields
+            ) = get_address_form_data($customer->get('Customer Invoice Address Country 2 Alpha Code'), $website->get('Website Locale'));
+
+        $smarty->assign('invoice_address_labels', $invoice_address_labels);
+        $smarty->assign('invoice_required_fields', $invoice_required_fields);
+        $smarty->assign('invoice_no_required_fields', $invoice_no_required_fields);
+        $smarty->assign('invoice_used_address_fields', $invoice_used_fields);
+
+
+        list(
+            $delivery_address_format, $delivery_address_labels, $delivery_used_fields, $delivery_hidden_fields, $delivery_required_fields, $delivery_no_required_fields
+            ) = get_address_form_data($customer->get('Customer Invoice Address Country 2 Alpha Code'), $website->get('Website Locale'));
+
+        $smarty->assign('delivery_address_labels', $delivery_address_labels);
+        $smarty->assign('delivery_required_fields', $delivery_required_fields);
+        $smarty->assign('delivery_no_required_fields', $delivery_no_required_fields);
+        $smarty->assign('delivery_used_address_fields', $delivery_used_fields);
+
+
+        $countries = get_countries($website->get('Website Locale'));
+        $smarty->assign('countries', $countries);
+
+
+        $template = $theme.'/profile.'.$theme.'.'.$website->get('Website Type').'.tpl';
+
+
+    } else {
+
+
+        if ($webpage->get('Webpage Code') == 'thanks.sys') {
+
+
+            if (empty($_REQUEST['order_key']) or !is_numeric($_REQUEST['order_key']) or !$logged_in) {
+                header('Location: /index.php');
+                exit;
+            }
+
+            $placed_order = get_object('Order', $_REQUEST['order_key']);
+
+            if (!$placed_order->id OR $placed_order->get('Order Customer Key') != $customer->id) {
+                header('Location: /index.php');
+                exit;
+            }
+            require_once 'utils/placed_order_functions.php';
+
+
+            $smarty->assign('placed_order', $placed_order);
+
+            $placeholders = array(
+                '[Greetings]'     => $customer->get_greetings(),
+                '[Customer Name]' => $customer->get('Name'),
+                '[Name]'          => $customer->get('Customer Main Contact Name'),
+                '[Name,Company]'  => preg_replace(
+                    '/^, /', '', $customer->get('Customer Main Contact Name').($customer->get('Customer Company Name') == '' ? '' : ', '.$customer->get('Customer Company Name'))
+                ),
+                '[Signature]'     => $webpage->get('Signature'),
+                '[Order Number]'  => $placed_order->get('Public ID'),
+                '[Order Amount]'  => $placed_order->get('To Pay'),
+                '[Pay Info]'      => get_pay_info($placed_order, $website, $smarty),
+                '[Order]'         => $smarty->fetch($theme.'/placed_order.'.$theme.'.EcomB2B.tpl')
+
+
+            );
+
+            foreach ($content['blocks'] as $block_key => $block) {
+
+                if (isset($content['blocks'][$block_key]['_text'])) {
+                    $content['blocks'][$block_key]['_text'] = strtr($content['blocks'][$block_key]['_text'], $placeholders);
                 }
-
-
-                $content_data = $public_product->webpage->get('Content Data');
-
-                $smarty->assign('content_data', $content_data);
-
-                $smarty->assign('public_product', $public_product);
-                $smarty->assign('customer', $public_customer);
-                $smarty->assign('order', $public_order);
-                $smarty->assign('user', $public_user);
-                $smarty->assign('webpage', $public_product->webpage);
-
-                $origin              = $public_product->get('Origin');
-                $cpnp                = $public_product->get('CPNP Number');
-                $materials           = $public_product->get('Materials');
-                $weight              = $public_product->get('Unit Weight');
-                $dimensions          = $public_product->get('Unit Dimensions');
-                $product_attachments = $public_product->get_attachments();
-                $barcode             = $public_product->get('Barcode Number');
-
-                $smarty->assign('CPNP', $cpnp);
-                $smarty->assign('Materials', $materials);
-                $smarty->assign('Weight', $weight);
-                $smarty->assign('Dimensions', $dimensions);
-                $smarty->assign('Origin', $origin);
-                $smarty->assign('product_attachments', $product_attachments);
-                $smarty->assign('Barcode', $barcode);
-
-
-                if ($weight != '' or $dimensions != '' or $origin != '' or $cpnp != '' or $materials != '' or count($product_attachments) > 0) {
-                    $has_properties_tab = true;
-                } else {
-                    $has_properties_tab = false;
-
-                }
-
-                $smarty->assign('has_properties_tab', $has_properties_tab);
-
 
             }
+
+
+        } elseif ($webpage->get('Webpage Code') == 'basket.sys') {
+
+
+            if (isset($order) and $order->id) {
+
+                require_once 'utils/get_addressing.php';
+                require_once 'utils/get_countries.php';
+
+                list(
+                    $invoice_address_format, $invoice_address_labels, $invoice_used_fields, $invoice_hidden_fields, $invoice_required_fields, $invoice_no_required_fields
+                    ) = get_address_form_data($order->get('Order Invoice Address Country 2 Alpha Code'), $website->get('Website Locale'));
+
+                $smarty->assign('invoice_address_labels', $invoice_address_labels);
+                $smarty->assign('invoice_required_fields', $invoice_required_fields);
+                $smarty->assign('invoice_no_required_fields', $invoice_no_required_fields);
+                $smarty->assign('invoice_used_address_fields', $invoice_used_fields);
+
+
+                list(
+                    $delivery_address_format, $delivery_address_labels, $delivery_used_fields, $delivery_hidden_fields, $delivery_required_fields, $delivery_no_required_fields
+                    ) = get_address_form_data($order->get('Order Invoice Address Country 2 Alpha Code'), $website->get('Website Locale'));
+
+                $smarty->assign('delivery_address_labels', $delivery_address_labels);
+                $smarty->assign('delivery_required_fields', $delivery_required_fields);
+                $smarty->assign('delivery_no_required_fields', $delivery_no_required_fields);
+                $smarty->assign('delivery_used_address_fields', $delivery_used_fields);
+
+
+                $countries = get_countries($website->get('Website Locale'));
+                $smarty->assign('countries', $countries);
+
+            } else {
+
+
+                $template = $theme.'/basket_no_order.'.$theme.'.'.$website->get('Website Type').'.tpl';
+            }
+
+
         }
+
+
+        $template = $theme.'/webpage_blocks.'.$theme.'.'.$website->get('Website Type').'.tpl';
+
+
     }
 
-    */
 
+    $smarty->assign('webpage', $webpage);
+    $smarty->assign('content', $content);
+    $smarty->assign('labels', $website->get('Localised Labels'));
+
+
+    //print_r($website->get('Localised Labels'));
+
+
+    $smarty->display($template, $webpage_key);
+
+}else{
+    print 'error';
 
 }
 
-
-$smarty->display('webpage.tpl', $webpage_key);
 
 
 ?>
