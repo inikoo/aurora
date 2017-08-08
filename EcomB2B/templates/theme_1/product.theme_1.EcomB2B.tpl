@@ -63,7 +63,7 @@
                             <div class="information" style="float:left;margin-left:30px;width:510px;">
                                 <h1 style="padding-top:5px;margin:2px 0;font-size:150%">
                                     {$product->get('Name')}
-                                    {if !empty($customer))}
+                                    {if !empty($customer)}
                                     {assign 'favourite_key' {$product->get('Favourite Key',{$customer->id})} }
                                     <span class="invisible  favourite  " favourite_key={$favourite_key}><i style="font-size:70%;position:relative;top:-2px"
                                                                                                            class="fa {if $favourite_key}fa-heart marked{else}fa-heart-o{/if}" aria-hidden="true"></i>  </span>
