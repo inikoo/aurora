@@ -196,6 +196,10 @@
 
 
 
+
+
+
+
                         if (data.state == '200') {
                             window.location.replace("index.php");
 
