@@ -24,7 +24,7 @@
         $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
 
-        $server_name=preg_replace('/^www\./','',$_SERVER['SERVER_NAME']);
+        //$server_name=preg_replace('/^www\./','',$_SERVER['SERVER_NAME']);
 
         $sql = sprintf(
             'SELECT `Website Key`  FROM `Website Dimension` WHERE `Website URL`=%s', prepare_mysql($server_name)
@@ -38,6 +38,8 @@
                 exit;
             }
         } else {
+
+
             print 'E2 SERVER_NAME '.$_SERVER['SERVER_NAME'];
             exit;
 
