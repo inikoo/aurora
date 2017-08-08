@@ -214,6 +214,7 @@ function get_object($object_name, $key, $load_other_data = false) {
             $object = new PartLocation($key);
             break;
         case 'campaign':
+        case 'dealcampaign':
         case 'deal campaign':
             require_once "class.DealCampaign.php";
             $object = new DealCampaign($key);
