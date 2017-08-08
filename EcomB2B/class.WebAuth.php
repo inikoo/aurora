@@ -151,9 +151,11 @@ class WebAuth {
         $customer_key     = '';
 
         $sql = sprintf(
-            "SELECT `Website User Key`,`Website User Customer Key`,`Website User Password`,`Website User Active` FROM `Website User Dimension` WHERE `Website User Handle`=%s  AND `Website User Website Key` ",
+            "SELECT `Website User Key`,`Website User Customer Key`,`Website User Password`,`Website User Active` FROM `Website User Dimension` WHERE `Website User Handle`=%s  AND `Website User Website Key`=%d ",
             prepare_mysql($handle), $website_key
         );
+
+
 
 
         if ($result = $this->db->query($sql)) {
