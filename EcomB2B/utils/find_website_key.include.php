@@ -30,10 +30,14 @@
             'SELECT `Website Key`  FROM `Website Dimension` WHERE `Website URL`=%s', prepare_mysql($server_name)
         );
 
+
+
         if ($result = $db->query($sql)) {
             if ($row = $result->fetch()) {
                 $_SESSION['website_key'] = $row['Website Key'];
             } else {
+
+        print $sql;
                 print 'E1 SERVER_NAME '.$_SERVER['SERVER_NAME'];
                 exit;
             }
