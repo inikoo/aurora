@@ -530,7 +530,7 @@ if($webpage->id) {
     //print_r($website->get('Localised Labels'));
 
 
-    $smarty->display($template, $webpage_key);
+    $smarty->display($template);
 
 }else{
     print 'error';
