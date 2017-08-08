@@ -151,14 +151,15 @@
 
                 {if $product->get('Web State')=='Out of Stock'}
 
-
-                    {assign 'reminder_key' {$product->get('Reminder Key',{$user->id})} }
+                    {if isset($customer)}
+                    {assign 'reminder_key' {$product->get('Reminder Key',{$customer->id})} }
                     <div  class="out_of_stock_row {$product->get('Out of Stock Class')}"  >
                         <span class="label">
                         {$product->get('Out of Stock Label')}
                         <span  class="label sim_button " > <i reminder_key="{$reminder_key}" title="{if $reminder_key>0}{t}Click to remove notification{/t}{else}{t}Click to be notified by email{/t}{/if}"   class="reminder fa {if $reminder_key>0}fa-envelope{else}fa-envelope-o{/if}" aria-hidden="true"></i>  </span>
                         </span>
                     </div>
+                        {/if}
 
                 {elseif $product->get('Web State')=='For Sale'}
                     {assign 'quantity_ordered' $product->get('Ordered Quantity',$order_key) }
@@ -307,8 +308,9 @@
 
                             {if $product->get('Web State')=='Out of Stock'}
 
+                                {if isset($customer)}
 
-                                {assign 'reminder_key' {$product->get('Reminder Key',{$user->id})} }
+                                {assign 'reminder_key' {$product->get('Reminder Key',{$customer->id})} }
                                 <div  class="out_of_stock_row {$product->get('Out of Stock Class')}"  >
     <span class="label">
     {$product->get('Out of Stock Label')}
@@ -316,7 +318,7 @@
     </span>
                                 </div>
 
-
+{/if
 
 
 
