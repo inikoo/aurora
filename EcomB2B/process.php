@@ -67,7 +67,7 @@ if (is_numeric($result)) {
 }
 
 
-function get_url($site_key, $url, $dns_host, $dns_user, $dns_pwd, $dns_db) {
+function get_url($website_key, $url, $dns_host, $dns_user, $dns_pwd, $dns_db) {
 
 
 
@@ -82,14 +82,14 @@ function get_url($site_key, $url, $dns_host, $dns_user, $dns_pwd, $dns_db) {
 
 
     $original_url = $url;
-    $page_key     = get_page_key_from_code($site_key, $url, $db);
+    $page_key     = get_page_key_from_code($website_key, $url, $db);
     if ($page_key) {
         return $page_key;
     }
 
     if (!$page_key and preg_match('/[a-z0-9\_\-]\/$/i', $url)) {
         $_tmp_url = preg_replace('/\/$/', '', $url);
-        $page_key = get_page_key_from_code($site_key, $_tmp_url, $db);
+        $page_key = get_page_key_from_code($website_key, $_tmp_url, $db);
         if ($page_key) {
             return $page_key;
 
@@ -140,7 +140,7 @@ function get_url($site_key, $url, $dns_host, $dns_user, $dns_pwd, $dns_db) {
     }
     $sql = sprintf(
         "SELECT  `Webpage Alias Webpage Key` FROM `Webpage Alias Dimension` WHERE `Webpage Alias Website Key`=%d AND `Webpage Alias Tag`=%s ",
-        SITE_KEY,
+        $website_key,
 
 
         _prepare_mysql($url)
@@ -165,11 +165,11 @@ function get_url($site_key, $url, $dns_host, $dns_user, $dns_pwd, $dns_db) {
 
 }
 
-function get_page_key_from_code($site_key, $code, $db) {
+function get_page_key_from_code($website_key, $code, $db) {
 
     $page_key = 0;
     $sql      = sprintf(
-        "SELECT `Page Key` FROM `Page Store Dimension` WHERE `Webpage Website Key`=%d AND `Webpage Code`=%s ", $site_key, _prepare_mysql($code)
+        "SELECT `Page Key` FROM `Page Store Dimension` WHERE `Webpage Website Key`=%d AND `Webpage Code`=%s ", $website_key, _prepare_mysql($code)
     );
 
 
