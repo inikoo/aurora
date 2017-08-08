@@ -92,8 +92,8 @@
                                         {if $product->get('Web State')=='Out of Stock'}
                                             <div class="ordering log_in can_not_order {$product->get('Out of Stock Class')} " style="width:350px;position:relative;margin-top:40px">
 
-
-                                                {assign 'reminder_key' {$product->get('Reminder Key',{$user->id})} }
+                                                {if isset($customer)}
+                                                {assign 'reminder_key' {$product->get('Reminder Key',{$customer->id})} }
                                                 <div class="out_of_stock_row {$product->get('Out of Stock Class')}">
     <span class="label">
     {$product->get('Out of Stock Label')}
@@ -101,13 +101,13 @@
                                             class="reminder fa {if $reminder_key>0}fa-envelope{else}fa-envelope-o{/if}" aria-hidden="true"></i>  </span>
     </span>
                                                 </div>
-
+                                                {/if}
 
                                             </div>
                                         {elseif $product->get('Web State')=='For Sale'}
                                             <div class="ordering log_in " style="width:200px;position:relative;margin-top:40px">
 
-                                                {assign 'quantity_ordered' $product->get('Ordered Quantity',$order->id) }
+                                                {assign 'quantity_ordered' $product->get('Ordered Quantity',$order_key) }
                                                 <div class="order_row {if $quantity_ordered!=''}ordered{else}empty{/if}">
 
                                                     <input maxlength=6 style="border-left:1px solid #ccc;" class='order_input ' id='but_qty{$product->id}' type="text"' size='2' value='{$quantity_ordered}'
