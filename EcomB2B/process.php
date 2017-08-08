@@ -22,6 +22,11 @@ require_once 'keyring/dns.php';
 $mem = new Memcached();
 $mem->addServer($memcache_ip, 11211);
 
+
+
+session_start();
+
+
 if (!array_key_exists('website_key', $_SESSION) or !$_SESSION['website_key']    ) {
 
     include('utils/find_website_key.include.php');
