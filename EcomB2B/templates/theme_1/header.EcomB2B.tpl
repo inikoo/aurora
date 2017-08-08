@@ -47,10 +47,12 @@
         background-color: transparent;
     }
 
+
+    {if isset($header_data.color.items_title)}
     #_columns  .dropdown li.item_li:hover > a * {
         color:{$header_data.color.items_title};
     }
-
+    {/if}
 
     #trueHeader .dropdown-menu{
 
@@ -62,11 +64,13 @@
         color: {$header_data.color.items};
     }
 
+    {if isset($header_data.color.items_title)}
+
     #trueHeader .dropdown-menu a:hover{
 
         color: {$header_data.color.items_title};
     }
-
+    {/if}
 
 
     #menu_control_panel .button {
