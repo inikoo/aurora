@@ -104,9 +104,11 @@
                     <i class="fa fa-info-circle more_info" aria-hidden="true" title="More info"></i>
                 </a>
 
+
+                {if !empty($customer))}
                 {assign 'favourite_key' {$product->get('Favourite Key',{$customer->id})} }
                 <span style="position:absolute;top:5px;left:5px" class="invisible  favourite  " favourite_key={$favourite_key} ><i class="fa {if $favourite_key}fa-heart marked{else}fa-heart-o{/if}" aria-hidden="true"></i>  </span>
-
+                {/if}
 
 
                 <div class="product_header_text fr-view" >
@@ -265,9 +267,10 @@
 
                         <i class="fa fa-info-circle more_info" aria-hidden="true" title="More info"></i>
                         </a>
+                        {if !empty($customer))}
                         {assign 'favourite_key' {$product->get('Favourite Key',{$customer->id})} }
                         <span style="position:absolute;top:5px;left:5px" class="  favourite  " favourite_key={$favourite_key} ><i class="fa {if $favourite_key}fa-heart marked{else}fa-heart-o{/if}" aria-hidden="true"></i>  </span>
-
+                        {/if}
 
 
                         <div class="product_header_text fr-view" >
