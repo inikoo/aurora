@@ -272,10 +272,10 @@ $(function() {
 
 $(document).on('input propertychange', '.order_qty', function (evt) {
 
-    if ($(this).val() == $(this).attr('ovalue')) {
-        $(this).closest('span').find('i').removeClass('fa-floppy-o exclamation-circle error').addClass('fa-plus')
+  //  if ($(this).val() == $(this).attr('ovalue')) {
+  //      $(this).closest('span').find('i').removeClass('fa-floppy-o exclamation-circle error').addClass('fa-plus')
 
-    } else {
+//    } else {
 
         if (!validate_signed_integer($(this).val(), 4294967295) || $(this).val() == '') {
             $(this).closest('span').find('i').removeClass('fa-plus exclamation-circle error').addClass('fa-floppy-o')
@@ -284,7 +284,7 @@ $(document).on('input propertychange', '.order_qty', function (evt) {
             $(this).closest('span').find('i').removeClass('fa-plus fa-floppy-o').addClass('fa-exclamation-circle error')
 
         }
-    }
+ //   }
 });
 
 
