@@ -306,7 +306,7 @@ if($new){
             )
         ),
         array(
-            'label'      => _('Email'),
+            'label'      => _('Email').' ('._('Web login').')',
             'show_title' => false,
             'fields'     => array(
 
@@ -321,8 +321,7 @@ if($new){
                         array('tipo' => 'check_for_duplicates')
                     ),
                     'label'             => ucfirst(
-                        $object->get_field_label('Customer Main Plain Email')
-                    ),
+                        $object->get_field_label('Customer Main Plain Email')),
                     'invalid_msg'       => get_invalid_message('email'),
                     'required'          => true,
                     'type'              => 'value'
@@ -359,7 +358,8 @@ if($new){
                 ),
 
                 array(
-                    'render'    => ($object->get('Customer Main Plain Email') == '' ? false : true),
+                  //  'render'    => ($object->get('Customer Main Plain Email') == '' ? false : true),
+                    'render'            => false,
                     'id'        => 'show_new_email',
                     'class'     => 'new',
                     'value'     => '',
