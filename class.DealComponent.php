@@ -1,11 +1,10 @@
 <?php
 /*
- File: Deal.php
-
- This file contains the DealCompanent Class
 
  About:
+Refurbished: 8 August 2017 at 15:16:40 CEST, Tranava , Slovakia
  Author: Raul Perusquia <rulovico@gmail.com>
+
 
  Copyright (c) 2009, Inikoo
 
@@ -18,6 +17,11 @@ class DealComponent extends DB_Table {
 
 
     function DealComponent($a1, $a2 = false) {
+
+
+
+        global $db;
+        $this->db = $db;
 
         $this->table_name    = 'Deal Component';
         $this->ignore_fields = array('Deal Component Key');
@@ -45,14 +49,13 @@ class DealComponent extends DB_Table {
             );
         }
 
-        $result = mysql_query($sql);
 
-        if ($this->data = mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $this->calculate_deal = create_function(
-                '$transaction_data,$customer_id,$date', $this->get('Deal Component')
-            );
+        if ($this->data = $this->db->query($sql)->fetch()) {
+            $this->calculate_deal = create_function('$transaction_data,$customer_id,$date', $this->get('Deal Component'));
             $this->id             = $this->data['Deal Component Key'];
         }
+
+
     }
 
     function get($key = '') {
@@ -87,12 +90,8 @@ class DealComponent extends DB_Table {
         $this->found     = false;
         $this->found_key = 0;
         $create          = '';
-        $update          = '';
         if (preg_match('/create/i', $options)) {
             $create = 'create';
-        }
-        if (preg_match('/update/i', $options)) {
-            $update = 'update';
         }
 
         $data = $this->base_data();
@@ -112,18 +111,20 @@ class DealComponent extends DB_Table {
 
         );
 
-        // print "$sql\n";
 
-
-        $result      = mysql_query($sql);
-        $num_results = mysql_num_rows($result);
-        if ($num_results == 1) {
-            $row             = mysql_fetch_array($result, MYSQL_ASSOC);
-            $this->found     = true;
-            $this->found_key = $row['Deal Component Key'];
-            $this->get_data('id', $row['Deal Component Key']);
-
+        if ($result=$this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $this->found     = true;
+                $this->found_key = $row['Deal Component Key'];
+                $this->get_data('id', $row['Deal Component Key']);
+        	}
+        }else {
+        	print_r($error_info=$this->db->errorInfo());
+        	print "$sql\n";
+        	exit;
         }
+
+
 
 
         if ($create and !$this->found) {
@@ -163,8 +164,11 @@ class DealComponent extends DB_Table {
             "INSERT INTO `Deal Component Dimension` %s %s", $keys, $values
         );
         // print "$sql\n";
-        if (mysql_query($sql)) {
-            $this->id = mysql_insert_id();
+
+
+
+        if ($this->db->exec($sql)) {
+            $this->id  = $this->db->lastInsertId();
             $this->get_data('id', $this->id);
             $this->update_allowance_description();
             $this->new = true;
@@ -212,21 +216,15 @@ class DealComponent extends DB_Table {
             $allowance_plain .= ' '.$this->data['Deal Component Allowance Target XHTML Label'];
         }
 
+
+        $this->update(array(
+            'Deal Component Allowance XHTML Description'=>$allowance,
+            'Deal Component Allowance Plain Description'=>strip_tags($allowance_plain)
+
+                      ),'no_history');
+
         $this->data['Deal Component Allowance XHTML Description'] = $allowance;
 
-        $this->data['Deal Component Allowance Plain Description'] = strip_tags(
-            $allowance_plain
-        );
-
-        $sql = sprintf(
-            "UPDATE `Deal Component Dimension` SET `Deal Component Allowance XHTML Description`=%s, `Deal Component Allowance Plain Description`=%s WHERE `Deal Component Key`=%d", prepare_mysql(
-                $this->data['Deal Component Allowance XHTML Description']
-            ), prepare_mysql(
-                $this->data['Deal Component Allowance Plain Description']
-            ), $this->id
-
-        );
-        mysql_query($sql);
 
     }
 
@@ -254,7 +252,7 @@ class DealComponent extends DB_Table {
 
         switch ($field) {
             case 'Deal Component Expiration Date':
-                $this->update_expitation_date($value, $options);
+                $this->update_expiration_date($value, $options);
                 break;
             case('term'):
                 $this->update_term($value);
@@ -271,7 +269,7 @@ class DealComponent extends DB_Table {
         }
     }
 
-    function update_expitation_date($value, $options) {
+    function update_expiration_date($value, $options) {
 
         if ($this->data['Deal Component Status'] == 'Finish') {
             $this->error = true;
@@ -288,14 +286,23 @@ class DealComponent extends DB_Table {
         $sql = sprintf(
             'SELECT `Deal Component Key` FROM `Deal Component Dimension` WHERE `Deal Component Status`!="Finish" AND `Deal Component Mirror Key`=%d', $this->id
         );
-        $res = mysql_query($sql);
-        while ($row = mysql_fetch_assoc($res)) {
-            $deal_compoment = new DealComponent($row['Deal Component Key']);
-            $deal_compoment->update(
-                array('Deal Component Expiration Date' => $value)
-            );
-            $deal_compoment->update_status_from_dates();
+
+
+        if ($result=$this->db->query($sql)) {
+        		foreach ($result as $row) {
+                    $deal_component = new DealComponent($row['Deal Component Key']);
+                    $deal_component->update(
+                        array('Deal Component Expiration Date' => $value)
+                    );
+                    $deal_component->update_status_from_dates();
+        		}
+        }else {
+        		print_r($error_info=$this->db->errorInfo());
+        		print "$sql\n";
+        		exit;
         }
+
+
 
 
         $this->update_status_from_dates();
@@ -341,11 +348,12 @@ class DealComponent extends DB_Table {
 
 
         if ($value == 'Suspended') {
-            $sql = sprintf(
-                "UPDATE `Deal Component Dimension` SET `Deal Component Status`=%s WHERE `Deal Component Key`=%d", prepare_mysql($value), $this->id
-            );
-            mysql_query($sql);
-            $this->data['Deal Component Status'] = $value;
+
+
+
+            $this->update_field('Deal Component Status',$value);
+
+
         } else {
             $this->update_status_from_dates($force = true);
         }
@@ -353,26 +361,36 @@ class DealComponent extends DB_Table {
         $sql = sprintf(
             "SELECT `Deal Component Key` FROM `Deal Component Dimension` WHERE `Deal Component Mirror Key`=%d", $this->id
         );
-        $res = mysql_query($sql);
-        while ($row = mysql_fetch_assoc($res)) {
-            $mirror_component         = new DealComponent(
-                $row['Deal Component Key']
-            );
-            $mirror_component->editor = $this->editor;
 
 
-            if ($value == 'Suspended') {
-                $sql = sprintf(
-                    "UPDATE `Deal Component Dimension` SET `Deal Component Status`=%s WHERE `Deal Component Key`=%d", prepare_mysql($value), $mirror_component->id
-                );
-                mysql_query($sql);
-                $mirror_component->data['Deal Component Status'] = $value;
-            } else {
-                $mirror_component->update_status_from_dates($force = true);
-            }
+        if ($result=$this->db->query($sql)) {
+        		foreach ($result as $row) {
+                    $mirror_component         = new DealComponent(
+                        $row['Deal Component Key']
+                    );
+                    $mirror_component->editor = $this->editor;
 
 
+                    if ($value == 'Suspended') {
+                        $sql = sprintf(
+                            "UPDATE `Deal Component Dimension` SET `Deal Component Status`=%s WHERE `Deal Component Key`=%d", prepare_mysql($value), $mirror_component->id
+                        );
+                        $this->db->exec($sql);
+                        $mirror_component->data['Deal Component Status'] = $value;
+
+
+
+                    } else {
+                        $mirror_component->update_status_from_dates($force = true);
+                    }
+        		}
+        }else {
+        		print_r($error_info=$this->db->errorInfo());
+        		print "$sql\n";
+        		exit;
         }
+
+
 
 
     }
@@ -383,7 +401,7 @@ class DealComponent extends DB_Table {
             $sql = sprintf(
                 "DELETE FROM `Deal Target Bridge` WHERE `Deal Component Key`=%d ", $this->id
             );
-            mysql_query($sql);
+            $this->db->exec($sql);
         } else {
 
 
@@ -392,22 +410,34 @@ class DealComponent extends DB_Table {
                 $this->data['Deal Component Allowance Target Key']
 
             );
-            mysql_query($sql);
+            $this->db->exec($sql);
 
-            if ($this->data['Deal Component Allowance Target'] == 'Family') {
+            if ($this->data['Deal Component Allowance Target'] == 'Category') {
+
+
+
+
 
                 $sql  = sprintf(
-                    "SELECT `Product ID` FROM `Product Dimension` WHERE `Product Family Key`=%d AND `Product Record Type`='Normal' ", $this->data['Deal Component Allowance Target Key']
+                    "SELECT `Subject Key` FROM `Category Bridge` WHERE `Category Key`=%d ", $this->data['Deal Component Allowance Target Key']
                 );
-                $res2 = mysql_query($sql);
-                while ($row2 = mysql_fetch_assoc($res2)) {
 
-                    $sql = sprintf(
-                        "INSERT INTO `Deal Target Bridge` VALUES (%d,%d,%s,%d) ", $this->data['Deal Component Deal Key'], $this->id, prepare_mysql('Product'), $row2['Product ID']
+                if ($result2=$this->db->query($sql)) {
+                		foreach ($result2 as $row2) {
+                            $sql = sprintf(
+                                "INSERT INTO `Deal Target Bridge` VALUES (%d,%d,%s,%d) ", $this->data['Deal Component Deal Key'], $this->id, prepare_mysql('Product'), $row2['Subject Key']
 
-                    );
-                    mysql_query($sql);
+                            );
+                            $this->db->exec($sql);
+                		}
+                }else {
+                		print_r($error_info=$this->db->errorInfo());
+                		print "$sql\n";
+                		exit;
                 }
+
+
+
 
 
             }
@@ -425,38 +455,58 @@ class DealComponent extends DB_Table {
             $this->id
 
         );
-        $res       = mysql_query($sql);
+
         $orders    = 0;
         $customers = 0;
-        if ($row = mysql_fetch_assoc($res)) {
-            $orders    = $row['orders'];
-            $customers = $row['customers'];
+
+        if ($result=$this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $orders    = $row['orders'];
+                $customers = $row['customers'];
+        	}
+        }else {
+        	print_r($error_info=$this->db->errorInfo());
+        	print "$sql\n";
+        	exit;
         }
 
-        $sql = sprintf(
-            "UPDATE `Deal Component Dimension` SET `Deal Component Total Acc Applied Orders`=%d, `Deal Component Total Acc Applied Customers`=%d WHERE `Deal Component Key`=%d", $orders, $customers,
-            $this->id
-        );
-        //print "$sql\n";
-        mysql_query($sql);
+
+        $this->update(array(
+                          'Deal Component Total Acc Applied Orders'=>$orders,
+                          'Deal Component Total Acc Applied Customers'=>$customers,
+
+                      ),'no_history');
+
+
+
         $sql       = sprintf(
             "SELECT count( DISTINCT O.`Order Key`) AS orders,count( DISTINCT `Order Customer Key`) AS customers FROM `Order Deal Bridge` B LEFT  JOIN `Order Dimension` O ON (O.`Order Key`=B.`Order Key`) WHERE B.`Deal Component Key`=%d AND `Used`='Yes' AND `Order Current Dispatch State`!='Cancelled' ",
             $this->id
 
         );
-        $res       = mysql_query($sql);
         $orders    = 0;
         $customers = 0;
-        //  print "$sql\n";
-        if ($row = mysql_fetch_assoc($res)) {
-            $orders    = $row['orders'];
-            $customers = $row['customers'];
+
+
+        if ($result=$this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $orders    = $row['orders'];
+                $customers = $row['customers'];
+            }
+        }else {
+            print_r($error_info=$this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
-        $sql = sprintf(
-            "UPDATE `Deal Component Dimension` SET `Deal Component Total Acc Used Orders`=%d, `Deal Component Total Acc Used Customers`=%d WHERE `Deal Component Key`=%d", $orders, $customers,
-            $this->id
-        );
-        mysql_query($sql);
+
+
+        $this->update(array(
+                          'Deal Component Total Acc Used Orders'=>$orders,
+                          'Deal Component Total Acc Used Customers'=>$customers,
+
+                      ),'no_history');
+
+
 
     }
 

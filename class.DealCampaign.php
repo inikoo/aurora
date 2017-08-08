@@ -4,6 +4,8 @@
  This file contains the Campaign Class
 
  About:
+Refurbished: 8 August 2017 at 15:16:40 CEST, Tranava , Slovakia
+
  Author: Raul Perusquia <rulovico@gmail.com>
 
  Copyright (c) 2013, Inikoo
@@ -203,6 +205,11 @@ class DealCampaign extends DB_Table {
 
     function add_deal($data) {
 
+
+
+
+        include_once 'class.Deal.php';
+
         $data['Deal Campaign Key'] = $this->id;
         $data['Deal Store Key']    = $this->data['Deal Campaign Store Key'];
 
@@ -217,6 +224,7 @@ class DealCampaign extends DB_Table {
 
         $data['Deal Expiration Date'] = $this->data['Deal Campaign Valid To'];
         $data['Deal Status']          = $this->data['Deal Campaign Status'];
+
 
 
         $deal = new Deal('find create', $data);
@@ -448,7 +456,7 @@ class DealCampaign extends DB_Table {
         $this->db->exec($sql);
 
         $sql = sprintf(
-            "DELETE FROM `Deal Compoment Dimension` WHERE `Deal Compoment Campaign Key`=%d", $this->id
+            "DELETE FROM `Deal Component Dimension` WHERE `Deal Component Campaign Key`=%d", $this->id
         );
         $this->db->exec($sql);
 

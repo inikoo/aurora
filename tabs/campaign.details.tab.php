@@ -15,7 +15,7 @@ include_once 'conf/object_fields.php';
 
 $campaign = $state['_object'];
 
-$object_fields = get_object_fields($campaign, $db, $user, $smarty, array());
+$object_fields = get_object_fields($campaign, $db, $user, $smarty, array('store_key'=>$campaign->get('Store Key')));
 
 $smarty->assign('object_fields', $object_fields);
 $smarty->assign('state', $state);
