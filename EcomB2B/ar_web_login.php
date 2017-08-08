@@ -77,9 +77,11 @@ function login($db, $data, $editor) {
             $selector.':'.base64_encode($authenticator),
             time() + 864000,
             '/'
-            //,'',
-            //true, // TLS-only
-            //true  // http-only
+
+
+            ,'',
+            true, // TLS-only
+            true  // http-only
         );
 
 
