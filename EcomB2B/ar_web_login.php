@@ -58,6 +58,7 @@ function login($db, $data, $editor) {
     $auth = new WebAuth();
 
 
+
     list($logged_in,$result,$customer_key,$website_user_key,$website_user_log_key)=$auth->authenticate_from_login($data['handle'],$data['pwd'],$data['website_key'],$data['keep_logged']);
 
 
