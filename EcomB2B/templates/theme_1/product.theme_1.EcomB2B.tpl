@@ -182,7 +182,7 @@
 
                           "image": "{$product->get('Image')}",
                           "name": "{$product->get('Name')|escape}",
-                          "sku": "{$product->get('Code')|escape}",
+                          "sku": "{$product->get('Code')|escape}"
 
 
                         }
