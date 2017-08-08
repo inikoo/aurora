@@ -246,8 +246,8 @@ class Voucher extends DB_Table {
         }
 
         foreach ($this->get_deal_component_keys() as $deal_component_key) {
-            $deal_compoment = new DealComponent($deal_key);
-            $deal_compoment->update_status_from_dates();
+            $deal_component = new DealComponent($deal_key);
+            $deal_component->update_status_from_dates();
         }
 
 
@@ -334,7 +334,7 @@ class Voucher extends DB_Table {
         mysql_query($sql);
 
         $sql = sprintf(
-            "DELETE FROM `Deal Compoment Dimension` WHERE `Deal Compoment Campaign Key`=%d", $this->id
+            "DELETE FROM `Deal Component Dimension` WHERE `Deal Component Campaign Key`=%d", $this->id
         );
         mysql_query($sql);
 

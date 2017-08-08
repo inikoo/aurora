@@ -297,11 +297,25 @@ class Store extends DB_Table {
 
             $bulk_discounts_campaign = $this->create_campaign($bulk_discounts_campaign_data);
 
+
+            $first_order_incentive_campaign_data = array(
+                'Deal Campaign Name'       => 'First order incentive',
+                'Deal Campaign Valid From' => gmdate('Y-m-d'),
+                'Deal Campaign Valid To'   => '',
+
+
+            );
+
+            $first_order_incentive_campaign = $this->create_campaign($first_order_incentive_campaign_data);
+
+
+
             $this->update(
                 array(
 
                     'Store Order Recursion Campaign Key' => $order_recursion_campaign->id,
                     'Store Bulk Discounts Campaign Key'  => $bulk_discounts_campaign->id,
+                    'Store First Order Campaign Key'  => $first_order_incentive_campaign->id,
 
                 ), 'no_history'
             );
