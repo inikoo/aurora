@@ -1988,20 +1988,6 @@ class Order extends DB_Table {
 
     }
 
-    function delete_transaction($otf_key) {
-        $sql = sprintf(
-            "DELETE FROM `Order Transaction Fact` WHERE `Order Transaction Fact Key`=%d", $otf_key
-        );
-        $this->db->exec($sql);
-
-
-        $sql = sprintf(
-            "DELETE FROM `Inventory Transaction Fact` WHERE `Map To Order Transaction Fact Key`=%d", $otf_key
-        );
-        $this->db->exec($sql);
-
-    }
-
     function activate($date = false) {
 
 
