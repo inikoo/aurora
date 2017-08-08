@@ -8,6 +8,7 @@
  Version 3
 
 */
+
 use Aws\Ses\SesClient;
 
 require_once 'common.php';
@@ -35,7 +36,7 @@ switch ($tipo) {
                          'store_key' => array('type' => 'key')
                      )
         );
-        register($db, $website,$data, $editor);
+        register($db, $website, $data, $editor);
         break;
 
 
@@ -49,7 +50,7 @@ switch ($tipo) {
         break;
 }
 
-function register($db, $website,$data, $editor) {
+function register($db, $website, $data, $editor) {
 
     include_once 'class.Public_Store.php';
 
@@ -97,6 +98,14 @@ function register($db, $website,$data, $editor) {
             $customer_data['Customer Contact Address country'] = $raw_data['country'];
         }
 
+        if (isset($raw_data['subscription']) and $raw_data['subscription'] == 'on') {
+            $customer_data['Customer Send Newsletter']       = 'Yes';
+            $customer_data['Customer Send Email Marketing']  = 'Yes';
+            $customer_data['Customer Send Postal Marketing'] = 'Yes';
+
+        }
+
+
 
         list($customer, $website_user) = $store->create_customer($customer_data, array('Website User Password' => $raw_data['password']));
 
@@ -136,7 +145,7 @@ function register($db, $website,$data, $editor) {
                 $db->exec($sql);
 
 
-                send_welcome_email($db,$website, $customer, $website_user);
+                send_welcome_email($db, $website, $customer, $website_user);
 
 
             } else {
@@ -181,29 +190,23 @@ function register($db, $website,$data, $editor) {
 }
 
 
-function send_welcome_email($db,$website, $customer, $website_user) {
+function send_welcome_email($db, $website, $customer, $website_user) {
 
     require 'external_libs/aws.phar';
-
 
 
     include_once 'class.Public_Email_Template.php';
     include_once 'class.Public_Webpage.php';
 
 
-    $webpage = new Public_Webpage('website_code',$website->id,'register.sys');
+    $webpage = new Public_Webpage('website_code', $website->id, 'register.sys');
 
     $scope_metadata = $webpage->get('Scope Metadata');
-
-
 
 
     $email_template = get_object('email_template', $scope_metadata['emails']['welcome']['key']);
 
     $published_email_template = get_object('published_email_template', $email_template->get('Email Template Published Email Key'));
-
-
-
 
 
     if ($email_template->get('Email Template Subject') == '') {
@@ -243,12 +246,12 @@ function send_welcome_email($db,$website, $customer, $website_user) {
 
 
     $placeholders = array(
-        '[Greetings]'          => $customer->get_greetings(),
-        '[Name]'               => $customer->get('Name'),
-        '[Name,Company]'       => preg_replace(
+        '[Greetings]'    => $customer->get_greetings(),
+        '[Name]'         => $customer->get('Name'),
+        '[Name,Company]' => preg_replace(
             '/^, /', '', $customer->get('Customer Main Contact Name').($customer->get('Customer Company Name') == '' ? '' : ', '.$customer->get('Customer Company Name'))
         ),
-        '[Signature]'          => $webpage->get('Signature'),
+        '[Signature]'    => $webpage->get('Signature'),
     );
 
 
@@ -264,10 +267,6 @@ function send_welcome_email($db,$website, $customer, $website_user) {
         $request['Message']['Body']['Html']['Data'] = strtr($published_email_template->get('Published Email Template HTML'), $placeholders);
 
     }
-
-
-
-
 
 
     try {
@@ -291,8 +290,6 @@ function send_welcome_email($db,$website, $customer, $website_user) {
 
         );
     }
-
-
 
 
     echo json_encode($response);
