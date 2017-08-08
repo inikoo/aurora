@@ -1433,7 +1433,7 @@ class Website extends DB_Table {
             "DELETE FROM `Sitemap Dimension` WHERE `Sitemap Website Key`=%d  ", $this->id
         );
 
-        
+
 
         $this->db->exec($sql);
 

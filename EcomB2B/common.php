@@ -34,7 +34,11 @@ $smarty->clearAllCache();
 //$smarty->clear_cache('index.tpl');
 
 
-session_start();
+if(session_id() == '' || !isset($_SESSION)) {
+    session_start();
+}
+
+
 
 if (!array_key_exists('website_key', $_SESSION) or !$_SESSION['website_key']    ) {
 
