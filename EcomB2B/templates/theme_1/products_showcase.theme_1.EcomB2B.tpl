@@ -51,7 +51,7 @@
     }'></span>
 
 
-    <div id="description_block" class="description_block {$content_data.description_block.class}" >
+    <div id="description_block" class="description_block {if isset($content_data.description_block.class)}{$content_data.description_block.class}{/if}" >
 
 
         {foreach from=$content_data.description_block.blocks key=id item=data}
