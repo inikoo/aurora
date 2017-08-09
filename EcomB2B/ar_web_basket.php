@@ -50,7 +50,7 @@ switch ($tipo) {
                      )
         );
 
-        update_item($data, $customer, $website, $editor);
+        update_item($data, $customer, $website, $editor,$db);
 
 
         break;
@@ -84,7 +84,7 @@ switch ($tipo) {
         break;
 }
 
-function update_item($_data, $customer, $website, $editor) {
+function update_item($_data, $customer, $website, $editor,$db) {
 
 
     $customer->editor = $editor;
@@ -211,7 +211,7 @@ function update_item($_data, $customer, $website, $editor) {
             );
 
 
-            if ($result = $this->db->query($sql)) {
+            if ($result = $db->query($sql)) {
                 foreach ($result as $row) {
                     $deal_info = '';
                     if ($row['Deal Info'] != '') {
@@ -225,7 +225,7 @@ function update_item($_data, $customer, $website, $editor) {
                     );
                 }
             } else {
-                print_r($error_info = $this->db->errorInfo());
+                print_r($error_info = $db->errorInfo());
                 print "$sql\n";
                 exit;
             }

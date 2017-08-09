@@ -298,7 +298,7 @@ if ($result = $db->query($sql)) {
 
                 );
 
-                //   $deal->add_component($component_data);
+                  $deal->add_component($component_data);
 
             }
         } else {

@@ -28,7 +28,7 @@ trait OrderCalculateTotals {
             "SELECT
 		count(*) AS number_items,
 		sum(`Estimated Weight`) AS weight,
-		sum(`Order Transaction Amount`) AS net ,sum(`Invoice Transaction Total Discount Amount`) AS discounts ,sum(`Order Transaction Gross Amount`) AS gross ,
+		sum(`Order Transaction Amount`) AS net ,sum(`Order Transaction Total Discount Amount`) AS discounts ,sum(`Order Transaction Gross Amount`) AS gross ,
 		sum(if(`Order Transaction Total Discount Amount`!=0,1,0)) AS number_with_deals ,
 		sum(if(`No Shipped Due Out of Stock`!=0,1,0)) AS number_with_out_of_stock
 		FROM `Order Transaction Fact` WHERE `Order Key`=%d  ", $this->id
@@ -49,6 +49,8 @@ trait OrderCalculateTotals {
             print_r($error_info = $this->db->errorInfo());
             exit;
         }
+
+
 
         $sql = sprintf(
             "SELECT
@@ -184,6 +186,8 @@ trait OrderCalculateTotals {
             print "$sql\n";
             exit;
         }
+
+
 
 
 

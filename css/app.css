@@ -1429,6 +1429,8 @@ tr.deleting_tr {
 
 table.totals .subtotal td {
   border-top: 1px solid #ddd; }
+table.totals .last td {
+  border-bottom: 1px solid #ddd; }
 table.totals .total td {
   border-bottom: 1px solid #aaa;
   border-top: 1px solid #aaa; }
