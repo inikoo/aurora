@@ -19,7 +19,8 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="keywords" content=""/>
-    <meta name="description" content=""/>
+    <meta name="description" content="{$webpage->get('Webpage Meta Description')}"/>
+
     <link rel="shortcut icon" type="image/png" href="art/favicon.png"/>
 
     <!--
