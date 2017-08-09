@@ -18,12 +18,18 @@
         m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
     })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
+
+
+    {if $client_analytics_id!=''}
+    ga('create', '{$analytics_id}', 'auto');
+    ga('create', '{$client_analytics_id}', 'auto', 'clientTracker');
+    ga('send', 'pageview');
+
+    ga('clientTracker.send', 'pageview');
+    {else}
     ga('create', '{$analytics_id}', 'auto');
     ga('send', 'pageview');
 
-    {if $client_analytics_id!=''}
-    ga('create', '{$client_analytics_id}', 'auto', 'clientTracker');
-    ga('clientTracker.send', 'pageview');
     {/if}
 </script>
 {/if}
