@@ -4,6 +4,12 @@ table.totals {
   .subtotal td {
     border-top: 1px solid #ddd;
   }
+
+
+  .last td {
+    border-bottom: 1px solid #ddd;
+  }
+
   .total td {
     border-bottom: 1px solid #aaa;
     border-top: 1px solid #aaa;

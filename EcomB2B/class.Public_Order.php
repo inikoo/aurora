@@ -26,6 +26,10 @@ include_once 'class.DBW_Table.php';
 class Public_Order extends DBW_Table {
     use OrderShippingOperations, OrderChargesOperations, OrderDiscountOperations, OrderItems, OrderPayments, OrderCalculateTotals,OrderBasketOperations,OrderTax;
 
+
+    var $amount_off_allowance_data = false;
+
+
     function Public_Order($arg1 = false, $arg2 = false, $arg3 = false) {
 
         global $db;

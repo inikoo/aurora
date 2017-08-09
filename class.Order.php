@@ -542,6 +542,11 @@ class Order extends DB_Table {
 
 
         switch ($key) {
+
+            case 'Items Discount Percentage':
+
+                return percentage($this->data['Order Items Discount Amount'],$this->data['Order Items Gross Amount']);
+
             case 'Currency Code':
 
                 return $this->data['Order Currency'];

@@ -331,6 +331,22 @@
                 </td>
             </tr>
 
+            <table border="0" class="totals" style="position:relative;top:20px">
+
+
+                <tr class="subtotal first">
+                    <td class="label">{t}Discounts{/t}</td>
+                    <td class="aright Items_Discount_Amount">{$order->get('Items Discount Amount')}</td>
+                </tr>
+
+                <tr class="subtotal last">
+                    <td class="label"></td>
+                    <td class="aright Items_Discount_Percentage">{$order->get('Items Discount Percentage')}</td>
+                </tr>
+            </table>
+
+
+
 
         </table>
 

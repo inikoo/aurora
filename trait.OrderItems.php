@@ -339,8 +339,16 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
 
             $this->update_totals();
 
+            $this->update_discounts_items();
+
+
+
             $this->update_shipping($dn_key, false);
             $this->update_charges($dn_key, false);
+
+            $this->update_deal_bridge();
+
+
 
             $this->update_totals();
 
@@ -376,6 +384,9 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
             'class_html'  => array(
                 'Order_State'                   => $this->get('State'),
                 'Items_Net_Amount'              => $this->get('Items Net Amount'),
+
+                'Items_Discount_Amount'=> $this->get('Items Discount Amount'),
+                'Items_Discount_Percentage'=> $this->get('Items Discount Percentage'),
                 'Shipping_Net_Amount'           => $this->get('Shipping Net Amount'),
                 'Charges_Net_Amount'            => $this->get('Charges Net Amount'),
                 'Total_Net_Amount'              => $this->get('Total Net Amount'),
@@ -386,7 +397,11 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
                 'Payments_Amount'               => $this->get('Payments Amount'),
 
 
-                'Order_Number_items' => $this->get('Number Items')
+
+
+
+                'Order_Number_items' => $this->get('Number Items'),
+                'Order_Number_Items_with_Deals' => $this->get('Number Items with Deals')
 
             ),
             'operations'  => $operations,
