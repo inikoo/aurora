@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.7.18, for osx10.12 (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.19, for osx10.12 (x86_64)
 --
 -- Host: localhost    Database: dw
 -- ------------------------------------------------------
--- Server version	5.7.18
+-- Server version	5.7.19
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -677,6 +677,7 @@ CREATE TABLE `Account Dimension` (
   `Account Acc To Day Updated` datetime DEFAULT NULL,
   `Account Acc Ongoing Intervals Updated` datetime DEFAULT NULL,
   `Account Acc Previous Intervals Updated` datetime DEFAULT NULL,
+  `Account Analytics ID` varchar(16) DEFAULT NULL,
   PRIMARY KEY (`Account Key`),
   KEY `Account Currency` (`Account Currency`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -2269,6 +2270,30 @@ CREATE TABLE `Customer Correlation` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `Customer Credit Card Dimension`
+--
+
+DROP TABLE IF EXISTS `Customer Credit Card Dimension`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Customer Credit Card Dimension` (
+  `Customer Credit Card Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Customer Credit Card Customer Key` mediumint(8) unsigned NOT NULL,
+  `Customer Credit Card Invoice Address Checksum` varchar(64) NOT NULL,
+  `Customer Credit Card Delivery Address Checksum` varchar(64) NOT NULL,
+  `Customer Credit Card CCUI` varchar(255) NOT NULL,
+  `Customer Credit Card Metadata` text NOT NULL,
+  `Customer Credit Card Vault` varchar(32) NOT NULL,
+  `Customer Credit Card Valid Until` datetime NOT NULL,
+  `Customer Credit Card Created` datetime NOT NULL,
+  `Customer Credit Card Updated` datetime NOT NULL,
+  PRIMARY KEY (`Customer Credit Card Key`),
+  UNIQUE KEY `Token` (`Customer Credit Card Customer Key`,`Customer Credit Card Invoice Address Checksum`,`Customer Credit Card Delivery Address Checksum`,`Customer Credit Card CCUI`(64)) USING BTREE,
+  KEY `Valid Until` (`Customer Credit Card Valid Until`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `Customer Credit Card Token Dimension`
 --
 
@@ -2971,15 +2996,15 @@ CREATE TABLE `Deal Component Dimension` (
   `Deal Component Campaign Key` mediumint(8) unsigned DEFAULT NULL,
   `Deal Component Deal Key` mediumint(8) unsigned NOT NULL,
   `Deal Component Status` enum('Suspended','Active','Finish','Waiting') NOT NULL DEFAULT 'Active',
-  `Deal Component Trigger` enum('Department','Family','Product','Order','Customer','Customer Category','Customer List') DEFAULT NULL,
+  `Deal Component Trigger` enum('Category','Department','Family','Product','Order','Customer','Customer Category','Customer List') DEFAULT NULL,
   `Deal Component Trigger Key` mediumint(8) unsigned DEFAULT NULL,
-  `Deal Component Terms Type` enum('Department Quantity Ordered','Every Order','Family For Every Quantity Any Product Ordered','Department For Every Quantity Any Product Ordered','Voucher AND Order Interval','Amount AND Order Number','Amount AND Order Interval','Voucher AND Order Number','Voucher AND Amount','Amount','Order Total Net Amount','Order Total Net Amount AND Order Number','Order Total Net Amount AND Shipping Country','Order Total Net Amount AND Order Interval','Order Items Net Amount','Order Items Net Amount AND Order Number','Order Items Net Amount AND Shipping Country','Order Items Net Amount AND Order Interval','Order Total Amount','Order Total Amount AND Order Number','Order Total Amount AND Shipping Country','Order Total Amount AND Order Interval','Order Interval','Product Quantity Ordered','Family Quantity Ordered','Order Number','Shipping Country','Voucher','Department For Every Quantity Ordered','Family For Every Quantity Ordered','Product For Every Quantity Ordered') NOT NULL,
+  `Deal Component Terms Type` enum('Category Quantity Ordered','Department Quantity Ordered','Every Order','Family For Every Quantity Any Product Ordered','Department For Every Quantity Any Product Ordered','Voucher AND Order Interval','Amount AND Order Number','Amount AND Order Interval','Voucher AND Order Number','Voucher AND Amount','Amount','Order Total Net Amount','Order Total Net Amount AND Order Number','Order Total Net Amount AND Shipping Country','Order Total Net Amount AND Order Interval','Order Items Net Amount','Order Items Net Amount AND Order Number','Order Items Net Amount AND Shipping Country','Order Items Net Amount AND Order Interval','Order Total Amount','Order Total Amount AND Order Number','Order Total Amount AND Shipping Country','Order Total Amount AND Order Interval','Order Interval','Product Quantity Ordered','Family Quantity Ordered','Order Number','Shipping Country','Voucher','Department For Every Quantity Ordered','Family For Every Quantity Ordered','Product For Every Quantity Ordered') NOT NULL,
   `Deal Component Terms Description` varchar(255) DEFAULT NULL,
   `Deal Component XHTML Terms Description Label` text,
   `Deal Component Terms Lock` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Deal Component Terms` varchar(255) DEFAULT NULL,
   `Deal Component Allowance Type` enum('Get Cheapest Free','Amount Off','Percentage Off','Get Free','Get Same Free','Credit') DEFAULT NULL,
-  `Deal Component Allowance Target` enum('Product','Order','Shipping','Charge','Family','Department') DEFAULT NULL,
+  `Deal Component Allowance Target` enum('Category','Product','Order','Shipping','Charge','Family','Department') DEFAULT NULL,
   `Deal Component Allowance Target Type` enum('Items','No Items') NOT NULL DEFAULT 'Items',
   `Deal Component Allowance Target Key` mediumint(8) unsigned DEFAULT NULL,
   `Deal Component Allowance Target XHTML Label` varchar(255) NOT NULL,
@@ -3031,7 +3056,7 @@ CREATE TABLE `Deal Dimension` (
   `Deal Trigger` enum('Order','Category','Department','Family','Product','Customer','Customer Category','Customer List') NOT NULL,
   `Deal Trigger Key` mediumint(9) NOT NULL DEFAULT '0',
   `Deal Trigger XHTML Label` varchar(255) NOT NULL,
-  `Deal Terms Type` enum('Department Quantity Ordered','Every Order','Family For Every Quantity Any Product Ordered','Department For Every Quantity Any Product Ordered','Voucher AND Order Interval','Amount AND Order Number','Amount AND Order Interval','Voucher AND Order Number','Voucher AND Amount','Amount','Order Total Net Amount','Order Total Net Amount AND Order Number','Order Total Net Amount AND Shipping Country','Order Total Net Amount AND Order Interval','Order Items Net Amount','Order Items Net Amount AND Order Number','Order Items Net Amount AND Shipping Country','Order Items Net Amount AND Order Interval','Order Total Amount','Order Total Amount AND Order Number','Order Total Amount AND Shipping Country','Order Total Amount AND Order Interval','Order Interval','Product Quantity Ordered','Family Quantity Ordered','Order Number','Shipping Country','Voucher','Department For Every Quantity Ordered','Family For Every Quantity Ordered','Product For Every Quantity Ordered') NOT NULL,
+  `Deal Terms Type` enum('Category Quantity Ordered','Department Quantity Ordered','Every Order','Family For Every Quantity Any Product Ordered','Department For Every Quantity Any Product Ordered','Voucher AND Order Interval','Amount AND Order Number','Amount AND Order Interval','Voucher AND Order Number','Voucher AND Amount','Amount','Order Total Net Amount','Order Total Net Amount AND Order Number','Order Total Net Amount AND Shipping Country','Order Total Net Amount AND Order Interval','Order Items Net Amount','Order Items Net Amount AND Order Number','Order Items Net Amount AND Shipping Country','Order Items Net Amount AND Order Interval','Order Total Amount','Order Total Amount AND Order Number','Order Total Amount AND Shipping Country','Order Total Amount AND Order Interval','Order Interval','Product Quantity Ordered','Family Quantity Ordered','Order Number','Shipping Country','Voucher','Department For Every Quantity Ordered','Family For Every Quantity Ordered','Product For Every Quantity Ordered') NOT NULL,
   `Deal Terms Description` varchar(255) DEFAULT NULL,
   `Deal XHTML Terms Description Label` text,
   `Deal Terms` varchar(255) DEFAULT NULL,
@@ -3147,6 +3172,19 @@ CREATE TABLE `Delivery Note Dimension` (
   `Delivery Note Estimated Weight` decimal(12,3) NOT NULL DEFAULT '0.000',
   `Delivery Note Weight` decimal(12,3) DEFAULT NULL COMMENT 'In kilograms',
   `Delivery Note Weight Source` enum('Estimated','Given') NOT NULL DEFAULT 'Estimated',
+  `Delivery Note Address Recipient` varchar(255) DEFAULT NULL,
+  `Delivery Note Address Organization` varchar(255) DEFAULT NULL,
+  `Delivery Note Address Line 1` varchar(255) DEFAULT NULL,
+  `Delivery Note Address Line 2` varchar(255) DEFAULT NULL,
+  `Delivery Note Address Sorting Code` varchar(255) DEFAULT NULL,
+  `Delivery Note Address Postal Code` varchar(255) DEFAULT NULL,
+  `Delivery Note Address Dependent Locality` varchar(255) DEFAULT NULL,
+  `Delivery Note Address Postal Label` text,
+  `Delivery Note Address Formatted` text,
+  `Delivery Note Address Checksum` varchar(64) DEFAULT NULL,
+  `Delivery Note Address Country 2 Alpha Code` varchar(2) DEFAULT NULL,
+  `Delivery Note Address Administrative Area` varchar(255) DEFAULT NULL,
+  `Delivery Note Address Locality` varchar(255) DEFAULT NULL,
   `Delivery Note Customer Contact Name` varchar(255) DEFAULT NULL,
   `Delivery Note Telephone` varchar(255) DEFAULT NULL,
   `Delivery Note Email` varchar(255) DEFAULT NULL,
@@ -3774,6 +3812,19 @@ CREATE TABLE `Email Template Color Scheme Dimension` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `Email Template Data`
+--
+
+DROP TABLE IF EXISTS `Email Template Data`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Email Template Data` (
+  `Email Template Key` mediumint(8) unsigned NOT NULL,
+  PRIMARY KEY (`Email Template Key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `Email Template Dimension`
 --
 
@@ -4370,10 +4421,11 @@ CREATE TABLE `Inventory Transaction Fact` (
   `Relations` varchar(32) DEFAULT NULL,
   `Part Location Stock` float NOT NULL DEFAULT '0',
   `Part Stock` float NOT NULL DEFAULT '0',
-  `Dispatch Country Code` char(3) NOT NULL DEFAULT 'UNK',
+  `Dispatch Country Code` char(3) DEFAULT 'UNK',
   `Out of Stock Tag` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Map To Order Transaction Fact Parts Multiplicity` smallint(5) unsigned NOT NULL DEFAULT '1',
   `Map To Order Transaction Fact XHTML Info` text,
+  `Inventory Transaction Fact Delivery 2 Alpha Code` varchar(2) DEFAULT NULL,
   KEY `Date` (`Date`),
   KEY `Part SKU` (`Part SKU`),
   KEY `Metadata` (`Metadata`(12)),
@@ -4394,7 +4446,8 @@ CREATE TABLE `Inventory Transaction Fact` (
   KEY `Out of Stock Tag` (`Out of Stock Tag`),
   KEY `Inventory Transaction Section` (`Inventory Transaction Section`),
   KEY `Inventory Transaction Record Type` (`Inventory Transaction Record Type`),
-  KEY `Inventory Transaction Type` (`Inventory Transaction Type`)
+  KEY `Inventory Transaction Type` (`Inventory Transaction Type`),
+  KEY `Inventory Transaction Fact Delivery 2 Alpha Code` (`Inventory Transaction Fact Delivery 2 Alpha Code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -4410,9 +4463,9 @@ CREATE TABLE `Inventory Warehouse Spanshot Fact` (
   `Warehouse Key` smallint(5) unsigned NOT NULL DEFAULT '1',
   `Parts` mediumint(8) unsigned NOT NULL,
   `Locations` mediumint(8) unsigned NOT NULL,
-  `Value At Cost` decimal(16,2) DEFAULT NULL,
-  `Value At Day Cost` decimal(16,2) DEFAULT NULL,
-  `Value Commercial` decimal(16,2) DEFAULT NULL,
+  `Value At Cost` decimal(9,2) DEFAULT NULL,
+  `Value At Day Cost` decimal(9,2) DEFAULT NULL,
+  `Value Commercial` decimal(9,2) DEFAULT NULL,
   `Value At Cost Open` float NOT NULL DEFAULT '0',
   `Value At Cost High` float NOT NULL DEFAULT '0',
   `Value At Cost Low` float NOT NULL DEFAULT '0',
@@ -4970,6 +5023,19 @@ CREATE TABLE `Invoice Dimension` (
   `Invoice Payment Account Key` mediumint(9) DEFAULT NULL,
   `Invoice Payment Account Code` varchar(64) DEFAULT NULL,
   `Invoice Payment Key` mediumint(9) DEFAULT NULL,
+  `Invoice Address Recipient` varchar(255) DEFAULT NULL,
+  `Invoice Address Organization` varchar(255) DEFAULT NULL,
+  `Invoice Address Line 1` varchar(255) DEFAULT NULL,
+  `Invoice Address Line 2` varchar(255) DEFAULT NULL,
+  `Invoice Address Sorting Code` varchar(255) DEFAULT NULL,
+  `Invoice Address Postal Code` varchar(255) DEFAULT NULL,
+  `Invoice Address Dependent Locality` varchar(255) DEFAULT NULL,
+  `Invoice Address Postal Label` text,
+  `Invoice Address Formatted` text,
+  `Invoice Address Checksum` varchar(64) DEFAULT NULL,
+  `Invoice Address Country 2 Alpha Code` varchar(2) DEFAULT NULL,
+  `Invoice Address Administrative Area` varchar(255) DEFAULT NULL,
+  `Invoice Address Locality` varchar(255) DEFAULT NULL,
   `Invoice XHTML Address` text,
   `Invoice Billing To Key` mediumint(8) unsigned DEFAULT NULL,
   `Invoice Has Been Paid In Full` enum('Yes','No') DEFAULT 'No',
@@ -5716,7 +5782,7 @@ CREATE TABLE `Order Dimension` (
   `Order Company Department Key` mediumint(8) unsigned DEFAULT NULL,
   `Order Company Department Code` varchar(255) DEFAULT NULL,
   `Order Main Source Type` enum('Internet','Call','Store','Other','Email','Fax') NOT NULL DEFAULT 'Other',
-  `Order Current Dispatch State` enum('In Process by Customer','Waiting for Payment Confirmation','In Process','Submitted by Customer','Ready to Pick','Picking & Packing','Ready to Ship','Dispatched','Packing','Packed','Packed Done','Cancelled','Suspended','Cancelled by Customer') NOT NULL DEFAULT 'In Process',
+  `Order Current Dispatch State` enum('In Process by Customer','Waiting for Payment Confirmation','In Process','Submitted by Customer','In Warehouse','Ready to Pick','Picking & Packing','Ready to Ship','Dispatched','Packing','Packed','Packed Done','Cancelled','Suspended','Cancelled by Customer') NOT NULL DEFAULT 'In Process',
   `Order Current XHTML Dispatch State` text,
   `Order Current Payment State` enum('Waiting Payment','Paid','Partially Paid','Unknown','No Applicable','Overpaid') NOT NULL DEFAULT 'Waiting Payment',
   `Order Current XHTML Payment State` text,
@@ -5749,6 +5815,7 @@ CREATE TABLE `Order Dimension` (
   `Order Balance Net Amount` decimal(14,2) NOT NULL DEFAULT '0.00',
   `Order Balance Tax Amount` decimal(14,2) NOT NULL DEFAULT '0.00',
   `Order Balance Total Amount` decimal(12,2) NOT NULL DEFAULT '0.00' COMMENT 'Net+Tax',
+  `Order Available Credit Amount` decimal(10,2) NOT NULL DEFAULT '0.00',
   `Order Payments Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Order To Pay Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Order Outstanding Balance Net Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
@@ -5837,10 +5904,16 @@ CREATE TABLE `Order Dimension` (
   `Order Tax Number` varchar(64) DEFAULT NULL,
   `Order Tax Number Valid` enum('Yes','No','Unknown') NOT NULL DEFAULT 'No',
   `Order Tax Number Validation Date` datetime DEFAULT NULL,
+  `Order Tax Number Validation Source` enum('Online','Staff') DEFAULT NULL,
+  `Order Tax Number Validation Message` text,
+  `Order Tax Number Details Match` enum('Yes','No','Unknown') NOT NULL DEFAULT 'Unknown',
+  `Order Tax Number Registered Name` varchar(255) DEFAULT NULL,
+  `Order Tax Number Registered Address` text,
   `Order Tax Number Associated Name` varchar(255) DEFAULT NULL,
   `Order Tax Number Associated Address` text,
   `Order Apply Auto Customer Account Payment` enum('Yes','No') NOT NULL DEFAULT 'Yes',
   `Order Show in Warehouse Orders` enum('Yes','No') NOT NULL DEFAULT 'Yes',
+  `Order Checkout Block Payment Account Key` smallint(5) unsigned DEFAULT NULL,
   PRIMARY KEY (`Order Key`,`Order Store Key`,`Order Date`) USING BTREE,
   KEY `Order Original Data Source` (`Order Original Data Source`),
   KEY `Order Public ID` (`Order Public ID`),
@@ -6052,10 +6125,10 @@ DROP TABLE IF EXISTS `Order Payment Bridge`;
 CREATE TABLE `Order Payment Bridge` (
   `Order Key` mediumint(9) unsigned NOT NULL,
   `Payment Key` mediumint(9) unsigned NOT NULL,
-  `Payment Account Key` mediumint(8) unsigned NOT NULL,
-  `Payment Service Provider Key` mediumint(8) unsigned NOT NULL,
-  `Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Is Account Payment` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Payment Account Key` mediumint(8) unsigned DEFAULT NULL,
+  `Payment Service Provider Key` mediumint(8) unsigned DEFAULT NULL,
+  `Amount` decimal(12,2) DEFAULT NULL,
+  `Is Account Payment` enum('Yes','No') DEFAULT NULL,
   UNIQUE KEY `Order Key` (`Order Key`,`Payment Key`),
   KEY `Order Key_2` (`Order Key`),
   KEY `Is Account Payment` (`Is Account Payment`)
@@ -6172,7 +6245,8 @@ CREATE TABLE `Order Transaction Deal Bridge` (
   `Order Key` mediumint(9) unsigned NOT NULL,
   `Product Key` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Product ID` mediumint(8) unsigned NOT NULL,
-  `Product Family Key` mediumint(8) unsigned NOT NULL,
+  `Category Key` mediumint(8) unsigned DEFAULT NULL,
+  `Product Family Key` mediumint(8) unsigned DEFAULT NULL,
   `Deal Campaign Key` mediumint(8) unsigned DEFAULT NULL,
   `Deal Key` mediumint(8) unsigned NOT NULL,
   `Deal Component Key` mediumint(9) NOT NULL,
@@ -6180,6 +6254,7 @@ CREATE TABLE `Order Transaction Deal Bridge` (
   `Amount Discount` decimal(8,2) NOT NULL DEFAULT '0.00',
   `Fraction Discount` decimal(5,2) NOT NULL DEFAULT '0.00',
   `Bunus Quantity` smallint(6) NOT NULL DEFAULT '0',
+  `Bonus Quantity` mediumint(9) DEFAULT '0',
   KEY `Order Transaction Key` (`Order Key`,`Deal Component Key`),
   KEY `Order Transaction Fact Key` (`Order Transaction Fact Key`),
   KEY `Deal Key` (`Deal Key`),
@@ -8188,6 +8263,7 @@ CREATE TABLE `Part Dimension` (
   `Part Number History Records` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Part Number Attachments` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Part Number Images` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Part SKO Image Key` mediumint(8) unsigned DEFAULT NULL,
   PRIMARY KEY (`Part SKU`),
   KEY `Part TYpe` (`Part Status`),
   KEY `Part Valid From` (`Part Valid From`),
@@ -8365,11 +8441,14 @@ DROP TABLE IF EXISTS `Payment Account Dimension`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Payment Account Dimension` (
   `Payment Account Key` mediumint(9) NOT NULL AUTO_INCREMENT,
+  `Payment Account Service Provider Key` mediumint(8) unsigned DEFAULT NULL,
   `Payment Service Provider Key` mediumint(9) NOT NULL,
+  `Payment Account Block` varchar(64) DEFAULT NULL,
   `Payment Account Code` varchar(64) NOT NULL,
   `Payment Account Name` varchar(32) NOT NULL,
   `Payment Account ID` varchar(128) DEFAULT NULL,
   `Payment Account Cart ID` varchar(64) DEFAULT NULL,
+  `Payment Account Type` enum('Credit Card','Cash','Paypal','Check','Bank Transfer','Cash on Delivery','Other','Unknown','Account','Sofort') DEFAULT NULL,
   `Payment Type` enum('Credit Card','Cash','Paypal','Check','Bank Transfer','Cash on Delivery','Other','Unknown','Account','Sofort') NOT NULL DEFAULT 'Unknown',
   `Payment Account Login` varchar(64) DEFAULT NULL,
   `Payment Account Password` varchar(64) DEFAULT NULL,
@@ -8396,11 +8475,17 @@ CREATE TABLE `Payment Account Dimension` (
   `Payment Account Currency` text NOT NULL,
   `Payment Account Transactions` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Payment Account Payments Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
+  `Payment Account Refunded Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
+  `Payment Account Credited Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
   `Payment Account Refunds Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
   `Payment Account Balance Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
+  `Payment Account From` datetime DEFAULT NULL,
+  `Payment Account Number Stores` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Payment Account Number Websites` smallint(5) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`Payment Account Key`),
   UNIQUE KEY `Payment Account Code` (`Payment Account Code`),
-  KEY `Payment Service Provider Key` (`Payment Service Provider Key`)
+  KEY `Payment Service Provider Key` (`Payment Service Provider Key`),
+  KEY `Payment Account Type` (`Payment Account Type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -8448,6 +8533,30 @@ CREATE TABLE `Payment Account Site Bridge` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `Payment Account Store Bridge`
+--
+
+DROP TABLE IF EXISTS `Payment Account Store Bridge`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Payment Account Store Bridge` (
+  `Payment Account Store Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Payment Account Store Payment Account Key` mediumint(9) NOT NULL,
+  `Payment Account Store Website Key` mediumint(9) NOT NULL DEFAULT '0',
+  `Payment Account Store Store Key` mediumint(9) NOT NULL,
+  `Payment Account Store Valid From` datetime DEFAULT NULL,
+  `Payment Account Store Valid To` datetime DEFAULT NULL,
+  `Payment Account Store Status` enum('Active','Inactive') NOT NULL DEFAULT 'Inactive',
+  `Payment Account Store Show In Cart` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Payment Account Store Show Cart Order` smallint(6) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`Payment Account Store Key`),
+  KEY `Website Key` (`Payment Account Store Website Key`,`Payment Account Store Show In Cart`),
+  KEY `Show Cart Order` (`Payment Account Store Show Cart Order`),
+  KEY `Payment Account Store Store Key` (`Payment Account Store Store Key`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `Payment Dimension`
 --
 
@@ -8460,15 +8569,21 @@ CREATE TABLE `Payment Dimension` (
   `Payment Account Code` varchar(64) NOT NULL,
   `Payment Service Provider Key` mediumint(9) NOT NULL,
   `Payment Method` enum('Credit Card','Cash','Paypal','Check','Bank Transfer','Cash on Delivery','Other','Unknown','Account') NOT NULL DEFAULT 'Unknown',
+  `Payment Location` varchar(16) DEFAULT NULL,
   `Payment Invoice Key` mediumint(8) unsigned DEFAULT NULL,
   `Payment Order Key` mediumint(9) DEFAULT NULL,
   `Payment Store Key` mediumint(9) NOT NULL,
+  `Payment Website Key` smallint(5) unsigned DEFAULT NULL,
   `Payment Site Key` mediumint(9) DEFAULT NULL,
   `Payment Customer Key` mediumint(8) unsigned NOT NULL,
   `Payment Type` enum('Payment','Refund','Credit') NOT NULL DEFAULT 'Payment',
-  `Payment Balance` decimal(12,2) NOT NULL,
-  `Payment Amount` decimal(12,2) NOT NULL,
-  `Payment Refund` decimal(12,2) NOT NULL,
+  `Payment Transaction Amount` decimal(16,2) DEFAULT NULL,
+  `Payment Transaction Amount Refunded` decimal(16,2) DEFAULT '0.00',
+  `Payment Transaction Amount Credited` decimal(16,2) DEFAULT '0.00',
+  `Payment Currency Exchange Rate` float NOT NULL DEFAULT '1',
+  `Payment Balance` decimal(12,2) DEFAULT NULL,
+  `Payment Amount` decimal(12,2) DEFAULT NULL,
+  `Payment Refund` decimal(12,2) DEFAULT NULL,
   `Payment Amount Invoiced` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Payment Currency Code` varchar(3) NOT NULL,
   `Payment Transaction ID` varchar(128) DEFAULT NULL,
@@ -8493,11 +8608,12 @@ CREATE TABLE `Payment Dimension` (
   `Payment Last Updated Date` datetime DEFAULT NULL,
   `Payment Fees` decimal(12,2) DEFAULT NULL,
   `Payment Transaction Status` enum('Pending','Completed','Cancelled','Error','Declined') NOT NULL DEFAULT 'Pending',
-  `Payment Transaction Status Info` varchar(128) DEFAULT NULL,
+  `Payment Transaction Status Info` text,
   `Payment Related Payment Key` mediumint(8) unsigned DEFAULT NULL,
   `Payment Related Payment Transaction ID` varchar(255) DEFAULT NULL,
   `Payment Submit Type` enum('Manual','EPS','AutoCredit','OrphanRefund') NOT NULL DEFAULT 'EPS',
   `Payment User Key` mediumint(8) unsigned DEFAULT NULL,
+  `Payment Metadata` text,
   PRIMARY KEY (`Payment Key`),
   KEY `Payment Customer Key` (`Payment Customer Key`),
   KEY `Payment Type` (`Payment Type`),
@@ -8542,11 +8658,14 @@ CREATE TABLE `Payment Service Provider Dimension` (
   `Payment Service Provider Code` varchar(64) NOT NULL,
   `Payment Service Provider Name` varchar(128) NOT NULL,
   `Payment Service Provider Type` enum('EPS','EBeP','Bank','Cash','Account','ConD') NOT NULL,
+  `Payment Service Provider Block` varchar(16) DEFAULT NULL,
   `Payment Service Provider Last Used Date` datetime DEFAULT NULL,
   `Payment Service Provider Accounts` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Payment Service Provider Transactions` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Payment Service Provider Currency` text NOT NULL,
   `Payment Service Provider Payments Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
+  `Payment Service Provider Refunded Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
+  `Payment Service Provider Credited Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
   `Payment Service Provider Refunds Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
   `Payment Service Provider Balance Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
   PRIMARY KEY (`Payment Service Provider Key`),
@@ -13016,7 +13135,8 @@ DROP TABLE IF EXISTS `Sitemap Dimension`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Sitemap Dimension` (
   `Sitemap Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `Sitemap Site Key` mediumint(8) unsigned NOT NULL,
+  `Sitemap Website Key` mediumint(8) unsigned DEFAULT NULL,
+  `Sitemap Site Key` mediumint(8) unsigned DEFAULT NULL,
   `Sitemap Date` datetime DEFAULT NULL,
   `Sitemap Name` varchar(64) DEFAULT NULL,
   `Sitemap Number` smallint(5) unsigned NOT NULL DEFAULT '1',
@@ -14369,6 +14489,17 @@ CREATE TABLE `Store Dimension` (
   `Store Order Public ID Format` varchar(65) NOT NULL DEFAULT '%05d',
   `Store Order Last Order ID` int(10) unsigned NOT NULL DEFAULT '0',
   `Store Can Collect` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Store Collect Address Line 1` varchar(255) DEFAULT NULL,
+  `Store Collect Address Line 2` varchar(255) DEFAULT NULL,
+  `Store Collect Address Sorting Code` varchar(255) DEFAULT NULL,
+  `Store Collect Address Postal Code` varchar(255) DEFAULT NULL,
+  `Store Collect Address Dependent Locality` varchar(255) DEFAULT NULL,
+  `Store Collect Address Locality` varchar(255) DEFAULT NULL,
+  `Store Collect Address Administrative Area` varchar(255) DEFAULT NULL,
+  `Store Collect Address Country 2 Alpha Code` varchar(2) DEFAULT NULL,
+  `Store Collect Address Checksum` varchar(64) DEFAULT NULL,
+  `Store Collect Address Formatted` text,
+  `Store Collect Address Postal Label` text,
   `Store Collection XHTML Address` varchar(1024) DEFAULT NULL,
   `Store Collection Address Key` mediumint(8) unsigned DEFAULT NULL,
   `Store Total Users` mediumint(8) unsigned NOT NULL DEFAULT '0',
@@ -14420,6 +14551,7 @@ CREATE TABLE `Store Dimension` (
   `Store Department Category Key` mediumint(9) DEFAULT NULL,
   `Store Order Recursion Campaign Key` smallint(5) unsigned DEFAULT NULL,
   `Store Bulk Discounts Campaign Key` smallint(5) unsigned DEFAULT NULL,
+  `Store First Order Campaign Key` mediumint(8) unsigned DEFAULT NULL,
   `Store Acc To Day Updated` datetime DEFAULT NULL COMMENT 'Total, Year to Day, Quarter to day, Week to day ',
   `Store Acc Ongoing Intervals Updated` datetime DEFAULT NULL COMMENT '1 year, 1 quarter ',
   `Store Acc Previous Intervals Updated` datetime DEFAULT NULL COMMENT 'last month, last week, past years, past quarters ',
@@ -17644,6 +17776,7 @@ CREATE TABLE `Warehouse Dimension` (
   `Warehouse Tolerable Percentage Part Locations To Replenish` float NOT NULL DEFAULT '0.1',
   `Warehouse Max Percentage Part Locations To Replenish` float NOT NULL DEFAULT '0.2',
   `Warehouse Email Template Signature` text,
+  `Warehouse Delivery Note Processing Block` enum('real_time','offline') NOT NULL DEFAULT 'real_time',
   PRIMARY KEY (`Warehouse Key`),
   UNIQUE KEY `Warehouse Code` (`Warehouse Code`),
   UNIQUE KEY `Warehouse Name` (`Warehouse Name`)
@@ -18089,6 +18222,15 @@ CREATE TABLE `Website Dimension` (
   `Website Number Users` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Website Alt Family Category Key` mediumint(9) DEFAULT NULL,
   `Website Alt Department Category Key` mediumint(9) DEFAULT NULL,
+  `Website Palette` varchar(255) NOT NULL DEFAULT 'art/palettes/simple.png',
+  `Website Primary Color` varchar(64) NOT NULL DEFAULT '#3183d7',
+  `Website Secondary Color` varchar(64) NOT NULL,
+  `Website Accent Color` varchar(64) NOT NULL,
+  `Website Title Font` varchar(255) NOT NULL DEFAULT '"Open Sans",Helvetica,Arial,sans-serif',
+  `Website Text Font` varchar(255) NOT NULL DEFAULT '"Open Sans",Helvetica,Arial,sans-serif',
+  `Website Text Background` text NOT NULL,
+  `Website Sitemap Last Update` datetime DEFAULT NULL,
+  `Website Client Analytics Code` varchar(16) DEFAULT NULL,
   PRIMARY KEY (`Website Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -18308,6 +18450,25 @@ CREATE TABLE `Website User Data` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `Website User Deleted Dimension`
+--
+
+DROP TABLE IF EXISTS `Website User Deleted Dimension`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Website User Deleted Dimension` (
+  `Website User Deleted Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Website User Deleted Handle` varchar(128) NOT NULL,
+  `Website User Deleted Customer Key` mediumint(9) NOT NULL,
+  `Website User Deleted Website Key` smallint(6) NOT NULL,
+  `Website User Deleted Date` datetime NOT NULL,
+  PRIMARY KEY (`Website User Deleted Key`),
+  UNIQUE KEY `Website User Deleted Handle` (`Website User Deleted Handle`,`Website User Deleted Website Key`),
+  KEY `Website User Deleted Customer Key` (`Website User Deleted Customer Key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `Website User Dimension`
 --
 
@@ -18433,4 +18594,4 @@ CREATE TABLE `todo_users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-07-11 13:53:08
+-- Dump completed on 2017-08-09 17:21:20
