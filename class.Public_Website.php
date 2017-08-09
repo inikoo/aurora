@@ -276,7 +276,7 @@ class Public_Website {
             case 'Website Theme':
             case 'Website Type':
             case 'Website URL':
-
+            case 'Website Client Analytics Code':
             case 'Website Primary Color':
             case 'Website Secondary Color':
             case 'Website Accent Color':

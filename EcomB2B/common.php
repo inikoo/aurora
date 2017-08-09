@@ -97,11 +97,20 @@ if (!$is_cached) {
     $smarty->assign('analytics_id',$account->get('Account Analytics ID'));
 
     $website   = new Public_Website($_SESSION['website_key']);
+
+
+
+    $smarty->assign('client_analytics_id',$website->get('Website Client Analytics Code'));
+
+
     $website_key=$website->id;
 
 
     $store_key = $website->get('Website Store Key');
     $store     = new Public_Store($store_key);
+
+
+
 
 
     date_default_timezone_set($store->get('Store Timezone'));
