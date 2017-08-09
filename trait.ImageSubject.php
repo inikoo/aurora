@@ -123,7 +123,7 @@ trait ImageSubject {
                 if ($scope_data['scope'] == 'content') {
 
                     $content_data = $this->get('Content Data');
-                    $image_src    = '/image_root.php?size=small&id='.$image->id;
+                    $image_src    = '/image_root.php?id='.$image->id;
 
                     if ($scope_data['section'] == 'mute') {
                         return $image;
