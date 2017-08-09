@@ -21,5 +21,9 @@
     ga('create', '{$analytics_id}', 'auto');
     ga('send', 'pageview');
 
+    {if $client_analytics_id!=''}
+    ga('create', '{$client_analytics_id}', 'auto', 'clientTracker');
+    ga('clientTracker.send', 'pageview');
+    {/if}
 </script>
 {/if}
