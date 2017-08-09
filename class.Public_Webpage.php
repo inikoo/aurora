@@ -196,7 +196,16 @@ class Public_Webpage {
                 return $content_data;
                 break;
 
+            case 'Browser Title':
+            case 'Meta Description':
+                return $this->data['Webpage '.$key];
+
+                break;
+
             case 'Webpage Website Key':
+            case 'Webpage Browser Title':
+            case 'Webpage Meta Description':
+
             case 'Webpage State':
             case 'Webpage Code':
             case 'Webpage Scope':
