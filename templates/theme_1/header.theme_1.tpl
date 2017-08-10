@@ -348,7 +348,7 @@
 </div>
 
 <ul class="hide">
-    <li id="link_stem_cell">
+    <li id="link_stem_cell" class="item" >
     <i class="handle aux hide fa fa-arrows very_discreet fa-fw" aria-hidden="true"></i>
     <span class="link"><i class="fa item_icon fa-fw  fa-circle" icon="fa-circle"></i> <span class="_item_label" contenteditable="true">{t}New link{/t}</span></span>
     <i url="" class="fa item_link hide aux fa-chain button very_discreet" aria-hidden="true"></i>
@@ -406,7 +406,13 @@
 <div class="hide">
 
     <ul id="items_stem_cell" >
-        <li >
+
+
+        <li>
+            <p class="_title"  contenteditable="true">{t}Title{/t}</p>
+        </li>
+
+        <li class="item">
             <i class="handle aux hide fa fa-arrows very_discreet fa-fw" aria-hidden="true"></i>
             <span class="link"><i class="fa item_icon fa-fw fa-caret-right"></i> <span class="_item_label"  contenteditable="true">{t}Link{/t}</span></span>
             <i url="" class="fa item_link hide aux fa-chain button very_discreet" aria-hidden="true"></i>
@@ -754,8 +760,12 @@
                                                                             {if $sub_column.type=='items'}
 
                                                                                 <ul id="_3c_col{$key}_{$col_key}" class="sortable col-sm-6 col-md-4 list-unstyled two _3c_col {$sub_column.type}" type="{$sub_column.type}">
+                                                                                    <li>
+                                                                                        <p class="_title" contenteditable="true">{if isset($sub_column.title)}{$sub_column.title}{else}{t}Title{/t}{/if}</p>
+                                                                                    </li>
+
                                                                                     {foreach from=$sub_column.items item=item}
-                                                                                        <li >
+                                                                                        <li class="item">
                                                                                             <i class="handle aux hide fa fa-arrows very_discreet fa-fw" aria-hidden="true"></i>
                                                                                             <span class="link"><i class="fa item_icon fa-fw {$item.icon}" icon="{$item.icon}" ></i> <span class="_item_label" contenteditable="true">{$item.label}</span></span>
                                                                                             <i url="{$item.url}" class="fa item_link hide aux fa-chain button very_discreet" aria-hidden="true"></i>
@@ -1189,6 +1199,9 @@
 
                         }else if(type=='items' ){
 
+
+                            _3c_col.title=$(obj2).find('._title').html()
+
                             _3c_col.type=$(obj2).attr('type')
                             _3c_col.label=''
                             _3c_col.items=[]
@@ -1196,7 +1209,7 @@
                             //console.log($(obj2))
 
 
-                            $('#'+$(obj2).attr('id')+'  li' ).each(function(i, obj3) {
+                            $('#'+$(obj2).attr('id')+'  li.item' ).each(function(i, obj3) {
 
                                 _3c_col.items.push({
                                     label:$(obj3).find('._item_label').html(),

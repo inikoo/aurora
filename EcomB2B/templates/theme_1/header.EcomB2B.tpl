@@ -218,6 +218,11 @@
                                                             {if $sub_column.type=='items'}
 
                                                                 <ul class="col-sm-6 col-md-4 list-unstyled two">
+
+                                                                    <li>
+                                                                        <p  >{if isset($sub_column.title)}{$sub_column.title}{/if}</p>
+                                                                    </li>
+
                                                                     {foreach from=$sub_column.items item=item}
 
 
