@@ -155,6 +155,24 @@ width:100%;
           }
 
 
+
+
+
+          #page_content   .product_header_text{
+                 padding:4px;height:40px;color:brown ;
+                 border:1px solid transparent;cursor:text;
+
+          }
+
+          #page_content   .product_header_text p{
+                 padding:0px ; margin:0px;text-align: center;
+                 z-index: 0;position:relative;
+          }
+
+
+
+
+
           #page_content input {
   position: relative;
   bottom: 2px;
@@ -425,19 +443,6 @@ width:100%;
 
 
 
-     .product_header_text{
-         padding:4px;height:30px;color:brown ;
-         border:1px solid transparent;cursor:text;
-
-     }
-
-     .product_header_text p{
-         padding:0px ; margin:0px;text-align: center;
-         z-index: 0;position:relative;
-     }
-
-
-
 
      .panel{
          margin-bottom:20px;
@@ -463,7 +468,7 @@ width:100%;
 
      }
      .panel_2x{
-         height:320px;width:457px;
+         height:320px;width:447px;
 
      }
 
