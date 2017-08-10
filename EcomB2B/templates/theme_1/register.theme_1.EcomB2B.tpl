@@ -346,8 +346,9 @@
                         if (data.state == '200') {
 
                            ga('send', 'event', { eventCategory: 'registration', eventAction: 'submit', eventLabel: 'newuser', eventValue: 1});
-                            ga('clientTracker.send', 'event', { eventCategory: 'registration', eventAction: 'submit', eventLabel: 'newuser', eventValue: 1});
-
+                            {if $client_analytics_id!=''}
+                               ga('clientTracker.send', 'event', { eventCategory: 'registration', eventAction: 'submit', eventLabel: 'newuser', eventValue: 1});
+                            {/if}
 
 
 
