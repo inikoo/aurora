@@ -126,6 +126,8 @@
 
     <script src="/theme_1/sky_forms/js/jquery.form.min.js"></script>
     <script src="/theme_1/sky_forms/js/jquery.validate.min.js"></script>
+    <script src="/theme_1/sky_forms/js/additional-methods.min.js"></script>
+
     <!--[if lt IE 10]>
     <script src="/theme_1/sky_formsjs/jquery.placeholder.min.js"></script>
     <![endif]-->

@@ -326,8 +326,26 @@
                                             // Rules for form validation
                                             rules:
                                                 {
+                                                    credit_card_number:{
+                                                        required: true,
+                                                        creditcard: true
+                                                    },
 
-
+                                                    credit_card_ccv:{
+                                                        required: true,
+                                                        digits: true,
+                                                        minlength: 3,
+                                                        maxlength: 4
+                                                    },
+                                                    credit_card_util_year:{
+                                                        required: true,
+                                                        digits: true,
+                                                        minlength: 2,
+                                                        maxlength: 4
+                                                    },
+                                                    credit_card_util_month:{
+                                                        required: true
+                                                    }
 
 
                                     },
@@ -399,7 +417,9 @@
                                                     button.removeClass('wait')
                                                     button.find('i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
 
-                                                    swal("{t}Error{/t}!", data.msg, "error")
+                                                    swal({ title:"{t}Error{/t}!", text:data.msg, type:"error", html: true}
+                                                )
+
                                                 }
 
 
