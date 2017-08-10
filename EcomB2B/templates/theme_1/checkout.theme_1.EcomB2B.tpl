@@ -240,7 +240,7 @@
                                             </section>
                                         </div>
 
-                                        <div class="row">
+                                        <div class="row hide">
 
                                             <section class="col col-5" >
                                                 <label class="checkbox"><input type="checkbox"  id="save_card"><i></i> </label>

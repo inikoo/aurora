@@ -131,7 +131,7 @@ function get_order_info($order) {
 
     $order_info .= '</table>';
 
-    return;
+    return $order_info;
 
 }
 
@@ -186,6 +186,10 @@ function get_pay_info($order, $website, $smarty) {
 
 
     }
+
+
+
+
 
 
     return $payment_info_for_customer;
