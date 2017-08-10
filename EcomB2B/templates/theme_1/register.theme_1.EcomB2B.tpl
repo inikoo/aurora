@@ -346,6 +346,11 @@
                         if (data.state == '200') {
 
                            ga('send', 'event', { eventCategory: 'registration', eventAction: 'submit', eventLabel: 'newuser', eventValue: 1});
+                            ga('clientTracker.send', 'event', { eventCategory: 'registration', eventAction: 'submit', eventLabel: 'newuser', eventValue: 1});
+
+
+
+
                             window.location.replace("welcome.sys");
 
 
