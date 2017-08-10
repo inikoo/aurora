@@ -283,7 +283,9 @@
                                             </div>
                                         {/if}
 
+
                                         {if $logged_in}
+
 
                                             {if $product->get('Web State')=='Out of Stock'}
 
@@ -291,18 +293,18 @@
 
                                                     {assign 'reminder_key' {$product->get('Reminder Key',{$customer->id})} }
                                                     <div class="out_of_stock_row {$product->get('Out of Stock Class')}">
-    <span class="label">
-    {$product->get('Out of Stock Label')}
-        <span class="label sim_button "> <i reminder_key="{$reminder_key}" title="{if $reminder_key>0}{t}Click to remove notification{/t}{else}{t}Click to be notified by email{/t}{/if}"
-                                            class="reminder fa {if $reminder_key>0}fa-envelope{else}fa-envelope-o{/if}" aria-hidden="true"></i>  </span>
-    </span>
+                                                    <span class="label">
+                                                    {$product->get('Out of Stock Label')}
+                                                        <span class="label sim_button "> <i reminder_key="{$reminder_key}" title="{if $reminder_key>0}{t}Click to remove notification{/t}{else}{t}Click to be notified by email{/t}{/if}"
+                                                                                            class="reminder fa {if $reminder_key>0}fa-envelope{else}fa-envelope-o{/if}" aria-hidden="true"></i>  </span>
+                                                    </span>
                                                     </div>
                                                 {/if}
 
 
 
 
-                                            {else if $product->get('Web State')=='For Sale'}
+                                            {elseif $product->get('Web State')=='For Sale'}
                                                 {assign 'quantity_ordered' $product->get('Ordered Quantity',$order_key) }
                                                 <div class="order_row {if $quantity_ordered!=''}ordered{else}empty{/if}">
                                                     <input maxlength=6 style="" class='order_input ' id='but_qty{$product->id}' type="text"' size='2' value='{$quantity_ordered}' ovalue='{$quantity_ordered}'>
@@ -315,11 +317,14 @@
                                                     {/if}
 
                                                 </div>
-                                                <div onclick='window.location.href = "/login.sys"' class="mark_on_hover"><span>{if empty($labels._Login)}{t}Login{/t}{else}{$labels._Login}{/if}</span></div>
-                                                <div onclick='window.location.href = "/register.sys"' class="mark_on_hover"><span
-                                                            style="height: 30px">{if empty($labels._Register)}{t}Register{/t}{else}{$labels._Register}{/if}</span></div>
+
                                             {/if}
+
+
                                         {else}
+
+                                            yy {$logged_in} xx
+
                                             <div class=" order_row " style="display:flex;">
                                                 <div onclick='window.location.href = "/login.sys"' class="mark_on_hover" style="flex-grow:1;text-align:center;border-right:1px solid #fff;  font-weight: 800;"><span
                                                             class="sim_button">{if empty($labels._Login)}{t}Login{/t}{else}{$labels._Login}{/if}</span></div>
