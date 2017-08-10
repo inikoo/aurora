@@ -137,7 +137,8 @@ if($webpage->get('Page Store Content Display Type')=='Template') {
                 $panels = array();
             }
 
-            // print_r($panels);
+
+
 
             ksort($panels);
             $products = array();
@@ -328,7 +329,7 @@ if($webpage->get('Page Store Content Display Type')=='Template') {
             }
 
 
-           //   print_r($content_data);
+
 
             $smarty->assign('products', $products);
             $smarty->assign('related_products', $related_products);

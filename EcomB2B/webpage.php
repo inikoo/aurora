@@ -16,7 +16,7 @@ if($webpage->id) {
 
 
     $content = $webpage->get('Content Data');
-
+    $content_data =$content;
 
     if ($webpage->get('Webpage Template Filename') == 'register') {
 
@@ -90,7 +90,6 @@ if($webpage->id) {
         include_once 'class.Public_Category.php';
         $category = new Public_Category($webpage->get('Webpage Scope Key'));
 
-        $content_data = $webpage->get('Content Data');
 
         $smarty->assign('sections', $content_data['sections']);
         $smarty->assign('content_data', $content_data);
@@ -111,9 +110,13 @@ if($webpage->id) {
             $panels = array();
         }
 
-        // print_r($panels);
+
+
 
         ksort($panels);
+
+
+
         $products = array();
 
         $sql = sprintf(
@@ -302,13 +305,13 @@ if($webpage->id) {
         }
 
 
-        //  print_r($products);
+
 
         $smarty->assign('products', $products);
         $smarty->assign('related_products', $related_products);
 
 
-        $content_data = $webpage->get('Content Data');
+
 
         $smarty->assign('content_data', $content_data);
         $smarty->assign('category', $category);
@@ -537,6 +540,27 @@ if($webpage->id) {
 
 }
 
+
+function get_next_panel($stack_index, $products, $panels) {
+
+    if (isset($panels[$stack_index])) {
+        $products[] = array(
+            'type' => 'panel',
+            'data' => $panels[$stack_index]
+        );
+
+        $size = floatval($panels[$stack_index]['size']);
+        unset($panels[$stack_index]);
+        $stack_index += $size;
+        list($stack_index, $products) = get_next_panel($stack_index, $products, $panels);
+    }
+
+    return array(
+        $stack_index,
+        $products
+    );
+
+}
 
 
 ?>
