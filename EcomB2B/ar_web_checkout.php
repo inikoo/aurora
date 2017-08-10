@@ -74,7 +74,6 @@ switch ($tipo) {
 function place_order_pay_braintree($_data, $order, $customer, $website, $editor, $smarty) {
 
 
-
     require_once 'external_libs/braintree-php-3.2.0/lib/Braintree.php';
 
     include_once 'external_libs/contact_name_parser.php';
@@ -190,27 +189,29 @@ function place_order_pay_braintree($_data, $order, $customer, $website, $editor,
         $result = Braintree_Transaction::sale($braintree_data);
 
 
-       // print_r($result);
-
-        switch ($result->transaction->paymentInstrumentType) {
-            case 'credit_card':
-
-                $payment_method   = 'Credit Card';
-                $payment_metadata = AESEncryptCtr(json_encode($result->transaction->creditCard), md5('Payment'.CKEY), 256);
-
-                break;
-            case 'paypal_account':
-
-                $payment_method = 'Paypal';
-                break;
-
-            default:
-                $payment_method = 'Other';
-                break;
-        }
+        // print_r($result);
 
 
         if ($result->success) {
+
+
+            switch ($result->transaction->paymentInstrumentType) {
+                case 'credit_card':
+
+                    $payment_method   = 'Credit Card';
+                    $payment_metadata = AESEncryptCtr(json_encode($result->transaction->creditCard), md5('Payment'.CKEY), 256);
+
+                    break;
+                case 'paypal_account':
+
+                    $payment_method = 'Paypal';
+                    break;
+
+                default:
+                    $payment_method = 'Other';
+                    break;
+            }
+
 
             //print_r($result);
             include_once 'utils/aes.php';
@@ -245,7 +246,6 @@ function place_order_pay_braintree($_data, $order, $customer, $website, $editor,
             $payment = $payment_account->create_payment($payment_data);
 
 
-
             if ($result->transaction->creditCard['token'] != '' and $save_payment) {
                 $customer->save_credit_card('Braintree', $result->transaction->creditCard, $order->get('Order Delivery Address Checksum'), $order->get('Order Invoice Address Checksum'));
             }
@@ -255,7 +255,7 @@ function place_order_pay_braintree($_data, $order, $customer, $website, $editor,
             $order->add_payment($payment);
 
 
-             place_order($order,$payment_account->id, $customer, $website, $editor, $smarty);
+            place_order($order, $payment_account->id, $customer, $website, $editor, $smarty);
 
 
         } else {
@@ -265,6 +265,8 @@ function place_order_pay_braintree($_data, $order, $customer, $website, $editor,
             $error_private_messages = array();
 
             foreach ($result->errors->deepAll() as $error) {
+
+
                 $_msg = get_errror_message($error->code, $error->message);
 
                 if (!(in_array(
@@ -316,34 +318,39 @@ function place_order_pay_braintree($_data, $order, $customer, $website, $editor,
             $payment_metadata = '';
 
 
-            $payment_data = array(
-                'Payment Store Key'                   => $order->get('Order Store Key'),
-                'Payment Website Key'                 => $website->id,
-                'Payment Customer Key'                => $customer->id,
-                'Payment Transaction Amount'          => $result->transaction->amount,
-                'Payment Currency Code'               => $result->transaction->currencyIsoCode,
-                'Payment Sender'                      => trim($result->transaction->customer['firstName'].' '.$result->transaction->customer['lastName']),
-                'Payment Sender Country 2 Alpha Code' => $result->transaction->billing['countryCodeAlpha2'],
-                'Payment Sender Email'                => $result->transaction->customer['email'],
-                'Payment Sender Card Type'            => $result->transaction->creditCard['cardType'],
-                'Payment Created Date'                => $result->transaction->createdAt->format('Y-m-d H:i:s'),
-
-                'Payment Last Updated Date'       => $result->transaction->updatedAt->format('Y-m-d H:i:s'),
-                'Payment Transaction Status'      => 'Declined',
-                'Payment Transaction ID'          => $result->transaction->id,
-                'Payment Method'                  => $payment_method,
-                'Payment Location'                => 'Basket',
-                'Payment Metadata'                => $payment_metadata,
-                'Payment Transaction Status Info' => $private_message
-
-            );
+            if (isset($result->transaction) and $result->transaction!='') {
 
 
-            $payment = $payment_account->create_payment($payment_data);
 
 
-            $order->add_payment($payment);
+                $payment_data = array(
+                    'Payment Store Key'                   => $order->get('Order Store Key'),
+                    'Payment Website Key'                 => $website->id,
+                    'Payment Customer Key'                => $customer->id,
+                    'Payment Transaction Amount'          => $result->transaction->amount,
+                    'Payment Currency Code'               => $result->transaction->currencyIsoCode,
+                    'Payment Sender'                      => trim($result->transaction->customer['firstName'].' '.$result->transaction->customer['lastName']),
+                    'Payment Sender Country 2 Alpha Code' => $result->transaction->billing['countryCodeAlpha2'],
+                    'Payment Sender Email'                => $result->transaction->customer['email'],
+                    'Payment Sender Card Type'            => $result->transaction->creditCard['cardType'],
+                    'Payment Created Date'                => $result->transaction->createdAt->format('Y-m-d H:i:s'),
 
+                    'Payment Last Updated Date'       => $result->transaction->updatedAt->format('Y-m-d H:i:s'),
+                    'Payment Transaction Status'      => 'Declined',
+                    'Payment Transaction ID'          => $result->transaction->id,
+                    'Payment Method'                  => $payment_method,
+                    'Payment Location'                => 'Basket',
+                    'Payment Metadata'                => $payment_metadata,
+                    'Payment Transaction Status Info' => $private_message
+
+                );
+
+
+                $payment = $payment_account->create_payment($payment_data);
+
+
+                $order->add_payment($payment);
+            }
 
             $response = array(
                 'state' => 400,
@@ -518,6 +525,62 @@ function send_order_confirmation_email($website, $customer, $order, $smarty) {
     }
 
 
+}
+
+
+function get_errror_message($code, $original_message) {
+
+    switch ($code) {
+        case ('81528'):
+            $msg = _('Sorry, but the amount is too large').'.';
+            break;
+        case ('81509'):
+        case ('91517'):
+        case ('91734'):
+            $msg = _("Sorry, we don't accept this credit card type").'.';
+            break;
+        case ('91577'):
+            $msg = _("Sorry, we don't support this payment instrument").'.';
+            break;
+        case ('91518'):
+            $msg = _("There was a problem processing your credit card, please provide your payment information again").'.';
+            break;
+        case ('92202'):
+            $msg = _("Phone number is invalid").'.';
+            break;
+
+        case ('81706'):
+            $msg = _("CVV is required").'.';
+            break;
+        case ('81707'):
+            $msg = _("CVV must be 3 or 4 digits").'.';
+            break;
+        case ('81709'):
+            $msg = _("Expiration date is required").'.';
+            break;
+        case ('81710'):
+        case ('81711'):
+        case ('81712'):
+        case ('81713'):
+            $msg = _("Expiration date is invalid").'.';
+            break;
+        case ('81706'):
+            $msg = _("CVV is required").'.';
+            break;
+
+        case ('81714'):
+        case ('81715'):
+        case ('81716'):
+        case ('81737'):
+        case ('81736'):
+            $msg = _("There was a problem processing your credit card, please double check your payment information and try again").'.';
+            break;
+
+        default:
+            $msg = $original_message;
+    }
+
+    return $msg;
 }
 
 
