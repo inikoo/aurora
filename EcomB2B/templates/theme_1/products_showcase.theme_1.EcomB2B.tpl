@@ -351,7 +351,7 @@
                             {foreach from=$see_also item=see_also_item name=foo}
                                 <div class="item">
                                     <div class="image_container">
-                                        <a href="http://{$see_also_item->get('URL')}"> <img src="{$see_also_item->get('Image')}" style=""/> </a>
+                                        <a href="{$see_also_item->get('URL')}"> <img src="{$see_also_item->get('Image')}" style=""/> </a>
                                     </div>
                                     <div class="label">
                                         {$see_also_item->get('Name')}
