@@ -19,9 +19,9 @@
                 <div class="item_header_text fr-view"  style="text-align: center">
                     {$category_data.header_text}
                 </div>
-               <div class="wrap_to_center category_image">
+               <div class="wrap_to_center category_image button"   >
                    
-                    <img draggable="false" src="{$category_data.image_src}"  id="item_image_{$category_data.index_key}"  />
+                    <img draggable="false" src="{if $category_data.image_src==''}https://via.placeholder.com/150x120{else}{$category_data.image_src}{/if}"  id="item_image_{$category_data.index_key}"  />
                  
                     
                     
