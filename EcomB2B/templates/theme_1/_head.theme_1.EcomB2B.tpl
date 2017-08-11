@@ -188,6 +188,13 @@
             _.push(o)};z._=[];z.set._=[];$.async=!0;$.setAttribute('charset','utf-8');
             $.src='https://v2.zopim.com/?{$zendesk_chat_code}';z.t=+new Date;$.
                 type='text/javascript';e.parentNode.insertBefore($,e)})(document,'script');
+
+
+            $zopim(function(){
+                $zopim.livechat.setLanguage('{$language}');
+            });
+
+
         </script>
         <!--End of Zendesk Chat Script-->
 

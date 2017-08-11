@@ -170,46 +170,50 @@ if (!$is_cached) {
         'pl_PL'
     );
 
-    /*
 
-    if (!isset($_SESSION['site_locale'])) {
-        $_SESSION['site_locale'] = $website->get('Website Locale');
-        $site_locale             = $website->get('Website Locale');;
+
+    if (!isset($_SESSION['website_locale'])) {
+        $_SESSION['website_locale'] = $website->get('Website Locale');
+        $website_locale             = $website->get('Website Locale');;
     }
 
 
     if (isset($_REQUEST['lang']) and in_array($_REQUEST['lang'], $valid_locales)) {
-        $site_locale             = $_REQUEST['lang'];
-        $_SESSION['site_locale'] = $site_locale;
-    } elseif (isset($_REQUEST['lang']) and $_REQUEST['lang'] == 'site') {
-        $site_locale             = $website->get('Website Locale');;
-        $_SESSION['site_locale'] = $site_locale;
+        $website_locale             = $_REQUEST['lang'];
+        $_SESSION['website_locale'] = $website_locale;
+    } elseif (isset($_REQUEST['lang']) and $_REQUEST['lang'] == 'website') {
+        $website_locale             = $website->get('Website Locale');;
+        $_SESSION['website_locale'] = $website_locale;
     } else {
-        $site_locale = $_SESSION['site_locale'];
+        $website_locale = $_SESSION['website_locale'];
     }
 
 
-
-    if (!isset($_SESSION['set_currency']) or !array_key_exists($_SESSION['set_currency'], $valid_currencies)) {
-
-        $set_currency                      = $store->get('Store Currency Code');
-        $_SESSION['set_currency']          = $set_currency;
-        $_SESSION['set_currency_exchange'] = 1;
+    $language = substr($website_locale, 0, 2);
+    $smarty->assign('language', $language);
 
 
-    } else {
+    /*
 
-        if ($_SESSION['set_currency'] != $store->get('Store Currency Code')) {
-            $set_currency_exchange = currency_conversion($store->get('Store Currency Code'), $_SESSION['set_currency']);
+        if (!isset($_SESSION['set_currency']) or !array_key_exists($_SESSION['set_currency'], $valid_currencies)) {
+
+            $set_currency                      = $store->get('Store Currency Code');
+            $_SESSION['set_currency']          = $set_currency;
+            $_SESSION['set_currency_exchange'] = 1;
+
+
         } else {
-            $set_currency_exchange = 1;
+
+            if ($_SESSION['set_currency'] != $store->get('Store Currency Code')) {
+                $set_currency_exchange = currency_conversion($store->get('Store Currency Code'), $_SESSION['set_currency']);
+            } else {
+                $set_currency_exchange = 1;
+            }
+            $_SESSION['set_currency_exchange'] = $set_currency_exchange;
+
         }
-        $_SESSION['set_currency_exchange'] = $set_currency_exchange;
 
-    }
-
-$language = substr($site_locale, 0, 2);
-*/
+    */
 
     $locale = $website->get('Website Locale').'.UTF-8';
 
@@ -280,7 +284,7 @@ $language = substr($site_locale, 0, 2);
     $order_in_process->set_display_currency($_SESSION['set_currency'], $_SESSION['set_currency_exchange']);
 
 
-    $smarty->assign('site_locale', $site_locale);
+    $smarty->assign('website_locale', $website_locale);
     $smarty->assign('language', $language);
 
 */
