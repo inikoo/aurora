@@ -217,12 +217,25 @@ if (!$is_cached) {
 
     $locale = $website->get('Website Locale').'.UTF-8';
 
-    setlocale(LC_TIME, $locale);
-    setlocale(LC_MESSAGES, $locale);
 
+
+
+    putenv('LC_MESSAGES='.$locale);
+
+    if (defined('LC_MESSAGES')) {
+        setlocale(LC_MESSAGES, $locale);
+    } else {
+        setlocale(LC_ALL, $locale);
+    }
     bindtextdomain("inikoo", "./locale");
     textdomain("inikoo");
     bind_textdomain_codeset("inikoo", 'UTF-8');
+
+    setlocale(LC_TIME, $locale);
+
+
+
+
 
 
     //$customer  = new Public_Customer(0);

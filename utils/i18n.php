@@ -39,6 +39,9 @@ function set_locale($locale) {
         ;
 
     }
+
+
+
     putenv('LC_MESSAGES='.$locale);
 
     if (defined('LC_MESSAGES')) {

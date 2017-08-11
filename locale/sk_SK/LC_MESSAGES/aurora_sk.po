@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Kaktus\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-08-11 16:19+0200\n"
-"PO-Revision-Date: 2017-08-11 16:19+0200\n"
+"PO-Revision-Date: 2017-08-11 16:28+0200\n"
 "Last-Translator: Raul <raul@inikoo.com>\n"
 "Language-Team: \n"
 "Language: sk_SK\n"
@@ -595,7 +595,7 @@ msgstr "Anonymné"
 #: ar_find.php:401
 #, php-format
 msgid "amount in %s"
-msgstr "suma v %"
+msgstr "suma v %s"
 
 #: ar_find.php:1899 ar_find.php:2004
 msgid "Current order in process"
@@ -1766,7 +1766,7 @@ msgid "Place to location"
 msgstr "Lokácie"
 
 #: ar_suppliers_tables.php:2366 utils/table_functions.php:145
-#, php-format
+#, fuzzy, php-format
 msgid "%s item"
 msgid_plural "%s items"
 msgstr[0] ""
@@ -1959,7 +1959,7 @@ msgid "Agents"
 msgstr "Agenti"
 
 #: ar_users_tables.php:400 utils/table_functions.php:311
-#, php-format
+#, fuzzy, php-format
 msgid "%s user category"
 msgid_plural "%s user categories"
 msgstr[0] "%s užívateľská kategória"
@@ -5214,7 +5214,7 @@ msgstr "Vyrobky na predaj"
 
 #: class.Product.php:582 class.Public_Product.php:378
 msgid "Launching soon"
-msgstr "Už čoskoro..."
+msgstr "Už čoskoro"
 
 #: class.Product.php:636
 msgid "per outer"
@@ -6614,9 +6614,8 @@ msgid "Wrong value %s"
 msgstr "Dodavatelia"
 
 #: class.User.php:1873
-#, fuzzy
 msgid "recovery email"
-msgstr "Dodavatelia"
+msgstr "dodavatelia"
 
 #: class.User.php:1876
 msgid "recovery mobile"
@@ -13596,7 +13595,7 @@ msgstr[1] ""
 msgstr[2] ""
 
 #: utils/table_functions.php:342
-#, php-format
+#, fuzzy, php-format
 msgid "%s production part"
 msgid_plural "%s production parts"
 msgstr[0] "%s "
@@ -13660,7 +13659,7 @@ msgstr[1] "%s obchody z %s"
 msgstr[2] "%s obchodov z %s"
 
 #: utils/table_functions.php:391
-#, php-format
+#, fuzzy, php-format
 msgid "%s department of %s"
 msgid_plural "%s departments of %s"
 msgstr[0] "%s department of %s"
@@ -14028,7 +14027,7 @@ msgstr[1] "%s vymazaný zamestnanci z %s"
 msgstr[2] "%s vymazaných zamestnancov z %s"
 
 #: utils/table_functions.php:651
-#, php-format
+#, fuzzy, php-format
 msgid "%s deleted contractor of %s"
 msgid_plural "%s deleted contractors of %s"
 msgstr[0] "%s vymazaný dodávateľ %s"
