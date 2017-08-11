@@ -101,6 +101,7 @@ if (!$is_cached) {
 
 
     $smarty->assign('client_analytics_id',$website->get('Website Client Analytics Code'));
+    $smarty->assign('zendesk_chat_code',$website->get('Website Zendesk Chat Code'));
 
 
     $website_key=$website->id;
