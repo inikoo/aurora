@@ -220,9 +220,9 @@ if (!$is_cached) {
     setlocale(LC_TIME, $locale);
     setlocale(LC_MESSAGES, $locale);
 
-    bindtextdomain("inikoosites", "./locale");
-    textdomain("inikoosites");
-    bind_textdomain_codeset("inikoosites", 'UTF-8');
+    bindtextdomain("inikoo", "./locale");
+    textdomain("inikoo");
+    bind_textdomain_codeset("inikoo", 'UTF-8');
 
 
     //$customer  = new Public_Customer(0);
