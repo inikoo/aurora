@@ -929,7 +929,7 @@ trait OrderDiscountOperations {
                             $this->allowance['Order Get Free'][$product_pid] = array(
                                 'Product ID'         => $product->id,
                                 'Product Key'        => $product->historic_id,
-                                'Product Category Key' => $product->data['Product Category Key'],
+                                'Product Category Key' =>0,// $product->data['Product Category Key'],
                                 'Get Free'           => $get_free_allowance,
                                 'Deal Campaign Key'  => $deal_component_data['Deal Component Campaign Key'],
                                 'Deal Component Key' => $deal_component_data['Deal Component Key'],
@@ -1631,7 +1631,7 @@ trait OrderDiscountOperations {
 
             $this->skip_update_after_individual_transaction = true;
 
-            $transaction_data                               = $this->add_order_transaction_to_delete(
+            $transaction_data                               = $this->update_item(
                 $data
             );
             $this->skip_update_after_individual_transaction = false;
