@@ -1821,7 +1821,7 @@ class Product extends Asset {
 
 
             $sql = sprintf(
-                "SELECT `Order Key` FROM `Order Transaction Fact` WHERE `Current Dispatching State`='In Process' AND `Product ID`=%d ", $this->id
+                "SELECT `Order Key` FROM `Order Transaction Fact` WHERE `Current Dispatching State` in ('In Process','In Process by Customer') AND `Product ID`=%d ", $this->id
             );
 
 
