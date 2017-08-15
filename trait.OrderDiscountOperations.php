@@ -399,7 +399,7 @@ trait OrderDiscountOperations {
 
                     if ($result = $this->db->query($sql)) {
                         if ($row = $result->fetch()) {
-                            if ($_row['num'] == $order_number_term) {
+                            if ($row['num'] == $order_number_term) {
                                 $order_number_term_ok = true;
                             }
                         }
