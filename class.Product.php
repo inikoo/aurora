@@ -1824,11 +1824,7 @@ class Product extends Asset {
                 "SELECT `Order Key` FROM `Order Transaction Fact` WHERE `Current Dispatching State` in ('In Process','In Process by Customer') AND `Product ID`=%d ", $this->id
             );
 
-            if ($this->id == 155922) {
 
-                print $sql;
-
-            }
 
 
             if ($result = $this->db->query($sql)) {
@@ -1837,6 +1833,13 @@ class Product extends Asset {
                     $web_availability = ($this->get_web_state() == 'For Sale' ? 'Yes' : 'No');
                     if ($web_availability == 'No') {
                         $order = new Order($row['Order Key']);
+
+                        if ($this->id == 155922) {
+
+                            print 'xxx';
+
+                        }
+
                         $order->remove_out_of_stocks_from_basket($this->id);
                     }
                 }
