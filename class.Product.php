@@ -1750,13 +1750,25 @@ class Product extends Asset {
             include_once 'utils/new_fork.php';
             $account = new Account($this->db);
 
-            $msg = new_housekeeping_fork(
-                'au_housekeeping', array(
-                'type'                     => 'update_web_state_slow_forks',
-                'web_availability_updated' => $web_availability_updated,
-                'product_id'               => $this->id
-            ), $account->get('Account Code')
-            );
+            if( $account->get('Account Code')=='AWEU'){
+
+                $msg = new_housekeeping_fork(
+                    'housekeeping', array(
+                    'type'                     => 'product_web_state',
+                    'product_id'               => $this->id
+                ), $account->get('Account Code')
+                );
+            }else{
+
+                $msg = new_housekeeping_fork(
+                    'au_housekeeping', array(
+                    'type'                     => 'update_web_state_slow_forks',
+                    'web_availability_updated' => $web_availability_updated,
+                    'product_id'               => $this->id
+                ), $account->get('Account Code')
+                );
+            }
+
 
         } else {
             $this->update_web_state_slow_forks($web_availability_updated);
