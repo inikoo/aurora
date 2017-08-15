@@ -925,7 +925,7 @@ class Order extends DB_Table {
                         $state = _('Cancelled');
                         break;
                     default:
-                        $state = $data['Order State'];
+                        $state = $this->data['Order State'];
 
                 }
 
@@ -2891,6 +2891,10 @@ VALUES (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 
 
         if ($affected_rows) {
+
+            /*
+
+
             $dn_key = 0;
 
             $this->update_number_products();
@@ -2915,6 +2919,9 @@ VALUES (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
             $this->update_number_products();
 
             //  $this->apply_payment_from_customer_account();
+
+
+            */
         }
 
 
