@@ -61,6 +61,19 @@ switch ($tipo) {
 
         break;
 
+    case 'pick_order_offline':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'items' => array('type' => 'json array'),
+
+                         'delivery_note_key' => array('type' => 'key'),
+
+                     )
+        );
+        pick_order_offline($data, $editor, $smarty, $db, $account);
+        break;
+
+
     case 'create_delivery_note':
         $data = prepare_values(
             $_REQUEST, array(
@@ -106,6 +119,50 @@ switch ($tipo) {
         );
         set_order_handler('Packer', $data, $editor, $smarty, $db);
         break;
+
+    case 'set_shipping_as_auto':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'order_key' => array('type' => 'key'),
+
+                     )
+        );
+        set_shipping_as_auto($data, $editor);
+        break;
+
+    case 'set_shipping_value':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'order_key' => array('type' => 'key'),
+                         'amount'         => array('type' => 'string'),
+
+                     )
+        );
+        set_shipping_value($data, $editor);
+        break;
+
+    case 'set_charges_as_auto':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'order_key' => array('type' => 'key'),
+
+                     )
+        );
+        set_charges_as_auto($data, $editor);
+        break;
+
+    case 'set_charges_value':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'order_key' => array('type' => 'key'),
+                         'amount'         => array('type' => 'string'),
+
+                     )
+        );
+        set_charges_value($data, $editor);
+        break;
+        
+
     case 'edit_item_in_order':
         $data = prepare_values(
             $_REQUEST, array(
@@ -158,12 +215,9 @@ function edit_item_in_order($account, $db, $user, $editor, $data, $smarty) {
         $parent->skip_update_after_individual_transaction = false;
 
         if (in_array(
-            $parent->data['Order Current Dispatch State'], array(
-                                                             'Ready to Pick',
-                                                             'Picking & Packing',
-                                                             'Packed',
-                                                             'Packed Done',
-                                                             'Packing'
+            $parent->data['Order State'], array(
+                                                             'InWarehouse',
+                                                             'PackedDone'
                                                          )
         )) {
             $dispatching_state = 'Ready to Pick';
@@ -201,7 +255,227 @@ function edit_item_in_order($account, $db, $user, $editor, $data, $smarty) {
 
 }
 
-function set_order_handler($type, $data, $editor, $smarty, $db) {
+
+
+function set_shipping_value($data, $editor) {
+
+
+    $order        = get_object('order', $data['order_key']);
+    $order->editor = $editor;
+
+
+
+
+
+    $order->update_shipping_amount($data['amount']);
+
+
+    $metadata = array(
+
+        'class_html'    => array(
+            'Order_State'                   => $order->get('State'),
+            'Items_Net_Amount'              => $order->get('Items Net Amount'),
+            'Shipping_Net_Amount'           => $order->get('Shipping Net Amount'),
+            'Charges_Net_Amount'            => $order->get('Charges Net Amount'),
+            'Total_Net_Amount'              => $order->get('Total Net Amount'),
+            'Total_Tax_Amount'              => $order->get('Total Tax Amount'),
+            'Total_Amount'                  => $order->get('Total Amount'),
+            'Total_Amount_Account_Currency' => $order->get('Total Amount Account Currency'),
+            'To_Pay_Amount'                 => $order->get('To Pay Amount'),
+            'Payments_Amount'               => $order->get('Payments Amount'),
+
+
+            'Order_Number_items' => $order->get('Number Items')
+
+        ),
+        //  'operations'    => $operations,
+        'state_index'   => $order->get('State Index'),
+        'to_pay'        => $order->get('Order To Pay Amount'),
+        'total'         => $order->get('Order Total Amount'),
+        'shipping'         => $order->get('Order Shipping Net Amount'),
+        'charges'         => $order->get('Order Charges Net Amount'),
+
+
+    );
+
+
+    $response = array(
+        'state'    => 200,
+        'metadata' => $metadata
+    );
+    echo json_encode($response);
+
+
+
+}
+
+function set_shipping_as_auto($data, $editor) {
+
+
+    $order        = get_object('order', $data['order_key']);
+    $order->editor = $editor;
+
+    $order->use_calculated_shipping();
+
+
+    $metadata = array(
+
+        'class_html'    => array(
+            'Order_State'                   => $order->get('State'),
+            'Items_Net_Amount'              => $order->get('Items Net Amount'),
+            'Shipping_Net_Amount'           => $order->get('Shipping Net Amount'),
+            'Charges_Net_Amount'            => $order->get('Charges Net Amount'),
+            'Total_Net_Amount'              => $order->get('Total Net Amount'),
+            'Total_Tax_Amount'              => $order->get('Total Tax Amount'),
+            'Total_Amount'                  => $order->get('Total Amount'),
+            'Total_Amount_Account_Currency' => $order->get('Total Amount Account Currency'),
+            'To_Pay_Amount'                 => $order->get('To Pay Amount'),
+            'Payments_Amount'               => $order->get('Payments Amount'),
+
+
+            'Order_Number_items' => $order->get('Number Items')
+
+        ),
+      //  'operations'    => $operations,
+        'state_index'   => $order->get('State Index'),
+        'to_pay'        => $order->get('Order To Pay Amount'),
+        'total'         => $order->get('Order Total Amount'),
+        'shipping'         => $order->get('Order Shipping Net Amount'),
+        'charges'         => $order->get('Order Charges Net Amount'),
+
+
+    );
+
+
+    $response = array(
+        'state'    => 200,
+        'metadata' => $metadata
+    );
+    echo json_encode($response);
+
+
+
+}
+
+
+
+
+function set_charges_value($data, $editor) {
+
+
+    $order        = get_object('order', $data['order_key']);
+    $order->editor = $editor;
+
+
+
+
+
+    $order->update_charges_amount($data['amount']);
+
+
+    $metadata = array(
+
+        'class_html'    => array(
+            'Order_State'                   => $order->get('State'),
+            'Items_Net_Amount'              => $order->get('Items Net Amount'),
+            'Charges_Net_Amount'           => $order->get('Charges Net Amount'),
+            'Charges_Net_Amount'            => $order->get('Charges Net Amount'),
+            'Total_Net_Amount'              => $order->get('Total Net Amount'),
+            'Total_Tax_Amount'              => $order->get('Total Tax Amount'),
+            'Total_Amount'                  => $order->get('Total Amount'),
+            'Total_Amount_Account_Currency' => $order->get('Total Amount Account Currency'),
+            'To_Pay_Amount'                 => $order->get('To Pay Amount'),
+            'Payments_Amount'               => $order->get('Payments Amount'),
+
+
+            'Order_Number_items' => $order->get('Number Items')
+
+        ),
+        //  'operations'    => $operations,
+        'state_index'   => $order->get('State Index'),
+        'to_pay'        => $order->get('Order To Pay Amount'),
+        'total'         => $order->get('Order Total Amount'),
+        'charges'         => $order->get('Order Charges Net Amount'),
+        'charges'         => $order->get('Order Charges Net Amount'),
+
+
+    );
+
+
+    $response = array(
+        'state'    => 200,
+        'metadata' => $metadata
+    );
+    echo json_encode($response);
+
+
+
+}
+
+function set_charges_as_auto($data, $editor) {
+
+
+    $order        = get_object('order', $data['order_key']);
+    $order->editor = $editor;
+
+    $order->use_calculated_items_charges();
+
+
+    $metadata = array(
+
+        'class_html'    => array(
+            'Order_State'                   => $order->get('State'),
+            'Items_Net_Amount'              => $order->get('Items Net Amount'),
+            'Charges_Net_Amount'           => $order->get('Charges Net Amount'),
+            'Charges_Net_Amount'            => $order->get('Charges Net Amount'),
+            'Total_Net_Amount'              => $order->get('Total Net Amount'),
+            'Total_Tax_Amount'              => $order->get('Total Tax Amount'),
+            'Total_Amount'                  => $order->get('Total Amount'),
+            'Total_Amount_Account_Currency' => $order->get('Total Amount Account Currency'),
+            'To_Pay_Amount'                 => $order->get('To Pay Amount'),
+            'Payments_Amount'               => $order->get('Payments Amount'),
+
+
+            'Order_Number_items' => $order->get('Number Items')
+
+        ),
+        //  'operations'    => $operations,
+        'state_index'   => $order->get('State Index'),
+        'to_pay'        => $order->get('Order To Pay Amount'),
+        'total'         => $order->get('Order Total Amount'),
+        'charges'         => $order->get('Order Charges Net Amount'),
+        'charges'         => $order->get('Order Charges Net Amount'),
+
+
+    );
+
+
+    $response = array(
+        'state'    => 200,
+        'metadata' => $metadata
+    );
+    echo json_encode($response);
+
+
+
+}
+
+
+
+
+function pick_order_offline($data, $editor, $smarty, $db, $account) {
+
+
+    $dn         = get_object('delivery_note', $data['delivery_note_key']);
+    $dn->editor = $editor;
+
+    $dn->consolidate($data['items']);
+
+
+}
+
+function set_order_handler($type,$data, $editor, $smarty, $db) {
+
 
 
     $dn         = get_object('delivery_note', $data['delivery_note_key']);
@@ -276,8 +550,6 @@ function create_delivery_note($data, $editor, $smarty, $db, $account) {
             'state'     => 200,
             'order_key' => $order->id,
             'dn_key'    => $dn->id,
-            //  'dispatch_state'=>get_order_formated_dispatch_state($order->get('Order Current Dispatch State'),$order->id),
-            // 'operations'=>get_orders_operations($order->data,$user)
 
         );
 
@@ -359,7 +631,6 @@ function add_payment_to_order($data, $editor, $smarty, $db, $account) {
 
 
     $metadata = array(
-        'to_pay' => $order->get('Order To Pay Amount'),
 
         'class_html'    => array(
             'Order_State'                   => $order->get('State'),
@@ -381,6 +652,8 @@ function add_payment_to_order($data, $editor, $smarty, $db, $account) {
         'state_index'   => $order->get('State Index'),
         'to_pay'        => $order->get('Order To Pay Amount'),
         'total'         => $order->get('Order Total Amount'),
+        'shipping'         => $order->get('Order Shipping Net Amount'),
+        'charges'         => $order->get('Order Charges Net Amount'),
         'payments'         => $order->get('Order Payments Amount'),
 
         'payments_xhtml' => $payments_xhtml

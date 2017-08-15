@@ -2,16 +2,17 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created:  11 August 2017 at 19:13:57 CEST, Tranava, Slovakia
+ Created:  16 September 2015 14:43:02 GMT+8, Kuala Lumpur, Malaysia
  Copyright (c) 2015, Inikoo
 
  Version 3
 
 */
 
-$tab     = 'orders';
+
+$tab     = 'orders.archived';
 $ar_file = 'ar_orders_tables.php';
-$tipo    = 'orders';
+$tipo    = 'archived_orders';
 
 $default = $user->get_tab_defaults($tab);
 

@@ -14,7 +14,7 @@ trait OrderChargesOperations {
 
    
     function update_charges($dn_key = false, $order_picked = true) {
-
+/*
         if (!$dn_key) {
             $dn_key = '';
             $sql    = sprintf(
@@ -27,6 +27,10 @@ trait OrderChargesOperations {
 
 
         }
+*/
+        $sql    = sprintf(
+            'DELETE FROM `Order No Product Transaction Fact` WHERE `Order Key`=%d AND `Transaction Type`="Charges" ', $this->id
+        );
 
         $this->db->exec($sql);
 
@@ -38,23 +42,33 @@ trait OrderChargesOperations {
         }
 
 
+
+       // print_r($charges_array);
+
         $total_charges_net = 0;
         $total_charges_tax = 0;
         foreach ($charges_array as $charge_data) {
-            $total_charges_net += $charge_data['Charge Net Amount'];
-            $total_charges_tax += $charge_data['Charge Tax Amount'];
 
-            if (!($charge_data['Charge Net Amount'] == 0 and $charge_data['Charge Tax Amount'] == 0)) {
+
+
+
+            $net=$charge_data['Charge Net Amount'];
+            $tax=$charge_data['Charge Net Amount']*$this->data['Order Tax Rate'];
+            $total_charges_net += $net;
+            $total_charges_tax += $tax;
+
+            if (!($net == 0 and $tax == 0)) {
                 $sql = sprintf(
                     "INSERT INTO `Order No Product Transaction Fact` (`Order Key`,`Order Date`,`Transaction Type`,`Transaction Type Key`,`Transaction Description`,`Transaction Gross Amount`,`Transaction Net Amount`,`Tax Category Code`,`Transaction Tax Amount`,`Currency Code`,`Currency Exchange`,`Metadata`,`Delivery Note Key`)
 
 					VALUES (%d,%s,%s,%d,%s,%.2f,%.2f,%s,%.2f,%s,%.2f,%s,%s)  ", $this->id, prepare_mysql($this->data['Order Date']), prepare_mysql('Charges'), $charge_data['Charge Key'],
                     prepare_mysql($charge_data['Charge Description']), $charge_data['Charge Net Amount'], $charge_data['Charge Net Amount'], prepare_mysql($this->data['Order Tax Code']),
-                    $charge_data['Charge Tax Amount'],
+                    $tax,
 
                     prepare_mysql($this->data['Order Currency']), $this->data['Order Currency Exchange'], prepare_mysql($this->data['Order Original Metadata']), prepare_mysql($dn_key)
 
                 );
+               // print "$sql\n";
 
                 $this->db->exec($sql);
 
@@ -77,11 +91,33 @@ trait OrderChargesOperations {
     }
 
     function get_charges($dn_key = false) {
+        
+        
+        
+        
         $charges = array();;
         if ($this->data['Order Number Items'] == 0) {
 
             return $charges;
         }
+
+
+        if ($this->data['Order Charges Method'] == 'Set') {
+
+
+
+
+            $charges[]=  array(
+                'Charge Net Amount'  => ($this->data['Order Charges Net Amount'] == '' ? 0 : $this->data['Order Charges Net Amount']),
+                'Charge Key'         => 0,
+                'Charge Description' => 'Set'
+            );
+
+            return $charges;
+
+        }
+        
+        
 
 
         $sql = sprintf(
@@ -213,16 +249,40 @@ trait OrderChargesOperations {
     
       function use_calculated_items_charges() {
 
-        $this->update_charges();
+
+          $this->update_field_switcher('Order Charges Method', 'Calculated', 'no_history');
+
+
+          $this->update_charges();
         $this->updated = true;
         $this->update_totals();
-        $this->apply_payment_from_customer_account();
         $this->new_value = $this->data['Order Charges Net Amount'];
 
     }
 
 
+    function update_charges_amount($value, $dn_key = false) {
+        $value = sprintf("%.2f", $value);
+
+
+        $this->update_field_switcher('Order Charges Method', 'Set', 'no_history');
+
+
+        $this->data['Order Charges Net Amount'] = $value;
+        $this->update_charges($dn_key);
+
+        $this->updated   = true;
+        $this->new_value = $value;
+
+        $this->update_totals();
+        //$this->apply_payment_from_customer_account();
+
+    }
+    
 }
+
+
+
 
 
 ?>

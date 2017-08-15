@@ -3,7 +3,7 @@
 {assign payments $order->get_payments('objects','Completed')}
 
 {$order->get('State Index')}
-<div class="timeline_horizontal with_time   {if $order->get('Order Current Dispatch State')=='Cancelled'}hide{/if}  ">
+<div class="timeline_horizontal with_time   {if $order->get('State Index')<0}hide{/if}  ">
 
     <ul class="timeline">
         <li id="submitted_node" class="li {if $order->get('State Index')>=30}complete{/if}">
@@ -30,12 +30,12 @@
             <div class="dot"></div>
         </li>
 
-        <li class="li ">
+        <li class="li {if $order->get('State Index')>=80}complete{/if} ">
             <div class="label">
-                <span class="state">{t}Packed{/t}</span>
+                <span class="state">{t}Packed & Sealed{/t}</span>
             </div>
             <div class="timestamp">
-                <span>&nbsp;<span class="Order_Packed_Date_or_Percentage">&nbsp;{$order->get('Packed Date or Percentage')}</span>
+                <span>&nbsp;<span class="Order_Packed_Done_Date">&nbsp;{$order->get('Packed Done Date')}</span>
                     </span>
             </div>
             <div class="dot"></div>
@@ -92,7 +92,7 @@
                 <div class="truck"></div>
             </li>
 
-            <li id="warehouse_node" class="li  {if $dn->get('State Index')>=70}complete{/if}">
+            <li id="warehouse_node" class="li  {if $dn->get('State Index')>=80}complete{/if}">
                 <div class="label">
                     <span class="state ">&nbsp;{$dn->get('State')}&nbsp;<span></i></span></span>
                 </div>
@@ -129,7 +129,7 @@
 </div>
 
 
-<div class="timeline_horizontal  {if $order->get('Order Current Dispatch State')!='Cancelled'}hide{/if}">
+<div class="timeline_horizontal  {if $order->get('State Index')>0}hide{/if}">
     <ul class="timeline" id="timeline">
         <li id="submitted_node" class="li complete">
             <div class="label">
@@ -201,24 +201,8 @@
     <div class="block " style="align-items: stretch;flex: 1;">
         <div class="state" style="height:30px;margin-bottom:10px;position:relative;top:-5px">
             <div id="back_operations">
-                <div id="delete_operations" class="order_operation {if $order->get('Order Current Dispatch State')!='InProcess'}hide{/if}">
-                    <div class="square_button left" xstyle="padding:0;margin:0;position:relative;top:-5px" title="{t}delete{/t}">
-                        <i class="fa fa-trash very_discreet " aria-hidden="true" onclick="toggle_order_operation_dialog('delete')"></i>
-                        <table id="delete_dialog" border="0" class="order_operation_dialog hide">
-                            <tr class="top">
-                                <td colspan="2" class="label">{t}Delete order{/t}</td>
-                            </tr>
-                            <tr class="changed buttons">
-                                <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('delete')"></i></td>
-                                <td class="aright"><span data-data='{ "object": "PurchaseOrder", "key":"{$order->id}"}' id="delete_save_buttons" class="error save button" onclick="delete_object(this)"><span
-                                                class="label">{t}Delete{/t}</span> <i class="fa fa-trash fa-fw  " aria-hidden="true"></i></span>
-                                </td>
 
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-                <div id="cancel_operations" class="order_operation {if $order->get('Order Current Dispatch State')=='Cancelled'}hide{/if}">
+                <div id="cancel_operations" class="order_operation {if $order->get('State Index')<0}hide{/if}">
                     <div class="square_button left" title="{t}Cancel{/t}">
                         <i class="fa fa-minus-circle error " aria-hidden="true" onclick="toggle_order_operation_dialog('cancel')"></i>
                         <table id="cancel_dialog" border="0" class="order_operation_dialog hide">
@@ -230,7 +214,7 @@
                                     <i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('cancel')"></i>
                                 </td>
                                 <td class="aright">
-                                    <span data-data='{ "field": "Order Current Dispatch State","value": "Cancelled","dialog_name":"cancel"}' id="cancel_save_buttons" class="error save button"
+                                    <span data-data='{ "field": "Order State","value": "Cancelled","dialog_name":"cancel"}' id="cancel_save_buttons" class="error save button"
                                           onclick="save_order_operation(this)">
                                         <span class="label">{t}Cancel{/t}</span>
                                         <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i>
@@ -240,8 +224,8 @@
                         </table>
                     </div>
                 </div>
-                <div id="undo_submit_operations" class="order_operation {if $order->get('Order Current Dispatch State')!='Submitted'}hide{/if}">
-                    <div class="square_button left" title="{t}Undo submit{/t}">
+                <div id="undo_submit_operations" class="order_operation {if $order->get('State Index')!=30}hide{/if}">
+                    <div class="square_button left" title="{t}Send back to basket{/t}">
 												<span class="fa-stack" onclick="toggle_order_operation_dialog('undo_submit')">
 						<i class="fa fa-paper-plane-o discreet " aria-hidden="true"></i>
 						<i class="fa fa-ban fa-stack-1x discreet error"></i>
@@ -250,17 +234,17 @@
 
                         <table id="undo_submit_dialog" border="0" class="order_operation_dialog hide">
                             <tr class="top">
-                                <td class="label" colspan="2">{t}Undo submition{/t}</td>
+                                <td class="label" colspan="2">{t}Send back to basket{/t}</td>
                             </tr>
                             <tr class="changed buttons">
                                 <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('undo_submit')"></i></td>
-                                <td class="aright"><span data-data='{  "field": "Order Current Dispatch State","value": "InProcess","dialog_name":"undo_submit"}' id="undo_submit_save_buttons" class="valid save button"
+                                <td class="aright"><span data-data='{  "field": "Order State","value": "InBasket","dialog_name":"undo_submit"}' id="undo_submit_save_buttons" class="valid save button"
                                                          onclick="save_order_operation(this)"><span class="label">{t}Save{/t}</span> <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>
                             </tr>
                         </table>
                     </div>
                 </div>
-                <div id="undo_send_operations" class="order_operation {if $order->get('Order Current Dispatch State')!='Send'}hide{/if}">
+                <div id="undo_send_operations" class="order_operation {if $order->get('Order State')!='Send'}hide{/if}">
                     <div class="square_button left" xstyle="padding:0;margin:0;position:relative;top:-5px" title="{t}Unmark as send{/t}">
 						<span class="fa-stack" onclick="toggle_order_operation_dialog('undo_send')">
 						<i class="fa fa-plane discreet " aria-hidden="true"></i>
@@ -281,6 +265,24 @@
             </div>
             <span style="float:left;padding-left:10px;padding-top:5px" class="Order_State"> {$order->get('State')} </span>
             <div id="forward_operations">
+
+
+                <div id="create_invoice_operations" class="order_operation {if {$order->get('State Index')}!=80  }hide{/if}">
+                    <div  class="square_button right  " title="{t}Send to warehouse{/t}">
+                        <i class="fa fa-file-text-o  " aria-hidden="true" onclick="toggle_order_operation_dialog('create_invoice')"></i>
+                        <table id="create_invoice_dialog" border="0" class="order_operation_dialog hide">
+                            <tr class="top">
+                                <td class="label" colspan="2">{t}Invoice order{/t}</td>
+                            </tr>
+                            <tr class="changed buttons">
+                                <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('create_invoice')"></i></td>
+                                <td class="aright"><span data-data='{  "field": "Order State","value": "Approved","dialog_name":"create_invoice"}' id="create_invoice_save_buttons" class="valid save button"
+                                                         onclick="save_order_operation(this)"><span class="label">{t}Save{/t}</span> <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                
                 <div id="send_to_warehouse_operations" class="order_operation {if {$order->get('State Index')|intval}>30 or  {$order->get('State Index')|intval}<10   or $order->get('Order Number Items')==0   }hide{/if}">
                     <div  class="square_button right  " title="{t}Send to warehouse{/t}">
                         <i class="fa fa-map   " aria-hidden="true" onclick="toggle_order_operation_dialog('send_to_warehouse')"></i>
@@ -290,7 +292,7 @@
                             </tr>
                             <tr class="changed buttons">
                                 <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('send_to_warehouse')"></i></td>
-                                <td class="aright"><span data-data='{  "field": "Order Current Dispatch State","value": "In Warehouse","dialog_name":"send_to_warehouse"}' id="send_to_warehouse_save_buttons" class="valid save button"
+                                <td class="aright"><span data-data='{  "field": "Order State","value": "InWarehouse","dialog_name":"send_to_warehouse"}' id="send_to_warehouse_save_buttons" class="valid save button"
                                                          onclick="save_order_operation(this)"><span class="label">{t}Save{/t}</span> <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>
                             </tr>
                         </table>
@@ -306,7 +308,7 @@
                             </tr>
                             <tr class="changed buttons">
                                 <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('submit')"></i></td>
-                                <td class="aright"><span data-data='{  "field": "Order Current Dispatch State","value": "Submitted by Customer","dialog_name":"submit"}' id="submit_save_buttons" class="valid save button"
+                                <td class="aright"><span data-data='{  "field": "Order State","value": "InProcess","dialog_name":"submit"}' id="submit_save_buttons" class="valid save button"
                                                          onclick="save_order_operation(this)"><span class="label">{t}Save{/t}</span> <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>
                             </tr>
                         </table>
@@ -375,7 +377,7 @@
             <span style="float:left;padding-left:10px;padding-top:5px" class="very_discreet italic"><i class="fa fa-truck fa-flip-horizontal  button" aria-hidden="true"></i> {t}Delivery note{/t} </span>
             <div id="forward_operations">
 
-                <div id="received_operations" class="order_operation {if !($order->get('Order Current Dispatch State')=='Submitted' or  $order->get('Order Current Dispatch State')=='Send') }hide{/if}">
+                <div id="received_operations" class="order_operation {if !($order->get('Order State')=='Submitted' or  $order->get('Order State')=='Send') }hide{/if}">
                     <div class="square_button right" style="padding:0;margin:0;position:relative;top:0px" title="{t}Input delivery note{/t}">
                         <i class="fa fa-plus" aria-hidden="true" onclick="show_create_delivery()"></i>
 
@@ -396,7 +398,7 @@
     </div>
 
 
-        <div class="payments {if $order->get('Order Number Items')==0}hide{/if}  "  >
+        <div class="payments {if $order->get('Order Number Items')==0  or $order->get('State Index')<0 }hide{/if}  "  >
         <div id="create_payment" class="payment node"">
 
 
@@ -433,13 +435,14 @@
             <td class="label">{t}Items{/t}</td>
             <td class="aright Items_Net_Amount">{$order->get('Items Net Amount')}</td>
         </tr>
+       
         <tr>
-            <td class="label">{t}Charges{/t}</td>
-            <td class="aright Charges_Net_Amount">{$order->get('Charges Net Amount')}</td>
+            <td class="label"  id="Charges_Net_Amount_label" >{t}Charges{/t}</td>
+            <td class="aright "><span id="Charges_Net_Amount_form" class="hide"><i id="set_charges_as_auto" class="fa fa-magic button" onClick="set_charges_as_auto()" aria-hidden="true"></i>  <input value="{$order->get('Order Charges Net Amount')}" ovalue="{$order->get('Order Charges Net Amount')}"  style="width: 100px" id="Charges_Net_Amount_input"  > <i id="Charges_Net_Amount_save" class="fa fa-cloud save" onClick="save_charges_value()" aria-hidden="true"></i> </span><span id="Charges_Net_Amount" class="Charges_Net_Amount button" >{$order->get('Charges Net Amount')}<span></td>
         </tr>
         <tr>
-            <td class="label">{t}Shipping{/t}</td>
-            <td class="aright Shipping_Net_Amount">{$order->get('Shipping Net Amount')}</td>
+            <td class="label"  id="Shipping_Net_Amount_label" >{t}Shipping{/t}</td>
+            <td class="aright "><span id="Shipping_Net_Amount_form" class="hide"><i id="set_shipping_as_auto" class="fa fa-magic button" onClick="set_shipping_as_auto()" aria-hidden="true"></i>  <input value="{$order->get('Order Shipping Net Amount')}" ovalue="{$order->get('Order Shipping Net Amount')}"  style="width: 100px" id="Shipping_Net_Amount_input"  > <i id="Shipping_Net_Amount_save" class="fa fa-cloud save" onClick="save_shipping_value()" aria-hidden="true"></i> </span><span id="Shipping_Net_Amount" class="Shipping_Net_Amount button" >{$order->get('Shipping Net Amount')}<span></td>
         </tr>
         <tr class="subtotal">
             <td class="label">{t}Net{/t}</td>
@@ -460,16 +463,16 @@
         <tr class="   {if $account->get('Account Currency')==$order->get('Order Currency Code')}hide{/if}">
             <td colspan="2" class="Total_Amount_Account_Currency aright ">{$order->get('Total Amount Account Currency')}</td>
         </tr>
-        <tr class="total Order_Payments_Amount  {if $order->get('Order To Pay Amount')==0   or $order->get('Order Payments Amount')==0  }hide{/if}  ">
+        <tr class="total Order_Payments_Amount  {if $order->get('Order To Pay Amount')==0    }hide{/if}  ">
             <td class="label">{t}Paid{/t}</td>
             <td class="aright Payments_Amount">{$order->get('Payments Amount')}</td>
         </tr>
-        <tr class="total  Order_To_Pay_Amount {if $order->get('Order To Pay Amount')==0  or $order->get('Order Payments Amount')==0   }hide{/if} button" amount="{$order->get('Order To Pay Amount')}"
+        <tr class="total  Order_To_Pay_Amount {if $order->get('Order To Pay Amount')==0    }hide{/if} button" amount="{$order->get('Order To Pay Amount')}"
             onclick="try_to_pay(this)">
             <td class="label">{t}To pay{/t}</td>
             <td class="aright To_Pay_Amount   ">{$order->get('To Pay Amount')}</td>
         </tr>
-        <tr class="total success  Order_Paid {if $order->get('Order To Pay Amount')!=0 or $order->get('Order Total Amount')==0 }hide{/if}">
+        <tr class="total success  Order_Paid {if $order->get('Order To Pay Amount')!=0  }hide{/if}">
 
             <td colspan="2" class="align_center "><i class="fa fa-check-circle" aria-hidden="true"></i> {t}Paid{/t}</td>
         </tr>
@@ -630,6 +633,534 @@
     }
 
 
+
+
+    $(document).on('click', '#Shipping_Net_Amount', function (evt) {
+        $('#Shipping_Net_Amount').addClass('hide')
+        $('#Shipping_Net_Amount_form').removeClass('hide')
+
+    })
+
+    $(document).on('click', '#Shipping_Net_Amount_label', function (evt) {
+        $('#Shipping_Net_Amount').removeClass('hide')
+        $('#Shipping_Net_Amount_form').addClass('hide')
+
+    })
+
+    $(document).on('input propertychange', '#Shipping_Net_Amount_input', function (evt) {
+
+
+        $('#Shipping_Net_Amount_save').addClass('changed')
+
+        if( ! validate_number($('#Shipping_Net_Amount_input').val(), 0, 999999999) || $('#Shipping_Net_Amount_input').val()=='' ){
+          $('#Shipping_Net_Amount_save').addClass('valid').removeClass('error')
+
+      }else{
+          $('#Shipping_Net_Amount_save').removeClass('valid').addClass('error ')
+
+      }
+
+
+    })
+
+    function save_shipping_value() {
+
+
+        if ($('#Shipping_Net_Amount_save').hasClass('wait')) {
+            return;
+        }
+        $('#Shipping_Net_Amount_save').addClass('wait')
+
+        $('#Shipping_Net_Amount_save').removeClass('fa-cloud').addClass('fa-spinner fa-spin');
+
+
+        if($('#Shipping_Net_Amount_input').val()==''){
+            $('#Shipping_Net_Amount_input').val(0)
+        }
+
+        var amount=parseFloat($('#Shipping_Net_Amount_input').val())
+
+
+
+
+        var ajaxData = new FormData();
+
+        ajaxData.append("tipo", 'set_shipping_value')
+
+        ajaxData.append("order_key", '{$order->id}')
+        ajaxData.append("amount", amount)
+
+
+
+        $.ajax({
+            url: "/ar_edit_orders.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false, complete: function () {
+            }, success: function (data) {
+
+
+                $('#Shipping_Net_Amount_save').removeClass('wait')
+                $('#Shipping_Net_Amount_save').addClass('fa-cloud').removeClass('fa-spinner fa-spin');
+
+
+                console.log(data)
+
+                if (data.state == '200') {
+
+
+                    $('#Shipping_Net_Amount').removeClass('hide')
+                    $('#Shipping_Net_Amount_form').addClass('hide')
+
+                    $('.Total_Amount').attr('amount', data.metadata.to_pay)
+                    $('.Order_To_Pay_Amount').attr('amount', data.metadata.to_pay)
+
+
+
+                    $('#Shipping_Net_Amount_input').val(data.metadata.shipping).attr('ovalue',data.metadata.shipping)
+                    $('#Charges_Net_Amount_input').val(data.metadata.charges).attr('ovalue',data.metadata.charges)
+
+                    if (data.metadata.to_pay == 0 || data.metadata.payments == 0) {
+                        $('.Order_Payments_Amount').addClass('hide')
+                        $('.Order_To_Pay_Amount').addClass('hide')
+
+                    } else {
+                        $('.Order_Payments_Amount').removeClass('hide')
+                        $('.Order_To_Pay_Amount').removeClass('hide')
+
+                    }
+
+                    if (data.metadata.to_pay != 0 || data.metadata.payments == 0) {
+                        $('.Order_Paid').addClass('hide')
+                    } else {
+                        $('.Order_Paid').removeClass('hide')
+                    }
+
+                    if (data.metadata.to_pay <= 0) {
+                        $('.payment_operation').addClass('hide')
+
+                    } else {
+                        $('.payment_operation').removeClass('hide')
+                    }
+
+
+                    if (data.metadata.to_pay == 0) {
+                        $('.Order_To_Pay_Amount').removeClass('button').attr('amount', data.metadata.to_pay)
+
+                    } else {
+                        $('.Order_To_Pay_Amount').addClass('button').attr('amount', data.metadata.to_pay)
+
+                    }
+
+
+                    $('#payment_nodes').html(data.metadata.payments_xhtml)
+
+
+                    for (var key in data.metadata.class_html) {
+                        $('.' + key).html(data.metadata.class_html[key])
+                    }
+
+
+                    for (var key in data.metadata.hide) {
+                        $('#' + data.metadata.hide[key]).addClass('hide')
+                    }
+                    for (var key in data.metadata.show) {
+                        $('#' + data.metadata.show[key]).removeClass('hide')
+                    }
+
+
+
+
+                } else if (data.state == '400') {
+                    swal("{t}Error{/t}!", data.msg, "error")
+                }
+
+
+            }, error: function () {
+                $('#Shipping_Net_Amount_save').removeClass('wait')
+                $('#Shipping_Net_Amount_save').addClass('fa-cloud').removeClass('fa-spinner fa-spin');
+
+            }
+        });
+
+
+    }
+
+    function set_shipping_as_auto(){
+
+
+    if ($('#set_shipping_as_auto').hasClass('wait')) {
+        return;
+    }
+    $('#set_shipping_as_auto').addClass('wait')
+
+    $('#set_shipping_as_auto').removeClass('fa-magic').addClass('fa-spinner fa-spin');
+
+
+
+    var ajaxData = new FormData();
+
+    ajaxData.append("tipo", 'set_shipping_as_auto')
+
+    ajaxData.append("order_key", '{$order->id}')
+
+
+
+    $.ajax({
+        url: "/ar_edit_orders.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false, complete: function () {
+        }, success: function (data) {
+
+
+            $('#set_shipping_as_auto').removeClass('wait')
+            $('#set_shipping_as_auto').addClass('fa-magic').removeClass('fa-spinner fa-spin');
+
+
+            console.log(data)
+
+            if (data.state == '200') {
+
+
+                $('#Shipping_Net_Amount').removeClass('hide')
+                $('#Shipping_Net_Amount_form').addClass('hide')
+
+                $('.Total_Amount').attr('amount', data.metadata.to_pay)
+                $('.Order_To_Pay_Amount').attr('amount', data.metadata.to_pay)
+
+
+
+                $('#Shipping_Net_Amount_input').val(data.metadata.shipping).attr('ovalue',data.metadata.shipping)
+                $('#Charges_Net_Amount_input').val(data.metadata.charges).attr('ovalue',data.metadata.charges)
+
+                if (data.metadata.to_pay == 0 || data.metadata.payments == 0) {
+                    $('.Order_Payments_Amount').addClass('hide')
+                    $('.Order_To_Pay_Amount').addClass('hide')
+
+                } else {
+                    $('.Order_Payments_Amount').removeClass('hide')
+                    $('.Order_To_Pay_Amount').removeClass('hide')
+
+                }
+
+                if (data.metadata.to_pay != 0 || data.metadata.payments == 0) {
+                    $('.Order_Paid').addClass('hide')
+                } else {
+                    $('.Order_Paid').removeClass('hide')
+                }
+
+                if (data.metadata.to_pay <= 0) {
+                    $('.payment_operation').addClass('hide')
+
+                } else {
+                    $('.payment_operation').removeClass('hide')
+                }
+
+
+                if (data.metadata.to_pay == 0) {
+                    $('.Order_To_Pay_Amount').removeClass('button').attr('amount', data.metadata.to_pay)
+
+                } else {
+                    $('.Order_To_Pay_Amount').addClass('button').attr('amount', data.metadata.to_pay)
+
+                }
+
+
+                $('#payment_nodes').html(data.metadata.payments_xhtml)
+
+
+                for (var key in data.metadata.class_html) {
+                    $('.' + key).html(data.metadata.class_html[key])
+                }
+
+
+                for (var key in data.metadata.hide) {
+                    $('#' + data.metadata.hide[key]).addClass('hide')
+                }
+                for (var key in data.metadata.show) {
+                    $('#' + data.metadata.show[key]).removeClass('hide')
+                }
+
+
+
+
+
+            } else if (data.state == '400') {
+                swal("{t}Error{/t}!", data.msg, "error")
+            }
+
+
+        }, error: function () {
+            $('#set_shipping_as_auto').removeClass('wait')
+            $('#set_shipping_as_auto').addClass('fa-magic').removeClass('fa-spinner fa-spin');
+
+
+        }
+    });
+
+}
+
+
+
+
+    $(document).on('click', '#Charges_Net_Amount', function (evt) {
+        $('#Charges_Net_Amount').addClass('hide')
+        $('#Charges_Net_Amount_form').removeClass('hide')
+
+    })
+
+    $(document).on('click', '#Charges_Net_Amount_label', function (evt) {
+        $('#Charges_Net_Amount').removeClass('hide')
+        $('#Charges_Net_Amount_form').addClass('hide')
+
+    })
+
+    $(document).on('input propertychange', '#Charges_Net_Amount_input', function (evt) {
+
+
+        $('#Charges_Net_Amount_save').addClass('changed')
+
+        if( ! validate_number($('#Charges_Net_Amount_input').val(), 0, 999999999) || $('#Charges_Net_Amount_input').val()=='' ){
+            $('#Charges_Net_Amount_save').addClass('valid').removeClass('error')
+
+        }else{
+            $('#Charges_Net_Amount_save').removeClass('valid').addClass('error ')
+
+        }
+
+
+    })
+
+    function save_charges_value() {
+
+
+        if ($('#Charges_Net_Amount_save').hasClass('wait')) {
+            return;
+        }
+        $('#Charges_Net_Amount_save').addClass('wait')
+
+        $('#Charges_Net_Amount_save').removeClass('fa-cloud').addClass('fa-spinner fa-spin');
+
+
+        if($('#Charges_Net_Amount_input').val()==''){
+            $('#Charges_Net_Amount_input').val(0)
+        }
+
+        var amount=parseFloat($('#Charges_Net_Amount_input').val())
+
+
+
+
+        var ajaxData = new FormData();
+
+        ajaxData.append("tipo", 'set_charges_value')
+
+        ajaxData.append("order_key", '{$order->id}')
+        ajaxData.append("amount", amount)
+
+
+
+        $.ajax({
+            url: "/ar_edit_orders.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false, complete: function () {
+            }, success: function (data) {
+
+
+                $('#Charges_Net_Amount_save').removeClass('wait')
+                $('#Charges_Net_Amount_save').addClass('fa-cloud').removeClass('fa-spinner fa-spin');
+
+
+                console.log(data)
+
+                if (data.state == '200') {
+
+
+                    $('#Charges_Net_Amount').removeClass('hide')
+                    $('#Charges_Net_Amount_form').addClass('hide')
+
+                    $('.Total_Amount').attr('amount', data.metadata.to_pay)
+                    $('.Order_To_Pay_Amount').attr('amount', data.metadata.to_pay)
+
+
+
+                    $('#Charges_Net_Amount_input').val(data.metadata.charges).attr('ovalue',data.metadata.charges)
+                    $('#Charges_Net_Amount_input').val(data.metadata.charges).attr('ovalue',data.metadata.charges)
+
+                    if (data.metadata.to_pay == 0 || data.metadata.payments == 0) {
+                        $('.Order_Payments_Amount').addClass('hide')
+                        $('.Order_To_Pay_Amount').addClass('hide')
+
+                    } else {
+                        $('.Order_Payments_Amount').removeClass('hide')
+                        $('.Order_To_Pay_Amount').removeClass('hide')
+
+                    }
+
+                    if (data.metadata.to_pay != 0 || data.metadata.payments == 0) {
+                        $('.Order_Paid').addClass('hide')
+                    } else {
+                        $('.Order_Paid').removeClass('hide')
+                    }
+
+                    if (data.metadata.to_pay <= 0) {
+                        $('.payment_operation').addClass('hide')
+
+                    } else {
+                        $('.payment_operation').removeClass('hide')
+                    }
+
+
+                    if (data.metadata.to_pay == 0) {
+                        $('.Order_To_Pay_Amount').removeClass('button').attr('amount', data.metadata.to_pay)
+
+                    } else {
+                        $('.Order_To_Pay_Amount').addClass('button').attr('amount', data.metadata.to_pay)
+
+                    }
+
+
+                    $('#payment_nodes').html(data.metadata.payments_xhtml)
+
+
+                    for (var key in data.metadata.class_html) {
+                        $('.' + key).html(data.metadata.class_html[key])
+                    }
+
+
+                    for (var key in data.metadata.hide) {
+                        $('#' + data.metadata.hide[key]).addClass('hide')
+                    }
+                    for (var key in data.metadata.show) {
+                        $('#' + data.metadata.show[key]).removeClass('hide')
+                    }
+
+
+
+
+                } else if (data.state == '400') {
+                    swal("{t}Error{/t}!", data.msg, "error")
+                }
+
+
+            }, error: function () {
+                $('#Charges_Net_Amount_save').removeClass('wait')
+                $('#Charges_Net_Amount_save').addClass('fa-cloud').removeClass('fa-spinner fa-spin');
+
+            }
+        });
+
+
+    }
+
+    function set_charges_as_auto(){
+
+
+        if ($('#set_charges_as_auto').hasClass('wait')) {
+            return;
+        }
+        $('#set_charges_as_auto').addClass('wait')
+
+        $('#set_charges_as_auto').removeClass('fa-magic').addClass('fa-spinner fa-spin');
+
+
+
+        var ajaxData = new FormData();
+
+        ajaxData.append("tipo", 'set_charges_as_auto')
+
+        ajaxData.append("order_key", '{$order->id}')
+
+
+
+        $.ajax({
+            url: "/ar_edit_orders.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false, complete: function () {
+            }, success: function (data) {
+
+
+                $('#set_charges_as_auto').removeClass('wait')
+                $('#set_charges_as_auto').addClass('fa-magic').removeClass('fa-spinner fa-spin');
+
+
+                console.log(data)
+
+                if (data.state == '200') {
+
+
+                    $('#Charges_Net_Amount').removeClass('hide')
+                    $('#Charges_Net_Amount_form').addClass('hide')
+
+                    $('.Total_Amount').attr('amount', data.metadata.to_pay)
+                    $('.Order_To_Pay_Amount').attr('amount', data.metadata.to_pay)
+
+
+
+                    $('#Charges_Net_Amount_input').val(data.metadata.charges).attr('ovalue',data.metadata.charges)
+                    $('#Charges_Net_Amount_input').val(data.metadata.charges).attr('ovalue',data.metadata.charges)
+
+                    if (data.metadata.to_pay == 0 || data.metadata.payments == 0) {
+                        $('.Order_Payments_Amount').addClass('hide')
+                        $('.Order_To_Pay_Amount').addClass('hide')
+
+                    } else {
+                        $('.Order_Payments_Amount').removeClass('hide')
+                        $('.Order_To_Pay_Amount').removeClass('hide')
+
+                    }
+
+                    if (data.metadata.to_pay != 0 || data.metadata.payments == 0) {
+                        $('.Order_Paid').addClass('hide')
+                    } else {
+                        $('.Order_Paid').removeClass('hide')
+                    }
+
+                    if (data.metadata.to_pay <= 0) {
+                        $('.payment_operation').addClass('hide')
+
+                    } else {
+                        $('.payment_operation').removeClass('hide')
+                    }
+
+
+                    if (data.metadata.to_pay == 0) {
+                        $('.Order_To_Pay_Amount').removeClass('button').attr('amount', data.metadata.to_pay)
+
+                    } else {
+                        $('.Order_To_Pay_Amount').addClass('button').attr('amount', data.metadata.to_pay)
+
+                    }
+
+
+                    $('#payment_nodes').html(data.metadata.payments_xhtml)
+
+
+                    for (var key in data.metadata.class_html) {
+                        $('.' + key).html(data.metadata.class_html[key])
+                    }
+
+
+                    for (var key in data.metadata.hide) {
+                        $('#' + data.metadata.hide[key]).addClass('hide')
+                    }
+                    for (var key in data.metadata.show) {
+                        $('#' + data.metadata.show[key]).removeClass('hide')
+                    }
+
+
+
+
+
+                } else if (data.state == '400') {
+                    swal("{t}Error{/t}!", data.msg, "error")
+                }
+
+
+            }, error: function () {
+                $('#set_charges_as_auto').removeClass('wait')
+                $('#set_charges_as_auto').addClass('fa-magic').removeClass('fa-spinner fa-spin');
+
+
+            }
+        });
+
+    }
+
+
+
+
     $('#add_payment').on('input propertychange', '.new_payment_field', function (evt) {
 
         validate_new_payment();
@@ -697,6 +1228,10 @@
                     $('.Total_Amount').attr('amount', data.metadata.to_pay)
                     $('.Order_To_Pay_Amount').attr('amount', data.metadata.to_pay)
 
+
+
+                    $('#Shipping_Net_Amount_input').val(data.metadata.shipping).attr('ovalue',data.metadata.shipping)
+                    $('#Charges_Net_Amount_input').val(data.metadata.charges).attr('ovalue',data.metadata.charges)
 
                     if (data.metadata.to_pay == 0 || data.metadata.payments == 0) {
                         $('.Order_Payments_Amount').addClass('hide')

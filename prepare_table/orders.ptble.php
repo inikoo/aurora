@@ -175,112 +175,31 @@ if (isset($parameters['period'])) {
 if (isset($parameters['elements_type'])) {
 
 
+
     switch ($parameters['elements_type']) {
 
-        case ('flow'):
 
-            $num_elements_checked = 0;
-
-
-            $_where='';
-
-            foreach ($parameters['elements']['flow']['items'] as $_key => $_value) {
-                $_value = $_value['selected'];
-                if ($_value) {
-                    $num_elements_checked++;
-
-                    if ($_key == 'Basket') {
-                        $_where.=" or (`Order Number Items`>0 AND `Order Current Dispatch State`  IN ('In Process') ) ";
-
-                    }
-                    if ($_key == 'Submitted_Unpaid') {
-                        $_where.=" or (`Order Current Dispatch State`='Submitted by Customer'  AND `Order Current Payment State`!='Paid' ) ";
-
-                    }
-                    if ($_key == 'Submitted_Paid') {
-                        $_where.=" or (`Order Current Dispatch State`='Submitted by Customer'  AND `Order Current Payment State`='Paid' ) ";
-
-                    }
-
-                    if ($_key == 'InWarehouse') {
-                        $_where.=" or (`Order Current Dispatch State` in ('Ready to Pick', 'Picking & Packing', 'Ready to Ship', 'Packing')  ) ";
-
-                    }
-
-                    if ($_key == 'Packed') {
-                        $_where.=" or (`Order Current Dispatch State` in ('Packed')  ) ";
-
-                    }
-
-
-                    if ($_key == 'Dispatch_Ready') {
-                        $_where.=" or (`Order Current Dispatch State` in ('Packed Done')  ) ";
-
-                    }
-
-                    if ($_key == 'Dispatched_Today') {
-                        $_where.=sprintf(" or (  `Order Current Dispatch State`='Dispatched' and `Order Dispatched Date`>%s   and  `Order Dispatched Date`<%s   ) ",
-                                         prepare_mysql(date('Y-m-d 00:00:00')),
-                                         prepare_mysql(date('Y-m-d 23:59:59'))
-                                         );
-
-                    }
-
-
-                }
-            }
-
-
-            if($num_elements_checked ==0){
-                $where=' where false';
-
-            }else{
-
-                $_where=preg_replace('/^ or/','',$_where);
-
-                $where.='and ( '.$_where.')';
-
-            }
-
-           // print $where;
-
-            break;
-        case('dispatch'):
+        case('state'):
             $_elements            = '';
             $num_elements_checked = 0;
-
-
-            foreach ($parameters['elements']['dispatch']['items'] as $_key => $_value) {
+            foreach (
+                $parameters['elements']['state']['items'] as $_key => $_value
+            ) {
                 $_value = $_value['selected'];
                 if ($_value) {
                     $num_elements_checked++;
-                    if ($_key == 'InProcessCustomer') {
-                        $_elements .= ",'In Process','Waiting for Payment Confirmation'";
 
-                    } elseif ($_key == 'InProcess') {
-                        $_elements .= ",'Submitted by Customer'";
-                    } elseif ($_key == 'Warehouse') {
-                        $_elements .= ",'Ready to Pick','Picking & Packing','Ready to Ship','Packing','Packed','Packed Done'";
-                    } elseif ($_key == 'Dispatched') {
-                        $_elements .= ",'Dispatched'";
-                    } elseif ($_key == 'Cancelled') {
-                        $_elements .= ",'Cancelled'";
-                    } elseif ($_key == 'Suspended') {
-                        $_elements .= ",'Suspended'";
-                    }
+                    $_elements .= ", '$_key'";
                 }
             }
 
             if ($_elements == '') {
                 $where .= ' and false';
-            } elseif ($num_elements_checked == 6) {
+            } elseif ($num_elements_checked == 7) {
 
             } else {
-
-
                 $_elements = preg_replace('/^,/', '', $_elements);
-
-                $where .= ' and `Order Current Dispatch State` in ('.$_elements.')';
+                $where .= ' and `Order State` in ('.$_elements.')';
             }
             break;
         case('source'):
@@ -409,17 +328,21 @@ if ($order == 'public_id') {
 } elseif ($order == 'customer') {
     $order = 'O.`Order Customer Name`';
 } elseif ($order == 'dispatch_state') {
-    $order = 'O.`Order Current Dispatch State`';
+    $order = 'O.`Order State`';
 } elseif ($order == 'payment_state') {
     $order = 'O.`Order Current Payment State`';
+} elseif ($order == 'state') {
+    $order = 'O.`Order State`';
 } elseif ($order == 'total_amount') {
     $order = 'O.`Order Total Amount`';
 } else {
     $order = 'O.`Order Key`';
 }
 
+
+
 $fields
-    = '`Order Number Items`,`Order Store Key`,`Payment Account Name`,`Order Payment Method`,`Order Current XHTML Dispatch State`,`Order Balance Total Amount`,`Order Current Payment State`,`Order Current Dispatch State`,`Order Out of Stock Net Amount`,`Order Invoiced Total Net Adjust Amount`,`Order Invoiced Total Tax Adjust Amount`,FORMAT(`Order Invoiced Total Net Adjust Amount`+`Order Invoiced Total Tax Adjust Amount`,2) as `Order Adjust Amount`,`Order Out of Stock Net Amount`,`Order Out of Stock Tax Amount`,FORMAT(`Order Out of Stock Net Amount`+`Order Out of Stock Tax Amount`,2) as `Order Out of Stock Amount`,`Order Invoiced Balance Total Amount`,`Order Type`,`Order Currency Exchange`,`Order Currency`,O.`Order Key`,O.`Order Public ID`,`Order Customer Key`,`Order Customer Name`,O.`Order Last Updated Date`,O.`Order Date`,`Order Total Amount` ,`Order Current XHTML Payment State`';
+    = '`Order State`,`Order Number Items`,`Order Store Key`,`Payment Account Name`,`Order Payment Method`,`Order Current XHTML Dispatch State`,`Order Balance Total Amount`,`Order Current Payment State`,`Order State`,`Order Out of Stock Net Amount`,`Order Invoiced Total Net Adjust Amount`,`Order Invoiced Total Tax Adjust Amount`,FORMAT(`Order Invoiced Total Net Adjust Amount`+`Order Invoiced Total Tax Adjust Amount`,2) as `Order Adjust Amount`,`Order Out of Stock Net Amount`,`Order Out of Stock Tax Amount`,FORMAT(`Order Out of Stock Net Amount`+`Order Out of Stock Tax Amount`,2) as `Order Out of Stock Amount`,`Order Invoiced Balance Total Amount`,`Order Type`,`Order Currency Exchange`,`Order Currency`,O.`Order Key`,O.`Order Public ID`,`Order Customer Key`,`Order Customer Name`,O.`Order Last Updated Date`,O.`Order Date`,`Order Total Amount` ,`Order Current XHTML Payment State`';
 
 $sql_totals = "select count(Distinct O.`Order Key`) as num from $table $where";
 //$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";

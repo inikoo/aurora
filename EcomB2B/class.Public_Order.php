@@ -110,7 +110,7 @@ class Public_Order extends DBW_Table {
                 $this->update_address('Delivery', json_decode($value, true));
                 break;
 
-            case('Order Current Dispatch State'):
+            case('Order State'):
                 $this->update_state($value, $options, $metadata);
                 break;
 
@@ -144,19 +144,19 @@ class Public_Order extends DBW_Table {
             switch ($value) {
 
 
-                case 'Submitted by Customer':
+                case 'InProcess':
 
 
-                    if (!($this->data['Order Current Dispatch State'] == 'In Process' or $this->data['Order Current Dispatch State'] == 'Waiting for Payment Confirmation')) {
+                    if ($this->data['Order State'] != 'InBasket') {
                         $this->error = true;
-                        $this->msg   = 'Order is not in process: :(  '.$this->data['Order Current Dispatch State'];
+                        $this->msg   = 'Order is not in basket: :(';
 
                         return;
 
                     }
 
 
-                    $this->update_field('Order Current Dispatch State', $value, 'no_history');
+                    $this->update_field('Order State', $value, 'no_history');
                     $this->update_field('Order Submitted by Customer Date', $date, 'no_history');
                     $this->update_field('Order Date', $date, 'no_history');
                     $this->update_field('Order Class', 'InProcess', 'no_history');
@@ -169,6 +169,14 @@ class Public_Order extends DBW_Table {
                     $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
 
                     $operations = array('send_to_warehouse');
+
+
+                    $sql = sprintf(
+                        'update `Order Transaction Fact` set `Current Dispatching State`="Submitted by Customer" where `Order Key`=%d  and `Current Dispatching State` in ("In Process by Customer","In Process")  ',
+                        $this->id
+                    );
+
+                    $this->db->exec($sql);
 
 
                     break;
@@ -205,6 +213,8 @@ class Public_Order extends DBW_Table {
 
 
         switch ($key) {
+
+
 
             case 'Order Invoice Address':
             case 'Order Delivery Address':

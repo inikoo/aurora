@@ -1061,7 +1061,7 @@ function find_products($db, $account, $memcache_ip, $data) {
 
 
         $sql = sprintf(
-            "select `Product ID`,`Product Code`,`Product Name`,`Product Current Key` from `Product Dimension` where  `Product Code` like '%s%%' %s order by `Product Code` limit $max_results ", $q,
+            "select `Product ID`,`Product Code`,`Product Name`,`Product Current Key`,`Product Availability` from `Product Dimension` where  `Product Code` like '%s%%' %s order by `Product Code` limit $max_results ", $q,
             $where
         );
 
@@ -1083,7 +1083,7 @@ function find_products($db, $account, $memcache_ip, $data) {
 
                 $candidates_data[$row['Product ID']] = array(
                     'Product Code'        => $row['Product Code'],
-                    'Product Name'        => $row['Product Name'],
+                    'Product Name'        => $row['Product Name'].', <span style="font-style: italic"  class="'.($row['Product Availability']<=0?'error':'').'" >'._('Stock').': '.number($row['Product Availability']).'</span>',
                     'Product Current Key' => $row['Product Current Key']
 
                 );

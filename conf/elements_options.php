@@ -287,34 +287,38 @@ $elements_options = array(
     'orders' => array(
 
 
-        'dispatch' => array(
-            'label' => _('Dispatch state'),
+        'state' => array(
+            'label' => _('state'),
             'items' => array(
-                'InProcessCustomer' => array(
-                    'label'    => _('Basket'),
+                'InBasket' => array(
+                    'label'    => _('In basket'),
                     'selected' => true
                 ),
                 'InProcess'         => array(
-                    'label'    => _('In process'),
+                    'label'    => _('Submitted'),
                     'selected' => true
                 ),
-                'Warehouse'         => array(
-                    'label'    => _('Warehouse'),
+                'InWarehouse'         => array(
+                    'label'    => _('In warehouse'),
                     'selected' => true
                 ),
-                'Dispatched'        => array(
+                'PackedDone'         => array(
+                    'label'    => _('Packed'),
+                    'selected' => true
+                ),
+                'Approved'         => array(
+                    'label'    => _('Approved'),
+                    'selected' => true
+                ),
+                'Dispatched'         => array(
                     'label'    => _('Dispatched'),
                     'selected' => true
                 ),
                 'Cancelled'         => array(
                     'label'    => _('Cancelled'),
-                    'selected' => false
-                ),
-                'Suspended'         => array(
-                    'label'    => _('Suspended'),
-                    'selected' => false
+                    'selected' => true
                 )
-            ),
+            )
         ),
 
         'type' => array(
@@ -338,7 +342,6 @@ $elements_options = array(
                 ),
             )
         ),
-
 
         'source' => array(
             'label' => _('Source'),
@@ -374,46 +377,34 @@ $elements_options = array(
 
     ),
 
+
+
+
+
     'orders_pending' => array(
 
-        'flow' => array(
-            'label' => _('Process flow'),
+        'state' => array(
+            'label' => _('state'),
             'items' => array(
-                'Basket'           => array(
-                    'label'    => _('IPrcss'),
-                    'title'    => _('In Process'),
-                    'selected' => false
-                ),
-                'Submitted_Unpaid' => array(
-                    'label'    => _('S (UPaid)'),
-                    'title'    => _('Submitted (Unpaid)'),
+
+                'InProcess'         => array(
+                    'label'    => _('Submitted'),
                     'selected' => true
                 ),
-                'Submitted_Paid'   => array(
-                    'label'    => _('S (Paid)'),
+                'InWarehouse'         => array(
+                    'label'    => _('In warehouse'),
                     'selected' => true
                 ),
-                'InWarehouse'      => array(
-                    'label'    => _('Warhs'),
-                    'title'    => _('In Warehouse'),
+                'PackedDone'         => array(
+                    'label'    => _('Packed'),
                     'selected' => true
                 ),
-                'Packed'           => array(
-                    'label'    => _('Pkd'),
-                    'title'    => _('Packed'),
+                'Approved'         => array(
+                    'label'    => _('Approved'),
                     'selected' => true
                 ),
-                'Dispatch_Ready'   => array(
-                    'label'    => _('Disp Rdy'),
-                    'title'    => _('Dispatch Ready'),
-                    'selected' => true
-                ),
-                'Dispatched_Today' => array(
-                    'label'    => _('Disp Tdy'),
-                    'title'    => _('Dispatched today'),
-                    'selected' => false
-                )
-            ),
+
+            )
         ),
 
 
@@ -529,7 +520,6 @@ $elements_options = array(
         'status' => array(
             'label' => _('Status'),
             'items' => array(
-                //'InProcess'=>array('label'=>_('In process'), 'selected'=>true),
                 'Active' => array(
                     'label'    => _('Active'),
                     'selected' => true
@@ -558,7 +548,6 @@ $elements_options = array(
         'status' => array(
             'label' => _('Status'),
             'items' => array(
-                //'InProcess'=>array('label'=>_('In process'), 'selected'=>true),
                 'Active'       => array(
                     'label'    => _('Active'),
                     'selected' => true

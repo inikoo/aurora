@@ -48,28 +48,34 @@ $parameters = array(
 
 
 $table_buttons   = array();
-$table_buttons[] = array(
-    'icon'     => 'plus',
-    'title'    => _('New item'),
-    'id'       => 'new_item',
-    'class'    => 'items_operation'.($state['_object']->get('State Index')>0 and  $state['_object']->get('State Index')<80   ? ' hide' : ''),
-    'add_item' => array(
 
-        'field_label' => _("Product").':',
-        'metadata'    => base64_encode(
-            json_encode(
-                array(
-                    'scope'      => 'product',
-                    'parent'     => 'Store',
-                    'parent_key' => $state['_object']->get('Store Key'),
-                    'options'    => array('for_order')
+
+if($state['_object']->get('State Index')>0 and  $state['_object']->get('State Index')<80){
+
+    $table_buttons[] = array(
+        'icon'     => 'plus',
+        'title'    => _('New item'),
+        'id'       => 'new_item',
+        'class'    => 'items_operation',
+        'add_item' => array(
+
+            'field_label' => _("Product").':',
+            'metadata'    => base64_encode(
+                json_encode(
+                    array(
+                        'scope'      => 'product',
+                        'parent'     => 'Store',
+                        'parent_key' => $state['_object']->get('Store Key'),
+                        'options'    => array('for_order')
+                    )
                 )
             )
+
         )
 
-    )
+    );
+}
 
-);
 
 
 

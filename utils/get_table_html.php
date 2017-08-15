@@ -197,6 +197,9 @@ if (array_key_exists('elements_type', $parameters)) {
 }
 
 
+//print_r($parameters);
+
+
 $parameters = json_encode($parameters);
 
 
@@ -212,6 +215,8 @@ $smarty->assign('sort_order', $sort_order);
 $smarty->assign('request', $request);
 $smarty->assign('ar_file', $ar_file);
 $smarty->assign('tipo', $tipo);
+
+
 
 $smarty->assign('parameters', $parameters);
 $smarty->assign('tab', $tab);

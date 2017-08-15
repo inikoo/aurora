@@ -125,7 +125,7 @@ $tab_defaults = array(
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'number',
 
-        'elements_type' => 'dispatch',
+        'elements_type' => 'state',
 
 
     ),
@@ -137,7 +137,7 @@ $tab_defaults = array(
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'number',
 
-        'elements_type' => 'flow',
+        'elements_type' => 'state',
         'elements'      => $elements_options['orders_pending'],
       //  'export_fields' => $export_fields['orders_pending']
 
@@ -152,11 +152,28 @@ $tab_defaults = array(
         'from'          => '',
         'to'            => '',
         'period'        => 'mtd',
-        'elements_type' => 'dispatch',
+        'elements_type' => 'state',
         'elements'      => $elements_options['orders_archived'],
         'export_fields' => $export_fields['orders']
 
     ),
+
+    'orders'                      => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 20,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'number',
+        'from'          => '',
+        'to'            => '',
+        'period'        => 'all',
+        'elements_type' => 'state',
+        'elements'      => $elements_options['orders'],
+        'export_fields' => $export_fields['orders']
+
+    ),
+
     'orders_server'               => array(
         'view'          => 'overview',
         'sort_key'      => 'id',
@@ -167,7 +184,7 @@ $tab_defaults = array(
         'from'          => '',
         'to'            => '',
         'period'        => 'all',
-        'elements_type' => 'dispatch',
+        'elements_type' => 'state',
         'elements'      => $elements_options['orders']
 
     ),
@@ -256,6 +273,16 @@ $tab_defaults = array(
         'f_field'     => 'code',
 
     ),
+    'delivery_note.fast_track_packing'         => array(
+        'view'        => 'overview',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 1000,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'code',
+
+    ),
+
     'invoice.items'               => array(
         'view'        => 'overview',
         'sort_key'    => 'id',

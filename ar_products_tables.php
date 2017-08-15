@@ -315,9 +315,8 @@ function products($_data, $db, $user, $account) {
                 'rrp' => $rrp,
 
 
-                //                'margin'           => '<span style="cursor:text" class="product_margin" onClick="open_edit_margin(this)" title="'._('Cost price').':'.money($data['Product Cost'], $account->get('Account Currency')).'">'.percentage($exchange*$data['Product Price'] - $data['Product Cost'], $exchange*$data['Product Price']).'<span>',
 
-                'margin'           => '<span class="product_margin" title="'._('Cost price').':'.money($data['Product Cost'], $account->get('Account Currency')).'">'.percentage(
+                'margin'           => '<span class="product_margin" title="'._('Cost').':'.money($data['Product Cost'], $account->get('Account Currency')).'">'.percentage(
                         $exchange * $data['Product Price'] - $data['Product Cost'], $exchange * $data['Product Price']
                     ).'<span>',
                 'web_state'        => $web_state,

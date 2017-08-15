@@ -2,7 +2,7 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 30 October 2015 at 15:10:19 CETT, Pisa-Milan (train), Italy
+ Created: 11 August 2017 at 10:13:26 CEST, Tranava, Slovakia
  Copyright (c) 2015, Inikoo
 
  Version 3
@@ -11,9 +11,9 @@
 
 
 
-$tab     = 'delivery_note.items';
+$tab     = 'delivery_note.fast_track_packing';
 $ar_file = 'ar_orders_tables.php';
-$tipo    = 'delivery_note.items';
+$tipo    = 'delivery_note.fast_track_packing';
 
 $default = $user->get_tab_defaults($tab);
 
@@ -21,7 +21,8 @@ $default = $user->get_tab_defaults($tab);
 $table_views = array(
     'overview'     => array(
         'label' => _('Overview'),
-    )
+    ),
+
 
 );
 
@@ -61,6 +62,18 @@ $warehouse=get_object('warehouse',$state['_object']->get('Delivery Note Warehous
 
 
 $table_buttons   = array();
+
+
+
+    $table_buttons[] = array(
+        'icon'     => 'sign-out fa-flip-horizontal',
+        'title'    => _('Exit'),
+        'id'       => 'exit_fast_track_packing',
+
+
+    );
+
+
 
 
 

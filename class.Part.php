@@ -459,7 +459,7 @@ class Part extends Asset {
                 break;
             case 'Cost in Warehouse':
                 if ($this->data['Part Unit Price'] == '') {
-                    return _('Cost price not set up');
+                    return _('Cost not set up');
                 }
                 include_once 'utils/natural_language.php';
 
@@ -480,7 +480,7 @@ class Part extends Asset {
                 break;
             case 'SKO Cost in Warehouse - Price':
                 if ($this->data['Part Unit Price'] == '') {
-                    return _('Cost price not set up');
+                    return _('Cost not set up');
                 }
                 include_once 'utils/natural_language.php';
 
@@ -1789,7 +1789,7 @@ class Part extends Asset {
 
 
         $sql = sprintf(
-            'SELECT sum((`Order Quantity`+`Order Bonus Quantity`)*`Product Part Ratio`) AS required FROM `Order Transaction Fact` OTF LEFT JOIN `Product Part Bridge` PPB ON (OTF.`Product ID`=PPB.`Product Part Product ID`)    WHERE OTF.`Current Dispatching State` IN ("Submitted by Customer","In Process") AND  `Current Payment State` IN ("Paid","No Applicable") AND `Product Part Part SKU`=%d    ',
+            'SELECT sum((`Order Quantity`+`Order Bonus Quantity`)*`Product Part Ratio`) AS required FROM `Order Transaction Fact` OTF LEFT JOIN `Product Part Bridge` PPB ON (OTF.`Product ID`=PPB.`Product Part Product ID`) WHERE OTF.`Current Dispatching State` IN ("Submitted by Customer","In Process") AND  `Current Payment State` IN ("Paid","No Applicable") AND `Product Part Part SKU`=%d    ',
 
             $this->id
         );

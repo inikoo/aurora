@@ -17,12 +17,17 @@ function get_product_showcase($data, $smarty, $user, $db) {
     $product = $data['_object'];
 
 
+
     if (!$product->id) {
         return "";
     }
 
     $product->load_acc_data();
     $product->get_webpage();
+
+
+
+    $product->update_web_state_slow_forks(true);
 
     //$product->update_availability();
 

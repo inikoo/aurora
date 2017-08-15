@@ -6,20 +6,7 @@ cell: "integer",
 renderable: false
 
 
-}, {
-name: "store_key",
-label: "",
-editable: false,
-renderable: false,
-cell: "string"
-},{
-name: "customer_key",
-label: "",
-editable: false,
-renderable: false,
-cell: "string"
 },
-
 
 {
 name: "public_id",
@@ -44,8 +31,8 @@ sortType: "toggle",
 editable: false,
 cell: Backgrid.HtmlCell.extend({})
 }, {
-name: "dispatch_state",
-label: "{t}Dispatch Status{/t}",
+name: "state",
+label: "{t}State{/t}",
 editable: false,
 sortType: "toggle",
 cell: "html"

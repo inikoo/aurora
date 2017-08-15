@@ -436,9 +436,8 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
                     money($object->get('Product Price'), $object->get('Store Currency Code'))
                 );
 
-                //        $update_metadata['margin_cell']='<span style="cursor:text" class="product_margin" onClick="open_edit_margin(this)" title="'._('Cost price').':'.money($object->get('Product Cost'), $account->get('Account Currency')).'">'.percentage($exchange*$object->get('Product Price')-$object->get('Product Cost'), $exchange*$object->get('Product Price')).'<span>';
 
-                $update_metadata['margin_cell'] = '<span  class="product_margin"  title="'._('Cost price').':'.money($object->get('Product Cost'), $account->get('Account Currency')).'">'.percentage(
+                $update_metadata['margin_cell'] = '<span  class="product_margin"  title="'._('Cost').':'.money($object->get('Product Cost'), $account->get('Account Currency')).'">'.percentage(
                         $exchange * $object->get('Product Price') - $object->get('Product Cost'), $exchange * $object->get('Product Price')
                     ).'<span>';
 

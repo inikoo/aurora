@@ -68,3 +68,5 @@ cron/fix_modified_supplier_parts_cartons.php
 cron/delete_me.php
 
 EcomB2B/art/favicon.png
+
+locale/sk_SK/LC_MESSAGES/aurora_skx.po

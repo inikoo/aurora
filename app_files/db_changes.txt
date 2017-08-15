@@ -640,11 +640,51 @@ update `Payment Account Dimension` set `Payment Account Service Provider Key`=`P
 ALTER TABLE `Payment Account Dimension` ADD `Payment Account Number Stores` SMALLINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Payment Account From`, ADD `Payment Account Number Websites` SMALLINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Payment Account Number Stores`;
 
 
-here
 
 ALTER TABLE `Payment Dimension` ADD `Payment Transaction Amount` DECIMAL(16,2) NULL DEFAULT NULL AFTER `Payment Type`;
 ALTER TABLE `Payment Dimension` CHANGE `Payment Balance` `Payment Balance` DECIMAL(12,2) NULL DEFAULT NULL, CHANGE `Payment Amount` `Payment Amount` DECIMAL(12,2) NULL DEFAULT NULL, CHANGE `Payment Refund` `Payment Refund` DECIMAL(12,2) NULL DEFAULT NULL;
 ALTER TABLE `Payment Dimension` ADD `Payment Transaction Amount Refunded` DECIMAL(16,2) NULL DEFAULT '0.00' AFTER `Payment Transaction Amount`;
+
+
+here
+
+ALTER TABLE `Inventory Transaction Fact` ADD PRIMARY KEY (`Inventory Transaction Key`);
+ALTER TABLE `Inventory Transaction Fact` ADD `Inventory Transaction State` ENUM('Picked','Done') NULL DEFAULT NULL AFTER `Inventory Transaction Fact Delivery 2 Alpha Code`;
+
+
+ALTER TABLE  `Account Data` ADD  `Account Orders In Process Number` MEDIUMINT UNSIGNED NOT NULL DEFAULT  '0' AFTER  `Account Orders In Basket Amount` ,
+ADD  `Account Orders In Process Amount` DECIMAL( 16, 2 ) NOT NULL DEFAULT  '0.00' AFTER  `Account Orders In Process Number` ;
+
+ALTER TABLE  `Account Data` ADD  `Account Orders Dispatch Approved Number` MEDIUMINT UNSIGNED NOT NULL DEFAULT  '0' AFTER  `Account Orders In Basket Amount` ,
+ADD  `Account Orders Dispatch Approved Amount` DECIMAL( 16, 2 ) NOT NULL DEFAULT  '0.00' AFTER  `Account Orders In Process Number` ;
+
+ALTER TABLE  `Account Data` ADD  `Account Orders Dispatched Number` MEDIUMINT UNSIGNED NOT NULL DEFAULT  '0' AFTER  `Account Orders In Basket Amount` ,
+ADD  `Account Orders Dispatched Amount` DECIMAL( 16, 2 ) NOT NULL DEFAULT  '0.00' AFTER  `Account Orders In Process Number` ;
+
+
+ALTER TABLE  `Account Data` ADD  `Account Orders Cancelled Number` MEDIUMINT UNSIGNED NOT NULL DEFAULT  '0' AFTER  `Account Orders In Basket Amount` ,
+ADD  `Account Orders Cancelled Amount` DECIMAL( 16, 2 ) NOT NULL DEFAULT  '0.00' AFTER  `Account Orders In Process Number` ;
+
+
+
+
+ALTER TABLE  `Store Data` ADD  `Store Orders In Process Number` MEDIUMINT UNSIGNED NOT NULL DEFAULT  '0' AFTER  `Store Orders In Basket Amount` ,
+ADD  `Store Orders In Process Amount` DECIMAL( 16, 2 ) NOT NULL DEFAULT  '0.00' AFTER  `Store Orders In Process Number` ;
+
+ALTER TABLE  `Store Data` ADD  `Store Orders Dispatch Approved Number` MEDIUMINT UNSIGNED NOT NULL DEFAULT  '0' AFTER  `Store Orders In Basket Amount` ,
+ADD  `Store Orders Dispatch Approved Amount` DECIMAL( 16, 2 ) NOT NULL DEFAULT  '0.00' AFTER  `Store Orders In Process Number` ;
+
+ALTER TABLE  `Store Data` ADD  `Store Orders Dispatched Number` MEDIUMINT UNSIGNED NOT NULL DEFAULT  '0' AFTER  `Store Orders In Basket Amount` ,
+ADD  `Store Orders Dispatched Amount` DECIMAL( 16, 2 ) NOT NULL DEFAULT  '0.00' AFTER  `Store Orders In Process Number` ;
+
+
+ALTER TABLE  `Store Data` ADD  `Store Orders Cancelled Number` MEDIUMINT UNSIGNED NOT NULL DEFAULT  '0' AFTER  `Store Orders In Basket Amount` ,
+ADD  `Store Orders Cancelled Amount` DECIMAL( 16, 2 ) NOT NULL DEFAULT  '0.00' AFTER  `Store Orders In Process Number` ;
+
+
+ALTER TABLE `Order Transaction Fact` ADD `Order Transaction Out of Stock Amount` DECIMAL(12,2) NULL DEFAULT '0.00' AFTER `Order Transaction Total Discount Amount`;
+
+
 
 ============= migration web[ages
 
@@ -675,6 +715,10 @@ STICKY:::: --> update `Category Dimension` set `Category Scope`=`Category Subjec
 
 
 costa important do this:
+
+import `Store Data` table
+
+
  update `Page Store Dimension` set `Webpage Launch Date`=`Page Store Creation Date` where   `Page Store Creation Date`!='0000-00-00 00:00:00' and   `Page Store Creation Date` is not NULL and `Webpage State`='Online';
 update `Location Dimension` set `Location Warehouse Flag Key`=`Warehouse Flag Key`;
 

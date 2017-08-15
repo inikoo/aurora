@@ -161,7 +161,7 @@ trait OrderDiscountOperations {
 
 
                 $sql = sprintf(
-                    "SELECT count(*) AS num FROM `Order Dimension` WHERE `Order Customer Key`=%d AND `Order Key`!=%d AND  `Order Current Dispatch State` NOT IN ('Cancelled','Suspended','Cancelled by Customer') ",
+                    "SELECT count(*) AS num FROM `Order Dimension` WHERE `Order Customer Key`=%d AND `Order Key`!=%d AND  `Order State` NOT IN ('Cancelled') ",
                     $this->data['Order Customer Key'], $this->id
                 );
 
@@ -203,7 +203,7 @@ trait OrderDiscountOperations {
                     if ($_row['num'] > 0) {
 
                         $sql = sprintf(
-                            "SELECT count(*) AS num FROM `Order Dimension` WHERE `Order Customer Key`=%d AND `Order Key`!=%d AND  `Order Current Dispatch State` NOT IN ('Cancelled','Suspended','Cancelled by Customer') ",
+                            "SELECT count(*) AS num FROM `Order Dimension` WHERE `Order Customer Key`=%d AND `Order Key`!=%d AND  `Order State` NOT IN ('Cancelled') ",
                             $this->data['Order Customer Key'], $this->id
                         );
 
@@ -275,7 +275,7 @@ trait OrderDiscountOperations {
             case('Order Interval'):
 
                 $sql = sprintf(
-                    "SELECT count(*) AS num FROM `Order Dimension` WHERE `Order Customer Key`=%d AND `Order Key`!=%d AND `Order Dispatched Date`>=%s AND `Order Current Dispatch State`='Dispatched' AND `Order Invoiced`='Yes'",
+                    "SELECT count(*) AS num FROM `Order Dimension` WHERE `Order Customer Key`=%d AND `Order Key`!=%d AND `Order Dispatched Date`>=%s AND `Order State`='Dispatched' AND `Order Invoiced`='Yes'",
                     $this->data['Order Customer Key'], $this->id, prepare_mysql(
                         date(
                             'Y-m-d', strtotime(
@@ -339,7 +339,7 @@ trait OrderDiscountOperations {
                 if ($amount_term_ok) {
 
                     $sql = sprintf(
-                        "SELECT count(*) AS num FROM `Order Dimension` WHERE `Order Customer Key`=%d AND `Order Key`!=%d AND `Order Dispatched Date`>=%s AND `Order Current Dispatch State`='Dispatched' AND `Order Invoiced`='Yes'",
+                        "SELECT count(*) AS num FROM `Order Dimension` WHERE `Order Customer Key`=%d AND `Order Key`!=%d AND `Order Dispatched Date`>=%s AND `Order State`='Dispatched' AND `Order Invoiced`='Yes'",
                         $this->data['Order Customer Key'], $this->id, prepare_mysql(
                             date(
                                 'Y-m-d', strtotime(
@@ -393,7 +393,7 @@ trait OrderDiscountOperations {
 
 
                     $sql = sprintf(
-                        "SELECT count(*) AS num FROM `Order Dimension` WHERE `Order Customer Key`=%d AND `Order Key`!=%d AND  `Order Current Dispatch State` NOT IN ('Cancelled','Suspended','Cancelled by Customer') ",
+                        "SELECT count(*) AS num FROM `Order Dimension` WHERE `Order Customer Key`=%d AND `Order Key`!=%d AND  `Order State` NOT IN ('Cancelled') ",
                         $this->data['Order Customer Key'], $this->id
                     );
 
@@ -1550,12 +1550,9 @@ trait OrderDiscountOperations {
 
         foreach ($this->allowance['Get Free'] as $type => $allowance_data) {
             if (in_array(
-                $this->data['Order Current Dispatch State'], array(
-                                                               'Ready to Pick',
-                                                               'Picking & Packing',
-                                                               'Packed',
-                                                               'Packed Done',
-                                                               'Packing'
+                $this->data['Order State'], array(
+                                                               'InWarehouse',
+                                                               'PackedDone',
                                                            )
             )) {
                 $dispatching_state = 'Ready to Pick';
@@ -1605,12 +1602,12 @@ trait OrderDiscountOperations {
 
 
             if (in_array(
-                $this->data['Order Current Dispatch State'], array(
+                $this->data['Order State'], array(
                                                                'Ready to Pick',
                                                                'Picking & Packing',
                                                                'Packed',
-                                                               'Packed Done',
-                                                               'Packing'
+                                                               'PackedDone',
+                                                               'InWarehouse'
                                                            )
             )) {
                 $dispatching_state = 'Ready to Pick';
@@ -2038,6 +2035,67 @@ trait OrderDiscountOperations {
 
 
     }
+
+    function get_no_product_deal_info($type) {
+        $deal_info = '';
+        $sql       = sprintf(
+            "SELECT `Deal Info` FROM `Order No Product Transaction Deal Bridge` B LEFT JOIN `Order No Product Transaction Fact` OTF ON (OTF.`Order No Product Transaction Fact Key`=B.`Order No Product Transaction Fact Key`) WHERE B.`Order Key`=%d AND `Transaction Type`=%s",
+            $this->id, prepare_mysql($type)
+        );
+
+        $res = mysql_query($sql);
+
+        if ($row = mysql_fetch_assoc($res)) {
+            $deal_info = $row['Deal Info'];
+        }
+
+        return $deal_info;
+    }
+
+    function get_vouchers_info() {
+        $vouchers_info = array();
+        $sql           = sprintf(
+            'SELECT V.`Voucher Key`,`Voucher Code`,D.`Deal Key`,`Deal Name`,`Deal Description` FROM `Voucher Order Bridge` B LEFT JOIN `Deal Dimension` D ON (B.`Deal Key`=D.`Deal Key`) LEFT JOIN `Voucher Dimension` V ON (B.`Voucher Key`=V.`Voucher Key`) WHERE `Order Key`=%d',
+            $this->id
+        );
+        $res           = mysql_query($sql);
+        while ($row = mysql_fetch_assoc($res)) {
+            $vouchers_info[] = array(
+                'key'              => $row['Voucher Key'],
+                'code'             => $row['Voucher Code'],
+                //   'state'=>$row['State'],
+                'deal_key'         => $row['Deal Key'],
+                'deal_name'        => $row['Deal Name'],
+                'deal_description' => $row['Deal Description']
+
+            );
+        }
+
+        return $vouchers_info;
+
+    }
+
+    function get_deals_info() {
+        $deals_info = array();
+        $sql        = sprintf(
+            'SELECT B.`Deal Key`,`Deal Name`,`Deal Description`,`Deal Term Allowances` FROM `Order Deal Bridge` B LEFT JOIN `Deal Dimension` D ON (B.`Deal Key`=D.`Deal Key`) WHERE `Order Key`=%d  AND `Deal Trigger` IN ("Order","Customer") AND `Deal Terms Type`!="Voucher" GROUP BY B.`Deal Key`',
+            $this->id
+        );
+
+        $res = mysql_query($sql);
+        while ($row = mysql_fetch_assoc($res)) {
+            $deals_info[] = array(
+                'key'              => $row['Deal Key'],
+                'name'             => $row['Deal Name'],
+                'description'      => $row['Deal Description'],
+                'terms_allowances' => $row['Deal Term Allowances'],
+            );
+        }
+
+        return $deals_info;
+
+    }
+
 
 }
 

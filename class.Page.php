@@ -4856,18 +4856,7 @@ class Page extends DB_Table {
         } else {
             $order_key = 0;
         }
-        /*
-		if ($this->user->data['User Type']=='Customer') {
 
-			$sql=sprintf("select `Order Key` from `Order Dimension` where `Order Customer Key`=%d and `Order Current Dispatch State`='In Process by Customer' order by `Order Public ID` DESC", $this->user->get('User Parent Key'));
-			$result=mysql_query($sql);
-			if ($row=mysql_fetch_array($result))
-
-
-				$order_key=$row['Order Key'];
-		}
-
-*/
         foreach ($products as $product) {
 
             if ($this->print_rrp) {

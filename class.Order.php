@@ -26,7 +26,7 @@ include_once 'trait.OrderTax.php';
 
 class Order extends DB_Table {
 
-    use OrderShippingOperations, OrderChargesOperations, OrderDiscountOperations, OrderItems, OrderPayments, OrderCalculateTotals,OrderBasketOperations,OrderTax;
+    use OrderShippingOperations, OrderChargesOperations, OrderDiscountOperations, OrderItems, OrderPayments, OrderCalculateTotals, OrderBasketOperations, OrderTax;
 
     //Public $data = array ();
     // Public $items = array ();
@@ -66,9 +66,6 @@ class Order extends DB_Table {
         $this->get_data($arg1, $arg2);
 
     }
-
-
-
 
 
     function get_data($key, $id) {
@@ -404,7 +401,7 @@ class Order extends DB_Table {
                 $this->update_address('Delivery', json_decode($value, true));
                 break;
 
-            case('Order Current Dispatch State'):
+            case('Order State'):
                 $this->update_state($value, $options, $metadata);
                 break;
             case 'auto_account_payments':
@@ -500,7 +497,7 @@ class Order extends DB_Table {
             $this->update_tax();
             $this->update_totals();
 
-        //    $this->apply_payment_from_customer_account();
+            //    $this->apply_payment_from_customer_account();
 
 
         } else {
@@ -545,7 +542,7 @@ class Order extends DB_Table {
 
             case 'Items Discount Percentage':
 
-                return percentage($this->data['Order Items Discount Amount'],$this->data['Order Items Gross Amount']);
+                return percentage($this->data['Order Items Discount Amount'], $this->data['Order Items Gross Amount']);
 
             case 'Currency Code':
 
@@ -656,30 +653,28 @@ class Order extends DB_Table {
                 return $this->get('Order '.$key.' Formatted');
                 break;
 
+            //'InBasket','InProcess','InWarehouse','PackedDone','Approved','Dispatched','Cancelled'
 
             case ('State Index'):
-                //'In Process by Customer','Waiting for Payment Confirmation','In Process','Submitted by Customer','Ready to Pick',
-                //'Picking & Packing','Packing','Packed','Packed Done','Ready to Ship','Dispatched','Cancelled','Suspended','Cancelled by Customer'
 
-                switch ($this->data['Order Current Dispatch State']) {
-                    case 'In Process':
+
+                switch ($this->data['Order State']) {
+                    case 'InBasket':
                         return 10;
                         break;
 
-                    case 'Waiting for Payment Confirmation':
-                        return 25;
-                        break;
-                    case 'Submitted by Customer':
+
+                    case 'InProcess':
                         return 30;
                         break;
-                    case 'In Warehouse':
+                    case 'InWarehouse':
                         return 40;
                         break;
 
-                    case 'Packed Done':
+                    case 'PackedDone':
                         return 80;
                         break;
-                    case 'Ready to Ship':
+                    case 'Approved':
                         return 90;
                         break;
                     case 'Dispatched':
@@ -689,9 +684,6 @@ class Order extends DB_Table {
                         return -10;
                         break;
 
-                    case 'Suspended':
-                        return -5;
-                        break;
 
                     default:
                         return 0;
@@ -891,7 +883,7 @@ class Order extends DB_Table {
 
                 include_once 'utils/natural_language.php';
 
-                if ($this->data['Order Current Dispatch State'] == 'Dispatched') {
+                if ($this->data['Order State'] == 'Dispatched') {
                     if ($this->data['Order Weight'] == '') {
                         return "&#8494;".weight(
                                 $this->data['Order Dispatched Estimated Weight']
@@ -908,45 +900,36 @@ class Order extends DB_Table {
 
 
             case ('State'):
-                //'In Process by Customer','In Process','Submitted by Customer','Ready to Pick','Picking & Packing','Ready to Ship','Dispatched','Unknown','Packing','Packed','Cancelled','Suspended'  case('Current Dispatch State'):
-                switch ($this->data['Order Current Dispatch State']) {
-                    case 'In Process':
-                        return _('In Basket');
-                        break;
-
-                    case 'Submitted by Customer':
-                        return _('Submitted');
-                        break;
-
-                    case 'In Warehouse':
-                        return _('In warehouse');
-                        break;
 
 
-                    case 'Packed Done':
-                        return _('Packed & Checked');
+                switch ($this->data['Order State']) {
+                    case('InBasket'):
+                        $state = _('In Basket');
                         break;
-                    case 'Ready to Ship':
-                        return _('Ready to Ship');
+                    case('InProcess'):
+                        $state = _('Submitted');
                         break;
-                    case 'Dispatched':
-                        return _('Dispatched');
+                    case('InWarehouse'):
+                        $state = _('In Warehouse');
                         break;
-
-
+                    case('PackedDone'):
+                        $state = _('Packed Done');
                         break;
-                    case 'Cancelled':
-                        return _('Cancelled');
+                    case('Dispatch Approved'):
+                        $state = _('Dispatch Approved');
                         break;
-                    case 'Suspended':
-                        return _('Suspended');
+                    case('Dispatched'):
+                        $state = _('Dispatched');
                         break;
-
+                    case('Cancelled'):
+                        $state = _('Cancelled');
+                        break;
                     default:
-                        return $this->data['Order Current Dispatch State'];
-                        break;
+                        $state = $data['Order State'];
+
                 }
 
+                return $state;
                 break;
 
             case 'Number Items':
@@ -976,10 +959,10 @@ class Order extends DB_Table {
         $date = gmdate('Y-m-d H:i:s');
 
 
-        $old_value        = $this->get('Order State');
-        $operations       = array();
-        $deliveries_xhtml = '';
-        $number_deliveries=0;
+        $old_value         = $this->get('Order State');
+        $operations        = array();
+        $deliveries_xhtml  = '';
+        $number_deliveries = 0;
 
         if ($old_value != $value) {
 
@@ -994,22 +977,63 @@ class Order extends DB_Table {
 
                     break;
 
-                case 'Submitted by Customer':
+
+                case 'InBasket':
 
 
-                    if (!($this->data['Order Current Dispatch State'] == 'In Process' or $this->data['Order Current Dispatch State'] == 'Waiting for Payment Confirmation')) {
+                    if ($this->data['Order State'] != 'InProcess') {
                         $this->error = true;
-                        $this->msg   = 'Order is not in process: :(  '.$this->data['Order Current Dispatch State'];
+                        $this->msg   = 'Order is not in process: :(';
 
                         return;
 
                     }
 
 
-                    $this->update_field('Order Current Dispatch State', $value, 'no_history');
+                    $this->update_field('Order State', $value, 'no_history');
+                    $this->update_field('Order Submitted by Customer Date', '', 'no_history');
+                    $this->update_field('Order Date', $date, 'no_history');
+                    $this->update_field('Order Class', 'InBasket', 'no_history');
+
+
+                    $history_data = array(
+                        'History Abstract' => _('Order send back to basket'),
+                        'History Details'  => '',
+                    );
+                    $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
+
+                    $operations = array(
+                        'send_to_warehouse_operations',
+                        'cancel_operations',
+                        'submit_operations'
+                    );
+
+
+                    $sql = sprintf(
+                        'UPDATE `Order Transaction Fact` SET `Current Dispatching State`="In Process" WHERE `Order Key`=%d  AND `Current Dispatching State` IN ("Submitted by Customer")  ', $this->id
+                    );
+
+                    $this->db->exec($sql);
+
+
+                    break;
+
+                case 'InProcess':
+
+
+                    if ($this->data['Order State'] != 'InBasket') {
+                        $this->error = true;
+                        $this->msg   = 'Order is not in basket: :(';
+
+                        return;
+
+                    }
+
+
+                    $this->update_field('Order State', $value, 'no_history');
                     $this->update_field('Order Submitted by Customer Date', $date, 'no_history');
                     $this->update_field('Order Date', $date, 'no_history');
-                    $this->update_field('Order Class', 'InProcess', 'no_history');
+                    $this->update_field('Order Class', 'InWebsite', 'no_history');
 
 
                     $history_data = array(
@@ -1018,11 +1042,20 @@ class Order extends DB_Table {
                     );
                     $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
 
-                    $operations=array('send_to_warehouse');
+                    $operations = array(
+                        'send_to_warehouse_operations',
+                        'cancel_operations'
+                    );
 
+                    $sql = sprintf(
+                        'UPDATE `Order Transaction Fact` SET `Current Dispatching State`="Submitted by Customer" WHERE `Order Key`=%d  AND `Current Dispatching State` IN ("In Process by Customer","In Process")  ',
+                        $this->id
+                    );
+
+                    $this->db->exec($sql);
 
                     break;
-                case 'In Warehouse':
+                case 'InWarehouse':
 
 
                     $warehouse_key = 1;
@@ -1030,7 +1063,7 @@ class Order extends DB_Table {
                     include_once('class.DeliveryNote.php');
 
 
-                    if (!($this->data['Order Current Dispatch State'] == 'In Process' or $this->data['Order Current Dispatch State'] == 'Submitted by Customer')) {
+                    if (!($this->data['Order State'] == 'InProcess' or $this->data['Order State'] == 'InBasket')) {
                         $this->error = true;
                         $this->msg   = 'Order is not in process';
 
@@ -1097,13 +1130,13 @@ class Order extends DB_Table {
                     );
 
 
-                    if ($this->get('Order Current Dispatch State') == 'In Process') {
+                    if ($this->get('Order State') == 'InBasket') {
 
                         $this->update_field('Order Submitted by Customer Date', $date);
 
                     }
                     $this->update_field('Order Class', 'InProcess', 'no_history');
-                    $this->update_field('Order Current Dispatch State', $value, 'no_history');
+                    $this->update_field('Order State', $value, 'no_history');
                     $this->update_field('Order Send to Warehouse Date', $date, 'no_history');
                     $this->update_field('Order Date', $date, 'no_history');
 
@@ -1126,6 +1159,208 @@ class Order extends DB_Table {
 
                     }
 
+                    $operations = array('cancel_operations');
+
+
+                    $sql = sprintf(
+                        'UPDATE `Order Transaction Fact` SET `Current Dispatching State`="Ready to Pick" WHERE `Order Key`=%d  AND `Current Dispatching State`,`Delivery Note Key`=%d  IN ("Submitted by Customer","In Process")  ',
+                        $this->id, $delivery_note->id
+
+                    );
+
+                    $this->db->exec($sql);
+
+
+                    break;
+                case 'PackedDone':
+
+
+                    if ($this->data['Order State'] != 'InWarehouse') {
+                        $this->error = true;
+                        $this->msg   = 'Order is not in warehouse: :(';
+
+                        return;
+
+                    }
+
+
+                    $this->update_field('Order State', $value, 'no_history');
+                    $this->update_field('Order Packed Done Date', $date, 'no_history');
+                    $this->update_field('Order Date', $date, 'no_history');
+
+
+                    $history_data = array(
+                        'History Abstract' => _('Order packed and sealed'),
+                        'History Details'  => '',
+                    );
+                    $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
+
+                    $operations = array(
+                        'invoice_operations',
+                        'cancel_operations'
+                    );
+
+                    $sql = sprintf(
+                        'UPDATE `Order Transaction Fact` SET `Current Dispatching State`="Packed Done" WHERE `Order Key`=%d  AND `Current Dispatching State` IN ("Ready to Pick")  ', $this->id
+                    );
+
+                    $this->db->exec($sql);
+
+                    break;
+
+                case 'Approved':
+
+
+                    include_once('class.Invoice.php');
+
+
+                    if (!$this->data['Order State'] == 'PackedDone') {
+                        $this->error = true;
+                        $this->msg   = 'Order is not in packed done';
+
+                        return false;
+
+                    }
+
+
+                    $store = get_object('Store', $this->data['Order Store Key']);
+
+
+                    if ($store->data['Store Next Invoice Public ID Method'] == 'Order ID') {
+                        $invoice_public_id = $this->data['Order Public ID'];
+                        $file_as           = $this->data['Order File As'];
+                    } elseif ($store->data['Store Next Invoice Public ID Method'] == 'Invoice Public ID') {
+
+                        $sql = sprintf(
+                            "UPDATE `Store Dimension` SET `Store Invoice Last Invoice Public ID` = LAST_INSERT_ID(`Store Invoice Last Invoice Public ID` + 1) WHERE `Store Key`=%d",
+                            $this->data['Order Store Key']
+                        );
+                        $this->db->exec($sql);
+                        $public_id = $this->db->lastInsertId();
+
+                        $invoice_public_id = sprintf(
+                            $store->data['Store Invoice Public ID Format'], $public_id
+                        );
+
+                        //todo file as
+
+                    } else {
+
+                        $sql = sprintf(
+                            "UPDATE `Account Dimension` SET `Account Invoice Last Invoice Public ID` = LAST_INSERT_ID(`Account Invoice Last Invoice Public ID` + 1) WHERE `Account Key`=1"
+                        );
+                        $this->db->exec($sql);
+                        $public_id = $this->db->lastInsertId();
+
+                        include_once 'class.Account.php';
+                        $account           = new Account();
+                        $invoice_public_id = sprintf(
+                            $account->data['Account Invoice Public ID Format'], $public_id
+                        );
+
+                        //todo file as
+                    }
+
+
+                    $data_invoice = array(
+                        'Invoice Date'                          => $date,
+                        'Invoice Type'                          => 'Invoice',
+                        'Invoice Public ID'                     => $invoice_public_id,
+                        'Invoice File As'                       => $file_as,
+                        'Invoice Order Key'                     => $this->id,
+                        'Invoice Store Key'                     => $this->data['Order Store Key'],
+                        'Invoice Customer Key'                  => $this->data['Order Customer Key'],
+                        'Invoice Tax Code'                      => $this->data['Order Tax Code'],
+                        'Invoice Tax Shipping Code'             => $this->data['Order Tax Code'],
+                        'Invoice Tax Charges Code'              => $this->data['Order Tax Code'],
+                        'Invoice Metadata'                      => $this->data['Order Original Metadata'],
+                        'Invoice Tax Number'                    => $this->data['Order Tax Number'],
+                        'Invoice Tax Number Valid'              => $this->data['Order Tax Number Valid'],
+                        'Invoice Tax Number Validation Date'    => $this->data['Order Tax Number Validation Date'],
+                        'Invoice Tax Number Associated Name'    => $this->data['Order Tax Number Associated Name'],
+                        'Invoice Tax Number Associated Address' => $this->data['Order Tax Number Associated Address'],
+                        'Invoice Net Amount Off'                => $this->data['Order Deal Amount Off'],
+                        'Invoice Customer Contact Name'         => $this->data['Order Customer Contact Name'],
+
+                        //   'Invoice Telephone'                    => $this->data['Order Telephone'],
+                        //     'Invoice Email'                        => $this->data['Order Email'],
+                        'Invoice Address Recipient'             => $this->data['Order Invoice Address Recipient'],
+                        'Invoice Address Organization'          => $this->data['Order Invoice Address Organization'],
+                        'Invoice Address Line 1'                => $this->data['Order Invoice Address Line 1'],
+                        'Invoice Address Line 2'                => $this->data['Order Invoice Address Line 2'],
+                        'Invoice Address Sorting Code'          => $this->data['Order Invoice Address Sorting Code'],
+                        'Invoice Address Postal Code'           => $this->data['Order Invoice Address Postal Code'],
+                        'Invoice Address Dependent Locality'    => $this->data['Order Invoice Address Dependent Locality'],
+                        'Invoice Address Locality'              => $this->data['Order Invoice Address Locality'],
+                        'Invoice Address Administrative Area'   => $this->data['Order Invoice Address Administrative Area'],
+                        'Invoice Address Country 2 Alpha Code'  => $this->data['Order Invoice Address Country 2 Alpha Code'],
+                        'Invoice Address Checksum'              => $this->data['Order Invoice Address Checksum'],
+                        'Invoice Address Formatted'             => $this->data['Order Invoice Address Formatted'],
+                        'Invoice Address Postal Label'          => $this->data['Order Invoice Address Postal Label'],
+
+
+                        'Invoice Main Source Type'          => $this->data['Order Main Source Type'],
+                        'Invoice Items Gross Amount'        => $this->data['Order Items Gross Amount'],
+                        'Invoice Items Discount Amount'     => $this->data['Order Items Discount Amount'],
+                        'Invoice Items Out of Stock Amount' => $this->data['Order Items Out of Stock Amount'],
+                        'Invoice Shipping Net Amount'       => $this->data['Order Shipping Net Amount'],
+                        'Invoice Charges Net Amount'        => $this->data['Order Items Net Amount'],
+                        'Invoice Insurance Net Amount'      => $this->data['Order Insurance Net Amount'],
+                        'Invoice Total Net Amount'          => $this->data['Order Total Net Amount'],
+                        'Invoice Total Tax Amount'          => $this->data['Order Total Tax Amount'],
+                        'Invoice Payments Amount'           => $this->data['Order Payments Amount'],
+                        'Invoice To Pay Amount'             => $this->data['Order To Pay Amount'],
+
+                    );
+
+
+                    $invoice = new Invoice ('create', $data_invoice);
+
+
+                    $dn->update(
+                        array(
+                            'Delivery Note Invoiced'                    => 'Yes',
+                            'Delivery Note Invoiced Net DC Amount'      => $invoice->get('Invoice Total Net Amount') * $invoice->get('Invoice Currency Exchange'),
+                            'Delivery Note Invoiced Shipping DC Amount' => $invoice->get('Invoice Shipping Net Amount') * $invoice->get('Invoice Currency Exchange'),
+                        )
+                    );
+
+
+                    return $invoice;
+
+
+                    include 'utils/new_fork.php';
+                    $account = get_object('Account', 1);
+                    new_housekeeping_fork(
+                        'au_housekeeping', array(
+                        'type'              => 'invoice_created',
+                        'delivery_note_key' => $invoice->id,
+                    ), $account->get('Account Code')
+                    );
+
+
+                    $this->update_field('Order State', $value, 'no_history');
+                    $this->update_field('Order Send to Warehouse Date', $date, 'no_history');
+                    $this->update_field('Order Date', $date, 'no_history');
+
+
+                    $history_data = array(
+                        'History Abstract' => _('Order send to warehouse'),
+                        'History Details'  => '',
+                    );
+                    $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->table_name, $this->id);
+
+
+                    $operations = array('cancel_operations');
+
+                    //'In Process by Customer','Submitted by Customer','In Process','Ready to Pick','Picking','Ready to Pack','Ready to Ship','Dispatched','Unknown','Packing','Packed','Packed Done','Cancelled','No Picked Due Out of Stock','No Picked Due No Authorised','No Picked Due Not Found','No Picked Due Other','Suspended','Cancelled by Customer','Out of Stock in Basket'
+
+                    $sql = sprintf(
+                        'UPDATE `Order Transaction Fact` SET `Current Dispatching State`="Ready to Ship" WHERE `Order Key`=%d  AND `Current Dispatching State` IN ("Packed Done")  ', $this->id
+                    );
+
+                    $this->db->exec($sql);
+
 
                     break;
                 default:
@@ -1137,299 +1372,228 @@ class Order extends DB_Table {
         }
 
         $this->update_metadata = array(
-            'class_html'       => array(
+            'class_html'        => array(
                 'Order_State'                  => $this->get('State'),
                 'Order_Submitted_Date'         => '&nbsp;'.$this->get('Submitted by Customer Date'),
                 'Order_Send_to_Warehouse_Date' => '&nbsp;'.$this->get('Send to Warehouse Date'),
 
 
             ),
-            'operations'       => $operations,
-            'state_index'      => $this->get('State Index'),
-            'deliveries_xhtml' => $deliveries_xhtml,
+            'operations'        => $operations,
+            'state_index'       => $this->get('State Index'),
+            'deliveries_xhtml'  => $deliveries_xhtml,
             'number_deliveries' => $number_deliveries
         );
 
 
     }
 
-    function cancel($note = '', $date = false, $force = false, $by_customer = false) {
+    function cancel($note = '', $date = false, $force = false) {
 
 
         $store = get_object('Store', $this->get('Order Store Key'));
 
-        $cancelled = false;
-        if (preg_match(
-            '/Dispatched/', $this->data['Order Current Dispatch State']
-        )) {
-            $this->msg = _(
-                'Order can not be cancelled, because has already been dispatched'
-            );
+
+        if ($this->data['Order State'] == 'Dispatched') {
+            $this->error = true;
+            $this->msg   = _('Order can not be cancelled, because has already been dispatched');
+
+            return false;
+        }
+
+        if ($this->data['Order State'] == 'Cancelled') {
+            $this->error = true;
+            $this->msg   = _('Order is already cancelled');
+
+            return false;
+        }
+
+
+        if ($this->data['Order Payments Amount'] != 0) {
+
+            $this->error = true;
+            $this->msg   = _('Payments must be refunded or voided before cancel the order');
+
+            return false;
 
         }
-        if (preg_match(
-            '/Cancelled/', $this->data['Order Current Dispatch State']
-        )) {
-            $this->msg = _('Order is already cancelled');
-
-        } else {
-
-            $current_amount_in_customer_account_payments = 0;
-            $sql                                         = sprintf(
-                "SELECT B.`Payment Key`,`Amount`,`Payment Transaction Status` FROM `Order Payment Bridge` B LEFT JOIN `Payment Dimension` P ON (P.`Payment Key`=B.`Payment Key`) WHERE `Is Account Payment`='Yes' AND `Order Key`=%d ",
-                $this->id
-
-            );
 
 
-            if ($result = $this->db->query($sql)) {
-                foreach ($result as $row) {
-                    $current_amount_in_customer_account_payments += $row['Amount'];
+        if (!$date) {
+            $date = gmdate('Y-m-d H:i:s');
+        }
+        $this->data['Order Cancelled Date'] = $date;
 
-                    if ($row['Payment Transaction Status'] == 'Pending') {
-                        $sql = sprintf(
-                            "DELETE  FROM `Order Payment Bridge` WHERE `Payment Key`=%d ", $row['Payment Key']
+        $this->data['Order Cancel Note'] = $note;
 
-                        );
-                        mysql_query($sql);
-
-                        $sql = sprintf(
-                            "DELETE  FROM `Payment Dimension` WHERE `Payment Key`=%d ", $row['Payment Key']
-
-                        );
-                        mysql_query($sql);
-
-                    } else {
-
-                        $payment        = new Payment($row['Payment Key']);
-                        $data_to_update = array(
-
-                            'Payment Completed Date'          => '',
-                            'Payment Last Updated Date'       => gmdate(
-                                'Y-m-d H:i:s'
-                            ),
-                            'Payment Cancelled Date'          => gmdate(
-                                'Y-m-d H:i:s'
-                            ),
-                            'Payment Transaction Status'      => 'Cancelled',
-                            'Payment Transaction Status Info' => _(
-                                'Cancelled by user'
-                            ),
+        $this->data['Order Current Payment State'] = 'No Applicable';
 
 
-                        );
-                        $payment->update($data_to_update);
+        $this->data['Order State'] = 'Cancelled';
+
+        $this->data['Order Current XHTML Dispatch State']              = _('Cancelled');
+        $this->data['Order Current XHTML Payment State']               = _('Order cancelled');
+        $this->data['Order XHTML Invoices']                            = '';
+        $this->data['Order XHTML Delivery Notes']                      = '';
+        $this->data['Order Invoiced Balance Total Amount']             = 0;
+        $this->data['Order Invoiced Balance Net Amount']               = 0;
+        $this->data['Order Invoiced Balance Tax Amount']               = 0;
+        $this->data['Order Invoiced Outstanding Balance Total Amount'] = 0;
+        $this->data['Order Invoiced Outstanding Balance Net Amount']   = 0;
+        $this->data['Order Invoiced Outstanding Balance Tax Amount']   = 0;
+        $this->data['Order Balance Net Amount']                        = 0;
+        $this->data['Order Balance Tax Amount']                        = 0;
+        $this->data['Order Balance Total Amount']                      = 0;
 
 
-                    }
-                }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
-            }
+        $this->data['Order To Pay Amount'] = round(
+            $this->data['Order Balance Total Amount'] - $this->data['Order Payments Amount'], 2
+        );
 
-
-            if ($by_customer) {
-                $state = 'Cancelled by Customer';
-
-            } else {
-                $state = 'Cancelled';
-            }
-
-            if (!$date) {
-                $date = gmdate('Y-m-d H:i:s');
-            }
-            $this->data['Order Cancelled Date'] = $date;
-
-            $this->data['Order Cancel Note'] = $note;
-
-            $this->data['Order Current Payment State'] = 'No Applicable';
-
-
-            $this->data['Order Current Dispatch State'] = $state;
-
-            $this->data['Order Current XHTML Dispatch State']              = _(
-                'Cancelled'
-            );
-            $this->data['Order Current XHTML Payment State']               = _(
-                'Order cancelled'
-            );
-            $this->data['Order XHTML Invoices']                            = '';
-            $this->data['Order XHTML Delivery Notes']                      = '';
-            $this->data['Order Invoiced Balance Total Amount']             = 0;
-            $this->data['Order Invoiced Balance Net Amount']               = 0;
-            $this->data['Order Invoiced Balance Tax Amount']               = 0;
-            $this->data['Order Invoiced Outstanding Balance Total Amount'] = 0;
-            $this->data['Order Invoiced Outstanding Balance Net Amount']   = 0;
-            $this->data['Order Invoiced Outstanding Balance Tax Amount']   = 0;
-            $this->data['Order Balance Net Amount']                        = 0;
-            $this->data['Order Balance Tax Amount']                        = 0;
-            $this->data['Order Balance Total Amount']                      = 0;
-
-
-            $this->data['Order To Pay Amount'] = round(
-                $this->data['Order Balance Total Amount'] - $this->data['Order Payments Amount'], 2
-            );
-
-            $sql = sprintf(
-                "UPDATE `Order Dimension` SET  `Order Cancelled Date`=%s, `Order Current Payment State`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML Dispatch State`=%s,`Order Current XHTML Payment State`=%s,
+        $sql = sprintf(
+            "UPDATE `Order Dimension` SET  `Order Cancelled Date`=%s, `Order Current Payment State`=%s,`Order State`=%s,`Order Current XHTML Dispatch State`=%s,`Order Current XHTML Payment State`=%s,
 				`Order XHTML Invoices`='',`Order XHTML Delivery Notes`=''
 				,`Order Invoiced Balance Net Amount`=0,`Order Invoiced Balance Tax Amount`=0,`Order Invoiced Balance Total Amount`=0 ,`Order Invoiced Outstanding Balance Net Amount`=0,`Order Invoiced Outstanding Balance Tax Amount`=0,`Order Invoiced Outstanding Balance Total Amount`=0,`Order Invoiced Profit Amount`=0,`Order Cancel Note`=%s
 				,`Order Balance Net Amount`=0,`Order Balance tax Amount`=0,`Order Balance Total Amount`=0,`Order To Pay Amount`=%.2f
 				WHERE `Order Key`=%d"//     ,$no_shipped
-                , prepare_mysql($this->data['Order Cancelled Date']), prepare_mysql($this->data['Order Current Payment State']), prepare_mysql($this->data['Order Current Dispatch State']),
-                prepare_mysql(
-                    $this->data['Order Current XHTML Dispatch State']
-                ), prepare_mysql($this->data['Order Current XHTML Payment State']), prepare_mysql($this->data['Order Cancel Note']), $this->data['Order To Pay Amount'], $this->id
-            );
+            , prepare_mysql($this->data['Order Cancelled Date']), prepare_mysql($this->data['Order Current Payment State']), prepare_mysql($this->data['Order State']), prepare_mysql(
+                $this->data['Order Current XHTML Dispatch State']
+            ), prepare_mysql($this->data['Order Current XHTML Payment State']), prepare_mysql($this->data['Order Cancel Note']), $this->data['Order To Pay Amount'], $this->id
+        );
 
-            $this->db->exec($sql);
-
-
-            $this->update(array('Order Class' => 'Archived'), 'no_history');
+        $this->db->exec($sql);
 
 
-            $sql = sprintf(
-                "UPDATE `Order Transaction Fact` SET  `Delivery Note Key`=NULL,  `Delivery Note ID`=NULL,`Invoice Key`=NULL, `Invoice Public ID`=NULL,`Picker Key`=NULL,`Picker Key`=NULL, `Consolidated`='Yes',`Current Dispatching State`=%s WHERE `Order Key`=%d ",
-                prepare_mysql($state), $this->id
-            );
-            $this->db->exec($sql);
-
-            $sql = sprintf(
-                "UPDATE `Order Transaction Fact` SET  `Picking Factor`=0,  `Picking Factor`=0,`Picked Quantity`=0, `Estimated Dispatched Weight`=0,`Delivery Note Quantity`=0,`Shipped Quantity`=0, `No Shipped Due Out of Stock`=0,`No Shipped Due No Authorized`=0,`No Shipped Due Not Found`=0,`No Shipped Due Other`=0,`Order Out of Stock Lost Amount`=0,`Invoice Quantity`=0 WHERE `Order Key`=%d ",
-
-                $this->id
-            );
-            $this->db->exec($sql);
+        $this->update(array('Order Class' => 'Archived'), 'no_history');
 
 
-            $sql = sprintf(
-                "UPDATE `Order No Product Transaction Fact` SET `Delivery Note Date`=NULL,`Delivery Note Key`=NULL,`State`=%s ,`Consolidated`='Yes' WHERE `Order Key`=%d ", prepare_mysql($state),
-                $this->id
-            );
-            $this->db->exec($sql);
+        $sql = sprintf(
+            "UPDATE `Order Transaction Fact` SET  `Delivery Note Key`=NULL,  `Delivery Note ID`=NULL,`Invoice Key`=NULL, `Invoice Public ID`=NULL,`Picker Key`=NULL,`Picker Key`=NULL, `Consolidated`='Yes',`Current Dispatching State`=%s WHERE `Order Key`=%d ",
+            prepare_mysql('Cancelled'), $this->id
+        );
+        $this->db->exec($sql);
+
+        $sql = sprintf(
+            "UPDATE `Order Transaction Fact` SET  `Picking Factor`=0,  `Picking Factor`=0,`Picked Quantity`=0, `Estimated Dispatched Weight`=0,`Delivery Note Quantity`=0,`Shipped Quantity`=0, `No Shipped Due Out of Stock`=0,`No Shipped Due No Authorized`=0,`No Shipped Due Not Found`=0,`No Shipped Due Other`=0,`Order Out of Stock Lost Amount`=0,`Invoice Quantity`=0 WHERE `Order Key`=%d ",
+
+            $this->id
+        );
+        $this->db->exec($sql);
 
 
-            foreach ($this->get_delivery_notes_objects() as $dn) {
-                $dn->cancel($note, $date, $force);
+        $sql = sprintf(
+            "UPDATE `Order No Product Transaction Fact` SET `Delivery Note Date`=NULL,`Delivery Note Key`=NULL,`State`=%s ,`Consolidated`='Yes' WHERE `Order Key`=%d ", prepare_mysql('Cancelled'),
+            $this->id
+        );
+        $this->db->exec($sql);
 
-                $sql = sprintf(
-                    "DELETE FROM  `Order Delivery Note Bridge` WHERE `Order Key`=%d AND `Delivery Note Key`=%d", $this->id, $dn->id
+
+        /*
+
+
+        if (!isset($_SESSION ['lang'])) {
+            $lang = 0;
+        } else {
+            $lang = $_SESSION ['lang'];
+        }
+
+        switch ($lang) {
+            default :
+                $note = sprintf(
+                    'Order <a href="order.php?id=%d">%s</a> (Cancelled)', $this->data['Order Key'], $this->data['Order Public ID']
                 );
-                $this->db->exec($sql);
-            }
+                if ($this->editor['Author Alias'] != '' and $this->editor['Author Key']) {
+                    $details = sprintf(
+                        _('%s cancel (%s) order %s'),
 
+                        sprintf(
+                            '<a href="staff.php?id=%d">%s</a>', $this->editor['Author Key'], $this->editor['Author Alias']
+                        ),
 
-            /*
-
-
-            if (!isset($_SESSION ['lang'])) {
-                $lang = 0;
-            } else {
-                $lang = $_SESSION ['lang'];
-            }
-
-            switch ($lang) {
-                default :
-                    $note = sprintf(
-                        'Order <a href="order.php?id=%d">%s</a> (Cancelled)', $this->data['Order Key'], $this->data['Order Public ID']
+                        sprintf(
+                            '<a href="customer.php?id=%d">%s</a>', $this->data['Order Customer Key'], $this->data['Order Customer Name']
+                        ), sprintf(
+                            '<a href="order.php?id=%d">%s</a>', $this->data['Order Key'], $this->data['Order Public ID']
+                        )
                     );
-                    if ($this->editor['Author Alias'] != '' and $this->editor['Author Key']) {
-                        $details = sprintf(
-                            _('%s cancel (%s) order %s'),
+                } elseif ($this->editor['Author Alias'] == 'System Cron' and !$this->editor['Author Key']) {
+                    $details = sprintf(
+                        _('A cron job cancel (%s) order %s'), sprintf(
+                        '<a href="customer.php?id=%d">%s</a>', $this->data['Order Customer Key'], $this->data['Order Customer Name']
+                    ), sprintf(
+                            '<a href="order.php?id=%d">%s</a>', $this->data['Order Key'], $this->data['Order Public ID']
+                        )
+                    );
 
-                            sprintf(
-                                '<a href="staff.php?id=%d">%s</a>', $this->editor['Author Key'], $this->editor['Author Alias']
-                            ),
-
-                            sprintf(
-                                '<a href="customer.php?id=%d">%s</a>', $this->data['Order Customer Key'], $this->data['Order Customer Name']
-                            ), sprintf(
-                                '<a href="order.php?id=%d">%s</a>', $this->data['Order Key'], $this->data['Order Public ID']
-                            )
-                        );
-                    } elseif ($this->editor['Author Alias'] == 'System Cron' and !$this->editor['Author Key']) {
-                        $details = sprintf(
-                            _('A cron job cancel (%s) order %s'), sprintf(
-                            '<a href="customer.php?id=%d">%s</a>', $this->data['Order Customer Key'], $this->data['Order Customer Name']
-                        ), sprintf(
-                                '<a href="order.php?id=%d">%s</a>', $this->data['Order Key'], $this->data['Order Public ID']
-                            )
-                        );
-
-                    } else {
-                        $details = sprintf(
-                            _('Someone cancel (%s) order %s'), sprintf(
-                            '<a href="customer.php?id=%d">%s</a>', $this->data['Order Customer Key'], $this->data['Order Customer Name']
-                        ), sprintf(
-                                '<a href="order.php?id=%d">%s</a>', $this->data['Order Key'], $this->data['Order Public ID']
-                            )
-                        );
-                    }
+                } else {
+                    $details = sprintf(
+                        _('Someone cancel (%s) order %s'), sprintf(
+                        '<a href="customer.php?id=%d">%s</a>', $this->data['Order Customer Key'], $this->data['Order Customer Name']
+                    ), sprintf(
+                            '<a href="order.php?id=%d">%s</a>', $this->data['Order Key'], $this->data['Order Public ID']
+                        )
+                    );
+                }
 
 
-                    if ($this->data['Order Cancel Note'] != '') {
-                        $details .= '<div> Note: '.$this->data['Order Cancel Note'].'</div>';
-                    }
-
-
-            }
-
-            if ($this->editor['Author Alias'] == 'System Cron' and !$this->editor['Author Key']) {
-                $subject     = 'System';
-                $subject_key = 0;
-            } else {
-                $subject     = 'Staff';
-                $subject_key = $this->editor['Author Key'];
-
-            }
-
-            $history_data = array(
-                'Date'              => $this->data['Order Cancelled Date'],
-                'Subject'           => $subject,
-                'Subject Key'       => $subject_key,
-                'Direct Object'     => 'Order',
-                'Direct Object Key' => $this->data['Order Key'],
-                'History Details'   => $details,
-                'History Abstract'  => $note,
-                'Metadata'          => 'Cancelled'
-
-            );
-
-
-            $history_key = $this->add_subject_history($history_data);
-
-
-
-
-
-
-            */
-            $customer         = new Customer($this->data['Order Customer Key']);
-            $customer->editor = $this->editor;
-            //$customer->add_history_order_cancelled($history_key);
-            $customer->update_orders();
-
-            $customer->update(
-                array(
-                    'Customer Account Balance' => round(
-                        $customer->data['Customer Account Balance'] + $current_amount_in_customer_account_payments, 2
-                    )
-                ), 'no_history'
-            );
-
-
-            $store->update_orders();
-
-            $this->update_deals_usage();
-            $cancelled = true;
+                if ($this->data['Order Cancel Note'] != '') {
+                    $details .= '<div> Note: '.$this->data['Order Cancel Note'].'</div>';
+                }
 
 
         }
 
+        if ($this->editor['Author Alias'] == 'System Cron' and !$this->editor['Author Key']) {
+            $subject     = 'System';
+            $subject_key = 0;
+        } else {
+            $subject     = 'Staff';
+            $subject_key = $this->editor['Author Key'];
 
-        return $cancelled;
+        }
+
+        $history_data = array(
+            'Date'              => $this->data['Order Cancelled Date'],
+            'Subject'           => $subject,
+            'Subject Key'       => $subject_key,
+            'Direct Object'     => 'Order',
+            'Direct Object Key' => $this->data['Order Key'],
+            'History Details'   => $details,
+            'History Abstract'  => $note,
+            'Metadata'          => 'Cancelled'
+
+        );
+
+
+        $history_key = $this->add_subject_history($history_data);
+
+
+
+
+
+
+        */
+
+
+        $history_data = array(
+            'History Abstract' => _('Order cancelled'),
+            'History Details'  => '',
+        );
+        $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
+
+
+        $customer         = get_object('Customer', $this->data['Order Customer Key']);
+        $customer->editor = $this->editor;
+        //$customer->add_history_order_cancelled($history_key);
+        $customer->update_orders();
+
+
+        $store->update_orders();
+
+        $this->update_deals_usage();
+
+
+        return true;
 
     }
 
@@ -1514,7 +1678,7 @@ class Order extends DB_Table {
 
 
         if ($value == 'Yes') {
-          //  $this->apply_payment_from_customer_account();
+            //  $this->apply_payment_from_customer_account();
         } else {
 
 
@@ -1527,7 +1691,7 @@ class Order extends DB_Table {
             $date = gmdate('Y-m-d H:i:s');
         }
 
-        if (!$this->data['Order Current Dispatch State'] == 'Dispatched') {
+        if (!$this->data['Order State'] == 'Dispatched') {
             $this->error = true;
             $this->msg   = 'Order is not already dispatched';
 
@@ -1661,657 +1825,6 @@ class Order extends DB_Table {
 
     }
 
-    function cancel_by_customer($note) {
-        $this->cancel($note, false, false, $by_customer = true);
-    }
-
-    function undo_cancel() {
-
-
-        if (!preg_match(
-            '/Cancelled/', $this->data['Order Current Dispatch State']
-        )) {
-            $this->msg   = _('Order is not cancelled');
-            $this->error = true;
-
-            return;
-        }
-
-
-        $state = 'In Process';
-
-        $date                               = gmdate('Y-m-d H:i:s');
-        $this->data['Order Cancelled Date'] = '';
-
-        $this->data['Order Cancel Note'] = '';
-
-        $this->data['Order Current Payment State'] = 'No Applicable';
-
-
-        $this->data['Order Current Dispatch State'] = $state;
-
-        $this->data['Order Current XHTML Dispatch State']              = _(
-            'In Process'
-        );
-        $this->data['Order Current XHTML Payment State']               = '';
-        $this->data['Order XHTML Invoices']                            = '';
-        $this->data['Order XHTML Delivery Notes']                      = '';
-        $this->data['Order Invoiced Balance Total Amount']             = 0;
-        $this->data['Order Invoiced Balance Net Amount']               = 0;
-        $this->data['Order Invoiced Balance Tax Amount']               = 0;
-        $this->data['Order Invoiced Outstanding Balance Total Amount'] = 0;
-        $this->data['Order Invoiced Outstanding Balance Net Amount']   = 0;
-        $this->data['Order Invoiced Outstanding Balance Tax Amount']   = 0;
-        $this->data['Order Balance Net Amount']                        = 0;
-        $this->data['Order Balance Tax Amount']                        = 0;
-        $this->data['Order Balance Total Amount']                      = 0;
-
-        $this->data['Order To Pay Amount'] = round(
-            $this->data['Order Balance Total Amount'] - $this->data['Order Payments Amount'], 2
-        );
-
-        $sql = sprintf(
-            "UPDATE `Order Dimension` SET    `Order Cancelled Date`=%s, `Order Current Payment State`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML Dispatch State`=%s,`Order Current XHTML Payment State`=%s,
-		`Order XHTML Invoices`='',`Order XHTML Delivery Notes`=''
-		,`Order Invoiced Balance Net Amount`=0,`Order Invoiced Balance Tax Amount`=0,`Order Invoiced Balance Total Amount`=0 ,`Order Invoiced Outstanding Balance Net Amount`=0,`Order Invoiced Outstanding Balance Tax Amount`=0,`Order Invoiced Outstanding Balance Total Amount`=0,`Order Invoiced Profit Amount`=0,`Order Cancel Note`=%s
-		,`Order Balance Net Amount`=0,`Order Balance tax Amount`=0,`Order Balance Total Amount`=0,`Order To Pay Amount`=%.2f
-		WHERE `Order Key`=%d"//     ,$no_shipped
-            , prepare_mysql($this->data['Order Cancelled Date']), prepare_mysql($this->data['Order Current Payment State']), prepare_mysql($this->data['Order Current Dispatch State']),
-            prepare_mysql($this->data['Order Current XHTML Dispatch State']), prepare_mysql($this->data['Order Current XHTML Payment State']), prepare_mysql($this->data['Order Cancel Note']),
-            $this->data['Order To Pay Amount'], $this->id
-        );
-
-
-        $this->db->exec($sql);
-
-
-        $sql = sprintf(
-            "UPDATE `Order Transaction Fact` SET `Delivery Note Key`=NULL,  `Delivery Note ID`=NULL,`Invoice Key`=NULL, `Invoice Public ID`=NULL,`Picker Key`=NULL,`Picker Key`=NULL, `Consolidated`='No',`Current Dispatching State`=%s WHERE `Order Key`=%d ",
-            prepare_mysql($state),
-
-            $this->id
-        );
-
-        //print $sql;
-
-        $this->db->exec($sql);
-
-
-        $sql = sprintf(
-            "UPDATE `Order No Product Transaction Fact` SET `State`=%s ,`Consolidated`='No' WHERE `Order Key`=%d ", prepare_mysql($state), $this->id
-        );
-        $this->db->exec($sql);
-
-
-        $sql = sprintf(
-            "DELETE FROM `Order Transaction Deal Bridge` WHERE `Order Key` =%d ", $this->id
-        );
-        $this->db->exec($sql);
-
-
-        $this->update_number_products();
-        $this->update_insurance();
-
-        $this->update_discounts_items();
-        $this->update_totals();
-
-
-        $this->update_shipping(false, false);
-        $this->update_charges(false, false);
-        $this->update_discounts_no_items();
-
-
-        $this->update_deal_bridge();
-
-        $this->update_deals_usage();
-
-        $this->update_totals();
-
-        $this->update_number_products();
-
-        //$this->apply_payment_from_customer_account();
-
-
-        $customer = new Customer($this->data['Order Customer Key']);
-        $customer->update_orders();
-
-        $store = new Store($this->data['Order Store Key']);
-        $store->update_orders();
-
-        $this->update_deals_usage();
-        //$this->cancelled=true;
-
-    }
-
-    function update_number_products() {
-        $this->data['Order Number Products'] = $this->get_number_products();
-        $sql                                 = sprintf(
-            "UPDATE `Order Dimension` SET `Order Number Products`=%d WHERE `Order Key`=%d", $this->data['Order Number Products'], $this->id
-        );
-        $this->db->exec($sql);
-    }
-
-    function get_number_products() {
-        $sql = sprintf(
-            "SELECT count(*) AS num FROM `Order Transaction Fact` WHERE `Order Key`=%d  ", $this->id
-        );
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $number = ($row['num'] == '' ? 0 : $row['num']);
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        return $number;
-    }
-
-    function update_insurance($dn_key = false) {
-        $valid_insurances = $this->get_insurances($dn_key);
-
-        $sql = sprintf(
-            "SELECT `Transaction Type Key`,`Order No Product Transaction Fact Key`  FROM `Order No Product Transaction Fact` WHERE `Order Key`=%d  AND `Transaction Type`='Insurance' ", $this->id
-
-        );
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                if (!array_key_exists($row['Transaction Type Key'], $valid_insurances)) {
-
-                    $sql = sprintf(
-                        "DELETE FROM `Order No Product Transaction Fact` WHERE `Order No Product Transaction Fact Key`=%d ", $row['Order No Product Transaction Fact Key']
-                    );
-                    $this->db->exec($sql);
-                }
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        $this->update_totals();
-        $this->apply_payment_from_customer_account();
-
-    }
-
-    function get_insurances($dn_key = false) {
-        $insurances = array();
-        if ($this->data['Order Number Items'] == 0) {
-
-            return $insurances;
-        }
-
-
-        $sql = sprintf(
-            "SELECT * FROM `Insurance Dimension` WHERE `Insurance Trigger`='Order' AND (`Insurance Trigger Key`=%d  OR `Insurance Trigger Key` IS NULL) AND `Insurance Store Key`=%d", $this->id,
-            $this->data['Order Store Key']
-        );
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-                $apply_insurance = false;
-
-                $order_amount = $this->data[$row['Insurance Terms Type']];
-
-
-                if ($dn_key) {
-                    switch ($row['Insurance Terms Type']) {
-
-                        case 'Order Items Net Amount':
-
-                            $sql = sprintf(
-                                "SELECT sum(`Order Transaction Net Amount`*(`Delivery Note Quantity`/`Order Quantity`)) AS amount FROM `Order Transaction Fact` WHERE `Order Key`=%d AND `Delivery Note Key`=%d AND `Order Quantity`!=0",
-                                $this->id, $dn_key
-                            );
-                            $res = mysql_query($sql);
-                            if ($row2 = mysql_fetch_assoc($res)) {
-                                $order_amount = $row2['amount'];
-                            } else {
-                                $order_amount = 0;
-                            }
-                            break;
-
-
-                        case 'Order Items Gross Amount':
-                        default:
-                            $sql = sprintf(
-                                "SELECT sum(`Order Transaction Gross Amount`*(`Delivery Note Quantity`/`Order Quantity`)) AS amount FROM `Order Transaction Fact` WHERE `Order Key`=%d AND `Delivery Note Key`=%d AND `Order Quantity`!=0",
-                                $this->id, $dn_key
-                            );
-                            $res = mysql_query($sql);
-                            if ($row2 = mysql_fetch_assoc($res)) {
-                                $order_amount = $row2['amount'];
-                            } else {
-                                $order_amount = 0;
-                            }
-                            break;
-                    }
-                }
-
-
-                $terms_components = preg_split(
-                    '/;/', $row['Insurance Terms Metadata']
-                );
-                $operator         = $terms_components[0];
-                $amount           = $terms_components[1];
-
-                //print_r($order_amount);
-
-
-                switch ($operator) {
-                    case('<'):
-                        if ($order_amount < $amount) {
-                            $apply_insurance = true;
-                        }
-                        break;
-                    case('>'):
-                        if ($order_amount > $amount) {
-                            $apply_insurance = true;
-                        }
-                        break;
-                    case('<='):
-                        if ($order_amount <= $amount) {
-                            $apply_insurance = true;
-                        }
-                        break;
-                    case('>='):
-                        if ($order_amount >= $amount) {
-                            $apply_insurance = true;
-                        }
-                        break;
-                }
-
-
-                if ($row['Insurance Tax Category Code'] == '') {
-                    $tax_category_code = $this->data['Order Tax Code'];
-                    $tax_rate          = $this->data['Order Tax Rate'];
-                } else {
-                    $tax_category      = new TaxCategory(
-                        $row['Insurance Tax Category Code']
-                    );
-                    $tax_category_code = $tax_category->data['Tax Category Code'];
-                    $tax_rate          = $tax_category->data['Tax Category Rate'];
-
-                }
-
-
-                if ($row['Insurance Type'] == 'Amount') {
-                    $charge_net_amount = $row['Insurance Metadata'];
-
-
-                    $charge_tax_amount = $row['Insurance Metadata'] * $tax_rate;
-                } else {
-
-                    exit("still to do");
-                }
-
-
-                $sql  = sprintf(
-                    "SELECT `Order No Product Transaction Fact Key`  FROM `Order No Product Transaction Fact` WHERE `Order Key`=%d  AND `Transaction Type`='Insurance' AND `Transaction Type Key`=%d ",
-                    $this->id, $row['Insurance Key']
-                );
-                $res2 = mysql_query($sql);
-                if ($row2 = mysql_fetch_assoc($res2)) {
-                    $onptf_key = $row2['Order No Product Transaction Fact Key'];
-                } else {
-                    $onptf_key = 0;
-                }
-
-                if ($apply_insurance) {
-                    $insurances[$row['Insurance Key']] = array(
-                        'Insurance Net Amount'                  => $charge_net_amount,
-                        'Insurance Tax Amount'                  => $charge_tax_amount,
-                        'Insurance Formatted Net Amount'        => money(
-                            $this->exchange * $charge_net_amount, $this->currency_code
-                        ),
-                        'Insurance Formatted Tax Amount'        => money(
-                            $this->exchange * $charge_tax_amount, $this->currency_code
-                        ),
-                        'Insurance Tax Code'                    => $tax_category_code,
-                        'Insurance Key'                         => $row['Insurance Key'],
-                        'Insurance Description'                 => $row['Insurance Name'],
-                        'Order No Product Transaction Fact Key' => $onptf_key
-                    );
-                }
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        return $insurances;
-
-    }
-
-    function activate($date = false) {
-
-
-        if (!preg_match(
-            '/Suspended/', $this->data['Order Current Dispatch State']
-        )) {
-            $this->msg = _('Order is not suspended');
-
-        } else {
-
-            if (!$date) {
-                $date = gmdate('Y-m-d H:i:s');
-            }
-            $this->data['Order Suspended Date'] = $date;
-
-            $this->data['Order Suspend Note'] = $note;
-
-            $this->data['Order Current Payment State']                     = 'No Applicable';
-            $this->data['Order Current Dispatch State']                    = 'Suspended';
-            $this->data['Order Current XHTML Dispatch State']              = _(
-                'Suspended'
-            );
-            $this->data['Order Current XHTML Payment State']               = _(
-                'Order Suspended'
-            );
-            $this->data['Order XHTML Invoices']                            = '';
-            $this->data['Order XHTML Delivery Notes']                      = '';
-            $this->data['Order Invoiced Balance Total Amount']             = 0;
-            $this->data['Order Invoiced Balance Net Amount']               = 0;
-            $this->data['Order Invoiced Balance Tax Amount']               = 0;
-            $this->data['Order Invoiced Outstanding Balance Total Amount'] = 0;
-            $this->data['Order Invoiced Outstanding Balance Net Amount']   = 0;
-            $this->data['Order Invoiced Outstanding Balance Tax Amount']   = 0;
-
-
-            $sql = sprintf(
-                "UPDATE `Order Dimension` SET `Order Suspended Date`=%s, `Order Current Payment State`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML Dispatch State`=%s,`Order Current XHTML Payment State`=%s,`Order XHTML Invoices`='',`Order XHTML Delivery Notes`='' ,`Order Invoiced Balance Net Amount`=0,`Order Invoiced Balance Tax Amount`=0,`Order Invoiced Balance Total Amount`=0 ,`Order Invoiced Outstanding Balance Net Amount`=0,`Order Invoiced Outstanding Balance Tax Amount`=0,`Order Invoiced Outstanding Balance Total Amount`=0,`Order Invoiced Profit Amount`=0,`Order Suspend Note`=%s  WHERE `Order Key`=%d",
-                prepare_mysql($this->data['Order Suspended Date']), prepare_mysql($this->data['Order Current Payment State']), prepare_mysql($this->data['Order Current Dispatch State']),
-                prepare_mysql(
-                    $this->data['Order Current XHTML Dispatch State']
-                ), prepare_mysql($this->data['Order Current XHTML Payment State']), prepare_mysql($this->data['Order Suspend Note'])
-
-                , $this->id
-            );
-            $this->db->exec($sql);
-
-            $sql = sprintf(
-                "UPDATE `Order Transaction Fact` SET `Current Dispatching State`='Suspended',`Current Payment State`='No Applicable' WHERE `Order Key`=%d ", $this->id
-            );
-            $this->db->exec($sql);
-            $sql = sprintf(
-                "UPDATE `Order No Product Transaction Fact` SET `State`='Suspended'  WHERE `Order Key`=%d ", $this->id
-            );
-            $this->db->exec($sql);
-
-            foreach ($this->get_delivery_notes_objects() as $dn) {
-                $dn->suspend($note, $date);
-            }
-
-            $customer         = new Customer($this->data['Order Customer Key']);
-            $customer->editor = $this->editor;
-            $customer->add_history_order_activate($this);//<--- Not done yet
-            $this->suspended = true;
-
-            $history_data = array(
-                'History Abstract' => _('Order activated'),
-                'History Details'  => '',
-            );
-            $this->add_subject_history($history_data);
-
-        }
-
-
-    }
-
-    function suspend($note = '', $date = false) {
-
-        $this->suspended = false;
-        if (preg_match(
-            '/Dispatched/', $this->data['Order Current Dispatch State']
-        )) {
-            $this->msg = _(
-                'Order can not be suspended, because has already been dispatched'
-            );
-
-        } elseif (preg_match(
-            '/Suspended/', $this->data['Order Current Dispatch State']
-        )) {
-            $this->msg = _('Order is cancelled');
-
-        } elseif (preg_match(
-            '/Suspended/', $this->data['Order Current Dispatch State']
-        )) {
-            $this->msg = _('Order is already suspended');
-
-        } else {
-
-            if (!$date) {
-                $date = gmdate('Y-m-d H:i:s');
-            }
-            $this->data['Order Suspended Date'] = $date;
-
-            $this->data['Order Suspend Note'] = $note;
-
-            $this->data['Order Current Payment State']                     = 'No Applicable';
-            $this->data['Order Current Dispatch State']                    = 'Suspended';
-            $this->data['Order Current XHTML Dispatch State']              = _(
-                'Suspended'
-            );
-            $this->data['Order Current XHTML Payment State']               = _(
-                'Order Suspended'
-            );
-            $this->data['Order XHTML Invoices']                            = '';
-            $this->data['Order XHTML Delivery Notes']                      = '';
-            $this->data['Order Invoiced Balance Total Amount']             = 0;
-            $this->data['Order Invoiced Balance Net Amount']               = 0;
-            $this->data['Order Invoiced Balance Tax Amount']               = 0;
-            $this->data['Order Invoiced Outstanding Balance Total Amount'] = 0;
-            $this->data['Order Invoiced Outstanding Balance Net Amount']   = 0;
-            $this->data['Order Invoiced Outstanding Balance Tax Amount']   = 0;
-
-
-            $sql = sprintf(
-                "UPDATE `Order Dimension` SET `Order Suspended Date`=%s, `Order Current Payment State`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML Dispatch State`=%s,`Order Current XHTML Payment State`=%s,`Order XHTML Invoices`='',`Order XHTML Delivery Notes`='' ,`Order Invoiced Balance Net Amount`=0,`Order Invoiced Balance Tax Amount`=0,`Order Invoiced Balance Total Amount`=0 ,`Order Invoiced Outstanding Balance Net Amount`=0,`Order Invoiced Outstanding Balance Tax Amount`=0,`Order Invoiced Outstanding Balance Total Amount`=0,`Order Invoiced Profit Amount`=0,`Order Suspend Note`=%s  WHERE `Order Key`=%d",
-                prepare_mysql($this->data['Order Suspended Date']), prepare_mysql($this->data['Order Current Payment State']), prepare_mysql($this->data['Order Current Dispatch State']),
-                prepare_mysql(
-                    $this->data['Order Current XHTML Dispatch State']
-                ), prepare_mysql($this->data['Order Current XHTML Payment State']), prepare_mysql($this->data['Order Suspend Note'])
-
-                , $this->id
-            );
-            $this->db->exec($sql);
-
-            $sql = sprintf(
-                "UPDATE `Order Transaction Fact` SET `Current Dispatching State`='Suspended',`Current Payment State`='No Applicable' WHERE `Order Key`=%d ", $this->id
-            );
-            $this->db->exec($sql);
-            $sql = sprintf(
-                "UPDATE `Order No Product Transaction Fact` SET `State`='Suspended'  WHERE `Order Key`=%d ", $this->id
-            );
-            $this->db->exec($sql);
-
-            foreach ($this->get_delivery_notes_objects() as $dn) {
-                $dn->suspend($note, $date);
-            }
-
-            $customer         = new Customer($this->data['Order Customer Key']);
-            $customer->editor = $this->editor;
-            $customer->add_history_order_suspended($this);
-            $store = new Store($this->data['Order Store Key']);
-            $store->update_orders();
-            $this->suspended = true;
-            $history_data    = array(
-                'History Abstract' => _('Order suspended'),
-                'History Details'  => '',
-            );
-            $this->add_subject_history($history_data);
-
-        }
-
-
-    }
-
-    function create_invoice($date = false) {
-        // intended to be used in services
-
-        if (!$date) {
-            $date = gmdate("Y-m-d H:i:s");
-        }
-
-        $tax_code   = 'UNK';
-        $orders_ids = '';
-
-        $tax_code = $this->data['Order Tax Code'];
-
-
-        $delivery_note_keys = '';
-        foreach ($this->get_delivery_notes_ids() as $dn_key) {
-
-            $delivery_note_keys = $dn_key.',';
-
-        }
-        $delivery_note_keys = preg_replace('/\,$/', '', $delivery_note_keys);
-
-
-        $store = new Store($this->data['Order Store Key']);
-        if ($store->data['Store Next Invoice Public ID Method'] == 'Order ID') {
-            $invoice_public_id = $this->data['Order Public ID'];
-        } elseif ($store->data['Store Next Invoice Public ID Method'] == 'Invoice Public ID') {
-
-            $sql = sprintf(
-                "UPDATE `Store Dimension` SET `Store Invoice Last Invoice Public ID` = LAST_INSERT_ID(`Store Invoice Last Invoice Public ID` + 1) WHERE `Store Key`=%d", $this->data['Order Store Key']
-            );
-            $this->db->exec($sql);
-            $public_id = $this->db->lastInsertId();
-
-            $invoice_public_id = sprintf(
-                $store->data['Store Invoice Public ID Format'], $public_id
-            );
-
-        } else {
-
-            $sql = sprintf(
-                "UPDATE `Account Dimension` SET `Account Invoice Last Invoice Public ID` = LAST_INSERT_ID(`Account Invoice Last Invoice Public ID` + 1) WHERE `Account Key`=1"
-            );
-            $this->db->exec($sql);
-            $public_id = $this->db->lastInsertId();
-
-            include_once 'class.Account.php';
-            $account           = new Account();
-            $invoice_public_id = sprintf(
-                $account->data['Account Invoice Public ID Format'], $public_id
-            );
-        }
-
-
-        $data_invoice = array(
-            'Invoice Date'                          => $date,
-            'Invoice Type'                          => 'Invoice',
-            'Invoice Public ID'                     => $invoice_public_id,
-            'Delivery Note Keys'                    => $delivery_note_keys,
-            'Order Key'                             => $this->id,
-            'Invoice Store Key'                     => $this->data['Order Store Key'],
-            'Invoice Customer Key'                  => $this->data['Order Customer Key'],
-            'Invoice Tax Code'                      => $tax_code,
-            'Invoice Tax Shipping Code'             => $tax_code,
-            'Invoice Tax Charges Code'              => $tax_code,
-            'Invoice Sales Representative Keys'     => $this->get_sales_representative_keys(),
-            'Invoice Metadata'                      => $this->data['Order Original Metadata'],
-            'Invoice Billing To Key'                => $this->data['Order Billing To Key To Bill'],
-            'Invoice Tax Number'                    => $this->data['Order Tax Number'],
-            'Invoice Tax Number Valid'              => $this->data['Order Tax Number Valid'],
-            'Invoice Tax Number Validation Date'    => $this->data['Order Tax Number Validation Date'],
-            'Invoice Tax Number Associated Name'    => $this->data['Order Tax Number Associated Name'],
-            'Invoice Tax Number Associated Address' => $this->data['Order Tax Number Associated Address'],
-            'Invoice Net Amount Off'                => $this->data['Order Deal Amount Off']
-
-
-        );
-
-
-        $invoice = new Invoice ('create', $data_invoice);
-
-
-        $this->update_totals();
-
-
-        return $invoice;
-    }
-
-    function get_sales_representative_keys() {
-        $sales_representative_keys = array();
-        $sql                       = sprintf(
-            "SELECT `Staff Key` FROM `Order Sales Representative Bridge` WHERE `Order Key`=%s", $this->id
-        );
-        $result = mysql_query($sql) or die('aa0 Query failed: '.mysql_error());
-        while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $sales_representative_keys[] = $row['Staff Key'];
-        }
-
-        return $sales_representative_keys;
-    }
-
-    function no_payment_applicable() {
-
-
-        $this->data['Order Current Payment State']  = 'No Applicable';
-        $this->data['Order Current Dispatch State'] = 'Dispatched';
-
-        $dn_txt = _('Dispatched');
-        if ($this->data['Order Type'] == 'Order') {
-            $dn_txt = _("No value order, Dispatched");
-        }
-
-
-        $sql = sprintf(
-            "UPDATE `Order Dimension` SET `Order Current XHTML Payment State`=%s WHERE `Order Key`=%d", prepare_mysql($dn_txt), $this->id
-        );
-        $this->db->exec($sql);
-
-
-        $sql = sprintf(
-            "UPDATE `Order Dimension` SET `Order Current Payment State`=%s ,`Order Current Dispatch State`=%s WHERE `Order Key`=%d", prepare_mysql($this->data['Order Current Payment State']),
-            prepare_mysql($this->data['Order Current Dispatch State']), $this->id
-        );
-        $this->db->exec($sql);
-
-        $sql = sprintf(
-            "UPDATE `Order Transaction Fact` SET `Consolidated`='Yes',`Current Payment State`=%s ,`Current Dispatching State`=%s WHERE `Order Key`=%d",
-            prepare_mysql($this->data['Order Current Payment State']), prepare_mysql($this->data['Order Current Dispatch State']), $this->id
-        );
-        $this->db->exec($sql);
-
-    }
-
-    function formatted_net() {
-        return money(
-            $this->data['Order Total Net Amount'] - $this->data['Order Out of Stock Net Amount'] - $this->data['Order No Authorized Net Amount'] - $this->data['Order Not Found Net Amount']
-            - $this->data['Order Not Due Other Net Amount'], $this->data['Order Currency']
-        );
-    }
-
-    function formatted_tax() {
-        return money(
-            $this->data['Order Total Tax Amount'] - $this->data['Order Out of Stock Tax Amount'] - $this->data['Order No Authorized Tax Amount'] - $this->data['Order Not Found Tax Amount']
-            - $this->data['Order Not Due Other Tax Amount'], $this->data['Order Currency']
-        );
-
-    }
-
-    function formatted_total() {
-        return money(
-            $this->data['Order Total Net Amount'] + $this->data['Order Total Tax Amount'] - $this->data['Order Out of Stock Net Amount'] - $this->data['Order No Authorized Net Amount']
-            - $this->data['Order Not Found Net Amount'] - $this->data['Order Not Due Other Net Amount'] - $this->data['Order Out of Stock Tax Amount'] - $this->data['Order No Authorized Tax Amount']
-            - $this->data['Order Not Found Tax Amount'] - $this->data['Order Not Due Other Tax Amount'], $this->data['Order Currency']
-        );
-
-    }
-
     function get_invoices($scope = 'keys') {
 
         if ($scope == 'objects') {
@@ -2349,27 +1862,6 @@ class Order extends DB_Table {
         return $invoices;
 
     }
-
-
-    function get_invoices_to_pay_abs_amount() {
-        $invoices_to_pay_abs_amount = 0;
-        $sql                        = sprintf(
-            "SELECT sum(abs(`Invoice Outstanding Total Amount`)) AS amount FROM `Order Invoice Bridge` B LEFT JOIN `Invoice Dimension` I ON (I.`Invoice Key`=B.`Invoice Key`) WHERE `Order Key`=%d",
-            $this->id
-        );
-        $res                        = mysql_query($sql);
-        while ($row = mysql_fetch_array($res, MYSQL_ASSOC)) {
-            $invoices_to_pay_abs_amount = $row['amount'];
-        }
-
-        return $invoices_to_pay_abs_amount;
-    }
-
-    function get_number_invoices() {
-
-        return count($this->get_invoices_ids());
-    }
-
 
     function update_product_sales() {
         return;
@@ -2413,85 +1905,6 @@ class Order extends DB_Table {
         foreach ($store as $key => $val) {
             $store = new Store($key);
             $store->update_sales();
-        }
-
-    }
-
-    function accept() {
-        $this->data['Order Invoiced Balance Net Amount']   = $this->data['Order Items Net Amount'];
-        $this->data['Order Invoiced Balance Tax Amount']   = $this->data['Order Items Tax Amount'];
-        $this->data['Order Invoiced Balance Total Amount'] = $this->data['Order Items Total Amount'];
-
-    }
-
-    function update_invoices($args = '') {
-        global $myconf;
-        $sql = sprintf(
-            "SELECT `Invoice Key` FROM `Order Transaction Fact` WHERE `Order Key`=%d GROUP BY `Invoice Key`", $this->id
-        );
-
-        $res            = mysql_query($sql);
-        $this->invoices = array();
-        while ($row = mysql_fetch_array($res, MYSQL_ASSOC)) {
-            if ($row['Invoice Key']) {
-                $invoice                             = new Invoice(
-                    $row['Invoice Key']
-                );
-                $this->invoices[$row['Invoice Key']] = $invoice;
-            }
-
-        }
-        //update no normal fields
-        $this->data['Order XHTML Invoices'] = '';
-        foreach ($this->invoices as $invoice) {
-            $this->data['Order XHTML Invoices'] .= sprintf(
-                '<a href="invoice.php?id=%d">%s</a>, ', $invoice->data['Invoice Key'], $invoice->data['Invoice Public ID']
-            );
-
-        }
-        $this->data['Order XHTML Invoices'] = _trim(
-            preg_replace('/\, $/', '', $this->data['Order XHTML Invoices'])
-        );
-        //$where_dns=preg_replace('/\,$/',')',$where_dns);
-
-        if (!preg_match('/no save/i', $args)) {
-            $sql = sprintf(
-                "UPDATE `Order Dimension`  SET `Order XHTML Invoices`=%s WHERE `Order Key`=%d", prepare_mysql($this->data['Order XHTML Invoices']), $this->id
-            );
-
-            $this->db->exec($sql);
-
-        }
-
-    }
-
-    function update_estimated_weight() {
-
-        $sql = sprintf(
-            "SELECT `Order Transaction Fact Key`, `Product Package Weight`, P.`Product ID`,`Order Bonus Quantity`,`Order Quantity` FROM `Order Transaction Fact` OTF LEFT JOIN `Product Dimension` P ON (OTF.`Product ID`=P.`Product ID`)  WHERE `Order Key`=%d ",
-            $this->id
-        );
-
-        $res = mysql_query($sql);
-        while ($row = mysql_fetch_assoc($res)) {
-
-            if ($row['Product ID']) {
-                $estimated_weight = $row['Product Package Weight'] * ($row['Order Bonus Quantity'] + $row['Order Quantity']);
-                $sql              = sprintf(
-                    "UPDATE `Order Transaction Fact` SET `Estimated Weight`=%f WHERE `Order Transaction Fact Key`=%d", $estimated_weight, $row['Order Transaction Fact Key']
-                );
-                $this->db->exec($sql);
-
-            }
-
-        }
-
-
-        $this->update_totals();
-
-
-        foreach ($this->get_delivery_notes_objects() as $dn) {
-            $dn->update_item_totals();
         }
 
     }
@@ -2574,7 +1987,7 @@ class Order extends DB_Table {
 
         $this->data['Order Current Post Dispatch State'] = $dispatch_state;
 
-        if ($old_dispatch_state != $this->data['Order Current Dispatch State']) {
+        if ($old_dispatch_state != $this->data['Order Current Post Dispatch State']) {
 
             $sql = sprintf(
                 "UPDATE `Order Dimension` SET `Order Current Post Dispatch State`=%s  WHERE `Order Key`=%d", prepare_mysql($this->data['Order Current Post Dispatch State'])
@@ -2618,13 +2031,12 @@ class Order extends DB_Table {
     }
 
     function update_customer_history() {
-        //print $this->data['Order Current Dispatch State']."\n";
         $customer = new Customer ($this->data['Order Customer Key']);
-        switch ($this->data['Order Current Dispatch State']) {
+        switch ($this->data['Order State']) {
 
-            case ('Picking & Packing'):
-            case('Ready to Pick'):
-            case('Ready to Ship'):
+            case ('Approved'):
+            case('InWarehouse'):
+            case('PackedDone'):
             case('Dispatched'):
                 $customer->update_history_order_in_warehouse($this);
                 break;
@@ -2657,53 +2069,6 @@ class Order extends DB_Table {
 
     }
 
-    function calculate_state($invoice_extra_info = '') {
-
-        $payment_state  = '';
-        $dispatch_state = '';
-        switch ($this->data['Order Current Dispatch State']) {
-
-            case 'In Process':
-                $dispatch_state = _('In Process');
-                break;
-            case 'Submitted by Customer':
-                $dispatch_state = _('Submitted by Customer');
-                break;
-            case 'Ready to Pick':
-                $dispatch_state = _('Ready to Pick');
-                break;
-            case 'Picking & Packing':
-                $dispatch_state = _('Picking & Packing');
-                break;
-            case 'Ready to Ship':
-                $dispatch_state = _('Ready to Ship');
-                break;
-            case 'Dispatched':
-                $dispatch_state = _('Dispatched');
-                break;
-            case 'Packing':
-                $dispatch_state = _('Packing');
-                break;
-            case 'Packed':
-                $dispatch_state = _('Packed');
-                break;
-            case 'Cancelled':
-                $dispatch_state = _('Cancelled');
-                break;
-            case 'Suspended':
-                $dispatch_state = _('Suspended');
-                break;
-            default:
-                $dispatch_state = $this->data['Order Current Dispatch State'];
-        }
-
-        $state = $dispatch_state;
-
-
-        return $state;
-    }
-
-
     function has_products_without_parts() {
         $has_products_without_parts = false;
 
@@ -2721,131 +2086,6 @@ class Order extends DB_Table {
 
         return $has_products_without_parts;
     }
-
-    function update_charges_amount($charge_data) {
-
-        //print_r($charge_data);
-
-        if ($charge_data['Charge Net Amount'] != $this->data['Order Charges Net Amount']) {
-
-            $this->data['Order Charges Net Amount'] = $charge_data['Charge Net Amount'];
-
-            $sql = sprintf(
-                'DELETE FROM `Order No Product Transaction Fact` WHERE `Order Key`=%d AND `Transaction Type`="Charges" AND `Consolidated`="No"', $this->id
-            );
-            mysql_query($sql);
-            // print "$sql\n";
-
-            $total_charges_net = $charge_data['Charge Net Amount'];
-            $total_charges_tax = $charge_data['Charge Tax Amount'];
-            if ($charge_data['Charge Tax Amount'] != 0 or $charge_data['Charge Net Amount'] != 0) {
-                $sql = sprintf(
-                    "INSERT INTO `Order No Product Transaction Fact` (`Order Key`,`Order Date`,`Transaction Type`,`Transaction Type Key`,`Transaction Description`,`Transaction Gross Amount`,`Transaction Net Amount`,`Tax Category Code`,`Transaction Tax Amount`,
-					`Currency Code`,`Currency Exchange`,`Metadata`)  VALUES (%d,%s,%s,%d,%s,%.2f,%.2f,%s,%.2f,%s,%.2f,%s)  ", $this->id, prepare_mysql($this->data['Order Date']),
-                    prepare_mysql('Charges'), $charge_data['Charge Key'], prepare_mysql($charge_data['Charge Description']), $charge_data['Charge Net Amount'], $charge_data['Charge Net Amount'],
-                    prepare_mysql($this->data['Order Tax Code']), $charge_data['Charge Tax Amount'],
-
-                    prepare_mysql($this->data['Order Currency']), $this->data['Order Currency Exchange'], prepare_mysql($this->data['Order Original Metadata'])
-                );
-
-                // print ("$sql\n");
-                mysql_query($sql);
-            }
-
-
-            $this->data['Order Charges Net Amount'] = $total_charges_net;
-            $this->data['Order Charges Tax Amount'] = $total_charges_tax;
-
-
-            $sql = sprintf(
-                "UPDATE `Order Dimension` SET `Order Charges Net Amount`=%.2f ,`Order Charges Tax Amount`=%.2f WHERE `Order Key`=%d", $this->data['Order Charges Net Amount'],
-                $this->data['Order Charges Tax Amount'], $this->id
-            );
-            $this->db->exec($sql);
-            //print "*a $sql\n";
-
-            // exit;
-
-            $this->updated   = true;
-            $this->new_value = $this->data['Order Charges Net Amount'];
-
-            $this->update_totals();
-          //  $this->apply_payment_from_customer_account();
-
-
-        }
-
-
-    }
-
-    function get_next_line_number() {
-
-        $sql = sprintf(
-            "SELECT count(*) AS num_lines FROM `Order Transaction Fact` WHERE `Order Key`=%d ", $this->id
-        );
-        $res = mysql_query($sql);
-
-        $line_number = 1;
-        if ($row = mysql_fetch_array($res)) {
-            $line_number += $row['num_lines'];
-        }
-
-        return $line_number;
-
-
-    }
-
-    function remove_insurance($onptf_key) {
-
-        $sql = sprintf(
-            "DELETE FROM `Order No Product Transaction Fact` WHERE `Order No Product Transaction Fact Key`=%d AND `Order Key`=%d", $onptf_key, $this->id
-        );
-        mysql_query($sql);
-
-        $this->update_totals();
-       // $this->apply_payment_from_customer_account();
-    }
-
-    function add_insurance($insurance_key, $dn_key = false) {
-
-        $valid_insurances = $this->get_insurances($dn_key);
-
-        if (array_key_exists($insurance_key, $valid_insurances)) {
-
-            if (!$valid_insurances[$insurance_key]['Order No Product Transaction Fact Key']) {
-
-
-                $sql = sprintf(
-                    "INSERT INTO `Order No Product Transaction Fact` (`Order Key`,`Order Date`,`Transaction Type`,`Transaction Type Key`,`Transaction Description`
-					,`Transaction Gross Amount`,`Transaction Net Amount`,`Tax Category Code`,`Transaction Tax Amount`,`Currency Code`,`Currency Exchange`,`Metadata`,`Delivery Note Key`)
-				VALUES (%d,%s,%s,%d,%s,%.2f,%.2f,%s,%.2f,%s,%.2f,%s,%s)  ", $this->id, prepare_mysql(gmdate("Y-m-d H:i:s")), prepare_mysql('Insurance'), $insurance_key, prepare_mysql(
-                    $valid_insurances[$insurance_key]['Insurance Description']
-                ), $valid_insurances[$insurance_key]['Insurance Net Amount'], $valid_insurances[$insurance_key]['Insurance Net Amount'], prepare_mysql(
-                        $valid_insurances[$insurance_key]['Insurance Tax Code']
-                    ), $valid_insurances[$insurance_key]['Insurance Tax Amount'],
-
-                    prepare_mysql($this->data['Order Currency']), $this->data['Order Currency Exchange'], prepare_mysql($this->data['Order Original Metadata']), prepare_mysql($dn_key)
-
-                );
-                mysql_query($sql);
-
-                $onptf_key = mysql_insert_id();
-
-                $this->update_totals();
-
-             //   $this->apply_payment_from_customer_account();
-            } else {
-                $onptf_key = $valid_insurances[$insurance_key]['Order No Product Transaction Fact Key'];
-            }
-
-        } else {
-            $onptf_key = 0;
-        }
-
-        return $onptf_key;
-    }
-
-
 
     function get_number_post_order_transactions() {
 
@@ -3393,13 +2633,6 @@ VALUES (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
         return $formatted_tax_info;
     }
 
-    function get_formatted_dispatch_state() {
-        return get_order_formatted_dispatch_state(
-            $this->data['Order Current Dispatch State'], $this->id
-        );
-
-    }
-
     function get_formatted_payment_state() {
         return get_order_formatted_payment_state($this->data);
 
@@ -3434,67 +2667,6 @@ VALUES (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 
 
     }
-
-    function get_no_product_deal_info($type) {
-        $deal_info = '';
-        $sql       = sprintf(
-            "SELECT `Deal Info` FROM `Order No Product Transaction Deal Bridge` B LEFT JOIN `Order No Product Transaction Fact` OTF ON (OTF.`Order No Product Transaction Fact Key`=B.`Order No Product Transaction Fact Key`) WHERE B.`Order Key`=%d AND `Transaction Type`=%s",
-            $this->id, prepare_mysql($type)
-        );
-
-        $res = mysql_query($sql);
-
-        if ($row = mysql_fetch_assoc($res)) {
-            $deal_info = $row['Deal Info'];
-        }
-
-        return $deal_info;
-    }
-
-    function get_vouchers_info() {
-        $vouchers_info = array();
-        $sql           = sprintf(
-            'SELECT V.`Voucher Key`,`Voucher Code`,D.`Deal Key`,`Deal Name`,`Deal Description` FROM `Voucher Order Bridge` B LEFT JOIN `Deal Dimension` D ON (B.`Deal Key`=D.`Deal Key`) LEFT JOIN `Voucher Dimension` V ON (B.`Voucher Key`=V.`Voucher Key`) WHERE `Order Key`=%d',
-            $this->id
-        );
-        $res           = mysql_query($sql);
-        while ($row = mysql_fetch_assoc($res)) {
-            $vouchers_info[] = array(
-                'key'              => $row['Voucher Key'],
-                'code'             => $row['Voucher Code'],
-                //   'state'=>$row['State'],
-                'deal_key'         => $row['Deal Key'],
-                'deal_name'        => $row['Deal Name'],
-                'deal_description' => $row['Deal Description']
-
-            );
-        }
-
-        return $vouchers_info;
-
-    }
-
-    function get_deals_info() {
-        $deals_info = array();
-        $sql        = sprintf(
-            'SELECT B.`Deal Key`,`Deal Name`,`Deal Description`,`Deal Term Allowances` FROM `Order Deal Bridge` B LEFT JOIN `Deal Dimension` D ON (B.`Deal Key`=D.`Deal Key`) WHERE `Order Key`=%d  AND `Deal Trigger` IN ("Order","Customer") AND `Deal Terms Type`!="Voucher" GROUP BY B.`Deal Key`',
-            $this->id
-        );
-
-        $res = mysql_query($sql);
-        while ($row = mysql_fetch_assoc($res)) {
-            $deals_info[] = array(
-                'key'              => $row['Deal Key'],
-                'name'             => $row['Deal Name'],
-                'description'      => $row['Deal Description'],
-                'terms_allowances' => $row['Deal Term Allowances'],
-            );
-        }
-
-        return $deals_info;
-
-    }
-
 
     function get_last_basket_page() {
         $page_key = 0;
@@ -3740,15 +2912,225 @@ VALUES (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 
             $this->update_number_products();
 
-          //  $this->apply_payment_from_customer_account();
+            //  $this->apply_payment_from_customer_account();
         }
 
 
     }
 
+    function update_number_products() {
+        $this->data['Order Number Products'] = $this->get_number_products();
+        $sql                                 = sprintf(
+            "UPDATE `Order Dimension` SET `Order Number Products`=%d WHERE `Order Key`=%d", $this->data['Order Number Products'], $this->id
+        );
+        $this->db->exec($sql);
+    }
+
+    function get_number_products() {
+        $sql = sprintf(
+            "SELECT count(*) AS num FROM `Order Transaction Fact` WHERE `Order Key`=%d  ", $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $number = ($row['num'] == '' ? 0 : $row['num']);
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        return $number;
+    }
+
+    function update_insurance($dn_key = false) {
+        $valid_insurances = $this->get_insurances($dn_key);
+
+        $sql = sprintf(
+            "SELECT `Transaction Type Key`,`Order No Product Transaction Fact Key`  FROM `Order No Product Transaction Fact` WHERE `Order Key`=%d  AND `Transaction Type`='Insurance' ", $this->id
+
+        );
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                if (!array_key_exists($row['Transaction Type Key'], $valid_insurances)) {
+
+                    $sql = sprintf(
+                        "DELETE FROM `Order No Product Transaction Fact` WHERE `Order No Product Transaction Fact Key`=%d ", $row['Order No Product Transaction Fact Key']
+                    );
+                    $this->db->exec($sql);
+                }
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        $this->update_totals();
+        $this->apply_payment_from_customer_account();
+
+    }
+
+    function get_insurances($dn_key = false) {
+        $insurances = array();
+        if ($this->data['Order Number Items'] == 0) {
+
+            return $insurances;
+        }
+
+
+        $sql = sprintf(
+            "SELECT * FROM `Insurance Dimension` WHERE `Insurance Trigger`='Order' AND (`Insurance Trigger Key`=%d  OR `Insurance Trigger Key` IS NULL) AND `Insurance Store Key`=%d", $this->id,
+            $this->data['Order Store Key']
+        );
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+                $apply_insurance = false;
+
+                $order_amount = $this->data[$row['Insurance Terms Type']];
+
+
+                if ($dn_key) {
+                    switch ($row['Insurance Terms Type']) {
+
+                        case 'Order Items Net Amount':
+
+                            $sql = sprintf(
+                                "SELECT sum(`Order Transaction Net Amount`*(`Delivery Note Quantity`/`Order Quantity`)) AS amount FROM `Order Transaction Fact` WHERE `Order Key`=%d AND `Delivery Note Key`=%d AND `Order Quantity`!=0",
+                                $this->id, $dn_key
+                            );
+                            $res = mysql_query($sql);
+                            if ($row2 = mysql_fetch_assoc($res)) {
+                                $order_amount = $row2['amount'];
+                            } else {
+                                $order_amount = 0;
+                            }
+                            break;
+
+
+                        case 'Order Items Gross Amount':
+                        default:
+                            $sql = sprintf(
+                                "SELECT sum(`Order Transaction Gross Amount`*(`Delivery Note Quantity`/`Order Quantity`)) AS amount FROM `Order Transaction Fact` WHERE `Order Key`=%d AND `Delivery Note Key`=%d AND `Order Quantity`!=0",
+                                $this->id, $dn_key
+                            );
+                            $res = mysql_query($sql);
+                            if ($row2 = mysql_fetch_assoc($res)) {
+                                $order_amount = $row2['amount'];
+                            } else {
+                                $order_amount = 0;
+                            }
+                            break;
+                    }
+                }
+
+
+                $terms_components = preg_split(
+                    '/;/', $row['Insurance Terms Metadata']
+                );
+                $operator         = $terms_components[0];
+                $amount           = $terms_components[1];
+
+                //print_r($order_amount);
+
+
+                switch ($operator) {
+                    case('<'):
+                        if ($order_amount < $amount) {
+                            $apply_insurance = true;
+                        }
+                        break;
+                    case('>'):
+                        if ($order_amount > $amount) {
+                            $apply_insurance = true;
+                        }
+                        break;
+                    case('<='):
+                        if ($order_amount <= $amount) {
+                            $apply_insurance = true;
+                        }
+                        break;
+                    case('>='):
+                        if ($order_amount >= $amount) {
+                            $apply_insurance = true;
+                        }
+                        break;
+                }
+
+
+                if ($row['Insurance Tax Category Code'] == '') {
+                    $tax_category_code = $this->data['Order Tax Code'];
+                    $tax_rate          = $this->data['Order Tax Rate'];
+                } else {
+                    $tax_category      = new TaxCategory(
+                        $row['Insurance Tax Category Code']
+                    );
+                    $tax_category_code = $tax_category->data['Tax Category Code'];
+                    $tax_rate          = $tax_category->data['Tax Category Rate'];
+
+                }
+
+
+                if ($row['Insurance Type'] == 'Amount') {
+                    $charge_net_amount = $row['Insurance Metadata'];
+
+
+                    $charge_tax_amount = $row['Insurance Metadata'] * $tax_rate;
+                } else {
+
+                    exit("still to do");
+                }
+
+
+                $sql  = sprintf(
+                    "SELECT `Order No Product Transaction Fact Key`  FROM `Order No Product Transaction Fact` WHERE `Order Key`=%d  AND `Transaction Type`='Insurance' AND `Transaction Type Key`=%d ",
+                    $this->id, $row['Insurance Key']
+                );
+                $res2 = mysql_query($sql);
+                if ($row2 = mysql_fetch_assoc($res2)) {
+                    $onptf_key = $row2['Order No Product Transaction Fact Key'];
+                } else {
+                    $onptf_key = 0;
+                }
+
+                if ($apply_insurance) {
+                    $insurances[$row['Insurance Key']] = array(
+                        'Insurance Net Amount'                  => $charge_net_amount,
+                        'Insurance Tax Amount'                  => $charge_tax_amount,
+                        'Insurance Formatted Net Amount'        => money(
+                            $this->exchange * $charge_net_amount, $this->currency_code
+                        ),
+                        'Insurance Formatted Tax Amount'        => money(
+                            $this->exchange * $charge_tax_amount, $this->currency_code
+                        ),
+                        'Insurance Tax Code'                    => $tax_category_code,
+                        'Insurance Key'                         => $row['Insurance Key'],
+                        'Insurance Description'                 => $row['Insurance Name'],
+                        'Order No Product Transaction Fact Key' => $onptf_key
+                    );
+                }
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        return $insurances;
+
+    }
+
     function restore_back_to_stock_to_basket($product_pid) {
 
-        if ($this->data['Order Current Dispatch State'] != 'In Process') {
+        if ($this->data['Order State'] != 'InBasket') {
             return;
         }
 

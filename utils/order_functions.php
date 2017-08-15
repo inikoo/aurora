@@ -18,16 +18,8 @@ function get_orders_operations($row, $user) {
     $class      = 'right';
 
 
-    if ($row['Order Current Dispatch State'] == 'Waiting for Payment Confirmation') {
-
-        $operations .= '<div class="buttons small '.$class.'">';
-        $operations .= ' <button class="negative" onClick="cancel_payment(this,'.$row['Order Key'].')">'._('Cancel Payment')."</button>";
-        $operations .= ' <button  class="positive"  onClick="conform_payment(this,'.$row['Order Key'].')">'._('Confirm Payment')."</button>";
-
-        $operations .= '</div>';
-
-    } else {
-        if ($row['Order Current Dispatch State'] == 'In Process by Customer') {
+ 
+        if ($row['Order State'] == 'InBasket') {
 
             $operations .= '<div class="buttons small '.$class.'">';
             $operations .= sprintf(
@@ -38,7 +30,7 @@ function get_orders_operations($row, $user) {
 
             $operations .= '</div>';
 
-        } elseif ($row['Order Current Dispatch State'] == 'Submitted by Customer') {
+        } elseif ($row['Order State'] == 'InProcess') {
             $operations .= '<div class="buttons small '.$class.'">';
             $operations .= sprintf(
                 "<i class=\"fa fa-minus-circle error padding_right_10 button edit\" onClick=\"open_cancel_dialog_from_list(this,%d,'%s, %s')\" title='%s'></i>",
@@ -56,7 +48,7 @@ function get_orders_operations($row, $user) {
             $operations .= '</div>';
 
         } else {
-            if ($row['Order Current Dispatch State'] == 'In Process') {
+            if ($row['Order State'] == 'In Process') {
                 $operations .= '<div class="buttons small '.$class.'">';
                 $operations .= sprintf(
                     "<button id=\"send_to_warehouse_button_%d\" class=\"%s\" onClick=\"create_delivery_note_from_list(this,%d)\"><img id=\"send_to_warehouse_img_%d\" style='height:12px;width:12px' src='art/icons/cart_go.png'> %s</button>",
@@ -71,7 +63,7 @@ function get_orders_operations($row, $user) {
                 $operations .= '</div>';
 
             } elseif (in_array(
-                $row['Order Current Dispatch State'], array(
+                $row['Order State'], array(
                     'Ready to Pick',
                     'Picking',
                     'Picked',
@@ -100,7 +92,7 @@ function get_orders_operations($row, $user) {
 
                 $operations .= '</div>';
 
-            } elseif ($row['Order Current Dispatch State'] == 'Packed Done') {
+            } elseif ($row['Order State'] == 'Packed Done') {
 
                 $operations .= '<div class="buttons small '.$class.'">';
                 if ($row['Order Invoiced'] == 'No') {
@@ -114,7 +106,7 @@ function get_orders_operations($row, $user) {
                 }
                 $operations .= '</div>';
 
-            } elseif ($row['Order Current Dispatch State'] == 'Ready to Ship') {
+            } elseif ($row['Order State'] == 'Ready to Ship') {
                 $operations .= '<div class="buttons small '.$class.'">';
                 $order = new Order($row['Order Key']);
                 $dns   = $order->get_delivery_notes_objects();
@@ -142,7 +134,7 @@ function get_orders_operations($row, $user) {
                 );
             }
         }
-    }
+    
     $operations .= '</div>';
 
     return $operations;
@@ -180,7 +172,7 @@ function get_order_formatted_payment_state($data) {
             break;
         case 'Waiting Payment':
 
-            if ($data['Order Current Dispatch State'] == 'In Process by Customer' or $data['Order Current Dispatch State'] == 'Cancelled') {
+            if ($data['Order State'] == 'In Process by Customer' or $data['Order State'] == 'Cancelled') {
                 $payment_state = '';
             } else {
 
@@ -228,7 +220,7 @@ function get_order_formatted_payment_state($data) {
             break;
         case 'Partially Paid':
 
-            if ($data['Order Current Dispatch State'] == 'In Process by Customer') {
+            if ($data['Order State'] == 'In Process by Customer') {
                 $payment_state = _('Using Credit');
             } else {
 

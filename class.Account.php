@@ -599,7 +599,7 @@ class Account extends DB_Table {
                 $number = 0;
 
                 $sql = sprintf(
-                    'SELECT count(*) AS num FROM `Order Dimension` WHERE `Order Current Dispatch State`="Dispatched" AND `Order Dispatched Date`>%s   AND  `Order Dispatched Date`<%s   ',
+                    'SELECT count(*) AS num FROM `Order Dimension` WHERE `Order State`="Dispatched" AND `Order Dispatched Date`>%s   AND  `Order Dispatched Date`<%s   ',
                     prepare_mysql(date('Y-m-d 00:00:00')), prepare_mysql(date('Y-m-d 23:59:59'))
                 );
 
@@ -1582,7 +1582,7 @@ class Account extends DB_Table {
         );
 
         $sql = sprintf(
-            "SELECT count(*) AS num ,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE  `Order Number Items`>0  AND `Order Current Dispatch State`  IN ('In Process')  ",
+            "SELECT count(*) AS num ,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE  `Order Number Items`>0  AND `Order State`='InBasket'  ",
             $this->id
         );
 
@@ -1627,7 +1627,7 @@ class Account extends DB_Table {
             )
         );
         $sql  = sprintf(
-            'SELECT `Order Current Dispatch State`,count(*) AS num, ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE  `Order Current Dispatch State` ="Submitted by Customer"  AND `Order Current Payment State`="Paid" '
+            'SELECT `Order Current Dispatch State`,count(*) AS num, ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE  `Order State` ="InProcess"  AND `Order Current Payment State`="Paid" '
         );
 
 
@@ -1647,7 +1647,7 @@ class Account extends DB_Table {
 
 
         $sql = sprintf(
-            'SELECT `Order Current Dispatch State`,count(*) AS num,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE  `Order Current Dispatch State`="Submitted by Customer"  AND `Order Current Payment State`!="Paid" '
+            'SELECT `Order Current Dispatch State`,count(*) AS num,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE  `Order State`="In Process"  AND `Order Current Payment State`!="Paid" '
         );
 
 

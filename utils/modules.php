@@ -564,11 +564,21 @@ $modules = array(
                 )
             ),
 
-
-            'orders' => array(
+            'archived_orders' => array(
                 'type'      => 'navigation',
                 'label'     => _('Orders (Archive)'),
                 'icon'      => 'archive',
+                'reference' => 'orders/%d/archived',
+                'tabs'      => array(
+                    'orders.archived' => array('label' => _('Archived orders'))
+
+                )
+            ),
+
+            'orders' => array(
+                'type'      => 'navigation',
+                'label'     => _('All'),
+                'icon'      => 'shopping-cart',
                 'reference' => 'orders/%d',
                 'tabs'      => array(
                     'orders' => array()
@@ -632,6 +642,13 @@ $modules = array(
                         ),
                         'icon'  => 'bars'
                     ),
+
+
+                    'delivery_note.picking_aid'    => array(
+                        'label' => _('Picking aid'),
+                        'icon'  => 'fa-hand-lizard-o'
+                    ),
+
                     'delivery_note.details'  => array(
                         'label' => _(
                             'Data'
@@ -1024,6 +1041,19 @@ $modules = array(
                         ),
                         'icon'  => 'bars'
                     ),
+
+
+                    'delivery_note.fast_track_packing'    => array(
+                        'label' => _('Fast track packing'),
+                        'icon'  => 'bolt'
+                    ),
+
+                    'delivery_note.picking_aid'    => array(
+                        'label' => _('Picking aid'),
+                        'icon'  => 'hand-lizard-o'
+                    ),
+
+
                     'delivery_note.details'  => array(
                         'label' => _(
                             'Data'
@@ -1034,8 +1064,15 @@ $modules = array(
                         'label' => _(
                             'History'
                         ),
-                        'icon'  => 'road'
-                    ),
+                        'icon'  => 'road',
+                        'class' => 'right icon_only'
+
+
+
+
+                    )
+                    /*
+                    ,
                     'delivery_note.orders'   => array(
                         'label' => _(
                             'Orders'
@@ -1048,6 +1085,8 @@ $modules = array(
                         ),
                         'icon'  => 'file-text-o'
                     ),
+
+                    */
                 )
 
             ),
@@ -1062,6 +1101,14 @@ $modules = array(
                         ),
                         'icon'  => 'bars'
                     ),
+
+
+                    'delivery_note.picking_aid'    => array(
+                        'label' => _('Picking aid'),
+                        'icon'  => 'fa-hand-lizard-o'
+                    ),
+
+
                     'invoice.details'        => array(
                         'label' => _(
                             'Data'
@@ -1089,6 +1136,7 @@ $modules = array(
                 )
 
             ),
+
             'pick_aid'      => array(
                 'type' => 'object',
                 'tabs' => array(

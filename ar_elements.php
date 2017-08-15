@@ -26,6 +26,7 @@ if (!isset($_REQUEST['tab'])) {
 }
 
 
+
 $tab = $_REQUEST['tab'];
 
 switch ($tab) {
@@ -205,7 +206,7 @@ switch ($tab) {
         get_product_categories_element_numbers_bis($db, $data['parameters'], $user);
         break;
 
-
+    case 'orders_server':
     case 'orders':
     case 'product.orders':
     case 'customer.orders':
@@ -1036,8 +1037,6 @@ function get_product_categories_element_numbers_bis($db, $data, $user) {
     $sql = sprintf("select count(*) as number,`Product Category Status` as element from $table $where  group by `Product Category Status` ");
 
 
-
-
     foreach ($db->query($sql) as $row) {
         if ($row['element'] == 'In Process') {
             $row['element'] = 'InProcess';
@@ -1371,29 +1370,52 @@ function get_orders_pending_element_numbers($db, $data, $user) {
             break;
     }
 
-
     $elements_numbers = array(
-
-        'flow' => array(
-            'Basket'           => 0,
-            'Submitted_Unpaid' => 0,
-            'Submitted_Paid'   => 0,
+        'state'   => array(
+            'InBasket'         => 0,
+            'InProcess'        => 0,
             'InWarehouse'      => 0,
-            'Packed'           => 0,
-            'Dispatch_Ready'   => 0,
-            'Dispatched_Today' => 0
+            'PackedDone'       => 0,
+            'Approved' => 0,
+            'Dispatched'       => 0,
+            'Cancelled'        => 0,
+        ),
+        'source'  => array(
+            'Internet' => 0,
+            'Call'     => 0,
+            'Store'    => 0,
+            'Other'    => 0,
+            'Email'    => 0,
+            'Fax'      => 0
+        ),
+        'payment' => array(
+            'Paid'           => 0,
+            'PartiallyPaid'  => 0,
+            'Unknown'        => 0,
+            'WaitingPayment' => 0,
+            'NA'             => 0
+        ),
+        'type'    => array(
+            'Order'    => 0,
+            'Sample'   => 0,
+            'Donation' => 0,
+            'Other'    => 0
+        ),
 
-
-        )
     );
 
     if ($data['parent'] == 'account' or $data['parent'] == 'store') {
-        $elements_numbers['flow']['Basket']           = $object->get('Orders In Basket Number');
-        $elements_numbers['flow']['Submitted_Unpaid'] = $object->get('Orders In Process Not Paid Number');
-        $elements_numbers['flow']['Submitted_Paid']   = $object->get('Orders In Process Paid Number');
-        $elements_numbers['flow']['Packed']           = $object->get('Orders Packed Number');
-        $elements_numbers['flow']['Dispatch_Ready']   = $object->get('Orders In Dispatch Area Number');
-        $elements_numbers['flow']['Dispatched_Today'] = $object->get('Today Orders Dispatched');
+        $object->load_acc_data();
+
+        $elements_numbers['state']['InBasket']    = $object->get('Orders In Basket Number');
+        $elements_numbers['state']['InProcess']   = $object->get('Orders In Process Number');
+        $elements_numbers['state']['InWarehouse'] = $object->get('Orders In Warehouse Number');
+
+        $elements_numbers['state']['PackedDone']       = $object->get('Orders Packed Number');
+        $elements_numbers['state']['Approved'] = $object->get('Orders Dispatch Approved Number');
+        $elements_numbers['state']['Dispatched']       = $object->get('Orders Dispatched Number');
+
+        $elements_numbers['state']['Cancelled'] = $object->get('Orders Cancelled Number');
 
     }
 
@@ -1507,7 +1529,7 @@ function get_orders_archived_element_numbers($db, $data, $user) {
 
 
     $sql = sprintf(
-        "SELECT count(*) AS number,`Order Current Dispatch State` AS element FROM %s  %s %s GROUP BY `Order Current Dispatch State` ", $table, $where, $where_interval
+        "SELECT count(*) AS number,`Order Current Dispatch State` AS element FROM %s  %s %s GROUP BY `Order State` ", $table, $where, $where_interval
     );
     foreach ($db->query($sql) as $row) {
 
@@ -1596,15 +1618,16 @@ function get_orders_element_numbers($db, $data, $user) {
     $where_interval = $where_interval['mysql'];
 
     $elements_numbers = array(
-        'dispatch' => array(
-            'InProcessCustomer' => 0,
-            'InProcess'         => 0,
-            'Warehouse'         => 0,
-            'Dispatched'        => 0,
-            'Cancelled'         => 0,
-            'Suspended'         => 0
+        'state'   => array(
+            'InBasket'         => 0,
+            'InProcess'        => 0,
+            'InWarehouse'      => 0,
+            'PackedDone'       => 0,
+            'Approved' => 0,
+            'Dispatched'       => 0,
+            'Cancelled'        => 0,
         ),
-        'source'   => array(
+        'source'  => array(
             'Internet' => 0,
             'Call'     => 0,
             'Store'    => 0,
@@ -1612,39 +1635,35 @@ function get_orders_element_numbers($db, $data, $user) {
             'Email'    => 0,
             'Fax'      => 0
         ),
-        'payment'  => array(
+        'payment' => array(
             'Paid'           => 0,
             'PartiallyPaid'  => 0,
             'Unknown'        => 0,
             'WaitingPayment' => 0,
             'NA'             => 0
         ),
-        'type'     => array(
+        'type'    => array(
             'Order'    => 0,
             'Sample'   => 0,
             'Donation' => 0,
             'Other'    => 0
         ),
-        'flow'     => array(
-            'Basket'           => 0,
-            'Submitted_Unpaid' => 0,
-            'Submitted_Paid'   => 0,
-            'InWarehouse'      => 0,
-            'Packed'           => 0,
-            'Dispatch_Ready'   => 0,
-            'Dispatched_Today' => 0
 
-
-        )
     );
 
     if ($data['parent'] == 'account' or $data['parent'] == 'store') {
-        $elements_numbers['flow']['Basket']           = $object->get('Orders In Basket Number');
-        $elements_numbers['flow']['Submitted_Unpaid'] = $object->get('Orders In Process Not Paid Number');
-        $elements_numbers['flow']['Submitted_Paid']   = $object->get('Orders In Process Paid Number');
-        $elements_numbers['flow']['Packed']           = $object->get('Orders Packed Number');
-        $elements_numbers['flow']['Dispatch_Ready']   = $object->get('Orders In Dispatch Area Number');
-        $elements_numbers['flow']['Dispatched_Today'] = $object->get('Today Orders Dispatched');
+
+        $object->load_acc_data();
+
+        $elements_numbers['state']['InBasket']    = $object->get('Orders In Basket Number');
+        $elements_numbers['state']['InProcess']   = $object->get('Orders In Process Number');
+        $elements_numbers['state']['InWarehouse'] = $object->get('Orders In Warehouse Number');
+
+        $elements_numbers['state']['PackedDone']       = $object->get('Orders Packed Number');
+        $elements_numbers['state']['Approved'] = $object->get('Orders Dispatch Approved Number');
+        $elements_numbers['state']['Dispatched']       = $object->get('Orders Dispatched Number');
+
+        $elements_numbers['state']['Cancelled'] = $object->get('Orders Cancelled Number');
 
     }
 
@@ -1671,6 +1690,8 @@ function get_orders_element_numbers($db, $data, $user) {
 */
 
     // USE INDEX (`Type Store Key`)
+
+
     $sql = sprintf(
         "SELECT %s AS number,`Order Type` AS element FROM %s %s %s GROUP BY `Order Type` ", $count, $table, $where, $where_interval
     );
@@ -1680,41 +1701,7 @@ function get_orders_element_numbers($db, $data, $user) {
     }
     //USE INDEX (`Current Dispatch State Store Key`)
 
-
-    $sql = sprintf(
-        "SELECT %s AS number,`Order Current Dispatch State` AS element FROM %s  %s %s GROUP BY `Order Current Dispatch State` ", $count, $table, $where, $where_interval
-    );
-
-
-    foreach ($db->query($sql) as $row) {
-
-        if ($row['element'] != '') {
-
-            if ($row['element'] == 'Cancelled by Customer') {
-                continue;
-            }
-
-            if ($row['element'] == 'In Process' or $row['element'] == 'Waiting for Payment Confirmation') {
-                $_element = 'InProcessCustomer';
-            } elseif ( $row['element'] == 'Submitted by Customer') {
-                $_element = 'InProcess';
-            } elseif ($row['element'] == 'Ready to Pick' or $row['element'] == 'Picking & Packing' or $row['element'] == 'Ready to Ship' or $row['element'] == 'Packing' or $row['element'] == 'Packed'
-                or $row['element'] == 'Packed Done'
-            ) {
-                $_element = 'Warehouse';
-            } else {
-                $_element = $row['element'];
-            }
-            $elements_numbers['dispatch'][$_element] += $row['number'];
-        }
-    }
-
-    // print $sql;
-
-    foreach ($elements_numbers['dispatch'] as $key => $value) {
-        $elements_numbers['dispatch'][$key] = number($value);
-    }
-    // USE INDEX (`Current Payment State Store Key`)
+  // USE INDEX (`Current Payment State Store Key`)
     $sql = sprintf(
         "SELECT %s AS number,`Order Current Payment State` AS element FROM %s  %s %s GROUP BY `Order Current Payment State` ", $count, $table, $where, $where_interval
     );
@@ -1838,8 +1825,7 @@ function get_invoices_element_numbers($db, $parameters) {
     } elseif ($parameters['parent'] == 'store') {
         if (is_numeric($parameters['parent_key']) and in_array(
                 $parameters['parent_key'], $user->stores
-            )
-        ) {
+            )) {
             $where = sprintf(
                 ' where  `Invoice Store Key`=%d ', $parameters['parent_key']
             );
@@ -1854,8 +1840,7 @@ function get_invoices_element_numbers($db, $parameters) {
     } elseif ($parameters['parent'] == 'account') {
         if (is_numeric($parameters['parent_key']) and in_array(
                 $parameters['parent_key'], $user->stores
-            )
-        ) {
+            )) {
 
             if (count($user->stores) == 0) {
                 $where = ' where false';
@@ -2021,8 +2006,7 @@ function get_delivery_note_element_numbers($db, $data) {
         if ($row['element'] == 'Ready to be Picked') {
             $_element = 'Ready';
         } elseif ($row['element'] == 'Picking' or $row['element'] == 'Picking & Packing' or $row['element'] == 'Picked' or $row['element'] == 'Picker Assigned' or $row['element']
-            == 'Picker & Packer Assigned'
-        ) {
+            == 'Picker & Packer Assigned') {
             $_element = 'Picking';
         } elseif ($row['element'] == 'Packing' or $row['element'] == 'Packed' or $row['element'] == 'Packer Assigned' or $row['element'] == 'Packed Done') {
             $_element = 'Packing';
@@ -2667,10 +2651,10 @@ function get_webpages_by_state_element_numbers($db, $data, $user, $state) {
 
     $elements_numbers = array(
         'type'    => array(
-            'Cats' => 0,
-            'Prods'   => 0,
-            'Prod'             => 0,
-            'Others'              => 0,
+            'Cats'   => 0,
+            'Prods'  => 0,
+            'Prod'   => 0,
+            'Others' => 0,
 
         ),
         'version' => array(
@@ -2699,23 +2683,24 @@ function get_webpages_by_state_element_numbers($db, $data, $user, $state) {
     }
 
 
-    $sql = sprintf("select count(*) as number,`Webpage Type Code` as element from `Page Store Dimension` P left join `Webpage Type Dimension` WTD on (WTD.`Webpage Type Key`=P.`Webpage Type Key`)  $where  group by P.`Webpage Type Key` ");
-
+    $sql = sprintf(
+        "select count(*) as number,`Webpage Type Code` as element from `Page Store Dimension` P left join `Webpage Type Dimension` WTD on (WTD.`Webpage Type Key`=P.`Webpage Type Key`)  $where  group by P.`Webpage Type Key` "
+    );
 
 
     foreach ($db->query($sql) as $row) {
 
-        if($row['element']=='Cats' or $row['element']=='Prods' or $row['element']=='Prod'  ){
+        if ($row['element'] == 'Cats' or $row['element'] == 'Prods' or $row['element'] == 'Prod') {
             $elements_numbers['type'][$row['element']] = number($row['number']);
-        }else{
+        } else {
             $elements_numbers['type']['Others'] += $row['number'];
         }
 
-        $elements_numbers['type']['Others']=number($elements_numbers['type']['Others']);
+        $elements_numbers['type']['Others'] = number($elements_numbers['type']['Others']);
 
 
     }
-    $elements_numbers['type']['Others']=number($elements_numbers['type']['Others']);
+    $elements_numbers['type']['Others'] = number($elements_numbers['type']['Others']);
 
 
     $sql = sprintf("select count(*) as number,`Webpage Version` as element from `Page Store Dimension`  $where  group by `Webpage Version` ");

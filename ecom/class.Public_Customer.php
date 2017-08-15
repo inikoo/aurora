@@ -461,17 +461,13 @@ class Public_Customer extends DBW_Table {
 
     }
 
-    function get_order_in_process_key($dispatch_state = 'all') {
+    function get_order_in_process_key() {
 
-        if ($dispatch_state == 'all') {
-            $dispatch_state_valid_values = "'In Process','Waiting for Payment Confirmation'";
-        } else {
-            $dispatch_state_valid_values = "'In Process'";
-        }
+
 
         $order_key = false;
         $sql       = sprintf(
-            "SELECT `Order Key` FROM `Order Dimension` WHERE `Order Customer Key`=%d AND `Order Current Dispatch State` IN (%s) ", $this->id, $dispatch_state_valid_values
+            "SELECT `Order Key` FROM `Order Dimension` WHERE `Order Customer Key`=%d AND `Order State`='InBasket' ", $this->id
         );
 
 

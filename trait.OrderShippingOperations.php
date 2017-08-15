@@ -32,6 +32,7 @@ trait OrderShippingOperations {
 
      function update_shipping($dn_key = false, $order_picked = true) {
 
+
         if (!$dn_key) {
             $dn_key = '';
         }
@@ -62,6 +63,7 @@ trait OrderShippingOperations {
 
         $this->update_field_switcher('Order Shipping Method', $shipping_method, 'no_history');
 
+        /*
 
         if (!$dn_key) {
 
@@ -76,8 +78,16 @@ trait OrderShippingOperations {
 
         }
 
+*/
 
-        $this->db->exec($sql);
+         $sql    = sprintf(
+             'DELETE FROM `Order No Product Transaction Fact` WHERE `Order Key`=%d AND `Transaction Type`="Shipping" ', $this->id
+         );
+
+         $this->db->exec($sql);
+
+
+
 
         if (!($this->data['Order Shipping Net Amount'] == 0 and $this->data['Order Shipping Tax Amount'] == 0)) {
             $sql = sprintf(

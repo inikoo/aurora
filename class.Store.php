@@ -574,7 +574,7 @@ class Store extends DB_Table {
                 $number = 0;
 
                 $sql = sprintf(
-                    'SELECT count(*) AS num FROM `Order Dimension` WHERE `Order Store Key`=%d AND `Order Current Dispatch State`="Dispatched" AND `Order Dispatched Date`>%s   AND  `Order Dispatched Date`<%s   ',
+                    'SELECT count(*) AS num FROM `Order Dimension` WHERE `Order Store Key`=%d AND `Order State`="Dispatched" AND `Order Dispatched Date`>%s   AND  `Order Dispatched Date`<%s   ',
                     $this->id, prepare_mysql(date('Y-m-d 00:00:00')), prepare_mysql(date('Y-m-d 23:59:59'))
                 );
 
@@ -1413,8 +1413,6 @@ class Store extends DB_Table {
         $this->data['Store Dispatched Orders'] = 0;
         $this->data['Store Cancelled Orders']  = 0;
         $this->data['Store Orders In Process'] = 0;
-        $this->data['Store Unknown Orders']    = 0;
-        $this->data['Store Suspended Orders']  = 0;
 
         $this->data['Store Total Acc Invoices']      = 0;
         $this->data['Store Invoices']                = 0;
@@ -1441,7 +1439,7 @@ class Store extends DB_Table {
 
 
         $sql =
-            "SELECT count(*) AS `Store Total Acc Orders`,sum(IF(`Order Current Dispatch State`='Dispatched',1,0 )) AS `Store Dispatched Orders` ,sum(IF(`Order Current Dispatch State`='Suspended',1,0 )) AS `Store Suspended Orders`,sum(IF(`Order Current Dispatch State`='Cancelled',1,0 )) AS `Store Cancelled Orders`,sum(IF(`Order Current Dispatch State`='Unknown',1,0 )) AS `Store Unknown Orders` FROM `Order Dimension`   WHERE `Order Store Key`="
+            "SELECT count(*) AS `Store Total Acc Orders`,sum(IF(`Order Current Dispatch State`='Dispatched',1,0 )) AS `Store Dispatched Orders` ,sum(IF(`Order Current Dispatch State`='Cancelled',1,0 )) AS `Store Cancelled Orders` FROM `Order Dimension`   WHERE `Order Store Key`="
             .$this->id;
 
         if ($result = $this->db->query($sql)) {
@@ -1449,8 +1447,6 @@ class Store extends DB_Table {
                 $this->data['Store Total Acc Orders']  = $row['Store Total Acc Orders'];
                 $this->data['Store Dispatched Orders'] = $row['Store Dispatched Orders'];
                 $this->data['Store Cancelled Orders']  = $row['Store Cancelled Orders'];
-                $this->data['Store Unknown Orders']    = $row['Store Unknown Orders'];
-                $this->data['Store Suspended Orders']  = $row['Store Suspended Orders'];
 
                 $this->data['Store Orders In Process'] =
                     $this->data['Store Total Acc Orders'] - $this->data['Store Dispatched Orders'] - $this->data['Store Cancelled Orders'] - $this->data['Store Unknown Orders']
@@ -1603,7 +1599,7 @@ class Store extends DB_Table {
             )
         );
         $sql  = sprintf(
-            'SELECT `Order Current Dispatch State`,count(*) AS num,ifnull(sum(`Order Total Net Amount`),0) AS amount,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE `Order Store Key`=%d  AND `Order Current Dispatch State` ="Submitted by Customer"  AND `Order Current Payment State`="Paid" ',
+            'SELECT `Order Current Dispatch State`,count(*) AS num,ifnull(sum(`Order Total Net Amount`),0) AS amount,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE `Order Store Key`=%d  AND `Order Current Dispatch State` ="InProcess"  AND `Order Current Payment State`="Paid" ',
             $this->id
         );
 
@@ -2130,7 +2126,7 @@ class Store extends DB_Table {
         );
 
         $sql = sprintf(
-            "SELECT `Order Key` FROM `Order Dimension` WHERE  `Order Current Dispatch State`='In Process By Customer' AND `Order Store Key`=%d AND `Order Last Updated Date`<%s", $this->id,
+            "SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State`='InBasket' AND `Order Store Key`=%d AND `Order Last Updated Date`<%s", $this->id,
             prepare_mysql($date)
         );
 
