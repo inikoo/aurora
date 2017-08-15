@@ -1447,17 +1447,15 @@ class Customer extends Subject {
 
     }
 
-    function get_order_in_process_key($dispatch_state = 'all') {
+    function get_order_in_process_key() {
 
-        if ($dispatch_state == 'all') {
-            $dispatch_state_valid_values = "'In Process','Waiting for Payment Confirmation'";
-        } else {
-            $dispatch_state_valid_values = "'In Process'";
-        }
+
+
+
 
         $order_key = false;
         $sql       = sprintf(
-            "SELECT `Order Key` FROM `Order Dimension` WHERE `Order Customer Key`=%d AND `Order Current Dispatch State` IN (%s) ", $this->id, $dispatch_state_valid_values
+            "SELECT `Order Key` FROM `Order Dimension` WHERE `Order Customer Key`=%d AND `Order State`='InBasket' ", $this->id
         );
 
 
@@ -1474,62 +1472,6 @@ class Customer extends Subject {
 
 
         return $order_key;
-    }
-
-    function get_order_in_process_keys($dispatch_state = 'all') {
-
-        if ($dispatch_state == 'all') {
-            $dispatch_state_valid_values = "'In Process','Waiting for Payment Confirmation'";
-        } else {
-            $dispatch_state_valid_values = "'In Process'";
-        }
-
-        $order_keys = array();
-        $sql        = sprintf(
-            "SELECT `Order Key` FROM `Order Dimension` WHERE `Order Customer Key`=%d AND `Order Current Dispatch State` IN (%s) ", $this->id, $dispatch_state_valid_values
-        );
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $order_keys[$row['Order Key']] = $row['Order Key'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        return $order_keys;
-    }
-
-    function get_pending_orders_keys($dispatch_state = '') {
-
-        $dispatch_state_valid_values = "'Submitted by Customer','Ready to Pick','Picking & Packing','Ready to Ship','Packing','Packed','Packed Done'";
-
-        if ($dispatch_state == 'all') {
-
-            $dispatch_state_valid_values .= ",'In Process','Waiting for Payment Confirmation'";
-        }
-
-        $order_keys = array();
-        $sql        = sprintf(
-            "SELECT `Order Key` FROM `Order Dimension` WHERE `Order Customer Key`=%d AND `Order Current Dispatch State` IN (%s) ", $this->id, $dispatch_state_valid_values
-        );
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                $order_keys[$row['Order Key']] = $row['Order Key'];
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        return $order_keys;
     }
 
     function get_credits_formatted() {
@@ -1998,7 +1940,7 @@ class Customer extends Subject {
 
 
         $sql = sprintf(
-            "SELECT count(*) AS num FROM `Order Dimension` WHERE `Order Customer Key`=%d AND `Order Current Dispatch State`='Cancelled' ", $this->id
+            "SELECT count(*) AS num FROM `Order Dimension` WHERE `Order Customer Key`=%d AND `Order State`='Cancelled' ", $this->id
         );
 
         if ($result = $this->db->query($sql)) {
@@ -2069,7 +2011,7 @@ class Customer extends Subject {
         $this->data['Customer Last Invoiced Dispatched Date'] = '';
 
         $sql = sprintf(
-            "SELECT max(`Order Dispatched Date`) AS last_order_dispatched_date FROM `Order Dimension` WHERE `Order Customer Key`=%d  AND `Order Current Dispatch State`='Dispatched' AND `Order Invoiced`='Yes'",
+            "SELECT max(`Order Dispatched Date`) AS last_order_dispatched_date FROM `Order Dimension` WHERE `Order Customer Key`=%d  AND `Order State`='Dispatched' AND `Order Invoiced`='Yes'",
             $this->id
         );
 
@@ -2097,7 +2039,7 @@ class Customer extends Subject {
 		min(`Order Date`) AS first_order_date ,
 		max(`Order Date`) AS last_order_date,
 		count(*) AS orders
-		FROM `Order Dimension` WHERE `Order Customer Key`=%d  AND `Order Current Dispatch State` NOT IN ('Cancelled','Cancelled by Customer','In Process','Waiting for Payment') ",
+		FROM `Order Dimension` WHERE `Order Customer Key`=%d  AND `Order State` NOT IN ('Cancelled','InBasket') ",
             $this->id
         );
 

@@ -23,12 +23,11 @@ function get_delivery_note_showcase($data) {
 
     $delivery_note = $data['_object'];
 
+
     $delivery_note->update_totals();
 
 
-
-
-    $order = new Order('id',$delivery_note->get('Delivery Note Order Key'));
+    $order = new Order('id', $delivery_note->get('Delivery Note Order Key'));
 
     $parcels     = $delivery_note->get('Parcels');
     $weight      = $delivery_note->data['Delivery Note Weight'];
@@ -40,6 +39,22 @@ function get_delivery_note_showcase($data) {
     $smarty->assign(
         'consignment', ($consignment ? $delivery_note->get('Consignment') : '')
     );
+
+
+
+    $smarty->assign(
+        'object_data', base64_encode(
+                         json_encode(
+                             array(
+                                 'object' => $data['object'],
+                                 'key'    => $data['key'],
+
+                                 'tab' => $data['tab']
+                             )
+                         )
+                     )
+    );
+
 
     $smarty->assign('order', $order);
 

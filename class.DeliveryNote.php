@@ -175,11 +175,8 @@ class DeliveryNote extends DB_Table {
                 foreach ($result as $row) {
 
 
-
-
-
                     $this->create_inventory_transaction_fact_item(
-                        $row['Product ID'], $row['Order Transaction Fact Key'], $row['Order Quantity'] - $row['No Shipped Due No Authorized'], $row['Order Bonus Quantity'] ,
+                        $row['Product ID'], $row['Order Transaction Fact Key'], $row['Order Quantity'] - $row['No Shipped Due No Authorized'], $row['Order Bonus Quantity'],
                         $this->get('Delivery Note Date'), $row['Supplier Metadata']
                     );
 
@@ -342,85 +339,6 @@ class DeliveryNote extends DB_Table {
 
     }
 
-    function update_inventory_transaction_fact($otf_key, $quantity_to_sell,$bonus_quantity) {
-
-        $date = gmdate("Y-m-d H:i:s");
-
-        $sql = sprintf(
-            "SELECT `Inventory Transaction Key`,`Map To Order Transaction Fact Metadata`,`Part SKU` FROM `Inventory Transaction Fact` WHERE `Delivery Note Key`=%d AND `Map To Order Transaction Fact Key`=%d ", $this->id, $otf_key
-        );
-
-
-        $transactions = 0;
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-
-
-                $transactions++;
-
-                $metadata=preg_split('/\;/',$row['Map To Order Transaction Fact Metadata']);
-                $ratio=$metadata[1];
-                $part=get_object('Part',$row['Part SKU']);
-
-                $required=$quantity_to_sell*$ratio;
-                $given=$bonus_quantity*$ratio;
-
-
-
-
-                $weight=$part->get('Part Package Weight') * ($required + $given);
-
-                $sql = sprintf(
-                    "UPDATE `Inventory Transaction Fact` SET `Required`=%f,`Given`=%f,`Inventory Transaction Weight`=%f WHERE `Inventory Transaction Key`=%d ",
-                    $required,
-                    $given,
-                    $weight,
-
-                    $row['Inventory Transaction Key']
-
-                );
-
-
-                $this->db->exec($sql);
-
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-
-        if($transactions==0){
-
-            $sql = sprintf(
-                'SELECT `No Shipped Due No Authorized`,OTF.`Product ID`,`Product Package Weight`,`Order Bonus Quantity`,`Order Quantity`,`Supplier Metadata`,`Order Bonus Quantity`,`Order Transaction Fact Key` FROM `Order Transaction Fact` OTF LEFT JOIN `Product History Dimension` PH  ON (OTF.`Product Key`=PH.`Product Key`)  LEFT JOIN `Product Dimension` P  ON (PH.`Product ID`=P.`Product ID`)     WHERE `Order Transaction Fact Key`=%d ',
-                $otf_key
-            );
-
-            if ($result = $this->db->query($sql)) {
-                foreach ($result as $row) {
-
-
-                    $this->create_inventory_transaction_fact_item(
-                        $row['Product ID'], $row['Order Transaction Fact Key'], $row['Order Quantity'] + $row['Order Bonus Quantity'] - $row['No Shipped Due No Authorized'], $date,
-                        $row['Supplier Metadata'], $row['Order Bonus Quantity']
-                    );
-                }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
-            }
-        }
-
-
-    }
-
-
     function get($key) {
 
 
@@ -432,6 +350,10 @@ class DeliveryNote extends DB_Table {
 
 
             case 'State Index':
+
+
+               // print $this->data['Delivery Note State'].'x';
+
                 switch ($this->data['Delivery Note State']) {
                     case 'Ready to be Picked':
                     case 'Picker & Packer Assigned':
@@ -494,9 +416,9 @@ class DeliveryNote extends DB_Table {
 
 
                     if ($this->get('Delivery Note Date Finish Picking') != '') {
-                        return strftime("%e %b %Y %H:%M", strtotime($this->get('Delivery Note Date Finish Picking')));
+                        return strftime("%e %b %y %H:%M", strtotime($this->get('Delivery Note Date Finish Picking')));
                     } else {
-                        return strftime("%e %b %Y %H:%M", strtotime($this->get('Delivery Note Date Start Picking')));
+                        return strftime("%e %b %y %H:%M", strtotime($this->get('Delivery Note Date Start Picking')));
                     }
 
 
@@ -513,9 +435,16 @@ class DeliveryNote extends DB_Table {
 
 
                         if ($this->get('Delivery Note Date Finish Picking') != '') {
-                            return strftime("%e %b %Y %H:%M", strtotime($this->get('Delivery Note Date Finish Picking')));
+
+                            if($this->get('Delivery Note Date Finish Picking')==$this->get('Delivery Note Date Finish Packing')){
+                                return '<i class="fa fa-arrow-right" aria-hidden="true"></i>';
+
+                            }else{
+                                return strftime("%e %b %y %H:%M", strtotime($this->get('Delivery Note Date Finish Picking')));
+
+                            }
                         } else {
-                            return strftime("%e %b %Y %H:%M", strtotime($this->get('Delivery Note Date Start Picking')));
+                            return strftime("%e %b %y %H:%M", strtotime($this->get('Delivery Note Date Start Picking')));
                         }
 
                     } else {
@@ -539,9 +468,9 @@ class DeliveryNote extends DB_Table {
 
 
                     if ($this->get('Delivery Note Date Finish Picking') != '') {
-                        return strftime("%e %b %Y %H:%M", strtotime($this->get('Delivery Note Date Finish Picking')));
+                        return strftime("%e %b %y %H:%M", strtotime($this->get('Delivery Note Date Finish Picking')));
                     } else {
-                        return strftime("%e %b %Y %H:%M", strtotime($this->get('Delivery Note Date Start Picking')));
+                        return strftime("%e %b %y %H:%M", strtotime($this->get('Delivery Note Date Start Picking')));
                     }
 
 
@@ -558,9 +487,9 @@ class DeliveryNote extends DB_Table {
 
 
                         if ($this->get('Delivery Note Date Finish Picking') != '') {
-                            return strftime("%e %b %Y %H:%M", strtotime($this->get('Delivery Note Date Finish Picking')));
+                            return strftime("%e %b %y %H:%M", strtotime($this->get('Delivery Note Date Finish Picking')));
                         } else {
-                            return strftime("%e %b %Y %H:%M", strtotime($this->get('Delivery Note Date Start Picking')));
+                            return strftime("%e %b %y %H:%M", strtotime($this->get('Delivery Note Date Start Picking')));
                         }
 
                     } else {
@@ -718,6 +647,42 @@ class DeliveryNote extends DB_Table {
 
                 return weight($this->data['Delivery Note Estimated Weight']);
                 break;
+
+            case('Weight Details'):
+                include_once 'utils/natural_language.php';
+
+                if ($this->data['Delivery Note Weight Source'] == 'Given') {
+
+
+                    if ($this->data['Delivery Note Estimated Weight'] < 1) {
+                        $estimated_weight = weight(
+                            $this->data['Delivery Note Estimated Weight'], 'Kg', 3
+                        );
+                    } else {
+                        $estimated_weight = weight(
+                            $this->data['Delivery Note Estimated Weight'], 'Kg', 0
+                        );
+                    }
+
+                    $estimated_weight= "&#8494;".$estimated_weight;
+
+
+                    return weight($this->data['Delivery Note Weight']).' <span style="font-style: italic" class="very_discreet">'.$estimated_weight.'</span>';
+                } else {
+                    if ($this->data['Delivery Note Estimated Weight'] < 1) {
+                        $weight = weight(
+                            $this->data['Delivery Note Estimated Weight'], 'Kg', 3
+                        );
+                    } else {
+                        $weight = weight(
+                            $this->data['Delivery Note Estimated Weight'], 'Kg', 0
+                        );
+                    }
+
+                    return "&#8494;".$weight;
+                }
+                break;
+
             case('Weight'):
                 include_once 'utils/natural_language.php';
 
@@ -835,6 +800,78 @@ class DeliveryNote extends DB_Table {
 
     }
 
+    function update_inventory_transaction_fact($otf_key, $quantity_to_sell, $bonus_quantity) {
+
+        $date = gmdate("Y-m-d H:i:s");
+
+        $sql = sprintf(
+            "SELECT `Inventory Transaction Key`,`Map To Order Transaction Fact Metadata`,`Part SKU` FROM `Inventory Transaction Fact` WHERE `Delivery Note Key`=%d AND `Map To Order Transaction Fact Key`=%d ",
+            $this->id, $otf_key
+        );
+
+
+        $transactions = 0;
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+
+                $transactions++;
+
+                $metadata = preg_split('/\;/', $row['Map To Order Transaction Fact Metadata']);
+                $ratio    = $metadata[1];
+                $part     = get_object('Part', $row['Part SKU']);
+
+                $required = $quantity_to_sell * $ratio;
+                $given    = $bonus_quantity * $ratio;
+
+
+                $weight = $part->get('Part Package Weight') * ($required + $given);
+
+                $sql = sprintf(
+                    "UPDATE `Inventory Transaction Fact` SET `Required`=%f,`Given`=%f,`Inventory Transaction Weight`=%f WHERE `Inventory Transaction Key`=%d ", $required, $given, $weight,
+
+                    $row['Inventory Transaction Key']
+
+                );
+
+
+                $this->db->exec($sql);
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        if ($transactions == 0) {
+
+            $sql = sprintf(
+                'SELECT `No Shipped Due No Authorized`,OTF.`Product ID`,`Product Package Weight`,`Order Bonus Quantity`,`Order Quantity`,`Supplier Metadata`,`Order Bonus Quantity`,`Order Transaction Fact Key` FROM `Order Transaction Fact` OTF LEFT JOIN `Product History Dimension` PH  ON (OTF.`Product Key`=PH.`Product Key`)  LEFT JOIN `Product Dimension` P  ON (PH.`Product ID`=P.`Product ID`)     WHERE `Order Transaction Fact Key`=%d ',
+                $otf_key
+            );
+
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
+
+
+                    $this->create_inventory_transaction_fact_item(
+                        $row['Product ID'], $row['Order Transaction Fact Key'], $row['Order Quantity'] + $row['Order Bonus Quantity'] - $row['No Shipped Due No Authorized'], $date,
+                        $row['Supplier Metadata'], $row['Order Bonus Quantity']
+                    );
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+        }
+
+
+    }
+
 
     //  New methods
 
@@ -842,9 +879,17 @@ class DeliveryNote extends DB_Table {
 
         switch ($field) {
 
-            case 'parcels_weight':
 
-                $this->set_weight($value);
+            case 'Delivery Note State':
+
+                $this->update_state($value);
+                break;
+
+            case 'Delivery Note Weight':
+
+                $this->update_field('Delivery Note Weight', $value, $options);
+                $this->update_field('Delivery Note Weight Source', 'Given', $options);
+
                 break;
 
             default:
@@ -1008,12 +1053,28 @@ class DeliveryNote extends DB_Table {
 
     }
 
-    function set_state($value, $options = '', $metadata = array()) {
+    function update_state($value, $options = '', $metadata = array()) {
         $date = gmdate('Y-m-d H:i:s');
 
         $operations = array();
 
         switch ($value) {
+            case 'Picking':
+
+                if ($this->get('State Index') != 10) {
+                    return;
+                }
+
+                $this->update_field(
+                    'Delivery Note Date Start Picking', $date, 'no_history'
+                );
+                //$this->update_field('Supplier Delivery Estimated Receiving Date', '', 'no_history');
+                $this->update_field(
+                    'Delivery Note State', $value, 'no_history'
+                );
+
+                break;
+
             case 'Picked':
 
                 if ($this->get('State Index') > 30 or $this->get('State Index') < 10) {
@@ -1030,21 +1091,7 @@ class DeliveryNote extends DB_Table {
 
 
                 break;
-            case 'Picking':
 
-                if ($this->get('State Index') != 10) {
-                    return;
-                }
-
-                $this->update_field(
-                    'Delivery Note Date Start Picking', $date, 'no_history'
-                );
-                //$this->update_field('Supplier Delivery Estimated Receiving Date', '', 'no_history');
-                $this->update_field(
-                    'Delivery Note State', $value, 'no_history'
-                );
-
-                break;
             case 'Packing':
 
                 if ($this->get('State Index') >= 40) {
@@ -1077,6 +1124,25 @@ class DeliveryNote extends DB_Table {
                 //   $order=
 
                 //   print "----";
+
+                break;
+
+            case 'Packed Done':
+
+                if ($this->get('State Index') > 70 or $this->get('State Index') < 70) {
+                    return;
+                }
+                $this->update_field('Delivery Note Date Done Approved', $date, 'no_history');
+                $this->update_field(
+                    'Delivery Note State', $value, 'no_history'
+                );
+
+                $this->update_field('Delivery Note Approved Done', 'Yes', 'no_history');
+                $this->update_field('Delivery Note Date', $date, 'no_history');
+
+
+                $order=get_object('Order',$this->get('Delivery Note Order Key'));
+                $order->update(array('Order State'=>'PackedDone'));
 
                 break;
 
@@ -1221,7 +1287,7 @@ class DeliveryNote extends DB_Table {
 
 
         if ($pending == 0) {
-            $picked_time = sprintf(_('Picked: %s'), strftime("%a %e %b %Y %H:%M %Z", strtotime($date.' +0:00')));
+            $picked_time = sprintf(_('Picked: %s'), strftime("%a %e %b %y %H:%M %Z", strtotime($date.' +0:00')));
             $location    = sprintf('<i class="fa fa-fw fa-check super_discreet %s" aria-hidden="true" title="%s"></i> ', $location_stock_icon_class, $picked_time);
 
         } elseif ($part_location->get('Quantity On Hand') <= 0) {
@@ -1522,7 +1588,7 @@ class DeliveryNote extends DB_Table {
 
             $order->update(
                 array(
-                    'Order Current Dispatch State' => 'In Process'
+                    'Order State' => 'InProcess'
                 )
             );
 
@@ -1530,6 +1596,92 @@ class DeliveryNote extends DB_Table {
 
 
         return 'orders/'.$order->get('Order Store Key').'/'.$order->id;
+
+    }
+
+
+    function consolidate($transactions) {
+
+
+        $date = gmdate('Y-m-d H:i:s');
+
+        foreach ($transactions as $transaction) {
+            $sql = sprintf('SELECT * FROM `Inventory Transaction Fact` WHERE `Inventory Transaction Key`=%d AND `Delivery Note Key`=%d ', $transaction['transaction_key'], $this->id);
+
+            if ($result = $this->db->query($sql)) {
+                if ($row = $result->fetch()) {
+
+                    //print_r($transaction);
+                    //print_r($row);
+
+                    $part = get_object('Part', $row['Part SKU']);
+
+                    $qty          = -1 * $transaction['qty'];
+                    $cost         = $qty * $part->get('Part Cost in Warehouse');
+                    $weight       = $transaction['qty'] * $part->get('Part Package Weight');
+                    $out_of_stock = $row['Required'] - $transaction['qty'];
+
+
+                    if ($out_of_stock == 0) {
+                        $out_of_stock_tag = 'No';
+                    } else {
+                        $out_of_stock_tag = 'Yes';
+                    }
+
+                    $state = 'Done';
+
+                    if ($transaction['qty'] == 0) {
+                        $transaction_type    = 'No Dispatched';
+                        $transaction_section = 'NoDispatched';
+                        $date_picked         = '';
+                        $date_packed         = '';
+                    } else {
+                        $transaction_type    = 'Sale';
+                        $transaction_section = 'Out';
+                        $date_picked         = $date;
+                        $date_packed         = $date;
+                    }
+
+
+                    $sql = sprintf(
+                        'UPDATE  `Inventory Transaction Fact`  SET  
+                                  `Date Picked`=%s ,`Date Packed`=%s ,`Date`=%s ,`Location Key`=%d ,`Inventory Transaction Type`=%s ,`Inventory Transaction Section`=%s ,
+                                  `Inventory Transaction Quantity`=%f, `Inventory Transaction Amount`=%.3f,`Inventory Transaction Weight`=%f,
+                                  `Picked`=%f,`PAcked`=%f,`Out of Stock`=%f,`Out of Stock Tag`=%s,
+                                  `Picker Key`=%d,`Packer Key`=%d,`Inventory Transaction State`=%s
+                                  
+                                  
+                                  WHERE `Inventory Transaction Key`=%d ',
+
+                        prepare_mysql($date_picked), prepare_mysql($date_packed), prepare_mysql($date), $transaction['location_key'], prepare_mysql($transaction_type),
+                        prepare_mysql($transaction_section), $qty, $cost, $weight, $transaction['qty'], $transaction['qty'], $out_of_stock, prepare_mysql($out_of_stock_tag),
+                        $this->get('Delivery Note Assigned Picker Key'), $this->get('Delivery Note Assigned Packer Key'), prepare_mysql($state), $transaction['transaction_key']
+                    );
+
+                  //  print "$sql\n";
+
+                    $this->db->exec($sql);
+
+
+                    $this->update_field('Delivery Note Date Finish Picking', $date, 'no_history');
+                    $this->update_field('Delivery Note Date Finish Packing', $date, 'no_history');
+                    //$this->update_field('Delivery Note Date Done Approved', $date, 'no_history');
+
+                    $this->update_field('Delivery Note Date', $date, 'no_history');
+
+                  //  $this->update_field('Delivery Note Approved Done', 'Yes', 'no_history');
+                    $this->update_field('Delivery Note State', 'Packed');
+
+
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+
+        }
+
 
     }
 

@@ -1350,6 +1350,9 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                 case ('basket_orders'):
                     return get_basket_orders_navigation($data, $smarty, $user, $db, $account);
                     break;
+                case ('archived_orders'):
+                    return get_archived_orders_navigation($data, $smarty, $user, $db, $account);
+                    break;
                 case ('pending_orders'):
                     return get_pending_orders_navigation($data, $smarty, $user, $db, $account);
                     break;
@@ -2370,6 +2373,7 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
     );
 
 
+
     if ($data['section'] == 'category') {
 
         if ($data['_object']->get('Category Scope') == 'Product') {
@@ -2477,7 +2481,8 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
         //print_r($_content);
 
 
-    } elseif ($data['module'] == 'suppliers' and $data['section'] == 'order') {
+    }
+    elseif ($data['module'] == 'suppliers' and $data['section'] == 'order') {
         if ($data['_object']->get('Purchase Order State') == 'InProcess') {
 
             //$data['tab']='supplier.order.items';
@@ -2495,8 +2500,10 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
             // }
 
 
+
         }
-    } elseif ($data['module'] == 'products' and $data['section'] == 'webpage') {
+    }
+    elseif ($data['module'] == 'products' and $data['section'] == 'webpage') {
 
 
         if (!in_array(
@@ -2513,7 +2520,8 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
         }
 
 
-    } elseif ($data['section'] == 'website') {
+    }
+    elseif ($data['section'] == 'website') {
 
 
         if ($data['website']->get('Website Status') == 'Active') {
@@ -2523,6 +2531,41 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
             $_content['subtabs']['website.online_webpages']['class']  = 'hide';
 
         }
+
+
+    }
+    elseif ($data['section'] == 'delivery_note') {
+
+
+
+
+
+        if ($data['tab'] == 'set_delivery_note.fast_track_packing') {
+            $data['tab'] ='delivery_note.fast_track_packing';
+            $_content['tabs']['delivery_note.fast_track_packing']['class'] = '';
+
+        }elseif ($data['tab'] == 'delivery_note.fast_track_packing') {
+            $data['tab'] ='delivery_note.items';
+            $_content['tabs']['delivery_note.fast_track_packing']['class'] = 'hide';
+
+        }else{
+            $_content['tabs']['delivery_note.fast_track_packing']['class'] = 'hide';
+
+        }
+
+
+
+
+
+        if($data['_object']->get('State Index')<=10){
+            $_content['tabs']['delivery_note.picking_aid']['class'] = 'hide';
+
+
+        }
+
+      //  exit;
+
+
 
 
     }
@@ -3829,6 +3872,17 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     $branch[] = array(
                         'label'     => _('Orders in website').' '.$state['store']->data['Store Code'],
                         'icon'      => 'globe',
+                        'reference' => ''
+                    );
+
+
+                    break;
+
+                case 'archived_orders':
+
+                    $branch[] = array(
+                        'label'     => _('Archived orders').' '.$state['store']->data['Store Code'],
+                        'icon'      => 'archive',
                         'reference' => ''
                     );
 

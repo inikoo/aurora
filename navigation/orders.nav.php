@@ -64,7 +64,48 @@ function get_pending_orders_navigation($data, $smarty, $user, $db, $account) {
         $sections[$data['section']]['selected'] = true;
     }
 
-    $title = _("Pending orders");
+    $title = _("Pending orders").' <span class="id">'.$data['store']->get('Code').'</span>';
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search orders')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
+
+
+
+function get_archived_orders_navigation($data, $smarty, $user, $db, $account) {
+
+
+    $sections = get_sections('orders', $data['parent_key']);
+
+
+    $left_buttons = array();
+
+
+    $right_buttons = array();
+
+    if (isset($sections[$data['section']])) {
+        $sections[$data['section']]['selected'] = true;
+    }
+
+
+
+    $title = _("Archived orders").' <span class="id">'.$data['store']->get('Code').'</span>';
 
     $_content = array(
         'sections_class' => '',
@@ -102,7 +143,7 @@ function get_basket_orders_navigation($data, $smarty, $user, $db, $account) {
         $sections[$data['section']]['selected'] = true;
     }
 
-    $title = _("Orders in website");
+    $title = _("Orders in website").' <span class="id">'.$data['store']->get('Code').'</span>';
 
     $_content = array(
         'sections_class' => '',

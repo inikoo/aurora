@@ -17,7 +17,7 @@ className: "link"
 },
 {
 name: "description",
-label: "{t}Description{/t}",
+label: "{t}SKO Description{/t}",
 editable: false,
 cell: "html"
 
@@ -32,6 +32,70 @@ cell: "html"
 },
 
 
+
+
+{
+name: "overview_required",
+label: "{t}Required{/t}",
+defaultOrder:1,
+editable: false,
+sortType: "toggle",
+{if $sort_key=='overview_required'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+},
+
+
+{
+name: "overview_problem",
+label: "{t}Problem{/t}",
+defaultOrder:1,
+editable: false,
+sortType: "toggle",
+{if $sort_key=='overview_problem'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+},
+
+
+{
+name: "overview_picked",
+label: "{t}Picked{/t}",
+defaultOrder:1,
+editable: false,
+sortType: "toggle",
+{if $sort_key=='overview_picked'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+},
+
+{
+name: "overview_packed",
+label: "{t}Packed{/t}",
+defaultOrder:1,
+editable: false,
+sortType: "toggle",
+{if $sort_key=='overview_packed'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+},
+
+
+{
+name: "overview_state",
+label: "{t}State{/t}",
+defaultOrder:1,
+editable: false,
+sortType: "toggle",
+{if $sort_key=='overview_state'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+},
+
+
+
+
+
 {
 name: "quantity",
 label: "{t}Qty{/t}",
@@ -39,11 +103,10 @@ defaultOrder:1,
 editable: false,
 sortType: "toggle",
 {if $sort_key=='quantity'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-
-
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
+
 {
 name: "picked",
 label: "{t}Picked{/t}",
@@ -73,7 +136,22 @@ sortType: "toggle",
 
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
+},
+
+{
+name: "picked_offline_input",
+label: "{t}Picked{/t}",
+defaultOrder:1,
+editable: false,
+sortType: "toggle",
+{if $sort_key=='picked_offline_input'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+
+
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
 }
+
+
 ]
 
 
@@ -90,18 +168,39 @@ grid.columns.findWhere({ name: 'quantity'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'picked'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'packed'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'picked_info'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'picked_offline_input'} ).set("renderable", false)
+
+
+
+grid.columns.findWhere({ name: 'overview_required'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'overview_problem'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'overview_picked'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'overview_packed'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'overview_state'} ).set("renderable", false)
 
 
 if(view=='overview'){
 grid.columns.findWhere({ name: 'reference'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'description'} ).set("renderable", true)
-grid.columns.findWhere({ name: 'quantity'} ).set("renderable", true)
+
+grid.columns.findWhere({ name: 'overview_required'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'overview_problem'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'overview_picked'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'overview_packed'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'overview_state'} ).set("renderable", true)
 }else if(view=='picking_aid'){
 grid.columns.findWhere({ name: 'reference'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'description'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'quantity'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'location'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'picked'} ).set("renderable", true)
+
+}else if(view=='picking_aid_offline'){
+grid.columns.findWhere({ name: 'reference'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'description'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'quantity'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'location'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'picked_offline_input'} ).set("renderable", true)
 
 }else if(view=='packing_aid'){
 grid.columns.findWhere({ name: 'reference'} ).set("renderable", true)

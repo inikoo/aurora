@@ -960,6 +960,7 @@ class Product extends Asset {
 
                     $field = 'Product '.$key;
 
+
                     return number($this->data[$field]);
                 }
                 if (preg_match(
@@ -1079,6 +1080,8 @@ class Product extends Asset {
             print_r($error_info = $this->db->errorInfo());
             exit;
         }
+
+
 
 
     }
@@ -1859,7 +1862,7 @@ class Product extends Asset {
 
 
         $this->get_data('id', $this->id);
-
+$this->load_acc_data();
 
         if (!($this->get('Product Status') == 'Active' or $this->get(
                     'Product Status'
@@ -1873,6 +1876,7 @@ class Product extends Asset {
 
         foreach ($this->get_pages('objects') as $page) {
             $page->update(array('Page State' => $_state), 'no_history');
+            $page->update(array('Webpage State' => $_state), 'no_history');
         }
 
     }

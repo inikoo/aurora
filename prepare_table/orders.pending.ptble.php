@@ -49,79 +49,119 @@ if ($parameters['parent'] == 'store') {
 if (isset($parameters['elements_type'])) {
 
 
+
     switch ($parameters['elements_type']) {
 
-        case ('flow'):
 
+        case('state'):
+            $_elements            = '';
             $num_elements_checked = 0;
-
-
-            $_where = '';
-
-            foreach ($parameters['elements']['flow']['items'] as $_key => $_value) {
+            foreach (
+                $parameters['elements']['state']['items'] as $_key => $_value
+            ) {
                 $_value = $_value['selected'];
                 if ($_value) {
                     $num_elements_checked++;
 
-                    if ($_key == 'Basket') {
-                        $_where .= " or (`Order Number Items`>0 AND `Order Current Dispatch State`  IN ('In Process') ) ";
-
-                    }
-                    if ($_key == 'Submitted_Unpaid') {
-                        $_where .= " or (`Order Current Dispatch State`='Submitted by Customer'  AND `Order Current Payment State`!='Paid' ) ";
-
-                    }
-                    if ($_key == 'Submitted_Paid') {
-                        $_where .= " or (`Order Current Dispatch State`='Submitted by Customer'  AND `Order Current Payment State`='Paid' ) ";
-
-                    }
-
-                    if ($_key == 'InWarehouse') {
-                        $_where .= " or (`Order Current Dispatch State` in ('Ready to Pick', 'Picking & Packing', 'Ready to Ship', 'Packing')  ) ";
-
-                    }
-
-                    if ($_key == 'Packed') {
-                        $_where .= " or (`Order Current Dispatch State` in ('Packed')  ) ";
-
-                    }
-
-
-                    if ($_key == 'Dispatch_Ready') {
-                        $_where .= " or (`Order Current Dispatch State` in ('Packed Done')  ) ";
-
-                    }
-
-                    if ($_key == 'Dispatched_Today') {
-                        $_where .= sprintf(
-                            " or (  `Order Current Dispatch State`='Dispatched' and `Order Dispatched Date`>%s   and  `Order Dispatched Date`<%s   ) ", prepare_mysql(date('Y-m-d 00:00:00')),
-                            prepare_mysql(date('Y-m-d 23:59:59'))
-                        );
-
-                    }
-
-
+                    $_elements .= ", '$_key'";
                 }
             }
 
-
-            if ($num_elements_checked == 0) {
-                $where = ' where false';
+            if ($_elements == '') {
+                $where .= ' and false';
+            } elseif ($num_elements_checked == 7) {
 
             } else {
+                $_elements = preg_replace('/^,/', '', $_elements);
+                $where .= ' and `Order State` in ('.$_elements.')';
+            }
+            break;
+        case('source'):
+            $_elements            = '';
+            $num_elements_checked = 0;
+            foreach (
+                $parameters['elements']['source']['items'] as $_key => $_value
+            ) {
+                $_value = $_value['selected'];
+                if ($_value) {
+                    $num_elements_checked++;
 
-                $_where = preg_replace('/^ or/', '', $_where);
-
-                $where .= 'and ( '.$_where.')';
-
+                    $_elements .= ", '$_key'";
+                }
             }
 
-            // print $where;
+            if ($_elements == '') {
+                $where .= ' and false';
+            } elseif ($num_elements_checked == 6) {
 
+            } else {
+                $_elements = preg_replace('/^,/', '', $_elements);
+                $where .= ' and `Order Main Source Type` in ('.$_elements.')';
+            }
             break;
+        case('type'):
+            $_elements            = '';
+            $num_elements_checked = 0;
+            foreach (
+                $parameters['elements']['type']['items'] as $_key => $_value
+            ) {
+                $_value = $_value['selected'];
+                if ($_value) {
+                    $num_elements_checked++;
 
+                    $_elements .= ", '$_key'";
+                }
+            }
+
+            if ($_elements == '') {
+                $where .= ' and false';
+            } elseif ($num_elements_checked == 6) {
+
+            } else {
+                $_elements = preg_replace('/^,/', '', $_elements);
+                $where .= ' and `Order Type` in ('.$_elements.')';
+            }
+            break;
+        case('payment'):
+            $_elements            = '';
+            $num_elements_checked = 0;
+
+            //'Waiting Payment','Paid','Partially Paid','Unknown','No Applicable'
+
+            foreach (
+                $parameters['elements']['payment']['items'] as $_key => $_value
+            ) {
+                $_value = $_value['selected'];
+                if ($_value) {
+                    $num_elements_checked++;
+                    if ($_key == 'WaitingPayment') {
+                        $_key = 'Waiting Payment';
+                    }
+                    if ($_key == 'PartiallyPaid') {
+                        $_key = 'Partially Paid';
+                    }
+                    if ($_key == 'NA') {
+                        $_key = 'No Applicable';
+                    }
+
+
+                    $_elements .= ", '$_key'";
+                }
+            }
+
+            if ($_elements == '') {
+                $where .= ' and false';
+            } elseif ($num_elements_checked == 6) {
+
+            } else {
+                $_elements = preg_replace('/^,/', '', $_elements);
+                $where .= ' and `Order Current Payment State` in ('.$_elements.')';
+            }
+            break;
     }
 }
+
+
 
 
 if (($parameters['f_field'] == 'customer') and $f_value != '') {
@@ -144,7 +184,7 @@ if ($order == 'public_id') {
 } elseif ($order == 'customer') {
     $order = 'O.`Order Customer Name`';
 } elseif ($order == 'dispatch_state') {
-    $order = 'O.`Order Current Dispatch State`';
+    $order = 'O.`Order State`';
 } elseif ($order == 'payment_state') {
     $order = 'O.`Order Current Payment State`';
 } elseif ($order == 'total_amount') {
@@ -154,7 +194,7 @@ if ($order == 'public_id') {
 }
 
 $fields
-    = '`Order Invoiced`,`Order Number Items`,`Order Store Key`,`Payment Account Name`,`Order Payment Method`,`Order Balance Total Amount`,`Order Current Payment State`,`Order Current Dispatch State`,`Order Type`,`Order Currency Exchange`,`Order Currency`,O.`Order Key`,O.`Order Public ID`,`Order Customer Key`,`Order Customer Name`,O.`Order Last Updated Date`,O.`Order Date`,`Order Total Amount`,
+    = '`Order Invoiced`,`Order Number Items`,`Order Store Key`,`Payment Account Name`,`Order Payment Method`,`Order Balance Total Amount`,`Order Current Payment State`,`Order State`,`Order Type`,`Order Currency Exchange`,`Order Currency`,O.`Order Key`,O.`Order Public ID`,`Order Customer Key`,`Order Customer Name`,O.`Order Last Updated Date`,O.`Order Date`,`Order Total Amount`,
      (select group_concat(`Delivery Note Key`) from `Delivery Note Dimension` where `Delivery Note Order Key`=O.`Order Key`   ) as delivery_notes
     
     

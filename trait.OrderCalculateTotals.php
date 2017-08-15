@@ -20,6 +20,7 @@ trait OrderCalculateTotals {
         $number_with_problems     = 0;
         $total_weight             = 0;
         $total_items_gross        = 0;
+        $total_items_out_of_stock        = 0;
         $total_items_net          = 0;
         $total_items_discounts    = 0;
 
@@ -28,7 +29,7 @@ trait OrderCalculateTotals {
             "SELECT
 		count(*) AS number_items,
 		sum(`Estimated Weight`) AS weight,
-		sum(`Order Transaction Amount`) AS net ,sum(`Order Transaction Total Discount Amount`) AS discounts ,sum(`Order Transaction Gross Amount`) AS gross ,
+		sum(`Order Transaction Amount`) AS net ,sum(`Order Transaction Total Discount Amount`) AS discounts ,sum(`Order Transaction Gross Amount`) AS gross ,sum(`Order Transaction Gross Amount`) AS out_of_stock ,
 		sum(if(`Order Transaction Total Discount Amount`!=0,1,0)) AS number_with_deals ,
 		sum(if(`No Shipped Due Out of Stock`!=0,1,0)) AS number_with_out_of_stock
 		FROM `Order Transaction Fact` WHERE `Order Key`=%d  ", $this->id
@@ -40,6 +41,9 @@ trait OrderCalculateTotals {
                 $number_items             = $row['number_items'];
                 $number_with_deals        = $row['number_with_deals'];
                 $number_with_out_of_stock = $row['number_with_out_of_stock'];
+
+
+                $total_items_out_of_stock=  $row['out_of_stock'];
                 $total_weight             = $row['weight'];
                 $total_items_gross        = $row['gross'];
                 $total_items_net          = $row['net'];
@@ -200,6 +204,15 @@ trait OrderCalculateTotals {
                 'Order Items Net Amount'          => $total_items_net,
                 'Order Items Gross Amount'        => $total_items_gross,
                 'Order Items Discount Amount'     => $total_items_discounts,
+                'Order Items Out of Stock Amount'     => $total_items_out_of_stock,
+
+
+
+                'Order Number Items Out of Stock'     => $number_with_out_of_stock,
+
+
+
+
                 'Order Shipping Net Amount'       => $shipping,
                 'Order Charges Net Amount'        => $charges,
                 'Order Insurance Net Amount'      => $insurance,

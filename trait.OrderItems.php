@@ -17,9 +17,9 @@ trait OrderItems {
 
         $gross = 0;
 
-        $otf_key    = 0;
-        $net_amount = 0;
-        $gross_discounts=0;
+        $otf_key         = 0;
+        $net_amount      = 0;
+        $gross_discounts = 0;
 
         $tax_code = $this->data['Order Tax Code'];
         $tax_rate = $this->data['Order Tax Rate'];
@@ -62,14 +62,12 @@ trait OrderItems {
 
 
         if (!in_array(
-            $this->data['Order Current Dispatch State'], array(
-                                                           'In Process',
-                                                           'Submitted by Customer',
-                                                           'In Warehouse',
-
-                                                           'Packed Done',
-                                                           'Packing'
-                                                       )
+            $this->data['Order State'], array(
+                                          'InProcess',
+                                          'InBasket',
+                                          'InWarehouse',
+                                          'PackedDone',
+                                      )
         )) {
             return array(
                 'updated' => false,
@@ -79,17 +77,17 @@ trait OrderItems {
 
 
         if (in_array(
-            $this->data['Order Current Dispatch State'], array(
-                                                           'In Warehouse',
+            $this->data['Order State'], array(
+                                          'InWarehouse',
 
-                                                           'Packed Done',
-                                                       )
+                                          'PackedDone',
+                                      )
         )) {
 
 
             $dn_keys = $this->get_deliveries('keys');
             $dn_key  = array_pop($dn_keys);
-            $dn      = get_object('DeliveryNote',$dn_key);
+            $dn      = get_object('DeliveryNote', $dn_key);
 
 
         } else {
@@ -112,8 +110,7 @@ trait OrderItems {
             if ($row = $result->fetch()) {
 
 
-
-                $otf_key=$row['Order Transaction Fact Key'];
+                $otf_key = $row['Order Transaction Fact Key'];
 
                 $old_quantity       = $row['Order Quantity'];
                 $old_bonus_quantity = $row['Order Bonus Quantity'];
@@ -143,8 +140,7 @@ trait OrderItems {
                     $gross   = 0;
 
 
-                }
-                else {
+                } else {
 
 
                     $estimated_weight = $total_quantity * $product->data['Product Package Weight'];
@@ -188,13 +184,10 @@ trait OrderItems {
                     }
 
 
-
-
                     //   print "$sql  $otf_key  \n";
                     //    exit;
                 }
-            }
-            else {
+            } else {
                 //-----here
 
                 $old_quantity       = 0;
@@ -236,7 +229,6 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
                     $otf_key = $this->db->lastInsertId();
 
 
-
                     if ($dn_key) {
 
                         $sql = sprintf(
@@ -257,13 +249,12 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
         }
 
 
-
         $this->update_field('Order Last Updated Date', gmdate('Y-m-d H:i:s'), 'no_history');
 
         if (in_array(
-            $this->data['Order Current Dispatch State'], array(
-                                                           'In Process'
-                                                       )
+            $this->data['Order State'], array(
+                                          'InBasket'
+                                      )
         )) {
             $this->update_field(
                 'Order Date', gmdate('Y-m-d H:i:s'), 'no_history'
@@ -342,12 +333,10 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
             $this->update_discounts_items();
 
 
-
             $this->update_shipping($dn_key, false);
             $this->update_charges($dn_key, false);
 
             $this->update_deal_bridge();
-
 
 
             $this->update_totals();
@@ -359,11 +348,10 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
         }
 
 
-
         if ($dn_key) {
 
 
-            $dn->update_inventory_transaction_fact($otf_key, $quantity,$bonus_quantity);
+            $dn->update_inventory_transaction_fact($otf_key, $quantity, $bonus_quantity);
 
             $dn->update_totals();
 
@@ -382,11 +370,11 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
         $this->update_metadata = array(
 
             'class_html'  => array(
-                'Order_State'                   => $this->get('State'),
-                'Items_Net_Amount'              => $this->get('Items Net Amount'),
+                'Order_State'      => $this->get('State'),
+                'Items_Net_Amount' => $this->get('Items Net Amount'),
 
-                'Items_Discount_Amount'=> $this->get('Items Discount Amount'),
-                'Items_Discount_Percentage'=> $this->get('Items Discount Percentage'),
+                'Items_Discount_Amount'         => $this->get('Items Discount Amount'),
+                'Items_Discount_Percentage'     => $this->get('Items Discount Percentage'),
                 'Shipping_Net_Amount'           => $this->get('Shipping Net Amount'),
                 'Charges_Net_Amount'            => $this->get('Charges Net Amount'),
                 'Total_Net_Amount'              => $this->get('Total Net Amount'),
@@ -397,10 +385,7 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
                 'Payments_Amount'               => $this->get('Payments Amount'),
 
 
-
-
-
-                'Order_Number_items' => $this->get('Number Items'),
+                'Order_Number_items'            => $this->get('Number Items'),
                 'Order_Number_Items_with_Deals' => $this->get('Number Items with Deals')
 
             ),
@@ -409,20 +394,22 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
             'to_pay'      => $this->get('Order To Pay Amount'),
             'total'       => $this->get('Order Total Amount'),
             'payments'    => $this->get('Order Payments Amount'),
-            'items'       => $this->get('Order Number Items')
+            'items'       => $this->get('Order Number Items'),
+            'shipping'    => $this->get('Order Shipping Net Amount'),
+            'charges'     => $this->get('Order Charges Net Amount'),
 
         );
 
 
         return array(
-            'updated'          => true,
-            'otf_key'          => $otf_key,
-            'to_charge'        => money($net_amount, $this->data['Order Currency']),
-            'net_amount'       => $net_amount,
-            'delta_net_amount' => $net_amount - $old_net_amount,
-            'qty'              => $quantity,
-            'delta_qty'        => $quantity - $old_quantity,
-            'bonus qty'        => $bonus_quantity,
+            'updated'             => true,
+            'otf_key'             => $otf_key,
+            'to_charge'           => money($net_amount, $this->data['Order Currency']),
+            'net_amount'          => $net_amount,
+            'delta_net_amount'    => $net_amount - $old_net_amount,
+            'qty'                 => $quantity,
+            'delta_qty'           => $quantity - $old_quantity,
+            'bonus qty'           => $bonus_quantity,
             'discount_percentage' => ($gross_discounts > 0 ? percentage($gross_discounts, $gross, $fixed = 1, $error_txt = 'NA', $percentage_sign = '') : '')
         );
 
@@ -485,9 +472,6 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
     }
 
 }
-
-
-
 
 
 ?>

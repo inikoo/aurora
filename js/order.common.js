@@ -279,6 +279,80 @@ function save_order_operation(element) {
 
 }
 
+
+
+
+function picked_offline_items_qty_change(element) {
+
+
+    var input = $(element).closest('span').find('input')
+    var icon = $(element)
+
+    if ($(element).hasClass('fa-plus')) {
+
+
+        var _icon = 'fa-plus'
+
+        if (isNaN(input.val()) || input.val() == '') {
+            var qty = 1
+        } else {
+            qty = parseFloat(input.val()) + 1
+        }
+
+
+
+
+
+
+    } else if ($(element).hasClass('fa-minus')) {
+
+        if (isNaN(input.val()) || input.val() == '' || input.val() == 0) {
+            var qty = 0
+        } else {
+            qty = parseFloat(input.val()) - 1
+        }
+
+
+        var _icon = 'fa-minus'
+
+    } else {
+        qty = parseFloat(input.val())
+
+        var _icon = 'fa-cloud'
+
+    }
+
+    if(qty>input.attr('max')){
+
+        qty=input.attr('max')
+    }
+
+
+    input.val(qty).addClass('discreet')
+
+
+    console.log(_icon)
+
+    $(element).addClass(_icon)
+
+    if (qty == '') qty = 0;
+
+
+    var settings = $(element).closest('span').data('settings')
+
+
+    var table_metadata = JSON.parse(atob($('#table').data("metadata")))
+
+
+
+
+
+
+
+
+}
+
+
 function save_item_qty_change(element) {
 
     $(element).addClass('fa-spinner fa-spin')
@@ -413,9 +487,14 @@ function save_item_qty_change(element) {
                 $(element).closest('tr').find('._order_item_net').html(data.transaction_data.to_charge)
 
 
+
                 $('.Total_Amount').attr('amount', data.metadata.to_pay)
                 $('.Order_To_Pay_Amount').attr('amount', data.metadata.to_pay)
 
+
+
+                $('#Shipping_Net_Amount_input').val(data.metadata.shipping).attr('ovalue',data.metadata.shipping)
+                $('#Charges_Net_Amount_input').val(data.metadata.charges).attr('ovalue',data.metadata.charges)
 
                 if (data.metadata.to_pay == 0 || data.metadata.payments == 0) {
                     $('.Order_Payments_Amount').addClass('hide')
@@ -448,6 +527,26 @@ function save_item_qty_change(element) {
                     $('.Order_To_Pay_Amount').addClass('button').attr('amount', data.metadata.to_pay)
 
                 }
+
+
+                $('#payment_nodes').html(data.metadata.payments_xhtml)
+
+
+                for (var key in data.metadata.class_html) {
+                    $('.' + key).html(data.metadata.class_html[key])
+                }
+
+
+                for (var key in data.metadata.hide) {
+                    $('#' + data.metadata.hide[key]).addClass('hide')
+                }
+                for (var key in data.metadata.show) {
+                    $('#' + data.metadata.show[key]).removeClass('hide')
+                }
+
+
+
+
 
 
                 if (data.metadata.items == 0) {

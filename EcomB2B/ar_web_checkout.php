@@ -394,7 +394,7 @@ function place_order($order, $payment_account_key, $customer, $website, $editor,
 
     $order->update(
         array(
-            'Order Current Dispatch State'             => 'Submitted by Customer',
+            'Order State'             => 'In Process',
             'Order Checkout Block Payment Account Key' => $payment_account_key
         ), 'no_history'
     );

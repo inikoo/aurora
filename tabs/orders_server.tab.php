@@ -11,7 +11,7 @@
 
 $tab     = 'orders_server';
 $ar_file = 'ar_orders_tables.php';
-$tipo    = 'orders';
+$tipo    = 'orders_server';
 
 
 
@@ -28,6 +28,8 @@ if($account->get('Account Stores')==0){
 }
 
 $default = $user->get_tab_defaults($tab);
+
+
 
 $table_views = array();
 

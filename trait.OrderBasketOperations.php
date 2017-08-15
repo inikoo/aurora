@@ -79,7 +79,7 @@ trait OrderBasketOperations {
         }
 
 
-        $this->data['Order Current Dispatch State']      = 'In Process';
+        $this->data['Order State']      = 'InBasket';
         $this->data['Order Current XHTML Payment State'] = _('Waiting for payment');
 
 
@@ -205,40 +205,6 @@ trait OrderBasketOperations {
         $this->data['Order Items Discount Amount'] = 0;
 
 
-        /*
-
-                $sql = sprintf(
-                    "INSERT INTO `Order Dimension` (
-                `Order Show in Warehouse Orders`,`Order Telephone`,`Order Customer Fiscal Name`,`Order Email`,		`Order Apply Auto Customer Account Payment`,`Order Tax Number`,`Order Tax Number Valid`,`Order Created Date`,`Order Payment Method`,`Order Customer Order Number`,
-                `Order Tax Code`,`Order Tax Rate`,`Order Customer Contact Name`,`Order For`,`Order File As`,`Order Date`,`Order Last Updated Date`,`Order Public ID`,`Order Store Key`,`Order Main Source Type`,`Order Customer Key`,`Order Customer Name`,`Order Current Dispatch State`,`Order Current Payment State`,`Order Current XHTML Payment State`,`Order Customer Message`,`Order Original Data MIME Type`,
-                `Order Items Gross Amount`,`Order Items Discount Amount`,`Order Original Metadata`,`Order Type`,`Order Currency`,`Order Currency Exchange`,`Order Original Data Filename`,`Order Original Data Source`,`Order Tax Name`,`Order Tax Operations`,`Order Tax Selection Type`) VALUES
-                (%s,%s, %s,%s,%s,%s,%s,%s,%s,%d,
-                %s,%f,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s ,
-                %.2f,%.2f,%s,%s,%s,   %f,%s,%s,%s,%s,%s)", prepare_mysql($this->data['Order Show in Warehouse Orders']), prepare_mysql($this->data['Order Telephone']),
-                    prepare_mysql($this->data['Order Customer Fiscal Name']), prepare_mysql($this->data['Order Email']), prepare_mysql(
-                        $this->data['Order Apply Auto Customer Account Payment']
-                    ), prepare_mysql($this->data['Order Tax Number']), prepare_mysql($this->data['Order Tax Number Valid']), prepare_mysql($this->data['Order Created Date']),
-                    prepare_mysql($this->data['Order Payment Method']),
-
-                    $this->data['Order Customer Order Number'], prepare_mysql($this->data['Order Tax Code'], false), $this->data['Order Tax Rate'],
-
-
-                    prepare_mysql($this->data['Order Customer Contact Name'], false), prepare_mysql($this->data['Order For']), prepare_mysql($this->data['Order File As']),
-                    prepare_mysql($this->data['Order Date']), prepare_mysql($this->data['Order Date']), prepare_mysql($this->data['Order Public ID']), prepare_mysql($this->data['Order Store Key']),
-
-                    prepare_mysql($this->data['Order Main Source Type']), prepare_mysql($this->data['Order Customer Key']), prepare_mysql($this->data['Order Customer Name'], false),
-                    prepare_mysql($this->data['Order Current Dispatch State']), prepare_mysql($this->data['Order Current Payment State']), prepare_mysql($this->data['Order Current XHTML Payment State']),
-                    prepare_mysql($this->data['Order Customer Message']), prepare_mysql($this->data['Order Original Data MIME Type']),
-
-
-                    $this->data['Order Items Gross Amount'], $this->data['Order Items Discount Amount'], prepare_mysql($this->data['Order Original Metadata']), prepare_mysql($this->data['Order Type']),
-                    prepare_mysql($this->data['Order Currency']), $this->data['Order Currency Exchange'], prepare_mysql($this->data['Order Original Data Filename']),
-                    prepare_mysql($this->data['Order Original Data Source']), prepare_mysql($this->data['Order Tax Name']), prepare_mysql($this->data['Order Tax Operations']),
-                    prepare_mysql($this->data['Order Tax Selection Type'])
-                );
-
-        */
-        //print_r($this->data);
 
         $keys   = '(';
         $values = 'values (';

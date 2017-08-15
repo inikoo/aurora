@@ -443,7 +443,7 @@ function customers_awhere($awhere) {
     if ($where_data['pending_orders'] == 'Yes') {
         $use_order = true;
         $where_orders
-            = " and `Order Current Dispatch State` in ('In Process')";
+            = " and `Order State` in ('InBasket')";
 
         $tmp = '';
         foreach ($where_data['pending_order_payment_method'] as $payment_method) {

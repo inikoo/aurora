@@ -78,7 +78,12 @@ window.addEventListener('popstate', function (event) {
 
 });
 
+
+
 function change_tab(tab, metadata) {
+
+
+
     $('#maintabs .tab').removeClass('selected')
     $('#tab_' + tab.replace(/(:|\.|\[|\])/g, "\$1")).addClass('selected')
     change_view(state.request + '&tab=' + tab, metadata)
@@ -223,6 +228,25 @@ function change_view(_request, metadata) {
 
         if (old_state_request == '') {
             old_state_request = data.state.request
+        }
+
+
+
+        console.log(metadata)
+
+
+        if(metadata.post_operations=='delivery_note.fast_track_packing'){
+
+            $('#maintabs .tab').addClass('hide')
+
+
+            $("div[id='tab_delivery_note.fast_track_packing']").removeClass('hide')
+        }else if(metadata.post_operations=='delivery_note.fast_track_packing_off'){
+
+            $('#maintabs .tab').removeClass('hide')
+
+
+            $("div[id='tab_delivery_note.fast_track_packing']").addClass('hide')
         }
 
         change_browser_history_state(data.state.request)

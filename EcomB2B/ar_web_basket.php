@@ -114,16 +114,6 @@ function update_item($_data, $customer, $website, $editor,$db) {
 
 
 
-    if ($order->data['Order Current Dispatch State'] == 'Waiting for Payment Confirmation') {
-        $response = array(
-            'state' => 201,
-            'key'   => $order->id,
-
-        );
-        echo json_encode($response);
-        exit;
-    }
-
 
     $product_pid = $_data['product_id'];
     $quantity    = $_data['qty'];
@@ -131,18 +121,10 @@ function update_item($_data, $customer, $website, $editor,$db) {
 
     if (is_numeric($quantity) and $quantity >= 0) {
         $quantity = ceil($quantity);
-        if (in_array(
-            $order->data['Order Current Dispatch State'], array(
-                                                            'Ready to Pick',
-                                                            'Picking & Packing',
-                                                            'Packed'
-                                                        )
-        )) {
-            $dispatching_state = 'Ready to Pick';
-        } else {
 
-            $dispatching_state = 'In Process';
-        }
+
+        $dispatching_state = 'In Process';
+
 
         $payment_state = 'Waiting Payment';
 
