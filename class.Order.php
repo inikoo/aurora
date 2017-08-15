@@ -2856,11 +2856,13 @@ VALUES (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 
 
         $sql           = sprintf(
-            "SELECT `Order Transaction Fact Key`,`Order Quantity`,`Product Key`,`Product ID`,`Order Transaction Amount` FROM `Order Transaction Fact` WHERE `Current Dispatching State`='In Process' AND  `Product ID`=%d AND `Order Key`=%d ",
+            "SELECT `Order Transaction Fact Key`,`Order Quantity`,`Product Key`,`Product ID`,`Order Transaction Amount` FROM `Order Transaction Fact` WHERE `Current Dispatching State` in ('In Process','In Process by Customer') AND  `Product ID`=%d AND `Order Key`=%d ",
             $product_pid, $this->id
         );
         $affected_rows = 0;
 
+
+        
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
