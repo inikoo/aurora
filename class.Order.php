@@ -2862,7 +2862,7 @@ VALUES (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
         $affected_rows = 0;
 
 
-        
+
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
@@ -2979,6 +2979,10 @@ VALUES (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
     }
 
     function get_insurances($dn_key = false) {
+
+
+        include_once('class.TaxCategory.php');
+
         $insurances = array();
         if ($this->data['Order Number Items'] == 0) {
 
