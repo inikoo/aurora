@@ -17,7 +17,6 @@ function get_product_showcase($data, $smarty, $user, $db) {
     $product = $data['_object'];
 
 
-
     if (!$product->id) {
         return "";
     }
@@ -26,9 +25,9 @@ function get_product_showcase($data, $smarty, $user, $db) {
     $product->get_webpage();
 
 
-
-    $product->update_web_state_slow_forks(true);
-
+    if ($product->id == 155922) {
+        $product->update_web_state_slow_forks(true);
+    }
     //$product->update_availability();
 
     $images = $product->get_images_slidesshow();
@@ -87,296 +86,296 @@ function get_product_showcase($data, $smarty, $user, $db) {
 
     $smarty->assign(
         'quarter_data', array(
-            array(
-                'header'                        => get_quarter_label(
-                    strtotime('now')
-                ),
-                'invoiced_amount_delta_title'   => delta(
-                    $product->get(
-                        'Product Quarter To Day Acc Invoiced Amount'
-                    ), $product->get(
-                    'Product Quarter To Day Acc 1YB Invoiced Amount'
-                )
-                ),
-                'invoiced_amount_delta'         => ($product->get(
-                    'Product Quarter To Day Acc Invoiced Amount'
-                ) > $product->get(
-                    'Product Quarter To Day Acc 1YB Invoiced Amount'
-                )
-                    ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>'
-                    : ($product->get(
-                        'Product Quarter To Day Acc Invoiced Amount'
-                    ) < $product->get(
-                        'Product Quarter To Day Acc 1YB Invoiced Amount'
-                    ) ? '<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>' : '')),
-                'quantity_invoiced_delta_title' => delta(
-                    $product->get(
-                        'Product Quarter To Day Acc Quantity Invoiced'
-                    ), $product->get(
-                    'Product Quarter To Day Acc 1YB Quantity Invoiced'
-                )
-                ),
-                'quantity_invoiced_delta'       => ($product->get(
-                    'Product Quarter To Day Acc Quantity Invoiced'
-                ) > $product->get(
-                    'Product Quarter To Day Acc 1YB Quantity Invoiced'
-                )
-                    ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>'
-                    : ($product->get(
-                        'Product Quarter To Day Acc Quantity Invoiced'
-                    ) < $product->get(
-                        'Product Quarter To Day Acc 1YB Quantity Invoiced'
-                    ) ? '<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>' : ''))
+                          array(
+                              'header'                        => get_quarter_label(
+                                  strtotime('now')
+                              ),
+                              'invoiced_amount_delta_title'   => delta(
+                                  $product->get(
+                                      'Product Quarter To Day Acc Invoiced Amount'
+                                  ), $product->get(
+                                  'Product Quarter To Day Acc 1YB Invoiced Amount'
+                              )
+                              ),
+                              'invoiced_amount_delta'         => ($product->get(
+                                  'Product Quarter To Day Acc Invoiced Amount'
+                              ) > $product->get(
+                                  'Product Quarter To Day Acc 1YB Invoiced Amount'
+                              )
+                                  ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>'
+                                  : ($product->get(
+                                      'Product Quarter To Day Acc Invoiced Amount'
+                                  ) < $product->get(
+                                      'Product Quarter To Day Acc 1YB Invoiced Amount'
+                                  ) ? '<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>' : '')),
+                              'quantity_invoiced_delta_title' => delta(
+                                  $product->get(
+                                      'Product Quarter To Day Acc Quantity Invoiced'
+                                  ), $product->get(
+                                  'Product Quarter To Day Acc 1YB Quantity Invoiced'
+                              )
+                              ),
+                              'quantity_invoiced_delta'       => ($product->get(
+                                  'Product Quarter To Day Acc Quantity Invoiced'
+                              ) > $product->get(
+                                  'Product Quarter To Day Acc 1YB Quantity Invoiced'
+                              )
+                                  ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>'
+                                  : ($product->get(
+                                      'Product Quarter To Day Acc Quantity Invoiced'
+                                  ) < $product->get(
+                                      'Product Quarter To Day Acc 1YB Quantity Invoiced'
+                                  ) ? '<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>' : ''))
 
-            ),
-            array(
-                'header'                        => get_quarter_label(
-                    strtotime('now -3 months')
-                ),
-                'invoiced_amount_delta_title'   => delta(
-                    $product->get('Product 1 Quarter Ago Invoiced Amount'), $product->get('Product 1 Quarter Ago 1YB Invoiced Amount')
-                ),
-                'invoiced_amount_delta'         => ($product->get('Product 1 Quarter Ago Invoiced Amount') > $product->get(
-                    'Product 1 Quarter Ago 1YB Invoiced Amount'
-                )
-                    ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>'
-                    : ($product->get(
-                        'Product 1 Quarter Ago Invoiced Amount'
-                    ) < $product->get(
-                        'Product 1 Quarter Ago 1YB Invoiced Amount'
-                    ) ? '<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>' : '')),
-                'quantity_invoiced_delta_title' => delta(
-                    $product->get('Product 1 Quarter Ago Quantity Invoiced'), $product->get(
-                    'Product 1 Quarter Ago 1YB Quantity Invoiced'
-                )
-                ),
-                'quantity_invoiced_delta'       => ($product->get('Product 1 Quarter Ago Quantity Invoiced') > $product->get(
-                    'Product 1 Quarter Ago 1YB Quantity Invoiced'
-                )
-                    ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>'
-                    : ($product->get(
-                        'Product 1 Quarter Ago Quantity Invoiced'
-                    ) < $product->get(
-                        'Product 1 Quarter Ago 1YB Quantity Invoiced'
-                    ) ? '<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>' : ''))
+                          ),
+                          array(
+                              'header'                        => get_quarter_label(
+                                  strtotime('now -3 months')
+                              ),
+                              'invoiced_amount_delta_title'   => delta(
+                                  $product->get('Product 1 Quarter Ago Invoiced Amount'), $product->get('Product 1 Quarter Ago 1YB Invoiced Amount')
+                              ),
+                              'invoiced_amount_delta'         => ($product->get('Product 1 Quarter Ago Invoiced Amount') > $product->get(
+                                  'Product 1 Quarter Ago 1YB Invoiced Amount'
+                              )
+                                  ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>'
+                                  : ($product->get(
+                                      'Product 1 Quarter Ago Invoiced Amount'
+                                  ) < $product->get(
+                                      'Product 1 Quarter Ago 1YB Invoiced Amount'
+                                  ) ? '<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>' : '')),
+                              'quantity_invoiced_delta_title' => delta(
+                                  $product->get('Product 1 Quarter Ago Quantity Invoiced'), $product->get(
+                                  'Product 1 Quarter Ago 1YB Quantity Invoiced'
+                              )
+                              ),
+                              'quantity_invoiced_delta'       => ($product->get('Product 1 Quarter Ago Quantity Invoiced') > $product->get(
+                                  'Product 1 Quarter Ago 1YB Quantity Invoiced'
+                              )
+                                  ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>'
+                                  : ($product->get(
+                                      'Product 1 Quarter Ago Quantity Invoiced'
+                                  ) < $product->get(
+                                      'Product 1 Quarter Ago 1YB Quantity Invoiced'
+                                  ) ? '<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>' : ''))
 
-            ),
-            array(
-                'header'                        => get_quarter_label(
-                    strtotime('now -6 months')
-                ),
-                'invoiced_amount_delta_title'   => delta(
-                    $product->get('Product 2 Quarter Ago Invoiced Amount'), $product->get('Product 2 Quarter Ago 1YB Invoiced Amount')
-                ),
-                'invoiced_amount_delta'         => ($product->get('Product 2 Quarter Ago Invoiced Amount') > $product->get(
-                    'Product 2 Quarter Ago 1YB Invoiced Amount'
-                )
-                    ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>'
-                    : ($product->get(
-                        'Product 2 Quarter Ago Invoiced Amount'
-                    ) < $product->get(
-                        'Product 2 Quarter Ago 1YB Invoiced Amount'
-                    ) ? '<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>' : '')),
-                'quantity_invoiced_delta_title' => delta(
-                    $product->get('Product 2 Quarter Ago Quantity Invoiced'), $product->get(
-                    'Product 2 Quarter Ago 1YB Quantity Invoiced'
-                )
-                ),
-                'quantity_invoiced_delta'       => ($product->get('Product 2 Quarter Ago Quantity Invoiced') > $product->get(
-                    'Product 2 Quarter Ago 1YB Quantity Invoiced'
-                )
-                    ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>'
-                    : ($product->get(
-                        'Product 2 Quarter Ago Quantity Invoiced'
-                    ) < $product->get(
-                        'Product 2 Quarter Ago 1YB Quantity Invoiced'
-                    ) ? '<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>' : ''))
+                          ),
+                          array(
+                              'header'                        => get_quarter_label(
+                                  strtotime('now -6 months')
+                              ),
+                              'invoiced_amount_delta_title'   => delta(
+                                  $product->get('Product 2 Quarter Ago Invoiced Amount'), $product->get('Product 2 Quarter Ago 1YB Invoiced Amount')
+                              ),
+                              'invoiced_amount_delta'         => ($product->get('Product 2 Quarter Ago Invoiced Amount') > $product->get(
+                                  'Product 2 Quarter Ago 1YB Invoiced Amount'
+                              )
+                                  ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>'
+                                  : ($product->get(
+                                      'Product 2 Quarter Ago Invoiced Amount'
+                                  ) < $product->get(
+                                      'Product 2 Quarter Ago 1YB Invoiced Amount'
+                                  ) ? '<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>' : '')),
+                              'quantity_invoiced_delta_title' => delta(
+                                  $product->get('Product 2 Quarter Ago Quantity Invoiced'), $product->get(
+                                  'Product 2 Quarter Ago 1YB Quantity Invoiced'
+                              )
+                              ),
+                              'quantity_invoiced_delta'       => ($product->get('Product 2 Quarter Ago Quantity Invoiced') > $product->get(
+                                  'Product 2 Quarter Ago 1YB Quantity Invoiced'
+                              )
+                                  ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>'
+                                  : ($product->get(
+                                      'Product 2 Quarter Ago Quantity Invoiced'
+                                  ) < $product->get(
+                                      'Product 2 Quarter Ago 1YB Quantity Invoiced'
+                                  ) ? '<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>' : ''))
 
-            ),
-            array(
-                'header'                        => get_quarter_label(
-                    strtotime('now -9 months')
-                ),
-                'invoiced_amount_delta_title'   => delta(
-                    $product->get('Product 3 Quarter Ago Invoiced Amount'), $product->get('Product 3 Quarter Ago 1YB Invoiced Amount')
-                ),
-                'invoiced_amount_delta'         => ($product->get('Product 3 Quarter Ago Invoiced Amount') > $product->get(
-                    'Product 3 Quarter Ago 1YB Invoiced Amount'
-                )
-                    ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>'
-                    : ($product->get(
-                        'Product 3 Quarter Ago Invoiced Amount'
-                    ) < $product->get(
-                        'Product 3 Quarter Ago 1YB Invoiced Amount'
-                    ) ? '<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>' : '')),
-                'quantity_invoiced_delta_title' => delta(
-                    $product->get('Product 3 Quarter Ago Quantity Invoiced'), $product->get(
-                    'Product 3 Quarter Ago 1YB Quantity Invoiced'
-                )
-                ),
-                'quantity_invoiced_delta'       => ($product->get('Product 3 Quarter Ago Quantity Invoiced') > $product->get(
-                    'Product 3 Quarter Ago 1YB Quantity Invoiced'
-                )
-                    ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>'
-                    : ($product->get(
-                        'Product 3 Quarter Ago Quantity Invoiced'
-                    ) < $product->get(
-                        'Product 3 Quarter Ago 1YB Quantity Invoiced'
-                    ) ? '<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>' : ''))
-            ),
-            array(
-                'header'                        => get_quarter_label(
-                    strtotime('now -12 months')
-                ),
-                'invoiced_amount_delta_title'   => delta(
-                    $product->get('Product 4 Quarter Ago Invoiced Amount'), $product->get('Product 4 Quarter Ago 1YB Invoiced Amount')
-                ),
-                'invoiced_amount_delta'         => ($product->get('Product 4 Quarter Ago Invoiced Amount') > $product->get(
-                    'Product 4 Quarter Ago 1YB Invoiced Amount'
-                )
-                    ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>'
-                    : ($product->get(
-                        'Product 4 Quarter Ago Invoiced Amount'
-                    ) < $product->get(
-                        'Product 4 Quarter Ago 1YB Invoiced Amount'
-                    ) ? '<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>' : '')),
-                'quantity_invoiced_delta_title' => delta(
-                    $product->get('Product 4 Quarter Ago Quantity Invoiced'), $product->get(
-                    'Product 4 Quarter Ago 1YB Quantity Invoiced'
-                )
-                ),
-                'quantity_invoiced_delta'       => ($product->get('Product 4 Quarter Ago Quantity Invoiced') > $product->get(
-                    'Product 4 Quarter Ago 1YB Quantity Invoiced'
-                )
-                    ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>'
-                    : ($product->get(
-                        'Product 4 Quarter Ago Quantity Invoiced'
-                    ) < $product->get(
-                        'Product 4 Quarter Ago 1YB Quantity Invoiced'
-                    ) ? '<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>' : ''))
-            ),
-        )
+                          ),
+                          array(
+                              'header'                        => get_quarter_label(
+                                  strtotime('now -9 months')
+                              ),
+                              'invoiced_amount_delta_title'   => delta(
+                                  $product->get('Product 3 Quarter Ago Invoiced Amount'), $product->get('Product 3 Quarter Ago 1YB Invoiced Amount')
+                              ),
+                              'invoiced_amount_delta'         => ($product->get('Product 3 Quarter Ago Invoiced Amount') > $product->get(
+                                  'Product 3 Quarter Ago 1YB Invoiced Amount'
+                              )
+                                  ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>'
+                                  : ($product->get(
+                                      'Product 3 Quarter Ago Invoiced Amount'
+                                  ) < $product->get(
+                                      'Product 3 Quarter Ago 1YB Invoiced Amount'
+                                  ) ? '<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>' : '')),
+                              'quantity_invoiced_delta_title' => delta(
+                                  $product->get('Product 3 Quarter Ago Quantity Invoiced'), $product->get(
+                                  'Product 3 Quarter Ago 1YB Quantity Invoiced'
+                              )
+                              ),
+                              'quantity_invoiced_delta'       => ($product->get('Product 3 Quarter Ago Quantity Invoiced') > $product->get(
+                                  'Product 3 Quarter Ago 1YB Quantity Invoiced'
+                              )
+                                  ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>'
+                                  : ($product->get(
+                                      'Product 3 Quarter Ago Quantity Invoiced'
+                                  ) < $product->get(
+                                      'Product 3 Quarter Ago 1YB Quantity Invoiced'
+                                  ) ? '<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>' : ''))
+                          ),
+                          array(
+                              'header'                        => get_quarter_label(
+                                  strtotime('now -12 months')
+                              ),
+                              'invoiced_amount_delta_title'   => delta(
+                                  $product->get('Product 4 Quarter Ago Invoiced Amount'), $product->get('Product 4 Quarter Ago 1YB Invoiced Amount')
+                              ),
+                              'invoiced_amount_delta'         => ($product->get('Product 4 Quarter Ago Invoiced Amount') > $product->get(
+                                  'Product 4 Quarter Ago 1YB Invoiced Amount'
+                              )
+                                  ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>'
+                                  : ($product->get(
+                                      'Product 4 Quarter Ago Invoiced Amount'
+                                  ) < $product->get(
+                                      'Product 4 Quarter Ago 1YB Invoiced Amount'
+                                  ) ? '<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>' : '')),
+                              'quantity_invoiced_delta_title' => delta(
+                                  $product->get('Product 4 Quarter Ago Quantity Invoiced'), $product->get(
+                                  'Product 4 Quarter Ago 1YB Quantity Invoiced'
+                              )
+                              ),
+                              'quantity_invoiced_delta'       => ($product->get('Product 4 Quarter Ago Quantity Invoiced') > $product->get(
+                                  'Product 4 Quarter Ago 1YB Quantity Invoiced'
+                              )
+                                  ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>'
+                                  : ($product->get(
+                                      'Product 4 Quarter Ago Quantity Invoiced'
+                                  ) < $product->get(
+                                      'Product 4 Quarter Ago 1YB Quantity Invoiced'
+                                  ) ? '<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>' : ''))
+                          ),
+                      )
     );
     $smarty->assign(
         'year_data', array(
-            array(
-                'header'                        => date(
-                    'Y', strtotime('now')
-                ),
-                'invoiced_amount_delta_title'   => delta(
-                    $product->get('Product Year To Day Acc Invoiced Amount'), $product->get(
-                    'Product Year To Day Acc 1YB Invoiced Amount'
-                )
-                ),
-                'invoiced_amount_delta'         => ($product->get('Product Year To Day Acc Invoiced Amount') > $product->get(
-                    'Product Year To Day Acc 1YB Invoiced Amount'
-                )
-                    ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>'
-                    : ($product->get(
-                        'Product Year To Day Acc Invoiced Amount'
-                    ) < $product->get(
-                        'Product Year To Day Acc 1YB Invoiced Amount'
-                    ) ? '<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>' : '')),
-                'quantity_invoiced_delta_title' => delta(
-                    $product->get(
-                        'Product Year To Day Acc Quantity Invoiced'
-                    ), $product->get(
-                    'Product Year To Day Acc 1YB Quantity Invoiced'
-                )
-                ),
-                'quantity_invoiced_delta'       => ($product->get('Product Year To Day Acc Quantity Invoiced') > $product->get(
-                    'Product Year To Day Acc 1YB Quantity Invoiced'
-                )
-                    ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>'
-                    : ($product->get(
-                        'Product Year To Day Acc Quantity Invoiced'
-                    ) < $product->get(
-                        'Product Year To Day Acc 1YB Quantity Invoiced'
-                    ) ? '<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>' : ''))
+                       array(
+                           'header'                        => date(
+                               'Y', strtotime('now')
+                           ),
+                           'invoiced_amount_delta_title'   => delta(
+                               $product->get('Product Year To Day Acc Invoiced Amount'), $product->get(
+                               'Product Year To Day Acc 1YB Invoiced Amount'
+                           )
+                           ),
+                           'invoiced_amount_delta'         => ($product->get('Product Year To Day Acc Invoiced Amount') > $product->get(
+                               'Product Year To Day Acc 1YB Invoiced Amount'
+                           )
+                               ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>'
+                               : ($product->get(
+                                   'Product Year To Day Acc Invoiced Amount'
+                               ) < $product->get(
+                                   'Product Year To Day Acc 1YB Invoiced Amount'
+                               ) ? '<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>' : '')),
+                           'quantity_invoiced_delta_title' => delta(
+                               $product->get(
+                                   'Product Year To Day Acc Quantity Invoiced'
+                               ), $product->get(
+                               'Product Year To Day Acc 1YB Quantity Invoiced'
+                           )
+                           ),
+                           'quantity_invoiced_delta'       => ($product->get('Product Year To Day Acc Quantity Invoiced') > $product->get(
+                               'Product Year To Day Acc 1YB Quantity Invoiced'
+                           )
+                               ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>'
+                               : ($product->get(
+                                   'Product Year To Day Acc Quantity Invoiced'
+                               ) < $product->get(
+                                   'Product Year To Day Acc 1YB Quantity Invoiced'
+                               ) ? '<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>' : ''))
 
-            ),
-            array(
-                'header'                        => date(
-                    'Y', strtotime('now -1 year')
-                ),
-                'invoiced_amount_delta_title'   => delta(
-                    $product->get('Product 1 Year Ago Invoiced Amount'), $product->get('Product 2 Year Ago Invoiced Amount')
-                ),
-                'invoiced_amount_delta'         => ($product->get('Product 1 Year Ago Invoiced Amount') > $product->get('Product 2 Year Ago Invoiced Amount')
-                    ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>'
-                    : ($product->get('Product 1 Year Ago Invoiced Amount') < $product->get('Product 2 Year Ago Invoiced Amount')
-                        ? '<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>' : '')),
-                'quantity_invoiced_delta_title' => delta(
-                    $product->get('Product 1 Year Ago Quantity Invoiced'), $product->get('Product 2 Year Ago Quantity Invoiced')
-                ),
-                'quantity_invoiced_delta'       => ($product->get('Product 1 Year Ago Quantity Invoiced') > $product->get('Product 2 Year Ago Quantity Invoiced')
-                    ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>'
-                    : ($product->get('Product 1 Year Ago Quantity Invoiced') < $product->get(
-                        'Product 2 Year Ago Quantity Invoiced'
-                    ) ? '<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>' : ''))
-            ),
-            array(
-                'header'                        => date(
-                    'Y', strtotime('now -2 year')
-                ),
-                'invoiced_amount_delta_title'   => delta(
-                    $product->get('Product 2 Year Ago Invoiced Amount'), $product->get('Product 3 Year Ago Invoiced Amount')
-                ),
-                'invoiced_amount_delta'         => ($product->get('Product 2 Year Ago Invoiced Amount') > $product->get('Product 3 Year Ago Invoiced Amount')
-                    ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>'
-                    : ($product->get('Product 2 Year Ago Invoiced Amount') < $product->get('Product 3 Year Ago Invoiced Amount')
-                        ? '<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>' : '')),
-                'quantity_invoiced_delta_title' => delta(
-                    $product->get('Product 2 Year Ago Quantity Invoiced'), $product->get('Product 3 Year Ago Quantity Invoiced')
-                ),
-                'quantity_invoiced_delta'       => ($product->get('Product 2 Year Ago Quantity Invoiced') > $product->get('Product 3 Year Ago Quantity Invoiced')
-                    ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>'
-                    : ($product->get('Product 2 Year Ago Quantity Invoiced') < $product->get(
-                        'Product 3 Year Ago Quantity Invoiced'
-                    ) ? '<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>' : ''))
-            ),
-            array(
-                'header'                        => date(
-                    'Y', strtotime('now -3 year')
-                ),
-                'invoiced_amount_delta_title'   => delta(
-                    $product->get('Product 3 Year Ago Invoiced Amount'), $product->get('Product 4 Year Ago Invoiced Amount')
-                ),
-                'invoiced_amount_delta'         => ($product->get('Product 3 Year Ago Invoiced Amoun') > $product->get('Product 4 Year Ago Invoiced Amount')
-                    ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>'
-                    : ($product->get('Product 3 Year Ago Invoiced Amount') < $product->get('Product 4 Year Ago Invoiced Amount')
-                        ? '<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>' : '')),
-                'quantity_invoiced_delta_title' => delta(
-                    $product->get('Product 3 Year Ago Quantity Invoiced'), $product->get('Product 4 Year Ago Quantity Invoiced')
-                ),
-                'quantity_invoiced_delta'       => ($product->get('Product 3 Year Ago Invoiced Amoun') > $product->get('Product 4 Year Ago Quantity Invoiced')
-                    ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>'
-                    : ($product->get('Product 3 Year Ago Quantity Invoiced') < $product->get(
-                        'Product 4 Year Ago Quantity Invoiced'
-                    ) ? '<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>' : ''))
+                       ),
+                       array(
+                           'header'                        => date(
+                               'Y', strtotime('now -1 year')
+                           ),
+                           'invoiced_amount_delta_title'   => delta(
+                               $product->get('Product 1 Year Ago Invoiced Amount'), $product->get('Product 2 Year Ago Invoiced Amount')
+                           ),
+                           'invoiced_amount_delta'         => ($product->get('Product 1 Year Ago Invoiced Amount') > $product->get('Product 2 Year Ago Invoiced Amount')
+                               ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>' : ($product->get('Product 1 Year Ago Invoiced Amount') < $product->get(
+                                   'Product 2 Year Ago Invoiced Amount'
+                               ) ? '<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>' : '')),
+                           'quantity_invoiced_delta_title' => delta(
+                               $product->get('Product 1 Year Ago Quantity Invoiced'), $product->get('Product 2 Year Ago Quantity Invoiced')
+                           ),
+                           'quantity_invoiced_delta'       => ($product->get('Product 1 Year Ago Quantity Invoiced') > $product->get('Product 2 Year Ago Quantity Invoiced')
+                               ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>'
+                               : ($product->get('Product 1 Year Ago Quantity Invoiced') < $product->get(
+                                   'Product 2 Year Ago Quantity Invoiced'
+                               ) ? '<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>' : ''))
+                       ),
+                       array(
+                           'header'                        => date(
+                               'Y', strtotime('now -2 year')
+                           ),
+                           'invoiced_amount_delta_title'   => delta(
+                               $product->get('Product 2 Year Ago Invoiced Amount'), $product->get('Product 3 Year Ago Invoiced Amount')
+                           ),
+                           'invoiced_amount_delta'         => ($product->get('Product 2 Year Ago Invoiced Amount') > $product->get('Product 3 Year Ago Invoiced Amount')
+                               ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>' : ($product->get('Product 2 Year Ago Invoiced Amount') < $product->get(
+                                   'Product 3 Year Ago Invoiced Amount'
+                               ) ? '<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>' : '')),
+                           'quantity_invoiced_delta_title' => delta(
+                               $product->get('Product 2 Year Ago Quantity Invoiced'), $product->get('Product 3 Year Ago Quantity Invoiced')
+                           ),
+                           'quantity_invoiced_delta'       => ($product->get('Product 2 Year Ago Quantity Invoiced') > $product->get('Product 3 Year Ago Quantity Invoiced')
+                               ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>'
+                               : ($product->get('Product 2 Year Ago Quantity Invoiced') < $product->get(
+                                   'Product 3 Year Ago Quantity Invoiced'
+                               ) ? '<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>' : ''))
+                       ),
+                       array(
+                           'header'                        => date(
+                               'Y', strtotime('now -3 year')
+                           ),
+                           'invoiced_amount_delta_title'   => delta(
+                               $product->get('Product 3 Year Ago Invoiced Amount'), $product->get('Product 4 Year Ago Invoiced Amount')
+                           ),
+                           'invoiced_amount_delta'         => ($product->get('Product 3 Year Ago Invoiced Amoun') > $product->get('Product 4 Year Ago Invoiced Amount')
+                               ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>' : ($product->get('Product 3 Year Ago Invoiced Amount') < $product->get(
+                                   'Product 4 Year Ago Invoiced Amount'
+                               ) ? '<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>' : '')),
+                           'quantity_invoiced_delta_title' => delta(
+                               $product->get('Product 3 Year Ago Quantity Invoiced'), $product->get('Product 4 Year Ago Quantity Invoiced')
+                           ),
+                           'quantity_invoiced_delta'       => ($product->get('Product 3 Year Ago Invoiced Amoun') > $product->get('Product 4 Year Ago Quantity Invoiced')
+                               ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>'
+                               : ($product->get('Product 3 Year Ago Quantity Invoiced') < $product->get(
+                                   'Product 4 Year Ago Quantity Invoiced'
+                               ) ? '<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>' : ''))
 
-            ),
-            array(
-                'header'                        => date(
-                    'Y', strtotime('now -4 year')
-                ),
-                'invoiced_amount_delta_title'   => delta(
-                    $product->get('Product 4 Year Ago Invoiced Amount'), $product->get('Product 5 Year Ago Invoiced Amount')
-                ),
-                'invoiced_amount_delta'         => ($product->get('Product 4 Year Ago Invoiced Amount') > $product->get('Product 5 Year Ago Invoiced Amount')
-                    ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>'
-                    : ($product->get('Product 4 Year Ago Invoiced Amount') < $product->get('Product 5 Year Ago Invoiced Amount')
-                        ? '<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>' : '')),
-                'quantity_invoiced_delta_title' => delta(
-                    $product->get('Product 4 Year Ago Quantity Invoiced'), $product->get('Product 5 Year Ago Quantity Invoiced')
-                ),
-                'quantity_invoiced_delta'       => ($product->get('Product 4 Year Ago Quantity Invoiced') > $product->get('Product 5 Year Ago Quantity Invoiced')
-                    ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>'
-                    : ($product->get('Product 4 Year Ago Quantity Invoiced') < $product->get(
-                        'Product 5 Year Ago Quantity Invoiced'
-                    ) ? '<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>' : ''))
-            )
-        )
+                       ),
+                       array(
+                           'header'                        => date(
+                               'Y', strtotime('now -4 year')
+                           ),
+                           'invoiced_amount_delta_title'   => delta(
+                               $product->get('Product 4 Year Ago Invoiced Amount'), $product->get('Product 5 Year Ago Invoiced Amount')
+                           ),
+                           'invoiced_amount_delta'         => ($product->get('Product 4 Year Ago Invoiced Amount') > $product->get('Product 5 Year Ago Invoiced Amount')
+                               ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>' : ($product->get('Product 4 Year Ago Invoiced Amount') < $product->get(
+                                   'Product 5 Year Ago Invoiced Amount'
+                               ) ? '<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>' : '')),
+                           'quantity_invoiced_delta_title' => delta(
+                               $product->get('Product 4 Year Ago Quantity Invoiced'), $product->get('Product 5 Year Ago Quantity Invoiced')
+                           ),
+                           'quantity_invoiced_delta'       => ($product->get('Product 4 Year Ago Quantity Invoiced') > $product->get('Product 5 Year Ago Quantity Invoiced')
+                               ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>'
+                               : ($product->get('Product 4 Year Ago Quantity Invoiced') < $product->get(
+                                   'Product 5 Year Ago Quantity Invoiced'
+                               ) ? '<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>' : ''))
+                       )
+                   )
     );
     $customers_title = sprintf(
         ngettext(
@@ -385,8 +384,8 @@ function get_product_showcase($data, $smarty, $user, $db) {
     );
     $customers       = sprintf(
         '<i class="fa fa-users padding_right_5" aria-hidden="true"></i> %s (%s)', $product->get('Total Acc Customers'), percentage(
-            $product->get('Product Total Acc Repeat Customers'), $product->get('Product Total Acc Customers')
-        )
+                                                                                    $product->get('Product Total Acc Repeat Customers'), $product->get('Product Total Acc Customers')
+                                                                                )
     );
     $smarty->assign('customers', $customers);
 

@@ -1824,6 +1824,12 @@ class Product extends Asset {
                 "SELECT `Order Key` FROM `Order Transaction Fact` WHERE `Current Dispatching State` in ('In Process','In Process by Customer') AND `Product ID`=%d ", $this->id
             );
 
+            if ($this->id == 155922) {
+
+                print $sql;
+
+            }
+
 
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
