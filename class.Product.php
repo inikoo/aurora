@@ -1834,11 +1834,7 @@ class Product extends Asset {
                     if ($web_availability == 'No') {
                         $order = new Order($row['Order Key']);
 
-                        if ($this->id == 155922) {
 
-                            print 'xxx';
-
-                        }
 
                         $order->remove_out_of_stocks_from_basket($this->id);
                     }
