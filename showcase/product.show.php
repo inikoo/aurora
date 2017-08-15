@@ -25,10 +25,6 @@ function get_product_showcase($data, $smarty, $user, $db) {
     $product->get_webpage();
 
 
-    if ($product->id == 155922) {
-        $product->update_web_state_slow_forks(true);
-    }
-    //$product->update_availability();
 
     $images = $product->get_images_slidesshow();
 
