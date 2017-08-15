@@ -2974,7 +2974,7 @@ VALUES (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 
 
         $this->update_totals();
-        $this->apply_payment_from_customer_account();
+       // $this->apply_payment_from_customer_account();
 
     }
 
