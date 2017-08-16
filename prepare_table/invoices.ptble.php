@@ -151,8 +151,8 @@ if (isset($parameters['awhere']) and $parameters['awhere']) {
 } elseif ($parameters['parent'] == 'order') {
 
     $table
-           = '`Order Invoice Bridge` B left join   `Invoice Dimension` I  on (I.`Invoice Key`=B.`Invoice Key`)     left join `Payment Account Dimension` P on (P.`Payment Account Key`=I.`Invoice Payment Account Key`)';
-    $where = sprintf('where  B.`Order Key`=%d  ', $parameters['parent_key']);
+           = '  `Invoice Dimension` I    left join `Payment Account Dimension` P on (P.`Payment Account Key`=I.`Invoice Payment Account Key`)';
+    $where = sprintf('where  `Invoice Order Key`=%d  ', $parameters['parent_key']);
 
 } elseif ($parameters['parent'] == 'delivery_note') {
 

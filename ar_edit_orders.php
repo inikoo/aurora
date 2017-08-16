@@ -485,6 +485,15 @@ function pick_order_offline($data, $editor, $smarty, $db, $account) {
     $dn->consolidate($data['items']);
 
 
+    $response = array(
+        'state'       => 200,
+        'update_metadata'    => $dn->get_update_metadata(),
+        'state_index' => $dn->get('State Index')
+    );
+
+    echo json_encode($response);
+
+
 }
 
 function set_order_handler($type,$data, $editor, $smarty, $db) {

@@ -786,6 +786,7 @@ class Order extends DB_Table {
             case('Dispatched Date'):
             case('Post Transactions Dispatched Date'):
             case('Packed Done Date'):
+            case('Invoiced Date'):
                 if ($this->data['Order '.$key] == '') {
                     return '';
                 } else {
@@ -853,30 +854,6 @@ class Order extends DB_Table {
                 );
                 break;
 
-            case ('Order Main Ship To Key') :
-                $sql = sprintf(
-                    "SELECT `Ship To Key`,count(*) AS  num FROM `Order Transaction Fact` WHERE `Order Key`=%d GROUP BY `Ship To Key` ORDER BY num DESC LIMIT 1", $this->id
-                );
-                $res = mysql_query($sql);
-                if ($row2 = mysql_fetch_array($res, MYSQL_ASSOC)) {
-                    return $row2 ['Ship To Key'];
-                } else {
-                    return '';
-                }
-
-                break;
-            case ('Order Main Billing To Key') :
-                $sql = sprintf(
-                    "SELECT `Billing To Key`,count(*) AS  num FROM `Order Transaction Fact` WHERE `Order Key`=%d GROUP BY `Billing To Key` ORDER BY num DESC LIMIT 1", $this->id
-                );
-                $res = mysql_query($sql);
-                if ($row2 = mysql_fetch_array($res, MYSQL_ASSOC)) {
-                    return $row2 ['Billing To Key'];
-                } else {
-                    return '';
-                }
-
-                break;
 
 
             case ('Weight'):
@@ -1139,6 +1116,7 @@ class Order extends DB_Table {
                     $this->update_field('Order State', $value, 'no_history');
                     $this->update_field('Order Send to Warehouse Date', $date, 'no_history');
                     $this->update_field('Order Date', $date, 'no_history');
+                    $this->update_field('Order Delivery Note Key',$delivery_note->id , 'no_history');
 
 
                     $history_data = array(
@@ -1281,6 +1259,7 @@ class Order extends DB_Table {
                         'Invoice Tax Number Associated Address' => $this->data['Order Tax Number Associated Address'],
                         'Invoice Net Amount Off'                => $this->data['Order Deal Amount Off'],
                         'Invoice Customer Contact Name'         => $this->data['Order Customer Contact Name'],
+                        'Invoice Customer Name'         => $this->data['Order Customer Name'],
 
                         //   'Invoice Telephone'                    => $this->data['Order Telephone'],
                         //     'Invoice Email'                        => $this->data['Order Email'],
@@ -1300,21 +1279,34 @@ class Order extends DB_Table {
 
 
                         'Invoice Main Source Type'          => $this->data['Order Main Source Type'],
+
                         'Invoice Items Gross Amount'        => $this->data['Order Items Gross Amount'],
                         'Invoice Items Discount Amount'     => $this->data['Order Items Discount Amount'],
+
+                        'Invoice Items Net Amount'     => $this->data['Order Items Net Amount'],
                         'Invoice Items Out of Stock Amount' => $this->data['Order Items Out of Stock Amount'],
                         'Invoice Shipping Net Amount'       => $this->data['Order Shipping Net Amount'],
-                        'Invoice Charges Net Amount'        => $this->data['Order Items Net Amount'],
+                        'Invoice Charges Net Amount'        => $this->data['Order Charges Net Amount'],
                         'Invoice Insurance Net Amount'      => $this->data['Order Insurance Net Amount'],
                         'Invoice Total Net Amount'          => $this->data['Order Total Net Amount'],
                         'Invoice Total Tax Amount'          => $this->data['Order Total Tax Amount'],
                         'Invoice Payments Amount'           => $this->data['Order Payments Amount'],
                         'Invoice To Pay Amount'             => $this->data['Order To Pay Amount'],
+                        'Invoice Total Amount'             => $this->data['Order Total Amount'],
+                        'Invoice Currency'             => $this->data['Order Currency'],
+
+
 
                     );
 
 
+
+
+
                     $invoice = new Invoice ('create', $data_invoice);
+
+
+                    $dn=get_object('DeliveryNote',$this->data['Order Delivery Note Key']);
 
 
                     $dn->update(
@@ -1322,11 +1314,12 @@ class Order extends DB_Table {
                             'Delivery Note Invoiced'                    => 'Yes',
                             'Delivery Note Invoiced Net DC Amount'      => $invoice->get('Invoice Total Net Amount') * $invoice->get('Invoice Currency Exchange'),
                             'Delivery Note Invoiced Shipping DC Amount' => $invoice->get('Invoice Shipping Net Amount') * $invoice->get('Invoice Currency Exchange'),
+                            'Delivery Note State'                    => 'Approved',
                         )
                     );
 
 
-                    return $invoice;
+
 
 
                     include 'utils/new_fork.php';
@@ -1339,13 +1332,16 @@ class Order extends DB_Table {
                     );
 
 
+
+
                     $this->update_field('Order State', $value, 'no_history');
-                    $this->update_field('Order Send to Warehouse Date', $date, 'no_history');
+                    $this->update_field('Order Invoiced Date', $date, 'no_history');
                     $this->update_field('Order Date', $date, 'no_history');
+                    $this->update_field('Order Invoice Key', $invoice->id, 'no_history');
 
 
                     $history_data = array(
-                        'History Abstract' => _('Order send to warehouse'),
+                        'History Abstract' => _('Order invoiced'),
                         'History Details'  => '',
                     );
                     $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->table_name, $this->id);

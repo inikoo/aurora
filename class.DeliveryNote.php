@@ -354,7 +354,7 @@ class DeliveryNote extends DB_Table {
             case 'State Index':
 
 
-               // print $this->data['Delivery Note State'].'x';
+                // print $this->data['Delivery Note State'].'x';
 
                 switch ($this->data['Delivery Note State']) {
                     case 'Ready to be Picked':
@@ -438,10 +438,10 @@ class DeliveryNote extends DB_Table {
 
                         if ($this->get('Delivery Note Date Finish Picking') != '') {
 
-                            if($this->get('Delivery Note Date Finish Picking')==$this->get('Delivery Note Date Finish Packing')){
+                            if ($this->get('Delivery Note Date Finish Picking') == $this->get('Delivery Note Date Finish Packing')) {
                                 return '<i class="fa fa-arrow-right" aria-hidden="true"></i>';
 
-                            }else{
+                            } else {
                                 return strftime("%e %b %y %H:%M", strtotime($this->get('Delivery Note Date Finish Picking')));
 
                             }
@@ -631,9 +631,13 @@ class DeliveryNote extends DB_Table {
             case('Finish Picking Datetime'):
             case('Start Packing Datetime'):
             case('Finish Packing Datetime'):
+            case('Done Approved Datetime'):
             case('Dispatched Approved Datetime'):
             case('Dispatched Datetime'):
                 $key = 'Date '.preg_replace('/ Datetime/', '', $key);
+
+
+
 
                 if ($this->data["Delivery Note $key"] == '') {
                     return '';
@@ -666,7 +670,7 @@ class DeliveryNote extends DB_Table {
                         );
                     }
 
-                    $estimated_weight= "&#8494;".$estimated_weight;
+                    $estimated_weight = "&#8494;".$estimated_weight;
 
 
                     return weight($this->data['Delivery Note Weight']).' <span style="font-style: italic" class="very_discreet">'.$estimated_weight.'</span>';
@@ -860,8 +864,8 @@ class DeliveryNote extends DB_Table {
 
 
                     $this->create_inventory_transaction_fact_item(
-                        $row['Product ID'], $row['Order Transaction Fact Key'], $row['Order Quantity'] + $row['Order Bonus Quantity'] - $row['No Shipped Due No Authorized'], $row['Order Bonus Quantity'],$date,
-                        $row['Supplier Metadata']
+                        $row['Product ID'], $row['Order Transaction Fact Key'], $row['Order Quantity'] + $row['Order Bonus Quantity'] - $row['No Shipped Due No Authorized'],
+                        $row['Order Bonus Quantity'], $date, $row['Supplier Metadata']
                     );
                 }
             } else {
@@ -902,6 +906,160 @@ class DeliveryNote extends DB_Table {
                     }
                 }
         }
+    }
+
+    function update_state($value, $options = '', $metadata = array()) {
+        $date = gmdate('Y-m-d H:i:s');
+
+        $operations = array();
+
+        switch ($value) {
+            case 'Picking':
+
+                if ($this->get('State Index') != 10) {
+                    return;
+                }
+
+                $this->update_field(
+                    'Delivery Note Date Start Picking', $date, 'no_history'
+                );
+                //$this->update_field('Supplier Delivery Estimated Receiving Date', '', 'no_history');
+                $this->update_field(
+                    'Delivery Note State', $value, 'no_history'
+                );
+
+                break;
+
+            case 'Picked':
+
+                if ($this->get('State Index') > 30 or $this->get('State Index') < 10) {
+                    return;
+                }
+
+                $this->update_field(
+                    'Delivery Note Date Finish Picking', $date, 'no_history'
+                );
+                //$this->update_field('Supplier Delivery Estimated Receiving Date', '', 'no_history');
+                $this->update_field(
+                    'Delivery Note State', $value, 'no_history'
+                );
+
+
+                break;
+
+            case 'Packing':
+
+                if ($this->get('State Index') >= 40) {
+                    return;
+                }
+
+                $this->update_field(
+                    'Delivery Note Date Start Packing', $date, 'no_history'
+                );
+
+
+                if ($this->get('State Index') == 30) {
+                    $this->update_field(
+                        'Delivery Note State', $value, 'no_history'
+                    );
+                }
+
+                break;
+            case 'Packed':
+
+                if ($this->get('State Index') > 70 or $this->get('State Index') < 10) {
+                    return;
+                }
+                $this->update_field('Delivery Note Date Finish Packing', $date, 'no_history');
+                $this->update_field(
+                    'Delivery Note State', $value, 'no_history'
+                );
+
+
+                //   $order=
+
+                //   print "----";
+
+                break;
+
+            case 'Packed Done':
+
+                if ($this->get('State Index') > 70 or $this->get('State Index') < 70) {
+                    return;
+                }
+                $this->update_field('Delivery Note Date Done Approved', $date, 'no_history');
+                $this->update_field(
+                    'Delivery Note State', $value, 'no_history'
+                );
+
+                $this->update_field('Delivery Note Approved Done', 'Yes', 'no_history');
+                $this->update_field('Delivery Note Date', $date, 'no_history');
+
+
+                $order = get_object('Order', $this->get('Delivery Note Order Key'));
+                $order->update(array('Order State' => 'PackedDone'));
+
+                break;
+
+            case 'Approved':
+
+                if ($this->get('State Index') != 70) {
+                    return;
+                }
+                $this->update_field('Delivery Note Date Dispatched Approved', $date, 'no_history');
+                $this->update_field(
+                    'Delivery Note State', $value, 'no_history'
+                );
+
+
+                break;
+            case 'Dispatched':
+
+                if ($this->get('State Index') != 90) {
+                    return;
+                }
+                $this->update_field('Delivery Note Date Dispatched', $date, 'no_history');
+                $this->update_field('Delivery Note Date', $date, 'no_history');
+                $this->update_field('Delivery Note State', $value, 'no_history');
+
+
+                break;
+
+            default:
+                exit('unknown state '.$value);
+                break;
+        }
+
+
+        $this->update_totals();
+
+
+        $this->update_metadata = array(
+            'class_html'  => array(
+                'Delivery_Note_State'                       => $this->get('State'),
+                'Delivery_Note_Dispatched_Date'             => '&nbsp;'.$this->get('Dispatched Date'),
+                'Supplier_Delivery_Number_Dispatched_Items' => $this->get('Number Dispatched Items'),
+                'Delivery_Note_Start_Picking_Datetime'      => '<i class="fa fa-clock-o" aria-hidden="true"></i> '.$this->get('Start Picking Datetime'),
+                'Delivery_Note_Start_Packing_Datetime'      => '<i class="fa fa-clock-o" aria-hidden="true"></i> '.$this->get('Start Packing Datetime'),
+                'Delivery_Note_Finish_Picking_Datetime'     => $this->get('Finish Picking Datetime'),
+                'Delivery_Note_Finish_Packing_Datetime'     => $this->get('Finish Packing Datetime'),
+                'Delivery_Note_Picked_Label'                => ($this->get('State Index') == 20 ? _('Picking') : _('Picked')),
+
+
+                'Delivery_Note_Picked_Percentage_or_Datetime' => '&nbsp;'.$this->get('Picked Percentage or Datetime').'&nbsp;',
+                'Delivery_Note_Packed_Percentage_or_Datetime' => '&nbsp;'.$this->get('Packed Percentage or Datetime').'&nbsp;',
+                'Delivery_Note_Dispatched_Approved_Datetime'  => '&nbsp;'.$this->get('Dispatched Approved Datetime').'&nbsp;',
+                'Delivery_Note_Dispatched_Datetime'           => '&nbsp;'.$this->get('Dispatched Datetime').'&nbsp;',
+
+                'Delivery_Note_State' => $this->get('State')
+
+
+            ),
+            'operations'  => $operations,
+            'state_index' => $this->get('State Index')
+        );
+
+
     }
 
     function update_item($data) {
@@ -1050,161 +1208,6 @@ class DeliveryNote extends DB_Table {
         return array(
             'transaction_key' => $transaction_key,
             'qty'             => $qty + 0
-        );
-
-
-    }
-
-    function update_state($value, $options = '', $metadata = array()) {
-        $date = gmdate('Y-m-d H:i:s');
-
-        $operations = array();
-
-        switch ($value) {
-            case 'Picking':
-
-                if ($this->get('State Index') != 10) {
-                    return;
-                }
-
-                $this->update_field(
-                    'Delivery Note Date Start Picking', $date, 'no_history'
-                );
-                //$this->update_field('Supplier Delivery Estimated Receiving Date', '', 'no_history');
-                $this->update_field(
-                    'Delivery Note State', $value, 'no_history'
-                );
-
-                break;
-
-            case 'Picked':
-
-                if ($this->get('State Index') > 30 or $this->get('State Index') < 10) {
-                    return;
-                }
-
-                $this->update_field(
-                    'Delivery Note Date Finish Picking', $date, 'no_history'
-                );
-                //$this->update_field('Supplier Delivery Estimated Receiving Date', '', 'no_history');
-                $this->update_field(
-                    'Delivery Note State', $value, 'no_history'
-                );
-
-
-                break;
-
-            case 'Packing':
-
-                if ($this->get('State Index') >= 40) {
-                    return;
-                }
-
-                $this->update_field(
-                    'Delivery Note Date Start Packing', $date, 'no_history'
-                );
-
-
-                if ($this->get('State Index') == 30) {
-                    $this->update_field(
-                        'Delivery Note State', $value, 'no_history'
-                    );
-                }
-
-                break;
-            case 'Packed':
-
-                if ($this->get('State Index') > 70 or $this->get('State Index') < 10) {
-                    return;
-                }
-                $this->update_field('Delivery Note Date Finish Packing', $date, 'no_history');
-                $this->update_field(
-                    'Delivery Note State', $value, 'no_history'
-                );
-
-
-                //   $order=
-
-                //   print "----";
-
-                break;
-
-            case 'Packed Done':
-
-                if ($this->get('State Index') > 70 or $this->get('State Index') < 70) {
-                    return;
-                }
-                $this->update_field('Delivery Note Date Done Approved', $date, 'no_history');
-                $this->update_field(
-                    'Delivery Note State', $value, 'no_history'
-                );
-
-                $this->update_field('Delivery Note Approved Done', 'Yes', 'no_history');
-                $this->update_field('Delivery Note Date', $date, 'no_history');
-
-
-                $order=get_object('Order',$this->get('Delivery Note Order Key'));
-                $order->update(array('Order State'=>'PackedDone'));
-
-                break;
-
-            case 'Approved':
-
-                if ($this->get('State Index') != 70) {
-                    return;
-                }
-                $this->update_field('Delivery Note Date Dispatched Approved', $date, 'no_history');
-                $this->update_field(
-                    'Delivery Note State', $value, 'no_history'
-                );
-
-
-                break;
-            case 'Dispatched':
-
-                if ($this->get('State Index') != 90) {
-                    return;
-                }
-                $this->update_field('Delivery Note Date Dispatched', $date, 'no_history');
-                $this->update_field('Delivery Note Date', $date, 'no_history');
-                $this->update_field('Delivery Note State', $value, 'no_history');
-
-
-                break;
-
-            default:
-                exit('unknown state '.$value);
-                break;
-        }
-
-
-        $this->update_totals();
-        // $purchase_order->update_totals();
-
-
-        $this->update_metadata = array(
-            'class_html'  => array(
-                'Delivery_Note_State'                       => $this->get('State'),
-                'Delivery_Note_Dispatched_Date'             => '&nbsp;'.$this->get('Dispatched Date'),
-                'Supplier_Delivery_Number_Dispatched_Items' => $this->get('Number Dispatched Items'),
-                'Delivery_Note_Start_Picking_Datetime'      => '<i class="fa fa-clock-o" aria-hidden="true"></i> '.$this->get('Start Picking Datetime'),
-                'Delivery_Note_Start_Packing_Datetime'      => '<i class="fa fa-clock-o" aria-hidden="true"></i> '.$this->get('Start Packing Datetime'),
-                'Delivery_Note_Finish_Picking_Datetime'     => $this->get('Finish Picking Datetime'),
-                'Delivery_Note_Finish_Packing_Datetime'     => $this->get('Finish Packing Datetime'),
-                'Delivery_Note_Picked_Label'                => ($this->get('State Index') == 20 ? _('Picking') : _('Picked')),
-
-
-                'Delivery_Note_Picked_Percentage_or_Datetime' => '&nbsp;'.$this->get('Picked Percentage or Datetime').'&nbsp;',
-                'Delivery_Note_Packed_Percentage_or_Datetime' => '&nbsp;'.$this->get('Packed Percentage or Datetime').'&nbsp;',
-                'Delivery_Note_Dispatched_Approved_Datetime'  => '&nbsp;'.$this->get('Dispatched Approved Datetime').'&nbsp;',
-                'Delivery_Note_Dispatched_Datetime'           => '&nbsp;'.$this->get('Dispatched Datetime').'&nbsp;',
-
-                'Delivery_Note_State' => $this->get('State')
-
-
-            ),
-            'operations'  => $operations,
-            'state_index' => $this->get('State Index')
         );
 
 
@@ -1660,7 +1663,7 @@ class DeliveryNote extends DB_Table {
                         $this->get('Delivery Note Assigned Picker Key'), $this->get('Delivery Note Assigned Packer Key'), prepare_mysql($state), $transaction['transaction_key']
                     );
 
-                  //  print "$sql\n";
+                    //  print "$sql\n";
 
                     $this->db->exec($sql);
 
@@ -1671,8 +1674,44 @@ class DeliveryNote extends DB_Table {
 
                     $this->update_field('Delivery Note Date', $date, 'no_history');
 
-                  //  $this->update_field('Delivery Note Approved Done', 'Yes', 'no_history');
+                    //  $this->update_field('Delivery Note Approved Done', 'Yes', 'no_history');
                     $this->update_field('Delivery Note State', 'Packed');
+
+
+                    $this->update_totals();
+
+
+                    $operations=array('cancel_operations','packed_done_operations');
+
+                    $this->update_metadata = array(
+                        'class_html'  => array(
+                            'Delivery_Note_State'                       => $this->get('State'),
+                            'Delivery_Note_Dispatched_Date'             => '&nbsp;'.$this->get('Dispatched Date'),
+                            'Supplier_Delivery_Number_Dispatched_Items' => $this->get('Number Dispatched Items'),
+                            'Delivery_Note_Start_Picking_Datetime'      => '<i class="fa fa-clock-o" aria-hidden="true"></i> '.$this->get('Start Picking Datetime'),
+                            'Delivery_Note_Start_Packing_Datetime'      => '<i class="fa fa-clock-o" aria-hidden="true"></i> '.$this->get('Start Packing Datetime'),
+                            'Delivery_Note_Finish_Picking_Datetime'     => $this->get('Finish Picking Datetime'),
+                            'Delivery_Note_Finish_Packing_Datetime'     => $this->get('Finish Packing Datetime'),
+                            'Delivery_Note_Picked_Label'                => ($this->get('State Index') == 20 ? _('Picking') : _('Picked')),
+
+                            'Delivery_Note_Packed_Done_Datetime' => '&nbsp;'.$this->get('Done Approved Datetime').'&nbsp;',
+
+
+
+
+
+                    'Delivery_Note_Picked_Percentage_or_Datetime' => '&nbsp;'.$this->get('Picked Percentage or Datetime').'&nbsp;',
+                            'Delivery_Note_Packed_Percentage_or_Datetime' => '&nbsp;'.$this->get('Packed Percentage or Datetime').'&nbsp;',
+                            'Delivery_Note_Dispatched_Approved_Datetime'  => '&nbsp;'.$this->get('Dispatched Approved Datetime').'&nbsp;',
+                            'Delivery_Note_Dispatched_Datetime'           => '&nbsp;'.$this->get('Dispatched Datetime').'&nbsp;',
+
+                            'Delivery_Note_State' => $this->get('State')
+
+
+                        ),
+                        'operations'  => $operations,
+                        'state_index' => $this->get('State Index')
+                    );
 
 
                 }
@@ -1686,6 +1725,43 @@ class DeliveryNote extends DB_Table {
 
 
     }
+
+
+    function get_formated_parcels() {
+
+        if (!is_numeric($this->data['Delivery Note Number Parcels']))
+            return;
+
+        switch ($this->data['Delivery Note Parcel Type']) {
+            case('Box'):
+                $parcel_type=ngettext('box', 'boxes', $this->data['Delivery Note Number Parcels']);
+                break;
+            case('Pallet'):
+                $parcel_type=ngettext('pallet', 'pallets', $this->data['Delivery Note Number Parcels']);
+                break;
+            case('Envelope'):
+                $parcel_type=ngettext('envelope', 'envelopes', $this->data['Delivery Note Number Parcels']);
+                break;
+            case('Small Parcel'):
+                $parcel_type=ngettext('small parcel', 'small parcels', $this->data['Delivery Note Number Parcels']);
+                break;
+            case('Other'):
+                $parcel_type=ngettext('container (other)', 'containers (other)', $this->data['Delivery Note Number Parcels']);
+                break;
+
+            case('None'):
+                return;
+                break;
+
+            default:
+                $parcel_type=$this->data['Delivery Note Parcel Type'];
+        }
+
+
+        return number($this->data['Delivery Note Number Parcels']).' '.$parcel_type;
+    }
+
+
 
 
 }

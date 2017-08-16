@@ -1,6 +1,6 @@
 <div class="timeline_horizontal">
 
-    <input id="Delivery_Note_State_Index" value="{$delivery_note->get('State Index')}">
+    <input type="hidden" id="Delivery_Note_State_Index" value="{$delivery_note->get('State Index')}">
 
     <ul class="timeline" id="timeline">
 
@@ -31,6 +31,9 @@
         {/if}
 
 
+
+
+
         <li id="start_picking_node" class="li  {if $delivery_note->get('State Index')>=20   }complete{/if}">
             <div class="label">
                 <span class="state Delivery_Note_Packed_Label">{t}Start picking{/t}<span></i></span></span>
@@ -42,8 +45,7 @@
         </li>
 
 
-        <li id="picked_node"
-            class="li  {if $delivery_note->get('State Index')>=30 or ($delivery_note->get('State Index')<0 and ($delivery_note->get('Date Start Picking')!=''  or $delivery_note->get(' Date Start Packing')!=''))  }complete{/if}">
+        <li id="picked_node" class="li  {if $delivery_note->get('State Index')>=30   }complete{/if}">
             <div class="label">
                 <span class="state Delivery_Note_Picked_Label">{if $delivery_note->get('State Index')==20 }{t}Picking{/t}{else}{t}Picked{/t}{/if}<span></i></span></span>
             </div>
@@ -53,8 +55,7 @@
             <div class="dot"></div>
         </li>
 
-        <li id="packed_node"
-            class="li  {if $delivery_note->get('State Index')>=70 or ($delivery_note->get('State Index')<0 and ($delivery_note->get('Date Start Picking')!=''  or $delivery_note->get(' Date Start Packing')!=''))  }complete{/if}">
+        <li id="packed_node" class="li  {if $delivery_note->get('State Index')>=70   }complete{/if}">
             <div class="label">
                 <span class="state Delivery_Note_Packed_Label">{if $delivery_note->get('State Index')==40 }{t}Packing{/t}{else}{t}Packed{/t}{/if}<span></i></span></span>
             </div>
@@ -65,13 +66,14 @@
         </li>
 
 
-        <li id="packed_done_node"
-            class="li  {if $delivery_note->get('State Index')>=80 or ($delivery_note->get('State Index')<0 and ($delivery_note->get('Date Start Picking')!=''  or $delivery_note->get(' Date Start Packing')!=''))  }complete{/if}">
+        <li id="packed_done_node" class="li  {if $delivery_note->get('State Index')>=80   }complete{/if}">
             <div class="label">
                 <span class="state Delivery_Note_Packed_Label">{t}Sealed{/t}<span></i></span></span>
             </div>
             <div class="timestamp">
-                <span class="Delivery_Note_Packed_Percentage_or_Datetime">&nbsp{$delivery_note->get('Packed Done Datetime')}&nbsp;</span>
+                <span class="Delivery_Note_Packed_Done_Datetime">&nbsp{$delivery_note->get('Done Approved Datetime')}&nbsp;</span>
+
+
             </div>
             <div class="dot"></div>
         </li>
@@ -179,7 +181,7 @@
 
 
                 <div id="packed_done_operations" class="order_operation {if $delivery_note->get('State Index')!=70    }hide{/if}">
-                    <div class="square_button right  " title="{t}Fast track packing{/t}">
+                    <div class="square_button right  " title="{t}Set asn packed and sealed{/t}">
                         <i id="packed_done_save_buttons" class="fa button fa-archive  fa-fw  {if $delivery_note->get('Delivery Note Weight Source')!='Given'  or  $delivery_note->get('Delivery Note Number Parcels')=='' }  very_discreet{/if} "
                            data-data='{  "field": "Delivery Note State","value": "Packed Done","dialog_name":"packed_done"}' aria-hidden="true" onclick="save_order_operation(this)"></i>
 
@@ -187,9 +189,13 @@
                 </div>
 
 
-                <div id="dispatch_operations" class="order_operation {if $delivery_note->get('Delivery Note State')!='Approved'}hide{/if}">
+                <div id="dispatch_operations" class="order_operation {if $delivery_note->get('State Index')!=90    } hide{/if}">
                     <div id="dispatch_operation" class="square_button right  " title="{t}Dispatch{/t}">
-                        <i class="fa fa-paper-plane   " aria-hidden="true" onclick="dispatch_delivery_note(this)"></i>
+
+
+                        <i id="dispatch_save_buttons" class="fa button fa-archive  fa-fw   "
+                           data-data='{  "field": "Delivery Note State","value": "Dispatched","dialog_name":"dispatch"}' aria-hidden="true" onclick="save_order_operation(this)"></i>
+
 
                     </div>
                 </div>
@@ -447,6 +453,88 @@
             }, success: function (data) {
 
                 if (data.state == '200') {
+
+
+
+
+
+                    console.log(data)
+
+
+                    if (data.value == 'Cancelled') {
+                        change_view(state.request, {
+                            reload_showcase: true
+                        })
+                    }
+
+
+                    for (var key in data.update_metadata.class_html) {
+                        $('.' + key).html(data.update_metadata.class_html[key])
+                    }
+
+
+                    $('.order_operation').addClass('hide')
+                    $('.items_operation').addClass('hide')
+
+                    for (var key in data.update_metadata.operations) {
+                        $('#' + data.update_metadata.operations[key]).removeClass('hide')
+                    }
+
+
+                    $('.timeline .li').removeClass('complete')
+
+
+
+
+                    $('#order_node').addClass('complete')
+
+                    if (data.update_metadata.state_index >= 20) {
+                            $('#start_picking_node').addClass('complete')
+                        }
+                        if (data.update_metadata.state_index >= 30) {
+                            $('#picked_node').addClass('complete')
+                        }
+                    if (data.update_metadata.state_index >= 70) {
+                        $('#packed_node').addClass('complete')
+                    }
+                    if (data.update_metadata.state_index >= 80) {
+                        $('#packed_done_node').addClass('complete')
+                    }
+                    if (data.update_metadata.state_index >= 90) {
+                        $('#dispatch_approved_node').addClass('complete')
+                    }
+                    if (data.update_metadata.state_index >= 100) {
+                        $('#dispatched_node').addClass('complete')
+                    }
+
+                    if (data.update_metadata.state_index >= 70 &&  data.update_metadata.state_index <= 90    ) {
+                        $('.info_block').removeClass('hide')
+                    }else{
+                        $('.info_block').addClass('hide')
+                    }
+
+
+
+
+                        $('.order_operation').addClass('hide')
+                    $('.items_operation').addClass('hide')
+
+                    for (var key in data.update_metadata.operations) {
+                        $('#' + data.update_metadata.operations[key]).removeClass('hide')
+                    }
+
+
+
+                    $('#Delivery_Note_State_Index').val(data.update_metadata.state_index)
+
+
+                    change_tab('delivery_note.items', {
+                        post_operations: 'delivery_note.fast_track_packing_off'
+                    })
+
+
+                    $('.fast_track_packing_operation').addClass('hide')
+
 
 
                 } else if (data.state == '400') {
@@ -891,7 +979,7 @@
         var form_data = new FormData();
 
         form_data.append("tipo", 'edit_field')
-        form_data.append("field", 'Delivery_Note_Number_Parcels')
+        form_data.append("field", 'Delivery_Note_Weight')
         form_data.append("object", 'DeliveryNote')
         form_data.append("key", $('#delivery_note').attr('dn_key'))
         form_data.append("value", qty)
