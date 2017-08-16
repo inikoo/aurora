@@ -1912,7 +1912,7 @@ trait OrderDiscountOperations {
                 $discounts = $discounts_input.'<span class="order_item_percentage_discount   '.$discounts_class.' '.($discount_amount==0?'super_discreet':'').'"><span style="padding-right:5px">'.percentage($discount_amount,$row['Order Transaction Gross Amount']).'</span> <span class="'.($discount_amount==0?'hide':'').'">'.money($discount_amount ,$this->data['Order Currency']).'</span></span>';
 
 
-              
+
 
 
                 return array(

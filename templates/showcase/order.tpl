@@ -630,6 +630,10 @@
 
         $('#add_payment').addClass('hide')
 
+        //change_tab('order.items')
+        $('#tabs').removeClass('hide')
+
+
     }
 
 
