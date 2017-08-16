@@ -954,12 +954,7 @@ function order_items($_data, $db, $user) {
 
 
         if (in_array(
-            $customer_order->get('Order State'), array(
-                                                                    'InProcess',
-                                                                    'InWarehouse',
-
-                                                                    'InBasket'
-                                                                )
+            $customer_order->get('Order State'), array('InProcess', 'InWarehouse', 'InBasket')
         )) {
             $quantity = sprintf(
                 '<span    data-settings=\'{"field": "Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   ><input class="order_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-plus fa-fw button" aria-hidden="true"></i></span>',
@@ -970,6 +965,20 @@ function order_items($_data, $db, $user) {
         }
 
 
+
+        if (in_array($customer_order->get('Order State'), array('Cancelled', 'Approved', 'Dispatched',))) {
+            $discounts_class='';
+            $discounts_input='';
+        } else {
+            $discounts_class='button';
+            $discounts_input=sprintf('<span class="hide order_item_percentage_discount_form" data-settings=\'{ "field": "Percentage" ,"transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   ><input class="order_item_percentage_discount_input" style="width: 70px" value="%s"> <i class="fa save fa-cloud" aria-hidden="true"></i></span>',
+                                     $data['Order Transaction Fact Key'], $data['Product ID'], $data['Product Key'],percentage($data['Order Transaction Total Discount Amount'],$data['Order Transaction Gross Amount'])
+                );
+        }
+        $discounts = $discounts_input.'<span class="order_item_percentage_discount   '.$discounts_class.' '.($data['Order Transaction Total Discount Amount']==0?'super_discreet':'').'"><span style="padding-right:5px">'.percentage($data['Order Transaction Total Discount Amount'],$data['Order Transaction Gross Amount']).'</span> <span class="'.($data['Order Transaction Total Discount Amount']==0?'hide':'').'">'.money($data['Order Transaction Total Discount Amount'] ,$data['Order Currency Code']).'</span></span>';
+
+
+
         $adata[] = array(
 
             'id'          => (integer)$data['Order Transaction Fact Key'],
@@ -977,6 +986,7 @@ function order_items($_data, $db, $user) {
             'code'        => sprintf('<span class="link" onclick="change_view(\'/products/%d/%d\')">%s</span>', $customer_order->get('Order Store Key'), $data['Product ID'], $data['Product Code']),
             'description' => $description,
             'quantity'    => $quantity,
+            'discounts'    => '<span class="_item_discounts">'.$discounts.'</span>',
 
 
             'net' => sprintf('<span class="_order_item_net">%s</span>', money($data['Order Transaction Amount'], $data['Order Currency Code'])),

@@ -161,7 +161,20 @@ switch ($tipo) {
         );
         set_charges_value($data, $editor);
         break;
-        
+    case 'edit_item_discount':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'field'             => array('type' => 'string'),
+                         'parent_key'        => array('type' => 'key'),
+
+                         'transaction_key'   => array('type'     => 'key'),
+
+                         'value'               => array('type' => 'string'),
+
+                     )
+        );
+        edit_item_discount($account, $db, $user, $editor, $data, $smarty);
+        break;
 
     case 'edit_item_in_order':
         $data = prepare_values(
@@ -724,6 +737,8 @@ function add_payment_to_invoice($data, $editor, $smarty, $db, $account) {
     $parent->add_payment($payment);
     $parent->update_totals();
 
+    $operations=array();
+
     if ($parent->get_object_name() == 'Order') {
 
         $metadata = array(
@@ -762,6 +777,49 @@ function add_payment_to_invoice($data, $editor, $smarty, $db, $account) {
     }
 
 
+
+
+
 }
+
+
+
+function edit_item_discount($account, $db, $user, $editor, $data, $smarty) {
+
+    $parent         = get_object('order', $data['parent_key']);
+    $parent->editor = $editor;
+
+
+
+    if($data['field']=='Percentage') {
+
+
+        $percentage       = $data['value'];
+        $transaction_data = $parent->update_transaction_discount_percentage($data['transaction_key'], $percentage);
+    }else{
+        $amount       = $data['value'];
+        $transaction_data = $parent->update_transaction_discount_amount($data['transaction_key'], $amount);
+    }
+
+
+    if ($parent->error) {
+        $response = array(
+            'state' => 400,
+            'msg'   => $parent->msg
+        );
+    } else {
+
+        $response = array(
+            'state'            => 200,
+            'transaction_data' => $transaction_data,
+            'metadata'         => $parent->get_update_metadata()
+        );
+    }
+    echo json_encode($response);
+
+}
+
+
+
 
 ?>

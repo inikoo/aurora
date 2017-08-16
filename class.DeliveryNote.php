@@ -239,6 +239,8 @@ class DeliveryNote extends DB_Table {
 
                 $location_key = $part->get_picking_location_key();
 
+                print_r($supplier_metadata_array);
+
 
                 if ($supplier_metadata_array != '') {
                     $supplier_metadata = unserialize($supplier_metadata_array);
@@ -858,8 +860,8 @@ class DeliveryNote extends DB_Table {
 
 
                     $this->create_inventory_transaction_fact_item(
-                        $row['Product ID'], $row['Order Transaction Fact Key'], $row['Order Quantity'] + $row['Order Bonus Quantity'] - $row['No Shipped Due No Authorized'], $date,
-                        $row['Supplier Metadata'], $row['Order Bonus Quantity']
+                        $row['Product ID'], $row['Order Transaction Fact Key'], $row['Order Quantity'] + $row['Order Bonus Quantity'] - $row['No Shipped Due No Authorized'], $row['Order Bonus Quantity'],$date,
+                        $row['Supplier Metadata']
                     );
                 }
             } else {
