@@ -27,7 +27,17 @@ label: "{t}Description{/t}",
 editable: false,
 cell: "html"
 
-}, {
+},{
+name: "discounts",
+label: "{t}Discounts{/t}",
+defaultOrder:1,
+editable: false,
+sortType: "toggle",
+{if $sort_key=='discounts'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+},
+{
 name: "quantity",
 label: "{t}Quantity{/t}",
 defaultOrder:1,

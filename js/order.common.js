@@ -4,6 +4,223 @@
  Version 3.0*/
 
 
+
+
+
+
+$(document).on('click', '.order_item_percentage_discount', function (evt) {
+
+    $(this).addClass('hide').closest('td').find('.order_item_percentage_discount_form').removeClass('hide')
+
+
+})
+
+
+
+$(document).on('input propertychange', '.order_item_percentage_discount_input', function (evt) {
+
+
+    icon=$(this).closest('.order_item_percentage_discount_form').find('i')
+
+    icon.addClass('changed')
+
+
+    percentage=$(this).val().replace("%", "");
+
+    if( ! validate_number(percentage, 0, 100) || percentage=='' ){
+        icon.addClass('valid').removeClass('error')
+
+    }else{
+        icon.removeClass('valid').addClass('error ')
+
+    }
+
+
+
+
+})
+
+
+
+$(document).on('click', '.order_item_percentage_discount_form i', function (evt) {
+
+    var icon=$(this)
+
+    if(icon.hasClass('wait')){
+        return
+    }
+
+    icon.removeClass('fa-cloud').addClass('wait fa-spinner fa-spin')
+
+    var settings= $(this).closest('.order_item_percentage_discount_form').data('settings')
+
+    var input=$(this).closest('.order_item_percentage_discount_form').find('input')
+
+
+
+    value=input.val()
+
+    if(value==''){
+        value=0
+    }
+
+    var table_metadata = JSON.parse(atob($('#table').data("metadata")))
+
+
+
+    var request = '/ar_edit_orders.php?tipo=edit_item_discount&parent=' + table_metadata.parent + '&field=' + settings.field + '&parent_key=' + table_metadata.parent_key + '&item_key=' + settings.item_key + '&value=' + value + '&transaction_key=' + settings.transaction_key
+
+console.log(request)
+
+
+    //=====
+    var form_data = new FormData();
+
+    form_data.append("tipo", 'edit_item_discount')
+    form_data.append("field", settings.field)
+    form_data.append("parent_key", table_metadata.parent_key)
+    form_data.append("transaction_key", settings.transaction_key)
+    form_data.append("value", value)
+
+
+    var request = $.ajax({
+
+        url: "/ar_edit_orders.php", data: form_data, processData: false, contentType: false, type: 'POST', dataType: 'json'
+
+    })
+
+
+    request.done(function (data) {
+
+
+        icon.removeClass('fa-spinner fa-spin wait').addClass('fa-cloud')
+
+
+        if (data.state == 200) {
+
+            console.log(data)
+            console.log(table_metadata)
+
+
+
+
+
+
+            icon.closest('tr').find('._order_item_net').html(data.transaction_data.to_charge)
+            icon.closest('tr').find('._item_discounts').html(data.transaction_data.item_discounts)
+
+
+
+                $('.Total_Amount').attr('amount', data.metadata.to_pay)
+                $('.Order_To_Pay_Amount').attr('amount', data.metadata.to_pay)
+
+
+
+                $('#Shipping_Net_Amount_input').val(data.metadata.shipping).attr('ovalue',data.metadata.shipping)
+                $('#Charges_Net_Amount_input').val(data.metadata.charges).attr('ovalue',data.metadata.charges)
+
+                if (data.metadata.to_pay == 0 || data.metadata.payments == 0) {
+                    $('.Order_Payments_Amount').addClass('hide')
+                    $('.Order_To_Pay_Amount').addClass('hide')
+
+                } else {
+                    $('.Order_Payments_Amount').removeClass('hide')
+                    $('.Order_To_Pay_Amount').removeClass('hide')
+
+                }
+
+                if (data.metadata.to_pay != 0 || data.metadata.payments == 0) {
+                    $('.Order_Paid').addClass('hide')
+                } else {
+                    $('.Order_Paid').removeClass('hide')
+                }
+
+                if (data.metadata.to_pay <= 0) {
+                    $('.payment_operation').addClass('hide')
+
+                } else {
+                    $('.payment_operation').removeClass('hide')
+                }
+
+
+                if (data.metadata.to_pay == 0) {
+                    $('.Order_To_Pay_Amount').removeClass('button').attr('amount', data.metadata.to_pay)
+
+                } else {
+                    $('.Order_To_Pay_Amount').addClass('button').attr('amount', data.metadata.to_pay)
+
+                }
+
+
+                $('#payment_nodes').html(data.metadata.payments_xhtml)
+
+
+                for (var key in data.metadata.class_html) {
+                    $('.' + key).html(data.metadata.class_html[key])
+                }
+
+
+                for (var key in data.metadata.hide) {
+                    $('#' + data.metadata.hide[key]).addClass('hide')
+                }
+                for (var key in data.metadata.show) {
+                    $('#' + data.metadata.show[key]).removeClass('hide')
+                }
+
+
+
+
+
+
+                if (data.metadata.items == 0) {
+                    $('.payments').addClass('hide')
+                    $('#submit_operation').addClass('hide')
+                    $('#send_to_warehouse_operation').addClass('hide')
+
+
+
+
+
+                }
+                else {
+
+
+                    $('.payments').removeClass('hide')
+                    $('#submit_operation').removeClass('hide')
+                    $('#send_to_warehouse_operation').removeClass('hide')
+                }
+
+
+
+
+
+
+
+        } else if (data.state == 400) {
+
+
+            sweetAlert(data.msg);
+            input.val(input.attr('ovalue'))
+
+
+        }
+
+    })
+
+
+    request.fail(function (jqXHR, textStatus) {
+        console.log(textStatus)
+
+        console.log(jqXHR.responseText)
+
+
+    });
+
+
+})
+
+
+
 function toggle_order_operation_dialog(dialog_name) {
 
     if ($('#' + dialog_name + '_dialog').hasClass('hide')) {
@@ -431,7 +648,6 @@ function save_item_qty_change(element) {
         request = request + '&packer_key=' + $('#dn_data').attr('packer_key')
     }
 
-    console.log(request)
 
 
     //=====

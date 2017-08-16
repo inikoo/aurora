@@ -401,10 +401,27 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
         );
 
 
+
+
+        if (in_array($this->get('Order State'), array('Cancelled', 'Approved', 'Dispatched',))) {
+            $discounts_class='';
+            $discounts_input='';
+        } else {
+            $discounts_class='button';
+            $discounts_input=sprintf('<span class="hide order_item_percentage_discount_form" data-settings=\'{ "field": "Percentage" ,"transaction_key":"%d"  }\'   ><input class="order_item_percentage_discount_input" style="width: 70px" value="%s"> <i class="fa save fa-cloud" aria-hidden="true"></i></span>',
+                                     $row['Order Transaction Fact Key'],percentage($gross_discounts,$row['Order Transaction Gross Amount'])
+            );
+        }
+        $discounts = $discounts_input.'<span class="order_item_percentage_discount   '.$discounts_class.' '.($gross_discounts==0?'super_discreet':'').'"><span style="padding-right:5px">'.percentage($gross_discounts,$row['Order Transaction Gross Amount']).'</span> <span class="'.($gross_discounts==0?'hide':'').'">'.money($gross_discounts ,$row['Order Currency Code']).'</span></span>';
+
+
+
         return array(
             'updated'             => true,
             'otf_key'             => $otf_key,
             'to_charge'           => money($net_amount, $this->data['Order Currency']),
+            'item_discounts'           => $discounts,
+
             'net_amount'          => $net_amount,
             'delta_net_amount'    => $net_amount - $old_net_amount,
             'qty'                 => $quantity,
