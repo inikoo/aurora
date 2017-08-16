@@ -352,6 +352,19 @@ function save_order_operation(element) {
                 if (data.update_metadata.state_index >= 40) {
                     $('#in_warehouse_node').addClass('complete')
                 }
+                if (data.update_metadata.state_index >= 80) {
+                    $('#packed_done_node').addClass('complete')
+                }
+                if (data.update_metadata.state_index >=90) {
+                    $('#approved_node').addClass('complete')
+                }
+                if (data.update_metadata.state_index >= 100) {
+                    $('#dispatched_node').addClass('complete')
+                }
+
+
+
+
 
 
                 $('#delivery_notes').html(data.update_metadata.deliveries_xhtml)
@@ -362,6 +375,39 @@ function save_order_operation(element) {
                     $('#delivery_notes').removeClass('hide')
 
                 }
+
+
+            }
+
+            else if (object == 'delivery_note') {
+
+
+                $('#order_node').addClass('complete')
+
+                if (data.update_metadata.state_index >= 20) {
+                    $('#start_picking_node').addClass('complete')
+                }
+                if (data.update_metadata.state_index >= 30) {
+                    $('#picked_node').addClass('complete')
+                }
+                if (data.update_metadata.state_index >= 70) {
+                    $('#packed_node').addClass('complete')
+                }
+                if (data.update_metadata.state_index >= 80) {
+                    $('#packed_done_node').addClass('complete')
+                }
+                if (data.update_metadata.state_index >= 90) {
+                    $('#dispatch_approved_node').addClass('complete')
+                }
+                if (data.update_metadata.state_index >= 100) {
+                    $('#dispatched_node').addClass('complete')
+                }
+
+
+
+                $('#Delivery_Note_State_Index').val(data.update_metadata.state_index)
+
+
 
 
             }else if (object == 'supplierdelivery') {

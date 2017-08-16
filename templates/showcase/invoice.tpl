@@ -4,29 +4,21 @@
             <div class="data_field">
                 <i class="fa fa-user"></i> <span>{$invoice->get('Invoice Customer Name')}</span>
             </div>
+            {if $invoice->get('Invoice Tax Number')!=''}
             <div class="data_field ">
                 <i class="fa fa-black-tie"></i></i> <span>{$invoice->get('Invoice Tax Number')}</span>
             </div>
+            {/if}
         </div>
-        <div class="data_container">
-            <div class="data_field {if !$invoice->get('Customer Main Plain Email')}hide{/if}">
-                <i class="fa fa-at"></i> <span>{$invoice->get('Customer Main XHTML Email')}</span>
-            </div>
-            <div class="data_field {if !$invoice->get('Customer Main XHTML Telephone')}hide{/if}">
-                <i class="fa fa-phone"></i> <span>{$invoice->get('Customer Main XHTML Telephone')}</span>
-            </div>
-            <div class="data_field {if !$invoice->get('Customer Main XHTML Mobile')}hide{/if}">
-                <i class="fa fa-mobile"></i> <span>{$invoice->get('Customer Main XHTML Mobile')}</span>
-            </div>
-        </div>
+
         <div style="clear:both">
         </div>
         <div id="billing_address_container" class="data_container" style="">
             <div style="min-height:80px;float:left;width:16px">
-                <i class="fa fa-map-marker"></i></i>
+                <i style="position: relative;top:3px" class="fa fa-map-marker"></i>
             </div>
-            <div style="font-size:90%;float:left;min-width:150px;max-width:220px;">
-                {$invoice->get('Invoice XHTML Address')}
+            <div style="min-width:150px;max-width:220px;margin-left: 25px">
+                {$invoice->get('Invoice Address Formatted')}
             </div>
         </div>
 
@@ -36,7 +28,7 @@
     </div>
 
 
-    <div id="totals" class="block totals">
+    <div id="totals" class="block totals"  style="width: 300px">
 
 
         <table border="0">
@@ -153,69 +145,29 @@
         </div>
 
     </div>
-    <div id="dates" class="block dates">
+    <div id="dates" class="block dates" style="width: 300px">
         <table border="0" class="date_and_state">
-            <tr>
+            <tr class="date">
+                <td><i class="fa fa-shopping-cart" aria-hidden="true"></i> {$order->get('Public ID')}</td>
+            </tr>
+
+
             <tr class="date">
                 <td title="{$invoice->get('Date')}">{$invoice->get_date('Invoice Date')}</td>
             </tr>
             <tr class="state">
                 <td>{$invoice->get_formatted_payment_state()}</td>
             </tr>
+
+            <tr class="date">
+                <td><a class="pdf_link" target='_blank' href="/pdf/invoice.pdf.php?id={$invoice->id}"> <img style="width: 50px;height:16px" src="/art/pdf.gif"></a></td>
+
+            </tr>
+
         </table>
 
-        <table id="orders" border="0" class="ul_table">
-            {foreach from=$invoice->get_orders_objects() item=order}
-                <tr>
-                    <td class="icon"><i class="fa fa-fw fa-shopping-cart"></i></td>
-                    <td><span class="link"
-                              onclick="change_view('invoice/{$invoice->id}/order/{$order->id}')">{$order->get('Order Public ID')}</span>
-                    </td>
 
-                </tr>
-            {/foreach}
-        </table>
 
-        <table id="delivery_notes" border="0" class="ul_table">
-            {foreach from=$invoice->get_delivery_notes_objects() item=dn}
-                <tr>
-                    <td class="icon"><i class="fa fa-fw fa-truck"></i></td>
-                    <td colspan="2"><span class="link"
-                                          onclick="change_view('invoice/{$invoice->id}/delivery_note/{$dn->id}')"
-                        ">{$dn->get('Delivery Note ID')}</span> <a class="pdf_link" target='_blank'
-                                                                   href="/dn.pdf.php?id={$dn->id}"> <img style=""
-                                                                                                         src="/art/pdf.gif"></a>
-                    </td>
-                    <td class="state">{$dn->get('Delivery Note XHTML State')} </td>
-                </tr>
-                <tr>
-                    <td class="more_dn_opertions"></td>
-                    <td colspan="3" class="state"> {$dn->get_info()} </td>
-                </tr>
-                <tr id="dn_operations_tr_{$dn->id}"
-                    style="{if $dn->get('Delivery Note State')=='Dispatched'}display:none{/if}">
-                    <td colspan="3" class="state"
-                        id="operations_container{$dn->id}">{$dn->get_operations($user,'invoice',$invoice->id)}</td>
-                </tr>
-                <tr style="{if $dn->get('Delivery Note State')=='Dispatched'}display:none{/if};border-bottom:1px solid #ccc;border-top:1px solid #eee">
-                    <td colspan="4">
-                        <table border=0 style="width:100%;margin:0px;font-size:80%;">
-                            <tr>
-                                <td style="border-right:1px solid #eee;width:50%;text-align:center"
-                                    id="pick_aid_container{$dn->id}"><span class="link"
-                                                                           onClick="change_view('delivery_note/{$dn->id}/pick_aid')">{t}Picking Aid{/t}</span>
-                                    <a class="pdf_link" target='_blank' href="pdf/order_pick_aid.pdf.php?id={$dn->id}">
-                                        <img src="/art/pdf.gif"></a></td>
-                                <td style="text-align:center" class="aright" id="pack_aid_container{$dn->id}"><span
-                                            class="link"
-                                            onClick="change_view('delivery_note/{$dn->id}/pack_aid')">{t}Pack Aid{/t}</span>
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-            {/foreach}
-        </table>
 
 
         </table>

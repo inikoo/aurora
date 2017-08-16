@@ -14,6 +14,9 @@ trait OrderCalculateTotals {
 
     function update_totals() {
 
+
+
+
         $number_items             = 0;
         $number_with_deals        = 0;
         $number_with_out_of_stock = 0;
@@ -29,7 +32,8 @@ trait OrderCalculateTotals {
             "SELECT
 		count(*) AS number_items,
 		sum(`Estimated Weight`) AS weight,
-		sum(`Order Transaction Amount`) AS net ,sum(`Order Transaction Total Discount Amount`) AS discounts ,sum(`Order Transaction Gross Amount`) AS gross ,sum(`Order Transaction Gross Amount`) AS out_of_stock ,
+		sum(`Order Transaction Amount`) AS net ,sum(`Order Transaction Total Discount Amount`) AS discounts ,sum(`Order Transaction Gross Amount`) AS gross ,
+		sum(`Order Transaction Out of Stock Amount`) AS out_of_stock ,
 		sum(if(`Order Transaction Total Discount Amount`!=0,1,0)) AS number_with_deals ,
 		sum(if(`No Shipped Due Out of Stock`!=0,1,0)) AS number_with_out_of_stock
 		FROM `Order Transaction Fact` WHERE `Order Key`=%d  ", $this->id
@@ -101,7 +105,8 @@ trait OrderCalculateTotals {
 
         $sql = sprintf(
             "SELECT  `Tax Category Code`, sum(`Transaction Net Amount`) AS net  FROM `Order No Product Transaction Fact` WHERE
-		`Order Key`=%d  GROUP BY  `Tax Category Code`  ", $this->id
+		`Order Key`=%d   GROUP BY  `Tax Category Code`     ", $this->id
+
         );
 
         //print $sql;
@@ -123,7 +128,7 @@ trait OrderCalculateTotals {
             exit;
         }
 
-      //  print_r($data);
+
 
         foreach ($data as $tax_code => $amount) {
 

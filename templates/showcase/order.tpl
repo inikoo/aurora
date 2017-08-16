@@ -30,29 +30,27 @@
             <div class="dot"></div>
         </li>
 
-        <li class="li {if $order->get('State Index')>=80}complete{/if} ">
+        <li id="packed_done_node" class="li {if $order->get('State Index')>=80}complete{/if} ">
             <div class="label">
                 <span class="state">{t}Packed & Sealed{/t}</span>
             </div>
             <div class="timestamp">
-                <span>&nbsp;<span class="Order_Packed_Done_Date">&nbsp;{$order->get('Packed Done Date')}</span>
-                    </span>
+                <span>&nbsp;<span class="Order_Packed_Done_Date">&nbsp;{$order->get('Packed Done Date')}</span></span>
             </div>
             <div class="dot"></div>
         </li>
 
-        <li class="li ">
+        <li  id="approved_node"  class="li {if $order->get('State Index')>=90}complete{/if} ">
             <div class="label">
                 <span class="state">{t}Invoiced{/t}</span>
             </div>
             <div class="timestamp">
-                <span>&nbsp;<span class=""></span>
-                    &nbsp;</span>
+                <span>&nbsp;<span class="Order_Packed_Done_Date">&nbsp;{$order->get('Invoiced Date')}</span></span>
             </div>
             <div class="dot"></div>
         </li>
 
-        <li class="li ">
+        <li  id="dispatched_node"  class="li  {if $order->get('State Index')>=100}complete{/if}">
             <div class="label">
                 <span class="state">{t}Dispatched{/t}</span>
             </div>
@@ -103,7 +101,7 @@
                 <div class="dot"></div>
             </li>
 
-            <li class="li {if $order->get('State Index')==100}complete{/if}">
+            <li class="li {if $order->get('State Index')>=90}complete{/if}">
                 <div class="label">
                     <span class="state">{t}Dispatch approved{/t}</span>
                 </div>
@@ -369,33 +367,10 @@
             </div>
         {/foreach}
 
-    </div>
-        <div class="invoices {if {$order->get('State Index')|intval}<30 or ($order->get('Order Ordered Number Items')-$order->get('Order Number Supplier Delivery Items'))==0  }hide{/if}" style="margin-bottom:10px">
-        <div id="create_invoice" class="delivery_node " style="height:30px;clear:both;border-top:1px solid #ccc;border-bottom:1px solid #ccc">
-
-            <div id="back_operations"></div>
-            <span style="float:left;padding-left:10px;padding-top:5px" class="very_discreet italic"><i class="fa fa-truck fa-flip-horizontal  button" aria-hidden="true"></i> {t}Delivery note{/t} </span>
-            <div id="forward_operations">
-
-                <div id="received_operations" class="order_operation {if !($order->get('Order State')=='Submitted' or  $order->get('Order State')=='Send') }hide{/if}">
-                    <div class="square_button right" style="padding:0;margin:0;position:relative;top:0px" title="{t}Input delivery note{/t}">
-                        <i class="fa fa-plus" aria-hidden="true" onclick="show_create_delivery()"></i>
-
-                    </div>
-                </div>
-
-
-            </div>
-
         </div>
-        {foreach from=$invoices item=invoice}
-            <div class="delivery_node" style="height:30px;clear:both;border-top:1px solid #ccc;border-bottom:1px solid #ccc">
-                    <span style="float:left;padding-left:10px;padding-top:5px"> <span class="button" onClick="change_view('order/{$order->id}/invoice/{$invoice->id}')"> <i class="fa fa-file-text-o fa-fw  "
-                                                                                                                                                                            aria-hidden="true"></i> {$invoice->get('Public ID')}</span> ({$invoice->get('State')}
-                        ) </span>
-            </div>
-        {/foreach}
-    </div>
+
+
+
 
 
         <div class="payments {if $order->get('Order Number Items')==0  or $order->get('State Index')<0 }hide{/if}  "  >
