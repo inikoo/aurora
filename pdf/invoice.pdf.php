@@ -531,6 +531,7 @@ if ($result=$db->query($sql)) {
 
 
 $smarty->assign('tax_data', $tax_data);
+$smarty->assign('account', $account);
 
 
 //if ($account->data['Apply Tax Method'] == 'Per Item') {

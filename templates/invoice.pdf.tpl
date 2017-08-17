@@ -103,10 +103,17 @@ div.inline { float:left; }
 			<div>
 				{t}Invoice Date{/t}:<b>{$invoice->get_date('Invoice Date')}</b> 
 			</div>
+
+
+				<div style="text-align: right">
+                    {t}Tax liability date{/t}: <b>{$order->get_date('Tax Liability Date')}</b>
+				</div>
 			{if $number_orders==1} 
 			<div style="text-align: right">
 				{t}Order Date{/t}: <b>{$order->get_date('Order Date')}</b> 
 			</div>
+
+
 			<div style="text-align: right">
 				{t}Order Number{/t}: <b>{$order->get('Order Public ID')}</b> 
 			</div>

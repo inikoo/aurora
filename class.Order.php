@@ -1202,7 +1202,7 @@ class Order extends DB_Table {
                         'Invoice Address Checksum'              => $this->data['Order Invoice Address Checksum'],
                         'Invoice Address Formatted'             => $this->data['Order Invoice Address Formatted'],
                         'Invoice Address Postal Label'          => $this->data['Order Invoice Address Postal Label'],
-
+                        'Invoice Tax Liability Date'=>$this->data['Order Packed Done Date'],
 
                         'Invoice Main Source Type'          => $this->data['Order Main Source Type'],
 
