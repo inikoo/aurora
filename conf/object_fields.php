@@ -23,6 +23,12 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
     switch ($object->get_object_name()) {
 
+        case 'Invoice':
+            include 'fields/invoice.fld.php';
+
+            return $object_fields;
+            break;
+
         case 'Payment Account':
             include 'fields/payment_account.fld.php';
 

@@ -431,6 +431,490 @@ class Order extends DB_Table {
 
     }
 
+    function update_state($value, $options = '', $metadata = array()) {
+        $date = gmdate('Y-m-d H:i:s');
+
+
+        $old_value         = $this->get('Order State');
+        $operations        = array();
+        $deliveries_xhtml  = '';
+        $number_deliveries = 0;
+
+        if ($old_value != $value) {
+
+            switch ($value) {
+
+
+                case 'Cancelled':
+
+
+                    $this->updated = $this->cancel();
+
+
+                    break;
+
+
+                case 'InBasket':
+
+
+                    if ($this->data['Order State'] != 'InProcess') {
+                        $this->error = true;
+                        $this->msg   = 'Order is not in process: :(';
+
+                        return;
+
+                    }
+
+
+                    $this->update_field('Order State', $value, 'no_history');
+                    $this->update_field('Order Submitted by Customer Date', '', 'no_history');
+                    $this->update_field('Order Date', $date, 'no_history');
+                    $this->update_field('Order Class', 'InWebsite', 'no_history');
+
+
+                    $history_data = array(
+                        'History Abstract' => _('Order send back to basket'),
+                        'History Details'  => '',
+                    );
+                    $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
+
+                    $operations = array(
+                        'send_to_warehouse_operations',
+                        'cancel_operations',
+                        'submit_operations'
+                    );
+
+
+                    $sql = sprintf(
+                        'UPDATE `Order Transaction Fact` SET `Current Dispatching State`="In Process" WHERE `Order Key`=%d  AND `Current Dispatching State` IN ("Submitted by Customer")  ', $this->id
+                    );
+
+                    $this->db->exec($sql);
+
+
+                    break;
+
+                case 'InProcess':
+
+
+                    if ($this->data['Order State'] == 'Cancelled' or $this->data['Order State'] == 'Dispatched') {
+                        $this->error = true;
+                        $this->msg   = 'Cant set as in process :(';
+
+                        return;
+
+                    }
+
+
+                    $this->update_field('Order State', $value, 'no_history');
+                    $this->update_field('Order Submitted by Customer Date', $date, 'no_history');
+                    $this->update_field('Order Date', $date, 'no_history');
+                    $this->update_field('Order Class', 'InProcess', 'no_history');
+
+
+                    $history_data = array(
+                        'History Abstract' => _('Order submited'),
+                        'History Details'  => '',
+                    );
+                    $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
+
+                    $operations = array(
+                        'send_to_warehouse_operations',
+                        'cancel_operations',
+                        'undo_submit_operations'
+                    );
+
+                    $sql = sprintf(
+                        'UPDATE `Order Transaction Fact` SET `Current Dispatching State`="Submitted by Customer" WHERE `Order Key`=%d  AND `Current Dispatching State` IN ("In Process by Customer","In Process")  ',
+                        $this->id
+                    );
+
+                    $this->db->exec($sql);
+
+                    break;
+                case 'InWarehouse':
+
+
+                    $warehouse_key = 1;
+
+                    include_once('class.DeliveryNote.php');
+
+
+                    if (!($this->data['Order State'] == 'InProcess' or $this->data['Order State'] == 'InBasket')) {
+                        $this->error = true;
+                        $this->msg   = 'Order is not in process';
+
+                        return false;
+
+                    }
+
+
+                    if ($this->data['Order For Collection'] == 'Yes') {
+                        $dispatch_method = 'Collection';
+                    } else {
+                        $dispatch_method = 'Dispatch';
+                    }
+
+                    $store = get_object('Store', $this->data['Order Store Key']);
+
+                    $data_dn                                              = array(
+                        'Delivery Note Warehouse Key' => $warehouse_key,
+                        'Delivery Note Date Created'  => $date,
+                        'Delivery Note Date'          => $date,
+                        'Delivery Note Order Key'     => $this->id,
+                        'Delivery Note Store Key'     => $this->data['Order Store Key'],
+
+                        'Delivery Note Order Date Placed'            => $this->data['Order Date'],
+                        'Delivery Note ID'                           => $this->data['Order Public ID'],
+                        'Delivery Note File As'                      => $this->data['Order File As'],
+                        'Delivery Note Type'                         => $this->data['Order Type'],
+                        'Delivery Note Dispatch Method'              => $dispatch_method,
+                        'Delivery Note Title'                        => '',
+                        'Delivery Note Customer Key'                 => $this->data['Order Customer Key'],
+                        'Delivery Note Metadata'                     => $this->data['Order Original Metadata'],
+                        'Delivery Note Customer Name'                => $this->data['Order Customer Name'],
+                        'Delivery Note Customer Contact Name'        => $this->data['Order Customer Contact Name'],
+                        'Delivery Note Telephone'                    => $this->data['Order Telephone'],
+                        'Delivery Note Email'                        => $this->data['Order Email'],
+                        'Delivery Note Address Recipient'            => $this->data['Order Delivery Address Recipient'],
+                        'Delivery Note Address Organization'         => $this->data['Order Delivery Address Organization'],
+                        'Delivery Note Address Line 1'               => $this->data['Order Delivery Address Line 1'],
+                        'Delivery Note Address Line 2'               => $this->data['Order Delivery Address Line 2'],
+                        'Delivery Note Address Sorting Code'         => $this->data['Order Delivery Address Sorting Code'],
+                        'Delivery Note Address Postal Code'          => $this->data['Order Delivery Address Postal Code'],
+                        'Delivery Note Address Dependent Locality'   => $this->data['Order Delivery Address Dependent Locality'],
+                        'Delivery Note Address Locality'             => $this->data['Order Delivery Address Locality'],
+                        'Delivery Note Address Administrative Area'  => $this->data['Order Delivery Address Administrative Area'],
+                        'Delivery Note Address Country 2 Alpha Code' => $this->data['Order Delivery Address Country 2 Alpha Code'],
+                        'Delivery Note Address Checksum'             => $this->data['Order Delivery Address Checksum'],
+                        'Delivery Note Address Formatted'            => $this->data['Order Delivery Address Formatted'],
+                        'Delivery Note Address Postal Label'         => $this->data['Order Delivery Address Postal Label'],
+                        'Delivery Note Show in Warehouse Orders'     => $store->get('Store Show in Warehouse Orders')
+                    );
+                    $this->data['Delivery Note Show in Warehouse Orders'] = $store->data['Store Show in Warehouse Orders'];
+
+
+                    $delivery_note = new DeliveryNote('create', $data_dn, $this);
+
+
+                    include 'utils/new_fork.php';
+                    $account = get_object('Account', 1);
+                    new_housekeeping_fork(
+                        'au_housekeeping', array(
+                        'type'              => 'delivery_note_created',
+                        'delivery_note_key' => $delivery_note->id,
+                    ), $account->get('Account Code')
+                    );
+
+
+                    if ($this->get('Order State') == 'InBasket') {
+
+                        $this->update_field('Order Submitted by Customer Date', $date);
+
+                    }
+                    $this->update_field('Order Class', 'InProcess', 'no_history');
+                    $this->update_field('Order State', $value, 'no_history');
+                    $this->update_field('Order Send to Warehouse Date', $date, 'no_history');
+                    $this->update_field('Order Date', $date, 'no_history');
+                    $this->update_field('Order Delivery Note Key', $delivery_note->id, 'no_history');
+
+
+                    $history_data = array(
+                        'History Abstract' => _('Order send to warehouse'),
+                        'History Details'  => '',
+                    );
+                    $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->table_name, $this->id);
+
+
+                    foreach ($this->get_deliveries('objects') as $dn) {
+                        $number_deliveries++;
+                        $deliveries_xhtml = sprintf(
+                            ' <div class="node"  id="delivery_node_%d"><span class="node_label"><i class="fa fa-truck fa-flip-horizontal fa-fw" aria-hidden="true"></i> 
+                               <span class="link" onClick="change_view(\'%s\')">%s</span>(<span class="Delivery_Note_State">%s</span>)</span></div>', $dn->id,
+                            'delivery_notes/'.$dn->get('Delivery Note Store Key').'/'.$dn->id, $dn->get('ID'), $dn->get('Abbreviated State')
+
+                        );
+
+                    }
+
+                    $operations = array('cancel_operations');
+
+
+                    $sql = sprintf(
+                        'UPDATE `Order Transaction Fact` SET `Current Dispatching State`="Ready to Pick" WHERE `Order Key`=%d  AND `Current Dispatching State`,`Delivery Note Key`=%d  IN ("Submitted by Customer","In Process")  ',
+                        $this->id, $delivery_note->id
+
+                    );
+
+                    $this->db->exec($sql);
+
+
+                    break;
+                case 'PackedDone':
+
+
+                    if ($this->data['Order State'] != 'InWarehouse') {
+                        $this->error = true;
+                        $this->msg   = 'Order is not in warehouse: :(';
+
+                        return;
+
+                    }
+
+
+                    $this->update_field('Order State', $value, 'no_history');
+                    $this->update_field('Order Packed Done Date', $date, 'no_history');
+                    $this->update_field('Order Date', $date, 'no_history');
+
+
+                    $history_data = array(
+                        'History Abstract' => _('Order packed and sealed'),
+                        'History Details'  => '',
+                    );
+                    $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
+
+                    $operations = array(
+                        'invoice_operations',
+                        'cancel_operations'
+                    );
+
+                    $sql = sprintf(
+                        'UPDATE `Order Transaction Fact` SET `Current Dispatching State`="Packed Done" WHERE `Order Key`=%d  AND `Current Dispatching State` IN ("Ready to Pick")  ', $this->id
+                    );
+
+                    $this->db->exec($sql);
+
+                    break;
+
+                case 'Approved':
+
+
+                    include_once('class.Invoice.php');
+
+
+                    if (!$this->data['Order State'] == 'PackedDone') {
+                        $this->error = true;
+                        $this->msg   = 'Order is not in packed done';
+
+                        return false;
+
+                    }
+                    $this->update_field('Order State', $value, 'no_history');
+
+
+                    $store = get_object('Store', $this->data['Order Store Key']);
+
+
+                    if ($store->data['Store Next Invoice Public ID Method'] == 'Order ID') {
+                        $invoice_public_id = $this->data['Order Public ID'];
+                        $file_as           = $this->data['Order File As'];
+                    } elseif ($store->data['Store Next Invoice Public ID Method'] == 'Invoice Public ID') {
+
+                        $sql = sprintf(
+                            "UPDATE `Store Dimension` SET `Store Invoice Last Invoice Public ID` = LAST_INSERT_ID(`Store Invoice Last Invoice Public ID` + 1) WHERE `Store Key`=%d",
+                            $this->data['Order Store Key']
+                        );
+                        $this->db->exec($sql);
+                        $public_id = $this->db->lastInsertId();
+
+                        $invoice_public_id = sprintf(
+                            $store->data['Store Invoice Public ID Format'], $public_id
+                        );
+
+                        //todo file as
+
+                    } else {
+
+                        $sql = sprintf(
+                            "UPDATE `Account Dimension` SET `Account Invoice Last Invoice Public ID` = LAST_INSERT_ID(`Account Invoice Last Invoice Public ID` + 1) WHERE `Account Key`=1"
+                        );
+                        $this->db->exec($sql);
+                        $public_id = $this->db->lastInsertId();
+
+                        include_once 'class.Account.php';
+                        $account           = new Account();
+                        $invoice_public_id = sprintf(
+                            $account->data['Account Invoice Public ID Format'], $public_id
+                        );
+
+                        //todo file as
+                    }
+
+
+                    $data_invoice = array(
+                        'Invoice Date'                          => $date,
+                        'Invoice Type'                          => 'Invoice',
+                        'Invoice Public ID'                     => $invoice_public_id,
+                        'Invoice File As'                       => $file_as,
+                        'Invoice Order Key'                     => $this->id,
+                        'Invoice Store Key'                     => $this->data['Order Store Key'],
+                        'Invoice Customer Key'                  => $this->data['Order Customer Key'],
+                        'Invoice Tax Code'                      => $this->data['Order Tax Code'],
+                        'Invoice Tax Shipping Code'             => $this->data['Order Tax Code'],
+                        'Invoice Tax Charges Code'              => $this->data['Order Tax Code'],
+                        'Invoice Metadata'                      => $this->data['Order Original Metadata'],
+                        'Invoice Tax Number'                    => $this->data['Order Tax Number'],
+                        'Invoice Tax Number Valid'              => $this->data['Order Tax Number Valid'],
+                        'Invoice Tax Number Validation Date'    => $this->data['Order Tax Number Validation Date'],
+                        'Invoice Tax Number Associated Name'    => $this->data['Order Tax Number Associated Name'],
+                        'Invoice Tax Number Associated Address' => $this->data['Order Tax Number Associated Address'],
+                        'Invoice Net Amount Off'                => $this->data['Order Deal Amount Off'],
+                        'Invoice Customer Contact Name'         => $this->data['Order Customer Contact Name'],
+                        'Invoice Customer Name'                 => $this->data['Order Customer Name'],
+
+                        //   'Invoice Telephone'                    => $this->data['Order Telephone'],
+                        //     'Invoice Email'                        => $this->data['Order Email'],
+                        'Invoice Address Recipient'             => $this->data['Order Invoice Address Recipient'],
+                        'Invoice Address Organization'          => $this->data['Order Invoice Address Organization'],
+                        'Invoice Address Line 1'                => $this->data['Order Invoice Address Line 1'],
+                        'Invoice Address Line 2'                => $this->data['Order Invoice Address Line 2'],
+                        'Invoice Address Sorting Code'          => $this->data['Order Invoice Address Sorting Code'],
+                        'Invoice Address Postal Code'           => $this->data['Order Invoice Address Postal Code'],
+                        'Invoice Address Dependent Locality'    => $this->data['Order Invoice Address Dependent Locality'],
+                        'Invoice Address Locality'              => $this->data['Order Invoice Address Locality'],
+                        'Invoice Address Administrative Area'   => $this->data['Order Invoice Address Administrative Area'],
+                        'Invoice Address Country 2 Alpha Code'  => $this->data['Order Invoice Address Country 2 Alpha Code'],
+                        'Invoice Address Checksum'              => $this->data['Order Invoice Address Checksum'],
+                        'Invoice Address Formatted'             => $this->data['Order Invoice Address Formatted'],
+                        'Invoice Address Postal Label'          => $this->data['Order Invoice Address Postal Label'],
+                        'Invoice Registration Number'           => $this->data['Order Registration Number'],
+
+
+                        'Invoice Tax Liability Date' => $this->data['Order Packed Done Date'],
+
+                        'Invoice Main Source Type' => $this->data['Order Main Source Type'],
+
+                        'Invoice Items Gross Amount'    => $this->data['Order Items Gross Amount'],
+                        'Invoice Items Discount Amount' => $this->data['Order Items Discount Amount'],
+
+                        'Invoice Items Net Amount'          => $this->data['Order Items Net Amount'],
+                        'Invoice Items Out of Stock Amount' => $this->data['Order Items Out of Stock Amount'],
+                        'Invoice Shipping Net Amount'       => $this->data['Order Shipping Net Amount'],
+                        'Invoice Charges Net Amount'        => $this->data['Order Charges Net Amount'],
+                        'Invoice Insurance Net Amount'      => $this->data['Order Insurance Net Amount'],
+                        'Invoice Total Net Amount'          => $this->data['Order Total Net Amount'],
+                        'Invoice Total Tax Amount'          => $this->data['Order Total Tax Amount'],
+                        'Invoice Payments Amount'           => $this->data['Order Payments Amount'],
+                        'Invoice To Pay Amount'             => $this->data['Order To Pay Amount'],
+                        'Invoice Total Amount'              => $this->data['Order Total Amount'],
+                        'Invoice Currency'                  => $this->data['Order Currency'],
+
+
+                    );
+
+
+                    $invoice = new Invoice ('create', $data_invoice);
+
+
+                    $dn = get_object('DeliveryNote', $this->data['Order Delivery Note Key']);
+
+
+                    $dn->update(
+                        array(
+                            'Delivery Note Invoiced'                    => 'Yes',
+                            'Delivery Note Invoiced Net DC Amount'      => $invoice->get('Invoice Total Net Amount') * $invoice->get('Invoice Currency Exchange'),
+                            'Delivery Note Invoiced Shipping DC Amount' => $invoice->get('Invoice Shipping Net Amount') * $invoice->get('Invoice Currency Exchange'),
+                            'Delivery Note State'                       => 'Approved',
+                        )
+                    );
+
+
+                    include 'utils/new_fork.php';
+                    $account = get_object('Account', 1);
+                    new_housekeeping_fork(
+                        'au_housekeeping', array(
+                        'type'              => 'invoice_created',
+                        'delivery_note_key' => $invoice->id,
+                    ), $account->get('Account Code')
+                    );
+
+
+                    $this->update_field('Order Invoiced Date', $date, 'no_history');
+                    $this->update_field('Order Date', $date, 'no_history');
+                    $this->update_field('Order Invoice Key', $invoice->id, 'no_history');
+
+
+                    $history_data = array(
+                        'History Abstract' => _('Order invoiced'),
+                        'History Details'  => '',
+                    );
+                    $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->table_name, $this->id);
+
+
+                    $operations = array('cancel_operations');
+
+                    //'In Process by Customer','Submitted by Customer','In Process','Ready to Pick','Picking','Ready to Pack','Ready to Ship','Dispatched','Unknown','Packing','Packed','Packed Done','Cancelled','No Picked Due Out of Stock','No Picked Due No Authorised','No Picked Due Not Found','No Picked Due Other','Suspended','Cancelled by Customer','Out of Stock in Basket'
+
+                    $sql = sprintf(
+                        'UPDATE `Order Transaction Fact` SET `Current Dispatching State`="Ready to Ship" WHERE `Order Key`=%d  AND `Current Dispatching State` IN ("Packed Done")  ', $this->id
+                    );
+
+                    $this->db->exec($sql);
+
+
+                    break;
+
+
+                case 'Dispatched':
+
+
+                    if ($this->data['Order State'] != 'Approved') {
+                        $this->error = true;
+                        $this->msg   = 'Order is not in Approved: :(';
+
+                        return;
+
+                    }
+
+
+                    $this->update_field('Order State', $value, 'no_history');
+                    $this->update_field('Order Dispatched Date', $date, 'no_history');
+                    $this->update_field('Order Class', 'Archived', 'no_history');
+
+
+                    $history_data = array(
+                        'History Abstract' => _('Order dispatched'),
+                        'History Details'  => '',
+                    );
+                    $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
+
+                    $operations = array();
+
+
+                    $sql = sprintf(
+                        'UPDATE `Order Transaction Fact` SET `Current Dispatching State`="Dispatched" WHERE `Order Key`=%d  AND `Current Dispatching State` IN ("Ready to Ship")  ', $this->id
+                    );
+
+                    $this->db->exec($sql);
+
+
+                    break;
+
+
+                default:
+                    exit('unknown state:::'.$value);
+                    break;
+            }
+
+
+        }
+
+        $this->update_metadata = array(
+            'class_html'        => array(
+                'Order_State'                  => $this->get('State'),
+                'Order_Submitted_Date'         => '&nbsp;'.$this->get('Submitted by Customer Date'),
+                'Order_Send_to_Warehouse_Date' => '&nbsp;'.$this->get('Send to Warehouse Date'),
+
+
+            ),
+            'operations'        => $operations,
+            'state_index'       => $this->get('State Index'),
+            'deliveries_xhtml'  => $deliveries_xhtml,
+            'number_deliveries' => $number_deliveries
+        );
+
+
+    }
 
     function get($key = '') {
 
@@ -779,7 +1263,6 @@ class Order extends DB_Table {
                 break;
 
 
-
             case ('Weight'):
 
                 include_once 'utils/natural_language.php';
@@ -853,501 +1336,6 @@ class Order extends DB_Table {
         }
 
         return false;
-    }
-
-
-    function update_state($value, $options = '', $metadata = array()) {
-        $date = gmdate('Y-m-d H:i:s');
-
-
-        $old_value         = $this->get('Order State');
-        $operations        = array();
-        $deliveries_xhtml  = '';
-        $number_deliveries = 0;
-
-        if ($old_value != $value) {
-
-            switch ($value) {
-
-
-                case 'Cancelled':
-
-
-                    $this->updated = $this->cancel();
-
-
-                    break;
-
-
-                case 'InBasket':
-
-
-                    if ($this->data['Order State'] != 'InProcess') {
-                        $this->error = true;
-                        $this->msg   = 'Order is not in process: :(';
-
-                        return;
-
-                    }
-
-
-                    $this->update_field('Order State', $value, 'no_history');
-                    $this->update_field('Order Submitted by Customer Date', '', 'no_history');
-                    $this->update_field('Order Date', $date, 'no_history');
-                    $this->update_field('Order Class', 'InWebsite', 'no_history');
-
-
-                    $history_data = array(
-                        'History Abstract' => _('Order send back to basket'),
-                        'History Details'  => '',
-                    );
-                    $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
-
-                    $operations = array(
-                        'send_to_warehouse_operations',
-                        'cancel_operations',
-                        'submit_operations'
-                    );
-
-
-                    $sql = sprintf(
-                        'UPDATE `Order Transaction Fact` SET `Current Dispatching State`="In Process" WHERE `Order Key`=%d  AND `Current Dispatching State` IN ("Submitted by Customer")  ', $this->id
-                    );
-
-                    $this->db->exec($sql);
-
-
-                    break;
-
-                case 'InProcess':
-
-
-                    if ($this->data['Order State'] == 'Cancelled' or $this->data['Order State'] == 'Dispatched'  ) {
-                        $this->error = true;
-                        $this->msg   = 'Cant set as in process :(';
-
-                        return;
-
-                    }
-
-
-                    $this->update_field('Order State', $value, 'no_history');
-                    $this->update_field('Order Submitted by Customer Date', $date, 'no_history');
-                    $this->update_field('Order Date', $date, 'no_history');
-                    $this->update_field('Order Class', 'InProcess', 'no_history');
-
-
-                    $history_data = array(
-                        'History Abstract' => _('Order submited'),
-                        'History Details'  => '',
-                    );
-                    $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
-
-                    $operations = array(
-                        'send_to_warehouse_operations',
-                        'cancel_operations',
-                        'undo_submit_operations'
-                    );
-
-                    $sql = sprintf(
-                        'UPDATE `Order Transaction Fact` SET `Current Dispatching State`="Submitted by Customer" WHERE `Order Key`=%d  AND `Current Dispatching State` IN ("In Process by Customer","In Process")  ',
-                        $this->id
-                    );
-
-                    $this->db->exec($sql);
-
-                    break;
-                case 'InWarehouse':
-
-
-                    $warehouse_key = 1;
-
-                    include_once('class.DeliveryNote.php');
-
-
-                    if (!($this->data['Order State'] == 'InProcess' or $this->data['Order State'] == 'InBasket')) {
-                        $this->error = true;
-                        $this->msg   = 'Order is not in process';
-
-                        return false;
-
-                    }
-
-
-                    if ($this->data['Order For Collection'] == 'Yes') {
-                        $dispatch_method = 'Collection';
-                    } else {
-                        $dispatch_method = 'Dispatch';
-                    }
-
-                    $store = get_object('Store', $this->data['Order Store Key']);
-
-                    $data_dn                                              = array(
-                        'Delivery Note Warehouse Key' => $warehouse_key,
-                        'Delivery Note Date Created'  => $date,
-                        'Delivery Note Date'          => $date,
-                        'Delivery Note Order Key'     => $this->id,
-                        'Delivery Note Store Key'     => $this->data['Order Store Key'],
-
-                        'Delivery Note Order Date Placed'            => $this->data['Order Date'],
-                        'Delivery Note ID'                           => $this->data['Order Public ID'],
-                        'Delivery Note File As'                      => $this->data['Order File As'],
-                        'Delivery Note Type'                         => $this->data['Order Type'],
-                        'Delivery Note Dispatch Method'              => $dispatch_method,
-                        'Delivery Note Title'                        => '',
-                        'Delivery Note Customer Key'                 => $this->data['Order Customer Key'],
-                        'Delivery Note Metadata'                     => $this->data['Order Original Metadata'],
-                        'Delivery Note Customer Name'                => $this->data['Order Customer Name'],
-                        'Delivery Note Customer Contact Name'        => $this->data['Order Customer Contact Name'],
-                        'Delivery Note Telephone'                    => $this->data['Order Telephone'],
-                        'Delivery Note Email'                        => $this->data['Order Email'],
-                        'Delivery Note Address Recipient'            => $this->data['Order Delivery Address Recipient'],
-                        'Delivery Note Address Organization'         => $this->data['Order Delivery Address Organization'],
-                        'Delivery Note Address Line 1'               => $this->data['Order Delivery Address Line 1'],
-                        'Delivery Note Address Line 2'               => $this->data['Order Delivery Address Line 2'],
-                        'Delivery Note Address Sorting Code'         => $this->data['Order Delivery Address Sorting Code'],
-                        'Delivery Note Address Postal Code'          => $this->data['Order Delivery Address Postal Code'],
-                        'Delivery Note Address Dependent Locality'   => $this->data['Order Delivery Address Dependent Locality'],
-                        'Delivery Note Address Locality'             => $this->data['Order Delivery Address Locality'],
-                        'Delivery Note Address Administrative Area'  => $this->data['Order Delivery Address Administrative Area'],
-                        'Delivery Note Address Country 2 Alpha Code' => $this->data['Order Delivery Address Country 2 Alpha Code'],
-                        'Delivery Note Address Checksum'             => $this->data['Order Delivery Address Checksum'],
-                        'Delivery Note Address Formatted'            => $this->data['Order Delivery Address Formatted'],
-                        'Delivery Note Address Postal Label'         => $this->data['Order Delivery Address Postal Label'],
-                        'Delivery Note Show in Warehouse Orders'     => $store->get('Store Show in Warehouse Orders')
-                    );
-                    $this->data['Delivery Note Show in Warehouse Orders'] = $store->data['Store Show in Warehouse Orders'];
-
-
-                    $delivery_note = new DeliveryNote('create', $data_dn, $this);
-
-
-                    include 'utils/new_fork.php';
-                    $account = get_object('Account', 1);
-                    new_housekeeping_fork(
-                        'au_housekeeping', array(
-                        'type'              => 'delivery_note_created',
-                        'delivery_note_key' => $delivery_note->id,
-                    ), $account->get('Account Code')
-                    );
-
-
-                    if ($this->get('Order State') == 'InBasket') {
-
-                        $this->update_field('Order Submitted by Customer Date', $date);
-
-                    }
-                    $this->update_field('Order Class', 'InProcess', 'no_history');
-                    $this->update_field('Order State', $value, 'no_history');
-                    $this->update_field('Order Send to Warehouse Date', $date, 'no_history');
-                    $this->update_field('Order Date', $date, 'no_history');
-                    $this->update_field('Order Delivery Note Key',$delivery_note->id , 'no_history');
-
-
-                    $history_data = array(
-                        'History Abstract' => _('Order send to warehouse'),
-                        'History Details'  => '',
-                    );
-                    $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->table_name, $this->id);
-
-
-                    foreach ($this->get_deliveries('objects') as $dn) {
-                        $number_deliveries++;
-                        $deliveries_xhtml = sprintf(
-                            ' <div class="node"  id="delivery_node_%d"><span class="node_label"><i class="fa fa-truck fa-flip-horizontal fa-fw" aria-hidden="true"></i> 
-                               <span class="link" onClick="change_view(\'%s\')">%s</span>(<span class="Delivery_Note_State">%s</span>)</span></div>', $dn->id,
-                            'delivery_notes/'.$dn->get('Delivery Note Store Key').'/'.$dn->id, $dn->get('ID'), $dn->get('Abbreviated State')
-
-                        );
-
-                    }
-
-                    $operations = array('cancel_operations');
-
-
-                    $sql = sprintf(
-                        'UPDATE `Order Transaction Fact` SET `Current Dispatching State`="Ready to Pick" WHERE `Order Key`=%d  AND `Current Dispatching State`,`Delivery Note Key`=%d  IN ("Submitted by Customer","In Process")  ',
-                        $this->id, $delivery_note->id
-
-                    );
-
-                    $this->db->exec($sql);
-
-
-                    break;
-                case 'PackedDone':
-
-
-                    if ($this->data['Order State'] != 'InWarehouse') {
-                        $this->error = true;
-                        $this->msg   = 'Order is not in warehouse: :(';
-
-                        return;
-
-                    }
-
-
-                    $this->update_field('Order State', $value, 'no_history');
-                    $this->update_field('Order Packed Done Date', $date, 'no_history');
-                    $this->update_field('Order Date', $date, 'no_history');
-
-
-                    $history_data = array(
-                        'History Abstract' => _('Order packed and sealed'),
-                        'History Details'  => '',
-                    );
-                    $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
-
-                    $operations = array(
-                        'invoice_operations',
-                        'cancel_operations'
-                    );
-
-                    $sql = sprintf(
-                        'UPDATE `Order Transaction Fact` SET `Current Dispatching State`="Packed Done" WHERE `Order Key`=%d  AND `Current Dispatching State` IN ("Ready to Pick")  ', $this->id
-                    );
-
-                    $this->db->exec($sql);
-
-                    break;
-
-                case 'Approved':
-
-
-                    include_once('class.Invoice.php');
-
-
-                    if (!$this->data['Order State'] == 'PackedDone') {
-                        $this->error = true;
-                        $this->msg   = 'Order is not in packed done';
-
-                        return false;
-
-                    }
-                    $this->update_field('Order State', $value, 'no_history');
-
-
-                    $store = get_object('Store', $this->data['Order Store Key']);
-
-
-                    if ($store->data['Store Next Invoice Public ID Method'] == 'Order ID') {
-                        $invoice_public_id = $this->data['Order Public ID'];
-                        $file_as           = $this->data['Order File As'];
-                    } elseif ($store->data['Store Next Invoice Public ID Method'] == 'Invoice Public ID') {
-
-                        $sql = sprintf(
-                            "UPDATE `Store Dimension` SET `Store Invoice Last Invoice Public ID` = LAST_INSERT_ID(`Store Invoice Last Invoice Public ID` + 1) WHERE `Store Key`=%d",
-                            $this->data['Order Store Key']
-                        );
-                        $this->db->exec($sql);
-                        $public_id = $this->db->lastInsertId();
-
-                        $invoice_public_id = sprintf(
-                            $store->data['Store Invoice Public ID Format'], $public_id
-                        );
-
-                        //todo file as
-
-                    } else {
-
-                        $sql = sprintf(
-                            "UPDATE `Account Dimension` SET `Account Invoice Last Invoice Public ID` = LAST_INSERT_ID(`Account Invoice Last Invoice Public ID` + 1) WHERE `Account Key`=1"
-                        );
-                        $this->db->exec($sql);
-                        $public_id = $this->db->lastInsertId();
-
-                        include_once 'class.Account.php';
-                        $account           = new Account();
-                        $invoice_public_id = sprintf(
-                            $account->data['Account Invoice Public ID Format'], $public_id
-                        );
-
-                        //todo file as
-                    }
-
-
-                    $data_invoice = array(
-                        'Invoice Date'                          => $date,
-                        'Invoice Type'                          => 'Invoice',
-                        'Invoice Public ID'                     => $invoice_public_id,
-                        'Invoice File As'                       => $file_as,
-                        'Invoice Order Key'                     => $this->id,
-                        'Invoice Store Key'                     => $this->data['Order Store Key'],
-                        'Invoice Customer Key'                  => $this->data['Order Customer Key'],
-                        'Invoice Tax Code'                      => $this->data['Order Tax Code'],
-                        'Invoice Tax Shipping Code'             => $this->data['Order Tax Code'],
-                        'Invoice Tax Charges Code'              => $this->data['Order Tax Code'],
-                        'Invoice Metadata'                      => $this->data['Order Original Metadata'],
-                        'Invoice Tax Number'                    => $this->data['Order Tax Number'],
-                        'Invoice Tax Number Valid'              => $this->data['Order Tax Number Valid'],
-                        'Invoice Tax Number Validation Date'    => $this->data['Order Tax Number Validation Date'],
-                        'Invoice Tax Number Associated Name'    => $this->data['Order Tax Number Associated Name'],
-                        'Invoice Tax Number Associated Address' => $this->data['Order Tax Number Associated Address'],
-                        'Invoice Net Amount Off'                => $this->data['Order Deal Amount Off'],
-                        'Invoice Customer Contact Name'         => $this->data['Order Customer Contact Name'],
-                        'Invoice Customer Name'         => $this->data['Order Customer Name'],
-
-                        //   'Invoice Telephone'                    => $this->data['Order Telephone'],
-                        //     'Invoice Email'                        => $this->data['Order Email'],
-                        'Invoice Address Recipient'             => $this->data['Order Invoice Address Recipient'],
-                        'Invoice Address Organization'          => $this->data['Order Invoice Address Organization'],
-                        'Invoice Address Line 1'                => $this->data['Order Invoice Address Line 1'],
-                        'Invoice Address Line 2'                => $this->data['Order Invoice Address Line 2'],
-                        'Invoice Address Sorting Code'          => $this->data['Order Invoice Address Sorting Code'],
-                        'Invoice Address Postal Code'           => $this->data['Order Invoice Address Postal Code'],
-                        'Invoice Address Dependent Locality'    => $this->data['Order Invoice Address Dependent Locality'],
-                        'Invoice Address Locality'              => $this->data['Order Invoice Address Locality'],
-                        'Invoice Address Administrative Area'   => $this->data['Order Invoice Address Administrative Area'],
-                        'Invoice Address Country 2 Alpha Code'  => $this->data['Order Invoice Address Country 2 Alpha Code'],
-                        'Invoice Address Checksum'              => $this->data['Order Invoice Address Checksum'],
-                        'Invoice Address Formatted'             => $this->data['Order Invoice Address Formatted'],
-                        'Invoice Address Postal Label'          => $this->data['Order Invoice Address Postal Label'],
-                        'Invoice Tax Liability Date'=>$this->data['Order Packed Done Date'],
-
-                        'Invoice Main Source Type'          => $this->data['Order Main Source Type'],
-
-                        'Invoice Items Gross Amount'        => $this->data['Order Items Gross Amount'],
-                        'Invoice Items Discount Amount'     => $this->data['Order Items Discount Amount'],
-
-                        'Invoice Items Net Amount'     => $this->data['Order Items Net Amount'],
-                        'Invoice Items Out of Stock Amount' => $this->data['Order Items Out of Stock Amount'],
-                        'Invoice Shipping Net Amount'       => $this->data['Order Shipping Net Amount'],
-                        'Invoice Charges Net Amount'        => $this->data['Order Charges Net Amount'],
-                        'Invoice Insurance Net Amount'      => $this->data['Order Insurance Net Amount'],
-                        'Invoice Total Net Amount'          => $this->data['Order Total Net Amount'],
-                        'Invoice Total Tax Amount'          => $this->data['Order Total Tax Amount'],
-                        'Invoice Payments Amount'           => $this->data['Order Payments Amount'],
-                        'Invoice To Pay Amount'             => $this->data['Order To Pay Amount'],
-                        'Invoice Total Amount'             => $this->data['Order Total Amount'],
-                        'Invoice Currency'             => $this->data['Order Currency'],
-
-
-
-                    );
-
-
-
-
-
-                    $invoice = new Invoice ('create', $data_invoice);
-
-
-                    $dn=get_object('DeliveryNote',$this->data['Order Delivery Note Key']);
-
-
-                    $dn->update(
-                        array(
-                            'Delivery Note Invoiced'                    => 'Yes',
-                            'Delivery Note Invoiced Net DC Amount'      => $invoice->get('Invoice Total Net Amount') * $invoice->get('Invoice Currency Exchange'),
-                            'Delivery Note Invoiced Shipping DC Amount' => $invoice->get('Invoice Shipping Net Amount') * $invoice->get('Invoice Currency Exchange'),
-                            'Delivery Note State'                    => 'Approved',
-                        )
-                    );
-
-
-
-
-
-                    include 'utils/new_fork.php';
-                    $account = get_object('Account', 1);
-                    new_housekeeping_fork(
-                        'au_housekeeping', array(
-                        'type'              => 'invoice_created',
-                        'delivery_note_key' => $invoice->id,
-                    ), $account->get('Account Code')
-                    );
-
-
-
-
-                    $this->update_field('Order Invoiced Date', $date, 'no_history');
-                    $this->update_field('Order Date', $date, 'no_history');
-                    $this->update_field('Order Invoice Key', $invoice->id, 'no_history');
-
-
-                    $history_data = array(
-                        'History Abstract' => _('Order invoiced'),
-                        'History Details'  => '',
-                    );
-                    $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->table_name, $this->id);
-
-
-                    $operations = array('cancel_operations');
-
-                    //'In Process by Customer','Submitted by Customer','In Process','Ready to Pick','Picking','Ready to Pack','Ready to Ship','Dispatched','Unknown','Packing','Packed','Packed Done','Cancelled','No Picked Due Out of Stock','No Picked Due No Authorised','No Picked Due Not Found','No Picked Due Other','Suspended','Cancelled by Customer','Out of Stock in Basket'
-
-                    $sql = sprintf(
-                        'UPDATE `Order Transaction Fact` SET `Current Dispatching State`="Ready to Ship" WHERE `Order Key`=%d  AND `Current Dispatching State` IN ("Packed Done")  ', $this->id
-                    );
-
-                    $this->db->exec($sql);
-
-
-                    break;
-
-
-                case 'Dispatched':
-
-
-                    if ($this->data['Order State'] != 'Approved') {
-                        $this->error = true;
-                        $this->msg   = 'Order is not in Approved: :(';
-
-                        return;
-
-                    }
-
-
-                    $this->update_field('Order State', $value, 'no_history');
-                    $this->update_field('Order Dispatched Date', $date, 'no_history');
-                    $this->update_field('Order Class', 'Archived', 'no_history');
-
-
-                    $history_data = array(
-                        'History Abstract' => _('Order dispatched'),
-                        'History Details'  => '',
-                    );
-                    $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
-
-                    $operations = array(
-
-                    );
-
-
-                    $sql = sprintf(
-                        'UPDATE `Order Transaction Fact` SET `Current Dispatching State`="Dispatched" WHERE `Order Key`=%d  AND `Current Dispatching State` IN ("Ready to Ship")  ', $this->id
-                    );
-
-                    $this->db->exec($sql);
-
-
-                    break;
-
-
-
-                default:
-                    exit('unknown state:::'.$value);
-                    break;
-            }
-
-
-        }
-
-        $this->update_metadata = array(
-            'class_html'        => array(
-                'Order_State'                  => $this->get('State'),
-                'Order_Submitted_Date'         => '&nbsp;'.$this->get('Submitted by Customer Date'),
-                'Order_Send_to_Warehouse_Date' => '&nbsp;'.$this->get('Send to Warehouse Date'),
-
-
-            ),
-            'operations'        => $operations,
-            'state_index'       => $this->get('State Index'),
-            'deliveries_xhtml'  => $deliveries_xhtml,
-            'number_deliveries' => $number_deliveries
-        );
-
-
     }
 
     function cancel($note = '', $date = false, $force = false) {
@@ -2818,12 +2806,10 @@ VALUES (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 
 
         $sql           = sprintf(
-            "SELECT `Order Transaction Fact Key`,`Order Quantity`,`Product Key`,`Product ID`,`Order Transaction Amount` FROM `Order Transaction Fact` WHERE `Current Dispatching State` in ('In Process','In Process by Customer') AND  `Product ID`=%d AND `Order Key`=%d ",
+            "SELECT `Order Transaction Fact Key`,`Order Quantity`,`Product Key`,`Product ID`,`Order Transaction Amount` FROM `Order Transaction Fact` WHERE `Current Dispatching State` IN ('In Process','In Process by Customer') AND  `Product ID`=%d AND `Order Key`=%d ",
             $product_pid, $this->id
         );
         $affected_rows = 0;
-
-
 
 
         if ($result = $this->db->query($sql)) {
@@ -2889,6 +2875,78 @@ VALUES (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 
     }
 
+    function restore_back_to_stock_to_basket($product_pid) {
+
+        if ($this->data['Order State'] != 'InBasket') {
+            return;
+        }
+
+        $affected_rows = 0;;
+
+        $sql = sprintf(
+            "SELECT `Order Transaction Fact Key`,`Quantity` FROM `Order Transaction Out of Stock in Basket Bridge` WHERE  `Product ID`=%d AND `Order Key`=%d ", $product_pid, $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $product = new Product('id', $product_pid);
+
+                $gross = $row['Quantity'] * $product->data['Product Price'];
+
+                $sql = sprintf(
+                    'UPDATE `Order Transaction Fact` SET `Current Dispatching State`=%s,`Order Quantity`=%d,`No Shipped Due Out of Stock`=0,`Order Transaction Gross Amount`=%.2f ,`Order Transaction Total Discount Amount`=%.2f,`Order Transaction Amount`=%.2f  WHERE `Order Transaction Fact Key`=%d   ',
+                    prepare_mysql('In Process'), $row['Quantity'], $gross, 0, $gross, $row['Order Transaction Fact Key']
+                );
+
+                $this->db->exec($sql);
+
+                $sql = sprintf(
+                    'DELETE FROM `Order Transaction Out of Stock in Basket Bridge` WHERE `Order Transaction Fact Key`=%d', $row['Order Transaction Fact Key']
+                );
+                $this->db->exec($sql);
+
+                $affected_rows++;
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        if ($affected_rows) {
+            $dn_key = 0;
+
+
+            $this->update_number_products();
+            $this->update_insurance();
+
+            $this->update_discounts_items();
+            $this->update_totals();
+
+
+            $this->update_shipping($dn_key, false);
+            $this->update_charges($dn_key, false);
+            $this->update_discounts_no_items($dn_key);
+
+
+            $this->update_deal_bridge();
+
+            $this->update_deals_usage();
+
+            $this->update_totals();
+
+
+            $this->update_number_products();
+
+            //$this->apply_payment_from_customer_account();
+
+
+        }
+
+    }
+
     function update_number_products() {
         $this->data['Order Number Products'] = $this->get_number_products();
         $sql                                 = sprintf(
@@ -2943,7 +3001,7 @@ VALUES (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 
 
         $this->update_totals();
-       // $this->apply_payment_from_customer_account();
+        // $this->apply_payment_from_customer_account();
 
     }
 
@@ -3100,78 +3158,6 @@ VALUES (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 
 
         return $insurances;
-
-    }
-
-    function restore_back_to_stock_to_basket($product_pid) {
-
-        if ($this->data['Order State'] != 'InBasket') {
-            return;
-        }
-
-        $affected_rows = 0;;
-
-        $sql = sprintf(
-            "SELECT `Order Transaction Fact Key`,`Quantity` FROM `Order Transaction Out of Stock in Basket Bridge` WHERE  `Product ID`=%d AND `Order Key`=%d ", $product_pid, $this->id
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                $product = new Product('id', $product_pid);
-
-                $gross = $row['Quantity'] * $product->data['Product Price'];
-
-                $sql = sprintf(
-                    'UPDATE `Order Transaction Fact` SET `Current Dispatching State`=%s,`Order Quantity`=%d,`No Shipped Due Out of Stock`=0,`Order Transaction Gross Amount`=%.2f ,`Order Transaction Total Discount Amount`=%.2f,`Order Transaction Amount`=%.2f  WHERE `Order Transaction Fact Key`=%d   ',
-                    prepare_mysql('In Process'), $row['Quantity'], $gross, 0, $gross, $row['Order Transaction Fact Key']
-                );
-
-                $this->db->exec($sql);
-
-                $sql = sprintf(
-                    'DELETE FROM `Order Transaction Out of Stock in Basket Bridge` WHERE `Order Transaction Fact Key`=%d', $row['Order Transaction Fact Key']
-                );
-                $this->db->exec($sql);
-
-                $affected_rows++;
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        if ($affected_rows) {
-            $dn_key = 0;
-
-
-            $this->update_number_products();
-            $this->update_insurance();
-
-            $this->update_discounts_items();
-            $this->update_totals();
-
-
-            $this->update_shipping($dn_key, false);
-            $this->update_charges($dn_key, false);
-            $this->update_discounts_no_items($dn_key);
-
-
-            $this->update_deal_bridge();
-
-            $this->update_deals_usage();
-
-            $this->update_totals();
-
-
-            $this->update_number_products();
-
-            //$this->apply_payment_from_customer_account();
-
-
-        }
 
     }
 

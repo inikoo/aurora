@@ -464,7 +464,6 @@ class Public_Customer extends DBW_Table {
     function get_order_in_process_key() {
 
 
-
         $order_key = false;
         $sql       = sprintf(
             "SELECT `Order Key` FROM `Order Dimension` WHERE `Order Customer Key`=%d AND `Order State`='InBasket' ", $this->id
@@ -569,8 +568,7 @@ class Public_Customer extends DBW_Table {
                     $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order Class`="InProcess" AND `Order Customer Key`=%d ', $this->id);
                     if ($result = $this->db->query($sql)) {
                         foreach ($result as $row) {
-                            $order=get_object('Order',$row['Order Key']);
-
+                            $order = get_object('Order', $row['Order Key']);
 
 
                             $order->update(array('Order Invoice Address' => $value), $options, array('no_propagate_customer' => true));
@@ -591,7 +589,7 @@ class Public_Customer extends DBW_Table {
                 $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order Class`="InProcess" AND `Order Customer Key`=%d ', $this->id);
                 if ($result = $this->db->query($sql)) {
                     foreach ($result as $row) {
-                        $order=get_object('Order',$row['Order Key']);
+                        $order = get_object('Order', $row['Order Key']);
 
                         $order->update(array('Order Delivery Address' => $value), $options, array('no_propagate_customer' => true));
                     }
@@ -743,9 +741,11 @@ class Public_Customer extends DBW_Table {
         $order_data['Order Class'] = 'InWebsite';
 
 
-        $order_data['Order Customer Key']                  = $this->id;
-        $order_data['Order Customer Name']                 = $this->data['Customer Name'];
-        $order_data['Order Customer Contact Name']         = $this->data['Customer Main Contact Name'];
+        $order_data['Order Customer Key']          = $this->id;
+        $order_data['Order Customer Name']         = $this->data['Customer Name'];
+        $order_data['Order Customer Contact Name'] = $this->data['Customer Main Contact Name'];
+        $order_data['Order Registration Number']   = $this->data['Customer Registration Number'];
+
         $order_data['Order Tax Number']                    = $this->data['Customer Tax Number'];
         $order_data['Order Tax Number Valid']              = $this->data['Customer Tax Number Valid'];
         $order_data['Order Tax Number Validation Date']    = $this->data['Customer Tax Number Validation Date'];
@@ -798,7 +798,6 @@ class Public_Customer extends DBW_Table {
         $order_data['Order Currency']                 = $store->get('Store Currency Code');
         $order_data['Order Show in Warehouse Orders'] = $store->get('Store Show in Warehouse Orders');
         $order_data['public_id_format']               = $store->get('Store Order Public ID Format');
-
 
 
         include_once 'class.Public_Order.php';
@@ -874,13 +873,13 @@ class Public_Customer extends DBW_Table {
         $sql = sprintf(
             "INSERT INTO `Customer Credit Card Dimension` (`Customer Credit Card Customer Key`,`Customer Credit Card Invoice Address Checksum`,`Customer Credit Card Delivery Address Checksum`,`Customer Credit Card CCUI`,`Customer Credit Card Metadata`,`Customer Credit Card Created`,`Customer Credit Card Updated`,`Customer Credit Card Valid Until`,`Customer Credit Card Vault`) 
               VALUES (%d,%s,%s,%s,%s,%s,%s,%s,%s)
-		      ON DUPLICATE KEY UPDATE `Customer Credit Card Metadata`=%s , `Customer Credit Card Updated`=%s,`Customer Credit Card Valid Until`=%s", $this->id, prepare_mysql($invoice_address_checksum), prepare_mysql($delivery_address_checksum),
-            prepare_mysql($card_info['uniqueNumberIdentifier']), prepare_mysql($card_data), prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql(gmdate('Y-m-d H:i:s')),
+		      ON DUPLICATE KEY UPDATE `Customer Credit Card Metadata`=%s , `Customer Credit Card Updated`=%s,`Customer Credit Card Valid Until`=%s", $this->id,
+            prepare_mysql($invoice_address_checksum), prepare_mysql($delivery_address_checksum), prepare_mysql($card_info['uniqueNumberIdentifier']), prepare_mysql($card_data),
+            prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql(gmdate('Y-m-d H:i:s')),
             prepare_mysql(gmdate('Y-m-d H:i:s', strtotime($card_info['expirationYear'].'-'.$card_info['expirationMonth'].'-01 +1 month'))), prepare_mysql($vault), prepare_mysql($card_data),
             prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql(gmdate('Y-m-d H:i:s', strtotime($card_info['expirationYear'].'-'.$card_info['expirationMonth'].'-01 +1 month')))
 
         );
-
 
 
         $this->db->exec($sql);
