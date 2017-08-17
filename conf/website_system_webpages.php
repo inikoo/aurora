@@ -521,6 +521,9 @@ function website_system_webpages_config($website_type) {
                     '_form_title_sofort'      => _('Checkout form'),
                     '_form_title_bank'        => _('Checkout form'),
                     '_form_title_other'       => _('Checkout form'),
+                    '_form_title_online_bank_transfer' => _('Checkout form'),
+                    '_form_title_cash_on_delivery' => _('Checkout form'),
+
 
 
                     '_bank_header' => _('Please go to your bank and make a payment of <b>[Order Amount]</b>  to our bank account, details below'),
@@ -535,8 +538,8 @@ function website_system_webpages_config($website_type) {
                     '_place_order_from_bank'        => _('Place order'),
                     '_place_order_from_credit_card' => _('Place order'),
                     '_place_order_from_paypal'      => _('Place order'),
-                    '_place_order_from_sofort'      => _('Place order'),
-                    '_place_order_from_cond'        => _('Place order'),
+                    '_place_order_from_cash_on_delivery'        => _('Place order'),
+                    '_place_order_from_online_bank_transfer'        => _('Place order'),
 
 
                 )

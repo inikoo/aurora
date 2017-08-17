@@ -89,7 +89,7 @@
                             <td class="text-right available_credit_amount ">{$order->get('Available Credit Amount')}</td>
                         </tr>
                         <tr class="to_pay_amount_tr {if $order->get('Order Payments Amount')==0 and $order->get('Order Available Credit Amount')==0 }hide{/if}" >
-                            <td>{if isset($labels._order_to_pay_amount) and $_order_to_pay_amoount._total!=''}{$labels._order_to_pay_amoount}{else}{t}To pay{/t}{/if}</td>
+                            <td>{if isset($labels._order_to_pay_amount) and $_order_to_pay_amount._total!=''}{$labels._order_to_pay_amount}{else}{t}To pay{/t}{/if}</td>
 
                             <td class="text-right to_pay_amount">{$order->get('Basket To Pay Amount')}</td>
                         </tr>
@@ -108,11 +108,13 @@
             <div class="container">
 
 
-                {assign "payment_accounyts" $website->get_payment_accounts()  }
+                {assign "payment_accounts" $website->get_payment_accounts()  }
 
                 <ul class="tabs3">
 
-                    {foreach from=$payment_accounyts item=payment_account key=key}
+                    {foreach from=$payment_accounts item=payment_account key=key}
+
+
                         <li><a href="#payment_account_item_{$payment_account.object->get('Block')}" target="_self"><i class="fa {$payment_account.icon}" aria-hidden="true"></i> <span>
             {if $payment_account.tab_label==''}
                 {$content[$payment_account.tab_label_index]}
@@ -127,7 +129,7 @@
 
                 <div class="tabs-content3 two">
 
-                    {foreach from=$payment_accounyts item=payment_account key=key}
+                    {foreach from=$payment_accounts item=payment_account key=key}
 
                         {assign "block" $payment_account.object->get("Block")  }
 
@@ -481,6 +483,26 @@
                                     </footer>
                                 </form>
                                 
+
+                            {elseif $block=='ConD'}
+
+
+                            <form action="" class="sky-form" style="max-width: 500px;">
+                                <header id="_form_title_bank">{$content._form_title_cash_on_delivery}</header>
+
+
+                                <div style="padding:20px">
+
+                                    {if isset($content._cash_on_delivery_text)}{{$content._cash_on_delivery_text}}{else}Pay on delivery{/if}
+
+                                </div>
+
+
+                                <footer>
+                                    <button  data-settings='{ "tipo":"place_order_pay_later", "payment_account_key":"{$payment_account.object->id}", "order_key":"{$order->id}"}' onclick="place_order(this)" class="button" id="_place_order_from_cash_on_delivery">{$content._place_order_from_cash_on_delivery} <i class="margin_left_10 fa fa-fw fa-arrow-right" aria-hidden="true"></i> </button>
+                                </footer>
+                            </form>
+
                             {/if}
 
                         </div>
