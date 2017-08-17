@@ -155,6 +155,9 @@ if ($result=$db->query($sql)) {
             $price    = $row['Product History Price'];
             $currency = $row['Product Currency'];
 
+
+
+
             $desc = '';
             if ($units > 1) {
                 $desc = number($units).'x ';
@@ -166,9 +169,9 @@ if ($result=$db->query($sql)) {
 
             $description = $desc;
 
-            if ($discount != '') {
-                $description .= ' '._('Discount').':'.$discount;
-            }
+           // if ($discount != '') {
+          //      $description .= ' '._('Discount').':'.$discount;
+          //  }
 
             if ($row['Product RRP'] != 0) {
                 $description .= ' <br>'._('RRP').': '.money(
@@ -181,6 +184,9 @@ if ($result=$db->query($sql)) {
             }
 
             $row['Product XHTML Short Description'] = $description;
+
+            $row['Discounts'] = $discounts;
+
 
 
             $transactions[] = $row;
