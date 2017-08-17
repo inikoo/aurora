@@ -134,6 +134,9 @@
                     <li><a href="#example-3-tab-1" target="_self"><i class="fa fa-credit-card" aria-hidden="true"></i> <span contenteditable="true" id="_credit_card_label">{$content._credit_card_label}</span></a></li>
                     <li><a href="#example-3-tab-2" target="_self"><i class="fa fa-paypal" aria-hidden="true"></i>&nbsp; Paypal</a></li>
                     <li><a href="#example-3-tab-3" target="_self"><i class="fa fa-university" aria-hidden="true"></i>&nbsp; <span contenteditable="true" id="_bank_label">{{$content._bank_label}}</span></a></li>
+                    <li><a href="#example-3-tab-4" target="_self"><i class="fa fa-handshake-o" aria-hidden="true"></i>&nbsp; <span contenteditable="true" id="_cash_on_delivery_label">{if !empty($content._cash_on_delivery_label)}{{$content._cash_on_delivery_label}}{else}Cash on delivery{/if}</span></a></li>
+                    <li><a href="#example-3-tab-5" target="_self"><i class="fa fa-hand-peace-o" aria-hidden="true"></i> <span contenteditable="true" id="_online_bank_transfer_label">{if !empty($content._online_bank_transfer_label)}{{$content._online_bank_transfer_label}}{else}Online bank transfer{/if}</span></a></li>
+
                 </ul>
 
                 <div class="tabs-content3 two">
@@ -251,6 +254,48 @@
 
                     </div><!-- end tab 3 -->
 
+
+                    <div id="example-3-tab-4" class="tabs-panel3">
+
+
+                        <form action="" class="sky-form" style="max-width: 500px;">
+                            <header id="_form_title_cash_on_delivery" contenteditable="true">{if !empty($content._form_title_cash_on_delivery)}{{$content._form_title_cash_on_delivery}}{else}Checkout form{/if}</header>
+
+
+                            <div style="padding:20px">
+                                <p id="_cash_on_delivery_text" contenteditable="true">{if !empty($content._cash_on_delivery_text)}{{$content._cash_on_delivery_text}}{else}Pay on delivery{/if}</p>
+
+                            </div>
+
+
+                            <footer>
+                                <button class="button" id="_place_order_from_cash_on_delivery" contenteditable="true">{if !empty($content._place_order_from_cash_on_delivery)}{{$content._place_order_from_cash_on_delivery}}{else}Place Order{/if}</button>
+                            </footer>
+                        </form>
+
+
+                    </div>
+
+                    <div id="example-3-tab-5" class="tabs-panel3">
+
+
+                        <form action="" class="sky-form" style="max-width: 500px;">
+                            <header id="_form_title_online_bank_transfer" contenteditable="true">{if !empty($content._form_title_online_bank_transfer)}{{$content._form_title_online_bank_transfer}}{else}Checkout form{/if}</header>
+
+
+                            <div style="padding:20px">
+                                <p id="_online_bank_transfer_text" contenteditable="true">{if !empty($content._online_bank_transfer_text)}{{$content._online_bank_transfer_text}}{else}Online bank transfer{/if}</p>
+
+                            </div>
+
+
+                            <footer>
+                                <button class="button" id="_place_order_from_online_bank_transfer" contenteditable="true">{if !empty($content._place_order_from_online_bank_transfer)}{{$content._place_order_from_online_bank_transfer}}{else}Place Order{/if}</button>
+                            </footer>
+                        </form>
+
+
+                    </div>
 
 
                 </div><!-- end all tabs -->
