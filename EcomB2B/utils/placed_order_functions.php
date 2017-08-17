@@ -91,7 +91,7 @@ function get_order_info($order) {
         '<tr style="border-bottom:1px solid #cccccc">
 		<td colspan=2></td>
 		<td style="text-align:right;padding:5px;vertical-align:top;border-bottom:1px solid #cccccc">%s</td>
-		<td style="padding:5px;vertical-align:top;text-align:right;border-bottom:1px solid #cccccc">%s</td></tr>', _('Net'), $order->get('Total Net Amoun')
+		<td style="padding:5px;vertical-align:top;text-align:right;border-bottom:1px solid #cccccc">%s</td></tr>', _('Net'), $order->get('Total Net Amount')
 
     );
 
