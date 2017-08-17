@@ -394,11 +394,36 @@
 
 
 
+
+
+
         <div class="payments {if $order->get('Order Number Items')==0  or $order->get('State Index')<0 }hide{/if}  "  >
-        <div id="create_payment" class="payment node"">
 
 
-        <span class="node_label very_discreet italic">{t}Payments{/t}</span>
+            {assign expected_payment $order->get('Expected Payment')}
+
+
+            <div id="expected_payment" class="payment node  {if $expected_payment==''}hide{/if} " >
+
+
+
+
+                <span class="node_label   ">{$expected_payment}</span>
+
+
+
+
+
+
+
+            </div>
+
+
+
+            <div id="create_payment" class="payment node">
+
+
+             <span class="node_label very_discreet italic">{t}Payments{/t}</span>
 
 
             <div class="payment_operation {if $order->get('Order To Pay Amount')<=0     }hide{/if}  ">
@@ -412,6 +437,9 @@
 
 
     </div>
+
+
+
 
         <div id="payment_nodes">
             {foreach from=$payments item=payment}

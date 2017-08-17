@@ -948,6 +948,32 @@ class Order extends DB_Table {
 
         switch ($key) {
 
+
+            case 'Expected Payment':
+
+
+                if ($this->data['Order Checkout Block Payment Account Key'] != '' and $this->data['Order To Pay Amount'] != 0) {
+                    $payment_account = get_object('Payment_Account', $this->data['Order Checkout Block Payment Account Key']);
+
+                    switch ($payment_account->get('Payment Account Block')) {
+                        case 'ConD':
+                            return '<i class="fa fa-handshake-o" aria-hidden="true"></i> '._('Cash on delivery');
+                            break;
+                        case 'Bank':
+                            return _('Waiting bank transfer');
+                            break;
+                        case 'Cash':
+                            return _('Will pay with cash');
+                            break;
+                        default:
+                            break;
+                    }
+
+
+                }
+
+                break;
+
             case 'Items Discount Percentage':
 
                 return percentage($this->data['Order Items Discount Amount'], $this->data['Order Items Gross Amount']);
