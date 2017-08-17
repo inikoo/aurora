@@ -128,7 +128,7 @@ div.inline { float:left; }
 			</td>
 			<td width="50%" style="vertical-align:bottom;border: 0mm solid #888888;text-align: right"> {if $number_dns==1} 
 			<div style="text-align:right;{if !$delivery_note->get('Delivery Note Number Parcels')}display:none{/if}">
-				{t}Parcels{/t}:<b> {$delivery_note->get_formated_parcels()}</b> 
+				<b> {$delivery_note->get_formatted_parcels()}</b>
 			</div>
 			<div style="text-align: right">
 				{t}Weight{/t}: <b>{$delivery_note->get('Weight')}</b> 

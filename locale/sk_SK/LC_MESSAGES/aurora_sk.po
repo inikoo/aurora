@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Kaktus\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-08-17 08:47+0200\n"
-"PO-Revision-Date: 2017-08-17 08:54+0200\n"
+"PO-Revision-Date: 2017-08-17 09:00+0200\n"
 "Last-Translator: Raul <raul@inikoo.com>\n"
 "Language-Team: \n"
 "Language: sk_SK\n"
@@ -13,7 +13,7 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-Basepath: ../../../../po_aurora_sources\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Poedit 2.0.3\n"
+"X-Generator: Poedit 2.0.1\n"
 "X-Poedit-SearchPath-0: .\n"
 
 #: ar_account_tables.php:92 utils/modules.php:5541
@@ -10085,7 +10085,7 @@ msgstr "Celkom bez DPH"
 
 #: smarty.php:8571
 msgid "Method"
-msgstr "Spôsob Platby"
+msgstr "Spôsob"
 
 #: smarty.php:8592 smarty.php:8622 smarty.php:8625
 msgid "Username"

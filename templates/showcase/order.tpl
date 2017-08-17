@@ -353,7 +353,7 @@
     </div>
     <div class="block " style="align-items: stretch;flex: 1 ">
 
-        <div id="delivery_notes" class="delivery_notes {if $deliveries|@count == 0}hide{/if}" style="margin-bottom:10px;position:relative;top:-5px;">
+        <div id="delivery_notes" class="delivery_notes {if $deliveries|@count == 0}hide{/if}" style="position:relative;top:-5px;">
 
 
 
@@ -366,6 +366,23 @@
                     </span>
             </div>
         {/foreach}
+
+        </div>
+
+
+        <div id="invoices" class="invoices {if $invoices|@count == 0}hide{/if}" style="margin-bottom:10px;">
+
+
+
+            {foreach from=$invoices item=invoice}
+
+                <div class="node" id="delivery_node_{$dn->id}">
+                    <span class="node_label" >
+                         <i class="fa fa-file-text-o fa-fw " aria-hidden="true"></i> <span class="link" onClick="change_view('invoices/{$invoice->get('Invoice Store Key')}/{$invoice->id}')">{$invoice->get('Invoice Public ID')}</span>
+<a class="pdf_link" target='_blank' href="/pdf/invoice.pdf.php?id={$invoice->id}"> <img style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif"></a>
+                    </span>
+                </div>
+            {/foreach}
 
         </div>
 
@@ -447,7 +464,7 @@
             <td class="label">{t}To pay{/t}</td>
             <td class="aright To_Pay_Amount   ">{$order->get('To Pay Amount')}</td>
         </tr>
-        <tr class="total success  Order_Paid {if $order->get('Order To Pay Amount')!=0  }hide{/if}">
+        <tr class="total success  Order_Paid {if $order->get('Order To Pay Amount')!=0   or $order->get('Order Total Amount')==0  }hide{/if}">
 
             <td colspan="2" class="align_center "><i class="fa fa-check-circle" aria-hidden="true"></i> {t}Paid{/t}</td>
         </tr>

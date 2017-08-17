@@ -1003,7 +1003,7 @@ class DeliveryNote extends DB_Table {
 
             case 'Approved':
 
-                if ($this->get('State Index') != 70) {
+                if ($this->get('State Index') != 80) {
                     return;
                 }
                 $this->update_field('Delivery Note Date Dispatched Approved', $date, 'no_history');
@@ -1022,6 +1022,9 @@ class DeliveryNote extends DB_Table {
                 $this->update_field('Delivery Note Date', $date, 'no_history');
                 $this->update_field('Delivery Note State', $value, 'no_history');
 
+
+                $order=get_object('Order',$this->data['Delivery Note Order Key']);
+                $order->update(array('Order State'=>'Dispatched'));
 
                 break;
 
@@ -1557,11 +1560,10 @@ class DeliveryNote extends DB_Table {
             $part_location->update_stock();
         }
 
-        $order         = new Order($this->get('Delivery Note Order Key'));
+        $order         = get_object('Order',$this->get('Delivery Note Order Key'));
         $order->editor = $this->editor;
         // $invoices=$this->get_invoices_objects();
 
-        $store_key = $this->data['Delivery Note Store Key'];
 
         $sql = sprintf(
             "DELETE FROM  `Delivery Note Dimension` WHERE `Delivery Note Key`=%d  ", $this->id
@@ -1727,7 +1729,7 @@ class DeliveryNote extends DB_Table {
     }
 
 
-    function get_formated_parcels() {
+    function get_formatted_parcels() {
 
         if (!is_numeric($this->data['Delivery Note Number Parcels']))
             return;

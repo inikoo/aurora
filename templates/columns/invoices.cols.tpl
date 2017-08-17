@@ -63,12 +63,6 @@ editable: false,
 sortType: "toggle",
 cell: "html"
 }, {
-name: "method",
-label: "{t}Payment Method{/t}",
-editable: false,
-sortType: "toggle",
-cell: "html"
-}, {
 name: "state",
 label: "{t}Payment State{/t}",
 editable: false,
