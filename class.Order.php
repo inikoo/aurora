@@ -970,7 +970,7 @@ class Order extends DB_Table {
                     $this->update_field('Order State', $value, 'no_history');
                     $this->update_field('Order Submitted by Customer Date', '', 'no_history');
                     $this->update_field('Order Date', $date, 'no_history');
-                    $this->update_field('Order Class', 'InBasket', 'no_history');
+                    $this->update_field('Order Class', 'InWebsite', 'no_history');
 
 
                     $history_data = array(
@@ -998,9 +998,9 @@ class Order extends DB_Table {
                 case 'InProcess':
 
 
-                    if ($this->data['Order State'] != 'InBasket') {
+                    if ($this->data['Order State'] == 'Cancelled' or $this->data['Order State'] == 'Dispatched'  ) {
                         $this->error = true;
-                        $this->msg   = 'Order is not in basket: :(';
+                        $this->msg   = 'Cant set as in process :(';
 
                         return;
 
@@ -1010,7 +1010,7 @@ class Order extends DB_Table {
                     $this->update_field('Order State', $value, 'no_history');
                     $this->update_field('Order Submitted by Customer Date', $date, 'no_history');
                     $this->update_field('Order Date', $date, 'no_history');
-                    $this->update_field('Order Class', 'InWebsite', 'no_history');
+                    $this->update_field('Order Class', 'InProcess', 'no_history');
 
 
                     $history_data = array(
@@ -1021,7 +1021,8 @@ class Order extends DB_Table {
 
                     $operations = array(
                         'send_to_warehouse_operations',
-                        'cancel_operations'
+                        'cancel_operations',
+                        'undo_submit_operations'
                     );
 
                     $sql = sprintf(

@@ -2193,12 +2193,20 @@ class Store extends DB_Table {
                 break;
 
             case 'Store Email Template Signature':
-                $label = '[Signature]';
+                $label = _('Emails signature');
+                break;
+            case 'Store Invoice Message':
+                $label =  _('Invoices signature');
                 break;
 
             case 'Store Collect Address':
                 $label = _("Collection address");
                 break;
+            case 'Store Order Public ID Format':
+                $label = _("Order number format");
+                break;
+
+
 
             default:
                 $label = $field;
