@@ -91,6 +91,11 @@ class Public_Order extends DBW_Table {
 
 
 
+            case('Order For Collection'):
+
+                $this->update_for_collection($value, $options);
+                break;
+
             case('Order Tax Number'):
                 $this->update_tax_number($value);
                 break;

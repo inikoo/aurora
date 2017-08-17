@@ -390,6 +390,8 @@ trait OrderBasketOperations {
         );
 
 
+
+
         $this->update_field(
             $this->table_name.' '.$type.' Address Checksum', $new_checksum, 'no_history'
         );
@@ -430,6 +432,8 @@ trait OrderBasketOperations {
         $xhtml_address = $formatter->format($address);
 
 
+
+
         $xhtml_address = preg_replace(
             '/class="family-name"/', 'class="recipient fn '.($this->get($type.' Address Recipient') == $this->get('Main Contact Name') and $type == 'Contact' ? 'hide' : '').'"', $xhtml_address
         );
@@ -448,6 +452,7 @@ trait OrderBasketOperations {
 
 
         $xhtml_address = preg_replace('/<br>/', '<br/>', $xhtml_address);
+
 
 
         $this->update_field($this->table_name.' '.$type.' Address Formatted', $xhtml_address, 'no_history');
@@ -473,6 +478,89 @@ trait OrderBasketOperations {
 
 
 
+    function update_for_collection($value, $options) {
+
+        if ($value != 'Yes') {
+            $value = 'No';
+        }
+
+
+
+        $old_value = $this->data['Order For Collection'];
+
+
+        if ($old_value != $value or true) {
+
+
+            if ($value == 'Yes') {
+                $store = get_object('Store', $this->data['Order Store Key']);
+
+
+                $address_data = array(
+                    'Address Recipient'            => '',
+                    'Address Organization'         => $store->get('Store Name'),
+                    'Address Line 1'               => $store->get('Store Collect Address Line 1'),
+                    'Address Line 2'               => $store->get('Store Collect Address Line 2'),
+                    'Address Sorting Code'         => $store->get('Store Collect Address Sorting Code'),
+                    'Address Postal Code'          => $store->get('Store Collect Address Postal Code'),
+                    'Address Dependent Locality'   => $store->get('Store Collect Address Dependent Locality'),
+                    'Address Locality'             => $store->get('Store Collect Address Locality'),
+                    'Address Administrative Area'  => $store->get('Store Collect Address Administrative Area'),
+                    'Address Country 2 Alpha Code' => $store->get('Store Collect Address Country 2 Alpha Code'),
+
+                );
+
+
+
+
+                $this->update_address('Delivery', $address_data, $options);
+
+
+            } else {
+
+                $customer = get_object('Customer', $this->get('Order Customer Key'));
+
+                $address_data = array(
+                    'Address Recipient'            => $customer->get('Customer Main Contact Name'),
+                    'Address Organization'         => $customer->get('Customer Company Name'),
+                    'Address Line 1'               => $customer->get('Customer Delivery Address Line 1'),
+                    'Address Line 2'               => $customer->get('Customer Delivery Address Line 2'),
+                    'Address Sorting Code'         => $customer->get('Customer Delivery Address Sorting Code'),
+                    'Address Postal Code'          => $customer->get('Customer Delivery Address Postal Code'),
+                    'Address Dependent Locality'   => $customer->get('Customer Delivery Address Dependent Locality'),
+                    'Address Locality'             => $customer->get('Customer Delivery Address Locality'),
+                    'Address Administrative Area'  => $customer->get('Customer Delivery Address Administrative Area'),
+                    'Address Country 2 Alpha Code' => $customer->get('Customer Delivery Address Country 2 Alpha Code'),
+
+                );
+
+                // print_r($address_data);
+
+                $this->update_address('Delivery', $address_data, $options);
+
+
+            }
+
+
+            $this->update_field('Order For Collection', $value, $options);
+
+            $this->update_shipping();
+            $this->update_tax();
+            $this->update_totals();
+
+
+
+
+            //    $this->apply_payment_from_customer_account();
+
+
+        } else {
+            $this->msg = _('Nothing to change');
+
+        }
+
+
+    }
 
 }
 
