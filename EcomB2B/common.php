@@ -22,6 +22,11 @@ include_once 'utils/aes.php';
 
 
 require_once 'external_libs/Smarty/Smarty.class.php';
+
+
+
+
+
 $smarty               = new Smarty();
 $smarty->template_dir = 'templates';
 $smarty->compile_dir  = 'server_files/smarty/templates_c';
@@ -68,8 +73,8 @@ if (    (!isset($_SESSION['logged_in']) or !$_SESSION['logged_in']) and isset($p
 if (!$is_cached) {
 
 
-    $order_key = 0;
-    $customer_key =0;
+    $order_key    = 0;
+    $customer_key = 0;
 
     require_once 'keyring/key.php';
 
@@ -94,7 +99,29 @@ if (!$is_cached) {
 
     $account = new Public_Account($db);
 
-    $smarty->assign('analytics_id',$account->get('Account Analytics ID'));
+    $smarty->assign('analytics_id', $account->get('Account Analytics ID'));
+
+
+    require_once 'external_libs/mobile_detect/Mobile_Detect.php';
+    $detect = new Mobile_Detect;
+
+    if ($detect->isMobile()) {
+        // $display_device_version = 'mobile';
+        $detected_device = 'mobile';
+    } else {
+        //$display_device_version = 'desktop';
+        $detected_device = 'desktop';
+
+    }
+
+
+    if (isset($_SERVER['SERVER_NAME']) and $_SERVER['SERVER_NAME'] == 'ecom.bali') {
+        $detected_device = 'mobile';
+    }
+
+
+    $smarty->assign('detected_device',$detected_device);
+
 
     $website   = new Public_Website($_SESSION['website_key']);
 
