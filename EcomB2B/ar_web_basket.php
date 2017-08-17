@@ -387,7 +387,8 @@ function delivery_address($db, $data, $order, $editor) {
     if($data['data']['order_for_collection']){
         $order->update(array('Order For Collection'=>'Yes'));
 
-    }else{
+    }
+    else{
         $order->update(array('Order For Collection'=>'No'));
 
         $address_data=array(

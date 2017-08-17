@@ -1,6 +1,6 @@
 <div class="timeline_horizontal">
 
-    <input xtype="hidden" id="Delivery_Note_State_Index" value="{$delivery_note->get('State Index')}">
+    <input type="hidden" id="Delivery_Note_State_Index" value="{$delivery_note->get('State Index')}">
 
     <ul class="timeline" id="timeline">
 

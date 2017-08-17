@@ -2,7 +2,6 @@
 {assign invoices $order->get_invoices('objects')}
 {assign payments $order->get_payments('objects','Completed')}
 
-{$order->get('State Index')}
 <div class="timeline_horizontal with_time   {if $order->get('State Index')<0}hide{/if}  ">
 
     <ul class="timeline">
@@ -182,7 +181,12 @@
 
             <div class="data_field  " style="padding:10px 0px 20px 0px;">
                 <div style="float:left;padding-bottom:20px;padding-right:20px" class="Delivery_Address">
-                    <div style="margin-bottom:10px"><i class="fa fa-truck fa-flip-horizontal button" aria-hidden="true""></i>{t}Deliver to{/t}</div>
+                    <div style="margin-bottom:10px">
+                        <span class="{if $order->get('Order For Collection')=='Yes'}hide{/if}"><i   class="   fa fa-truck fa-flip-horizontal button" aria-hidden="true""></i>{t}Deliver to{/t}</span>
+                        <span class="{if $order->get('Order For Collection')=='No'}hide{/if}"><i   class="   fa fa-hand-rock-o fa-flip-horizontal button" aria-hidden="true""></i>{t}Collection{/t}</span>
+
+                    </div>
+
                     <div class="small Order_Delivery_Address " style="max-width: 140px;">{$order->get('Order Delivery Address Formatted')}</div>
                 </div>
                 <div style="float:right;padding-bottom:20px;" class="Billing_Address">
