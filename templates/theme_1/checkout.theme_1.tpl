@@ -205,7 +205,7 @@
                     <div id="example-3-tab-2" class="tabs-panel3">
 
                         <form action="" class="sky-form" style="max-width: 500px;">
-                            <header id="_form_title_bank" contenteditable="true">{$content._form_title_paypal}</header>
+                            <header id="_form_title_paypal" contenteditable="true">{if isset($content._form_title_paypal) }{$content._form_title_paypal}{else}{t}Checkout form{/t}{/if}</header>
 
 
                             <fieldset>

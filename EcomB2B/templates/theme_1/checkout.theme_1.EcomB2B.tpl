@@ -447,7 +447,7 @@
 
                             {elseif $block=='BTreePaypal'}
                                 <form action="" class="sky-form" style="max-width: 500px;">
-                                    <header >{$content._form_title_paypal}</header>
+                                    <header >{if isset($content._form_title_paypal) }{$content._form_title_paypal}{else}{t}Checkout form{/t}{/if}</header>
 
 
                                     <fieldset style="min-height: 280px">
