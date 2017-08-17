@@ -121,8 +121,8 @@ if (in_array(
 
 $transactions = array();
 $sql          = sprintf(
-    "SELECT `Order Transaction Amount`,`Delivery Note Quantity`,`Order Transaction Total Discount Amount`,`Order Transaction Out of Stock Amount`,
-`Product Currency`,`Product History Name`,`Product History Price`,`Product Units Per Case`,`Product History XHTML Short Description`,`Product Name`,`Product RRP`,`Product Tariff Code`,`Product Tariff Code`,`Invoice Transaction Gross Amount`,`Invoice Transaction Total Discount Amount`,`Invoice Transaction Item Tax Amount`,`Invoice Quantity`,`Invoice Transaction Tax Refund Amount`,`Invoice Currency Code`,`Invoice Transaction Net Refund Amount`,`Product XHTML Short Description`,P.`Product ID`,O.`Product Code`
+    "SELECT `Order Transaction Amount`,`Delivery Note Quantity`,`Order Transaction Total Discount Amount`,`Order Transaction Out of Stock Amount`,`Order Currency Code`,`Order Transaction Gross Amount`,
+`Product Currency`,`Product History Name`,`Product History Price`,`Product Units Per Case`,`Product History XHTML Short Description`,`Product Name`,`Product RRP`,`Product Tariff Code`,`Product Tariff Code`,`Product XHTML Short Description`,P.`Product ID`,O.`Product Code`
  FROM `Order Transaction Fact` O  LEFT JOIN `Product History Dimension` PH ON (O.`Product Key`=PH.`Product Key`) LEFT JOIN
   `Product Dimension` P ON (PH.`Product ID`=P.`Product ID`) WHERE `Invoice Key`=%d ORDER BY `Product Code`", $invoice->id
 );
@@ -132,23 +132,19 @@ $sql          = sprintf(
 if ($result=$db->query($sql)) {
 		foreach ($result as $row) {
 
-            $row['Net'] = money(
-                ($row['Order Transaction Amount']), $row['Invoice Currency Code']
-            );
 
-            $row['Tax']    = money(
-                ($row['Invoice Transaction Item Tax Amount']), $row['Invoice Currency Code']
-            );
+
             $row['Amount'] = money(
-                ($row['Order Transaction Amount']), $row['Invoice Currency Code']
+                ($row['Order Transaction Amount']), $row['Order Currency Code']
             );
 
 
             $discount = ($row['Order Transaction Total Discount Amount'] == 0
                 ? ''
                 : percentage(
-                    $row['Order Transaction Total Discount Amount'], $row['Order Transaction Gross Amount']- $row['Order Transaction Out of Stock Amount'], 0
+                    $row['Order Transaction Total Discount Amount'], $row['Order Transaction Gross Amount']- floatval($row['Order Transaction Out of Stock Amount']), 0
                 ));
+
 
             $units    = $row['Product Units Per Case'];
             $name     = $row['Product History Name'];
@@ -185,8 +181,7 @@ if ($result=$db->query($sql)) {
 
             $row['Product XHTML Short Description'] = $description;
 
-            $row['Discounts'] = $discounts;
-
+            $row['Discount'] =$discount;
 
 
             $transactions[] = $row;
