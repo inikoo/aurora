@@ -60,157 +60,7 @@ if ($result = $db->query($sql)) {
 }
 
 asort($options_currencies);
-$object_fields = array(
-    array(
-        'label'      => _('Id'),
-        'show_title' => true,
-        'fields'     => array(
 
-            array(
-                'edit'              => ($edit ? 'string' : ''),
-                'id'                => 'Store_Code',
-                'value'             => $object->get('Store Code'),
-                'label'             => ucfirst(
-                    $object->get_field_label('Store Code')
-                ),
-                'invalid_msg'       => get_invalid_message('string'),
-                'required'          => true,
-                'server_validation' => json_encode(
-                    array('tipo' => 'check_for_duplicates')
-                ),
-                'type'              => 'value'
-
-
-            ),
-            array(
-                'edit'              => ($edit ? 'string' : ''),
-                'id'                => 'Store_Name',
-                'value'             => $object->get('Store Name'),
-                'label'             => ucfirst(
-                    $object->get_field_label('Store Name')
-                ),
-                'invalid_msg'       => get_invalid_message('string'),
-                'required'          => true,
-                'server_validation' => json_encode(
-                    array('tipo' => 'check_for_duplicates')
-                ),
-
-                'type' => 'value'
-            ),
-
-
-        )
-    ),
-    array(
-        'label'      => _('Localization'),
-        'show_title' => true,
-        'fields'     => array(
-            array(
-                'id'              => 'Store_Locale',
-                'edit'            => ($edit ? 'option' : ''),
-                'options'         => $options_locale,
-                'value'           => $object->get('Store Locale'),
-                'formatted_value' => $object->get('Locale'),
-                'label'           => ucfirst($object->get_field_label('Store Locale')),
-                'type'            => 'value'
-            ),
-            array(
-                'id'              => 'Store_Currency_Code',
-                'edit'            => ($edit ? 'option' : ''),
-                'options'         => $options_currencies,
-                'value'           => $object->get('Store Currency Code'),
-                'formatted_value' => $object->get('Currency Code'),
-                'label'           => ucfirst($object->get_field_label('Store Currency Code')),
-                'type'            => 'value'
-            ),
-            array(
-                'id'              => 'Store_Timezone',
-                'edit'            => ($edit ? 'option' : ''),
-                'options'         => $options_timezones,
-                'value'           => $object->get('Store Timezone'),
-                'formatted_value' => $object->get('Timezone'),
-                'label'           => ucfirst(
-                    $object->get_field_label('Store Timezone')
-                ),
-                'type'            => 'value'
-            )
-
-        )
-    ),
-
-    array(
-        'label'      => _('Website'),
-        'show_title' => true,
-        'fields'     => array(
-
-
-            array(
-                'edit' => ($edit ? 'string' : ''),
-
-                'id'              => 'Store_URL',
-                'value'           => $object->get('Store URL'),
-                'formatted_value' => $object->get('Store URL'),
-                'label'           => ucfirst(
-                    $object->get_field_label('Store URL')
-                ),
-                'invalid_msg'     => get_invalid_message('string'),
-                'required'        => false,
-                'type'            => 'value'
-            ),
-
-        )
-    ),
-    array(
-        'label'      => _('Contact'),
-        'show_title' => true,
-        'fields'     => array(
-
-            array(
-                'edit'        => ($edit ? 'email' : ''),
-                'id'          => 'Store_Email',
-                'value'       => $object->get('Store Email'),
-                'label'       => ucfirst(
-                    $object->get_field_label('Store Email')
-                ),
-                'invalid_msg' => get_invalid_message('email'),
-                'required'    => false,
-
-                'type' => 'value'
-
-
-            ),
-            array(
-                'edit'            => ($edit ? 'telephone' : ''),
-                'id'              => 'Store_Telephone',
-                'value'           => $object->get('Store Telephone'),
-                'formatted_value' => $object->get('Telephone'),
-                'label'           => ucfirst(
-                    $object->get_field_label('Store Telephone')
-                ),
-                'invalid_msg'     => get_invalid_message('telephone'),
-                'required'        => false,
-                'type'            => 'value'
-            ),
-
-            array(
-                'edit'            => ($edit ? 'textarea' : ''),
-                'id'              => 'Store_Address',
-                'value'           => $object->get('Store Address'),
-                'formatted_value' => $object->get('Address'),
-                'label'           => ucfirst(
-                    $object->get_field_label('Store Address')
-                ),
-                'invalid_msg'     => get_invalid_message('string'),
-                'required'        => false,
-                'type'            => 'value'
-            ),
-
-
-        )
-    ),
-
-
-);
 
 $object_fields = array(
     array(
@@ -222,14 +72,10 @@ $object_fields = array(
                 'edit'              => ($edit ? 'string' : ''),
                 'id'                => 'Store_Code',
                 'value'             => $object->get('Store Code'),
-                'label'             => ucfirst(
-                    $object->get_field_label('Store Code')
-                ),
+                'label'             => ucfirst($object->get_field_label('Store Code')),
                 'invalid_msg'       => get_invalid_message('string'),
                 'required'          => true,
-                'server_validation' => json_encode(
-                    array('tipo' => 'check_for_duplicates')
-                ),
+                'server_validation' => json_encode(array('tipo' => 'check_for_duplicates')),
                 'type'              => 'value'
 
 
@@ -350,6 +196,16 @@ $object_fields = array(
             ),
             array(
                 'edit'            => ($edit ? 'string' : ''),
+                'id'              => 'Store_URL',
+                'value'           => $object->get('Store URL'),
+                'formatted_value' => $object->get('URL'),
+                'label'           => ucfirst($object->get_field_label('Store URL')),
+                'invalid_msg'     => get_invalid_message('string'),
+                'required'        => false,
+                'type'            => 'value'
+            ),
+            array(
+                'edit'            => ($edit ? 'string' : ''),
                 'id'              => 'Store_Company_Number',
                 'value'           => $object->get('Store Company Number'),
                 'formatted_value' => $object->get('Company Number'),
@@ -396,7 +252,7 @@ $object_fields = array(
                 'render'=>($object->get('Store Can Collect')=='Yes'?true:false),
                 'countries'       => $countries,
                 'value'           => htmlspecialchars($object->get('Store Collect Address')),
-                'formatted_value' => $object->get('Collect Address'),
+                'formatted_value' => $object->get('Store Collect Address Formatted'),
                 'label'           => ucfirst($object->get_field_label('Store Collect Address')),
                 'invalid_msg'     => get_invalid_message('address'),
                 'required'        => false
@@ -407,7 +263,43 @@ $object_fields = array(
 
 
     array(
-        'label'      => _('Emails templates'),
+        'label'      => _('Orders'),
+        'show_title' => true,
+        'fields'     => array(
+
+
+    array(
+        'edit'     => ($edit ? 'string' : ''),
+        'id'       => 'Store_Order_Public_ID_Format',
+        'value'    => $object->get('Store Order Public ID Format'),
+        'label'    => ucfirst($object->get_field_label('Store Order Public ID Format')).' <i class="fa fa-exclamation-triangle yellow" aria-hidden="true"  title="'._('Warning, misconfiguration of this variable can affect the creation of new orders').'" ></i>',
+        'required' => true,
+
+        'type' => 'value'
+
+
+    ),
+
+    array(
+        'edit'     => ($edit ? 'numeric' : ''),
+        'id'       => 'Store_Order_Last_Order_ID',
+        'value'    => $object->get('Store Order Last Order ID'),
+        'label'    => ucfirst($object->get_field_label('Store Order Last Order ID')).' <i class="fa fa-exclamation-triangle yellow" aria-hidden="true"  title="'._('Warning, misconfiguration of this variable can affect the creation of new orders').'" ></i>',
+        'required' => true,
+
+        'type' => 'value'
+
+
+    ),
+
+
+
+        )),
+
+
+
+    array(
+        'label'      => _('Signatures'),
         'show_title' => true,
         'fields'     => array(
 
@@ -415,9 +307,19 @@ $object_fields = array(
                 'edit'     => ($edit ? 'textarea' : ''),
                 'id'       => 'Store_Email_Template_Signature',
                 'value'    => $object->get('Store Email Template Signature'),
-                'label'    => ucfirst(
-                    $object->get_field_label('Store Email Template Signature')
-                ),
+                'label'    => ucfirst($object->get_field_label('Store Email Template Signature')),
+                'required' => false,
+
+                'type' => 'value'
+
+
+            ),
+
+            array(
+                'edit'     => ($edit ? 'textarea' : ''),
+                'id'       => 'Store_Invoice_Message',
+                'value'    => $object->get('Store Invoice Message'),
+                'label'    => ucfirst($object->get_field_label('Store Invoice Message')),
                 'required' => false,
 
                 'type' => 'value'
