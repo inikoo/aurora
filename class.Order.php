@@ -1200,6 +1200,7 @@ class Order extends DB_Table {
                         return false;
 
                     }
+                    $this->update_field('Order State', $value, 'no_history');
 
 
                     $store = get_object('Store', $this->data['Order Store Key']);
@@ -1335,7 +1336,6 @@ class Order extends DB_Table {
 
 
 
-                    $this->update_field('Order State', $value, 'no_history');
                     $this->update_field('Order Invoiced Date', $date, 'no_history');
                     $this->update_field('Order Date', $date, 'no_history');
                     $this->update_field('Order Invoice Key', $invoice->id, 'no_history');
@@ -1360,6 +1360,47 @@ class Order extends DB_Table {
 
 
                     break;
+
+
+                case 'Dispatched':
+
+
+                    if ($this->data['Order State'] != 'Approved') {
+                        $this->error = true;
+                        $this->msg   = 'Order is not in Approved: :(';
+
+                        return;
+
+                    }
+
+
+                    $this->update_field('Order State', $value, 'no_history');
+                    $this->update_field('Order Dispatched Date', $date, 'no_history');
+                    $this->update_field('Order Class', 'Archived', 'no_history');
+
+
+                    $history_data = array(
+                        'History Abstract' => _('Order dispatched'),
+                        'History Details'  => '',
+                    );
+                    $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
+
+                    $operations = array(
+
+                    );
+
+
+                    $sql = sprintf(
+                        'UPDATE `Order Transaction Fact` SET `Current Dispatching State`="Dispatched" WHERE `Order Key`=%d  AND `Current Dispatching State` IN ("Ready to Ship")  ', $this->id
+                    );
+
+                    $this->db->exec($sql);
+
+
+                    break;
+
+
+
                 default:
                     exit('unknown state:::'.$value);
                     break;

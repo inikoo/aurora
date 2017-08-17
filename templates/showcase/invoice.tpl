@@ -148,7 +148,7 @@
     <div id="dates" class="block dates" style="width: 300px">
         <table border="0" class="date_and_state">
             <tr class="date">
-                <td><i class="fa fa-shopping-cart" aria-hidden="true"></i> {$order->get('Public ID')}</td>
+                <td class="button"  onclick="change_view('orders/{$order->get('Order Store Key')}/{$order->id}')" ><i class="fa fa-shopping-cart" aria-hidden="true"></i> {$order->get('Public ID')}</td>
             </tr>
 
 

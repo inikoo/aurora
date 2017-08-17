@@ -1,6 +1,6 @@
 <div class="timeline_horizontal">
 
-    <input type="hidden" id="Delivery_Note_State_Index" value="{$delivery_note->get('State Index')}">
+    <input xtype="hidden" id="Delivery_Note_State_Index" value="{$delivery_note->get('State Index')}">
 
     <ul class="timeline" id="timeline">
 
@@ -193,7 +193,7 @@
                     <div id="dispatch_operation" class="square_button right  " title="{t}Dispatch{/t}">
 
 
-                        <i id="dispatch_save_buttons" class="fa button fa-archive  fa-fw   "
+                        <i id="dispatch_save_buttons" class="fa button fa-paper-plane fa-fw   "
                            data-data='{  "field": "Delivery Note State","value": "Dispatched","dialog_name":"dispatch"}' aria-hidden="true" onclick="save_order_operation(this)"></i>
 
 
@@ -202,7 +202,15 @@
             </div>
         </div>
 
+
+        <div class="state"  style="height:30px;margin-bottom:10px;position:relative;top:-5px;text-align: center">
+            <span class="button"  onclick="change_view('orders/{$order->get('Order Store Key')}/{$order->id}')" ><i class="fa fa-shopping-cart" aria-hidden="true"></i> {$order->get('Public ID')}</span>
+        </div>
+
+
         <table border="0" class="info_block acenter">
+
+
 
             <tr>
 
@@ -228,6 +236,9 @@
 
 
         <table border="0" class="info_block  {if $delivery_note->get('State Index')<70 or $delivery_note->get('State Index')>90 }hide{/if} ">
+
+
+
 
             <tr>
                 <td class="aright"> {t}Parcels{/t}:</td>
