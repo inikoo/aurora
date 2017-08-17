@@ -187,7 +187,7 @@ div.inline { float:left; }
 				<td style="text-align:left">{$transaction['Product XHTML Short Description']}</td>
 				<td style="width:8%;text-align:right">{$transaction['Discount']}</td>
 				
-				<td style="width:8%;text-align:right">{$transaction['Invoice Quantity']}</td>
+				<td style="width:8%;text-align:right">{$transaction['Delivery Note Quantity']}</td>
 				<td style="width:10%;text-align:right">{$transaction['Amount']}</td>
 			</tr>
 			{/foreach} 
