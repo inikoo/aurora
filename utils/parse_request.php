@@ -1749,6 +1749,22 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                         $parent_key = 1;
 
 
+
+                        if (isset($view_path[0]) and  is_numeric($view_path[0])) {
+                            $module  = 'orders';
+                            $section = 'order';
+                            $object  = 'order';
+                            $parent  = 'account';
+                            $parent_key  = 1;
+                            $key=$view_path[0];
+
+
+
+                        }
+
+
+
+
                     } elseif (is_numeric($arg1)) {
 
 
@@ -1926,7 +1942,13 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
 
             case 'order':
+
+
+
                 if (!$user->can_view('orders')) {
+
+
+
                     $module  = 'utils';
                     $section = 'forbidden';
                     break;
@@ -3764,20 +3786,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                     if ($view_path[0] == '1') {
 
                         if (isset($view_path[1])) {
-                            if ($view_path[1] == 'order') {
-                                $module  = 'orders';
-                                $section = 'order';
-                                $object  = 'order';
-                                $parent  = 'account';
-                                $parent_key  = 1;
-                                if (isset($view_path[2])) {
-                                    if ( is_numeric($view_path[2])) {
-                                        $key=$view_path[2];
-                                    }
-                                }
 
-
-                            }
 
                         }
 

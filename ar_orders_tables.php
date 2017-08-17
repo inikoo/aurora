@@ -391,11 +391,9 @@ function orders_server($_data, $db, $user) {
     $adata = array();
 
 
-    if ($parameters['parent'] == 'store') {
-        $link_format = '/orders/%d/%d';
-    } else {
-        $link_format = '/'.$parameters['parent'].'/%d/order/%d';
-    }
+
+        $link_format = '/orders/all/%d';
+
 
     //'InBasket','InProcess','InWarehouse','PackedDone','
     //
@@ -437,9 +435,9 @@ function orders_server($_data, $db, $user) {
 
         $adata[] = array(
             'id'             => (integer)$data['Order Key'],
-            'store'          => sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%s</span>', $parameters['parent_key'], $data['Order Key'], $data['Store Code']),
+            'store'          => sprintf('<span class="link" onClick="change_view(\'/orders/%d\')">%s</span>', $data['Order Store Key'], $data['Store Code']),
             'state'          => $state,
-            'public_id'      => sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%s</span>', $parameters['parent_key'], $data['Order Key'], $data['Order Public ID']),
+            'public_id'      => sprintf('<span class="link" onClick="change_view(\'/orders/all/%d\')">%s</span>', $data['Order Key'], $data['Order Public ID']),
             'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
             'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
             'customer'       => sprintf('<span class="link" onClick="change_view(\'customers/%d/%d\')">%s</span>', $data['Order Store Key'], $data['Order Customer Key'], $data['Order Customer Name']),
