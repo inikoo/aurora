@@ -2046,7 +2046,7 @@ function get_invoice_navigation($data, $smarty, $user, $db, $account) {
     }
 
 
-    $title = _('Invoice').' <span class="id">'.$object->get('Invoice Public ID').'</span>';
+    $title = _('Invoice').' <span class="id Invoice_Public_ID">'.$object->get('Invoice Public ID').'</span>';
 
 
     $_content = array(
