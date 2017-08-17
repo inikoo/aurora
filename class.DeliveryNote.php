@@ -637,8 +637,6 @@ class DeliveryNote extends DB_Table {
                 $key = 'Date '.preg_replace('/ Datetime/', '', $key);
 
 
-
-
                 if ($this->data["Delivery Note $key"] == '') {
                     return '';
                 }
@@ -996,6 +994,48 @@ class DeliveryNote extends DB_Table {
                 $this->update_field('Delivery Note Date', $date, 'no_history');
 
 
+                // todo make it work for multiple parts
+
+                $sql = sprintf(
+                    'SELECT `Packed`,`Required`,`Given`,`Map To Order Transaction Fact Key` FROM `Inventory Transaction Fact` WHERE  `Delivery Note Key`=%d ',
+                    $this->id
+                );
+
+
+
+                if ($result = $this->db->query($sql)) {
+                    if ($row = $result->fetch()) {
+
+
+                        $to_pack = $row['Required'] + $row['Given'];
+
+                        if ($to_pack == 0) {
+                            $ratio_of_packing = 1;
+                        } else {
+                            $ratio_of_packing = $row['Packed'] / $to_pack;
+                        }
+
+                        // todo make get  `Order Transaction Amount` and do it properly to have exact cents
+
+                        $otf = $row['Map To Order Transaction Fact Key'];
+
+                        $sql = sprintf(
+                            'UPDATE `Order Transaction Fact`  SET 
+                            `Delivery Note Quantity`=(`Order Quantity`+`Order Bonus Quantity`)*%f ,
+                            `Order Transaction Out of Stock Amount`=`Order Transaction Amount`*(1-%f) ,
+                               `Order Transaction Amount`=`Order Transaction Amount`*%f 
+                             WHERE `Order Transaction Fact Key`=%d ', $ratio_of_packing, $ratio_of_packing, $ratio_of_packing, $otf
+                        );
+
+
+
+                        $this->db->exec($sql);
+
+
+                    }
+                }
+
+
                 $order = get_object('Order', $this->get('Delivery Note Order Key'));
                 $order->update(array('Order State' => 'PackedDone'));
 
@@ -1023,8 +1063,8 @@ class DeliveryNote extends DB_Table {
                 $this->update_field('Delivery Note State', $value, 'no_history');
 
 
-                $order=get_object('Order',$this->data['Delivery Note Order Key']);
-                $order->update(array('Order State'=>'Dispatched'));
+                $order = get_object('Order', $this->data['Delivery Note Order Key']);
+                $order->update(array('Order State' => 'Dispatched'));
 
                 break;
 
@@ -1560,7 +1600,7 @@ class DeliveryNote extends DB_Table {
             $part_location->update_stock();
         }
 
-        $order         = get_object('Order',$this->get('Delivery Note Order Key'));
+        $order         = get_object('Order', $this->get('Delivery Note Order Key'));
         $order->editor = $this->editor;
         // $invoices=$this->get_invoices_objects();
 
@@ -1626,7 +1666,7 @@ class DeliveryNote extends DB_Table {
                     $qty          = -1 * $transaction['qty'];
                     $cost         = $qty * $part->get('Part Cost in Warehouse');
                     $weight       = $transaction['qty'] * $part->get('Part Package Weight');
-                    $out_of_stock = $row['Required'] - $transaction['qty'];
+                    $out_of_stock = $row['Required'] + $row['Given'] + -$transaction['qty'];
 
 
                     if ($out_of_stock == 0) {
@@ -1654,7 +1694,7 @@ class DeliveryNote extends DB_Table {
                         'UPDATE  `Inventory Transaction Fact`  SET  
                                   `Date Picked`=%s ,`Date Packed`=%s ,`Date`=%s ,`Location Key`=%d ,`Inventory Transaction Type`=%s ,`Inventory Transaction Section`=%s ,
                                   `Inventory Transaction Quantity`=%f, `Inventory Transaction Amount`=%.3f,`Inventory Transaction Weight`=%f,
-                                  `Picked`=%f,`PAcked`=%f,`Out of Stock`=%f,`Out of Stock Tag`=%s,
+                                  `Picked`=%f,`Packed`=%f,`Out of Stock`=%f,`Out of Stock Tag`=%s,
                                   `Picker Key`=%d,`Packer Key`=%d,`Inventory Transaction State`=%s
                                   
                                   
@@ -1665,7 +1705,6 @@ class DeliveryNote extends DB_Table {
                         $this->get('Delivery Note Assigned Picker Key'), $this->get('Delivery Note Assigned Packer Key'), prepare_mysql($state), $transaction['transaction_key']
                     );
 
-                    //  print "$sql\n";
 
                     $this->db->exec($sql);
 
@@ -1683,7 +1722,10 @@ class DeliveryNote extends DB_Table {
                     $this->update_totals();
 
 
-                    $operations=array('cancel_operations','packed_done_operations');
+                    $operations = array(
+                        'cancel_operations',
+                        'packed_done_operations'
+                    );
 
                     $this->update_metadata = array(
                         'class_html'  => array(
@@ -1699,10 +1741,7 @@ class DeliveryNote extends DB_Table {
                             'Delivery_Note_Packed_Done_Datetime' => '&nbsp;'.$this->get('Done Approved Datetime').'&nbsp;',
 
 
-
-
-
-                    'Delivery_Note_Picked_Percentage_or_Datetime' => '&nbsp;'.$this->get('Picked Percentage or Datetime').'&nbsp;',
+                            'Delivery_Note_Picked_Percentage_or_Datetime' => '&nbsp;'.$this->get('Picked Percentage or Datetime').'&nbsp;',
                             'Delivery_Note_Packed_Percentage_or_Datetime' => '&nbsp;'.$this->get('Packed Percentage or Datetime').'&nbsp;',
                             'Delivery_Note_Dispatched_Approved_Datetime'  => '&nbsp;'.$this->get('Dispatched Approved Datetime').'&nbsp;',
                             'Delivery_Note_Dispatched_Datetime'           => '&nbsp;'.$this->get('Dispatched Datetime').'&nbsp;',
@@ -1731,24 +1770,25 @@ class DeliveryNote extends DB_Table {
 
     function get_formatted_parcels() {
 
-        if (!is_numeric($this->data['Delivery Note Number Parcels']))
+        if (!is_numeric($this->data['Delivery Note Number Parcels'])) {
             return;
+        }
 
         switch ($this->data['Delivery Note Parcel Type']) {
             case('Box'):
-                $parcel_type=ngettext('box', 'boxes', $this->data['Delivery Note Number Parcels']);
+                $parcel_type = ngettext('box', 'boxes', $this->data['Delivery Note Number Parcels']);
                 break;
             case('Pallet'):
-                $parcel_type=ngettext('pallet', 'pallets', $this->data['Delivery Note Number Parcels']);
+                $parcel_type = ngettext('pallet', 'pallets', $this->data['Delivery Note Number Parcels']);
                 break;
             case('Envelope'):
-                $parcel_type=ngettext('envelope', 'envelopes', $this->data['Delivery Note Number Parcels']);
+                $parcel_type = ngettext('envelope', 'envelopes', $this->data['Delivery Note Number Parcels']);
                 break;
             case('Small Parcel'):
-                $parcel_type=ngettext('small parcel', 'small parcels', $this->data['Delivery Note Number Parcels']);
+                $parcel_type = ngettext('small parcel', 'small parcels', $this->data['Delivery Note Number Parcels']);
                 break;
             case('Other'):
-                $parcel_type=ngettext('container (other)', 'containers (other)', $this->data['Delivery Note Number Parcels']);
+                $parcel_type = ngettext('container (other)', 'containers (other)', $this->data['Delivery Note Number Parcels']);
                 break;
 
             case('None'):
@@ -1756,14 +1796,12 @@ class DeliveryNote extends DB_Table {
                 break;
 
             default:
-                $parcel_type=$this->data['Delivery Note Parcel Type'];
+                $parcel_type = $this->data['Delivery Note Parcel Type'];
         }
 
 
         return number($this->data['Delivery Note Number Parcels']).' '.$parcel_type;
     }
-
-
 
 
 }

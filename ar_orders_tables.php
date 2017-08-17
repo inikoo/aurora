@@ -1037,7 +1037,7 @@ function invoice_items($_data, $db, $user) {
     foreach ($db->query($sql) as $data) {
 
         $net = money(
-            ($data['Invoice Transaction Gross Amount'] - $data['Invoice Transaction Total Discount Amount']), $data['Invoice Currency Code']
+            ($data['Order Transaction Amount']), $data['Invoice Currency Code']
         );
 
         $tax    = money(
@@ -1085,7 +1085,7 @@ function invoice_items($_data, $db, $user) {
         }
 
 
-        $quantity = number($data['Invoice Quantity']);
+        $quantity = number($data['Delivery Note Quantity']);
 
 
         $adata[] = array(
