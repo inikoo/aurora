@@ -10,86 +10,28 @@
 */
 
 
+include_once 'utils/country_functions.php';
+include_once 'utils/invalid_messages.php';
+include_once 'conf/object_fields.php';
+
+
 $invoice = $state['_object'];
 
-$object_fields = array(
-    array(
-        'label'      => _('Id'),
-        'show_title' => true,
-        'fields'     => array(
-            array(
-                'class' => 'locked',
-                'id'    => 'Invoice_Key',
-                'value' => $invoice->id,
-                'label' => _('Id')
-            ),
-            array(
-                'class' => 'locked',
-                'id'    => 'Invoice_Public_ID',
-                'value' => $invoice->get('Invoice Public ID'),
-                'label' => _('Number')
-            ),
-
-
-        )
-    ),
-    array(
-        'label'      => _('Customer'),
-        'show_title' => true,
-        'fields'     => array(
-
-            array(
-                'class' => 'locked',
-                'id'    => 'Cutomer',
-                'value' => $invoice->get('Invoice Customer Name').' (<span class="id">'.sprintf(
-                        "%05d", $invoice->get('Invoice Customer Key')
-                    ).'</span>)',
-                'label' => _('Customer')
-            ),
-            array(
-                'id'    => 'Invoice_Customer_Fiscal_Name',
-                'value' => $invoice->get('Invoice Customer Fiscal Name'),
-                'label' => _('Fiscal name')
-            ),
-            array(
-                'id'    => 'Invoice_Customer_Contact_Name',
-                'value' => $invoice->get('Invoice Customer Contact Name'),
-                'label' => _('Contact name')
-            ),
-            array(
-                'id'    => 'Invoice_Telephone',
-                'value' => $invoice->get('Invoice Telephone'),
-                'label' => _('Contact telephone')
-            ),
-            array(
-                'id'    => 'Invoice_Email',
-                'value' => $invoice->get('Invoice Email'),
-                'label' => _('Contact email')
-            ),
-
-
-        )
-    ),
-    array(
-        'label'      => _('Billing'),
-        'show_title' => true,
-        'fields'     => array(
-
-            array(
-                'class' => 'address',
-                'id'    => 'Invoice_Billing_Address',
-                'value' => $invoice->get('Invoice XHTML Billing Tos'),
-                'label' => _('Billing Address')
-            ),
-
-
-        )
-    ),
-
-
+$object_fields = get_object_fields(
+    $invoice, $db, $user, $smarty
 );
+
+
+
+$smarty->assign('object', $state['_object']);
+$smarty->assign('key', $state['key']);
+
 $smarty->assign('object_fields', $object_fields);
+$smarty->assign('state', $state);
+
 
 $html = $smarty->fetch('edit_object.tpl');
+
+
 
 ?>

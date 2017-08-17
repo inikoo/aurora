@@ -130,8 +130,14 @@ div.inline { float:left; }
 				{t}Customer{/t}: <b>{$invoice->get('Invoice Customer Name')}</b> ({$invoice->get('Invoice Customer Key')}) 
 			</div>
 			<div style="{if $invoice->get('Invoice Tax Number')==''}display:none{/if}">
-				{t}Tax Number{/t}: <b>{$invoice->get('Invoice Tax Number')}</b> 
+                    {t}Tax Number{/t}: <b>{$invoice->get('Invoice Tax Number')}</b>
 			</div>
+
+				<div style="{if $invoice->get('Invoice Registration Number')==''}display:none{/if}">
+                    {t}Registration Number{/t}: <b>{$invoice->get('Invoice Registration Number')}</b>
+				</div>
+
+
 			</td>
 			<td width="50%" style="vertical-align:bottom;border: 0mm solid #888888;text-align: right"> {if $number_dns==1} 
 			<div style="text-align:right;{if !$delivery_note->get('Delivery Note Number Parcels')}display:none{/if}">
@@ -142,7 +148,7 @@ div.inline { float:left; }
 			</div>
 			{if $delivery_note->data['Delivery Note Shipper Consignment']!=''}
 			<div style="text-align: right">
-				{t}Courier{/t}: <b> <span id="formated_consignment">{$delivery_note->get('Consignment')|strip_tags}</span></span> </b> 
+				{t}Courier{/t}: <b> <span id="formatted_consignment">{$delivery_note->get('Consignment')|strip_tags}</span></span> </b> 
 			</div>
 			{/if}
 			{/if} </td>

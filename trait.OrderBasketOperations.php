@@ -164,12 +164,7 @@ trait OrderBasketOperations {
             $this->data['Order Main Source Type'] = $data['Order Main Source Type'];
         }
 
-        if (isset($data['Order Public ID'])) {
-            $this->data['Order Public ID'] = $data['Order Public ID'];
-            $this->data['Order File As']   = $this->prepare_file_as(
-                $data['Order Public ID']
-            );
-        } else {
+
 
             $sql = sprintf(
                 "UPDATE `Store Dimension` SET `Store Order Last Order ID` = LAST_INSERT_ID(`Store Order Last Order ID` + 1) WHERE `Store Key`=%d", $this->data['Order Store Key']
@@ -192,12 +187,12 @@ trait OrderBasketOperations {
                 $this->data['Order File As']   = preg_replace('/\d+$/', sprintf("%012d", $part_number), $number);
 
             } else {
-                $this->data['Order File As']   == $number;
+                $this->data['Order File As']   = $number;
             }
 
 
 
-        }
+
 
 
         //calculate the order total

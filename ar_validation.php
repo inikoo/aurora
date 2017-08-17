@@ -75,6 +75,9 @@ function check_for_duplicates($data, $db, $user, $account) {
 
 
     switch ($data['object']) {
+
+
+
         case 'User':
             switch ($field) {
                 case 'Staff User Handle':
@@ -96,7 +99,7 @@ function check_for_duplicates($data, $db, $user, $account) {
             }
             break;
 
-            break;
+
         case 'Contractor':
 
             switch ($field) {
@@ -805,7 +808,7 @@ function check_for_duplicates($data, $db, $user, $account) {
 
         );
 
-        //	print $sql;
+
 
 
         if (!isset($invalid_msg)) {

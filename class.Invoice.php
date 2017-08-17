@@ -1000,9 +1000,31 @@ class Invoice extends DB_Table {
 
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
 
+
+
+
         switch ($field) {
 
+            case 'Invoice Public ID':
+                $this->update_field($field, $value, $options);
 
+
+                $number = strtolower($value);
+                if (preg_match("/^\d+/", $number, $match)) {
+                    $invoice_number = $match[0];
+                    $file_as   = preg_replace('/^\d+/', sprintf("%012d", $invoice_number), $number);
+
+                } elseif (preg_match("/\d+$/", $number, $match)) {
+                    $invoice_number = $match[0];
+                    $file_as  = preg_replace('/\d+$/', sprintf("%012d", $invoice_number), $number);
+
+                } else {
+                    $file_as   = $number;
+                }
+
+                $this->update_field('Invoice File As', $file_as, $options);
+
+            break;
             default:
                 $base_data = $this->base_data();
                 if (array_key_exists($field, $base_data)) {
