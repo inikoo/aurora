@@ -64,8 +64,8 @@ $js_files[] = 'js/braintree_paypal.js';
 
 
 
-$smarty->assign('css_files', $css_files);
-$smarty->assign('js_files', $js_files);
+//$smarty->assign('css_files', $css_files);
+//$smarty->assign('js_files', $js_files);
 
 $smarty->display('braintree_paypal_iframe.tpl');
 
