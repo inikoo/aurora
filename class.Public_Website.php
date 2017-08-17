@@ -330,6 +330,12 @@ class Public_Website {
                         $tab_label_index = '_bank_label';
                         $tab_label       = '';
                         break;
+
+                    case 'ConD':
+                        $icon            = 'fa-handshake-o';
+                        $tab_label_index = '_cash_on_delivery_label';
+                        $tab_label       = '';
+                        break;
                     default:
 
 

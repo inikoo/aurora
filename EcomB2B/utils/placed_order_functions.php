@@ -91,7 +91,7 @@ function get_order_info($order) {
         '<tr style="border-bottom:1px solid #cccccc">
 		<td colspan=2></td>
 		<td style="text-align:right;padding:5px;vertical-align:top;border-bottom:1px solid #cccccc">%s</td>
-		<td style="padding:5px;vertical-align:top;text-align:right;border-bottom:1px solid #cccccc">%s</td></tr>', _('Net'), $order->get('Balance Net Amount')
+		<td style="padding:5px;vertical-align:top;text-align:right;border-bottom:1px solid #cccccc">%s</td></tr>', _('Net'), $order->get('Total Net Amoun')
 
     );
 
@@ -99,7 +99,7 @@ function get_order_info($order) {
         '<tr style="border-bottom:1px solid #cccccc">
 		<td colspan=2></td>
 		<td style="text-align:right;padding:5px;vertical-align:top;border-bottom:1px solid #cccccc">%s</td>
-		<td style="padding:5px;vertical-align:top;text-align:right;border-bottom:1px solid #cccccc">%s</td></tr>', _('Tax'), $order->get('Balance Tax Amount')
+		<td style="padding:5px;vertical-align:top;text-align:right;border-bottom:1px solid #cccccc">%s</td></tr>', _('Tax'), $order->get('Total Tax Amount')
 
     );
 
@@ -107,7 +107,7 @@ function get_order_info($order) {
         '<tr style="border-bottom:1px solid #cccccc">
 		<td colspan=2></td>
 		<td style="text-align:right;padding:5px;vertical-align:top;border-bottom:1px solid #cccccc">%s</td>
-		<td style="padding:5px;vertical-align:top;text-align:right;border-bottom:1px solid #cccccc">%s</td></tr>', _('Total'), $order->get('Balance Total Amount')
+		<td style="padding:5px;vertical-align:top;text-align:right;border-bottom:1px solid #cccccc">%s</td></tr>', _('Total'), $order->get('Total')
 
     );
 
@@ -117,9 +117,13 @@ function get_order_info($order) {
             '<tr style="border-bottom:1px solid #cccccc">
 		<td colspan=2></td>
 		<td style="text-align:right;padding:5px;vertical-align:top;border-bottom:1px solid #cccccc">%s</td>
-		<td style="padding:5px;vertical-align:top;text-align:right;border-bottom:1px solid #cccccc">%s</td></tr>', _('Paid'), $order->get('Payments Amount')
+		<td style="padding:5px;vertical-align:top;text-align:right;border-bottom:1px solid #cccccc">%s</td></tr>', _('Amount paid'), $order->get('Payments Amount')
 
         );
+    }
+
+    if ($order->get('Order To Pay Amount') != 0) {
+
         $order_info .= sprintf(
             '<tr style="border-bottom:1px solid #cccccc">
 		<td colspan=2></td>

@@ -525,6 +525,7 @@ if($webpage->id) {
     }
 
 
+
     $smarty->assign('webpage', $webpage);
     $smarty->assign('content', $content);
     $smarty->assign('labels', $website->get('Localised Labels'));
