@@ -2,13 +2,17 @@
     <div id="contact_data" class="block" style="float:left;padding:20px 20px;max-width:500px;">
         <div class="data_container">
             <div class="data_field">
-                <i class="fa fa-user"></i> <span>{$invoice->get('Invoice Customer Name')}</span>
+                <i class="fa fa-fw  fa-user" title="{t}Customer name{/t}"  ></i> <span class="Invoice_Customer_Name">{$invoice->get('Invoice Customer Name')}</span>
             </div>
-            {if $invoice->get('Invoice Tax Number')!=''}
+
             <div class="data_field ">
-                <i class="fa fa-black-tie"></i></i> <span>{$invoice->get('Invoice Tax Number')}</span>
+                <i class="fa fa-fw  fa-black-tie" title="{t}Tax number{/t}"></i> <span class="Invoice_Tax_Number">{if $invoice->get('Invoice Tax Number')!=''}{$invoice->get('Invoice Tax Number')}{else}<span style="font-style: italic" class="super_discreet">No tax number provided</span>{/if}</span>
             </div>
-            {/if}
+
+            <div class="data_field ">
+                <i class="fa fa-fw fa-university" title="{t}Registration number{/t}"></i> <span class="Invoice_Registration_Number">{if $invoice->get('Invoice Registration Number')!=''}{$invoice->get('Invoice Registration Number')}{else}<span style="font-style: italic" class="super_discreet">No registration number provided</span>{/if}</span>
+            </div>
+
         </div>
 
         <div style="clear:both">
