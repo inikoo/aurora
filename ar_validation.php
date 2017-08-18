@@ -610,7 +610,7 @@ function check_for_duplicates($data, $db, $user, $account) {
                             $response = array(
                                 'state'      => 200,
                                 'validation' => 'invalid',
-                                'msg'        =>  sprintf(_('Part barcode already used by %s'),'<span class="link error" style="color:red"  onclick="change_view(\'/part/'.$row['key'].'\')" >'.$row['name'].'</span>')
+                                'msg'        =>  sprintf(_('Unit barcode already used by %s'),'<span class="link error" style="color:red"  onclick="change_view(\'/part/'.$row['key'].'\')" >'.$row['name'].'</span>')
                             );
 
                     	}else{

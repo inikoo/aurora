@@ -282,7 +282,7 @@ $export_fields = array(
         ),
         array(
             'name'    => '`Part Barcode Number`',
-            'label'   => _('Part barcode'),
+            'label'   => _('Unit barcode'),
             'checked' => 1
         ),
         array(
@@ -361,7 +361,7 @@ $export_fields = array(
         ),
         array(
             'name'    => '`Part Barcode Number`',
-            'label'   => _('Part barcode'),
+            'label'   => _('Unit barcode'),
             'checked' => 1
         ),
         array(
