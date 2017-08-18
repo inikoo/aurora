@@ -32,6 +32,9 @@
 
                 <div id="page_content">
 
+                    {if $detected_device!='mobile'}
+
+
                     <div id="description_block" class="description_block {$content_data.description_block.class}" >
 
 
@@ -56,6 +59,8 @@
 
     <div style="clear:both"></div>
 </div>
+                   {/if}
+
                     <div id="items_container" class="product_blocks"   style="margin-bottom:80px;"  >
 
         {foreach from=$sections item=section_data}

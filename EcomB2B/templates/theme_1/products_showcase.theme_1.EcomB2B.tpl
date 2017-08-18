@@ -46,7 +46,7 @@
     "update":"<i class=\"fa fa-hand-pointer-o fa-fw \" aria-hidden=\"true\"></i>  <span class=\"order_button_text\">{if empty($labels._ordering_updated)}{t}Updated{/t}{else}{$labels._ordering_updated}{/if}</span>"
     }'></span>
 
-
+                    {if $detected_device!='mobile'}
                     <div id="description_block" class="description_block {if isset($content_data.description_block.class)}{$content_data.description_block.class}{/if}">
 
 
@@ -67,6 +67,8 @@
 
                         <div style="clear:both"></div>
                     </div>
+
+                    {/if}
 
                     {if $category->get('Product Category Status')=='Discontinued'}
                         <div class="section description_block alert alert-error alert-title" style="text-align:center">
