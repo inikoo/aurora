@@ -522,6 +522,7 @@ if($webpage->id) {
         $template = $theme.'/webpage_blocks.'.$theme.'.'.$website->get('Website Type').'.tpl';
 
 
+
     }
 
 
