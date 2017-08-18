@@ -26,7 +26,7 @@
                             <ul class="gn-submenu">
 
                                 {foreach from=$website->get_categories('departments','menu') item=item  }
-                                    <li><a class="gn-icon " style="margin-left: 40px">  <i class="fa fa-arrow-right padding_right_10" aria-hidden="true"></i>  {$item.label}</a></li>
+                                    <li><a href="{$item.url}" class="gn-icon " style="margin-left: 40px">  <i class="fa fa-arrow-right padding_right_10" aria-hidden="true"></i>  {$item.label}</a></li>
 
                                 {/foreach}
 
