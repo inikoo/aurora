@@ -167,16 +167,20 @@ class Public_Website {
 
     function get_categories($type = 'families', $output = 'data') {
 
-        $categories = array();
 
+        global $store;
+
+        $categories=array();
 
         switch ($type) {
             case 'departments':
                 $sql = sprintf(
                     'SELECT  `Webpage Code`,`Webpage Name` FROM  `Category Dimension` C   LEFT JOIN `Page Store Dimension` P ON (P.`Webpage Scope Key`=C.`Category Key` AND `Webpage Scope`="Category Categories" ) WHERE   C.`Category Parent Key`=%d ',
 
-                    $this->get('Website Alt Department Category Key')
+                    $store->get('Store Department Category Key')
                 );
+
+
 
 
                 if ($result = $this->db->query($sql)) {
@@ -268,6 +272,7 @@ class Public_Website {
 
             case 'Website Store Key':
             case 'Website Locale':
+            case 'Website Name':
             case 'Website Footer Key';
             case 'Website Header Key';
             case 'Website Alt Department Category Key':

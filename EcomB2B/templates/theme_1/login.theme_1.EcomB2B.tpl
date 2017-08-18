@@ -376,7 +376,7 @@
 
 </script>
 
-</body>
+{include file="theme_1/bottom_scripts.EcomB2B.tpl"}</body>
 
 </html>
 
