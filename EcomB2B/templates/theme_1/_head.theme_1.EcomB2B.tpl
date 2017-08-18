@@ -59,12 +59,24 @@
        <!-- <link rel="stylesheet" href="https://use.fontawesome.com/3052dece40.css"> -->
     <link rel="stylesheet" href="/theme_1/local/font-awesome/css/font-awesome.min.css">
 
+
+    {if $detected_device=='mobile'}
+
+        <link rel="stylesheet" type="text/css" href="/theme_1/mobile_menu/css/normalize.css" />
+        <link rel="stylesheet" type="text/css" href="/theme_1/mobile_menu/css/demo.css" />
+        <link rel="stylesheet" type="text/css" href="/theme_1/mobile_menu/css/component.css" />
+
+    {else}
+
     <!--
    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
  -->
     <link href="/theme_1/mainmenu/bootstrap.min4.css" rel="stylesheet">
 
     <link href="/theme_1/mainmenu/menu-5.css" rel="stylesheet">
+
+    {/if}
+
     <link href="/css/sweetalert.css" rel="stylesheet">
 
 
@@ -143,7 +155,6 @@
 
     <script type="text/javascript" src="/js/sweetalert.min.js"></script>
 
-
      <script type="text/javascript" src="/theme_1/tooltips/jquery.darktooltip.js"></script>
 
      <script src="/theme_1/aninum/jquery.animateNumber.min.js"></script>
@@ -152,16 +163,20 @@
      <script type="text/javascript" src="/theme_1/cubeportfolio/js/jquery.cubeportfolio.js"></script>
 
 
-    <!-- mega menu -->
 
-    <script src="/theme_1/mainmenu/customeUI.js"></script>
     <script type="text/javascript" src="/theme_1/tabs/assets/js/responsive-tabs.min.js"></script>
 
+    {if $detected_device=='mobile'}
+        <script src="/theme_1/mobile_menu/js/modernizr.custom.js"></script>
+
+    {else}
+
+        <script src="/theme_1/mainmenu/customeUI.js"></script>
+        <script type="text/javascript" src="/theme_1/mainmenu/sticky.js"></script>
+        <script type="text/javascript" src="/theme_1/mainmenu/modernizr.custom.75180.js"></script>
 
 
-    <script type="text/javascript" src="/theme_1/mainmenu/sticky.js"></script>
-    <script type="text/javascript" src="/theme_1/mainmenu/modernizr.custom.75180.js"></script>
-
+    {/if}
 
 
     <script type="text/javascript" src="/js/jquery.form.min.js"></script>
@@ -199,10 +214,6 @@
         <!--End of Zendesk Chat Script-->
 
     {/if}
-
-
-
-
 
 
 

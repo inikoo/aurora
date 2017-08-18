@@ -14,5 +14,8 @@
 <div class="{$data.type} _block  " style="Width:100%;" h="{$data.height}" w="1240"  >
 <iframe src="https://{$data.src}" width="100%" height="100%" scrolling="no" frameborder="0" allowtransparency="true" allowfullscreen="true"></iframe>
 </div>
+{else}
+
+
 
 {/if}
