@@ -45,7 +45,7 @@ $export_edit_template_fields = array(
             'required'      => false,
             'header'        => 'Part barcode',
             'name'          => 'Part Barcode Number',
-            'label'         => _('Part barcode'),
+            'label'         => _('Unit barcode'),
             'checked'       => 0,
             'cell_type'     => 'string'
         ),
@@ -350,7 +350,7 @@ $export_edit_template_fields = array(
             'required'      => false,
             'header'        => 'Barcode',
             'name'          => 'Part Barcode Number',
-            'label'         => _('Part barcode'),
+            'label'         => _('Unit barcode'),
             'checked'       => 0,
             'cell_type'     => 'string'
         ),
