@@ -10,6 +10,54 @@
 *}
 
 
+{if $detected_device=='mobile'}
+
+
+
+    <ul id="gn-menu" class="gn-menu-main" style="z-index: 10000;border-bottom:4px solid brown">
+        <li class="gn-trigger">
+            <a class="gn-icon gn-icon-menu"><span>Menu</span></a>
+            <nav class="gn-menu-wrapper">
+                <div class="gn-scroller">
+                    <ul class="gn-menu">
+
+                        <li>
+                            <a class="open_drawer gn-icon gn-icon-download">{t}Departments{/t}</a>
+                            <ul class="gn-submenu">
+
+                                {foreach from=$website->get_categories('departments','menu') item=item  }
+                                    <li><a class="gn-icon " style="margin-left: 40px">  <i class="fa fa-arrow-right padding_right_10" aria-hidden="true"></i>  {$item.label}</a></li>
+
+                                {/foreach}
+
+                            </ul>
+                        </li>
+
+                        {if $logged_in}
+                            <li><a  href="basket.sys" class="gn-icon gn-icon-cog">{t}Basket{/t}</a></li>
+                            <li><a  href="profile.sys" class="gn-icon gn-icon-cog">{t}Profile{/t}</a></li>
+                            <li><a  id="logout"  class="gn-icon gn-icon-cog">{t}Logout{/t}</a></li>
+                        {else}
+                        <li><a  href="login.sys" class="gn-icon gn-icon-cog">{t}Login{/t}</a></li>
+                        <li><a  href="about_ud.sys" class="gn-icon gn-icon-cog">{t}About us{/t}</a></li>
+                        {/if}
+
+                    </ul>
+                </div><!-- /gn-scroller -->
+            </nav>
+        </li>
+        <li class="gn-title" ><a href="/"> <img style="width:40px;position:relative;top:10px;left:-20px" src="/art/mobile_logo.png"/>  <span style="position:relative;top:-5px;left:-10px">{$website->get('Website Name')}</span></a></li>
+        {if $logged_in}
+        <li><a class="" href="/basket.sys"><i class="fa fa-shopping-cart" aria-hidden="true"></i></a></li>
+        {else}
+            <li><a class="" href="/login.sys"><i class="fa fa-sign-in" aria-hidden="true"></i></a></li>
+
+        {/if}
+
+    </ul>
+
+{else}
+
 <style>
 
 
@@ -353,4 +401,4 @@
         </div>
 
     </header>
-
+{/if}
