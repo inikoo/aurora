@@ -365,18 +365,37 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
 
 
         if ($this->get('Order State') == 'InBasket') {
-            $operations = array(
-                'send_to_warehouse_operations',
-                'cancel_operations',
-                'submit_operations'
-            );
+
+
+            if($this->get('Order Number Items')==0){
+                $operations = array(
+                    'cancel_operations',
+                );
+            }else{
+                $operations = array(
+                    'send_to_warehouse_operations',
+                    'cancel_operations',
+                    'submit_operations'
+                );
+            }
+
 
         } elseif ($this->get('Order State') == 'InProcess') {
-            $operations = array(
-                'send_to_warehouse_operations',
-                'cancel_operations',
-                'undo_submit_operations'
-            );
+
+            if($this->get('Order Number Items')==0){
+                $operations = array(
+                    'cancel_operations',
+                    'undo_submit_operations'
+                );
+            }else{
+                $operations = array(
+                    'send_to_warehouse_operations',
+                    'cancel_operations',
+                    'undo_submit_operations'
+                );
+            }
+
+
         } elseif ($this->get('Order State') == 'InWarehouse') {
             $operations = array('cancel_operations');
         } elseif ($this->get('Order State') == 'PackedDone') {
@@ -436,13 +455,13 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
             $discounts_class = 'button';
             $discounts_input = sprintf(
                 '<span class="hide order_item_percentage_discount_form" data-settings=\'{ "field": "Percentage" ,"transaction_key":"%d"  }\'   ><input class="order_item_percentage_discount_input" style="width: 70px" value="%s"> <i class="fa save fa-cloud" aria-hidden="true"></i></span>',
-                $row['Order Transaction Fact Key'], percentage($gross_discounts, $row['Order Transaction Gross Amount'])
+                $row['Order Transaction Fact Key'], percentage($gross_discounts, $gross)
             );
         }
         $discounts =
             $discounts_input.'<span class="order_item_percentage_discount   '.$discounts_class.' '.($gross_discounts == 0 ? 'super_discreet' : '').'"><span style="padding-right:5px">'.percentage(
-                $gross_discounts, $row['Order Transaction Gross Amount']
-            ).'</span> <span class="'.($gross_discounts == 0 ? 'hide' : '').'">'.money($gross_discounts, $row['Order Currency Code']).'</span></span>';
+                $gross_discounts, $gross
+            ).'</span> <span class="'.($gross_discounts == 0 ? 'hide' : '').'">'.money($gross_discounts, $this->data['Order Currency']).'</span></span>';
 
 
         return array(
