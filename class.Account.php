@@ -1572,6 +1572,18 @@ class Account extends DB_Table {
 
     }
 
+
+
+function update_orders() {
+
+    $this->update_orders_in_basket_data();
+    $this->update_orders_in_process_data();
+    $this->update_orders_in_warehouse_data();
+    $this->update_orders_packed_data();
+    $this->update_orders_ready_to_ship_data();
+
+}
+
     function update_orders_in_basket_data() {
 
         $data = array(
@@ -1582,7 +1594,7 @@ class Account extends DB_Table {
         );
 
         $sql = sprintf(
-            "SELECT count(*) AS num ,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE  `Order Number Items`>0  AND `Order State`='InBasket'  ",
+            "SELECT count(*) AS num ,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE  `Order Class`='InWebsite'  ",
             $this->id
         );
 
@@ -1627,7 +1639,7 @@ class Account extends DB_Table {
             )
         );
         $sql  = sprintf(
-            'SELECT `Order Current Dispatch State`,count(*) AS num, ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE  `Order State` ="InProcess"  AND `Order Current Payment State`="Paid" '
+            'SELECT `Order Current Dispatch State`,count(*) AS num, ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE  `Order State` ="InProcess"  AND !`Order To Pay Amount`>0 '
         );
 
 
@@ -1646,8 +1658,10 @@ class Account extends DB_Table {
         }
 
 
+
+
         $sql = sprintf(
-            'SELECT `Order Current Dispatch State`,count(*) AS num,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE  `Order State`="In Process"  AND `Order Current Payment State`!="Paid" '
+            'SELECT `Order Current Dispatch State`,count(*) AS num,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE  `Order State`="InProcess"  AND `Order To Pay Amount`>0  '
         );
 
 
@@ -1674,6 +1688,8 @@ class Account extends DB_Table {
 
 
         );
+
+
         $this->update($data_to_update, 'no_history');
     }
 
@@ -1682,14 +1698,21 @@ class Account extends DB_Table {
         $data = array(
             'warehouse' => array(
                 'number'    => 0,
-                'amount'    => 0,
+                'dc_amount' => 0
+            ),
+            'warehouse_no_alerts' => array(
+                'number'    => 0,
+                'dc_amount' => 0
+            ),
+            'warehouse_with_alerts' => array(
+                'number'    => 0,
                 'dc_amount' => 0
             ),
         );
 
 
         $sql = sprintf(
-            "SELECT count(*) AS num,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE   `Order Current Dispatch State`  IN ( 'Ready to Pick', 'Picking & Packing', 'Ready to Ship', 'Packing')  "
+            "SELECT count(*) AS num,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE   `Order State` ='InWarehouse'  "
         );
 
 
@@ -1708,12 +1731,40 @@ class Account extends DB_Table {
         }
 
 
+        $sql = sprintf(
+            "SELECT count(*) AS num,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE   `Order State` ='InWarehouse' and `Order Delivery Note Alert`='Yes'  "
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+
+                $data['warehouse_with_alerts']['number']    = $row['num'];
+                $data['warehouse_with_alerts']['dc_amount'] = $row['dc_amount'];
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+        $data['warehouse_no_alerts']['number'] =$data['warehouse']['number']-$data['warehouse_with_alerts']['number'];
+        $data['warehouse_no_alerts']['dc_amount'] =$data['warehouse']['dc_amount']-$data['warehouse_with_alerts']['dc_amount'];
+
+
         $data_to_update = array(
             'Account Orders In Warehouse Number' => $data['warehouse']['number'],
             'Account Orders In Warehouse Amount' => $data['warehouse']['dc_amount'],
-
+            'Account Orders In Warehouse No Alerts Number' => $data['warehouse_no_alerts']['number'],
+            'Account Orders In Warehouse No Alerts Amount' => $data['warehouse_no_alerts']['dc_amount'],
+            'Account Orders In Warehouse With Alerts Number' => $data['warehouse_with_alerts']['number'],
+            'Account Orders In Warehouse With Alerts Amount' => $data['warehouse_with_alerts']['dc_amount'],
 
         );
+
+
         $this->update($data_to_update, 'no_history');
     }
 

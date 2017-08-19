@@ -684,6 +684,14 @@ ADD  `Store Orders Cancelled Amount` DECIMAL( 16, 2 ) NOT NULL DEFAULT  '0.00' A
 
 ALTER TABLE `Order Transaction Fact` ADD `Order Transaction Out of Stock Amount` DECIMAL(12,2) NULL DEFAULT '0.00' AFTER `Order Transaction Total Discount Amount`;
 
+ALTER TABLE `Account Data` ADD `Account Orders In Warehouse No Alerts Number` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Account Orders In Warehouse Amount`, ADD `Account Orders In Warehouse No Alerts Amount` DECIMAL(12,2) NOT NULL DEFAULT '0.00' AFTER `Account Orders In Warehouse No Alerts Number`, ADD `Account Orders In Warehouse With Alerts Number` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Account Orders In Warehouse No Alerts Amount`, ADD `Account Orders In Warehouse With Alerts Amount` DECIMAL(12,2) NOT NULL DEFAULT '0.00' AFTER `Account Orders In Warehouse With Alerts Number`;
+
+ALTER TABLE `Order Dimension` ADD `Order Delivery Note Alert` ENUM('No','Yes','Closed') NOT NULL DEFAULT 'No' AFTER `Order Checkout Block Payment Account Key`, ADD `Order Delivery Note Alert Note` TEXT NULL DEFAULT NULL AFTER `Order Delivery Note Alert`, ADD INDEX (`Order Delivery Note Alert`);
+
+ALTER TABLE `Delivery Note Dimension` ADD `Delivery Note Order Alert` ENUM('No','Yes','Closed') NOT NULL DEFAULT 'No' AFTER `Delivery Note Pending`, ADD INDEX (`Delivery Note Order Alert`);
+
+ALTER TABLE `Account Data` ADD `Account Orders Dispatched Today Number` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Account Orders In Dispatch Area Amount`, ADD `Account Orders Dispatched Today Amount` DECIMAL(12,2) NOT NULL DEFAULT '0.00' AFTER `Account Orders Dispatched Today Number`;
+
 
 
 ============= migration web[ages

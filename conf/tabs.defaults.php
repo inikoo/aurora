@@ -129,7 +129,29 @@ $tab_defaults = array(
 
 
     ),
-    'orders.pending'                      => array(
+    'orders.in_process.not_paid'                      => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 500,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'number',
+
+
+
+    ),
+    'orders.in_process.paid'                      => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 500,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'number',
+
+
+
+    ),
+    'orders.in_process'                      => array(
         'view'          => 'overview',
         'sort_key'      => 'id',
         'sort_order'    => 1,
@@ -139,9 +161,64 @@ $tab_defaults = array(
 
         'elements_type' => 'state',
         'elements'      => $elements_options['orders_pending'],
-      //  'export_fields' => $export_fields['orders_pending']
+        //  'export_fields' => $export_fields['orders_pending']
 
     ),
+
+    'orders.in_warehouse'                      => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 500,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'number',
+    ),
+    'orders.in_warehouse_no_alerts'                      => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 500,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'number',
+    ),
+    'orders.in_warehouse_with_alerts'                      => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 500,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'number',
+    ),
+
+    'orders.packed_done'                      => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 500,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'number',
+    ),
+
+
+    'orders.approved'                      => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 500,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'number',
+    ),
+
+
+    'orders.dispatched_today'                      => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 500,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'number',
+    ),
+
     'orders.archived'                      => array(
         'view'          => 'overview',
         'sort_key'      => 'id',

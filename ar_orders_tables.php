@@ -40,9 +40,35 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
-    case 'pending_orders':
-        pending_orders(get_table_parameters(), $db, $user);
+    case 'orders_in_process_not_paid':
+        orders_in_process_not_paid(get_table_parameters(), $db, $user);
         break;
+    case 'orders_in_process_paid':
+        orders_in_process_paid(get_table_parameters(), $db, $user);
+        break;
+    case 'orders_in_process':
+        orders_in_process(get_table_parameters(), $db, $user);
+        break;
+
+    case 'orders_in_warehouse':
+        orders_in_warehouse(get_table_parameters(), $db, $user);
+        break;
+    case 'orders_in_warehouse_no_alerts':
+        orders_in_warehouse_no_alerts(get_table_parameters(), $db, $user);
+        break;
+    case 'orders_in_warehouse_with_alerts':
+        orders_in_warehouse_with_alerts(get_table_parameters(), $db, $user);
+        break;
+    case 'orders_packed_done':
+        orders_packed_done(get_table_parameters(), $db, $user);
+        break;
+    case 'orders_approved':
+        orders_approved(get_table_parameters(), $db, $user);
+        break;
+    case 'orders_dispatched_today':
+        orders_dispatched_today(get_table_parameters(), $db, $user);
+        break;
+
     case 'archived_orders':
         archived_orders(get_table_parameters(), $db, $user);
         break;
@@ -100,7 +126,894 @@ switch ($tipo) {
 }
 
 
-function pending_orders($_data, $db, $user) {
+function orders_in_process_not_paid($_data, $db, $user) {
+    $rtext_label = 'order';
+
+
+    include_once 'prepare_table/init.php';
+
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $adata = array();
+
+    //   print $sql;
+    foreach ($db->query($sql) as $data) {
+
+
+        switch ($data['Order Current Payment State']) {
+            case 'No Applicable':
+                ///$payment_state='<span style="opacity:.6">'._('No Applicable').'</span>';
+                $payment_state = '';
+                break;
+            case 'Waiting Payment':
+
+                $payment_state = '<i class="fa fa-check super_discreet" aria-hidden="true"></i>';
+
+
+                break;
+            case 'Overpaid':
+                $payment_state = _('Overpaid');
+
+                break;
+            case 'Unknown':
+                $payment_state = '<i class="fa fa-question" aria-hidden="true"></i>';
+
+                break;
+            case 'Paid':
+                $payment_state = '<i class="fa fa-check success" aria-hidden="true"></i>';
+                break;
+            case 'Partially Paid':
+
+                $payment_state = '<i class="fa fa-check discreet warning" aria-hidden="true"></i>';
+
+                break;
+            default:
+                $payment_state = $data['Order Current Payment State'];
+        }
+        if ($payment_state != '') {
+            $payment_state = '<span id="payment_state_'.$data['Order Key'].'">'.$payment_state.'</span>';
+        }
+
+
+        include_once 'class.Order.php';
+
+        $operations = '<div id="operations'.$data['Order Key'].'">';
+        $class      = 'right';
+
+
+
+            $operations .= '<div class="buttons small '.$class.'">';
+            $operations .= sprintf(
+                "<i class=\"fa fa-minus-circle error padding_right_10 button edit\" onClick=\"open_cancel_dialog_from_list(this,%d,'%s, %s')\" title='%s'></i>", $data['Order Key'],
+                $data['Order Public ID'], $data['Order Customer Name'], _('Cancel')
+            );
+
+            $operations .= sprintf(
+                "<i id=\"send_to_warehouse_button_%d\" class=\"%s fa fa-hand-lizard-o fa-flip-horizontal button edit \" onClick=\"create_delivery_note_from_list(this,%d)\" title='%s'></i>",
+                $data['Order Key'], ($data['Order Number Items'] == 0 ? 'disabled' : ''), $data['Order Key'], _('Send for picking')
+            );
+
+            //$operations.=sprintf("<button onClick=\"location.href='order.php?id=%d&referral=store_pending_orders'\"><img style='height:12px;width:12px' src='art/icons/cart_edit.png'> %s</button>",$data['Order Key'],_('Edit Order'));
+
+            $operations .= '</div>';
+
+
+
+
+        $operations .= '</div>';
+
+
+        $adata[] = array(
+            'id'             => (integer)$data['Order Key'],
+            'checked'        => sprintf('<i class="fa fa-square-o fa-fw button"  aria-hidden="true" onClick="select_order(this)"></i>'),
+            'store_key'      => (integer)$data['Order Store Key'],
+            'public_id'      => sprintf('<span class="link"  onclick="change_view(\'orders/%s/%d\')" >%s</span>',($_data['parameters']['parent']=='store'?$_data['parameters']['parent_key']:'all'),$data['Order Key'],$data['Order Public ID']),
+            'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
+            'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
+            'customer'       => sprintf('<span class="link" onClick="change_view(\'customers/%d\')">%s</span>', $data['Order Customer Key'], $data['Order Customer Name']),
+            'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'], $data['Order Key']),
+            'payment_state'  => $payment_state,
+            'total_amount'   => money($data['Order Total Amount'], $data['Order Currency']),
+            'actions'        => $operations
+
+
+        );
+
+    }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+
+function orders_in_process_paid($_data, $db, $user) {
+    $rtext_label = 'order';
+
+
+    include_once 'prepare_table/init.php';
+
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $adata = array();
+
+    //   print $sql;
+    foreach ($db->query($sql) as $data) {
+
+
+        switch ($data['Order Current Payment State']) {
+            case 'No Applicable':
+                ///$payment_state='<span style="opacity:.6">'._('No Applicable').'</span>';
+                $payment_state = '';
+                break;
+            case 'Waiting Payment':
+
+                $payment_state = '<i class="fa fa-check super_discreet" aria-hidden="true"></i>';
+
+
+                break;
+            case 'Overpaid':
+                $payment_state = _('Overpaid');
+
+                break;
+            case 'Unknown':
+                $payment_state = '<i class="fa fa-question" aria-hidden="true"></i>';
+
+                break;
+            case 'Paid':
+                $payment_state = '<i class="fa fa-check success" aria-hidden="true"></i>';
+                break;
+            case 'Partially Paid':
+
+                $payment_state = '<i class="fa fa-check discreet warning" aria-hidden="true"></i>';
+
+                break;
+            default:
+                $payment_state = $data['Order Current Payment State'];
+        }
+        if ($payment_state != '') {
+            $payment_state = '<span id="payment_state_'.$data['Order Key'].'">'.$payment_state.'</span>';
+        }
+
+
+        include_once 'class.Order.php';
+
+        $operations = '<div id="operations'.$data['Order Key'].'">';
+        $class      = 'right';
+
+
+
+        $operations .= '<div class="buttons small '.$class.'">';
+        $operations .= sprintf(
+            "<i class=\"fa fa-minus-circle error padding_right_10 button edit\" onClick=\"open_cancel_dialog_from_list(this,%d,'%s, %s')\" title='%s'></i>", $data['Order Key'],
+            $data['Order Public ID'], $data['Order Customer Name'], _('Cancel')
+        );
+
+        $operations .= sprintf(
+            "<i id=\"send_to_warehouse_button_%d\" class=\"%s fa fa-hand-lizard-o fa-flip-horizontal button edit \" onClick=\"create_delivery_note_from_list(this,%d)\" title='%s'></i>",
+            $data['Order Key'], ($data['Order Number Items'] == 0 ? 'disabled' : ''), $data['Order Key'], _('Send for picking')
+        );
+
+        //$operations.=sprintf("<button onClick=\"location.href='order.php?id=%d&referral=store_pending_orders'\"><img style='height:12px;width:12px' src='art/icons/cart_edit.png'> %s</button>",$data['Order Key'],_('Edit Order'));
+
+        $operations .= '</div>';
+
+
+
+
+        $operations .= '</div>';
+
+
+        $adata[] = array(
+            'id'             => (integer)$data['Order Key'],
+            'checked'        => sprintf('<i class="fa fa-square-o fa-fw button"  aria-hidden="true" onClick="select_order(this)"></i>'),
+            'store_key'      => (integer)$data['Order Store Key'],
+            'public_id'      => sprintf('<span class="link"  onclick="change_view(\'orders/%s/%d\')" >%s</span>',($_data['parameters']['parent']=='store'?$_data['parameters']['parent_key']:'all'),$data['Order Key'],$data['Order Public ID']),
+            'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
+            'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
+            'customer'       => sprintf('<span class="link" onClick="change_view(\'customers/%d\')">%s</span>', $data['Order Customer Key'], $data['Order Customer Name']),
+            'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'], $data['Order Key']),
+            'payment_state'  => $payment_state,
+            'total_amount'   => money($data['Order Total Amount'], $data['Order Currency']),
+            'actions'        => $operations
+
+
+        );
+
+    }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+function orders_in_warehouse($_data, $db, $user) {
+    $rtext_label = 'order';
+
+
+    include_once 'prepare_table/init.php';
+
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $adata = array();
+
+    //   print $sql;
+    foreach ($db->query($sql) as $data) {
+
+
+        switch ($data['Order Current Payment State']) {
+            case 'No Applicable':
+                ///$payment_state='<span style="opacity:.6">'._('No Applicable').'</span>';
+                $payment_state = '';
+                break;
+            case 'Waiting Payment':
+
+                $payment_state = '<i class="fa fa-check super_discreet" aria-hidden="true"></i>';
+
+
+                break;
+            case 'Overpaid':
+                $payment_state = _('Overpaid');
+
+                break;
+            case 'Unknown':
+                $payment_state = '<i class="fa fa-question" aria-hidden="true"></i>';
+
+                break;
+            case 'Paid':
+                $payment_state = '<i class="fa fa-check success" aria-hidden="true"></i>';
+                break;
+            case 'Partially Paid':
+
+                $payment_state = '<i class="fa fa-check discreet warning" aria-hidden="true"></i>';
+
+                break;
+            default:
+                $payment_state = $data['Order Current Payment State'];
+        }
+        if ($payment_state != '') {
+            $payment_state = '<span id="payment_state_'.$data['Order Key'].'">'.$payment_state.'</span>';
+        }
+
+
+        include_once 'class.Order.php';
+
+        $operations = '<div id="operations'.$data['Order Key'].'">';
+        $class      = 'right';
+
+
+        $operations .= '<div class="buttons small '.$class.'">';
+
+
+        $operations .= sprintf(
+            "<i class=\"fa fa-minus-circle error  padding_right_10 button edit\" onClick=\"open_cancel_dialog_from_list(this,%d,'%s, %s')\" title='%s'></i>", $data['Order Key'],
+            $data['Order Public ID'], $data['Order Customer Name'], _('Cancel')
+        );
+
+        foreach (preg_split('/,/', $data['delivery_notes']) as $delivery_note_data) {
+            $operations .= sprintf(
+                "<i class=\"fa fa-truck fa-flip-horizontal   button\" onClick=\"change_view('delivery_notes/%d/%d')\"></i>", $data['Order Store Key'], $delivery_note_data
+
+            );
+        }
+
+
+        $operations .= '</div>';
+
+
+
+
+        $operations .= '</div>';
+
+
+        $adata[] = array(
+            'id'             => (integer)$data['Order Key'],
+            'checked'        => sprintf('<i class="fa fa-square-o fa-fw button"  aria-hidden="true" onClick="select_order(this)"></i>'),
+            'store_key'      => (integer)$data['Order Store Key'],
+            'public_id'      => sprintf('<span class="link"  onclick="change_view(\'orders/%s/%d\')" >%s</span>',($_data['parameters']['parent']=='store'?$_data['parameters']['parent_key']:'all'),$data['Order Key'],$data['Order Public ID']),
+            'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
+            'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
+            'customer'       => sprintf('<span class="link" onClick="change_view(\'customers/%d\')">%s</span>', $data['Order Customer Key'], $data['Order Customer Name']),
+            'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'], $data['Order Key']),
+            'payment_state'  => $payment_state,
+            'total_amount'   => money($data['Order Total Amount'], $data['Order Currency']),
+            'actions'        => $operations
+
+
+        );
+
+    }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+
+function orders_in_warehouse_no_alerts($_data, $db, $user) {
+    $rtext_label = 'order';
+
+
+    include_once 'prepare_table/init.php';
+
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $adata = array();
+
+    //   print $sql;
+    foreach ($db->query($sql) as $data) {
+
+
+        switch ($data['Order Current Payment State']) {
+            case 'No Applicable':
+                ///$payment_state='<span style="opacity:.6">'._('No Applicable').'</span>';
+                $payment_state = '';
+                break;
+            case 'Waiting Payment':
+
+                $payment_state = '<i class="fa fa-check super_discreet" aria-hidden="true"></i>';
+
+
+                break;
+            case 'Overpaid':
+                $payment_state = _('Overpaid');
+
+                break;
+            case 'Unknown':
+                $payment_state = '<i class="fa fa-question" aria-hidden="true"></i>';
+
+                break;
+            case 'Paid':
+                $payment_state = '<i class="fa fa-check success" aria-hidden="true"></i>';
+                break;
+            case 'Partially Paid':
+
+                $payment_state = '<i class="fa fa-check discreet warning" aria-hidden="true"></i>';
+
+                break;
+            default:
+                $payment_state = $data['Order Current Payment State'];
+        }
+        if ($payment_state != '') {
+            $payment_state = '<span id="payment_state_'.$data['Order Key'].'">'.$payment_state.'</span>';
+        }
+
+
+        include_once 'class.Order.php';
+
+        $operations = '<div id="operations'.$data['Order Key'].'">';
+        $class      = 'right';
+
+
+        $operations .= '<div class="buttons small '.$class.'">';
+
+
+        $operations .= sprintf(
+            "<i class=\"fa fa-minus-circle error  padding_right_10 button edit\" onClick=\"open_cancel_dialog_from_list(this,%d,'%s, %s')\" title='%s'></i>", $data['Order Key'],
+            $data['Order Public ID'], $data['Order Customer Name'], _('Cancel')
+        );
+
+        foreach (preg_split('/,/', $data['delivery_notes']) as $delivery_note_data) {
+            $operations .= sprintf(
+                "<i class=\"fa fa-truck fa-flip-horizontal   button\" onClick=\"change_view('delivery_notes/%d/%d')\"></i>", $data['Order Store Key'], $delivery_note_data
+
+            );
+        }
+
+
+        $operations .= '</div>';
+
+
+
+
+        $operations .= '</div>';
+
+
+        $adata[] = array(
+            'id'             => (integer)$data['Order Key'],
+            'checked'        => sprintf('<i class="fa fa-square-o fa-fw button"  aria-hidden="true" onClick="select_order(this)"></i>'),
+            'store_key'      => (integer)$data['Order Store Key'],
+            'public_id'      => sprintf('<span class="link"  onclick="change_view(\'orders/%s/%d\')" >%s</span>',($_data['parameters']['parent']=='store'?$_data['parameters']['parent_key']:'all'),$data['Order Key'],$data['Order Public ID']),
+            'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
+            'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
+            'customer'       => sprintf('<span class="link" onClick="change_view(\'customers/%d\')">%s</span>', $data['Order Customer Key'], $data['Order Customer Name']),
+            'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'], $data['Order Key']),
+            'payment_state'  => $payment_state,
+            'total_amount'   => money($data['Order Total Amount'], $data['Order Currency']),
+            'actions'        => $operations
+
+
+        );
+
+    }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function orders_in_warehouse_with_alerts($_data, $db, $user) {
+    $rtext_label = 'order';
+
+
+    include_once 'prepare_table/init.php';
+
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $adata = array();
+
+    //   print $sql;
+    foreach ($db->query($sql) as $data) {
+
+
+        switch ($data['Order Current Payment State']) {
+            case 'No Applicable':
+                ///$payment_state='<span style="opacity:.6">'._('No Applicable').'</span>';
+                $payment_state = '';
+                break;
+            case 'Waiting Payment':
+
+                $payment_state = '<i class="fa fa-check super_discreet" aria-hidden="true"></i>';
+
+
+                break;
+            case 'Overpaid':
+                $payment_state = _('Overpaid');
+
+                break;
+            case 'Unknown':
+                $payment_state = '<i class="fa fa-question" aria-hidden="true"></i>';
+
+                break;
+            case 'Paid':
+                $payment_state = '<i class="fa fa-check success" aria-hidden="true"></i>';
+                break;
+            case 'Partially Paid':
+
+                $payment_state = '<i class="fa fa-check discreet warning" aria-hidden="true"></i>';
+
+                break;
+            default:
+                $payment_state = $data['Order Current Payment State'];
+        }
+        if ($payment_state != '') {
+            $payment_state = '<span id="payment_state_'.$data['Order Key'].'">'.$payment_state.'</span>';
+        }
+
+
+        include_once 'class.Order.php';
+
+        $operations = '<div id="operations'.$data['Order Key'].'">';
+        $class      = 'right';
+
+
+        $operations .= '<div class="buttons small '.$class.'">';
+
+
+        $operations .= sprintf(
+            "<i class=\"fa fa-minus-circle error  padding_right_10 button edit\" onClick=\"open_cancel_dialog_from_list(this,%d,'%s, %s')\" title='%s'></i>", $data['Order Key'],
+            $data['Order Public ID'], $data['Order Customer Name'], _('Cancel')
+        );
+
+        foreach (preg_split('/,/', $data['delivery_notes']) as $delivery_note_data) {
+            $operations .= sprintf(
+                "<i class=\"fa fa-truck fa-flip-horizontal   button\" onClick=\"change_view('delivery_notes/%d/%d')\"></i>", $data['Order Store Key'], $delivery_note_data
+
+            );
+        }
+
+
+        $operations .= '</div>';
+
+
+
+
+        $operations .= '</div>';
+
+
+        $adata[] = array(
+            'id'             => (integer)$data['Order Key'],
+            'checked'        => sprintf('<i class="fa fa-square-o fa-fw button"  aria-hidden="true" onClick="select_order(this)"></i>'),
+            'store_key'      => (integer)$data['Order Store Key'],
+            'public_id'      => sprintf('<span class="link"  onclick="change_view(\'orders/%s/%d\')" >%s</span>',($_data['parameters']['parent']=='store'?$_data['parameters']['parent_key']:'all'),$data['Order Key'],$data['Order Public ID']),
+            'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
+            'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
+            'customer'       => sprintf('<span class="link" onClick="change_view(\'customers/%d\')">%s</span>', $data['Order Customer Key'], $data['Order Customer Name']),
+            'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'], $data['Order Key']),
+            'payment_state'  => $payment_state,
+            'total_amount'   => money($data['Order Total Amount'], $data['Order Currency']),
+            'actions'        => $operations
+
+
+        );
+
+    }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function orders_packed_done($_data, $db, $user) {
+    $rtext_label = 'order';
+
+
+    include_once 'prepare_table/init.php';
+
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $adata = array();
+
+    //   print $sql;
+    foreach ($db->query($sql) as $data) {
+
+
+        switch ($data['Order Current Payment State']) {
+            case 'No Applicable':
+                ///$payment_state='<span style="opacity:.6">'._('No Applicable').'</span>';
+                $payment_state = '';
+                break;
+            case 'Waiting Payment':
+
+                $payment_state = '<i class="fa fa-check super_discreet" aria-hidden="true"></i>';
+
+
+                break;
+            case 'Overpaid':
+                $payment_state = _('Overpaid');
+
+                break;
+            case 'Unknown':
+                $payment_state = '<i class="fa fa-question" aria-hidden="true"></i>';
+
+                break;
+            case 'Paid':
+                $payment_state = '<i class="fa fa-check success" aria-hidden="true"></i>';
+                break;
+            case 'Partially Paid':
+
+                $payment_state = '<i class="fa fa-check discreet warning" aria-hidden="true"></i>';
+
+                break;
+            default:
+                $payment_state = $data['Order Current Payment State'];
+        }
+        if ($payment_state != '') {
+            $payment_state = '<span id="payment_state_'.$data['Order Key'].'">'.$payment_state.'</span>';
+        }
+
+
+        include_once 'class.Order.php';
+
+        $operations = '<div id="operations'.$data['Order Key'].'">';
+        $class      = 'right';
+
+
+        $operations .= '<div class="buttons small '.$class.'">';
+
+
+        $operations .= sprintf(
+            "<i class=\"fa fa-minus-circle error  padding_right_10 button edit\" onClick=\"open_cancel_dialog_from_list(this,%d,'%s, %s')\" title='%s'></i>", $data['Order Key'],
+            $data['Order Public ID'], $data['Order Customer Name'], _('Cancel')
+        );
+
+        foreach (preg_split('/,/', $data['delivery_notes']) as $delivery_note_data) {
+            $operations .= sprintf(
+                "<i class=\"fa fa-truck fa-flip-horizontal   button\" onClick=\"change_view('delivery_notes/%d/%d')\"></i>", $data['Order Store Key'], $delivery_note_data
+
+            );
+        }
+
+
+        $operations .= '</div>';
+
+
+
+
+        $operations .= '</div>';
+
+
+        $adata[] = array(
+            'id'             => (integer)$data['Order Key'],
+            'checked'        => sprintf('<i class="fa fa-square-o fa-fw button"  aria-hidden="true" onClick="select_order(this)"></i>'),
+            'store_key'      => (integer)$data['Order Store Key'],
+            'public_id'      => sprintf('<span class="link"  onclick="change_view(\'orders/%s/%d\')" >%s</span>',($_data['parameters']['parent']=='store'?$_data['parameters']['parent_key']:'all'),$data['Order Key'],$data['Order Public ID']),
+            'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
+            'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
+            'customer'       => sprintf('<span class="link" onClick="change_view(\'customers/%d\')">%s</span>', $data['Order Customer Key'], $data['Order Customer Name']),
+            'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'], $data['Order Key']),
+            'payment_state'  => $payment_state,
+            'total_amount'   => money($data['Order Total Amount'], $data['Order Currency']),
+            'actions'        => $operations
+
+
+        );
+
+    }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function orders_approved($_data, $db, $user) {
+    $rtext_label = 'order';
+
+
+    include_once 'prepare_table/init.php';
+
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $adata = array();
+
+    //   print $sql;
+    foreach ($db->query($sql) as $data) {
+
+
+        switch ($data['Order Current Payment State']) {
+            case 'No Applicable':
+                ///$payment_state='<span style="opacity:.6">'._('No Applicable').'</span>';
+                $payment_state = '';
+                break;
+            case 'Waiting Payment':
+
+                $payment_state = '<i class="fa fa-check super_discreet" aria-hidden="true"></i>';
+
+
+                break;
+            case 'Overpaid':
+                $payment_state = _('Overpaid');
+
+                break;
+            case 'Unknown':
+                $payment_state = '<i class="fa fa-question" aria-hidden="true"></i>';
+
+                break;
+            case 'Paid':
+                $payment_state = '<i class="fa fa-check success" aria-hidden="true"></i>';
+                break;
+            case 'Partially Paid':
+
+                $payment_state = '<i class="fa fa-check discreet warning" aria-hidden="true"></i>';
+
+                break;
+            default:
+                $payment_state = $data['Order Current Payment State'];
+        }
+        if ($payment_state != '') {
+            $payment_state = '<span id="payment_state_'.$data['Order Key'].'">'.$payment_state.'</span>';
+        }
+
+
+        include_once 'class.Order.php';
+
+        $operations = '<div id="operations'.$data['Order Key'].'">';
+        $class      = 'right';
+
+
+        $operations .= '<div class="buttons small '.$class.'">';
+
+
+        $operations .= sprintf(
+            "<i class=\"fa fa-minus-circle error  padding_right_10 button edit\" onClick=\"open_cancel_dialog_from_list(this,%d,'%s, %s')\" title='%s'></i>", $data['Order Key'],
+            $data['Order Public ID'], $data['Order Customer Name'], _('Cancel')
+        );
+
+        foreach (preg_split('/,/', $data['delivery_notes']) as $delivery_note_data) {
+            $operations .= sprintf(
+                "<i class=\"fa fa-truck fa-flip-horizontal   button\" onClick=\"change_view('delivery_notes/%d/%d')\"></i>", $data['Order Store Key'], $delivery_note_data
+
+            );
+        }
+
+
+        $operations .= '</div>';
+
+
+
+
+        $operations .= '</div>';
+
+
+        $adata[] = array(
+            'id'             => (integer)$data['Order Key'],
+            'checked'        => sprintf('<i class="fa fa-square-o fa-fw button"  aria-hidden="true" onClick="select_order(this)"></i>'),
+            'store_key'      => (integer)$data['Order Store Key'],
+            'public_id'      => sprintf('<span class="link"  onclick="change_view(\'orders/%s/%d\')" >%s</span>',($_data['parameters']['parent']=='store'?$_data['parameters']['parent_key']:'all'),$data['Order Key'],$data['Order Public ID']),
+            'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
+            'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
+            'customer'       => sprintf('<span class="link" onClick="change_view(\'customers/%d\')">%s</span>', $data['Order Customer Key'], $data['Order Customer Name']),
+            'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'], $data['Order Key']),
+            'payment_state'  => $payment_state,
+            'total_amount'   => money($data['Order Total Amount'], $data['Order Currency']),
+            'actions'        => $operations
+
+
+        );
+
+    }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function orders_dispatched_today($_data, $db, $user) {
+    $rtext_label = 'order';
+
+
+    include_once 'prepare_table/init.php';
+
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $adata = array();
+
+    //   print $sql;
+    foreach ($db->query($sql) as $data) {
+
+
+        switch ($data['Order Current Payment State']) {
+            case 'No Applicable':
+                ///$payment_state='<span style="opacity:.6">'._('No Applicable').'</span>';
+                $payment_state = '';
+                break;
+            case 'Waiting Payment':
+
+                $payment_state = '<i class="fa fa-check super_discreet" aria-hidden="true"></i>';
+
+
+                break;
+            case 'Overpaid':
+                $payment_state = _('Overpaid');
+
+                break;
+            case 'Unknown':
+                $payment_state = '<i class="fa fa-question" aria-hidden="true"></i>';
+
+                break;
+            case 'Paid':
+                $payment_state = '<i class="fa fa-check success" aria-hidden="true"></i>';
+                break;
+            case 'Partially Paid':
+
+                $payment_state = '<i class="fa fa-check discreet warning" aria-hidden="true"></i>';
+
+                break;
+            default:
+                $payment_state = $data['Order Current Payment State'];
+        }
+        if ($payment_state != '') {
+            $payment_state = '<span id="payment_state_'.$data['Order Key'].'">'.$payment_state.'</span>';
+        }
+
+
+        include_once 'class.Order.php';
+
+        $operations = '<div id="operations'.$data['Order Key'].'">';
+        $class      = 'right';
+
+
+        $operations .= '<div class="buttons small '.$class.'">';
+
+
+        $operations .= sprintf(
+            "<i class=\"fa fa-minus-circle error  padding_right_10 button edit\" onClick=\"open_cancel_dialog_from_list(this,%d,'%s, %s')\" title='%s'></i>", $data['Order Key'],
+            $data['Order Public ID'], $data['Order Customer Name'], _('Cancel')
+        );
+
+        foreach (preg_split('/,/', $data['delivery_notes']) as $delivery_note_data) {
+            $operations .= sprintf(
+                "<i class=\"fa fa-truck fa-flip-horizontal   button\" onClick=\"change_view('delivery_notes/%d/%d')\"></i>", $data['Order Store Key'], $delivery_note_data
+
+            );
+        }
+
+
+        $operations .= '</div>';
+
+
+
+
+        $operations .= '</div>';
+
+
+        $adata[] = array(
+            'id'             => (integer)$data['Order Key'],
+            'checked'        => sprintf('<i class="fa fa-square-o fa-fw button"  aria-hidden="true" onClick="select_order(this)"></i>'),
+            'store_key'      => (integer)$data['Order Store Key'],
+            'public_id'      => sprintf('<span class="link"  onclick="change_view(\'orders/%s/%d\')" >%s</span>',($_data['parameters']['parent']=='store'?$_data['parameters']['parent_key']:'all'),$data['Order Key'],$data['Order Public ID']),
+            'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
+            'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
+            'customer'       => sprintf('<span class="link" onClick="change_view(\'customers/%d\')">%s</span>', $data['Order Customer Key'], $data['Order Customer Name']),
+            'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'], $data['Order Key']),
+            'payment_state'  => $payment_state,
+            'total_amount'   => money($data['Order Total Amount'], $data['Order Currency']),
+            'actions'        => $operations
+
+
+        );
+
+    }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+
+
+function orders_in_process_old($_data, $db, $user) {
     $rtext_label = 'order';
 
 
@@ -192,9 +1105,9 @@ function pending_orders($_data, $db, $user) {
 
         } elseif (in_array(
             $data['Order State'], array(
-                                                     'InWarehouse',
+                                    'InWarehouse',
 
-                                                 )
+                                )
         )) {
 
             $operations .= '<div class="buttons small '.$class.'">';

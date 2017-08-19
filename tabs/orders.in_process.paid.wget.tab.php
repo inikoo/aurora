@@ -2,16 +2,16 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created:  16 September 2015 14:43:02 GMT+8, Kuala Lumpur, Malaysia
+ Created:  18 August 2017 at 20:16:12 CEST, Vienna Airport, Austria
  Copyright (c) 2015, Inikoo
 
  Version 3
 
 */
 
-$tab     = 'orders.pending';
+$tab     = 'orders.in_process.paid';
 $ar_file = 'ar_orders_tables.php';
-$tipo    = 'pending_orders';
+$tipo    = 'orders_in_process_paid';
 
 $default = $user->get_tab_defaults($tab);
 
@@ -24,7 +24,7 @@ $table_filters = array(
 );
 
 $parameters = array(
-    'parent'     => 'store',
+    'parent'     => $state['parent'],
     'parent_key' => $state['parent_key'],
 );
 

@@ -69,6 +69,7 @@ function get_widget_details($db, $smarty, $user, $account) {
     $state = $data['metadata'];
 
 
+
     $html     = get_tab(
         $db, $smarty, $user, $account, $data['widget'], '', $state, $metadata = false
     );
@@ -703,11 +704,16 @@ function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state = false, $
 
     $html = '';
 
+
     $_tab    = $tab;
     $_subtab = $subtab;
 
+
+
     $actual_tab   = ($subtab != '' ? $subtab : $tab);
     $state['tab'] = $actual_tab;
+
+
 
     $smarty->assign('data', $state);
 
@@ -719,9 +725,8 @@ function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state = false, $
     }
 
 
-    if (is_array($state) and !(preg_match('/\_edit$/', $tab) or preg_match(
-                '/\.wget$/', $tab
-            ) or $tab == 'part_family.product_family.new')) {
+
+    if (is_array($state) and   !(preg_match('/\_edit$/', $tab) or preg_match('/\.wget$/', $_tab) or $tab == 'part_family.product_family.new')) {
 
 
         $_SESSION['state'][$state['module']][$state['section']]['tab'] = $_tab;
@@ -1294,6 +1299,14 @@ function get_navigation($user, $smarty, $data, $db, $account) {
         case ('orders_server'):
             require_once 'navigation/orders.nav.php';
             switch ($data['section']) {
+
+
+
+                case ('dashboard'):
+                    return get_orders_server_dashboard_navigation($data, $smarty, $user, $db, $account);
+                    break;
+
+
                 case ('orders'):
                 case ('payments'):
                     return get_orders_server_navigation(
@@ -3784,6 +3797,11 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     'reference' => 'orders/all'
                 );
             }
+
+
+
+
+
             break;
         case 'invoices_server':
 
