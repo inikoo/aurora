@@ -337,6 +337,8 @@ function save_order_operation(element) {
             $('.items_operation').addClass('hide')
 
             for (var key in data.update_metadata.operations) {
+
+
                 $('#' + data.update_metadata.operations[key]).removeClass('hide')
             }
 
@@ -813,8 +815,6 @@ function save_item_qty_change(element) {
 
                 if (data.metadata.items == 0) {
                     $('.payments').addClass('hide')
-                    $('#submit_operation').addClass('hide')
-                    $('#send_to_warehouse_operation').addClass('hide')
 
 
 
@@ -825,9 +825,7 @@ function save_item_qty_change(element) {
 
 
                     $('.payments').removeClass('hide')
-                    $('#submit_operation').removeClass('hide')
-                    $('#send_to_warehouse_operation').removeClass('hide')
-                }
+                        }
 
 
             } else if (table_metadata.parent == 'delivery_note') {
