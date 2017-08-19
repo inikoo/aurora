@@ -744,6 +744,24 @@ $modules = array(
         'parent_type' => 'none',
         'section'     => 'orders',
         'sections'    => array(
+
+
+
+
+            'dashboard' => array(
+                'type'      => 'navigation',
+                'label'     => _('Control panel'),
+                'icon'      => 'angle-double-right',
+                'reference' => 'orders/all/dashboard',
+                'tabs'      => array(
+                    'orders_server.dashboard' => array('label' => _('Dashboard'))
+
+                )
+            ),
+
+
+
+
             'orders' => array(
                 'type'      => 'navigation',
                 'label'     => _('Orders'),

@@ -2,16 +2,16 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created:  16 September 2015 14:43:02 GMT+8, Kuala Lumpur, Malaysia
- Copyright (c) 2015, Inikoo
+ Created:  19 August 2017 at 12:56:23 GMT+5:30, Delhi Airport, India
+ Copyright (c) 2017, Inikoo
 
  Version 3
 
 */
 
-$tab     = 'orders.website';
+$tab     = 'orders.in_warehouse_no_alerts';
 $ar_file = 'ar_orders_tables.php';
-$tipo    = 'orders_in_website';
+$tipo    = 'orders_in_warehouse_no_alerts';
 
 $default = $user->get_tab_defaults($tab);
 
@@ -24,12 +24,13 @@ $table_filters = array(
 );
 
 $parameters = array(
-    'parent'     => 'store',
+    'parent'     => $state['parent'],
     'parent_key' => $state['parent_key'],
 );
 
 
 
+$smarty->assign('table_top_lower_template', 'orders_process.edit.tpl');
 
 
 include('utils/get_table_html.php');

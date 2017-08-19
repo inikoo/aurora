@@ -11,7 +11,49 @@
 */
 
 
+
+
+
+function get_orders_server_dashboard_navigation($data, $smarty, $user, $db, $account) {
+
+
+    $sections = get_sections('orders_server');
+
+
+    $left_buttons = array();
+
+
+    $right_buttons = array();
+
+    if (isset($sections[$data['section']])) {
+        $sections[$data['section']]['selected'] = true;
+    }
+
+    $title = _("Orders control panel");
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search orders')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
+
+
 function get_dashboard_navigation($data, $smarty, $user, $db, $account) {
+
 
 
     $sections = get_sections('orders', $data['parent_key']);
@@ -26,7 +68,7 @@ function get_dashboard_navigation($data, $smarty, $user, $db, $account) {
         $sections[$data['section']]['selected'] = true;
     }
 
-    $title = _("Orders dashboard");
+    $title = _("Orders control panel").' '.$data['_parent']->get('Code');
 
     $_content = array(
         'sections_class' => '',

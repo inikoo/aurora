@@ -1,5 +1,13 @@
 <?php
+/*
+ About:
+ Author: Raul Perusquia <raul@inikoo.com>
+ Created:  19 August 2017 at 15:32:51 GMT+5:30, Flight Delhi India to Bangkok
+ Copyright (c) 2017, Inikoo
 
+ Version 3
+
+*/
 
 
 
@@ -10,7 +18,7 @@ $wheref   = '';
 $currency = '';
 
 
-$where = 'where `Order Class`="InProcess" ';
+$where =sprintf( 'where `Order State`="Dospatched" and `Order Dispatched Date`>%s  ',prepare_mysql(gmdate('Y-m-d 00:00:00')));
 $table = '`Order Dimension` O left join `Payment Account Dimension` P on (P.`Payment Account Key`=O.`Order Payment Account Key`)';
 
 

@@ -90,8 +90,7 @@ $fields
     ';
 
 $sql_totals = "select count(Distinct O.`Order Key`) as num from $table $where";
-//$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-//print $sql;
+$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
 
 ?>
