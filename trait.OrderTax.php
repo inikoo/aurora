@@ -59,7 +59,7 @@ trait OrderTax {
             ), 'no_history'
         );
 
-        $order->update_tax();
+        $this->update_tax();
 
 
     }
@@ -803,7 +803,7 @@ trait OrderTax {
             );
         }
 
-        $order->update_tax();
+        $this->update_tax();
 
 
         $this->other_fields_updated = array(
