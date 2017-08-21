@@ -886,8 +886,10 @@ class Customer extends Subject {
 
                 }
 
+                //'InBasket','InProcess','InWarehouse','PackedDone','Approved','Dispatched','Cancelled'
+
                 if(  empty($metadata['no_propagate_orders'])  ) {
-                    $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order Class`="InProcess" AND `Order Customer Key`=%d ', $this->id);
+                    $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` in ("Basket")   AND `Order Customer Key`=%d ', $this->id);
                     if ($result = $this->db->query($sql)) {
                         foreach ($result as $row) {
                             $order = get_object('Order', $row['Order Key']);
@@ -909,7 +911,7 @@ class Customer extends Subject {
 
                 $this->update_address('Delivery', json_decode($value, true));
 
-                $sql=sprintf('select `Order Key` from `Order Dimension` where  `Order Class`="InProcess" and `Order Customer Key`=%d ',$this->id);
+                $sql=sprintf('select `Order Key` from `Order Dimension` where  `Order State` in ("InBasket")  and `Order Customer Key`=%d ',$this->id);
                 if ($result=$this->db->query($sql)) {
                 		foreach ($result as $row) {
                            $order=get_object('Order',$row['Order Key']);
@@ -933,9 +935,40 @@ class Customer extends Subject {
 
             case('Customer Tax Number'):
                 $this->update_tax_number($value);
+
+
+                $sql=sprintf('select `Order Key` from `Order Dimension` where  `Order State` in (\'InBasket\',\'InProcess\',\'InWarehouse\',\'PackedDone\')  and `Order Customer Key`=%d ',$this->id);
+                if ($result=$this->db->query($sql)) {
+                    foreach ($result as $row) {
+                        $order=get_object('Order',$row['Order Key']);
+                        $order->update_tax_number($value) ;
+                    }
+                }else {
+                    print_r($error_info=$this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+
+
                 break;
             case('Customer Tax Number Valid'):
                 $this->update_tax_number_valid($value);
+
+
+
+                    $sql=sprintf('select `Order Key` from `Order Dimension` where  `Order State` in (\'InBasket\',\'InProcess\',\'InWarehouse\',\'PackedDone\')  and `Order Customer Key`=%d ',$this->id);
+                if ($result=$this->db->query($sql)) {
+                    foreach ($result as $row) {
+                        $order=get_object('Order',$row['Order Key']);
+                        $order->update_tax_number_valid($value) ;
+                    }
+                }else {
+                    print_r($error_info=$this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
                 break;
 
 
