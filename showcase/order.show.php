@@ -25,6 +25,7 @@ function get_order_showcase($data, $smarty, $user, $db) {
     $smarty->assign('customer', get_object('customer',$order->get('Customer Key')));
 
 
+    $order->update_tax();
     $order->update_totals();
 
 
