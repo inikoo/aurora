@@ -271,6 +271,13 @@
 
 
 
+                $('.order_operation').addClass('hide')
+                //$('.items_operation').addClass('hide')
+
+
+                for (var key in data.metadata.operations) {
+                    $('#' + data.metadata.operations[key]).removeClass('hide')
+                }
 
 
                 $('.Total_Amount').attr('amount', data.metadata.to_pay)

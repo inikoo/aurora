@@ -912,6 +912,32 @@ class DeliveryNote extends DB_Table {
         $operations = array();
 
         switch ($value) {
+
+
+            case 'Ready to be Picked':
+
+                if ($this->get('State Index') != 20) {
+                    return;
+                }
+
+                $this->update_field(
+                    'Delivery Note Date Start Picking', '', 'no_history'
+                );
+                //$this->update_field('Supplier Delivery Estimated Receiving Date', '', 'no_history');
+                $this->update_field(
+                    'Delivery Note State', $value, 'no_history'
+                );
+
+
+                $operations = array(
+                    'delete_operations',
+                    'start_picking_operations',
+
+                );
+
+
+                break;
+
             case 'Picking':
 
                 if ($this->get('State Index') != 10) {
@@ -924,6 +950,13 @@ class DeliveryNote extends DB_Table {
                 //$this->update_field('Supplier Delivery Estimated Receiving Date', '', 'no_history');
                 $this->update_field(
                     'Delivery Note State', $value, 'no_history'
+                );
+
+                $operations = array(
+                    'delete_operations',
+                    'undo_picking_operations',
+                    'fast_track_packing_operations',
+
                 );
 
                 break;

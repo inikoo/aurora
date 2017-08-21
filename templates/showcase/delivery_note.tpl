@@ -1,6 +1,6 @@
 <div class="timeline_horizontal">
 
-    <input type="hidden" id="Delivery_Note_State_Index" value="{$delivery_note->get('State Index')}">
+    <input type="xhidden" id="Delivery_Note_State_Index" value="{$delivery_note->get('State Index')}">
 
     <ul class="timeline" id="timeline">
 
@@ -142,6 +142,27 @@
                         </table>
                     </div>
                 </div>
+
+                <div id="undo_picking_operations" class="order_operation {if $delivery_note->get('State Index')!=20}hide{/if}">
+                    <div class="square_button left" title="{t}Undo start picking{/t}">
+												<span class="fa-stack" onclick="toggle_order_operation_dialog('undo_picking')">
+						<i class="fa fa-hand-lizard-o  fa-rotate-270 very_discreet " aria-hidden="true"></i>
+						<i class="fa fa-ban fa-stack-1x discreet error"></i>
+						</span>
+
+
+                        <table id="undo_picking_dialog" border="0" class="order_operation_dialog hide">
+                            <tr class="top">
+                                <td class="label" colspan="2">{t}Set back to waiting to be picked{/t}</td>
+                            </tr>
+                            <tr class="changed buttons">
+                                <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('undo_picking')"></i></td>
+                                <td class="aright"><span data-data='{  "field": "Delivery Note State","value": "Ready to be Picked","dialog_name":"undo_picking"}' id="undo_picking_save_buttons" class="valid save button"
+                                                         onclick="save_order_operation(this)"><span class="label">{t}Save{/t}</span> <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
                 <div id="cancel_operations" class="order_operation {if $delivery_note->get('Delivery Note Number Picked Items')==0}hide{/if}">
                     <div class="square_button left" title="{t}Cancel{/t}">
                         <i class="fa fa-minus-circle error " aria-hidden="true" onclick="toggle_order_operation_dialog('cancel')"></i>
@@ -172,7 +193,7 @@
                 </div>
 
                 <div id="start_picking_operations" class="order_operation {if $delivery_note->get('State Index')!=10    }hide{/if}">
-                    <div class="square_button right  " title="{t}Fast track packing{/t}">
+                    <div class="square_button right  " title="{t}Start picking{/t}">
                         <i id="start_picking_save_buttons" class="fa button fa-hand-lizard-o  fa-rotate-270 fa-fw  very_discreet "
                            data-data='{  "field": "Delivery Note State","value": "Picking","dialog_name":"start_picking"}' aria-hidden="true" onclick="save_order_operation(this)"></i>
 
@@ -295,7 +316,7 @@
       no_picker_msg="{t}Please assign picker{/t}" no_packer_msg="{t}Please assign packer{/t}"></span>
 
 
-<div class="table_new_fields {if $delivery_note->get('State Index')<=10    }hide{/if} " style="border-bottom:1px solid #ccc;">
+<div class="table_new_fields delivery_note_handling_fields   {if $delivery_note->get('State Index')<=10    }hide{/if} " style="border-bottom:1px solid #ccc;">
 
     <div class="" style="align-items: stretch;flex: 1;padding:0px 20px;border-left:1px solid #ccc">
 
