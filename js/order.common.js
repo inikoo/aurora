@@ -318,7 +318,7 @@ function save_order_operation(element) {
 
             close_dialog(dialog_name)
 
-            console.log(data)
+
 
 
             if (data.value == 'Cancelled') {
@@ -334,13 +334,19 @@ function save_order_operation(element) {
 
 
             $('.order_operation').addClass('hide')
-            $('.items_operation').addClass('hide')
+           // $('.items_operation').addClass('hide')
+
+
+
 
             for (var key in data.update_metadata.operations) {
 
+                console.log('#' + data.update_metadata.operations[key])
 
                 $('#' + data.update_metadata.operations[key]).removeClass('hide')
             }
+
+
 
 
             $('.timeline .li').removeClass('complete')
@@ -386,6 +392,8 @@ function save_order_operation(element) {
 
                 $('#order_node').addClass('complete')
 
+
+
                 if (data.update_metadata.state_index >= 20) {
                     $('#start_picking_node').addClass('complete')
                 }
@@ -406,8 +414,19 @@ function save_order_operation(element) {
                 }
 
 
+                if(data.update_metadata.state_index > 10){
+                    $('.delivery_note_handling_fields').removeClass('hide')
+                }else{
+                    $('.delivery_note_handling_fields').addClass('hide')
+
+                }
+
+
 
                 $('#Delivery_Note_State_Index').val(data.update_metadata.state_index)
+
+
+
 
 
 
@@ -684,6 +703,8 @@ function save_item_qty_change(element) {
 
     var request = '/ar_edit_orders.php?tipo=edit_item_in_order&parent=' + table_metadata.parent + '&field=' + settings.field + '&parent_key=' + table_metadata.parent_key + '&item_key=' + settings.item_key + '&qty=' + qty + '&transaction_key=' + settings.transaction_key
 
+
+
     if (settings.item_historic_key != undefined) {
         request = request + '&item_historic_key=' + settings.item_historic_key
     }
@@ -739,13 +760,23 @@ function save_item_qty_change(element) {
 
         if (data.state == 200) {
 
-            console.log(data)
-            console.log(table_metadata)
+           // console.log(data)
+           // console.log(table_metadata)
 
 
             input.val(data.transaction_data.qty).removeClass('discreet')
             input.attr('ovalue', data.transaction_data.qty)
             if (table_metadata.parent == 'order') {
+
+
+
+                $('.order_operation').addClass('hide')
+                //$('.items_operation').addClass('hide')
+
+
+                for (var key in data.metadata.operations) {
+                    $('#' + data.metadata.operations[key]).removeClass('hide')
+                }
 
 
                 $(element).closest('tr').find('._order_item_net').html(data.transaction_data.to_charge)

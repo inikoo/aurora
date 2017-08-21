@@ -925,7 +925,14 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
                     $tab = 'orders.archived';
                     break;
                 case 'InProcess':
-                    $tab = 'orders.pending';
+
+                    if($object->get('Order To Pay Amount')==0){
+                        $tab = 'orders.in_process.paid';
+                    }else{
+                        $tab = 'orders.in_process.not_paid';
+                    }
+
+
                     break;
                 case 'InWebsite':
                     $tab = 'orders.website';
