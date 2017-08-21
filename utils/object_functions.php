@@ -223,6 +223,11 @@ function get_object($object_name, $key, $load_other_data = false) {
             require_once "class.Deal.php";
             $object = new Deal($key);
             break;
+        case 'deal component':
+        case 'dealcomponent':
+            require_once "class.DealComponent.php";
+            $object = new DealComponent($key);
+            break;
         case 'purchase_order':
         case 'purchase order':
         case 'purchaseorder':

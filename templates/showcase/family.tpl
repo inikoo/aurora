@@ -202,7 +202,31 @@
                     </tr>
 
 
+
+
                 </table>
+                {assign discounts $category->get_discounts('objects')}
+
+
+                <table border="0" class="overview" style="">
+
+
+
+                    {foreach from=$discounts item=discount name=discounts}
+                        <tr class="main">
+                            <td>
+                                {$discount->get('Icon')}
+                            </td>
+                            <td class="aright ">
+                                {$discount->get('Description')}
+
+                            </td>
+                        </tr>
+                    {/foreach}
+
+
+                </table>
+
                 
             </div>
         </div>

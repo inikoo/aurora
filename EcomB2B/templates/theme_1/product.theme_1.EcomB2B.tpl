@@ -26,7 +26,7 @@
 
 
                 {assign 'see_also'  $webpage->get_see_also() }
-                {include file="style.tpl" css=$webpage->get('Published CSS') }
+
 
 
                 <span id="ordering_settings" class="hide"

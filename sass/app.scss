@@ -760,6 +760,15 @@ right connector from last child*/
 }
 
 
+.gold-text {
+  color:#c3a343;
+  -webkit-text-fill-color: transparent;
+  background: -webkit-linear-gradient(transparent, transparent),
+  url('/art/gold.png') repeat;
+  background: -o-linear-gradient(transparent, transparent);
+  -webkit-background-clip: text;
+}
+
 .success {
   color: $color_success
 }

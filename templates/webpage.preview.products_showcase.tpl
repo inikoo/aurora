@@ -10,6 +10,15 @@
 *}
 
 <style>
+
+
+    .parent_up{
+        font-family: "Ubuntu",Helvetica,Arial,sans-serif;
+        font-weight:800;
+        font-size:18px;
+        cursor: pointer;
+    }
+
     #sort_options {
         border: 1px solid #ccc;
         background-color: white;
@@ -136,6 +145,20 @@
         </div>
     {/if}
 
+
+
+   <div class="description_block">
+
+       <span class="parent_up">
+       <i class="fa fa-arrow-up" aria-hidden="true"></i>
+       {foreach from=$category->get_category_data() item=item key=key}
+           <span  >{$item.label}</span>
+           {break}
+       {/foreach}
+           </span>
+
+
+   </div>
 
     <div id="description_block" class="section description_block {$content_data.description_block.class} ">
 

@@ -29,7 +29,7 @@
                 {assign 'content_data' $webpage->get('Content Published Data')}
 
 
-                {include file="style.tpl" css=$webpage->get('Published CSS') }
+
 
 
                 <div id="page_content" class="asset_container">
