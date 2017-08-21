@@ -59,6 +59,8 @@ trait OrderTax {
             ), 'no_history'
         );
 
+        $order->update_tax();
+
 
     }
 
@@ -788,7 +790,8 @@ trait OrderTax {
                 ), 'no_history'
             );
 
-        } else {
+        }
+        else {
             $this->update_field('Order Tax Number Valid', $value);
             $this->update(
                 array(
@@ -799,6 +802,8 @@ trait OrderTax {
                 ), 'no_history'
             );
         }
+
+        $order->update_tax();
 
 
         $this->other_fields_updated = array(
