@@ -99,6 +99,16 @@ function get_object($object_name, $key, $load_other_data = false) {
             require_once "class.TaxCategory.php";
             $object = new TaxCategory('key',$key);
             break;
+        case 'deal':
+            require_once "class.Public_Deal.php";
+            $object = new Public_Deal($key);
+            break;
+        case 'deal component':
+        case 'dealcomponent':
+            require_once "class.Public_DealComponent.php";
+            $object = new Public_DealComponent($key);
+            break;
+
 
         default:
             exit('need to complete E1: >'.strtolower($object_name.' '.$load_other_data)."<\n");

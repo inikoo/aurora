@@ -611,6 +611,13 @@ right connector from last child*/
 .just_hinted {
   opacity: 0.3; }
 
+.gold-text {
+  color: #c3a343;
+  -webkit-text-fill-color: transparent;
+  background: -webkit-linear-gradient(transparent, transparent), url("/art/gold.png") repeat;
+  background: -o-linear-gradient(transparent, transparent);
+  -webkit-background-clip: text; }
+
 .success {
   color: #26A65B; }
 

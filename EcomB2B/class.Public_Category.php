@@ -182,6 +182,104 @@ class Public_Category {
     }
 
 
+
+
+
+    function get_discounts($scope = 'keys') {
+
+
+
+        $deals = array();
+
+
+        $sql = sprintf(
+            "SELECT `Deal Component Key` FROM `Deal Component Dimension` WHERE `Deal Component Allowance Target`='Category' AND `Deal Component Allowance Target Key`=%d AND `Deal Component Status`='Active'",
+            $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+                if ($scope == 'objects') {
+                    $deals[$row['Deal Component Key']] = get_object('DealComponent',$row['Deal Component Key']);
+                } else {
+                    $deals[$row['Deal Component Key']] = $row['Deal Component Key'];
+                }
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+
+
+        return $deals;
+
+
+    }
+
+    function get_category_data() {
+
+
+        $type = 'Category';
+
+        $sql = sprintf(
+            "SELECT B.`Category Key`,`Category Root Key`,`Other Note`,`Category Label`,`Category Code`,`Is Category Field Other` FROM `Category Bridge` B LEFT JOIN `Category Dimension` C ON (C.`Category Key`=B.`Category Key`) WHERE  `Category Branch Type`='Head'  AND B.`Subject Key`=%d AND B.`Subject`=%s",
+            $this->id, prepare_mysql($type)
+        );
+
+        $category_data = array();
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+
+                $sql = sprintf(
+                    "SELECT `Category Label`,`Category Code` FROM `Category Dimension` WHERE `Category Key`=%d", $row['Category Root Key']
+                );
+
+
+                if ($result2 = $this->db->query($sql)) {
+                    if ($row2 = $result2->fetch()) {
+                        $root_label = $row2['Category Label'];
+                        $root_code  = $row2['Category Code'];
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    exit;
+                }
+
+
+                if ($row['Is Category Field Other'] == 'Yes' and $row['Other Note'] != '') {
+                    $value = $row['Other Note'];
+                } else {
+                    $value = $row['Category Label'];
+                }
+                $category_data[] = array(
+                    'root_label'   => $root_label,
+                    'root_code'    => $root_code,
+                    'label'        => $row['Category Label'],
+                    'code'         => $row['Category Code'],
+                    'value'        => $value,
+                    'category_key' => $row['Category Key']
+                );
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        return $category_data;
+    }
+
+
+
 }
 
 

@@ -1681,6 +1681,43 @@ trait ProductCategory {
     }
 
 
+    function get_discounts($scope = 'keys') {
+
+
+
+        $deals = array();
+
+
+        $sql = sprintf(
+            "SELECT `Deal Component Key` FROM `Deal Component Dimension` WHERE `Deal Component Allowance Target`='Category' AND `Deal Component Allowance Target Key`=%d AND `Deal Component Status`='Active'",
+            $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+                if ($scope == 'objects') {
+                    $deals[$row['Deal Component Key']] = get_object('DealComponent',$row['Deal Component Key']);
+                } else {
+                    $deals[$row['Deal Component Key']] = $row['Deal Component Key'];
+                }
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+
+
+        return $deals;
+
+
+    }
+
+
 }
 
 ?>
