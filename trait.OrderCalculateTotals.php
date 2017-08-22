@@ -16,7 +16,6 @@ trait OrderCalculateTotals {
 
 
 
-
         $number_items             = 0;
         $number_with_deals        = 0;
         $number_with_out_of_stock = 0;
@@ -89,6 +88,8 @@ trait OrderCalculateTotals {
 		`Order Key`=%d  GROUP BY  `Transaction Tax Code`  ", $this->id
         );
 
+      //  print $sql;
+
 
 
         if ($result = $this->db->query($sql)) {
@@ -129,10 +130,10 @@ trait OrderCalculateTotals {
         }
 
 
-
         foreach ($data as $tax_code => $amount) {
 
-            $tax_category = get_object('Tax_Category', $tax_code);
+            $tax_category =    get_object('Tax_Category', $tax_code);
+
 
 
             $total_net += round($amount,2);
@@ -140,6 +141,8 @@ trait OrderCalculateTotals {
             $total_tax += $tax;
 
         }
+
+
 
 
         $total = round($total_net + $total_tax,2);
