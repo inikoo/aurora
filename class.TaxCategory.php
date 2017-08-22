@@ -36,16 +36,20 @@ class TaxCategory extends DB_Table {
 
             $account=get_object('Account',1);
 
+
+
+
             $sql = sprintf(
                 "SELECT *   FROM kbase.`Tax Category Dimension` WHERE `Tax Category Code`=%s  and `Tax Category Country Code`=%s ", prepare_mysql($tag), prepare_mysql($account->get('Account Country Code'))
             );
-        } elseif ($key == 'id') {
+        } elseif ($key == 'key' or $key == 'id') {
             $sql = sprintf(
                 "SELECT *   FROM kbase.`Tax Category Dimension` WHERE `Tax Category Key`=%d ", $tag
             );
         } else {
             return;
         }
+
 
 
         if ($this->data = $this->db->query($sql)->fetch()) {
