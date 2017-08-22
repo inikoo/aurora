@@ -371,7 +371,7 @@ if($webpage->id) {
 
         if (isset($order) and $order->id) {
 
-
+            $order->update_totals();
             $placeholders = array(
 
                 '[Order Number]' => $order->get('Public ID'),
@@ -482,6 +482,8 @@ if($webpage->id) {
 
 
             if (isset($order) and $order->id) {
+
+                $order->update_totals();
 
                 require_once 'utils/get_addressing.php';
                 require_once 'utils/get_countries.php';
