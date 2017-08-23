@@ -2,7 +2,7 @@
     <span class="strong"> <span class="Product_Units_Per_Case">{$product->get('Units Per Case')}</span>x <span
                 class="Product_Name">{$product->get('Name')}</span></span>
     <ul class="tags Categories" style="float:right">
-        {foreach from=$product->get_category_data() item=item key=key}
+        {foreach from=$product->get_parent_categories('data') item=item key=key}
             <li><span class="button" onclick="change_view('category/{$item.category_key}')"
                       title="{$item.label}">{$item.code}</span></li>
         {/foreach}
@@ -239,6 +239,21 @@
                 </tr>
 
 
+            </table>
+
+            {assign deal_components $product->get_deal_components('objects')}
+            <table border="0" class="overview" style="">
+                {foreach from=$deal_components item=deal_component name=deal_component}
+                    <tr class="main">
+                        <td>
+                            {$deal_component->get('Icon')}
+                        </td>
+                        <td class="aright ">
+                            {$deal_component->get('Description')}
+
+                        </td>
+                    </tr>
+                {/foreach}
             </table>
 
 

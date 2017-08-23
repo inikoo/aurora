@@ -322,6 +322,11 @@ class Deal extends DB_Table {
 
     }
 
+
+
+
+
+
     function update_term_allowances() {
 
 
@@ -352,6 +357,13 @@ class Deal extends DB_Table {
 
         switch ($field) {
 
+            case 'Deal Term Label':
+                $this->update_field($field, $value, $options);
+
+                $sql=sprintf('update `Deal Component Dimension` set `Deal Component Term Label`=%s where `Deal Component Deal Key`=%d  ',prepare_mysql($value),$this->id);
+                $this->db->exec($sql);
+
+                break;
             case('Deal Begin Date'):
                 $this->update_begin_date($value, $options);
                 break;
@@ -366,6 +378,24 @@ class Deal extends DB_Table {
                 }
         }
     }
+
+
+    function update_allowance_label(){
+
+
+        $deal_component_keys=$this->get_deal_components('keys','Active');
+
+        if(count($deal_component_keys)==1){
+            $deal_component=get_object('DealComponent',array_pop($deal_component_keys));
+
+            $this->update(array('Deal Allowance Label'=>$deal_component->get('Deal Component Allowance Label')));
+
+        }
+
+
+
+    }
+
 
     function update_begin_date($value, $options) {
         $this->updated = false;
@@ -866,6 +896,49 @@ class Deal extends DB_Table {
         return $allowance_label;
 
     }
+
+    function get_deal_components($type='keys',$options='Active') {
+
+        $deal_components = array();
+
+
+        if($options=='Active'){
+
+            $where=' and `Deal Component Status`="Active"';
+
+        }else{
+            $where='';
+        }
+
+
+        $sql                 = sprintf(
+            "SELECT `Deal Component Key` FROM `Deal Component Dimension` WHERE `Deal Component Deal Key`=%d  $where", $this->id
+        );
+
+        if ($result=$this->db->query($sql)) {
+        		foreach ($result as $row) {
+
+
+
+                    if($type=='objects'){
+                        $deal_components[$row['Deal Component Key']]=get_object('DealComponent',$row['Deal Component Key']);
+                    }else{
+                        $deal_components[$row['Deal Component Key']]=$row['Deal Component Key'];
+                    }
+
+
+        		}
+        }else {
+        		print_r($error_info=$this->db->errorInfo());
+        		print "$sql\n";
+        		exit;
+        }
+
+
+
+        return $deal_components;
+    }
+
 
     function get_deal_component_keys() {
         $deal_component_keys = array();

@@ -71,6 +71,7 @@ require_once 'class.Webpage_Type.php';
 include_once 'utils/currency_functions.php';
 require_once 'conf/footer_data.php';
 require_once 'conf/header_data.php';
+require_once 'utils/object_functions.php';
 
 
 $_user = new User('handle', 'raul', 'Contractor');
@@ -84,6 +85,66 @@ $editor = array(
     'Date'         => gmdate('Y-m-d H:i:s')
 );
 
+
+$sql = sprintf('SELECT `Deal Component Key`,`Deal Component Deal Key`,`Deal Component Campaign Key` FROM `Deal Component Dimension`  ');
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+
+
+     //   print_r($row);
+
+
+        $deal           = get_object('Deal', $row['Deal Component Deal Key']);
+        $deal_component = get_object('DealComponent', $row['Deal Component Key']);
+        $deal_campaign = get_object('DealCampaign', $row['Deal Component Campaign Key']);
+
+
+
+        $store = get_object('Store', $deal_component->data['Deal Component Store Key']);
+
+
+        if ($deal_component->data['Deal Component Campaign Key'] == $store->get('Store Order Recursion Campaign Key')) {
+            $icon= '<i class="fa fa-tag gold-text "  aria-hidden="true"></i>';
+        } elseif ($deal_component->data['Deal Component Campaign Key'] == $store->get('Store Bulk Discounts Campaign Key')) {
+            $icon= '<i class="fa fa-tag  " style="color:#31B96E" aria-hidden="true"></i>';
+        }else{
+            $icon= '<i class="fa fa-tag  "  aria-hidden="true"></i>';
+        }
+
+        $deal_campaign->update(
+            array(
+                'Deal Campaign Icon'=>$icon,
+                'Deal Campaign Name'=>$deal_campaign->get('Deal Campaign Name'),
+
+            ),'no_history'
+
+        );
+
+        $deal->update(
+            array(
+                'Deal Term Label'=>$deal->get('Deal XHTML Terms Description Label'),
+            ),'no_history'
+
+        );
+
+
+        // NOte for migration in dw why may need to use 'Deal Component XHTML Allowance Description Label' instead
+
+        $deal_component->update(
+            array(
+
+                'Deal Component Allowance Label'=>$deal_component->get('Deal Component Allowance Description')
+            ),'no_history'
+
+        );
+
+
+    }
+
+}
+
+
+exit;
 
 $db->exec('truncate  `Deal Dimension`');
 $db->exec('truncate  `Deal Component Dimension`');
@@ -195,14 +256,14 @@ if ($result = $db->query($sql)) {
 
         $families = $account->create_category($families_category_data);
 
-        $fam=$families->create_category(
+        $fam = $families->create_category(
             array(
                 'Category Code'  => 'FOC',
                 'Category Label' => 'First Order Campaign'
             )
         );
 
-       // print_r($fam);
+        // print_r($fam);
 
 
         $category_key = '';
@@ -298,7 +359,7 @@ if ($result = $db->query($sql)) {
 
                 );
 
-                  $deal->add_component($component_data);
+                $deal->add_component($component_data);
 
             }
         } else {
@@ -360,9 +421,6 @@ if ($result = $db->query($sql)) {
     print "$sql\n";
     exit;
 }
-
-
-
 
 
 ?>

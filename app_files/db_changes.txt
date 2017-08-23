@@ -682,7 +682,6 @@ ALTER TABLE  `Store Data` ADD  `Store Orders Cancelled Number` MEDIUMINT UNSIGNE
 ADD  `Store Orders Cancelled Amount` DECIMAL( 16, 2 ) NOT NULL DEFAULT  '0.00' AFTER  `Store Orders In Process Number` ;
 
 
-ALTER TABLE `Order Transaction Fact` ADD `Order Transaction Out of Stock Amount` DECIMAL(12,2) NULL DEFAULT '0.00' AFTER `Order Transaction Total Discount Amount`;
 
 ALTER TABLE `Account Data` ADD `Account Orders In Warehouse No Alerts Number` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Account Orders In Warehouse Amount`, ADD `Account Orders In Warehouse No Alerts Amount` DECIMAL(12,2) NOT NULL DEFAULT '0.00' AFTER `Account Orders In Warehouse No Alerts Number`, ADD `Account Orders In Warehouse With Alerts Number` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Account Orders In Warehouse No Alerts Amount`, ADD `Account Orders In Warehouse With Alerts Amount` DECIMAL(12,2) NOT NULL DEFAULT '0.00' AFTER `Account Orders In Warehouse With Alerts Number`;
 
@@ -691,6 +690,15 @@ ALTER TABLE `Order Dimension` ADD `Order Delivery Note Alert` ENUM('No','Yes','C
 ALTER TABLE `Delivery Note Dimension` ADD `Delivery Note Order Alert` ENUM('No','Yes','Closed') NOT NULL DEFAULT 'No' AFTER `Delivery Note Pending`, ADD INDEX (`Delivery Note Order Alert`);
 
 ALTER TABLE `Account Data` ADD `Account Orders Dispatched Today Number` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Account Orders In Dispatch Area Amount`, ADD `Account Orders Dispatched Today Amount` DECIMAL(12,2) NOT NULL DEFAULT '0.00' AFTER `Account Orders Dispatched Today Number`;
+
+//=======
+ALTER TABLE `Order Transaction Fact` ADD `Order Transaction Out of Stock Amount` DECIMAL(12,2) NULL DEFAULT '0.00' AFTER `Order Transaction Total Discount Amount`;
+
+ALTER TABLE `Deal Component Dimension` ADD `Deal Component Icon` TEXT NULL DEFAULT NULL AFTER `Deal Component Status`, ADD `Deal Component Name Label` TEXT NULL DEFAULT NULL AFTER `Deal Component Icon`, ADD `Deal Component Term Label` TEXT NULL DEFAULT NULL AFTER `Deal Component Name Label`, ADD `Deal Component Allowance Label` TEXT NULL DEFAULT NULL AFTER `Deal Component Term Label`;
+
+
+
+ALTER TABLE `Deal Dimension` ADD `Deal Icon` TEXT NULL DEFAULT NULL AFTER `Deal Status`, ADD `Deal Name Label` TEXT NULL DEFAULT NULL AFTER `Deal Icon`, ADD `Deal Term Label` TEXT NULL DEFAULT NULL AFTER `Deal Name Label`, ADD `Deal Allowance Label` TEXT NULL DEFAULT NULL AFTER `Deal Term Label`;
 
 
 

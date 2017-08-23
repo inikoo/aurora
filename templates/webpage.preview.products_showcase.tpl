@@ -12,6 +12,20 @@
 <style>
 
 
+    .discount_card{
+
+        border:1px solid #ccc;width:300px;margin-left:10px;float:right;padding:2px 4px
+
+    }
+
+    .discount_card .discount_name{
+        font-size: 90%;
+    }
+
+    .discount_card  .discount_allowance{
+       font-weight: 800;
+    }
+
     .parent_up{
         font-family: "Ubuntu",Helvetica,Arial,sans-serif;
         font-weight:800;
@@ -157,6 +171,22 @@
        {/foreach}
            </span>
 
+
+       {foreach from=$category->get_deal_components('objects') item=item key=key}
+           <div class="discount_card"  >
+               <span class="discount_icon">{$item->get('Deal Component Icon')}</span>
+
+               <span class="discount_name">{$item->get('Deal Component Name Label')}</span><br/>
+               <span class="discount_term">{$item->get('Deal Component Term Label')}</span>
+
+               <span class="discount_allowance">{$item->get('Deal Component Allowance Label')}</span>
+
+           </div>
+
+       {/foreach}
+
+
+<div style="clear: both"></div>
 
    </div>
 

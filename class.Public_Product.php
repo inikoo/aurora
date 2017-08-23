@@ -884,6 +884,54 @@ class Public_Product {
 
     }
 
+
+
+
+    function get_deal_components($scope = 'keys',$options='Active') {
+
+        switch($options) {
+            case 'Active':
+                $where='AND `Deal Component Status`=\'Active\'';
+                break;
+            default:
+                $where='';
+                break;
+        }
+
+
+        $deal_components = array();
+
+
+        $sql = sprintf(
+            "SELECT `Deal Component Key` FROM `Deal Component Dimension` WHERE `Deal Component Allowance Target`='Category' AND `Deal Component Allowance Target Key`=%d $where",
+            $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+                if ($scope == 'objects') {
+                    $deal_components[$row['Deal Component Key']] = get_object('DealComponent',$row['Deal Component Key']);
+                } else {
+                    $deal_components[$row['Deal Component Key']] = $row['Deal Component Key'];
+                }
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+
+
+        return $deal_components;
+
+
+    }
+
+
 }
 
 
