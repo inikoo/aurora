@@ -1130,7 +1130,10 @@ class Part extends Asset {
         }
 
         $sql = sprintf(
-            "SELECT PL.`Location Key`,`Location Code`,`Quantity On Hand`,`Location Warehouse Key`,`Part SKU`,`Minimum Quantity`,`Maximum Quantity`,`Moving Quantity`,`Can Pick` FROM `Part Location Dimension` PL LEFT JOIN `Location Dimension` L ON (L.`Location Key`=PL.`Location Key`)  WHERE `Part SKU`=%d",
+            "SELECT PL.`Location Key`,`Location Code`,`Quantity On Hand`,`Location Warehouse Key`,`Part SKU`,`Minimum Quantity`,`Maximum Quantity`,`Moving Quantity`,`Can Pick` FROM `Part Location Dimension` PL LEFT JOIN `Location Dimension` L ON (L.`Location Key`=PL.`Location Key`)  WHERE `Part SKU`=%d 
+        order by `Can Pick`,`Location File As` 
+
+",
             $this->sku
         );
 

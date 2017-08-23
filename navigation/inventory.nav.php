@@ -227,7 +227,7 @@ function get_part_navigation($data, $smarty, $user, $db, $account) {
                 );
 
 
-             
+
 
                 if ($result = $db->query($sql)) {
                     if ($row = $result->fetch()) {
