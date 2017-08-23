@@ -165,7 +165,7 @@
 
        <span class="parent_up">
        <i class="fa fa-arrow-up" aria-hidden="true"></i>
-       {foreach from=$category->get_category_data() item=item key=key}
+       {foreach from=$category->get_parent_categories('data') item=item key=key}
            <span  >{$item.label}</span>
            {break}
        {/foreach}
