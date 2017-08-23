@@ -276,7 +276,7 @@
                                    class="fa fa-sign-out fa-flip-horizontal fw reset hide reset_button"
                                    onclick="close_edit_this_field(this)"></i>
                                 <i id="{$field.id}_edit_button"
-                                   class="fa fa-pencil fw edit {if $edit=='' or $linked!=''}hide{/if} edit_button"
+                                   class="fa fa-pencil fw edit {if $edit=='' or $linked!=''  or $edit=='custom' }hide{/if} edit_button"
                                    onclick="open_edit_this_field(this)"></i>
 
                             </td>
@@ -303,7 +303,6 @@
                                        onclick="save_this_field(this)"></i>
                                     <span id="{$field.id}_msg" class="msg"></span>
                                     <span id="{$field.id}_info" class="hide"></span>
-
 
                                 {elseif $edit=='barcode'  }
                                     <span id="{$field.id}_assign_available_barcode" class="fa-stack fa-lg button hide"

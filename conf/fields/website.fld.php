@@ -132,9 +132,85 @@ $object_fields = array(
     ),
 
 
+
+
+
+
 );
 
 if (!$new) {
+
+
+/*
+    $object_fields[] =  array(
+        'label'      => _('Notify me'),
+        'show_title' => true,
+        'fields'     => array(
+
+
+            array(
+                'edit'     => 'custom',
+                'id'       => 'Browser_Notifications',
+                'value'    =>'',
+                'formatted_value'    => '<span class="marked_link">'._('Enable this browser notifications').'</span>',
+                'label'    => _('Browser notifications'),
+                'required' => false,
+
+
+
+            ),
+
+            array(
+                'render'            => true,
+                'id'                => 'User_Password_Recovery_Email',
+                'edit'              => 'email',
+                'value'             => $user->get('User Password Recovery Email'),
+                'formatted_value'   => $user->get('User Password Recovery Email'),
+                'label'             => ucfirst(
+                    $user->get_field_label('User Password Recovery Email')
+                ),
+                'server_validation' => json_encode(
+                    array(
+                        'tipo'       => 'check_for_duplicates',
+                        'parent'     => 'account',
+                        'parent_key' => 1,
+                        'object'     => 'User',
+                        'key'        => $user->id
+                    )
+                ),
+                'invalid_msg'       => get_invalid_message('email'),
+                'type'              => 'value'
+
+            ),
+
+            array(
+                'edit'     => 'custom',
+                'id'       => 'Notify_Customer_Registration',
+                'value'    =>$object->get('Notify_Customer_Registration',$user),
+                'formatted_value'    =>'<span style="margin-right:40px" ><i class="button fa '.($object->get('Notify_Customer_Registration',$user)=='Yes'?'fa-toggle-on':'fa-toggle-off').'" aria-hidden="true"></i> '._('Browser notification').'</span> <i class="button fa '.($object->get('Notify_Customer_Registration',$user)=='Yes'?'fa-toggle-on':'fa-toggle-off').'"  aria-hidden="true"></i> '._('Email')  ,
+                'label'    => _('when customer register'),
+                'required' => false,
+
+
+
+            ),
+            array(
+                'edit'     => 'custom',
+                'id'       => 'Notify_Customer_Registration',
+                'value'    => $object->get('Notify_Customer_Registration',$user),
+                'label'    => _('when customer place order'),
+                'required' => false,
+
+
+
+            ),
+
+
+
+        )
+    );
+*/
+
     $operations = array(
         'label'      => _('Operations'),
         'show_title' => true,

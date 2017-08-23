@@ -1870,7 +1870,7 @@ class User extends DB_Table {
                 $label = _('language');
                 break;
             case 'User Password Recovery Email':
-                $label = _("recovery email");
+                $label = _("notifications/recovery email");
                 break;
             case 'User Password Recovery Mobile':
                 $label = _("recovery mobile");

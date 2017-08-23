@@ -408,6 +408,15 @@ class Website extends DB_Table {
 
 
         switch ($key) {
+
+            case 'User Password Recovery Email':
+
+                global  $user;
+                return $user->get('User Password Recovery Email');
+
+            break;
+
+
             case 'Palette':
 
                 return '<img style="width:150px;height:150px;" src="/'.$this->data['Website Palette'].'"/>';
@@ -762,6 +771,14 @@ class Website extends DB_Table {
         }
 
         switch ($field) {
+
+            case 'User Password Recovery Email':
+
+                global $user;
+                $user->editor=$this->editor;
+                $user->update(array('User Password Recovery Email'=>$value));
+
+                break;
             default:
                 $base_data = $this->base_data();
                 if (array_key_exists($field, $base_data)) {

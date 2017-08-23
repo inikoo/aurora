@@ -83,7 +83,7 @@ function check_for_duplicates($data, $db, $user, $account) {
                 case 'Staff User Handle':
                     $invalid_msg = _('Another user is using this login');
                     $sql         = sprintf(
-                        "SELECT `User Key`AS `key` ,`User Handle` AS field FROM `User Dimension` WHERE `User Type`='Staff' AND `User Handle`=%s", prepare_mysql($data['value'])
+                        "SELECT `User Key`AS `key` ,`User Handle` AS field FROM `User Dimension` WHERE `User Type` in ('Staff','Contractor','Administrator')  AND `User Handle`=%s", prepare_mysql($data['value'])
                     );
 
                     $validation_sql_queries[] = array(
@@ -91,7 +91,17 @@ function check_for_duplicates($data, $db, $user, $account) {
                         'invalid_msg' => $invalid_msg
                     );
                     break;
+                case 'User Password Recovery Email':
+                    $invalid_msg = _('Another user is using this email');
+                    $sql         = sprintf(
+                        "SELECT `User Key`AS `key` ,`User Handle` AS field FROM `User Dimension` WHERE `User Type` in ('Staff','Contractor') AND `User Password Recovery Email`=%s", prepare_mysql($data['value'])
+                    );
 
+                    $validation_sql_queries[] = array(
+                        'sql'         => $sql,
+                        'invalid_msg' => $invalid_msg
+                    );
+                    break;
 
                 default:
 
