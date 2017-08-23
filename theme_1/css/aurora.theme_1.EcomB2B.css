@@ -932,3 +932,27 @@ section.product_tabs  input[type=radio]:checked + label + div {
 	padding:0px ; margin:0px;text-align: center;
 	z-index: 100;position:relative;
 }
+
+
+
+
+.discount_card{
+
+	border:1px solid #ccc;width:300px;margin-left:10px;float:right;padding:2px 4px
+
+}
+
+.discount_card .discount_name{
+	font-size: 90%;
+}
+
+.discount_card  .discount_allowance{
+	font-weight: 800;
+}
+
+.parent_up{
+	font-family: "Ubuntu",Helvetica,Arial,sans-serif;
+	font-weight:800;
+	font-size:18px;
+	cursor: pointer;
+}

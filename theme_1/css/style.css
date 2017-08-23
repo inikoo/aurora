@@ -79,8 +79,13 @@
 .content_fullwidth.less {
 	padding: 0px 0px 0px 0px;
 }
+
 .content_fullwidth.less2 {
 	padding: 90px 0px 0px 0px;
+}
+
+.content_fullwidth.less3 {
+	padding: 20px 0px 0px 0px;
 }
 .content_left {
 	float: left;

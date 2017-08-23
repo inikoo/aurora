@@ -884,82 +884,132 @@ class Public_Product {
 
     }
 
+    function get_prev_product($scope = 'data') {
 
-    function get_parent_categories($scope='keys'){
 
-
-        $type = 'Product';
-        $parent_categories = array();
+        $prev_product = false;
 
         $sql = sprintf(
-            "SELECT B.`Category Key`,`Category Root Key`,`Other Note`,`Category Label`,`Category Code`,`Is Category Field Other` FROM `Category Bridge` B LEFT JOIN `Category Dimension` C ON (C.`Category Key`=B.`Category Key`) WHERE  `Category Branch Type`='Head'  AND B.`Subject Key`=%d AND B.`Subject`=%s",
-            $this->id, prepare_mysql($type)
+            "SELECT `Webpage Code`,`Product Name` FROM `Category Bridge` LEFT JOIN `Product Dimension` P ON (`Subject Key`=`Product ID`) 
+              LEFT JOIN `Page Store Dimension` ON (`Page Key`=`Product Webpage Key`)
+              WHERE P.`Product Type`='Product' AND`Subject`='Product' AND `Category Key`=%d AND `Webpage State`='Online' AND P.`Product Status` IN ('Active','Discontinuing') AND (`Product Code File As` < %s OR (`Product Code File As` = %s AND P.`Product ID` < %d)) ORDER BY `Product Code File As` DESC , P.`Product ID` DESC LIMIT 1;",
+            $this->data['Product Family Category Key'], prepare_mysql($this->data['Product Code File As']), prepare_mysql($this->data['Product Code File As']), $this->id
+
         );
 
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
 
+
+                $prev_product = array(
+                    'webpage_code' => $row['Webpage Code'],
+                    'name'         => $row['Product Name']
+                );
+            } else {
+
+                $sql = sprintf(
+                    "SELECT `Webpage Code`,`Product Name` FROM `Category Bridge` LEFT JOIN `Product Dimension` P ON (`Subject Key`=`Product ID`) 
+              LEFT JOIN `Page Store Dimension` ON (`Page Key`=`Product Webpage Key`)
+              WHERE P.`Product Type`='Product' AND`Subject`='Product' AND `Category Key`=%d AND `Webpage State`='Online' AND P.`Product Status` IN ('Active','Discontinuing')  AND   P.`Product ID`!=%d  ORDER BY `Product Code File As` DESC , P.`Product ID` DESC LIMIT 1;",
+                    $this->data['Product Family Category Key'], $this->id
+
+                );
+
+
+                if ($result = $this->db->query($sql)) {
+                    if ($row = $result->fetch()) {
+                        $prev_product = array(
+                            'webpage_code' => $row['Webpage Code'],
+                            'name'         => $row['Product Name']
+                        );
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        return $prev_product;
+
+
+    }
+
+
+    function get_next_product($scope = 'data') {
+        $next_product = false;
+
+
+        $sql = sprintf(
+            "SELECT `Webpage Code`,`Product Name` FROM `Category Bridge` LEFT JOIN `Product Dimension` P ON (`Subject Key`=`Product ID`) 
+              LEFT JOIN `Page Store Dimension` ON (`Page Key`=`Product Webpage Key`)
+              WHERE P.`Product Type`='Product' AND`Subject`='Product' AND `Category Key`=%d AND `Webpage State`='Online' AND P.`Product Status` IN ('Active','Discontinuing') 
+              AND (`Product Code File As` > %s OR (`Product Code File As` = %s AND P.`Product ID` > %d)) ORDER BY `Product Code File As`  , P.`Product ID` DESC LIMIT 1;",
+            $this->data['Product Family Category Key'], prepare_mysql($this->data['Product Code File As']), prepare_mysql($this->data['Product Code File As']), $this->id
+
+        );
 
         if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-                if($scope=='keys') {
-                    $parent_categories[$row['Category Key']]=$row['Category Key'];
-                }elseif($scope=='objects') {
-                    $parent_categories[$row['Category Key']]=get_object('Category',$row['Category Key']);
-                }elseif($scope=='data') {
+            if ($row = $result->fetch()) {
 
 
-                    $sql = sprintf(
-                        "SELECT `Category Label`,`Category Code` FROM `Category Dimension` WHERE `Category Key`=%d", $row['Category Root Key']
-                    );
+                $next_product = array(
+                    'webpage_code' => $row['Webpage Code'],
+                    'name'         => $row['Product Name']
+                );
+            } else {
+
+                $sql = sprintf(
+                    "SELECT `Webpage Code`,`Product Name` FROM `Category Bridge` LEFT JOIN `Product Dimension` P ON (`Subject Key`=`Product ID`) 
+              LEFT JOIN `Page Store Dimension` ON (`Page Key`=`Product Webpage Key`)
+              WHERE P.`Product Type`='Product' AND`Subject`='Product' AND `Category Key`=%d AND `Webpage State`='Online' AND P.`Product Status` IN ('Active','Discontinuing') AND   P.`Product ID`!=%d  ORDER BY `Product Code File As`  , P.`Product ID` DESC LIMIT 1;",
+                    $this->data['Product Family Category Key'], $this->id
+
+                );
 
 
-                    if ($result2 = $this->db->query($sql)) {
-                        if ($row2 = $result2->fetch()) {
-                            $root_label = $row2['Category Label'];
-                            $root_code  = $row2['Category Code'];
-                        }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        exit;
+                if ($result = $this->db->query($sql)) {
+                    if ($row = $result->fetch()) {
+                        $next_product = array(
+                            'webpage_code' => $row['Webpage Code'],
+                            'name'         => $row['Product Name']
+                        );
                     }
-
-
-                    if ($row['Is Category Field Other'] == 'Yes' and $row['Other Note'] != '') {
-                        $value = $row['Other Note'];
-                    } else {
-                        $value = $row['Category Label'];
-                    }
-                    $parent_categories[] = array(
-                        'root_label'   => $root_label,
-                        'root_code'    => $root_code,
-                        'label'        => $row['Category Label'],
-                        'code'         => $row['Category Code'],
-                        'value'        => $value,
-                        'category_key' => $row['Category Key']
-                    );
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
                 }
 
             }
         } else {
             print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
             exit;
         }
 
 
-        return $parent_categories;
+        return $next_product;
+
     }
 
 
+    function get_deal_components($scope = 'keys', $options = 'Active') {
 
-
-    function get_deal_components($scope = 'keys',$options='Active') {
-
-        switch($options) {
+        switch ($options) {
             case 'Active':
-                $where='AND `Deal Component Status`=\'Active\'';
+                $where = 'AND `Deal Component Status`=\'Active\'';
                 break;
             default:
-                $where='';
+                $where = '';
                 break;
         }
 
@@ -967,13 +1017,13 @@ class Public_Product {
         $deal_components = array();
 
 
-        $parent_categories=$this->get_parent_categories();
+        $parent_categories = $this->get_parent_categories();
 
-        if(count($parent_categories)>0) {
+        if (count($parent_categories) > 0) {
 
             $sql = sprintf(
                 "SELECT `Deal Component Key` FROM `Deal Component Dimension` WHERE `Deal Component Allowance Target`='Category' AND `Deal Component Allowance Target Key` in (%s) $where",
-                join(',',$parent_categories)
+                join(',', $parent_categories)
 
             );
 
@@ -1000,6 +1050,96 @@ class Public_Product {
         return $deal_components;
 
 
+    }
+
+    function get_parent_categories($scope = 'keys') {
+
+
+        $type              = 'Product';
+        $parent_categories = array();
+
+
+        $sql = sprintf(
+            "SELECT `Webpage Code`,B.`Category Key`,`Category Root Key`,`Other Note`,`Category Label`,`Category Code`,`Is Category Field Other` 
+        FROM `Category Bridge` B 
+        LEFT JOIN `Category Dimension` C ON (C.`Category Key`=B.`Category Key`) 
+        LEFT JOIN `Page Store Dimension` W ON (W.`Webpage Scope Key`=B.`Category Key` AND `Webpage Scope`=%s) 
+
+          WHERE  `Category Branch Type`='Head'  AND B.`Subject Key`=%d AND B.`Subject`=%s",
+
+            prepare_mysql('Category Products'),
+
+            $this->id, prepare_mysql($type)
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+                if ($scope == 'keys') {
+                    $parent_categories[$row['Category Key']] = $row['Category Key'];
+                } elseif ($scope == 'objects') {
+                    $parent_categories[$row['Category Key']] = get_object('Category', $row['Category Key']);
+                } elseif ($scope == 'data') {
+
+
+                    $value = $row['Category Label'];
+
+                    $parent_categories[] = array(
+
+                        'label'        => $row['Category Label'],
+                        'code'         => $row['Category Code'],
+                        'value'        => $value,
+                        'category_key' => $row['Category Key'],
+                        'webpage_code' => strtolower($row['Webpage Code'])
+
+                    );
+                }
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        return $parent_categories;
+    }
+
+    function get_parent_category($scope = 'keys') {
+
+
+        $parent_category = false;
+        if ($scope == 'keys') {
+            $parent_category = $this->data['Product Family Category Key'];
+        } elseif ($scope == 'objects') {
+            $parent_category = get_object('Category', $this->data['Product Family Category Key']);
+        } elseif ($scope == 'data') {
+
+            $sql = sprintf(
+                'SELECT `Webpage Code`,`Category Label`,`Category Code` FROM  `Category Dimension` C LEFT JOIN `Product Category Dimension`  ON (C.`Category Key`=`Product Category Key`) 
+        LEFT JOIN `Page Store Dimension` ON (`Page Key`=`Product Category Webpage Key`)  WHERE C.`Category Key`=%d ', $this->data['Product Family Category Key']
+            );
+
+        }
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $parent_category = array(
+                    'label'        => $row['Category Label'],
+                    'code'         => $row['Category Code'],
+                    'webpage_code' => strtolower($row['Webpage Code'])
+
+                );
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        return $parent_category;
     }
 
 

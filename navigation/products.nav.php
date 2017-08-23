@@ -952,6 +952,8 @@ function get_product_navigation($data, $smarty, $user, $db, $account) {
                     prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
                 );
 
+
+
                 if ($result = $db->query($sql)) {
                     if ($row = $result->fetch()) {
                         $prev_key   = $row['object_key'];
