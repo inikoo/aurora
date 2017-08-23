@@ -885,6 +885,71 @@ class Public_Product {
     }
 
 
+    function get_parent_categories($scope='keys'){
+
+
+        $type = 'Product';
+        $parent_categories = array();
+
+        $sql = sprintf(
+            "SELECT B.`Category Key`,`Category Root Key`,`Other Note`,`Category Label`,`Category Code`,`Is Category Field Other` FROM `Category Bridge` B LEFT JOIN `Category Dimension` C ON (C.`Category Key`=B.`Category Key`) WHERE  `Category Branch Type`='Head'  AND B.`Subject Key`=%d AND B.`Subject`=%s",
+            $this->id, prepare_mysql($type)
+        );
+
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+                if($scope=='keys') {
+                    $parent_categories[$row['Category Key']]=$row['Category Key'];
+                }elseif($scope=='objects') {
+                    $parent_categories[$row['Category Key']]=get_object('Category',$row['Category Key']);
+                }elseif($scope=='data') {
+
+
+                    $sql = sprintf(
+                        "SELECT `Category Label`,`Category Code` FROM `Category Dimension` WHERE `Category Key`=%d", $row['Category Root Key']
+                    );
+
+
+                    if ($result2 = $this->db->query($sql)) {
+                        if ($row2 = $result2->fetch()) {
+                            $root_label = $row2['Category Label'];
+                            $root_code  = $row2['Category Code'];
+                        }
+                    } else {
+                        print_r($error_info = $this->db->errorInfo());
+                        exit;
+                    }
+
+
+                    if ($row['Is Category Field Other'] == 'Yes' and $row['Other Note'] != '') {
+                        $value = $row['Other Note'];
+                    } else {
+                        $value = $row['Category Label'];
+                    }
+                    $parent_categories[] = array(
+                        'root_label'   => $root_label,
+                        'root_code'    => $root_code,
+                        'label'        => $row['Category Label'],
+                        'code'         => $row['Category Code'],
+                        'value'        => $value,
+                        'category_key' => $row['Category Key']
+                    );
+                }
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        return $parent_categories;
+    }
+
+
 
 
     function get_deal_components($scope = 'keys',$options='Active') {
@@ -902,28 +967,34 @@ class Public_Product {
         $deal_components = array();
 
 
-        $sql = sprintf(
-            "SELECT `Deal Component Key` FROM `Deal Component Dimension` WHERE `Deal Component Allowance Target`='Category' AND `Deal Component Allowance Target Key`=%d $where",
-            $this->id
-        );
+        $parent_categories=$this->get_parent_categories();
 
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
+        if(count($parent_categories)>0) {
 
-                if ($scope == 'objects') {
-                    $deal_components[$row['Deal Component Key']] = get_object('DealComponent',$row['Deal Component Key']);
-                } else {
-                    $deal_components[$row['Deal Component Key']] = $row['Deal Component Key'];
+            $sql = sprintf(
+                "SELECT `Deal Component Key` FROM `Deal Component Dimension` WHERE `Deal Component Allowance Target`='Category' AND `Deal Component Allowance Target Key` in (%s) $where",
+                join(',',$parent_categories)
+
+            );
+
+
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
+
+                    if ($scope == 'objects') {
+                        $deal_components[$row['Deal Component Key']] = get_object('DealComponent', $row['Deal Component Key']);
+                    } else {
+                        $deal_components[$row['Deal Component Key']] = $row['Deal Component Key'];
+                    }
+
+
                 }
-
-
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                exit;
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
+
         }
-
-
 
 
         return $deal_components;

@@ -90,7 +90,7 @@
 
        <span class="parent_up">
 
-           {foreach from=$product->get_parent_categories('data') item=item key=key}
+           {foreach from=$public_product->get_parent_categories('data') item=item key=key}
                <i class="fa fa-arrow-up" aria-hidden="true" title="{$item.label}"></i>
                {break}
            {/foreach}
@@ -102,7 +102,7 @@
          </span>
 
 
-        {foreach from=$product->get_deal_components('objects') item=item key=key}
+        {foreach from=$public_product->get_deal_components('objects') item=item key=key}
             <div class="discount_card"  >
                 <span class="discount_icon">{$item->get('Deal Component Icon')}</span>
 
