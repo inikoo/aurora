@@ -191,7 +191,11 @@ function get_part_navigation($data, $smarty, $user, $db, $account) {
         }
 
 
-        $extra_where = ' and `Part Status`="In Use"';
+
+
+
+
+    //    $extra_where = ' and `Part Status`="In Use"';
 
         include_once 'prepare_table/'.$tab.'.ptble.php';
 
@@ -208,6 +212,9 @@ function get_part_navigation($data, $smarty, $user, $db, $account) {
         $next_key   = 0;
         $sql        = trim($sql_totals." $wheref");
 
+
+
+
         if ($result2 = $db->query($sql)) {
             if ($row2 = $result2->fetch() and $row2['num'] > 1) {
 
@@ -218,6 +225,9 @@ function get_part_navigation($data, $smarty, $user, $db, $account) {
 
                     prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
                 );
+
+
+             
 
                 if ($result = $db->query($sql)) {
                     if ($row = $result->fetch()) {
