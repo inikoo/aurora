@@ -14,17 +14,19 @@ include 'utils/available_locales.php';
 include 'conf/user_groups.php';
 
 
-
 if (isset($options['new']) and $options['new']) {
     $new = true;
 } else {
     $new = false;
 }
 
-$options_User_Groups=array();
+$options_User_Groups = array();
 
-foreach($user_groups as $key=>$user_group){
-    $options_User_Groups[$user_group['Key']]=array('label'=>$user_group['Name'],'selected'=>false);
+foreach ($user_groups as $key => $user_group) {
+    $options_User_Groups[$user_group['Key']] = array(
+        'label'    => $user_group['Name'],
+        'selected' => false
+    );
 }
 
 
@@ -66,10 +68,10 @@ $object_fields = array(
             array(
                 'render'          => (in_array(
                     $options['parent'], array(
-                        'supplier',
-                        'agent',
-                        'xontractor'
-                    )
+                                          'supplier',
+                                          'agent',
+                                          'xontractor'
+                                      )
                 ) ? true : false),
                 'id'              => 'User_Alias',
                 'edit'            => 'string',
@@ -80,10 +82,10 @@ $object_fields = array(
                 ),
                 'type'            => (in_array(
                     $options['parent'], array(
-                        'aupplier',
-                        'agent',
-                        'contractor'
-                    )
+                                          'aupplier',
+                                          'agent',
+                                          'contractor'
+                                      )
                 ) ? 'value' : '')
 
             ),
@@ -105,6 +107,32 @@ $object_fields = array(
                 ),
                 'type'            => 'value'
             ),
+
+
+            array(
+                'render'            => true,
+                'id'                => 'User_Password_Recovery_Email',
+                'edit'              => 'email',
+                'value'             => $object->get('User Password Recovery Email'),
+                'formatted_value'   => $object->get('User Password Recovery Email'),
+                'label'             => ucfirst(
+                    $object->get_field_label('User Password Recovery Email')
+                ),
+                'server_validation' => json_encode(
+                    array(
+                        'tipo'       => 'check_for_duplicates',
+                        'parent'     => 'account',
+                        'parent_key' => 1,
+                        'object'     => 'User',
+                        'key'        => $object->id
+                    )
+                ),
+                'invalid_msg'       => get_invalid_message('email'),
+                'type'              => 'value'
+
+            ),
+
+
             array(
                 'render'            => true,
                 'id'                => 'User_Handle',
@@ -147,9 +175,9 @@ $object_fields = array(
                     ? ($options['parent'] == 'Staff' ? true : false)
                     : (in_array(
                         $object->get('User Type'), array(
-                            'Staff',
-                            'Contractor'
-                        )
+                                                     'Staff',
+                                                     'Contractor'
+                                                 )
                     ) ? true : false)),
                 'id'              => 'User_PIN',
                 'edit'            => 'pin',
@@ -163,9 +191,9 @@ $object_fields = array(
                     ? ($options['parent'] == 'Staff' ? 'value' : '')
                     : (in_array(
                         $object->get('User Type'), array(
-                            'Staff',
-                            'Contractor'
-                        )
+                                                     'Staff',
+                                                     'Contractor'
+                                                 )
                     ) ? 'value' : ''))
 
             ),
@@ -182,9 +210,9 @@ if (!$new) {
 
     if (in_array(
         $object->get('User Type'), array(
-        'Staff',
-        'Contractor'
-    )
+                                     'Staff',
+                                     'Contractor'
+                                 )
     )) {
 
         include 'utils/available_locales.php';
@@ -225,8 +253,7 @@ if (!$new) {
                 $current_position_key, $options_Staff_Position
             )) {
 
-                $options_Staff_Position[$current_position_key]['selected']
-                    = true;
+                $options_Staff_Position[$current_position_key]['selected'] = true;
             }
         }
 
@@ -338,7 +365,7 @@ if (!$new) {
                     'label'           => ucfirst($object->get_field_label('User Groups')),
                 ),
                 array(
-                    'render'=>$object->has_scope('Stores'),
+                    'render'          => $object->has_scope('Stores'),
                     'id'              => 'User_Stores',
                     'edit'            => 'option_multiple_choices',
                     'value'           => $object->get('User Stores'),
@@ -351,7 +378,7 @@ if (!$new) {
 
                 ),
                 array(
-                    'render'=>$object->has_scope('Websites'),
+                    'render'          => $object->has_scope('Websites'),
                     'id'              => 'User_Websites',
                     'edit'            => 'option_multiple_choices',
                     'value'           => $object->get('User Websites'),
@@ -364,7 +391,7 @@ if (!$new) {
 
                 ),
                 array(
-                    'render'=>$object->has_scope('Warehouses'),
+                    'render'          => $object->has_scope('Warehouses'),
                     'id'              => 'User_Warehouses',
                     'edit'            => 'option_multiple_choices',
                     'value'           => $object->get('User Warehouses'),
@@ -378,7 +405,7 @@ if (!$new) {
 
                 ),
                 array(
-                    'render'=>$object->has_scope('Productions'),
+                    'render'          => $object->has_scope('Productions'),
                     'id'              => 'User_Productions',
                     'edit'            => 'option_multiple_choices',
                     'value'           => $object->get('User Productions'),
