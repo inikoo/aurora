@@ -63,26 +63,7 @@ class DealComponent extends DB_Table {
 
         switch ($key) {
 
-            case('Icon'):
 
-                if ($arg == '' or !is_object($arg)) {
-                    $store = get_object('Store', $this->data['Deal Component Store Key']);
-                } else {
-                    $store = $arg;
-                }
-
-                if ($this->data['Deal Component Campaign Key'] == $store->get('Store Order Recursion Campaign Key')) {
-                    return '<i class="fa fa-tag gold-text "  aria-hidden="true"></i>';
-                } elseif ($this->data['Deal Component Campaign Key'] == $store->get('Store Bulk Discounts Campaign Key')) {
-                    return '<i class="fa fa-tag  " style="color:#31B96E" aria-hidden="true"></i>';
-                }else{
-                    return '<i class="fa fa-tag  "  aria-hidden="true"></i>';
-                }
-
-
-
-
-                break;
 
             case('Description'):
             case('Deal Description'):
@@ -92,6 +73,10 @@ class DealComponent extends DB_Table {
 
         if (isset($this->data[$key])) {
             return $this->data[$key];
+        }
+
+        if (isset($this->data['Deal Component '.$key])) {
+            return $this->data['Deal Component '.$key];
         }
 
 
@@ -272,6 +257,14 @@ class DealComponent extends DB_Table {
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
 
         switch ($field) {
+
+            case 'Deal Component Allowance Label':
+                $this->update_field($field, $value, $options);
+
+                $deal=get_object('Deal',$this->data['Deal Component Deal Key']);
+                $deal->update_allowance_label();
+
+            break;
             case 'Deal Component Expiration Date':
                 $this->update_expiration_date($value, $options);
                 break;

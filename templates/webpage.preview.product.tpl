@@ -9,6 +9,30 @@
 -->
 *}
 
+<style>
+
+    .discount_card{
+
+        border:1px solid #ccc;width:300px;margin-left:10px;float:right;padding:2px 4px
+
+    }
+
+    .discount_card .discount_name{
+        font-size: 90%;
+    }
+
+    .discount_card  .discount_allowance{
+        font-weight: 800;
+    }
+
+    .parent_up{
+        font-family: "Ubuntu",Helvetica,Arial,sans-serif;
+        font-weight:800;
+        font-size:18px;
+        cursor: pointer;
+    }
+</style>
+
 <div style="padding:20px;border-bottom:1px solid #ccc">
 
     <span style="margin-right:20px" class="hide">
@@ -54,6 +78,47 @@
 
 <div id="page_content" style="position:relative">
 
+
+
+    <div class="description_block">
+
+
+         <span class="parent_up">
+              <i class="fa fa-arrow-left" aria-hidden="true" title="" style="margin-right: 10px;"></i>
+
+         </span>
+
+       <span class="parent_up">
+
+           {foreach from=$product->get_parent_categories('data') item=item key=key}
+               <i class="fa fa-arrow-up" aria-hidden="true" title="{$item.label}"></i>
+               {break}
+           {/foreach}
+       </span>
+
+        <span class="parent_up">
+              <i class="fa fa-arrow-right" aria-hidden="true" title="" style="margin-left: 10px;"></i>
+
+         </span>
+
+
+        {foreach from=$product->get_deal_components('objects') item=item key=key}
+            <div class="discount_card"  >
+                <span class="discount_icon">{$item->get('Deal Component Icon')}</span>
+
+                <span class="discount_name">{$item->get('Deal Component Name Label')}</span><br/>
+                <span class="discount_term">{$item->get('Deal Component Term Label')}</span>
+
+                <span class="discount_allowance">{$item->get('Deal Component Allowance Label')}</span>
+
+            </div>
+
+        {/foreach}
+
+
+        <div style="clear: both"></div>
+
+    </div>
 
 
     <div id="product_bd" style="padding:5px 20px 0px 20px;clear:both;">

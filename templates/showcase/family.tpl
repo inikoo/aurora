@@ -205,26 +205,19 @@
 
 
                 </table>
-                {assign discounts $category->get_discounts('objects')}
-
-
+                {assign deal_components $category->get_deal_components('objects')}
                 <table border="0" class="overview" style="">
-
-
-
-                    {foreach from=$discounts item=discount name=discounts}
+                    {foreach from=$deal_components item=deal_component name=deal_component}
                         <tr class="main">
                             <td>
-                                {$discount->get('Icon')}
+                                {$deal_component->get('Icon')}
                             </td>
                             <td class="aright ">
-                                {$discount->get('Description')}
+                                {$deal_component->get('Description')}
 
                             </td>
                         </tr>
                     {/foreach}
-
-
                 </table>
 
                 

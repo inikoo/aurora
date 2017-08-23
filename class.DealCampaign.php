@@ -203,9 +203,54 @@ class DealCampaign extends DB_Table {
 
     }
 
+    function update_field_switcher($field, $value, $options = '', $metadata = '') {
+
+
+        switch ($field) {
+
+            case 'Deal Campaign Icon':
+
+                $this->update_field($field, $value, $options);
+
+                $sql=sprintf('update `Deal Dimension` set `Deal Icon`=%s where `Deal Campaign Key`=%d  ',prepare_mysql($value),$this->id);
+                $this->db->exec($sql);
+                $sql=sprintf('update `Deal Component Dimension` set `Deal Component Icon`=%s where `Deal Component Campaign Key`=%d  ',prepare_mysql($value),$this->id);
+                $this->db->exec($sql);
+
+
+                break;
+
+            case 'Deal Campaign Name':
+
+                $this->update_field($field, $value, $options);
+
+                $sql=sprintf('update `Deal Dimension` set `Deal Name Label`=%s where `Deal Campaign Key`=%d  ',prepare_mysql($value),$this->id);
+                $this->db->exec($sql);
+                $sql=sprintf('update `Deal Component Dimension` set `Deal Component Name Label`=%s where `Deal Component Campaign Key`=%d  ',prepare_mysql($value),$this->id);
+                $this->db->exec($sql);
+
+
+                break;
+
+
+            default:
+
+
+                if (array_key_exists($field, $this->base_data())) {
+
+                    if ($value != $this->data[$field]) {
+                        $this->update_field($field, $value, $options);
+
+                    }
+                }
+
+
+        }
+
+
+    }
+
     function add_deal($data) {
-
-
 
 
         include_once 'class.Deal.php';
@@ -226,11 +271,8 @@ class DealCampaign extends DB_Table {
         $data['Deal Status']          = $this->data['Deal Campaign Status'];
 
 
-
         $deal = new Deal('find create', $data);
         $deal->update_status_from_dates();
-
-
 
 
         $this->update_current_number_of_deals();
@@ -239,23 +281,22 @@ class DealCampaign extends DB_Table {
     }
 
 
-    function update_current_number_of_deals(){
+    function update_current_number_of_deals() {
         $number_deals = 0;
         $sql          = sprintf("SELECT count(*) AS num FROM `Deal Dimension` WHERE `Deal Campaign Key`=%d ", $this->id);
 
-        if ($result=$this->db->query($sql)) {
+        if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-                $number_deals=$row['num'];
-        	}
-        }else {
-        	print_r($error_info=$this->db->errorInfo());
-        	print "$sql\n";
-        	exit;
+                $number_deals = $row['num'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
 
 
-
-        $this->update(array('Deal Campaign Number Current Deals'=>$number_deals),'no_history');
+        $this->update(array('Deal Campaign Number Current Deals' => $number_deals), 'no_history');
 
     }
 
