@@ -21,18 +21,76 @@
 
         {include file="theme_1/header.EcomB2B.tpl"}
 
-        <div class="content_fullwidth less2">
+        <div class="content_fullwidth less3">
             <div class="container">
 
 
                 {assign 'see_also'  $webpage->get_see_also() }
 
 
-
                 <span id="ordering_settings" class="hide"
                       data-labels='{ "ordered":"<i class=\"fa fa-thumbs-o-up fa-flip-horizontal \" aria-hidden=\"true\"></i> {if empty($labels._ordering_ordered)}{t}Ordered{/t}{else}{$labels._ordering_ordered}{/if}", "order":"<i class=\"fa fa-hand-pointer-o\" aria-hidden=\"true\"></i>  {if empty($labels._ordering_order_now)}{t}Order now{/t}{else}{$labels._ordering_order_now}{/if}", "update":"<i class=\"fa fa-hand-pointer-o\" aria-hidden=\"true\"></i>  {if empty($labels._ordering_click_to_update)}{t}Click to update{/t}{else}{$labels._ordering_click_to_update}{/if}"  }'></span>
 
                 <div id="page_content" style="position:relative">
+
+
+                    <div class="description_block">
+
+
+                        {assign 'parent_family'  $product->get_parent_category('data') }
+
+                        {assign 'prev_product'  $product->get_prev_product('data') }
+                        {assign 'next_product'  $product->get_next_product('data') }
+
+
+                        {if $prev_product}
+                            <a class="parent_up" href="{$prev_product.webpage_code}">
+                                <i class="fa fa-arrow-left" aria-hidden="true" title="" style="margin-right: 10px;"></i>
+
+                            </a>
+                        {/if}
+
+
+                        {if $parent_family}
+
+                            <a href="/{$parent_family.webpage_code}" class="parent_up" title="{$parent_family.code}  {$parent_family.label}">
+                                <i class="fa fa-arrow-up" aria-hidden="true"></i>
+
+
+                            </a>
+                        {/if}
+
+
+
+
+
+                        {if $next_product}
+
+                        <a class="parent_up" href="{$next_product.webpage_code}">
+                            <i class="fa fa-arrow-right" aria-hidden="true" title="" style="margin-left: 10px;"></i>
+
+                            </a>
+
+                            {/if}
+
+                            {foreach from=$product->get_deal_components('objects') item=item key=key}
+                                <div class="discount_card">
+                                    <span class="discount_icon">{$item->get('Deal Component Icon')}</span>
+
+                                    <span class="discount_name">{$item->get('Deal Component Name Label')}</span><br/>
+                                    <span class="discount_term">{$item->get('Deal Component Term Label')}</span>
+
+                                    <span class="discount_allowance">{$item->get('Deal Component Allowance Label')}</span>
+
+                                </div>
+                            {/foreach}
+
+
+                            <div style="clear: both"></div>
+
+                    </div>
+
+
                     <div id="product_bd" style="padding:5px 20px 0px 20px;clear:both;" class="product_container" product_id="{$product->id}">
 
 
@@ -64,9 +122,9 @@
                                 <h1 style="padding-top:5px;margin:2px 0;font-size:150%">
                                     {$product->get('Name')}
                                     {if !empty($customer)}
-                                    {assign 'favourite_key' {$product->get('Favourite Key',{$customer->id})} }
-                                    <span class="invisible  favourite  " favourite_key={$favourite_key}><i style="font-size:70%;position:relative;top:-2px"
-                                                                                                           class="fa {if $favourite_key}fa-heart marked{else}fa-heart-o{/if}" aria-hidden="true"></i>  </span>
+                                        {assign 'favourite_key' {$product->get('Favourite Key',{$customer->id})} }
+                                        <span class="invisible  favourite  " favourite_key={$favourite_key}><i style="font-size:70%;position:relative;top:-2px"
+                                                                                                               class="fa {if $favourite_key}fa-heart marked{else}fa-heart-o{/if}" aria-hidden="true"></i>  </span>
                                     {/if}
 
                                 </h1>
@@ -93,14 +151,14 @@
                                             <div class="ordering log_in can_not_order {$product->get('Out of Stock Class')} " style="width:350px;position:relative;margin-top:40px">
 
                                                 {if isset($customer)}
-                                                {assign 'reminder_key' {$product->get('Reminder Key',{$customer->id})} }
-                                                <div class="out_of_stock_row {$product->get('Out of Stock Class')}">
+                                                    {assign 'reminder_key' {$product->get('Reminder Key',{$customer->id})} }
+                                                    <div class="out_of_stock_row {$product->get('Out of Stock Class')}">
     <span class="label">
     {$product->get('Out of Stock Label')}
         <span class="label sim_button "> <i reminder_key="{$reminder_key}" title="{if $reminder_key>0}{t}Click to remove notification{/t}{else}{t}Click to be notified by email{/t}{/if}"
                                             class="reminder fa {if $reminder_key>0}fa-envelope{else}fa-envelope-o{/if}" aria-hidden="true"></i>  </span>
     </span>
-                                                </div>
+                                                    </div>
                                                 {/if}
 
                                             </div>
@@ -187,7 +245,8 @@
 
 
                         }
-                   </script>
+
+                    </script>
 
                     <section class="product_tabs" style="margin-top:20px">
 

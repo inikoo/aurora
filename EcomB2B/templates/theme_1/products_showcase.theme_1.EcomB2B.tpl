@@ -21,7 +21,7 @@
 
         {include file="theme_1/header.EcomB2B.tpl"}
 
-        <div class="content_fullwidth less2">
+        <div class="content_fullwidth less3">
             <div class="container">
 
 
@@ -47,6 +47,38 @@
     }'></span>
 
                     {if $detected_device!='mobile'}
+
+
+                        <div class="description_block">
+
+                            {foreach from=$category->get_parent_categories('data') item=item key=key}
+                                <a href="/{$item.webpage_code}" class="parent_up">
+                                    <i class="fa fa-arrow-up" aria-hidden="true"></i>
+                                        <span  >{$item.label}</span>
+
+                                </a>
+                                {break}
+                            {/foreach}
+
+                            {foreach from=$category->get_deal_components('objects') item=item key=key}
+                                <div class="discount_card"  >
+                                    <span class="discount_icon">{$item->get('Deal Component Icon')}</span>
+
+                                    <span class="discount_name">{$item->get('Deal Component Name Label')}</span><br/>
+                                    <span class="discount_term">{$item->get('Deal Component Term Label')}</span>
+
+                                    <span class="discount_allowance">{$item->get('Deal Component Allowance Label')}</span>
+
+                                </div>
+
+                            {/foreach}
+
+
+                            <div style="clear: both"></div>
+
+                        </div>
+
+
                     <div id="description_block" class="description_block {if isset($content_data.description_block.class)}{$content_data.description_block.class}{/if}">
 
 
