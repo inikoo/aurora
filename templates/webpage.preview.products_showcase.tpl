@@ -12,6 +12,11 @@
 <style>
 
 
+    [contenteditable="true"]:empty {
+        background-color: #f4f4f4;
+        padding: 10px;
+    }
+
     .discount_card{
 
         border:1px solid #ccc;width:300px;margin-left:10px;float:right;padding:2px 4px
