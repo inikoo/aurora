@@ -702,6 +702,11 @@ ALTER TABLE `Deal Dimension` ADD `Deal Icon` TEXT NULL DEFAULT NULL AFTER `Deal 
 
 
 
+//====
+
+
+
+
 ============= migration web[ages
 
 update `Page Store Dimension` set `Webpage Code`=LOWER(`Webpage Code`);

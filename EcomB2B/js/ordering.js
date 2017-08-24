@@ -60,6 +60,10 @@ $(function() {
 
 
     $('.favourite').click(function () {
+
+
+        var element=$(this)
+
         var icon = $(this).find('i');
 
 
@@ -74,10 +78,14 @@ $(function() {
         }
 
 
-        var request = 'ar_basket.php?tipo=update_favorite&pid=' + $(this).closest('.product_showcase').attr('product_id') + '&customer_key=' + $('#webpage_data').attr('customer_key') + '&favorite_key=' + $(this).attr('favourite_key')
+        var request = 'ar_web_basket.php?tipo=update_favorite&pid=' + $(this).attr('product_id') + '&customer_key=' + $('#webpage_data').attr('customer_key') + '&favorite_key=' + $(this).attr('favourite_key')
 
         console.log(request)
         $.getJSON(request, function (data) {
+
+            console.log(data)
+
+            element.attr('favourite_key',data.favorite_key)
 
         })
 

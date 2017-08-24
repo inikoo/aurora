@@ -115,6 +115,28 @@ class Public_Product {
 
         switch ($key) {
 
+
+            case 'Favourite Key':
+
+                $sql = sprintf(
+                    'SELECT `Customer Favourite Product Key`  FROM `Customer Favourite Product Fact` WHERE `Customer Favourite Product Product ID`=%d AND `Customer Favourite Product Customer Key`=%d ',
+                    $this->id, $arg1
+                );
+
+                if ($result = $this->db->query($sql)) {
+                    if ($row = $result->fetch()) {
+                        return $row['Customer Favourite Product Key'];
+                    } else {
+                        return 0;
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+
+                break;
             case 'Status':
             case 'Barcode Number':
             case 'CPNP Number':
