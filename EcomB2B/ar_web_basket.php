@@ -42,7 +42,7 @@ switch ($tipo) {
     case 'update_item':
         $data = prepare_values(
             $_REQUEST, array(
-                         'product_id'               => array('type' => 'key'),
+                         'product_id'        => array('type' => 'key'),
                          'qty'               => array('type' => 'numeric'),
                          'order_key'         => array('type' => 'numeric'),
                          'webpage_key'       => array('type' => 'numeric'),
@@ -50,7 +50,22 @@ switch ($tipo) {
                      )
         );
 
-        update_item($data, $customer, $website, $editor,$db);
+        update_item($data, $customer, $website, $editor, $db);
+
+
+        break;
+
+    case 'update_favorite':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'pid'          => array('type' => 'key'),
+                         'customer_key' => array('type' => 'key'),
+                         'favorite_key' => array('type' => 'numeric'),
+
+                     )
+        );
+
+        update_favorite($data, $customer, $website, $editor, $db);
 
 
         break;
@@ -84,7 +99,7 @@ switch ($tipo) {
         break;
 }
 
-function update_item($_data, $customer, $website, $editor,$db) {
+function update_item($_data, $customer, $website, $editor, $db) {
 
 
     $customer->editor = $editor;
@@ -105,14 +120,11 @@ function update_item($_data, $customer, $website, $editor,$db) {
     } else {
         //$order=get_object('Order',$order_key);
 
-        $order =get_object('Order',$order_key);
+        $order = get_object('Order', $order_key);
     }
 
 
     //$order->set_display_currency($_SESSION['set_currency'],$_SESSION['set_currency_exchange']);
-
-
-
 
 
     $product_pid = $_data['product_id'];
@@ -132,7 +144,7 @@ function update_item($_data, $customer, $website, $editor,$db) {
         $product = get_object('Product', $product_pid);
         $data    = array(
             'date'                      => gmdate('Y-m-d H:i:s'),
-            'item_historic_key'        => $product->get('Product Current Key'),
+            'item_historic_key'         => $product->get('Product Current Key'),
             'item_key'                  => $product->id,
             'Metadata'                  => '',
             'qty'                       => $quantity,
@@ -146,24 +158,24 @@ function update_item($_data, $customer, $website, $editor,$db) {
         $transaction_data = $order->update_item($data);
 
 
-       /*
+        /*
 
-        if (!$transaction_data['updated']) {
-            $response = array(
-                'state'    => 200,
-                'newvalue' => $_REQUEST['oldvalue'],
-                'key'      => $_REQUEST['id']
-            );
-            echo json_encode($response);
+         if (!$transaction_data['updated']) {
+             $response = array(
+                 'state'    => 200,
+                 'newvalue' => $_REQUEST['oldvalue'],
+                 'key'      => $_REQUEST['id']
+             );
+             echo json_encode($response);
 
-            return;
-        }
+             return;
+         }
 
-*/
+ */
 
         $basket_history = array(
             'otf_key'                 => $transaction_data['otf_key'],
-            'Webpage Key'                => $_data['webpage_key'],
+            'Webpage Key'             => $_data['webpage_key'],
             'Product ID'              => $product->id,
             'Quantity Delta'          => $transaction_data['delta_qty'],
             'Quantity'                => $transaction_data['qty'],
@@ -217,16 +229,16 @@ function update_item($_data, $customer, $website, $editor,$db) {
 
 
         $class_html = array(
-            'order_items_gross'            => $order->get('Items Gross Amount'),
-            'order_items_discount'         => $order->get('Items Discount Amount'),
-            'order_items_net'              => $order->get('Items Net Amount'),
-            'order_net'                    => $order->get('Total Net Amount'),
-            'order_tax'                    => $order->get('Total Tax Amount'),
-            'order_charges'                => $order->get('Charges Net Amount'),
-            'order_credits'                => $order->get('Net Credited Amount'),
-            'order_shipping'               => $order->get('Shipping Net Amount'),
-            'order_total'                  => $order->get('Total Amount'),
-            'ordered_products_number'      => $order->get('Number Items'),
+            'order_items_gross'       => $order->get('Items Gross Amount'),
+            'order_items_discount'    => $order->get('Items Discount Amount'),
+            'order_items_net'         => $order->get('Items Net Amount'),
+            'order_net'               => $order->get('Total Net Amount'),
+            'order_tax'               => $order->get('Total Tax Amount'),
+            'order_charges'           => $order->get('Charges Net Amount'),
+            'order_credits'           => $order->get('Net Credited Amount'),
+            'order_shipping'          => $order->get('Shipping Net Amount'),
+            'order_total'             => $order->get('Total Amount'),
+            'ordered_products_number' => $order->get('Number Items'),
         );
 
 
@@ -238,13 +250,13 @@ function update_item($_data, $customer, $website, $editor,$db) {
             'discount_percentage' => $transaction_data['discount_percentage'],
             'key'                 => $order->id,
 
-            'metadata'=>array('class_html'=>$class_html),
+            'metadata' => array('class_html' => $class_html),
 
 
-            'to_charge'           => $transaction_data['to_charge'],
-            'discount_data'       => $adata,
-            'discounts'           => ($order->data['Order Items Discount Amount'] != 0 ? true : false),
-            'charges'             => ($order->data['Order Charges Net Amount'] != 0 ? true : false)
+            'to_charge'     => $transaction_data['to_charge'],
+            'discount_data' => $adata,
+            'discounts'     => ($order->data['Order Items Discount Amount'] != 0 ? true : false),
+            'charges'       => ($order->data['Order Charges Net Amount'] != 0 ? true : false)
         );
     } else {
         $response = array('state' => 200);
@@ -258,17 +270,11 @@ function update_item($_data, $customer, $website, $editor,$db) {
 
     new_housekeeping_fork(
         'au_housekeeping', array(
-        'type'     => 'update_orders_in_basket_data',
+        'type'      => 'update_orders_in_basket_data',
         'store_key' => $order->get('Order Store Key')
 
     ), $account->get('Account Code')
     );
-
-
-
-
-
-
 
 
     echo json_encode($response);
@@ -279,16 +285,13 @@ function update_item($_data, $customer, $website, $editor,$db) {
 function create_order($editor, $customer) {
 
 
-
     $order_data = array(
         'Order Current Dispatch State' => 'In Process',
-        'editor'=>$editor
+        'editor'                       => $editor
     );
 
 
     $order = $customer->create_order($order_data);
-
-
 
 
     return $order;
@@ -298,20 +301,19 @@ function create_order($editor, $customer) {
 function invoice_address($db, $data, $order, $editor) {
 
 
-
-    $address_data=array(
-        'Address Line 1'=>'',
-        'Address Line 2'=>'',
-        'Address Sorting Code'=>'',
-        'Address Postal Code'=>'',
-        'Address Dependent Locality'=>'',
-        'Address Locality'=>'',
-        'Address Administrative Area'=>'',
-        'Address Country 2 Alpha Code'=>'',
+    $address_data = array(
+        'Address Line 1'               => '',
+        'Address Line 2'               => '',
+        'Address Sorting Code'         => '',
+        'Address Postal Code'          => '',
+        'Address Dependent Locality'   => '',
+        'Address Locality'             => '',
+        'Address Administrative Area'  => '',
+        'Address Country 2 Alpha Code' => '',
     );
 
 
-    foreach($data['data'] as $key=>$value){
+    foreach ($data['data'] as $key => $value) {
 
         if ($key == 'addressLine1') {
             $key = 'Address Line 1';
@@ -325,49 +327,45 @@ function invoice_address($db, $data, $order, $editor) {
             $key = 'Address Dependent Locality';
         } elseif ($key == 'locality') {
             $key = 'Address Locality';
-        }elseif ($key == 'administrativeArea') {
+        } elseif ($key == 'administrativeArea') {
             $key = 'Address Administrative Area';
-        }elseif ($key == 'country') {
+        } elseif ($key == 'country') {
             $key = 'Address Country 2 Alpha Code';
         }
 
-        $address_data[$key]=$value;
+        $address_data[$key] = $value;
 
     }
 
 
-
     $order->editor = $editor;
-    $order->update(array('Order Invoice Address'=>json_encode($address_data)));
-
+    $order->update(array('Order Invoice Address' => json_encode($address_data)));
 
 
     $class_html = array(
-        'order_items_gross'            => $order->get('Items Gross Amount'),
-        'order_items_discount'         => $order->get('Items Discount Amount'),
-        'order_items_net'              => $order->get('Items Net Amount'),
-        'order_net'                    => $order->get('Total Net Amount'),
-        'order_tax'                    => $order->get('Total Tax Amount'),
-        'order_charges'                => $order->get('Charges Net Amount'),
-        'order_credits'                => $order->get('Net Credited Amount'),
-        'order_shipping'               => $order->get('Shipping Net Amount'),
-        'order_total'                  => $order->get('Total Amount'),
-        'ordered_products_number'      => $order->get('Number Items'),
+        'order_items_gross'       => $order->get('Items Gross Amount'),
+        'order_items_discount'    => $order->get('Items Discount Amount'),
+        'order_items_net'         => $order->get('Items Net Amount'),
+        'order_net'               => $order->get('Total Net Amount'),
+        'order_tax'               => $order->get('Total Tax Amount'),
+        'order_charges'           => $order->get('Charges Net Amount'),
+        'order_credits'           => $order->get('Net Credited Amount'),
+        'order_shipping'          => $order->get('Shipping Net Amount'),
+        'order_total'             => $order->get('Total Amount'),
+        'ordered_products_number' => $order->get('Number Items'),
 
 
-        'formatted_invoice_address'=>$order->get('Order Invoice Address Formatted'),
-
-
+        'formatted_invoice_address' => $order->get('Order Invoice Address Formatted'),
 
 
     );
 
 
     $response = array(
-        'state'               => 200,
-        'metadata'=>array(
-            'class_html'=>$class_html,
-            'for_collection'=>$order->get('Order For Collection')
+        'state'    => 200,
+        'metadata' => array(
+            'class_html'     => $class_html,
+            'for_collection' => $order->get('Order For Collection')
         ),
 
     );
@@ -379,31 +377,28 @@ function invoice_address($db, $data, $order, $editor) {
 function delivery_address($db, $data, $order, $editor) {
 
 
-
     $order->editor = $editor;
 
 
+    if ($data['data']['order_for_collection']) {
+        $order->update(array('Order For Collection' => 'Yes'));
 
-    if($data['data']['order_for_collection']){
-        $order->update(array('Order For Collection'=>'Yes'));
+    } else {
+        $order->update(array('Order For Collection' => 'No'));
 
-    }
-    else{
-        $order->update(array('Order For Collection'=>'No'));
-
-        $address_data=array(
-            'Address Line 1'=>'',
-            'Address Line 2'=>'',
-            'Address Sorting Code'=>'',
-            'Address Postal Code'=>'',
-            'Address Dependent Locality'=>'',
-            'Address Locality'=>'',
-            'Address Administrative Area'=>'',
-            'Address Country 2 Alpha Code'=>'',
+        $address_data = array(
+            'Address Line 1'               => '',
+            'Address Line 2'               => '',
+            'Address Sorting Code'         => '',
+            'Address Postal Code'          => '',
+            'Address Dependent Locality'   => '',
+            'Address Locality'             => '',
+            'Address Administrative Area'  => '',
+            'Address Country 2 Alpha Code' => '',
         );
 
 
-        foreach($data['data'] as $key=>$value){
+        foreach ($data['data'] as $key => $value) {
 
             if ($key == 'addressLine1') {
                 $key = 'Address Line 1';
@@ -417,59 +412,48 @@ function delivery_address($db, $data, $order, $editor) {
                 $key = 'Address Dependent Locality';
             } elseif ($key == 'locality') {
                 $key = 'Address Locality';
-            }elseif ($key == 'administrativeArea') {
+            } elseif ($key == 'administrativeArea') {
                 $key = 'Address Administrative Area';
-            }elseif ($key == 'country') {
+            } elseif ($key == 'country') {
                 $key = 'Address Country 2 Alpha Code';
             }
 
-            $address_data[$key]=$value;
+            $address_data[$key] = $value;
 
         }
 
-        $order->update(array('Order Delivery Address'=>json_encode($address_data)));
+        $order->update(array('Order Delivery Address' => json_encode($address_data)));
 
     }
 
 
-
     $class_html = array(
-        'order_items_gross'            => $order->get('Items Gross Amount'),
-        'order_items_discount'         => $order->get('Items Discount Amount'),
-        'order_items_net'              => $order->get('Items Net Amount'),
-        'order_net'                    => $order->get('Total Net Amount'),
-        'order_tax'                    => $order->get('Total Tax Amount'),
-        'order_charges'                => $order->get('Charges Net Amount'),
-        'order_credits'                => $order->get('Net Credited Amount'),
-        'order_shipping'               => $order->get('Shipping Net Amount'),
-        'order_total'                  => $order->get('Total Amount'),
-        'ordered_products_number'      => $order->get('Number Items'),
+        'order_items_gross'       => $order->get('Items Gross Amount'),
+        'order_items_discount'    => $order->get('Items Discount Amount'),
+        'order_items_net'         => $order->get('Items Net Amount'),
+        'order_net'               => $order->get('Total Net Amount'),
+        'order_tax'               => $order->get('Total Tax Amount'),
+        'order_charges'           => $order->get('Charges Net Amount'),
+        'order_credits'           => $order->get('Net Credited Amount'),
+        'order_shipping'          => $order->get('Shipping Net Amount'),
+        'order_total'             => $order->get('Total Amount'),
+        'ordered_products_number' => $order->get('Number Items'),
 
 
-        'formatted_delivery_address'=>$order->get('Order Delivery Address Formatted'),
-
-
+        'formatted_delivery_address' => $order->get('Order Delivery Address Formatted'),
 
 
     );
 
 
     $response = array(
-        'state'               => 200,
-        'metadata'=>array(
-            'class_html'=>$class_html,
-            'for_collection'=>$order->get('Order For Collection')
+        'state'    => 200,
+        'metadata' => array(
+            'class_html'     => $class_html,
+            'for_collection' => $order->get('Order For Collection')
         ),
 
     );
-
-
-
-
-
-
-
-
 
 
     echo json_encode($response);
@@ -481,18 +465,65 @@ function delivery_address($db, $data, $order, $editor) {
 function update_special_instructions($db, $data, $order, $editor) {
 
 
-  $order->editor=$editor;
+    $order->editor = $editor;
 
-  $order->update(
-      array('Order Customer Message'=>$data['value']),'no_history'
+    $order->update(
+        array('Order Customer Message' => $data['value']), 'no_history'
 
-  );
+    );
     $response = array(
-        'state'               => 200,
+        'state' => 200,
 
 
     );
     echo json_encode($response);
+
+}
+
+
+
+function update_favorite($data, $customer, $website, $editor, $db) {
+
+
+    $customer->editor = $editor;
+
+    if ($data['favorite_key']) {
+
+        $sql=sprintf('delete from `Customer Favourite Product Fact` where `Customer Favourite Product Key`=%d ',$data['favorite_key'] );
+
+
+        $db->exec($sql);
+
+        $favorite_key=0;
+        $pid=$data['pid'];
+
+    }else {
+
+        $product=get_object('Product',$data['pid']);
+        $sql=sprintf('insert into  `Customer Favourite Product Fact` (`Customer Favourite Product Customer Key`,`Customer Favourite Product Product ID`,`Customer Favourite Product Store Key`,`Customer Favourite Product Creation Date`) values
+		(%d,%d,%d,%s) on duplicate key update `Customer Favourite Product Store Key`=%d
+		',
+                     $data['customer_key'],
+                     $product->id,
+                     $product->data['Product Store Key'],
+
+                     prepare_mysql(gmdate('Y-m-d H:i:s')),
+                     $product->data['Product Store Key']
+
+        );
+
+        print $sql;
+        $db->exec($sql);
+
+        $favorite_key=$db->lastInsertId();
+        $pid=$product->pid;
+
+    }
+
+    $response= array('state'=>200,'favorite_key'=>$favorite_key,'pid'=>$pid);
+    echo json_encode($response);
+
+
 
 }
 

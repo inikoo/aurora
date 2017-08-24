@@ -123,8 +123,8 @@
                                     {$product->get('Name')}
                                     {if !empty($customer)}
                                         {assign 'favourite_key' {$product->get('Favourite Key',{$customer->id})} }
-                                        <span class="invisible  favourite  " favourite_key={$favourite_key}><i style="font-size:70%;position:relative;top:-2px"
-                                                                                                               class="fa {if $favourite_key}fa-heart marked{else}fa-heart-o{/if}" aria-hidden="true"></i>  </span>
+                                        <span class="  favourite  " product_id="{$product->id}" favourite_key="{$favourite_key}">
+                                            <i style="" class="fa {if $favourite_key}fa-heart marked{else}fa-heart-o{/if}" aria-hidden="true"></i>  </span>
                                     {/if}
 
                                 </h1>

@@ -1746,6 +1746,8 @@ class Product extends Asset {
         }
 
 
+
+
         if ($use_fork) {
             include_once 'utils/new_fork.php';
             $account = new Account($this->db);

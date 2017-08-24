@@ -17,9 +17,17 @@ var old_state_request = '';
 
 
 
-
-
 $(document).ready(function () {
+
+
+
+
+
+    document.addEventListener("paste", function(e) {
+        e.preventDefault();
+        var text = e.clipboardData.getData("text/plain");
+        document.execCommand("insertHTML", false, text);
+    });
 
 
     state = {
