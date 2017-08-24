@@ -666,6 +666,8 @@ class Subject extends DB_Table {
                 }
 
 
+
+
                 if ($value != '') {
 
                     include_once 'utils/get_phoneUtil.php';
@@ -2076,6 +2078,16 @@ class Subject extends DB_Table {
             case 'Main Plain Telephone':
             case 'Main Plain Mobile':
             case 'Main Plain FAX':
+
+
+
+            return array(
+                true,
+                $this->get(
+                    $this->table_name.' '.$key
+                )
+            );
+
 
                 return array(
                     true,
