@@ -1751,15 +1751,6 @@ class Product extends Asset {
             $account = new Account($this->db);
 
             if( $account->get('Account Code')=='AWEU'){
-
-                $msg = new_housekeeping_fork(
-                    'housekeeping', array(
-                    'type'                     => 'product_web_state',
-                    'product_id'               => $this->id
-                ), $account->get('Account Code')
-                );
-            }else{
-
                 $msg = new_housekeeping_fork(
                     'au_housekeeping', array(
                     'type'                     => 'update_web_state_slow_forks',
@@ -1767,6 +1758,20 @@ class Product extends Asset {
                     'product_id'               => $this->id
                 ), $account->get('Account Code')
                 );
+
+            }else{
+
+
+
+                $msg = new_housekeeping_fork(
+                    'housekeeping', array(
+                    'type'                     => 'product_web_state',
+                    'product_id'               => $this->id
+                ), $account->get('Account Code')
+                );
+
+
+
             }
 
 
