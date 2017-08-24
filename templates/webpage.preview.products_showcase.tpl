@@ -173,13 +173,13 @@
 
 
        {foreach from=$category->get_deal_components('objects') item=item key=key}
-           <div class="discount_card"  >
+           <div class="discount_card" key="{$item->id}" >
                <span class="discount_icon">{$item->get('Deal Component Icon')}</span>
 
-               <span class="discount_name">{$item->get('Deal Component Name Label')}</span><br/>
-               <span class="discount_term">{$item->get('Deal Component Term Label')}</span>
+               <span contenteditable="true" class="discount_name">{$item->get('Deal Component Name Label')}</span><br/>
+               <span contenteditable="true"  class="discount_term">{$item->get('Deal Component Term Label')}</span>
 
-               <span class="discount_allowance">{$item->get('Deal Component Allowance Label')}</span>
+               <span contenteditable="true"  class="discount_allowance">{$item->get('Deal Component Allowance Label')}</span>
 
            </div>
 
@@ -360,6 +360,8 @@
 
     {include file="js/webpage.preview.publish.tpl.js" }
     {include file="js/webpage.preview.description_block.tpl.js" }
+    {include file="js/webpage.preview.discounts.tpl.js" }
+
     {include file="js/webpage.preview.products.tpl.js" }
     {include file="js/webpage.preview.panels.tpl.js" }
 

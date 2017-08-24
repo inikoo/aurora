@@ -2088,13 +2088,6 @@ class Subject extends DB_Table {
                 )
             );
 
-
-                return array(
-                    true,
-                    $this->get(
-                        $this->table_name.' '.preg_replace('/Plain/', 'XHTML', $key)
-                    )
-                );
                 break;
 
             case('First Name'):

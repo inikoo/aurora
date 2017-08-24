@@ -30,7 +30,18 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
+    case 'save_deal_component_labels':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'key'  => array('type' => 'key'),
+                         'label' => array('type' => 'string'),
+                         'value' => array('type' => 'string')
 
+
+                     )
+        );
+        save_deal_component_labels($data,$editor);
+        break;
 
     case 'save_webpage_content':
         $data = prepare_values(
@@ -1875,6 +1886,38 @@ function launch_website($account, $db, $user, $editor, $data, $smarty) {
 
     );
     echo json_encode($response);
+
+}
+
+function save_deal_component_labels($data,$editor){
+
+    $deal_component         = get_object('Deal Component', $data['key']);
+    $deal_component->editor = $editor;
+
+    $update_fields=array();
+
+    switch ($data['label']){
+        case 'name':
+            $update_fields=array('Deal Component Name Label'=>$data['value']);
+            break;
+        case 'term':
+            $update_fields=array('Deal Component Term Label'=>$data['value']);
+            break;
+        case 'allowance':
+            $update_fields=array('Deal Component Allowance Label'=>$data['value']);
+            break;
+
+    }
+
+    $deal_component->update($update_fields);
+
+
+    $response = array(
+        'state' => 200,
+
+    );
+    echo json_encode($response);
+
 
 }
 
