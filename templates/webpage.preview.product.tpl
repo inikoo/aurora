@@ -11,6 +11,12 @@
 
 <style>
 
+
+    [contenteditable="true"]:empty {
+        background-color: #f4f4f4;
+        padding: 10px;
+    }
+
     .discount_card{
 
         border:1px solid #ccc;width:300px;margin-left:10px;float:right;padding:2px 4px
@@ -103,13 +109,13 @@
 
 
         {foreach from=$public_product->get_deal_components('objects') item=item key=key}
-            <div class="discount_card"  >
+            <div class="discount_card"  key="{$item->id}">
                 <span class="discount_icon">{$item->get('Deal Component Icon')}</span>
 
-                <span class="discount_name">{$item->get('Deal Component Name Label')}</span><br/>
-                <span class="discount_term">{$item->get('Deal Component Term Label')}</span>
+                <span contenteditable="true" class="discount_name">{$item->get('Deal Component Name Label')}</span><br/>
+                <span contenteditable="true" class="discount_term">{$item->get('Deal Component Term Label')}</span>
 
-                <span class="discount_allowance">{$item->get('Deal Component Allowance Label')}</span>
+                <span contenteditable="true" class="discount_allowance">{$item->get('Deal Component Allowance Label')}</span>
 
             </div>
 
@@ -259,6 +265,8 @@
 
     {include file="js/webpage.preview.publish.tpl.js" }
     {include file="js/webpage.preview.product_description.tpl.js" }
+    {include file="js/webpage.preview.discounts.tpl.js" }
+
     {include file="js/webpage.preview.tabs.tpl.js" }
 
 
