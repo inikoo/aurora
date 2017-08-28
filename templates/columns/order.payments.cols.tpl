@@ -58,6 +58,13 @@ label:"{t}Status{/t}",
 editable: false,
 sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({  }),
+},
+{
+name: "operations",
+label:"{t}Operations{/t}",
+editable: false,
+sortType: "toggle",
+cell: Backgrid.HtmlCell.extend({  }),
 }
 
 ]
