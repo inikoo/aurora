@@ -29,6 +29,26 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
+
+    case 'refund_payment':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'operation'   => array('type' => 'string'),
+                         'key'         => array('type' => 'key'),
+                         'reference'   => array('type' => 'string'),
+                         'submit_type' => array('type' => 'string'),
+                         'amount'      => array('type' => 'string'),
+
+
+                     )
+        );
+
+        refund_payment($data, $editor, $smarty, $db, $account,$user);
+
+
+        break;
+
+
     case 'new_payment':
         $data = prepare_values(
             $_REQUEST, array(
@@ -44,19 +64,8 @@ switch ($tipo) {
                      )
         );
 
-        if ($data['parent'] == 'order') {
-            add_payment_to_order($data, $editor, $smarty, $db, $account);
-        } elseif ($data['parent'] == 'order') {
-            add_payment_to_invoice($data, $editor, $smarty, $db, $account);
-        } else {
-            $response = array(
-                'state' => 400,
-                'msg'   => 'Unsupported parent for create new payment '.$parent->get_object_name()
 
-            );
-            echo json_encode($response);
-            exit;
-        }
+        new_payment($data, $editor, $smarty, $db, $account,$user);
 
 
         break;
@@ -576,19 +585,16 @@ function create_delivery_note($data, $editor, $smarty, $db, $account) {
 
 }
 
+function new_payment($data, $editor, $smarty, $db, $account,$user) {
 
-function add_payment_to_order($data, $editor, $smarty, $db, $account) {
+    include_once 'utils/currency_functions.php';
 
 
-    $order         = get_object($data['parent'], $data['parent_key']);
+    $order         = get_object('Order', $data['parent_key']);
     $order->editor = $editor;
 
     $payment_account         = get_object('Payment_Account', $data['payment_account_key']);
     $payment_account->editor = $editor;
-
-
-    $sender_field  = 'Order Invoice Address Recipient';
-    $country_field = 'Order Invoice Address Country 2 Alpha Code';
 
 
     $payment_data = array(
@@ -596,23 +602,26 @@ function add_payment_to_order($data, $editor, $smarty, $db, $account) {
         'Payment Customer Key'                => $order->get('Customer Key'),
         'Payment Transaction Amount'          => $data['amount'],
         'Payment Currency Code'               => $order->get('Currency Code'),
-        'Payment Sender'                      => $order->get($sender_field),
-        'Payment Sender Country 2 Alpha Code' => $order->get($country_field),
+        'Payment Sender'                      => $order->get('Order Invoice Address Recipient'),
+        'Payment Sender Country 2 Alpha Code' => $order->get('Order Invoice Address Country 2 Alpha Code'),
         'Payment Sender Email'                => $order->get('Email'),
         'Payment Sender Card Type'            => '',
         'Payment Created Date'                => gmdate('Y-m-d H:i:s'),
 
-        'Payment Completed Date'     => gmdate('Y-m-d H:i:s'),
-        'Payment Last Updated Date'  => gmdate('Y-m-d H:i:s'),
-        'Payment Transaction Status' => 'Completed',
-        'Payment Transaction ID'     => $data['reference'],
-        'Payment Method'             => $data['payment_method'],
-        'Payment Location'           => 'Order',
-        'Payment Metadata'           => '',
-        'Payment Submit Type'        => 'Manual'
+        'Payment Completed Date'         => gmdate('Y-m-d H:i:s'),
+        'Payment Last Updated Date'      => gmdate('Y-m-d H:i:s'),
+        'Payment Transaction Status'     => 'Completed',
+        'Payment Transaction ID'         => $data['reference'],
+        'Payment Method'                 => $data['payment_method'],
+        'Payment Location'               => 'Order',
+        'Payment Metadata'               => '',
+        'Payment Submit Type'            => 'Manual',
+        'Payment Currency Exchange Rate' => currency_conversion($db,$order->get('Currency Code'), $account->get('Currency Code')),
+        'Payment User Key'=>$user->id
 
 
     );
+
 
 
     $payment = $payment_account->create_payment($payment_data);
@@ -674,107 +683,10 @@ function add_payment_to_order($data, $editor, $smarty, $db, $account) {
 
 }
 
-function add_payment_to_invoice($data, $editor, $smarty, $db, $account) {
-
-    //todo add_payment_to_invoice
-
-    $parent         = get_object($data['parent'], $data['parent_key']);
-    $parent->editor = $editor;
-
-    $payment_account         = get_object('Payment_Account', $data['payment_account_key']);
-    $payment_account->editor = $editor;
-
-    if ($parent->get_object_name() == 'Order') {
-        $sender_field  = 'Order Invoice Address Recipient';
-        $country_field = 'Order Invoice Address Country 2 Alpha Code';
-    } elseif ($parent->get_object_name() == 'Order') {
-        $sender_field  = 'Order Invoice Address Recipient';
-        $country_field = 'Order Invoice Address Country 2 Alpha Code';
-    } else {
-        $response = array(
-            'state' => 400,
-            'msg'   => 'Unsupported parent for create new payment '.$parent->get_object_name()
-
-        );
-        echo json_encode($response);
-        exit;
-    }
-
-
-    $payment_data = array(
-        'Payment Store Key'                   => $parent->get('Store Key'),
-        'Payment Customer Key'                => $parent->get('Customer Key'),
-        'Payment Transaction Amount'          => $data['amount'],
-        'Payment Currency Code'               => $parent->get('Currency Code'),
-        'Payment Sender'                      => $parent->get($sender_field),
-        'Payment Sender Country 2 Alpha Code' => $parent->get($country_field),
-        'Payment Sender Email'                => $parent->get('Email'),
-        'Payment Sender Card Type'            => '',
-        'Payment Created Date'                => gmdate('Y-m-d H:i:s'),
-
-        'Payment Completed Date'     => gmdate('Y-m-d H:i:s'),
-        'Payment Last Updated Date'  => gmdate('Y-m-d H:i:s'),
-        'Payment Transaction Status' => 'Completed',
-        'Payment Transaction ID'     => $data['reference'],
-        'Payment Method'             => $data['payment_method'],
-        'Payment Location'           => 'Order',
-        'Payment Metadata'           => '',
-
-
-    );
-
-
-    $payment = $payment_account->create_payment($payment_data);
-
-    $parent->add_payment($payment);
-    $parent->update_totals();
-
-    $operations = array();
-
-    if ($parent->get_object_name() == 'Order') {
-
-        $metadata = array(
-            'to_pay' => $parent->get('Order To Pay Amount'),
-
-            'class_html'  => array(
-                'Order_State'                   => $this->get('State'),
-                'Items_Net_Amount'              => $this->get('Items Net Amount'),
-                'Shipping_Net_Amount'           => $this->get('Shipping Net Amount'),
-                'Charges_Net_Amount'            => $this->get('Charges Net Amount'),
-                'Total_Net_Amount'              => $this->get('Total Net Amount'),
-                'Total_Tax_Amount'              => $this->get('Total Tax Amount'),
-                'Total_Amount'                  => $this->get('Total Amount'),
-                'Total_Amount_Account_Currency' => $this->get('Total Amount Account Currency'),
-                'To_Pay_Amount'                 => $this->get('To Pay Amount'),
-                'Payments_Amount'               => $this->get('Payments Amount'),
-
-
-                'Order_Number_items' => $this->get('Number Items')
-
-            ),
-            'operations'  => $operations,
-            'state_index' => $this->get('State Index'),
-
-        );
-
-
-        $response = array(
-            'state'    => 200,
-            'metadata' => $metadata
-        );
-        echo json_encode($response);
-
-    } else {
-
-    }
-
-
-}
-
 
 function edit_item_discount($account, $db, $user, $editor, $data, $smarty) {
 
-    $parent         = get_object('order', $data['parent_key']);
+    $parent         = get_object('payment', $data['key']);
     $parent->editor = $editor;
 
 
@@ -803,6 +715,214 @@ function edit_item_discount($account, $db, $user, $editor, $data, $smarty) {
         );
     }
     echo json_encode($response);
+
+}
+
+
+function refund_payment($data, $editor, $smarty, $db, $account,$user) {
+
+    include_once 'utils/currency_functions.php';
+
+
+    $payment         = get_object('payment', $data['key']);
+    $payment->editor = $editor;
+
+    $payment_account         = get_object('Payment_Account', $payment->get('Payment Account Key'));
+    $payment_account->editor = $editor;
+
+    $order = get_object('Order', $payment->get('Payment Order Key'));
+
+
+    switch ($data['operation']) {
+        case 'Refund':
+
+            switch ($data['submit_type']) {
+                case 'Manual':
+
+
+                    $reference = $data['reference'];
+
+                    break;
+                case 'Online':
+
+                    switch ($payment_account->get('Payment Account Block')) {
+                        case 'BTree':
+
+
+                            require_once 'external_libs/braintree-php-3.2.0/lib/Braintree.php';
+
+                            Braintree_Configuration::environment('production');
+                            Braintree_Configuration::merchantId($payment_account->get('Payment Account ID'));
+                            Braintree_Configuration::publicKey($payment_account->get('Payment Account Login'));
+                            Braintree_Configuration::privateKey($payment_account->get('Payment Account Password'));
+
+                            $reference = 'test XXX';
+                            /*
+
+                            $result = Braintree_Transaction::refund($payment->data['Payment Transaction ID'], $data['amount']);
+
+
+
+                            if ($result->success) {
+
+                                $reference=$result->transaction->id;
+
+
+
+                            } else {
+
+                                if (isset($result->transaction->processorSettlementResponseText)) {
+                                    $msg = $result->transaction->processorSettlementResponseText.' ('.$result->transaction->processorSettlementResponseCode.')';
+
+                                } else {
+                                    $msg = $result->message;
+
+                                }
+
+
+                                $response = array(
+                                    'state' => 400,
+                                    'msg'   => $msg
+                                );
+                                echo json_encode($response);
+                                exit;
+
+
+                            }
+*/
+
+                            break;
+                        default:
+                            $response = array(
+                                'state' => 400,
+                                'msg'   => 'Payment account cant make online refunds'
+                            );
+                            echo json_encode($response);
+                            exit;
+
+
+                            break;
+                    }
+
+
+                    break;
+                default:
+                    $response = array(
+                        'state' => 400,
+                        'msg'   => 'unknown refund method '.$data['submit_type']
+                    );
+                    echo json_encode($response);
+                    exit;
+
+            }
+
+
+            $payment_data = array(
+                'Payment Store Key'                   => $order->get('Store Key'),
+                'Payment Customer Key'                => $order->get('Customer Key'),
+                'Payment Transaction Amount'          => -$data['amount'],
+                'Payment Currency Code'               => $order->get('Currency Code'),
+                'Payment Sender'                      => $order->get('Order Invoice Address Recipient'),
+                'Payment Sender Country 2 Alpha Code' => $order->get('Order Invoice Address Country 2 Alpha Code'),
+                'Payment Sender Email'                => $order->get('Email'),
+                'Payment Sender Card Type'            => '',
+                'Payment Created Date'                => gmdate('Y-m-d H:i:s'),
+
+                'Payment Completed Date'         => gmdate('Y-m-d H:i:s'),
+                'Payment Last Updated Date'      => gmdate('Y-m-d H:i:s'),
+                'Payment Transaction Status'     => 'Completed',
+                'Payment Transaction ID'         => $reference,
+                'Payment Method'                 => $payment->get('Payment Method'),
+                'Payment Location'               => 'Order',
+                'Payment Metadata'               => '',
+                'Payment Submit Type'            => ($data['submit_type']=='Online'?'EPS':$data['submit_type']),
+                'Payment Type'                   => 'Refund',
+                'Payment Currency Exchange Rate' => currency_conversion($db,$order->get('Currency Code'), $account->get('Currency Code')),
+                'Payment Related Payment Key'=>$payment->id,
+                'Payment Related Payment Transaction ID'=>$payment->get('Payment Transaction ID'),
+                'Payment User Key'=>$user->id
+
+
+
+            );
+
+
+
+            $refund = $payment_account->create_payment($payment_data);
+
+
+            $payment->update(array('Payment Transaction Amount Refunded'=>$payment->get('Payment Transaction Amount Refunded')+$data['amount']));
+
+
+            $order->add_payment($refund);
+            $order->update_totals();
+
+            break;
+        default:
+
+            $response = array(
+                'state' => 400,
+                'msg'   => 'unknown refund operation '.$data['operation']
+            );
+            echo json_encode($response);
+            exit;
+            break;
+    }
+
+
+
+
+
+    $operations = array();
+
+
+    $payments_xhtml = '';
+
+    foreach ($order->get_payments('objects', 'Completed') as $payment) {
+        $payments_xhtml .= sprintf(
+            '<div class="payment node"><span class="node_label link" onClick="change_view(\'%s\')" >%s</span><span class="node_amount" >%s</span></div>', '/order/'.$order->id.'/payment/'.$payment->id,
+            $payment->get('Payment Account Code'), $payment->get('Transaction Amount')
+
+        );
+    }
+
+
+    $metadata = array(
+
+        'class_html'  => array(
+            'Order_State'                   => $order->get('State'),
+            'Items_Net_Amount'              => $order->get('Items Net Amount'),
+            'Shipping_Net_Amount'           => $order->get('Shipping Net Amount'),
+            'Charges_Net_Amount'            => $order->get('Charges Net Amount'),
+            'Total_Net_Amount'              => $order->get('Total Net Amount'),
+            'Total_Tax_Amount'              => $order->get('Total Tax Amount'),
+            'Total_Amount'                  => $order->get('Total Amount'),
+            'Total_Amount_Account_Currency' => $order->get('Total Amount Account Currency'),
+            'To_Pay_Amount'                 => $order->get('To Pay Amount'),
+            'Payments_Amount'               => $order->get('Payments Amount'),
+
+
+            'Order_Number_items' => $order->get('Number Items')
+
+        ),
+        'operations'  => $operations,
+        'state_index' => $order->get('State Index'),
+        'to_pay'      => $order->get('Order To Pay Amount'),
+        'total'       => $order->get('Order Total Amount'),
+        'shipping'    => $order->get('Order Shipping Net Amount'),
+        'charges'     => $order->get('Order Charges Net Amount'),
+        'payments'    => $order->get('Order Payments Amount'),
+
+        'payments_xhtml' => $payments_xhtml
+    );
+
+
+    $response = array(
+        'state'    => 200,
+        'metadata' => $metadata
+    );
+    echo json_encode($response);
+
 
 }
 

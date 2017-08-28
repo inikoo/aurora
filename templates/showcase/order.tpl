@@ -488,6 +488,10 @@
         <tr class="   {if $account->get('Account Currency')==$order->get('Order Currency Code')}hide{/if}">
             <td colspan="2" class="Total_Amount_Account_Currency aright ">{$order->get('Total Amount Account Currency')}</td>
         </tr>
+
+
+        <tbody id="total_payments" class="{if $order->get('State Index')<0}hide{/if}">
+
         <tr class="total Order_Payments_Amount  {if $order->get('Order To Pay Amount')==0    }hide{/if}  ">
             <td class="label">{t}Paid{/t}</td>
             <td class="aright Payments_Amount">{$order->get('Payments Amount')}</td>
@@ -501,6 +505,17 @@
 
             <td colspan="2" class="align_center "><i class="fa fa-check-circle" aria-hidden="true"></i> {t}Paid{/t}</td>
         </tr>
+        </tbody>
+
+
+        <tbody id="total_payments_cancelled_order" class="error {if $order->get('State Index')>0}hide{/if}">
+        <tr class="total Order_Payments_Amount  {if $order->get('Order Payments Amount')==0    }hide{/if}  "  style="background-color: rgba(255,0,0,.05); " >
+            <td style="border-color:rgba(255,0,0,1)" class="label">{t}Paid{/t}</td>
+            <td style="border-color:rgba(255,0,0,1)" class="aright Payments_Amount">{$order->get('Payments Amount')}</td>
+        </tr>
+
+        </tbody>
+
 
 
     </table>

@@ -190,6 +190,11 @@ function payments($_data, $db, $user) {
                     break;
             }
 
+
+            $refund_amount=$data['Payment Transaction Amount Refunded']+$data['Payment Transaction Amount Credited'];
+
+            $refundable_amount=$data['Payment Transaction Amount']-$refund_amount;
+
             $operations = '';
             switch ($data['Payment Transaction Status']) {
                 case 'Pending':
@@ -200,9 +205,17 @@ function payments($_data, $db, $user) {
                     $operations = sprintf(
                         '<span class="operations">
                             <i class="fa fa-trash button %s" aria-hidden="true" title="'._('Remove payment').'"  onClick="cancel_payment(this,%d)"  ></i>
-                            <i class="fa fa-share   fa-flip-horizontal button " aria-hidden="true" title="'._('Refund/Credit payment').'"  onClick="open_refund_dialog(this,%d)"  ></i>
+                            <i class="fa fa-share fa-flip-horizontal button %s" data-settings=\'{"reference":"%s","amount_formatted":"%s","amount":"%s","can_refund_online":"%s"}\'   aria-hidden="true" title="'._('Refund/Credit payment').'"  onClick="open_refund_dialog(this,%d)"  ></i>
 
-                            </span>', ($data['Payment Submit Type'] != 'Manual' ? 'hide' : ''), $data['Payment Key'], $data['Payment Key']
+                            </span>', ($data['Payment Submit Type'] != 'Manual'   ? 'hide' : ''), $data['Payment Key'],
+
+                        (($data['Payment Type'] == 'Payment'   and   $refundable_amount>0 ) ? '' : 'hide'),
+
+                        htmlspecialchars($data['Payment Transaction ID']),
+                        money($refundable_amount, $data['Payment Currency Code']),
+                        $refundable_amount,
+                        ($data['Payment Account Block']=='BTree'?true:false),
+                        $data['Payment Key']
                     );
 
                     break;
@@ -231,8 +244,12 @@ function payments($_data, $db, $user) {
                 '<span class="'.($data['Payment Transaction Status'] != 'Completed' ? 'strikethrough' : '').'" >'.money($data['Payment Transaction Amount'], $data['Payment Currency Code']).'</span>';
 
 
-            $refunds = '';
+            if($refund_amount==0){
+                $refunds='';
+            }else{
+                $refunds = '<span style="font-style: italic" class="discreet">'.money($refund_amount, $data['Payment Currency Code']).' '._('refunded').'</span>';
 
+            }
 
             $adata[] = array(
                 'id'           => (integer)$data['Payment Key'],
