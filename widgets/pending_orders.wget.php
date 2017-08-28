@@ -36,10 +36,10 @@ function get_dashboard_pending_orders($db, $account, $user, $smarty, $parent = '
 
 
    // $object->update_orders_in_basket_data();
-    $object->update_orders_in_process_data();
-    $object->update_orders_in_warehouse_data();
-    $object->update_orders_packed_data();
-    $object->update_orders_ready_to_ship_data();
+    //$object->update_orders_in_process_data();
+    //$object->update_orders_in_warehouse_data();
+    //$object->update_orders_packed_data();
+    //$object->update_orders_ready_to_ship_data();
 
 
     $stores = array();
