@@ -1702,6 +1702,11 @@ class SupplierPart extends DB_Table {
 
 
         $this->deleted = true;
+
+
+       return 'part/'.$this->data['Supplier Part Part SKU'];
+
+
     }
 
 
