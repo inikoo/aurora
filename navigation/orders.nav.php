@@ -1308,7 +1308,7 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
             $left_buttons[] = array(
                 'icon'      => 'arrow-left',
                 'title'     => $prev_title,
-                'reference' => 'account/'.$data['parent_key'].'/order/'.$prev_key
+                'reference' => 'orders/all/'.$prev_key
             );
 
         } else {
@@ -1326,7 +1326,7 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
             $left_buttons[] = array(
                 'icon'      => 'arrow-right',
                 'title'     => $next_title,
-                'reference' => 'account/'.$data['parent_key'].'/order/'.$next_key
+                'reference' => 'orders/all/'.$next_key
             );
 
         } else {

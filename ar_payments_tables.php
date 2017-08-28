@@ -37,6 +37,7 @@ switch ($tipo) {
         stores(get_table_parameters(), $db, $user);
         break;
     case 'payments':
+    case 'order.payments':
         payments(get_table_parameters(), $db, $user);
         break;
     default:

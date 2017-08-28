@@ -9,9 +9,9 @@
 
 */
 
-$tab     = 'payments';
+$tab     = 'order.payments';
 $ar_file = 'ar_payments_tables.php';
-$tipo    = 'payments';
+$tipo    = 'order.payments';
 
 $default = $user->get_tab_defaults($tab);
 
