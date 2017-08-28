@@ -60,9 +60,10 @@ function get_account_setup_navigation($data, $smarty, $user, $db, $account) {
 function get_account_navigation($data, $smarty, $user, $db, $account) {
 
 
+
     $sections                        = get_sections('account', '');
     $sections['account']['selected'] = true;
-    $title                           = _('Account').' <span class="id">'.$data['_object']->get('Code').'</span>';
+    $title                           = _('Account').' <span class="id">'.$account->get('Code').'</span>';
 
     $_content = array(
         'sections_class' => '',

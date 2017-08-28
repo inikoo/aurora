@@ -634,6 +634,7 @@ class DeliveryNote extends DB_Table {
             case('Done Approved Datetime'):
             case('Dispatched Approved Datetime'):
             case('Dispatched Datetime'):
+            case ('Cancelled Datetime'):
                 $key = 'Date '.preg_replace('/ Datetime/', '', $key);
 
 
@@ -1019,10 +1020,7 @@ class DeliveryNote extends DB_Table {
                     return;
                 }
                 $this->update_field('Delivery Note Date Done Approved', $date, 'no_history');
-                $this->update_field(
-                    'Delivery Note State', $value, 'no_history'
-                );
-
+                $this->update_field('Delivery Note State', $value, 'no_history');
                 $this->update_field('Delivery Note Approved Done', 'Yes', 'no_history');
                 $this->update_field('Delivery Note Date', $date, 'no_history');
 
@@ -1030,10 +1028,8 @@ class DeliveryNote extends DB_Table {
                 // todo make it work for multiple parts
 
                 $sql = sprintf(
-                    'SELECT `Packed`,`Required`,`Given`,`Map To Order Transaction Fact Key` FROM `Inventory Transaction Fact` WHERE  `Delivery Note Key`=%d ',
-                    $this->id
+                    'SELECT `Packed`,`Required`,`Given`,`Map To Order Transaction Fact Key` FROM `Inventory Transaction Fact` WHERE  `Delivery Note Key`=%d ', $this->id
                 );
-
 
 
                 if ($result = $this->db->query($sql)) {
@@ -1061,7 +1057,6 @@ class DeliveryNote extends DB_Table {
                         );
 
 
-
                         $this->db->exec($sql);
 
 
@@ -1071,6 +1066,18 @@ class DeliveryNote extends DB_Table {
 
                 $order = get_object('Order', $this->get('Delivery Note Order Key'));
                 $order->update(array('Order State' => 'PackedDone'));
+
+                break;
+
+
+            case 'Invoice Deleted':
+
+                if ($this->get('State Index') != 90) {
+                    return;
+                }
+                $this->update_field('Delivery Note Date Dispatched Approved', '', 'no_history');
+                $this->update_field('Delivery Note State', 'Packed Done', 'no_history');
+
 
                 break;
 
@@ -1098,6 +1105,100 @@ class DeliveryNote extends DB_Table {
 
                 $order = get_object('Order', $this->data['Delivery Note Order Key']);
                 $order->update(array('Order State' => 'Dispatched'));
+
+                break;
+            case 'Cancelled':
+
+
+                $order = get_object('Order', $this->data['Delivery Note Order Key']);
+                if ($order->get('Order State') >= 90) {
+                    return;
+                }
+
+
+                $this->update_field(
+                    'Delivery Note Date Cancelled', $date, 'no_history'
+                );
+                $this->update_field(
+                    'Delivery Note State', $value, 'no_history'
+                );
+
+                // todo: Manually choose where the stock will go
+
+
+                $sql = sprintf(
+                    'SELECT * FROM `Inventory Transaction Fact`  WHERE  `Delivery Note Key`=%d  AND `Inventory Transaction Type`="Sale" AND `Inventory Transaction Section`="Out"  ', $this->id
+                );
+
+
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+
+                        $sql = sprintf('UPDATE `Inventory Transaction Fact`  SET `Inventory Transaction Type`="FailSale" WHERE `Inventory Transaction Key`=%d  ', $row['Inventory Transaction Key']);
+                        $this->db->exec($sql);
+
+
+                        //print "$sql\n";
+
+                        $location_key = $row['Location Key'];
+
+
+                        $note = '';
+
+                        $picker_key=$row['Picker Key'];
+
+
+                        $sql = sprintf(
+                            "INSERT INTO `Inventory Transaction Fact`  (
+					`Map To Order Transaction Fact Parts Multiplicity`,`Map To Order Transaction Fact XHTML Info`,`Inventory Transaction Record Type`,`Inventory Transaction Section`,
+					`Inventory Transaction Fact Delivery 2 Alpha Code`,`Picking Note`,
+
+					`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,
+
+					`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,
+
+					`Metadata`,`Note`,`Supplier Product ID`,`Supplier Product Historic Key`,`Supplier Key`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata`,`Relations`,`Picker Key`)
+					VALUES (
+					%d,%s,%s,%s,%s,%s,
+					%f,%s,%s,%d,%s,%d,
+					%s,%s,%.2f,%f,%f,%f,
+
+					%s,%s,%d,%d,%d,%d,%s,%d,%d) ", $row['Map To Order Transaction Fact Parts Multiplicity'], prepare_mysql(''), "'Movement'", "'In'",  prepare_mysql(''),  prepare_mysql(''),
+
+                            $row['Inventory Transaction Weight'], prepare_mysql($date), prepare_mysql($date), $this->id, prepare_mysql($row['Part SKU']), $location_key,
+
+
+                            -1 * $row['Inventory Transaction Quantity'], "'Restock'", -1 * $row['Inventory Transaction Amount'], 0, 0, 0,
+
+
+                            prepare_mysql($row['Metadata']), prepare_mysql($note),
+
+                            $row['Supplier Product ID'],
+
+                            $row['Supplier Product Historic Key'], $row['Supplier Key'], $row['Map To Order Transaction Fact Key'],
+
+                            prepare_mysql($row['Map To Order Transaction Fact Metadata']),$row['Inventory Transaction Key'],$picker_key
+                        );
+
+                       // print "$sql\n";
+
+                        $this->db->exec($sql);
+
+                        // todo: fork this
+                        $part_location = get_object('Part_Location', $row['Part SKU'].'_'.$row['Location Key']);
+                        $part_location->update_stock();
+
+
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+
+                $order->update(array('Order State' => 'Delivery Note Cancelled'));
+
 
                 break;
 
@@ -1742,50 +1843,13 @@ class DeliveryNote extends DB_Table {
                     $this->db->exec($sql);
 
 
-                    $this->update_field('Delivery Note Date Finish Picking', $date, 'no_history');
-                    $this->update_field('Delivery Note Date Finish Packing', $date, 'no_history');
-                    //$this->update_field('Delivery Note Date Done Approved', $date, 'no_history');
-
-                    $this->update_field('Delivery Note Date', $date, 'no_history');
-
-                    //  $this->update_field('Delivery Note Approved Done', 'Yes', 'no_history');
-                    $this->update_field('Delivery Note State', 'Packed');
 
 
-                    $this->update_totals();
 
 
-                    $operations = array(
-                        'cancel_operations',
-                        'packed_done_operations'
-                    );
-
-                    $this->update_metadata = array(
-                        'class_html'  => array(
-                            'Delivery_Note_State'                       => $this->get('State'),
-                            'Delivery_Note_Dispatched_Date'             => '&nbsp;'.$this->get('Dispatched Date'),
-                            'Supplier_Delivery_Number_Dispatched_Items' => $this->get('Number Dispatched Items'),
-                            'Delivery_Note_Start_Picking_Datetime'      => '<i class="fa fa-clock-o" aria-hidden="true"></i> '.$this->get('Start Picking Datetime'),
-                            'Delivery_Note_Start_Packing_Datetime'      => '<i class="fa fa-clock-o" aria-hidden="true"></i> '.$this->get('Start Packing Datetime'),
-                            'Delivery_Note_Finish_Picking_Datetime'     => $this->get('Finish Picking Datetime'),
-                            'Delivery_Note_Finish_Packing_Datetime'     => $this->get('Finish Packing Datetime'),
-                            'Delivery_Note_Picked_Label'                => ($this->get('State Index') == 20 ? _('Picking') : _('Picked')),
-
-                            'Delivery_Note_Packed_Done_Datetime' => '&nbsp;'.$this->get('Done Approved Datetime').'&nbsp;',
-
-
-                            'Delivery_Note_Picked_Percentage_or_Datetime' => '&nbsp;'.$this->get('Picked Percentage or Datetime').'&nbsp;',
-                            'Delivery_Note_Packed_Percentage_or_Datetime' => '&nbsp;'.$this->get('Packed Percentage or Datetime').'&nbsp;',
-                            'Delivery_Note_Dispatched_Approved_Datetime'  => '&nbsp;'.$this->get('Dispatched Approved Datetime').'&nbsp;',
-                            'Delivery_Note_Dispatched_Datetime'           => '&nbsp;'.$this->get('Dispatched Datetime').'&nbsp;',
-
-                            'Delivery_Note_State' => $this->get('State')
-
-
-                        ),
-                        'operations'  => $operations,
-                        'state_index' => $this->get('State Index')
-                    );
+                    // todo: fork this
+                    $part_location = get_object('Part_Location', $row['Part SKU'].'_'.$row['Location Key']);
+                    $part_location->update_stock();
 
 
                 }
@@ -1796,6 +1860,50 @@ class DeliveryNote extends DB_Table {
             }
 
         }
+
+
+        $this->update_field('Delivery Note Date Finish Picking', $date, 'no_history');
+        $this->update_field('Delivery Note Date Finish Packing', $date, 'no_history');
+
+        $this->update_field('Delivery Note Date', $date, 'no_history');
+
+        $this->update_field('Delivery Note State', 'Packed');
+
+
+        $this->update_totals();
+
+
+        $operations = array(
+            'cancel_operations',
+            'packed_done_operations'
+        );
+
+        $this->update_metadata = array(
+            'class_html'  => array(
+                'Delivery_Note_State'                       => $this->get('State'),
+                'Delivery_Note_Dispatched_Date'             => '&nbsp;'.$this->get('Dispatched Date'),
+                'Supplier_Delivery_Number_Dispatched_Items' => $this->get('Number Dispatched Items'),
+                'Delivery_Note_Start_Picking_Datetime'      => '<i class="fa fa-clock-o" aria-hidden="true"></i> '.$this->get('Start Picking Datetime'),
+                'Delivery_Note_Start_Packing_Datetime'      => '<i class="fa fa-clock-o" aria-hidden="true"></i> '.$this->get('Start Packing Datetime'),
+                'Delivery_Note_Finish_Picking_Datetime'     => $this->get('Finish Picking Datetime'),
+                'Delivery_Note_Finish_Packing_Datetime'     => $this->get('Finish Packing Datetime'),
+                'Delivery_Note_Picked_Label'                => ($this->get('State Index') == 20 ? _('Picking') : _('Picked')),
+
+                'Delivery_Note_Packed_Done_Datetime' => '&nbsp;'.$this->get('Done Approved Datetime').'&nbsp;',
+
+
+                'Delivery_Note_Picked_Percentage_or_Datetime' => '&nbsp;'.$this->get('Picked Percentage or Datetime').'&nbsp;',
+                'Delivery_Note_Packed_Percentage_or_Datetime' => '&nbsp;'.$this->get('Packed Percentage or Datetime').'&nbsp;',
+                'Delivery_Note_Dispatched_Approved_Datetime'  => '&nbsp;'.$this->get('Dispatched Approved Datetime').'&nbsp;',
+                'Delivery_Note_Dispatched_Datetime'           => '&nbsp;'.$this->get('Dispatched Datetime').'&nbsp;',
+
+                'Delivery_Note_State' => $this->get('State')
+
+
+            ),
+            'operations'  => $operations,
+            'state_index' => $this->get('State Index')
+        );
 
 
     }

@@ -1826,8 +1826,8 @@ function get_invoice_navigation($data, $smarty, $user, $db, $account) {
 
 
                     $sql = sprintf(
-                        "select `Invoice Public ID` object_name,P.`Payment Key` as object_key from $table   $where $wheref
-	                and ($_order_field < %s OR ($_order_field = %s AND P.`Payment Key` < %d))  order by $_order_field desc , P.`Payment Key` desc limit 1",
+                        "select `Invoice Public ID` object_name,I.`Invoice Key` as object_key from $table   $where $wheref
+	                and ($_order_field < %s OR ($_order_field = %s AND I.`Invoice Key` < %d))  order by $_order_field desc , I.`Invoice Key`desc limit 1",
 
                         prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
                     );
@@ -1840,13 +1840,14 @@ function get_invoice_navigation($data, $smarty, $user, $db, $account) {
                         }
                     } else {
                         print_r($error_info = $db->errorInfo());
+                        print $sql;
                         exit;
                     }
 
 
                     $sql = sprintf(
-                        "select `Invoice Public ID` object_name,P.`Payment Key` as object_key from $table   $where $wheref
-	                and ($_order_field  > %s OR ($_order_field  = %s AND P.`Payment Key` > %d))  order by $_order_field   , P.`Payment Key`  limit 1", prepare_mysql($_order_field_value),
+                        "select `Invoice Public ID` object_name,I.`Invoice Key` as object_key from $table   $where $wheref
+	                and ($_order_field  > %s OR ($_order_field  = %s AND I.`Invoice Key` > %d))  order by $_order_field   , I.`Invoice Key`  limit 1", prepare_mysql($_order_field_value),
                         prepare_mysql($_order_field_value), $object->id
                     );
 

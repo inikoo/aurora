@@ -57,8 +57,7 @@ function payment_service_providers($_data, $db, $user) {
 
     $account_currency = $account->get('Account Currency');
 
-    $sql
-           = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
     foreach ($db->query($sql) as $data) {
@@ -111,8 +110,7 @@ function payment_accounts($_data, $db, $user) {
 
     $account_currency = $account->get('Account Currency');
 
-    $sql
-           = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
 
@@ -168,8 +166,7 @@ function payments($_data, $db, $user) {
     include_once 'prepare_table/init.php';
 
 
-    $sql
-        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
     $adata = array();
 
@@ -193,13 +190,21 @@ function payments($_data, $db, $user) {
                     break;
             }
 
-
+            $operations = '';
             switch ($data['Payment Transaction Status']) {
                 case 'Pending':
                     $status = _('Pending');
                     break;
                 case 'Completed':
-                    $status = _('Completed');
+                    $status     = _('Completed');
+                    $operations = sprintf(
+                        '<span class="operations">
+                            <i class="fa fa-trash button %s" aria-hidden="true" title="'._('Remove payment').'"  onClick="cancel_payment(this,%d)"  ></i>
+                            <i class="fa fa-share   fa-flip-horizontal button " aria-hidden="true" title="'._('Refund/Credit payment').'"  onClick="open_refund_dialog(this,%d)"  ></i>
+
+                            </span>', ($data['Payment Submit Type'] != 'Manual' ? 'hide' : ''), $data['Payment Key'], $data['Payment Key']
+                    );
+
                     break;
                 case 'Cancelled':
                     $status = _('Cancelled');
@@ -217,27 +222,30 @@ function payments($_data, $db, $user) {
             }
 
 
-
-
-            $status.='<br><span class="small">'.$data['Payment Transaction Status Info'].'</span>';
+            $status .= '<br><span class="small">'.$data['Payment Transaction Status Info'].'</span>';
 
             $notes = '';
 
 
-            $amount= '<span class="'. ($data['Payment Transaction Status']!='Completed'?'strikethrough':'').'" >'.money($data['Payment Transaction Amount'], $data['Payment Currency Code']).'</span>';
+            $amount =
+                '<span class="'.($data['Payment Transaction Status'] != 'Completed' ? 'strikethrough' : '').'" >'.money($data['Payment Transaction Amount'], $data['Payment Currency Code']).'</span>';
 
+
+            $refunds = '';
 
 
             $adata[] = array(
                 'id'           => (integer)$data['Payment Key'],
                 'reference'    => $data['Payment Transaction ID'],
                 'currency'     => $data['Payment Currency Code'],
-                'amount'       =>$amount,
-                'formatted_id' => sprintf("<span class='link' onclick='change_view(\"/%s/%d/payment/%d\")' >%05d", $parameters['parent'],$parameters['parent_key'],$data['Payment Key'],$data['Payment Key']),
+                'amount'       => $amount,
+                'formatted_id' => sprintf("<span class='link' onclick='change_view(\"/payment/%d\")' >%05d", $data['Payment Key'], $data['Payment Key']),
                 'type'         => $type,
                 'status'       => $status,
                 'notes'        => $notes,
                 'date'         => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Payment Last Updated Date'].' +0:00')),
+                'operations'   => $operations,
+                'refunds'      => $refunds
 
             );
 
@@ -274,63 +282,55 @@ function stores($_data, $db, $user) {
     $record_data = array();
 
 
-    $max_length=36;
+    $max_length = 36;
 
     foreach ($db->query($sql) as $data) {
 
 
-
-        if($data['payment_account_data']==''){
-            $data['Payment Account Store Key']='';
-            $data['Payment Account Store Status']='';
-            $data['Payment Account Store Show In Cart']='';
-        }else{
-            list($data['Payment Account Store Key'],$data['Payment Account Store Status'],$data['Payment Account Store Show In Cart'])=preg_split('/,/',$data['payment_account_data']);
+        if ($data['payment_account_data'] == '') {
+            $data['Payment Account Store Key']          = '';
+            $data['Payment Account Store Status']       = '';
+            $data['Payment Account Store Show In Cart'] = '';
+        } else {
+            list($data['Payment Account Store Key'], $data['Payment Account Store Status'], $data['Payment Account Store Show In Cart']) = preg_split('/,/', $data['payment_account_data']);
 
         }
 
 
+        $name = (strlen($data['Store Name']) > $max_length ? substr($data['Store Name'], 0, $max_length)."..." : $data['Store Name']);
 
 
+        if ($data['Payment Account Store Status'] == '') {
+            $accepted         = sprintf('<span class="very_discreet ">%s</span>', _('No applicable'));
+            $shown_in_website = '';
+        } else {
+            if ($data['Payment Account Store Status'] == 'Active') {
+                $accepted = sprintf('<span class="success button ">%s</span>', _('Yes'));
 
-        $name = (strlen($data['Store Name']) > $max_length ? substr($data['Store Name'],0,$max_length)."..." : $data['Store Name']);
+                if ($data['Payment Account Store Show In Cart'] == 'Yes') {
+                    $shown_in_website = sprintf('<span class="success button ">%s</span>', _('Yes'));
 
+                } else {
+                    $shown_in_website = sprintf('<span class="error discreet button ">%s</span>', _('No'));
+                }
 
-        if($data['Payment Account Store Status']=='') {
-            $accepted=sprintf('<span class="very_discreet ">%s</span>',_('No applicable'));
-            $shown_in_website='';
-        }else if($data['Payment Account Store Status']=='Active'){
-            $accepted=sprintf('<span class="success button ">%s</span>',_('Yes'));
-
-            if($data['Payment Account Store Show In Cart']=='Yes'){
-                $shown_in_website=sprintf('<span class="success button ">%s</span>',_('Yes'));
-
-            }else{
-                $shown_in_website=sprintf('<span class="error discreet button ">%s</span>',_('No'));
+            } else {
+                $accepted         = sprintf('<span class="error discreet button ">%s</span>', _('No'));
+                $shown_in_website = '';
             }
-
-        }else{
-            $accepted=sprintf('<span class="error discreet button ">%s</span>',_('No'));
-            $shown_in_website='';
         }
-
-
-
-
-
 
 
         $record_data[] = array(
             'access' => (in_array($data['Store Key'], $user->stores) ? '' : '<i class="fa fa-lock "></i>'),
 
-            'id'   => (integer)$data['Store Key'],
-            'code' => sprintf('<span class="link" onClick="change_view(\'store/%d\')" >%s</span>',$data['Store Key'],$data['Store Code']),
-            'name' => sprintf('<span class="link" onClick="change_view(\'store/%d\')" >%s</span>',$data['Store Key'],$name),
-            'website' => sprintf('<span class="link" onClick="change_view(\'store/%d/website\')" title="%s" >%s</span>',$data['Store Key'],$data['Website Name'],$data['Website Code']),
+            'id'      => (integer)$data['Store Key'],
+            'code'    => sprintf('<span class="link" onClick="change_view(\'store/%d\')" >%s</span>', $data['Store Key'], $data['Store Code']),
+            'name'    => sprintf('<span class="link" onClick="change_view(\'store/%d\')" >%s</span>', $data['Store Key'], $name),
+            'website' => sprintf('<span class="link" onClick="change_view(\'store/%d/website\')" title="%s" >%s</span>', $data['Store Key'], $data['Website Name'], $data['Website Code']),
 
-           'accepted'=>$accepted,
-            'shown_in_website'=>$shown_in_website
-
+            'accepted'         => $accepted,
+            'shown_in_website' => $shown_in_website
 
 
         );

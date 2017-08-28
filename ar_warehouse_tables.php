@@ -421,47 +421,49 @@ function stock_transactions($_data, $db, $user) {
 
 
                     break;
+                case 'Restock':
+                    $type = '<i class="fa fa-sign-in fa-fw" aria-hidden="true"></i>';
+                    $note = sprintf(
+                        _('%s (%s) returned from %s'), number($data['Inventory Transaction Quantity']).'  <span title="'._('Stock keeping outers').'">SKO</span>',
+
+                        sprintf(
+                            '<span class="button strong" onClick="change_view(\'part/%d\')">%s</span>', $data['Part SKU'], $data['Part Reference']
+                        )
+
+
+                        , sprintf(
+                            '<span class="button" onClick="change_view(\'delivery_note/%d\')"><i class="fa fa-truck" aria-hidden="true"></i> %s</span>', $data['Delivery Note Key'],
+                            $data['Delivery Note ID']
+                        ), sprintf(
+                            '<span class="button" onClick="change_view(\'location/%d\')">%s</span>', $data['Location Key'], $data['Location Code']
+                        )
+
+                    );
+                    break;
+                case 'FailSale':
                 case 'Sale':
                     $type = '<i class="fa fa-sign-out fa-fw" aria-hidden="true"></i>';
-                    if ($parameters['parent'] == 'part') {
-                        $note = sprintf(
-                            _('%s %s (%s) taken from %s'),
 
-                            number(
-                                -1 * $data['Inventory Transaction Quantity']
-                            ), '<span title="'._('Stock keeping outers').'">SKO</span>',
+                    $note = sprintf(
+                        _('%s (%s) picked for %s'), number(-1 * $data['Inventory Transaction Quantity']).'  <span title="'._('Stock keeping outers').'">SKO</span>',
 
-                            sprintf(
-                                '<span class="button" onClick="change_view(\'delivery_note/%d\')"><i class="fa fa-truck" aria-hidden="true"></i> %s</span>', $data['Delivery Note Key'],
-                                $data['Delivery Note ID']
-                            ), sprintf(
-                                '<span class="button" onClick="change_view(\'location/%d\')">%s</span>', $data['Location Key'], $data['Location Code']
-                            )
+                        sprintf(
+                            '<span class="button strong" onClick="change_view(\'part/%d\')">%s</span>', $data['Part SKU'], $data['Part Reference']
+                        )
 
 
-                        );
-                    } else {
-                        $note = sprintf(
-                            _('%sx %s (%s) taken from %s'), number(
-                            -1 * $data['Inventory Transaction Quantity']
-                        ),
+                        , sprintf(
+                            '<span class="button" onClick="change_view(\'delivery_note/%d\')"><i class="fa fa-truck" aria-hidden="true"></i> %s</span>', $data['Delivery Note Key'],
+                            $data['Delivery Note ID']
+                        ), sprintf(
+                            '<span class="button" onClick="change_view(\'location/%d\')">%s</span>', $data['Location Key'], $data['Location Code']
+                        )
 
-                            ($parameters['parent'] == 'part'
-                                ? sprintf(
-                                    '<i class="fa fa-square" aria-hidden="true"></i> %s', $data['Part Reference']
-                                )
-                                : sprintf(
-                                    '<span class="button" onClick="change_view(\'part/%d\')"><i class="fa fa-square" aria-hidden="true"></i> %s</span>', $data['Part SKU'], $data['Part Reference']
-                                )), sprintf(
-                                '<span class="button" onClick="change_view(\'delivery_note/%d\')"><i class="fa fa-truck" aria-hidden="true"></i> %s</span>', $data['Delivery Note Key'],
-                                $data['Delivery Note ID']
-                            ), sprintf(
-                                '<span class="button" onClick="change_view(\'location/%d\')">%s</span>', $data['Location Key'], $data['Location Code']
-                            )
+                    );
 
-                        );
+                    if ($data['Inventory Transaction Type'] == 'FailSale') {
+                        $note .= ' <span class="warning"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> '._('Returned').'</span>';
                     }
-
 
                     break;
                 case 'In':

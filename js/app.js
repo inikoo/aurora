@@ -24,7 +24,6 @@ $(document).ready(function () {
 
 
 
-
     state = {
         module: '',
         section: '',

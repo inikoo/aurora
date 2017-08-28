@@ -490,8 +490,7 @@ class Invoice extends DB_Table {
             $data = array();
 
             $sql = sprintf(
-                "SELECT  `Transaction Tax Code`,sum(`Order Transaction Amount`) AS net   FROM `Order Transaction Fact` WHERE
-		`Invoice Key`=%d  GROUP BY  `Transaction Tax Code`  ", $this->id
+                "SELECT  `Transaction Tax Code`,sum(`Order Transaction Amount`) AS net   FROM `Order Transaction Fact` WHERE `Invoice Key`=%d  GROUP BY  `Transaction Tax Code`  ", $this->id
             );
 
 
@@ -508,8 +507,7 @@ class Invoice extends DB_Table {
 
 
             $sql = sprintf(
-                "SELECT  `Tax Category Code`, sum(`Transaction Net Amount`) AS net  FROM `Order No Product Transaction Fact` WHERE
-		`Order Key`=%d  GROUP BY  `Tax Category Code`  ", $this->id
+                "SELECT  `Tax Category Code`, sum(`Transaction Net Amount`) AS net  FROM `Order No Product Transaction Fact` WHERE `Order Key`=%d  GROUP BY  `Tax Category Code`  ", $this->id
             );
 
             //print $sql;
@@ -574,7 +572,6 @@ class Invoice extends DB_Table {
             $this->db->exec($sql);
 
 
-
             $sql = sprintf(
                 "UPDATE `Order Payment Bridge` SET `Invoice Key`=%d  WHERE `Order Key`=%d",
 
@@ -635,16 +632,15 @@ class Invoice extends DB_Table {
             ), 'no_history'
         );
 
-        if($to_pay == 0){
+        if ($to_pay == 0) {
 
-            if($this->data['Invoice Paid Date']==''){
-                $this->update_field('Invoice Paid Date',gmdate('Y-m-d H:i:s'),'no_history');
+            if ($this->data['Invoice Paid Date'] == '') {
+                $this->update_field('Invoice Paid Date', gmdate('Y-m-d H:i:s'), 'no_history');
             }
 
-        }else{
-            $this->update_field('Invoice Paid Date','','no_history');
+        } else {
+            $this->update_field('Invoice Paid Date', '', 'no_history');
         }
-
 
 
     }
@@ -1001,8 +997,6 @@ class Invoice extends DB_Table {
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
 
 
-
-
         switch ($field) {
 
             case 'Invoice Public ID':
@@ -1012,19 +1006,19 @@ class Invoice extends DB_Table {
                 $number = strtolower($value);
                 if (preg_match("/^\d+/", $number, $match)) {
                     $invoice_number = $match[0];
-                    $file_as   = preg_replace('/^\d+/', sprintf("%012d", $invoice_number), $number);
+                    $file_as        = preg_replace('/^\d+/', sprintf("%012d", $invoice_number), $number);
 
                 } elseif (preg_match("/\d+$/", $number, $match)) {
                     $invoice_number = $match[0];
-                    $file_as  = preg_replace('/\d+$/', sprintf("%012d", $invoice_number), $number);
+                    $file_as        = preg_replace('/\d+$/', sprintf("%012d", $invoice_number), $number);
 
                 } else {
-                    $file_as   = $number;
+                    $file_as = $number;
                 }
 
                 $this->update_field('Invoice File As', $file_as, $options);
 
-            break;
+                break;
             default:
                 $base_data = $this->base_data();
                 if (array_key_exists($field, $base_data)) {
@@ -1615,6 +1609,19 @@ class Invoice extends DB_Table {
     function delete() {
 
 
+        $order = get_object('Order', $this->data['Invoice Order Key']);
+
+        $order->editor=$this->editor;
+
+        if ($order->get('Order State') == 'Dispatched') {
+            $this->error = true;
+            $this->msg   = 'invoice cant be deleted';
+
+            return;
+
+        }
+
+
         $products             = array();
         $dates                = array();
         $customer_key         = $this->get('Invoice Customer Key');
@@ -1637,93 +1644,78 @@ class Invoice extends DB_Table {
         }
 
 
-        $orders = $this->get_orders_objects();
-        $dns    = $this->get_delivery_notes_objects();
+        $sql = sprintf("DELETE FROM `Invoice Tax Bridge` WHERE `Invoice Key`=%d", $this->id);
+        $this->db->exec($sql);
 
-        $sql = sprintf(
-            "DELETE FROM `Order Invoice Bridge` WHERE `Invoice Key`=%d   ", $this->id
-        );
-        mysql_query($sql);
 
-        $sql = sprintf(
-            "DELETE FROM `Invoice Tax Bridge` WHERE `Invoice Key`=%d", $this->id
-        );
-        mysql_query($sql);
+        $sql = sprintf("DELETE FROM `Invoice Sales Representative Bridge`  WHERE   `Invoice Key`=%d", $this->id);
+        $this->db->exec($sql);
 
-        $sql = sprintf(
-            "DELETE FROM `Invoice Sales Representative Bridge`  WHERE   `Invoice Key`=%d", $this->id
-        );
-        mysql_query($sql);
+        $sql = sprintf("DELETE FROM `Invoice Processed By Bridge`  WHERE   `Invoice Key`=%d", $this->id);
+        $this->db->exec($sql);
 
-        $sql = sprintf(
-            "DELETE FROM `Invoice Processed By Bridge`  WHERE   `Invoice Key`=%d", $this->id
-        );
-        mysql_query($sql);
+        $sql = sprintf("DELETE FROM `Invoice Charged By Bridge`  WHERE   `Invoice Key`=%d", $this->id);
+        $this->db->exec($sql);
 
-        $sql = sprintf(
-            "DELETE FROM `Invoice Charged By Bridge`  WHERE   `Invoice Key`=%d", $this->id
-        );
-        mysql_query($sql);
+        $sql = sprintf("DELETE FROM `Invoice Tax Dimension` WHERE `Invoice Key`=%d", $this->id);
+        $this->db->exec($sql);
 
-        $sql = sprintf(
-            "DELETE FROM `Invoice Tax Dimension` WHERE `Invoice Key`=%d", $this->id
-        );
-        mysql_query($sql);
+        $sql = sprintf("DELETE FROM `Invoice Delivery Note Bridge` WHERE `Invoice Key`=%d   ", $this->id);
+        $this->db->exec($sql);
 
-        $sql = sprintf(
-            "DELETE FROM `Invoice Delivery Note Bridge` WHERE `Invoice Key`=%d   ", $this->id
-        );
-        mysql_query($sql);
-
-        $sql = sprintf(
-            "DELETE FROM `History Dimension`  WHERE   `Direct Object`='Invoice' AND `Direct Object Key`=%d", $this->id
-        );
-        mysql_query($sql);
+        $sql = sprintf("DELETE FROM `History Dimension`  WHERE   `Direct Object`='Invoice' AND `Direct Object Key`=%d", $this->id);
+        $this->db->exec($sql);
 
 
         $payments = array();
         $sql      = sprintf(
             "SELECT * FROM `Invoice Payment Bridge` WHERE `Invoice Key`=%d", $this->id
         );
-        $res      = mysql_query($sql);
-        while ($row = mysql_fetch_assoc($res)) {
-            $payment    = new Payment($row['Payment Key']);
-            $payments[] = $payment;
 
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $payments[] = get_object('Payment', $row['Payment Key']);
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
 
 
         $sql = sprintf(
             "DELETE FROM `Invoice Payment Bridge`  WHERE    `Invoice Key`=%d", $this->id
         );
-        mysql_query($sql);
+        $this->db->exec($sql);
 
 
         $sql = sprintf(
             "UPDATE `Payment Dimension`  SET `Payment Invoice Key`=NULL   WHERE `Payment Invoice Key`=%d", $this->id
         );
-        mysql_query($sql);
+        $this->db->exec($sql);
 
 
-        foreach ($payments as $payment) {
-            $payment->update_balance();
-        }
+        //foreach ($payments as $payment) {
+        //    $payment->update_balance();
+        //}
 
-
-        $sql                       = sprintf(
-            "SELECT `Category Key` FROM `Category Bridge`  WHERE   `Subject`='Invoice' AND `Subject Key`=%d", $this->id
-        );
-        $result_test_category_keys = mysql_query($sql);
         $_category_keys            = array();
-        while ($row_test_category_keys = mysql_fetch_array(
-            $result_test_category_keys, MYSQL_ASSOC
-        )) {
-            $_category_keys[$row_test_category_keys['Category Key']] = $row_test_category_keys['Category Key'];
+        $sql                       = sprintf("SELECT `Category Key` FROM `Category Bridge`  WHERE   `Subject`='Invoice' AND `Subject Key`=%d", $this->id);
+        if ($result=$this->db->query($sql)) {
+        		foreach ($result as $row) {
+                    $_category_keys[$row['Category Key']] = $row['Category Key'];
+        		}
+        }else {
+        		print_r($error_info=$this->db->errorInfo());
+        		print "$sql\n";
+        		exit;
         }
-        $sql = sprintf(
-            "DELETE FROM `Category Bridge`  WHERE   `Subject`='Invoice' AND `Subject Key`=%d", $this->id
-        );
-        mysql_query($sql);
+
+
+
+        $sql = sprintf("DELETE FROM `Category Bridge`  WHERE   `Subject`='Invoice' AND `Subject Key`=%d", $this->id);
+        $this->db->exec($sql);
+
 
         foreach ($_category_keys as $_category_key) {
             $_category = new Category($_category_key);
@@ -1743,43 +1735,49 @@ class Invoice extends DB_Table {
         $sql = sprintf(
             "DELETE FROM `Order Transaction Fact`  WHERE    `Invoice Key`=%d  AND (`Order Key`=0 OR `Order Key` IS NULL) ", $this->id
         );
-        mysql_query($sql);
+        $this->db->exec($sql);
 
         $sql = sprintf(
             "UPDATE `Order Transaction Fact` SET `Invoice Date`=NULL , `Invoice Key`=NULL ,`Consolidated`='No'  WHERE  `Invoice Key`=%d", $this->id
         );
-        mysql_query($sql);
+        $this->db->exec($sql);
 
 
         $sql = sprintf(
             "DELETE FROM `Order No Product Transaction Fact`  WHERE    `Invoice Key`=%d  AND (`Order Key`=0 OR `Order Key` IS NULL) ", $this->id
         );
-        mysql_query($sql);
+        $this->db->exec($sql);
 
         $sql = sprintf(
             "UPDATE `Order No Product Transaction Fact` SET `Invoice Key`=NULL , `Consolidated`='No'   WHERE  `Invoice Key`=%d", $this->id
         );
-        mysql_query($sql);
+        $this->db->exec($sql);
 
 
         $sql = sprintf(
             "DELETE FROM `Invoice Dimension`  WHERE  `Invoice Key`=%d", $this->id
         );
-        mysql_query($sql);
-
-        foreach ($dns as $dn) {
+        $this->db->exec($sql);
 
 
-            $dn->update(
-                array(
-                    'Delivery Note Invoiced'                    => 'No',
-                    'Delivery Note Invoiced Net DC Amountd'     => 0,
-                    'Delivery Note Invoiced Shipping DC Amount' => 0
 
-                )
-            );
 
-        }
+
+        $dn = get_object('DeliveryNote', $order->get('Order Delivery Note Key'));
+
+
+        $dn->update(
+            array(
+                'Delivery Note Invoiced'                    => 'No',
+                'Delivery Note Invoiced Net DC Amount'      => 0,
+                'Delivery Note Invoiced Shipping DC Amount' => 0
+
+            )
+        );
+
+
+
+
 
 
         if ($this->data['Invoice Type'] == 'Refund') {
@@ -1817,18 +1815,14 @@ class Invoice extends DB_Table {
 
 
         }
-
-        foreach ($orders as $order) {
-            if ($this->data['Invoice Type'] == 'Invoice') {
-                $order->update(array('Order Invoiced' => 'No'));
-            }
-
-            $order->update_totals();
-
-
+        else{
+            $order->update(array('Order State' => 'Invoice Deleted'),'no_history');
         }
 
-        include_once 'new_fork.php';
+
+
+
+        include_once 'utils/new_fork.php';
         global $account_code;
         $msg = new_housekeeping_fork(
             'au_asset_sales', array(
@@ -1843,9 +1837,18 @@ class Invoice extends DB_Table {
 
 
         $this->deleted = true;
+
+
+        return sprintf('/orders/%d/%d',$order->get('Store Key'),$order->id);
+
     }
 
     function get($key) {
+
+        if(!$this->id){
+            return false;
+        }
+
 
         switch ($key) {
 
@@ -1984,19 +1987,19 @@ class Invoice extends DB_Table {
     }
 
 
-    function get_payments($scope = 'keys',$filter='') {
+    function get_payments($scope = 'keys', $filter = '') {
 
 
-        if($filter=='Completed'){
-            $where=' and `Payment Transaction Status`="Completed" ';
-        }else{
-            $where='';
+        if ($filter == 'Completed') {
+            $where = ' and `Payment Transaction Status`="Completed" ';
+        } else {
+            $where = '';
         }
 
 
         $payments = array();
         $sql      = sprintf(
-            "SELECT B.`Payment Key` FROM `Order Payment Bridge` B left join `Payment Dimension` P  on (P.`Payment Key`=B.`Payment Key`)  WHERE `Invoice Key`=%d %s ", $this->id,$where
+            "SELECT B.`Payment Key` FROM `Order Payment Bridge` B LEFT JOIN `Payment Dimension` P  ON (P.`Payment Key`=B.`Payment Key`)  WHERE `Invoice Key`=%d %s ", $this->id, $where
         );
 
 
@@ -2007,7 +2010,7 @@ class Invoice extends DB_Table {
                 }
 
                 if ($scope == 'objects') {
-                    $payments[$row['Payment Key']] =  get_object('Payment',$row['Payment Key']);
+                    $payments[$row['Payment Key']] = get_object('Payment', $row['Payment Key']);
 
                 } else {
                     $payments[$row['Payment Key']] = $row['Payment Key'];
@@ -2024,7 +2027,6 @@ class Invoice extends DB_Table {
     }
 
 }
-
 
 
 ?>

@@ -350,6 +350,15 @@ $tab_defaults = array(
         'f_field'     => 'code',
 
     ),
+    'delivery_note_cancelled.items'         => array(
+        'view'        => 'overview',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 1000,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'code',
+
+    ),
     'delivery_note.fast_track_packing'         => array(
         'view'        => 'overview',
         'sort_key'    => 'id',

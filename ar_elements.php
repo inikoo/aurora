@@ -26,7 +26,6 @@ if (!isset($_REQUEST['tab'])) {
 }
 
 
-
 $tab = $_REQUEST['tab'];
 
 switch ($tab) {
@@ -1372,13 +1371,13 @@ function get_orders_pending_element_numbers($db, $data, $user) {
 
     $elements_numbers = array(
         'state'   => array(
-            'InBasket'         => 0,
-            'InProcess'        => 0,
-            'InWarehouse'      => 0,
-            'PackedDone'       => 0,
-            'Approved' => 0,
-            'Dispatched'       => 0,
-            'Cancelled'        => 0,
+            'InBasket'    => 0,
+            'InProcess'   => 0,
+            'InWarehouse' => 0,
+            'PackedDone'  => 0,
+            'Approved'    => 0,
+            'Dispatched'  => 0,
+            'Cancelled'   => 0,
         ),
         'source'  => array(
             'Internet' => 0,
@@ -1411,9 +1410,9 @@ function get_orders_pending_element_numbers($db, $data, $user) {
         $elements_numbers['state']['InProcess']   = $object->get('Orders In Process Number');
         $elements_numbers['state']['InWarehouse'] = $object->get('Orders In Warehouse Number');
 
-        $elements_numbers['state']['PackedDone']       = $object->get('Orders Packed Number');
-        $elements_numbers['state']['Approved'] = $object->get('Orders Dispatch Approved Number');
-        $elements_numbers['state']['Dispatched']       = $object->get('Orders Dispatched Number');
+        $elements_numbers['state']['PackedDone'] = $object->get('Orders Packed Number');
+        $elements_numbers['state']['Approved']   = $object->get('Orders Dispatch Approved Number');
+        $elements_numbers['state']['Dispatched'] = $object->get('Orders Dispatched Number');
 
         $elements_numbers['state']['Cancelled'] = $object->get('Orders Cancelled Number');
 
@@ -1619,13 +1618,13 @@ function get_orders_element_numbers($db, $data, $user) {
 
     $elements_numbers = array(
         'state'   => array(
-            'InBasket'         => 0,
-            'InProcess'        => 0,
-            'InWarehouse'      => 0,
-            'PackedDone'       => 0,
-            'Approved' => 0,
-            'Dispatched'       => 0,
-            'Cancelled'        => 0,
+            'InBasket'    => 0,
+            'InProcess'   => 0,
+            'InWarehouse' => 0,
+            'PackedDone'  => 0,
+            'Approved'    => 0,
+            'Dispatched'  => 0,
+            'Cancelled'   => 0,
         ),
         'source'  => array(
             'Internet' => 0,
@@ -1659,9 +1658,9 @@ function get_orders_element_numbers($db, $data, $user) {
         $elements_numbers['state']['InProcess']   = $object->get('Orders In Process Number');
         $elements_numbers['state']['InWarehouse'] = $object->get('Orders In Warehouse Number');
 
-        $elements_numbers['state']['PackedDone']       = $object->get('Orders Packed Number');
-        $elements_numbers['state']['Approved'] = $object->get('Orders Dispatch Approved Number');
-        $elements_numbers['state']['Dispatched']       = $object->get('Orders Dispatched Number');
+        $elements_numbers['state']['PackedDone'] = $object->get('Orders Packed Number');
+        $elements_numbers['state']['Approved']   = $object->get('Orders Dispatch Approved Number');
+        $elements_numbers['state']['Dispatched'] = $object->get('Orders Dispatched Number');
 
         $elements_numbers['state']['Cancelled'] = $object->get('Orders Cancelled Number');
 
@@ -1701,7 +1700,7 @@ function get_orders_element_numbers($db, $data, $user) {
     }
     //USE INDEX (`Current Dispatch State Store Key`)
 
-  // USE INDEX (`Current Payment State Store Key`)
+    // USE INDEX (`Current Payment State Store Key`)
     $sql = sprintf(
         "SELECT %s AS number,`Order Current Payment State` AS element FROM %s  %s %s GROUP BY `Order Current Payment State` ", $count, $table, $where, $where_interval
     );

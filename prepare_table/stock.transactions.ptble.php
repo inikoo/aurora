@@ -108,7 +108,7 @@ $sql_totals
     = "select count(Distinct `Inventory Transaction Key`) as num from $table  $where  ";
 
 $fields
-    .= '`Date`,`Inventory Transaction Section`,`Inventory Transaction Key`,`Inventory Transaction Quantity`,
+    .= '`Date`,`Inventory Transaction Section`,`Inventory Transaction Key`,`Inventory Transaction Quantity`,`Warehouse Key`,
 `Part Reference`,ITF.`Part SKU`,`Delivery Note ID`,ITF.`Delivery Note Key`,ITF.`Location Key`,`Location Code`,`Required`,`Part Location Stock`,`Inventory Transaction Type`,`Metadata`,
 `Note`,`User Alias`,ITF.`User Key`,`User Handle`,`Given`,`Required`+`Given`+`Inventory Transaction Quantity`-`Out of Stock`-`No Authorized`-`Not Found`-`No Picked Other` as pending  '           ;
 

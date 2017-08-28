@@ -385,6 +385,17 @@ function save_order_operation(element) {
                 }
 
 
+
+                $('#invoices').html(data.update_metadata.invoices_xhtml)
+
+                if(data.update_metadata.number_invoices==0){
+                    $('#invoices').addClass('hide')
+                }else{
+                    $('#invoices').removeClass('hide')
+
+                }
+
+
             }
 
             else if (object == 'delivery_note') {
