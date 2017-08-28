@@ -1,29 +1,26 @@
 <div id="edit_stock_min_max" location_key="" class="hide " style="position:absolute;border:1px solid #ccc;padding:5px;width:auto;background-color: #fff;z-index: 100">
     <i style="position: relative;top:-5px;padding-right:5px" onClick="close_edit_min_max(this)" class="close_min_max button fa fa-window-close" aria-hidden="true"></i>
-    <input class="recommended_min min_max" style="width:50px" ovalue=""  value="" placeholder="{t}min{/t}"/>
-    <input class="recommended_max min_max" style="width:50px" ovalue=""  value="" placeholder="{t}max{/t}"/>
+    <input class="recommended_min min_max" style="width:50px" ovalue="" value="" placeholder="{t}min{/t}"/>
+    <input class="recommended_max min_max" style="width:50px" ovalue="" value="" placeholder="{t}max{/t}"/>
     <i onClick="save_recommendations('min_max',this)" class="fa fa-cloud save" aria-hidden="true"></i>
 </div>
 
 <div id="edit_recommended_move" location_key="" class="hide" style="position:absolute;border:1px solid #ccc;padding:5px;width:auto;background-color: #fff;z-index: 100">
     <i style="position: relative;top:-5px;padding-right:5px" onClick="close_edit_recommended_move(this)" class="close_recommended_move button fa fa-window-close" aria-hidden="true"></i>
-    <input class="recommended_move min_max" style="width:70px" ovalue=""  value=""/> <i onClick="save_recommendations('move',this)" class="fa fa-cloud save" aria-hidden="true"></i>
+    <input class="recommended_move min_max" style="width:70px" ovalue="" value=""/> <i onClick="save_recommendations('move',this)" class="fa fa-cloud save" aria-hidden="true"></i>
 </div>
 
 
 {include file="sticky_note.tpl" value=$part->get('Sticky Note') object="Part" key="{$part->id}" field="Part_Sticky_Note"  }
 
 <div class="name_and_categories">
-    <span class="strong"><span
-                class="strong Part_Unit_Description">{$part->get('Part Package Description')}</span> </span>
+    <span class="strong"><span class="strong Part_Unit_Description">{$part->get('Part Package Description')}</span> </span>
     <ul class="tags Categories" style="float:right">
         {foreach from=$part->get_category_data() item=item key=key}
-            <li><span class="button" onclick="change_view('category/{$item.category_key}')"
-                      title="{$item.label}">{$item.code}</span></li>
+            <li><span class="button" onclick="change_view('category/{$item.category_key}')" title="{$item.label}">{$item.code}</span></li>
         {/foreach}
     </ul>
-    <div style="clear:both">
-    </div>
+    <div style="clear:both"></div>
 </div>
 
 <div class="asset_container">
@@ -37,8 +34,7 @@
             </div>
             {include file='upload_main_image.tpl' object='Part' key=$part->id class="{if $image_key!=''}hide{/if}"}
         </div>
-        <div style="clear:both">
-        </div>
+        <div style="clear:both"></div>
     </div>
     <div class="block sales_data">
         <table>
@@ -180,10 +176,16 @@
                     <td colspan=2>
                         <table style="width:100%;;margin-bottom:10px">
                             <tr style="border-top:1px solid #ccc;border-bottom:1px solid #ccc">
-                                <td style="border-left:1px solid #ccc;width:30%" class="align_center " title="{t}Stock in locations{/t}"><i class="fa fa-map-marker fa-fw" aria-hidden="true"></i> <span class="Current_On_Hand_Stock">{$part->get('Current On Hand Stock')}</span></td>
-                                <td style="border-left:1px solid #ccc;width:20%" class="align_center discreet " title="{t}Reserved paid parts in process by customer services{/t}"><i class="fa fa-shopping-cart fa-fw" aria-hidden="true" ></i> <span class="Part_Current_Stock_Ordered_Paid">{$part->get('Current Stock Ordered Paid')}</span></td>
-                                <td style="border-left:1px solid #ccc;width:20%" class="align_center discreet" title="{t}Parts been picked{/t}""><i style="font-size:80%;position: relative;top:-1px" class="fa fa-shopping-basket fa-fw" aria-hidden="true"></i> <span class="Current_Stock_In_Process" >{$part->get('Current Stock In Process')}</span></td>
-                                <td style="border-left:1px solid #ccc;width:30%;border-right:1px solid #ccc;font-size:110%" class=" align_center strong" title="{t}Stock available for sale{/t}"><span class="Current_Stock_Available">{$part->get('Current Stock Available')}</span></td>
+                                <td style="border-left:1px solid #ccc;width:30%" class="align_center " title="{t}Stock in locations{/t}"><i class="fa fa-map-marker fa-fw" aria-hidden="true"></i> <span
+                                            class="Current_On_Hand_Stock">{$part->get('Current On Hand Stock')}</span></td>
+                                <td style="border-left:1px solid #ccc;width:20%" class="align_center discreet " title="{t}Reserved paid parts in process by customer services{/t}"><i class="fa fa-shopping-cart fa-fw"
+                                                                                                                                                                                      aria-hidden="true"></i> <span
+                                            class="Part_Current_Stock_Ordered_Paid">{$part->get('Current Stock Ordered Paid')}</span></td>
+                                <td style="border-left:1px solid #ccc;width:20%" class="align_center discreet" title="{t}Parts been picked{/t}"
+                                "><i style="font-size:80%;position: relative;top:-1px" class="fa fa-shopping-basket fa-fw" aria-hidden="true"></i> <span
+                                        class="Current_Stock_In_Process">{$part->get('Current Stock In Process')}</span></td>
+                                <td style="border-left:1px solid #ccc;width:30%;border-right:1px solid #ccc;font-size:110%" class=" align_center strong" title="{t}Stock available for sale{/t}"><span
+                                            class="Current_Stock_Available">{$part->get('Current Stock Available')}</span></td>
                             </tr>
                         </table>
                     </td>
@@ -193,7 +195,7 @@
                     <td class="aright Available_Forecast">{$part->get('Available Forecast')}</td>
                 </tr>
                 <tr class="{if $part->get('Part Next Shipment Date')==''}hide{/if}">
-                    <td >{t}Next shipment{/t}</td>
+                    <td>{t}Next shipment{/t}</td>
                     <td class="aright">{$part->get('Next Shipment')}</td>
                 </tr>
                 </tbody>
@@ -204,26 +206,19 @@
 
                         <table style="width:100%">
                             <tr>
-                                <td class="super_discreet highlight Current_On_Hand_Stock"
-                                    style="font-size:200%">{$part->get('Current On Hand Stock')}</td>
+                                <td class="super_discreet highlight Current_On_Hand_Stock" style="font-size:200%">{$part->get('Current On Hand Stock')}</td>
                                 <td id="stock_diff" class="acenter"></td>
                                 <td id="new_stock" class="aright highlight" style="font-size:200%"></td>
                             </tr>
                             <tr>
-                                <td><i class="fa  fa-times button discreet" aria-hidden="true" title="{t}Close edit{/t}"
-                                       onClick="close_edit_stock()"></i></td>
+                                <td><i class="fa  fa-times button discreet" aria-hidden="true" title="{t}Close edit{/t}" onClick="close_edit_stock()"></i></td>
                                 <td></td>
                                 <td id="saving_buttons" class="aright discreet  ">
                                     <span id="saving_buttons" class="aright discreet   ><span class=" save">{t}
-                                    Save{/t}</span ><i class="fa  fa-cloud   save " aria-hidden="true"
-                                                       title="{t}Save{/t}" id="save_stock"
-                                                       onClick="save_stock()"></i></span>
+                                    Save{/t}</span ><i class="fa  fa-cloud   save " aria-hidden="true" title="{t}Save{/t}" id="save_stock" onClick="save_stock()"></i></span>
                                 </td>
 
                             </tr>
-
-
-
 
 
                         </table>
@@ -238,43 +233,30 @@
             <table style="width:100%">
 
 
-
                 <tr>
-                <td>
+                    <td>
 
-                    <span  id="part_stock_value" style="font-size:85%" class="Part_Cost_in_Warehouse">{$part->get('Cost in Warehouse')}</span>
+                        <span id="part_stock_value" style="font-size:85%" class="Part_Cost_in_Warehouse">{$part->get('Cost in Warehouse')}</span>
 
-                    <i id="close_edit_stock" class="fa fa-sign-out fa-flip-horizontal button hide" aria-hidden="true"
-                       title="{t}Exit edit stock{/t}" onClick="close_edit_stock()"></i></td>
-                <td class="aright">
-                    <i id="open_edit_stock" class="fa fa-pencil button very_discreet " aria-hidden="true"
-                       title="{t}Edit stock{/t}" onClick="open_edit_stock()"></i>
-                    <span id="edit_stock_saving_buttons" class="aright discreet hide"><span
-                                class="save">{t}Save{/t}</span><i class="fa  fa-cloud   save padding_left_5"
-                                                                  aria-hidden="true" title="{t}Save{/t}" id="save_stock"
-                                                                  onClick="save_stock()"></i></span>
-                </td>
+                        <i id="close_edit_stock" class="fa fa-sign-out fa-flip-horizontal button hide" aria-hidden="true" title="{t}Exit edit stock{/t}" onClick="close_edit_stock()"></i></td>
+                    <td class="aright">
+                        <i id="open_edit_stock" class="fa fa-pencil button very_discreet " aria-hidden="true" title="{t}Edit stock{/t}" onClick="open_edit_stock()"></i>
+                        <span id="edit_stock_saving_buttons" class="aright discreet hide"><span class="save">{t}Save{/t}</span><i class="fa  fa-cloud   save padding_left_5" aria-hidden="true" title="{t}Save{/t}"
+                                                                                                                                  id="save_stock" onClick="save_stock()"></i></span>
+                    </td>
                 </tr>
             </table>
-
-
-
-
-
-
 
 
             <table id="locations_table" border="0" class="overview" part_sku="{$part->id}">
 
                 <tr id="move_stock_tr" class="discreet button hide " style="border-bottom:1px solid #ccc" max="">
-                    <td colspan=2><span id="move_from"></span> <i class="fa fa-fw fa-caret-square-o-right "
-                                                                  aria-hidden="true"></i> <span id="move_to"></span>
+                    <td colspan=2><span id="move_from"></span> <i class="fa fa-fw fa-caret-square-o-right " aria-hidden="true"></i> <span id="move_to"></span>
                     </td>
 
                     <td class="aright">
                         <input id="move_stock_qty" style="width:80px" value="" placeholder="{t}Move stock{/t}">
-                        <i class="fa fa-fw fa-times button discreet" aria-hidden="true" title="{t}Close{/t}"
-                           onClick="close_move()"></i>
+                        <i class="fa fa-fw fa-times button discreet" aria-hidden="true" title="{t}Close{/t}" onClick="close_move()"></i>
 
                     </td>
 
@@ -294,10 +276,9 @@
                         <i {if $part->get('Part Barcode Key')} class="fa fa-barcode button" onClick="change_view('inventory/barcode/{$part->get('Part Barcode Key')}')"{else}  class="fa fa-barcode"{/if} ></i>
                     </td>
                     <td class="Part_Barcode_Number highlight">{$part->get('Part Barcode Number')} </td>
-                    <td class="barcode_labels aright {if !$part->get('Part Barcode Key')}hide{/if}">
+                    <td class="barcode_labels aright {if !$part->get('Part Barcode Key')}xhide{/if}">
 
-                        <a class="padding_left_10" title="{t}Commercial unit label{/t}"
-                           href="/asset_label.php?object=part&key={$part->id}&type=unit"><i class="fa fa-tags "></i></a>
+                        <a class="padding_left_10" title="{t}Commercial unit label{/t}" href="/asset_label.php?object=part&key={$part->id}&type=unit"><i class="fa fa-tags "></i></a>
                     </td>
 
                 </tr>
@@ -312,10 +293,8 @@
 
                     </td>
                     <td class="Part_SKO_Barcode ">{$part->get('Part SKO Barcode')} </td>
-                    <td class="barcode_labels aright {if !$part->get('Part Barcode Key')}hide{/if}">
-                        <a title="{t}Stock keeping unit (Outer){/t}"
-                           href="/asset_label.php?object=part&key={$part->id}&type=package"><i
-                                    class="fa fa-tag "></i></a>
+                    <td class="barcode_labels aright {if !$part->get('Part Barcode Key')}xhide{/if}">
+                        <a title="{t}Stock keeping unit (Outer){/t}" href="/asset_label.php?object=part&key={$part->id}&type=package"><i class="fa fa-tag "></i></a>
 
                     </td>
 
@@ -325,16 +304,13 @@
 
         </div>
     </div>
-    <div style="clear:both">
-    </div>
+    <div style="clear:both"></div>
 
 
 </div>
 
 
 <script>
-
-
 
 
     var movements = false
