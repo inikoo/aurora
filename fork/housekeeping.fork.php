@@ -162,6 +162,13 @@ function fork_housekeeping($job) {
 
             include_once 'class.Part.php';
             $part = new Part($data['part_sku']);
+
+
+
+
+            $part->update_available_forecast();
+            $part->update_stock_status();
+
             foreach ($part->get_products('objects') as $product) {
                 $product->update_availability($use_fork = false);
             }

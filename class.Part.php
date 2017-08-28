@@ -222,6 +222,8 @@ class Part extends Asset {
 
             $this->get_data('id', $this->id);
 
+            $this->calculate_forecast_data();
+
             $this->update_products_web_status();
 
             $history_data = array(
@@ -1261,8 +1263,9 @@ class Part extends Asset {
 
         $this->activate();
         $this->discontinue_trigger();
-        $this->update_stock_status();
-        $this->update_available_forecast();
+
+
+
 
         include_once 'utils/new_fork.php';
         global $account;
@@ -1389,28 +1392,42 @@ class Part extends Asset {
 
     }
 
+
+    function calculate_forecast_data(){
+
+        $required_last_quarter=0;
+
+        $sql=sprintf('select sum(`Required`) as required from `Inventory Transaction Fact` where `Part SKU`=%d and `Date`>= ( NOW() - INTERVAL 1 Quarter ) ',$this->id);
+
+        if ($result=$this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $required_last_quarter=$row['required'];
+        	}
+        }else {
+        	print_r($error_info=$this->db->errorInfo());
+        	print "$sql\n";
+        	exit;
+        }
+
+        $forecast_metadata=json_encode(array(
+            'method'=>'Simple',
+            'Required last quarter'=>$required_last_quarter
+        ));
+
+
+
+        $this->update_field('Part Forecast Metadata',$forecast_metadata,'no_history');
+
+    }
+
+
+
+
+
     function update_available_forecast() {
 
         $this->load_acc_data();
 
-
-        // -------------- simple forecast -------------------------
-
-        $sql = sprintf("SELECT `Date` FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d AND `Inventory Transaction Type` LIKE 'Associate' ORDER BY `Date` DESC", $this->id);
-
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $date     = $row['Date'];
-                $interval = (date('U') - strtotime($date)) / 3600 / 24;
-            } else {
-                $interval = 0;
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
 
 
         if ($this->data['Part Current Stock'] == '' or $this->data['Part Current Stock'] < 0) {
@@ -1427,13 +1444,11 @@ class Part extends Asset {
             //   print $this->data['Part 1 Quarter Acc Dispatched']/(52/4)/7;
 
 
-            if ($this->data['Part 1 Quarter Acc Dispatched'] > 0) {
+            if ($this->data['Part 1 Quarter Acc Required'] > 0) {
 
                 $days_on_sale = 91.25;
 
-                $from_since = (date('U') - strtotime(
-                            $this->data['Part Valid From']
-                        )) / 3600 / 24;
+                $from_since = (date('U') - strtotime($this->data['Part Valid From'])) / 86400;
                 if ($from_since < 1) {
                     $from_since = 1;
                 }
@@ -1444,16 +1459,20 @@ class Part extends Asset {
                 }
 
 
-                $this->data['Part Days Available Forecast']      = $this->data['Part Current Stock'] / ($this->data['Part 1 Quarter Acc Dispatched'] / $days_on_sale);
-                $this->data['Part XHTML Available For Forecast'] = number(
-                        $this->data['Part Days Available Forecast'], 0
-                    ).' '._('d');
+                $this->data['Part Days Available Forecast']      = $this->data['Part Current Stock'] / ($this->data['Part 1 Quarter Acc Required'] / $days_on_sale);
+                $this->data['Part XHTML Available For Forecast'] = number($this->data['Part Days Available Forecast'], 0).' '._('d');
 
             } else {
 
-                $from_since = (date('U') - strtotime(
-                        $this->data['Part Valid From']
-                    ) / 86400);
+
+
+
+
+                $from_since = (date('U') - strtotime($this->data['Part Valid From'])) / 86400;
+
+
+               // print $from_since;
+
                 if ($from_since < ($this->data['Part Excess Availability Days Limit'] / 2)) {
                     $forecast = $this->data['Part Excess Availability Days Limit'] - 1;
                 } else {
@@ -1461,10 +1480,9 @@ class Part extends Asset {
                 }
 
 
+
                 $this->data['Part Days Available Forecast']      = $forecast;
-                $this->data['Part XHTML Available For Forecast'] = number(
-                        $this->data['Part Days Available Forecast'], 0
-                    ).' '._('d');
+                $this->data['Part XHTML Available For Forecast'] = number($this->data['Part Days Available Forecast'], 0).' '._('d');
 
 
             }
@@ -2109,7 +2127,9 @@ class Part extends Asset {
 
 
         $sql = sprintf(
-            "SELECT count(DISTINCT `Delivery Note Customer Key`) AS customers, count( DISTINCT ITF.`Delivery Note Key`) AS deliveries, round(ifnull(sum(`Amount In`),0),2) AS invoiced_amount,round(ifnull(sum(`Amount In`+`Inventory Transaction Amount`),0),2) AS profit,round(ifnull(sum(`Inventory Transaction Quantity`),0),1) AS dispatched,round(ifnull(sum(`Required`),0),1) AS required FROM `Inventory Transaction Fact` ITF  LEFT JOIN `Delivery Note Dimension` DN ON (DN.`Delivery Note Key`=ITF.`Delivery Note Key`) WHERE `Inventory Transaction Type` LIKE 'Sale' AND `Part SKU`=%d %s %s",
+            "SELECT count(DISTINCT `Delivery Note Customer Key`) AS customers, count( DISTINCT ITF.`Delivery Note Key`) AS deliveries, round(ifnull(sum(`Amount In`),0),2) AS invoiced_amount,round(ifnull(sum(`Amount In`+`Inventory Transaction Amount`),0),2) AS profit,round(ifnull(sum(`Inventory Transaction Quantity`),0),1) AS dispatched,round(ifnull(sum(`Required`),0),1) AS required 
+              FROM `Inventory Transaction Fact` ITF  LEFT JOIN `Delivery Note Dimension` DN ON (DN.`Delivery Note Key`=ITF.`Delivery Note Key`) 
+              WHERE `Inventory Transaction Type` LIKE 'Sale' AND `Part SKU`=%d %s %s",
             $this->id, ($from_date ? sprintf('and  `Date`>=%s', prepare_mysql($from_date)) : ''), ($to_date ? sprintf('and `Date`<%s', prepare_mysql($to_date)) : '')
         );
 

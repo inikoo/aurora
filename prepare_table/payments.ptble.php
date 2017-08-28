@@ -79,7 +79,7 @@ $table = '`Payment Dimension` P ';
 
 $sql_totals = "select count(P.`Payment Key`) as num from $table  $where  ";
 $fields
-            = "`Payment Key`,`Payment Transaction ID`,`Payment Currency Code`,`Payment Transaction Amount`,`Payment Type`,`Payment Last Updated Date`,`Payment Transaction Status`,`Payment Transaction Status Info`";
+            = "`Payment Submit Type`,`Payment Key`,`Payment Transaction ID`,`Payment Currency Code`,`Payment Transaction Amount`,`Payment Type`,`Payment Last Updated Date`,`Payment Transaction Status`,`Payment Transaction Status Info`";
 
 
 ?>

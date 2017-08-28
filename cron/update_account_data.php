@@ -15,10 +15,12 @@ require_once 'class.Store.php';
 require_once 'utils/natural_language.php';
 
 
+$account->load_acc_data();
 $account->update_stores_data();
 $account->update_suppliers_data();
 $account->update_warehouses_data();
 $account->update_parts_data();
+$account->update_orders();
 
 
 
@@ -29,11 +31,9 @@ if ($result = $db->query($sql)) {
 
         $store->load_acc_data();
 
-        $store->update_orders_in_basket_data();
-        $store->update_orders_in_process_data();
-        $store->update_orders_in_warehouse_data();
-        $store->update_orders_packed_data();
-        $store->update_orders_ready_to_ship_data();
+
+
+        $store->update_orders();
 
         $store->update(
             array('Store Today Start Orders In Warehouse Number'=>$store->get('Store Orders In Warehouse Number')+$store->get('Store Orders Packed Number')+$store->get('Store Orders In Dispatch Area Number'))

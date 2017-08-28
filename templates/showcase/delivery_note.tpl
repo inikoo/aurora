@@ -1,6 +1,6 @@
 <div class="timeline_horizontal">
 
-    <input type="xhidden" id="Delivery_Note_State_Index" value="{$delivery_note->get('State Index')}">
+    <input type="hiddenx" id="Delivery_Note_State_Index" value="{$delivery_note->get('State Index')}">
 
     <ul class="timeline" id="timeline">
 
@@ -18,23 +18,12 @@
         </li>
 
 
-        {if $delivery_note->get('State Index')<0 and $delivery_note->get('Dispatched Date')=='' and  $delivery_note->get('Received Date')==''  }
-            <li id="received_node" class="li  cancelled">
-                <div class="label">
-                    <span class="state ">{t}Cancelled{/t}</span>
-                </div>
-                <div class="timestamp">
-                    <span class="">&nbsp;{$delivery_note->get('Cancelled Date')}</span>
-                </div>
-                <div class="dot"></div>
-            </li>
-        {/if}
 
 
 
 
 
-        <li id="start_picking_node" class="li  {if $delivery_note->get('State Index')>=20   }complete{/if}">
+        <li id="start_picking_node" class="li  {if $delivery_note->get('State Index')>=20   }complete{/if} {if $delivery_note->get('State Index')<0 } {if   $delivery_note->get('Delivery Note Date Start Picking')=='' }hide{else}complete{/if}{/if}">
             <div class="label">
                 <span class="state Delivery_Note_Packed_Label">{t}Start picking{/t}<span></i></span></span>
             </div>
@@ -45,7 +34,7 @@
         </li>
 
 
-        <li id="picked_node" class="li  {if $delivery_note->get('State Index')>=30   }complete{/if}">
+        <li id="picked_node" class="li  {if $delivery_note->get('State Index')>=30   }complete{/if} {if $delivery_note->get('State Index')<0 } {if   $delivery_note->get('Delivery Note Date Finish Picking')=='' }hide{else}complete{/if}{/if}">
             <div class="label">
                 <span class="state Delivery_Note_Picked_Label">{if $delivery_note->get('State Index')==20 }{t}Picking{/t}{else}{t}Picked{/t}{/if}<span></i></span></span>
             </div>
@@ -55,7 +44,7 @@
             <div class="dot"></div>
         </li>
 
-        <li id="packed_node" class="li  {if $delivery_note->get('State Index')>=70   }complete{/if}">
+        <li id="packed_node" class="li  {if $delivery_note->get('State Index')>=70   }complete{/if} {if $delivery_note->get('State Index')<0 } {if   $delivery_note->get('Delivery Note Date Finish Packing')=='' }hide{else}complete{/if}{/if}">
             <div class="label">
                 <span class="state Delivery_Note_Packed_Label">{if $delivery_note->get('State Index')==40 }{t}Packing{/t}{else}{t}Packed{/t}{/if}<span></i></span></span>
             </div>
@@ -66,7 +55,7 @@
         </li>
 
 
-        <li id="packed_done_node" class="li  {if $delivery_note->get('State Index')>=80   }complete{/if}">
+        <li id="packed_done_node" class="li  {if $delivery_note->get('State Index')>=80   }complete{/if} {if $delivery_note->get('State Index')<0} {if  $delivery_note->get('Delivery Note Date Done Approved')=='' }hide{else}complete{/if}{/if}">
             <div class="label">
                 <span class="state Delivery_Note_Packed_Label">{t}Sealed{/t}<span></i></span></span>
             </div>
@@ -79,7 +68,7 @@
         </li>
 
 
-        <li id="dispatch_approved_node" class="li  {if $delivery_note->get('State Index')>=90  }complete{/if}">
+        <li id="dispatch_approved_node" class="li  {if $delivery_note->get('State Index')>=90  }complete{/if}   {if $delivery_note->get('State Index')<0} {if $delivery_note->get('Delivery Note Date Dispatched Approved')=='' }hide{else}complete{/if}{/if}">
             <div class="label">
                 <span class="state ">{t}Dispatch Approved{/t} <span></i></span></span>
             </div>
@@ -90,7 +79,7 @@
         </li>
 
 
-        <li id="dispatched_node" class="li  {if $delivery_note->get('State Index')>=100  }complete{/if}">
+        <li id="dispatched_node" class="li  {if $delivery_note->get('State Index')>=100  }complete{/if}  {if $delivery_note->get('State Index')<0 }hide{/if}   ">
             <div class="label">
                 <span class="state ">{t}Dispatched{/t} <span></i></span></span>
             </div>
@@ -99,6 +88,22 @@
             </div>
             <div class="dot"></div>
         </li>
+
+
+
+        {if $delivery_note->get('State Index')<0   }
+            <li id="received_node" class="li  cancelled">
+                <div class="label">
+                    <span class="state ">{t}Cancelled{/t}</span>
+                </div>
+                <div class="timestamp">
+                    <span class="">&nbsp;{$delivery_note->get('Cancelled Datetime')}</span>
+                </div>
+                <div class="dot"></div>
+            </li>
+        {/if}
+
+
 
 
     </ul>
@@ -125,7 +130,7 @@
     <div class="block ">
         <div class="state" style="height:30px;margin-bottom:10px;position:relative;top:-5px;min-width: 250px">
             <div id="back_operations">
-                <div id="delete_operations" class="order_operation {if $delivery_note->get('Delivery Note Number Picked Items')>0}hide{/if}">
+                <div id="delete_operations" class="order_operation {if $delivery_note->get('Delivery Note Number Picked Items')>0       }hide{/if}">
                     <div class="square_button left" xstyle="padding:0;margin:0;position:relative;top:-5px" title="{t}delete{/t}">
                         <i class="fa fa-trash very_discreet " aria-hidden="true" onclick="toggle_order_operation_dialog('delete')"></i>
                         <table id="delete_dialog" border="0" class="order_operation_dialog hide">
@@ -157,22 +162,25 @@
                             </tr>
                             <tr class="changed buttons">
                                 <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('undo_picking')"></i></td>
-                                <td class="aright"><span data-data='{  "field": "Delivery Note State","value": "Ready to be Picked","dialog_name":"undo_picking"}' id="undo_picking_save_buttons" class="valid save button"
+                                <td class="aright">
+                                    <span data-data='{  "field": "Delivery Note State","value": "Ready to be Picked","dialog_name":"undo_picking"}' id="undo_picking_save_buttons" class="valid save button"
                                                          onclick="save_order_operation(this)"><span class="label">{t}Save{/t}</span> <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>
                             </tr>
                         </table>
                     </div>
                 </div>
-                <div id="cancel_operations" class="order_operation {if $delivery_note->get('Delivery Note Number Picked Items')==0}hide{/if}">
+                <div id="cancel_operations" class="order_operation {if $delivery_note->get('Delivery Note Number Picked Items')==0  or  $delivery_note->get('State Index')<0 or  $delivery_note->get('State Index')>=90  }hide{/if}">
                     <div class="square_button left" title="{t}Cancel{/t}">
                         <i class="fa fa-minus-circle error " aria-hidden="true" onclick="toggle_order_operation_dialog('cancel')"></i>
                         <table id="cancel_dialog" border="0" class="order_operation_dialog hide">
                             <tr class="top">
-                                <td colspan="2">{t}Cancel order{/t}</td>
+                                <td colspan="2">{t}Cancel delivery note{/t}</td>
                             </tr>
                             <tr class="changed">
                                 <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('cancel')"></i></td>
-                                <td class="aright"><span id="received_save_buttons" class="error save button" onclick="save_order_operation('cancel','Cancelled')"><span class="label">{t}Cancel{/t}</span> <i
+                                <td class="aright"><span data-data='{  "field": "Delivery Note State","value": "Cancelled","dialog_name":"cancel"}' id="cancel_save_buttons" class="error save button"
+
+                                                         onclick="save_order_operation(this)"><span class="label">{t}Cancel{/t}</span> <i
                                                 class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span>
                                 </td>
                             </tr>

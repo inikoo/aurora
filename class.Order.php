@@ -439,6 +439,8 @@ class Order extends DB_Table {
         $operations        = array();
         $deliveries_xhtml  = '';
         $number_deliveries = 0;
+        $invoices_xhtml='';
+        $number_invoices = 0;
 
         if ($old_value != $value) {
 
@@ -532,6 +534,62 @@ class Order extends DB_Table {
                     $this->db->exec($sql);
 
                     break;
+
+                case 'Delivery Note Cancelled':
+
+                    if ($this->get('Order State') >= 90) {
+                        $this->error = true;
+                        $this->msg   = 'Cant set as back to in process :(';
+
+                        return;
+
+                    }
+
+                    $value='InProcess';
+
+                    $this->update_field('Order State', $value, 'no_history');
+                    $this->update_field('Order Date', $date, 'no_history');
+                    $this->update_field('Order Class', 'InProcess', 'no_history');
+
+
+                    $this->update_field('Order Send to Warehouse Date', '', 'no_history');
+                    $this->update_field('Order Packed Done Date', '', 'no_history');
+
+
+
+                    $this->update_field('Order Date', $this->data['Order Submitted by Customer Date'], 'no_history');
+                    $this->update_field('Order Delivery Note Key', '', 'no_history');
+
+
+
+                    $history_data = array(
+                        'History Abstract' => _('Delivery note cancelled, order back to submited state'),
+                        'History Details'  => '',
+                    );
+                    $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
+
+                    $operations = array(
+                        'send_to_warehouse_operations',
+                        'cancel_operations',
+                        'undo_submit_operations'
+                    );
+
+                    $sql = sprintf(
+                        'UPDATE `Order Transaction Fact` SET `Current Dispatching State`="Submitted by Customer",`Delivery Note Key`=NULL WHERE `Order Key`=%d  AND `Current Dispatching State` IN ("Ready to Pick","Packed Done")  ',
+                        $this->id
+                    );
+
+                    $this->db->exec($sql);
+
+
+
+
+
+
+
+                    break;
+
+
                 case 'InWarehouse':
 
 
@@ -626,16 +684,6 @@ class Order extends DB_Table {
                     $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->table_name, $this->id);
 
 
-                    foreach ($this->get_deliveries('objects') as $dn) {
-                        $number_deliveries++;
-                        $deliveries_xhtml = sprintf(
-                            ' <div class="node"  id="delivery_node_%d"><span class="node_label"><i class="fa fa-truck fa-flip-horizontal fa-fw" aria-hidden="true"></i> 
-                               <span class="link" onClick="change_view(\'%s\')">%s</span>(<span class="Delivery_Note_State">%s</span>)</span></div>', $dn->id,
-                            'delivery_notes/'.$dn->get('Delivery Note Store Key').'/'.$dn->id, $dn->get('ID'), $dn->get('Abbreviated State')
-
-                        );
-
-                    }
 
                     $operations = array('cancel_operations');
 
@@ -683,6 +731,59 @@ class Order extends DB_Table {
                     );
 
                     $this->db->exec($sql);
+
+                    break;
+                case 'Invoice Deleted':
+
+
+                    if ($this->data['Order State'] != 'Approved') {
+                        $this->error = true;
+                        $this->msg   = 'Order is not in Approved: :(';
+
+                        return;
+
+                    }
+                    $value='PackedDone';
+
+                    $this->update_field('Order State', $value, 'no_history');
+                    $this->update_field('Order Packed Done Date', $date, 'no_history');
+                    $this->update_field('Order Invoiced Date', '', 'no_history');
+
+                    $this->update_field('Order Date', $date, 'no_history');
+
+
+                    $history_data = array(
+                        'History Abstract' => _('Invoice deleted, order state back to packed and sealed'),
+                        'History Details'  => '',
+                    );
+                    $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
+
+                    $operations = array(
+                        'invoice_operations',
+                        'cancel_operations'
+                    );
+
+                    $sql = sprintf(
+                        'UPDATE `Order Transaction Fact` SET `Current Dispatching State`="Packed Done" WHERE `Order Key`=%d  AND `Current Dispatching State` IN ("Ready to Ship")  ', $this->id
+                    );
+
+                    $this->db->exec($sql);
+
+
+
+
+                    $dn = get_object('DeliveryNote', $this->data['Order Delivery Note Key']);
+
+
+                    $dn->update(
+                        array(
+                            'Delivery Note Invoiced'                    => 'No',
+                            'Delivery Note Invoiced Net DC Amount'      => 0,
+                            'Delivery Note Invoiced Shipping DC Amount' => 0,
+                            'Delivery Note State'                       => 'Invoice Deleted',
+                        )
+                    );
+
 
                     break;
 
@@ -899,18 +1000,49 @@ class Order extends DB_Table {
 
         }
 
+        foreach ($this->get_deliveries('objects') as $dn) {
+            $number_deliveries++;
+            $deliveries_xhtml .= sprintf(
+                ' <div class="node"  id="delivery_node_%d"><span class="node_label"><i class="fa fa-truck fa-flip-horizontal fa-fw" aria-hidden="true"></i> 
+                               <span class="link" onClick="change_view(\'%s\')">%s</span> (<span class="Delivery_Note_State">%s</span>)</span></div>', $dn->id,
+                'delivery_notes/'.$dn->get('Delivery Note Store Key').'/'.$dn->id, $dn->get('ID'), $dn->get('Abbreviated State')
+
+            );
+
+        }
+
+        foreach ($this->get_invoices('objects') as $invoice) {
+            $number_invoices++;
+            $invoices_xhtml .= sprintf(
+                ' <div class="node" id="invoice_%d">
+                    <span class="node_label" >
+                        <i class="fa fa-file-text-o fa-fw " aria-hidden="true"></i>
+                        <span class="link" onClick="change_view(\'%s\')">%s</span>
+                        <a class="pdf_link" target=\'_blank\' href="/pdf/invoice.pdf.php?id={$invoice->id}"> <img style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif"></a>
+                    </span>
+                </div>', $invoice->id,
+                'invoices/'.$invoice->get('Invoice Store Key').'/'.$invoice->id, $invoice->get('Invoice Public ID'), $invoice->id
+
+            );
+
+        }
+
+
         $this->update_metadata = array(
             'class_html'        => array(
                 'Order_State'                  => $this->get('State'),
                 'Order_Submitted_Date'         => '&nbsp;'.$this->get('Submitted by Customer Date'),
                 'Order_Send_to_Warehouse_Date' => '&nbsp;'.$this->get('Send to Warehouse Date'),
+                'Order_Invoiced_Date' => '&nbsp;'.$this->get('Invoiced Date'),
 
 
             ),
             'operations'        => $operations,
             'state_index'       => $this->get('State Index'),
             'deliveries_xhtml'  => $deliveries_xhtml,
-            'number_deliveries' => $number_deliveries
+            'invoices_xhtml'  => $invoices_xhtml,
+            'number_deliveries' => $number_deliveries,
+            'number_invoices' => $number_invoices
         );
 
 
@@ -1324,6 +1456,9 @@ class Order extends DB_Table {
                         break;
                     case('PackedDone'):
                         $state = _('Packed Done');
+                        break;
+                    case('Approved'):
+                        $state = _('Invoiced');
                         break;
                     case('Dispatch Approved'):
                         $state = _('Dispatch Approved');

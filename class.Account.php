@@ -1576,12 +1576,14 @@ class Account extends DB_Table {
 
 function update_orders() {
 
+
     $this->update_orders_in_basket_data();
     $this->update_orders_in_process_data();
     $this->update_orders_in_warehouse_data();
     $this->update_orders_packed_data();
-    $this->update_orders_ready_to_ship_data();
-
+    $this->update_orders_approved_data();
+    $this->update_orders_dispatched();
+    $this->update_orders_cancelled();
 }
 
     function update_orders_in_basket_data() {
@@ -1594,7 +1596,7 @@ function update_orders() {
         );
 
         $sql = sprintf(
-            "SELECT count(*) AS num ,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE  `Order Class`='InWebsite'  ",
+            "SELECT count(*) AS num ,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE  `Order State`='InBasket'  ",
             $this->id
         );
 
@@ -1636,7 +1638,8 @@ function update_orders() {
                 'number'    => 0,
                 'amount'    => 0,
                 'dc_amount' => 0
-            )
+            ),
+
         );
         $sql  = sprintf(
             'SELECT `Order Current Dispatch State`,count(*) AS num, ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE  `Order State` ="InProcess"  AND !`Order To Pay Amount`>0 '
@@ -1685,9 +1688,11 @@ function update_orders() {
             'Account Orders In Process Paid Amount'     => $data['in_process_paid']['dc_amount'],
             'Account Orders In Process Not Paid Number' => $data['in_process_not_paid']['number'],
             'Account Orders In Process Not Paid Amount' => $data['in_process_not_paid']['dc_amount'],
-
+            'Account Orders In Process Number'     => $data['in_process_paid']['number']+$data['in_process_not_paid']['number'],
+            'Account Orders In Process Amount'     => $data['in_process_paid']['dc_amount']+$data['in_process_not_paid']['dc_amount'],
 
         );
+
 
 
         $this->update($data_to_update, 'no_history');
@@ -1780,7 +1785,7 @@ function update_orders() {
 
 
         $sql = sprintf(
-            "SELECT count(*) AS num,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE   `Order Current Dispatch State` ='Packed' "
+            "SELECT count(*) AS num,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE   `Order State` ='PackedDone' "
         );
 
 
@@ -1808,10 +1813,10 @@ function update_orders() {
         $this->update($data_to_update, 'no_history');
     }
 
-    function update_orders_ready_to_ship_data() {
+    function update_orders_approved_data() {
 
         $data = array(
-            'ready_to_ship' => array(
+            'approved' => array(
                 'number'    => 0,
                 'amount'    => 0,
                 'dc_amount' => 0
@@ -1820,7 +1825,7 @@ function update_orders() {
 
 
         $sql = sprintf(
-            "SELECT count(*) AS num,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE   `Order Current Dispatch State` ='Packed Done' "
+            "SELECT count(*) AS num,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE   `Order State` ='Approved' "
         );
 
 
@@ -1828,8 +1833,8 @@ function update_orders() {
             foreach ($result as $row) {
 
 
-                $data['ready_to_ship']['number']    = $row['num'];
-                $data['ready_to_ship']['dc_amount'] = $row['dc_amount'];
+                $data['approved']['number']    = $row['num'];
+                $data['approved']['dc_amount'] = $row['dc_amount'];
 
 
             }
@@ -1840,13 +1845,99 @@ function update_orders() {
 
 
         $data_to_update = array(
-            'Account Orders In Dispatch Area Number' => $data['ready_to_ship']['number'],
-            'Account Orders In Dispatch Area Amount' => $data['ready_to_ship']['dc_amount'],
+            'Account Orders Dispatch Approved Number' => $data['approved']['number'],
+            'Account Orders Dispatch Approved Amount' => $data['approved']['dc_amount'],
 
 
         );
         $this->update($data_to_update, 'no_history');
     }
+
+
+    function update_orders_dispatched() {
+
+        $data = array(
+            'dispatched' => array(
+                'number'    => 0,
+                'amount'    => 0,
+                'dc_amount' => 0
+            ),
+
+        );
+
+
+        $sql = sprintf(
+            "SELECT count(*) AS num,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE   `Order State` ='Dispatched' "
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+
+                $data['dispatched']['number']    = $row['num'];
+                $data['dispatched']['dc_amount'] = $row['dc_amount'];
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        $data_to_update = array(
+            'Account Orders Dispatched Number' => $data['dispatched']['number'],
+            'Account Orders Dispatched Amount' => $data['dispatched']['dc_amount'],
+
+
+        );
+        $this->update($data_to_update, 'no_history');
+    }
+
+    function update_orders_cancelled() {
+
+        $data = array(
+
+            'cancelled' => array(
+                'number'    => 0,
+                'amount'    => 0,
+                'dc_amount' => 0
+            ),
+        );
+
+
+        $sql = sprintf(
+            "SELECT count(*) AS num,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE   `Order State` ='Cancelled' "
+        );
+
+
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+
+                $data['cancelled']['number']    = $row['num'];
+                $data['cancelled']['dc_amount'] = $row['dc_amount'];
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        $data_to_update = array(
+
+            'Account Orders Cancelled Number' => $data['cancelled']['number'],
+            'Account Orders Cancelled Amount' => $data['cancelled']['dc_amount'],
+
+        );
+        $this->update($data_to_update, 'no_history');
+    }
+
 
     protected function update_field_switcher($field, $value, $options = '', $metadata = '') {
 

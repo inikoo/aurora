@@ -134,7 +134,7 @@ switch ($tipo) {
         $data = prepare_values(
             $_REQUEST, array(
                          'order_key' => array('type' => 'key'),
-                         'amount'         => array('type' => 'string'),
+                         'amount'    => array('type' => 'string'),
 
                      )
         );
@@ -155,7 +155,7 @@ switch ($tipo) {
         $data = prepare_values(
             $_REQUEST, array(
                          'order_key' => array('type' => 'key'),
-                         'amount'         => array('type' => 'string'),
+                         'amount'    => array('type' => 'string'),
 
                      )
         );
@@ -164,12 +164,12 @@ switch ($tipo) {
     case 'edit_item_discount':
         $data = prepare_values(
             $_REQUEST, array(
-                         'field'             => array('type' => 'string'),
-                         'parent_key'        => array('type' => 'key'),
+                         'field'      => array('type' => 'string'),
+                         'parent_key' => array('type' => 'key'),
 
-                         'transaction_key'   => array('type'     => 'key'),
+                         'transaction_key' => array('type' => 'key'),
 
-                         'value'               => array('type' => 'string'),
+                         'value' => array('type' => 'string'),
 
                      )
         );
@@ -229,9 +229,9 @@ function edit_item_in_order($account, $db, $user, $editor, $data, $smarty) {
 
         if (in_array(
             $parent->data['Order State'], array(
-                                                             'InWarehouse',
-                                                             'PackedDone'
-                                                         )
+                                            'InWarehouse',
+                                            'PackedDone'
+                                        )
         )) {
             $dispatching_state = 'Ready to Pick';
         } else {
@@ -269,15 +269,11 @@ function edit_item_in_order($account, $db, $user, $editor, $data, $smarty) {
 }
 
 
-
 function set_shipping_value($data, $editor) {
 
 
-    $order        = get_object('order', $data['order_key']);
+    $order         = get_object('order', $data['order_key']);
     $order->editor = $editor;
-
-
-
 
 
     $order->update_shipping_amount($data['amount']);
@@ -285,7 +281,7 @@ function set_shipping_value($data, $editor) {
 
     $metadata = array(
 
-        'class_html'    => array(
+        'class_html'  => array(
             'Order_State'                   => $order->get('State'),
             'Items_Net_Amount'              => $order->get('Items Net Amount'),
             'Shipping_Net_Amount'           => $order->get('Shipping Net Amount'),
@@ -302,11 +298,11 @@ function set_shipping_value($data, $editor) {
 
         ),
         //  'operations'    => $operations,
-        'state_index'   => $order->get('State Index'),
-        'to_pay'        => $order->get('Order To Pay Amount'),
-        'total'         => $order->get('Order Total Amount'),
-        'shipping'         => $order->get('Order Shipping Net Amount'),
-        'charges'         => $order->get('Order Charges Net Amount'),
+        'state_index' => $order->get('State Index'),
+        'to_pay'      => $order->get('Order To Pay Amount'),
+        'total'       => $order->get('Order Total Amount'),
+        'shipping'    => $order->get('Order Shipping Net Amount'),
+        'charges'     => $order->get('Order Charges Net Amount'),
 
 
     );
@@ -317,7 +313,6 @@ function set_shipping_value($data, $editor) {
         'metadata' => $metadata
     );
     echo json_encode($response);
-
 
 
 }
@@ -325,7 +320,7 @@ function set_shipping_value($data, $editor) {
 function set_shipping_as_auto($data, $editor) {
 
 
-    $order        = get_object('order', $data['order_key']);
+    $order         = get_object('order', $data['order_key']);
     $order->editor = $editor;
 
     $order->use_calculated_shipping();
@@ -333,7 +328,7 @@ function set_shipping_as_auto($data, $editor) {
 
     $metadata = array(
 
-        'class_html'    => array(
+        'class_html'  => array(
             'Order_State'                   => $order->get('State'),
             'Items_Net_Amount'              => $order->get('Items Net Amount'),
             'Shipping_Net_Amount'           => $order->get('Shipping Net Amount'),
@@ -349,12 +344,12 @@ function set_shipping_as_auto($data, $editor) {
             'Order_Number_items' => $order->get('Number Items')
 
         ),
-      //  'operations'    => $operations,
-        'state_index'   => $order->get('State Index'),
-        'to_pay'        => $order->get('Order To Pay Amount'),
-        'total'         => $order->get('Order Total Amount'),
-        'shipping'         => $order->get('Order Shipping Net Amount'),
-        'charges'         => $order->get('Order Charges Net Amount'),
+        //  'operations'    => $operations,
+        'state_index' => $order->get('State Index'),
+        'to_pay'      => $order->get('Order To Pay Amount'),
+        'total'       => $order->get('Order Total Amount'),
+        'shipping'    => $order->get('Order Shipping Net Amount'),
+        'charges'     => $order->get('Order Charges Net Amount'),
 
 
     );
@@ -367,20 +362,14 @@ function set_shipping_as_auto($data, $editor) {
     echo json_encode($response);
 
 
-
 }
-
-
 
 
 function set_charges_value($data, $editor) {
 
 
-    $order        = get_object('order', $data['order_key']);
+    $order         = get_object('order', $data['order_key']);
     $order->editor = $editor;
-
-
-
 
 
     $order->update_charges_amount($data['amount']);
@@ -388,10 +377,10 @@ function set_charges_value($data, $editor) {
 
     $metadata = array(
 
-        'class_html'    => array(
+        'class_html'  => array(
             'Order_State'                   => $order->get('State'),
             'Items_Net_Amount'              => $order->get('Items Net Amount'),
-            'Charges_Net_Amount'           => $order->get('Charges Net Amount'),
+            'Charges_Net_Amount'            => $order->get('Charges Net Amount'),
             'Charges_Net_Amount'            => $order->get('Charges Net Amount'),
             'Total_Net_Amount'              => $order->get('Total Net Amount'),
             'Total_Tax_Amount'              => $order->get('Total Tax Amount'),
@@ -405,11 +394,11 @@ function set_charges_value($data, $editor) {
 
         ),
         //  'operations'    => $operations,
-        'state_index'   => $order->get('State Index'),
-        'to_pay'        => $order->get('Order To Pay Amount'),
-        'total'         => $order->get('Order Total Amount'),
-        'charges'         => $order->get('Order Charges Net Amount'),
-        'charges'         => $order->get('Order Charges Net Amount'),
+        'state_index' => $order->get('State Index'),
+        'to_pay'      => $order->get('Order To Pay Amount'),
+        'total'       => $order->get('Order Total Amount'),
+        'charges'     => $order->get('Order Charges Net Amount'),
+        'charges'     => $order->get('Order Charges Net Amount'),
 
 
     );
@@ -420,7 +409,6 @@ function set_charges_value($data, $editor) {
         'metadata' => $metadata
     );
     echo json_encode($response);
-
 
 
 }
@@ -428,7 +416,7 @@ function set_charges_value($data, $editor) {
 function set_charges_as_auto($data, $editor) {
 
 
-    $order        = get_object('order', $data['order_key']);
+    $order         = get_object('order', $data['order_key']);
     $order->editor = $editor;
 
     $order->use_calculated_items_charges();
@@ -436,10 +424,10 @@ function set_charges_as_auto($data, $editor) {
 
     $metadata = array(
 
-        'class_html'    => array(
+        'class_html'  => array(
             'Order_State'                   => $order->get('State'),
             'Items_Net_Amount'              => $order->get('Items Net Amount'),
-            'Charges_Net_Amount'           => $order->get('Charges Net Amount'),
+            'Charges_Net_Amount'            => $order->get('Charges Net Amount'),
             'Charges_Net_Amount'            => $order->get('Charges Net Amount'),
             'Total_Net_Amount'              => $order->get('Total Net Amount'),
             'Total_Tax_Amount'              => $order->get('Total Tax Amount'),
@@ -453,11 +441,11 @@ function set_charges_as_auto($data, $editor) {
 
         ),
         //  'operations'    => $operations,
-        'state_index'   => $order->get('State Index'),
-        'to_pay'        => $order->get('Order To Pay Amount'),
-        'total'         => $order->get('Order Total Amount'),
-        'charges'         => $order->get('Order Charges Net Amount'),
-        'charges'         => $order->get('Order Charges Net Amount'),
+        'state_index' => $order->get('State Index'),
+        'to_pay'      => $order->get('Order To Pay Amount'),
+        'total'       => $order->get('Order Total Amount'),
+        'charges'     => $order->get('Order Charges Net Amount'),
+        'charges'     => $order->get('Order Charges Net Amount'),
 
 
     );
@@ -470,10 +458,7 @@ function set_charges_as_auto($data, $editor) {
     echo json_encode($response);
 
 
-
 }
-
-
 
 
 function pick_order_offline($data, $editor, $smarty, $db, $account) {
@@ -486,9 +471,9 @@ function pick_order_offline($data, $editor, $smarty, $db, $account) {
 
 
     $response = array(
-        'state'       => 200,
-        'update_metadata'    => $dn->get_update_metadata(),
-        'state_index' => $dn->get('State Index')
+        'state'           => 200,
+        'update_metadata' => $dn->get_update_metadata(),
+        'state_index'     => $dn->get('State Index')
     );
 
     echo json_encode($response);
@@ -496,8 +481,7 @@ function pick_order_offline($data, $editor, $smarty, $db, $account) {
 
 }
 
-function set_order_handler($type,$data, $editor, $smarty, $db) {
-
+function set_order_handler($type, $data, $editor, $smarty, $db) {
 
 
     $dn         = get_object('delivery_note', $data['delivery_note_key']);
@@ -625,6 +609,7 @@ function add_payment_to_order($data, $editor, $smarty, $db, $account) {
         'Payment Method'             => $data['payment_method'],
         'Payment Location'           => 'Order',
         'Payment Metadata'           => '',
+        'Payment Submit Type'        => 'Manual'
 
 
     );
@@ -641,12 +626,10 @@ function add_payment_to_order($data, $editor, $smarty, $db, $account) {
 
     $payments_xhtml = '';
 
-    foreach ($order->get_payments('objects','Completed') as $payment) {
+    foreach ($order->get_payments('objects', 'Completed') as $payment) {
         $payments_xhtml .= sprintf(
-            '<div class="payment node"><span class="node_label link" onClick="change_view(\'%s\')" >%s</span><span class="node_amount" >%s</span></div>',
-            '/order/'.$order->id.'/payment/'.$payment->id,
-            $payment->get('Payment Account Code'),
-            $payment->get('Transaction Amount')
+            '<div class="payment node"><span class="node_label link" onClick="change_view(\'%s\')" >%s</span><span class="node_amount" >%s</span></div>', '/order/'.$order->id.'/payment/'.$payment->id,
+            $payment->get('Payment Account Code'), $payment->get('Transaction Amount')
 
         );
     }
@@ -654,7 +637,7 @@ function add_payment_to_order($data, $editor, $smarty, $db, $account) {
 
     $metadata = array(
 
-        'class_html'    => array(
+        'class_html'  => array(
             'Order_State'                   => $order->get('State'),
             'Items_Net_Amount'              => $order->get('Items Net Amount'),
             'Shipping_Net_Amount'           => $order->get('Shipping Net Amount'),
@@ -670,13 +653,13 @@ function add_payment_to_order($data, $editor, $smarty, $db, $account) {
             'Order_Number_items' => $order->get('Number Items')
 
         ),
-        'operations'    => $operations,
-        'state_index'   => $order->get('State Index'),
-        'to_pay'        => $order->get('Order To Pay Amount'),
-        'total'         => $order->get('Order Total Amount'),
-        'shipping'         => $order->get('Order Shipping Net Amount'),
-        'charges'         => $order->get('Order Charges Net Amount'),
-        'payments'         => $order->get('Order Payments Amount'),
+        'operations'  => $operations,
+        'state_index' => $order->get('State Index'),
+        'to_pay'      => $order->get('Order To Pay Amount'),
+        'total'       => $order->get('Order Total Amount'),
+        'shipping'    => $order->get('Order Shipping Net Amount'),
+        'charges'     => $order->get('Order Charges Net Amount'),
+        'payments'    => $order->get('Order Payments Amount'),
 
         'payments_xhtml' => $payments_xhtml
     );
@@ -746,7 +729,7 @@ function add_payment_to_invoice($data, $editor, $smarty, $db, $account) {
     $parent->add_payment($payment);
     $parent->update_totals();
 
-    $operations=array();
+    $operations = array();
 
     if ($parent->get_object_name() == 'Order') {
 
@@ -786,11 +769,7 @@ function add_payment_to_invoice($data, $editor, $smarty, $db, $account) {
     }
 
 
-
-
-
 }
-
 
 
 function edit_item_discount($account, $db, $user, $editor, $data, $smarty) {
@@ -799,14 +778,13 @@ function edit_item_discount($account, $db, $user, $editor, $data, $smarty) {
     $parent->editor = $editor;
 
 
-
-    if($data['field']=='Percentage') {
+    if ($data['field'] == 'Percentage') {
 
 
         $percentage       = $data['value'];
         $transaction_data = $parent->update_transaction_discount_percentage($data['transaction_key'], $percentage);
-    }else{
-        $amount       = $data['value'];
+    } else {
+        $amount           = $data['value'];
         $transaction_data = $parent->update_transaction_discount_amount($data['transaction_key'], $amount);
     }
 
@@ -827,8 +805,6 @@ function edit_item_discount($account, $db, $user, $editor, $data, $smarty) {
     echo json_encode($response);
 
 }
-
-
 
 
 ?>

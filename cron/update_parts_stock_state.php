@@ -25,6 +25,12 @@ $sql = sprintf(
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
         $part = new Part($row['Part SKU']);
+
+        foreach($part->get_locations('part_location_object') as $part_location){
+            $part_location->update_stock();
+        }
+
+
         $part->update_available_forecast();
         $part->update_stock_status();
 

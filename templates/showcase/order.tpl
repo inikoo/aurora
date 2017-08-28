@@ -44,7 +44,7 @@
                 <span class="state">{t}Invoiced{/t}</span>
             </div>
             <div class="timestamp">
-                <span>&nbsp;<span class="Order_Packed_Done_Date">&nbsp;{$order->get('Invoiced Date')}</span></span>
+                <span>&nbsp;<span class="Order_Invoiced_Date">&nbsp;{$order->get('Invoiced Date')}</span></span>
             </div>
             <div class="dot"></div>
         </li>
@@ -270,7 +270,7 @@
 
 
                 <div id="create_invoice_operations" class="order_operation {if {$order->get('State Index')}!=80  }hide{/if}">
-                    <div  class="square_button right  " title="{t}Send to warehouse{/t}">
+                    <div  class="square_button right  " title="{t}Create invoice{/t}">
                         <i class="fa fa-file-text-o  " aria-hidden="true" onclick="toggle_order_operation_dialog('create_invoice')"></i>
                         <table id="create_invoice_dialog" border="0" class="order_operation_dialog hide">
                             <tr class="top">
@@ -380,10 +380,11 @@
 
             {foreach from=$invoices item=invoice}
 
-                <div class="node" id="delivery_node_{$dn->id}">
+                <div class="node" id="invoice_{$invoice->id}">
                     <span class="node_label" >
-                         <i class="fa fa-file-text-o fa-fw " aria-hidden="true"></i> <span class="link" onClick="change_view('invoices/{$invoice->get('Invoice Store Key')}/{$invoice->id}')">{$invoice->get('Invoice Public ID')}</span>
-<a class="pdf_link" target='_blank' href="/pdf/invoice.pdf.php?id={$invoice->id}"> <img style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif"></a>
+                        <i class="fa fa-file-text-o fa-fw " aria-hidden="true"></i>
+                        <span class="link" onClick="change_view('invoices/{$invoice->get('Invoice Store Key')}/{$invoice->id}')">{$invoice->get('Invoice Public ID')}</span>
+                        <a class="pdf_link" target='_blank' href="/pdf/invoice.pdf.php?id={$invoice->id}"> <img style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif"></a>
                     </span>
                 </div>
             {/foreach}

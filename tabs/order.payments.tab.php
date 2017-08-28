@@ -39,6 +39,10 @@ $parameters = array(
 );
 
 
+$smarty->assign(
+    'js_code', 'js/injections/edit_payments.'.(_DEVEL ? '' : 'min.').'js'
+);
+
 include('utils/get_table_html.php');
 
 

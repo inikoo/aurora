@@ -75,7 +75,7 @@ if ($user->can_view('orders')) {
         $nav_menu[] = array(
             '<i class="fa fa-shopping-cart fa-fw"></i>',
             _('Orders'),
-            'orders/all',
+            'orders/all/dashboard',
             'orders',
             'module',
             ''

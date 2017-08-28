@@ -2057,7 +2057,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     break;
                 case ('payment_service_providers'):
                     return get_payment_service_providers_navigation(
-                        $data, $user, $smarty
+                        $data, $user, $smarty, $db
                     );
                     break;
                 case ('payment_account'):
@@ -2065,14 +2065,14 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     break;
                 case ('payment_accounts'):
                     return get_payment_accounts_navigation(
-                        $data, $user, $smarty
+                        $data, $user, $smarty, $db
                     );
                     break;
                 case ('payment'):
-                    return get_payment_navigation($data, $user, $smarty);
+                    return get_payment_navigation($data, $user, $smarty, $db);
                     break;
                 case ('payments'):
-                    return get_payments_navigation($data, $user, $smarty);
+                    return get_payments_navigation($data, $user, $smarty, $db);
                     break;
             }
             break;
