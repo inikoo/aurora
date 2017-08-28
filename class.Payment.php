@@ -267,7 +267,10 @@ class Payment extends DB_Table {
         $order = get_object('Order', $this->data['Payment Order Key']);
         $order->update_totals();
 
-
+        $invoice = get_object('Invoice', $this->data['Payment Invoice Key']);
+        if($invoice->id) {
+            $invoice->update_payments_totals();
+        }
         $account=get_object('Account',1);
         require_once 'utils/new_fork.php';
         new_housekeeping_fork(
@@ -298,6 +301,17 @@ class Payment extends DB_Table {
             )
 
         );
+
+
+        if($this->data['Payment Type']=='Refund'){
+            $parent_payment=get_object('Payment',$this->data['Payment Related Payment Key']);
+            $parent_payment->update(array('Payment Transaction Amount Refunded'=>$parent_payment->get('Payment Transaction Amount Refunded')+$this->data['Payment Transaction Amount']));
+
+
+
+
+        }
+
 
         $this->update_parents();
 

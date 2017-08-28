@@ -43,6 +43,8 @@ $smarty->assign(
     'js_code', 'js/injections/edit_payments.'.(_DEVEL ? '' : 'min.').'js'
 );
 
+$smarty->assign('table_top_template', 'edit_payments_dialogs.tpl');
+
 include('utils/get_table_html.php');
 
 
