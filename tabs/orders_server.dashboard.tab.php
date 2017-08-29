@@ -15,7 +15,7 @@ $account=get_object('Account',1);
 
 $account->load_acc_data();
 
-$account->update_orders();
+//$account->update_orders();
 
 
 //include_once 'widgets/warehouse_alerts.wget.php';

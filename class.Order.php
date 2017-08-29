@@ -1698,7 +1698,7 @@ class Order extends DB_Table {
         //$customer->add_history_order_cancelled($history_key);
         $customer->update_orders();
 
-
+        // todo: call a fork to update store and accounts orders data
         $store->update_orders();
 
         $this->update_deals_usage();

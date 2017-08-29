@@ -15,7 +15,7 @@ $store=$state['store'];
 
 $store->load_acc_data();
 
-$store->update_orders();
+//$store->update_orders();
 
 
 //include_once 'widgets/warehouse_alerts.wget.php';
