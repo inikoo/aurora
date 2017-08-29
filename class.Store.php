@@ -560,7 +560,7 @@ class Store extends DB_Table {
             case 'Delta Today Start Orders In Warehouse Number':
 
                 $start = $this->data['Store Today Start Orders In Warehouse Number'];
-                $end   = $this->data['Store Orders In Warehouse Number'] + $this->data['Store Orders Packed Number'] + $this->data['Store Orders In Dispatch Area Number'];
+                $end   = $this->data['Store Orders In Warehouse Number'] + $this->data['Store Orders Packed Number'] + $this->data['Store Orders Dispatch Approved Number'];
 
                 $diff = $end - $start;
 

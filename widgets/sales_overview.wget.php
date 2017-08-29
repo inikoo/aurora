@@ -65,7 +65,7 @@ function get_dashboard_sales_overview($db, $account, $user, $smarty, $type,$sub_
 
 	`Store Orders In Warehouse Number`,`Store Orders In Warehouse Amount`,`Store DC Orders In Warehouse Amount`,
 	`Store Orders Packed Number`,`Store Orders Packed Amount`,`Store DC Orders Packed Amount`,
-	`Store Orders In Dispatch Area Number`,`Store Orders In Dispatch Area Amount`,`Store DC Orders In Dispatch Area Amount`,
+	`Store Orders Dispatch Approved Number`,`Store Orders Dispatch Approved Amount`,`Store DC Orders Dispatch Approved Amount`,
 
 	`Store Code`,S.`Store Key`,`Store Name`, `Store Currency Code` currency, `Store $period_tag Acc Invoices` as invoices,`Store $period_tag Acc Refunds` as refunds,`Store $period_tag Acc Delivery Notes` delivery_notes,`Store $period_tag Acc Replacements` replacements,`Store $period_tag Acc Invoiced Amount` as sales,`Store DC $period_tag Acc Invoiced Amount` as dc_sales,";
     if (!($period_tag == '3 Year' or $period_tag == 'Total')) {
@@ -110,8 +110,8 @@ function get_dashboard_sales_overview($db, $account, $user, $smarty, $type,$sub_
                 $sum_in_warehouse_amount += $row['Store Orders In Warehouse Amount'];
                 $sum_in_warehouse += $row['Store Orders Packed Number'];
                 $sum_in_warehouse_amount += $row['Store Orders Packed Amount'];
-                $sum_in_dispatch_area += $row['Store Orders In Dispatch Area Number'];
-                $sum_in_dispatch_area_amount += $row['Store Orders In Dispatch Area Amount'];
+                $sum_in_dispatch_area += $row['Store Orders Dispatch Approved Number'];
+                $sum_in_dispatch_area_amount += $row['Store Orders Dispatch Approved Amount'];
 
 
             }
@@ -209,7 +209,7 @@ function get_dashboard_sales_overview($db, $account, $user, $smarty, $type,$sub_
                 ),
                 'in_dispatch_area'           => array(
                     'value' => number(
-                        $row['Store Orders In Dispatch Area Number']
+                        $row['Store Orders Dispatch Approved Number']
                     ),
                     'title' => '',
                     'view'  => 'store/'.$row['Store Key']
@@ -217,10 +217,10 @@ function get_dashboard_sales_overview($db, $account, $user, $smarty, $type,$sub_
                 'in_dispatch_area_amount'    => array(
                     'value' => ($currency == 'store'
                         ? money(
-                            $row['Store Orders In Dispatch Area Amount'], $row['currency']
+                            $row['Store Orders Dispatch Approved Amount'], $row['currency']
                         )
                         : money(
-                            $row['Store DC Orders In Dispatch Area Amount'], $account->get('Account Currency')
+                            $row['Store DC Orders Dispatch Approved Amount'], $account->get('Account Currency')
                         ))
                 ),
 

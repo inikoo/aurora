@@ -585,7 +585,7 @@ class Account extends DB_Table {
             case 'Delta Today Start Orders In Warehouse Number':
 
                 $start = $this->data['Account Today Start Orders In Warehouse Number'];
-                $end   = $this->data['Account Orders In Warehouse Number'] + $this->data['Account Orders Packed Number'] + $this->data['Account Orders In Dispatch Area Number'];
+                $end   = $this->data['Account Orders In Warehouse Number'] + $this->data['Account Orders Packed Number'] + $this->data['Account Orders Dispatch Approved Number'];
 
                 $diff = $end - $start;
 
