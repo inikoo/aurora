@@ -21,11 +21,10 @@ $where = 'where `Order Class`="InWebsite" ';
 $table = '`Order Dimension` O ';
 
 
+
+
 if ($parameters['parent'] == 'store') {
-    if (is_numeric($parameters['parent_key']) and in_array(
-            $parameters['parent_key'], $user->stores
-        )
-    ) {
+    if (is_numeric($parameters['parent_key']) and in_array($parameters['parent_key'], $user->stores)) {
         $where .= sprintf(' and  `Order Store Key`=%d ', $parameters['parent_key']);
         if (!isset($store)) {
             include_once 'class.Store.php';
@@ -51,7 +50,6 @@ if ($parameters['parent'] == 'store') {
         }
     }
 }
-
 
 
 if (($parameters['f_field'] == 'customer') and $f_value != '') {

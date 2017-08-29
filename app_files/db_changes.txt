@@ -701,6 +701,27 @@ ALTER TABLE `Deal Component Dimension` ADD `Deal Component Icon` TEXT NULL DEFAU
 ALTER TABLE `Deal Dimension` ADD `Deal Icon` TEXT NULL DEFAULT NULL AFTER `Deal Status`, ADD `Deal Name Label` TEXT NULL DEFAULT NULL AFTER `Deal Icon`, ADD `Deal Term Label` TEXT NULL DEFAULT NULL AFTER `Deal Name Label`, ADD `Deal Allowance Label` TEXT NULL DEFAULT NULL AFTER `Deal Term Label`;
 
 
+ALTER TABLE `Store Data` ADD `Store Orders In Warehouse No Alerts Number` MEDIUMINT UNSIGNED NULL DEFAULT '0' AFTER `Store Orders In Warehouse Amount`;
+ALTER TABLE `Store Data` ADD `Store Orders In Warehouse With Alerts Number` MEDIUMINT UNSIGNED NULL DEFAULT '0' AFTER `Store Orders In Warehouse Amount`;
+ALTER TABLE `Store Data` ADD `Store Orders In Warehouse No Alerts Amount` DECIMAL(12,2) NULL DEFAULT '0.00' AFTER `Store Orders In Warehouse No Alerts Number`;
+ALTER TABLE `Store Data` ADD `Store Orders In Warehouse With Alerts Amount` DECIMAL(12,2) NULL DEFAULT '0.00' AFTER `Store Orders In Warehouse With Alerts Number`;
+
+
+
+ALTER TABLE `Store Data` ADD `Store Orders Dispatched Today Number`  MEDIUMINT UNSIGNED NULL DEFAULT '0' AFTER `Store Orders In Dispatch Area Amount`;
+ALTER TABLE `Store Data` ADD `Store Orders Dispatched Today Amount` DECIMAL(12,2) NULL DEFAULT '0.00' AFTER `Store Orders Dispatched Today Number`;
+
+
+ALTER TABLE `Store DC Data` ADD `Store DC Orders Dispatched Today Amount` DECIMAL(12,2) NULL DEFAULT '0.00' AFTER `Store DC Orders In Warehouse Amount`;
+ALTER TABLE `Store DC Data` ADD `Store DC Orders Dispatch Approved Amount` DECIMAL(12,2) NULL DEFAULT '0.00' AFTER `Store DC Orders In Warehouse Amount`;
+
+ALTER TABLE `Store DC Data` ADD `Store DC Orders In Warehouse With Alerts Amount` DECIMAL(12,2) NULL DEFAULT '0.00' AFTER `Store DC Orders In Warehouse Amount`;
+ALTER TABLE `Store DC Data` ADD `Store DC Orders In Warehouse No Alerts Amount` DECIMAL(12,2) NULL DEFAULT '0.00' AFTER `Store DC Orders In Warehouse Amount`;
+
+
+
+ALTER TABLE `Order Dimension` ADD INDEX `StoreState` (`Order State`, `Order Store Key`);
+
 
 //====
 

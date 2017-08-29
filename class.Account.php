@@ -1583,6 +1583,8 @@ function update_orders() {
     $this->update_orders_packed_data();
     $this->update_orders_approved_data();
     $this->update_orders_dispatched();
+    $this->update_orders_dispatched_today();
+
     $this->update_orders_cancelled();
 }
 
@@ -1776,7 +1778,7 @@ function update_orders() {
     function update_orders_packed_data() {
 
         $data = array(
-            'warehouse' => array(
+            'packed' => array(
                 'number'    => 0,
                 'amount'    => 0,
                 'dc_amount' => 0
@@ -1853,7 +1855,6 @@ function update_orders() {
         $this->update($data_to_update, 'no_history');
     }
 
-
     function update_orders_dispatched() {
 
         $data = array(
@@ -1862,6 +1863,7 @@ function update_orders() {
                 'amount'    => 0,
                 'dc_amount' => 0
             ),
+
 
         );
 
@@ -1894,6 +1896,51 @@ function update_orders() {
         );
         $this->update($data_to_update, 'no_history');
     }
+
+    function update_orders_dispatched_today() {
+
+        $data = array(
+            'dispatched_today' => array(
+                'number'    => 0,
+                'amount'    => 0,
+                'dc_amount' => 0
+            ),
+
+
+        );
+
+
+        $sql = sprintf(
+            "SELECT count(*) AS num,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE   `Order State` ='Dispatched' and `Order Dispatched Date`>=%s ",
+            prepare_mysql(gmdate('Y-m-d 00:00:00'))
+
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+
+                $data['dispatched_today']['number']    = $row['num'];
+                $data['dispatched_today']['dc_amount'] = $row['dc_amount'];
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        $data_to_update = array(
+            'Account Orders Dispatched Today Number' => $data['dispatched_today']['number'],
+            'Account Orders Dispatched Today Amount' => $data['dispatched_today']['dc_amount'],
+
+
+        );
+        $this->update($data_to_update, 'no_history');
+    }
+
 
     function update_orders_cancelled() {
 

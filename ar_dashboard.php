@@ -120,12 +120,19 @@ function pending_orders($data, $db, $user, $account) {
             'title' => ($data['currency'] == 'account' ? $object->get('DC Orders In Process Paid Amount') : $object->get('Orders In Process Paid Amount'))
         ),
 
-        'Orders_In_Warehouse_Number' => array('value' => $object->get('Orders In Warehouse Number')),
-        'Orders_In_Warehouse_Amount' => array(
-            'value' => ($data['currency'] == 'account' ? $object->get('DC Orders In Warehouse Amount Minify') : $object->get('Orders In Warehouse Amount Minify')),
-            'title' => ($data['currency'] == 'account' ? $object->get('DC Orders In Warehouse Amount') : $object->get('Orders In Warehouse Amount'))
+        'Orders_In_Warehouse_No_Alerts_Number' => array('value' => $object->get('Orders In Warehouse No Alerts Number')),
+        'Orders_In_Warehouse_No_Alerts_Amount' => array(
+            'value' => ($data['currency'] == 'account' ? $object->get('DC Orders In Warehouse No Alerts Amount Minify') : $object->get('Orders In Warehouse No Alerts Amount Minify')),
+            'title' => ($data['currency'] == 'account' ? $object->get('DC Orders In Warehouse No Alerts Amount') : $object->get('Orders In Warehouse No Alerts Amount'))
 
         ),
+        'Orders_In_Warehouse_With_Alerts_Number' => array('value' => $object->get('Orders In Warehouse With Alerts Number')),
+        'Orders_In_Warehouse_With_Alerts_Amount' => array(
+            'value' => ($data['currency'] == 'account' ? $object->get('DC Orders In Warehouse With Alerts Amount Minify') : $object->get('Orders In Warehouse With Alerts Amount Minify')),
+            'title' => ($data['currency'] == 'account' ? $object->get('DC Orders In Warehouse With Alerts Amount') : $object->get('Orders In Warehouse With Alerts Amount'))
+
+        ),
+
 
         'Orders_Packed_Number' => array('value' => $object->get('Orders Packed Number')),
         'Orders_Packed_Amount' => array(
@@ -133,10 +140,10 @@ function pending_orders($data, $db, $user, $account) {
             'title' => ($data['currency'] == 'account' ? $object->get('DC Orders Packed Amount') : $object->get('Orders Packed Amount'))
         ),
 
-        'Orders_In_Dispatch_Area_Number' => array('value' => $object->get('Orders In Dispatch Area Number')),
-        'Orders_In_Dispatch_Area_Amount' => array(
-            'value' => ($data['currency'] == 'account' ? $object->get('DC Orders In Dispatch Area Amount Minify') : $object->get('Orders In Dispatch Area Amount Minify')),
-            'title' => ($data['currency'] == 'account' ? $object->get('DC Orders In Dispatch Area Amount') : $object->get('Orders In Dispatch Area Amount'))
+        'Orders_Dispatch_Approved_Number' => array('value' => $object->get('Orders Dispatch Approved Number')),
+        'Orders_Dispatch_Approved_Amount' => array(
+            'value' => ($data['currency'] == 'account' ? $object->get('DC Orders Dispatch Approved Amount Minify') : $object->get('Orders Dispatch Approved Amount Minify')),
+            'title' => ($data['currency'] == 'account' ? $object->get('DC Orders Dispatch Approved Amount') : $object->get('Orders Dispatch Approved Amount'))
         ),
 
         'Delta_Today_Start_Orders_In_Warehouse_Number' => array('value' => $object->get('Delta Today Start Orders In Warehouse Number')),

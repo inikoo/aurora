@@ -1763,8 +1763,8 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                             }elseif ( $view_path[0]=='dashboard') {
                                 $section = 'dashboard';
 
-
-
+                            }elseif ( $view_path[0]=='by_store') {
+                                $section = 'group_by_store';
                             }
 
 
@@ -1823,7 +1823,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                     break;
                 }
 
-                $module = 'invoices';
+                $module = 'orders';
                 if ($count_view_path == 0) {
                     $section = 'invoices';
                     $parent  = 'store';
@@ -1841,7 +1841,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                 } else {
                     $arg1 = array_shift($view_path);
                     if ($arg1 == 'all') {
-                        $module     = 'invoices_server';
+                        $module     = 'orders_server';
                         $section    = 'invoices';
                         $parent     = 'account';
                         $parent_key = 1;

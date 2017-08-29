@@ -54,11 +54,7 @@ $timeseries=get_time_series_config();
 $account->load_acc_data();
 
 
-$account->update_orders_in_basket_data();
-$account->update_orders_in_process_data();
-$account->update_orders_in_warehouse_data();
-$account->update_orders_packed_data();
-$account->update_orders_ready_to_ship_data();
+$account->update_orders();
 
 $account->update(
     array(  'Account Today Start Orders In Warehouse Number'=>$account->get('Account Orders In Warehouse Number')+$account->get('Account Orders Packed Number')+$account->get('Account Orders In Dispatch Area Number'))
@@ -73,11 +69,8 @@ if ($result = $db->query($sql)) {
 
         $store->load_acc_data();
 
-        $store->update_orders_in_basket_data();
-        $store->update_orders_in_process_data();
-        $store->update_orders_in_warehouse_data();
-        $store->update_orders_packed_data();
-        $store->update_orders_ready_to_ship_data();
+        $store->update_orders();
+
 
         $store->update(
             array('Store Today Start Orders In Warehouse Number'=>$store->get('Store Orders In Warehouse Number')+$store->get('Store Orders Packed Number')+$store->get('Store Orders In Dispatch Area Number'))
