@@ -756,8 +756,7 @@ function refund_payment($data, $editor, $smarty, $db, $account,$user) {
                             Braintree_Configuration::publicKey($payment_account->get('Payment Account Login'));
                             Braintree_Configuration::privateKey($payment_account->get('Payment Account Password'));
 
-                            $reference = 'test XXX';
-                            /*
+
 
                             $result = Braintree_Transaction::refund($payment->data['Payment Transaction ID'], $data['amount']);
 
@@ -789,7 +788,7 @@ function refund_payment($data, $editor, $smarty, $db, $account,$user) {
 
 
                             }
-*/
+
 
                             break;
                         default:
