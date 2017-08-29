@@ -206,8 +206,8 @@ function sales_overview($_data, $db, $user, $account) {
              0 `Store Orders In Warehouse Amount`,
            0 `Store Orders Packed Number`,
             0 `Store Orders Packed Amount`,
-             0 `Store Orders In Dispatch Area Number`,
-              0 `Store Orders In Dispatch Area Amount`,
+             0 `Store Orders Dispatch Approved Number`,
+              0 `Store Orders Dispatch Approved Amount`,
                0 `Store Orders In Warehouse Amount`,
                 0 `Store Orders Packed Amount`,
                 
@@ -216,8 +216,8 @@ function sales_overview($_data, $db, $user, $account) {
                0   ` Store DC Orders In Process Not Paid Amount`,
                 0   `Store DC Orders In Warehouse Amount`,
                  0   `Store DC Orders Packed Amount`,
-                  0   `Store DC Orders In Dispatch Area Amount `,
-                   0   `Store DC Orders In Dispatch Area Amount`
+                  0   `Store DC Orders Dispatch Approved Amount `,
+                   0   `Store DC Orders Dispatch Approved Amount`
           
         ,
                         ";
@@ -256,7 +256,7 @@ function sales_overview($_data, $db, $user, $account) {
 
 	`Store Orders In Warehouse Number`,`Store Orders In Warehouse Amount`,`Store DC Orders In Warehouse Amount`,
 	`Store Orders Packed Number`,`Store Orders Packed Amount`,`Store DC Orders Packed Amount`,
-	`Store Orders In Dispatch Area Number`,`Store Orders In Dispatch Area Amount`,`Store DC Orders In Dispatch Area Amount`,
+	`Store Orders Dispatch Approved Number`,`Store Orders Dispatch Approved Amount`,`Store DC Orders Dispatch Approved Amount`,
 
 		`Store Code`,S.`Store Key` record_key ,`Store Name`, `Store Currency Code` currency, `Store $period_tag Acc Invoices` as invoices,`Store $period_tag Acc Refunds` as refunds,`Store $period_tag Acc Delivery Notes` delivery_notes,`Store $period_tag Acc Replacements` replacements,`Store $period_tag Acc Invoiced Amount` as sales,`Store DC $period_tag Acc Invoiced Amount` as dc_sales,";
 
@@ -334,8 +334,8 @@ function sales_overview($_data, $db, $user, $account) {
             $sum_in_warehouse_amount += $row['Store Orders In Warehouse Amount'];
             $sum_in_warehouse += $row['Store Orders Packed Number'];
             $sum_in_warehouse_amount += $row['Store Orders Packed Amount'];
-            $sum_in_dispatch_area += $row['Store Orders In Dispatch Area Number'];
-            $sum_in_dispatch_area_amount += $row['Store Orders In Dispatch Area Amount'];
+            $sum_in_dispatch_area += $row['Store Orders Dispatch Approved Number'];
+            $sum_in_dispatch_area_amount += $row['Store Orders Dispatch Approved Amount'];
 
 
             if ($_data['currency'] == 'store') {
@@ -381,7 +381,7 @@ function sales_overview($_data, $db, $user, $account) {
                 );
                 $data['orders_overview_in_dispatch_area_amount_'.$row['record_key']]    = array(
                     'value' => money(
-                        $row['Store Orders In Dispatch Area Amount'], $row['currency']
+                        $row['Store Orders Dispatch Approved Amount'], $row['currency']
                     )
                 );
 
@@ -428,7 +428,7 @@ function sales_overview($_data, $db, $user, $account) {
                 );
                 $data['orders_overview_in_dispatch_area_amount_'.$row['record_key']]    = array(
                     'value' => money(
-                        $row['Store DC Orders In Dispatch Area Amount'], $account->get('Account Currency')
+                        $row['Store DC Orders Dispatch Approved Amount'], $account->get('Account Currency')
                     )
                 );
 
@@ -538,8 +538,8 @@ function sales_overview($_data, $db, $user, $account) {
                 'in_warehouse_amount'=>array('value'=>($currency=='store'?money($row['Store Orders In Warehouse Amount'], $row['currency']):money($row['Store DC Orders In Warehouse Amount'], $account->get('Account Currency'))))  ,
                 'packed'=>array('value'=>number($row['Store Orders Packed Number']), 'title'=>'', 'view'=>'store/'.$row['Store Key']),
                 'packed_amount'=>array('value'=>($currency=='store'?money($row['Store Orders Packed Amount'], $row['currency']):money($row['Store DC Orders Packed Amount'], $account->get('Account Currency'))))  ,
-                'in_dispatch_area'=>array('value'=>number($row['Store Orders In Dispatch Area Number']), 'title'=>'', 'view'=>'store/'.$row['Store Key']),
-                'in_dispatch_area_amount'=>array('value'=>($currency=='store'?money($row['Store Orders In Dispatch Area Amount'], $row['currency']):money($row['Store DC Orders In Dispatch Area Amount'], $account->get('Account Currency'))))  ,
+                'in_dispatch_area'=>array('value'=>number($row['Store Orders Dispatch Approved Number']), 'title'=>'', 'view'=>'store/'.$row['Store Key']),
+                'in_dispatch_area_amount'=>array('value'=>($currency=='store'?money($row['Store Orders Dispatch Approved Amount'], $row['currency']):money($row['Store DC Orders Dispatch Approved Amount'], $account->get('Account Currency'))))  ,
 */
 
 

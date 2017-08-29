@@ -57,7 +57,7 @@ $account->load_acc_data();
 $account->update_orders();
 
 $account->update(
-    array(  'Account Today Start Orders In Warehouse Number'=>$account->get('Account Orders In Warehouse Number')+$account->get('Account Orders Packed Number')+$account->get('Account Orders In Dispatch Area Number'))
+    array(  'Account Today Start Orders In Warehouse Number'=>$account->get('Account Orders In Warehouse Number')+$account->get('Account Orders Packed Number')+$account->get('Account Orders Dispatch Approved Number'))
 
 );
 
@@ -73,7 +73,7 @@ if ($result = $db->query($sql)) {
 
 
         $store->update(
-            array('Store Today Start Orders In Warehouse Number'=>$store->get('Store Orders In Warehouse Number')+$store->get('Store Orders Packed Number')+$store->get('Store Orders In Dispatch Area Number'))
+            array('Store Today Start Orders In Warehouse Number'=>$store->get('Store Orders In Warehouse Number')+$store->get('Store Orders Packed Number')+$store->get('Store Orders Dispatch Approved Number'))
 
         );
 
