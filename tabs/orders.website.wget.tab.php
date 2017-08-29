@@ -13,6 +13,7 @@ $tab     = 'orders.website';
 $ar_file = 'ar_orders_tables.php';
 $tipo    = 'orders_in_website';
 
+
 $default = $user->get_tab_defaults($tab);
 
 $table_views = array();
@@ -27,8 +28,6 @@ $parameters = array(
     'parent'     => $state['parent'],
     'parent_key' => $state['parent_key'],
 );
-
-
 
 
 

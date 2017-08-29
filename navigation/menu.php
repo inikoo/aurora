@@ -113,7 +113,7 @@ if ($user->can_view('orders')) {
         $nav_menu[] = array('<i class="fa fa-'.$section['icon'].' fa-fw"></i>',$section['label'], $section['reference'], $key, 'section', '');
     }
 */
-
+/*
 
     if ($user->get('User Hooked Store Key')) {
         $nav_menu[] = array(
@@ -134,6 +134,9 @@ if ($user->can_view('orders')) {
             ''
         );
     }
+
+*/
+
     /*
     $sections=get_sections('invoices', $data['parent_key']);
     foreach ($sections as $key=>$section ) {

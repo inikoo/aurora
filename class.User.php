@@ -2757,6 +2757,9 @@ class User extends DB_Table {
 
         } else {
             if ($this->data['User Type'] == 'Contractor') {
+                $dashboard_items[] = 'pending_orders';
+                $dashboard_items[] = 'sales_overview';
+                $dashboard_items[] = 'kpis';
 
 
             } else {

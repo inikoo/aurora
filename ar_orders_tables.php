@@ -93,6 +93,9 @@ switch ($tipo) {
     case 'orders_index':
         orders_index(get_table_parameters(), $db, $user);
         break;
+    case 'orders_group_by_store':
+        orders_group_by_store(get_table_parameters(), $db, $user);
+        break;
 
     case 'invoice_categories':
         invoice_categories(get_table_parameters(), $db, $user);
@@ -116,6 +119,7 @@ switch ($tipo) {
         invoice_categories(get_table_parameters(), $db, $user);
         break;
     case 'orders_in_website':
+
         orders_in_website(get_table_parameters(), $db, $user);
         break;
     default:
@@ -1721,6 +1725,73 @@ function invoices($_data, $db, $user) {
     echo json_encode($response);
 }
 
+
+function orders_group_by_store($_data, $db, $user) {
+
+    $rtext_label = 'store';
+    include_once 'prepare_table/init.php';
+
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+    $total_orders         = 0;
+    $total_invoices       = 0;
+    $total_delivery_notes = 0;
+    $total_payments       = 0;
+
+
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+            $total_orders         += $data['orders'];
+            $total_invoices       += $data['invoices'];
+            $total_delivery_notes += $data['delivery_notes'];
+            $total_payments       += $data['payments'];
+
+            $adata[] = array(
+                'store_key'      => $data['Store Key'],
+                'code'           => sprintf('<span class="link" onclick="change_view(\'orders/%d\')">%s</span>',$data['Store Key'],$data['Store Code']),
+                'name'           => sprintf('<span class="link" onclick="change_view(\'orders/%d\')">%s</span>',$data['Store Key'],$data['Store Name']),
+                'orders'         => number($data['orders']),
+                'delivery_notes' => number($data['delivery_notes']),
+                'invoices'       => sprintf('<span class="link" onclick="change_view(\'invoices/%d\')">%s</span>',$data['Store Key'],number($data['invoices'])),
+                'payments'       => number($data['payments']),
+            );
+
+        }
+
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+
+    $adata[] = array(
+        'store_key' => '',
+        'name'      => '',
+        'code'      => _('Total').($filtered > 0 ? ' '.'<i class="fa fa-filter fa-fw"></i>' : ''),
+
+        'orders'         => number($total_orders),
+        'delivery_notes' => number($total_delivery_notes),
+        'invoices'       => number($total_invoices),
+        'payments'       => number($total_payments),
+
+    );
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+        )
+    );
+    echo json_encode($response);
+}
 
 function orders_index($_data, $db, $user) {
 

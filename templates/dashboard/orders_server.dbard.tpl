@@ -33,7 +33,7 @@
 
     </li>
     <li class="flex-item">
-        <span>{t}In warehouse{/t}</span>
+        <span>{t}Picking{/t}</span>
         <div class="title">
             <span class="" >
             <span class="Orders_In_Warehouse_No_Alerts_Number button" title="{t}Orders in warehouse without alerts{/t}" onclick="get_widget_details(this,'orders.in_warehouse_no_alerts.wget',{ parent: 'account','parent_key':1})">
@@ -57,65 +57,34 @@
 
     <li class="flex-item">
 
-        <span>{t}To invoice{/t}</span>
-        <div class="title"><span class="Orders_Packed_Number button"  onClick="get_widget_details(this,'orders.packed_done.wget',{ parent: 'account','parent_key':1})"> {$account->get('Orders Packed Number')}</span></div>
-        <div ><span class="Orders_Packed_Amount" title="{if $currency=='account'}{$account->get('DC Orders Packed Amount')}{else}{$account->get('Orders Packed Amount')}{/if}">{if $currency=='account'}{$account->get('DC Orders Packed Amount Minify')}{else}{$account->get('Orders Packed Amount Minify')}{/if}</span></div>
+        <span>{t}Invoicing{/t}</span>
+        <div class="title">
+            <span class="Orders_Packed_Number button" title="{t}Closed orders waiting to be invoiced{/t}" onClick="get_widget_details(this,'orders.packed_done.wget',{ 'parent': 'account','parent_key':1})"> <i style="font-size: 50%" class="fa fa-archive" aria-hidden="true"></i> {$account->get('Orders Packed Number')}</span>
+            |
+            <span class="Orders_Dispatch_Approved_Number button" title="{t}Invoiced orders waiting to be dispatched{/t}"  onclick="get_widget_details(this,'orders.approved.wget',{ 'parent': 'account','parent_key':1})" >{$account->get('Orders Dispatch Approved Number')} <i style="font-size: 50%" class="fa fa-file-text-o" aria-hidden="true"></i> </span>
+
+        </div >
+
+        <span class="Orders_Packed_Amount" title="{if $currency=='account'}{$account->get('DC Orders Packed Amount')}{else}{$account->get('Orders Packed Amount')}{/if}">{if $currency=='account'}{$account->get('DC Orders Packed Amount Minify')}{else}{$account->get('Orders Packed Amount Minify')}{/if}</span> |
+        <span class="Orders_Dispatch_Approved_Amount" title="{if $currency=='account'}{$account->get('DC Orders Dispatch Approved Amount')}{else}{$account->get('Orders Dispatch Approved Amount')}{/if}">{if $currency=='account'}{$account->get('DC Orders Dispatch Approved Amount Minify')}{else}{$account->get('Orders Dispatch Approved Amount Minify')}{/if}</span>
+
+            </div>
 
     </li>
-
-
 
     <li class="flex-item">
-        <span>{t}Dispatch area{/t}</span>
+        <span>{t}Dispatched today{/t}</span>
         <div class="title"><span class="" >
-                <span class="Orders_Dispatch_Approved_Number button" title="{t}Invoiced orders waiting to be dispatched{/t}"  onclick="get_widget_details(this,'orders.approved.wget',{ parent: 'account','parent_key':1})" > <i style="font-size: 50%" class="fa fa-file-text-o" aria-hidden="true"></i> {$account->get('Orders Dispatch Approved Number')}</span> | </span>
-            <span class="Orders_Dispatched_Today_Number button" title="{t}Today's dispatched orders{/t}"  onclick="get_widget_details(this,'orders.dispatched_today.wget',{ parent: 'account','parent_key':1})">{$account->get('Orders Dispatched Today Number')} <i style="font-size: 50%" class="fa fa-paper-plane " aria-hidden="true"></i> </span> </div>
+
+            <span class="Orders_Dispatched_Today_Number button" title="{t}Today's dispatched orders{/t}"  onclick="get_widget_details(this,'orders.dispatched_today.wget',{ 'parent': 'account','parent_key':1})">{$account->get('Orders Dispatched Today Number')} <i style="font-size: 50%" class="hide fa fa-paper-plane " aria-hidden="true"></i> </span> </div>
         <div >
-            <span class=""><span class="Orders_Dispatch_Approved_Amount" title="{if $currency=='account'}{$account->get('DC Orders Dispatch Approved Amount')}{else}{$account->get('Orders Dispatch Approved Amount')}{/if}">{if $currency=='account'}{$account->get('DC Orders Dispatch Approved Amount Minify')}{else}{$account->get('Orders Dispatch Approved Amount Minify')}{/if}</span> | </span>
-            <span class="Orders_Dispatched_Today_Amount" title="{if $currency=='account'}{$account->get('DC Orders Dispatched Today Amount')}{else}{$account->get('Orders Dispatched Today Amount')}{/if}">{if $currency=='account'}{$account->get('DC Orders Dispatched Today Amount Minify')}{else}{$account->get('Orders Dispatched Today Amount Minify')}{/if}</span></div>
+            <span class="Orders_Dispatched_Today_Amount" title="{if $currency=='account'}{$account->get('DC Orders Dispatched Today Amount')}{else}{$account->get('Orders Dispatched Today Amount')}{/if}">{if $currency=='account'}{$account->get('DC Orders Dispatched Today Amount Minify')}{else}{$account->get('Orders Dispatched Today Amount Minify')}{/if}</span>
+        </div>
 
 
     </li>
+    
+
+   
 </ul>
 
-
-<script>
-    function get_pending_orders_data(parent,  currency) {
-
-        var request = "/ar_dashboard.php?tipo=pending_orders&parent=" + parent + '&currency=' + currency
-        console.log(request)
-        $.getJSON(request, function (r) {
-
-
-            $('#pending_orders_parent').val(parent)
-
-            for (var record in r.data) {
-
-                console.log(record)
-                console.log(r.data[record].value)
-
-                $('.' + record).html(r.data[record].value)
-
-                if(r.data[record].title!= undefined ) {
-                    $('.' + record).prop('title', r.data[record].title);
-                }
-
-
-
-
-            }
-
-
-        });
-
-    }
-
-    function go_to_orders(metadata){
-
-      
-
-        change_view('orders/'+{$account->id},metadata)
-
-    }
-    
-    </script>

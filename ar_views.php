@@ -70,6 +70,9 @@ function get_widget_details($db, $smarty, $user, $account) {
 
 
 
+
+
+
     $html     = get_tab(
         $db, $smarty, $user, $account, $data['widget'], '', $state, $metadata = false
     );
@@ -629,10 +632,10 @@ function get_view($db, $smarty, $user, $account, $modules) {
 
         if (!in_array(
             $state['_object']->get('Webpage Code'), array(
-            'register.sys',
-            'login.sys',
-            'checkout.sys'
-        )
+                                                      'register.sys',
+                                                      'login.sys',
+                                                      'checkout.sys'
+                                                  )
         )) {
 
 
@@ -709,15 +712,18 @@ function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state = false, $
     $_subtab = $subtab;
 
 
-
     $actual_tab   = ($subtab != '' ? $subtab : $tab);
     $state['tab'] = $actual_tab;
 
 
-
     $smarty->assign('data', $state);
 
+
+
+
     if (file_exists('tabs/'.$actual_tab.'.tab.php')) {
+    //print 'tabs/'.$actual_tab.'.tab.php';
+
         include_once 'tabs/'.$actual_tab.'.tab.php';
     } else {
         $html = 'Tab Not found: >'.$actual_tab.'.tab.php<';
@@ -725,8 +731,7 @@ function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state = false, $
     }
 
 
-
-    if (is_array($state) and   !(preg_match('/\_edit$/', $tab) or preg_match('/\.wget$/', $_tab) or $tab == 'part_family.product_family.new')) {
+    if (is_array($state) and !(preg_match('/\_edit$/', $tab) or preg_match('/\.wget$/', $_tab) or $tab == 'part_family.product_family.new')) {
 
 
         $_SESSION['state'][$state['module']][$state['section']]['tab'] = $_tab;
@@ -1301,9 +1306,11 @@ function get_navigation($user, $smarty, $data, $db, $account) {
             switch ($data['section']) {
 
 
-
                 case ('dashboard'):
                     return get_orders_server_dashboard_navigation($data, $smarty, $user, $db, $account);
+                    break;
+                case ('group_by_store'):
+                    return get_orders_server_group_by_store_navigation($data, $smarty, $user, $db, $account);
                     break;
 
 
@@ -1313,12 +1320,6 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                         $data, $smarty, $user, $db, $account
                     );
                     break;
-            }
-
-            break;
-        case ('invoices_server'):
-            require_once 'navigation/orders.nav.php';
-            switch ($data['section']) {
 
                 case ('invoices'):
                 case ('payments'):
@@ -1337,10 +1338,11 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                         $data, $smarty, $user, $db, $account
                     );
                     break;
+
             }
 
-
             break;
+
         case ('delivery_notes_server'):
             require_once 'navigation/orders.nav.php';
             switch ($data['section']) {
@@ -1380,6 +1382,11 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                 case ('delivery_note'):
                     return get_delivery_note_navigation($data, $smarty, $user, $db, $account);
                     break;
+                case ('invoices'):
+                    return get_invoices_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
                 case ('invoice'):
                     return get_invoice_navigation($data, $smarty, $user, $db, $account);
                     break;
@@ -1391,37 +1398,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 
             }
             break;
-        case ('invoices'):
-            require_once 'navigation/orders.nav.php';
-            switch ($data['section']) {
 
-                case ('invoices'):
-                case ('payments'):
-                    return get_invoices_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-                    break;
-
-                case ('invoice'):
-                    return get_invoice_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-                    break;
-                case ('delivery_note'):
-                    return get_delivery_note_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-                    break;
-                case ('order'):
-                    return get_order_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-                    break;
-                default:
-                    return 'View not found';
-
-            }
-            break;
         case ('delivery_notes'):
             require_once 'navigation/orders.nav.php';
 
@@ -2386,7 +2363,6 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
     );
 
 
-
     if ($data['section'] == 'category') {
 
         if ($data['_object']->get('Category Scope') == 'Product') {
@@ -2494,8 +2470,7 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
         //print_r($_content);
 
 
-    }
-    elseif ($data['module'] == 'suppliers' and $data['section'] == 'order') {
+    } elseif ($data['module'] == 'suppliers' and $data['section'] == 'order') {
         if ($data['_object']->get('Purchase Order State') == 'InProcess') {
 
             //$data['tab']='supplier.order.items';
@@ -2513,18 +2488,16 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
             // }
 
 
-
         }
-    }
-    elseif ($data['module'] == 'products' and $data['section'] == 'webpage') {
+    } elseif ($data['module'] == 'products' and $data['section'] == 'webpage') {
 
 
         if (!in_array(
             $data['_object']->get('Webpage Code'), array(
-            'register.sys',
-            'login.sys',
-            'checkout.sys'
-        )
+                                                     'register.sys',
+                                                     'login.sys',
+                                                     'checkout.sys'
+                                                 )
         )) {
             $_content['subtabs'] = '';
 
@@ -2533,8 +2506,7 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
         }
 
 
-    }
-    elseif ($data['section'] == 'website') {
+    } elseif ($data['section'] == 'website') {
 
 
         if ($data['website']->get('Website Status') == 'Active') {
@@ -2546,39 +2518,30 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
         }
 
 
-    }
-    elseif ($data['section'] == 'delivery_note') {
-
-
-
+    } elseif ($data['section'] == 'delivery_note') {
 
 
         if ($data['tab'] == 'set_delivery_note.fast_track_packing') {
-            $data['tab'] ='delivery_note.fast_track_packing';
+            $data['tab']                                                   = 'delivery_note.fast_track_packing';
             $_content['tabs']['delivery_note.fast_track_packing']['class'] = '';
 
-        }elseif ($data['tab'] == 'delivery_note.fast_track_packing') {
-            $data['tab'] ='delivery_note.items';
+        } elseif ($data['tab'] == 'delivery_note.fast_track_packing') {
+            $data['tab']                                                   = 'delivery_note.items';
             $_content['tabs']['delivery_note.fast_track_packing']['class'] = 'hide';
 
-        }else{
+        } else {
             $_content['tabs']['delivery_note.fast_track_packing']['class'] = 'hide';
 
         }
 
 
-
-
-
-        if($data['_object']->get('State Index')<=10){
+        if ($data['_object']->get('State Index') <= 10) {
             $_content['tabs']['delivery_note.picking_aid']['class'] = 'hide';
 
 
         }
 
-      //  exit;
-
-
+        //  exit;
 
 
     }
@@ -2615,7 +2578,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
     $branch = array();
     //$branch=array(array('label'=>'<span >'._('Home').'</span>', 'icon'=>'home', 'reference'=>'/dashboard'));
-    //print_r($state);
+
     switch ($state['module']) {
         case 'dashboard':
 
@@ -3790,19 +3753,49 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 'reference' => 'receipts'
             );
 
-            if ($user->get_number_stores() > 1) {
+
+            if ($state['section'] == 'dashboard') {
+
+                $branch[] = array(
+                    'label'     => _("Orders control panel").' ('._('All stores').')',
+                    'icon'      => '',
+                    'reference' => ''
+                );
+            } elseif ($state['section'] == 'orders') {
+
                 $branch[] = array(
                     'label'     => _('Orders').' ('._('All stores').')',
                     'icon'      => '',
-                    'reference' => 'orders/all'
+                    'reference' => ''
                 );
+            } else {
+                if ($state['section'] == 'invoices') {
+
+                    $branch[] = array(
+                        'label'     => _('Invoices').' ('._('All stores').')',
+                        'icon'      => '',
+                        'reference' => ''
+                    );
+
+
+                } else {
+                    if ($state['section'] == 'group_by_store') {
+
+                        $branch[] = array(
+                            'label'     => _('Orders grouped by store'),
+                            'icon'      => 'compress',
+                            'reference' => ''
+                        );
+
+
+                    }
+                }
             }
 
 
-
-
-
             break;
+        /*
+
         case 'invoices_server':
 
             if ($state['section'] == 'categories') {
@@ -3849,6 +3842,8 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 }
             }
             break;
+
+        */
         case 'delivery_notes_server':
             $branch[] = array(
                 'label'     => '',
@@ -3876,54 +3871,39 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
                 case 'dashboard':
 
+                    if ($user->get_number_stores() > 1) {
+                        $branch[] = array(
+                            'label' => '('._('All stores').')',
+                            'icon'  => '',
+                            'reference'   => 'orders/all/dashboard'
+                        );
+                    }
+
                     $branch[] = array(
-                        'label'     => _("Orders").' '.$state['store']->data['Store Code'],
-                        'icon'      => 'tachometer',
+                        'label'     => _('Orders control panel').' '.$state['store']->data['Store Code'],
+                        'icon'      => '',
                         'reference' => ''
                     );
 
                     break;
 
 
-                case 'basket_orders':
 
-                    $branch[] = array(
-                        'label'     => _('Orders in website').' '.$state['store']->data['Store Code'],
-                        'icon'      => 'globe',
-                        'reference' => ''
-                    );
-
-
-                    break;
-
-                case 'archived_orders':
-
-                    $branch[] = array(
-                        'label'     => _('Archived orders').' '.$state['store']->data['Store Code'],
-                        'icon'      => 'archive',
-                        'reference' => ''
-                    );
-
-
-                    break;
-
-                case 'pending_orders':
-
-                    $branch[] = array(
-                        'label'     => _('Pending orders').' '.$state['store']->data['Store Code'],
-                        'icon'      => 'shopping-cart',
-                        'reference' => ''
-                    );
-
-
-                    break;
 
                 case 'orders':
 
+                    if ($user->get_number_stores() > 1) {
+                        $branch[] = array(
+                            'label' => '('._('All stores').')',
+                            'icon'  => '',
+                            'reference'   => 'orders/all'
+                        );
+                    }
+
 
                     $branch[] = array(
-                        'label'     => _('Orders (Archive)').' '.$state['store']->data['Store Code'],
-                        'icon'      => 'archive',
+                        'label'     => _('Orders').' '.$state['store']->data['Store Code'],
+                        'icon'      => 'shopping-cart',
                         'reference' => ''
                     );
 
@@ -3977,7 +3957,6 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                             'icon'      => 'shopping-cart',
                             'reference' => ''
                         );
-
 
 
                     }
@@ -4107,6 +4086,25 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'icon'      => 'truck fa-flip-horizontal',
                         'reference' => ''
                     );
+                    break;
+
+                case 'invoices':
+                    if ($user->get_number_stores() > 1) {
+                        $branch[] = array(
+                            'label' => '('._('All stores').')',
+                            'icon'  => '',
+                            'reference'   => 'invoices/all'
+                        );
+                    }
+                    $store = new Store($state['parent_key']);
+
+                    $branch[] = array(
+                        'label'     => _('Invoices').' '.$store->data['Store Code'],
+                        'icon'      => '',
+                        'reference' => ''
+                    );
+
+
                     break;
 
                 case 'invoice':
@@ -4354,6 +4352,9 @@ function get_view_position($db, $state, $user, $smarty, $account) {
             }
 
             break;
+
+
+        /*
         case 'invoices':
             $branch[] = array(
                 'label'     => '',
@@ -4363,24 +4364,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
             switch ($state['section']) {
 
-                case 'invoices':
-                    if ($user->get_number_stores() > 1) {
-                        $branch[] = array(
-                            'label' => '('._('All stores').')',
-                            'icon'  => '',
-                            'url'   => 'invoices/all'
-                        );
-                    }
-                    $store = new Store($state['parent_key']);
 
-                    $branch[] = array(
-                        'label'     => _('Invoices').' '.$store->data['Store Code'],
-                        'icon'      => '',
-                        'reference' => 'invoices/'.$store->id
-                    );
-
-
-                    break;
 
                 case 'payments':
                     if ($user->get_number_stores() > 1) {
@@ -4549,6 +4533,9 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 
             break;
+
+        */
+
         case 'help':
             switch ($state['section']) {
                 case 'help':

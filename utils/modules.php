@@ -281,7 +281,7 @@ $_service = array(
 );
 
 $modules = array(
-    'dashboard'             => array(
+    'dashboard'        => array(
 
         'section'     => 'dashboard',
         'parent'      => 'none',
@@ -304,7 +304,7 @@ $modules = array(
         )
 
     ),
-    'customers'             => array(
+    'customers'        => array(
         'section'     => 'customers',
         'parent'      => 'store',
         'parent_type' => 'key',
@@ -503,7 +503,7 @@ $modules = array(
 
         )
     ),
-    'customers_server'      => array(
+    'customers_server' => array(
 
         'parent'      => 'none',
         'parent_type' => 'none',
@@ -523,7 +523,7 @@ $modules = array(
         )
 
     ),
-    'orders'                => array(
+    'orders'           => array(
         'section'     => 'orders',
         'parent'      => 'store',
         'parent_type' => 'key',
@@ -532,8 +532,8 @@ $modules = array(
 
             'dashboard' => array(
                 'type'      => 'navigation',
-                'label'     => _('Dashboard'),
-                'icon'      => 'tachometer',
+                'label'     => _('Control panel'),
+                'icon'      => 'angle-double-right',
                 'reference' => 'orders/%d/dashboard',
                 'tabs'      => array(
                     'orders.dashboard' => array('label' => _('Dashboard'))
@@ -542,47 +542,26 @@ $modules = array(
             ),
 
 
-            'basket_orders' => array(
-                'type'      => 'navigation',
-                'label'     => _('Orders in website'),
-                'icon'      => 'globe',
-                'reference' => 'orders/%d/website',
-                'tabs'      => array(
-                    'orders.website' => array('label' => _('Orders in website'))
-
-                )
-            ),
-
-            'pending_orders' => array(
-                'type'      => 'navigation',
-                'label'     => _('Pending orders'),
-                'icon'      => 'shopping-cart',
-                'reference' => 'orders/%d/flow',
-                'tabs'      => array(
-                    'orders.pending' => array('label' => _('Pending orders'))
-
-                )
-            ),
-
-            'archived_orders' => array(
-                'type'      => 'navigation',
-                'label'     => _('Orders (Archive)'),
-                'icon'      => 'archive',
-                'reference' => 'orders/%d/archived',
-                'tabs'      => array(
-                    'orders.archived' => array('label' => _('Archived orders'))
-
-                )
-            ),
-
             'orders' => array(
                 'type'      => 'navigation',
-                'label'     => _('All'),
+                'label'     => _('Orders'),
                 'icon'      => 'shopping-cart',
                 'reference' => 'orders/%d',
                 'tabs'      => array(
                     'orders' => array()
                 )
+            ),
+
+
+            'invoices' => array(
+                'type'      => 'navigation',
+                'label'     => _('Invoices'),
+                'icon'      => 'file-text-o',
+                'reference' => 'invoices/%d',
+                'tabs'      => array(
+                    'invoices' => array()
+                )
+
             ),
 
 
@@ -636,7 +615,7 @@ $modules = array(
                 'tabs' => array(
 
 
-                    'delivery_note.items'    => array(
+                    'delivery_note.items' => array(
                         'label' => _(
                             'Items'
                         ),
@@ -644,7 +623,7 @@ $modules = array(
                     ),
 
 
-                    'delivery_note.picking_aid'    => array(
+                    'delivery_note.picking_aid' => array(
                         'label' => _('Picking aid'),
                         'icon'  => 'fa-hand-lizard-o'
                     ),
@@ -714,7 +693,7 @@ $modules = array(
                 )
 
             ),
-            'payment'                  => array(
+            'payment'       => array(
                 'type' => 'object',
                 'tabs' => array(
                     'payment.details' => array(
@@ -738,17 +717,14 @@ $modules = array(
 
         )
     ),
-    'orders_server'         => array(
+    'orders_server'    => array(
 
         'parent'      => 'none',
         'parent_type' => 'none',
         'section'     => 'orders',
         'sections'    => array(
 
-
-
-
-            'dashboard' => array(
+            'dashboard'      => array(
                 'type'      => 'navigation',
                 'label'     => _('Control panel'),
                 'icon'      => 'angle-double-right',
@@ -758,11 +734,7 @@ $modules = array(
 
                 )
             ),
-
-
-
-
-            'orders' => array(
+            'orders'         => array(
                 'type'      => 'navigation',
                 'label'     => _('Orders'),
                 'icon'      => 'shopping-cart',
@@ -772,10 +744,31 @@ $modules = array(
                 )
 
             ),
+            'invoices'       => array(
+                'type'      => 'navigation',
+                'label'     => _('Invoices'),
+                'icon'      => 'file-text-o',
+                'reference' => 'invoices/all',
+                'tabs'      => array(
+                    'invoices_server' => array()
+                )
+
+            ),
+            'group_by_store' => array(
+                'type'      => 'navigation',
+                'label'     => _('Group by store'),
+                'icon'      => 'compress',
+                'reference' => 'orders/all/by_store',
+                'tabs'      => array(
+                    'orders_group_by_store' => array()
+                )
+
+            ),
 
         )
 
     ),
+    /*
     'invoices'              => array(
         'section'     => 'invoices',
         'parent'      => 'store',
@@ -991,6 +984,9 @@ $modules = array(
         )
 
     ),
+    */
+
+
     'delivery_notes'        => array(
         'section'     => 'delivery_notes',
         'parent'      => 'store',
@@ -1053,7 +1049,7 @@ $modules = array(
                 'tabs' => array(
 
 
-                    'delivery_note.items'    => array(
+                    'delivery_note.items' => array(
                         'label' => _(
                             'Items'
                         ),
@@ -1061,31 +1057,29 @@ $modules = array(
                     ),
 
 
-                    'delivery_note.fast_track_packing'    => array(
+                    'delivery_note.fast_track_packing' => array(
                         'label' => _('Fast track packing'),
                         'icon'  => 'bolt'
                     ),
 
-                    'delivery_note.picking_aid'    => array(
+                    'delivery_note.picking_aid' => array(
                         'label' => _('Picking aid'),
                         'icon'  => 'hand-lizard-o'
                     ),
 
 
-                    'delivery_note.details'  => array(
+                    'delivery_note.details' => array(
                         'label' => _(
                             'Data'
                         ),
                         'icon'  => 'database'
                     ),
-                    'delivery_note.history'  => array(
+                    'delivery_note.history' => array(
                         'label' => _(
                             'History'
                         ),
                         'icon'  => 'road',
                         'class' => 'right icon_only'
-
-
 
 
                     )
@@ -1113,7 +1107,7 @@ $modules = array(
                 'tabs' => array(
 
 
-                    'invoice.items'          => array(
+                    'invoice.items' => array(
                         'label' => _(
                             'Items'
                         ),
@@ -1121,7 +1115,7 @@ $modules = array(
                     ),
 
 
-                    'delivery_note.picking_aid'    => array(
+                    'delivery_note.picking_aid' => array(
                         'label' => _('Picking aid'),
                         'icon'  => 'fa-hand-lizard-o'
                     ),
@@ -1155,7 +1149,7 @@ $modules = array(
 
             ),
 
-            'pick_aid'      => array(
+            'pick_aid' => array(
                 'type' => 'object',
                 'tabs' => array(
 
@@ -1169,7 +1163,7 @@ $modules = array(
                 )
 
             ),
-            'pack_aid'      => array(
+            'pack_aid' => array(
                 'type' => 'object',
                 'tabs' => array(
 
@@ -1311,7 +1305,7 @@ $modules = array(
                             'field'  => 'Transactions'
                         ),
                     ),
-                    'payment_account.stores' => array(
+                    'payment_account.stores'   => array(
                         'label'         => _('Stores'),
                         'quantity_data' => array(
                             'object' => '_object',
@@ -6578,6 +6572,7 @@ function get_sections($module, $parent_key = false) {
     global $modules;
 
     $sections = array();
+
 
     foreach ($modules[$module]['sections'] as $key => $value) {
 

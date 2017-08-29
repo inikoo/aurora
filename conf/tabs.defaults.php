@@ -500,6 +500,20 @@ $tab_defaults = array(
         'f_field'     => 'code',
         'percentages' => 0
     ),
+
+    'orders_group_by_store'                => array(
+        'view'        => 'overview',
+        'sort_key'    => 'code',
+        'sort_order'  => -1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'code',
+        'percentages' => 0
+    ),
+
+
+
+
     'stores'                      => array(
         'view'        => 'overview',
         'sort_key'    => 'id',

@@ -11,6 +11,42 @@
 */
 
 
+function get_orders_server_group_by_store_navigation($data, $smarty, $user, $db, $account) {
+
+
+    $sections = get_sections('orders_server');
+
+
+    $left_buttons = array();
+
+
+    $right_buttons = array();
+
+    if (isset($sections[$data['section']])) {
+        $sections[$data['section']]['selected'] = true;
+    }
+
+    $title = _("Orders grouped by store");
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search orders')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
 
 
 
@@ -51,7 +87,6 @@ function get_orders_server_dashboard_navigation($data, $smarty, $user, $db, $acc
 
 }
 
-
 function get_dashboard_navigation($data, $smarty, $user, $db, $account) {
 
 
@@ -89,6 +124,7 @@ function get_dashboard_navigation($data, $smarty, $user, $db, $account) {
     return $html;
 
 }
+
 
 
 function get_pending_orders_navigation($data, $smarty, $user, $db, $account) {
@@ -502,7 +538,7 @@ function get_invoices_navigation($data, $smarty, $user, $db, $account) {
     $block_view = $data['section'];
 
 
-    $sections = get_sections('invoices', $store->id);
+    $sections = get_sections('orders', $store->id);
     switch ($block_view) {
 
         case 'invoices':
@@ -689,13 +725,12 @@ function get_orders_server_navigation($data, $smarty, $user, $db, $account) {
 
 function get_invoices_server_navigation($data, $smarty, $user, $db, $account) {
 
-    global $user, $smarty;
 
 
     $block_view = $data['section'];
 
 
-    $sections = get_sections('invoices_server');
+    $sections = get_sections('orders_server');
     switch ($block_view) {
 
         case 'invoices':
