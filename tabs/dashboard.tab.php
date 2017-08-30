@@ -11,6 +11,7 @@
 */
 
 
+
 $html = '';
 foreach ($user->get_dashboard_items() as $item) {
 

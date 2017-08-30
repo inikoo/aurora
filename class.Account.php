@@ -1178,6 +1178,8 @@ class Account extends DB_Table {
             );
 
 
+
+
             $this->update($data_to_update, 'no_history');
         }
 
@@ -1771,6 +1773,7 @@ function update_orders() {
 
         );
 
+       // print_r($data_to_update);
 
         $this->update($data_to_update, 'no_history');
     }
