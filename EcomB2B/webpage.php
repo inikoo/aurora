@@ -357,7 +357,10 @@ if($webpage->id) {
         $smarty->assign('has_properties_tab', $has_properties_tab);
 
 
-        $template = $theme.'/product.'.$theme.'.'.$website->get('Website Type').'.tpl';
+
+
+
+        $template = $theme.'/product.'.$theme.'.'.$website->get('Website Type').$template_suffix.'.tpl';
 
 
     } elseif ($webpage->get('Webpage Template Filename') == 'reset_password') {
