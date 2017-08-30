@@ -30,7 +30,7 @@ $object_fields = array(
                 'id'    => 'Invoice_Public_ID',
                 'value' => $invoice->get('Invoice Public ID'),
                 'server_validation' => json_encode(array('tipo' => 'check_for_duplicates')),
-                'label' => _('Number').' <i class="fa fa-exclamation-triangle yellow" aria-hidden="true"  title="'._('Warning, editing invoice details can be illegal ').'" ></i>',
+                'label' => _('Number').' <i class="fa fa-exclamation-triangle yellow" aria-hidden="true"  title="'._('Warning, editing invoice details can be illegal').'" ></i>',
             ),
 
 
@@ -45,21 +45,21 @@ $object_fields = array(
                 'edit'  => ($edit ? 'string' : ''),
                 'id'    => 'Invoice_Customer_Name',
                 'value' => $invoice->get('Invoice Customer Name'),
-                'label' => _('Customer name').' <i class="fa fa-exclamation-triangle yellow" aria-hidden="true"  title="'._('Warning, editing invoice details can be illegal ').'" ></i>',
+                'label' => _('Customer name').' <i class="fa fa-exclamation-triangle yellow" aria-hidden="true"  title="'._('Warning, editing invoice details can be illegal').'" ></i>',
                 'required'=>true
             ),
             array(
                 'edit'  => ($edit ? 'string' : ''),
                 'id'    => 'Invoice_Tax_Number',
                 'value' => $invoice->get('Invoice Tax Number'),
-                'label' => _('Customer tax number').' <i class="fa fa-exclamation-triangle yellow" aria-hidden="true"  title="'._('Warning, editing invoice details can be illegal ').'" ></i>',
+                'label' => _('Customer tax number').' <i class="fa fa-exclamation-triangle yellow" aria-hidden="true"  title="'._('Warning, editing invoice details can be illegal').'" ></i>',
                 'required'=>false
             ),
             array(
                 'edit'  => ($edit ? 'string' : ''),
                 'id'    => 'Invoice_Registration_Number',
                 'value' => $invoice->get('Invoice Registration Number'),
-                'label' => _('Customer registration number').' <i class="fa fa-exclamation-triangle yellow" aria-hidden="true"  title="'._('Warning, editing invoice details can be illegal ').'" ></i>',
+                'label' => _('Customer registration number').' <i class="fa fa-exclamation-triangle yellow" aria-hidden="true"  title="'._('Warning, editing invoice details can be illegal').'" ></i>',
                 'required'=>false
             ),
 

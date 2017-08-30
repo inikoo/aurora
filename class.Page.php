@@ -1368,7 +1368,7 @@ class Page extends DB_Table {
             case('Webpage Scope Metadata'):
             case('Webpage Website Key'):
             case('Webpage Store Key'):
-
+            case ('Webpage Redirection Code'):
             case('Webpage Code'):
             case('Webpage Type Key'):
             case 'Webpage Version':
@@ -7678,6 +7678,9 @@ class Page extends DB_Table {
                 break;
             case 'Webpage Meta Description':
                 $label = _('meta description');
+                break;
+            case 'Webpage Redirection Code':
+                $label = _('Permanent redirection');
                 break;
             default:
                 $label = $field;

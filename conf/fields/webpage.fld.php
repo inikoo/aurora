@@ -92,16 +92,7 @@ if (in_array(
                 ),
 
 
-                array(
-                    'id'        => 'set_as_not_ready_webpage',
-                    'render'    => ($website->get('Website Status') == 'InProcess' and $object->get('Webpage State') == 'Ready' ? true : false),
-                    'class'     => 'operation',
-                    'value'     => '',
-                    'label'     => ' <span style="margin:10px 0px;padding:10px;border:1px solid #ccc" webpage_key="'.$object->id
-                        .'" onClick="publish(this,\'set_webpage_as_not_ready\')" class="discreet button ">'._("Set as not ready").' <i class="fa fa-child button"></i></span>',
-                    'reference' => '',
-                    'type'      => 'operation'
-                ),
+
                 array(
                     'id'        => 'set_as_ready_webpage',
                     'render'    => ($website->get('Website Status') == 'InProcess' and $object->get('Webpage State') != 'Ready' ? true : false),
@@ -115,7 +106,34 @@ if (in_array(
                     'type'      => 'operation'
 
 
+                ),
+
+
+                array(
+                    'id'        => 'launch_webpage',
+                    'render'    => ($website->get('Website Status') == 'Active' and $object->get('Webpage State') == 'InProcess' ? true : false),
+                    'class'     => 'operation',
+                    'value'     => '',
+                    'label'     => ' <span style="margin:10px 0px;padding:10px;border:1px solid #ccc"  webpage_key="'.$object->id
+                        .'" onClick="publish(this,\'publish_webpage\')" class="save changed valid">'._("Launch web page").' <i class="fa fa-rocket save changed valid"></i></span>',
+                    'reference' => '',
+                    'type'      => 'operation'
+                ),
+
+                array(
+                    'id'   => 'Webpage_Redirection_Code',
+                    'edit' => ($edit ? 'string' : ''),
+                    'render'    => ($website->get('Website Status') == 'Active' and $object->get('Webpage State') == 'Offline' ? true : false),
+
+                'value'           => htmlspecialchars($object->get('Webpage Redirection Code')),
+                'formatted_value' => $object->get('Webpage Redirection Code'),
+                'label'           => ucfirst($object->get_field_label('Webpage Redirection Code')).' <i class="fa fa-exclamation-triangle yellow" aria-hidden="true"  title="'._('Warning, this is a 301 redirection, and misconfiguration will affect how google index this webpage').'" ></i>',
+                'required'        => false,
+                'type'            => 'value' ,
+                'server_validation' => json_encode(array('tipo' => 'valid_redirection_webpage_code')),
                 )
+
+
             )
         );
 

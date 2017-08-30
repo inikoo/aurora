@@ -205,7 +205,7 @@ class Public_Webpage {
             case 'Webpage Website Key':
             case 'Webpage Browser Title':
             case 'Webpage Meta Description':
-
+            case 'Webpage Redirection Code':
             case 'Webpage State':
             case 'Webpage Code':
             case 'Webpage Scope':
