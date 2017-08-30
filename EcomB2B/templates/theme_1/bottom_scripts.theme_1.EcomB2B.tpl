@@ -11,7 +11,7 @@
 
 
 
-{if $detected_device=='mobile'}
+{if $detected_device=='mobile' }
      <script src="/theme_1/mobile_menu/js/classie.js"></script>
 		<script src="/theme_1/mobile_menu/js/gnmenu.js"></script>
 		<script>

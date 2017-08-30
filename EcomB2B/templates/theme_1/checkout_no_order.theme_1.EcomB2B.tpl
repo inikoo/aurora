@@ -16,7 +16,7 @@
 
     <div class="site_wrapper">
 
-        {include file="theme_1/header.EcomB2B.tpl"}
+        {include file="theme_1/header.theme_1.EcomB2B.tpl"}
 
         <div class="content_fullwidth less2">
 
@@ -34,10 +34,10 @@
 
     </div>
 
-    {include file="theme_1/footer.EcomB2B.tpl"}
+    {include file="theme_1/footer.theme_1.EcomB2B.tpl"}
 </div>
 
 </div>
-{include file="theme_1/bottom_scripts.EcomB2B.tpl"}</body></html>
+{include file="theme_1/bottom_scripts.theme_1.EcomB2B.tpl"}</body></html>
 
 

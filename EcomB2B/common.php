@@ -106,19 +106,24 @@ if (!$is_cached) {
     $detect = new Mobile_Detect;
 
     if ($detect->isMobile()) {
-        // $display_device_version = 'mobile';
         $detected_device = 'mobile';
     } else {
-        //$display_device_version = 'desktop';
         $detected_device = 'desktop';
 
     }
 
 
     if (isset($_SERVER['SERVER_NAME']) and $_SERVER['SERVER_NAME'] == 'ecom.bali') {
-        //$detected_device = 'mobile';
+        $detected_device = 'mobile';
     }
 
+
+    if($detected_device=='mobile'){
+        $template_suffix='.mobile';
+    }else{
+        $template_suffix='';
+    }
+    $template_suffix='';
 
     $smarty->assign('detected_device',$detected_device);
 
