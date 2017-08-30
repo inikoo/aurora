@@ -18,7 +18,28 @@ if($webpage->id) {
     $content = $webpage->get('Content Data');
     $content_data =$content;
 
-    if ($webpage->get('Webpage Template Filename') == 'register') {
+
+    if($webpage->get('Webpage State')=='Offline'){
+
+
+        if($webpage->get('Webpage Redirection Code')!=''){
+            $redirection_webpage=$website->get_webpage($webpage->get('Webpage Redirection Code'));
+            if($redirection_webpage->id and $redirection_webpage->get('Webpage State')=='Online'){
+                header("HTTP/1.1 301 Moved Permanently");
+                header("Location: /".strtolower($redirection_webpage->get('Webpage Code')));
+                exit();
+
+            }
+
+
+        }
+
+        $offline_webpage=$website->get_webpage('offline.sys');
+        $content =$offline_webpage->get('Content Data');
+        $template = $theme.'/offline.'.$theme.'.'.$website->get('Website Type').'.tpl';
+
+    }
+    elseif ($webpage->get('Webpage Template Filename') == 'register') {
 
         if ($logged_in) {
             header('Location: /index.php');
@@ -51,7 +72,8 @@ if($webpage->id) {
         $smarty->assign('selected_country', $country_code);
         $template = $theme.'/register.'.$theme.'.'.$website->get('Website Type').'.tpl';
 
-    } elseif ($webpage->get('Webpage Template Filename') == 'login') {
+    }
+    elseif ($webpage->get('Webpage Template Filename') == 'login') {
 
         if ($logged_in) {
             header('Location: /index.php');
@@ -66,7 +88,8 @@ if($webpage->id) {
 
 
         $template = $theme.'/login.'.$theme.'.'.$website->get('Website Type').'.tpl';
-    } elseif ($webpage->get('Webpage Template Filename') == 'search') {
+    }
+    elseif ($webpage->get('Webpage Template Filename') == 'search') {
 
         if (!empty($_REQUEST['q'])) {
             $search_query = $_REQUEST['q'];

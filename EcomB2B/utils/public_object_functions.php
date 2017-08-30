@@ -70,14 +70,10 @@ function get_object($object_name, $key, $load_other_data = false) {
             $object = new Public_Website($key);
             break;
         case 'webpage':
-
-
             include_once 'class.Public_Webpage.php';
-
             $object = new Public_Webpage($key);
-
             break;
-       
+
         case 'email_template':
             require_once "class.Public_Email_Template.php";
             $object = new Public_Email_Template($key);

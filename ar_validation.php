@@ -27,6 +27,31 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
+
+    case 'valid_redirection_webpage_code':
+
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'object'       => array('type' => 'string'),
+                         'parent'       => array('type' => 'string'),
+                         'parent_key'   => array('type' => 'string'),
+                         'key'          => array('type' => 'string'),
+                         'field'        => array('type' => 'string'),
+                         'actual_field' => array(
+                             'type'     => 'string',
+                             'optional' => true
+                         ),
+                         'value'        => array('type' => 'string'),
+                         'metadata'     => array(
+                             'type'     => 'json array',
+                             'optional' => true
+                         ),
+                     )
+        );
+
+        valid_redirection_webpage_code($data, $db, $user, $account);
+        break;
+
     case 'check_for_duplicates':
 
         $data = prepare_values(
@@ -61,6 +86,55 @@ switch ($tipo) {
         break;
 }
 
+
+
+function valid_redirection_webpage_code($data, $db, $user, $account) {
+
+    $invalid_msg              = '';
+
+
+    $sql                      = sprintf(
+        "SELECT P.`Page Key` AS `key` ,`Webpage Code` ,`Webpage State`  FROM `Page Store Dimension` P WHERE  `Webpage Code`=%s  AND `Webpage Website Key`=%s  ",
+        prepare_mysql($data['value']), $data['parent_key']
+
+    );
+
+    if ($result=$db->query($sql)) {
+        if ($row = $result->fetch()) {
+
+            if($row['key']==$data['key']){
+                $invalid_msg              = _("Webpage can't be redirected to itself");
+            }elseif($row['Webpage State']!='Online'){
+                $invalid_msg              = _("Redirection webpage is not online");
+            }
+
+
+    	}else{
+            $invalid_msg              = _('Webpage not found');
+
+        }
+    }else {
+    	print_r($error_info=$db->errorInfo());
+    	print "$sql\n";
+    	exit;
+    }
+
+    if($invalid_msg==''){
+        $validation='valid';
+        $msg='';
+    }else{
+        $validation='invalid';
+        $msg=$invalid_msg;
+    }
+
+    $response = array(
+        'state'      => 200,
+        'validation' => $validation,
+        'msg'        => $msg,
+    );
+    echo json_encode($response);
+
+}
 
 function check_for_duplicates($data, $db, $user, $account) {
 

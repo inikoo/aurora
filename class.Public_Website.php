@@ -72,8 +72,9 @@ class Public_Website {
         if ($code == '') {
             $code = 'p.home';
         }
+        include_once 'class.Public_Webpage.php';
 
-        $webpage = new Webpage('website_code', $this->id, $code);
+        $webpage = new Public_Webpage('website_code', $this->id, $code);
 
         return $webpage;
 
