@@ -503,6 +503,13 @@ class Agent extends SubjectSupplier {
             case 'Agent Automatic Placement Location':
                 $label = _("Try automatic placement location");
                 break;
+            case 'Agent Order Public ID Format':
+                $label = _("order number format");
+                break;
+
+            case 'Agent Order Last Order ID':
+                $label = _("last incremental order number");
+                break;
 
 
             default:

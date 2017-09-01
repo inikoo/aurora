@@ -1402,6 +1402,7 @@ trait ProductCategory {
                                 'category_key'  => $subject->id,
                                 'header_text'   => $subject->get('Label'),
                                 'image_375x250' => $image_375x250,
+                             //   'image_600x375' => $image_600x375,
                                 'image_src'=>$subject->get('Image'),
                                 'footer_text'   => $subject->get('Code'),
                             );

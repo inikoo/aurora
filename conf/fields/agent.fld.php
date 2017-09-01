@@ -454,6 +454,31 @@ $object_fields = array(
                 'type'            => 'value'
             ),
 
+            array(
+                'edit'     => ($edit ? 'string' : ''),
+                'id'       => 'Agent_Order_Public_ID_Format',
+                'value'    => $object->get('Agent Order Public ID Format'),
+                'label'    => ucfirst($object->get_field_label('Agent Order Public ID Format')).' <i class="fa fa-exclamation-triangle yellow" aria-hidden="true"  title="'._('Warning, misconfiguration of this variable can affect the creation of new orders').'" ></i>',
+                'required' => true,
+
+                'type' => 'value'
+
+
+            ),
+
+            array(
+                'edit'     => ($edit ? 'numeric' : ''),
+                'id'       => 'Agent_Order_Last_Order_ID',
+                'value'    => $object->get('Agent Order Last Order ID'),
+                'label'    => ucfirst($object->get_field_label('Agent Order Last Order ID')).' <i class="fa fa-exclamation-triangle yellow" aria-hidden="true"  title="'._('Warning, misconfiguration of this variable can affect the creation of new orders').'" ></i>',
+                'required' => true,
+
+                'type' => 'value'
+
+
+            ),
+
+
         )
     ),
 

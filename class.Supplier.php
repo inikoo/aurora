@@ -20,12 +20,12 @@ class Supplier extends SubjectSupplier {
     var $new = false;
     public $locale = 'en_GB';
 
-    function Supplier($arg1 = false, $arg2 = false, $arg3 = false,$_db=false) {
+    function Supplier($arg1 = false, $arg2 = false, $arg3 = false, $_db = false) {
 
-        if(!$_db) {
+        if (!$_db) {
             global $db;
             $this->db = $db;
-        }else{
+        } else {
 
 
             $this->db = $_db;
@@ -56,9 +56,6 @@ class Supplier extends SubjectSupplier {
     function get_data($tipo, $id) {
 
 
-
-
-
         $this->data = $this->base_data();
 
         if ($tipo == 'id' or $tipo == 'key') {
@@ -80,7 +77,6 @@ class Supplier extends SubjectSupplier {
         } else {
             return;
         }
-
 
 
         if ($this->data = $this->db->query($sql)->fetch()) {
@@ -347,13 +343,9 @@ class Supplier extends SubjectSupplier {
 
         if ($this->update_subject_field_switcher(
             $field, $value, $options, $metadata
-        )
-        ) {
+        )) {
             return;
         }
-
-
-
 
 
         switch ($field) {
@@ -372,8 +364,7 @@ class Supplier extends SubjectSupplier {
                               'No',
                               'Yes'
                           )
-                )
-                ) {
+                )) {
                     $this->error = true;
                     $this->msg   = sprintf(
                         _('Invalid value, valid values: %s'), '"Yes", "No"'
@@ -557,11 +548,8 @@ class Supplier extends SubjectSupplier {
                     $this->update_field($field, $value, $options);
 
 
-
                 }
         }
-
-
 
 
     }
@@ -593,8 +581,6 @@ class Supplier extends SubjectSupplier {
                 break;
 
             default;
-
-
 
 
                 if (array_key_exists($key, $this->data)) {
@@ -958,8 +944,8 @@ class Supplier extends SubjectSupplier {
 
         }
 
-        if (preg_match('/\%$/',  $data['Supplier Part Unit Extra Cost Percentage'])) {
-            $data['Supplier Part Unit Extra Cost Percentage'] = preg_replace('/\%^/', '',  $data['Supplier Part Unit Extra Cost Percentage']) / 100;
+        if (preg_match('/\%$/', $data['Supplier Part Unit Extra Cost Percentage'])) {
+            $data['Supplier Part Unit Extra Cost Percentage'] = preg_replace('/\%^/', '', $data['Supplier Part Unit Extra Cost Percentage']) / 100;
             // $value = $this->data['Supplier Part Unit Cost'] * $value / 100;
         }
 
@@ -973,8 +959,6 @@ class Supplier extends SubjectSupplier {
         }
 
 
-
-
         $data['Supplier Part Supplier Key'] = $this->id;
 
         $data['Supplier Part Minimum Carton Order'] = ceil($data['Supplier Part Minimum Carton Order']);
@@ -986,17 +970,14 @@ class Supplier extends SubjectSupplier {
         $data['Supplier Part Status'] = 'Available';
 
 
-
-
         $supplier_part = new SupplierPart('find', $data, 'create');
 
 
         if ($supplier_part->id) {
             $this->new_object_msg = $supplier_part->msg;
 
-            if ($supplier_part->new ) {
+            if ($supplier_part->new) {
                 $this->new_object = true;
-
 
 
                 if (isset($data['Part Part Materials'])) {
@@ -1024,9 +1005,6 @@ class Supplier extends SubjectSupplier {
                 }
 
 
-
-
-
                 foreach ($data as $key => $value) {
                     $_key        = preg_replace('/^Part Part /', 'Part ', $key);
                     $data[$_key] = $value;
@@ -1034,14 +1012,13 @@ class Supplier extends SubjectSupplier {
 
                 }
 
-                $auto_part_barcode=false;
+                $auto_part_barcode = false;
 
-                if (isset($data['Part Barcode Number'])  and preg_match('/^auto$/i',$data['Part Barcode Number']) ) {
-                    $auto_part_barcode=true;
+                if (isset($data['Part Barcode Number']) and preg_match('/^auto$/i', $data['Part Barcode Number'])) {
+                    $auto_part_barcode = true;
                     unset($data['Part Barcode Number']);
 
                 }
-
 
 
                 $part = new Part('find', $data, 'create');
@@ -1058,7 +1035,7 @@ class Supplier extends SubjectSupplier {
                         ), 'no_history'
                     );
 
-                    if($auto_part_barcode){
+                    if ($auto_part_barcode) {
 
 
                         $barcode_number = '';
@@ -1072,10 +1049,10 @@ class Supplier extends SubjectSupplier {
                             exit;
                         }
 
-                        if($barcode_number!='') {
+                        if ($barcode_number != '') {
                             $part->update(
                                 array(
-                                    'Part Barcode'          => $barcode_number,
+                                    'Part Barcode' => $barcode_number,
 
 
                                 ), 'no_history'
@@ -1083,15 +1060,13 @@ class Supplier extends SubjectSupplier {
                         }
 
                     }
-                    
+
                     $supplier_part->update(
                         array('Supplier Part Part SKU' => $part->sku)
                     );
                     $supplier_part->get_data('id', $supplier_part->id);
 
-                    
-                    
-                    
+
                     $supplier_part->update_historic_object();
                     $this->update_supplier_parts();
                     $part->update_cost();
@@ -1252,7 +1227,7 @@ class Supplier extends SubjectSupplier {
                 //	print $sql;
                 if ($result = $this->db->query($sql)) {
                     if ($row = $result->fetch()) {
-                       // print_r($row);
+                        // print_r($row);
                         $supplier_number_active_parts = $row['num'];
                         if ($row['num'] > 0) {
                             $supplier_number_surplus_parts      = $row['surplus'];
@@ -1313,14 +1288,13 @@ class Supplier extends SubjectSupplier {
 
         $part_skus = '';
 
-      //  print "$sql\n";
+        //  print "$sql\n";
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
 
 
-
-                if( is_numeric($row['Supplier Part Part SKU']) and $row['Supplier Part Part SKU']>0 ){
+                if (is_numeric($row['Supplier Part Part SKU']) and $row['Supplier Part Part SKU'] > 0) {
                     $part_skus .= $row['Supplier Part Part SKU'].',';
 
                 }
@@ -1330,8 +1304,6 @@ class Supplier extends SubjectSupplier {
             exit;
         }
         $part_skus = preg_replace('/\,$/', '', $part_skus);
-
-
 
 
         return $part_skus;
@@ -1489,6 +1461,13 @@ class Supplier extends SubjectSupplier {
                 break;
             case 'Supplier QQ':
                 $label = 'QQ';
+                break;
+            case 'Supplier Order Public ID Format':
+                $label = _("order number format");
+                break;
+
+            case 'Supplier Order Last Order ID':
+                $label = _("last incremental order number");
                 break;
 
             default:
@@ -1759,7 +1738,8 @@ class Supplier extends SubjectSupplier {
             $_date      = gmdate('Y-m-d', strtotime($date_frequency_period['from'].' +0:00'));
 
 
-            if ($sales_data['deliveries'] > 0 or $sales_data['supplier_deliveries'] > 0 or $sales_data['dispatched'] > 0 or $sales_data['invoiced_amount'] != 0 or $sales_data['required'] != 0 or $sales_data['profit'] != 0 or $sales_data['purchased_amount'] != 0) {
+            if ($sales_data['deliveries'] > 0 or $sales_data['supplier_deliveries'] > 0 or $sales_data['dispatched'] > 0 or $sales_data['invoiced_amount'] != 0 or $sales_data['required'] != 0
+                or $sales_data['profit'] != 0 or $sales_data['purchased_amount'] != 0) {
 
                 list($timeseries_record_key, $date) = $timeseries->create_record(
                     array('Timeseries Record Date' => $_date)
@@ -1770,10 +1750,8 @@ class Supplier extends SubjectSupplier {
                     'UPDATE `Timeseries Record Dimension` SET 
                               `Timeseries Record Integer A`=%d ,`Timeseries Record Integer B`=%d ,`Timeseries Record Integer C`=%d ,
                               `Timeseries Record Float A`=%.2f ,  `Timeseries Record Float B`=%f ,`Timeseries Record Float C`=%f ,`Timeseries Record Float D`=%f ,
-                              `Timeseries Record Type`=%s WHERE `Timeseries Record Key`=%d',
-                    $sales_data['dispatched'], $sales_data['deliveries'], $sales_data['supplier_deliveries'],
-                    $sales_data['invoiced_amount'], $sales_data['required'], $sales_data['profit'],$sales_data['purchased_amount'],
-                    prepare_mysql('Data'), $timeseries_record_key
+                              `Timeseries Record Type`=%s WHERE `Timeseries Record Key`=%d', $sales_data['dispatched'], $sales_data['deliveries'], $sales_data['supplier_deliveries'],
+                    $sales_data['invoiced_amount'], $sales_data['required'], $sales_data['profit'], $sales_data['purchased_amount'], prepare_mysql('Data'), $timeseries_record_key
 
                 );
 
@@ -1837,7 +1815,6 @@ class Supplier extends SubjectSupplier {
         $to_replenish_picking_location_paid_ordered_parts = 0;
 
 
-
         $sql = sprintf(
             'SELECT count(DISTINCT P.`Part SKU`) AS num FROM 
               `Part Dimension` P  LEFT JOIN `Supplier Part Dimension` SP ON (SP.`Supplier Part Part SKU`=P.`Part SKU`) 
@@ -1855,16 +1832,12 @@ class Supplier extends SubjectSupplier {
         }
 
 
-
         $sql = sprintf(
             'SELECT count(DISTINCT P.`Part SKU`) AS num FROM 
               `Part Dimension` P LEFT JOIN `Part Location Dimension` PL ON (PL.`Part SKU`=P.`Part SKU`)  LEFT JOIN `Supplier Part Dimension` SP ON (SP.`Supplier Part Part SKU`=P.`Part SKU`) 
               WHERE (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>`Quantity On Hand`   AND (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>0   AND `Can Pick`="Yes"   AND `Supplier Part Supplier Key`=%d ',
             $this->id
         );
-
-
-
 
 
         if ($result = $this->db->query($sql)) {
@@ -1890,7 +1863,6 @@ class Supplier extends SubjectSupplier {
     }
 
 
-
     function update_supplier_part_locations_to_replenish() {
 
         $replenishable_part_locations = 0;
@@ -1898,10 +1870,11 @@ class Supplier extends SubjectSupplier {
 
 
         $sql = sprintf(
-            'SELECT count(*) AS num FROM `Part Location Dimension`   PLD  left join 
-            `Part Dimension` P on (PLD.`Part SKU`=P.`Part SKU`) 
+            'SELECT count(*) AS num FROM `Part Location Dimension`   PLD  LEFT JOIN 
+            `Part Dimension` P ON (PLD.`Part SKU`=P.`Part SKU`) 
             
-            LEFT JOIN `Supplier Part Dimension` SP ON (SP.`Supplier Part Part SKU`=P.`Part SKU`)   WHERE   `Supplier Part Supplier Key`=%d     AND  `Minimum Quantity`>=0 AND `Can Pick`="Yes"   ', $this->id
+            LEFT JOIN `Supplier Part Dimension` SP ON (SP.`Supplier Part Part SKU`=P.`Part SKU`)   WHERE   `Supplier Part Supplier Key`=%d     AND  `Minimum Quantity`>=0 AND `Can Pick`="Yes"   ',
+            $this->id
         );
         //print $sql;
         if ($result = $this->db->query($sql)) {
@@ -1938,11 +1911,11 @@ class Supplier extends SubjectSupplier {
         */
         $sql = sprintf(
             " 
- SELECT count(*) AS num  from
- `Part Location Dimension` PL  left join `Part Dimension` P on (PL.`Part SKU`=P.`Part SKU`)   LEFT JOIN `Supplier Part Dimension` SP ON (SP.`Supplier Part Part SKU`=P.`Part SKU`) 
+ SELECT count(*) AS num  FROM
+ `Part Location Dimension` PL  LEFT JOIN `Part Dimension` P ON (PL.`Part SKU`=P.`Part SKU`)   LEFT JOIN `Supplier Part Dimension` SP ON (SP.`Supplier Part Part SKU`=P.`Part SKU`) 
  
-  where `Can Pick`='Yes' and `Minimum Quantity`>=0 and   `Minimum Quantity`>=(`Quantity On Hand`- `Part Current Stock In Process`- `Part Current Stock Ordered Paid` )  
-   and `Supplier Part Supplier Key`=%d
+  WHERE `Can Pick`='Yes' AND `Minimum Quantity`>=0 AND   `Minimum Quantity`>=(`Quantity On Hand`- `Part Current Stock In Process`- `Part Current Stock Ordered Paid` )  
+   AND `Supplier Part Supplier Key`=%d
 
 ", $this->id
         );
@@ -1958,7 +1931,6 @@ class Supplier extends SubjectSupplier {
             print "$sql\n";
             exit;
         }
-
 
 
         $this->update(

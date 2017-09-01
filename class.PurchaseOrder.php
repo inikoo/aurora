@@ -43,6 +43,8 @@ class PurchaseOrder extends DB_Table {
 
         global $account;
 
+
+
         $parent = get_object($data['Purchase Order Parent'], $data['Purchase Order Parent Key']);
 
         $this->editor = $data['editor'];
@@ -50,7 +52,24 @@ class PurchaseOrder extends DB_Table {
 
         $data['Purchase Order Creation Date']     = gmdate('Y-m-d H:i:s');
         $data['Purchase Order Last Updated Date'] = gmdate('Y-m-d H:i:s');
-        $data['Purchase Order Public ID']         = $this->get_next_public_id($parent);
+        //$data['Purchase Order Public ID']         = $this->get_next_public_id($parent);
+
+
+
+        $sql = sprintf(
+            "UPDATE `Supplier Dimension` SET `%s Order Last Order ID` = LAST_INSERT_ID(`%s Order Last Order ID` + 1) WHERE `%s Key`=%d", addslashes($data['Purchase Order Parent']), addslashes($data['Purchase Order Parent']),  addslashes($data['Purchase Order Parent']), $data['Purchase Order Parent Key']
+        );
+
+        $this->db->exec($sql);
+
+
+        $public_id = $this->db->lastInsertId();
+
+        $data['Purchase Order Public ID'] = sprintf($parent->get('Order Public ID Format'), $public_id);
+
+        $data['Purchase Order Public ID'] =$this->get_unique_public_id_suffix($data['Purchase Order Public ID'],$data['Purchase Order Parent'], $data['Purchase Order Parent Key']);
+
+
         $data['Purchase Order File As']           = $this->get_file_as($data['Purchase Order Public ID']);
 
 
@@ -141,6 +160,7 @@ class PurchaseOrder extends DB_Table {
 
     }
 
+    /*
     function get_next_public_id($parent) {
 
         $code = $parent->get('Code');
@@ -164,11 +184,55 @@ class PurchaseOrder extends DB_Table {
         return sprintf('%s%04d', $code, $line_number);
 
     }
+    */
 
     function get_file_as($name) {
 
         return $name;
     }
+
+
+
+    function get_unique_public_id_suffix($code,$parent,$parent_key) {
+
+
+        for ($i = 1; $i <= 200; $i++) {
+
+            if ($i == 1) {
+                $suffix = '';
+            } elseif ($i <= 150) {
+                $suffix = '.'.$i;
+            } else {
+                $suffix = '.'.uniqid('', true);
+            }
+
+            $sql = sprintf("SELECT `Purchase Order Public ID` FROM `Purchase Order Dimension`  WHERE  `Purchase Order Parent`=%s AND `Purchase Order Parent Key`=%d AND `Purchase Order Public ID`=%s  ",
+                           prepare_mysql($parent),
+
+                           $parent_key,
+                           prepare_mysql($code.$suffix));
+
+
+
+
+
+            if ($result = $this->db->query($sql)) {
+                if ($row = $result->fetch()) {
+
+                } else {
+                    return $code.$suffix;
+                }
+            }
+
+
+        }
+
+        return $suffix;
+    }
+
+
+
+
 
     function get_data($key, $id) {
         if ($key == 'id') {
