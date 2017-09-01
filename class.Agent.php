@@ -399,7 +399,7 @@ class Agent extends SubjectSupplier {
 
 
     function get_field_label($field) {
-        global $account;
+       
 
         switch ($field) {
 
@@ -487,7 +487,7 @@ class Agent extends SubjectSupplier {
                 break;
             case 'Agent User PIN':
                 $label = _('PIN');
-
+                break;
             case 'Agent Skip Inputting':
                 $label = _("Skip inputting");
                 break;

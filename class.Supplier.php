@@ -1349,7 +1349,7 @@ class Supplier extends SubjectSupplier {
     }
 
     function get_field_label($field) {
-        global $account;
+
 
         switch ($field) {
 
