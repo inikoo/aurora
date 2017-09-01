@@ -2396,10 +2396,12 @@ class Store extends DB_Table {
                 $label = _("Collection address");
                 break;
             case 'Store Order Public ID Format':
-                $label = _("Order number format");
+                $label = _("order number format");
                 break;
 
-
+            case 'Store Order Last Order ID':
+                $label = _("last incremental order number");
+                break;
 
             default:
                 $label = $field;
