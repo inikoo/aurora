@@ -35,7 +35,7 @@ if ($result = $db->query($sql)) {
 
         if ($result2 = $db->query($sql)) {
             if ($row2 = $result2->fetch()) {
-                $line_number = (int)preg_replace('/[^\d]/', '', preg_replace('/^'.$code.'/', '', $row2['Purchase Order Public ID'])) + 1;
+                $line_number = (int)preg_replace('/[^\d]/', '', preg_replace('/^'.$code.'/', '', $row2['Purchase Order Public ID'])) ;
             }
         } else {
             print_r($error_info = $db->errorInfo());
@@ -81,7 +81,7 @@ if ($result = $db->query($sql)) {
                 print '-->'.$code."<-\n";
                 print '-->'.preg_replace('/^'.$code.'/', '', $row2['Purchase Order Public ID'])."<-\n";
 
-                $line_number = (int)preg_replace('/[^\d]/', '', preg_replace('/^'.$code.'/', '', $row2['Purchase Order Public ID'])) + 1;
+                $line_number = (int)preg_replace('/[^\d]/', '', preg_replace('/^'.$code.'/', '', $row2['Purchase Order Public ID'])) ;
             }
         } else {
             print_r($error_info = $db->errorInfo());
