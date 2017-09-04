@@ -28,20 +28,20 @@
 
 
 
-                    <a  class="but profile_button no-smoothState bg-black border-orange-dark  "  data-tab="_contact_details">
+                    <a  class="like_button profile_button no-smoothState bg-black border-orange-dark  "  data-tab="_contact_details">
                         <i class="fa fa-user  color-orange-dark" aria-hidden="true"></i>
                         <em style="font-size: 11px">{$content._contact_details_title}</em>
                     </a>
 
-                <a  class="but profile_button no-smoothState bg-black border-black color-gray-light  "  data-tab="_login_details">
+                <a  class="like_button profile_button no-smoothState bg-black border-black color-gray-light  "  data-tab="_login_details">
                     <i class="fa fa-sign-in  color-gray-light" aria-hidden="true"></i>
                     <em style="font-size: 11px">{$content._login_details_title}</em>
                 </a>
-                <a  class="but profile_button no-smoothState bg-black border-black color-gray-light  "   data-tab="_invoice_address_details">
+                <a  class="like_button profile_button no-smoothState bg-black border-black color-gray-light  "   data-tab="_invoice_address_details">
                     <i class="fa fa-dollar color-gray-light" aria-hidden="true"></i>
                     <em style="font-size: 11px">{$content._invoice_address_title}</em>
                 </a>
-                <a  class="but profile_button no-smoothState bg-black border-black color-gray-light  "  data-tab="_delivery_addresses_details">
+                <a  class="like_button profile_button no-smoothState bg-black border-black color-gray-light  "  data-tab="_delivery_addresses_details">
                     <i class="fa fa-truck color-gray-light" aria-hidden="true"></i>
                     <em style="font-size: 11px">{$content._delivery_addresses_title}</em>
                 </a>

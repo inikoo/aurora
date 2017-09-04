@@ -9,12 +9,6 @@
 $(function() {
 
 
-    $('.block_iframe').load(function(){
-
-
-
-
-    });
 
     $("form").on('submit', function (e) {
 
