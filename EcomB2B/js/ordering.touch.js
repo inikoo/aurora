@@ -98,9 +98,15 @@ $(document).on('input propertychange', '.order_qty', function (evt) {
 
 function save_item_qty_change(element) {
 
-    //$(element).addClass('fa-spinner fa-spin')
+
+
 
     var order_div= $(element).closest('div')
+    if(order_div.hasClass('wait')){
+        return;
+    }
+    order_div.addClass('wait')
+
     var input = order_div.find('input')
     //var icon=$(element)
 
@@ -121,6 +127,9 @@ function save_item_qty_change(element) {
         } else {
             qty = parseFloat(input.val()) + 1
         }
+
+
+
 
         input.val(qty).addClass('discreet')
 
@@ -145,6 +154,8 @@ function save_item_qty_change(element) {
 
     }
 
+    $(element).addClass('fa-circle-o-notch fa-spin')
+
     if (qty == '') qty = 0;
 
     var settings = order_div.data('settings')
@@ -156,10 +167,11 @@ console.log(request)
 
     $.getJSON(request, function (data) {
         input.prop('readonly', false);
+        order_div.removeClass('wait')
 
         if (data.state == 200) {
 
-
+            $(element).removeClass('fa-circle-o-notch fa-spin')
 
             if(_icon=='fa-floppy-o'){
 
