@@ -65,7 +65,7 @@
                                 <i class="ordering_button one_less fa fa-minus-circle color-red-dark"></i>
                                 <input  type="number" min="0" value="{$quantity_ordered}" class="needsclick order_qty">
                                  <i  style="display:none" class="ordering_button save fa  fa-floppy-o color-blue-dark"></i>
-                                <i  class="ordering_button add_one fa fa-plus-circle color-green-dark"></i>
+                                <i onclick="alert('x')" class="ordering_button add_one fa fa-plus-circle color-green-dark"></i>
 
                             </div>
 
