@@ -43,7 +43,7 @@ switch ($tipo) {
         $data = prepare_values(
             $_REQUEST, array(
                          'product_id'        => array('type' => 'key'),
-                         'qty'               => array('type' => 'numeric'),
+                         'qty'               => array('type' => 'string'),
                          'order_key'         => array('type' => 'string'),
                          'webpage_key'       => array('type' => 'numeric'),
                          'page_section_type' => array('type' => 'string')
@@ -130,6 +130,10 @@ function update_item($_data, $customer, $website, $editor, $db) {
     $product_pid = $_data['product_id'];
     $quantity    = $_data['qty'];
 
+    
+    if($quantity==''){
+        $quantity=0;
+    }
 
     if (is_numeric($quantity) and $quantity >= 0) {
         $quantity = ceil($quantity);
