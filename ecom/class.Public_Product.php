@@ -289,12 +289,13 @@ class Public_Product {
                     $image_filename='server_files/tmp/'.$image_key.'_600_375.jpeg';
 
 
-                    $cached_image= $imagecache->cache($image_filename);
+                   // $cached_image= $imagecache->cache($image_filename);
 
 
-                    //unlink($image_filename);
-                    return $cached_image;
+                    unlink($image_filename);
+                   // return $cached_image;
 
+                    return $image_filename;
                 } else {
                     return '/art/nopic.png';
 
