@@ -52,11 +52,8 @@
 
 
                         {if $parent_family}
-
                             <a href="/{$parent_family.webpage_code}" class="parent_up" title="{$parent_family.code}  {$parent_family.label}">
                                 <i class="fa fa-arrow-up" aria-hidden="true"></i>
-
-
                             </a>
                         {/if}
 

@@ -8,89 +8,62 @@
 $(function() {
 
 
-    $("form").on('submit', function (e) {
-
-        e.preventDefault();
-        e.returnValue = false;
-
-    });
-
-    $('.reminder').click(function () {
-
-        if ($(this).hasClass('lock')) return;
-
-        $(this).addClass('lock')
-
-        var icon = $(this)
 
 
-        if (icon.hasClass('fa-envelope-o')) {
-
-            icon.removeClass('fa-envelope-o').addClass('fa-envelope').addClass('marked').attr('title', '{t}Click to remove notification{/t}')
 
 
-            var request = 'ar_reminders.php?tipo=send_reminder&pid=' + $(this).closest('.product_showcase').attr('product_id')
 
-
-        } else {
-
-
-            icon.removeClass('fa-envelope').addClass('fa-envelope-o').removeClass('marked').attr('title', '{t}Click to be notified by email{/t}')
-            var request = 'ar_reminders.php?tipo=cancel_send_reminder&esr_key=' + $(this).attr('reminder_key')
-
-        }
-
-        element = $(this)
-
-        console.log(request)
-        $.getJSON(request, function (data) {
-            console.log(data)
-
-            if (data.state == 200) {
-                element.removeClass('lock')
-                element.attr('reminder_key', data.id)
-
+        $('.modal-opener').on('click', function()
+        {
+            if( !$('#sky-form-modal-overlay').length )
+            {
+                $('body').append('<div id="sky-form-modal-overlay" class="sky-form-modal-overlay"></div>');
             }
 
+            $('#sky-form-modal-overlay').on('click', function()
+            {
+                $('#sky-form-modal-overlay').fadeOut();
+                $('.sky-form-modal').fadeOut();
+            });
 
-        })
+            form = $($(this).attr('href'));
+            $('#sky-form-modal-overlay').fadeIn();
+            form.css('top', '50%').css('left', '50%').css('margin-top', -form.outerHeight()/2).css('margin-left', -form.outerWidth()/2).fadeIn();
+
+            return false;
+        });
+
+        $('.modal-closer').on('click', function()
+        {
+            $('#sky-form-modal-overlay').fadeOut();
+            $('.sky-form-modal').fadeOut();
+
+            return false;
+        });
 
 
+
+
+    $(document).on('click', '.payment_method_button', function (evt) {
+
+        console.log(this)
+
+        $('.payment_method_button').addClass('discreet bg-gray-light border-gray-dark').removeClass('bg-blue-light border-blue-dark').css({ 'opacity':.2})
+
+        $(this).removeClass('discreet bg-gray-light border-gray-dark').addClass('bg-blue-light border-blue-dark').css({ 'opacity':1})
+
+        $('.payment_method_block').addClass('hide')
+        $('#'+$(this).data('tab')).removeClass('hide')
     });
 
 
-    $('.favourite').click(function () {
 
+    $(document).on('click', '.ordering_button', function (evt) {
 
-        var element=$(this)
-
-        var icon = $(this).find('i');
-
-
-        if (icon.hasClass('fa-heart-o')) {
-            icon.removeClass('fa-heart-o').addClass('fa-heart').addClass('marked')
-
-        } else {
-
-            icon.removeClass('fa-heart').addClass('fa-heart-o').removeClass('marked')
-
-
-        }
-
-
-        var request = 'ar_web_basket.php?tipo=update_favorite&pid=' + $(this).attr('product_id') + '&customer_key=' + $('#webpage_data').attr('customer_key') + '&favorite_key=' + $(this).attr('favourite_key')
-
-        console.log(request)
-        $.getJSON(request, function (data) {
-
-            console.log(data)
-
-            element.attr('favourite_key',data.favorite_key)
-
-        })
-
+        save_item_qty_change(this)
 
     });
+
 
 
     $('.order_row .label').hover(function () {
@@ -570,3 +543,5 @@ function place_order(element) {
     });
 
 }
+
+

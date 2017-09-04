@@ -2,403 +2,163 @@
 <!--
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 28 March 2017 at 17:45:30 GMT+8, Cyberjaya, Malaysia
+ Created: 30 August 2017 at 17:13:47 GMT+8, Kuala Lumpur, Malaysia
  Copyright (c) 2016, Inikoo
 
  Version 3
 -->
 *}
-
-
-{if $detected_device=='mobile'}
-
-
-
-    <ul id="gn-menu" class="gn-menu-main" style="z-index: 10000;border-bottom:4px solid brown">
-        <li class="gn-trigger">
-            <a class="gn-icon gn-icon-menu"><span>Menu</span></a>
-            <nav class="gn-menu-wrapper">
-                <div class="gn-scroller">
-                    <ul class="gn-menu">
-
-                        <li>
-                            <a class="open_drawer gn-icon gn-icon-download">{t}Departments{/t}</a>
-                            <ul class="gn-submenu">
-
-                                {foreach from=$website->get_categories('departments','menu') item=item  }
-                                    <li><a href="{$item.url}" class="gn-icon " style="margin-left: 40px">  <i class="fa fa-arrow-right padding_right_10" aria-hidden="true"></i>  {$item.label}</a></li>
-
-                                {/foreach}
-
-                            </ul>
-                        </li>
-
-                        {if $logged_in}
-                            <li><a  href="basket.sys" class="gn-icon gn-icon-cog">{t}Basket{/t}</a></li>
-                            <li><a  href="profile.sys" class="gn-icon gn-icon-cog">{t}Profile{/t}</a></li>
-                            <li><a  id="logout"  class="gn-icon gn-icon-cog">{t}Logout{/t}</a></li>
-                        {else}
-                        <li><a  href="login.sys" class="gn-icon gn-icon-cog">{t}Login{/t}</a></li>
-                        <li><a  href="about_ud.sys" class="gn-icon gn-icon-cog">{t}About us{/t}</a></li>
-                        {/if}
-
-                    </ul>
-                </div><!-- /gn-scroller -->
-            </nav>
-        </li>
-        <li class="gn-title" ><a href="/"> <img style="width:40px;position:relative;top:10px;left:-20px" src="/art/mobile_logo.png"/>  <span style="position:relative;top:-5px;left:-10px">{$website->get('Website Name')}</span></a></li>
-        {if $logged_in}
-        <li><a class="" href="/basket.sys"><i class="fa fa-shopping-cart" aria-hidden="true"></i></a></li>
-        {else}
-            <li><a class="" href="/login.sys"><i class="fa fa-sign-in" aria-hidden="true"></i></a></li>
-
-        {/if}
-
-    </ul>
-
-{else}
-
-<style>
-
-
-    #topHeader {
-
-        background-color: {$header_data.color.header_background};
-    {if $header_data.background_image!=''}
-        background-image: url({$header_data.background_image});
-    {/if}
-
-        color: {$header_data.color.header};
-
-
-    }
-
-    #trueHeader{
-        background-color: {$header_data.color.menu_background};
-        border-bottom-color:  {$header_data.color.menu_background_highlight};
-        color: {$header_data.color.menu};
-    }
-
-
-
-    #trueHeader a {
-        color: {$header_data.color.menu};
-        cursor: pointer;
-
-    }
-    #trueHeader a:hover {
-        color: {$header_data.color.menu_text_background_highlight};
-
-    }
-
-    #_columns  .dropdown a:hover {
-        background-color: transparent;
-    }
-
-
-    {if isset($header_data.color.items_title)}
-    #_columns  .dropdown li.item_li:hover > a * {
-        color:{$header_data.color.items_title};
-    }
-    {/if}
-
-    #trueHeader .dropdown-menu{
-
-        color: {$header_data.color.items};
-    }
-
-    #trueHeader .dropdown-menu a{
-
-        color: {$header_data.color.items};
-    }
-
-    {if isset($header_data.color.items_title)}
-
-    #trueHeader .dropdown-menu a:hover{
-
-        color: {$header_data.color.items_title};
-    }
-    {/if}
-
-
-    #menu_control_panel .button {
-        background-color:  {$header_data.color.menu_background_highlight};
-    }
-
-    #logo {
-        background-image: url({$header_data.logo});
-
-
-    }
-
-    .yamm .dropdown-menu {
-        background: {$header_data.color.items_background};
-    }
-
-
-
-    .dropdown-menu li a:hover{
-        background:{$header_data.color.items};
-        color: {$header_data.color.items_background};
-    }
-
-
-
-
-    .list-unstyled span.link,.list-unstyled a.link {
-        color: {$header_data.color.items};
-
-    }
-
-    .list-unstyled li p{
-        color: {$header_data.color.items}
-    }
-
-    .dart {
-        color: {$header_data.color.items}
-
-    }
-    .list-unstyled li i {
-        color: {$header_data.color.items}
-    }
-
-    .list-unstyled li span {
-        color: {$header_data.color.items}
-    }
-
-
-
-
-
-</style>
 <span id="webpage_data" style="display:none"
       webpage_key="{$webpage->id}"
       customer_key="{$customer_key}"
       order_key="{$order_key}"
 ></span>
-<header id="header">
-        <div id="topHeader">
-            <div class="wrapper" style="position: relative" >
-                <div class="top_nav">
-                    <div class="container">
-                        <div class="left">
-                            <a href="index.php" id="logo">  </a>
-
-                        </div>
 
 
 
-                        <div class="right {if $webpage->get('Webpage Code')=='search.sys'}hide{/if} ">
+<div class="sidebars sidebars-light">
+    <div class="sidebar sidebar-left">
+        <div class="sidebar-header sidebar-header-image bg-1">
+            <div class="overlay "></div>
+            <div class="sidebar-socials">
+                <a  class="invisible"  href="tel:{$store->get('Telephone')}"><i class="ion-ios-telephone"></i></a>
 
-                                <div style="float:right;background-color: black;height:30px;width: 30px ;text-align: center">
-                                    <i id="header_search_icon" class=" fa fa-search" style="color:#fff;font-size:20px;position: relative;top:4px;cursor: pointer;" aria-hidden="true"  ></i></div>
-                                <input id="header_search_input" style="width: 250px;float:right;border: 1px solid black;padding:2px"/>
+                <a class="invisible" href="#"><i class="ion-social-facebook"></i></a>
+                <a class="invisible" href="#"><i class="ion-social-twitter"></i></a>
+                <a class="invisible" href="#"><i class="ion-android-mail"></i></a>
+                <a class="close-sidebar" href="#"><i class="ion-android-close"></i></a>
+                <div class="clear"></div>
+            </div>
+            <a href="/" class="sidebar-logo">
+                <strong>{$website->get('Website Name')}</strong>
+            </a>
+        </div>
+        <div class="menu-search">
+            <input id="header_search_input" type="text" class="search-field" value="Search..." onblur="if (this.value == '') {
+                this.value = 'Search...';}" onfocus="if (this.value == 'Search...') {
+                this.value = '';}" >
+            <span id="header_search_icon" class="search-button"><i class="fa fa-search"></i></span>
+        </div>
+        <div class="menu-options icon-background no-submenu-numbers sidebar-menu">
+
+            {foreach from=$header_data.menu.columns item=column key=key}
+                <a data-sub="sidebar-sub-{$key}" href="#" class="{if !$column.show}hide{/if}">
+                    <i class="icon-bg bg-blue-dark fa  {$column.icon}"></i>
+
+                    <span>{$column.label}</span><strong class="plushide-animated"></strong></a>
+
+                {if $column.type=='three_columns'}
+
+                    <div class="submenu" id="sidebar-sub-{$key}">
+                    {foreach from=$column.sub_columns key=sub_col_key item=sub_column}
+                        {if isset($sub_column.title)}<em class="menu-divider">{$sub_column.title}</em>{/if}
 
 
 
-                        </div>
+                        {if $sub_column.type=='items'}
+                                 {foreach from=$sub_column.items item=item}
+                                     <a href="{$item.url}"><span>{$item.label}</span></a>
+                                 {/foreach}
+                        {elseif $sub_column.type=='departments' or   $sub_column.type=='families' or  $sub_column.type=='web_departments' or   $sub_column.type=='web_families'}
+                            {if isset($sub_column.title)}<em class="menu-divider">{$sub_column.title}</em>{/if}
 
+
+
+
+                                {foreach from=$store->get_categories({$sub_column.type},{$sub_column.page},'menu') item=item}
+                                    <a href="{$item['url']}"><span>{$item['label']}</span></a>
+
+                                {/foreach}
+
+                            </ul>
+                        {/if}
+                    {/foreach}
                     </div>
-                </div>
+                {else}
 
+
+                {/if}
+
+
+
+            {/foreach}
+
+
+            <a href="#" class="close-sidebar"><i class="icon-bg bg-red-light ion-android-close"></i><span>Close</span><i class="ion-record"></i></a>
+            <em class="menu-divider">Copyright <u class="copyright-year"></u>. All rights reserved</em>
+        </div>
+    </div>
+    <div class="sidebar sidebar-right">
+        <div class="sidebar-header sidebar-header-classic">
+            <div class="sidebar-socials">
+                <a class="close-sidebar" href="#"><i class="ion-android-close"></i></a>
+                <a class="" href="#"></a>
+                <a class="" href="#"></a>  <a class="" href="#"></a>
+                <a class="" href="#"></a>
+                <div class="clear"></div>
             </div>
-
+            <a href="/" class="sidebar-logo">
+                <strong>{$website->get('Website Name')}</strong>
+            </a>
         </div>
 
-        <div id="trueHeader">
+        <div class="menu-options icon-background sidebar-menu">
 
-            <div class="wrapper">
 
-                <div class="container">
+            {if $logged_in}
+                <a class="default-link" href="basket.sys"><i class="icon-bg bg-magenta-light  ion-ios-cart"></i><span>{t}Basket{/t}</span><i class="ion-record"></i></a>
+                <a class="default-link" href="profile.sys"><i class="icon-bg bg-green-light  ion-person"></i><span>{t}Profile{/t}</span><i class="ion-record"></i></a>
 
-                    <nav class="menu_main2" style="float:left">
+            {else}
 
-                        <div id="menu_control_panel"  style=";float:right;z-index: 2000">
-                            {if $logged_in}
-                                <p>
-                                    <i id="logout" class="fa fa-sign-out fa-flip-horizontal button " style="cursor:pointer;margin-right:20px"   title="{t}Log out{/t}"  aria-hidden="true"></i>
+            <a class="default-link" href="login.sys"><i class="icon-bg bg-orange-light ion-log-in"></i><span>{if empty($labels._Login)}{t}Login{/t}{else}{$labels._Login}{/if}</span><i class="ion-record"></i></a>
+            <a class="default-link" href="register.sys"><i class="icon-bg bg-orange-light ion-android-add-circle"></i><span>{if empty($labels._Register)}{t}Register{/t}{else}{$labels._Register}{/if}</span><i class="ion-record"></i></a>
+            {/if}
 
-                                    <a href="profile.sys"  ><i class="fa fa-user fa-flip-horizontal button " style="cursor:pointer;margin-right:10px"   title="{t}Profile{/t}"  aria-hidden="true"></i></a>
-                                    <i class="hide fa fa-heart fa-flip-horizontal button " style="cursor:pointer;margin-right:20px"   title="{t}My favorites{/t}"  aria-hidden="true"></i>
-                                    <a href="basket.sys" class="button" >
-                                        <span  id="header_order_products"  class="ordered_products_number" >{if isset($order)}{$order->get('Products')}{else}0{/if}</span>
-                                        <i style="padding-right:5px;padding-left:5px" class="fa fa-shopping-cart fa-flip-horizontal  " style="cursor:pointer"   title="{t}Basket{/t}"  aria-hidden="true"></i>
-                                        <span id="header_order_total_amount" class="order_total" style="padding-right:10px" >{if isset($order)}{$order->get('Total')}{else}{/if}</span>
-                                    </a>
 
 
-                                </p>
 
-                            {else}
-                                <p>
-                                    <a href="/login.sys" class="button" ><i class="fa fa-sign-in" aria-hidden="true"></i> {if empty($labels._Login)}{t}Login{/t}{else}{$labels._Login}{/if}</a>
-                                    <a href="/register.sys"class="button" ><i class="fa fa-user-plus" aria-hidden="true"></i> {if empty($labels._Register)}{t}Register{/t}{else}{$labels._Register}{/if}</a>
-                                </p>
-                            {/if}
 
-                        </div>
 
-                        <div class="navbar yamm navbar-default"  style="width:850px" >
+                        <em class="menu-divider" style="margin-top:40px">Get in touch with us</em>
 
+            <em class="menu-divider">
+                <a href="tel:{$store->get('Telephone')}"><em class="fa fa-phone color-black" style="font-size: 25px;margin-right: 20px;;position: relative;top:-2px" aria-hidden="true"></em></a>
+                <a href="email:{$store->get('Email')}"><em class="fa fa-envelope-o color-black" style="font-size: 25px;position: relative;top:-4px" aria-hidden="true"></em></a>
 
 
-                            <div id="navbar-collapse-1" class="navbar-collapse collapse">
+            </em>
 
-                                <ul id="_columns" class="nav navbar-nav three"    style="width:850px"   >
-                                    {foreach from=$header_data.menu.columns item=column key=key}
-                                    <li  id="menu_column_{$key}" class="dropdown {if !$column.show}hide{/if} on _column {if $column.type=='three_columns'}yamm-fw  3_columns{else}single_column{/if}  " >
-                                        <a  href="" data-toggle="dropdown" class="dropdown-toggle ">
-                                            <i class="fa _column_label_icon {if $column.icon==''}fa-ban {else}{$column.icon}{/if} item_icon padding_right_5  " icon="{$column.icon}" aria-hidden="true"></i>  <span>{$column.label}</span>
-                                        </a>
+                  <em class="menu-divider"></em>
+            {if $logged_in}
+                <a class="default-link" href="#" id="logout"><span style="padding-left: 20px">{t}Log out{/t}</span><i class="ion-record"></i></a>
+            {/if}
 
-
-                                        {if $column.type=='three_columns'}
-
-
-                                        <ul class="dropdown-menu">
-                                            <li>
-                                                <div class="yamm-content">
-                                                    <div class="row">
-                                                        {foreach from=$column.sub_columns item=sub_column}
-                                                            {if $sub_column.type=='items'}
-
-                                                                <ul class="col-sm-6 col-md-4 list-unstyled two">
-
-                                                                    <li>
-                                                                        <p  >{if isset($sub_column.title)}{$sub_column.title}{/if}</p>
-                                                                    </li>
-
-                                                                    {foreach from=$sub_column.items item=item}
-
-
-                                                                    <li class="item_li">
-                                                                        <a href="{$item.url}" ><i class="fa item_icon fa-fw {$item.icon}" icon="{$item.icon}" ></i> <span class="_item_label" >{$item.label}</span></a>
-                                                                    </li >
-                                                                    {/foreach}
-
-                                                                </ul>
-                                                            {elseif $sub_column.type=='text'}
-                                                                <ul class="col-sm-6 col-md-4 list-unstyled two">
-                                                                    <li>
-                                                                        <p  >{$sub_column.title}</p>
-                                                                    </li>
-                                                                    <li class="dart">
-                                                                        {if  $sub_column.url!=''}
-                                                                            <a href="{$sub_column.url}"><img src="{if $sub_column.image==''}https://placehold.it/230x80{else}{$sub_column.image}{/if}" alt="" class="rimg marb1" /></a>
-
-                                                                        {else}
-                                                                            <img src="{if $sub_column.image==''}https://placehold.it/230x80{else}{$sub_column.image}{/if}" alt="" class="rimg marb1" />
-
-                                                                        {/if}
-                                                                        <span >{$sub_column.text}</span>
-                                                                    </li>
-                                                                </ul>
-                                                            {elseif $sub_column.type=='image'}
-                                                                <ul class="col-sm-6 col-md-4 list-unstyled two">
-                                                                    <li>
-                                                                        <p  >{$sub_column.title}</p>
-                                                                    </li>
-                                                                    <li class="dart">
-                                                            {if  $sub_column.url!=''}
-                                                                <a href="{$sub_column.url}"><img src="{if $sub_column.image==''}https://placehold.it/230x160{else}{$sub_column.image}{/if}" alt="" class="rimg marb1" /></a>
-                                                            {else}
-                                                                <img src="{if $sub_column.image==''}https://placehold.it/230x160{else}{$sub_column.image}{/if}" alt="" class="rimg marb1" />
-
-                                                            {/if}
-                                                                    </li>
-                                                                </ul>
-                                                            {elseif $sub_column.type=='departments' or   $sub_column.type=='families' or  $sub_column.type=='web_departments' or   $sub_column.type=='web_families'}
-                                                                <ul  class="col-sm-6 col-md-4 list-unstyled two _3c_col {$sub_column.type}" type="{$sub_column.type}" page="{$sub_column.page}" page_label="{$sub_column.page_label}"  >
-                                                                    <li class="title">
-                                                                        <p >{$sub_column.label}</p>
-                                                                    </li>
-                                                                    {foreach from=$store->get_categories({$sub_column.type},{$sub_column.page},'menu') item=item}
-                                                                        <li class="item">
-                                                                            <a href="{$item['url']}"><i class="fa fa-caret-right" style="margin-right:5px" ></i>{$item['label']} {if $item['new']}<b class="mitemnew">{t}New{/t}</b>{/if}</a>
-                                                                        </li>
-                                                                    {/foreach}
-
-                                                                </ul>
-                                                            {elseif $sub_column.type=='empty'}
-                                                                <ul  class="col-sm-6 col-md-4 list-unstyled two _3c_col {$sub_column.type} ">
-                                                                </ul>
-
-                                                            {/if}
-
-
-
-
-                                                        {/foreach}
-
-                                                    </div>
-                                                </div>
-                                            </li>
-                                        </ul>
-
-
-
-
-                                        {elseif $column.type=='single_column'}
-                                            <ul class="dropdown-menu multilevel sortable" role="menu">
-
-
-                                                {foreach from=$column.items item=item}
-                                                    {if $item.type=='item'}
-                                                        <li><a href="{$item['url']}">{$item['label']}</a></li>
-                                                    {elseif $item.type=='submenu'}
-                                                        <li class="dropdown-submenu mul"> <a tabindex="-1" href="#">{$item['label']}</a>
-                                                            <ul class="dropdown-menu sortable">
-                                                                {foreach from=$item.sub_items item=sub_item}
-                                                                    <li><a href="{$sub_item.url}">{$sub_item.label}</a></li>
-                                                                {/foreach}
-
-
-                                                            </ul>
-                                                        </li>
-                                                    {/if}
-                                                {/foreach}
-
-
-                                            </ul>
-
-                                        {/if}
-                                    </li>
-
-
-
-
-                                    {/foreach}
-
-
-
-
-
-
-
-
-
-
-
-                                </ul>
-
-                            </div>
-
-                        </div>
-
-
-
-                    </nav>
-
-
-
-
-
-
-                </div>
-
-            </div>
-
+                <em class="menu-divider">Copyright <u class="copyright-year"></u>. {t}All rights reserved{/t}</em>
         </div>
 
-    </header>
+
+
+    </div>
+</div>
+
+{if isset($checkout_mode)}
+
+    <div class="header header-logo-center header-light">
+        <a href="/basket.sys" class="header-icon " "><i class="fa fa-arrow-left center" style="position: relative;top:18px" ></i></a>
+        <a href="#" class="header-logo">{$website->get('Website Name')}</a>
+
+    </div>
+{else}
+
+<div class="header header-logo-center header-light">
+    <a href="#" class="header-icon header-icon-1 hamburger-animated open-sidebar-left"></a>
+    <a href="/" class="header-logo">{$website->get('Website Name')}</a>
+    {if $logged_in}
+        <a href="#" class="header-icon header-icon-4 open-sidebar-right"><i class="ion-ios-cart-outline"></i></a>
+    {else}
+        <a href="#" class="header-icon header-icon-4 open-sidebar-right"><i class="ion-log-in"></i></a>
+    {/if}
+</div>
 {/if}
+

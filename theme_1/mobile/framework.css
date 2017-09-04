@@ -144,7 +144,7 @@ body {
 	padding: 0;
 	overflow-x:hidden;
     font-size:14px;
-    font-family:'Roboto', sans-serif;
+    font-family: "Ubuntu", Helvetica, Arial, sans-serif;
     line-height:30px;
     font-weight:400;
 }
@@ -312,26 +312,26 @@ textarea{font-family:'Roboto', sans-serif;}
 .bg-cover{background-size:cover; background-position:center center;}
 .bg-transparent{background:transparent!important;}
 .bg-dark{background-color:rgba(0,0,0,0.3)!important;}
-.bg-1{background-image:url(../images/pictures/1.jpg)}
-.bg-2{background-image:url(../images/pictures/2.jpg)}
-.bg-3{background-image:url(../images/pictures/3.jpg)}
-.bg-4{background-image:url(../images/pictures/4.jpg)}
-.bg-5{background-image:url(../images/pictures/5.jpg)}
-.bg-6{background-image:url(../images/pictures/6.jpg)}
-.bg-7{background-image:url(../images/pictures/7.jpg)}
-.bg-8{background-image:url(../images/pictures/8.jpg)}
-.bg-9{background-image:url(../images/pictures/9.jpg)}
+.bg-1{background-image:url(/art/mobile_side_bg_1.png)}
+.bg-2{background-image:url(../images/mobile/pictures/2.jpg)}
+.bg-3{background-image:url(../images/mobile/pictures/3.jpg)}
+.bg-4{background-image:url(../images/mobile/pictures/4.jpg)}
+.bg-5{background-image:url(../images/mobile/pictures/5.jpg)}
+.bg-6{background-image:url(../images/mobile/pictures/6.jpg)}
+.bg-7{background-image:url(../images/mobile/pictures/7.jpg)}
+.bg-8{background-image:url(../images/mobile/pictures/8.jpg)}
+.bg-9{background-image:url(../images/mobile/pictures/9.jpg)}
 
-.vertical-bg-0{background-image:url(../images/pictures_vertical/bg0.jpg);}
-.vertical-bg-1{background-image:url(../images/pictures_vertical/bg1.jpg);}
-.vertical-bg-2{background-image:url(../images/pictures_vertical/bg2.jpg);}
-.vertical-bg-3{background-image:url(../images/pictures_vertical/bg3.jpg);}
-.vertical-bg-4{background-image:url(../images/pictures_vertical/bg4.jpg);}
-.vertical-bg-5{background-image:url(../images/pictures_vertical/bg5.jpg);}
-.vertical-bg-6{background-image:url(../images/pictures_vertical/bg6.jpg);}
-.vertical-bg-7{background-image:url(../images/pictures_vertical/bg7.jpg);}
-.vertical-bg-8{background-image:url(../images/pictures_vertical/bg8.jpg);}
-.vertical-bg-9{background-image:url(../images/pictures_vertical/bg9.jpg);}
+.vertical-bg-0{background-image:url(../images/mobile/pictures_vertical/bg0.jpg);}
+.vertical-bg-1{background-image:url(../images/mobile/pictures_vertical/bg1.jpg);}
+.vertical-bg-2{background-image:url(../images/mobile/pictures_vertical/bg2.jpg);}
+.vertical-bg-3{background-image:url(../images/mobile/pictures_vertical/bg3.jpg);}
+.vertical-bg-4{background-image:url(../images/mobile/pictures_vertical/bg4.jpg);}
+.vertical-bg-5{background-image:url(../images/mobile/pictures_vertical/bg5.jpg);}
+.vertical-bg-6{background-image:url(../images/mobile/pictures_vertical/bg6.jpg);}
+.vertical-bg-7{background-image:url(../images/mobile/pictures_vertical/bg7.jpg);}
+.vertical-bg-8{background-image:url(../images/mobile/pictures_vertical/bg8.jpg);}
+.vertical-bg-9{background-image:url(../images/mobile/pictures_vertical/bg9.jpg);}
 
 .overlay{
     position:absolute;
@@ -879,14 +879,14 @@ ol ol ol{list-style-type:disc;}
 .decoration-zig-zag{
     margin-bottom:30px;
 	height: 6px;
-	background: url(../images/framework/deco-zig.png) repeat-x 0 0;
+	background: url(../images/mobile/framework/deco-zig.png) repeat-x 0 0;
     border: 0;   
 }
 
 .decoration-slash{
     margin-bottom:30px;
 	height: 6px;
-	background: url(../images/framework/deco-slash.png) repeat-x 0 0;
+	background: url(../images/mobile/framework/deco-slash.png) repeat-x 0 0;
     border: 0;   
 }
 
@@ -1822,6 +1822,26 @@ ol ol ol{list-style-type:disc;}
     width:100%;
     font-style:normal;
 }
+
+
+
+
+.menu-bottom-bar span.but{
+    float:left;
+    height:60px;
+    line-height:60px;
+    text-align:center;
+    font-size:16px;
+    color:#1f1f1f;
+}
+.menu-bottom-bar-two span.but{width:50%;}
+.menu-bottom-bar-three span.but{width:33%;}
+.menu-bottom-bar-four span.but{width:25%;}
+.menu-bottom-bar-five span.but{width:20%;}
+.menu-bottom-bar-text span.but{line-height:42px!important;}
+
+
+
 
 .selected-bottom-bar{    background-color:rgba(0,0,0,0.1);}
 .dark-menu-bar .selected-bottom-bar{    background-color:#141f2a;}
@@ -3391,12 +3411,69 @@ ul.tabs li.current{
 .landing-dark .landing-overlay{background-color:rgba(0,0,0,0.8);}
 .landing-dark ul li a em{ color:#FFFFFF;}
 .landing-dark .deco{ background-color:rgba(255,255,255,0.1)!important;}
-.landing-dark .landing-header-logo{	background-image:url(../images/logo-light.png);}
+.landing-dark .landing-header-logo{	background-image:url(../images/mobile/logo-light.png);}
 
 .landing-light .landing-overlay{background-color:rgba(255,255,255,0.8);}
 .landing-light ul li a em{ color:#000000;}
 .landing-light .deco{ background-color:rgba(0,0,0,0.1)!important;}
-.landing-light .landing-header-logo{	background-image:url(../images/logo-dark.png);}
+.landing-light .landing-header-logo{	background-image:url('/art/mobile_logo.png');}
+
+
+
+.ios_style_buttons ul {padding:0px 20px 0px 20px;}
+.ios_style_buttons ul li:last-child{margin-bottom:40px;}
+.ios_style_buttons ul li{list-style:none; margin-bottom:20px;}
+.ios_style_buttons ul li{width:33.3%; float:left;}
+.ios_style_buttons ul li a{padding-top:10px;}
+
+.ios_style_buttons ul li a i{
+    width:65px;
+    height:65px;
+    font-size:24px;
+    line-height:65px;
+    text-align:center;
+    display:block;
+    color:#FFFFFF;
+    border-radius:65px;
+    margin-left:auto;
+    margin-right:auto;
+    -webkit-box-shadow: 0 1px 2px 2px rgba(0,0,0,0.10);
+    box-shadow: 0 1px 2px 2px rgba(0,0,0,0.10);
+    -moz-transform: scale(1, 1);
+    -webkit-transform: scale(1, 1);
+    -o-transform: scale(1, 1);
+    -ms-transform: scale(1, 1);
+    transform: scale(1, 1);
+    -webkit-transition: all 150ms ease;
+    -moz-transition: all 150ms ease;
+    -ms-transition: all 150ms ease;
+    -o-transition: all 150ms ease;
+    transition: all 150ms ease;
+}
+
+.ios_style_buttons ul li a i:hover{
+    -moz-transform: scale(1.1, 1.1);
+    -webkit-transform: scale(1.1, 1.1);
+    -o-transform: scale(1.1, 1.1);
+    -ms-transform: scale(1.1, 1.1);
+    transform: scale(1.1, 1.1);
+    -webkit-transition: all 150ms ease;
+    -moz-transition: all 150ms ease;
+    -ms-transition: all 150ms ease;
+    -o-transition: all 150ms ease;
+    transition: all 150ms ease;
+}
+
+.ios_style_buttons ul li a em{
+    display:block;
+    font-size:14px;
+    opacity:0.8;
+    font-style:normal;
+    text-align:center;
+    padding-top:10px;
+    font-weight:500;
+}
+
 
 
 .landing-homepage ul {padding:0px 20px 0px 20px;}
@@ -6298,30 +6375,30 @@ calendar*{display:block; overflow:hidden;}
 /*---------------------*/
 
 @media(min-width:768px){
-    .store-item-list a {width:50%; float:left;}
-    .store-item-list a em{padding-right:30px;}
+    .store-item-list span {width:50%; float:left;}
+    .store-item-list span em{padding-right:30px;}
     .store-strip{width:49.3%; float:left; margin-left:5px;}
 }
 
 .store-item-list{margin-bottom:30px;}
-.store-item-list a{margin-bottom:30px;}
-.store-item-list a img{width:130px;}
-.store-item-list a strong{
+.store-item-list span{margin-bottom:30px;}
+.store-item-list span img{width:170px;border:1px solid #ccc}
+.store-item-list span strong{
     font-size:15px;
     font-weight:600;
     padding-left:20px;
     position:absolute;
     top:0px;
-    padding-left:150px;
+    padding-left:190px;
 }
 
-.store-item-list a em{
+.store-item-list span em{
     position:absolute;
-    top:29px;
-    padding-left:150px;
+    top:0px;
+    padding-left:190px;
 }
 
-.store-item-list a u{
+.store-item-list span u{
     position:absolute;
     margin-top:-30px;    
     font-size:11px;
@@ -8138,7 +8215,7 @@ button.swiper-pagination-bullet {
 }
 
 #swipebox-slider .slide {
-	background: url("../images/preload2.gif") no-repeat center center;
+	background: url("../images/mobile/preload2.gif") no-repeat center center;
 	height: 100%;
 	width: 100%;
 	line-height: 1px;
@@ -8181,7 +8258,7 @@ button.swiper-pagination-bullet {
 #swipebox-caption.force-visible-bars {top: 0!important;}
 #swipebox-action #swipebox-prev, #swipebox-action #swipebox-next,
 #swipebox-action #swipebox-close {
-	background-image: url("../images/framework/icons.png");
+	background-image: url("../images/mobile/framework/icons.png");
 	background-repeat: no-repeat;
 	border: none!important;
 	text-decoration: none!important;

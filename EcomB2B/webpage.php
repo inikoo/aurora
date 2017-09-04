@@ -36,7 +36,7 @@ if($webpage->id) {
 
         $offline_webpage=$website->get_webpage('offline.sys');
         $content =$offline_webpage->get('Content Data');
-        $template = $theme.'/offline.'.$theme.'.'.$website->get('Website Type').'.tpl';
+        $template = $theme.'/offline.'.$theme.'.'.$website->get('Website Type').$template_suffix.'.tpl';
 
     }
     elseif ($webpage->get('Webpage Template Filename') == 'register') {
@@ -70,7 +70,7 @@ if($webpage->id) {
         $smarty->assign('used_address_fields', $used_fields);
         $smarty->assign('countries', $countries);
         $smarty->assign('selected_country', $country_code);
-        $template = $theme.'/register.'.$theme.'.'.$website->get('Website Type').'.tpl';
+        $template = $theme.'/register.'.$theme.'.'.$website->get('Website Type').$template_suffix.'.tpl';
 
     }
     elseif ($webpage->get('Webpage Template Filename') == 'login') {
@@ -87,7 +87,7 @@ if($webpage->id) {
         }
 
 
-        $template = $theme.'/login.'.$theme.'.'.$website->get('Website Type').'.tpl';
+        $template = $theme.'/login.'.$theme.'.'.$website->get('Website Type').$template_suffix.'.tpl';
     }
     elseif ($webpage->get('Webpage Template Filename') == 'search') {
 
@@ -98,7 +98,7 @@ if($webpage->id) {
         }
         $smarty->assign('search_query', $search_query);
 
-        $template = $theme.'/search.'.$theme.'.'.$website->get('Website Type').'.tpl';
+        $template = $theme.'/search.'.$theme.'.'.$website->get('Website Type').$template_suffix.'.tpl';
     } elseif ($webpage->get('Webpage Template Filename') == 'welcome') {
 
         if (!$logged_in) {
@@ -106,25 +106,42 @@ if($webpage->id) {
             exit;
         }
 
-        $template = $theme.'/webpage_blocks.'.$theme.'.'.$website->get('Website Type').'.tpl';
+        $template = $theme.'/webpage_blocks.'.$theme.'.'.$website->get('Website Type').$template_suffix.'.tpl';
 
     } elseif ($webpage->get('Webpage Template Filename') == 'categories_showcase') {
 
         include_once 'class.Public_Category.php';
         $category = new Public_Category($webpage->get('Webpage Scope Key'));
 
-
         $smarty->assign('sections', $content_data['sections']);
         $smarty->assign('content_data', $content_data);
         $smarty->assign('category', $category);
 
-        $template = $theme.'/categories_showcase.'.$theme.'.'.$website->get('Website Type').'.tpl';
+
+
+
+
+
+
+        $template = $theme.'/categories_showcase.'.$theme.'.'.$website->get('Website Type').$template_suffix.'.tpl';
     } elseif ($webpage->get('Webpage Template Filename') == 'products_showcase') {
 
         include_once 'class.Public_Category.php';
         include_once 'class.Public_Product.php';
 
+
+
+
+
+
         $category = new Public_Category($webpage->get('Webpage Scope Key'));
+
+
+        $parent=false;
+        foreach ($category->get_parent_categories('data') as $parent){
+            break;
+        }
+        $smarty->assign('parent', $parent);
 
 
         if (isset($content_data['panels'])) {
@@ -342,7 +359,7 @@ if($webpage->id) {
         //print $theme.'/products_showcase.'.$theme.'.'.$website->get('Website Type').'.tpl';
         //exit;
 
-        $template = $theme.'/products_showcase.'.$theme.'.'.$website->get('Website Type').'.tpl';
+        $template = $theme.'/products_showcase.'.$theme.'.'.$website->get('Website Type').$template_suffix.'.tpl';
 
 
     } elseif ($webpage->get('Webpage Template Filename') == 'product') {
@@ -391,7 +408,7 @@ if($webpage->id) {
         $template = $theme.'/reset_password.'.$theme.'.'.$website->get('Website Type').'.tpl';
 
     } elseif ($webpage->get('Webpage Template Filename') == 'not_found') {
-        $template = $theme.'/not_found.'.$theme.'.'.$website->get('Website Type').'.tpl';
+        $template = $theme.'/not_found.'.$theme.'.'.$website->get('Website Type').$template_suffix.'.tpl';
     } elseif ($webpage->get('Webpage Template Filename') == 'checkout') {
 
 
@@ -413,11 +430,11 @@ if($webpage->id) {
             }
 
 
-            $template = $theme.'/checkout.'.$theme.'.'.$website->get('Website Type').'.tpl';
+            $template = $theme.'/checkout.'.$theme.'.'.$website->get('Website Type').$template_suffix.'.tpl';
         } else {
 
 
-            $template = $theme.'/checkout_no_order.'.$theme.'.'.$website->get('Website Type').'.tpl';
+            $template = $theme.'/checkout_no_order.'.$theme.'.'.$website->get('Website Type').$template_suffix.'.tpl';
         }
 
     } elseif ($webpage->get('Webpage Template Filename') == 'profile') {
@@ -454,10 +471,11 @@ if($webpage->id) {
         $smarty->assign('countries', $countries);
 
 
-        $template = $theme.'/profile.'.$theme.'.'.$website->get('Website Type').'.tpl';
+        $template = $theme.'/profile.'.$theme.'.'.$website->get('Website Type').$template_suffix.'.tpl';
 
 
     } else {
+
 
 
         if ($webpage->get('Webpage Code') == 'thanks.sys') {
@@ -498,13 +516,27 @@ if($webpage->id) {
             foreach ($content['blocks'] as $block_key => $block) {
 
                 if (isset($content['blocks'][$block_key]['_text'])) {
-                    $content['blocks'][$block_key]['_text'] = strtr($content['blocks'][$block_key]['_text'], $placeholders);
+
+                    $text=$content['blocks'][$block_key]['_text'];
+
+                    if($detected_device=='mobile'){
+                        $text=str_replace('<br/>','',$text);
+                        $text=str_replace('<br>','',$text);
+                        $text=str_replace('<p></p>','',$text);
+
+
+
+                    }
+
+
+                    $content['blocks'][$block_key]['_text'] = strtr($text, $placeholders);
                 }
 
             }
 
 
-        } elseif ($webpage->get('Webpage Code') == 'basket.sys') {
+        }
+        elseif ($webpage->get('Webpage Code') == 'basket.sys') {
 
 
             if (isset($order) and $order->id) {
@@ -540,14 +572,14 @@ if($webpage->id) {
             } else {
 
 
-                $template = $theme.'/basket_no_order.'.$theme.'.'.$website->get('Website Type').'.tpl';
+                $template = $theme.'/basket_no_order.'.$theme.'.'.$website->get('Website Type').$template_suffix.'.tpl';
             }
 
 
         }
 
 
-        $template = $theme.'/webpage_blocks.'.$theme.'.'.$website->get('Website Type').'.tpl';
+            $template = $theme.'/webpage_blocks.'.$theme.'.'.$website->get('Website Type').$template_suffix.'.tpl';
 
 
 
@@ -558,10 +590,6 @@ if($webpage->id) {
     $smarty->assign('webpage', $webpage);
     $smarty->assign('content', $content);
     $smarty->assign('labels', $website->get('Localised Labels'));
-
-
-    //print_r($website->get('Localised Labels'));
-
 
     $smarty->display($template);
 

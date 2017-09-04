@@ -18,8 +18,6 @@ $db = new PDO(
 $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
 
-
-
 if (!isset($_REQUEST['id'])) {
     $image_key = -1;
 } else {
@@ -31,6 +29,21 @@ if (isset($_REQUEST['size']) and preg_match('/^large|small|thumbnail|tiny$/', $_
     $size = $_REQUEST['size'];
 } else {
     $size = 'original';
+}
+
+if(isset($_REQUEST['r'])){
+
+    include_once 'class.Image.php';
+    $image=new Image($image_key);
+
+
+    list($w,$h)=preg_split('/x/',$_REQUEST['r']);
+
+    $new_image=$image->fit_to_canvas($w,$h);
+    header('Content-type: image/'.$image->get('Image File Format'));
+    header('Content-Disposition: inline; filename='.$image->get('Image Filename'));
+    ImagePNG($new_image);
+    exit;
 }
 
 

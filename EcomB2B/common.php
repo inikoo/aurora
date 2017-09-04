@@ -51,7 +51,6 @@ if (!array_key_exists('website_key', $_SESSION) or !$_SESSION['website_key']    
 
 }
 
-
 $is_cached = false;
 
 /*
@@ -114,7 +113,7 @@ if (!$is_cached) {
 
 
     if (isset($_SERVER['SERVER_NAME']) and $_SERVER['SERVER_NAME'] == 'ecom.bali') {
-      //  $detected_device = 'mobile';
+        $detected_device = 'mobile';
     }
 
 
@@ -123,7 +122,7 @@ if (!$is_cached) {
     }else{
         $template_suffix='';
     }
-    $template_suffix='';
+   // $template_suffix='';
 
     $smarty->assign('detected_device',$detected_device);
 

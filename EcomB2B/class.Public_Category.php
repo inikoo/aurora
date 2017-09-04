@@ -225,6 +225,125 @@ class Public_Category {
     }
 
 
+    function get_prev_category($scope = 'data') {
+
+
+        $prev_product = false;
+
+        $sql = sprintf(
+            "SELECT `Webpage Code`,`Category Label` FROM `Category Bridge` LEFT JOIN `Product Dimension` P ON (`Subject Key`=`Product ID`) 
+              LEFT JOIN `Page Store Dimension` ON (`Page Key`=`Product Webpage Key`)
+              WHERE P.`Product Type`='Product' AND`Subject`='Product' AND `Category Key`=%d AND `Webpage State`='Online' AND P.`Product Status` IN ('Active','Discontinuing') AND (`Product Code File As` < %s OR (`Product Code File As` = %s AND P.`Product ID` < %d)) ORDER BY `Product Code File As` DESC , P.`Product ID` DESC LIMIT 1;",
+            $this->data['Product Family Category Key'], prepare_mysql($this->data['Product Code File As']), prepare_mysql($this->data['Product Code File As']), $this->id
+
+        );
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+
+
+                $prev_product = array(
+                    'webpage_code' => $row['Webpage Code'],
+                    'name'         => $row['Category Label']
+                );
+            } else {
+
+                $sql = sprintf(
+                    "SELECT `Webpage Code`,`Category Label` FROM `Category Bridge` LEFT JOIN `Product Dimension` P ON (`Subject Key`=`Product ID`) 
+              LEFT JOIN `Page Store Dimension` ON (`Page Key`=`Product Webpage Key`)
+              WHERE P.`Product Type`='Product' AND`Subject`='Product' AND `Category Key`=%d AND `Webpage State`='Online' AND P.`Product Status` IN ('Active','Discontinuing')  AND   P.`Product ID`!=%d  ORDER BY `Product Code File As` DESC , P.`Product ID` DESC LIMIT 1;",
+                    $this->data['Product Family Category Key'], $this->id
+
+                );
+
+
+                if ($result = $this->db->query($sql)) {
+                    if ($row = $result->fetch()) {
+                        $prev_product = array(
+                            'webpage_code' => $row['Webpage Code'],
+                            'name'         => $row['Category Label']
+                        );
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        return $prev_product;
+
+
+    }
+
+
+    function get_next_category($scope = 'data') {
+        $next_product = false;
+
+
+        $sql = sprintf(
+            "SELECT `Webpage Code`,`Category Label` FROM `Category Bridge` LEFT JOIN `Category Dimension` P ON (`Subject Key`=`Category Key`) 
+              LEFT JOIN `Page Store Dimension` ON (`Page Key`=`Product Webpage Key`)
+              WHERE `Subject`='Category' AND `Category Key`=%d AND `Webpage State`='Online' AND P.`Product Status` IN ('Active','Discontinuing') 
+              AND (`Product Code File As` > %s OR (`Product Code File As` = %s AND P.`Product ID` > %d)) ORDER BY `Product Code File As`  , P.`Product ID` DESC LIMIT 1;",
+            $this->data['Product Family Category Key'], prepare_mysql($this->data['Product Code File As']), prepare_mysql($this->data['Product Code File As']), $this->id
+
+        );
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+
+
+                $next_product = array(
+                    'webpage_code' => $row['Webpage Code'],
+                    'name'         => $row['Category Label']
+                );
+            } else {
+
+                $sql = sprintf(
+                    "SELECT `Webpage Code`,`Category Label` FROM `Category Bridge` LEFT JOIN `Product Dimension` P ON (`Subject Key`=`Product ID`) 
+              LEFT JOIN `Page Store Dimension` ON (`Page Key`=`Product Webpage Key`)
+              WHERE P.`Product Type`='Product' AND`Subject`='Product' AND `Category Key`=%d AND `Webpage State`='Online' AND P.`Product Status` IN ('Active','Discontinuing') AND   P.`Product ID`!=%d  ORDER BY `Product Code File As`  , P.`Product ID` DESC LIMIT 1;",
+                    $this->data['Product Family Category Key'], $this->id
+
+                );
+
+
+                if ($result = $this->db->query($sql)) {
+                    if ($row = $result->fetch()) {
+                        $next_product = array(
+                            'webpage_code' => $row['Webpage Code'],
+                            'name'         => $row['Category Label']
+                        );
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        return $next_product;
+
+    }
+    
+
+
 }
 
 

@@ -44,7 +44,7 @@ switch ($tipo) {
             $_REQUEST, array(
                          'product_id'        => array('type' => 'key'),
                          'qty'               => array('type' => 'numeric'),
-                         'order_key'         => array('type' => 'numeric'),
+                         'order_key'         => array('type' => 'string'),
                          'webpage_key'       => array('type' => 'numeric'),
                          'page_section_type' => array('type' => 'string')
                      )

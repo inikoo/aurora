@@ -228,9 +228,9 @@ class Website_User extends DB_Table {
 
 
         $this->db->exec($sql);
-        $website = get_object('Website', $this->data['Website User Website Key']);
+        //$website = get_object('Website', $this->data['Website User Website Key']);
 
-        $website->update_customers_data();
+      //  $website->update_customers_data();
 
 
     }

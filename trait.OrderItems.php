@@ -516,8 +516,12 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
 
                 $items[] = array(
                     'code'        => $row['Product Code'],
+                    'code_description' => '<b>'.$row['Product Code'].'</b> '.$row['Product History Units Per Case'].'x '.$row['Product History Name'],
                     'description' => $row['Product History Units Per Case'].'x '.$row['Product History Name'],
                     'qty'         => number($row['Order Quantity']),
+                    'qty_raw'         => $row['Order Quantity']+0,
+                    'pid'=>$row['Product ID'],
+                    'otf_key'=> $row['Order Transaction Fact Key'],
                     'edit_qty'    => $edit_quantity,
                     'amount'      => '<span class="item_amount">'.money($row['Order Transaction Amount'], $row['Order Currency Code']).'</span>'
 
