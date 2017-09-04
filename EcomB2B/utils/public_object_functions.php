@@ -43,6 +43,10 @@ function get_object($object_name, $key, $load_other_data = false) {
             include_once 'class.Public_Store.php';
             $object = new Public_Store($key);
             break;
+        case 'image':
+            include_once 'class.Image.php';
+            $object = new Image($key);
+            break;
         case 'product':
         case 'service':
             include_once 'class.Public_Product.php';

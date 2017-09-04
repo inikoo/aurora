@@ -24,8 +24,9 @@ include_once 'utils/aes.php';
 require_once 'external_libs/Smarty/Smarty.class.php';
 
 
-
-
+include_once 'external_libs/ImageCache.php';
+$imagecache = new ImageCache();
+$imagecache->cached_image_directory = 'server_files/cached_images';
 
 $smarty               = new Smarty();
 $smarty->template_dir = 'templates';

@@ -1061,6 +1061,8 @@ trait ProductCategory {
                     */
 
 
+
+
                     $image=new Image($product->get('Product Main Image Key'));
 
                     $_image_filename=uniqid('tmp_ftc_image_');
