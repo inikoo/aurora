@@ -116,12 +116,7 @@
 
 
                         <li><a href="#payment_account_item_{$payment_account.object->get('Block')}" target="_self"><i class="fa {$payment_account.icon}" aria-hidden="true"></i> <span>
-            {if $payment_account.tab_label==''}
-                {$content[$payment_account.tab_label_index]}
-
-            {else}
-                {$payment_account.tab_label}
-            {/if}
+            {if $payment_account.tab_label==''}{$content[$payment_account.tab_label_index]}{else}{$payment_account.tab_label}{/if}
             </span></a></li>
                     {/foreach}
 

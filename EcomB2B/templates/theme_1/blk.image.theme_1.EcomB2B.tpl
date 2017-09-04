@@ -14,16 +14,13 @@
 <div id="block_{$key}" block="{$data.type}" class="{$data.type} _block  " style="Width:100%;" >
 
 
-        
         {if $data.link!=''}
-                    <a href="{$data.link}">    <img src="{$data.src}"  class="rimg "   alt="{$data.tooltip}" title="{$data.tooltip}" /></a>
-
+            <a href="{$data.link}"><img src="{$data.src}"  class="rimg "   alt="{$data.tooltip}" title="{$data.tooltip}" /></a>
         {else}
-                <img src="{$data.src}"  class="rimg "   alt="{$data.tooltip}" title="{$data.tooltip}" />
-
+            <img src="{$data.src}" class="rimg" alt="{$data.tooltip}" title="{$data.tooltip}" />
         {/if}
-        
-        
+
+
 
     <div class="clearfix"></div>
 </div>

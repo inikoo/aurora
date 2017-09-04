@@ -131,11 +131,8 @@
 
     <!--  <script src="http://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script> -->
       <script src="/theme_1/local/jquery.js"></script>
+
     <script src="/theme_1/local/jquery-ui.js"></script>
-
-
-
-
     <script src="/theme_1/sky_forms/js/jquery.form.min.js"></script>
     <script src="/theme_1/sky_forms/js/jquery.validate.min.js"></script>
     <script src="/theme_1/sky_forms/js/additional-methods.min.js"></script>

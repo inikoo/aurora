@@ -311,7 +311,7 @@ $(document).ready(function(){
         });
         
         //FastClick
-        $(function() {FastClick.attach(document.body);});
+       // $(function() {FastClick.attach(document.body);});
 
         //Preload Image
         $(function() {
@@ -947,14 +947,14 @@ $(document).ready(function(){
         cacheLength: 0,
         blacklist: '.default-link',
         forms: 'contactForm',
-        onStart: {
+          onStart: {
           duration:500, // Duration of our animation
           render: function ($container) {
             // Add your CSS animation reversing class
             $container.addClass('is-exiting');
 
             // Restart your animation
-            smoothState.restartCSSAnimations();
+           // smoothState.restartCSSAnimations();
             $('.page-preloader').addClass('show-preloader');
             $('#page-transitions').css({"opacity":"0", "transition":"all 500ms ease"});
 			$('#sidebar-tap-close').removeClass();
@@ -990,7 +990,7 @@ $(document).ready(function(){
             });   
         }
       };
-      var smoothState = $('#page-transitions').smoothState(options).data('smoothState');
+     // var smoothState = $('#page-transitions').smoothState(options).data('smoothState');
     });
     
 });

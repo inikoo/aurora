@@ -505,6 +505,8 @@ function inventory_stock_history($_data, $db, $user, $account) {
 
     $sql = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
 
+    //print $sql;
+
     $record_data = array();
 
     if ($result = $db->query($sql)) {
@@ -534,8 +536,8 @@ function inventory_stock_history($_data, $db, $user, $account) {
                 'parts'     => number($data['Parts']),
                 'locations' => number($data['Locations']),
 
-                'value'            => money($data['Value At Day Cost'], $account->get('Currency')),
-                'commercial_value' => money($data['Value Commercial'], $account->get('Currency')),
+                'value'            => money($data['Value At Day Cost'], $account->get('Currency Code')),
+                'commercial_value' => money($data['Value Commercial'], $account->get('Currency Code')),
                 //'in'=>number($data['Quantity In']),
                 //'sold'=>number($data['Quantity Sold']),
                 //'lost'=>number($data['Quantity Lost']),

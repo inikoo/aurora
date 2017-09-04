@@ -90,7 +90,7 @@ if ($result = $db->query($sql)) {
         if ($result2 = $db->query($sql)) {
             foreach ($result2 as $row2) {
                 $warehouse = new Warehouse($row2['Warehouse Key']);
-                //$warehouse->update_inventory_snapshot($row['Date']);
+                $warehouse->update_inventory_snapshot($row['Date']);
             }
         } else {
             print_r($error_info = $db->errorInfo());

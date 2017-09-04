@@ -320,27 +320,35 @@ class Public_Website {
                         $icon            = 'fa-credit-card';
                         $tab_label_index = '_credit_card_label';
                         $tab_label       = '';
+                        $short_label='<i class="fa fa-credit-card" aria-hidden="true"></i>';
                         break;
                     case 'BTreePaypal':
                         $icon            = 'fa-paypal';
                         $tab_label       = 'Paypal';
                         $tab_label_index = '';
+                        $short_label='<i class="fa fa-paypal" aria-hidden="true"></i>';
+
                         break;
                     case 'Paypal':
                         $icon            = 'fa-paypal';
                         $tab_label       = 'Paypal';
                         $tab_label_index = '';
+                        $short_label='<i class="fa fa-paypal" aria-hidden="true"></i>';
+
                         break;
                     case 'Bank':
                         $icon            = 'fa-university';
                         $tab_label_index = '_bank_label';
                         $tab_label       = '';
+                        $short_label='';
+
                         break;
 
                     case 'ConD':
                         $icon            = 'fa-handshake-o';
                         $tab_label_index = '_cash_on_delivery_label';
                         $tab_label       = '';
+                        $short_label='';
                         break;
                     default:
 
@@ -352,7 +360,8 @@ class Public_Website {
                     'object'          => $payment_account,
                     'icon'            => $icon,
                     'tab_label_index' => $tab_label_index,
-                    'tab_label'       => $tab_label
+                    'tab_label'       => $tab_label,
+                    'short_label'=>$short_label
                 );
 
             }

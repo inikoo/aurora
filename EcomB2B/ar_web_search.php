@@ -35,7 +35,10 @@ switch ($tipo) {
                          'query' => array('type' => 'string')
                      )
         );
-        search($db, $website, $data, $smarty);
+
+
+
+        search($db, $website, $data, $smarty,$template_suffix,$order_key);
         break;
 
 
@@ -49,11 +52,11 @@ switch ($tipo) {
         break;
 }
 
-function search($db, $website, $data, $smarty) {
+function search($db, $website, $data, $smarty,$template_suffix,$order_key) {
 
 
     $theme='theme_1';
-    $results = process_search($data['query'], $db, $website);
+    $results = process_search($data['query'], $db, $website,$order_key);
 
 
 
@@ -62,14 +65,14 @@ function search($db, $website, $data, $smarty) {
 
     $response = array(
         'state'   => 200,
-        'results' => $smarty->fetch("$theme/_search_results.$theme.EcomB2B.tpl")
+        'results' => $smarty->fetch("$theme/_search_results.$theme.EcomB2B".$template_suffix.'.tpl')
     );
     echo json_encode($response);
 
 }
 
 
-function process_search($q, $db, $website) {
+function process_search($q, $db, $website,$order_key) {
 
 
     $candidates  = array();
@@ -108,12 +111,24 @@ function process_search($q, $db, $website) {
         }
 
 
+        if($order_key){
+            $ordered=sprintf('(SELECT `Order Quantity` FROM `Order Transaction Fact` WHERE `Order Key`=%d AND `Product ID`=P.`Product ID`) as ordered,',$order_key);
+        }else{
+            $ordered=' "" as ordered,';
+
+        }
+
+
         $sql = sprintf(
-            'SELECT  `Webpage Code`,`Page Key` ,`Product Main Image Key`,`Product Web State`,`Webpage URL`,`Webpage Name`,`Product Name`,`Product Code`,`Webpage Meta Description`
-     FROM  `Product Dimension` P  LEFT JOIN `Page Store Dimension` PAS ON (PAS.`Page Key`=P.`Product Webpage Key`)
+            'SELECT  %s `Product Currency`,`Product Price`,`Product ID`,`Webpage Code`,`Page Key` ,`Product Main Image Key`,`Product Web State`,`Webpage URL`,`Webpage Name`,`Product Name`,`Product Code`,`Webpage Meta Description`,`Product Units Per Case`
+            FROM  `Product Dimension` P  
+            LEFT JOIN `Page Store Dimension` PAS ON (PAS.`Page Key`=P.`Product Webpage Key`)
 
 
-		 WHERE `Webpage Website Key`=%d AND `Product Code` LIKE %s  AND  `Webpage State`="Online"   ', $website->id, prepare_mysql($code_q)
+		 WHERE `Webpage Website Key`=%d AND `Product Code` LIKE %s  AND  `Webpage State`="Online" and `Product Status` in ("Active","Discontinuing")   ',
+            $ordered,
+            $website->id,
+            prepare_mysql($code_q)
         );
 
 
@@ -142,7 +157,12 @@ function process_search($q, $db, $website) {
                 $candidates[$row['Page Key']]['score']             = $score_match_product_code;
                 $candidates[$row['Page Key']]['url']               = '/'.strtolower($row['Webpage Code']);
                 $candidates[$row['Page Key']]['title']             = $row['Webpage Name'];
+                $candidates[$row['Page Key']]['key']             =  $row['Product ID'];
+                $candidates[$row['Page Key']]['ordered']             =  $row['ordered'];
+
                 $candidates[$row['Page Key']]['code']             = $row['Product Code'];
+                $candidates[$row['Page Key']]['name']             = $row['Product Units Per Case'].'x '.$row['Product Name'];
+                $candidates[$row['Page Key']]['price']             = money($row['Product Price'],$row['Product Currency']);
 
                 $candidates[$row['Page Key']]['description']       = $row['Webpage Meta Description'];
                 $candidates[$row['Page Key']]['asset_description'] = '<span class="code">'.$row['Product Code'].'</span> '.$row['Product Name'];
@@ -154,14 +174,14 @@ function process_search($q, $db, $website) {
             exit;
         }
 
-
         $sql = sprintf(
-            'SELECT  `Webpage Code`, `Page Key` ,`Category Main Image Key`,`Webpage URL`,`Webpage Name`,`Category Label`,`Category Code`,`Webpage Meta Description`
+            'SELECT  `Webpage Code`, `Page Key` ,`Category Main Image Key`,`Webpage URL`,`Webpage Name`,`Category Label`,`Category Code`,`Webpage Meta Description`,`Category Label`
 		     FROM   `Product Category Dimension` PC LEFT JOIN    `Category Dimension` C    ON (PC.`Product Category Key`=C.`Category Key`)  LEFT JOIN `Page Store Dimension` PAS ON (PAS.`Page Key`=PC.`Product Category Webpage Key`)
             WHERE `Webpage Website Key`=%d AND `Category Code` LIKE %s  AND  `Webpage State`="Online"   ', $website->id, prepare_mysql($code_q)
         );
         //print $sql;
         // print "$sql\n";
+
 
         if ($result = $db->query($sql)) {
             foreach ($result as $row) {
@@ -189,7 +209,10 @@ function process_search($q, $db, $website) {
                     $page_scores[$row['Page Key']]                     = $score_match_family_code;
                     $candidates[$row['Page Key']]['url']               = '/'.strtolower($row['Webpage Code']);
                     $candidates[$row['Page Key']]['title']             = $row['Webpage Name'];
+                    $candidates[$row['Page Key']]['key']             = '';
+
                     $candidates[$row['Page Key']]['code']             = $row['Category Code'];
+                    $candidates[$row['Page Key']]['name']             = $row['Category Label'];
 
                     $candidates[$row['Page Key']]['description']       = $row['Webpage Meta Description'];
                     $candidates[$row['Page Key']]['asset_description'] = '<span class="code">'.$row['Category Code'].'</span> '.$row['Category Label'];
@@ -204,13 +227,22 @@ function process_search($q, $db, $website) {
 
         if (strlen($_q) > 2) {
 
+            if($order_key){
+                $ordered=sprintf('(SELECT `Order Quantity` FROM `Order Transaction Fact` WHERE `Order Key`=%d AND `Product ID`=P.`Product ID`) as ordered,',$order_key);
+            }else{
+                $ordered=' "" as ordered,';
+
+            }
 
             $sql = sprintf(
-                'SELECT  `Webpage Code`,`Page Key` ,`Product Main Image Key`,`Product Web State`,`Webpage URL`,`Webpage Name`,`Product Name`,`Product Code`,`Webpage Meta Description`
+                'SELECT %s `Product Currency`,`Product Price`,`Product ID`, `Webpage Code`,`Page Key` ,`Product Main Image Key`,`Product Web State`,`Webpage URL`,`Webpage Name`,`Product Name`,`Product Code`,`Webpage Meta Description`,`Product Units Per Case`
      FROM  `Product Dimension` P  LEFT JOIN `Page Store Dimension` PAS ON (PAS.`Page Key`=P.`Product Webpage Key`)
 
 
-		 WHERE `Webpage Website Key`=%d AND `Product Name`  REGEXP \'[[:<:]]%s\'   AND  `Webpage State`="Online"   ', $website->id, $_q
+		 WHERE `Webpage Website Key`=%d AND `Product Name`  REGEXP \'[[:<:]]%s\'   AND  `Webpage State`="Online"   and `Product Status` in ("Active","Discontinuing")  ',
+                $ordered,
+                $website->id,
+                $_q
             );
 
 
@@ -234,6 +266,12 @@ function process_search($q, $db, $website) {
                     $candidates[$row['Page Key']]['image']             = $image;
                     $candidates[$row['Page Key']]['score']             = $score_match_product_code;
                     $candidates[$row['Page Key']]['url']               = '/'.strtolower($row['Webpage Code']);
+                    $candidates[$row['Page Key']]['key']             =  $row['Product ID'];
+                    $candidates[$row['Page Key']]['code']             = $row['Product Code'];
+                    $candidates[$row['Page Key']]['name']             = $row['Product Units Per Case'].'x '.$row['Product Name'];
+                    $candidates[$row['Page Key']]['price']             = money($row['Product Price'],$row['Product Currency']);
+                    $candidates[$row['Page Key']]['ordered']             =  $row['ordered'];
+
                     $candidates[$row['Page Key']]['title']             = $row['Webpage Name'];
                     $candidates[$row['Page Key']]['description']       = $row['Webpage Meta Description'];
                     $candidates[$row['Page Key']]['asset_description'] = '<span class="code">'.$row['Product Code'].'</span> '.$row['Product Name'];
@@ -253,6 +291,10 @@ function process_search($q, $db, $website) {
             );
             //print $sql;
             //print "$sql\n";
+
+
+
+
 
             if ($result = $db->query($sql)) {
                 foreach ($result as $row) {
@@ -277,6 +319,10 @@ function process_search($q, $db, $website) {
                         $page_scores[$row['Page Key']]                     = $score_match_family_code;
                         $candidates[$row['Page Key']]['url']               = '/'.strtolower($row['Webpage Code']);
                         $candidates[$row['Page Key']]['title']             = $row['Webpage Name'];
+                        $candidates[$row['Page Key']]['code']             = $row['Category Code'];
+                        $candidates[$row['Page Key']]['key']             = '';
+
+                        $candidates[$row['Page Key']]['name']             = $row['Category Label'];
                         $candidates[$row['Page Key']]['description']       = $row['Webpage Meta Description'];
                         $candidates[$row['Page Key']]['asset_description'] = '<span class="code">'.$row['Category Code'].'</span> '.$row['Category Label'];
 
@@ -344,6 +390,10 @@ function process_search($q, $db, $website) {
                     $candidates[$row['Page Key']]['title']             = $row['Page Store Title'];
                     $candidates[$row['Page Key']]['description']       = $row['Page Store Description'];
                     $candidates[$row['Page Key']]['asset_description'] = '<span class="code">'.$row['Product Code'].'</span> '.$row['Product Name'];
+                    $candidates[$row['Page Key']]['key']             =  $row['Product ID'];
+
+                    $candidates[$row['Page Key']]['code']             = $row['Page Store Title'];
+                    $candidates[$row['Page Key']]['name']             = $row['Page Store Title'];
 
 
                 }
@@ -614,6 +664,9 @@ function process_search($q, $db, $website) {
     if (!$alternative_found) {
         $did_you_mean = '';
     }
+
+
+
 
     return array(
         'number_results' => $number_results,

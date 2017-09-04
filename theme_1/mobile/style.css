@@ -151,16 +151,20 @@
 
 /*Header Logo*/
 
-.header-dark .header-logo{background-image:url(../images/logo-light.png);}
-.header-light .header-logo{background-image:url(../images/logo-dark.png);}
+.header-dark .header-logo{background-image:url(/art/mobile_logo.png);}
+.header-light .header-logo{background-image:url(/art/mobile_logo.png);}
 
 .header-logo{
 	background-repeat: no-repeat;
-	background-position: center center;
-	background-size:120px 32px;
-	width:120px;
+	background-position: center left;
+	xbackground-size:120px 32px;
+	width:220px;
+	padding-left: 80px;
 	height:54px;
 	z-index:999;
+	font-family: "Ubuntu", Helvetica, Arial, sans-serif;
+	font-weight: 800;
+	color: #0b0b0b;
 }
 
 /*Animated Icons*/
@@ -596,7 +600,7 @@
 
 .sidebars-light .sidebar-header-classic .sidebar-socials a{color:#000000!important; border-bottom:solid 1px rgba(0,0,0,0.08); border-top:solid 1px rgba(0,0,0,0.05);	}
 .sidebars-light .sidebar-header-classic .sidebar-socials a i{color:#000000!important;}
-.sidebars-light .sidebar-header-classic .sidebar-logo{background-image:url(../images/logo-dark.png);}
+.sidebars-light .sidebar-header-classic .sidebar-logo{background-image:url(/art/mobile_logo.png);}
 .sidebars-light .sidebar-header-classic strong{color:#000000;	border-bottom:solid 1px rgba(0,0,0,0.08);}
 .sidebars-light a, .menu-light a{border-bottom:solid 1px rgba(0,0,0,0.08);}
 .sidebars-light i:first-child, .menu-light i:first-child{color:#1f1f1f;}
@@ -617,7 +621,7 @@
 .sidebars-dark .sidebar-header-classic{background-color:#1e1e1e!important;}
 .sidebars-dark .sidebar-header-classic .sidebar-socials a{	color:#FFFFFF; border-bottom:solid 1px rgba(255,255,255,0.1); border-top:solid 1px rgba(255,255,255,0.1);	}
 .sidebars-dark .sidebar-header-classic .sidebar-socials a i{color:#FFFFFF!important;}
-.sidebars-dark .sidebar-header-classic .sidebar-logo{background-image:url(../images/logo-light.png);}
+.sidebars-dark .sidebar-header-classic .sidebar-logo{background-image:url(../images/mobile/logo-light.png);}
 .sidebars-dark .sidebar-header-classic strong{color:#FFFFFF;border-bottom:solid 1px rgba(255,255,255,0.05);}
 .sidebars-dark a, .menu-dark a{border-bottom:solid 1px rgba(255,255,255,0.05);}
 .sidebars-dark i:first-child, .menu-dark i:first-child{color:#FFFFFF;}
@@ -660,7 +664,7 @@
 .sidebar-header-classic .sidebar-logo{
 	background-repeat: no-repeat;
 	background-position: 10px 10px;
-	background-size:130px 33px;
+	xbackground-size:130px 33px;
 	padding-top:33px;
 	width:100%;
 	z-index:999;
@@ -669,10 +673,13 @@
 .sidebar-header-classic .sidebar-logo strong{
 	display:block;
 	padding-left:15px;
-	font-family:'Poppins', sans-serif;
+	font-family:Ubuntu;
+	font-weight: 800;
 	font-size:12px;
-	font-weight:400;
+
 	padding-bottom:10px;
+	margin-left:70px;
+
 }
 
 
@@ -695,23 +702,28 @@
 
 .sidebar-header-image .sidebar-logo{
 	z-index:99;
-	background-image:url(../images/logo-light.png);
+	background-image:url(/art/mobile_logo.png);
+
 	background-repeat: no-repeat;
 	background-position: 10px 10px;
-	background-size:130px 33px;
+	//background-size:130px 33px;
 	padding-top:33px;
+	padding-left: 60px;
 	width:100%;
 	z-index:999;
+
 }
 
 .sidebar-header-image .sidebar-logo strong{
 	display:block;
 	padding-left:15px;
-	font-family:'Poppins', sans-serif;
-	font-size:12px;
-	font-weight:400;
-	color:#bfbfbf;
+	font-size:14px;
+
+	color:#fff;
 	padding-bottom:10px;
+	font-family:Ubuntu, sans-serif;
+	font-weight: 800;
+	text-shadow: 0 1px 0 black;
 }
 
 .body-left-effect{
@@ -768,7 +780,7 @@
 	height:50px;
 	background-color:transparent;
 	color:#000000;
-	padding-left:50px;
+	padding-left:20px;
 	width:100%;
 	font-size:12px;
 	border-bottom:solid 1px rgba(0,0,0,0.08);
@@ -789,7 +801,7 @@
 	padding-left:0px!important;
 	position:absolute;
 	top:0px;
-	right:0px;
+	right:-45px;
 }
 
 /*Footer*/
@@ -798,18 +810,20 @@
 .footer-dark .copyright-text{border-top:solid 1px rgba(255,255,255,0.05); color:#656465;}
 .footer-dark .footer-socials a{color:#FFFFFF;}
 .footer-dark .footer-text{color:#b7b7b7!important; border-bottom:solid 1px rgba(255,255,255,0.05);}
-.footer-dark .footer-logo{background-image:url(../images/logo-light.png);}
+.footer-dark .footer-logo{background-image:url(/art/mobile_logo.png);}
+
+
 
 .footer-light{padding-top:0px!important;}
 .footer-light .copyright-text{border-top:solid 1px rgba(0,0,0,0.1); color:#656465;}
 .footer-light .footer-socials a{color:#000000;}
 .footer-light .footer-text{color:#666666!important; border-bottom:solid 1px rgba(0,0,0,0.1);}
-.footer-light .footer-logo{background-image:url(../images/logo-dark.png);}
+.footer-light .footer-logo{background-image:url(/art/mobile_logo.png);}
 
 .footer-logo{
 	background-repeat: no-repeat;
 	background-position: center center;
-	background-size:180px 47px;
+	xbackground-size:180px 47px;
 	width:180px;
 	height:47px;
 	z-index:999;
