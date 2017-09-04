@@ -9,7 +9,7 @@
 -->
 *}{include file="theme_1/_head.theme_1.EcomB2B.mobile.tpl"}
 <body>{include file="analytics.tpl"}
-<div id="page-transitions">
+<div id="xpage-transitions">
     {include file="theme_1/header.theme_1.EcomB2B.mobile.tpl"}
     <div id="page-content" class="page-content">
 
