@@ -292,7 +292,7 @@ class Public_Product {
                     $cached_image= $imagecache->cache($image_filename);
 
 
-                    unlink($image_filename);
+                    //unlink($image_filename);
                     return $cached_image;
 
                 } else {
