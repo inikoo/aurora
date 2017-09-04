@@ -70,16 +70,6 @@ $('#'+$(this).data('tab')).removeClass('hide')
 
 
 
-$(document).on('click touch', '.ordering_button', function (evt) {
-
-    alert('xxxxx')
-
-    save_item_qty_change(this)
-
-});
-
-
-
 $(document).on('input propertychange', '.order_qty', function (evt) {
 
   //  if ($(this).val() == $(this).attr('ovalue')) {
