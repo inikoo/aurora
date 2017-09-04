@@ -139,7 +139,26 @@
 
                     {foreach from=$order->get_items() item="item" }
 
+                        <tr>
+                            <td style="text-align: left">{$item.code_description}
 
+
+                                <div class="mobile_ordering"  data-settings='{ "pid":{$item.pid},"basket":true }'>
+                                    <i onclick="save_item_qty_change(this)" class="ordering_button one_less fa fa-fw  fa-minus-circle color-red-dark"></i>
+                                    <input  type="number" min="0" value="{$item.qty_raw}" class="needsclick order_qty">
+                                    <i onclick="save_item_qty_change(this)" style="display:none" class="ordering_button save fa fa-fw fa-floppy-o color-blue-dark"></i>
+                                    <i onclick="save_item_qty_change(this)" class="ordering_button add_one fa fa-fw  fa-plus-circle color-green-dark"></i>
+                                </div>
+
+
+                               
+
+
+                            </td>
+
+
+                            <td class="text-right">{$item.amount}</td>
+                        </tr>
 
 
                     {/foreach}
