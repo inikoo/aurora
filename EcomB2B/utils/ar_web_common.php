@@ -102,7 +102,7 @@ function prepare_values($data, $value_names) {
                     exit(json_encode(
                         array(
                             'state' => 400,
-                            'msg'   => 'Error wrong value 3'
+                            'msg'   => 'Error wrong value 3 '.$spected_type
                         )
                     ));
                 }
