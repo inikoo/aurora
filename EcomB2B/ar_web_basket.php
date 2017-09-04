@@ -130,7 +130,7 @@ function update_item($_data, $customer, $website, $editor, $db) {
     $product_pid = $_data['product_id'];
     $quantity    = $_data['qty'];
 
-    
+
     if($quantity==''){
         $quantity=0;
     }

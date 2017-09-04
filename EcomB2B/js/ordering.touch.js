@@ -111,6 +111,9 @@ function save_item_qty_change(element) {
     var input = order_div.find('input')
     //var icon=$(element)
 
+    alert('x')
+
+
     input.prop('readonly', true);
     if ($(element).hasClass('fa-plus-circle')) {
 
