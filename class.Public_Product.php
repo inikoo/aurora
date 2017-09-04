@@ -259,12 +259,49 @@ class Public_Product {
 
                 if ($image_key) {
                     $img = '/image_root.php?size=small&id='.$image_key;
+
+
+
+
                 } else {
                     $img = '/art/nopic.png';
 
                 }
 
                 return $img;
+
+                break;
+
+            case 'Image Mobile':
+
+                global $imagecache;
+
+                $image_key = $this->data['Product Main Image Key'];
+
+                if ($image_key) {
+
+                  if(file_exists('server_files/cached_images/'.md5($image_key.'_600_375.jpeg').'.jpeg' )){
+                      return 'server_files/cached_images/'.md5($image_key.'_600_375.jpeg').'.jpeg';
+                    }
+
+                    $image=get_object('Image', $image_key);
+                    $image->save_image_to_file('server_files/tmp',$image_key.'_600_375',$image->fit_to_canvas(600,375));
+                    $image_filename='server_files/tmp/'.$image_key.'_600_375.jpeg';
+
+
+                    $cached_image= $imagecache->cache($image_filename);
+
+
+                    unlink($image_filename);
+                    return $cached_image;
+
+                } else {
+                    return '/art/nopic.png';
+
+                }
+
+
+
 
                 break;
 

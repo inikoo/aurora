@@ -45,7 +45,7 @@
                     <span >
 
 
-                        <a href="{$product->get('Code')|strtolower}" style="z-index: 10000"><img src="{$product->get('Image')}&r=600x375" alt="img"></a>
+                        <a href="{$product->get('Code')|strtolower}" style="z-index: 10000"><img src="{$product->get('Image Mobile')}" alt="img"></a>
 
                         <em style="margin-left:185px;padding-left: 0px" class="single_line_height">
                             <div class="description">
