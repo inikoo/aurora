@@ -18,7 +18,7 @@
         <div id="page-content-scroll" class="header-clear"><!--Enables this element to be scrolled -->
             <div class="menu-bar menu-bar-text">
                 <a href="{$parent.code|strtolower}" class="menu-bar-text-1"><i class="fa fa-arrow-up"></i><em style="position: relative;left:-4px">{$parent.label|truncate:8:"."}</em></a>
-                <span class="menu-bar-title" style="position: relative;left:-20px">{$category->get('Label')}</span>
+                <span class="menu-bar-title" style="position: relative;left:100px">{$category->get('Label')}</span>
             </div>
 
 
