@@ -70,7 +70,9 @@ $('#'+$(this).data('tab')).removeClass('hide')
 
 
 
-$(document).on('click', '.ordering_button', function (evt) {
+$(document).on('click touch', '.ordering_button', function (evt) {
+
+    alert('xxxxx')
 
     save_item_qty_change(this)
 
@@ -118,7 +120,7 @@ function save_item_qty_change(element) {
     input.prop('readonly', true);
 
 
-    alert('a1')
+
 
     if ($(element).hasClass('fa-plus-circle')) {
 
@@ -156,7 +158,7 @@ function save_item_qty_change(element) {
     if (qty == '') qty = 0;
 
     var settings = order_div.data('settings')
-    alert('a2')
+
 
     var request = 'ar_web_basket.php?tipo=update_item&product_id=' + settings.pid + '&order_key=' + $('#webpage_data').attr('order_key') + '&qty=' + qty + '&webpage_key=' + $('#webpage_data').attr('webpage_key') + '&page_section_type=Basket'
 
