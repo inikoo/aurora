@@ -414,7 +414,7 @@ if ($webpage->id) {
 
     } elseif ($webpage->get('Webpage Template Filename') == 'reset_password') {
         include 'reset_password.inc.php';
-        $template = $theme.'/reset_password.'.$theme.'.'.$website->get('Website Type').'.tpl';
+        $template = $theme.'/reset_password.'.$theme.'.'.$website->get('Website Type').$template_suffix.'.tpl';
 
     } elseif ($webpage->get('Webpage Template Filename') == 'not_found') {
         $template = $theme.'/not_found.'.$theme.'.'.$website->get('Website Type').$template_suffix.'.tpl';
