@@ -208,6 +208,8 @@ $(document).on('click', '.slider_preview', function (e) {
     }
 
     function exit_edit_webpage_block_column() {
+
+
         $('#columns').removeClass('hide')
         $('#edit_columns').addClass('hide').attr('current_key','')
 
@@ -216,7 +218,7 @@ $(document).on('click', '.slider_preview', function (e) {
 
         $('#save_button').removeClass('hide')
 
-
+        $("#preview").removeClass('hide')
         $("#preview").contents().find('._block').removeClass('hide')
 
 
