@@ -18,6 +18,8 @@ function get_invoice_showcase($data,$smarty, $user,$db) {
         return "";
     }
 
+
+    //$data['_object']->update_totals();
     $smarty->assign('invoice', $data['_object']);
 
     $smarty->assign('order',get_object('order', $data['_object']->get('Invoice Order Key')));
@@ -49,7 +51,6 @@ function get_invoice_showcase($data,$smarty, $user,$db) {
     		print "$sql\n";
     		exit;
     }
-
 
 
 

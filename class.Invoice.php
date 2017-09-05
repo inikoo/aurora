@@ -507,13 +507,13 @@ class Invoice extends DB_Table {
 
 
             $sql = sprintf(
-                "SELECT  `Tax Category Code`, sum(`Transaction Net Amount`) AS net  FROM `Order No Product Transaction Fact` WHERE `Order Key`=%d  GROUP BY  `Tax Category Code`  ", $this->id
+                "SELECT  `Tax Category Code`, sum(`Transaction Net Amount`) AS net  FROM `Order No Product Transaction Fact` WHERE `Invoice Key`=%d  GROUP BY  `Tax Category Code`  ", $this->id
             );
 
-            //print $sql;
 
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
+
 
                     if (isset($data[$row['Tax Category Code']])) {
                         $data[$row['Tax Category Code']] += $row['net'];
@@ -539,11 +539,9 @@ class Invoice extends DB_Table {
 
             foreach ($data as $tax_code => $amount) {
 
+
                 $tax_category = get_object('Tax_Category', $tax_code);
-
-
                 $tax = round($tax_category->get('Tax Category Rate') * $amount, 2);
-
 
                 $is_base = 'Yes';
 
@@ -1611,7 +1609,7 @@ class Invoice extends DB_Table {
 
         $order = get_object('Order', $this->data['Invoice Order Key']);
 
-        $order->editor=$this->editor;
+        $order->editor = $this->editor;
 
         if ($order->get('Order State') == 'Dispatched') {
             $this->error = true;
@@ -1699,18 +1697,17 @@ class Invoice extends DB_Table {
         //    $payment->update_balance();
         //}
 
-        $_category_keys            = array();
-        $sql                       = sprintf("SELECT `Category Key` FROM `Category Bridge`  WHERE   `Subject`='Invoice' AND `Subject Key`=%d", $this->id);
-        if ($result=$this->db->query($sql)) {
-        		foreach ($result as $row) {
-                    $_category_keys[$row['Category Key']] = $row['Category Key'];
-        		}
-        }else {
-        		print_r($error_info=$this->db->errorInfo());
-        		print "$sql\n";
-        		exit;
+        $_category_keys = array();
+        $sql            = sprintf("SELECT `Category Key` FROM `Category Bridge`  WHERE   `Subject`='Invoice' AND `Subject Key`=%d", $this->id);
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $_category_keys[$row['Category Key']] = $row['Category Key'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
-
 
 
         $sql = sprintf("DELETE FROM `Category Bridge`  WHERE   `Subject`='Invoice' AND `Subject Key`=%d", $this->id);
@@ -1760,9 +1757,6 @@ class Invoice extends DB_Table {
         $this->db->exec($sql);
 
 
-
-
-
         $dn = get_object('DeliveryNote', $order->get('Order Delivery Note Key'));
 
 
@@ -1774,10 +1768,6 @@ class Invoice extends DB_Table {
 
             )
         );
-
-
-
-
 
 
         if ($this->data['Invoice Type'] == 'Refund') {
@@ -1814,12 +1804,9 @@ class Invoice extends DB_Table {
             mysql_query($sql);
 
 
+        } else {
+            $order->update(array('Order State' => 'Invoice Deleted'), 'no_history');
         }
-        else{
-            $order->update(array('Order State' => 'Invoice Deleted'),'no_history');
-        }
-
-
 
 
         include_once 'utils/new_fork.php';
@@ -1839,13 +1826,13 @@ class Invoice extends DB_Table {
         $this->deleted = true;
 
 
-        return sprintf('/orders/%d/%d',$order->get('Store Key'),$order->id);
+        return sprintf('/orders/%d/%d', $order->get('Store Key'), $order->id);
 
     }
 
     function get($key) {
 
-        if(!$this->id){
+        if (!$this->id) {
             return false;
         }
 
