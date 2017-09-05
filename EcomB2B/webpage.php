@@ -12,19 +12,19 @@
 
 
 $webpage = new Public_Webpage($webpage_key);
-if($webpage->id) {
+if ($webpage->id) {
 
 
-    $content = $webpage->get('Content Data');
-    $content_data =$content;
+    $content      = $webpage->get('Content Data');
+    $content_data = $content;
 
 
-    if($webpage->get('Webpage State')=='Offline'){
+    if ($webpage->get('Webpage State') == 'Offline') {
 
 
-        if($webpage->get('Webpage Redirection Code')!=''){
-            $redirection_webpage=$website->get_webpage($webpage->get('Webpage Redirection Code'));
-            if($redirection_webpage->id and $redirection_webpage->get('Webpage State')=='Online'){
+        if ($webpage->get('Webpage Redirection Code') != '') {
+            $redirection_webpage = $website->get_webpage($webpage->get('Webpage Redirection Code'));
+            if ($redirection_webpage->id and $redirection_webpage->get('Webpage State') == 'Online') {
                 header("HTTP/1.1 301 Moved Permanently");
                 header("Location: /".strtolower($redirection_webpage->get('Webpage Code')));
                 exit();
@@ -34,12 +34,11 @@ if($webpage->id) {
 
         }
 
-        $offline_webpage=$website->get_webpage('offline.sys');
-        $content =$offline_webpage->get('Content Data');
-        $template = $theme.'/offline.'.$theme.'.'.$website->get('Website Type').$template_suffix.'.tpl';
+        $offline_webpage = $website->get_webpage('offline.sys');
+        $content         = $offline_webpage->get('Content Data');
+        $template        = $theme.'/offline.'.$theme.'.'.$website->get('Website Type').$template_suffix.'.tpl';
 
-    }
-    elseif ($webpage->get('Webpage Template Filename') == 'register') {
+    } elseif ($webpage->get('Webpage Template Filename') == 'register') {
 
         if ($logged_in) {
             header('Location: /index.php');
@@ -72,8 +71,38 @@ if($webpage->id) {
         $smarty->assign('selected_country', $country_code);
         $template = $theme.'/register.'.$theme.'.'.$website->get('Website Type').$template_suffix.'.tpl';
 
-    }
-    elseif ($webpage->get('Webpage Template Filename') == 'login') {
+    } elseif ($webpage->get('Webpage Template Filename') == 'login') {
+
+        $redirect = '';
+        if (!empty($_SERVER['HTTP_REFERER'])) {
+            $requestsSource = $_SERVER['HTTP_REFERER'];
+
+            if (empty($_SERVER['SCRIPT_URI'])) {
+                $myDomain = 'http://'.$_SERVER['HTTP_HOST'].'/'.$_SERVER['REQUEST_URI'];
+            } else {
+                $myDomain = $_SERVER['SCRIPT_URI'];
+
+            }
+
+            if (parse_url($myDomain, PHP_URL_HOST) === parse_url($requestsSource, PHP_URL_HOST)) {
+                $redirect = $requestsSource;
+            }
+
+        }
+
+        if(!empty($_REQUEST['ref'])){
+            if($_REQUEST['ref']=='basket'){
+                $redirect='basket.sys';
+            }elseif($_REQUEST['ref']=='profile'){
+                $redirect='profile.sys';
+
+            }
+
+        }
+
+        $smarty->assign('redirect', $redirect);
+
+
 
         if ($logged_in) {
             header('Location: /index.php');
@@ -88,8 +117,7 @@ if($webpage->id) {
 
 
         $template = $theme.'/login.'.$theme.'.'.$website->get('Website Type').$template_suffix.'.tpl';
-    }
-    elseif ($webpage->get('Webpage Template Filename') == 'search') {
+    } elseif ($webpage->get('Webpage Template Filename') == 'search') {
 
         if (!empty($_REQUEST['q'])) {
             $search_query = $_REQUEST['q'];
@@ -118,11 +146,6 @@ if($webpage->id) {
         $smarty->assign('category', $category);
 
 
-
-
-
-
-
         $template = $theme.'/categories_showcase.'.$theme.'.'.$website->get('Website Type').$template_suffix.'.tpl';
     } elseif ($webpage->get('Webpage Template Filename') == 'products_showcase') {
 
@@ -130,15 +153,11 @@ if($webpage->id) {
         include_once 'class.Public_Product.php';
 
 
-
-
-
-
         $category = new Public_Category($webpage->get('Webpage Scope Key'));
 
 
-        $parent=false;
-        foreach ($category->get_parent_categories('data') as $parent){
+        $parent = false;
+        foreach ($category->get_parent_categories('data') as $parent) {
             break;
         }
         $smarty->assign('parent', $parent);
@@ -151,10 +170,7 @@ if($webpage->id) {
         }
 
 
-
-
         ksort($panels);
-
 
 
         $products = array();
@@ -345,12 +361,8 @@ if($webpage->id) {
         }
 
 
-
-
         $smarty->assign('products', $products);
         $smarty->assign('related_products', $related_products);
-
-
 
 
         $smarty->assign('content_data', $content_data);
@@ -397,9 +409,6 @@ if($webpage->id) {
         $smarty->assign('has_properties_tab', $has_properties_tab);
 
 
-
-
-
         $template = $theme.'/product.'.$theme.'.'.$website->get('Website Type').$template_suffix.'.tpl';
 
 
@@ -440,9 +449,10 @@ if($webpage->id) {
     } elseif ($webpage->get('Webpage Template Filename') == 'profile') {
 
         if (!$logged_in) {
-            header('Location: /index.php');
+            header('Location: /login.sys?ref=profile');
             exit;
         }
+
 
         require_once 'utils/get_addressing.php';
         require_once 'utils/get_countries.php';
@@ -475,7 +485,6 @@ if($webpage->id) {
 
 
     } else {
-
 
 
         if ($webpage->get('Webpage Code') == 'thanks.sys') {
@@ -517,13 +526,12 @@ if($webpage->id) {
 
                 if (isset($content['blocks'][$block_key]['_text'])) {
 
-                    $text=$content['blocks'][$block_key]['_text'];
+                    $text = $content['blocks'][$block_key]['_text'];
 
-                    if($detected_device=='mobile'){
-                        $text=str_replace('<br/>','',$text);
-                        $text=str_replace('<br>','',$text);
-                        $text=str_replace('<p></p>','',$text);
-
+                    if ($detected_device == 'mobile') {
+                        $text = str_replace('<br/>', '', $text);
+                        $text = str_replace('<br>', '', $text);
+                        $text = str_replace('<p></p>', '', $text);
 
 
                     }
@@ -535,8 +543,14 @@ if($webpage->id) {
             }
 
 
-        }
-        elseif ($webpage->get('Webpage Code') == 'basket.sys') {
+        } elseif ($webpage->get('Webpage Code') == 'basket.sys') {
+
+
+            if (!$logged_in) {
+                header('Location: /login.sys?ref=basket');
+                exit;
+            }
+
 
 
             if (isset($order) and $order->id) {
@@ -579,13 +593,10 @@ if($webpage->id) {
         }
 
 
-
-            $template = $theme.'/webpage_blocks.'.$theme.'.'.$website->get('Website Type').$template_suffix.'.tpl';
-
+        $template = $theme.'/webpage_blocks.'.$theme.'.'.$website->get('Website Type').$template_suffix.'.tpl';
 
 
     }
-
 
 
     $smarty->assign('webpage', $webpage);
@@ -594,7 +605,7 @@ if($webpage->id) {
 
     $smarty->display($template);
 
-}else{
+} else {
     print 'error';
 
 }
