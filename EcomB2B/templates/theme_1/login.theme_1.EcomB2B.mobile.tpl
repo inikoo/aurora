@@ -230,7 +230,18 @@
 
 
                         if (data.state == '200') {
-                            window.location.replace("index.php");
+
+
+
+                                {if $redirect==''}
+                                window.location.replace("index.php");
+
+                                {else}
+                                window.location.replace("{$redirect}");
+
+                                {/if}
+
+
 
                         } else if (data.state == '400') {
                             swal("{t}Error{/t}!", data.msg, "error")
