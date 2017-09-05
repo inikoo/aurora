@@ -15,7 +15,9 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
-    <title>Epsilon 7.0</title>
+    <title>{$webpage->get('Webpage Browser Title')}</title>
+    <meta name="description" content="{$webpage->get('Webpage Meta Description')}"/>
+
     <link href="/css/sweetalert.css" rel="stylesheet">
 
     <link rel="stylesheet" type="text/css" href="/theme_1/mobile/style.css">
