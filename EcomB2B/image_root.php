@@ -10,6 +10,11 @@
 */
 
 
+
+
+
+
+
 require_once 'keyring/dns.php';
 
 $db = new PDO(

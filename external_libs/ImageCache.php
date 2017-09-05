@@ -162,7 +162,7 @@ class ImageCache {
      * @return string The source file to be referenced after compressing an image
      */
     public function cache($image, $version = "") {
-ob_start();
+        ob_start();
         if ( ! is_writable($this->cached_image_directory))
             $this->error( $this->cached_image_directory . ' must writable!');
 
@@ -314,6 +314,9 @@ ob_start();
         if ($this->link_is_broken($image_url)) {
             $this->error('Final image URL is broken');
         }
+
+
+
         return $image_url;
     }
 
@@ -382,8 +385,7 @@ ob_start();
     private function set_cached_filename() {
         $pathinfo = pathinfo($this->image_src);
 
-        print ">>".$this->cached_directory_version . basename($this->image_src) . $this->image_src_version."<<";
-        exit;
+
         $this->cached_filename = $this->cached_image_directory . '/' . md5($this->cached_directory_version . basename($this->image_src) . $this->image_src_version) . '.' . $this->file_extension;
     }
 
