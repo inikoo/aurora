@@ -16,12 +16,11 @@ require_once 'utils/object_functions.php';
 require_once 'external_libs/ImageCache.php';
 
 
-$imagecache = new ImageCache();
+$imagecache                         = new ImageCache();
 $imagecache->cached_image_directory = 'EcomB2B/server_files/cached_images/';
 
 
-
-$sql = sprintf("SELECT `Product ID` FROM `Product Dimension` where `Product ID`=29832");
+$sql = sprintf("SELECT `Product ID` FROM `Product Dimension` WHERE `Product ID`=29832");
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
         $product = get_object('Product', $row['Product ID']);
@@ -36,23 +35,24 @@ if ($result = $db->query($sql)) {
 
             $image = get_object('Image', $image_key);
 
-
-            $image->save_image_to_file('EcomB2B/server_files/tmp', $image_key.'_600_375', $image->fit_to_canvas(600, 375));
             $image_filename = 'EcomB2B/server_files/tmp/'.$image_key.'_600_375.jpeg';
 
-            $cached_image= $imagecache->cache($image_filename);
+            if (!file_exists($image_filename)) {
 
-           // print $cached_image;
+                $image->save_image_to_file('EcomB2B/server_files/tmp', $image_key.'_600_375', $image->fit_to_canvas(600, 375));
+            }
+
+            $cached_image = $imagecache->cache($image_filename);
+
+            // print $cached_image;
 
 
         }
     }
-}else {
+} else {
     print_r($error_info = $db->errorInfo());
     exit;
 }
-
-
 
 
 ?>
