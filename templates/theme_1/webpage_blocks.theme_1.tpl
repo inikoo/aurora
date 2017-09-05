@@ -282,8 +282,12 @@
                         icon: 'fa-window-restore',
                         show: ($(obj).hasClass('hide') ? 0 : 1 ),
                         height: $(obj).attr('h'),
-                        src:$(obj).find('iframe').attr('src').replace(/(^\w+:|^)\/\//, '')
+                        src:$(obj).find('iframe').attr('src').replace(/(^\w+:|^)\/\//, ''),
+                        height_mobile: $(obj).attr('h_mobile'),
+                        src_mobile:$(obj).attr('src_mobile').replace(/(^\w+:|^)\/\//, '')
                     })
+
+                    console.log($(obj))
 
                     break;
                 case 'static_banner':

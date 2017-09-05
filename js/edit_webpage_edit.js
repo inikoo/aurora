@@ -12,6 +12,7 @@ $(document).on('click', '.delete_block', function (e) {
 
     $('#edit_mode_'+key).remove()
     $('#block_label_'+key).remove()
+    $("#preview").removeClass('hide')
     $("#preview").contents().find("#block_"+key).remove()
 
 
@@ -177,6 +178,8 @@ $(document).on('click', '.slider_preview', function (e) {
 
     function edit_webpage_block_column(key) {
 
+        $("#preview").removeClass('hide')
+
         $('.edit_block').addClass('hide')
 
 
@@ -225,12 +228,43 @@ $(document).on('click', '.slider_preview', function (e) {
 
     // =============================== Iframe ======================================================
 
+
+
+
+
+$(document).on('click', '.device_type', function (e) {
+
+
+    $(this).closest('div').find('.device_type').addClass('very_discreet').removeClass('valid_save')
+ $(this).removeClass('very_discreet').addClass('valid_save')
+
+    $(this).closest('.edit_mode').find('.device_controls').addClass('hide')
+
+    if($(this).hasClass('desktop')){
+
+        $("#preview").removeClass('hide')
+
+        $(this).closest('.edit_mode').find('.device_controls.desktop').removeClass('hide')
+
+
+    }else{
+        $(this).closest('.edit_mode').find('.device_controls.mobile').removeClass('hide')
+
+        $("#preview").addClass('hide')
+    }
+
+
+
+})
+
+
+
     $(document).on('click', '.iframe_height', function (e) {
 
         $('.edit_block').addClass('hide')
         $('#iframe_height_edit_block_'+$(this).attr('key')).data('element',$(this)).removeClass('hide').offset({
             left: $(this).offset().left
-        }).find('input').focus()
+        }).find('input').focus().val($(this).attr('value')).attr('device',$(this).attr('device')).data('element',$(this))
 
 
 
@@ -241,7 +275,7 @@ $(document).on('click', '.slider_preview', function (e) {
 
     $(document).on('click', '.iframe_src', function (e) {
         $('.edit_block').addClass('hide')
-        $('#iframe_src_edit_block_'+$(this).attr('key')).data('element',$(this)).removeClass('hide').find('input').focus()
+        $('#iframe_src_edit_block_'+$(this).attr('key')).data('element',$(this)).removeClass('hide').find('input').focus().val($(this).attr('value')).attr('device',$(this).attr('device')).data('element',$(this))
     })
 
     $(document).on('click', '.apply_changes', function (e) {
@@ -254,19 +288,38 @@ $(document).on('click', '.slider_preview', function (e) {
         switch ($(this).closest('div').attr('name')){
             case 'iframe_height_edit_block':
 
-                value=parseInt($(this).prev('input').val())
+                var input=$(this).prev('input')
 
-                $(this).closest('div').data('element').html(value+'px').next('span.iframe_ratio').html((1240/value).toFixed(2))
+                value=parseInt(input.val())
 
-                $("#preview").contents().find("#block_"+$(this).closest('.edit_mode').attr('key')).attr('h',value);
-                $("#preview")[0].contentWindow.resize_banners();
+                input.data('element').attr('value',value)
+
+
+                if(input.attr('device')=='desktop'){
+                    $(this).closest('div').data('element').html(value+'px').next('span.iframe_ratio').html((1240/value).toFixed(2))
+
+                    $("#preview").contents().find("#block_"+$(this).closest('.edit_mode').attr('key')).attr('h',value);
+                    $("#preview")[0].contentWindow.resize_banners();
+                }else{
+                    $(this).closest('div').data('element').html(value+'px').next('span.iframe_ratio').html((420/value).toFixed(2))
+
+                    console.log("#block_"+$(this).closest('.edit_mode').attr('key'))
+
+                    $("#preview").contents().find("#block_"+$(this).closest('.edit_mode').attr('key')).attr('h_mobile',value);
+
+                }
+
+
 
 
                 break;
             case 'iframe_src_edit_block':
+                var input=$(this).prev('input')
 
-                var value=$(this).prev('input').val()
 
+                var value=input.val()
+
+                input.data('element').attr('value',value)
 
                 var tmp=$('<div>' + value + '</div>').find('iframe').attr('src');
 
@@ -279,12 +332,23 @@ $(document).on('click', '.slider_preview', function (e) {
 
                 }
 
-                console.log(value)
+
+
 
                 $(this).closest('div').data('element').html('https://'+ truncateWithEllipses(  value,60)   )
-                $("#preview").contents().find("#block_"+$(this).closest('.edit_mode').attr('key')).find('iframe').attr('src','https://'+value);
 
-                console.log($("#preview").contents().find("#block_"+$(this).closest('.edit_mode').attr('key')).find('iframe'))
+
+                console.log(input.attr('device'))
+
+                if(input.attr('device')=='desktop') {
+
+                    $("#preview").contents().find("#block_" + $(this).closest('.edit_mode').attr('key')).find('iframe').attr('src', 'https://' + value);
+                }else{
+
+                    $("#preview").contents().find("#block_"+$(this).closest('.edit_mode').attr('key')).attr('src_mobile', 'https://' + value);
+
+
+                }
 
                 break;
 
