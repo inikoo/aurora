@@ -85,6 +85,11 @@ function get_object($object_name, $key, $load_other_data = false) {
 
             $object = new Website_User($key);
             break;
+        case 'image':
+            include_once 'class.Image.php';
+            $object = new Image($key);
+            break;
+
         case 'old_page':
         case 'page':
         case 'webpage':
