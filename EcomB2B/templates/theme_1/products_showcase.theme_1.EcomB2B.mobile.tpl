@@ -16,7 +16,7 @@
 
 
         <div id="page-content-scroll" class="header-clear"><!--Enables this element to be scrolled -->
-            <div class="menu-bar menu-bar-text">
+            <div class="menu-bar menu-bar-text" style="margin-bottom:5px">
                 <a href="{$parent.code|strtolower}" class="menu-bar-text-1"><i class="fa fa-arrow-up"></i><em style="position: relative;left:-4px">{$parent.label|truncate:8:"."}</em></a>
                 <span class="menu-bar-title" style="position: relative;left:100px">{$category->get('Label')}</span>
             </div>
@@ -39,7 +39,7 @@
 
                 <div class="asset_description   fr-view">
 
-
+<div class="asset_description_wrap" >
                         {foreach from=$content_data.description_block.blocks key=id item=data name=foo}
 
 
@@ -50,11 +50,21 @@
 
                     {/if}
                     {/foreach}
+</div>
+
+
+
+
+
+
+
+                    <div class="clear"></div>
+                    <div class="decoration-zig-zag decoration-margins"></div>
+
+
+                    <p class="read-more"><span class="show_all fa-stack "><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-arrow-down fa-stack-1x fa-inverse"></i></span>
 
                     </p>
-
-                <div class="clear"></div>
-                    <div class="decoration-zig-zag decoration-margins"></div>
 
                 </div>
 

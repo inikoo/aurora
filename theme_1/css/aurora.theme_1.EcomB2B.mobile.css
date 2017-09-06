@@ -13,6 +13,30 @@
 	color:#555;
 	line-height: 140%;
 
+	max-height: 300px;
+	position: relative;
+	overflow: hidden;
+margin-bottom:30px;
+
+}
+
+.asset_description .read-more {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	text-align: right;
+	margin: 0;
+	padding: 15px 0;
+
+
+	/* "transparent" only works here because == rgba(0,0,0,0) */
+	background-image: linear-gradient(to bottom, transparent, white);
+}
+
+.asset_description .read-more span{
+	position: relative;
+left:-20px;
 }
 
 .asset_description p{
