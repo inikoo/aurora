@@ -36,6 +36,29 @@
             {/if}
 
             <div class="content">
+
+                <div class="asset_description   fr-view">
+
+
+                        {foreach from=$content_data.description_block.blocks key=id item=data name=foo}
+
+
+                        {if $data.type=='text' and $data.content!=''}
+                        <p >{$data.content}</p>
+                    {elseif $data.type=='image'}
+                        <img  src="{$data.image_src}" style="width:40%;;{if $smarty.foreach.foo.iteration%2} float:left;margin-right:15px;{else}float:right;margin-left:15px;{/if}" title="{if isset($data.caption)}{$data.caption}{/if}"/>
+
+                    {/if}
+                    {/foreach}
+
+                    </p>
+
+                <div class="clear"></div>
+                    <div class="decoration-zig-zag decoration-margins"></div>
+
+                </div>
+
+
             {foreach from=$products item=product_data key=stack_index}
 
 
