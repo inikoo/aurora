@@ -185,7 +185,7 @@ class ImageCache {
             $this->cached_filesize = filesize($this->cached_filename);
             if ($this->src_filesize < $this->cached_filesize) {
                 ob_end_clean();
-                return $this->docroot_to_url($this->image_src);
+                return $this->docroot_to_url();
             }
             ob_end_clean();
             return $this->docroot_to_url();
@@ -199,7 +199,7 @@ class ImageCache {
         $this->cached_filesize = filesize($this->cached_filename);
         if ($this->src_filesize < $this->cached_filesize) {
             ob_end_clean();
-            return $this->docroot_to_url($this->image_src);
+            return $this->docroot_to_url();
         }
         ob_end_clean();
         return $this->docroot_to_url();
@@ -307,14 +307,16 @@ class ImageCache {
         }
         if (empty($this->cached_image_url)) {
             $image_path = str_replace($_SERVER['DOCUMENT_ROOT'], '', $src);
-            $image_url =  $_SERVER['REQUEST_SCHEME']."://" . $_SERVER['HTTP_HOST'].'/' . substr($image_path, 1);
+            $image_url =  $_SERVER['REQUEST_SCHEME']."://" . $_SERVER['HTTP_HOST'].'/' . $image_path;
+
+
+
         } else {
             $image_url = $this->cached_image_url . "/" . basename($src);
         }
         if ($this->link_is_broken($image_url)) {
             $this->error('Final image URL is broken');
         }
-
 
 
         return $image_url;
@@ -410,6 +412,10 @@ class ImageCache {
   
     
         $image_type = exif_imagetype($this->image_src);
+
+
+
+
         if (!$image_type)
             $this->error('The file you supplied isn\'t a valid image.');
         $this->file_mime_type = image_type_to_mime_type($image_type);

@@ -592,12 +592,10 @@ trait ProductCategory {
             //  print_r($elements_status_numbers);
 
             if ($elements_status_numbers['Discontinued'] > 0 and $elements_status_numbers['Active'] == 0 and $elements_status_numbers['Discontinuing'] == 0 and $elements_status_numbers['In Process']
-                == 0 and $elements_status_numbers['Suspended'] == 0
-            ) {
+                == 0 and $elements_status_numbers['Suspended'] == 0) {
                 $category_status = 'Discontinued';
             } elseif ($elements_status_numbers['Suspended'] > 0 and $elements_status_numbers['Active'] == 0 and $elements_status_numbers['Discontinuing'] == 0
-                and $elements_status_numbers['In Process'] == 0
-            ) {
+                and $elements_status_numbers['In Process'] == 0) {
                 $category_status = 'Suspended';
             } elseif ($elements_status_numbers['Discontinuing'] > 0 and $elements_status_numbers['Active'] == 0 and $elements_status_numbers['In Process'] == 0) {
                 $category_status = 'Discontinuing';
@@ -1016,7 +1014,6 @@ trait ProductCategory {
             $this->db->exec($sql);
 
 
-
             if ($this->webpage->get('Webpage State') == 'InProcess') {
                 $state = "'Online','InProcess','Out of Stock '";
             } else {
@@ -1028,18 +1025,17 @@ trait ProductCategory {
                     FROM `Category Bridge` B  
                     LEFT JOIN `Product Dimension` P ON (`Subject Key`=P.`Product ID`)  
                     LEFT JOIN `Page Store Dimension` W ON (W.`Page Key`=P.`Product Webpage Key`)   
-                        WHERE  `Category Key`=%d    AND `Product Public`='Yes' AND   `Webpage State` IN (%s)   ORDER BY `Product Code File As`",
-                $this->id,$state
+                        WHERE  `Category Key`=%d    AND `Product Public`='Yes' AND   `Webpage State` IN (%s)   ORDER BY `Product Code File As`", $this->id, $state
             );
 
 
             include_once 'class.Image.php';
 
-            $stack=0;
+            $stack = 0;
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
 
-                    $product=new Product($row['Product ID']);
+                    $product = new Product($row['Product ID']);
 
                     /*
 
@@ -1061,33 +1057,34 @@ trait ProductCategory {
                     */
 
 
+                    $image = new Image($product->get('Product Main Image Key'));
 
+                    $_image_filename = uniqid('tmp_ftc_image_');
 
-                    $image=new Image($product->get('Product Main Image Key'));
+                    $image->save_image_to_file('server_files/tmp', $_image_filename, $image->fit_to_canvas(375, 275));
 
-                    $_image_filename=uniqid('tmp_ftc_image_');
-
-                    $image->save_image_to_file('server_files/tmp',$_image_filename,$image->fit_to_canvas(375,275));
-
-                    $image_filename='server_files/tmp/'.$_image_filename.'.jpeg';
-                    $image_data=array(
-                        'Upload Data'=>array('tmp_name'=>$image_filename,'type'=>'image/jpeg'),
-                        'Image Filename'=>$image->get('Image Filename'),
-                        'Image Subject Object Image Scope'=>'Item'
+                    $image_filename = 'server_files/tmp/'.$_image_filename.'.jpeg';
+                    $image_data     = array(
+                        'Upload Data'                      => array(
+                            'tmp_name' => $image_filename,
+                            'type'     => 'image/jpeg'
+                        ),
+                        'Image Filename'                   => $image->get('Image Filename'),
+                        'Image Subject Object Image Scope' => 'Item'
 
                     );
 
-                   // print_r($image_data);
-                    $image=$this->webpage->add_image($image_data);
+                    // print_r($image_data);
+                    $image = $this->webpage->add_image($image_data);
 
-                    if(!$image){
+                    if (!$image) {
                         print_r($this->webpage->msg);
                         exit;
                     }
 
-                  //  print "========";
+                    //  print "========";
 
-                   // print_r($image);
+                    // print_r($image);
 
 
                     $image_375x250 = '/image_root.php?id='.$image->id;
@@ -1095,32 +1092,29 @@ trait ProductCategory {
                     unlink($image_filename);
 
                     $_data = array(
-                        'code'   => $product->get('Code'),
-                        'label'   => $product->get('Name'),
-                        'hover_code'   => $product->get('Code'),
+                        'code'          => $product->get('Code'),
+                        'label'         => $product->get('Name'),
+                        'hover_code'    => $product->get('Code'),
                         'hover_label'   => $product->get('Name'),
                         'image_375x250' => $image_375x250,
 
 
-                        'product_id' => $product->id,
-                        'webpage_key'=> $row['Product Webpage Key'],
-                        'tags'=>'',
-                        'guest'=>false,
+                        'product_id'  => $product->id,
+                        'webpage_key' => $row['Product Webpage Key'],
+                        'tags'        => '',
+                        'guest'       => false,
 
 
                     );
 
-                   // print_r($_data);
+                    // print_r($_data);
 
 
-                        $sql = sprintf(
-                            'INSERT INTO `Product Category Index` (`Product Category Index Category Key`,`Product Category Index Product ID`,`Product Category Index Website Key`,`Product Category Index Product Webpage Key`,`Product Category Index Content Data`,`Product Category Index Stack`) VALUES (%d,%d,%d,%d,%s,%d) ',
-                            $this->id, $row['Product ID'], $this->webpage->id,$row['Product Webpage Key'], prepare_mysql(json_encode($_data)),$stack
-                        );
-                        $this->db->exec($sql);
-
-
-
+                    $sql = sprintf(
+                        'INSERT INTO `Product Category Index` (`Product Category Index Category Key`,`Product Category Index Product ID`,`Product Category Index Website Key`,`Product Category Index Product Webpage Key`,`Product Category Index Content Data`,`Product Category Index Stack`) VALUES (%d,%d,%d,%d,%s,%d) ',
+                        $this->id, $row['Product ID'], $this->webpage->id, $row['Product Webpage Key'], prepare_mysql(json_encode($_data)), $stack
+                    );
+                    $this->db->exec($sql);
 
 
                 }
@@ -1131,12 +1125,8 @@ trait ProductCategory {
             }
 
 
-
-
-
         } else {
             if ($this->get('Category Subject') == 'Category') {
-
 
 
                 include_once 'class.Public_Webpage.php';
@@ -1168,26 +1158,21 @@ trait ProductCategory {
                         LEFT JOIN `Category Dimension` CAT ON (B.`Subject Key`=CAT.`Category Key`)  
                         LEFT JOIN `Product Category Dimension` P ON (B.`Subject Key`=P.`Product Category Key`) 
                         LEFT JOIN `Page Store Dimension` W ON (W.`Page Key`=P.`Product Category Webpage Key`)   
-                        WHERE B.`Category Key`=%d AND  `Product Category Public`='Yes'  AND   `Webpage State` IN (%s)   ORDER BY  `Category Code`  ",
-                    $this->id,$state
+                        WHERE B.`Category Key`=%d AND  `Product Category Public`='Yes'  AND   `Webpage State` IN (%s)   ORDER BY  `Category Code`  ", $this->id, $state
                 );
 
-               $stack=0;
+                $stack = 0;
 
                 if ($result = $this->db->query($sql)) {
                     foreach ($result as $row) {
 
 
-
                         $subject = new Category($row['Subject Key']);
-
-
-
 
 
                         if ($row['Product Category Webpage Key']) {
 
-                            $image_375x250     = '';
+                            $image_375x250      = '';
                             $images_slides_show = $subject->get_images_slidesshow();
 
                             foreach ($images_slides_show as $image_data) {
@@ -1203,22 +1188,22 @@ trait ProductCategory {
                             }
 
                             $_data = array(
-                                'code'   => $subject->get('Code'),
-                                'label'   => $subject->get('Label'),
-                                'hover_code'   => $subject->get('Code'),
+                                'code'          => $subject->get('Code'),
+                                'label'         => $subject->get('Label'),
+                                'hover_code'    => $subject->get('Code'),
                                 'hover_label'   => $subject->get('Label'),
                                 'image_375x250' => $image_375x250,
-                                'category_key' => $subject->id,
-                                'webpage_key'=> $row['Product Category Webpage Key'],
-                                'tags'=>'',
-                                'guest'=>false,
+                                'category_key'  => $subject->id,
+                                'webpage_key'   => $row['Product Category Webpage Key'],
+                                'tags'          => '',
+                                'guest'         => false,
 
 
                             );
 
                             $sql = sprintf(
                                 'INSERT INTO `Category Webpage Index` (`Category Webpage Index Section Key`,`Category Webpage Index Content Data`,`Category Webpage Index Parent Category Key`,`Category Webpage Index Category Key`,`Category Webpage Index Webpage Key`,`Category Webpage Index Category Webpage Key`,`Category Webpage Index Stack`) VALUES (%d,%s,%d,%d,%d,%d,%d) ',
-                                $anchor_section_key, prepare_mysql(json_encode($_data)), $this->id, $row['Subject Key'], $this->webpage->id,$row['Product Category Webpage Key'],$stack
+                                $anchor_section_key, prepare_mysql(json_encode($_data)), $this->id, $row['Subject Key'], $this->webpage->id, $row['Product Category Webpage Key'], $stack
                             );
 
 
@@ -1241,7 +1226,6 @@ trait ProductCategory {
 
 
     }
-
 
 
     function create_stack_index($force_reindex = false) {
@@ -1321,8 +1305,7 @@ trait ProductCategory {
             }
 
 
-        }
-        elseif ($this->get('Category Subject') == 'Category') {
+        } elseif ($this->get('Category Subject') == 'Category') {
 
 
             include_once 'class.Public_Webpage.php';
@@ -1360,7 +1343,7 @@ trait ProductCategory {
 
 
             $sql = sprintf(
-                "SELECT `Category Webpage Index Webpage Key`,`Category Code`,`Subject Key`,`Category Webpage Index Content Data`,`Category Webpage Index Key`,`Category Webpage Index Category Key`,`Category Webpage Index Stack`  
+                "SELECT `Category Main Image Key`,`Category Webpage Index Webpage Key`,`Category Code`,`Subject Key`,`Category Webpage Index Content Data`,`Category Webpage Index Key`,`Category Webpage Index Category Key`,`Category Webpage Index Stack`  
             FROM `Category Bridge` B LEFT JOIN `Category Dimension` CAT ON (B.`Subject Key`=CAT.`Category Key`)  LEFT JOIN 
             `Product Category Dimension` P ON (B.`Subject Key`=P.`Product Category Key`)   
             LEFT JOIN `Category Webpage Index` ON (`Category Webpage Index Category Key`=`Subject Key`  AND `Category Webpage Index Webpage Key`=%d )  
@@ -1369,11 +1352,8 @@ trait ProductCategory {
             );
 
 
-
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
-
-
 
 
                     if ($row['Category Webpage Index Category Key'] == '') {
@@ -1399,16 +1379,48 @@ trait ProductCategory {
                                     $image_375x250 = '/image_root.php?id='.$image_data['id'];
                                 }
                             }
+/*
+
+                            require_once 'external_libs/ImageCache.php';
+                            $imagecache                         = new ImageCache();
+                            $imagecache->cached_image_directory = 'EcomB2B/server_files/cached_images/';
+
+
+                            $image_key = $row['Category Main Image Key'];
+
+                            $_size_image_product_webpage = '320_200';
+
+                            if ($image_key) {
+
+                                if (file_exists('EcomB2B/server_files/cached_images/'.md5($image_key.'_'.$_size_image_product_webpage.'.jpeg').'.jpeg')) {
+                                    $image_mobile_website = 'server_files/cached_images/'.md5($image_key.'_'.$_size_image_product_webpage.'.jpeg').'.jpeg';
+                                } else {
+                                    $image          = get_object('Image', $image_key);
+                                    $image_filename = 'EcomB2B/server_files/tmp/'.$image_key.'_'.$_size_image_product_webpage.'.jpeg';
+
+                                    if (!file_exists($image_filename)) {
+                                        $image->save_image_to_file('EcomB2B/server_files/tmp', $image_key.'_'.$_size_image_product_webpage, $image->fit_to_canvas(320, 200), 'jpeg');
+                                    }
+                                    $image_mobile_website = $imagecache->cache($image_filename);
+                                    unlink($image_filename);
+                                }
+
+
+                            } else {
+                                $image_mobile_website = '/art/nopic.png';
+
+                            }
+*/
 
                             $_data = array(
-                                'category_key'  => $subject->id,
-                                'header_text'   => $subject->get('Label'),
-                                'image_375x250' => $image_375x250,
-                             //   'image_600x375' => $image_600x375,
-                                'image_src'=>$subject->get('Image'),
-                                'footer_text'   => $subject->get('Code'),
+                                'category_key'         => $subject->id,
+                                'header_text'          => $subject->get('Label'),
+                                'image_375x250'        => $image_375x250,
+                                //   'image_600x375' => $image_600x375,
+                                'image_src'            => $subject->get('Image'),
+                             //   'image_mobile_website' => $image_mobile_website,
+                                'footer_text'          => $subject->get('Code'),
                             );
-
 
 
                             $sql = sprintf(
@@ -1421,6 +1433,17 @@ trait ProductCategory {
 
 
                         }
+
+                    } else {
+                        //todo, Temporal hack can delete later when all categories has image_mobile_website
+
+
+                       // if ($row['Subject Key'] == 444) {
+
+
+
+                        //}
+
 
                     }
 
@@ -1447,7 +1470,6 @@ trait ProductCategory {
                     $this->id
 
                 );
-
 
 
                 if ($result = $this->db->query($sql)) {
@@ -1480,8 +1502,7 @@ trait ProductCategory {
             }
 
 
-
-            //print_r($content_data);
+            //  print_r($content_data);
 
             $this->webpage->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
 
@@ -1684,16 +1705,14 @@ trait ProductCategory {
     }
 
 
+    function get_deal_components($scope = 'keys', $options = 'Active') {
 
-
-    function get_deal_components($scope = 'keys',$options='Active') {
-
-        switch($options) {
+        switch ($options) {
             case 'Active':
-                $where='AND `Deal Component Status`=\'Active\'';
+                $where = 'AND `Deal Component Status`=\'Active\'';
                 break;
             default:
-                $where='';
+                $where = '';
                 break;
         }
 
@@ -1702,15 +1721,14 @@ trait ProductCategory {
 
 
         $sql = sprintf(
-            "SELECT `Deal Component Key` FROM `Deal Component Dimension` WHERE `Deal Component Allowance Target`='Category' AND `Deal Component Allowance Target Key`=%d $where",
-            $this->id
+            "SELECT `Deal Component Key` FROM `Deal Component Dimension` WHERE `Deal Component Allowance Target`='Category' AND `Deal Component Allowance Target Key`=%d $where", $this->id
         );
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
 
                 if ($scope == 'objects') {
-                    $deal_components[$row['Deal Component Key']] = get_object('DealComponent',$row['Deal Component Key']);
+                    $deal_components[$row['Deal Component Key']] = get_object('DealComponent', $row['Deal Component Key']);
                 } else {
                     $deal_components[$row['Deal Component Key']] = $row['Deal Component Key'];
                 }
@@ -1721,8 +1739,6 @@ trait ProductCategory {
             print_r($error_info = $this->db->errorInfo());
             exit;
         }
-
-
 
 
         return $deal_components;

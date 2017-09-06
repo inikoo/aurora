@@ -41,7 +41,7 @@
                     {foreach from=$section_data.items item=category_data key=key name=families}
                                 {if $category_data.type=='category'}
                                     {counter}
-                                    <div class="store-item"><a href="/{$category_data.webpage_code|lower}"><img src="{$category_data.image_src}&r=600x375" alt="img"></a><div class="single_line_height center-text " style="min-height: 32px">{$category_data.header_text|strip_tags}</div></div>
+                                    <div class="store-item"><a href="/{$category_data.webpage_code|lower}"><img src="{$category_data.image_mobile_website}" alt="{$category_data.header_text|strip_tags|escape}"></a><div class="single_line_height center-text " style="min-height: 32px">{$category_data.header_text|strip_tags}</div></div>
                                 {/if}
                     {/foreach}
                     {if $i%2==1}<div class="store-item invisible"></div>{/if}

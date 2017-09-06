@@ -37,8 +37,7 @@ switch ($tipo) {
         );
 
 
-
-        search($db, $website, $data, $smarty,$template_suffix,$order_key);
+        search($db, $website, $data, $smarty, $template_suffix, $order_key);
         break;
 
 
@@ -52,16 +51,14 @@ switch ($tipo) {
         break;
 }
 
-function search($db, $website, $data, $smarty,$template_suffix,$order_key) {
+function search($db, $website, $data, $smarty, $template_suffix, $order_key) {
 
 
-    $theme='theme_1';
-    $results = process_search($data['query'], $db, $website,$order_key);
+    $theme   = 'theme_1';
+    $results = process_search($data['query'], $db, $website, $order_key);
 
 
-
-
-    $smarty->assign('results',$results['results']);
+    $smarty->assign('results', $results['results']);
 
     $response = array(
         'state'   => 200,
@@ -72,7 +69,7 @@ function search($db, $website, $data, $smarty,$template_suffix,$order_key) {
 }
 
 
-function process_search($q, $db, $website,$order_key) {
+function process_search($q, $db, $website, $order_key) {
 
 
     $candidates  = array();
@@ -111,10 +108,10 @@ function process_search($q, $db, $website,$order_key) {
         }
 
 
-        if($order_key){
-            $ordered=sprintf('(SELECT `Order Quantity` FROM `Order Transaction Fact` WHERE `Order Key`=%d AND `Product ID`=P.`Product ID`) as ordered,',$order_key);
-        }else{
-            $ordered=' "" as ordered,';
+        if ($order_key) {
+            $ordered = sprintf('(SELECT `Order Quantity` FROM `Order Transaction Fact` WHERE `Order Key`=%d AND `Product ID`=P.`Product ID`) as ordered,', $order_key);
+        } else {
+            $ordered = ' "" as ordered,';
 
         }
 
@@ -125,10 +122,7 @@ function process_search($q, $db, $website,$order_key) {
             LEFT JOIN `Page Store Dimension` PAS ON (PAS.`Page Key`=P.`Product Webpage Key`)
 
 
-		 WHERE `Webpage Website Key`=%d AND `Product Code` LIKE %s  AND  `Webpage State`="Online" and `Product Status` in ("Active","Discontinuing")   ',
-            $ordered,
-            $website->id,
-            prepare_mysql($code_q)
+		 WHERE `Webpage Website Key`=%d AND `Product Code` LIKE %s  AND  `Webpage State`="Online" AND `Product Status` IN ("Active","Discontinuing")   ', $ordered, $website->id, prepare_mysql($code_q)
         );
 
 
@@ -136,13 +130,18 @@ function process_search($q, $db, $website,$order_key) {
             foreach ($result as $row) {
 
 
-
-
                 if ($row['Product Main Image Key'] > 0) {
                     $image = sprintf('image_root.php?size=small&id=%d', $row['Product Main Image Key']);
+
+                    $image_mobile = get_image_mobile($row['Product Main Image Key']);
+
+
                 } else {
-                    $image = 'art/nopic.png';
+                    $image        = 'art/nopic.png';
+                    $image_mobile = 'art/nopic.png';
+
                 }
+
 
                 if ($row['Product Web State'] == 'Out of Stock') {
                     $score_match_product_code = 0.7 * $score_match_product_code;
@@ -152,17 +151,18 @@ function process_search($q, $db, $website,$order_key) {
                 $candidates[$row['Page Key']]                = array();
                 $candidates[$row['Page Key']]['webpage_key'] = $row['Page Key'];
 
-                $candidates[$row['Page Key']]['scope']             = 'Product';
-                $candidates[$row['Page Key']]['image']             = $image;
-                $candidates[$row['Page Key']]['score']             = $score_match_product_code;
-                $candidates[$row['Page Key']]['url']               = '/'.strtolower($row['Webpage Code']);
-                $candidates[$row['Page Key']]['title']             = $row['Webpage Name'];
-                $candidates[$row['Page Key']]['key']             =  $row['Product ID'];
-                $candidates[$row['Page Key']]['ordered']             =  $row['ordered'];
+                $candidates[$row['Page Key']]['scope']        = 'Product';
+                $candidates[$row['Page Key']]['image']        = $image;
+                $candidates[$row['Page Key']]['image_mobile'] = $image_mobile;
+                $candidates[$row['Page Key']]['score']        = $score_match_product_code;
+                $candidates[$row['Page Key']]['url']          = '/'.strtolower($row['Webpage Code']);
+                $candidates[$row['Page Key']]['title']        = $row['Webpage Name'];
+                $candidates[$row['Page Key']]['key']          = $row['Product ID'];
+                $candidates[$row['Page Key']]['ordered']      = $row['ordered'];
 
-                $candidates[$row['Page Key']]['code']             = $row['Product Code'];
-                $candidates[$row['Page Key']]['name']             = $row['Product Units Per Case'].'x '.$row['Product Name'];
-                $candidates[$row['Page Key']]['price']             = money($row['Product Price'],$row['Product Currency']);
+                $candidates[$row['Page Key']]['code']  = $row['Product Code'];
+                $candidates[$row['Page Key']]['name']  = $row['Product Units Per Case'].'x '.$row['Product Name'];
+                $candidates[$row['Page Key']]['price'] = money($row['Product Price'], $row['Product Currency']);
 
                 $candidates[$row['Page Key']]['description']       = $row['Webpage Meta Description'];
                 $candidates[$row['Page Key']]['asset_description'] = '<span class="code">'.$row['Product Code'].'</span> '.$row['Product Name'];
@@ -186,12 +186,16 @@ function process_search($q, $db, $website,$order_key) {
         if ($result = $db->query($sql)) {
             foreach ($result as $row) {
 
-             //   print_r($row);
+                //   print_r($row);
 
                 if ($row['Category Main Image Key'] > 0) {
-                    $image = sprintf('image_root.php?size=small&id=%d', $row['Category Main Image Key']);
+                    $image        = sprintf('image_root.php?size=small&id=%d', $row['Category Main Image Key']);
+                    $image_mobile = get_image_mobile($row['Category Main Image Key']);
+
                 } else {
-                    $image = 'art/nopic.png';
+                    $image        = 'art/nopic.png';
+                    $image_mobile = 'art/nopic.png';
+
                 }
 
 
@@ -203,16 +207,17 @@ function process_search($q, $db, $website,$order_key) {
                     $candidates[$row['Page Key']]['scope']       = 'Category';
                     $candidates[$row['Page Key']]['webpage_key'] = $row['Page Key'];
 
+                    $candidates[$row['Page Key']]['image_mobile'] = $image_mobile;
 
-                    $candidates[$row['Page Key']]['image']             = $image;
-                    $candidates[$row['Page Key']]['score']             = $score_match_family_code;
-                    $page_scores[$row['Page Key']]                     = $score_match_family_code;
-                    $candidates[$row['Page Key']]['url']               = '/'.strtolower($row['Webpage Code']);
-                    $candidates[$row['Page Key']]['title']             = $row['Webpage Name'];
-                    $candidates[$row['Page Key']]['key']             = '';
+                    $candidates[$row['Page Key']]['image'] = $image;
+                    $candidates[$row['Page Key']]['score'] = $score_match_family_code;
+                    $page_scores[$row['Page Key']]         = $score_match_family_code;
+                    $candidates[$row['Page Key']]['url']   = '/'.strtolower($row['Webpage Code']);
+                    $candidates[$row['Page Key']]['title'] = $row['Webpage Name'];
+                    $candidates[$row['Page Key']]['key']   = '';
 
-                    $candidates[$row['Page Key']]['code']             = $row['Category Code'];
-                    $candidates[$row['Page Key']]['name']             = $row['Category Label'];
+                    $candidates[$row['Page Key']]['code'] = $row['Category Code'];
+                    $candidates[$row['Page Key']]['name'] = $row['Category Label'];
 
                     $candidates[$row['Page Key']]['description']       = $row['Webpage Meta Description'];
                     $candidates[$row['Page Key']]['asset_description'] = '<span class="code">'.$row['Category Code'].'</span> '.$row['Category Label'];
@@ -227,10 +232,10 @@ function process_search($q, $db, $website,$order_key) {
 
         if (strlen($_q) > 2) {
 
-            if($order_key){
-                $ordered=sprintf('(SELECT `Order Quantity` FROM `Order Transaction Fact` WHERE `Order Key`=%d AND `Product ID`=P.`Product ID`) as ordered,',$order_key);
-            }else{
-                $ordered=' "" as ordered,';
+            if ($order_key) {
+                $ordered = sprintf('(SELECT `Order Quantity` FROM `Order Transaction Fact` WHERE `Order Key`=%d AND `Product ID`=P.`Product ID`) as ordered,', $order_key);
+            } else {
+                $ordered = ' "" as ordered,';
 
             }
 
@@ -239,38 +244,40 @@ function process_search($q, $db, $website,$order_key) {
      FROM  `Product Dimension` P  LEFT JOIN `Page Store Dimension` PAS ON (PAS.`Page Key`=P.`Product Webpage Key`)
 
 
-		 WHERE `Webpage Website Key`=%d AND `Product Name`  REGEXP \'[[:<:]]%s\'   AND  `Webpage State`="Online"   and `Product Status` in ("Active","Discontinuing")  ',
-                $ordered,
-                $website->id,
-                $_q
+		 WHERE `Webpage Website Key`=%d AND `Product Name`  REGEXP \'[[:<:]]%s\'   AND  `Webpage State`="Online"   AND `Product Status` IN ("Active","Discontinuing")  ', $ordered, $website->id, $_q
             );
 
 
             if ($result = $db->query($sql)) {
                 foreach ($result as $row) {
                     if ($row['Product Main Image Key'] > 0) {
-                        $image = sprintf('image_root.php?size=small&id=%d', $row['Product Main Image Key']);
+                        $image        = sprintf('image_root.php?size=small&id=%d', $row['Product Main Image Key']);
+                        $image_mobile = get_image_mobile($row['Product Main Image Key']);
+
                     } else {
-                        $image = 'art/nopic.png';
+                        $image        = 'art/nopic.png';
+                        $image_mobile = 'art/nopic.png';
+
                     }
 
                     if ($row['Product Web State'] == 'Out of Stock') {
                         $score_match_product_code = 0.7 * $score_match_product_code;
                     }
 
-                    $page_scores[$row['Page Key']]               = $score_match_product_code;
-                    $candidates[$row['Page Key']]                = array();
-                    $candidates[$row['Page Key']]['webpage_key'] = $row['Page Key'];
+                    $page_scores[$row['Page Key']]                = $score_match_product_code;
+                    $candidates[$row['Page Key']]                 = array();
+                    $candidates[$row['Page Key']]['webpage_key']  = $row['Page Key'];
+                    $candidates[$row['Page Key']]['image_mobile'] = $image_mobile;
 
-                    $candidates[$row['Page Key']]['scope']             = 'Product';
-                    $candidates[$row['Page Key']]['image']             = $image;
-                    $candidates[$row['Page Key']]['score']             = $score_match_product_code;
-                    $candidates[$row['Page Key']]['url']               = '/'.strtolower($row['Webpage Code']);
-                    $candidates[$row['Page Key']]['key']             =  $row['Product ID'];
-                    $candidates[$row['Page Key']]['code']             = $row['Product Code'];
-                    $candidates[$row['Page Key']]['name']             = $row['Product Units Per Case'].'x '.$row['Product Name'];
-                    $candidates[$row['Page Key']]['price']             = money($row['Product Price'],$row['Product Currency']);
-                    $candidates[$row['Page Key']]['ordered']             =  $row['ordered'];
+                    $candidates[$row['Page Key']]['scope']   = 'Product';
+                    $candidates[$row['Page Key']]['image']   = $image;
+                    $candidates[$row['Page Key']]['score']   = $score_match_product_code;
+                    $candidates[$row['Page Key']]['url']     = '/'.strtolower($row['Webpage Code']);
+                    $candidates[$row['Page Key']]['key']     = $row['Product ID'];
+                    $candidates[$row['Page Key']]['code']    = $row['Product Code'];
+                    $candidates[$row['Page Key']]['name']    = $row['Product Units Per Case'].'x '.$row['Product Name'];
+                    $candidates[$row['Page Key']]['price']   = money($row['Product Price'], $row['Product Currency']);
+                    $candidates[$row['Page Key']]['ordered'] = $row['ordered'];
 
                     $candidates[$row['Page Key']]['title']             = $row['Webpage Name'];
                     $candidates[$row['Page Key']]['description']       = $row['Webpage Meta Description'];
@@ -293,15 +300,17 @@ function process_search($q, $db, $website,$order_key) {
             //print "$sql\n";
 
 
-
-
-
             if ($result = $db->query($sql)) {
                 foreach ($result as $row) {
                     if ($row['Category Main Image Key'] > 0) {
                         $image = sprintf('image_root.php?size=small&id=%d', $row['Category Main Image Key']);
+
+                        $image_mobile = get_image_mobile($row['Category Main Image Key']);
+
+
                     } else {
-                        $image = 'art/nopic.png';
+                        $image        = 'art/nopic.png';
+                        $image_mobile = 'art/nopic.png';
                     }
 
 
@@ -309,20 +318,21 @@ function process_search($q, $db, $website,$order_key) {
                         $candidates[$row['Page Key']]['score'] += $score_match_family_code;
                         $page_scores[$row['Page Key']]         += $score_match_family_code;
                     } else {
-                        $candidates[$row['Page Key']]                = array();
-                        $candidates[$row['Page Key']]['scope']       = 'Category';
-                        $candidates[$row['Page Key']]['webpage_key'] = $row['Page Key'];
+                        $candidates[$row['Page Key']]                 = array();
+                        $candidates[$row['Page Key']]['scope']        = 'Category';
+                        $candidates[$row['Page Key']]['webpage_key']  = $row['Page Key'];
+                        $candidates[$row['Page Key']]['image_mobile'] = $image_mobile;
 
 
-                        $candidates[$row['Page Key']]['image']             = $image;
-                        $candidates[$row['Page Key']]['score']             = $score_match_family_code;
-                        $page_scores[$row['Page Key']]                     = $score_match_family_code;
-                        $candidates[$row['Page Key']]['url']               = '/'.strtolower($row['Webpage Code']);
-                        $candidates[$row['Page Key']]['title']             = $row['Webpage Name'];
-                        $candidates[$row['Page Key']]['code']             = $row['Category Code'];
-                        $candidates[$row['Page Key']]['key']             = '';
+                        $candidates[$row['Page Key']]['image'] = $image;
+                        $candidates[$row['Page Key']]['score'] = $score_match_family_code;
+                        $page_scores[$row['Page Key']]         = $score_match_family_code;
+                        $candidates[$row['Page Key']]['url']   = '/'.strtolower($row['Webpage Code']);
+                        $candidates[$row['Page Key']]['title'] = $row['Webpage Name'];
+                        $candidates[$row['Page Key']]['code']  = $row['Category Code'];
+                        $candidates[$row['Page Key']]['key']   = '';
 
-                        $candidates[$row['Page Key']]['name']             = $row['Category Label'];
+                        $candidates[$row['Page Key']]['name']              = $row['Category Label'];
                         $candidates[$row['Page Key']]['description']       = $row['Webpage Meta Description'];
                         $candidates[$row['Page Key']]['asset_description'] = '<span class="code">'.$row['Category Code'].'</span> '.$row['Category Label'];
 
@@ -340,72 +350,75 @@ function process_search($q, $db, $website,$order_key) {
 
     }
 
+    /*
+        if ($number_query_words > 1 and false) {
 
-    if ($number_query_words > 1 and false) {
-
-        $q_boolean = '';
-        foreach ($array_q as $_q) {
-            $q_boolean .= "+$_q ";
-        }
-        $q_boolean = _trim($q_boolean);
-        $sql       = sprintf(
-            'SELECT
-		match (`First Search Full Text`) AGAINST  (%s IN BOOLEAN MODE) AS score,
-		PP.`Page Key` ,`Page Store Description`,`Page Store Title`,`Page URL`,`Product Main Image Key`,PP.`Product ID`,`Product Code`,`Product Name`
-		FROM `Page Product Dimension` PP
-		LEFT JOIN `Search Full Text Dimension` SFTD ON (SFTD.`Subject Key`=PP.`Product ID` AND SFTD.`Subject`="Product")
-		LEFT JOIN `Product Dimension` P ON (P.`Product ID`=PP.`Product ID`)
-		LEFT JOIN `Page Dimension` PA ON (PA.`Page Key`=PP.`Page Key`)
-		LEFT JOIN `Page Store Dimension` PAS ON (PAS.`Page Key`=PP.`Page Key`)
-		WHERE  `Site Key`=%d  AND  `Product Web State`  IN ("For Sale", "Out of Stock")  AND match (`First Search Full Text`) AGAINST  (%s IN BOOLEAN MODE) GROUP BY  PP.`Page Key`   ',
-            prepare_mysql($q_boolean), $website->id, prepare_mysql($q_boolean)
-        );
-        //print "$sql\n";
-
-        if ($result = $db->query($sql)) {
-            foreach ($result as $row) {
-                if ($row['Product Main Image Key'] > 0) {
-                    $image = sprintf('image_root.php?size=small&id=%d', $row['Product Main Image Key']);
-                } else {
-                    $image = 'art/nopic.png';
-                }
-
-                if (array_key_exists($row['Page Key'], $candidates)) {
-
-                    //print $row['Page Key']." ".$page_scores[$row['Page Key']]." +".$score_match_product_description;
-
-                    $candidates[$row['Page Key']]['score'] += $row['score'] * $number_query_words * $score_boolean_factor;
-                    $page_scores[$row['Page Key']]         += $row['score'] * $number_query_words * $score_boolean_factor;
-
-                    //print $row['Product Name']." ".$page_scores[$row['Page Key']]."\n";
-
-                } else {
-                    $candidates[$row['Page Key']]                      = array();
-                    $candidates[$row['Page Key']]['scope']             = 'Product';
-                    $candidates[$row['Page Key']]['webpage_key']       = $row['Page Key'];
-                    $candidates[$row['Page Key']]['image']             = $image;
-                    $candidates[$row['Page Key']]['score']             = $row['score'] * $number_query_words * $score_boolean_factor;
-                    $page_scores[$row['Page Key']]                     = $row['score'] * $number_query_words * $score_boolean_factor;
-                    $candidates[$row['Page Key']]['url']               = '/'.strtolower($row['Webpage Code']);
-                    $candidates[$row['Page Key']]['title']             = $row['Page Store Title'];
-                    $candidates[$row['Page Key']]['description']       = $row['Page Store Description'];
-                    $candidates[$row['Page Key']]['asset_description'] = '<span class="code">'.$row['Product Code'].'</span> '.$row['Product Name'];
-                    $candidates[$row['Page Key']]['key']             =  $row['Product ID'];
-
-                    $candidates[$row['Page Key']]['code']             = $row['Page Store Title'];
-                    $candidates[$row['Page Key']]['name']             = $row['Page Store Title'];
-
-
-                }
+            $q_boolean = '';
+            foreach ($array_q as $_q) {
+                $q_boolean .= "+$_q ";
             }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            print "$sql\n";
-            exit;
+            $q_boolean = _trim($q_boolean);
+            $sql       = sprintf(
+                'SELECT
+            match (`First Search Full Text`) AGAINST  (%s IN BOOLEAN MODE) AS score,
+            PP.`Page Key` ,`Page Store Description`,`Page Store Title`,`Page URL`,`Product Main Image Key`,PP.`Product ID`,`Product Code`,`Product Name`
+            FROM `Page Product Dimension` PP
+            LEFT JOIN `Search Full Text Dimension` SFTD ON (SFTD.`Subject Key`=PP.`Product ID` AND SFTD.`Subject`="Product")
+            LEFT JOIN `Product Dimension` P ON (P.`Product ID`=PP.`Product ID`)
+            LEFT JOIN `Page Dimension` PA ON (PA.`Page Key`=PP.`Page Key`)
+            LEFT JOIN `Page Store Dimension` PAS ON (PAS.`Page Key`=PP.`Page Key`)
+            WHERE  `Site Key`=%d  AND  `Product Web State`  IN ("For Sale", "Out of Stock")  AND match (`First Search Full Text`) AGAINST  (%s IN BOOLEAN MODE) GROUP BY  PP.`Page Key`   ',
+                prepare_mysql($q_boolean), $website->id, prepare_mysql($q_boolean)
+            );
+            //print "$sql\n";
+
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+                    if ($row['Product Main Image Key'] > 0) {
+                        $image = sprintf('image_root.php?size=small&id=%d', $row['Product Main Image Key']);
+                    } else {
+                        $image = 'art/nopic.png';
+                    }
+
+                    if (array_key_exists($row['Page Key'], $candidates)) {
+
+                        //print $row['Page Key']." ".$page_scores[$row['Page Key']]." +".$score_match_product_description;
+
+                        $candidates[$row['Page Key']]['score'] += $row['score'] * $number_query_words * $score_boolean_factor;
+                        $page_scores[$row['Page Key']]         += $row['score'] * $number_query_words * $score_boolean_factor;
+
+                        //print $row['Product Name']." ".$page_scores[$row['Page Key']]."\n";
+
+                    } else {
+                        $candidates[$row['Page Key']]                      = array();
+                        $candidates[$row['Page Key']]['scope']             = 'Product';
+                        $candidates[$row['Page Key']]['webpage_key']       = $row['Page Key'];
+                        $candidates[$row['Page Key']]['image']             = $image;
+                        $candidates[$row['Page Key']]['image_mobile']             = $image_mobile;
+
+                        $candidates[$row['Page Key']]['score']             = $row['score'] * $number_query_words * $score_boolean_factor;
+                        $page_scores[$row['Page Key']]                     = $row['score'] * $number_query_words * $score_boolean_factor;
+                        $candidates[$row['Page Key']]['url']               = '/'.strtolower($row['Webpage Code']);
+                        $candidates[$row['Page Key']]['title']             = $row['Page Store Title'];
+                        $candidates[$row['Page Key']]['description']       = $row['Page Store Description'];
+                        $candidates[$row['Page Key']]['asset_description'] = '<span class="code">'.$row['Product Code'].'</span> '.$row['Product Name'];
+                        $candidates[$row['Page Key']]['key']             =  $row['Product ID'];
+
+                        $candidates[$row['Page Key']]['code']             = $row['Page Store Title'];
+                        $candidates[$row['Page Key']]['name']             = $row['Page Store Title'];
+
+
+                    }
+                }
+            } else {
+                print_r($error_info = $db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+
+
         }
-
-
-    }
+    */
 
     /*
 
@@ -666,13 +679,50 @@ function process_search($q, $db, $website,$order_key) {
     }
 
 
-
-
     return array(
         'number_results' => $number_results,
         'results'        => $candidates,
         'did_you_mean'   => $did_you_mean
     );
+
+}
+
+function get_image_mobile($image_key) {
+
+    global $imagecache;
+
+
+    $_size_image_product_webpage = '120_120';
+
+
+    $image_format = 'jpeg';
+
+    if (file_exists('server_files/cached_images/'.md5($image_key.'_'.$_size_image_product_webpage.'.'.$image_format).'.'.$image_format)) {
+        return 'server_files/cached_images/'.md5($image_key.'_'.$_size_image_product_webpage.'.'.$image_format).'.'.$image_format;
+    } else {
+        $image = get_object('Image', $image_key);
+
+        $image_filename = 'server_files/tmp/'.$image_key.'_'.$_size_image_product_webpage.'.'.$image_format;
+
+        if (!file_exists($image_filename)) {
+
+            $_image = $image->fit_to_canvas(120, 120);
+
+            if ($image->get('Image File Format') == 'png') {
+                $image->save_image_to_file_as_jpeg('server_files/tmp', $image_key.'_'.$_size_image_product_webpage, $_image, $image_format);
+            } else {
+                $image->save_image_to_file('server_files/tmp', $image_key.'_'.$_size_image_product_webpage, $_image, $image_format);
+
+            }
+
+
+        }
+        $image_product_webpage = $imagecache->cache($image_filename);
+        unlink($image_filename);
+
+        return $image_product_webpage;
+    }
+
 
 }
 

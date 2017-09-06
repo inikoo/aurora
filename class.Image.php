@@ -523,6 +523,10 @@ class Image {
     }
 
 
+
+
+
+
     // scale the image constraining proportions (maxX and maxY)
 
     function create_small() {
@@ -624,7 +628,7 @@ class Image {
     }
 
 
-    function save_image_to_file($path, $filename = false,$im=false) {
+    function save_image_to_file($path, $filename = false,$im=false,$extension='') {
 
 
         if (!$im) {
@@ -637,12 +641,50 @@ class Image {
             $filename = $this->id;
         }
 
-        file_put_contents($path.'/'.$filename.'.'.$this->data['Image File Format'], $image_data);
+        if($extension==''){
+            $extension=$this->data['Image File Format'];
+        }
 
-        return $filename.'.'.$this->data['Image File Format'];
+
+        file_put_contents($path.'/'.$filename.'.'.$extension, $image_data);
+
+        return $filename.'.'.$extension;
 
     }
 
+
+    function save_image_to_file_as_jpeg($path, $filename = false,$im=false,$extension=''){
+
+        if($extension==''){
+            $extension=$this->data['Image File Format'];
+        }
+
+        if (!$im) {
+            $input = $this->get_image_from_file($this->data['Image File Format'], $this->data['Image Data']);
+        }else{
+            $input = $im;
+        }
+
+
+
+
+        $width=imagesx($input);
+        $height=imagesy($input);
+
+
+
+        $output = imagecreatetruecolor($width, $height);
+        $white = imagecolorallocate($output,  255, 255, 255);
+        imagefilledrectangle($output, 0, 0, $width, $height, $white);
+        imagecopy($output, $input, 0, 0, 0, 0, $width, $height);
+
+
+
+        imagejpeg($im, $path.'/'.$filename.'.'.$extension);
+
+
+
+    }
 
 
 
@@ -809,8 +851,7 @@ class Image {
             case 'Image Public':
                 if ($this->get('Subject') == 'Staff') {
                     $label = _('Employee can see file');
-                }
-                if ($this->get('Subject') == 'Product') {
+                }elseif ($this->get('Subject') == 'Product') {
                     $label = _('Customers can see');
                 } else {
                     $label = _('Public');
@@ -828,6 +869,9 @@ class Image {
             case 'Image Preview':
                 $label = _('Preview');
                 break;
+
+
+
             default:
                 $label = $field;
                 break;
