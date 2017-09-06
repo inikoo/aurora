@@ -780,14 +780,14 @@ class Public_Product {
                     //=======
 
 
-
+                    $image_format='jpeg';
 
                     $image_key = $row['Image Key'];
 
                     $_size_image_product_webpage = '600_375';
 
                     if ($image_key) {
-                        $image_format=$row['Image File Format'];
+
                         if (file_exists('server_files/cached_images/'.md5($image_key.'_'.$_size_image_product_webpage.'.'.$image_format).'.'.$image_format)) {
                             $image_product_webpage = 'server_files/cached_images/'.md5($image_key.'_'.$_size_image_product_webpage.'.'.$image_format).'.'.$image_format;
                         } else {
