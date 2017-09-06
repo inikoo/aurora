@@ -72,8 +72,8 @@
 </div>
 
 
-{assign 'see_also'  $public_product->webpage->get_see_also() }
-{assign 'css'  $public_product->webpage->get('CSS') }
+{assign 'see_also'  $public_webpage->get_see_also() }
+{assign 'css'  $public_webpage->get('CSS') }
 
 
 

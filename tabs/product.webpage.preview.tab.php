@@ -10,6 +10,7 @@
 */
 
 include_once('class.Public_Product.php');
+include_once('class.Public_Webpage.php');
 
 $logged = true;
 
@@ -33,8 +34,11 @@ if (!$webpage->id) {
 // todo migrate to new webpage & webpage version classes
 
 
-$public_product = new Public_Product($product->id);
-$public_product->load_webpage();
+$public_product = new Product($product->id);
+//$public_product->load_webpage();
+
+$public_webpage=new Public_Webpage('scope', 'Product', $product->id);
+
 $content_data = $product->webpage->get('Content Data');
 
 switch ($webpage->get('Page Store Content Template Filename')) {
@@ -67,6 +71,7 @@ switch ($webpage->get('Page Store Content Template Filename')) {
 
 
         $smarty->assign('public_product', $public_product);
+        $smarty->assign('public_webpage', $public_webpage);
 
         $origin       = $public_product->get('Origin');
         $cpnp       = $public_product->get('CPNP Number');

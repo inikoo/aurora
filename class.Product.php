@@ -3665,6 +3665,43 @@ $this->load_acc_data();
         return $category_data;
     }
 
+    function get_attachments() {
+
+        $attachments = array();
+
+
+        $sql = sprintf(
+            'SELECT `Attachment Subject Type`, `Attachment Bridge Key`,`Attachment Caption`  FROM `Product Part Bridge`  LEFT JOIN `Attachment Bridge` AB  ON (AB.`Subject Key`=`Product Part Part SKU`)    WHERE AB.`Subject`="Part" AND  `Product Part Product ID`=%d  AND `Attachment Public`="Yes" AND `Attachment Subject Type`="MSDS" ',
+            $this->id
+        );
+
+
+        if ($result2 = $this->db->query($sql)) {
+            foreach ($result2 as $row2) {
+
+                if ($row2['Attachment Subject Type'] == 'MSDS') {
+                    $label = '<span title="'._('Material safety data sheet').'">MSDS</span>';
+                } else {
+                    $label = _('Attachment');
+                }
+
+
+                $attachments[] = array(
+                    'id'    => $row2['Attachment Bridge Key'],
+                    'label' => $label,
+                    'name'  => $row2['Attachment Caption']
+                );
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        return $attachments;
+
+
+    }
 
 
 

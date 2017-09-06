@@ -9,6 +9,21 @@
 
 */
 
+.asset_description{
+	color:#8a8a8a;
+
+}
+
+.asset_description h1{
+	font-size: 120%;
+	font-weight: 800;
+	color:#000;
+	line-height: normal;
+	margin-bottom: 10px;
+
+}
+
+
 
 .profile_form header{
 	font-size: 100%;
