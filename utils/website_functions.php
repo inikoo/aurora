@@ -20,7 +20,7 @@ function get_website_section_items($db, $section_data) {
 
 
     $sql = sprintf(
-        "SELECT  `Webpage State`,`Product Category Public`,`Webpage State`,`Category Webpage Index Key`,`Page Code`,`Category Webpage Index Category Webpage Key`,`Category Webpage Index Subject Type`,`Category Webpage Index Stack`,`Product Category Active Products`,`Category Webpage Index Category Key`,`Category Code`,`Category Webpage Index Content Data`,`Category Webpage Index Key` 
+        "SELECT  `Category Main Image Key`,`Webpage State`,`Product Category Public`,`Webpage State`,`Category Webpage Index Key`,`Page Code`,`Category Webpage Index Category Webpage Key`,`Category Webpage Index Subject Type`,`Category Webpage Index Stack`,`Product Category Active Products`,`Category Webpage Index Category Key`,`Category Code`,`Category Webpage Index Content Data`,`Category Webpage Index Key` 
             FROM `Category Webpage Index` CWI
             LEFT JOIN `Product Category Dimension` P ON (`Category Webpage Index Category Key`=P.`Product Category Key`)   
             LEFT JOIN `Category Dimension` Cat ON (Cat.`Category Key`=`Category Webpage Index Category Key`)     
@@ -110,6 +110,72 @@ function get_website_section_items($db, $section_data) {
             }
 
 
+            //=======
+
+
+            require_once 'external_libs/ImageCache.php';
+            $imagecache                         = new ImageCache();
+            $imagecache->cached_image_directory = 'EcomB2B/server_files/cached_images/';
+
+
+
+
+            $image_key = $row['Category Main Image Key'];
+
+            $_size_image_product_webpage = '320_200';
+
+            if ($image_key) {
+
+                $image_format='jpeg';
+                if (file_exists('EcomB2B/server_files/cached_images/'.md5($image_key.'_'.$_size_image_product_webpage.'.'.$image_format).'.'.$image_format)) {
+                    $image_mobile_website = 'server_files/cached_images/'.md5($image_key.'_'.$_size_image_product_webpage.'.'.$image_format).'.'.$image_format;
+                } else {
+                    $image          = get_object('Image', $image_key);
+                    $image_filename = 'EcomB2B/server_files/tmp/'.$image_key.'_'.$_size_image_product_webpage.'.'.$image_format;
+
+                    if (!file_exists($image_filename)) {
+
+
+
+
+                        $_image= $image->fit_to_canvas(320, 200);
+
+
+                        if($image->get('Image File Format')=='png'){
+                            $image->save_image_to_file_as_jpeg('EcomB2B/server_files/tmp', $image_key.'_'.$_size_image_product_webpage,$_image, $image_format);
+                        }else{
+                            $image->save_image_to_file('EcomB2B/server_files/tmp', $image_key.'_'.$_size_image_product_webpage,$_image, $image_format);
+
+                        }
+
+
+
+                    }
+
+
+
+
+                        $image_mobile_website = $imagecache->cache($image_filename);
+
+
+                    unlink($image_filename);
+                }
+
+
+            } else {
+                $image_mobile_website = '/art/nopic.png';
+
+            }
+
+
+
+
+
+
+            //=======
+
+
+
             $categories[]         = array(
                 'type'                 => 'category',
                 'category_key'         => $row['Category Webpage Index Category Key'],
@@ -121,6 +187,7 @@ function get_website_section_items($db, $section_data) {
                 'header_text'          => (isset($item_content_data['header_text']) ? $item_content_data['header_text'] : ''),
                 'footer_text'          => (isset($item_content_data['footer_text']) ? $item_content_data['footer_text'] : ''),
                 'image_src'            =>(isset($item_content_data['image_src']) ? $item_content_data['image_src'] : ''),
+                'image_mobile_website'          => $image_mobile_website,
                 'category_stack_index' => $row['Category Webpage Index Stack'],
                 'item_type'            => $row['Category Webpage Index Subject Type'],
                 

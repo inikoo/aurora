@@ -46,7 +46,7 @@
 
                         {foreach from=$product->get_images_slidesshow() item=image name=foo}
                             <a href="#" class="swiper-slide store-slider-item">
-                                <img class="responsive-image no-bottom" src="/{$image.normal_url}&r=600x375" alt="img">
+                                <img class="responsive-image no-bottom" src="{$image.image_product_webpage}" alt="{$product->get('Code')|escape}">
                             </a>
                         {/foreach}
 

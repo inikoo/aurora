@@ -261,8 +261,6 @@ class Public_Product {
                     $img = '/image_root.php?size=small&id='.$image_key;
 
 
-
-
                 } else {
                     $img = '/art/nopic.png';
 
@@ -272,31 +270,46 @@ class Public_Product {
 
                 break;
 
-            case 'Image Mobile':
+            case 'Image Mobile In Family Webpage':
 
                 global $imagecache;
 
                 $image_key = $this->data['Product Main Image Key'];
 
+                $_size_image_product_webpage = '340_214';
+
                 if ($image_key) {
 
-                    if(file_exists('server_files/cached_images/'.md5($image_key.'_600_375.jpeg').'.jpeg' )){
-                        return 'server_files/cached_images/'.md5($image_key.'_600_375.jpeg').'.jpeg';
+
+                    $image_format='jpeg';
+
+                    if (file_exists('server_files/cached_images/'.md5($image_key.'_'.$_size_image_product_webpage.'.'.$image_format).'.'.$image_format)) {
+                        return 'server_files/cached_images/'.md5($image_key.'_'.$_size_image_product_webpage.'.'.$image_format).'.'.$image_format;
+                    } else {
+                        $image          = get_object('Image', $image_key);
+
+                        $image_filename = 'server_files/tmp/'.$image_key.'_'.$_size_image_product_webpage.'.'.$image_format;
+
+                        if (!file_exists($image_filename)) {
+
+                            $_image= $image->fit_to_canvas(340, 214);
+
+                            if($image->get('Image File Format')=='png'){
+                                $image->save_image_to_file_as_jpeg('server_files/tmp', $image_key.'_'.$_size_image_product_webpage,$_image, $image_format);
+                            }else{
+                                $image->save_image_to_file('server_files/tmp', $image_key.'_'.$_size_image_product_webpage,$_image, $image_format);
+
+                            }
+
+
+
+                        }
+                        $image_product_webpage = $imagecache->cache($image_filename);
+                        unlink($image_filename);
+                        return $image_product_webpage;
                     }
 
-                    $image=get_object('Image', $image_key);
-                    $image_filename='server_files/tmp/'.$image_key.'_600_375.jpeg';
 
-                    if (!file_exists($image_filename)) {
-                        $image->save_image_to_file('server_files/tmp', $image_key.'_600_375', $image->fit_to_canvas(600, 375));
-                    }
-                     $cached_image= $imagecache->cache($image_filename);
-
-
-                    //unlink($image_filename);
-                     return $cached_image;
-
-                    return $image_filename;
                 } else {
                     return '/art/nopic.png';
 
@@ -305,41 +318,9 @@ class Public_Product {
 
 
 
-                break;
-
-            case 'Image Mobile':
-
-                global $imagecache;
-
-                $image_key = $this->data['Product Main Image Key'];
-
-                if ($image_key) {
-
-                  if(file_exists('server_files/cached_images/'.md5($image_key.'_600_375.jpeg').'.jpeg' )){
-                      return 'server_files/cached_images/'.md5($image_key.'_600_375.jpeg').'.jpeg';
-                    }
-
-                    $image=get_object('Image', $image_key);
-                    $image->save_image_to_file('server_files/tmp',$image_key.'_600_375',$image->fit_to_canvas(600,375));
-                    $image_filename='server_files/tmp/'.$image_key.'_600_375.jpeg';
-
-
-                   // $cached_image= $imagecache->cache($image_filename);
-
-
-                   // unlink($image_filename);
-                   // return $cached_image;
-
-                    return $image_filename;
-                } else {
-                    return '/art/nopic.png';
-
-                }
-
-
-
 
                 break;
+
 
             case 'Webpage Related Products':
             case 'Related Products':
@@ -767,7 +748,7 @@ class Public_Product {
 
     function get_images_slidesshow() {
         include_once 'utils/natural_language.php';
-
+        global $imagecache;
 
         $image_subject_type = $this->table_name;
 
@@ -794,21 +775,70 @@ class Public_Product {
                     } else {
                         $ratio = 1;
                     }
+
+
+                    //=======
+
+
+
+
+                    $image_key = $row['Image Key'];
+
+                    $_size_image_product_webpage = '600_375';
+
+                    if ($image_key) {
+                        $image_format=$row['Image File Format'];
+                        if (file_exists('server_files/cached_images/'.md5($image_key.'_'.$_size_image_product_webpage.'.'.$image_format).'.'.$image_format)) {
+                            $image_product_webpage = 'server_files/cached_images/'.md5($image_key.'_'.$_size_image_product_webpage.'.'.$image_format).'.'.$image_format;
+                        } else {
+                            $image          = get_object('Image', $image_key);
+
+                            $image_filename = 'server_files/tmp/'.$image_key.'_'.$_size_image_product_webpage.'.'.$image_format;
+
+                            if (!file_exists($image_filename)) {
+
+                                $_image=$image->fit_to_canvas(600, 375);
+
+                                if($image->get('Image File Format')=='png'){
+                                    $image->save_image_to_file_as_jpeg('server_files/tmp', $image_key.'_'.$_size_image_product_webpage,$_image, $image_format);
+                                }else{
+                                    $image->save_image_to_file('server_files/tmp', $image_key.'_'.$_size_image_product_webpage,$_image, $image_format);
+
+                                }
+
+
+                            }
+                            $image_product_webpage = $imagecache->cache($image_filename);
+                            unlink($image_filename);
+                        }
+
+
+                    } else {
+                        $image_product_webpage = '/art/nopic.png';
+
+                    }
+
+
+
+                    //=======
+
+
                     // print_r($row);
                     $images_slideshow[] = array(
-                        'subject_order' => $subject_order,
-                        'name'          => $row['Image Filename'],
-                        'small_url'     => 'image_root.php?id='.$row['Image Key'].'&size=small',
-                        'thumbnail_url' => 'image_root.php?id='.$row['Image Key'].'&size=thumbnail',
-                        'normal_url'    => 'image_root.php?id='.$row['Image Key'],
-                        'filename'      => $row['Image Filename'],
-                        'ratio'         => $ratio,
-                        'caption'       => $row['Image Subject Image Caption'],
-                        'is_principal'  => $row['Image Subject Is Principal'],
-                        'id'            => $row['Image Key'],
-                        'size'          => file_size($row['Image File Size']),
-                        'width'         => $row['Image Width'],
-                        'height'        => $row['Image Height']
+                        'subject_order'         => $subject_order,
+                        'name'                  => $row['Image Filename'],
+                        'small_url'             => 'image_root.php?id='.$row['Image Key'].'&size=small',
+                        'thumbnail_url'         => 'image_root.php?id='.$row['Image Key'].'&size=thumbnail',
+                        'normal_url'            => 'image_root.php?id='.$row['Image Key'],
+                        'filename'              => $row['Image Filename'],
+                        'ratio'                 => $ratio,
+                        'caption'               => $row['Image Subject Image Caption'],
+                        'is_principal'          => $row['Image Subject Is Principal'],
+                        'id'                    => $row['Image Key'],
+                        'size'                  => file_size($row['Image File Size']),
+                        'width'                 => $row['Image Width'],
+                        'height'                => $row['Image Height'],
+                        'image_product_webpage' => $image_product_webpage
 
                     );
                     $subject_order++;

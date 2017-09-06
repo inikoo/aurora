@@ -22,7 +22,7 @@
     <tr>
 
 
-        <td style="padding: 5px;text-align: center" class="center"><img class="center" style="height: 60px" src="{$result.image}&r=60x60"></td>
+        <td style="padding: 5px;text-align: center" class="center"><img class="center" style="height: 60px" src="{$result.image_mobile}"></td>
         <td style="padding-left: 5px;text-align: left"><b>{$result.code}</b>  {$result.name}
 
             {if $result.scope=='Product'}

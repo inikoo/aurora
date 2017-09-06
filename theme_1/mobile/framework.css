@@ -6382,7 +6382,7 @@ calendar*{display:block; overflow:hidden;}
 
 .store-item-list{margin-bottom:30px;}
 .store-item-list span{margin-bottom:30px;}
-.store-item-list span img{width:170px;border:1px solid #ccc}
+.store-item-list span img{width:170px;height:107px;border:1px solid #ccc}
 .store-item-list span strong{
     font-size:15px;
     font-weight:600;
