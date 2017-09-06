@@ -17,7 +17,6 @@
 
 
 
-
             <div class="content" >
 
                 <div class="asset_description   fr-view"  style="margin-bottom:0px">

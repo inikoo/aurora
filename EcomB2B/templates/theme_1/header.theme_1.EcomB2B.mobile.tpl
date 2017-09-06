@@ -43,7 +43,7 @@
 
             {foreach from=$header_data.menu.columns item=column key=key}
                 <a data-sub="sidebar-sub-{$key}" href="#" class="{if !$column.show}hide{/if}">
-                    <i class="icon-bg bg-blue-dark fa  {$column.icon}"></i>
+                    <i class="icon-bg bg-orange-dark fa  {$column.icon}"></i>
 
                     <span>{$column.label}</span><strong class="plushide-animated"></strong></a>
 
@@ -106,8 +106,8 @@
 
 
             {if $logged_in}
-                <a class="default-link" href="basket.sys"><i class="icon-bg bg-magenta-light  ion-ios-cart"></i><span>{t}Basket{/t}</span><i class="ion-record"></i></a>
-                <a class="default-link" href="profile.sys"><i class="icon-bg bg-green-light  ion-person"></i><span>{t}Profile{/t}</span><i class="ion-record"></i></a>
+                <a class="default-link" href="basket.sys"><i class="icon-bg bg-orange-dark  ion-ios-cart"></i><span>{t}Basket{/t}</span><i class="ion-record"></i></a>
+                <a class="default-link" href="profile.sys"><i class="icon-bg bg-orange-dark  ion-person"></i><span>{t}Profile{/t}</span><i class="ion-record"></i></a>
 
             {else}
 
