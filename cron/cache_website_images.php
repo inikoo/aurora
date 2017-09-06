@@ -20,7 +20,7 @@ $imagecache                         = new ImageCache();
 $imagecache->cached_image_directory = 'EcomB2B/server_files/cached_images/';
 
 
-$sql = sprintf("SELECT `Product ID` FROM `Product Dimension` WHERE `Product ID`=29832");
+$sql = sprintf("SELECT `Product ID` FROM `Product Dimension` ");
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
         $product = get_object('Product', $row['Product ID']);
@@ -29,29 +29,169 @@ if ($result = $db->query($sql)) {
 
         if ($image_key) {
 
-            //if(file_exists('server_files/cached_images/'.md5($image_key.'_600_375.jpeg').'.jpeg' )){
-            //    return 'server_files/cached_images/'.md5($image_key.'_600_375.jpeg').'.jpeg';
-            //}
 
-            $image = get_object('Image', $image_key);
+            $_size_image_product_webpage = '340_214';
+            $image_format = 'jpeg';
+            if (!file_exists('EcomB2B/server_files/cached_images/'.md5($image_key.'_'.$_size_image_product_webpage.'.'.$image_format).'.'.$image_format)) {
 
-            $image_filename = 'EcomB2B/server_files/tmp/'.$image_key.'_600_375.jpeg';
+                $image          = get_object('Image', $image_key);
+                $image_filename = 'EcomB2B/server_files/tmp/'.$image_key.'_'.$_size_image_product_webpage.'.'.$image_format;
 
-            if (!file_exists($image_filename)) {
+                if (!file_exists($image_filename)) {
 
-                $image->save_image_to_file('EcomB2B/server_files/tmp', $image_key.'_600_375', $image->fit_to_canvas(600, 375));
+                    $_image = $image->fit_to_canvas(340, 214);
+                    if ($image->get('Image File Format') == 'png') {
+                        $image->save_image_to_file_as_jpeg('EcomB2B/server_files/tmp', $image_key.'_'.$_size_image_product_webpage, $_image, $image_format);
+                    } else {
+                        $image->save_image_to_file('EcomB2B/server_files/tmp', $image_key.'_'.$_size_image_product_webpage, $_image, $image_format);
+                    }
+
+
+                }
+                $image_product_webpage = $imagecache->cache($image_filename);
+                unlink($image_filename);
+
+
             }
 
-            $cached_image = $imagecache->cache($image_filename);
 
-            // print $cached_image;
+            $_size_image_product_webpage = '120_120';
+            $image_format = 'jpeg';
+            if (!file_exists('EcomB2B/server_files/cached_images/'.md5($image_key.'_'.$_size_image_product_webpage.'.'.$image_format).'.'.$image_format)) {
 
+                $image          = get_object('Image', $image_key);
+                $image_filename = 'EcomB2B/server_files/tmp/'.$image_key.'_'.$_size_image_product_webpage.'.'.$image_format;
+
+                if (!file_exists($image_filename)) {
+
+                    $_image = $image->fit_to_canvas(120, 120);
+                    if ($image->get('Image File Format') == 'png') {
+                        $image->save_image_to_file_as_jpeg('EcomB2B/server_files/tmp', $image_key.'_'.$_size_image_product_webpage, $_image, $image_format);
+                    } else {
+                        $image->save_image_to_file('EcomB2B/server_files/tmp', $image_key.'_'.$_size_image_product_webpage, $_image, $image_format);
+                    }
+
+
+                }
+                $image_product_webpage = $imagecache->cache($image_filename);
+                unlink($image_filename);
+
+
+            }
 
         }
+
+
+
+
+
+        $sql = sprintf(
+            "SELECT `Image Subject Is Principal`,`Image Key`,`Image Subject Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` FROM `Image Subject Bridge` B LEFT JOIN `Image Dimension` I ON (`Image Subject Image Key`=`Image Key`) WHERE `Image Subject Object`=%s AND   `Image Subject Object Key`=%d ORDER BY `Image Subject Is Principal`,`Image Subject Date`,`Image Subject Key`",
+            prepare_mysql('Product'), $product->id
+        );
+
+
+        // print $sql;
+
+        $subject_order = 0;
+
+        //print $sql;
+        $images_slideshow = array();
+        if ($result2 = $db->query($sql)) {
+            foreach ($result2 as $row2) {
+
+                if ($row2['Image Key']) {
+
+                    $image_format='jpeg';
+
+                    $image_key = $row2['Image Key'];
+
+                    $_size_image_product_webpage = '600_375';
+
+
+
+                        if (!file_exists('EcomB2B/server_files/cached_images/'.md5($image_key.'_'.$_size_image_product_webpage.'.'.$image_format).'.'.$image_format)) {
+
+                            $image          = get_object('Image', $image_key);
+
+                            $image_filename = 'EcomB2B/server_files/tmp/'.$image_key.'_'.$_size_image_product_webpage.'.'.$image_format;
+
+                            if (!file_exists($image_filename)) {
+
+                                $_image=$image->fit_to_canvas(600, 375);
+
+                                if($image->get('Image File Format')=='png'){
+                                    $image->save_image_to_file_as_jpeg('EcomB2B/server_files/tmp', $image_key.'_'.$_size_image_product_webpage,$_image, $image_format);
+                                }else{
+                                    $image->save_image_to_file('EcomB2B/server_files/tmp', $image_key.'_'.$_size_image_product_webpage,$_image, $image_format);
+
+                                }
+
+
+                            }
+                            $image_product_webpage = $imagecache->cache($image_filename);
+                            unlink($image_filename);
+                        }
+
+
+
+
+                }
+
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print "$sql";
+            exit;
+        }
+
+
+
     }
-} else {
-    print_r($error_info = $db->errorInfo());
-    exit;
+}
+
+
+$sql = sprintf('SELECT  `Category Main Image Key` FROM   `Product Category Dimension` PC LEFT JOIN    `Category Dimension` C    ON (PC.`Product Category Key`=C.`Category Key`) ');
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+
+        $image_key = $row['Category Main Image Key'];
+
+        if ($image_key) {
+
+
+            $_size_image_product_webpage = '120_120';
+            $image_format = 'jpeg';
+            if (!file_exists('EcomB2B/server_files/cached_images/'.md5($image_key.'_'.$_size_image_product_webpage.'.'.$image_format).'.'.$image_format)) {
+
+                $image          = get_object('Image', $image_key);
+                $image_filename = 'EcomB2B/server_files/tmp/'.$image_key.'_'.$_size_image_product_webpage.'.'.$image_format;
+
+                if (!file_exists($image_filename)) {
+
+                    $_image = $image->fit_to_canvas(120, 120);
+                    if ($image->get('Image File Format') == 'png') {
+                        $image->save_image_to_file_as_jpeg('EcomB2B/server_files/tmp', $image_key.'_'.$_size_image_product_webpage, $_image, $image_format);
+                    } else {
+                        $image->save_image_to_file('EcomB2B/server_files/tmp', $image_key.'_'.$_size_image_product_webpage, $_image, $image_format);
+                    }
+
+
+                }
+                $image_product_webpage = $imagecache->cache($image_filename);
+                unlink($image_filename);
+
+
+            }
+
+        }
+
+
+
+
+
+
+    }
 }
 
 
