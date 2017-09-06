@@ -686,7 +686,7 @@ function new_payment($data, $editor, $smarty, $db, $account,$user) {
 
 function edit_item_discount($account, $db, $user, $editor, $data, $smarty) {
 
-    $parent         = get_object('payment', $data['key']);
+    $parent         = get_object('Order', $data['parent_key']);
     $parent->editor = $editor;
 
 
