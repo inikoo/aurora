@@ -808,6 +808,8 @@ class Public_Product {
 
 
                             }
+
+
                             $image_product_webpage = $imagecache->cache($image_filename);
                             unlink($image_filename);
                         }
