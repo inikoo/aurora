@@ -10,9 +10,18 @@
 */
 
 .asset_description{
-	color:#8a8a8a;
+	color:#555;
+	line-height: 140%;
 
 }
+
+.asset_description p{
+	color:#555;
+	line-height: 140%;
+	margin-bottom: 10px;
+
+}
+
 
 .asset_description h1{
 	font-size: 120%;
