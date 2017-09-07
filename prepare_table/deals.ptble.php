@@ -89,7 +89,9 @@ if (isset($parameters['elements_type'])) {
 
 $wheref = '';
 if ($parameters['f_field'] == 'name' and $f_value != '') {
-    $wheref .= " and  `Deal Name` like '".addslashes($f_value)."%'";
+    $wheref = sprintf(
+        ' and `Deal Name` REGEXP "[[:<:]]%s" ', addslashes($f_value)
+    );
 }
 
 $_order = $order;
@@ -111,10 +113,8 @@ if ($order == 'name') {
 } else {
     $order = '`Deal Key`';
 }
-$table
-    = '`Deal Dimension` D left join `Deal Campaign Dimension` C on (C.`Deal Campaign Key`=D.`Deal Campaign Key`) ';
-$fields
-    = "`Deal Key`,`Deal Name`,`Deal Term Allowances`,`Deal Term Allowances Label`,`Deal Store Key`,D.`Deal Campaign Key`,`Deal Status`,`Deal Begin Date`,`Deal Expiration Date`,
+$table  = '`Deal Dimension` D left join `Deal Campaign Dimension` C on (C.`Deal Campaign Key`=D.`Deal Campaign Key`) ';
+$fields = "`Deal Key`,`Deal Name`,`Deal Term Allowances`,`Deal Term Allowances Label`,`Deal Store Key`,D.`Deal Campaign Key`,`Deal Status`,`Deal Begin Date`,`Deal Expiration Date`,
 `Deal Total Acc Used Orders`,`Deal Total Acc Used Customers`";
 
 

@@ -1270,6 +1270,8 @@ class Part extends Asset {
         include_once 'utils/new_fork.php';
         global $account;
 
+
+
         $msg = new_housekeeping_fork(
             'au_housekeeping', array(
             'type'     => 'update_part_products_availability',

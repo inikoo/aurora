@@ -384,9 +384,9 @@ class DealCampaign extends DB_Table {
         );
 
 
-        $store = new Store($this->get('Deal Campaign Store Key'));
-        $store->update_campaings_data();
-        $store->update_deals_data();
+        //$store = new Store($this->get('Deal Campaign Store Key'));
+        //$store->update_campaings_data();
+        //$store->update_deals_data();
 
 
     }

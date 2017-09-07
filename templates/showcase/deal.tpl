@@ -5,13 +5,14 @@
 
             <table border=0>
 
-                <tr>
-                    <td class="label">{t}Offers{/t}</td>
-                    <td class="aright"> {$deal->get('Number Current Deals')}</td>
-                </tr>
+
                 <tr>
                     <td class="label">{t}Customers{/t}</td>
                     <td class="aright"> {$deal->get('Used Customers')}</td>
+                </tr>
+                <tr>
+                    <td class="label">{t}Orders{/t}</td>
+                    <td class="aright"> {$deal->get('Used Orders')}</td>
                 </tr>
             </table>
         </div>

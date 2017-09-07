@@ -40,16 +40,57 @@ $object_fields = array(
 
                 'type' => 'value'
             ),
-            array(
-                'edit'              => ($edit ? 'textarea' : ''),
-                'id'                => 'Deal_Campaign_Description',
-                'value'             => $object->get('Deal Campaign Description'),
-                'label'             => ucfirst($object->get_field_label('Deal Campaign Description')),
-                'invalid_msg'       => get_invalid_message('string'),
-                'required'          => false,
 
-                'type' => 'value'
+            array(
+                'id'              => 'Deal_Campaign_Description',
+                'edit'            => ($edit ? 'editor' : ''),
+                'class'           => 'editor',
+                'editor_data'     => array(
+                    'id'      => 'Deal_Campaign_Description',
+                    'content' => $object->get('Deal Campaign Description'),
+
+                    'data' => base64_encode(
+                        json_encode(
+                            array(
+                                'mode'     => 'edit_object',
+                                'field'    => 'Deal_Campaign_Description',
+                                'plugins'  => array(
+                                    'align',
+                                    'draggable',
+                                    'image',
+                                    'link',
+                                    'save',
+                                    'entities',
+                                    'emoticons',
+                                    'fullscreen',
+                                    'lineBreaker',
+                                    'table',
+                                    'codeView',
+                                    'codeBeautifier'
+                                ),
+                                'metadata' => array(
+                                    'tipo'   => 'edit_field',
+                                    'object' => 'Deal_Campaign',
+                                    'key'    => $object->id,
+                                    'field'  => 'Deal Campaign Description',
+
+
+                                )
+                            )
+                        )
+                    )
+
+                ),
+                'value'             => $object->get('Deal Campaign Description'),
+                'formatted_value'             => $object->get('Deal Campaign Description'),
+
+                'label'             => ucfirst($object->get_field_label('Deal Campaign Description')),
+                'required'          => false,
+                'type'            => 'value'
             ),
+
+
+
 
 
         )

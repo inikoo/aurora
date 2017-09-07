@@ -18,6 +18,8 @@ function get_deal_showcase($data, $smarty) {
         return "";
     }
 
+    $deal->update_usage();
+
     $smarty->assign('deal', $deal);
 
     return $smarty->fetch('showcase/deal.tpl');
