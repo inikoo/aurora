@@ -35,8 +35,9 @@ $options_offer_type = array(
 
 );
 
+$object_fields=array();
 
-$object_fields = array(
+$object_fields[]=
     array(
         'label'      => _('Id'),
         'show_title' => true,
@@ -47,22 +48,63 @@ $object_fields = array(
                 'edit'              => ($edit ? 'string' : ''),
                 'id'                => 'Deal_Name',
                 'value'             => $object->get('Deal Name'),
-                'label'             => ucfirst(
-                    $object->get_field_label('Deal Name')
-                ),
+                'label'             => ucfirst($object->get_field_label('Deal Name')),
                 'invalid_msg'       => get_invalid_message('string'),
                 'required'          => true,
-                'server_validation' => json_encode(
-                    array('tipo' => 'check_for_duplicates')
-                ),
-
+                'server_validation' => json_encode(array('tipo' => 'check_for_duplicates')),
+                'type' => 'value'
+            ),
+            array(
+                'edit'              => ($edit ? 'string' : ''),
+                'id'                => 'Deal_Name',
+                'value'             => $object->get('Deal Component Term Label'),
+                'label'             => ucfirst($object->get_field_label('Deal Name')),
+                'invalid_msg'       => get_invalid_message('string'),
+                'required'          => true,
+                'server_validation' => json_encode(array('tipo' => 'check_for_duplicates')),
+                'type' => 'value'
+            ),
+            array(
+                'edit'              => ($edit ? 'string' : ''),
+                'id'                => 'Deal_Name',
+                'value'             => $object->get('Deal Component Term Label'),
+                'label'             => ucfirst($object->get_field_label('Deal Name')),
+                'invalid_msg'       => get_invalid_message('string'),
+                'required'          => true,
+                'server_validation' => json_encode(array('tipo' => 'check_for_duplicates')),
                 'type' => 'value'
             ),
 
 
         )
-    ),
 
+);
+
+/*
+
+$object_fields[]=array(
+    array(
+        'label'      => _('Id'),
+        'show_title' => true,
+        'fields'     => array(
+
+
+            array(
+                'edit'              => ($edit ? 'string' : ''),
+                'id'                => 'Deal_Name',
+                'value'             => $object->get('Deal Name'),
+                'label'             => ucfirst($object->get_field_label('Deal Name')),
+                'invalid_msg'       => get_invalid_message('string'),
+                'required'          => true,
+                'server_validation' => json_encode(array('tipo' => 'check_for_duplicates')),
+                'type' => 'value'
+            ),
+
+
+        )
+    )
+);
+$object_fields[]=array(
     array(
         'label'      => _('Trigger'),
         'show_title' => true,
@@ -185,6 +227,9 @@ $object_fields = array(
 
 
 );
+
+*/
+
 
 
 ?>

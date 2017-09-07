@@ -92,11 +92,17 @@ function old_new_fork($type,$data,$account_code) {
     );
 
 
+    $caca=array(
+        'code'  => addslashes($account_code),
+        'data'  => $data,
+        
+    );
+
 
     $client= new GearmanClient();
 
     $client->addServer('127.0.0.1');
-    $msg=$client->doBackground($type, $fork_metadata);
+    $msg=$client->doBackground($type, json_encode($caca));
 
     return $msg;
 
