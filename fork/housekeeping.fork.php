@@ -170,7 +170,7 @@ function fork_housekeeping($job) {
             $part->update_stock_status();
 
             foreach ($part->get_products('objects') as $product) {
-                $product->update_availability($use_fork = false);
+                $product->update_availability(true);
             }
 
             break;
