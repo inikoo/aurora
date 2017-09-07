@@ -93,9 +93,13 @@ function old_new_fork($type,$data,$account_code) {
 
 
     $caca=array(
-        'code'  => addslashes($account_code),
-        'data'  => $data,
-        
+        array(
+            'code'  => addslashes($account_code),
+            'data'  => $data,
+            'token' => $token,
+            'salt'  => $salt
+        )
+
     );
 
 
