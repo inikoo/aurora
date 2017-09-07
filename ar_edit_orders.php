@@ -699,6 +699,9 @@ function edit_item_discount($account, $db, $user, $editor, $data, $smarty) {
         $amount           = $data['value'];
         $transaction_data = $parent->update_transaction_discount_amount($data['transaction_key'], $amount);
     }
+    Plaza Agrolongo 27
+    4700312, Braga
+
 
 
     if ($parent->error) {

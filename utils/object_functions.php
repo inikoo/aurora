@@ -221,6 +221,7 @@ function get_object($object_name, $key, $load_other_data = false) {
         case 'campaign':
         case 'dealcampaign':
         case 'deal campaign':
+        case 'deal_campaign':
             require_once "class.DealCampaign.php";
             $object = new DealCampaign($key);
             break;

@@ -585,9 +585,7 @@ function get_campaign_navigation($data, $smarty, $user, $db) {
     }
 
 
-    $title = '<span class="id"><span class="Deal_Campaign_Name">'.$object->get(
-            'Name'
-        ).'</span> </span>';
+    $title = _('Campaign').' <span class="id Deal_Campaign_Name">'.$object->get('Name').'</span>';
 
 
     $_content = array(
@@ -623,7 +621,6 @@ function get_deal_navigation($data, $smarty, $user, $db) {
         return;
     }
 
-    $block_view = $data['section'];
 
 
     $left_buttons  = array();
@@ -637,7 +634,7 @@ function get_deal_navigation($data, $smarty, $user, $db) {
 
                 break;
             case 'campaign':
-                $tab = 'campaign.deals';
+                $tab = 'deals';
                 break;
         }
 
@@ -680,18 +677,41 @@ function get_deal_navigation($data, $smarty, $user, $db) {
         $prev_key   = 0;
         $next_key   = 0;
         $sql        = trim($sql_totals." $wheref");
-        //print $sql;
+
 
         if ($result2 = $db->query($sql)) {
             if ($row2 = $result2->fetch() and $row2['num'] > 1) {
 
 
-                $sql = sprintf(
-                    "select `Deal Name` object_name,D.`Deal Key` as object_key from $table   $where $wheref
+
+
+                if($order_direction == 'desc'){
+                    $sql = sprintf(
+                        "select `Deal Name` object_name,D.`Deal Key` as object_key from $table   $where $wheref
+	                and ($_order_field > %s OR ($_order_field = %s AND D.`Deal Key` < %d))  order by $_order_field  , D.`Deal Key` desc  limit 1",
+
+                        prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+
+                    );
+
+                }else{
+                    $sql = sprintf(
+                        "select `Deal Name` object_name,D.`Deal Key` as object_key from $table   $where $wheref
 	                and ($_order_field < %s OR ($_order_field = %s AND D.`Deal Key` < %d))  order by $_order_field desc , D.`Deal Key` desc limit 1",
 
-                    prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
-                );
+                        prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+
+                    );
+
+                }
+
+        //        print $order_direction;
+
+      //   print $sql;
+
+
+
+
                 if ($result = $db->query($sql)) {
                     if ($row = $result->fetch()) {
                         $prev_key   = $row['object_key'];
@@ -700,15 +720,38 @@ function get_deal_navigation($data, $smarty, $user, $db) {
                     }
                 } else {
                     print_r($error_info = $db->errorInfo());
+                    print 'X1:'.$sql;
                     exit;
                 }
 
 
-                $sql = sprintf(
-                    "select `Deal Name` object_name,D.`Deal Key` as object_key from $table   $where $wheref
-	                and ($_order_field  > %s OR ($_order_field  = %s AND D.`Deal Key` > %d))  order by $_order_field   , D.`Deal Key`  limit 1", prepare_mysql($_order_field_value),
-                    prepare_mysql($_order_field_value), $object->id
-                );
+                if($order_direction == 'desc'){
+                    $sql = sprintf(
+                        "select `Deal Name` object_name,D.`Deal Key` as object_key from $table   $where $wheref
+	                and ($_order_field  %s %s OR ($_order_field  = %s AND D.`Deal Key` > %d))  order by $_order_field %s  , D.`Deal Key`  limit 1",
+                        ($order_direction == 'desc'?'<':'>'),
+                        prepare_mysql($_order_field_value),
+                        prepare_mysql($_order_field_value), $object->id,
+                        $order_direction
+                    );
+
+                }else{
+                    $sql = sprintf(
+                        "select `Deal Name` object_name,D.`Deal Key` as object_key from $table   $where $wheref
+	                and ($_order_field  %s %s OR ($_order_field  = %s AND D.`Deal Key` > %d))  order by $_order_field   , D.`Deal Key`   limit 1",
+                        ($order_direction == 'desc'?'<':'>'),
+                        prepare_mysql($_order_field_value),
+                        prepare_mysql($_order_field_value), $object->id
+
+                    );
+
+                }
+
+
+
+                //print $order_direction;
+                //print $sql;
+
                 if ($result = $db->query($sql)) {
                     if ($row = $result->fetch()) {
                         $next_key   = $row['object_key'];
@@ -717,9 +760,10 @@ function get_deal_navigation($data, $smarty, $user, $db) {
                     }
                 } else {
                     print_r($error_info = $db->errorInfo());
+                    print 'X2:'.$sql;
                     exit;
                 }
-
+/*
 
                 if ($order_direction == 'desc') {
                     $_tmp1      = $prev_key;
@@ -729,7 +773,7 @@ function get_deal_navigation($data, $smarty, $user, $db) {
                     $next_key   = $_tmp1;
                     $next_title = $_tmp2;
                 }
-
+*/
 
             }
         } else {

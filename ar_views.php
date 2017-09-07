@@ -3060,9 +3060,9 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 );
             } elseif ($state['section'] == 'campaign') {
                 $branch[] = array(
-                    'label'     => _('Campaigns').' <span class="Store_Code">'.$state['store']->get('Code').'</span>',
-                    'icon'      => 'tags',
-                    'reference' => 'campaigns/'.$state['store']->id
+                    'label'     => _('Marketing').' <span class="Store_Code">'.$state['store']->get('Code').'</span>',
+                    'icon'      => 'bullhorn',
+                    'reference' => 'marketing/'.$state['store']->id
                 );
 
                 $branch[] = array(
@@ -3072,9 +3072,9 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 );
             } elseif ($state['section'] == 'campaign.new') {
                 $branch[] = array(
-                    'label'     => _('Campaigns').' <span class="Store_Code">'.$state['store']->get('Code').'</span>',
-                    'icon'      => 'tags',
-                    'reference' => 'campaigns/'.$state['store']->id
+                    'label'     => _('Marketing').' <span class="Store_Code">'.$state['store']->get('Code').'</span>',
+                    'icon'      => 'bullhorn',
+                    'reference' => 'marketing/'.$state['store']->id
                 );
 
                 $branch[] = array(
@@ -3091,9 +3091,9 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     $state['store'] = new Store($state['_parent']->get('Store Key'));
 
                     $branch[] = array(
-                        'label'     => _('Campaigns').' <span class="Store_Code">'.$state['store']->get('Code').'</span>',
-                        'icon'      => 'tags',
-                        'reference' => 'campaigns/'.$state['store']->id
+                        'label'     => _('Marketing').' <span class="Store_Code">'.$state['store']->get('Code').'</span>',
+                        'icon'      => 'bullhorn',
+                        'reference' => 'marketing/'.$state['store']->id
                     );
 
                     $branch[] = array(
@@ -3114,17 +3114,15 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
                 if ($state['parent'] == 'campaign') {
                     $branch[] = array(
-                        'label'     => _('Campaigns').' <span class="Store_Code">'.$state['store']->get(
-                                'Code'
-                            ).'</span>',
-                        'icon'      => 'tags',
-                        'reference' => 'campaigns/'.$state['store']->id
+                        'label'     => _('Marketing').' <span class="Store_Code">'.$state['store']->get('Code').'</span>',
+                        'icon'      => 'bullhorn',
+                        'reference' => 'marketing/'.$state['store']->id
                     );
 
                     $branch[] = array(
                         'label'     => '<span class="Deal_Campaign_Name">'.$state['_parent']->get('Name').'</span>',
                         'icon'      => 'tags',
-                        'reference' => ''
+                        'reference' => 'campaigns/'.$state['store']->id.'/'.$state['_parent']->id
                     );
 
                 }

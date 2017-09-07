@@ -2405,26 +2405,26 @@ $modules = array(
 
 
                 'tabs' => array(
-                    'campaign.details'    => array(
+                    'deal.details'    => array(
                         'label' => _('Data'),
                         'icon'  => 'database',
                         'title' => _('Details')
                     ),
-                    'campaign.history'    => array(
+                    'deal.history'    => array(
                         'label' => _(
                             'History, notes'
                         ),
                         'icon'  => 'sticky-note-o'
                     ),
-                    'campaign.allowances' => array(
+                    'deal.allowances' => array(
                         'label' => _('Allowances'),
                         'icon'  => ''
                     ),
-                    'campaign.orders'     => array(
+                    'deal.orders'     => array(
                         'label' => _('Orders'),
                         'icon'  => 'shopping-cart'
                     ),
-                    'campaign.customers'  => array(
+                    'deal.customers'  => array(
                         'label' => _('Customers'),
                         'icon'  => 'users'
                     )

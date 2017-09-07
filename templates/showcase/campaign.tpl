@@ -13,6 +13,10 @@
                     <td class="label">{t}Customers{/t}</td>
                     <td class="aright"> {$campaign->get('Used Customers')}</td>
                 </tr>
+                <tr>
+                    <td class="label">{t}Orders{/t}</td>
+                    <td class="aright"> {$campaign->get('Used Orders')}</td>
+                </tr>
             </table>
         </div>
         <div style="clear:both">

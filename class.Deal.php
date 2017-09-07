@@ -1049,37 +1049,45 @@ class Deal extends DB_Table {
             $this->id
 
         );
-        $res       = mysql_query($sql);
         $orders    = 0;
         $customers = 0;
-        if ($row = mysql_fetch_assoc($res)) {
-            $orders    = $row['orders'];
-            $customers = $row['customers'];
+
+        if ($result=$this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $orders    = $row['orders'];
+                $customers = $row['customers'];
+        	}
+        }else {
+        	print_r($error_info=$this->db->errorInfo());
+        	print "$sql\n";
+        	exit;
         }
+
 
         $sql = sprintf(
             "UPDATE `Deal Dimension` SET `Deal Total Acc Applied Orders`=%d, `Deal Total Acc Applied Customers`=%d WHERE `Deal Key`=%d", $orders, $customers, $this->id
         );
-        //print "$sql\n";
-        mysql_query($sql);
-        $sql       = sprintf(
-            "SELECT count( DISTINCT O.`Order Key`) AS orders,count( DISTINCT `Order Customer Key`) AS customers FROM `Order Deal Bridge` B LEFT  JOIN `Order Dimension` O ON (O.`Order Key`=B.`Order Key`) WHERE B.`Deal Key`=%d AND `Used`='Yes' AND `Order Current Dispatch State`!='Cancelled' ",
-            $this->id
 
-        );
-        $res       = mysql_query($sql);
+        $this->db->exec($sql);
+
         $orders    = 0;
         $customers = 0;
-        //  print "$sql\n";
-        if ($row = mysql_fetch_assoc($res)) {
-            $orders    = $row['orders'];
-            $customers = $row['customers'];
+        if ($result=$this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $orders    = $row['orders'];
+                $customers = $row['customers'];
+        	}
+        }else {
+        	print_r($error_info=$this->db->errorInfo());
+        	print "$sql\n";
+        	exit;
         }
+
 
         $sql = sprintf(
             "UPDATE `Deal Dimension` SET `Deal Total Acc Used Orders`=%d, `Deal Total Acc Used Customers`=%d WHERE `Deal Key`=%d", $orders, $customers, $this->id
         );
-        mysql_query($sql);
+        $this->db->exec($sql);
     }
 
 
