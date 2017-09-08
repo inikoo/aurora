@@ -233,7 +233,7 @@ trait OrderCalculateTotals {
             )
         );
 
-       exit;
+      
 
 
     }
