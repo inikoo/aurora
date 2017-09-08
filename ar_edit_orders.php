@@ -284,7 +284,6 @@ function set_shipping_value($data, $editor) {
     $order         = get_object('order', $data['order_key']);
     $order->editor = $editor;
 
-
     $order->update_shipping_amount($data['amount']);
 
 
