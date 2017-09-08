@@ -2380,22 +2380,37 @@ $modules = array(
 
                     'campaign.deals'     => array(
                         'label' => _('Offers'),
-                        'icon'  => 'tags'
+                        'icon'  => 'tags',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Deals Numbers'
+                        ),
                     ),
                     'campaign.orders'    => array(
                         'label' => _('Orders'),
-                        'icon'  => 'shopping-cart'
+                        'icon'  => 'shopping-cart',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Used Orders'
+                        ),
                     ),
                     'campaign.customers' => array(
                         'label' => _('Customers'),
-                        'icon'  => 'users'
+                        'icon'  => 'users',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Used Customers'
+                        ),
                     ),
                     'campaign.history'   => array(
-                        'label' => _(
-                            'History, notes'
-                        ),
+                        'title' => _('History, notes'),
+                        'label'=>'',
                         'icon'  => 'road',
-                        'class' => 'right icon_only'
+                        'class' => 'right icon_only',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number History Records'
+                        ),
                     ),
 
                 )
@@ -2410,24 +2425,45 @@ $modules = array(
                         'icon'  => 'database',
                         'title' => _('Details')
                     ),
-                    'deal.history'    => array(
-                        'label' => _(
-                            'History, notes'
-                        ),
-                        'icon'  => 'sticky-note-o'
-                    ),
-                    'deal.allowances' => array(
+
+                    'deal.components' => array(
                         'label' => _('Allowances'),
-                        'icon'  => ''
+                        'icon'  => '',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number Active Components'
+                        ),
+
+
+
                     ),
                     'deal.orders'     => array(
                         'label' => _('Orders'),
-                        'icon'  => 'shopping-cart'
+                        'icon'  => 'shopping-cart',
+
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Used Orders'
+                        ),
                     ),
                     'deal.customers'  => array(
                         'label' => _('Customers'),
-                        'icon'  => 'users'
-                    )
+                        'icon'  => 'users',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Used Customers'
+                        ),
+                    ),
+                    'deal.history' => array(
+                        'title'         => _('History/Notes'),
+                        'label'         => '',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number History Records'
+                        ),
+                        'icon'          => 'road',
+                        'class'         => 'right icon_only'
+                    ),
 
                 )
             ),
@@ -2649,44 +2685,87 @@ $modules = array(
 
 
                     'order.items'          => array(
-                        'label' => _(
-                            'Items'
-                        ),
+                        'label' => _('Items'),
                         'icon'  => 'bars'
                     ),
                     'order.details'        => array(
-                        'label' => _(
-                            'Data'
-                        ),
+                        'label' => _('Data'),
                         'icon'  => 'database'
                     ),
                     'order.history'        => array(
-                        'label' => _(
-                            'History'
-                        ),
+                        'label' => _('History'),
                         'icon'  => 'road'
                     ),
                     'order.delivery_notes' => array(
-                        'label' => _(
-                            'Delivery notes'
-                        ),
+                        'label' => _('Delivery notes'),
                         'icon'  => 'truck'
                     ),
                     'order.invoices'       => array(
-                        'label' => _(
-                            'Invoices'
-                        ),
+                        'label' => _('Invoices'),
                         'icon'  => 'file-text-o'
                     ),
                     'order.payments'       => array(
-                        'label' => _(
-                            'Payments'
-                        ),
+                        'label' => _('Payments'),
                         'icon'  => 'usd'
                     ),
 
                 )
 
+            ),
+
+
+            'customer' => array(
+                'type'           => 'object',
+
+
+                'tabs'           => array(
+                    'customer.details'   => array(
+                        'label' => _('Data'),
+                        'icon'  => 'database'
+                    ),
+                    'customer.history'   => array(
+                        'label' => _('History, notes'),
+                        'icon'  => 'sticky-note-o'
+                    ),
+                    'customer.orders'    => array('label' => _('Orders')),
+                    'customer.invoices'  => array('label' => _('Invoices')),
+                    'customer.marketing' => array(
+                        'label'   => _('Interests'),
+                        'title'   => _(
+                            "Customer's interests"
+                        ),
+                        'subtabs' => array(
+                            'customer.marketing.overview'   => array(
+                                'label' => _(
+                                    'Overview'
+                                )
+                            ),
+                            'customer.marketing.products'   => array(
+                                'label' => _(
+                                    'Products ordered'
+                                )
+                            ),
+                            'customer.marketing.families'   => array(
+                                'label' => _(
+                                    'Families ordered'
+                                )
+                            ),
+                            'customer.marketing.favourites' => array(
+                                'label' => _(
+                                    'Favourite products'
+                                )
+                            ),
+                            'customer.marketing.search'     => array(
+                                'label' => _(
+                                    'Search queries'
+                                )
+                            ),
+
+                        )
+
+                    ),
+
+                )
             ),
 
         )

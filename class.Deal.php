@@ -189,6 +189,8 @@ class Deal extends DB_Table {
 
         switch ($key) {
 
+
+
             case 'Used Orders':
             case 'Used Customers':
             case 'Applied Orders':
@@ -197,7 +199,10 @@ class Deal extends DB_Table {
 
                 return number($this->data['Deal Total Acc '.$key]);
 
-
+            case 'Number History Records':
+            case 'Number Active Components':
+                return number($this->data['Deal '.$key]);
+                break;
             case 'Duration':
                 $duration = '';
                 if ($this->data['Deal Expiration Date'] == '' and $this->data['Deal Begin Date'] == '') {
@@ -770,8 +775,24 @@ class Deal extends DB_Table {
 
     function update_number_components() {
         $number = 0;
+        $active_number=0;
         $sql    = sprintf(
             "SELECT count(*) AS number FROM `Deal Component Dimension` WHERE `Deal Component Deal Key`=%d AND `Deal Component Status`='Active' ", $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $active_number = $row['number'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+        $sql    = sprintf(
+            "SELECT count(*) AS number FROM `Deal Component Dimension` WHERE `Deal Component Deal Key`=%d ", $this->id
         );
 
 
@@ -785,10 +806,11 @@ class Deal extends DB_Table {
             exit;
         }
 
-        $this->update(
+        $this->fast_update(
             array(
-                'Deal Number Active Components' => $number
-            ), 'no_history'
+                'Deal Number Active Components' => $active_number,
+                'Deal Number Components'=> $number,
+            )
         );
 
 
@@ -1036,7 +1058,7 @@ class Deal extends DB_Table {
         $campaign         = new DealCampaign($this->data['Deal Campaign Key']);
         $campaign->editor = $this->editor;
 
-        $campaign->update_current_number_of_deals();
+        $campaign->update_number_of_deals();
 
 
     }
@@ -1049,13 +1071,13 @@ class Deal extends DB_Table {
             $this->id
 
         );
-        $orders    = 0;
-        $customers = 0;
+        $applied_orders    = 0;
+        $applied_customers = 0;
 
         if ($result=$this->db->query($sql)) {
             if ($row = $result->fetch()) {
-                $orders    = $row['orders'];
-                $customers = $row['customers'];
+                $applied_orders    = $row['orders'];
+                $applied_customers = $row['customers'];
         	}
         }else {
         	print_r($error_info=$this->db->errorInfo());
@@ -1063,19 +1085,12 @@ class Deal extends DB_Table {
         	exit;
         }
 
-
-        $sql = sprintf(
-            "UPDATE `Deal Dimension` SET `Deal Total Acc Applied Orders`=%d, `Deal Total Acc Applied Customers`=%d WHERE `Deal Key`=%d", $orders, $customers, $this->id
-        );
-
-        $this->db->exec($sql);
-
-        $orders    = 0;
-        $customers = 0;
+        $used_orders    = 0;
+        $used_customers = 0;
         if ($result=$this->db->query($sql)) {
             if ($row = $result->fetch()) {
-                $orders    = $row['orders'];
-                $customers = $row['customers'];
+                $used_orders    = $row['orders'];
+                $used_customers = $row['customers'];
         	}
         }else {
         	print_r($error_info=$this->db->errorInfo());
@@ -1083,11 +1098,19 @@ class Deal extends DB_Table {
         	exit;
         }
 
+        $this->fast_update(
+            array(
+                'Deal Total Acc Applied Orders'=>$applied_orders,
+                'Deal Total Acc Applied Customers'=>$applied_customers,
+                'Deal Total Acc Used Orders'=>$used_orders,
+                'Deal Total Acc Used Customers'=>$used_customers,
+            )
 
-        $sql = sprintf(
-            "UPDATE `Deal Dimension` SET `Deal Total Acc Used Orders`=%d, `Deal Total Acc Used Customers`=%d WHERE `Deal Key`=%d", $orders, $customers, $this->id
         );
-        $this->db->exec($sql);
+
+
+
+
     }
 
 

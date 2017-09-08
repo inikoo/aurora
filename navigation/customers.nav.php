@@ -836,6 +836,8 @@ function get_customer_navigation($data, $smarty, $user, $db) {
         return;
     }
 
+
+
     $block_view = $data['section'];
 
 
@@ -856,6 +858,14 @@ function get_customer_navigation($data, $smarty, $user, $db) {
             case 'list':
                 $tab      = 'customers.list';
                 $_section = 'lists';
+                break;
+            case 'campaign':
+                $tab      = 'campaign.customers';
+                $_section = 'marketing';
+                break;
+            case 'deal':
+                $tab      = 'deal.customers';
+                $_section = 'marketing';
                 break;
         }
 
@@ -953,6 +963,10 @@ function get_customer_navigation($data, $smarty, $user, $db) {
         }
 
 
+        $placeholder=_('Search customers');
+        $sections = get_sections('customers', $customer->data['Customer Store Key']);
+
+
         if ($data['parent'] == 'list') {
 
             include_once 'class.List.php';
@@ -999,7 +1013,8 @@ function get_customer_navigation($data, $smarty, $user, $db) {
             }
 
 
-        } elseif ($data['parent'] == 'category') {
+        }
+        elseif ($data['parent'] == 'category') {
 
 
             include_once 'class.Category.php';
@@ -1041,13 +1056,108 @@ function get_customer_navigation($data, $smarty, $user, $db) {
                 'url'   => 'customer_category.php?id='.$category->id
             );
 
-        } else {
+        }
+        elseif ($data['parent'] == 'campaign') {
+
 
             $up_button = array(
                 'icon'      => 'arrow-up',
-                'title'     => _(
-                        "Customers"
-                    ).' '.$store->data['Store Code'],
+                'title'     => _("Campaign").' '.$data['_parent']->get('Name'),
+                'reference' => 'campaigns/'.$store->id.'/'.$data['_parent']->id
+            );
+
+            if ($prev_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-left',
+                    'title'     => $prev_title,
+                    'reference' => 'campaign/'.$data['parent_key'].'/customer/'.$prev_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-left disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+            $left_buttons[] = $up_button;
+
+
+            if ($next_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-right',
+                    'title'     => $next_title,
+                    'reference' => 'campaign/'.$data['parent_key'].'/customer/'.$next_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-right disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+            $sections = get_sections('products',$store->id);
+
+            $placeholder=_('Search marketing');
+
+
+        }
+        elseif ($data['parent'] == 'deal') {
+
+
+            $up_button = array(
+                'icon'      => 'arrow-up',
+                'title'     => _("Deal").' '.$data['_parent']->get('Name'),
+                'reference' => 'campaigns/'.$store->id.'/'.$data['_parent']->get('Deal Campaign Key').'/deal/'.$data['_parent']->id
+            );
+
+            if ($prev_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-left',
+                    'title'     => $prev_title,
+                    'reference' => 'deal/'.$data['parent_key'].'/customer/'.$prev_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-left disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+            $left_buttons[] = $up_button;
+
+
+            if ($next_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-right',
+                    'title'     => $next_title,
+                    'reference' => 'deal/'.$data['parent_key'].'/customer/'.$next_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-right disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+            $sections = get_sections('products',$store->id);
+
+            $placeholder=_('Search marketing');
+
+
+        }
+        else {
+
+            $up_button = array(
+                'icon'      => 'arrow-up',
+                'title'     => _("Customers").' '.$store->data['Store Code'],
                 'reference' => 'customers/'.$store->id
             );
 
@@ -1108,9 +1218,6 @@ function get_customer_navigation($data, $smarty, $user, $db) {
         'class' => ($customer->get('Sticky Note') == '' ? '' : 'hide')
     );
 
-    $sections = get_sections(
-        'customers', $customer->data['Customer Store Key']
-    );
 
 
     if (isset($sections[$_section])) {
@@ -1136,7 +1243,7 @@ function get_customer_navigation($data, $smarty, $user, $db) {
         'title'          => $title,
         'search'         => array(
             'show'        => true,
-            'placeholder' => _('Search customers')
+            'placeholder' => $placeholder
         )
 
     );

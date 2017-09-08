@@ -420,12 +420,12 @@ class Order extends DB_Table {
 
 
                 if (array_key_exists($field, $base_data)) {
-                    // print "xxx-> $field : $value -> ".$this->data[$field]." \n";
 
-                    if ($value != $this->data[$field]) {
+
+
 
                         $this->update_field($field, $value, $options);
-                    }
+
                 }
         }
 

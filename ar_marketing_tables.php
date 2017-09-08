@@ -47,6 +47,9 @@ switch ($tipo) {
     case 'deals':
         deals(get_table_parameters(), $db, $user);
         break;
+    case 'components':
+        components(get_table_parameters(), $db, $user);
+        break;
 
     default:
         $response = array(
@@ -354,5 +357,130 @@ function campaigns($_data, $db, $user) {
     echo json_encode($response);
 }
 
+function components($_data, $db, $user) {
+
+    $rtext_label = 'allowance';
+    include_once 'prepare_table/init.php';
+
+    $sql
+           = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $adata = array();
+
+    // print $sql;
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+
+
+            switch ($data['Deal Component Status']) {
+                case 'Waiting':
+                    $status = sprintf(
+                        '<i class="fa fa-clock-o discreet fa-fw" aria-hidden="true" title="%s" ></i>', _('Waiting')
+                    );
+                    break;
+                case 'Active':
+                    $status = sprintf(
+                        '<i class="fa fa-play success fa-fw" aria-hidden="true" title="%s" ></i>', _('Active')
+                    );
+                    break;
+                case 'Suspended':
+                    $status = sprintf(
+                        '<i class="fa fa-pause error fa-fw" aria-hidden="true" title="%s" ></i>', _('Suspended')
+                    );
+                    break;
+                case 'Finish':
+                    $status = sprintf(
+                        '<i class="fa fa-stop discreet fa-fw" aria-hidden="true" title="%s" ></i>', _('Finished')
+                    );
+                    break;
+                default:
+                    $status = $data['Deal Component Status'];
+            }
+
+            $duration = '';
+            if ($data['Deal Component Expiration Date'] == '' and $data['Deal Component Begin Date'] == '') {
+                $duration = _('Permanent');
+            } else {
+
+                if ($data['Deal Component Begin Date'] != '') {
+                    $duration = strftime(
+                        "%x", strtotime($data['Deal Component Begin Date']." +00:00")
+                    );
+
+                }
+                $duration .= ' - ';
+                if ($data['Deal Component Expiration Date'] != '') {
+                    $duration .= strftime(
+                        "%x", strtotime($data['Deal Component Expiration Date']." +00:00")
+                    );
+
+                } else {
+                    $duration .= _('Present');
+                }
+
+            }
+
+            if ($data['Deal Component Expiration Date'] != '') {
+                $to = strftime(
+                    "%x", strtotime($data['Deal Component Expiration Date']." +00:00")
+                );
+            } else {
+                $to = _('Permanent');
+            }
+
+
+            if ($data['Deal Component Begin Date'] != '') {
+                $from = strftime(
+                    "%x", strtotime($data['Deal Component Begin Date']." +00:00")
+                );
+            } else {
+                $from = '';
+            }
+/*
+            if (strlen(strip_tags($data['Deal Term Allowances Label'])) > 75) {
+                $description_class = 'super_small';
+            } elseif (strlen(strip_tags($data['Deal Term Allowances Label'])) > 60) {
+                $description_class = 'very_small';
+            } elseif (strlen(strip_tags($data['Deal Term Allowances Label'])) > 50) {
+                $description_class = 'small';
+            } else {
+                $description_class = '';
+            }
+
+*/
+            $adata[] = array(
+                'id'          => (integer)$data['Deal Component Key'],
+                'status'      => $status,
+                //'name'        => $data['Deal Name'],
+                //'description' => sprintf('<span class="%s" title="%s">%s</span>', $description_class, strip_tags($data['Deal Term Allowances']), $data['Deal Term Allowances Label']),
+                'from'        => $from,
+                'to'          => $to,
+                'duration'          => $duration,
+                'orders'      => number($data['Deal Component Total Acc Used Orders']),
+                'customers'   => number($data['Deal Component Total Acc Used Customers'])
+
+            );
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
 
 ?>

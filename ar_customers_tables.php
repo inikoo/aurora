@@ -145,10 +145,19 @@ function customers($_data, $db, $user) {
                     break;
             }
 
+
+            if ($parameters['parent'] == 'store') {
+                $link_format = '/customers/%d/%d';
+            } else {
+                $link_format = '/'.$parameters['parent'].'/%d/customer/%d';
+            }
+
+
             $adata[] = array(
                 'id'           => (integer)$data['Customer Key'],
                 'store_key'    => $data['Customer Store Key'],
-                'formatted_id' => sprintf("%06d", $data['Customer Key']),
+                'formatted_id' => sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $parameters['parent_key'], $data['Customer Key'], $data['Customer Key']),
+
                 'name'         => $data['Customer Name'],
                 'company_name' => $data['Customer Company Name'],
                 'contact_name' => $data['Customer Main Contact Name'],
@@ -167,9 +176,7 @@ function customers($_data, $db, $user) {
 
                 'other_value' => $category_other_value,
 
-                'total_payments'  => money(
-                    $data['Customer Net Payments'], $currency
-                ),
+                'total_payments'  => money($data['Customer Net Payments'], $currency),
                 'net_balance'     => money(
                     $data['Customer Net Balance'], $currency
                 ),

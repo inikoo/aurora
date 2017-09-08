@@ -699,7 +699,7 @@ function edit_item_discount($account, $db, $user, $editor, $data, $smarty) {
         $amount           = $data['value'];
         $transaction_data = $parent->update_transaction_discount_amount($data['transaction_key'], $amount);
     }
-   
+
     if ($parent->error) {
         $response = array(
             'state' => 400,

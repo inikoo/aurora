@@ -475,7 +475,7 @@ function get_campaign_navigation($data, $smarty, $user, $db) {
                 if ($result = $db->query($sql)) {
                     if ($row = $result->fetch()) {
                         $prev_key   = $row['object_key'];
-                        $prev_title = _("Camapign").' '.$row['object_name'].' ('.$row['object_key'].')';
+                        $prev_title = _("Campaign").' '.$row['object_name'].' ('.$row['object_key'].')';
 
                     }
                 } else {
@@ -493,7 +493,7 @@ function get_campaign_navigation($data, $smarty, $user, $db) {
                 if ($result = $db->query($sql)) {
                     if ($row = $result->fetch()) {
                         $next_key   = $row['object_key'];
-                        $next_title = _("Camapign").' '.$row['object_name'].' ('.$row['object_key'].')';
+                        $next_title = _("Campaign").' '.$row['object_name'].' ('.$row['object_key'].')';
 
                     }
                 } else {
@@ -526,7 +526,7 @@ function get_campaign_navigation($data, $smarty, $user, $db) {
                 'title'     => _(
                         "Campaigns"
                     ).' '.$data['store']->get('Code'),
-                'reference' => 'campaigns/'.$data['store']->id
+                'reference' => 'marketing/'.$data['store']->id
             );
 
             if ($prev_key) {

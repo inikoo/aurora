@@ -2320,6 +2320,93 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
 
                 break;
+
+            case 'campaign':
+                $module = 'products';
+
+
+
+                if (isset($view_path[0])) {
+                    $section = 'campaigns';
+
+
+                    $parent     = 'store';
+                    $key = $view_path[0];
+
+
+                    if (isset($view_path[1])) {
+
+
+                      if ($view_path[1] == 'order') {
+                            $object  = 'order';
+                            $section = 'order';
+                            $parent='campaign';
+                          $parent_key=$key;
+                          if (isset($view_path[2])) {
+                              $key = $view_path[2];
+                          }
+
+                        }
+                        elseif ($view_path[1] == 'customer') {
+                            $object  = 'customer';
+                            $section = 'customer';
+                            $parent='campaign';
+                            $parent_key=$key;
+                            if (isset($view_path[2])) {
+                                $key = $view_path[2];
+                            }
+
+                        }
+
+
+                    }
+
+                }
+                break;
+
+            case 'deal':
+                $module = 'products';
+
+
+
+                if (isset($view_path[0])) {
+                    $section = 'deals';
+
+
+                    $parent     = 'campaign';
+                    $key = $view_path[0];
+
+
+                    if (isset($view_path[1])) {
+
+
+                        if ($view_path[1] == 'order') {
+                            $object  = 'order';
+                            $section = 'order';
+                            $parent='deal';
+                            $parent_key=$key;
+                            if (isset($view_path[2])) {
+                                $key = $view_path[2];
+                            }
+
+                        }
+                        elseif ($view_path[1] == 'customer') {
+                            $object  = 'customer';
+                            $section = 'customer';
+                            $parent='deal';
+                            $parent_key=$key;
+                            if (isset($view_path[2])) {
+                                $key = $view_path[2];
+                            }
+
+                        }
+
+
+                    }
+
+                }
+                break;
+
             case 'warehouses':
 
                 if (!$user->can_view('locations')) {

@@ -18,7 +18,7 @@ function get_campaign_showcase($data, $smarty) {
         return "";
     }
 
-    $campaign->update_current_number_of_deals();
+    $campaign->update_number_of_deals();
     $campaign->update_usage();
 
     $smarty->assign('campaign', $campaign);

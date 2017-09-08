@@ -723,6 +723,13 @@ ALTER TABLE `Store DC Data` ADD `Store DC Orders In Warehouse No Alerts Amount` 
 ALTER TABLE `Order Dimension` ADD INDEX `StoreState` (`Order State`, `Order Store Key`);
 
 
+ALTER TABLE `Deal Campaign Dimension` ADD `Deal Campaign Number History Records` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Deal Campaign Total Acc Applied Customers`;
+ALTER TABLE `Deal Dimension` ADD `Deal Number History Records` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Deal Total Acc Applied Customers`;
+
+ALTER TABLE `Deal Dimension` ADD `Deal Number Components` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Deal Number Active Components`;
+ALTER TABLE `Deal Campaign Dimension` ADD `Deal Campaign Number Deals` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Deal Campaign Valid To`;
+
+
 //====
 
 

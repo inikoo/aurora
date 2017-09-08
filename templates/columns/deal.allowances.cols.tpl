@@ -1,3 +1,14 @@
+{*
+<!--
+ About:
+ Author: Raul Perusquia <raul@inikoo.com>
+ Created: 8 September 2017 at 12:48:17 GMT+8, Kuala Lumpur, Malaysia
+ Copyright (c) 2016, Inikoo
+
+ Version 3
+-->
+*}
+
 var columns = [
 {
 name: "id",
@@ -5,16 +16,6 @@ label: "",
 editable: false,
 renderable: false,
 cell: "string",
-
-},{
-name: "formatted_id",
-label: "{t}ID{/t}",
-editable: false,
-sortType: "toggle",
-{if $sort_key=='id'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-
-cell: Backgrid.HtmlCell.extend({ })
-
 
 }, {
 name: "store_key",
@@ -24,168 +25,103 @@ renderable: false,
 cell: "string",
 sortType: "toggle",
 
-}, {
+},
+{
+name: "status",
+label: "",
+editable: false,
+sortType: "toggle",
+cell: Backgrid.HtmlCell.extend({
+className: "width_20"
+})
+
+},
+{
 name: "name",
 label: "{t}Name{/t}",
 sortType: "toggle",
 cell: Backgrid.StringCell.extend({
 events: {
-"dblclick": "enterEditMode"
+"click": function() {
+{if $data['object']==''}
+    change_view('deals/'+this.model.get("store_key")+'/' + this.model.get("id")  )
+
+{else $data['object']=='campaign'}
+    change_view('campaigns/{$data['_parent']->get('Store Key')}/{$data['key']}/deal/' + this.model.get("id")  )
+
+{/if}
+
 }
+},
+className:"link"
 })
-}, {
-name: "location",
-label: "{t}Location{/t}",
+},
+{
+name: "description",
+label: "{t}Description{/t}",
 sortType: "toggle",
-{if $sort_key=='location'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({
 
-editable: false,
+}),
 
-cell: "html"
-}, {
-name: "activity",
-label: "{t}Status{/t}",
-editable: false,
-sortType: "toggle",
-{if $sort_key=='activity'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-
-cell: "string"
-}, {
-name: "contact_since",
-label: "{t}Since{/t}",
-editable: false,
-defaultOrder:1,
-sortType: "toggle",
-{if $sort_key=='contact_since'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
-headerCell: integerHeaderCell
-
-}, {
-name: "last_invoice",
-label: "{t}Last invoice{/t}",
+},
+{
+name: "from",
+label: "{t}From{/t}",
 defaultOrder:1,
 editable: false,
 sortType: "toggle",
-{if $sort_key=='last_invoice'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='from'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
 
 cell: Backgrid.StringCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 
-}, {
-name: "invoices",
-label: "{t}Invoices{/t}",
+},
+{
+name: "to",
+label: "{t}To{/t}",
+defaultOrder:1,
 editable: false,
+sortType: "toggle",
+{if $sort_key=='to'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
-defaultOrder:1,
-sortType: "toggle",
-{if $sort_key=='invoices'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
 
-headerCell: integerHeaderCell
-}, {
-name: "logins",
-label: "{t}Logins{/t}",
-editable: false,
-defaultOrder:1,
-sortType: "toggle",
-{if $sort_key=='logins'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.StringCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
-}, {
-name: "failed_logins",
-label: "{t}Fail Logins{/t}",
-editable: false,
+
+},
+{
+name: "orders",
+label: "{t}Orders{/t}",
 defaultOrder:1,
+editable: false,
 sortType: "toggle",
-{if $sort_key=='logins'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='orders'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+
+
 cell: Backgrid.StringCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
-}, {
-name: "requests",
-label: "{t}Pageviews{/t}",
-editable: false,
+
+},
+{
+name: "customers",
+label: "{t}Customers{/t}",
 defaultOrder:1,
+editable: false,
 sortType: "toggle",
-{if $sort_key=='logins'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='customers'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+
+
 cell: Backgrid.StringCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
-}, {
-name: "company_name",
-label: "{t}Company{/t}",
-editable: false,
-sortType: "toggle",
-cell: Backgrid.StringCell.extend({
-events: {
-"dblclick": "enterEditMode"
+
 }
-})
-}, {
-name: "contact_name",
-label: "{t}Main contact{/t}",
-editable: false,
-sortType: "toggle",
-cell: Backgrid.StringCell.extend({
-events: {
-"dblclick": "enterEditMode"
-}
-})
-}, {
-name: "email",
-label: "{t}Email{/t}",
-editable: false,
-sortType: "toggle",
-cell: Backgrid.EmailCell.extend({
-events: {
-"dblclick": "enterEditMode"
-}
-})
-}, {
-name: "mobile",
-label: "{t}Mobile{/t}",
-editable: false,
-sortType: "toggle",
-cell: Backgrid.StringCell.extend({
-events: {
-"dblclick": "enterEditMode"
-}
-})
-}, {
-name: "telephone",
-label: "{t}Telephone{/t}",
-editable: false,
-sortType: "toggle",
-cell: Backgrid.StringCell.extend({
-events: {
-"dblclick": "enterEditMode"
-}
-})
-}, {
-name: "total_payments",
-label: "{t}Payments{/t}",
-editable: false,
-defaultOrder:1,
-sortType: "toggle",
-{if $sort_key=='account_balance'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
-headerCell: integerHeaderCell
-
-
-}, {
-name: "account_balance",
-label: "{t}Account Balance{/t}",
-editable: false,
-defaultOrder:1,
-sortType: "toggle",
-{if $sort_key=='account_balance'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
-headerCell: integerHeaderCell
-
-
-}]
+]
 
 function change_table_view(view,save_state){
+
+return;
 
 $('.view').removeClass('selected');
 $('#view_'+view).addClass('selected');

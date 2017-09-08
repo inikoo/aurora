@@ -2615,6 +2615,8 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
         case 'products':
 
+
+
             if ($user->get_number_stores() > 1) {
                 $branch[] = array(
                     'label'     => _('Stores'),
@@ -2623,6 +2625,8 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 );
 
             }
+
+
             if ($state['section'] == 'store') {
 
                 $branch[]               = array(
@@ -2654,7 +2658,8 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 );
                 $state['current_store'] = $state['_object']->id;
 
-            } elseif ($state['section'] == 'product') {
+            }
+            elseif ($state['section'] == 'product') {
 
                 if ($state['parent'] == 'store') {
                     $branch[] = array(
@@ -2759,7 +2764,8 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     'reference' => $_ref
                 );
 
-            } elseif ($state['section'] == 'products') {
+            }
+            elseif ($state['section'] == 'products') {
 
 
                 $branch[] = array(
@@ -2769,7 +2775,8 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 );
 
 
-            } elseif ($state['section'] == 'service') {
+            }
+            elseif ($state['section'] == 'service') {
 
                 if ($state['parent'] == 'store') {
                     $branch[] = array(
@@ -2862,6 +2869,13 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 
                 }
+
+
+
+
+
+
+
                 $state['current_store'] = $state['store']->id;
                 $_ref                   = $state['parent'].'/'.$state['parent_key'].'/service/'.$state['_object']->id;
                 if (isset($state['otf'])) {
@@ -2874,7 +2888,8 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     'reference' => $_ref
                 );
 
-            } elseif ($state['section'] == 'services') {
+            }
+            elseif ($state['section'] == 'services') {
 
 
                 $branch[] = array(
@@ -2886,13 +2901,15 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 );
 
 
-            } elseif ($state['section'] == 'categories') {
+            }
+            elseif ($state['section'] == 'categories') {
                 $branch[] = array(
                     'label'     => _("Products's categories").' <span class="id">'.$state['store']->get('Code').'</span>',
                     'icon'      => 'sitemap',
                     'reference' => ''
                 );
-            } elseif ($state['section'] == 'category') {
+            }
+            elseif ($state['section'] == 'category') {
                 $category = $state['_object'];
                 $branch[] = array(
                     'label'     => _("Products's categories").' <span class="id">'.$state['store']->get('Code').'</span>',
@@ -2940,7 +2957,8 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         }
                     }
                 }
-            } elseif ($state['section'] == 'main_category.new') {
+            }
+            elseif ($state['section'] == 'main_category.new') {
                 $branch[] = array(
                     'label'     => _("Products's categories"),
                     'icon'      => 'sitemap',
@@ -2956,27 +2974,130 @@ function get_view_position($db, $state, $user, $smarty, $account) {
             } elseif ($state['section'] == 'order') {
 
 
-                $branch[] = array(
-                    'label'     => _(
-                            'Products'
-                        ).' <span class="id">'.$state['_parent']->get('Store Code').'</span>',
-                    'icon'      => '',
-                    'reference' => 'products/'.$state['_parent']->get('Store Key')
-                );
+
+                if ($state['parent'] == 'campaign') {
+                    $branch[] = array(
+                        'label'     => _('Marketing').' <span class="Store_Code">'.$state['store']->get('Code').'</span>',
+                        'icon'      => 'bullhorn',
+                        'reference' => 'marketing/'.$state['store']->id
+                    );
+
+                    $branch[] = array(
+                        'label'     => '<span class="Deal_Campaign_Name">'.$state['_parent']->get('Name').'</span>',
+                        'icon'      => 'tags',
+                        'reference' => 'campaigns/'.$state['store']->id.'/'.$state['_parent']->id
+                    );
+
+                }
+                elseif ($state['parent'] == 'deal') {
 
 
-                $branch[] = array(
-                    'label'     => '<span class=" Product_Code">'.$state['_parent']->get('Code').'</span>',
-                    'icon'      => 'cube',
-                    'reference' => 'product/'.$state['_parent']->id
-                );
-                $branch[] = array(
+
+                    $branch[] = array(
+                        'label'     => _('Marketing').' <span class="Store_Code">'.$state['store']->get('Code').'</span>',
+                        'icon'      => 'bullhorn',
+                        'reference' => 'marketing/'.$state['store']->id
+                    );
+
+                    $campaign=get_object('Campaign',$state['_parent']->get('Deal Campaign Key'));
+
+                    $branch[] = array(
+                        'label'     => '<span class="Deal_Campaign_Name">'.$campaign->get('Name').'</span>',
+                        'icon'      => 'tags',
+                        'reference' => 'campaigns/'.$state['store']->id.'/'.$state['_parent']->id
+                    );
+
+                    $branch[] = array(
+                        'label'     => '<span class="Deal_Name">'.$state['_parent']->get('Name').'</span>',
+                        'icon'      => 'tags',
+                        'reference' => 'campaigns/'.$state['store']->id.'/'.$state['_parent']->get('Deal Campaign Key').'/deal/'.$state['_parent']->id
+                    );
+
+
+
+                }
+                else{
+
+                        $branch[] = array(
+                            'label'     => _('Products').' <span class="id">'.$state['_parent']->get('Store Code').'</span>',
+                            'icon'      => '',
+                            'reference' => 'products/'.$state['_parent']->get('Store Key')
+                        );
+
+
+                        $branch[] = array(
+                            'label'     => '<span class=" Product_Code">'.$state['_parent']->get('Code').'</span>',
+                            'icon'      => 'cube',
+                            'reference' => 'product/'.$state['_parent']->id
+                        );
+
+                }
+
+
+
+
+
+
+
+
+                    $branch[] = array(
                     'label'     => '<span class="id ">'.$state['_object']->get('Order Public ID').'</span>',
                     'icon'      => 'shopping-cart',
                     'reference' => ''
                 );
 
-            } elseif ($state['section'] == 'website') {
+            }elseif ($state['section'] == 'customer') {
+
+
+
+            if ($state['parent'] == 'campaign') {
+                $branch[] = array(
+                    'label'     => _('Marketing').' <span class="Store_Code">'.$state['store']->get('Code').'</span>',
+                    'icon'      => 'bullhorn',
+                    'reference' => 'marketing/'.$state['store']->id
+                );
+
+                $branch[] = array(
+                    'label'     => '<span class="Deal_Campaign_Name">'.$state['_parent']->get('Name').'</span>',
+                    'icon'      => 'tags',
+                    'reference' => 'campaigns/'.$state['store']->id.'/'.$state['_parent']->id
+                );
+
+                $branch[] = array(
+                    'label'     => '<span class="id ">'.$state['_object']->get_formatted_id().'</span>',
+                    'icon'      => 'user',
+                    'reference' => ''
+                );
+            }elseif ($state['parent'] == 'deal') {
+
+                    $branch[] = array(
+                        'label'     => _('Marketing').' <span class="Store_Code">'.$state['store']->get('Code').'</span>',
+                        'icon'      => 'bullhorn',
+                        'reference' => 'marketing/'.$state['store']->id
+                    );
+
+                    $campaign=get_object('Campaign',$state['_parent']->get('Deal Campaign Key'));
+
+                    $branch[] = array(
+                        'label'     => '<span class="Deal_Campaign_Name">'.$campaign->get('Name').'</span>',
+                        'icon'      => 'tags',
+                        'reference' => 'campaigns/'.$state['store']->id.'/'.$state['_parent']->id
+                    );
+
+                $branch[] = array(
+                    'label'     => '<span class="Deal_Name">'.$state['_parent']->get('Name').'</span>',
+                    'icon'      => 'tags',
+                    'reference' => 'campaigns/'.$state['store']->id.'/'.$state['_parent']->get('Deal Campaign Key').'/deal/'.$state['_parent']->id
+                );
+
+                    $branch[] = array(
+                        'label'     => '<span class="id ">'.$state['_object']->get_formatted_id().'</span>',
+                        'icon'      => 'user',
+                        'reference' => ''
+                    );
+                }
+
+            }elseif ($state['section'] == 'website') {
 
                 $branch[]               = array(
                     'label'     => _('Store').' <span class="Store_Code id">'.$state['store']->get('Code').'</span>',
@@ -3194,6 +3315,8 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     break;
 
                 case 'customer':
+
+
 
                     if ($state['parent'] == 'store') {
                         $customer = new Customer($state['key']);
