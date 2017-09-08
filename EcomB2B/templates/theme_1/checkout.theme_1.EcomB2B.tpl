@@ -222,7 +222,7 @@
                                                         <option value="6">{'2000-06-01'|date_format:"%B"}</option>
                                                         <option value="7">{'2000-07-01'|date_format:"%B"}</option>
                                                         <option value="8">{'2000-08-01'|date_format:"%B"}</option>
-                                                        <option value="9">{'2000-08-01'|date_format:"%B"}</option>
+                                                        <option value="9">{'2000-09-01'|date_format:"%B"}</option>
                                                         <option value="10">{'2000-10-01'|date_format:"%B"}</option>
                                                         <option value="11">{'2000-11-01'|date_format:"%B"}</option>
                                                         <option value="12">{'2000-12-01'|date_format:"%B"}</option>
