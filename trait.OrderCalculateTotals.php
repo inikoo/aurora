@@ -202,8 +202,7 @@ trait OrderCalculateTotals {
 
 
 
-
-        $this->update(
+        $this->fast_update(
             array(
                 'Order Number Items'              => $number_items,
                 'Order Number Items with Deals'   => $number_with_deals,
@@ -231,10 +230,10 @@ trait OrderCalculateTotals {
                 'Order To Pay Amount'             => round($total - $payments,2)
 
 
-            ), 'no_history'
+            )
         );
 
-       
+       exit;
 
 
     }

@@ -32,6 +32,7 @@ abstract class DB_Table extends stdClass {
     public function update($data, $options = '', $metadata = '') {
 
 
+
         $this->error = false;
         $this->msg   = '';
         if (!is_array($data)) {
@@ -111,13 +112,14 @@ abstract class DB_Table extends stdClass {
     }
 
     protected function update_field($field, $value, $options = '') {
+
         $this->update_table_field($field, $value, $options, $this->table_name, $this->table_name.' Dimension', $this->id);
 
     }
 
     protected function update_table_field($field, $value, $options = '', $table_name, $table_full_name, $table_key) {
 
-        //print "*** $field, $value\n";
+
         $this->updated = false;
 
         $null_if_empty = true;
@@ -211,7 +213,7 @@ abstract class DB_Table extends stdClass {
             exit($sql);
 
         }
-*/
+    */
         $old_formatted_value = $this->get($formatted_field);
 
 
@@ -246,7 +248,6 @@ abstract class DB_Table extends stdClass {
         }
 
 
-
         $update_op = $this->db->prepare($sql);
         $update_op->execute();
         $affected = $update_op->rowCount();
@@ -276,8 +277,7 @@ abstract class DB_Table extends stdClass {
             if (preg_match(
                     '/deal|deal campaign|attachment bridge|location|site|page|part|barcode|agent|customer|contact|company|order|staff|supplier|address|telecom|user|store|product|company area|company department|position|category/i',
                     $table_name
-                ) and !$this->new and $save_history
-            ) {
+                ) and !$this->new and $save_history) {
 
 
                 $old_formatted_value = htmlentities($old_formatted_value);
@@ -557,8 +557,7 @@ abstract class DB_Table extends stdClass {
 
         if (isset($this->editor['Date']) and preg_match(
                 '/^\d{4}-\d{2}-\d{2}/', $this->editor['Date']
-            )
-        ) {
+            )) {
             $date = $this->editor['Date'];
         } else {
             $date = gmdate("Y-m-d H:i:s");
@@ -568,8 +567,7 @@ abstract class DB_Table extends stdClass {
 
         if (isset($this->editor['User Key']) and is_numeric(
                 $this->editor['User Key']
-            )
-        ) {
+            )) {
             $user_key = $this->editor['User Key'];
         } else {
             $user_key = 0;
@@ -669,6 +667,55 @@ abstract class DB_Table extends stdClass {
 
     }
 
+    public function fast_update($data, $table_full_name = false,$options='') {
+
+        if ($options == 'no_null') {
+            $null_if_empty = false;
+
+        }else{
+            $null_if_empty = true;
+
+        }
+
+
+        if ($table_full_name == '') {
+            $table_full_name = $this->table_name.' Dimension';
+        }
+
+        if ($table_full_name == 'Part Dimension' or $table_full_name == 'Part Data') {
+            $key_field = 'Part SKU';
+        } elseif ($table_full_name == 'Product Dimension' or $table_full_name == 'Product Data' or $table_full_name == 'Product DC Data') {
+            $key_field = 'Product ID';
+        } elseif ($table_full_name == 'Supplier Production Dimension') {
+            $key_field = 'Supplier Production Supplier Key';
+
+        } elseif ($table_full_name == 'Page Store Dimension') {
+            $key_field = 'Page Key';
+
+        } else {
+            $key_field = $this->table_name." Key";
+
+        }
+
+
+        foreach ($data as $field => $value) {
+
+
+
+
+            $sql = sprintf(
+                "UPDATE `%s` SET `%s`=%s WHERE `%s`=%d", addslashes($table_full_name), addslashes($field), prepare_mysql($value, $null_if_empty), addslashes($key_field), $this->id
+            );
+
+
+            $this->db->exec($sql);
+            $this->data[$field] = $value;
+
+        }
+
+
+    }
+
     function post_add_history($history_key, $type = false) {
         return false;
     }
@@ -694,14 +741,14 @@ abstract class DB_Table extends stdClass {
 
     }
 
-    function add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $table_name='', $table_key='',$update_history_records_data=true) {
+    function add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $table_name = '', $table_key = '', $update_history_records_data = true) {
 
 
-        if($table_name==''){
-            $table_name=$this->get_object_name();
+        if ($table_name == '') {
+            $table_name = $this->get_object_name();
         }
-        if($table_key==''){
-            $table_key=$this->id;
+        if ($table_key == '') {
+            $table_key = $this->id;
         }
 
         $history_key = $this->add_table_history($history_data, $force_save, '', '', $table_name, $table_key);

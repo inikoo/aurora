@@ -2,7 +2,7 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 10 May 2016 at 17:22:07 GMT+8, Kuala Lumpur, Malaysia
+ Created: 8 September 2017 at 13:25:51 GMT+8, Kuala Lumpur, Malaysia
  Copyright (c) 2015, Inikoo
 
  Version 3
@@ -10,7 +10,7 @@
 */
 
 
-$tab     = 'campaign.customers';
+$tab     = 'customers';
 $ar_file = 'ar_customers_tables.php';
 $tipo    = 'customers';
 

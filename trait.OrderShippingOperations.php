@@ -20,6 +20,10 @@ trait OrderShippingOperations {
 
 
         $this->data['Order Shipping Net Amount'] = $value;
+
+
+
+
         $this->update_shipping($dn_key);
 
         $this->updated   = true;
@@ -39,17 +43,13 @@ trait OrderShippingOperations {
 
 
         if ($dn_key and $order_picked) {
-            list(
-                $shipping, $shipping_key, $shipping_method
-                ) = $this->get_shipping($dn_key);
+            list($shipping, $shipping_key, $shipping_method) = $this->get_shipping($dn_key);
         } else {
-            list(
-                $shipping, $shipping_key, $shipping_method
-                ) = $this->get_shipping();
+            list($shipping, $shipping_key, $shipping_method) = $this->get_shipping();
         }
 
 
-        //print "$shipping,$shipping_key,$shipping_method";
+
         if (!is_numeric($shipping)) {
 
             $this->data['Order Shipping Net Amount'] = 0;
@@ -83,6 +83,9 @@ trait OrderShippingOperations {
          $sql    = sprintf(
              'DELETE FROM `Order No Product Transaction Fact` WHERE `Order Key`=%d AND `Transaction Type`="Shipping" ', $this->id
          );
+
+
+
 
          $this->db->exec($sql);
 

@@ -2675,6 +2675,17 @@ $tab_defaults = array(
         'elements_type' => each($elements_options['orders'])['key'],
         'elements'      => $elements_options['orders']
     ),
+    'campaign.customers'                          => array(
+        'view'          => 'overview',
+        'sort_key'      => 'formatted_id',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'name',
+        'elements_type' => each($elements_options['customers'])['key'],
+        'elements'      => $elements_options['customers']
+
+    ),
     'deal.history'                             => array(
         'view'          => 'overview',
         'sort_key'      => 'date',
@@ -2684,6 +2695,39 @@ $tab_defaults = array(
         'f_field'       => '',
         'elements_type' => each($elements_options['deal_history'])['key'],
         'elements'      => $elements_options['deal_history']
+    ),
+    'deal.components'                           => array(
+        'view'          => 'overview',
+        'sort_key'      => 'name',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'name',
+
+    ),
+    'deal.orders'                          => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'number',
+        'from'          => '',
+        'to'            => '',
+        'period'        => 'all',
+        'elements_type' => each($elements_options['orders'])['key'],
+        'elements'      => $elements_options['orders']
+    ),
+    'deal.customers'                          => array(
+        'view'          => 'overview',
+        'sort_key'      => 'formatted_id',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'name',
+        'elements_type' => each($elements_options['customers'])['key'],
+        'elements'      => $elements_options['customers']
+
     ),
     'material.parts'                           => array(
         'view'          => 'overview',

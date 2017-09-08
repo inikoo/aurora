@@ -212,9 +212,9 @@ class DealCampaign extends DB_Table {
 
                 $this->update_field($field, $value, $options);
 
-                $sql=sprintf('update `Deal Dimension` set `Deal Icon`=%s where `Deal Campaign Key`=%d  ',prepare_mysql($value),$this->id);
+                $sql = sprintf('UPDATE `Deal Dimension` SET `Deal Icon`=%s WHERE `Deal Campaign Key`=%d  ', prepare_mysql($value), $this->id);
                 $this->db->exec($sql);
-                $sql=sprintf('update `Deal Component Dimension` set `Deal Component Icon`=%s where `Deal Component Campaign Key`=%d  ',prepare_mysql($value),$this->id);
+                $sql = sprintf('UPDATE `Deal Component Dimension` SET `Deal Component Icon`=%s WHERE `Deal Component Campaign Key`=%d  ', prepare_mysql($value), $this->id);
                 $this->db->exec($sql);
 
 
@@ -224,9 +224,9 @@ class DealCampaign extends DB_Table {
 
                 $this->update_field($field, $value, $options);
 
-                $sql=sprintf('update `Deal Dimension` set `Deal Name Label`=%s where `Deal Campaign Key`=%d  ',prepare_mysql($value),$this->id);
+                $sql = sprintf('UPDATE `Deal Dimension` SET `Deal Name Label`=%s WHERE `Deal Campaign Key`=%d  ', prepare_mysql($value), $this->id);
                 $this->db->exec($sql);
-                $sql=sprintf('update `Deal Component Dimension` set `Deal Component Name Label`=%s where `Deal Component Campaign Key`=%d  ',prepare_mysql($value),$this->id);
+                $sql = sprintf('UPDATE `Deal Component Dimension` SET `Deal Component Name Label`=%s WHERE `Deal Component Campaign Key`=%d  ', prepare_mysql($value), $this->id);
                 $this->db->exec($sql);
 
 
@@ -275,15 +275,29 @@ class DealCampaign extends DB_Table {
         $deal->update_status_from_dates();
 
 
-        $this->update_current_number_of_deals();
+        $this->update_number_of_deals();
 
         return $deal;
     }
 
 
-    function update_current_number_of_deals() {
-        $number_deals = 0;
-        $sql          = sprintf("SELECT count(*) AS num FROM `Deal Dimension` WHERE `Deal Campaign Key`=%d ", $this->id);
+    function update_number_of_deals() {
+        $number_deals         = 0;
+        $number_current_deals = 0;
+
+        $sql                  = sprintf("SELECT count(*) AS num FROM `Deal Dimension` WHERE `Deal Campaign Key`=%d  and `Deal Status`='Active'  ", $this->id);
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $number_current_deals = $row['num'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+        $sql                  = sprintf("SELECT count(*) AS num FROM `Deal Dimension` WHERE `Deal Campaign Key`=%d ", $this->id);
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
@@ -296,7 +310,13 @@ class DealCampaign extends DB_Table {
         }
 
 
-        $this->update(array('Deal Campaign Number Current Deals' => $number_deals), 'no_history');
+        $this->fast_update(
+            array(
+                'Deal Campaign Number Deals'         => $number_deals,
+                'Deal Campaign Number Current Deals' => $number_current_deals
+
+            )
+        );
 
     }
 
@@ -372,7 +392,7 @@ class DealCampaign extends DB_Table {
         }
 
 
-        $this->update(
+        $this->fast_update(
             array(
                 'Deal Campaign Total Acc Applied Orders'    => $applied_orders,
                 'Deal Campaign Total Acc Applied Customers' => $applied_customers,
@@ -387,6 +407,33 @@ class DealCampaign extends DB_Table {
         //$store = new Store($this->get('Deal Campaign Store Key'));
         //$store->update_campaings_data();
         //$store->update_deals_data();
+
+
+    }
+
+    function delete() {
+
+        if ($this->get('Deal Campaign Number Current Deals') > 0 and $this->data['Deal Campaign Status'] != 'Waiting') {
+            $this->msg = "can't be delete";
+
+            return;
+        }
+
+
+        $sql = sprintf(
+            "DELETE FROM `Deal Campaign Dimension` WHERE `Deal Campaign Key`=%d", $this->id
+        );
+        $this->db->exec($sql);
+
+        $sql = sprintf(
+            "DELETE FROM `Deal Dimension` WHERE `Deal Campaign Key`=%d", $this->id
+        );
+        $this->db->exec($sql);
+
+        $sql = sprintf(
+            "DELETE FROM `Deal Component Dimension` WHERE `Deal Component Campaign Key`=%d", $this->id
+        );
+        $this->db->exec($sql);
 
 
     }
@@ -446,6 +493,21 @@ class DealCampaign extends DB_Table {
                 return number($this->data['Deal Campaign Total Acc '.$key]);
 
                 break;
+
+            case 'Number History Records':
+            case 'Number Deals':
+            case 'Number Current Deals':
+                return number($this->data['Deal Campaign '.$key]);
+                break;
+            case 'Deals Numbers':
+
+                if ($this->data['Deal Campaign Number Current Deals'] != $this->data['Deal Campaign Number Deals']) {
+                    return number($this->data['Deal Campaign Number Current Deals']).','.number($this->data['Deal Campaign Number Deals']);
+                } else {
+                    return number($this->data['Deal Campaign Number Current Deals']);
+                }
+
+
             case 'Interval':
             case 'Duration':
                 if (!$this->data['Deal Campaign Valid To']) {
@@ -475,46 +537,6 @@ class DealCampaign extends DB_Table {
         }
 
         return false;
-    }
-
-    function delete() {
-
-        if ($this->get('Deal Campaign Number Current Deals') > 0 and $this->data['Deal Campaign Status'] != 'Waiting') {
-            $this->msg = "can't be delete";
-
-            return;
-        }
-
-
-        $sql = sprintf(
-            "DELETE FROM `Deal Campaign Dimension` WHERE `Deal Campaign Key`=%d", $this->id
-        );
-        $this->db->exec($sql);
-
-        $sql = sprintf(
-            "DELETE FROM `Deal Dimension` WHERE `Deal Campaign Key`=%d", $this->id
-        );
-        $this->db->exec($sql);
-
-        $sql = sprintf(
-            "DELETE FROM `Deal Component Dimension` WHERE `Deal Component Campaign Key`=%d", $this->id
-        );
-        $this->db->exec($sql);
-
-
-    }
-
-    function get_number_deals() {
-        $number_deals = 0;
-        $sql          = sprintf(
-            "SELECT count(*) AS num FROM `Deal Dimension` WHERE `Deal Campaign Key`=%d ", $this->id
-        );
-        $res          = mysql_query($sql);
-        while ($row = mysql_fetch_assoc($res)) {
-            $number_deals = $row['num'];
-        }
-
-        return $number_deals;
     }
 
     function get_field_label($field) {
