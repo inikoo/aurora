@@ -136,7 +136,7 @@
                                         {if $category_data.data.link!=''}
                                             <a href="{$category_data.data.link}"><img  class="panel_image" src="{$category_data.data.image_src}"  title="{$category_data.data.caption}" /></a>
                                         {else}
-                                            <img  class="panel_image" src="{$product_data.data.image_src}"  title="{$product_data.data.caption}" />
+                                            <img  class="panel_image" src="{$category_data.data.image_src}"  title="{$category_data.data.caption}" />
                                         {/if}
 
 
