@@ -734,6 +734,42 @@ ALTER TABLE `Deal Campaign Dimension` ADD `Deal Campaign Number Deals` MEDIUMINT
 
 
 
+// ==== afer migrade customers ===//
+
+ALTER TABLE `Customer Dimension` DROP INDEX `Customer Other ID`;
+ALTER TABLE `Customer Dimension` DROP INDEX `Customer Company Key`;
+ALTER TABLE `Customer Dimension` DROP `Customer Main Contact Key`;
+ALTER TABLE `Customer Dimension` DROP `Customer Main Telephone Key`;
+ALTER TABLE `Customer Dimension` DROP `Customer Main FAX Key`;
+ALTER TABLE `Customer Dimension` DROP `Customer Main Mobile Key`;
+ALTER TABLE `Customer Dimension` DROP `Customer Main XHTML Email`;
+ALTER TABLE `Customer Dimension` DROP `Customer Main Email Key`;
+ALTER TABLE `Customer Dimension`  DROP `Customer Main XHTML Address`,  DROP `Customer Main Postal Address`;
+ALTER TABLE `Customer Dimension` DROP PRIMARY KEY, ADD PRIMARY KEY (`Customer Key`) USING BTREE;
+ALTER TABLE `Customer Dimension`  DROP `Customer Billing Address Key`,  DROP `Customer Main Delivery Address Key`;
+
+
+ALTER TABLE `Customer Dimension` DROP `Customer Orders`;
+ALTER TABLE `Customer Dimension` DROP `Customer Net Balance`;
+ALTER TABLE `Customer Dimension` DROP `Customer Profit`;
+ALTER TABLE `Customer Dimension` DROP `Customer First Order Date`;
+ALTER TABLE `Customer Dimension` DROP `Customer Lost Date`;
+ALTER TABLE `Customer Dimension` DROP `Customer First Contacted Date`;
+ALTER TABLE `Customer Dimension` DROP `Customer Account Operative`;
+
+
+ALTER TABLE `Customer Dimension` DROP `Customer Main Address Key`;
+ALTER TABLE `Customer Dimension` DROP `Customer Main Delivery Address Key`;
+ALTER TABLE `Customer Dimension` DROP `Customer Main Address Incomplete`;
+
+
+
+
+
+
+
+
+
 
 ============= migration web[ages
 

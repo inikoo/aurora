@@ -84,16 +84,28 @@ class Payment extends DB_Table {
         $values = '';
 
 
-
         foreach ($data as $key => $value) {
 
             $keys .= ",`".$key."`";
             if (
 
-            in_array($key,array('Payment Completed Date','Payment Last Updated Date','Payment Cancelled Date','Payment Order Key','Payment Invoice Key','Payment Site Key','Payment Fees',
-                                'Payment Balance','Payment Amount','Payment Refund','Payment Related Payment Key','Payment User Key'
+            in_array(
+                $key, array(
+                'Payment Completed Date',
+                'Payment Last Updated Date',
+                'Payment Cancelled Date',
+                'Payment Order Key',
+                'Payment Invoice Key',
+                'Payment Site Key',
+                'Payment Fees',
+                'Payment Balance',
+                'Payment Amount',
+                'Payment Refund',
+                'Payment Related Payment Key',
+                'Payment User Key'
 
-            ))
+            )
+            )
 
             ) {
                 $values .= ','.prepare_mysql($value, true);
@@ -133,7 +145,8 @@ class Payment extends DB_Table {
 
             case('Max Payment to Refund'):
                 return round(
-                    $this->data['Payment Transaction Amount'] - $this->data['Payment Transaction Amount Refunded'], 2);
+                    $this->data['Payment Transaction Amount'] - $this->data['Payment Transaction Amount Refunded'], 2
+                );
                 break;
             case 'Transaction Status':
                 switch ($this->data['Payment Transaction Status']) {
@@ -234,20 +247,18 @@ class Payment extends DB_Table {
             case 'Payment Transaction Amount':
 
 
-                if( $value< ($this->data['Payment Transaction Amount Refunded']+$this->data['Payment Transaction Amount Credited'])){
+                if ($value < ($this->data['Payment Transaction Amount Refunded'] + $this->data['Payment Transaction Amount Credited'])) {
 
-                    $this->error=true;
-                    $this->msg=_("Payment amount can't be smaller than its refunds or credits");
-        return;
+                    $this->error = true;
+                    $this->msg   = _("Payment amount can't be smaller than its refunds or credits");
+
+                    return;
                 }
-
-
-
 
 
                 $this->update_field($field, $value, $options);
 
-                $this->update_parents();
+                $this->update_payment_parents();
 
 
                 break;
@@ -263,20 +274,21 @@ class Payment extends DB_Table {
         }
     }
 
-    function update_parents() {
+    function update_payment_parents() {
         $order = get_object('Order', $this->data['Payment Order Key']);
         $order->update_totals();
 
         $invoice = get_object('Invoice', $this->data['Payment Invoice Key']);
-        if($invoice->id) {
+        if ($invoice->id) {
             $invoice->update_payments_totals();
         }
-        $account=get_object('Account',1);
+        $account = get_object('Account', 1);
         require_once 'utils/new_fork.php';
         new_housekeeping_fork(
             'au_housekeeping', array(
             'type'        => 'payment_updated',
             'payment_key' => $this->id,
+            'store_key' => $order->get('Order Store Key'),
         ), $account->get('Account Code'), $this->db
         );
 
@@ -284,10 +296,11 @@ class Payment extends DB_Table {
 
     function delete() {
 
-        if($this->data['Payment Transaction Amount Refunded']!=0 or $this->data['Payment Transaction Amount Credited']!=0 ){
+        if ($this->data['Payment Transaction Amount Refunded'] != 0 or $this->data['Payment Transaction Amount Credited'] != 0) {
 
-            $this->error=true;
-            $this->msg=_("Payment can't be cancelled if it has refunds or credits");
+            $this->error = true;
+            $this->msg   = _("Payment can't be cancelled if it has refunds or credits");
+
             return;
 
         }
@@ -303,17 +316,15 @@ class Payment extends DB_Table {
         );
 
 
-        if($this->data['Payment Type']=='Refund'){
-            $parent_payment=get_object('Payment',$this->data['Payment Related Payment Key']);
-            $parent_payment->update(array('Payment Transaction Amount Refunded'=>$parent_payment->get('Payment Transaction Amount Refunded')+$this->data['Payment Transaction Amount']));
-
-
+        if ($this->data['Payment Type'] == 'Refund') {
+            $parent_payment = get_object('Payment', $this->data['Payment Related Payment Key']);
+            $parent_payment->update(array('Payment Transaction Amount Refunded' => $parent_payment->get('Payment Transaction Amount Refunded') + $this->data['Payment Transaction Amount']));
 
 
         }
 
 
-        $this->update_parents();
+        $this->update_payment_parents();
 
 
     }

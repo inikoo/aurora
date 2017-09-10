@@ -267,18 +267,8 @@ function update_item($_data, $customer, $website, $editor, $db) {
     }
 
 
-    include_once 'utils/new_fork.php';
-
-    global $account;
 
 
-    new_housekeeping_fork(
-        'au_housekeeping', array(
-        'type'      => 'update_orders_in_basket_data',
-        'store_key' => $order->get('Order Store Key')
-
-    ), $account->get('Account Code')
-    );
 
 
     echo json_encode($response);

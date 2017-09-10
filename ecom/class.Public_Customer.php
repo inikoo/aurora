@@ -866,7 +866,7 @@ class Public_Customer extends DBW_Table {
 
         $order_data['Order Customer Fiscal Name'] = $this->get('Fiscal Name');
         $order_data['Order Email']                = $this->data['Customer Main Plain Email'];
-        $order_data['Order Telephone']            = $this->data['Customer Main Plain Mobile'];
+        $order_data['Order Telephone']            = $this->data['Customer Preferred Contact Number Formatted Number'];
 
 
         $order_data['Order Invoice Address Recipient']            = $this->data['Customer Invoice Address Recipient'];

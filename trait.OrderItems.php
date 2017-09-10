@@ -464,6 +464,20 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
             ).'</span> <span class="'.($gross_discounts == 0 ? 'hide' : '').'">'.money($gross_discounts, $this->data['Order Currency']).'</span></span>';
 
 
+
+
+        $account=get_object('Account','');
+
+        require_once 'utils/new_fork.php';
+        new_housekeeping_fork(
+            'au_housekeeping', array(
+            'type'        => 'order_items_changed',
+            'order_key' => $this->id,
+        ), $account->get('Account Code'), $this->db
+        );
+
+
+
         return array(
             'updated'        => true,
             'otf_key'        => $otf_key,

@@ -952,24 +952,32 @@ class Invoice extends DB_Table {
             "SELECT * FROM `Category Dimension` WHERE `Category Subject`='Invoice' AND `Category Store Key`=%d ORDER BY `Category Function Order`, `Category Key` ", $this->data['Invoice Store Key']
         );
         // print $sql;
-        $res           = mysql_query($sql);
         $function_code = '';
-        while ($row = mysql_fetch_assoc($res)) {
-            if ($row['Category Function'] != '') {
-                $function_code .= sprintf(
-                    "%s return %d;", $row['Category Function'], $row['Category Key']
-                );
-            }
 
 
+        if ($result=$this->db->query($sql)) {
+        		foreach ($result as $row) {
+                    if ($row['Category Function'] != '') {
+                        $function_code .= sprintf(
+                            "%s return %d;", $row['Category Function'], $row['Category Key']
+                        );
+                    }
+        		}
+        }else {
+        		print_r($error_info=$this->db->errorInfo());
+        		print "$sql\n";
+        		exit;
         }
+
+
+
         $function_code .= "return 0;";
         //print $function_code."\n";exit;
-        $newfunc = create_function('$data', $function_code);
+        $new_function = create_function('$data', $function_code);
 
         // $this->data['Invoice Customer Level Type'];
 
-        $category_key = $newfunc($this->data);
+        $category_key = $new_function($this->data);
 
         //print "Cat $category_key\n";
 
@@ -979,7 +987,6 @@ class Invoice extends DB_Table {
 
 
             if ($category->id) {
-                //print "HOLA";
                 $category->associate_subject($this->id);
                 $this->update_field_switcher(
                     'Invoice Category Key', $category->id, 'no_history'
@@ -1608,6 +1615,7 @@ class Invoice extends DB_Table {
 
 
         $order = get_object('Order', $this->data['Invoice Order Key']);
+        $account = get_object('Account', '');
 
         $order->editor = $this->editor;
 
@@ -1810,8 +1818,7 @@ class Invoice extends DB_Table {
 
 
         include_once 'utils/new_fork.php';
-        global $account_code;
-        $msg = new_housekeeping_fork(
+        new_housekeeping_fork(
             'au_asset_sales', array(
             'type'                 => 'update_deleted_invoice_products_sales_data',
             'products'             => $products,
@@ -1819,7 +1826,7 @@ class Invoice extends DB_Table {
             'customer_key'         => $customer_key,
             'store_key'            => $store_key,
             'invoice_category_key' => $invoice_category_key
-        ), $account_code
+        ), $account->get('Account Code')
         );
 
 

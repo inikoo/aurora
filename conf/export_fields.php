@@ -47,12 +47,12 @@ $export_fields = array(
             'checked' => 0
         ),
         array(
-            'name'    => 'REPLACE(`Customer Main XHTML Address`,"<br/>","\n") as`Customer Address`',
+            'name'    => 'REPLACE(`Customer Contact Address Formatted`,"<br/>","\n") as`Customer Address`',
             'label'   => _('Contact address'),
             'checked' => 0
         ),
         array(
-            'name'    => '`Customer Main Postal Address`',
+            'name'    => '`Customer Contact Address Postal Label`',
             'label'   => _('Contact address (Postal label)'),
             'checked' => 0
         ),

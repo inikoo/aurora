@@ -682,6 +682,10 @@ abstract class DB_Table extends stdClass {
             $table_full_name = $this->table_name.' Dimension';
         }
 
+
+
+
+
         if ($table_full_name == 'Part Dimension' or $table_full_name == 'Part Data') {
             $key_field = 'Part SKU';
         } elseif ($table_full_name == 'Product Dimension' or $table_full_name == 'Product Data' or $table_full_name == 'Product DC Data') {
@@ -691,6 +695,9 @@ abstract class DB_Table extends stdClass {
 
         } elseif ($table_full_name == 'Page Store Dimension') {
             $key_field = 'Page Key';
+
+        }elseif ($table_full_name == 'Product Category Data' or   $table_full_name == 'Product Category DC Data'  or  $table_full_name == 'Product Category Dimension') {
+            $key_field = 'Product Category Key';
 
         } else {
             $key_field = $this->table_name." Key";
@@ -707,6 +714,7 @@ abstract class DB_Table extends stdClass {
                 "UPDATE `%s` SET `%s`=%s WHERE `%s`=%d", addslashes($table_full_name), addslashes($field), prepare_mysql($value, $null_if_empty), addslashes($key_field), $this->id
             );
 
+         //   print "$sql;\n";
 
             $this->db->exec($sql);
             $this->data[$field] = $value;

@@ -432,7 +432,13 @@ class Order extends DB_Table {
     }
 
     function update_state($value, $options = '', $metadata = array()) {
+
+        include_once 'utils/new_fork.php';
+
+
         $date = gmdate('Y-m-d H:i:s');
+
+        $account = get_object('Account', 1);
 
 
         $old_value         = $this->get('Order State');
@@ -655,8 +661,6 @@ class Order extends DB_Table {
                     $delivery_note = new DeliveryNote('create', $data_dn, $this);
 
 
-                    include 'utils/new_fork.php';
-                    $account = get_object('Account', 1);
                     new_housekeeping_fork(
                         'au_housekeeping', array(
                         'type'              => 'delivery_note_created',
@@ -833,7 +837,6 @@ class Order extends DB_Table {
                         $public_id = $this->db->lastInsertId();
 
                         include_once 'class.Account.php';
-                        $account           = new Account();
                         $invoice_public_id = sprintf(
                             $account->data['Account Invoice Public ID Format'], $public_id
                         );
@@ -920,12 +923,12 @@ class Order extends DB_Table {
                     );
 
 
-                    include 'utils/new_fork.php';
-                    $account = get_object('Account', 1);
                     new_housekeeping_fork(
                         'au_housekeeping', array(
                         'type'              => 'invoice_created',
-                        'delivery_note_key' => $invoice->id,
+                        'invoice_key' => $invoice->id,
+                        'customer_key'=>$invoice->get('Invoice Customer Key'),
+                        'store_key'=>$invoice->get('Invoice Store Key')
                     ), $account->get('Account Code')
                     );
 
@@ -1044,6 +1047,19 @@ class Order extends DB_Table {
             'number_deliveries' => $number_deliveries,
             'number_invoices' => $number_invoices
         );
+
+
+        if($this->data['Order State']!='Cancelled') {
+
+            new_housekeeping_fork(
+                'au_housekeeping', array(
+                'type'      => 'order_state_changed',
+                'order_key' => $this->id,
+            ), $account->get('Account Code')
+            );
+        }
+
+
 
 
     }
@@ -1506,7 +1522,6 @@ class Order extends DB_Table {
     function cancel($note = '', $date = false, $force = false) {
 
 
-        $store = get_object('Store', $this->get('Order Store Key'));
 
 
         if ($this->data['Order State'] == 'Dispatched') {
@@ -1697,15 +1712,21 @@ class Order extends DB_Table {
         $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
 
 
-        $customer         = get_object('Customer', $this->data['Order Customer Key']);
-        $customer->editor = $this->editor;
-        //$customer->add_history_order_cancelled($history_key);
-        $customer->update_orders();
 
-        // todo: call a fork to update store and accounts orders data
-        $store->update_orders();
 
-        $this->update_deals_usage();
+        $account=get_object('Account','');
+
+        require_once 'utils/new_fork.php';
+        new_housekeeping_fork(
+            'au_housekeeping', array(
+            'type'        => 'order_cancelled',
+            'order_key' => $this->id,
+
+
+            'editor'      => $this->editor
+        ), $account->get('Account Code'), $this->db
+        );
+
 
 
         return true;

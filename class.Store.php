@@ -1581,12 +1581,18 @@ class Store extends DB_Table {
 
         $data_to_update = array(
             'Store Orders In Basket Number'    => $data['in_basket']['number'],
-            'Store Orders In Basket Amount'    => $data['in_basket']['amount'],
-            'Store DC Orders In Basket Amount' => $data['in_basket']['dc_amount'],
-
-
+            'Store Orders In Basket Amount'    => round($data['in_basket']['amount'],2)
         );
-        $this->update($data_to_update, 'no_history');
+
+
+        $this->fast_update($data_to_update,'Store Data');
+
+        $data_to_update = array(
+            'Store DC Orders In Basket Amount' => round($data['in_basket']['dc_amount'],2),
+        );
+        $this->fast_update($data_to_update,'Store DC Data');
+
+
     }
 
     function update_orders_in_process_data() {
@@ -1650,15 +1656,25 @@ class Store extends DB_Table {
 
         $data_to_update = array(
             'Store Orders In Process Paid Number'        => $data['in_process_paid']['number'],
-            'Store Orders In Process Paid Amount'        => $data['in_process_paid']['amount'],
-            'Store DC Orders In Process Paid Amount'     => $data['in_process_paid']['dc_amount'],
+            'Store Orders In Process Paid Amount'        => round($data['in_process_paid']['amount'],2),
             'Store Orders In Process Not Paid Number'    => $data['in_process_not_paid']['number'],
-            'Store Orders In Process Not Paid Amount'    => $data['in_process_not_paid']['amount'],
-            'Store DC Orders In Process Not Paid Amount' => $data['in_process_not_paid']['dc_amount'],
+            'Store Orders In Process Not Paid Amount'    => round($data['in_process_not_paid']['amount'],2)
 
 
         );
-        $this->update($data_to_update, 'no_history');
+
+
+
+        $this->fast_update($data_to_update,'Store Data');
+
+        $data_to_update = array(
+            'Store DC Orders In Process Paid Amount'     => round($data['in_process_paid']['dc_amount'],2),
+            'Store DC Orders In Process Not Paid Amount' => round($data['in_process_not_paid']['dc_amount'],2)
+
+        );
+        $this->fast_update($data_to_update,'Store DC Data');
+
+
     }
 
     function update_orders_in_warehouse_data() {
@@ -1735,20 +1751,30 @@ class Store extends DB_Table {
 
         $data_to_update = array(
             'Store Orders In Warehouse Number'    => $data['warehouse']['number'],
-            'Store Orders In Warehouse Amount'    => $data['warehouse']['amount'],
-            'Store DC Orders In Warehouse Amount' => $data['warehouse']['dc_amount'],
+            'Store Orders In Warehouse Amount'    => round($data['warehouse']['amount'],2),
 
             'Store Orders In Warehouse No Alerts Number' => $data['warehouse_no_alerts']['number'],
-            'Store Orders In Warehouse No Alerts Amount' => $data['warehouse_no_alerts']['amount'],
-            'Store DC Orders In Warehouse No Alerts Amount' => $data['warehouse_no_alerts']['dc_amount'],
+            'Store Orders In Warehouse No Alerts Amount' => round($data['warehouse_no_alerts']['amount'],2),
 
             'Store Orders In Warehouse With Alerts Number' => $data['warehouse_with_alerts']['number'],
-            'Store Orders In Warehouse With Alerts Amount' => $data['warehouse_with_alerts']['amount'],
-            'Store DC Orders In Warehouse With Alerts Amount' => $data['warehouse_with_alerts']['dc_amount'],
+            'Store Orders In Warehouse With Alerts Amount' => round($data['warehouse_with_alerts']['amount'],2)
 
 
         );
-        $this->update($data_to_update, 'no_history');
+
+
+
+        $this->fast_update($data_to_update,'Store Data');
+
+        $data_to_update = array(
+            'Store DC Orders In Warehouse Amount' => round($data['warehouse']['dc_amount'],2),
+            'Store DC Orders In Warehouse No Alerts Amount' => round($data['warehouse_no_alerts']['dc_amount'],2),
+            'Store DC Orders In Warehouse With Alerts Amount' => round($data['warehouse_with_alerts']['dc_amount'],2)
+
+        );
+        $this->fast_update($data_to_update,'Store DC Data');
+
+
     }
 
     function update_orders_packed_data() {
@@ -1786,14 +1812,21 @@ class Store extends DB_Table {
 
         $data_to_update = array(
             'Store Orders Packed Number'    => $data['packed']['number'],
-            'Store Orders Packed Amount'    => $data['packed']['amount'],
-            'Store DC Orders Packed Amount' => $data['packed']['dc_amount'],
+            'Store Orders Packed Amount'    => round($data['packed']['amount'],2)
 
 
         );
 
 
-        $this->update($data_to_update, 'no_history');
+        $this->fast_update($data_to_update,'Store Data');
+
+        $data_to_update = array(
+            'Store DC Orders Packed Amount' => round($data['packed']['dc_amount'],2)
+
+        );
+        $this->fast_update($data_to_update,'Store DC Data');
+
+
     }
 
 
@@ -1832,12 +1865,20 @@ class Store extends DB_Table {
 
         $data_to_update = array(
             'Store Orders Dispatch Approved Number' => $data['approved']['number'],
-            'Store Orders Dispatch Approved Amount' => $data['approved']['amount'],
-            'Store DC Orders Dispatch Approved Amount' => $data['approved']['dc_amount'],
+            'Store Orders Dispatch Approved Amount' => round($data['approved']['amount'],2)
 
 
         );
-        $this->update($data_to_update, 'no_history');
+
+        $this->fast_update($data_to_update,'Store Data');
+
+        $data_to_update = array(
+            'Store DC Orders Dispatch Approved Amount' => round($data['approved']['dc_amount'],2)
+
+        );
+        $this->fast_update($data_to_update,'Store DC Data');
+
+
     }
 
     function update_orders_dispatched() {
@@ -1876,12 +1917,17 @@ class Store extends DB_Table {
 
         $data_to_update = array(
             'Store Orders Dispatched Number' => $data['dispatched']['number'],
-            'Store Orders Dispatched Amount' => $data['dispatched']['amount'],
-            'Store DC Orders Dispatched Amount' => $data['dispatched']['dc_amount'],
+            'Store Orders Dispatched Amount' => round($data['dispatched']['amount'],2)
 
 
         );
-        $this->update($data_to_update, 'no_history');
+        $this->fast_update($data_to_update,'Store Data');
+
+        $data_to_update = array(
+            'Store DC Orders Dispatched Amount' => round($data['dispatched']['dc_amount'],2)
+
+        );
+        $this->fast_update($data_to_update,'Store DC Data');
     }
 
     function update_orders_dispatched_today() {
@@ -1923,12 +1969,17 @@ class Store extends DB_Table {
 
         $data_to_update = array(
             'Store Orders Dispatched Today Number' => $data['dispatched_today']['number'],
-            'Store Orders Dispatched Today Amount' => $data['dispatched_today']['amount'],
-            'Store DC Orders Dispatched Today Amount' => $data['dispatched_today']['dc_amount'],
+            'Store Orders Dispatched Today Amount' => round($data['dispatched_today']['amount'],2)
 
 
         );
-        $this->update($data_to_update, 'no_history');
+        $this->fast_update($data_to_update,'Store Data');
+
+        $data_to_update = array(
+            'Store DC Orders Dispatched Today Amount' => round($data['dispatched_today']['dc_amount'],2)
+
+        );
+        $this->fast_update($data_to_update,'Store DC Data');
     }
 
 
@@ -1971,11 +2022,16 @@ class Store extends DB_Table {
         $data_to_update = array(
 
             'Store Orders Cancelled Number' => $data['cancelled']['number'],
-            'Store Orders Cancelled Amount' => $data['cancelled']['amount'],
-            'Store DC Orders Cancelled Amount' => $data['cancelled']['dc_amount'],
+            'Store Orders Cancelled Amount' => round($data['cancelled']['amount'],2)
 
         );
-        $this->update($data_to_update, 'no_history');
+        $this->fast_update($data_to_update,'Store Data');
+
+        $data_to_update = array(
+            'Store DC Orders Cancelled Amount' => round($data['cancelled']['dc_amount'],2)
+
+        );
+        $this->fast_update($data_to_update,'Store DC Data');
     }
 
 
@@ -1988,23 +2044,34 @@ class Store extends DB_Table {
 
 
             $data_to_update = array(
-                "Store $i Year Ago Invoiced Discount Amount"    => $data_iy_ago['discount_amount'],
-                "Store $i Year Ago Invoiced Amount"             => $data_iy_ago['amount'],
+                "Store $i Year Ago Invoiced Discount Amount"    => round($data_iy_ago['discount_amount'],2),
+                "Store $i Year Ago Invoiced Amount"             => round($data_iy_ago['amount'],2),
                 "Store $i Year Ago Invoices"                    => $data_iy_ago['invoices'],
                 "Store $i Year Ago Refunds"                     => $data_iy_ago['refunds'],
                 "Store $i Year Ago Replacements"                => $data_iy_ago['replacements'],
                 "Store $i Year Ago Delivery Notes"              => $data_iy_ago['deliveries'],
-                "Store $i Year Ago Profit"                      => $data_iy_ago['profit'],
-                "Store DC $i Year Ago Invoiced Amount"          => $data_iy_ago['dc_amount'],
-                "Store DC $i Year Ago Invoiced Discount Amount" => $data_iy_ago['dc_discount_amount'],
-                "Store DC $i Year Ago Profit"                   => $data_iy_ago['dc_profit']
+                "Store $i Year Ago Profit"                      => round($data_iy_ago['profit'],2),
+
             );
 
 
-            $this->update($data_to_update, 'no_history');
+            $this->fast_update($data_to_update,'Store Data');
+
+            $data_to_update = array(
+                "Store DC $i Year Ago Invoiced Amount"          => round($data_iy_ago['dc_amount'],2),
+                "Store DC $i Year Ago Invoiced Discount Amount" => round($data_iy_ago['dc_discount_amount'],2),
+                "Store DC $i Year Ago Profit"                   => round($data_iy_ago['dc_profit'],2)
+            );
+            $this->fast_update($data_to_update,'Store DC Data');
+
+
+
+
+
+
         }
 
-        $this->update(['Store Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
+        $this->fast_update(['Store Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')]);
 
 
     }
@@ -2027,32 +2094,40 @@ class Store extends DB_Table {
             );
 
             $data_to_update = array(
-                "Store $i Quarter Ago Invoiced Discount Amount"    => $sales_data['discount_amount'],
-                "Store $i Quarter Ago Invoiced Amount"             => $sales_data['amount'],
+                "Store $i Quarter Ago Invoiced Discount Amount"    => round($sales_data['discount_amount'],2),
+                "Store $i Quarter Ago Invoiced Amount"             => round($sales_data['amount'],2),
                 "Store $i Quarter Ago Invoices"                    => $sales_data['invoices'],
                 "Store $i Quarter Ago Refunds"                     => $sales_data['refunds'],
                 "Store $i Quarter Ago Replacements"                => $sales_data['replacements'],
                 "Store $i Quarter Ago Delivery Notes"              => $sales_data['deliveries'],
-                "Store $i Quarter Ago Profit"                      => $sales_data['profit'],
-                "Store DC $i Quarter Ago Invoiced Amount"          => $sales_data['dc_amount'],
-                "Store DC $i Quarter Ago Invoiced Discount Amount" => $sales_data['dc_discount_amount'],
-                "Store DC $i Quarter Ago Profit"                   => $sales_data['dc_profit'],
+                "Store $i Quarter Ago Profit"                      => round($sales_data['profit'],2),
 
-                "Store $i Quarter Ago 1YB Invoiced Discount Amount"    => $sales_data_1yb['discount_amount'],
-                "Store $i Quarter Ago 1YB Invoiced Amount"             => $sales_data_1yb['amount'],
+
+                "Store $i Quarter Ago 1YB Invoiced Discount Amount"    => round($sales_data_1yb['discount_amount'],2),
+                "Store $i Quarter Ago 1YB Invoiced Amount"             => round($sales_data_1yb['amount'],2),
                 "Store $i Quarter Ago 1YB Invoices"                    => $sales_data_1yb['invoices'],
                 "Store $i Quarter Ago 1YB Refunds"                     => $sales_data_1yb['refunds'],
                 "Store $i Quarter Ago 1YB Replacements"                => $sales_data_1yb['replacements'],
                 "Store $i Quarter Ago 1YB Delivery Notes"              => $sales_data_1yb['deliveries'],
-                "Store $i Quarter Ago 1YB Profit"                      => $sales_data_1yb['profit'],
-                "Store DC $i Quarter Ago 1YB Invoiced Amount"          => $sales_data_1yb['dc_amount'],
-                "Store DC $i Quarter Ago 1YB Invoiced Discount Amount" => $sales_data_1yb['dc_discount_amount'],
-                "Store DC $i Quarter Ago 1YB Profit"                   => $sales_data_1yb['dc_profit']
+                "Store $i Quarter Ago 1YB Profit"                      => round($sales_data_1yb['profit'],2),
+
             );
-            $this->update($data_to_update, 'no_history');
+
+            $this->fast_update($data_to_update,'Store Data');
+
+            $data_to_update = array(
+                "Store DC $i Quarter Ago Invoiced Amount"          => round($sales_data['dc_amount'],2),
+                "Store DC $i Quarter Ago Invoiced Discount Amount" => round($sales_data['dc_discount_amount'],2),
+                "Store DC $i Quarter Ago Profit"                   => round($sales_data['dc_profit'],2),
+                "Store DC $i Quarter Ago 1YB Invoiced Amount"          => round($sales_data_1yb['dc_amount'],2),
+                "Store DC $i Quarter Ago 1YB Invoiced Discount Amount" => round($sales_data_1yb['dc_discount_amount'],2),
+                "Store DC $i Quarter Ago 1YB Profit"                   => round($sales_data_1yb['dc_profit'],2)
+            );
+            $this->fast_update($data_to_update,'Store DC Data');
+
         }
 
-        $this->update(['Store Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
+        $this->fast_update(['Store Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')]);
 
 
     }
@@ -2074,23 +2149,29 @@ class Store extends DB_Table {
 
 
             $data_to_update = array(
-                "Store $db_interval Acc Invoiced Discount Amount" => $sales_data['discount_amount'],
-                "Store $db_interval Acc Invoiced Amount"          => $sales_data['amount'],
+                "Store $db_interval Acc Invoiced Discount Amount" => round($sales_data['discount_amount'],2),
+                "Store $db_interval Acc Invoiced Amount"          => round($sales_data['amount'],2),
                 "Store $db_interval Acc Invoices"                 => $sales_data['invoices'],
                 "Store $db_interval Acc Refunds"                  => $sales_data['refunds'],
                 "Store $db_interval Acc Replacements"             => $sales_data['replacements'],
                 "Store $db_interval Acc Delivery Notes"           => $sales_data['deliveries'],
-                "Store $db_interval Acc Profit"                   => $sales_data['profit'],
+                "Store $db_interval Acc Profit"                   => round($sales_data['profit'],2),
                 "Store $db_interval Acc Customers"                => $sales_data['customers'],
                 "Store $db_interval Acc Repeat Customers"         => $sales_data['repeat_customers'],
 
-                "Store DC $db_interval Acc Invoiced Amount"          => $sales_data['dc_amount'],
-                "Store DC $db_interval Acc Invoiced Discount Amount" => $sales_data['dc_discount_amount'],
-                "Store DC $db_interval Acc Profit"                   => $sales_data['dc_profit']
+
             );
 
 
-            $this->update($data_to_update, 'no_history');
+            $this->fast_update($data_to_update,'Store Data');
+
+            $data_to_update = array(
+                "Store DC $db_interval Acc Invoiced Amount"          => round($sales_data['dc_amount'],2),
+                "Store DC $db_interval Acc Invoiced Discount Amount" => round($sales_data['dc_discount_amount'],2),
+                "Store DC $db_interval Acc Profit"                   => round($sales_data['dc_profit'],2)
+            );
+            $this->fast_update($data_to_update,'Store DC Data');
+
         }
 
         if ($from_date_1yb and $last_year) {
@@ -2099,21 +2180,26 @@ class Store extends DB_Table {
             $sales_data = $this->get_sales_data($from_date_1yb, $to_date_1yb);
 
             $data_to_update = array(
-                "Store $db_interval Acc 1YB Invoiced Discount Amount"    => $sales_data['discount_amount'],
-                "Store $db_interval Acc 1YB Invoiced Amount"             => $sales_data['amount'],
+                "Store $db_interval Acc 1YB Invoiced Discount Amount"    => round($sales_data['discount_amount'],2),
+                "Store $db_interval Acc 1YB Invoiced Amount"             => round($sales_data['amount'],2),
                 "Store $db_interval Acc 1YB Invoices"                    => $sales_data['invoices'],
                 "Store $db_interval Acc 1YB Refunds"                     => $sales_data['refunds'],
                 "Store $db_interval Acc 1YB Replacements"                => $sales_data['replacements'],
                 "Store $db_interval Acc 1YB Delivery Notes"              => $sales_data['deliveries'],
-                "Store $db_interval Acc 1YB Profit"                      => $sales_data['profit'],
+                "Store $db_interval Acc 1YB Profit"                      => round($sales_data['profit'],2),
                 "Store $db_interval Acc 1YB Customers"                   => $sales_data['customers'],
                 "Store $db_interval Acc 1YB Repeat Customers"            => $sales_data['repeat_customers'],
-                "Store DC $db_interval Acc 1YB Invoiced Amount"          => $sales_data['dc_amount'],
-                "Store DC $db_interval Acc 1YB Invoiced Discount Amount" => $sales_data['dc_discount_amount'],
-                "Store DC $db_interval Acc 1YB Profit"                   => $sales_data['dc_profit']
+
             );
 
-            $this->update($data_to_update, 'no_history');
+            $this->fast_update($data_to_update,'Store Data');
+
+            $data_to_update = array(
+                "Store DC $db_interval Acc 1YB Invoiced Amount"          => round($sales_data['dc_amount'],2),
+                "Store DC $db_interval Acc 1YB Invoiced Discount Amount" => round($sales_data['dc_discount_amount'],2),
+                "Store DC $db_interval Acc 1YB Profit"                   => round($sales_data['dc_profit'],2)
+            );
+            $this->fast_update($data_to_update,'Store DC Data');
 
 
         }
@@ -2130,7 +2216,7 @@ class Store extends DB_Table {
                         ]
         )) {
 
-            $this->update(['Store Acc To Day Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
+            $this->fast_update(['Store Acc To Day Updated' => gmdate('Y-m-d H:i:s')]);
 
         } elseif (in_array(
             $db_interval, [
@@ -2141,7 +2227,7 @@ class Store extends DB_Table {
                         ]
         )) {
 
-            $this->update(['Store Acc Ongoing Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
+            $this->fast_update(['Store Acc Ongoing Intervals Updated' => gmdate('Y-m-d H:i:s')]);
         } elseif (in_array(
             $db_interval, [
                             'Last Month',
@@ -2151,7 +2237,7 @@ class Store extends DB_Table {
                         ]
         )) {
 
-            $this->update(['Store Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
+            $this->fast_update(['Store Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')]);
         }
 
     }
