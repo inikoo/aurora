@@ -74,7 +74,7 @@ if ($order == 'public_id') {
 } elseif ($order == 'total_amount') {
     $order = 'O.`Order Total Amount`';
 } elseif ($order == 'idle_time') {
-    $order = 'idle_time';
+    $order = 'DATEDIFF(NOW(), `Order Last Updated Date`) ';
 } else {
     $order = 'O.`Order Key`';
 }

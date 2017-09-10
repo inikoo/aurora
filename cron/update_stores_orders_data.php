@@ -36,7 +36,6 @@ print date('l jS \of F Y h:i:s A')."\n";
 
 
 $account = new Account();
-$account->load_acc_data();
 
 $account->update_orders();
 
@@ -46,7 +45,6 @@ if ($result = $db->query($sql)) {
     foreach ($result as $row) {
         $store = new Store('id', $row['Store Key']);
 
-        $store->load_acc_data();
         $store->update_orders();
 
     }
