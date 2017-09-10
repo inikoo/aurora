@@ -2255,7 +2255,7 @@ class Product extends Asset {
         $this->fast_update($data_to_update, 'Product DC Data');
 
 
-        exit;
+      
 
     }
 
