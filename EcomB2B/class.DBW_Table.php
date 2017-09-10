@@ -39,6 +39,67 @@ abstract class DBW_Table extends stdClass {
     protected $table_name;
     protected $ignore_fields = array();
 
+
+
+    public function fast_update($data, $table_full_name = false,$options='') {
+
+        if ($options == 'no_null') {
+            $null_if_empty = false;
+
+        }else{
+            $null_if_empty = true;
+
+        }
+
+
+        if ($table_full_name == '') {
+            $table_full_name = $this->table_name.' Dimension';
+        }
+
+
+
+
+
+        if ($table_full_name == 'Part Dimension' or $table_full_name == 'Part Data') {
+            $key_field = 'Part SKU';
+        } elseif ($table_full_name == 'Product Dimension' or $table_full_name == 'Product Data' or $table_full_name == 'Product DC Data') {
+            $key_field = 'Product ID';
+        } elseif ($table_full_name == 'Supplier Production Dimension') {
+            $key_field = 'Supplier Production Supplier Key';
+
+        } elseif ($table_full_name == 'Page Store Dimension') {
+            $key_field = 'Page Key';
+
+        }elseif ($table_full_name == 'Product Category Data' or   $table_full_name == 'Product Category DC Data'  or  $table_full_name == 'Product Category Dimension') {
+            $key_field = 'Product Category Key';
+
+        } else {
+            $key_field = $this->table_name." Key";
+
+        }
+
+
+        foreach ($data as $field => $value) {
+
+
+
+
+            $sql = sprintf(
+                "UPDATE `%s` SET `%s`=%s WHERE `%s`=%d", addslashes($table_full_name), addslashes($field), prepare_mysql($value, $null_if_empty), addslashes($key_field), $this->id
+            );
+
+            //   print "$sql;\n";
+
+            $this->db->exec($sql);
+            $this->data[$field] = $value;
+
+        }
+
+
+    }
+
+
+
     public function update($data, $options = '', $metadata = '') {
 
 
