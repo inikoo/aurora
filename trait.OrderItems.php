@@ -309,7 +309,7 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
         }
 
 
-        if (!$this->skip_update_after_individual_transaction) {
+       // if (!$this->skip_update_after_individual_transaction) {
 
 
             //$this->update_number_products();
@@ -345,7 +345,7 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
 
             //  $this->apply_payment_from_customer_account();
 
-        }
+       // }
 
 
         if ($dn_key) {
