@@ -24,6 +24,24 @@ trait OrderPayments {
         $this->db->exec($sql);
         $this->update_totals();
 
+         include_once 'utils/new_fork.php';
+
+
+
+         $account = get_object('Account', 1);
+
+
+
+         new_housekeeping_fork(
+             'au_housekeeping', array(
+             'type'      => 'payment_added_order',
+             'order_key' => $this->id,
+             'store_key' => $this->data['Order Store Key'],
+             'payment_key' => $payment->id,
+         ), $account->get('Account Code')
+         );
+
+
 
     }
     

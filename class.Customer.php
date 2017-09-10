@@ -626,8 +626,8 @@ class Customer extends Subject {
 
         $_address = $this->data['Customer Main Plain Email'];
 
-        if ($this->data['Customer Main Telephone Key']) {
-            $_address .= '<br/>T: '.$this->data['Customer Main XHTML Telephone'];
+        if ($this->data['Customer Preferred Contact Number Formatted Number']!='') {
+            $_address .= '<br/>T: '.$this->data['Customer Preferred Contact Number Formatted Number'];
         }
         $_address .= '<br/>'.$this->data['Customer Main Location'];
         if ($this->data['Customer Main Postal Code']) {
@@ -754,7 +754,7 @@ class Customer extends Subject {
 
         $order_data['Order Customer Fiscal Name'] = $this->get('Fiscal Name');
         $order_data['Order Email']                = $this->data['Customer Main Plain Email'];
-        $order_data['Order Telephone']            = $this->data['Customer Main Plain Mobile'];
+        $order_data['Order Telephone']            = $this->data['Customer Preferred Contact Number Formatted Number'];
 
 
         $order_data['Order Invoice Address Recipient']            = $this->data['Customer Invoice Address Recipient'];
@@ -1941,17 +1941,7 @@ class Customer extends Subject {
 
     }
 
-    function close_account() {
 
-        // todo deactivate the website user too
-
-        $sql = sprintf(
-            "UPDATE `Customer Dimension` SET `Customer Account Operative`='No' WHERE `Customer Key`=%d ", $this->id
-        );
-        $this->db->exec($sql);
-
-
-    }
 
     public function update_orders() {
 
@@ -2931,7 +2921,7 @@ class Customer extends Subject {
 
 
         $sql = sprintf(
-            "SELECT `Product ID`, count(DISTINCT `Invoice Key`) invoices ,max(`Invoice Date`) AS date FROM `Order Transaction Fact`  WHERE   `Current Dispatching State`='Dispatched' AND `Invoice Key`>0 AND (`Invoice Quantity`-`Refund Quantity`)>0  AND  `Customer Key`=%d  GROUP BY `Product ID` ",
+            "SELECT `Product ID`, count(DISTINCT `Invoice Key`) invoices ,max(`Invoice Date`) AS date FROM `Order Transaction Fact`  WHERE     `Invoice Key`>0 AND (`Delivery Note Quantity`-`Refund Quantity`)>0  AND  `Customer Key`=%d  GROUP BY `Product ID` ",
             $this->id
         );
 
@@ -2939,18 +2929,18 @@ class Customer extends Subject {
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
 
-                $penultime_date = '';
+                $penultimate_date = '';
                 if ($row['invoices'] > 1) {
 
                     $sql = sprintf(
-                        "SELECT `Invoice Date` FROM `Order Transaction Fact`  WHERE   `Current Dispatching State`='Dispatched'  AND `Invoice Key`>0 AND (`Invoice Quantity`-`Refund Quantity`)>0  AND   `Customer Key`=%d AND `Product ID`=%d  GROUP BY `Invoice Key` ORDER BY `Invoice Date` LIMIT  1,1   ",
+                        "SELECT `Invoice Date` FROM `Order Transaction Fact`  WHERE  `Invoice Key`>0 AND (`Delivery Note Quantity`-`Refund Quantity`)>0  AND   `Customer Key`=%d AND `Product ID`=%d  GROUP BY `Invoice Key` ORDER BY `Invoice Date` LIMIT  1,1   ",
                         $this->id, $row['Product ID']
                     );
 
 
                     if ($result2 = $this->db->query($sql)) {
                         if ($row2 = $result2->fetch()) {
-                            $penultime_date = $row2['Invoice Date'];
+                            $penultimate_date = $row2['Invoice Date'];
                         }
                     } else {
                         print_r($error_info = $this->db->errorInfo());
@@ -2963,9 +2953,10 @@ class Customer extends Subject {
 
                 $sql = sprintf(
                     "INSERT INTO `Customer Product Bridge` (`Customer Product Customer Key`,`Customer Product Product ID`,`Customer Product Invoices`,`Customer Product Last Invoice Date`,`Customer Product Penultimate Invoice Date`) VALUES (%d,%d,%s,%s,%s) ",
-                    $this->id, $row['Product ID'], $row['invoices'], prepare_mysql($row['date']), prepare_mysql($penultime_date)
+                    $this->id, $row['Product ID'], $row['invoices'], prepare_mysql($row['date']), prepare_mysql($penultimate_date)
 
                 );
+
 
 
                 $this->db->exec($sql);
@@ -2998,7 +2989,7 @@ class Customer extends Subject {
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
 
-                $penultime_date = '';
+                $penultimate_date = '';
                 if ($row['delivery_notes'] > 1) {
 
                     $sql = sprintf(
@@ -3009,7 +3000,7 @@ class Customer extends Subject {
 
                     if ($result2 = $this->db->query($sql)) {
                         if ($row2 = $result2->fetch()) {
-                            $penultime_date = $row2['Delivery Note Date'];
+                            $penultimate_date = $row2['Delivery Note Date'];
                         }
                     } else {
                         print_r($error_info = $this->db->errorInfo());
@@ -3022,7 +3013,7 @@ class Customer extends Subject {
 
                 $sql = sprintf(
                     "INSERT INTO `Customer Part Bridge` (`Customer Part Customer Key`,`Customer Part Part SKU`,`Customer Part Delivery Notes`,`Customer Part Last Delivery Note Date`,`Customer Part Penultimate Delivery Note Date`) VALUES (%d,%d,%s,%s,%s) ",
-                    $this->id, $row['Part SKU'], $row['delivery_notes'], prepare_mysql($row['date']), prepare_mysql($penultime_date)
+                    $this->id, $row['Part SKU'], $row['delivery_notes'], prepare_mysql($row['date']), prepare_mysql($penultimate_date)
 
                 );
 
@@ -3069,13 +3060,13 @@ class Customer extends Subject {
                     if ($result2 = $this->db->query($sql)) {
                         foreach ($result2 as $row2) {
 
-                            $penultime_date = '';
+                            $penultimate_date = '';
 
                             if ($row2['delivery_notes'] > 0) {
 
                                 $sql = sprintf(
                                     "INSERT INTO `Customer Part Category Bridge` (`Customer Part Category Customer Key`,`Customer Part Category Category Key`,`Customer Part Category Delivery Notes`,`Customer Part Category Last Delivery Note Date`,`Customer Part Category Penultimate Delivery Note Date`) VALUES (%d,%d,%s,%s,%s) ",
-                                    $this->id, $category->id, $row2['delivery_notes'], prepare_mysql($row2['date']), prepare_mysql($penultime_date)
+                                    $this->id, $category->id, $row2['delivery_notes'], prepare_mysql($row2['date']), prepare_mysql($penultimate_date)
 
                                 );
 

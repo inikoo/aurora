@@ -76,6 +76,12 @@ trait InvoiceCategory {
 
     function get_invoice_sales_data($from_date, $to_date) {
 
+
+        if(!$this->id){
+            return;
+        }
+
+
         $sales_data = array(
             'discount_amount'    => 0,
             'amount'             => 0,

@@ -22,7 +22,8 @@ if (isset($parameters['awhere']) and $parameters['awhere']) {
     list($where, $table, $group_by) = customers_awhere($raw_data);
 
 
-} elseif ($parameters['parent'] == 'list') {
+}
+elseif ($parameters['parent'] == 'list') {
 
 
     $sql = sprintf(

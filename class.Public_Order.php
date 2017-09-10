@@ -136,7 +136,11 @@ class Public_Order extends DBW_Table {
     }
 
     function update_state($value, $options = '', $metadata = array()) {
+
         $date = gmdate('Y-m-d H:i:s');
+
+        include_once 'utils/new_fork.php';
+        $account = get_object('Account', 1);
 
 
         $old_value         = $this->get('Order State');
@@ -209,6 +213,13 @@ class Public_Order extends DBW_Table {
             'state_index'       => $this->get('State Index'),
             'deliveries_xhtml'  => $deliveries_xhtml,
             'number_deliveries' => $number_deliveries
+        );
+
+        new_housekeeping_fork(
+            'au_housekeeping', array(
+            'type'      => 'order_state_changed',
+            'order_key' => $this->id,
+        ), $account->get('Account Code')
         );
 
 

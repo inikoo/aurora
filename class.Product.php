@@ -440,8 +440,6 @@ class Product extends Asset {
                 $image_key = $this->data['Product Main Image Key'];
 
 
-
-
                 if ($image_key) {
                     $img = '/image_root.php?size=small&id='.$image_key;
                 } else {
@@ -869,8 +867,8 @@ class Product extends Asset {
                 } else {
 
                     $date = strftime("%a, %e %b %y", strtotime($this->data['Product Next Supplier Shipment'].' +0:00'));
-                    return $date;
 
+                    return $date;
 
 
                 }
@@ -955,8 +953,7 @@ class Product extends Asset {
                 }
                 if (preg_match(
                         '/^(Last|Yesterday|Total|1|10|6|3|2|4|5|Year To|Quarter To|Month To|Today|Week To).*(Quantity Invoiced|Customers)$/', $key
-                    ) or $key == 'Current Stock'
-                ) {
+                    ) or $key == 'Current Stock') {
 
                     $field = 'Product '.$key;
 
@@ -965,8 +962,7 @@ class Product extends Asset {
                 }
                 if (preg_match(
                         '/^(Last|Yesterday|Total|1|10|6|3|2|4|5|Year To|Quarter To|Month To|Today|Week To).*(Quantity Invoiced) Minify$/', $key
-                    ) or $key == 'Current Stock'
-                ) {
+                    ) or $key == 'Current Stock') {
 
                     $field = 'Product '.preg_replace('/ Minify$/', '', $key);
 
@@ -1005,7 +1001,7 @@ class Product extends Asset {
         include_once 'class.Part.php';
 
         $sql = sprintf(
-            "SELECT `Part Reference`,`Product Part Key`,`Product Part Linked Fields`,`Product Part Part SKU`,`Product Part Ratio`,`Product Part Note` FROM `Product Part Bridge` left join `Part Dimension` on (`Part SKU`=`Product Part Part SKU`)  WHERE `Product Part Product ID`=%d ",
+            "SELECT `Part Reference`,`Product Part Key`,`Product Part Linked Fields`,`Product Part Part SKU`,`Product Part Ratio`,`Product Part Note` FROM `Product Part Bridge` LEFT JOIN `Part Dimension` ON (`Part SKU`=`Product Part Part SKU`)  WHERE `Product Part Product ID`=%d ",
             $this->id
         );
 
@@ -1016,10 +1012,10 @@ class Product extends Asset {
 
 
                 $part_data = array(
-                    'Key'      => $row['Product Part Key'],
-                    'Ratio'    => $row['Product Part Ratio'],
-                    'Note'     => $row['Product Part Note'],
-                    'Part SKU' => $row['Product Part Part SKU'],
+                    'Key'            => $row['Product Part Key'],
+                    'Ratio'          => $row['Product Part Ratio'],
+                    'Note'           => $row['Product Part Note'],
+                    'Part SKU'       => $row['Product Part Part SKU'],
                     'Part Reference' => $row['Part Reference'],
                 );
 
@@ -1046,44 +1042,6 @@ class Product extends Asset {
         }
 
         return $parts_data;
-    }
-
-    function load_acc_data() {
-
-        $sql = sprintf(
-            "SELECT * FROM `Product Data` WHERE `Product ID`=%d", $this->id
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                foreach ($row as $key => $value) {
-                    $this->data[$key] = $value;
-                }
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        $sql = sprintf(
-            "SELECT * FROM `Product DC Data` WHERE `Product ID`=%d", $this->id
-        );
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                foreach ($row as $key => $value) {
-                    $this->data[$key] = $value;
-                }
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-
-
     }
 
     function get_see_also_data() {
@@ -1521,8 +1479,7 @@ class Product extends Asset {
 
                     if (is_numeric($row['stock']) and is_numeric(
                             $row['Product Part Ratio']
-                        ) and $row['Product Part Ratio'] > 0
-                    ) {
+                        ) and $row['Product Part Ratio'] > 0) {
 
                         $_part_stock = $row['stock'];
 
@@ -1680,8 +1637,7 @@ class Product extends Asset {
 
             if (isset($this->editor['User Key']) and is_numeric(
                     $this->editor['User Key']
-                )
-            ) {
+                )) {
                 $user_key = $this->editor['User Key'];
             } else {
                 $user_key = 0;
@@ -1746,13 +1702,11 @@ class Product extends Asset {
         }
 
 
-
-
         if ($use_fork) {
             include_once 'utils/new_fork.php';
             $account = new Account($this->db);
 
-            if( $account->get('Account Code')=='AWEU'){
+            if ($account->get('Account Code') == 'AWEU') {
                 $msg = new_housekeeping_fork(
                     'au_housekeeping', array(
                     'type'                     => 'update_web_state_slow_forks',
@@ -1761,20 +1715,18 @@ class Product extends Asset {
                 ), $account->get('Account Code')
                 );
 
-            }else{
-
+            } else {
 
 
                 $msg = old_new_fork(
                     'housekeeping', array(
-                    'type'                     => 'product_web_state',
-                    'product_id'               => $this->id,
-                    'wa'=>$web_availability,
-                    'wa_updated'=>$web_availability_updated
+                    'type'       => 'product_web_state',
+                    'product_id' => $this->id,
+                    'wa'         => $web_availability,
+                    'wa_updated' => $web_availability_updated
 
                 ), $account->get('Account Code')
                 );
-
 
 
             }
@@ -1843,10 +1795,8 @@ class Product extends Asset {
 
 
             $sql = sprintf(
-                "SELECT `Order Key` FROM `Order Transaction Fact` WHERE `Current Dispatching State` in ('In Process','In Process by Customer') AND `Product ID`=%d ", $this->id
+                "SELECT `Order Key` FROM `Order Transaction Fact` WHERE `Current Dispatching State` IN ('In Process','In Process by Customer') AND `Product ID`=%d ", $this->id
             );
-
-
 
 
             if ($result = $this->db->query($sql)) {
@@ -1855,7 +1805,6 @@ class Product extends Asset {
                     $web_availability = ($this->get_web_state() == 'For Sale' ? 'Yes' : 'No');
                     if ($web_availability == 'No') {
                         $order = new Order($row['Order Key']);
-
 
 
                         $order->remove_out_of_stocks_from_basket($this->id);
@@ -1889,12 +1838,11 @@ class Product extends Asset {
 
 
         $this->get_data('id', $this->id);
-$this->load_acc_data();
+        $this->load_acc_data();
 
         if (!($this->get('Product Status') == 'Active' or $this->get(
                     'Product Status'
-                ) == 'Discontinuing') or $this->get('Product Web Configuration') == 'Offline'
-        ) {
+                ) == 'Discontinuing') or $this->get('Product Web Configuration') == 'Offline') {
             $_state = 'Offline';
         } else {
             $_state = 'Online';
@@ -1905,6 +1853,42 @@ $this->load_acc_data();
             $page->update(array('Page State' => $_state), 'no_history');
             $page->update(array('Webpage State' => $_state), 'no_history');
         }
+
+    }
+
+    function load_acc_data() {
+
+        $sql = sprintf(
+            "SELECT * FROM `Product Data` WHERE `Product ID`=%d", $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                foreach ($row as $key => $value) {
+                    $this->data[$key] = $value;
+                }
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        $sql = sprintf(
+            "SELECT * FROM `Product DC Data` WHERE `Product ID`=%d", $this->id
+        );
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                foreach ($row as $key => $value) {
+                    $this->data[$key] = $value;
+                }
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
 
     }
 
@@ -2004,19 +1988,22 @@ $this->load_acc_data();
                 "Product $db_interval Acc Customers"          => $sales_data['customers'],
                 "Product $db_interval Acc Repeat Customers"   => $sales_data['repeat_customers'],
                 "Product $db_interval Acc Invoices"           => $sales_data['invoices'],
-                "Product $db_interval Acc Profit"             => $sales_data['profit'],
-                "Product $db_interval Acc Invoiced Amount"    => $sales_data['net'],
+                "Product $db_interval Acc Profit"             => round($sales_data['profit'], 2),
+                "Product $db_interval Acc Invoiced Amount"    => round($sales_data['net'], 2),
                 "Product $db_interval Acc Quantity Ordered"   => $sales_data['ordered'],
                 "Product $db_interval Acc Quantity Invoiced"  => $sales_data['invoiced'],
                 "Product $db_interval Acc Quantity Delivered" => $sales_data['delivered'],
-                "Product DC $db_interval Acc Profit"          => $sales_data['dc_profit'],
-                "Product DC $db_interval Acc Invoiced Amount" => $sales_data['dc_net']
+
             );
 
 
-            //  print_r($data_to_update);
+            $this->fast_update($data_to_update, 'Product Data');
 
-            $this->update($data_to_update, 'no_history');
+            $data_to_update = array(
+                "Product DC $db_interval Acc Profit"          => round($sales_data['dc_profit'], 2),
+                "Product DC $db_interval Acc Invoiced Amount" => round($sales_data['dc_net'], 2)
+            );
+            $this->fast_update($data_to_update, 'Product DC Data');
 
 
         }
@@ -2028,17 +2015,23 @@ $this->load_acc_data();
                 "Product $db_interval Acc 1YB Customers"          => $sales_data['customers'],
                 "Product $db_interval Acc Repeat Customers"       => $sales_data['repeat_customers'],
                 "Product $db_interval Acc 1YB Invoices"           => $sales_data['invoices'],
-                "Product $db_interval Acc 1YB Profit"             => $sales_data['profit'],
-                "Product $db_interval Acc 1YB Invoiced Amount"    => $sales_data['net'],
+                "Product $db_interval Acc 1YB Profit"             => round($sales_data['profit'], 2),
+                "Product $db_interval Acc 1YB Invoiced Amount"    => round($sales_data['net'], 2),
                 "Product $db_interval Acc 1YB Quantity Ordered"   => $sales_data['ordered'],
                 "Product $db_interval Acc 1YB Quantity Invoiced"  => $sales_data['invoiced'],
                 "Product $db_interval Acc 1YB Quantity Delivered" => $sales_data['delivered'],
-                "Product DC $db_interval Acc 1YB Profit"          => $sales_data['dc_profit'],
-                "Product DC $db_interval Acc 1YB Invoiced Amount" => $sales_data['dc_net']
+
             );
-            $this->update($data_to_update, 'no_history');
+            $this->fast_update($data_to_update, 'Product Data');
+
+            $data_to_update = array(
+                "Product DC $db_interval Acc 1YB Profit"          => round($sales_data['dc_profit'], 2),
+                "Product DC $db_interval Acc 1YB Invoiced Amount" => round($sales_data['dc_net'], 2)
+            );
+            $this->fast_update($data_to_update, 'Product DC Data');
 
         }
+
 
         if (in_array(
             $db_interval, [
@@ -2051,7 +2044,7 @@ $this->load_acc_data();
                         ]
         )) {
 
-            $this->update(['Product Acc To Day Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
+            $this->fast_update(['Product Acc To Day Updated' => gmdate('Y-m-d H:i:s')]);
 
         } elseif (in_array(
             $db_interval, [
@@ -2062,7 +2055,7 @@ $this->load_acc_data();
                         ]
         )) {
 
-            $this->update(['Product Acc Ongoing Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
+            $this->fast_update(['Product Acc Ongoing Intervals Updated' => gmdate('Y-m-d H:i:s')]);
         } elseif (in_array(
             $db_interval, [
                             'Last Month',
@@ -2072,7 +2065,7 @@ $this->load_acc_data();
                         ]
         )) {
 
-            $this->update(['Product Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
+            $this->fast_update(['Product Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')]);
         }
 
 
@@ -2189,79 +2182,80 @@ $this->load_acc_data();
 
     function update_previous_years_data() {
 
-        $data_1y_ago = $this->get_sales_data(
-            date('Y-01-01 00:00:00', strtotime('-1 year')), date('Y-01-01 00:00:00')
-        );
-        $data_2y_ago = $this->get_sales_data(
-            date('Y-01-01 00:00:00', strtotime('-2 year')), date('Y-01-01 00:00:00', strtotime('-1 year'))
-        );
-        $data_3y_ago = $this->get_sales_data(
-            date('Y-01-01 00:00:00', strtotime('-3 year')), date('Y-01-01 00:00:00', strtotime('-2 year'))
-        );
-        $data_4y_ago = $this->get_sales_data(
-            date('Y-01-01 00:00:00', strtotime('-4 year')), date('Y-01-01 00:00:00', strtotime('-3 year'))
-        );
-        $data_5y_ago = $this->get_sales_data(
-            date('Y-01-01 00:00:00', strtotime('-5 year')), date('Y-01-01 00:00:00', strtotime('-4 year'))
-        );
+        $data_1y_ago = $this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-1 year')), date('Y-01-01 00:00:00'));
+        $data_2y_ago = $this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-2 year')), date('Y-01-01 00:00:00', strtotime('-1 year')));
+        $data_3y_ago = $this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-3 year')), date('Y-01-01 00:00:00', strtotime('-2 year')));
+        $data_4y_ago = $this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-4 year')), date('Y-01-01 00:00:00', strtotime('-3 year')));
+        $data_5y_ago = $this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-5 year')), date('Y-01-01 00:00:00', strtotime('-4 year')));
 
         $data_to_update = array(
             "Product 1 Year Ago Customers"          => $data_1y_ago['customers'],
             "Product 1 Year Ago Repeat Customers"   => $data_1y_ago['repeat_customers'],
             "Product 1 Year Ago Invoices"           => $data_1y_ago['invoices'],
-            "Product 1 Year Ago Profit"             => $data_1y_ago['profit'],
-            "Product 1 Year Ago Invoiced Amount"    => $data_1y_ago['net'],
+            "Product 1 Year Ago Profit"             => round($data_1y_ago['profit'], 2),
+            "Product 1 Year Ago Invoiced Amount"    => round($data_1y_ago['net'], 2),
             "Product 1 Year Ago Quantity Ordered"   => $data_1y_ago['ordered'],
             "Product 1 Year Ago Quantity Invoiced"  => $data_1y_ago['invoiced'],
             "Product 1 Year Ago Quantity Delivered" => $data_1y_ago['delivered'],
-            "Product DC 1 Year Ago Profit"          => $data_1y_ago['dc_net'],
-            "Product DC 1 Year Ago Invoiced Amount" => $data_1y_ago['dc_profit'],
+
 
             "Product 2 Year Ago Customers"          => $data_2y_ago['customers'],
             "Product 2 Year Ago Repeat Customers"   => $data_2y_ago['repeat_customers'],
             "Product 2 Year Ago Invoices"           => $data_2y_ago['invoices'],
-            "Product 2 Year Ago Profit"             => $data_2y_ago['profit'],
-            "Product 2 Year Ago Invoiced Amount"    => $data_2y_ago['net'],
+            "Product 2 Year Ago Profit"             => round($data_2y_ago['profit'], 2),
+            "Product 2 Year Ago Invoiced Amount"    => round($data_2y_ago['net'], 2),
             "Product 2 Year Ago Quantity Ordered"   => $data_2y_ago['ordered'],
             "Product 2 Year Ago Quantity Invoiced"  => $data_2y_ago['invoiced'],
             "Product 2 Year Ago Quantity Delivered" => $data_2y_ago['delivered'],
-            "Product DC 2 Year Ago Profit"          => $data_2y_ago['dc_net'],
-            "Product DC 2 Year Ago Invoiced Amount" => $data_2y_ago['dc_profit'],
+
 
             "Product 3 Year Ago Customers"          => $data_3y_ago['customers'],
             "Product 3 Year Ago Repeat Customers"   => $data_3y_ago['repeat_customers'],
             "Product 3 Year Ago Invoices"           => $data_3y_ago['invoices'],
-            "Product 3 Year Ago Profit"             => $data_3y_ago['profit'],
-            "Product 3 Year Ago Invoiced Amount"    => $data_3y_ago['net'],
+            "Product 3 Year Ago Profit"             => round($data_3y_ago['profit'], 2),
+            "Product 3 Year Ago Invoiced Amount"    => round($data_3y_ago['net'], 2),
             "Product 3 Year Ago Quantity Ordered"   => $data_3y_ago['ordered'],
             "Product 3 Year Ago Quantity Invoiced"  => $data_3y_ago['invoiced'],
             "Product 3 Year Ago Quantity Delivered" => $data_3y_ago['delivered'],
-            "Product DC 3 Year Ago Profit"          => $data_3y_ago['dc_net'],
-            "Product DC 3 Year Ago Invoiced Amount" => $data_3y_ago['dc_profit'],
 
             "Product 4 Year Ago Customers"          => $data_4y_ago['customers'],
             "Product 4 Year Ago Repeat Customers"   => $data_4y_ago['repeat_customers'],
             "Product 4 Year Ago Invoices"           => $data_4y_ago['invoices'],
-            "Product 4 Year Ago Profit"             => $data_4y_ago['profit'],
-            "Product 4 Year Ago Invoiced Amount"    => $data_4y_ago['net'],
+            "Product 4 Year Ago Profit"             => round($data_4y_ago['profit'], 2),
+            "Product 4 Year Ago Invoiced Amount"    => round($data_4y_ago['net'], 2),
             "Product 4 Year Ago Quantity Ordered"   => $data_4y_ago['ordered'],
             "Product 4 Year Ago Quantity Invoiced"  => $data_4y_ago['invoiced'],
             "Product 4 Year Ago Quantity Delivered" => $data_4y_ago['delivered'],
-            "Product DC 4 Year Ago Profit"          => $data_4y_ago['dc_net'],
-            "Product DC 4 Year Ago Invoiced Amount" => $data_4y_ago['dc_profit'],
 
             "Product 5 Year Ago Customers"          => $data_5y_ago['customers'],
             "Product 5 Year Ago Repeat Customers"   => $data_5y_ago['repeat_customers'],
             "Product 5 Year Ago Invoices"           => $data_5y_ago['invoices'],
-            "Product 5 Year Ago Profit"             => $data_5y_ago['profit'],
-            "Product 5 Year Ago Invoiced Amount"    => $data_5y_ago['net'],
+            "Product 5 Year Ago Profit"             => round($data_5y_ago['profit'], 2),
+            "Product 5 Year Ago Invoiced Amount"    => round($data_5y_ago['net'], 2),
             "Product 5 Year Ago Quantity Ordered"   => $data_5y_ago['ordered'],
             "Product 5 Year Ago Quantity Invoiced"  => $data_5y_ago['invoiced'],
             "Product 5 Year Ago Quantity Delivered" => $data_5y_ago['delivered'],
-            "Product DC 5 Year Ago Profit"          => $data_5y_ago['dc_net'],
-            "Product DC 5 Year Ago Invoiced Amount" => $data_5y_ago['dc_profit']
+
         );
-        $this->update($data_to_update, 'no_history');
+        $this->fast_update($data_to_update, 'Product Data');
+
+
+        $data_to_update = array(
+            "Product DC 1 Year Ago Profit"          => round($data_1y_ago['dc_net'], 2),
+            "Product DC 1 Year Ago Invoiced Amount" => round($data_1y_ago['dc_profit'], 2),
+            "Product DC 2 Year Ago Profit"          => round($data_2y_ago['dc_net'], 2),
+            "Product DC 2 Year Ago Invoiced Amount" => round($data_2y_ago['dc_profit'], 2),
+            "Product DC 3 Year Ago Profit"          => round($data_3y_ago['dc_net'], 2),
+            "Product DC 3 Year Ago Invoiced Amount" => round($data_3y_ago['dc_profit'], 2),
+            "Product DC 4 Year Ago Profit"          => round($data_4y_ago['dc_net'], 2),
+            "Product DC 4 Year Ago Invoiced Amount" => round($data_4y_ago['dc_profit'], 2),
+            "Product DC 5 Year Ago Profit"          => round($data_5y_ago['dc_net'], 2),
+            "Product DC 5 Year Ago Invoiced Amount" => round($data_5y_ago['dc_profit'], 2),
+        );
+        $this->fast_update($data_to_update, 'Product DC Data');
+
+
+        exit;
 
     }
 
@@ -2288,28 +2282,34 @@ $this->load_acc_data();
                 "Product $i Quarter Ago Customers"          => $sales_data['customers'],
                 "Product $i Quarter Ago Repeat Customers"   => $sales_data['repeat_customers'],
                 "Product $i Quarter Ago Invoices"           => $sales_data['invoices'],
-                "Product $i Quarter Ago Profit"             => $sales_data['profit'],
-                "Product $i Quarter Ago Invoiced Amount"    => $sales_data['net'],
+                "Product $i Quarter Ago Profit"             => round($sales_data['profit'], 2),
+                "Product $i Quarter Ago Invoiced Amount"    => round($sales_data['net'], 2),
                 "Product $i Quarter Ago Quantity Ordered"   => $sales_data['ordered'],
                 "Product $i Quarter Ago Quantity Invoiced"  => $sales_data['invoiced'],
                 "Product $i Quarter Ago Quantity Delivered" => $sales_data['delivered'],
-                "Product DC $i Quarter Ago Profit"          => $sales_data['dc_net'],
-                "Product DC $i Quarter Ago Invoiced Amount" => $sales_data['dc_profit'],
+
 
                 "Product $i Quarter Ago 1YB Customers"          => $sales_data_1yb['customers'],
                 "Product $i Quarter Ago 1YB Repeat Customers"   => $sales_data['repeat_customers'],
                 "Product $i Quarter Ago 1YB Invoices"           => $sales_data_1yb['invoices'],
-                "Product $i Quarter Ago 1YB Profit"             => $sales_data_1yb['profit'],
-                "Product $i Quarter Ago 1YB Invoiced Amount"    => $sales_data_1yb['net'],
+                "Product $i Quarter Ago 1YB Profit"             => round($sales_data_1yb['profit'], 2),
+                "Product $i Quarter Ago 1YB Invoiced Amount"    => round($sales_data_1yb['net'], 2),
                 "Product $i Quarter Ago 1YB Quantity Ordered"   => $sales_data_1yb['ordered'],
                 "Product $i Quarter Ago 1YB Quantity Invoiced"  => $sales_data_1yb['invoiced'],
                 "Product $i Quarter Ago 1YB Quantity Delivered" => $sales_data_1yb['delivered'],
-                "Product DC $i Quarter Ago 1YB Profit"          => $sales_data_1yb['dc_net'],
-                "Product DC $i Quarter Ago 1YB Invoiced Amount" => $sales_data_1yb['dc_profit']
 
 
             );
-            $this->update($data_to_update, 'no_history');
+            $this->fast_update($data_to_update, 'Product Data');
+
+
+            $data_to_update = array(
+                "Product DC $i Quarter Ago Profit"              => round($sales_data['dc_net'], 2),
+                "Product DC $i Quarter Ago Invoiced Amount"     => round($sales_data['dc_profit'], 2),
+                "Product DC $i Quarter Ago 1YB Profit"          => round($sales_data_1yb['dc_net'], 2),
+                "Product DC $i Quarter Ago 1YB Invoiced Amount" => round($sales_data_1yb['dc_profit'], 2)
+            );
+            $this->fast_update($data_to_update, 'Product DC Data');
         }
 
     }
@@ -2375,7 +2375,7 @@ $this->load_acc_data();
     function get_webpage() {
 
 
-        $page = get_object('Webpage',$this->get('Product Webpage Key'));
+        $page = get_object('Webpage', $this->get('Product Webpage Key'));
 
         $this->webpage = $page;
 
@@ -2438,8 +2438,6 @@ $this->load_acc_data();
         if (is_string($value)) {
             $value = _trim($value);
         }
-
-
 
 
         switch ($field) {
@@ -2532,8 +2530,7 @@ $this->load_acc_data();
                               'Discontinued',
                               'Discontinuing'
                           )
-                )
-                ) {
+                )) {
                     $this->error = true;
                     $this->msg   = _('Invalid status').' ('.$value.')';
 
@@ -2593,8 +2590,7 @@ $this->load_acc_data();
                               'Offline',
                               'Online Force For Sale'
                           )
-                )
-                ) {
+                )) {
                     $this->error = true;
                     $this->msg   = _('Invalid web configuration').' ('.$value.')';
 
@@ -2623,8 +2619,7 @@ $this->load_acc_data();
 
                 if (!preg_match('/from_part/', $options) and count(
                         $this->get_parts()
-                    ) == 1
-                ) {
+                    ) == 1) {
 
 
                     $part = array_values($this->get_parts('objects'))[0];
@@ -2672,8 +2667,7 @@ $this->load_acc_data();
 
                 if (!preg_match('/from_part/', $options) and count(
                         $this->get_parts()
-                    ) == 1
-                ) {
+                    ) == 1) {
 
 
                     $part = array_values($this->get_parts('objects'))[0];
@@ -2722,8 +2716,7 @@ $this->load_acc_data();
 
                 if (!preg_match('/from_part/', $options) and count(
                         $this->get_parts()
-                    ) == 1
-                ) {
+                    ) == 1) {
 
 
                     $part = array_values($this->get_parts('objects'))[0];
@@ -2751,8 +2744,7 @@ $this->load_acc_data();
 
                 if (!preg_match('/from_part/', $options) and count(
                         $this->get_parts()
-                    ) == 1
-                ) {
+                    ) == 1) {
 
 
                     $part = array_values($this->get_parts('objects'))[0];
@@ -3073,7 +3065,7 @@ $this->load_acc_data();
 
 
                 $sql = sprintf(
-                    'DELETE FROM `Product Part Bridge` WHERE  `Product Part Product ID`=%d ',  $this->id
+                    'DELETE FROM `Product Part Bridge` WHERE  `Product Part Product ID`=%d ', $this->id
                 );
 
                 $this->db->exec($sql);
@@ -3116,8 +3108,7 @@ $this->load_acc_data();
                                                         'Suspended',
                                                         'Discontinued'
                                                     )
-                    )
-                ) {
+                    )) {
                     return;
                 }
                 $this->update_field($field, $value, $options);
@@ -3252,8 +3243,7 @@ $this->load_acc_data();
 
                 if (!preg_match('/from_part/', $options) and count(
                         $this->get_parts()
-                    ) == 1
-                ) {
+                    ) == 1) {
 
 
                     $part = array_values($this->get_parts('objects'))[0];
@@ -3298,8 +3288,7 @@ $this->load_acc_data();
 
                 if (!preg_match('/from_part/', $options) and count(
                         $this->get_parts()
-                    ) == 1
-                ) {
+                    ) == 1) {
 
 
                     $part = array_values($this->get_parts('objects'))[0];
@@ -3344,14 +3333,10 @@ $this->load_acc_data();
     function update_part_list($value, $options = '') {
 
 
-
-
         //print_r($value);
 
 
         $value = json_decode($value, true);
-
-
 
 
         $part_list = $this->get_parts_data();
@@ -3443,7 +3428,7 @@ $this->load_acc_data();
         $this->get_data('id', $this->id);
 
 
-        $this->update(array('Product Parts Data'=>json_encode($this->get_parts_data())),'no_history');
+        $this->update(array('Product Parts Data' => json_encode($this->get_parts_data())), 'no_history');
 
         $this->update_part_numbers();
         $this->update_availability();
@@ -3490,125 +3475,6 @@ $this->load_acc_data();
         }
 
         $this->update(array('Product Cost' => $cost), 'no_history');
-    }
-
-
-
-    function get_parent_categories($scope='keys'){
-
-
-        $type = 'Product';
-        $parent_categories = array();
-
-        $sql = sprintf(
-            "SELECT B.`Category Key`,`Category Root Key`,`Other Note`,`Category Label`,`Category Code`,`Is Category Field Other` FROM `Category Bridge` B LEFT JOIN `Category Dimension` C ON (C.`Category Key`=B.`Category Key`) WHERE  `Category Branch Type`='Head'  AND B.`Subject Key`=%d AND B.`Subject`=%s",
-            $this->id, prepare_mysql($type)
-        );
-
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-                if($scope=='keys') {
-                    $parent_categories[$row['Category Key']]=$row['Category Key'];
-                }elseif($scope=='objects') {
-                    $parent_categories[$row['Category Key']]=get_object('Category',$row['Category Key']);
-                }elseif($scope=='data') {
-
-
-                    $sql = sprintf(
-                        "SELECT `Category Label`,`Category Code` FROM `Category Dimension` WHERE `Category Key`=%d", $row['Category Root Key']
-                    );
-
-
-                    if ($result2 = $this->db->query($sql)) {
-                        if ($row2 = $result2->fetch()) {
-                            $root_label = $row2['Category Label'];
-                            $root_code  = $row2['Category Code'];
-                        }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        exit;
-                    }
-
-
-                    if ($row['Is Category Field Other'] == 'Yes' and $row['Other Note'] != '') {
-                        $value = $row['Other Note'];
-                    } else {
-                        $value = $row['Category Label'];
-                    }
-                    $parent_categories[] = array(
-                        'root_label'   => $root_label,
-                        'root_code'    => $root_code,
-                        'label'        => $row['Category Label'],
-                        'code'         => $row['Category Code'],
-                        'value'        => $value,
-                        'category_key' => $row['Category Key']
-                    );
-                }
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        return $parent_categories;
-    }
-
-
-
-
-    function get_deal_components($scope = 'keys',$options='Active') {
-
-        switch($options) {
-            case 'Active':
-                $where='AND `Deal Component Status`=\'Active\'';
-                break;
-            default:
-                $where='';
-                break;
-        }
-
-
-        $deal_components = array();
-
-
-        $parent_categories=$this->get_parent_categories();
-
-        if(count($parent_categories)>0) {
-
-            $sql = sprintf(
-                "SELECT `Deal Component Key` FROM `Deal Component Dimension` WHERE `Deal Component Allowance Target`='Category' AND `Deal Component Allowance Target Key` in (%s) $where",
-                join(',',$parent_categories)
-
-            );
-
-
-            if ($result = $this->db->query($sql)) {
-                foreach ($result as $row) {
-
-                    if ($scope == 'objects') {
-                        $deal_components[$row['Deal Component Key']] = get_object('DealComponent', $row['Deal Component Key']);
-                    } else {
-                        $deal_components[$row['Deal Component Key']] = $row['Deal Component Key'];
-                    }
-
-
-                }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                exit;
-            }
-
-        }
-
-
-        return $deal_components;
-
-
     }
 
     function get_category_data() {
@@ -3668,6 +3534,119 @@ $this->load_acc_data();
         return $category_data;
     }
 
+    function get_deal_components($scope = 'keys', $options = 'Active') {
+
+        switch ($options) {
+            case 'Active':
+                $where = 'AND `Deal Component Status`=\'Active\'';
+                break;
+            default:
+                $where = '';
+                break;
+        }
+
+
+        $deal_components = array();
+
+
+        $parent_categories = $this->get_parent_categories();
+
+        if (count($parent_categories) > 0) {
+
+            $sql = sprintf(
+                "SELECT `Deal Component Key` FROM `Deal Component Dimension` WHERE `Deal Component Allowance Target`='Category' AND `Deal Component Allowance Target Key` in (%s) $where",
+                join(',', $parent_categories)
+
+            );
+
+
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
+
+                    if ($scope == 'objects') {
+                        $deal_components[$row['Deal Component Key']] = get_object('DealComponent', $row['Deal Component Key']);
+                    } else {
+                        $deal_components[$row['Deal Component Key']] = $row['Deal Component Key'];
+                    }
+
+
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                exit;
+            }
+
+        }
+
+
+        return $deal_components;
+
+
+    }
+
+    function get_parent_categories($scope = 'keys') {
+
+
+        $type              = 'Product';
+        $parent_categories = array();
+
+        $sql = sprintf(
+            "SELECT B.`Category Key`,`Category Root Key`,`Other Note`,`Category Label`,`Category Code`,`Is Category Field Other` FROM `Category Bridge` B LEFT JOIN `Category Dimension` C ON (C.`Category Key`=B.`Category Key`) WHERE  `Category Branch Type`='Head'  AND B.`Subject Key`=%d AND B.`Subject`=%s",
+            $this->id, prepare_mysql($type)
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+                if ($scope == 'keys') {
+                    $parent_categories[$row['Category Key']] = $row['Category Key'];
+                } elseif ($scope == 'objects') {
+                    $parent_categories[$row['Category Key']] = get_object('Category', $row['Category Key']);
+                } elseif ($scope == 'data') {
+
+
+                    $sql = sprintf(
+                        "SELECT `Category Label`,`Category Code` FROM `Category Dimension` WHERE `Category Key`=%d", $row['Category Root Key']
+                    );
+
+
+                    if ($result2 = $this->db->query($sql)) {
+                        if ($row2 = $result2->fetch()) {
+                            $root_label = $row2['Category Label'];
+                            $root_code  = $row2['Category Code'];
+                        }
+                    } else {
+                        print_r($error_info = $this->db->errorInfo());
+                        exit;
+                    }
+
+
+                    if ($row['Is Category Field Other'] == 'Yes' and $row['Other Note'] != '') {
+                        $value = $row['Other Note'];
+                    } else {
+                        $value = $row['Category Label'];
+                    }
+                    $parent_categories[] = array(
+                        'root_label'   => $root_label,
+                        'root_code'    => $root_code,
+                        'label'        => $row['Category Label'],
+                        'code'         => $row['Category Code'],
+                        'value'        => $value,
+                        'category_key' => $row['Category Key']
+                    );
+                }
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        return $parent_categories;
+    }
+
     function get_attachments() {
 
         $attachments = array();
@@ -3705,7 +3684,6 @@ $this->load_acc_data();
 
 
     }
-
 
 
 }

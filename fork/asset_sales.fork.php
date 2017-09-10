@@ -28,7 +28,12 @@ function fork_asset_sales($job) {
         case 'update_stores_previous_intervals':
             include_once 'class.Store.php';
 
-            if(!in_array($data['intervals'],array('Quarters','Years'))){
+            if (!in_array(
+                $data['intervals'], array(
+                                      'Quarters',
+                                      'Years'
+                                  )
+            )) {
                 return;
             }
 
@@ -125,7 +130,12 @@ function fork_asset_sales($job) {
         case 'update_invoices_categories_previous_intervals':
             include_once 'class.Category.php';
 
-            if(!in_array($data['intervals'],array('Quarters','Years'))){
+            if (!in_array(
+                $data['intervals'], array(
+                                      'Quarters',
+                                      'Years'
+                                  )
+            )) {
                 return;
             }
 
@@ -149,8 +159,6 @@ function fork_asset_sales($job) {
             }
 
 
-
-
             break;
 
 
@@ -158,10 +166,14 @@ function fork_asset_sales($job) {
             include_once 'class.Supplier.php';
             include_once 'class.Agent.php';
 
-            if(!in_array($data['intervals'],array('Quarters','Years'))){
+            if (!in_array(
+                $data['intervals'], array(
+                                      'Quarters',
+                                      'Years'
+                                  )
+            )) {
                 return;
             }
-
 
 
             $sql = sprintf('SELECT `Supplier Key` FROM `Supplier Dimension`  ');
@@ -185,7 +197,6 @@ function fork_asset_sales($job) {
             }
 
 
-
             $sql = sprintf('SELECT `Agent Key` FROM `Agent Dimension`  ');
 
             if ($result = $db->query($sql)) {
@@ -207,11 +218,7 @@ function fork_asset_sales($job) {
             }
 
 
-
-
             break;
-
-
 
 
         case 'update_suppliers_sales_data':
@@ -226,8 +233,6 @@ function fork_asset_sales($job) {
                 $this_year = $data['mode'][0];
                 $last_year = $data['mode'][1];
             }
-
-
 
 
             $sql = sprintf('SELECT `Supplier Key` FROM `Supplier Dimension`  ');
@@ -270,11 +275,15 @@ function fork_asset_sales($job) {
             break;
 
 
-
         case 'update_products_previous_intervals':
             include_once 'class.Product.php';
 
-            if(!in_array($data['intervals'],array('Quarters','Years'))){
+            if (!in_array(
+                $data['intervals'], array(
+                                      'Quarters',
+                                      'Years'
+                                  )
+            )) {
                 return;
             }
 
@@ -295,9 +304,6 @@ function fork_asset_sales($job) {
                 }
             }
             break;
-
-
-
 
 
         case 'update_products_sales_data':
@@ -327,7 +333,12 @@ function fork_asset_sales($job) {
         case 'update_parts_previous_intervals':
             include_once 'class.Part.php';
 
-            if(!in_array($data['intervals'],array('Quarters','Years'))){
+            if (!in_array(
+                $data['intervals'], array(
+                                      'Quarters',
+                                      'Years'
+                                  )
+            )) {
                 return;
             }
 
@@ -350,9 +361,6 @@ function fork_asset_sales($job) {
 
 
             break;
-
-
-
 
 
         case 'update_parts_sales_data':
@@ -383,7 +391,12 @@ function fork_asset_sales($job) {
         case 'update_product_categories_previous_intervals':
             include_once 'class.Category.php';
 
-            if(!in_array($data['intervals'],array('Quarters','Years'))){
+            if (!in_array(
+                $data['intervals'], array(
+                                      'Quarters',
+                                      'Years'
+                                  )
+            )) {
                 return;
             }
 
@@ -433,11 +446,15 @@ function fork_asset_sales($job) {
             break;
 
 
-
         case 'update_part_categories_previous_intervals':
             include_once 'class.Category.php';
 
-            if(!in_array($data['intervals'],array('Quarters','Years'))){
+            if (!in_array(
+                $data['intervals'], array(
+                                      'Quarters',
+                                      'Years'
+                                  )
+            )) {
                 return;
             }
 
@@ -486,7 +503,12 @@ function fork_asset_sales($job) {
         case 'update_suppliers_categories_previous_intervals':
             include_once 'class.Category.php';
 
-            if(!in_array($data['intervals'],array('Quarters','Years'))){
+            if (!in_array(
+                $data['intervals'], array(
+                                      'Quarters',
+                                      'Years'
+                                  )
+            )) {
                 return;
             }
 
@@ -637,13 +659,13 @@ function update_invoice_products_sales_data($db, $account, $data) {
     include_once 'class.Invoice.php';
 
 
-    $account->load_acc_data();
     $account->update_sales_from_invoices('Total', true, false);
     $account->update_sales_from_invoices('Week To Day', true, false);
     $account->update_sales_from_invoices('Month To Day', true, false);
     $account->update_sales_from_invoices('Quarter To Day', true, false);
     $account->update_sales_from_invoices('Year To Day', true, false);
     $account->update_sales_from_invoices('Today', true, false);
+
 
     $categories     = array();
     $categories_bis = array();
@@ -653,9 +675,8 @@ function update_invoice_products_sales_data($db, $account, $data) {
     $customer->update_product_bridge();
 
 
-    $store = new Store($data['store_key']);
+    $store = get_object('Store', $data['store_key']);
 
-    $store->load_acc_data();
     $store->update_sales_from_invoices('Total', true, false);
     $store->update_sales_from_invoices('Week To Day', true, false);
     $store->update_sales_from_invoices('Month To Day', true, false);
@@ -667,20 +688,22 @@ function update_invoice_products_sales_data($db, $account, $data) {
     $invoice = new Invoice($data['invoice_key']);
     $invoice->categorize();
 
+    if (($invoice->get('Invoice Category Key'))) {
 
-    $invoice_category = new Category($invoice->get('Invoice Category Key'));
+        $invoice_category = new Category($invoice->get('Invoice Category Key'));
+
+        //  $invoice_category->load_acc_data();
 
 
-    $invoice_category->load_acc_data();
+        $invoice_category->update_invoice_category_sales('Total', true, false);
 
+        $invoice_category->update_invoice_category_sales('Year To Day', true, false);
+        $invoice_category->update_invoice_category_sales('Quarter To Day', true, false);
+        $invoice_category->update_invoice_category_sales('Month To Day', true, false);
+        $invoice_category->update_invoice_category_sales('Week To Day', true, false);
+        $invoice_category->update_invoice_category_sales('Today', true, false);
+    }
 
-    $invoice_category->update_invoice_category_sales('Total', true, false);
-
-    $invoice_category->update_invoice_category_sales('Year To Day', true, false);
-    $invoice_category->update_invoice_category_sales('Quarter To Day', true, false);
-    $invoice_category->update_invoice_category_sales('Month To Day', true, false);
-    $invoice_category->update_invoice_category_sales('Week To Day', true, false);
-    $invoice_category->update_invoice_category_sales('Today', true, false);
 
     $sql = sprintf(
         "SELECT `Product ID`,`Invoice Date` FROM `Order Transaction Fact` WHERE `Invoice Key`=%d", $data['invoice_key']
@@ -694,7 +717,7 @@ function update_invoice_products_sales_data($db, $account, $data) {
 
             //print $product->get('Code')."\n";
 
-            $product->load_acc_data();
+            //  $product->load_acc_data();
 
             $product->update_sales_from_invoices('Total', true, false);
             $product->update_sales_from_invoices('Week To Day', true, false);
@@ -714,10 +737,10 @@ function update_invoice_products_sales_data($db, $account, $data) {
     foreach ($categories as $category_key) {
 
         $category = new Category($category_key);
-        $category->load_acc_data();
+        //$category->load_acc_data();
 
 
-        //print $category->get('Code')."\n";
+        //  print $category->get('Code')."\n";
 
         $category->update_product_category_sales('Total', true, false);
         $category->update_product_category_sales('Week To Day', true, false);
@@ -735,7 +758,7 @@ function update_invoice_products_sales_data($db, $account, $data) {
     foreach ($categories_bis as $category_key) {
 
         $category = new Category($category_key);
-        $category->load_acc_data();
+        // $category->load_acc_data();
 
 
         //print $category->get('Code')."\n";
@@ -749,7 +772,7 @@ function update_invoice_products_sales_data($db, $account, $data) {
 
 
     }
-
+    // exit('hola');
 
 }
 
@@ -761,6 +784,32 @@ function update_deleted_invoice_products_sales_data($db, $data) {
     include_once 'class.Category.php';
     include_once 'class.Store.php';
     include_once 'class.Invoice.php';
+
+
+    $account = get_object('Account', '');
+
+
+    $account->update_sales_from_invoices('Total');
+    $account->update_sales_from_invoices('Week To Day');
+    $account->update_sales_from_invoices('Month To Day');
+    $account->update_sales_from_invoices('Quarter To Day');
+    $account->update_sales_from_invoices('Year To Day');
+
+    $account->update_sales_from_invoices('1 Year');
+    $account->update_sales_from_invoices('1 Quarter');
+    $account->update_sales_from_invoices('1 Month');
+    $account->update_sales_from_invoices('1 Week');
+    $account->update_sales_from_invoices('Today');
+
+
+    //todo don't calculate the ones not applicable
+    $account->update_sales_from_invoices('Yesterday');
+    $account->update_sales_from_invoices('Last Week');
+    $account->update_sales_from_invoices('Last Month');
+
+
+    $account->update_previous_years_data();
+    $account->update_previous_quarters_data();
 
 
     $categories     = array();

@@ -28,12 +28,79 @@ function fork_housekeeping($job) {
         case 'payment_updated':
 
 
-            $payment         = get_object('Payment', $data['payment_key']);
-            $payment_account = get_object('Payment_Account', $payment->get('Payment Account Key'));
-        $payment_service_provider = get_object('Payment_Service_Provider', $payment->get('	Payment Service Provider Key'));
+            $payment                  = get_object('Payment', $data['payment_key']);
+            $payment_account          = get_object('Payment_Account', $payment->get('Payment Account Key'));
+            $payment_service_provider = get_object('Payment_Service_Provider', $payment->get('	Payment Service Provider Key'));
 
             $payment_account->update_payments_data();
-        $payment_service_provider->update_payments_data();
+            $payment_service_provider->update_payments_data();
+
+
+            $account = get_object('Account', '');
+            $store   = get_object('Store', $data['store_key']);
+
+
+            $store->update_orders();
+            $account->update_orders();
+
+            break;
+
+
+        case 'order_items_changed':
+            $order = get_object('Order', $data['order_key']);
+
+            $order->update_deals_usage();
+
+            $account = get_object('Account', '');
+            $store   = get_object('Store', $order->get('Store Key'));
+
+
+            switch ($order->get('Order State')) {
+                case 'InBasket':
+                    $store->update_orders_in_basket_data();
+                    $account->update_orders_in_basket_data();
+
+                    break;
+                case 'InProcess':
+                    $store->update_orders_in_process_data();
+                    $account->update_orders_in_process_data();
+
+                    break;
+                case 'InWarehouse':
+                    $store->update_orders_in_warehouse_data();
+                    $account->update_orders_in_warehouse_data();
+
+                    break;
+                case 'PackedDone':
+                    $store->update_orders_packed_data();
+                    $account->update_orders_packed_data();
+
+                    break;
+                case 'Approved':
+                    $store->update_orders_approved_data();
+                    $account->update_orders_approved_data();
+
+                    break;
+
+
+                default:
+                    break;
+            }
+
+
+            break;
+
+
+        case 'order_state_changed':
+            $order   = get_object('Order', $data['order_key']);
+            $account = get_object('Account', '');
+            $store   = get_object('Store', $order->get('Store Key'));
+
+
+            $store->update_orders();
+            $account->update_orders();
+
+
             break;
 
         case 'order_created':
@@ -47,13 +114,34 @@ function fork_housekeeping($job) {
             $customer->add_history_new_order($order);
             $customer->update_orders();
             $store = new Store($order->get('Order Store Key'));
-            $store->load_acc_data();
 
 
             $store->update_orders();
             $order->update_full_search();
+
+            $account = get_object('Account', '');
+            $account->update_orders();
+
+
             break;
 
+
+        case 'order_cancelled':
+
+            $order    = get_object('Order', $data['order_key']);
+            $customer = get_object('Customer', $order->get('Order Customer Key'));
+            $store    = get_object('Store', $order->get('Order Store Key'));
+            $account  = get_object('Account', '');
+
+
+            $customer->update_orders();
+            $store->update_orders();
+            $account->update_orders();
+
+            $order->update_deals_usage();
+
+
+            break;
         case 'website_launched':
 
 
@@ -136,18 +224,6 @@ function fork_housekeeping($job) {
             break;
 
 
-        case 'update_orders_in_basket_data':
-
-            include_once 'class.Store.php';
-            $store = new Store($data['store_key']);
-            $store->load_acc_data();
-            $store->update_orders_in_basket_data();
-            $account->load_acc_data();
-            $account->update_orders_in_basket_data();
-
-
-            break;
-
         case 'update_web_state_slow_forks':
 
             include_once 'class.Product.php';
@@ -162,8 +238,6 @@ function fork_housekeeping($job) {
 
             include_once 'class.Part.php';
             $part = new Part($data['part_sku']);
-
-
 
 
             $part->update_available_forecast();
@@ -196,9 +270,14 @@ function fork_housekeeping($job) {
                 }
             }
             break;
-        case 'order_payment_changed':
+        case 'payment_added_order':
 
-            include_once 'class.Part.php';
+
+            // $order    = get_object('Order', $data['order_key']);
+
+            $store = get_object('Store', $data['store_key']);
+            $store->update_orders();
+
 
             $sql = sprintf(
                 'SELECT `Product Part Part SKU` FROM `Order Transaction Fact` OTF LEFT JOIN `Product Part Bridge` PPB ON (OTF.`Product ID`=PPB.`Product Part Product ID`)  WHERE `Order Key`=%d  ',
@@ -207,7 +286,7 @@ function fork_housekeeping($job) {
             // print "$sql\n";
             if ($result = $db->query($sql)) {
                 foreach ($result as $row) {
-                    $part = new Part($row['Product Part Part SKU']);
+                    $part = get_object('Part', $row['Product Part Part SKU']);
                     $part->update_stock_in_paid_orders();
                     //   print $part->get('Reference')."\n";
                 }
@@ -218,9 +297,8 @@ function fork_housekeeping($job) {
 
 
             break;
-        case 'order_send_to_warehouse':
+        case 'delivery_note_created':
 
-            include_once 'class.Part.php';
 
             $sql = sprintf(
                 'SELECT `Product Part Part SKU` FROM `Order Transaction Fact` OTF LEFT JOIN `Product Part Bridge` PPB ON (OTF.`Product ID`=PPB.`Product Part Product ID`)  WHERE  `Order Key`=%d  ',
@@ -230,7 +308,7 @@ function fork_housekeeping($job) {
 
             if ($result = $db->query($sql)) {
                 foreach ($result as $row) {
-                    $part = new Part($row['Product Part Part SKU']);
+                    $part = get_object('Part', $row['Product Part Part SKU']);
                     $part->update_stock_in_paid_orders();
                     // print $part->get('Reference')."\n";
                 }
@@ -238,8 +316,14 @@ function fork_housekeeping($job) {
                 print_r($error_info = $db->errorInfo());
                 exit;
             }
+        case 'invoice_created':
+
+            update_invoice_products_sales_data($db, $account, $data);
 
 
+            break;
+
+        default:
             break;
 
     }

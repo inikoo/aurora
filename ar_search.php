@@ -1921,7 +1921,7 @@ function search_customers($db, $account, $memcache_ip, $data) {
         $customer_keys = preg_replace('/^,/', '', $customer_keys);
 
         $sql = sprintf(
-            "SELECT `Store Code`,`Customer Store Key`,`Customer Main Email Key`, `Customer Main XHTML Telephone`,`Customer Main Telephone Key`,`Customer Main Postal Code`,`Customer Key`,`Customer Main Contact Name`,`Customer Name`,`Customer Type`,`Customer Main Plain Email`,`Customer Main Location`,`Customer Tax Number` FROM `Customer Dimension` LEFT JOIN `Store Dimension` ON (`Customer Store Key`=`Store Key`) WHERE `Customer Key` IN (%s)",
+            "SELECT `Store Code`,`Customer Store Key`, `Customer Main XHTML Telephone`,`Customer Main Postal Code`,`Customer Key`,`Customer Main Contact Name`,`Customer Name`,`Customer Type`,`Customer Main Plain Email`,`Customer Main Location`,`Customer Tax Number` FROM `Customer Dimension` LEFT JOIN `Store Dimension` ON (`Customer Store Key`=`Store Key`) WHERE `Customer Key` IN (%s)",
             $customer_keys
         );
 
@@ -1942,7 +1942,6 @@ function search_customers($db, $account, $memcache_ip, $data) {
 			}
 
 			$address=$row['Customer Main Plain Email'];
-			if ($row['Customer Main Telephone Key'])$address.='<br/>T: '.$row['Customer Main XHTML Telephone'];
 			$address.='<br/>'.$row['Customer Main Location'];
 			if ($row['Customer Main Postal Code'])$address.=', '.$row['Customer Main Postal Code'];
 			$address=preg_replace('/^\<br\/\>/', '', $address);

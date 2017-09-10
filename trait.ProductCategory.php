@@ -349,15 +349,22 @@ trait ProductCategory {
             $data_to_update = array(
                 "Product Category $db_interval Acc Customers"          => $sales_product_category_data['customers'],
                 "Product Category $db_interval Acc Invoices"           => $sales_product_category_data['invoices'],
-                "Product Category $db_interval Acc Profit"             => $sales_product_category_data['profit'],
-                "Product Category $db_interval Acc Invoiced Amount"    => $sales_product_category_data['net'],
+                "Product Category $db_interval Acc Profit"             => round($sales_product_category_data['profit'],2),
+                "Product Category $db_interval Acc Invoiced Amount"    => round($sales_product_category_data['net'],2),
                 "Product Category $db_interval Acc Quantity Ordered"   => $sales_product_category_data['ordered'],
                 "Product Category $db_interval Acc Quantity Invoiced"  => $sales_product_category_data['invoiced'],
                 "Product Category $db_interval Acc Quantity Delivered" => $sales_product_category_data['delivered'],
-                "Product Category DC $db_interval Acc Profit"          => $sales_product_category_data['dc_profit'],
-                "Product Category DC $db_interval Acc Invoiced Amount" => $sales_product_category_data['dc_net']
+
             );
-            $this->update($data_to_update, 'no_history');
+
+
+            $this->fast_update($data_to_update,'Product Category Data');
+
+            $data_to_update = array(
+                "Product Category DC $db_interval Acc Profit"          => round($sales_product_category_data['dc_profit'],2),
+                "Product Category DC $db_interval Acc Invoiced Amount" => round($sales_product_category_data['dc_net'],2)
+            );
+            $this->fast_update($data_to_update,'Product Category DC Data');
 
         }
 
@@ -370,15 +377,20 @@ trait ProductCategory {
             $data_to_update = array(
                 "Product Category $db_interval Acc 1YB Customers"          => $sales_product_category_data['customers'],
                 "Product Category $db_interval Acc 1YB Invoices"           => $sales_product_category_data['invoices'],
-                "Product Category $db_interval Acc 1YB Profit"             => $sales_product_category_data['profit'],
-                "Product Category $db_interval Acc 1YB Invoiced Amount"    => $sales_product_category_data['net'],
+                "Product Category $db_interval Acc 1YB Profit"             => round($sales_product_category_data['profit'],2),
+                "Product Category $db_interval Acc 1YB Invoiced Amount"    => round($sales_product_category_data['net'],2),
                 "Product Category $db_interval Acc 1YB Quantity Ordered"   => $sales_product_category_data['ordered'],
                 "Product Category $db_interval Acc 1YB Quantity Invoiced"  => $sales_product_category_data['invoiced'],
                 "Product Category $db_interval Acc 1YB Quantity Delivered" => $sales_product_category_data['delivered'],
-                "Product Category DC $db_interval Acc 1YB Profit"          => $sales_product_category_data['dc_profit'],
-                "Product Category DC $db_interval Acc 1YB Invoiced Amount" => $sales_product_category_data['dc_net']
+
             );
-            $this->update($data_to_update, 'no_history');
+            $this->fast_update($data_to_update,'Product Category Data');
+
+            $data_to_update = array(
+                "Product Category DC $db_interval Acc 1YB Profit"          => round($sales_product_category_data['dc_profit'],2),
+                "Product Category DC $db_interval Acc 1YB Invoiced Amount" => round($sales_product_category_data['dc_net'],2)
+            );
+            $this->fast_update($data_to_update,'Product Category DC Data');
 
         }
 
@@ -394,7 +406,7 @@ trait ProductCategory {
                         ]
         )) {
 
-            $this->update(['Product Category Acc To Day Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
+            $this->fast_update(['Product Category Acc To Day Updated' => gmdate('Y-m-d H:i:s')],'Product Category Dimension');
 
         } elseif (in_array(
             $db_interval, [
@@ -405,7 +417,7 @@ trait ProductCategory {
                         ]
         )) {
 
-            $this->update(['Product Category Acc Ongoing Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
+            $this->fast_update(['Product Category Acc Ongoing Intervals Updated' => gmdate('Y-m-d H:i:s')],'Product Category Dimension');
         } elseif (in_array(
             $db_interval, [
                             'Last Month',
@@ -415,7 +427,7 @@ trait ProductCategory {
                         ]
         )) {
 
-            $this->update(['Product Category Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
+            $this->fast_update(['Product Category Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')],'Product Category Dimension');
         }
 
 

@@ -572,27 +572,7 @@
 
 <script>
 
-    function create_delivery_note(element) {
 
-        var request = '/ar_edit_orders.php?tipo=create_delivery_note&object=order&key=' + $('#order').attr('order_key')
-        $.getJSON(request, function (data) {
-            if (data.state == 200) {
-
-
-            }
-        })
-    }
-
-    function approve_dispatch(element) {
-
-        var request = '/ar_edit_orders.php?tipo=set_state&object=delivery_note&key=' + $(element).attr('dn_key') + '&value=Approved'
-        $.getJSON(request, function (data) {
-            if (data.state == 200) {
-
-
-            }
-        })
-    }
 
 
     function select_payment_account(element) {

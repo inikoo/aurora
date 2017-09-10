@@ -118,7 +118,7 @@ function customers($_data, $db, $user) {
             if ($data['Customer Billing Address Link'] == 'Contact') {
                 $billing_address = '<i>'._('Same as Contact').'</i>';
             } else {
-                $billing_address = $data['Customer XHTML Billing Address'];
+                $billing_address = $data['Customer Invoice Address Formatted'];
             }
 
             if ($data['Customer Delivery Address Link'] == 'Contact') {
@@ -126,8 +126,7 @@ function customers($_data, $db, $user) {
             } elseif ($data['Customer Delivery Address Link'] == 'Billing') {
                 $delivery_address = '<i>'._('Same as Billing').'</i>';
             } else {
-                $delivery_address
-                    = $data['Customer XHTML Main Delivery Address'];
+                $delivery_address = $data['Customer Delivery Address Formatted'];
             }
 
             switch ($data['Customer Type by Activity']) {
@@ -204,18 +203,14 @@ function customers($_data, $db, $user) {
                 'top_profits'      => percentage(
                     $data['Customer Profits Top Percentage'], 1, 2
                 ),
-                'address'          => $data['Customer Main XHTML Address'],
+                'address'          => $data['Customer Contact Address Formatted'],
                 'billing_address'  => $billing_address,
                 'delivery_address' => $delivery_address,
 
                 'activity'      => $activity,
                 'logins'        => number($data['Customer Number Web Logins']),
-                'failed_logins' => number(
-                    $data['Customer Number Web Failed Logins']
-                ),
-                'requests'      => number(
-                    $data['Customer Number Web Requests']
-                ),
+                'failed_logins' => number($data['Customer Number Web Failed Logins']),
+                'requests'      => number($data['Customer Number Web Requests']),
 
 
             );

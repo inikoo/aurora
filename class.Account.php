@@ -207,41 +207,39 @@ class Account extends DB_Table {
         //  print_r($data);
 
 
-        $data['Store Valid From']                = gmdate('Y-m-d H:i:s');
+        $data['Store Valid From'] = gmdate('Y-m-d H:i:s');
 
 
-        if(!isset($data['Store Timezone']) or $data['Store Timezone']==''){
-            $data['Store Timezone']                  = $this->get('Account Timezone');
+        if (!isset($data['Store Timezone']) or $data['Store Timezone'] == '') {
+            $data['Store Timezone'] = $this->get('Account Timezone');
 
-        }else{
-            $data['Store Timezone']                  = preg_replace('/_/', '/', $data['Store Timezone']);
-
-        }
-
-        if(!isset($data['Store Currency Code']) or $data['Store Currency Code']==''){
-            $data['Store Currency Code']                  = $this->get('Account Currency');
-
-        }else{
-            $data['Store Currency Code']                  = $data['Store Currency Code'];
+        } else {
+            $data['Store Timezone'] = preg_replace('/_/', '/', $data['Store Timezone']);
 
         }
 
+        if (!isset($data['Store Currency Code']) or $data['Store Currency Code'] == '') {
+            $data['Store Currency Code'] = $this->get('Account Currency');
 
-
-        if(!isset($data['Store Type']) or $data['Store Type']==''){
-            $data['Store Type']                  ='B2B';
+        } else {
+            $data['Store Currency Code'] = $data['Store Currency Code'];
 
         }
 
-        $data['Store Telecom Format']  =$this->get('Account Country Code');
-        $data['Store Tax Country Code']  =$this->get('Account Country Code');
+
+        if (!isset($data['Store Type']) or $data['Store Type'] == '') {
+            $data['Store Type'] = 'B2B';
+
+        }
+
+        $data['Store Telecom Format']   = $this->get('Account Country Code');
+        $data['Store Tax Country Code'] = $this->get('Account Country Code');
 
 
         $data['Store Home Country Code 2 Alpha'] = substr($data['Store Locale'], -2);
 
         $country                         = new Country('2alpha', $data['Store Home Country Code 2 Alpha']);
         $data['Store Home Country Name'] = $country->get('Country Name');
-
 
 
         $store = new Store('find', $data, 'create');
@@ -277,206 +275,6 @@ class Account extends DB_Table {
             $this->error = true;
             $this->msg   = $store->msg;
         }
-    }
-
-    function update_stores_data() {
-        $number_stores   = 0;
-        $number_websites = 0;
-        $sql             = sprintf(
-            'SELECT count(*) AS num FROM `Store Dimension` WHERE `Store State`="Normal"'
-        );
-        if ($row = $this->db->query($sql)->fetch()) {
-            $number_stores = $row['num'];
-        }
-
-        $sql = sprintf(
-            'SELECT count(*) AS num FROM `Website Dimension` '
-        );
-        if ($row = $this->db->query($sql)->fetch()) {
-            $number_websites = $row['num'];
-        }
-
-        $this->update(array('Account Stores' => $number_stores), 'no_history');
-        $this->update(array('Account Websites' => $number_websites), 'no_history');
-
-
-    }
-
-    function create_barcode($data) {
-
-        $this->new_object = false;
-
-        $data['editor'] = $this->editor;
-
-        $this->errors = 0;
-        $this->new    = 0;
-
-        $range = preg_split('/-/', $data['Barcode Range']);
-        unset($data['Barcode Range']);
-
-        if (count($range) == 1) {
-            $data['Barcode Number']    = $range[0];
-            $data['Barcode Used From'] = gmdate('Y-m-d H:i:s');
-            $data['editor']['Date']    = gmdate('Y-m-d H:i:s');
-
-            $barcode = new Barcode('find', $data, 'create');
-            if (!$barcode->id) {
-                $this->error = true;
-                $this->msg   = $barcode->msg;
-
-                return;
-            } else {
-                if ($barcode->new) {
-                    $this->new++;
-                } else {
-                    $this->error = true;
-
-
-                    $this->msg = $barcode->msg;
-
-                    return;
-                }
-            }
-        } elseif (count($range) == 2) {
-
-            for ($i = $range[0]; $i <= $range[1]; $i++) {
-                $data['Barcode Number']    = $i;
-                $data['Barcode Used From'] = gmdate('Y-m-d H:i:s');
-                $data['editor']['Date']    = gmdate('Y-m-d H:i:s');
-
-                $barcode = new Barcode('find', $data, 'create');
-                if (!$barcode->id) {
-                    $this->errors++;
-                } else {
-                    if ($barcode->new) {
-                        $this->new++;
-                    } else {
-                        $this->errors++;
-                    }
-                }
-            }
-        } else {
-            $this->error = true;
-            $this->msg   = _('None of the bar codes could be added');
-
-            return;
-        }
-
-
-        if ($this->new == 0) {
-            $this->error = true;
-            $this->msg   = _('None of the bar codes could be added');
-
-            return;
-        }
-
-        return $barcode;
-    }
-
-    function create_warehouse($data) {
-
-        include_once 'class.Warehouse.php';
-        include_once 'class.User.php';
-
-        $this->new_object = false;
-
-        $data['editor'] = $this->editor;
-
-        $data['Warehouse State']      = 'Active';
-        $data['Warehouse Valid From'] = gmdate('Y-m-d H:i:s');
-
-        $warehouse = new Warehouse('find', $data, 'create');
-
-        if ($warehouse->id) {
-            $this->new_object_msg = $warehouse->msg;
-
-
-            if ($warehouse->new) {
-                $this->new_object = true;
-
-
-                $this->update_warehouses_data();
-
-
-                if ($this->get('Account Warehouses') == 1) {
-
-
-                    $sql = sprintf("SELECT `User Key` FROM `User Dimension` WHERE `User Type` IN ('Staff','Warehouse','Contractor','Agent')  ");
-
-
-                    if ($result = $this->db->query($sql)) {
-                        foreach ($result as $row) {
-
-
-                            $_user = new User($row['User Key']);
-                            $_user->read_rights();
-                         //   print_r($_user);
-
-                            if ($_user->can_view('locations')) {
-
-                              //  print "xxx";
-
-                                $_user->add_warehouse(array($warehouse->id));
-                            }
-
-                        }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        print "$sql\n";
-                        exit;
-                    }
-
-                }
-
-                if (is_numeric($this->editor['User Key']) and $this->editor['User Key'] > 1) {
-                    $_user = new User($this->editor['User Key']);
-                    if ($_user->id) {
-                        $_user->add_warehouse(array($warehouse->id));
-                    }
-                }
-
-
-            } else {
-                $this->error = true;
-                if ($warehouse->found) {
-
-                    $this->error_code     = 'duplicated_field';
-                    $this->error_metadata = json_encode(
-                        array($warehouse->duplicated_field)
-                    );
-
-                    if ($warehouse->duplicated_field == 'Warehouse Code') {
-                        $this->msg = _('Duplicated warehouse code');
-                    } else {
-                        $this->msg = _('Duplicated warehouse name');
-                    }
-
-
-                } else {
-                    $this->msg = $warehouse->msg;
-                }
-            }
-
-            return $warehouse;
-        } else {
-            $this->error = true;
-            $this->msg   = $warehouse->msg;
-        }
-    }
-
-    function update_warehouses_data() {
-        $number_stores = 0;
-        $sql           = sprintf(
-            'SELECT count(*) AS num FROM `Warehouse Dimension` WHERE `Warehouse State`="Active"'
-        );
-        if ($row = $this->db->query($sql)->fetch()) {
-            $number_stores = $row['num'];
-        }
-
-        $this->update(
-            array('Account Warehouses' => $number_stores), 'no_history'
-        );
-
     }
 
     function get($key, $data = false) {
@@ -714,6 +512,206 @@ class Account extends DB_Table {
         }
 
         return '';
+    }
+
+    function update_stores_data() {
+        $number_stores   = 0;
+        $number_websites = 0;
+        $sql             = sprintf(
+            'SELECT count(*) AS num FROM `Store Dimension` WHERE `Store State`="Normal"'
+        );
+        if ($row = $this->db->query($sql)->fetch()) {
+            $number_stores = $row['num'];
+        }
+
+        $sql = sprintf(
+            'SELECT count(*) AS num FROM `Website Dimension` '
+        );
+        if ($row = $this->db->query($sql)->fetch()) {
+            $number_websites = $row['num'];
+        }
+
+        $this->update(array('Account Stores' => $number_stores), 'no_history');
+        $this->update(array('Account Websites' => $number_websites), 'no_history');
+
+
+    }
+
+    function create_barcode($data) {
+
+        $this->new_object = false;
+
+        $data['editor'] = $this->editor;
+
+        $this->errors = 0;
+        $this->new    = 0;
+
+        $range = preg_split('/-/', $data['Barcode Range']);
+        unset($data['Barcode Range']);
+
+        if (count($range) == 1) {
+            $data['Barcode Number']    = $range[0];
+            $data['Barcode Used From'] = gmdate('Y-m-d H:i:s');
+            $data['editor']['Date']    = gmdate('Y-m-d H:i:s');
+
+            $barcode = new Barcode('find', $data, 'create');
+            if (!$barcode->id) {
+                $this->error = true;
+                $this->msg   = $barcode->msg;
+
+                return;
+            } else {
+                if ($barcode->new) {
+                    $this->new++;
+                } else {
+                    $this->error = true;
+
+
+                    $this->msg = $barcode->msg;
+
+                    return;
+                }
+            }
+        } elseif (count($range) == 2) {
+
+            for ($i = $range[0]; $i <= $range[1]; $i++) {
+                $data['Barcode Number']    = $i;
+                $data['Barcode Used From'] = gmdate('Y-m-d H:i:s');
+                $data['editor']['Date']    = gmdate('Y-m-d H:i:s');
+
+                $barcode = new Barcode('find', $data, 'create');
+                if (!$barcode->id) {
+                    $this->errors++;
+                } else {
+                    if ($barcode->new) {
+                        $this->new++;
+                    } else {
+                        $this->errors++;
+                    }
+                }
+            }
+        } else {
+            $this->error = true;
+            $this->msg   = _('None of the bar codes could be added');
+
+            return;
+        }
+
+
+        if ($this->new == 0) {
+            $this->error = true;
+            $this->msg   = _('None of the bar codes could be added');
+
+            return;
+        }
+
+        return $barcode;
+    }
+
+    function create_warehouse($data) {
+
+        include_once 'class.Warehouse.php';
+        include_once 'class.User.php';
+
+        $this->new_object = false;
+
+        $data['editor'] = $this->editor;
+
+        $data['Warehouse State']      = 'Active';
+        $data['Warehouse Valid From'] = gmdate('Y-m-d H:i:s');
+
+        $warehouse = new Warehouse('find', $data, 'create');
+
+        if ($warehouse->id) {
+            $this->new_object_msg = $warehouse->msg;
+
+
+            if ($warehouse->new) {
+                $this->new_object = true;
+
+
+                $this->update_warehouses_data();
+
+
+                if ($this->get('Account Warehouses') == 1) {
+
+
+                    $sql = sprintf("SELECT `User Key` FROM `User Dimension` WHERE `User Type` IN ('Staff','Warehouse','Contractor','Agent')  ");
+
+
+                    if ($result = $this->db->query($sql)) {
+                        foreach ($result as $row) {
+
+
+                            $_user = new User($row['User Key']);
+                            $_user->read_rights();
+                            //   print_r($_user);
+
+                            if ($_user->can_view('locations')) {
+
+                                //  print "xxx";
+
+                                $_user->add_warehouse(array($warehouse->id));
+                            }
+
+                        }
+                    } else {
+                        print_r($error_info = $this->db->errorInfo());
+                        print "$sql\n";
+                        exit;
+                    }
+
+                }
+
+                if (is_numeric($this->editor['User Key']) and $this->editor['User Key'] > 1) {
+                    $_user = new User($this->editor['User Key']);
+                    if ($_user->id) {
+                        $_user->add_warehouse(array($warehouse->id));
+                    }
+                }
+
+
+            } else {
+                $this->error = true;
+                if ($warehouse->found) {
+
+                    $this->error_code     = 'duplicated_field';
+                    $this->error_metadata = json_encode(
+                        array($warehouse->duplicated_field)
+                    );
+
+                    if ($warehouse->duplicated_field == 'Warehouse Code') {
+                        $this->msg = _('Duplicated warehouse code');
+                    } else {
+                        $this->msg = _('Duplicated warehouse name');
+                    }
+
+
+                } else {
+                    $this->msg = $warehouse->msg;
+                }
+            }
+
+            return $warehouse;
+        } else {
+            $this->error = true;
+            $this->msg   = $warehouse->msg;
+        }
+    }
+
+    function update_warehouses_data() {
+        $number_stores = 0;
+        $sql           = sprintf(
+            'SELECT count(*) AS num FROM `Warehouse Dimension` WHERE `Warehouse State`="Active"'
+        );
+        if ($row = $this->db->query($sql)->fetch()) {
+            $number_stores = $row['num'];
+        }
+
+        $this->update(
+            array('Account Warehouses' => $number_stores), 'no_history'
+        );
+
     }
 
     function update_parts_data() {
@@ -1097,7 +1095,6 @@ class Account extends DB_Table {
         include_once 'class.Category.php';
 
 
-
         if (!isset($raw_data['Category Label']) or $raw_data['Category Label'] == '') {
             $raw_data['Category Label'] = $raw_data['Category Code'];
         }
@@ -1119,11 +1116,11 @@ class Account extends DB_Table {
 
         );
 
-        if (isset($raw_data['Category Store Key']) ) {
+        if (isset($raw_data['Category Store Key'])) {
             $data['Category Store Key'] = $raw_data['Category Store Key'];
         }
 
-        if (isset($raw_data['Category Warehouse Key']) ) {
+        if (isset($raw_data['Category Warehouse Key'])) {
             $data['Category Warehouse Key'] = $raw_data['Category Warehouse Key'];
         }
 
@@ -1162,25 +1159,23 @@ class Account extends DB_Table {
 
 
             $data_to_update = array(
-                "Account $db_interval Acc Invoiced Discount Amount" => $sales_data['discount_amount'],
-                "Account $db_interval Acc Invoiced Amount"          => $sales_data['amount'],
+                "Account $db_interval Acc Invoiced Discount Amount" => round($sales_data['discount_amount'], 2),
+                "Account $db_interval Acc Invoiced Amount"          => round($sales_data['amount'], 2),
                 "Account $db_interval Acc Invoices"                 => $sales_data['invoices'],
                 "Account $db_interval Acc Refunds"                  => $sales_data['refunds'],
                 "Account $db_interval Acc Replacements"             => $sales_data['replacements'],
                 "Account $db_interval Acc Delivery Notes"           => $sales_data['deliveries'],
-                "Account $db_interval Acc Profit"                   => $sales_data['profit'],
+                "Account $db_interval Acc Profit"                   => round($sales_data['profit'], 2),
                 "Account $db_interval Acc Customers"                => $sales_data['customers'],
                 "Account $db_interval Acc Repeat Customers"         => $sales_data['repeat_customers'],
 
-                "Account DC $db_interval Acc Invoiced Amount"          => $sales_data['dc_amount'],
-                "Account DC $db_interval Acc Invoiced Discount Amount" => $sales_data['dc_discount_amount'],
-                "Account DC $db_interval Acc Profit"                   => $sales_data['dc_profit']
-            );
+              //  "Account DC $db_interval Acc Invoiced Amount"          => round($sales_data['dc_amount'], 2),
+              //  "Account DC $db_interval Acc Invoiced Discount Amount" => round($sales_data['dc_discount_amount'], 2),
+              //  "Account DC $db_interval Acc Profit"                   => round($sales_data['dc_profit'], 2)
+                );
 
 
-
-
-            $this->update($data_to_update, 'no_history');
+            $this->fast_update($data_to_update, 'Account Data');
         }
 
         if ($from_date_1yb and $last_year) {
@@ -1189,21 +1184,21 @@ class Account extends DB_Table {
             $sales_data = $this->get_sales_data($from_date_1yb, $to_date_1yb);
 
             $data_to_update = array(
-                "Account $db_interval Acc 1YB Invoiced Discount Amount"    => $sales_data['discount_amount'],
-                "Account $db_interval Acc 1YB Invoiced Amount"             => $sales_data['amount'],
+                "Account $db_interval Acc 1YB Invoiced Discount Amount"    => round($sales_data['discount_amount'], 2),
+                "Account $db_interval Acc 1YB Invoiced Amount"             => round($sales_data['amount'], 2),
                 "Account $db_interval Acc 1YB Invoices"                    => $sales_data['invoices'],
                 "Account $db_interval Acc 1YB Refunds"                     => $sales_data['refunds'],
                 "Account $db_interval Acc 1YB Replacements"                => $sales_data['replacements'],
                 "Account $db_interval Acc 1YB Delivery Notes"              => $sales_data['deliveries'],
-                "Account $db_interval Acc 1YB Profit"                      => $sales_data['profit'],
+                "Account $db_interval Acc 1YB Profit"                      => round($sales_data['profit'], 2),
                 "Account $db_interval Acc 1YB Customers"                   => $sales_data['customers'],
                 "Account $db_interval Acc 1YB Repeat Customers"            => $sales_data['repeat_customers'],
-                "Account DC $db_interval Acc 1YB Invoiced Amount"          => $sales_data['dc_amount'],
-                "Account DC $db_interval Acc 1YB Invoiced Discount Amount" => $sales_data['dc_discount_amount'],
-                "Account DC $db_interval Acc 1YB Profit"                   => $sales_data['dc_profit']
+              //  "Account DC $db_interval Acc 1YB Invoiced Amount"          => round($sales_data['dc_amount'], 2),
+              //  "Account DC $db_interval Acc 1YB Invoiced Discount Amount" => round($sales_data['dc_discount_amount'], 2),
+              //  "Account DC $db_interval Acc 1YB Profit"                   => round($sales_data['dc_profit'], 2),
             );
 
-            $this->update($data_to_update, 'no_history');
+            $this->fast_update($data_to_update, 'Account Data');
 
 
         }
@@ -1369,10 +1364,10 @@ class Account extends DB_Table {
             );
 
 
-            $this->update($data_to_update, 'no_history');
+            $this->fast_update($data_to_update, 'Account Data');
         }
 
-        $this->update(['Account Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
+        $this->fast_update(['Account Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')]);
 
 
     }
@@ -1411,10 +1406,10 @@ class Account extends DB_Table {
                 "Account $i Quarter Ago 1YB Delivery Notes"           => $sales_data_1yb['deliveries'],
                 "Account $i Quarter Ago 1YB Profit"                   => $sales_data_1yb['profit'],
             );
-            $this->update($data_to_update, 'no_history');
+            $this->fast_update($data_to_update, 'Account Data');
         }
 
-        $this->update(['Account Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
+        $this->fast_update(['Account Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')]);
 
 
     }
@@ -1497,8 +1492,7 @@ class Account extends DB_Table {
 
 
                 if ($sales_data['invoices'] > 0 or $sales_data['refunds'] > 0 or $sales_data['customers'] > 0 or $sales_data['amount'] != 0 or $sales_data['dc_amount'] != 0 or $sales_data['profit']
-                    != 0 or $sales_data['dc_profit'] != 0
-                ) {
+                    != 0 or $sales_data['dc_profit'] != 0) {
 
                     list($timeseries_record_key, $date) = $timeseries->create_record(array('Timeseries Record Date' => $_date));
 
@@ -1575,20 +1569,19 @@ class Account extends DB_Table {
     }
 
 
+    function update_orders() {
 
-function update_orders() {
 
+        $this->update_orders_in_basket_data();
+        $this->update_orders_in_process_data();
+        $this->update_orders_in_warehouse_data();
+        $this->update_orders_packed_data();
+        $this->update_orders_approved_data();
+        $this->update_orders_dispatched();
+        $this->update_orders_dispatched_today();
 
-    $this->update_orders_in_basket_data();
-    $this->update_orders_in_process_data();
-    $this->update_orders_in_warehouse_data();
-    $this->update_orders_packed_data();
-    $this->update_orders_approved_data();
-    $this->update_orders_dispatched();
-    $this->update_orders_dispatched_today();
-
-    $this->update_orders_cancelled();
-}
+        $this->update_orders_cancelled();
+    }
 
     function update_orders_in_basket_data() {
 
@@ -1600,8 +1593,7 @@ function update_orders() {
         );
 
         $sql = sprintf(
-            "SELECT count(*) AS num ,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE  `Order State`='InBasket'  ",
-            $this->id
+            "SELECT count(*) AS num ,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE  `Order State`='InBasket'  ", $this->id
         );
 
 
@@ -1622,11 +1614,13 @@ function update_orders() {
 
         $data_to_update = array(
             'Account Orders In Basket Number' => $data['in_basket']['number'],
-            'Account Orders In Basket Amount' => $data['in_basket']['dc_amount'],
+            'Account Orders In Basket Amount' => round($data['in_basket']['dc_amount'],2)
 
 
         );
-        $this->update($data_to_update, 'no_history');
+
+
+        $this->fast_update($data_to_update, 'Account Data');
     }
 
     function update_orders_in_process_data() {
@@ -1665,8 +1659,6 @@ function update_orders() {
         }
 
 
-
-
         $sql = sprintf(
             'SELECT `Order Current Dispatch State`,count(*) AS num,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE  `Order State`="InProcess"  AND `Order To Pay Amount`>0  '
         );
@@ -1689,27 +1681,26 @@ function update_orders() {
 
         $data_to_update = array(
             'Account Orders In Process Paid Number'     => $data['in_process_paid']['number'],
-            'Account Orders In Process Paid Amount'     => $data['in_process_paid']['dc_amount'],
+            'Account Orders In Process Paid Amount'     => round($data['in_process_paid']['dc_amount'],2),
             'Account Orders In Process Not Paid Number' => $data['in_process_not_paid']['number'],
-            'Account Orders In Process Not Paid Amount' => $data['in_process_not_paid']['dc_amount'],
-            'Account Orders In Process Number'     => $data['in_process_paid']['number']+$data['in_process_not_paid']['number'],
-            'Account Orders In Process Amount'     => $data['in_process_paid']['dc_amount']+$data['in_process_not_paid']['dc_amount'],
+            'Account Orders In Process Not Paid Amount' => round($data['in_process_not_paid']['dc_amount'],2),
+            'Account Orders In Process Number'          => $data['in_process_paid']['number'] + $data['in_process_not_paid']['number'],
+            'Account Orders In Process Amount'          => round($data['in_process_paid']['dc_amount'] + $data['in_process_not_paid']['dc_amount'],2)
 
         );
 
 
-
-        $this->update($data_to_update, 'no_history');
+        $this->fast_update($data_to_update, 'Account Data');
     }
 
     function update_orders_in_warehouse_data() {
 
         $data = array(
-            'warehouse' => array(
+            'warehouse'             => array(
                 'number'    => 0,
                 'dc_amount' => 0
             ),
-            'warehouse_no_alerts' => array(
+            'warehouse_no_alerts'   => array(
                 'number'    => 0,
                 'dc_amount' => 0
             ),
@@ -1741,7 +1732,7 @@ function update_orders() {
 
 
         $sql = sprintf(
-            "SELECT count(*) AS num,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE   `Order State` ='InWarehouse' and `Order Delivery Note Alert`='Yes'  "
+            "SELECT count(*) AS num,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE   `Order State` ='InWarehouse' AND `Order Delivery Note Alert`='Yes'  "
         );
 
 
@@ -1759,23 +1750,23 @@ function update_orders() {
             exit;
         }
 
-        $data['warehouse_no_alerts']['number'] =$data['warehouse']['number']-$data['warehouse_with_alerts']['number'];
-        $data['warehouse_no_alerts']['dc_amount'] =$data['warehouse']['dc_amount']-$data['warehouse_with_alerts']['dc_amount'];
+        $data['warehouse_no_alerts']['number']    = $data['warehouse']['number'] - $data['warehouse_with_alerts']['number'];
+        $data['warehouse_no_alerts']['dc_amount'] = $data['warehouse']['dc_amount'] - $data['warehouse_with_alerts']['dc_amount'];
 
 
         $data_to_update = array(
-            'Account Orders In Warehouse Number' => $data['warehouse']['number'],
-            'Account Orders In Warehouse Amount' => $data['warehouse']['dc_amount'],
-            'Account Orders In Warehouse No Alerts Number' => $data['warehouse_no_alerts']['number'],
-            'Account Orders In Warehouse No Alerts Amount' => $data['warehouse_no_alerts']['dc_amount'],
+            'Account Orders In Warehouse Number'             => $data['warehouse']['number'],
+            'Account Orders In Warehouse Amount'             => round($data['warehouse']['dc_amount'],2),
+            'Account Orders In Warehouse No Alerts Number'   => $data['warehouse_no_alerts']['number'],
+            'Account Orders In Warehouse No Alerts Amount'   => round($data['warehouse_no_alerts']['dc_amount'],2),
             'Account Orders In Warehouse With Alerts Number' => $data['warehouse_with_alerts']['number'],
-            'Account Orders In Warehouse With Alerts Amount' => $data['warehouse_with_alerts']['dc_amount'],
+            'Account Orders In Warehouse With Alerts Amount' => round($data['warehouse_with_alerts']['dc_amount'],2)
 
         );
 
-       // print_r($data_to_update);
+        // print_r($data_to_update);
 
-        $this->update($data_to_update, 'no_history');
+        $this->fast_update($data_to_update, 'Account Data');
     }
 
     function update_orders_packed_data() {
@@ -1811,11 +1802,11 @@ function update_orders() {
 
         $data_to_update = array(
             'Account Orders Packed Number' => $data['packed']['number'],
-            'Account Orders Packed Amount' => $data['packed']['dc_amount'],
+            'Account Orders Packed Amount' => round($data['packed']['dc_amount'],2)
 
 
         );
-        $this->update($data_to_update, 'no_history');
+        $this->fast_update($data_to_update, 'Account Data');
     }
 
     function update_orders_approved_data() {
@@ -1823,7 +1814,6 @@ function update_orders() {
         $data = array(
             'approved' => array(
                 'number'    => 0,
-                'amount'    => 0,
                 'dc_amount' => 0
             ),
         );
@@ -1851,11 +1841,11 @@ function update_orders() {
 
         $data_to_update = array(
             'Account Orders Dispatch Approved Number' => $data['approved']['number'],
-            'Account Orders Dispatch Approved Amount' => $data['approved']['dc_amount'],
+            'Account Orders Dispatch Approved Amount' => round($data['approved']['dc_amount'],2)
 
 
         );
-        $this->update($data_to_update, 'no_history');
+        $this->fast_update($data_to_update, 'Account Data');
     }
 
     function update_orders_dispatched() {
@@ -1863,7 +1853,6 @@ function update_orders() {
         $data = array(
             'dispatched' => array(
                 'number'    => 0,
-                'amount'    => 0,
                 'dc_amount' => 0
             ),
 
@@ -1893,11 +1882,11 @@ function update_orders() {
 
         $data_to_update = array(
             'Account Orders Dispatched Number' => $data['dispatched']['number'],
-            'Account Orders Dispatched Amount' => $data['dispatched']['dc_amount'],
+            'Account Orders Dispatched Amount' => round($data['dispatched']['dc_amount'],2)
 
 
         );
-        $this->update($data_to_update, 'no_history');
+        $this->fast_update($data_to_update, 'Account Data');
     }
 
     function update_orders_dispatched_today() {
@@ -1914,7 +1903,7 @@ function update_orders() {
 
 
         $sql = sprintf(
-            "SELECT count(*) AS num,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE   `Order State` ='Dispatched' and `Order Dispatched Date`>=%s ",
+            "SELECT count(*) AS num,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE   `Order State` ='Dispatched' AND `Order Dispatched Date`>=%s ",
             prepare_mysql(gmdate('Y-m-d 00:00:00'))
 
         );
@@ -1937,11 +1926,11 @@ function update_orders() {
 
         $data_to_update = array(
             'Account Orders Dispatched Today Number' => $data['dispatched_today']['number'],
-            'Account Orders Dispatched Today Amount' => $data['dispatched_today']['dc_amount'],
+            'Account Orders Dispatched Today Amount' => round($data['dispatched_today']['dc_amount'],2)
 
 
         );
-        $this->update($data_to_update, 'no_history');
+        $this->fast_update($data_to_update, 'Account Data');
     }
 
 
@@ -1951,7 +1940,6 @@ function update_orders() {
 
             'cancelled' => array(
                 'number'    => 0,
-                'amount'    => 0,
                 'dc_amount' => 0
             ),
         );
@@ -1960,8 +1948,6 @@ function update_orders() {
         $sql = sprintf(
             "SELECT count(*) AS num,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE   `Order State` ='Cancelled' "
         );
-
-
 
 
         if ($result = $this->db->query($sql)) {
@@ -1982,10 +1968,10 @@ function update_orders() {
         $data_to_update = array(
 
             'Account Orders Cancelled Number' => $data['cancelled']['number'],
-            'Account Orders Cancelled Amount' => $data['cancelled']['dc_amount'],
+            'Account Orders Cancelled Amount' => round($data['cancelled']['dc_amount'],2)
 
         );
-        $this->update($data_to_update, 'no_history');
+        $this->fast_update($data_to_update, 'Account Data');
     }
 
 

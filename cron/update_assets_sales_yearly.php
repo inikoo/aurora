@@ -39,7 +39,15 @@ $editor = array(
 
 //shortcuts($db);
 
+$msg = new_housekeeping_fork(
+    'au_asset_sales', array(
+    'type'     => 'update_products_previous_intervals',
+    'intervals' => 'Years',
 
+), $account->get('Account Code')
+);
+
+exit;
 
 
 $intervals = array(
@@ -173,13 +181,7 @@ $msg = new_housekeeping_fork(
 );
 
 
-$msg = new_housekeeping_fork(
-    'au_asset_sales', array(
-    'type'     => 'update_products_previous_intervals',
-    'intervals' => 'Years',
 
-), $account->get('Account Code')
-);
 
 
 $msg = new_housekeeping_fork(

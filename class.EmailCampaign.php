@@ -587,7 +587,7 @@ class EmailCampaign extends DB_Table {
         if ($customer_list_data['List Type'] == 'Static') {
 
             $sql = sprintf(
-                "SELECT `Customer Main Contact Name`,C.`Customer Key`,`Customer Main Plain Email`,`Customer Main Email Key`,`Customer Send Email Marketing` FROM `List Customer Bridge` B LEFT JOIN `Customer Dimension` C ON (B.`Customer Key`=C.`Customer Key`) WHERE `List Key`=%d ",
+                "SELECT `Customer Main Contact Name`,C.`Customer Key`,`Customer Main Plain Email`,`Customer Send Email Marketing` FROM `List Customer Bridge` B LEFT JOIN `Customer Dimension` C ON (B.`Customer Key`=C.`Customer Key`) WHERE `List Key`=%d ",
                 $list_key
             );
 
@@ -613,7 +613,7 @@ class EmailCampaign extends DB_Table {
 
 
             $sql = sprintf(
-                "select `Customer Main Contact Name`,C.`Customer Key`,`Customer Main Plain Email`,`Customer Main Email Key`,`Customer Send Email Marketing` from $table $where $group "
+                "select `Customer Main Contact Name`,C.`Customer Key`,`Customer Main Plain Email`,`Customer Send Email Marketing` from $table $where $group "
 
             );
 
