@@ -71,7 +71,6 @@ class Subject extends DB_Table {
     }
 
 
-
     function set_as_main($field, $other_key) {
 
 
@@ -151,8 +150,7 @@ class Subject extends DB_Table {
                 );
 
 
-                $this->other_fields_updated[$this->table_name.'_Main_Plain_Telephone']
-                    = array(
+                $this->other_fields_updated[$this->table_name.'_Main_Plain_Telephone'] = array(
                     'field'           => $this->table_name.'_Main_Plain_Telephone',
                     'render'          => true,
                     'value'           => $this->get(
@@ -177,8 +175,7 @@ class Subject extends DB_Table {
 
                 $this->other_fields_updated[preg_replace(
                     '/ /', '_', "$field $other_key"
-                )]
-                    = array(
+                )] = array(
                     'field'           => preg_replace(
                         '/ /', '_', "$field $other_key"
                     ),
@@ -271,8 +268,7 @@ class Subject extends DB_Table {
                 );
 
 
-                $this->other_fields_updated['Customer_Delivery_Address']
-                    = array(
+                $this->other_fields_updated['Customer_Delivery_Address'] = array(
                     'field'           => 'Customer_Delivery_Address',
                     'render'          => true,
                     'value'           => $this->get(
@@ -346,8 +342,7 @@ class Subject extends DB_Table {
                 );
 
 
-                $this->other_fields_updated[$this->table_name.'_Main_Plain_Telephone']
-                    = array(
+                $this->other_fields_updated[$this->table_name.'_Main_Plain_Telephone'] = array(
                     'field'           => $this->table_name.'_Main_Plain_Telephone',
                     'render'          => true,
                     'value'           => $this->get(
@@ -372,8 +367,7 @@ class Subject extends DB_Table {
 
                 $this->other_fields_updated[preg_replace(
                     '/ /', '_', "$field $component_key"
-                )]
-                    = array(
+                )] = array(
                     'field'           => preg_replace(
                         '/ /', '_', "$field $component_key"
                     ),
@@ -402,14 +396,14 @@ class Subject extends DB_Table {
     function update_address($type, $fields, $options = '') {
 
 
-        $old_value    = $this->get("$type Address");
+        $old_value = $this->get("$type Address");
         //$old_checksum = $this->get("$type Address Checksum");
 
 
         //$address_fields           = array();
-        $updated_fields_number    = 0;
-       // $updated_recipient_fields = false;
-       // $updated_address_fields   = false;
+        $updated_fields_number = 0;
+        // $updated_recipient_fields = false;
+        // $updated_address_fields   = false;
 
         foreach ($fields as $field => $value) {
             $this->update_field(
@@ -418,13 +412,13 @@ class Subject extends DB_Table {
             if ($this->updated) {
                 $updated_fields_number++;
 
-               /*
-                if ($field == 'Address Recipient' or $field == 'Address Organization') {
-                    $updated_recipient_fields = true;
-                } else {
-                    $updated_address_fields = true;
-                }
-               */
+                /*
+                 if ($field == 'Address Recipient' or $field == 'Address Organization') {
+                     $updated_recipient_fields = true;
+                 } else {
+                     $updated_address_fields = true;
+                 }
+                */
             }
         }
 
@@ -432,9 +426,6 @@ class Subject extends DB_Table {
         if ($updated_fields_number > 0) {
             $this->updated = true;
         }
-
-
-
 
 
         if ($this->updated) {
@@ -449,8 +440,6 @@ class Subject extends DB_Table {
                 );
 
             }
-
-
 
 
             if ($type == 'Contact') {
@@ -474,10 +463,10 @@ class Subject extends DB_Table {
                         $this->table_name.' Location' => trim(
                             sprintf(
                                 '<img src="/art/flags/%s.gif" title="%s"> %s', strtolower(
-                                    $this->get(
-                                        'Contact Address Country 2 Alpha Code'
-                                    )
-                                ), $this->get(
+                                $this->get(
+                                    'Contact Address Country 2 Alpha Code'
+                                )
+                            ), $this->get(
                                 'Contact Address Country 2 Alpha Code'
                             ), $location
                             )
@@ -551,9 +540,7 @@ class Subject extends DB_Table {
         list($address, $formatter, $postal_label_formatter) = get_address_formatter($country, $locale);
 
 
-
-        $address =
-            $address->withFamilyName($this->get($type.' Address Recipient'))->withOrganization($this->get($type.' Address Organization'))->withAddressLine1($this->get($type.' Address Line 1'))
+        $address = $address->withFamilyName($this->get($type.' Address Recipient'))->withOrganization($this->get($type.' Address Organization'))->withAddressLine1($this->get($type.' Address Line 1'))
             ->withAddressLine2($this->get($type.' Address Line 2'))->withSortingCode($this->get($type.' Address Sorting Code'))->withPostalCode($this->get($type.' Address Postal Code'))
             ->withDependentLocality(
                 $this->get($type.' Address Dependent Locality')
@@ -567,8 +554,7 @@ class Subject extends DB_Table {
         $xhtml_address = $formatter->format($address);
 
 
-
-        if($type == 'Contact') {
+        if ($type == 'Contact') {
 
             if ($this->get($type.' Address Recipient') == $this->get('Main Contact Name')) {
                 $xhtml_address = preg_replace('/(class="family-name">.+<\/span>)<br>/', '$1', $xhtml_address);
@@ -578,10 +564,14 @@ class Subject extends DB_Table {
                 $xhtml_address = preg_replace('/(class="organization">.+<\/span>)<br>/', '$1', $xhtml_address);
             }
         }
-        $xhtml_address = preg_replace('/class="family-name"/', 'class="recipient fn '.($this->get($type.' Address Recipient') == $this->get('Main Contact Name') and $type == 'Contact'  ? 'hide' : '').'"', $xhtml_address);
+        $xhtml_address = preg_replace(
+            '/class="family-name"/', 'class="recipient fn '.($this->get($type.' Address Recipient') == $this->get('Main Contact Name') and $type == 'Contact' ? 'hide' : '').'"', $xhtml_address
+        );
 
 
-        $xhtml_address = preg_replace('/class="organization"/', 'class="organization org '.($this->get($type.' Address Organization') == $this->get('Company Name')  and $type == 'Contact' ? 'hide' : '').'"', $xhtml_address);
+        $xhtml_address = preg_replace(
+            '/class="organization"/', 'class="organization org '.($this->get($type.' Address Organization') == $this->get('Company Name') and $type == 'Contact' ? 'hide' : '').'"', $xhtml_address
+        );
         $xhtml_address = preg_replace('/class="address-line1"/', 'class="address-line1 street-address"', $xhtml_address);
         $xhtml_address = preg_replace('/class="address-line2"/', 'class="address-line2 extended-address"', $xhtml_address);
         $xhtml_address = preg_replace('/class="sort-code"/', 'class="sort-code postal-code"', $xhtml_address);
@@ -590,7 +580,7 @@ class Subject extends DB_Table {
 
         $xhtml_address = preg_replace('/(class="address-line1 street-address"><\/span>)<br>/', '$1', $xhtml_address);
 
-      //  print $xhtml_address;
+        //  print $xhtml_address;
 
 
         $this->update_field($this->table_name.' '.$type.' Address Formatted', $xhtml_address, 'no_history');
@@ -601,7 +591,6 @@ class Subject extends DB_Table {
     }
 
     function update_subject_field_switcher($field, $value, $options = '', $metadata) {
-
 
 
         switch ($field) {
@@ -649,61 +638,45 @@ class Subject extends DB_Table {
 
                 return true;
                 break;
-            case $this->table_name.' Main Plain Telephone':
+            /*
+        case $this->table_name.' Main Plain Telephone':
 
-                $this->update_telephone($field, $value, $options);
+            $this->update_telephone($field, $value, $options);
 
 
-                return true;
-                break;
-
+            return true;
+            break;
+*/
 
             case $this->table_name.' Main Plain Mobile':
             case $this->table_name.' Main Plain FAX':
+            case $this->table_name.' Main Plain Telephone':
                 $value = preg_replace('/\s/', '', $value);
                 if ($value == '+') {
                     $value = '';
                 }
-
-
-
-
                 if ($value != '') {
 
                     include_once 'utils/get_phoneUtil.php';
                     $phoneUtil = get_phoneUtil();
-
                     try {
-                        if ($this->get('Contact Address Country 2 Alpha Code') == '' or $this->get(
-                                'Contact Address Country 2 Alpha Code'
-                            ) == 'XX'
-                        ) {
+                        if ($this->get('Contact Address Country 2 Alpha Code') == '' or $this->get('Contact Address Country 2 Alpha Code') == 'XX') {
 
                             if ($this->get('Store Key')) {
                                 $store   = new Store($this->get('Store Key'));
-                                $country = $store->get(
-                                    'Home Country Code 2 Alpha'
-                                );
+                                $country = $store->get('Home Country Code 2 Alpha');
                             } else {
                                 $account = new Account();
-                                $country = $account->get(
-                                    'Country 2 Alpha Code'
-                                );
+                                $country = $account->get('Country 2 Alpha Code');
                             }
 
                         } else {
-                            $country = $this->get(
-                                'Contact Address Country 2 Alpha Code'
-                            );
+                            $country = $this->get('Contact Address Country 2 Alpha Code');
                         }
                         $proto_number    = $phoneUtil->parse($value, $country);
-                        $formatted_value = $phoneUtil->format(
-                            $proto_number, \libphonenumber\PhoneNumberFormat::INTERNATIONAL
-                        );
+                        $formatted_value = $phoneUtil->format($proto_number, \libphonenumber\PhoneNumberFormat::INTERNATIONAL);
 
-                        $value = $phoneUtil->format(
-                            $proto_number, \libphonenumber\PhoneNumberFormat::E164
-                        );
+                        $value = $phoneUtil->format($proto_number, \libphonenumber\PhoneNumberFormat::E164);
 
 
                     } catch (\libphonenumber\NumberParseException $e) {
@@ -713,24 +686,20 @@ class Subject extends DB_Table {
 
                 } else {
                     $formatted_value = '';
-
                 }
 
 
                 $this->update_field($field, $value, 'no_history');
-                $this->update_field(
-                    preg_replace('/Plain/', 'XHTML', $field), $formatted_value, 'no_history'
-                );
+                $this->update_field(preg_replace('/Plain/', 'XHTML', $field), $formatted_value, 'no_history');
 
+                if ($field == $this->table_name.' Main Plain Mobile' or $field == $this->table_name.' Main Plain Telephone') {
 
+                    $this->update_field_switcher($this->table_name.' Preferred Contact Number', '');
+                }
                 if ($field == $this->table_name.' Main Plain Mobile') {
 
-                    $this->update_field_switcher(
-                        $this->table_name.' Preferred Contact Number', ''
-                    );
 
-                    $this->other_fields_updated[$this->table_name.'_Main_Plain_Mobile']
-                        = array(
+                    $this->other_fields_updated[$this->table_name.'_Main_Plain_Mobile']    = array(
                         'field'           => $this->table_name.'_Main_Plain_Mobile',
                         'render'          => true,
                         'label'           => ucfirst(
@@ -750,8 +719,7 @@ class Subject extends DB_Table {
                         ),
                         'formatted_value' => $this->get('Main Plain Mobile')
                     );
-                    $this->other_fields_updated[$this->table_name.'_Main_Plain_Telephone']
-                        = array(
+                    $this->other_fields_updated[$this->table_name.'_Main_Plain_Telephone'] = array(
                         'field'  => $this->table_name.'_Main_Plain_Telephone',
                         'render' => true,
                         'label'  => ucfirst(
@@ -769,8 +737,7 @@ class Subject extends DB_Table {
 
                     );
                 } else {
-                    $this->other_fields_updated[$this->table_name.'_Main_Plain_FAX']
-                        = array(
+                    $this->other_fields_updated[$this->table_name.'_Main_Plain_FAX'] = array(
                         'field'           => $this->table_name.'_Main_Plain_FAX',
                         'render'          => true,
                         'label'           => ucfirst(
@@ -823,13 +790,10 @@ class Subject extends DB_Table {
 
 
                 $this->update_field($field, $value, $options);
-                $this->update_field(
-                    $this->table_name.' Preferred Contact Number Formatted Number', $this->get('Main XHTML '.$value), $options
-                );
+                $this->update_field($this->table_name.' Preferred Contact Number Formatted Number', $this->get('Main XHTML '.$value), $options);
 
 
-                $this->other_fields_updated[$this->table_name.'_Main_Plain_Mobile']
-                    = array(
+                $this->other_fields_updated[$this->table_name.'_Main_Plain_Mobile'] = array(
                     'field'  => $this->table_name.'_Main_Plain_Mobile',
                     'render' => true,
                     'label'  => ucfirst(
@@ -845,8 +809,7 @@ class Subject extends DB_Table {
                             ).'" class="fa fa-star-o discreet button"></i>') : ''),
                 );
 
-                $this->other_fields_updated[$this->table_name.'_Main_Plain_Telephone']
-                    = array(
+                $this->other_fields_updated[$this->table_name.'_Main_Plain_Telephone'] = array(
                     'field'  => $this->table_name.'_Main_Plain_Telephone',
                     'render' => true,
                     'label'  => ucfirst(
@@ -907,8 +870,7 @@ class Subject extends DB_Table {
 
                     if ($old_value == $this->get(
                             'Invoice Address Organization'
-                        )
-                    ) {
+                        )) {
                         $this->update_field(
                             $this->table_name.' Invoice Address Organization', $value, 'no_history'
                         );
@@ -1112,8 +1074,7 @@ class Subject extends DB_Table {
                                     'Contact Address Country 2 Alpha Code'
                                 ) == '' or $this->get(
                                     'Contact Address Country 2 Alpha Code'
-                                ) == 'XX'
-                            ) {
+                                ) == 'XX') {
                                 if ($this->get('Store Key')) {
                                     $store   = new Store(
                                         $this->get('Store Key')
@@ -1222,8 +1183,7 @@ class Subject extends DB_Table {
 
         if ($value == '' and count(
                 $other_emails_data = $this->get_other_emails_data()
-            ) > 0
-        ) {
+            ) > 0) {
             $old_value = $this->get($field);
             foreach ($other_emails_data as $other_key => $other_value) {
                 break;
@@ -1424,6 +1384,7 @@ class Subject extends DB_Table {
 
     }
 
+    /*
     function update_telephone($field, $value, $options) {
 
 
@@ -1571,75 +1532,7 @@ class Subject extends DB_Table {
 
 
     }
-
-    function get_other_telephones_data() {
-
-        $sql = sprintf(
-            "SELECT `%s Other Telephone Key`,`%s Other Telephone Number`,`%s Other Telephone Formatted Number`,`%s Other Telephone Label` FROM `%s Other Telephone Dimension` WHERE `%s Other Telephone %s Key`=%d ORDER BY `%s Other Telephone Key`",
-            addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name),
-            addslashes($this->table_name), $this->id, addslashes($this->table_name)
-        );
-
-        $telephone_keys = array();
-
-        if ($result = $this->db->query($sql)) {
-
-            foreach ($result as $row) {
-                $telephone_keys[$row[$this->table_name.' Other Telephone Key']]
-                    = array(
-                    'telephone'           => $row[$this->table_name.' Other Telephone Number'],
-                    'formatted_telephone' => $row[$this->table_name.' Other Telephone Formatted Number'],
-                    'label'               => $row[$this->table_name.' Other Telephone Label'],
-                );
-            }
-
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        return $telephone_keys;
-
-    }
-
-    function get_formatted_number($value) {
-        include_once 'utils/get_phoneUtil.php';
-        $phoneUtil = get_phoneUtil();
-        try {
-            if ($this->get('Contact Address Country 2 Alpha Code') == '' or $this->get('Contact Address Country 2 Alpha Code') == 'XX') {
-
-                if ($this->get('Store Key')) {
-                    $store   = new Store($this->get('Store Key'));
-                    $country = $store->get('Home Country Code 2 Alpha');
-                } else {
-                    $account = new Account();
-                    $country = $account->get('Country 2 Alpha Code');
-                }
-
-            } else {
-                $country = $this->get('Contact Address Country 2 Alpha Code');
-            }
-            $proto_number    = $phoneUtil->parse($value, $country);
-            $formatted_value = $phoneUtil->format(
-                $proto_number, \libphonenumber\PhoneNumberFormat::INTERNATIONAL
-            );
-
-            $value = $phoneUtil->format(
-                $proto_number, \libphonenumber\PhoneNumberFormat::E164
-            );
-
-
-        } catch (\libphonenumber\NumberParseException $e) {
-
-        }
-
-        return array(
-            $value,
-            $formatted_value
-        );
-
-    }
+*/
 
     function add_other_email($value, $options = '') {
 
@@ -2025,6 +1918,74 @@ class Subject extends DB_Table {
 
     }
 
+    function get_other_telephones_data() {
+
+        $sql = sprintf(
+            "SELECT `%s Other Telephone Key`,`%s Other Telephone Number`,`%s Other Telephone Formatted Number`,`%s Other Telephone Label` FROM `%s Other Telephone Dimension` WHERE `%s Other Telephone %s Key`=%d ORDER BY `%s Other Telephone Key`",
+            addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name),
+            addslashes($this->table_name), $this->id, addslashes($this->table_name)
+        );
+
+        $telephone_keys = array();
+
+        if ($result = $this->db->query($sql)) {
+
+            foreach ($result as $row) {
+                $telephone_keys[$row[$this->table_name.' Other Telephone Key']] = array(
+                    'telephone'           => $row[$this->table_name.' Other Telephone Number'],
+                    'formatted_telephone' => $row[$this->table_name.' Other Telephone Formatted Number'],
+                    'label'               => $row[$this->table_name.' Other Telephone Label'],
+                );
+            }
+
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        return $telephone_keys;
+
+    }
+
+    function get_formatted_number($value) {
+        include_once 'utils/get_phoneUtil.php';
+        $phoneUtil = get_phoneUtil();
+        try {
+            if ($this->get('Contact Address Country 2 Alpha Code') == '' or $this->get('Contact Address Country 2 Alpha Code') == 'XX') {
+
+                if ($this->get('Store Key')) {
+                    $store   = new Store($this->get('Store Key'));
+                    $country = $store->get('Home Country Code 2 Alpha');
+                } else {
+                    $account = new Account();
+                    $country = $account->get('Country 2 Alpha Code');
+                }
+
+            } else {
+                $country = $this->get('Contact Address Country 2 Alpha Code');
+            }
+            $proto_number    = $phoneUtil->parse($value, $country);
+            $formatted_value = $phoneUtil->format(
+                $proto_number, \libphonenumber\PhoneNumberFormat::INTERNATIONAL
+            );
+
+            $value = $phoneUtil->format(
+                $proto_number, \libphonenumber\PhoneNumberFormat::E164
+            );
+
+
+        } catch (\libphonenumber\NumberParseException $e) {
+
+        }
+
+        return array(
+            $value,
+            $formatted_value
+        );
+
+    }
+
     function get_subject_common($key, $arg1 = '') {
 
         switch ($key) {
@@ -2051,7 +2012,8 @@ class Subject extends DB_Table {
                     'Address Dependent Locality'   => $this->get($type.' Address Dependent Locality'),
                     'Address Locality'             => $this->get($type.' Address Locality'),
                     'Address Administrative Area'  => $this->get($type.' Address Administrative Area'),
-                    'Address Country 2 Alpha Code' => $this->get($type.' Address Country 2 Alpha Code'
+                    'Address Country 2 Alpha Code' => $this->get(
+                        $type.' Address Country 2 Alpha Code'
                     ),
 
 
@@ -2080,13 +2042,10 @@ class Subject extends DB_Table {
             case 'Main Plain FAX':
 
 
-
-            return array(
-                true,
-                $this->get(
-                    $this->table_name.' '.$key
-                )
-            );
+                return array(
+                    true,
+                    $this->get($this->table_name.' '.preg_replace('/Plain/', 'XHTML', $key))
+                );
 
                 break;
 
@@ -2174,8 +2133,7 @@ class Subject extends DB_Table {
                         '/'.$this->table_name.' Other Telephone Label (\d+)/i', $key, $matches
                     ) or preg_match(
                         '/Other Telephone Label (\d+)/i', $key, $matches
-                    )
-                ) {
+                    )) {
 
 
                     $subject_telephone_key = $matches[1];

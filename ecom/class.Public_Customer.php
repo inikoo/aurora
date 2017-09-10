@@ -166,6 +166,17 @@ class Public_Customer extends DBW_Table {
             $this->update_address('Delivery', $address_raw_data, 'no_history');
 
 
+            $this->update(
+                array(
+                    'Customer Main Plain Mobile'=>$this->get('Customer Main Plain Mobile'),
+                    'Customer Main Plain Telephone'=>$this->get('Customer Main Plain Telephone'),
+                    'Customer Main Plain FAX'=>$this->get('Customer Main Plain FAX'),
+                ),
+                'no_history'
+
+            );
+
+
             $history_data = array(
                 'History Abstract' => sprintf(_('Customer %s registered'), $this->get('Name')),
                 'History Details'  => '',
@@ -565,7 +576,7 @@ class Public_Customer extends DBW_Table {
 
                 if (empty($metadata['no_propagate_orders'])) {
 
-                    $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` in ("Basket")   AND `Order Customer Key`=%d ', $this->id);
+                    $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN ("Basket")   AND `Order Customer Key`=%d ', $this->id);
                     if ($result = $this->db->query($sql)) {
                         foreach ($result as $row) {
                             $order = get_object('Order', $row['Order Key']);
@@ -586,7 +597,7 @@ class Public_Customer extends DBW_Table {
 
                 $this->update_address('Delivery', json_decode($value, true));
 
-                $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` in ("Basket")   AND `Order Customer Key`=%d ', $this->id);
+                $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN ("Basket")   AND `Order Customer Key`=%d ', $this->id);
                 if ($result = $this->db->query($sql)) {
                     foreach ($result as $row) {
                         $order = get_object('Order', $row['Order Key']);
@@ -602,13 +613,96 @@ class Public_Customer extends DBW_Table {
 
                 break;
 
+
+            case 'Customer Main Plain Mobile':
+            case 'Customer Main Plain FAX':
+            case 'Customer Main Plain Telephone':
+                $value = preg_replace('/\s/', '', $value);
+                if ($value == '+') {
+                    $value = '';
+                }
+                if ($value != '') {
+
+                    include_once 'utils/get_phoneUtil.php';
+                    $phoneUtil = get_phoneUtil();
+                    try {
+                        if ($this->data['Customer Contact Address Country 2 Alpha Code'] == '' or $this->data['Customer Contact Address Country 2 Alpha Code'] == 'XX') {
+
+                            if ($this->get('Store Key')) {
+                                $store   = get_object('Store',$this->data['Customer Store Key']);
+                                $country = $store->get('Home Country Code 2 Alpha');
+                            } else {
+                                $account = get_object('Account',1);
+                                $country = $account->get('Account Country 2 Alpha Code');
+                            }
+
+                        } else {
+                            $country = $this->data['Customer Contact Address Country 2 Alpha Code'];
+                        }
+                        $proto_number    = $phoneUtil->parse($value, $country);
+                        $formatted_value = $phoneUtil->format($proto_number, \libphonenumber\PhoneNumberFormat::INTERNATIONAL);
+
+                        $value = $phoneUtil->format($proto_number, \libphonenumber\PhoneNumberFormat::E164);
+
+
+                    } catch (\libphonenumber\NumberParseException $e) {
+                        $this->error = true;
+                        $this->msg   = 'Error 1234';
+                    }
+
+                } else {
+                    $formatted_value = '';
+                }
+
+
+                $this->update_field($field, $value, 'no_history');
+                $this->update_field(preg_replace('/Plain/', 'XHTML', $field), $formatted_value, 'no_history');
+
+
+                if ($field == 'Customer Main Plain Mobile' or $field == 'Customer Main Plain Telephone') {
+
+                    $this->update_field_switcher('Customer Preferred Contact Number', '');
+
+
+                } else {
+
+
+                }
+
+
+                return true;
+
+            case 'Customer Preferred Contact Number':
+
+
+                if ($value == '') {
+                    $value = $this->data['Customer Preferred Contact Number'];
+
+                    if ($value == '') {
+                        $value = 'Mobile';
+                    }
+
+                    if ($this->data['Customer Main Plain Mobile'] == '' and $this->data['Customer Main Plain Telephone'] != '') {
+                        $value = 'Telephone';
+                    } elseif ($this->data['Customer Main Plain Mobile'] != '' and $this->data['Customer Main Plain Telephone'] == '') {
+                        $value = 'Mobile';
+                    } elseif ($this->data['Customer Main Plain Mobile'] == '' and $this->data['Customer Main Plain Telephone'] == '') {
+                        $value = 'Mobile';
+                    }
+
+                }
+
+
+                $this->update_field($field, $value, $options);
+                $this->update_field($this->table_name.'Customer Preferred Contact Number Formatted Number', $this->get('Customer Main XHTML '.$value), $options);
+
+
+                break;
+
             case 'Customer Company Name':
             case 'Customer Main Contact Name':
-            case 'Customer Main Plain Mobile':
             case 'Customer Main Plain Email':
             case 'Customer Registration Number':
-
-
             case 'Customer Location':
             case 'Customer Tax Number Valid':
             case 'Customer Tax Number Details Match':
@@ -624,19 +718,18 @@ class Public_Customer extends DBW_Table {
             case 'Customer Tax Number':
                 $this->update_tax_number($value);
 
-                $sql=sprintf('select `Order Key` from `Order Dimension` where  `Order State` in (\'InBasket\',\'InProcess\',\'InWarehouse\',\'PackedDone\')  and `Order Customer Key`=%d ',$this->id);
-                if ($result=$this->db->query($sql)) {
+                $sql =
+                    sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN (\'InBasket\',\'InProcess\',\'InWarehouse\',\'PackedDone\')  AND `Order Customer Key`=%d ', $this->id);
+                if ($result = $this->db->query($sql)) {
                     foreach ($result as $row) {
-                        $order=get_object('Order',$row['Order Key']);
-                        $order->update_tax_number($value) ;
+                        $order = get_object('Order', $row['Order Key']);
+                        $order->update_tax_number($value);
                     }
-                }else {
-                    print_r($error_info=$this->db->errorInfo());
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
                     print "$sql\n";
                     exit;
                 }
-
-
 
 
                 break;
