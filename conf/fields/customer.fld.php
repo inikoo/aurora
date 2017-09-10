@@ -133,7 +133,7 @@ if($new){
                     'id'              => 'Customer_Main_Plain_Mobile',
                     'edit'            => ($edit ? 'telephone' : ''),
                     'value'           => $object->get('Customer Main Plain Mobile'),
-                    'formatted_value' => $object->get('Main Plain Mobile'),
+                    'formatted_value' => $object->get('Customer Main XHTML Mobile'),
                     'label'           => ucfirst(
                             $object->get_field_label('Customer Main Plain Mobile')
                         ).($object->get('Customer Main Plain Mobile') != '' ? ($object->get('Customer Preferred Contact Number') == 'Mobile'
@@ -379,7 +379,7 @@ if($new){
                     'id'              => 'Customer_Main_Plain_Mobile',
                     'edit'            => ($edit ? 'telephone' : ''),
                     'value'           => $object->get('Customer Main Plain Mobile'),
-                    'formatted_value' => $object->get('Main Plain Mobile'),
+                    'formatted_value' => $object->get('Main XHTML Mobile'),
                     'label'           => ucfirst(
                             $object->get_field_label('Customer Main Plain Mobile')
                         ).($object->get('Customer Main Plain Mobile') != '' ? ($object->get('Customer Preferred Contact Number') == 'Mobile'
@@ -399,7 +399,7 @@ if($new){
                     'value'           => $object->get(
                         'Customer Main Plain Telephone'
                     ),
-                    'formatted_value' => $object->get('Main Plain Telephone'),
+                    'formatted_value' => $object->get('Main XHTML Telephone'),
                     'label'           => ucfirst(
                             $object->get_field_label(
                                 'Customer Main Plain Telephone'

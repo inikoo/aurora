@@ -36,28 +36,28 @@
                 <div id="Customer_Main_Plain_Mobile_display"
                      class="data_field {if !$customer->get('Customer Main Plain Mobile')}hide{/if}">
                     <i class="fa fa-fw fa-mobile"></i> <span
-                            class="Customer_Main_Plain_Mobile">{$customer->get('Main Plain Mobile')}</span>
+                            class="Customer_Main_Plain_Mobile">{$customer->get('Main XHTML Mobile')}</span>
                 </div>
                 <div id="Customer_Main_Plain_Telephone_display"
                      class="data_field {if !$customer->get('Customer Main Plain Telephone')}hide{/if}">
                     <i class="fa fa-fw fa-phone"></i> <span
-                            class="Customer_Main_Plain_Telephone">{$customer->get('Main Plain Telephone')}</span>
+                            class="Customer_Main_Plain_Telephone">{$customer->get('Main XHTML Telephone')}</span>
                 </div>
             {else}
                 <div id="Customer_Main_Plain_Telephone_display"
                      class="data_field {if !$customer->get('Customer Main Plain Telephone')}hide{/if}">
                     <i title="Telephone" class="fa fa-fw fa-phone"></i> <span
-                            class="Customer_Main_Plain_Telephone">{$customer->get('Main Plain Telephone')}</span>
+                            class="Customer_Main_Plain_Telephone">{$customer->get('Main XHTML Telephone')}</span>
                 </div>
                 <div id="Customer_Main_Plain_Mobile_display"
                      class="data_field {if !$customer->get('Customer Main Plain Mobile')}hide{/if}">
                     <i title="Mobile" class="fa fa-fw fa-mobile"></i> <span
-                            class="Customer_Main_Plain_Mobile">{$customer->get('Main Plain Mobile')}</span>
+                            class="Customer_Main_Plain_Mobile">{$customer->get('Main XHTML Mobile')}</span>
                 </div>
             {/if}
             <div id="Customer_Main_Plain_FAX_display"
                  class="data_field {if !$customer->get('Customer Main Plain FAX')}hide{/if}">
-                <i title="Fax" class="fa fa-fw fa-fax"></i> <span>{$customer->get('Main Plain FAX')}</span>
+                <i title="Fax" class="fa fa-fw fa-fax"></i> <span>{$customer->get('Main XHTML FAX')}</span>
             </div>
 
             {foreach $customer->get_other_telephones_data() key=other_telephone_key item=other_telephone}

@@ -212,6 +212,17 @@ class Customer extends Subject {
             $this->update_address('Delivery', $address_raw_data, 'no_history');
 
 
+            $this->update(
+                array(
+                    'Customer Main Plain Mobile'=>$this->get('Customer Main Plain Mobile'),
+                    'Customer Main Plain Telephone'=>$this->get('Customer Main Plain Telephone'),
+                    'Customer Main Plain FAX'=>$this->get('Customer Main Plain FAX'),
+                ),
+                'no_history'
+
+            );
+
+
             $history_data = array(
                 'History Abstract' => sprintf(_('%s customer record created'), $this->get('Name')),
                 'History Details'  => '',

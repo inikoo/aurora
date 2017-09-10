@@ -164,6 +164,7 @@ class Public_Store {
             case 'Telephone':
             case 'Email':
             case 'Address':
+            case 'Home Country Code 2 Alpha':
                 return $this->data['Store '.$key];
                 break;
 

@@ -14,8 +14,13 @@
     <div id="page-content" class="page-content">
         <div id="page-content-scroll" class="header-clear"><!--Enables this element to be scrolled -->
 
-
-
+            {if $webpage->get('Webpage Code')=='welcome.sys'}
+            <div class="heading-strip bg-1" style="padding: 10px 20px;margin-bottom: 10px">
+                <h3>{t}Welcome{/t}</h3>
+                <i class="ion-android-happy" style="top:-27.5px"></i>
+                <div class="overlay dark-overlay"></div>
+            </div>
+            {/if}
 
 
             {foreach from=$content.blocks item=$block key=key}
