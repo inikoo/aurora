@@ -15,6 +15,28 @@ trait OrderItems {
 
     function update_item($data) {
 
+
+        /*
+         *
+         *
+         *
+
+           $data = array(
+                'date'                      => gmdate('Y-m-d H:i:s'),
+                'Product Key'               => $allowance_data['Product Key'],
+                'Metadata'                  => '',
+                'qty'                       => 0,
+                'bonus qty'                 => $allowance_data['Get Free'],
+                'Current Dispatching State' => $dispatching_state,
+                'Current Payment State'     => $payment_state
+            );
+
+         *
+         *
+         */
+
+
+
         $gross = 0;
 
         $otf_key         = 0;

@@ -1558,7 +1558,7 @@ trait OrderDiscountOperations {
 
             $data = array(
                 'date'                      => gmdate('Y-m-d H:i:s'),
-                'Product Key'               => $allowance_data['Product Key'],
+                'item_historic_key'               => $allowance_data['Product Key'],
                 'Metadata'                  => '',
                 'qty'                       => 0,
                 'bonus qty'                 => $allowance_data['Get Free'],
@@ -1568,9 +1568,7 @@ trait OrderDiscountOperations {
 
             $this->skip_update_after_individual_transaction = true;
 
-            $transaction_data                               = $this->add_order_transaction_to_delete(
-                $data
-            );
+            $transaction_data                               = $this->update_item($data);
             $this->skip_update_after_individual_transaction = false;
 
             $sql = sprintf(

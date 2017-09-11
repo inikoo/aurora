@@ -1175,7 +1175,10 @@ class Account extends DB_Table {
                 );
 
 
+
+
             $this->fast_update($data_to_update, 'Account Data');
+          //  exit();
         }
 
         if ($from_date_1yb and $last_year) {
@@ -1198,11 +1201,12 @@ class Account extends DB_Table {
               //  "Account DC $db_interval Acc 1YB Profit"                   => round($sales_data['dc_profit'], 2),
             );
 
+
+
             $this->fast_update($data_to_update, 'Account Data');
 
 
         }
-
 
         if (in_array(
             $db_interval, [
@@ -1258,6 +1262,7 @@ class Account extends DB_Table {
             'repeat_customers'   => 0,
 
         );
+       // print_r($sales_data);
 
 
         $sql = sprintf(
@@ -1266,14 +1271,22 @@ class Account extends DB_Table {
 
         );
 
+
+
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-                $sales_data['discount_amount'] = $row['dc_discounts'];
-                $sales_data['amount']          = $row['dc_net'];
-                $sales_data['profit']          = $row['dc_profit'];
-                $sales_data['invoices']        = $row['invoices'];
-                $sales_data['refunds']         = $row['refunds'];
                 $sales_data['customers']       = $row['customers'];
+                if($row['customers']>0){
+
+                    $sales_data['discount_amount'] = $row['dc_discounts'];
+                    $sales_data['amount']          = $row['dc_net'];
+                    $sales_data['profit']          = $row['dc_profit'];
+                    $sales_data['invoices']        = $row['invoices'];
+                    $sales_data['refunds']         = $row['refunds'];
+                }
+
+
+
 
             }
         } else {
@@ -1338,7 +1351,7 @@ class Account extends DB_Table {
             exit;
         }
 
-
+       // print_r($sales_data);
         return $sales_data;
 
 
