@@ -113,8 +113,10 @@ if (isset($parameters['awhere']) and $parameters['awhere']) {
 
         $parents = preg_split('/_/', $parameters['parent_key']);
         $where   = sprintf(
-            'where  `Invoice Type`="Invoice" and  `Invoice Billing Region`=%s and `Invoice Tax Code`=%s  ', prepare_mysql($parents[0]), prepare_mysql($parents[1])
+            'where  `Invoice Type`="Invoice" and  `Invoice Billing Region`=%s and `Invoice Tax Code`=%s', prepare_mysql($parents[0]), prepare_mysql($parents[1])
         );
+
+
 
 
     } elseif ($parameters['tab'] == 'billingregion_taxcategory.refunds') {
