@@ -506,11 +506,11 @@ function update_favorite($data, $customer, $website, $editor, $db) {
 
         );
 
-        print $sql;
+       // print $sql;
         $db->exec($sql);
 
         $favorite_key=$db->lastInsertId();
-        $pid=$product->pid;
+        $pid=$product->id;
 
     }
 

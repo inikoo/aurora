@@ -37,58 +37,6 @@ $editor = array(
 $timeseries = get_time_series_config();
 
 
-
-
-
-$account->load_acc_data();
-
-
-$msg = new_housekeeping_fork(
-    'au_asset_sales', array(
-    'type'     => 'update_stores_sales_data',
-    'interval' => 'Today',
-    'mode'     => array(
-        true,
-        true
-    )
-), $account->get('Account Code')
-);
-
-$msg = new_housekeeping_fork(
-    'au_asset_sales', array(
-    'type'     => 'update_invoices_categories_sales_data',
-    'interval' => 'Today',
-    'mode'     => array(
-        true,
-        true
-    )
-), $account->get('Account Code')
-);
-
-
-$msg = new_housekeeping_fork(
-    'au_asset_sales', array(
-    'type'     => 'update_stores_sales_data',
-    'interval' => 'Yesterday',
-    'mode'     => array(
-        true,
-        true
-    )
-), $account->get('Account Code')
-);
-
-$msg = new_housekeeping_fork(
-    'au_asset_sales', array(
-    'type'     => 'update_invoices_categories_sales_data',
-    'interval' => 'Yesterday',
-    'mode'     => array(
-        true,
-        true
-    )
-), $account->get('Account Code')
-);
-
-
 $intervals = array(
     'Total',
     'Year To Date',
@@ -116,6 +64,8 @@ foreach ($intervals as $interval) {
         )
     ), $account->get('Account Code')
     );
+
+
 
     $msg = new_housekeeping_fork(
         'au_asset_sales', array(
@@ -199,6 +149,60 @@ foreach ($intervals as $interval) {
 
 
 }
+
+
+$account->load_acc_data();
+
+
+$msg = new_housekeeping_fork(
+    'au_asset_sales', array(
+    'type'     => 'update_stores_sales_data',
+    'interval' => 'Today',
+    'mode'     => array(
+        true,
+        true
+    )
+), $account->get('Account Code')
+);
+
+
+
+$msg = new_housekeeping_fork(
+    'au_asset_sales', array(
+    'type'     => 'update_invoices_categories_sales_data',
+    'interval' => 'Today',
+    'mode'     => array(
+        true,
+        true
+    )
+), $account->get('Account Code')
+);
+
+
+$msg = new_housekeeping_fork(
+    'au_asset_sales', array(
+    'type'     => 'update_stores_sales_data',
+    'interval' => 'Yesterday',
+    'mode'     => array(
+        true,
+        true
+    )
+), $account->get('Account Code')
+);
+
+$msg = new_housekeeping_fork(
+    'au_asset_sales', array(
+    'type'     => 'update_invoices_categories_sales_data',
+    'interval' => 'Yesterday',
+    'mode'     => array(
+        true,
+        true
+    )
+), $account->get('Account Code')
+);
+
+
+
 
 
 ?>
