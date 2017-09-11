@@ -227,6 +227,8 @@ function billingregion_taxcategory($_data, $db, $user, $account) {
     $adata = array();
 
 
+    //print $sql;
+
     if ($result = $db->query($sql)) {
 
         foreach ($result as $data) {
@@ -271,15 +273,9 @@ function billingregion_taxcategory($_data, $db, $user, $account) {
                 ),
 
                 'customers' => number($data['customers']),
-                'tax'       => money(
-                    $data['tax'], $account->get('Account Currency')
-                ),
-                'net'       => money(
-                    $data['net'], $account->get('Account Currency')
-                ),
-                'total'     => money(
-                    $data['total'], $account->get('Account Currency')
-                ),
+                'tax'       => money($data['tax'], $account->get('Account Currency')),
+                'net'       => money($data['net'], $account->get('Account Currency')),
+                'total'     => money($data['total'], $account->get('Account Currency')),
 
 
             );
