@@ -652,6 +652,7 @@ function calculate_interval_dates($db, $interval, $from = '', $to = '') {
             break;
 
         case 'Week To Day':
+        case 'Week To Date':
         case 'wtd':
             $db_interval = 'Week To Day';
 
@@ -711,6 +712,7 @@ function calculate_interval_dates($db, $interval, $from = '', $to = '') {
             break;
 
         case 'Quarter To Day':
+        case 'Quarter To Date':
         case 'qtd':
             $db_interval = 'Quarter To Day';
 
@@ -722,6 +724,7 @@ function calculate_interval_dates($db, $interval, $from = '', $to = '') {
             $to_1yb        = $dates['end'];
             break;
         case 'Month To Day':
+        case 'Month To Date':
         case 'mtd':
             $db_interval   = 'Month To Day';
             $from_date     = date('Y-m-01 00:00:00');
@@ -730,6 +733,7 @@ function calculate_interval_dates($db, $interval, $from = '', $to = '') {
             $to_1yb        = date('Y-m-d H:i:s', strtotime("$to_date -1 year"));
             break;
         case 'Year To Day':
+        case 'Year To Date':
         case 'ytd':
             $db_interval   = 'Year To Day';
             $from_date     = date('Y-01-01 00:00:00');
