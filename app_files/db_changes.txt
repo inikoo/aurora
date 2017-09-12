@@ -768,10 +768,19 @@ ALTER TABLE `Customer Dimension` DROP `Customer Main Address Incomplete`;
 
 
 
+======= fer migracion ordering in dw and costa
 
-
+                    ALTER TABLE `Invoice Tax Dimension` ADD `Invoice Tax Key` INT UNSIGNED NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`Invoice Tax Key`);
+ALTER TABLE  `Invoice Tax Bridge` ADD  `Invoice Tax Bridge Key` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST ;
+than fix the indeces
+`ALTER TABLE Invoice Tax Bridge DROP INDEX Tax Code;`
+`ALTER TABLE Invoice Tax Bridge DROP INDEX Invoice Key_2;`
+and add an uniqui index w  Tax Code; and Invoice Key
 
 ============= migration web[ages
+
+
+
 
 update `Page Store Dimension` set `Webpage Code`=LOWER(`Webpage Code`);
 update `Page Store Dimension` set `Webpage Name`=`Page Store Title` where `Webpage Name` is NULL or `Webpage Name`='' ;

@@ -554,7 +554,7 @@ class Invoice extends DB_Table {
                 $this->db->exec($sql);
                   // print "$sql\n";
                 $sql = sprintf(
-                    "INSERT INTO `Invoice Tax Bridge` VALUES (%d,%s,%.2f,%s) ON DUPLICATE KEY UPDATE `Tax Amount`=%.2f, `Tax Base`=%s", $this->id, prepare_mysql($tax_code), $tax,
+                    "INSERT INTO `Invoice Tax Bridge` (`Invoice Key`,`Tax Code`,`Tax Amount`,`Tax Base`) VALUES   (%d,%s,%.2f,%s) ON DUPLICATE KEY UPDATE `Tax Amount`=%.2f, `Tax Base`=%s", $this->id, prepare_mysql($tax_code), $tax,
                     prepare_mysql($is_base), $tax, prepare_mysql($is_base)
 
                 );
