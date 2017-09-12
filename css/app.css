@@ -1099,6 +1099,10 @@ right connector from last child*/
   line-height: 22px;
   font-size: 90%; }
 
+.order_flow.selected {
+  border-bottom: 1px solid white;
+  background-color: white; }
+
 .popout_chooser {
   width: 200px; }
   .popout_chooser.corner {

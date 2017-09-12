@@ -22,12 +22,14 @@ $account->load_acc_data();
 
 //$state['_object']->get_kpi('Month To Day');
 
+$smarty->assign('order_flow',$state['extra']);
+
+
 $smarty->assign('account',$account);
 $smarty->assign('currency',$account->get('Currency Code'));
 
 $html = $smarty->fetch('dashboard/orders_server.dbard.tpl');
 
-$html .= '<div id="widget_details" class="hide" style="clear:both;margin-top:20px;border-top:1px solid #ccc"><div>';
 
 
 

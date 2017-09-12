@@ -67,15 +67,16 @@ function change_browser_history_state(request) {
 
     if (old_state_request != request) {
 
-        window.top.history.pushState({
-            request: request
-        }, '', request)
+        window.top.history.pushState({request: request}, '', request)
 
         old_state_request = request
     }
 }
 
 window.addEventListener('popstate', function (event) {
+
+    console.log(event)
+
     change_view(event.state.request)
 
 });

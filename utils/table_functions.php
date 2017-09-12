@@ -362,6 +362,38 @@ function get_rtext($record_label, $total_records) {
         return sprintf(
             ngettext('%s replenishment', '%s replenishments', $total_records), number($total_records)
         );
+    }elseif ($record_label == 'order in basket') {
+        return sprintf(
+            ngettext('%s order in basket', '%s orders in basket', $total_records), number($total_records)
+        );
+    } elseif ($record_label == 'order submitted not paid') {
+        return sprintf(
+            ngettext('%s order submitted (Not paid)', '%s orders submitted (Not paid)', $total_records), number($total_records)
+        );
+    } elseif ($record_label == 'order submitted paid') {
+        return sprintf(
+            ngettext('%s order submitted (Paid)', '%s orders submitted (Paid)', $total_records), number($total_records)
+        );
+    }  elseif ($record_label == 'order warehouse') {
+        return sprintf(
+            ngettext('%s order in warehouse', '%s orders in warehouse', $total_records), number($total_records)
+        );
+    }  elseif ($record_label == 'order warehouse with alerts') {
+        return sprintf(
+            ngettext('%s order in warehouse (With Alerts)', '%s orders in warehouse (with Alerts)', $total_records), number($total_records)
+        );
+    }  elseif ($record_label == 'order approved') {
+        return sprintf(
+            ngettext('%s order invoiced', '%s orders invoiced', $total_records), number($total_records)
+        );
+    }  elseif ($record_label == 'order packed done') {
+        return sprintf(
+            ngettext('%s order to invoice', '%s orders to invoice', $total_records), number($total_records)
+        );
+    }  elseif ($record_label == 'order dispatched today') {
+        return sprintf(
+            ngettext('%s order dispatched today', '%s orders dispatched today', $total_records), number($total_records)
+        );
     } else {
         return sprintf(
             ngettext('%s record', '%s records', $total_records), number($total_records)
