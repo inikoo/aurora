@@ -54,22 +54,16 @@
     <li class="flex-item">
 
         <span>{t}In basket{/t}</span>
-        <div class="title"><span class="Orders_In_Basket_Number button"  onclick="go_to_orders({ parameters:{ period:'all',elements_type:'flow' } ,element:{ flow:{ Basket:1,Submitted_Unpaid:'',Submitted_Paid:'',InWarehouse:'',Packed:'',Dispatch_Ready:'',Dispatched_Today:''}}}
-                    )">{$object->get('Orders In Basket Number')}</span></div>
+        <div class="title"><span class="Orders_In_Basket_Number button"  onclick="go_to_orders('website')"
+                    >{$object->get('Orders In Basket Number')}</span></div>
         <div ><span class="Orders_In_Basket_Amount" title="{if $currency=='account'}{$object->get('DC Orders In Basket Amount')}{else}{$object->get('Orders In Basket Amount')}{/if}">{if $currency=='account'}{$object->get('DC Orders In Basket Amount Minify')}{else}{$object->get('Orders In Basket Amount Minify')}{/if}</span></div>
 
     </li>
     <li class="flex-item">
         <span>{t}Submitted{/t}</span>
         <div class="title"><span class="" >
-                <span class="Orders_In_Process_Not_Paid_Number button" title="{t}Unpaid submitted orders{/t}"  onclick="go_to_orders(
-                        
-                        { parameters:{ period:'all',elements_type:'flow' } ,element:{ flow:{ Basket:'',Submitted_Unpaid:1,Submitted_Paid:'',InWarehouse:'',Packed:'',Dispatch_Ready:'',Dispatched_Today:''}}}
-                        )" ><i style="font-size: 50%" class="fa fa-usd discreet" aria-hidden="true"></i> {$object->get('Orders In Process Not Paid Number')}</span> | </span>
-            <span class="Orders_In_Process_Paid_Number button" title="{t}Paid submitted orders{/t}"  onclick="go_to_orders(
-
-                    { parameters:{ period:'all',elements_type:'flow' } ,element:{ flow:{ Basket:'',Submitted_Unpaid:'',Submitted_Paid:1,InWarehouse:'',Packed:'',Dispatch_Ready:'',Dispatched_Today:''}}}
-                    )">{$object->get('Orders In Process Paid Number')}  <i style="font-size: 50%" class="fa fa-usd success" aria-hidden="true"></i></span> </div>
+                <span class="Orders_In_Process_Not_Paid_Number button" title="{t}Unpaid submitted orders{/t}"  onclick="go_to_orders('submitted_not_paid')" ><i style="font-size: 50%" class="fa fa-usd discreet" aria-hidden="true"></i> {$object->get('Orders In Process Not Paid Number')}</span> | </span>
+            <span class="Orders_In_Process_Paid_Number button" title="{t}Paid submitted orders{/t}"  onclick="go_to_orders('submitted')">{$object->get('Orders In Process Paid Number')}  <i style="font-size: 50%" class="fa fa-usd success" aria-hidden="true"></i></span> </div>
         <div >
             <span class=""><span class="Orders_In_Process_Not_Paid_Amount" title="{if $currency=='account'}{$object->get('DC Orders In Process Not Paid Amount')}{else}{$object->get('Orders In Process Not Paid Amount')}{/if}">{if $currency=='account'}{$object->get('DC Orders In Process Not Paid Amount Minify')}{else}{$object->get('Orders In Process Not Paid Amount Minify')}{/if}</span> | </span>
             <span class="Orders_In_Process_Paid_Amount" title="{if $currency=='account'}{$object->get('DC Orders In Process Paid Amount')}{else}{$object->get('Orders In Process Paid Amount')}{/if}">{if $currency=='account'}{$object->get('DC Orders In Process Paid Amount Minify')}{else}{$object->get('Orders In Process Paid Amount Minify')}{/if}</span></div>
@@ -79,8 +73,8 @@
     <li class="flex-item">
         <span>{t}Picking{/t}</span>
         <div class="title">
-            <span class=" button" title="{t}Orders in warehouse{/t}" onclick="change_view('orders/{if $object->get_object_name()=='Account'}all{else}{$object->id}{/if}/dashboard')"><i style="font-size: 50%" class="invisible fa fa-bell error" aria-hidden="true"></i> <span class="Orders_In_Warehouse_No_Alerts_Number">{$object->get('Orders In Warehouse No Alerts Number')}</span></span> |
-            <span class=" button" title="{t}Orders in warehouse with alerts{/t}"  onclick="change_view('orders/{if $object->get_object_name()=='Account'}all{else}{$object->id}{/if}/dashboard')"><span class="Orders_In_Warehouse_With_Alerts_Number">{$object->get('Orders In Warehouse With Alerts Number')}</span> <i style="font-size: 50%" class="fa fa-bell error" aria-hidden="true"></i></span>
+            <span class=" button" title="{t}Orders in warehouse{/t}"  onclick="go_to_orders('in_warehouse')"><i style="font-size: 50%" class="invisible fa fa-bell error" aria-hidden="true"></i> <span class="Orders_In_Warehouse_No_Alerts_Number">{$object->get('Orders In Warehouse No Alerts Number')}</span></span> |
+            <span class=" button" title="{t}Orders in warehouse with alerts{/t}"  onclick="go_to_orders('in_warehouse_with_alerts')" ><span class="Orders_In_Warehouse_With_Alerts_Number">{$object->get('Orders In Warehouse With Alerts Number')}</span> <i style="font-size: 50%" class="fa fa-bell error" aria-hidden="true"></i></span>
         </div>
         <div >
             <span class="Orders_In_Warehouse_No_Alerts_Amount" title="{if $currency=='account'}{$object->get('DC Orders In Warehouse No Alerts Amount')}{else}{$object->get('Orders In Warehouse No Alerts Amount')}{/if}">{if $currency=='account'}{$object->get('DC Orders In Warehouse No Alerts Amount Minify')}{else}{$object->get('Orders In Warehouse No Alerts Amount Minify')}{/if}</span> |
@@ -93,8 +87,8 @@
     <li class="flex-item">
         <span>{t}Invoicing{/t}</span>
         <div class="title">
-            <span class=" button" title="{t}Closed orders waiting to be invoiced{/t}" onclick="change_view('orders/{if $object->get_object_name()=='Account'}all{else}{$object->id}{/if}/dashboard')"><i style="font-size: 50%" class=" fa fa-archive " aria-hidden="true"></i> <span class="Orders_Packed_Number">{$object->get('Orders Packed Number')}</span></span> |
-            <span class=" button" title="{t}Invoiced orders waiting to be dispatched{/t}"  onclick="change_view('orders/{if $object->get_object_name()=='Account'}all{else}{$object->id}{/if}/dashboard')"><span class="Orders_Dispatch_Approved_Number">{$object->get('Orders Dispatch Approved Number')}</span> <i style="font-size: 50%" class="fa fa-file-text-o" aria-hidden="true"></i></span>
+            <span class=" button" title="{t}Closed orders waiting to be invoiced{/t}"  onclick="go_to_orders('packed_done')"><i style="font-size: 50%" class=" fa fa-archive " aria-hidden="true"></i> <span class="Orders_Packed_Number">{$object->get('Orders Packed Number')}</span></span> |
+            <span class=" button" title="{t}Invoiced orders waiting to be dispatched{/t}"   onclick="go_to_orders('approved')"><span class="Orders_Dispatch_Approved_Number">{$object->get('Orders Dispatch Approved Number')}</span> <i style="font-size: 50%" class="fa fa-file-text-o" aria-hidden="true"></i></span>
         </div>
         <div >
             <span class="Orders_Packed_Amount" title="{if $currency=='account'}{$object->get('DC Orders Packed Amount')}{else}{$object->get('Orders Packed Amount')}{/if}">{if $currency=='account'}{$object->get('DC Orders Packed Amount Minify')}{else}{$object->get('Orders Packed Amount Minify')}{/if}</span> |
@@ -111,10 +105,7 @@
         <span>{t}Today{/t}</span>
         <div class="title">
             <span class="Delta_Today_Start_Orders_In_Warehouse_Number" title="Today's difference of orders in warehouse">{$object->get('Delta Today Start Orders In Warehouse Number')}</span>
-            <span class="padding_left_10 Today_Orders_Dispatched button" title="Today's dispatched orders"  onclick="go_to_orders(
-                   
-                    { parameters:{ period:'all',elements_type:'flow' } ,element:{ flow:{ Basket:'',Submitted_Unpaid:'',Submitted_Paid:'',InWarehouse:'',Packed:'',Dispatch_Ready:'',Dispatched_Today:1}}}
-                    )">{$object->get('Today Orders Dispatched')}</span>
+            <span class="padding_left_10 Today_Orders_Dispatched button" title="Today's dispatched orders"   onclick="go_to_orders('dispatched_today')">{$object->get('Today Orders Dispatched')}</span>
 
         </div>
 
@@ -190,15 +181,19 @@ if(parent==''){
 
     }
 
-    function go_to_orders(metadata){
+    function go_to_orders(tag){
 
         var parent_key= $('#pending_orders_parent').val();
         if(parent_key==''){
-            parent_key='all'
+
+            change_view('orders/all/dashboard/'+tag)
+
+
+        }else{
+            change_view('orders/'+parent_key+'/dashboard/'+tag)
 
         }
 
-        change_view('orders/'+parent_key,metadata)
 
     }
     

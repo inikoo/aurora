@@ -134,7 +134,8 @@ switch ($tipo) {
 
 
 function orders_in_process_not_paid($_data, $db, $user) {
-    $rtext_label = 'order';
+    $rtext_label = 'order submitted not paid';
+
 
 
     include_once 'prepare_table/init.php';
@@ -243,7 +244,7 @@ function orders_in_process_not_paid($_data, $db, $user) {
 
 
 function orders_in_process_paid($_data, $db, $user) {
-    $rtext_label = 'order';
+    $rtext_label = 'order submitted paid';
 
 
     include_once 'prepare_table/init.php';
@@ -351,7 +352,7 @@ function orders_in_process_paid($_data, $db, $user) {
 }
 
 function orders_in_warehouse($_data, $db, $user) {
-    $rtext_label = 'order';
+    $rtext_label = 'order warehouse';
 
 
     include_once 'prepare_table/init.php';
@@ -463,7 +464,8 @@ function orders_in_warehouse($_data, $db, $user) {
 
 
 function orders_in_warehouse_no_alerts($_data, $db, $user) {
-    $rtext_label = 'order';
+    $rtext_label = 'order warehouse';
+
 
 
     include_once 'prepare_table/init.php';
@@ -575,7 +577,8 @@ function orders_in_warehouse_no_alerts($_data, $db, $user) {
 
 
 function orders_in_warehouse_with_alerts($_data, $db, $user) {
-    $rtext_label = 'order';
+    $rtext_label = 'order warehouse with alerts';
+
 
 
     include_once 'prepare_table/init.php';
@@ -687,7 +690,7 @@ function orders_in_warehouse_with_alerts($_data, $db, $user) {
 
 
 function orders_packed_done($_data, $db, $user) {
-    $rtext_label = 'order';
+    $rtext_label = 'order packed done';
 
 
     include_once 'prepare_table/init.php';
@@ -799,7 +802,7 @@ function orders_packed_done($_data, $db, $user) {
 
 
 function orders_approved($_data, $db, $user) {
-    $rtext_label = 'order';
+    $rtext_label = 'order approved';
 
 
     include_once 'prepare_table/init.php';
@@ -911,7 +914,7 @@ function orders_approved($_data, $db, $user) {
 
 
 function orders_dispatched_today($_data, $db, $user) {
-    $rtext_label = 'order';
+    $rtext_label = 'order dispatched today';
 
 
     include_once 'prepare_table/init.php';
@@ -1207,7 +1210,7 @@ function orders_in_process_old($_data, $db, $user) {
 
 
 function orders_in_website($_data, $db, $user) {
-    $rtext_label = 'order';
+    $rtext_label = 'order in basket';
 
 
     include_once 'prepare_table/init.php';

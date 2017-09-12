@@ -35,7 +35,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
     $parent_key = 1;
     $object     = '';
     $key        = '';
-
+    $extra      = '';
 
     $count_view_path = count($view_path);
     $shorcut         = false;
@@ -135,10 +135,9 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                         }
 
 
-                                    }elseif ($view_path[2] == 'new') {
-                                        $section    = 'website.new';
-                                        $object     = 'website';
-
+                                    } elseif ($view_path[2] == 'new') {
+                                        $section = 'website.new';
+                                        $object  = 'website';
 
 
                                     }
@@ -174,8 +173,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                 } else {
                     if ($user->data['User Hooked Store Key'] and in_array(
                             $user->data['User Hooked Store Key'], $user->stores
-                        )
-                    ) {
+                        )) {
                         $key = $user->data['User Hooked Store Key'];
                     } else {
                         $_tmp = $user->stores;
@@ -262,8 +260,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                                     $object  = 'product';
                                                     if (isset($view_path[4]) and is_numeric(
                                                             $view_path[4]
-                                                        )
-                                                    ) {
+                                                        )) {
 
                                                         $key = $view_path[4];
 
@@ -280,8 +277,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                             $category = new Category($key);
                                             if ($category->get(
                                                     'Category Branch Type'
-                                                ) == 'Root'
-                                            ) {
+                                                ) == 'Root') {
                                                 $parent     = 'store';
                                                 $parent_key = $category->get(
                                                     'Category Store Key'
@@ -309,8 +305,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                                     $object  = 'product';
                                                     if (isset($view_path[4]) and is_numeric(
                                                             $view_path[4]
-                                                        )
-                                                    ) {
+                                                        )) {
 
                                                         $key = $view_path[4];
 
@@ -460,8 +455,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                                     $object  = 'product';
                                                     if (isset($view_path[4]) and is_numeric(
                                                             $view_path[4]
-                                                        )
-                                                    ) {
+                                                        )) {
 
                                                         $key = $view_path[4];
 
@@ -478,8 +472,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                             $category = new Category($key);
                                             if ($category->get(
                                                     'Category Branch Type'
-                                                ) == 'Root'
-                                            ) {
+                                                ) == 'Root') {
                                                 $parent     = 'store';
                                                 $parent_key = $category->get(
                                                     'Category Store Key'
@@ -507,8 +500,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                                     $object  = 'product';
                                                     if (isset($view_path[4]) and is_numeric(
                                                             $view_path[4]
-                                                        )
-                                                    ) {
+                                                        )) {
 
                                                         $key = $view_path[4];
 
@@ -665,8 +657,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                                     $object  = 'service';
                                                     if (isset($view_path[4]) and is_numeric(
                                                             $view_path[4]
-                                                        )
-                                                    ) {
+                                                        )) {
 
                                                         $key = $view_path[4];
 
@@ -683,8 +674,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                             $category = new Category($key);
                                             if ($category->get(
                                                     'Category Branch Type'
-                                                ) == 'Root'
-                                            ) {
+                                                ) == 'Root') {
                                                 $parent     = 'store';
                                                 $parent_key = $category->get(
                                                     'Category Store Key'
@@ -712,8 +702,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                                     $object  = 'service';
                                                     if (isset($view_path[4]) and is_numeric(
                                                             $view_path[4]
-                                                        )
-                                                    ) {
+                                                        )) {
 
                                                         $key = $view_path[4];
 
@@ -1012,13 +1001,12 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                         if (is_numeric($view_path[2])) {
                             $key = $view_path[2];
-                        }elseif($view_path[2]=='new'){
-                            $section    = 'webpage.new';
+                        } elseif ($view_path[2] == 'new') {
+                            $section = 'webpage.new';
                         }
 
 
-                    }
-                    elseif ($view_path[1] == 'online') {
+                    } elseif ($view_path[1] == 'online') {
 
 
                         if ($view_path[2] == 'webpage') {
@@ -1035,8 +1023,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                         }
 
 
-                        }
-                    elseif ($view_path[1] == 'offline') {
+                    } elseif ($view_path[1] == 'offline') {
 
 
                         if ($view_path[2] == 'webpage') {
@@ -1053,8 +1040,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                         }
 
 
-                    }
-                    elseif ($view_path[1] == 'in_process') {
+                    } elseif ($view_path[1] == 'in_process') {
 
 
                         if ($view_path[2] == 'webpage') {
@@ -1071,8 +1057,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                         }
 
 
-                    }
-                    elseif ($view_path[1] == 'ready') {
+                    } elseif ($view_path[1] == 'ready') {
 
 
                         if ($view_path[2] == 'webpage') {
@@ -1089,8 +1074,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                         }
 
 
-                    }
-                    elseif ($view_path[1] == 'user') {
+                    } elseif ($view_path[1] == 'user') {
                         $section    = 'website.user';
                         $object     = 'user';
                         $parent     = 'website';
@@ -1129,18 +1113,17 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                 $module  = 'products';
                 $section = 'webpage';
                 $object  = 'webpage';
-                $parent='website';
+                $parent  = 'website';
 
 
-
-                $parent_key='';
+                $parent_key = '';
 
 
                 if (isset($view_path[0])) {
 
-                    $key = $view_path[0];
-                    $webpage=get_object('Webpage',$key);
-                    $parent_key=$webpage->get('Webpage Website Key');
+                    $key        = $view_path[0];
+                    $webpage    = get_object('Webpage', $key);
+                    $parent_key = $webpage->get('Webpage Website Key');
 
                 }
 
@@ -1439,8 +1422,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                         if ($user->get('User Type') == 'Agent' and $user->get(
                                 'User Parent Key'
-                            ) != $key
-                        ) {
+                            ) != $key) {
                             $module  = 'utils';
                             $section = 'forbidden';
                             break;
@@ -1580,8 +1562,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                     $parent  = 'store';
                     if ($user->data['User Hooked Store Key'] and in_array(
                             $user->data['User Hooked Store Key'], $user->stores
-                        )
-                    ) {
+                        )) {
                         $parent_key = $user->data['User Hooked Store Key'];
                     } else {
                         $_tmp       = $user->stores;
@@ -1612,8 +1593,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                         if (isset($view_path[1]) and is_numeric(
                                 $view_path[1]
-                            )
-                        ) {
+                            )) {
                             $section    = 'customer';
                             $parent     = 'list';
                             $parent_key = $list->id;
@@ -1641,8 +1621,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                         if (isset($view_path[1]) and is_numeric(
                                 $view_path[1]
-                            )
-                        ) {
+                            )) {
                             $section    = 'customer';
                             $parent     = 'category';
                             $parent_key = $category->id;
@@ -1685,8 +1664,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                             if (isset($view_path[1]) and is_numeric(
                                     $view_path[1]
-                                )
-                            ) {
+                                )) {
 
                                 include_once 'class.Category.php';
                                 $key = $view_path[1];
@@ -1748,30 +1726,33 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                         $parent     = 'account';
                         $parent_key = 1;
 
-                        if (isset($view_path[0])){
+                        if (isset($view_path[0])) {
 
-                            if ( is_numeric($view_path[0])) {
-                                $module  = 'orders';
-                                $section = 'order';
-                                $object  = 'order';
-                                $parent  = 'account';
-                                $parent_key  = 1;
-                                $key=$view_path[0];
+                            if (is_numeric($view_path[0])) {
+                                $module     = 'orders';
+                                $section    = 'order';
+                                $object     = 'order';
+                                $parent     = 'account';
+                                $parent_key = 1;
+                                $key        = $view_path[0];
 
 
-
-                            }elseif ( $view_path[0]=='dashboard') {
+                            } elseif ($view_path[0] == 'dashboard') {
                                 $section = 'dashboard';
 
-                            }elseif ( $view_path[0]=='by_store') {
+                                if (isset($view_path[1])) {
+
+                                    $extra = $view_path[1];
+
+                                }
+
+
+                            } elseif ($view_path[0] == 'by_store') {
                                 $section = 'group_by_store';
                             }
 
 
                         }
-
-
-
 
 
                     } elseif (is_numeric($arg1)) {
@@ -1782,16 +1763,20 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                         $parent_key = $arg1;
 
 
-
                         if (isset($view_path[0])) {
 
                             if ($view_path[0] == 'dashboard') {
                                 $section = 'dashboard';
-                            }
-                            elseif ($view_path[0] == 'flow') {
+                                if (isset($view_path[1])) {
+
+                                    $extra = $view_path[1];
+
+                                }
+
+
+                            } elseif ($view_path[0] == 'flow') {
                                 $section = 'pending_orders';
-                            }
-                            elseif ($view_path[0] == 'website') {
+                            } elseif ($view_path[0] == 'website') {
                                 $section = 'basket_orders';
                             } elseif ($view_path[0] == 'archived') {
                                 $section = 'archived_orders';
@@ -1829,8 +1814,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                     $parent  = 'store';
                     if ($user->data['User Hooked Store Key'] and in_array(
                             $user->data['User Hooked Store Key'], $user->stores
-                        )
-                    ) {
+                        )) {
                         $parent_key = $user->data['User Hooked Store Key'];
                     } else {
                         $_tmp       = $user->stores;
@@ -1859,8 +1843,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                                 if (isset($view_path[1]) and is_numeric(
                                         $view_path[1]
-                                    )
-                                ) {
+                                    )) {
                                     $key = $view_path[1];
 
                                     include_once 'class.Category.php';
@@ -1916,8 +1899,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                     $parent  = 'store';
                     if ($user->data['User Hooked Store Key'] and in_array(
                             $user->data['User Hooked Store Key'], $user->stores
-                        )
-                    ) {
+                        )) {
                         $parent_key = $user->data['User Hooked Store Key'];
                     } else {
                         $_tmp       = $user->stores;
@@ -1953,9 +1935,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
             case 'order':
 
 
-
                 if (!$user->can_view('orders')) {
-
 
 
                     $module  = 'utils';
@@ -1995,8 +1975,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                 }
 
 
-                            }
-                            elseif ($view_path[1] == 'delivery_note') {
+                            } elseif ($view_path[1] == 'delivery_note') {
                                 $section    = 'delivery_note';
                                 $object     = 'delivery_note';
                                 $parent     = 'order';
@@ -2007,8 +1986,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                 }
 
 
-                            }
-                            elseif ($view_path[1] == 'pick_aid') {
+                            } elseif ($view_path[1] == 'pick_aid') {
                                 $section    = 'pick_aid';
                                 $object     = 'pick_aid';
                                 $parent     = 'order';
@@ -2325,33 +2303,31 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                 $module = 'products';
 
 
-
                 if (isset($view_path[0])) {
                     $section = 'campaigns';
 
 
-                    $parent     = 'store';
-                    $key = $view_path[0];
+                    $parent = 'store';
+                    $key    = $view_path[0];
 
 
                     if (isset($view_path[1])) {
 
 
-                      if ($view_path[1] == 'order') {
-                            $object  = 'order';
-                            $section = 'order';
-                            $parent='campaign';
-                          $parent_key=$key;
-                          if (isset($view_path[2])) {
-                              $key = $view_path[2];
-                          }
+                        if ($view_path[1] == 'order') {
+                            $object     = 'order';
+                            $section    = 'order';
+                            $parent     = 'campaign';
+                            $parent_key = $key;
+                            if (isset($view_path[2])) {
+                                $key = $view_path[2];
+                            }
 
-                        }
-                        elseif ($view_path[1] == 'customer') {
-                            $object  = 'customer';
-                            $section = 'customer';
-                            $parent='campaign';
-                            $parent_key=$key;
+                        } elseif ($view_path[1] == 'customer') {
+                            $object     = 'customer';
+                            $section    = 'customer';
+                            $parent     = 'campaign';
+                            $parent_key = $key;
                             if (isset($view_path[2])) {
                                 $key = $view_path[2];
                             }
@@ -2368,33 +2344,31 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                 $module = 'products';
 
 
-
                 if (isset($view_path[0])) {
                     $section = 'deals';
 
 
-                    $parent     = 'campaign';
-                    $key = $view_path[0];
+                    $parent = 'campaign';
+                    $key    = $view_path[0];
 
 
                     if (isset($view_path[1])) {
 
 
                         if ($view_path[1] == 'order') {
-                            $object  = 'order';
-                            $section = 'order';
-                            $parent='deal';
-                            $parent_key=$key;
+                            $object     = 'order';
+                            $section    = 'order';
+                            $parent     = 'deal';
+                            $parent_key = $key;
                             if (isset($view_path[2])) {
                                 $key = $view_path[2];
                             }
 
-                        }
-                        elseif ($view_path[1] == 'customer') {
-                            $object  = 'customer';
-                            $section = 'customer';
-                            $parent='deal';
-                            $parent_key=$key;
+                        } elseif ($view_path[1] == 'customer') {
+                            $object     = 'customer';
+                            $section    = 'customer';
+                            $parent     = 'deal';
+                            $parent_key = $key;
                             if (isset($view_path[2])) {
                                 $key = $view_path[2];
                             }
@@ -2534,8 +2508,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                                     $object  = 'location';
                                                     if (isset($view_path[4]) and is_numeric(
                                                             $view_path[4]
-                                                        )
-                                                    ) {
+                                                        )) {
 
                                                         $key = $view_path[4];
 
@@ -2552,8 +2525,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                             $category = new Category($key);
                                             if ($category->get(
                                                     'Category Branch Type'
-                                                ) == 'Root'
-                                            ) {
+                                                ) == 'Root') {
                                                 $parent     = 'warehouse';
                                                 $parent_key = $category->get(
                                                     'Category Store Key'
@@ -2581,8 +2553,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                                     $object  = 'location';
                                                     if (isset($view_path[4]) and is_numeric(
                                                             $view_path[4]
-                                                        )
-                                                    ) {
+                                                        )) {
 
                                                         $key = $view_path[4];
 
@@ -2636,8 +2607,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                 } else {
                     if ($user->data['User Hooked Warehouse Key'] and in_array(
                             $user->data['User Hooked Warehouse Key'], $user->stores
-                        )
-                    ) {
+                        )) {
                         $key = $user->data['User Hooked Warehouse Key'];
                     } else {
                         $_tmp = $user->warehouses;
@@ -3149,8 +3119,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                 if ($user->get('User Type') == 'Staff' or $user->get(
                         'User Type'
-                    ) == 'Contractor'
-                ) {
+                    ) == 'Contractor') {
                     if (!$user->can_view('suppliers')) {
                         $module  = 'utils';
                         $section = 'forbidden';
@@ -3223,8 +3192,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                                                 if (isset($view_path[2]) and is_numeric(
                                                         $view_path[2]
-                                                    )
-                                                ) {
+                                                    )) {
 
                                                     $key = $view_path[2];
 
@@ -3241,8 +3209,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                         $category = new Category($key);
                                         if ($category->get(
                                                 'Category Branch Type'
-                                            ) == 'Root'
-                                        ) {
+                                            ) == 'Root') {
                                             $parent     = 'account';
                                             $parent_key = 1;
                                         } else {
@@ -3259,8 +3226,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                                                 if (isset($view_path[3]) and is_numeric(
                                                         $view_path[3]
-                                                    )
-                                                ) {
+                                                    )) {
 
                                                     $section    = 'supplier';
                                                     $parent     = 'category';
@@ -3824,8 +3790,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
             case 'profile':
                 if ($user->get('User Type') == 'Staff' or $user->get(
                         'User Type'
-                    ) == 'Contractor'
-                ) {
+                    ) == 'Contractor') {
                     $module  = 'profile';
                     $section = 'profile';
 
@@ -3887,7 +3852,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                         }
 
 
-                    }elseif ($view_path[0] == 'users') {
+                    } elseif ($view_path[0] == 'users') {
                         $section = 'users';
 
                         if (isset($view_path[1])) {
@@ -4277,8 +4242,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                     $parent = 'store';
                     if ($user->data['User Hooked Store Key'] and in_array(
                             $user->data['User Hooked Store Key'], $user->stores
-                        )
-                    ) {
+                        )) {
                         $parent_key = $user->data['User Hooked Store Key'];
                     } else {
                         $_tmp       = $user->stores;
@@ -4317,8 +4281,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                     $parent = 'store';
                     if ($user->data['User Hooked Store Key'] and in_array(
                             $user->data['User Hooked Store Key'], $user->stores
-                        )
-                    ) {
+                        )) {
                         $parent_key = $user->data['User Hooked Store Key'];
                     } else {
                         $_tmp       = $user->stores;
@@ -4369,6 +4332,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
         'parent_key' => $parent_key,
         'object'     => $object,
         'key'        => $key,
+        'extra'      => $extra
     );
 
 

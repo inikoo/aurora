@@ -22,6 +22,9 @@ $store->load_acc_data();
 
 //$state['_object']->get_kpi('Month To Day');
 
+$smarty->assign('order_flow',$state['extra']);
+
+
 $smarty->assign('store',$store);
 $smarty->assign('currency','store');
 
