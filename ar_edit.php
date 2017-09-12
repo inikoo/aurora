@@ -766,6 +766,9 @@ function object_operation($account, $db, $user, $editor, $data, $smarty) {
         case 'unarchive':
             $request = $object->unarchive();
             break;
+        case 'un_dispatch':
+            $request = $object->update_state('un_dispatch');
+            break;
         case 'set_all_products_web_configuration':
 
 

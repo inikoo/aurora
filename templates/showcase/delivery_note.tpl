@@ -1,6 +1,6 @@
 <div class="timeline_horizontal">
 
-    <input type="hiddenx" id="Delivery_Note_State_Index" value="{$delivery_note->get('State Index')}">
+    <input type="hidden" id="Delivery_Note_State_Index" value="{$delivery_note->get('State Index')}">
 
     <ul class="timeline" id="timeline">
 
@@ -128,7 +128,7 @@
 
 
     <div class="block ">
-        <div class="state" style="height:30px;margin-bottom:10px;position:relative;top:-5px;min-width: 250px">
+        <div class="state" style="height:30px;margin-bottom:0px;position:relative;top:-5px;min-width: 250px">
             <div id="back_operations">
                 <div id="delete_operations" class="order_operation {if $delivery_note->get('Delivery Note Number Picked Items')>0       }hide{/if}">
                     <div class="square_button left" xstyle="padding:0;margin:0;position:relative;top:-5px" title="{t}delete{/t}">
@@ -231,13 +231,18 @@
             </div>
         </div>
 
+        <div  style="text-align: center;border-bottom: 1px solid #ccc;padding:5px 0px;">
+           <a class="pdf_link" target='_blank' href="/pdf/dn.pdf.php?id={$delivery_note->id}"> <img style="width: 50px;height:16px" src="/art/pdf.gif"></a>
 
-        <div class="state"  style="height:30px;margin-bottom:10px;position:relative;top:-5px;text-align: center">
-            <span class="button"  onclick="change_view('orders/{$order->get('Order Store Key')}/{$order->id}')" ><i class="fa fa-shopping-cart" aria-hidden="true"></i> {$order->get('Public ID')}</span>
         </div>
 
 
-        <table border="0" class="info_block acenter">
+        <div class="date"  style="padding:10px;margin-bottom:0px;text-align: center;border-bottom: 1px solid #ccc">
+            <span class="button"  onclick="change_view('orders/{$order->get('Order Store Key')}/{$order->id}')" ><i class="fa fa-shopping-cart" aria-hidden="true"></i> {$order->get('Public ID')}</span>
+        </div>
+
+        <div class="state"  style="text-align: center;padding:5px 0px;border-bottom:none">
+        <table border="0" style="width: 100%"  >
 
 
 
@@ -247,21 +252,26 @@
                 <td>
                     <span style=""><i class="fa fa-square fa-fw discreet" aria-hidden="true"></i>
                           <span class="Number_Ordered_Parts">{$delivery_note->get('Number Ordered Parts')}</span> (<span class="Number_Ordered_Items">{$delivery_note->get('Number Ordered Items')}</span>)
-                    <span style="padding-left:20px"><i class="fa fa-balance-scale fa-fw discreet " aria-hidden="true"></i> <span class="Weight_Details">{$delivery_note->get('Weight Details')}</span></span>
-                    <span class="error {if $delivery_note->get('Order Number Items Out of Stock')==0}hide{/if}" style="padding-left:20px"><i class="fa fa-cube fa-fw  " aria-hidden="true"></i> <span
-                                class="Order_Number_Items_with_Out_of_Stock">{$delivery_note->get('Number Items Out of Stock')}</span></span>
+
+               <span class="error {if $delivery_note->get('Order Number Items Out of Stock')==0}hide{/if}" style="padding-left:20px"><i class="fa fa-cube fa-fw  " aria-hidden="true"></i> <span
+                           class="Order_Number_Items_with_Out_of_Stock">{$delivery_note->get('Number Items Out of Stock')}</span></span>
                     <span class="error {if $delivery_note->get('Order Number Items Returned')==0}hide{/if}" style="padding-left:20px"><i class="fa fa-thumbs-o-down fa-fw   " aria-hidden="true"></i> <span
                                 class="Order_Number_Items_with_Returned">{$delivery_note->get('Number Items Returned')}</span></span>
                 </td>
+                <td>
+
+                    <span style="padding-left:20px"><i class="fa fa-balance-scale fa-fw discreet " aria-hidden="true"></i> <span class="Weight_Details">{$delivery_note->get('Weight Details')}</span></span>
+                </td>
+
             </tr>
 
 
         </table>
-
+        </div>
     </div>
 
 
-    <div class="block">
+    <div class="block" style="padding:20px 10px 0px 10px">
 
 
         <table border="0" class="info_block  {if $delivery_note->get('State Index')<70 or $delivery_note->get('State Index')>90 }hide{/if} ">
@@ -419,8 +429,8 @@
     </div>
 
     <div class="" style="align-items: stretch;flex: 1;padding:40px 20px;border-left:1px solid #ccc;text-align: center">
-
-        <a class="pdf_link" target='_blank' href="/pdf/order_pick_aid.pdf.php?id={$delivery_note->id}"> <img style="width: 50px" src="/art/pdf.gif"></a>
+        <span>{t}Picking aid{/t}</span>
+        <a style="position: relative;top:2.5px;" class="pdf_link" target='_blank' href="/pdf/order_pick_aid.pdf.php?id={$delivery_note->id}"> <img style="width: 50px" src="/art/pdf.gif"></a>
 
 
     </div>

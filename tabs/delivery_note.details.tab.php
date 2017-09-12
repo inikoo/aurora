@@ -10,6 +10,30 @@
 */
 
 
+
+include_once 'utils/country_functions.php';
+include_once 'utils/invalid_messages.php';
+include_once 'conf/object_fields.php';
+
+
+$invoice = $state['_object'];
+
+$object_fields = get_object_fields(
+    $invoice, $db, $user, $smarty
+);
+
+
+
+$smarty->assign('object', $state['_object']);
+$smarty->assign('key', $state['key']);
+
+$smarty->assign('object_fields', $object_fields);
+$smarty->assign('state', $state);
+
+
+$html = $smarty->fetch('edit_object.tpl');
+
+/*
 $delivery_note = $state['_object'];
 
 $object_fields = array(
@@ -87,5 +111,7 @@ $object_fields = array(
 $smarty->assign('object_fields', $object_fields);
 
 $html = $smarty->fetch('edit_object.tpl');
+
+*/
 
 ?>
