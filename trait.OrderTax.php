@@ -102,8 +102,8 @@ trait OrderTax {
 
 
         $sql = sprintf(
-            "UPDATE `Order Transaction Fact` SET `Transaction Tax Rate`=%f,`Transaction Tax Code`=%s WHERE `Order Key`=%d AND `Consolidated`='No' AND `Transaction Tax Code`=%s  ",
-            $this->data['Order Tax Rate'], prepare_mysql($this->data['Order Tax Code']), $this->id, prepare_mysql($old_tax_code)
+            "UPDATE `Order Transaction Fact` SET `Transaction Tax Rate`=%f,`Transaction Tax Code`=%s WHERE `Order Key`=%d AND `Consolidated`='No'  ",
+            $this->data['Order Tax Rate'], prepare_mysql($this->data['Order Tax Code']), $this->id
 
         );
         $this->db->exec($sql);
@@ -418,9 +418,7 @@ trait OrderTax {
 
                         switch ($row['Tax Category Name']) {
                             case 'Outside the scope of VAT':
-                                $tax_category_name = _(
-                                    'Outside the scope of VAT'
-                                );
+                                $tax_category_name = _('Outside the scope of VAT');
                                 break;
                             case 'VAT 17.5%':
                                 $tax_category_name = _('VAT').' 17.5%';
@@ -576,7 +574,7 @@ trait OrderTax {
                             'code'       => $tax_category['Outside']['code'],
                             'name'       => $tax_category['Outside']['name'],
                             'rate'       => $tax_category['Outside']['rate'],
-                            'state'      => 'ouside EC',
+                            'state'      => 'outside EC',
                             'operations' => '<div>'._('Outside EC fiscal area').'</div>'
 
                         );
@@ -676,9 +674,9 @@ trait OrderTax {
 
 
                         $response = array(
-                            'code'       => $tax_category['Outside']['code'],
-                            'name'       => $tax_category['Outside']['name'].'<div>'._('Valid tax number').'<br>'.$this->data['Order Tax Number'].'</div>',
-                            'rate'       => $tax_category['Outside']['rate'],
+                            'code'       => $tax_category['Exempt']['code'],
+                            'name'       => $tax_category['Exempt']['name'].'<div>'._('Valid tax number').'<br>'.$this->data['Order Tax Number'].'</div>',
+                            'rate'       => $tax_category['Exempt']['rate'],
                             'state'      => 'EC with valid tax number',
                             'operations' => ''
 
@@ -754,7 +752,7 @@ trait OrderTax {
                             'code'       => $tax_category['Outside']['code'],
                             'name'       => $tax_category['Outside']['name'],
                             'rate'       => $tax_category['Outside']['rate'],
-                            'state'      => 'ouside EC',
+                            'state'      => 'outside EC',
                             'operations' => '<div>'._('Outside EC fiscal area').'</div>'
 
                         );

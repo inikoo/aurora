@@ -472,19 +472,34 @@ if ($invoice->data['Invoice Type'] == 'CreditNote') {
 $smarty->assign('transactions', $transactions);
 
 
+$exempt_tax=false;
+
 $tax_data = array();
 $sql      = sprintf(
-    "SELECT `Tax Category Name`,`Tax Category Rate`,`Tax Amount` FROM  `Invoice Tax Bridge` B  LEFT JOIN kbase.`Tax Category Dimension` T ON (T.`Tax Category Code`=B.`Tax Code`)  WHERE B.`Invoice Key`=%d  and `Tax Category Country Code`=%s ",
+    "SELECT `Tax Category Name`,`Tax Category Rate`,`Tax Amount`,`Tax Category Type` FROM  `Invoice Tax Bridge` B  LEFT JOIN kbase.`Tax Category Dimension` T ON (T.`Tax Category Code`=B.`Tax Code`)  WHERE B.`Invoice Key`=%d  and `Tax Category Country Code`=%s ",
     $invoice->id,
     prepare_mysql($account->get('Account Country Code'))
 );
 
 
+//print $sql;
+  //  exit;
+
 if ($result=$db->query($sql)) {
 		foreach ($result as $row) {
+
+
+            if($row['Tax Category Type']=='Exempt'){
+                $exempt_tax=true;
+
+            }
+
             if ($row['Tax Amount'] == 0) {
                 continue;
             }
+
+
+
 
             switch ($row['Tax Category Name']) {
                 case 'Outside the scope of VAT':
@@ -507,6 +522,8 @@ if ($result=$db->query($sql)) {
                     break;
                 case 'Exempt from VAT':
                     $tax_category_name = _('Exempt from VAT');
+                    $exempt_tax=true;
+
                     break;
 
 
@@ -530,10 +547,21 @@ if ($result=$db->query($sql)) {
 
 
 
-
 $smarty->assign('tax_data', $tax_data);
 $smarty->assign('account', $account);
 
+$extra_comments='';
+if($account->get('Account Country Code')=='SVK'){
+
+    if($exempt_tax){
+        $extra_comments=_('Delivery is exempt from tax according to §43 of Act No. 222/2004 on VAT');
+
+    }
+
+
+}
+
+$smarty->assign('extra_comments', $extra_comments);
 
 //if ($account->data['Apply Tax Method'] == 'Per Item') {
 //    $html = $smarty->fetch('invoice_tax_disaggregated.pdf.tpl');
