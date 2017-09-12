@@ -393,7 +393,7 @@ function input_barcode_to_new_object(field) {
 		<input id="{$field.id}_formatted"  class="option_input_field " value="{$field.formatted_value}" readonly  onClick="toggle_options('{$field.id}')"/>
 		
         <span id="{$field.id}_msg" class="msg"></span> 
-		<div id="{$field.id}_options" class="dropcontainer option_multiple_choices  hide" >
+		<div id="{$field.id}_options" class="dropcontainer option_multiple_choices  hide" style="position: relative;top:0px">
 			<ul>
 				{foreach from=$field.options item=option key=value} 
 				<li id="{$field.id}_option_{$value}" label="{$option.label}" value="{$value}" is_selected="{$option.selected}" onclick="select_option_multiple_choices('{$field.id}','{$value}','{$option.label}' )"><i class="fa fa-fw checkbox {if $option.selected}fa-check-square-o{else}fa-square-o{/if}"></i> {$option.label} <i class="fa fa-circle fw current_mark {if $option.selected}current{/if}"></i></li>
@@ -401,7 +401,12 @@ function input_barcode_to_new_object(field) {
 			</ul>
 		</div>
 
-	
+
+
+
+
+
+
 		{elseif $edit=='date' } 
 		<input id="{$field.id}" type="hidden" value="{$field.value}" has_been_valid="0"/>
 		<input id="{$field.id}_time" type="hidden" value="{$field.time}" />
