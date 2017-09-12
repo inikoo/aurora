@@ -64,6 +64,8 @@ foreach ($roles as $_key => $_data) {
     }
 }
 
+
+
 foreach (preg_split('/,/', $employee->get('Staff Position')) as $current_position_key) {
     if (array_key_exists($current_position_key, $options_Staff_Position)) {
         $options_Staff_Position[$current_position_key]['selected'] = true;
@@ -149,7 +151,6 @@ foreach ($db->query($sql) as $row) {
         'selected' => false
     );
 }
-
 
 
 
@@ -790,9 +791,7 @@ if (!$new) {
                 'value'           => '',
                 'formatted_value' => '',
                 'options'         => $options_Staff_Position,
-                'label'           => ucfirst(
-                    $employee->get_field_label('Staff Position')
-                ),
+                'label'           => ucfirst($employee->get_field_label('Staff Position')),
                 'required'        => false,
                 'type'            => 'user_value'
             ),
