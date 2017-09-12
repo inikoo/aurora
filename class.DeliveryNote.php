@@ -617,15 +617,11 @@ class DeliveryNote extends DB_Table {
                 break;
             case('Date'):
 
-                return strftime(
-                    "%e %b %y", strtotime($this->data['Delivery Note Date'].' +0:00')
-                );
+                return strftime("%e %b %y", strtotime($this->data['Delivery Note Date'].' +0:00'));
 
                 break;
             case('Creation Date'):
-                return strftime(
-                    "%e %b %y %H:%M", strtotime($this->data['Delivery Note Date Created'].' +0:00')
-                );
+                return strftime("%e %b %y %H:%M", strtotime($this->data['Delivery Note Date Created'].' +0:00'));
                 break;
             case('Start Picking Datetime'):
             case('Finish Picking Datetime'):
@@ -1093,12 +1089,30 @@ class DeliveryNote extends DB_Table {
 
 
                 break;
+            case 'un_dispatch':
+
+                if ($this->get('State Index') != 100) {
+                    return;
+                }
+
+                $value='Approved';
+                $this->update_field('Delivery Note Date Dispatched', $date, 'no_history');
+                $this->update_field('Delivery Note Date', $date, 'no_history');
+                $this->update_field('Delivery Note State', $value, 'no_history');
+
+
+                $order = get_object('Order', $this->data['Delivery Note Order Key']);
+                $order->update(array('Order State' => 'un_dispatch'));
+
+                break;
             case 'Dispatched':
 
                 if ($this->get('State Index') != 90) {
                     return;
                 }
-                $this->update_field('Delivery Note Date Dispatched', $date, 'no_history');
+
+
+                $this->update_field('Delivery Note Date Dispatched', '', 'no_history');
                 $this->update_field('Delivery Note Date', $date, 'no_history');
                 $this->update_field('Delivery Note State', $value, 'no_history');
 
@@ -1912,7 +1926,7 @@ class DeliveryNote extends DB_Table {
     function get_formatted_parcels() {
 
         if (!is_numeric($this->data['Delivery Note Number Parcels'])) {
-            return;
+            return '';
         }
 
         switch ($this->data['Delivery Note Parcel Type']) {

@@ -422,9 +422,7 @@ class Order extends DB_Table {
                 if (array_key_exists($field, $base_data)) {
 
 
-
-
-                        $this->update_field($field, $value, $options);
+                    $this->update_field($field, $value, $options);
 
                 }
         }
@@ -445,8 +443,8 @@ class Order extends DB_Table {
         $operations        = array();
         $deliveries_xhtml  = '';
         $number_deliveries = 0;
-        $invoices_xhtml='';
-        $number_invoices = 0;
+        $invoices_xhtml    = '';
+        $number_invoices   = 0;
 
         if ($old_value != $value) {
 
@@ -494,8 +492,13 @@ class Order extends DB_Table {
 
 
                     $sql = sprintf(
-                        'UPDATE `Order Transaction Fact` SET `Current Dispatching State`="In Process" WHERE `Order Key`=%d  AND `Current Dispatching State` IN ("Submitted by Customer")  ', $this->id
+                        "UPDATE `Order Transaction Fact` SET `Current Dispatching State`='In Process' WHERE `Order Key`=%d  AND `Current Dispatching State` NOT IN ('Out of Stock in Basket')  ",
+                        $this->id
+
+
                     );
+
+                    // todo check 'Out of Stock in Basket' etc
 
                     $this->db->exec($sql);
 
@@ -533,7 +536,9 @@ class Order extends DB_Table {
                     );
 
                     $sql = sprintf(
-                        'UPDATE `Order Transaction Fact` SET `Current Dispatching State`="Submitted by Customer" WHERE `Order Key`=%d  AND `Current Dispatching State` IN ("In Process by Customer","In Process")  ',
+                        "UPDATE `Order Transaction Fact` SET `Current Dispatching State`='Submitted by Customer' WHERE `Order Key`=%d  AND `Current Dispatching State` NOT IN ('Out of Stock in Basket')  ",
+
+
                         $this->id
                     );
 
@@ -551,7 +556,7 @@ class Order extends DB_Table {
 
                     }
 
-                    $value='InProcess';
+                    $value = 'InProcess';
 
                     $this->update_field('Order State', $value, 'no_history');
                     $this->update_field('Order Date', $date, 'no_history');
@@ -562,10 +567,8 @@ class Order extends DB_Table {
                     $this->update_field('Order Packed Done Date', '', 'no_history');
 
 
-
                     $this->update_field('Order Date', $this->data['Order Submitted by Customer Date'], 'no_history');
                     $this->update_field('Order Delivery Note Key', '', 'no_history');
-
 
 
                     $history_data = array(
@@ -581,16 +584,14 @@ class Order extends DB_Table {
                     );
 
                     $sql = sprintf(
-                        'UPDATE `Order Transaction Fact` SET `Current Dispatching State`="Submitted by Customer",`Delivery Note Key`=NULL WHERE `Order Key`=%d  AND `Current Dispatching State` IN ("Ready to Pick","Packed Done")  ',
+
+
+                        "UPDATE `Order Transaction Fact` SET `Current Dispatching State`='Submitted by Customer' WHERE `Order Key`=%d  AND `Current Dispatching State` NOT IN ('Out of Stock in Basket')  ",
                         $this->id
+
                     );
 
                     $this->db->exec($sql);
-
-
-
-
-
 
 
                     break;
@@ -688,13 +689,15 @@ class Order extends DB_Table {
                     $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->table_name, $this->id);
 
 
-
                     $operations = array('cancel_operations');
 
 
                     $sql = sprintf(
-                        'UPDATE `Order Transaction Fact` SET `Current Dispatching State`="Ready to Pick" WHERE `Order Key`=%d  AND `Current Dispatching State`,`Delivery Note Key`=%d  IN ("Submitted by Customer","In Process")  ',
-                        $this->id, $delivery_note->id
+
+
+                        "UPDATE `Order Transaction Fact` SET `Current Dispatching State`='Ready to Pick' WHERE `Order Key`=%d  AND `Current Dispatching State` NOT IN ('Out of Stock in Basket')  ",
+                        $this->id
+
 
                     );
 
@@ -731,7 +734,9 @@ class Order extends DB_Table {
                     );
 
                     $sql = sprintf(
-                        'UPDATE `Order Transaction Fact` SET `Current Dispatching State`="Packed Done" WHERE `Order Key`=%d  AND `Current Dispatching State` IN ("Ready to Pick")  ', $this->id
+                        "UPDATE `Order Transaction Fact` SET `Current Dispatching State`='Packed Done' WHERE `Order Key`=%d  AND `Current Dispatching State` NOT IN ('No Picked Due Out of Stock','No Picked Due No Authorised','No Picked Due Not Found','No Picked Due Other','Out of Stock in Basket')  ",
+                        $this->id
+
                     );
 
                     $this->db->exec($sql);
@@ -747,7 +752,7 @@ class Order extends DB_Table {
                         return;
 
                     }
-                    $value='PackedDone';
+                    $value = 'PackedDone';
 
                     $this->update_field('Order State', $value, 'no_history');
                     $this->update_field('Order Packed Done Date', $date, 'no_history');
@@ -768,12 +773,13 @@ class Order extends DB_Table {
                     );
 
                     $sql = sprintf(
-                        'UPDATE `Order Transaction Fact` SET `Current Dispatching State`="Packed Done" WHERE `Order Key`=%d  AND `Current Dispatching State` IN ("Ready to Ship")  ', $this->id
+                        "UPDATE `Order Transaction Fact` SET `Current Dispatching State`='Packed Done' WHERE `Order Key`=%d  AND `Current Dispatching State` NOT IN ('No Picked Due Out of Stock','No Picked Due No Authorised','No Picked Due Not Found','No Picked Due Other','Out of Stock in Basket')  ",
+                        $this->id
+
+
                     );
 
                     $this->db->exec($sql);
-
-
 
 
                     $dn = get_object('DeliveryNote', $this->data['Order Delivery Note Key']);
@@ -925,10 +931,10 @@ class Order extends DB_Table {
 
                     new_housekeeping_fork(
                         'au_housekeeping', array(
-                        'type'              => 'invoice_created',
-                        'invoice_key' => $invoice->id,
-                        'customer_key'=>$invoice->get('Invoice Customer Key'),
-                        'store_key'=>$invoice->get('Invoice Store Key')
+                        'type'         => 'invoice_created',
+                        'invoice_key'  => $invoice->id,
+                        'customer_key' => $invoice->get('Invoice Customer Key'),
+                        'store_key'    => $invoice->get('Invoice Store Key')
                     ), $account->get('Account Code')
                     );
 
@@ -950,14 +956,51 @@ class Order extends DB_Table {
                     //'In Process by Customer','Submitted by Customer','In Process','Ready to Pick','Picking','Ready to Pack','Ready to Ship','Dispatched','Unknown','Packing','Packed','Packed Done','Cancelled','No Picked Due Out of Stock','No Picked Due No Authorised','No Picked Due Not Found','No Picked Due Other','Suspended','Cancelled by Customer','Out of Stock in Basket'
 
                     $sql = sprintf(
-                        'UPDATE `Order Transaction Fact` SET `Current Dispatching State`="Ready to Ship" WHERE `Order Key`=%d  AND `Current Dispatching State` IN ("Packed Done")  ', $this->id
+
+                        "UPDATE `Order Transaction Fact` SET `Current Dispatching State`='Ready to Ship' WHERE `Order Key`=%d  AND `Current Dispatching State` NOT IN ('No Picked Due Out of Stock','No Picked Due No Authorised','No Picked Due Not Found','No Picked Due Other','Out of Stock in Basket')  ",
+                        $this->id
+
                     );
 
                     $this->db->exec($sql);
 
 
                     break;
+                case 'un_dispatch':
 
+
+                    if ($this->data['Order State'] != 'Dispatched') {
+                        $this->error = true;
+                        $this->msg   = 'Order is not in Dispatched: :(';
+
+                        return;
+
+                    }
+                    $value = 'Approved';
+
+                    $this->update_field('Order State', $value, 'no_history');
+                    $this->update_field('Order Dispatched Date', '', 'no_history');
+                    $this->update_field('Order Class', 'InProcess', 'no_history');
+
+
+                    $history_data = array(
+                        'History Abstract' => _('Order set as not dispatched'),
+                        'History Details'  => '',
+                    );
+                    $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
+
+                    $operations = array();
+                    //'In Process by Customer','Submitted by Customer','In Process','Ready to Pick','Picking','Ready to Pack','Ready to Ship','Dispatched','Unknown','Packing','Packed','Packed Done','Cancelled','No Picked Due Out of Stock','No Picked Due No Authorised','No Picked Due Not Found','No Picked Due Other','Suspended','Cancelled by Customer','Out of Stock in Basket'
+
+                    $sql = sprintf(
+                        "UPDATE `Order Transaction Fact` SET `Current Dispatching State`='Ready to Ship' WHERE `Order Key`=%d  AND `Current Dispatching State` NOT IN ('No Picked Due Out of Stock','No Picked Due No Authorised','No Picked Due Not Found','No Picked Due Other','Out of Stock in Basket')  ",
+                        $this->id
+                    );
+
+                    $this->db->exec($sql);
+
+
+                    break;
 
                 case 'Dispatched':
 
@@ -986,7 +1029,9 @@ class Order extends DB_Table {
 
 
                     $sql = sprintf(
-                        'UPDATE `Order Transaction Fact` SET `Current Dispatching State`="Dispatched" WHERE `Order Key`=%d  AND `Current Dispatching State` IN ("Ready to Ship")  ', $this->id
+                        "UPDATE `Order Transaction Fact` SET `Current Dispatching State`='Dispatched' WHERE `Order Key`=%d  AND `Current Dispatching State` NOT IN ('No Picked Due Out of Stock','No Picked Due No Authorised','No Picked Due Not Found','No Picked Due Other','Out of Stock in Basket')  ",
+                        $this->id
+
                     );
 
                     $this->db->exec($sql);
@@ -1023,8 +1068,7 @@ class Order extends DB_Table {
                         <span class="link" onClick="change_view(\'%s\')">%s</span>
                         <a class="pdf_link" target=\'_blank\' href="/pdf/invoice.pdf.php?id={$invoice->id}"> <img style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif"></a>
                     </span>
-                </div>', $invoice->id,
-                'invoices/'.$invoice->get('Invoice Store Key').'/'.$invoice->id, $invoice->get('Invoice Public ID'), $invoice->id
+                </div>', $invoice->id, 'invoices/'.$invoice->get('Invoice Store Key').'/'.$invoice->id, $invoice->get('Invoice Public ID'), $invoice->id
 
             );
 
@@ -1036,20 +1080,20 @@ class Order extends DB_Table {
                 'Order_State'                  => $this->get('State'),
                 'Order_Submitted_Date'         => '&nbsp;'.$this->get('Submitted by Customer Date'),
                 'Order_Send_to_Warehouse_Date' => '&nbsp;'.$this->get('Send to Warehouse Date'),
-                'Order_Invoiced_Date' => '&nbsp;'.$this->get('Invoiced Date'),
+                'Order_Invoiced_Date'          => '&nbsp;'.$this->get('Invoiced Date'),
 
 
             ),
             'operations'        => $operations,
             'state_index'       => $this->get('State Index'),
             'deliveries_xhtml'  => $deliveries_xhtml,
-            'invoices_xhtml'  => $invoices_xhtml,
+            'invoices_xhtml'    => $invoices_xhtml,
             'number_deliveries' => $number_deliveries,
-            'number_invoices' => $number_invoices
+            'number_invoices'   => $number_invoices
         );
 
 
-        if($this->data['Order State']!='Cancelled') {
+        if ($this->data['Order State'] != 'Cancelled') {
 
             new_housekeeping_fork(
                 'au_housekeeping', array(
@@ -1060,13 +1104,11 @@ class Order extends DB_Table {
         }
 
 
-
-
     }
 
     function get($key = '') {
 
-        if(!$this->id){
+        if (!$this->id) {
             return;
         }
 
@@ -1522,8 +1564,6 @@ class Order extends DB_Table {
     function cancel($note = '', $date = false, $force = false) {
 
 
-
-
         if ($this->data['Order State'] == 'Dispatched') {
             $this->error = true;
             $this->msg   = _('Order can not be cancelled, because has already been dispatched');
@@ -1712,65 +1752,21 @@ class Order extends DB_Table {
         $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
 
 
-
-
-        $account=get_object('Account','');
+        $account = get_object('Account', '');
 
         require_once 'utils/new_fork.php';
         new_housekeeping_fork(
             'au_housekeeping', array(
-            'type'        => 'order_cancelled',
+            'type'      => 'order_cancelled',
             'order_key' => $this->id,
 
 
-            'editor'      => $this->editor
+            'editor' => $this->editor
         ), $account->get('Account Code'), $this->db
         );
 
 
-
         return true;
-
-    }
-
-
-    function update_deals_usage() {
-
-        include_once 'class.DealCampaign.php';
-        include_once 'class.DealComponent.php';
-
-
-        $deals     = array();
-        $campaigns = array();
-        $sql       = sprintf(
-            "SELECT `Deal Component Key`,`Deal Key`,`Deal Campaign Key` FROM  `Order Deal Bridge` WHERE `Order Key`=%d", $this->id
-        );
-        // exit("$sql\n");
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                $component = new DealComponent($row['Deal Component Key']);
-                $component->update_usage();
-                $deals[$row['Deal Key']]              = $row['Deal Key'];
-                $campaigns[$row['Deal Campaign Key']] = $row['Deal Campaign Key'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        foreach ($deals as $deal_key) {
-            $deal = new Deal($deal_key);
-            $deal->update_usage();
-        }
-
-        foreach ($campaigns as $campaign_key) {
-            $campaign = new DealCampaign($campaign_key);
-            $campaign->update_usage();
-        }
 
     }
 
@@ -1803,6 +1799,44 @@ class Order extends DB_Table {
 
 
         return $deliveries;
+
+    }
+
+    function get_invoices($scope = 'keys') {
+
+        if ($scope == 'objects') {
+            include_once 'class.Invoice.php';
+        }
+
+
+        $invoices = array();
+        $sql      = sprintf(
+            "SELECT `Invoice Key` FROM `Order Transaction Fact` WHERE `Order Key`=%d  GROUP BY `Invoice Key`", $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                if ($row['Invoice Key'] == '') {
+                    continue;
+                }
+
+                if ($scope == 'objects') {
+
+                    $invoices[$row['Invoice Key']] = new Invoice(
+                        $row['Invoice Key']
+                    );
+
+                } else {
+                    $invoices[$row['Invoice Key']] = $row['Invoice Key'];
+                }
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        return $invoices;
 
     }
 
@@ -1958,44 +1992,6 @@ class Order extends DB_Table {
         );
         $this->db->exec($sql);
 
-
-    }
-
-    function get_invoices($scope = 'keys') {
-
-        if ($scope == 'objects') {
-            include_once 'class.Invoice.php';
-        }
-
-
-        $invoices = array();
-        $sql      = sprintf(
-            "SELECT `Invoice Key` FROM `Order Transaction Fact` WHERE `Order Key`=%d  GROUP BY `Invoice Key`", $this->id
-        );
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                if ($row['Invoice Key'] == '') {
-                    continue;
-                }
-
-                if ($scope == 'objects') {
-
-                    $invoices[$row['Invoice Key']] = new Invoice(
-                        $row['Invoice Key']
-                    );
-
-                } else {
-                    $invoices[$row['Invoice Key']] = $row['Invoice Key'];
-                }
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        return $invoices;
 
     }
 
@@ -3344,6 +3340,46 @@ VALUES (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 
 
         return $insurances;
+
+    }
+
+    function update_deals_usage() {
+
+        include_once 'class.DealCampaign.php';
+        include_once 'class.DealComponent.php';
+
+
+        $deals     = array();
+        $campaigns = array();
+        $sql       = sprintf(
+            "SELECT `Deal Component Key`,`Deal Key`,`Deal Campaign Key` FROM  `Order Deal Bridge` WHERE `Order Key`=%d", $this->id
+        );
+        // exit("$sql\n");
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $component = new DealComponent($row['Deal Component Key']);
+                $component->update_usage();
+                $deals[$row['Deal Key']]              = $row['Deal Key'];
+                $campaigns[$row['Deal Campaign Key']] = $row['Deal Campaign Key'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        foreach ($deals as $deal_key) {
+            $deal = new Deal($deal_key);
+            $deal->update_usage();
+        }
+
+        foreach ($campaigns as $campaign_key) {
+            $campaign = new DealCampaign($campaign_key);
+            $campaign->update_usage();
+        }
 
     }
 

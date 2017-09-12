@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kaktus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-11 19:32+0800\n"
-"PO-Revision-Date: 2017-09-11 19:33+0800\n"
+"POT-Creation-Date: 2017-09-12 21:51+0800\n"
+"PO-Revision-Date: 2017-09-12 21:51+0800\n"
 "Last-Translator: Raul <raul@inikoo.com>\n"
 "Language-Team: \n"
 "Language: sk_SK\n"
@@ -261,7 +261,7 @@ msgstr "Import zo súboru"
 
 #: EcomB2B/class.Image.php:870 _smarty.php:2049 _smarty.php:2877
 #: _smarty.php:3420 _smarty.php:4524 _smarty.php:5607 class.Attachment.php:461
-#: class.Image.php:870
+#: class.Image.php:870 pdf/supplier.order.pdf.php:48
 msgid "Preview"
 msgstr "Náhľad"
 
@@ -478,7 +478,7 @@ msgstr "iná dodacia adresa"
 #: conf/elements_options.php:927 conf/fields/category.part.fld.php:15
 #: conf/fields/part.fld.php:41 conf/fields/product.fld.php:31
 #: conf/fields/service.fld.php:31 tabs/website.user.details.tab.php:50
-#: utils/modules.php:4031
+#: utils/modules.php:4041
 msgid "Active"
 msgstr "Aktívny"
 
@@ -532,8 +532,8 @@ msgstr "Zaplatené"
 #: EcomB2B/class.Public_Payment.php:138 _smarty.php:9789 _smarty.php:10011
 #: _smarty.php:10233 _smarty.php:10470 _smarty.php:10779 _smarty.php:10785
 #: _smarty.php:10791 _smarty.php:10797 _smarty.php:10947 _smarty.php:11175
-#: ar_account_tables.php:515 ar_orders_tables.php:1270
-#: ar_orders_tables.php:1347 ar_orders_tables.php:1426
+#: ar_account_tables.php:515 ar_orders_tables.php:1273
+#: ar_orders_tables.php:1350 ar_orders_tables.php:1429
 #: ar_payments_tables.php:224 ar_search.php:2153 ar_search.php:2380
 #: ar_suppliers_tables.php:799 ar_suppliers_tables.php:899
 #: ar_suppliers_tables.php:1004 ar_suppliers_tables.php:1107
@@ -546,7 +546,7 @@ msgstr "Zaplatené"
 #: conf/elements_options.php:224 conf/elements_options.php:318
 #: conf/elements_options.php:1050 conf/elements_options.php:1093
 #: conf/elements_options.php:1129 conf/elements_options.php:1174
-#: conf/elements_options.php:1209
+#: conf/elements_options.php:1209 pdf/supplier.order.pdf.php:41
 msgid "Cancelled"
 msgstr "Zrušené"
 
@@ -566,27 +566,27 @@ msgstr "Zrušené"
 msgid "Error"
 msgstr "Chyba"
 
-#: EcomB2B/class.Public_Payment.php:157 class.Invoice.php:1900
+#: EcomB2B/class.Public_Payment.php:157 class.Invoice.php:1903
 #: class.Payment.php:179 class.Site.php:2222 utils/order_functions.php:192
 msgid "Credit Card"
 msgstr "Kreditná Karta"
 
-#: EcomB2B/class.Public_Payment.php:160 class.Invoice.php:1903
+#: EcomB2B/class.Public_Payment.php:160 class.Invoice.php:1906
 #: class.Payment.php:182 class.Payment_Service_Provider.php:183
 msgid "Cash"
 msgstr "Hotovosť"
 
-#: EcomB2B/class.Public_Payment.php:163 class.Invoice.php:1906
+#: EcomB2B/class.Public_Payment.php:163 class.Invoice.php:1909
 #: class.Payment.php:185
 msgid "Paypal"
 msgstr "Paypal"
 
-#: EcomB2B/class.Public_Payment.php:166 class.Invoice.php:1909
+#: EcomB2B/class.Public_Payment.php:166 class.Invoice.php:1912
 #: class.Payment.php:188
 msgid "Check"
 msgstr "Šek"
 
-#: EcomB2B/class.Public_Payment.php:169 class.Invoice.php:1912
+#: EcomB2B/class.Public_Payment.php:169 class.Invoice.php:1915
 #: class.Payment.php:191 class.Site.php:2226 utils/order_functions.php:183
 msgid "Bank Transfer"
 msgstr "Bankový Prevod"
@@ -600,19 +600,21 @@ msgstr "Dobierka"
 #: ar_account_tables.php:436 ar_attachments_tables.php:83
 #: ar_attachments_tables.php:151 ar_websites_tables.php:378
 #: class.Attachment.php:531 class.Attachment.php:601 class.Category.php:3773
-#: class.Invoice.php:1915 class.Payment.php:198 conf/elements_options.php:246
+#: class.Invoice.php:1918 class.Payment.php:198 conf/elements_options.php:246
 #: conf/elements_options.php:277 conf/elements_options.php:340
 #: conf/elements_options.php:370 conf/elements_options.php:1254
 #: conf/elements_options.php:1292 conf/fields/attachment.fld.php:41
 #: conf/object_fields.php:79 conf/object_fields.php:90
-#: conf/object_fields.php:96 utils/order_functions.php:189
+#: conf/object_fields.php:96 pdf/invoice.pdf.php:257 pdf/invoice.pdf.php:440
+#: pdf/supplier.order.pdf.php:445 pdf/supplier.order.pdf.php:596
+#: utils/order_functions.php:189
 msgid "Other"
 msgstr "Ďalšie"
 
 #: EcomB2B/class.Public_Payment.php:180 ar_views.php:6051 class.Payment.php:202
 #: conf/user_groups.php:35 conf/user_groups.php:36
 #: navigation/account.nav.php:66 navigation/menu.mobile.php:471
-#: navigation/menu.php:516 utils/modules.php:5489
+#: navigation/menu.php:516 utils/modules.php:5499
 msgid "Account"
 msgstr "Účet"
 
@@ -1074,7 +1076,9 @@ msgstr "Emailová Adresa"
 #: _smarty.php:10407 _smarty.php:10560 _smarty.php:11220 _smarty.php:11388
 #: _smarty.php:11607 _web_smarty.php:87 _web_smarty.php:132 _web_smarty.php:300
 #: _web_smarty.php:498 _web_smarty.php:657 ar_edit_email_template.php:805
-#: conf/website_system_webpages.php:455 trait.OrderShippingOperations.php:100
+#: conf/website_system_webpages.php:455 pdf/invoice.pdf.php:248
+#: pdf/invoice.pdf.php:431 pdf/supplier.order.pdf.php:436
+#: pdf/supplier.order.pdf.php:587 trait.OrderShippingOperations.php:100
 msgid "Shipping"
 msgstr "Doprava"
 
@@ -1082,70 +1086,76 @@ msgstr "Doprava"
 msgid "Exempt"
 msgstr ""
 
-#: EcomB2B/trait.OrderTax.php:187 EcomB2B/trait.OrderTax.php:426
-#: EcomB2B/trait.OrderTax.php:429 EcomB2B/trait.OrderTax.php:432
-#: EcomB2B/trait.OrderTax.php:609 trait.OrderTax.php:187 trait.OrderTax.php:426
-#: trait.OrderTax.php:429 trait.OrderTax.php:432 trait.OrderTax.php:609
+#: EcomB2B/trait.OrderTax.php:187 EcomB2B/trait.OrderTax.php:424
+#: EcomB2B/trait.OrderTax.php:427 EcomB2B/trait.OrderTax.php:430
+#: EcomB2B/trait.OrderTax.php:607 pdf/invoice.pdf.php:509
+#: pdf/invoice.pdf.php:512 pdf/invoice.pdf.php:515
+#: pdf/supplier.order.pdf.php:644 pdf/supplier.order.pdf.php:647
+#: pdf/supplier.order.pdf.php:650 trait.OrderTax.php:187 trait.OrderTax.php:424
+#: trait.OrderTax.php:427 trait.OrderTax.php:430 trait.OrderTax.php:607
 msgid "VAT"
 msgstr "IČ DPH"
 
 #: EcomB2B/trait.OrderTax.php:227 EcomB2B/trait.OrderTax.php:242
-#: EcomB2B/trait.OrderTax.php:398 EcomB2B/trait.OrderTax.php:580
-#: EcomB2B/trait.OrderTax.php:758 trait.OrderTax.php:227 trait.OrderTax.php:242
-#: trait.OrderTax.php:398 trait.OrderTax.php:580 trait.OrderTax.php:758
+#: EcomB2B/trait.OrderTax.php:398 EcomB2B/trait.OrderTax.php:578
+#: EcomB2B/trait.OrderTax.php:756 trait.OrderTax.php:227 trait.OrderTax.php:242
+#: trait.OrderTax.php:398 trait.OrderTax.php:578 trait.OrderTax.php:756
 msgid "Outside EC fiscal area"
 msgstr ""
 
-#: EcomB2B/trait.OrderTax.php:322 EcomB2B/trait.OrderTax.php:502
-#: EcomB2B/trait.OrderTax.php:680 trait.OrderTax.php:322 trait.OrderTax.php:502
-#: trait.OrderTax.php:680
+#: EcomB2B/trait.OrderTax.php:322 EcomB2B/trait.OrderTax.php:500
+#: EcomB2B/trait.OrderTax.php:678 trait.OrderTax.php:322 trait.OrderTax.php:500
+#: trait.OrderTax.php:678
 msgid "Valid tax number"
 msgstr "Správne IČ DPH"
 
-#: EcomB2B/trait.OrderTax.php:340 EcomB2B/trait.OrderTax.php:520
-#: EcomB2B/trait.OrderTax.php:698 trait.OrderTax.php:340 trait.OrderTax.php:520
-#: trait.OrderTax.php:698
+#: EcomB2B/trait.OrderTax.php:340 EcomB2B/trait.OrderTax.php:518
+#: EcomB2B/trait.OrderTax.php:696 trait.OrderTax.php:340 trait.OrderTax.php:518
+#: trait.OrderTax.php:696
 msgid "VAT might be exempt with a valid tax number"
 msgstr ""
 
-#: EcomB2B/trait.OrderTax.php:341 EcomB2B/trait.OrderTax.php:521
-#: EcomB2B/trait.OrderTax.php:699 trait.OrderTax.php:341 trait.OrderTax.php:521
-#: trait.OrderTax.php:699
+#: EcomB2B/trait.OrderTax.php:341 EcomB2B/trait.OrderTax.php:519
+#: EcomB2B/trait.OrderTax.php:697 trait.OrderTax.php:341 trait.OrderTax.php:519
+#: trait.OrderTax.php:697
 msgid "Set up tax number"
 msgstr "Nastavenie IČ DPH"
 
-#: EcomB2B/trait.OrderTax.php:357 EcomB2B/trait.OrderTax.php:537
-#: EcomB2B/trait.OrderTax.php:715 trait.OrderTax.php:357 trait.OrderTax.php:537
-#: trait.OrderTax.php:715
+#: EcomB2B/trait.OrderTax.php:357 EcomB2B/trait.OrderTax.php:535
+#: EcomB2B/trait.OrderTax.php:713 trait.OrderTax.php:357 trait.OrderTax.php:535
+#: trait.OrderTax.php:713
 msgid "Invalid tax number"
 msgstr "Nesprávne IČ DPH"
 
 #: EcomB2B/trait.OrderTax.php:358 EcomB2B/trait.OrderTax.php:359
-#: EcomB2B/trait.OrderTax.php:538 EcomB2B/trait.OrderTax.php:539
-#: EcomB2B/trait.OrderTax.php:716 EcomB2B/trait.OrderTax.php:717
-#: trait.OrderTax.php:358 trait.OrderTax.php:359 trait.OrderTax.php:538
-#: trait.OrderTax.php:539 trait.OrderTax.php:716 trait.OrderTax.php:717
+#: EcomB2B/trait.OrderTax.php:536 EcomB2B/trait.OrderTax.php:537
+#: EcomB2B/trait.OrderTax.php:714 EcomB2B/trait.OrderTax.php:715
+#: trait.OrderTax.php:358 trait.OrderTax.php:359 trait.OrderTax.php:536
+#: trait.OrderTax.php:537 trait.OrderTax.php:714 trait.OrderTax.php:715
 msgid "Validate"
 msgstr "Overiť"
 
-#: EcomB2B/trait.OrderTax.php:361 EcomB2B/trait.OrderTax.php:541
-#: EcomB2B/trait.OrderTax.php:719 trait.OrderTax.php:361 trait.OrderTax.php:541
-#: trait.OrderTax.php:719
+#: EcomB2B/trait.OrderTax.php:361 EcomB2B/trait.OrderTax.php:539
+#: EcomB2B/trait.OrderTax.php:717 trait.OrderTax.php:361 trait.OrderTax.php:539
+#: trait.OrderTax.php:717
 msgid "Edit tax number"
 msgstr ""
 
-#: EcomB2B/trait.OrderTax.php:422 EcomB2B/trait.OrderTax.php:605
-#: trait.OrderTax.php:422 trait.OrderTax.php:605
+#: EcomB2B/trait.OrderTax.php:421 EcomB2B/trait.OrderTax.php:603
+#: pdf/invoice.pdf.php:506 pdf/supplier.order.pdf.php:641
+#: trait.OrderTax.php:421 trait.OrderTax.php:603
 msgid "Outside the scope of VAT"
 msgstr ""
 
-#: EcomB2B/trait.OrderTax.php:435 EcomB2B/trait.OrderTax.php:612
-#: trait.OrderTax.php:435 trait.OrderTax.php:612 utils/modules.php:4920
+#: EcomB2B/trait.OrderTax.php:433 EcomB2B/trait.OrderTax.php:610
+#: pdf/invoice.pdf.php:518 pdf/supplier.order.pdf.php:653
+#: trait.OrderTax.php:433 trait.OrderTax.php:610 utils/modules.php:4930
 msgid "No Tax"
 msgstr ""
 
-#: EcomB2B/trait.OrderTax.php:438 EcomB2B/trait.OrderTax.php:615
-#: trait.OrderTax.php:438 trait.OrderTax.php:615
+#: EcomB2B/trait.OrderTax.php:436 EcomB2B/trait.OrderTax.php:613
+#: pdf/invoice.pdf.php:524 pdf/supplier.order.pdf.php:659
+#: trait.OrderTax.php:436 trait.OrderTax.php:613
 #, fuzzy
 msgid "Exempt from VAT"
 msgstr "Import zo súboru"
@@ -1169,7 +1179,7 @@ msgstr "Žiadne výsledky neboli nájdené"
 msgid "clear results"
 msgstr "vymazať výsledky"
 
-#: _smarty.php:21 utils/modules.php:5924
+#: _smarty.php:21 utils/modules.php:5934
 msgid "Fire"
 msgstr "Požiar"
 
@@ -1178,13 +1188,13 @@ msgid "Logout"
 msgstr "Odhlásenie"
 
 #: _smarty.php:30 _smarty.php:33 _smarty.php:9747 ar_views.php:4664
-#: navigation/help.nav.php:19 utils/modules.php:5939
+#: navigation/help.nav.php:19 utils/modules.php:5949
 msgid "Help"
 msgstr "Pomoc"
 
 #: _smarty.php:36 utils/modules.php:76 utils/modules.php:204
-#: utils/modules.php:1869 utils/modules.php:2560 utils/modules.php:2804
-#: utils/modules.php:3514 utils/modules.php:4149 utils/modules.php:4271
+#: utils/modules.php:1871 utils/modules.php:2570 utils/modules.php:2814
+#: utils/modules.php:3524 utils/modules.php:4159 utils/modules.php:4281
 msgid "Sales history"
 msgstr "História predaja"
 
@@ -1366,7 +1376,7 @@ msgid "Deleted"
 msgstr "Vymazané"
 
 #: _smarty.php:111 _smarty.php:138 _smarty.php:159 _smarty.php:180
-#: utils/modules.php:5727
+#: utils/modules.php:5737
 msgid "Groups"
 msgstr "Skupiny"
 
@@ -1375,14 +1385,14 @@ msgstr "Skupiny"
 #: navigation/products.nav.php:65 navigation/products.nav.php:164
 #: navigation/products.nav.php:338 navigation/products.nav.php:714
 #: navigation/products.nav.php:812 navigation/products.nav.php:1384
-#: utils/modules.php:1309 utils/modules.php:2781 utils/modules.php:2793
+#: utils/modules.php:1309 utils/modules.php:2791 utils/modules.php:2803
 msgid "Stores"
 msgstr "Obchody"
 
 #: _smarty.php:117 _smarty.php:144 _smarty.php:165 _smarty.php:186
 #: _smarty.php:9774 navigation/warehouses.nav.php:74
 #: navigation/warehouses.nav.php:102 navigation/warehouses.nav.php:152
-#: utils/modules.php:3989 utils/modules.php:3990
+#: utils/modules.php:3999 utils/modules.php:4000
 msgid "Warehouses"
 msgstr "Sklady"
 
@@ -1506,7 +1516,7 @@ msgstr "Krajina"
 #: _smarty.php:12279 _web_smarty.php:96 _web_smarty.php:141 _web_smarty.php:309
 #: _web_smarty.php:468 _web_smarty.php:507 _web_smarty.php:666
 #: ar_customers_tables.php:514 ar_edit_email_template.php:830
-#: ar_orders_tables.php:1773 ar_orders_tables.php:1851 class.Page.php:5164
+#: ar_orders_tables.php:1776 ar_orders_tables.php:1854 class.Page.php:5164
 #: class.Page.php:5176 conf/export_fields.php:125
 #: conf/website_system_webpages.php:458 sales_overview.wget.php:427
 #: widgets/sales_overview.wget.php:427
@@ -1586,7 +1596,7 @@ msgstr "Dodávateľ/Agent"
 #: navigation/suppliers.nav.php:1185 navigation/suppliers.nav.php:1346
 #: navigation/suppliers.nav.php:1515 navigation/suppliers.nav.php:1890
 #: navigation/suppliers.nav.php:2310 navigation/suppliers.nav.php:2326
-#: utils/modules.php:3474 utils/modules.php:6136
+#: utils/modules.php:3484 utils/modules.php:6146
 msgid "Supplier"
 msgstr "Dodávateľ"
 
@@ -1692,7 +1702,7 @@ msgstr "Balený"
 #: class.Family.php:1022 class.Manufacture_Task.php:371
 #: conf/export_edit_template_fields.php:559
 #: conf/export_edit_template_fields.php:652 conf/export_fields.php:462
-#: conf/fields/website_localization.fld.php:87
+#: conf/fields/website_localization.fld.php:87 pdf/order.pdf.php:444
 #: tabs/category.all_subjects.tab.php:40 tabs/category.all_subjects.tab.php:85
 #: tabs/category.all_subjects.tab.php:200
 #: tabs/category.all_subjects.tab.php:238 tabs/category.categories.tab.php:51
@@ -1749,7 +1759,7 @@ msgstr "Kód"
 #: navigation/warehouses.nav.php:674 navigation/warehouses.nav.php:695
 #: tabs/supplier.part_locations_to_replenish.wget.tab.php:23
 #: tabs/warehouse.part_locations_to_replenish.wget.tab.php:23
-#: tabs/warehouse.replenishments.tab.php:31 utils/modules.php:4662
+#: tabs/warehouse.replenishments.tab.php:31 utils/modules.php:4672
 msgid "Location"
 msgstr "Lokácia"
 
@@ -1760,7 +1770,7 @@ msgstr "Posledná objednávka"
 
 #: _smarty.php:279 _smarty.php:1083 _smarty.php:1119 _smarty.php:4197
 #: _smarty.php:4947 ar_account_tables.php:493 class.Upload.php:180
-#: utils/modules.php:4344
+#: utils/modules.php:4354
 msgid "Supplier's parts"
 msgstr "Dodávateľove výrobky"
 
@@ -1803,7 +1813,8 @@ msgstr "Kritický"
 #: _smarty.php:8961 ar_products_tables.php:188 ar_products_tables.php:205
 #: class.Page.php:3166 class.Page.php:3345 class.Page.php:3467
 #: class.Page.php:3558 class.Product.php:805 class.Product.php:830
-#: navigation/reports.nav.php:67 utils/modules.php:4816 utils/modules.php:4819
+#: navigation/reports.nav.php:67 pdf/dn.pdf.php:93 utils/modules.php:4826
+#: utils/modules.php:4829
 msgid "Out of Stock"
 msgstr "Nie je na Sklade"
 
@@ -1847,7 +1858,7 @@ msgstr "Hlavný kontakt"
 #: tabs/deal.customers.tab.php:46 tabs/product.customers.favored.tab.php:46
 #: tabs/product.customers.tab.php:46 tabs/suppliers.tab.php:51
 #: tabs/suppliers_edit.tab.php:33 tabs/website.favourites.customers.tab.php:46
-#: utils/modules.php:2303
+#: utils/modules.php:2313
 msgid "Email"
 msgstr "Email"
 
@@ -1892,9 +1903,9 @@ msgstr "Telefón"
 #: tabs/store.sales.plot.tab.php:23 tabs/stores.sales.plot.tab.php:28
 #: tabs/supplier.sales.plot.tab.php:23 utils/modules.php:66
 #: utils/modules.php:67 utils/modules.php:194 utils/modules.php:195
-#: utils/modules.php:1860 utils/modules.php:2551 utils/modules.php:2795
-#: utils/modules.php:4138 utils/modules.php:4261 utils/modules.php:4838
-#: utils/modules.php:4839
+#: utils/modules.php:1860 utils/modules.php:2561 utils/modules.php:2805
+#: utils/modules.php:4148 utils/modules.php:4271 utils/modules.php:4848
+#: utils/modules.php:4849
 msgid "Sales"
 msgstr "Predaje"
 
@@ -1922,9 +1933,9 @@ msgstr "Dostupnosť produktu"
 #: navigation/menu.mobile.php:411 navigation/menu.php:348
 #: navigation/menu.php:456 navigation/suppliers.nav.php:34
 #: navigation/suppliers.nav.php:575 navigation/suppliers.nav.php:618
-#: navigation/suppliers.nav.php:771 utils/modules.php:3046
-#: utils/modules.php:3231 utils/modules.php:3401 utils/modules.php:5742
-#: utils/modules.php:5872 utils/modules.php:5877 utils/modules.php:6033
+#: navigation/suppliers.nav.php:771 utils/modules.php:3056
+#: utils/modules.php:3241 utils/modules.php:3411 utils/modules.php:5752
+#: utils/modules.php:5882 utils/modules.php:5887 utils/modules.php:6043
 msgid "Suppliers"
 msgstr "Dodávatelia"
 
@@ -1937,10 +1948,10 @@ msgstr "Dodávatelia"
 #: conf/export_edit_template_fields.php:569 conf/export_fields.php:484
 #: conf/fields/category.fld.php:31 conf/fields/category.fld.php:33
 #: conf/fields/product.fld.php:179 conf/fields/service.fld.php:168
-#: navigation/inventory.nav.php:72 utils/modules.php:158 utils/modules.php:3076
-#: utils/modules.php:3080 utils/modules.php:4019 utils/modules.php:4170
-#: utils/modules.php:4677 utils/modules.php:4752 utils/modules.php:5662
-#: utils/modules.php:6599
+#: navigation/inventory.nav.php:72 utils/modules.php:158 utils/modules.php:3086
+#: utils/modules.php:3090 utils/modules.php:4029 utils/modules.php:4180
+#: utils/modules.php:4687 utils/modules.php:4762 utils/modules.php:5672
+#: utils/modules.php:6609
 msgid "Parts"
 msgstr "Časti"
 
@@ -1973,9 +1984,9 @@ msgstr ""
 #: tabs/timeserie.records.monthy.tab.php:64 tabs/timeserie.records.tab.php:64
 #: tabs/timeserie.records.weekly.tab.php:64 utils/modules.php:449
 #: utils/modules.php:558 utils/modules.php:599 utils/modules.php:651
-#: utils/modules.php:749 utils/modules.php:1039 utils/modules.php:2704
-#: utils/modules.php:2731 utils/modules.php:3694 utils/modules.php:3761
-#: utils/modules.php:3890 utils/modules.php:6267 utils/modules.php:6397
+#: utils/modules.php:749 utils/modules.php:1039 utils/modules.php:2714
+#: utils/modules.php:2741 utils/modules.php:3704 utils/modules.php:3771
+#: utils/modules.php:3900 utils/modules.php:6277 utils/modules.php:6407
 msgid "Invoices"
 msgstr "Faktúry"
 
@@ -2004,9 +2015,9 @@ msgstr "Refundácie"
 #: navigation/menu.mobile.php:47 navigation/menu.php:35 navigation/menu.php:45
 #: utils/modules.php:102 utils/modules.php:109 utils/modules.php:220
 #: utils/modules.php:224 utils/modules.php:227 utils/modules.php:325
-#: utils/modules.php:366 utils/modules.php:414 utils/modules.php:2051
-#: utils/modules.php:2077 utils/modules.php:2398 utils/modules.php:2450
-#: utils/modules.php:2916 utils/modules.php:2954
+#: utils/modules.php:366 utils/modules.php:414 utils/modules.php:2061
+#: utils/modules.php:2087 utils/modules.php:2408 utils/modules.php:2460
+#: utils/modules.php:2926 utils/modules.php:2964
 msgid "Customers"
 msgstr "Zákazníci"
 
@@ -2022,7 +2033,8 @@ msgstr "Celkom bez DPH"
 #: _web_smarty.php:138 _web_smarty.php:306 _web_smarty.php:465
 #: _web_smarty.php:504 _web_smarty.php:663 ar_edit_email_template.php:822
 #: conf/export_fields.php:200 conf/export_fields.php:449
-#: conf/website_system_webpages.php:457
+#: conf/website_system_webpages.php:457 pdf/invoice.pdf.php:308
+#: pdf/supplier.order.pdf.php:488
 msgid "Tax"
 msgstr "DPH"
 
@@ -2097,8 +2109,8 @@ msgid "Fail Logins"
 msgstr "Neúspešné Prihlásenia"
 
 #: _smarty.php:507 _smarty.php:1440 _smarty.php:1491 _smarty.php:1659
-#: _smarty.php:3969 _smarty.php:4020 _smarty.php:5670 utils/modules.php:1996
-#: utils/modules.php:2323
+#: _smarty.php:3969 _smarty.php:4020 _smarty.php:5670 utils/modules.php:2006
+#: utils/modules.php:2333
 msgid "Pageviews"
 msgstr "Videní stránky"
 
@@ -2122,7 +2134,7 @@ msgstr "Mobil"
 #: navigation/orders.nav.php:745 navigation/payments.nav.php:55
 #: navigation/payments.nav.php:71 navigation/payments.nav.php:113
 #: navigation/payments.nav.php:653 utils/modules.php:605 utils/modules.php:1235
-#: utils/modules.php:1268 utils/modules.php:2708
+#: utils/modules.php:1268 utils/modules.php:2718
 msgid "Payments"
 msgstr "Platby"
 
@@ -2138,7 +2150,7 @@ msgstr "Zostatok na účte"
 #: class.Page.php:7383 class.Page.php:7511 class.Website.php:1075
 #: conf/fields/attachment.fld.php:30 conf/fields/image.fld.php:29
 #: conf/fields/part.supplier_part.new.fld.php:36
-#: conf/fields/supplier_part.fld.php:99
+#: conf/fields/supplier_part.fld.php:99 pdf/order.pdf.php:450
 #: tabs/category.webpage.preview.tab.php:84
 #: tabs/category.webpage.preview.tab.php:395 tabs/client_order.items.tab.php:21
 #: tabs/client_order.items.tab.php:22
@@ -2182,9 +2194,9 @@ msgstr "Do"
 #: tabs/suppliers.tab.php:40 utils/modules.php:93 utils/modules.php:216
 #: utils/modules.php:371 utils/modules.php:448 utils/modules.php:547
 #: utils/modules.php:645 utils/modules.php:683 utils/modules.php:739
-#: utils/modules.php:1138 utils/modules.php:2390 utils/modules.php:2441
-#: utils/modules.php:2730 utils/modules.php:2912 utils/modules.php:2950
-#: utils/modules.php:3434
+#: utils/modules.php:1138 utils/modules.php:2400 utils/modules.php:2451
+#: utils/modules.php:2740 utils/modules.php:2922 utils/modules.php:2960
+#: utils/modules.php:3444
 msgid "Orders"
 msgstr "Objednávky"
 
@@ -2202,9 +2214,9 @@ msgstr "Platba"
 #: _smarty.php:585 _smarty.php:2823 _smarty.php:9981 ar_views.php:6600
 #: conf/header_data.php:149 navigation/marketing.nav.php:262
 #: navigation/marketing.nav.php:303 navigation/marketing.nav.php:345
-#: utils/modules.php:242 utils/modules.php:243 utils/modules.php:2361
-#: utils/modules.php:2382 utils/modules.php:2865 utils/modules.php:2871
-#: utils/modules.php:2908
+#: utils/modules.php:242 utils/modules.php:243 utils/modules.php:2371
+#: utils/modules.php:2392 utils/modules.php:2875 utils/modules.php:2881
+#: utils/modules.php:2918
 #, fuzzy
 msgid "Offers"
 msgstr "Objednavky"
@@ -2236,7 +2248,7 @@ msgstr ""
 #: _smarty.php:603 _smarty.php:702 _smarty.php:1404 _smarty.php:2685
 #: _smarty.php:2721 _smarty.php:2796 _smarty.php:3654 _smarty.php:4245
 #: _smarty.php:4497 _smarty.php:4929 utils/modules.php:417
-#: utils/modules.php:2519 utils/modules.php:3404 utils/modules.php:4187
+#: utils/modules.php:2529 utils/modules.php:3414 utils/modules.php:4197
 msgid "Subcategories"
 msgstr "Podkategórie"
 
@@ -2353,7 +2365,7 @@ msgstr "Nadpis"
 #: conf/fields/barcode.fld.php:76 conf/fields/campaign.fld.php:145
 #: conf/fields/category.fld.php:159 conf/fields/category.webpage.fld.php:298
 #: conf/fields/contractor.fld.php:450 conf/fields/customer.fld.php:565
-#: conf/fields/employee.fld.php:671 conf/fields/image.fld.php:91
+#: conf/fields/employee.fld.php:672 conf/fields/image.fld.php:91
 #: conf/fields/invoice.fld.php:80 conf/fields/location.fld.php:138
 #: conf/fields/node.fld.php:60 conf/fields/part.fld.php:643
 #: conf/fields/payment.fld.php:71 conf/fields/payment_account.fld.php:282
@@ -2409,15 +2421,15 @@ msgstr ""
 #: _smarty.php:2490 _smarty.php:2556 _smarty.php:2853 _smarty.php:3693
 #: _smarty.php:9792 _smarty.php:10230 _smarty.php:10455 _smarty.php:10464
 #: _smarty.php:10782 _smarty.php:10914 _smarty.php:12282 _smarty.php:12285
-#: _smarty.php:12288 ar_orders_tables.php:1267 ar_orders_tables.php:1344
-#: ar_orders_tables.php:1423 ar_search.php:2144 ar_search.php:2377
+#: _smarty.php:12288 ar_orders_tables.php:1270 ar_orders_tables.php:1347
+#: ar_orders_tables.php:1426 ar_search.php:2144 ar_search.php:2377
 #: class.DeliveryNote.php:545 class.DeliveryNote.php:595 class.Order.php:1487
 #: class.Order.php:2147 class.Order.php:2192 class.PurchaseOrder.php:589
 #: class.PurchaseOrder.php:620 class.SupplierDelivery.php:475
 #: conf/elements_options.php:216 conf/elements_options.php:220
 #: conf/elements_options.php:314 conf/elements_options.php:1113
-#: conf/elements_options.php:1193 utils/order_functions.php:489
-#: utils/order_functions.php:515
+#: conf/elements_options.php:1193 pdf/order.pdf.php:462
+#: utils/order_functions.php:489 utils/order_functions.php:515
 msgid "Dispatched"
 msgstr "Odoslané"
 
@@ -2440,9 +2452,9 @@ msgstr ""
 #: tabs/timeserie.records.annually.tab.php:92
 #: tabs/timeserie.records.daily.tab.php:92
 #: tabs/timeserie.records.monthy.tab.php:92 tabs/timeserie.records.tab.php:92
-#: tabs/timeserie.records.weekly.tab.php:92 utils/modules.php:3288
-#: utils/modules.php:3438 utils/modules.php:3554 utils/modules.php:5996
-#: utils/modules.php:6535
+#: tabs/timeserie.records.weekly.tab.php:92 utils/modules.php:3298
+#: utils/modules.php:3448 utils/modules.php:3564 utils/modules.php:6006
+#: utils/modules.php:6545
 msgid "Deliveries"
 msgstr ""
 
@@ -2473,7 +2485,7 @@ msgstr "Objednavky"
 msgid "Discontinuing parts"
 msgstr "Časti vo vyradení"
 
-#: _smarty.php:816 utils/modules.php:4178
+#: _smarty.php:816 utils/modules.php:4188
 msgid "Discontinued parts"
 msgstr "Vyradené časti"
 
@@ -2506,9 +2518,9 @@ msgstr "Rodiny"
 #: navigation/agent.nav.php:26 navigation/menu.mobile.php:242
 #: navigation/menu.mobile.php:252 navigation/menu.mobile.php:424
 #: navigation/menu.php:249 navigation/menu.php:259 navigation/menu.php:465
-#: navigation/products.nav.php:842 utils/modules.php:1920
-#: utils/modules.php:2046 utils/modules.php:2085 utils/modules.php:2825
-#: utils/modules.php:2833 utils/modules.php:4196 utils/modules.php:4354
+#: navigation/products.nav.php:842 utils/modules.php:1930
+#: utils/modules.php:2056 utils/modules.php:2095 utils/modules.php:2835
+#: utils/modules.php:2843 utils/modules.php:4206 utils/modules.php:4364
 msgid "Products"
 msgstr "Produkty"
 
@@ -2517,7 +2529,7 @@ msgstr "Produkty"
 #: ar_products_tables.php:1060 ar_products_tables.php:1224
 #: class.Category.php:686 class.Category.php:1038 class.Part.php:453
 #: conf/elements_options.php:529 conf/elements_options.php:587
-#: conf/elements_options.php:648 locale.php:42 utils/modules.php:4036
+#: conf/elements_options.php:648 locale.php:42 utils/modules.php:4046
 msgid "Discontinuing"
 msgstr "Vo vyradení"
 
@@ -2538,7 +2550,7 @@ msgstr "Vo vyradení"
 #: conf/fields/category.part.fld.php:16 conf/fields/part.fld.php:42
 #: conf/fields/part.supplier_part.new.fld.php:25 conf/fields/product.fld.php:33
 #: conf/fields/service.fld.php:33 conf/fields/supplier_part.fld.php:50
-#: locale.php:40 locale.php:50 utils/modules.php:4042
+#: locale.php:40 locale.php:50 utils/modules.php:4052
 msgid "Discontinued"
 msgstr "Vyradený"
 
@@ -2574,7 +2586,7 @@ msgstr "Produkty"
 #: conf/fields/product.webpage.fld.php:108 conf/fields/service.fld.php:463
 #: navigation/websites.nav.php:182 navigation/websites.nav.php:201
 #: navigation/websites.nav.php:217 navigation/websites.nav.php:231
-#: navigation/websites.nav.php:446 utils/modules.php:252 utils/modules.php:2299
+#: navigation/websites.nav.php:446 utils/modules.php:252 utils/modules.php:2309
 msgid "Webpage"
 msgstr "Webstránka"
 
@@ -2589,11 +2601,14 @@ msgstr "Marža"
 #: _smarty.php:4410 _smarty.php:10719 _smarty.php:12750 _smarty.php:12780
 #: _smarty.php:12864 _web_smarty.php:675 _web_smarty.php:720
 #: _web_smarty.php:783 _web_smarty.php:804 _web_smarty.php:834
-#: ar_orders_tables.php:2073 class.Page.php:3233 class.Page.php:3452
+#: ar_orders_tables.php:2076 class.Page.php:3233 class.Page.php:3452
 #: class.Page.php:3622 class.Page.php:3778 class.Page.php:3805
 #: class.Page.php:3808 class.Page.php:3995 class.Page.php:4765
 #: conf/fields/website_localization.fld.php:78
-#: conf/fields/website_localization.fld.php:79 utils/store_functions.php:31
+#: conf/fields/website_localization.fld.php:79 pdf/invoice.pdf.php:173
+#: pdf/invoice.pdf.php:318 pdf/invoice.pdf.php:387
+#: pdf/supplier.order.pdf.php:374 pdf/supplier.order.pdf.php:498
+#: pdf/supplier.order.pdf.php:553 utils/store_functions.php:31
 msgid "RRP"
 msgstr "OPC"
 
@@ -2684,8 +2699,8 @@ msgstr ""
 #: _smarty.php:1245 _smarty.php:2187 _smarty.php:2301 _smarty.php:2940
 #: _smarty.php:3930 conf/fields/contractor.fld.php:356
 #: conf/fields/contractor.fld.php:430 conf/fields/contractor.fld.php:476
-#: conf/fields/employee.fld.php:521 conf/fields/employee.fld.php:646
-#: conf/fields/employee.fld.php:727 conf/fields/user.system.fld.php:63
+#: conf/fields/employee.fld.php:522 conf/fields/employee.fld.php:647
+#: conf/fields/employee.fld.php:728 conf/fields/user.system.fld.php:63
 #: tabs/account.setup.add_employees.tab.php:36 tabs/contractors.tab.php:27
 #: tabs/employees.tab.php:33 tabs/position.employees.tab.php:33
 #, fuzzy
@@ -2745,7 +2760,7 @@ msgstr "Prihlasenie"
 #: _smarty.php:5106 _smarty.php:5424 conf/fields/account.fld.php:23
 #: conf/fields/account.setup.fld.php:54 conf/fields/campaign.fld.php:23
 #: conf/fields/category.fld.php:50 conf/fields/contractor.fld.php:86
-#: conf/fields/deal.fld.php:42 conf/fields/employee.fld.php:202
+#: conf/fields/deal.fld.php:42 conf/fields/employee.fld.php:203
 #: conf/fields/invoice.fld.php:24 conf/fields/location.fld.php:49
 #: conf/fields/material.fld.php:30 conf/fields/node.fld.php:22
 #: conf/fields/part.fld.php:71 conf/fields/payment.fld.php:24
@@ -2773,8 +2788,8 @@ msgid "Sets"
 msgstr "Sady"
 
 #: _smarty.php:1563 _smarty.php:1602 _smarty.php:5046 _smarty.php:9318
-#: _smarty.php:9624 utils/modules.php:4480 utils/modules.php:4771
-#: utils/modules.php:5643 utils/modules.php:5690
+#: _smarty.php:9624 utils/modules.php:4490 utils/modules.php:4781
+#: utils/modules.php:5653 utils/modules.php:5700
 msgid "Records"
 msgstr "Záznamy"
 
@@ -2893,12 +2908,12 @@ msgstr "IČ DPH"
 
 #: _smarty.php:2088 _smarty.php:2118 _smarty.php:2202 _smarty.php:2232
 #: _smarty.php:5061 _smarty.php:5109 _smarty.php:5349 class.Address.php:5816
-#: conf/elements_options.php:67 utils/modules.php:5715
+#: conf/elements_options.php:67 utils/modules.php:5725
 msgid "Staff"
 msgstr "Zamestnanci"
 
 #: _smarty.php:2094 _smarty.php:2208 _smarty.php:2373 _smarty.php:5115
-#: _smarty.php:5166 _smarty.php:5376 utils/modules.php:5240
+#: _smarty.php:5166 _smarty.php:5376 utils/modules.php:5250
 msgid "Clockings"
 msgstr ""
 
@@ -2974,7 +2989,7 @@ msgstr "Nadriadený"
 #: ar_hr_tables.php:128 ar_hr_tables.php:250 ar_production_tables.php:85
 #: ar_setup.php:646 ar_users_tables.php:431 class.Staff.php:891
 #: conf/fields/contractor.fld.php:30 conf/fields/employee.fld.php:41
-#: conf/fields/employee.fld.php:371 navigation/hr.nav.php:258
+#: conf/fields/employee.fld.php:372 navigation/hr.nav.php:258
 #: navigation/hr.nav.php:276 navigation/hr.nav.php:1697
 #: navigation/hr.nav.php:1715
 msgid "Employee"
@@ -3061,8 +3076,8 @@ msgstr "Časti"
 #: _smarty.php:2598 _smarty.php:5457 _smarty.php:11088 ar_views.php:5433
 #: ar_views.php:5469 conf/fields/category.fld.php:36
 #: conf/fields/category.fld.php:38 navigation/warehouses.nav.php:233
-#: navigation/warehouses.nav.php:489 utils/modules.php:4618
-#: utils/modules.php:4623 utils/modules.php:4758
+#: navigation/warehouses.nav.php:489 utils/modules.php:4628
+#: utils/modules.php:4633 utils/modules.php:4768
 msgid "Locations"
 msgstr "Lokácie"
 
@@ -3114,8 +3129,8 @@ msgstr ""
 #: ar_views.php:6643 ar_views.php:6666 navigation/marketing.nav.php:140
 #: navigation/marketing.nav.php:181 navigation/marketing.nav.php:224
 #: navigation/marketing.nav.php:527 navigation/marketing.nav.php:790
-#: navigation/marketing.nav.php:835 utils/modules.php:2357
-#: utils/modules.php:2881 utils/modules.php:2886
+#: navigation/marketing.nav.php:835 utils/modules.php:2367
+#: utils/modules.php:2891 utils/modules.php:2896
 msgid "Campaigns"
 msgstr ""
 
@@ -3128,7 +3143,7 @@ msgstr "Zľavy"
 #: _smarty.php:6618 _smarty.php:8955 _smarty.php:9006 _smarty.php:9732
 #: _smarty.php:10584 _smarty.php:10587 _smarty.php:11208 _smarty.php:11367
 #: ar_edit_email_template.php:758 conf/export_fields.php:579
-#: conf/fields/payment.fld.php:47
+#: conf/fields/payment.fld.php:47 pdf/order.pdf.php:468
 msgid "Amount"
 msgstr "Suma"
 
@@ -3163,9 +3178,9 @@ msgstr "faktúry"
 #: navigation/orders.nav.php:296 navigation/orders.nav.php:300
 #: navigation/orders.nav.php:429 navigation/orders.nav.php:433
 #: navigation/orders.nav.php:683 navigation/orders.nav.php:895
-#: navigation/warehouses.nav.php:829 utils/modules.php:3689
-#: utils/modules.php:3756 utils/modules.php:3885 utils/modules.php:6262
-#: utils/modules.php:6392
+#: navigation/warehouses.nav.php:829 utils/modules.php:3699
+#: utils/modules.php:3766 utils/modules.php:3895 utils/modules.php:6272
+#: utils/modules.php:6402
 msgid "Delivery Notes"
 msgstr "Dodacie listy"
 
@@ -3180,8 +3195,8 @@ msgstr "Zamestnanci"
 #: ar_views.php:4826 ar_views.php:6069 ar_views.php:6117
 #: navigation/hr.nav.php:31 navigation/hr.nav.php:306 navigation/hr.nav.php:400
 #: navigation/hr.nav.php:820 navigation/hr.nav.php:1535
-#: navigation/hr.nav.php:1745 tabs/employees.tab.php:77 utils/modules.php:4949
-#: utils/modules.php:4950 utils/modules.php:4965 utils/modules.php:5333
+#: navigation/hr.nav.php:1745 tabs/employees.tab.php:77 utils/modules.php:4959
+#: utils/modules.php:4960 utils/modules.php:4975 utils/modules.php:5343
 msgid "Employees"
 msgstr "Zamestnanci"
 
@@ -3237,8 +3252,8 @@ msgstr ""
 #: ar_views.php:6086 ar_views.php:6097 ar_views.php:6108
 #: navigation/account.nav.php:821 navigation/account.nav.php:850
 #: navigation/account.nav.php:893 navigation/account.nav.php:936
-#: navigation/account.nav.php:979 utils/modules.php:2002 utils/modules.php:2329
-#: utils/modules.php:5507 utils/modules.php:5722
+#: navigation/account.nav.php:979 utils/modules.php:2012 utils/modules.php:2339
+#: utils/modules.php:5517 utils/modules.php:5732
 msgid "Users"
 msgstr "Užívatelia"
 
@@ -3276,7 +3291,7 @@ msgstr "Akceptované"
 #: navigation/websites.nav.php:1204 navigation/websites.nav.php:1219
 #: navigation/websites.nav.php:1403 navigation/websites.nav.php:1545
 #: navigation/websites.nav.php:1560 utils/modules.php:37 utils/modules.php:247
-#: utils/modules.php:248 utils/modules.php:1948 utils/modules.php:2525
+#: utils/modules.php:248 utils/modules.php:1958 utils/modules.php:2535
 msgid "Website"
 msgstr "Webstránka"
 
@@ -3388,6 +3403,7 @@ msgstr "Lokácie"
 #: _smarty.php:12822 _web_smarty.php:447 _web_smarty.php:702
 #: _web_smarty.php:732 _web_smarty.php:789 _web_smarty.php:819
 #: _web_smarty.php:849 conf/fields/website_localization.fld.php:162
+#: pdf/order.pdf.php:456
 #, fuzzy
 msgid "Ordered"
 msgstr "Objednavky"
@@ -3500,12 +3516,12 @@ msgid "Day"
 msgstr "Deň"
 
 #: _smarty.php:5097 _smarty.php:5151 _smarty.php:5163 _smarty.php:5337
-#: _smarty.php:5397 conf/website_system_webpages.php:132 utils/modules.php:5267
+#: _smarty.php:5397 conf/website_system_webpages.php:132 utils/modules.php:5277
 msgid "Days"
 msgstr "Dní"
 
 #: _smarty.php:5103 _smarty.php:5157 _smarty.php:5343 _smarty.php:5403
-#: utils/modules.php:5073 utils/modules.php:5278
+#: utils/modules.php:5083 utils/modules.php:5288
 msgid "Timesheets"
 msgstr ""
 
@@ -3644,7 +3660,7 @@ msgstr "Uzivatelia"
 msgid "Searches"
 msgstr "Hľadania"
 
-#: _smarty.php:5862 navigation/websites.nav.php:1185 utils/modules.php:2168
+#: _smarty.php:5862 navigation/websites.nav.php:1185 utils/modules.php:2178
 msgid "Web pages"
 msgstr "Webstránky"
 
@@ -3880,7 +3896,7 @@ msgstr "V košíku"
 #: _smarty.php:6075 _smarty.php:6108 _smarty.php:6150 _smarty.php:10008
 #: _smarty.php:10443 _smarty.php:10458 _smarty.php:10467 _smarty.php:10773
 #: _smarty.php:10905 _smarty.php:10944 _smarty.php:11184
-#: ar_orders_tables.php:1332 ar_orders_tables.php:1411
+#: ar_orders_tables.php:1335 ar_orders_tables.php:1414
 #: ar_suppliers_tables.php:787 ar_suppliers_tables.php:887
 #: ar_suppliers_tables.php:992 ar_suppliers_tables.php:1095
 #: ar_suppliers_tables.php:1168 class.Order.php:1472
@@ -3999,7 +4015,7 @@ msgstr "Pridaj Zákazníka"
 #: navigation/menu.mobile.php:105 navigation/menu.php:94
 #: navigation/menu.php:103 navigation/orders.nav.php:1605 utils/modules.php:593
 #: utils/modules.php:689 utils/modules.php:1033 utils/modules.php:1144
-#: utils/modules.php:2700 utils/modules.php:4639
+#: utils/modules.php:2710 utils/modules.php:4649
 msgid "Delivery notes"
 msgstr "Dodacie listy"
 
@@ -4025,7 +4041,7 @@ msgstr ""
 #: class.Category.php:677 class.Category.php:1035 class.Page.php:915
 #: class.Part.php:457 class.Upload.php:147 conf/elements_options.php:575
 #: conf/elements_options.php:1026 conf/elements_options.php:1109
-#: conf/elements_options.php:1189 utils/modules.php:4025
+#: conf/elements_options.php:1189 utils/modules.php:4035
 msgid "In process"
 msgstr "V procese"
 
@@ -4172,7 +4188,7 @@ msgid "Recipient"
 msgstr "Príjemca"
 
 #: _smarty.php:6564 _smarty.php:9072 ar_address.php:102 ar_views.php:4845
-#: navigation/hr.nav.php:167 utils/modules.php:5023 utils/modules.php:5024
+#: navigation/hr.nav.php:167 utils/modules.php:5033 utils/modules.php:5034
 msgid "Organization"
 msgstr "Spoločnosť"
 
@@ -4242,12 +4258,17 @@ msgstr "Emailová Adresa"
 #: _smarty.php:6606 _smarty.php:11400 _smarty.php:11619 _web_smarty.php:102
 #: _web_smarty.php:147 _web_smarty.php:474 _web_smarty.php:513
 #: ar_payments_tables.php:187 conf/website_system_webpages.php:461
+#: pdf/invoice.pdf.php:242 pdf/invoice.pdf.php:346 pdf/invoice.pdf.php:425
+#: pdf/supplier.order.pdf.php:430 pdf/supplier.order.pdf.php:518
+#: pdf/supplier.order.pdf.php:581
 msgid "Credit"
 msgstr "Kredit"
 
-#: _smarty.php:6609 ar_orders_tables.php:1675 ar_payments_tables.php:184
-#: ar_reports_tables.php:367 conf/elements_options.php:421
-#: utils/order_functions.php:499
+#: _smarty.php:6609 ar_orders_tables.php:1678 ar_payments_tables.php:184
+#: ar_reports_tables.php:363 conf/elements_options.php:421
+#: pdf/invoice.pdf.php:108 pdf/invoice.pdf.php:245 pdf/invoice.pdf.php:428
+#: pdf/supplier.order.pdf.php:309 pdf/supplier.order.pdf.php:433
+#: pdf/supplier.order.pdf.php:584 utils/order_functions.php:499
 msgid "Refund"
 msgstr "Refundácia"
 
@@ -4445,10 +4466,10 @@ msgstr "Dodavatelia"
 #: _web_smarty.php:108 utils/modules.php:575 utils/modules.php:620
 #: utils/modules.php:665 utils/modules.php:1015 utils/modules.php:1054
 #: utils/modules.php:1112 utils/modules.php:1159 utils/modules.php:1173
-#: utils/modules.php:2688 utils/modules.php:3301 utils/modules.php:3341
-#: utils/modules.php:3370 utils/modules.php:6049 utils/modules.php:6089
-#: utils/modules.php:6118 utils/modules.php:6482 utils/modules.php:6511
-#: utils/modules.php:6548 utils/modules.php:6577
+#: utils/modules.php:2698 utils/modules.php:3311 utils/modules.php:3351
+#: utils/modules.php:3380 utils/modules.php:6059 utils/modules.php:6099
+#: utils/modules.php:6128 utils/modules.php:6492 utils/modules.php:6521
+#: utils/modules.php:6558 utils/modules.php:6587
 msgid "Items"
 msgstr "Položky"
 
@@ -5126,7 +5147,7 @@ msgstr "Fakturačná Adresa"
 msgid "Delivery address"
 msgstr "Dodacia Adresa"
 
-#: _smarty.php:8949 ar_orders_tables.php:2069
+#: _smarty.php:8949 ar_orders_tables.php:2072 pdf/supplier.order.pdf.php:370
 msgid "Discount"
 msgstr "Zľava"
 
@@ -5141,7 +5162,8 @@ msgstr "Produkty"
 msgid "Items Net"
 msgstr "Základ DPH"
 
-#: _smarty.php:8967 _smarty.php:10395 _smarty.php:11214
+#: _smarty.php:8967 _smarty.php:10395 _smarty.php:11214 pdf/invoice.pdf.php:212
+#: pdf/supplier.order.pdf.php:403
 #, fuzzy
 msgid "Amount Off"
 msgstr "Emailová Adresa"
@@ -5149,11 +5171,15 @@ msgstr "Emailová Adresa"
 #: _smarty.php:8976 _smarty.php:10401 _smarty.php:10557 _smarty.php:11223
 #: _smarty.php:11385 _smarty.php:11604 _web_smarty.php:84 _web_smarty.php:129
 #: _web_smarty.php:495 _web_smarty.php:654 ar_edit_email_template.php:796
-#: conf/website_system_webpages.php:454
+#: conf/website_system_webpages.php:454 pdf/invoice.pdf.php:251
+#: pdf/invoice.pdf.php:434 pdf/supplier.order.pdf.php:439
+#: pdf/supplier.order.pdf.php:590 utils/modules.php:1890 utils/modules.php:1892
 msgid "Charges"
 msgstr "Poplatky"
 
-#: _smarty.php:8979 _smarty.php:10410 _smarty.php:11226
+#: _smarty.php:8979 _smarty.php:10410 _smarty.php:11226 pdf/invoice.pdf.php:263
+#: pdf/invoice.pdf.php:446 pdf/supplier.order.pdf.php:451
+#: pdf/supplier.order.pdf.php:602
 msgid "Insurance"
 msgstr "Poistenie"
 
@@ -5439,7 +5465,7 @@ msgstr ""
 
 #: _smarty.php:9465 ar_users_tables.php:437 class.Staff.php:897
 #: conf/fields/contractor.fld.php:29 conf/fields/contractor.fld.php:214
-#: conf/fields/employee.fld.php:40 conf/fields/employee.fld.php:371
+#: conf/fields/employee.fld.php:40 conf/fields/employee.fld.php:372
 #: navigation/hr.nav.php:510 navigation/hr.nav.php:528
 #: navigation/hr.nav.php:1892 navigation/hr.nav.php:1910
 msgid "Contractor"
@@ -5501,7 +5527,7 @@ msgstr "Produkt dodávateľa"
 #: navigation/menu.php:308 navigation/menu.php:318
 #: navigation/warehouses.nav.php:166 navigation/warehouses.nav.php:353
 #: navigation/warehouses.nav.php:850 navigation/warehouses.nav.php:866
-#: utils/modules.php:4568 utils/modules.php:4569 utils/modules.php:5749
+#: utils/modules.php:4578 utils/modules.php:4579 utils/modules.php:5759
 msgid "Warehouse"
 msgstr "Sklad"
 
@@ -5641,14 +5667,14 @@ msgstr "Vymazať"
 
 #: _smarty.php:9813 _smarty.php:9819 _smarty.php:10254 _smarty.php:10260
 #: _smarty.php:10491 _smarty.php:10497 _smarty.php:10821 _smarty.php:10827
-#: _smarty.php:10968 _smarty.php:10974 ar_orders_tables.php:193
-#: ar_orders_tables.php:302 ar_orders_tables.php:412 ar_orders_tables.php:524
-#: ar_orders_tables.php:636 ar_orders_tables.php:748 ar_orders_tables.php:860
-#: ar_orders_tables.php:972 ar_orders_tables.php:1083 ar_orders_tables.php:1101
-#: ar_orders_tables.php:1127 class.Page.php:3143 class.Page.php:3323
+#: _smarty.php:10968 _smarty.php:10974 ar_orders_tables.php:194
+#: ar_orders_tables.php:303 ar_orders_tables.php:413 ar_orders_tables.php:526
+#: ar_orders_tables.php:639 ar_orders_tables.php:751 ar_orders_tables.php:863
+#: ar_orders_tables.php:975 ar_orders_tables.php:1086 ar_orders_tables.php:1104
+#: ar_orders_tables.php:1130 class.Page.php:3143 class.Page.php:3323
 #: class.Page.php:3535 class.Page.php:4078 class.Page.php:4291
-#: class.Page.php:4574 class.Page.php:5049 utils/modules.php:5314
-#: utils/modules.php:5315 utils/order_functions.php:38
+#: class.Page.php:4574 class.Page.php:5049 utils/modules.php:5324
+#: utils/modules.php:5325 utils/order_functions.php:38
 #: utils/order_functions.php:61 utils/order_functions.php:82
 #: utils/order_functions.php:90
 msgid "Cancel"
@@ -5679,12 +5705,14 @@ msgid "Delivery dispatched by supplier"
 msgstr ""
 
 #: _smarty.php:9864 _smarty.php:10872 ar_attachments_tables.php:86
-#: ar_orders_tables.php:1671 ar_reports_tables.php:363 class.Attachment.php:534
+#: ar_orders_tables.php:1674 ar_reports_tables.php:359 class.Attachment.php:534
 #: conf/elements_options.php:417 conf/object_fields.php:85
 #: navigation/agent.nav.php:886 navigation/orders.nav.php:1281
 #: navigation/orders.nav.php:1703 navigation/orders.nav.php:1873
 #: navigation/orders.nav.php:1892 navigation/orders.nav.php:2134
 #: navigation/orders.nav.php:2206 navigation/orders.nav.php:2428
+#: pdf/invoice.pdf.php:77 pdf/invoice.pdf.php:100
+#: pdf/supplier.order.pdf.php:278 pdf/supplier.order.pdf.php:301
 msgid "Invoice"
 msgstr "Faktúra"
 
@@ -5950,7 +5978,7 @@ msgstr "Poslať do skladu"
 msgid "Sealed"
 msgstr ""
 
-#: _smarty.php:10227 ar_orders_tables.php:1341 ar_orders_tables.php:1420
+#: _smarty.php:10227 ar_orders_tables.php:1344 ar_orders_tables.php:1423
 #: class.Order.php:1484
 msgid "Dispatch Approved"
 msgstr "Odoslanie schválené"
@@ -6137,9 +6165,10 @@ msgstr "pridaj platbu"
 
 #: _smarty.php:10572 _smarty.php:10578 _smarty.php:10581 _web_smarty.php:99
 #: _web_smarty.php:144 _web_smarty.php:471 _web_smarty.php:510
-#: ar_edit_email_template.php:839 ar_orders_tables.php:1662
-#: ar_reports_tables.php:354 ar_search.php:2574 class.Invoice.php:1935
-#: conf/elements_options.php:431 utils/order_functions.php:219
+#: ar_edit_email_template.php:839 ar_orders_tables.php:1665
+#: ar_reports_tables.php:350 ar_search.php:2574 class.Invoice.php:1938
+#: conf/elements_options.php:431 pdf/invoice.pdf.php:82
+#: pdf/supplier.order.pdf.php:283 utils/order_functions.php:219
 msgid "Paid"
 msgstr "Zaplatené"
 
@@ -7106,7 +7135,7 @@ msgid "Basket"
 msgstr "Košík"
 
 #: _smarty.php:12552 ar_websites_tables.php:546 ar_websites_tables.php:547
-#: utils/modules.php:2140
+#: utils/modules.php:2150
 msgid "Header"
 msgstr ""
 
@@ -7204,7 +7233,7 @@ msgstr "Pôvod"
 #: _smarty.php:12765 _web_smarty.php:696 _web_smarty.php:762
 #: ar_account_tables.php:116 ar_views.php:6264 ar_views.php:6276
 #: ar_views.php:6469 conf/export_edit_template_fields.php:243
-#: navigation/account.nav.php:690 utils/modules.php:3132 utils/modules.php:5622
+#: navigation/account.nav.php:690 utils/modules.php:3142 utils/modules.php:5632
 msgid "Materials"
 msgstr "Materiály"
 
@@ -7388,7 +7417,7 @@ msgstr "Požadovaný"
 msgid "No products has been ordered"
 msgstr "Produkty"
 
-#: _web_smarty.php:291 utils/modules.php:2037 utils/modules.php:2040
+#: _web_smarty.php:291 utils/modules.php:2047 utils/modules.php:2050
 msgid "Favourites"
 msgstr "Obľúbené"
 
@@ -7420,7 +7449,7 @@ msgid "Pay with other card"
 msgstr "Platiť inou kartou"
 
 #: _web_smarty.php:561 _web_smarty.php:579 ar_websites_tables.php:575
-#: utils/modules.php:5962
+#: utils/modules.php:5972
 msgid "Profile"
 msgstr "Profil"
 
@@ -7517,37 +7546,37 @@ msgstr ""
 msgid "Welcome"
 msgstr "Vytajte"
 
-#: ar_account_tables.php:92 utils/modules.php:5632
+#: ar_account_tables.php:92 utils/modules.php:5642
 msgid "Timeseries"
 msgstr ""
 
 #: ar_account_tables.php:96 ar_views.php:6228 navigation/account.nav.php:589
-#: utils/modules.php:148 utils/modules.php:275 utils/modules.php:2592
-#: utils/modules.php:3102 utils/modules.php:3704 utils/modules.php:3771
-#: utils/modules.php:3834 utils/modules.php:3900 utils/modules.php:4200
-#: utils/modules.php:4375 utils/modules.php:5085 utils/modules.php:5592
-#: utils/modules.php:6277 utils/modules.php:6341 utils/modules.php:6407
-#: utils/modules.php:6625
+#: utils/modules.php:148 utils/modules.php:275 utils/modules.php:2602
+#: utils/modules.php:3112 utils/modules.php:3714 utils/modules.php:3781
+#: utils/modules.php:3844 utils/modules.php:3910 utils/modules.php:4210
+#: utils/modules.php:4385 utils/modules.php:5095 utils/modules.php:5602
+#: utils/modules.php:6287 utils/modules.php:6351 utils/modules.php:6417
+#: utils/modules.php:6635
 msgid "Images"
 msgstr "Obrázky"
 
 #: ar_account_tables.php:100 ar_views.php:6240 conf/elements_options.php:106
-#: navigation/account.nav.php:622 utils/modules.php:3585 utils/modules.php:4385
-#: utils/modules.php:5092 utils/modules.php:5602 utils/modules.php:6165
+#: navigation/account.nav.php:622 utils/modules.php:3595 utils/modules.php:4395
+#: utils/modules.php:5102 utils/modules.php:5612 utils/modules.php:6175
 msgid "Attachments"
 msgstr "Prílohy"
 
-#: ar_account_tables.php:104 utils/modules.php:5572
+#: ar_account_tables.php:104 utils/modules.php:5582
 msgid "Order transactions timeseries"
 msgstr ""
 
-#: ar_account_tables.php:108 utils/modules.php:5582
+#: ar_account_tables.php:108 utils/modules.php:5592
 #, fuzzy
 msgid "Inventory transactions timeseries"
 msgstr "Inventár"
 
-#: ar_account_tables.php:112 utils/modules.php:5348 utils/modules.php:5380
-#: utils/modules.php:5612
+#: ar_account_tables.php:112 utils/modules.php:5358 utils/modules.php:5390
+#: utils/modules.php:5622
 msgid "Uploads"
 msgstr "Nahratia"
 
@@ -7620,21 +7649,21 @@ msgstr ""
 
 #: ar_categories_tables.php:64 ar_categories_tables.php:126
 #: ar_customers_tables.php:316 ar_inventory_tables.php:1450
-#: ar_orders_tables.php:2476 ar_products_tables.php:520
+#: ar_orders_tables.php:2479 ar_products_tables.php:520
 #: ar_suppliers_tables.php:705 ar_suppliers_tables.php:3001
 msgid "Root"
 msgstr ""
 
 #: ar_categories_tables.php:67 ar_categories_tables.php:129
 #: ar_customers_tables.php:319 ar_inventory_tables.php:1453
-#: ar_orders_tables.php:2479 ar_products_tables.php:523
+#: ar_orders_tables.php:2482 ar_products_tables.php:523
 #: ar_suppliers_tables.php:708 ar_suppliers_tables.php:3004
 msgid "Head"
 msgstr ""
 
 #: ar_categories_tables.php:70 ar_categories_tables.php:132
 #: ar_customers_tables.php:322 ar_inventory_tables.php:1456
-#: ar_orders_tables.php:2482 ar_products_tables.php:526
+#: ar_orders_tables.php:2485 ar_products_tables.php:526
 #: ar_suppliers_tables.php:711 ar_suppliers_tables.php:3007
 #: class.Category.php:3765 navigation/websites.nav.php:978
 #: navigation/websites.nav.php:996
@@ -7969,11 +7998,11 @@ msgstr ""
 msgid "No associated clock out"
 msgstr ""
 
-#: ar_hr_tables.php:499 ar_reports_tables.php:240 ar_search.php:2147
+#: ar_hr_tables.php:499 ar_reports_tables.php:242 ar_search.php:2147
 #: ar_views.php:6517 ar_views.php:6547 ar_warehouse_tables.php:192
 #: ar_warehouse_tables.php:197 class.Address.php:4934 class.Customer.php:378
-#: class.DB_Table.php:385 class.Invoice.php:766 class.Invoice.php:798
-#: class.Invoice.php:1918 class.Invoice.php:1978 class.Manufacture_Task.php:304
+#: class.DB_Table.php:385 class.Invoice.php:769 class.Invoice.php:801
+#: class.Invoice.php:1921 class.Invoice.php:1981 class.Manufacture_Task.php:304
 #: class.SubjectSupplier.php:388 class.SubjectSupplier.php:442
 #: class.SupplierDelivery.php:433 class.Timesheet_Record.php:231
 #: conf/fields/customer.fld.php:23 conf/fields/order.fld.php:19 locale.php:57
@@ -7992,8 +8021,8 @@ msgstr "Neznámy"
 #: conf/fields/attachment.fld.php:22 conf/fields/category.product.fld.php:14
 #: conf/fields/contractor.fld.php:36 conf/fields/contractor.fld.php:237
 #: conf/fields/contractor.fld.php:510 conf/fields/department.fld.php:14
-#: conf/fields/employee.fld.php:47 conf/fields/employee.fld.php:391
-#: conf/fields/employee.fld.php:761 conf/fields/family.fld.php:15
+#: conf/fields/employee.fld.php:47 conf/fields/employee.fld.php:392
+#: conf/fields/employee.fld.php:762 conf/fields/family.fld.php:15
 #: conf/fields/image.fld.php:22 conf/fields/profile.fld.php:18
 #: conf/fields/store.fld.php:26 conf/fields/supplier.fld.php:22
 #: conf/fields/supplier.fld.php:563 conf/fields/supplier.fld.php:586
@@ -8044,7 +8073,7 @@ msgstr "Nastaviť ako prvé"
 #: conf/user_groups.php:167 conf/user_groups.php:218
 #: navigation/marketing.nav.php:103 navigation/menu.mobile.php:209
 #: navigation/menu.mobile.php:219 tabs/part.images.tab.php:47
-#: utils/modules.php:2351
+#: utils/modules.php:2361
 msgid "Marketing"
 msgstr "Marketing"
 
@@ -8143,9 +8172,9 @@ msgstr "Prítomný"
 #: navigation/dashboard.nav.php:34 navigation/menu.mobile.php:21
 #: navigation/menu.mobile.php:431 navigation/menu.php:21 utils/modules.php:297
 #: utils/modules.php:314 utils/modules.php:539 utils/modules.php:733
-#: utils/modules.php:2853 utils/modules.php:3064 utils/modules.php:3504
-#: utils/modules.php:4006 utils/modules.php:4010 utils/modules.php:4555
-#: utils/modules.php:4559
+#: utils/modules.php:2863 utils/modules.php:3074 utils/modules.php:3514
+#: utils/modules.php:4016 utils/modules.php:4020 utils/modules.php:4565
+#: utils/modules.php:4569
 msgid "Dashboard"
 msgstr "Domov"
 
@@ -8158,41 +8187,41 @@ msgstr "Domov"
 #: navigation/inventory.nav.php:72 navigation/inventory.nav.php:102
 #: navigation/inventory.nav.php:270 navigation/inventory.nav.php:548
 #: navigation/menu.mobile.php:305 navigation/menu.php:334
-#: utils/modules.php:4019
+#: utils/modules.php:4029
 msgid "Inventory"
 msgstr "Inventár"
 
-#: ar_orders_tables.php:161 ar_orders_tables.php:270 ar_orders_tables.php:378
-#: ar_orders_tables.php:490 ar_orders_tables.php:602 ar_orders_tables.php:714
-#: ar_orders_tables.php:826 ar_orders_tables.php:938 ar_orders_tables.php:1050
+#: ar_orders_tables.php:162 ar_orders_tables.php:271 ar_orders_tables.php:379
+#: ar_orders_tables.php:492 ar_orders_tables.php:605 ar_orders_tables.php:717
+#: ar_orders_tables.php:829 ar_orders_tables.php:941 ar_orders_tables.php:1053
 #: utils/order_functions.php:211
 msgid "Overpaid"
 msgstr "Preplatok"
 
-#: ar_orders_tables.php:198 ar_orders_tables.php:307 ar_orders_tables.php:1088
-#: ar_orders_tables.php:1108 utils/order_functions.php:43
+#: ar_orders_tables.php:199 ar_orders_tables.php:308 ar_orders_tables.php:1091
+#: ar_orders_tables.php:1111 utils/order_functions.php:43
 msgid "Send for picking"
 msgstr "Pošli na vyberanie"
 
-#: ar_orders_tables.php:1145 utils/order_functions.php:100
+#: ar_orders_tables.php:1148 utils/order_functions.php:100
 msgid "Create Invoice"
 msgstr "Nová Faktúra"
 
-#: ar_orders_tables.php:1148 utils/order_functions.php:103
+#: ar_orders_tables.php:1151 utils/order_functions.php:103
 #: utils/order_functions.php:436
 msgid "Approve Dispatching"
 msgstr "Potvrď Odoslanie"
 
-#: ar_orders_tables.php:1163 utils/order_functions.php:118
+#: ar_orders_tables.php:1166 utils/order_functions.php:118
 #: utils/order_functions.php:451
 msgid "Mark as Dispatched"
 msgstr "Označ ako Odoslané"
 
-#: ar_orders_tables.php:1329 ar_orders_tables.php:1408 class.Order.php:1469
+#: ar_orders_tables.php:1332 ar_orders_tables.php:1411 class.Order.php:1469
 msgid "In Basket"
 msgstr "V Košíku"
 
-#: ar_orders_tables.php:1335 ar_orders_tables.php:1414
+#: ar_orders_tables.php:1338 ar_orders_tables.php:1417
 #: ar_suppliers_tables.php:793 ar_suppliers_tables.php:893
 #: ar_suppliers_tables.php:998 ar_suppliers_tables.php:1101
 #: ar_suppliers_tables.php:1174 class.Order.php:1475
@@ -8200,13 +8229,13 @@ msgstr "V Košíku"
 msgid "In Warehouse"
 msgstr "Na Sklade"
 
-#: ar_orders_tables.php:1338 ar_orders_tables.php:1417 class.Order.php:1478
+#: ar_orders_tables.php:1341 ar_orders_tables.php:1420 class.Order.php:1478
 #, fuzzy
 #| msgid "Packed done"
 msgid "Packed Done"
 msgstr "Zabalené"
 
-#: ar_orders_tables.php:1483 ar_orders_tables.php:1574 ar_views.php:2746
+#: ar_orders_tables.php:1486 ar_orders_tables.php:1577 ar_views.php:2746
 #: ar_views.php:2863 class.Customer.php:1694 class.Customer.php:1870
 #: conf/elements_options.php:234 conf/elements_options.php:328
 #: conf/elements_options.php:486 conf/elements_options.php:951
@@ -8225,76 +8254,78 @@ msgstr "Zabalené"
 msgid "Order"
 msgstr "Objednávka"
 
-#: ar_orders_tables.php:1486 ar_orders_tables.php:1577
+#: ar_orders_tables.php:1489 ar_orders_tables.php:1580
 #: conf/elements_options.php:238 conf/elements_options.php:332
 #: conf/elements_options.php:492
 msgid "Sample"
 msgstr "Vzor"
 
-#: ar_orders_tables.php:1489 ar_orders_tables.php:1580
+#: ar_orders_tables.php:1492 ar_orders_tables.php:1583
 #: conf/elements_options.php:242 conf/elements_options.php:336
 #: conf/elements_options.php:498
 msgid "Donation"
 msgstr "Donácia"
 
-#: ar_orders_tables.php:1493 ar_orders_tables.php:1584
+#: ar_orders_tables.php:1496 ar_orders_tables.php:1587
 msgid "Replacement"
 msgstr "Náhrada"
 
-#: ar_orders_tables.php:1496 ar_orders_tables.php:1587
+#: ar_orders_tables.php:1499 ar_orders_tables.php:1590
 #: conf/elements_options.php:510
 msgid "Shortages"
 msgstr "Manká"
 
-#: ar_orders_tables.php:1664 ar_reports_tables.php:356 class.Invoice.php:1975
+#: ar_orders_tables.php:1667 ar_reports_tables.php:352 class.Invoice.php:1978
 #: utils/order_functions.php:227
 msgid "Partially Paid"
 msgstr "Čiastočne Zaplatené"
 
-#: ar_orders_tables.php:1666 ar_reports_tables.php:358
+#: ar_orders_tables.php:1669 ar_reports_tables.php:354
 msgid "No Paid"
 msgstr "Nezaplatené"
 
-#: ar_orders_tables.php:1673 ar_reports_tables.php:365
+#: ar_orders_tables.php:1676 ar_reports_tables.php:361 pdf/invoice.pdf.php:104
+#: pdf/supplier.order.pdf.php:305
 msgid "Credit Note"
 msgstr "Kreditná poznámka"
 
-#: ar_orders_tables.php:1894 ar_orders_tables.php:1896 class.Order.php:2904
+#: ar_orders_tables.php:1897 ar_orders_tables.php:1899 class.Order.php:2904
 #: class.Order.php:2906
 msgid "free"
 msgstr "zadarmo"
 
-#: ar_orders_tables.php:1932
+#: ar_orders_tables.php:1935
 msgid "Product out of stock, removed from basket"
 msgstr "Produkt nie je na sklade, odstránený z košíka"
 
-#: ar_orders_tables.php:2079
+#: ar_orders_tables.php:2082 pdf/invoice.pdf.php:179 pdf/invoice.pdf.php:324
+#: pdf/supplier.order.pdf.php:380 pdf/supplier.order.pdf.php:504
 msgid "Tariff Code"
 msgstr "Tarifný Kód"
 
-#: ar_orders_tables.php:2145 ar_orders_tables.php:2285
+#: ar_orders_tables.php:2148 ar_orders_tables.php:2288
 msgid "dispatched"
 msgstr "odoslaný"
 
-#: ar_orders_tables.php:2151 ar_orders_tables.php:2291
+#: ar_orders_tables.php:2154 ar_orders_tables.php:2294
 msgid "to be restocked"
 msgstr "na doplnenie"
 
-#: ar_orders_tables.php:2154 ar_orders_tables.php:2294
+#: ar_orders_tables.php:2157 ar_orders_tables.php:2297
 msgid "to be dispatched"
 msgstr "na odoslanie"
 
-#: ar_orders_tables.php:2164 ar_orders_tables.php:2304
+#: ar_orders_tables.php:2167 ar_orders_tables.php:2307
 msgid "out of stock"
 msgstr "nie je na sklade"
 
-#: ar_orders_tables.php:2167 ar_orders_tables.php:2307
+#: ar_orders_tables.php:2170 ar_orders_tables.php:2310
 #: conf/website_system_webpages.php:580 conf/website_system_webpages.php:581
-#: navigation/utils.nav.php:56 utils/modules.php:5912 utils/modules.php:5913
+#: navigation/utils.nav.php:56 utils/modules.php:5922 utils/modules.php:5923
 msgid "Not found"
 msgstr "Nenájdené"
 
-#: ar_orders_tables.php:2170 ar_orders_tables.php:2310
+#: ar_orders_tables.php:2173 ar_orders_tables.php:2313
 msgid "not picked (other)"
 msgstr "nevybrané (iné)"
 
@@ -8333,7 +8364,7 @@ msgstr "Nie je k dispozícii"
 msgid "For sale"
 msgstr "Na predaj"
 
-#: ar_reports_tables.php:197 utils/table_functions.php:367
+#: ar_reports_tables.php:197 utils/table_functions.php:399
 #, php-format
 msgid "%s record"
 msgid_plural "%s records"
@@ -8341,21 +8372,21 @@ msgstr[0] "%s záznam"
 msgstr[1] "%s záznamy"
 msgstr[2] "%s záznamov"
 
-#: ar_reports_tables.php:237 ar_views.php:6508 ar_views.php:6544
+#: ar_reports_tables.php:239 ar_views.php:6508 ar_views.php:6544
 #: navigation/reports.nav.php:199
 msgid "European Union"
 msgstr "Európska Únia"
 
-#: ar_reports_tables.php:243 ar_views.php:6511 ar_views.php:6550
+#: ar_reports_tables.php:245 ar_views.php:6511 ar_views.php:6550
 #: navigation/reports.nav.php:205
 msgid "Outside European Union"
 msgstr "Mimo Európskej Únie"
 
-#: ar_reports_tables.php:258
+#: ar_reports_tables.php:260
 msgid "Unknown tax code"
 msgstr "Neznámy daňový kód"
 
-#: ar_reports_tables.php:320 ar_reports_tables.php:437
+#: ar_reports_tables.php:316 ar_reports_tables.php:433
 msgid "Excluding"
 msgstr "Okrem"
 
@@ -8412,11 +8443,11 @@ msgstr ""
 msgid "Packed done"
 msgstr "Zabalené"
 
-#: ar_search.php:2577 class.Invoice.php:1938
+#: ar_search.php:2577 class.Invoice.php:1941
 msgid "Not paid"
 msgstr "Nezaplatené"
 
-#: ar_search.php:2580 class.Invoice.php:1941 conf/elements_options.php:437
+#: ar_search.php:2580 class.Invoice.php:1944 conf/elements_options.php:437
 msgid "Partially paid"
 msgstr "Čiastočne zaplatené"
 
@@ -8426,8 +8457,8 @@ msgstr "Čiastočne zaplatené"
 #: conf/fields/category.fld.php:23 conf/fields/category.webpage.fld.php:53
 #: navigation/inventory.nav.php:1091 navigation/products.nav.php:1902
 #: navigation/suppliers.nav.php:2081 navigation/warehouses.nav.php:451
-#: utils/modules.php:345 utils/modules.php:1934 utils/modules.php:3253
-#: utils/modules.php:3254
+#: utils/modules.php:345 utils/modules.php:1944 utils/modules.php:3263
+#: utils/modules.php:3264
 msgid "Categories"
 msgstr "Kategórie"
 
@@ -8516,7 +8547,7 @@ msgid "There is another object with the same value"
 msgstr ""
 
 #: ar_setup.php:1524 tabs/account.setup.root_user.tab.php:61
-#: utils/modules.php:5757
+#: utils/modules.php:5767
 msgid "Root user"
 msgstr "Kmeňový užívateľ"
 
@@ -8736,8 +8767,8 @@ msgstr ""
 #: ar_users_tables.php:367 ar_views.php:4684 ar_views.php:4754
 #: ar_views.php:4766 ar_views.php:4812 ar_views.php:6080 ar_views.php:6124
 #: navigation/hr.nav.php:133 navigation/hr.nav.php:558
-#: navigation/hr.nav.php:652 tabs/contractors.tab.php:60 utils/modules.php:4992
-#: utils/modules.php:4996 utils/modules.php:5884 utils/modules.php:5889
+#: navigation/hr.nav.php:652 tabs/contractors.tab.php:60 utils/modules.php:5002
+#: utils/modules.php:5006 utils/modules.php:5894 utils/modules.php:5899
 msgid "Contractors"
 msgstr "Kontraktori"
 
@@ -8751,8 +8782,8 @@ msgstr "Administrátor"
 #: ar_views.php:6131 ar_views.php:6725 ar_views.php:6779 ar_views.php:6825
 #: ar_views.php:6861 ar_views.php:6909 ar_views.php:6971
 #: navigation/suppliers.nav.php:132 navigation/suppliers.nav.php:876
-#: navigation/suppliers.nav.php:1035 utils/modules.php:3242
-#: utils/modules.php:5860 utils/modules.php:5865
+#: navigation/suppliers.nav.php:1035 utils/modules.php:3252
+#: utils/modules.php:5870 utils/modules.php:5875
 msgid "Agents"
 msgstr "Agenti"
 
@@ -8843,7 +8874,7 @@ msgstr "Vyrobky na predaj"
 
 #: ar_views.php:2641 navigation/products.nav.php:185
 #: navigation/products.nav.php:732 tabs/stores.tab.php:57
-#: utils/modules.php:1901
+#: utils/modules.php:1911
 #, fuzzy
 msgid "New store"
 msgstr "Pridaj Zákazníka"
@@ -8859,7 +8890,7 @@ msgid "Products's categories"
 msgstr "Produkty"
 
 #: ar_views.php:2783 ar_views.php:2897 navigation/products.nav.php:1414
-#: utils/modules.php:1911
+#: utils/modules.php:1921
 msgid "Services"
 msgstr "Služby"
 
@@ -8876,18 +8907,18 @@ msgid "New webpage"
 msgstr "Nová webstránka"
 
 #: ar_views.php:3171 class.Site.php:269 class.Site.php:281 class.Site.php:2188
-#: navigation/websites.nav.php:1526 utils/modules.php:2217
+#: navigation/websites.nav.php:1526 utils/modules.php:2227
 msgid "New website"
 msgstr "Nová webstránka"
 
 #: ar_views.php:3202 ar_views.php:6630 tabs/campaigns.tab.php:44
-#: utils/modules.php:2476 utils/modules.php:2966
+#: utils/modules.php:2486 utils/modules.php:2976
 #, fuzzy
 msgid "New campaign"
 msgstr "Emailová Adresa"
 
 #: ar_views.php:3230 ar_views.php:6658 tabs/campaign.deals.tab.php:44
-#: tabs/deals.tab.php:44 utils/modules.php:2489 utils/modules.php:2979
+#: tabs/deals.tab.php:44 utils/modules.php:2499 utils/modules.php:2989
 msgid "New offer"
 msgstr "Nová ponuka"
 
@@ -8935,21 +8966,21 @@ msgstr "Dodavatelia"
 #: ar_views.php:3447 ar_views.php:3554 ar_views.php:6713 ar_views.php:6808
 #: conf/fields/suppliers.settings.fld.php:23 navigation/agent.nav.php:787
 #: navigation/suppliers.nav.php:66 navigation/suppliers.nav.php:1609
-#: navigation/suppliers.nav.php:1936 utils/modules.php:3279
-#: utils/modules.php:3545 utils/modules.php:3817 utils/modules.php:4321
-#: utils/modules.php:4328 utils/modules.php:5990 utils/modules.php:6153
-#: utils/modules.php:6324
+#: navigation/suppliers.nav.php:1936 utils/modules.php:3289
+#: utils/modules.php:3555 utils/modules.php:3827 utils/modules.php:4331
+#: utils/modules.php:4338 utils/modules.php:6000 utils/modules.php:6163
+#: utils/modules.php:6334
 msgid "Purchase orders"
 msgstr "Objednávky"
 
 #: ar_views.php:3470 ar_views.php:3722 navigation/suppliers.nav.php:1043
-#: tabs/agents.tab.php:74 utils/modules.php:3465
+#: tabs/agents.tab.php:74 utils/modules.php:3475
 msgid "New agent"
 msgstr "Nový agent"
 
 #: ar_views.php:3511 ar_views.php:6799 navigation/suppliers.nav.php:784
 #: tabs/agent.suppliers.tab.php:74 tabs/suppliers.tab.php:77
-#: utils/modules.php:3604 utils/modules.php:6177
+#: utils/modules.php:3614 utils/modules.php:6187
 msgid "New supplier"
 msgstr "Nový dodávateľ"
 
@@ -8969,8 +9000,8 @@ msgid "Suppliers's categories"
 msgstr "Dodávateľské kategórie"
 
 #: ar_views.php:3844 ar_views.php:3861 ar_views.php:4776 ar_views.php:4793
-#: ar_views.php:6981 utils/modules.php:3934 utils/modules.php:3946
-#: utils/modules.php:6441
+#: ar_views.php:6981 utils/modules.php:3944 utils/modules.php:3956
+#: utils/modules.php:6451
 #, fuzzy
 msgid "New system user"
 msgstr "Pridaj Zákazníka"
@@ -9004,7 +9035,7 @@ msgid "Manpower history"
 msgstr "Import zo súboru"
 
 #: ar_views.php:4711 tabs/deleted.employees.tab.php:36
-#: tabs/deleted.employees.tab.php:37 utils/modules.php:4970
+#: tabs/deleted.employees.tab.php:37 utils/modules.php:4980
 msgid "Deleted employees"
 msgstr "Vymazaný zamestnanci"
 
@@ -9021,7 +9052,7 @@ msgid "New employee"
 msgstr "Pridaj Zákazníka"
 
 #: ar_views.php:4800 tabs/deleted.contractors.tab.php:36
-#: tabs/deleted.contractors.tab.php:37 utils/modules.php:4999
+#: tabs/deleted.contractors.tab.php:37 utils/modules.php:5009
 #, fuzzy
 msgid "Deleted contractors"
 msgstr "Lokácie"
@@ -9031,7 +9062,7 @@ msgstr "Lokácie"
 msgid "New contractor"
 msgstr "Kontakty a Objednávky"
 
-#: ar_views.php:4852 navigation/hr.nav.php:2158 utils/modules.php:5042
+#: ar_views.php:4852 navigation/hr.nav.php:2158 utils/modules.php:5052
 msgid "Job positions"
 msgstr "Pracovné pozície"
 
@@ -9051,25 +9082,25 @@ msgstr ""
 msgid "Parts's categories"
 msgstr "Vyrobky na predaj"
 
-#: ar_views.php:5051 navigation/inventory.nav.php:121 utils/modules.php:3922
-#: utils/modules.php:6429
+#: ar_views.php:5051 navigation/inventory.nav.php:121 utils/modules.php:3932
+#: utils/modules.php:6439
 #, fuzzy
 msgid "New part"
 msgstr "Heslo"
 
-#: ar_views.php:5126 utils/modules.php:4494
+#: ar_views.php:5126 utils/modules.php:4504
 #, fuzzy
 msgid "New supplier part"
 msgstr "Dodavatelia"
 
 #: ar_views.php:5156 ar_views.php:5163 ar_views.php:5178
 #: navigation/inventory.nav.php:825 navigation/inventory.nav.php:956
-#: utils/modules.php:4057
+#: utils/modules.php:4067
 msgid "Barcodes"
 msgstr "Čiarové kódy"
 
-#: ar_views.php:5325 ar_views.php:5332 utils/modules.php:4291
-#: utils/modules.php:4503
+#: ar_views.php:5325 ar_views.php:5332 utils/modules.php:4301
+#: utils/modules.php:4513
 msgid "Stock History"
 msgstr "História zásob"
 
@@ -9083,7 +9114,7 @@ msgstr "Všetky sklady"
 msgid "Warehouse dashboard"
 msgstr "Domov"
 
-#: ar_views.php:5450 utils/modules.php:4634
+#: ar_views.php:5450 utils/modules.php:4644
 msgid "Pending delivery notes"
 msgstr "Nevybavené dodacie listy"
 
@@ -9142,8 +9173,8 @@ msgstr "Vymazaný užívatelia"
 #: ar_views.php:6171 ar_views.php:6453 conf/user_groups.php:35
 #: conf/user_groups.php:36 navigation/account.nav.php:157
 #: navigation/production.nav.php:137 navigation/reports.nav.php:144
-#: utils/modules.php:41 utils/modules.php:2529 utils/modules.php:5700
-#: utils/modules.php:5706
+#: utils/modules.php:41 utils/modules.php:2539 utils/modules.php:5710
+#: utils/modules.php:5716
 msgid "Settings"
 msgstr "Nastavenia"
 
@@ -9154,7 +9185,7 @@ msgstr "Nastavenia"
 #: navigation/account.nav.php:592 navigation/account.nav.php:626
 #: navigation/account.nav.php:660 navigation/account.nav.php:694
 #: navigation/account.nav.php:756 navigation/account.nav.php:790
-#: utils/modules.php:5556 utils/modules.php:5562
+#: utils/modules.php:5566 utils/modules.php:5572
 msgid "Data sets"
 msgstr ""
 
@@ -9217,18 +9248,18 @@ msgstr "Objednavky"
 
 #: ar_views.php:6582 navigation/marketing.nav.php:170
 #: navigation/marketing.nav.php:292 navigation/marketing.nav.php:386
-#: utils/modules.php:3026 utils/modules.php:3027
+#: utils/modules.php:3036 utils/modules.php:3037
 #, fuzzy
 msgid "Marketing (All stores)"
 msgstr "Všetky Kontakty"
 
-#: ar_views.php:6688 utils/modules.php:2854
+#: ar_views.php:6688 utils/modules.php:2864
 #, fuzzy
 msgid "Marketing dashboard"
 msgstr "Domov"
 
 #: ar_views.php:6996 ar_views.php:7003 navigation/agent.nav.php:98
-#: navigation/menu.php:437 utils/modules.php:6468 utils/modules.php:6552
+#: navigation/menu.php:437 utils/modules.php:6478 utils/modules.php:6562
 #, fuzzy
 msgid "Client's orders"
 msgstr "Objednavky"
@@ -9257,7 +9288,7 @@ msgstr "Vynulovanie"
 msgid "Registration"
 msgstr "Registrácia"
 
-#: ar_websites_tables.php:354
+#: ar_websites_tables.php:354 pdf/dn.pdf.php:96
 msgid "Not Found"
 msgstr "Nie je nájdené"
 
@@ -9301,7 +9332,7 @@ msgstr "Prázdny"
 msgid "Hub"
 msgstr ""
 
-#: ar_websites_tables.php:550 ar_websites_tables.php:551 utils/modules.php:2146
+#: ar_websites_tables.php:550 ar_websites_tables.php:551 utils/modules.php:2156
 msgid "Footer"
 msgstr ""
 
@@ -9317,14 +9348,14 @@ msgstr "Zákazníci"
 
 #: ar_websites_tables.php:673 ar_websites_tables.php:903
 #: class.Webpage_Type.php:78 conf/webpage_types.php:21 utils/modules.php:85
-#: utils/modules.php:1878 utils/modules.php:2569 utils/modules.php:2813
-#: utils/modules.php:3526 utils/modules.php:4159 utils/modules.php:4280
+#: utils/modules.php:1880 utils/modules.php:2579 utils/modules.php:2823
+#: utils/modules.php:3536 utils/modules.php:4169 utils/modules.php:4290
 msgid "Info"
 msgstr "Info"
 
 #: attachment.php:47 navigation/utils.nav.php:63
-#: tabs/agent.suppliers.tab.php:13 utils/modules.php:5903
-#: utils/modules.php:5904
+#: tabs/agent.suppliers.tab.php:13 utils/modules.php:5913
+#: utils/modules.php:5914
 #, fuzzy
 msgid "Forbidden"
 msgstr "Operacia nenajdena"
@@ -10180,11 +10211,11 @@ msgstr ""
 msgid "Error: can not delete family"
 msgstr ""
 
-#: class.Invoice.php:1969
+#: class.Invoice.php:1972
 msgid "Paid in full"
 msgstr "Zaplatené"
 
-#: class.Invoice.php:1972
+#: class.Invoice.php:1975
 msgid "Not Paid"
 msgstr "Nezaplatené"
 
@@ -12703,7 +12734,7 @@ msgid "Packs"
 msgstr "Zabalené"
 
 #: conf/fields/account.fld.php:48 conf/fields/account.setup.fld.php:75
-#: conf/fields/store.fld.php:103 utils/modules.php:2122
+#: conf/fields/store.fld.php:103 utils/modules.php:2132
 #, fuzzy
 #| msgid "Locations"
 msgid "Localization"
@@ -13039,7 +13070,7 @@ msgstr "Mesačne"
 msgid "Per hour (prorata)"
 msgstr ""
 
-#: conf/fields/contractor.fld.php:129 conf/fields/employee.fld.php:245
+#: conf/fields/contractor.fld.php:129 conf/fields/employee.fld.php:246
 #: tabs/account.setup.add_employees.tab.php:28
 #: tabs/account.setup.add_employees.tab.php:29 tabs/employees.tab.php:25
 #: tabs/employees.tab.php:26 tabs/position.employees.tab.php:25
@@ -13061,7 +13092,7 @@ msgid "Working hours & cost"
 msgstr "pracovné hodiny"
 
 #: conf/fields/contractor.fld.php:439 conf/fields/contractor.fld.php:487
-#: conf/fields/employee.fld.php:655 conf/fields/employee.fld.php:738
+#: conf/fields/employee.fld.php:656 conf/fields/employee.fld.php:739
 #, fuzzy
 msgid "Set up system user"
 msgstr "Pridaj Zákazníka"
@@ -13071,7 +13102,7 @@ msgstr "Pridaj Zákazníka"
 msgid "Delete contractor"
 msgstr "Lokácie"
 
-#: conf/fields/contractor.fld.php:497 conf/fields/employee.fld.php:748
+#: conf/fields/contractor.fld.php:497 conf/fields/employee.fld.php:749
 #, fuzzy
 msgid "Don't set up system user"
 msgstr "Uzivatelia"
@@ -13128,11 +13159,11 @@ msgstr "Zákazníci"
 msgid "Other delivery addresses"
 msgstr "iná dodacia adresa"
 
-#: conf/fields/employee.fld.php:361
+#: conf/fields/employee.fld.php:362
 msgid "Contractual service agreement"
 msgstr ""
 
-#: conf/fields/employee.fld.php:361 tabs/account.setup.add_employees.tab.php:32
+#: conf/fields/employee.fld.php:362 tabs/account.setup.add_employees.tab.php:32
 #: tabs/account.setup.add_employees.tab.php:33 tabs/employees.tab.php:29
 #: tabs/employees.tab.php:30 tabs/position.employees.tab.php:29
 #: tabs/position.employees.tab.php:30
@@ -13141,23 +13172,23 @@ msgstr ""
 msgid "Employment"
 msgstr "Zamestnanec"
 
-#: conf/fields/employee.fld.php:484
+#: conf/fields/employee.fld.php:485
 #, fuzzy
 #| msgid "working hours"
 msgid "Working hours & salary"
 msgstr "pracovné hodiny"
 
-#: conf/fields/employee.fld.php:680
+#: conf/fields/employee.fld.php:681
 msgid "Recalculate time sheets"
 msgstr ""
 
-#: conf/fields/employee.fld.php:698
+#: conf/fields/employee.fld.php:699
 #, fuzzy
 #| msgid "end of employment"
 msgid "Terminate employment"
 msgstr "ukončenie zamestnania"
 
-#: conf/fields/employee.fld.php:709
+#: conf/fields/employee.fld.php:710
 #, fuzzy
 #| msgid "Deleted employees"
 msgid "Delete employee"
@@ -13581,7 +13612,7 @@ msgstr "Stav webstránky"
 msgid "Delete webpage version"
 msgstr "Vymazaný zamestnanci"
 
-#: conf/fields/website.fld.php:65 utils/modules.php:2102
+#: conf/fields/website.fld.php:65 utils/modules.php:2112
 msgid "Look & feel"
 msgstr ""
 
@@ -13895,8 +13926,8 @@ msgstr "Zákazníci"
 msgid "Customer Service Supervisor"
 msgstr "Pridaj Zákazníka"
 
-#: conf/user_groups.php:35 conf/user_groups.php:36 utils/modules.php:3452
-#: utils/modules.php:3574 utils/modules.php:6016
+#: conf/user_groups.php:35 conf/user_groups.php:36 utils/modules.php:3462
+#: utils/modules.php:3584 utils/modules.php:6026
 #, fuzzy
 msgid "System users"
 msgstr "Uzivatelia"
@@ -14442,7 +14473,7 @@ msgstr "Emailová Adresa"
 msgid "Add store"
 msgstr "Pridať obchod"
 
-#: navigation/account.nav.php:35 utils/modules.php:5439
+#: navigation/account.nav.php:35 utils/modules.php:5449
 #, fuzzy
 msgid "Account set up"
 msgstr "Emailová Adresa"
@@ -14489,7 +14520,7 @@ msgstr "Zoznam zamestnancov"
 msgid "Contractor users"
 msgstr "Kontraktori"
 
-#: navigation/account.nav.php:955 utils/modules.php:5743
+#: navigation/account.nav.php:955 utils/modules.php:5753
 #, fuzzy
 msgid "Suppliers users"
 msgstr "Dodavatelia"
@@ -14500,7 +14531,7 @@ msgid "Agents users"
 msgstr "dodávatelia"
 
 #: navigation/account.nav.php:1191 navigation/account.nav.php:1415
-#: navigation/account.nav.php:1656 utils/modules.php:5716
+#: navigation/account.nav.php:1656 utils/modules.php:5726
 #, fuzzy
 msgid "Staff users"
 msgstr "Zamestnanci"
@@ -14552,7 +14583,7 @@ msgstr "Hľadať objednávky"
 
 #: navigation/agent.nav.php:835 navigation/orders.nav.php:1230
 #: navigation/orders.nav.php:1763 navigation/orders.nav.php:2076
-#: navigation/orders.nav.php:2191
+#: navigation/orders.nav.php:2191 pdf/dn.pdf.php:66
 msgid "Delivery Note"
 msgstr "Dodací List"
 
@@ -14650,7 +14681,9 @@ msgstr "Nová Kampaň"
 msgid "Search marketing"
 msgstr "Hľadať marketing"
 
-#: navigation/customers.nav.php:1113
+#: navigation/customers.nav.php:1113 pdf/invoice.pdf.php:260
+#: pdf/invoice.pdf.php:443 pdf/supplier.order.pdf.php:448
+#: pdf/supplier.order.pdf.php:599
 msgid "Deal"
 msgstr ""
 
@@ -14690,8 +14723,8 @@ msgstr "Operacia nenajdena"
 msgid "Search manpower"
 msgstr "Operacia nenajdena"
 
-#: navigation/hr.nav.php:65 tabs/overtimes.tab.php:42 utils/modules.php:5011
-#: utils/modules.php:5015
+#: navigation/hr.nav.php:65 tabs/overtimes.tab.php:42 utils/modules.php:5021
+#: utils/modules.php:5025
 #, fuzzy
 msgid "Overtimes"
 msgstr "Objednavky"
@@ -14775,16 +14808,16 @@ msgstr "Viacerí dodávatelia"
 msgid "Search Inventory"
 msgstr "Hľadaj Inventár"
 
-#: navigation/inventory.nav.php:666 utils/modules.php:4309
-#: utils/modules.php:4683
+#: navigation/inventory.nav.php:666 utils/modules.php:4319
+#: utils/modules.php:4693
 #, fuzzy
 #| msgid "Stock (cartons)"
 msgid "Stock movements"
 msgstr "Zásoby (kartóny)"
 
 #: navigation/inventory.nav.php:713 navigation/inventory.nav.php:758
-#: navigation/inventory.nav.php:775 utils/modules.php:4297
-#: utils/modules.php:4509
+#: navigation/inventory.nav.php:775 utils/modules.php:4307
+#: utils/modules.php:4519
 msgid "Stock history"
 msgstr "História zásob"
 
@@ -14974,13 +15007,13 @@ msgid "Manufacturers"
 msgstr "Výrobcovia"
 
 #: navigation/production.nav.php:235 tabs/operatives.tab.php:47
-#: utils/modules.php:3184 utils/modules.php:3188
+#: utils/modules.php:3194 utils/modules.php:3198
 #, fuzzy
 msgid "Operatives"
 msgstr "Operacia nenajdena"
 
-#: navigation/production.nav.php:271 utils/modules.php:3120
-#: utils/modules.php:3124 utils/modules.php:3161
+#: navigation/production.nav.php:271 utils/modules.php:3130
+#: utils/modules.php:3134 utils/modules.php:3171
 #, fuzzy
 #| msgid "Searches"
 msgid "Batches"
@@ -15087,14 +15120,14 @@ msgstr "Hľadať webstránku"
 msgid "Search reports"
 msgstr "Hľadať reporty"
 
-#: navigation/reports.nav.php:63 utils/modules.php:4810 utils/modules.php:4848
+#: navigation/reports.nav.php:63 utils/modules.php:4820 utils/modules.php:4858
 #, fuzzy
 #| msgid "Picker & packer assigned"
 msgid "Pickers & Packers Report"
 msgstr "Picker & packer assigned"
 
 #: navigation/reports.nav.php:70 navigation/reports.nav.php:73
-#: utils/modules.php:4825 utils/modules.php:4828 utils/modules.php:4866
+#: utils/modules.php:4835 utils/modules.php:4838 utils/modules.php:4876
 msgid "Top Customers"
 msgstr "Top Zákazníci"
 
@@ -15224,7 +15257,7 @@ msgid "New main locations's category"
 msgstr "Zákazníci"
 
 #: navigation/warehouses.nav.php:504 tabs/warehouse.locations.tab.php:67
-#: utils/modules.php:4707
+#: utils/modules.php:4717
 msgid "New location"
 msgstr "Nová lokácia"
 
@@ -15247,7 +15280,7 @@ msgid "Search websites (all)"
 msgstr "Hľadať webstránky (všetky)"
 
 #: navigation/websites.nav.php:301 navigation/websites.nav.php:320
-#: utils/modules.php:2250
+#: utils/modules.php:2260
 msgid "Web page"
 msgstr "Webstránka"
 
@@ -15263,6 +15296,101 @@ msgstr "Hľadať webstránky"
 #: navigation/websites.nav.php:1379
 msgid "Webpage type"
 msgstr "Druh webstránky"
+
+#: pdf/dn.pdf.php:99
+#, fuzzy
+#| msgid "not picked (other)"
+msgid "Not picked (other)"
+msgstr "nevybrané (iné)"
+
+#: pdf/invoice.pdf.php:101 pdf/supplier.order.pdf.php:302
+msgid "Invoice No."
+msgstr "Číslo Faktúry"
+
+#: pdf/invoice.pdf.php:105 pdf/supplier.order.pdf.php:306
+#, fuzzy
+#| msgid "Credit Note"
+msgid "Credit Note No."
+msgstr "Kreditná poznámka"
+
+#: pdf/invoice.pdf.php:109 pdf/supplier.order.pdf.php:310
+#, fuzzy
+#| msgid "Refund"
+msgid "Refund No."
+msgstr "Refundácia"
+
+#: pdf/invoice.pdf.php:254 pdf/invoice.pdf.php:437
+#: pdf/supplier.order.pdf.php:442 pdf/supplier.order.pdf.php:593
+#, fuzzy
+#| msgid "Adjusts"
+msgid "Adjust"
+msgstr "Nastaviť"
+
+#: pdf/invoice.pdf.php:557
+msgid "Delivery is exempt from tax according to §43 of Act No. 222/2004 on VAT"
+msgstr ""
+
+#: pdf/order.pdf.php:259
+#, fuzzy
+msgid "Order Picking Aid"
+msgstr "Objednavky"
+
+#: pdf/order_pick_aid.pdf.php:27 tabs/delivery_note.picking_aid.tab.php:27
+#: tabs/delivery_note.picking_aid.tab.php:31 utils/order_functions.php:310
+#: utils/order_functions.php:350
+msgid "Picking Aid"
+msgstr "Picking Aid"
+
+#: pdf/order_pick_aid.pdf.php:90
+#, fuzzy
+#| msgid "items"
+msgid "item"
+msgid_plural "items"
+msgstr[0] "položky"
+msgstr[1] "položky"
+msgstr[2] "položky"
+
+#: pdf/order_pick_aid.pdf.php:93
+msgid "pick"
+msgid_plural "picks"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#: pdf/supplier.order.pdf.php:26
+#, fuzzy, php-format
+#| msgid "Purchase orders"
+msgid "Purchase order %s"
+msgstr "Objednávky"
+
+#: pdf/supplier.order.pdf.php:103
+#, fuzzy, php-format
+#| msgid "units"
+msgid "%d units"
+msgstr "jednotky"
+
+#: pdf/supplier.order.pdf.php:140
+#, fuzzy, php-format
+#| msgid "packed in %ds"
+msgid "packed in %d's"
+msgstr "balené v %ds"
+
+#: pdf/supplier.order.pdf.php:144 pdf/supplier.order.pdf.php:158
+#, fuzzy, php-format
+msgid "%s unit per carton"
+msgid_plural "%s units per carton"
+msgstr[0] "Operacia nenajdena"
+msgstr[1] "Operacia nenajdena"
+msgstr[2] "Operacia nenajdena"
+
+#: pdf/supplier.order.pdf.php:149
+#, fuzzy, php-format
+#| msgid "per carton"
+msgid "%s pack per carton"
+msgid_plural "%s packs per carton"
+msgstr[0] "za kartón"
+msgstr[1] "za kartón"
+msgstr[2] "za kartón"
 
 #: setup.php:141
 #, fuzzy, php-format
@@ -15382,7 +15510,7 @@ msgstr[2] "%s zákazníkov"
 #: tabs/timesheets.employees.tab.php:23
 #: tabs/website.favourites.customers.tab.php:22
 #: tabs/website.favourites.customers.tab.php:23 utils/modules.php:458
-#: utils/modules.php:2740 utils/modules.php:5533
+#: utils/modules.php:2750 utils/modules.php:5543
 msgid "Overview"
 msgstr "Prehľad"
 
@@ -15750,8 +15878,8 @@ msgstr "Pridaj Zákazníka"
 #: tabs/category.categories.tab.php:264 tabs/category.categories.tab.php:313
 #: tabs/locations.categories.tab.php:43 tabs/parts.categories.tab.php:50
 #: tabs/products.categories.tab.php:83 tabs/suppliers.categories.tab.php:49
-#: utils/modules.php:2611 utils/modules.php:3269 utils/modules.php:4110
-#: utils/modules.php:4732
+#: utils/modules.php:2621 utils/modules.php:3279 utils/modules.php:4120
+#: utils/modules.php:4742
 msgid "New category"
 msgstr "Nová kategória"
 
@@ -16015,12 +16143,6 @@ msgstr "Emailová Adresa"
 msgid "Exit"
 msgstr "Dodavatelia"
 
-#: tabs/delivery_note.picking_aid.tab.php:27
-#: tabs/delivery_note.picking_aid.tab.php:31 utils/order_functions.php:310
-#: utils/order_functions.php:350
-msgid "Picking Aid"
-msgstr "Picking Aid"
-
 #: tabs/delivery_note.picking_aid.tab.php:34 utils/order_functions.php:338
 #: utils/order_functions.php:396
 msgid "Packing Aid"
@@ -16037,8 +16159,8 @@ msgstr "%s doručenie"
 #: tabs/employee.timesheets.records.tab.php:31
 #: tabs/employee.today_timesheet.records.tab.php:55
 #: tabs/employees.timesheets.records.tab.php:30
-#: tabs/timesheet.records.tab.php:30 utils/modules.php:5289
-#: utils/modules.php:5290 utils/modules.php:5296 utils/modules.php:5299
+#: tabs/timesheet.records.tab.php:30 utils/modules.php:5299
+#: utils/modules.php:5300 utils/modules.php:5306 utils/modules.php:5309
 #, fuzzy
 msgid "New timesheet record"
 msgstr "Import zo súboru"
@@ -16062,7 +16184,7 @@ msgid "Employee code"
 msgstr "Zamestnanec"
 
 #: tabs/exemployees.tab.php:36 tabs/exemployees.tab.php:37
-#: utils/modules.php:4977
+#: utils/modules.php:4987
 msgid "Ex employees"
 msgstr "Ex zamestnanci"
 
@@ -16166,8 +16288,8 @@ msgstr "názov banky"
 msgid "Add task"
 msgstr "Pridať položky"
 
-#: tabs/manufacture_tasks.tab.php:47 utils/modules.php:3144
-#: utils/modules.php:3148
+#: tabs/manufacture_tasks.tab.php:47 utils/modules.php:3154
+#: utils/modules.php:3158
 msgid "Tasks"
 msgstr "Úloha"
 
@@ -16207,7 +16329,7 @@ msgid "Customer Name"
 msgstr "Pridaj Zákazníka"
 
 #: tabs/part.products.tab.php:51 tabs/part.supplier_parts.tab.php:46
-#: tabs/products.tab.php:67 utils/modules.php:2624 utils/modules.php:4540
+#: tabs/products.tab.php:67 utils/modules.php:2634 utils/modules.php:4550
 msgid "New product"
 msgstr "Nový produkt"
 
@@ -16277,7 +16399,7 @@ msgstr "Vyrobky na predaj"
 msgid "Upload supplier's parts"
 msgstr "%s dodávateľova časť"
 
-#: tabs/services.tab.php:51 utils/modules.php:2637
+#: tabs/services.tab.php:51 utils/modules.php:2647
 msgid "New service"
 msgstr "Nový servis"
 
@@ -16466,7 +16588,7 @@ msgstr "Objednavky"
 msgid "Payment information"
 msgstr "Možnosti platby"
 
-#: tabs/website.in_process_webpages.tab.php:37 utils/modules.php:2229
+#: tabs/website.in_process_webpages.tab.php:37 utils/modules.php:2239
 msgid "New Webpage"
 msgstr "Nová Webstránka"
 
@@ -16868,60 +16990,60 @@ msgstr "Prihlásiť"
 #: utils/modules.php:671 utils/modules.php:701 utils/modules.php:1021
 #: utils/modules.php:1073 utils/modules.php:1126 utils/modules.php:1248
 #: utils/modules.php:1282 utils/modules.php:1330 utils/modules.php:1855
-#: utils/modules.php:1985 utils/modules.php:2287 utils/modules.php:2376
-#: utils/modules.php:2424 utils/modules.php:2514 utils/modules.php:2667
-#: utils/modules.php:2692 utils/modules.php:2723 utils/modules.php:2902
-#: utils/modules.php:2935 utils/modules.php:3094 utils/modules.php:3160
-#: utils/modules.php:3307 utils/modules.php:3363 utils/modules.php:3391
-#: utils/modules.php:3418 utils/modules.php:3489 utils/modules.php:3628
-#: utils/modules.php:3669 utils/modules.php:3736 utils/modules.php:3802
-#: utils/modules.php:3866 utils/modules.php:4065 utils/modules.php:4131
-#: utils/modules.php:4255 utils/modules.php:4420 utils/modules.php:4451
-#: utils/modules.php:4575 utils/modules.php:4668 utils/modules.php:4746
-#: utils/modules.php:5062 utils/modules.php:5174 utils/modules.php:5194
-#: utils/modules.php:5406 utils/modules.php:5496 utils/modules.php:5656
-#: utils/modules.php:5766 utils/modules.php:5844 utils/modules.php:5968
-#: utils/modules.php:6055 utils/modules.php:6111 utils/modules.php:6141
-#: utils/modules.php:6201 utils/modules.php:6242 utils/modules.php:6309
-#: utils/modules.php:6373 utils/modules.php:6487 utils/modules.php:6556
-#: utils/modules.php:6617
+#: utils/modules.php:1995 utils/modules.php:2297 utils/modules.php:2386
+#: utils/modules.php:2434 utils/modules.php:2524 utils/modules.php:2677
+#: utils/modules.php:2702 utils/modules.php:2733 utils/modules.php:2912
+#: utils/modules.php:2945 utils/modules.php:3104 utils/modules.php:3170
+#: utils/modules.php:3317 utils/modules.php:3373 utils/modules.php:3401
+#: utils/modules.php:3428 utils/modules.php:3499 utils/modules.php:3638
+#: utils/modules.php:3679 utils/modules.php:3746 utils/modules.php:3812
+#: utils/modules.php:3876 utils/modules.php:4075 utils/modules.php:4141
+#: utils/modules.php:4265 utils/modules.php:4430 utils/modules.php:4461
+#: utils/modules.php:4585 utils/modules.php:4678 utils/modules.php:4756
+#: utils/modules.php:5072 utils/modules.php:5184 utils/modules.php:5204
+#: utils/modules.php:5416 utils/modules.php:5506 utils/modules.php:5666
+#: utils/modules.php:5776 utils/modules.php:5854 utils/modules.php:5978
+#: utils/modules.php:6065 utils/modules.php:6121 utils/modules.php:6151
+#: utils/modules.php:6211 utils/modules.php:6252 utils/modules.php:6319
+#: utils/modules.php:6383 utils/modules.php:6497 utils/modules.php:6566
+#: utils/modules.php:6627
 msgid "Data"
 msgstr "Dáta"
 
 #: utils/modules.php:34 utils/modules.php:187 utils/modules.php:705
 #: utils/modules.php:1286 utils/modules.php:1334 utils/modules.php:1857
-#: utils/modules.php:2378 utils/modules.php:2426 utils/modules.php:2904
-#: utils/modules.php:2937 utils/modules.php:3393 utils/modules.php:3420
-#: utils/modules.php:3491 utils/modules.php:5770 utils/modules.php:5972
-#: utils/modules.php:6143
+#: utils/modules.php:2388 utils/modules.php:2436 utils/modules.php:2914
+#: utils/modules.php:2947 utils/modules.php:3403 utils/modules.php:3430
+#: utils/modules.php:3501 utils/modules.php:5780 utils/modules.php:5982
+#: utils/modules.php:6153
 msgid "Details"
 msgstr "Detaily"
 
-#: utils/modules.php:46 utils/modules.php:2294 utils/modules.php:2534
+#: utils/modules.php:46 utils/modules.php:2304 utils/modules.php:2544
 msgid "Workshop"
 msgstr "Prevádzkareň"
 
-#: utils/modules.php:50 utils/modules.php:2341 utils/modules.php:2538
+#: utils/modules.php:50 utils/modules.php:2351 utils/modules.php:2548
 msgid "Logbook"
 msgstr "Denník"
 
 #: utils/modules.php:62 utils/modules.php:190 utils/modules.php:445
 #: utils/modules.php:710 utils/modules.php:1254 utils/modules.php:1290
-#: utils/modules.php:1339 utils/modules.php:2406 utils/modules.php:2727
-#: utils/modules.php:2921 utils/modules.php:2941 utils/modules.php:3397
-#: utils/modules.php:5078 utils/modules.php:5200 utils/modules.php:5414
+#: utils/modules.php:1339 utils/modules.php:2416 utils/modules.php:2737
+#: utils/modules.php:2931 utils/modules.php:2951 utils/modules.php:3407
+#: utils/modules.php:5088 utils/modules.php:5210 utils/modules.php:5424
 msgid "History, notes"
 msgstr "História, poznámky"
 
-#: utils/modules.php:71 utils/modules.php:199 utils/modules.php:1864
-#: utils/modules.php:2555 utils/modules.php:2799 utils/modules.php:3509
-#: utils/modules.php:4144 utils/modules.php:4266 utils/modules.php:5685
+#: utils/modules.php:71 utils/modules.php:199 utils/modules.php:1866
+#: utils/modules.php:2565 utils/modules.php:2809 utils/modules.php:3519
+#: utils/modules.php:4154 utils/modules.php:4276 utils/modules.php:5695
 msgid "Plot"
 msgstr ""
 
-#: utils/modules.php:81 utils/modules.php:209 utils/modules.php:1874
-#: utils/modules.php:2565 utils/modules.php:2809 utils/modules.php:3519
-#: utils/modules.php:4154 utils/modules.php:4276 utils/modules.php:5251
+#: utils/modules.php:81 utils/modules.php:209 utils/modules.php:1876
+#: utils/modules.php:2575 utils/modules.php:2819 utils/modules.php:3529
+#: utils/modules.php:4164 utils/modules.php:4286 utils/modules.php:5261
 msgid "Calendar"
 msgstr "Kalendár"
 
@@ -16930,18 +17052,18 @@ msgstr "Kalendár"
 msgid "Customers who favored"
 msgstr "Zákazníci"
 
-#: utils/modules.php:138 utils/modules.php:2458 utils/modules.php:2582
-#: utils/modules.php:2673 utils/modules.php:3109 utils/modules.php:3324
-#: utils/modules.php:3347 utils/modules.php:3376 utils/modules.php:3447
-#: utils/modules.php:3564 utils/modules.php:3711 utils/modules.php:3778
-#: utils/modules.php:3841 utils/modules.php:3907 utils/modules.php:4210
-#: utils/modules.php:4364 utils/modules.php:4426 utils/modules.php:4595
-#: utils/modules.php:4598 utils/modules.php:4689 utils/modules.php:4692
-#: utils/modules.php:5792 utils/modules.php:5817 utils/modules.php:6009
-#: utils/modules.php:6072 utils/modules.php:6095 utils/modules.php:6124
-#: utils/modules.php:6159 utils/modules.php:6284 utils/modules.php:6348
-#: utils/modules.php:6414 utils/modules.php:6494 utils/modules.php:6517
-#: utils/modules.php:6562 utils/modules.php:6581 utils/modules.php:6632
+#: utils/modules.php:138 utils/modules.php:2468 utils/modules.php:2592
+#: utils/modules.php:2683 utils/modules.php:3119 utils/modules.php:3334
+#: utils/modules.php:3357 utils/modules.php:3386 utils/modules.php:3457
+#: utils/modules.php:3574 utils/modules.php:3721 utils/modules.php:3788
+#: utils/modules.php:3851 utils/modules.php:3917 utils/modules.php:4220
+#: utils/modules.php:4374 utils/modules.php:4436 utils/modules.php:4605
+#: utils/modules.php:4608 utils/modules.php:4699 utils/modules.php:4702
+#: utils/modules.php:5802 utils/modules.php:5827 utils/modules.php:6019
+#: utils/modules.php:6082 utils/modules.php:6105 utils/modules.php:6134
+#: utils/modules.php:6169 utils/modules.php:6294 utils/modules.php:6358
+#: utils/modules.php:6424 utils/modules.php:6504 utils/modules.php:6527
+#: utils/modules.php:6572 utils/modules.php:6591 utils/modules.php:6642
 msgid "History/Notes"
 msgstr "História/Poznámky"
 
@@ -16962,12 +17084,12 @@ msgstr ""
 
 #: utils/modules.php:270 utils/modules.php:411 utils/modules.php:587
 #: utils/modules.php:639 utils/modules.php:677 utils/modules.php:1027
-#: utils/modules.php:1079 utils/modules.php:1132 utils/modules.php:1887
-#: utils/modules.php:2696 utils/modules.php:3634 utils/modules.php:3646
-#: utils/modules.php:4069 utils/modules.php:4084 utils/modules.php:4457
-#: utils/modules.php:4719 utils/modules.php:5109 utils/modules.php:5180
-#: utils/modules.php:5213 utils/modules.php:5375 utils/modules.php:5667
-#: utils/modules.php:6207 utils/modules.php:6219
+#: utils/modules.php:1079 utils/modules.php:1132 utils/modules.php:1897
+#: utils/modules.php:2706 utils/modules.php:3644 utils/modules.php:3656
+#: utils/modules.php:4079 utils/modules.php:4094 utils/modules.php:4467
+#: utils/modules.php:4729 utils/modules.php:5119 utils/modules.php:5190
+#: utils/modules.php:5223 utils/modules.php:5385 utils/modules.php:5677
+#: utils/modules.php:6217 utils/modules.php:6229
 msgid "History"
 msgstr "História"
 
@@ -16998,31 +17120,31 @@ msgstr "Geografická Distribúcia"
 msgid "Correlations"
 msgstr "Lokácie"
 
-#: utils/modules.php:451 utils/modules.php:2733
+#: utils/modules.php:451 utils/modules.php:2743
 msgid "Interests"
 msgstr "Záujmy"
 
-#: utils/modules.php:453 utils/modules.php:2735
+#: utils/modules.php:453 utils/modules.php:2745
 #, fuzzy
 msgid "Customer's interests"
 msgstr "Pridaj Zákazníka"
 
-#: utils/modules.php:463 utils/modules.php:2745
+#: utils/modules.php:463 utils/modules.php:2755
 #, fuzzy
 msgid "Products ordered"
 msgstr "Produkty"
 
-#: utils/modules.php:468 utils/modules.php:2750
+#: utils/modules.php:468 utils/modules.php:2760
 #, fuzzy
 msgid "Families ordered"
 msgstr "Vyrobky na predaj"
 
-#: utils/modules.php:473 utils/modules.php:2755
+#: utils/modules.php:473 utils/modules.php:2765
 #, fuzzy
 msgid "Favourite products"
 msgstr "Produkty"
 
-#: utils/modules.php:478 utils/modules.php:2760
+#: utils/modules.php:478 utils/modules.php:2770
 #, fuzzy
 msgid "Search queries"
 msgstr "Zákazníci"
@@ -17054,417 +17176,417 @@ msgstr "Platobné transakcie"
 msgid "Websites (All stores)"
 msgstr "Webstránky (Všetky obchody)"
 
-#: utils/modules.php:1921
+#: utils/modules.php:1931
 msgid "Products database"
 msgstr "Databáza produktov"
 
-#: utils/modules.php:1935
+#: utils/modules.php:1945
 #, fuzzy
 msgid "Products categories"
 msgstr "Produkty"
 
-#: utils/modules.php:1990 utils/modules.php:2317
+#: utils/modules.php:2000 utils/modules.php:2327
 msgid "Analytics"
 msgstr "Analytika"
 
-#: utils/modules.php:2008 utils/modules.php:2017
+#: utils/modules.php:2018 utils/modules.php:2027
 msgid "Queries"
 msgstr "Otázky"
 
-#: utils/modules.php:2011
+#: utils/modules.php:2021
 #, fuzzy
 msgid "Search Queries"
 msgstr "Zákazníci"
 
-#: utils/modules.php:2020
+#: utils/modules.php:2030
 msgid "Search queries goruped by keywords"
 msgstr ""
 
-#: utils/modules.php:2025
+#: utils/modules.php:2035
 msgid "Search History"
 msgstr "Hľadať Históriu"
 
-#: utils/modules.php:2028
+#: utils/modules.php:2038
 #, fuzzy
 msgid "List of all search queries"
 msgstr "Zákazníci"
 
-#: utils/modules.php:2060
+#: utils/modules.php:2070
 #, fuzzy
 msgid "OOS Reminders"
 msgstr "Objednavky"
 
-#: utils/modules.php:2063
+#: utils/modules.php:2073
 #, fuzzy
 msgid "Out of stock reminders"
 msgstr "Vyrobky na predaj"
 
-#: utils/modules.php:2069 utils/modules.php:5850
+#: utils/modules.php:2079 utils/modules.php:5860
 msgid "Requests"
 msgstr "Požiadavky"
 
-#: utils/modules.php:2072
+#: utils/modules.php:2082
 #, fuzzy
 msgid "Out of stock notifications requests"
 msgstr "Vyrobky na predaj"
 
-#: utils/modules.php:2080
+#: utils/modules.php:2090
 msgid "Customers who ask for a out of stock notification"
 msgstr ""
 
-#: utils/modules.php:2088
+#: utils/modules.php:2098
 #, fuzzy
 msgid "Out of stock notifications grouped by product"
 msgstr "Vyrobky na predaj"
 
-#: utils/modules.php:2107
+#: utils/modules.php:2117
 msgid "Colours"
 msgstr "Farby"
 
-#: utils/modules.php:2114
+#: utils/modules.php:2124
 msgid "Fonts"
 msgstr "Písma"
 
-#: utils/modules.php:2134 utils/modules.php:2155
+#: utils/modules.php:2144 utils/modules.php:2165
 msgid "Templates"
 msgstr "Vzory"
 
-#: utils/modules.php:2176
+#: utils/modules.php:2186
 #, fuzzy
 msgid "In process web pages"
 msgstr "Pridaj Zákazníka"
 
-#: utils/modules.php:2181
+#: utils/modules.php:2191
 msgid "Ready web pages"
 msgstr "Pripravené webstránky"
 
-#: utils/modules.php:2186
+#: utils/modules.php:2196
 msgid "Online web pages"
 msgstr "Webstránky online"
 
-#: utils/modules.php:2192
+#: utils/modules.php:2202
 msgid "Offline web pages"
 msgstr "Webstránky offline"
 
-#: utils/modules.php:2199
+#: utils/modules.php:2209
 #, fuzzy
 #| msgid "Web pages"
 msgid "Web pages's groups"
 msgstr "Webstránky"
 
-#: utils/modules.php:2307
+#: utils/modules.php:2317
 #, fuzzy
 msgid "Email HTML templates"
 msgstr "Emailová Adresa"
 
-#: utils/modules.php:2430 utils/modules.php:2946
+#: utils/modules.php:2440 utils/modules.php:2956
 msgid "Allowances"
 msgstr ""
 
-#: utils/modules.php:2651 utils/modules.php:5360
+#: utils/modules.php:2661 utils/modules.php:5370
 #, fuzzy
 msgid "Upload Records"
 msgstr "Import zo súboru"
 
-#: utils/modules.php:3065
+#: utils/modules.php:3075
 #, fuzzy
 msgid "Manufacture dashboard"
 msgstr "Domov"
 
-#: utils/modules.php:3136
+#: utils/modules.php:3146
 msgid "materials"
 msgstr "materiály"
 
-#: utils/modules.php:3157
+#: utils/modules.php:3167
 msgid "Task"
 msgstr "Úloha"
 
-#: utils/modules.php:3173
+#: utils/modules.php:3183
 msgid "New task"
 msgstr "Nová úloha"
 
-#: utils/modules.php:3202 utils/modules.php:3963
+#: utils/modules.php:3212 utils/modules.php:3973
 msgid "General settings"
 msgstr "Všeobecné nastavenia"
 
-#: utils/modules.php:3317 utils/modules.php:6065
+#: utils/modules.php:3327 utils/modules.php:6075
 msgid "Terms and conditions"
 msgstr "Obchodné podmienky"
 
-#: utils/modules.php:3413
+#: utils/modules.php:3423
 msgid "agent"
 msgstr "agent"
 
-#: utils/modules.php:3424 utils/modules.php:5977
+#: utils/modules.php:3434 utils/modules.php:5987
 #, fuzzy
 msgid "Agent's suppliers"
 msgstr "dodávatelia"
 
-#: utils/modules.php:3430 utils/modules.php:5984
+#: utils/modules.php:3440 utils/modules.php:5994
 #, fuzzy
 msgid "Agent's Parts"
 msgstr "Heslo"
 
-#: utils/modules.php:3442 utils/modules.php:6002
+#: utils/modules.php:3452 utils/modules.php:6012
 #, fuzzy
 msgid "Agent's PO"
 msgstr "Heslo"
 
-#: utils/modules.php:3494
+#: utils/modules.php:3504
 #, fuzzy
 msgid "Part's sales"
 msgstr "Vyrobky na predaj"
 
-#: utils/modules.php:3500
+#: utils/modules.php:3510
 #, fuzzy
 msgid "Purchases/Sales"
 msgstr "Objednavky"
 
-#: utils/modules.php:3536 utils/modules.php:6147
+#: utils/modules.php:3546 utils/modules.php:6157
 #, fuzzy
 msgid "Supplier's Parts"
 msgstr "Dodavatelia"
 
-#: utils/modules.php:3616 utils/modules.php:4439 utils/modules.php:5137
-#: utils/modules.php:6189
+#: utils/modules.php:3626 utils/modules.php:4449 utils/modules.php:5147
+#: utils/modules.php:6199
 msgid "new attachment"
 msgstr "nová príloha"
 
-#: utils/modules.php:3677 utils/modules.php:3684 utils/modules.php:3744
-#: utils/modules.php:3751 utils/modules.php:3874 utils/modules.php:3880
-#: utils/modules.php:6250 utils/modules.php:6257 utils/modules.php:6381
-#: utils/modules.php:6387
+#: utils/modules.php:3687 utils/modules.php:3694 utils/modules.php:3754
+#: utils/modules.php:3761 utils/modules.php:3884 utils/modules.php:3890
+#: utils/modules.php:6260 utils/modules.php:6267 utils/modules.php:6391
+#: utils/modules.php:6397
 #, fuzzy
 msgid "Purchase Orders"
 msgstr "Objednavky"
 
-#: utils/modules.php:3810 utils/modules.php:6317
+#: utils/modules.php:3820 utils/modules.php:6327
 #, fuzzy
 msgid "Purchase orders / deliveries"
 msgstr "Vyrobky na predaj"
 
-#: utils/modules.php:3823 utils/modules.php:4333 utils/modules.php:6330
+#: utils/modules.php:3833 utils/modules.php:4343 utils/modules.php:6340
 #, fuzzy
 msgid "Supplier's deliveries"
 msgstr "Dodavatelia"
 
-#: utils/modules.php:3970
+#: utils/modules.php:3980
 #, fuzzy
 msgid "Email template"
 msgstr "Emailová Adresa"
 
-#: utils/modules.php:4053
+#: utils/modules.php:4063
 #, fuzzy
 msgid "Retail barcodes"
 msgstr "Vyrobky na predaj"
 
-#: utils/modules.php:4074
+#: utils/modules.php:4084
 #, fuzzy
 msgid "Products/Parts"
 msgstr "Vyrobky na predaj"
 
-#: utils/modules.php:4093 utils/modules.php:4100
+#: utils/modules.php:4103 utils/modules.php:4110
 #, fuzzy
 msgid "Part's categories"
 msgstr "Vyrobky na predaj"
 
-#: utils/modules.php:4192
+#: utils/modules.php:4202
 #, fuzzy
 msgid "Product families"
 msgstr "Vyrobky na predaj"
 
-#: utils/modules.php:4303
+#: utils/modules.php:4313
 #, fuzzy
 msgid "Stock history chart"
 msgstr "Vyrobky na predaj"
 
-#: utils/modules.php:4404
+#: utils/modules.php:4414
 #, fuzzy
 msgid "new part"
 msgstr "Heslo"
 
-#: utils/modules.php:4515
+#: utils/modules.php:4525
 msgid "Chart"
 msgstr "Graf"
 
-#: utils/modules.php:4577
+#: utils/modules.php:4587
 #, fuzzy
 msgid "Warehouse details"
 msgstr "Objednavky"
 
-#: utils/modules.php:4590
+#: utils/modules.php:4600
 #, fuzzy
 msgid "Part-Locations"
 msgstr "Lokácie"
 
-#: utils/modules.php:4652
+#: utils/modules.php:4662
 msgid "new warehouse"
 msgstr "nový sklad"
 
-#: utils/modules.php:4671
+#: utils/modules.php:4681
 #, fuzzy
 msgid "Location detais"
 msgstr "Lokácie"
 
-#: utils/modules.php:4787 utils/modules.php:4788 utils/modules.php:4800
-#: utils/modules.php:4801
+#: utils/modules.php:4797 utils/modules.php:4798 utils/modules.php:4810
+#: utils/modules.php:4811
 msgid "Activity/Performance"
 msgstr ""
 
-#: utils/modules.php:4807 utils/modules.php:4845
+#: utils/modules.php:4817 utils/modules.php:4855
 #, fuzzy
 #| msgid "Picker & packer assigned"
 msgid "Pickers & Packers"
 msgstr "Picker & packer assigned"
 
-#: utils/modules.php:4854
+#: utils/modules.php:4864
 msgid "Geographic Sales"
 msgstr "Geografické Predaje"
 
-#: utils/modules.php:4857
+#: utils/modules.php:4867
 #, fuzzy
 #| msgid "Geographic Sales"
 msgid "Geographic Sales Report"
 msgstr "Geografické Predaje"
 
-#: utils/modules.php:4863
+#: utils/modules.php:4873
 #, fuzzy
 msgid "Sales Components"
 msgstr "Emailová Adresa"
 
-#: utils/modules.php:4910 utils/modules.php:4913
+#: utils/modules.php:4920 utils/modules.php:4923
 msgid "Tax Reports"
 msgstr "Daňové Reporty"
 
-#: utils/modules.php:4923
+#: utils/modules.php:4933
 #, fuzzy
 msgid "No Tax Report"
 msgstr "Reporty"
 
-#: utils/modules.php:4929 utils/modules.php:4932
+#: utils/modules.php:4939 utils/modules.php:4942
 #, fuzzy
 msgid "Intrastat"
 msgstr "Emailová Adresa"
 
-#: utils/modules.php:4980
+#: utils/modules.php:4990
 msgid "Ex Employees"
 msgstr "Ex Zamestnanci"
 
-#: utils/modules.php:5030
+#: utils/modules.php:5040
 #, fuzzy
 msgid "Working Areas"
 msgstr "Import zo súboru"
 
-#: utils/modules.php:5036
+#: utils/modules.php:5046
 #, fuzzy
 msgid "Company departments"
 msgstr "Import zo súboru"
 
-#: utils/modules.php:5047
+#: utils/modules.php:5057
 msgid "Organizational chart"
 msgstr "Organizačný graf"
 
-#: utils/modules.php:5068
+#: utils/modules.php:5078
 msgid "Today timesheet"
 msgstr "Dnešný rozvrh"
 
-#: utils/modules.php:5124
+#: utils/modules.php:5134
 msgid "new employee"
 msgstr "nový zamestnanec"
 
-#: utils/modules.php:5149 utils/modules.php:5161
+#: utils/modules.php:5159 utils/modules.php:5171
 #, fuzzy
 msgid "new system user"
 msgstr "Uzivatelia"
 
-#: utils/modules.php:5227
+#: utils/modules.php:5237
 msgid "new contractor"
 msgstr "Nový kontraktor"
 
-#: utils/modules.php:5256
+#: utils/modules.php:5266
 msgid "Months"
 msgstr "Mesiace"
 
-#: utils/modules.php:5262
+#: utils/modules.php:5272
 msgid "Weeks"
 msgstr "Týždne"
 
-#: utils/modules.php:5272
+#: utils/modules.php:5282
 #, fuzzy
 #| msgid "Employees"
 msgid "Employes'"
 msgstr "Zamestnanci"
 
-#: utils/modules.php:5303
+#: utils/modules.php:5313
 msgid "Import"
 msgstr "Import"
 
-#: utils/modules.php:5305
+#: utils/modules.php:5315
 #, fuzzy
 msgid "Import timesheet record"
 msgstr "Import zo súboru"
 
-#: utils/modules.php:5309 utils/modules.php:5310
+#: utils/modules.php:5319 utils/modules.php:5320
 msgid "API"
 msgstr "API"
 
-#: utils/modules.php:5409
+#: utils/modules.php:5419
 msgid "My details"
 msgstr "Moje detaily"
 
-#: utils/modules.php:5420 utils/modules.php:5775 utils/modules.php:5778
-#: utils/modules.php:5809 utils/modules.php:5812
+#: utils/modules.php:5430 utils/modules.php:5785 utils/modules.php:5788
+#: utils/modules.php:5819 utils/modules.php:5822
 msgid "Login history"
 msgstr "Prihlasovacia hitória"
 
-#: utils/modules.php:5499
+#: utils/modules.php:5509
 msgid "Account details"
 msgstr "Detaily účtu"
 
-#: utils/modules.php:5513
+#: utils/modules.php:5523
 #, fuzzy
 msgid "Users categories"
 msgstr "Vyrobky na predaj"
 
-#: utils/modules.php:5518
+#: utils/modules.php:5528
 msgid "Deleted users"
 msgstr "Vymazaný užívatelia"
 
-#: utils/modules.php:5527
+#: utils/modules.php:5537
 #, fuzzy
 msgid "Order's Index"
 msgstr "Objednavky"
 
-#: utils/modules.php:5538
+#: utils/modules.php:5548
 msgid "Orders list"
 msgstr "Zoznam objednávok"
 
-#: utils/modules.php:5543
+#: utils/modules.php:5553
 msgid "Delivery notes list"
 msgstr "Dodacie listy"
 
-#: utils/modules.php:5548
+#: utils/modules.php:5558
 msgid "Invoice list"
 msgstr "Zoznam faktúr"
 
-#: utils/modules.php:5732
+#: utils/modules.php:5742
 msgid "Login History"
 msgstr "Prihlasovacia Hitória"
 
-#: utils/modules.php:5750
+#: utils/modules.php:5760
 msgid "Warehouse users"
 msgstr "Skladový užívatelia"
 
-#: utils/modules.php:5783 utils/modules.php:5786
+#: utils/modules.php:5793 utils/modules.php:5796
 msgid "API keys"
 msgstr ""
 
-#: utils/modules.php:5833
+#: utils/modules.php:5843
 #, fuzzy
 msgid "New API"
 msgstr "Heslo"
 
-#: utils/modules.php:5950
+#: utils/modules.php:5960
 #, fuzzy
 #| msgid "About us"
 msgid "About"
@@ -18154,7 +18276,73 @@ msgstr[0] "%s oddelenie"
 msgstr[1] "%s oddelenia"
 msgstr[2] "%s oddelení"
 
-#: utils/table_functions.php:377
+#: utils/table_functions.php:367
+#, fuzzy, php-format
+#| msgid "Modify Order in Basket"
+msgid "%s order in basket"
+msgid_plural "%s orders in basket"
+msgstr[0] "Upraviť Objednávku v Koši"
+msgstr[1] "Upraviť Objednávku v Koši"
+msgstr[2] "Upraviť Objednávku v Koši"
+
+#: utils/table_functions.php:371
+#, fuzzy, php-format
+msgid "%s order submitted (Not paid)"
+msgid_plural "%s orders submitted (Not paid)"
+msgstr[0] "Vyrobky na predaj"
+msgstr[1] "Vyrobky na predaj"
+msgstr[2] "Vyrobky na predaj"
+
+#: utils/table_functions.php:375
+#, fuzzy, php-format
+msgid "%s order submitted (Paid)"
+msgid_plural "%s orders submitted (Paid)"
+msgstr[0] "Vyrobky na predaj"
+msgstr[1] "Vyrobky na predaj"
+msgstr[2] "Vyrobky na predaj"
+
+#: utils/table_functions.php:379
+#, fuzzy, php-format
+msgid "%s order in warehouse"
+msgid_plural "%s orders in warehouse"
+msgstr[0] "Objednavky"
+msgstr[1] "Objednavky"
+msgstr[2] "Objednavky"
+
+#: utils/table_functions.php:383
+#, fuzzy, php-format
+msgid "%s order in warehouse (With Alerts)"
+msgid_plural "%s orders in warehouse (with Alerts)"
+msgstr[0] "Objednavky"
+msgstr[1] "Objednavky"
+msgstr[2] "Objednavky"
+
+#: utils/table_functions.php:387
+#, fuzzy, php-format
+msgid "%s order invoiced"
+msgid_plural "%s orders invoiced"
+msgstr[0] "Objednavky"
+msgstr[1] "Objednavky"
+msgstr[2] "Objednavky"
+
+#: utils/table_functions.php:391
+#, fuzzy, php-format
+msgid "%s order to invoice"
+msgid_plural "%s orders to invoice"
+msgstr[0] "Objednavky"
+msgstr[1] "Objednavky"
+msgstr[2] "Objednavky"
+
+#: utils/table_functions.php:395
+#, fuzzy, php-format
+#| msgid "Dispatched"
+msgid "%s order dispatched today"
+msgid_plural "%s orders dispatched today"
+msgstr[0] "Odoslané"
+msgstr[1] "Odoslané"
+msgstr[2] "Odoslané"
+
+#: utils/table_functions.php:409
 #, php-format
 msgid "%s customer of %s"
 msgid_plural "%s customers of %s"
@@ -18162,7 +18350,7 @@ msgstr[0] "%s zákazník z %s"
 msgstr[1] "%s zákazníci z %s"
 msgstr[2] "%s zákazníkov z %s"
 
-#: utils/table_functions.php:382 utils/table_functions.php:414
+#: utils/table_functions.php:414 utils/table_functions.php:446
 #, php-format
 msgid "%s order of %s"
 msgid_plural "%s orders of %s"
@@ -18170,7 +18358,7 @@ msgstr[0] "%s objednávka z %s"
 msgstr[1] "%s objednávky z %s"
 msgstr[2] "%s objednávok z %s"
 
-#: utils/table_functions.php:386
+#: utils/table_functions.php:418
 #, php-format
 msgid "%s store of %s"
 msgid_plural "%s stores of %s"
@@ -18178,7 +18366,7 @@ msgstr[0] "%s obchod z %s"
 msgstr[1] "%s obchody z %s"
 msgstr[2] "%s obchodov z %s"
 
-#: utils/table_functions.php:391
+#: utils/table_functions.php:423
 #, php-format
 msgid "%s department of %s"
 msgid_plural "%s departments of %s"
@@ -18186,7 +18374,7 @@ msgstr[0] "%s oddelenie z %s"
 msgstr[1] "%s oddelenia z %s"
 msgstr[2] "%s oddelení z %s"
 
-#: utils/table_functions.php:397
+#: utils/table_functions.php:429
 #, php-format
 msgid "%s family of %s"
 msgid_plural "%s families of %s"
@@ -18194,7 +18382,7 @@ msgstr[0] "%s rodina z %s"
 msgstr[1] "%s rodiny z %s"
 msgstr[2] "%s rodín z %s"
 
-#: utils/table_functions.php:403
+#: utils/table_functions.php:435
 #, php-format
 msgid "%s product of %s"
 msgid_plural "%s products of %s"
@@ -18202,7 +18390,7 @@ msgstr[0] "%s produkt z %s"
 msgstr[1] "%s produkty z %s"
 msgstr[2] "%s produktov z %s"
 
-#: utils/table_functions.php:409
+#: utils/table_functions.php:441
 #, php-format
 msgid "%s category of %s"
 msgid_plural "%s categories of %s"
@@ -18210,7 +18398,7 @@ msgstr[0] "%s kategória z %s"
 msgstr[1] "%s kategórie z %s"
 msgstr[2] "%s kategórií z %s"
 
-#: utils/table_functions.php:418
+#: utils/table_functions.php:450
 #, php-format
 msgid "%s item of %s"
 msgid_plural "%s items of %s"
@@ -18218,7 +18406,7 @@ msgstr[0] "%s položka %s"
 msgstr[1] "%s položky %s"
 msgstr[2] "%s položiek %s"
 
-#: utils/table_functions.php:423
+#: utils/table_functions.php:455
 #, php-format
 msgid "%s invoice of %s"
 msgid_plural "%s invoices of %s"
@@ -18226,7 +18414,7 @@ msgstr[0] "%s faktúra z %s"
 msgstr[1] "%s faktúry z %s"
 msgstr[2] "%s faktúr z %s"
 
-#: utils/table_functions.php:429
+#: utils/table_functions.php:461
 #, php-format
 msgid "%s delivery note of %s"
 msgid_plural "%s delivery notes of %s"
@@ -18234,7 +18422,7 @@ msgstr[0] "%s dodací list z %s"
 msgstr[1] "%s dodacie listy z %s"
 msgstr[2] "%s dodacích listov z %s"
 
-#: utils/table_functions.php:434
+#: utils/table_functions.php:466
 #, php-format
 msgid "%s part of %s"
 msgid_plural "%s parts of %s"
@@ -18242,7 +18430,7 @@ msgstr[0] "%s produkt z %s"
 msgstr[1] "%s produkty z %s"
 msgstr[2] "%s produktov z %s"
 
-#: utils/table_functions.php:439
+#: utils/table_functions.php:471
 #, php-format
 msgid "%s discontinued part of %s"
 msgid_plural "%s discontinued parts of %s"
@@ -18250,7 +18438,7 @@ msgstr[0] "%s vyradený produkt z %s"
 msgstr[1] "%s vyradené produkty z %s"
 msgstr[2] "%s vyradených produktov z %s"
 
-#: utils/table_functions.php:445
+#: utils/table_functions.php:477
 #, php-format
 msgid "%s supplier's part of %s"
 msgid_plural "%s supplier's parts of %s"
@@ -18258,7 +18446,7 @@ msgstr[0] "%s produkt dodávateľa z %s"
 msgstr[1] "%s produkty dodávateľa z %s"
 msgstr[2] "%s produktov dodávateľa z %s"
 
-#: utils/table_functions.php:451
+#: utils/table_functions.php:483
 #, php-format
 msgid "%s website of %s"
 msgid_plural "%s websites of %s"
@@ -18266,7 +18454,7 @@ msgstr[0] "%s webstránka z %s"
 msgstr[1] "%s webstránky z %s"
 msgstr[2] "%s webstránok z %s"
 
-#: utils/table_functions.php:457
+#: utils/table_functions.php:489
 #, php-format
 msgid "%s warehouse of %s"
 msgid_plural "%s warehouses of %s"
@@ -18274,7 +18462,7 @@ msgstr[0] "%s sklad z %s"
 msgstr[1] "%s sklady z %s"
 msgstr[2] "%s skladov z %s"
 
-#: utils/table_functions.php:463
+#: utils/table_functions.php:495
 #, php-format
 msgid "%s supplier of %s"
 msgid_plural "%s suppliers of %s"
@@ -18282,7 +18470,7 @@ msgstr[0] "%s dodávateľ z %s"
 msgstr[1] "%s dodávatelia z %s"
 msgstr[2] "%s dodávateľov z %s"
 
-#: utils/table_functions.php:469
+#: utils/table_functions.php:501
 #, php-format
 msgid "%s employee of %s"
 msgid_plural "%s employees of %s"
@@ -18290,7 +18478,7 @@ msgstr[0] "%s zamestnanec z %s"
 msgstr[1] "%s zamestnanci z %s"
 msgstr[2] "%s zamestnancov z %s"
 
-#: utils/table_functions.php:475
+#: utils/table_functions.php:507
 #, php-format
 msgid "%s ex employee of %s"
 msgid_plural "%s ex employees of %s"
@@ -18298,7 +18486,7 @@ msgstr[0] "%s ex zamestnanec %s"
 msgstr[1] "%s ex zamestnanci %s"
 msgstr[2] "%s ex zamestnancov %s"
 
-#: utils/table_functions.php:481
+#: utils/table_functions.php:513
 #, php-format
 msgid "%s contractor of %s"
 msgid_plural "%s contractors of %s"
@@ -18306,7 +18494,7 @@ msgstr[0] "%s kontraktor z %s"
 msgstr[1] "%s kontraktori z %s"
 msgstr[2] "%s kontraktorov z %s"
 
-#: utils/table_functions.php:486
+#: utils/table_functions.php:518
 #, php-format
 msgid "%s user of %s"
 msgid_plural "%s users of %s"
@@ -18314,7 +18502,7 @@ msgstr[0] "%s užívateľ z %s"
 msgstr[1] "%s užívatelia z %s"
 msgstr[2] "%s užívateľov z %s"
 
-#: utils/table_functions.php:491
+#: utils/table_functions.php:523
 #, fuzzy, php-format
 #| msgid "%s user of %s"
 #| msgid_plural "%s users of %s"
@@ -18324,7 +18512,7 @@ msgstr[0] "%s užívateľ z %s"
 msgstr[1] "%s užívatelia z %s"
 msgstr[2] "%s užívateľov z %s"
 
-#: utils/table_functions.php:496
+#: utils/table_functions.php:528
 #, php-format
 msgid "%s report of %s"
 msgid_plural "%s reports of %s"
@@ -18332,7 +18520,7 @@ msgstr[0] "%s report z %s"
 msgstr[1] "%s reporty z %s"
 msgstr[2] "%s reportov z %s"
 
-#: utils/table_functions.php:501
+#: utils/table_functions.php:533
 #, fuzzy, php-format
 msgid "%s session of %s"
 msgid_plural "%s sessions of %s"
@@ -18340,7 +18528,7 @@ msgstr[0] "Uzivatel"
 msgstr[1] "Uzivatel"
 msgstr[2] "Uzivatel"
 
-#: utils/table_functions.php:506
+#: utils/table_functions.php:538
 #, php-format
 msgid "%s list of %s"
 msgid_plural "%s lists of %s"
@@ -18348,7 +18536,7 @@ msgstr[0] "%s zoznam z %s"
 msgstr[1] "%s zoznamy z %s"
 msgstr[2] "%s zoznamov z %s"
 
-#: utils/table_functions.php:511
+#: utils/table_functions.php:543
 #, fuzzy, php-format
 msgid "%s customer with favourites of %s"
 msgid_plural "%s customers with favourites of %s"
@@ -18356,7 +18544,7 @@ msgstr[0] "Pridaj Zákazníka"
 msgstr[1] "Pridaj Zákazníka"
 msgstr[2] "Pridaj Zákazníka"
 
-#: utils/table_functions.php:517
+#: utils/table_functions.php:549
 #, fuzzy, php-format
 #| msgid "%s product favored"
 #| msgid_plural "%s products favored"
@@ -18366,7 +18554,7 @@ msgstr[0] "%s uprednostnený produkt"
 msgstr[1] "%s uprednostnené produkty"
 msgstr[2] "%s uprednostnených produktov"
 
-#: utils/table_functions.php:522
+#: utils/table_functions.php:554
 #, fuzzy, php-format
 #| msgid "%s user of %s"
 #| msgid_plural "%s users of %s"
@@ -18376,7 +18564,7 @@ msgstr[0] "%s užívateľ z %s"
 msgstr[1] "%s užívatelia z %s"
 msgstr[2] "%s užívateľov z %s"
 
-#: utils/table_functions.php:527
+#: utils/table_functions.php:559
 #, php-format
 msgid "%s search of %s"
 msgid_plural "%s searches of %s"
@@ -18384,7 +18572,7 @@ msgstr[0] "%s hľadanie z %s"
 msgstr[1] "%s hľadania z %s"
 msgstr[2] "%s hľadaní z %s"
 
-#: utils/table_functions.php:533 utils/table_functions.php:601
+#: utils/table_functions.php:565 utils/table_functions.php:633
 #, php-format
 msgid "%s transaction of %s"
 msgid_plural "%s transaction of %s"
@@ -18392,7 +18580,7 @@ msgstr[0] "%s transakcia z %s"
 msgstr[1] "%s transakcií z %s"
 msgstr[2] "%s transakcií z %s"
 
-#: utils/table_functions.php:539
+#: utils/table_functions.php:571
 #, php-format
 msgid "%s payment account of %s"
 msgid_plural "%s payment accounts of %s"
@@ -18400,7 +18588,7 @@ msgstr[0] "%s platobný účet z %s"
 msgstr[1] "%s platobné účty z %s"
 msgstr[2] "%s platobných účtov z %s"
 
-#: utils/table_functions.php:545
+#: utils/table_functions.php:577
 #, php-format
 msgid "%s timesheet of %s"
 msgid_plural "%s timesheets of %s"
@@ -18408,7 +18596,7 @@ msgstr[0] "%s rozvrh z %s"
 msgstr[1] "%s rozvrhy z %s"
 msgstr[2] "%s rozvrhov z %s"
 
-#: utils/table_functions.php:551
+#: utils/table_functions.php:583
 #, php-format
 msgid "%s overtime of %s"
 msgid_plural "%s overtimes of %s"
@@ -18416,7 +18604,7 @@ msgstr[0] "%s nadčas z %s"
 msgstr[1] "%s nadčasy z %s"
 msgstr[2] "%s nadčasov z %s"
 
-#: utils/table_functions.php:557
+#: utils/table_functions.php:589
 #, php-format
 msgid "%s attachment of %s"
 msgid_plural "%s attachments of %s"
@@ -18424,7 +18612,7 @@ msgstr[0] "%s príloha z %s"
 msgstr[1] "%s prílohy z %s"
 msgstr[2] "%s príloh z %s"
 
-#: utils/table_functions.php:562
+#: utils/table_functions.php:594
 #, php-format
 msgid "%s year of %s"
 msgid_plural "%s years of %s"
@@ -18432,7 +18620,7 @@ msgstr[0] "%s rok z %s"
 msgstr[1] "%s roky z %s"
 msgstr[2] "%s rokov z %s"
 
-#: utils/table_functions.php:566
+#: utils/table_functions.php:598
 #, php-format
 msgid "%s month of %s"
 msgid_plural "%s months of %s"
@@ -18440,7 +18628,7 @@ msgstr[0] "%s mesiac z %s"
 msgstr[1] "%s mesiace z %s"
 msgstr[2] "%s mesiacov z %s"
 
-#: utils/table_functions.php:570
+#: utils/table_functions.php:602
 #, php-format
 msgid "%s week of %s"
 msgid_plural "%s weeks of %s"
@@ -18448,7 +18636,7 @@ msgstr[0] "%s týždeň z %s"
 msgstr[1] "%s týždne z %s"
 msgstr[2] "%s týždňov z %s"
 
-#: utils/table_functions.php:574
+#: utils/table_functions.php:606
 #, php-format
 msgid "%s day of %s"
 msgid_plural "%s days of %s"
@@ -18456,7 +18644,7 @@ msgstr[0] "%s deň z %s"
 msgstr[1] "%s dni z %s"
 msgstr[2] "%s dní z %s"
 
-#: utils/table_functions.php:579
+#: utils/table_functions.php:611
 #, php-format
 msgid "%s operative of %s"
 msgid_plural "%s operatives of %s"
@@ -18464,7 +18652,7 @@ msgstr[0] "%s operátor z %s"
 msgstr[1] "%s operátori z %s"
 msgstr[2] "%s operátorov z %s"
 
-#: utils/table_functions.php:585
+#: utils/table_functions.php:617
 #, fuzzy, php-format
 #| msgid "%s timesheet of %s"
 #| msgid_plural "%s timesheets of %s"
@@ -18474,7 +18662,7 @@ msgstr[0] "%s rozvrh z %s"
 msgstr[1] "%s rozvrhy z %s"
 msgstr[2] "%s rozvrhov z %s"
 
-#: utils/table_functions.php:591
+#: utils/table_functions.php:623
 #, fuzzy, php-format
 msgid "%s data set of %s"
 msgid_plural "%s data sets of %s"
@@ -18482,7 +18670,7 @@ msgstr[0] "Objednavky"
 msgstr[1] "Objednavky"
 msgstr[2] "Objednavky"
 
-#: utils/table_functions.php:596
+#: utils/table_functions.php:628
 #, php-format
 msgid "%s image of %s"
 msgid_plural "%s images of %s"
@@ -18490,7 +18678,7 @@ msgstr[0] "%s obrázok z %s"
 msgstr[1] "%s obrázky z %s"
 msgstr[2] "%s obrázkov z %s"
 
-#: utils/table_functions.php:607
+#: utils/table_functions.php:639
 #, php-format
 msgid "%s campaign of %s"
 msgid_plural "%s campaigns of %s"
@@ -18498,7 +18686,7 @@ msgstr[0] "%s kampaň z %s"
 msgstr[1] "%s kampane z %s"
 msgstr[2] "%s kampaní z %s"
 
-#: utils/table_functions.php:612
+#: utils/table_functions.php:644
 #, php-format
 msgid "%s offer of %s"
 msgid_plural "%s offers of %s"
@@ -18506,7 +18694,7 @@ msgstr[0] "%s ponuka z %s"
 msgstr[1] "%s ponuky z %s"
 msgstr[2] "%s ponúk z %s"
 
-#: utils/table_functions.php:617
+#: utils/table_functions.php:649
 #, php-format
 msgid "%s purchase order of %s"
 msgid_plural "%s purchase orders of %s"
@@ -18514,7 +18702,7 @@ msgstr[0] "%s objednávka %s"
 msgstr[1] "%s objednávky %s"
 msgstr[2] "%s objednávok %s"
 
-#: utils/table_functions.php:623
+#: utils/table_functions.php:655
 #, fuzzy, php-format
 #| msgid "%s week of %s"
 #| msgid_plural "%s weeks of %s"
@@ -18524,7 +18712,7 @@ msgstr[0] "%s týždeň z %s"
 msgstr[1] "%s týždne z %s"
 msgstr[2] "%s týždňov z %s"
 
-#: utils/table_functions.php:628
+#: utils/table_functions.php:660
 #, php-format
 msgid "%s agent of %s"
 msgid_plural "%s agents of %s"
@@ -18532,7 +18720,7 @@ msgstr[0] "%s agent z %s"
 msgstr[1] "%s agenti z %s"
 msgstr[2] "%s agentov z %s"
 
-#: utils/table_functions.php:633
+#: utils/table_functions.php:665
 #, fuzzy, php-format
 msgid "%s user category of %s"
 msgid_plural "%s user categories of %s"
@@ -18540,7 +18728,7 @@ msgstr[0] "Pridaj Zákazníka"
 msgstr[1] "Pridaj Zákazníka"
 msgstr[2] "Pridaj Zákazníka"
 
-#: utils/table_functions.php:639
+#: utils/table_functions.php:671
 #, php-format
 msgid "%s delivery of %s"
 msgid_plural "%s deliveries of %s"
@@ -18548,7 +18736,7 @@ msgstr[0] "%s doručený z %s"
 msgstr[1] "%s doručené z %s"
 msgstr[2] "%s doručených z %s"
 
-#: utils/table_functions.php:645
+#: utils/table_functions.php:677
 #, php-format
 msgid "%s deleted employee of %s"
 msgid_plural "%s deleted employees of %s"
@@ -18556,7 +18744,7 @@ msgstr[0] "%s vymazaný zamestnanec z %s"
 msgstr[1] "%s vymazaný zamestnanci z %s"
 msgstr[2] "%s vymazaných zamestnancov z %s"
 
-#: utils/table_functions.php:651
+#: utils/table_functions.php:683
 #, php-format
 msgid "%s deleted contractor of %s"
 msgid_plural "%s deleted contractors of %s"
@@ -18564,7 +18752,7 @@ msgstr[0] "%s vymazaný dodávateľ %s"
 msgstr[1] "%s vymazaný dodávatelia %s"
 msgstr[2] "%s vymazaných dodávateľov %s"
 
-#: utils/table_functions.php:657
+#: utils/table_functions.php:689
 #, fuzzy, php-format
 #| msgid "%s part location"
 #| msgid_plural "%s part locations"
@@ -18574,7 +18762,7 @@ msgstr[0] "%s lokácia produktu"
 msgstr[1] "%s lokácií produktov"
 msgstr[2] "%s lokácií produktov"
 
-#: utils/table_functions.php:663
+#: utils/table_functions.php:695
 #, php-format
 msgid "%s part location with errors of %s"
 msgid_plural "%s part locations with errors of %s"
@@ -18582,7 +18770,7 @@ msgstr[0] "%s lokácia produktu s chybami %s"
 msgstr[1] "%s lokácie produktu s chybami %s "
 msgstr[2] "%s lokácií produktu s chybami %s "
 
-#: utils/table_functions.php:669
+#: utils/table_functions.php:701
 #, fuzzy, php-format
 #| msgid "%s product of %s"
 #| msgid_plural "%s products of %s"
@@ -18592,7 +18780,7 @@ msgstr[0] "%s produkt z %s"
 msgstr[1] "%s produkty z %s"
 msgstr[2] "%s produktov z %s"
 
-#: utils/table_functions.php:675
+#: utils/table_functions.php:707
 #, php-format
 msgid "%s material of %s"
 msgid_plural "%s materials of %s"
@@ -18600,7 +18788,7 @@ msgstr[0] "%s materiál z %s"
 msgstr[1] "%s materiály z %s"
 msgstr[2] "%s materiálov z %s"
 
-#: utils/table_functions.php:681
+#: utils/table_functions.php:713
 #, php-format
 msgid "%s picking location needed to replenish for ordered parts of %s"
 msgid_plural "%s picking locations needed to replenish for ordered parts of %s"
@@ -18608,7 +18796,7 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#: utils/table_functions.php:687
+#: utils/table_functions.php:719
 #, php-format
 msgid "%s online web page of %s"
 msgid_plural "%s online web pages of %s"
@@ -18616,7 +18804,7 @@ msgstr[0] "%s online webstránka z %s"
 msgstr[1] "%s online webstránky z %s"
 msgstr[2] "%s online webstránok z %s"
 
-#: utils/table_functions.php:693
+#: utils/table_functions.php:725
 #, php-format
 msgid "%s offline web page of %s"
 msgid_plural "%s offline web pages of %s"
@@ -18624,7 +18812,7 @@ msgstr[0] "%s offline webstránka z %s"
 msgstr[1] "%s offline webstránky z %s"
 msgstr[2] "%s offline webstránok z %s"
 
-#: utils/table_functions.php:699
+#: utils/table_functions.php:731
 #, fuzzy, php-format
 #| msgid "%s list of %s"
 #| msgid_plural "%s lists of %s"
@@ -18634,7 +18822,7 @@ msgstr[0] "%s zoznam z %s"
 msgstr[1] "%s zoznamy z %s"
 msgstr[2] "%s zoznamov z %s"
 
-#: utils/table_functions.php:704
+#: utils/table_functions.php:736
 #, php-format
 msgid "%s record of %s"
 msgid_plural "%s records of %s"
@@ -18663,47 +18851,12 @@ msgstr "Nesprávne IČ DPH"
 msgid "Valid Tax Number"
 msgstr "Správne IČ DPH"
 
-#, fuzzy
-#~| msgid "not picked (other)"
-#~ msgid "Not picked (other)"
-#~ msgstr "nevybrané (iné)"
-
-#~ msgid "Invoice No."
-#~ msgstr "Číslo Faktúry"
-
-#, fuzzy
-#~| msgid "Credit Note"
-#~ msgid "Credit Note No."
-#~ msgstr "Kreditná poznámka"
-
-#, fuzzy
-#~| msgid "Refund"
-#~ msgid "Refund No."
-#~ msgstr "Refundácia"
-
-#, fuzzy
-#~| msgid "Adjusts"
-#~ msgid "Adjust"
-#~ msgstr "Nastaviť"
-
 #~ msgid "Camapign"
 #~ msgstr "Kampaň"
 
 #, fuzzy
 #~ msgid "Orders dashboard"
 #~ msgstr "Domov"
-
-#, fuzzy
-#~ msgid "Order Picking Aid"
-#~ msgstr "Objednavky"
-
-#, fuzzy
-#~| msgid "items"
-#~ msgid "item"
-#~ msgid_plural "items"
-#~ msgstr[0] "položky"
-#~ msgstr[1] "položky"
-#~ msgstr[2] "položky"
 
 #~ msgid "a unknown country"
 #~ msgstr "neznáma krajina"
@@ -18715,31 +18868,6 @@ msgstr "Správne IČ DPH"
 #, fuzzy
 #~ msgid "Orders ready to dispatch"
 #~ msgstr "Produkty"
-
-#, fuzzy
-#~| msgid "units"
-#~ msgid "%d units"
-#~ msgstr "jednotky"
-
-#, fuzzy
-#~| msgid "packed in %ds"
-#~ msgid "packed in %d's"
-#~ msgstr "balené v %ds"
-
-#, fuzzy
-#~ msgid "%s unit per carton"
-#~ msgid_plural "%s units per carton"
-#~ msgstr[0] "Operacia nenajdena"
-#~ msgstr[1] "Operacia nenajdena"
-#~ msgstr[2] "Operacia nenajdena"
-
-#, fuzzy
-#~| msgid "per carton"
-#~ msgid "%s pack per carton"
-#~ msgid_plural "%s packs per carton"
-#~ msgstr[0] "za kartón"
-#~ msgstr[1] "za kartón"
-#~ msgstr[2] "za kartón"
 
 #~ msgid "Confirm Payment"
 #~ msgstr "Potvrdenie Platby"
