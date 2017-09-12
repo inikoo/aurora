@@ -105,7 +105,7 @@ if (!$is_cached) {
     require_once 'external_libs/mobile_detect/Mobile_Detect.php';
     $detect = new Mobile_Detect;
 
-    if ($detect->isMobile()) {
+    if ($detect->isMobile() or   $detect->isTablet() ) {
         $detected_device = 'mobile';
     } else {
         $detected_device = 'desktop';
