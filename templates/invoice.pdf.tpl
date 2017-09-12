@@ -292,6 +292,12 @@ div.inline { float:left; }
 	<div style="text-align: center; font-style: italic;">
 		{include file="string:{$store->get('Store Invoice Message')}" } 
 	</div>
-	<br> 
-	</body>
+	<br>
+
+<div style="text-align: center; font-style: italic;">
+    {$extra_comments}
+</div>
+<br>
+
+</body>
 	</html>

@@ -529,11 +529,14 @@ class Invoice extends DB_Table {
                 exit;
             }
 
-            // print_r($data);
+           // print_r($data);
 
             $sql = sprintf(
                 "    INSERT INTO `Invoice Tax Dimension` (`Invoice Key`) VALUES (%d)", $this->id
             );
+
+            //print "$sql\n";
+
             $this->db->exec($sql);
 
 
@@ -549,14 +552,14 @@ class Invoice extends DB_Table {
                     "    UPDATE `Invoice Tax Dimension` SET `%s`=%.2f WHERE `Invoice Key`=%d", addslashes($tax_code), $tax, $this->id
                 );
                 $this->db->exec($sql);
-                //    print "$sql\n";
+                  // print "$sql\n";
                 $sql = sprintf(
                     "INSERT INTO `Invoice Tax Bridge` VALUES (%d,%s,%.2f,%s) ON DUPLICATE KEY UPDATE `Tax Amount`=%.2f, `Tax Base`=%s", $this->id, prepare_mysql($tax_code), $tax,
                     prepare_mysql($is_base), $tax, prepare_mysql($is_base)
 
                 );
                 $this->db->exec($sql);
-                //   print "$sql\n";
+                   //print "$sql\n";
 
 
             }
