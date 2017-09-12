@@ -78,7 +78,7 @@
         <script type="text/javascript" src="/js/edit_webpage_edit.js"></script>
 
         <script type="text/javascript" src="/js/new.js"></script>
-        <script type="text/javascript" src="/js/order.common.js"></script>
+        <script type="text/javascript" src="/js/order.common.js?v120917"></script>
         <script type="text/javascript" src="/js/supplier.order.js"></script>
         <script type="text/javascript" src="/js/supplier.delivery.js"></script>
         <script type="text/javascript" src="/js/part_locations.edit.js"></script>
