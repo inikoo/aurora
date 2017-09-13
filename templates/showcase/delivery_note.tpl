@@ -231,7 +231,7 @@
             </div>
         </div>
 
-        <div  style="text-align: center;border-bottom: 1px solid #ccc;padding:5px 0px;">
+        <div class="{if $delivery_note->get('State Index')<90 }hide{/if}" style="text-align: center;border-bottom: 1px solid #ccc;padding:5px 0px;">
            <a class="pdf_link" target='_blank' href="/pdf/dn.pdf.php?id={$delivery_note->id}"> <img style="width: 50px;height:16px" src="/art/pdf.gif"></a>
 
         </div>
