@@ -1481,7 +1481,8 @@ function move_MSDS_attachments($db) {
 
             print $row['Part SKU']."\n";
             $sql = sprintf(
-                'UPDATE `Attachment Bridge` SET `Subject`="Part" , `Attachment Subject Type`="MSDS" ,`Attachment Public`="Yes" ,`Attachment Caption`=%s WHERE `Attachment Bridge Key`=%s  ',
+                'UPDATE `Attachment Bridge` SET 
+ ,`Attachment Public`="Yes" ,`Attachment Caption`=%s WHERE `Attachment Bridge Key`=%s  ',
                 prepare_mysql('MSDS file'), $row['Part MSDS Attachment Bridge Key']
             );
             $db->exec($sql);

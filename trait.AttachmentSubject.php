@@ -23,19 +23,20 @@ trait AttachmentSubject {
         $attach = new Attachment('find', $data, 'create');
 
 
-        $subject_key = $this->id;
+        //$subject_key = $this->id;
 
 
-        $subject = $this->get_object_name();
+        //$subject = $this->get_object_name();
 
 
         if ($attach->id) {
 
 
             $sql = sprintf(
-                "INSERT INTO `Attachment Bridge` (`Attachment Key`,`Subject`,`Subject Key`,`Attachment File Original Name`,`Attachment Caption`,`Attachment Subject Type`) VALUES (%d,%s,%d,%s,%s,%s)",
+                "INSERT INTO `Attachment Bridge` (`Attachment Key`,`Subject`,`Subject Key`,`Attachment File Original Name`,`Attachment Caption`,`Attachment Subject Type`,`Attachment Public`) VALUES (%d,%s,%d,%s,%s,%s,%s)",
                 $attach->id, prepare_mysql($this->get_object_name()), $this->id, prepare_mysql($raw_data['Attachment File Original Name']),
-                prepare_mysql($raw_data['Attachment Caption'], false), prepare_mysql($raw_data['Attachment Subject Type'])
+                prepare_mysql($raw_data['Attachment Caption'], false), prepare_mysql($raw_data['Attachment Subject Type']),
+                 prepare_mysql((isset($raw_data['Attachment Public'])?$raw_data['Attachment Public']:'No'))
 
 
             );
