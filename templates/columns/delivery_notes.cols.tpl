@@ -25,14 +25,7 @@ editable: false,
 sortType: "toggle",
 {if $sort_key=='number'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
-cell: Backgrid.StringCell.extend({
-events: {
-"click": function() {
-change_view('delivery_notes/'+this.model.get("store_key")+'/' + this.model.get("id")  )
-}
-},
-className: "link",
-})
+cell: Backgrid.HtmlCell.extend({ })
 }, {
 name: "date",
 label: "{t}Date creation{/t}",
@@ -47,14 +40,7 @@ name: "customer",
 label: "{t}Customer{/t}",
 sortType: "toggle",
 editable: false,
-cell: Backgrid.StringCell.extend({
-events: {
-"click": function() {
-change_view('customer/' + this.model.get("customer_key")  )
-}
-},
-className: "link",
-})
+cell: Backgrid.HtmlCell.extend({ })
 }, {
 name: "type",
 label: "{t}Type{/t}",
@@ -83,8 +69,19 @@ editable: false,
 defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='total_amount'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
-}]
+},
+
+{
+name: "notes",
+label: "",
+editable: false,
+
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+}
+
+]
 
 function change_table_view(view,save_state){}
