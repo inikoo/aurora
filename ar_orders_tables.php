@@ -1520,6 +1520,9 @@ function delivery_notes($_data, $db, $user) {
                 break;
             case 'Dispatched':
                 $state= _('Dispatched');
+                $notes=sprintf('<a class="pdf_link " target=\'_blank\' href="/pdf/dn.pdf.php?id=%d"> <img style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif"></a>',
+                               $data['Delivery Note Key']
+                );
                 break;
             case 'Cancelled':
                 $state= _('Cancelled');
