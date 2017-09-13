@@ -3657,6 +3657,8 @@ class Product extends Asset {
             $this->id
         );
 
+    //    print $sql;
+
 
         if ($result2 = $this->db->query($sql)) {
             foreach ($result2 as $row2) {

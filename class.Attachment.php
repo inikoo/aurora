@@ -18,10 +18,15 @@ class Attachment extends DB_Table {
     var $locations = false;
     var $compress = true;
 
-    function Attachment($arg1 = false, $arg2 = false, $arg3 = false) {
+    function Attachment($arg1 = false, $arg2 = false, $arg3 = false, $_db = false) {
 
-        global $db;
-        $this->db = $db;
+        if (!$_db) {
+            global $db;
+            $this->db = $db;
+        } else {
+            $this->db = $_db;
+        }
+
 
         $this->table_name    = 'Attachment';
         $this->ignore_fields = array('Attachment Key');
@@ -56,6 +61,10 @@ class Attachment extends DB_Table {
 
 
         $filename = $data['file'];
+
+
+
+
 
         $this->data['Attachment Data'] = addslashes(
             fread(fopen($filename, "r"), filesize($filename))
@@ -287,6 +296,8 @@ class Attachment extends DB_Table {
             $data[$_key] = $val;
         }
 
+       // print_r($raw_data);
+       // print_r($data);
 
         $sql = sprintf(
             "SELECT `Attachment Key` FROM `Attachment Dimension` WHERE `Attachment File Checksum`=%s", prepare_mysql($data['Attachment File Checksum'])
@@ -676,6 +687,13 @@ class Attachment extends DB_Table {
         }
     }
 
+    function save_to_file($file_path){
+
+        $this->get_data('id', $this->id, $with_data = true);
+
+        file_put_contents($file_path, $this->data['Attachment Data']);
+
+    }
 
 }
 
