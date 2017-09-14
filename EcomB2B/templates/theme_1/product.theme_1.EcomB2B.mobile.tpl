@@ -74,6 +74,25 @@
                     <h2 class="center-text">{$product->get('Name')}</h2>
 
                     {if $logged_in}
+
+
+                    {if $product->get('Web State')=='Out of Stock'}
+
+
+                        <div style="margin-top: 10px" class="notification-small  {if $product->get('Out of Stock Class')=='launching_soon'}bg-green-light{else}bg-red-light{/if} ">
+                            <strong class="{if $product->get('Out of Stock Class')=='launching_soon'}bg-green-dark{else}bg-red-dark{/if} "><i class="ion-information-circled"></i></strong>
+                            <p style="line-height: 50px;">
+                                {$product->get('Out of Stock Label')}
+                            </p>
+                        </div>
+
+
+
+
+                        </div>
+
+
+                    {elseif $product->get('Web State')=='For Sale'}
                     <div class="store-product-socials full-bottom " style="text-align: center">
 
 
@@ -89,6 +108,8 @@
                         </div>
 
                     </div>
+
+                     {/if}
                     {else}
 
                         <div class="notification-small bg-red-light tap-hide animate-right">
