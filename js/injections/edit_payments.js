@@ -280,7 +280,7 @@ function save_refund(element){
                 // $('#delete_payment_button_' + payment_key).html(data.msg).closest('td').addClass('hide').html('')
 
             } else if (data.state == '400') {
-                tr.removeClass('deleting_tr')
+               // tr.removeClass('deleting_tr')
                 swal(data.msg);
             }
 
