@@ -62,28 +62,26 @@
 
 
                         {if $next_product}
-
-                        <a class="parent_up" href="{$next_product.webpage_code}">
-                            <i class="fa fa-arrow-right" aria-hidden="true" title="" style="margin-left: 10px;"></i>
+                            <a class="parent_up" href="{$next_product.webpage_code}">
+                                <i class="fa fa-arrow-right" aria-hidden="true" title="" style="margin-left: 10px;"></i>
 
                             </a>
+                        {/if}
 
-                            {/if}
+                        {foreach from=$product->get_deal_components('objects') item=item key=key}
+                            <div class="discount_card">
+                                <span class="discount_icon">{$item->get('Deal Component Icon')}</span>
 
-                            {foreach from=$product->get_deal_components('objects') item=item key=key}
-                                <div class="discount_card">
-                                    <span class="discount_icon">{$item->get('Deal Component Icon')}</span>
+                                <span class="discount_name">{$item->get('Deal Component Name Label')}</span><br/>
+                                <span class="discount_term">{$item->get('Deal Component Term Label')}</span>
 
-                                    <span class="discount_name">{$item->get('Deal Component Name Label')}</span><br/>
-                                    <span class="discount_term">{$item->get('Deal Component Term Label')}</span>
+                                <span class="discount_allowance">{$item->get('Deal Component Allowance Label')}</span>
 
-                                    <span class="discount_allowance">{$item->get('Deal Component Allowance Label')}</span>
-
-                                </div>
-                            {/foreach}
+                            </div>
+                        {/foreach}
 
 
-                            <div style="clear: both"></div>
+                        <div style="clear: both"></div>
 
                     </div>
 
@@ -150,11 +148,11 @@
                                                 {if isset($customer)}
                                                     {assign 'reminder_key' {$product->get('Reminder Key',{$customer->id})} }
                                                     <div class="out_of_stock_row {$product->get('Out of Stock Class')}">
-    <span class="label">
-    {$product->get('Out of Stock Label')}
-        <span class="label sim_button "> <i reminder_key="{$reminder_key}" title="{if $reminder_key>0}{t}Click to remove notification{/t}{else}{t}Click to be notified by email{/t}{/if}"
+                                  <span class="label">
+                                    {$product->get('Out of Stock Label')}
+                                       <span class="label sim_button "> <i reminder_key="{$reminder_key}" title="{if $reminder_key>0}{t}Click to remove notification{/t}{else}{t}Click to be notified by email{/t}{/if}"
                                             class="reminder fa {if $reminder_key>0}fa-envelope{else}fa-envelope-o{/if}" aria-hidden="true"></i>  </span>
-    </span>
+                                            </span>
                                                     </div>
                                                 {/if}
 
@@ -242,6 +240,7 @@
 
 
                         }
+
 
                     </script>
 
