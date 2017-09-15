@@ -1706,6 +1706,36 @@ function search_customers($db, $account, $memcache_ip, $data) {
 
         }
 
+
+
+        $sql = sprintf(
+            "select `Customer Key`,`Customer Main Plain Email` from `Customer Dimension` where true $where_store and `Customer Main Plain Email` like '%s%%' limit 10 ", $q
+        );
+
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
+
+                if ($row['Customer Main Plain Email'] == $q) {
+                    $candidates[$row['Customer Key']] = 120;
+                } else {
+
+                    $len_name                         = strlen(
+                        $row['Customer Main Plain Email']
+                    );
+                    $len_q                            = strlen($q);
+                    $factor                           = $len_q / $len_name;
+                    $candidates[$row['Customer Key']] = 100 * $factor;
+                }
+
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            exit;
+        }
+
+
+
+
         $sql = sprintf(
             "select `Customer Key`,`Customer Tax Number` from `Customer Dimension` where true $where_store and `Customer Tax Number` like '%s%%' limit 10 ", $q
         );
@@ -1732,30 +1762,6 @@ function search_customers($db, $account, $memcache_ip, $data) {
         }
 
 
-        $sql = sprintf(
-            "select `Subject Key`,`Email` from `Email Bridge` EB  left join `Email Dimension` E on (EB.`Email Key`=E.`Email Key`) left join `Customer Dimension` CD on (CD.`Customer Key`=`Subject Key`) where true $where_store and `Subject Type`='Customer' and `Email`  like '%s%%' limit 100 ",
-            $q
-        );
-
-
-        if ($result = $db->query($sql)) {
-            foreach ($result as $row) {
-
-                if ($row['Email'] == $q) {
-                    $candidates[$row['Subject Key']] = 120;
-                } else {
-
-                    $len_name                        = strlen($row['Email']);
-                    $len_q                           = strlen($q);
-                    $factor                          = $len_q / $len_name;
-                    $candidates[$row['Subject Key']] = 100 * $factor;
-                }
-
-            }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            exit;
-        }
 
 
         $q_postal_code = preg_replace('/[^a-z^A-Z^\d]/', '', $q);
@@ -1764,6 +1770,8 @@ function search_customers($db, $account, $memcache_ip, $data) {
                 "select `Customer Key`,`Customer Main Plain Postal Code` from `Customer Dimension`where true $where_store and `Customer Main Plain Postal Code`!='' and `Customer Main Plain Postal Code` like '%s%%' limit 150",
                 addslashes($q_postal_code)
             );
+
+
 
             if ($result = $db->query($sql)) {
                 foreach ($result as $row) {
@@ -1790,52 +1798,6 @@ function search_customers($db, $account, $memcache_ip, $data) {
         }
 
 
-        $sql = sprintf(
-            "select `Subject Key`,`Contact Name`,`Contact Surname` from `Contact Bridge` EB  left join `Contact Dimension` E on (EB.`Contact Key`=E.`Contact Key`) left join `Customer Dimension` CD on (CD.`Customer Key`=`Subject Key`) where true $where_store and `Subject Type`='Customer' and `Contact Name` like '%s%%' limit 20",
-            $q
-        );
-
-        if ($result = $db->query($sql)) {
-            foreach ($result as $row) {
-
-                if ($row['Contact Name'] == $q) {
-                    $candidates[$row['Subject Key']] = 120;
-                } else {
-                    $len_name                        = $row['Contact Name'];
-                    $len_q                           = strlen($q);
-                    $factor                          = $len_name / $len_q;
-                    $candidates[$row['Subject Key']] = 100 * $factor;
-                }
-
-            }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            exit;
-        }
-
-
-        $sql = sprintf(
-            "select `Subject Key`,`Contact Name`,`Contact Surname` from `Contact Bridge` EB  left join `Contact Dimension` E on (EB.`Contact Key`=E.`Contact Key`) left join `Customer Dimension` CD on (CD.`Customer Key`=`Subject Key`) where true $where_store and `Subject Type`='Customer' and  `Contact Surname`  like '%s%%'  limit 20",
-            $q
-        );
-
-        if ($result = $db->query($sql)) {
-            foreach ($result as $row) {
-
-                if ($row['Contact Surname'] == $q) {
-                    $candidates[$row['Subject Key']] = 120;
-                } else {
-                    $len_name                        = $row['Contact Surname'];
-                    $len_q                           = strlen($q);
-                    $factor                          = $len_name / $len_q;
-                    $candidates[$row['Subject Key']] = 100 * $factor;
-                }
-
-            }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            exit;
-        }
 
 
         $sql = sprintf(
@@ -1881,6 +1843,33 @@ function search_customers($db, $account, $memcache_ip, $data) {
                     $len_q                            = strlen($q);
                     $factor                           = $len_q / $len_name;
                     $candidates[$row['Customer Key']] = 50 * $factor;
+                }
+
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            exit;
+        }
+
+
+
+        $sql = sprintf(
+            "select `Customer Key`,`Customer Main Contact Name` from `Customer Dimension` where true $where_store and `Customer Main Contact Name`  REGEXP '[[:<:]]%s' limit 100 ", $q
+        );
+
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
+
+                if ($row['Customer Main Contact Name'] == $q) {
+                    $candidates[$row['Customer Key']] = 35;
+                } else {
+
+                    $len_name                         = strlen(
+                        $row['Customer Main Contact Name']
+                    );
+                    $len_q                            = strlen($q);
+                    $factor                           = $len_q / $len_name;
+                    $candidates[$row['Customer Key']] = 30 * $factor;
                 }
 
             }
