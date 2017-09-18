@@ -209,6 +209,10 @@ class Website_User extends DB_Table {
             case 'Website User Handle':
                 $this->update_field($field, $value, $options);
                 break;
+            case 'Website User Password':
+            case 'Website User Password Hash':
+                $this->update_field($field, $value, 'no_history');
+                break;
 
             default:
 

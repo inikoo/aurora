@@ -103,6 +103,9 @@ class Public_Order extends DBW_Table {
                 $this->update_tax_number_valid($value);
                 break;
             case 'Order Invoice Address':
+
+
+
                 $this->update_address('Invoice', json_decode($value, true));
 
 

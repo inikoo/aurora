@@ -167,6 +167,8 @@ class WebAuth {
                 $customer_key           = $row['Website User Customer Key'];
 
 
+
+
                 //if (password_verify($password, ($row['Website User Password Hash'])) {
                 if ($row['Website User Password'] == $password) {
                     $tests['password'] = true;

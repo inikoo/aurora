@@ -521,17 +521,17 @@ class Subject extends DB_Table {
 
         if ($type == 'Delivery') {
 
-            $account = new Account();
+            $account = get_object('Account', '');
             $country = $account->get('Account Country 2 Alpha Code');
             $locale  = $account->get('Account Locale');
         } else {
 
             if ($this->get('Store Key')) {
-                $store   = new Store($this->get('Store Key'));
+                $store   = get_object('Store', $this->get('Store Key'));
                 $country = $store->get('Store Home Country Code 2 Alpha');
                 $locale  = $store->get('Store Locale');
             } else {
-                $account = new Account();
+                $account = get_object('Account', '');
                 $country = $account->get('Account Country 2 Alpha Code');
                 $locale  = $account->get('Account Locale');
             }
@@ -584,53 +584,122 @@ class Subject extends DB_Table {
 
 
         $this->update_field($this->table_name.' '.$type.' Address Formatted', $xhtml_address, 'no_history');
-        $this->update_field(
-            $this->table_name.' '.$type.' Address Postal Label', $postal_label_formatter->format($address), 'no_history'
-        );
+        $this->update_field($this->table_name.' '.$type.' Address Postal Label', $postal_label_formatter->format($address), 'no_history');
+
+        if ($this->table_name == 'Customer') {
+
+
+            if ($type == 'Invoice') {
+
+                $_value = $this->get('Customer Invoice Address');
+                if ($this->data['Customer Billing Address Link'] == 'Contact') {
+
+
+                    $metadata['no_propagate_addresses'] = true;
+                    $this->update_field_switcher('Customer Contact Address', $_value, 'no_history', $metadata);
+
+                    if ($this->data['Customer Delivery Address Link'] == 'Contact') {
+
+                        $this->update_field_switcher('Customer Delivery Address', $_value, 'no_history', $metadata);
+
+                    }
+
+
+                }
+                if ($this->data['Customer Delivery Address Link'] == 'Billing') {
+
+
+                    $metadata['no_propagate_addresses'] = true;
+
+                    $this->update_field_switcher('Customer Delivery Address', $_value, 'no_history', $metadata);
+                }
+
+            }
+
+           // print $type;
+
+            if ($type == 'Invoice') {
+                $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN ("InBasket")   AND `Order Customer Key`=%d ', $this->id);
+               // print "$sql\n";
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+                      //  print_r($row);
+                        $order = get_object('Order', $row['Order Key']);
+
+                        $order->editor = $this->editor;
+
+
+
+                        $order->update(array('Order Invoice Address' => $this->get('Customer Invoice Address')), $options, array('no_propagate_customer' => true));
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+            } elseif ($type == 'Delivery') {
+                $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN ("InBasket")   AND `Order Customer Key`=%d ', $this->id);
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+                        $order         = get_object('Order', $row['Order Key']);
+                        $order->editor = $this->editor;
+
+                        $order->update(array('Order Delivery Address' => $this->get('Customer Delivery Address')), $options, array('no_propagate_customer' => true));
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+            }
+
+
+        }
+
 
     }
 
     function update_subject_field_switcher($field, $value, $options = '', $metadata) {
 
-
         switch ($field) {
 
+            /*
+                        // todo  delete this it will be doo in their class i think
+                        case($this->table_name.' User Handle'):
+                        case($this->table_name.' User Password'):
+                        case($this->table_name.' User Active'):
 
-            case($this->table_name.' User Handle'):
-            case($this->table_name.' User Password'):
-            case($this->table_name.' User Active'):
-
-                $this->get_user_data();
+                            $this->get_user_data();
 
 
-                $system_user         = new User(
-                    $this->get($this->table_name.' User Key')
-                );
-                $system_user->editor = $this->editor;
-                $user_field          = preg_replace(
-                    '/^'.$this->table_name.' /', '', $field
-                );
-                //$old_value=$this->get($user_field);
+                            $system_user         = new User(
+                                $this->get($this->table_name.' User Key')
+                            );
+                            $system_user->editor = $this->editor;
+                            $user_field          = preg_replace(
+                                '/^'.$this->table_name.' /', '', $field
+                            );
+                            //$old_value=$this->get($user_field);
 
-                $system_user->update(array($user_field => $value), $options);
-                $this->error   = $system_user->error;
-                $this->msg     = $system_user->msg;
-                $this->updated = $system_user->updated;
-                $this->get_user_data();
+                            $system_user->update(array($user_field => $value), $options);
+                            $this->error   = $system_user->error;
+                            $this->msg     = $system_user->msg;
+                            $this->updated = $system_user->updated;
+                            $this->get_user_data();
 
-                return true;
-                break;
-
+                            return true;
+                            break;
+            */
             case 'History Note':
 
 
                 $this->add_note($value, '', '', $metadata['deletable']);
                 break;
-            case $this->table_name.' Contact Address':
-                $this->update_address('Contact', json_decode($value, true));
+          //  case $this->table_name.' Contact Address':
+            //    $this->update_address('Contact', json_decode($value, true));
 
-                return true;
-                break;
+              //  return true;
+               // break;
 
             case $this->table_name.' Main Plain Email':
 
@@ -836,9 +905,7 @@ class Subject extends DB_Table {
                 $old_value = $this->get('Company Name');
 
                 if ($value == '' and $this->data[$this->table_name.' Main Contact Name'] == '') {
-                    $this->msg   = _(
-                        "Company name can't be emply if the contact name is empty as well"
-                    );
+                    $this->msg   = _("Company name can't be empty if the contact name is empty as well");
                     $this->error = true;
 
                     return true;
@@ -864,19 +931,30 @@ class Subject extends DB_Table {
                         'Contact', 'no_history'
                     );
 
+
                 }
 
                 if ($this->table_name == 'Customer') {
 
-                    if ($old_value == $this->get(
-                            'Invoice Address Organization'
-                        )) {
-                        $this->update_field(
-                            $this->table_name.' Invoice Address Organization', $value, 'no_history'
-                        );
-                        $this->update_address_formatted_fields(
-                            'Invoice', 'no_history'
-                        );
+
+                    $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE `Order Customer Key`=%d AND `Order State`="InBasket"', $this->id);
+                    if ($result = $this->db->query($sql)) {
+                        foreach ($result as $row) {
+                            $order         = get_object('Order', $row['Order Key']);
+                            $order->editor = $this->editor;
+                            $order->update(array('Order Customer Name' => $this->get('Name')));
+                        }
+                    } else {
+                        print_r($error_info = $this->db->errorInfo());
+                        print "$sql\n";
+                        exit;
+                    }
+
+
+                    if ($old_value == $this->get('Invoice Address Organization')) {
+                        $this->update_field($this->table_name.' Invoice Address Organization', $value, 'no_history');
+                        $this->update_address_formatted_fields('Invoice', 'no_history');
+
 
                     }
                 }
@@ -923,6 +1001,7 @@ class Subject extends DB_Table {
                     if ($old_value == $this->get('Invoice Address Recipient')) {
                         $this->update_field($this->table_name.' Invoice Address Recipient', $value, 'no_history');
                         $this->update_address_formatted_fields('Invoice', 'no_history');
+
 
                     }
                 }
@@ -1181,9 +1260,7 @@ class Subject extends DB_Table {
 
     function update_email($field, $value, $options) {
 
-        if ($value == '' and count(
-                $other_emails_data = $this->get_other_emails_data()
-            ) > 0) {
+        if ($value == '' and count($other_emails_data = $this->get_other_emails_data()) > 0) {
             $old_value = $this->get($field);
             foreach ($other_emails_data as $other_key => $other_value) {
                 break;
@@ -1276,12 +1353,25 @@ class Subject extends DB_Table {
                 $website_user = get_object('Website_User', $this->get('Customer Website User Key'));
 
 
-                $website_user->editor=$this->editor;
-                $website_user->update(array('Website User Handle'=>$value),$options);
+                $website_user->editor = $this->editor;
+                $website_user->update(array('Website User Handle' => $value), $options);
 
 
-            }
-            else {
+                $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE `Order Customer Key`=%d AND `Order State`="InBasket"', $this->id);
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+                        $order         = get_object('Order', $row['Order Key']);
+                        $order->editor = $this->editor;
+                        $order->update(array('Order Email' => $value));
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+
+            } else {
 
                 $sql = sprintf(
                     'SELECT `%s Key`,`%s Name` FROM `%s Dimension`  WHERE `%s Main Plain Email`=%s AND `%s Key`!=%d ', addslashes($this->table_name), addslashes($this->table_name),

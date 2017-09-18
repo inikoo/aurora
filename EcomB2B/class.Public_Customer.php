@@ -140,12 +140,22 @@ class Public_Customer extends DBW_Table {
         $values = '';
 
 
-
         foreach ($this->data as $key => $value) {
             $keys .= ",`".$key."`";
-            if (in_array($key,array('Customer First Contacted Date','Customer Lost Date','Customer Last Invoiced Dispatched Date','Customer First Invoiced Order Date','Customer Last Invoiced Order Date','Customer Tax Number Validation Date','Customer Last Order Date','Customer First Order Date'))) {
-                $values.=','.prepare_mysql($value, true);
-            }else {
+            if (in_array(
+                $key, array(
+                        'Customer First Contacted Date',
+                        'Customer Lost Date',
+                        'Customer Last Invoiced Dispatched Date',
+                        'Customer First Invoiced Order Date',
+                        'Customer Last Invoiced Order Date',
+                        'Customer Tax Number Validation Date',
+                        'Customer Last Order Date',
+                        'Customer First Order Date'
+                    )
+            )) {
+                $values .= ','.prepare_mysql($value, true);
+            } else {
                 $values .= ','.prepare_mysql($value, false);
             }
         }
@@ -177,11 +187,10 @@ class Public_Customer extends DBW_Table {
 
             $this->update(
                 array(
-                    'Customer Main Plain Mobile'=>$this->get('Customer Main Plain Mobile'),
-                    'Customer Main Plain Telephone'=>$this->get('Customer Main Plain Telephone'),
-                    'Customer Main Plain FAX'=>$this->get('Customer Main Plain FAX'),
-                ),
-                'no_history'
+                    'Customer Main Plain Mobile'    => $this->get('Customer Main Plain Mobile'),
+                    'Customer Main Plain Telephone' => $this->get('Customer Main Plain Telephone'),
+                    'Customer Main Plain FAX'       => $this->get('Customer Main Plain FAX'),
+                ), 'no_history'
 
             );
 
@@ -294,6 +303,39 @@ class Public_Customer extends DBW_Table {
     function get($key) {
 
         switch ($key) {
+
+            case $this->table_name.' Contact Address':
+            case $this->table_name.' Invoice Address':
+            case $this->table_name.' Delivery Address':
+
+                if ($key == $this->table_name.' Contact Address') {
+                    $type = 'Contact';
+                } elseif ($key == $this->table_name.' Delivery Address') {
+                    $type = 'Delivery';
+                } else {
+                    $type = 'Invoice';
+                }
+
+                $address_fields = array(
+
+                    'Address Recipient'            => $this->get($type.' Address Recipient'),
+                    'Address Organization'         => $this->get($type.' Address Organization'),
+                    'Address Line 1'               => $this->get($type.' Address Line 1'),
+                    'Address Line 2'               => $this->get($type.' Address Line 2'),
+                    'Address Sorting Code'         => $this->get($type.' Address Sorting Code'),
+                    'Address Postal Code'          => $this->get($type.' Address Postal Code'),
+                    'Address Dependent Locality'   => $this->get($type.' Address Dependent Locality'),
+                    'Address Locality'             => $this->get($type.' Address Locality'),
+                    'Address Administrative Area'  => $this->get($type.' Address Administrative Area'),
+                    'Address Country 2 Alpha Code' => $this->get(
+                        $type.' Address Country 2 Alpha Code'
+                    ),
+
+
+                );
+
+                return json_encode($address_fields);
+                break;
 
             case 'Fiscal Name':
             case 'Invoice Name':
@@ -585,12 +627,12 @@ class Public_Customer extends DBW_Table {
 
                 if (empty($metadata['no_propagate_orders'])) {
 
-                    $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN ("Basket")   AND `Order Customer Key`=%d ', $this->id);
+                    $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN ("InBasket")   AND `Order Customer Key`=%d ', $this->id);
                     if ($result = $this->db->query($sql)) {
                         foreach ($result as $row) {
                             $order = get_object('Order', $row['Order Key']);
 
-
+                            $order->editor = $this->editor;
                             $order->update(array('Order Invoice Address' => $value), $options, array('no_propagate_customer' => true));
                         }
                     } else {
@@ -606,10 +648,11 @@ class Public_Customer extends DBW_Table {
 
                 $this->update_address('Delivery', json_decode($value, true));
 
-                $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN ("Basket")   AND `Order Customer Key`=%d ', $this->id);
+                $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN ("InBasket")   AND `Order Customer Key`=%d ', $this->id);
                 if ($result = $this->db->query($sql)) {
                     foreach ($result as $row) {
-                        $order = get_object('Order', $row['Order Key']);
+                        $order         = get_object('Order', $row['Order Key']);
+                        $order->editor = $this->editor;
 
                         $order->update(array('Order Delivery Address' => $value), $options, array('no_propagate_customer' => true));
                     }
@@ -638,10 +681,10 @@ class Public_Customer extends DBW_Table {
                         if ($this->data['Customer Contact Address Country 2 Alpha Code'] == '' or $this->data['Customer Contact Address Country 2 Alpha Code'] == 'XX') {
 
                             if ($this->get('Store Key')) {
-                                $store   = get_object('Store',$this->data['Customer Store Key']);
+                                $store   = get_object('Store', $this->data['Customer Store Key']);
                                 $country = $store->get('Home Country Code 2 Alpha');
                             } else {
-                                $account = get_object('Account',1);
+                                $account = get_object('Account', 1);
                                 $country = $account->get('Account Country 2 Alpha Code');
                             }
 
@@ -708,9 +751,245 @@ class Public_Customer extends DBW_Table {
 
                 break;
 
+
             case 'Customer Company Name':
+
+
+                $old_value = $this->get('Company Name');
+
+                if ($value == '' and $this->data[$this->table_name.' Main Contact Name'] == '') {
+                    $this->msg   = _("Company name can't be empty if the contact name is empty as well");
+                    $this->error = true;
+
+                    return true;
+                }
+
+                $this->update_field($field, $value, $options);
+                if ($value == '') {
+                    $this->update_field(
+                        $this->table_name.' Name', $this->data[$this->table_name.' Main Contact Name'], 'no_history'
+                    );
+
+                } else {
+                    $this->update_field(
+                        $this->table_name.' Name', $value, 'no_history'
+                    );
+                }
+
+                if ($old_value == $this->get('Contact Address Organization')) {
+                    $this->update_field(
+                        $this->table_name.' Contact Address Organization', $value, 'no_history'
+                    );
+                    $this->update_address_formatted_fields(
+                        'Contact', 'no_history'
+                    );
+
+
+                }
+
+
+                $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE `Order Customer Key`=%d AND `Order State`="InBasket"', $this->id);
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+                        $order         = get_object('Order', $row['Order Key']);
+                        $order->editor = $this->editor;
+                        $order->update(array('Order Customer Name' => $this->get('Name')));
+
+
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+
+                //if ($old_value == $this->get('Customer Invoice Address Organization')) {
+
+                //   print $this->table_name.' Invoice Address Organization'.'--> '.$value;
+                $this->update_field($this->table_name.' Invoice Address Organization', $value, 'no_history');
+                $this->update_address_formatted_fields('Invoice', 'no_history');
+
+                $this->update_field($this->table_name.' Contact Address Organization', $value, 'no_history');
+                $this->update_address_formatted_fields('Contact', 'no_history');
+
+                if ($this->data['Customer Delivery Address Link'] != 'None') {
+                    $this->update_field($this->table_name.' Delivery Address Organization', $value, 'no_history');
+                    $this->update_address_formatted_fields('Delivery', 'no_history');
+
+                }
+
+                //  }
+
+                $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN ("InBasket")   AND `Order Customer Key`=%d ', $this->id);
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+                        $order         = get_object('Order', $row['Order Key']);
+                        $order->editor = $this->editor;
+
+
+                        $_value = $this->get('Customer Invoice Address');
+
+
+                        $order->update(array('Order Invoice Address' => $_value), 'no_history', array('no_propagate_customer' => true));
+
+
+                        if ($this->data['Customer Delivery Address Link'] != 'None') {
+                            $order->update(array('Order Delivery Address' => $_value), 'no_history', array('no_propagate_customer' => true));
+                        }
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+                break;
             case 'Customer Main Contact Name':
+              //  $old_value = $this->get('Main Contact Name');
+
+                if ($value == '' and $this->data[$this->table_name.' Company Name'] == '') {
+                    $this->msg   = _("Contact name can't be empty if the company name is empty");
+                    $this->error = true;
+
+                    return;
+                }
+
+                $this->update_field($field, $value, $options);
+                if ($this->data[$this->table_name.' Company Name'] == '') {
+                    $this->update_field($this->table_name.' Name', $value, 'no_history');
+
+                }
+
+
+                $this->update_field($this->table_name.' Invoice Address Recipient', $value, 'no_history');
+                $this->update_address_formatted_fields('Invoice', 'no_history');
+
+                $this->update_field($this->table_name.' Contact Address Recipient', $value, 'no_history');
+                $this->update_address_formatted_fields('Contact', 'no_history');
+
+                if ($this->data['Customer Delivery Address Link'] != 'None') {
+                    $this->update_field($this->table_name.' Delivery Address Recipient', $value, 'no_history');
+                    $this->update_address_formatted_fields('Delivery', 'no_history');
+
+                }
+
+                //  }
+
+                $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN ("InBasket")   AND `Order Customer Key`=%d ', $this->id);
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+                        $order         = get_object('Order', $row['Order Key']);
+                        $order->editor = $this->editor;
+
+
+                        $_value = $this->get('Customer Invoice Address');
+
+
+                        $order->update(array('Order Invoice Address' => $_value), 'no_history', array('no_propagate_customer' => true));
+
+
+                        if ($this->data['Customer Delivery Address Link'] != 'None') {
+                            $order->update(array('Order Delivery Address' => $_value), 'no_history', array('no_propagate_customer' => true));
+                        }
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+
+                break;
+
             case 'Customer Main Plain Email':
+                if ($value == '') {
+                    $this->msg   = _("Email can't be empty");
+                    $this->error = true;
+
+                    return;
+                }
+
+                $sql = sprintf(
+                    'SELECT `%s Key`,`%s Name` FROM `%s Dimension`  WHERE `%s Main Plain Email`=%s AND `%s Store Key`=%d AND `%s Key`!=%d ', addslashes($this->table_name),
+                    addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), prepare_mysql($value), addslashes($this->table_name), $this->get('Store Key'),
+                    addslashes($this->table_name), $this->id
+                );
+
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+
+                        if ($this->table_name == 'Customer') {
+                            $msg = _('Another customer has this email');
+                        } else {
+                            $msg = _('Another object has this email');
+                        }
+
+                        $this->error = true;
+                        $this->msg   = $msg;
+
+                        return;
+                    }
+
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    exit;
+                }
+
+                $sql = sprintf(
+                    'SELECT `%s Key`,`%s Name` FROM `%s Other Email Dimension` LEFT JOIN `%s Dimension` ON (`%s Key`=`%s Other Email %s Key`) WHERE `%s Other Email Email`=%s AND `%s Other Email Store Key`=%d ',
+                    addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name),
+                    addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), prepare_mysql($value), addslashes($this->table_name), $this->get('Store Key')
+                );
+                //print "$sql\n";
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+
+                        if ($this->table_name == 'Customer') {
+                            if ($row[$this->table_name.' Key'] == $this->id) {
+                                $msg = _('Customer has already this email');
+                            } else {
+                                $msg = _('Another customer has this email');
+                            }
+                        } else {
+                            $msg = _('Another object has this email');
+                        }
+
+                        $this->error = true;
+                        $this->msg   = $msg;
+
+                        return;
+                    }
+
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    exit;
+                }
+
+                $this->update_field($field, $value, $options);
+
+                $website_user = get_object('Website_User', $this->get('Customer Website User Key'));
+
+                $website_user->editor = $this->editor;
+                $website_user->update(array('Website User Handle' => $value), $options);
+
+
+                $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE `Order Customer Key`=%d AND `Order State`="InBasket"', $this->id);
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+                        $order         = get_object('Order', $row['Order Key']);
+                        $order->editor = $this->editor;
+                        $order->update(array('Order Email' => $value));
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+
+
+                break;
             case 'Customer Registration Number':
             case 'Customer Location':
             case 'Customer Tax Number Valid':
@@ -719,6 +998,7 @@ class Public_Customer extends DBW_Table {
             case 'Customer Tax Number Validation Source':
             case 'Customer Tax Number Validation Message':
             case 'Customer Website User Key':
+            case 'Customer Invoice Address Organization':
 
                 $this->update_field($field, $value, $options);
 
@@ -743,7 +1023,7 @@ class Public_Customer extends DBW_Table {
 
                 break;
             default:
-                print ">>>".$field."\n";
+                // print ">>>".$field."\n";
 
         }
     }

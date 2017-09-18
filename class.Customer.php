@@ -487,6 +487,10 @@ class Customer extends Subject {
             case('Tax Code'):
                 return $this->data['Customer Tax Category Code'];
                 break;
+            case 'Web Login Password':
+                return '<i class="fa fa-asterisk" aria-hidden="true"></i><i class="fa fa-asterisk" aria-hidden="true"></i><i class="fa fa-asterisk" aria-hidden="true"></i><i class="fa fa-asterisk" aria-hidden="true"></i><i class="fa fa-asterisk" aria-hidden="true"></i>
+';
+                break;
 
             default:
 
@@ -837,11 +841,24 @@ class Customer extends Subject {
         switch ($field) {
 
 
+            case 'Customer Web Login Password':
 
+                $website_user = get_object('Website_User', $this->get('Customer Website User Key'));
+
+
+                $website_user->editor=$this->editor;
+
+                $website_user->update(array('Website User Password'=>hash('sha256', $value)),'no_history');
+
+                $website_user->update(array('Website User Password Hash'=>password_hash(hash('sha256', $value), PASSWORD_DEFAULT, array('cost' => 12))),'no_history');
+
+                break;
             case 'Customer Contact Address':
 
-                $this->update_address('Contact', json_decode($value, true),$options);
 
+
+                $this->update_address('Contact', json_decode($value, true),$options);
+/*
 
                 if(  empty($metadata['no_propagate_addresses'])  ) {
 
@@ -863,7 +880,7 @@ class Customer extends Subject {
                     }
 
                 }
-
+*/
                 break;
 
 
@@ -873,7 +890,7 @@ class Customer extends Subject {
 
 
 //print_r(json_decode($value, true));
-
+/*
                 if(  empty($metadata['no_propagate_addresses'])  ) {
 
 
@@ -914,25 +931,15 @@ class Customer extends Subject {
                         exit;
                     }
                 }
-
+*/
                 break;
             case 'Customer Delivery Address':
 
 
 
-                $this->update_address('Delivery', json_decode($value, true));
+                $this->update_address('Delivery', json_decode($value, true),$options);
 
-                $sql=sprintf('select `Order Key` from `Order Dimension` where  `Order State` in ("InBasket")  and `Order Customer Key`=%d ',$this->id);
-                if ($result=$this->db->query($sql)) {
-                		foreach ($result as $row) {
-                           $order=get_object('Order',$row['Order Key']);
-                           $order->update(array('Order Delivery Address'=>$value),$options,array('no_propagate_customer'=>true) );
-                		}
-                }else {
-                		print_r($error_info=$this->db->errorInfo());
-                		print "$sql\n";
-                		exit;
-                }
+
 
 
 
