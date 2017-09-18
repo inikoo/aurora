@@ -1971,12 +1971,11 @@ function save_object_operation(type, element) {
         if (data.state == 200) {
 
             console.log(data)
+
             if (data.request != undefined) {
-                change_view(data.request)
+               change_view(data.request)
             } else {
-                change_view(state.request, {
-                    'reload_showcase': 1
-                })
+                change_view(state.request, {'reload_showcase': 1})
             }
 
         } else if (data.state == 400) {

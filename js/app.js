@@ -150,7 +150,7 @@ function change_view(_request, metadata) {
 
 
 
-
+console.log(request)
 
 
 
@@ -165,6 +165,9 @@ function change_view(_request, metadata) {
     $.getJSON(request, function (data) {
 
         //console.log(data);
+
+
+
         state = data.state;
 
         //console.log(data.state)
@@ -235,7 +238,7 @@ function change_view(_request, metadata) {
 
 
 
-        console.log(metadata)
+       // console.log(metadata)
 
 
         if(metadata.post_operations=='delivery_note.fast_track_packing'){

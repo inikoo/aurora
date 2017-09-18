@@ -2231,18 +2231,12 @@ class Customer extends Subject {
 
     }
 
-    function delete($note = '', $customer_id_prefix = '') {
+    function delete($note = '') {
 
+global $account;
 
-        //TODO
 
         $this->deleted        = false;
-        $deleted_company_keys = array();
-
-        $address_to_delete = array();
-        $emails_to_delete  = array();
-        $telecom_to_delete = array();
-
 
         $has_orders = false;
         $sql        = "SELECT count(*) AS total  FROM `Order Dimension` WHERE `Order Customer Key`=".$this->id;
@@ -2292,15 +2286,6 @@ class Customer extends Subject {
             "DELETE FROM `List Customer Bridge` WHERE `Customer Key`=%d", $this->id
         );
         $this->db->exec($sql);
-        $sql = sprintf(
-            "DELETE FROM `Customer Ship To Bridge` WHERE `Customer Key`=%d", $this->id
-        );
-        $this->db->exec($sql);
-
-        $sql = sprintf(
-            "DELETE FROM `Customer Billing To Bridge` WHERE `Customer Key`=%d", $this->id
-        );
-        $this->db->exec($sql);
 
         $sql = sprintf(
             "DELETE FROM `Customer Send Post` WHERE `Customer Key`=%d", $this->id
@@ -2310,31 +2295,9 @@ class Customer extends Subject {
             "DELETE FROM `Search Full Text Dimension` WHERE `Subject`='Customer' AND `Subject Key`=%d", $this->id
         );
         $this->db->exec($sql);
-        $sql = sprintf(
-            "DELETE FROM `Address Bridge` WHERE `Subject Type`='Customer' AND `Subject Key`=%d", $this->id
+               $sql = sprintf("DELETE FROM `Category Bridge` WHERE `Subject`='Customer' AND `Subject Key`=%d", $this->id
         );
         $this->db->exec($sql);
-        $sql = sprintf(
-            "DELETE FROM `Category Bridge` WHERE `Subject`='Customer' AND `Subject Key`=%d", $this->id
-        );
-        $this->db->exec($sql);
-        $sql = sprintf(
-            "DELETE FROM `Company Bridge` WHERE `Subject Type`='Customer' AND `Subject Key`=%d", $this->id
-        );
-        $this->db->exec($sql);
-        $sql = sprintf(
-            "DELETE FROM `Contact Bridge` WHERE `Subject Type`='Customer' AND `Subject Key`=%d", $this->id
-        );
-        $this->db->exec($sql);
-        $sql = sprintf(
-            "DELETE FROM `Email Bridge` WHERE `Subject Type`='Customer' AND `Subject Key`=%d", $this->id
-        );
-        $this->db->exec($sql);
-        $sql = sprintf(
-            "DELETE FROM `Telecom Bridge` WHERE `Subject Type`='Customer' AND `Subject Key`=%d", $this->id
-        );
-        $this->db->exec($sql);
-
 
         $sql = sprintf(
             "DELETE FROM `Customer Send Post` WHERE  `Customer Key`=%d", $this->id
@@ -2350,8 +2313,9 @@ class Customer extends Subject {
         //Email Campaign Mailing List
 
         $sql = sprintf(
-            "INSERT INTO `Customer Deleted Dimension` VALUE (%d,%d,%s,%s,%s,%s,%s,%s) ", $this->id, $this->data['Customer Store Key'], prepare_mysql($this->data['Customer Name']),
-            prepare_mysql($this->data['Customer Main Contact Name']), prepare_mysql($this->data['Customer Main Plain Email']), prepare_mysql($this->display('card', $customer_id_prefix)),
+            "INSERT INTO `Customer Deleted Dimension` (`Customer Key`,`Customer Store Key`,`Customer Deleted Name`,`Customer Deleted Contact Name`,`Customer Deleted Email`,`Customer Deleted Metadata`,`Customer Deleted Date`,`Customer Deleted Note`) VALUE (%d,%d,%s,%s,%s,%s,%s,%s) ",
+            $this->id, $this->data['Customer Store Key'], prepare_mysql($this->data['Customer Name']),
+            prepare_mysql($this->data['Customer Main Contact Name']), prepare_mysql($this->data['Customer Main Plain Email']), prepare_mysql(gzcompress(json_encode($this->data), 9)),
             prepare_mysql($this->editor['Date']), prepare_mysql($note, false)
         );
 
@@ -2359,8 +2323,17 @@ class Customer extends Subject {
         $this->db->exec($sql);
 
 
-        $store = new Store($this->data['Customer Store Key']);
-        $store->update_customers_data();
+
+        require_once 'utils/new_fork.php';
+        new_housekeeping_fork(
+            'au_housekeeping', array(
+            'type'        => 'customer_deleted',
+            'store_key' => $this->data['Customer Store Key'],
+            'editor'      => $this->editor
+        ), $account->get('Account Code'), $this->db
+        );
+
+
 
         $this->deleted = true;
     }
