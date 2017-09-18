@@ -313,15 +313,10 @@ if($new){
                 array(
                     'id'                => 'Customer_Main_Plain_Email',
                     'edit'              => ($edit ? 'email' : ''),
-                    'value'             => $object->get(
-                        'Customer Main Plain Email'
-                    ),
+                    'value'             => $object->get('Customer Main Plain Email'),
                     'formatted_value'   => $object->get('Main Plain Email'),
-                    'server_validation' => json_encode(
-                        array('tipo' => 'check_for_duplicates')
-                    ),
-                    'label'             => ucfirst(
-                        $object->get_field_label('Customer Main Plain Email')),
+                    'server_validation' => json_encode(array('tipo' => 'check_for_duplicates')),
+                    'label'             => ucfirst($object->get_field_label('Customer Main Plain Email')),
                     'invalid_msg'       => get_invalid_message('email'),
                     'required'          => true,
                     'type'              => 'value'
@@ -365,6 +360,16 @@ if($new){
                     'value'     => '',
                     'label'     => _('Add email').' <i class="fa fa-plus new_button button"></i>',
                     'reference' => ''
+                ),
+                array(
+                    'id'                => 'Customer_Web_Login_Password',
+                    'edit'              => ($edit ? 'string' : ''),
+                    'value'             => $object->get('Customer Web Login Password'),
+                    'formatted_value'   => $object->get('Web Login Password'),
+                    'label'             => _('Password'),
+                    'invalid_msg'       => get_invalid_message('string'),
+                    'required'          => true,
+                    'type'              => ''
                 ),
 
             )

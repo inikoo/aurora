@@ -267,7 +267,7 @@ function update_password($db, $data, $editor) {
                 'Website User Password Hash' => password_hash($data['pwd'], PASSWORD_DEFAULT, array('cost' => 12)),
 
 
-            )
+            ),'no_history'
         );
 
         $website_user->update(

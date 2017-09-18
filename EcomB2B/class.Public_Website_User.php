@@ -177,7 +177,9 @@ class Public_Website_User extends DBW_Table {
 
         switch ($key) {
             case 'Website User Customer Key':
-                return $this->data[$key];
+            case 'Website User Handle':
+
+            return $this->data[$key];
                 break;
 
             default:
@@ -198,6 +200,14 @@ class Public_Website_User extends DBW_Table {
         switch ($field) {
             case 'Website User Password':
             case 'Website User Password Hash':
+
+                $this->update_field($field, $value, 'no_history');
+                break;
+
+
+            default:
+
+            case 'Website User Handle':
 
                 $this->update_field($field, $value, $options);
                 break;
