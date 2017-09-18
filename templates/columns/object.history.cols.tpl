@@ -26,7 +26,8 @@ className: "width_200 "
 name: "note",
 label: "{t}Note{/t}",
 editable: false,
-cell: "html"
+cell: Backgrid.HtmlCell.extend({
+})
 }
 ]
 

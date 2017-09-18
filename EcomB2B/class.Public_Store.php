@@ -291,6 +291,8 @@ class Public_Store {
 
                 $this->new_website_user = $website_user->new;
 
+                $customer->update(array('Customer Website User Key'=>$website_user->id),'no_history');
+
 
                 new_housekeeping_fork(
                     'au_housekeeping', array(

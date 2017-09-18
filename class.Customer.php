@@ -182,11 +182,11 @@ class Customer extends Subject {
         $values = '';
         foreach ($this->data as $key => $value) {
             $keys .= ",`".$key."`";
-            //if ($key=='') {
-            // $values.=','.prepare_mysql($value, true);
-            //}else {
+            if (in_array($key,array('Customer First Contacted Date','Customer Lost Date','Customer Last Invoiced Dispatched Date','Customer First Invoiced Order Date','Customer Last Invoiced Order Date','Customer Tax Number Validation Date','Customer Last Order Date','Customer First Order Date'))) {
+             $values.=','.prepare_mysql($value, true);
+            }else {
             $values .= ','.prepare_mysql($value, false);
-            //}
+            }
         }
         $values = preg_replace('/^,/', '', $values);
         $keys   = preg_replace('/^,/', '', $keys);
