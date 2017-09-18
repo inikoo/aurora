@@ -25,7 +25,7 @@ editable: false,
 sortType: "toggle",
 {if $sort_key=='number'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 events: {
 "click": function() {
 change_view('{$data['object']}/{$data['key']}/delivery_note/' + this.model.get("id")  )
