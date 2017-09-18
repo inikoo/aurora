@@ -45,7 +45,6 @@ switch ($tipo) {
 
 function object_history($_data, $db, $user) {
 
-   // print_r($_data);
 
     include_once 'prepare_table/init.php';
 

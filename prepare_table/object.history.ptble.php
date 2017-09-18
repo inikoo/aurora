@@ -163,6 +163,11 @@ if ($parameters['parent'] == 'customer' or $parameters['parent'] == 'order_custo
         ' where   B.`Deal Key`=%d   ', $parameters['parent_key']
     );
     $subject = 'Deal';
+}  elseif ($parameters['parent'] == 'charge') {
+    $where   = sprintf(
+        ' where   B.`Charge Key`=%d   ', $parameters['parent_key']
+    );
+    $subject = 'Charge';
 } elseif ($parameters['parent'] == 'purchase_order') {
     $where   = sprintf(
         ' where   B.`Purchase Order Key`=%d   ', $parameters['parent_key']

@@ -730,6 +730,21 @@ ALTER TABLE `Deal Dimension` ADD `Deal Number Components` MEDIUMINT UNSIGNED NOT
 ALTER TABLE `Deal Campaign Dimension` ADD `Deal Campaign Number Deals` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Deal Campaign Valid To`;
 
 
+  CREATE TABLE IF NOT EXISTS `Charge History Bridge` (
+  `Charge Key` mediumint(8) unsigned NOT NULL,
+  `History Key` int(10) unsigned NOT NULL,
+  `Deletable` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Strikethrough` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Type` enum('Notes','Changes') NOT NULL DEFAULT 'Notes'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+ALTER TABLE `Charge History Bridge`
+  ADD PRIMARY KEY (`Charge Key`,`History Key`),
+  ADD KEY `Charge Key` (`Charge Key`),
+  ADD KEY `History Key` (`History Key`),
+  ADD KEY `Deletable` (`Deletable`),
+  ADD KEY `Type` (`Type`);
+
+
 //====
 
 
@@ -761,11 +776,6 @@ ALTER TABLE `Customer Dimension` DROP `Customer Account Operative`;
 ALTER TABLE `Customer Dimension` DROP `Customer Main Address Key`;
 ALTER TABLE `Customer Dimension` DROP `Customer Main Delivery Address Key`;
 ALTER TABLE `Customer Dimension` DROP `Customer Main Address Incomplete`;
-
-
-
-
-
 
 
 ======= fer migracion ordering in dw and costa

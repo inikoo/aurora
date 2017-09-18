@@ -1858,6 +1858,8 @@ $modules = array(
                     ),
                     'store.sales'   => array(
                         'label'   => _('Sales'),
+                        'icon'  => 'usd',
+
                         'subtabs' => array(
                             'store.sales.plot'     => array(
                                 'label' => _(
@@ -1883,6 +1885,14 @@ $modules = array(
                         )
 
                     ),
+
+                    'store.charges' => array(
+                        'label' => _('Charges'),
+                        'icon'  => 'money',
+                        'title' => _('Charges')
+                    ),
+
+
                     'store.history' => array(
                         'label' => _('History'),
                         'icon'  => 'road',
@@ -2763,6 +2773,49 @@ $modules = array(
 
                         )
 
+                    ),
+
+                )
+            ),
+
+            'charge'     => array(
+                'type' => 'object',
+
+
+                'tabs' => array(
+                    'charge.details'    => array(
+                        'label' => _('Data'),
+                        'icon'  => 'database',
+                        'title' => _('Details')
+                    ),
+
+
+                    'charge.orders'     => array(
+                        'label' => _('Orders'),
+                        'icon'  => 'shopping-cart',
+
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Orders'
+                        ),
+                    ),
+                    'charge.customers'  => array(
+                        'label' => _('Customers'),
+                        'icon'  => 'users',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Customers'
+                        ),
+                    ),
+                    'charge.history' => array(
+                        'title'         => _('History/Notes'),
+                        'label'         => '',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number History Records'
+                        ),
+                        'icon'          => 'road',
+                        'class'         => 'right icon_only'
                     ),
 
                 )

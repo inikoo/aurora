@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Kaktus\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-09-12 21:51+0800\n"
-"PO-Revision-Date: 2017-09-12 21:51+0800\n"
+"PO-Revision-Date: 2017-09-13 15:29+0200\n"
 "Last-Translator: Raul <raul@inikoo.com>\n"
 "Language-Team: \n"
 "Language: sk_SK\n"
@@ -3169,10 +3169,8 @@ msgid "All orders"
 msgstr "Objednavky"
 
 #: _smarty.php:3300
-#, fuzzy
-#| msgid "invoices"
 msgid "All invoices"
-msgstr "faktúry"
+msgstr "Všetky faktúry"
 
 #: _smarty.php:3315 _smarty.php:6195 ar_views.php:3977 ar_views.php:4293
 #: navigation/orders.nav.php:296 navigation/orders.nav.php:300
@@ -7370,10 +7368,8 @@ msgid "Order for collection"
 msgstr "Objednávka na vyzdvihnutie"
 
 #: _web_smarty.php:195 _web_smarty.php:360
-#, fuzzy
-#| msgid "IP Address"
 msgid "invoice Address"
-msgstr "IP Adresa"
+msgstr "fakturačná Adresa"
 
 #: _web_smarty.php:237 _web_smarty.php:240 _web_smarty.php:243
 #: _web_smarty.php:246 _web_smarty.php:249 _web_smarty.php:252
@@ -12380,8 +12376,6 @@ msgid "Payment state"
 msgstr "Stav Platby"
 
 #: conf/elements_options.php:443
-#, fuzzy
-#| msgid "Waiting Payment"
 msgid "Waiting payment"
 msgstr "Čakajúci na zaplatenie"
 
@@ -12393,7 +12387,7 @@ msgstr "Stav Odoslania"
 
 #: conf/elements_options.php:472
 msgid "Send"
-msgstr ""
+msgstr "Poslať"
 
 #: conf/elements_options.php:664
 msgid "Free"
@@ -12401,7 +12395,7 @@ msgstr ""
 
 #: conf/elements_options.php:668
 msgid "Through agent"
-msgstr ""
+msgstr "Cez Agenta"
 
 #: conf/elements_options.php:719
 #, fuzzy
@@ -12440,16 +12434,12 @@ msgstr "požadovaný"
 
 #: conf/elements_options.php:765 conf/export_edit_template_fields.php:121
 #: conf/export_fields.php:310 conf/export_fields.php:389
-#, fuzzy
-#| msgid "availability"
 msgid "Availability"
-msgstr "dostupnosť"
+msgstr "Dostupnosť"
 
 #: conf/elements_options.php:812
-#, fuzzy
-#| msgid "Transactions"
 msgid "Transaction type"
-msgstr "Transakcie"
+msgstr "Druh transakcie"
 
 #: conf/elements_options.php:815
 #, fuzzy
@@ -12458,22 +12448,16 @@ msgid "Movements"
 msgstr "Zásoby (kartóny)"
 
 #: conf/elements_options.php:819
-#, fuzzy
-#| msgid "Dispatched"
 msgid "No Dispatched"
-msgstr "Odoslané"
+msgstr "Neodoslané"
 
 #: conf/elements_options.php:823
-#, fuzzy
-#| msgid "Credits"
 msgid "Audits"
-msgstr "Kredity"
+msgstr "Audity"
 
 #: conf/elements_options.php:837
-#, fuzzy
-#| msgid "Order Processed"
 msgid "Orders in Process"
-msgstr "Objednávka Podaná"
+msgstr "Objednávky v Procese"
 
 #: conf/elements_options.php:847
 msgid "Flags"
@@ -12495,15 +12479,13 @@ msgid "Customer cateogry"
 msgstr "Pridaj Zákazníka"
 
 #: conf/elements_options.php:975
-#, fuzzy
 msgid "Customer list"
-msgstr "Pridaj Zákazníka"
+msgstr "Zoznam Zákazníkov"
 
 #: conf/elements_options.php:1032 conf/elements_options.php:1075
 #: conf/elements_options.php:1156
-#, fuzzy
 msgid "Submitted, in transit"
-msgstr "Pridaj Zákazníka"
+msgstr "Potvrdené, na ceste"
 
 #: conf/elements_options.php:1311
 #, fuzzy
@@ -12512,28 +12494,20 @@ msgid "No Assigned"
 msgstr "Pridelené"
 
 #: conf/elements_options.php:1322
-#, fuzzy
-#| msgid "Tax number"
 msgid "Tax number status"
-msgstr "IČ DPH číslo"
+msgstr "Stav IČ DPH "
 
 #: conf/elements_options.php:1325
-#, fuzzy
-#| msgid "tax number validity"
 msgid "Tax number valid"
-msgstr "overenie IČ DPH"
+msgstr "IČ DPH platné"
 
 #: conf/elements_options.php:1329
-#, fuzzy
-#| msgid "tax number validity"
 msgid "Tax number invalid"
-msgstr "overenie IČ DPH"
+msgstr "IČ DPH neplatné"
 
 #: conf/elements_options.php:1333
-#, fuzzy
-#| msgid "tax number"
 msgid "No tax number"
-msgstr "IČ DPH"
+msgstr "Chýbajúce IČ DPH"
 
 #: conf/email_templates_data.php:25 conf/email_templates_data.php:26
 #, fuzzy
@@ -12541,9 +12515,8 @@ msgid "Password reset"
 msgstr "Heslo"
 
 #: conf/email_templates_data.php:33 conf/email_templates_data.php:34
-#, fuzzy
 msgid "Order confirmation"
-msgstr "Konfigurácia"
+msgstr "Potvrdenie objednávky"
 
 #: conf/email_templates_data.php:40 conf/email_templates_data.php:41
 #, fuzzy
@@ -12561,7 +12534,7 @@ msgstr "Objednavky"
 #: conf/fields/service.fld.php:73 conf/fields/supplier_part.fld.php:275
 #: conf/fields/supplier_part.fld.php:280
 msgid "Piece"
-msgstr ""
+msgstr "Kus"
 
 #: conf/export_edit_template_fields.php:103 conf/export_fields.php:300
 #: conf/export_fields.php:379
@@ -12610,14 +12583,12 @@ msgstr "krajina pôvodu"
 #: conf/fields/product.fld.php:298 conf/fields/service.fld.php:295
 #: conf/fields/service.fld.php:300
 msgid "piece"
-msgstr ""
+msgstr "kus"
 
 #: conf/export_edit_template_fields.php:579 tabs/category.categories.tab.php:39
 #: tabs/category.categories.tab.php:110 tabs/store.families.tab.php:34
-#, fuzzy
-#| msgid "Family created"
 msgid "Family code"
-msgstr "Rodina vytvorená"
+msgstr "Kód rodiny"
 
 #: conf/export_edit_template_fields.php:589
 msgid "Label in family"
@@ -12663,9 +12634,8 @@ msgid "Delivery address (Separated fields)"
 msgstr "Pridaj Zákazníka"
 
 #: conf/export_fields.php:92
-#, fuzzy
 msgid "Last order date"
-msgstr "Objednavky"
+msgstr "Dátum poslednej objednávky"
 
 #: conf/export_fields.php:97
 #, fuzzy
@@ -12675,15 +12645,12 @@ msgstr "Zostatok na účte"
 
 #: conf/export_fields.php:115 conf/export_fields.php:148
 #: conf/export_fields.php:180
-#, fuzzy
 msgid "Customer Id"
-msgstr "Pridaj Zákazníka"
+msgstr "Id Zákazníka"
 
 #: conf/export_fields.php:130
-#, fuzzy
-#| msgid "Payment Method"
 msgid "Payment method"
-msgstr "Spôsob Platby"
+msgstr "Spôsob platby"
 
 #: conf/export_fields.php:251 conf/export_fields.php:256
 #: tabs/timeserie.records.annually.tab.php:44
@@ -12700,10 +12667,8 @@ msgid "Sales Net"
 msgstr "Predaje"
 
 #: conf/export_fields.php:433
-#, fuzzy
-#| msgid "Country"
 msgid "Country Code"
-msgstr "Krajina"
+msgstr "Kód Krajiny"
 
 #: conf/export_fields.php:438
 #, fuzzy
@@ -12802,26 +12767,22 @@ msgstr ""
 
 #: conf/fields/agent.fld.php:39 conf/fields/supplier.fld.php:38
 msgid "Air"
-msgstr ""
+msgstr "Letecky"
 
 #: conf/fields/agent.fld.php:61 conf/fields/supplier.fld.php:79
 #: tabs/suppliers_edit.tab.php:21
-#, fuzzy
 msgid "Code, name"
-msgstr "Pridaj Zákazníka"
+msgstr "Kód, meno"
 
 #: conf/fields/agent.fld.php:175 conf/fields/customer.fld.php:366
 #: conf/fields/supplier.fld.php:195
-#, fuzzy
 msgid "Add email"
-msgstr "Pridaj Zákazníka"
+msgstr "Pridaj email"
 
 #: conf/fields/agent.fld.php:184 conf/fields/customer.fld.php:128
 #: conf/fields/customer.fld.php:374
-#, fuzzy
-#| msgid "Telephone"
 msgid "Telephones"
-msgstr "Telefón"
+msgstr "Telefóny"
 
 #: conf/fields/agent.fld.php:261 conf/fields/customer.fld.php:449
 #: conf/fields/supplier.fld.php:284
@@ -12864,15 +12825,12 @@ msgstr "Nie je na Sklade"
 
 #: conf/fields/agent_part.fld.php:74 conf/fields/supplier_part.fld.php:75
 #: tabs/production.suppliers.tab.php:31
-#, fuzzy
 msgid "Supplier code"
-msgstr "Dodavatelia"
+msgstr "Kód dodávateľa"
 
 #: conf/fields/agent_part.fld.php:80 conf/fields/supplier_part.fld.php:81
-#, fuzzy
-#| msgid "Supplier created"
 msgid "Supplier will be created"
-msgstr "Dodavateľ vytvorený"
+msgstr "Dodavateľ bude vytvorený"
 
 #: conf/fields/agent_part.fld.php:95
 #, fuzzy
@@ -12928,18 +12886,13 @@ msgstr "Produkty"
 #: conf/fields/agent_part.fld.php:424
 #: conf/fields/part.supplier_part.new.fld.php:181
 #: conf/fields/supplier_part.fld.php:443
-#, fuzzy
-#| msgid "cubic meter"
-#| msgid_plural "cubic meters"
 msgid "cubic meters"
-msgstr "kubický meter"
+msgstr "kubických metrov"
 
 #: conf/fields/attachment.fld.php:69 conf/fields/image.fld.php:55
 #: tabs/user.api_key.new.tab.php:52
-#, fuzzy
-#| msgid "Registration"
 msgid "Restrictions"
-msgstr "Registrácia"
+msgstr "Obmedzenia"
 
 #: conf/fields/attachment.fld.php:146
 #, fuzzy
@@ -12969,16 +12922,13 @@ msgid "Subject type"
 msgstr "Subjekt"
 
 #: conf/fields/category.fld.php:168
-#, fuzzy
 msgid "Delete category"
-msgstr "Pridaj Zákazníka"
+msgstr "Vymazať kategóriu"
 
 #: conf/fields/category.product.fld.php:22 conf/fields/department.fld.php:23
 #: conf/fields/family.fld.php:58
-#, fuzzy
-#| msgid "%s availability"
 msgid "Visibility"
-msgstr "%s dostupnosť"
+msgstr "Viditeľnosť"
 
 #: conf/fields/category.product.fld.php:32 conf/fields/department.fld.php:33
 #, fuzzy
@@ -12986,9 +12936,8 @@ msgid "Show in website"
 msgstr "Všetky Kontakty"
 
 #: conf/fields/category.product.fld.php:67
-#, fuzzy
 msgid "Found in"
-msgstr "Operacia nenajdena"
+msgstr "Nájdené v"
 
 #: conf/fields/category.product.fld.php:159
 #: conf/fields/category.webpage.fld.php:263
@@ -13008,7 +12957,7 @@ msgstr "Pozrite si tiež"
 #: conf/fields/category.webpage.fld.php:35
 #: conf/fields/category.webpage.fld.php:41
 msgid "White canvas"
-msgstr ""
+msgstr "Biele plátno"
 
 #: conf/fields/category.webpage.fld.php:79
 #: conf/fields/product.webpage.fld.php:57 conf/fields/webpage.fld.php:67
@@ -13020,10 +12969,8 @@ msgstr "Spustiť webstránku"
 
 #: conf/fields/category.webpage.fld.php:89
 #: conf/fields/product.webpage.fld.php:67 conf/fields/webpage.fld.php:78
-#, fuzzy
-#| msgid "Online web pages"
 msgid "Unpublish web page"
-msgstr "Webstránky online"
+msgstr "Nezverejniť webstránku"
 
 #: conf/fields/category.webpage.fld.php:98
 #: conf/fields/product.webpage.fld.php:76 conf/fields/webpage.fld.php:88
@@ -13034,17 +12981,13 @@ msgstr "Výsledky na stranu"
 
 #: conf/fields/category.webpage.fld.php:109
 #: conf/fields/product.webpage.fld.php:87
-#, fuzzy
-#| msgid "Set as not Ready"
 msgid "Set as not ready"
-msgstr "Nastaviť ako Nepripravené"
+msgstr "Nastaviť ako nepripravené"
 
 #: conf/fields/category.webpage.fld.php:118
 #: conf/fields/product.webpage.fld.php:96 conf/fields/webpage.fld.php:103
-#, fuzzy
-#| msgid "Set as Ready"
 msgid "Set as ready"
-msgstr "Nastaviť ako Pripravené"
+msgstr "Nastaviť ako pripravené"
 
 #: conf/fields/category.webpage.fld.php:253
 #: conf/fields/product.webpage.fld.php:230
@@ -13080,10 +13023,8 @@ msgid "Personal information"
 msgstr "Konfigurácia"
 
 #: conf/fields/contractor.fld.php:199 tabs/contractors.tab.php:25
-#, fuzzy
-#| msgid "Contact"
 msgid "Contract"
-msgstr "Kontakt"
+msgstr "Zmluva"
 
 #: conf/fields/contractor.fld.php:319
 #, fuzzy
@@ -13189,15 +13130,12 @@ msgid "Terminate employment"
 msgstr "ukončenie zamestnania"
 
 #: conf/fields/employee.fld.php:710
-#, fuzzy
-#| msgid "Deleted employees"
 msgid "Delete employee"
-msgstr "Vymazaný zamestnanci"
+msgstr "Vymazať zamestnanca"
 
 #: conf/fields/image.fld.php:102
-#, fuzzy
 msgid "Delete image"
-msgstr "Uzivatel"
+msgstr "Vymazať obrázok"
 
 #: conf/fields/invoice.fld.php:33 conf/fields/invoice.fld.php:48
 #: conf/fields/invoice.fld.php:55 conf/fields/invoice.fld.php:62
@@ -13229,10 +13167,8 @@ msgid "Storing"
 msgstr "Obchod"
 
 #: conf/fields/location.fld.php:42
-#, fuzzy
-#| msgid "On display"
 msgid "Displaying"
-msgstr "Na displej"
+msgstr "Zobrazovať"
 
 #: conf/fields/location.fld.php:97
 #, fuzzy
@@ -13241,15 +13177,13 @@ msgid "Capacity"
 msgstr "mesto"
 
 #: conf/fields/location.fld.php:148
-#, fuzzy
-#| msgid "Deleted location"
 msgid "Delete location"
-msgstr "Vymazaná lokácia"
+msgstr "Vymazať lokáciu"
 
 #: conf/fields/node.fld.php:70 conf/fields/website.fld.php:225
 #: conf/fields/website.node.fld.php:70
 msgid "Delete website & all webpages"
-msgstr ""
+msgstr "Vymazať webstránku a všetky webstránky"
 
 #: conf/fields/order.fld.php:47 tabs/delivery_note.details.tab.php:59
 #, fuzzy
@@ -13337,7 +13271,7 @@ msgstr ""
 #: conf/fields/part.fld.php:558 conf/fields/product.fld.php:459
 #: conf/fields/service.fld.php:517
 msgid "Health & Safety"
-msgstr ""
+msgstr "Zdravie a Bezpečnosť"
 
 #: conf/fields/part.fld.php:653
 #, fuzzy
@@ -13358,10 +13292,8 @@ msgstr "Dodavatelia"
 
 #: conf/fields/part.supplier_part.new.fld.php:103
 #: conf/fields/supplier_part.fld.php:300 conf/webpage_types.php:32
-#, fuzzy
-#| msgid "Order"
 msgid "Ordering"
-msgstr "Objednávka"
+msgstr "Objednávanie"
 
 #: conf/fields/part.supplier_part.new.fld.php:192
 #: conf/fields/supplier_part.fld.php:454
@@ -13423,11 +13355,11 @@ msgstr "Opravené"
 
 #: conf/fields/product.fld.php:70 conf/fields/service.fld.php:74
 msgid "Gram"
-msgstr ""
+msgstr "Gram"
 
 #: conf/fields/product.fld.php:71 conf/fields/service.fld.php:75
 msgid "Liter"
-msgstr ""
+msgstr "Liter"
 
 #: conf/fields/product.fld.php:168 conf/fields/product.fld.php:350
 #: conf/fields/product.fld.php:365 conf/fields/product.fld.php:396
@@ -13456,10 +13388,8 @@ msgstr "Import zo súboru"
 
 #: conf/fields/profile.fld.php:33 tabs/user.api_key.details.tab.php:52
 #: tabs/website.user.details.tab.php:44
-#, fuzzy
-#| msgid "Success"
 msgid "Access"
-msgstr "Úspech"
+msgstr "Prístup"
 
 #: conf/fields/profile.fld.php:61 conf/fields/user.system.fld.php:433
 #: tabs/website.user.details.tab.php:61
@@ -13469,9 +13399,8 @@ msgid "Preferences"
 msgstr "referencia"
 
 #: conf/fields/store.fld.php:144
-#, fuzzy
 msgid "Contact/Details"
-msgstr "Emailová Adresa"
+msgstr "Kontakt/Detaily"
 
 #: conf/fields/store.fld.php:246
 #, fuzzy
@@ -13480,21 +13409,16 @@ msgid "Accept orders for collection"
 msgstr "Objednávka na vyzdvihnutie"
 
 #: conf/fields/store.fld.php:302
-#, fuzzy
 msgid "Signatures"
-msgstr "Emailová Adresa"
+msgstr "Podpisy"
 
 #: conf/fields/store.fld.php:351
-#, fuzzy
-#| msgid "%s store"
-#| msgid_plural "%s stores"
 msgid "Close store"
-msgstr "%s obchod"
+msgstr "Zavrieť obchod"
 
 #: conf/fields/store.fld.php:351
-#, fuzzy
 msgid "Delete store"
-msgstr "Pridaj Zákazníka"
+msgstr "Vymazať obchod"
 
 #: conf/fields/supplier.delivery.fld.php:65
 #: conf/fields/supplier.order.fld.php:53
@@ -13504,10 +13428,8 @@ msgstr "Uzivatel"
 
 #: conf/fields/supplier.delivery.fld.php:99
 #: conf/fields/supplier.order.fld.php:78
-#, fuzzy
-#| msgid "Delivery address"
 msgid "Delivery rules"
-msgstr "Dodacia Adresa"
+msgstr "Podmienky doručenia"
 
 #: conf/fields/supplier.fld.php:350
 #, fuzzy
@@ -13522,9 +13444,8 @@ msgid "Unlink agent %s"
 msgstr "%s agent z %s"
 
 #: conf/fields/supplier.fld.php:811
-#, fuzzy
 msgid "Archive supplier"
-msgstr "Dodavatelia"
+msgstr "Aktívny dodávateľ"
 
 #: conf/fields/supplier.fld.php:824 conf/fields/supplier.fld.php:867
 #, fuzzy
@@ -13567,16 +13488,12 @@ msgstr "Obchodné podmienky"
 #: conf/fields/user.system.fld.php:354 tabs/account.users.agents.tab.php:22
 #: tabs/account.users.contractors.tab.php:22
 #: tabs/account.users.staff.tab.php:22 tabs/account.users.suppliers.tab.php:22
-#, fuzzy
-#| msgid "Versions"
 msgid "Permissions"
-msgstr "Verzie"
+msgstr "Povolenia"
 
 #: conf/fields/user.system.fld.php:474
-#, fuzzy
-#| msgid "Deleted users"
 msgid "Delete user"
-msgstr "Vymazaný užívatelia"
+msgstr "Vymazať užívateľa"
 
 #: conf/fields/warehouse.fld.php:90
 #, fuzzy
@@ -13618,7 +13535,7 @@ msgstr ""
 
 #: conf/fields/website_localization.fld.php:53
 msgid "Login to see message"
-msgstr ""
+msgstr "Na zobrazenie správy"
 
 #: conf/fields/website_localization.fld.php:86
 #, fuzzy
@@ -15328,7 +15245,7 @@ msgstr "Nastaviť"
 
 #: pdf/invoice.pdf.php:557
 msgid "Delivery is exempt from tax according to §43 of Act No. 222/2004 on VAT"
-msgstr ""
+msgstr "Dodanie je oslobodené od dane podľa § 43 zákona č. 222/2004 o DPH"
 
 #: pdf/order.pdf.php:259
 #, fuzzy

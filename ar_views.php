@@ -998,6 +998,10 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             include_once 'showcase/payment_account.show.php';
             $html = get_payment_account_showcase($data, $smarty, $user, $db);
             break;
+        case 'charge':
+            include_once 'showcase/charge.show.php';
+            $html = get_charge_showcase($data, $smarty, $user, $db);
+            break;
         default:
             $html = $data['object'].' -> '.$data['key'];
             break;
@@ -1224,7 +1228,9 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                         $data, $smarty, $user, $db, $account
                     );
                     break;
+                case ('charge'):
 
+                    return get_charge_navigation($data, $smarty, $user, $db, $account);
 
                     break;
             }
@@ -2971,7 +2977,8 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 );
 
 
-            } elseif ($state['section'] == 'order') {
+            }
+            elseif ($state['section'] == 'order') {
 
 
 
@@ -3011,6 +3018,24 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'label'     => '<span class="Deal_Name">'.$state['_parent']->get('Name').'</span>',
                         'icon'      => 'tags',
                         'reference' => 'campaigns/'.$state['store']->id.'/'.$state['_parent']->get('Deal Campaign Key').'/deal/'.$state['_parent']->id
+                    );
+
+
+
+                } elseif ($state['parent'] == 'charge') {
+
+
+                    $branch[]               = array(
+                        'label'     => _('Store').' <span class="Store_Code id">'.$state['store']->get('Store Code').'</span>',
+                        'icon'      => 'shopping-bag',
+                        'reference' => 'store/'.$state['_object']->id
+                    );
+
+
+                    $branch[] = array(
+                        'label'     => _('Charge').': <span class="Charge_Name">'.$state['_parent']->get('Name').'</span>',
+                        'icon'      => 'money',
+                        'reference' => 'store/'.$state['store']->id.'/charge/'.$state['_parent']->id
                     );
 
 
@@ -3253,7 +3278,23 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     'icon'      => 'tag',
                     'reference' => ''
                 );
-            }
+            }elseif ($state['section'] == 'charge'){
+
+             $branch[] = array(
+                 'label'     => _('Store').' <span class="Store_Code id">'.$state['store']->get('Store Code').'</span>',
+                 'icon'      => 'shopping-bag',
+                 'reference' => 'store/'.$state['store']->id
+             );
+                $branch[] = array(
+                    'label'     => _('Charge').': <span class="Charge_Name id">'.$state['_object']->get('Charge Name').'</span>',
+                    'icon'      => 'money',
+                    'reference' => ''
+                );
+
+
+
+
+        }
 
 
             break;

@@ -534,6 +534,17 @@ $tab_defaults = array(
         'f_field'     => '',
 
     ),
+    'store.charges' => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'name',
+
+
+
+    ),
     'store.products' => array(
         'view'          => 'overview',
         'sort_key'      => 'id',
@@ -710,6 +721,42 @@ $tab_defaults = array(
         'elements_type' => each($elements_options['orders'])['key'],
         'elements'      => $elements_options['orders'],
         'export_fields' => $export_fields['orders']
+    ),
+
+    'charge.orders'        => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'customer',
+        'from'          => '',
+        'to'            => '',
+        'period'        => 'ytd',
+        'elements_type' => each($elements_options['orders'])['key'],
+        'elements'      => $elements_options['orders'],
+        'export_fields' => $export_fields['orders']
+    ),
+    'charge.customers'        => array(
+        'view'          => 'overview',
+        'sort_key'      => 'formatted_id',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'name',
+        'elements_type' => each($elements_options['customers'])['key'],
+        'elements'      => $elements_options['customers']
+    ),
+
+    'charge.history'                             => array(
+        'view'          => 'overview',
+        'sort_key'      => 'date',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => '',
+        'elements_type' => each($elements_options['deal_history'])['key'],
+        'elements'      => $elements_options['deal_history']
     ),
 
 
