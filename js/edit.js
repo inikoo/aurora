@@ -1007,7 +1007,7 @@ else
 
 
     $.getJSON(request, function (data) {
-        console.log('www')
+
 
         console.log(data)
         $('#' + field + '_save_button').addClass('fa-cloud').removeClass('fa-spinner fa-spin')
@@ -1072,8 +1072,14 @@ else
 
             close_edit_field(field)
 
+
+
+
             if (data.other_fields) {
                 for (var key in data.other_fields) {
+
+                 //   console.log(data.other_fields[key])
+
                     update_field(data.other_fields[key])
                 }
             }
@@ -1180,7 +1186,7 @@ function post_save_actions(field, data) {
 function create_new_field(_data) {
 
 
-    console.log(_data)
+    //console.log(_data)
     var clone_field = _data.field
     var clone = $('#' + _data.clone_from + '_field').clone()
     clone.prop('id', clone_field + '_field');
@@ -1324,11 +1330,11 @@ function update_field(data) {
 
     var field = data.field
     var type = $('#' + field + '_container').attr('field_type')
-    console.log(data)
+    //console.log(data)
 
 
-    console.log(data.render)
-    console.log(field)
+    //console.log(data.render)
+    //console.log(field)
 
     if (data.render) {
         $('#' + field + '_field').removeClass('hide')

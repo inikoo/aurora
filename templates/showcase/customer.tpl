@@ -23,7 +23,7 @@
                 <i class="fa fa-fw fa-at"></i> <span
                         id="Customer_Other_Email_mailto">{if $customer->get('Customer Main Plain Email')}{mailto address=$customer->get('Main Plain Email')}{/if}</span>
             </div>
-            {foreach $customer->get_other_emails_data() key=other_email_key item=other_email}
+            {foreach from=$customer->get_other_emails_data() key=other_email_key item=other_email}
                 <div id="Customer_Other_Email_{$other_email_key}_display" class="data_field ">
                     <i class="fa fa-fw fa-at discreet"></i> <span
                             id="Customer_Other_Email_{$other_email_key}_mailto">{mailto address=$other_email.email}</span>
@@ -76,7 +76,7 @@
             <div style="min-height:80px;float:left;width:28px">
                 <i class="fa fa-map-marker"></i>
             </div>
-            <div style="float:left;min-width:272px">
+            <div class="Contact_Address" style="float:left;min-width:272px">
                 {$customer->get('Contact Address')}
             </div>
         </div>
