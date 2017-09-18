@@ -138,10 +138,19 @@ class Public_Customer extends DBW_Table {
 
         $keys   = '';
         $values = '';
+
+
+
         foreach ($this->data as $key => $value) {
-            $keys   .= ",`".$key."`";
-            $values .= ','.prepare_mysql($value, false);
+            $keys .= ",`".$key."`";
+            if (in_array($key,array('Customer First Contacted Date','Customer Lost Date','Customer Last Invoiced Dispatched Date','Customer First Invoiced Order Date','Customer Last Invoiced Order Date','Customer Tax Number Validation Date','Customer Last Order Date','Customer First Order Date'))) {
+                $values.=','.prepare_mysql($value, true);
+            }else {
+                $values .= ','.prepare_mysql($value, false);
+            }
         }
+
+
         $values = preg_replace('/^,/', '', $values);
         $keys   = preg_replace('/^,/', '', $keys);
 
@@ -709,7 +718,7 @@ class Public_Customer extends DBW_Table {
             case 'Customer Tax Number Validation Date':
             case 'Customer Tax Number Validation Source':
             case 'Customer Tax Number Validation Message':
-
+            case 'Customer Website User Key':
 
                 $this->update_field($field, $value, $options);
 

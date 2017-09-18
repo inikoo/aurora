@@ -1273,7 +1273,15 @@ class Subject extends DB_Table {
                 }
 
 
-            } else {
+                $website_user = get_object('Website_User', $this->get('Customer Website User Key'));
+
+
+                $website_user->editor=$this->editor;
+                $website_user->update(array('Website User Handle'=>$value),$options);
+
+
+            }
+            else {
 
                 $sql = sprintf(
                     'SELECT `%s Key`,`%s Name` FROM `%s Dimension`  WHERE `%s Main Plain Email`=%s AND `%s Key`!=%d ', addslashes($this->table_name), addslashes($this->table_name),

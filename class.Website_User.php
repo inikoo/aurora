@@ -206,6 +206,9 @@ class Website_User extends DB_Table {
 
         switch ($field) {
 
+            case 'Website User Handle':
+                $this->update_field($field, $value, $options);
+                break;
 
             default:
 
@@ -230,7 +233,7 @@ class Website_User extends DB_Table {
         $this->db->exec($sql);
         //$website = get_object('Website', $this->data['Website User Website Key']);
 
-      //  $website->update_customers_data();
+        //  $website->update_customers_data();
 
 
     }

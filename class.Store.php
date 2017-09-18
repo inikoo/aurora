@@ -2501,7 +2501,8 @@ class Store extends DB_Table {
 
     }
 
-    function create_customer($data) {
+    function
+    create_customer($data) {
 
         $this->new_customer = false;
         $this->new_website_user=false;
@@ -2597,6 +2598,9 @@ class Store extends DB_Table {
 
                     $this->new_website_user = $website_user->new;
                     $website_user_key=$website_user->id;
+
+                    $customer->update(array('Customer Website User Key'=>$website_user_key),'no_history');
+
 
                 }
 
