@@ -282,7 +282,7 @@ div.inline { float:left; }
 				<td style="text-align:left">{$payment->get('Method')}</td>
 				<td style="text-align:right">{$payment->get('Created Date')}</td>
 				<td style="text-align:left">{$payment->get('Transaction Status')}</td>
-				<td style="text-align:left">{if $payment->get('Payment Type')=='Refund'}{$payment->get_parent_info()|strip_tags}{/if}{if $payment->get('Payment Transaction ID')!='' and $payment->get('Payment Type')=='Refund'}, {/if}{$payment->get('Payment Transaction ID')|strip_tags}</td>
+				<td style="text-align:left">{$payment->get('Payment Transaction ID')|strip_tags}</td>
 				<td style="text-align:right">{$payment->get('Transaction Amount')}</td>
 			</tr>
 			{/foreach} 
