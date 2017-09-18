@@ -89,8 +89,30 @@ function fork_housekeeping($job) {
 
 
             break;
+        case 'update_charges_data':
+
+            $sql=sprintf('select `Charge Key` from `Charge Dimension` where `Charge Store Key`=%d  ',$data['store_key']);
+
+            if ($result=$db->query($sql)) {
+            		foreach ($result as $row) {
+                        $charge   = get_object('Charge', $row['Charge Key']);
+                        $charge->update_charge_usage();
+
+                    }
+            }else {
+            		print_r($error_info=$db->errorInfo());
+            		print "$sql\n";
+            		exit;
+            }
 
 
+
+            break;
+        case 'customer_deleted':
+            $store   = get_object('Store', $data['store_key']);
+            $store->update_customers_data();
+
+            break;
         case 'order_state_changed':
             $order   = get_object('Order', $data['order_key']);
             $account = get_object('Account', '');
@@ -132,6 +154,20 @@ function fork_housekeeping($job) {
             $customer = get_object('Customer', $order->get('Order Customer Key'));
             $store    = get_object('Store', $order->get('Order Store Key'));
             $account  = get_object('Account', '');
+
+            $sql=sprintf('select `Transaction Type Key` from `Charge Dimension` where `Transaction Type`="Charges" and   `Order Key`=%d  ',$order->id);
+
+            if ($result=$db->query($sql)) {
+                foreach ($result as $row) {
+                    $charge   = get_object('Charge', $row['Transaction Type Key']);
+                    $charge->update_charge_usage();
+
+                }
+            }else {
+                print_r($error_info=$db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
 
 
             $customer->update_orders();
@@ -301,8 +337,8 @@ function fork_housekeeping($job) {
 
 
             $sql = sprintf(
-                'SELECT `Product Part Part SKU` FROM `Order Transaction Fact` OTF LEFT JOIN `Product Part Bridge` PPB ON (OTF.`Product ID`=PPB.`Product Part Product ID`)  WHERE  `Order Key`=%d  ',
-                $data['order_key']
+                'SELECT `Product Part Part SKU` FROM `Order Transaction Fact` OTF LEFT JOIN `Product Part Bridge` PPB ON (OTF.`Product ID`=PPB.`Product Part Product ID`)  WHERE  `Delivery Note Key`=%d  ',
+                $data['delivery_note_key']
             );
             // print "$sql\n";
 

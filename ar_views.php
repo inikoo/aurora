@@ -159,12 +159,8 @@ function get_view($db, $smarty, $user, $account, $modules) {
                     );
                     $state['parent_key'] = $_parent->id;
                 } elseif ($state['object'] == 'customer') {
-                    $_object             = get_object(
-                        $state['object'], $state['key']
-                    );
-                    $_parent             = new Store(
-                        $_object->get('Customer Store Key')
-                    );
+                    $_object             = get_object($state['object'], $state['key']);
+                    $_parent             = new Store($_object->get('Customer Store Key'));
                     $state['parent_key'] = $_parent->id;
 
                 } else {
@@ -691,12 +687,16 @@ function get_view($db, $smarty, $user, $account, $modules) {
     unset($state['old_state']['store']);
     unset($state['old_state']['website']);
     unset($state['old_state']['warehouse']);
+    unset($state['old_state']['old_state']);
 
     unset($state['store']);
     unset($state['website']);
     unset($state['warehouse']);
     $response['state'] = $state;
 
+
+   // print_r($response);
+   // exit;
 
     echo json_encode($response);
 
