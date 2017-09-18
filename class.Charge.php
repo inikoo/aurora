@@ -1,22 +1,25 @@
 <?php
 /*
- File: Charge.php
-
- This file contains the Charge Class
-
+ /*
  About:
- Author: Raul Perusquia <rulovico@gmail.com>
+ Author: Raul Perusquia <raul@inikoo.com>
+ Created: 14 September 2017 at 13:25:13 GMT+8, Kuala Lumpur, Malaysia
+ Copyright (c) 2017, Inikoo
 
- Copyright (c) 2009, Inikoo
+ Version 3
 
- Version 2.0
 */
+
+
 include_once('class.DB_Table.php');
 
 class Charge extends DB_Table {
 
 
     function Charge($a1, $a2 = false) {
+
+        global $db;
+        $this->db = $db;
 
         $this->table_name    = 'Charge';
         $this->ignore_fields = array('Charge Key');
@@ -42,15 +45,13 @@ class Charge extends DB_Table {
         $sql = sprintf(
             "SELECT * FROM `Charge Dimension` WHERE `Charge Key`=%d", $tag
         );
-        //    elseif($tipo=='code')
-        //  $sql=sprintf("select * from `Charge Dimension` where `Charge Code`=%s",prepare_mysql($tag));
-        // print $sql;
-        $result = mysql_query($sql);
 
-        if ($this->data = mysql_fetch_array($result, MYSQL_ASSOC)) {
-            //$this->calculate_charge=create_function('$transaction_data,$customer_id,$date', $this->get('Charge Metadata'));
+
+        if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id = $this->data['Charge Key'];
         }
+
+
     }
 
     function find($raw_data, $options) {
@@ -69,13 +70,11 @@ class Charge extends DB_Table {
         $this->found     = false;
         $this->found_key = 0;
         $create          = '';
-        $update          = '';
+
         if (preg_match('/create/i', $options)) {
             $create = 'create';
         }
-        if (preg_match('/update/i', $options)) {
-            $update = 'update';
-        }
+
 
         $data = $this->base_data();
         foreach ($raw_data as $key => $value) {
@@ -100,14 +99,19 @@ class Charge extends DB_Table {
             );
         }
 
-        $result      = mysql_query($sql);
-        $num_results = mysql_num_rows($result);
-        if ($num_results == 1) {
-            $row             = mysql_fetch_array($result, MYSQL_ASSOC);
-            $this->found     = true;
-            $this->found_key = $row['Charge Key'];
 
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $this->found     = true;
+                $this->found_key = $row['Charge Key'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
+
+
         if ($this->found) {
             $this->get_data('id', $this->found_key);
         }
@@ -141,7 +145,7 @@ class Charge extends DB_Table {
         $keys   = '(';
         $values = 'values(';
         foreach ($data as $key => $value) {
-            $keys .= "`$key`,";
+            $keys   .= "`$key`,";
             $values .= prepare_mysql($value).",";
         }
         $keys   = preg_replace('/,$/', ')', $keys);
@@ -149,10 +153,23 @@ class Charge extends DB_Table {
         $sql    = sprintf(
             "INSERT INTO `Charge Dimension` %s %s", $keys, $values
         );
-        // print "$sql\n";
-        if (mysql_query($sql)) {
-            $this->id = mysql_insert_id();
+
+
+        if ($this->db->exec($sql)) {
+            $this->id = $this->db->lastInsertId();
             $this->get_data('id', $this->id);
+
+            $history_data = array(
+                'History Abstract' => sprintf(_('%s charge created'), $this->get('Name')),
+                'History Details'  => '',
+                'Action'           => 'created'
+            );
+
+            $this->add_subject_history(
+                $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+            );
+
+
         } else {
             print "Error can not create charge  $sql\n";
             exit;
@@ -214,15 +231,115 @@ class Charge extends DB_Table {
 
     function get($key = '') {
 
-        if (isset($this->data[$key])) {
-            return $this->data[$key];
-        }
 
         switch ($key) {
+            case 'Amount':
+                $store=get_object('Store',$this->data['Charge Store Key']);
+                return money($this->data['Charge Total Acc '.$key],$store->get('Store Currency Code'));
+
+                break;
+            case 'Orders':
+            case 'Customers':
+
+                return number($this->data['Charge Total Acc '.$key]);
+
+                break;
+
+            case 'Number History Records':
+
+                return number($this->data['Charge '.$key]);
+
+                break;
+            default:
+                if (array_key_exists($key, $this->data)) {
+                    return $this->data[$key];
+                }
+
+                if (array_key_exists('Charge '.$key, $this->data)) {
+                    return $this->data[$this->table_name.' '.$key];
+                }
+
+
+
+                return false;
+        }
+
+
+    }
+
+
+    function get_field_label($field) {
+
+
+        switch ($field) {
+
+            case 'Charge Name':
+                $label = _('code');
+                break;
+            case 'Charge Description':
+                $label = _('name');
+                break;
+            case 'Charge Public Description':
+                $label = _('description');
+                break;
+
+
+            default:
+
+
+
+
+                $label = $field;
 
         }
 
-        return false;
+        return $label;
+
+    }
+
+
+    function update_charge_usage() {
+
+        $orders    = 0;
+        $customers = 0;
+        $amount=0;
+
+        $sql       = sprintf(
+            "SELECT sum(`Transaction Net Amount`) as amount,count( DISTINCT O.`Order Key`) AS orders,count( DISTINCT `Order Customer Key`) AS customers FROM `Order No Product Transaction Fact` B LEFT  JOIN `Order Dimension` O ON (O.`Order Key`=B.`Order Key`) WHERE `Transaction Type Key`=%d AND `Transaction Type`='Charges' AND `Order State` not in ('InBasket','Cancelled') ",
+            $this->id
+
+        );
+
+
+
+        if ($result=$this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $orders    = $row['orders'];
+                $customers = $row['customers'];
+                $amount = $row['amount'];
+            }
+        }else {
+            print_r($error_info=$this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+
+
+
+        $this->fast_update(
+            array(
+                'Charge Total Acc Orders'=>$orders,
+                'Charge Total Acc Customers'=>$customers,
+                'Charge Total Acc Amount'=>$amount,
+            )
+
+        );
+
+
+
+
     }
 
 

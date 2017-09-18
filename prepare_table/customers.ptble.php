@@ -124,6 +124,19 @@ elseif ($parameters['parent'] == 'list') {
     $where = sprintf(' where  `Product ID`=%d ', $parameters['parent_key']);
 
 
+} elseif ($parameters['parent'] == 'charge') {
+    $table = '`Order No Product Transaction Fact` OTF left join     `Order Dimension` O   on (OTF.`Order Key`=O.`Order Key`)  left join `Customer Dimension` C on (`Order Customer Key`=C.`Customer Key`)  ';
+
+    $where = sprintf(' where  `Transaction Type`="Charges" and `Transaction Type Key`=%d   and `Order State`!="InBasket" ', $parameters['parent_key']);
+
+
+
+
+    $group_by = ' group by `Order Customer Key` ';
+
+
+
+
 } elseif ($parameters['parent'] == 'favourites') {
 
     $table = '`Customer Favorite Product Bridge` F  left join `Customer Dimension` C   on (C.`Customer Key`=F.`Customer Key`)  ';

@@ -85,14 +85,14 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                     if (is_numeric($view_path[0])) {
                         $key = $view_path[0];
-
                         if (isset($view_path[1])) {
                             if ($view_path[1] == 'dashboard') {
 
                                 $section = 'dashboard';
 
 
-                            } elseif ($view_path[1] == 'website') {
+                            }
+                            elseif ($view_path[1] == 'website') {
 
 
                                 if (!$user->can_view('sites')) {
@@ -135,7 +135,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                         }
 
 
-                                    } elseif ($view_path[2] == 'new') {
+                                    }  elseif ($view_path[2] == 'new') {
                                         $section = 'website.new';
                                         $object  = 'website';
 
@@ -146,7 +146,18 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
 
                             }
+                            elseif ($view_path[1] == 'charge') {
+                                $section    = 'charge';
+                                $object     = 'charge';
 
+                                $parent     = 'store';
+                                $parent_key = $key;
+                                if (is_numeric($view_path[2])) {
+                                    $key = $view_path[2];
+                                }
+
+
+                            }
 
                         }
 
@@ -181,6 +192,56 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                     }
                 }
 
+                break;
+
+            case 'charge':
+                if (!$user->can_view('stores')) {
+                    $module  = 'utils';
+                    $section = 'forbidden';
+                    break;
+                }
+
+                $module  = 'products';
+                $section = 'store';
+
+                if (isset($view_path[0])) {
+                    if (is_numeric($view_path[0])) {
+
+
+                        $section    = 'charge';
+                        $object     = 'charge';
+                        $key        = $view_path[0];
+                        $parent     = 'store';
+                        $parent_key = '';
+
+                        if (isset($view_path[1])) {
+
+                            if ($view_path[1] == 'order') {
+                                $object     = 'order';
+                                $section    = 'order';
+
+
+
+                                $parent     = 'charge';
+                                $parent_key = $key   ;
+                                if (isset($view_path[2])) {
+                                    $key        = $view_path[2];
+
+                                }
+
+
+
+
+
+                            }
+
+
+
+                        }
+                    }
+
+
+                }
                 break;
 
             case 'product':
@@ -1767,11 +1828,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                             if ($view_path[0] == 'dashboard') {
                                 $section = 'dashboard';
-                                if (isset($view_path[1])) {
 
-                                    $extra = $view_path[1];
-
-                                }
 
 
                             } elseif ($view_path[0] == 'flow') {

@@ -68,6 +68,9 @@ switch ($tipo) {
     case 'product_categories_products':
         product_categories_products(get_table_parameters(), $db, $user, $account);
         break;
+    case 'charges':
+        charges(get_table_parameters(), $db, $user);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -1391,5 +1394,45 @@ function product_categories_products($_data, $db, $user) {
     echo json_encode($response);
 }
 
+
+
+
+
+function charges($_data, $db, $user) {
+
+
+    $rtext_label = 'charge';
+
+    include_once 'prepare_table/init.php';
+
+    $sql         = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $record_data = array();
+
+    foreach ($db->query($sql) as $data) {
+
+
+        $record_data[] = array(
+            'id'   => (integer)$data['Charge Key'],
+            'code' => sprintf('<span class="link" onClick="change_view(\'store/%d/charge/%d\')" >%s</span>',$data['Charge Store Key'],$data['Charge Key'],$data['Charge Name']),
+            'name' => sprintf('<span class="link" onClick="change_view(\'store/%d/charge/%d\')" >%s</span>',$data['Charge Store Key'],$data['Charge Key'],$data['Charge Description']),
+
+
+        );
+
+    }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $record_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
 
 ?>

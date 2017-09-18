@@ -1387,16 +1387,27 @@ function orders_server($_data, $db, $user) {
 }
 
 function orders($_data, $db, $user) {
+
     $rtext_label = 'order';
 
 
     include_once 'prepare_table/init.php';
 
+
+    if ($parameters['parent'] == 'charge') {
+        $rtext_label = 'submited orders with this charge';
+
+    }
+
+
     $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
 
-    if ($parameters['parent'] == 'store') {
+
+
+
+    if ($parameters['parent'] == 'store'  ) {
         $link_format = '/orders/%d/%d';
     } else {
         $link_format = '/'.$parameters['parent'].'/%d/order/%d';
