@@ -182,10 +182,21 @@ class Customer extends Subject {
         $values = '';
         foreach ($this->data as $key => $value) {
             $keys .= ",`".$key."`";
-            if (in_array($key,array('Customer First Contacted Date','Customer Lost Date','Customer Last Invoiced Dispatched Date','Customer First Invoiced Order Date','Customer Last Invoiced Order Date','Customer Tax Number Validation Date','Customer Last Order Date','Customer First Order Date'))) {
-             $values.=','.prepare_mysql($value, true);
-            }else {
-            $values .= ','.prepare_mysql($value, false);
+            if (in_array(
+                $key, array(
+                'Customer First Contacted Date',
+                'Customer Lost Date',
+                'Customer Last Invoiced Dispatched Date',
+                'Customer First Invoiced Order Date',
+                'Customer Last Invoiced Order Date',
+                'Customer Tax Number Validation Date',
+                'Customer Last Order Date',
+                'Customer First Order Date'
+            )
+            )) {
+                $values .= ','.prepare_mysql($value, true);
+            } else {
+                $values .= ','.prepare_mysql($value, false);
             }
         }
         $values = preg_replace('/^,/', '', $values);
@@ -214,11 +225,10 @@ class Customer extends Subject {
 
             $this->update(
                 array(
-                    'Customer Main Plain Mobile'=>$this->get('Customer Main Plain Mobile'),
-                    'Customer Main Plain Telephone'=>$this->get('Customer Main Plain Telephone'),
-                    'Customer Main Plain FAX'=>$this->get('Customer Main Plain FAX'),
-                ),
-                'no_history'
+                    'Customer Main Plain Mobile'    => $this->get('Customer Main Plain Mobile'),
+                    'Customer Main Plain Telephone' => $this->get('Customer Main Plain Telephone'),
+                    'Customer Main Plain FAX'       => $this->get('Customer Main Plain FAX'),
+                ), 'no_history'
 
             );
 
@@ -267,7 +277,7 @@ class Customer extends Subject {
                     return _('Same as invoice address');
                 } elseif ($this->data['Customer Delivery Address Link'] == 'None') {
                     return _('Unrelated to invoice address');
-                }else{
+                } else {
                     return _('Unrelated to contact address');
                 }
 
@@ -630,7 +640,7 @@ class Customer extends Subject {
 
         $_address = $this->data['Customer Main Plain Email'];
 
-        if ($this->data['Customer Preferred Contact Number Formatted Number']!='') {
+        if ($this->data['Customer Preferred Contact Number Formatted Number'] != '') {
             $_address .= '<br/>T: '.$this->data['Customer Preferred Contact Number Formatted Number'];
         }
         $_address .= '<br/>'.$this->data['Customer Main Location'];
@@ -741,10 +751,10 @@ class Customer extends Subject {
         $order_data['Order Class'] = 'InWebsite';
 
 
-        $order_data['Order Customer Key']                  = $this->id;
-        $order_data['Order Customer Name']                 = $this->data['Customer Name'];
-        $order_data['Order Customer Contact Name']         = $this->data['Customer Main Contact Name'];
-        $order_data['Order Registration Number']                    = $this->data['Customer Registration Number'];
+        $order_data['Order Customer Key']          = $this->id;
+        $order_data['Order Customer Name']         = $this->data['Customer Name'];
+        $order_data['Order Customer Contact Name'] = $this->data['Customer Main Contact Name'];
+        $order_data['Order Registration Number']   = $this->data['Customer Registration Number'];
 
         $order_data['Order Tax Number']                    = $this->data['Customer Tax Number'];
         $order_data['Order Tax Number Valid']              = $this->data['Customer Tax Number Valid'];
@@ -825,6 +835,28 @@ class Customer extends Subject {
 
     }
 
+    function get_number_of_orders() {
+        $sql    = sprintf(
+            "SELECT count(*) AS number FROM `Order Dimension` WHERE `Order Customer Key`=%d ", $this->id
+        );
+        $number = 0;
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $number = $row['number'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        return $number;
+
+
+    }
+
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
 
 
@@ -846,102 +878,118 @@ class Customer extends Subject {
                 $website_user = get_object('Website_User', $this->get('Customer Website User Key'));
 
 
-                $website_user->editor=$this->editor;
+                $website_user->editor = $this->editor;
 
-                $website_user->update(array('Website User Password'=>hash('sha256', $value)),'no_history');
+                $website_user->update(array('Website User Password' => hash('sha256', $value)), 'no_history');
 
-                $website_user->update(array('Website User Password Hash'=>password_hash(hash('sha256', $value), PASSWORD_DEFAULT, array('cost' => 12))),'no_history');
+                $website_user->update(array('Website User Password Hash' => password_hash(hash('sha256', $value), PASSWORD_DEFAULT, array('cost' => 12))), 'no_history');
 
                 break;
             case 'Customer Contact Address':
 
 
+                $this->update_address('Contact', json_decode($value, true), $options);
+                /*
 
-                $this->update_address('Contact', json_decode($value, true),$options);
-/*
-
-                if(  empty($metadata['no_propagate_addresses'])  ) {
-
-
-                    if ($this->data['Customer Billing Address Link'] == 'Contact') {
-
-                        $this->update_field_switcher('Customer Invoice Address', $value, $options, array('no_propagate_addresses'=>true));
-
-                        if ($this->data['Customer Delivery Address Link'] == 'Billing') {
-                            $this->update_field_switcher('Customer Delivery Address', $value, $options, array('no_propagate_addresses'=>true));
-
-                        }
+                                if(  empty($metadata['no_propagate_addresses'])  ) {
 
 
-                    }
-                    if ($this->data['Customer Delivery Address Link'] == 'Contact') {
+                                    if ($this->data['Customer Billing Address Link'] == 'Contact') {
 
-                        $this->update_field_switcher('Customer Delivery Address', $value, $options, array('no_propagate_addresses'=>true));
-                    }
+                                        $this->update_field_switcher('Customer Invoice Address', $value, $options, array('no_propagate_addresses'=>true));
 
-                }
-*/
+                                        if ($this->data['Customer Delivery Address Link'] == 'Billing') {
+                                            $this->update_field_switcher('Customer Delivery Address', $value, $options, array('no_propagate_addresses'=>true));
+
+                                        }
+
+
+                                    }
+                                    if ($this->data['Customer Delivery Address Link'] == 'Contact') {
+
+                                        $this->update_field_switcher('Customer Delivery Address', $value, $options, array('no_propagate_addresses'=>true));
+                                    }
+
+                                }
+
+
+                                $this->update_metadata = array(
+
+                                    'class_html'  => array(
+                                        'Contact_Address'      => $this->get('Contact Address')
+
+
+                                    )
+                                );
+                */
                 break;
 
 
             case 'Customer Invoice Address':
 
-                $this->update_address('Invoice', json_decode($value, true),$options);
+                $this->update_address('Invoice', json_decode($value, true), $options);
 
 
-//print_r(json_decode($value, true));
-/*
-                if(  empty($metadata['no_propagate_addresses'])  ) {
+                //print_r(json_decode($value, true));
+                /*
+                                if(  empty($metadata['no_propagate_addresses'])  ) {
 
 
-                    if ($this->data['Customer Billing Address Link'] == 'Contact') {
+                                    if ($this->data['Customer Billing Address Link'] == 'Contact') {
 
-                        $this->update_field_switcher('Customer Contact Address', $value, $options, array('no_propagate_addresses'=>true));
+                                        $this->update_field_switcher('Customer Contact Address', $value, $options, array('no_propagate_addresses'=>true));
 
-                        if ($this->data['Customer Delivery Address Link'] == 'Contact') {
-                            $this->update_field_switcher('Customer Delivery Address', $value, $options, array('no_propagate_addresses'=>true));
+                                        if ($this->data['Customer Delivery Address Link'] == 'Contact') {
+                                            $this->update_field_switcher('Customer Delivery Address', $value, $options, array('no_propagate_addresses'=>true));
 
-                        }
-
-
-                    }
-                    if ($this->data['Customer Delivery Address Link'] == 'Billing') {
+                                        }
 
 
-
-                        $this->update_field_switcher('Customer Delivery Address', $value, $options, array('no_propagate_addresses'=>true));
-                    }
-
-                }
-
-                //'InBasket','InProcess','InWarehouse','PackedDone','Approved','Dispatched','Cancelled'
-
-                if(  empty($metadata['no_propagate_orders'])  ) {
-                    $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` in ("Basket")   AND `Order Customer Key`=%d ', $this->id);
-                    if ($result = $this->db->query($sql)) {
-                        foreach ($result as $row) {
-                            $order = get_object('Order', $row['Order Key']);
+                                    }
+                                    if ($this->data['Customer Delivery Address Link'] == 'Billing') {
 
 
-                            $order->update(array('Order Invoice Address' => $value), $options, array('no_propagate_customer' => true));
-                        }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        print "$sql\n";
-                        exit;
-                    }
-                }
-*/
+
+                                        $this->update_field_switcher('Customer Delivery Address', $value, $options, array('no_propagate_addresses'=>true));
+                                    }
+
+                                }
+
+                                //'InBasket','InProcess','InWarehouse','PackedDone','Approved','Dispatched','Cancelled'
+
+                                if(  empty($metadata['no_propagate_orders'])  ) {
+                                    $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` in ("Basket")   AND `Order Customer Key`=%d ', $this->id);
+                                    if ($result = $this->db->query($sql)) {
+                                        foreach ($result as $row) {
+                                            $order = get_object('Order', $row['Order Key']);
+
+
+                                            $order->update(array('Order Invoice Address' => $value), $options, array('no_propagate_customer' => true));
+                                        }
+                                    } else {
+                                        print_r($error_info = $this->db->errorInfo());
+                                        print "$sql\n";
+                                        exit;
+                                    }
+                                }
+                */
+
+
+                $this->update_metadata = array(
+
+                    'class_html' => array(
+                        'Contact_Address' => $this->get('Contact Address')
+
+
+                    )
+                );
+
+
                 break;
             case 'Customer Delivery Address':
 
 
-
-                $this->update_address('Delivery', json_decode($value, true),$options);
-
-
-
-
+                $this->update_address('Delivery', json_decode($value, true), $options);
 
 
                 break;
@@ -955,18 +1003,18 @@ class Customer extends Subject {
                 $this->update_tax_number($value);
 
 
-                $sql=sprintf('select `Order Key` from `Order Dimension` where  `Order State` in (\'InBasket\',\'InProcess\',\'InWarehouse\',\'PackedDone\')  and `Order Customer Key`=%d ',$this->id);
-                if ($result=$this->db->query($sql)) {
+                $sql =
+                    sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN (\'InBasket\',\'InProcess\',\'InWarehouse\',\'PackedDone\')  AND `Order Customer Key`=%d ', $this->id);
+                if ($result = $this->db->query($sql)) {
                     foreach ($result as $row) {
-                        $order=get_object('Order',$row['Order Key']);
-                        $order->update_tax_number($value) ;
+                        $order = get_object('Order', $row['Order Key']);
+                        $order->update_tax_number($value);
                     }
-                }else {
-                    print_r($error_info=$this->db->errorInfo());
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
                     print "$sql\n";
                     exit;
                 }
-
 
 
                 break;
@@ -974,22 +1022,42 @@ class Customer extends Subject {
                 $this->update_tax_number_valid($value);
 
 
-
-                    $sql=sprintf('select `Order Key` from `Order Dimension` where  `Order State` in (\'InBasket\',\'InProcess\',\'InWarehouse\',\'PackedDone\')  and `Order Customer Key`=%d ',$this->id);
-                if ($result=$this->db->query($sql)) {
+                $sql =
+                    sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN (\'InBasket\',\'InProcess\',\'InWarehouse\',\'PackedDone\')  AND `Order Customer Key`=%d ', $this->id);
+                if ($result = $this->db->query($sql)) {
                     foreach ($result as $row) {
-                        $order=get_object('Order',$row['Order Key']);
-                        $order->update_tax_number_valid($value) ;
+                        $order = get_object('Order', $row['Order Key']);
+                        $order->update_tax_number_valid($value);
                     }
-                }else {
-                    print_r($error_info=$this->db->errorInfo());
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
                     print "$sql\n";
                     exit;
                 }
 
                 break;
 
+            case('Customer Delivery Address Link'):
+                $this->update_field($field, $value, $options);
 
+
+                $this->other_fields_updated = array(
+                    'Customer_Delivery_Address'=>array(
+                        'field'              => 'Customer_Delivery_Address',
+                        'id'              => 'Customer_Delivery_Address',
+                        'edit'            =>'address',
+                        'render'=>($this->get('Customer Delivery Address Link')!='None'?false:true),
+                        'value'           => htmlspecialchars($this->get('Customer Delivery Address')),
+                        'formatted_value' => $this->get('Delivery Address'),
+                        'label'           => ucfirst($this->get_field_label('Customer Delivery Address')),
+
+                    ),
+
+
+                );
+
+
+                break;
             case('Customer First Contacted Date'):
 
                 break;
@@ -1452,14 +1520,12 @@ class Customer extends Subject {
         return $order_key;
     }
 
-
     function add_customer_history($history_data, $force_save = true, $deleteable = 'No', $type = 'Changes') {
 
         return $this->add_subject_history(
             $history_data, $force_save, $deleteable, $type
         );
     }
-
 
     function get_other_delivery_addresses_data() {
         $sql = sprintf(
@@ -1490,7 +1556,6 @@ class Customer extends Subject {
 
     }
 
-
     function is_tax_number_valid() {
         if ($this->data['Customer Tax Number'] == '') {
             return false;
@@ -1501,9 +1566,6 @@ class Customer extends Subject {
     }
 
     function get_order_in_process_key() {
-
-
-
 
 
         $order_key = false;
@@ -1556,7 +1618,6 @@ class Customer extends Subject {
 
         return $credits;
     }
-
 
     function add_history_new_order($order, $text_locale = 'en_GB') {
 
@@ -1926,30 +1987,6 @@ class Customer extends Subject {
 
     }
 
-    function get_number_of_orders() {
-        $sql    = sprintf(
-            "SELECT count(*) AS number FROM `Order Dimension` WHERE `Order Customer Key`=%d ", $this->id
-        );
-        $number = 0;
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $number = $row['number'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        return $number;
-
-
-    }
-
-
-
     public function update_orders() {
 
 
@@ -2082,8 +2119,7 @@ class Customer extends Subject {
 		min(`Order Date`) AS first_order_date ,
 		max(`Order Date`) AS last_order_date,
 		count(*) AS orders
-		FROM `Order Dimension` WHERE `Order Customer Key`=%d  AND `Order State` NOT IN ('Cancelled','InBasket') ",
-            $this->id
+		FROM `Order Dimension` WHERE `Order Customer Key`=%d  AND `Order State` NOT IN ('Cancelled','InBasket') ", $this->id
         );
 
 
@@ -2240,10 +2276,10 @@ class Customer extends Subject {
 
     function delete($note = '') {
 
-global $account;
+        global $account;
 
 
-        $this->deleted        = false;
+        $this->deleted = false;
 
         $has_orders = false;
         $sql        = "SELECT count(*) AS total  FROM `Order Dimension` WHERE `Order Customer Key`=".$this->id;
@@ -2302,7 +2338,8 @@ global $account;
             "DELETE FROM `Search Full Text Dimension` WHERE `Subject`='Customer' AND `Subject Key`=%d", $this->id
         );
         $this->db->exec($sql);
-               $sql = sprintf("DELETE FROM `Category Bridge` WHERE `Subject`='Customer' AND `Subject Key`=%d", $this->id
+        $sql = sprintf(
+            "DELETE FROM `Category Bridge` WHERE `Subject`='Customer' AND `Subject Key`=%d", $this->id
         );
         $this->db->exec($sql);
 
@@ -2321,25 +2358,22 @@ global $account;
 
         $sql = sprintf(
             "INSERT INTO `Customer Deleted Dimension` (`Customer Key`,`Customer Store Key`,`Customer Deleted Name`,`Customer Deleted Contact Name`,`Customer Deleted Email`,`Customer Deleted Metadata`,`Customer Deleted Date`,`Customer Deleted Note`) VALUE (%d,%d,%s,%s,%s,%s,%s,%s) ",
-            $this->id, $this->data['Customer Store Key'], prepare_mysql($this->data['Customer Name']),
-            prepare_mysql($this->data['Customer Main Contact Name']), prepare_mysql($this->data['Customer Main Plain Email']), prepare_mysql(gzcompress(json_encode($this->data), 9)),
-            prepare_mysql($this->editor['Date']), prepare_mysql($note, false)
+            $this->id, $this->data['Customer Store Key'], prepare_mysql($this->data['Customer Name']), prepare_mysql($this->data['Customer Main Contact Name']),
+            prepare_mysql($this->data['Customer Main Plain Email']), prepare_mysql(gzcompress(json_encode($this->data), 9)), prepare_mysql($this->editor['Date']), prepare_mysql($note, false)
         );
 
 
         $this->db->exec($sql);
 
 
-
         require_once 'utils/new_fork.php';
         new_housekeeping_fork(
             'au_housekeeping', array(
-            'type'        => 'customer_deleted',
+            'type'      => 'customer_deleted',
             'store_key' => $this->data['Customer Store Key'],
-            'editor'      => $this->editor
+            'editor'    => $this->editor
         ), $account->get('Account Code'), $this->db
         );
-
 
 
         $this->deleted = true;
@@ -2645,33 +2679,6 @@ global $account;
 
     }
 
-    function get_credit_card_token($card_key, $delivery_address_checksum, $invoice_address_checksum) {
-
-        $key = md5($this->id.','.$delivery_address_checksum.','.$invoice_address_checksum.','.CKEY);
-
-        $token = false;
-        $sql   = sprintf(
-            "SELECT `Customer Credit Card Metadata` FROM `Customer Credit Card Dimension` WHERE `Customer Credit Card Customer Key`=%d AND `Customer Credit Card Invoice Address Checksum`=%s AND `Customer Credit Card Delivery Address Checksum`=%s AND   `Customer Credit Card Valid Until`>NOW() AND  `Customer Credit Card Key`=%d ",
-            $this->id, prepare_mysql($invoice_address_checksum), prepare_mysql($delivery_address_checksum), $card_key
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                $_card_data = json_decode(AESDecryptCtr($row['Customer Credit Card Metadata'], $key, 256), true);
-                $token      = $_card_data['Token'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        return $token;
-
-    }
-
     function delete_credit_card($card_key) {
 
 
@@ -2719,6 +2726,33 @@ global $account;
 
 
         return $tokens;
+
+    }
+
+    function get_credit_card_token($card_key, $delivery_address_checksum, $invoice_address_checksum) {
+
+        $key = md5($this->id.','.$delivery_address_checksum.','.$invoice_address_checksum.','.CKEY);
+
+        $token = false;
+        $sql   = sprintf(
+            "SELECT `Customer Credit Card Metadata` FROM `Customer Credit Card Dimension` WHERE `Customer Credit Card Customer Key`=%d AND `Customer Credit Card Invoice Address Checksum`=%s AND `Customer Credit Card Delivery Address Checksum`=%s AND   `Customer Credit Card Valid Until`>NOW() AND  `Customer Credit Card Key`=%d ",
+            $this->id, prepare_mysql($invoice_address_checksum), prepare_mysql($delivery_address_checksum), $card_key
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $_card_data = json_decode(AESDecryptCtr($row['Customer Credit Card Metadata'], $key, 256), true);
+                $token      = $_card_data['Token'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        return $token;
 
     }
 
@@ -2936,7 +2970,6 @@ global $account;
                     $this->id, $row['Product ID'], $row['invoices'], prepare_mysql($row['date']), prepare_mysql($penultimate_date)
 
                 );
-
 
 
                 $this->db->exec($sql);
