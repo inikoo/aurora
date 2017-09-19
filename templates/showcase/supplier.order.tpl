@@ -1,5 +1,4 @@
 {assign deliveries $order->get_deliveries('objects')}
-
 <div style="padding:20px;border-bottom:1px solid #ccc" class="{if !$order->get('Purchase Order Agent Key')}hide{/if}">
 
 <span class="fulfilled_by">
@@ -9,6 +8,8 @@
 </span>
 </div>
 <div class="timeline_horizontal {if $order->get('Purchase Order State')=='Cancelled'  or $order->get('Purchase Order Agent Key') }hide{/if}">
+
+
     <ul class="timeline" id="timeline">
         <li id="submitted_node" class="li {if $order->get('State Index')>=30}complete{/if}">
             <div class="label">
@@ -21,21 +22,27 @@
             <div class="dot">
             </div>
         </li>
-        <li id="send_node" class="li  {if $order->get('State Index')>=60}complete{/if} ">
+
+
+        {foreach from=$deliveries item=dn name=deliveries}
+
+        <li id="send_node" class="li button {if $dn->get('State Index')==100}complete{/if} "  onclick="change_view('{$order->get('Purchase Order Parent')|lower}/{$order->get('Purchase Order Parent Key')}/delivery/{$dn->id}')"  >
             <div class="label">
-                <span class="state" style="position:relative;left:5px">{t}Delivery{/t} <span></i></span></span>
+                <span class="state" style="position:relative;left:5px">  <i class="fa fa-truck   " aria-hidden="true" title="{t}Delivery{/t}"></i>  {$dn->get('Public ID')} {$dn->get('Progress')}<span></span></span>
             </div>
             <div class="timestamp">
-			<span class="Deliveries_Public_IDs"
-                  style="position:relative;left:5px">&nbsp;{foreach from=$deliveries item=dn name=deliveries}
-                <span i
-                      class="{if $smarty.foreach.deliveries.index != 0}hide{/if} index_{$smarty.foreach.deliveries.index}">{$dn->get('Public ID')}</span>
-                {/foreach}&nbsp;</span>
+			<span class="Deliveries_Public_IDs" style="position:relative;left:5px">&nbsp;
+                <span>{$dn->get('Progress Date')}</span>
+            </span>
             </div>
-            <div class="truck">
+            <div class="dot">
             </div>
         </li>
-        <li id="send_node" class="li  {if $order->get('State Index')>=60}complete{/if}">
+        {/foreach}
+
+        <div class="hide">
+
+        <li id="send_node" class=" li  {if $order->get('State Index')>=60}complete{/if}">
             <div class="label">
                 <span class="state ">{t}Inputted{/t} <span></i></span></span>
             </div>
@@ -48,7 +55,7 @@
             <div class="dot">
             </div>
         </li>
-        <li id="send_node" class="li {if $order->get('State Index')>=70}complete{/if}">
+        <li id="send_node" class=" li {if $order->get('State Index')>=70}complete{/if}">
             <div class="label">
                 <span class="state ">{t}Dispatched{/t} <span></i></span></span>
             </div>
@@ -61,7 +68,7 @@
             <div class="dot">
             </div>
         </li>
-        <li class="li {if $order->get('State Index')>=80}complete{/if}">
+        <li class="li  {if $order->get('State Index')>=80}complete{/if}">
             <div class="label">
                 <span class="state ">{t}Received{/t}</span>
             </div>
@@ -77,7 +84,7 @@
             <div class="dot">
             </div>
         </li>
-        <li class="li {if $order->get('State Index')>=90}complete{/if}">
+        <li class="li  {if $order->get('State Index')>=90}complete{/if}">
             <div class="label">
                 <span class="state">{t}Checked{/t}</span>
             </div>
@@ -103,6 +110,9 @@
             <div class="dot">
             </div>
         </li>
+
+        </div>
+
     </ul>
 </div>
 <div class="timeline_horizontal {if $order->get('Purchase Order State')=='Cancelled' or !$order->get('Purchase Order Agent Key') }hide{/if}">
@@ -218,7 +228,7 @@
             <div id="back_operations">
                 <div id="delete_operations"
                      class="order_operation {if $order->get('State Index')!=10    }hide{/if}">
-                    <div class="square_button left" xstyle="padding:0;margin:0;position:relative;top:-5px"
+                    <div class="square_button left"
                          title="{t}delete{/t}">
                         <i class="fa fa-trash very_discreet " aria-hidden="true"
                            onclick="toggle_order_operation_dialog('delete')"></i>
@@ -296,10 +306,9 @@
             <div id="forward_operations">
 
 
-                <div id="submit_operations"
-                     class="order_operation {if $order->get('Purchase Order State')!='InProcess'}hide{/if}">
+                <div id="submit_operations" class="order_operation {if $order->get('Purchase Order State')!='InProcess'  or  $order->get('Purchase Order Number Items')==0 }hide{/if}">
                     <div id="submit_operation"
-                         class="square_button right {if $order->get('Purchase Order Number Items')==0}hide{/if} "
+                         class="square_button right"
                          title="{t}Submit{/t}">
                         <i class="fa fa-paper-plane-o   " aria-hidden="true"
                            onclick="toggle_order_operation_dialog('submit')"></i>

@@ -279,6 +279,59 @@ class SupplierDelivery extends DB_Table {
                         break;
                 }
                 break;
+
+            case 'Progress Date':
+
+                switch ($this->data['Supplier Delivery State']){
+                    case 'InProcess':
+                    return $this->get('Creation Date');
+                        break;
+                    case 'Dispatched':
+                        return $this->get('Dispatched Date');
+                        break;
+                    case 'Received':
+                    case 'Checked':
+                        return $this->get('Received Date');
+                        break;
+                    case 'Placed':
+                        return $this->get('Placed Date');
+                        break;
+                }
+
+                break;
+            case 'Progress':
+
+                switch ($this->data['Supplier Delivery State']){
+                    case 'Dispatched':
+                        return '('._('Dispatched').')';
+                        break;
+                    case 'Received':
+                        $progress= '('._('Received').')';
+
+                        if($this->get('Supplier Delivery Number Checked Items')>0){
+                            $progress= '('._('Checking').' '.percentage($this->get('Supplier Delivery Number Checked Items'), $this->get('Supplier Delivery Number Dispatched Items'),0).')';
+
+                        }
+                        if($this->get('Supplier Delivery Number Placed Items')>0){
+                            $progress= '('._('Placing').' '.percentage($this->get('Supplier Delivery Number Placed Items'), $this->get('Supplier Delivery Number Dispatched Items'),0).')';
+
+                        }
+
+                        return $progress;
+                        break;
+                    case 'Checked':
+                        $progress= '('._('Checked').')';
+
+                        if($this->get('Supplier Delivery Number Placed Items')>0){
+                            $progress= '('._('Placing').' '.percentage($this->get('Supplier Delivery Number Placed Items'), $this->get('Supplier Delivery Number Dispatched Items'),0).')';
+
+                        }
+
+                        return $progress;
+                        break;
+                }
+
+                break;
             case 'Checked Percentage or Date':
                 if ($this->get('State Index') < 0) {
                     if ($this->get('Supplier Delivery Checked Date') == '') {
@@ -352,9 +405,7 @@ class SupplierDelivery extends DB_Table {
                     return '';
                 }
 
-                return strftime(
-                    "%e %b %Y", strtotime($this->data['Supplier Delivery '.$key].' +0:00')
-                );
+                return strftime("%e %b %Y", strtotime($this->data['Supplier Delivery '.$key].' +0:00'));
 
                 break;
             case 'Received Date':

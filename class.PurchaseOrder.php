@@ -1435,41 +1435,80 @@ class PurchaseOrder extends DB_Table {
         }
 
         $this->update_totals();
+        $operations=array();
+
+        if ($this->get('State Index') == 10) {
+
+
+            if($this->get('Purchase Order Number Items')==0){
+                $operations = array(
+                    'delete_operations',
+                );
+            }else{
+                $operations = array(
+                    'delete_operations',
+                    'submit_operations'
+                );
+            }
+
+
+        }
+
+        /*
+        elseif ($this->get('Order State') == 'InProcess') {
+
+            if($this->get('Order Number Items')==0){
+                $operations = array(
+                    'cancel_operations',
+                    'undo_submit_operations'
+                );
+            }else{
+                $operations = array(
+                    'send_to_warehouse_operations',
+                    'cancel_operations',
+                    'undo_submit_operations'
+                );
+            }
+
+
+        } elseif ($this->get('Order State') == 'InWarehouse') {
+            $operations = array('cancel_operations');
+        } elseif ($this->get('Order State') == 'PackedDone') {
+            $operations = array(
+                'invoice_operations',
+                'cancel_operations'
+            );
+        } else {
+            $operations = array();
+        }
+        */
 
         $this->update_metadata = array(
             'class_html' => array(
-                'Purchase_Order_Total_Amount'                  => $this->get(
-                    'Total Amount'
-                ),
-                'Purchase_Order_Total_Amount_Account_Currency' => $this->get(
-                    'Total Amount Account Currency'
-                ),
-                'Purchase_Order_Weight'                        => $this->get(
-                    'Weight'
-                ),
-                'Purchase_Order_CBM'                           => $this->get(
-                    'CBM'
-                ),
-                'Purchase_Order_Number_Items'                  => $this->get(
-                    'Number Items'
-                ),
-            )
+                'Purchase_Order_Total_Amount'                  => $this->get('Total Amount'),
+                'Purchase_Order_Total_Amount_Account_Currency' => $this->get('Total Amount Account Currency'),
+                'Purchase_Order_Weight'                        => $this->get('Weight'),
+                'Purchase_Order_CBM'                           => $this->get('CBM'),
+                'Purchase_Order_Number_Items'                  => $this->get('Number Items'),
+            ),
+            'operations'  => $operations,
         );
 
+        /*
         if ($this->get('Purchase Order Number Items') == 0) {
             $this->update_metadata['hide'] = array('submit_operation');
         } else {
             $this->update_metadata['show'] = array('submit_operation');
 
         }
+        */
+
 
 
         return array(
             'transaction_key' => $transaction_key,
             'subtotals'       => $subtotals,
-            'to_charge'       => money(
-                $amount, $this->data['Purchase Order Currency Code']
-            ),
+            'to_charge'       => money($amount, $this->data['Purchase Order Currency Code']),
             'qty'             => $qty + 0
         );
 
