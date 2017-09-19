@@ -442,7 +442,8 @@ function save_order_operation(element) {
 
 
 
-            }else if (object == 'supplierdelivery') {
+            }
+            else if (object == 'supplierdelivery') {
 
                 $('#inputted_node').addClass('complete')
                 $('#purchase_order_node').addClass('complete')
@@ -490,13 +491,20 @@ function save_order_operation(element) {
 
                     if (data.value == 'InProcess') {
                         $('#create_delivery').addClass('hide')
+
+                        $('#all_available_items,#new_item').removeClass('hide')
+
+
                     } else if (data.value == 'Submitted') {
+                        $('#all_available_items,#new_item').addClass('hide')
 
 
                         if (state.tab == 'supplier.order.all_supplier_parts') {
                             change_tab('supplier.order.items')
 
                         }
+
+
 
                         if (data.update_metadata.pending_items_in_delivery > 0) {
 
@@ -523,23 +531,15 @@ function save_order_operation(element) {
                 if (state.tab == 'supplier.order.items') {
                     if (data.value == 'InProcess') {
 
-                        grid.columns.findWhere({
-                            name: 'ordered'
-                        }).set("renderable", false)
+                        grid.columns.findWhere({ name: 'ordered'}).set("renderable", false)
 
-                        grid.columns.findWhere({
-                            name: 'quantity'
-                        }).set("renderable", true)
+                        grid.columns.findWhere({ name: 'quantity'}).set("renderable", true)
 
                     } else if (data.value == 'Submitted') {
 
-                        grid.columns.findWhere({
-                            name: 'ordered'
-                        }).set("renderable", true)
+                        grid.columns.findWhere({ name: 'ordered'}).set("renderable", true)
 
-                        grid.columns.findWhere({
-                            name: 'quantity'
-                        }).set("renderable", false)
+                        grid.columns.findWhere({ name: 'quantity'}).set("renderable", false)
 
 
                     }
@@ -687,7 +687,7 @@ function save_item_qty_change(element) {
 
     }
 
-    console.log(_icon)
+    //console.log(_icon)
 
     $(element).addClass(_icon)
 
@@ -782,9 +782,6 @@ function save_item_qty_change(element) {
 
 
                 $('.order_operation').addClass('hide')
-                //$('.items_operation').addClass('hide')
-
-
                 for (var key in data.metadata.operations) {
                     $('#' + data.metadata.operations[key]).removeClass('hide')
                 }
@@ -887,6 +884,17 @@ function save_item_qty_change(element) {
 
 
             } else {
+
+console.log(data)
+
+                $('.order_operation').addClass('hide')
+                for (var key in data.metadata.operations) {
+
+
+                    $('#' + data.metadata.operations[key]).removeClass('hide')
+                    console.log('#' + data.metadata.operations[key])
+
+                }
 
 
                 $(element).closest('tr').find('.part_sko_item').attr('_checked', data.transaction_data.qty)

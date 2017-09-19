@@ -46,12 +46,8 @@ $table_buttons   = array();
 $table_buttons[] = array(
     'icon'       => 'stop',
     'id'         => 'all_available_items',
-    'class'      => 'items_operation'.($state['_object']->get(
-            'Purchase Order State'
-        ) != 'InProcess' ? ' hide' : ''),
-    'title'      => _(
-        "All supplier's parts"
-    ),
+    'class'      => 'items_operation'.($state['_object']->get('Purchase Order State') != 'InProcess' ? ' hide' : ''),
+    'title'      => _("All supplier's parts"),
     'change_tab' => 'supplier.order.all_supplier_parts'
 );
 
@@ -60,9 +56,7 @@ $table_buttons[] = array(
     'icon'     => 'plus',
     'title'    => _('New item'),
     'id'       => 'new_item',
-    'class'    => 'items_operation'.($state['_object']->get(
-            'Purchase Order State'
-        ) != 'InProcess' ? ' hide' : ''),
+    'class'    => 'items_operation'.($state['_object']->get('Purchase Order State') != 'InProcess' ? ' hide' : ''),
     'add_item' => array(
 
         'field_label' => _("Supplier's part").':',
