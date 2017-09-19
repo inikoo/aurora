@@ -241,8 +241,8 @@
             <span class="button"  onclick="change_view('orders/{$order->get('Order Store Key')}/{$order->id}')" ><i class="fa fa-shopping-cart" aria-hidden="true"></i> {$order->get('Public ID')}</span>
         </div>
 
-        <div class="state"  style="text-align: center;padding:5px 0px;border-bottom:none">
-        <table border="0" style="width: 100%"  >
+        <div class="state"  style="text-align: center;padding:5px 10px;border-bottom:none">
+        <table border="0" style="width: 100%;"  >
 
 
 
@@ -258,9 +258,15 @@
                     <span class="error {if $delivery_note->get('Order Number Items Returned')==0}hide{/if}" style="padding-left:20px"><i class="fa fa-thumbs-o-down fa-fw   " aria-hidden="true"></i> <span
                                 class="Order_Number_Items_with_Returned">{$delivery_note->get('Number Items Returned')}</span></span>
                 </td>
+
+                <td>
+                    <span style="padding-left:20px"><i class="fa fa-balance-scale fa-fw discreet " aria-hidden="true"></i> <span class="Weight_Details">{$delivery_note->get('Weight Details')}</span></span>
+                </td>
                 <td>
 
-                    <span style="padding-left:20px"><i class="fa fa-balance-scale fa-fw discreet " aria-hidden="true"></i> <span class="Weight_Details">{$delivery_note->get('Weight Details')}</span></span>
+                    <span style="padding-left:20px" class="Delivery_Note_Number_Parcels">
+                        {$delivery_note->get('Number Parcels')}
+                    </span>
                 </td>
 
             </tr>
@@ -301,6 +307,9 @@
             </tr>
 
         </table>
+
+
+
 
     </div>
 

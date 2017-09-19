@@ -84,9 +84,7 @@ $object_fields = array(
                 'edit'              => ($edit ? 'string' : ''),
                 'id'                => 'Store_Name',
                 'value'             => $object->get('Store Name'),
-                'label'             => ucfirst(
-                    $object->get_field_label('Store Name')
-                ),
+                'label'             => ucfirst($object->get_field_label('Store Name')),
                 'invalid_msg'       => get_invalid_message('string'),
                 'required'          => true,
                 'server_validation' => json_encode(
@@ -120,9 +118,7 @@ $object_fields = array(
                 'options'         => $options_currencies,
                 'value'           => $object->get('Store Currency Code'),
                 'formatted_value' => $object->get('Currency Code'),
-                'label'           => ucfirst(
-                    $object->get_field_label('Store Currency Code')
-                ),
+                'label'           => ucfirst($object->get_field_label('Store Currency Code')),
                 'type'            => 'value'
             ),
             array(

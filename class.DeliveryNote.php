@@ -724,6 +724,38 @@ class DeliveryNote extends DB_Table {
 
                 return $consignment;
                 break;
+
+            case 'Number Parcels':
+
+                if (!is_numeric($this->data['Delivery Note Number Parcels'])) {
+                    return '';
+                }
+
+
+                switch ($this->data['Delivery Note Parcel Type']) {
+                    case('Box'):
+                        $parcel_type = sprintf('<i class="fa fa-archive" title="%s" aria-hidden="true"></i>\'', ngettext('box', 'boxes', $this->data['Delivery Note Number Parcels']));
+                        break;
+                    case('Pallet'):
+                        $parcel_type =
+                            sprintf('<i class="fa fa-calendar  fa-flip-vertical" title="%s" aria-hidden="true"></i>', ngettext('pallet', 'pallets', $this->data['Delivery Note Number Parcels']));
+                        break;
+                    case('Envelope'):
+                        $parcel_type = sprintf('<i class="fa fa-envelope" title="%s" aria-hidden="true"></i>\'', ngettext('envelope', 'envelopes', $this->data['Delivery Note Number Parcels']));
+
+
+                        break;
+
+
+                    default:
+                        $parcel_type = $this->data['Delivery Note Parcel Type'];
+                }
+
+
+                return number($this->data['Delivery Note Number Parcels']).' '.$parcel_type;
+
+                break;
+
             case('Items Gross Amount'):
             case('Items Discount Amount'):
             case('Items Net Amount'):
@@ -886,10 +918,31 @@ class DeliveryNote extends DB_Table {
                 $this->update_state($value);
                 break;
 
+            case 'Delivery Note Parcel Type':
+
+                $this->update_field($field, $value, $options);
+                $this->update_metadata = array(
+                    'class_html' => array(
+                        'Delivery_Note_Number_Parcels'                  => $this->get('Number Parcels'),
+
+                    ),
+                );
+
+                break;
+
             case 'Delivery Note Weight':
 
                 $this->update_field('Delivery Note Weight', $value, $options);
                 $this->update_field('Delivery Note Weight Source', 'Given', $options);
+
+
+                $this->update_metadata = array(
+                    'class_html' => array(
+                        'Weight_Details'                  => $this->get('Weight Details'),
+
+                    ),
+                );
+
 
                 break;
 
@@ -1095,7 +1148,7 @@ class DeliveryNote extends DB_Table {
                     return;
                 }
 
-                $value='Approved';
+                $value = 'Approved';
                 $this->update_field('Delivery Note Date Dispatched', $date, 'no_history');
                 $this->update_field('Delivery Note Date', $date, 'no_history');
                 $this->update_field('Delivery Note State', $value, 'no_history');
@@ -1159,7 +1212,7 @@ class DeliveryNote extends DB_Table {
 
                         $note = '';
 
-                        $picker_key=$row['Picker Key'];
+                        $picker_key = $row['Picker Key'];
 
 
                         $sql = sprintf(
@@ -1177,7 +1230,7 @@ class DeliveryNote extends DB_Table {
 					%f,%s,%s,%d,%s,%d,
 					%s,%s,%.2f,%f,%f,%f,
 
-					%s,%s,%d,%d,%d,%d,%s,%d,%d) ", $row['Map To Order Transaction Fact Parts Multiplicity'], prepare_mysql(''), "'Movement'", "'In'",  prepare_mysql(''),  prepare_mysql(''),
+					%s,%s,%d,%d,%d,%d,%s,%d,%d) ", $row['Map To Order Transaction Fact Parts Multiplicity'], prepare_mysql(''), "'Movement'", "'In'", prepare_mysql(''), prepare_mysql(''),
 
                             $row['Inventory Transaction Weight'], prepare_mysql($date), prepare_mysql($date), $this->id, prepare_mysql($row['Part SKU']), $location_key,
 
@@ -1191,10 +1244,10 @@ class DeliveryNote extends DB_Table {
 
                             $row['Supplier Product Historic Key'], $row['Supplier Key'], $row['Map To Order Transaction Fact Key'],
 
-                            prepare_mysql($row['Map To Order Transaction Fact Metadata']),$row['Inventory Transaction Key'],$picker_key
+                            prepare_mysql($row['Map To Order Transaction Fact Metadata']), $row['Inventory Transaction Key'], $picker_key
                         );
 
-                       // print "$sql\n";
+                        // print "$sql\n";
 
                         $this->db->exec($sql);
 
@@ -1857,10 +1910,6 @@ class DeliveryNote extends DB_Table {
                     $this->db->exec($sql);
 
 
-
-
-
-
                     // todo: fork this
                     $part_location = get_object('Part_Location', $row['Part SKU'].'_'.$row['Location Key']);
                     $part_location->update_stock();
@@ -1956,6 +2005,32 @@ class DeliveryNote extends DB_Table {
 
 
         return number($this->data['Delivery Note Number Parcels']).' '.$parcel_type;
+    }
+
+
+    function get_field_label($field) {
+
+        switch ($field) {
+
+            case 'Delivery Note Number Parcels':
+                $label = _('number parcels');
+                break;
+            case 'Delivery Note Parcel Type':
+                $label = _('parcel type');
+                break;
+            case 'Delivery Note Weight':
+                $label = _('weight');
+                break;
+         
+
+
+            default:
+                $label = $field;
+
+        }
+
+        return $label;
+
     }
 
 

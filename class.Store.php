@@ -2501,8 +2501,7 @@ class Store extends DB_Table {
 
     }
 
-    function
-    create_customer($data) {
+    function create_customer($data) {
 
         $this->new_customer = false;
         $this->new_website_user=false;
