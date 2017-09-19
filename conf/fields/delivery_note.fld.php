@@ -16,6 +16,12 @@ include_once 'utils/static_data.php';
 $new=false;
 
 
+$options_parcel_type = array(
+    'Box' => _('Box'),
+    'Pallet' => _('Pallet'),
+    'Envelope' => _('Envelope'),
+);
+
 $delivery_note=$object;
 
 
@@ -36,11 +42,45 @@ $object_fields = array(
 
         )
     ),
-   
 
+    array(
+        'label'      => _('Parcels/Weight'),
+        'show_title' => true,
+        'fields'     => array(
+
+            array(
+                'edit'  => ($edit ? 'string' : ''),
+                'id'    => 'Delivery_Note_Number_Parcels',
+                'value' => $delivery_note->get('Delivery Note Number Parcels'),
+                'formatted_value' => $delivery_note->get('Number Parcels'),
+                'label'             => ucfirst($object->get_field_label('Delivery Note Number Parcels')),
+            ),
+            array(
+                'id'              => 'Delivery_Note_Parcel_Type',
+                'edit'            => ($edit ? 'option' : ''),
+                'options'         => $options_parcel_type,
+                'value'           => $object->get('Delivery Note Parcel Type'),
+                'formatted_value' => $object->get('Parcel Type'),
+                'label'           => ucfirst($object->get_field_label('Delivery Note Parcel Type')),
+                'type'            => 'value'
+            ),
+            array(
+                'edit'  => ($edit ? 'string' : ''),
+                'id'    => 'Delivery_Note_Weight',
+                'value' => $delivery_note->get('Delivery Note Weight'),
+                'formatted_value' => $delivery_note->get('Weight'),
+                'label'             => ucfirst($object->get_field_label('Delivery Note Weight')),
+            ),
+
+        )
+    ),
 
 
 );
+
+
+
+
 
 
 
