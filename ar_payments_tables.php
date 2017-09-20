@@ -192,9 +192,9 @@ function payments($_data, $db, $user) {
             }
 
 
-            $refund_amount=$data['Payment Transaction Amount Refunded']+$data['Payment Transaction Amount Credited'];
+            $refund_amount = $data['Payment Transaction Amount Refunded'] + $data['Payment Transaction Amount Credited'];
 
-            $refundable_amount=$data['Payment Transaction Amount']-$refund_amount;
+            $refundable_amount = $data['Payment Transaction Amount'] - $refund_amount;
 
             $operations = '';
             switch ($data['Payment Transaction Status']) {
@@ -202,29 +202,26 @@ function payments($_data, $db, $user) {
                     $status = _('Pending');
                     break;
                 case 'Completed':
-                    $status     = _('Completed');
+                    $status = _('Completed');
 
 
-                   if($data['Payment Account Block']=='Accounts'){
-                       $operations='';
-                   }else{
-                       $operations = sprintf(
-                           '<span class="operations">
+                    if ($data['Payment Account Block'] == 'Accounts') {
+                        $operations = '';
+                    } else {
+                        $operations = sprintf(
+                            '<span class="operations">
                             <i class="fa fa-trash button %s" aria-hidden="true" title="'._('Remove payment').'"  onClick="cancel_payment(this,%d)"  ></i>
-                            <i class="fa fa-share fa-flip-horizontal button %s" data-settings=\'{"reference":"%s","amount_formatted":"%s","amount":"%s","can_refund_online":"%s"}\'   aria-hidden="true" title="'._('Refund/Credit payment').'"  onClick="open_refund_dialog(this,%d)"  ></i>
+                            <i class="fa fa-share fa-flip-horizontal button %s" data-settings=\'{"reference":"%s","amount_formatted":"%s","amount":"%s","can_refund_online":"%s"}\'   aria-hidden="true" title="'
+                            ._('Refund/Credit payment').'"  onClick="open_refund_dialog(this,%d)"  ></i>
 
-                            </span>', ($data['Payment Submit Type'] != 'Manual'   ? 'hide' : ''), $data['Payment Key'],
+                            </span>', ($data['Payment Submit Type'] != 'Manual' ? 'hide' : ''), $data['Payment Key'],
 
-                           (($data['Payment Type'] == 'Payment'   and   $refundable_amount>0 ) ? '' : 'hide'),
+                            (($data['Payment Type'] == 'Payment' and $refundable_amount > 0) ? '' : 'hide'),
 
-                           htmlspecialchars($data['Payment Transaction ID']),
-                           money($refundable_amount, $data['Payment Currency Code']),
-                           $refundable_amount,
-                           ($data['Payment Account Block']=='BTree'?true:false),
-                           $data['Payment Key']
-                       );
-                   }
-
+                            htmlspecialchars($data['Payment Transaction ID']), money($refundable_amount, $data['Payment Currency Code']), $refundable_amount,
+                            ($data['Payment Account Block'] == 'BTree' ? true : false), $data['Payment Key']
+                        );
+                    }
 
 
                     break;
@@ -253,43 +250,39 @@ function payments($_data, $db, $user) {
                 '<span class="'.($data['Payment Transaction Status'] != 'Completed' ? 'strikethrough' : '').'" >'.money($data['Payment Transaction Amount'], $data['Payment Currency Code']).'</span>';
 
 
-            if($refund_amount==0){
-                $refunds='';
-            }else{
+            $refunds = '';
+
+            if ($data['Payment Transaction Amount Refunded'] != 0) {
 
                 $refunds = '<span style="font-style: italic" class="discreet">'.money($data['Payment Transaction Amount Refunded'], $data['Payment Currency Code']).' '._('refunded').'</span>';
-
-                if($data['Payment Transaction Amount Credited']!=0) {
-                    $refunds .= ', <span style="font-style: italic" class="discreet">'.money($data['Payment Transaction Amount Credited'], $data['Payment Currency Code']).' '._('credited').'</span>';
-                }
-
-                $refunds=preg_replace('/^, /','',$refunds);
-
+            }
+            if ($data['Payment Transaction Amount Credited'] != 0) {
+                $refunds .= ', <span style="font-style: italic" class="discreet">'.money($data['Payment Transaction Amount Credited'], $data['Payment Currency Code']).' '._('credited').'</span>';
             }
 
-            if($data['Payment Account Block']=='Accounts'){
-                $account=_('Customer credits');
+            $refunds = preg_replace('/^, /', '', $refunds);
 
-            }else{
-                $account=$data['Payment Account Code'];
+        
+            if ($data['Payment Account Block'] == 'Accounts') {
+                $account = _('Customer credits');
+
+            } else {
+                $account = $data['Payment Account Code'];
             }
-
-
-
 
 
             $adata[] = array(
-                'id'           => (integer)$data['Payment Key'],
-                'currency'     => $data['Payment Currency Code'],
-                'amount'       => $amount,
-                'reference' => sprintf("<span class='link' onclick='change_view(\"/payment/%d\")' >%05d", $data['Payment Key'], $data['Payment Transaction ID']),
-                'type'         => $type,
-                'status'       => $status,
-                'notes'        => $notes,
-                'date'         => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Payment Last Updated Date'].' +0:00')),
-                'operations'   => $operations,
-                'refunds'      => $refunds,
-                'account'      => $account
+                'id'         => (integer)$data['Payment Key'],
+                'currency'   => $data['Payment Currency Code'],
+                'amount'     => $amount,
+                'reference'  => sprintf("<span class='link' onclick='change_view(\"/payment/%d\")' >%05d", $data['Payment Key'], $data['Payment Transaction ID']),
+                'type'       => $type,
+                'status'     => $status,
+                'notes'      => $notes,
+                'date'       => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Payment Last Updated Date'].' +0:00')),
+                'operations' => $operations,
+                'refunds'    => $refunds,
+                'account'    => $account
 
             );
 
