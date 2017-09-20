@@ -150,7 +150,7 @@ function change_view(_request, metadata) {
 
 
 
-console.log(request)
+//console.log(request)
 
 
 

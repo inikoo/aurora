@@ -446,7 +446,7 @@
         <div id="payment_nodes">
             {foreach from=$payments item=payment}
                 <div class="payment node">
-                    <span class="node_label"> <span class="link" onClick="change_view('order/{$order->id}/payment/{$payment->id}')">{$payment->get('Payment Account Code')}</span> </span>
+                    <span class="node_label"> <span class="link" onClick="change_view('order/{$order->id}/payment/{$payment->id}')">{if $payment->payment_account->get('Payment Account Block')=='Accounts'}{t}Credit{/t}{else}{$payment->get('Payment Account Code')}{/if}</span> </span>
                     <span class="node_amount"> {$payment->get('Transaction Amount')}</span>
                 </div>
             {/foreach}
@@ -539,10 +539,21 @@
                 <td>
                     <div id="new_payment_payment_account_buttons">
                         {foreach from=$store->get_payment_accounts('objects','Active') item=payment_account}
-                            <div onclick="select_payment_account(this)"
-                                 data-settings='{ "payment_account_key":"{$payment_account->id}", "max_amount":"" , "payment_method":"{$payment_account->get('Default Payment Method')}" }' class="new_payment_payment_account_button unselectable
+
+                            {if $payment_account->get('Payment Account Block')=='Accounts'}
+                                <div class="button  {if $customer->get('Customer Account Balance')<=0}hide{/if} {$payment_account->get('Payment Account Block')}" onclick="select_payment_account(this)"
+                                     data-settings='{ "payment_account_key":"{$payment_account->id}", "max_amount":"{$customer->get('Customer Account Balance')}" , "payment_method":"{$payment_account->get('Default Payment Method')}", "block":"{$payment_account->get('Payment Account Block')}" }' class="new_payment_payment_account_button unselectable
+                        button {if $payment_account->get('Payment Account Block')=='Accounts' and $customer->get('Customer Account Balance')<=0  }hide{/if}" style="border:1px solid #ccc;padding:10px
+                        5px;margin-bottom:2px">{t}Customer credit{/t} <span class="discreet padding_left_10">{$customer->get('Account Balance')}</span></div>
+                                {else}
+                                <div  class="button" onclick="select_payment_account(this)"
+                                     data-settings='{ "payment_account_key":"{$payment_account->id}", "max_amount":"" , "payment_method":"{$payment_account->get('Default Payment Method')}", "block":"{$payment_account->get('Payment Account Block')}" }' class="new_payment_payment_account_button unselectable
                         button {if $payment_account->get('Payment Account Block')=='Accounts' and $customer->get('Customer Account Balance')<=0  }hide{/if}" style="border:1px solid #ccc;padding:10px
                         5px;margin-bottom:2px">{$payment_account->get('Name')}</div>
+                            {/if}
+
+
+
                         {/foreach}
                     </div>
                     <input type="hidden" id="new_payment_payment_account_key" value="">
@@ -581,11 +592,18 @@
         var settings = $(element).data('settings')
 
         console.log(settings)
-        $('#new_payment_payment_account_key').val(settings.payment_account_key)
+        $('#new_payment_payment_account_key').val(settings.payment_account_key).data('settings',settings)
         $('#new_payment_payment_method').val(settings.payment_method)
 
         $("#add_payment :input").attr("disabled", false);
         $("#add_payment .payment_fields").removeClass("just_hinted");
+
+
+        if(settings.block=='Accounts'){
+            $('#new_payment_reference').closest('tr').addClass('hide')
+        }else{
+            $('#new_payment_reference').closest('tr').removeClass('hide')
+        }
 
 
         $('.new_payment_payment_account_button').addClass('super_discreet')
@@ -610,7 +628,36 @@
 
 
             }
-            $('#new_payment_amount').val($(element).attr('amount'))
+            if(!$('#new_payment_amount').is(':disabled')){
+                $('#new_payment_amount').val($(element).attr('amount'))
+
+                validate_new_payment();
+            }
+
+
+
+
+        } else if ($(element).attr('amount') < 0) {
+
+
+            if ($('#payment_refund_amount').is(':visible')) {
+
+                var amount=Math.abs($(element).attr('amount'))
+
+                var max_amount= $('#payment_refund_dialog').data('settings').amount
+
+              if(max_amount<amount){
+                  amount=max_amount
+              }
+
+
+
+                $('#payment_refund_amount').val(amount)
+                validate_refund_form()
+            }
+
+            //payment_refund_amount
+
         }
 
 
@@ -630,6 +677,7 @@
 
             $("#add_payment :input").attr("disabled", true);
             $(".payment_fields").addClass("just_hinted");
+            $('#new_payment_reference').closest('tr').removeClass('hide')
 
 
             $('#add_payment').removeClass('hide')
@@ -1194,11 +1242,50 @@
 
     function validate_new_payment() {
 
-        console.log($('#new_payment_reference').val() != '')
-        console.log(!validate_number($('#new_payment_amount').val(), 0, 999999999))
-        console.log($('#new_payment_payment_account_key').val() > 0)
+       // console.log($('#new_payment_reference').val() != '')
+       // console.log(!validate_number($('#new_payment_amount').val(), 0, 999999999))
+        //console.log($('#new_payment_payment_account_key').val() > 0)
 
-        if ($('#new_payment_reference').val() != '' && !validate_number($('#new_payment_amount').val(), 0, 999999999) && $('#new_payment_payment_account_key').val() > 0) {
+
+        var settings=$('#new_payment_payment_account_key').data('settings')
+
+
+
+        if(settings.block=='Accounts'){
+            var valid_reference=true;
+
+
+        }else{
+            var valid_reference=($('#new_payment_reference').val()==''?false:true);
+        }
+
+
+        if(settings.max_amount!=''){
+
+            console.log(settings.max_amount)
+            console.log($('#new_payment_amount').val())
+
+            var valid_max_amount=(parseFloat(settings.max_amount)<parseFloat($('#new_payment_amount').val())?false:true)
+
+        }else{
+            var valid_max_amount=true;
+
+        }
+
+
+        if( !validate_number($('#new_payment_amount').val(), 0, 999999999) && $('#new_payment_payment_account_key').val() > 0){
+            var valid_amount=true;
+        }else{
+            var valid_amount=false;
+
+        }
+
+        console.log(valid_reference)
+        console.log(valid_max_amount)
+
+        console.log(valid_amount)
+
+        if (valid_reference && valid_max_amount &&  valid_amount) {
             console.log('xx')
             $('#save_new_payment').addClass('valid changed')
         } else {

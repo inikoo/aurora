@@ -203,21 +203,29 @@ function payments($_data, $db, $user) {
                     break;
                 case 'Completed':
                     $status     = _('Completed');
-                    $operations = sprintf(
-                        '<span class="operations">
+
+
+                   if($data['Payment Account Block']=='Accounts'){
+                       $operations='';
+                   }else{
+                       $operations = sprintf(
+                           '<span class="operations">
                             <i class="fa fa-trash button %s" aria-hidden="true" title="'._('Remove payment').'"  onClick="cancel_payment(this,%d)"  ></i>
                             <i class="fa fa-share fa-flip-horizontal button %s" data-settings=\'{"reference":"%s","amount_formatted":"%s","amount":"%s","can_refund_online":"%s"}\'   aria-hidden="true" title="'._('Refund/Credit payment').'"  onClick="open_refund_dialog(this,%d)"  ></i>
 
                             </span>', ($data['Payment Submit Type'] != 'Manual'   ? 'hide' : ''), $data['Payment Key'],
 
-                        (($data['Payment Type'] == 'Payment'   and   $refundable_amount>0 ) ? '' : 'hide'),
+                           (($data['Payment Type'] == 'Payment'   and   $refundable_amount>0 ) ? '' : 'hide'),
 
-                        htmlspecialchars($data['Payment Transaction ID']),
-                        money($refundable_amount, $data['Payment Currency Code']),
-                        $refundable_amount,
-                        ($data['Payment Account Block']=='BTree'?true:false),
-                        $data['Payment Key']
-                    );
+                           htmlspecialchars($data['Payment Transaction ID']),
+                           money($refundable_amount, $data['Payment Currency Code']),
+                           $refundable_amount,
+                           ($data['Payment Account Block']=='BTree'?true:false),
+                           $data['Payment Key']
+                       );
+                   }
+
+
 
                     break;
                 case 'Cancelled':
@@ -248,22 +256,40 @@ function payments($_data, $db, $user) {
             if($refund_amount==0){
                 $refunds='';
             }else{
-                $refunds = '<span style="font-style: italic" class="discreet">'.money($refund_amount, $data['Payment Currency Code']).' '._('refunded').'</span>';
+
+                $refunds = '<span style="font-style: italic" class="discreet">'.money($data['Payment Transaction Amount Refunded'], $data['Payment Currency Code']).' '._('refunded').'</span>';
+
+                if($data['Payment Transaction Amount Credited']!=0) {
+                    $refunds .= ', <span style="font-style: italic" class="discreet">'.money($data['Payment Transaction Amount Credited'], $data['Payment Currency Code']).' '._('credited').'</span>';
+                }
+
+                $refunds=preg_replace('/^, /','',$refunds);
 
             }
 
+            if($data['Payment Account Block']=='Accounts'){
+                $account=_('Customer credits');
+
+            }else{
+                $account=$data['Payment Account Code'];
+            }
+
+
+
+
+
             $adata[] = array(
                 'id'           => (integer)$data['Payment Key'],
-                'reference'    => $data['Payment Transaction ID'],
                 'currency'     => $data['Payment Currency Code'],
                 'amount'       => $amount,
-                'formatted_id' => sprintf("<span class='link' onclick='change_view(\"/payment/%d\")' >%05d", $data['Payment Key'], $data['Payment Key']),
+                'reference' => sprintf("<span class='link' onclick='change_view(\"/payment/%d\")' >%05d", $data['Payment Key'], $data['Payment Transaction ID']),
                 'type'         => $type,
                 'status'       => $status,
                 'notes'        => $notes,
                 'date'         => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Payment Last Updated Date'].' +0:00')),
                 'operations'   => $operations,
-                'refunds'      => $refunds
+                'refunds'      => $refunds,
+                'account'      => $account
 
             );
 

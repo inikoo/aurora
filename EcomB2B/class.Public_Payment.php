@@ -311,9 +311,9 @@ class Public_Payment extends DBW_Table {
 
     function load_payment_account() {
 
-        $this->payment_account = new Payment_Account(
-            $this->data['Payment Account Key']
-        );
+        $this->payment_account =  get_object('Payment_Account',$this->data['Payment Account Key']);
+
+
     }
 
     function load_payment_service_provider() {

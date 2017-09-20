@@ -30,7 +30,7 @@
     <input type="hidden"  id="payment_refund_submit_type" value=""  >
     <input type="hidden"  id="payment_refund_payment_key" value=""  >
 
-
+    <i class="fa fa-window-close button" onclick="close_refund_dialog()" aria-hidden="true" style="margin-bottom:5px"></i>
 
     <table style="width: 100%;border-bottom: 1px solid #ccc;margin-bottom: 5px" border="0">
         <tr>

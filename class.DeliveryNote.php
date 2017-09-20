@@ -2021,7 +2021,7 @@ class DeliveryNote extends DB_Table {
             case 'Delivery Note Weight':
                 $label = _('weight');
                 break;
-         
+
 
 
             default:

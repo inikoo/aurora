@@ -454,10 +454,16 @@ class Customer extends Subject {
             case("Sticky Note"):
                 return nl2br($this->data['Customer Sticky Note']);
                 break;
-            case('Net Balance'):
             case('Account Balance'):
+
+                if(is_object($arg1)){
+                    $store=$arg1;
+                }else{
+                    $store=get_object('Store',$this->data['Customer Store Key']);
+                }
+
                 return money(
-                    $this->data['Customer '.$key], $this->data['Customer Currency Code']
+                    $this->data['Customer '.$key], $store->get('Store Currency Code')
                 );
                 break;
             case('Total Net Per Order'):
@@ -3109,6 +3115,25 @@ class Customer extends Subject {
 
     }
 
+
+    function update_account_balance(){
+        $balance=0;
+        $sql=sprintf('select sum(`Credit Transaction Amount`) as balance from `Credit Transaction Fact`  where `Credit Transaction Customer Key`=%d  ',
+            $this->id
+            );
+        if ($result=$this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $balance=$row['balance'];
+        	}
+        }else {
+        	print_r($error_info=$this->db->errorInfo());
+        	print "$sql\n";
+        	exit;
+        }
+
+        $this->fast_update(array('Customer Account Balance'=>$balance));
+
+    }
 
 }
 

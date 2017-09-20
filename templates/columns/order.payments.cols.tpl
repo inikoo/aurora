@@ -5,15 +5,15 @@ label: "",
 editable: false,
 renderable: false,
 cell: "string"
-}, {
-name: "formatted_id",
-label: "{t}Id{/t}",
-editable: false,
-cell: Backgrid.HtmlCell.extend({
-})
 },{
 name: "reference",
 label:"{t}Reference{/t}",
+editable: false,
+sortType: "toggle",
+cell: Backgrid.HtmlCell.extend({  }),
+},{
+name: "account",
+label:"{t}Account{/t}",
 editable: false,
 sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({  }),

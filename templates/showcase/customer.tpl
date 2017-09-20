@@ -92,15 +92,7 @@
                     <td id="account_balance_label">{t}Account Balance{/t}</td>
                     <td id="account_balance" class="aright highlight">{$customer->get('Account Balance')} </td>
                 </tr>
-                <tr id="last_credit_note_tr" style="display:none">
-                    <td colspan="2" class="aright" style="padding-right:20px">{t}Credit note{/t}: <span
-                                id="account_balance_last_credit_note"></span></td>
-                </tr>
-                <tr style="{if $customer->get_pending_payment_amount_from_account_balance()==0}display:none{/if}">
-                    <td id="account_balance_label">{t}Payments in Process{/t}</td>
-                    <td id="account_balance" class="aright"
-                        style="padding-right:20px;font-weight:800"> {$customer->get_formatted_pending_payment_amount_from_account_balance()} </td>
-                </tr>
+
             </table>
             <table border="0" class="overview">
                 {if $customer->get('Customer Level Type')=='VIP'}
@@ -121,7 +113,7 @@
                 {/if}
                 <tr>
                     <td>{t}Contact Since{/t}:</td>
-                    <td>{$customer->get('First Contacted Date')}</td>
+                    <td>{$customer->get('Customer First Contacted Date')}</td>
                 </tr>
                 {assign var="correlation_msg" value=$customer->get_correlation_info()} {if $correlation_msg}
                     <tr>

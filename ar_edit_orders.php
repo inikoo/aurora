@@ -43,7 +43,7 @@ switch ($tipo) {
                      )
         );
 
-        refund_payment($data, $editor, $smarty, $db, $account,$user);
+        refund_payment($data, $editor, $smarty, $db, $account, $user);
 
 
         break;
@@ -65,7 +65,7 @@ switch ($tipo) {
         );
 
 
-        new_payment($data, $editor, $smarty, $db, $account,$user);
+        new_payment($data, $editor, $smarty, $db, $account, $user);
 
 
         break;
@@ -542,7 +542,7 @@ function set_state($data, $editor, $smarty, $db) {
 
 }
 
-function new_payment($data, $editor, $smarty, $db, $account,$user) {
+function new_payment($data, $editor, $smarty, $db, $account, $user) {
 
     include_once 'utils/currency_functions.php';
 
@@ -553,6 +553,8 @@ function new_payment($data, $editor, $smarty, $db, $account,$user) {
     $payment_account         = get_object('Payment_Account', $data['payment_account_key']);
     $payment_account->editor = $editor;
 
+    $date     = gmdate('Y-m-d H:i:s');
+    $exchange = currency_conversion($db, $order->get('Currency Code'), $account->get('Currency Code'));
 
     $payment_data = array(
         'Payment Store Key'                   => $order->get('Store Key'),
@@ -563,25 +565,63 @@ function new_payment($data, $editor, $smarty, $db, $account,$user) {
         'Payment Sender Country 2 Alpha Code' => $order->get('Order Invoice Address Country 2 Alpha Code'),
         'Payment Sender Email'                => $order->get('Email'),
         'Payment Sender Card Type'            => '',
-        'Payment Created Date'                => gmdate('Y-m-d H:i:s'),
+        'Payment Created Date'                => $date,
 
-        'Payment Completed Date'         => gmdate('Y-m-d H:i:s'),
-        'Payment Last Updated Date'      => gmdate('Y-m-d H:i:s'),
+        'Payment Completed Date'         => $date,
+        'Payment Last Updated Date'      => $date,
         'Payment Transaction Status'     => 'Completed',
         'Payment Transaction ID'         => $data['reference'],
         'Payment Method'                 => $data['payment_method'],
         'Payment Location'               => 'Order',
         'Payment Metadata'               => '',
         'Payment Submit Type'            => 'Manual',
-        'Payment Currency Exchange Rate' => currency_conversion($db,$order->get('Currency Code'), $account->get('Currency Code')),
-        'Payment User Key'=>$user->id
+        'Payment Currency Exchange Rate' => $exchange,
+        'Payment User Key'               => $user->id
 
 
     );
 
 
+    if ($payment_account->get('Payment Account Block') == 'Accounts') {
+        $customer = get_object('Customer', $order->get('Customer Key'));
+
+
+        if ($customer->get('Customer Account Balance') < $data['amount']) {
+            $response = array(
+                'state' => 400,
+                'msg'   => _('Payment amount exceeds customer account balance')
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+    }
+
 
     $payment = $payment_account->create_payment($payment_data);
+
+    if ($payment_account->get('Payment Account Block') == 'Accounts') {
+
+        $sql = sprintf(
+            'INSERT INTO `Credit Transaction Fact` 
+                    (`Credit Transaction Date`,`Credit Transaction Amount`,`Credit Transaction Currency Code`,`Credit Transaction Currency Exchange Rate`,`Credit Transaction Customer Key`,`Credit Transaction Payment Key`) 
+                    VALUES (%s,%.2f,%s,%f,%d,%d) ', prepare_mysql($date), -$data['amount'], prepare_mysql($order->get('Currency Code')), $exchange, $order->get('Customer Key'), $payment->id
+
+
+        );
+
+        $db->exec($sql);
+
+        $reference = $db->lastInsertId();
+
+        $payment->fast_update(array('Payment Transaction ID' => sprintf('%05d', $reference)));
+
+
+        $customer->update_account_balance();
+
+
+    }
+
 
     $order->add_payment($payment);
     $order->update_totals();
@@ -593,9 +633,18 @@ function new_payment($data, $editor, $smarty, $db, $account,$user) {
     $payments_xhtml = '';
 
     foreach ($order->get_payments('objects', 'Completed') as $payment) {
+
+
+        if ($payment->payment_account->get('Payment Account Block') == 'Accounts') {
+            $_code = _('Credit');
+        } else {
+            $_code = $payment->get('Payment Account Code');
+
+        }
+
         $payments_xhtml .= sprintf(
             '<div class="payment node"><span class="node_label link" onClick="change_view(\'%s\')" >%s</span><span class="node_amount" >%s</span></div>', '/order/'.$order->id.'/payment/'.$payment->id,
-            $payment->get('Payment Account Code'), $payment->get('Transaction Amount')
+            $_code, $payment->get('Transaction Amount')
 
         );
     }
@@ -675,7 +724,7 @@ function edit_item_discount($account, $db, $user, $editor, $data, $smarty) {
 }
 
 
-function refund_payment($data, $editor, $smarty, $db, $account,$user) {
+function refund_payment($data, $editor, $smarty, $db, $account, $user) {
 
     include_once 'utils/currency_functions.php';
 
@@ -713,15 +762,12 @@ function refund_payment($data, $editor, $smarty, $db, $account,$user) {
                             Braintree_Configuration::privateKey($payment_account->get('Payment Account Password'));
 
 
-
                             $result = Braintree_Transaction::refund($payment->data['Payment Transaction ID'], $data['amount']);
-
 
 
                             if ($result->success) {
 
-                                $reference=$result->transaction->id;
-
+                                $reference = $result->transaction->id;
 
 
                             } else {
@@ -783,34 +829,89 @@ function refund_payment($data, $editor, $smarty, $db, $account,$user) {
                 'Payment Sender Card Type'            => '',
                 'Payment Created Date'                => gmdate('Y-m-d H:i:s'),
 
-                'Payment Completed Date'         => gmdate('Y-m-d H:i:s'),
-                'Payment Last Updated Date'      => gmdate('Y-m-d H:i:s'),
-                'Payment Transaction Status'     => 'Completed',
-                'Payment Transaction ID'         => $reference,
-                'Payment Method'                 => $payment->get('Payment Method'),
-                'Payment Location'               => 'Order',
-                'Payment Metadata'               => '',
-                'Payment Submit Type'            => ($data['submit_type']=='Online'?'EPS':$data['submit_type']),
-                'Payment Type'                   => 'Refund',
-                'Payment Currency Exchange Rate' => currency_conversion($db,$order->get('Currency Code'), $account->get('Currency Code')),
-                'Payment Related Payment Key'=>$payment->id,
-                'Payment Related Payment Transaction ID'=>$payment->get('Payment Transaction ID'),
-                'Payment User Key'=>$user->id
-
+                'Payment Completed Date'                 => gmdate('Y-m-d H:i:s'),
+                'Payment Last Updated Date'              => gmdate('Y-m-d H:i:s'),
+                'Payment Transaction Status'             => 'Completed',
+                'Payment Transaction ID'                 => $reference,
+                'Payment Method'                         => $payment->get('Payment Method'),
+                'Payment Location'                       => 'Order',
+                'Payment Metadata'                       => '',
+                'Payment Submit Type'                    => ($data['submit_type'] == 'Online' ? 'EPS' : $data['submit_type']),
+                'Payment Type'                           => 'Refund',
+                'Payment Currency Exchange Rate'         => currency_conversion($db, $order->get('Currency Code'), $account->get('Currency Code')),
+                'Payment Related Payment Key'            => $payment->id,
+                'Payment Related Payment Transaction ID' => $payment->get('Payment Transaction ID'),
+                'Payment User Key'                       => $user->id
 
 
             );
 
 
-
             $refund = $payment_account->create_payment($payment_data);
 
 
-            $payment->update(array('Payment Transaction Amount Refunded'=>$payment->get('Payment Transaction Amount Refunded')+$data['amount']));
+            $payment->fast_update(array('Payment Transaction Amount Refunded' => $payment->get('Payment Transaction Amount Refunded') + $data['amount']));
 
 
-            $order->add_payment($refund);
-            $order->update_totals();
+            break;
+
+        case 'Credit':
+
+            $date     = gmdate('Y-m-d H:i:s');
+            $customer = get_object('Customer', $order->get('Customer Key'));
+
+            $exchange = currency_conversion($db, $order->get('Currency Code'), $account->get('Currency Code'));
+
+            $reference    = '';
+            $payment_data = array(
+                'Payment Store Key'                   => $order->get('Store Key'),
+                'Payment Customer Key'                => $order->get('Customer Key'),
+                'Payment Transaction Amount'          => -$data['amount'],
+                'Payment Currency Code'               => $order->get('Currency Code'),
+                'Payment Sender'                      => $order->get('Order Invoice Address Recipient'),
+                'Payment Sender Country 2 Alpha Code' => $order->get('Order Invoice Address Country 2 Alpha Code'),
+                'Payment Sender Email'                => $order->get('Email'),
+                'Payment Sender Card Type'            => '',
+                'Payment Created Date'                => $date,
+
+                'Payment Completed Date'                 => $date,
+                'Payment Last Updated Date'              => $date,
+                'Payment Transaction Status'             => 'Completed',
+                'Payment Transaction ID'                 => $reference,
+                'Payment Method'                         => $payment->get('Payment Method'),
+                'Payment Location'                       => 'Order',
+                'Payment Metadata'                       => '',
+                'Payment Submit Type'                    => ($data['submit_type'] == 'Online' ? 'EPS' : $data['submit_type']),
+                'Payment Type'                           => 'Credit',
+                'Payment Currency Exchange Rate'         => $exchange,
+                'Payment Related Payment Key'            => $payment->id,
+                'Payment Related Payment Transaction ID' => $payment->get('Payment Transaction ID'),
+                'Payment User Key'                       => $user->id
+
+
+            );
+
+
+            $refund = $payment_account->create_payment($payment_data);
+
+            $sql = sprintf(
+                'INSERT INTO `Credit Transaction Fact` 
+                    (`Credit Transaction Date`,`Credit Transaction Amount`,`Credit Transaction Currency Code`,`Credit Transaction Currency Exchange Rate`,`Credit Transaction Customer Key`,`Credit Transaction Payment Key`) 
+                    VALUES (%s,%.2f,%s,%f,%d,%d) ', prepare_mysql($date), $data['amount'], prepare_mysql($order->get('Currency Code')), $exchange, $order->get('Customer Key'), $refund->id
+
+
+            );
+
+            $db->exec($sql);
+
+            $reference = $db->lastInsertId();
+
+            $refund->fast_update(array('Payment Transaction ID' => sprintf('%05d', $reference)));
+
+
+            $customer->update_account_balance();
+            $payment->fast_update(array('Payment Transaction Amount Credited' => $payment->get('Payment Transaction Amount Credited') + $data['amount']));
+
 
             break;
         default:
@@ -825,8 +926,8 @@ function refund_payment($data, $editor, $smarty, $db, $account,$user) {
     }
 
 
-
-
+    $order->add_payment($refund);
+    $order->update_totals();
 
     $operations = array();
 
