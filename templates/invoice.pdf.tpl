@@ -279,7 +279,7 @@ div.inline { float:left; }
 		<tbody>
 			{foreach from=$invoice->get_payments('objects','Completed') item=payment name=payments}
 			<tr class="{if $smarty.foreach.payments.last}last{/if}">
-				<td style="text-align:left">{$payment->get('Method')}{if $payment->get('Payment Type')=='Refund'} ({t}Refund{/t}){/if}</td>
+				<td style="text-align:left">{if $payment->get('Payment Type')=='Credit'}{t}Credit{/t}{else}{$payment->get('Method')}{if $payment->get('Payment Type')=='Refund'} ({t}Refund{/t}){/if}{/if}</td>
 				<td style="text-align:right">{$payment->get('Created Date')}</td>
 				<td style="text-align:left">{$payment->get('Transaction Status')}</td>
 				<td style="text-align:left">{$payment->get('Payment Transaction ID')|strip_tags}</td>
