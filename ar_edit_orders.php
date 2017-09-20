@@ -635,7 +635,7 @@ function new_payment($data, $editor, $smarty, $db, $account, $user) {
     foreach ($order->get_payments('objects', 'Completed') as $payment) {
 
 
-        if ($payment->payment_account->get('Payment Account Block') == 'Accounts') {
+        if ($payment->payment_account->get('Payment Account Block') == 'Accounts'  or $payment->get('Payment Type')=='Credit' ) {
             $_code = _('Credit');
         } else {
             $_code = $payment->get('Payment Account Code');

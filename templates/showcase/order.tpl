@@ -446,7 +446,7 @@
         <div id="payment_nodes">
             {foreach from=$payments item=payment}
                 <div class="payment node">
-                    <span class="node_label"> <span class="link" onClick="change_view('order/{$order->id}/payment/{$payment->id}')">{if $payment->payment_account->get('Payment Account Block')=='Accounts'}{t}Credit{/t}{else}{$payment->get('Payment Account Code')}{/if}</span> </span>
+                    <span class="node_label"> <span class="link" onClick="change_view('order/{$order->id}/payment/{$payment->id}')">{if $payment->payment_account->get('Payment Account Block')=='Accounts'  or $payment->get('Payment Type')=='Credit' }{t}Credit{/t}{else}{$payment->get('Payment Account Code')}{/if}</span> </span>
                     <span class="node_amount"> {$payment->get('Transaction Amount')}</span>
                 </div>
             {/foreach}
