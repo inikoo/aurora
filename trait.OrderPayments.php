@@ -68,7 +68,9 @@ trait OrderPayments {
                 }
 
                 if ($scope == 'objects') {
-                    $payments[$row['Payment Key']] =  get_object('Payment',$row['Payment Key']);  
+                    $_object=get_object('Payment',$row['Payment Key']);
+                    $_object->load_payment_account();
+                    $payments[$row['Payment Key']] = $_object ;
 
                 } else {
                     $payments[$row['Payment Key']] = $row['Payment Key'];

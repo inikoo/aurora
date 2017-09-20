@@ -20,7 +20,22 @@ function open_refund_dialog(element, payment_key) {
 
     var settings = $(element).data('settings')
 
-    $('#payment_refund_dialog').removeClass('hide').data('settings',settings)
+
+    $('#payment_refund_dialog').removeClass('hide').data('settings',settings).offset({
+        top: $(element).closest('td').offset().top ,  left: $(element).offset().left- $('#payment_refund_dialog').width() })
+
+
+    $('#payment_refund_dialog .fields').addClass('hide')
+
+    $('#payment_refund_dialog .lower_fields').addClass('hide')
+    $('#payment_refund_dialog  .select_credit').removeClass('selected').removeClass('no_selected')
+    $('#payment_refund_dialog  .select_refund').removeClass('selected').removeClass('no_selected')
+
+
+    $('#payment_refund_amount').val('')
+    $('#payment_refund_reference').val('')
+    $('#payment_refund_dialog .save').removeClass('valid changed error')
+
 
     $('#payment_refund_dialog .payment_reference').html(settings.reference)
     $('#payment_refund_dialog .payment_refundable_amount').html(settings.amount_formatted)
@@ -41,6 +56,14 @@ function open_refund_dialog(element, payment_key) {
 
     }
 
+}
+
+function close_refund_dialog(){
+
+
+
+
+    $('#payment_refund_dialog').addClass('hide')
 }
 
 
@@ -118,18 +141,13 @@ function payment_refund_credit_selected() {
     $('#payment_refund_submit_type').val('Credit')
 
 
-
-    $('#payment_refund_dialog .fields').removeClass('hide')
-
-
     $('#payment_refund_dialog .fields').addClass('hide')
 
     $('#payment_refund_dialog .lower_fields').removeClass('hide')
-        $('#payment_refund_dialog .reference').addClass('hide')
+    $('#payment_refund_dialog .reference').addClass('hide')
 
 
     $('#payment_refund_dialog  .submit_type').removeClass('selected no_selected')
-
 
 
 }
