@@ -7,7 +7,7 @@
     {include file=$table_top_template  }
 {/if}
 
-{if isset($elements) and count(elements)>0}
+{if isset($elements) and count($elements)>0     }
     <div id="elements" class="elements tabs ">
         <div id="element_type" onClick="show_elements_types()"><i id="element_type_select_icon" class="fa fa-bars""></i></div>
         {foreach from=$elements item=element_group key=_elements_type}
