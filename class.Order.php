@@ -75,6 +75,8 @@ class Order extends DB_Table {
 
         } elseif ($key == 'public id' or $key == 'public_id') {
             $sql = sprintf("SELECT * FROM `Order Dimension` WHERE `Order Public ID`=%s", prepare_mysql($id));
+        }else{
+            return;
         }
 
 

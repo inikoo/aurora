@@ -370,16 +370,11 @@ function invoices_billingregion_taxcategory($_data, $db, $user) {
 
             $adata[] = array(
                 'id'                   => (integer)$data['Invoice Key'],
-                'store_key'            => (integer)$data['Invoice Store Key'],
-                'customer_key'         => (integer)$data['Invoice Customer Key'],
-                'number'               => $data['Invoice Public ID'],
+
+                'number'               => sprintf('<span class="link" onclick="change_view(\'invoices/%d/%d\')">%s</span>',$data['Invoice Store Key'],$data['Invoice Key'],$data['Invoice Public ID']),
                 'customer'             => $data['Invoice Customer Name'],
-                'store_code'           => sprintf(
-                    '<span title="%s">%s</span>', $data['Store Name'], $data['Store Code']
-                ),
-                'date'                 => strftime(
-                    "%e %b %Y", strtotime($data['Invoice Date'].' +0:00')
-                ),
+                'store_code'           => sprintf('<span title="%s">%s</span>', $data['Store Name'], $data['Store Code']),
+                'date'                 => strftime("%e %b %Y", strtotime($data['Invoice Date'].' +0:00')),
                 'total_amount'         => money(
                     $data['Invoice Total Amount'], $data['Invoice Currency']
                 ),
@@ -396,7 +391,7 @@ function invoices_billingregion_taxcategory($_data, $db, $user) {
                     $data['Invoice Items Net Amount'], $data['Invoice Currency']
                 ),
                 'type'                 => $type,
-                'method'               => $method,
+                'payment_method'               => $method,
                 'state'                => $state,
                 'billing_country'      => $data['Invoice Billing Country 2 Alpha Code'],
                 'billing_country_flag' => sprintf(

@@ -289,7 +289,7 @@ if ($order == 'date') {
     $order = '`Invoice Shipping Net Amount`';
 } elseif ($order == 'customer') {
     $order = '`Invoice Customer Name`';
-} elseif ($order == 'method') {
+} elseif ($order == 'payment_method') {
     $order = '`Invoice Main Payment Method`';
 } elseif ($order == 'type') {
     $order = '`Invoice Type`';

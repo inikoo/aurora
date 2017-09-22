@@ -59,7 +59,6 @@ sortType: "toggle",
 defaultOrder:1,
 cell: "integer",
 {if $sort_key=='active_contacts'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-{if $sort_key=='active_contacts'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
 headerCell: integerHeaderCell
 }, {
