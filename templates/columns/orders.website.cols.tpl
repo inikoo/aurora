@@ -56,7 +56,8 @@ label: "{t}Customer{/t}",
 sortType: "toggle",
 editable: false,
 cell: Backgrid.HtmlCell.extend({})
-}, {
+},
+{
 name: "total_amount",
 label: "{t}Total{/t}",
 editable: false,

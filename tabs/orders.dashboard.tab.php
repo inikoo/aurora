@@ -10,7 +10,6 @@
 */
 
 
-
 $store=$state['store'];
 
 $store->load_acc_data();
@@ -21,6 +20,9 @@ $store->load_acc_data();
 //include_once 'widgets/warehouse_alerts.wget.php';
 
 //$state['_object']->get_kpi('Month To Day');
+
+
+//print 'xxx'.$state['extra'];
 
 $smarty->assign('order_flow',$state['extra']);
 

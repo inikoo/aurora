@@ -1828,16 +1828,14 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                             if ($view_path[0] == 'dashboard') {
                                 $section = 'dashboard';
+                                if (isset($view_path[1])) {
+
+                                    $extra = $view_path[1];
+
+                                }
 
 
-
-                            } elseif ($view_path[0] == 'flow') {
-                                $section = 'pending_orders';
-                            } elseif ($view_path[0] == 'website') {
-                                $section = 'basket_orders';
-                            } elseif ($view_path[0] == 'archived') {
-                                $section = 'archived_orders';
-                            } elseif (is_numeric($view_path[0])) {
+                            }elseif (is_numeric($view_path[0])) {
                                 $section = 'order';
                                 $object  = 'order';
 

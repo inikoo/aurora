@@ -11,23 +11,17 @@ name: "formatted_id",
 label: "{t}ID{/t}",
 editable: false,
 sortType: "toggle",
-{if $sort_key=='id'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='formatted_id'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
 cell: Backgrid.HtmlCell.extend({ })
 
 
-}, {
-name: "store_key",
-label: "",
-editable: false,
-renderable: false,
-cell: "string",
-sortType: "toggle",
-
-}, {
+},  {
 name: "name",
 label: "{t}Name{/t}",
 sortType: "toggle",
+{if $sort_key=='name'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+
 cell: Backgrid.StringCell.extend({
 events: {
 "dblclick": "enterEditMode"
@@ -99,7 +93,7 @@ label: "{t}Fail Logins{/t}",
 editable: false,
 defaultOrder:1,
 sortType: "toggle",
-{if $sort_key=='logins'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='failed_logins'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.StringCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 }, {
@@ -108,7 +102,7 @@ label: "{t}Pageviews{/t}",
 editable: false,
 defaultOrder:1,
 sortType: "toggle",
-{if $sort_key=='logins'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='requests'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.StringCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 }, {
@@ -116,6 +110,8 @@ name: "company_name",
 label: "{t}Company{/t}",
 editable: false,
 sortType: "toggle",
+{if $sort_key=='company_name'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+
 cell: Backgrid.StringCell.extend({
 events: {
 "dblclick": "enterEditMode"
@@ -126,6 +122,8 @@ name: "contact_name",
 label: "{t}Main contact{/t}",
 editable: false,
 sortType: "toggle",
+{if $sort_key=='contact_name'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+
 cell: Backgrid.StringCell.extend({
 events: {
 "dblclick": "enterEditMode"
@@ -136,6 +134,8 @@ name: "email",
 label: "{t}Email{/t}",
 editable: false,
 sortType: "toggle",
+{if $sort_key=='email'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+
 cell: Backgrid.EmailCell.extend({
 events: {
 "dblclick": "enterEditMode"
@@ -146,6 +146,8 @@ name: "mobile",
 label: "{t}Mobile{/t}",
 editable: false,
 sortType: "toggle",
+{if $sort_key=='mobile'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+
 cell: Backgrid.StringCell.extend({
 events: {
 "dblclick": "enterEditMode"
@@ -156,6 +158,8 @@ name: "telephone",
 label: "{t}Telephone{/t}",
 editable: false,
 sortType: "toggle",
+{if $sort_key=='telephone'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+
 cell: Backgrid.StringCell.extend({
 events: {
 "dblclick": "enterEditMode"
@@ -167,7 +171,7 @@ label: "{t}Payments{/t}",
 editable: false,
 defaultOrder:1,
 sortType: "toggle",
-{if $sort_key=='account_balance'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='total_payments'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.StringCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 

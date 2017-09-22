@@ -18,7 +18,7 @@
         <link href="/css/intlTelInput.css" rel="stylesheet">
         <link href="/css/countrySelect.css" rel="stylesheet">
         <link href="/css/d3fc.css" rel="stylesheet">
-        <link href="/css/backgrid.css" rel="stylesheet">
+        <link href="/css/backgrid.css?v=211917" rel="stylesheet">
         <link href="/css/backgrid-filter.css" rel="stylesheet">
         <link href="/css/editor/froala_editor.css" rel="stylesheet">
         <link href="/css/editor/froala_style.css" rel="stylesheet">
@@ -51,8 +51,8 @@
         <script type="text/javascript" src="/js/libs/moment-with-locales.js"></script>
         <script type="text/javascript" src="/js/libs/chrono.js"></script>
         <script type="text/javascript" src="/js/libs/sha256.js"></script>
-        <script type="text/javascript" src="/js/libs/underscore.js"></script>
-        <script type="text/javascript" src="/js/libs/backbone.js"></script>
+        <script type="text/javascript" src="/js/libs/underscore.min.js"></script>
+        <script type="text/javascript" src="/js/libs/backbone.min.js"></script>
         <script type="text/javascript" src="/js/libs/backbone.paginator.js"></script>
         <script type="text/javascript" src="/js/libs/backgrid.js"></script>
         <script type="text/javascript" src="/js/libs/backgrid-filter.js"></script>

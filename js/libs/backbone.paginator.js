@@ -317,7 +317,7 @@
             var comparator = options.comparator;
 
             if (state.sortKey && !comparator) {
-
+console.log(state)
                 this.setSorting(state.sortKey, state.order, options);
             }
 
@@ -1184,6 +1184,7 @@
                 if (v != null) data[kvp[0]] = v;
             }
 
+
             if (mode != "server") {
                 var self = this, fullCol = this.fullCollection;
                 var success = options.success;
@@ -1287,6 +1288,9 @@
          @param {(function(Backbone.Model, string): Object) | string} [options.sortValue]
          */
         setSorting: function (sortKey, order, options) {
+
+
+            console.log(sortKey+' '+order+' '+options)
 
             var state = this.state;
 

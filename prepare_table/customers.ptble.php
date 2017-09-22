@@ -297,7 +297,7 @@ if (($parameters['f_field'] == 'name') and $f_value != '') {
 $_order = $order;
 $_dir   = $order_direction;
 if ($order == 'name') {
-    $order = '`Customer File As`';
+    $order = '`Customer Name`';
 } elseif ($order == 'formatted_id') {
     $order = 'C.`Customer Key`';
 } elseif ($order == 'location') {
