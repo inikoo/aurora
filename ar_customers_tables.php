@@ -368,6 +368,9 @@ function categories($_data, $db, $user) {
 
 function customers_server($_data, $db, $user) {
 
+
+    //print_r($_data);
+
     $rtext_label = 'store';
     include_once 'prepare_table/init.php';
 
@@ -455,7 +458,7 @@ function customers_server($_data, $db, $user) {
         */
             $adata[] = array(
                 'store_key'                   => $data['Store Key'],
-                'code'                        => $data['Store Code'],
+                'code'                        => sprintf('<span class="link" onClick="change_view(\'customers/%d\')">%s</span>',$data['Store Key'],$data['Store Code']),
                 'name'                        => $data['Store Name'],
                 'contacts'                    => (integer)$data['Store Contacts'],
                 'active_contacts'             => (integer)$data['active'],

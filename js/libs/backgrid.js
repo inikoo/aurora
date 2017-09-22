@@ -1,55 +1,47 @@
 /*!
- backgrid
- http://github.com/wyuenho/backgrid
+  backgrid 0.3.8
+  http://github.com/cloudflare/backgrid
 
- Copyright (c) 2014 Jimmy Yuen Ho Wong and contributors <wyuenho@gmail.com>
- Licensed under the MIT license.
+  Copyright (c) 2017 Cloudflare, Inc. and contributors <jwong@cloudflare.com>
+  Licensed under the MIT license.
+*/
 
- Inikoo Changes:
+(function (root, factory) {
 
- Line commented (~2090):
- //this.listenTo(collection.fullCollection || collection, "sort", this.removeCellDirection);
- Add (~2538):
- if(collection.state.sortKey!=column.get("name")){order=(column.get("defaultOrder")!= undefined ? column.get("defaultOrder"):-1)}
-
- */
-
-
-(function (factory) {
-
-    // CommonJS
-    if (typeof exports == "object") {
-        module.exports = factory(module.exports,
-            require("underscore"),
-            require("backbone"));
+    if (typeof define === "function" && define.amd) {
+        // AMD (+ global for extensions)
+        define(["underscore", "backbone"], function (_, Backbone) {
+            return (root.Backgrid = factory(_, Backbone));
+        });
+    } else if (typeof exports === "object") {
+        // CommonJS
+        module.exports = factory(require("underscore"), require("backbone"));
+    } else {
+        // Browser
+        root.Backgrid = factory(root._, root.Backbone);
     }
-    // Browser
-    else factory(this, this._, this.Backbone);
-}(function (root, _, Backbone) {
+}(this, function (_, Backbone) {
 
     "use strict";
 
     /*
-     backgrid
-     http://github.com/wyuenho/backgrid
+      backgrid
+      http://github.com/cloudflare/backgrid
 
-     Copyright (c) 2013 Jimmy Yuen Ho Wong and contributors
-     Licensed under the MIT license.
-     */
+      Copyright (c) 2013-present Cloudflare, Inc. and contributors
+      Licensed under the MIT license.
+    */
 
 // Copyright 2009, 2010 Kristopher Michael Kowal
 // https://github.com/kriskowal/es5-shim
 // ES5 15.5.4.20
 // http://es5.github.com/#x15.5.4.20
-    var ws = "\x09\x0A\x0B\x0C\x0D\x20\xA0\u1680\u180E\u2000\u2001\u2002\u2003" +
-        "\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000\u2028" +
-        "\u2029\uFEFF";
+    var ws = "\x09\x0A\x0B\x0C\x0D\x20\xA0\u1680\u180E\u2000\u2001\u2002\u2003" + "\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000\u2028" + "\u2029\uFEFF";
     if (!String.prototype.trim || ws.trim()) {
         // http://blog.stevenlevithan.com/archives/faster-trim-javascript
         // http://perfectionkills.com/whitespace-deviations/
         ws = "[" + ws + "]";
-        var trimBeginRegexp = new RegExp("^" + ws + ws + "*"),
-            trimEndRegexp = new RegExp(ws + ws + "*$");
+        var trimBeginRegexp = new RegExp("^" + ws + ws + "*"), trimEndRegexp = new RegExp(ws + ws + "*$");
         String.prototype.trim = function trim() {
             if (this === undefined || this === null) {
                 throw new TypeError("can't convert " + this + " to object");
@@ -72,15 +64,15 @@
 
     var $ = Backbone.$;
 
-    var Backgrid = root.Backgrid = {
+    var Backgrid = {
 
         Extension: {},
 
         resolveNameToClass: function (name, suffix) {
             if (_.isString(name)) {
                 var key = _.map(name.split('-'), function (e) {
-                        return e.slice(0, 1).toUpperCase() + e.slice(1);
-                    }).join('') + suffix;
+                    return e.slice(0, 1).toUpperCase() + e.slice(1);
+                }).join('') + suffix;
                 var klass = Backgrid[key] || Backgrid.Extension[key];
                 if (_.isUndefined(klass)) {
                     throw new ReferenceError("Class '" + key + "' not found");
@@ -138,65 +130,58 @@
          */
         moveUp: function () {
             return this.keyCode == 38;
-        },
-        /**
+        }, /**
          Down Arrow
 
          @member Backgrid.Command
          */
         moveDown: function () {
             return this.keyCode === 40;
-        },
-        /**
+        }, /**
          Shift Tab
 
          @member Backgrid.Command
          */
         moveLeft: function () {
             return this.shiftKey && this.keyCode === 9;
-        },
-        /**
+        }, /**
          Tab
 
          @member Backgrid.Command
          */
         moveRight: function () {
             return !this.shiftKey && this.keyCode === 9;
-        },
-        /**
+        }, /**
          Enter
 
          @member Backgrid.Command
          */
         save: function () {
             return this.keyCode === 13;
-        },
-        /**
+        }, /**
          Esc
 
          @member Backgrid.Command
          */
         cancel: function () {
             return this.keyCode === 27;
-        },
-        /**
+        }, /**
          None of the above.
 
          @member Backgrid.Command
          */
         passThru: function () {
-            return !(this.moveUp() || this.moveDown() || this.moveLeft() ||
-            this.moveRight() || this.save() || this.cancel());
+            return !(this.moveUp() || this.moveDown() || this.moveLeft() || this.moveRight() || this.save() || this.cancel());
         }
     });
 
     /*
-     backgrid
-     http://github.com/wyuenho/backgrid
+      backgrid
+      http://github.com/cloudflare/backgrid
 
-     Copyright (c) 2013 Jimmy Yuen Ho Wong and contributors
-     Licensed under the MIT license.
-     */
+      Copyright (c) 2013-present Cloudflare, Inc. and contributors
+      Licensed under the MIT license.
+    */
 
     /**
      Just a convenient class for interested parties to subclass.
@@ -277,9 +262,7 @@
          separator thousands. May be an empty string.
          */
         defaults: {
-            decimals: 2,
-            decimalSeparator: '.',
-            orderSeparator: ','
+            decimals: 2, decimalSeparator: '.', orderSeparator: ','
         },
 
         HUMANIZED_NUM_RE: /(\d)(?=(?:\d{3})+$)/g,
@@ -298,7 +281,7 @@
         fromRaw: function (number, model) {
             if (_.isNull(number) || _.isUndefined(number)) return '';
 
-            number = number.toFixed(~~this.decimals);
+            number = parseFloat(number).toFixed(~~this.decimals);
 
             var parts = number.split('.');
             var integerPart = parts[0];
@@ -373,8 +356,7 @@
              string.
              */
             defaults: _.extend({}, NumberFormatter.prototype.defaults, {
-                multiplier: 1,
-                symbol: "%"
+                multiplier: 1, symbol: "%"
             }),
 
             /**
@@ -453,14 +435,10 @@
          whether to include the millisecond part, if it exists.
          */
         defaults: {
-            includeDate: true,
-            includeTime: true,
-            includeMilli: false
+            includeDate: true, includeTime: true, includeMilli: false
         },
 
-        DATE_RE: /^([+\-]?\d{4})-(\d{2})-(\d{2})$/,
-        TIME_RE: /^(\d{2}):(\d{2}):(\d{2})(\.(\d{3}))?$/,
-        ISO_SPLITTER_RE: /T|Z| +/,
+        DATE_RE: /^([+\-]?\d{4})-(\d{2})-(\d{2})$/, TIME_RE: /^(\d{2}):(\d{2}):(\d{2})(\.(\d{3}))?$/, ISO_SPLITTER_RE: /T|Z| +/,
 
         _convert: function (data, validate) {
             if ((data + '').trim() === '') return null;
@@ -470,8 +448,7 @@
                 var jsDate = new Date(data);
                 date = lpad(jsDate.getUTCFullYear(), 4, 0) + '-' + lpad(jsDate.getUTCMonth() + 1, 2, 0) + '-' + lpad(jsDate.getUTCDate(), 2, 0);
                 time = lpad(jsDate.getUTCHours(), 2, 0) + ':' + lpad(jsDate.getUTCMinutes(), 2, 0) + ':' + lpad(jsDate.getUTCSeconds(), 2, 0);
-            }
-            else {
+            } else {
                 data = data.trim();
                 var parts = data.split(this.ISO_SPLITTER_RE) || [];
                 date = this.DATE_RE.test(parts[0]) ? parts[0] : '';
@@ -488,13 +465,7 @@
                 if (!this.includeTime && time) return;
             }
 
-            var jsDate = new Date(Date.UTC(YYYYMMDD[1] * 1 || 0,
-                YYYYMMDD[2] * 1 - 1 || 0,
-                YYYYMMDD[3] * 1 || 0,
-                HHmmssSSS[1] * 1 || null,
-                HHmmssSSS[2] * 1 || null,
-                HHmmssSSS[3] * 1 || null,
-                HHmmssSSS[5] * 1 || null));
+            var jsDate = new Date(Date.UTC(YYYYMMDD[1] * 1 || 0, YYYYMMDD[2] * 1 - 1 || 0, YYYYMMDD[3] * 1 || 0, HHmmssSSS[1] * 1 || null, HHmmssSSS[2] * 1 || null, HHmmssSSS[3] * 1 || null, HHmmssSSS[5] * 1 || null));
 
             var result = '';
 
@@ -640,12 +611,12 @@
     });
 
     /*
-     backgrid
-     http://github.com/wyuenho/backgrid
+      backgrid
+      http://github.com/cloudflare/backgrid
 
-     Copyright (c) 2013 Jimmy Yuen Ho Wong and contributors
-     Licensed under the MIT license.
-     */
+      Copyright (c) 2013-present Cloudflare, Inc. and contributors
+      Licensed under the MIT license.
+    */
 
     /**
      Generic cell editor base class. Only defines an initializer for a number of
@@ -712,8 +683,7 @@
 
         /** @property */
         events: {
-            "blur": "saveOrCancel",
-            "keydown": "saveOrCancel"
+            "blur": "saveOrCancel", "keydown": "saveOrCancel"
         },
 
         /**
@@ -770,8 +740,7 @@
             var command = new Command(e);
             var blurred = e.type === "blur";
 
-            if (command.moveUp() || command.moveDown() || command.moveLeft() || command.moveRight() ||
-                command.save() || blurred) {
+            if (command.moveUp() || command.moveDown() || command.moveLeft() || command.moveRight() || command.save() || blurred) {
 
                 e.preventDefault();
                 e.stopPropagation();
@@ -780,8 +749,7 @@
                 var newValue = formatter.toRaw(val, model);
                 if (_.isUndefined(newValue)) {
                     model.trigger("backgrid:error", model, column, val);
-                }
-                else {
+                } else {
                     model.set(column.get("name"), newValue);
                     model.trigger("backgrid:edited", model, column, command);
                 }
@@ -800,8 +768,7 @@
                 if (this.$el.css("text-align") === "right") {
                     var val = this.$el.val();
                     this.$el.focus().val(null).val(val);
-                }
-                else this.$el.focus();
+                } else this.$el.focus();
             }
             return this;
         }
@@ -862,8 +829,7 @@
 
             var column = this.column, model = this.model, $el = this.$el;
 
-            var formatter = Backgrid.resolveNameToClass(column.get("formatter") ||
-                this.formatter, "Formatter");
+            var formatter = Backgrid.resolveNameToClass(column.get("formatter") || this.formatter, "Formatter");
 
             if (!_.isFunction(formatter.fromRaw) && !_.isFunction(formatter.toRaw)) {
                 formatter = new formatter();
@@ -879,19 +845,25 @@
 
             this.listenTo(model, "backgrid:error", this.renderError);
 
-            this.listenTo(column, "change:editable change:sortable change:renderable",
-                function (column) {
-                    var changed = column.changedAttributes();
-                    for (var key in changed) {
-                        if (changed.hasOwnProperty(key)) {
-                            $el.toggleClass(key, changed[key]);
-                        }
+            this.listenTo(column, "change:editable change:sortable change:renderable", function (column) {
+                var changed = column.changedAttributes();
+                for (var key in changed) {
+                    if (changed.hasOwnProperty(key)) {
+                        $el.toggleClass(key, changed[key]);
                     }
-                });
+                }
+            });
 
-            if (Backgrid.callByNeed(column.editable(), column, model)) $el.addClass("editable");
-            if (Backgrid.callByNeed(column.sortable(), column, model)) $el.addClass("sortable");
-            if (Backgrid.callByNeed(column.renderable(), column, model)) $el.addClass("renderable");
+            this.updateStateClassesMaybe();
+        },
+
+        updateStateClassesMaybe: function () {
+            var model = this.model;
+            var column = this.column;
+            var $el = this.$el;
+            $el.toggleClass("editable", Backgrid.callByNeed(column.editable(), column, model));
+            $el.toggleClass("sortable", Backgrid.callByNeed(column.sortable(), column, model));
+            $el.toggleClass("renderable", Backgrid.callByNeed(column.renderable(), column, model));
         },
 
         /**
@@ -899,9 +871,13 @@
          model's raw value for this cell's column.
          */
         render: function () {
-            this.$el.empty();
+            var $el = this.$el;
+            $el.empty();
             var model = this.model;
-            this.$el.text(this.formatter.fromRaw(model.get(this.column.get("name")), model));
+            var columnName = this.column.get("name");
+            $el.text(this.formatter.fromRaw(model.get(columnName), model));
+            $el.addClass(columnName);
+            this.updateStateClassesMaybe();
             this.delegateEvents();
             return this;
         },
@@ -933,9 +909,7 @@
             if (editable) {
 
                 this.currentEditor = new this.editor({
-                    column: this.column,
-                    model: this.model,
-                    formatter: this.formatter
+                    column: this.column, model: this.model, formatter: this.formatter
                 });
 
                 model.trigger("backgrid:edit", model, column, this, this.currentEditor);
@@ -1041,10 +1015,7 @@
             var rawValue = this.model.get(this.column.get("name"));
             var formattedValue = this.formatter.fromRaw(rawValue, this.model);
             this.$el.append($("<a>", {
-                tabIndex: -1,
-                href: rawValue,
-                title: this.title || formattedValue,
-                target: this.target
+                tabIndex: -1, href: rawValue, title: this.title || formattedValue, target: this.target
             }).text(formattedValue));
             this.delegateEvents();
             return this;
@@ -1072,9 +1043,7 @@
             var model = this.model;
             var formattedValue = this.formatter.fromRaw(model.get(this.column.get("name")), model);
             this.$el.append($("<a>", {
-                tabIndex: -1,
-                href: "mailto:" + formattedValue,
-                title: formattedValue
+                tabIndex: -1, href: "mailto:" + formattedValue, title: formattedValue
             }).text(formattedValue));
             this.delegateEvents();
             return this;
@@ -1291,21 +1260,16 @@
 
         /** @property */
         attributes: {
-            tabIndex: -1,
-            type: "checkbox"
+            tabIndex: -1, type: "checkbox"
         },
 
         /** @property */
         events: {
             "mousedown": function () {
                 this.mouseDown = true;
-            },
-            "blur": "enterOrExitEditMode",
-            "mouseup": function () {
+            }, "blur": "enterOrExitEditMode", "mouseup": function () {
                 this.mouseDown = false;
-            },
-            "change": "saveOrCancel",
-            "keydown": "saveOrCancel"
+            }, "change": "saveOrCancel", "keydown": "saveOrCancel"
         },
 
         /**
@@ -1348,15 +1312,13 @@
             }
 
             var $el = this.$el;
-            if (command.save() || command.moveLeft() || command.moveRight() || command.moveUp() ||
-                command.moveDown()) {
+            if (command.save() || command.moveLeft() || command.moveRight() || command.moveUp() || command.moveDown()) {
                 e.preventDefault();
                 e.stopPropagation();
                 var val = formatter.toRaw($el.prop("checked"), model);
                 model.set(column.get("name"), val);
                 model.trigger("backgrid:edited", model, column, command);
-            }
-            else if (e.type == "change") {
+            } else if (e.type == "change") {
                 var val = formatter.toRaw($el.prop("checked"), model);
                 model.set(column.get("name"), val);
                 $el.focus();
@@ -1394,10 +1356,7 @@
             var model = this.model, column = this.column;
             var editable = Backgrid.callByNeed(column.editable(), column, model);
             this.$el.append($("<input>", {
-                tabIndex: -1,
-                type: "checkbox",
-                checked: this.formatter.fromRaw(model.get(column.get("name")), model),
-                disabled: !editable
+                tabIndex: -1, type: "checkbox", checked: this.formatter.fromRaw(model.get(column.get("name")), model), disabled: !editable
             }));
             this.delegateEvents();
             return this;
@@ -1418,13 +1377,13 @@
 
         /** @property */
         events: {
-            "change": "save",
-            "blur": "close",
-            "keydown": "close"
+            "change": "save", "blur": "close", "keydown": "close"
         },
 
         /** @property {function(Object, ?Object=): string} template */
-        template: _.template('<option value="<%- value %>" <%= selected ? \'selected="selected"\' : "" %>><%- text %></option>', null, {variable: null}),
+        template: _.template('<option value="<%- value %>" <%= selected ? \'selected="selected"\' : "" %>><%- text %></option>', null, {
+            variable: null, evaluate: /<%([\s\S]+?)%>/g, interpolate: /<%=([\s\S]+?)%>/g, escape: /<%-([\s\S]+?)%>/g
+        }),
 
         setOptionValues: function (optionValues) {
             this.optionValues = optionValues;
@@ -1440,10 +1399,8 @@
             var options = '';
             for (var i = 0; i < nvps.length; i++) {
                 options = options + this.template({
-                        text: nvps[i][0],
-                        value: nvps[i][1],
-                        selected: _.indexOf(selectedValues, nvps[i][1]) > -1
-                    });
+                    text: nvps[i][0], value: nvps[i][1], selected: _.indexOf(selectedValues, nvps[i][1]) > -1
+                });
             }
             return options;
         },
@@ -1478,18 +1435,14 @@
                     optionValue = optionValue[1];
 
                     this.$el.append(this.template({
-                        text: optionText,
-                        value: optionValue,
-                        selected: _.indexOf(selectedValues, optionValue) > -1
+                        text: optionText, value: optionValue, selected: _.indexOf(selectedValues, optionValue) > -1
                     }));
-                }
-                else if (_.isObject(optionValue)) {
+                } else if (_.isObject(optionValue)) {
                     optgroupName = optionValue.name;
                     optgroup = $("<optgroup></optgroup>", {label: optgroupName});
                     optgroup.append(this._renderOptions.call(this, optionValue.values, selectedValues));
                     this.$el.append(optgroup);
-                }
-                else {
+                } else {
                     throw new TypeError("optionValues elements must be a name-value pair or an object hash of { name: 'optgroup label', value: [option name-value pairs] }");
                 }
             }
@@ -1519,9 +1472,7 @@
             if (command.cancel()) {
                 e.stopPropagation();
                 model.trigger("backgrid:edited", model, column, new Command(e));
-            }
-            else if (command.save() || command.moveLeft() || command.moveRight() ||
-                command.moveUp() || command.moveDown() || e.type == "blur") {
+            } else if (command.save() || command.moveLeft() || command.moveRight() || command.moveUp() || command.moveDown() || e.type == "blur") {
                 e.preventDefault();
                 e.stopPropagation();
                 this.save(e);
@@ -1632,8 +1583,7 @@
                             var optionValue = optionValue[1];
 
                             if (optionValue == rawDatum) selectedText.push(optionText);
-                        }
-                        else if (_.isObject(optionValue)) {
+                        } else if (_.isObject(optionValue)) {
                             var optionGroupValues = optionValue.values;
 
                             for (var j = 0; j < optionGroupValues.length; j++) {
@@ -1642,16 +1592,14 @@
                                     selectedText.push(optionGroupValue[0]);
                                 }
                             }
-                        }
-                        else {
+                        } else {
                             throw new TypeError;
                         }
                     }
                 }
 
                 this.$el.append(selectedText.join(this.delimiter));
-            }
-            catch (ex) {
+            } catch (ex) {
                 if (ex instanceof TypeError) {
                     throw new TypeError("'optionValues' must be of type {Array.<Array>|Array.<{name: string, values: Array.<Array>}>}");
                 }
@@ -1666,12 +1614,12 @@
     });
 
     /*
-     backgrid
-     http://github.com/wyuenho/backgrid
+      backgrid
+      http://github.com/cloudflare/backgrid
 
-     Copyright (c) 2013 Jimmy Yuen Ho Wong and contributors
-     Licensed under the MIT license.
-     */
+      Copyright (c) 2013-present Cloudflare, Inc. and contributors
+      Licensed under the MIT license.
+    */
 
     /**
      A Column is a placeholder for column metadata.
@@ -1722,19 +1670,20 @@
          this column is sortable. If the value is a string, a method will the same
          name will be looked up from the column instance to determine whether the
          column should be sortable. The method's signature must be `function
-         (Backgrid.Column, Backbone.Model): boolean`.
+         (Backbone.Model): boolean`. The function's context is the column instance.
 
          @cfg {boolean|string|function(): boolean} [defaults.editable=true] Whether
          this column is editable. If the value is a string, a method will the same
          name will be looked up from the column instance to determine whether the
          column should be editable. The method's signature must be `function
-         (Backgrid.Column, Backbone.Model): boolean`.
+         (Backbone.Model): boolean`. The function's context is the column instance.
 
          @cfg {boolean|string|function(): boolean} [defaults.renderable=true]
          Whether this column is renderable. If the value is a string, a method will
          the same name will be looked up from the column instance to determine
          whether the column should be renderable. The method's signature must be
-         `function (Backrid.Column, Backbone.Model): boolean`.
+         `function (Backbone.Model): boolean`. The function's context is the column
+         instance.
 
          @cfg {Backgrid.CellFormatter | Object | string} [defaults.formatter] The
          formatter to use to convert between raw model values and user input.
@@ -1754,17 +1703,7 @@
          insertion order.
          */
         defaults: {
-            name: undefined,
-            label: undefined,
-            sortable: true,
-            editable: true,
-            renderable: true,
-            formatter: undefined,
-            sortType: "cycle",
-            sortValue: undefined,
-            direction: null,
-            cell: undefined,
-            headerCell: undefined
+            name: undefined, label: undefined, sortable: true, editable: true, renderable: true, formatter: undefined, sortType: "cycle", sortValue: undefined, direction: null, cell: undefined, headerCell: undefined
         },
 
         /**
@@ -1831,8 +1770,7 @@
          */
         sortValue: function () {
             var sortValue = this.get("sortValue");
-            if (_.isString(sortValue)) return this[sortValue];
-            else if (_.isFunction(sortValue)) return sortValue;
+            if (_.isString(sortValue)) return this[sortValue]; else if (_.isFunction(sortValue)) return sortValue;
 
             return function (model, colName) {
                 return model.get(colName);
@@ -1840,32 +1778,40 @@
         }
 
         /**
+         If you cannot always determine whether a column should be sortable before
+         the grid get initialized, you can override this method.
+
          @member Backgrid.Column
          @protected
          @method sortable
-         @return {function(Backgrid.Column, Backbone.Model): boolean | boolean}
+         @return {function(Backbone.Model): boolean | boolean}
          */
 
         /**
+         If you cannot always determine whether a column should be editable before
+         the grid get initialized, you can override this method.
+
          @member Backgrid.Column
          @protected
          @method editable
-         @return {function(Backgrid.Column, Backbone.Model): boolean | boolean}
+         @return {function(Backbone.Model): boolean | boolean}
          */
 
         /**
+         If you cannot always determine whether a column should be renderable before
+         the grid get initialized, you can override this method.
+
          @member Backgrid.Column
          @protected
          @method renderable
-         @return {function(Backgrid.Column, Backbone.Model): boolean | boolean}
+         @return {function(Backbone.Model): boolean | boolean}
          */
     });
 
     _.each(["sortable", "renderable", "editable"], function (key) {
         Column.prototype[key] = function () {
             var value = this.get(key);
-            if (_.isString(value)) return this[value];
-            else if (_.isFunction(value)) return value;
+            if (_.isString(value)) return this[value]; else if (_.isFunction(value)) return value;
 
             return !!value;
         };
@@ -1886,12 +1832,12 @@
     });
 
     /*
-     backgrid
-     http://github.com/wyuenho/backgrid
+      backgrid
+      http://github.com/cloudflare/backgrid
 
-     Copyright (c) 2013 Jimmy Yuen Ho Wong and contributors
-     Licensed under the MIT license.
-     */
+      Copyright (c) 2013-present Cloudflare, Inc. and contributors
+      Licensed under the MIT license.
+    */
 
     /**
      Row is a simple container view that takes a model instance and a list of
@@ -1935,11 +1881,9 @@
                 var $el = this.$el;
                 if (i === 0) {
                     $el.prepend(cell.render().$el);
-                }
-                else if (i === columns.length - 1) {
+                } else if (i === columns.length - 1) {
                     $el.append(cell.render().$el);
-                }
-                else {
+                } else {
                     $el.children().eq(i).before(cell.render().$el);
                 }
             });
@@ -1963,8 +1907,7 @@
          */
         makeCell: function (column) {
             return new (column.get("cell"))({
-                column: column,
-                model: this.model
+                column: column, model: this.model
             });
         },
 
@@ -2036,7 +1979,9 @@
 
             var td = document.createElement("td");
             td.setAttribute("colspan", this.columns.length);
-            td.appendChild(document.createTextNode(_.result(this, "emptyText")));
+            var span = document.createElement("span");
+            span.innerHTML = _.result(this, "emptyText");
+            td.appendChild(span);
 
             this.el.className = "empty";
             this.el.appendChild(td);
@@ -2046,12 +1991,12 @@
     });
 
     /*
-     backgrid
-     http://github.com/wyuenho/backgrid
+      backgrid
+      http://github.com/cloudflare/backgrid
 
-     Copyright (c) 2013 Jimmy Yuen Ho Wong and contributors
-     Licensed under the MIT license.
-     */
+      Copyright (c) 2013-present Cloudflare, Inc. and contributors
+      Licensed under the MIT license.
+    */
 
     /**
      HeaderCell is a special cell class that renders a column header cell. If the
@@ -2068,7 +2013,7 @@
 
         /** @property */
         events: {
-            "click a": "onClick"
+            "click button": "onClick"
         },
 
         /**
@@ -2087,15 +2032,14 @@
 
             var column = this.column, collection = this.collection, $el = this.$el;
 
-            this.listenTo(column, "change:editable change:sortable change:renderable",
-                function (column) {
-                    var changed = column.changedAttributes();
-                    for (var key in changed) {
-                        if (changed.hasOwnProperty(key)) {
-                            $el.toggleClass(key, changed[key]);
-                        }
+            this.listenTo(column, "change:editable change:sortable change:renderable", function (column) {
+                var changed = column.changedAttributes();
+                for (var key in changed) {
+                    if (changed.hasOwnProperty(key)) {
+                        $el.toggleClass(key, changed[key]);
                     }
-                });
+                }
+            });
             this.listenTo(column, "change:direction", this.setCellDirection);
             this.listenTo(column, "change:name change:label", this.render);
 
@@ -2103,15 +2047,20 @@
             if (Backgrid.callByNeed(column.sortable(), column, collection)) $el.addClass("sortable");
             if (Backgrid.callByNeed(column.renderable(), column, collection)) $el.addClass("renderable");
 
-//    this.listenTo(collection.fullCollection || collection, "sort", this.removeCellDirection);
+            this.listenTo(collection.fullCollection || collection, "backgrid:sorted", this.removeCellDirection);
         },
 
         /**
-         Event handler for the collection's `sort` event. Removes all the CSS
-         direction classes.
+         Event handler for the collection's `backgrid:sorted` event. Removes
+         all the CSS direction classes.
          */
         removeCellDirection: function () {
-            this.$el.removeClass("ascending").removeClass("descending");
+            //this.$el.removeClass("ascending").removeClass("descending");
+            // this.$el.find('.sort_caret').addClass('hide')
+
+            this.$el.find('.sort_caret').addClass('fa-sort  super_discreet').removeClass('fa-sort-asc fa-sort-desc');
+
+
             this.column.set("direction", null);
         },
 
@@ -2122,8 +2071,19 @@
          otherwise.
          */
         setCellDirection: function (column, direction) {
-            this.$el.removeClass("ascending").removeClass("descending");
-            if (column.cid == this.column.cid) this.$el.addClass(direction);
+            //this.$el.removeClass("ascending").removeClass("descending");
+
+            if (column.cid == this.column.cid) {
+                console.log(direction)
+                if (direction == 'ascending') {
+                    this.$el.find('.sort_caret').removeClass('fa-sort fa-sort-asc fa-sort-desc super_discreet').addClass('fa-sort-asc');
+
+                } else if (direction == 'descending') {
+                    this.$el.find('.sort_caret').removeClass('fa-sort fa-sort-asc fa-sort-desc super_discreet').addClass('fa-sort-desc');
+
+                }
+
+            }
         },
 
         /**
@@ -2139,21 +2099,17 @@
             var event = "backgrid:sort";
 
             function cycleSort(header, col) {
-                if (column.get("direction") === "ascending") collection.trigger(event, col, "descending");
-                else if (column.get("direction") === "descending") collection.trigger(event, col, null);
-                else collection.trigger(event, col, "ascending");
+                if (column.get("direction") === "ascending") collection.trigger(event, col, "descending"); else if (column.get("direction") === "descending") collection.trigger(event, col, null); else collection.trigger(event, col, "ascending");
             }
 
             function toggleSort(header, col) {
-                if (column.get("direction") === "ascending") collection.trigger(event, col, "descending");
-                else collection.trigger(event, col, "ascending");
+                if (column.get("direction") === "ascending") collection.trigger(event, col, "descending"); else collection.trigger(event, col, "ascending");
             }
 
             var sortable = Backgrid.callByNeed(column.sortable(), column, this.collection);
             if (sortable) {
                 var sortType = column.get("sortType");
-                if (sortType === "toggle") toggleSort(this, column);
-                else cycleSort(this, column);
+                if (sortType === "toggle") toggleSort(this, column); else cycleSort(this, column);
             }
         },
 
@@ -2162,20 +2118,32 @@
          column.
          */
         render: function () {
-
             this.$el.empty();
             var column = this.column;
             var sortable = Backgrid.callByNeed(column.sortable(), column, this.collection);
             var label;
             if (sortable) {
-                label = $("<a>").text(column.get("label")).append("<b class='sort-caret'></b>");
+                label = $("<button>").text(column.get("label")).append('<i class="sort_caret fa   fa-sort padding_left_5 super_discreet" aria-hidden="true"></i>');
             } else {
                 label = document.createTextNode(column.get("label"));
             }
 
             this.$el.append(label);
             this.$el.addClass(column.get("name"));
-            this.$el.addClass(column.get("direction"));
+            // this.$el.addClass(column.get("direction"));
+
+
+            // console.log('cacacacac')
+
+            //console.log(column.get("direction"))
+            if (column.get("direction") == 'ascending') {
+                this.$el.find('.sort_caret').removeClass('fa-sort fa-sort-asc fa-sort-desc super_discreet').addClass('fa-sort-asc');
+
+            } else if (column.get("direction") == 'descending') {
+                this.$el.find('.sort_caret').removeClass('fa-sort fa-sort-asc fa-sort-desc super_discreet').addClass('fa-sort-desc');
+
+            }
+
             this.delegateEvents();
             return this;
         }
@@ -2189,8 +2157,6 @@
      @extends Backgrid.Row
      */
     var HeaderRow = Backgrid.HeaderRow = Backgrid.Row.extend({
-
-        requiredOptions: ["columns", "collection"],
 
         /**
          Initializer.
@@ -2211,8 +2177,7 @@
         makeCell: function (column, options) {
             var headerCell = column.get("headerCell") || options.headerCell || HeaderCell;
             headerCell = new headerCell({
-                column: column,
-                collection: this.collection
+                column: column, collection: this.collection
             });
             return headerCell;
         }
@@ -2248,8 +2213,7 @@
             }
 
             this.row = new Backgrid.HeaderRow({
-                columns: this.columns,
-                collection: this.collection
+                columns: this.columns, collection: this.collection
             });
         },
 
@@ -2275,12 +2239,12 @@
     });
 
     /*
-     backgrid
-     http://github.com/wyuenho/backgrid
+      backgrid
+      http://github.com/cloudflare/backgrid
 
-     Copyright (c) 2013 Jimmy Yuen Ho Wong and contributors
-     Licensed under the MIT license.
-     */
+      Copyright (c) 2013-present Cloudflare, Inc. and contributors
+      Licensed under the MIT license.
+    */
 
     /**
      Body is the table body which contains the rows inside a table. Body is
@@ -2315,11 +2279,10 @@
                 this.columns = new Columns(this.columns);
             }
 
-            this.row = options.row || Row;
+            this.row = options.row || this.row || Row;
             this.rows = this.collection.map(function (model) {
                 var row = new this.row({
-                    columns: this.columns,
-                    model: model
+                    columns: this.columns, model: model
                 });
 
                 return row;
@@ -2335,14 +2298,18 @@
             this.listenTo(collection, "reset", this.refresh);
             this.listenTo(collection, "backgrid:sort", this.sort);
             this.listenTo(collection, "backgrid:edited", this.moveToNextCell);
+
+            this.listenTo(this.columns, "add remove", this.updateEmptyRow);
         },
 
         _unshiftEmptyRowMayBe: function () {
             if (this.rows.length === 0 && this.emptyText != null) {
-                this.rows.unshift(new EmptyRow({
-                    emptyText: this.emptyText,
-                    columns: this.columns
-                }));
+                this.emptyRow = new EmptyRow({
+                    emptyText: this.emptyText, columns: this.columns
+                });
+
+                this.rows.unshift(this.emptyRow);
+                return true
             }
         },
 
@@ -2380,8 +2347,7 @@
             }
 
             var row = new this.row({
-                columns: this.columns,
-                model: model
+                columns: this.columns, model: model
             });
 
             var index = collection.indexOf(model);
@@ -2393,8 +2359,7 @@
 
             if (index >= $children.length) {
                 $el.append($rowEl);
-            }
-            else {
+            } else {
                 $children.eq(index).before($rowEl);
             }
 
@@ -2430,7 +2395,9 @@
             // removeRow() is called directly
             if (!options) {
                 this.collection.remove(model, (options = collection));
-                this._unshiftEmptyRowMayBe();
+                if (this._unshiftEmptyRowMayBe()) {
+                    this.render();
+                }
                 return;
             }
 
@@ -2439,9 +2406,22 @@
             }
 
             this.rows.splice(options.index, 1);
-            this._unshiftEmptyRowMayBe();
+            if (this._unshiftEmptyRowMayBe()) {
+                this.render();
+            }
 
             return this;
+        },
+
+        /**
+         Rerender the EmptyRow which empties the DOM element, creates the td with the
+         updated colspan, and appends it back into the DOM
+         */
+
+        updateEmptyRow: function () {
+            if (this.emptyRow != null) {
+                this.emptyRow.render();
+            }
         },
 
         /**
@@ -2456,8 +2436,7 @@
 
             this.rows = this.collection.map(function (model) {
                 var row = new this.row({
-                    columns: this.columns,
-                    model: model
+                    columns: this.columns, model: model
                 });
 
                 return row;
@@ -2488,7 +2467,6 @@
             this.el.appendChild(fragment);
 
             this.delegateEvents();
-
 
             return this;
         },
@@ -2521,7 +2499,7 @@
          Triggers a Backbone `backgrid:sorted` event from the collection when done
          with the column, direction and a reference to the collection.
 
-         @param {Backgrid.Column} column
+         @param {Backgrid.Column|string} column
          @param {null|"ascending"|"descending"} direction
 
          See [Backbone.Collection#comparator](http://backbonejs.org/#Collection-comparator)
@@ -2537,28 +2515,36 @@
             var collection = this.collection;
 
             var order;
-            if (direction === "ascending") order = -1;
-            else if (direction === "descending") order = 1;
-            else order = null;
 
-            var comparator = this.makeComparator(column.get("name"), order,
-                order ?
-                    column.sortValue() :
-                    function (model) {
-                        return model.cid.replace('c', '') * 1;
-                    });
 
-            if (Backbone.PageableCollection &&
-                collection instanceof Backbone.PageableCollection) {
+            if (direction === "ascending") order = -1; else if (direction === "descending") order = 1; else order = null;
 
+
+            var comparator = this.makeComparator(column.get("name"), order, order ? column.sortValue() : function (model) {
+                return model.cid.replace('c', '') * 1;
+            });
+
+            if (Backbone.PageableCollection && collection instanceof Backbone.PageableCollection) {
+
+                // Added aurora
                 if (collection.state.sortKey != column.get("name")) {
                     order = (column.get("defaultOrder") != undefined ? column.get("defaultOrder") : -1)
+                    if (order == 1) {
+                        direction = 'descending'
+                    } else {
+
+                        direction = 'ascending'
+
+                    }
+
                 }
 
-                collection.setSorting(order && column.get("name"), order,
-                    {sortValue: column.sortValue()});
+
+                collection.setSorting(order && column.get("name"), order, {sortValue: column.sortValue()});
 
                 if (collection.fullCollection) {
+
+
                     // If order is null, pageable will remove the comparator on both sides,
                     // in this case the default insertion order comparator needs to be
                     // attached to get back to the order before sorting.
@@ -2567,21 +2553,20 @@
                     }
                     collection.fullCollection.sort();
                     collection.trigger("backgrid:sorted", column, direction, collection);
-                }
-                else collection.fetch({
+                    column.set("direction", direction);
+                } else collection.fetch({
                     reset: true, success: function () {
-
                         collection.trigger("backgrid:sorted", column, direction, collection);
+                        column.set("direction", direction);
                     }
                 });
-            }
-            else {
+            } else {
                 collection.comparator = comparator;
                 collection.sort();
                 collection.trigger("backgrid:sorted", column, direction, collection);
+                column.set("direction", direction);
             }
 
-            column.set("direction", direction);
 
             return this;
         },
@@ -2596,8 +2581,7 @@
                 if (order === 1) t = l, l = r, r = t;
 
                 // compare as usual
-                if (l === r) return 0;
-                else if (l < r) return -1;
+                if (l === r) return 0; else if (l < r) return -1;
                 return 1;
             };
         },
@@ -2621,10 +2605,12 @@
             var j = this.columns.indexOf(column);
             var cell, renderable, editable, m, n;
 
+            // return if model being edited in a different grid
+            if (j === -1) return this;
+
             this.rows[i].cells[j].exitEditMode();
 
-            if (command.moveUp() || command.moveDown() || command.moveLeft() ||
-                command.moveRight() || command.save()) {
+            if (command.moveUp() || command.moveDown() || command.moveLeft() || command.moveRight() || command.save()) {
                 var l = this.columns.length;
                 var maxOffset = l * this.collection.length;
 
@@ -2637,14 +2623,10 @@
                             cell.enterEditMode();
                             model.trigger("backgrid:next", m, j, false);
                         }
-                    }
-                    else model.trigger("backgrid:next", m, j, true);
-                }
-                else if (command.moveLeft() || command.moveRight()) {
+                    } else model.trigger("backgrid:next", m, j, true);
+                } else if (command.moveLeft() || command.moveRight()) {
                     var right = command.moveRight();
-                    for (var offset = i * l + j + (right ? 1 : -1);
-                         offset >= 0 && offset < maxOffset;
-                         right ? offset++ : offset--) {
+                    for (var offset = i * l + j + (right ? 1 : -1); offset >= 0 && offset < maxOffset; right ? offset++ : offset--) {
                         m = ~~(offset / l);
                         n = offset - m * l;
                         cell = this.rows[m].cells[n];
@@ -2668,12 +2650,12 @@
     });
 
     /*
-     backgrid
-     http://github.com/wyuenho/backgrid
+      backgrid
+      http://github.com/cloudflare/backgrid
 
-     Copyright (c) 2013 Jimmy Yuen Ho Wong and contributors
-     Licensed under the MIT license.
-     */
+      Copyright (c) 2013-present Cloudflare, Inc. and contributors
+      Licensed under the MIT license.
+    */
 
     /**
      A Footer is a generic class that only defines a default tag `tfoot` and
@@ -2708,12 +2690,12 @@
     });
 
     /*
-     backgrid
-     http://github.com/wyuenho/backgrid
+      backgrid
+      http://github.com/cloudflare/backgrid
 
-     Copyright (c) 2013 Jimmy Yuen Ho Wong and contributors
-     Licensed under the MIT license.
-     */
+      Copyright (c) 2013-present Cloudflare, Inc. and contributors
+      Licensed under the MIT license.
+    */
 
     /**
      Grid represents a data grid that has a header, body and an optional footer.
@@ -2785,6 +2767,7 @@
          @param {Object} options
          @param {Backbone.Collection.<Backgrid.Columns>|Array.<Backgrid.Column>|Array.<Object>} options.columns Column metadata.
          @param {Backbone.Collection} options.collection The collection of tabular model data to display.
+         @param {string} [options.caption=string] An optional caption to be added to the table.
          @param {Backgrid.Header} [options.header=Backgrid.Header] An optional Header class to override the default.
          @param {Backgrid.Body} [options.body=Backgrid.Body] An optional Body class to override the default.
          @param {Backgrid.Row} [options.row=Backgrid.Row] An optional Row class to override the default.
@@ -2794,12 +2777,13 @@
             // Convert the list of column objects here first so the subviews don't have
             // to.
             if (!(options.columns instanceof Backbone.Collection)) {
-                options.columns = new Columns(options.columns);
+                options.columns = new Columns(options.columns || this.columns);
             }
             this.columns = options.columns;
 
-            var filteredOptions = _.omit(options, ["el", "id", "attributes",
-                "className", "tagName", "events"]);
+            this.caption = options.caption;
+
+            var filteredOptions = _.omit(options, ["el", "id", "attributes", "className", "tagName", "events"]);
 
             // must construct body first so it listens to backgrid:sort first
             this.body = options.body || this.body;
@@ -2867,7 +2851,6 @@
             return this;
         },
 
-
         /**
          Delegates to Backgrid.Body#sort.
          */
@@ -2877,12 +2860,16 @@
         },
 
         /**
-         Renders the grid's header, then footer, then finally the body. Triggers a
+         Renders the grid's caption, then header, then footer, then finally the body. Triggers a
          Backbone `backgrid:rendered` event along with a reference to the grid when
          the it has successfully been rendered.
          */
         render: function () {
             this.$el.empty();
+
+            if (this.caption) {
+                this.$el.append($("<caption>").text(this.caption));
+            }
 
             if (this.header) {
                 this.$el.append(this.header.render().$el);

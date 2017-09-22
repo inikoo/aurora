@@ -8,7 +8,7 @@
   font-style: normal;
   font-weight: 700;
   src: local("Ubuntu Bold"), local("Ubuntu-Bold"), url("/fonts/ubuntu700.woff2") format("woff2"); }
-html, body, textarea {
+html, body, textarea, button {
   width: 100%;
   height: 100%;
   font-family: "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;
@@ -16,7 +16,7 @@ html, body, textarea {
   background: #fcfcfc;
   margin: 0px;
   font-size: 14px; }
-  html .sr-only, body .sr-only, textarea .sr-only {
+  html .sr-only, body .sr-only, textarea .sr-only, button .sr-only {
     position: absolute;
     width: 1px;
     height: 1px;
@@ -25,39 +25,39 @@ html, body, textarea {
     overflow: hidden;
     clip: rect(0, 0, 0, 0);
     border: 0; }
-  html a, html table, html button, html tbody, body a, body table, body button, body tbody, textarea a, textarea table, textarea button, textarea tbody {
+  html a, html table, html button, html tbody, body a, body table, body button, body tbody, textarea a, textarea table, textarea button, textarea tbody, button a, button table, button button, button tbody {
     outline: none; }
-  html .link, html a, body .link, body a, textarea .link, textarea a {
+  html .link, html a, body .link, body a, textarea .link, textarea a, button .link, button a {
     color: #6a6d91;
     cursor: pointer;
     text-decoration: none; }
-  html .marked_link, body .marked_link, textarea .marked_link {
+  html .marked_link, body .marked_link, textarea .marked_link, button .marked_link {
     color: #6a6d91;
     cursor: pointer;
     text-decoration: underline; }
-  html .button, body .button, textarea .button {
+  html .button, body .button, textarea .button, button .button {
     cursor: pointer; }
-  html .handle, body .handle, textarea .handle {
+  html .handle, body .handle, textarea .handle, button .handle {
     cursor: move; }
-  html i.button.edit, body i.button.edit, textarea i.button.edit {
+  html i.button.edit, body i.button.edit, textarea i.button.edit, button i.button.edit {
     opacity: .75; }
-    html i.button.edit:hover, body i.button.edit:hover, textarea i.button.edit:hover {
+    html i.button.edit:hover, body i.button.edit:hover, textarea i.button.edit:hover, button i.button.edit:hover {
       opacity: 1; }
-  html .link:hover, html a:hover, body .link:hover, body a:hover, textarea .link:hover, textarea a:hover {
+  html .link:hover, html a:hover, body .link:hover, body a:hover, textarea .link:hover, textarea a:hover, button .link:hover, button a:hover {
     text-decoration: underline; }
-  html table, body table, textarea table {
+  html table, body table, textarea table, button table {
     border-collapse: collapse; }
-  html .aright, body .aright, textarea .aright {
+  html .aright, body .aright, textarea .aright, button .aright {
     text-align: right !important; }
-  html .align_center, body .align_center, textarea .align_center {
+  html .align_center, body .align_center, textarea .align_center, button .align_center {
     text-align: center; }
-  html .invisible, body .invisible, textarea .invisible {
+  html .invisible, body .invisible, textarea .invisible, button .invisible {
     visibility: hidden; }
-  html .visible, body .visible, textarea .visible {
+  html .visible, body .visible, textarea .visible, button .visible {
     visibility: visible; }
-  html .hide, body .hide, textarea .hide {
+  html .hide, body .hide, textarea .hide, button .hide {
     display: none; }
-  html .strikethrough, body .strikethrough, textarea .strikethrough {
+  html .strikethrough, body .strikethrough, textarea .strikethrough, button .strikethrough {
     text-decoration: line-through; }
 
 .unselectable {
@@ -1265,8 +1265,13 @@ table .totals td {
 
 .backgrid th {
   text-align: left; }
-  .backgrid th a {
-    color: #444; }
+  .backgrid th button, .backgrid th a {
+    font-weight: bold;
+    text-align: left;
+    cursor: pointer; }
+
+.backgrid th.sortable button, .backgrid th.sortable a {
+  cursor: pointer; }
 
 .backgrid th, .backgrid td {
   vertical-align: top;
@@ -1274,6 +1279,8 @@ table .totals td {
 
 .backgrid th.align-right {
   text-align: right; }
+  .backgrid th.align-right button {
+    text-align: right; }
 
 .export_dialog {
   position: absolute;

@@ -853,7 +853,14 @@
 
     var Row = Backbone.Model.extend({});
 
+    console.log('{$sort_order}')
+
+
     var Rows = Backbone.PageableCollection.extend({
+
+
+
+
         model: Row, url: '{$request}', ar_file: '{$ar_file}', tipo: '{$tipo}', parameters: '{$parameters}', tab: '{$tab}', state: {
             pageSize: {$results_per_page}, sortKey: '{$sort_key}', order: parseInt({$sort_order})
         }, queryParams: {

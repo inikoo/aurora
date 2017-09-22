@@ -1,4 +1,6 @@
 
+
+
 .order_flow.selected{
   border-bottom: 1px solid white;background-color: white
 }
@@ -237,12 +239,24 @@ table {
   }
 }
 
+
 .backgrid th {
   text-align: left;
-  a {
-    color: #444;
+  button,a {
+    font-weight: bold;
+    text-align: left;
+    cursor: pointer;
   }
 }
+
+.backgrid th.sortable {
+
+  button,a {
+
+    cursor: pointer;
+  }
+}
+
 
 .backgrid th, .backgrid td {
   vertical-align: top;
@@ -251,6 +265,8 @@ table {
 
 .backgrid th.align-right {
   text-align: right;
+  button{text-align: right;}
+
 }
 
 .export_dialog {

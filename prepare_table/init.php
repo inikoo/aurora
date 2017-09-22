@@ -22,9 +22,7 @@ $parameters      = $_data['parameters'];
 $number_results  = $_data['nr'];
 $start_from      = ($_data['page'] - 1) * $number_results;
 $order           = (isset($_data['o']) ? $_data['o'] : 'id');
-$order_direction = ((isset($_data['od']) and preg_match(
-        '/desc/i', $_data['od']
-    )) ? 'desc' : '');
+$order_direction = ((isset($_data['od']) and preg_match('/desc/i', $_data['od'])) ? 'desc' : '');
 
 if (isset($_data['f_value']) and $_data['f_value'] != '') {
     $f_value = $_data['f_value'];
@@ -45,10 +43,8 @@ foreach ($parameters as $parameter => $parameter_value) {
 
 if (!isset($dont_save_table_state)) {
     $_SESSION['table_state'][$_data['parameters']['tab']]['o']       = $order;
-    $_SESSION['table_state'][$_data['parameters']['tab']]['od']
-                                                                     = ($order_direction == '' ? -1 : 1);
-    $_SESSION['table_state'][$_data['parameters']['tab']]['nr']
-                                                                     = $number_results;
+    $_SESSION['table_state'][$_data['parameters']['tab']]['od'] = ($order_direction == '' ? -1 : 1);
+    $_SESSION['table_state'][$_data['parameters']['tab']]['nr'] = $number_results;
     $_SESSION['table_state'][$_data['parameters']['tab']]['f_value'] = $f_value;
 }
 

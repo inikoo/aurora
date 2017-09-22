@@ -5,71 +5,81 @@ label: "",
 editable: false,
 renderable: false,
 cell: "string"
-}, {
+},
+
+
+{
 name: "code",
 label: "{t}Code{/t}",
 editable: false,
-cell: Backgrid.Cell.extend({
-orderSeparator: '',
-events: {
-"click": function() {
-change_view('customers/' + this.model.get("store_key") )
-}
-},
-className: "link",
+sortType: "toggle",
+{if $sort_key=='code'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
-render: function () {
-this.constructor.__super__.render.apply(this, arguments);
-
-
-this.$el.empty();
-var rawValue = this.model.get(this.column.get("name"));
-var formattedValue = this.formatter.fromRaw(rawValue, this.model);
-this.$el.append(formattedValue);
-this.delegateEvents();
-
-
-if(this.model.get('store_key')==''){
-this.$el.removeClass('link');
-}
-return this;
-}
-
-
+cell: Backgrid.HtmlCell.extend({
 })
-}, {
+},
+
+{
 name: "name",
 label:"{t}Store Name{/t}",
 editable: false,
+sortType: "toggle",
+{if $sort_key=='name'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+
 cell: "string"
-}, {
+},
+{
 name: "contacts",
+{if $sort_key=='contacts'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 label:"{t}Total{/t}",
 editable: false,
+sortType: "toggle",
+defaultOrder:1,
 cell: "integer",
 headerCell: integerHeaderCell
-}, {
+},
+
+{
 name: "new_contacts",
 label:"{t}New{/t}",
 editable: false,
+sortType: "toggle",
+defaultOrder:1,
+
+{if $sort_key=='new_contacts'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+
+
 cell: "integer",
 headerCell: integerHeaderCell
 }, {
 name: "active_contacts",
 label:"{t}Active{/t}",
 editable: false,
+sortType: "toggle",
+defaultOrder:1,
 cell: "integer",
+{if $sort_key=='active_contacts'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='active_contacts'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+
 headerCell: integerHeaderCell
 }, {
 name: "losing_contacts",
 label:"{t}Loosing{/t}",
 editable: false,
+sortType: "toggle",
+defaultOrder:1,
+{if $sort_key=='losing_contacts'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+
 cell: "integer",
 headerCell: integerHeaderCell
 }, {
 name: "lost_contacts",
 label:"{t}Lost{/t}",
 editable: false,
+sortType: "toggle",
+defaultOrder:1,
+{if $sort_key=='lost_contacts'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+
 cell: "integer",
 headerCell: integerHeaderCell
 }
