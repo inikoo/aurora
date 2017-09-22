@@ -67,6 +67,13 @@ function change_browser_history_state(request) {
 
     if (old_state_request != request) {
 
+
+        if($('#_server_name').val()!='localhost') {
+            ga('set', 'page', request);
+            ga('send', 'pageview');
+        }
+
+
         window.top.history.pushState({request: request}, '', request)
 
         old_state_request = request

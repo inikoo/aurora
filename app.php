@@ -37,14 +37,19 @@ if (isset($_SESSION['display_device_version']) and $_SESSION['display_device_ver
 $display_device_version='desktop';
 
 
+
 $_SESSION['display_device_version']=$display_device_version;
 $_SESSION['detected_device']=$detected_device;
+
+$smarty->assign('_server_name', $_SERVER['SERVER_NAME'];
+
 
 if ($display_device_version == 'mobile') {
     $smarty->display('app.mobile.tpl');
 } else {
     $smarty->display('app.tpl');
 }
+
 
 
 ?>
