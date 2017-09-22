@@ -159,7 +159,7 @@
 </head>
 <body>
 <input type="hidden" id="_request" value="{$_request}">
-<input type="hidden" id="_server_name" value="{$$_server_name}">
+<input type="hidden" id="_server_name" value="{$_server_name}">
 
 
 
