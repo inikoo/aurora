@@ -191,6 +191,11 @@ $export_fields = array(
             'checked' => 1
         ),
         array(
+            'name'    => '`Invoice Main Payment Method`',
+            'label'   => _('Main payment method'),
+            'checked' => 1
+        ),
+        array(
             'name'    => '`Invoice Total Net Amount`',
             'label'   => _('Net'),
             'checked' => 1
