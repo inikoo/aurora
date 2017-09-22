@@ -25,6 +25,10 @@ name: "store_code",
 label: "{t}Store{/t}",
 sortType: "toggle",
 editable: false,
+sortType: "toggle",
+defaultOrder:-1,
+{if $sort_key=='store_code'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+
 cell: Backgrid.HtmlCell.extend({
 
 })
@@ -34,36 +38,33 @@ name: "number",
 label: "{t}Number{/t}",
 editable: false,
 sortType: "toggle",
+defaultOrder:1,
 {if $sort_key=='number'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
-cell: Backgrid.StringCell.extend({
-events: {
-"click": function() {
-change_view('invoices/'+this.model.get("store_key")+'/' + this.model.get("id")  )
-}
-},
-className: "link",
+cell: Backgrid.HtmlCell.extend({
+
 })
 },
 {
 name: "customer",
 label: "{t}Customer{/t}",
 sortType: "toggle",
+defaultOrder:-1,
+{if $sort_key=='customer'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+
 editable: false,
 cell: Backgrid.StringCell.extend({
 
-events: {
-"click": function() {
-change_view('customer/' + this.model.get("customer_key")  )
-}
-},
-className: "link padding_left_20",
+className: "padding_left_20"
 })
 },
 {
 name: "billing_country_flag",
 label: "",
 sortType: "toggle",
+defaultOrder:-1,
+{if $sort_key=='billing_country_flag'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+
 editable: false,
 cell: Backgrid.HtmlCell.extend({
 
@@ -81,12 +82,26 @@ cell: Backgrid.StringCell.extend({ className: "width_100 padding_right_20 aright
 headerCell: integerHeaderCell
 },
 {
+name: "payment_method",
+label: "{t}Payment{/t}",
+sortType: "toggle",
+defaultOrder:-1,
+{if $sort_key=='payment_method'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+
+editable: false,
+cell: Backgrid.StringCell.extend({
+
+className: "padding_left_20"
+})
+},
+
+{
 name: "net",
 label: "{t}Net{/t}",
 editable: false,
 defaultOrder:1,
 sortType: "toggle",
-{if $sort_key=='total_amount'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='net'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.StringCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
@@ -96,7 +111,7 @@ label: "{t}Tax{/t}",
 editable: false,
 defaultOrder:1,
 sortType: "toggle",
-{if $sort_key=='total_amount'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='tax'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.StringCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
