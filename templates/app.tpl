@@ -2,6 +2,21 @@
 <!DOCTYPE html>
 <html lang='en' xml:lang='en' xmlns="http://www.w3.org/1999/xhtml">
 <head>
+    {if $_server_name!='localhost'}
+    {literal}
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-100778677-2', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+    {/literal}
+    {/if}
+
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>Aurora</title>
 
@@ -144,6 +159,10 @@
 </head>
 <body>
 <input type="hidden" id="_request" value="{$_request}">
+<input type="hidden" id="_server_name" value="{$$_server_name}">
+
+
+
 <div id="top_bar">
     <div id="view_position">
     </div>
