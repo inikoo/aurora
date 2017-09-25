@@ -65,7 +65,7 @@
             </div>
 
 
-            {assign "payment_accounts" $website->get_payment_accounts()  }
+            {assign "payment_accounts" $website->get_payment_accounts($order->get('Order Delivery Address Country 2 Alpha Code'))  }
 
 
             <div class="menu-bottom-bar menu-bottom-bar-four color-menu-bar menu-bottom-bar-text flat-menu-bar">
@@ -79,6 +79,7 @@
                         <i class="fa {$payment_account.icon}" aria-hidden="true"></i>
                         <em>{if $payment_account.tab_label==''}{$content[$payment_account.tab_label_index]}{else}{$payment_account.tab_label}{/if}</em>
                     </a>
+
 
                 {/foreach}
 
@@ -97,6 +98,9 @@
 
 
 
+                                {assign "saved_cards" $customer->get_saved_credit_cards($order->get('Order Delivery Address Checksum'),$order->get('Order Invoice Address Checksum'))}
+
+                                {assign "number_saved_cards" count($saved_cards)  }
 
 
 
