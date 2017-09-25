@@ -108,16 +108,20 @@
             <div class="container">
 
 
-                {assign "payment_accounts" $website->get_payment_accounts()  }
+                {assign "payment_accounts" $website->get_payment_accounts($order->get('Order Delivery Address Country 2 Alpha Code'))  }
 
                 <ul class="tabs3">
 
                     {foreach from=$payment_accounts item=payment_account key=key}
 
 
-                        <li><a href="#payment_account_item_{$payment_account.object->get('Block')}" target="_self"><i class="fa {$payment_account.icon}" aria-hidden="true"></i> <span>
-            {if $payment_account.tab_label==''}{$content[$payment_account.tab_label_index]}{else}{$payment_account.tab_label}{/if}
-            </span></a></li>
+
+                        <li>
+                            <a href="#payment_account_item_{$payment_account.object->get('Block')}" target="_self"><i class="fa {$payment_account.icon}" aria-hidden="true"></i>
+                                <span>{if $payment_account.tab_label==''}{$content[$payment_account.tab_label_index]}{else}{$payment_account.tab_label}{/if}</span>
+                            </a>
+                        </li>
+
                     {/foreach}
 
                 </ul>

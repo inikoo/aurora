@@ -100,6 +100,21 @@ class Public_Payment_Account {
 
 
         switch ($key) {
+
+            case 'Valid Delivery Countries':
+
+                $_tmp=array();
+
+                if($this->data['Payment Account Settings']!=''){
+
+
+                    $_tmp=preg_split('/\,/',$this->data['Payment Account Settings']);
+                }
+
+                return $_tmp;
+
+                break;
+
             case 'Block Data':
 
 
