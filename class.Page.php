@@ -7275,6 +7275,7 @@ class Page extends DB_Table {
 
 
                     ksort($subjects);
+                   // print $sql;
                     //print_r($subjects);
 
                     $stack_index = 0;
