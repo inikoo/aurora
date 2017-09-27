@@ -70,6 +70,8 @@ if ($order == 'total_stock') {
     $order = '`Location File As`';
 } elseif ($order == 'reference') {
     $order = '`Part Reference`';
+} elseif ($order == 'stock_status') {
+    $order = '`Part Stock Status`';
 } else {
 
     $order = '`Part SKU`';

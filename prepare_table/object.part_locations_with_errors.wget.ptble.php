@@ -51,6 +51,16 @@ $_dir   = $order_direction;
 
 if ($order == 'reference') {
     $order = 'P.`Part Reference`';
+} else if ($order == 'stock_status') {
+    $order = '`Part Stock Status`';
+} else if ($order == 'location') {
+    $order = '`Location Code`';
+} else if ($order == 'description') {
+    $order = '`Part Package Description`';
+} else if ($order == 'can_pick') {
+    $order = '`Can Pick`';
+} else if ($order == 'quantity') {
+    $order = '`Quantity On Hand`';
 } else {
 
     $order = '`Part SKU`';

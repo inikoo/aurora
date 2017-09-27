@@ -746,7 +746,6 @@ ALTER TABLE `Charge History Bridge`
 
 
 
-ALTER TABLE `Email Campaign Dimension` CHANGE `Number of Emails` `Email Campaign Number of Emails` SMALLINT(5) NOT NULL DEFAULT '0', CHANGE `Number of Read Emails` `Email Campaign Number of Read Emails` SMALLINT(5) NOT NULL DEFAULT '0', CHANGE `Number of Rejected Emails` `Email Campaign Number of Rejected Emails` SMALLINT(5) NOT NULL DEFAULT '0';
 
 
 //====
