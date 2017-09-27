@@ -394,6 +394,18 @@ function get_rtext($record_label, $total_records) {
         return sprintf(
             ngettext('%s order dispatched today', '%s orders dispatched today', $total_records), number($total_records)
         );
+    }  elseif ($record_label == 'part with excess stock') {
+        return sprintf(
+            ngettext('%s part with excess stock', '%s parts with excess stock', $total_records), number($total_records)
+        );
+    }elseif ($record_label == 'part with critical stock or out of stock') {
+        return sprintf(
+            ngettext('%s part with critical stock or out of stock', '%s parts with critical stock or out of stock', $total_records), number($total_records)
+        );
+    }elseif ($record_label == 'part to produce as soon as possible') {
+        return sprintf(
+            ngettext('%s part to produce as soon as possible', '%s parts to produce as soon as possible', $total_records), number($total_records)
+        );
     } else {
         return sprintf(
             ngettext('%s record', '%s records', $total_records), number($total_records)
@@ -731,12 +743,38 @@ function get_rtext_with_filter($record_label, $total_with_filter, $total_no_filt
                 '%s replenishment of %s', '%s replenishments of %s', $total_with_filter
             ), number($total_with_filter), number($total_no_filter)
         );
+    } elseif ($record_label == 'part with excess stock') {
+        return sprintf(
+            ngettext(
+                '%s part with excess stock of %s', '%s parts with excess stock of %s', $total_with_filter
+            ), number($total_with_filter), number($total_no_filter)
+        );
+    } elseif ($record_label == 'part with critical stock or out of stock') {
+        return sprintf(
+            ngettext(
+                '%s part with critical stock or out of stock of %s', '%s parts with critical stock or out of stock of %s', $total_with_filter
+            ), number($total_with_filter), number($total_no_filter)
+        );
+    } elseif ($record_label == 'part with critical stock or out of stock') {
+        return sprintf(
+            ngettext(
+                '%s part with critical stock or out of stock of %s', '%s parts with critical stock or out of stock of %s', $total_with_filter
+            ), number($total_with_filter), number($total_no_filter)
+        );
+    } elseif ($record_label == 'part to produce as soon as possible') {
+        return sprintf(
+            ngettext(
+                '%s part to produce as soon as possible of %s', '%s parts to produce as soon as possible of %s', $total_with_filter
+            ), number($total_with_filter), number($total_no_filter)
+        );
     } else {
         return sprintf(
             ngettext('%s record of %s', '%s records of %s', $total_with_filter), number($total_with_filter), number($total_no_filter)
         );
     }
 }
+
+
 
 
 ?>

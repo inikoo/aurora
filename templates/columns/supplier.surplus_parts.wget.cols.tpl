@@ -8,17 +8,11 @@ cell: "string",
 
 },{
 name: "reference",
-label: "{t}Reference{/t}",
+label: "{t}Part{/t}",
 editable: false,
 sortType: "toggle",
 
-cell: Backgrid.StringCell.extend({
-events: {
-"click": function() {
-change_view('{if $data['parent']=='account'}{else if $data['parent']=='category'}category/{$data['key']}/{else}{$data['parent']}/{$data['parent_key']}/{/if}part/' + this.model.get("id"))
-}
-},
-className: "link"
+cell: Backgrid.HtmlCell.extend({
 
 })
 

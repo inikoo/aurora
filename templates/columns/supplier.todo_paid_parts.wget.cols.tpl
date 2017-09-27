@@ -12,13 +12,7 @@ label: "{t}Reference{/t}",
 editable: false,
 sortType: "toggle",
 
-cell: Backgrid.StringCell.extend({
-events: {
-"click": function() {
-change_view('{if $data['parent']=='account'}{else if $data['parent']=='category'}category/{$data['key']}/{else}{$data['parent']}/{$data['parent_key']}/{/if}part/' + this.model.get("id"))
-}
-},
-className: "link"
+cell: Backgrid.HtmlCell.extend({
 
 })
 
@@ -39,7 +33,7 @@ cell: Backgrid.HtmlCell.extend({
 
 {
 name: "required",
-label: "{t}Required{/t}",
+label: "{t}Ordered{/t}",
 editable: false,
 
 defaultOrder:1,
@@ -54,7 +48,7 @@ name: "stock",
 label: "{t}Stock{/t}",
 editable: false,
 
-defaultOrder:1,
+defaultOrder:-1,
 sortType: "toggle",
 {if $sort_key=='stock'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),

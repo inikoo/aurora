@@ -30,7 +30,7 @@ headerCell: integerHeaderCell,
 sortType: "toggle",
 },
 {
-name: "picks",
+name: "skos",
 label: "{t}SKOs{/t}",
 editable: false,
 sortable: false,

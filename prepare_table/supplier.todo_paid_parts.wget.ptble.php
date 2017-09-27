@@ -43,11 +43,15 @@ if ($order == 'stock') {
 } elseif ($order == 'reference') {
     $order = '`Part Reference`';
 } elseif ($order == 'description') {
-    $order = '`Part Unit Description`';
+    $order = '`Part Package Description`';
 } elseif ($order == 'available_forecast') {
     $order = '`Part Days Available Forecast`';
 } elseif ($order == 'dispatched_per_week') {
     $order = '`Part 1 Quarter Acc Dispatched`';
+}elseif ($order == 'required') {
+    $order = '(`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)';
+}elseif ($order == 'stock') {
+    $order = '`Part Current Stock`';
 } else {
 
     $order = 'P.`Part SKU`';
@@ -62,7 +66,7 @@ $sql_totals
 
 $fields
     .= "
-`Supplier Part Reference`,`Supplier Part Status`,`Part Stock Status`,`Part Units Per Package`,`Supplier Part Packages Per Carton`,`Supplier Part Unit Cost`,`Part Unit Description`,`Supplier Part Currency Code`,
+`Part Reference`,`Part Package Description`,`Supplier Part Reference`,`Supplier Part Status`,`Part Stock Status`,`Part Units Per Package`,`Supplier Part Packages Per Carton`,`Supplier Part Unit Cost`,`Part Unit Description`,`Supplier Part Currency Code`,
 `Supplier Part Minimum Carton Order`,`Supplier Part Key`,`Supplier Part Supplier Key`,`Supplier Part Part SKU`,`Part Current Stock`,`Part Current Stock In Process`+ `Part Current Stock Ordered Paid` as required
 
 

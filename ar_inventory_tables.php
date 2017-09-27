@@ -1799,9 +1799,8 @@ function sales_history($_data, $db, $user, $account) {
 
             $record_data[$_date] = array(
                 'sales'     => '<span class="very_discreet">'.money(0, $currency).'</span>',
-                'picks' => '<span class="very_discreet">'.number(0).'</span>',
-                'customers' => '<span class="very_discreet">'.number(0).'</span>',
-                'invoices'  => '<span class="very_discreet">'.number(0).'</span>',
+                'skos' => '<span class="very_discreet">'.number(0).'</span>',
+                'deliveries' => '<span class="very_discreet">'.number(0).'</span>',
                 'date'      => $date
 
 
@@ -1867,7 +1866,7 @@ function sales_history($_data, $db, $user, $account) {
     );
 
 
-    //print $sql;
+  //  print $sql;
 
     $last_year_data = array();
 
@@ -1875,6 +1874,9 @@ function sales_history($_data, $db, $user, $account) {
 
 
         foreach ($result as $data) {
+
+
+
 
             if ($_data['parameters']['frequency'] == 'annually') {
                 $_date           = strftime("%Y", strtotime($data['Date'].' +0:00'));
@@ -1908,7 +1910,7 @@ function sales_history($_data, $db, $user, $account) {
                 $record_data[$_date] = array(
 
                     'sales'      => money($data['sales'], $currency),
-                    'picks' => number(-1*$data['picks']),
+                    'skos' => number($data['skos']),
                     'deliveries' => number($data['deliveries']),
                     'date'       => $record_data[$_date]['date']
 
@@ -1931,7 +1933,6 @@ function sales_history($_data, $db, $user, $account) {
     }
 
 
-    // print_r($last_year_data);
 
     $response = array(
         'resultset' => array(

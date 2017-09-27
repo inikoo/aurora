@@ -2347,9 +2347,7 @@ function deleted_order_items($_data, $db, $user) {
         $table_data[] = array(
             'id'                         => $total,
             'supplier_part_historic_key' => $data[0],
-            'parent_type'                => strtolower(
-                $purchase_order->get('Purchase Order Parent')
-            ),
+            'parent_type'                => strtolower($purchase_order->get('Purchase Order Parent')),
             'parent_key'                 => $purchase_order->get(
                 'Purchase Order Parent Key'
             ),
@@ -2652,23 +2650,41 @@ function part_locations_with_errors($_data, $db, $user) {
 
     foreach ($db->query($sql) as $data) {
 
+
+        switch ($data['Part Stock Status']) {
+            case 'Surplus':
+                $stock_status = '<i class="fa  fa-plus-circle fa-fw" aria-hidden="true"></i>';
+                break;
+            case 'Optimal':
+                $stock_status = '<i class="fa fa-check-circle fa-fw" aria-hidden="true"></i>';
+                break;
+            case 'Low':
+                $stock_status = '<i class="fa fa-minus-circle fa-fw" aria-hidden="true"></i>';
+                break;
+            case 'Critical':
+                $stock_status = '<i class="fa error fa-minus-circle fa-fw" aria-hidden="true"></i>';
+                break;
+            case 'Out_Of_Stock':
+                $stock_status = '<i class="fa error fa-ban fa-fw" aria-hidden="true"></i>';
+                break;
+            case 'Error':
+                $stock_status = '<i class="fa fa-question-circle error fa-fw" aria-hidden="true"></i>';
+                break;
+            default:
+                $stock_status = $data['Part Stock Status'];
+                break;
+        }
+
         $table_data[] = array(
             // 'id'=>(integer) $data['Part SKU'],
-            'reference'        => $data['Part Reference'],
-            'unit_description' => $data['Part Unit Description'],
-            'location'         => $data['Location Code'],
-            'location_key'     => $data['Location Key'],
-            'warehouse_key'    => $data['Part Location Warehouse Key'],
-            'part_sku'         => $data['Part SKU'],
-            'can_pick'         => ($data['Can Pick'] == 'Yes'
-                ? _('Yes')
-                : _(
-                    'No'
-                )),
-            'quantity'         => '<span class="error">'.number(
-                    $data['Quantity On Hand']
-                ),
-            '</span>'
+            'reference' => sprintf('<span class="link" onclick="change_view(\'part/%d\')">%s</span>',$data['Part SKU'],$data['Part Reference']),
+            'location' => sprintf('<span class="link" onclick="change_view(\'locations/%d/%d\')">%s</span>',$data['Part Location Warehouse Key'],$data['Location Key'],$data['Location Code']),
+
+            'description' => $data['Part Package Description'],
+
+            'can_pick'         => ($data['Can Pick'] == 'Yes' ? _('Yes') : _('No')),
+            'quantity'         => '<span class="error">'.number($data['Quantity On Hand']), '</span>',
+            'stock_status'=>$stock_status
 
         );
 
@@ -2692,7 +2708,19 @@ function part_locations_with_errors($_data, $db, $user) {
 function parts_by_stock_status($stock_status, $_data, $db, $user) {
 
 
-    $rtext_label = 'supplier part';
+    switch ($stock_status){
+        case 'Surplus':
+            $rtext_label = 'part with excess stock';
+            break;
+        case 'Todo':
+            $rtext_label = 'part with critical stock or out of stock';
+            break;
+        default:
+            $rtext_label = 'part';
+
+    }
+
+
 
 
     include_once 'prepare_table/init.php';
@@ -2761,7 +2789,7 @@ function parts_by_stock_status($stock_status, $_data, $db, $user) {
             $transaction_key = '';
 
 
-            $description = $data['Part Unit Description'];
+            $description = $data['Part Package Description'];
 
 
             $description .= '
@@ -2828,19 +2856,16 @@ function parts_by_stock_status($stock_status, $_data, $db, $user) {
 
             $table_data[] = array(
                 'id'             => (integer)$data['Supplier Part Key'],
-                'supplier_key'   => (integer)$data['Supplier Part Supplier Key'],
-                'part_key'       => (integer)$data['Supplier Part Part SKU'],
-                'part_reference' => $data['Part Reference'],
-                'reference'      => $data['Supplier Part Reference'],
-                'formatted_sku'  => sprintf(
-                    "SKU%05d", $data['Supplier Part Part SKU']
-                ),
+               // 'supplier_key'   => (integer)$data['Supplier Part Supplier Key'],
+                //'part_key'       => (integer)$data['Supplier Part Part SKU'],
+                'reference' => sprintf('<span class="link" onclick="change_view(\'part/%d\')">%s</span>',$data['Supplier Part Part SKU'],$data['Part Reference']),
+                //'reference'      => $data['Supplier Part Reference'],
+                //'formatted_sku'  => sprintf("SKU%05d", $data['Supplier Part Part SKU']),
 
                 'description'         => $description,
+                'simple_description'         => $data['Part Package Description'],
                 'status'              => $status,
-                'cost'                => money(
-                    $data['Supplier Part Unit Cost'], $data['Supplier Part Currency Code']
-                ),
+                'cost'                => money($data['Supplier Part Unit Cost'], $data['Supplier Part Currency Code']),
                 'packing'             => '<div style="float:left;min-width:20px;text-align:right"><span>'.$data['Part Units Per Package']
                     .'</span></div><div style="float:left;min-width:70px;text-align:left"> <i  class="fa fa-arrow-right very_discreet padding_right_10 padding_left_10"></i><span>['
                     .$data['Supplier Part Packages Per Carton'].']</span></div> <span class="discreet">'.($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'].'</span>'),
@@ -2880,7 +2905,7 @@ function parts_by_stock_status($stock_status, $_data, $db, $user) {
 function todo_paid_parts($_data, $db, $user) {
 
 
-    $rtext_label = 'supplier part';
+    $rtext_label = 'part to produce as soon as possible';
 
 
     include_once 'prepare_table/init.php';
@@ -2942,18 +2967,18 @@ function todo_paid_parts($_data, $db, $user) {
                 'supplier_key' => (integer)$data['Supplier Part Supplier Key'],
 
 
-                'reference' => $data['Supplier Part Reference'],
+              //  'reference' => $data['Supplier Part Reference'],
+                'reference' => sprintf('<span class="link" onclick="change_view(\'part/%d\')">%s</span>',$data['Supplier Part Part SKU'],$data['Part Reference']),
 
-                'description' => $description,
-                'cost'        => money(
-                    $data['Supplier Part Unit Cost'], $data['Supplier Part Currency Code']
-                ),
+               // 'description' => $description,
+                'description' => $data['Part Package Description'],
+                'cost'        => money($data['Supplier Part Unit Cost'], $data['Supplier Part Currency Code']),
                 'packing'     => '<div style="float:left;min-width:20px;text-align:right"><span>'.$data['Part Units Per Package']
                     .'</span></div><div style="float:left;min-width:70px;text-align:left"> <i  class="fa fa-arrow-right very_discreet padding_right_10 padding_left_10"></i><span>['
                     .$data['Supplier Part Packages Per Carton'].']</span></div> <span class="discreet">'.($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'].'</span>'),
                 'stock'       => number(floor($data['Part Current Stock']))." $stock_status",
                 //'date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['date'].' +0:00')),
-                'required'    => number($data['required'])
+                'required'    => number(ceil($data['required']),0)
 
             );
 
@@ -3314,6 +3339,30 @@ function part_locations_to_replenish_picking_location($_data, $db, $user) {
 
     foreach ($db->query($sql) as $data) {
 
+        switch ($data['Part Stock Status']) {
+            case 'Surplus':
+                $stock_status = '<i class="fa  fa-plus-circle fa-fw" aria-hidden="true"></i>';
+                break;
+            case 'Optimal':
+                $stock_status = '<i class="fa fa-check-circle fa-fw" aria-hidden="true"></i>';
+                break;
+            case 'Low':
+                $stock_status = '<i class="fa fa-minus-circle fa-fw" aria-hidden="true"></i>';
+                break;
+            case 'Critical':
+                $stock_status = '<i class="fa error fa-minus-circle fa-fw" aria-hidden="true"></i>';
+                break;
+            case 'Out_Of_Stock':
+                $stock_status = '<i class="fa error fa-ban fa-fw" aria-hidden="true"></i>';
+                break;
+            case 'Error':
+                $stock_status = '<i class="fa fa-question-circle error fa-fw" aria-hidden="true"></i>';
+                break;
+            default:
+                $stock_status = $data['Part Stock Status'];
+                break;
+        }
+
         $table_data[] = array(
             'reference' => sprintf('<span class="link"  title="%s" onclick="change_view(\'part/%d\')">%s</span>', $data['Part Package Description'], $data['Part SKU'], $data['Part Reference']),
             'location'  => sprintf('<span  class="link"  onclick="change_view(\'locations/%d/%d\')">%s</span>', $data['Part Location Warehouse Key'], $data['Location Key'], $data['Location Code']),
@@ -3323,7 +3372,8 @@ function part_locations_to_replenish_picking_location($_data, $db, $user) {
             'to_pick'             => number(ceil($data['to_pick'])),
 
             'total_stock'       => number(floor($data['Part Current Stock'])),
-            'storing_locations' => $data['storing_locations']
+            'storing_locations' => $data['storing_locations'],
+            'stock_status'=>$stock_status
 
 
         );
@@ -3385,7 +3435,7 @@ function replenishments($_data, $db, $user) {
                 .'\')">'.$data['Location Code'].'</span>',
             'part'                  => sprintf('<span class="link" onCLick="change_view(\'part/%d\')" >%s</span>', $data['Part SKU'], $data['Part Reference']),
             'other_locations_stock' => $stock,
-
+            'description'             => $data['Part Package Description'],
             'quantity'             => number($data['Quantity On Hand']),
             'ordered_quantity'     => number($data['ordered_quantity']),
             'effective_stock'      => number($data['effective_stock']),

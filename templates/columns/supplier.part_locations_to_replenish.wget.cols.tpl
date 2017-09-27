@@ -18,7 +18,20 @@ cell: Backgrid.HtmlCell.extend({
 
 })
 
-}, {
+},
+{
+name: "description",
+label: "{t}Description{/t}",
+editable: false,
+sortType: "toggle",
+
+cell: Backgrid.HtmlCell.extend({
+
+
+})
+
+}
+, {
 name: "other_locations_stock",
 label: "{t}Other locations stock{/t}",
 
