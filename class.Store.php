@@ -1451,9 +1451,7 @@ class Store extends DB_Table {
                 $this->data['Store Dispatched Orders'] = $row['Store Dispatched Orders'];
                 $this->data['Store Cancelled Orders']  = $row['Store Cancelled Orders'];
 
-                $this->data['Store Orders In Process'] =
-                    $this->data['Store Total Acc Orders'] - $this->data['Store Dispatched Orders'] - $this->data['Store Cancelled Orders'] - $this->data['Store Unknown Orders']
-                    - $this->data['Store Suspended Orders'];
+              //  $this->data['Store Orders In Process'] = $this->data['Store Total Acc Orders'] - $this->data['Store Dispatched Orders'] - $this->data['Store Cancelled Orders'] - $this->data['Store Unknown Orders'] - $this->data['Store Suspended Orders'];
 
             }
         } else {
@@ -1520,12 +1518,12 @@ class Store extends DB_Table {
 
 
         $sql = sprintf(
-            "UPDATE `Store Dimension` SET `Store Suspended Orders`=%d,`Store Dispatched Orders`=%d,`Store Cancelled Orders`=%d,`Store Orders In Process`=%d,`Store Unknown Orders`=%d
+            "UPDATE `Store Dimension` SET `Store Suspended Orders`=%d,`Store Dispatched Orders`=%d,`Store Cancelled Orders`=%d
                     ,`Store Invoices`=%d ,`Store Refunds`=%d ,`Store Paid Invoices`=%d ,`Store Paid Refunds`=%d ,`Store Partially Paid Invoices`=%d ,`Store Partially Paid Refunds`=%d
                      ,`Store Ready to Pick Delivery Notes`=%d,`Store Picking Delivery Notes`=%d,`Store Packing Delivery Notes`=%d,`Store Ready to Dispatch Delivery Notes`=%d,`Store Dispatched Delivery Notes`=%d,`Store Returned Delivery Notes`=%d
                      ,`Store Delivery Notes For Replacements`=%d,`Store Delivery Notes For Shortages`=%d,`Store Delivery Notes For Samples`=%d,`Store Delivery Notes For Donations`=%d,`Store Delivery Notes For Orders`=%d
                      WHERE `Store Key`=%d", $this->data['Store Suspended Orders'], $this->data['Store Dispatched Orders'], $this->data['Store Cancelled Orders'],
-            $this->data['Store Orders In Process'], $this->data['Store Unknown Orders'], $this->data['Store Invoices'], $this->data['Store Refunds'], $this->data['Store Paid Invoices'],
+             $this->data['Store Invoices'], $this->data['Store Refunds'], $this->data['Store Paid Invoices'],
             $this->data['Store Paid Refunds'], $this->data['Store Partially Paid Invoices'], $this->data['Store Partially Paid Refunds'], $this->data['Store Ready to Pick Delivery Notes'],
             $this->data['Store Picking Delivery Notes'], $this->data['Store Picking Delivery Notes'], $this->data['Store Ready to Dispatch Delivery Notes'],
             $this->data['Store Dispatched Delivery Notes'], $this->data['Store Returned Delivery Notes'], $this->data['Store Delivery Notes For Replacements'],

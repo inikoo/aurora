@@ -155,7 +155,7 @@ function fork_housekeeping($job) {
             $store    = get_object('Store', $order->get('Order Store Key'));
             $account  = get_object('Account', '');
 
-            $sql=sprintf('select `Transaction Type Key` from `Charge Dimension` where `Transaction Type`="Charges" and   `Order Key`=%d  ',$order->id);
+            $sql=sprintf('select `Transaction Type Key` from `Order No Product Transaction Fact` where `Transaction Type`="Charges" and   `Order Key`=%d  ',$order->id);
 
             if ($result=$db->query($sql)) {
                 foreach ($result as $row) {
