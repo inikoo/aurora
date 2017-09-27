@@ -178,7 +178,16 @@ function save_new_object(object, form_type) {
 
                     value = JSON.stringify(part_list_data)
 
-                } else {
+                }else if (field_type == 'subscription') {
+                    var icon=$(this).find('i')
+                    if(icon.hasClass('fa-toggle-on')){
+                        value = 'Yes'
+
+                    }else{
+                        value = 'No'
+                    }
+
+                }  else {
                     var value = $('#' + field).val()
                 }
                 console.log($(this).attr('id') + ' ' + field + ' ' + $(this).closest('tr').hasClass('hide'))
@@ -207,7 +216,7 @@ function save_new_object(object, form_type) {
         console.log(request)
 
 
-        // return;
+         //return;
         //=====
         form_data.append("tipo", (form_type != '' ? form_type : tipo))
         form_data.append("object", object)
@@ -563,7 +572,7 @@ function update_new_address_fields(field, country_code, hide_recipient_fields, a
 
 
                 var validation = validate_field(field, value, type, required, server_validation, parent, parent_key, _object, key)
-                console.log(validation)
+               // console.log(validation)
 
                 /*
                  if (arg == 'init') {
@@ -574,7 +583,7 @@ function update_new_address_fields(field, country_code, hide_recipient_fields, a
                  }
                  }
                  */
-                console.log(field + ' ' + field_data.attr('_required') + ' ' + validation.class)
+//                console.log(field + ' ' + field_data.attr('_required') + ' ' + validation.class)
                 if (field_data.attr('_required') == 1 && value == '' && validation.class == 'valid') {
                     validation.class = 'valid attention'
                 }

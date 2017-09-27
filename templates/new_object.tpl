@@ -21,36 +21,34 @@
 	    {if isset($field.render)}{assign "render" $field.render}{else}{assign "render" true}{/if} 
         <tr  class="link {if !$render}hide{/if}" onClick="change_view('{$field.reference}')">
             <td  colspan=3>
-	            <i style="margin-right:10px" class="fa fa-link"></i> {$field.label} 
+	            <i style="margin-right:10px" class="fa fa-link"></i> {$field.label}
 	        </td>
         </tr>
         {/foreach}
         {else}
 	{foreach from=$field_group.fields item=field name=fields} 
-	
+
 		{if isset($field.type)}{assign "type" $field.type}{else}{assign "type" "ignore"}{/if} 
-{if $type=='ignore'}{continue}{/if}
+        {if $type=='ignore'}{continue}{/if}
+	    {if isset($field.edit)}{assign "edit" $field.edit}{else}{assign "edit" ""}{/if}
+
+	    {if isset($field.class)}{assign "class" $field.class}{else}{assign "class" ""}{/if}
+	    {if isset($field.locked)}{assign "locked" $field.locked}{else}{assign "locked" 0}{/if}
+	    {if isset($field.render)}{assign "render" $field.render}{else}{assign "render" true}{/if}
+	    {if isset($field.required)}{assign "required" $field.required}{else}{assign "required" true}{/if}
+
+	    {if isset($field.server_validation)}{assign "server_validation" $field.server_validation}{else}{assign "server_validation" ""}{/if}
+	    {if isset($field.invalid_msg)}{assign "invalid_msg" $field.invalid_msg}{else}{assign "invalid_msg" ""}{/if}
 	
-	
-	{if isset($field.edit)}{assign "edit" $field.edit}{else}{assign "edit" ""}{/if} 
-
-	{if isset($field.class)}{assign "class" $field.class}{else}{assign "class" ""}{/if} 
-	{if isset($field.locked)}{assign "locked" $field.locked}{else}{assign "locked" 0}{/if} 
-	{if isset($field.render)}{assign "render" $field.render}{else}{assign "render" true}{/if} 
-	{if isset($field.required)}{assign "required" $field.required}{else}{assign "required" true}{/if} 
-
-	{if isset($field.server_validation)}{assign "server_validation" $field.server_validation}{else}{assign "server_validation" ""}{/if} 
-	{if isset($field.invalid_msg)}{assign "invalid_msg" $field.invalid_msg}{else}{assign "invalid_msg" ""}{/if} 
-	
-	{if isset($field.invalid_msg)} 
-	{foreach from=$field.invalid_msg item=msg key=msg_key } 
-	<span id="{$field.id}_{$msg_key}_invalid_msg" class="hide">{$msg}</span> 
-	{/foreach} 
-	{/if} 
-	<span id="invalid_msg" class="hide">{t}Invalid value{/t}</span> 
+	    {if isset($field.invalid_msg)}
+	        {foreach from=$field.invalid_msg item=msg key=msg_key }
+	            <span id="{$field.id}_{$msg_key}_invalid_msg" class="hide">{$msg}</span>
+	        {/foreach}
+	    {/if}
+	    <span id="invalid_msg" class="hide">{t}Invalid value{/t}</span>
 
 
-    {if $edit=='address'}
+         {if $edit=='address'}
     
                 <tbody id="{$field.id}_address_fields" class="address_fields"  field="{$field.id}" has_been_changed="0"  _required="{$required}" >
     	        <tr id="{$field.id}_recipient_field" class="hide" >
@@ -190,7 +188,10 @@
 		
 	
 		<input id="{$field.id}" class="input_field " value="{$field.value}" {if $locked}readonly="readonly="{/if}  has_been_valid="0" {if isset($field.placeholder)}placeholder="{$field.placeholder}"{/if}/>
-		<span id="{$field.id}_msg" class="msg"></span> 
+		<span id="{$field.id}_msg" class="msg"></span>
+
+		{elseif $edit=='no_icon'  }
+		{$field.formatted_value}
 		{elseif $edit=='parts_list'  } 
 	
 		{include file="parts_list.edit.tpl" field=$field parts_list=$object->get_parts_data(true) mode='new'} 
@@ -472,6 +473,8 @@ function input_barcode_to_new_object(field) {
 	</td>
 	</tr>
 	{/if}
+
+
 	{/foreach} 
 {/if}
  </div>

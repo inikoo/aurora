@@ -103,6 +103,10 @@ function register($db, $website, $data, $editor) {
             $customer_data['Customer Send Email Marketing']  = 'Yes';
             $customer_data['Customer Send Postal Marketing'] = 'Yes';
 
+        }else{
+            $customer_data['Customer Send Newsletter']       = 'No';
+            $customer_data['Customer Send Email Marketing']  = 'No';
+            $customer_data['Customer Send Postal Marketing'] = 'No';
         }
 
 

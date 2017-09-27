@@ -207,6 +207,8 @@ class Payment_Account extends DB_Table {
         //'Credit Card','Cash','Paypal','Check','Bank Transfer','Cash on Delivery','Other','Unknown','Account'
 
         switch ($key) {
+
+
             case 'Default Payment Method':
 
                 switch ($this->data['Payment Account Block']) {

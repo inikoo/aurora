@@ -94,6 +94,17 @@ a {
 .link, .checkbox {
   cursor: pointer; }
 
+.border_button {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  border: 1px solid #ccc;
+  padding: 10px 12px;
+  cursor: pointer; }
+
 input {
   position: relative;
   bottom: 2px;
@@ -8251,5 +8262,13 @@ html, body {
 
 #table [contenteditable="true"]:empty {
   padding: 0px 10px; }
+
+table.filter {
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc; }
+  table.filter td {
+    padding-left: 20px;
+    padding-right: 20px;
+    border-bottom: 1px solid #eee; }
 
 /*# sourceMappingURL=app.css.map */

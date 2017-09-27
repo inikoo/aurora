@@ -22,11 +22,14 @@ $account->load_acc_data();
 
 //$state['_object']->get_kpi('Month To Day');
 
-$smarty->assign('order_flow',$state['extra']);
+
+$smarty->assign('order_flow',(empty($state['extra_tab'])?$state['extra']:$state['extra'].'_'.$state['extra_tab']));
 
 
 $smarty->assign('account',$account);
 $smarty->assign('currency',$account->get('Currency Code'));
+
+
 
 $html = $smarty->fetch('dashboard/orders_server.dbard.tpl');
 

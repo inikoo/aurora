@@ -11,6 +11,7 @@
 
 
 
+
 <div id="set_price_dialog" class="hide" style="position:absolute;border:1px solid #ccc;background-color: white;padding:10px 10px;z-index: 100">
     <i style="position:relative;top:-7px;margin-right:10px" class="fa fa-window-close button" onClick="close_product_price_dialog()" aria-hidden="true"></i>
     {t}Price{/t} (<span id="set_price_currency"></span>)
@@ -25,18 +26,54 @@
     <input id="set_rrp_value" class=" width_75" value="" old_margin="" ovalue="" exchange="" cost="" product_id="" /> <i id="set_rrp_save" onClick="save_product_rrp(this)" class="fa  fa-cloud fa-fw button  save    " aria-hidden="true"/>
 </div>
 
-<div style="padding:10px;padding-left:7px;border-bottom:1px solid #ccc;display:flex;">
+<div id="orders_website_block_operations" style="padding:30px;padding-left:40px;border-bottom:1px solid #ccc;display:flex;  ">
 <div style="text-align: left;">
 
-    <i class="fa fa-hand-o-down" style="margin-right:2.5px" aria-hidden="true"></i> <i class="fa fa-square-o" aria-hidden="true" title="{t}Mark all in list{/t}"></i>
-</div>
+    <span onclick="start_purge_orders_website_mission()" class="orders_website_operation border_button">Purge orders</span>
+    <span onclick="start_send_email_orders_website_mission()" style="margin-left:20px" class="orders_website_operation border_button">Send email</span>
+
+
 
 </div>
 
+</div>
 
+<div id="send_email_orders_website_block"  class="hide" style="padding:10px 10px 10px 40px;">
+    <span class="hide">{t}Abandoned cart email{/t}</span>
+
+<table border=0 class="filter" style="margin-top:5px">
+    <tr>
+
+        <td colspan="4">{t}Total orders in basket{/t}</td>
+        <td>{$orders_in_basket}</td>
+    </tr>
+
+    <tr>
+        <td><i class="fa fa-filter"></i></td>
+        <td>{t}Order idle{/t}</td>
+        <td>{t}more than{/t}</td>
+        <td>30</td>
+    </tr>
+    <tr>
+        <td colspan="4">{t}Filtered orders{/t}</td>
+        <td>{$orders_in_basket}</td>
+    </tr>
+</table>
+
+</div>
 
 
 <script>
+
+
+    function start_send_email_orders_website_mission(){
+
+        console.log('caca')
+$('#table_block').addClass('hide')
+        $('#send_email_orders_website_block').removeClass('hide')
+        $('#orders_website_block_operations').css({ 'padding-bottom':'10px'})
+
+    }
 
 
     function set_all_products_web_configuration(value, element) {

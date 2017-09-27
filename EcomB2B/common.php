@@ -114,7 +114,7 @@ if (!$is_cached) {
 
 
     if (isset($_SERVER['SERVER_NAME']) and $_SERVER['SERVER_NAME'] == 'ecom.bali') {
-        $detected_device = 'mobile';
+     //  $detected_device = 'mobile';
     }
 
 
@@ -574,6 +574,9 @@ if (!$is_cached) {
 
 
         }
+
+        $smarty->assign('zero_money', money(0,$store->get('Store Currency Code')));
+
 
 
     }

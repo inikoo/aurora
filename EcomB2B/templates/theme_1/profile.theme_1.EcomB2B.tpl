@@ -160,9 +160,23 @@
                                         <input class="register_field" type="text" name="tax_number" id="_tax_number_placeholder"  value="{$customer->get('Customer Tax Number')}" placeholder="{$content._tax_number_placeholder}">
                                         <b id="_tax_number_tooltip" class="tooltip tooltip-bottom-right">{$content._tax_number_tooltip}</b>
                                     </label>
-                                    <label class="label">{$customer->get('Tax Number Valid')}</label>
+                                    <label class="label Tax_Number_Valid">{$customer->get('Tax Number Valid')}</label>
 
                                 </section>
+
+
+                            </fieldset>
+
+                            <fieldset>
+
+                                <section>
+                                    <label class="label">{t}Subscriptions{/t}</label>
+                                    <label style="border:none" class="toggle "><input type="checkbox" {if $customer->get('Customer Send Newsletter')=='Yes'}checked{/if} name="newsletter"><i></i>{t}Newsletter{/t}</label>
+                                    <label style="border:none" class="toggle "><input type="checkbox" {if $customer->get('Customer Send Email Marketing')=='Yes'}checked{/if} name="email_marketing"><i></i>{t}Email marketing{/t}</label>
+                                    <label style="border:none" class="toggle "><input type="checkbox" {if $customer->get('Customer Send Postal Marketing')=='Yes'}checked{/if} name="postal_marketing"><i></i>{t}Postal marketing{/t}</label>
+                                </section>
+
+
 
 
                             </fieldset>
@@ -552,7 +566,14 @@
 
                 $("#contact_details input:not(.ignore)").each(function(i, obj) {
                     if(!$(obj).attr('name')==''){
-                        register_data[$(obj).attr('name')]=$(obj).val()
+
+
+                        if($(obj).attr('type')=='checkbox'){
+                            register_data[$(obj).attr('name')]=$(obj).is(':checked')
+                        }else{
+                            register_data[$(obj).attr('name')]=$(obj).val()
+                        }
+
                     }
 
                 });
@@ -583,6 +604,9 @@
 
                         if (data.state == '200') {
 
+                            for (var key in data.metadata.class_html) {
+                                $('.' + key).html(data.metadata.class_html[key])
+                            }
 
 
 

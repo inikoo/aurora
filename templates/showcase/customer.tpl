@@ -125,9 +125,16 @@
                         <td>{$item.value}</td>
                     </tr>
                 {/foreach}
+                <tr>
+                    <td>{t}Subscriptions{/t}:</td>
+                    <td style="text-align: right"><i title="{t}Newsletters{/t}" style="margin-right: 10px;position: relative;top:1px" class="Customer_Send_Newsletter {if $customer->get('Customer Send Newsletter')=='No' }discreet error {/if} fa fa-fw fa-newspaper-o" aria-hidden="true"></i> <i title="{t}Marketing by email{/t}" style="margin-right: 10px"  class="Customer_Send_Email_Marketing {if $customer->get('Customer Send Email Marketing')=='No' }discreet error {/if} fa fa-fw fa-envelope-o" aria-hidden="true"></i>  <i title="{t}Marketing by post{/t}" class="Customer_Send_Postal_Marketing {if $customer->get('Customer Send Postal Marketing')=='No' }discreet error {/if} fa fa-fw fa-truck" aria-hidden="true"></i></td>
+                </tr>
+
             </table>
+
+
             {if $customer->get('Customer Send Newsletter')=='No' or $customer->get('Customer Send Email Marketing')=='No' or $customer->get('Customer Send Postal Marketing')=='No'}
-                <table border="0" class="overview compact">
+                <table border="0" class="overview compact hide">
                     <tr class="{if $customer->get('Customer Send Newsletter')=='Yes'}hide{/if}">
                         <td colspan="2"><i class="fa fa-ban"></i> <span>{t}Don't send newsletters{/t}</span></td>
                     </tr>

@@ -25,8 +25,8 @@ $options_valid_tax_number = array(
 );
 
 
-$options_delivery_address_link            = array(
-    'Billing'       => _('Same as invoice address'),
+$options_delivery_address_link = array(
+    'Billing' => _('Same as invoice address'),
     'None'    => _('Unrelated to invoice address'),
 );
 
@@ -38,7 +38,7 @@ if (isset($options['new']) and $options['new']) {
 }
 
 
-if($new){
+if ($new) {
 
     $customer_fields = array(
         array(
@@ -175,9 +175,7 @@ if($new){
                     'edit'            => ($edit ? 'telephone' : ''),
                     'value'           => $object->get('Customer Main Plain FAX'),
                     'formatted_value' => $object->get('Main Plain FAX'),
-                    'label'           => ucfirst(
-                        $object->get_field_label('Customer Main Plain FAX')
-                    ),
+                    'label'           => ucfirst($object->get_field_label('Customer Main Plain FAX')),
                     'invalid_msg'     => get_invalid_message('telephone'),
                     'required'        => false,
                     'type'            => 'value'
@@ -185,7 +183,6 @@ if($new){
 
             )
         ),
-
 
 
         array(
@@ -236,10 +233,29 @@ if($new){
             )
         ),
 
+        array(
+            'label'      => _('Marketing'),
+            'show_title' => true,
+            'fields'     => array(
+                array(
+                    'id'              => 'Customer_Subscriptions',
+                    'edit'            => 'no_icon',
+                    'value'           => $object->get('Customer Subscriptions'),
+                    'formatted_value' => '<span id="Customer_Send_Newsletter_field" class="button value valid" onclick="toggle_subscription_from_new(this)" field_type="subscription" field="Customer_Send_Newsletter"  style="margin-right:40px"><i class=" fa fa-fw fa-toggle-on" aria-hidden="true"></i> <span class="">'._('Newsletter').'</span></span>'.'<span id="Customer_Send_Email_Marketing_field" onclick="toggle_subscription_from_new(this)"  field_type="subscription"  field="Customer_Send_Email_Marketing" class="button value valid" style="margin-right:40px"><i class=" fa fa-fw fa-toggle-on" aria-hidden="true"></i> <span class="">'._('Marketing emails').'</span></span>'.'<span id="Customer_Send_Postal_Marketing_field" onclick="toggle_subscription_from_new(this)"  field_type="subscription"  field="Customer_Send_Postal_Marketing" class="value valid button" style="margin-right:40px"><i class=" fa fa-fw fa-toggle-on" aria-hidden="true"></i> <span class="">'._('Postal marketing').'</span></span>',
+                    'label'           => _('Subscriptions'),
+                    'required'        => false,
+                    'type'            => ''
+                ),
+
+
+
+            )
+        ),
+
     );
 
 
-}else {
+} else {
 
     $company_field = array();
 
@@ -353,8 +369,8 @@ if($new){
                 ),
 
                 array(
-                  //  'render'    => ($object->get('Customer Main Plain Email') == '' ? false : true),
-                    'render'            => false,
+                    //  'render'    => ($object->get('Customer Main Plain Email') == '' ? false : true),
+                    'render'    => false,
                     'id'        => 'show_new_email',
                     'class'     => 'new',
                     'value'     => '',
@@ -362,14 +378,14 @@ if($new){
                     'reference' => ''
                 ),
                 array(
-                    'id'                => 'Customer_Web_Login_Password',
-                    'edit'              => ($edit ? 'string' : ''),
-                    'value'             => $object->get('Customer Web Login Password'),
-                    'formatted_value'   => $object->get('Web Login Password'),
-                    'label'             => _('Password'),
-                    'invalid_msg'       => get_invalid_message('string'),
-                    'required'          => true,
-                    'type'              => ''
+                    'id'              => 'Customer_Web_Login_Password',
+                    'edit'            => ($edit ? 'string' : ''),
+                    'value'           => $object->get('Customer Web Login Password'),
+                    'formatted_value' => $object->get('Web Login Password'),
+                    'label'           => _('Password'),
+                    'invalid_msg'     => get_invalid_message('string'),
+                    'required'        => true,
+                    'type'            => ''
                 ),
 
             )
@@ -424,11 +440,7 @@ if($new){
                     'edit'            => ($edit ? 'new_telephone' : ''),
                     'value'           => '',
                     'formatted_value' => '',
-                    'label'           => ucfirst(
-                            $object->get_field_label('Customer Other Telephone')
-                        ).' <i onClick="set_this_as_main(this)" title="'._(
-                            'Set as main telephone'
-                        ).'" class="fa fa-star-o very_discreet button"></i>',
+                    'label'           => ucfirst($object->get_field_label('Customer Other Telephone')).' <i onClick="set_this_as_main(this)" title="'._('Set as main telephone').'" class="fa fa-star-o very_discreet button"></i>',
                     'required'        => false
                 ),
 
@@ -438,11 +450,7 @@ if($new){
                     'edit'            => ($edit ? 'telephone' : ''),
                     'value'           => '',
                     'formatted_value' => '',
-                    'label'           => ucfirst(
-                            $object->get_field_label('Customer Other Telephone')
-                        ).' <i onClick="set_this_as_main(this)" title="'._(
-                            'Set as main telephone'
-                        ).'" class="fa fa-star-o very_discreet button"></i>',
+                    'label'           => ucfirst($object->get_field_label('Customer Other Telephone')).' <i onClick="set_this_as_main(this)" title="'._('Set as main telephone').'" class="fa fa-star-o very_discreet button"></i>',
                     'required'        => false
                 ),
 
@@ -461,9 +469,7 @@ if($new){
                     'edit'            => ($edit ? 'telephone' : ''),
                     'value'           => $object->get('Customer Main Plain FAX'),
                     'formatted_value' => $object->get('Main Plain FAX'),
-                    'label'           => ucfirst(
-                        $object->get_field_label('Customer Main Plain FAX')
-                    ),
+                    'label'           => ucfirst($object->get_field_label('Customer Main Plain FAX')),
                     'invalid_msg'     => get_invalid_message('telephone'),
                     'required'        => false,
                     'type'            => 'value'
@@ -481,7 +487,7 @@ if($new){
                 array(
                     'id'              => 'Customer_Contact_Address',
                     'edit'            => ($edit ? 'address' : ''),
-                    'render'=>($object->get('Customer Billing Address Link')=='Contact'?false:true),
+                    'render'          => ($object->get('Customer Billing Address Link') == 'Contact' ? false : true),
                     'countries'       => $countries,
                     'value'           => htmlspecialchars($object->get('Customer Contact Address')),
                     'formatted_value' => $object->get('Contact Address'),
@@ -504,24 +510,20 @@ if($new){
                 ),
 
 
-
-
-
-
-                 array(
-                     'id'              => 'Customer_Delivery_Address_Link',
-                     'edit'            => ($edit ? 'option' : ''),
-                     'value'           => htmlspecialchars($object->get('Customer Delivery Address Link')),
-                     'formatted_value' => $object->get('Delivery Address Link'),
-                     'label'           => ucfirst($object->get_field_label('Customer Delivery Address Link')),
-                     'options'         => $options_delivery_address_link,
-                     'required'        => true
-                 ),
+                array(
+                    'id'              => 'Customer_Delivery_Address_Link',
+                    'edit'            => ($edit ? 'option' : ''),
+                    'value'           => htmlspecialchars($object->get('Customer Delivery Address Link')),
+                    'formatted_value' => $object->get('Delivery Address Link'),
+                    'label'           => ucfirst($object->get_field_label('Customer Delivery Address Link')),
+                    'options'         => $options_delivery_address_link,
+                    'required'        => true
+                ),
 
                 array(
                     'id'              => 'Customer_Delivery_Address',
                     'edit'            => ($edit ? 'address' : ''),
-                    'render'=>($object->get('Customer Delivery Address Link')!='None'?false:true),
+                    'render'          => ($object->get('Customer Delivery Address Link') != 'None' ? false : true),
                     'countries'       => $countries,
                     'value'           => htmlspecialchars($object->get('Customer Delivery Address')),
                     'formatted_value' => $object->get('Delivery Address'),
@@ -553,8 +555,8 @@ if($new){
                     'required'        => false
                 ),
                 array(
-                    'id'        => 'show_new_delivery_address',
-                    'render'=>($object->get('Customer Delivery Address Link')!='None'?false:true),
+                    'id'     => 'show_new_delivery_address',
+                    'render' => ($object->get('Customer Delivery Address Link') != 'None' ? false : true),
 
 
                     'class'     => 'new',
@@ -567,13 +569,29 @@ if($new){
         ),
 
         array(
+            'label'      => _('Marketing'),
+            'show_title' => true,
+            'fields'     => array(
+                array(
+                    'id'              => 'Customer_Subscriptions',
+                    'edit'            => 'no_icon',
+                    'value'           => $object->get('Customer Subscriptions'),
+                    'formatted_value' => '<span class="button" onclick="toggle_subscription(this)"  field="Customer_Send_Newsletter"  style="margin-right:40px"><i class=" fa fa-fw '.($object->get('Customer Send Newsletter')=='Yes'?'fa-toggle-on':'fa-toggle-off').'" aria-hidden="true"></i> <span class="'.($object->get('Customer Send Newsletter')=='No'?'discreet':'').'">'._('Newsletter').'</span></span>'.'<span onclick="toggle_subscription(this)"  field="Customer_Send_Email_Marketing" class="button" style="margin-right:40px"><i class=" fa fa-fw '.($object->get('Customer Send Email Marketing')=='Yes'?'fa-toggle-on':'fa-toggle-off').'" aria-hidden="true"></i> <span class="'.($object->get('Customer Send Email Marketing')=='No'?'discreet':'').'">'._('Marketing emails').'</span></span>'.'<span onclick="toggle_subscription(this)"  field="Customer_Send_Postal_Marketing" class="button" style="margin-right:40px"><i class=" fa fa-fw '.($object->get('Customer Send Postal Marketing')=='Yes'?'fa-toggle-on':'fa-toggle-off').'" aria-hidden="true"></i> <span class="'.($object->get('Customer Send Postal Marketing')=='No'?'discreet':'').'">'._('Postal marketing').'</span></span>',
+                    'label'           => _('Subscriptions'),
+                    'required'        => false,
+                    'type'            => 'value'
+                ),
+
+
+
+            )
+        ),
+
+        array(
             'label'      => _('Operations'),
             'show_title' => true,
             'class'      => 'edit_fields',
             'fields'     => array(
-
-
-
 
 
                 array(
@@ -581,9 +599,8 @@ if($new){
                     'id'        => 'delete_customer',
                     'class'     => 'operation',
                     'value'     => '',
-                    'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name(
-                        ).'", "key":"'.$object->id.'"}\' onClick="delete_object(this)" class="delete_object disabled">'._('Delete customer')
-                        .' <i class="fa fa-trash new_button link"></i></span>',
+                    'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
+                        .'"}\' onClick="delete_object(this)" class="delete_object disabled">'._('Delete customer').' <i class="fa fa-trash new_button link"></i></span>',
                     'reference' => '',
                     'type'      => 'operation'
                 ),
@@ -691,7 +708,6 @@ if($new){
     array_splice($customer_fields[3]['fields'], 3, 0, $other_delivery_addresses_fields);
 
 }
-
 
 
 ?>

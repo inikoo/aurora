@@ -1,8 +1,6 @@
 <?php
 /*
-  File: Company.php
 
-  This file contains the Company Class
 
   About:
   Author: Raul Perusquia <rulovico@gmail.com>
@@ -511,6 +509,7 @@ class Store extends DB_Table {
             case('Active Web For Sale'):
             case('Active Web Out of Stock'):
             case('Active Web Offline'):
+            case 'Orders In Basket Number':
                 return number($this->data['Store '.$key]);
             case 'Percentage Active Web Out of Stock':
                 return percentage($this->data['Store Active Web Out of Stock'], $this->data['Store Active Products']);
