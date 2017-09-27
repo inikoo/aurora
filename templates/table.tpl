@@ -1,10 +1,13 @@
-{if isset($period)  and   !isset($hide_period) }
 
-    {include file="utils/date_chooser.tpl" period=$period from=$from to=$to from_mmddyy=$from_mmddyy  to_mmddyy=$to_mmddyy from_locale=$from_locale  to_locale=$to_locale  }
-{/if}
 
 {if isset($table_top_template)}
     {include file=$table_top_template  }
+{/if}
+
+<section id="table_block" class="">
+
+{if isset($period)  and   !isset($hide_period) }
+    {include file="utils/date_chooser.tpl" period=$period from=$from to=$to from_mmddyy=$from_mmddyy  to_mmddyy=$to_mmddyy from_locale=$from_locale  to_locale=$to_locale  }
 {/if}
 
 {if isset($elements) and count($elements)>0     }
@@ -383,11 +386,7 @@
         {if (isset($table_buttons) and count(table_buttons)>0)  }
 
         {foreach from=$table_buttons item=button }
-
-
-        {if isset($button.inline_new_object)}
-        {include file="inline_new_object.tpl" data=$button.inline_new_object trigger={$button.id}}
-        {/if}
+            {if isset($button.inline_new_object)}{include file="inline_new_object.tpl" data=$button.inline_new_object trigger={$button.id}}{/if}
 
 
         <div {if isset($button.id) and $button.id }id="{$button.id}"{/if}
@@ -411,10 +410,7 @@
 
         </div>
          {if $button.icon=='edit_add'}
-        <div id="inline_edit_table_items_buttons" class="hide" style="float:right;margin-right: 10px"
-                 data-object='{$edit_table_dialog.spreadsheet_edit.object}'
-
-        >
+        <div id="inline_edit_table_items_buttons" class="hide" style="float:right;margin-right: 10px" data-object='{$edit_table_dialog.spreadsheet_edit.object}'>
         <i id="inline_edit_table_items_save_button" onclick="save_table_items()" class="fa fa-cloud button save" aria-hidden="true"></i>
         <i id="inline_edit_table_items_close_button"  class="fa fa-window-close button" onclick="close_table_edit_view(this)" style="margin-left:10px;margin-right: 10px" aria-hidden="true"></i> {t}inline editing{/t}
 
@@ -600,7 +596,7 @@
 
     {/if}
 
-    {if isset($upload_file)}
+        {if isset($upload_file)}
 
     <div class="square_button right ">
         <form method="post" action="/ar_edit.php" enctype="multipart/form-data" novalidate>
@@ -690,8 +686,8 @@
 
     </script>
     {/if}
-
-</div><span class="padding_left_10" id="rtext"></span></div>
+    </div>
+    <span class="padding_left_10" id="rtext"></span></div>
 
 <div id="table_edit_control_panel" class="hide" style="padding:10px 5px;border-bottom:1px solid #ccc">
     <div style="float:left"><i class="fa fa-fw fa-square-o button" style="padding:0px 5px 0px 0px" aria-hidden="true" onClick="select_all_rows(this)"></i> {t}Check/Uncheck all{/t}</div>
@@ -721,11 +717,7 @@
 
     </div>
 {/if}
-
-
 <div class="table" id="table" data-metadata="{if isset($table_metadata)}{$table_metadata}{/if}"></div>
-
-
 <script>
 
 
@@ -998,7 +990,6 @@
     {/if}
 
 </script>
-
 <div id="elements_chooser" class="hide panel popout_chooser corner">
     {foreach from=$elements item=element_group key=_elements_type}
         <div onClick="change_elements_type('{$_elements_type}')" id="element_group_option_{$_elements_type}" elements_type="{$_elements_type}" class="{if $_elements_type==$elements_type}selected{/if}">
@@ -1006,7 +997,6 @@
         </div>
     {/foreach}
 </div>
-
 <div id="f_options_chooser" class="hide panel popout_chooser">
     {foreach from=$f_options item=f_option key=_f_option}
         <div onClick="change_f_option(this)" id="element_group_option_{$_f_option}" f_field="{$_f_option}" class="{if $_f_option==$f_field}selected{/if}">
@@ -1014,8 +1004,6 @@
         </div>
     {/foreach}
 </div>
-
-
 <div id="columns_period_chooser" class="hide panel popout_chooser corner">
     {foreach from=$f_periods item=period_label key=_f_period}
         <div onClick="change_columns_period('{$_f_period}','{$period_label}')" id="element_group_option_{$_f_period}" elements_type="{$_f_period}" class="aright {if $f_period==$_f_period}selected{/if}">
@@ -1023,8 +1011,6 @@
         </div>
     {/foreach}
 </div>
-
-
 <div id="columns_frequency_chooser" class="hide panel popout_chooser ">
     {foreach from=$frequencies item=frequency_label key=_f_frequency}
         <div onClick="change_columns_frequency('{$_f_frequency}','{$frequency_label}')" id="element_group_option_{$_f_frequency}" elements_type="{$_f_frequency}"
@@ -1040,3 +1026,4 @@
     {/foreach}
 {/if}
 
+</section>

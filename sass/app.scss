@@ -203,6 +203,14 @@ a {
   cursor: pointer;
 }
 
+.border_button{
+  @include unselectable;
+  border:1px solid #ccc;
+  padding:10px 12px;
+  cursor:pointer
+}
+
+
 input {
   position: relative;
   bottom: 2px;
@@ -1208,3 +1216,10 @@ html, body {
   }
 }
 
+
+table.filter{
+  border-top:1px solid #ccc;
+  border-bottom:1px solid #ccc;
+
+  td {padding-left:20px;padding-right: 20px;border-bottom:1px solid #eee}
+}

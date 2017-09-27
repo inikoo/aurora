@@ -23,7 +23,7 @@ switch ($tipo) {
         get_view($db, $smarty, $user, $account, $modules);
         break;
     case 'widget_details':
-        get_widget_details($db, $smarty, $user, $account);
+        get_widget_details($db, $smarty, $user, $account,$modules);
         break;
     case 'tab':
         $data     = prepare_values(
@@ -52,7 +52,7 @@ switch ($tipo) {
 
 }
 
-function get_widget_details($db, $smarty, $user, $account) {
+function get_widget_details($db, $smarty, $user, $account,$modules) {
 
     $data = prepare_values(
         $_REQUEST, array(
@@ -78,7 +78,7 @@ function get_widget_details($db, $smarty, $user, $account) {
     );
     $response = array(
         'state'          => 200,
-        'widget_details' => $html
+        'widget_details' => $html,
     );
     echo json_encode($response);
 
@@ -129,6 +129,7 @@ function get_view($db, $smarty, $user, $account, $modules) {
 
 
     $state = parse_request($data, $db, $modules, $account, $user);
+
 
 
     $state['current_store']     = $_SESSION['current_store'];
@@ -717,7 +718,6 @@ function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state = false, $
 
 
     $smarty->assign('data', $state);
-
 
 
 
@@ -2310,6 +2310,8 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 
 
 function get_tabs($data, $db, $account, $modules, $user, $smarty) {
+
+
 
 
     if (preg_match('/\_edit$/', $data['tab'])) {

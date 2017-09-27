@@ -36,6 +36,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
     $object     = '';
     $key        = '';
     $extra      = '';
+    $extra_tab='';
 
     $count_view_path = count($view_path);
     $shorcut         = false;
@@ -1806,6 +1807,11 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                     $extra = $view_path[1];
 
                                 }
+                                if (isset($view_path[2])) {
+                                    $extra_tab = $view_path[2];
+
+
+                                }
 
 
                             } elseif ($view_path[0] == 'by_store') {
@@ -1831,6 +1837,11 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                 if (isset($view_path[1])) {
 
                                     $extra = $view_path[1];
+
+                                }
+                                if (isset($view_path[2])) {
+                                    $extra_tab = $view_path[2];
+
 
                                 }
 
@@ -4376,7 +4387,11 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
     }
 
+
     list($tab, $subtab) = parse_tabs($module, $section, $_data, $modules);
+
+
+
     $state = array(
         'request'    => $request,
         'module'     => $module,
@@ -4387,7 +4402,8 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
         'parent_key' => $parent_key,
         'object'     => $object,
         'key'        => $key,
-        'extra'      => $extra
+        'extra'      => $extra,
+        'extra_tab'      => $extra_tab
     );
 
 
@@ -4412,6 +4428,7 @@ function parse_tabs($module, $section, $_data, $modules) {
     if (isset($_data['subtab'])) {
         $subtab = $_data['subtab'];
         $tab    = $modules[$module]['sections'][$section]['subtabs_parent'][$subtab];
+
     } elseif (isset($_data['tab'])) {
 
         $tab    = $_data['tab'];
@@ -4419,7 +4436,8 @@ function parse_tabs($module, $section, $_data, $modules) {
     } else {
 
 
-        if (isset ($_SESSION['state'][$module][$section]['tab'])) {
+        if (!empty ($_SESSION['state'][$module][$section]['tab'])) {
+
             $tab = $_SESSION['state'][$module][$section]['tab'];
             //Special default tabs
 
@@ -4437,6 +4455,9 @@ function parse_tabs($module, $section, $_data, $modules) {
             if (!isset($modules[$module]['sections'][$section]['tabs']) or !is_array($modules[$module]['sections'][$section]['tabs']) or count($modules[$module]['sections'][$section]['tabs']) == 0) {
                 print "problem with M: $module S: $section";
             }
+
+
+
             $tab = each($modules[$module]['sections'][$section]['tabs'])['key'];
         }
         $subtab = parse_subtab($module, $section, $tab, $modules);

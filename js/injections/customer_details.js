@@ -112,3 +112,87 @@ function post_create_action(data) {
 
 }
 
+function toggle_subscription(element){
+
+    var icon=$(element).find('i')
+
+    if(icon.hasClass('fa-toggle-on')){
+        var value='No'
+    }else if(icon.hasClass('fa-toggle-off')){
+        var value='Yes'
+    }else{
+
+        return
+    }
+    icon.removeClass('fa-toggle-on fa-toggle-off').addClass(' fa-spinner fa-spin')
+
+
+
+
+    var ajaxData = new FormData();
+
+    ajaxData.append("tipo", 'edit_field')
+    ajaxData.append("object", 'Customer')
+
+    ajaxData.append("key", $('#fields').attr('key'))
+    ajaxData.append("field", $(element).attr('field'))
+
+    ajaxData.append("value", value)
+
+
+    $.ajax({
+        url: "/ar_edit.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+        complete: function () {
+        }, success: function (data) {
+
+            if (data.state == '200') {
+
+
+                if(value=='Yes'){
+                    icon.addClass('fa-toggle-on').removeClass(' fa-spinner fa-spin')
+                    icon.next('span').removeClass('discreet')
+                    $('.'+$(element).attr('field')).removeClass('error discreet')
+
+                }else{
+                    icon.addClass('fa-toggle-off').removeClass(' fa-spinner fa-spin')
+                    icon.next('span').addClass('discreet')
+                    $('.'+$(element).attr('field')).addClass('error discreet')
+
+                }
+
+              //  $('#save_button', window.parent.document).removeClass('save').find('i').removeClass('fa-spinner fa-spin')
+
+            } else if (data.state == '400') {
+                swal({
+                    title: data.title, text: data.msg, confirmButtonText: "OK"
+                });
+            }
+
+
+
+        }, error: function () {
+
+        }
+    });
+
+
+}
+
+function toggle_subscription_from_new(element){
+
+    var icon=$(element).find('i')
+
+    if(icon.hasClass('fa-toggle-on')){
+        icon.removeClass('fa-toggle-on').addClass('fa-toggle-off').next('span').addClass('discreet')
+
+    }else if(icon.hasClass('fa-toggle-off')){
+        icon.removeClass('fa-toggle-off').addClass('fa-toggle-on').next('span').removeClass('discreet')
+    }
+
+
+
+
+
+}
+
+

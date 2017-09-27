@@ -1064,9 +1064,7 @@ class Customer extends Subject {
 
 
                 break;
-            case('Customer First Contacted Date'):
 
-                break;
             case('Customer Sticky Note'):
                 $this->update_field_switcher('Sticky Note', $value);
                 break;
@@ -2920,6 +2918,15 @@ class Customer extends Subject {
                 break;
             case 'Customer Other Delivery Address':
                 $label = _('other delivery address');
+                break;
+            case 'Customer Send Email Marketing':
+                $label = _('subscription to email marketing');
+                break;
+            case 'Customer Send Postal Marketing':
+                $label = _('subscription postal marketing');
+                break;
+            case 'Customer Send Newsletter':
+                $label = _('subscription to newsletter');
                 break;
             default:
                 $label = $field;

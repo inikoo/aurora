@@ -96,6 +96,8 @@ function change_tab(tab, metadata) {
 
     $('#maintabs .tab').removeClass('selected')
     $('#tab_' + tab.replace(/(:|\.|\[|\])/g, "\$1")).addClass('selected')
+
+
     change_view(state.request + '&tab=' + tab, metadata)
 }
 

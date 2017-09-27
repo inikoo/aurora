@@ -24,7 +24,7 @@ $store->load_acc_data();
 
 //print 'xxx'.$state['extra'];
 
-$smarty->assign('order_flow',$state['extra']);
+$smarty->assign('order_flow',(empty($state['extra_tab'])?$state['extra']:$state['extra'].'_'.$state['extra_tab']));
 
 
 $smarty->assign('store',$store);

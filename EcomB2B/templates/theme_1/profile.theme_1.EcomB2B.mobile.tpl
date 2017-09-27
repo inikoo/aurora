@@ -129,6 +129,20 @@
 
                     </fieldset>
 
+                    <fieldset>
+
+                        <section>
+                            <label class="label">{t}Subscriptions{/t}</label>
+                            <label style="border:none" class="toggle "><input type="checkbox" {if $customer->get('Customer Send Newsletter')=='Yes'}checked{/if} name="newsletter"><i></i>{t}Newsletter{/t}</label>
+                            <label style="border:none" class="toggle "><input type="checkbox" {if $customer->get('Customer Send Email Marketing')=='Yes'}checked{/if} name="email_marketing"><i></i>{t}Email marketing{/t}</label>
+                            <label style="border:none" class="toggle "><input type="checkbox" {if $customer->get('Customer Send Postal Marketing')=='Yes'}checked{/if} name="postal_marketing"><i></i>{t}Postal marketing{/t}</label>
+                        </section>
+
+
+
+
+                    </fieldset>
+
 
                     <footer>
                         <button id="save_contact_details_button" type="submit" class="button  " >{$content._save_contact_details_label} <i  class="margin_left_10 fa fa-fw fa-floppy-o" aria-hidden="true"></i> </button>
@@ -530,14 +544,20 @@
 
                 $("#contact_details input:not(.ignore)").each(function(i, obj) {
                     if(!$(obj).attr('name')==''){
-                        register_data[$(obj).attr('name')]=$(obj).val()
+
+                        if($(obj).attr('type')=='checkbox'){
+                            register_data[$(obj).attr('name')]=$(obj).is(':checked')
+                        }else{
+                            register_data[$(obj).attr('name')]=$(obj).val()
+                        }
+
+
                     }
 
                 });
 
                 $("#contact_details select:not(.ignore)").each(function(i, obj) {
                     if(!$(obj).attr('name')==''){
-
 
                         register_data[$(obj).attr('name')]=$(obj).val()
                     }

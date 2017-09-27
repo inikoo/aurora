@@ -1095,10 +1095,22 @@ function get_orders_table( order_flow, metadata) {
         case 'website':
             $('#order_flow_website').addClass('selected')
             widget='orders.website.wget'
-
             $('.Orders_In_Basket_Number').addClass('blue')
             $('.Orders_In_Basket_Amount').addClass('blue')
 
+            break;
+        case 'website_purges':
+            $('#order_flow_website').addClass('selected')
+            widget='orders.website.purges.wget'
+            $('.Orders_In_Basket_Number').addClass('blue')
+            $('.Orders_In_Basket_Amount').addClass('blue')
+
+            break;
+        case 'website_mailshots':
+            $('#order_flow_website').addClass('selected')
+            widget='orders.website.mailshots.wget'
+            $('.Orders_In_Basket_Number').addClass('blue')
+            $('.Orders_In_Basket_Amount').addClass('blue')
 
             break;
         case 'submitted_not_paid':

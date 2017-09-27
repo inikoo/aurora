@@ -268,16 +268,11 @@
                             </td>
                             <td class="show_buttons  {if $edit=='address'}address {/if}">
 
-                                <i id="{$field.id}_lock"
-                                   class="fa fa-lock fw {if $edit!='' or $class=='new'  or $class=='operation'  }hide{/if} edit lock"></i>
+                                <i id="{$field.id}_lock" class="fa fa-lock fw {if $edit!='' or $class=='new'  or $class=='operation'  or $edit=='no_icon'  }hide{/if} edit lock"></i>
                                 <i class="fa fa-lock fw {if !$linked  }hide{/if} edit"></i>
 
-                                <i id="{$field.id}_reset_button"
-                                   class="fa fa-sign-out fa-flip-horizontal fw reset hide reset_button"
-                                   onclick="close_edit_this_field(this)"></i>
-                                <i id="{$field.id}_edit_button"
-                                   class="fa fa-pencil fw edit {if $edit=='' or $linked!=''  or $edit=='custom' }hide{/if} edit_button"
-                                   onclick="open_edit_this_field(this)"></i>
+                                <i id="{$field.id}_reset_button" class="fa fa-sign-out fa-flip-horizontal fw reset hide reset_button" onclick="close_edit_this_field(this)"></i>
+                                <i id="{$field.id}_edit_button" class="fa fa-pencil fw edit {if $edit=='' or $linked!=''  or $edit=='custom' or $edit=='no_icon'  }hide{/if}  edit_button" onclick="open_edit_this_field(this)"></i>
 
                             </td>
                             <td id="{$field.id}_container" class="container value  " _required="{$required}"
@@ -286,9 +281,10 @@
                                 parent_key='{$state.parent_key}'>
 
                                 {if $edit=='editor'}
-                                    <div id="{$field.id}_formatted_value"
-                                         class="{$field.id} {$edit} fr-view  formatted_value "
-                                         ondblclick="open_edit_this_field(this)">{$field.formatted_value}</div>
+                                    <div id="{$field.id}_formatted_value" class="{$field.id} {$edit} fr-view  formatted_value " ondblclick="open_edit_this_field(this)">{$field.formatted_value}</div>
+                                {elseif $edit=='no_icon'}
+                                    <span id="{$field.id}_formatted_value" class="formatted_value " >{$field.formatted_value}</span>
+
                                 {else}
                                      <span id="{$field.id}_formatted_value" class="{$field.id} {$edit} formatted_value " ondblclick="open_edit_this_field(this)">{if isset($field.formatted_value)}{$field.formatted_value}{else}{$field.value}{/if}</span>
                                 {/if}

@@ -85,22 +85,19 @@ switch ($tipo) {
 function invoice_address($db, $data, $customer, $editor) {
 
 
-
-
-
-    $address_data=array(
-        'Address Line 1'=>'',
-        'Address Line 2'=>'',
-        'Address Sorting Code'=>'',
-        'Address Postal Code'=>'',
-        'Address Dependent Locality'=>'',
-        'Address Locality'=>'',
-        'Address Administrative Area'=>'',
-        'Address Country 2 Alpha Code'=>'',
+    $address_data = array(
+        'Address Line 1'               => '',
+        'Address Line 2'               => '',
+        'Address Sorting Code'         => '',
+        'Address Postal Code'          => '',
+        'Address Dependent Locality'   => '',
+        'Address Locality'             => '',
+        'Address Administrative Area'  => '',
+        'Address Country 2 Alpha Code' => '',
     );
 
 
-    foreach($data['data'] as $key=>$value){
+    foreach ($data['data'] as $key => $value) {
 
         if ($key == 'addressLine1') {
             $key = 'Address Line 1';
@@ -114,22 +111,19 @@ function invoice_address($db, $data, $customer, $editor) {
             $key = 'Address Dependent Locality';
         } elseif ($key == 'locality') {
             $key = 'Address Locality';
-        }elseif ($key == 'administrativeArea') {
+        } elseif ($key == 'administrativeArea') {
             $key = 'Address Administrative Area';
-        }elseif ($key == 'country') {
+        } elseif ($key == 'country') {
             $key = 'Address Country 2 Alpha Code';
         }
 
-            $address_data[$key]=$value;
+        $address_data[$key] = $value;
 
     }
 
 
-
-
-
     $customer->editor = $editor;
-    $customer->update(array('Customer Invoice Address'=>json_encode($address_data)));
+    $customer->update(array('Customer Invoice Address' => json_encode($address_data)));
 
 
     echo json_encode(
@@ -147,25 +141,25 @@ function delivery_address($db, $data, $customer, $editor) {
     $customer->editor = $editor;
 
 
-    if($data['data']['delivery_address_link']){
-        $customer->update(array('Customer Delivery Address Link'=>'Billing'));
+    if ($data['data']['delivery_address_link']) {
+        $customer->update(array('Customer Delivery Address Link' => 'Billing'));
 
-    }else{
-        $customer->update(array('Customer Delivery Address Link'=>'None'));
+    } else {
+        $customer->update(array('Customer Delivery Address Link' => 'None'));
 
-        $address_data=array(
-            'Address Line 1'=>'',
-            'Address Line 2'=>'',
-            'Address Sorting Code'=>'',
-            'Address Postal Code'=>'',
-            'Address Dependent Locality'=>'',
-            'Address Locality'=>'',
-            'Address Administrative Area'=>'',
-            'Address Country 2 Alpha Code'=>'',
+        $address_data = array(
+            'Address Line 1'               => '',
+            'Address Line 2'               => '',
+            'Address Sorting Code'         => '',
+            'Address Postal Code'          => '',
+            'Address Dependent Locality'   => '',
+            'Address Locality'             => '',
+            'Address Administrative Area'  => '',
+            'Address Country 2 Alpha Code' => '',
         );
 
 
-        foreach($data['data'] as $key=>$value){
+        foreach ($data['data'] as $key => $value) {
 
             if ($key == 'addressLine1') {
                 $key = 'Address Line 1';
@@ -179,28 +173,19 @@ function delivery_address($db, $data, $customer, $editor) {
                 $key = 'Address Dependent Locality';
             } elseif ($key == 'locality') {
                 $key = 'Address Locality';
-            }elseif ($key == 'administrativeArea') {
+            } elseif ($key == 'administrativeArea') {
                 $key = 'Address Administrative Area';
-            }elseif ($key == 'country') {
+            } elseif ($key == 'country') {
                 $key = 'Address Country 2 Alpha Code';
             }
 
-            $address_data[$key]=$value;
+            $address_data[$key] = $value;
 
         }
 
-        $customer->update(array('Customer Delivery Address'=>json_encode($address_data)));
+        $customer->update(array('Customer Delivery Address' => json_encode($address_data)));
 
     }
-
-
-
-
-
-
-
-
-
 
 
     echo json_encode(
@@ -213,7 +198,6 @@ function delivery_address($db, $data, $customer, $editor) {
 }
 
 function contact_details($db, $data, $customer, $editor) {
-
 
 
     $update_data = array();
@@ -232,13 +216,21 @@ function contact_details($db, $data, $customer, $editor) {
             $key = 'Customer Registration Number';
         } elseif ($key == 'tax_number') {
             $key = 'Customer Tax Number';
-
-
+        }elseif ($key == 'newsletter') {
+            $key = 'Customer Send Newsletter';
+            $value=($value?'Yes':'No');
+        }elseif ($key == 'email_marketing') {
+            $key = 'Customer Send Email Marketing';
+            $value=($value?'Yes':'No');
+        }elseif ($key == 'postal_marketing') {
+            $key = 'Customer Send Postal Marketing';
+            $value=($value?'Yes':'No');
         }
         $update_data[$key] = $value;
 
     }
 
+    print_r($update_data);
 
     $customer->editor = $editor;
     $customer->update($update_data);
@@ -246,7 +238,12 @@ function contact_details($db, $data, $customer, $editor) {
 
     echo json_encode(
         array(
-            'state' => 200
+            'state'    => 200,
+            'metadata' => array(
+                'class_html' => array(
+                    'Tax_Number_Valid' => $customer->get('Tax Number Valid'),
+                )
+            )
         )
     );
 
@@ -267,15 +264,15 @@ function update_password($db, $data, $editor) {
                 'Website User Password Hash' => password_hash($data['pwd'], PASSWORD_DEFAULT, array('cost' => 12)),
 
 
-            ),'no_history'
+            ), 'no_history'
         );
 
         $website_user->update(
             array(
-                'Website User Password'      => $data['pwd'],
+                'Website User Password' => $data['pwd'],
 
 
-            ),'no_history'
+            ), 'no_history'
         );
 
 

@@ -91,5 +91,6 @@
 
 <script>
     var current_order_flow='';
+
     get_orders_table('{$order_flow}',{ 'parent': 'account','parent_key':1})
 </script>

@@ -245,6 +245,12 @@ function fork_housekeeping($job) {
             $website_user = get_object('Website_User', $data['website_user_key']);
 
 
+            if($customer->get('Customer Tax Number')!=''){
+
+                $customer->update_tax_number_valid('Auto');
+            }
+
+
             $customer->update_full_search();
             $customer->update_location_type();
             $store->update_customers_data();

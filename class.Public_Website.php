@@ -300,7 +300,7 @@ class Public_Website {
 
 
 
-    function get_payment_accounts() {
+    function get_payment_accounts($delivery_2alpha_country='') {
 
         $payments_accounts = array();
 
@@ -312,6 +312,8 @@ class Public_Website {
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
+
+
 
 
                 $payment_account = get_object('Payment_Account', $row['Payment Account Store Payment Account Key']);
@@ -345,6 +347,16 @@ class Public_Website {
                         break;
 
                     case 'ConD':
+
+
+
+                        if(! in_array($delivery_2alpha_country,$payment_account->get('Valid Delivery Countries'))){
+                            continue 2;
+                        }
+
+
+
+
                         $icon            = 'fa-handshake-o';
                         $tab_label_index = '_cash_on_delivery_label';
                         $tab_label       = '';

@@ -66,6 +66,8 @@ $smarty->assign(
 );
 
 
+$smarty->assign('js_code', 'js/injections/customer_details.'.(_DEVEL ? '' : 'min.').'js');
+
 
 $html = $smarty->fetch('new_object.tpl');
 

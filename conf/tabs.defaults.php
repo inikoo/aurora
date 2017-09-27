@@ -125,10 +125,34 @@ $tab_defaults = array(
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'number',
 
-        'elements_type' => 'state',
 
 
     ),
+
+    'orders.website.purges'                      => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 500,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'id',
+
+
+
+    ),
+
+    'orders.website.mailshots'                      => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 500,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'id',
+
+
+
+    ),
+
     'orders.in_process.not_paid'                      => array(
         'view'          => 'overview',
         'sort_key'      => 'id',
