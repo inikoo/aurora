@@ -100,21 +100,21 @@ class TimeseriesRecord extends DB_Table {
             case 'Supplier Deliveries':
                 return number($this->data['Timeseries Record Integer C']);
                 break;
-            case 'Timeseries Record Deliveries Deliveries':
+            case 'Timeseries Record Deliveries':
                 return $this->data['Timeseries Record Integer B'];
                 break;
-            case 'Timeseries Record Deliveries Dispatched':
+            case 'Timeseries Record Dispatched':
                 return $this->data['Timeseries Record Integer A'];
                 break;
-            case 'Timeseries Record Deliveries Sales':
+            case 'Timeseries Record Sales':
                 return $this->data['Timeseries Record Float A'];
                 break;
-            case 'Timeseries Record  Purchased Amount':
+            case 'Timeseries Record Purchased Amount':
                 return $this->data['Timeseries Record Float B'];
                 break;
             case 'Timeseries Record Supplier Deliveries':
                 return $this->data['Timeseries Record Integer C'];
-
+                break;
 
 
                 break;
