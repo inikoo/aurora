@@ -333,6 +333,13 @@ function get_object($object_name, $key, $load_other_data = false) {
             require_once "class.Charge.php";
             $object = new Charge($key);
             break;
+        case 'timeseries_record':
+            require_once "class.TimeseriesRecord.php";
+            $object = new TimeseriesRecord($key);
+            break;
+
+
+
         default:
             exit('need to complete E1: x>'.strtolower($object_name).'<<++>>'.$load_other_data."<\n");
             break;

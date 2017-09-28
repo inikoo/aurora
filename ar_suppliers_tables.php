@@ -29,6 +29,7 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo = $_REQUEST['tipo'];
 
+
 switch ($tipo) {
     case 'replenishments':
         replenishments(get_table_parameters(), $db, $user);
@@ -114,6 +115,13 @@ switch ($tipo) {
     case 'supplier_categories':
         supplier_categories(get_table_parameters(), $db, $user, $account);
         break;
+    case 'timeseries_drill_down_parts':
+        timeseries_drill_down_parts(get_table_parameters(), $db, $user, $account);
+        break;
+    case 'timeseries_drill_down_families':
+        timeseries_drill_down_families(get_table_parameters(), $db, $user, $account);
+        break;
+
     default:
         $response = array(
             'state' => 405,
@@ -132,8 +140,7 @@ function suppliers($_data, $db, $user, $account) {
 
         if (!($_data['parameters']['parent'] == 'agent' and $_data['parameters']['parent_key'] == $user->get(
                 'User Parent Key'
-            ))
-        ) {
+            ))) {
             echo json_encode(
                 array(
                     'state' => 405,
@@ -174,8 +181,7 @@ function suppliers($_data, $db, $user, $account) {
 
             if ($_data['parameters']['parent'] == 'agent') {
                 $operations = sprintf(
-                    '<i agent_key="%d" supplier_key="%d"  class="fa fa-chain-broken button" aria-hidden="true"  onClick="bridge_supplier(this)" ></i>', $_data['parameters']['parent_key'],
-                    $data['Supplier Key']
+                    '<i agent_key="%d" supplier_key="%d"  class="fa fa-chain-broken button" aria-hidden="true"  onClick="bridge_supplier(this)" ></i>', $_data['parameters']['parent_key'], $data['Supplier Key']
                 );
             } else {
                 $operations = '';
@@ -805,17 +811,13 @@ function orders($_data, $db, $user) {
             }
 
 
-
-
-
-
             $table_data[] = array(
-                'id'          => (integer)$data['Purchase Order Key'],
-                'parent'      => sprintf('<span class="link" onclick="change_view(\'/%s/%d\')" >%s</span>  ', strtolower($data['Purchase Order Parent']),$data['Purchase Order Parent Key'],$data['Purchase Order Parent Name']),
-                'public_id' => sprintf('<span class="link" onclick="change_view(\'suppliers/order/%d\')" >%s</span>  ', $data['Purchase Order Key'],$data['Purchase Order Public ID']),
-                'date'      => strftime("%e %b %Y", strtotime($data['Purchase Order Creation Date'].' +0:00')),
-                'last_date' => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Purchase Order Last Updated Date'].' +0:00')),
-                'state'     => $state,
+                'id'           => (integer)$data['Purchase Order Key'],
+                'parent'       => sprintf('<span class="link" onclick="change_view(\'/%s/%d\')" >%s</span>  ', strtolower($data['Purchase Order Parent']), $data['Purchase Order Parent Key'], $data['Purchase Order Parent Name']),
+                'public_id'    => sprintf('<span class="link" onclick="change_view(\'suppliers/order/%d\')" >%s</span>  ', $data['Purchase Order Key'], $data['Purchase Order Public ID']),
+                'date'         => strftime("%e %b %Y", strtotime($data['Purchase Order Creation Date'].' +0:00')),
+                'last_date'    => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Purchase Order Last Updated Date'].' +0:00')),
+                'state'        => $state,
                 'total_amount' => money($data['Purchase Order Total Amount'], $data['Purchase Order Currency Code'])
 
 
@@ -844,13 +846,7 @@ function orders($_data, $db, $user) {
 }
 
 
-
-
-
 function agent_orders($_data, $db, $user) {
-
-
-
 
 
     if (!$user->can_view('suppliers')) {
@@ -862,7 +858,6 @@ function agent_orders($_data, $db, $user) {
         );
         exit;
     }
-
 
 
     $rtext_label = 'purchase order';
@@ -953,7 +948,6 @@ function agent_orders($_data, $db, $user) {
 }
 
 
-
 function agent_client_orders($_data, $db, $user) {
 
     if ($user->get('User Type') != 'Agent') {
@@ -966,8 +960,6 @@ function agent_client_orders($_data, $db, $user) {
         exit;
     }
     $_data['parameters']['agent_key'] = $user->get('User Parent Key');
-
-
 
 
     $rtext_label = 'client order';
@@ -1058,8 +1050,6 @@ function agent_client_orders($_data, $db, $user) {
 }
 
 
-
-
 function agent_deliveries($_data, $db, $user) {
 
     if ($user->get('User Type') != 'Agent') {
@@ -1073,7 +1063,6 @@ function agent_deliveries($_data, $db, $user) {
     }
 
     $_data['parameters']['agent_key'] = $user->get('User Parent Key');
-
 
 
     $rtext_label = 'delivery';
@@ -1113,11 +1102,11 @@ function agent_deliveries($_data, $db, $user) {
             }
 
             $table_data[] = array(
-                'id'          => (integer)$data['Supplier Delivery Key'],
-                'public_id'   => sprintf('<span class="link" onClick="change_view(\'agent_delivery/%d\')">%s</span>',$data['Supplier Delivery Key'],$data['Supplier Delivery Public ID']),
-                'date'        => strftime("%e %b %Y", strtotime($data['Supplier Delivery Creation Date'].' +0:00')),
-                'last_date'   => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Supplier Delivery Last Updated Date'].' +0:00')),
-                'state'       => $state,
+                'id'        => (integer)$data['Supplier Delivery Key'],
+                'public_id' => sprintf('<span class="link" onClick="change_view(\'agent_delivery/%d\')">%s</span>', $data['Supplier Delivery Key'], $data['Supplier Delivery Public ID']),
+                'date'      => strftime("%e %b %Y", strtotime($data['Supplier Delivery Creation Date'].' +0:00')),
+                'last_date' => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Supplier Delivery Last Updated Date'].' +0:00')),
+                'state'     => $state,
 
                 'total_amount' => money($data['Supplier Delivery Total Amount'], $data['Supplier Delivery Currency Code'])
 
@@ -1145,7 +1134,6 @@ function agent_deliveries($_data, $db, $user) {
     );
     echo json_encode($response);
 }
-
 
 
 function deliveries($_data, $db, $user) {
@@ -1186,19 +1174,21 @@ function deliveries($_data, $db, $user) {
             }
 
             $table_data[] = array(
-                'id'          => (integer)$data['Supplier Delivery Key'],
+                'id'        => (integer)$data['Supplier Delivery Key'],
 
                 //'public_id'   => $data['Supplier Delivery Public ID'],
-                'date'        => strftime("%e %b %Y", strtotime($data['Supplier Delivery Creation Date'].' +0:00')),
-                'last_date'   => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Supplier Delivery Last Updated Date'].' +0:00')),
-               // 'parent_name' => $data['Supplier Delivery Parent Name'],
+                'date'      => strftime("%e %b %Y", strtotime($data['Supplier Delivery Creation Date'].' +0:00')),
+                'last_date' => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Supplier Delivery Last Updated Date'].' +0:00')),
+                // 'parent_name' => $data['Supplier Delivery Parent Name'],
 
 
-                'parent'   => sprintf('<span class="link" onclick="change_view(\'/%s/%d\')" >%s</span>  ', strtolower($data['Supplier Delivery Parent']),$data['Supplier Delivery Parent Key'],$data['Supplier Delivery Parent Name']),
-                'public_id'=> sprintf('<span class="link" onclick="change_view(\'%s/%d/delivery/%d\')" >%s</span>  ', strtolower($data['Supplier Delivery Parent']),$data['Supplier Delivery Parent Key'],$data['Supplier Delivery Key'],$data['Supplier Delivery Public ID']),
+                'parent'    => sprintf('<span class="link" onclick="change_view(\'/%s/%d\')" >%s</span>  ', strtolower($data['Supplier Delivery Parent']), $data['Supplier Delivery Parent Key'], $data['Supplier Delivery Parent Name']),
+                'public_id' => sprintf(
+                    '<span class="link" onclick="change_view(\'%s/%d/delivery/%d\')" >%s</span>  ', strtolower($data['Supplier Delivery Parent']), $data['Supplier Delivery Parent Key'], $data['Supplier Delivery Key'], $data['Supplier Delivery Public ID']
+                ),
 
 
-                'state'       => $state,
+                'state'        => $state,
                 'total_amount' => money($data['Supplier Delivery Total Amount'], $data['Supplier Delivery Currency Code'])
 
 
@@ -1273,13 +1263,13 @@ function order_items($_data, $db, $user, $account) {
 
 
             $units_per_carton = $data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'];
-            $skos_per_carton = $data['Supplier Part Packages Per Carton'];
+            $skos_per_carton  = $data['Supplier Part Packages Per Carton'];
 
 
             $subtotals = sprintf('<span  class="subtotals" style="font-size:90%%"  >');
             if ($data['Purchase Order Quantity'] > 0) {
 
-                $subtotals .=$data['Purchase Order Quantity'] * $units_per_carton.'u., '.$data['Purchase Order Quantity'] * $skos_per_carton.'pkg. ';
+                $subtotals .= $data['Purchase Order Quantity'] * $units_per_carton.'u., '.$data['Purchase Order Quantity'] * $skos_per_carton.'pkg. ';
 
 
                 $amount = $data['Purchase Order Quantity'] * $units_per_carton * $data['Supplier Part Unit Cost'];
@@ -1290,8 +1280,7 @@ function order_items($_data, $db, $user, $account) {
 
                 if ($data['Supplier Part Currency Code'] != $account->get(
                         'Account Currency'
-                    )
-                ) {
+                    )) {
                     $subtotals .= ' <span class="">('.money(
                             $amount * $purchase_order->get(
                                 'Purchase Order Currency Exchange'
@@ -1320,8 +1309,7 @@ function order_items($_data, $db, $user, $account) {
 
                 $delivery_quantity = sprintf(
                     '<span class="delivery_quantity" id="delivery_quantity_%d" key="%d" item_key="%d" item_historic_key=%d on="1" ><input class="order_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-minus fa-fw button" aria-hidden="true"></i></span>',
-                    $data['Purchase Order Transaction Fact Key'], $data['Purchase Order Transaction Fact Key'], $data['Supplier Part Key'], $data['Supplier Part Historic Key'], $delivery_qty + 0,
-                    $delivery_qty + 0
+                    $data['Purchase Order Transaction Fact Key'], $data['Purchase Order Transaction Fact Key'], $data['Supplier Part Key'], $data['Supplier Part Historic Key'], $delivery_qty + 0, $delivery_qty + 0
                 );
             } else {
                 $delivery_quantity = number(
@@ -1330,22 +1318,22 @@ function order_items($_data, $db, $user, $account) {
 
             }
 
-            $description ='<div style="font-size:90%" >'. ($data['Supplier Part Reference'] != $data['Part Reference'] ? $data['Part Reference'].', ' : '');
+            $description = '<div style="font-size:90%" >'.($data['Supplier Part Reference'] != $data['Part Reference'] ? $data['Part Reference'].', ' : '');
 
 
             $description .= $data['Part Unit Description'].'<br/> 
-             <span class="discreet">(<span  title="'._('Units per carton').'">'.number($units_per_carton).'u./C</span>, '.sprintf(_('packed in %ds'),$data['Part Units Per Package']).')</span> <span class="" title="'._('Carton cost').'">'.money(
-                    $units_per_carton*$data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code')
+             <span class="discreet">(<span  title="'._('Units per carton').'">'.number($units_per_carton).'u./C</span>, '.sprintf(_('packed in %ds'), $data['Part Units Per Package']).')</span> <span class="" title="'._('Carton cost').'">'.money(
+                    $units_per_carton * $data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code')
                 ).'/C</span></span>';
 
 
-            if ($data['Supplier Part Minimum Carton Order'] > 0 and $data['Supplier Part Minimum Carton Order']!=1  ) {
+            if ($data['Supplier Part Minimum Carton Order'] > 0 and $data['Supplier Part Minimum Carton Order'] != 1) {
                 $description .= sprintf(
                     ' <span class="discreet"><span title="%s">MOQ</span>:%s<span>', _('Minimum order (cartons)'), number($data['Supplier Part Minimum Carton Order'])
                 );
             }
 
-            $description_sales='';
+            $description_sales = '';
             if ($purchase_order->get('State Index') < 30) {
 
 
@@ -1391,7 +1379,7 @@ function order_items($_data, $db, $user, $account) {
 
                 }
 
-                $description_sales =$description.  '<div style="margin-top:10px" >
+                $description_sales = $description.'<div style="margin-top:10px" >
                         <span class="no_discreet"><i class="fa fa-square" aria-hidden="true"></i> '.$data['Part Reference'].'</span>
                         <span title="'._('Stock (cartons)').'">'.number(
                         $data['Part Current On Hand Stock'] / $data['Supplier Part Packages Per Carton']
@@ -1442,9 +1430,8 @@ function order_items($_data, $db, $user, $account) {
             }
 
 
-
-            $description.='</div>';
-            $description_sales.='</div>';
+            $description       .= '</div>';
+            $description_sales .= '</div>';
 
 
             $table_data[] = array(
@@ -1460,15 +1447,16 @@ function order_items($_data, $db, $user, $account) {
                 'reference'         => $data['Supplier Part Reference'],
 
 
-                'reference'      => sprintf('<span class="link" onclick="change_view(\'/%s/%d/part/%d\')" >%s</span>  ', strtolower($purchase_order->get('Purchase Order Parent')),$purchase_order->get('Purchase Order Parent Key'),$data['Supplier Part Key'],$data['Supplier Part Reference']),
+                'reference' => sprintf(
+                    '<span class="link" onclick="change_view(\'/%s/%d/part/%d\')" >%s</span>  ', strtolower($purchase_order->get('Purchase Order Parent')), $purchase_order->get('Purchase Order Parent Key'), $data['Supplier Part Key'], $data['Supplier Part Reference']
+                ),
 
 
                 'description'       => $description,
-                'description_sales'       => $description_sales,
+                'description_sales' => $description_sales,
                 'quantity'          => sprintf(
                     '<span    data-settings=\'{"field": "Purchase Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   ><input class="order_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-plus fa-fw button" aria-hidden="true"></i></span>',
-                    $data['Purchase Order Transaction Fact Key'], $data['Supplier Part Key'], $data['Supplier Part Historic Key'], $data['Purchase Order Quantity'] + 0,
-                    $data['Purchase Order Quantity'] + 0
+                    $data['Purchase Order Transaction Fact Key'], $data['Supplier Part Key'], $data['Supplier Part Historic Key'], $data['Purchase Order Quantity'] + 0, $data['Purchase Order Quantity'] + 0
                 ),
                 'delivery_quantity' => $delivery_quantity,
                 'subtotals'         => $subtotals,
@@ -1543,8 +1531,7 @@ function delivery_items($_data, $db, $user) {
 
             $delivery_quantity = sprintf(
                 '<span class="delivery_quantity" id="delivery_quantity_%d" key="%d" item_key="%d" item_historic_key=%d on="1" ><input class="order_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-minus fa-fw button" aria-hidden="true"></i></span>',
-                $data['Purchase Order Transaction Fact Key'], $data['Purchase Order Transaction Fact Key'], $data['Supplier Part Key'], $data['Supplier Part Historic Key'], $quantity + 0,
-                $quantity + 0
+                $data['Purchase Order Transaction Fact Key'], $data['Purchase Order Transaction Fact Key'], $data['Supplier Part Key'], $data['Supplier Part Historic Key'], $quantity + 0, $quantity + 0
             );
 
 
@@ -1635,7 +1622,7 @@ function delivery_checking_items($_data, $db, $user) {
 
             $description = $data['Part Package Description'].' ('.number(
                     $units_per_carton
-                ).'/'.number($data['Supplier Part Packages Per Carton']).'/C)    '.($data['Part SKO Barcode']!=''?'<br><i class="fa fa-barcode" aria-hidden="true"></i> '.$data['Part SKO Barcode']:'' );
+                ).'/'.number($data['Supplier Part Packages Per Carton']).'/C)    '.($data['Part SKO Barcode'] != '' ? '<br><i class="fa fa-barcode" aria-hidden="true"></i> '.$data['Part SKO Barcode'] : '');
 
             $number_locations = 0;
             $locations        = '';
@@ -1648,7 +1635,7 @@ function delivery_checking_items($_data, $db, $user) {
                 foreach ($locations_data as $location_data) {
                     $number_locations++;
                     $location_data = preg_split('/\:/', $location_data);
-                    $locations .= ' <div class="part_location button" style="clear:both;" onClick="set_placement_location(this)"  location_key="'.$location_data[0].'" >
+                    $locations     .= ' <div class="part_location button" style="clear:both;" onClick="set_placement_location(this)"  location_key="'.$location_data[0].'" >
 				<div  class="code data w150"  >'.$location_data[1].'</div>
 				<div class="data w30 aright" >'.number($location_data[3]).'</div>
 				</div>';
@@ -1657,9 +1644,8 @@ function delivery_checking_items($_data, $db, $user) {
                 $locations .= '<div style="clear:both"></div></div>';
             }
 
-            if($locations!=''){
-                $description .= '<br><i style="margin-left:4px" class="fa fa-map-marker button discreet  hide'.($number_locations == 0 ? 'hide' : '').'" aria-hidden="true" title="'._('Show locations')
-                    .'"  show_title="'._('Show locations').'" hide_title="'._(
+            if ($locations != '') {
+                $description .= '<br><i style="margin-left:4px" class="fa fa-map-marker button discreet  hide'.($number_locations == 0 ? 'hide' : '').'" aria-hidden="true" title="'._('Show locations').'"  show_title="'._('Show locations').'" hide_title="'._(
                         'Hide locations'
                     ).'"    onClick="show_part_locations(this)" ></i>';
 
@@ -1667,8 +1653,6 @@ function delivery_checking_items($_data, $db, $user) {
                 $description .= $locations;
 
             }
-
-
 
 
             /*
@@ -1686,18 +1670,12 @@ function delivery_checking_items($_data, $db, $user) {
             }
 
 
-
             $edit_sko_checked_quantity = sprintf(
                 '<span class="%s" ondblclick="show_check_dialog(this)">%s</span>
                 <span data-settings=\'{"field": "Supplier Delivery Checked Quantity", "transaction_key":%d,"item_key":%d, "item_historic_key":%d ,"on":1 }\' class="checked_quantity %s"  >
                     <input class="checked_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-plus fa-fw button %s" aria-hidden="true">
-                </span>',
-                ($supplier_delivery->get('Supplier Delivery State')=='Placed'?'':'hide'),
-                number($sko_checked_quantity),
-                $data['Purchase Order Transaction Fact Key'],
-                $data['Supplier Part Key'], $data['Supplier Part Historic Key'],
-                ($supplier_delivery->get('Supplier Delivery State')=='Placed'?'hide':''),
-                $sko_checked_quantity, $sko_checked_quantity, ''
+                </span>', ($supplier_delivery->get('Supplier Delivery State') == 'Placed' ? '' : 'hide'), number($sko_checked_quantity), $data['Purchase Order Transaction Fact Key'], $data['Supplier Part Key'], $data['Supplier Part Historic Key'],
+                ($supplier_delivery->get('Supplier Delivery State') == 'Placed' ? 'hide' : ''), $sko_checked_quantity, $sko_checked_quantity, ''
             );
 
 
@@ -1728,13 +1706,13 @@ function delivery_checking_items($_data, $db, $user) {
             $placement .= '<div style="clear:both"></div></div>';
 
             $placement_note = '<input type="hidden" class="note" /><i class="fa add_note fa-sticky-note-o padding_right_5 button" aria-hidden="true"  onClick="show_placement_note(this)" ></i>';
-            $placement .= '
-			    <div style="clear:both"  id="place_item_'.$data['Purchase Order Transaction Fact Key'].'" class="place_item '.($data['Supplier Delivery Transaction Placed'] == 'No' ? '' : 'hide')
-                .' " part_sku="'.$data['Part SKU'].'" transaction_key="'.$data['Purchase Order Transaction Fact Key'].'"  >
+            $placement      .= '
+			    <div style="clear:both"  id="place_item_'.$data['Purchase Order Transaction Fact Key'].'" class="place_item '.($data['Supplier Delivery Transaction Placed'] == 'No' ? '' : 'hide').' " part_sku="'.$data['Part SKU'].'" transaction_key="'
+                .$data['Purchase Order Transaction Fact Key'].'"  >
 
 			    '.$placement_note.'
 
-			    <input class="place_qty width_50 changed" value="'.($quantity + 0).'" ovalue="'.($quantity + 0).'"  min="1" max="'.round($quantity,2).'"  >
+			    <input class="place_qty width_50 changed" value="'.($quantity + 0).'" ovalue="'.($quantity + 0).'"  min="1" max="'.round($quantity, 2).'"  >
 				<input class="location_code"  placeholder="'._('Location code').'"  >
 				<i  class="place_item_button  fa  fa-cloud  fa-fw save " aria-hidden="true" title="'._('Place to location').'"  location_key="" onClick="place_item(this)"  ></i>
                 </div>
@@ -1756,16 +1734,19 @@ function delivery_checking_items($_data, $db, $user) {
                 ),
 
 
-                'reference'      => sprintf('<span class="link" onclick="change_view(\'/%s/%d/part/%d\')" >%s</span>  ', strtolower($supplier_delivery->get('Supplier Delivery Parent')),$supplier_delivery->get('Supplier Delivery Parent Key'),$data['Supplier Part Key'],$data['Supplier Part Reference']),
+                'reference' => sprintf(
+                    '<span class="link" onclick="change_view(\'/%s/%d/part/%d\')" >%s</span>  ', strtolower($supplier_delivery->get('Supplier Delivery Parent')), $supplier_delivery->get('Supplier Delivery Parent Key'), $data['Supplier Part Key'],
+                    $data['Supplier Part Reference']
+                ),
 
 
-              //  'reference'      => $data['Supplier Part Reference'],
+                //  'reference'      => $data['Supplier Part Reference'],
 
 
-                'part_reference'      => sprintf('<span class="link" onclick="change_view(\'/part/%d\')" >%s</span>  ', $data['Part SKU'],$data['Part Reference']),
+                'part_reference' => sprintf('<span class="link" onclick="change_view(\'/part/%d\')" >%s</span>  ', $data['Part SKU'], $data['Part Reference']),
 
 
-               // 'part_reference' => $data['Part Reference'],
+                // 'part_reference' => $data['Part Reference'],
                 'description'    => $description,
 
                 'sko_edit_checked_quantity' => $edit_sko_checked_quantity,
@@ -1778,32 +1759,20 @@ function delivery_checking_items($_data, $db, $user) {
                 'qty'                       => number($quantity),
 
 
-
-
-
-
-                'c_sko_u'                   => sprintf(
+                'c_sko_u'   => sprintf(
                     '<span  id="part_sko_item_%d"  data-barcode_settings=\'{"reference":"%s","description":"%s" ,"image_src":"%s" ,"qty":"%s" ,"cartons":"%s"  , "skos":"%s"  ,"units":"%s"   }\'  _checked="%s"   barcode="%s" data-metadata=\'{"qty":%d}\' onClick="copy_qty(this)" class="button part_sko_item"  ><span class="very_discreet">%s/</span> <span>%s</span> <span class="super_discreet">/%s</span></span>',
 
-                    $data['Part SKU'],
-                    $data['Part Reference'],
-                    base64_encode($data['Part Package Description']),
-                    $data['Part SKO Image Key'],
-                    $data['Supplier Part Packages Per Carton'] * $data['Supplier Delivery Quantity'],
-                    number($data['Supplier Delivery Quantity']),
-                    number($data['Supplier Part Packages Per Carton'] * $data['Supplier Delivery Quantity']),
-                    number($data['Supplier Part Packages Per Carton'] * $data['Part Units Per Package'] * $data['Supplier Delivery Quantity']),
+                    $data['Part SKU'], $data['Part Reference'], base64_encode($data['Part Package Description']), $data['Part SKO Image Key'], $data['Supplier Part Packages Per Carton'] * $data['Supplier Delivery Quantity'], number($data['Supplier Delivery Quantity']),
+                    number($data['Supplier Part Packages Per Carton'] * $data['Supplier Delivery Quantity']), number($data['Supplier Part Packages Per Carton'] * $data['Part Units Per Package'] * $data['Supplier Delivery Quantity']),
                     $data['Supplier Delivery Checked Quantity'],
 
 
-                    $data['Part SKO Barcode'],
-                    $data['Supplier Part Packages Per Carton'] * $data['Supplier Delivery Quantity'],
+                    $data['Part SKO Barcode'], $data['Supplier Part Packages Per Carton'] * $data['Supplier Delivery Quantity'],
 
-                    number($data['Supplier Delivery Quantity']),
-                    number($data['Supplier Part Packages Per Carton'] * $data['Supplier Delivery Quantity']),
+                    number($data['Supplier Delivery Quantity']), number($data['Supplier Part Packages Per Carton'] * $data['Supplier Delivery Quantity']),
                     number($data['Supplier Part Packages Per Carton'] * $data['Part Units Per Package'] * $data['Supplier Delivery Quantity'])
                 ),
-                'placement'                 => $placement
+                'placement' => $placement
             );
 
 
@@ -1894,9 +1863,7 @@ function order_supplier_parts($_data, $db, $user) {
                     break;
             }
 
-            $description =
-                '<span style="min-width:80px;display: inline-block;" class="link padding_right_10" onClick="change_view(\'part/'.$data['Supplier Part Part SKU'].'\')">'.$data['Part Reference']
-                .'</span> '.$data['Part Unit Description'];
+            $description = '<span style="min-width:80px;display: inline-block;" class="link padding_right_10" onClick="change_view(\'part/'.$data['Supplier Part Part SKU'].'\')">'.$data['Part Reference'].'</span> '.$data['Part Unit Description'];
 
 
             $table_data[] = array(
@@ -1917,8 +1884,8 @@ function order_supplier_parts($_data, $db, $user) {
                     $data['Supplier Part Unit Cost'], $data['Supplier Part Currency Code']
                 ),
                 'packing'     => '<div style="float:left;min-width:20px;text-align:right"><span>'.$data['Part Units Per Package']
-                    .'</span></div><div style="float:left;min-width:70px;text-align:left"> <i  class="fa fa-arrow-right very_discreet padding_right_10 padding_left_10"></i><span>['
-                    .$data['Supplier Part Packages Per Carton'].']</span></div> <span class="discreet">'.($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'].'</span>'),
+                    .'</span></div><div style="float:left;min-width:70px;text-align:left"> <i  class="fa fa-arrow-right very_discreet padding_right_10 padding_left_10"></i><span>['.$data['Supplier Part Packages Per Carton'].']</span></div> <span class="discreet">'
+                    .($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'].'</span>'),
                 'stock'       => number(floor($data['Part Current Stock']))." $stock_status"
             );
 
@@ -2282,8 +2249,7 @@ function order_supplier_all_parts($_data, $db, $user) {
                 'formatted_sku'    => sprintf(
                     "SKU%05d", $data['Supplier Part Part SKU']
                 ),
-                'part_description' => '<span style="min-width:80px;display: inline-block;" class="link padding_right_10" onClick="change_view(\'part/'.$data['Supplier Part Part SKU'].'\')">'
-                    .$data['Part Reference'].'</span> '.$data['Part Unit Description'],
+                'part_description' => '<span style="min-width:80px;display: inline-block;" class="link padding_right_10" onClick="change_view(\'part/'.$data['Supplier Part Part SKU'].'\')">'.$data['Part Reference'].'</span> '.$data['Part Unit Description'],
 
                 'description' => $description,
                 'status'      => $status,
@@ -2291,8 +2257,8 @@ function order_supplier_all_parts($_data, $db, $user) {
                     $data['Supplier Part Unit Cost'], $data['Supplier Part Currency Code']
                 ),
                 'packing'     => '<div style="float:left;min-width:20px;text-align:right"><span>'.$data['Part Units Per Package']
-                    .'</span></div><div style="float:left;min-width:70px;text-align:left"> <i  class="fa fa-arrow-right very_discreet padding_right_10 padding_left_10"></i><span>['
-                    .$data['Supplier Part Packages Per Carton'].']</span></div> <span class="discreet">'.($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'].'</span>'),
+                    .'</span></div><div style="float:left;min-width:70px;text-align:left"> <i  class="fa fa-arrow-right very_discreet padding_right_10 padding_left_10"></i><span>['.$data['Supplier Part Packages Per Carton'].']</span></div> <span class="discreet">'
+                    .($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'].'</span>'),
                 'stock'       => number(floor($data['Part Current Stock']))." $stock_status",
                 'quantity'    => sprintf(
                     '<span    data-settings=\'{"field": "Purchase Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   ><input class="order_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-plus fa-fw button" aria-hidden="true"></i></span>',
@@ -2387,6 +2353,9 @@ function sales_history($_data, $db, $user, $account) {
 
     $skip_get_table_totals = true;
 
+
+    //print_r($_data);
+
     include_once 'prepare_table/init.php';
 
     include_once 'utils/natural_language.php';
@@ -2450,8 +2419,7 @@ function sales_history($_data, $db, $user, $account) {
 
 
     $sql = sprintf(
-        'SELECT `Date` FROM kbase.`Date Dimension` WHERE `Date`>=date(%s) AND `Date`<=DATE(%s) %s ORDER BY %s  LIMIT %s', prepare_mysql($from), prepare_mysql($to), $_group_by,
-        "`Date` $order_direction ", "$start_from,$number_results"
+        'SELECT `Date` FROM kbase.`Date Dimension` WHERE `Date`>=date(%s) AND `Date`<=DATE(%s) %s ORDER BY %s  LIMIT %s', prepare_mysql($from), prepare_mysql($to), $_group_by, "`Date` $order_direction ", "$start_from,$number_results"
     );
 
 
@@ -2492,15 +2460,15 @@ function sales_history($_data, $db, $user, $account) {
                 $_date = date('Y-m-d', strtotime($data['Date'].' +0:00'));
             }
 
-            $record_data[$_date] = array(
-                'sales'      => '<span class="very_discreet">'.money(0, $currency).'</span>',
-                'purchased_amount'      => '<span class="very_discreet">'.money(0, $currency).'</span>',
 
-                'dispatched' => '<span class="very_discreet">'.number(0).'</span>',
-                'deliveries' => '<span class="very_discreet">'.number(0).'</span>',
+            $record_data[$_date] = array(
+                'sales'               => '<span class="very_discreet">'.money(0, $currency).'</span>',
+                'purchased_amount'    => '<span class="very_discreet">'.money(0, $currency).'</span>',
+                'dispatched'          => '<span class="very_discreet">'.number(0).'</span>',
+                'deliveries'          => '<span class="very_discreet">'.number(0).'</span>',
                 'supplier_deliveries' => '<span class="very_discreet">'.number(0).'</span>',
 
-                'date'       => $date
+                'date' => $date
 
 
             );
@@ -2518,22 +2486,22 @@ function sales_history($_data, $db, $user, $account) {
 
         case 'supplier':
         case 'category':
-        if ($_data['parameters']['frequency'] == 'annually') {
-            $from_date = gmdate("Y-01-01", strtotime($from_date.' +0:00'));
-            $to_date   = gmdate("Y-12-31", strtotime($to_date.' +0:00'));
-        } elseif ($_data['parameters']['frequency'] == 'quarterly') {
-            $from_date = gmdate("Y-m-01", strtotime($from_date.'  -1 year  +0:00'));
-            $to_date   = gmdate("Y-m-01", strtotime($to_date.' + 3 month +0:00'));
-        }elseif ($_data['parameters']['frequency'] == 'monthly') {
-            $from_date = gmdate("Y-m-01", strtotime($from_date.' -1 year  +0:00'));
-            $to_date   = gmdate("Y-m-01", strtotime($to_date.' +0:00'));
-        } elseif ($_data['parameters']['frequency'] == 'weekly') {
-            $from_date = gmdate("Y-m-d", strtotime($from_date.'  -1 year  +0:00'));
-            $to_date   = gmdate("Y-m-d", strtotime($to_date.'  +0:00'));
-        } elseif ($_data['parameters']['frequency'] == 'daily') {
-            $from_date = gmdate("Y-m-d", strtotime($from_date.' - 1 year +0:00'));
-            $to_date   =  $to_date ;
-        }
+            if ($_data['parameters']['frequency'] == 'annually') {
+                $from_date = gmdate("Y-01-01", strtotime($from_date.' +0:00'));
+                $to_date   = gmdate("Y-12-31", strtotime($to_date.' +0:00'));
+            } elseif ($_data['parameters']['frequency'] == 'quarterly') {
+                $from_date = gmdate("Y-m-01", strtotime($from_date.'  -1 year  +0:00'));
+                $to_date   = gmdate("Y-m-01", strtotime($to_date.' + 3 month +0:00'));
+            } elseif ($_data['parameters']['frequency'] == 'monthly') {
+                $from_date = gmdate("Y-m-01", strtotime($from_date.' -1 year  +0:00'));
+                $to_date   = gmdate("Y-m-01", strtotime($to_date.' +0:00'));
+            } elseif ($_data['parameters']['frequency'] == 'weekly') {
+                $from_date = gmdate("Y-m-d", strtotime($from_date.'  -1 year  +0:00'));
+                $to_date   = gmdate("Y-m-d", strtotime($to_date.'  +0:00'));
+            } elseif ($_data['parameters']['frequency'] == 'daily') {
+                $from_date = gmdate("Y-m-d", strtotime($from_date.' - 1 year +0:00'));
+                $to_date   = $to_date;
+            }
             $group_by = '';
 
             break;
@@ -2548,7 +2516,7 @@ function sales_history($_data, $db, $user, $account) {
         "select $fields from $table $where $wheref and %s>=%s and  %s<=%s %s order by $date_field    ", $date_field, prepare_mysql($from_date), $date_field, prepare_mysql($to_date), " $group_by "
     );
 
-    $last_year_data=array();
+    $last_year_data = array();
 
 
     //print $sql;
@@ -2558,54 +2526,87 @@ function sales_history($_data, $db, $user, $account) {
         foreach ($result as $data) {
 
 
-
             if ($_data['parameters']['frequency'] == 'annually') {
-                $_date = strftime("%Y", strtotime($data['Date'].' +0:00'));
-                $_date_last_year=strftime("%Y", strtotime($data['Date'].' - 1 year'));
-                $date=$_date;
+                $_date           = strftime("%Y", strtotime($data['Date'].' +0:00'));
+                $_date_last_year = strftime("%Y", strtotime($data['Date'].' - 1 year'));
+                $date            = $_date;
             } elseif ($_data['parameters']['frequency'] == 'quarterly') {
-                $_date = 'Q'.ceil(date('n', strtotime($data['Date'].' +0:00')) / 3).' '.strftime("%Y", strtotime($data['Date'].' +0:00'));
+                $_date           = 'Q'.ceil(date('n', strtotime($data['Date'].' +0:00')) / 3).' '.strftime("%Y", strtotime($data['Date'].' +0:00'));
                 $_date_last_year = 'Q'.ceil(date('n', strtotime($data['Date'].' - 1 year')) / 3).' '.strftime("%Y", strtotime($data['Date'].' - 1 year'));
-                $date=$_date;
+                $date            = $_date;
             } elseif ($_data['parameters']['frequency'] == 'monthly') {
-                $_date = strftime("%b %Y", strtotime($data['Date'].' +0:00'));
+                $_date           = strftime("%b %Y", strtotime($data['Date'].' +0:00'));
                 $_date_last_year = strftime("%b %Y", strtotime($data['Date'].' - 1 year'));
-                $date=$_date;
+                $date            = $_date;
             } elseif ($_data['parameters']['frequency'] == 'weekly') {
-                $_date = strftime("%Y%W ", strtotime($data['Date'].' +0:00'));
+                $_date           = strftime("%Y%W ", strtotime($data['Date'].' +0:00'));
                 $_date_last_year = strftime("%Y%W ", strtotime($data['Date'].' - 1 year'));
-                $date  = strftime("(%e %b) %Y %W ", strtotime($data['Date'].' +0:00'));
+                $date            = strftime("(%e %b) %Y %W ", strtotime($data['Date'].' +0:00'));
             } elseif ($_data['parameters']['frequency'] == 'daily') {
-                $_date = date('Y-m-d', strtotime($data['Date'].' +0:00'));
+                $_date           = date('Y-m-d', strtotime($data['Date'].' +0:00'));
                 $_date_last_year = date('Y-m-d', strtotime($data['Date'].'  -1 year'));
-                $date  = strftime("%a %e %b %Y", strtotime($data['Date'].' +0:00'));
+                $date            = strftime("%a %e %b %Y", strtotime($data['Date'].' +0:00'));
             }
 
-            $last_year_data[$_date]=array('_sales'=>$data['sales']);
+            $last_year_data[$_date] = array('_sales' => $data['sales']);
 
 
             if (array_key_exists($_date, $record_data)) {
 
-                $record_data[$_date] = array(
-                    'sales'      => money($data['sales'], $currency),
-                    'purchased_amount'      => money($data['purchased_amount'], $currency),
 
-                    'deliveries' => number($data['deliveries']),
+                if (in_array(
+                        $_data['parameters']['frequency'], array(
+                        'annually',
+                        'quarterly',
+                        'monthly'
+                    )
+                    ) and $_data['parameters']['parent'] == 'supplier') {
+                    $dispatched = sprintf(
+                        '<span class="link" onclick="change_view(\'%s/%d/timeseries/%d/%d\')">%s</span>', $_data['parameters']['parent'], $_data['parameters']['parent_key'], $data['Timeseries Record Timeseries Key'],
+
+                        $data['Timeseries Record Key'], number($data['dispatched'])
+                    );
+
+                    $deliveries = sprintf(
+                        '<span class="link" onclick="change_view(\'%s/%d/timeseries/%d/%d\')">%s</span>', $_data['parameters']['parent'], $_data['parameters']['parent_key'], $data['Timeseries Record Timeseries Key'], $data['Timeseries Record Key'],
+                        number($data['deliveries'])
+                    );
+
+                    $purchased_amount = sprintf(
+                        '<span class="link" onclick="change_view(\'%s/%d/timeseries/%d/%d\')">%s</span>', $_data['parameters']['parent'], $_data['parameters']['parent_key'], $data['Timeseries Record Timeseries Key'], $data['Timeseries Record Key'],
+                        money($data['purchased_amount'], $currency)
+                    );
+
+
+                } else {
+                    $dispatched       = number($data['dispatched']);
+                    $deliveries       = number($data['deliveries']);
+                    $purchased_amount = money($data['purchased_amount'], $currency);
+
+
+                }
+
+
+                $record_data[$_date] = array(
+                    'sales'            => money($data['sales'], $currency),
+                    'purchased_amount' => $purchased_amount,
+
+                    'deliveries'          => $deliveries,
                     'supplier_deliveries' => number($data['supplier_deliveries']),
-                    'dispatched' => number($data['dispatched']),
-                    'date'       => $record_data[$_date]['date']
+                    'dispatched'          => $dispatched,
+                    'date'                => $record_data[$_date]['date']
 
 
                 );
             }
 
 
-
-            if ( isset( $last_year_data[$_date_last_year]  )) {
-                $record_data[$_date]['delta_sales_1yb'] = '<span class="" title="'.money($last_year_data[$_date_last_year]['_sales'], $currency).'">'.delta( $data['sales'],$last_year_data[$_date_last_year]['_sales']).' '.delta_icon($data['sales'], $last_year_data[$_date_last_year]['_sales']).'</span>';
+            if (isset($last_year_data[$_date_last_year])) {
+                $record_data[$_date]['delta_sales_1yb'] =
+                    '<span class="" title="'.money($last_year_data[$_date_last_year]['_sales'], $currency).'">'.delta($data['sales'], $last_year_data[$_date_last_year]['_sales']).' '.delta_icon($data['sales'], $last_year_data[$_date_last_year]['_sales']).'</span>';
             }
 
-        //    print_r($record_data);
+            //    print_r($record_data);
         }
 
     } else {
@@ -2613,10 +2614,6 @@ function sales_history($_data, $db, $user, $account) {
         print "$sql";
         exit;
     }
-
-
-
-
 
 
     $response = array(
@@ -2677,14 +2674,15 @@ function part_locations_with_errors($_data, $db, $user) {
 
         $table_data[] = array(
             // 'id'=>(integer) $data['Part SKU'],
-            'reference' => sprintf('<span class="link" onclick="change_view(\'part/%d\')">%s</span>',$data['Part SKU'],$data['Part Reference']),
-            'location' => sprintf('<span class="link" onclick="change_view(\'locations/%d/%d\')">%s</span>',$data['Part Location Warehouse Key'],$data['Location Key'],$data['Location Code']),
+            'reference' => sprintf('<span class="link" onclick="change_view(\'part/%d\')">%s</span>', $data['Part SKU'], $data['Part Reference']),
+            'location'  => sprintf('<span class="link" onclick="change_view(\'locations/%d/%d\')">%s</span>', $data['Part Location Warehouse Key'], $data['Location Key'], $data['Location Code']),
 
             'description' => $data['Part Package Description'],
 
-            'can_pick'         => ($data['Can Pick'] == 'Yes' ? _('Yes') : _('No')),
-            'quantity'         => '<span class="error">'.number($data['Quantity On Hand']), '</span>',
-            'stock_status'=>$stock_status
+            'can_pick'     => ($data['Can Pick'] == 'Yes' ? _('Yes') : _('No')),
+            'quantity'     => '<span class="error">'.number($data['Quantity On Hand']),
+            '</span>',
+            'stock_status' => $stock_status
 
         );
 
@@ -2708,7 +2706,7 @@ function part_locations_with_errors($_data, $db, $user) {
 function parts_by_stock_status($stock_status, $_data, $db, $user) {
 
 
-    switch ($stock_status){
+    switch ($stock_status) {
         case 'Surplus':
             $rtext_label = 'part with excess stock';
             break;
@@ -2719,8 +2717,6 @@ function parts_by_stock_status($stock_status, $_data, $db, $user) {
             $rtext_label = 'part';
 
     }
-
-
 
 
     include_once 'prepare_table/init.php';
@@ -2855,20 +2851,20 @@ function parts_by_stock_status($stock_status, $_data, $db, $user) {
 
 
             $table_data[] = array(
-                'id'             => (integer)$data['Supplier Part Key'],
-               // 'supplier_key'   => (integer)$data['Supplier Part Supplier Key'],
+                'id'        => (integer)$data['Supplier Part Key'],
+                // 'supplier_key'   => (integer)$data['Supplier Part Supplier Key'],
                 //'part_key'       => (integer)$data['Supplier Part Part SKU'],
-                'reference' => sprintf('<span class="link" onclick="change_view(\'part/%d\')">%s</span>',$data['Supplier Part Part SKU'],$data['Part Reference']),
+                'reference' => sprintf('<span class="link" onclick="change_view(\'part/%d\')">%s</span>', $data['Supplier Part Part SKU'], $data['Part Reference']),
                 //'reference'      => $data['Supplier Part Reference'],
                 //'formatted_sku'  => sprintf("SKU%05d", $data['Supplier Part Part SKU']),
 
                 'description'         => $description,
-                'simple_description'         => $data['Part Package Description'],
+                'simple_description'  => $data['Part Package Description'],
                 'status'              => $status,
                 'cost'                => money($data['Supplier Part Unit Cost'], $data['Supplier Part Currency Code']),
                 'packing'             => '<div style="float:left;min-width:20px;text-align:right"><span>'.$data['Part Units Per Package']
-                    .'</span></div><div style="float:left;min-width:70px;text-align:left"> <i  class="fa fa-arrow-right very_discreet padding_right_10 padding_left_10"></i><span>['
-                    .$data['Supplier Part Packages Per Carton'].']</span></div> <span class="discreet">'.($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'].'</span>'),
+                    .'</span></div><div style="float:left;min-width:70px;text-align:left"> <i  class="fa fa-arrow-right very_discreet padding_right_10 padding_left_10"></i><span>['.$data['Supplier Part Packages Per Carton'].']</span></div> <span class="discreet">'
+                    .($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'].'</span>'),
                 'stock'               => number(
                         floor($data['Part Current Stock'])
                     )." $stock_status",
@@ -2967,18 +2963,18 @@ function todo_paid_parts($_data, $db, $user) {
                 'supplier_key' => (integer)$data['Supplier Part Supplier Key'],
 
 
-              //  'reference' => $data['Supplier Part Reference'],
-                'reference' => sprintf('<span class="link" onclick="change_view(\'part/%d\')">%s</span>',$data['Supplier Part Part SKU'],$data['Part Reference']),
+                //  'reference' => $data['Supplier Part Reference'],
+                'reference'    => sprintf('<span class="link" onclick="change_view(\'part/%d\')">%s</span>', $data['Supplier Part Part SKU'], $data['Part Reference']),
 
-               // 'description' => $description,
-                'description' => $data['Part Package Description'],
-                'cost'        => money($data['Supplier Part Unit Cost'], $data['Supplier Part Currency Code']),
-                'packing'     => '<div style="float:left;min-width:20px;text-align:right"><span>'.$data['Part Units Per Package']
-                    .'</span></div><div style="float:left;min-width:70px;text-align:left"> <i  class="fa fa-arrow-right very_discreet padding_right_10 padding_left_10"></i><span>['
-                    .$data['Supplier Part Packages Per Carton'].']</span></div> <span class="discreet">'.($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'].'</span>'),
-                'stock'       => number(floor($data['Part Current Stock']))." $stock_status",
+                // 'description' => $description,
+                'description'  => $data['Part Package Description'],
+                'cost'         => money($data['Supplier Part Unit Cost'], $data['Supplier Part Currency Code']),
+                'packing'      => '<div style="float:left;min-width:20px;text-align:right"><span>'.$data['Part Units Per Package']
+                    .'</span></div><div style="float:left;min-width:70px;text-align:left"> <i  class="fa fa-arrow-right very_discreet padding_right_10 padding_left_10"></i><span>['.$data['Supplier Part Packages Per Carton'].']</span></div> <span class="discreet">'
+                    .($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'].'</span>'),
+                'stock'        => number(floor($data['Part Current Stock']))." $stock_status",
                 //'date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['date'].' +0:00')),
-                'required'    => number(ceil($data['required']),0)
+                'required'     => number(ceil($data['required']), 0)
 
             );
 
@@ -3202,7 +3198,6 @@ function supplier_categories($_data, $db, $user) {
 }
 
 
-
 function agent_parts($_data, $db, $user, $account) {
 
 
@@ -3226,14 +3221,10 @@ function agent_parts($_data, $db, $user, $account) {
     $record_data = array();
 
 
-
-
     if ($result = $db->query($sql)) {
 
 
         foreach ($result as $data) {
-
-
 
 
             switch ($data['Supplier Part Status']) {
@@ -3260,38 +3251,35 @@ function agent_parts($_data, $db, $user, $account) {
             }
 
 
-
             if ($data['Part Status'] == 'Not In Use' or $data['Part Status'] == 'Discontinuing') {
                 $part_status = '<i class="fa fa-square-o fa-fw  very_discreet" title="'._("No longer required").'" aria-hidden="true"></i> ';
-$required=false;
-            }else {
+                $required    = false;
+            } else {
                 $part_status = '<i class="fa fa-shopping-bag fa-fw " aria-hidden="true"></i> ';
-                $required=true;
+                $required    = true;
 
             }
 
 
-
             $record_data[] = array(
-                'id'               => (integer)$data['Supplier Part Key'],
-                'supplier_key'     => (integer)$data['Supplier Part Supplier Key'],
-                'supplier_code'    => sprintf('<span class="link " onCLick="change_view(\'/supplier/%d\')">%s</span>', $data['Supplier Part Supplier Key'],$data['Supplier Code']),
-                'reference'        => sprintf('<span class="link %s " onCLick="change_view(\'/supplier/%d/part/%d\')">%s</span>',($required?'':'strikethrough'),  $data['Supplier Part Supplier Key'],$data['Supplier Part Key'],$data['Supplier Part Reference']),
+                'id'            => (integer)$data['Supplier Part Key'],
+                'supplier_key'  => (integer)$data['Supplier Part Supplier Key'],
+                'supplier_code' => sprintf('<span class="link " onCLick="change_view(\'/supplier/%d\')">%s</span>', $data['Supplier Part Supplier Key'], $data['Supplier Code']),
+                'reference'     => sprintf('<span class="link %s " onCLick="change_view(\'/supplier/%d/part/%d\')">%s</span>', ($required ? '' : 'strikethrough'), $data['Supplier Part Supplier Key'], $data['Supplier Part Key'], $data['Supplier Part Reference']),
 
 
-                'description'    => $data['Part Unit Description'],
-                'status'         => $status,
-                'part_status'         => $part_status,
+                'description' => $data['Part Unit Description'],
+                'status'      => $status,
+                'part_status' => $part_status,
 
-                'cost'           => sprintf('<span class="part_cost"  pid="%d" cost="%s"  currency="%s"   onClick="open_edit_cost(this)">%s</span>' ,
-                                            $data['Supplier Part Key'],$data['Supplier Part Unit Cost'],$data['Supplier Part Currency Code'],money($data['Supplier Part Unit Cost'], $data['Supplier Part Currency Code'])
+                'cost' => sprintf(
+                    '<span class="part_cost"  pid="%d" cost="%s"  currency="%s"   onClick="open_edit_cost(this)">%s</span>', $data['Supplier Part Key'], $data['Supplier Part Unit Cost'], $data['Supplier Part Currency Code'],
+                    money($data['Supplier Part Unit Cost'], $data['Supplier Part Currency Code'])
                 ),
 
-                'packing'        => '
-				 <div style="float:right;min-width:30px;;text-align:right" title="'._('Units per carton').'"><span class="discreet" >'.($data['Part Units Per Package']
-                        * $data['Supplier Part Packages Per Carton'].'</span></div>
-				<div style="float:right;min-width:70px;text-align:center;"> <i  class="fa fa-arrow-right very_discreet padding_right_10 padding_left_10"></i><span>['
-                        .$data['Supplier Part Packages Per Carton'].']</span></div>
+                'packing' => '
+				 <div style="float:right;min-width:30px;;text-align:right" title="'._('Units per carton').'"><span class="discreet" >'.($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'].'</span></div>
+				<div style="float:right;min-width:70px;text-align:center;"> <i  class="fa fa-arrow-right very_discreet padding_right_10 padding_left_10"></i><span>['.$data['Supplier Part Packages Per Carton'].']</span></div>
 				<div style="float:right;min-width:20px;text-align:right"><span>'.$data['Part Units Per Package'].'</span></div>
 				 '),
 
@@ -3373,7 +3361,7 @@ function part_locations_to_replenish_picking_location($_data, $db, $user) {
 
             'total_stock'       => number(floor($data['Part Current Stock'])),
             'storing_locations' => $data['storing_locations'],
-            'stock_status'=>$stock_status
+            'stock_status'      => $stock_status
 
 
         );
@@ -3395,7 +3383,7 @@ function part_locations_to_replenish_picking_location($_data, $db, $user) {
 }
 
 
-function replenishments($_data, $db, $user) {
+function replenishments($_data, $db, $user,$account) {
 
 
     $rtext_label = 'replenishment';
@@ -3431,16 +3419,16 @@ function replenishments($_data, $db, $user) {
             'id'                    => (integer)$data['Location Key'],
             'location'              => ($data['Warehouse Flag Key'] ? sprintf(
                     '<i class="fa fa-flag %s" aria-hidden="true" title="%s"></i>', strtolower($data['Warehouse Flag Color']), $data['Warehouse Flag Label']
-                ) : '<i class="fa fa-flag-o super_discreet" aria-hidden="true"></i>').' <span class="link" onClick="change_view(\'locations/'.$data['Location Warehouse Key'].'/'.$data['Location Key']
-                .'\')">'.$data['Location Code'].'</span>',
+                ) : '<i class="fa fa-flag-o super_discreet" aria-hidden="true"></i>').' <span class="link" onClick="change_view(\'locations/'.$data['Location Warehouse Key'].'/'.$data['Location Key'].'\')">'.$data['Location Code'].'</span>',
             'part'                  => sprintf('<span class="link" onCLick="change_view(\'part/%d\')" >%s</span>', $data['Part SKU'], $data['Part Reference']),
             'other_locations_stock' => $stock,
-            'description'             => $data['Part Package Description'],
-            'quantity'             => number($data['Quantity On Hand']),
-            'ordered_quantity'     => number($data['ordered_quantity']),
-            'effective_stock'      => number($data['effective_stock']),
-            'recommended_quantity' => ' <span class="padding_left_5">(<span style="display: inline-block;min-width: 20px;text-align: center">'.number($data['Minimum Quantity'])
-                .'</span>,<span style="display: inline-block;min-width: 25px;text-align: center">'.number($data['Maximum Quantity']).'</span>)</span>'
+            'description'           => $data['Part Package Description'],
+            'quantity'              => number($data['Quantity On Hand']),
+            'ordered_quantity'      => number($data['ordered_quantity']),
+            'effective_stock'       => number($data['effective_stock']),
+            'recommended_quantity'  => ' <span class="padding_left_5">(<span style="display: inline-block;min-width: 20px;text-align: center">'.number($data['Minimum Quantity']).'</span>,<span style="display: inline-block;min-width: 25px;text-align: center">'.number(
+                    $data['Maximum Quantity']
+                ).'</span>)</span>'
 
         );
 
@@ -3459,5 +3447,131 @@ function replenishments($_data, $db, $user) {
     );
     echo json_encode($response);
 }
+
+
+
+
+function timeseries_drill_down_parts($_data, $db, $user,$account) {
+
+
+
+    $rtext_label = 'part';
+
+
+    include_once 'prepare_table/init.php';
+
+
+    $sql = "select $fields from $table $where $wheref  $group_by order by $order $order_direction limit $start_from,$number_results";
+
+   // print $sql;
+
+    $currency=$account->get('Currency Code');
+
+    $table_data = array();
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+
+
+
+            $table_data[] = array(
+                'id'           => (integer)$data['Part SKU'],
+                'reference'    => sprintf('<span class="link" onclick="change_view(\'part/%d\')">%s</span>', $data['Part SKU'], $data['Part Reference']),
+                'description'  => $data['Part Package Description'],
+                'dispatched'=>number($data['Timeseries Record Drill Down Integer A']),
+                'deliveries'=>number($data['Timeseries Record Drill Down Integer B']),
+                'sales'=>money($data['Timeseries Record Drill Down Float A'],$currency),
+                'delta_sales_percentage'=>delta_icon($data['Timeseries Record Drill Down Float A'],$data['Timeseries Record Drill Down Float C']).' '.percentage($data['Timeseries Record Drill Down Float A'],$data['Timeseries Record Drill Down Float C']),
+                'delta_sales'=>money($data['Timeseries Record Drill Down Float A']-$data['Timeseries Record Drill Down Float C'],$currency),
+
+
+
+            );
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print $sql;
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $table_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+
+function timeseries_drill_down_families($_data, $db, $user,$account) {
+
+
+
+    $rtext_label = 'family';
+
+
+    include_once 'prepare_table/init.php';
+
+
+    $sql = "select $fields from $table $where $wheref  $group_by order by $order $order_direction limit $start_from,$number_results";
+
+    // print $sql;
+
+    $currency=$account->get('Currency Code');
+
+    $table_data = array();
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+
+$diff=$data['Timeseries Record Drill Down Float A']-$data['Timeseries Record Drill Down Float C'];
+
+            $table_data[] = array(
+                'id'           => (integer)$data['Category Key'],
+                'code'    => sprintf('<span class="link" onclick="change_view(\'category/%d\')">%s</span>', $data['Category Key'], $data['Category Code']),
+                'label'  => $data['Category Label'],
+                'dispatched'=>number($data['Timeseries Record Drill Down Integer A']),
+                'deliveries'=>number($data['Timeseries Record Drill Down Integer B']),
+                'sales'=>money($data['Timeseries Record Drill Down Float A'],$currency),
+                'delta_sales_percentage'=>delta_icon($data['Timeseries Record Drill Down Float A'],$data['Timeseries Record Drill Down Float C']).' '.percentage($data['Timeseries Record Drill Down Float A'],$data['Timeseries Record Drill Down Float C']),
+                'delta_sales'=>'<span class="discreet '.($diff>0?'':($diff<0?'error':'')).'">'.($diff>0?'+':'').money($diff,$currency).'</span>',
+
+
+
+            );
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print $sql;
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $table_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
 
 ?>
