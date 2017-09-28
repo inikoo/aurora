@@ -30,7 +30,7 @@ function get_timeseries_record_showcase($data, $smarty, $user, $db, $account) {
                 'SELECT `Timeseries Record Key` FROM `Timeseries Record Dimension` WHERE `Timeseries Record Timeseries Key`=%d AND `Timeseries Record Date`=%s ', $timeseries_record->get('Timeseries Record Timeseries Key'),
                 prepare_mysql(date('Y-m-d', strtotime($timeseries_record->get('Timeseries Record Date').' -1 year')))
             );
-            print $sql;
+           // print $sql;
 
             if ($result=$db->query($sql)) {
                 if ($row = $result->fetch()) {
