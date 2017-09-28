@@ -1081,8 +1081,10 @@ class DeliveryNote extends DB_Table {
                 );
 
 
-                if ($result = $this->db->query($sql)) {
-                    if ($row = $result->fetch()) {
+                if ($result=$this->db->query($sql)) {
+                		foreach ($result as $row) {
+
+
 
 
                         $to_pack = $row['Required'] + $row['Given'];
@@ -1128,6 +1130,13 @@ class DeliveryNote extends DB_Table {
                 $this->update_field('Delivery Note State', 'Packed Done', 'no_history');
 
 
+                $sql = sprintf(
+                    "UPDATE  `Inventory Transaction Fact`  SET `Amount In`=0 WHERE `Delivery Note Key`=%d ", $this->id
+                );
+                //print "$sql\n";
+                $this->db->exec($sql);
+
+
                 break;
 
             case 'Approved':
@@ -1139,6 +1148,95 @@ class DeliveryNote extends DB_Table {
                 $this->update_field(
                     'Delivery Note State', $value, 'no_history'
                 );
+
+
+
+                $sql = sprintf("SELECT `Map To Order Transaction Fact Key` FROM `Inventory Transaction Fact` WHERE `Delivery Note Key`=%d  GROUP BY `Map To Order Transaction Fact Key` ", $this->id);
+
+
+                if ($result3 = $this->db->query($sql)) {
+                    foreach ($result3 as $row3) {
+
+                        $sql = sprintf(
+                            "SELECT `Invoice Currency Exchange Rate`,`Order Transaction Fact Key`,`Order Transaction Amount`,`Delivery Note Quantity` FROM `Order Transaction Fact` WHERE `Order Transaction Fact Key`=%d ",
+                            $row3['Map To Order Transaction Fact Key']
+                        );
+
+
+                        if ($result = $this->db->query($sql)) {
+                            foreach ($result as $row) {
+
+
+
+                                $itf_transfer_factor = array();
+                                $sum_itfs            = 0;
+
+                                $sql = sprintf(
+                                    'SELECT `Inventory Transaction Key`,`Inventory Transaction Quantity`,`Part Cost in Warehouse` FROM `Inventory Transaction Fact` ITF LEFT JOIN `Part Dimension` P ON (P.`Part SKU`=ITF.`Part SKU`)  WHERE `Map To Order Transaction Fact Key`=%d ',
+                                    $row['Order Transaction Fact Key']
+                                );
+
+                                if ($result2 = $this->db->query($sql)) {
+                                    foreach ($result2 as $row2) {
+                                        $itf_transfer_factor[$row2['Inventory Transaction Key']] = $row2['Part Cost in Warehouse'] * $row2['Inventory Transaction Quantity'];
+                                        $sum_itfs                                                += $row2['Part Cost in Warehouse'] * $row2['Inventory Transaction Quantity'];
+                                    }
+                                } else {
+                                    print_r($error_info = $this->db->errorInfo());
+                                    print "$sql\n";
+                                    exit;
+                                }
+
+
+                                $number_of_itf = count($itf_transfer_factor);
+
+                                if ($number_of_itf == 1) {
+                                    foreach ($itf_transfer_factor as $key => $value) {
+                                        $itf_transfer_factor[$key] = 1;
+                                    }
+                                } else {
+
+                                    if ($sum_itfs == 0 and $number_of_itf > 0) {
+                                        foreach ($itf_transfer_factor as $key => $value) {
+                                            $itf_transfer_factor[$key] = 1 / $number_of_itf;
+                                        }
+                                    } else {
+                                        foreach ($itf_transfer_factor as $key => $value) {
+                                            $itf_transfer_factor[$key] = $value / $sum_itfs;
+                                        }
+                                    }
+                                }
+
+                                $amount_in = $row['Invoice Currency Exchange Rate'] * $row['Order Transaction Amount'];
+
+                                //print_r($itf_transfer_factor);
+
+                                foreach ($itf_transfer_factor as $key => $value) {
+                                    $sql = sprintf(
+                                        "UPDATE  `Inventory Transaction Fact`  SET `Amount In`=%f WHERE `Inventory Transaction Key`=%d ", $amount_in * $value, $key
+                                    );
+                                    //print "$sql\n";
+                                    $this->db->exec($sql);
+                                  //  exit;
+                                    // mysql_query( $sql );
+                                }
+
+
+                            }
+                        } else {
+                            print_r($error_info = $this->db->errorInfo());
+                            print "$sql\n";
+                            exit;
+                        }
+                    }
+
+
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
 
 
                 break;

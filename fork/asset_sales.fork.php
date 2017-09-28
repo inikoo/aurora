@@ -686,54 +686,57 @@ function update_invoice_products_sales_data($db, $account, $data) {
     $store->update_sales_from_invoices('Today', true, false);
 
 
-    $invoice = new Invoice($data['invoice_key']);
-    $invoice->categorize();
+    if(!empty($data['invoice_key'])) {
 
-    if (($invoice->get('Invoice Category Key'))) {
+        $invoice = new Invoice($data['invoice_key']);
+        $invoice->categorize();
 
-        $invoice_category = new Category($invoice->get('Invoice Category Key'));
+        if (($invoice->get('Invoice Category Key'))) {
 
-        //  $invoice_category->load_acc_data();
+            $invoice_category = new Category($invoice->get('Invoice Category Key'));
 
-
-        $invoice_category->update_invoice_category_sales('Total', true, false);
-
-        $invoice_category->update_invoice_category_sales('Year To Day', true, false);
-        $invoice_category->update_invoice_category_sales('Quarter To Day', true, false);
-        $invoice_category->update_invoice_category_sales('Month To Day', true, false);
-        $invoice_category->update_invoice_category_sales('Week To Day', true, false);
-        $invoice_category->update_invoice_category_sales('Today', true, false);
-    }
+            //  $invoice_category->load_acc_data();
 
 
-    $sql = sprintf(
-        "SELECT `Product ID`,`Invoice Date` FROM `Order Transaction Fact` WHERE `Invoice Key`=%d", $data['invoice_key']
-    );
+            $invoice_category->update_invoice_category_sales('Total', true, false);
 
-
-    if ($result = $db->query($sql)) {
-        foreach ($result as $row) {
-            $product = new Product('id', $row['Product ID']);
-
-
-            //print $product->get('Code')."\n";
-
-            //  $product->load_acc_data();
-
-            $product->update_sales_from_invoices('Total', true, false);
-            $product->update_sales_from_invoices('Week To Day', true, false);
-            $product->update_sales_from_invoices('Month To Day', true, false);
-            $product->update_sales_from_invoices('Quarter To Day', true, false);
-            $product->update_sales_from_invoices('Year To Day', true, false);
-
-            $product->update_sales_from_invoices('Today', true, false);
-
-            $categories = $categories + $product->get_categories();
-
-
+            $invoice_category->update_invoice_category_sales('Year To Day', true, false);
+            $invoice_category->update_invoice_category_sales('Quarter To Day', true, false);
+            $invoice_category->update_invoice_category_sales('Month To Day', true, false);
+            $invoice_category->update_invoice_category_sales('Week To Day', true, false);
+            $invoice_category->update_invoice_category_sales('Today', true, false);
         }
-    }
 
+
+        $sql = sprintf(
+            "SELECT `Product ID`,`Invoice Date` FROM `Order Transaction Fact` WHERE `Invoice Key`=%d", $data['invoice_key']
+        );
+
+
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
+                $product = new Product('id', $row['Product ID']);
+
+
+                //print $product->get('Code')."\n";
+
+                //  $product->load_acc_data();
+
+                $product->update_sales_from_invoices('Total', true, false);
+                $product->update_sales_from_invoices('Week To Day', true, false);
+                $product->update_sales_from_invoices('Month To Day', true, false);
+                $product->update_sales_from_invoices('Quarter To Day', true, false);
+                $product->update_sales_from_invoices('Year To Day', true, false);
+
+                $product->update_sales_from_invoices('Today', true, false);
+
+                $categories = $categories + $product->get_categories();
+
+
+            }
+        }
+
+    }
 
     foreach ($categories as $category_key) {
 

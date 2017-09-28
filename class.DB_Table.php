@@ -713,7 +713,7 @@ abstract class DB_Table extends stdClass {
                 "UPDATE `%s` SET `%s`=%s WHERE `%s`=%d", addslashes($table_full_name), addslashes($field), prepare_mysql($value, $null_if_empty), addslashes($key_field), $this->id
             );
 
-         //   print "$sql;\n";
+          //  print "$sql;\n";
 
             $this->db->exec($sql);
             $this->data[$field] = $value;
