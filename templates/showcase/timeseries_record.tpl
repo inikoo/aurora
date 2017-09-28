@@ -22,34 +22,34 @@
                     <tr>
                         <td class="label">{t}Supplier deliveries{/t}</td>
                         <td class="aright"> {$timeseries_record->get('Supplier Deliveries')}</td>
-                        <td class="aright"> {$delta_1yb['Supplier Deliveries']['delta_percentage']}</td>
+                        <td class="padding_left_10"> {$delta_1yb['Supplier Deliveries']['delta_percentage']}</td>
                         <td class="aright discreet {if $delta_1yb['Supplier Deliveries']['diff']<0}error{/if}"> {if $delta_1yb['Supplier Deliveries']['diff']>0}+{/if}{$delta_1yb['Supplier Deliveries']['delta']}</td>
 
                     </tr>
                     <tr>
                         <td class="label">{t}Purchased amount{/t}</td>
                         <td class="aright"> {$timeseries_record->get('Purchased Amount',$account)}</td>
-                        <td class="aright"> {$delta_1yb['Purchased Amount']['delta_percentage']}</td>
+                        <td class="padding_left_10"> {$delta_1yb['Purchased Amount']['delta_percentage']}</td>
                         <td class="aright discreet {if $delta_1yb['Purchased Amount']['diff']<0}error{/if}"> {if $delta_1yb['Purchased Amount']['diff']>0}+{/if}{$delta_1yb['Purchased Amount']['delta']}</td>
 
                     </tr>
                     <tr>
                         <td class="label">{t}Sale deliveries{/t}</td>
                         <td class="aright"> {$timeseries_record->get('Deliveries')}</td>
-                        <td class="aright"> {$delta_1yb['Deliveries']['delta_percentage']}</td>
+                        <td class="padding_left_10"> {$delta_1yb['Deliveries']['delta_percentage']}</td>
                         <td class="aright discreet {if $delta_1yb['Deliveries']['diff']<0}error{/if}"> {if $delta_1yb['Deliveries']['diff']>0}+{/if}{$delta_1yb['Deliveries']['delta']}</td>
 
                     </tr>
                     <tr>
                         <td class="label">{t}Dispatched SKOs{/t}</td>
                         <td class="aright"> {$timeseries_record->get('Dispatched')}</td>
-                        <td class="aright"> {$delta_1yb['Dispatched']['delta_percentage']}</td>
+                        <td class="padding_left_10"> {$delta_1yb['Dispatched']['delta_percentage']}</td>
                         <td class="aright discreet {if $delta_1yb['Dispatched']['diff']<0}error{/if}"> {if $delta_1yb['Dispatched']['diff']>0}+{/if}{$delta_1yb['Dispatched']['delta']}</td>
                     </tr>
                     <tr>
                         <td class="label">{t}Sales amount{/t}</td>
                         <td class="aright"> {$timeseries_record->get('Sales',$account)}</td>
-                        <td class="aright"> {$delta_1yb['Sales']['delta_percentage']}</td>
+                        <td class="padding_left_10"> {$delta_1yb['Sales']['delta_percentage']}</td>
                         <td class="aright discreet {if $delta_1yb['Sales']['diff']<0}error{/if}"> {if $delta_1yb['Sales']['diff']>0}+{/if}{$delta_1yb['Sales']['delta']}</td>
                     </tr>
 

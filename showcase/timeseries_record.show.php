@@ -31,7 +31,7 @@ function get_timeseries_record_showcase($data, $smarty, $user, $db, $account) {
                 prepare_mysql(date('Y-m-d', strtotime($timeseries_record->get('Timeseries Record Date').' -1 year')))
             );
            // print $sql;
-        $delta_1yb=array();
+
             if ($result=$db->query($sql)) {
                 if ($row = $result->fetch()) {
 
@@ -78,6 +78,7 @@ function get_timeseries_record_showcase($data, $smarty, $user, $db, $account) {
                        
 
                     );
+                    $smarty->assign('delta_1yb', $delta_1yb);
 
 
                 }
@@ -89,7 +90,6 @@ function get_timeseries_record_showcase($data, $smarty, $user, $db, $account) {
 
             break;
     }
-    $smarty->assign('delta_1yb', $delta_1yb);
 
 
     $smarty->assign('account', $account);
