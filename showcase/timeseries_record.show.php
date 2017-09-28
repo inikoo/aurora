@@ -19,7 +19,7 @@ function get_timeseries_record_showcase($data, $smarty, $user, $db, $account) {
     if (!$timeseries_record->id) {
         return "";
     }
-    //print $timeseries_record->get('Timeseries Frequency');
+    print $timeseries_record->get('Timeseries Frequency');
     switch ($timeseries_record->get('Timeseries Frequency')) {
         case 'Monthly':
         case 'Quarterly':
@@ -30,15 +30,15 @@ function get_timeseries_record_showcase($data, $smarty, $user, $db, $account) {
                 'SELECT `Timeseries Record Key` FROM `Timeseries Record Dimension` WHERE `Timeseries Record Timeseries Key`=%d AND `Timeseries Record Date`=%s ', $timeseries_record->get('Timeseries Record Timeseries Key'),
                 prepare_mysql(date('Y-m-d', strtotime($timeseries_record->get('Timeseries Record Date').' -1 year')))
             );
-            //print $sql;
+            print $sql;
 
             if ($result=$db->query($sql)) {
                 if ($row = $result->fetch()) {
 
-                    //print_r($row);
+                    print_r($row);
 
                     $timeseries_record_1yb=get_object('timeseries_record',$row['Timeseries Record Key']);
-                    //print_r($timeseries_record_1yb);
+                    print_r($timeseries_record_1yb);
                     $delta_1yb=array(
                         'Supplier Deliveries'=>array(
                             'delta_percentage'=>delta_icon($timeseries_record->get('Timeseries Record Supplier Deliveries'),$timeseries_record_1yb->get('Timeseries Record Supplier Deliveries')).' '.
@@ -78,7 +78,7 @@ function get_timeseries_record_showcase($data, $smarty, $user, $db, $account) {
                        
 
                     );
-                    //print_r($delta_1yb);
+                    print_r($delta_1yb);
                     $smarty->assign('delta_1yb', $delta_1yb);
 
 
