@@ -44,7 +44,10 @@ function get_timeseries_record_showcase($data, $smarty, $user, $db, $account) {
                             'delta_percentage'=>delta_icon($timeseries_record->get('Timeseries Record Supplier Deliveries'),$timeseries_record_1yb->get('Timeseries Record Supplier Deliveries')).' '.
                                 percentage($timeseries_record->get('Timeseries Record Supplier Deliveries'),$timeseries_record_1yb->get('Timeseries Record Supplier Deliveries')),
                             'delta'=>number($timeseries_record->get('Timeseries Record Supplier Deliveries')-$timeseries_record_1yb->get('Timeseries Record Supplier Deliveries')),
-                            'diff'=>$timeseries_record->get('Timeseries Record Supplier Deliveries')-$timeseries_record_1yb->get('Timeseries Record Supplier Deliveries')
+                            'diff'=>$timeseries_record->get('Timeseries Record Supplier Deliveries')-$timeseries_record_1yb->get('Timeseries Record Supplier Deliveries'),
+                            'value'=>$timeseries_record->get('Timeseries Record Supplier Deliveries'),
+                            'value_1yb'=>$timeseries_record_1yb->get('Timeseries Record Supplier Deliveries'),
+
 
                         ),
                         'Purchased Amount'=>array(
@@ -78,6 +81,9 @@ function get_timeseries_record_showcase($data, $smarty, $user, $db, $account) {
                        
 
                     );
+
+                    print_r($delta_1yb);
+
                     $smarty->assign('delta_1yb', $delta_1yb);
 
 
