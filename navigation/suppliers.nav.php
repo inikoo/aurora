@@ -281,8 +281,8 @@ function get_suppliers_category_navigation($data, $smarty, $user, $db, $account)
 
             $sql = sprintf(
                 "select C.`Category Label` object_name,C.`Category Key` as object_key %s from %s
-	                and ($_order_field < %s OR ($_order_field = %s AND C.`Category Key` < %d))  order by $_order_field desc , C.`Category Key` desc limit 1", $extra_field, "$table $where $wheref",
-                prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $category->id
+	                and ($_order_field < %s OR ($_order_field = %s AND C.`Category Key` < %d))  order by $_order_field desc , C.`Category Key` desc limit 1", $extra_field, "$table $where $wheref", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value),
+                $category->id
             );
 
             if ($result = $db->query($sql)) {
@@ -301,8 +301,8 @@ function get_suppliers_category_navigation($data, $smarty, $user, $db, $account)
 
             $sql = sprintf(
                 "select C.`Category Label` object_name,C.`Category Key` as object_key %s from %s
-	                and ($_order_field  > %s OR ($_order_field  = %s AND C.`Category Key`> %d))  order by $_order_field   , C.`Category Key` limit 1", $extra_field, "$table $where $wheref",
-                prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $category->id
+	                and ($_order_field  > %s OR ($_order_field  = %s AND C.`Category Key`> %d))  order by $_order_field   , C.`Category Key` limit 1", $extra_field, "$table $where $wheref", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value),
+                $category->id
             );
 
 
@@ -351,8 +351,9 @@ function get_suppliers_category_navigation($data, $smarty, $user, $db, $account)
         );
 
     } else {
-        $left_buttons[] = array('icon'  => 'arrow-left disabled',
-                                'title' => ''
+        $left_buttons[] = array(
+            'icon'  => 'arrow-left disabled',
+            'title' => ''
         );
 
     }
@@ -527,8 +528,7 @@ function get_supplier_navigation($data, $smarty, $user, $db, $account) {
 
                     $sql = sprintf(
                         "select `Supplier Name` object_name,S.`Supplier Key` as object_key from %s
-	                and ($_order_field < %s OR ($_order_field = %s AND S.`Supplier Key` < %d))  order by $_order_field desc , S.`Supplier Key` desc limit 1", "$table $where $wheref",
-                        prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $supplier->id
+	                and ($_order_field < %s OR ($_order_field = %s AND S.`Supplier Key` < %d))  order by $_order_field desc , S.`Supplier Key` desc limit 1", "$table $where $wheref", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $supplier->id
                     );
 
                     if ($result = $db->query($sql)) {
@@ -544,8 +544,7 @@ function get_supplier_navigation($data, $smarty, $user, $db, $account) {
 
                     $sql = sprintf(
                         "select `Supplier Name` object_name,S.`Supplier Key` as object_key from %s
-	                and ($_order_field  > %s OR ($_order_field  = %s AND S.`Supplier Key` > %d))  order by $_order_field   , S.`Supplier Key`  limit 1", "$table $where $wheref",
-                        prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $supplier->id
+	                and ($_order_field  > %s OR ($_order_field  = %s AND S.`Supplier Key` > %d))  order by $_order_field   , S.`Supplier Key`  limit 1", "$table $where $wheref", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $supplier->id
                     );
 
                     if ($result = $db->query($sql)) {
@@ -602,8 +601,7 @@ function get_supplier_navigation($data, $smarty, $user, $db, $account) {
                         );
 
                     } else {
-                        $left_buttons[]
-                            = array(
+                        $left_buttons[] = array(
                             'icon'  => 'arrow-right disabled',
                             'title' => '',
                             'url'   => ''
@@ -697,9 +695,7 @@ function get_supplier_navigation($data, $smarty, $user, $db, $account) {
 
 
     if ($supplier->get('Supplier Type') == 'Archived') {
-        $title
-            = ' <span class="disabled padding_right_5"><i class="fa fa-archive" aria-hidden="true"></i>  '._('Archived').'</span> <span class="id disabled Supplier_Code">'.$supplier->get('Code')
-            .'</span>';
+        $title = ' <span class="disabled padding_right_5"><i class="fa fa-archive" aria-hidden="true"></i>  '._('Archived').'</span> <span class="id disabled Supplier_Code">'.$supplier->get('Code').'</span>';
 
 
     } else {
@@ -715,8 +711,7 @@ function get_supplier_navigation($data, $smarty, $user, $db, $account) {
         ) == 'No' ? 'hide' : '').'">';
     $count = 0;
     foreach ($supplier->get_agents_data() as $agent_data) {
-        $title .= ($count > 0 ? ', ' : ' ').'<span onclick="change_view(\'agent/'.$agent_data['Agent Key']
-            .'\')" class="button  "><i class="fa fa-user-secret" aria-hidden="true" style="font-size:90%"></i> '.$agent_data['Agent Code'].'</span>';
+        $title .= ($count > 0 ? ', ' : ' ').'<span onclick="change_view(\'agent/'.$agent_data['Agent Key'].'\')" class="button  "><i class="fa fa-user-secret" aria-hidden="true" style="font-size:90%"></i> '.$agent_data['Agent Code'].'</span>';
         $count++;
     }
     $title .= '</span>';
@@ -782,7 +777,6 @@ function get_new_supplier_navigation($data, $smarty, $user, $db, $account) {
 
 
     $title = '<span class="id ">'._('New supplier').'</span>';
-
 
 
     $_content = array(
@@ -885,8 +879,7 @@ function get_agent_navigation($data, $smarty, $user, $db, $account) {
 
                         $sql = sprintf(
                             "select `Agent Name` object_name,A.`Agent Key` as object_key from %s
-	                and ($_order_field < %s OR ($_order_field = %s AND A.`Agent Key` < %d))  order by $_order_field desc , A.`Agent Key` desc limit 1", "$table $where $wheref",
-                            prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $agent->id
+	                and ($_order_field < %s OR ($_order_field = %s AND A.`Agent Key` < %d))  order by $_order_field desc , A.`Agent Key` desc limit 1", "$table $where $wheref", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $agent->id
                         );
 
                         if ($result = $db->query($sql)) {
@@ -902,8 +895,7 @@ function get_agent_navigation($data, $smarty, $user, $db, $account) {
 
                         $sql = sprintf(
                             "select `Agent Name` object_name,A.`Agent Key` as object_key from %s
-	                and ($_order_field  > %s OR ($_order_field  = %s AND A.`Agent Key` > %d))  order by $_order_field   , A.`Agent Key`  limit 1", "$table $where $wheref",
-                            prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $agent->id
+	                and ($_order_field  > %s OR ($_order_field  = %s AND A.`Agent Key` > %d))  order by $_order_field   , A.`Agent Key`  limit 1", "$table $where $wheref", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $agent->id
                         );
 
                         if ($result = $db->query($sql)) {
@@ -936,8 +928,7 @@ function get_agent_navigation($data, $smarty, $user, $db, $account) {
                             );
 
                         } else {
-                            $left_buttons[]
-                                = array(
+                            $left_buttons[] = array(
                                 'icon'  => 'arrow-left disabled',
                                 'title' => '',
                                 'url'   => ''
@@ -955,8 +946,7 @@ function get_agent_navigation($data, $smarty, $user, $db, $account) {
                             );
 
                         } else {
-                            $left_buttons[]
-                                = array(
+                            $left_buttons[] = array(
                                 'icon'  => 'arrow-right disabled',
                                 'title' => '',
                                 'url'   => ''
@@ -991,8 +981,7 @@ function get_agent_navigation($data, $smarty, $user, $db, $account) {
     }
 
 
-    $title
-        = '<i class="fa fa-user-secret" aria-hidden="true"></i> <span class="id Agent_Code">'.$agent->get('Code').'</span>';
+    $title = '<i class="fa fa-user-secret" aria-hidden="true"></i> <span class="id Agent_Code">'.$agent->get('Code').'</span>';
 
 
     $_content = array(
@@ -1194,8 +1183,7 @@ function get_supplier_part_navigation($data, $smarty, $user, $db, $account) {
                             );
 
                         } else {
-                            $left_buttons[]
-                                = array(
+                            $left_buttons[] = array(
                                 'icon'  => 'arrow-left disabled',
                                 'title' => '',
                                 'url'   => ''
@@ -1213,8 +1201,7 @@ function get_supplier_part_navigation($data, $smarty, $user, $db, $account) {
                             );
 
                         } else {
-                            $left_buttons[]
-                                = array(
+                            $left_buttons[] = array(
                                 'icon'  => 'arrow-right disabled',
                                 'title' => '',
                                 'url'   => ''
@@ -1300,8 +1287,8 @@ function get_supplier_part_navigation($data, $smarty, $user, $db, $account) {
 
 
     $title = _("Supplier's part").' <span class="id Supplier_Part_Reference">'.$data['_object']->get('Reference').'</span>';
-    $title .= ' <small class="padding_left_10"> <i class="fa fa-long-arrow-right padding_left_10"></i> <i class="fa fa-square button" title="'._('Part').'" onCLick="change_view(\'/part/'
-        .$data['_object']->part->id.'\')" ></i> <span class="Part_Reference button"  onCLick="change_view(\'part/'.$data['_object']->part->id.'\')">'.$data['_object']->part->get(
+    $title .= ' <small class="padding_left_10"> <i class="fa fa-long-arrow-right padding_left_10"></i> <i class="fa fa-square button" title="'._('Part').'" onCLick="change_view(\'/part/'.$data['_object']->part->id
+        .'\')" ></i> <span class="Part_Reference button"  onCLick="change_view(\'part/'.$data['_object']->part->id.'\')">'.$data['_object']->part->get(
             'Reference'
         ).'</small>';
 
@@ -1453,8 +1440,8 @@ function get_purchase_order_navigation($data, $smarty, $user, $db, $account) {
 
                 $sql = sprintf(
                     "select `Purchase Order Public ID` object_name,O.`Purchase Order Key` as object_key from %s
-	                and ($_order_field < %s OR ($_order_field = %s AND O.`Purchase Order Key` < %d))  order by $_order_field desc , O.`Purchase Order Key` desc limit 1", "$table $where $wheref",
-                    prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+	                and ($_order_field < %s OR ($_order_field = %s AND O.`Purchase Order Key` < %d))  order by $_order_field desc , O.`Purchase Order Key` desc limit 1", "$table $where $wheref", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value),
+                    $object->id
                 );
 
 
@@ -1471,8 +1458,8 @@ function get_purchase_order_navigation($data, $smarty, $user, $db, $account) {
 
                 $sql = sprintf(
                     "select `Purchase Order Public ID` object_name,O.`Purchase Order Key` as object_key from %s
-	                and ($_order_field  > %s OR ($_order_field  = %s AND O.`Purchase Order Key` > %d))  order by $_order_field   , O.`Purchase Order Key`  limit 1", "$table $where $wheref",
-                    prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+	                and ($_order_field  > %s OR ($_order_field  = %s AND O.`Purchase Order Key` > %d))  order by $_order_field   , O.`Purchase Order Key`  limit 1", "$table $where $wheref", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value),
+                    $object->id
                 );
 
                 if ($result = $db->query($sql)) {
@@ -1846,8 +1833,8 @@ function get_delivery_navigation($data, $smarty, $user, $db, $account) {
 
                     $sql = sprintf(
                         "select `Supplier Delivery Public ID` object_name,D.`Supplier Delivery Key` as object_key from %s
-	                and ($_order_field  > %s OR ($_order_field  = %s AND D.`Supplier Delivery Key` > %d))  order by $_order_field   , D.`Supplier Delivery Key`  limit 1", "$table $where $wheref",
-                        prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+	                and ($_order_field  > %s OR ($_order_field  = %s AND D.`Supplier Delivery Key` > %d))  order by $_order_field   , D.`Supplier Delivery Key`  limit 1", "$table $where $wheref", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value),
+                        $object->id
                     );
 
                     if ($result = $db->query($sql)) {
@@ -2396,10 +2383,9 @@ function get_order_item_navigation($data, $smarty, $user, $db, $account) {
     }
 
 
-    $title
-        = '<i class="fa fa-stop"></i>  <span class="id Supplier_Part_Reference">'.$data['_object']->get('Reference').'</span>';
-    $title .= ' <small class="padding_left_10"> <i class="fa fa-long-arrow-right padding_left_10"></i> <i class="fa fa-square button" title="'._('Part').'" onCLick="change_view(\'/part/'
-        .$data['_object']->part->id.'\')" ></i> <span class="Part_Part_Reference button"  onCLick="change_view(\'part/'.$data['_object']->part->id.'\')">'.$data['_object']->part->get(
+    $title = '<i class="fa fa-stop"></i>  <span class="id Supplier_Part_Reference">'.$data['_object']->get('Reference').'</span>';
+    $title .= ' <small class="padding_left_10"> <i class="fa fa-long-arrow-right padding_left_10"></i> <i class="fa fa-square button" title="'._('Part').'" onCLick="change_view(\'/part/'.$data['_object']->part->id
+        .'\')" ></i> <span class="Part_Part_Reference button"  onCLick="change_view(\'part/'.$data['_object']->part->id.'\')">'.$data['_object']->part->get(
             'Reference'
         ).'</small>';
 
@@ -2442,8 +2428,7 @@ function get_deleted_purchase_order_navigation($data, $smarty, $user, $db, $acco
         $sections[$_section]['selected'] = true;
     }
 
-    $title
-        = '<i class="fa fa-clipboard" aria-hidden="true"></i> <span class="id">'.$object->get('Public ID').'</span> <span class="error">('._('Deleted').')</span>';
+    $title = '<i class="fa fa-clipboard" aria-hidden="true"></i> <span class="id">'.$object->get('Public ID').'</span> <span class="error">('._('Deleted').')</span>';
 
 
     $_content = array(
@@ -2597,6 +2582,211 @@ function get_supplier_attachment_navigation($data, $smarty, $user, $db) {
 
     $title = _('Attachment').' <span class="id Attachment_Caption">'.$data['_object']->get('Caption').'</span>';
 
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search suppliers')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
+
+
+function get_timeseries_record_navigation($data, $smarty, $user, $db, $account) {
+
+
+    //print_r($data);
+
+
+    $timeseries = $data['_object'];
+
+   // print_r($timeseries);
+
+
+
+    $left_buttons  = array();
+    $right_buttons = array();
+
+
+    switch ($data['parent']) {
+        case 'timeseries':
+            $tab      = 'supplier.sales.history';
+            $_section = 'suppliers';
+            break;
+
+        default:
+            return '';
+
+    }
+
+
+    if (isset($_SESSION['table_state'][$tab])) {
+        $number_results  = $_SESSION['table_state'][$tab]['nr'];
+        $start_from      = 0;
+        $order           = $_SESSION['table_state'][$tab]['o'];
+        $order_direction = ($_SESSION['table_state'][$tab]['od'] == 1 ? 'desc' : '');
+        $f_value         = $_SESSION['table_state'][$tab]['f_value'];
+        $parameters      = $_SESSION['table_state'][$tab];
+
+
+    } else {
+
+        $default                  = $user->get_tab_defaults($tab);
+        $number_results           = $default['rpp'];
+        $start_from               = 0;
+        $order                    = $default['sort_key'];
+        $order_direction          = ($default['sort_order'] == 1 ? 'desc' : '');
+        $f_value                  = '';
+        $parameters               = $default;
+        $parameters['parent']     = $data['parent'];
+        $parameters['parent_key'] = $data['parent_key'];
+    }
+
+    include_once 'prepare_table/'.$tab.'.ptble.php';
+
+
+    $_order_field       = $order;
+    $order              = preg_replace('/^.*\.`/', '', $order);
+    $order              = preg_replace('/^`/', '', $order);
+    $order              = preg_replace('/`$/', '', $order);
+    $_order_field_value = $timeseries->get($order);
+
+
+    $prev_title = '';
+    $next_title = '';
+    $prev_key   = 0;
+    $next_key   = 0;
+
+
+    if ($data['parent'] == 'timeseries') {
+
+        if ($result2 = $db->query($sql)) {
+            if ($row2 = $result2->fetch()) {
+
+
+                $sql = sprintf(
+                    "select `Timeseries Record Date` object_name,`Timeseries Record Key` as object_key from %s
+	                and ($_order_field < %s OR ($_order_field = %s AND `Timeseries Record Key` < %d))  order by $_order_field desc , `Timeseries Record Key` desc limit 1", "$table $where $wheref", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value),
+                    $timeseries->id
+                );
+
+
+                //print $sql;
+                if ($result = $db->query($sql)) {
+                    if ($row = $result->fetch()) {
+                        $prev_key   = $row['object_key'];
+                        $prev_title = _("Time series record").' '.$row['object_name'].' ('.$row['object_key'].')';
+                    }
+                } else {
+                    print_r($error_info = $db->errorInfo());
+                    exit;
+                }
+
+
+                $sql = sprintf(
+                    "select `Timeseries Record Date` object_name,`Timeseries Record Key` as object_key from %s
+	                and ($_order_field  > %s OR ($_order_field  = %s AND `Timeseries Record Key` > %d))  order by $_order_field   ,`Timeseries Record Key`  limit 1", "$table $where $wheref", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value),
+                    $timeseries->id
+                );
+
+                if ($result = $db->query($sql)) {
+                    if ($row = $result->fetch()) {
+                        $next_key   = $row['object_key'];
+                        $next_title = _("Time series record").' '.$row['object_name'].' ('.$row['object_key'].')';
+
+                    }
+                } else {
+                    print_r($error_info = $db->errorInfo());
+                    exit;
+                }
+
+
+                if ($order_direction == 'desc') {
+                    $_tmp1      = $prev_key;
+                    $_tmp2      = $prev_title;
+                    $prev_key   = $next_key;
+                    $prev_title = $next_title;
+                    $next_key   = $_tmp1;
+                    $next_title = $_tmp2;
+                }
+
+
+                $up_button = array(
+                    'icon'      => 'arrow-up',
+                    'title'     => _("Supplier"),
+                    'reference' => 'supplier/'.$data['_parent']->get('Timeseries Parent Key')
+                );
+
+                if ($prev_key) {
+                    $left_buttons[] = array(
+                        'icon'      => 'arrow-left',
+                        'title'     => $prev_title,
+                        'reference' => 'supplier/'.$data['_parent']->get('Timeseries Parent Key').'/timeseries/'.$data['_parent']->id.'/'.$prev_key
+                    );
+
+                } else {
+                    $left_buttons[] = array(
+                        'icon'  => 'arrow-left disabled',
+                        'title' => '',
+                        'url'   => ''
+                    );
+
+                }
+                $left_buttons[] = $up_button;
+
+
+                if ($next_key) {
+                    $left_buttons[] = array(
+                        'icon'      => 'arrow-right',
+                        'title'     => $next_title,
+                        'reference' => 'supplier/'.$data['_parent']->get('Timeseries Parent Key').'/timeseries/'.$data['_parent']->id.'/'.$next_key
+                    );
+
+                } else {
+                    $left_buttons[] = array(
+                        'icon'  => 'arrow-right disabled',
+                        'title' => '',
+                        'url'   => ''
+                    );
+
+                }
+
+
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            exit;
+        }
+
+
+    }
+
+
+    $sections = get_sections('suppliers', '');
+
+
+    if (isset($sections[$_section])) {
+        $sections[$_section]['selected'] = true;
+    }
+
+
+    $title = _("Supplier's time series").' <span class="id">'.$timeseries->get('Code').'</span>';
+
+
+    $right_buttons = array();
 
     $_content = array(
         'sections_class' => '',

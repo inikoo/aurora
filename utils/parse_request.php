@@ -1342,7 +1342,8 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                 }
 
 
-                            } elseif ($view_path[1] == 'order') {
+                            }
+                            elseif ($view_path[1] == 'order') {
                                 $section = 'order';
 
                                 $parent     = 'supplier';
@@ -1381,7 +1382,8 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                 }
 
 
-                            } elseif ($view_path[1] == 'delivery') {
+                            }
+                            elseif ($view_path[1] == 'delivery') {
                                 $section = 'delivery';
 
                                 $parent     = 'supplier';
@@ -1398,7 +1400,8 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                 }
 
 
-                            } elseif ($view_path[1] == 'upload') {
+                            }
+                            elseif ($view_path[1] == 'upload') {
                                 $module     = 'account';
                                 $section    = 'upload';
                                 $parent     = 'supplier';
@@ -1412,7 +1415,42 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                 }
 
 
-                            } else {
+                            }
+                            elseif ($view_path[1] == 'timeseries') {
+                                $section = 'timeseries_record';
+
+                                $parent     = 'supplier';
+                                $parent_key = $view_path[0];
+                                $object     = 'timeseries';
+
+                                if (isset($view_path[2])) {
+                                    if (is_numeric($view_path[2])) {
+                                        $key = $view_path[2];
+
+                                        if (isset($view_path[3])) {
+                                            if (is_numeric($view_path[3])) {
+
+                                                $parent     = 'timeseries';
+                                                $parent_key = $view_path[2];
+                                                $object     = 'timeseries_record';
+
+                                                $key = $view_path[3];
+
+
+
+
+                                            }
+
+                                        }
+
+
+                                    }
+
+                                }
+
+
+                            }
+                            else {
                                 if ($view_path[1] == 'user') {
 
 

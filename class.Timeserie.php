@@ -216,6 +216,12 @@ class Timeseries extends DB_Table {
 
 
         switch ($key) {
+
+            case 'Parent':
+                return get_object($this->data['Timeseries Parent'],$this->data['Timeseries Parent Key']);
+
+                break;
+
             case 'Number Records':
 
                 return number($this->data['Timeseries Number Records']);

@@ -4031,6 +4031,31 @@ $modules = array(
 
 
             ),
+            'timeseries_record' => array(
+                'type'      => 'object',
+                'label'     => '',
+                'showcase'     => 'timeseries_record',
+
+                'tabs'      => array(
+                    'supplier.timeseries_record.parts'       => array(
+                        'label' => _('Parts'),
+                        'icon'  => 'square',
+                        'class' => ''
+                    ),
+                    'supplier.timeseries_record.families'       => array(
+                        'label' => _('Families'),
+                        'icon'  => 'sitemap',
+                        'class' => ''
+                    ),
+
+
+                )
+
+
+            ),
+
+
+
         )
     ),
     'warehouses_server' => array(

@@ -131,8 +131,7 @@ class SubjectSupplier extends Subject {
 
 
         $sql = sprintf(
-            "SELECT count(*) AS num FROM `Purchase Order Dimension` WHERE `Purchase Order Parent`=%s AND  `Purchase Order Parent Key`=%d AND `Purchase Order State` NOT IN ('Done','Cancelled')",
-            prepare_mysql($this->table_name), $this->id
+            "SELECT count(*) AS num FROM `Purchase Order Dimension` WHERE `Purchase Order Parent`=%s AND  `Purchase Order Parent Key`=%d AND `Purchase Order State` NOT IN ('Done','Cancelled')", prepare_mysql($this->table_name), $this->id
         );
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
@@ -158,8 +157,8 @@ class SubjectSupplier extends Subject {
 
 
         $sql = sprintf(
-            "UPDATE `%s Dimension` SET `%s Number Purchase Orders`=%d,`%s Number Open Purchase Orders`=%d ,`%s Number Deliveries`=%d,`%s Number Invoices`=%d  WHERE `%s Key`=%d", $this->table_name,
-            $this->table_name, $number_purchase_orders, $this->table_name, $number_open_purchase_orders, $this->table_name, $number_delivery_notes, $this->table_name, $number_invoices,
+            "UPDATE `%s Dimension` SET `%s Number Purchase Orders`=%d,`%s Number Open Purchase Orders`=%d ,`%s Number Deliveries`=%d,`%s Number Invoices`=%d  WHERE `%s Key`=%d", $this->table_name, $this->table_name, $number_purchase_orders, $this->table_name,
+            $number_open_purchase_orders, $this->table_name, $number_delivery_notes, $this->table_name, $number_invoices,
 
             $this->table_name, $this->id
         );
@@ -404,8 +403,7 @@ class SubjectSupplier extends Subject {
             case 'Products Origin Country Code':
                 if ($this->get(
                     $this->table_name.' Products Origin Country Code'
-                )
-                ) {
+                )) {
                     include_once 'class.Country.php';
                     $country = new Country(
                         'code', $this->data[$this->table_name.' Products Origin Country Code']
@@ -435,8 +433,7 @@ class SubjectSupplier extends Subject {
 
                 if (!is_numeric(
                     $this->data[$this->table_name.' Stock Value']
-                )
-                ) {
+                )) {
                     return array(
                         true,
                         _('Unknown')
@@ -553,8 +550,7 @@ class SubjectSupplier extends Subject {
 
                 if (preg_match(
                         '/^(Last|Yesterday|Total|1|10|6|3|Year To|Quarter To|Month To|Today|Week To).*(Given|Lost|Required|Sold|Dispatched|Broken|Acquired)$/', $key
-                    ) or $key == 'Current Stock'
-                ) {
+                    ) or $key == 'Current Stock') {
 
                     $field = $this->table_name.' '.$key;
 
@@ -567,8 +563,7 @@ class SubjectSupplier extends Subject {
 
                 if (preg_match(
                         '/^(Last|Yesterday|Total|1|10|6|3|2|4|Year To|Quarter To|Month To|Today|Week To).*(Given|Lost|Required|Sold|Dispatched|Broken|Acquired) Minify$/', $key
-                    ) or $key == 'Current Stock'
-                ) {
+                    ) or $key == 'Current Stock') {
 
                     $field = $this->table_name.' '.preg_replace(
                             '/ Minify$/', '', $key
@@ -594,8 +589,7 @@ class SubjectSupplier extends Subject {
                 }
                 if (preg_match(
                         '/^(Last|Yesterday|Total|1|10|6|3|2|4|Year To|Quarter To|Month To|Today|Week To).*(Given|Lost|Required|Sold|Dispatched|Broken|Acquired) Soft Minify$/', $key
-                    ) or $key == 'Current Stock'
-                ) {
+                    ) or $key == 'Current Stock') {
 
                     $field = $this->table_name.' '.preg_replace(
                             '/ Soft Minify$/', '', $key
@@ -649,7 +643,7 @@ class SubjectSupplier extends Subject {
 
             print_r($data_to_update);
 
-            $this->fast_update($data_to_update,$this->table_name.' Data');
+            $this->fast_update($data_to_update, $this->table_name.' Data');
         }
 
         if ($from_date_1yb and $last_year) {
@@ -671,7 +665,7 @@ class SubjectSupplier extends Subject {
                 $this->table_name." $db_interval Acc 1YB With Stock Days"  => $sales_data['with_stock_days'],
 
             );
-            $this->fast_update($data_to_update,$this->table_name.' Data');
+            $this->fast_update($data_to_update, $this->table_name.' Data');
 
 
         }
@@ -715,7 +709,7 @@ class SubjectSupplier extends Subject {
 
     }
 
-    function get_sales_data($from_date, $to_date) {
+    function get_sales_data($from_date, $to_date, $part_skos = false) {
 
         $sales_data = array(
             'invoiced_amount'     => 0,
@@ -732,7 +726,13 @@ class SubjectSupplier extends Subject {
 
         );
 
-        $part_skos = $this->get_part_skus();
+        if (!$part_skos) {
+            $part_skos = $this->get_part_skus();
+            $method='like_a_supplier';
+        }else{
+            $method='like_a_part';
+        }
+
 
         if ($part_skos != '') {
 
@@ -765,22 +765,36 @@ class SubjectSupplier extends Subject {
         }
 
 
-        $sql = sprintf(
-            'SELECT sum(`Supplier Delivery Total Amount`*`Supplier Delivery Currency Exchange`) AS invoiced_amount, count(*) AS supplier_deliveries FROM `Supplier Delivery Dimension` WHERE `Supplier Delivery State`="Placed"  AND `Supplier Delivery Parent`=%s AND `Supplier Delivery Parent Key`=%d  %s %s ',
-            prepare_mysql($this->table_name), $this->id, ($from_date ? sprintf('and  `Supplier Delivery Placed Date`>=%s', prepare_mysql($from_date)) : ''),
-            ($to_date ? sprintf('and `Supplier Delivery Placed Date`<%s', prepare_mysql($to_date)) : '')
 
-        );
 
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $sales_data['supplier_deliveries'] = $row['supplier_deliveries'];
-                $sales_data['purchased_amount']    = $row['invoiced_amount'];
+        if($method=='like_a_supplier') {
+
+            $sql = sprintf(
+                'SELECT ifnull(sum(`Supplier Delivery Total Amount`*`Supplier Delivery Currency Exchange`),0) AS invoiced_amount, count(*) AS supplier_deliveries FROM `Supplier Delivery Dimension` WHERE `Supplier Delivery State`="Placed"  AND `Supplier Delivery Parent`=%s AND `Supplier Delivery Parent Key`=%d  %s %s ',
+                prepare_mysql($this->table_name), $this->id, ($from_date ? sprintf('and  `Supplier Delivery Placed Date`>=%s', prepare_mysql($from_date)) : ''), ($to_date ? sprintf('and `Supplier Delivery Placed Date`<%s', prepare_mysql($to_date)) : '')
+
+            );
+
+           // print "$sql\n";
+
+
+            if ($result = $this->db->query($sql)) {
+                if ($row = $result->fetch()) {
+
+
+                    $sales_data['supplier_deliveries'] = $row['supplier_deliveries'];
+                    $sales_data['purchased_amount']    = $row['invoiced_amount'];
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
+        }else{
+
+
+
+
         }
 
         return $sales_data;

@@ -456,8 +456,7 @@ class Supplier extends SubjectSupplier {
                 include_once 'class.Part.php';
 
                 $sql = sprintf(
-                    "SELECT  `Part SKU`  FROM `Supplier Part Dimension` LEFT JOIN `Part Dimension` ON (`Part SKU`=`Supplier Part Part SKU`)  WHERE `Supplier Part Supplier Key`=%d AND  `Part Origin Country Code` IS NULL",
-                    $this->id
+                    "SELECT  `Part SKU`  FROM `Supplier Part Dimension` LEFT JOIN `Part Dimension` ON (`Part SKU`=`Supplier Part Part SKU`)  WHERE `Supplier Part Supplier Key`=%d AND  `Part Origin Country Code` IS NULL", $this->id
                 );
 
 
@@ -1219,8 +1218,7 @@ class Supplier extends SubjectSupplier {
 		sum(if(`Part Stock Status`="Critical",1,0)) AS critical,
 		sum(if(`Part Stock Status`="Out_Of_Stock",1,0)) AS out_of_stock
 
-		FROM `Supplier Part Dimension` SP  LEFT JOIN `Part Dimension` P ON (P.`Part SKU`=SP.`Supplier Part Part SKU`)  WHERE `Supplier Part Supplier Key`=%d AND `Supplier Part Part SKU` IN (%s) ',
-                    $this->id, addslashes($parts_skus)
+		FROM `Supplier Part Dimension` SP  LEFT JOIN `Part Dimension` P ON (P.`Part SKU`=SP.`Supplier Part Part SKU`)  WHERE `Supplier Part Supplier Key`=%d AND `Supplier Part Part SKU` IN (%s) ', $this->id, addslashes($parts_skus)
                 );
 
 
@@ -1286,7 +1284,7 @@ class Supplier extends SubjectSupplier {
             );
         }
 
-        $part_skus = '';
+
 
         //  print "$sql\n";
 
@@ -1310,6 +1308,42 @@ class Supplier extends SubjectSupplier {
 
     }
 
+    function get_part_family_keys() {
+
+
+        $part_family_keys = '';
+
+
+            $sql = sprintf(
+                'SELECT `Part Family Category Key` FROM `Supplier Part Dimension` left join `Part Dimension` on (`Part SKU`=`Supplier Part Part SKU`) WHERE `Supplier Part Supplier Key`=%d group by `Part Family Category Key` ', $this->id
+            );
+
+
+
+        //  print "$sql\n";
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+
+                if (is_numeric($row['Part Family Category Key']) and $row['Part Family Category Key'] > 0) {
+                    $part_family_keys .= $row['Part Family Category Key'].',';
+
+                }
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+        $part_family_keys = preg_replace('/\,$/', '', $part_family_keys);
+
+
+        return $part_family_keys;
+
+    }
+    
+    
+
     function get_categories($scope = 'keys') {
 
         if ($scope == 'objects') {
@@ -1321,8 +1355,7 @@ class Supplier extends SubjectSupplier {
 
 
         $sql = sprintf(
-            "SELECT B.`Category Key` FROM `Category Dimension` C LEFT JOIN `Category Bridge` B ON (B.`Category Key`=C.`Category Key`) WHERE `Subject`='Supplier' AND `Subject Key`=%d AND `Category Branch Type`!='Root'",
-            $this->id
+            "SELECT B.`Category Key` FROM `Category Dimension` C LEFT JOIN `Category Bridge` B ON (B.`Category Key`=C.`Category Key`) WHERE `Subject`='Supplier' AND `Subject Key`=%d AND `Category Branch Type`!='Root'", $this->id
         );
 
         if ($result = $this->db->query($sql)) {
@@ -1483,8 +1516,7 @@ class Supplier extends SubjectSupplier {
     function get_agents_data() {
         $agents_data = array();
         $sql         = sprintf(
-            'SELECT `Agent Code`,`Agent Key`,`Agent Name`  FROM `Agent Supplier Bridge` LEFT JOIN `Agent Dimension` ON (`Agent Supplier Agent Key`=`Agent Key`)  WHERE `Agent Supplier Supplier Key`=%d',
-            $this->id
+            'SELECT `Agent Code`,`Agent Key`,`Agent Name`  FROM `Agent Supplier Bridge` LEFT JOIN `Agent Dimension` ON (`Agent Supplier Agent Key`=`Agent Key`)  WHERE `Agent Supplier Supplier Key`=%d', $this->id
         );
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
@@ -1552,9 +1584,8 @@ class Supplier extends SubjectSupplier {
 
 
         $sql = sprintf(
-            'INSERT INTO `Supplier Deleted Dimension`  (`Supplier Deleted Key`,`Supplier Deleted Code`,`Supplier Deleted Name`,`Supplier Deleted From`,`Supplier Deleted To`,`Supplier Deleted Metadata`) VALUES (%d,%s,%s,%s,%s,%s) ',
-            $this->id, prepare_mysql($this->get('Supplier Code')), prepare_mysql($this->get('Supplier Name')), prepare_mysql($this->get('Supplier Valid From')), prepare_mysql(gmdate('Y-m-d H:i:s')),
-            prepare_mysql(gzcompress(json_encode($this->data), 9))
+            'INSERT INTO `Supplier Deleted Dimension`  (`Supplier Deleted Key`,`Supplier Deleted Code`,`Supplier Deleted Name`,`Supplier Deleted From`,`Supplier Deleted To`,`Supplier Deleted Metadata`) VALUES (%d,%s,%s,%s,%s,%s) ', $this->id,
+            prepare_mysql($this->get('Supplier Code')), prepare_mysql($this->get('Supplier Name')), prepare_mysql($this->get('Supplier Valid From')), prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql(gzcompress(json_encode($this->data), 9))
 
         );
         $this->db->exec($sql);
@@ -1719,35 +1750,64 @@ class Supplier extends SubjectSupplier {
         $dates = date_frequency_range($this->db, $timeseries->get('Timeseries Frequency'), $from, $to);
 
 
+
+
+
         if ($fork_key) {
 
             $sql = sprintf(
-                "UPDATE `Fork Dimension` SET `Fork State`='In Process' ,`Fork Operations Total Operations`=%d,`Fork Start Date`=NOW(),`Fork Result`=%d  WHERE `Fork Key`=%d ", count($dates),
-                $timeseries->id, $fork_key
+                "UPDATE `Fork Dimension` SET `Fork State`='In Process' ,`Fork Operations Total Operations`=%d,`Fork Start Date`=NOW(),`Fork Result`=%d  WHERE `Fork Key`=%d ", count($dates), $timeseries->id, $fork_key
             );
 
             $this->db->exec($sql);
         }
         $index = 0;
 
+
+
+        $sql=sprintf('select `Timeseries Record Key` from `Timeseries Record Dimension` where `Timeseries Record Timeseries Key`=%d',$timeseries->id);
+
+        if ($result=$this->db->query($sql)) {
+        		foreach ($result as $row) {
+                    $sql = sprintf(
+                        'DELETE FROM `Timeseries Record Drill Down` WHERE `Timeseries Record Drill Down Timeseries Record Key`=%d  ', $row['Timeseries Record Key']
+                    );
+                    //print $sql;
+                    $this->db->exec($sql);
+        		}
+        }else {
+        		print_r($error_info=$this->db->errorInfo());
+        		print "$sql\n";
+        		exit;
+        }
+
+
+
+
+
         foreach ($dates as $date_frequency_period) {
             $index++;
+
+
+            //print_r($date_frequency_period);
+
             $sales_data = $this->get_sales_data($date_frequency_period['from'], $date_frequency_period['to']);
             $_date      = gmdate('Y-m-d', strtotime($date_frequency_period['from'].' +0:00'));
 
 
-            if ($sales_data['deliveries'] > 0 or $sales_data['supplier_deliveries'] > 0 or $sales_data['dispatched'] > 0 or $sales_data['invoiced_amount'] != 0 or $sales_data['required'] != 0
-                or $sales_data['profit'] != 0 or $sales_data['purchased_amount'] != 0) {
+            if ($sales_data['deliveries'] > 0 or $sales_data['supplier_deliveries'] > 0 or $sales_data['dispatched'] > 0 or $sales_data['invoiced_amount'] != 0 or $sales_data['required'] != 0 or $sales_data['profit'] != 0 or $sales_data['purchased_amount'] != 0) {
 
                 list($timeseries_record_key, $date) = $timeseries->create_record(array('Timeseries Record Date' => $_date));
+
+
 
 
                 $sql = sprintf(
                     'UPDATE `Timeseries Record Dimension` SET 
                               `Timeseries Record Integer A`=%d ,`Timeseries Record Integer B`=%d ,`Timeseries Record Integer C`=%d ,
                               `Timeseries Record Float A`=%.2f ,  `Timeseries Record Float B`=%f ,`Timeseries Record Float C`=%f ,`Timeseries Record Float D`=%f ,
-                              `Timeseries Record Type`=%s WHERE `Timeseries Record Key`=%d', $sales_data['dispatched'], $sales_data['deliveries'], $sales_data['supplier_deliveries'],
-                    $sales_data['invoiced_amount'], $sales_data['required'], $sales_data['profit'], $sales_data['purchased_amount'], prepare_mysql('Data'), $timeseries_record_key
+                              `Timeseries Record Type`=%s WHERE `Timeseries Record Key`=%d', $sales_data['dispatched'], $sales_data['deliveries'], $sales_data['supplier_deliveries'], $sales_data['invoiced_amount'], $sales_data['required'], $sales_data['profit'],
+                    $sales_data['purchased_amount'], prepare_mysql('Data'), $timeseries_record_key
 
                 );
 
@@ -1761,14 +1821,117 @@ class Supplier extends SubjectSupplier {
                 }
 
 
+                if( in_array($timeseries->get('Timeseries Frequency'),array('Monthly','Quarterly','Yearly'))  ) {
+
+                    foreach (preg_split('/\,/', $this->get_part_family_keys()) as $family_key) {
+
+
+                        $part_skus = array();
+                        $sql       = sprintf('SELECT `Part SKU` FROM `Part Dimension` WHERE  `Part Family Category Key`=%d ', $family_key);
+                        if ($result = $this->db->query($sql)) {
+                            foreach ($result as $row) {
+                                $part_skus[$row['Part SKU']] = $row['Part SKU'];
+                            }
+                        } else {
+                            print_r($error_info = $this->db->errorInfo());
+                            print "$sql\n";
+                            exit;
+                        }
+
+                        $part_skus = join(',', $part_skus);
+
+
+                       // print 'XXX:'.$part_skus;
+                        //  exit;
+
+                        $sales_data = $this->get_sales_data($date_frequency_period['from'], $date_frequency_period['to'], $part_skus);
+                        $from_1yb = date('Y-m-d H:i:s', strtotime($date_frequency_period['from'].' -1 year'));
+                        $to_1yb   = date('Y-m-d H:i:s', strtotime($date_frequency_period['to'].' -1 year'));
+
+
+                        $sales_data_1yb = $this->get_sales_data($from_1yb, $to_1yb, $part_skus);
+
+                        if (
+                            $sales_data['deliveries'] > 0 or $sales_data['dispatched'] > 0 or $sales_data['invoiced_amount'] != 0 or $sales_data['required'] != 0 or $sales_data['profit'] != 0 or
+                            $sales_data_1yb['deliveries'] > 0 or $sales_data_1yb['dispatched'] > 0 or $sales_data_1yb['invoiced_amount'] != 0 or $sales_data_1yb['required'] != 0 or $sales_data_1yb['profit'] != 0
+                        ) {
+
+
+
+
+
+                            $sql = sprintf(
+                                'INSERT INTO `Timeseries Record Drill Down` (`Timeseries Record Drill Down Timeseries Record Key`,`Timeseries Record Drill Down Subject`,`Timeseries Record Drill Down Subject Key`,
+`Timeseries Record Drill Down Float A`,`Timeseries Record Drill Down Float B`,`Timeseries Record Drill Down Float C`,`Timeseries Record Drill Down Float D`,
+`Timeseries Record Drill Down Integer A`,`Timeseries Record Drill Down Integer B`,`Timeseries Record Drill Down Integer C`,`Timeseries Record Drill Down Integer D`
+)
+                    VALUES (%d,%s,%d, %f,%f,%f,%f, %d,%d,%d,%d)', $timeseries_record_key, prepare_mysql('Category'), $family_key,
+
+                                $sales_data['invoiced_amount'], $sales_data['profit'], $sales_data_1yb['invoiced_amount'], $sales_data_1yb['profit'], $sales_data['dispatched'], $sales_data['deliveries'], $sales_data_1yb['dispatched'], $sales_data_1yb['deliveries']
+
+
+                            );
+
+                            //print "$sql\n";
+                            $this->db->exec($sql);
+                            // exit;
+                        }
+
+                    }
+
+
+                    foreach (preg_split('/\,/', $this->get_part_skus()) as $part_sku) {
+
+                        $sales_data = $this->get_sales_data($date_frequency_period['from'], $date_frequency_period['to'], $part_sku);
+                        $from_1yb = date('Y-m-d H:i:s', strtotime($date_frequency_period['from'].' -1 year'));
+                        $to_1yb   = date('Y-m-d H:i:s', strtotime($date_frequency_period['to'].' -1 year'));
+
+
+                        $sales_data_1yb = $this->get_sales_data($from_1yb, $to_1yb, $part_sku);
+
+                        if ($sales_data['deliveries'] > 0 or $sales_data['dispatched'] > 0 or $sales_data['invoiced_amount'] != 0 or $sales_data['required'] != 0 or $sales_data['profit'] != 0 or
+                            $sales_data_1yb['deliveries'] > 0 or $sales_data_1yb['dispatched'] > 0 or $sales_data_1yb['invoiced_amount'] != 0 or $sales_data_1yb['required'] != 0 or $sales_data_1yb['profit'] != 0
+
+                        ) {
+
+
+
+
+
+                            $sql = sprintf(
+                                'INSERT INTO `Timeseries Record Drill Down` (`Timeseries Record Drill Down Timeseries Record Key`,`Timeseries Record Drill Down Subject`,`Timeseries Record Drill Down Subject Key`,
+`Timeseries Record Drill Down Float A`,`Timeseries Record Drill Down Float B`,`Timeseries Record Drill Down Float C`,`Timeseries Record Drill Down Float D`,
+`Timeseries Record Drill Down Integer A`,`Timeseries Record Drill Down Integer B`,`Timeseries Record Drill Down Integer C`,`Timeseries Record Drill Down Integer D`
+)
+                    VALUES (%d,%s,%d, %f,%f,%f,%f, %d,%d,%d,%d)', $timeseries_record_key, prepare_mysql('Part'), $part_sku,
+
+                                $sales_data['invoiced_amount'], $sales_data['profit'], $sales_data_1yb['invoiced_amount'], $sales_data_1yb['profit'],
+                                $sales_data['dispatched'], $sales_data['deliveries'], $sales_data_1yb['dispatched'], $sales_data_1yb['deliveries']
+
+
+                            );
+
+                            //print "$sql\n";
+                            $this->db->exec($sql);
+                            // exit;
+                        }
+
+                    }
+                }
 
 
 
 
             } else {
+
+
+
+
                 $sql = sprintf(
                     'DELETE FROM `Timeseries Record Dimension` WHERE `Timeseries Record Timeseries Key`=%d AND `Timeseries Record Date`=%s ', $timeseries->id, prepare_mysql($_date)
                 );
+
+
 
                 $update_sql = $this->db->prepare($sql);
                 $update_sql->execute();
@@ -1792,6 +1955,13 @@ class Supplier extends SubjectSupplier {
 
             }
             $timeseries->update_stats();
+
+
+
+
+
+
+
 
         }
 
@@ -1833,8 +2003,7 @@ class Supplier extends SubjectSupplier {
         $sql = sprintf(
             'SELECT count(DISTINCT P.`Part SKU`) AS num FROM 
               `Part Dimension` P LEFT JOIN `Part Location Dimension` PL ON (PL.`Part SKU`=P.`Part SKU`)  LEFT JOIN `Supplier Part Dimension` SP ON (SP.`Supplier Part Part SKU`=P.`Part SKU`) 
-              WHERE (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>`Quantity On Hand`   AND (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>0   AND `Can Pick`="Yes"   AND `Supplier Part Supplier Key`=%d ',
-            $this->id
+              WHERE (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>`Quantity On Hand`   AND (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>0   AND `Can Pick`="Yes"   AND `Supplier Part Supplier Key`=%d ', $this->id
         );
 
 
@@ -1871,8 +2040,7 @@ class Supplier extends SubjectSupplier {
             'SELECT count(*) AS num FROM `Part Location Dimension`   PLD  LEFT JOIN 
             `Part Dimension` P ON (PLD.`Part SKU`=P.`Part SKU`) 
             
-            LEFT JOIN `Supplier Part Dimension` SP ON (SP.`Supplier Part Part SKU`=P.`Part SKU`)   WHERE   `Supplier Part Supplier Key`=%d     AND  `Minimum Quantity`>=0 AND `Can Pick`="Yes"   ',
-            $this->id
+            LEFT JOIN `Supplier Part Dimension` SP ON (SP.`Supplier Part Part SKU`=P.`Part SKU`)   WHERE   `Supplier Part Supplier Key`=%d     AND  `Minimum Quantity`>=0 AND `Can Pick`="Yes"   ', $this->id
         );
         //print $sql;
         if ($result = $this->db->query($sql)) {

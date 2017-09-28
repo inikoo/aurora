@@ -770,7 +770,6 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             include_once 'showcase/website.show.php';
             $html = get_website_showcase($data, $smarty, $user, $db);
             break;
-
         case 'dashboard':
             $html = '';
             break;
@@ -1001,6 +1000,10 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
         case 'charge':
             include_once 'showcase/charge.show.php';
             $html = get_charge_showcase($data, $smarty, $user, $db);
+            break;
+        case 'timeseries_record':
+            include_once 'showcase/timeseries_record.show.php';
+            $html = get_timeseries_record_showcase($data, $smarty, $user, $db,$account);
             break;
         default:
             $html = $data['object'].' -> '.$data['key'];
@@ -1718,6 +1721,11 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     break;
                 case ('supplier.attachment.new'):
                     return get_new_supplier_attachment_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
+                case ('timeseries_record'):
+                    return get_timeseries_record_navigation(
                         $data, $smarty, $user, $db, $account
                     );
                     break;
@@ -3903,6 +3911,23 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 $branch[] = array(
                     'label'     => _('New system user'),
                     'icon'      => 'terminal',
+                    'reference' => ''
+                );
+
+            }elseif ($state['section'] == 'timeseries_record') {
+                $branch[] = array(
+                    'label'     => _('Suppliers'),
+                    'icon'      => '',
+                    'reference' => 'suppliers'
+                );
+                $branch[] = array(
+                    'label'     => '<span class="id Supplier_Code">'.$state['_parent']->get('Parent')->get('Code').'</span>',
+                    'icon'      => 'ship',
+                    'reference' => 'supplier/'.$state['_parent']->get('Timeseries Parent Key')
+                );
+                $branch[] = array(
+                    'label'     => '<span class="id">'.$state['_object']->get('Code').'</span>',
+                    'icon'      => 'table',
                     'reference' => ''
                 );
 
