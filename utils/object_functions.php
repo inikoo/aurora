@@ -334,7 +334,8 @@ function get_object($object_name, $key, $load_other_data = false) {
             $object = new Charge($key);
             break;
         case 'timeseries_record':
-            require_once "class.TimeseriesRecord.php";
+        case 'timeseriesrecord':
+        require_once "class.TimeseriesRecord.php";
             $object = new TimeseriesRecord($key);
             break;
 

@@ -42,6 +42,7 @@ class TimeseriesRecord extends DB_Table {
     function get_data($tipo, $tag) {
 
 
+
         $sql = sprintf(
             "SELECT * FROM `Timeseries Record Dimension` LEFT JOIN `Timeseries Dimension` ON (`Timeseries Key`=`Timeseries Record Timeseries Key`)  WHERE `Timeseries Record Key`=%d", $tag
         );
@@ -57,7 +58,7 @@ class TimeseriesRecord extends DB_Table {
 
     function get($key = '',$arg='') {
 
-        //'Daily','Weekly','Monthly','Quarterly','Yearly'
+
         switch ($key) {
 
             case 'Code':
@@ -96,9 +97,25 @@ class TimeseriesRecord extends DB_Table {
             case 'Purchased Amount':
                 return money($this->data['Timeseries Record Float B'],$arg->get('Currency Code'));
                 break;
-
             case 'Supplier Deliveries':
                 return number($this->data['Timeseries Record Integer C']);
+            case 'Timeseries Record Supplier Deliveries Deliveries':
+                return $this->data['Timeseries Record Integer B'];
+                break;
+            case 'Timeseries Record Supplier Deliveries Dispatched':
+                return $this->data['Timeseries Record Integer A'];
+                break;
+            case 'Timeseries Record Supplier Deliveries Sales':
+                return $this->data['Timeseries Record Float A'];
+                break;
+            case 'Timeseries Record Supplier Deliveries Purchased Amount':
+                return $this->data['Timeseries Record Float B'];
+                break;
+            case 'Timeseries Record Supplier Deliveries Supplier Deliveries':
+                return $this->data['Timeseries Record Integer C'];
+
+
+
                 break;
             default:
                 if (array_key_exists($key, $this->data)) {
