@@ -42,7 +42,7 @@ function get_timeseries_record_showcase($data, $smarty, $user, $db, $account) {
                     $delta_1yb = array(
                         'Supplier Deliveries' => array(
                             'delta_percentage' => delta_icon($timeseries_record->get('Timeseries Record Supplier Deliveries'), $timeseries_record_1yb->get('Timeseries Record Supplier Deliveries')).' '.percentage(
-                                    $timeseries_record->get('Timeseries Record Supplier Deliveries'), $timeseries_record->get('Timeseries Record Supplier Deliveries')+$timeseries_record_1yb->get('Timeseries Record Supplier Deliveries')
+                                    $timeseries_record->get('Timeseries Record Supplier Deliveries')-$timeseries_record_1yb->get('Timeseries Record Supplier Deliveries'), $timeseries_record_1yb->get('Timeseries Record Supplier Deliveries')
                                 ),
                             'delta'            => number($timeseries_record->get('Timeseries Record Supplier Deliveries') - $timeseries_record_1yb->get('Timeseries Record Supplier Deliveries')),
                             'diff'             => $timeseries_record->get('Timeseries Record Supplier Deliveries') - $timeseries_record_1yb->get('Timeseries Record Supplier Deliveries'),
@@ -53,9 +53,7 @@ function get_timeseries_record_showcase($data, $smarty, $user, $db, $account) {
                         ),
                         'Purchased Amount'    => array(
                             'delta_percentage' => delta_icon($timeseries_record->get('Timeseries Record Purchased Amount'), $timeseries_record_1yb->get('Timeseries Record Purchased Amount')).' '.percentage(
-                                    $timeseries_record->get('Timeseries Record Purchased Amount'), $timeseries_record->get('Timeseries Record Purchased Amount')+$timeseries_record_1yb->get(
-                                    'Timeseries Record Purchased Amount'
-                                )
+                                    $timeseries_record->get('Timeseries Record Purchased Amount')- $timeseries_record_1yb->get('Timeseries Record Purchased Amount'), $timeseries_record_1yb->get('Timeseries Record Purchased Amount')
                                 ),
                             'delta'            => money($timeseries_record->get('Timeseries Record Purchased Amount') - $timeseries_record_1yb->get('Timeseries Record Purchased Amount'), $account->get('Currency Code')),
                             'diff'             => $timeseries_record->get('Timeseries Record Purchased Amount') - $timeseries_record_1yb->get('Timeseries Record Purchased Amount'),
@@ -64,7 +62,7 @@ function get_timeseries_record_showcase($data, $smarty, $user, $db, $account) {
                         ),
                         'Deliveries'          => array(
                             'delta_percentage' => delta_icon($timeseries_record->get('Timeseries Record Deliveries'), $timeseries_record_1yb->get('Timeseries Record Deliveries')).' '.percentage(
-                                    $timeseries_record->get('Timeseries Record Deliveries'), $timeseries_record->get('Timeseries Record Deliveries')+$timeseries_record_1yb->get('Timeseries Record Deliveries')
+                                    $timeseries_record->get('Timeseries Record Deliveries')-$timeseries_record_1yb->get('Timeseries Record Deliveries'),$timeseries_record_1yb->get('Timeseries Record Deliveries')
                                 ),
                             'delta'            => number($timeseries_record->get('Timeseries Record Deliveries') - $timeseries_record_1yb->get('Timeseries Record Deliveries')),
                             'diff'             => $timeseries_record->get('Timeseries Record Deliveries') - $timeseries_record_1yb->get('Timeseries Record Deliveries'),
@@ -74,7 +72,7 @@ function get_timeseries_record_showcase($data, $smarty, $user, $db, $account) {
                         ),
                         'Dispatched'          => array(
                             'delta_percentage' => delta_icon($timeseries_record->get('Timeseries Record Dispatched'), $timeseries_record_1yb->get('Timeseries Record Dispatched')).' '.percentage(
-                                    $timeseries_record->get('Timeseries Record Dispatched'), $timeseries_record->get('Timeseries Record Dispatched')+$timeseries_record_1yb->get('Timeseries Record Dispatched')
+                                    $timeseries_record->get('Timeseries Record Dispatched')-$timeseries_record_1yb->get('Timeseries Record Dispatched'),$timeseries_record_1yb->get('Timeseries Record Dispatched')
                                 ),
                             'delta'            => number($timeseries_record->get('Timeseries Record Dispatched') - $timeseries_record_1yb->get('Timeseries Record Dispatched')),
                             'diff'             => $timeseries_record->get('Timeseries Record Dispatched') - $timeseries_record_1yb->get('Timeseries Record Dispatched')
@@ -82,7 +80,7 @@ function get_timeseries_record_showcase($data, $smarty, $user, $db, $account) {
                         ),
                         'Sales'               => array(
                             'delta_percentage' => delta_icon($timeseries_record->get('Timeseries Record Sales'), $timeseries_record_1yb->get('Timeseries Record Sales')).' '.percentage(
-                                    $timeseries_record->get('Timeseries Record Sales'), $timeseries_record->get('Timeseries Record Sales')+$timeseries_record_1yb->get('Timeseries Record Sales')
+                                    $timeseries_record->get('Timeseries Record Sales')-$timeseries_record_1yb->get('Timeseries Record Sales'),$timeseries_record_1yb->get('Timeseries Record Sales')
                                 ),
                             'delta'            => money($timeseries_record->get('Timeseries Record Sales') - $timeseries_record_1yb->get('Timeseries Record Sales'), $account->get('Currency Code')),
                             'diff'             => $timeseries_record->get('Timeseries Record Sales') - $timeseries_record_1yb->get('Timeseries Record Sales')
@@ -91,6 +89,7 @@ function get_timeseries_record_showcase($data, $smarty, $user, $db, $account) {
 
 
                     );
+
 
                   //  print_r($delta_1yb);
 

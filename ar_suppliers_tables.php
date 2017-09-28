@@ -3472,6 +3472,7 @@ function timeseries_drill_down_parts($_data, $db, $user,$account) {
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
 
+            $diff=$data['Timeseries Record Drill Down Float A']-$data['Timeseries Record Drill Down Float C'];
 
 
             $table_data[] = array(
@@ -3481,8 +3482,8 @@ function timeseries_drill_down_parts($_data, $db, $user,$account) {
                 'dispatched'=>number($data['Timeseries Record Drill Down Integer A']),
                 'deliveries'=>number($data['Timeseries Record Drill Down Integer B']),
                 'sales'=>money($data['Timeseries Record Drill Down Float A'],$currency),
-                'delta_sales_percentage'=>delta_icon($data['Timeseries Record Drill Down Float A'],$data['Timeseries Record Drill Down Float C']).' '.percentage($data['Timeseries Record Drill Down Float A'],$data['Timeseries Record Drill Down Float C']+$data['Timeseries Record Drill Down Float A']),
-                'delta_sales'=>money($data['Timeseries Record Drill Down Float A']-$data['Timeseries Record Drill Down Float C'],$currency),
+                'delta_sales_percentage'=>delta_icon($data['Timeseries Record Drill Down Float A'],$data['Timeseries Record Drill Down Float C']).' '.percentage($diff,$data['Timeseries Record Drill Down Float C']),
+                'delta_sales'=>'<span class="discreet '.($diff>0?'':($diff<0?'error':'')).'">'.($diff>0?'+':'').money($diff,$currency).'</span>',
 
 
 
@@ -3543,7 +3544,7 @@ $diff=$data['Timeseries Record Drill Down Float A']-$data['Timeseries Record Dri
                 'dispatched'=>number($data['Timeseries Record Drill Down Integer A']),
                 'deliveries'=>number($data['Timeseries Record Drill Down Integer B']),
                 'sales'=>money($data['Timeseries Record Drill Down Float A'],$currency),
-                'delta_sales_percentage'=>delta_icon($data['Timeseries Record Drill Down Float A'],$data['Timeseries Record Drill Down Float C']).' '.percentage($data['Timeseries Record Drill Down Float A'],$data['Timeseries Record Drill Down Float C']),
+                'delta_sales_percentage'=>delta_icon($data['Timeseries Record Drill Down Float A'],$data['Timeseries Record Drill Down Float C']).' '.percentage($diff,$data['Timeseries Record Drill Down Float C']),
                 'delta_sales'=>'<span class="discreet '.($diff>0?'':($diff<0?'error':'')).'">'.($diff>0?'+':'').money($diff,$currency).'</span>',
 
 
