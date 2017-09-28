@@ -87,9 +87,8 @@ editable: false,
 defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='delta_sales_percentage'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ } ),
 
-headerCell: integerHeaderCell
 },
 {
 name: "delta_sales",
