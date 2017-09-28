@@ -15,7 +15,7 @@
 
         <div class="showcase">
 
-            {if isset($data_1yb)}
+            {if isset($delta_1yb)}
                 <table border=0>
 
 
