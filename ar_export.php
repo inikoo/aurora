@@ -41,6 +41,7 @@ $_data['page']         = 1;
 include 'conf/export_fields.php';
 
 
+
 if ($_data['tipo'] == 'timeserie_records') {
 
     include_once 'class.Timeserie.php';
@@ -69,7 +70,7 @@ else {
         $_tipo = 'invoices';
     } elseif ($_data['tipo'] == 'in_process_parts' or $_data['tipo'] == 'active_parts' or $_data['tipo'] == 'discontinuing_parts' or $_data['tipo'] == 'discontinued_parts') {
         $_tipo = 'parts';
-    } else {
+    }  else {
         $_tipo = $_data['tipo'];
     }
 
@@ -79,7 +80,7 @@ else {
     if (!isset($export_fields[$_tipo])) {
         $response = array(
             'state' => 405,
-            'resp'  => 'field set not found'
+            'resp'  => 'field set not found: '.$_tipo
         );
         echo json_encode($response);
         exit;

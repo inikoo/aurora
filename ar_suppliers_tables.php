@@ -115,10 +115,10 @@ switch ($tipo) {
     case 'supplier_categories':
         supplier_categories(get_table_parameters(), $db, $user, $account);
         break;
-    case 'timeseries_drill_down_parts':
+    case 'supplier_timeseries_drill_down_parts':
         timeseries_drill_down_parts(get_table_parameters(), $db, $user, $account);
         break;
-    case 'timeseries_drill_down_families':
+    case 'supplier_timeseries_drill_down_families':
         timeseries_drill_down_families(get_table_parameters(), $db, $user, $account);
         break;
 
