@@ -1716,9 +1716,7 @@ class Supplier extends SubjectSupplier {
     function update_timeseries_record($timeseries, $from, $to, $fork_key = false) {
 
 
-        $dates = date_frequency_range(
-            $this->db, $timeseries->get('Timeseries Frequency'), $from, $to
-        );
+        $dates = date_frequency_range($this->db, $timeseries->get('Timeseries Frequency'), $from, $to);
 
 
         if ($fork_key) {
@@ -1741,9 +1739,7 @@ class Supplier extends SubjectSupplier {
             if ($sales_data['deliveries'] > 0 or $sales_data['supplier_deliveries'] > 0 or $sales_data['dispatched'] > 0 or $sales_data['invoiced_amount'] != 0 or $sales_data['required'] != 0
                 or $sales_data['profit'] != 0 or $sales_data['purchased_amount'] != 0) {
 
-                list($timeseries_record_key, $date) = $timeseries->create_record(
-                    array('Timeseries Record Date' => $_date)
-                );
+                list($timeseries_record_key, $date) = $timeseries->create_record(array('Timeseries Record Date' => $_date));
 
 
                 $sql = sprintf(
@@ -1761,10 +1757,12 @@ class Supplier extends SubjectSupplier {
                 $update_sql = $this->db->prepare($sql);
                 $update_sql->execute();
                 if ($update_sql->rowCount() or $date == date('Y-m-d')) {
-                    $timeseries->update(
-                        array('Timeseries Updated' => gmdate('Y-m-d H:i:s')), 'no_history'
-                    );
+                    $timeseries->fast_update(array('Timeseries Updated' => gmdate('Y-m-d H:i:s')));
                 }
+
+
+
+
 
 
             } else {
@@ -1775,8 +1773,8 @@ class Supplier extends SubjectSupplier {
                 $update_sql = $this->db->prepare($sql);
                 $update_sql->execute();
                 if ($update_sql->rowCount()) {
-                    $timeseries->update(
-                        array('Timeseries Updated' => gmdate('Y-m-d H:i:s')), 'no_history'
+                    $timeseries->fast_update(
+                        array('Timeseries Updated' => gmdate('Y-m-d H:i:s'))
                     );
 
                 }

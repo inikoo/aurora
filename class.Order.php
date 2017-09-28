@@ -668,6 +668,8 @@ class Order extends DB_Table {
                         'au_housekeeping', array(
                         'type'              => 'delivery_note_created',
                         'delivery_note_key' => $delivery_note->id,
+                        'customer_key' => $delivery_note->get('Delivery Note Customer Key'),
+                        'store_key' => $delivery_note->get('Delivery Note Store Key'),
                     ), $account->get('Account Code')
                     );
 
@@ -931,14 +933,7 @@ class Order extends DB_Table {
                     );
 
 
-                    new_housekeeping_fork(
-                        'au_housekeeping', array(
-                        'type'         => 'invoice_created',
-                        'invoice_key'  => $invoice->id,
-                        'customer_key' => $invoice->get('Invoice Customer Key'),
-                        'store_key'    => $invoice->get('Invoice Store Key')
-                    ), $account->get('Account Code')
-                    );
+
 
 
                     $this->update_field('Order Invoiced Date', $date, 'no_history');
@@ -966,6 +961,14 @@ class Order extends DB_Table {
 
                     $this->db->exec($sql);
 
+                    new_housekeeping_fork(
+                        'au_housekeeping', array(
+                        'type'         => 'invoice_created',
+                        'invoice_key'  => $invoice->id,
+                        'customer_key' => $invoice->get('Invoice Customer Key'),
+                        'store_key'    => $invoice->get('Invoice Store Key')
+                    ), $account->get('Account Code')
+                    );
 
                     break;
                 case 'un_dispatch':

@@ -647,7 +647,9 @@ class SubjectSupplier extends Subject {
                 $this->table_name." $db_interval Acc With Stock Days"  => $sales_data['with_stock_days'],
             );
 
-            $this->update($data_to_update, 'no_history');
+            print_r($data_to_update);
+
+            $this->fast_update($data_to_update,$this->table_name.' Data');
         }
 
         if ($from_date_1yb and $last_year) {
@@ -669,7 +671,7 @@ class SubjectSupplier extends Subject {
                 $this->table_name." $db_interval Acc 1YB With Stock Days"  => $sales_data['with_stock_days'],
 
             );
-            $this->update($data_to_update, 'no_history');
+            $this->fast_update($data_to_update,$this->table_name.' Data');
 
 
         }
@@ -686,7 +688,7 @@ class SubjectSupplier extends Subject {
                         ]
         )) {
 
-            $this->update([$this->table_name.' Acc To Day Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
+            $this->fast_update([$this->table_name.' Acc To Day Updated' => gmdate('Y-m-d H:i:s')]);
 
         } elseif (in_array(
             $db_interval, [
@@ -697,7 +699,7 @@ class SubjectSupplier extends Subject {
                         ]
         )) {
 
-            $this->update([$this->table_name.' Acc Ongoing Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
+            $this->fast_update([$this->table_name.' Acc Ongoing Intervals Updated' => gmdate('Y-m-d H:i:s')]);
         } elseif (in_array(
             $db_interval, [
                             'Last Month',
@@ -730,18 +732,18 @@ class SubjectSupplier extends Subject {
 
         );
 
-        $part_skus = $this->get_part_skus();
+        $part_skos = $this->get_part_skus();
 
-        if ($part_skus != '') {
+        if ($part_skos != '') {
 
             if ($from_date == '' and $to_date == '') {
-                $sales_data['repeat_customers'] = $this->get_customers_total_data($part_skus);
+                $sales_data['repeat_customers'] = $this->get_customers_total_data($part_skos);
             }
 
 
             $sql = sprintf(
                 "SELECT count(DISTINCT `Delivery Note Customer Key`) AS customers, count( DISTINCT ITF.`Delivery Note Key`) AS deliveries, round(ifnull(sum(`Amount In`),0),2) AS invoiced_amount,round(ifnull(sum(`Amount In`+`Inventory Transaction Amount`),0),2) AS profit,round(ifnull(sum(`Inventory Transaction Quantity`),0),1) AS dispatched,round(ifnull(sum(`Required`),0),1) AS required FROM `Inventory Transaction Fact` ITF  LEFT JOIN `Delivery Note Dimension` DN ON (DN.`Delivery Note Key`=ITF.`Delivery Note Key`) WHERE `Inventory Transaction Type` LIKE 'Sale' AND `Part SKU` IN (%s) %s %s",
-                $part_skus, ($from_date ? sprintf('and  `Date`>=%s', prepare_mysql($from_date)) : ''), ($to_date ? sprintf('and `Date`<%s', prepare_mysql($to_date)) : '')
+                $part_skos, ($from_date ? sprintf('and  `Date`>=%s', prepare_mysql($from_date)) : ''), ($to_date ? sprintf('and `Date`<%s', prepare_mysql($to_date)) : '')
             );
 
 
@@ -785,13 +787,13 @@ class SubjectSupplier extends Subject {
 
     }
 
-    function get_customers_total_data($part_skus) {
+    function get_customers_total_data($part_skos) {
 
         $repeat_customers = 0;
 
 
         $sql = sprintf(
-            'SELECT count(`Customer Part Customer Key`) AS num  FROM `Customer Part Bridge` WHERE `Customer Part Delivery Notes`>1 AND `Customer Part Part SKU` IN (%s)    ', $part_skus
+            'SELECT count(`Customer Part Customer Key`) AS num  FROM `Customer Part Bridge` WHERE `Customer Part Delivery Notes`>1 AND `Customer Part Part SKU` IN (%s)    ', $part_skos
         );
 
 

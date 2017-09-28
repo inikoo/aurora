@@ -358,6 +358,7 @@ function fork_housekeeping($job) {
                 print_r($error_info = $db->errorInfo());
                 exit;
             }
+            break;
         case 'invoice_created':
 
             update_invoice_products_sales_data($db, $account, $data);
