@@ -460,8 +460,7 @@ $export_fields = array(
             'checked' => 0
         ),
     ),
-
-    'locations' => array(
+    'locations'                    => array(
         array(
             'name'    => '`Location Code`',
             'label'   => _('Code'),
@@ -492,8 +491,7 @@ $export_fields = array(
 
 
     ),
-
-    'parts' => array(
+    'parts'                        => array(
         array(
             'name'    => '`Part Reference`',
             'label'   => _('Reference'),
@@ -522,8 +520,7 @@ $export_fields = array(
         ),
 
     ),
-
-    'part_locations' => array(
+    'part_locations'               => array(
         array(
             'name'    => '`Part Reference`',
             'label'   => _('Part reference'),
@@ -552,8 +549,7 @@ $export_fields = array(
 
 
     ),
-
-    'supplier.order.items' => array(
+    'supplier.order.items'         => array(
         array(
             'name'    => '`Supplier Part Reference`',
             'label'   => _('Supplier product code'),
@@ -586,10 +582,75 @@ $export_fields = array(
         ),
 
 
+    ),
+    'supplier_timeseries_drill_down_parts'                        => array(
+        array(
+            'name'    => '`Part Reference`',
+            'label'   => _('Part reference'),
+            'checked' => 1
+        ),
+
+        array(
+            'name'    => '`Part Package Description`',
+            'label'   => _('Part description'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Timeseries Record Drill Down Integer B`',
+            'label'   => _('Sales deliveries'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Timeseries Record Drill Down Integer A`',
+            'label'   => _('Dispatched SKOs'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Timeseries Record Drill Down Float A`',
+            'label'   => _('Sales'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Timeseries Record Drill Down Float C`',
+            'label'   => _('Sales 1y ago'),
+            'checked' => 1
+        ),
 
     ),
+    'supplier_timeseries_drill_down_families'                        => array(
+        array(
+            'name'    => '`Category Code`',
+            'label'   => _('Part family code'),
+            'checked' => 1
+        ),
 
+        array(
+            'name'    => '`Category Label`',
+            'label'   => _('Family name'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Timeseries Record Drill Down Integer B`',
+            'label'   => _('Deliveries'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Timeseries Record Drill Down Integer A`',
+            'label'   => _('Dispatched SKOs'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Timeseries Record Drill Down Float A`',
+            'label'   => _('Sales'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Timeseries Record Drill Down Float C`',
+            'label'   => _('Sales 1y ago'),
+            'checked' => 1
+        ),
 
+    ),
 
 );
 

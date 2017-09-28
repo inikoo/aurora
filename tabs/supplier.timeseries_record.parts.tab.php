@@ -12,7 +12,7 @@
 
 $tab     = 'supplier.timeseries_record.parts';
 $ar_file = 'ar_suppliers_tables.php';
-$tipo    = 'timeseries_drill_down_parts';
+$tipo    = 'supplier_timeseries_drill_down_parts';
 
 $default = $user->get_tab_defaults($tab);
 

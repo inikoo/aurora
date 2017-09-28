@@ -2928,6 +2928,7 @@ $tab_defaults = array(
         'rpp'         => 1000,
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'reference',
+        'export_fields' => $export_fields['supplier_timeseries_drill_down_parts']
 
     ),
     'supplier.timeseries_record.families' => array(
@@ -2937,6 +2938,7 @@ $tab_defaults = array(
         'rpp'         => 1000,
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'code',
+        'export_fields' => $export_fields['supplier_timeseries_drill_down_families']
 
     ),
 

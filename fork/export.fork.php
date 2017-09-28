@@ -42,10 +42,6 @@ function fork_export($job) {
 
 
 
-
-
-
-
     $number_rows = 0;
 
 
@@ -72,6 +68,10 @@ function fork_export($job) {
     $sql = sprintf(
         "UPDATE `Fork Dimension` SET `Fork State`='In Process' ,`Fork Operations Total Operations`=%d,`Fork Start Date`=NOW() WHERE `Fork Key`=%d ", $number_rows, $fork_key
     );
+
+
+   // print "$sql\n";
+
     $db->exec($sql);
 
 
@@ -89,10 +89,12 @@ function fork_export($job) {
 
 
     $row_index = 1;
-
+   // print "$sql_data\n";
 
     if ($result = $db->query($sql_data)) {
         foreach ($result as $row) {
+
+           // print_r($row);
 
 
             if ($row_index == 1) {
