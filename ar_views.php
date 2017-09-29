@@ -1232,10 +1232,26 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     );
                     break;
                 case ('charge'):
-
                     return get_charge_navigation($data, $smarty, $user, $db, $account);
-
                     break;
+                case ('shipping_zone'):
+                    return get_shipping_zone_navigation($data, $smarty, $user, $db, $account);
+                    break;
+                case ('shipping_option'):
+                    return get_shipping_option_navigation($data, $smarty, $user, $db, $account);
+                    break;
+
+                case ('charge.new'):
+                    return get_charge_new_navigation($data, $smarty, $user, $db, $account);
+                    break;
+                case ('shipping_zone.new'):
+                    return get_shipping_zone_new_navigation($data, $smarty, $user, $db, $account);
+                    break;
+                case ('shipping_option.new'):
+                    return get_shipping_option_new_navigation($data, $smarty, $user, $db, $account);
+                    break;
+
+
             }
         case ('customers'):
             require_once 'navigation/customers.nav.php';

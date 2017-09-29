@@ -400,13 +400,10 @@ function get_products_all_stores_navigation($data, $smarty, $user, $db, $account
 function get_products_category_navigation($data, $smarty, $user, $db) {
 
 
-
-
     $category = $data['_object'];
 
     $left_buttons  = array();
     $right_buttons = array();
-
 
 
     switch ($data['parent']) {
@@ -423,8 +420,7 @@ function get_products_category_navigation($data, $smarty, $user, $db) {
 
             if ($data['_parent']->id == $data['_parent']->get(
                     'Category Root Key'
-                )
-            ) {
+                )) {
                 $tab = 'category.product_categories.categories';
             } else {
 
@@ -480,13 +476,13 @@ function get_products_category_navigation($data, $smarty, $user, $db) {
     $_order_field = $order;
 
 
-    if($_order_field=='products'){
-        $_order_field='(`Product Category Active Products`+`Product Category Discontinuing Products`)';
+    if ($_order_field == 'products') {
+        $_order_field = '(`Product Category Active Products`+`Product Category Discontinuing Products`)';
     }
 
-    $order        = preg_replace('/^.*\.`/', '', $order);
-    $order        = preg_replace('/^`/', '', $order);
-    $order        = preg_replace('/`$/', '', $order);
+    $order = preg_replace('/^.*\.`/', '', $order);
+    $order = preg_replace('/^`/', '', $order);
+    $order = preg_replace('/`$/', '', $order);
 
 
     $_order_field_value = $category->get($order);
@@ -508,15 +504,14 @@ function get_products_category_navigation($data, $smarty, $user, $db) {
     if ($result2 = $db->query($sql)) {
         if ($row2 = $result2->fetch() and $row2['num'] > 1) {
 
-         //   print $order_direction;
+            //   print $order_direction;
 
             $sql = sprintf(
                 "select C.`Category Label` object_name,C.`Category Key` as object_key %s from $table   $where $wheref
-	                and ($_order_field < %s OR ($_order_field = %s AND C.`Category Key` < %d))  order by $_order_field desc , C.`Category Key` desc limit 1", $extra_field,
-                prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $category->id
+	                and ($_order_field < %s OR ($_order_field = %s AND C.`Category Key` < %d))  order by $_order_field desc , C.`Category Key` desc limit 1", $extra_field, prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $category->id
             );
 
-           // print $sql;
+            // print $sql;
 
             if ($result = $db->query($sql)) {
                 if ($row = $result->fetch()) {
@@ -536,8 +531,7 @@ function get_products_category_navigation($data, $smarty, $user, $db) {
 
             $sql = sprintf(
                 "select C.`Category Label` object_name,C.`Category Key` as object_key %s from $table   $where $wheref
-	                and ($_order_field  > %s OR ($_order_field  = %s AND C.`Category Key`> %d))  order by $_order_field   , C.`Category Key` limit 1", $extra_field, prepare_mysql($_order_field_value),
-                prepare_mysql($_order_field_value), $category->id
+	                and ($_order_field  > %s OR ($_order_field  = %s AND C.`Category Key`> %d))  order by $_order_field   , C.`Category Key` limit 1", $extra_field, prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $category->id
             );
 
 
@@ -555,8 +549,7 @@ function get_products_category_navigation($data, $smarty, $user, $db) {
             }
 
 
-         // print $order_direction;
-
+            // print $order_direction;
 
 
             if ($order_direction == 'desc') {
@@ -619,21 +612,21 @@ function get_products_category_navigation($data, $smarty, $user, $db) {
 
     if ($data['store']->get('Store Department Category Key') == $data['_object']->get('Category Root Key')) {
         if ($data['_object']->get('Category Root Key') != $data['_object']->id) {
-           $category_title_label = _('Department').' ';
-            $title = $category_title_label.'<span class="Category_Code id">'.$data['_object']->get('Code').'</span>';
+            $category_title_label = _('Department').' ';
+            $title                = $category_title_label.'<span class="Category_Code id">'.$data['_object']->get('Code').'</span>';
 
         } else {
-            $title=_('Departments');
+            $title = _('Departments');
         }
 
     } elseif ($data['store']->get('Store Family Category Key') == $data['_object']->get('Category Root Key')) {
 
         if ($data['_object']->get('Category Root Key') != $data['_object']->id) {
             $category_title_label = _('Family').' ';
-            $title = $category_title_label.'<span class="Category_Code id">'.$data['_object']->get('Code').'</span>';
+            $title                = $category_title_label.'<span class="Category_Code id">'.$data['_object']->get('Code').'</span>';
 
         } else {
-            $title=_('Families');
+            $title = _('Families');
         }
 
 
@@ -658,7 +651,6 @@ function get_products_category_navigation($data, $smarty, $user, $db) {
     }
 
 
-
     //$right_buttons[]=array('icon'=>'edit', 'title'=>_('Edit'), 'url'=>"edit_product_categories.php?store_id=".$data['store']->id);
 
     $sections                           = get_sections(
@@ -667,7 +659,7 @@ function get_products_category_navigation($data, $smarty, $user, $db) {
     $sections['categories']['selected'] = true;
 
 
-    if($category->get('Category Branch Type')!='Root') {
+    if ($category->get('Category Branch Type') != 'Root') {
 
         $right_buttons[] = array(
             'icon'  => 'sticky-note',
@@ -948,10 +940,8 @@ function get_product_navigation($data, $smarty, $user, $db, $account) {
 
                 $sql = sprintf(
                     "select P.`Product Code` object_name,P.`Product ID` as object_key %s from $table   $where $wheref
-	                and ($_order_field < %s OR ($_order_field = %s AND P.`Product ID` < %d))  order by $_order_field desc , P.`Product ID` desc limit 1", $extra_field,
-                    prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+	                and ($_order_field < %s OR ($_order_field = %s AND P.`Product ID` < %d))  order by $_order_field desc , P.`Product ID` desc limit 1", $extra_field, prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
                 );
-
 
 
                 if ($result = $db->query($sql)) {
@@ -970,8 +960,7 @@ function get_product_navigation($data, $smarty, $user, $db, $account) {
 
                 $sql = sprintf(
                     "select P.`Product Code` object_name,P.`Product ID` as object_key %s from $table   $where $wheref
-	                and ($_order_field  > %s OR ($_order_field  = %s AND P.`Product ID` > %d))  order by $_order_field   , P.`Product ID`  limit 1", $extra_field, prepare_mysql($_order_field_value),
-                    prepare_mysql($_order_field_value), $object->id
+	                and ($_order_field  > %s OR ($_order_field  = %s AND P.`Product ID` > %d))  order by $_order_field   , P.`Product ID`  limit 1", $extra_field, prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
                 );
 
 
@@ -1227,7 +1216,7 @@ function get_product_navigation($data, $smarty, $user, $db, $account) {
 
     if (count($product_parts) == 1) {
 
-        $part = array_values($product_parts)[0];
+        $part  = array_values($product_parts)[0];
         $title .= ' <small class="padding_left_10"> <i class="fa fa-long-arrow-left padding_left_10"></i> <i class="fa fa-square button" title="'._('Part').'" onCLick="change_view(\'/part/'.$part->id
             .'\')" ></i> <span class="Part_Reference button"  onCLick="change_view(\'part/'.$part->id.'\')">'.$part->get('Reference').'</small>';
 
@@ -1520,8 +1509,7 @@ function get_service_navigation($data, $smarty, $user, $db, $account) {
 
                 $sql = sprintf(
                     "select P.`Product Code` object_name,P.`Product ID` as object_key %s from $table   $where $wheref
-	                and ($_order_field < %s OR ($_order_field = %s AND P.`Product ID` < %d))  order by $_order_field desc , P.`Product ID` desc limit 1", $extra_field,
-                    prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+	                and ($_order_field < %s OR ($_order_field = %s AND P.`Product ID` < %d))  order by $_order_field desc , P.`Product ID` desc limit 1", $extra_field, prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
                 );
 
                 if ($result = $db->query($sql)) {
@@ -1540,8 +1528,7 @@ function get_service_navigation($data, $smarty, $user, $db, $account) {
 
                 $sql = sprintf(
                     "select P.`Product Code` object_name,P.`Product ID` as object_key %s from $table   $where $wheref
-	                and ($_order_field  > %s OR ($_order_field  = %s AND P.`Product ID` > %d))  order by $_order_field   , P.`Product ID`  limit 1", $extra_field, prepare_mysql($_order_field_value),
-                    prepare_mysql($_order_field_value), $object->id
+	                and ($_order_field  > %s OR ($_order_field  = %s AND P.`Product ID` > %d))  order by $_order_field   , P.`Product ID`  limit 1", $extra_field, prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
                 );
 
 
@@ -1799,7 +1786,7 @@ function get_service_navigation($data, $smarty, $user, $db, $account) {
 
     if (count($service_parts) == 1) {
 
-        $part = array_values($service_parts)[0];
+        $part  = array_values($service_parts)[0];
         $title .= ' <small class="padding_left_10"> <i class="fa fa-long-arrow-left padding_left_10"></i> <i class="fa fa-stop button" title="'._('Part').'" onCLick="change_view(\'/part/'.$part->id
             .'\')" ></i> <span class="Part_Reference button"  onCLick="change_view(\'part/'.$part->id.'\')">'.$part->get('Reference').'</small>';
 
@@ -2026,8 +2013,7 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
 
                     $sql = sprintf(
                         "select O.`Order Public ID` object_name,O.`Order Key` as object_key from $table   $where $wheref
-	                and ($_order_field  > %s OR ($_order_field  = %s AND O.`Order Key` > %d))  order by $_order_field   , O.`Order Key`  limit 1", prepare_mysql($_order_field_value),
-                        prepare_mysql($_order_field_value), $object->id
+	                and ($_order_field  > %s OR ($_order_field  = %s AND O.`Order Key` > %d))  order by $_order_field   , O.`Order Key`  limit 1", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
                     );
 
                     if ($result = $db->query($sql)) {
@@ -2110,8 +2096,7 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
             $search_placeholder = _('Search products');
 
 
-        }
-        elseif ($data['parent'] == 'campaign') {
+        } elseif ($data['parent'] == 'campaign') {
 
 
             $up_button = array(
@@ -2159,8 +2144,7 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
             $search_placeholder = _('Search marketing');
 
 
-        }
-        elseif ($data['parent'] == 'deal') {
+        } elseif ($data['parent'] == 'deal') {
 
             $up_button = array(
                 'icon'      => 'arrow-up',
@@ -2207,16 +2191,13 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
             $search_placeholder = _('Search marketing');
 
 
-        }
-        elseif ($data['parent'] == 'charge') {
+        } elseif ($data['parent'] == 'charge') {
 
             $up_button = array(
                 'icon'      => 'arrow-up',
                 'title'     => _("Charge").' '.$data['_parent']->get('Code'),
                 'reference' => 'store/'.$data['_parent']->get('Store Key').'/charge/'.$data['_parent']->id
             );
-
-
 
 
             if ($prev_key) {
@@ -2296,21 +2277,18 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
 }
 
 
-
-
 function get_new_webpage_navigation($data, $smarty, $user, $db, $account) {
 
     $left_buttons = array();
 
 
-
     switch ($data['parent']) {
         case 'website':
-            $title                            = sprintf(_('New webpage for %s'), '<span class="id">'.$data['website']->get('Code').'</span>');
-            $sections                         = get_sections(
+            $title                           = sprintf(_('New webpage for %s'), '<span class="id">'.$data['website']->get('Code').'</span>');
+            $sections                        = get_sections(
                 'products', $data['parent_key']
             );
-            $left_buttons[]                   = array(
+            $left_buttons[]                  = array(
                 'icon'      => 'arrow-up',
                 'title'     => _('Website').': '.$data['website']->get('Code'),
                 'reference' => 'store/'.$data['store']->id.'/website',
@@ -2357,8 +2335,6 @@ function get_charge_navigation($data, $smarty, $user, $db, $account) {
     $right_buttons = array();
 
 
-
-
     if ($data['parent']) {
 
         switch ($data['parent']) {
@@ -2367,7 +2343,6 @@ function get_charge_navigation($data, $smarty, $user, $db, $account) {
                 $tab      = 'store.charges';
                 $_section = 'products';
                 break;
-
 
 
         }
@@ -2436,8 +2411,7 @@ function get_charge_navigation($data, $smarty, $user, $db, $account) {
 
                     $sql = sprintf(
                         "select O.`Order Public ID` object_name,O.`Order Key` as object_key from $table   $where $wheref
-	                and ($_order_field  > %s OR ($_order_field  = %s AND O.`Order Key` > %d))  order by $_order_field   , O.`Order Key`  limit 1", prepare_mysql($_order_field_value),
-                        prepare_mysql($_order_field_value), $object->id
+	                and ($_order_field  > %s OR ($_order_field  = %s AND O.`Order Key` > %d))  order by $_order_field   , O.`Order Key`  limit 1", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
                     );
 
                     if ($result = $db->query($sql)) {
@@ -2516,8 +2490,8 @@ function get_charge_navigation($data, $smarty, $user, $db, $account) {
             }
 
 
-            $sections      = get_sections('products', $data['_parent']->id);
-            $_section      = 'store';
+            $sections = get_sections('products', $data['_parent']->id);
+            $_section = 'store';
 
 
             $search_placeholder = _('Search products');
@@ -2560,6 +2534,152 @@ function get_charge_navigation($data, $smarty, $user, $db, $account) {
 
 }
 
+
+function get_shipping_zone_new_navigation($data, $smarty, $user, $db, $account) {
+
+    $left_buttons = array();
+
+
+
+    switch ($data['parent']) {
+        case 'store':
+            $title                            = sprintf(_('New shipping zone for %s'), '<span class="id">'.$data['store']->get('Code').'</span>');
+            $sections                         = get_sections('products', $data['parent_key']);
+            $left_buttons[]                   = array(
+                'icon'      => 'arrow-up',
+                'title'     => _('Store').': '.$data['store']->get('Code'),
+                'reference' => 'products/'.$data['store']->id,
+                'parent'    => ''
+            );
+            $sections['products']['selected'] = true;
+            break;
+        default:
+            exit('error in products.nav.php');
+            break;
+    }
+
+
+    $right_buttons = array();
+
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search products')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+
+}
+
+
+function get_charge_new_navigation($data, $smarty, $user, $db, $account) {
+
+    $left_buttons = array();
+
+
+
+    switch ($data['parent']) {
+        case 'store':
+            $title                            = sprintf(_('New charge for %s'), '<span class="id">'.$data['store']->get('Code').'</span>');
+            $sections                         = get_sections('products', $data['parent_key']);
+            $left_buttons[]                   = array(
+                'icon'      => 'arrow-up',
+                'title'     => _('Store').': '.$data['store']->get('Code'),
+                'reference' => 'products/'.$data['store']->id,
+                'parent'    => ''
+            );
+            $sections['products']['selected'] = true;
+            break;
+        default:
+            exit('error in products.nav.php');
+            break;
+    }
+
+
+    $right_buttons = array();
+
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search products')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+
+}
+
+
+function get_shipping_option_new_navigation($data, $smarty, $user, $db, $account) {
+
+    $left_buttons = array();
+
+
+
+    switch ($data['parent']) {
+        case 'store':
+            $title                            = sprintf(_('New shipping option for %s'), '<span class="id">'.$data['store']->get('Code').'</span>');
+            $sections                         = get_sections('products', $data['parent_key']);
+            $left_buttons[]                   = array(
+                'icon'      => 'arrow-up',
+                'title'     => _('Store').': '.$data['store']->get('Code'),
+                'reference' => 'products/'.$data['store']->id,
+                'parent'    => ''
+            );
+            $sections['products']['selected'] = true;
+            break;
+        default:
+            exit('error in products.nav.php');
+            break;
+    }
+
+
+    $right_buttons = array();
+
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search products')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+
+}
 
 
 ?>
