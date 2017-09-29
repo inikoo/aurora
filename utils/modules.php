@@ -1889,9 +1889,12 @@ $modules = array(
                     'store.charges' => array(
                         'label' => _('Charges'),
                         'icon'  => 'money',
-                        'title' => _('Charges')
                     ),
 
+                    'store.shipping_zones' => array(
+                        'label' => _('Shipping zones'),
+                        'icon'  => 'truck fa-flip-horizontal',
+                    ),
 
                     'store.history' => array(
                         'label' => _('History'),
@@ -1915,6 +1918,7 @@ $modules = array(
                 )
 
             ),
+
 
             'services' => array(
                 'type'      => 'navigation',
@@ -2819,6 +2823,71 @@ $modules = array(
                     ),
 
                 )
+            ),
+
+
+            'shipping_zone'     => array(
+                'type' => 'object',
+
+
+                'tabs' => array(
+                    'charge.details'    => array(
+                        'label' => _('Data'),
+                        'icon'  => 'database',
+                        'title' => _('Details')
+                    ),
+
+
+                    'charge.orders'     => array(
+                        'label' => _('Orders'),
+                        'icon'  => 'shopping-cart',
+
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Orders'
+                        ),
+                    ),
+                    'charge.customers'  => array(
+                        'label' => _('Customers'),
+                        'icon'  => 'users',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Customers'
+                        ),
+                    ),
+                    'charge.history' => array(
+                        'title'         => _('History/Notes'),
+                        'label'         => '',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number History Records'
+                        ),
+                        'icon'          => 'road',
+                        'class'         => 'right icon_only'
+                    ),
+
+                )
+            ),
+
+            'shipping_zone.new' => array(
+                'type' => 'new_object',
+                'tabs' => array(
+                    'shipping_zone.new' => array(
+                        'label' => _('New shipping zone')
+                    ),
+
+                )
+
+            ),
+            'charge.new' => array(
+                'type' => 'new_object',
+                'tabs' => array(
+                    'charge.new' => array(
+                        'label' => _('New charge')
+                    ),
+
+                )
+
             ),
 
         )

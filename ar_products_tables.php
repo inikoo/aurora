@@ -71,6 +71,12 @@ switch ($tipo) {
     case 'charges':
         charges(get_table_parameters(), $db, $user);
         break;
+    case 'shipping_zones':
+        shipping_zones(get_table_parameters(), $db, $user);
+        break;
+    case 'shipping_options':
+        shipping_options(get_table_parameters(), $db, $user);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -1434,5 +1440,46 @@ function charges($_data, $db, $user) {
     );
     echo json_encode($response);
 }
+
+
+
+function shipping_zones($_data, $db, $user) {
+
+
+    $rtext_label = 'shipping zone';
+
+    include_once 'prepare_table/init.php';
+
+    $sql         = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $record_data = array();
+
+
+    foreach ($db->query($sql) as $data) {
+
+
+        $record_data[] = array(
+            'id'   => (integer)$data['Shipping Zone Key'],
+            'code' => sprintf('<span class="link" onClick="change_view(\'store/%d/shipping_zone/%d\')" >%s</span>',$data['Shipping Zone Store Key'],$data['Shipping Zone Key'],$data['Shipping Zone Name']),
+            'name' => sprintf('<span class="link" onClick="change_view(\'store/%d/shipping_zone/%d\')" >%s</span>',$data['Shipping Zone Store Key'],$data['Shipping Zone Key'],$data['Shipping Zone Description']),
+
+
+        );
+
+    }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $record_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
 
 ?>

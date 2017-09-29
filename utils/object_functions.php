@@ -339,7 +339,16 @@ function get_object($object_name, $key, $load_other_data = false) {
             $object = new TimeseriesRecord($key);
             break;
 
-
+        case 'shipping_zone':
+        case 'shippingzone':
+            require_once "class.Shipping_Zone.php";
+            $object = new Shipping_Zone($key);
+            break;
+        case 'shipping_option':
+        case 'shippingoption':
+            require_once "class.Shipping_Option.php";
+            $object = new Shipping_Option($key);
+            break;
 
         default:
             exit('need to complete E1: x>'.strtolower($object_name).'<<++>>'.$load_other_data."<\n");

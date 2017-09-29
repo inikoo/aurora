@@ -564,11 +564,19 @@ $tab_defaults = array(
         'sort_order'    => 1,
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
-        'f_field'       => 'name',
-
-
-
+        'f_field'       => 'name'
     ),
+    'store.shipping_zones' => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'name'
+    ),
+
+
+
     'store.products' => array(
         'view'          => 'overview',
         'sort_key'      => 'id',

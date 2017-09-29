@@ -155,8 +155,25 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                 $parent_key = $key;
                                 if (is_numeric($view_path[2])) {
                                     $key = $view_path[2];
-                                }
+                                }elseif($view_path[2]=='new'){
 
+                                    $section    = 'charge.new';
+                                }
+                            }elseif ($view_path[1] == 'shipping_zone') {
+
+
+                                $section    = 'shipping_zone';
+                                $object     = 'shipping_zone';
+
+                                $parent     = 'store';
+                                $parent_key = $key;
+
+                                if (is_numeric($view_path[2])) {
+                                    $key = $view_path[2];
+                                }elseif($view_path[2]=='new'){
+
+                                    $section    = 'shipping_zone.new';
+                                }
 
                             }
 
@@ -239,6 +256,59 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
 
                         }
+                    }
+
+
+                }
+                break;
+            case 'shipping_zone':
+                if (!$user->can_view('stores')) {
+                    $module  = 'utils';
+                    $section = 'forbidden';
+                    break;
+                }
+
+                $module  = 'products';
+                $section = 'store';
+
+                if (isset($view_path[0])) {
+                    if (is_numeric($view_path[0])) {
+
+
+                        $section    = 'shipping_zone';
+                        $object     = 'shipping_zone';
+                        $key        = $view_path[0];
+                        $parent     = 'store';
+                        $parent_key = '';
+
+                        if (isset($view_path[1])) {
+
+                            if ($view_path[1] == 'order') {
+                                $object     = 'order';
+                                $section    = 'order';
+
+
+
+                                $parent     = 'shipping_zone';
+                                $parent_key = $key   ;
+                                if (isset($view_path[2])) {
+                                    $key        = $view_path[2];
+
+                                }
+
+
+
+
+
+                            }
+
+
+
+                        }
+
+                    }
+                    elseif($view_path[0]=='new'){
+                        $section    = 'shipping_zone.new';
                     }
 
 

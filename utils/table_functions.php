@@ -270,6 +270,14 @@ function get_rtext($record_label, $total_records) {
         return sprintf(
             ngettext('%s operative', '%s operatives', $total_records), number($total_records)
         );
+    }  elseif ($record_label == 'charge') {
+        return sprintf(
+            ngettext('%s charge', '%s charges', $total_records), number($total_records)
+        );
+    }elseif ($record_label == 'shipping zone') {
+        return sprintf(
+            ngettext('%s shipping zone', '%s shipping zones', $total_records), number($total_records)
+        );
     } elseif ($record_label == 'data set') {
         return sprintf(
             ngettext('%s data set', '%s data sets', $total_records), number($total_records)
@@ -765,6 +773,18 @@ function get_rtext_with_filter($record_label, $total_with_filter, $total_no_filt
         return sprintf(
             ngettext(
                 '%s part to produce as soon as possible of %s', '%s parts to produce as soon as possible of %s', $total_with_filter
+            ), number($total_with_filter), number($total_no_filter)
+        );
+    } elseif ($record_label == 'charge') {
+        return sprintf(
+            ngettext(
+                '%s charge of %s', '%s charges of %s', $total_with_filter
+            ), number($total_with_filter), number($total_no_filter)
+        );
+    } elseif ($record_label == 'shipping zone') {
+        return sprintf(
+            ngettext(
+                '%s shipping zone of %s', '%s shipping zones of %s', $total_with_filter
             ), number($total_with_filter), number($total_no_filter)
         );
     } else {
