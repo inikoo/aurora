@@ -1765,22 +1765,6 @@ class Supplier extends SubjectSupplier {
 
 
 
-        $sql=sprintf('select `Timeseries Record Key` from `Timeseries Record Dimension` where `Timeseries Record Timeseries Key`=%d',$timeseries->id);
-
-        if ($result=$this->db->query($sql)) {
-        		foreach ($result as $row) {
-                    $sql = sprintf(
-                        'DELETE FROM `Timeseries Record Drill Down` WHERE `Timeseries Record Drill Down Timeseries Record Key`=%d  ', $row['Timeseries Record Key']
-                    );
-                    //print $sql;
-                    $this->db->exec($sql);
-        		}
-        }else {
-        		print_r($error_info=$this->db->errorInfo());
-        		print "$sql\n";
-        		exit;
-        }
-
 
 
 
@@ -1799,6 +1783,13 @@ class Supplier extends SubjectSupplier {
 
                 list($timeseries_record_key, $date) = $timeseries->create_record(array('Timeseries Record Date' => $_date));
 
+
+
+                $sql = sprintf(
+                    'DELETE FROM `Timeseries Record Drill Down` WHERE `Timeseries Record Drill Down Timeseries Record Key`=%d  ', $timeseries_record_key
+                );
+                //print $sql;
+                $this->db->exec($sql);
 
 
 
@@ -1923,6 +1914,27 @@ class Supplier extends SubjectSupplier {
 
 
             } else {
+
+
+                $sql = sprintf(
+                    'select `Timeseries Record Key` FROM `Timeseries Record Dimension` WHERE `Timeseries Record Timeseries Key`=%d AND `Timeseries Record Date`=%s ', $timeseries->id, prepare_mysql($_date)
+                );
+
+                if ($result=$this->db->query($sql)) {
+                    if ($row = $result->fetch()) {
+                        $sql = sprintf(
+                            'DELETE FROM `Timeseries Record Drill Down` WHERE `Timeseries Record Drill Down Timeseries Record Key`=%d  ', $row['Timeseries Record Key']
+                        );
+                        //print $sql;
+                        $this->db->exec($sql);
+
+                    }
+                }else {
+                	print_r($error_info=$this->db->errorInfo());
+                	print "$sql\n";
+                	exit;
+                }
+
 
 
 
