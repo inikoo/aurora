@@ -9,27 +9,9 @@
 -->
 *}
 
-{if $smarty.server.SERVER_NAME!='ecom.bali'}
+{if $smarty.server.SERVER_NAME!='ecom.bali' and $client_tag_google_manager_id!=''}
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={$client_tag_google_manager_id}" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
 
-<script>
-    (function(i,s,o,g,r,a,m){
-        i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-
-
-    {if $client_analytics_id!=''}
-    ga('create', '{$analytics_id}', 'auto');
-    ga('create', '{$client_analytics_id}', 'auto', 'clientTracker');
-    ga('send', 'pageview');
-
-    ga('clientTracker.send', 'pageview');
-    {else}
-    ga('create', '{$analytics_id}', 'auto');
-    ga('send', 'pageview');
-
-    {/if}
-</script>
 {/if}

@@ -375,14 +375,7 @@
 
                         if (data.state == '200') {
 
-                            {if $smarty.server.SERVER_NAME!='ecom.bali'}
-
-
-                            ga('send', 'event', { eventCategory: 'registration', eventAction: 'submit', eventLabel: 'newuser', eventValue: 1});
-                            {if $client_analytics_id!=''}
-                               ga('clientTracker.send', 'event', { eventCategory: 'registration', eventAction: 'submit', eventLabel: 'newuser', eventValue: 1});
-                            {/if}
-                            {/if}
+                         
 
 
                             window.location.replace("welcome.sys");
