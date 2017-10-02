@@ -18,6 +18,11 @@ class EmailCampaign extends DB_Table {
     var $updated_data = array();
 
     function EmailCampaign($arg1 = false, $arg2 = false, $arg3 = false) {
+
+
+        global $db;
+        $this->db = $db;
+
         $this->table_name    = 'Email Campaign';
         $this->ignore_fields = array(
             'Email Campaign Key',
@@ -34,8 +39,8 @@ class EmailCampaign extends DB_Table {
         }
 
 
-        if (is_array($arg2) and preg_match('/find/i', $arg1)) {
-            $this->find($arg2, $arg3);
+        if (is_array($arg2) and preg_match('/find|new/i', $arg1)) {
+            $this->find($arg2, 'create');
 
             return;
         }
@@ -89,6 +94,7 @@ class EmailCampaign extends DB_Table {
             if ($row = $result->fetch()) {
                 $this->found_key = $row['Email Campaign Key'];
                 $this->found     = true;
+                $this->get_data('id',$this->found_key );
         	}
         }else {
         	print_r($error_info=$this->db->errorInfo());
@@ -115,6 +121,7 @@ class EmailCampaign extends DB_Table {
 
         $data         = $this->base_data();
 
+
         foreach ($raw_data as $key => $value) {
             if (array_key_exists($key, $data)) {
 
@@ -132,16 +139,14 @@ class EmailCampaign extends DB_Table {
             return;
         }
 
-        $data['Email Campaign Creation Date'] = date("Y-m-d H:i:s");
-        $data['Email Campaign Last Updated Date'] = $data['Email Campaign Creation Date'];
-        $data['Email Campaign Status']        = 'Creating';
+
 
 
         $keys   = '(';
         $values = 'values(';
         foreach ($data as $key => $value) {
             $keys .= "`$key`,";
-            if ($key = 'Email Campaign Recipients Preview' or $key = 'Email Campaign Scope') {
+            if (  $key = '') {
                 $values .= prepare_mysql($value, false).",";
             } else {
                 $values .= prepare_mysql($value).",";
@@ -154,6 +159,8 @@ class EmailCampaign extends DB_Table {
 
 
         $sql = "insert into `Email Campaign Dimension` $keys  $values";
+
+//print $sql;
 
         if ($this->db->exec($sql)) {
             $this->id = $this->db->lastInsertId();
