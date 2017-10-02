@@ -145,8 +145,5 @@ $smarty->assign('account', $account);
 $common = '';
 
 $smarty->assign('page_name', basename($_SERVER["PHP_SELF"], ".php"));
-$smarty->assign(
-    'analytics_tracking', (file_exists('templates/analytics_tracking.tpl') ? true : false)
-);
 
 

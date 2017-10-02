@@ -132,7 +132,8 @@ if (!$is_cached) {
 
 
 
-    $smarty->assign('client_analytics_id',$website->get('Website Client Analytics Code'));
+    $smarty->assign('client_tag_google_manager_id',$website->get('Website Google Tag Manager Code'));
+
     $smarty->assign('zendesk_chat_code',$website->get('Website Zendesk Chat Code'));
 
 
