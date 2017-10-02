@@ -119,8 +119,10 @@ switch ($tipo) {
         invoice_categories(get_table_parameters(), $db, $user);
         break;
     case 'orders_in_website':
-
         orders_in_website(get_table_parameters(), $db, $user);
+        break;
+    case 'orders_in_website_mailshots':
+        orders_in_website_mailshots(get_table_parameters(), $db, $user);
         break;
     default:
         $response = array(
@@ -2574,6 +2576,60 @@ function invoice_categories($_data, $db, $user) {
             'percentage_assigned' => percentage(
                 $data['Category Number Subjects'], ($data['Category Number Subjects'] + $data['Category Subjects Not Assigned'])
             )
+        );
+
+    }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+function orders_in_website_mailshots($_data, $db, $user) {
+
+    $rtext_label = 'mailshot';
+
+
+    include_once 'prepare_table/init.php';
+
+
+
+
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $adata = array();
+
+
+
+
+
+    if ($parameters['parent'] == 'store'  ) {
+        $link_format = '/orders/%d/%d';
+    } else {
+        $link_format = '/'.$parameters['parent'].'/%d/order/%d';
+    }
+
+
+    foreach ($db->query($sql) as $data) {
+
+
+
+
+
+        $adata[] = array(
+            'id' => (integer)$data['Email Campaign Key'],
+
+            'name' => sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%s</span>', $parameters['parent_key'], $data['Email Campaign Key'], $data['Email Campaign Name']),
+
+
         );
 
     }

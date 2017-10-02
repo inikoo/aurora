@@ -349,6 +349,11 @@ function get_object($object_name, $key, $load_other_data = false) {
             require_once "class.Shipping_Option.php";
             $object = new Shipping_Option($key);
             break;
+        case 'email_campaign':
+        case 'emailcampaign':
+            require_once "class.EmailCampaign.php";
+            $object = new EmailCampaign($key);
+            break;
 
         default:
             exit('need to complete E1: x>'.strtolower($object_name).'<<++>>'.$load_other_data."<\n");

@@ -565,7 +565,7 @@ $modules = array(
             ),
 
 
-            'order'         => array(
+            'order'          => array(
                 'type' => 'object',
                 'tabs' => array(
 
@@ -610,7 +610,7 @@ $modules = array(
                 )
 
             ),
-            'delivery_note' => array(
+            'delivery_note'  => array(
                 'type' => 'object',
                 'tabs' => array(
 
@@ -655,7 +655,7 @@ $modules = array(
                 )
 
             ),
-            'invoice'       => array(
+            'invoice'        => array(
                 'type' => 'object',
                 'tabs' => array(
 
@@ -693,7 +693,7 @@ $modules = array(
                 )
 
             ),
-            'payment'       => array(
+            'payment'        => array(
                 'type' => 'object',
                 'tabs' => array(
                     'payment.details' => array(
@@ -706,6 +706,27 @@ $modules = array(
                         )
                     ),
                     'payment.history' => array(
+                        'label' => _(
+                            'History, notes'
+                        ),
+                        'icon'  => 'sticky-note-o'
+                    ),
+
+                )
+            ),
+            'email_campaign' => array(
+                'type' => 'object',
+                'tabs' => array(
+                    'email_campaign.details' => array(
+                        'label' => _(
+                            'Data'
+                        ),
+                        'icon'  => 'database',
+                        'title' => _(
+                            'Details'
+                        )
+                    ),
+                    'email_campaign.history' => array(
                         'label' => _(
                             'History, notes'
                         ),
@@ -1857,7 +1878,7 @@ $modules = array(
                         'title' => _('Details')
                     ),
                     'store.sales'   => array(
-                        'label'   => _('Sales'),
+                        'label' => _('Sales'),
                         'icon'  => 'usd',
 
                         'subtabs' => array(
@@ -2393,34 +2414,34 @@ $modules = array(
                     ),
 
                     'campaign.deals'     => array(
-                        'label' => _('Offers'),
-                        'icon'  => 'tags',
+                        'label'         => _('Offers'),
+                        'icon'          => 'tags',
                         'quantity_data' => array(
                             'object' => '_object',
                             'field'  => 'Deals Numbers'
                         ),
                     ),
                     'campaign.orders'    => array(
-                        'label' => _('Orders'),
-                        'icon'  => 'shopping-cart',
+                        'label'         => _('Orders'),
+                        'icon'          => 'shopping-cart',
                         'quantity_data' => array(
                             'object' => '_object',
                             'field'  => 'Used Orders'
                         ),
                     ),
                     'campaign.customers' => array(
-                        'label' => _('Customers'),
-                        'icon'  => 'users',
+                        'label'         => _('Customers'),
+                        'icon'          => 'users',
                         'quantity_data' => array(
                             'object' => '_object',
                             'field'  => 'Used Customers'
                         ),
                     ),
                     'campaign.history'   => array(
-                        'title' => _('History, notes'),
-                        'label'=>'',
-                        'icon'  => 'road',
-                        'class' => 'right icon_only',
+                        'title'         => _('History, notes'),
+                        'label'         => '',
+                        'icon'          => 'road',
+                        'class'         => 'right icon_only',
                         'quantity_data' => array(
                             'object' => '_object',
                             'field'  => 'Number History Records'
@@ -2434,20 +2455,19 @@ $modules = array(
 
 
                 'tabs' => array(
-                    'deal.details'    => array(
+                    'deal.details' => array(
                         'label' => _('Data'),
                         'icon'  => 'database',
                         'title' => _('Details')
                     ),
 
                     'deal.components' => array(
-                        'label' => _('Allowances'),
-                        'icon'  => '',
+                        'label'         => _('Allowances'),
+                        'icon'          => '',
                         'quantity_data' => array(
                             'object' => '_object',
                             'field'  => 'Number Active Components'
                         ),
-
 
 
                     ),
@@ -2461,14 +2481,14 @@ $modules = array(
                         ),
                     ),
                     'deal.customers'  => array(
-                        'label' => _('Customers'),
-                        'icon'  => 'users',
+                        'label'         => _('Customers'),
+                        'icon'          => 'users',
                         'quantity_data' => array(
                             'object' => '_object',
                             'field'  => 'Used Customers'
                         ),
                     ),
-                    'deal.history' => array(
+                    'deal.history'    => array(
                         'title'         => _('History/Notes'),
                         'label'         => '',
                         'quantity_data' => array(
@@ -2729,10 +2749,10 @@ $modules = array(
 
 
             'customer' => array(
-                'type'           => 'object',
+                'type' => 'object',
 
 
-                'tabs'           => array(
+                'tabs' => array(
                     'customer.details'   => array(
                         'label' => _('Data'),
                         'icon'  => 'database'
@@ -2782,19 +2802,19 @@ $modules = array(
                 )
             ),
 
-            'charge'     => array(
+            'charge' => array(
                 'type' => 'object',
 
 
                 'tabs' => array(
-                    'charge.details'    => array(
+                    'charge.details' => array(
                         'label' => _('Data'),
                         'icon'  => 'database',
                         'title' => _('Details')
                     ),
 
 
-                    'charge.orders'     => array(
+                    'charge.orders'    => array(
                         'label' => _('Orders'),
                         'icon'  => 'shopping-cart',
 
@@ -2803,15 +2823,15 @@ $modules = array(
                             'field'  => 'Orders'
                         ),
                     ),
-                    'charge.customers'  => array(
-                        'label' => _('Customers'),
-                        'icon'  => 'users',
+                    'charge.customers' => array(
+                        'label'         => _('Customers'),
+                        'icon'          => 'users',
                         'quantity_data' => array(
                             'object' => '_object',
                             'field'  => 'Customers'
                         ),
                     ),
-                    'charge.history' => array(
+                    'charge.history'   => array(
                         'title'         => _('History/Notes'),
                         'label'         => '',
                         'quantity_data' => array(
@@ -2826,19 +2846,19 @@ $modules = array(
             ),
 
 
-            'shipping_zone'     => array(
+            'shipping_zone' => array(
                 'type' => 'object',
 
 
                 'tabs' => array(
-                    'charge.details'    => array(
+                    'charge.details' => array(
                         'label' => _('Data'),
                         'icon'  => 'database',
                         'title' => _('Details')
                     ),
 
 
-                    'charge.orders'     => array(
+                    'charge.orders'    => array(
                         'label' => _('Orders'),
                         'icon'  => 'shopping-cart',
 
@@ -2847,15 +2867,15 @@ $modules = array(
                             'field'  => 'Orders'
                         ),
                     ),
-                    'charge.customers'  => array(
-                        'label' => _('Customers'),
-                        'icon'  => 'users',
+                    'charge.customers' => array(
+                        'label'         => _('Customers'),
+                        'icon'          => 'users',
                         'quantity_data' => array(
                             'object' => '_object',
                             'field'  => 'Customers'
                         ),
                     ),
-                    'charge.history' => array(
+                    'charge.history'   => array(
                         'title'         => _('History/Notes'),
                         'label'         => '',
                         'quantity_data' => array(
@@ -2879,7 +2899,7 @@ $modules = array(
                 )
 
             ),
-            'charge.new' => array(
+            'charge.new'        => array(
                 'type' => 'new_object',
                 'tabs' => array(
                     'charge.new' => array(
@@ -4073,7 +4093,7 @@ $modules = array(
 
             ),
 
-            'settings' => array(
+            'settings'          => array(
                 'type'      => 'navigation',
                 'label'     => '',
                 'icon'      => 'sliders',
@@ -4101,17 +4121,17 @@ $modules = array(
 
             ),
             'timeseries_record' => array(
-                'type'      => 'object',
-                'label'     => '',
-                'showcase'     => 'timeseries_record',
+                'type'     => 'object',
+                'label'    => '',
+                'showcase' => 'timeseries_record',
 
-                'tabs'      => array(
-                    'supplier.timeseries_record.parts'       => array(
+                'tabs' => array(
+                    'supplier.timeseries_record.parts'    => array(
                         'label' => _('Parts'),
                         'icon'  => 'square',
                         'class' => ''
                     ),
-                    'supplier.timeseries_record.families'       => array(
+                    'supplier.timeseries_record.families' => array(
                         'label' => _('Families'),
                         'icon'  => 'sitemap',
                         'class' => ''
@@ -4122,7 +4142,6 @@ $modules = array(
 
 
             ),
-
 
 
         )

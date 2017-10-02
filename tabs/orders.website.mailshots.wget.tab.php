@@ -34,16 +34,27 @@ $smarty->assign('table_top_template', 'orders_website_tabs.tpl');
 
 $table_buttons   = array();
 
-if( $state['parent']=='store'){
+if( $state['parent']=='store') {
 
-$table_buttons[] = array(
-    'icon'      => 'plus',
-    'title'     => _('New mailshot'),
-    'reference' => "orders/".$state['parent_key']."/dashboard/website/mailshots/new"
-);
+    $table_buttons[] = array(
+        'icon'      => 'plus',
+        'title'     => _('New mailshot'),
+        'id'=>'new_orders_in_website_mailshot',
+        'attr'=>array(
+            'parent'=>$state['parent'],
+            'parent_key'=>$state['parent_key'],
+
+        )
+
+    );
 
 }
 $smarty->assign('table_buttons', $table_buttons);
+
+
+$smarty->assign(
+    'js_code', 'js/injections/orders.website.mailshots.'.(_DEVEL ? '' : 'min.').'js'
+);
 
 
 

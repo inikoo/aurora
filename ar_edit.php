@@ -1532,6 +1532,14 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                 $updated_data = array();
             }
             break;
+        case 'EmailCampaign':
+            include_once 'class.EmailCampaign.php';
+            $object = $parent->create_email_campaign($data['fields_data']);
+            if (!$parent->error) {
+                $pcard        = '';
+                $updated_data = array();
+            }
+            break;
 
         default:
             $response = array(
