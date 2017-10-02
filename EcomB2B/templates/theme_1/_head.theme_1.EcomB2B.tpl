@@ -14,7 +14,7 @@
 <html lang="en-gb" class="no-js"> <!--<![endif]-->
 
 <head>
-    {if$smarty.server.SERVER_NAME!='ecom.bali'  and $client_tag_google_manager_id!=''}
+    {if $smarty.server.SERVER_NAME!='ecom.bali'  and $client_tag_google_manager_id!=''}
         <!-- Google Tag Manager -->
         <script>(function(w,d,s,l,i){ w[l]=w[l]||[];w[l].push({ 'gtm.start':
             new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],

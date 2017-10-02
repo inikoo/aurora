@@ -375,7 +375,7 @@
 
                         if (data.state == '200') {
 
-                         
+
 
 
                             window.location.replace("welcome.sys");
