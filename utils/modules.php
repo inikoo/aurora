@@ -727,10 +727,10 @@ $modules = array(
                         )
                     ),
                     'email_campaign.history' => array(
-                        'label' => _(
-                            'History, notes'
-                        ),
-                        'icon'  => 'sticky-note-o'
+                        'title' => _('History'),
+                        'label' => '',
+                        'icon'  => 'road',
+                        'class' => 'right icon_only'
                     ),
 
                 )

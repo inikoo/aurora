@@ -2950,6 +2950,18 @@ $tab_defaults = array(
 
     ),
 
+    'email_campaign.history'                             => array(
+        'view'          => 'overview',
+        'sort_key'      => 'date',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => '',
+        'elements_type' => each($elements_options['deal_history'])['key'],
+        'elements'      => $elements_options['deal_history']
+    ),
+
+
 );
 
 

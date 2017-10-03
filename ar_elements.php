@@ -251,6 +251,8 @@ switch ($tab) {
     case 'supplier.order.history':
     case 'category.webpage.logbook':
     case 'supplier.history':
+    case 'charge.history':
+    case 'email_campaign.history':
 
         $data = prepare_values(
             $_REQUEST, array(
@@ -1306,6 +1308,14 @@ function get_history_elements($db, $data) {
     } elseif ($data['parent'] == 'webpage_logbook') {
         $sql = sprintf(
             "SELECT count(*) AS num ,`Type` FROM  `Webpage Publishing History Bridge` WHERE  `Webpage Key`=%d GROUP BY  `Type`", $data['parent_key']
+        );
+    }elseif ($data['parent'] == 'charge') {
+        $sql = sprintf(
+            "SELECT count(*) AS num ,`Type` FROM  `Charge History Bridge` WHERE  `Charge Key`=%d GROUP BY  `Type`", $data['parent_key']
+        );
+    }elseif ($data['parent'] == 'email_campaign') {
+        $sql = sprintf(
+            "SELECT count(*) AS num ,`Type` FROM  `Email Campaign History Bridge` WHERE  `Email Campaign Key`=%d GROUP BY  `Type`", $data['parent_key']
         );
     } elseif ($data['parent'] == 'none') {
         $sql = sprintf(

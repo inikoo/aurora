@@ -22,9 +22,12 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
 
     switch ($object->get_object_name()) {
+        case 'Email Campaign':
+            include 'fields/email_campaign.fld.php';
+            return $object_fields;
+            break;
         case 'Charge':
             include 'fields/charge.fld.php';
-
             return $object_fields;
             break;
         case 'Delivery Note':
