@@ -142,6 +142,8 @@ function get_view($db, $smarty, $user, $account, $modules) {
     $warehouse = '';
 
 
+
+
     switch ($state['parent']) {
 
 
@@ -173,6 +175,9 @@ function get_view($db, $smarty, $user, $account, $modules) {
 
             $state['current_store'] = $_parent->id;
             $store                  = $_parent;
+
+
+
             break;
 
         case 'part':
@@ -805,8 +810,6 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             );
             break;
         case 'account':
-
-
             if ($data['module'] == 'products_server') {
                 include_once 'showcase/stores.show.php';
                 $html = get_stores_showcase($data, $smarty, $user, $db);
@@ -1004,6 +1007,10 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
         case 'timeseries_record':
             include_once 'showcase/timeseries_record.show.php';
             $html = get_timeseries_record_showcase($data, $smarty, $user, $db,$account);
+            break;
+        case 'email_campaign':
+            include_once 'showcase/email_campaign.show.php';
+            $html = get_email_campaign_showcase($data, $smarty, $user, $db,$account);
             break;
         default:
             $html = $data['object'].' -> '.$data['key'];
@@ -1396,7 +1403,6 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                 case ('pending_orders'):
                     return get_pending_orders_navigation($data, $smarty, $user, $db, $account);
                     break;
-
                 case ('orders'):
                 case ('payments'):
                     return get_orders_navigation($data, $smarty, $user, $db, $account);
@@ -1408,15 +1414,16 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_delivery_note_navigation($data, $smarty, $user, $db, $account);
                     break;
                 case ('invoices'):
-                    return get_invoices_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
+                    return get_invoices_navigation($data, $smarty, $user, $db, $account);
                     break;
                 case ('invoice'):
                     return get_invoice_navigation($data, $smarty, $user, $db, $account);
                     break;
                 case ('payment'):
                     return get_payment_navigation($data, $smarty, $user, $db, $account);
+                    break;
+                case ('email_campaign'):
+                    return get_email_campaign_navigation($data, $smarty, $user, $db, $account);
                     break;
                 default:
                     return 'View not found';
@@ -4314,9 +4321,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
                 case 'invoice':
 
-                    $store = new Store(
-                        $state['_object']->data['Invoice Store Key']
-                    );
+                    $store = new Store($state['_object']->data['Invoice Store Key']);
 
                     if ($user->get_number_stores() > 1) {
                         $branch[] = array(
@@ -4349,7 +4354,37 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'reference' => ''
                     );
                     break;
+                case 'email_campaign':
 
+
+
+
+                    if ($user->get_number_stores() > 1) {
+                        $branch[] = array(
+                            'label'     => '('._('All stores').')',
+                            'icon'      => '',
+                            'reference' => 'orders/all'
+                        );
+                    }
+
+
+
+
+                    $branch[] = array(
+                        'label'     => _('Orders control panel').' '.$state['store']->get('Code'),
+                        'icon'      => '',
+                        'reference' => 'orders/'.$state['store']->id.'/dashboard/website/mailshots'
+                    );
+
+
+
+
+                    $branch[] = array(
+                        'label'     => '<span class="Email_Campaign_Name">'.$state['_object']->get('Name').'</span>',
+                        'icon'      => 'at',
+                        'reference' => ''
+                    );
+                    break;
             }
 
             break;

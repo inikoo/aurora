@@ -351,6 +351,7 @@ function get_object($object_name, $key, $load_other_data = false) {
             break;
         case 'email_campaign':
         case 'emailcampaign':
+        case 'email campaign':
             require_once "class.EmailCampaign.php";
             $object = new EmailCampaign($key);
             break;

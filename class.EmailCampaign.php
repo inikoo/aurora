@@ -482,7 +482,7 @@ class EmailCampaign extends DB_Table {
     }
 
     function delete() {
-        if ($this->data['Email Campaign Status'] == 'Creating') {
+        if ($this->data['Email Campaign State'] == 'Creating') {
             $content_keys = $this->get_content_data_keys();
             $sql          = sprintf(
                 "DELETE FROM `Email Campaign Content Bridge` WHERE `Email Campaign Key`=%d", $this->id
@@ -515,12 +515,92 @@ class EmailCampaign extends DB_Table {
 
 
         switch ($key) {
-            case('Email Campaign Content Type'):
-                return $this->get_content_type();
+
+            case 'State':
+                switch ($this->data['Email Campaign State']) {
+                    case 'InProcess':
+                        return _('Setting up mailing list');
+                        break;
+
+
+                    case 'InProcess':
+                        return 30;
+                        break;
+                    case 'InWarehouse':
+                        return 40;
+                        break;
+
+                    case 'PackedDone':
+                        return 80;
+                        break;
+                    case 'Approved':
+                        return 90;
+                        break;
+                    case 'Dispatched':
+                        return 100;
+                        break;
+                    case 'Cancelled':
+                        return -10;
+                        break;
+
+
+                    default:
+                        return 0;
+                        break;
+                }
+
+
                 break;
+            case ('State Index'):
+
+
+                switch ($this->data['Email Campaign State']) {
+                    case 'InProcess':
+                        return 10;
+                        break;
+
+
+                    case 'InProcess':
+                        return 30;
+                        break;
+                    case 'InWarehouse':
+                        return 40;
+                        break;
+
+                    case 'PackedDone':
+                        return 80;
+                        break;
+                    case 'Approved':
+                        return 90;
+                        break;
+                    case 'Dispatched':
+                        return 100;
+                        break;
+                    case 'Cancelled':
+                        return -10;
+                        break;
+
+
+                    default:
+                        return 0;
+                        break;
+                }
+
+                break;
+            case 'Creation Date':
+
+                return strftime('%e %b %y %k:%M',strtotime($this->data['Email Campaign '.$key]));
+
+                break;
+
+
             default:
                 if (isset($this->data[$key])) {
                     return $this->data[$key];
+                }
+
+                if (array_key_exists('Email Campaign '.$key, $this->data)) {
+                    return $this->data[$this->table_name.' '.$key];
                 }
         }
 
@@ -1042,30 +1122,49 @@ class EmailCampaign extends DB_Table {
 
     function set_as_ready($lag_seconds) {
 
-        if ($this->data['Email Campaign Status'] == 'Sending') {
+        if ($this->data['Email Campaign State'] == 'Sending') {
             $this->error = true;
             $this->msg   = _('Campaign already sending emails');
 
             return;
         }
-        if ($this->data['Email Campaign Status'] == 'Complete') {
+        if ($this->data['Email Campaign State'] == 'Complete') {
             $this->error = true;
             $this->msg   = _('Campaign already send');
 
             return;
         }
 
-        $this->data['Email Campaign Status']             = 'Ready';
+        $this->data['Email Campaign State']             = 'Ready';
         $this->data['Email Campaign Start Overdue Date'] = date(
             "Y-m-d H:i:s", strtotime(sprintf('now +%d seconds ', $lag_seconds))
         );
         $sql                                             = sprintf(
-            "UPDATE `Email Campaign Dimension` SET `Email Campaign Status`='Ready'  , `Email Campaign Start Overdue Date`=%s ", prepare_mysql($this->data['Email Campaign Start Overdue Date'])
+            "UPDATE `Email Campaign Dimension` SET `Email Campaign State`='Ready'  , `Email Campaign Start Overdue Date`=%s ", prepare_mysql($this->data['Email Campaign Start Overdue Date'])
 
         );
 
         //print $sql;
         mysql_query($sql);
+
+    }
+
+
+    function get_field_label($field) {
+
+        switch ($field) {
+
+            case 'Email Campaign Name':
+                $label = _('name');
+                break;
+
+
+            default:
+                $label = $field;
+
+        }
+
+        return $label;
 
     }
 
