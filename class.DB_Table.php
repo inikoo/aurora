@@ -60,6 +60,8 @@ abstract class DB_Table extends stdClass {
             if (is_string($value)) {
                 $value = _trim($value);
             }
+
+
             $this->update_field_switcher($key, $value, $options, $metadata);
 
 

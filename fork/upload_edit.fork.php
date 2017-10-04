@@ -112,6 +112,7 @@ function fork_upload_edit($job) {
     $key_index     = -1;
     $valid_indexes = array();
 
+  //  print_r($fields);
 
 
     foreach ($fields as $key => $value) {
@@ -134,8 +135,9 @@ function fork_upload_edit($job) {
         }
     }
 
+//print_r($valid_indexes);
 
-
+   // exit;
 
     if ($key_index < 0) {
         $error_code     = 'missing_required_field';

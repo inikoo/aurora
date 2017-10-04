@@ -2857,6 +2857,9 @@ class Part extends Asset {
         switch ($field) {
 
 
+
+
+
             case 'Part Cost in Warehouse':
 
                 $old_value = $this->get('Part Cost in Warehouse');
@@ -3303,7 +3306,7 @@ class Part extends Asset {
                 $this->updated = $updated;
                 break;
 
-
+/*
             case '':
 
 
@@ -3320,7 +3323,7 @@ class Part extends Asset {
 
 
                 break;
-
+*/
             case 'Part Package Dimensions':
             case 'Part Unit Dimensions':
 
@@ -3668,6 +3671,23 @@ class Part extends Asset {
             case 'Part Next Set Supplier Shipment':
                 $this->update_set_next_supplier_shipment($value, $options);
                 break;
+            case 'Part SKOs per Carton skip update supplier part':
+                $this->update_field('Part SKOs per Carton', $value, $options);
+
+
+            case 'Part SKOs per Carton':
+                $this->update_field($field, $value, $options);
+
+                foreach($this->get_supplier_parts('objects') as $supplier_part){
+                    $supplier_part->editor=$this->editor;
+
+
+
+                    $supplier_part->update(array('Supplier Part Packages Per Carton skip update part'=>$value),$options);
+                }
+
+                break;
+
             default:
                 $base_data = $this->base_data();
 
