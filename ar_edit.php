@@ -1293,7 +1293,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             include_once 'class.Product.php';
 
 
-            print_r($data['fields_data']);
+            //print_r($data['fields_data']);
 
             $object = $parent->create_product($data['fields_data']);
 
