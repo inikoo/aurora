@@ -900,6 +900,8 @@ class SupplierPart extends DB_Table {
 
                 break;
             case 'Supplier Part Packages Per Carton':
+            case 'Supplier Part Packages Per Carton skip update part':
+
 
 
                 if ($value == '') {
@@ -919,7 +921,7 @@ class SupplierPart extends DB_Table {
                 }
 
 
-                $this->update_field($field, $value, $options);
+                $this->update_field('Supplier Part Packages Per Carton', $value, $options);
 
 
 
@@ -935,11 +937,12 @@ class SupplierPart extends DB_Table {
 
                 );
 
-                $this->part->editor=$this->editor;
-                $this->part->update(
-                    array('Part SKOs per Carton'=>$value)
+                if($field=='Supplier Part Packages Per Carton'){
+                    $this->part->editor=$this->editor;
+                    $this->part->update(array('Part SKOs per Carton skip update supplier part'=>$value));
+                }
 
-                );
+
 
 
                 if (!preg_match('/skip_update_historic_object/', $options)) {

@@ -58,7 +58,7 @@ $export_edit_template_fields = array(
             'label'         => _('Family'),
             'checked'       => 0
         ),
- array(
+        array(
             'default_value' => '',
             'show_for_new'  => true,
             'required'      => true,
@@ -98,9 +98,9 @@ $export_edit_template_fields = array(
             'default_value' => '',
             'show_for_new'  => true,
             'required'      => true,
-            'header'        => 'Outers (SKO) per carton',
+            'header'        => 'SKOs per carton',
             'name'          => 'Supplier Part Packages Per Carton',
-            'label'         => _('Outers (SKO) per carton'),
+            'label'         => _('SKOs per carton'),
             'checked'       => 0
         ),
         array(
@@ -112,6 +112,7 @@ $export_edit_template_fields = array(
             'label'         => _('Units per SKO'),
             'checked'       => 0
         ),
+
         array(
             'default_value' => '',
             'show_for_new'  => false,
@@ -410,15 +411,7 @@ $export_edit_template_fields = array(
             'checked'       => 0
         ),
 
-array(
-            'default_value' => '',
-            'show_for_new'  => true,
-            'required'      => true,
-            'header'        => 'Part SKO Barcode',
-            'name'          => 'Part SKO Barcode',
-            'label'         => _('Part SKO Barcode'),
-            'checked'       => 0
-        ),
+
         array(
             'default_value' => '',
             'show_for_new'  => true,
@@ -426,6 +419,24 @@ array(
             'header'        => 'Units per SKO',
             'name'          => 'Part Units Per Package',
             'label'         => _('Units per SKO'),
+            'checked'       => 0
+        ),
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => true,
+            'header'        => 'SKOs per Carton',
+            'name'          => 'Part SKOs per Carton',
+            'label'         => _('SKOs per Carton'),
+            'checked'       => 0
+        ),
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => true,
+            'header'        => 'Part SKO Barcode',
+            'name'          => 'Part SKO Barcode',
+            'label'         => _('SKO Barcode'),
             'checked'       => 0
         ),
         array(
@@ -549,7 +560,7 @@ array(
 
     ),
 
-    'product' => array(
+    'product'  => array(
         array(
             'default_value' => '',
             'show_for_new'  => true,
@@ -694,8 +705,6 @@ array(
             'label'         => ucfirst(_('max volume')).' (m³)',
             'checked'       => 0
         ),
-
-
 
 
     ),
