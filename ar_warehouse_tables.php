@@ -674,7 +674,7 @@ function stock_leakages($_data, $db, $user, $account) {
         case 'warehouse':
             $warehouse  = get_object('Warehouse', $_data['parameters']['parent_key']);
             $currency   = $account->get('Account Currency');
-            $from       = $warehouse->get('Warehouse Valid From');
+            $from       = ($warehouse->get('Warehouse Leakage Timeseries From')!=''?$warehouse->get('Warehouse Leakage Timeseries From'):$warehouse->get('Warehouse Valid From'));
             $to         = gmdate('Y-m-d');
             $date_field = '`Timeseries Record Date`';
             break;
@@ -690,6 +690,8 @@ function stock_leakages($_data, $db, $user, $account) {
         'SELECT count(DISTINCT %s) AS num FROM kbase.`Date Dimension` WHERE `Date`>=DATE(%s) AND `Date`<=DATE(%s) ', $sql_totals_fields, prepare_mysql($from), prepare_mysql($to)
 
     );
+
+    //print $sql;
 
     list($rtext, $total, $filtered) = get_table_totals(
         $db, $sql_totals, '', $rtext_label, false
@@ -919,8 +921,8 @@ function leakages_transactions($_data, $db, $user, $account) {
 
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
-    print $sql;
-    
+    //print $sql;
+
 
     $record_data = array();
 
