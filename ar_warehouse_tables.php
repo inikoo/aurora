@@ -280,16 +280,16 @@ function replenishments($_data, $db, $user) {
             'id'                    => (integer)$data['Location Key'],
             'location'              => ($data['Warehouse Flag Key'] ? sprintf(
                     '<i class="fa fa-flag %s" aria-hidden="true" title="%s"></i>', strtolower($data['Warehouse Flag Color']), $data['Warehouse Flag Label']
-                ) : '<i class="fa fa-flag-o super_discreet" aria-hidden="true"></i>').' <span class="link" onClick="change_view(\'locations/'.$data['Location Warehouse Key'].'/'.$data['Location Key']
-                .'\')">'.$data['Location Code'].'</span>',
+                ) : '<i class="fa fa-flag-o super_discreet" aria-hidden="true"></i>').' <span class="link" onClick="change_view(\'locations/'.$data['Location Warehouse Key'].'/'.$data['Location Key'].'\')">'.$data['Location Code'].'</span>',
             'part'                  => sprintf('<span class="link" onCLick="change_view(\'part/%d\')" >%s</span>', $data['Part SKU'], $data['Part Reference']),
             'other_locations_stock' => $stock,
 
             'quantity'             => number($data['Quantity On Hand']),
             'ordered_quantity'     => number($data['ordered_quantity']),
             'effective_stock'      => number($data['effective_stock']),
-            'recommended_quantity' => ' <span class="padding_left_5">(<span style="display: inline-block;min-width: 20px;text-align: center">'.number($data['Minimum Quantity'])
-                .'</span>,<span style="display: inline-block;min-width: 25px;text-align: center">'.number($data['Maximum Quantity']).'</span>)</span>'
+            'recommended_quantity' => ' <span class="padding_left_5">(<span style="display: inline-block;min-width: 20px;text-align: center">'.number($data['Minimum Quantity']).'</span>,<span style="display: inline-block;min-width: 25px;text-align: center">'.number(
+                    $data['Maximum Quantity']
+                ).'</span>)</span>'
 
         );
 
@@ -346,8 +346,8 @@ function parts($_data, $db, $user, $account) {
             'sko_cost'    => money($data['Part Cost in Warehouse'], $account->get('Account Currency')),
             'stock_value' => money($data['Stock Value'], $account->get('Account Currency')),
             'quantity'    => sprintf(
-                '<span style="padding-left:3px;padding-right:7.5px" class="table_edit_cell  location_part_stock" title="%s" part_sku="%d" location_key="%d"  qty="%s" onClick="open_location_part_stock_quantity_dialog(this)">%s</span>',
-                '', $data['Part SKU'], $data['Location Key'], $data['Quantity On Hand'], number($data['Quantity On Hand'])
+                '<span style="padding-left:3px;padding-right:7.5px" class="table_edit_cell  location_part_stock" title="%s" part_sku="%d" location_key="%d"  qty="%s" onClick="open_location_part_stock_quantity_dialog(this)">%s</span>', '', $data['Part SKU'],
+                $data['Location Key'], $data['Quantity On Hand'], number($data['Quantity On Hand'])
             )
 
 
@@ -399,8 +399,7 @@ function stock_transactions($_data, $db, $user) {
                             number($data['Required']), '<span title="'._('Stock keeping outers').'">SKO</span>',
 
                             sprintf(
-                                '<span class="button" onClick="change_view(\'delivery_note/%d\')"><i class="fa fa-fw fa-shopping-basket" aria-hidden="true"></i> %s</span>', $data['Delivery Note Key'],
-                                $data['Delivery Note ID']
+                                '<span class="button" onClick="change_view(\'delivery_note/%d\')"><i class="fa fa-fw fa-shopping-basket" aria-hidden="true"></i> %s</span>', $data['Delivery Note Key'], $data['Delivery Note ID']
                             ), sprintf(
                                 '<span class="button" onClick="change_view(\'location/%d\')">%s</span>', $data['Location Key'], $data['Location Code']
                             )
@@ -418,8 +417,7 @@ function stock_transactions($_data, $db, $user) {
                                 : sprintf(
                                     '<span class="button" onClick="change_view(\'part/%d\')"><i class="fa fa-square" aria-hidden="true"></i> %s</span>', $data['Part SKU'], $data['Part Reference']
                                 )), sprintf(
-                                '<span class="button" onClick="change_view(\'delivery_note/%d\')"><i class="fa fa-shopping-basket" aria-hidden="true"></i> %s</span>', $data['Delivery Note Key'],
-                                $data['Delivery Note ID']
+                                '<span class="button" onClick="change_view(\'delivery_note/%d\')"><i class="fa fa-shopping-basket" aria-hidden="true"></i> %s</span>', $data['Delivery Note Key'], $data['Delivery Note ID']
                             ), sprintf(
                                 '<span class="button" onClick="change_view(\'location/%d\')">%s</span>', $data['Location Key'], $data['Location Code']
                             )
@@ -440,8 +438,7 @@ function stock_transactions($_data, $db, $user) {
 
 
                         , sprintf(
-                            '<span class="button" onClick="change_view(\'delivery_note/%d\')"><i class="fa fa-truck" aria-hidden="true"></i> %s</span>', $data['Delivery Note Key'],
-                            $data['Delivery Note ID']
+                            '<span class="button" onClick="change_view(\'delivery_note/%d\')"><i class="fa fa-truck" aria-hidden="true"></i> %s</span>', $data['Delivery Note Key'], $data['Delivery Note ID']
                         ), sprintf(
                             '<span class="button" onClick="change_view(\'location/%d\')">%s</span>', $data['Location Key'], $data['Location Code']
                         )
@@ -461,8 +458,7 @@ function stock_transactions($_data, $db, $user) {
 
 
                         , sprintf(
-                            '<span class="button" onClick="change_view(\'delivery_note/%d\')"><i class="fa fa-truck" aria-hidden="true"></i> %s</span>', $data['Delivery Note Key'],
-                            $data['Delivery Note ID']
+                            '<span class="button" onClick="change_view(\'delivery_note/%d\')"><i class="fa fa-truck" aria-hidden="true"></i> %s</span>', $data['Delivery Note Key'], $data['Delivery Note ID']
                         ), sprintf(
                             '<span class="button" onClick="change_view(\'location/%d\')">%s</span>', $data['Location Key'], $data['Location Code']
                         )
@@ -638,8 +634,6 @@ function part_locations_with_errors($_data, $db, $user) {
 }
 
 
-
-
 function stock_leakages($_data, $db, $user, $account) {
 
 
@@ -678,10 +672,10 @@ function stock_leakages($_data, $db, $user, $account) {
 
     switch ($_data['parameters']['parent']) {
         case 'warehouse':
-            $warehouse   = get_object('Warehouse',$_data['parameters']['parent_key']);
+            $warehouse  = get_object('Warehouse', $_data['parameters']['parent_key']);
             $currency   = $account->get('Account Currency');
             $from       = $warehouse->get('Warehouse Valid From');
-            $to         =  gmdate('Y-m-d');
+            $to         = gmdate('Y-m-d');
             $date_field = '`Timeseries Record Date`';
             break;
 
@@ -746,12 +740,12 @@ function stock_leakages($_data, $db, $user, $account) {
 
 
             $record_data[$_date] = array(
-                'up_amount'               => '<span class="very_discreet">'.money(0, $currency).'</span>',
-                'down_amount'    => '<span class="very_discreet">'.money(0, $currency).'</span>',
-                'up_commercial_amount'               => '<span class="very_discreet">'.money(0, $currency).'</span>',
-                'down_commercial_amount'    => '<span class="very_discreet">'.money(0, $currency).'</span>',
-                'up_transactions'          => '<span class="very_discreet">'.number(0).'</span>',
-                'down_transactions'          => '<span class="very_discreet">'.number(0).'</span>',
+                'up_amount'              => '<span class="very_discreet">'.money(0, $currency).'</span>',
+                'down_amount'            => '<span class="very_discreet">'.money(0, $currency).'</span>',
+                'up_commercial_amount'   => '<span class="very_discreet">'.money(0, $currency).'</span>',
+                'down_commercial_amount' => '<span class="very_discreet">'.money(0, $currency).'</span>',
+                'up_transactions'        => '<span class="very_discreet">'.number(0).'</span>',
+                'down_transactions'      => '<span class="very_discreet">'.number(0).'</span>',
 
                 'date' => $date
 
@@ -765,7 +759,6 @@ function stock_leakages($_data, $db, $user, $account) {
         print "$sql";
         exit;
     }
-
 
 
     switch ($_data['parameters']['parent']) {
@@ -840,24 +833,24 @@ function stock_leakages($_data, $db, $user, $account) {
 
 
                 if (in_array(
-                        $_data['parameters']['frequency'], array(
-                                                             'annually',
-                                                             'quarterly',
-                                                             'monthly'
-                                                         )
-                    ) ) {
+                    $_data['parameters']['frequency'], array(
+                                                         'annually',
+                                                         'quarterly',
+                                                         'monthly'
+                                                     )
+                )) {
                     $up_amount = sprintf(
                         '<span class="link" onclick="change_view(\'%s/%d/leakages/%d/%d\')">%s</span>', $_data['parameters']['parent'], $_data['parameters']['parent_key'], $data['Timeseries Record Timeseries Key'],
 
                         $data['Timeseries Record Key'], money($data['up_amount'], $currency)
                     );
 
-                    $down_amount = sprintf(
+                    $down_amount       = sprintf(
                         '<span class="link" onclick="change_view(\'%s/%d/leakages/%d/%d\')">%s</span>', $_data['parameters']['parent'], $_data['parameters']['parent_key'], $data['Timeseries Record Timeseries Key'],
 
                         $data['Timeseries Record Key'], '<span class="error">'.money($data['down_amount'], $currency).'</span>'
                     );
-                    $up_transactions = sprintf(
+                    $up_transactions   = sprintf(
                         '<span class="link" onclick="change_view(\'%s/%d/leakages/%d/%d\')">%s</span>', $_data['parameters']['parent'], $_data['parameters']['parent_key'], $data['Timeseries Record Timeseries Key'],
 
                         $data['Timeseries Record Key'], number($data['up_transactions'])
@@ -870,25 +863,26 @@ function stock_leakages($_data, $db, $user, $account) {
 
 
                 } else {
-                    $up_amount = money($data['up_amount'], $currency);
-                    $down_amount = '<span class="error">'.money($data['down_amount'], $currency).'</span>';
-                    $up_transactions= number($data['up_transactions']);
-                    $down_transactions= '<span class="error">'.number($data['down_transactions']).'</span>';
+                    $up_amount         = money($data['up_amount'], $currency);
+                    $down_amount       = '<span class="error">'.money($data['down_amount'], $currency).'</span>';
+                    $up_transactions   = number($data['up_transactions']);
+                    $down_transactions = '<span class="error">'.number($data['down_transactions']).'</span>';
 
                 }
 
-                $record_data[$_date]['up_amount'] = $up_amount;
-                $record_data[$_date]['down_amount'] =  $down_amount;
-                $record_data[$_date]['up_transactions'] = $up_transactions;
-                $record_data[$_date]['down_transactions'] =  $down_transactions;
+                $record_data[$_date]['up_amount']         = $up_amount;
+                $record_data[$_date]['down_amount']       = $down_amount;
+                $record_data[$_date]['up_transactions']   = $up_transactions;
+                $record_data[$_date]['down_transactions'] = $down_transactions;
 
 
             }
 
 
             if (isset($last_year_data[$_date_last_year])) {
-                $record_data[$_date]['delta_up_amount_1yb'] =
-                    '<span class="" title="'.money($last_year_data[$_date_last_year]['_up_amount'], $currency).'">'.delta($data['up_amount'], $last_year_data[$_date_last_year]['_up_amount']).' '.delta_icon($data['up_amount'], $last_year_data[$_date_last_year]['_up_amount']).'</span>';
+                $record_data[$_date]['delta_up_amount_1yb'] = '<span class="" title="'.money($last_year_data[$_date_last_year]['_up_amount'], $currency).'">'.delta($data['up_amount'], $last_year_data[$_date_last_year]['_up_amount']).' '.delta_icon(
+                        $data['up_amount'], $last_year_data[$_date_last_year]['_up_amount']
+                    ).'</span>';
             }
 
             //    print_r($record_data);
@@ -899,7 +893,6 @@ function stock_leakages($_data, $db, $user, $account) {
         print "$sql";
         exit;
     }
-
 
 
     $response = array(
@@ -926,56 +919,56 @@ function leakages_transactions($_data, $db, $user, $account) {
 
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
+    print $sql;
+    
+
     $record_data = array();
 
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
 
-$note=$data['Note'];
+            $note = $data['Note'];
 
             if ($data['Inventory Transaction Quantity'] > 0) {
                 $stock = '+'.number($data['Inventory Transaction Quantity']);
-            }else{
+            } else {
                 $stock = number($data['Inventory Transaction Quantity']);
 
             }
             if ($data['Inventory Transaction Amount'] > 0) {
-                $amount = '+'.money($data['Inventory Transaction Amount'],$account->get('Currency Code'));
-            }else{
-                $amount = money($data['Inventory Transaction Amount'],$account->get('Currency Code'));
+                $amount = '+'.money($data['Inventory Transaction Amount'], $account->get('Currency Code'));
+            } else {
+                $amount = money($data['Inventory Transaction Amount'], $account->get('Currency Code'));
 
             }
 
-           // $type =
+            // $type =
 
-            if($data['Part Reference']==''){
-                $reference=sprintf('<span class="very_discreet italic" >%s</span>', _('deleted'));
-                $note=preg_replace('/note_data/','',$note);
-            }else{
-                $reference=sprintf('<span class="link" onclick="change_view(\'part/%d\')">%s</span>', $data['Part SKU'], $data['Part Reference']);
+            if ($data['Part Reference'] == '') {
+                $reference = sprintf('<span class="very_discreet italic" >%s</span>', _('deleted'));
+                $note      = preg_replace('/note_data/', '', $note);
+            } else {
+                $reference = sprintf('<span class="link" onclick="change_view(\'part/%d\')">%s</span>', $data['Part SKU'], $data['Part Reference']);
 
             }
-
-
-
 
 
             $record_data[] = array(
-                'id'   => (integer)$data['Inventory Transaction Key'],
-                'reference'    => $reference,
-                'description'  => $data['Part Package Description'],
-                'note'  => $note,
+                'id'          => (integer)$data['Inventory Transaction Key'],
+                'reference'   => $reference,
+                'description' => $data['Part Package Description'],
+                'note'        => $note,
 
-                'location'    => sprintf('<span class="link" onclick="change_view(\'locations/%d/%d\')">%s</span>', $data['Warehouse Key'],$data['Location Key'], $data['Location Code']),
+                'location' => sprintf('<span class="link" onclick="change_view(\'locations/%d/%d\')">%s</span>', $data['Warehouse Key'], $data['Location Key'], $data['Location Code']),
 
                 'date' => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Date'].' +0:00')),
                 'user' => sprintf('<span title="%s">%s</span>', $data['User Alias'], ucwords($data['User Handle'])),
 
-                'change' => $stock,
+                'change'        => $stock,
                 'change_amount' => $amount,
 
                 //   'note'   => $note,
-             //   'type'   => $type,
+                //   'type'   => $type,
 
             );
 
@@ -1001,7 +994,6 @@ $note=$data['Note'];
     );
     echo json_encode($response);
 }
-
 
 
 ?>
