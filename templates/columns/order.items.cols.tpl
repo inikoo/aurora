@@ -53,7 +53,7 @@ defaultOrder:1,
 editable: false,
 sortType: "toggle",
 {if $sort_key=='net'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright width_100"} ),
 headerCell: integerHeaderCell
 }
 ]

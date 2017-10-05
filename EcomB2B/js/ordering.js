@@ -259,10 +259,12 @@ $(document).on('input propertychange', '.order_qty', function (evt) {
 //    } else {
 
         if (!validate_signed_integer($(this).val(), 4294967295) || $(this).val() == '') {
-            $(this).closest('span').find('i').removeClass('fa-plus exclamation-circle error').addClass('fa-floppy-o')
+            $(this).closest('span').find('i.minus').addClass('hide')
+            $(this).closest('span').find('i.plus').removeClass('fa-plus exclamation-circle error').addClass('fa-floppy-o')
             $(this).addClass('discreet')
         } else {
-            $(this).closest('span').find('i').removeClass('fa-plus fa-floppy-o').addClass('fa-exclamation-circle error')
+            $(this).closest('span').find('i.minus').addClass('hide')
+            $(this).closest('span').find('i.plus').removeClass('fa-plus fa-floppy-o').addClass('fa-exclamation-circle error')
 
         }
  //   }
@@ -294,12 +296,14 @@ function save_item_qty_change(element) {
     }
     else if ($(element).hasClass('fa-minus')) {
 
+
+
         if (isNaN(input.val()) || input.val() == '' || input.val() == 0) {
             var qty = 0
         } else {
             qty = parseFloat(input.val()) - 1
         }
-
+        console.log(qty)
         input.val(qty).addClass('discreet')
 
         var _icon='fa-minus'
@@ -328,8 +332,8 @@ function save_item_qty_change(element) {
 
 
 
-            $(element).removeClass('fa-spinner fa-spin fa-floppy-o').addClass('fa-plus')
-
+            $(element).closest('span').find('i.plus').removeClass('fa-spinner fa-spin fa-floppy-o').addClass('fa-plus')
+            $(element).closest('span').find('i.minus').removeClass('hide fa-spinner fa-spin').addClass('fa-minus')
 
             console.log($(element))
 

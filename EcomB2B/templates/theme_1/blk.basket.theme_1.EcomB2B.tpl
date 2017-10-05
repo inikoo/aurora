@@ -124,17 +124,9 @@
 
             </div>
 
-
-
                 <div class="clearfix "></div>
-
-
-
                 <div class="container order">
-
                     {include file="theme_1/_order_items.theme_1.tpl" edit=true hide_title=true }
-
-
                 </div>
 
                 <div class="clearfix marb6"></div>
