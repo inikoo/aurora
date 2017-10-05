@@ -1084,7 +1084,7 @@ class Warehouse extends DB_Table {
         );
         foreach ($this->db->query($sql) as $row) {
 
-            $_stock_leakage= number($row['amount']);
+            $_stock_leakage=$row['amount'];
 
         }
 
