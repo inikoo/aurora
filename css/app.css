@@ -1139,6 +1139,9 @@ right connector from last child*/
 .backgrid .adr {
   padding-bottom: 10px;
   line-height: 70%; }
+.backgrid .hide_extra_note_info .note_data {
+  display: none;
+  color: green; }
 
 #edit_table_dialog {
   position: absolute;

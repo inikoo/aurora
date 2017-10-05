@@ -15,6 +15,8 @@
 
         <div class="showcase">
 
+          {if   $timeseries_record->get('Timeseries Type')=='SupplierSales'}
+
             {if isset($delta_1yb)}
                 <table border=0>
 
@@ -80,6 +82,7 @@
                     </tr>
 
                 </table>
+            {/if}
             {/if}
         </div>
 

@@ -2601,6 +2601,41 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                 $parent_key = $key;
 
 
+                            } elseif ($view_path[1] == 'leakages') {
+
+
+                                $section = 'leakages';
+                                $object  = '';
+
+                                $parent     = 'warehouse';
+                                $parent_key = $key;
+
+
+                                if (isset($view_path[2])) {
+                                    if (is_numeric($view_path[2])) {
+                                        $key = $view_path[2];
+
+                                        if (isset($view_path[3])) {
+                                            if (is_numeric($view_path[3])) {
+                                                $section = 'timeseries_record';
+                                                $parent     = 'timeseries';
+                                                $parent_key = $view_path[2];
+                                                $object     = 'timeseries_record';
+
+                                                $key = $view_path[3];
+
+
+                                            }
+
+                                        }
+
+
+                                    }
+
+                                }
+
+
+
                             } elseif ($view_path[1] == 'locations') {
                                 $section = 'locations';
                                 $object  = '';

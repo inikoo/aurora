@@ -196,7 +196,45 @@ function get_time_series_config() {
             )
 
 
-        )
+        ),
+        'Warehouse'        => array(
+            array(
+                'Timeseries Type'      => 'WarehouseStockLeakages',
+                'Timeseries Frequency' => 'Daily',
+                'Timeseries Scope'     => 'StockLeakages',
+                'Timeseries Parent'    => 'Warehouse'
+            ),
+            array(
+                'Timeseries Type'      => 'WarehouseStockLeakages',
+                'Timeseries Frequency' => 'Weekly',
+                'Timeseries Scope'     => 'StockLeakages',
+                'Timeseries Parent'    => 'Warehouse'
+            ),
+            array(
+                'Timeseries Type'      => 'WarehouseStockLeakages',
+                'Timeseries Frequency' => 'Monthly',
+                'Timeseries Scope'     => 'StockLeakages',
+                'Timeseries Parent'    => 'Warehouse'
+            ),
+            array(
+                'Timeseries Type'      => 'WarehouseStockLeakages',
+                'Timeseries Frequency' => 'Quarterly',
+                'Timeseries Scope'     => 'StockLeakages',
+                'Timeseries Parent'    => 'Warehouse'
+            ),
+            array(
+                'Timeseries Type'      => 'WarehouseStockLeakages',
+                'Timeseries Frequency' => 'Yearly',
+                'Timeseries Scope'     => 'StockLeakages',
+                'Timeseries Parent'    => 'Warehouse'
+            ),
+
+
+
+
+
+
+        ),
 
     );
 

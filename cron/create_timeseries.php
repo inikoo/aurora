@@ -17,6 +17,7 @@ require_once 'class.Store.php';
 require_once 'class.Invoice.php';
 require_once 'class.Category.php';
 require_once 'class.Supplier.php';
+require_once 'class.Warehouse.php';
 
 require_once 'utils/date_functions.php';
 require_once 'conf/timeseries.php';
@@ -33,10 +34,42 @@ $editor = array(
 $timeseries=get_time_series_config();
 
 //families();
-part_families();
+//part_families();
 //suppliers();
 //stores();
 
+warehouses();
+
+function warehouses() {
+
+    global $db, $editor, $timeseries;
+
+    $sql = sprintf('SELECT `Warehouse Key` FROM `Warehouse Dimension`  ');
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+
+            $warehouse = new Warehouse($row['Warehouse Key']);
+
+
+            $timeseries_data = $timeseries['Warehouse'];
+
+            foreach ($timeseries_data as $time_series_data) {
+
+                $editor['Date']           = gmdate('Y-m-d H:i:s');
+                $time_series_data['editor'] = $editor;
+                $warehouse->create_timeseries($time_series_data);
+
+            }
+        }
+
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit($sql);
+    }
+
+
+}
 
 function suppliers() {
 

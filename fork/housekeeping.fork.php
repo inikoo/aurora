@@ -366,6 +366,12 @@ function fork_housekeeping($job) {
 
             break;
 
+        case 'update_warehouse_leakages':
+
+            $warehouse = get_object('warehouse',$data['warehouse_key']);
+            $warehouse->update_current_timeseries_record('WarehouseStockLeakages');
+            break;
+
         default:
             break;
 

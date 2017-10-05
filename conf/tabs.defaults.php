@@ -1856,6 +1856,11 @@ $tab_defaults = array(
 
     ),
 
+
+
+
+
+
     'inventory.stock.transactions' => array(
         'view'          => 'overview',
         'sort_key'      => 'date',
@@ -2960,7 +2965,26 @@ $tab_defaults = array(
         'elements_type' => each($elements_options['deal_history'])['key'],
         'elements'      => $elements_options['deal_history']
     ),
+    'stock_leakages' => array(
+        'view'        => 'overview',
+        'sort_key'    => 'date',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => '',
+        'frequency'   => 'monthly',
 
+    ),
+    'warehouse.leakages.transactions'                             => array(
+        'view'          => 'overview',
+        'sort_key'      => 'reference',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => '',
+        'elements_type' => each($elements_options['leakages_transactions'])['key'],
+        'elements'      => $elements_options['leakages_transactions']
+    ),
 
 );
 

@@ -14,19 +14,7 @@ require_once 'common.php';
 require_once 'utils/aes.php';
 require_once 'utils/new_fork.php';
 require_once 'conf/timeseries.php';
-
-
-$default_DB_link = @mysql_connect($dns_host, $dns_user, $dns_pwd);
-if (!$default_DB_link) {
-    print "Error can not connect with database server\n";
-}
-$db_selected = mysql_select_db($dns_db, $default_DB_link);
-if (!$db_selected) {
-    print "Error can not access the database\n";
-    exit;
-}
-mysql_set_charset('utf8');
-mysql_query("SET time_zone='+0:00'");
+require_once 'utils/object_functions.php';
 
 
 require_once 'class.Product.php';
@@ -45,9 +33,46 @@ $editor = array(
     'Date'         => gmdate('Y-m-d H:i:s')
 );
 
-$timeseries=get_time_series_config();
+$timeseries = get_time_series_config();
 
 
+
+$sql = sprintf('SELECT `Warehouse Key` FROM `Warehouse Dimension` ');
+
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+
+
+
+        $warehouse = get_object('Warehouse', $row['Warehouse Key']);
+
+
+
+
+
+        if (!array_key_exists('Warehouse', $timeseries)) {
+            continue;
+        }
+
+        $timeseries_data = $timeseries['Warehouse'];
+
+        foreach ($timeseries_data as $timeserie_data) {
+
+            $editor['Date']                          = gmdate('Y-m-d H:i:s');
+            $timeserie_data['editor']                = $editor;
+            $timeserie_data['Timeseries Parent']     = 'Warehouse';
+            $timeserie_data['Timeseries Parent Key'] = $warehouse->id;
+            $timeseries                              = new Timeseries('find', $timeserie_data, 'create');
+            $warehouse->update_timeseries_record($timeseries, gmdate('Y-m-d', strtotime('now -1 day')), gmdate('Y-m-d', strtotime('now -1 day')));
+        }
+
+    }
+
+} else {
+    print_r($error_info = $db->errorInfo());
+    print $sql;
+    exit;
+}
 
 
 
@@ -57,7 +82,7 @@ $account->load_acc_data();
 $account->update_orders();
 
 $account->update(
-    array(  'Account Today Start Orders In Warehouse Number'=>$account->get('Account Orders In Warehouse Number')+$account->get('Account Orders Packed Number')+$account->get('Account Orders Dispatch Approved Number'))
+    array('Account Today Start Orders In Warehouse Number' => $account->get('Account Orders In Warehouse Number') + $account->get('Account Orders Packed Number') + $account->get('Account Orders Dispatch Approved Number'))
 
 );
 
@@ -73,7 +98,7 @@ if ($result = $db->query($sql)) {
 
 
         $store->update(
-            array('Store Today Start Orders In Warehouse Number'=>$store->get('Store Orders In Warehouse Number')+$store->get('Store Orders Packed Number')+$store->get('Store Orders Dispatch Approved Number'))
+            array('Store Today Start Orders In Warehouse Number' => $store->get('Store Orders In Warehouse Number') + $store->get('Store Orders Packed Number') + $store->get('Store Orders Dispatch Approved Number'))
 
         );
 
@@ -84,7 +109,6 @@ if ($result = $db->query($sql)) {
     print_r($error_info = $db->errorInfo());
     exit;
 }
-
 
 
 $sql = sprintf('SELECT `Category Key` FROM `Category Dimension` WHERE `Category Scope`="Part" ORDER BY  `Category Key` DESC');
@@ -374,7 +398,6 @@ $sql=sprintf('update `Part Category Data` set `Part Category Yesterday Acc Repea
 */
 
 
-
 $msg = new_housekeeping_fork(
     'au_asset_sales', array(
     'type'     => 'update_stores_sales_data',
@@ -419,8 +442,6 @@ $msg = new_housekeeping_fork(
     )
 ), $account->get('Account Code')
 );
-
-
 
 
 $intervals = array(
@@ -458,46 +479,46 @@ foreach ($intervals as $interval) {
 
     $msg = new_housekeeping_fork(
         'au_asset_sales', array(
-            'type'     => 'update_products_sales_data',
-            'interval' => $interval,
-            'mode'     => array(
-                false,
-                true
-            )
-        ), $account->get('Account Code')
+        'type'     => 'update_products_sales_data',
+        'interval' => $interval,
+        'mode'     => array(
+            false,
+            true
+        )
+    ), $account->get('Account Code')
     );
 
     $msg = new_housekeeping_fork(
         'au_asset_sales', array(
-            'type'     => 'update_parts_sales_data',
-            'interval' => $interval,
-            'mode'     => array(
-                false,
-                true
-            )
-        ), $account->get('Account Code')
+        'type'     => 'update_parts_sales_data',
+        'interval' => $interval,
+        'mode'     => array(
+            false,
+            true
+        )
+    ), $account->get('Account Code')
     );
 
     $msg = new_housekeeping_fork(
         'au_asset_sales', array(
-            'type'     => 'update_part_categories_sales_data',
-            'interval' => $interval,
-            'mode'     => array(
-                false,
-                true
-            )
-        ), $account->get('Account Code')
+        'type'     => 'update_part_categories_sales_data',
+        'interval' => $interval,
+        'mode'     => array(
+            false,
+            true
+        )
+    ), $account->get('Account Code')
     );
 
     $msg = new_housekeeping_fork(
         'au_asset_sales', array(
-            'type'     => 'update_product_categories_sales_data',
-            'interval' => $interval,
-            'mode'     => array(
-                false,
-                true
-            )
-        ), $account->get('Account Code')
+        'type'     => 'update_product_categories_sales_data',
+        'interval' => $interval,
+        'mode'     => array(
+            false,
+            true
+        )
+    ), $account->get('Account Code')
     );
 
 
@@ -525,10 +546,7 @@ foreach ($intervals as $interval) {
     );
 
 
-
-
 }
-
 
 
 $intervals = array(
@@ -631,8 +649,6 @@ foreach ($intervals as $interval) {
         )
     ), $account->get('Account Code')
     );
-
-
 
 
 }

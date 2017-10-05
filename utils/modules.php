@@ -4943,6 +4943,38 @@ $modules = array(
             ),
 
 
+
+
+            'leakages' => array(
+                'type' => 'object',
+                'tabs' => array(
+                    'stock_leakages' => array(
+                        'label' => _('Leakages')
+                    ),
+
+                )
+
+            ),
+
+            'timeseries_record' => array(
+                'type'     => 'object',
+                'label'    => '',
+                'showcase' => 'timeseries_record',
+
+                'tabs' => array(
+                    'warehouse.leakages.transactions'    => array(
+                        'label' => _('Transactions'),
+                        'icon'  => 'fa-arrow-circle-o-right',
+                        'class' => ''
+                    )
+
+
+                )
+
+
+            ),
+
+
         )
     ),
     'reports'         => array(
