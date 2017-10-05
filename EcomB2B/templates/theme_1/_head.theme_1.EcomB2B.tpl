@@ -190,7 +190,7 @@
     <script type="text/javascript" src="/js/aurora.js"></script>
     <script type="text/javascript" src="/js/validation.js"></script>
 
-    <script type="text/javascript" src="/js/ordering.js"></script>
+    <script type="text/javascript" src="/js/ordering.js?v20171105"></script>
     <script type="text/javascript" src="/js/fotorama.js"></script>
 
     <link rel="stylesheet" href="/website.color.EcomB2B.css.php?&theme=theme_1" type="text/css"/>

@@ -545,7 +545,11 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
             foreach ($result as $row) {
 
                 $edit_quantity = sprintf(
-                    '<span    data-settings=\'{"field": "Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   ><input class="order_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-plus fa-fw like_button button"  style="cursor:pointer" aria-hidden="true"></i></span>',
+                    '<span    data-settings=\'{"field": "Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   >
+<i onClick="save_item_qty_change(this)" class="fa minus fa-minus fa-fw like_button button"  style="cursor:pointer" aria-hidden="true"></i>
+<input class="order_qty width_50 " style="text-align: center" value="%s" ovalue="%s"> 
+
+<i onClick="save_item_qty_change(this)" class="fa plus  fa-plus fa-fw like_button button"  style="cursor:pointer" aria-hidden="true"></i></span>',
                     $row['Order Transaction Fact Key'], $row['Product ID'], $row['Product Key'], $row['Order Quantity'] + 0, $row['Order Quantity'] + 0
                 );
 

@@ -766,7 +766,8 @@ function save_item_qty_change(element) {
     request.done(function (data) {
 
 
-        $(element).removeClass('fa-spinner fa-spin fa-cloud').addClass('fa-plus')
+        $(element).closest('span').find('i.plus').removeClass('fa-spinner fa-spin fa-cloud').addClass('fa-plus')
+        $(element).closest('span').find('i.minus').removeClass('fa-spinner fa-spin invisible').addClass('fa-minus')
 
 
         if (data.state == 200) {
