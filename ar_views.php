@@ -252,8 +252,16 @@ function get_view($db, $smarty, $user, $account, $modules) {
             $store   = get_object('store', $_parent->get('Store Key'));
 
             break;
+        case 'timeseries':
+            $_parent = get_object($state['parent'], $state['parent_key']);
 
+            if($_parent->get('Timeseries Parent')=='Warehouse'){
+                $warehouse                  = get_object('Warehouse',$_parent->get('Timeseries Parent Key'));
+
+            }
+            break;
         default:
+
             $_parent = get_object($state['parent'], $state['parent_key']);
 
     }
@@ -1748,9 +1756,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     );
                     break;
                 case ('timeseries_record'):
-                    return get_timeseries_record_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
+                    return get_timeseries_record_navigation($data, $smarty, $user, $db, $account);
                     break;
             }
 
@@ -1930,6 +1936,12 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 
                 case ('delivery_notes'):
                     return get_delivery_notes_navigation($data, $smarty, $user, $db, $account);
+                    break;
+                case ('leakages'):
+                    return get_leakages_navigation($data, $smarty, $user, $db, $account);
+                    break;
+                case ('timeseries_record'):
+                    return get_timeseries_record_navigation($data, $smarty, $user, $db, $account);
                     break;
 
             }
@@ -5669,9 +5681,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
                     break;
                 case 'part':
-                    if ($user->get_number_warehouses() > 1 or $user->can_create(
-                            'warehouses'
-                        )) {
+                    if ($user->get_number_warehouses() > 1 or $user->can_create('warehouses')) {
 
                         $branch[] = array(
                             'label'     => '('._('All warehouses').')',
@@ -5693,6 +5703,42 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'reference' => ''
                     );
 
+                    break;
+
+                case 'leakages':
+
+
+
+                    $branch[] = array(
+                        'label'     => _('Warehouse dashboard'),
+                        'icon'      => 'tachometer',
+                        'reference' => 'warehouse/'.$state['warehouse']->id.'/dashboard'
+                    );
+                    $branch[] = array(
+                        'label'     => _('Stock leakages'),
+                        'icon'      => 'inbox',
+                        'reference' => ''
+                    );
+                    break;
+                case 'timeseries_record':
+
+
+
+                    $branch[] = array(
+                        'label'     => _('Warehouse dashboard'),
+                        'icon'      => 'tachometer',
+                        'reference' => 'warehouse/'.$state['warehouse']->id.'/dashboard'
+                    );
+                    $branch[] = array(
+                        'label'     => _('Stock leakages'),
+                        'icon'      => 'inbox',
+                        'reference' => 'warehouse/'.$state['warehouse']->id.'/leakages'
+                    );
+                   $branch[] = array(
+                       'label'     => '<span class="id">'.$state['_object']->get('Code').'</span>',
+                       'icon'      => 'table',
+                       'reference' => ''
+                   );
                     break;
 
 

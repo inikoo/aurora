@@ -14,6 +14,7 @@ require_once 'utils/ar_common.php';
 require_once 'utils/table_functions.php';
 require_once 'utils/natural_language.php';
 
+require_once 'utils/object_functions.php';
 
 if (!$user->can_view('locations')) {
     echo json_encode(
@@ -64,6 +65,13 @@ switch ($tipo) {
     case 'part_locations_with_errors':
         part_locations_with_errors(get_table_parameters(), $db, $user, $account);
         break;
+    case 'stock_leakages':
+        stock_leakages(get_table_parameters(), $db, $user, $account);
+        break;
+    case 'leakages_transactions':
+        leakages_transactions(get_table_parameters(), $db, $user, $account);
+        break;
+
     default:
         $response = array(
             'state' => 405,
@@ -628,6 +636,372 @@ function part_locations_with_errors($_data, $db, $user) {
     );
     echo json_encode($response);
 }
+
+
+
+
+function stock_leakages($_data, $db, $user, $account) {
+
+
+    $skip_get_table_totals = true;
+
+
+    //print_r($_data);
+
+    include_once 'prepare_table/init.php';
+
+    include_once 'utils/natural_language.php';
+    include_once 'class.Store.php';
+
+    if ($_data['parameters']['frequency'] == 'annually') {
+        $rtext_label       = 'year';
+        $_group_by         = ' group by Year(`Date`) ';
+        $sql_totals_fields = 'Year(`Date`)';
+    } elseif ($_data['parameters']['frequency'] == 'quarterly') {
+        $rtext_label       = 'quarter';
+        $_group_by         = '  group by YEAR(`Date`), QUARTER(`Date`) ';
+        $sql_totals_fields = 'DATE_FORMAT(`Date`,"%Y %q")';
+    } elseif ($_data['parameters']['frequency'] == 'monthly') {
+        $rtext_label       = 'month';
+        $_group_by         = '  group by DATE_FORMAT(`Date`,"%Y-%m") ';
+        $sql_totals_fields = 'DATE_FORMAT(`Date`,"%Y-%m")';
+    } elseif ($_data['parameters']['frequency'] == 'weekly') {
+        $rtext_label       = 'week';
+        $_group_by         = ' group by Yearweek(`Date`) ';
+        $sql_totals_fields = 'Yearweek(`Date`)';
+    } elseif ($_data['parameters']['frequency'] == 'daily') {
+        $rtext_label = 'day';
+
+        $_group_by         = ' group by Date(`Date`) ';
+        $sql_totals_fields = '`Date`';
+    }
+
+    switch ($_data['parameters']['parent']) {
+        case 'warehouse':
+            $warehouse   = get_object('Warehouse',$_data['parameters']['parent_key']);
+            $currency   = $account->get('Account Currency');
+            $from       = $warehouse->get('Warehouse Valid From');
+            $to         =  gmdate('Y-m-d');
+            $date_field = '`Timeseries Record Date`';
+            break;
+
+        default:
+            print_r($_data);
+            exit('parent not configured '.$_data['parameters']['parent']);
+            break;
+    }
+
+
+    $sql_totals = sprintf(
+        'SELECT count(DISTINCT %s) AS num FROM kbase.`Date Dimension` WHERE `Date`>=DATE(%s) AND `Date`<=DATE(%s) ', $sql_totals_fields, prepare_mysql($from), prepare_mysql($to)
+
+    );
+
+    list($rtext, $total, $filtered) = get_table_totals(
+        $db, $sql_totals, '', $rtext_label, false
+    );
+
+
+    $sql = sprintf(
+        'SELECT `Date` FROM kbase.`Date Dimension` WHERE `Date`>=date(%s) AND `Date`<=DATE(%s) %s ORDER BY %s  LIMIT %s', prepare_mysql($from), prepare_mysql($to), $_group_by, "`Date` $order_direction ", "$start_from,$number_results"
+    );
+
+
+    $record_data = array();
+
+    $from_date = '';
+    $to_date   = '';
+    if ($result = $db->query($sql)) {
+
+
+        foreach ($result as $data) {
+
+            if ($to_date == '') {
+                $to_date = $data['Date'];
+            }
+            $from_date = $data['Date'];
+
+
+            if ($_data['parameters']['frequency'] == 'annually') {
+                $date  = strftime("%Y", strtotime($data['Date'].' +0:00'));
+                $_date = $date;
+            } elseif ($_data['parameters']['frequency'] == 'quarterly') {
+                $date  = 'Q'.ceil(date('n', strtotime($data['Date'].' +0:00')) / 3).' '.strftime("%Y", strtotime($data['Date'].' +0:00'));
+                $_date = $date;
+            } elseif ($_data['parameters']['frequency'] == 'monthly') {
+
+
+                $date  = strftime("%b %Y", strtotime($data['Date'].' +0:00'));
+                $_date = strftime("%b %Y", strtotime($data['Date'].' +0:00'));
+
+            } elseif ($_data['parameters']['frequency'] == 'weekly') {
+                $date  = strftime(
+                    "(%e %b) %Y %W ", strtotime($data['Date'].' +0:00')
+                );
+                $_date = strftime("%Y%W ", strtotime($data['Date'].' +0:00'));
+            } elseif ($_data['parameters']['frequency'] == 'daily') {
+                $date  = strftime("%a %e %b %Y", strtotime($data['Date'].' +0:00'));
+                $_date = date('Y-m-d', strtotime($data['Date'].' +0:00'));
+            }
+
+
+            $record_data[$_date] = array(
+                'up_amount'               => '<span class="very_discreet">'.money(0, $currency).'</span>',
+                'down_amount'    => '<span class="very_discreet">'.money(0, $currency).'</span>',
+                'up_commercial_amount'               => '<span class="very_discreet">'.money(0, $currency).'</span>',
+                'down_commercial_amount'    => '<span class="very_discreet">'.money(0, $currency).'</span>',
+                'up_transactions'          => '<span class="very_discreet">'.number(0).'</span>',
+                'down_transactions'          => '<span class="very_discreet">'.number(0).'</span>',
+
+                'date' => $date
+
+
+            );
+
+        }
+
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql";
+        exit;
+    }
+
+
+
+    switch ($_data['parameters']['parent']) {
+
+        case 'warehouse':
+            if ($_data['parameters']['frequency'] == 'annually') {
+                $from_date = gmdate("Y-01-01", strtotime($from_date.' +0:00'));
+                $to_date   = gmdate("Y-12-31", strtotime($to_date.' +0:00'));
+            } elseif ($_data['parameters']['frequency'] == 'quarterly') {
+                $from_date = gmdate("Y-m-01", strtotime($from_date.'  -1 year  +0:00'));
+                $to_date   = gmdate("Y-m-01", strtotime($to_date.' + 3 month +0:00'));
+            } elseif ($_data['parameters']['frequency'] == 'monthly') {
+                $from_date = gmdate("Y-m-01", strtotime($from_date.' -1 year  +0:00'));
+                $to_date   = gmdate("Y-m-01", strtotime($to_date.' +0:00'));
+            } elseif ($_data['parameters']['frequency'] == 'weekly') {
+                $from_date = gmdate("Y-m-d", strtotime($from_date.'  -1 year  +0:00'));
+                $to_date   = gmdate("Y-m-d", strtotime($to_date.'  +0:00'));
+            } elseif ($_data['parameters']['frequency'] == 'daily') {
+                $from_date = gmdate("Y-m-d", strtotime($from_date.' - 1 year +0:00'));
+                $to_date   = $to_date;
+            }
+            $group_by = '';
+
+            break;
+        default:
+            print_r($_data);
+            exit('Parent not configured '.$_data['parameters']['parent']);
+            break;
+    }
+
+
+    $sql = sprintf(
+        "select $fields from $table $where $wheref and %s>=%s and  %s<=%s %s order by $date_field    ", $date_field, prepare_mysql($from_date), $date_field, prepare_mysql($to_date), " $group_by "
+    );
+
+    $last_year_data = array();
+
+
+    //print $sql;
+    if ($result = $db->query($sql)) {
+
+
+        foreach ($result as $data) {
+
+
+            if ($_data['parameters']['frequency'] == 'annually') {
+                $_date           = strftime("%Y", strtotime($data['Date'].' +0:00'));
+                $_date_last_year = strftime("%Y", strtotime($data['Date'].' - 1 year'));
+                $date            = $_date;
+            } elseif ($_data['parameters']['frequency'] == 'quarterly') {
+                $_date           = 'Q'.ceil(date('n', strtotime($data['Date'].' +0:00')) / 3).' '.strftime("%Y", strtotime($data['Date'].' +0:00'));
+                $_date_last_year = 'Q'.ceil(date('n', strtotime($data['Date'].' - 1 year')) / 3).' '.strftime("%Y", strtotime($data['Date'].' - 1 year'));
+                $date            = $_date;
+            } elseif ($_data['parameters']['frequency'] == 'monthly') {
+                $_date           = strftime("%b %Y", strtotime($data['Date'].' +0:00'));
+                $_date_last_year = strftime("%b %Y", strtotime($data['Date'].' - 1 year'));
+                $date            = $_date;
+            } elseif ($_data['parameters']['frequency'] == 'weekly') {
+                $_date           = strftime("%Y%W ", strtotime($data['Date'].' +0:00'));
+                $_date_last_year = strftime("%Y%W ", strtotime($data['Date'].' - 1 year'));
+                $date            = strftime("(%e %b) %Y %W ", strtotime($data['Date'].' +0:00'));
+            } elseif ($_data['parameters']['frequency'] == 'daily') {
+                $_date           = date('Y-m-d', strtotime($data['Date'].' +0:00'));
+                $_date_last_year = date('Y-m-d', strtotime($data['Date'].'  -1 year'));
+                $date            = strftime("%a %e %b %Y", strtotime($data['Date'].' +0:00'));
+            }
+
+            $last_year_data[$_date] = array('_up_amount' => $data['up_amount']);
+
+
+            if (array_key_exists($_date, $record_data)) {
+
+
+                if (in_array(
+                        $_data['parameters']['frequency'], array(
+                                                             'annually',
+                                                             'quarterly',
+                                                             'monthly'
+                                                         )
+                    ) ) {
+                    $up_amount = sprintf(
+                        '<span class="link" onclick="change_view(\'%s/%d/leakages/%d/%d\')">%s</span>', $_data['parameters']['parent'], $_data['parameters']['parent_key'], $data['Timeseries Record Timeseries Key'],
+
+                        $data['Timeseries Record Key'], money($data['up_amount'], $currency)
+                    );
+
+                    $down_amount = sprintf(
+                        '<span class="link" onclick="change_view(\'%s/%d/leakages/%d/%d\')">%s</span>', $_data['parameters']['parent'], $_data['parameters']['parent_key'], $data['Timeseries Record Timeseries Key'],
+
+                        $data['Timeseries Record Key'], '<span class="error">'.money($data['down_amount'], $currency).'</span>'
+                    );
+                    $up_transactions = sprintf(
+                        '<span class="link" onclick="change_view(\'%s/%d/leakages/%d/%d\')">%s</span>', $_data['parameters']['parent'], $_data['parameters']['parent_key'], $data['Timeseries Record Timeseries Key'],
+
+                        $data['Timeseries Record Key'], number($data['up_transactions'])
+                    );
+                    $down_transactions = sprintf(
+                        '<span class="link" onclick="change_view(\'%s/%d/leakages/%d/%d\')">%s</span>', $_data['parameters']['parent'], $_data['parameters']['parent_key'], $data['Timeseries Record Timeseries Key'],
+
+                        $data['Timeseries Record Key'], '<span class="error">'.number($data['down_transactions']).'</span>'
+                    );
+
+
+                } else {
+                    $up_amount = money($data['up_amount'], $currency);
+                    $down_amount = '<span class="error">'.money($data['down_amount'], $currency).'</span>';
+                    $up_transactions= number($data['up_transactions']);
+                    $down_transactions= '<span class="error">'.number($data['down_transactions']).'</span>';
+
+                }
+
+                $record_data[$_date]['up_amount'] = $up_amount;
+                $record_data[$_date]['down_amount'] =  $down_amount;
+                $record_data[$_date]['up_transactions'] = $up_transactions;
+                $record_data[$_date]['down_transactions'] =  $down_transactions;
+
+
+            }
+
+
+            if (isset($last_year_data[$_date_last_year])) {
+                $record_data[$_date]['delta_up_amount_1yb'] =
+                    '<span class="" title="'.money($last_year_data[$_date_last_year]['_up_amount'], $currency).'">'.delta($data['up_amount'], $last_year_data[$_date_last_year]['_up_amount']).' '.delta_icon($data['up_amount'], $last_year_data[$_date_last_year]['_up_amount']).'</span>';
+            }
+
+            //    print_r($record_data);
+        }
+
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql";
+        exit;
+    }
+
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => array_values($record_data),
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function leakages_transactions($_data, $db, $user, $account) {
+
+
+    $rtext_label = 'transaction';
+
+    include_once 'prepare_table/init.php';
+
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+    $record_data = array();
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+
+$note=$data['Note'];
+
+            if ($data['Inventory Transaction Quantity'] > 0) {
+                $stock = '+'.number($data['Inventory Transaction Quantity']);
+            }else{
+                $stock = number($data['Inventory Transaction Quantity']);
+
+            }
+            if ($data['Inventory Transaction Amount'] > 0) {
+                $amount = '+'.money($data['Inventory Transaction Amount'],$account->get('Currency Code'));
+            }else{
+                $amount = money($data['Inventory Transaction Amount'],$account->get('Currency Code'));
+
+            }
+
+           // $type =
+
+            if($data['Part Reference']==''){
+                $reference=sprintf('<span class="very_discreet italic" >%s</span>', _('deleted'));
+                $note=preg_replace('/note_data/','',$note);
+            }else{
+                $reference=sprintf('<span class="link" onclick="change_view(\'part/%d\')">%s</span>', $data['Part SKU'], $data['Part Reference']);
+
+            }
+
+
+
+
+
+            $record_data[] = array(
+                'id'   => (integer)$data['Inventory Transaction Key'],
+                'reference'    => $reference,
+                'description'  => $data['Part Package Description'],
+                'note'  => $note,
+
+                'location'    => sprintf('<span class="link" onclick="change_view(\'locations/%d/%d\')">%s</span>', $data['Warehouse Key'],$data['Location Key'], $data['Location Code']),
+
+                'date' => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Date'].' +0:00')),
+                'user' => sprintf('<span title="%s">%s</span>', $data['User Alias'], ucwords($data['User Handle'])),
+
+                'change' => $stock,
+                'change_amount' => $amount,
+
+                //   'note'   => $note,
+             //   'type'   => $type,
+
+            );
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print $sql;
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $record_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
 
 
 ?>

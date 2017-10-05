@@ -767,8 +767,7 @@ class Warehouse extends DB_Table {
     function get_default_flag_key() {
         $flag_key = 0;
         $sql      = sprintf(
-            "SELECT `Warehouse Flag Key` FROM  `Warehouse Flag Dimension` WHERE `Warehouse Flag Color`=%s AND `Warehouse Flag Warehouse Key`=%d",
-            prepare_mysql($this->data['Warehouse Default Flag Color']), $this->id
+            "SELECT `Warehouse Flag Key` FROM  `Warehouse Flag Dimension` WHERE `Warehouse Flag Color`=%s AND `Warehouse Flag Warehouse Key`=%d", prepare_mysql($this->data['Warehouse Default Flag Color']), $this->id
         );
 
 
@@ -846,12 +845,11 @@ class Warehouse extends DB_Table {
                     foreach ($result2 as $row2) {
 
                         $sql = sprintf(
-                            "SELECT count(*) AS num FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d AND  `Inventory Transaction Type`='Sale' AND `Date`>=%s AND `Date`<=%s ", $row2['Part SKU'],
-                            prepare_mysql(
-                                date(
-                                    "Y-m-d H:i:s", strtotime($row['Date'].' 23:59:59 -1 year')
-                                )
-                            ), prepare_mysql($row['Date'].' 23:59:59')
+                            "SELECT count(*) AS num FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d AND  `Inventory Transaction Type`='Sale' AND `Date`>=%s AND `Date`<=%s ", $row2['Part SKU'], prepare_mysql(
+                                                                                                                                                                                      date(
+                                                                                                                                                                                          "Y-m-d H:i:s", strtotime($row['Date'].' 23:59:59 -1 year')
+                                                                                                                                                                                      )
+                                                                                                                                                                                  ), prepare_mysql($row['Date'].' 23:59:59')
                         );
 
 
@@ -906,13 +904,12 @@ class Warehouse extends DB_Table {
 
                             $row2['close'], $row2['close_value_at_day'], $row2['close_commercial_value'], $row2['open'], $row2['high'], $row2['low'],
 
-                            $row2['open_value_at_day'], $row2['high_value_at_day'], $row2['low_value_at_day'], $row2['open_commercial_value'], $row2['high_commercial_value'],
-                            $row2['low_commercial_value'], $dormant_1y_open_value_at_day,
+                            $row2['open_value_at_day'], $row2['high_value_at_day'], $row2['low_value_at_day'], $row2['open_commercial_value'], $row2['high_commercial_value'], $row2['low_commercial_value'], $dormant_1y_open_value_at_day,
 
                             $row2['close'], $row2['close_value_at_day'], $row2['close_commercial_value'], $row2['open'], $row2['high'], $row2['low'],
 
-                            $row2['open_value_at_day'], $row2['high_value_at_day'], $row2['low_value_at_day'], $row2['open_commercial_value'], $row2['high_commercial_value'],
-                            $row2['low_commercial_value'], $row2['parts'], $row2['locations'], $dormant_1y_open_value_at_day
+                            $row2['open_value_at_day'], $row2['high_value_at_day'], $row2['low_value_at_day'], $row2['open_commercial_value'], $row2['high_commercial_value'], $row2['low_commercial_value'], $row2['parts'], $row2['locations'],
+                            $dormant_1y_open_value_at_day
 
 
                         );
@@ -1005,8 +1002,7 @@ class Warehouse extends DB_Table {
 
 
         $sql = sprintf(
-            'SELECT sum(`Timesheet Warehouse Clocked Time`) AS seconds FROM `Timesheet Dimension` WHERE `Timesheet Date`>=%s AND `Timesheet Date`<=%s ', prepare_mysql($from_date),
-            prepare_mysql($to_date)
+            'SELECT sum(`Timesheet Warehouse Clocked Time`) AS seconds FROM `Timesheet Dimension` WHERE `Timesheet Date`>=%s AND `Timesheet Date`<=%s ', prepare_mysql($from_date), prepare_mysql($to_date)
         );
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
@@ -1025,8 +1021,7 @@ class Warehouse extends DB_Table {
             include_once 'class.Timesheet.php';
 
             $sql = sprintf(
-                "SELECT `Timesheet Key` FROM `Timesheet Dimension` T LEFT JOIN `Staff Role Bridge` B ON (B.`Staff Key`=`Timesheet Staff Key`) WHERE `Role Code` IN ('PICK','WAHSC') AND `Timesheet Date`=%s ",
-                prepare_mysql(gmdate('Y-m-d'))
+                "SELECT `Timesheet Key` FROM `Timesheet Dimension` T LEFT JOIN `Staff Role Bridge` B ON (B.`Staff Key`=`Timesheet Staff Key`) WHERE `Role Code` IN ('PICK','WAHSC') AND `Timesheet Date`=%s ", prepare_mysql(gmdate('Y-m-d'))
             );
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
@@ -1046,8 +1041,7 @@ class Warehouse extends DB_Table {
         // print $sql;
 
         $sql = sprintf(
-            'SELECT sum(`Delivery Note Invoiced Net DC Amount`) AS amount FROM `Delivery Note Dimension`   WHERE `Delivery Note Date`>=%s AND `Delivery Note Date`<=%s  AND `Delivery Note State`="Dispatched" ',
-            prepare_mysql($from_date), prepare_mysql($to_date)
+            'SELECT sum(`Delivery Note Invoiced Net DC Amount`) AS amount FROM `Delivery Note Dimension`   WHERE `Delivery Note Date`>=%s AND `Delivery Note Date`<=%s  AND `Delivery Note State`="Dispatched" ', prepare_mysql($from_date), prepare_mysql($to_date)
         );
 
         //  print $sql;
@@ -1073,8 +1067,49 @@ class Warehouse extends DB_Table {
             $formatted_kpi = number($amount / $hrs, 2).' '.currency_symbol($account->get('Account Currency')).'/h';
         }
 
-        //    print $sql;
+
+
+
+
+        $where = sprintf(" where `Inventory Transaction Type` = 'Adjust' and `Inventory Transaction Section`='Audit'  AND `Warehouse Key`=%d %s %s  ",
+                         $this->id,
+            ($from_date ? sprintf('and  `Date`>=%s', prepare_mysql($from_date)) : ''), ($to_date ? sprintf('and `Date`<%s', prepare_mysql($to_date)) : '')
+        );
+
+
+        $_stock_leakage=0;
+
+        $sql = sprintf(
+            "select sum(`Inventory Transaction Amount`) as amount from `Inventory Transaction Fact` %s    and `Inventory Transaction Quantity`<0  ",$where
+        );
+        foreach ($this->db->query($sql) as $row) {
+
+            $_stock_leakage= number($row['amount']);
+
+        }
+
+        if($_stock_leakage==0){
+            $stock_leakage='<span class="success"><i class="fa fa-thumbs-up" aria-hidden="true"></i> '.money(0,$account->get('Currency Code')).'</span>';
+
+        }else{
+            $stock_leakage='<span class="error">'.money($_stock_leakage,$account->get('Currency Code')).'</span>';
+        }
+
+
+        $stock_leakage = array(
+            'down' => array(
+                'amount' =>$stock_leakage
+                ),
+            'up'   => array(
+                'amount' =>money(0,$account->get('Currency Code'))
+            ),
+        );
+
+
         return array(
+
+            'stock_leakage' => $stock_leakage,
+
             'kpi'                    => $kpi,
             'amount'                 => $amount,
             'hrs'                    => $hrs,
@@ -1136,8 +1171,7 @@ class Warehouse extends DB_Table {
             $sql = sprintf(
                 'SELECT count(DISTINCT P.`Part SKU`) AS num FROM 
               `Part Dimension` P LEFT JOIN `Part Location Dimension` PL ON (PL.`Part SKU`=P.`Part SKU`) 
-              WHERE (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>`Quantity On Hand`  AND (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>0    AND `Part Location Warehouse Key`=%d AND `Can Pick`="Yes" ',
-                $this->id
+              WHERE (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>`Quantity On Hand`  AND (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>0    AND `Part Location Warehouse Key`=%d AND `Can Pick`="Yes" ', $this->id
             );
 
 
@@ -1225,10 +1259,10 @@ class Warehouse extends DB_Table {
         */
         $sql = sprintf(
             " 
- SELECT count(*) AS num  from
- `Part Location Dimension` PL  left join `Part Dimension` P on (PL.`Part SKU`=P.`Part SKU`) 
+ SELECT count(*) AS num  FROM
+ `Part Location Dimension` PL  LEFT JOIN `Part Dimension` P ON (PL.`Part SKU`=P.`Part SKU`) 
  
-  where `Can Pick`='Yes' and `Minimum Quantity`>=0 and   `Minimum Quantity`>=(`Quantity On Hand`- `Part Current Stock In Process`- `Part Current Stock Ordered Paid` ) and (P.`Part Current On Hand Stock`-`Quantity On Hand`)>=0  and `Part Location Warehouse Key`=%d
+  WHERE `Can Pick`='Yes' AND `Minimum Quantity`>=0 AND   `Minimum Quantity`>=(`Quantity On Hand`- `Part Current Stock In Process`- `Part Current Stock Ordered Paid` ) AND (P.`Part Current On Hand Stock`-`Quantity On Hand`)>=0  AND `Part Location Warehouse Key`=%d
 
 ", $this->id
         );
@@ -1246,7 +1280,6 @@ class Warehouse extends DB_Table {
         }
 
 
-
         $this->update(
             array(
                 'Warehouse Replenishable Part Locations' => $replenishable_part_locations,
@@ -1257,7 +1290,413 @@ class Warehouse extends DB_Table {
 
 
     }
+
+    function create_timeseries($data, $fork_key = 0) {
+
+
+        include_once 'class.Timeserie.php';
+
+        $data['Timeseries Parent']     = 'Warehouse';
+        $data['Timeseries Parent Key'] = $this->id;
+
+
+        $data['editor'] = $this->editor;
+
+        $timeseries = new Timeseries('find', $data, 'create');
+
+        if ($timeseries->id) {
+            require_once 'utils/date_functions.php';
+
+
+            //Warehouse Leakage Timeseries From
+
+
+            if($timeseries->get('Timeseries Type')=='WarehouseStockLeakages' and $this->get('Warehouse Leakage Timeseries From')!=''){
+                $from=$this->get('Warehouse Leakage Timeseries From');
+            }else{
+                if ($this->data['Warehouse Valid From'] != '') {
+                    $from = date('Y-m-d', strtotime($this->get('Valid From')));
+
+                } else {
+                    $from = '';
+                }
+            }
+
+
+
+
+            $to = gmdate('Y-m-d');
+
+
+            $sql        = sprintf(
+                'DELETE FROM `Timeseries Record Dimension` WHERE `Timeseries Record Timeseries Key`=%d AND `Timeseries Record Date`<%s ', $timeseries->id, prepare_mysql($from)
+            );
+            $update_sql = $this->db->prepare($sql);
+            $update_sql->execute();
+            if ($update_sql->rowCount()) {
+                $timeseries->update(
+                    array('Timeseries Updated' => gmdate('Y-m-d H:i:s')), 'no_history'
+                );
+            }
+
+            $sql        = sprintf(
+                'DELETE FROM `Timeseries Record Dimension` WHERE `Timeseries Record Timeseries Key`=%d AND `Timeseries Record Date`>%s ', $timeseries->id, prepare_mysql($to)
+            );
+            $update_sql = $this->db->prepare($sql);
+            $update_sql->execute();
+            if ($update_sql->rowCount()) {
+                $timeseries->fast_update(
+                    array('Timeseries Updated' => gmdate('Y-m-d H:i:s'))
+                );
+            }
+
+            if ($from and $to) {
+                $this->update_timeseries_record($timeseries, $from, $to, $fork_key);
+            }
+
+
+            if ($timeseries->get('Timeseries Number Records') == 0) {
+                $timeseries->fast_update(
+                    array('Timeseries Updated' => gmdate('Y-m-d H:i:s'))
+                );
+            }
+
+
+        }
+
+    }
+
+    function update_current_timeseries_record($type){
+
+        $sql=sprintf('select `Timeseries Key` from `Timeseries Dimension` where `Timeseries Type`=%s and `Timeseries Parent`="Warehouse" and `Timeseries Parent key`=%d ',
+            prepare_mysql($type),$this->id
+            );
+        if ($result=$this->db->query($sql)) {
+        		foreach ($result as $row) {
+
+        		    $timeseries=get_object('timeseries',$row['Timeseries Key']);
+        		    $this->update_timeseries_record($timeseries,gmdate('Y-m-d'),gmdate('Y-m-d'));
+
+        		}
+        }else {
+        		print_r($error_info=$this->db->errorInfo());
+        		print "$sql\n";
+        		exit;
+        }
+
+
+
+    }
+
+
+    function update_timeseries_record($timeseries, $from, $to, $fork_key = false) {
+
+
+        include_once 'utils/date_functions.php';
+
+        $dates = date_frequency_range($this->db, $timeseries->get('Timeseries Frequency'), $from, $to);
+
+
+        if ($fork_key) {
+
+            $sql = sprintf(
+                "UPDATE `Fork Dimension` SET `Fork State`='In Process' ,`Fork Operations Total Operations`=%d,`Fork Start Date`=NOW(),`Fork Result`=%d  WHERE `Fork Key`=%d ", count($dates), $timeseries->id, $fork_key
+            );
+
+            $this->db->exec($sql);
+        }
+        $index = 0;
+
+
+
+        foreach ($dates as $date_frequency_period) {
+            $index++;
+
+
+            //print_r($date_frequency_period);
+
+            $sales_data = $this->get_leakages_data($date_frequency_period['from'], $date_frequency_period['to']);
+            $_date      = gmdate('Y-m-d', strtotime($date_frequency_period['from'].' +0:00'));
+
+
+            if ($sales_data['up_transactions'] > 0 or $sales_data['down_transactions'] > 0 ) {
+
+                list($timeseries_record_key, $date) = $timeseries->create_record(array('Timeseries Record Date' => $_date));
+
+
+
+                $sql = sprintf(
+                    'DELETE FROM `Timeseries Record Drill Down` WHERE `Timeseries Record Drill Down Timeseries Record Key`=%d  ', $timeseries_record_key
+                );
+                //print $sql;
+                $this->db->exec($sql);
+
+
+
+                $sql = sprintf(
+                    'UPDATE `Timeseries Record Dimension` SET 
+                              `Timeseries Record Integer A`=%d ,`Timeseries Record Integer B`=%d ,
+                              `Timeseries Record Float A`=%.2f ,  `Timeseries Record Float B`=%f ,`Timeseries Record Float C`=%f ,`Timeseries Record Float D`=%f ,
+                              `Timeseries Record Type`=%s,`Timeseries Record Metadata`=%s WHERE `Timeseries Record Key`=%d',
+                    $sales_data['up_transactions'], $sales_data['down_transactions'],
+                    $sales_data['up_amount'], $sales_data['up_commercial_amount'], $sales_data['down_amount'], $sales_data['down_commercial_amount'], prepare_mysql('Data'),
+                    prepare_mysql(json_encode(array('f'=>$date_frequency_period['from'],'t'=>$date_frequency_period['to']))),
+                    $timeseries_record_key
+
+                );
+
+
+                //  print "$sql\n";
+
+                $update_sql = $this->db->prepare($sql);
+                $update_sql->execute();
+                if ($update_sql->rowCount() or $date == date('Y-m-d')) {
+                    $timeseries->fast_update(array('Timeseries Updated' => gmdate('Y-m-d H:i:s')));
+                }
+
+
+                if( in_array($timeseries->get('Timeseries Frequency'),array('Monthly','Quarterly','Yearly'))  and false ) {
+
+                    foreach (preg_split('/\,/', $this->get_part_family_keys()) as $family_key) {
+
+
+                        $part_skus = array();
+                        $sql       = sprintf('SELECT `Part SKU` FROM `Part Dimension` WHERE  `Part Family Category Key`=%d ', $family_key);
+                        if ($result = $this->db->query($sql)) {
+                            foreach ($result as $row) {
+                                $part_skus[$row['Part SKU']] = $row['Part SKU'];
+                            }
+                        } else {
+                            print_r($error_info = $this->db->errorInfo());
+                            print "$sql\n";
+                            exit;
+                        }
+
+                        $part_skus = join(',', $part_skus);
+
+
+                        // print 'XXX:'.$part_skus;
+                        //  exit;
+
+                        $sales_data = $this->get_sales_data($date_frequency_period['from'], $date_frequency_period['to'], $part_skus);
+                        $from_1yb = date('Y-m-d H:i:s', strtotime($date_frequency_period['from'].' -1 year'));
+                        $to_1yb   = date('Y-m-d H:i:s', strtotime($date_frequency_period['to'].' -1 year'));
+
+
+                        $sales_data_1yb = $this->get_sales_data($from_1yb, $to_1yb, $part_skus);
+
+                        if (
+                            $sales_data['deliveries'] > 0 or $sales_data['dispatched'] > 0 or $sales_data['invoiced_amount'] != 0 or $sales_data['required'] != 0 or $sales_data['profit'] != 0 or
+                            $sales_data_1yb['deliveries'] > 0 or $sales_data_1yb['dispatched'] > 0 or $sales_data_1yb['invoiced_amount'] != 0 or $sales_data_1yb['required'] != 0 or $sales_data_1yb['profit'] != 0
+                        ) {
+
+
+
+
+
+                            $sql = sprintf(
+                                'INSERT INTO `Timeseries Record Drill Down` (`Timeseries Record Drill Down Timeseries Record Key`,`Timeseries Record Drill Down Subject`,`Timeseries Record Drill Down Subject Key`,
+`Timeseries Record Drill Down Float A`,`Timeseries Record Drill Down Float B`,`Timeseries Record Drill Down Float C`,`Timeseries Record Drill Down Float D`,
+`Timeseries Record Drill Down Integer A`,`Timeseries Record Drill Down Integer B`,`Timeseries Record Drill Down Integer C`,`Timeseries Record Drill Down Integer D`
+)
+                    VALUES (%d,%s,%d, %f,%f,%f,%f, %d,%d,%d,%d)', $timeseries_record_key, prepare_mysql('Category'), $family_key,
+
+                                $sales_data['invoiced_amount'], $sales_data['profit'], $sales_data_1yb['invoiced_amount'], $sales_data_1yb['profit'], $sales_data['dispatched'], $sales_data['deliveries'], $sales_data_1yb['dispatched'], $sales_data_1yb['deliveries']
+
+
+                            );
+
+                            //print "$sql\n";
+                            $this->db->exec($sql);
+                            // exit;
+                        }
+
+                    }
+
+
+                    foreach (preg_split('/\,/', $this->get_part_skus()) as $part_sku) {
+
+                        $sales_data = $this->get_sales_data($date_frequency_period['from'], $date_frequency_period['to'], $part_sku);
+                        $from_1yb = date('Y-m-d H:i:s', strtotime($date_frequency_period['from'].' -1 year'));
+                        $to_1yb   = date('Y-m-d H:i:s', strtotime($date_frequency_period['to'].' -1 year'));
+
+
+                        $sales_data_1yb = $this->get_sales_data($from_1yb, $to_1yb, $part_sku);
+
+                        if ($sales_data['deliveries'] > 0 or $sales_data['dispatched'] > 0 or $sales_data['invoiced_amount'] != 0 or $sales_data['required'] != 0 or $sales_data['profit'] != 0 or
+                            $sales_data_1yb['deliveries'] > 0 or $sales_data_1yb['dispatched'] > 0 or $sales_data_1yb['invoiced_amount'] != 0 or $sales_data_1yb['required'] != 0 or $sales_data_1yb['profit'] != 0
+
+                        ) {
+
+
+
+
+
+                            $sql = sprintf(
+                                'INSERT INTO `Timeseries Record Drill Down` (`Timeseries Record Drill Down Timeseries Record Key`,`Timeseries Record Drill Down Subject`,`Timeseries Record Drill Down Subject Key`,
+`Timeseries Record Drill Down Float A`,`Timeseries Record Drill Down Float B`,`Timeseries Record Drill Down Float C`,`Timeseries Record Drill Down Float D`,
+`Timeseries Record Drill Down Integer A`,`Timeseries Record Drill Down Integer B`,`Timeseries Record Drill Down Integer C`,`Timeseries Record Drill Down Integer D`
+)
+                    VALUES (%d,%s,%d, %f,%f,%f,%f, %d,%d,%d,%d)', $timeseries_record_key, prepare_mysql('Part'), $part_sku,
+
+                                $sales_data['invoiced_amount'], $sales_data['profit'], $sales_data_1yb['invoiced_amount'], $sales_data_1yb['profit'],
+                                $sales_data['dispatched'], $sales_data['deliveries'], $sales_data_1yb['dispatched'], $sales_data_1yb['deliveries']
+
+
+                            );
+
+                            //print "$sql\n";
+                            $this->db->exec($sql);
+                            // exit;
+                        }
+
+                    }
+                }
+
+
+
+
+            } else {
+
+
+                $sql = sprintf(
+                    'select `Timeseries Record Key` FROM `Timeseries Record Dimension` WHERE `Timeseries Record Timeseries Key`=%d AND `Timeseries Record Date`=%s ', $timeseries->id, prepare_mysql($_date)
+                );
+
+                if ($result=$this->db->query($sql)) {
+                    if ($row = $result->fetch()) {
+                        $sql = sprintf(
+                            'DELETE FROM `Timeseries Record Drill Down` WHERE `Timeseries Record Drill Down Timeseries Record Key`=%d  ', $row['Timeseries Record Key']
+                        );
+                        //print $sql;
+                        $this->db->exec($sql);
+
+                    }
+                }else {
+                    print_r($error_info=$this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+
+
+
+
+                $sql = sprintf(
+                    'DELETE FROM `Timeseries Record Dimension` WHERE `Timeseries Record Timeseries Key`=%d AND `Timeseries Record Date`=%s ', $timeseries->id, prepare_mysql($_date)
+                );
+
+
+
+                $update_sql = $this->db->prepare($sql);
+                $update_sql->execute();
+                if ($update_sql->rowCount()) {
+                    $timeseries->fast_update(
+                        array('Timeseries Updated' => gmdate('Y-m-d H:i:s'))
+                    );
+
+                }
+
+            }
+            if ($fork_key) {
+                $skip_every = 1;
+                if ($index % $skip_every == 0) {
+                    $sql = sprintf(
+                        "UPDATE `Fork Dimension` SET `Fork Operations Done`=%d  WHERE `Fork Key`=%d ", $index, $fork_key
+                    );
+                    $this->db->exec($sql);
+
+                }
+
+            }
+            $timeseries->update_stats();
+
+
+
+
+
+
+
+
+        }
+
+        if ($fork_key) {
+
+            $sql = sprintf(
+                "UPDATE `Fork Dimension` SET `Fork State`='Finished' ,`Fork Finished Date`=NOW(),`Fork Operations Done`=%d,`Fork Result`=%d WHERE `Fork Key`=%d ", $index, $timeseries->id, $fork_key
+            );
+
+            $this->db->exec($sql);
+
+        }
+
+    }
+
+
+    function get_leakages_data($from_date, $to_date) {
+
+        $sales_data = array(
+            'up_amount'     => 0,
+            'up_commercial_amount'     => 0,
+            'up_transactions'     => 0,
+            'down_amount'    => 0,
+            'down_transactions'    => 0,
+            'down_commercial_amount'     => 0,
+
+
+        );
+
+
+
+        $sql = sprintf(
+            "SELECT count(*) AS transactions, round(ifnull(sum(`Inventory Transaction Amount`),0),2) AS amount,round(ifnull(sum(`Inventory Transaction Quantity`*`Part Commercial Value`),0),2) AS commercial_amount FROM `Inventory Transaction Fact` ITF left join `Part Dimension` P on (ITF.`Part SKU`=P.`Part SKU`)  WHERE `Inventory Transaction Type` = 'Adjust' and `Inventory Transaction Section`='Audit' and `Inventory Transaction Quantity`<0  AND `Warehouse Key`=%d %s %s",
+            $this->id, ($from_date ? sprintf('and  `Date`>=%s', prepare_mysql($from_date)) : ''), ($to_date ? sprintf('and `Date`<%s', prepare_mysql($to_date)) : '')
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $sales_data['down_amount']       = $row['amount'];
+                $sales_data['down_commercial_amount'] = $row['commercial_amount'];
+                $sales_data['down_transactions']       = $row['transactions'];
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+
+        $sql = sprintf(
+            "SELECT count(*) AS transactions, round(ifnull(sum(`Inventory Transaction Amount`),0),2) AS amount,round(ifnull(sum(`Inventory Transaction Quantity`*`Part Commercial Value`),0),2) AS commercial_amount FROM `Inventory Transaction Fact` ITF left join `Part Dimension` P on (ITF.`Part SKU`=P.`Part SKU`)  WHERE `Inventory Transaction Type` = 'Adjust' and `Inventory Transaction Section`='Audit' and `Inventory Transaction Quantity`>0  AND `Warehouse Key`=%d %s %s",
+            $this->id, ($from_date ? sprintf('and  `Date`>=%s', prepare_mysql($from_date)) : ''), ($to_date ? sprintf('and `Date`<%s', prepare_mysql($to_date)) : '')
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $sales_data['up_amount']       = $row['amount'];
+                $sales_data['up_commercial_amount'] = $row['commercial_amount'];
+                $sales_data['up_transactions']       = $row['transactions'];
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+
+        return $sales_data;
+
+    }
+
 }
+
+
 
 
 ?>

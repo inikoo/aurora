@@ -1338,6 +1338,23 @@ $elements_options = array(
 
         )
     ),
+    'leakages_transactions' => array(
+        'type' => array(
+            'label' => _('Type'),
+            'items' => array(
+                'found'     => array(
+                    'label'    => _('Found'),
+                    'selected' => true
+                ),
+                'lost'      => array(
+                    'label'    => _('Lost'),
+                    'selected' => true
+                )
+
+            ),
+
+        )
+    ),
 );
 
 ?>

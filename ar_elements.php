@@ -318,18 +318,17 @@ switch ($tab) {
         get_category_root_all_parts_elements($db, $data['parameters'], $user);
         break;
     case 'ec_sales_list':
-
-        $data = prepare_values(
-            $_REQUEST, array(
-                         'parameters' => array('type' => 'json array')
-                     )
-        );
+        $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
         get_ec_sales_list_elements($db, $data['parameters'], $user);
         break;
 
+    case 'warehouse.leakages.transactions':
+
+        $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
+        warehouse_leakages_transactions($db, $data['parameters'], $user);
+        break;
+
     default:
-
-
         $response = array(
             'state' => 405,
             'resp'  => 'Tab not found '.$tab
@@ -340,10 +339,69 @@ switch ($tab) {
 }
 
 
+function warehouse_leakages_transactions($db, $data, $user) {
+
+
+
+
+    $elements_numbers = array(
+        'type' => array(
+            'found'  => 0,
+            'lost' => 0,
+        ),
+
+    );
+
+
+
+
+
+    $timeseries_record=get_object('timeseries_record',$data['parent_key']);
+    //print_r($timeseries_record);
+
+    $_tmp=json_decode($timeseries_record->get('Timeseries Record Metadata'),true);
+    $from_date=$_tmp['f'];
+    $to_date=$_tmp['t'];
+
+    $where = sprintf(" where `Inventory Transaction Type` = 'Adjust' and `Inventory Transaction Section`='Audit'  AND `Warehouse Key`=%d %s %s  ",
+                     $timeseries_record->get('Timeseries Parent Key'),
+        ($from_date ? sprintf('and  `Date`>=%s', prepare_mysql($from_date)) : ''), ($to_date ? sprintf('and `Date`<%s', prepare_mysql($to_date)) : '')
+    );
+
+
+    $sql = sprintf(
+        "select count(*) as number from `Inventory Transaction Fact` %s    and `Inventory Transaction Quantity`<0  ",$where
+    );
+    foreach ($db->query($sql) as $row) {
+
+        $elements_numbers['type']['lost'] = number($row['number']);
+
+    }
+
+    $sql = sprintf(
+        "select count(*) as number from `Inventory Transaction Fact` %s    and `Inventory Transaction Quantity`>0  ",$where
+    );
+    foreach ($db->query($sql) as $row) {
+
+        $elements_numbers['type']['found'] = number($row['number']);
+
+    }
+
+
+
+    $response = array(
+        'state'            => 200,
+        'elements_numbers' => $elements_numbers
+    );
+    echo json_encode($response);
+
+
+}
+
 function get_webnodes_element_numbers($db, $data, $user) {
 
 
-    $parent_key = $data['parent_key'];
+
 
     $elements_numbers = array(
         'status' => array(
