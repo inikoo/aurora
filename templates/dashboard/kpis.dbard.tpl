@@ -26,7 +26,7 @@
 
     <tr class=" small_row   ">
         <td colspan="7">
-            <div class="date_chooser {if $type=='orders'}invisible{/if}">
+            <div class="date_chooser ">
                 <div style="visibility:hidden" id="kpi_interval"
                      class="interval {if  $kpis_period=='interval'}selected{/if}">
                     <img src="/art/icons/mini-calendar_interval.png"/> {t}Interval{/t}
