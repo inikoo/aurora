@@ -91,21 +91,21 @@
 </div>
 
 <ul id="kpis" class=" flex-container">
-
+    {assign "warehouse_kpi" $warehouse->get_kpi($kpis_period)}
     <li class="flex-item  kpi    "  type="WPM" parent="warehouse" parent_key="{$warehouse->id}"  >
-        {assign "kpi" $warehouse->get_kpi($kpis_period)}
+
 
         <span title="{t}Warehouse productivity metric{/t}"> WPM </span>
         <div class="title">
-            <span class="kpi_value" title="{t}Net sales per man hour{/t}">{$kpi.formatted_kpi}</span>
+            <span class="kpi_value" title="{t}Net sales per man hour{/t}">{$warehouse_kpi.formatted_kpi}</span>
         </div>
         <div >
-            <span class="aux_kpi_data" title="">{$kpi.formatted_aux_kpi_data}</span>
+            <span class="aux_kpi_data" title="">{$warehouse_kpi.formatted_aux_kpi_data}</span>
 
         </div>
 
     </li>
-
+    {if isset($supplier_production)}
     <li class="flex-item  kpi ppm_kip   "  type="PPM" parent="supplier_production" parent_key="{$supplier_production->id}"  >
 
 
@@ -119,6 +119,22 @@
         </div>
 
     </li>
+    {/if}
+    <li class="flex-item  kpi    "  type="WPM" parent="warehouse" parent_key="{$warehouse->id}"  >
+
+        <span title="{t}Lost stock{/t}"> {t}Lost stock{/t} </span>
+        <div class="title">
+            <span class="kpi_value" title="{t}Amount lost as cost value{/t}">{$warehouse_kpi.stock_leakage.down.amount}</span>
+        </div>
+        <div >
+            <span class="aux_kpi_data" title="{t}Number of audits{/t}">{$warehouse_kpi.stock_leakage.down.transactions}</span>
+
+        </div>
+
+    </li>
+
+
+
 
 </ul>
 
