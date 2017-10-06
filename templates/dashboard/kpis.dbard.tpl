@@ -119,7 +119,7 @@
 
     </li>
     {/if}
-    <li class="flex-item  kpi   button warehouse  "  onclick="change_view('warehouse/{$warehouse->id}/leakages')"    parent="warehouse" parent_key="{$warehouse->id}"  >
+    <li class="flex-item  kpi   button warehouse  hide"  onclick="change_view('warehouse/{$warehouse->id}/leakages')"    parent="warehouse" parent_key="{$warehouse->id}"  >
 
         <span title="{t}Lost stock{/t}"> {t}Lost stock{/t} </span>
         <div class="title">
