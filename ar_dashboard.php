@@ -30,7 +30,6 @@ switch ($tipo) {
     case 'kpi':
         $data = prepare_values(
             $_REQUEST, array(
-                         'type'       => array('type' => 'string'),
                          'parent'     => array('type' => 'string'),
                          'period'     => array('type' => 'period'),
                          'parent_key' => array('type' => 'key'),
@@ -697,10 +696,7 @@ function kpi($data, $db, $user, $account) {
     require_once 'utils/object_functions.php';
 
 
-    $_SESSION['dashboard_state']['kpis'] = array(
-        'period' => $data['period'],
-
-    );
+    $_SESSION['dashboard_state']['kpis'] = array('period' => $data['period']);
 
     $object = get_object($data['parent'], $data['parent_key']);
 

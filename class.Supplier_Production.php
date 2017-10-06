@@ -178,7 +178,7 @@ class Supplier_Production extends Supplier {
     }
 
 
-    function get_kpi($interval){
+    function get_kpi($interval) {
 
         global $account;
 
@@ -188,35 +188,32 @@ class Supplier_Production extends Supplier {
         // print "$db_interval, $from_date, $to_date, $from_date_1yb, $to_date_1yb \n";
 
 
-        $sql=sprintf('select sum(`Timesheet Production Clocked Time`) as seconds from `Timesheet Dimension` where `Timesheet Date`>=%s and `Timesheet Date`<=%s ',
-                     prepare_mysql($from_date),
-                     prepare_mysql($to_date)
+        $sql = sprintf(
+            'SELECT sum(`Timesheet Production Clocked Time`) AS seconds FROM `Timesheet Dimension` WHERE `Timesheet Date`>=%s AND `Timesheet Date`<=%s ', prepare_mysql($from_date), prepare_mysql($to_date)
         );
-        if ($result=$this->db->query($sql)) {
+        if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-                $hrs=$row['seconds']/3600;
-            }else{
-                $hrs=0;
+                $hrs = $row['seconds'] / 3600;
+            } else {
+                $hrs = 0;
             }
-        }else {
-            print_r($error_info=$this->db->errorInfo());
+        } else {
+            print_r($error_info = $this->db->errorInfo());
             print "$sql\n";
             exit;
         }
-
 
 
         if ($to_date == gmdate('Y-m-d 23:59:59')) {
             include_once 'class.Timesheet.php';
 
             $sql = sprintf(
-                "SELECT `Timesheet Key` FROM `Timesheet Dimension` T LEFT JOIN `Staff Role Bridge` B ON (B.`Staff Key`=`Timesheet Staff Key`) WHERE `Role Code` IN ('PRODM','PRODO') AND `Timesheet Date`=%s ",
-                prepare_mysql(gmdate('Y-m-d'))
+                "SELECT `Timesheet Key` FROM `Timesheet Dimension` T LEFT JOIN `Staff Role Bridge` B ON (B.`Staff Key`=`Timesheet Staff Key`) WHERE `Role Code` IN ('PRODM','PRODO') AND `Timesheet Date`=%s ", prepare_mysql(gmdate('Y-m-d'))
             );
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
                     $timesheet = new Timesheet($row['Timesheet Key']);
-                    $hrs += $timesheet->get_clocked_open_jaw_time() / 3600;
+                    $hrs       += $timesheet->get_clocked_open_jaw_time() / 3600;
                 }
             } else {
                 print_r($error_info = $this->db->errorInfo());
@@ -228,54 +225,64 @@ class Supplier_Production extends Supplier {
         }
 
 
-
         // print $sql;
 
-        $sql=sprintf('select sum(`Amount In`) as amount from `Inventory Transaction Fact` ITF LEFT JOIN `Supplier Part Dimension` SP ON (SP.`Supplier Part Part SKU`=ITF.`Part SKU`)   where `Date`>=%s and `Date`<=%s  and `Inventory Transaction Type`="Sale" and `Supplier Part Supplier Key`=%d   ',
-                     prepare_mysql($from_date),
-                     prepare_mysql($to_date),
-                     $this->id
-        );
-        if ($result=$this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $amount=$row['amount'];
-            }else{
-                $amount=0;
-            }
-        }else {
-            print_r($error_info=$this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
+
+        $db_interval = get_interval_db_name($interval);
+
+        $supplier = get_object('supplier', $this->id);
+        $supplier->load_acc_data();
+        $amount = $supplier->get('Supplier '.$db_interval.' Acc Invoiced Amount');
 
 
-        if($hrs==0){
-            $kpi= '';
-            $kpi_formatted='';
-        }else{
-            $kpi= $amount/$hrs;
-            $kpi_formatted=number($amount/$hrs,2).' '.currency_symbol($account->get('Account Currency')).'/h';
+        /*
+
+                $sql=sprintf('select sum(`Amount In`) as amount from `Inventory Transaction Fact` ITF LEFT JOIN `Supplier Part Dimension` SP ON (SP.`Supplier Part Part SKU`=ITF.`Part SKU`)   where `Date`>=%s and `Date`<=%s  and `Inventory Transaction Type`="Sale" and `Supplier Part Supplier Key`=%d   ',
+                             prepare_mysql($from_date),
+                             prepare_mysql($to_date),
+                             $this->id
+                );
+                if ($result=$this->db->query($sql)) {
+                    if ($row = $result->fetch()) {
+                        $amount=$row['amount'];
+                    }else{
+                        $amount=0;
+                    }
+                }else {
+                    print_r($error_info=$this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+        */
+
+
+        if ($hrs == 0) {
+            $kpi           = '';
+            $kpi_formatted = '';
+        } else {
+            $kpi           = $amount / $hrs;
+            $kpi_formatted = number($amount / $hrs, 2).' '.currency_symbol($account->get('Account Currency')).'/h';
         }
 
 
         return array(
-            'kpi'=> $kpi,
-            'amount'=>$amount,
-            'hrs'=>$hrs,
-            'formatted_kpi'=>$kpi_formatted ,
-            'formatted_amount'=>money($amount,$account->get('Account Currency')),
-            'formatted_hrs'=>sprintf('%d hours',number($hrs,1)),
-            'formatted_aux_kpi_data'=>sprintf('%d hours', number($hrs, 1)),
+            'ppm' => array(
+
+                'ppm_kpi'                    => $kpi,
+                'ppm_amount'                 => $amount,
+                'ppm_hrs'                    => $hrs,
+                'ppm_formatted_kpi'          => $kpi_formatted,
+                'ppm_formatted_amount'       => money($amount, $account->get('Account Currency')),
+                'ppm_formatted_hrs'          => sprintf('%d hours', number($hrs, 1)),
+                'ppm_formatted_aux_kpi_data' => sprintf('%d hours', number($hrs, 1)),
+            )
         );
 
 
     }
 
 }
-
-
-
-
 
 
 ?>
