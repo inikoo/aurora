@@ -91,43 +91,42 @@
 </div>
 
 <ul id="kpis" class=" flex-container">
-    {assign "warehouse_kpi" $warehouse->get_kpi($kpis_period)}
-    <li class="flex-item  kpi    "  type="WPM" parent="warehouse" parent_key="{$warehouse->id}"  >
+    <li class="flex-item  kpi base warehouse "  style="height: 60px" parent="warehouse" parent_key="{$warehouse->id}"  >
 
 
         <span title="{t}Warehouse productivity metric{/t}"> WPM </span>
         <div class="title">
-            <span class="kpi_value" title="{t}Net sales per man hour{/t}">{$warehouse_kpi.formatted_kpi}</span>
+            <span class="kpi_value wpm_formatted_kpi" title="{t}Net sales per man hour{/t}"></span>
         </div>
         <div >
-            <span class="aux_kpi_data" title="">{$warehouse_kpi.formatted_aux_kpi_data}</span>
+            <span class="kpi_value wpm_formatted_aux_kpi_data" title=""></span>
 
         </div>
 
     </li>
-    {if isset($supplier_production)}
-    <li class="flex-item  kpi ppm_kip   "  type="PPM" parent="supplier_production" parent_key="{$supplier_production->id}"  >
+    {if isset($supplier_production) }
+    <li class="flex-item  kpi ppm_kip base supplier_production "   parent="supplier_production" parent_key="{$supplier_production->id}"  >
 
 
         <span title="{t}Production productivity metric{/t}"> PPM </span>
         <div class="title">
-            <span class="kpi_value  button" title="{t}Production sales per man hour{/t}"></span>
+            <span class="kpi_value  ppm_formatted_kpi" title="{t}Production sales per man hour{/t}"></span>
         </div>
         <div >
-            <span class="aux_kpi_data" title=""></span>
+            <span class="kpi_value  ppm_formatted_aux_kpi_data " title=""></span>
 
         </div>
 
     </li>
     {/if}
-    <li class="flex-item  kpi    "  type="WPM" parent="warehouse" parent_key="{$warehouse->id}"  >
+    <li class="flex-item  kpi   button warehouse  "  onclick="change_view('warehouse/{$warehouse->id}/leakages')"    parent="warehouse" parent_key="{$warehouse->id}"  >
 
         <span title="{t}Lost stock{/t}"> {t}Lost stock{/t} </span>
         <div class="title">
-            <span class="kpi_value" title="{t}Amount lost as cost value{/t}">{$warehouse_kpi.stock_leakage.down.amount}</span>
+            <span class="kpi_value stock_leakage_down_amount"  title="{t}Amount lost as cost value{/t}"></span>
         </div>
         <div >
-            <span class="aux_kpi_data" title="{t}Number of audits{/t}">{$warehouse_kpi.stock_leakage.down.transactions}</span>
+            <span class="kpi_value stock_leakage_down_transactions" title="{t}Number of audits{/t}"></span>
 
         </div>
 
@@ -140,9 +139,9 @@
 
 
 <script>
-    $( "#kpis .ppm_kip" ).load(function() {
+   // $( "#kpis " ).load(function() {
         change_kpis_period('{$kpis_period}');
-    })
+   // })
 
     function change_kpis_period(period) {
 
@@ -150,24 +149,38 @@
         $('#dashboard_kpis .date_chooser .fixed_interval').removeClass('selected')
         $('#kpi_' + period).addClass('selected')
         
-        $('#kpis li.kpi').each(function(i, obj) {
+        $('#kpis li.kpi.base').each(function(i, obj) {
 
             var kpi_element=$(obj);
-            kpi_element.find('.kpi_value').addClass('super_discreet')
-            kpi_element.find('.aux_kpi_data').addClass('super_discreet')
+
+            $('#kpis li.'+kpi_element.attr('parent')+' .kpi_value ').addClass('super_discreet')
 
 
-            var request = "/ar_dashboard.php?tipo=kpi&type=" + $(obj).attr('type') + '&parent=' + $(obj).attr('parent') + '&parent_key=' + $(obj).attr('parent_key')+'&period='+period
+
+            var request = "/ar_dashboard.php?tipo=kpi&parent=" + $(obj).attr('parent') + '&parent_key=' + $(obj).attr('parent_key')+'&period='+period
             console.log(request)
 
             $.getJSON(request, function (r) {
 
 
+               console.log(r.kpi)
+                for (var i in r.kpi) {
 
-        console.log(r.kpi.formatted_kpi)
-                kpi_element.find('.kpi_value').html( r.kpi.formatted_kpi).removeClass('super_discreet')
+                    for (var j in r.kpi[i]) {
 
-                kpi_element.find('.aux_kpi_data').html( r.kpi.formatted_aux_kpi_data).removeClass('super_discreet')
+                       $('.'+j).html(r.kpi[i][j] ).removeClass('super_discreet')
+
+
+                    }
+
+                }
+
+
+                //kpi_element.find('.kpi_value').html( r.kpi.formatted_kpi).removeClass('super_discreet')
+                //kpi_element.find('.aux_kpi_data').html( r.kpi.formatted_aux_kpi_data).removeClass('super_discreet')
+
+
+
 
             });
 

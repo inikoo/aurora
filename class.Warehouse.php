@@ -846,10 +846,10 @@ class Warehouse extends DB_Table {
 
                         $sql = sprintf(
                             "SELECT count(*) AS num FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d AND  `Inventory Transaction Type`='Sale' AND `Date`>=%s AND `Date`<=%s ", $row2['Part SKU'], prepare_mysql(
-                                                                                                                                                                                      date(
-                                                                                                                                                                                          "Y-m-d H:i:s", strtotime($row['Date'].' 23:59:59 -1 year')
-                                                                                                                                                                                      )
-                                                                                                                                                                                  ), prepare_mysql($row['Date'].' 23:59:59')
+                            date(
+                                "Y-m-d H:i:s", strtotime($row['Date'].' 23:59:59 -1 year')
+                            )
+                        ), prepare_mysql($row['Date'].' 23:59:59')
                         );
 
 
@@ -1068,57 +1068,55 @@ class Warehouse extends DB_Table {
         }
 
 
+        $wpm = array(
+            'wpm_kpi'                    => $kpi,
+            'wpm_amount'                 => $amount,
+            'wpm_hrs'                    => $hrs,
+            'wpm_formatted_kpi'          => $formatted_kpi,
+            'wpm_formatted_amount'       => money($amount, $account->get('Account Currency')),
+            'wpm_formatted_hrs'          => sprintf('%d hours', number($hrs, 1)),
+            'wpm_formatted_aux_kpi_data' => sprintf('%d hours', number($hrs, 1)),
 
-
-
-        $where = sprintf(" where `Inventory Transaction Type` = 'Adjust' and `Inventory Transaction Section`='Audit'  AND `Warehouse Key`=%d %s %s  ",
-                         $this->id,
-            ($from_date ? sprintf('and  `Date`>=%s', prepare_mysql($from_date)) : ''), ($to_date ? sprintf('and `Date`<%s', prepare_mysql($to_date)) : '')
         );
 
 
-        $_stock_leakage=0;
+        $where = sprintf(
+            " where `Inventory Transaction Type` = 'Adjust' and `Inventory Transaction Section`='Audit'  AND `Warehouse Key`=%d %s %s  ", $this->id, ($from_date ? sprintf('and  `Date`>=%s', prepare_mysql($from_date)) : ''),
+            ($to_date ? sprintf('and `Date`<%s', prepare_mysql($to_date)) : '')
+        );
+
+
+        $_stock_leakage = 0;
 
         $sql = sprintf(
-            "select sum(`Inventory Transaction Amount`) as amount, count(*) as num from `Inventory Transaction Fact` %s    and `Inventory Transaction Quantity`<0  ",$where
+            "SELECT sum(`Inventory Transaction Amount`) AS amount, count(*) AS num FROM `Inventory Transaction Fact` %s    AND `Inventory Transaction Quantity`<0  ", $where
         );
         foreach ($this->db->query($sql) as $row) {
 
-            $_stock_leakage=$row['amount'];
-            $_stock_leakage_transactions=$row['num'];
+            $_stock_leakage              = $row['amount'];
+            $_stock_leakage_transactions = $row['num'];
 
         }
 
-        if($_stock_leakage==0){
-            $stock_leakage='<span class="success"><i class="fa fa-thumbs-up" aria-hidden="true"></i> '.money(0,$account->get('Currency Code')).'</span>';
+        if ($_stock_leakage == 0) {
+            $stock_leakage = '<span class="success"><i class="fa fa-thumbs-up" aria-hidden="true"></i> '.money(0, $account->get('Currency Code')).'</span>';
 
-        }else{
-            $stock_leakage='<span class="">'.money($_stock_leakage,$account->get('Currency Code')).'</span>';
+        } else {
+            $stock_leakage = '<span class="">'.money($_stock_leakage, $account->get('Currency Code')).'</span>';
         }
 
 
         $stock_leakage = array(
-            'down' => array(
-                'amount' =>$stock_leakage,
-                'transactions' =>number($_stock_leakage_transactions)
-                ),
-            'up'   => array(
-                'amount' =>money(0,$account->get('Currency Code'))
-            ),
+            'stock_leakage_down_amount'       => $stock_leakage,
+            'stock_leakage_down_transactions' => number($_stock_leakage_transactions)
         );
 
 
         return array(
 
             'stock_leakage' => $stock_leakage,
+            'wpm'           => $wpm,
 
-            'kpi'                    => $kpi,
-            'amount'                 => $amount,
-            'hrs'                    => $hrs,
-            'formatted_kpi'          => $formatted_kpi,
-            'formatted_amount'       => money($amount, $account->get('Account Currency')),
-            'formatted_hrs'          => sprintf('%d hours', number($hrs, 1)),
-            'formatted_aux_kpi_data' => sprintf('%d hours', number($hrs, 1)),
         );
 
 
@@ -1313,9 +1311,9 @@ class Warehouse extends DB_Table {
             //Warehouse Leakage Timeseries From
 
 
-            if($timeseries->get('Timeseries Type')=='WarehouseStockLeakages' and $this->get('Warehouse Leakage Timeseries From')!=''){
-                $from=$this->get('Warehouse Leakage Timeseries From');
-            }else{
+            if ($timeseries->get('Timeseries Type') == 'WarehouseStockLeakages' and $this->get('Warehouse Leakage Timeseries From') != '') {
+                $from = $this->get('Warehouse Leakage Timeseries From');
+            } else {
                 if ($this->data['Warehouse Valid From'] != '') {
                     $from = date('Y-m-d', strtotime($this->get('Valid From')));
 
@@ -1323,8 +1321,6 @@ class Warehouse extends DB_Table {
                     $from = '';
                 }
             }
-
-
 
 
             $to = gmdate('Y-m-d');
@@ -1368,29 +1364,6 @@ class Warehouse extends DB_Table {
 
     }
 
-    function update_current_timeseries_record($type){
-
-        $sql=sprintf('select `Timeseries Key` from `Timeseries Dimension` where `Timeseries Type`=%s and `Timeseries Parent`="Warehouse" and `Timeseries Parent key`=%d ',
-            prepare_mysql($type),$this->id
-            );
-        if ($result=$this->db->query($sql)) {
-        		foreach ($result as $row) {
-
-        		    $timeseries=get_object('timeseries',$row['Timeseries Key']);
-        		    $this->update_timeseries_record($timeseries,gmdate('Y-m-d'),gmdate('Y-m-d'));
-
-        		}
-        }else {
-        		print_r($error_info=$this->db->errorInfo());
-        		print "$sql\n";
-        		exit;
-        }
-
-
-
-    }
-
-
     function update_timeseries_record($timeseries, $from, $to, $fork_key = false) {
 
 
@@ -1410,7 +1383,6 @@ class Warehouse extends DB_Table {
         $index = 0;
 
 
-
         foreach ($dates as $date_frequency_period) {
             $index++;
 
@@ -1421,10 +1393,9 @@ class Warehouse extends DB_Table {
             $_date      = gmdate('Y-m-d', strtotime($date_frequency_period['from'].' +0:00'));
 
 
-            if ($sales_data['up_transactions'] > 0 or $sales_data['down_transactions'] > 0 ) {
+            if ($sales_data['up_transactions'] > 0 or $sales_data['down_transactions'] > 0) {
 
                 list($timeseries_record_key, $date) = $timeseries->create_record(array('Timeseries Record Date' => $_date));
-
 
 
                 $sql = sprintf(
@@ -1434,16 +1405,19 @@ class Warehouse extends DB_Table {
                 $this->db->exec($sql);
 
 
-
                 $sql = sprintf(
                     'UPDATE `Timeseries Record Dimension` SET 
                               `Timeseries Record Integer A`=%d ,`Timeseries Record Integer B`=%d ,
                               `Timeseries Record Float A`=%.2f ,  `Timeseries Record Float B`=%f ,`Timeseries Record Float C`=%f ,`Timeseries Record Float D`=%f ,
-                              `Timeseries Record Type`=%s,`Timeseries Record Metadata`=%s WHERE `Timeseries Record Key`=%d',
-                    $sales_data['up_transactions'], $sales_data['down_transactions'],
-                    $sales_data['up_amount'], $sales_data['up_commercial_amount'], $sales_data['down_amount'], $sales_data['down_commercial_amount'], prepare_mysql('Data'),
-                    prepare_mysql(json_encode(array('f'=>$date_frequency_period['from'],'t'=>$date_frequency_period['to']))),
-                    $timeseries_record_key
+                              `Timeseries Record Type`=%s,`Timeseries Record Metadata`=%s WHERE `Timeseries Record Key`=%d', $sales_data['up_transactions'], $sales_data['down_transactions'], $sales_data['up_amount'], $sales_data['up_commercial_amount'],
+                    $sales_data['down_amount'], $sales_data['down_commercial_amount'], prepare_mysql('Data'), prepare_mysql(
+                        json_encode(
+                            array(
+                                'f' => $date_frequency_period['from'],
+                                't' => $date_frequency_period['to']
+                            )
+                        )
+                    ), $timeseries_record_key
 
                 );
 
@@ -1457,7 +1431,13 @@ class Warehouse extends DB_Table {
                 }
 
 
-                if( in_array($timeseries->get('Timeseries Frequency'),array('Monthly','Quarterly','Yearly'))  and false ) {
+                if (in_array(
+                        $timeseries->get('Timeseries Frequency'), array(
+                        'Monthly',
+                        'Quarterly',
+                        'Yearly'
+                    )
+                    ) and false) {
 
                     foreach (preg_split('/\,/', $this->get_part_family_keys()) as $family_key) {
 
@@ -1481,19 +1461,14 @@ class Warehouse extends DB_Table {
                         //  exit;
 
                         $sales_data = $this->get_sales_data($date_frequency_period['from'], $date_frequency_period['to'], $part_skus);
-                        $from_1yb = date('Y-m-d H:i:s', strtotime($date_frequency_period['from'].' -1 year'));
-                        $to_1yb   = date('Y-m-d H:i:s', strtotime($date_frequency_period['to'].' -1 year'));
+                        $from_1yb   = date('Y-m-d H:i:s', strtotime($date_frequency_period['from'].' -1 year'));
+                        $to_1yb     = date('Y-m-d H:i:s', strtotime($date_frequency_period['to'].' -1 year'));
 
 
                         $sales_data_1yb = $this->get_sales_data($from_1yb, $to_1yb, $part_skus);
 
-                        if (
-                            $sales_data['deliveries'] > 0 or $sales_data['dispatched'] > 0 or $sales_data['invoiced_amount'] != 0 or $sales_data['required'] != 0 or $sales_data['profit'] != 0 or
-                            $sales_data_1yb['deliveries'] > 0 or $sales_data_1yb['dispatched'] > 0 or $sales_data_1yb['invoiced_amount'] != 0 or $sales_data_1yb['required'] != 0 or $sales_data_1yb['profit'] != 0
-                        ) {
-
-
-
+                        if ($sales_data['deliveries'] > 0 or $sales_data['dispatched'] > 0 or $sales_data['invoiced_amount'] != 0 or $sales_data['required'] != 0 or $sales_data['profit'] != 0 or $sales_data_1yb['deliveries'] > 0 or $sales_data_1yb['dispatched'] > 0
+                            or $sales_data_1yb['invoiced_amount'] != 0 or $sales_data_1yb['required'] != 0 or $sales_data_1yb['profit'] != 0) {
 
 
                             $sql = sprintf(
@@ -1519,19 +1494,16 @@ class Warehouse extends DB_Table {
                     foreach (preg_split('/\,/', $this->get_part_skus()) as $part_sku) {
 
                         $sales_data = $this->get_sales_data($date_frequency_period['from'], $date_frequency_period['to'], $part_sku);
-                        $from_1yb = date('Y-m-d H:i:s', strtotime($date_frequency_period['from'].' -1 year'));
-                        $to_1yb   = date('Y-m-d H:i:s', strtotime($date_frequency_period['to'].' -1 year'));
+                        $from_1yb   = date('Y-m-d H:i:s', strtotime($date_frequency_period['from'].' -1 year'));
+                        $to_1yb     = date('Y-m-d H:i:s', strtotime($date_frequency_period['to'].' -1 year'));
 
 
                         $sales_data_1yb = $this->get_sales_data($from_1yb, $to_1yb, $part_sku);
 
-                        if ($sales_data['deliveries'] > 0 or $sales_data['dispatched'] > 0 or $sales_data['invoiced_amount'] != 0 or $sales_data['required'] != 0 or $sales_data['profit'] != 0 or
-                            $sales_data_1yb['deliveries'] > 0 or $sales_data_1yb['dispatched'] > 0 or $sales_data_1yb['invoiced_amount'] != 0 or $sales_data_1yb['required'] != 0 or $sales_data_1yb['profit'] != 0
+                        if ($sales_data['deliveries'] > 0 or $sales_data['dispatched'] > 0 or $sales_data['invoiced_amount'] != 0 or $sales_data['required'] != 0 or $sales_data['profit'] != 0 or $sales_data_1yb['deliveries'] > 0 or $sales_data_1yb['dispatched'] > 0
+                            or $sales_data_1yb['invoiced_amount'] != 0 or $sales_data_1yb['required'] != 0 or $sales_data_1yb['profit'] != 0
 
                         ) {
-
-
-
 
 
                             $sql = sprintf(
@@ -1541,8 +1513,7 @@ class Warehouse extends DB_Table {
 )
                     VALUES (%d,%s,%d, %f,%f,%f,%f, %d,%d,%d,%d)', $timeseries_record_key, prepare_mysql('Part'), $part_sku,
 
-                                $sales_data['invoiced_amount'], $sales_data['profit'], $sales_data_1yb['invoiced_amount'], $sales_data_1yb['profit'],
-                                $sales_data['dispatched'], $sales_data['deliveries'], $sales_data_1yb['dispatched'], $sales_data_1yb['deliveries']
+                                $sales_data['invoiced_amount'], $sales_data['profit'], $sales_data_1yb['invoiced_amount'], $sales_data_1yb['profit'], $sales_data['dispatched'], $sales_data['deliveries'], $sales_data_1yb['dispatched'], $sales_data_1yb['deliveries']
 
 
                             );
@@ -1556,16 +1527,14 @@ class Warehouse extends DB_Table {
                 }
 
 
-
-
             } else {
 
 
                 $sql = sprintf(
-                    'select `Timeseries Record Key` FROM `Timeseries Record Dimension` WHERE `Timeseries Record Timeseries Key`=%d AND `Timeseries Record Date`=%s ', $timeseries->id, prepare_mysql($_date)
+                    'SELECT `Timeseries Record Key` FROM `Timeseries Record Dimension` WHERE `Timeseries Record Timeseries Key`=%d AND `Timeseries Record Date`=%s ', $timeseries->id, prepare_mysql($_date)
                 );
 
-                if ($result=$this->db->query($sql)) {
+                if ($result = $this->db->query($sql)) {
                     if ($row = $result->fetch()) {
                         $sql = sprintf(
                             'DELETE FROM `Timeseries Record Drill Down` WHERE `Timeseries Record Drill Down Timeseries Record Key`=%d  ', $row['Timeseries Record Key']
@@ -1574,20 +1543,16 @@ class Warehouse extends DB_Table {
                         $this->db->exec($sql);
 
                     }
-                }else {
-                    print_r($error_info=$this->db->errorInfo());
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
                     print "$sql\n";
                     exit;
                 }
 
 
-
-
-
                 $sql = sprintf(
                     'DELETE FROM `Timeseries Record Dimension` WHERE `Timeseries Record Timeseries Key`=%d AND `Timeseries Record Date`=%s ', $timeseries->id, prepare_mysql($_date)
                 );
-
 
 
                 $update_sql = $this->db->prepare($sql);
@@ -1614,12 +1579,6 @@ class Warehouse extends DB_Table {
             $timeseries->update_stats();
 
 
-
-
-
-
-
-
         }
 
         if ($fork_key) {
@@ -1634,33 +1593,31 @@ class Warehouse extends DB_Table {
 
     }
 
-
     function get_leakages_data($from_date, $to_date) {
 
         $sales_data = array(
-            'up_amount'     => 0,
-            'up_commercial_amount'     => 0,
-            'up_transactions'     => 0,
-            'down_amount'    => 0,
-            'down_transactions'    => 0,
-            'down_commercial_amount'     => 0,
+            'up_amount'              => 0,
+            'up_commercial_amount'   => 0,
+            'up_transactions'        => 0,
+            'down_amount'            => 0,
+            'down_transactions'      => 0,
+            'down_commercial_amount' => 0,
 
 
         );
 
 
-
         $sql = sprintf(
-            "SELECT count(*) AS transactions, round(ifnull(sum(`Inventory Transaction Amount`),0),2) AS amount,round(ifnull(sum(`Inventory Transaction Quantity`*`Part Commercial Value`),0),2) AS commercial_amount FROM `Inventory Transaction Fact` ITF left join `Part Dimension` P on (ITF.`Part SKU`=P.`Part SKU`)  WHERE `Inventory Transaction Type` = 'Adjust' and `Inventory Transaction Section`='Audit' and `Inventory Transaction Quantity`<0  AND `Warehouse Key`=%d %s %s",
+            "SELECT count(*) AS transactions, round(ifnull(sum(`Inventory Transaction Amount`),0),2) AS amount,round(ifnull(sum(`Inventory Transaction Quantity`*`Part Commercial Value`),0),2) AS commercial_amount FROM `Inventory Transaction Fact` ITF LEFT JOIN `Part Dimension` P ON (ITF.`Part SKU`=P.`Part SKU`)  WHERE `Inventory Transaction Type` = 'Adjust' AND `Inventory Transaction Section`='Audit' AND `Inventory Transaction Quantity`<0  AND `Warehouse Key`=%d %s %s",
             $this->id, ($from_date ? sprintf('and  `Date`>=%s', prepare_mysql($from_date)) : ''), ($to_date ? sprintf('and `Date`<%s', prepare_mysql($to_date)) : '')
         );
 
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-                $sales_data['down_amount']       = $row['amount'];
+                $sales_data['down_amount']            = $row['amount'];
                 $sales_data['down_commercial_amount'] = $row['commercial_amount'];
-                $sales_data['down_transactions']       = $row['transactions'];
+                $sales_data['down_transactions']      = $row['transactions'];
 
 
             }
@@ -1670,18 +1627,17 @@ class Warehouse extends DB_Table {
         }
 
 
-
         $sql = sprintf(
-            "SELECT count(*) AS transactions, round(ifnull(sum(`Inventory Transaction Amount`),0),2) AS amount,round(ifnull(sum(`Inventory Transaction Quantity`*`Part Commercial Value`),0),2) AS commercial_amount FROM `Inventory Transaction Fact` ITF left join `Part Dimension` P on (ITF.`Part SKU`=P.`Part SKU`)  WHERE `Inventory Transaction Type` = 'Adjust' and `Inventory Transaction Section`='Audit' and `Inventory Transaction Quantity`>0  AND `Warehouse Key`=%d %s %s",
+            "SELECT count(*) AS transactions, round(ifnull(sum(`Inventory Transaction Amount`),0),2) AS amount,round(ifnull(sum(`Inventory Transaction Quantity`*`Part Commercial Value`),0),2) AS commercial_amount FROM `Inventory Transaction Fact` ITF LEFT JOIN `Part Dimension` P ON (ITF.`Part SKU`=P.`Part SKU`)  WHERE `Inventory Transaction Type` = 'Adjust' AND `Inventory Transaction Section`='Audit' AND `Inventory Transaction Quantity`>0  AND `Warehouse Key`=%d %s %s",
             $this->id, ($from_date ? sprintf('and  `Date`>=%s', prepare_mysql($from_date)) : ''), ($to_date ? sprintf('and `Date`<%s', prepare_mysql($to_date)) : '')
         );
 
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-                $sales_data['up_amount']       = $row['amount'];
+                $sales_data['up_amount']            = $row['amount'];
                 $sales_data['up_commercial_amount'] = $row['commercial_amount'];
-                $sales_data['up_transactions']       = $row['transactions'];
+                $sales_data['up_transactions']      = $row['transactions'];
 
 
             }
@@ -1689,16 +1645,34 @@ class Warehouse extends DB_Table {
             print_r($error_info = $this->db->errorInfo());
             exit;
         }
-
 
 
         return $sales_data;
 
     }
 
+    function update_current_timeseries_record($type) {
+
+        $sql = sprintf(
+            'SELECT `Timeseries Key` FROM `Timeseries Dimension` WHERE `Timeseries Type`=%s AND `Timeseries Parent`="Warehouse" AND `Timeseries Parent key`=%d ', prepare_mysql($type), $this->id
+        );
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+                $timeseries = get_object('timeseries', $row['Timeseries Key']);
+                $this->update_timeseries_record($timeseries, gmdate('Y-m-d'), gmdate('Y-m-d'));
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+    }
+
 }
-
-
 
 
 ?>
