@@ -26,7 +26,7 @@ $nav_menu[] = array(
 );
 
 
-if ($user->can_view('customers')) {
+if ($user->can_view('customers')   ) {
 
 
     if ($user->get('User Hooked Store Key')) {

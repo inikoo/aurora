@@ -1080,11 +1080,12 @@ class Warehouse extends DB_Table {
         $_stock_leakage=0;
 
         $sql = sprintf(
-            "select sum(`Inventory Transaction Amount`) as amount from `Inventory Transaction Fact` %s    and `Inventory Transaction Quantity`<0  ",$where
+            "select sum(`Inventory Transaction Amount`) as amount, count(*) as num from `Inventory Transaction Fact` %s    and `Inventory Transaction Quantity`<0  ",$where
         );
         foreach ($this->db->query($sql) as $row) {
 
             $_stock_leakage=$row['amount'];
+            $_stock_leakage_transactions=$row['num'];
 
         }
 
@@ -1092,13 +1093,14 @@ class Warehouse extends DB_Table {
             $stock_leakage='<span class="success"><i class="fa fa-thumbs-up" aria-hidden="true"></i> '.money(0,$account->get('Currency Code')).'</span>';
 
         }else{
-            $stock_leakage='<span class="error">'.money($_stock_leakage,$account->get('Currency Code')).'</span>';
+            $stock_leakage='<span class="">'.money($_stock_leakage,$account->get('Currency Code')).'</span>';
         }
 
 
         $stock_leakage = array(
             'down' => array(
-                'amount' =>$stock_leakage
+                'amount' =>$stock_leakage,
+                'transactions' =>number($_stock_leakage_transactions)
                 ),
             'up'   => array(
                 'amount' =>money(0,$account->get('Currency Code'))

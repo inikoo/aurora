@@ -157,7 +157,6 @@
                                             <div class="name item_name">{$product->get('Name')}</div>
 
                                         </div>
-
                                         {if $logged_in}
                                             <div class="product_prices log_in ">
                                                 <div class="product_price">{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}: {$product->get('Price')}</div>
