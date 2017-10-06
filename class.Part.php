@@ -379,6 +379,7 @@ class Part extends Asset {
                         $stock_status = '<i class="fa error fa-minus-circle fa-fw" aria-hidden="true"  title="'._('Critical stock').'"></i>';
                         break;
                     case 'Out_Of_Stock':
+                    case 'Out_of_Stock':
                         $stock_status = '<i class="fa error fa-ban fa-fw" aria-hidden="true"  title="'._('Out of stock').'"></i>';
                         break;
                     case 'Error':
