@@ -2390,6 +2390,11 @@ class Part extends Asset {
             case 'Part Cost in Warehouse':
                 $label = _('Stock value (per SKO)');
                 break;
+            case 'Part Recommended Packages Per Selling Outer':
+                $label = _('Recommended SKOs per selling outer');
+
+
+                break;
             default:
                 $label = $field;
 

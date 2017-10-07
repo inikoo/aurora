@@ -15,7 +15,7 @@ function get_part_showcase($data, $smarty, $user, $db) {
 
     $part = $data['_object'];
     $part->load_acc_data();
-    $part->update_available_forecast();
+    //$part->update_available_forecast();
 
     // $part->update_cost();
     // $part->updated_linked_products();
@@ -29,7 +29,7 @@ function get_part_showcase($data, $smarty, $user, $db) {
     //$part->update_next_shipment();
 
 
- $part->update_stock_status();
+ //$part->update_stock_status();
 
 
     if (!$part->id) {

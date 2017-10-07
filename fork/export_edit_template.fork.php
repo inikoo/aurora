@@ -141,10 +141,7 @@ function fork_export_edit_template($job) {
 
 
                     $store = new Store($metadata['store_key']);
-
                     $family = new Category($parent_key);
-
-
                     $exchange = currency_conversion($db, $account->get('Account Currency'), $store->get('Store Currency Code'));
 
 
@@ -351,6 +348,7 @@ function fork_export_edit_template($job) {
                                 } else {
 
 
+
                                     $op = 'NEW';
 
                                     if ($object->get('Part Status') == 'In Process') {
@@ -379,19 +377,23 @@ function fork_export_edit_template($job) {
                                     );
 
 
+
+                                    if(is_numeric($object->get('Part Recommended Packages Per Selling Outer')) and $object->get('Part Recommended Packages Per Selling Outer')>0 ){
+                                        $skos_per_outer=$object->get('Part Recommended Packages Per Selling Outer');
+                                    }else{
+                                        $skos_per_outer=1;
+                                    }
+
                                     foreach ($fields as $field) {
 
 
                                         switch ($field['name']) {
                                             case 'Product Code':
-                                                $value = $object->get(
-                                                    'Reference'
-                                                );
+                                                $value = $object->get('Reference');
                                                 break;
                                             case 'Parts':
-                                                $value = '1x '.$object->get(
-                                                        'Reference'
-                                                    );
+
+                                                $value = $skos_per_outer.'x '.$object->get('Reference');
                                                 break;
                                             case 'Product Name':
                                                 $value = $object->get(
@@ -402,53 +404,31 @@ function fork_export_edit_template($job) {
                                                 $value = $family->get('Code');
                                                 break;
                                             case 'Product Label in Family':
-                                                $value = $object->get(
-                                                    'Part Label in Family'
-                                                );
+                                                $value = $object->get('Part Label in Family');
                                                 break;
                                             case 'Product Units Per Case':
-                                                $value = $object->get(
-                                                    'Part Units Per Package'
-                                                );
+                                                $value = $object->get('Part Units Per Package');
                                                 break;
                                             case 'Product Unit Label':
-                                                $value = $object->get(
-                                                    'Part Unit Label'
-                                                );
+                                                $value = $object->get('Part Unit Label');
                                                 break;
                                             case 'Product Price':
-                                                if ($object->get(
-                                                        'Part Unit Price'
-                                                    ) == '') {
+                                                if ($object->get('Part Unit Price') == '') {
                                                     $value = '';
                                                 } else {
-                                                    $value = round(
-                                                        $exchange * $object->get(
-                                                            'Part Unit Price'
-                                                        ) * $object->get(
-                                                            'Part Units Per Package'
-                                                        ), 2
-                                                    );
+                                                    $value = round($skos_per_outer*$exchange * $object->get('Part Unit Price') * $object->get('Part Units Per Package'), 2);
                                                 }
                                                 break;
                                             case 'Product Unit RRP':
 
-                                                if ($object->get(
-                                                        'Part Unit RRP'
-                                                    ) == '') {
+                                                if ($object->get('Part Unit RRP') == '') {
                                                     $value = '';
                                                 } else {
-                                                    $value = round(
-                                                        $exchange * $object->get(
-                                                            'Part Unit RRP'
-                                                        ), 2
-                                                    );
+                                                    $value = round($exchange * $object->get('Part Unit RRP'), 2);
                                                 }
                                                 break;
                                             default:
-                                                $value = $object->get(
-                                                    $field['name']
-                                                );
+                                                $value = $object->get($field['name']);
                                                 break;
                                         }
 

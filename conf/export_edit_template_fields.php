@@ -107,12 +107,20 @@ $export_edit_template_fields = array(
             'default_value' => '',
             'show_for_new'  => true,
             'required'      => true,
-            'header'        => 'Units per SKO',
-            'name'          => 'Part Units Per Package',
-            'label'         => _('Units per SKO'),
+            'header'        => 'Recommended SKOs per selling outer',
+            'name'          => 'Part Recommended Packages Per Selling Outer',
+            'label'         => _('Recommended SKOs per selling outer'),
             'checked'       => 0
         ),
-
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'SKO Barcode',
+            'name'          => 'Part SKO Barcode',
+            'label'         => _('Part SKO Barcode'),
+            'checked'       => 0
+        ),
         array(
             'default_value' => '',
             'show_for_new'  => false,
@@ -434,6 +442,15 @@ $export_edit_template_fields = array(
             'default_value' => '',
             'show_for_new'  => true,
             'required'      => true,
+            'header'        => 'Recommended SKOs per selling outer',
+            'name'          => 'Part Recommended Packages Per Selling Outer',
+            'label'         => _('Recommended SKOs per selling outer'),
+            'checked'       => 0
+        ),
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => true,
             'header'        => 'Part SKO Barcode',
             'name'          => 'Part SKO Barcode',
             'label'         => _('SKO Barcode'),
@@ -559,7 +576,6 @@ $export_edit_template_fields = array(
 
 
     ),
-
     'product'  => array(
         array(
             'default_value' => '',
