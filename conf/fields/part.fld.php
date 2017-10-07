@@ -287,6 +287,32 @@ $part_fields[] = array(
 
     )
 );
+
+
+$part_fields[] = array(
+    'label' => ($supplier_part_scope ? _('Selling outer') : _('Selling outer')),
+
+    'show_title' => true,
+    'fields'     => array(
+        array(
+            'render' => true,
+
+            'id'   => 'Part_Recommended_Packages_Per_Selling_Outer',
+            'edit' => ($edit ? 'numeric' : ''),
+
+            'value'           => $object->get('Part Recommended Packages Per Selling Outer'),
+            'formatted_value' => $object->get('Part Recommended Packages Per Selling Outer'),
+            'label'           => ucfirst($object->get_field_label('Part Recommended Packages Per Selling Outer')),
+            'invalid_msg'     => get_invalid_message('string'),
+            'required'        => false,
+            'type'            => 'value'
+        ),
+
+
+
+    )
+);
+
 $part_fields[] = array(
     'label' => ($supplier_part_scope
         ? _('Part stock keeping outer (SKO)')
