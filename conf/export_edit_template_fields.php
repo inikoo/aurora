@@ -76,6 +76,16 @@ $export_edit_template_fields = array(
             'label'         => _('Outers (SKO) description'),
             'checked'       => 0
         ),
+
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => true,
+            'header'        => 'Units per SKO',
+            'name'          => 'Part Units Per Package',
+            'label'         => _('Units per SKO'),
+            'checked'       => 0
+        ),
         array(
             'default_value' => '',
             'show_for_new'  => true,
@@ -106,7 +116,7 @@ $export_edit_template_fields = array(
         array(
             'default_value' => '',
             'show_for_new'  => true,
-            'required'      => true,
+            'required'      => false,
             'header'        => 'Recommended SKOs per selling outer',
             'name'          => 'Part Recommended Packages Per Selling Outer',
             'label'         => _('Recommended SKOs per selling outer'),
@@ -441,7 +451,7 @@ $export_edit_template_fields = array(
         array(
             'default_value' => '',
             'show_for_new'  => true,
-            'required'      => true,
+            'required'      => false,
             'header'        => 'Recommended SKOs per selling outer',
             'name'          => 'Part Recommended Packages Per Selling Outer',
             'label'         => _('Recommended SKOs per selling outer'),
