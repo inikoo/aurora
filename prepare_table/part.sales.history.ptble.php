@@ -61,7 +61,7 @@ $sql_totals
 
 $fields
     = "`Date`,
-sum(`Inventory Transaction Quantity`) as picks,
+-1*sum(`Inventory Transaction Quantity`) as skos,
 sum(`Amount In`) as sales,
 count(distinct `Delivery Note Key`) as deliveries
 ";
