@@ -40,7 +40,7 @@ function fork_time_series($job) {
             include_once 'class.Warehouse.php';
             include_once 'class.PartLocation.php';
 
-            print_r($fork_data);
+           // print_r($fork_data);
 
 
             $part = new Part($fork_data['key']);
@@ -86,9 +86,12 @@ function fork_time_series($job) {
                 foreach ($result as $row) {
                     $index++;
 
+                    $_date=$row['Date'];
+
+
                     $sql = sprintf(
                         "SELECT `Location Key`  FROM `Inventory Transaction Fact` WHERE  `Inventory Transaction Type` LIKE 'Associate' AND  `Part SKU`=%d AND `Date`<=%s GROUP BY `Location Key`",
-                        $part->id, prepare_mysql($row['Date'].' 23:59:59')
+                        $part->id, prepare_mysql($_date.' 23:59:59')
                     );
 
 
@@ -99,13 +102,13 @@ function fork_time_series($job) {
                             $part_location = new PartLocation(
                                 $part->id.'_'.$row3['Location Key']
                             );
-                            $part_location->update_stock_history_date($row['Date']);
+                            $part_location->update_stock_history_date($_date);
 
 
 
                             $isf_records=0;
                             $sql=sprintf('select count(*) as num from `Inventory Spanshot Fact` where `Part SKU`=%d ',
-                                         $state['_object']->id
+                                         $part->id
                             );
 
                             if ($result=$db->query($sql)) {
@@ -138,7 +141,7 @@ function fork_time_series($job) {
                     if ($result2 = $db->query($sql)) {
                         foreach ($result2 as $row2) {
                             $warehouse = new Warehouse($row2['Warehouse Key']);
-                            $warehouse->update_inventory_snapshot($row['Date']);
+                            $warehouse->update_inventory_snapshot($_date);
                         }
                     } else {
                         print_r($error_info = $db->errorInfo());
@@ -153,7 +156,7 @@ function fork_time_series($job) {
                                 "UPDATE `Fork Dimension` SET `Fork Operations Done`=%d  WHERE `Fork Key`=%d ", $index, $fork_key
                             );
                             $db->exec($sql);
-                            print "$sql\n";
+                           // print "$sql\n";
                         }
 
                     }
@@ -172,12 +175,12 @@ function fork_time_series($job) {
                     "UPDATE `Fork Dimension` SET `Fork State`='Finished' ,`Fork Finished Date`=NOW(),`Fork Operations Done`=%d,`Fork Result`=%d WHERE `Fork Key`=%d ", $index, $part->id, $fork_key
                 );
 
-                print "$sql\n";
+               // print "$sql\n";
                 $db->exec($sql);
 
             }
 
-            exit;
+          //  exit;
 
             // $object->create_timeseries($fork_data['time_series_data'], $fork_key);
             break;
