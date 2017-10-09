@@ -1,0 +1,124 @@
+
+.wrapper_boxed {
+	width: 1240px;
+	margin: auto auto auto auto;
+}
+
+.site_wrapper {
+	width: 1240px;
+	float: left;
+	margin: 0px auto auto auto;
+	background-color: #fff;
+	-webkit-box-shadow:  0px 0px 5px 0px rgba(0, 0, 0, 0.2);
+	box-shadow:  0px 0px 5px 0px rgba(0, 0, 0, 0.2);
+}
+
+.container_full {
+	width: 100%;
+	float: left;
+	margin: auto;
+}
+
+.container {
+	width: 1170px;
+	margin: auto;
+}
+.container.tbp {
+	padding: 80px 0px;
+}
+.container.tbp2 {
+	padding: 80px 0px 30px 0px;
+}
+
+.content_fullwidth {
+	float: left;
+	width: 100%;
+	padding: 120px 0px 0px 0px;
+}
+.content_fullwidth.less {
+	padding: 0px 0px 0px 0px;
+}
+
+.content_fullwidth.less2 {
+	padding: 90px 0px 0px 0px;
+}
+
+.content_fullwidth.less3 {
+	padding: 20px 0px 0px 0px;
+}
+.content_left {
+	float: left;
+	width: 71%;
+	padding: 0px 0px 0px 0px;
+}
+.right_sidebar {
+	float: right;
+	width: 25%;
+	padding: 0px 0px 0px 0px;
+}
+.left_sidebar {
+	float: left;
+	width: 25%;
+	padding: 0px 0px 0px 0px;
+}
+.content_right {
+	float: right;
+	width: 71%;
+	padding: 0px 0px 0px 0px;
+}
+
+.content_halfsite {
+	float: left;
+	width: 47.5%;
+	margin-right: 5%;
+	padding: 0px 0px 0px 0px;
+}
+.content_halfsite.last {
+	margin-right: 0;
+}
+
+
+/* columns */
+.one_half, .one_third, .one_fourth, .two_third, .three_fourth, .one_fifth, .onecol_forty, .onecol_sixty, .onecol_thirtyfive {
+	position: relative;
+	margin-right: 4%;
+	float: left;
+}
+.one_full {
+	width: 100%;
+}
+.one_half {
+	width: 48%;
+}
+.one_third {
+	width: 30.650%;
+}
+.one_fourth {
+	width: 22%;
+}
+.one_fifth {
+	width: 16.800%;
+}
+.two_third {
+	width: 65.350%;
+}
+.three_fourth {
+	width: 74%;
+}
+
+.onecol_forty {
+	width: 40%;
+}
+
+.onecol_sixty {
+	width: 56%;
+}
+
+.onecol_thirtyfive {
+	width: 35%;
+}
+
+.last {
+	margin-right: 0 !important;
+	clear: right;
+}

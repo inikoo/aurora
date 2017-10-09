@@ -66,6 +66,15 @@ module.exports = function (grunt) {
                   
                 }
             },
+            aurora_public: {
+                options: {
+                    // style: 'compressed'
+                },
+                files: {
+                    'EcomB2B/css/style.theme_1.EcomB2B.css': 'sass/style.theme_1.EcomB2B.scss',
+
+                }
+            },
             
             web: {
                 options: {
@@ -98,6 +107,7 @@ module.exports = function (grunt) {
             options: {
                 shorthandCompacting: false,
                 roundingPrecision: -1,
+                sourceMap: true,
             },
             libs: {
                 files: {
@@ -105,6 +115,14 @@ module.exports = function (grunt) {
 
                 }
             },
+
+            pweb: {
+                files: {
+                    'EcomB2B/css/style.theme_1.EcomB2B.min.css': ['EcomB2B/css/style.theme_1.EcomB2B.css']
+
+                }
+            },
+
             aurora: {
                 files: {
                     'build/app/css/app.min.css': ['css/app.css']
@@ -349,6 +367,7 @@ module.exports = function (grunt) {
     grunt.registerTask('app', ['clean:app', 'imagemin', 'sass', 'concat', 'uglify', 'cssmin', 'copy:app']);
     grunt.registerTask('fork', ['clean:fork', 'copy:fork_stones', 'copy:fork']);
     grunt.registerTask('qfork', ['copy:fork']);
+    grunt.registerTask('pweb', ['sass:aurora_public','cssmin:pweb']);
     grunt.registerTask('deploy_fork', ['clean:fork', 'copy:fork_stones', 'copy:fork', 'ssh_deploy:fork_external_libs', 'ssh_deploy:fork']);
     grunt.registerTask('deploy_qfork', ['copy:fork', 'ssh_deploy:fork']);
     grunt.registerTask('ecom', ['ssh_deploy:ecom']);

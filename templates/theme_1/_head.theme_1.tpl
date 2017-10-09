@@ -31,12 +31,6 @@
 
 
 
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic,700,700italic,800,800italic' rel='stylesheet' type='text/css'>
-    <link href='https://fonts.googleapis.com/css?family=Raleway:400,100,200,300,500,600,700,800,900' rel='stylesheet' type='text/css'>
-    <link href='https://fonts.googleapis.com/css?family=Dancing+Script:400,700' rel='stylesheet' type='text/css'>
-    <link href='https://fonts.googleapis.com/css?family=Josefin+Sans:400,100,100italic,300,300italic,400italic,600,600italic,700,700italic' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" id="ms-fonts" href="https://fonts.googleapis.com/css?family=Kaushan+Script:regular|Raleway:regular|Playfair+Display:700" type="text/css" media="all" />
-
     <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
@@ -66,9 +60,8 @@
 
 
 
-     <link rel="stylesheet" href="/theme_1/css/reset.css" type="text/css"/>
-     <link rel="stylesheet" href="/theme_1/css/style.css" type="text/css"/>
-    <link rel="stylesheet" media="screen" href="/theme_1/css/shortcodes.css" type="text/css"/>
+    <link rel="stylesheet" href="/EcomB2B/css/style.theme_1.EcomB2B.css" type="text/css"/>
+
 
 
 
@@ -82,61 +75,10 @@
    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
  -->
 
-   <link href="/theme_1/mainmenu/bootstrap.min4.css" rel="stylesheet">
-   <link href="/theme_1/mainmenu/menu-5.css" rel="stylesheet">
-
-    <link href="/css/sweetalert.css" rel="stylesheet">
-
-
-    <!-- animations -->
-    <link href="/theme_1/animations/css/animations.min.css" rel="stylesheet" type="text/css" media="all"/>
-
-    <link rel="stylesheet" media="screen" href="/theme_1/css/responsive-layouts.css" type="text/css"/>
-
-
-
-    <link rel="stylesheet" href="/theme_1/masterslider/style/masterslider.css"/>
-    <link rel="stylesheet" href="/theme_1/masterslider/style/style.css"/>
-
-
-
-    <link href="/theme_1/carouselowl/owl.transitions.css" rel="stylesheet">
-    <link href="/theme_1/carouselowl/owl.carousel.css" rel="stylesheet">
-
-    <link rel="stylesheet" href="/theme_1/iconhoverefs/component.css"/>
-
-    <link rel="stylesheet" href="/theme_1/basicslider/bacslider.css"/>
-
-
-    <link rel="stylesheet" href="/theme_1/flexslider/flexslider.css" type="text/css" media="screen"/>
-    <link rel="stylesheet" type="text/css" href="/theme_1/flexslider/skin.css"/>
-    <link rel="stylesheet" type="text/css" href="/theme_1/tooltips/darktooltip.css"/>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.4.1/css/simple-line-icons.css">
 
 
-
-
-    <link rel="stylesheet" href="/theme_1/cubeportfolio/css/cubeportfolio.min.css">
-
-
-
-    <!--
-    <link rel="stylesheet" href="/theme_1/sky_forms_old/sky-forms2.css" type="text/css" media="all">
-
-       -->
-
-    <link rel="stylesheet" href="/theme_1/sky_forms/css/sky-forms.css" type="text/css" media="all">
-
-
-
-
-
-
-
-    <link rel="stylesheet" type="text/css" href="/theme_1/tabs/assets/css/responsive-tabs.css">
-    <link rel="stylesheet" type="text/css" href="/theme_1/tabs/assets/css/responsive-tabs2.css">
-    <link rel="stylesheet" type="text/css" href="/theme_1/tabs/assets/css/responsive-tabs3.css">
 
 
     <link rel="stylesheet" href="/theme_1/css/aurora.css">
@@ -228,7 +170,17 @@
 
     <link rel="stylesheet" href="/website.color.css.php?website_key={$website->id}&theme=theme_1" type="text/css"/>
 
+    <style>
+        body{
+            font-family: 'Ubuntu', sans-serif;
+        }
 
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Ubuntu', sans-serif;
+
+        }
+
+        </style>
 
 </head>
 

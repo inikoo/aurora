@@ -32,7 +32,6 @@
     }
 
     .parent_up{
-        font-family: "Ubuntu",Helvetica,Arial,sans-serif;
         font-weight:800;
         font-size:18px;
         cursor: pointer;

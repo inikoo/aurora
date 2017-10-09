@@ -1140,8 +1140,7 @@ right connector from last child*/
   padding-bottom: 10px;
   line-height: 70%; }
 .backgrid .hide_extra_note_info .note_data {
-  display: none;
-  color: green; }
+  display: none; }
 
 #edit_table_dialog {
   position: absolute;
