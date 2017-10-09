@@ -288,6 +288,7 @@ class Public_Website {
             case 'Website Accent Color':
             case 'Website Zendesk Chat Code':
             case 'Website Google Tag Manager Code':
+            case 'Website Text Font':
                 return $this->data[$key];
                 break;
 

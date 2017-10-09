@@ -111,6 +111,7 @@ $object_fields = array(
 
             array(
                 'id'                => 'Website_Title_Font',
+                'render'=>false,
                 'edit'              => ($edit ? 'string' : ''),
                 'value'             => $object->get('Website Title Font'),
                 'label'             => ucfirst($object->get_field_label('Title Font')),
@@ -122,6 +123,7 @@ $object_fields = array(
                 'id'                => 'Website_Text_Font',
                 'edit'              => ($edit ? 'string' : ''),
                 'value'             => $object->get('Website Text Font'),
+                'formatted_value'             => $object->get('Text Font'),
                 'label'             => ucfirst($object->get_field_label('Text Font')),
                 'required'          => true,
                 'type'              => 'value',

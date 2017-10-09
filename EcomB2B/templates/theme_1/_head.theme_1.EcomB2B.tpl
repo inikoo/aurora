@@ -220,18 +220,21 @@
 
 
 
-    <link href="https://fonts.googleapis.com/css?family=Ubuntu:400,700" rel="stylesheet">
+    {if $website->get('Website Text Font')!=''}
+    <link href="https://fonts.googleapis.com/css?family={$website->get('Website Text Font')}:400,700" rel="stylesheet">
+    {/if}
     <style>
+        {if $website->get('Website Text Font')!=''}
         body{
-            font-family: 'Ubuntu', sans-serif;
+            font-family: '{$website->get('Website Text Font')}', sans-serif;
         }
 
         h1, h2, h3, h4, h5, h6 {
-            font-family: 'Ubuntu', sans-serif;
+            font-family: '{$website->get('Website Text Font')}', sans-serif;
 
         }
 
-
+    {/if}
 
 
 
