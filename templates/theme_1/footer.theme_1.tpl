@@ -417,7 +417,7 @@
 
                                                       {/foreach}
 
-                                                      <li onClick="add_link(this)"  class="add_link"><a href="{$item.url}"><i class="fa fa-fw fa-plus editing link_icon" "></i> <span class="editing" ondrop="return false;" >{t}Add link{/t}<span></span></a></li>
+                                                      <li onClick="add_link(this)"  class="add_link"><a href=""><i class="fa fa-fw fa-plus editing link_icon" "></i> <span class="editing" ondrop="return false;" >{t}Add link{/t}<span></span></a></li>
 
                                                   </ul>
 
@@ -624,7 +624,7 @@
 
                                               {/foreach}
 
-                                              <li onClick="add_link(this)"  class="add_link"><a href="{$item.url}"><i class="fa fa-fw fa-plus editing link_icon" "></i> <span class="editing" ondrop="return false;" >{t}Add link{/t}<span></span></a></li>
+                                              <li onClick="add_link(this)"  class="add_link"><a href=""><i class="fa fa-fw fa-plus editing link_icon" "></i> <span class="editing" ondrop="return false;" >{t}Add link{/t}<span></span></a></li>
 
                                           </ul>
 
