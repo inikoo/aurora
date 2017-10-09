@@ -70,7 +70,6 @@
 
     #page_content h1{
 
-        font-family: "Ubuntu",Helvetica,Arial,sans-serif;
         font-weight: 800;
         font-size:21px;
         padding:0;
@@ -90,7 +89,6 @@
         width:992px;
         margin:auto;
 
-        font-family: "Ubuntu",Helvetica,Arial,sans-serif;
 
     }
 
@@ -567,7 +565,6 @@
     .item_header_text{
         padding:8px;height:30px;margin-bottom:5px;
         border:1px solid transparent;cursor:text;padding-top:10px;padding-bottom:0px;
-        font-family: "Ubuntu",Helvetica,Arial,sans-serif;
         font-weight: 800;
 
     }
@@ -676,7 +673,6 @@
         border-color: #eed3d7;
     }
     .alert-title{
-        font-family: "Ubuntu",Helvetica,Arial,sans-serif;
         font-weight: 800;
         font-size:21px;
     }

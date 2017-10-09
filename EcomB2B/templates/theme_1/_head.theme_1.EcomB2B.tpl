@@ -41,60 +41,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Google fonts - witch you want to use - (rest you can just remove) -->
-
+    <!--
 
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic,700,700italic,800,800italic' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Raleway:400,100,200,300,500,600,700,800,900' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Dancing+Script:400,700' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Josefin+Sans:400,100,100italic,300,300italic,400italic,600,600italic,700,700italic' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" id="ms-fonts" href="https://fonts.googleapis.com/css?family=Kaushan+Script:regular|Raleway:regular|Playfair+Display:700" type="text/css" media="all" />
-
     <link href="https://fonts.googleapis.com/css?family=Ubuntu:300,700" rel="stylesheet">
-
+-->
 
     <!--[if lt IE 9]>
     <script src="https://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 
     <!-- ######### CSS STYLES ######### -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/3052dece40.css">
+
+    <link rel="stylesheet" href="css/style.theme_1.EcomB2B.min.css" type="text/css"/>
+    <!-- #
+       <link rel="stylesheet" href="/theme_1/css/reset.css" type="text/css"/>
+               <link rel="stylesheet" href="/theme_1/css/style.css" type="text/css"/>
+
+   -->
 
 
-
-
-
-     <link rel="stylesheet" href="/theme_1/css/reset.css" type="text/css"/>
-     <link rel="stylesheet" href="/theme_1/css/style.css" type="text/css"/>
-
-       <!-- <link rel="stylesheet" href="https://use.fontawesome.com/3052dece40.css"> -->
-    <link rel="stylesheet" href="/theme_1/local/font-awesome/css/font-awesome.min.css">
-
-
-    {if $detected_device=='mobile'}
-
-        <link rel="stylesheet" type="text/css" href="/theme_1/mobile_menu/css/normalize.css" />
-        <link rel="stylesheet" type="text/css" href="/theme_1/mobile_menu/css/demo.css" />
-        <link rel="stylesheet" type="text/css" href="/theme_1/mobile_menu/css/component.css" />
-
-    {else}
 
     <!--
-   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
- -->
-    <link href="/theme_1/mainmenu/bootstrap.min4.css" rel="stylesheet">
+        <link rel="stylesheet" href="/theme_1/local/font-awesome/css/font-awesome.min.css">
+
+    -->
+
+
+       <!--
+  <link href="/theme_1/mainmenu/bootstrap.min4.css" rel="stylesheet">
 
     <link href="/theme_1/mainmenu/menu-5.css" rel="stylesheet">
-
-    {/if}
-
-    <link href="/css/sweetalert.css" rel="stylesheet">
-
-
-    <!-- animations -->
-    <link href="/theme_1/animations/css/animations.min.css" rel="stylesheet" type="text/css" media="all"/>
-
+   <link href="/css/sweetalert.css" rel="stylesheet">
+       <link href="/theme_1/animations/css/animations.min.css" rel="stylesheet" type="text/css" media="all"/>
     <link rel="stylesheet" media="screen" href="/theme_1/css/responsive-layouts.css" type="text/css"/>
 
     <link rel="stylesheet" media="screen" href="/theme_1/css/shortcodes.css" type="text/css"/>
+
+    -->
+
+
+
+
+
+
+    <!--
+
 
 
     <link rel="stylesheet" href="/theme_1/masterslider/style/masterslider.css"/>
@@ -104,7 +101,6 @@
     <link href="/theme_1/carouselowl/owl.carousel.css" rel="stylesheet">
 
     <link rel="stylesheet" href="/theme_1/iconhoverefs/component.css"/>
-
     <link rel="stylesheet" href="/theme_1/basicslider/bacslider.css"/>
 
 
@@ -116,25 +112,29 @@
 
 
     <link rel="stylesheet" href="/theme_1/cubeportfolio/css/cubeportfolio.min.css">
-    <link href="/css/fotorama.css" rel="stylesheet">
-
-
-
+        <link href="/css/fotorama.css" rel="stylesheet">
     <link rel="stylesheet" href="/theme_1/sky_forms/css/sky-forms.css" type="text/css" media="all">
-    <!--[if lt IE 9]>
-    <link rel="stylesheet" href="css/sky-forms-ie8.css">
-    <![endif]-->
 
-
-
-    <link rel="stylesheet" type="text/css" href="/theme_1/tabs/assets/css/responsive-tabs.css">
-    <link rel="stylesheet" type="text/css" href="/theme_1/tabs/assets/css/responsive-tabs2.css">
+ <link rel="stylesheet" type="text/css" href="/theme_1/tabs/assets/css/responsive-tabs.css">
     <link rel="stylesheet" type="text/css" href="/theme_1/tabs/assets/css/responsive-tabs3.css">
-
-
-
-
     <link rel="stylesheet" href="/theme_1/css/aurora.theme_1.EcomB2B.css" type="text/css"/>
+
+     -->
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.4.1/css/simple-line-icons.css">
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -172,17 +172,14 @@
 
     <script type="text/javascript" src="/theme_1/tabs/assets/js/responsive-tabs.min.js"></script>
 
-    {if $detected_device=='mobile'}
-        <script src="/theme_1/mobile_menu/js/modernizr.custom.js"></script>
 
-    {else}
 
         <script src="/theme_1/mainmenu/customeUI.js"></script>
         <script type="text/javascript" src="/theme_1/mainmenu/sticky.js"></script>
         <script type="text/javascript" src="/theme_1/mainmenu/modernizr.custom.75180.js"></script>
 
 
-    {/if}
+
 
 
     <script type="text/javascript" src="/js/jquery.form.min.js"></script>
@@ -223,6 +220,132 @@
 
 
 
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu:400,700" rel="stylesheet">
+    <style>
+        body{
+            font-family: 'Ubuntu', sans-serif;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Ubuntu', sans-serif;
+
+        }
+
+
+
+
+
+
+        header  #topHeader {
+
+            background-color: {$header_data.color.header_background};
+        {if $header_data.background_image!=''}
+            background-image: url({$header_data.background_image});
+        {/if}
+
+            color: {$header_data.color.header};
+
+
+        }
+
+        header   #trueHeader{
+            background-color: {$header_data.color.menu_background};
+            border-bottom-color:  {$header_data.color.menu_background_highlight};
+            color: {$header_data.color.menu};
+        }
+
+
+
+        header    #trueHeader a {
+            color: {$header_data.color.menu};
+            cursor: pointer;
+
+        }
+        header   #trueHeader a:hover {
+            color: {$header_data.color.menu_text_background_highlight};
+
+        }
+
+        header   #_columns  .dropdown a:hover {
+            background-color: transparent;
+        }
+
+
+        {if isset($header_data.color.items_title)}
+        header    #_columns  .dropdown li.item_li:hover > a * {
+            color:{$header_data.color.items_title};
+        }
+        {/if}
+
+        header   #trueHeader .dropdown-menu{
+
+            color: {$header_data.color.items};
+        }
+
+        header   #trueHeader .dropdown-menu a{
+
+            color: {$header_data.color.items};
+        }
+
+        {if isset($header_data.color.items_title)}
+
+        header  #trueHeader .dropdown-menu a:hover{
+
+            color: {$header_data.color.items_title};
+        }
+        {/if}
+
+
+        header   #menu_control_panel .button {
+            background-color:  {$header_data.color.menu_background_highlight};
+        }
+
+        header  #logo {
+            background-image: url({$header_data.logo});
+
+
+        }
+
+        header  .yamm .dropdown-menu {
+            background: {$header_data.color.items_background};
+        }
+
+
+
+        header   .dropdown-menu li a:hover{
+            background:{$header_data.color.items};
+            color: {$header_data.color.items_background};
+        }
+
+
+
+
+        header  .list-unstyled span.link,.list-unstyled a.link {
+            color: {$header_data.color.items};
+
+        }
+
+        header  .list-unstyled li p{
+            color: {$header_data.color.items}
+        }
+
+        header   .dart {
+            color: {$header_data.color.items}
+
+        }
+        header  .list-unstyled li i {
+            color: {$header_data.color.items}
+        }
+
+        header  .list-unstyled li span {
+            color: {$header_data.color.items}
+        }
+
+
+
+
+
+    </style>
 
 </head>
 
