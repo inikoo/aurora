@@ -1502,6 +1502,9 @@ class Supplier extends SubjectSupplier {
             case 'Supplier Order Last Order ID':
                 $label = _("last incremental order number");
                 break;
+            case 'Supplier Nickname':
+                $label = _("nickname");
+                break;
 
             default:
                 $label = $field;
