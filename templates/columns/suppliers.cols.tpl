@@ -37,27 +37,22 @@ name: "code",
 label: "{t}Code{/t}",
 editable: false,
 sortType: "toggle",
-{if $sort_key=='id'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='code'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
-cell: Backgrid.StringCell.extend({
-orderSeparator: '',
-events: {
-"click": function() {
-change_view('supplier{if $data.object=='list'}/list/{$data.key}{/if}/' + this.model.get("id"))
-}
-},
-className: "link"
+cell: Backgrid.HtmlCell.extend({
+
 
 })
 
 }, {
 name: "name",
-label: "Name",
+label: "{t}Name{/t}",
+editable: false,
 sortType: "toggle",
-cell: Backgrid.StringCell.extend({
-events: {
-"dblclick": "enterEditMode"
-}
+{if $sort_key=='name'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+
+cell: Backgrid.HtmlCell.extend({
+
 })
 }, {
 name: "location",
@@ -74,7 +69,7 @@ label: "{t}Last PO{/t}",
 defaultOrder:1,
 editable: false,
 sortType: "toggle",
-{if $sort_key=='last_invoice'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='last_purchase_order'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
 
 cell: Backgrid.StringCell.extend({ className: "aright"} ),

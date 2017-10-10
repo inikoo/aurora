@@ -32,9 +32,9 @@ switch ($tipo) {
 
         $data = prepare_values(
             $_REQUEST, array(
-                'query' => array('type' => 'string'),
-                'state' => array('type' => 'json array')
-            )
+                         'query' => array('type' => 'string'),
+                         'state' => array('type' => 'json array')
+                     )
         );
 
         $data['user'] = $user;
@@ -44,7 +44,7 @@ switch ($tipo) {
         } else {
 
 
-           // print_r($data);
+            // print_r($data);
 
 
             if ($data['state']['module'] == 'customers') {
@@ -71,14 +71,20 @@ switch ($tipo) {
                     $data['scope'] = 'stores';
                 }
 
-                if(  in_array($data['state']['section'],array('website','webpage','',''))) {
+                if (in_array(
+                    $data['state']['section'], array(
+                    'website',
+                    'webpage',
+                    '',
+                    ''
+                )
+                )) {
                     search_webpages($db, $account, $memcache_ip, $data);
-                }else{
+                } else {
                     search_products($db, $account, $memcache_ip, $data);
                 }
 
-              //  print_r($data['state']);
-
+                //  print_r($data['state']);
 
 
             } elseif ($data['state']['module'] == 'products_server') {
@@ -304,6 +310,69 @@ function search_suppliers($db, $account, $memcache_ip, $data) {
                 exit;
             }
 
+            $sql = sprintf(
+                "SELECT `Supplier Key`,`Supplier Name`,`Supplier Nickname`,`Supplier Type` FROM `Supplier Dimension` WHERE `Supplier Nickname`  REGEXP '[[:<:]]%s' LIMIT 20 ", $q
+            );
+
+
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+
+                    if ($row['Supplier Name'] == $q) {
+                        if ($row['Supplier Type'] == 'Archived') {
+
+                            if (isset($candidates['S'.$row['Supplier Key']])) {
+                                $candidates['S'.$row['Supplier Key']] += 1400;
+
+                            } else {
+                                $candidates['S'.$row['Supplier Key']] = 1400;
+
+                            }
+
+                        } else {
+
+                            if (isset($candidates['S'.$row['Supplier Key']])) {
+                                $candidates['S'.$row['Supplier Key']] += 1800;
+
+                            } else {
+                                $candidates['S'.$row['Supplier Key']] = 1800;
+
+                            }
+
+
+                        }
+                    } else {
+
+                        $len_name = strlen($row['Supplier Nickname']);
+                        $len_q    = strlen($q);
+                        $factor   = $len_q / $len_name;
+                        if ($row['Supplier Type'] == 'Archived') {
+                            if (isset($candidates['S'.$row['Supplier Key']])) {
+                                $candidates['S'.$row['Supplier Key']] += 1200 * $factor;
+
+                            } else {
+                                $candidates['S'.$row['Supplier Key']] = 1200 * $factor;
+
+                            }
+                        } else {
+                            if (isset($candidates['S'.$row['Supplier Key']])) {
+                                $candidates['S'.$row['Supplier Key']] += 1400 * $factor;
+
+                            } else {
+                                $candidates['S'.$row['Supplier Key']] = 1400 * $factor;
+
+                            }
+
+                        }
+                    }
+
+                }
+            } else {
+                print_r($error_info = $db->errorInfo());
+                print $sql;
+                exit;
+            }
+
 
             $sql = sprintf(
                 "SELECT `Agent Key`,`Agent Code` FROM `Agent Dimension` WHERE `Agent Code` LIKE '%s%%' LIMIT 20 ", $q
@@ -403,8 +472,7 @@ function search_suppliers($db, $account, $memcache_ip, $data) {
 
 
             $sql = sprintf(
-                "SELECT `Supplier Part Key`,`Part Reference` FROM `Supplier Part Dimension`  LEFT JOIN   `Part Dimension`  ON (`Supplier Part Part SKU`=`Part SKU`) WHERE `Part Reference` LIKE '%s%%' LIMIT 20 ",
-                $q
+                "SELECT `Supplier Part Key`,`Part Reference` FROM `Supplier Part Dimension`  LEFT JOIN   `Part Dimension`  ON (`Supplier Part Part SKU`=`Part SKU`) WHERE `Part Reference` LIKE '%s%%' LIMIT 20 ", $q
             );
 
 
@@ -446,8 +514,7 @@ function search_suppliers($db, $account, $memcache_ip, $data) {
 
 
             $sql = sprintf(
-                "SELECT `Supplier Part Key`,`Part Unit Description` FROM `Supplier Part Dimension` LEFT JOIN   `Part Dimension`  ON (`Supplier Part Part SKU`=`Part SKU`)  WHERE `Part Unit Description`  REGEXP '[[:<:]]%s' LIMIT 100 ",
-                $q
+                "SELECT `Supplier Part Key`,`Part Unit Description` FROM `Supplier Part Dimension` LEFT JOIN   `Part Dimension`  ON (`Supplier Part Part SKU`=`Part SKU`)  WHERE `Part Unit Description`  REGEXP '[[:<:]]%s' LIMIT 100 ", $q
             );
 
             if ($result = $db->query($sql)) {
@@ -582,26 +649,26 @@ function search_suppliers($db, $account, $memcache_ip, $data) {
             $counter++;
 
             if ($_key[0] == 'P') {
-                $key = preg_replace('/^P/', '', $_key);
+                $key                 = preg_replace('/^P/', '', $_key);
                 $supplier_parts_keys .= ','.$key;
-                $results[$_key] = '';
+                $results[$_key]      = '';
                 $number_supplier_parts_keys++;
 
             } elseif ($_key[0] == 'S') {
-                $key = preg_replace('/^S/', '', $_key);
-                $supplier_keys .= ','.$key;
+                $key            = preg_replace('/^S/', '', $_key);
+                $supplier_keys  .= ','.$key;
                 $results[$_key] = '';
                 $number_supplier_keys++;
 
             } elseif ($_key[0] == 'A') {
-                $key = preg_replace('/^A/', '', $_key);
-                $agent_keys .= ','.$key;
+                $key            = preg_replace('/^A/', '', $_key);
+                $agent_keys     .= ','.$key;
                 $results[$_key] = '';
                 $number_agent_keys++;
 
             } elseif ($_key[0] == 'C') {
-                $key = preg_replace('/^C/', '', $_key);
-                $category_keys .= ','.$key;
+                $key            = preg_replace('/^C/', '', $_key);
+                $category_keys  .= ','.$key;
                 $results[$_key] = '';
                 $number_category_keys++;
 
@@ -652,7 +719,7 @@ function search_suppliers($db, $account, $memcache_ip, $data) {
         if ($number_supplier_keys) {
 
             $sql = sprintf(
-                "SELECT `Supplier Key`,`Supplier Code`,`Supplier Name`,`Supplier Type` FROM `Supplier Dimension`  WHERE `Supplier Key` IN (%s)", $supplier_keys
+                "SELECT `Supplier Key`,`Supplier Code`,`Supplier Name`,`Supplier Nickname`,`Supplier Type` FROM `Supplier Dimension`  WHERE `Supplier Key` IN (%s)", $supplier_keys
             );
 
             if ($result = $db->query($sql)) {
@@ -664,15 +731,15 @@ function search_suppliers($db, $account, $memcache_ip, $data) {
                     } else {
                         $icon = '<i class="fa fa-ship fa-fw "></i> ';
                     }
+                    if ($row['Supplier Nickname'] != '') {
+                        $details = highlightkeyword($row['Supplier Name'].' <span class="discreet italic">('.$row['Supplier Nickname'].')</span>', $queries);
+                    } else {
+                        $details = highlightkeyword($row['Supplier Name'], $queries);
 
-
+                    }
                     $results['S'.$row['Supplier Key']] = array(
-                        'label'   => $icon.highlightkeyword(
-                                sprintf('%s', $row['Supplier Code']), $queries
-                            ),
-                        'details' => highlightkeyword(
-                            $row['Supplier Name'], $queries
-                        ),
+                        'label'   => $icon.highlightkeyword(sprintf('%s', $row['Supplier Code']), $queries),
+                        'details' => $details,
                         'view'    => sprintf(
                             'supplier/%d', $row['Supplier Key']
                         )
@@ -731,8 +798,7 @@ function search_suppliers($db, $account, $memcache_ip, $data) {
                 foreach ($result as $row) {
 
 
-                    $icon
-                        = '<i class="fa fa-sitemap fa-fw padding_right_5" aria-hidden="true" ></i> ';
+                    $icon = '<i class="fa fa-sitemap fa-fw padding_right_5" aria-hidden="true" ></i> ';
 
                     $results['C'.$row['Category Key']] = array(
                         'label'   => $icon.highlightkeyword(
@@ -1023,14 +1089,14 @@ function search_inventory($db, $account, $memcache_ip, $data) {
             $counter++;
 
             if ($_key[0] == 'P') {
-                $key = preg_replace('/^P/', '', $_key);
-                $part_keys .= ','.$key;
+                $key            = preg_replace('/^P/', '', $_key);
+                $part_keys      .= ','.$key;
                 $results[$_key] = '';
                 $number_parts_keys++;
 
             } elseif ($_key[0] == 'C') {
-                $key = preg_replace('/^C/', '', $_key);
-                $category_keys .= ','.$key;
+                $key            = preg_replace('/^C/', '', $_key);
+                $category_keys  .= ','.$key;
                 $results[$_key] = '';
                 $number_categories_keys++;
 
@@ -1053,16 +1119,13 @@ function search_inventory($db, $account, $memcache_ip, $data) {
                 foreach ($result as $row) {
 
                     if ($row['Part Status'] == 'Not In Use') {
-                        $status
-                            = '<i class="fa fa-square-o fa-fw padding_right_5 very_discreet" aria-hidden="true"></i> ';
+                        $status = '<i class="fa fa-square-o fa-fw padding_right_5 very_discreet" aria-hidden="true"></i> ';
 
                     } elseif ($row['Part Status'] == 'Discontinuing') {
-                        $status
-                            = '<i class="fa fa-square fa-fw padding_right_5 very_discreet" aria-hidden="true"></i> ';
+                        $status = '<i class="fa fa-square fa-fw padding_right_5 very_discreet" aria-hidden="true"></i> ';
 
                     } else {
-                        $status
-                            = '<i class="fa fa-square fa-fw padding_right_5" aria-hidden="true"></i> ';
+                        $status = '<i class="fa fa-square fa-fw padding_right_5" aria-hidden="true"></i> ';
                     }
 
                     $results['P'.$row['Part SKU']] = array(
@@ -1091,8 +1154,7 @@ function search_inventory($db, $account, $memcache_ip, $data) {
                 foreach ($result as $row) {
 
 
-                    $icon
-                        = '<i class="fa fa-sitemap fa-fw padding_right_5" aria-hidden="true" ></i> ';
+                    $icon = '<i class="fa fa-sitemap fa-fw padding_right_5" aria-hidden="true" ></i> ';
 
                     $results['C'.$row['Category Key']] = array(
                         'label'   => $icon.highlightkeyword(
@@ -1361,8 +1423,7 @@ function search_products($db, $account, $memcache_ip, $data) {
 
 
             $sql = sprintf(
-                "select `Category Key`,`Category Code`,`Category Label` from `Category Dimension` where `Category Scope`='Product'   $where_cat_store and  `Category Label`  REGEXP '[[:<:]]%s' limit 100 ",
-                $q
+                "select `Category Key`,`Category Code`,`Category Label` from `Category Dimension` where `Category Scope`='Product'   $where_cat_store and  `Category Label`  REGEXP '[[:<:]]%s' limit 100 ", $q
             );
 
             if ($result = $db->query($sql)) {
@@ -1430,14 +1491,14 @@ function search_products($db, $account, $memcache_ip, $data) {
             $counter++;
 
             if ($_key[0] == 'P') {
-                $key = preg_replace('/^P/', '', $_key);
-                $product_keys .= ','.$key;
+                $key            = preg_replace('/^P/', '', $_key);
+                $product_keys   .= ','.$key;
                 $results[$_key] = '';
                 $number_products_keys++;
 
             } elseif ($_key[0] == 'C') {
-                $key = preg_replace('/^C/', '', $_key);
-                $category_keys .= ','.$key;
+                $key            = preg_replace('/^C/', '', $_key);
+                $category_keys  .= ','.$key;
                 $results[$_key] = '';
                 $number_categories_keys++;
 
@@ -1453,8 +1514,7 @@ function search_products($db, $account, $memcache_ip, $data) {
 
         if ($number_products_keys) {
             $sql = sprintf(
-                "SELECT `Product Status`,`Store Code`,`Store Key`,`Product ID`,`Product Code`,`Product Name` FROM `Product Dimension` LEFT JOIN `Store Dimension` S ON (`Product Store Key`=S.`Store Key`) WHERE `Product ID` IN (%s)",
-                $product_keys
+                "SELECT `Product Status`,`Store Code`,`Store Key`,`Product ID`,`Product Code`,`Product Name` FROM `Product Dimension` LEFT JOIN `Store Dimension` S ON (`Product Store Key`=S.`Store Key`) WHERE `Product ID` IN (%s)", $product_keys
             );
 
             if ($result = $db->query($sql)) {
@@ -1462,16 +1522,13 @@ function search_products($db, $account, $memcache_ip, $data) {
 
 
                     if ($row['Product Status'] == 'Discontinued') {
-                        $icon
-                            = '<i class="fa fa-cube fa-fw padding_right_5 error" aria-hidden="true" ></i> ';
+                        $icon = '<i class="fa fa-cube fa-fw padding_right_5 error" aria-hidden="true" ></i> ';
 
                     } elseif ($row['Product Status'] == 'Discontinued') {
-                        $icon
-                            = '<i class="fa fa-cube fa-fw padding_right_5 warning" aria-hidden="true" ></i> ';
+                        $icon = '<i class="fa fa-cube fa-fw padding_right_5 warning" aria-hidden="true" ></i> ';
 
                     } else {
-                        $icon
-                            = '<i class="fa fa-cube fa-fw padding_right_5" aria-hidden="true" ></i> ';
+                        $icon = '<i class="fa fa-cube fa-fw padding_right_5" aria-hidden="true" ></i> ';
                     }
 
                     $results['P'.$row['Product ID']] = array(
@@ -1499,16 +1556,14 @@ function search_products($db, $account, $memcache_ip, $data) {
 
         if ($number_categories_keys) {
             $sql = sprintf(
-                "SELECT `Category Code`,`Category Store Key`,`Category Key`,`Category Code`,`Category Label`,`Store Code` FROM `Category Dimension` LEFT JOIN `Store Dimension` S ON (`Category Store Key`=S.`Store Key`) WHERE `Category Key` IN (%s)",
-                $category_keys
+                "SELECT `Category Code`,`Category Store Key`,`Category Key`,`Category Code`,`Category Label`,`Store Code` FROM `Category Dimension` LEFT JOIN `Store Dimension` S ON (`Category Store Key`=S.`Store Key`) WHERE `Category Key` IN (%s)", $category_keys
             );
 
             if ($result = $db->query($sql)) {
                 foreach ($result as $row) {
 
 
-                    $icon
-                        = '<i class="fa fa-sitemap fa-fw padding_right_5" aria-hidden="true" ></i> ';
+                    $icon = '<i class="fa fa-sitemap fa-fw padding_right_5" aria-hidden="true" ></i> ';
 
                     $results['C'.$row['Category Key']] = array(
                         'store'   => $row['Store Code'],
@@ -1707,7 +1762,6 @@ function search_customers($db, $account, $memcache_ip, $data) {
         }
 
 
-
         $sql = sprintf(
             "select `Customer Key`,`Customer Main Plain Email` from `Customer Dimension` where true $where_store and `Customer Main Plain Email` like '%s%%' limit 10 ", $q
         );
@@ -1732,8 +1786,6 @@ function search_customers($db, $account, $memcache_ip, $data) {
             print_r($error_info = $db->errorInfo());
             exit;
         }
-
-
 
 
         $sql = sprintf(
@@ -1762,15 +1814,11 @@ function search_customers($db, $account, $memcache_ip, $data) {
         }
 
 
-
-
         $q_postal_code = preg_replace('/[^a-z^A-Z^\d]/', '', $q);
         if ($q_postal_code != '') {
             $sql = sprintf(
-                "select `Customer Key`,`Customer Main Plain Postal Code` from `Customer Dimension`where true $where_store and `Customer Main Plain Postal Code`!='' and `Customer Main Plain Postal Code` like '%s%%' limit 150",
-                addslashes($q_postal_code)
+                "select `Customer Key`,`Customer Main Plain Postal Code` from `Customer Dimension`where true $where_store and `Customer Main Plain Postal Code`!='' and `Customer Main Plain Postal Code` like '%s%%' limit 150", addslashes($q_postal_code)
             );
-
 
 
             if ($result = $db->query($sql)) {
@@ -1796,8 +1844,6 @@ function search_customers($db, $account, $memcache_ip, $data) {
             }
 
         }
-
-
 
 
         $sql = sprintf(
@@ -1850,7 +1896,6 @@ function search_customers($db, $account, $memcache_ip, $data) {
             print_r($error_info = $db->errorInfo());
             exit;
         }
-
 
 
         $sql = sprintf(
@@ -2092,7 +2137,7 @@ function search_orders($db, $account, $memcache_ip, $data) {
 
         foreach ($candidates as $key => $val) {
             $counter++;
-            $order_keys .= ','.$key;
+            $order_keys    .= ','.$key;
             $results[$key] = '';
             if ($counter > $max_results) {
                 break;
@@ -2101,8 +2146,7 @@ function search_orders($db, $account, $memcache_ip, $data) {
         $order_keys = preg_replace('/^,/', '', $order_keys);
 
         $sql = sprintf(
-            "SELECT `Order Key`,`Store Code`,`Order Store Key`,`Order Public ID`,`Order Current Dispatch State`,`Order Customer Name` FROM `Order Dimension` LEFT JOIN `Store Dimension` ON (`Order Store Key`=`Store Key`) WHERE `Order Key` IN (%s)",
-            $order_keys
+            "SELECT `Order Key`,`Store Code`,`Order Store Key`,`Order Public ID`,`Order Current Dispatch State`,`Order Customer Name` FROM `Order Dimension` LEFT JOIN `Store Dimension` ON (`Order Store Key`=`Store Key`) WHERE `Order Key` IN (%s)", $order_keys
         );
 
         if ($result = $db->query($sql)) {
@@ -2314,7 +2358,7 @@ function search_delivery_notes($db, $account, $memcache_ip, $data) {
         foreach ($candidates as $key => $val) {
             $counter++;
             $delivery_note_keys .= ','.$key;
-            $results[$key] = '';
+            $results[$key]      = '';
             if ($counter > $max_results) {
                 break;
             }
@@ -2542,7 +2586,7 @@ function search_invoices($db, $account, $memcache_ip, $data) {
 
         foreach ($candidates as $key => $val) {
             $counter++;
-            $invoice_keys .= ','.$key;
+            $invoice_keys  .= ','.$key;
             $results[$key] = '';
             if ($counter > $max_results) {
                 break;
@@ -2952,8 +2996,7 @@ function search_locations($db, $account, $memcache_ip, $data) {
         $customer_keys = preg_replace('/^,/', '', $customer_keys);
 
         $sql = sprintf(
-            "SELECT `Location Code`,`Location Warehouse Key`,`Location Key`, `Warehouse Code` FROM `Location Dimension` LEFT JOIN `Warehouse Dimension` ON (`Location Warehouse Key`=`Warehouse Key`) WHERE `Location Key` IN (%s)",
-            $customer_keys
+            "SELECT `Location Code`,`Location Warehouse Key`,`Location Key`, `Warehouse Code` FROM `Location Dimension` LEFT JOIN `Warehouse Dimension` ON (`Location Warehouse Key`=`Warehouse Key`) WHERE `Location Key` IN (%s)", $customer_keys
         );
 
         if ($result = $db->query($sql)) {
@@ -3057,8 +3100,7 @@ function agent_search($db, $account, $user, $memcache_ip, $data) {
 
 
             $sql = sprintf(
-                "SELECT `Supplier Key`,`Supplier Code` FROM `Supplier Dimension` LEFT JOIN `Agent Supplier Bridge` ON (`Supplier Key`=`Agent Supplier Supplier Key`) WHERE `Agent Supplier Agent Key`=%d  AND `Supplier Code` LIKE '%s%%' LIMIT 20 ",
-                $agent_key, $q
+                "SELECT `Supplier Key`,`Supplier Code` FROM `Supplier Dimension` LEFT JOIN `Agent Supplier Bridge` ON (`Supplier Key`=`Agent Supplier Supplier Key`) WHERE `Agent Supplier Agent Key`=%d  AND `Supplier Code` LIKE '%s%%' LIMIT 20 ", $agent_key, $q
             );
 
 
@@ -3085,8 +3127,7 @@ function agent_search($db, $account, $user, $memcache_ip, $data) {
             }
 
             $sql = sprintf(
-                "SELECT `Supplier Key`,`Supplier Name` FROM `Supplier Dimension` LEFT JOIN `Agent Supplier Bridge` ON (`Supplier Key`=`Agent Supplier Supplier Key`) WHERE `Agent Supplier Agent Key`=%d  AND  `Supplier Name`  REGEXP '[[:<:]]%s' LIMIT 20 ",
-                $agent_key, $q
+                "SELECT `Supplier Key`,`Supplier Name` FROM `Supplier Dimension` LEFT JOIN `Agent Supplier Bridge` ON (`Supplier Key`=`Agent Supplier Supplier Key`) WHERE `Agent Supplier Agent Key`=%d  AND  `Supplier Name`  REGEXP '[[:<:]]%s' LIMIT 20 ", $agent_key, $q
             );
 
 
@@ -3230,20 +3271,20 @@ function agent_search($db, $account, $user, $memcache_ip, $data) {
             $counter++;
 
             if ($_key[0] == 'P') {
-                $key = preg_replace('/^P/', '', $_key);
+                $key                 = preg_replace('/^P/', '', $_key);
                 $supplier_parts_keys .= ','.$key;
-                $results[$_key] = '';
+                $results[$_key]      = '';
                 $number_supplier_parts_keys++;
 
             } elseif ($_key[0] == 'S') {
-                $key = preg_replace('/^S/', '', $_key);
-                $supplier_keys .= ','.$key;
+                $key            = preg_replace('/^S/', '', $_key);
+                $supplier_keys  .= ','.$key;
                 $results[$_key] = '';
                 $number_supplier_keys++;
 
             } elseif ($_key[0] == 'A') {
-                $key = preg_replace('/^A/', '', $_key);
-                $agent_keys .= ','.$key;
+                $key            = preg_replace('/^A/', '', $_key);
+                $agent_keys     .= ','.$key;
                 $results[$_key] = '';
                 $number_agent_keys++;
 
@@ -3377,7 +3418,6 @@ function agent_search($db, $account, $user, $memcache_ip, $data) {
 }
 
 
-
 function search_webpages($db, $account, $memcache_ip, $data) {
 
 
@@ -3398,21 +3438,19 @@ function search_webpages($db, $account, $memcache_ip, $data) {
     }
 
 
-
-
     if ($data['scope'] == 'store') {
         if (in_array($data['scope_key'], $user->stores)) {
-            $stores          = $data['scope_key'];
-            $where_store     = sprintf(' and `Webpage Store Key`=%d', $data['scope_key']);
+            $stores      = $data['scope_key'];
+            $where_store = sprintf(' and `Webpage Store Key`=%d', $data['scope_key']);
 
         } else {
-            $where_store     = ' and false';
+            $where_store = ' and false';
         }
     } else {
         if (count($user->stores) == $account->get('Account Stores')) {
-            $where_store     = '';
+            $where_store = '';
         } else {
-            $where_store     = sprintf(' and `Webpage Store Key` in (%s)', join(',', $user->stores));
+            $where_store = sprintf(' and `Webpage Store Key` in (%s)', join(',', $user->stores));
         }
 
         $stores = join(',', $user->stores);
@@ -3425,9 +3463,9 @@ function search_webpages($db, $account, $memcache_ip, $data) {
 
     if (strlen($queries) <= 2) {
         $memcache_time = 295200;
-    }elseif (strlen($queries) <= 3) {
+    } elseif (strlen($queries) <= 3) {
         $memcache_time = 86400;
-    }elseif (strlen($queries) <= 4) {
+    } elseif (strlen($queries) <= 4) {
         $memcache_time = 3600;
     } else {
         $memcache_time = 300;
@@ -3443,10 +3481,8 @@ function search_webpages($db, $account, $memcache_ip, $data) {
 
         $candidates = array();
 
-        $query_array    = preg_split('/\s+/', $queries);
+        $query_array = preg_split('/\s+/', $queries);
         //$number_queries = count($query_array);
-
-       
 
 
         foreach ($query_array as $q) {
@@ -3544,7 +3580,7 @@ function search_webpages($db, $account, $memcache_ip, $data) {
 
 
         }
-     //   print_r($candidates);
+        //   print_r($candidates);
 
         arsort($candidates);
 
@@ -3575,14 +3611,14 @@ function search_webpages($db, $account, $memcache_ip, $data) {
             $counter++;
 
             if ($_key[0] == 'P') {
-                $key = preg_replace('/^P/', '', $_key);
-                $product_keys .= ','.$key;
+                $key            = preg_replace('/^P/', '', $_key);
+                $product_keys   .= ','.$key;
                 $results[$_key] = '';
                 $number_products_keys++;
 
             } elseif ($_key[0] == 'C') {
-                $key = preg_replace('/^C/', '', $_key);
-                $category_keys .= ','.$key;
+                $key            = preg_replace('/^C/', '', $_key);
+                $category_keys  .= ','.$key;
                 $results[$_key] = '';
                 $number_categories_keys++;
 
@@ -3592,13 +3628,12 @@ function search_webpages($db, $account, $memcache_ip, $data) {
                 break;
             }
         }
-        $product_keys  = preg_replace('/^,/', '', $product_keys);
+        $product_keys = preg_replace('/^,/', '', $product_keys);
 
 
         if ($number_products_keys) {
             $sql = sprintf(
-                "SELECT `Webpage State`,`Website Code`,`Website Key`,`Page Key`,`Webpage Code`,`Webpage Name` FROM `Page Store Dimension` LEFT JOIN `Website Dimension` W ON (`Webpage Website Key`=W.`Website Key`) WHERE `Page Key` IN (%s)",
-                $product_keys
+                "SELECT `Webpage State`,`Website Code`,`Website Key`,`Page Key`,`Webpage Code`,`Webpage Name` FROM `Page Store Dimension` LEFT JOIN `Website Dimension` W ON (`Webpage Website Key`=W.`Website Key`) WHERE `Page Key` IN (%s)", $product_keys
             );
 
             if ($result = $db->query($sql)) {
@@ -3607,29 +3642,28 @@ function search_webpages($db, $account, $memcache_ip, $data) {
 
                     if ($row['Webpage State'] == 'Offline') {
                         $icon = '<i class="fa fa-file-o fa-fw padding_right_5 discreet" aria-hidden="true" ></i> ';
-                        $code= '<span class="strikethrough">'.$icon.highlightkeyword(sprintf('%s', strtolower($row['Webpage Code'])), $queries).'</span>';
+                        $code = '<span class="strikethrough">'.$icon.highlightkeyword(sprintf('%s', strtolower($row['Webpage Code'])), $queries).'</span>';
 
 
                     } elseif ($row['Webpage State'] == 'InProcess') {
                         $icon = '<i class="fa fa-file-o fa-fw padding_right_5 " aria-hidden="true" ></i> ';
-                        $code= $icon.highlightkeyword(sprintf('%s', strtolower($row['Webpage Code'])), $queries);
+                        $code = $icon.highlightkeyword(sprintf('%s', strtolower($row['Webpage Code'])), $queries);
 
 
-                    }elseif ($row['Webpage State'] == 'Ready') {
+                    } elseif ($row['Webpage State'] == 'Ready') {
                         $icon = '<i class="fa fa-file-o  fa-fw padding_right_5 " aria-hidden="true" ></i> ';
-                        $code= $icon.highlightkeyword(sprintf('%s', strtolower($row['Webpage Code'])), $queries);
+                        $code = $icon.highlightkeyword(sprintf('%s', strtolower($row['Webpage Code'])), $queries);
 
 
                     } else {
                         $icon = '<i class="fa fa-file-o fa-fw padding_right_5" aria-hidden="true" ></i> ';
-                        $code= $icon.highlightkeyword(sprintf('%s', strtolower($row['Webpage Code'])), $queries);
+                        $code = $icon.highlightkeyword(sprintf('%s', strtolower($row['Webpage Code'])), $queries);
 
                     }
 
 
-
                     $results['P'.$row['Page Key']] = array(
-                        'website'   => $row['Website Code'],
+                        'website' => $row['Website Code'],
                         'label'   => $code,
                         'details' => highlightkeyword($row['Webpage Name'], $queries),
                         'view'    => sprintf('website/%d/webpage/%d', $row['Website Key'], $row['Page Key'])
@@ -3666,9 +3700,6 @@ function search_webpages($db, $account, $memcache_ip, $data) {
     echo json_encode($response);
 
 }
-
-
-
 
 
 ?>

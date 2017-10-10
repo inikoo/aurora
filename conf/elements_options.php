@@ -666,7 +666,7 @@ $elements_options = array(
                 ),
                 'Agent'    => array(
                     'label'    => _("Through agent"),
-                    'selected' => false
+                    'selected' => true
                 ),
                 'Archived' => array(
                     'label'    => _('Archived'),

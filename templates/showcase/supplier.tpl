@@ -35,6 +35,7 @@
                 <h1 class="Supplier_Name">
                     {$supplier->get('Name')}
                 </h1>
+                <span class="italic discreet Supplier_Nickname">{$supplier->get('Nickname')}</span>
             </div>
             <div class="data_field {if $supplier->get('Supplier Main Contact Name')==''}hide{/if}">
                 <i title="{t}Contact name{/t}" class="fa fa-user"></i> <span

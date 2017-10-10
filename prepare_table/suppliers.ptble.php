@@ -20,6 +20,7 @@ $group_by   = '';
 $where_type = '';
 
 
+
 if (isset($parameters['awhere']) and $parameters['awhere']) {
 
     $tmp = preg_replace('/\\\"/', '"', $parameters['awhere']);
@@ -32,7 +33,8 @@ if (isset($parameters['awhere']) and $parameters['awhere']) {
     list($where, $table, $group_by) = suppliers_awhere($raw_data);
 
 
-} elseif ($parameters['parent'] == 'list') {
+}
+elseif ($parameters['parent'] == 'list') {
 
 
     $sql = sprintf(
@@ -72,7 +74,8 @@ if (isset($parameters['awhere']) and $parameters['awhere']) {
     }
 
 
-} elseif ($parameters['parent'] == 'category') {
+}
+elseif ($parameters['parent'] == 'category') {
 
 
     $where = sprintf(
@@ -81,18 +84,23 @@ if (isset($parameters['awhere']) and $parameters['awhere']) {
     $table
            = ' `Category Bridge` C left join  `Supplier Dimension` S on (`Subject Key`=`Supplier Key`)  left join `Supplier Data`  D on (S.`Supplier Key`=D.`Supplier Key`)';
 
-} elseif ($parameters['parent'] == 'agent') {
+}
+elseif ($parameters['parent'] == 'agent') {
 
     $where = sprintf(
         " where `Agent Supplier Agent Key`=%d", $parameters['parent_key']
     );
     $table
            = ' `Agent Supplier Bridge` B left join  `Supplier Dimension` S on (`Agent Supplier Supplier Key`=`Supplier Key`)  left join `Supplier Data`  D on (S.`Supplier Key`=D.`Supplier Key`)';
-} else {
+}
+else {
 
     $where = sprintf(" where true ");
 
 }
+
+
+
 
 
 if (isset($parameters['elements_type'])) {
@@ -270,9 +278,14 @@ if ($order == 'code') {
 
 $sql_totals
     = "select count(Distinct S.`Supplier Key`) as num from $table  $where  $where_type";
+
+
+
+
+
 $fields
     = "
-S.`Supplier Key`,`Supplier Code`,`Supplier Name`,`Supplier Number Active Parts`,
+S.`Supplier Key`,`Supplier Code`,`Supplier Name`,`Supplier Number Active Parts`,`Supplier Nickname`,
 `Supplier Location`,`Supplier Main Plain Email`,`Supplier Preferred Contact Number`,`Supplier Preferred Contact Number Formatted Number`,`Supplier Main Contact Name`,`Supplier Company Name`,
 `Supplier Number Parts`,`Supplier Number Surplus Parts`,`Supplier Number Optimal Parts`,`Supplier Number Low Parts`,`Supplier Number Critical Parts`,`Supplier Number Critical Parts`,`Supplier Number Out Of Stock Parts`,
 

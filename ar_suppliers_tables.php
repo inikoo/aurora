@@ -170,6 +170,8 @@ function suppliers($_data, $db, $user, $account) {
     $rtext_label = 'supplier';
     include_once 'prepare_table/init.php';
 
+
+
     $sql        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $table_data = array();
 
@@ -213,8 +215,8 @@ function suppliers($_data, $db, $user, $account) {
                 'operations' => $operations,
                 'associated' => $associated,
 
-                'code' => $data['Supplier Code'],
-                'name' => $data['Supplier Name'],
+                'code' => sprintf('<span class="link" onclick="change_view(\'supplier/%d\')">%s</span>',$data['Supplier Key'],$data['Supplier Code']),
+                'name' => $data['Supplier Name'].' <span class="italic discreet">'.$data['Supplier Nickname'].'</span>',
 
                 'supplier_parts'        => number(
                     $data['Supplier Number Parts']

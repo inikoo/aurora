@@ -87,26 +87,29 @@ $object_fields = array(
                 'label'             => ucfirst(
                     $object->get_field_label('Code')
                 ),
-                'server_validation' => json_encode(
-                    array('tipo' => 'check_for_duplicates')
-                ),
+                'server_validation' => json_encode(array('tipo' => 'check_for_duplicates')),
                 'invalid_msg'       => get_invalid_message('string'),
                 'type'              => 'value'
             ),
             array(
-                'id'   => 'Supplier_Company_Name',
+                'id'   => 'Supplier_Nickname',
                 'edit' => ($edit ? 'string' : ''),
-
-                'value'           => htmlspecialchars(
-                    $object->get('Supplier Company Name')
-                ),
-                'formatted_value' => $object->get('Company Name'),
-                'label'           => ucfirst(
-                    $object->get_field_label('Supplier Company Name')
-                ),
+                'value'           => htmlspecialchars($object->get('Supplier Nickname')),
+                'formatted_value' => $object->get('Nickname'),
+                'label'           => ucfirst($object->get_field_label('Supplier Nickname')),
                 'required'        => false,
                 'type'            => 'value'
             ),
+            array(
+                'id'   => 'Supplier_Company_Name',
+                'edit' => ($edit ? 'string' : ''),
+                'value'           => htmlspecialchars($object->get('Supplier Company Name')),
+                'formatted_value' => $object->get('Company Name'),
+                'label'           => ucfirst($object->get_field_label('Supplier Company Name')),
+                'required'        => false,
+                'type'            => 'value'
+            ),
+
 
             array(
 
