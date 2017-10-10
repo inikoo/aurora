@@ -12,20 +12,6 @@
 
 require_once 'common.php';
 
-
-$default_DB_link = @mysql_connect($dns_host, $dns_user, $dns_pwd);
-if (!$default_DB_link) {
-    print "Error can not connect with database server\n";
-}
-$db_selected = mysql_select_db($dns_db, $default_DB_link);
-if (!$db_selected) {
-    print "Error can not access the database\n";
-    exit;
-}
-mysql_set_charset('utf8');
-mysql_query("SET time_zone='+0:00'");
-
-
 require_once 'utils/get_addressing.php';
 require_once 'utils/parse_natural_language.php';
 
@@ -56,18 +42,17 @@ $editor = array(
 $sql = sprintf(
 
     '
-SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code`,`Product Status` FROM `Page Store Dimension` left join `Product Dimension` on (`Webpage Scope key`=`Product ID`)   WHERE `Webpage Scope`="Product" and `Product Status`="Active"  and  `Product Web Configuration`="Offline" and  `Webpage State`="Online" 
+SELECT `Product ID`,`Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code`,`Product Status`,`Product Web State` FROM `Page Store Dimension` left join `Product Dimension` on (`Webpage Scope key`=`Product ID`)   WHERE `Webpage Scope`="Product" and `Product Status`="Active"  and  `Product Web Configuration`="Offline" and  `Webpage State`="Online" 
 
 ');
 
 
-
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
-
+        print_r($row);
+        print "Unpublish\n";
         $webpage=new Page($row['Page Key']);
-        $webpage->update(array('Webpage State'=>'Offline'),'no_history');
-
+        $webpage->unpublish();
 
     }
 } else {
@@ -77,5 +62,28 @@ if ($result = $db->query($sql)) {
 }
 
 
+$sql = sprintf(
+    "
+select  `Page Key`,`Product Web State`,`Product Web Configuration`,`Webpage State`,`Page State`,`Product Store Key`,`Product Code` from `Product Dimension` left join `Page Store Dimension` on (`Page Key`=`Product Webpage Key`) where `Product Web State`='For Sale' and `Product Web Configuration`='Online Auto' and `Webpage State`='Offline';
+"
+
+);
+
+
+
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+
+        $webpage=new Page($row['Page Key']);
+        print "publish  \n";
+        print_r($row);
+        $webpage->publish();
+
+    }
+} else {
+    print_r($error_info = $db->errorInfo());
+    print "$sql\n";
+    exit;
+}
 
 ?>
