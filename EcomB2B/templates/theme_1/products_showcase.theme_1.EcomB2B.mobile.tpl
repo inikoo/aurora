@@ -15,9 +15,16 @@
 
 
         <div id="page-content-scroll" class="header-clear"><!--Enables this element to be scrolled -->
-            <div class="menu-bar menu-bar-text" style="margin-bottom:5px">
-                <a href="{$parent.code|strtolower}" class="menu-bar-text-1"><i class="fa fa-arrow-up"></i><em style="position: relative;left:-4px">{$parent.label|truncate:8:"."}</em></a>
-                <span class="menu-bar-title" style="position: relative;left:100px">{$category->get('Label')}</span>
+            <div class="menu-bar xmenu-bar-text" style="margin:0px;height:50px;position: relative;top:-10px;border-bottom:1px solid #ccc">
+
+                    <em class="menu-bar-text-1   ">
+                        <a href="/" style="color:#1f2f1f"> <i class="fa fa-home" aria-hidden="true"></i></a> <i class="fa fa-angle-double-right padding_left_5 padding_right_5" aria-hidden="true"></i>
+                         <a href="{$parent.code|strtolower}" style="color:#1f2f1f"> {$parent.label|truncate:15:"."}</a> <i class="fa fa-angle-double-right padding_left_5 padding_right_5" aria-hidden="true"></i> {$category->get('Code')}
+                    </em>
+
+
+
+                <div class="menu-bar-title" style="position: relative;"></div>
             </div>
 
 
@@ -72,9 +79,7 @@
 
                         <em style="margin-left:185px;padding-left: 0px;" class="single_line_height">
 
-                            <div class="description">
-                            {$product->get('Name')}
-                            </div>
+                            <div class="description" {if ($product->get('Name')|count_characters)>40} style="font-size: 90%{/if}">{$product->get('Name')}</div>
                             {if $logged_in}
                                 <div class="price" style="margin-top: 5px">
                                 {t}Price{/t}:{$product->get('Price')}
