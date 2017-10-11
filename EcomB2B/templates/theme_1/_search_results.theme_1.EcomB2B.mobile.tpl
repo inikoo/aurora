@@ -51,9 +51,9 @@
             {elseif $result.scope=='Category'}
                 <div style="clear:both" class="single_line_height">
                     <div  style="float:right;margin-right: 10px" class="mobile_ordering" >
-                        <a href="{$result.url}" style="color:#555"> <i  class="fa fa-reply fa-flip-horizontal"></i></a>
+                        <a href="{$result.url}" style="color:#555">  <i  class="fa fa-reply fa-flip-horizontal"></i></a>
                     </div>
-                    <p style="margin: 0px">{$result.description|truncate:60:"...":true}</p>
+                    <p style="margin: 0px;margin-right:40px;">{$result.description|truncate:60:"...":true}</p>
 
 
                 </div>

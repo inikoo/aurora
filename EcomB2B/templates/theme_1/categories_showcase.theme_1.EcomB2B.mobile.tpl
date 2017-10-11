@@ -18,8 +18,8 @@
 
 
             <div class="content" >
-
                 <div class="asset_description   fr-view"  style="margin-bottom:0px">
+
                     <div class="asset_description_wrap">
                         {foreach from=$content_data.description_block.blocks key=id item=data name=foo}
 

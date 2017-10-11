@@ -63,7 +63,7 @@
                     {if $product_data.type=='product'}
                         {assign 'product' $product_data.object}
                         <div class="store-item-list">
-                    <span style="position:relative">
+                    <span class="sub_wrap" style="">
 
 
                         <a href="{$product->get('Code')|strtolower}" style="z-index: 10000;"><img src="{$product->get('Image Mobile In Family Webpage')}" alt="{$product->get('Name')|escape}"></a>
@@ -88,7 +88,7 @@
                                 <div style="margin-top:10px;"><span style="padding:5px 10px" class="{if $product->get('Out of Stock Class')=='launching_soon'}highlight-green color-white{else}highlight-red color-white{/if}">{$product->get('Out of Stock Label')}</span></div>
                             {elseif $product->get('Web State')=='For Sale'}
                                {assign 'quantity_ordered' $product->get('Ordered Quantity',$order_key) }
-                                <div class="mobile_ordering" data-settings='{ "pid":{$product->id} }'>
+                                <div class="mobile_ordering"  data-settings='{ "pid":{$product->id} }'>
                                 <i onclick="save_item_qty_change(this)" class="ordering_button one_less fa fa-fw  fa-minus-circle color-red-dark"></i>
                                 <input type="number" min="0" value="{$quantity_ordered}" class="needsclick order_qty">
                                 <i onclick="save_item_qty_change(this)" style="display:none" class="ordering_button save fa fa-fw fa-floppy-o color-blue-dark"></i>
