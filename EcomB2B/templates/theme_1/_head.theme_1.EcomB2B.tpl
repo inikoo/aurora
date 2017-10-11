@@ -58,7 +58,7 @@
     <!-- ######### CSS STYLES ######### -->
     <link rel="stylesheet" href="https://use.fontawesome.com/3052dece40.css">
 
-    <link rel="stylesheet" href="css/style.theme_1.EcomB2B.min.css" type="text/css"/>
+    <link rel="stylesheet" href="css/style.theme_1.EcomB2B.min.css?v171011" type="text/css"/>
     <!-- #
        <link rel="stylesheet" href="/theme_1/css/reset.css" type="text/css"/>
                <link rel="stylesheet" href="/theme_1/css/style.css" type="text/css"/>
