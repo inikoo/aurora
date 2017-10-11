@@ -31,7 +31,7 @@
 
     <link rel="stylesheet" type="text/css" href="/theme_1/mobile/style.css">
     <link rel="stylesheet" type="text/css" href="/theme_1/mobile/skin.css">
-    <link rel="stylesheet" type="text/css" href="/theme_1/mobile/framework.css">
+    <link rel="stylesheet" type="text/css" href="/theme_1/mobile/framework.css?v=171011">
     <link rel="stylesheet" type="text/css" href="/theme_1/mobile/ionicons.min.css">
     <link rel="stylesheet" type="text/css" href="/theme_1/sky_forms/css/sky-forms.css"  media="all">
     <link rel="stylesheet" type="text/css" href="/theme_1/css/aurora.theme_1.EcomB2B.mobile.css" />

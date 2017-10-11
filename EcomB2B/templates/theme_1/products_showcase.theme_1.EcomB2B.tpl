@@ -357,7 +357,7 @@
 
                                         {else}
 
-                                            yy {$logged_in} xx
+
 
                                             <div class=" order_row " style="display:flex;">
                                                 <div onclick='window.location.href = "/login.sys"' class="mark_on_hover" style="flex-grow:1;text-align:center;border-right:1px solid #fff;  font-weight: 800;"><span

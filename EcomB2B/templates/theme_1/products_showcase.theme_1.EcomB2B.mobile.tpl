@@ -63,12 +63,15 @@
                     {if $product_data.type=='product'}
                         {assign 'product' $product_data.object}
                         <div class="store-item-list">
-                    <span>
+                    <span style="position:relative">
 
 
-                        <a href="{$product->get('Code')|strtolower}" style="z-index: 10000"><img src="{$product->get('Image Mobile In Family Webpage')}" alt="{$product->get('Name')|escape}"></a>
+                        <a href="{$product->get('Code')|strtolower}" style="z-index: 10000;"><img src="{$product->get('Image Mobile In Family Webpage')}" alt="{$product->get('Name')|escape}"></a>
 
-                        <em style="margin-left:185px;padding-left: 0px" class="single_line_height">
+
+
+                        <em style="margin-left:185px;padding-left: 0px;" class="single_line_height">
+
                             <div class="description">
                             {$product->get('Name')}
                             </div>
