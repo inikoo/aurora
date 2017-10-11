@@ -20741,6 +20741,32 @@ section.product_tabs input[type=radio]:checked + label + div {
   font-size: 18px;
   cursor: pointer; }
 
+@media (max-width: 935px) {
+  #description_block {
+    display: none; }
+
+  #description_block_small_devices {
+    display: block; }
+
+  .discounts_block {
+    float: right;
+    width: 300px; }
+
+  .discount_card {
+    margin-bottom: 5px; } }
+@media (min-width: 935px) {
+  #description_block {
+    display: block; }
+
+  #description_block_small_devices {
+    display: none; } }
+#description_block_small_devices img {
+  -ms-transform: scale(0.9, 0.9);
+  /* IE 9 */
+  -webkit-transform: scale(0.9, 0.9);
+  /* Safari */
+  transform: scale(0.9, 0.9); }
+
 @font-face {
   font-family: system;
   font-style: normal;

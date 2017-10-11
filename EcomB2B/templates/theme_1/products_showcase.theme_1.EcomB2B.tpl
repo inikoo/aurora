@@ -60,6 +60,8 @@
                                 {break}
                             {/foreach}
 
+                            <div class="discounts_block" >
+
                             {foreach from=$category->get_deal_components('objects') item=item key=key}
                                 <div class="discount_card"  >
                                     <span class="discount_icon">{$item->get('Deal Component Icon')}</span>
@@ -73,13 +75,15 @@
 
                             {/foreach}
 
+                            </div>
+
 
                             <div style="clear: both"></div>
 
                         </div>
 
 
-                    <div id="description_block" class="description_block {if isset($content_data.description_block.class)}{$content_data.description_block.class}{/if}">
+                    <div id="description_block" class="description_block  {if isset($content_data.description_block.class)}{$content_data.description_block.class}{/if}">
 
 
                         {foreach from=$content_data.description_block.blocks key=id item=data}
@@ -99,6 +103,21 @@
 
                         <div style="clear:both"></div>
                     </div>
+
+                      <div id="description_block_small_devices">
+
+                          {foreach from=$content_data.description_block.blocks key=id item=data name=foo}
+
+
+                              {if $data.type=='text' and $data.content!=''}
+                                  <p>{$data.content}</p>
+                              {elseif $data.type=='image'}
+                                  <img src="{$data.image_src}" style="width:40%;;{if $smarty.foreach.foo.iteration%2} float:left;margin-right:15px;{else}float:right;margin-left:15px;{/if}"
+                                       title="{if isset($data.caption)}{$data.caption}{/if}"/>
+                              {/if}
+                          {/foreach}
+
+                      </div>
 
                     {/if}
 

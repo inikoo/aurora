@@ -32,10 +32,10 @@
 
                 <div id="page_content">
 
-                    {if $detected_device!='mobile'}
 
 
-                    <div id="description_block" class="description_block {$content_data.description_block.class}" >
+
+                    <div id="description_block" class="description_block  {$content_data.description_block.class}" >
 
 
     {foreach from=$content_data.description_block.blocks key=id item=data}
@@ -59,7 +59,7 @@
 
     <div style="clear:both"></div>
 </div>
-                   {/if}
+
 
                     <div id="items_container" class="product_blocks"   style="margin-bottom:80px;"  >
 
