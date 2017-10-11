@@ -79,7 +79,7 @@
 
                         <em style="margin-left:185px;padding-left: 0px;" class="single_line_height">
 
-                            <div class="description" {if ($product->get('Name')|count_characters)>40} style="font-size: 90%{/if}">{$product->get('Name')}{$product->get('Name')|count_characters}</div>
+                            <div class="description"  {if ($product->get('Name')|count_characters)>40} style="font-size: 80% {elseif ($product->get('Name')|count_characters)>35}{/if}">{$product->get('Name')}</div>
                             {if $logged_in}
                                 <div class="price" style="margin-top: 5px">
                                 {t}Price{/t}:{$product->get('Price')}
