@@ -150,6 +150,7 @@ font-weight: 800;
 
 .mobile_ordering {
     margin-top: 5px;
+	z-index:3000
 }
 .mobile_ordering .fa{
 
