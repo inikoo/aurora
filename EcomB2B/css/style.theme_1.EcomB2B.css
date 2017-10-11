@@ -20372,8 +20372,8 @@ table.properties td {
 
 .wrap_to_center img {
   vertical-align: bottom;
-  max-width: 218px;
-  max-height: 160px; }
+  max-width: 216px;
+  max-height: 158px; }
 
 .product_description {
   padding-left: 10px;
@@ -20398,8 +20398,7 @@ table.properties td {
 .description_block {
   margin-bottom: 20px;
   background: #fff;
-  padding: 10px 20px;
-  border: 1px solid #eee; }
+  padding: 10px 20px; }
 
 .ordering.log_out div {
   float: left;

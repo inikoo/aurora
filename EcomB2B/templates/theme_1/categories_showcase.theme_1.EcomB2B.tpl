@@ -22,7 +22,7 @@
 
         {include file="theme_1/header.theme_1.EcomB2B.tpl"}
 
-        <div class="content_fullwidth less2">
+        <div class="content_fullwidth less3">
 
 
 
