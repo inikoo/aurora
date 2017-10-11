@@ -41,7 +41,18 @@
 
                         {assign 'prev_product'  $product->get_prev_product('data') }
                         {assign 'next_product'  $product->get_next_product('data') }
+                        <div style="float: left">
+                        <div style="position: relative;top:-10px;width: 200px;">
+                            {if $parent_family}
+                                <span onclick="location.href = '/{$parent_family.webpage_code}'" class="like_button padding_right_5" title="{$parent_family.code}  {$parent_family.label}">
+                                     {$parent_family.code}
+                                </span>
+                                <i class="fa fa-angle-double-right padding_right_5" aria-hidden="true"></i>
 
+                            {/if}
+
+                            {if empty($labels._product_code)}{t}Product{/t}{else}{$labels._product_code}{/if}: <span class="code">{$product->get('Code')} </span>
+                        </div>
 
                         {if $prev_product}
                             <a class="parent_up" href="{$prev_product.webpage_code}">
@@ -53,7 +64,7 @@
 
                         {if $parent_family}
                             <a href="/{$parent_family.webpage_code}" class="parent_up" title="{$parent_family.code}  {$parent_family.label}">
-                                <i class="fa fa-arrow-up" aria-hidden="true"></i>
+                                <i class="fa fa-arrow-up" aria-hidden="true"></i> {$parent_family.code}
                             </a>
                         {/if}
 
@@ -68,8 +79,10 @@
                             </a>
                         {/if}
 
+                        </div>
+
                         {foreach from=$product->get_deal_components('objects') item=item key=key}
-                            <div class="discount_card">
+                            <div class="discount_card" style="float: right">
                                 <span class="discount_icon">{$item->get('Deal Component Icon')}</span>
 
                                 <span class="discount_name">{$item->get('Deal Component Name Label')}</span><br/>

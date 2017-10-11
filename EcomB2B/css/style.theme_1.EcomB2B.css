@@ -20282,7 +20282,7 @@ table.properties td {
   border: 1px solid transparent;
   cursor: text; }
 
-#page_content .product_header_text p {
+#page_content .product_header_text p, #page_content .item_header_text p {
   padding: 0px;
   margin: 0px;
   text-align: center;
@@ -20373,7 +20373,7 @@ table.properties td {
 .wrap_to_center img {
   vertical-align: bottom;
   max-width: 216px;
-  max-height: 158px; }
+  max-height: 160px; }
 
 .product_description {
   padding-left: 10px;
