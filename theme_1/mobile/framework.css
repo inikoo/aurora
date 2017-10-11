@@ -6376,7 +6376,7 @@ calendar*{display:block; overflow:hidden;}
 
 @media(min-width:768px){
     .store-item-list span.sub_wrap{position:relative}
-    .store-item-list span {width:50%; float:left;}
+    .store-item-list span.sub_wrap {width:50%; float:left;}
     .store-item-list span em{padding-right:30px;}
     .store-strip{width:49.3%; float:left; margin-left:5px;}
 }
