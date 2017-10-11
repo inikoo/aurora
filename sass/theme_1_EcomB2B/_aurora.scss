@@ -403,13 +403,13 @@ table.properties td{
 
 
 
-#page_content   .product_header_text{
+#page_content  .product_header_text{
 	padding:4px;height:40px;color:brown ;
 	border:1px solid transparent;cursor:text;
 
 }
 
-#page_content   .product_header_text p{
+#page_content  .product_header_text p,#page_content  .item_header_text p{
 	padding:0px ; margin:0px;text-align: center;
 	z-index: 0;position:relative;
 }
@@ -527,7 +527,7 @@ table.properties td{
 	margin-bottom:10px
 }
 .wrap_to_center img {
-	vertical-align: bottom;max-width:216px;max-height:158px
+	vertical-align: bottom;max-width:216px;max-height:160px
 }
 
 
