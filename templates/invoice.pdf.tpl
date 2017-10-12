@@ -252,7 +252,7 @@ div.inline { float:left; }
 			</tr>
 			{foreach from=$tax_data item=tax } 
 			<tr>
-				<td class="totals" colspan="2">{$tax.name}</td>
+				<td class="totals" colspan="2">{t}Tax{/t} ({$tax.name})</td>
 				<td class="totals">{$tax.amount}</td>
 			</tr>
 			{/foreach} 
