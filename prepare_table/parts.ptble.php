@@ -273,7 +273,7 @@ $sql_totals
 
 $fields
     .= "P.`Part SKU`,`Part Reference`,`Part Package Description`,`Part Current Stock`,`Part Stock Status`,`Part Days Available Forecast`,`Part Current On Hand Stock`,
-`Part $db_period Acc Dispatched` as dispatched,
+`Part $db_period Acc Dispatched` as dispatched,`Part Number Active Products`,`Part Margin`,
 `Part $db_period Acc Invoiced Amount` as sales,
 `Part Days Available Forecast`,$yb_fields
 

@@ -20,7 +20,7 @@ $print_est = true;
 
 
 update_parts_data($db);
-update_part_categories_data($db, $print_est);
+//update_part_categories_data($db, $print_est);
 
 function update_parts_data($db) {
 
@@ -34,6 +34,10 @@ function update_parts_data($db) {
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
             $part = new Part($row['Part SKU']);
+
+
+            $part->activate();
+
 
             $part->update_cost();
             $part->update_products_data();
