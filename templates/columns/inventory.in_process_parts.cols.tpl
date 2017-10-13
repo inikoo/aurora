@@ -62,13 +62,13 @@ cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
 {
-name: "has_picture",
-label: "{t}Picture{/t}",
+name: "has_products",
+label: "{t}Products{/t}",
 editable: false,
 
 //  defaultOrder:1,
 sortType: "toggle",
-{if $sort_key=='has_picture'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='has_products'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
 headerCell: integerHeaderCell
@@ -76,12 +76,12 @@ headerCell: integerHeaderCell
 
 
 {
-name: "warehouse_cost",
+name: "cost",
 label: "{t}Cost{/t}",
 editable: false,
 sortType: "toggle",
 defaultOrder:1,
-{if $sort_key=='warehouse_cost'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='cost'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
 cell: Backgrid.StringCell.extend({
 
@@ -123,13 +123,13 @@ grid.columns.findWhere({ name: 'sko_description'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'valid_from'} ).set("renderable", false)
 
 grid.columns.findWhere({ name: 'has_stock'} ).set("renderable", false)
-grid.columns.findWhere({ name: 'has_picture'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'has_products'} ).set("renderable", false)
 
 
 if(view=='overview'){
 grid.columns.findWhere({ name: 'sko_description'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'has_stock'} ).set("renderable", true)
-grid.columns.findWhere({ name: 'has_picture'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'has_products'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'valid_from'} ).set("renderable", true)
 
 $('#columns_period').removeClass('hide');

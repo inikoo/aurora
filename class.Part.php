@@ -558,7 +558,7 @@ class Part extends Asset {
 
 
                 $sko_recomended_price = sprintf(
-                    _('recommended SKO commercial value: %s'), money($this->data['Part Unit Price'] * $this->data['Part Units Per Package'], $account->get('Account Currency'))
+                    _('recommended SKO commercial value: %s'), ($this->data['Part Unit Price']>0?money($this->data['Part Unit Price'] * $this->data['Part Units Per Package'], $account->get('Account Currency')):'<span class="italic discreet">'._('not set').'</span>')
 
                 );
 
@@ -1375,9 +1375,7 @@ class Part extends Asset {
         if ($this->get('Part Status') == 'In Process') {
 
 
-            if ($this->get_number_images() > 0 and $this->get(
-                    'Part Current On Hand Stock'
-                ) > 0) {
+            if ($this->data['Part Number Active Products'] > 0 and $this->get('Part Current On Hand Stock') > 0) {
                 $this->update(
                     array(
                         'Part Status'      => 'In Use',
@@ -2800,15 +2798,15 @@ class Part extends Asset {
             exit;
         }
 
-        $this->update(
+        $this->fast_update(
             array(
                 'Part Number Active Products'    => $active_products,
                 'Part Number No Active Products' => $no_active_products,
 
-            ), 'no_history'
+            )
 
         );
-
+        $this->activate();
 
     }
 

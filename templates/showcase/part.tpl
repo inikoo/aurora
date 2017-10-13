@@ -38,7 +38,7 @@
     </div>
     <div class="block sales_data">
         <table>
-            <tr class="header">
+            <tr class="header {if $part->get('Part Number Active Products')==0}hide{/if} ">
                 <td colspan=3>{t}SKO commercial value{/t} <b>{$part->get('Commercial Value')}</b> <span class="tooltip" data-tooltip-content="#tooltip_part_margin">({$part->get('Margin')})</td>
             </tr>
             <tr class="header">

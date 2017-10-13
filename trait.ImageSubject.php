@@ -74,7 +74,7 @@ trait ImageSubject {
 
                 if ($object_image_scope != 'SKO') {
 
-                    $this->activate();
+
 
 
                     foreach ($this->get_products('objects') as $product) {
