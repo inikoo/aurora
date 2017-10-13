@@ -9,7 +9,23 @@
 -->
 *}
 
+<style>
+    .supplier_parts_table{
+        font-size: 90%;
+    }
 
+.supplier_parts_table td{
+    padding:3px 15px
+
+
+}
+.supplier_parts_table tr{
+  border-bottom:1px solid #ccc;
+    height: auto;
+
+
+}
+</style>
 
 <div id="set_price_dialog" class="hide" style="position:absolute;border:1px solid #ccc;background-color: white;padding:10px 10px;z-index: 100">
     <i style="position:relative;top:-7px;margin-right:10px" class="fa fa-window-close button" onClick="close_product_price_dialog()" aria-hidden="true"></i>
@@ -28,7 +44,31 @@
 <div style="padding:10px;border-bottom:1px solid #ccc;display:flex;justify-content: space-around;">
 <div style="text-align: left;">
 
- {if isset($supplier_part)}  {t}Current unit cost{/t}: {$supplier_part->get('Unit Cost')} {t}Extras{/t}: {$supplier_part->get('Unit Extra Cost')}  {/if}
+
+    {assign supplier_parts $part->get_supplier_parts('objects')}
+    <table  class="supplier_parts_table">
+        <tr>
+            <td>{t}Supplier{/t}</td>
+            <td>{t}Current SKO cost{/t}</td>
+        </tr>
+    {foreach from=$supplier_parts item=supplier_part name=supplier_parts}
+        <tr>
+            <td>{$supplier_part->supplier->get('Name')}</td>
+            <td>
+               {if $supplier_part->get('Supplier Part Unit Cost')==''}
+                   <i class="fa fa-exclamation-circle error" aria-hidden="true"></i>
+                    {t}Cost not set up{/t}
+                   {else}
+                {$supplier_part->get('SKO Cost AC')} {$supplier_part->get('SKO Margin')}
+                {/if}
+            </td>
+        </tr>
+    {/foreach}
+    </table>
+
+
+
+
 
 
 </div>

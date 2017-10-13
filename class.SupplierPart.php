@@ -50,13 +50,17 @@ class SupplierPart extends DB_Table {
 
         if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id = $this->data['Supplier Part Key'];
-
-
             $this->part = new Part('id', $this->data['Supplier Part Part SKU'], false, $this->db);
         }
 
 
     }
+
+    function load_supplier(){
+
+        $this->supplier=get_object('Supplier',$this->data['Supplier Part Supplier Key']);
+    }
+
 
     function find($raw_data, $options) {
         if (isset($raw_data['editor'])) {
@@ -1268,6 +1272,19 @@ class SupplierPart extends DB_Table {
                     $this->data['Supplier Part Unit Cost'] * $this->part->data['Part Units Per Package'], $this->data['Supplier Part Currency Code']
                 );
                 break;
+            case 'SKO Cost AC':
+
+                if ($this->data['Supplier Part Unit Cost'] == '') {
+                    return '';
+                }
+
+                include_once 'utils/currency_functions.php';
+                $exchange       = currency_conversion($this->db, $this->data['Supplier Part Currency Code'], $account->get('Account Currency'), '- 1 day');
+
+                return money(
+                    $exchange*$this->data['Supplier Part Unit Cost'] * $this->part->data['Part Units Per Package'], $account->get('Account Currency')
+                );
+                break;
 
             case 'Carton Delivered Cost':
 
@@ -1382,6 +1399,19 @@ class SupplierPart extends DB_Table {
 
 
                 return $cost;
+                break;
+
+            case 'SKO Margin':
+                include_once 'utils/currency_functions.php';
+                $exchange       = currency_conversion(
+                    $this->db, $this->data['Supplier Part Currency Code'], $account->get('Account Currency'), '- 1 day'
+                );
+
+                $unit_margin = $this->part->data['Part Unit Price'] - $this->data['Supplier Part Unit Cost'] *$exchange;
+
+                return sprintf(
+                    '<span class="'.($unit_margin < 0 ? 'error' : '').'">'._('margin %s').'</span>', percentage($unit_margin, $this->part->data['Part Unit Price'])
+                );
                 break;
 
             case 'Unit Delivered Cost':

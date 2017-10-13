@@ -38,7 +38,9 @@
     </div>
     <div class="block sales_data">
         <table>
-
+            <tr class="header">
+                <td colspan=3>{t}SKO commercial value{/t} <b>{$part->get('Commercial Value')}</b> <span class="tooltip" data-tooltip-content="#tooltip_part_margin">({$part->get('Margin')})</td>
+            </tr>
             <tr class="header">
                 <td colspan=3>{$header_total_sales}</td>
             </tr>
@@ -191,7 +193,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="Products_Web_State">{$part->get('Products Web Status')}</td>
+                    <td class="Products_Web_Status">{$part->get('Products Web Status')}</td>
                     <td class="aright Available_Forecast">{$part->get('Available Forecast')}</td>
                 </tr>
                 <tr class="{if $part->get('Part Next Shipment Date')==''}hide{/if}">
@@ -233,10 +235,16 @@
             <table style="width:100%">
 
 
-                <tr>
+                    <tr class="Part_Cost_in_Warehouse_info_not_set_up {if $part->get('Part Cost in Warehouse')!=''}hide{/if}"><td colspan="2">
+                           {t}SKO stock value no set up yet{/t}
+                            <div class="italic discreet" style="margin-top:10px">{t}Add stock via a purchase order or update Stock value (per SKO){/t}</div>
+                        </td>
+                    </tr>
+
+                <tr class="Part_Cost_in_Warehouse_info_set_up {if $part->get('Part Cost in Warehouse')==''}hide{/if}">
                     <td>
 
-                        <span id="part_stock_value" style="font-size:85%" class="Part_Cost_in_Warehouse">{$part->get('Cost in Warehouse')}</span>
+                        {t}Stock value{/t}: <span id="part_stock_value" style="font-size:85%" class="Part_Cost_in_Warehouse">{$part->get('Cost in Warehouse')}</span>
 
                         <i id="close_edit_stock" class="fa fa-sign-out fa-flip-horizontal button hide" aria-hidden="true" title="{t}Exit edit stock{/t}" onClick="close_edit_stock()"></i></td>
                     <td class="aright">
@@ -245,6 +253,7 @@
                                                                                                                                   id="save_stock" onClick="save_stock()"></i></span>
                     </td>
                 </tr>
+
             </table>
 
 
@@ -309,6 +318,15 @@
 
 </div>
 
+<div class="tooltip_templates">
+    <span id="tooltip_part_margin">
+        <table>
+            <tr><td>{t}Margin{/t}:</td><td class="Part_Margin">{$part->get('Margin')}</td></tr>
+            <tr><td>{t}SKO cost{/t}:</td><td class="Cost">{$part->get('Cost')}</td></tr>
+
+        </table>
+    </span>
+</div>
 
 <script>
 
@@ -357,5 +375,6 @@
         delayed_on_change_add_location_field($(this), delay)
     });
 
+    $('.tooltip').tooltipster();
 
 </script>

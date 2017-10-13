@@ -307,7 +307,7 @@ class PartLocation extends DB_Table {
         $qty_change = $qty - $old_qty;
 
 
-        $value_change = $this->get_value_change($qty_change, $old_qty, $old_value, $date);
+        $value_change = $qty_change*$this->part->get('Part Cost in Warehouse');
 
         $this->updated = true;
 
@@ -415,7 +415,8 @@ class PartLocation extends DB_Table {
 
     }
 
-    function get_value_change($qty_change, $old_qty, $old_value, $date) {
+    /*
+    function get_value_change_deleted($qty_change, $old_qty, $old_value, $date) {
         $qty = $old_qty + $qty_change;
         if ($qty_change > 0) {
 
@@ -430,7 +431,7 @@ class PartLocation extends DB_Table {
 
             if ($qty_above_zero) {
 
-                $unit_cost    = $this->part->data['Part Cost'];
+                $unit_cost    = $this->part->data['Part Cost in Warehouse'];
                 $value_change += $qty_above_zero * $unit_cost;
             }
 
@@ -443,7 +444,7 @@ class PartLocation extends DB_Table {
 
             $value_change = 0;
             if ($qty_below_zero) {
-                $unit_cost    = $this->part->data['Part Cost'];
+                $unit_cost    = $this->part->data['Part Cost in Warehouse'];
                 $value_change += -$qty_below_zero * $unit_cost;
 
             }
@@ -463,6 +464,7 @@ class PartLocation extends DB_Table {
 
         return $value_change;
     }
+    */
 
     function qty_analysis($a, $b) {
         if ($b < $a) {
@@ -997,7 +999,7 @@ class PartLocation extends DB_Table {
 
         $diff = $audit->data['Inventory Audit Quantity'] - $stock;
         //$cost_per_part=$this->part->get_unit_cost($audit->data['Inventory Audit Date']);
-        $cost_per_part = $this->part->data['Part Cost'];
+        $cost_per_part = $this->part->data['Part Cost in Warehouse'];
 
         $cost = $diff * $cost_per_part;
         //print $audit->data['Inventory Audit Type']."S: $stock ".$audit->data['Inventory Audit Quantity']."\n";
@@ -1064,42 +1066,6 @@ class PartLocation extends DB_Table {
         $transaction_type = $data['Transaction Type'];
 
 
-        /*
-
-                if (array_key_exists('Value', $data)) {
-                    $value_change = $data['Value'];
-                } else {
-                    $sql       = sprintf(
-                        "SELECT sum(ifnull(`Inventory Transaction Quantity`,0)) AS stock ,ifnull(sum(`Inventory Transaction Amount`),0) AS value FROM `Inventory Transaction Fact` WHERE  `Date`<%s AND `Part SKU`=%d AND `Location Key`=%d",
-                        prepare_mysql($date), $this->part_sku, $this->location_key
-                    );
-                    $old_qty   = 0;
-                    $old_value = 0;
-
-
-                    if ($result = $this->db->query($sql)) {
-                        if ($row = $result->fetch()) {
-                            $old_qty   = round($row['stock'], 3);
-                            $old_value = $row['value'];
-                        }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        exit;
-                    }
-
-
-                    $value_change = $this->get_value_change($qty_change, $old_qty, $old_value, $date);
-
-
-                }
-        */
-
-        // $this->value_change = $value_change;
-
-
-        //  $_new_value = $this->data['Stock Value'] + $value_change;
-
-        // print "\n** ".$this->data['Stock Value']."  -> ".$value_change." = $_new_value **\n";
 
 
         $value_change = $this->part->get('Part Cost in Warehouse') * $qty_change;
@@ -1231,10 +1197,12 @@ class PartLocation extends DB_Table {
 
     }
 
-    function update_stock_value($old_part_cost, $options = '') {
+    function update_stock_value() {
 
         $sql = sprintf(
-            "UPDATE `Part Location Dimension` SET `Stock Value`=%.3f WHERE `Part SKU`=%d AND `Location Key`=%d ", $this->get('Quantity On Hand') * $this->part->get('Part Cost in Warehouse'), $this->part_sku, $this->location_key
+            "UPDATE `Part Location Dimension` SET `Stock Value`=%.3f WHERE `Part SKU`=%d AND `Location Key`=%d ",
+            $this->get('Quantity On Hand') * $this->part->get('Part Cost in Warehouse'),
+            $this->part_sku, $this->location_key
         );
 
         $update = $this->db->prepare($sql);
@@ -1688,8 +1656,15 @@ print "++++++++++\n";
 
 
                 //$commercial_value_unit_cost=$this->part->get_unit_commercial_value($row['Date'].' 23:59:59');
-                $commercial_value_unit_cost = $this->part->get('Part Unit Price');
-                $value_day_cost_unit_cost   = $this->part->get('Part Cost');
+
+                if($this->part->get('Part Commercial Value')==''){
+                    $commercial_value_unit_cost = $this->part->get('Part Unit Price');
+                }else{
+                    $commercial_value_unit_cost = $this->part->get('Part Commercial Value');
+                }
+
+
+
                 $value_day_cost             = $stock * $value_day_cost_unit_cost;
                 $commercial_value           = $stock * $commercial_value_unit_cost;
 
@@ -2007,11 +1982,7 @@ print "++++++++++\n";
                 $qty_change = $qty - $old_qty;
 
 
-                //print "Q: $qty_change $qty $old_qty\n";
-
-                $value_change = $this->get_value_change(
-                    $qty_change, $old_qty, $old_value, $date
-                );
+                $value_change = $qty_change*$this->part->get('Part Cost in Warehouse');
 
                 if ($qty_change != 0 or $value_change != 0) {
 

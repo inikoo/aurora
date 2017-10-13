@@ -73,6 +73,41 @@ cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
 headerCell: integerHeaderCell
 },
+
+
+{
+name: "warehouse_cost",
+label: "{t}Cost{/t}",
+editable: false,
+sortType: "toggle",
+defaultOrder:1,
+{if $sort_key=='warehouse_cost'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+
+cell: Backgrid.StringCell.extend({
+
+className: "aright"
+}),
+headerCell: integerHeaderCell
+
+},
+
+
+{
+name: "margin",
+label: "{t}Margin{/t}",
+editable: false,
+sortType: "toggle",
+defaultOrder:1,
+{if $sort_key=='margin'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+
+cell: Backgrid.HtmlCell.extend({
+
+className: "aright"
+}),
+headerCell: integerHeaderCell
+
+}
+
 ]
 
 function change_table_view(view,save_state){

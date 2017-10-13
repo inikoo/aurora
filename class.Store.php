@@ -2948,6 +2948,11 @@ class Store extends DB_Table {
                     }
                 }
 
+                foreach ($this->get_parts('objects') as $part){
+                    $part->update_products_data();
+                    $part->update_commercial_value();
+                }
+
 
                 if ($family_key) {
                     $product->update(
