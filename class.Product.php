@@ -3503,7 +3503,7 @@ class Product extends Asset {
 
         }
 
-      
+
         $this->update(array('Product Cost' => $cost), 'no_history');
     }
 
