@@ -2720,7 +2720,7 @@ class Part extends Asset {
                 );
 
                 $sql = sprintf(
-                    'SELECT `Image Subject Image Key` FROM `Image Subject Bridge` WHERE `Image Subject Object`="Part" AND `Image Subject Object Key`=%d  ', $this->id
+                    'SELECT `Image Subject Image Key` FROM `Image Subject Bridge` WHERE `Image Subject Object`="Part" AND `Image Subject Object Key`=%d order by `Image Subject Order` ', $this->id
                 );
 
                 //   print "$sql\n";

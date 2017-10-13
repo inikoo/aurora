@@ -2651,9 +2651,7 @@ class Store extends DB_Table {
 
         if (!is_numeric($data['Product Units Per Case']) or $data['Product Units Per Case'] < 0) {
             $this->error      = true;
-            $this->msg        = sprintf(
-                _('Invalid units per outer (%s)'), $data['Product Units Per Case']
-            );
+            $this->msg        = sprintf(_('Invalid units per outer (%s)'), $data['Product Units Per Case']);
             $this->error_code = 'invalid_product_units_per_case';
             $this->metadata   = $data['Product Units Per Case'];
 
@@ -2767,10 +2765,6 @@ class Store extends DB_Table {
             if ($product_parts and is_array($product_parts)) {
 
                 foreach ($product_parts as $product_part) {
-
-
-                    //   print_r($product_part);
-
 
                     if (!is_array($product_part)
 
