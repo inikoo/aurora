@@ -18,7 +18,7 @@ require_once 'class.Category.php';
     $sql = sprintf(
         'SELECT `Part SKU` FROM `Part Dimension`  ORDER BY `Part SKU` desc  '
     );
-  $sql = sprintf('SELECT `Part SKU` FROM `Part Dimension`  where `Part Reference`="AWFO-67" ORDER BY `Part SKU`  desc ');
+ // $sql = sprintf('SELECT `Part SKU` FROM `Part Dimension`  where `Part Reference`="AWFO-67" ORDER BY `Part SKU`  desc ');
 
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
