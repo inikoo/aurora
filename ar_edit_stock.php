@@ -139,45 +139,42 @@ function new_part_location($account, $db, $user, $editor, $data, $smarty) {
 
     if ($part_location->new) {
 
-/*
-        switch ($part_location->part->get('Location Mainly Used For')) {
-            case 'Picking':
-                $used_for = sprintf(
-                    '<i class="fa fa-fw fa-shopping-basket" aria-hidden="true" title="%s" ></i>', _('Picking')
-                );
-                break;
-            case 'Storing':
-                $used_for = sprintf(
-                    '<i class="fa fa-fw  fa-hdd-o" aria-hidden="true" title="%s"></i>', _('Storing')
-                );
-                break;
-            default:
-                $used_for = sprintf(
-                    '<i class="fa fa-fw  fa-shopping-basket" aria-hidden="true" title="%s"></i>', $part_location->part->get('Location Mainly Used For')
-                );
-        }
-*/
+        /*
+                switch ($part_location->part->get('Location Mainly Used For')) {
+                    case 'Picking':
+                        $used_for = sprintf(
+                            '<i class="fa fa-fw fa-shopping-basket" aria-hidden="true" title="%s" ></i>', _('Picking')
+                        );
+                        break;
+                    case 'Storing':
+                        $used_for = sprintf(
+                            '<i class="fa fa-fw  fa-hdd-o" aria-hidden="true" title="%s"></i>', _('Storing')
+                        );
+                        break;
+                    default:
+                        $used_for = sprintf(
+                            '<i class="fa fa-fw  fa-shopping-basket" aria-hidden="true" title="%s"></i>', $part_location->part->get('Location Mainly Used For')
+                        );
+                }
+        */
 
-        $picking_location_icon=sprintf('<i onclick="set_as_picking_location(%d,%d)" class="fa fa-fw fa-shopping-basket %s" aria-hidden="true" title="%s" ></i></span>',
-                                       $part_location->part->id,
-                                       $part_location->location->id,
-                                       ($part_location->get('Can Pick')=='Yes'?'':'super_discreet_on_hover button'),
-                                       ($part_location->get('Can Pick')=='Yes'?_('Picking location'):_('Set as picking location'))
+        $picking_location_icon = sprintf(
+            '<i onclick="set_as_picking_location(%d,%d)" class="fa fa-fw fa-shopping-basket %s" aria-hidden="true" title="%s" ></i></span>', $part_location->part->id, $part_location->location->id,
+            ($part_location->get('Can Pick') == 'Yes' ? '' : 'super_discreet_on_hover button'), ($part_location->get('Can Pick') == 'Yes' ? _('Picking location') : _('Set as picking location'))
 
         );
 
 
-
         $response = array(
-            'state'                  => 200,
-            'part_sku'               => $part_location->part->id,
-            'location_key'           => $part_location->location->id,
-            'location_code'          => $part_location->location->get('Code'),
-            'formatted_stock'        => number($part_location->get('Quantity On Hand'), 3),
-            'stock'                  => ($part_location->get('Quantity On Hand') == 0 ? '' : $part_location->get('Quantity On Hand')),
-           'picking_location_icon' => $picking_location_icon,
-           // 'location_used_for'      => $part_location->location->get('Location Mainly Used For'),
-            'location_link'          => sprintf('locations/%d/%d', $part_location->location->get('Warehouse Key'), $part_location->location->id),
+            'state'                 => 200,
+            'part_sku'              => $part_location->part->id,
+            'location_key'          => $part_location->location->id,
+            'location_code'         => $part_location->location->get('Code'),
+            'formatted_stock'       => number($part_location->get('Quantity On Hand'), 3),
+            'stock'                 => ($part_location->get('Quantity On Hand') == 0 ? '' : $part_location->get('Quantity On Hand')),
+            'picking_location_icon' => $picking_location_icon,
+            // 'location_used_for'      => $part_location->location->get('Location Mainly Used For'),
+            'location_link'         => sprintf('locations/%d/%d', $part_location->location->get('Warehouse Key'), $part_location->location->id),
 
             'formatted_min_qty'  => ($part_location->get('Minimum Quantity') != '' ? $part_location->get('Minimum Quantity') : '?'),
             'formatted_max_qty'  => ($part_location->get('Maximum Quantity') != '' ? $part_location->get('Maximum Quantity') : '?'),
@@ -240,8 +237,8 @@ function edit_part_location_stock($account, $db, $user, $editor, $data, $smarty)
 
 
     $update_metadata['location_part_stock_cell'] = sprintf(
-        '<span  class="table_edit_cell location_part_stock" title="%s" part_sku="%d" location_key="%d"  qty="%s" onClick="open_location_part_stock_quantity_dialog(this)">%s</span>', '',
-        $data['part_sku'], $data['location_key'], $part_location->get('Quantity On Hand'), number($part_location->get('Quantity On Hand'))
+        '<span  class="table_edit_cell location_part_stock" title="%s" part_sku="%d" location_key="%d"  qty="%s" onClick="open_location_part_stock_quantity_dialog(this)">%s</span>', '', $data['part_sku'], $data['location_key'], $part_location->get('Quantity On Hand'),
+        number($part_location->get('Quantity On Hand'))
     );
 
 
@@ -319,8 +316,7 @@ function edit_stock($account, $db, $user, $editor, $data, $smarty) {
         } else {
             if ($parts_locations_data[$key]['qty'] != $part_location->get(
                     'Quantity On Hand'
-                ) or $parts_locations_data[$key]['audit']
-            ) {
+                ) or $parts_locations_data[$key]['audit']) {
 
 
                 $part_location->audit(
@@ -373,7 +369,7 @@ function place_part($account, $db, $user, $editor, $data, $smarty) {
     include_once 'class.PartLocation.php';
     include_once 'utils/currency_functions.php';
 
-    $account=get_object('Account',1);
+    $account = get_object('Account', 1);
 
 
     $part_location_data = array(
@@ -382,8 +378,9 @@ function place_part($account, $db, $user, $editor, $data, $smarty) {
         'editor'       => $editor
     );
 
-    $object = get_object($data['object'], $data['key']);
-    $origin = sprintf(
+    $object         = get_object($data['object'], $data['key']);
+    $object->editor = $editor;
+    $origin         = sprintf(
         '<span class="link" onClick="change_view(\'delivery/%d\')" ><i class="fa fa-arrow-circle-down" aria-hidden="true"></i> %s</span>', $object->id, $object->get('Public ID')
     );
 
@@ -392,12 +389,12 @@ function place_part($account, $db, $user, $editor, $data, $smarty) {
     }
 
 
-
-
     $sql = sprintf(
-        'SELECT POTF.`Currency Code`,SP.`Supplier Part Key`,`Supplier Part Unit Extra Cost Percentage`,`Supplier Delivery Quantity`,`Supplier Delivery Net Amount`,`Purchase Order Transaction Fact Key`,`Supplier Delivery Checked Quantity`,`Supplier Delivery Placed Quantity` ,`Supplier Part Packages Per Carton` FROM	  `Purchase Order Transaction Fact` POTF
+        'SELECT `Part Units Per Package`,`Supplier Part Unit Extra Cost`,`Supplier Part Unit Cost`,`Supplier Part Currency Code`,POTF.`Currency Code`,SP.`Supplier Part Key`,`Supplier Part Unit Extra Cost Percentage`,`Supplier Delivery Quantity`,`Supplier Delivery Net Amount`,`Purchase Order Transaction Fact Key`,`Supplier Delivery Checked Quantity`,`Supplier Delivery Placed Quantity` ,`Supplier Part Packages Per Carton` FROM	  `Purchase Order Transaction Fact` POTF
 LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Historic Key`=SPH.`Supplier Part Historic Key`)
  LEFT JOIN  `Supplier Part Dimension` SP ON (POTF.`Supplier Part Key`=SP.`Supplier Part Key`)
+  LEFT JOIN  `Part Dimension` P ON (`Part SKU`=SP.`Supplier Part Part SKU`)
+
 
 	 WHERE `Purchase Order Transaction Fact Key`=%d', $data['transaction_key']
     );
@@ -407,14 +404,54 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
         if ($row = $result->fetch()) {
 
 
-
-
             if ($row['Supplier Delivery Placed Quantity'] == '') {
                 $row['Supplier Delivery Placed Quantity'] = 0;
             }
 
-            $part_location = new PartLocation('find', $part_location_data, 'create');
 
+            // here the magic happens for the update of Part Cost in Warehouse !!!
+
+
+            if ($row['Supplier Part Currency Code'] != $account->get('Account Currency')) {
+                include_once 'utils/currency_functions.php';
+                $exchange = currency_conversion(
+                    $db, $row['Supplier Part Currency Code'], $account->get('Account Currency'), '- 15 minutes'
+                );
+
+            } else {
+                $exchange = 1;
+            }
+
+            $cost = $row['Part Units Per Package'] * $exchange * ($row['Supplier Part Unit Cost'] + $row['Supplier Part Unit Extra Cost']);
+
+
+            $part = get_object('part', $data['part_sku']);
+
+            $old_value = $part->get('Part Cost in Warehouse');
+            $part->update(array('Part Cost in Warehouse' => $cost), 'no_history');
+            $part->editor = $editor;
+
+
+
+            if ($old_value != $part->get('Part Cost in Warehouse')) {
+
+
+                $history_data = array(
+                    'Action'           => 'edited',
+                    'History Abstract' => sprintf(
+                        _('Part stock value changed to %s following %s policy after received from supplier delivery %s'),
+                        $part->get('Cost in Warehouse only'),
+                        '<span class="italic">'._('Last delivery cost set stock value').'</span>', $origin
+                    ),
+                    'History Details'  => ''
+                );
+                $part->add_subject_history(
+                    $history_data, true, 'No', 'Changes', $part->get_object_name(), $part->id
+                );
+
+            }
+            $part_location         = new PartLocation('find', $part_location_data, 'create');
+            $part_location->editor = $editor;
             if (!$part_location) {
                 $response = array(
                     'state' => 400,
@@ -425,8 +462,7 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
             } else {
 
 
-
-                if (  round($data['qty'] / $row['Supplier Part Packages Per Carton'],2) >    round($row['Supplier Delivery Checked Quantity'] - $row['Supplier Delivery Placed Quantity'],2)  ) {
+                if (round($data['qty'] / $row['Supplier Part Packages Per Carton'], 2) > round($row['Supplier Delivery Checked Quantity'] - $row['Supplier Delivery Placed Quantity'], 2)) {
                     $response = array(
                         'state' => 400,
                         'msg'   => _('Placement quantity greater than the checked quantity')
@@ -436,7 +472,7 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
                 }
 
 
-                $oif_key = $part_location->add_stock(
+                $oif_key  = $part_location->add_stock(
                     array(
                         'Quantity' => $data['qty'],
                         'Origin'   => $origin
@@ -444,7 +480,7 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
                 );
                 $exchange = currency_conversion($db, $row['Currency Code'], $account->get('Account Currency'), '-  30 minutes');
 
-                $part_location->part->update(array('Part Cost in Warehouse'=> $exchange*(1+ $row['Supplier Part Unit Extra Cost Percentage'] )*    $row['Supplier Delivery Net Amount']/$row['Supplier Delivery Quantity']/$row['Supplier Part Packages Per Carton']     ));
+                $part_location->part->update(array('Part Cost in Warehouse' => $exchange * (1 + $row['Supplier Part Unit Extra Cost Percentage']) * $row['Supplier Delivery Net Amount'] / $row['Supplier Delivery Quantity'] / $row['Supplier Part Packages Per Carton']));
 
 
                 if ($part_location->error) {
@@ -485,14 +521,12 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
                 $part_locations        = '';
 
                 $sql = sprintf(
-                    'SELECT L.`Location Key`,L.`Location Code`,`Can Pick`,`Quantity On Hand` FROM `Part Location Dimension` PLD  LEFT JOIN `Location Dimension` L ON (L.`Location Key`=PLD.`Location Key`) WHERE PLD.`Part SKU`=%d',
-                    $data['part_sku']
+                    'SELECT L.`Location Key`,L.`Location Code`,`Can Pick`,`Quantity On Hand` FROM `Part Location Dimension` PLD  LEFT JOIN `Location Dimension` L ON (L.`Location Key`=PLD.`Location Key`) WHERE PLD.`Part SKU`=%d', $data['part_sku']
                 );
                 if ($result = $db->query($sql)) {
                     foreach ($result as $row) {
                         $number_part_locations++;
-                        $part_locations .= '<div class="button" onClick="set_placement_location(this)" style="clear:both;"  location_key="'.$row['Location Key'].'"><div  class="code data w150"  >'
-                            .$row['Location Code'].'</div><div class="data w30 aright" >'.number(
+                        $part_locations .= '<div class="button" onClick="set_placement_location(this)" style="clear:both;"  location_key="'.$row['Location Key'].'"><div  class="code data w150"  >'.$row['Location Code'].'</div><div class="data w30 aright" >'.number(
                                 $row['Quantity On Hand']
                             ).'</div></div>';
                     }

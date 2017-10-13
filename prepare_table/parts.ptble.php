@@ -290,7 +290,8 @@ $fields
 
 `Part 1 Quarter Acc Dispatched`,
 `Part Valid From`,`Part Valid From`,`Part Active From`,`Part Main Image Key`,`Part Status`,
-if(`Part Total Acc Customers`=0,0,  (`Part Total Acc Repeat Customers`/`Part Total Acc Customers`)) percentage_repeat_customer_total
+if(`Part Total Acc Customers`=0,0,  (`Part Total Acc Repeat Customers`/`Part Total Acc Customers`)) percentage_repeat_customer_total,
+`Part Cost`,`Part Cost in Warehouse`,`Part Units Per Package`,`Part Unit Price`
 
 ";
 

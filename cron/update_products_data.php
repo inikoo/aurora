@@ -57,7 +57,10 @@ function update_products_data($db) {
             $product->update_history_records_data();
             $product->update_images_data();
 
-            $product->update(array('Product Parts Data'=>json_encode($product->get_parts_data())),'no_history');
+            $product->update_interval_sales();
+            $product->update_up_today_sales();
+
+           // $product->update(array('Product Parts Data'=>json_encode($product->get_parts_data())),'no_history');
 
         }
 
@@ -86,6 +89,8 @@ function update_categories_data($db) {
             $category->update_images_data();
             $category->update_history_records_data();
 
+
+
         }
 
     } else {
@@ -112,7 +117,7 @@ function update_web_state($db) {
             $old_webstate = $product->get('Product Web State');
 
             $product->update_availability($use_fork = false);
-            $product->update_cost();
+
 
             $new_webstate = $product->get('Product Web State');
 

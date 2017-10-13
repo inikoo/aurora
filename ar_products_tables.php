@@ -186,6 +186,7 @@ function products($_data, $db, $user, $account) {
                     break;
             }
 
+            /*
             switch ($data['Product Web Configuration']) {
                 case 'Online Auto':
                     $web_configuration = _('Automatic');
@@ -203,7 +204,7 @@ function products($_data, $db, $user, $account) {
                     $web_configuration = $data['Product Web Configuration'];
                     break;
             }
-
+*/
             switch ($data['Product Web State']) {
                 case 'For Sale':
                     $web_state =
@@ -211,8 +212,16 @@ function products($_data, $db, $user, $account) {
                         == 'Online Force For Sale' ? ' <i class="fa fa-thumb-tack padding_left_5" aria-hidden="true"></i>' : '');
                     break;
                 case 'Out of Stock':
-                    $web_state = '<span  class="'.(($data['Product Availability'] > 0 and $data['Product Number of Parts'] > 0) ? 'error' : '').'">'._('Out of Stock').'</span>'
-                        .($data['Product Web Configuration'] == 'Online Force Out of Stock' ? ' <i class="fa fa-thumb-tack padding_left_5" aria-hidden="true"></i>' : '');
+
+                    if ($data['Product Total Acc Quantity Ordered'] == 0 and $data['Product Web Configuration'] != 'Online Force Out of Stock') {
+                        $web_state=_('Launching soon');
+                    }else{
+                        $web_state = '<span  class="'.(($data['Product Availability'] > 0 and $data['Product Number of Parts'] > 0) ? 'error' : '').'">'._('Out of Stock').'</span>'
+                            .($data['Product Web Configuration'] == 'Online Force Out of Stock' ? ' <i class="fa fa-thumb-tack padding_left_5" aria-hidden="true"></i>' : '');
+                    }
+
+
+
                     break;
                 case 'Discontinued':
                     $web_state = _('Discontinued');
@@ -305,6 +314,11 @@ function products($_data, $db, $user, $account) {
                         className: "link width_150",
 
             */
+
+            $margin='<span class="product_margin" title="'._('Cost').':'.money($data['Product Cost'], $account->get('Account Currency')).'">'.percentage(
+                    $exchange * $data['Product Price'] - $data['Product Cost'], $exchange * $data['Product Price']
+                ).'<span>';
+
             $record_data[] = array(
 
                 'id'         => (integer)$data['Product ID'],
@@ -325,9 +339,7 @@ function products($_data, $db, $user, $account) {
 
 
 
-                'margin'           => '<span class="product_margin" title="'._('Cost').':'.money($data['Product Cost'], $account->get('Account Currency')).'">'.percentage(
-                        $exchange * $data['Product Price'] - $data['Product Cost'], $exchange * $data['Product Price']
-                    ).'<span>',
+                'margin'           => $margin,
                 'web_state'        => $web_state,
                 'status'           => $status,
                 'parts'            => $parts,

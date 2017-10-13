@@ -208,6 +208,17 @@ function parts($_data, $db, $user, $type, $account) {
                 '<i key="%d" class="fa fa-fw fa-link button" aria-hidden="true" onClick="edit_category_subject(this)" ></i>', $data['Part SKU']
             );
 
+            $margin = '';
+
+            if ($data['Part Units Per Package'] != 0 and is_numeric($data['Part Units Per Package'])) {
+
+                $_unit_margin = $data['Part Unit Price'] - ($data['Part Cost in Warehouse'] / $data['Part Units Per Package']);
+
+                $margin .= sprintf(
+                    '<span class="'.($_unit_margin < 0 ? 'error' : '').'">%s</span>', percentage($_unit_margin, $data['Part Unit Price'])
+                );
+            }
+
 
             $record_data[] = array(
                 'id'                 => (integer)$data['Part SKU'],
@@ -354,33 +365,22 @@ function parts($_data, $db, $user, $type, $account) {
                 ),
 
 
-                'sales_total'                      => money(
-                    $data['Part Total Acc Invoiced Amount'], $account->get('Account Currency')
-                ),
-                'dispatched_total'                 => number(
-                    $data['Part Total Acc Dispatched'], 0
-                ),
-                'customer_total'                   => number(
-                    $data['Part Total Acc Customers'], 0
-                ),
-                'percentage_repeat_customer_total' => percentage(
-                    $data['Part Total Acc Repeat Customers'], $data['Part Total Acc Customers']
-                ),
+                'sales_total'                      => money($data['Part Total Acc Invoiced Amount'], $account->get('Account Currency')),
+                'dispatched_total'                 => number($data['Part Total Acc Dispatched'], 0),
+                'customer_total'                   => number($data['Part Total Acc Customers'], 0),
+                'percentage_repeat_customer_total' => percentage($data['Part Total Acc Repeat Customers'], $data['Part Total Acc Customers']),
 
 
                 'weeks_available'     => $weeks_available,
                 'dispatched_per_week' => $dispatched_per_week,
-                'valid_from'          => strftime(
-                    "%a %e %b %Y %H:%M %Z", strtotime($data['Part Valid From'].' +0:00')
-                ),
-                'valid_to'            => strftime(
-                    "%a %e %b %Y %H:%M %Z", strtotime($data['Part Valid From'].' +0:00')
-                ),
-                'active_from'         => strftime(
-                    "%a %e %b %Y %H:%M %Z", strtotime($data['Part Active From'].' +0:00')
-                ),
+                'valid_from'          => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Part Valid From'].' +0:00')),
+                'valid_to'            => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Part Valid From'].' +0:00')),
+                'active_from'         => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Part Active From'].' +0:00')),
                 'has_stock'           => ($data['Part Current On Hand Stock'] > 0 ? '<i class="fa fa-check success" aria-hidden="true"></i>' : '<i class="fa fa-minus super_discreet" aria-hidden="true"></i>'),
-                'has_picture'         => ($data['Part Main Image Key'] > 0 ? '<i class="fa fa-check success" aria-hidden="true"></i>' : '<i class="fa fa-minus super_discreet" aria-hidden="true"></i>')
+                'has_picture'         => ($data['Part Main Image Key'] > 0 ? '<i class="fa fa-check success" aria-hidden="true"></i>' : '<i class="fa fa-minus super_discreet" aria-hidden="true"></i>'),
+                'cost'                => money($data['Part Cost'], $account->get('Account Currency')),
+                'warehouse_cost'      => money($data['Part Cost in Warehouse'], $account->get('Account Currency')),
+                'margin'              => $margin
             );
 
 

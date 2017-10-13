@@ -453,8 +453,17 @@ trait ProductCategory {
 
         if ($product_ids != '' and $this->get('Category Branch Type') != 'Root') {
 
-            $sql = sprintf(
-                "SELECT
+
+
+
+
+
+            // todo quick hack before migration is done
+            global $account;
+            if ($account->get('Code') == 'AW') {
+
+                $sql = sprintf(
+                    "SELECT
 		ifnull(count(DISTINCT `Customer Key`),0) AS customers,
 		ifnull(count(DISTINCT `Invoice Key`),0) AS invoices,
 		round(ifnull(sum( `Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount` +(  `Cost Supplier`/`Invoice Currency Exchange Rate`)  ),0),2) AS profit,
@@ -465,9 +474,30 @@ trait ProductCategory {
 		round(ifnull(sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)*`Invoice Currency Exchange Rate`),0),2) AS dc_net,
 		round(ifnull(sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`+`Cost Supplier`)*`Invoice Currency Exchange Rate`),0),2) AS dc_profit
 		FROM `Order Transaction Fact` USE INDEX (`Product ID`,`Invoice Date`) WHERE    `Invoice Key` IS NOT NULL  AND  `Product ID` IN (%s) %s %s ", $product_ids,
-                ($from_date ? sprintf('and `Invoice Date`>=%s', prepare_mysql($from_date)) : ''), ($to_date ? sprintf('and `Invoice Date`<%s', prepare_mysql($to_date)) : '')
+                    ($from_date ? sprintf('and `Invoice Date`>=%s', prepare_mysql($from_date)) : ''), ($to_date ? sprintf('and `Invoice Date`<%s', prepare_mysql($to_date)) : '')
 
-            );
+                );
+
+            } else {
+                $sql = sprintf(
+                    "SELECT
+		ifnull(count(DISTINCT `Customer Key`),0) AS customers,
+		ifnull(count(DISTINCT `Invoice Key`),0) AS invoices,
+		round(ifnull(sum( `Order Transaction Amount` +(  `Cost Supplier`/`Invoice Currency Exchange Rate`)  ),0),2) AS profit,
+		round(ifnull(sum(`Order Transaction Amount`),0),2) AS net ,
+		round(ifnull(sum(`Delivery Note Quantity`),0),1) AS delivered,
+		round(ifnull(sum(`Order Quantity`),0),1) AS ordered,
+		round(ifnull(sum(`Delivery Note Quantity`),0),1) AS invoiced,
+		round(ifnull(sum((`Order Transaction Amount`)*`Invoice Currency Exchange Rate`),0),2) AS dc_net,
+		round(ifnull(sum((`Order Transaction Amount`+`Cost Supplier`)*`Invoice Currency Exchange Rate`),0),2) AS dc_profit
+		FROM `Order Transaction Fact` USE INDEX (`Product ID`,`Invoice Date`) WHERE `Invoice Key` >0  AND  `Product ID` IN (%s) %s %s ", $product_ids,
+                    ($from_date ? sprintf('and `Invoice Date`>=%s', prepare_mysql($from_date)) : ''), ($to_date ? sprintf('and `Invoice Date`<%s', prepare_mysql($to_date)) : '')
+
+                );
+            }
+
+
+
             //print "$sql\n";
             if ($result = $this->db->query($sql)) {
                 if ($row = $result->fetch()) {

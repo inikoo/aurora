@@ -44,10 +44,11 @@
         <link href="/css/sweetalert.css" rel="stylesheet">
         <link href="/css/fotorama.css" rel="stylesheet">
         <link href="/css/jquery.fancybox.min.css" rel="stylesheet">
+        <link href="/css/tooltipster.bundle.min.css" rel="stylesheet" type="text/css">
 
 
 
-        <link href="/css/app.css" rel="stylesheet">
+        <link href="/css/app.css?v171012a" rel="stylesheet">
         <script type="text/javascript" src="/js/libs/jquery-2.2.1.js"></script>
         <script type="text/javascript" src="/js/libs/jquery-ui.js"></script>
         <script type="text/javascript" src="/js/libs/moment-with-locales.js"></script>
@@ -68,6 +69,7 @@
         <script type="text/javascript" src="/js/libs/sweetalert.min.js"></script>
 
         <script type="text/javascript" src="/js/libs/fotorama.js"></script>
+        <script type="text/javascript" src="/js/libs/tooltipster.bundle.min.js"></script>
 
 
         <script type="text/javascript" src="/js/app.js"></script>

@@ -354,7 +354,7 @@ $sql_totals
 
 
 $fields
-    = "P.`Product ID`,`Product Code`,`Product Name`,`Product Price`,`Store Currency Code`,`Store Code`,`Store Key`,`Store Name`,`Product Web Configuration`,`Product Availability`,`Product Web State`,`Product Cost`,`Product Number of Parts`,P.`Product Status`,`Product Units Per Case`,
+    = "`Product Total Acc Quantity Ordered`,P.`Product ID`,`Product Code`,`Product Name`,`Product Price`,`Store Currency Code`,`Store Code`,`Store Key`,`Store Name`,`Product Web Configuration`,`Product Availability`,`Product Web State`,`Product Cost`,`Product Number of Parts`,P.`Product Status`,`Product Units Per Case`,
 `Product 1 Year Ago Invoiced Amount`,`Product 2 Year Ago Invoiced Amount`,`Product 3 Year Ago Invoiced Amount`,`Product 4 Year Ago Invoiced Amount`,`Product 5 Year Ago Invoiced Amount`,
 `Product 1 Quarter Ago Invoiced Amount`,`Product 2 Quarter Ago Invoiced Amount`,`Product 3 Quarter Ago Invoiced Amount`,`Product 4 Quarter Ago Invoiced Amount`,
 `Product 1 Quarter Ago 1YB Invoiced Amount`,`Product 2 Quarter Ago 1YB Invoiced Amount`,`Product 3 Quarter Ago 1YB Invoiced Amount`,`Product 4 Quarter Ago 1YB Invoiced Amount`,

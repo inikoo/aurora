@@ -1436,6 +1436,24 @@ function order_items($_data, $db, $user, $account) {
             $description_sales .= '</div>';
 
 
+
+/*
+            $quantity = sprintf(
+                '<span    data-settings=\'{"field": "Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   >
+            <i onClick="save_item_qty_change(this)" class="fa minus  fa-minus fa-fw button" aria-hidden="true"></i>
+            <input class="order_qty width_50" style="text-align: center" value="%s" ovalue="%s"> 
+            <i onClick="save_item_qty_change(this)" class="fa plus  fa-plus fa-fw button" aria-hidden="true"></i></span>',
+                $data['Order Transaction Fact Key'], $data['Product ID'], $data['Product Key'], $data['Order Quantity'] + 0, $data['Order Quantity'] + 0
+            );
+*/
+            $quantity = sprintf(
+                '<span    data-settings=\'{"field": "Purchase Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   >
+                <i onClick="save_item_qty_change(this)" class="fa minus  fa-minus fa-fw button" aria-hidden="true"></i>
+                <input class="order_qty width_50" style="text-align: center" value="%s" ovalue="%s"> 
+                <i onClick="save_item_qty_change(this)" class="fa plus  fa-plus fa-fw button" aria-hidden="true"></i></span>',
+                $data['Purchase Order Transaction Fact Key'], $data['Supplier Part Key'], $data['Supplier Part Historic Key'], $data['Purchase Order Quantity'] + 0, $data['Purchase Order Quantity'] + 0
+            );
+
             $table_data[] = array(
 
                 'id'                => (integer)$data['Purchase Order Transaction Fact Key'],
@@ -1456,10 +1474,7 @@ function order_items($_data, $db, $user, $account) {
 
                 'description'       => $description,
                 'description_sales' => $description_sales,
-                'quantity'          => sprintf(
-                    '<span    data-settings=\'{"field": "Purchase Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   ><input class="order_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-plus fa-fw button" aria-hidden="true"></i></span>',
-                    $data['Purchase Order Transaction Fact Key'], $data['Supplier Part Key'], $data['Supplier Part Historic Key'], $data['Purchase Order Quantity'] + 0, $data['Purchase Order Quantity'] + 0
-                ),
+                'quantity'          => $quantity,
                 'delivery_quantity' => $delivery_quantity,
                 'subtotals'         => $subtotals,
                 'ordered'           => number($data['Purchase Order Quantity']),
@@ -1671,11 +1686,27 @@ function delivery_checking_items($_data, $db, $user) {
                 $sko_checked_quantity = ($data['Supplier Delivery Checked Quantity'] * $data['Supplier Part Packages Per Carton']) + 0;
             }
 
+/*
+            $quantity = sprintf(
+                '<span    data-settings=\'{"field": "Purchase Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   >
+                <i onClick="save_item_qty_change(this)" class="fa minus  fa-minus fa-fw button" aria-hidden="true"></i>
+                <input class="order_qty width_50" style="text-align: center" value="%s" ovalue="%s">
+                <i onClick="save_item_qty_change(this)" class="fa plus  fa-plus fa-fw button" aria-hidden="true"></i></span>',
+
+
+
+                $transaction_key, $data['Supplier Part Key'], $data['Supplier Part Historic Key'], ($data['Purchase Order Quantity'] == 0 ? '' : $data['Purchase Order Quantity'] + 0),
+                ($data['Purchase Order Quantity'] == 0 ? '' : $data['Purchase Order Quantity'] + 0)
+
+            );
+            */
 
             $edit_sko_checked_quantity = sprintf(
                 '<span class="%s" ondblclick="show_check_dialog(this)">%s</span>
                 <span data-settings=\'{"field": "Supplier Delivery Checked Quantity", "transaction_key":%d,"item_key":%d, "item_historic_key":%d ,"on":1 }\' class="checked_quantity %s"  >
-                    <input class="checked_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-plus fa-fw button %s" aria-hidden="true">
+                    <i onClick="save_item_qty_change(this)" class="fa minus  fa-minus fa-fw button" aria-hidden="true"></i>
+                    <input class="checked_qty width_50" style="text-align: center" value="%s" ovalue="%s"> 
+                    <i onClick="save_item_qty_change(this)" class="fa plus  fa-plus fa-fw button %s" aria-hidden="true">
                 </span>', ($supplier_delivery->get('Supplier Delivery State') == 'Placed' ? '' : 'hide'), number($sko_checked_quantity), $data['Purchase Order Transaction Fact Key'], $data['Supplier Part Key'], $data['Supplier Part Historic Key'],
                 ($supplier_delivery->get('Supplier Delivery State') == 'Placed' ? 'hide' : ''), $sko_checked_quantity, $sko_checked_quantity, ''
             );
@@ -2235,6 +2266,22 @@ function order_supplier_all_parts($_data, $db, $user) {
 			';
 
 
+
+            $quantity = sprintf(
+                '<span    data-settings=\'{"field": "Purchase Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   >
+                <i onClick="save_item_qty_change(this)" class="fa minus  fa-minus fa-fw button" aria-hidden="true"></i>
+                <input class="order_qty width_50" style="text-align: center" value="%s" ovalue="%s"> 
+                <i onClick="save_item_qty_change(this)" class="fa plus  fa-plus fa-fw button" aria-hidden="true"></i></span>',
+
+
+
+                 $transaction_key, $data['Supplier Part Key'], $data['Supplier Part Historic Key'], ($data['Purchase Order Quantity'] == 0 ? '' : $data['Purchase Order Quantity'] + 0),
+                    ($data['Purchase Order Quantity'] == 0 ? '' : $data['Purchase Order Quantity'] + 0)
+
+            );
+
+
+
             $table_data[] = array(
                 'id'               => (integer)$data['Supplier Part Key'],
                 'supplier_key'     => (integer)$data['Supplier Part Supplier Key'],
@@ -2262,7 +2309,8 @@ function order_supplier_all_parts($_data, $db, $user) {
                     .'</span></div><div style="float:left;min-width:70px;text-align:left"> <i  class="fa fa-arrow-right very_discreet padding_right_10 padding_left_10"></i><span>['.$data['Supplier Part Packages Per Carton'].']</span></div> <span class="discreet">'
                     .($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'].'</span>'),
                 'stock'       => number(floor($data['Part Current Stock']))." $stock_status",
-                'quantity'    => sprintf(
+                'quantity'=>$quantity,
+                'xquantity'    => sprintf(
                     '<span    data-settings=\'{"field": "Purchase Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   ><input class="order_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-plus fa-fw button" aria-hidden="true"></i></span>',
                     $transaction_key, $data['Supplier Part Key'], $data['Supplier Part Historic Key'], ($data['Purchase Order Quantity'] == 0 ? '' : $data['Purchase Order Quantity'] + 0),
                     ($data['Purchase Order Quantity'] == 0 ? '' : $data['Purchase Order Quantity'] + 0)

@@ -281,11 +281,11 @@ abstract class DB_Table extends stdClass {
                 ) and !$this->new and $save_history) {
 
 
-                $old_formatted_value = htmlentities($old_formatted_value);
-                $new_formatted_value = htmlentities($this->get($formatted_field));
+                //$old_formatted_value = htmlentities($old_formatted_value);
+                //$new_formatted_value = htmlentities($this->get($formatted_field));
+                $new_formatted_value =$this->get($formatted_field);
 
-
-                $this->add_changelog_record($field, $old_formatted_value, $new_formatted_value, $options, $table_name, $table_key);
+                    $this->add_changelog_record($field, $old_formatted_value, $new_formatted_value, $options, $table_name, $table_key);
 
             }
 
@@ -542,7 +542,7 @@ abstract class DB_Table extends stdClass {
             prepare_mysql($data['History Abstract']), prepare_mysql($data['History Details']), $data['User Key'], prepare_mysql($data['Deep']), prepare_mysql($data['Metadata'])
         );
 
-        //    print "$sql\n";
+        // print "$sql\n";
 
 
         $this->db->exec($sql);

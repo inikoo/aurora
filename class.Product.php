@@ -154,8 +154,7 @@ class Product extends Asset {
 
 
         $sql = sprintf(
-            "SELECT `Product ID` FROM `Product Dimension` WHERE  `Product Store Key`=%s AND `Product Code`=%s  AND `Product Status`!='Discontinued'  ", $data['Product Store Key'],
-            prepare_mysql($data['Product Code'])
+            "SELECT `Product ID` FROM `Product Dimension` WHERE  `Product Store Key`=%s AND `Product Code`=%s  AND `Product Status`!='Discontinued'  ", $data['Product Store Key'], prepare_mysql($data['Product Code'])
         );
 
 
@@ -328,9 +327,8 @@ class Product extends Asset {
                     'INSERT INTO `Product History Dimension` (`Product ID`,`Product History Code`,`Product History Units Per Case`,
 						`Product History Price`, `Product History Name`,`Product History Valid From`,`Product History Short Description`,`Product History XHTML Short Description`,`Product History Special Characteristic`
 
-				) VALUES (%d,%s,%d,%.2f,%s,%s,%s,%s,%s) ', $this->id, prepare_mysql($this->data['Product Code']), $this->data['Product Units Per Case'], $this->data['Product Price'],
-                    prepare_mysql($this->data['Product Name']), prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql($desc), prepare_mysql($desc),
-                    prepare_mysql($this->get('Product Special Characteristic'))
+				) VALUES (%d,%s,%d,%.2f,%s,%s,%s,%s,%s) ', $this->id, prepare_mysql($this->data['Product Code']), $this->data['Product Units Per Case'], $this->data['Product Price'], prepare_mysql($this->data['Product Name']), prepare_mysql(gmdate('Y-m-d H:i:s')),
+                    prepare_mysql($desc), prepare_mysql($desc), prepare_mysql($this->get('Product Special Characteristic'))
                 );
                 //print "$sql\n";
                 // exit;
@@ -369,8 +367,8 @@ class Product extends Asset {
 
             $orders = array();
             $sql    = sprintf(
-                "SELECT `Order Key`,`Delivery Note Key`,`Order Quantity`,`Order Transaction Fact Key` FROM `Order Transaction Fact` OTF  WHERE `Product ID`=%d   AND `Product Key`!=%d AND  `Current Dispatching State` IN (%s) AND `Invoice Key` IS NULL ",
-                $this->id, $this->get('Product Current Key'), $states_to_change
+                "SELECT `Order Key`,`Delivery Note Key`,`Order Quantity`,`Order Transaction Fact Key` FROM `Order Transaction Fact` OTF  WHERE `Product ID`=%d   AND `Product Key`!=%d AND  `Current Dispatching State` IN (%s) AND `Invoice Key` IS NULL ", $this->id,
+                $this->get('Product Current Key'), $states_to_change
 
             );
 
@@ -380,8 +378,7 @@ class Product extends Asset {
 
                     $sql = sprintf(
                         'UPDATE `Order Transaction Fact` SET  `Product Key`=%d, `Product Code`=%s, `Order Transaction Gross Amount`=%.2f, `Order Transaction Total Discount Amount`=0	, `Order Transaction Amount`=%.2f  WHERE `Order Transaction Fact Key`=%d',
-                        $this->get('Product Current Key'), prepare_mysql($this->get('Product Code')), $this->get('Product Price') * $row['Order Quantity'],
-                        $this->get('Product Price') * $row['Order Quantity'],
+                        $this->get('Product Current Key'), prepare_mysql($this->get('Product Code')), $this->get('Product Price') * $row['Order Quantity'], $this->get('Product Price') * $row['Order Quantity'],
 
                         $row['Order Transaction Fact Key']
                     );
@@ -726,11 +723,7 @@ class Product extends Asset {
 
                 break;
 
-            case 'Product Price':
-                $str = number_format($this->data['Product Price'], 4);
 
-                return preg_replace('/(?<=\d{2})0+$/', '', $str);
-                break;
             case 'Price':
                 return money(
                     $this->data['Product Price'], $this->data['Store Currency Code']
@@ -821,14 +814,14 @@ class Product extends Asset {
                     case 'For Sale':
                         $web_state = '<span class="'.(($this->get(
                                     'Product Availability'
-                                ) <= 0 and $this->data['Product Number of Parts'] > 0) ? 'error' : '').'">'._('Online').'</span>'.($this->data['Product Web Configuration'] == 'Online Force For Sale'
-                                ? ' <i class="fa fa-thumb-tack padding_left_5" aria-hidden="true"></i>' : '');
+                                ) <= 0 and $this->data['Product Number of Parts'] > 0) ? 'error' : '').'">'._('Online').'</span>'.($this->data['Product Web Configuration'] == 'Online Force For Sale' ? ' <i class="fa fa-thumb-tack padding_left_5" aria-hidden="true"></i>'
+                                : '');
                         break;
                     case 'Out of Stock':
                         $web_state = '<span  class="'.(($this->get(
                                     'Product Availability'
-                                ) > 0 and $this->data['Product Number of Parts'] > 0) ? 'error' : '').'">'._('Out of Stock').'</span>'.($this->data['Product Web Configuration']
-                            == 'Online Force Out of Stock' ? ' <i class="fa fa-thumb-tack padding_left_5" aria-hidden="true"></i>' : '');
+                                ) > 0 and $this->data['Product Number of Parts'] > 0) ? 'error' : '').'">'._('Out of Stock').'</span>'.($this->data['Product Web Configuration'] == 'Online Force Out of Stock'
+                                ? ' <i class="fa fa-thumb-tack padding_left_5" aria-hidden="true"></i>' : '');
                         break;
                     case 'Discontinued':
                         $web_state = _('Discontinued');
@@ -841,8 +834,7 @@ class Product extends Asset {
 
                             $web_state = '<span class="'.(($this->get(
                                         'Product Availability'
-                                    ) > 0 and $this->data['Product Number of Parts'] > 0) ? 'error' : '').'">'._('Offline').'</span>'.($this->data['Product Status'] == 'Active'
-                                    ? ' <i class="fa fa-thumb-tack padding_left_5" aria-hidden="true"></i>' : '');
+                                    ) > 0 and $this->data['Product Number of Parts'] > 0) ? 'error' : '').'">'._('Offline').'</span>'.($this->data['Product Status'] == 'Active' ? ' <i class="fa fa-thumb-tack padding_left_5" aria-hidden="true"></i>' : '');
                         }
                         break;
                     default:
@@ -1001,8 +993,8 @@ class Product extends Asset {
         include_once 'class.Part.php';
 
         $sql = sprintf(
-            "SELECT `Part Reference`,`Product Part Key`,`Product Part Linked Fields`,`Product Part Part SKU`,`Product Part Ratio`,`Product Part Note` FROM `Product Part Bridge` LEFT JOIN `Part Dimension` ON (`Part SKU`=`Product Part Part SKU`)  WHERE `Product Part Product ID`=%d ",
-            $this->id
+            "SELECT `Part Reference`,`Product Part Key`,`Product Part Linked Fields`,`Product Part Part SKU`,`Product Part Ratio`,`Product Part Note` 
+              FROM `Product Part Bridge` LEFT JOIN `Part Dimension` ON (`Part SKU`=`Product Part Part SKU`)  WHERE `Product Part Product ID`=%d ", $this->id
         );
 
 
@@ -1666,9 +1658,8 @@ class Product extends Asset {
             $new_date          = gmdate('U');
 
             $sql = sprintf(
-                "INSERT INTO `Product Availability Timeline`  (`Product ID`,`Store Key`,`Department Key`,`Family Key`,`User Key`,`Date`,`Availability`,`Web State`) VALUES (%d,%d,%d,%d,%d,%s,%s,%s) ",
-                $this->id, $this->data['Product Store Key'], $this->data['Product Main Department Key'], $this->data['Product Family Key'], $user_key, prepare_mysql($new_date_formated),
-                prepare_mysql($web_availability), prepare_mysql($web_state)
+                "INSERT INTO `Product Availability Timeline`  (`Product ID`,`Store Key`,`Department Key`,`Family Key`,`User Key`,`Date`,`Availability`,`Web State`) VALUES (%d,%d,%d,%d,%d,%s,%s,%s) ", $this->id, $this->data['Product Store Key'],
+                $this->data['Product Main Department Key'], $this->data['Product Family Key'], $user_key, prepare_mysql($new_date_formated), prepare_mysql($web_availability), prepare_mysql($web_state)
 
             );
             $this->db->exec($sql);
@@ -1685,14 +1676,12 @@ class Product extends Asset {
 
             if ($web_availability == 'Yes') {
                 $sql = sprintf(
-                    "UPDATE `Email Site Reminder Dimension` SET `Email Site Reminder State`='Ready' WHERE `Email Site Reminder State`='Waiting' AND `Trigger Scope`='Back in Stock' AND `Trigger Scope Key`=%d ",
-                    $this->id
+                    "UPDATE `Email Site Reminder Dimension` SET `Email Site Reminder State`='Ready' WHERE `Email Site Reminder State`='Waiting' AND `Trigger Scope`='Back in Stock' AND `Trigger Scope Key`=%d ", $this->id
                 );
 
             } else {
                 $sql = sprintf(
-                    "UPDATE `Email Site Reminder Dimension` SET `Email Site Reminder State`='Waiting' WHERE `Email Site Reminder State`='Ready' AND `Trigger Scope`='Back in Stock' AND `Trigger Scope Key`=%d ",
-                    $this->id
+                    "UPDATE `Email Site Reminder Dimension` SET `Email Site Reminder State`='Waiting' WHERE `Email Site Reminder State`='Ready' AND `Trigger Scope`='Back in Stock' AND `Trigger Scope Key`=%d ", $this->id
                 );
 
             }
@@ -1711,7 +1700,8 @@ class Product extends Asset {
                     'au_housekeeping', array(
                     'type'                     => 'update_web_state_slow_forks',
                     'web_availability_updated' => $web_availability_updated,
-                    'product_id'               => $this->id
+                    'product_id'               => $this->id,
+                    'xx'                       => 'zz'
                 ), $account->get('Account Code')
                 );
 
@@ -1936,8 +1926,7 @@ class Product extends Asset {
 
 
         $sql = sprintf(
-            "SELECT B.`Category Key` FROM `Category Dimension` C LEFT JOIN `Category Bridge` B ON (B.`Category Key`=C.`Category Key`) WHERE `Subject`='Product' AND `Subject Key`=%d AND `Category Branch Type`!='Root'",
-            $this->id
+            "SELECT B.`Category Key` FROM `Category Dimension` C LEFT JOIN `Category Bridge` B ON (B.`Category Key`=C.`Category Key`) WHERE `Subject`='Product' AND `Subject Key`=%d AND `Category Branch Type`!='Root'", $this->id
         );
 
         if ($result = $this->db->query($sql)) {
@@ -1974,6 +1963,9 @@ class Product extends Asset {
 
     function update_sales_from_invoices($interval, $this_year = true, $last_year = true) {
 
+
+        // print $interval;
+
         include_once 'utils/date_functions.php';
 
 
@@ -1996,6 +1988,7 @@ class Product extends Asset {
 
             );
 
+            // print_r($data_to_update);
 
             $this->fast_update($data_to_update, 'Product Data');
 
@@ -2092,9 +2085,11 @@ class Product extends Asset {
             $sales_data['repeat_customers'] = $this->get_customers_total_data();
         }
 
-
-        $sql = sprintf(
-            "SELECT
+        // todo quick hack before migration is done
+        global $account;
+        if ($account->get('Code') == 'AW') {
+            $sql = sprintf(
+                "SELECT
 		ifnull(count(DISTINCT `Customer Key`),0) AS customers,
 		ifnull(count(DISTINCT `Invoice Key`),0) AS invoices,
 		round(ifnull(sum( `Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount` +(  `Cost Supplier`/`Invoice Currency Exchange Rate`)  ),0),2) AS profit,
@@ -2105,12 +2100,35 @@ class Product extends Asset {
 		round(ifnull(sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)*`Invoice Currency Exchange Rate`),0),2) AS dc_net,
 		round(ifnull(sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`+`Cost Supplier`)*`Invoice Currency Exchange Rate`),0),2) AS dc_profit
 		FROM `Order Transaction Fact` USE INDEX (`Product ID`,`Invoice Date`) WHERE `Invoice Key` IS NOT NULL AND  `Product ID`=%d %s %s ", $this->id, ($from_date ? sprintf(
-            'and `Invoice Date`>=%s', prepare_mysql($from_date)
-        ) : ''), ($to_date ? sprintf(
-            'and `Invoice Date`<%s', prepare_mysql($to_date)
-        ) : '')
+                'and `Invoice Date`>=%s', prepare_mysql($from_date)
+            ) : ''), ($to_date ? sprintf(
+                'and `Invoice Date`<%s', prepare_mysql($to_date)
+            ) : '')
 
-        );
+            );
+        } else {
+            $sql = sprintf(
+                "SELECT
+		ifnull(count(DISTINCT `Customer Key`),0) AS customers,
+		ifnull(count(DISTINCT `Invoice Key`),0) AS invoices,
+		round(ifnull(sum( `Order Transaction Amount` +(  `Cost Supplier`/`Invoice Currency Exchange Rate`)  ),0),2) AS profit,
+		round(ifnull(sum(`Order Transaction Amount`),0),2) AS net ,
+		round(ifnull(sum(`Delivery Note Quantity`),0),1) AS delivered,
+		round(ifnull(sum(`Order Quantity`),0),1) AS ordered,
+		round(ifnull(sum(`Delivery Note Quantity`),0),1) AS invoiced,
+		round(ifnull(sum((`Order Transaction Amount`)*`Invoice Currency Exchange Rate`),0),2) AS dc_net,
+		round(ifnull(sum((`Order Transaction Amount`+`Cost Supplier`)*`Invoice Currency Exchange Rate`),0),2) AS dc_profit
+		FROM `Order Transaction Fact` USE INDEX (`Product ID`,`Invoice Date`) WHERE `Invoice Key` >0 AND  `Product ID`=%d %s %s ", $this->id, ($from_date ? sprintf(
+                'and `Invoice Date`>=%s', prepare_mysql($from_date)
+            ) : ''), ($to_date ? sprintf(
+                'and `Invoice Date`<%s', prepare_mysql($to_date)
+            ) : '')
+
+            );
+        }
+
+        //print "$sql\n";
+
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
@@ -2255,8 +2273,6 @@ class Product extends Asset {
         $this->fast_update($data_to_update, 'Product DC Data');
 
 
-
-
     }
 
     function update_previous_quarters_data() {
@@ -2390,8 +2406,7 @@ class Product extends Asset {
         $next_delivery_time = 0;
 
         $sql = sprintf(
-            'SELECT `Part Current On Hand Stock`,`Part Next Shipment Date` FROM  `Product Part Bridge` LEFT JOIN `Part Dimension` ON (`Part SKU`=`Product Part Part SKU`)   WHERE `Product Part Product ID`=%d ',
-            $this->id
+            'SELECT `Part Current On Hand Stock`,`Part Next Shipment Date` FROM  `Product Part Bridge` LEFT JOIN `Part Dimension` ON (`Part SKU`=`Product Part Part SKU`)   WHERE `Product Part Product ID`=%d ', $this->id
         );
 
 
@@ -2422,7 +2437,7 @@ class Product extends Asset {
             }
 
 
-            $this->update_field_switcher('Product Next Supplier Shipment', (!$next_delivery_time ? '' : gmdate('Y-m-d H:i:s', $next_delivery_time)));
+            $this->update_field_switcher('Product Next Supplier Shipment', (!$next_delivery_time ? '' : gmdate('Y-m-d H:i:s', $next_delivery_time)),'no_history');
 
 
         } else {
@@ -2802,8 +2817,7 @@ class Product extends Asset {
 
                         if ($material_data['id'] > 0) {
                             $sql = sprintf(
-                                "INSERT INTO `Product Material Bridge` (`Product ID`, `Material Key`, `Ratio`, `May Contain`) VALUES (%d, %d, %s, %s) ", $this->id, $material_data['id'],
-                                prepare_mysql($material_data['ratio']), prepare_mysql($material_data['may_contain'])
+                                "INSERT INTO `Product Material Bridge` (`Product ID`, `Material Key`, `Ratio`, `May Contain`) VALUES (%d, %d, %s, %s) ", $this->id, $material_data['id'], prepare_mysql($material_data['ratio']), prepare_mysql($material_data['may_contain'])
 
                             );
                             $this->db->exec($sql);
@@ -2866,8 +2880,7 @@ class Product extends Asset {
                 }
 
                 $sql = sprintf(
-                    'SELECT count(*) AS num FROM `Product Dimension` WHERE `Product Code`=%s AND `Product Store Key`=%d AND  `Product Status`!="Discontinued"  AND `Product ID`!=%d ',
-                    prepare_mysql($value), $this->get('Product Store Key'), $this->id
+                    'SELECT count(*) AS num FROM `Product Dimension` WHERE `Product Code`=%s AND `Product Store Key`=%d AND  `Product Status`!="Discontinued"  AND `Product ID`!=%d ', prepare_mysql($value), $this->get('Product Store Key'), $this->id
                 );
 
 
@@ -2980,6 +2993,11 @@ class Product extends Asset {
 
                 $updated = $this->updated;
                 $this->update_historic_object();
+
+                foreach ($this->get_parts('objects') as $part) {
+                    $part->update_commercial_value();
+                }
+
                 $this->updated = $updated;
 
                 break;
@@ -3373,8 +3391,7 @@ class Product extends Asset {
             if (isset($product_part['Key']) and $product_part['Key'] > 0) {
 
                 $sql = sprintf(
-                    'UPDATE `Product Part Bridge` SET `Product Part Note`=%s WHERE `Product Part Key`=%d AND `Product Part Product ID`=%d ', prepare_mysql($product_part['Note']), $product_part['Key'],
-                    $this->id
+                    'UPDATE `Product Part Bridge` SET `Product Part Note`=%s WHERE `Product Part Key`=%d AND `Product Part Product ID`=%d ', prepare_mysql($product_part['Note']), $product_part['Key'], $this->id
                 );
 
                 $updt = $this->db->prepare($sql);
@@ -3398,8 +3415,7 @@ class Product extends Asset {
                 } else {
 
                     $sql = sprintf(
-                        'UPDATE `Product Part Bridge` SET `Product Part Ratio`=%f WHERE `Product Part Key`=%d AND `Product Part Product ID`=%d ', $product_part['Ratio'], $product_part['Key'],
-                        $this->id
+                        'UPDATE `Product Part Bridge` SET `Product Part Ratio`=%f WHERE `Product Part Key`=%d AND `Product Part Product ID`=%d ', $product_part['Ratio'], $product_part['Key'], $this->id
                     );
 
                     $updt = $this->db->prepare($sql);
@@ -3414,8 +3430,8 @@ class Product extends Asset {
                 if ($product_part['Part SKU'] > 0) {
 
                     $sql = sprintf(
-                        'INSERT INTO `Product Part Bridge` (`Product Part Product ID`,`Product Part Part SKU`,`Product Part Ratio`,`Product Part Note`,`Product Part Linked Fields`) VALUES (%d,%d,%f,%s,"")',
-                        $this->id, $product_part['Part SKU'], $product_part['Ratio'], prepare_mysql($product_part['Note'], false)
+                        'INSERT INTO `Product Part Bridge` (`Product Part Product ID`,`Product Part Part SKU`,`Product Part Ratio`,`Product Part Note`,`Product Part Linked Fields`) VALUES (%d,%d,%f,%s,"")', $this->id, $product_part['Part SKU'], $product_part['Ratio'],
+                        prepare_mysql($product_part['Note'], false)
                     );
                     //    print $sql;
                     $this->db->exec($sql);
@@ -3433,6 +3449,11 @@ class Product extends Asset {
         $this->update_part_numbers();
         $this->update_availability();
         $this->update_cost();
+
+        foreach ($this->get_parts('objects') as $part) {
+            $part->update_products_data();
+            $part->update_commercial_value();
+        }
 
 
     }
@@ -3470,10 +3491,19 @@ class Product extends Asset {
         $cost = 0;
 
         foreach ($this->get_parts_data($with_objects = true) as $part_data) {
-            $cost += $part_data['Part']->get('Part Cost') * $part_data['Ratio'];
+            if ($part_data['Part']->get('Part Cost in Warehouse') != '') {
+
+
+                $part_cost = $part_data['Part']->get('Part Cost in Warehouse');
+            } else {
+                $part_cost = $part_data['Part']->get('Part Cost');
+            }
+
+            $cost += $part_cost * $part_data['Ratio'];
 
         }
 
+      
         $this->update(array('Product Cost' => $cost), 'no_history');
     }
 
@@ -3554,8 +3584,7 @@ class Product extends Asset {
         if (count($parent_categories) > 0) {
 
             $sql = sprintf(
-                "SELECT `Deal Component Key` FROM `Deal Component Dimension` WHERE `Deal Component Allowance Target`='Category' AND `Deal Component Allowance Target Key` in (%s) $where",
-                join(',', $parent_categories)
+                "SELECT `Deal Component Key` FROM `Deal Component Dimension` WHERE `Deal Component Allowance Target`='Category' AND `Deal Component Allowance Target Key` in (%s) $where", join(',', $parent_categories)
 
             );
 
@@ -3657,7 +3686,7 @@ class Product extends Asset {
             $this->id
         );
 
-    //    print $sql;
+        //    print $sql;
 
 
         if ($result2 = $this->db->query($sql)) {

@@ -79,9 +79,7 @@ if (!($supplier_part_scope or $new)) {
                     $object->get('Part Reference')
                 ),
                 'formatted_value'   => $object->get('Reference'),
-                'label'             => ucfirst(
-                    $object->get_field_label('Part Reference')
-                ),
+                'label'             => ucfirst($object->get_field_label('Part Reference')),
                 'required'          => true,
                 'server_validation' => json_encode(
                     array(
@@ -252,17 +250,11 @@ $part_fields[] = array(
             'edit'   => 'amount_margin',
             'render' => (!($supplier_part_scope or $new) ? true : false),
 
-            'value'           => htmlspecialchars(
-                $object->get('Part Unit Price')
-            ),
+            'value'           => htmlspecialchars($object->get('Part Unit Price')),
             'formatted_value' => $object->get('Unit Price'),
-            'label'           => ucfirst(
-                $object->get_field_label('Part Unit Price')
-            ),
+            'label'           => ucfirst($object->get_field_label('Part Unit Price')),
             'required'        => true,
-            'placeholder'     => sprintf(
-                _('amount in %s or margin (%%)'), $account->get('Currency')
-            ),
+            'placeholder'     => sprintf(_('amount in %s or margin (%%)'), $account->get('Currency')),
             'type'            => 'value'
         ),
         array(
