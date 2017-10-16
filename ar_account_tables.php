@@ -525,7 +525,7 @@ function uploads($_data, $db, $user, $account) {
                 'object'       => $object,
                 'state'        => $state,
                 'date'         => strftime(
-                    "%a %e %b %Y", strtotime($data['Upload Created'].' +0:00')
+                    "%a %e %b %Y %T %Z", strtotime($data['Upload Created'].' +0:00')
                 ),
                 'ok'           => number($data['Upload OK']),
                 'records'      => number($data['Upload Records']),
