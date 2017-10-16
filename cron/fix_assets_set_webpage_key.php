@@ -22,6 +22,8 @@ include_once 'class.Public_Category.php';;
 $sql = sprintf(
     "SELECT `Product ID` FROM `Product Dimension` WHERE (`Product Webpage Key` IS NULL OR `Product Webpage Key`=0 )  ORDER BY `Product Code` DESC"
 );
+print "$sql\n";
+
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
 
@@ -32,7 +34,7 @@ if ($result = $db->query($sql)) {
         $product = new Product($row['Product ID']);
         if ($subject_webpage_key > 0) {
 
-            //print $product->id.' '.$product->get('Code')."\n";
+            print $product->id.' '.$product->get('Code')."\n";
             $product->update(array('Product Webpage Key' => $subject_webpage_key), 'no_history');
         } else {
             if ($product->get('Product Status') != 'Discontinued') {
