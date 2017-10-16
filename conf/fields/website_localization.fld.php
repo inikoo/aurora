@@ -144,6 +144,38 @@ $object_fields = array(
     ),
 
     array(
+        'label'      => _('Orders'),
+        'show_title' => true,
+        'fields'     => array(
+            array(
+                'id'                => 'Localised_Labels_order_number_label',
+                'edit'              => ($edit ? 'string' : ''),
+                'value'             => ( empty($labels['_order_number_label'])  ?_('Order number'):$labels['_order_number_label']),
+                'label'             => _('Order number'),
+                'required'          => true,
+                'type'              => 'value'
+            ),
+            array(
+                'id'                => 'Localised_Labels_delivery_address_label',
+                'edit'              => ($edit ? 'string' : ''),
+                'value'             => ( empty($labels['_delivery_address_label'])  ?_('Delivery address'):$labels['_delivery_address_label']),
+                'label'             => _('Delivery address'),
+                'required'          => true,
+                'type'              => 'value'
+            ),
+            array(
+                'id'                => 'Localised_Labels_invoice_address_label',
+                'edit'              => ($edit ? 'string' : ''),
+                'value'             => ( empty($labels['_invoice_address_label'])  ?_('Login'):$labels['_invoice_address_label']),
+                'label'             => _('Invoice Address'),
+                'required'          => true,
+                'type'              => 'value'
+            ),
+
+        )
+    ),
+
+    array(
         'label'      => _('Order button states'),
         'show_title' => true,
         'fields'     => array(

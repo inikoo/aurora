@@ -517,7 +517,8 @@ if ($webpage->id) {
                 '[Order Number]'  => $placed_order->get('Public ID'),
                 '[Order Amount]'  => $placed_order->get('To Pay'),
                 '[Pay Info]'      => get_pay_info($placed_order, $website, $smarty),
-                '[Order]'         => $smarty->fetch($theme.'/placed_order.'.$theme.'.EcomB2B.tpl')
+                '[Order]'         => $smarty->fetch($theme.'/placed_order.'.$theme.'.EcomB2B.tpl'),
+                '#order_number'=>$placed_order->get('Public ID')
 
 
             );
