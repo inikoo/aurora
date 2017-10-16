@@ -13,19 +13,6 @@
 require_once 'common.php';
 
 
-$default_DB_link = @mysql_connect($dns_host, $dns_user, $dns_pwd);
-if (!$default_DB_link) {
-    print "Error can not connect with database server\n";
-}
-$db_selected = mysql_select_db($dns_db, $default_DB_link);
-if (!$db_selected) {
-    print "Error can not access the database\n";
-    exit;
-}
-mysql_set_charset('utf8');
-mysql_query("SET time_zone='+0:00'");
-
-
 require_once 'utils/get_addressing.php';
 require_once 'utils/parse_natural_language.php';
 
@@ -39,6 +26,7 @@ require_once 'class.Store.php';
 require_once 'class.Public_Product.php';
 require_once 'class.Category.php';
 require_once 'class.Webpage_Type.php';
+include_once 'class.Webpage_Type.php';
 
 $editor = array(
     'Author Name'  => '',
@@ -56,21 +44,32 @@ set_scope($db);
 function set_scope($db) {
 
 
-    $sql = sprintf('UPDATE  `Page Store Dimension`  SET `Webpage Code`=`Page Code`  WHERE `Webpage Code` IS NULL  ');
-    $db->exec($sql);
+        $sql = sprintf('UPDATE  `Page Store Dimension`  SET `Webpage Code`=`Page Code`  WHERE `Webpage Code` IS NULL  ');
+        $db->exec($sql);
 
 
-    $sql = sprintf('UPDATE  `Page Store Dimension`  SET `Webpage Website Key`=`Page Site Key`  WHERE `Webpage Website Key` IS NULL  ');
-    $db->exec($sql);
 
-    $sql = sprintf('UPDATE  `Page Store Dimension`  SET `Webpage Store Key`=`Page Store Key`  WHERE `Webpage Store Key` IS NULL  ');
-    $db->exec($sql);
+        $sql = sprintf('UPDATE  `Page Store Dimension`  SET `Webpage Website Key`=`Page Site Key`  WHERE `Webpage Website Key` IS NULL  ');
+        $db->exec($sql);
 
-    $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE `Webpage Scope Key` IS NULL OR  `Webpage Scope Key`=0 ');
+        $sql = sprintf('UPDATE  `Page Store Dimension`  SET `Webpage Store Key`=`Page Store Key`  WHERE `Webpage Store Key` IS NULL  ');
+        $db->exec($sql);
+
+      $sql = sprintf('UPDATE  `Page Store Dimension`  SET `Webpage Meta Description`=`Page Store Description`  WHERE `Webpage Meta Description` IS NULL or `Webpage Meta Description`="" ');
+        $db->exec($sql);
+
+
+
+        $sql = sprintf('UPDATE  `Page Store Dimension`  SET `Webpage Creation Date`=`Page Store Creation Date`  WHERE `Webpage Creation Date` IS NULL  ');
+        $db->exec($sql);
+
+    $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE (`Webpage Scope Key` IS NULL OR  `Webpage Scope Key`=0 ) and  `Page Store Section`="Product Description"  ');
 
 
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
+
+
             $webpage = new Page($row['Page Key']);
             $store   = new Store($row['Page Store Key']);
 
@@ -80,8 +79,18 @@ function set_scope($db) {
 
             if ($webpage->data['Page Store Section'] == 'Product Description') {
                 include_once('class.Public_Product.php');
+
+
+
                 $scope       = new Public_Product($webpage->data['Page Parent Key']);
                 $scope_found = 'Product';
+
+
+                if(!$scope->id){
+                    print "delete page\n";
+                    print_r($row);
+                    $webpage->delete(false);
+                }
 
 
             } elseif ($webpage->data['Page Store Section'] == 'Category') {
@@ -174,16 +183,47 @@ function set_scope($db) {
             //===
 
 
-            if ($scope) {
+
+            //exit;
+            if ($scope and $scope->id and   $scope->get_object_name() == 'Product') {
 
 
                 if ($scope->get_object_name() == 'Product') {
+                    $product=$scope;
+                    $webpage_type = new Webpage_Type('website_code', $webpage->get('Webpage Website Key'), 'Prod');
+
+
+                    $content_data = array(
+                        'description_block' => array(
+                            'class' => '',
+
+                            'content' => sprintf('<div class="description">%s</div>', $scope->get('Description'))
+
+
+                        ),
+                        'tabs'              => array()
+
+                    );
+
+
                     $webpage->update(
                         array(
-                            'Webpage Scope'     => 'Product',
-                            'Webpage Scope Key' => $scope->id
+                            'Webpage Scope'             => 'Product',
+                            'Webpage Template Filename' => 'product',
+                            'Page Store Content Data'   => json_encode($content_data),
+                            'Webpage Type Key'          => $webpage_type->id,
+                            'Webpage Scope Key'         => $scope->id,
+                            'Webpage Name'              => $product->get('Name'),
+                            'Webpage Browser Title'     => $product->get('Name'),
+
+
+
+
                         ), 'no_history'
                     );
+
+                    $webpage->update_url();
+
 
                 } elseif ($scope->get_object_name() == 'Category') {
 
@@ -200,16 +240,23 @@ function set_scope($db) {
                         );
 
 
+                        $webpage->update_url();
+
                     } elseif ($category->get('Category Subject') == 'Category') {
                         //print $category->get('Category Subject');
+
+                        $webpage_type = new Webpage_Type('website_code', $webpage->get('Webpage Website Key'), ($category->get('Category Subject') == 'Product' ? 'Prods' : 'Cats'));
+
 
                         $webpage->update(
                             array(
                                 'Webpage Scope'     => 'Category Categories',
-                                'Webpage Scope Key' => $scope->id
+                                'Webpage Scope Key' => $scope->id,
+                                'Webpage Type Key'          => $webpage_type->id,
+
                             ), 'no_history'
                         );
-
+                        $webpage->update_url();
 
                         if ($category->get('Category Root Key') == $store->get('Store Family Category Key')) {
 
@@ -273,6 +320,9 @@ function set_scope($db) {
             exit;
         }
     */
+
+    exit;
+
     $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE `Webpage Scope`="Category Categories" AND `Page Key`=51 ');
     $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE `Webpage Scope`="Category Categories" ');
 

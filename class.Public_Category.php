@@ -57,6 +57,8 @@ class Public_Category {
                 break;
         }
 
+       // print "$sql\n";
+
         if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id = $this->data['Category Key'];
 

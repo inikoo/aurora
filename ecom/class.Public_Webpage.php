@@ -120,7 +120,7 @@ class Public_Webpage {
             $sql = sprintf("SELECT * FROM `Page Store Dimension` PS LEFT JOIN `Page Dimension` P  ON (P.`Page Key`=PS.`Page Key`) WHERE  PS.`Page Key`=%d", $tag);
         }
 
-       // print $sql;
+
 
 
         if ($this->data = $this->db->query($sql)->fetch()) {

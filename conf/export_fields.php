@@ -302,7 +302,7 @@ $export_fields = array(
         ),
         array(
             'name'    => '`Supplier Part Packages Per Carton`',
-            'label'   => _('Outers (SKO) per carton'),
+            'label'   => _('SKOs per carton'),
             'checked' => 1
         ),
         array(
@@ -381,7 +381,7 @@ $export_fields = array(
         ),
         array(
             'name'    => '`Supplier Part Packages Per Carton`',
-            'label'   => _('Outers (SKO) per carton'),
+            'label'   => _('SKOs per carton'),
             'checked' => 1
         ),
         array(

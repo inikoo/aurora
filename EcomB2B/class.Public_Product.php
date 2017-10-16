@@ -38,10 +38,14 @@ class Public_Product {
 
     function get_data($key, $id, $aux_id = false) {
 
+
+
         if ($key == 'id') {
             $sql = sprintf(
                 "SELECT * FROM `Product Dimension` WHERE `Product ID`=%d", $id
             );
+
+
             if ($this->data = $this->db->query($sql)->fetch()) {
                 $this->id          = $this->data['Product ID'];
                 $this->historic_id = $this->data['Product Current Key'];

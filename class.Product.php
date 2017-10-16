@@ -1732,6 +1732,19 @@ class Product extends Asset {
         }
 
 
+        if (!($this->get('Product Status') == 'Active' or $this->get('Product Status') == 'Discontinuing') or $this->get('Product Web Configuration') == 'Offline') {
+            $_state = 'Offline';
+        } else {
+            $_state = 'Online';
+        }
+
+        $webpage = get_object('webpage', $this->data['Product Webpage Key']);
+
+        if ($webpage->id) {
+            $webpage->update(array('Webpage State' => $_state), 'no_history');
+        }
+
+
     }
 
     function get_web_state() {
@@ -1780,7 +1793,6 @@ class Product extends Asset {
 
 
             include_once 'class.Page.php';
-
             include_once 'class.Order.php';
 
 
@@ -1808,6 +1820,7 @@ class Product extends Asset {
 
             $sql = sprintf(
                 "SELECT `Order Key` FROM `Order Transaction Fact` WHERE `Current Dispatching State`='Out of Stock in Basket' AND `Product ID`=%d ", $this->id
+
             );
 
             if ($result = $this->db->query($sql)) {
@@ -1830,19 +1843,6 @@ class Product extends Asset {
         $this->get_data('id', $this->id);
         $this->load_acc_data();
 
-        if (!($this->get('Product Status') == 'Active' or $this->get(
-                    'Product Status'
-                ) == 'Discontinuing') or $this->get('Product Web Configuration') == 'Offline') {
-            $_state = 'Offline';
-        } else {
-            $_state = 'Online';
-        }
-
-
-        foreach ($this->get_pages('objects') as $page) {
-            $page->update(array('Page State' => $_state), 'no_history');
-            $page->update(array('Webpage State' => $_state), 'no_history');
-        }
 
     }
 
@@ -1882,39 +1882,6 @@ class Product extends Asset {
 
     }
 
-    function get_pages($scope = 'keys') {
-
-        if ($scope == 'objects') {
-            include_once 'class.Page.php';
-        }
-
-        $sql = sprintf(
-            "SELECT `Page Key` FROM `Page Store Dimension` WHERE `Page Store Section Type`='Product' AND  `Page Parent Key`=%d", $this->id
-        );
-
-        $pages = array();
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-                if ($scope == 'objects') {
-                    $pages[$row['Page Key']] = new Page($row['Page Key']);
-                } else {
-                    $pages[$row['Page Key']] = $row['Page Key'];
-                }
-
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-        return $pages;
-
-
-    }
-
     function get_categories($scope = 'keys') {
 
         if ($scope == 'objects') {
@@ -1948,6 +1915,39 @@ class Product extends Asset {
         }
 
         return $categories;
+
+
+    }
+
+    function get_pages($scope = 'keys') {
+
+        if ($scope == 'objects') {
+            include_once 'class.Page.php';
+        }
+
+        $sql = sprintf(
+            "SELECT `Page Key` FROM `Page Store Dimension` WHERE `Page Store Section Type`='Product' AND  `Page Parent Key`=%d", $this->id
+        );
+
+        $pages = array();
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+                if ($scope == 'objects') {
+                    $pages[$row['Page Key']] = new Page($row['Page Key']);
+                } else {
+                    $pages[$row['Page Key']] = $row['Page Key'];
+                }
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+        return $pages;
 
 
     }
@@ -2437,7 +2437,7 @@ class Product extends Asset {
             }
 
 
-            $this->update_field_switcher('Product Next Supplier Shipment', (!$next_delivery_time ? '' : gmdate('Y-m-d H:i:s', $next_delivery_time)),'no_history');
+            $this->update_field_switcher('Product Next Supplier Shipment', (!$next_delivery_time ? '' : gmdate('Y-m-d H:i:s', $next_delivery_time)), 'no_history');
 
 
         } else {
@@ -2538,6 +2538,8 @@ class Product extends Asset {
                 break;
             case('Product Status'):
 
+                $old_state = $this->data['Product Status'];
+
                 if (!in_array(
                     $value, array(
                               'Active',
@@ -2557,15 +2559,34 @@ class Product extends Asset {
 
 
                 if ($value == 'Suspended' or $value == 'Discontinued') {
-                    $this->update_field(
-                        'Product Valid To', gmdate('Y-m-d H:i:s'), 'no_history'
-                    );
+                    $this->update_field('Product Valid To', gmdate('Y-m-d H:i:s'), 'no_history');
+                } else {
+                    $this->update_field('Product Valid To', '', 'no_history');
+
                 }
                 if ($value == 'Discontinuing') {
-                    $this->update_field(
-                        'Product Web Configuration', 'Online Auto', 'no_history'
-                    );
+                    $this->update_field('Product Web Configuration', 'Online Auto', 'no_history');
 
+                } elseif ($value == 'Suspended') {
+                    $this->update_field('Product Web Configuration', 'Offline', 'no_history');
+
+                } elseif ($value == 'Active') {
+                    $this->update_field('Product Web Configuration', 'Online Auto', 'no_history');
+
+                } elseif ($value == 'Discontinued') {
+                    $this->update_field('Product Web Configuration', 'Offline', 'no_history');
+
+                }
+
+
+                if ($old_state == 'Discontinued' and $value != 'Discontinued' and $this->data['Product Webpage Key'] == '') {
+
+                    $store = get_object('store', $this->get('Store Key'));
+
+                    foreach ($store->get_websites('objects') as $website) {
+
+                        $website->create_product_webpage($this->id);
+                    }
                 }
 
 
@@ -2651,22 +2672,20 @@ class Product extends Asset {
 
                 }
 
-
-                if ($value == '') {
-                    $tariff_code_valid = '';
-                } else {
-                    include_once 'utils/validate_tariff_code.php';
-                    $tariff_code_valid = validate_tariff_code(
-                        $value, $this->db
-                    );
-                }
-
+                /*
+                                if ($value == '') {
+                                    $tariff_code_valid = '';
+                                } else {
+                                    include_once 'utils/validate_tariff_code.php';
+                                    $tariff_code_valid = validate_tariff_code(
+                                        $value, $this->db
+                                    );
+                                }
+                */
 
                 $this->update_field($field, $value, $options);
 
-                $this->update_field(
-                    'Product Tariff Code Valid', $tariff_code_valid, 'no_history'
-                );
+                //$this->update_field('Product Tariff Code Valid', $tariff_code_valid, 'no_history');
 
 
                 break;

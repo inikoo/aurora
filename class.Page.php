@@ -402,6 +402,8 @@ class Page extends DB_Table {
     function update_see_also() {
 
 
+        //  Todo AUR-34
+
         if ($this->data['Page Type'] != 'Store' or $this->data['Page Store See Also Type'] == 'Manual') {
             return;
         }
@@ -428,7 +430,10 @@ class Page extends DB_Table {
         switch ($this->data['Page Store Section']) {
             case 'Department Catalogue':
                 break;
-            case 'Family Catalogue':
+
+
+
+            case 'Family Cataloguexx':
 
 
                 include_once 'class.Family.php';
@@ -1811,8 +1816,8 @@ class Page extends DB_Table {
         $old_state = $this->data['Webpage State'];
 
 
-        $this->update_field('Page State', $value, $options);
-        $this->update_field('Webpage State', $value, 'no_history');
+        $this->update_field('Page State', $value, 'no_history');
+        $this->update_field('Webpage State', $value, $options);
 
 
 
@@ -1888,6 +1893,11 @@ class Page extends DB_Table {
             $this->updated = true;
 
         }
+
+
+
+
+
 
         $show = array();
         $hide = array();
