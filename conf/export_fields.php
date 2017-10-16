@@ -116,6 +116,11 @@ $export_fields = array(
             'checked' => 0
         ),
         array(
+            'name'    => '`Order Email`',
+            'label'   => _('Email'),
+            'checked' => 1
+        ),
+        array(
             'name'    => '`Order Date`',
             'label'   => _('Date'),
             'checked' => 1
