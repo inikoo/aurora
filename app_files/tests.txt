@@ -8,14 +8,20 @@
 
 */
 
+
+
+
+
+
 if
 
 select count(*) from `Part Dimension` where `Part Status`='Discontinuing' and `Part Current On Hand Stock`<=0 and `Part Current Stock In Process`=0;
  select count(*) from `Part Dimension` where `Part Status`='Not In Use' and `Part Current On Hand Stock`>0 and `Part Current Stock In Process`>0;
  select count(*) from `Part Dimension` where `Part Status`='Not In Use' and `Part Current On Hand Stock`<0 ;
 
-run fix_discontinuing_parts.php;
+php fix_discontinuing_parts.php;
 
+//==========
 
 SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE (`Webpage Scope Key` IS NULL OR  `Webpage Scope Key`=0 ) and  `Page Store Section`="Product Description";
 run
@@ -42,10 +48,15 @@ select `Product Web State`,`Product Web Configuration`,`Product Status`,count(*)
 +-------------------+---------------------------+----------------+----------+
 
 
+GRANT REPLICATION SLAVE ON *.* TO 'au_slave'@'%' IDENTIFIED BY '8823uk3l32h2k3h4';
 
-
-
+CHANGE MASTER TO MASTER_HOST='213.136.75.193',MASTER_USER='au_slave', MASTER_PASSWORD='8823uk3l32h2k3h4', MASTER_LOG_FILE='mysql-bin.000001', MASTER_LOG_POS=  120;
 
 fix_assets_set_webpage_key.php
  php fix_discontinuing_parts.php
  php fix_offline_products_offline_webpages.php
+
+
+
+Discontinuing : Out of Stock row can be present until we fix:
+ we solve AUR-35: Parts discontinuing with orders in process review
