@@ -9,6 +9,7 @@
  Version 3
 
 */
+print 'aa';
 
 require_once 'common.php';
 require_once 'class.Category.php';
@@ -17,6 +18,9 @@ include_once 'class.Page.php';
 
 include_once 'class.Public_Webpage.php';
 include_once 'class.Public_Category.php';;
+
+
+print 'x';
 
 
 $sql = sprintf(
