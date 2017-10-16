@@ -941,6 +941,7 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
     $search_placeholder = _('Search orders');
 
 
+
     switch ($data['parent']) {
         case 'account':
             $tab      = 'orders_server';
@@ -954,29 +955,7 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
             break;
         case 'store':
 
-
-            switch ($object->get('Order Class')) {
-                case 'Archived':
-                    $tab = 'orders.archived';
-                    break;
-                case 'InProcess':
-
-                    if($object->get('Order To Pay Amount')==0){
-                        $tab = 'orders.in_process.paid';
-                    }else{
-                        $tab = 'orders.in_process.not_paid';
-                    }
-
-
-                    break;
-                case 'InWebsite':
-                    $tab = 'orders.website';
-                    break;
-                default:
-                    exit("Error order don't have class");
-                    break;
-            }
-
+            $tab = 'orders';
 
             $_section = 'orders';
             break;
@@ -1152,35 +1131,15 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
         $store = new Store($data['parent_key']);
 
 
-        switch ($object->get('Order Class')) {
-            case 'Archived':
-                $up_button = array(
-                    'icon'      => 'arrow-up',
-                    'title'     => _("Archived orders").' ('.$store->get('Store Code').')',
-                    'reference' => 'orders/'.$data['parent_key']
-                );
 
-                break;
-            case 'InProcess':
-                $up_button = array(
-                    'icon'      => 'arrow-up',
-                    'title'     => _("Pending orders").' ('.$store->get('Store Code').')',
-                    'reference' => 'orders/'.$data['parent_key'].'/flow'
-                );
+        $up_button = array(
+            'icon'      => 'arrow-up',
+            'title'     => _("Orders").' ('.$store->get('Store Code').')',
+            'reference' => 'orders/'.$data['parent_key']
+        );
 
-                break;
-            case 'InWebsite':
-                $up_button = array(
-                    'icon'      => 'arrow-up',
-                    'title'     => _("Orders in website").' ('.$store->get('Store Code').')',
-                    'reference' => 'orders/'.$data['parent_key'].'/website'
-                );
 
-                break;
-            default:
-                exit("Error order don't have class");
-                break;
-        }
+
 
 
         if ($prev_key) {

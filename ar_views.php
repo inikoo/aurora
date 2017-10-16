@@ -4149,32 +4149,14 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 case 'payment':
 
                     if ($state['parent'] == 'order') {
-                        switch ($state['_parent']->get('Order Class')) {
-                            case 'Archived':
-                                $branch[] = array(
-                                    'label'     => _('Orders (Archive)').' '.$state['store']->data['Store Code'],
-                                    'icon'      => 'archive',
-                                    'reference' => 'orders/'.$state['store']->id
-                                );
-                                break;
-                            case 'InProcess':
-                                $branch[] = array(
-                                    'label'     => _('Pending orders').' '.$state['store']->data['Store Code'],
-                                    'icon'      => 'shopping-cart',
-                                    'reference' => 'orders/'.$state['store']->id.'/flow'
-                                );
-                                break;
-                            case 'InWebsite':
-                                $branch[] = array(
-                                    'label'     => _('Orders in website').' '.$state['store']->data['Store Code'],
-                                    'icon'      => 'globe',
-                                    'reference' => 'orders/'.$state['store']->id.'/website'
-                                );
-                                break;
-                            default:
-                                exit("Error order don't have class");
-                                break;
-                        }
+
+
+
+                        $branch[] = array(
+                            'label'     => _('Orders').' '.$state['store']->data['Store Code'],
+                            'icon'      => '',
+                            'reference' => 'orders/'.$state['store']->id
+                        );
 
                         $branch[] = array(
                             'label'     => $state['_parent']->get('Order Public ID'),
@@ -4237,32 +4219,12 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     } else {
 
 
-                        switch ($state['_object']->get('Order Class')) {
-                            case 'Archived':
-                                $branch[] = array(
-                                    'label'     => _('Orders (Archive)').' '.$state['store']->data['Store Code'],
-                                    'icon'      => 'archive',
-                                    'reference' => 'orders/'.$state['store']->id
-                                );
-                                break;
-                            case 'InProcess':
-                                $branch[] = array(
-                                    'label'     => _('Pending orders').' '.$state['store']->data['Store Code'],
-                                    'icon'      => 'shopping-cart',
-                                    'reference' => 'orders/'.$state['store']->id.'/flow'
-                                );
-                                break;
-                            case 'InWebsite':
-                                $branch[] = array(
-                                    'label'     => _('Orders in website').' '.$state['store']->data['Store Code'],
-                                    'icon'      => 'globe',
-                                    'reference' => 'orders/'.$state['store']->id.'/website'
-                                );
-                                break;
-                            default:
-                                exit("Error order don't have class");
-                                break;
-                        }
+
+                        $branch[] = array(
+                            'label'     => _('Orders').' '.$state['store']->data['Store Code'],
+                            'icon'      => '',
+                            'reference' => 'orders/'.$state['store']->id
+                        );
 
 
                     }
