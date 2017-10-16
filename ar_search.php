@@ -2895,6 +2895,7 @@ function search_locations($db, $account, $memcache_ip, $data) {
                 ' and `Location Warehouse Key`=%d', $data['scope_key']
             );
         } else {
+            $warehouses='_';
             $where_warehouse = ' and false';
         }
     } else {
