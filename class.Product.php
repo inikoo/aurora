@@ -56,6 +56,9 @@ class Product extends Asset {
             $sql = sprintf(
                 "SELECT * FROM `Product Dimension` WHERE `Product ID`=%d", $id
             );
+
+
+
             if ($this->data = $this->db->query($sql)->fetch()) {
                 $this->id          = $this->data['Product ID'];
                 $this->historic_id = $this->data['Product Current Key'];

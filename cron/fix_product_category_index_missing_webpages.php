@@ -35,27 +35,27 @@ if ($result = $db->query($sql)) {
        // print_r($row);
 
         $product = get_object('Product', $row['Product Category Index Product ID']);
-       // print_r($product);
 
         $webpage_key = $product->get('Product Webpage Key');
 
         // print_r($category->get('Product Category Webpage Key'));
 
+        if($webpage_key>0) {
 
-        $sql = sprintf(
-            'UPDATE `Product Category Index` SET `Product Category Index Product Webpage Key`=%s WHERE `Product Category Index Key`=%d  ',
-            prepare_mysql($webpage_key), $row['Product Category Index Key']
-        );
-        print "$sql\n";
+            $sql = sprintf(
+                'UPDATE `Product Category Index` SET `Product Category Index Product Webpage Key`=%s WHERE `Product Category Index Key`=%d  ', prepare_mysql($webpage_key), $row['Product Category Index Key']
+            );
+            print "$sql\n";
+            $db->exec($sql);
+        }
 
 
-        $db->exec($sql);
 
 
 
     }
 } else {
-    print_r($error_info = $this->db->errorInfo());
+    print_r($error_info = $db->errorInfo());
     print "$sql\n";
     exit;
 }
@@ -74,22 +74,22 @@ if ($result = $db->query($sql)) {
 
         // print_r($category->get('Product Category Webpage Key'));
 
-
-        $sql = sprintf(
-            'UPDATE `Product Category Index` SET `Product Category Index Website Key`=%s WHERE `Product Category Index Key`=%d  ',
-            prepare_mysql($webpage_key),
-            $row['Product Category Index Key']
-        );
-        print "$sql\n";
+        if($webpage_key>0) {
+            $sql = sprintf(
+                'UPDATE `Product Category Index` SET `Product Category Index Website Key`=%s WHERE `Product Category Index Key`=%d  ', prepare_mysql($webpage_key), $row['Product Category Index Key']
+            );
+            print "$sql\n";
+            $db->exec($sql);
+        }
         //exit;
 
-        $db->exec($sql);
+
 
 
 
     }
 } else {
-    print_r($error_info = $this->db->errorInfo());
+    print_r($error_info = $db->errorInfo());
     print "$sql\n";
     exit;
 }
