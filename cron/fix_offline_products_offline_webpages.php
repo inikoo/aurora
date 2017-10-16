@@ -36,22 +36,6 @@ $editor = array(
 );
 
 
-$sql = sprintf('SELECT * FROM `Part Dimension` where `Part SKU`=53512  order by `Part Reference` ');
-
-if ($result = $db->query($sql)) {
-    foreach ($result as $row) {
-        $part = new Part($row['Part SKU']);
-        print $part->get('Reference')."\r";
-        $part->discontinue_trigger();
-
-    }
-
-}
-
-exit;
-// fix products no parts set to suspended:
-
-
 
 $sql = sprintf('SELECT * FROM `Product Dimension`  WHERE  `Product Status` !="Discontinued"  and  `Product Number of Parts` =0 ');
 
@@ -107,7 +91,6 @@ if ($result = $db->query($sql)) {
 
 
 $sql = sprintf('SELECT * FROM `Product Dimension`  WHERE  `Product Status` IN ("Suspended","Discontinued")  ');
-
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {

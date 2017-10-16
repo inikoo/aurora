@@ -48,5 +48,4 @@ select `Product Web State`,`Product Web Configuration`,`Product Status`,count(*)
 
 fix_assets_set_webpage_key.php
  php fix_discontinuing_parts.php
-
-
+ php fix_offline_products_offline_webpages.php

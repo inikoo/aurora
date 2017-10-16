@@ -36,11 +36,11 @@ if ($result = $db->query($sql)) {
             $product->update(array('Product Webpage Key' => $subject_webpage_key), 'no_history');
         } else {
             if ($product->get('Product Status') != 'Discontinued') {
-                printf("webpage for  %d  product %s %s , %s not found\n", $product->get('Store Key'),$product->get('Code'), $product->id, $product->get('Product Status'));
 
                 $store = get_object('store', $product->get('Store Key'));
 
                 foreach ($store->get_websites('objects') as $website) {
+                    printf("webpage for  %d  product %s %s , %s not found\n", $product->get('Store Key'),$product->get('Code'), $product->id, $product->get('Product Status'));
 
                     $website->create_product_webpage($product->id);
                 }
