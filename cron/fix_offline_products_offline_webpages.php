@@ -56,6 +56,36 @@ if ($result = $db->query($sql)) {
 }
 
 
+$sql = sprintf('SELECT * FROM `Product Dimension`  WHERE  `Product Status` ="Active" and `Product Web Configuration`="Online Force For Sale" ');
+
+
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+
+        $product = get_object('Product', $row['Product ID']);
+
+
+            $product->fast_update(
+                array(
+                    'Product Web Configuration' => 'Online Auto',
+                    'Product Valid To'          => ''
+                )
+            );
+
+
+        //print_r($product);
+
+        $product->update_web_state();
+        //exit;
+
+
+    }
+} else {
+    print_r($error_info = $db->errorInfo());
+    print "$sql\n";
+    exit;
+}
+
 
 $sql = sprintf('SELECT * FROM `Product Dimension`  WHERE  `Product Status` ="Active"  and `Product Web State`="Offline" and `Product Web Configuration`="Online Auto" ');
 
