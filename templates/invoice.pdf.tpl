@@ -106,7 +106,7 @@ div.inline { float:left; }
 
 
 				<div style="text-align: right">
-                    {t}Tax liability date{/t}: <b>{$order->get_date('Tax Liability Date')}</b>
+                    {t}Tax liability date{/t}" <b>{$invoice->get_date('Invoice Tax Liability Date')}</b>
 				</div>
 			{if $number_orders==1} 
 			<div style="text-align: right">
