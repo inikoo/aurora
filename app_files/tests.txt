@@ -1,0 +1,52 @@
+/*
+ About:
+ Author: Raul Perusquia <raul@inikoo.com>
+ Created: 15 October 2017 at 23:38:59 GMT+8, Kuala Lumpur, Malaysia
+ Copyright (c) 2016, Inikoo
+
+ Version 3
+
+*/
+
+if
+
+select count(*) from `Part Dimension` where `Part Status`='Discontinuing' and `Part Current On Hand Stock`<=0 and `Part Current Stock In Process`=0;
+ select count(*) from `Part Dimension` where `Part Status`='Not In Use' and `Part Current On Hand Stock`>0 and `Part Current Stock In Process`>0;
+ select count(*) from `Part Dimension` where `Part Status`='Not In Use' and `Part Current On Hand Stock`<0 ;
+
+run fix_discontinuing_parts.php;
+
+
+SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE (`Webpage Scope Key` IS NULL OR  `Webpage Scope Key`=0 ) and  `Page Store Section`="Product Description";
+run
+ php fix_webpages_scope.php
+
+
+
+SELECT `Product ID` FROM `Product Dimension` WHERE (`Product Webpage Key` IS NULL OR `Product Webpage Key`=0 ) and `Product Status`!='Discontinued' and `Product Store Key`!=9 ORDER BY `Product Code` DESC;
+run
+fix_assets_set_webpage_key.php
+
+select `Product Web State`,`Product Web Configuration`,`Product Status`,count(*) from `Product Dimension` group by `Product Web State`,`Product Web Configuration`,`Product Status` order by `Product Status`,`Product Web Configuration`;
+
+| Product Web State | Product Web Configuration | Product Status | count(*) |
++-------------------+---------------------------+----------------+----------+
+| Out of Stock      | Online Force Out of Stock | Active         |     1228 |
+| For Sale          | Online Auto               | Active         |    24639 |
+| Out of Stock      | Online Auto               | Active         |     5621 |
+| Offline           | Offline                   | Active         |     2491 |
+| Offline           | Offline                   | Suspended      |     1279 |
+| For Sale          | Online Auto               | Discontinuing  |     4877 |
+| Offline           | Offline                   | Discontinued   |    50551 |
+| Out of Stock      | Offline                   | Discontinued   |        4 |
++-------------------+---------------------------+----------------+----------+
+
+
+
+
+
+
+fix_assets_set_webpage_key.php
+ php fix_discontinuing_parts.php
+
+

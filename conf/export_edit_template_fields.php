@@ -58,22 +58,14 @@ $export_edit_template_fields = array(
             'label'         => _('Family'),
             'checked'       => 0
         ),
+
         array(
             'default_value' => '',
             'show_for_new'  => true,
             'required'      => true,
-            'header'        => 'SKO Barcode',
-            'name'          => 'Part SKO Barcode',
-            'label'         => _('Part SKO Barcode'),
-            'checked'       => 0
-        ),
-        array(
-            'default_value' => '',
-            'show_for_new'  => true,
-            'required'      => true,
-            'header'        => 'Outers (SKO) description',
+            'header'        => 'SKO description',
             'name'          => 'Part Package Description',
-            'label'         => _('Outers (SKO) description'),
+            'label'         => _('SKO description'),
             'checked'       => 0
         ),
 

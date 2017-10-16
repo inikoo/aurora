@@ -281,9 +281,9 @@ class Asset extends DB_Table {
 
             case  'Tariff Code':
                 $tariff_code = $this->data[$this->table_name.' Tariff Code'];
-                if ($tariff_code != '' and $this->data[$this->table_name.' Tariff Code Valid'] == 'No') {
-                    $tariff_code .= ' <span class="error invalid_value"><i class="fa fa-exclamation-circle"></i><span> '._('Invalid').'</span></span>';
-                }
+               // if ($tariff_code != '' and $this->data[$this->table_name.' Tariff Code Valid'] == 'No') {
+               //     $tariff_code .= ' <span class="error invalid_value"><i class="fa fa-exclamation-circle"></i><span> '._('Invalid').'</span></span>';
+               // }
 
                 return array(
                     true,

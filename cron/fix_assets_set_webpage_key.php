@@ -13,27 +13,43 @@
 require_once 'common.php';
 require_once 'class.Category.php';
 require_once 'class.Product.php';
+include_once 'class.Page.php';
 
 include_once 'class.Public_Webpage.php';
 include_once 'class.Public_Category.php';;
 
 
 $sql = sprintf(
-    "SELECT `Product ID` FROM `Product Dimension` where `Product Webpage Key` is null   order by `Product ID` desc"
+    "SELECT `Product ID` FROM `Product Dimension` WHERE (`Product Webpage Key` IS NULL OR `Product Webpage Key`=0 )  ORDER BY `Product Code` DESC"
 );
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
 
-        $product = new Product($row['Product ID']);
 
-        print $product->id.' '.$product->get('Code')."\n";
-        $subject_webpage     = new Public_Webpage('scope', 'Product', $product->id);
+        $subject_webpage     = new Page('scope', 'Product', $row['Product ID']);
         $subject_webpage_key = $subject_webpage->id;
 
+        $product = new Product($row['Product ID']);
+        if ($subject_webpage_key > 0) {
 
-        //print $subject_webpage_key." xx \n";
+            //print $product->id.' '.$product->get('Code')."\n";
+            $product->update(array('Product Webpage Key' => $subject_webpage_key), 'no_history');
+        } else {
+            if ($product->get('Product Status') != 'Discontinued') {
+                printf("webpage for  %d  product %s %s , %s not found\n", $product->get('Store Key'),$product->get('Code'), $product->id, $product->get('Product Status'));
 
-        $product->update(array('Product Webpage Key' => $subject_webpage_key), 'no_history');
+                $store = get_object('store', $product->get('Store Key'));
+
+                foreach ($store->get_websites('objects') as $website) {
+
+                    $website->create_product_webpage($product->id);
+                }
+
+
+            }
+
+
+        }
     }
 
 
@@ -42,6 +58,7 @@ if ($result = $db->query($sql)) {
     exit;
 }
 
+exit;
 
 $where = "where true";
 //$where="where `Category Key`=15362";
@@ -65,18 +82,20 @@ $lap_time0 = date('U');
 $contador  = 0;
 
 $sql = sprintf(
-    "select `Category Key` from `Category Dimension` $where and  `Category Scope`='Product' "
+    "select `Category Key` from `Category Dimension` $where and  `Category Scope`='Product'   "
 );
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
         $subject = new Category($row['Category Key']);
 
-        $subject_webpage     = new Public_Webpage('scope', ($subject->get('Category Subject') == 'Category' ? 'Category Categories' : 'Category Products'), $subject->id);
-        $subject_webpage_key = $subject_webpage->id;
+        if ($subject->get('Product Category Webpage Key') == '') {
 
-        $subject->update(array('Product Category Webpage Key' => $subject_webpage_key), 'no_history');
+            $subject_webpage     = new Public_Webpage('scope', ($subject->get('Category Subject') == 'Category' ? 'Category Categories' : 'Category Products'), $subject->id);
+            $subject_webpage_key = $subject_webpage->id;
 
+            $subject->update(array('Product Category Webpage Key' => $subject_webpage_key), 'no_history');
+        }
 
     }
 

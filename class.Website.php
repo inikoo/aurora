@@ -1123,7 +1123,7 @@ class Website extends DB_Table {
 
         include_once 'class.Webpage_Type.php';
         include_once 'class.Page.php';
-
+        include_once 'class.Product.php';
 
 
 
@@ -1139,10 +1139,10 @@ class Website extends DB_Table {
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-                include_once 'class.Product.php';
+
                 $product = new Product($product_id);
 
-                $product->update(array('Product Webpage Key' => $row['Page Key']), 'no_history');
+                $product->fast_update(array('Product Webpage Key' => $row['Page Key']));
                 return $row['Page Key'];
 
 
@@ -1153,7 +1153,6 @@ class Website extends DB_Table {
             exit;
         }
 
-        include_once 'class.Product.php';
         $product = new Product($product_id);
 
         $page_code = $this->get_unique_code($product->get('Code'), 'Webpage');
@@ -1237,7 +1236,7 @@ class Website extends DB_Table {
 
        // print $page->id;
 
-        $product->update(array('Product Webpage Key' => $page->id), 'no_history');
+        $product->fast_update(array('Product Webpage Key' => $page->id));
 
         $webpage_type->update_number_webpages();
 
@@ -1267,6 +1266,17 @@ class Website extends DB_Table {
         );
 
         $page->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
+
+
+        //todo: AUR-33
+
+        if($product->get('Product Web State')=='Discontinued'){
+            $page->unpublish();
+        }else{
+           // $page->publish();
+        }
+
+
 
 
         return $page->id;

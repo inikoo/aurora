@@ -2605,9 +2605,7 @@ class Store extends DB_Table {
             if ($row = $result->fetch()) {
                 if ($row['num'] > 0) {
                     $this->error      = true;
-                    $this->msg        = sprintf(
-                        _('Duplicated code (%s)'), $data['Product Code']
-                    );
+                    $this->msg        = sprintf(_('Duplicated code (%s)'), $data['Product Code']);
                     $this->error_code = 'duplicate_product_code_reference';
                     $this->metadata   = $data['Product Code'];
 

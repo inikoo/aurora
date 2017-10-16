@@ -1133,9 +1133,7 @@ class Part extends Asset {
         } elseif ($value == 'Not In Use') {
 
 
-            foreach (
-                $this->get_locations('part_location_object') as $part_location
-            ) {
+            foreach ($this->get_locations('part_location_object') as $part_location) {
                 $part_location->disassociate();
             }
 
@@ -3525,30 +3523,21 @@ class Part extends Asset {
                 if ($value == '') {
                     $tariff_code_valid = '';
                 } else {
-                    include_once 'utils/validate_tariff_code.php';
-                    $tariff_code_valid = validate_tariff_code(
-                        $value, $this->db
-                    );
+                    //include_once 'utils/validate_tariff_code.php';
+                    //$tariff_code_valid = validate_tariff_code($value, $this->db);
                 }
 
 
                 $this->update_field($field, $value, $options);
                 $updated = $this->updated;
-                $this->update_field(
-                    'Part Tariff Code Valid', $tariff_code_valid, 'no_history'
-                );
+                //$this->update_field('Part Tariff Code Valid', $tariff_code_valid, 'no_history');
 
 
                 foreach ($this->get_products('objects') as $product) {
 
                     if (count($product->get_parts()) == 1) {
                         $product->editor = $this->editor;
-                        $product->update(
-                            array(
-                                'Product Tariff Code' => $this->get(
-                                    'Part Tariff Code'
-                                )
-                            ), $options.' from_part'
+                        $product->update(array('Product Tariff Code' => $this->get('Part Tariff Code')), $options.' from_part'
                         );
                     }
 
