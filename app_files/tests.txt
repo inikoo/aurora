@@ -35,22 +35,20 @@ fix_assets_set_webpage_key.php
 
 select `Product Web State`,`Product Web Configuration`,`Product Status`,count(*) from `Product Dimension` group by `Product Web State`,`Product Web Configuration`,`Product Status` order by `Product Status`,`Product Web Configuration`;
 
++-------------------+---------------------------+----------------+----------+
 | Product Web State | Product Web Configuration | Product Status | count(*) |
 +-------------------+---------------------------+----------------+----------+
 | Out of Stock      | Online Force Out of Stock | Active         |     1228 |
 | For Sale          | Online Auto               | Active         |    24639 |
-| Out of Stock      | Online Auto               | Active         |     5621 |
-| Offline           | Offline                   | Active         |     2491 |
-| Offline           | Offline                   | Suspended      |     1279 |
+| Out of Stock      | Online Auto               | Active         |     5570 |
+| Offline           | Offline                   | Active         |     2484 |
+| Offline           | Offline                   | Suspended      |     1257 |
 | For Sale          | Online Auto               | Discontinuing  |     4877 |
-| Offline           | Offline                   | Discontinued   |    50551 |
-| Out of Stock      | Offline                   | Discontinued   |        4 |
+| Out of Stock      | Online Auto               | Discontinuing  |      236 |
+| Offline           | Offline                   | Discontinued   |    51190 |
 +-------------------+---------------------------+----------------+----------+
+8 rows in set (0.95 sec)
 
-
-GRANT REPLICATION SLAVE ON *.* TO 'au_slave'@'%' IDENTIFIED BY '8823uk3l32h2k3h4';
-
-CHANGE MASTER TO MASTER_HOST='213.136.75.193',MASTER_USER='au_slave', MASTER_PASSWORD='8823uk3l32h2k3h4', MASTER_LOG_FILE='mysql-bin.000001', MASTER_LOG_POS=  120;
 
 fix_assets_set_webpage_key.php
  php fix_discontinuing_parts.php
