@@ -45,26 +45,15 @@ class Asset extends DB_Table {
                     $this->update_field_switcher($this->table_name.' Barcode Key', '', 'no_history');
 
 
-                    if ($this->table_name == 'Part') {
 
-                        $this->update_metadata = array(
-                            'class_html' => array(
-                                'SKO_Barcode'      => $this->get('Status'),
-                                'Average_Delivery' => $this->get(
-                                    'Average Delivery'
-                                )
-
-                            )
-                        );
-                    }
 
 
                 } else {
 
-                    $available_barcodes = 0;
                     $sql                = sprintf(
-                        "SELECT `Barcode Key` ,`Barcode Status` ,`Barcode Sticky Note` FROM `Barcode Dimension` WHERE `Barcode Number`=%s", $value
+                        "SELECT `Barcode Key` ,`Barcode Status` ,`Barcode Sticky Note` FROM `Barcode Dimension` WHERE `Barcode Number`=%s", prepare_mysql($value)
                     );
+
 
 
                     if ($result = $this->db->query($sql)) {
@@ -99,7 +88,7 @@ class Asset extends DB_Table {
                                 );
 
 
-                                $barcode->assign_asset($asset_data);
+                                $barcode->assign_asset_to_barcode($asset_data);
                                 $barcode_label = sprintf(
                                     '<i class="fa fa-barcode fa-fw"></i> <span class="link" onClick="change_view(\'inventory/barcode/%d\')">%s</span>', $barcode->id, $barcode->get('Barcode Number')
                                 );
@@ -145,9 +134,7 @@ class Asset extends DB_Table {
                         } else {
                             if ($this->get('Barcode Key')) {
                                 include_once 'class.Barcode.php';
-                                $barcode         = new Barcode(
-                                    $this->get('Barcode Key')
-                                );
+                                $barcode         = new Barcode($this->get('Barcode Key'));
                                 $barcode->editor = $this->editor;
                                 if ($barcode->id) {
                                     $asset_data = array(
@@ -159,11 +146,8 @@ class Asset extends DB_Table {
                                 }
                             }
 
-                            $this->update_field_switcher(
-                                $this->table_name.' Barcode Number', $value, $options
-                            );
-                            $this->update_field_switcher(
-                                $this->table_name.' Barcode Key', '', 'no_history'
+                            $this->update_field_switcher($this->table_name.' Barcode Number', $value, $options);
+                            $this->update_field_switcher($this->table_name.' Barcode Key', '', 'no_history'
                             );
 
                         }
@@ -177,13 +161,9 @@ class Asset extends DB_Table {
                     $this->table_name.'_Barcode_Number' => array(
                         'field'           => $this->table_name.'_Barcode_Number',
                         'render'          => true,
-                        'value'           => $this->get(
-                            $this->table_name.' Barcode Number'
-                        ),
+                        'value'           => $this->get($this->table_name.' Barcode Number'),
                         'formatted_value' => $this->get('Barcode Number'),
-                        'barcode_key'     => $this->get(
-                            $this->table_name.' Barcode Key'
-                        )
+                        'barcode_key'     => $this->get($this->table_name.' Barcode Key')
 
 
                     )

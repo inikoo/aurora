@@ -546,7 +546,7 @@ function on_changed_value(field, new_value) {
 
 
 
-    //console.log('changed: ' + field)
+
     var object = $('#fields').attr('object');
 
     if ($('#' + object + '_save').hasClass('hide')) {
@@ -589,6 +589,8 @@ function on_changed_value(field, new_value) {
 
 function validate(field, value) {
 
+
+
     var field_data = $('#' + field + '_container')
 
 
@@ -613,7 +615,6 @@ function validate(field, value) {
     if (type == 'salary') {
         return validate_salary_components();
     } else {
-
         return validate_field(field, value, type, required, server_validation, parent, parent_key, _object, key)
     }
 

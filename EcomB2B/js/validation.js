@@ -22,8 +22,7 @@ function validate_field(field, new_value, field_type, required, server_validatio
         }
 
         var validation = {
-            class: 'waiting',
-            type: ''
+            class: 'waiting', type: ''
         }
 
         server_validation(settings, parent, parent_key, object, key, field, new_value)
@@ -44,8 +43,7 @@ function validate_address(field) {
 
     //  console.log('validating address')
     var valid_state = {
-        class: 'valid',
-        type: ''
+        class: 'valid', type: ''
     }
 
     var invalid_fields = 0;
@@ -75,8 +73,7 @@ function validate_address(field) {
                 }
 
                 valid_state = {
-                    class: 'invalid',
-                    type: valid_state_type
+                    class: 'invalid', type: valid_state_type
                 }
             } else {
                 tr.find('.show_buttons').addClass(' success').removeClass('super_discreet error')
@@ -90,8 +87,7 @@ function validate_address(field) {
 
     if (invalid_fields > 1) {
         valid_state = {
-            class: 'invalid',
-            type: 'missing_fields'
+            class: 'invalid', type: 'missing_fields'
         }
     }
 
@@ -103,11 +99,10 @@ function validate_address(field) {
 function client_validation(type, required, value, field) {
 
 
-    //console.log(type + ' ' + value + ' ' + field)
+    console.log(type + ' ' + value + ' ' + field)
 
     var valid_state = {
-        class: 'valid',
-        type: ''
+        class: 'valid', type: ''
     }
 
 
@@ -120,13 +115,11 @@ function client_validation(type, required, value, field) {
                 if ($('#' + field + '_dropdown_select_label').val() == '') {
 
                     return {
-                        class: 'invalid',
-                        type: 'empty'
+                        class: 'invalid', type: 'empty'
                     }
                 } else {
                     return {
-                        class: 'invalid',
-                        type: 'not_found'
+                        class: 'invalid', type: 'not_found'
                     }
                 }
 
@@ -134,15 +127,13 @@ function client_validation(type, required, value, field) {
             } else {
 
                 return {
-                    class: 'invalid',
-                    type: 'empty'
+                    class: 'invalid', type: 'empty'
                 }
             }
 
         } else {
             return {
-                class: 'valid',
-                type: ''
+                class: 'valid', type: ''
             }
 
         }
@@ -157,15 +148,13 @@ function client_validation(type, required, value, field) {
 
             if (value == '__error__' && $('#' + field).val() == '') {
                 return {
-                    class: 'invalid',
-                    type: 'not_found'
+                    class: 'invalid', type: 'not_found'
                 }
             } else if ($('#' + field).val() == '') {
 
 
                 return {
-                    class: 'potentially_valid',
-                    type: 'not_selected'
+                    class: 'potentially_valid', type: 'not_selected'
                 }
             }
 
@@ -214,8 +203,7 @@ function client_validation(type, required, value, field) {
 
             if (value.length < 6) {
                 return {
-                    class: 'potentially_valid',
-                    type: 'short'
+                    class: 'potentially_valid', type: 'short'
                 }
             }
 
@@ -226,7 +214,7 @@ function client_validation(type, required, value, field) {
 
         case 'barcode':
 
-            var res = validate_barcode(value, 12)
+            var res = validate_ean_barcode(value)
 
             if (res) return res
 
@@ -240,8 +228,7 @@ function client_validation(type, required, value, field) {
                 barcodes = value.split('-')
                 if (barcodes.length > 2) {
                     return {
-                        class: 'invalid',
-                        type: 'invalid'
+                        class: 'invalid', type: 'invalid'
                     }
                 }
 
@@ -251,15 +238,13 @@ function client_validation(type, required, value, field) {
 
                 if (res) {
                     return {
-                        class: 'invalid',
-                        type: res.type
+                        class: 'invalid', type: res.type
                     }
                 }
 
                 if (barcodes[1] == '') {
                     return {
-                        class: 'potentially_valid',
-                        type: 'short'
+                        class: 'potentially_valid', type: 'short'
                     }
                 }
 
@@ -270,8 +255,7 @@ function client_validation(type, required, value, field) {
 
                 if (barcodes[1] < barcodes[0]) {
                     return {
-                        class: 'invalid',
-                        type: 'range_minmax'
+                        class: 'invalid', type: 'range_minmax'
                     }
                 }
 
@@ -297,13 +281,11 @@ function client_validation(type, required, value, field) {
                 value = value.replace(/^\+/g, '')
                 if (value == '' || $.isNumeric(value)) {
                     return {
-                        class: 'potentially_valid',
-                        type: 'short'
+                        class: 'potentially_valid', type: 'short'
                     }
                 } else {
                     return {
-                        class: 'invalid',
-                        type: 'invalid'
+                        class: 'invalid', type: 'invalid'
                     }
                 }
 
@@ -315,23 +297,19 @@ function client_validation(type, required, value, field) {
                     //console.log(error)
                     if (error == intlTelInputUtils.validationError.TOO_SHORT) {
                         return {
-                            class: 'potentially_valid',
-                            type: 'short'
+                            class: 'potentially_valid', type: 'short'
                         }
                     } else if (error == intlTelInputUtils.validationError.TOO_LONG) {
                         return {
-                            class: 'invalid',
-                            type: 'long'
+                            class: 'invalid', type: 'long'
                         }
                     } else if (error == intlTelInputUtils.validationError.NOT_A_NUMBER) {
                         return {
-                            class: 'invalid',
-                            type: 'invalid'
+                            class: 'invalid', type: 'invalid'
                         }
                     } else if (error == intlTelInputUtils.validationError.INVALID_COUNTRY_CODE) {
                         return {
-                            class: 'invalid',
-                            type: 'invalid_code'
+                            class: 'invalid', type: 'invalid_code'
                         }
                     }
 
@@ -354,8 +332,7 @@ function client_validation(type, required, value, field) {
 
 
                     return {
-                        class: 'invalid',
-                        type: 'spaces'
+                        class: 'invalid', type: 'spaces'
                     }
                 }
 
@@ -367,15 +344,13 @@ function client_validation(type, required, value, field) {
 
 
                         return {
-                            class: 'invalid',
-                            type: 'comma'
+                            class: 'invalid', type: 'comma'
                         }
                     } else {
 
 
                         return {
-                            class: 'invalid',
-                            type: 'invalid_character'
+                            class: 'invalid', type: 'invalid_character'
                         }
                     }
 
@@ -384,8 +359,7 @@ function client_validation(type, required, value, field) {
                     //console.log('error')
 
                     return {
-                        class: 'invalid',
-                        type: 'double_at'
+                        class: 'invalid', type: 'double_at'
                     }
 
                 }
@@ -400,8 +374,7 @@ function client_validation(type, required, value, field) {
             if (!emailReg.test(value)) {
 
                 return {
-                    class: 'potentially_valid',
-                    type: 'invalid'
+                    class: 'potentially_valid', type: 'invalid'
                 }
             }
 
@@ -414,24 +387,21 @@ function client_validation(type, required, value, field) {
             if (!timelReg.test(value)) {
 
                 return {
-                    class: 'invalid',
-                    type: 'invalid'
+                    class: 'invalid', type: 'invalid'
                 }
             }
 
             if (value.length > 5) {
 
                 return {
-                    class: 'invalid',
-                    type: 'invalid'
+                    class: 'invalid', type: 'invalid'
                 }
             } else if (value.length == 1) {
 
                 var partial_timeReg = /^[0-9]$/
                 if (!partial_timeReg.test(value)) {
                     return {
-                        class: 'invalid',
-                        type: 'invalid'
+                        class: 'invalid', type: 'invalid'
                     }
                 }
 
@@ -455,8 +425,7 @@ function client_validation(type, required, value, field) {
                 if (timelReg.test(value)) {
 
                     return {
-                        class: 'valid',
-                        type: 'valid'
+                        class: 'valid', type: 'valid'
                     }
                 }
 
@@ -464,8 +433,7 @@ function client_validation(type, required, value, field) {
                 if (timelReg.test(value)) {
 
                     return {
-                        class: 'potentially_valid',
-                        type: 'invalid'
+                        class: 'potentially_valid', type: 'invalid'
                     }
                 }
 
@@ -479,20 +447,17 @@ function client_validation(type, required, value, field) {
                 if (value.length == 5 || value.length == 4) {
 
                     return {
-                        class: 'invalid',
-                        type: 'invalid'
+                        class: 'invalid', type: 'invalid'
                     }
                 } else {
 
                     return {
-                        class: 'potentially_valid',
-                        type: 'invalid'
+                        class: 'potentially_valid', type: 'invalid'
                     }
                 }
             } else {
                 return {
-                    class: 'valid',
-                    type: ''
+                    class: 'valid', type: ''
                 }
 
             }
@@ -511,11 +476,10 @@ function client_validation(type, required, value, field) {
             break;
 
 
-
         case 'numeric_unsigned':
 
 
-            var res = validate_number(value, 0,4294967295)
+            var res = validate_number(value, 0, 4294967295)
             if (res) return res
             break;
 
@@ -524,8 +488,7 @@ function client_validation(type, required, value, field) {
             if (value == 0) {
 
                 return {
-                    class: 'invalid',
-                    type: 'invalid_break_duration'
+                    class: 'invalid', type: 'invalid_break_duration'
                 }
             }
 
@@ -547,8 +510,7 @@ function client_validation(type, required, value, field) {
             if (value == 0) {
 
                 return {
-                    class: 'invalid',
-                    type: 'invalid_day_of_month'
+                    class: 'invalid', type: 'invalid_day_of_month'
                 }
             }
 
@@ -567,8 +529,7 @@ function client_validation(type, required, value, field) {
 
             if (value == dot) {
                 return {
-                    class: 'potentially_valid',
-                    type: 'invalid'
+                    class: 'potentially_valid', type: 'invalid'
                 }
             }
 
@@ -576,15 +537,12 @@ function client_validation(type, required, value, field) {
             var regex = /^\d*\.?\d{0,6}$/
             if (!regex.test(value)) {
                 return {
-                    class: 'invalid',
-                    type: 'invalid_amount'
+                    class: 'invalid', type: 'invalid_amount'
                 }
             }
             break
 
         case 'percentage':
-
-
 
 
             var comma = ','
@@ -596,8 +554,7 @@ function client_validation(type, required, value, field) {
 
             if (value == dot) {
                 return {
-                    class: 'potentially_valid',
-                    type: 'invalid'
+                    class: 'potentially_valid', type: 'invalid'
                 }
             }
 
@@ -606,26 +563,20 @@ function client_validation(type, required, value, field) {
             if (regex.test(value)) {
 
                 return {
-                    class: 'valid',
-                    type: 'valid'
+                    class: 'valid', type: 'valid'
                 }
             }
 
             var regex = /^\d*\.?\d{0,6}$/
             if (!regex.test(value)) {
                 return {
-                    class: 'invalid',
-                    type: 'invalid_amount'
+                    class: 'invalid', type: 'invalid_amount'
                 }
-            }else{
+            } else {
                 return {
-                    class: 'potentially_valid',
-                    type: 'invalid'
+                    class: 'potentially_valid', type: 'invalid'
                 }
             }
-
-
-
 
 
             break
@@ -646,8 +597,7 @@ function client_validation(type, required, value, field) {
 
             if (value == dot) {
                 return {
-                    class: 'potentially_valid',
-                    type: 'invalid'
+                    class: 'potentially_valid', type: 'invalid'
                 }
             }
 
@@ -656,8 +606,7 @@ function client_validation(type, required, value, field) {
             if (!regex.test(value)) {
                 /// console.log('ccc')
                 return {
-                    class: 'invalid',
-                    type: 'invalid_amount'
+                    class: 'invalid', type: 'invalid_amount'
                 }
             }
 
@@ -670,17 +619,134 @@ function client_validation(type, required, value, field) {
     return valid_state;
 }
 
+function checkEan(eanCode) {
+    // Check if only digits
+    var ValidChars = "0123456789";
+    for (i = 0; i < eanCode.length; i++) {
+        digit = eanCode.charAt(i);
+        if (ValidChars.indexOf(digit) == -1) {
+            return false;
+        }
+    }
 
-function validate_barcode(value, min_length, max_length) {
+    // Add five 0 if the code has only 8 digits
+    if (eanCode.length == 8 ) {
+        eanCode = "00000" + eanCode;
+    }
+    // Check for 13 digits otherwise
+    else if (eanCode.length != 13) {
+        return false;
+    }
 
-    if(value==''){
+    // Get the check number
+    originalCheck = eanCode.substring(eanCode.length - 1);
+    eanCode = eanCode.substring(0, eanCode.length - 1);
+
+    // Add even numbers together
+    even = Number(eanCode.charAt(1)) +
+        Number(eanCode.charAt(3)) +
+        Number(eanCode.charAt(5)) +
+        Number(eanCode.charAt(7)) +
+        Number(eanCode.charAt(9)) +
+        Number(eanCode.charAt(11));
+    // Multiply this result by 3
+    even *= 3;
+
+    // Add odd numbers together
+    odd = Number(eanCode.charAt(0)) +
+        Number(eanCode.charAt(2)) +
+        Number(eanCode.charAt(4)) +
+        Number(eanCode.charAt(6)) +
+        Number(eanCode.charAt(8)) +
+        Number(eanCode.charAt(10));
+
+    // Add two totals together
+    total = even + odd;
+
+    // Calculate the checksum
+    // Divide total by 10 and store the remainder
+    checksum = total % 10;
+    // If result is not 0 then take away 10
+    if (checksum != 0) {
+        checksum = 10 - checksum;
+    }
+
+    // Return the result
+    if (checksum != originalCheck) {
+        return false;
+    }
+
+    return true;
+}
+
+function validate_ean_barcode(value) {
+
+    if (value == '') {
         return false
     }
 
     if (!$.isNumeric(value)) {
         return {
+            class: 'invalid', type: 'invalid'
+        }
+    }
+    if (value < 0) {
+        return {
             class: 'invalid',
+
+            type: 'negative'
+        }
+    }
+
+    if (Math.floor(value) != value) {
+        return {
+            class: 'invalid',
+
             type: 'invalid'
+        }
+    }
+
+    console.log(value.length)
+
+
+    if (value.length == 12) {
+        return {
+            class: 'invalid', type: 'missing_checksum'
+        }
+    }
+
+    if (value.length <= 12) {
+        return {
+            class: 'invalid', type: 'short'
+        }
+    }
+
+    if (value.length >= 14) {
+        return {
+            class: 'invalid', type: 'long'
+        }
+    }
+
+    if (!checkEan(value)) {
+        return {
+            class: 'invalid', type: 'checksum'
+        }
+    }
+
+
+    return false
+}
+
+
+function validate_barcode(value, min_length, max_length) {
+
+    if (value == '') {
+        return false
+    }
+
+    if (!$.isNumeric(value)) {
+        return {
+            class: 'invalid', type: 'invalid'
         }
     }
     if (value < 0) {
@@ -702,15 +768,13 @@ function validate_barcode(value, min_length, max_length) {
 
     if (value.length < min_length) {
         return {
-            class: 'potentially_valid',
-            type: 'short'
+            class: 'potentially_valid', type: 'short'
         }
     }
 
     if (value.length > max_length) {
         return {
-            class: 'invalid',
-            type: 'long'
+            class: 'invalid', type: 'long'
         }
     }
 
@@ -724,8 +788,7 @@ function validate_number(value, min, max) {
 
     if (!$.isNumeric(value)) {
         return {
-            class: 'invalid',
-            type: 'no_numeric'
+            class: 'invalid', type: 'no_numeric'
         }
     }
 
@@ -734,14 +797,10 @@ function validate_number(value, min, max) {
     var max = parseFloat(max)
 
 
-
-
-
     if (min != undefined && value < min) {
 
         return {
-            class: 'invalid',
-            type: 'negative'
+            class: 'invalid', type: 'negative'
         }
 
     }
@@ -752,8 +811,7 @@ function validate_number(value, min, max) {
         //console.log(max)
 
         return {
-            class: 'invalid',
-            type: 'max_limit'
+            class: 'invalid', type: 'max_limit'
         }
 
     }
@@ -767,8 +825,7 @@ function validate_signed_integer(value, max_value) {
 
     if (!$.isNumeric(value)) {
         return {
-            class: 'invalid',
-            type: 'not_integer'
+            class: 'invalid', type: 'not_integer'
         }
     }
 

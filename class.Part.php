@@ -249,6 +249,8 @@ class Part extends Asset {
             }
 
 
+            $this->validate_barcode();
+
         } else {
             print "Error Part can not be created $sql\n";
             $this->msg = 'Error Part can not be created';
@@ -2934,7 +2936,7 @@ class Part extends Asset {
 
 
                 $this->update_field($field, $value, $options);
-
+                $this->validate_barcode();
 
                 $updated = $this->updated;
 
@@ -2952,6 +2954,27 @@ class Part extends Asset {
 
 
                 $this->updated = $updated;
+
+
+                if (file_exists('widgets/inventory_alerts.wget.php')) {
+                    include_once('widgets/inventory_alerts.wget.php');
+                    global $smarty;
+
+                    if (is_object($smarty)) {
+
+
+                        $_data = get_widget_data(
+
+                            $account->get('Account Parts with Barcode Number Error'), $account->get('Account Parts with Barcode Number'), 0, 0
+                        );
+
+
+                        $smarty->assign('data', $_data);
+
+
+                        $this->update_metadata = array('parts_with_barcode_errors' => $smarty->fetch('dashboard/inventory.parts_with_barcode_errors.dbard.tpl'));
+                    }
+                }
 
 
                 break;
@@ -3582,10 +3605,17 @@ class Part extends Asset {
                     if (is_object($smarty)) {
 
 
-                        $_data = get_widget_data(
+                        $all_active=$account->get('Account Active Parts Number')+$account->get('Account In Process Parts Number')+$account->get('Account Discontinuing Parts Number');
 
-                            $account->get('Account Active Parts Number') - $account->get('Account Active Parts with SKO Barcode Number'), $account->get('Account Active Parts Number'), 0, 0
+                        $data = get_widget_data(
+
+                            $all_active-$account->get('Account Active Parts with SKO Barcode Number'),
+                            $all_active,
+                            0,
+                            0
+
                         );
+
 
 
                         $smarty->assign('data', $_data);
@@ -4053,5 +4083,79 @@ class Part extends Asset {
 
 
     }
+
+
+    function validate_barcode(){
+        $error='';
+        if($this->data['Part Barcode Number']!=''){
+            if(strlen($this->data['Part Barcode Number'])!=(12+1)){
+                $error='Size';
+                if(strlen($this->data['Part Barcode Number'])==12){
+                    $error='Checksum_missing';
+                    $sql=sprintf('select `Part SKU` from `Part Dimension` where `Part Barcode Number` like "%s%%" and `Part SKU`!=%d',
+                                 addslashes($this->data['Part Barcode Number']) ,$this->id);
+
+                    if ($result=$this->db->query($sql)) {
+                        foreach ($result as $row) {
+
+                            $error='Short_Duplicated';
+                        }
+
+                    }else {
+                        print_r($error_info=$this->db->errorInfo());
+                        print "$sql\n";
+                        exit;
+                    }
+
+                }
+
+
+            }else{
+                $digits=substr($this->data['Part Barcode Number'], 0, 12);
+
+                $digits         = (string)$digits;
+                $even_sum       = $digits{1} + $digits{3} + $digits{5} + $digits{7} + $digits{9} + $digits{11};
+                $even_sum_three = $even_sum * 3;
+                $odd_sum        = $digits{0} + $digits{2} + $digits{4} + $digits{6} + $digits{8} + $digits{10};
+                $total_sum      = $even_sum_three + $odd_sum;
+                $next_ten       = (ceil($total_sum / 10)) * 10;
+                $check_digit    = $next_ten - $total_sum;
+
+                if($check_digit!=substr($this->data['Part Barcode Number'], -1)){
+                    $error='Checksum';
+                }else{
+                    $sql=sprintf('select `Part SKU` from `Part Dimension` where `Part Barcode Number`=%s and `Part SKU`!=%d',
+                                 prepare_mysql($this->data['Part Barcode Number']) ,$this->id);
+
+                    if ($result=$this->db->query($sql)) {
+                    		foreach ($result as $row) {
+                               $part=get_object('Part',$row['Part SKU']);
+                               $part->fast_update(array('Part Barcode Number Error'=>'Duplicated'));
+                                $error='Duplicated';
+                    		}
+
+                    }else {
+                    		print_r($error_info=$this->db->errorInfo());
+                    		print "$sql\n";
+                    		exit;
+                    }
+
+
+                }
+
+
+            }
+
+        }
+        $this->fast_update(array('Part Barcode Number Error'=>$error));
+
+        global $account;
+        $account->update_parts_data();
+
+    }
+
+
+
+
 
 }

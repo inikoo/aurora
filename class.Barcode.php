@@ -263,7 +263,7 @@ $this->msg=_('Barcode already in the system');
                         'Barcode Asset Assigned Date' => gmdate('Y-m-d H:i:s')
                     );
 
-                    $this->assign_asset($asset_data);
+                    $this->assign_asset_to_barcode($asset_data);
 
                 }
             }else {
@@ -302,7 +302,7 @@ $this->msg=_('Barcode already in the system');
     }
 
 
-    function assign_asset($asset_data) {
+    function assign_asset_to_barcode($asset_data) {
 
         $this->new_assigned_asset = false;
 

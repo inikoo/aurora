@@ -109,8 +109,7 @@ class Account extends DB_Table {
 
         $positions = array();
         $sql       = sprintf(
-            'SELECT * FROM `Staff Dimension` SD  LEFT JOIN `Company Position Staff Bridge` B ON (B.`Staff Key`=SD.`Staff Key`)  WHERE  `Position Code`=%s AND `Staff Currently Working`="Yes"',
-            prepare_mysql($position_code)
+            'SELECT * FROM `Staff Dimension` SD  LEFT JOIN `Company Position Staff Bridge` B ON (B.`Staff Key`=SD.`Staff Key`)  WHERE  `Position Code`=%s AND `Staff Currently Working`="Yes"', prepare_mysql($position_code)
         );
 
 
@@ -397,8 +396,7 @@ class Account extends DB_Table {
                 $number = 0;
 
                 $sql = sprintf(
-                    'SELECT count(*) AS num FROM `Order Dimension` WHERE `Order State`="Dispatched" AND `Order Dispatched Date`>%s   AND  `Order Dispatched Date`<%s   ',
-                    prepare_mysql(date('Y-m-d 00:00:00')), prepare_mysql(date('Y-m-d 23:59:59'))
+                    'SELECT count(*) AS num FROM `Order Dimension` WHERE `Order State`="Dispatched" AND `Order Dispatched Date`>%s   AND  `Order Dispatched Date`<%s   ', prepare_mysql(date('Y-m-d 00:00:00')), prepare_mysql(date('Y-m-d 23:59:59'))
                 );
 
                 if ($result = $this->db->query($sql)) {
@@ -715,29 +713,76 @@ class Account extends DB_Table {
     }
 
     function update_parts_data() {
-        $number_parts                 = 0;
+        $number_in_process_parts      = 0;
+        $number_active_parts          = 0;
+        $number_discontinuing_parts   = 0;
+        $number_discontinued_parts    = 0;
         $number_parts_no_sko_barcodes = 0;
-        $sql                          = sprintf(
-            'SELECT count(*) AS num FROM `Part Dimension` WHERE `Part Status`="In Use"'
-        );
-        if ($row = $this->db->query($sql)->fetch()) {
-            $number_parts = $row['num'];
+        $number_parts_barcode_error   = 0;
+        $number_parts_with_barcode    = 0;
+
+
+        $sql = sprintf('SELECT count(*) AS num ,`Part Status`  FROM `Part Dimension` WHERE `Part Status` GROUP BY `Part Status`');
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                switch ($row['Part Status']) {
+                    case 'In Use':
+                        $number_active_parts = $row['num'];
+                        break;
+                    case 'In Process':
+                        $number_in_process_parts = $row['num'];
+                        break;
+                    case 'Not In Use':
+                        $number_discontinued_parts = $row['num'];
+                        break;
+                    case 'Discontinuing':
+                        $number_discontinuing_parts = $row['num'];
+                        break;
+                }
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
 
+
         $sql = sprintf(
-            'SELECT count(*) AS num FROM `Part Dimension` WHERE `Part Status`="In Use" AND `Part SKO Barcode`!=""  '
+            'SELECT count(*) AS num FROM `Part Dimension` WHERE `Part Status`!="Not In Use" AND `Part SKO Barcode`!=""  '
         );
         if ($row = $this->db->query($sql)->fetch()) {
             $number_parts_no_sko_barcodes = $row['num'];
         }
 
+        $sql = sprintf(
+            'SELECT count(*) AS num FROM `Part Dimension` WHERE `Part Barcode Number Error` IS NOT NULL  '
+        );
+        if ($row = $this->db->query($sql)->fetch()) {
+            $number_parts_barcode_error = $row['num'];
+        }
 
-        $this->update(
+        $sql = sprintf(
+            'SELECT count(*) AS num FROM `Part Dimension` WHERE `Part Barcode Number` IS NOT NULL  '
+        );
+        if ($row = $this->db->query($sql)->fetch()) {
+            $number_parts_with_barcode = $row['num'];
+        }
+
+
+
+        $this->fast_update(
             array(
-                'Account Active Parts Number'                  => $number_parts,
+                'Account Active Parts Number'                  => $number_active_parts,
+                'Account In Process Parts Number'              => $number_in_process_parts,
+                'Account Discontinued Parts Number'            => $number_discontinued_parts,
+                'Account Discontinuing Parts Number'           => $number_discontinuing_parts,
                 'Account Active Parts with SKO Barcode Number' => $number_parts_no_sko_barcodes,
+                'Account Parts with Barcode Number Error'      => $number_parts_barcode_error,
+                'Account Parts with Barcode Number'            => $number_parts_with_barcode,
 
-            ), 'no_history'
+
+            ), 'Account Data'
         );
 
     }
@@ -1169,16 +1214,14 @@ class Account extends DB_Table {
                 "Account $db_interval Acc Customers"                => $sales_data['customers'],
                 "Account $db_interval Acc Repeat Customers"         => $sales_data['repeat_customers'],
 
-              //  "Account DC $db_interval Acc Invoiced Amount"          => round($sales_data['dc_amount'], 2),
-              //  "Account DC $db_interval Acc Invoiced Discount Amount" => round($sales_data['dc_discount_amount'], 2),
-              //  "Account DC $db_interval Acc Profit"                   => round($sales_data['dc_profit'], 2)
-                );
-
-
+                //  "Account DC $db_interval Acc Invoiced Amount"          => round($sales_data['dc_amount'], 2),
+                //  "Account DC $db_interval Acc Invoiced Discount Amount" => round($sales_data['dc_discount_amount'], 2),
+                //  "Account DC $db_interval Acc Profit"                   => round($sales_data['dc_profit'], 2)
+            );
 
 
             $this->fast_update($data_to_update, 'Account Data');
-          //  exit();
+            //  exit();
         }
 
         if ($from_date_1yb and $last_year) {
@@ -1187,20 +1230,19 @@ class Account extends DB_Table {
             $sales_data = $this->get_sales_data($from_date_1yb, $to_date_1yb);
 
             $data_to_update = array(
-                "Account $db_interval Acc 1YB Invoiced Discount Amount"    => round($sales_data['discount_amount'], 2),
-                "Account $db_interval Acc 1YB Invoiced Amount"             => round($sales_data['amount'], 2),
-                "Account $db_interval Acc 1YB Invoices"                    => $sales_data['invoices'],
-                "Account $db_interval Acc 1YB Refunds"                     => $sales_data['refunds'],
-                "Account $db_interval Acc 1YB Replacements"                => $sales_data['replacements'],
-                "Account $db_interval Acc 1YB Delivery Notes"              => $sales_data['deliveries'],
-                "Account $db_interval Acc 1YB Profit"                      => round($sales_data['profit'], 2),
-                "Account $db_interval Acc 1YB Customers"                   => $sales_data['customers'],
-                "Account $db_interval Acc 1YB Repeat Customers"            => $sales_data['repeat_customers'],
-              //  "Account DC $db_interval Acc 1YB Invoiced Amount"          => round($sales_data['dc_amount'], 2),
-              //  "Account DC $db_interval Acc 1YB Invoiced Discount Amount" => round($sales_data['dc_discount_amount'], 2),
-              //  "Account DC $db_interval Acc 1YB Profit"                   => round($sales_data['dc_profit'], 2),
+                "Account $db_interval Acc 1YB Invoiced Discount Amount" => round($sales_data['discount_amount'], 2),
+                "Account $db_interval Acc 1YB Invoiced Amount"          => round($sales_data['amount'], 2),
+                "Account $db_interval Acc 1YB Invoices"                 => $sales_data['invoices'],
+                "Account $db_interval Acc 1YB Refunds"                  => $sales_data['refunds'],
+                "Account $db_interval Acc 1YB Replacements"             => $sales_data['replacements'],
+                "Account $db_interval Acc 1YB Delivery Notes"           => $sales_data['deliveries'],
+                "Account $db_interval Acc 1YB Profit"                   => round($sales_data['profit'], 2),
+                "Account $db_interval Acc 1YB Customers"                => $sales_data['customers'],
+                "Account $db_interval Acc 1YB Repeat Customers"         => $sales_data['repeat_customers'],
+                //  "Account DC $db_interval Acc 1YB Invoiced Amount"          => round($sales_data['dc_amount'], 2),
+                //  "Account DC $db_interval Acc 1YB Invoiced Discount Amount" => round($sales_data['dc_discount_amount'], 2),
+                //  "Account DC $db_interval Acc 1YB Profit"                   => round($sales_data['dc_profit'], 2),
             );
-
 
 
             $this->fast_update($data_to_update, 'Account Data');
@@ -1262,7 +1304,7 @@ class Account extends DB_Table {
             'repeat_customers'   => 0,
 
         );
-       // print_r($sales_data);
+        // print_r($sales_data);
 
 
         $sql = sprintf(
@@ -1272,11 +1314,10 @@ class Account extends DB_Table {
         );
 
 
-
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-                $sales_data['customers']       = $row['customers'];
-                if($row['customers']>0){
+                $sales_data['customers'] = $row['customers'];
+                if ($row['customers'] > 0) {
 
                     $sales_data['discount_amount'] = $row['dc_discounts'];
                     $sales_data['amount']          = $row['dc_net'];
@@ -1284,8 +1325,6 @@ class Account extends DB_Table {
                     $sales_data['invoices']        = $row['invoices'];
                     $sales_data['refunds']         = $row['refunds'];
                 }
-
-
 
 
             }
@@ -1297,8 +1336,8 @@ class Account extends DB_Table {
 
 
         $sql = sprintf(
-            "SELECT count(*)  AS replacements FROM `Delivery Note Dimension` WHERE `Delivery Note Type` IN ('Replacement & Shortages','Replacement','Shortages') AND TRUE %s %s",
-            ($from_date ? sprintf('and `Delivery Note Date`>%s', prepare_mysql($from_date)) : ''), ($to_date ? sprintf('and `Delivery Note Date`<%s', prepare_mysql($to_date)) : '')
+            "SELECT count(*)  AS replacements FROM `Delivery Note Dimension` WHERE `Delivery Note Type` IN ('Replacement & Shortages','Replacement','Shortages') AND TRUE %s %s", ($from_date ? sprintf('and `Delivery Note Date`>%s', prepare_mysql($from_date)) : ''),
+            ($to_date ? sprintf('and `Delivery Note Date`<%s', prepare_mysql($to_date)) : '')
         );
 
 
@@ -1351,7 +1390,7 @@ class Account extends DB_Table {
             exit;
         }
 
-       // print_r($sales_data);
+        // print_r($sales_data);
         return $sales_data;
 
 
@@ -1491,8 +1530,7 @@ class Account extends DB_Table {
             if ($fork_key) {
 
                 $sql = sprintf(
-                    "UPDATE `Fork Dimension` SET `Fork State`='In Process' ,`Fork Operations Total Operations`=%d,`Fork Start Date`=NOW(),`Fork Result`=%d  WHERE `Fork Key`=%d ", count($dates),
-                    $timeseries->id, $fork_key
+                    "UPDATE `Fork Dimension` SET `Fork State`='In Process' ,`Fork Operations Total Operations`=%d,`Fork Start Date`=NOW(),`Fork Result`=%d  WHERE `Fork Key`=%d ", count($dates), $timeseries->id, $fork_key
                 );
 
                 $this->db->exec($sql);
@@ -1504,15 +1542,13 @@ class Account extends DB_Table {
                 $_date      = gmdate('Y-m-d', strtotime($date_frequency_period['from'].' +0:00'));
 
 
-                if ($sales_data['invoices'] > 0 or $sales_data['refunds'] > 0 or $sales_data['customers'] > 0 or $sales_data['amount'] != 0 or $sales_data['dc_amount'] != 0 or $sales_data['profit']
-                    != 0 or $sales_data['dc_profit'] != 0) {
+                if ($sales_data['invoices'] > 0 or $sales_data['refunds'] > 0 or $sales_data['customers'] > 0 or $sales_data['amount'] != 0 or $sales_data['dc_amount'] != 0 or $sales_data['profit'] != 0 or $sales_data['dc_profit'] != 0) {
 
                     list($timeseries_record_key, $date) = $timeseries->create_record(array('Timeseries Record Date' => $_date));
 
                     $sql = sprintf(
                         'UPDATE `Timeseries Record Dimension` SET `Timeseries Record Integer A`=%d ,`Timeseries Record Integer B`=%d ,`Timeseries Record Integer C`=%d ,`Timeseries Record Float A`=%.2f ,  `Timeseries Record Float B`=%f ,`Timeseries Record Float C`=%f ,`Timeseries Record Float D`=%f ,`Timeseries Record Type`=%s WHERE `Timeseries Record Key`=%d',
-                        $sales_data['invoices'], $sales_data['refunds'], $sales_data['customers'], $sales_data['amount'], $sales_data['dc_amount'], $sales_data['profit'], $sales_data['dc_profit'],
-                        prepare_mysql('Data'), $timeseries_record_key
+                        $sales_data['invoices'], $sales_data['refunds'], $sales_data['customers'], $sales_data['amount'], $sales_data['dc_amount'], $sales_data['profit'], $sales_data['dc_profit'], prepare_mysql('Data'), $timeseries_record_key
 
                     );
 
@@ -1627,7 +1663,7 @@ class Account extends DB_Table {
 
         $data_to_update = array(
             'Account Orders In Basket Number' => $data['in_basket']['number'],
-            'Account Orders In Basket Amount' => round($data['in_basket']['dc_amount'],2)
+            'Account Orders In Basket Amount' => round($data['in_basket']['dc_amount'], 2)
 
 
         );
@@ -1694,11 +1730,11 @@ class Account extends DB_Table {
 
         $data_to_update = array(
             'Account Orders In Process Paid Number'     => $data['in_process_paid']['number'],
-            'Account Orders In Process Paid Amount'     => round($data['in_process_paid']['dc_amount'],2),
+            'Account Orders In Process Paid Amount'     => round($data['in_process_paid']['dc_amount'], 2),
             'Account Orders In Process Not Paid Number' => $data['in_process_not_paid']['number'],
-            'Account Orders In Process Not Paid Amount' => round($data['in_process_not_paid']['dc_amount'],2),
+            'Account Orders In Process Not Paid Amount' => round($data['in_process_not_paid']['dc_amount'], 2),
             'Account Orders In Process Number'          => $data['in_process_paid']['number'] + $data['in_process_not_paid']['number'],
-            'Account Orders In Process Amount'          => round($data['in_process_paid']['dc_amount'] + $data['in_process_not_paid']['dc_amount'],2)
+            'Account Orders In Process Amount'          => round($data['in_process_paid']['dc_amount'] + $data['in_process_not_paid']['dc_amount'], 2)
 
         );
 
@@ -1769,11 +1805,11 @@ class Account extends DB_Table {
 
         $data_to_update = array(
             'Account Orders In Warehouse Number'             => $data['warehouse']['number'],
-            'Account Orders In Warehouse Amount'             => round($data['warehouse']['dc_amount'],2),
+            'Account Orders In Warehouse Amount'             => round($data['warehouse']['dc_amount'], 2),
             'Account Orders In Warehouse No Alerts Number'   => $data['warehouse_no_alerts']['number'],
-            'Account Orders In Warehouse No Alerts Amount'   => round($data['warehouse_no_alerts']['dc_amount'],2),
+            'Account Orders In Warehouse No Alerts Amount'   => round($data['warehouse_no_alerts']['dc_amount'], 2),
             'Account Orders In Warehouse With Alerts Number' => $data['warehouse_with_alerts']['number'],
-            'Account Orders In Warehouse With Alerts Amount' => round($data['warehouse_with_alerts']['dc_amount'],2)
+            'Account Orders In Warehouse With Alerts Amount' => round($data['warehouse_with_alerts']['dc_amount'], 2)
 
         );
 
@@ -1815,7 +1851,7 @@ class Account extends DB_Table {
 
         $data_to_update = array(
             'Account Orders Packed Number' => $data['packed']['number'],
-            'Account Orders Packed Amount' => round($data['packed']['dc_amount'],2)
+            'Account Orders Packed Amount' => round($data['packed']['dc_amount'], 2)
 
 
         );
@@ -1854,7 +1890,7 @@ class Account extends DB_Table {
 
         $data_to_update = array(
             'Account Orders Dispatch Approved Number' => $data['approved']['number'],
-            'Account Orders Dispatch Approved Amount' => round($data['approved']['dc_amount'],2)
+            'Account Orders Dispatch Approved Amount' => round($data['approved']['dc_amount'], 2)
 
 
         );
@@ -1895,7 +1931,7 @@ class Account extends DB_Table {
 
         $data_to_update = array(
             'Account Orders Dispatched Number' => $data['dispatched']['number'],
-            'Account Orders Dispatched Amount' => round($data['dispatched']['dc_amount'],2)
+            'Account Orders Dispatched Amount' => round($data['dispatched']['dc_amount'], 2)
 
 
         );
@@ -1916,8 +1952,7 @@ class Account extends DB_Table {
 
 
         $sql = sprintf(
-            "SELECT count(*) AS num,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE   `Order State` ='Dispatched' AND `Order Dispatched Date`>=%s ",
-            prepare_mysql(gmdate('Y-m-d 00:00:00'))
+            "SELECT count(*) AS num,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE   `Order State` ='Dispatched' AND `Order Dispatched Date`>=%s ", prepare_mysql(gmdate('Y-m-d 00:00:00'))
 
         );
 
@@ -1939,7 +1974,7 @@ class Account extends DB_Table {
 
         $data_to_update = array(
             'Account Orders Dispatched Today Number' => $data['dispatched_today']['number'],
-            'Account Orders Dispatched Today Amount' => round($data['dispatched_today']['dc_amount'],2)
+            'Account Orders Dispatched Today Amount' => round($data['dispatched_today']['dc_amount'], 2)
 
 
         );
@@ -1981,7 +2016,7 @@ class Account extends DB_Table {
         $data_to_update = array(
 
             'Account Orders Cancelled Number' => $data['cancelled']['number'],
-            'Account Orders Cancelled Amount' => round($data['cancelled']['dc_amount'],2)
+            'Account Orders Cancelled Amount' => round($data['cancelled']['dc_amount'], 2)
 
         );
         $this->fast_update($data_to_update, 'Account Data');

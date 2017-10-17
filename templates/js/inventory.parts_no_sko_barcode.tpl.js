@@ -35,6 +35,12 @@ $('#table').on('click', '.save_sko_barcode', function() {
 
 
     var icon= $(this)
+
+    if(icon.hasClass('error')){
+        return;
+    }
+
+
     var input= $(this).prev('input')
 
     var request = '/ar_edit.php?tipo=edit_field&object=Part&key='+input.attr('part_sku')+'&field=Part_SKO_Barcode&value='+input.val()+'&metadata={}'

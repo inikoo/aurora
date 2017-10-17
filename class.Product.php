@@ -574,11 +574,14 @@ class Product extends Asset {
                 break;
 
             case 'Webpage Out of Stock Label':
-                if ($this->get('Product Total Acc Quantity Ordered') > 0) {
-                    return _('Out of stock');
-                } else {
+
+                if ($this->get('Product Total Acc Quantity Ordered') ==0 and  $this->data['Product Web Configuration'] != 'Online Force Out of Stock' and $this->data['Product Status']!='Discontinuing') {
                     return _('Launching soon');
+                } else {
+                    return _('Out of stock');
                 }
+
+                break;
 
 
             case 'Price':

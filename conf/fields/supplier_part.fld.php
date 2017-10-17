@@ -221,6 +221,7 @@ $supplier_part_fields[] = array(
             'formatted_value'   => $object->get('Part Barcode Number'),
             'label'             => _('Unit barcode (EAN-13)'),
             'required'          => false,
+            'invalid_msg'       => get_invalid_message('barcode_ean'),
             'server_validation' => json_encode(
                 array(
                     'tipo'       => 'check_for_duplicates',

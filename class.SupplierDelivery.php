@@ -494,6 +494,8 @@ class SupplierDelivery extends DB_Table {
             case 'PO Creation Date':
             case 'PO Submitted Date':
 
+
+
                 $key = preg_replace('/^PO /', '', $key);
 
                 if ($this->data['Purchase Order '.$key] == '') {
@@ -1713,7 +1715,9 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
             case 'Supplier Delivery Estimated Receiving Date':
                 $label = _('estimated receiving date');
                 break;
-
+            case 'Supplier Delivery Dispatched Date':
+                $label = _('dispatched date');
+                break;
             default:
                 $label = $field;
 

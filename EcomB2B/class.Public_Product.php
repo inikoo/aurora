@@ -440,7 +440,16 @@ class Public_Product {
                 break;
 
             case 'Out of Stock Label':
-                if ($this->data['Product Total Acc Quantity Ordered'] > 0) {
+
+                if ($this->get('Product Total Acc Quantity Ordered') ==0 and  $this->data['Product Web Configuration'] != 'Online Force Out of Stock' and $this->data['Product Status']!='Discontinuing') {
+                    return _('Launching soon');
+
+
+
+
+
+
+                } else {
 
 
                     if ($this->data['Product Next Supplier Shipment'] != '') {
@@ -451,11 +460,8 @@ class Public_Product {
                     } else {
                         $label = _('Out of stock');
                     }
-
-
                     return $label;
-                } else {
-                    return _('Launching soon');
+
                 }
                 break;
 

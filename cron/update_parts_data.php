@@ -39,15 +39,16 @@ function update_parts_data($db) {
             $part->activate();
 
 
-            $part->update_cost();
+           // $part->update_cost();
             $part->update_products_data();
             $part->update_history_records_data();
             $part->update_attachments_data();
             $part->update_images_data();
+            $part->validate_barcode();
 
 
             if ($part->get('Part Cost') <= 0 and $part->get('Part Status')!='Not In Use' ) {
-                print $part->get('Reference')." ".$part->get('Part Cost')."\n";
+             //   print $part->get('Reference')." ".$part->get('Part Cost')."\n";
 
 
             }

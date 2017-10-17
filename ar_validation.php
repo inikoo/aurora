@@ -684,7 +684,9 @@ function check_for_duplicates($data, $db, $user, $account) {
 
                    // $invalid_msg              =
                     $sql                      = sprintf(
-                        "SELECT P.`Part SKU` AS `key` ,`Part Barcode Number` AS field  ,`Part Reference` as name FROM `Part Dimension` P WHERE  `Part Barcode Number`=%s   ", prepare_mysql($data['value'])
+                        "SELECT P.`Part SKU` AS `key` ,`Part Barcode Number` AS field  ,`Part Reference` as name FROM `Part Dimension` P WHERE  `Part Barcode Number`=%s and `Part SKU`!=%d  ",
+                        prepare_mysql($data['value']),
+                        $data['key']
                     );
 
 

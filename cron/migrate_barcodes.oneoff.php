@@ -147,7 +147,7 @@ while (($data = fgetcsv($handle, 1000, ",")) !== false) {
                 'Barcode Asset Assigned Date' => $part->get('Part Valid From')
             );
 
-            $barcode->assign_asset($asset_data);
+            $barcode->assign_asset_to_barcode($asset_data);
 
             if (!$barcode->assigned) {
                 $barcode->update(
