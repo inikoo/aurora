@@ -269,6 +269,16 @@ function get_invalid_message($type) {
             $messages = array(
                 'invalid' => _('Invalid amount'),
             );
+            break;
+        case 'barcode_ean':
+            $messages = array(
+                'invalid'      => _('Invalid barcode'),
+                'empty'        => _('Please provide a number'),
+                'short'        => _('Barcode too short, should be 13 digits'),
+                'missing_checksum'  => _('Check digit missing'),
+                'long'         => _('Barcode too long, should be 13 digits'),
+                'checksum' => _('Wrong check digit'),
+            );
     }
 
     return $messages;

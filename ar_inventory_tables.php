@@ -32,6 +32,11 @@ switch ($tipo) {
     case 'parts_no_sko_barcode':
         parts_no_sko_barcode(get_table_parameters(), $db, $user, '', $account);
         break;
+    case 'parts_barcode_errors':
+        parts_barcode_errors(get_table_parameters(), $db, $user, '', $account);
+        break;
+
+
 
     case 'parts':
         parts(get_table_parameters(), $db, $user, '', $account);
@@ -1965,5 +1970,71 @@ function parts_no_sko_barcode($_data, $db, $user) {
     echo json_encode($response);
 }
 
+function parts_barcode_errors($_data, $db, $user) {
+
+
+    $rtext_label = 'part';
+
+    include_once 'prepare_table/init.php';
+
+    $sql         = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+    $record_data = array();
+
+    $record_data = array();
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+            switch ($data['Part Barcode Number Error']){
+                case 'Duplicated':
+                    $error='<span class="barcode_number_error error">'._('Duplicated').'</span>';
+                    break;
+                case 'Size':
+                    $error='<span class="barcode_number_error error">'._('Barcode should be 13 digits').'</span>';
+                    break;
+                case 'Short_Duplicated':
+                    $error='<span class="barcode_number_error error">'._('Check digit missing, will duplicate').'</span>';
+                    break;
+                case 'Checksum_missing':
+                    $error='<span class="barcode_number_error error">'._('Check digit missing').'</span>';
+                    break;
+                case 'Checksum':
+                    $error='<span class="barcode_number_error error">'._('Invalid check digit').'</span>';
+                    break;
+                default:
+                    $error='<span class="barcode_number_error error">'.$data['Part Barcode Number Error'].'</span>';
+            }
+
+            $record_data[] = array(
+                'id'          => (integer)$data['Part SKU'],
+                'reference'   => sprintf('<span class="link" onClick="change_view(\'part/%d\')">%s</span>',$data['Part SKU'],$data['Part Reference']),
+                'error' => $error,
+                'description' => $data['Part Package Description'],
+                'barcode'     => sprintf(
+                    '<input class="barcode_number" style="width:200px" value="%s" part_sku="%d" > <i class="fa save_barcode_number fa-cloud very_discreet" aria-hidden="true"></i> <span class="barcode_number_msg error" ></span>',
+                    $data['Part Barcode Number'],
+                    $data['Part SKU']
+                )
+            );
+        }
+
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $record_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
 
 ?>

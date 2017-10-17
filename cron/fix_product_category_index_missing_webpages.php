@@ -32,11 +32,11 @@ $sql = sprintf('SELECT * FROM `Product Category Index`  WHERE ( `Product Categor
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
-       // print_r($row);
 
         $product = get_object('Product', $row['Product Category Index Product ID']);
 
         $webpage_key = $product->get('Product Webpage Key');
+
 
         // print_r($category->get('Product Category Webpage Key'));
 
@@ -48,7 +48,6 @@ if ($result = $db->query($sql)) {
             print "$sql\n";
             $db->exec($sql);
         }
-
 
 
 

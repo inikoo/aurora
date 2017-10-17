@@ -164,12 +164,11 @@ $part_fields[] = array(
             'render' => ($supplier_part_scope ? false : true),
             'edit' => ($edit ? 'barcode' : ''),
 
-            'value'             => htmlspecialchars(
-                $object->get('Part Barcode Number')
-            ),
+            'value'             => htmlspecialchars($object->get('Part Barcode Number')),
             'formatted_value'   => $object->get('Barcode Number'),
             'label'             => _('Unit barcode (EAN-13)'),
             'required'          => false,
+            'invalid_msg'       => get_invalid_message('barcode_ean'),
             'server_validation' => json_encode(
                 array(
                     'tipo'       => 'check_for_duplicates',

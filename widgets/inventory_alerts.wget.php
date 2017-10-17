@@ -15,10 +15,13 @@ function get_inventory_alerts( $db, $account, $user, $smarty) {
 
     $html = '';
 
+
+    $all_active=$account->get('Account Active Parts Number')+$account->get('Account In Process Parts Number')+$account->get('Account Discontinuing Parts Number');
+
     $data = get_widget_data(
 
-        $account->get('Account Active Parts Number')-$account->get('Account Active Parts with SKO Barcode Number'),
-        $account->get('Account Active Parts Number'),
+        $all_active-$account->get('Account Active Parts with SKO Barcode Number'),
+        $all_active,
         0,
         0
 
@@ -37,6 +40,23 @@ function get_inventory_alerts( $db, $account, $user, $smarty) {
 
 
 
+    $data = get_widget_data(
+
+        $account->get('Account Parts with Barcode Number Error'),
+        $account->get('Account Parts with Barcode Number'),
+        0,
+        0
+
+    );
+
+
+
+    if ($data['ok']) {
+
+
+        $smarty->assign('data', $data);
+        $html .= '<div class="parts_with_barcode_error">'.$smarty->fetch('dashboard/inventory.parts_with_barcode_errors.dbard.tpl').'</div>';
+    }
 
 
 

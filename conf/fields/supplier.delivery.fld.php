@@ -59,29 +59,39 @@ $object_fields = array(
     ),
 );
 
-if ($object->get('State Index') < 40) {
 
     $object_fields[] = array(
-        'label'      => _('Estimated delivery'),
+        'label'      => _('Dates').' <i class="fa padding_left_10 fa-exclamation-triangle yellow" aria-hidden="true"></i> <span class="warning" style=";font-weight: normal">'._('Please be careful changing dates').'</span>',
         'show_title' => true,
         'fields'     => array(
 
             array(
 
 
-                'id'   => 'Supplier_Delivery_Estimated_Receiving_Date',
+                'id'   => 'Supplier_Delivery_Dispatched_Date',
                 'edit' => ($edit ? 'date' : ''),
 
                 'time'            => '00:00:00',
-                'value'           => $object->get(
-                    'Supplier Delivery Estimated Receiving Date'
-                ),
+                'value'           => $object->get('Supplier Delivery Dispatched Date'),
+                'formatted_value' => $object->get('Dispatched Date'),
+                'label'           => ucfirst($object->get_field_label('Supplier Delivery Dispatched Date')),
+                'invalid_msg'     => get_invalid_message('date'),
+                'required'        => false,
+                'type'            => 'value'
+
+
+            ),
+
+            array(
+
+
+                'id'   => 'Supplier_Delivery_Estimated_Receiving_Date',
+                'edit' => ($edit ? 'date' : ''),
+               'render'=> ($object->get('State Index') < 40?true:false),
+                'time'            => '00:00:00',
+                'value'           => $object->get('Supplier Delivery Estimated Receiving Date'),
                 'formatted_value' => $object->get('Estimated Receiving Date'),
-                'label'           => ucfirst(
-                    $object->get_field_label(
-                        'Supplier Delivery Estimated Receiving Date'
-                    )
-                ),
+                'label'           => ucfirst($object->get_field_label('Supplier Delivery Estimated Receiving Date')),
                 'invalid_msg'     => get_invalid_message('date'),
                 'required'        => false,
                 'type'            => 'value'
@@ -94,7 +104,7 @@ if ($object->get('State Index') < 40) {
     );
 
 
-}
+
 $object_fields[] = array(
     'label'      => _('Delivery rules'),
     'show_title' => true,

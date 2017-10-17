@@ -61,5 +61,5 @@ Discontinuing : Out of Stock row can be present until we fix:
 
 
  SELECT count(*) FROM `Product Category Index`  WHERE ( `Product Category Index Product Webpage Key` IS NULL  OR `Product Category Index Product Webpage Key`=0 );
- SELECT count(*)  FROM `Product Category Index`  WHERE ( `Product Category Index Website Key` IS NULL  OR `Product Category Index Website Key`=0 ;
+ SELECT count(*) FROM `Product Category Index`  WHERE ( `Product Category Index Website Key` IS NULL  OR `Product Category Index Website Key`=0) ;
 php fix_product_category_index_missing_webpages.php

@@ -781,6 +781,9 @@ ALTER TABLE `Customer Dimension` DROP `Customer Main Delivery Address Key`;
 ALTER TABLE `Customer Dimension` DROP `Customer Main Address Incomplete`;
 
 
+
+
+
 ======= fer migracion ordering in dw and costa
 
                     ALTER TABLE `Invoice Tax Dimension` ADD `Invoice Tax Key` INT UNSIGNED NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`Invoice Tax Key`);

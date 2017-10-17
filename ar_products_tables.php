@@ -213,7 +213,7 @@ function products($_data, $db, $user, $account) {
                     break;
                 case 'Out of Stock':
 
-                    if ($data['Product Total Acc Quantity Ordered'] == 0 and $data['Product Web Configuration'] != 'Online Force Out of Stock') {
+                    if ($data['Product Total Acc Quantity Ordered'] == 0 and $data['Product Web Configuration'] != 'Online Force Out of Stock' and $data['Product Status']!='Discontinuing' ) {
                         $web_state=_('Launching soon');
                     }else{
                         $web_state = '<span  class="'.(($data['Product Availability'] > 0 and $data['Product Number of Parts'] > 0) ? 'error' : '').'">'._('Out of Stock').'</span>'

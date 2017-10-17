@@ -273,9 +273,7 @@ function edit_stock($account, $db, $user, $editor, $data, $smarty) {
 
         }
 
-        $part_location_to         = new PartLocation(
-            $movement['part_sku'], $movement['to_location_key']
-        );
+        $part_location_to         = new PartLocation($movement['part_sku'], $movement['to_location_key']);
         $part_location_to->editor = $editor;
 
         if ($part_location_to->get('Quantity On Hand') != $movement['to_location_stock']) {
