@@ -1985,6 +1985,22 @@ function parts_barcode_errors($_data, $db, $user) {
 
         foreach ($result as $data) {
 
+            if ($data['Part Status'] == 'In Use') {
+                $status = _('Active');
+            } elseif ($data['Part Status'] == 'Discontinuing') {
+                $status             = _('Discontinuing');
+
+            } elseif ($data['Part Status'] == 'Not In Use') {
+                $status = _('Discontinued');
+            } elseif ($data['Part Status'] == 'In Process') {
+                $status = _('In process');
+
+
+            } else {
+                $status = $data['Part Status'];
+            }
+
+
             switch ($data['Part Barcode Number Error']){
                 case 'Duplicated':
                     $error='<span class="barcode_number_error error">'._('Duplicated').'</span>';
@@ -2009,6 +2025,7 @@ function parts_barcode_errors($_data, $db, $user) {
                 'id'          => (integer)$data['Part SKU'],
                 'reference'   => sprintf('<span class="link" onClick="change_view(\'part/%d\')">%s</span>',$data['Part SKU'],$data['Part Reference']),
                 'error' => $error,
+                'status'=>$status,
                 'description' => $data['Part Package Description'],
                 'barcode'     => sprintf(
                     '<input class="barcode_number" style="width:200px" value="%s" part_sku="%d" > <i class="fa save_barcode_number fa-cloud very_discreet" aria-hidden="true"></i> <span class="barcode_number_msg error" ></span>',

@@ -1,4 +1,4 @@
-<div  class="button widget"
+<div id="inventory_parts_barcode_errors_wget"  class="button widget"
      onClick="get_widget_details(this,'inventory.parts_barcode_errors.wget',{ parent: 'account','parent_key':1})">
     <div id="parts_barcode_errors"
          style="padding-top: 10px;padding-right: 10px;padding-left: 10px;padding-bottom: 10px;"></div>

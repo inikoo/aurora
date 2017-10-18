@@ -16,15 +16,6 @@ editable: false,
 renderable: false,
 cell: "string",
 
-}, {
-name: "stock_status",
-label: "",
-editable: false,
-sortType: "toggle",
-cell: Backgrid.HtmlCell.extend({
-className: "width_20"
-})
-
 },{
 name: "reference",
 label: "{t}Part{/t}",
@@ -34,6 +25,17 @@ sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({ })
 
 },
+
+{
+name: "status",
+label: "{t}State{/t}",
+editable: false,
+sortType: "toggle",
+cell: Backgrid.HtmlCell.extend({
+})
+
+},
+
 {
 name: "description",
 label: "{t}Description{/t}",

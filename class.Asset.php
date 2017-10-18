@@ -266,7 +266,7 @@ class Asset extends DB_Table {
                         'SELECT `Part SKU` FROM `Part Dimension` WHERE `Part Barcode Number`=%s AND `Part SKU`!=%d  and (`Part Barcode Key` is null  or `Part Barcode Key`=0 )   ', prepare_mysql($_old_value), $this->id
                     );
 
-                   
+
                     if ($result = $this->db->query($sql)) {
                         foreach ($result as $row) {
 
