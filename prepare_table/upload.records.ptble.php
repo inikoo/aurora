@@ -94,7 +94,7 @@ $_dir   = $order_direction;
 
 
 if ($order == 'row') {
-    $order = '`Upload Record Upload File Key`,`Upload Record Row Index`';
+    $order = '`Upload Record Row Index`';
 } elseif ($order == 'status') {
     $order = '`Upload Record Status`';
 } elseif ($order == 'state') {
@@ -108,6 +108,7 @@ if ($order == 'row') {
 } else {
     $order = '`Upload Record Key`';
 }
+
 
 
 $sql_totals = "select count(*) as num from $table  $where  ";

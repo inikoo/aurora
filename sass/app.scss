@@ -118,6 +118,12 @@ html, body, textarea,button {
     text-decoration: none;
   }
 
+
+  .error {
+    color: $color_error;
+
+  }
+
   .marked_link {
 
     color: #6a6d91;
@@ -838,10 +844,6 @@ right connector from last child*/
   color: $color_warning
 }
 
-.error {
-  color: $color_error
-}
-
 .active{
   color: $color_active;
 
@@ -1262,3 +1264,5 @@ table.filter{
   margin-left : -8.75em;
   content : attr(data-tip);
 }
+
+

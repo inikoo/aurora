@@ -276,7 +276,7 @@ function fork_export_edit_template($job) {
 
                     break;
                 case 'part':
-                    $object = new Part($row['id']);
+                    $object = get_object('Part',$row['id']);
 
                     $data_rows = array();
 

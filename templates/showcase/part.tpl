@@ -235,11 +235,12 @@
             <table style="width:100%">
 
 
-                    <tr class="Part_Cost_in_Warehouse_info_not_set_up {if $part->get('Part Cost in Warehouse')!=''}hide{/if}"><td colspan="2">
-                           {t}SKO stock value no set up yet{/t}
-                            <div class="italic discreet" style="margin-top:10px">{t}Add stock via a purchase order or update Stock value (per SKO){/t}</div>
-                        </td>
-                    </tr>
+                <tr class="Part_Cost_in_Warehouse_info_not_set_up {if $part->get('Part Cost in Warehouse')!=''}hide{/if}">
+                    <td colspan="2">
+                        {t}SKO stock value no set up yet{/t}
+                        <div class="italic discreet" style="margin-top:10px">{t}Add stock via a purchase order or update Stock value (per SKO){/t}</div>
+                    </td>
+                </tr>
 
                 <tr class="Part_Cost_in_Warehouse_info_set_up {if $part->get('Part Cost in Warehouse')==''}hide{/if}">
                     <td>
@@ -284,8 +285,8 @@
                     <td class="label">
                         <i {if $part->get('Part Barcode Key')} class="fa fa-barcode button" onClick="change_view('inventory/barcode/{$part->get('Part Barcode Key')}')"{else}  class="fa fa-barcode"{/if} ></i>
                     </td>
-                    <td class="Part_Barcode_Number highlight">{$part->get('Part Barcode Number')} </td>
-                    <td class="barcode_labels aright {if !$part->get('Part Barcode Key')}xhide{/if}">
+                    <td><span  class="Part_Barcode_Number ">{$part->get('Part Barcode Number')}</span> <span class="error small  Barcode_Number_Error_with_Duplicates_Links">{$part->get('Barcode Number Error with Duplicates Links')}</span></td>
+                    <td class="barcode_labels aright ">
 
                         <a class="padding_left_10" title="{t}Commercial unit label{/t}" href="/asset_label.php?object=part&key={$part->id}&type=unit"><i class="fa fa-tags "></i></a>
                     </td>

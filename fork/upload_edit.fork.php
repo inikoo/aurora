@@ -31,6 +31,7 @@ function fork_upload_edit($job) {
 
     }
 
+
     $fork_data           = $_data['fork_data'];
     $fork_key            = $_data['fork_key'];
     $inikoo_account_code = $_data['inikoo_account_code'];
@@ -39,20 +40,21 @@ function fork_upload_edit($job) {
     $account = new Account($db);
 
 
-    $user = new User('id', $fork_data['user_key']);
+    $user   = new User('id', $fork_data['user_key']);
+
+    $upload = new Upload('id', $fork_data['upload_key']);
+    $upload->load_file_data();
 
     $editor = array(
         'Author Name'  => $user->data['User Alias'],
         'Author Alias' => $user->data['User Alias'],
         'Author Type'  => $user->data['User Type'],
         'Author Key'   => $user->data['User Parent Key'],
-        'User Key'     => $user->id
+        'User Key'     => $user->id,
+        'Upload Key'   => $fork_data['upload_key'],
+        'Upload Label' => $upload->get('Upload File Name')
     );
 
-
-
-
-    $upload = new Upload('id', $fork_data['upload_key']);
 
     $upload->update(array('Upload State' => 'InProcess'));
 
@@ -60,9 +62,6 @@ function fork_upload_edit($job) {
         "UPDATE `Fork Dimension` SET `Fork State`='In Process' ,`Fork Start Date`=NOW() WHERE `Fork Key`=%d ", $fork_key
     );
     $db->exec($sql);
-
-
-
 
 
     switch ($upload->get('Upload Object')) {
@@ -112,7 +111,7 @@ function fork_upload_edit($job) {
     $key_index     = -1;
     $valid_indexes = array();
 
-  //  print_r($fields);
+    //  print_r($fields);
 
 
     foreach ($fields as $key => $value) {
@@ -135,17 +134,16 @@ function fork_upload_edit($job) {
         }
     }
 
-//print_r($valid_indexes);
+    //print_r($valid_indexes);
 
-   // exit;
+    // exit;
 
     if ($key_index < 0) {
-        $error_code     = 'missing_required_field';
-        $error_metadata = json_encode(array());
+        //$error_code     = 'missing_required_field';
+        //$error_metadata = json_encode(array());
 
         $sql = sprintf(
-            "UPDATE `Upload Record Dimension` SET `Upload Record Date`=%s ,`Upload Record State`='Error', `Upload Record Status`='Done'  WHERE `Upload Record Upload Key`=%d AND `Upload Record State`='InProcess' ",
-            prepare_mysql(gmdate('Y-m-d H:i:s')), $upload->id
+            "UPDATE `Upload Record Dimension` SET `Upload Record Date`=%s ,`Upload Record State`='Error', `Upload Record Status`='Done'  WHERE `Upload Record Upload Key`=%d AND `Upload Record State`='InProcess' ", prepare_mysql(gmdate('Y-m-d H:i:s')), $upload->id
         );
         $db->exec($sql);
         update_upload_edit_stats($fork_key, $upload->id, $db);
@@ -173,8 +171,6 @@ function fork_upload_edit($job) {
     $sql = sprintf(
         "SELECT `Upload Record Key`, uncompress(`Upload Record Data`) AS data  FROM `Upload Record Dimension` WHERE `Upload Record Upload Key`=%d AND `Upload Record Status`='InProcess' ", $upload->id
     );
-
-
 
 
     if ($result = $db->query($sql)) {
@@ -249,7 +245,6 @@ function fork_upload_edit($job) {
                     $account, $db, $user, $editor, $_data, $upload, $fork_key
                 );
 
-
             } else {
                 if ($record_data[$key_index] == '') {
 
@@ -263,7 +258,8 @@ function fork_upload_edit($job) {
 
                 } else {
 
-                    $object = get_object($object_name, $record_data[$key_index]);
+                    $object         = get_object($object_name, $record_data[$key_index]);
+                    $object->editor = $editor;
 
                     if (!$object->id) {
 
@@ -278,11 +274,6 @@ function fork_upload_edit($job) {
                     }
 
 
-                    $edit_data = array();
-
-
-                    $row_results = array();
-
                     $errors          = 0;
                     $updated_records = 0;
                     $msg             = '';
@@ -294,7 +285,7 @@ function fork_upload_edit($job) {
 
                     foreach ($valid_indexes as $index => $field) {
 
-                   //       print "$field ->".$record_data[$index]."  ".$object->get_object_name()." \n";
+                        // print "$field ->".$record_data[$index]."  ".$object->get_object_name()." \n";
 
                         $object->update(array($field => $record_data[$index]));
 
@@ -319,7 +310,7 @@ function fork_upload_edit($job) {
 
                     }
 
-                   // exit;
+
                     // print "\n";
                     $msg = preg_replace('/, $/', '', $msg);
 
@@ -413,15 +404,14 @@ function update_upload_edit_stats($fork_key, $upload_key, $db) {
 
 
     $sql = sprintf(
-        'UPDATE `Fork Dimension` SET `Fork Operations Done`=%d,`Fork Operations No Changed`=%d,  `Fork Operations Errors`=%d ,`Fork Operations Cancelled`=%d WHERE `Fork Key`=%d ',
-        ($elements['OK'] + $elements['Warning']), $elements['NoChange'], $elements['Error'], $elements['Cancelled'], $fork_key
+        'UPDATE `Fork Dimension` SET `Fork Operations Done`=%d,`Fork Operations No Changed`=%d,  `Fork Operations Errors`=%d ,`Fork Operations Cancelled`=%d WHERE `Fork Key`=%d ', ($elements['OK'] + $elements['Warning']), $elements['NoChange'], $elements['Error'],
+        $elements['Cancelled'], $fork_key
     );
 
     $db->exec($sql);
 
     $sql = sprintf(
-        'UPDATE `Upload Dimension` SET `Upload OK`=%d,`Upload No Change`=%d,`Upload Errors`=%d ,`Upload Warnings`=%d WHERE `Upload Key`=%d ', $elements['OK'], $elements['NoChange'],
-        $elements['Error'], $elements['Warning'], $upload_key
+        'UPDATE `Upload Dimension` SET `Upload OK`=%d,`Upload No Change`=%d,`Upload Errors`=%d ,`Upload Warnings`=%d WHERE `Upload Key`=%d ', $elements['OK'], $elements['NoChange'], $elements['Error'], $elements['Warning'], $upload_key
     );
     $db->exec($sql);
 
@@ -453,8 +443,8 @@ function new_object($account, $db, $user, $editor, $data, $upload, $fork_key) {
                 $error_metadata = json_encode(array());
 
                 $sql = sprintf(
-                    "UPDATE `Upload Record Dimension` SET `Upload Record Date`=%s ,`Upload Record State`='Error', `Upload Record Status`='Done'  WHERE `Upload Record Upload Key`=%d AND `Upload Record State`='InProcess' ",
-                    prepare_mysql(gmdate('Y-m-d H:i:s')), $upload->id
+                    "UPDATE `Upload Record Dimension` SET `Upload Record Date`=%s ,`Upload Record State`='Error', `Upload Record Status`='Done'  WHERE `Upload Record Upload Key`=%d AND `Upload Record State`='InProcess' ", prepare_mysql(gmdate('Y-m-d H:i:s')),
+                    $upload->id
                 );
                 $db->exec($sql);
                 update_upload_edit_stats($fork_key, $upload->id, $db);

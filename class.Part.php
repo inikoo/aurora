@@ -351,7 +351,7 @@ class Part extends Asset {
 
                 if ($scope == 'objects') {
                     $products[$row['Product Part Product ID']] = get_object('Product', $row['Product Part Product ID']);
-                }elseif ($scope == 'data') {
+                } elseif ($scope == 'data') {
                     $products[$row['Product Part Product ID']] = $row;
                 } else {
                     $products[$row['Product Part Product ID']] = $row['Product Part Product ID'];
@@ -473,7 +473,7 @@ class Part extends Asset {
 
                         if ($this->data['Part Status'] == 'In Process') {
                             return '';
-                        }else{
+                        } else {
                             return _('Out of stock');
                         }
 
@@ -501,7 +501,6 @@ class Part extends Asset {
             case 'Cost in Warehouse only':
 
 
-
                 if ($this->data['Part Cost in Warehouse'] == '') {
                     $sko_cost = _('SKO stock value no set up yet');
                 } else {
@@ -510,15 +509,10 @@ class Part extends Asset {
                 }
 
 
-
-
                 return $sko_cost;
                 break;
 
             case 'Cost in Warehouse':
-
-
-
 
 
                 if ($this->data['Part Cost in Warehouse'] == '') {
@@ -543,10 +537,9 @@ class Part extends Asset {
             case 'SKO Cost in Warehouse - Price':
 
 
-
-                if($this->data['Part Cost in Warehouse']==''){
-                    $sko_cost ='<i class="fa fa-exclamation-circle error" aria-hidden="true"></i> '._('SKO stock value no set up yet');
-                }else{
+                if ($this->data['Part Cost in Warehouse'] == '') {
+                    $sko_cost = '<i class="fa fa-exclamation-circle error" aria-hidden="true"></i> '._('SKO stock value no set up yet');
+                } else {
                     $sko_cost = sprintf(
                         _('SKO stock value %s'), money($this->data['Part Cost in Warehouse'], $account->get('Account Currency'))
 
@@ -554,18 +547,14 @@ class Part extends Asset {
                 }
 
 
-
-
-
-
-
                 $sko_recomended_price = sprintf(
-                    _('recommended SKO commercial value: %s'), ($this->data['Part Unit Price']>0?money($this->data['Part Unit Price'] * $this->data['Part Units Per Package'], $account->get('Account Currency')):'<span class="italic discreet">'._('not set').'</span>')
+                    _('recommended SKO commercial value: %s'),
+                    ($this->data['Part Unit Price'] > 0 ? money($this->data['Part Unit Price'] * $this->data['Part Units Per Package'], $account->get('Account Currency')) : '<span class="italic discreet">'._('not set').'</span>')
 
                 );
 
 
-                if ($this->data['Part Units Per Package'] != 0 and is_numeric($this->data['Part Units Per Package']) and $this->data['Part Cost in Warehouse']!='') {
+                if ($this->data['Part Units Per Package'] != 0 and is_numeric($this->data['Part Units Per Package']) and $this->data['Part Cost in Warehouse'] != '') {
 
                     $unit_margin = $this->data['Part Unit Price'] - ($this->data['Part Cost in Warehouse'] / $this->data['Part Units Per Package']);
 
@@ -858,6 +847,82 @@ class Part extends Asset {
                 return money($this->data['Part '.$key], $account->get('Currency Code'));
                 break;
 
+
+
+            case 'Barcode Number Error':
+
+                if ($this->data['Part Barcode Number Error'] == '') {
+                    return '';
+                }
+
+
+                switch ($this->data['Part Barcode Number Error']) {
+
+                    case 'Duplicated':
+                        $error = '<span class="barcode_number_error error">'._('Duplicated').'</span>';
+                        break;
+                    case 'Size':
+                        $error = '<span class="barcode_number_error error">'._('Barcode should be 13 digits').'</span>';
+                        break;
+                    case 'Short_Duplicated':
+                        $error = '<span class="barcode_number_error error">'._('Check digit missing, will duplicate').'</span>';
+                        break;
+                    case 'Checksum_missing':
+                        $error = '<span class="barcode_number_error error">'._('Check digit missing').'</span>';
+                        break;
+                    case 'Checksum':
+                        $error = '<span class="barcode_number_error error">'._('Invalid check digit').'</span>';
+                        break;
+                    default:
+                        $error = '<span class="barcode_number_error error">'.$this->data['Part Barcode Number Error'].'</span>';
+                }
+
+
+
+                return '<i class="fa fa-exclamation-circle error" aria-hidden="true"></i> '.$error;
+
+                break;
+
+            case 'Barcode Number Error with Duplicates Links':
+
+                $error =$this->get('Barcode Number Error');
+                if ($error == '') {
+                    return '';
+                }
+
+
+                $duplicates = '';
+
+
+
+                if (strlen($this->data['Part Barcode Number']) >= 12 and strlen($this->data['Part Barcode Number']) < 14) {
+
+
+                    $sql = sprintf(
+                        'SELECT `Part SKU`,`Part Reference` FROM `Part Dimension` WHERE `Part Barcode Number` LIKE "%s%%" AND `Part SKU`!=%d', addslashes($this->data['Part Barcode Number']), $this->id
+                    );
+
+                    if ($result = $this->db->query($sql)) {
+                        foreach ($result as $row) {
+                            $duplicates .= sprintf('<span class=" " style="cursor: pointer" onclick="change_view(\'part/%d\')">%s</span>, ', $row['Part SKU'], $row['Part Reference']);
+                        }
+
+                    } else {
+                        print_r($error_info = $this->db->errorInfo());
+                        print "$sql\n";
+                        exit;
+                    }
+                    if ($duplicates != '') {
+                        $duplicates = ' ('.preg_replace('/\, $/', ')', $duplicates);
+                    }
+
+
+                }
+
+                return $error.$duplicates;
+                break;
+
+
             default:
 
                 if (preg_match('/No Supplied$/', $key)) {
@@ -990,6 +1055,82 @@ class Part extends Asset {
         }
 
         return false;
+    }
+
+    function validate_barcode() {
+
+        $barcode = $this->data['Part Barcode Number'];
+
+        $error = '';
+
+
+        if ($barcode != '') {
+            if (strlen($barcode) != (12 + 1)) {
+                $error = 'Size';
+                if (strlen($barcode) == 12) {
+                    $error = 'Checksum_missing';
+                    $sql   = sprintf(
+                        'SELECT `Part SKU` FROM `Part Dimension` WHERE `Part Barcode Number` LIKE "%s%%" AND `Part SKU`!=%d', addslashes($barcode), $this->id
+                    );
+
+                    if ($result = $this->db->query($sql)) {
+                        foreach ($result as $row) {
+
+                            $error = 'Short_Duplicated';
+                        }
+
+                    } else {
+                        print_r($error_info = $this->db->errorInfo());
+                        print "$sql\n";
+                        exit;
+                    }
+
+                }
+
+
+            } else {
+                $digits = substr($barcode, 0, 12);
+
+                $digits         = (string)$digits;
+                $even_sum       = $digits{1} + $digits{3} + $digits{5} + $digits{7} + $digits{9} + $digits{11};
+                $even_sum_three = $even_sum * 3;
+                $odd_sum        = $digits{0} + $digits{2} + $digits{4} + $digits{6} + $digits{8} + $digits{10};
+                $total_sum      = $even_sum_three + $odd_sum;
+                $next_ten       = (ceil($total_sum / 10)) * 10;
+                $check_digit    = $next_ten - $total_sum;
+
+                if ($check_digit != substr($barcode, -1)) {
+                    $error = 'Checksum';
+                } else {
+                    $sql = sprintf(
+                        'SELECT `Part SKU` FROM `Part Dimension` WHERE `Part Barcode Number`=%s AND `Part SKU`!=%d', prepare_mysql($barcode), $this->id
+                    );
+
+                    if ($result = $this->db->query($sql)) {
+                        foreach ($result as $row) {
+                            $part = get_object('Part', $row['Part SKU']);
+                            $part->fast_update(array('Part Barcode Number Error' => 'Duplicated'));
+                            $error = 'Duplicated';
+                        }
+
+                    } else {
+                        print_r($error_info = $this->db->errorInfo());
+                        print "$sql\n";
+                        exit;
+                    }
+
+
+                }
+
+
+            }
+
+        }
+        $this->fast_update(array('Part Barcode Number Error' => $error));
+
+        global $account;
+        $account->update_parts_data();
+
     }
 
     function get_categories($scope = 'keys') {
@@ -1580,7 +1721,7 @@ class Part extends Asset {
             foreach ($result as $row) {
 
                 if ($scope == 'objects') {
-                    $object= new SupplierPart('id', $row['Supplier Part Key'], false, $this->db);
+                    $object = new SupplierPart('id', $row['Supplier Part Key'], false, $this->db);
                     $object->load_supplier();
                     $supplier_parts[$row['Supplier Part Key']] = $object;
                 } else {
@@ -2311,6 +2452,47 @@ class Part extends Asset {
 
     }
 
+    /*
+    function get_products_data($with_objects = false) {
+
+        include_once 'class.Product.php';
+
+        $sql           = sprintf(
+            "SELECT `Linked Fields`,`Store Product Key`,`Parts Per Product`,`Note` FROM `Store Product Part Bridge` WHERE `Part SKU`=%d ", $this->id
+        );
+
+
+        $products_data = array();
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $product_data = $row;
+                if ($product_data['Linked Fields'] == '') {
+                    $product_data['Linked Fields']        = array();
+                    $product_data['Number Linked Fields'] = 0;
+                } else {
+                    $product_data['Linked Fields']        = json_decode(
+                        $row['Linked Fields'], true
+                    );
+                    $product_data['Number Linked Fields'] = count(
+                        $product_data['Linked Fields']
+                    );
+                }
+                if ($with_objects) {
+                    $product_data['Product'] = new Product(
+                        'id', $row['Store Product Key']
+                    );
+                }
+                $products_data[] = $product_data;
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+        return $products_data;
+    }
+*/
+
     function get_field_label($field) {
         global $account;
 
@@ -2415,47 +2597,6 @@ class Part extends Asset {
         return $label;
 
     }
-
-    /*
-    function get_products_data($with_objects = false) {
-
-        include_once 'class.Product.php';
-
-        $sql           = sprintf(
-            "SELECT `Linked Fields`,`Store Product Key`,`Parts Per Product`,`Note` FROM `Store Product Part Bridge` WHERE `Part SKU`=%d ", $this->id
-        );
-
-
-        $products_data = array();
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                $product_data = $row;
-                if ($product_data['Linked Fields'] == '') {
-                    $product_data['Linked Fields']        = array();
-                    $product_data['Number Linked Fields'] = 0;
-                } else {
-                    $product_data['Linked Fields']        = json_decode(
-                        $row['Linked Fields'], true
-                    );
-                    $product_data['Number Linked Fields'] = count(
-                        $product_data['Linked Fields']
-                    );
-                }
-                if ($with_objects) {
-                    $product_data['Product'] = new Product(
-                        'id', $row['Store Product Key']
-                    );
-                }
-                $products_data[] = $product_data;
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-        return $products_data;
-    }
-*/
 
     function create_supplier_part_record($data) {
 
@@ -2631,235 +2772,37 @@ class Part extends Asset {
         }
 
 
-
-
-
-
         $this->update_margin();
 
 
     }
 
-    function updated_linked_products() {
-        include_once 'class.Image.php';
-        foreach ($this->get_products('objects') as $product) {
-
-            if (count($product->get_parts()) == 1) {
-                $product->editor = $this->editor;
-
-                $product->update(
-                    array(
-                        'Product Tariff Code' => $this->get(
-                            'Part Tariff Code'
-                        )
-                    ), 'no_history from_part'
-                );
-                $product->update(
-                    array('Product Duty Rate' => $this->get('Part Duty Rate')), 'no_history from_part'
-                );
-                $product->update(
-                    array(
-                        'Product Origin Country Code' => $this->get(
-                            'Part Origin Country Code'
-                        )
-                    ), 'no_history from_part'
-                );
+    function update_margin() {
 
 
-                $product->update(
-                    array('Product UN Number' => $this->get('Part UN Number')), 'no_history from_part'
-                );
-                $product->update(
-                    array('Product UN Class' => $this->get('Part UN Class')), 'no_history from_part'
-                );
-                $product->update(
-                    array(
-                        'Product Packing Group' => $this->get(
-                            'Part Packing Group'
-                        )
-                    ), 'no_history from_part'
-                );
-                $product->update(
-                    array(
-                        'Product Proper Shipping Name' => $this->get(
-                            'Part Proper Shipping Name'
-                        )
-                    ), 'no_history from_part'
-                );
-                $product->update(
-                    array(
-                        'Product Hazard Indentification Number' => $this->get(
-                            'Part Hazard Indentification Number'
-                        )
-                    ), 'no_history from_part'
-                );
-
-
-                $product->update(
-                    array(
-                        'Product Unit Weight' => $this->get(
-                            'Part Unit Weight'
-                        )
-                    ), 'no_history from_part'
-                );
-
-
-                $product->update(
-                    array(
-                        'Product Unit Dimensions' => $this->get(
-                            'Part Unit Dimensions'
-                        )
-                    ), 'no_history from_part'
-                );
-                $product->update(
-                    array(
-                        'Product Materials' => strip_tags(
-                            $this->get('Materials')
-                        )
-                    ), 'no_history from_part'
-                );
-
-                $sql = sprintf(
-                    'SELECT `Image Subject Image Key` FROM `Image Subject Bridge` WHERE `Image Subject Object`="Part" AND `Image Subject Object Key`=%d order by `Image Subject Order` ', $this->id
-                );
-
-                //   print "$sql\n";
-
-                if ($result = $this->db->query($sql)) {
-                    foreach ($result as $row) {
-                        //print_r($row);
-                        $product->link_image($row['Image Subject Image Key']);
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    exit;
-                }
-
-
-            }
-
-        }
-
-
-    }
-
-    function get_picking_location_key() {
-
-        $sql = sprintf("SELECT `Location Key` FROM `Part Location Dimension` WHERE `Part SKU`=%d AND `Can Pick`='Yes' ;", $this->sku);
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                return $row['Location Key'];
-            } else {
-                return false;
-            }
+        if ($this->data['Part Cost in Warehouse'] == '') {
+            $cost = $this->data['Part Cost'];
         } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
+            $cost = $this->data['Part Cost in Warehouse'];
         }
 
-    }
 
-    function update_products_data() {
+        if ($this->data['Part Commercial Value'] == '') {
 
-
-        //'InProcess','Active','Suspended',,'Discontinued'
-
-        $active_products    = 0;
-        $no_active_products = 0;
-
-
-        $sql = sprintf(
-            "SELECT count(*) AS num FROM `Product Part Bridge`  LEFT JOIN `Product Dimension` P ON (P.`Product ID`=`Product Part Product ID`)  WHERE `Product Part Part SKU`=%d  AND `Product Status` IN ('InProcess','Active','Discontinuing') ", $this->id
-        );
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $active_products = $row['num'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-        $sql = sprintf(
-            "SELECT count(*) AS num FROM `Product Part Bridge`  LEFT JOIN `Product Dimension` P ON (P.`Product ID`=`Product Part Product ID`)  WHERE `Product Part Part SKU`=%d  AND `Product Status` IN ('Suspended','Discontinued') ", $this->id
-        );
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $no_active_products = $row['num'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-        $this->fast_update(
-            array(
-                'Part Number Active Products'    => $active_products,
-                'Part Number No Active Products' => $no_active_products,
-
-            )
-
-        );
-        $this->activate();
-
-    }
-
-    function update_next_shipment() {
-
-        include_once 'class.PurchaseOrder.php';
-
-        $next_delivery_time   = 0;
-        $next_delivery_po_key = 0;
-
-        $sql = sprintf(
-            'SELECT `Purchase Order Key` FROM  `Supplier Part Dimension` SPD  LEFT JOIN   `Purchase Order Transaction Fact` POTF  ON (SPD.`Supplier Part Key`=POTF.`Supplier Part Key`)  WHERE `Purchase Order Transaction State` IN ("Submitted","Inputted","Dispatched") AND `Supplier Part Part SKU`=%d ',
-            $this->id
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-
-                $purchase_order        = new PurchaseOrder($row['Purchase Order Key']);
-                $_next_delivery_time   = $purchase_order->get('Estimated Receiving Datetime');
-                $_next_delivery_po_key = $purchase_order->id;
-
-
-                if ($_next_delivery_time != '' and strtotime($_next_delivery_time) > gmdate('U')) {
-
-
-                    if (!$next_delivery_time or strtotime($_next_delivery_time.' +0:00') < $next_delivery_time) {
-                        $next_delivery_time   = strtotime($_next_delivery_time.' +0:00');
-                        $next_delivery_po_key = $_next_delivery_po_key;
-
-                    }
-                }
-
-            }
-
-
-            $this->update_field_switcher('Part Next Shipment Date', (!$next_delivery_time ? '' : gmdate('Y-m-d H:i:s', $next_delivery_time)),'no_history');
-            $this->update_field_switcher('Part Next Shipment Object', 'PurchaseOrder','no_history');
-            $this->update_field_switcher('Part Next Shipment Object Key', (!$next_delivery_po_key ? '' : $next_delivery_po_key),'no_history');
-
-
-            foreach ($this->get_products('objects') as $product) {
-                $product->update_next_shipment();
-            }
+            $selling_price = $this->data['Part Unit Price'] * $this->data['Part Units Per Package'];
 
 
         } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
+            $selling_price = $this->data['Part Commercial Value'];
         }
+
+        if ($selling_price == 0) {
+            $margin = 0;
+        } else {
+            $margin = ($selling_price - $cost) / $selling_price;
+        }
+
+        $this->update_field_switcher('Part Margin', $margin, 'no_history');
 
 
     }
@@ -2882,16 +2825,15 @@ class Part extends Asset {
                 $this->update_cost();
 
 
-
                 break;
 
 
             case 'Part Cost in Warehouse':
 
                 //$old_value = $this->get('Part Cost in Warehouse');
-//print 'xxxx';
+                //print 'xxxx';
                 $this->update_field($field, $value, $options);
-             //  print 'yyyy';
+                //  print 'yyyy';
 
                 $this->update_margin();
 
@@ -2905,15 +2847,15 @@ class Part extends Asset {
                     $product->update_cost();
                 }
 
-                $hide=array();
-                $show=array();
+                $hide = array();
+                $show = array();
 
-                if($value==''){
-                    $hide[]='Part_Cost_in_Warehouse_info_set_up';
-                    $show[]='Part_Cost_in_Warehouse_info_not_set_up';
-                }else{
-                    $show[]='Part_Cost_in_Warehouse_info_set_up';
-                    $hide[]='Part_Cost_in_Warehouse_info_not_set_up';
+                if ($value == '') {
+                    $hide[] = 'Part_Cost_in_Warehouse_info_set_up';
+                    $show[] = 'Part_Cost_in_Warehouse_info_not_set_up';
+                } else {
+                    $show[] = 'Part_Cost_in_Warehouse_info_set_up';
+                    $hide[] = 'Part_Cost_in_Warehouse_info_not_set_up';
                 }
 
                 $this->update_metadata = array(
@@ -2921,10 +2863,9 @@ class Part extends Asset {
                         'Webpage_State_Icon' => $this->get('State Icon'),
 
 
-
                     ),
-                    'hide' => $hide,
-                    'show' => $show
+                    'hide'       => $hide,
+                    'show'       => $show
 
 
                 );
@@ -2934,11 +2875,39 @@ class Part extends Asset {
 
             case 'Part Barcode Number':
 
+                $old_value=$this->data['Part Barcode Number'];
+
 
                 $this->update_field($field, $value, $options);
                 $this->validate_barcode();
 
                 $updated = $this->updated;
+
+
+                 $sql   = sprintf(
+                     'SELECT `Part SKU` FROM `Part Dimension` WHERE `Part Barcode Number`=%s AND `Part SKU`!=%d', prepare_mysql($old_value), $this->id
+                 );
+
+
+                 if ($result=$this->db->query($sql)) {
+                 		foreach ($result as $row) {
+
+
+                            $part = get_object('Part', $row['Part SKU']);
+                            $part->validate_barcode();
+
+
+
+
+
+                 		}
+                 }else {
+                 		print_r($error_info=$this->db->errorInfo());
+                 		print "$sql\n";
+                 		exit;
+                 }
+
+
 
 
                 foreach ($this->get_products('objects') as $product) {
@@ -2951,6 +2920,10 @@ class Part extends Asset {
                     }
 
                 }
+
+
+
+
 
 
                 $this->updated = $updated;
@@ -3106,7 +3079,6 @@ class Part extends Asset {
                     $this->update_margin();
 
                 }
-
 
 
                 $this->other_fields_updated = array(
@@ -3560,7 +3532,8 @@ class Part extends Asset {
 
                     if (count($product->get_parts()) == 1) {
                         $product->editor = $this->editor;
-                        $product->update(array('Product Tariff Code' => $this->get('Part Tariff Code')), $options.' from_part'
+                        $product->update(
+                            array('Product Tariff Code' => $this->get('Part Tariff Code')), $options.' from_part'
                         );
                     }
 
@@ -3605,17 +3578,13 @@ class Part extends Asset {
                     if (is_object($smarty)) {
 
 
-                        $all_active=$account->get('Account Active Parts Number')+$account->get('Account In Process Parts Number')+$account->get('Account Discontinuing Parts Number');
+                        $all_active = $account->get('Account Active Parts Number') + $account->get('Account In Process Parts Number') + $account->get('Account Discontinuing Parts Number');
 
                         $data = get_widget_data(
 
-                            $all_active-$account->get('Account Active Parts with SKO Barcode Number'),
-                            $all_active,
-                            0,
-                            0
+                            $all_active - $account->get('Account Active Parts with SKO Barcode Number'), $all_active, 0, 0
 
                         );
-
 
 
                         $smarty->assign('data', $_data);
@@ -3796,36 +3765,6 @@ class Part extends Asset {
 
     }
 
-    function update_margin() {
-
-
-        if ($this->data['Part Cost in Warehouse'] == '') {
-            $cost = $this->data['Part Cost'];
-        } else {
-            $cost = $this->data['Part Cost in Warehouse'];
-        }
-
-
-        if ($this->data['Part Commercial Value'] == '') {
-
-            $selling_price = $this->data['Part Unit Price'] * $this->data['Part Units Per Package'];
-
-
-        } else {
-            $selling_price = $this->data['Part Commercial Value'];
-        }
-
-        if ($selling_price == 0) {
-            $margin = 0;
-        } else {
-            $margin = ($selling_price - $cost) / $selling_price;
-        }
-
-        $this->update_field_switcher('Part Margin', $margin, 'no_history');
-
-
-    }
-
     function get_category_data() {
 
 
@@ -3984,6 +3923,230 @@ class Part extends Asset {
 
     }
 
+    function updated_linked_products() {
+        include_once 'class.Image.php';
+        foreach ($this->get_products('objects') as $product) {
+
+            if (count($product->get_parts()) == 1) {
+                $product->editor = $this->editor;
+
+                $product->update(
+                    array(
+                        'Product Tariff Code' => $this->get(
+                            'Part Tariff Code'
+                        )
+                    ), 'no_history from_part'
+                );
+                $product->update(
+                    array('Product Duty Rate' => $this->get('Part Duty Rate')), 'no_history from_part'
+                );
+                $product->update(
+                    array(
+                        'Product Origin Country Code' => $this->get(
+                            'Part Origin Country Code'
+                        )
+                    ), 'no_history from_part'
+                );
+
+
+                $product->update(
+                    array('Product UN Number' => $this->get('Part UN Number')), 'no_history from_part'
+                );
+                $product->update(
+                    array('Product UN Class' => $this->get('Part UN Class')), 'no_history from_part'
+                );
+                $product->update(
+                    array(
+                        'Product Packing Group' => $this->get(
+                            'Part Packing Group'
+                        )
+                    ), 'no_history from_part'
+                );
+                $product->update(
+                    array(
+                        'Product Proper Shipping Name' => $this->get(
+                            'Part Proper Shipping Name'
+                        )
+                    ), 'no_history from_part'
+                );
+                $product->update(
+                    array(
+                        'Product Hazard Indentification Number' => $this->get(
+                            'Part Hazard Indentification Number'
+                        )
+                    ), 'no_history from_part'
+                );
+
+
+                $product->update(
+                    array(
+                        'Product Unit Weight' => $this->get(
+                            'Part Unit Weight'
+                        )
+                    ), 'no_history from_part'
+                );
+
+
+                $product->update(
+                    array(
+                        'Product Unit Dimensions' => $this->get(
+                            'Part Unit Dimensions'
+                        )
+                    ), 'no_history from_part'
+                );
+                $product->update(
+                    array(
+                        'Product Materials' => strip_tags(
+                            $this->get('Materials')
+                        )
+                    ), 'no_history from_part'
+                );
+
+                $sql = sprintf(
+                    'SELECT `Image Subject Image Key` FROM `Image Subject Bridge` WHERE `Image Subject Object`="Part" AND `Image Subject Object Key`=%d ORDER BY `Image Subject Order` ', $this->id
+                );
+
+                //   print "$sql\n";
+
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+                        //print_r($row);
+                        $product->link_image($row['Image Subject Image Key']);
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    exit;
+                }
+
+
+            }
+
+        }
+
+
+    }
+
+    function get_picking_location_key() {
+
+        $sql = sprintf("SELECT `Location Key` FROM `Part Location Dimension` WHERE `Part SKU`=%d AND `Can Pick`='Yes' ;", $this->sku);
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                return $row['Location Key'];
+            } else {
+                return false;
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+    }
+
+    function update_products_data() {
+
+
+        //'InProcess','Active','Suspended',,'Discontinued'
+
+        $active_products    = 0;
+        $no_active_products = 0;
+
+
+        $sql = sprintf(
+            "SELECT count(*) AS num FROM `Product Part Bridge`  LEFT JOIN `Product Dimension` P ON (P.`Product ID`=`Product Part Product ID`)  WHERE `Product Part Part SKU`=%d  AND `Product Status` IN ('InProcess','Active','Discontinuing') ", $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $active_products = $row['num'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+        $sql = sprintf(
+            "SELECT count(*) AS num FROM `Product Part Bridge`  LEFT JOIN `Product Dimension` P ON (P.`Product ID`=`Product Part Product ID`)  WHERE `Product Part Part SKU`=%d  AND `Product Status` IN ('Suspended','Discontinued') ", $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $no_active_products = $row['num'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+        $this->fast_update(
+            array(
+                'Part Number Active Products'    => $active_products,
+                'Part Number No Active Products' => $no_active_products,
+
+            )
+
+        );
+        $this->activate();
+
+    }
+
+    function update_next_shipment() {
+
+        include_once 'class.PurchaseOrder.php';
+
+        $next_delivery_time   = 0;
+        $next_delivery_po_key = 0;
+
+        $sql = sprintf(
+            'SELECT `Purchase Order Key` FROM  `Supplier Part Dimension` SPD  LEFT JOIN   `Purchase Order Transaction Fact` POTF  ON (SPD.`Supplier Part Key`=POTF.`Supplier Part Key`)  WHERE `Purchase Order Transaction State` IN ("Submitted","Inputted","Dispatched") AND `Supplier Part Part SKU`=%d ',
+            $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+
+                $purchase_order        = new PurchaseOrder($row['Purchase Order Key']);
+                $_next_delivery_time   = $purchase_order->get('Estimated Receiving Datetime');
+                $_next_delivery_po_key = $purchase_order->id;
+
+
+                if ($_next_delivery_time != '' and strtotime($_next_delivery_time) > gmdate('U')) {
+
+
+                    if (!$next_delivery_time or strtotime($_next_delivery_time.' +0:00') < $next_delivery_time) {
+                        $next_delivery_time   = strtotime($_next_delivery_time.' +0:00');
+                        $next_delivery_po_key = $_next_delivery_po_key;
+
+                    }
+                }
+
+            }
+
+
+            $this->update_field_switcher('Part Next Shipment Date', (!$next_delivery_time ? '' : gmdate('Y-m-d H:i:s', $next_delivery_time)), 'no_history');
+            $this->update_field_switcher('Part Next Shipment Object', 'PurchaseOrder', 'no_history');
+            $this->update_field_switcher('Part Next Shipment Object Key', (!$next_delivery_po_key ? '' : $next_delivery_po_key), 'no_history');
+
+
+            foreach ($this->get_products('objects') as $product) {
+                $product->update_next_shipment();
+            }
+
+
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+    }
+
     function update_commercial_value() {
 
         include_once 'utils/currency_functions.php';
@@ -4016,7 +4179,7 @@ class Part extends Asset {
                 }
 
 
-               // print $product->get('Product 1 Year Acc Quantity Invoiced');
+                // print $product->get('Product 1 Year Acc Quantity Invoiced');
 
                 $exchange = currency_conversion($this->db, $product->get('Product Currency'), $account->get('Account Currency'));
 
@@ -4028,7 +4191,7 @@ class Part extends Asset {
                     $data[] = array(
                         'store'         => $product->get('Store Key'),
                         'sales'         => $sales,
-                        'price'=> $product->get('Product Price'),
+                        'price'         => $product->get('Product Price'),
                         'selling_price' => $exchange * $product->get('Product Price') / $product_data['Product Part Ratio'],
                         'exchange'      => $exchange,
                         'currency'      => $product->get('Product Currency')
@@ -4037,7 +4200,7 @@ class Part extends Asset {
                     $data[] = array(
                         'store'         => $product->get('Store Key'),
                         'sales'         => 0,
-                        'price'=> $product->get('Product Price'),
+                        'price'         => $product->get('Product Price'),
                         'selling_price' => $exchange * $product->get('Product Price') / $product_data['Product Part Ratio'],
                         'exchange'      => $exchange,
                         'currency'      => $product->get('Product Currency')
@@ -4051,7 +4214,7 @@ class Part extends Asset {
 
         }
 
-       // print_r($data);
+        // print_r($data);
 
         $commercial_value = '';
 
@@ -4064,7 +4227,6 @@ class Part extends Asset {
             }
 
         } elseif ($num_products > 0) {
-
 
 
             $commercial_value = 0;
@@ -4083,79 +4245,6 @@ class Part extends Asset {
 
 
     }
-
-
-    function validate_barcode(){
-        $error='';
-        if($this->data['Part Barcode Number']!=''){
-            if(strlen($this->data['Part Barcode Number'])!=(12+1)){
-                $error='Size';
-                if(strlen($this->data['Part Barcode Number'])==12){
-                    $error='Checksum_missing';
-                    $sql=sprintf('select `Part SKU` from `Part Dimension` where `Part Barcode Number` like "%s%%" and `Part SKU`!=%d',
-                                 addslashes($this->data['Part Barcode Number']) ,$this->id);
-
-                    if ($result=$this->db->query($sql)) {
-                        foreach ($result as $row) {
-
-                            $error='Short_Duplicated';
-                        }
-
-                    }else {
-                        print_r($error_info=$this->db->errorInfo());
-                        print "$sql\n";
-                        exit;
-                    }
-
-                }
-
-
-            }else{
-                $digits=substr($this->data['Part Barcode Number'], 0, 12);
-
-                $digits         = (string)$digits;
-                $even_sum       = $digits{1} + $digits{3} + $digits{5} + $digits{7} + $digits{9} + $digits{11};
-                $even_sum_three = $even_sum * 3;
-                $odd_sum        = $digits{0} + $digits{2} + $digits{4} + $digits{6} + $digits{8} + $digits{10};
-                $total_sum      = $even_sum_three + $odd_sum;
-                $next_ten       = (ceil($total_sum / 10)) * 10;
-                $check_digit    = $next_ten - $total_sum;
-
-                if($check_digit!=substr($this->data['Part Barcode Number'], -1)){
-                    $error='Checksum';
-                }else{
-                    $sql=sprintf('select `Part SKU` from `Part Dimension` where `Part Barcode Number`=%s and `Part SKU`!=%d',
-                                 prepare_mysql($this->data['Part Barcode Number']) ,$this->id);
-
-                    if ($result=$this->db->query($sql)) {
-                    		foreach ($result as $row) {
-                               $part=get_object('Part',$row['Part SKU']);
-                               $part->fast_update(array('Part Barcode Number Error'=>'Duplicated'));
-                                $error='Duplicated';
-                    		}
-
-                    }else {
-                    		print_r($error_info=$this->db->errorInfo());
-                    		print "$sql\n";
-                    		exit;
-                    }
-
-
-                }
-
-
-            }
-
-        }
-        $this->fast_update(array('Part Barcode Number Error'=>$error));
-
-        global $account;
-        $account->update_parts_data();
-
-    }
-
-
-
 
 
 }

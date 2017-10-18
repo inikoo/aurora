@@ -31,6 +31,8 @@ html, body, textarea, button {
     color: #6a6d91;
     cursor: pointer;
     text-decoration: none; }
+  html .error, body .error, textarea .error, button .error {
+    color: tomato; }
   html .marked_link, body .marked_link, textarea .marked_link, button .marked_link {
     color: #6a6d91;
     cursor: pointer;
@@ -672,9 +674,6 @@ right connector from last child*/
 
 .warning {
   color: #ED9121; }
-
-.error {
-  color: tomato; }
 
 .active {
   color: #ffc822; }
@@ -1708,6 +1707,7 @@ table.totals .total td {
       min-width: 300px;
       margin-bottom: 4px; }
   #object_showcase h1 {
+    font-family: "Ubuntu", "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;
     font-size: 140%;
     padding: 0px;
     margin: 0px; }

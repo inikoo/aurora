@@ -19,6 +19,19 @@ function get_upload_showcase($data, $smarty, $user, $db) {
     $object->load_file_data();
     $smarty->assign('upload', $object);
 
+
+    if($object->get('Upload Type')=='EditObjects'){
+        $title=sprintf(_('Editing %s in %s'),$object->get('Object'),$object->get('Parent'));
+
+    } elseif($object->get('Upload Type')=='NewObjects'){
+        $title=sprintf(_('Adding %s to %s'),$object->get('Object'),$object->get('Parent'));
+
+    }else{
+        $title='';
+    }
+
+    $smarty->assign('_title', $title);
+
     return $smarty->fetch('showcase/upload.tpl');
 
 
