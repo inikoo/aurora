@@ -490,13 +490,10 @@ function uploads($_data, $db, $user, $account) {
             switch ($data['Upload Object']) {
                 case 'supplier_part':
                     $object = sprintf(
-                        '<i  class="fa fa-fw fa-stop"></i> %s', _("Supplier's parts")
-                    );
+                        '<i  class="fa fa-fw fa-stop"></i> %s', _("Supplier's parts"));
                     break;
                 case 'supplier':
-                    $object = sprintf(
-                        '<i  class="fa fa-fw fa-ship"></i> %s', _("Suppliers")
-                    );
+                    $object = sprintf('<i  class="fa fa-fw fa-ship"></i> %s', _("Suppliers"));
                     break;
                 default:
                     $object = $data['Upload Object'];
@@ -524,9 +521,7 @@ function uploads($_data, $db, $user, $account) {
                 'formatted_id' => sprintf('%04d', $data['Upload Key']),
                 'object'       => $object,
                 'state'        => $state,
-                'date'         => strftime(
-                    "%a %e %b %Y %T %Z", strtotime($data['Upload Created'].' +0:00')
-                ),
+                'date'         => strftime("%a %e %b %Y %T %Z", strtotime($data['Upload Created'].' +0:00')),
                 'ok'           => number($data['Upload OK']),
                 'records'      => number($data['Upload Records']),
                 'warnings'     => number($data['Upload Warnings']),
@@ -636,7 +631,6 @@ function upload_records($_data, $db, $user, $account) {
 
     $sql
         = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-    //print $sql;
     $adata = array();
 
     if ($result = $db->query($sql)) {
@@ -649,23 +643,19 @@ function upload_records($_data, $db, $user, $account) {
                 case 'Done':
 
                     $object = sprintf(
-                        '<span class="button" onClick="change_view(\'%s\')">%s</span>', $data['link'], ($data['object_name'] != '' ? $data['object_name'] : $data['object_auxiliar_name'])
+                        '<span class="link" onClick="change_view(\'%s\')">%s</span>', $data['link'], ($data['object_name'] != '' ? $data['object_name'] : $data['object_auxiliar_name'])
                     );
                     $state  = '<span >'.$data['Upload Record Message Metadata'].'</span>';
 
                     switch ($data['Upload Record Message Code']) {
                         case 'no_change':
-                            $state .= ' <span class="very_discreet ">'._(
-                                    'Record not changed'
-                                ).'</span>';
+                            $state .= ' <span class="very_discreet ">'._('Record not changed').'</span>';
                             break;
                         case 'updated':
                             $state .= ' <span class="success">'._('Updated').'</span>';
                             break;
                         case 'not_found':
-                            $state .= ' <span class="error">'._(
-                                    'Record not found'
-                                ).'</span>';
+                            $state .= ' <span class="error">'._('Record not found').'</span>';
                             break;
                         case 'object_not_found':
                             $state .= ' <span class="error"><i class="fa fa-exclamation-circle fa-fw" aria-hidden="true"></i> '._('Record not found').'</span>';
@@ -674,11 +664,12 @@ function upload_records($_data, $db, $user, $account) {
                             $state .= ' <span class="warning"><i class="fa fa-share fa-fw" aria-hidden="true"></i> '._('Record skipped').'</span>';
                             break;
                         case 'created':
-                            $state
-                                = '<i class="fa fa-check success" aria-hidden="true"></i>  <span class="success">'._('Created').'</span>';
+                            $state = '<i class="fa fa-check success" aria-hidden="true"></i>  <span class="success">'._('Created').'</span>';
                             break;
                         default:
-                            $state .= ' <span class="error"><i class="fa fa-exclamation-circle fa-fw" aria-hidden="true"></i> '.$data['Upload Record Message Code'].'</span>';
+                            $state .=$data['Upload Record Message Code'];
+
+                            // $state .= ' <span class="error"><i class="fa fa-exclamation-circle fa-fw" aria-hidden="true"></i> '.$data['Upload Record Message Code'].'</span>';
 
                             break;
                     }

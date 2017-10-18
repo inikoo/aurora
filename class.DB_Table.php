@@ -32,7 +32,6 @@ abstract class DB_Table extends stdClass {
     public function update($data, $options = '', $metadata = '') {
 
 
-
         $this->error = false;
         $this->msg   = '';
         if (!is_array($data)) {
@@ -276,16 +275,15 @@ abstract class DB_Table extends stdClass {
 
 
             if (preg_match(
-                    '/email campaign|deal|charge|deal campaign|attachment bridge|location|site|page|part|barcode|agent|customer|contact|company|order|staff|supplier|address|telecom|user|store|product|company area|company department|position|category/i',
-                    $table_name
+                    '/email campaign|deal|charge|deal campaign|attachment bridge|location|site|page|part|barcode|agent|customer|contact|company|order|staff|supplier|address|telecom|user|store|product|company area|company department|position|category/i', $table_name
                 ) and !$this->new and $save_history) {
 
 
                 //$old_formatted_value = htmlentities($old_formatted_value);
                 //$new_formatted_value = htmlentities($this->get($formatted_field));
-                $new_formatted_value =$this->get($formatted_field);
+                $new_formatted_value = $this->get($formatted_field);
 
-                    $this->add_changelog_record($field, $old_formatted_value, $new_formatted_value, $options, $table_name, $table_key);
+                $this->add_changelog_record($field, $old_formatted_value, $new_formatted_value, $options, $table_name, $table_key);
 
             }
 
@@ -535,11 +533,18 @@ abstract class DB_Table extends stdClass {
         }
 
 
+        if (!empty($this->editor['Upload Key'])) {
+            $data['History Abstract'] .= ' <span class="italic">( '.sprintf(
+                    '<i class="fa fa-upload" aria-hidden="true"></i> <span class="link" onclick="change_view(\'upload/%d\')">%s</span>)</span>', $this->editor['Upload Key'], $this->editor['Upload Label']
+                );
+        }
+
+
         $sql = sprintf(
             "INSERT INTO `History Dimension` (`Author Name`,`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`User Key`,`Deep`,`Metadata`) VALUES (%s,%s,%s,%d,%s,%s,%d,%s,%s,%d,%s,%s,%d,%s,%s)",
-            prepare_mysql($data['Author Name']), prepare_mysql($data['Date']), prepare_mysql($data['Subject']), $data['Subject Key'], prepare_mysql($data['Action']),
-            prepare_mysql($data['Direct Object']), $data['Direct Object Key'], prepare_mysql($data['Preposition'], false), prepare_mysql($data['Indirect Object'], false), $data['Indirect Object Key'],
-            prepare_mysql($data['History Abstract']), prepare_mysql($data['History Details']), $data['User Key'], prepare_mysql($data['Deep']), prepare_mysql($data['Metadata'])
+            prepare_mysql($data['Author Name']), prepare_mysql($data['Date']), prepare_mysql($data['Subject']), $data['Subject Key'], prepare_mysql($data['Action']), prepare_mysql($data['Direct Object']), $data['Direct Object Key'],
+            prepare_mysql($data['Preposition'], false), prepare_mysql($data['Indirect Object'], false), $data['Indirect Object Key'], prepare_mysql($data['History Abstract']), prepare_mysql($data['History Details']), $data['User Key'], prepare_mysql($data['Deep']),
+            prepare_mysql($data['Metadata'])
         );
 
         // print "$sql\n";
@@ -668,12 +673,12 @@ abstract class DB_Table extends stdClass {
 
     }
 
-    public function fast_update($data, $table_full_name = false,$options='') {
+    public function fast_update($data, $table_full_name = false, $options = '') {
 
         if ($options == 'no_null') {
             $null_if_empty = false;
 
-        }else{
+        } else {
             $null_if_empty = true;
 
         }
@@ -682,9 +687,6 @@ abstract class DB_Table extends stdClass {
         if ($table_full_name == '') {
             $table_full_name = $this->table_name.' Dimension';
         }
-
-
-
 
 
         if ($table_full_name == 'Part Dimension' or $table_full_name == 'Part Data') {
@@ -697,7 +699,7 @@ abstract class DB_Table extends stdClass {
         } elseif ($table_full_name == 'Page Store Dimension') {
             $key_field = 'Page Key';
 
-        }elseif ($table_full_name == 'Product Category Data' or   $table_full_name == 'Product Category DC Data'  or  $table_full_name == 'Product Category Dimension') {
+        } elseif ($table_full_name == 'Product Category Data' or $table_full_name == 'Product Category DC Data' or $table_full_name == 'Product Category Dimension') {
             $key_field = 'Product Category Key';
 
         } else {
@@ -709,13 +711,11 @@ abstract class DB_Table extends stdClass {
         foreach ($data as $field => $value) {
 
 
-
-
             $sql = sprintf(
                 "UPDATE `%s` SET `%s`=%s WHERE `%s`=%d", addslashes($table_full_name), addslashes($field), prepare_mysql($value, $null_if_empty), addslashes($key_field), $this->id
             );
 
-          //  print "$sql;\n";
+            //  print "$sql;\n";
 
             $this->db->exec($sql);
             $this->data[$field] = $value;

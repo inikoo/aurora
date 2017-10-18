@@ -1,7 +1,7 @@
 <div class="asset_profile" style="padding-top:10px;border-bottom:1px solid #ccc;padding-bottom:20px">
 
 
-    <div id="asset_data"  style="float:left;p" >
+    <div id="asset_data"  style="float:left;" >
         <div class="data_container">
 
             <div class="data_field">

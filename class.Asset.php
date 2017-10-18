@@ -24,8 +24,11 @@ class Asset extends DB_Table {
         switch ($field) {
 
 
-
             case $this->table_name.' Barcode':
+
+                $_old_value=$this->data[$this->table_name.' Barcode Number'];
+
+
 
                 if ($value == '') {
                     include_once 'class.Barcode.php';
@@ -45,15 +48,110 @@ class Asset extends DB_Table {
                     $this->update_field_switcher($this->table_name.' Barcode Key', '', 'no_history');
 
 
-
-
-
                 } else {
 
-                    $sql                = sprintf(
+
+                    $barcode = $value;
+                    $error   = '';
+
+                    if (strlen($barcode) != (12 + 1)) {
+                        $error = 'Size';
+                        if (strlen($barcode) == 12) {
+                            $error = 'Checksum_missing';
+                            $sql   = sprintf(
+                                'SELECT `Part SKU` FROM `Part Dimension` WHERE `Part Barcode Number` LIKE "%s%%" AND `Part SKU`!=%d', addslashes($barcode), $this->id
+                            );
+
+                            if ($result = $this->db->query($sql)) {
+                                foreach ($result as $row) {
+
+                                    $error = 'Short_Duplicated';
+                                }
+
+                            } else {
+                                print_r($error_info = $this->db->errorInfo());
+                                print "$sql\n";
+                                exit;
+                            }
+
+                        }
+
+
+                    } else {
+                        $digits = substr($barcode, 0, 12);
+
+                        $digits         = (string)$digits;
+                        $even_sum       = $digits{1} + $digits{3} + $digits{5} + $digits{7} + $digits{9} + $digits{11};
+                        $even_sum_three = $even_sum * 3;
+                        $odd_sum        = $digits{0} + $digits{2} + $digits{4} + $digits{6} + $digits{8} + $digits{10};
+                        $total_sum      = $even_sum_three + $odd_sum;
+                        $next_ten       = (ceil($total_sum / 10)) * 10;
+                        $check_digit    = $next_ten - $total_sum;
+
+                        if ($check_digit != substr($barcode, -1)) {
+                            $error = 'Checksum';
+                        } else {
+                            $sql = sprintf(
+                                'SELECT `Part SKU` FROM `Part Dimension` WHERE `Part Barcode Number`=%s AND `Part SKU`!=%d', prepare_mysql($barcode), $this->id
+                            );
+
+                            if ($result = $this->db->query($sql)) {
+                                foreach ($result as $row) {
+                                    $part = get_object('Part', $row['Part SKU']);
+                                    $part->fast_update(array('Part Barcode Number Error' => 'Duplicated'));
+                                    $error = 'Duplicated';
+                                }
+
+                            } else {
+                                print_r($error_info = $this->db->errorInfo());
+                                print "$sql\n";
+                                exit;
+                            }
+
+
+                        }
+
+
+                    }
+
+                    if ($error != '') {
+
+
+
+                        switch ($error) {
+
+                            case 'Duplicated':
+                                $error_msg = _('Duplicated');
+                                break;
+                            case 'Size':
+                                $error_msg = _('Barcode should be 13 digits');
+                                break;
+                            case 'Short_Duplicated':
+                                $error_msg = _('Check digit missing, will duplicate');
+                                break;
+                            case 'Checksum_missing':
+                                $error_msg = _('Check digit missing');
+                                break;
+                            case 'Checksum':
+                                $error_msg = _('Invalid check digit');
+                                break;
+                            default:
+                                $error_msg = $this->data['Part Barcode Number Error'];
+                        }
+
+
+
+                        $this->error      = true;
+                        $this->msg        = $error_msg;
+                        $this->error_code = $error;
+
+                        return;
+                    }
+
+
+                    $sql = sprintf(
                         "SELECT `Barcode Key` ,`Barcode Status` ,`Barcode Sticky Note` FROM `Barcode Dimension` WHERE `Barcode Number`=%s", prepare_mysql($value)
                     );
-
 
 
                     if ($result = $this->db->query($sql)) {
@@ -63,9 +161,7 @@ class Asset extends DB_Table {
                             if ($row['Barcode Status'] == 'Available') {
 
                                 include_once 'class.Barcode.php';
-                                $barcode         = new Barcode(
-                                    $row['Barcode Key']
-                                );
+                                $barcode         = new Barcode($row['Barcode Key']);
                                 $barcode->editor = $this->editor;
 
                                 if ($this->get('Barcode Key')) {
@@ -82,9 +178,7 @@ class Asset extends DB_Table {
                                 $asset_data = array(
                                     'Barcode Asset Type'          => $this->table_name,
                                     'Barcode Asset Key'           => $this->id,
-                                    'Barcode Asset Assigned Date' => gmdate(
-                                        'Y-m-d H:i:s'
-                                    )
+                                    'Barcode Asset Assigned Date' => gmdate('Y-m-d H:i:s')
                                 );
 
 
@@ -107,27 +201,30 @@ class Asset extends DB_Table {
                                 );
 
 
-                                $this->update_field_switcher($this->table_name.' Barcode Number', $value, 'no_history'
+                                $this->update_field_switcher(
+                                    $this->table_name.' Barcode Number', $value, 'no_history'
                                 );
                                 $this->update_field_switcher($this->table_name.' Barcode Key', $barcode->id, 'no_history');
 
-                            }
-                            else  if ($row['Barcode Status'] == 'Reserved') {
-                                $this->error=true;
-                                $this->msg = _("Can't update barcode reserved").' '.$row['Barcode Sticky Note'] ;
+                            } else {
+                                if ($row['Barcode Status'] == 'Reserved') {
+                                    $this->error = true;
+                                    $this->msg   = _("Can't update barcode reserved").' '.$row['Barcode Sticky Note'];
 
-                                return true;
-                            } else  if ($row['Barcode Status'] == 'Used') {
-                                $this->error=true;
-                                $this->msg = _("Can't update, barcode already used");
+                                    return true;
+                                } else {
+                                    if ($row['Barcode Status'] == 'Used') {
+                                        $this->error = true;
+                                        $this->msg   = _("Can't update, barcode already used");
 
-                                return true;
-                            }
-                            else {
-                                $this->error=true;
-                                $this->msg = _('Barcode no available');
+                                        return true;
+                                    } else {
+                                        $this->error = true;
+                                        $this->msg   = _('Barcode no available');
 
-                                return true;
+                                        return true;
+                                    }
+                                }
                             }
 
 
@@ -147,8 +244,13 @@ class Asset extends DB_Table {
                             }
 
                             $this->update_field_switcher($this->table_name.' Barcode Number', $value, $options);
-                            $this->update_field_switcher($this->table_name.' Barcode Key', '', 'no_history'
-                            );
+                            $this->update_field_switcher($this->table_name.' Barcode Key', '', 'no_history');
+
+
+
+
+
+
 
                         }
                     } else {
@@ -156,6 +258,71 @@ class Asset extends DB_Table {
                         exit;
                     }
                 }
+
+
+                if($this->table_name=='Part') {
+
+                    $sql = sprintf(
+                        'SELECT `Part SKU` FROM `Part Dimension` WHERE `Part Barcode Number`=%s AND `Part SKU`!=%d  and (`Part Barcode Key` is null  or `Part Barcode Key`=0 )   ', prepare_mysql($_old_value), $this->id
+                    );
+
+                   
+                    if ($result = $this->db->query($sql)) {
+                        foreach ($result as $row) {
+
+
+
+
+
+                            $part = get_object('Part', $row['Part SKU']);
+
+
+
+                            $sql = sprintf(
+                                "SELECT `Barcode Key` ,`Barcode Status` ,`Barcode Sticky Note` FROM `Barcode Dimension` WHERE `Barcode Number`=%s   ", prepare_mysql($part->get('Part Barcode Number'))
+                            );
+
+                            if ($result2=$this->db->query($sql)) {
+                                if ($row2 = $result2->fetch()) {
+
+
+
+
+                                    $barcode         = new Barcode($row2['Barcode Key']);
+
+                                    if($barcode->get('Barcode Status')=='Available' ){
+
+
+                                        $asset_data = array(
+                                            'Barcode Asset Type'          => 'Part',
+                                            'Barcode Asset Key'           => $part->id,
+                                            'Barcode Asset Assigned Date' => gmdate('Y-m-d H:i:s')
+                                        );
+
+
+                                        $barcode->assign_asset_to_barcode($asset_data);
+                                        $part->fast_update(array('Part Barcode Key'=>$barcode->id));
+
+                                    }
+
+
+
+                                }
+                            }else {
+                                print_r($error_info=$db->errorInfo());
+                                print "$sql\n";
+                                exit;
+                            }
+
+
+                        }
+                    } else {
+                        print_r($error_info = $this->db->errorInfo());
+                        print "$sql\n";
+                        exit;
+                    }
+                }
+
 
                 $this->other_fields_updated = array(
                     $this->table_name.'_Barcode_Number' => array(
@@ -261,9 +428,9 @@ class Asset extends DB_Table {
 
             case  'Tariff Code':
                 $tariff_code = $this->data[$this->table_name.' Tariff Code'];
-               // if ($tariff_code != '' and $this->data[$this->table_name.' Tariff Code Valid'] == 'No') {
-               //     $tariff_code .= ' <span class="error invalid_value"><i class="fa fa-exclamation-circle"></i><span> '._('Invalid').'</span></span>';
-               // }
+                // if ($tariff_code != '' and $this->data[$this->table_name.' Tariff Code Valid'] == 'No') {
+                //     $tariff_code .= ' <span class="error invalid_value"><i class="fa fa-exclamation-circle"></i><span> '._('Invalid').'</span></span>';
+                // }
 
                 return array(
                     true,
@@ -317,8 +484,6 @@ class Asset extends DB_Table {
             case 'Materials':
 
                 if ($this->data[$this->table_name.' Materials'] != '') {
-
-
 
 
                     $materials_data  = json_decode($this->data[$this->table_name.' Materials'], true);
@@ -632,8 +797,8 @@ class Asset extends DB_Table {
                     true,
                     strftime(
                         "%a %e %b %Y", strtotime(
-                            $this->data[$this->table_name.' '.$key].' +0:00'
-                        )
+                                         $this->data[$this->table_name.' '.$key].' +0:00'
+                                     )
                     )
                 );
 
@@ -652,8 +817,8 @@ class Asset extends DB_Table {
                         true,
                         strftime(
                             "%a %e %b %Y", strtotime(
-                                $this->data[$this->table_name.' '.$key].' +0:00'
-                            )
+                                             $this->data[$this->table_name.' '.$key].' +0:00'
+                                         )
                         )
                     );
 
@@ -699,8 +864,7 @@ class Asset extends DB_Table {
     function get_image_key($index = 1) {
 
         $sql = sprintf(
-            "SELECT `Image Subject Image Key` FROM  `Image Subject Bridge` WHERE `Image Subject Object`=%s AND `Image Subject Object Key`=%d ORDER BY `Image Subject Order`  LIMIT %d,1 ",
-            prepare_mysql($this->table_name), $this->id, ($index - 1)
+            "SELECT `Image Subject Image Key` FROM  `Image Subject Bridge` WHERE `Image Subject Object`=%s AND `Image Subject Object Key`=%d ORDER BY `Image Subject Order`  LIMIT %d,1 ", prepare_mysql($this->table_name), $this->id, ($index - 1)
         );
 
         $image_key = 0;

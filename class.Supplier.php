@@ -755,6 +755,110 @@ class Supplier extends SubjectSupplier {
             exit;
         }
 
+
+
+        if(!empty($data['Part Barcode Number'])){
+            $barcode=$data['Part Barcode Number'];
+            $error='';
+
+            if(strlen($barcode)!=(12+1)){
+                $error='Size';
+                if(strlen($barcode)==12){
+                    $error='Checksum_missing';
+                    $sql=sprintf('select `Part SKU` from `Part Dimension` where `Part Barcode Number` like "%s%%" and `Part SKU`!=%d',
+                                 addslashes($barcode) ,$this->id);
+
+                    if ($result=$this->db->query($sql)) {
+                        foreach ($result as $row) {
+
+                            $error='Short_Duplicated';
+                        }
+
+                    }else {
+                        print_r($error_info=$this->db->errorInfo());
+                        print "$sql\n";
+                        exit;
+                    }
+
+                }
+
+
+            }else{
+                $digits=substr($barcode, 0, 12);
+
+                $digits         = (string)$digits;
+                $even_sum       = $digits{1} + $digits{3} + $digits{5} + $digits{7} + $digits{9} + $digits{11};
+                $even_sum_three = $even_sum * 3;
+                $odd_sum        = $digits{0} + $digits{2} + $digits{4} + $digits{6} + $digits{8} + $digits{10};
+                $total_sum      = $even_sum_three + $odd_sum;
+                $next_ten       = (ceil($total_sum / 10)) * 10;
+                $check_digit    = $next_ten - $total_sum;
+
+                if($check_digit!=substr($barcode, -1)){
+                    $error='Checksum';
+                }else{
+                    $sql=sprintf('select `Part SKU` from `Part Dimension` where `Part Barcode Number`=%s and `Part SKU`!=%d',
+                                 prepare_mysql($barcode) ,$this->id);
+
+                    if ($result=$this->db->query($sql)) {
+                        foreach ($result as $row) {
+                            $part=get_object('Part',$row['Part SKU']);
+                            $part->fast_update(array('Part Barcode Number Error'=>'Duplicated'));
+                            $error='Duplicated';
+                        }
+
+                    }else {
+                        print_r($error_info=$this->db->errorInfo());
+                        print "$sql\n";
+                        exit;
+                    }
+
+
+                }
+
+
+            }
+
+            if($error!=''){
+
+
+
+
+                switch ($error) {
+
+                    case 'Duplicated':
+                        $error_msg = _('Duplicated');
+                        break;
+                    case 'Size':
+                        $error_msg = _('Barcode should be 13 digits');
+                        break;
+                    case 'Short_Duplicated':
+                        $error_msg = _('Check digit missing, will duplicate');
+                        break;
+                    case 'Checksum_missing':
+                        $error_msg = _('Check digit missing');
+                        break;
+                    case 'Checksum':
+                        $error_msg = _('Invalid check digit');
+                        break;
+                    default:
+                        $error_msg = $this->data['Part Barcode Number Error'];
+                }
+
+
+
+
+                $this->error      = true;
+                $this->msg        = $error_msg;
+                $this->error_code = $error;
+
+                return;
+            }
+
+
+        }
+
+
         if (!isset($data['Part Unit Label']) or $data['Part Unit Label'] == '') {
 
 

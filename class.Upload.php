@@ -176,25 +176,45 @@ class Upload extends DB_Table {
             case 'Object':
                 switch ($this->data['Upload Object']) {
                     case 'supplier_part':
-                        $object = sprintf(
-                            '<i  class="fa fa-fw fa-stop"></i> %s', _("Supplier's parts")
-                        );
+                        $object = _("supplier's parts");
                         break;
                     case 'supplier':
-                        $object = sprintf(
-                            '<i  class="fa fa-fw fa-ship"></i> %s', _("Suppliers")
-                        );
+                        $object = _("suppliers");
                         break;
                     case 'part':
-                        $object = sprintf(
-                            '<i  class="fa fa-fw fa-square"></i> %s', _("Parts")
-                        );
+                        $object = _("parts");
                         break;
                     default:
                         $object = $this->data['Upload Object'];
                 }
 
                 return $object;
+
+                break;
+            case 'Parent':
+
+                $parent=get_object($this->data['Upload Parent'],$this->data['Upload Parent Key']);
+
+
+                switch ($this->data['Upload Parent']) {
+                    case 'supplier':
+                        $parent = sprintf(_("supplier %s"),sprintf('<span  class="link"  onclick="change_view(\'supplier/%d\')"  >%s</span>',$this->data['Upload Parent Key'],$parent->get('Code')));
+                        break;
+                    case 'category':
+                        if($this->data['Upload Object']=='part'){
+                            $parent = sprintf(_("part's category %s"),sprintf('<span  class="link"  onclick="change_view(\'category/%d\')"  >%s</span>',$this->data['Upload Parent Key'],$parent->get('Code')));
+
+
+                        }else{
+                            $parent = sprintf(_("category %s"),sprintf('<span  class="link"  onclick="change_view(\'category/%d\')"  >%s</span>',$this->data['Upload Parent Key'],$parent->get('Code')));
+
+                        }
+                    break;
+                    default:
+                        $parent = $this->data['Upload Parent'];
+                }
+
+                return $parent;
 
                 break;
             case ('Created'):

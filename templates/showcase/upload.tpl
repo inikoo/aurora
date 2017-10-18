@@ -1,12 +1,11 @@
-<div class="subject_profile">
+<div class="subject_profile" style="padding-top: 10px">
     <div id="contact_data" style="float:left;width:600px">
         <div class="showcase">
 
+            <h1>{$_title}</h1>
             <table class="">
-                <tr>
-                    <td class="label">{$upload->get_field_label('Upload Object')|capitalize}</td>
-                    <td class="Attachment_Subject_Type">{$upload->get('Object')}</td>
-                </tr>
+
+
 
                 <tr>
                     <td class="label">{t}Uploaded by{/t}</td>
