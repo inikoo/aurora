@@ -77,11 +77,11 @@
         <script type="text/javascript" src="/js/barcode_scanner.js"></script>
         <script type="text/javascript" src="/js/search.js"></script>
         <script type="text/javascript" src="/js/table.js"></script>
-        <script type="text/javascript" src="/js/validation.js"></script>
-        <script type="text/javascript" src="/js/edit.js"></script>
-        <script type="text/javascript" src="/js/edit_webpage_edit.js"></script>
+        <script type="text/javascript" src="/js/validation.js?v171019"></script>
+        <script type="text/javascript" src="/js/edit.js?v171019"></script>
+        <script type="text/javascript" src="/js/edit_webpage_edit.js?v171019"></script>
 
-        <script type="text/javascript" src="/js/new.js"></script>
+        <script type="text/javascript" src="/js/new.js?v171019"></script>
         <script type="text/javascript" src="/js/order.common.js?v171005"></script>
         <script type="text/javascript" src="/js/supplier.order.js"></script>
         <script type="text/javascript" src="/js/supplier.delivery.js"></script>

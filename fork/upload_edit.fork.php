@@ -31,7 +31,6 @@ function fork_upload_edit($job) {
 
     }
 
-
     $fork_data           = $_data['fork_data'];
     $fork_key            = $_data['fork_key'];
     $inikoo_account_code = $_data['inikoo_account_code'];
@@ -111,7 +110,8 @@ function fork_upload_edit($job) {
     $key_index     = -1;
     $valid_indexes = array();
 
-    //  print_r($fields);
+
+
 
 
     foreach ($fields as $key => $value) {
@@ -233,8 +233,8 @@ function fork_upload_edit($job) {
 
 
                 $_data = array(
-                    'parent'            => $upload->get('Parent'),
-                    'parent_key'        => $upload->get('Parent Key'),
+                    'parent'            => $upload->get('Upload Parent'),
+                    'parent_key'        => $upload->get('Upload Parent Key'),
                     'object'            => $upload->get('Upload Object'),
                     'upload_record_key' => $row['Upload Record Key'],
                     'fields_data'       => $fields_data
@@ -244,6 +244,8 @@ function fork_upload_edit($job) {
                 $object_key = new_object(
                     $account, $db, $user, $editor, $_data, $upload, $fork_key
                 );
+
+
 
             } else {
                 if ($record_data[$key_index] == '') {
@@ -421,6 +423,9 @@ function update_upload_edit_stats($fork_key, $upload_key, $db) {
 function new_object($account, $db, $user, $editor, $data, $upload, $fork_key) {
 
     $error = false;
+
+
+
 
     $parent = get_object($data['parent'], $data['parent_key']);
 
