@@ -646,6 +646,7 @@ class Image {
         }
 
 
+
         file_put_contents($path.'/'.$filename.'.'.$extension, $image_data);
 
         return $filename.'.'.$extension;
