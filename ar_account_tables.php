@@ -657,6 +657,45 @@ function upload_records($_data, $db, $user, $account) {
                         case 'created':
                             $state = '<i class="fa fa-check success" aria-hidden="true"></i>  <span class="success">'._('Created').'</span>';
                             break;
+                        case 'supplier_part_reference_missing':
+                            $state =  ' <span class="error"><i class="fa fa-exclamation-circle fa-fw" aria-hidden="true"></i> '._('Supplier\'s part reference missing').'</span>';
+                            break;
+                        case 'part_unit_description_missing':
+                            $state =  ' <span class="error"><i class="fa fa-exclamation-circle fa-fw" aria-hidden="true"></i> '._('Unit description missing').'</span>';
+                            break;
+
+                        case 'Barcode No Numeric':
+                            $error_msg = _('Barcode can only have numbers');
+                            $state =  ' <span class="error"><i class="fa fa-exclamation-circle fa-fw" aria-hidden="true"></i> '.$error_msg.'</span>';
+                            break;
+
+                        case 'Barcode Duplicated':
+                            $error_msg = _('Barcode duplicated');
+                            $state =  ' <span class="error"><i class="fa fa-exclamation-circle fa-fw" aria-hidden="true"></i> '.$error_msg.'</span>';
+                            break;
+                        case 'Barcode Size':
+                            $error_msg = _('Barcode should be 13 digits');
+                            $state =  ' <span class="error"><i class="fa fa-exclamation-circle fa-fw" aria-hidden="true"></i> '.$error_msg.'</span>';
+
+                            break;
+                        case 'Barcode Short_Duplicated':
+                            $error_msg = _('Barcode check digit missing, will duplicate');
+                            $state =  ' <span class="error"><i class="fa fa-exclamation-circle fa-fw" aria-hidden="true"></i> '.$error_msg.'</span>';
+
+                            break;
+                        case 'Barcode Checksum_missing':
+                            $error_msg = _('Barcode check digit missing');
+                            $state =  ' <span class="error"><i class="fa fa-exclamation-circle fa-fw" aria-hidden="true"></i> '.$error_msg.'</span>';
+
+                            break;
+                        case 'Barcode Checksum':
+                            $error_msg = _('Invalid barcode check digit');
+                            $state =  ' <span class="error"><i class="fa fa-exclamation-circle fa-fw" aria-hidden="true"></i> '.$error_msg.'</span>';
+
+                            break;
+
+
+
                         default:
                             $state .=$data['Upload Record Message Code'];
 
