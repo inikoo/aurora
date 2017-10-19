@@ -24,6 +24,7 @@ class Product extends Asset {
         }
 
 
+
         $this->table_name    = 'Product';
         $this->ignore_fields = array('Product ID');
         $this->webpage       = false;
