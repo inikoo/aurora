@@ -14,16 +14,6 @@ require_once 'utils/ar_common.php';
 require_once 'utils/table_functions.php';
 require_once 'utils/object_functions.php';
 
-if (!$user->can_view('account')) {
-    echo json_encode(
-        array(
-            'state' => 405,
-            'resp'  => 'Forbidden'
-        )
-    );
-    exit;
-}
-
 
 if (!isset($_REQUEST['tipo'])) {
     $response = array(
@@ -39,6 +29,7 @@ $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
     case 'data_sets':
+
         data_sets(get_table_parameters(), $db, $user, $account);
         break;
     case 'timeseries':
