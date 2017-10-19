@@ -366,19 +366,9 @@ $supplier_part_fields[] = array(
         array(
             'id'              => 'Supplier_Part_Packages_Per_Carton',
             'edit'            => 'smallint_unsigned',
-            'value'           => ($new
-                ? 1
-                : htmlspecialchars(
-                    $object->get('Supplier Part Packages Per Carton')
-                )),
-            'formatted_value' => ($new
-                ? 1
-                : $object->get(
-                    'Packages Per Carton'
-                )),
-            'label'           => ucfirst(
-                $object->get_field_label('Supplier Part Packages Per Carton')
-            ),
+            'value'           => ($new ? 1 : htmlspecialchars($object->get('Supplier Part Packages Per Carton'))),
+            'formatted_value' => ($new ? 1 : $object->get('Packages Per Carton')),
+            'label'           => ucfirst($object->get_field_label('Supplier Part Packages Per Carton')).'<div class="warning" style="line-height: normal;font-size: 80%;position: relative;top:-4px"> <i class="fa fa-exclamation-triangle yellow" title="'._("This field is independent of parts's SKOs per selling carton").'" aria-hidden="true"></i> '._("This field is independent of parts's SKOs per selling carton").'</div>',
             'required'        => true,
             'type'            => 'value'
         ),

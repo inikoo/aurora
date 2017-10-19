@@ -442,7 +442,7 @@ $part_fields[] = array(
 if(!$supplier_part_scope) {
 
     $part_fields[] = array(
-        'label' => _('Cartons'),
+        'label' => _('Cartons').' <small class="padding_left_10" ><i class="fa fa-exclamation-triangle yellow" aria-hidden="true"></i> <span class="warning">'._("This field is independent of Supplier's part ordering SKOs per carton").'</span></small>',
 
         'show_title' => true,
         'fields'     => array(

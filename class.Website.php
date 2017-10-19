@@ -1269,11 +1269,11 @@ class Website extends DB_Table {
 
 
         //todo: AUR-33
-
-        if($product->get('Product Web State')=='Discontinued'){
+       // 'InProcess','Active','Suspended','Discontinuing','Discontinued'
+        if($product->get('Product Status')=='Discontinued' or $product->get('Product Status')=='Suspended' ){
             $page->unpublish();
-        }else{
-           // $page->publish();
+        }elseif($product->get('Product Status')=='Discontinuing' or $product->get('Product Status')=='Active' ){
+            $page->publish();
         }
 
 

@@ -145,16 +145,15 @@ class Part extends Asset {
         include_once 'class.Account.php';
         include_once 'class.Category.php';
 
-         
+
         $account = new Account($this->db);
 
-        if (array_key_exists('Part Family Category Code', $data)  and  $data['Part Family Category Code']!='' ) {
+        if (array_key_exists('Part Family Category Code', $data) and $data['Part Family Category Code'] != '') {
 
             $root_category = new Category(
                 $account->get('Account Part Family Category Key')
             );
             if ($root_category->id) {
-
 
 
                 $root_category->editor = $this->editor;
@@ -219,12 +218,11 @@ class Part extends Asset {
             $this->db->exec($sql);
 
 
-
             $this->get_data('id', $this->id);
 
 
-            if(!empty($data['Part Barcode'])){
-                $this->update(array('Part Barcode'=>$data['Part Barcode']),'no_history');
+            if (!empty($data['Part Barcode'])) {
+                $this->update(array('Part Barcode' => $data['Part Barcode']), 'no_history');
             }
 
 
@@ -391,6 +389,21 @@ class Part extends Asset {
 
         switch ($key) {
 
+            case 'SKOs per Carton':
+
+
+                $suppliers = '';
+
+                foreach ($this->get_supplier_parts('objects') as $supplier_part) {
+                    $supplier_part->load_supplier();
+                    $suppliers .= $supplier_part->supplier->get('Code').' '.$supplier_part->get('Supplier Part Packages Per Carton').' '._("Supplier's part ordering SKOs per carton").', ';
+
+                }
+                $suppliers = preg_replace('/\, $/', '', $suppliers);
+
+                return number($this->data['Part SKOs per Carton'])." <span class='italic very_discreet'>(".$suppliers.')</span>';
+
+                break;
             case 'Products Numbers':
 
                 return number($this->data['Part Number Active Products']).",<span class=' very_discreet'>".number($this->data['Part Number No Active Products']).'</span>';
@@ -856,7 +869,6 @@ class Part extends Asset {
                 break;
 
 
-
             case 'Barcode Number Error':
 
                 if ($this->data['Part Barcode Number Error'] == '') {
@@ -886,21 +898,19 @@ class Part extends Asset {
                 }
 
 
-
                 return '<i class="fa fa-exclamation-circle error" aria-hidden="true"></i> '.$error;
 
                 break;
 
             case 'Barcode Number Error with Duplicates Links':
 
-                $error =$this->get('Barcode Number Error');
+                $error = $this->get('Barcode Number Error');
                 if ($error == '') {
                     return '';
                 }
 
 
                 $duplicates = '';
-
 
 
                 if (strlen($this->data['Part Barcode Number']) >= 12 and strlen($this->data['Part Barcode Number']) < 14) {
@@ -1063,6 +1073,40 @@ class Part extends Asset {
         }
 
         return false;
+    }
+
+    function get_supplier_parts($scope = 'keys') {
+
+
+        if ($scope == 'objects') {
+            include_once 'class.SupplierPart.php';
+        }
+
+        $sql = sprintf(
+            'SELECT `Supplier Part Key` FROM `Supplier Part Dimension` WHERE `Supplier Part Part SKU`=%d ', $this->id
+        );
+
+        $supplier_parts = array();
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+                if ($scope == 'objects') {
+                    $object = new SupplierPart('id', $row['Supplier Part Key'], false, $this->db);
+                    $object->load_supplier();
+                    $supplier_parts[$row['Supplier Part Key']] = $object;
+                } else {
+                    $supplier_parts[$row['Supplier Part Key']] = $row['Supplier Part Key'];
+                }
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+        return $supplier_parts;
     }
 
     function validate_barcode() {
@@ -1710,40 +1754,6 @@ class Part extends Asset {
             $supplier_part_key,
             $supplier_part_historic_key
         );
-    }
-
-    function get_supplier_parts($scope = 'keys') {
-
-
-        if ($scope == 'objects') {
-            include_once 'class.SupplierPart.php';
-        }
-
-        $sql = sprintf(
-            'SELECT `Supplier Part Key` FROM `Supplier Part Dimension` WHERE `Supplier Part Part SKU`=%d ', $this->id
-        );
-
-        $supplier_parts = array();
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-                if ($scope == 'objects') {
-                    $object = new SupplierPart('id', $row['Supplier Part Key'], false, $this->db);
-                    $object->load_supplier();
-                    $supplier_parts[$row['Supplier Part Key']] = $object;
-                } else {
-                    $supplier_parts[$row['Supplier Part Key']] = $row['Supplier Part Key'];
-                }
-
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-        return $supplier_parts;
     }
 
     function update_on_demand() {
@@ -2594,8 +2604,10 @@ class Part extends Asset {
                 break;
             case 'Part Recommended Packages Per Selling Outer':
                 $label = _('Recommended SKOs per selling outer');
-
-
+                break;
+            case 'Part SKOs per Carton':
+                $label = _('SKOs per selling carton');
+                break;
                 break;
             default:
                 $label = $field;
@@ -2883,7 +2895,7 @@ class Part extends Asset {
 
             case 'Part Barcode Number':
 
-                $old_value=$this->data['Part Barcode Number'];
+                $old_value = $this->data['Part Barcode Number'];
 
 
                 $this->update_field($field, $value, $options);
@@ -2892,30 +2904,25 @@ class Part extends Asset {
                 $updated = $this->updated;
 
 
-                 $sql   = sprintf(
-                     'SELECT `Part SKU` FROM `Part Dimension` WHERE `Part Barcode Number`=%s AND `Part SKU`!=%d', prepare_mysql($old_value), $this->id
-                 );
+                $sql = sprintf(
+                    'SELECT `Part SKU` FROM `Part Dimension` WHERE `Part Barcode Number`=%s AND `Part SKU`!=%d', prepare_mysql($old_value), $this->id
+                );
 
 
-                 if ($result=$this->db->query($sql)) {
-                 		foreach ($result as $row) {
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
 
 
-                            $part = get_object('Part', $row['Part SKU']);
-                            $part->validate_barcode();
+                        $part = get_object('Part', $row['Part SKU']);
+                        $part->validate_barcode();
 
 
-
-
-
-                 		}
-                 }else {
-                 		print_r($error_info=$this->db->errorInfo());
-                 		print "$sql\n";
-                 		exit;
-                 }
-
-
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
 
 
                 foreach ($this->get_products('objects') as $product) {
@@ -2928,10 +2935,6 @@ class Part extends Asset {
                     }
 
                 }
-
-
-
-
 
 
                 $this->updated = $updated;
@@ -3604,7 +3607,6 @@ class Part extends Asset {
                 break;
 
 
-
             case 'Part UN Number':
             case 'Part UN Class':
             case 'Part Packing Group':
@@ -3614,13 +3616,12 @@ class Part extends Asset {
             case('Part Duty Rate'):
 
 
+                if ($field == 'Part Duty Rate' and is_numeric($value)) {
+                    $value = percentage($value, 1);
+                }
 
-            if($field=='Part Duty Rate'  and is_numeric($value)){
-                $value=percentage($value,1);
-            }
 
-
-            $this->update_field($field, $value, $options);
+                $this->update_field($field, $value, $options);
                 $updated = $this->updated;
                 //$this->update_linked_products($field, $value, $options, $metadata);
 
@@ -3748,12 +3749,10 @@ class Part extends Asset {
             case 'Part SKOs per Carton':
                 $this->update_field($field, $value, $options);
 
-                foreach ($this->get_supplier_parts('objects') as $supplier_part) {
-                    $supplier_part->editor = $this->editor;
-
-
-                    $supplier_part->update(array('Supplier Part Packages Per Carton skip update part' => $value), $options);
-                }
+                //foreach ($this->get_supplier_parts('objects') as $supplier_part) {
+                //    $supplier_part->editor = $this->editor;
+                //    $supplier_part->update(array('Supplier Part Packages Per Carton skip update part' => $value), $options);
+                //}
 
                 break;
 

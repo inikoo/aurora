@@ -1119,6 +1119,15 @@ class Supplier extends SubjectSupplier {
 
                 }
 
+
+                if (!empty($data['Supplier Part Packages Per Carton'])) {
+                    $data['Part SKOs per Carton']=$data['Supplier Part Packages Per Carton'];
+
+                }
+
+
+
+
                 $auto_part_barcode = false;
 
                 if (isset($data['Part Barcode Number']) and preg_match('/^auto$/i', $data['Part Barcode Number'])) {
