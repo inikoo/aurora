@@ -303,9 +303,16 @@ $export_operations      = array(
             'id'        => 'export_webpage',
             'class'     => 'operation',
             'value'     => '',
-            'label'     => sprintf('<span type="submit" class="button" file="/webpage_images.zip.php?parent=category&key=%d" onclick="window.open($(this).attr(\'file\'))"><i class="fa fa-file-archive-o" aria-hidden="true"></i> %s</span>',
+            'label'     => sprintf('
+<span type="submit" class="button" file="/webpage_images.zip.php?parent=category&key=%d" onclick="window.open($(this).attr(\'file\'))"><i class="fa fa-file-archive-o" aria-hidden="true"></i> %s</span>
+<span type="submit" class="padding_left_30 button" file="/webpage_texts.txt.php?parent=category&key=%d" onclick="window.open($(this).attr(\'file\'))"><i class="fa fa-file-text-o" aria-hidden="true"></i> %s</span>
+
+
+',
                                    $object->id,
-                                   _('Images (including products)')),
+                                   _('Images (including products)'),
+            $object->id,
+            _('Texts (including products)')),
             'reference' => '',
             'type'      => 'operation'
         ),
