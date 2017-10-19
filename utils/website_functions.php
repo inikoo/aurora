@@ -113,6 +113,10 @@ function get_website_section_items($db, $section_data) {
             //=======
 
 
+            $image_mobile_website='';
+
+            /*
+
             require_once 'external_libs/ImageCache.php';
             $imagecache                         = new ImageCache();
             $imagecache->cached_image_directory = 'EcomB2B/server_files/cached_images/';
@@ -133,7 +137,7 @@ function get_website_section_items($db, $section_data) {
                     $image          = get_object('Image', $image_key);
                     $image_filename = 'EcomB2B/server_files/tmp/'.$image_key.'_'.$_size_image_product_webpage.'.'.$image_format;
 
-                    if (!file_exists($image_filename)) {
+                    if (!file_exists($image_filename)  ) {
 
 
 
@@ -168,7 +172,7 @@ function get_website_section_items($db, $section_data) {
             }
 
 
-
+*/
 
 
 
