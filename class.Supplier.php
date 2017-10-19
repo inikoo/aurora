@@ -668,6 +668,7 @@ class Supplier extends SubjectSupplier {
     function create_supplier_part_record($data) {
 
 
+
         $data['editor'] = $this->editor;
 
         unset($data['Supplier Part Supplier Code']);
@@ -757,11 +758,14 @@ class Supplier extends SubjectSupplier {
 
 
 
-        if(!empty($data['Part Barcode Number'])){
-            $barcode=$data['Part Barcode Number'];
+        if(!empty($data['Part Barcode'])){
+            $barcode=$data['Part Barcode'];
             $error='';
 
-            if(strlen($barcode)!=(12+1)){
+
+            if(!is_numeric($barcode)){
+                $error='No Numeric';
+            }elseif(strlen($barcode)!=(12+1)){
                 $error='Size';
                 if(strlen($barcode)==12){
                     $error='Checksum_missing';
@@ -783,7 +787,7 @@ class Supplier extends SubjectSupplier {
                 }
 
 
-            }else{
+            } else{
                 $digits=substr($barcode, 0, 12);
 
                 $digits         = (string)$digits;
@@ -842,7 +846,7 @@ class Supplier extends SubjectSupplier {
                         $error_msg = _('Invalid check digit');
                         break;
                     default:
-                        $error_msg = $this->data['Part Barcode Number Error'];
+                        $error_msg = $error;
                 }
 
 
@@ -850,7 +854,7 @@ class Supplier extends SubjectSupplier {
 
                 $this->error      = true;
                 $this->msg        = $error_msg;
-                $this->error_code = $error;
+                $this->error_code = 'Barcode '.$error;
 
                 return;
             }

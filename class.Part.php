@@ -145,19 +145,20 @@ class Part extends Asset {
         include_once 'class.Account.php';
         include_once 'class.Category.php';
 
-        // print_r($data);
+         
         $account = new Account($this->db);
 
-        if (array_key_exists('Part Family Category Code', $data)) {
+        if (array_key_exists('Part Family Category Code', $data)  and  $data['Part Family Category Code']!='' ) {
 
             $root_category = new Category(
                 $account->get('Account Part Family Category Key')
             );
             if ($root_category->id) {
+
+
+
                 $root_category->editor = $this->editor;
-                $family                = $root_category->create_category(
-                    array('Category Code' => $data['Part Family Category Code'])
-                );
+                $family                = $root_category->create_category(array('Category Code' => $data['Part Family Category Code']));
                 if ($family->id) {
                     $data['Part Family Category Key'] = $family->id;
                 }
@@ -218,7 +219,14 @@ class Part extends Asset {
             $this->db->exec($sql);
 
 
+
             $this->get_data('id', $this->id);
+
+
+            if(!empty($data['Part Barcode'])){
+                $this->update(array('Part Barcode'=>$data['Part Barcode']),'no_history');
+            }
+
 
             $this->calculate_forecast_data();
 
