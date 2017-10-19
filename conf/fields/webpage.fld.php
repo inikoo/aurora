@@ -354,7 +354,61 @@ if (in_array($object->get('Webpage Scope'), array('Category Categories'))) {
 
 }
 
+if(!$new and $object->get('Webpage Scope')=='Category Products'){
+    $export_operations      = array(
+        'label'      => _('Export'),
+        'show_title' => true,
+        'class'      => 'operations',
+        'fields'     => array(
 
+
+            array(
+                'id'        => 'export_webpage',
+                'class'     => 'operation',
+                'value'     => '',
+                'label'     => sprintf('<span type="submit" class="button" file="/webpage_images.zip.php?parent=category&key=%d" onclick="window.open($(this).attr(\'file\'))"><i class="fa fa-file-archive-o" aria-hidden="true"></i> %s</span>',
+                                       $object->get('Webpage Scope Key'),
+                                       _('Images (including products)')),
+                'reference' => '',
+                'type'      => 'operation'
+            ),
+
+
+        )
+
+    );
+
+    $object_fields[] = $export_operations;
+
+}
+
+if(!$new and $object->get('Webpage Scope')=='Product'){
+$export_operations      = array(
+    'label'      => _('Export'),
+    'show_title' => true,
+    'class'      => 'operations',
+    'fields'     => array(
+
+
+        array(
+            'id'        => 'export_webpage',
+            'class'     => 'operation',
+            'value'     => '',
+            'label'     => sprintf('<span type="submit" class="button" file="/webpage_images.zip.php?parent=product&key=%d" onclick="window.open($(this).attr(\'file\'))"><i class="fa fa-file-archive-o" aria-hidden="true"></i> %s</span>',
+                                   $object->get('Webpage Scope Key'),
+                                   _('Images')),
+            'reference' => '',
+            'type'      => 'operation'
+        ),
+
+
+    )
+
+);
+
+$object_fields[] = $export_operations;
+
+}
 
 
 $operations      = array(

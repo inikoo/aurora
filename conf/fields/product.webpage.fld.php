@@ -265,5 +265,33 @@ $product_fields = array_merge(
 
 
 
+$export_operations      = array(
+    'label'      => _('Export'),
+    'show_title' => true,
+    'class'      => 'operations',
+    'fields'     => array(
+
+
+        array(
+            'id'        => 'export_webpage',
+            'class'     => 'operation',
+            'value'     => '',
+            'label'     => sprintf('<span type="submit" class="button" file="/webpage_images.zip.php?parent=product&key=%d" onclick="window.open($(this).attr(\'file\'))"><i class="fa fa-file-archive-o" aria-hidden="true"></i> %s</span>',
+                                   $object->id,
+                                   _('Images')),
+            'reference' => '',
+            'type'      => 'operation'
+        ),
+
+
+    )
+
+);
+
+$product_fields[] = $export_operations;
+
+
+
+
 
 ?>

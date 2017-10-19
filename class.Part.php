@@ -3594,15 +3594,25 @@ class Part extends Asset {
                     }
                 }
                 break;
+
+
+
             case 'Part UN Number':
             case 'Part UN Class':
             case 'Part Packing Group':
             case 'Part Proper Shipping Name':
             case 'Part Hazard Indentification Number':
-            case('Part Duty Rate'):
             case('Part CPNP Number'):
+            case('Part Duty Rate'):
 
-                $this->update_field($field, $value, $options);
+
+
+            if($field=='Part Duty Rate'  and is_numeric($value)){
+                $value=percentage($value,1);
+            }
+
+
+            $this->update_field($field, $value, $options);
                 $updated = $this->updated;
                 //$this->update_linked_products($field, $value, $options, $metadata);
 

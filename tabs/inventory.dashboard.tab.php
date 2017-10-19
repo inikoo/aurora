@@ -22,6 +22,7 @@ $html .= '<div id="widget_details" class="hide" style="clear:both;font-size:90%;
 
 switch ($state['extra']) {
     case 'barcode_errors':
+    case 'barcodes_errors':
         $html .= "<script>get_widget_details($('#inventory_parts_barcode_errors_wget'),'inventory.parts_barcode_errors.wget',{ parent: 'account','parent_key':1})</script>";
         break;
     case 'missing_sko_barcodes':
