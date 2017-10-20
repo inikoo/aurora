@@ -102,6 +102,7 @@ function old_new_fork($type,$data,$account_code) {
 
     );
 
+    print_r($caca);
 
     $client= new GearmanClient();
 
@@ -115,35 +116,55 @@ function old_new_fork($type,$data,$account_code) {
 
 
 function new_housekeeping_fork($type, $data, $account_code) {
-
+/*
     include_once  'utils/aes.php';
     $fork_encrypt_key = md5('huls0fjhslsshskslgjbtqcwijnbxhl2391');
 
-    $token = substr(
-        str_shuffle(
-            md5(time()).rand().str_shuffle(
-                'qwertyuiopasdfghjjklmnbvcxzQWERTYUIOPKJHGFDSAZXCVBNM1234567890'
-            )
-        ), 0, 64
-    );
-    $salt  = md5(rand());
 
-    $fork_metadata = base64_encode(
-        AESEncryptCtr(
-            json_encode(
-                array(
-                    'code'  => addslashes($account_code),
-                    'data'  => $data,
-                    'token' => $token,
-                    'salt'  => $salt
-                )
-            ), $fork_encrypt_key, 256
+    $encrypted=AESEncryptCtr(
+        json_encode(
+            array(
+                'code'  => addslashes($account_code),
+                'data'  => $data
+            )
+        ), $fork_encrypt_key, 256
+    );
+
+    $fork_metadata = base64_encode($encrypted);
+
+    print "=======\n";
+    print $fork_encrypt_key."\n";
+    print "=======\n";
+    print json_encode(
+            array(
+                'code'  => addslashes($account_code),
+                'data'  => $data
+            )
+        )."\n";
+    print "=======\n";
+
+
+    print $fork_encrypt_key."\n";
+    print "=======\n";
+    print $encrypted."\n";
+    print "=======\n";
+    print $fork_metadata."\n";
+    print "=======\n";
+
+*/
+
+    $client        = new GearmanClient();
+
+    $fork_metadata=json_encode(
+        array(
+            'code'  => addslashes($account_code),
+            'data'  => $data
         )
     );
-    $client        = new GearmanClient();
 
     $client->addServer('127.0.0.1');
     $msg = $client->doBackground($type, $fork_metadata);
+
 
     return $msg;
 
