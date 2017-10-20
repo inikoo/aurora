@@ -102,7 +102,7 @@ function old_new_fork($type,$data,$account_code) {
 
     );
 
-    print_r($caca);
+   // print_r($caca);
 
     $client= new GearmanClient();
 
