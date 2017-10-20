@@ -54,20 +54,20 @@ function get_fork_metadata($job) {
 
     global $db, $account;
 
-    $fork_encrypt_key = md5('huls0fjhslsshskslgjbtqcwijnbxhl2391');
+   // $fork_encrypt_key = md5('huls0fjhslsshskslgjbtqcwijnbxhl2391');
     $fork_raw_data    = $job->workload();
-    $fork_metadata    = json_decode(
-        AESDecryptCtr(base64_decode($fork_raw_data), $fork_encrypt_key, 256), true
-    );
+   // $fork_metadata    = json_decode(AESDecryptCtr(base64_decode($fork_raw_data), $fork_encrypt_key, 256), true);
 
+    $fork_metadata=json_decode($fork_raw_data,true);
 
-   print_r($fork_metadata);
+  //  print_r($fork_metadata);
+   // exit;
+
 
     $inikoo_account_code = $fork_metadata['code'];
     if (!ctype_alnum($inikoo_account_code)) {
 
         // print_r(AESDecryptCtr(base64_decode($fork_raw_data), $fork_encrypt_key, 256));
-        print_r($fork_metadata);
 
         print "can't find account code y ->".$inikoo_account_code."<-  \n";
 
