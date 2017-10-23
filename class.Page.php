@@ -299,6 +299,7 @@ class Page extends DB_Table {
         }
 
 
+
         $data['Page Key'] = $this->id;
         $keys             = '(';
 
@@ -344,8 +345,12 @@ class Page extends DB_Table {
             $this->update_url();
 
             $this->update_see_also();
+
             $this->update_image_key();
             $this->refresh_cache();
+
+            return $this;
+
 
         } else {
             $this->error = true;

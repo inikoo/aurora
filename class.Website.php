@@ -1121,6 +1121,8 @@ class Website extends DB_Table {
 
     function create_product_webpage($product_id) {
 
+
+
         include_once 'class.Webpage_Type.php';
         include_once 'class.Page.php';
         include_once 'class.Product.php';
@@ -1153,7 +1155,8 @@ class Website extends DB_Table {
             exit;
         }
 
-        $product = new Product($product_id);
+
+        $product=get_object('product',$product_id);
 
         $page_code = $this->get_unique_code($product->get('Code'), 'Webpage');
 
@@ -1230,13 +1233,20 @@ class Website extends DB_Table {
 
 
 
-
         $page = new Page('find', $page_data, 'create');
+
 
 
        // print $page->id;
 
+
+
+
         $product->fast_update(array('Product Webpage Key' => $page->id));
+
+
+
+
 
         $webpage_type->update_number_webpages();
 

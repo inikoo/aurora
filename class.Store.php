@@ -2945,17 +2945,17 @@ class Store extends DB_Table {
                     $part->update_commercial_value();
                 }
 
+                foreach ($this->get_websites('objects') as $website) {
+                    $website->create_product_webpage($product->id);
+                }
 
                 if ($family_key) {
-                    $product->update(
-                        array('Product Family Category Key' => $family_key), 'no_history'
+                    $product->update(array('Product Family Category Key' => $family_key), 'no_history'
                     );
                 }
 
 
-                foreach ($this->get_websites('objects') as $website) {
-                    $website->create_product_webpage($product->id);
-                }
+
 
                 $this->update_product_data();
                 $this->update_new_products();

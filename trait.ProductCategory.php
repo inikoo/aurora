@@ -1156,6 +1156,8 @@ trait ProductCategory {
                         'INSERT INTO `Product Category Index` (`Product Category Index Category Key`,`Product Category Index Product ID`,`Product Category Index Website Key`,`Product Category Index Product Webpage Key`,`Product Category Index Content Data`,`Product Category Index Stack`) VALUES (%d,%d,%d,%d,%s,%d) ',
                         $this->id, $row['Product ID'], $this->webpage->id, $row['Product Webpage Key'], prepare_mysql(json_encode($_data)), $stack
                     );
+
+
                     $this->db->exec($sql);
 
 
@@ -1289,18 +1291,80 @@ trait ProductCategory {
                 $this->id
             );
 
-
+            $stack=0;
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
 
                     if ($row['Product Category Index Product ID'] == '') {
                         $null_stacks = true;
 
-                        $sql = sprintf(
-                            'INSERT INTO `Product Category Index` (`Product Category Index Category Key`,`Product Category Index Product ID`,`Product Category Index Website Key`) VALUES (%d,%d,%d) ',
-                            $this->id, $row['Product ID'], $this->webpage->id
+
+                        $product=get_object('product',$row['Product ID']);
+                        $image = new Image($product->get('Product Main Image Key'));
+
+                        $_image_filename = uniqid('tmp_ftc_image_');
+
+                        $image->save_image_to_file('/tmp', $_image_filename, $image->fit_to_canvas(375, 275));
+
+                        $image_filename = '/tmp/'.$_image_filename.'.jpeg';
+                        $image_data     = array(
+                            'Upload Data'                      => array(
+                                'tmp_name' => $image_filename,
+                                'type'     => 'image/jpeg'
+                            ),
+                            'Image Filename'                   => $image->get('Image Filename'),
+                            'Image Subject Object Image Scope' => 'Item'
+
                         );
+
+                        // print_r($image_data);
+                        $image = $this->webpage->add_image($image_data);
+
+                        if (!$image) {
+                            print_r($this->webpage->msg);
+                            exit;
+                        }
+
+                        //  print "========";
+
+                        // print_r($image);
+
+
+                        $image_375x250 = '/image_root.php?id='.$image->id;
+
+                        unlink($image_filename);
+
+                        //print_r($product);
+
+                        $_data = array(
+                            'code'          => $product->get('Code'),
+                            'label'         => $product->get('Name'),
+                            'hover_code'    => $product->get('Code'),
+                            'hover_label'   => $product->get('Name'),
+                            'image_375x250' => $image_375x250,
+
+
+                            'product_id'  => $product->id,
+                            'webpage_key' => $product->get('Product Webpage Key'),
+                            'tags'        => '',
+                            'guest'       => false,
+
+                        );
+
+
+
+                            $sql = sprintf(
+                            'INSERT INTO `Product Category Index` (`Product Category Index Category Key`,`Product Category Index Product ID`,`Product Category Index Website Key`,`Product Category Index Product Webpage Key`,`Product Category Index Content Data`,`Product Category Index Stack`) VALUES (%d,%d,%d,%d,%s,%d) ',
+                            $this->id, $row['Product ID'], $this->webpage->id, $product->get('Product Webpage Key'), prepare_mysql(json_encode($_data)), $stack
+                        );
+
+
+                          //  print "$sql\n";
+
                         $this->db->exec($sql);
+
+
+                      //  exit;
 
                     }
 
@@ -1347,7 +1411,8 @@ trait ProductCategory {
             }
 
 
-        } elseif ($this->get('Category Subject') == 'Category') {
+        }
+        elseif ($this->get('Category Subject') == 'Category') {
 
 
             include_once 'class.Public_Webpage.php';
