@@ -96,7 +96,7 @@
                     <span class="button " onclick="toggle_logged_in_view(this)"><i class="fa fa-toggle-on " aria-hidden="true" alt="{t}On{/t}"></i> <span class="unselectable">{t}Logged in{/t}</span></span>
 
 
-                    <a id="link_to_live_webpage" target="_blank" class="{if $webpage->get('Webpage State')=='Offline'}invisible{/if}" href="http://{$webpage->get('Page URL')}"><i class="fa fa-external-link"
+                    <a id="link_to_live_webpage" target="_blank" class="{if $webpage->get('Webpage State')=='Offline'}invisible{/if}" href="{$webpage->get('URL')}"><i class="fa fa-external-link"
                                                                                                                                                                                    aria-hidden="true"
                                                                                                                                                                                    style="float:right;margin-left:20px;position:relative;top:2px"></i>
                     </a>

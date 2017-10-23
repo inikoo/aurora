@@ -1201,7 +1201,7 @@ class Page extends DB_Table {
             case('xhtml'):
             case('link'):
             default:
-                return '<a href="'.$this->data['Page URL'].'">'.$this->data['Page Title'].'</a>';
+                return '<a href="'.$this->data['Webpage URL'].'">'.$this->data['Page Title'].'</a>';
 
         }
 
