@@ -99,7 +99,7 @@
 
     {if $website->get('Website Status')=='Active'}
 
-        <a id="link_to_live_webpage" target="_blank"  class="{if $webpage->get('Webpage State')=='Offline'}invisible{/if}"  href="http://{$webpage->get('Page URL')}" ><i class="fa fa-external-link" aria-hidden="true"  style="float:right;margin-left:20px;position:relative;top:2px"></i>   </a>
+        <a id="link_to_live_webpage" target="_blank"  class="{if $webpage->get('Webpage State')=='Offline'}invisible{/if}"  href="{$webpage->get('URL')}" ><i class="fa fa-external-link" aria-hidden="true"  style="float:right;margin-left:20px;position:relative;top:2px"></i>   </a>
 
 
         <span id="publish" class="button save {if $webpage->get('Publish') or $webpage->get('Webpage State')=='Offline'  }changed valid{/if}" webpage_key="{$webpage->id}" style="float:right" onclick="publish(this,'publish_webpage')"><span class="unselectable preview_publish_label">

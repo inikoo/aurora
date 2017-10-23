@@ -114,7 +114,7 @@
 
 
     {if $website->get('Website Status')=='Active'}
-        <a target="_blank" href="http://{$webpage->get('Page URL')}"><i class="fa fa-external-link" aria-hidden="true" style="float:right;margin-left:20px;position:relative;top:2px"></i> </a>
+        <a target="_blank" href="{$webpage->get('URL')}"><i class="fa fa-external-link" aria-hidden="true" style="float:right;margin-left:20px;position:relative;top:2px"></i> </a>
         <span id="publish" webpage_key="{$webpage->id}" class="button save {if $webpage->get('Publish')}changed valid{/if}" style="float:right" onclick="publish(this,'publish_webpage')">
         <span class="unselectable">{t}Publish{/t}</span> <i class="fa fa-rocket" aria-hidden="true"></i>
     </span>
