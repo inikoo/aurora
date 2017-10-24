@@ -84,7 +84,7 @@ class Public_Payment_Account {
         new_housekeeping_fork(
             'au_housekeeping', array(
             'type'        => 'payment_created',
-            'subject_key' => $payment->id,
+            'payment_key' => $payment->id,
             'editor'      => $payment->editor
         ), $account->get('Account Code'), $this->db
         );
