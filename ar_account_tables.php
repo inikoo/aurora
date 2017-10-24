@@ -663,6 +663,9 @@ function upload_records($_data, $db, $user, $account) {
                         case 'part_unit_description_missing':
                             $state =  ' <span class="error"><i class="fa fa-exclamation-circle fa-fw" aria-hidden="true"></i> '._('Unit description missing').'</span>';
                             break;
+                        case 'duplicate_part_reference':
+                            $state =  ' <span class="error"><i class="fa fa-exclamation-circle fa-fw" aria-hidden="true"></i> '._("Duplicate part's reference").'</span>';
+                            break;
 
                         case 'Barcode No Numeric':
                             $error_msg = _('Barcode can only have numbers');

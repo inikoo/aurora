@@ -212,9 +212,8 @@ $supplier_part_fields[] = array(
             'required'        => true,
             'type'            => 'value'
         ),
-
         array(
-            'id'   => 'Part_Barcode_Number',
+            'id'   => 'Part_Barcode',
             'edit' => ($edit ? 'barcode' : ''),
 
             'value'             => htmlspecialchars($object->get('Part Part Barcode Number')),
