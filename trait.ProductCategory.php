@@ -754,9 +754,8 @@ trait ProductCategory {
     function get_webpage() {
 
 
-        include_once 'class.Page.php';
 
-        $this->webpage         = new Page('scope', ($this->get('Category Subject') == 'Category' ? 'Category Categories' : 'Category Products'), $this->id);
+        $this->webpage    =get_object('Webpage',$this->data['Product Category Webpage Key']);
         $this->webpage->editor = $this->editor;
 
 

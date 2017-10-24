@@ -47,6 +47,7 @@ if ($result = $db->query($sql)) {
         $webpage = get_object('Webpage',$row['Page Key']);
 
         $webpage->update_url();
+        $webpage->update_see_also();
 
 
     }
