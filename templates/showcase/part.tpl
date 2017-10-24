@@ -285,7 +285,7 @@
                     <td class="label">
                         <i {if $part->get('Part Barcode Key')} class="fa fa-barcode button" onClick="change_view('inventory/barcode/{$part->get('Part Barcode Key')}')"{else}  class="fa fa-barcode"{/if} ></i>
                     </td>
-                    <td><span  class="Part_Barcode_Number ">{$part->get('Part Barcode Number')}</span> <span class="error small  Barcode_Number_Error_with_Duplicates_Links">{$part->get('Barcode Number Error with Duplicates Links')}</span></td>
+                    <td><span  class="Part_Barcode_Number  {if $part->get('Part Barcode Key')} link" onClick="change_view('inventory/barcode/{$part->get('Part Barcode Key')}')" {else}"{/if}   >{$part->get('Part Barcode Number')}</span> <span class="error small  Barcode_Number_Error_with_Duplicates_Links">{$part->get('Barcode Number Error with Duplicates Links')}</span></td>
                     <td class="barcode_labels aright ">
 
                         <a class="padding_left_10" title="{t}Commercial unit label{/t}" href="/asset_label.php?object=part&key={$part->id}&type=unit"><i class="fa fa-tags "></i></a>

@@ -44,6 +44,9 @@ class Asset extends DB_Table {
                     }
                     $this->deleted_value = $this->get('Barcode Number');
 
+
+
+
                     $this->update_field_switcher($this->table_name.' Barcode Number', '', $options);
                     $this->update_field_switcher($this->table_name.' Barcode Key', '', 'no_history');
 

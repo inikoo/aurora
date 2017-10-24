@@ -409,7 +409,6 @@ class Page extends DB_Table {
     function update_see_also() {
 
 
-        //  Todo AUR-34
 
         if ($this->data['Page Type'] != 'Store' or $this->data['Page Store See Also Type'] == 'Manual') {
             return;

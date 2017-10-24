@@ -590,12 +590,13 @@ $this->msg=_('Barcode already in the system');
         );
 
 
+
+
         $this->db->exec($sql);
         $this->update_status();
 
         if ($asset_data['Barcode Asset Type'] == 'Part') {
-            $asset       = get_object(
-                $asset_data['Barcode Asset Type'], $asset_data['Barcode Asset Key']
+            $asset       = get_object($asset_data['Barcode Asset Type'], $asset_data['Barcode Asset Key']
             );
             $asset_label = sprintf(
                 '<i class="fa fa-square fa-fw"></i> <span class="link" onClick="change_view(\'part/%d\')">%s</span>', $asset->get('Part SKU'), $asset->get('Part Reference')
