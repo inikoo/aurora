@@ -1293,7 +1293,7 @@
                               if($(obj2).hasClass('_logo')){
 
 
-                                  console.log($(obj2))
+                                //  console.log($(obj2))
 
                                   var img= $(obj2).find('img')
 
@@ -1369,8 +1369,8 @@
                                   label: $(obj2).find('.item_label').html(),
                               });
 
-                              console.log($(obj2).find('a').attr('href'))
-                              console.log($(obj2).find('.item_label').html())
+                             // console.log($(obj2).find('a').attr('href'))
+                             // console.log($(obj2).find('.item_label').html())
                           });
 
 
@@ -1438,9 +1438,11 @@
                       }
                       else if($(obj).hasClass('_social_links')){
 
-
                           var items=[]
-                          $(obj).find('.social_link').each(function(j, obj2) {
+                          $(obj).find('.footer_social_links li').each(function(j, obj2) {
+
+
+                              //console.log($(obj2).find('a').attr('href'))
 
                               items.push({
                                   url: $(obj2).find('a').attr('href'),
