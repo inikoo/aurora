@@ -354,7 +354,7 @@
 
         var scope = 'webpage'
         $(element).addClass('fa-spin')
-        var request = '/ar_edit.php?tipo=refresh_webpage_see_also&object=' + scope + '&key=' + webpage_key
+        var request = '/ar_edit_website.php?tipo=refresh_webpage_see_also&key=' + webpage_key
         $.getJSON(request, function (data) {
             $(element).removeClass('fa-spin')
             $('#auto_links').html(data.links)

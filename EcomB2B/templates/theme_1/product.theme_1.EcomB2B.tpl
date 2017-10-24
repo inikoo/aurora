@@ -257,7 +257,7 @@
 
                     </script>
 
-                    <section class="product_tabs" style="margin-top:20px">
+                    <section class="product_tabs" style="margin-top:20px;margin-bottom: 40px">
 
                         <input id="tab-properties" type="radio" name="grp" class="{if !$has_properties_tab}hide{/if}" {if $has_properties_tab}checked="checked"{/if} />
                         <label for="tab-properties">{t}Properties{/t}</label>
@@ -308,9 +308,35 @@
 
 
                     </section>
+                    {assign 'see_also'  $webpage->get_see_also() }
+
+
+                    <div class=" {if $see_also|@count eq 0}hide{/if}">
+                        <div class="title" style="margin-left:20px;ztext-align: center">{t}See also{/t}</div>
+
+                        <div class="warp">
+                            {foreach from=$see_also item=see_also_item name=foo}
+                                <div class="warp_element see_also">
+                                    <div class="image" >
+                                        <a href="{$see_also_item->get('URL')}">
+                                            <img src="{$see_also_item->get('Image')}" style=""/>
+                                        </a>
+
+
+                                    </div>
+                                    <div class="link" style="">
+                                        <a href="{$see_also_item->get('URL')}">{$see_also_item->get('Name')}</a>
+                                    </div>
+                                </div>
+                            {/foreach}
+                        </div>
+                    </div>
+
 
                 </div>
             </div>
+
+
 
 
             <div class="clearfix marb12"></div>

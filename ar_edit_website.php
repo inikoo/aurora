@@ -348,7 +348,6 @@ switch ($tipo) {
     case 'refresh_webpage_see_also':
         $data = prepare_values(
             $_REQUEST, array(
-                         'object' => array('type' => 'string'),
                          'key'    => array('type' => 'key')
                      )
         );
@@ -378,10 +377,9 @@ switch ($tipo) {
 
 function refresh_webpage_see_also($account, $db, $user, $editor, $data, $smarty) {
 
-    // TODO remove this when class Webpage is implemented
-    $data['object'] = 'old_page';
 
-    $object         = get_object($data['object'], $data['key']);
+
+    $object         = get_object('webpage', $data['key']);
     $object->editor = $editor;
 
 

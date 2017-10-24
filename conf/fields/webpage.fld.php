@@ -348,11 +348,64 @@ if (in_array($object->get('Webpage Scope'), array('Category Categories'))) {
             ),
 
 
+            array(
+                'id'              => 'Webpage_See_Also',
+                'edit'            => 'webpage_see_also',
+                'value'           => '',
+                'formatted_value' => $object->get('See Also'),
+                'label'           => _('See also links'),
+                'required'        => false,
+                'type'            => ''
+            ),
+
+
         )
     );
 
 
 }
+
+
+
+if (in_array($object->get('Webpage Scope'), array('Product'))) {
+
+
+
+
+    $object_fields[] = array(
+        'label'      => _('Template'),
+        'show_title' => true,
+        'fields'     => array(
+
+
+
+            array(
+                'id'              => 'Webpage_See_Also',
+                'edit'            => 'webpage_see_also',
+                'value'           => '',
+                'formatted_value' => $object->get('See Also'),
+                'label'           => _('See also links'),
+                'required'        => false,
+                'type'            => ''
+            ),
+
+
+        )
+    );
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
 
 if(!$new and $object->get('Webpage Scope')=='Category Products'){
     $export_operations      = array(

@@ -26,10 +26,10 @@
 
 
                 {assign 'see_also'  $webpage->get_see_also() }
+
+
+
                 {assign 'content_data' $webpage->get('Content Published Data')}
-
-
-
 
 
                 <div id="page_content" class="asset_container">
@@ -47,33 +47,30 @@
     }'></span>
 
                     {if $detected_device!='mobile'}
-
-
                         <div class="description_block">
 
                             {foreach from=$category->get_parent_categories('data') item=item key=key}
                                 <a href="/{$item.webpage_code}" class="parent_up">
                                     <i class="fa fa-arrow-up" aria-hidden="true"></i>
-                                        <span  >{$item.label}</span>
+                                    <span>{$item.label}</span>
 
                                 </a>
                                 {break}
                             {/foreach}
 
-                            <div class="discounts_block" >
+                            <div class="discounts_block">
 
-                            {foreach from=$category->get_deal_components('objects') item=item key=key}
-                                <div class="discount_card"  >
-                                    <span class="discount_icon">{$item->get('Deal Component Icon')}</span>
+                                {foreach from=$category->get_deal_components('objects') item=item key=key}
+                                    <div class="discount_card">
+                                        <span class="discount_icon">{$item->get('Deal Component Icon')}</span>
 
-                                    <span class="discount_name">{$item->get('Deal Component Name Label')}</span><br/>
-                                    <span class="discount_term">{$item->get('Deal Component Term Label')}</span>
+                                        <span class="discount_name">{$item->get('Deal Component Name Label')}</span><br/>
+                                        <span class="discount_term">{$item->get('Deal Component Term Label')}</span>
 
-                                    <span class="discount_allowance">{$item->get('Deal Component Allowance Label')}</span>
+                                        <span class="discount_allowance">{$item->get('Deal Component Allowance Label')}</span>
 
-                                </div>
-
-                            {/foreach}
+                                    </div>
+                                {/foreach}
 
                             </div>
 
@@ -81,44 +78,40 @@
                             <div style="clear: both"></div>
 
                         </div>
+                        <div id="description_block" class="description_block  {if isset($content_data.description_block.class)}{$content_data.description_block.class}{/if}">
 
 
-                    <div id="description_block" class="description_block  {if isset($content_data.description_block.class)}{$content_data.description_block.class}{/if}">
+                            {foreach from=$content_data.description_block.blocks key=id item=data}
 
 
-                        {foreach from=$content_data.description_block.blocks key=id item=data}
+                                {if $data.type=='text'}
+                                    <div id="{$id}" class="webpage_content_header fr-view text">
+                                        {$data.content}
+                                    </div>
+                                {elseif $data.type=='image'}
+                                    <div id="{$id}" class="webpage_content_header webpage_content_header_image">
+                                        <img src="{$data.image_src}" style="width:100%" title="{if isset($data.caption)}{$data.caption}{/if}"/>
+                                    </div>
+                                {/if}
+                            {/foreach}
 
 
-                            {if $data.type=='text'}
-                                <div id="{$id}" class="webpage_content_header fr-view text">
-                                    {$data.content}
-                                </div>
-                            {elseif $data.type=='image'}
-                                <div id="{$id}" class="webpage_content_header webpage_content_header_image">
-                                    <img src="{$data.image_src}" style="width:100%" title="{if isset($data.caption)}{$data.caption}{/if}"/>
-                                </div>
-                            {/if}
-                        {/foreach}
+                            <div style="clear:both"></div>
+                        </div>
+                        <div id="description_block_small_devices">
+
+                            {foreach from=$content_data.description_block.blocks key=id item=data name=foo}
 
 
-                        <div style="clear:both"></div>
-                    </div>
+                                {if $data.type=='text' and $data.content!=''}
+                                    <p>{$data.content}</p>
+                                {elseif $data.type=='image'}
+                                    <img src="{$data.image_src}" style="width:40%;;{if $smarty.foreach.foo.iteration%2} float:left;margin-right:15px;{else}float:right;margin-left:15px;{/if}"
+                                         title="{if isset($data.caption)}{$data.caption}{/if}"/>
+                                {/if}
+                            {/foreach}
 
-                      <div id="description_block_small_devices">
-
-                          {foreach from=$content_data.description_block.blocks key=id item=data name=foo}
-
-
-                              {if $data.type=='text' and $data.content!=''}
-                                  <p>{$data.content}</p>
-                              {elseif $data.type=='image'}
-                                  <img src="{$data.image_src}" style="width:40%;;{if $smarty.foreach.foo.iteration%2} float:left;margin-right:15px;{else}float:right;margin-left:15px;{/if}"
-                                       title="{if isset($data.caption)}{$data.caption}{/if}"/>
-                              {/if}
-                          {/foreach}
-
-                      </div>
-
+                        </div>
                     {/if}
 
                     {if $category->get('Product Category Status')=='Discontinued'}
@@ -128,13 +121,8 @@
                     {/if}
 
 
-
-
                     <div class="warp">
                         {foreach from=$products item=product_data key=stack_index}
-
-
-
                             <div class="warp_element">
 
 
@@ -260,9 +248,6 @@
 
                                         </div>
                                     {elseif $product_data.data.type=='image'}
-
-
-
                                         <div id="{$product_data.data.id}" style="position:relative" class=" panel image panel_{$product_data.data.size}">
 
 
@@ -348,7 +333,8 @@
                                                     <div class="out_of_stock_row {$product->get('Out of Stock Class')}">
                                                     <span class="label">
                                                     {$product->get('Out of Stock Label')}
-                                                        <span class="label sim_button "> <i reminder_key="{$reminder_key}" title="{if $reminder_key>0}{t}Click to remove notification{/t}{else}{t}Click to be notified by email{/t}{/if}"
+                                                        <span class="label sim_button "> <i reminder_key="{$reminder_key}"
+                                                                                            title="{if $reminder_key>0}{t}Click to remove notification{/t}{else}{t}Click to be notified by email{/t}{/if}"
                                                                                             class="reminder fa {if $reminder_key>0}fa-envelope{else}fa-envelope-o{/if}" aria-hidden="true"></i>  </span>
                                                     </span>
                                                     </div>
@@ -370,14 +356,10 @@
                                                     {/if}
 
                                                 </div>
-
                                             {/if}
 
 
                                         {else}
-
-
-
                                             <div class=" order_row " style="display:flex;">
                                                 <div onclick='window.location.href = "/login.sys"' class="mark_on_hover" style="flex-grow:1;text-align:center;border-right:1px solid #fff;  font-weight: 800;"><span
                                                             class="sim_button">{if empty($labels._Login)}{t}Login{/t}{else}{$labels._Login}{/if}</span></div>
@@ -397,23 +379,25 @@
 
                     </div>
 
+                    <div class=" {if $see_also|@count eq 0}hide{/if}">
+                        <div class="title" style="margin-left:20px;ztext-align: center">{t}See also{/t}</div>
 
-                    <div id="bottom_see_also" class="{if $see_also|@count eq 0}hide{/if}">
-                        <div class="title">{t}See also{/t}:</div>
-                        <div>
+                        <div class="warp">
                             {foreach from=$see_also item=see_also_item name=foo}
-                                <div class="item">
-                                    <div class="image_container">
-                                        <a href="{$see_also_item->get('URL')}"> <img src="{$see_also_item->get('Image')}" style=""/> </a>
+                                <div class="warp_element see_also">
+                                    <div class="image" >
+                                        <a href="{$see_also_item->get('URL')}">
+                                            <img src="{$see_also_item->get('Image')}" style=""/>
+                                        </a>
+
+
                                     </div>
-                                    <div class="label">
-                                        {$see_also_item->get('Name')}
+                                    <div class="link" style="">
+                                        <a href="{$see_also_item->get('URL')}">{$see_also_item->get('Name')}</a>
                                     </div>
                                 </div>
                             {/foreach}
                         </div>
-                        <div style="clear:both"></div>
-
                     </div>
 
 

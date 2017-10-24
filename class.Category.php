@@ -152,6 +152,8 @@ class Category extends DB_Table {
                 }
 
 
+
+
             } elseif ($this->data['Category Scope'] == 'Supplier') {
 
 
@@ -1970,7 +1972,6 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
     }
 
     function get_parent_keys() {
-        $parent_keys        = array();
         $category_tree_keys = preg_split(
             '/\>/', preg_replace('/\>$/', '', $this->data['Category Position'])
         );
