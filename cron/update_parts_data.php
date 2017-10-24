@@ -45,7 +45,7 @@ function update_parts_data($db) {
             $part->update_attachments_data();
             $part->update_images_data();
 */
-            $part->validate_barcode();
+
 
 
             $sql=sprintf("UPDATE `Barcode Asset Bridge` SET `Barcode Asset Status`='Historic',`Barcode Asset Withdrawn Date`=NOW() WHERE `Barcode Asset Status`='Assigned' AND `Barcode Asset Type`='Part' AND `Barcode Asset Key`=%d and `Barcode Asset Barcode Key`!=%d ;",
@@ -57,7 +57,7 @@ function update_parts_data($db) {
           //  print "$sql\n";
 
 $db->exec($sql);
-
+            $part->validate_barcode();
 
             if ($part->get('Part Cost') <= 0 and $part->get('Part Status')!='Not In Use' ) {
              //   print $part->get('Reference')." ".$part->get('Part Cost')."\n";
