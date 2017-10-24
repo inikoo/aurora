@@ -15,6 +15,9 @@ function get_part_showcase($data, $smarty, $user, $db) {
 
     $part = $data['_object'];
     $part->load_acc_data();
+
+    $part->update_stock();
+
     //$part->update_available_forecast();
 
     // $part->update_cost();
