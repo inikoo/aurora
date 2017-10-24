@@ -159,7 +159,7 @@ function get_fork_data($job) {
 
 
     $fork_key = $fork_metadata['fork_key'];
-    $token    = $fork_metadata['token'];
+//    $token    = $fork_metadata['token'];
 
     $db = new PDO("mysql:host=$dns_host;dbname=$dns_db;charset=utf8", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';"));
     $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
@@ -191,7 +191,7 @@ function get_fork_data($job) {
 
 
     $sql = sprintf(
-        "SELECT `Fork Process Data` FROM `Fork Dimension` WHERE `Fork Key`=%d AND `Fork Token`=%s", $fork_key, prepare_mysql($token)
+        "SELECT `Fork Process Data` FROM `Fork Dimension` WHERE `Fork Key`=%d ", $fork_key
     );
 
 
