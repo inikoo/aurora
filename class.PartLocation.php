@@ -1990,22 +1990,34 @@ print "++++++++++\n";
 
                     $note = $row['Note'];
 
-                    //print "$qty_change=$qty-$old_qty\n";
-                    $details =
-                        'Audit: <b>['.number($qty).']</b> <a href="part.php?sku='.$this->part_sku.'">'.$this->part->id.'</a>'.' '._('adjust quantity').' <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a>: '.($qty_change > 0
-                            ? '+' : '').number($qty_change).' ('.($value_change > 0 ? '+' : '').money(
-                            $value_change
-                        ).')';
-                    //if ($note) {
-                    // $details.=', '.$note;
-                    //
-                    //   }
+
+
+
+                    $details = sprintf(
+                        '<span class="note_data"><i class="fa fa-dot-circle-o" aria-hidden="true"></i>: <i class="fa fa-fw fa-sliders" aria-hidden="true"></i> <b>%s</b> SKO <span class="link" onClick="change_view(\'part/%d\')"><i class="fa fa-square" aria-hidden="true"></i> %s</span> @ <span class="link" onClick="change_view(\'locations/%d/%d\')">%s</span></span>',
+                        ($qty_change > 0 ? '+' : '').number($qty_change), $this->part_sku, $this->part->get('Reference'), $this->location->get('Warehouse Key'), $this->location->id, $this->location->get('Code')
+                    );
+
+
+                    // $details='Audit: <b>['.number($qty).']</b> <a href="part.php?sku='.$this->part_sku.'">'.$this->part->id.'</a>'.' '._('adjust quantity').' '.$location_link.': '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
+                    if ($note) {
+                        $details .= $note;
+
+                    }
 
 
                     $sql = sprintf(
                         "INSERT INTO `Inventory Transaction Fact` (`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`,`Relations`)
 			VALUES (%s,%s,%d,%d,%s,%f,%.3f,%s,%s,%s,%s)", "'Movement'", "'Audit'", $this->part_sku, $this->location_key, "'Adjust'", $qty_change, $value_change, $row['User Key'], prepare_mysql($details, false), prepare_mysql($date), prepare_mysql($audit_key)
                     );
+
+
+                    $sql = sprintf(
+                        "INSERT INTO `Inventory Transaction Fact` (`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`,`Relations`) VALUES (%s,%s,%d,%d,%s,%f,%.3f,%s,%s,%s,%s)",
+                        "'Movement'", "'Audit'", $this->part_sku, $this->location_key, "'Adjust'", $qty_change, $value_change, $this->editor['User Key'], prepare_mysql($details, false), prepare_mysql($date), prepare_mysql($audit_key)
+                    );
+
+
                     //  print "$sql\n\n\n";
                     //  if($date=='2012-02-27 02:43:48')
                     //  exit;
@@ -2023,6 +2035,22 @@ print "++++++++++\n";
 
 
         $this->update_stock();
+
+
+        $this->get_data();
+
+        include_once 'utils/new_fork.php';
+        global $account;
+
+
+        new_housekeeping_fork(
+            'au_housekeeping', array(
+            'type'             => 'update_warehouse_leakages',
+            'warehouse_key'     => $this->location->get('Location Warehouse Key'),
+        ), $account->get('Account Code')
+        );
+
+
 
     }
 

@@ -12,21 +12,7 @@
 
 require_once 'common.php';
 
-if (function_exists('mysql_connect')) {
 
-
-    $default_DB_link = @mysql_connect($dns_host, $dns_user, $dns_pwd);
-    if (!$default_DB_link) {
-        print "Error can not connect with database server\n";
-    }
-    $db_selected = mysql_select_db($dns_db, $default_DB_link);
-    if (!$db_selected) {
-        print "Error can not access the database\n";
-        exit;
-    }
-    mysql_set_charset('utf8');
-    mysql_query("SET time_zone='+0:00'");
-}
 
 require_once 'utils/aes.php';
 
@@ -107,7 +93,7 @@ if ($result = $db->query($sql)) {
 
 
 $sql =
-"select `Date`,`Inventory Transaction Key`,`Location Key`,ITF.`Part SKU`,ITF.`Delivery Note Key`,`Note`,`Amount In`,`Inventory Transaction Type`,`Inventory Transaction Section`,`Delivery Note State`,`Inventory Transaction Quantity` from `Inventory Transaction Fact` ITF left join `Delivery Note Dimension` DN on (DN.`Delivery Note Key`=ITF.`Delivery Note Key`) where  `Inventory Transaction Section`='OIP'  and `Delivery Note State`='Dispatched' ;";
+"select *,`Date`,`Inventory Transaction Key`,`Location Key`,ITF.`Part SKU`,ITF.`Delivery Note Key`,`Note`,`Amount In`,`Inventory Transaction Type`,`Inventory Transaction Section`,`Delivery Note State`,`Inventory Transaction Quantity` from `Inventory Transaction Fact` ITF left join `Delivery Note Dimension` DN on (DN.`Delivery Note Key`=ITF.`Delivery Note Key`) where  `Inventory Transaction Section`='OIP'  and `Delivery Note State` in ('Approved','Packed Done','Packed','Dispatched') ;";
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
@@ -119,13 +105,32 @@ if ($result = $db->query($sql)) {
         $part_location = new PartLocation($row['Part SKU'].'_'.$row['Location Key']);
 
 
-        $sql = sprintf('update  `Inventory Transaction Fact` set `Date Shipped`=%s,`Inventory Transaction Type` = "Sale",`Inventory Transaction Section`="Out"   where `Inventory Transaction Key`=%d',
-                       prepare_mysql($row['Date']),
+       // print_r($row);
+
+        $sql = sprintf('update  `Inventory Transaction Fact` set 
+                        `Inventory Transaction Type` = "Sale",`Inventory Transaction Section`="Out" ,
+                          `Date Picked`=%s, `Date Packed`=%s,`Inventory Transaction Quantity`=%f,`Inventory Transaction Amount`=%f,`Picked`=%f,`Packed`=%f,`Picker Key`=%d,`Packer Key`=%d, `Inventory Transaction State`="Done"
+                          where `Inventory Transaction Key`=%d',
+
+
+                       prepare_mysql($row['Delivery Note Date Finish Picking']),
+                       prepare_mysql($row['Delivery Note Date Finish Packing']),
+                       -1*$row['Required'],
+                       -1*$row['Required']*$part->get('Part Cost in Warehouse'),
+                       $row['Required'],
+                       $row['Required'],
+                       $row['Delivery Note Assigned Picker Key'],
+                       $row['Delivery Note Assigned Packer Key'],
+
                        $row['Inventory Transaction Key']);
+
+
+        print "$sql\n";
 
 
         $db->exec($sql);
         if ($part_location->ok) {
+            $part_location->redo_adjusts();
             $part_location->update_stock();
         } else {
 
@@ -141,7 +146,6 @@ if ($result = $db->query($sql)) {
 
 
         }
-
 
     }
 } else {
