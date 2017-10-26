@@ -21,18 +21,38 @@ $wheref     = '';
 $group_by     = '';
 
 
-if ($parameters['f_field'] == 'used_in' and $f_value != '') {
-    $wheref .= " and  `Part XHTML Currently Used In` like '%".addslashes(
-            $f_value
-        )."%'";
-} elseif ($parameters['f_field'] == 'reference' and $f_value != '') {
+if ($parameters['f_field'] == 'reference' and $f_value != '') {
     $wheref .= " and  `Part Reference` like '".addslashes($f_value)."%'";
-} elseif ($parameters['f_field'] == 'supplied_by' and $f_value != '') {
-    $wheref .= " and  `Part XHTML Currently Supplied By` like '%".addslashes(
-            $f_value
-        )."%'";
-}  elseif ($parameters['f_field'] == 'description' and $f_value != '') {
-    $wheref .= " and  `Part Package Description` like '".addslashes($f_value)."%'";
+}elseif ($parameters['f_field'] == 'barcode' and $f_value != '') {
+    $wheref .= " and  `Part Barcode Number` like '".addslashes($f_value)."%'";
+}
+
+
+switch ($parameters['elements_type']) {
+
+    case 'type':
+        $_elements      = '';
+        $count_elements = 0;
+        foreach (
+            $parameters['elements'][$parameters['elements_type']]['items'] as $_key => $_value
+        ) {
+            if ($_value['selected']) {
+                $count_elements++;
+                $_elements .= ','.prepare_mysql($_key);
+
+            }
+        }
+        $_elements = preg_replace('/^\,/', '', $_elements);
+        if ($_elements == '') {
+            $where .= ' and false';
+        } elseif ($count_elements < 5) {
+            $where .= ' and `Part Barcode Number Error` in ('.$_elements.')';
+        }
+        break;
+
+        ;
+
+
 }
 
 

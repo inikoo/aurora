@@ -965,7 +965,7 @@ $elements_options = array(
                     'label'    => _('Customer'),
                     'selected' => true
                 ),
-                'Customer_Cateogory' => array(
+                'Customer_Category' => array(
                     'label'    => _(
                         'Customer cateogry'
                     ),
@@ -1348,6 +1348,39 @@ $elements_options = array(
                 ),
                 'lost'      => array(
                     'label'    => _('Lost'),
+                    'selected' => true
+                )
+
+            ),
+
+        )
+    ),
+
+
+
+
+    'part_barcode_errors' => array(
+        'type' => array(
+            'label' => _('Type'),
+            'items' => array(
+                'Duplicated'     => array(
+                    'label'    => _('Duplicated'),
+                    'selected' => true
+                ),
+                'Size'      => array(
+                    'label'    => _('Number digits'),
+                    'selected' => true
+                ),
+                'Short_Duplicated'      => array(
+                    'label'    => _('No check digit (Will dup.)'),
+                    'selected' => true
+                ),
+                'Checksum_missing'      => array(
+                    'label'    => _('No check digit'),
+                    'selected' => true
+                ),
+                'Checksum'      => array(
+                    'label'    => _('Invalid check digit'),
                     'selected' => true
                 )
 

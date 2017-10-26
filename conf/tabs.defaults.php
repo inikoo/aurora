@@ -1764,7 +1764,7 @@ $tab_defaults = array(
         'view'          => 'overview',
         'sort_key'      => 'id',
         'sort_order'    => 1,
-        'rpp'           => 100,
+        'rpp'           => 1000,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'reference',
 
@@ -1774,9 +1774,15 @@ $tab_defaults = array(
         'view'          => 'overview',
         'sort_key'      => 'id',
         'sort_order'    => 1,
-        'rpp'           => 100,
+        'rpp'           => 1000,
         'rpp_options'   => $default_rrp_options,
-        'f_field'       => 'reference',
+        'f_field'       => 'barcode',
+        'elements_type' => each($elements_options['part_barcode_errors']) ['key'],
+        'elements'      => $elements_options['part_barcode_errors'],
+        'export_fields' => $export_fields['part_barcode_errors']
+
+
+
 
     ),
 
