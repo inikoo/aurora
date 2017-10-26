@@ -150,6 +150,7 @@ function fork_export($job) {
         }
     } else {
         print_r($error_info = $db->errorInfo());
+        print "$sql_data\n";
         exit;
     }
 
@@ -161,7 +162,6 @@ function fork_export($job) {
         $download_path="downloads_$inikoo_account_code/";
     }
 */
-
 
     $sheet        = $objPHPExcel->getActiveSheet();
     $cellIterator = $sheet->getRowIterator()->current()->getCellIterator();
