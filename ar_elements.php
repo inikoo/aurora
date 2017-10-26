@@ -327,7 +327,10 @@ switch ($tab) {
         $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
         warehouse_leakages_transactions($db, $data['parameters'], $user);
         break;
-
+    case 'inventory.parts_barcode_errors.wget':
+        $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
+        parts_barcode_errors($db, $data['parameters'], $user);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -336,6 +339,44 @@ switch ($tab) {
         echo json_encode($response);
         exit;
         break;
+}
+
+
+function parts_barcode_errors($db, $data, $user) {
+
+
+
+    $elements_numbers = array(
+        'type'  => array(
+            'Duplicated'    => 0,
+            'Size'   => 0,
+            'Short_Duplicated' => 0,
+            'Checksum_missing'    => 0,
+            'Checksum'    => 0
+        ),
+
+
+    );
+
+
+
+    $sql = sprintf(
+        "select count(*) as number,`Part Barcode Number Error` as element from `Part Dimension` where `Part Barcode Number Error` is not null  group by `Part Barcode Number Error` "
+    );
+    foreach ($db->query($sql) as $row) {
+
+        $elements_numbers['type'][$row['element']] = number($row['number']);
+
+    }
+
+
+    $response = array(
+        'state'            => 200,
+        'elements_numbers' => $elements_numbers
+    );
+    echo json_encode($response);
+
+
 }
 
 
@@ -471,7 +512,7 @@ function get_deals_element_numbers($db, $data, $user) {
             'Product_Category'   => 0,
             'Product'            => 0,
             'Customer'           => 0,
-            'Customer_Cateogory' => 0,
+            'Customer_Category' => 0,
             'Customer_List'      => 0
         ),
 

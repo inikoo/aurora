@@ -657,6 +657,37 @@ $export_fields = array(
 
     ),
 
+    'part_barcode_errors'=>array(
+        array(
+            'name'    => '`Part Reference`',
+            'label'   => _('Reference'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Part Status`',
+            'label'   => _('Status'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Part Package Description`',
+            'label'   => _('SKO description'),
+            'checked' => 1
+        ),
+
+        array(
+            'name'    => '`Part Barcode Number`',
+            'label'   => _('Barcode'),
+            'checked' => 1
+        ),
+
+        array(
+            'name'    => '`Part Barcode Number Error `',
+            'label'   => _('Part Barcode Error'),
+            'checked' => 1
+        ),
+
+    )
+
 );
 
 ?>
