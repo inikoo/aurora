@@ -665,7 +665,7 @@ $export_fields = array(
         ),
         array(
             'name'    => '`Part Status`',
-            'label'   => _('Status'),
+            'label'   => _('Part status'),
             'checked' => 1
         ),
         array(
@@ -676,13 +676,13 @@ $export_fields = array(
 
         array(
             'name'    => '`Part Barcode Number`',
-            'label'   => _('Barcode'),
+            'label'   => _('Unit barcode'),
             'checked' => 1
         ),
 
         array(
-            'name'    => '`Part Barcode Number Error `',
-            'label'   => _('Part Barcode Error'),
+            'name'    => '`Part Barcode Number Error`',
+            'label'   => _('Barcode errors'),
             'checked' => 1
         ),
 

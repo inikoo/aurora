@@ -68,8 +68,10 @@ else {
 
     if ($_data['tipo'] == 'billingregion_taxcategory.invoices' or $_data['tipo'] == 'billingregion_taxcategory.refunds') {
         $_tipo = 'invoices';
-    } elseif ($_data['tipo'] == 'in_process_parts' or $_data['tipo'] == 'active_parts' or $_data['tipo'] == 'discontinuing_parts' or $_data['tipo'] == 'discontinued_parts') {
+    } elseif ($_data['tipo'] == 'in_process_parts' or $_data['tipo'] == 'active_parts' or $_data['tipo'] == 'discontinuing_parts' or $_data['tipo'] == 'discontinued_parts' ) {
         $_tipo = 'parts';
+    } elseif ($_data['tipo'] == 'parts_barcode_errors'  ) {
+        $_tipo = 'part_barcode_errors';
     }  else {
         $_tipo = $_data['tipo'];
     }
