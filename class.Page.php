@@ -623,7 +623,7 @@ class Page extends DB_Table {
 
                 $product = get_object('Product', $this->data['Webpage Scope Key']);
                 $sql     = sprintf(
-                    "SELECT `Product Webpage Key`,`Product B ID` FROM `Product Sales Correlation`  left join `Product Dimension` on (`Product ID`=`Product B ID`)    left join `Page Store Dimension` on (`Page Key`=`Product Webpage Key`)  WHERE `Product A ID`=%d and `Webpage State`='Online' and `Product Web State`='For Sale'  ORDER BY `Correlation` DESC", $product->id
+                    "SELECT `Product Webpage Key`,`Product B ID`,`Correlation` FROM `Product Sales Correlation`  left join `Product Dimension` on (`Product ID`=`Product B ID`)    left join `Page Store Dimension` on (`Page Key`=`Product Webpage Key`)  WHERE `Product A ID`=%d and `Webpage State`='Online' and `Product Web State`='For Sale'  ORDER BY `Correlation` DESC", $product->id
                 );
 //  $see_also_page->data['Page Stealth Mode'] == 'No')
 
