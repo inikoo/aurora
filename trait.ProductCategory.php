@@ -1304,7 +1304,7 @@ trait ProductCategory {
                         if($image->id) {
                             $_image_filename = uniqid('tmp_ftc_image_');
 
-                          
+
 
                             $image->save_image_to_file('/tmp', $_image_filename, $image->fit_to_canvas(375, 275));
 

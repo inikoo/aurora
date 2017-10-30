@@ -48,7 +48,7 @@ if ($result = $db->query($sql)) {
 
         $webpage->update_url();
         $webpage->update_see_also();
-
+        $webpage->update_version();
 
     }
 }
