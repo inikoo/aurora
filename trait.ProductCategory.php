@@ -1300,42 +1300,43 @@ trait ProductCategory {
 
                         $product=get_object('product',$row['Product ID']);
                         $image = new Image($product->get('Product Main Image Key'));
+                        $image_375x250='';
+                        if($image->id) {
+                            $_image_filename = uniqid('tmp_ftc_image_');
 
-                        $_image_filename = uniqid('tmp_ftc_image_');
+                          
 
-                        if($this->id==24210) {
-                            print_r($image);
+                            $image->save_image_to_file('/tmp', $_image_filename, $image->fit_to_canvas(375, 275));
+
+                            $image_filename = '/tmp/'.$_image_filename.'.jpeg';
+                            $image_data     = array(
+                                'Upload Data'                      => array(
+                                    'tmp_name' => $image_filename,
+                                    'type'     => 'image/jpeg'
+                                ),
+                                'Image Filename'                   => $image->get('Image Filename'),
+                                'Image Subject Object Image Scope' => 'Item'
+
+                            );
+
+                            // print_r($image_data);
+                            $image = $this->webpage->add_image($image_data);
+
+                            if (!$image) {
+                                print_r($this->webpage->msg);
+                                exit;
+                            }
+
+                            //  print "========";
+
+                            // print_r($image);
+
+
+                            $image_375x250 = '/image_root.php?id='.$image->id;
+
+                            unlink($image_filename);
+
                         }
-
-                        $image->save_image_to_file('/tmp', $_image_filename, $image->fit_to_canvas(375, 275));
-
-                        $image_filename = '/tmp/'.$_image_filename.'.jpeg';
-                        $image_data     = array(
-                            'Upload Data'                      => array(
-                                'tmp_name' => $image_filename,
-                                'type'     => 'image/jpeg'
-                            ),
-                            'Image Filename'                   => $image->get('Image Filename'),
-                            'Image Subject Object Image Scope' => 'Item'
-
-                        );
-
-                        // print_r($image_data);
-                        $image = $this->webpage->add_image($image_data);
-
-                        if (!$image) {
-                            print_r($this->webpage->msg);
-                            exit;
-                        }
-
-                        //  print "========";
-
-                        // print_r($image);
-
-
-                        $image_375x250 = '/image_root.php?id='.$image->id;
-
-                        unlink($image_filename);
 
                         //print_r($product);
 
