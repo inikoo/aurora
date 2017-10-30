@@ -139,7 +139,7 @@ mpdf-->
 		<tr>
 			<td align="left" width="8%">{t}Location{/t}</td>
 			<td align="center" width="10%">{t}Reference{/t}</td>
-			<td align="left">{t}Descrption{/t}</td>
+			<td align="left">{t}SKO description{/t}</td>
 			<td align="left" width="10%">{t}Stock{/t}</td>
 			<td align="center" width="10%">{t}To Pick{/t}</td>
 			<td align="center" width="10%">{t}N/P{/t}</td>
