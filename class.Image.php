@@ -641,6 +641,8 @@ class Image {
             $filename = $this->id;
         }
 
+
+
         if($extension==''){
             $extension=$this->data['Image File Format'];
         }
