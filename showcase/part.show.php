@@ -17,7 +17,7 @@ function get_part_showcase($data, $smarty, $user, $db) {
     $part->load_acc_data();
 
     $part->update_stock();
-    $part->validate_barcode();
+  //  $part->validate_barcode();
 
     //$part->update_available_forecast();
 
