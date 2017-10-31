@@ -18,49 +18,47 @@ require_once 'class.Category.php';
 $print_est = true;
 
 
-
 update_parts_data($db);
 //update_part_categories_data($db, $print_est);
 
 function update_parts_data($db) {
 
     $sql = sprintf(
-        'SELECT `Part SKU` FROM `Part Dimension` WHERE `Part Reference`="FO-P7" ORDER BY `Part SKU` desc  '
+        'SELECT `Part SKU` FROM `Part Dimension` WHERE `Part Reference`="FO-P7" ORDER BY `Part SKU` DESC  '
     );
     $sql = sprintf(
-        'SELECT `Part SKU` FROM `Part Dimension`  ORDER BY `Part SKU`  desc '
+        'SELECT `Part SKU` FROM `Part Dimension`  ORDER BY `Part SKU`  DESC '
     );
 
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
             $part = new Part($row['Part SKU']);
 
-/*
-            $part->activate();
+            /*
+                        $part->activate();
 
 
-           // $part->update_cost();
-            $part->update_products_data();
-            $part->update_history_records_data();
-            $part->update_attachments_data();
-            $part->update_images_data();
-*/
+                       // $part->update_cost();
+                        $part->update_products_data();
+                        $part->update_history_records_data();
+                        $part->update_attachments_data();
+                        $part->update_images_data();
+            */
 
 
+            $sql = sprintf(
+                "UPDATE `Barcode Asset Bridge` SET `Barcode Asset Status`='Historic',`Barcode Asset Withdrawn Date`=NOW() WHERE `Barcode Asset Status`='Assigned' AND `Barcode Asset Type`='Part' AND `Barcode Asset Key`=%d AND `Barcode Asset Barcode Key`!=%d ;",
+                $part->id, $part->get('Part Barcode Key')
+            );
 
-            $sql=sprintf("UPDATE `Barcode Asset Bridge` SET `Barcode Asset Status`='Historic',`Barcode Asset Withdrawn Date`=NOW() WHERE `Barcode Asset Status`='Assigned' AND `Barcode Asset Type`='Part' AND `Barcode Asset Key`=%d and `Barcode Asset Barcode Key`!=%d ;",
-                         $part->id,
-                         $part->get('Part Barcode Key')
-                );
 
+            //  print "$sql\n";
 
-          //  print "$sql\n";
-
-$db->exec($sql);
+            $db->exec($sql);
             $part->validate_barcode();
 
-            if ($part->get('Part Cost') <= 0 and $part->get('Part Status')!='Not In Use' ) {
-             //   print $part->get('Reference')." ".$part->get('Part Cost')."\n";
+            if ($part->get('Part Cost') <= 0 and $part->get('Part Status') != 'Not In Use') {
+                //   print $part->get('Reference')." ".$part->get('Part Cost')."\n";
 
 
             }
@@ -131,7 +129,6 @@ function update_part_categories_data($db, $print_est) {
         exit;
     }
 }
-
 
 
 ?>
