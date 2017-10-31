@@ -26,8 +26,8 @@ class Asset extends DB_Table {
 
             case $this->table_name.' Barcode':
 
-                $_old_value=$this->data[$this->table_name.' Barcode Number'];
 
+                $_old_value = $this->data[$this->table_name.' Barcode Number'];
 
 
                 if ($value == '') {
@@ -43,8 +43,6 @@ class Asset extends DB_Table {
                         $barcode->withdrawn_asset($asset_data);
                     }
                     $this->deleted_value = $this->get('Barcode Number');
-
-
 
 
                     $this->update_field_switcher($this->table_name.' Barcode Number', '', $options);
@@ -120,7 +118,6 @@ class Asset extends DB_Table {
                     if ($error != '') {
 
 
-
                         switch ($error) {
 
                             case 'Duplicated':
@@ -143,7 +140,6 @@ class Asset extends DB_Table {
                         }
 
 
-
                         $this->error      = true;
                         $this->msg        = $error_msg;
                         $this->error_code = $error;
@@ -152,18 +148,30 @@ class Asset extends DB_Table {
                     }
 
 
+
+
                     $sql = sprintf(
                         "SELECT `Barcode Key` ,`Barcode Status` ,`Barcode Sticky Note` FROM `Barcode Dimension` WHERE `Barcode Number`=%s", prepare_mysql($value)
                     );
 
-
                     if ($result = $this->db->query($sql)) {
                         if ($row = $result->fetch()) {
+                            include_once 'class.Barcode.php';
 
 
-                            if ($row['Barcode Status'] == 'Available') {
+                            $barcode_status=$row['Barcode Status'] ;
 
-                                include_once 'class.Barcode.php';
+                            if ($barcode_status== 'Reserved' and preg_match('/ignore_reserved/', $options)) {
+
+                                $barcode = new Barcode($row['Barcode Key']);
+                                $barcode->update(array('Barcode Status' => 'Available'));
+                                $barcode_status=$barcode->get('Barcode Status');
+                            }
+
+
+                            if ($barcode_status == 'Available') {
+
+
                                 $barcode         = new Barcode($row['Barcode Key']);
                                 $barcode->editor = $this->editor;
 
@@ -210,13 +218,13 @@ class Asset extends DB_Table {
                                 $this->update_field_switcher($this->table_name.' Barcode Key', $barcode->id, 'no_history');
 
                             } else {
-                                if ($row['Barcode Status'] == 'Reserved') {
+                                if ($barcode_status == 'Reserved') {
                                     $this->error = true;
                                     $this->msg   = _("Can't update barcode reserved").' '.$row['Barcode Sticky Note'];
 
                                     return true;
                                 } else {
-                                    if ($row['Barcode Status'] == 'Used') {
+                                    if ($barcode_status == 'Used') {
                                         $this->error = true;
                                         $this->msg   = _("Can't update, barcode already used");
 
@@ -250,11 +258,6 @@ class Asset extends DB_Table {
                             $this->update_field_switcher($this->table_name.' Barcode Key', '', 'no_history');
 
 
-
-
-
-
-
                         }
                     } else {
                         print_r($error_info = $this->db->errorInfo());
@@ -263,10 +266,10 @@ class Asset extends DB_Table {
                 }
 
 
-                if($this->table_name=='Part') {
+                if ($this->table_name == 'Part') {
 
                     $sql = sprintf(
-                        'SELECT `Part SKU` FROM `Part Dimension` WHERE `Part Barcode Number`=%s AND `Part SKU`!=%d  and (`Part Barcode Key` is null  or `Part Barcode Key`=0 )   ', prepare_mysql($_old_value), $this->id
+                        'SELECT `Part SKU` FROM `Part Dimension` WHERE `Part Barcode Number`=%s AND `Part SKU`!=%d  AND (`Part Barcode Key` IS NULL  OR `Part Barcode Key`=0 )   ', prepare_mysql($_old_value), $this->id
                     );
 
 
@@ -274,26 +277,20 @@ class Asset extends DB_Table {
                         foreach ($result as $row) {
 
 
-
-
-
                             $part = get_object('Part', $row['Part SKU']);
-
 
 
                             $sql = sprintf(
                                 "SELECT `Barcode Key` ,`Barcode Status` ,`Barcode Sticky Note` FROM `Barcode Dimension` WHERE `Barcode Number`=%s   ", prepare_mysql($part->get('Part Barcode Number'))
                             );
 
-                            if ($result2=$this->db->query($sql)) {
+                            if ($result2 = $this->db->query($sql)) {
                                 if ($row2 = $result2->fetch()) {
 
 
+                                    $barcode = new Barcode($row2['Barcode Key']);
 
-
-                                    $barcode         = new Barcode($row2['Barcode Key']);
-
-                                    if($barcode->get('Barcode Status')=='Available' ){
+                                    if ($barcode->get('Barcode Status') == 'Available') {
 
 
                                         $asset_data = array(
@@ -304,15 +301,14 @@ class Asset extends DB_Table {
 
 
                                         $barcode->assign_asset_to_barcode($asset_data);
-                                        $part->fast_update(array('Part Barcode Key'=>$barcode->id));
+                                        $part->fast_update(array('Part Barcode Key' => $barcode->id));
 
                                     }
 
 
-
                                 }
-                            }else {
-                                print_r($error_info=$db->errorInfo());
+                            } else {
+                                print_r($error_info = $db->errorInfo());
                                 print "$sql\n";
                                 exit;
                             }
