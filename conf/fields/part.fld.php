@@ -458,7 +458,7 @@ if(!$supplier_part_scope) {
                     $object->get_field_label('Part SKOs per Carton')
                 ),
                 'invalid_msg'     => get_invalid_message('string'),
-                'required'        => ($supplier_part_scope ? false : true),
+                'required'        => false,
                 'type'            => 'value'
             ),
 
