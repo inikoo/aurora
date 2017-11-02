@@ -39,25 +39,19 @@ editable: false,
 sortType: "toggle",
 {if $sort_key=='id'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
-cell: Backgrid.StringCell.extend({
-orderSeparator: '',
-events: {
-"click": function() {
-change_view('supplier{if $data.object=='list'}/list/{$data.key}{/if}/' + this.model.get("id"))
-}
-},
-className: "link"
+cell: Backgrid.HtmlCell.extend({
 
 })
 
 }, {
 name: "name",
 label: "Name",
+editable: false,
+
 sortType: "toggle",
-cell: Backgrid.StringCell.extend({
-events: {
-"dblclick": "enterEditMode"
-}
+cell: Backgrid.HtmlCell.extend({
+
+
 })
 }, {
 name: "location",
