@@ -55,6 +55,9 @@ function update_parts_data($db) {
             //  print "$sql\n";
 
             $db->exec($sql);
+
+
+
             $part->validate_barcode();
 
             if ($part->get('Part Cost') <= 0 and $part->get('Part Status') != 'Not In Use') {
