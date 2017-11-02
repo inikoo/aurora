@@ -11,7 +11,7 @@
 
 <div class="container" style="min-height:200px;padding:5px 20px">
 
-    <h4>{$webpage->get('Webpage URL')}</h4>
+    <h4 class="Webpage_URL">{$webpage->get('Webpage URL')}</h4>
 
     <i class="fa fa-site-map" aria-hidden="true" title="{t}Webpage for category{/t}"></i> <span onclick="change_view('products/{$category->get('Store Key')}/{$product->id}')" class="link">{$category->get('Code')}</span> {$category->get('Name')}
 
