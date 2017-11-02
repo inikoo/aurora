@@ -21,16 +21,15 @@ if (isset($options['new']) and $options['new']) {
 }
 
 
-if ($new) {
-    $can_update_code = true;
 
-} else {
-    $can_update_code = false;
+//$can_update_code = true;
 
-}
+
+
 
 
 $can_change_state = ($object->get('Webpage Scope') == 'System' ? false : true);
+$can_update_code =(in_array($object->get('Webpage Scope'),array('Product','Category Categories','Category Products','Info')) ? true : false);
 $can_delete       = false;
 
 
@@ -153,7 +152,7 @@ $object_fields[] = array(
             'edit'   => ($edit ? 'string' : ''),
             'value'           => htmlspecialchars($object->get('Webpage Code')),
             'formatted_value' => $object->get('Code'),
-            'label'           => ucfirst($object->get_field_label('Webpage Code')),
+            'label'           => ucfirst($object->get_field_label('Webpage Code')).' <span class="warning small"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> '._('URL will change').'</span>',
             'required'        => true,
             'type'            => 'value' ,
             'server_validation' => json_encode(array('tipo' => 'check_for_duplicates')),

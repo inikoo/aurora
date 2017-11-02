@@ -15,7 +15,7 @@
 
     <div class="name_and_categories">
 
-        <h4>{$webpage->get('Webpage URL')}</h4>
+        <h4 class="Webpage_URL">{$webpage->get('Webpage URL')}</h4>
 
 
     </div>

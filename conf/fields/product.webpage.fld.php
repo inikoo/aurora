@@ -109,18 +109,6 @@ $product_fields = array(
         'show_title' => true,
         'fields'     => array(
 
-/*
-            array(
-                'id'              => 'Webpage_URLs',
-                'edit'            => 'Webpage_URLs',
-                'value'           => '',
-                'formatted_value' => $object->get('Webpage URLs'),
-                'label'           => _('URLs'),
-                'required'        => false,
-                'type'            => ''
-            ),
-
-*/
 
 
             array(

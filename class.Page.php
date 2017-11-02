@@ -1127,7 +1127,7 @@ class Page extends DB_Table {
                 return $this->get('Page Site Key');
                 break;
             case 'Code':
-                return $this->data['Page Code'];
+                return $this->data['Webpage Code'];
                 break;
 
             case  'Page Found In Page Key':
@@ -1347,12 +1347,30 @@ class Page extends DB_Table {
 
 
                 break;
-            case 'Webpage Browser Title':
 
-                $sql = sprintf('UPDATE `Page Dimension` SET `Page Title`=%s WHERE `Page Key`=%d ', prepare_mysql($value), $this->id);
+            case('Webpage Code'):
+                $sql = sprintf('UPDATE `Page Dimension` SET `Page Code`=%s WHERE `Page Key`=%d ', prepare_mysql($value), $this->id);
                 $this->db->exec($sql);
                 $this->update_field($field, $value, $options);
+                $this->update_url();
+
+
+
+                $this->update_metadata = array(
+                    'class_html'    => array(
+                        'Webpage_URL' => $this->get('Webpage URL'),
+
+                    ),
+
+                );
+
+
                 break;
+
+
+            case 'Webpage Browser Title':
+
+
             case 'Webpage Name':
 
 
@@ -1408,7 +1426,7 @@ class Page extends DB_Table {
             case('Webpage Website Key'):
             case('Webpage Store Key'):
             case ('Webpage Redirection Code'):
-            case('Webpage Code'):
+
             case('Webpage Type Key'):
             case 'Webpage Version':
             case 'Webpage Launch Date':
@@ -1448,7 +1466,6 @@ class Page extends DB_Table {
 
 
                 $this->update_field($field, $value, $options);
-
 
                 $this->update_version();
                 $this->publish();
