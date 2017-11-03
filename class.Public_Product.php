@@ -19,7 +19,7 @@ class Public_Product {
         global $db;
         $this->db = $db;
         $this->id = false;
-
+$this->acc_data_loaded=false;
         $this->webpage = false;
 
         $this->table_name = 'Product';
@@ -114,6 +114,44 @@ class Public_Product {
         }
 
     }
+
+
+    function load_acc_data() {
+
+        $sql = sprintf(
+            "SELECT * FROM `Product Data` WHERE `Product ID`=%d", $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                foreach ($row as $key => $value) {
+                    $this->data[$key] = $value;
+                }
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        $sql = sprintf(
+            "SELECT * FROM `Product DC Data` WHERE `Product ID`=%d", $this->id
+        );
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                foreach ($row as $key => $value) {
+                    $this->data[$key] = $value;
+                }
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+    }
+
 
     function get($key, $arg1 = '') {
 
@@ -443,7 +481,9 @@ class Public_Product {
 
 
 
-
+if(!$this->acc_data_loaded){
+    $this->load_acc_data();
+}
 
 
                if($this->get('Product Total Acc Quantity Ordered') >0 or $this->data['Product Web Configuration'] == 'Online Force Out of Stock'   or $this->data['Product Status']=='Discontinuing'  ){
@@ -465,6 +505,11 @@ class Public_Product {
                 break;
 
             case 'Out of Stock Class':
+
+
+                if(!$this->acc_data_loaded){
+                    $this->load_acc_data();
+                }
                 if($this->get('Product Total Acc Quantity Ordered') >0 or $this->data['Product Web Configuration'] == 'Online Force Out of Stock'   or $this->data['Product Status']!=='Discontinuing'  ){
                     return 'out_of_stock';
                 } else {
