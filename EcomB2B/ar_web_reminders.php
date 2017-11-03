@@ -57,7 +57,7 @@ switch ($tipo) {
 
 function send_reminder($data, $customer, $website, $editor, $db) {
 
-
+exit;
     $customer->editor = $editor;
 
 
@@ -93,7 +93,7 @@ function send_reminder($data, $customer, $website, $editor, $db) {
 
 function remove_reminder($data, $customer, $website, $editor, $db) {
 
-
+exit
     $customer->editor = $editor;
 
     if ($data['favourite_key']) {
