@@ -47,8 +47,7 @@ $editor = array(
 $account = new Account();
 
 
-$sql =
-    'SELECT `Inventory Transaction Key`,`Location Key`,ITF.`Part SKU`,ITF.`Delivery Note Key`,`Note`,`Inventory Transaction Type`,`Inventory Transaction Section` FROM `Inventory Transaction Fact` ITF LEFT JOIN `Delivery Note Dimension` DN ON (DN.`Delivery Note Key`=ITF.`Delivery Note Key`) WHERE    ITF.`Delivery Note Key`>0 AND DN.`Delivery Note Key` IS NULL;';
+$sql = 'SELECT `Inventory Transaction Key`,`Location Key`,ITF.`Part SKU`,ITF.`Delivery Note Key`,`Note`,`Inventory Transaction Type`,`Inventory Transaction Section` FROM `Inventory Transaction Fact` ITF LEFT JOIN `Delivery Note Dimension` DN ON (DN.`Delivery Note Key`=ITF.`Delivery Note Key`) WHERE    ITF.`Delivery Note Key`>0 AND DN.`Delivery Note Key` IS NULL;';
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
