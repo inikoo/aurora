@@ -17,10 +17,10 @@ class Public_Product {
     function __construct($arg1 = false, $arg2 = false, $arg3 = false) {
 
         global $db;
-        $this->db = $db;
-        $this->id = false;
-$this->acc_data_loaded=false;
-        $this->webpage = false;
+        $this->db              = $db;
+        $this->id              = false;
+        $this->acc_data_loaded = false;
+        $this->webpage         = false;
 
         $this->table_name = 'Product';
 
@@ -37,7 +37,6 @@ $this->acc_data_loaded=false;
 
 
     function get_data($key, $id, $aux_id = false) {
-
 
 
         if ($key == 'id') {
@@ -115,44 +114,6 @@ $this->acc_data_loaded=false;
 
     }
 
-
-    function load_acc_data() {
-
-        $sql = sprintf(
-            "SELECT * FROM `Product Data` WHERE `Product ID`=%d", $this->id
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                foreach ($row as $key => $value) {
-                    $this->data[$key] = $value;
-                }
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        $sql = sprintf(
-            "SELECT * FROM `Product DC Data` WHERE `Product ID`=%d", $this->id
-        );
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                foreach ($row as $key => $value) {
-                    $this->data[$key] = $value;
-                }
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-    }
-
-
     function get($key, $arg1 = '') {
 
         switch ($key) {
@@ -161,8 +122,7 @@ $this->acc_data_loaded=false;
             case 'Favourite Key':
 
                 $sql = sprintf(
-                    'SELECT `Customer Favourite Product Key`  FROM `Customer Favourite Product Fact` WHERE `Customer Favourite Product Product ID`=%d AND `Customer Favourite Product Customer Key`=%d ',
-                    $this->id, $arg1
+                    'SELECT `Customer Favourite Product Key`  FROM `Customer Favourite Product Fact` WHERE `Customer Favourite Product Product ID`=%d AND `Customer Favourite Product Customer Key`=%d ', $this->id, $arg1
                 );
 
                 if ($result = $this->db->query($sql)) {
@@ -226,8 +186,7 @@ $this->acc_data_loaded=false;
 
 
                 $sql = sprintf(
-                    "SELECT `Email Site Reminder Key` FROM `Email Site Reminder Dimension` WHERE `Trigger Scope`='Back in Stock' AND `Trigger Scope Key`=%d AND `User Key`=%d AND `Email Site Reminder In Process`='Yes' ",
-                    $this->id, $arg1
+                    "SELECT `Email Site Reminder Key` FROM `Email Site Reminder Dimension` WHERE `Trigger Scope`='Back in Stock' AND `Trigger Scope Key`=%d AND `User Key`=%d AND `Email Site Reminder In Process`='Yes' ", $this->id, $arg1
 
                 );
 
@@ -323,31 +282,31 @@ $this->acc_data_loaded=false;
                 if ($image_key) {
 
 
-                    $image_format='jpeg';
+                    $image_format = 'jpeg';
 
                     if (file_exists('server_files/cached_images/'.md5($image_key.'_'.$_size_image_product_webpage.'.'.$image_format).'.'.$image_format)) {
                         return 'server_files/cached_images/'.md5($image_key.'_'.$_size_image_product_webpage.'.'.$image_format).'.'.$image_format;
                     } else {
-                        $image          = get_object('Image', $image_key);
+                        $image = get_object('Image', $image_key);
 
                         $image_filename = 'server_files/tmp/'.$image_key.'_'.$_size_image_product_webpage.'.'.$image_format;
 
                         if (!file_exists($image_filename)) {
 
-                            $_image= $image->fit_to_canvas(340, 214);
+                            $_image = $image->fit_to_canvas(340, 214);
 
-                            if($image->get('Image File Format')=='png'){
-                                $image->save_image_to_file_as_jpeg('server_files/tmp', $image_key.'_'.$_size_image_product_webpage,$_image, $image_format);
-                            }else{
-                                $image->save_image_to_file('server_files/tmp', $image_key.'_'.$_size_image_product_webpage,$_image, $image_format);
+                            if ($image->get('Image File Format') == 'png') {
+                                $image->save_image_to_file_as_jpeg('server_files/tmp', $image_key.'_'.$_size_image_product_webpage, $_image, $image_format);
+                            } else {
+                                $image->save_image_to_file('server_files/tmp', $image_key.'_'.$_size_image_product_webpage, $_image, $image_format);
 
                             }
-
 
 
                         }
                         $image_product_webpage = $imagecache->cache($image_filename);
                         unlink($image_filename);
+
                         return $image_product_webpage;
                     }
 
@@ -356,9 +315,6 @@ $this->acc_data_loaded=false;
                     return '/art/nopic.png';
 
                 }
-
-
-
 
 
                 break;
@@ -450,8 +406,7 @@ $this->acc_data_loaded=false;
 
                 if ($this->data['Product Units Per Case'] != 1) {
 
-                    $price .= ' ('.preg_replace('/PLN/', 'zł ', money($this->data['Product Price'] / $this->data['Product Units Per Case'], $this->data['Store Currency Code'])).'/'
-                        .$this->data['Product Unit Label'].')';
+                    $price .= ' ('.preg_replace('/PLN/', 'zł ', money($this->data['Product Price'] / $this->data['Product Units Per Case'], $this->data['Store Currency Code'])).'/'.$this->data['Product Unit Label'].')';
 
 
                     //$price.=' ('.sprintf(_('%s per %s'), money($this->data['Product Price']/$this->data['Product Units Per Case'], $this->data['Store Currency Code']), $this->data['Product Unit Label']).')';
@@ -480,13 +435,12 @@ $this->acc_data_loaded=false;
             case 'Out of Stock Label':
 
 
+                if (!$this->acc_data_loaded) {
+                    $this->load_acc_data();
+                }
 
-if(!$this->acc_data_loaded){
-    $this->load_acc_data();
-}
 
-
-               if($this->data['Product Total Acc Quantity Ordered'] >0 or $this->data['Product Web Configuration'] == 'Online Force Out of Stock'   or $this->data['Product Status']=='Discontinuing'  ){
+                if ($this->data['Product Total Acc Quantity Ordered'] > 0 or $this->data['Product Web Configuration'] == 'Online Force Out of Stock' or $this->data['Product Status'] == 'Discontinuing') {
 
 
                     if ($this->data['Product Next Supplier Shipment'] != '') {
@@ -497,20 +451,21 @@ if(!$this->acc_data_loaded){
                     } else {
                         $label = _('Out of stock');
                     }
+
                     return $label;
 
-                }else{
-                   return _('Launching soon');
+                } else {
+                    return _('Launching soon');
                 }
                 break;
 
             case 'Out of Stock Class':
 
 
-                if(!$this->acc_data_loaded){
+                if (!$this->acc_data_loaded) {
                     $this->load_acc_data();
                 }
-                if($this->data['Product Total Acc Quantity Ordered'] >0 or $this->data['Product Web Configuration'] == 'Online Force Out of Stock'   or $this->data['Product Status']=='Discontinuing'  ){
+                if ($this->data['Product Total Acc Quantity Ordered'] > 0 or $this->data['Product Web Configuration'] == 'Online Force Out of Stock' or $this->data['Product Status'] == 'Discontinuing') {
                     return 'out_of_stock';
                 } else {
                     return 'launching_soon';
@@ -761,6 +716,42 @@ if(!$this->acc_data_loaded){
         $this->webpage = new Public_Webpage('scope', 'Product', $this->id);
     }
 
+    function load_acc_data() {
+
+        $sql = sprintf(
+            "SELECT * FROM `Product Data` WHERE `Product ID`=%d", $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                foreach ($row as $key => $value) {
+                    $this->data[$key] = $value;
+                }
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        $sql = sprintf(
+            "SELECT * FROM `Product DC Data` WHERE `Product ID`=%d", $this->id
+        );
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                foreach ($row as $key => $value) {
+                    $this->data[$key] = $value;
+                }
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+    }
+
     function get_attachments() {
 
         $attachments = array();
@@ -834,7 +825,7 @@ if(!$this->acc_data_loaded){
                     //=======
 
 
-                    $image_format='jpeg';
+                    $image_format = 'jpeg';
 
                     $image_key = $row['Image Key'];
 
@@ -845,18 +836,18 @@ if(!$this->acc_data_loaded){
                         if (file_exists('server_files/cached_images/'.md5($image_key.'_'.$_size_image_product_webpage.'.'.$image_format).'.'.$image_format)) {
                             $image_product_webpage = 'server_files/cached_images/'.md5($image_key.'_'.$_size_image_product_webpage.'.'.$image_format).'.'.$image_format;
                         } else {
-                            $image          = get_object('Image', $image_key);
+                            $image = get_object('Image', $image_key);
 
                             $image_filename = 'server_files/tmp/'.$image_key.'_'.$_size_image_product_webpage.'.'.$image_format;
 
                             if (!file_exists($image_filename)) {
 
-                                $_image=$image->fit_to_canvas(600, 375);
+                                $_image = $image->fit_to_canvas(600, 375);
 
-                                if($image->get('Image File Format')=='png'){
-                                    $image->save_image_to_file_as_jpeg('server_files/tmp', $image_key.'_'.$_size_image_product_webpage,$_image, $image_format);
-                                }else{
-                                    $image->save_image_to_file('server_files/tmp', $image_key.'_'.$_size_image_product_webpage,$_image, $image_format);
+                                if ($image->get('Image File Format') == 'png') {
+                                    $image->save_image_to_file_as_jpeg('server_files/tmp', $image_key.'_'.$_size_image_product_webpage, $_image, $image_format);
+                                } else {
+                                    $image->save_image_to_file('server_files/tmp', $image_key.'_'.$_size_image_product_webpage, $_image, $image_format);
 
                                 }
 
@@ -873,7 +864,6 @@ if(!$this->acc_data_loaded){
                         $image_product_webpage = '/art/nopic.png';
 
                     }
-
 
 
                     //=======
@@ -1133,8 +1123,8 @@ if(!$this->acc_data_loaded){
             "SELECT `Webpage Code`,`Product Name` FROM `Category Bridge` LEFT JOIN `Product Dimension` P ON (`Subject Key`=`Product ID`) 
               LEFT JOIN `Page Store Dimension` ON (`Page Key`=`Product Webpage Key`)
               WHERE P.`Product Type`='Product' AND`Subject`='Product' AND `Category Key`=%d AND `Webpage State`='Online' AND P.`Product Status` IN ('Active','Discontinuing') 
-              AND (`Product Code File As` > %s OR (`Product Code File As` = %s AND P.`Product ID` > %d)) ORDER BY `Product Code File As`  , P.`Product ID` DESC LIMIT 1;",
-            $this->data['Product Family Category Key'], prepare_mysql($this->data['Product Code File As']), prepare_mysql($this->data['Product Code File As']), $this->id
+              AND (`Product Code File As` > %s OR (`Product Code File As` = %s AND P.`Product ID` > %d)) ORDER BY `Product Code File As`  , P.`Product ID` DESC LIMIT 1;", $this->data['Product Family Category Key'], prepare_mysql($this->data['Product Code File As']),
+            prepare_mysql($this->data['Product Code File As']), $this->id
 
         );
 
@@ -1203,8 +1193,7 @@ if(!$this->acc_data_loaded){
         if (count($parent_categories) > 0) {
 
             $sql = sprintf(
-                "SELECT `Deal Component Key` FROM `Deal Component Dimension` WHERE `Deal Component Allowance Target`='Category' AND `Deal Component Allowance Target Key` in (%s) $where",
-                join(',', $parent_categories)
+                "SELECT `Deal Component Key` FROM `Deal Component Dimension` WHERE `Deal Component Allowance Target`='Category' AND `Deal Component Allowance Target Key` in (%s) $where", join(',', $parent_categories)
 
             );
 

@@ -192,7 +192,7 @@
                         <span class="label">
                         {$product->get('Out of Stock Label')}
                             <span class="label sim_button "> <i reminder_key="{$reminder_key}" title="{if $reminder_key>0}{t}Click to remove notification{/t}{else}{t}Click to be notified by email{/t}{/if}"
-                                                                class="reminder fa {if $reminder_key>0}fa-envelope{else}fa-envelope-o{/if}" aria-hidden="true"></i>  </span>
+                                                                class="reminder hide fa {if $reminder_key>0}fa-envelope{else}fa-envelope-o{/if}" aria-hidden="true"></i>  </span>
                         </span>
                                                     </div>
                                                 {/if}
@@ -335,7 +335,7 @@
                                                     {$product->get('Out of Stock Label')}
                                                         <span class="label sim_button "> <i reminder_key="{$reminder_key}"
                                                                                             title="{if $reminder_key>0}{t}Click to remove notification{/t}{else}{t}Click to be notified by email{/t}{/if}"
-                                                                                            class="reminder fa {if $reminder_key>0}fa-envelope{else}fa-envelope-o{/if}" aria-hidden="true"></i>  </span>
+                                                                                            class="reminder hide fa {if $reminder_key>0}fa-envelope{else}fa-envelope-o{/if}" aria-hidden="true"></i>  </span>
                                                     </span>
                                                     </div>
                                                 {/if}
