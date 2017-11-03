@@ -1100,7 +1100,7 @@ trait ProductCategory {
 
                     $image = new Image($product->get('Product Main Image Key'));
 
-                    $_image_filename = uniqid('tmp_ftc_image_');
+                    $_image_filename = uniqid('tmp_ftc_image_bis_');
 
                     $image->save_image_to_file('server_files/tmp', $_image_filename, $image->fit_to_canvas(375, 275));
 

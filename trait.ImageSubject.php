@@ -228,8 +228,7 @@ trait ImageSubject {
             }
 
             return $image;
-        }
-        else {
+        } else {
 
 
             $this->error = true;
