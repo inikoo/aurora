@@ -7555,9 +7555,16 @@ class Page extends DB_Table {
 
                 );
 
-                print "$sql\n";
-
                 $this->db->exec($sql);
+                $sql = sprintf(
+                    'DELETE FROM  `Category Webpage Index` WHERE `Category Webpage Index Parent Category Key`=%d  ', $this->get('Webpage Scope Key')
+
+                );
+
+
+               print "$sql\n";
+
+               // $this->db->exec($sql);
 
 
                 $title = $category->get('Label');
