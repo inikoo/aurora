@@ -1542,7 +1542,7 @@ trait ProductCategory {
                                 $row['Subject Key'], $this->webpage->id, $subject_webpage->id
                             );
 
-                            print "$sql\n";
+                            //print "$sql\n";
 
 
                             $this->db->exec($sql);

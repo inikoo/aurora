@@ -7562,7 +7562,7 @@ class Page extends DB_Table {
                 );
 
 
-               print "$sql\n";
+             //  print "$sql\n";
 
                // $this->db->exec($sql);
 
