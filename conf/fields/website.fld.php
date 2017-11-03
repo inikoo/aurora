@@ -61,6 +61,18 @@ $object_fields = array(
         )
     ),
 
+
+
+
+
+
+
+
+);
+
+if (!$new) {
+
+    $object_fields[]=
     array(
         'label'      => _('Look & feel'),
         'show_title' => true,
@@ -131,17 +143,7 @@ $object_fields = array(
             ),
 
         )
-    ),
-
-
-
-
-
-
-);
-
-if (!$new) {
-
+    );
 
 /*
     $object_fields[] =  array(

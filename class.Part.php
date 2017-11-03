@@ -401,7 +401,14 @@ class Part extends Asset {
                 }
                 $suppliers = preg_replace('/\, $/', '', $suppliers);
 
-                return number($this->data['Part SKOs per Carton'])." <span class='italic very_discreet'>(".$suppliers.')</span>';
+                if($this->data['Part SKOs per Carton']==''){
+                    return '<span class="error">'._('Not set')."</span> <span class='italic very_discreet'>(".$suppliers.')</span>';
+
+                }else{
+                    return number($this->data['Part SKOs per Carton'])." <span class='italic very_discreet'>(".$suppliers.')</span>';
+
+                }
+
 
                 break;
             case 'Products Numbers':
@@ -2046,94 +2053,6 @@ class Part extends Asset {
         );
     }
 
-    function fix_stock_transactions() {
-
-        include_once 'class.PartLocation.php';
-
-        $sql = sprintf(
-            "SELECT `Location Key`  FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d GROUP BY `Location Key`", $this->sku
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                $part_location = new PartLocation(
-                    $this->sku.'_'.$row['Location Key']
-                );
-                $part_location->redo_adjusts();
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        $sql = sprintf(
-            "SELECT `Inventory Transaction Key`,`Date`,`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Location Key`,`Note`,`Inventory Transaction Quantity`,`Required`  FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d AND `Inventory Transaction Section` IN ('Out','OIP') ORDER BY `Date`",
-            $this->sku
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-
-                if ($row['Inventory Transaction Section'] == 'OIP') {
-                    $qty = $row['Required'];
-                } else {
-                    $qty = -1 * $row['Inventory Transaction Quantity'];
-                }
-                $picking_locations = $this->get_picking_location_historic(
-                    $row['Date'], $qty
-                );
-
-                if (count($picking_locations == 1) and $picking_locations[0]['location_key'] != $row['Location Key']) {
-
-                    $_location = new Location(
-                        $picking_locations[0]['location_key']
-                    );
-                    $note      = $row['Note'];
-
-                    if (preg_match('/(<.*a> )(.*)/', $note, $matches)) {
-
-                        if ($_location->id == 1) {
-                            $location_note .= ' '._('Taken from an')." ".sprintf(
-                                    "<a href='location.php?id=1'>%s</a>", _('Unknown Location')
-                                );
-                        } else {
-                            $location_note = ' '._('Taken from').": ".sprintf(
-                                    "<a href='location.php?id=%d'>%s</a>", $_location->id, $_location->data['Location Code']
-                                );
-                        }
-
-
-                        $note = $matches[1].$location_note;
-                    } else {
-
-                        $note .= ' (WL)';
-                    }
-
-
-                    $sql = sprintf(
-                        'UPDATE `Inventory Transaction Fact` SET `Location Key`=%d ,`Note`=%s WHERE `Inventory Transaction Key`=%d', $_location->id, prepare_mysql($note), $row['Inventory Transaction Key']
-                    );
-                    print $sql;
-                    $this->db->exec($sql);
-                    print_r($row);
-                    print_r($picking_locations);
-                }
-
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        $this->update_stock();
-
-    }
 
     function update_stock_history() {
 
@@ -4263,5 +4182,31 @@ class Part extends Asset {
 
     }
 
+    function update_stock_run() {
+
+        $running_stock = 0;
+
+        $sql = sprintf('SELECT `Inventory Transaction Key`, `Inventory Transaction Quantity` FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d ORDER BY `Date` ', $this->id);
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $running_stock = $running_stock + $row['Inventory Transaction Quantity'];
+                $sql           = sprintf(
+                    'UPDATE `Inventory Transaction Fact` SET `Running Stock`=%f WHERE `Inventory Transaction Key`=%d ', $running_stock, $row['Inventory Transaction Key']
+                );
+                $this->db->exec($sql);
+                //print "$sql\n";
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+    }
 
 }
+
+
+

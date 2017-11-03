@@ -972,14 +972,8 @@ function get_products_element_numbers($db, $data, $user) {
 
 
             break;
-        case 'list':
-            $tab = 'customers.list';
-            break;
-        case 'favourites':
-            $where = sprintf(
-                " where `Product Type`='Product'  C.`Customer Key` in (select DISTINCT F.`Customer Key` from `Customer Favorite Product Bridge` F where `Site Key`=%d )", $data['parent_key']
-            );
-            break;
+
+
 
 
         default:
@@ -1217,10 +1211,10 @@ function get_customers_element_numbers($db, $data) {
 
         case 'favourites':
 
-            $table = '`Customer Favorite Product Bridge` F  left join `Customer Dimension` C   on (C.`Customer Key`=F.`Customer Key`)  ';
+            $table = '`Customer Favourite Product Fact` F  left join `Customer Dimension` C   on (C.`Customer Key`=F.`Customer Favourite Product Customer Key`)  ';
 
 
-            $where = sprintf(' where  F.`Product ID`=%d ', $data['parent_key']);
+            $where = sprintf(' where  F.`Customer Favourite Product Product ID`=%d ', $data['parent_key']);
 
             break;
         default:

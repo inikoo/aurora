@@ -57,30 +57,14 @@ events: {
 name: "supplier",
 label: "{t}Supplier{/t}",
 editable: false,
-cell: Backgrid.StringCell.extend({
-events: {
-"click": function() {
-change_view("/supplier/"+this.model.get("supplier_key"))
-
-
-}
-},
-className: "link"
+cell: Backgrid.HtmlCell.extend({
 }),
 },
 {
 name: "reference",
 label: "{t}S. Code{/t}",
 editable: false,
-cell: Backgrid.StringCell.extend({
-events: {
-"click": function() {
-change_view("supplier/"+this.model.get("supplier_key")+"/part/"+this.model.get("supplier_part_key"))
-
-
-}
-},
-className: "link"
+cell: Backgrid.HtmlCell.extend({
 }),
 },
 {
@@ -89,46 +73,88 @@ label: "{t}Unit description{/t}",
 editable: false,
 cell: "html"
 
-}, {
-name: "subtotals",
-label: "{t}Subtotals{/t}",
-defaultOrder:1,
-editable: false,
-sortType: "toggle",
-{if $sort_key=='subtotals'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.HtmlCell.extend({ className: ""} ),
+},
 
-}, {
-name: "quantity",
-label: "{t}E Cartons{/t}",
-renderable: {if $data['_object']->get('Purchase Order State')!='InProcess'}true{else}false{/if},
+
+{
+name: "packed_in",
+label: "{t}Packed in{/t}",
 defaultOrder:1,
 editable: false,
 sortType: "toggle",
-{if $sort_key=='quantity'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='unit_cost'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
-}, {
-name: "ordered",
+},
+
+{
+name: "units_per_carton",
+label: "{t}U/C{/t}",
+defaultOrder:1,
+editable: false,
+sortType: "toggle",
+{if $sort_key=='unit_cost'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+},
+{
+name: "sko_per_carton",
+label: "{t}Pack/C{/t}",
+defaultOrder:1,
+editable: false,
+sortType: "toggle",
+{if $sort_key=='unit_cost'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+},
+
+
+{
+name: "unit_cost",
+label: "{t}Unit cost{/t}",
+defaultOrder:1,
+editable: false,
+sortType: "toggle",
+{if $sort_key=='unit_cost'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+},
+
+{
+name: "qty_units",
+label: "{t}Units{/t}",
+defaultOrder:1,
+editable: false,
+sortType: "toggle",
+{if $sort_key=='qty_units'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+},
+
+
+{
+name: "qty_cartons",
 label: "{t}Cartons{/t}",
-renderable: {if $data['_object']->get('Purchase Order State')=='InProcess'}true{else}false{/if},
 defaultOrder:1,
 editable: false,
 sortType: "toggle",
-{if $sort_key=='ordered'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='qty_cartons'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
-}, {
-name: "delivery_quantity",
-label: "{t}Delivery{/t}",
-renderable: false,
+},
+
+
+{
+name: "amount",
+label: "{t}Total{/t}",
 defaultOrder:1,
 editable: false,
 sortType: "toggle",
-{if $sort_key=='quantity'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='amount'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 }
+
 ]
 
 

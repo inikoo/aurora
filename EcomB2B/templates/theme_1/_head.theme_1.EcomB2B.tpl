@@ -184,7 +184,7 @@
 
     <script type="text/javascript" src="/js/jquery.form.min.js"></script>
     <script type="text/javascript" src="/js/sha256.js"></script>
-    <script type="text/javascript" src="/js/aurora.js"></script>
+    <script type="text/javascript" src="/js/aurora.js?20171101"></script>
     <script type="text/javascript" src="/js/validation.js"></script>
 
     <script type="text/javascript" src="/js/ordering.js?v20171105"></script>

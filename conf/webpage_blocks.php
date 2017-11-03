@@ -14,28 +14,28 @@ function get_webpage_blocks($theme = '') {
 
     $blocks = array(
 
-/*
-        'static_banner'  => array(
-            'type'   => 'static_banner',
-            'label'  => _('Header'),
-            'icon'   => 'fa-header',
-            'show'   => 1,
-            '_top_text_left' => 'customize',
-            '_top_text_right' => 'your own',
-            '_title' => 'Chic &amp; Unique Header',
-            '_text' => 'in easy peasy steps',
-            'link'=>'',
-            'bg_image'=>''
-        ),
-*/
-        'one_pack'  => array(
-            'type'   => 'one_pack',
-            'label'  => _('One-Pack'),
-            'icon'   => 'fa-minus',
-            'show'   => 1,
-            '_title' => _('Title'),
+        /*
+                'static_banner'  => array(
+                    'type'   => 'static_banner',
+                    'label'  => _('Header'),
+                    'icon'   => 'fa-header',
+                    'show'   => 1,
+                    '_top_text_left' => 'customize',
+                    '_top_text_right' => 'your own',
+                    '_title' => 'Chic &amp; Uniquefima Header',
+                    '_text' => 'in easy peasy steps',
+                    'link'=>'',
+                    'bg_image'=>''
+                ),
+        */
+        'one_pack'   => array(
+            'type'      => 'one_pack',
+            'label'     => _('One-Pack'),
+            'icon'      => 'fa-minus',
+            'show'      => 1,
+            '_title'    => _('Title'),
             '_subtitle' => 'Here goes an abstract of your content',
-            '_text'  => 'When an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also electronics typesetting, remaining essentially believable.',
+            '_text'     => 'When an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also electronics typesetting, remaining essentially believable.',
         ),
         'two_pack'   => array(
             'type'  => 'two_pack',
@@ -136,7 +136,7 @@ function get_webpage_blocks($theme = '') {
 
 
         ),
-        'two_one' => array(
+        'two_one'    => array(
             'type'  => 'two_one',
             'label' => _('Two-One'),
             'icon'  => ' fa-window-maximize fa-rotate-90',
@@ -175,6 +175,8 @@ function get_webpage_blocks($theme = '') {
 
 
         ),
+        /*
+
         'image'      => array(
             'type'    => 'image',
             'label'   => _('Image'),
@@ -185,7 +187,27 @@ function get_webpage_blocks($theme = '') {
             'link'    => '',
 
         ),
-        'iframe'     => array(
+*/
+        'images' => array(
+            'type'     => 'images',
+            'label'    => _('Images'),
+            'icon'     => 'fa-image',
+            'show'     => 1,
+            'template' => '4',
+            'images'   => array(
+                'src'        => '',
+                'tooltip'    => '',
+                'link'       => '',
+                'text_1'     => _('title'),
+                'text_2'     => _('label'),
+                'text_class' => ''
+            )
+
+
+        ),
+
+
+        'iframe'    => array(
             'type'   => 'iframe',
             'label'  => 'iFrame',
             'icon'   => 'fa-window-restore',
@@ -193,7 +215,7 @@ function get_webpage_blocks($theme = '') {
             'height' => 250,
             'src'    => 'cdn.bannersnack.com/banners/bxmldll37/embed/index.html?userId=30149291&t=1499779573'
         ),
-        'counter'    => array(
+        'counter'   => array(
             'type'  => 'counter',
             'label' => _('Counter'),
             'icon'  => 'fa-sort-numeric-asc',
@@ -235,14 +257,13 @@ function get_webpage_blocks($theme = '') {
             '_telephone' => '+88 123 456 7890',
             '_text'      => 'Answer Desk is Ready!',
         ),
-        'map' => array(
+        'map'       => array(
             'type'  => 'map',
             'label' => _('Map'),
             'icon'  => 'fa-map-marker',
             'show'  => 1,
             'src'   => '#map'
         ),
-
 
 
     );

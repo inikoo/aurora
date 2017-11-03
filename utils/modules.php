@@ -228,12 +228,7 @@ $_service = array(
                     )
                 ),
                 'service.customers.favourites' => array(
-                    'label' => _(
-                        'Customers who favorited'
-                    ),
-                    'title' => _(
-                        'Customers who favorited'
-                    )
+                    'label' => _('Customers who favored'),
                 ),
 
             )
@@ -6742,21 +6737,17 @@ $modules = array(
             'agent_delivery' => array(
                 'type' => 'object',
                 'tabs' => array(
-                    'client_order.items'         => array(
+                    'agent_delivery.items'         => array(
                         'label' => _('Items'),
                         'icon'  => 'bars'
                     ),
-                    'client_order.client_orders' => array(
-                        'label' => _("Client's orders"),
-                        'icon'  => 'clipboard'
-                    ),
-                    'client_order.details'       => array(
+                    'agent_delivery.details'       => array(
                         'label' => _('Data'),
                         'icon'  => 'database'
                     ),
 
 
-                    'client_order.history' => array(
+                    'agent_delivery.history' => array(
                         'label' => _('History/Notes'),
                         'icon'  => 'road',
                         'class' => 'right icon_only'

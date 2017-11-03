@@ -1791,7 +1791,7 @@ class PurchaseOrder extends DB_Table {
 
         $history_data = array(
             'History Abstract' => sprintf(
-                _('Purchase order associeted with delivery %s'), '<a href="supplier_dn.php?id='.$sdn_key.'">'.$sdn_name.'</a>'
+                _('Purchase order associated with delivery %s'), '<a href="supplier_dn.php?id='.$sdn_key.'">'.$sdn_name.'</a>'
             ),
             'History Details'  => ''
         );
@@ -1824,11 +1824,10 @@ class PurchaseOrder extends DB_Table {
             default:
 
 
-                $base_data = $this->base_data();
 
 
                 if (array_key_exists(
-                    $field, $base_data
+                    $field, $this->data
                 )) {
                     if ($value != $this->data[$field]) {
 

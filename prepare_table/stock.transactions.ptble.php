@@ -54,6 +54,9 @@ if (isset($parameters['elements_type'])) {
 
     switch ($parameters['elements_type']) {
         case 'type':
+
+
+
             $_elements      = '';
             $count_elements = 0;
             foreach (
@@ -70,7 +73,7 @@ if (isset($parameters['elements_type'])) {
             $_elements = preg_replace('/^\,/', '', $_elements);
             if ($_elements == '') {
                 $where .= ' and false';
-            } elseif ($count_elements < 5) {
+            } elseif ($count_elements < 6) {
                 $where .= ' and `Inventory Transaction Section` in ('.$_elements.')';
 
             }
@@ -108,7 +111,7 @@ $sql_totals
     = "select count(Distinct `Inventory Transaction Key`) as num from $table  $where  ";
 
 $fields
-    .= '`Date`,`Inventory Transaction Section`,`Inventory Transaction Key`,`Inventory Transaction Quantity`,`Warehouse Key`,
+    .= '`Date`,`Inventory Transaction Section`,`Inventory Transaction Key`,`Inventory Transaction Quantity`,`Warehouse Key`,`Running Stock`,`Location Warehouse Key`,
 `Part Reference`,ITF.`Part SKU`,`Delivery Note ID`,ITF.`Delivery Note Key`,ITF.`Location Key`,`Location Code`,`Required`,`Part Location Stock`,`Inventory Transaction Type`,`Metadata`,
 `Note`,`User Alias`,ITF.`User Key`,`User Handle`,`Given`,`Required`+`Given`+`Inventory Transaction Quantity`-`Out of Stock`-`No Authorized`-`Not Found`-`No Picked Other` as pending  '           ;
 
