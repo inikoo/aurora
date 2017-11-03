@@ -37,7 +37,6 @@ function get_website_section_items($db, $section_data) {
 
 // and `Webpage State`='Online'
 
-  //print $sql;
 
 
     $categories = array();

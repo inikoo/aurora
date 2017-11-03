@@ -1290,6 +1290,8 @@ trait ProductCategory {
                 $this->id
             );
 
+
+
             $stack=0;
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
@@ -1534,9 +1536,13 @@ trait ProductCategory {
 
 
                             $sql = sprintf(
-                                'INSERT INTO `Category Webpage Index` (`Category Webpage Index Section Key`,`Category Webpage Index Content Data`,`Category Webpage Index Parent Category Key`,`Category Webpage Index Category Key`,`Category Webpage Index Webpage Key`,`Category Webpage Index Category Webpage Key`) VALUES (%d,%s,%d,%d,%d,%d) ',
-                                $anchor_section_key, prepare_mysql(json_encode($_data)), $this->id, $row['Subject Key'], $this->webpage->id, $subject_webpage->id
+                                'INSERT INTO `Category Webpage Index` (`Category Webpage Index Section Key`,`Category Webpage Index Content Data`,`Category Webpage Index Parent Category Key`,
+`Category Webpage Index Category Key`,`Category Webpage Index Webpage Key`,`Category Webpage Index Category Webpage Key`) VALUES (%d,%s,%d,%d,%d,%d) ',
+                                $anchor_section_key, prepare_mysql(json_encode($_data)), $this->id,
+                                $row['Subject Key'], $this->webpage->id, $subject_webpage->id
                             );
+
+                            print "$sql\n";
 
 
                             $this->db->exec($sql);
@@ -1689,7 +1695,7 @@ trait ProductCategory {
             }
 
 
-            print_r($page_breaks);
+          //  print_r($page_breaks);
 
 
             $subjects = array();
