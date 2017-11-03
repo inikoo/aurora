@@ -1322,9 +1322,10 @@ trait ProductCategory {
                             // print_r($image_data);
                             $image = $this->webpage->add_image($image_data);
 
-                            if (!$image) {
-                                print_r($this->webpage->msg);
-                                exit;
+                            if ($image) {
+                                $image_375x250 = '/image_root.php?id='.$image->id;
+
+                                unlink($image_filename);
                             }
 
                             //  print "========";
@@ -1332,9 +1333,7 @@ trait ProductCategory {
                             // print_r($image);
 
 
-                            $image_375x250 = '/image_root.php?id='.$image->id;
 
-                            unlink($image_filename);
 
                         }
 
