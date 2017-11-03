@@ -486,7 +486,7 @@ if(!$this->acc_data_loaded){
 }
 
 
-               if($this->get('Product Total Acc Quantity Ordered') >0 or $this->data['Product Web Configuration'] == 'Online Force Out of Stock'   or $this->data['Product Status']=='Discontinuing'  ){
+               if($this->data['Product Total Acc Quantity Ordered'] >0 or $this->data['Product Web Configuration'] == 'Online Force Out of Stock'   or $this->data['Product Status']=='Discontinuing'  ){
 
 
                     if ($this->data['Product Next Supplier Shipment'] != '') {
@@ -510,7 +510,7 @@ if(!$this->acc_data_loaded){
                 if(!$this->acc_data_loaded){
                     $this->load_acc_data();
                 }
-                if($this->get('Product Total Acc Quantity Ordered') >0 or $this->data['Product Web Configuration'] == 'Online Force Out of Stock'   or $this->data['Product Status']!=='Discontinuing'  ){
+                if($this->data['Product Total Acc Quantity Ordered'] >0 or $this->data['Product Web Configuration'] == 'Online Force Out of Stock'   or $this->data['Product Status']!=='Discontinuing'  ){
                     return 'out_of_stock';
                 } else {
                     return 'launching_soon';
