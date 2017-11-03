@@ -446,7 +446,7 @@ class Public_Product {
 
 
 
-               if($this->get('Product Total Acc Quantity Ordered') >0 or $this->data['Product Web Configuration'] == 'Online Force Out of Stock'   or $this->data['Product Status']!=='Discontinuing'  ){
+               if($this->get('Product Total Acc Quantity Ordered') >0 or $this->data['Product Web Configuration'] == 'Online Force Out of Stock'   or $this->data['Product Status']=='Discontinuing'  ){
 
 
                     if ($this->data['Product Next Supplier Shipment'] != '') {
