@@ -7555,6 +7555,8 @@ class Page extends DB_Table {
 
                 );
 
+                print "$sql\n";
+
                 $this->db->exec($sql);
 
 
