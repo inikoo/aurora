@@ -55,17 +55,17 @@ switch ($tipo) {
 
         break;
 
-    case 'update_favorite':
+    case 'update_favourite':
         $data = prepare_values(
             $_REQUEST, array(
                          'pid'          => array('type' => 'key'),
                          'customer_key' => array('type' => 'key'),
-                         'favorite_key' => array('type' => 'numeric'),
+                         'favourite_key' => array('type' => 'numeric'),
 
                      )
         );
 
-        update_favorite($data, $customer, $website, $editor, $db);
+        update_favourite($data, $customer, $website, $editor, $db);
 
 
         break;
@@ -476,19 +476,19 @@ function update_special_instructions($db, $data, $order, $editor) {
 
 
 
-function update_favorite($data, $customer, $website, $editor, $db) {
+function update_favourite($data, $customer, $website, $editor, $db) {
 
 
     $customer->editor = $editor;
 
-    if ($data['favorite_key']) {
+    if ($data['favourite_key']) {
 
-        $sql=sprintf('delete from `Customer Favourite Product Fact` where `Customer Favourite Product Key`=%d ',$data['favorite_key'] );
+        $sql=sprintf('delete from `Customer Favourite Product Fact` where `Customer Favourite Product Key`=%d ',$data['favourite_key'] );
 
 
         $db->exec($sql);
 
-        $favorite_key=0;
+        $favourite_key=0;
         $pid=$data['pid'];
 
     }else {
@@ -509,12 +509,12 @@ function update_favorite($data, $customer, $website, $editor, $db) {
        // print $sql;
         $db->exec($sql);
 
-        $favorite_key=$db->lastInsertId();
+        $favourite_key=$db->lastInsertId();
         $pid=$product->id;
 
     }
 
-    $response= array('state'=>200,'favorite_key'=>$favorite_key,'pid'=>$pid);
+    $response= array('state'=>200,'favourite_key'=>$favourite_key,'pid'=>$pid);
     echo json_encode($response);
 
 

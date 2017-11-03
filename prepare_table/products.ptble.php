@@ -99,11 +99,11 @@ switch ($parameters['parent']) {
     case('customer_favourites'):
 
         $table
-            = "`Product Dimension` P left join `Product Data` PD on (PD.`Product ID`=P.`Product ID`)  left join `Product DC Data` PDCD on (PDCD.`Product ID`=P.`Product ID`) left join `Store Dimension` S on (`Product Store Key`=`Store Key`) left join `Customer Favorite Product Bridge` F on (F.`Product ID`=P.`Product ID`)";
+            = "`Product Dimension` P left join `Product Data` PD on (PD.`Product ID`=P.`Product ID`)  left join `Product DC Data` PDCD on (PDCD.`Product ID`=P.`Product ID`) left join `Store Dimension` S on (`Product Store Key`=`Store Key`) left join `Customer Favourite Product Fact` F on (F.`Customer Favourite Product Product ID`=P.`Product ID`)";
 
 
         $where .= sprintf(
-            ' where P.`Product Type`="Product" and F.`Customer Key`=%d', $parameters['parent_key']
+            ' where P.`Product Type`="Product" and F.`Customer Favourite Product Customer Key`=%d', $parameters['parent_key']
         );
         break;
 

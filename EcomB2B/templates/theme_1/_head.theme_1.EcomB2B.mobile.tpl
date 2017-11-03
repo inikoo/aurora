@@ -50,7 +50,7 @@
     <script src="/theme_1/sky_forms/js/jquery.validate.min.js"></script>
     <script src="/theme_1/sky_forms/js/additional-methods.min.js"></script>
 
-    <script src="/js/aurora.js"></script>
+    <script src="/js/aurora.js?20171101"></script>
     <script type="text/javascript" src="/js/validation.js"></script>
 
     <script src="/js/ordering.touch.js"></script>

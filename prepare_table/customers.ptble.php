@@ -139,10 +139,10 @@ elseif ($parameters['parent'] == 'list') {
 
 } elseif ($parameters['parent'] == 'favourites') {
 
-    $table = '`Customer Favorite Product Bridge` F  left join `Customer Dimension` C   on (C.`Customer Key`=F.`Customer Key`)  ';
+    $table =' `Customer Favourite Product Fact` F  left join `Customer Dimension` C   on (C.`Customer Key`=F.`Customer Favourite Product Customer Key`)  ';
 
 
-    $where .= sprintf(' and  F.`Product ID`=%d ', $parameters['parent_key']);
+    $where .= sprintf(' and  F.`Customer Favourite Product Product ID`=%d ', $parameters['parent_key']);
 
    // if (in_array($parameters['parent_key'], $user->websites)) {
    //     $where .= sprintf(' and  `Site Key`=%d ', $parameters['parent_key']);
@@ -150,7 +150,7 @@ elseif ($parameters['parent'] == 'list') {
    //     $where .= ' and false';
    // }
 
-    $group_by = 'group by F.`Customer Key`';
+    $group_by = 'group by F.`Customer Favourite Product Customer Key`';
 
     $fields
         = ' *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds`';

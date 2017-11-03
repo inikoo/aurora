@@ -445,7 +445,7 @@ if ($user->get('User Type') == 'Agent') {
     $nav_menu[] = array(
         '<i class="fa fa-ship fa-fw"></i>',
         _('Deliveries'),
-        'deliveries',
+        'agent_deliveries',
         'agent_client_deliveries',
         'module',
         ''

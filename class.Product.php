@@ -1217,7 +1217,7 @@ class Product extends Asset {
 
 
         $sql = sprintf(
-            'SELECT count(DISTINCT `Customer Key`)  customers FROM `Customer Favorite Product Bridge`  WHERE `Product ID`=%d', $this->id
+            'SELECT count(DISTINCT `Customer Favourite Product Customer Key`)  customers FROM `Customer Favourite Product Fact`  WHERE `Customer Favourite Product Product ID`=%d', $this->id
         );
 
         if ($result = $this->db->query($sql)) {

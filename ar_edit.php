@@ -838,6 +838,8 @@ function object_operation($account, $db, $user, $editor, $data, $smarty) {
 function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 
+
+
     $parent         = get_object($data['parent'], $data['parent_key']);
     $parent->editor = $editor;
 
@@ -875,6 +877,11 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             break;
         case 'Website':
             include_once 'class.Website.php';
+
+
+
+            //TODO clear this after migration
+            exit('Cant create website ony after migration');
 
             $data['fields_data']['user'] = $user;
 

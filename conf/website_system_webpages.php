@@ -42,7 +42,7 @@ function website_system_webpages_config($website_type) {
 
                         $blocks['iframe'],
                         $blocks['six_pack'],
-                        $blocks['image'],
+                        $blocks['images'],
                         $blocks['counter'],
                         $blocks['three_pack'],
 
@@ -72,7 +72,7 @@ function website_system_webpages_config($website_type) {
                         $blocks['button'],
 
                         $blocks['six_pack'],
-                        $blocks['image'],
+                        $blocks['images'],
                         $blocks['counter'],
                         $blocks['three_pack'],
 
@@ -96,7 +96,7 @@ function website_system_webpages_config($website_type) {
                     'blocks' => array(
                         $blocks['iframe'],
                         $blocks['six_pack'],
-                        $blocks['image'],
+                        $blocks['images'],
                         $blocks['counter'],
                         $blocks['three_pack'],
 
@@ -139,6 +139,29 @@ function website_system_webpages_config($website_type) {
             )
 
 
+        ),
+
+
+        'favourites.sys' => array(
+            'Webpage Scope'             => 'Favourites',
+            'Webpage Scope Metadata'    => '',
+            'Webpage Template Filename' => 'Favourites',
+            'Webpage Type'              => 'Portfolio',
+            'Webpage Code'              => 'favourites.sys',
+            'Webpage Browser Title'     => _('Favourites'),
+            'Webpage Name'              => _('Favourites'),
+            'Webpage Meta Description'  => '',
+            'Webpage Scope Metadata'    => '',
+            'Page Store Content Data'   => json_encode(
+                array(
+                    '_title'          => _('Favourites'),
+                    '_text' => _('Here you can see your favourites'),
+                     '_text_empty' => _('You still have no favourites'),
+
+
+
+                )
+            )
         ),
 
 

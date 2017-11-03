@@ -213,12 +213,12 @@ class Public_Product {
             case 'Favourite Key':
 
                 $sql = sprintf(
-                    "SELECT `Customer Favorite Product Key`  FROM  `Customer Favorite Product Bridge` WHERE `Customer Key`=%d AND `Product ID`=%d ", $arg1, $this->id
+                    "SELECT `Customer Favourite Product Key`  FROM  `Customer Favourite Product Fact` WHERE `Customer Favourite Product Customer Key`=%d AND `Customer Favourite Product Product ID`=%d ", $arg1, $this->id
                 );
 
                 if ($result = $this->db->query($sql)) {
                     if ($row = $result->fetch()) {
-                        $favourite_key = $row['Customer Favorite Product Key'];
+                        $favourite_key = $row['Customer Favourite Product Key'];
                     } else {
                         $favourite_key = 0;
 

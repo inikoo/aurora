@@ -290,14 +290,14 @@
 
 
 
-    .product_footer.favorite{
+    .product_footer.favourite{
         padding:6px 0px 2px 0px;width:32px;text-align:center;
 
         background-color: inherit;
         color: darkgray;border-top:1px solid #ccc
     }
 
-    .product_footer.favorite.marked{
+    .product_footer.favourite.marked{
 
         color: deeppink;
     }

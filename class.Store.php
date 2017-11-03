@@ -3182,6 +3182,12 @@ class Store extends DB_Table {
         $data['Website From'] = gmdate('Y-m-d H:i:s');
 
 
+        $data['Website Primary Color']='#b22222';
+        $data['Website Secondary Color']='#ffa500';
+        $data['Website Accent Color']='#ff6600';
+        $data['Website Text Background']='#333';
+
+
         switch ($this->get('Store Type')) {
 
             case 'B2B':

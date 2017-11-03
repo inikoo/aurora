@@ -811,18 +811,19 @@ $elements_options = array(
         'type' => array(
             'label' => _('Transaction type'),
             'items' => array(
+                'Audit'        => array(
+                    'label'    => _('Audits'),
+                    'selected' => false
+                ),
                 'Move'         => array(
                     'label'    => _('Movements'),
-                    'selected' => true
+                    'selected' => false
                 ),
                 'NoDispatched' => array(
                     'label'    => _('No Dispatched'),
                     'selected' => true
                 ),
-                'Audit'        => array(
-                    'label'    => _('Audits'),
-                    'selected' => true
-                ),
+
                 'In'           => array(
                     'label'    => _('In'),
                     'selected' => true
