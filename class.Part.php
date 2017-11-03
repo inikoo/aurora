@@ -1523,6 +1523,12 @@ class Part extends Asset {
         $this->activate();
         $this->discontinue_trigger();
 
+        // todo find a way do it more efficient in aw
+        global $account;
+        if($account->get('Code')=='AWEU'){
+            $this->update_stock_run();
+        }
+
 
         include_once 'utils/new_fork.php';
         global $account;
