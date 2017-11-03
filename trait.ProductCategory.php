@@ -1302,7 +1302,7 @@ trait ProductCategory {
                         $image = new Image($product->get('Product Main Image Key'));
                         $image_375x250='';
                         if($image->id) {
-                            $_image_filename = uniqid('tmp_ftc_image_');
+                            $_image_filename = uniqid('tmp_ftc_image_a_');
 
 
 
