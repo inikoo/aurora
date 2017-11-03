@@ -442,7 +442,7 @@ class Public_Product {
             case 'Out of Stock Label':
 
                 if ($this->get('Product Total Acc Quantity Ordered') ==0 and  $this->data['Product Web Configuration'] != 'Online Force Out of Stock' and $this->data['Product Status']!='Discontinuing') {
-                    return _('Launching soon');
+                    return _('Launching soon').'.';
 
 
 
