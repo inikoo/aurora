@@ -233,7 +233,7 @@ trait ImageSubject {
 
 
             $this->error = true;
-            $this->msg   = "Can't create/found image, ".$image->msg;
+            $this->msg   = "Can't create/found image (b), ".$image->msg;
 
             return false;
         }
@@ -367,7 +367,7 @@ trait ImageSubject {
             return $image;
         } else {
             $this->error = true;
-            $this->msg   = "Can't create/found image, ".$image->msg;
+            $this->msg   = "Can't create/found image (a), ".$image->msg;
 
             return false;
         }
