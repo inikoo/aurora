@@ -10,8 +10,15 @@
 *}
 
 
+{if $data.src=='' or ($data.src=='#map' and  $store->get('Store Google Map URL')=='' )}
+
+    <div style="height: 20px"></div>
+
+{else}
 
 <div id="block_{$key}" block="{$data.type}" class="{$data.type} _block  " style="Width:100%;" >
+
+
 
     <div class="one_full">
         <iframe     class="google-map2"  _src="{$data.src}" src="{if $data.src=='#map'}{$store->get('Store Google Map URL')}{else}{$data.src}{/if}" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" allowfullscreen></iframe>
@@ -21,3 +28,5 @@
     <div class="clearfix marb6"></div>
 
 </div>
+
+{/if}
