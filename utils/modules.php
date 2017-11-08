@@ -688,6 +688,51 @@ $modules = array(
                 )
 
             ),
+
+
+            'refund'        => array(
+                'type' => 'object',
+                'tabs' => array(
+
+
+                    'refund.items'          => array(
+                        'label' => _(
+                            'Items'
+                        ),
+                        'icon'  => 'bars'
+                    ),
+                    'refund.details'        => array(
+                        'label' => _(
+                            'Data'
+                        ),
+                        'icon'  => 'database'
+                    ),
+                    'refund.history'        => array(
+                        'label' => _(
+                            'History'
+                        ),
+                        'icon'  => 'road'
+                    )
+                )
+
+            ),
+            'refund.new'        => array(
+                'type' => 'object',
+                'tabs' => array(
+
+
+                    'refund.new.items'          => array(
+                        'label' => _(
+                            'Items'
+                        ),
+                        'icon'  => 'bars'
+                    )
+
+
+                )
+
+            ),
+
             'payment'        => array(
                 'type' => 'object',
                 'tabs' => array(
@@ -6741,6 +6786,10 @@ $modules = array(
                         'label' => _('Items'),
                         'icon'  => 'bars'
                     ),
+                    'agent_delivery.cartons'         => array(
+                        'label' => _('Boxes'),
+                        'icon'  => 'dropbox'
+                    ),
                     'agent_delivery.details'       => array(
                         'label' => _('Data'),
                         'icon'  => 'database'
@@ -6748,7 +6797,8 @@ $modules = array(
 
 
                     'agent_delivery.history' => array(
-                        'label' => _('History/Notes'),
+                        'label'=>'',
+                        'title' => _('History/Notes'),
                         'icon'  => 'road',
                         'class' => 'right icon_only'
                     ),

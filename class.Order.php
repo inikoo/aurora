@@ -149,10 +149,11 @@ class Order extends DB_Table {
         $this->update_totals();
     }
 
-    function create_refund($data = false) {
+    function create_refund($transactions) {
 
+        $date=gmdate('Y-m-d H:i:s');
 
-        $store = new Store($this->data['Order Store Key']);
+        $store = get_object( 'Store',($this->data['Order Store Key']));
 
 
         $invoice_public_id = '';
@@ -178,8 +179,11 @@ class Order extends DB_Table {
                         $this->data['Order Store Key']
                     );
                     $this->db->exec($sql);
+
+
+
                     $invoice_public_id = sprintf(
-                        $store->data['Store Invoice Public ID Format'], mysql_insert_id()
+                        $store->data['Store Invoice Public ID Format'],$this->db->lastInsertId()
                     );
 
                 } elseif ($store->data['Store Next Invoice Public ID Method'] == 'Order ID') {
@@ -188,9 +192,8 @@ class Order extends DB_Table {
                         "UPDATE `Store Dimension` SET `Store Order Last Order ID` = LAST_INSERT_ID(`Store Order Last Order ID` + 1) WHERE `Store Key`=%d", $this->data['Order Store Key']
                     );
                     $this->db->exec($sql);
-                    $invoice_public_id = mysql_insert_id();
                     $invoice_public_id = sprintf(
-                        $store->data['Store Order Public ID Format'], mysql_insert_id()
+                        $store->data['Store Order Public ID Format'], $this->db->lastInsertId()
                     );
 
 
@@ -200,7 +203,7 @@ class Order extends DB_Table {
                         "UPDATE `Account Dimension` SET `Account Invoice Last Invoice Public ID` = LAST_INSERT_ID(`Account Invoice Last Invoice Public ID` + 1) WHERE `Account Key`=1"
                     );
                     $this->db->exec($sql);
-                    $public_id = mysql_insert_id();
+                    $public_id = $this->db->lastInsertId();
                     include_once 'class.Account.php';
                     $account           = new Account();
                     $invoice_public_id = sprintf(
@@ -221,7 +224,7 @@ class Order extends DB_Table {
             );
             $this->db->exec($sql);
             $invoice_public_id = sprintf(
-                $account->data['Account Refund Public ID Format'], mysql_insert_id()
+                $account->data['Account Refund Public ID Format'], $this->db->lastInsertId()
             );
 
 
@@ -230,9 +233,9 @@ class Order extends DB_Table {
             $sql = sprintf(
                 "UPDATE `Store Dimension` SET `Store Invoice Last Refund Public ID` = LAST_INSERT_ID(`Store Invoice Last Refund Public ID` + 1) WHERE `Store Key`=%d", $this->data['Order Store Key']
             );
-            mysql_query($sql);
+            $this->db->exec($sql);
             $invoice_public_id = sprintf(
-                $store->data['Store Refund Public ID Format'], mysql_insert_id()
+                $store->data['Store Refund Public ID Format'], $this->db->lastInsertId()
             );
 
 
@@ -247,7 +250,7 @@ class Order extends DB_Table {
                 );
                 $this->db->exec($sql);
                 $invoice_public_id = sprintf(
-                    $store->data['Store Invoice Public ID Format'], mysql_insert_id()
+                    $store->data['Store Invoice Public ID Format'], $this->db->lastInsertId()
                 );
 
             } elseif ($store->data['Store Next Invoice Public ID Method'] == 'Order ID') {
@@ -256,9 +259,8 @@ class Order extends DB_Table {
                     "UPDATE `Store Dimension` SET `Store Order Last Order ID` = LAST_INSERT_ID(`Store Order Last Order ID` + 1) WHERE `Store Key`=%d", $this->data['Order Store Key']
                 );
                 $this->db->exec($sql);
-                $invoice_public_id = mysql_insert_id();
                 $invoice_public_id = sprintf(
-                    $store->data['Store Order Public ID Format'], mysql_insert_id()
+                    $store->data['Store Order Public ID Format'], $this->db->lastInsertId()
                 );
 
 
@@ -268,7 +270,7 @@ class Order extends DB_Table {
                     "UPDATE `Account Dimension` SET `Account Invoice Last Invoice Public ID` = LAST_INSERT_ID(`Account Invoice Last Invoice Public ID` + 1) WHERE `Account Key`=1"
                 );
                 $this->db->exec($sql);
-                $public_id = mysql_insert_id();
+                $public_id = $this->db->lastInsertId();
                 include_once 'class.Account.php';
                 $account           = new Account();
                 $invoice_public_id = sprintf(
@@ -285,34 +287,75 @@ class Order extends DB_Table {
             );
         }
 
+
+
+
+
+
         $refund_data = array(
-            'Invoice Customer Key' => $this->data['Order Customer Key'],
-            'Invoice Store Key'    => $this->data['Order Store Key'],
-            'Order Key'            => $this->id
+            'Invoice Date'                          => $date,
+            'Invoice Type'                          => 'Refund',
+            'Invoice Public ID'                     => $invoice_public_id,
+            'Invoice File As'                       =>$invoice_public_id,
+            'Invoice Order Key'                     => $this->id,
+            'Invoice Store Key'                     => $this->data['Order Store Key'],
+            'Invoice Customer Key'                  => $this->data['Order Customer Key'],
+            'Invoice Tax Code'                      => $this->data['Order Tax Code'],
+            'Invoice Tax Shipping Code'             => $this->data['Order Tax Code'],
+            'Invoice Tax Charges Code'              => $this->data['Order Tax Code'],
+            'Invoice Metadata'                      => $this->data['Order Original Metadata'],
+            'Invoice Tax Number'                    => $this->data['Order Tax Number'],
+            'Invoice Tax Number Valid'              => $this->data['Order Tax Number Valid'],
+            'Invoice Tax Number Validation Date'    => $this->data['Order Tax Number Validation Date'],
+            'Invoice Tax Number Associated Name'    => $this->data['Order Tax Number Associated Name'],
+            'Invoice Tax Number Associated Address' => $this->data['Order Tax Number Associated Address'],
+            'Invoice Net Amount Off'                => 0,
+            'Invoice Customer Contact Name'         => $this->data['Order Customer Contact Name'],
+            'Invoice Customer Name'                 => $this->data['Order Customer Name'],
+
+            //   'Invoice Telephone'                    => $this->data['Order Telephone'],
+            //     'Invoice Email'                        => $this->data['Order Email'],
+            'Invoice Address Recipient'             => $this->data['Order Invoice Address Recipient'],
+            'Invoice Address Organization'          => $this->data['Order Invoice Address Organization'],
+            'Invoice Address Line 1'                => $this->data['Order Invoice Address Line 1'],
+            'Invoice Address Line 2'                => $this->data['Order Invoice Address Line 2'],
+            'Invoice Address Sorting Code'          => $this->data['Order Invoice Address Sorting Code'],
+            'Invoice Address Postal Code'           => $this->data['Order Invoice Address Postal Code'],
+            'Invoice Address Dependent Locality'    => $this->data['Order Invoice Address Dependent Locality'],
+            'Invoice Address Locality'              => $this->data['Order Invoice Address Locality'],
+            'Invoice Address Administrative Area'   => $this->data['Order Invoice Address Administrative Area'],
+            'Invoice Address Country 2 Alpha Code'  => $this->data['Order Invoice Address Country 2 Alpha Code'],
+            'Invoice Address Checksum'              => $this->data['Order Invoice Address Checksum'],
+            'Invoice Address Formatted'             => $this->data['Order Invoice Address Formatted'],
+            'Invoice Address Postal Label'          => $this->data['Order Invoice Address Postal Label'],
+            'Invoice Registration Number'           => $this->data['Order Registration Number'],
+
+
+            'Invoice Tax Liability Date' => $date,
+
+            'Invoice Main Source Type' => '',
+
+            'Invoice Items Gross Amount'    => 0,
+            'Invoice Items Discount Amount' =>  0,
+
+            'Invoice Items Net Amount'          => 0,
+            'Invoice Items Out of Stock Amount' =>  0,
+            'Invoice Shipping Net Amount'       =>  0,
+            'Invoice Charges Net Amount'        => 0,
+            'Invoice Insurance Net Amount'      =>  0,
+            'Invoice Total Net Amount'          =>  0,
+            'Invoice Total Tax Amount'          =>  0,
+            'Invoice Payments Amount'           =>  0,
+            'Invoice To Pay Amount'             =>  0,
+            'Invoice Total Amount'              =>  0,
+            'Invoice Currency'                  => $this->data['Order Currency'],
+
 
         );
 
 
-        if ($invoice_public_id != '') {
-            $refund_data['Invoice Public ID'] = $invoice_public_id;
-        }
 
-
-        if (!$data) {
-            $data = array();
-        }
-
-        if (array_key_exists('Invoice Metadata', $data)) {
-            $refund_data['Invoice Metadata'] = $data['Invoice Metadata'];
-        }
-        if (array_key_exists('Invoice Date', $data)) {
-            $refund_data['Invoice Date'] = $data['Invoice Date'];
-        }
-        if (array_key_exists('Invoice Tax Code', $data)) {
-            $refund_data['Invoice Tax Code'] = $data['Invoice Tax Code'];
-        }
-
-        $refund = new Invoice('create refund', $refund_data);
+        $refund = new Invoice('create refund', $refund_data,$transactions);
 
 
         return $refund;
@@ -321,8 +364,8 @@ class Order extends DB_Table {
     function get_invoices_objects() {
         $invoices     = array();
         $invoices_ids = $this->get_invoices_ids();
-        foreach ($invoices_ids as $order_id) {
-            $invoices[$order_id] = new Invoice($order_id);
+        foreach ($invoices_ids as $invoice_key) {
+            $invoices[$invoice_key] = get_object( 'Invoice',$invoice_key);
         }
 
         return $invoices;
@@ -333,17 +376,19 @@ class Order extends DB_Table {
         $invoices = array();
 
         $sql = sprintf(
-            "SELECT `Invoice Key` FROM `Order Invoice Bridge` WHERE `Order Key`=%d ", $this->id
+            "SELECT `Invoice Key` FROM `Invoice Dimension` WHERE `Invoice Order Key`=%d ", $this->id
         );
 
-        //print "$sql\n";
-        $res = mysql_query($sql);
-        while ($row = mysql_fetch_array($res, MYSQL_ASSOC)) {
-            if ($row['Invoice Key']) {
-                $invoices[$row['Invoice Key']] = $row['Invoice Key'];
-            }
-
+        if ($result=$this->db->query($sql)) {
+        		foreach ($result as $row) {
+                    $invoices[$row['Invoice Key']] = $row['Invoice Key'];
+        		}
+        }else {
+        		print_r($error_info=$this->db->errorInfo());
+        		print "$sql\n";
+        		exit;
         }
+
 
 
         return $invoices;
@@ -354,23 +399,31 @@ class Order extends DB_Table {
         $sql = sprintf(
             "SELECT `Invoice Public ID` FROM `Invoice Dimension` WHERE `Invoice Store Key`=%d AND `Invoice Public ID`=%s ", $this->data['Order Store Key'], prepare_mysql($refund_id.$suffix_counter)
         );
-        $res = mysql_query($sql);
-        if ($row = mysql_fetch_assoc($res)) {
-            if ($suffix_counter > 100) {
+
+
+        if ($result=$this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                if ($suffix_counter > 100) {
+                    return $refund_id.$suffix_counter;
+                }
+
+                if (!$suffix_counter) {
+                    $suffix_counter = 2;
+                } else {
+                    $suffix_counter++;
+                }
+
+                return $this->get_refund_public_id($refund_id, $suffix_counter);
+        	}else{
                 return $refund_id.$suffix_counter;
             }
-
-            if (!$suffix_counter) {
-                $suffix_counter = 2;
-            } else {
-                $suffix_counter++;
-            }
-
-            return $this->get_refund_public_id($refund_id, $suffix_counter);
-
-        } else {
-            return $refund_id.$suffix_counter;
+        }else {
+        	print_r($error_info=$this->db->errorInfo());
+        	print "$sql\n";
+        	exit;
         }
+
+
 
     }
 

@@ -41,19 +41,19 @@ function new_fork($type, $data, $account_code, $db) {
 
 
 
-    $fork_metadata = base64_encode(
-        AESEncryptCtr(
-            json_encode(
-                array(
-                    'code'     => addslashes($account_code),
-                    'token'    => $token,
-                    'fork_key' => $fork_key,
-                    'salt'     => $salt
 
-                )
-            ), $fork_encrypt_key, 256
+
+    $fork_metadata=json_encode(
+        array(
+            'code'     => addslashes($account_code),
+            'token'    => $token,
+            'fork_key' => $fork_key,
+            'salt'     => $salt
+
         )
     );
+
+
     $client        = new GearmanClient();
 
     $client->addServer('127.0.0.1');
@@ -65,54 +65,6 @@ function new_fork($type, $data, $account_code, $db) {
     );
 
 }
-
-
-function old_new_fork($type,$data,$account_code) {
-    include_once  'utils/aes.php';
-
-    $fork_encrypt_key=md5('huls0fjhslsshskslgjbtqcwijnbxhl2391');
-
-    $token=substr(str_shuffle(md5(time()).rand().str_shuffle('qwertyuiopasdfghjjklmnbvcxzQWERTYUIOPKJHGFDSAZXCVBNM1234567890') ),0,64);
-
-
-    $salt=md5(rand());
-
-
-    $fork_metadata = base64_encode(
-        AESEncryptCtr(
-            json_encode(
-                array(
-                    'code'  => addslashes($account_code),
-                    'data'  => $data,
-                    'token' => $token,
-                    'salt'  => $salt
-                )
-            ), $fork_encrypt_key, 256
-        )
-    );
-
-
-    $caca=array(
-        array(
-            'code'  => addslashes($account_code),
-            'data'  => $data,
-            'token' => $token,
-            'salt'  => $salt
-        )
-
-    );
-
-   // print_r($caca);
-
-    $client= new GearmanClient();
-
-    $client->addServer('127.0.0.1');
-    $msg=$client->doBackground($type, json_encode($caca));
-
-    return $msg;
-
-}
-
 
 
 function new_housekeeping_fork($type, $data, $account_code) {

@@ -765,7 +765,6 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
         return '';
     }
 
-
     switch ($showcase) {
         case 'material':
             include_once 'showcase/material.show.php';
@@ -1432,6 +1431,18 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     break;
                 case ('email_campaign'):
                     return get_email_campaign_navigation($data, $smarty, $user, $db, $account);
+                    break;
+                case ('refund.new'):
+                    return get_refund_new_navigation($data, $smarty, $user, $db, $account);
+                    break;
+                case ('replacement.new'):
+                    return get_replacement_new_navigation($data, $smarty, $user, $db, $account);
+                    break;
+                case ('refund'):
+                    return get_refund_navigation($data, $smarty, $user, $db, $account);
+                    break;
+                case ('replacement'):
+                    return get_replacement_navigation($data, $smarty, $user, $db, $account);
                     break;
                 default:
                     return 'View not found';
@@ -3023,7 +3034,11 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 
             }
-            elseif ($state['section'] == 'order') {
+
+
+
+
+            elseif ($state['section'] == 'refund.new') {
 
 
 
@@ -4018,56 +4033,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 
             break;
-        /*
 
-        case 'invoices_server':
-
-            if ($state['section'] == 'categories') {
-                $branch[] = array(
-                    'label'     => _("Invoice's categories").' ('._(
-                            'All stores'
-                        ).')',
-                    'icon'      => '',
-                    'reference' => ''
-                );
-
-            }
-            if ($state['section'] == 'category') {
-                $branch[] = array(
-                    'label'     => _("Invoice's categories").' ('._(
-                            'All stores'
-                        ).')',
-                    'icon'      => '',
-                    'reference' => ''
-                );
-                $branch[] = array(
-                    'label'     => '<span class="Category_Code">'.$state['_object']->get('Code').'</span>',
-                    'icon'      => 'sitemap',
-                    'reference' => ''
-                );
-
-            } else {
-
-
-                $branch[] = array(
-                    'label'     => '',
-                    'icon'      => 'bars',
-                    'reference' => 'receipts'
-                );
-
-                if ($user->get_number_stores() > 1) {
-                    $branch[] = array(
-                        'label'     => _('Invoices').' ('._(
-                                'All stores'
-                            ).')',
-                        'icon'      => '',
-                        'reference' => ''
-                    );
-                }
-            }
-            break;
-
-        */
         case 'delivery_notes_server':
             $branch[] = array(
                 'label'     => '',
@@ -4176,6 +4142,67 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     break;
 
                 case 'order':
+
+                    if ($state['parent'] == 'customer') {
+
+                        $customer = new Customer($state['parent_key']);
+                        if ($customer->id) {
+                            if ($user->get_number_stores() > 1) {
+
+
+                                $branch[] = array(
+                                    'label'     => _(
+                                        'Customers (All stores)'
+                                    ),
+                                    'icon'      => 'bars',
+                                    'reference' => 'customers/all'
+                                );
+
+                            }
+
+                            $store = new Store(
+                                $customer->data['Customer Store Key']
+                            );
+
+
+                            $branch[] = array(
+                                'label'     => _(
+                                        'Customers'
+                                    ).' '.$store->data['Store Code'],
+                                'icon'      => 'users',
+                                'reference' => 'customers/'.$store->id
+                            );
+                            $branch[] = array(
+                                'label'     => _(
+                                        'Customer'
+                                    ).' '.$customer->get_formatted_id(),
+                                'icon'      => 'user',
+                                'reference' => 'customer/'.$customer->id
+                            );
+                        }
+
+
+                    } else {
+
+
+
+                        $branch[] = array(
+                            'label'     => _('Orders').' '.$state['store']->data['Store Code'],
+                            'icon'      => '',
+                            'reference' => 'orders/'.$state['store']->id
+                        );
+
+
+                    }
+                    $branch[] = array(
+                        'label'     => $state['_object']->get('Order Public ID'),
+                        'icon'      => 'shopping-cart',
+                        'reference' => ''
+                    );
+
+                    break;
+
+                case 'refund.new':
 
                     if ($state['parent'] == 'customer') {
 

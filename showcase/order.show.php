@@ -12,23 +12,21 @@
 
 function get_order_showcase($data, $smarty, $user, $db) {
 
+
+
+
+
     if (!$data['_object']->id) {
         return "";
     }
 
 
     $order = $data['_object'];
+    $store=get_object('store',$order->get('Store Key'));
 
     $smarty->assign('order',$order);
-
-    $smarty->assign('store', get_object('store',$order->get('Store Key')));
+    $smarty->assign('store', $store);
     $smarty->assign('customer', get_object('customer',$order->get('Customer Key')));
-
-
-    //$order->update_tax();
-    //$order->update_totals();
-
-
 
 
 
@@ -38,7 +36,9 @@ function get_order_showcase($data, $smarty, $user, $db) {
                 array(
                     'object' => $data['object'],
                     'key'    => $data['key'],
-
+                    'symbol'=>currency_symbol($order->get('Order Currency')),
+                    'tax_rate'=>$order->get('Order Tax Rate'),
+                    'available_to_refund'=>$order->get('Order Total Amount'),
                     'tab' => $data['tab']
                 )
             )
@@ -46,7 +46,20 @@ function get_order_showcase($data, $smarty, $user, $db) {
     );
 
 
-    return $smarty->fetch('showcase/order.tpl');
+
+    if($data['section']=='refund.new'){
+        $smarty->assign('zero_amount',money(0,$store->get('Store Currency Code')));
+
+
+
+
+        return $smarty->fetch('showcase/refund.new.tpl');
+
+    }else{
+        return $smarty->fetch('showcase/order.tpl');
+
+    }
+
 
 
 }

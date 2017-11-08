@@ -20,6 +20,10 @@ function get_upload_showcase($data, $smarty, $user, $db) {
     $smarty->assign('upload', $object);
 
 
+
+    //$upload_user=get_object('User',$this->get(''));
+
+
     if($object->get('Upload Type')=='EditObjects'){
         $title=sprintf(_('Editing %s in %s'),$object->get('Object'),$object->get('Parent'));
 
