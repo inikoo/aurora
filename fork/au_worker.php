@@ -130,11 +130,13 @@ function get_fork_data($job) {
 
     global $db, $account;
 
-    $fork_encrypt_key = md5('huls0fjhslsshskslgjbtqcwijnbxhl2391');
+   // $fork_encrypt_key = md5('huls0fjhslsshskslgjbtqcwijnbxhl2391');
     $fork_raw_data    = $job->workload();
-    $fork_metadata    = json_decode(
-        AESDecryptCtr(base64_decode($fork_raw_data), $fork_encrypt_key, 256), true
-    );
+    //$fork_metadata    = json_decode(
+     //   AESDecryptCtr(base64_decode($fork_raw_data), $fork_encrypt_key, 256), true
+    //);
+
+    $fork_metadata    = json_decode($fork_raw_data, true);
 
 
     $inikoo_account_code = $fork_metadata['code'];

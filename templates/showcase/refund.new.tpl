@@ -1,156 +1,17 @@
+{*
+<!--
+ About:
+ Author: Raul Perusquia <raul@inikoo.com>
+ Created: 5 November 2017 at 12:44:12 GMT+8, Sanur, Bali, Indonesia
+ Copyright (c) 2017, Inikoo
+
+ Version 3
+-->
+*}
+
 {assign deliveries $order->get_deliveries('objects')}
 {assign invoices $order->get_invoices('objects')}
 {assign payments $order->get_payments('objects','Completed')}
-
-<div class="timeline_horizontal with_time   {if $order->get('State Index')<0}hide{/if}  ">
-
-    <ul class="timeline">
-        <li id="submitted_node" class="li {if $order->get('State Index')>=30}complete{/if}">
-            <div class="label">
-                <span class="state ">{t}Submitted{/t}</span>
-            </div>
-            <div class="timestamp">
-                <span class="Order_Submitted_Date">&nbsp;{$order->get('Submitted by Customer Date')}</span> <span class="start_date">{$order->get('Created Date')}</span>
-            </div>
-            <div class="dot"></div>
-        </li>
-
-        <li id="in_warehouse_node" class="li {if $order->get('State Index')>=40}complete{/if} ">
-            <div class="label">
-                <span class="state" >&nbsp;{t}In warehouse{/t}&nbsp;<span></i></span></span>
-            </div>
-            <div class="timestamp">
-			<span class="Order_In_Warehouse" ">&nbsp;
-
-                    <span class="Order_Send_to_Warehouse_Date">&nbsp;{$order->get('Send to Warehouse Date')}</span>
-
-                &nbsp;</span>
-            </div>
-            <div class="dot"></div>
-        </li>
-
-        <li id="packed_done_node" class="li {if $order->get('State Index')>=80}complete{/if} ">
-            <div class="label">
-                <span class="state">{t}Packed & Sealed{/t}</span>
-            </div>
-            <div class="timestamp">
-                <span>&nbsp;<span class="Order_Packed_Done_Date">&nbsp;{$order->get('Packed Done Date')}</span></span>
-            </div>
-            <div class="dot"></div>
-        </li>
-
-        <li  id="approved_node"  class="li {if $order->get('State Index')>=90}complete{/if} ">
-            <div class="label">
-                <span class="state">{t}Invoiced{/t}</span>
-            </div>
-            <div class="timestamp">
-                <span>&nbsp;<span class="Order_Invoiced_Date">&nbsp;{$order->get('Invoiced Date')}</span></span>
-            </div>
-            <div class="dot"></div>
-        </li>
-
-        <li  id="dispatched_node"  class="li  {if $order->get('State Index')>=100}complete{/if}">
-            <div class="label">
-                <span class="state">{t}Dispatched{/t}</span>
-            </div>
-            <div class="timestamp">
-                <span>&nbsp;<span class=""></span>
-                    &nbsp;</span>
-            </div>
-            <div class="dot"></div>
-        </li>
-
-    </ul>
-
-    {foreach from=$deliveries item=dn name=delivery_notes}
-        <ul class="timelinex hide">
-
-            <li id="submitted_node" class="li {if $order->get('State Index')>=30}complete{/if}">
-                <div class="label">
-                    <span class="state ">{t}Submitted{/t}</span>
-                </div>
-                <div class="timestamp">
-                    <span class="Order_Submitted_Date">&nbsp;{$order->get('Submitted by Customer Date')}</span> <span class="start_date">{$order->get('Created Date')} </span>
-                </div>
-                <div class="dot"></div>
-            </li>
-
-            <li id="send_node" class="li  {if $dn->id}complete{/if} ">
-                <div class="label">
-                    <span class="state" style="position:relative;left:5px">&nbsp;{$dn->get('ID')}&nbsp;<span></i></span></span>
-                </div>
-                <div class="timestamp">
-			<span class="Deliveries_Public_IDs" style="position:relative;left:5px">&nbsp;
-
-                    <span class="">&nbsp;{$dn->get('Creation Date')}&nbsp;</span>
-
-                &nbsp;</span>
-                </div>
-                <div class="truck"></div>
-            </li>
-
-            <li id="warehouse_node" class="li  {if $dn->get('State Index')>=80}complete{/if}">
-                <div class="label">
-                    <span class="state ">&nbsp;{$dn->get('State')}&nbsp;<span></i></span></span>
-                </div>
-                <div class="timestamp">
-                <span class="Order_Inputted_Date">&nbsp;<span class="">{$dn->get('Picking and Packing Percentage or Date')}</span>
-                    &nbsp;</span>
-                </div>
-                <div class="dot"></div>
-            </li>
-
-            <li class="li {if $order->get('State Index')>=90}complete{/if}">
-                <div class="label">
-                    <span class="state">{t}Dispatch approved{/t}</span>
-                </div>
-                <div class="timestamp">
-                <span>&nbsp;<span class="{if $smarty.foreach.delivery_notes.index != 0}hide{/if}">{$dn->get('Dispatched Date')}</span>
-                    &nbsp;</span>
-                </div>
-                <div class="dot"></div>
-            </li>
-
-            <li class="li {if $order->get('State Index')==100}complete{/if}">
-                <div class="label">
-                    <span class="state">{t}Dispatched{/t}</span>
-                </div>
-                <div class="timestamp">
-                <span>&nbsp;<span class="{if $smarty.foreach.delivery_notes.index != 0}hide{/if}">{$dn->get('Dispatched Date')}</span>
-                    &nbsp;</span>
-                </div>
-                <div class="dot"></div>
-            </li>
-        </ul>
-    {/foreach}
-</div>
-
-
-<div class="timeline_horizontal  {if $order->get('State Index')>0}hide{/if}">
-    <ul class="timeline" id="timeline">
-        <li id="submitted_node" class="li complete">
-            <div class="label">
-                <span class="state ">{t}Submitted{/t}</span>
-            </div>
-            <div class="timestamp">
-                <span class="Purchase_Order_Submitted_Date">&nbsp;{$order->get('Submitted Date')}</span> <span class="start_date">{$order->get('Created Date')} </span>
-            </div>
-            <div class="dot"></div>
-        </li>
-
-        <li id="send_node" class="li  cancelled">
-            <div class="label">
-                <span class="state ">{t}Cancelled{/t} <span></i></span></span>
-            </div>
-            <div class="timestamp">
-                <span class="Cancelled_Date">{$order->get('Cancelled Date')} </span>
-            </div>
-            <div class="dot"></div>
-        </li>
-
-
-    </ul>
-</div>
 
 <div id="order" class="order" style="display: flex;" data-object="{$object_data}" order_key="{$order->id}">
     <div class="block" style=" align-items: stretch;flex: 1">
@@ -200,195 +61,7 @@
         </div>
         <div style="clear:both"></div>
     </div>
-    <div class="block " style="align-items: stretch;flex: 1;">
-        <div class="state" style="height:30px;margin-bottom:10px;position:relative;top:-5px">
-            <div id="back_operations">
 
-                <div id="cancel_operations" class="order_operation {if $order->get('State Index')<0 or  $order->get('State Index')>=100 }hide{/if}">
-                    <div class="square_button left" title="{t}Cancel{/t}">
-                        <i class="fa fa-minus-circle error " aria-hidden="true" onclick="toggle_order_operation_dialog('cancel')"></i>
-                        <table id="cancel_dialog" border="0" class="order_operation_dialog hide">
-                            <tr class="top">
-                                <td colspan="2">{t}Cancel order{/t}</td>
-                            </tr>
-                            <tr class="changed buttons">
-                                <td>
-                                    <i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('cancel')"></i>
-                                </td>
-                                <td class="aright">
-                                    <span data-data='{ "field": "Order State","value": "Cancelled","dialog_name":"cancel"}' id="cancel_save_buttons" class="error save button"
-                                          onclick="save_order_operation(this)">
-                                        <span class="label">{t}Cancel{/t}</span>
-                                        <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i>
-                                    </span>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-                <div id="undo_submit_operations" class="order_operation {if $order->get('State Index')!=30}hide{/if}">
-                    <div class="square_button left" title="{t}Send back to basket{/t}">
-												<span class="fa-stack" onclick="toggle_order_operation_dialog('undo_submit')">
-						<i class="fa fa-paper-plane-o discreet " aria-hidden="true"></i>
-						<i class="fa fa-ban fa-stack-1x discreet error"></i>
-						</span>
-
-
-                        <table id="undo_submit_dialog" border="0" class="order_operation_dialog hide">
-                            <tr class="top">
-                                <td class="label" colspan="2">{t}Send back to basket{/t}</td>
-                            </tr>
-                            <tr class="changed buttons">
-                                <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('undo_submit')"></i></td>
-                                <td class="aright"><span data-data='{  "field": "Order State","value": "InBasket","dialog_name":"undo_submit"}' id="undo_submit_save_buttons" class="valid save button"
-                                                         onclick="save_order_operation(this)"><span class="label">{t}Save{/t}</span> <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-                <div id="undo_send_operations" class="order_operation {if $order->get('Order State')!='Send'}hide{/if}">
-                    <div class="square_button left" xstyle="padding:0;margin:0;position:relative;top:-5px" title="{t}Unmark as send{/t}">
-						<span class="fa-stack" onclick="toggle_order_operation_dialog('undo_send')">
-						<i class="fa fa-plane discreet " aria-hidden="true"></i>
-						<i class="fa fa-ban fa-stack-1x very_discreet error"></i>
-						</span>
-                        <table id="undo_send_dialog" border="0" class="order_operation_dialog hide">
-                            <tr class="top">
-                                <td colspan="2" class="label">{t}Unmark as send{/t}</td>
-                            </tr>
-                            <tr class="buttons changed">
-                                <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('undo_send')"></i></td>
-                                <td class="aright"><span id="undo_send_save_buttons" class="valid save button" onclick="save_order_operation('undo_send','Submitted')"><span class="label">{t}Save{/t}</span> <i
-                                                class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <span style="float:left;padding-left:10px;padding-top:5px" class="Order_State"> {$order->get('State')} </span>
-            <div id="forward_operations">
-
-                <div id="create_refund_operations" class="order_operation {if {$order->get('State Index')}<100  }hide{/if}">
-                    <div  class="square_button right  " title="{t}Create refund{/t}">
-                        <i class="fa fa-file-text-o error " aria-hidden="true" onclick="toggle_order_operation_dialog('create_refund')"></i>
-                        <table id="create_refund_dialog" border="0" class="order_operation_dialog hide" style="color:#777" >
-                            <tr class="top">
-                                <td class="label" colspan="2">{t}Create refund{/t}</td>
-                            </tr>
-
-                            <tr class="changed buttons">
-                                <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('create_refund')"></i></td>
-                                <td class="aright"><span id="create_refund_save_buttons" class="valid save button"
-                                                         onclick="change_view('orders/{$order->get('Store Key')}/{$order->id}/refund/new')"><span class="label">{t}Next{/t}</span> <i class="fa fa-arrow-right fa-fw  " aria-hidden="true"></i></span></td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-
-
-                <div id="create_replacement_operations" class="order_operation {if {$order->get('State Index')}<100  }hide{/if}">
-                    <div  class="square_button right  " title="{t}Create replacement{/t}">
-                        <i class="fa fa-truck red " aria-hidden="true" onclick="toggle_order_operation_dialog('create_replacement')"></i>
-                        <table id="create_replacement_dialog" border="0" class="order_operation_dialog hide" style="color:#777" >
-                            <tr class="top">
-                                <td class="label" colspan="2">{t}Create replacement{/t}</td>
-                            </tr>
-
-                            <tr class="changed buttons">
-                                <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('create_replacement')"></i></td>
-                                <td class="aright"><span id="create_replacement_save_buttons" class="valid save button"
-                                                         onclick="change_view('orders/{$order->get('Store Key')}/{$order->id}/replacement/new')"><span class="label">{t}Next{/t}</span> <i class="fa fa-arrow-right fa-fw  " aria-hidden="true"></i></span></td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-
-                <div id="create_invoice_operations" class="order_operation {if {$order->get('State Index')}!=80  }hide{/if}">
-                    <div  class="square_button right  " title="{t}Create invoice{/t}">
-                        <i class="fa fa-file-text-o  " aria-hidden="true" onclick="toggle_order_operation_dialog('create_invoice')"></i>
-                        <table id="create_invoice_dialog" border="0" class="order_operation_dialog hide">
-                            <tr class="top">
-                                <td class="label" colspan="2">{t}Invoice order{/t}</td>
-                            </tr>
-                            <tr class="changed buttons">
-                                <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('create_invoice')"></i></td>
-                                <td class="aright"><span data-data='{  "field": "Order State","value": "Approved","dialog_name":"create_invoice"}' id="create_invoice_save_buttons" class="valid save button"
-                                                         onclick="save_order_operation(this)"><span class="label">{t}Save{/t}</span> <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-                
-                <div id="send_to_warehouse_operations" class="order_operation {if {$order->get('State Index')|intval}>30 or  {$order->get('State Index')|intval}<10   or $order->get('Order Number Items')==0   }hide{/if}">
-                    <div  class="square_button right  " title="{t}Send to warehouse{/t}">
-                        <i class="fa fa-map   " aria-hidden="true" onclick="toggle_order_operation_dialog('send_to_warehouse')"></i>
-                        <table id="send_to_warehouse_dialog" border="0" class="order_operation_dialog hide">
-                            <tr class="top">
-                                <td class="label" colspan="2">{t}Send to warehouse{/t}</td>
-                            </tr>
-                            <tr class="changed buttons">
-                                <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('send_to_warehouse')"></i></td>
-                                <td class="aright"><span data-data='{  "field": "Order State","value": "InWarehouse","dialog_name":"send_to_warehouse"}' id="send_to_warehouse_save_buttons" class="valid save button"
-                                                         onclick="save_order_operation(this)"><span class="label">{t}Save{/t}</span> <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-
-                <div id="submit_operations" class="order_operation {if $order->get('State Index')!=10   or  $order->get('Order Number Items')==0 }hide{/if}">
-                    <div  class="square_button right  " title="{t}Submit{/t}">
-                        <i class="fa fa-paper-plane-o   " aria-hidden="true" onclick="toggle_order_operation_dialog('submit')"></i>
-                        <table id="submit_dialog" border="0" class="order_operation_dialog hide">
-                            <tr class="top">
-                                <td class="label" colspan="2">{t}Submit order{/t}</td>
-                            </tr>
-                            <tr class="changed buttons">
-                                <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('submit')"></i></td>
-                                <td class="aright"><span data-data='{  "field": "Order State","value": "InProcess","dialog_name":"submit"}' id="submit_save_buttons" class="valid save button"
-                                                         onclick="save_order_operation(this)"><span class="label">{t}Save{/t}</span> <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-
-
-            </div>
-        </div>
-
-        <table border="0" class="info_block acenter">
-
-            <tr>
-
-                <td>
-                    <span style=""><i class="fa fa-cube fa-fw discreet" aria-hidden="true"></i> <span class="Order_Number_items">{$order->get('Number Items')}</span></span>
-                    <span style="padding-left:20px"><i class="fa fa-tag fa-fw  " aria-hidden="true"></i> <span class="Order_Number_Items_with_Deals">{$order->get('Number Items with Deals')}</span></span>
-                    <span class="error {if $order->get('Order Number Items Out of Stock')==0}hide{/if}" style="padding-left:20px"><i class="fa fa-cube fa-fw  " aria-hidden="true"></i> <span
-                                class="Order_Number_Items_with_Out_of_Stock">{$order->get('Number Items Out of Stock')}</span></span>
-                    <span class="error {if $order->get('Order Number Items Returned')==0}hide{/if}" style="padding-left:20px"><i class="fa fa-thumbs-o-down fa-fw   " aria-hidden="true"></i> <span
-                                class="Order_Number_Items_with_Returned">{$order->get('Number Items Returned')}</span></span>
-                </td>
-            </tr>
-
-            <table border="0" class="totals" style="position:relative;top:20px">
-
-
-                <tr class="subtotal first">
-                    <td class="label">{t}Discounts{/t}</td>
-                    <td class="aright Items_Discount_Amount">{$order->get('Items Discount Amount')}</td>
-                </tr>
-
-                <tr class="subtotal last">
-                    <td class="label"></td>
-                    <td class="aright Items_Discount_Percentage">{$order->get('Items Discount Percentage')}</td>
-                </tr>
-            </table>
-
-
-
-
-        </table>
-
-    </div>
     <div class="block " style="align-items: stretch;flex: 1 ">
 
         <div id="delivery_notes" class="delivery_notes {if $deliveries|@count == 0}hide{/if}" style="position:relative;top:-5px;">
@@ -484,12 +157,26 @@
                     <span class="node_amount"> {$payment->get('Transaction Amount')}</span>
                 </div>
             {/foreach}
+            <div class="payment node" style="border-top:1px solid #555;border-bottom:1px solid #555 ">
+                <span class="node_label">{t}To pay{/t} </span>
+                <span class="node_amount"> {$order->get('To Pay Amount')}</span>
+            </div>
         </div>
+
+
+
+
     </div>
 
 <div style="clear:both"></div></div>
-<div class="block " style="align-items: stretch;flex: 1 ">
+    <div class="block " style="align-items: stretch;flex: 1 ">
     <table border="0" class="totals" style="position:relative;top:-5px">
+
+        <tr class="total ">
+
+            <td colspan="2" class="align_center ">{t}Original order{/t}</td>
+        </tr>
+
 
         <tr>
             <td class="label">{t}Items{/t}</td>
@@ -520,34 +207,7 @@
         </tr>
 
 
-        <tr class="   {if $account->get('Account Currency')==$order->get('Order Currency Code')}hide{/if}">
-            <td colspan="2" class="Total_Amount_Account_Currency aright ">{$order->get('Total Amount Account Currency')}</td>
-        </tr>
 
-
-        <tbody id="total_payments" class="{if $order->get('State Index')<0}hide{/if}">
-
-        <tr class="total Order_Payments_Amount  {if $order->get('Order To Pay Amount')==0    }hide{/if}  ">
-            <td class="label">{t}Paid{/t}</td>
-            <td class="aright Payments_Amount">{$order->get('Payments Amount')}</td>
-        </tr>
-        <tr class="total  Order_To_Pay_Amount {if $order->get('Order To Pay Amount')==0    }hide{/if} button" amount="{$order->get('Order To Pay Amount')}"
-            onclick="try_to_pay(this)">
-            <td class="label">{t}To pay{/t}</td>
-            <td class="aright To_Pay_Amount   ">{$order->get('To Pay Amount')}</td>
-        </tr>
-        <tr class="total success  Order_Paid {if $order->get('Order To Pay Amount')!=0   or $order->get('Order Total Amount')==0  }hide{/if}">
-
-            <td colspan="2" class="align_center "><i class="fa fa-check-circle" aria-hidden="true"></i> {t}Paid{/t}</td>
-        </tr>
-        </tbody>
-
-
-        <tbody id="total_payments_cancelled_order" class="error {if $order->get('State Index')>0}hide{/if}">
-        <tr class="total Order_Payments_Amount  {if $order->get('Order Payments Amount')==0    }hide{/if}  "  style="background-color: rgba(255,0,0,.05); " >
-            <td style="border-color:rgba(255,0,0,1)" class="label">{t}Paid{/t}</td>
-            <td style="border-color:rgba(255,0,0,1)" class="aright Payments_Amount">{$order->get('Payments Amount')}</td>
-        </tr>
 
         </tbody>
 
@@ -556,6 +216,62 @@
     </table>
     <div style="clear:both"></div>
 </div>
+    <div class="block " style="align-items: stretch;flex: 1;">
+        <div class="state" style="height:30px;margin-bottom:10px;position:relative;top:-5px">
+            <div id="back_operations">
+
+            </div>
+            <span style="float:left;padding-left:10px;padding-top:5px" class="Order_State"> {t}Creating refund{/t} </span>
+            <div id="forward_operations">
+
+                <div id="create_refund_operations" class="order_operation {if {$order->get('State Index')}<100  }hide{/if}">
+                    <div  class="square_button right  " title="{t}Create refund{/t}">
+                        <i class="fa fa-cloud save   open_create_refund_dialog_button" aria-hidden="true" onclick="save_refund(this)"></i>
+
+                    </div>
+                </div>
+
+
+
+            </div>
+        </div>
+
+        <table border="0" class="info_block acenter">
+
+            <tr>
+
+                <td>
+                    <span style=""><i class="fa fa-cube fa-fw discreet" aria-hidden="true"></i> <span class="affected_items">0</span> / <span class="Order_Number_items">{$order->get('Number Items')}</span></span>
+                    <span style="padding-left:20px"><i class="fa fa-percent fa-fw  " aria-hidden="true"></i> <span class="percentage_refunded">0.00</span>%</span>
+
+
+                </td>
+            </tr>
+
+            <table border="0" class="totals" style="position:relative;top:20px">
+
+
+                <tr class="subtotal first">
+                    <td class="label">{t}Net{/t}</td>
+                    <td class="aright Refund_Net_Amount">{$zero_amount}</td>
+                </tr>
+                <tr class="subtotal first">
+                    <td class="label">{t}Tax{/t}</td>
+                    <td class="aright Refund_Tax_Amount">{$zero_amount}</td>
+                </tr>
+                <tr class="total first">
+                    <td class="label">{t}Total{/t}</td>
+                    <td class="aright Refund_Total_Amount">{$zero_amount}</td>
+                </tr>
+
+            </table>
+
+
+
+
+        </table>
+
+    </div>
 <div style="clear:both"></div></div>
 
 <div id="add_payment" class="table_new_fields hide">

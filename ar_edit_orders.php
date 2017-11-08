@@ -30,6 +30,22 @@ $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
 
+
+    case 'create_refund':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'key'         => array('type' => 'key'),
+                         'transactions'   => array('type' => 'json array'),
+
+
+                     )
+        );
+
+        create_refund($data, $editor, $smarty, $db, $account, $user);
+
+
+        break;
+
     case 'refund_payment':
         $data = prepare_values(
             $_REQUEST, array(
@@ -981,6 +997,36 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user) {
 
 
 }
+
+
+
+function create_refund($data, $editor, $smarty, $db) {
+
+
+    exit;
+
+    $object         = get_object('order', $data['key']);
+    $object->editor = $editor;
+
+
+
+    $object->create_refund($data['transactions']);
+
+
+
+    exit;
+
+    $response = array(
+        'state'       => 200,
+        'metadata'    => $object->get_update_metadata(),
+        'state_index' => $object->get('State Index')
+    );
+
+    echo json_encode($response);
+
+}
+
+
 
 
 ?>

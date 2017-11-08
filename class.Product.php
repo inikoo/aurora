@@ -1715,7 +1715,7 @@ class Product extends Asset {
             } else {
 
 
-                $msg = old_new_fork(
+                $msg = new_fork(
                     'housekeeping', array(
                     'type'       => 'product_web_state',
                     'product_id' => $this->id,

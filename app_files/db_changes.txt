@@ -806,6 +806,9 @@ update `Page Store Dimension` set `Webpage Meta Description`=`Store Description`
 ALTER TABLE `Payment Account Dimension` DROP `Payment Account Type`;
 
 
+ALTER TABLE `Invoice Dimension` ADD `Invoice Internal Description` TEXT NULL DEFAULT NULL AFTER `Invoice Category Key`, ADD `Invoice Public Description` TEXT NULL DEFAULT NULL AFTER `Invoice Internal Description`;
+
+
 ===============
 
 
