@@ -163,9 +163,15 @@ class Upload extends DB_Table {
 
             case 'User Alias':
 
+
+
+
                 $user = get_object('User', $this->data['Upload User Key']);
 
-                return $user->get('Alias');
+
+
+
+                return $user->get('Handle');
                 break;
 
             case 'File Size':
