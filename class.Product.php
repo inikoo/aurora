@@ -1716,13 +1716,16 @@ class Product extends Asset {
 
 
                 $msg = new_fork(
-                    'housekeeping', array(
+                    'housekeeping',
+                    array(
                     'type'       => 'product_web_state',
                     'product_id' => $this->id,
                     'wa'         => $web_availability,
                     'wa_updated' => $web_availability_updated
 
-                ), $account->get('Account Code')
+                ),
+                    $account->get('Account Code'),
+                    $this->db
                 );
 
 
