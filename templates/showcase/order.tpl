@@ -268,6 +268,14 @@
             <span style="float:left;padding-left:10px;padding-top:5px" class="Order_State"> {$order->get('State')} </span>
             <div id="forward_operations">
 
+                <div id="proforma_operations" class="order_operation {if  $order->get('State Index')<10 or  $order->get('State Index')>=90    or  $order->get('Order Number Items')==0 }hide{/if}">
+                    <div  class="square_button right  " title="{t}Proforma invoice{/t}">
+                        <a class="" target='_blank' href="/pdf/proforma.pdf.php?id={$order->id}"><i class="fa fa-file-text-o   " style="color:darkseagreen" aria-hidden="true" ></i></a>
+
+                    </div>
+                </div>
+
+
                 <div id="create_refund_operations" class="order_operation {if {$order->get('State Index')}<100  }hide{/if}">
                     <div  class="square_button right  " title="{t}Create refund{/t}">
                         <i class="fa fa-file-text-o error " aria-hidden="true" onclick="toggle_order_operation_dialog('create_refund')"></i>
@@ -334,6 +342,8 @@
                         </table>
                     </div>
                 </div>
+
+
 
                 <div id="submit_operations" class="order_operation {if $order->get('State Index')!=10   or  $order->get('Order Number Items')==0 }hide{/if}">
                     <div  class="square_button right  " title="{t}Submit{/t}">
@@ -417,9 +427,10 @@
 
                 <div class="node" id="invoice_{$invoice->id}">
                     <span class="node_label" >
-                        <i class="fa fa-file-text-o fa-fw " aria-hidden="true"></i>
-                        <span class="link" onClick="change_view('invoices/{$invoice->get('Invoice Store Key')}/{$invoice->id}')">{$invoice->get('Invoice Public ID')}</span>
+                        <i class="fa fa-file-text-o fa-fw {if $invoice->get('Invoice Type')=='Refund'}error{/if}" aria-hidden="true"></i>
+                        <span class="link {if $invoice->get('Invoice Type')=='Refund'}error{/if}" onClick="change_view('invoices/{$invoice->get('Invoice Store Key')}/{$invoice->id}')">{$invoice->get('Invoice Public ID')}</span>
                         <a class="pdf_link" target='_blank' href="/pdf/invoice.pdf.php?id={$invoice->id}"> <img style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif"></a>
+                        {if $invoice->get('Invoice Type')=='Refund'}{$invoice->get('Total Amount')}{/if}
                     </span>
                 </div>
             {/foreach}
@@ -433,7 +444,7 @@
 
 
 
-        <div class="payments {if $order->get('Order Number Items')==0  or $order->get('State Index')<0 }hide{/if}  "  >
+        <div style="margin-bottom: 5px" class="payments {if $order->get('Order Number Items')==0  or $order->get('State Index')<0 }hide{/if}  "  >
 
 
             {assign expected_payment $order->get('Expected Payment')}
@@ -485,9 +496,49 @@
                 </div>
             {/foreach}
         </div>
+
+
+
+
     </div>
 
-<div style="clear:both"></div></div>
+        <div style="clear:both"></div>
+
+
+
+        <table border="0" class="totals" style="width: 100%">
+
+
+            <tbody id="total_payments" class="{if $order->get('State Index')<0}hide{/if}">
+
+            <tr class="total Order_Payments_Amount  {if $order->get('Order To Pay Amount')==0    }hide{/if}  ">
+                <td class="label">{t}Paid{/t}</td>
+                <td class="aright Payments_Amount">{$order->get('Payments Amount')}</td>
+            </tr>
+            <tr class="total  Order_To_Pay_Amount {if $order->get('Order To Pay Amount')==0    }hide{/if} button" amount="{$order->get('Order To Pay Amount')}"
+                onclick="try_to_pay(this)">
+                <td class="label">{t}To pay{/t}</td>
+                <td class="aright To_Pay_Amount   ">{$order->get('To Pay Amount')}</td>
+            </tr>
+            <tr class="total success  Order_Paid {if $order->get('Order To Pay Amount')!=0   or $order->get('Order Total Amount')==0  }hide{/if}">
+
+                <td colspan="2" class="align_center "><i class="fa fa-check-circle" aria-hidden="true"></i> {t}Paid{/t}</td>
+            </tr>
+            </tbody>
+
+
+            <tbody id="total_payments_cancelled_order" class="error {if $order->get('State Index')>0}hide{/if}">
+            <tr class="total Order_Payments_Amount  {if $order->get('Order Payments Amount')==0    }hide{/if}  "  style="background-color: rgba(255,0,0,.05); " >
+                <td style="border-color:rgba(255,0,0,1)" class="label">{t}Paid{/t}</td>
+                <td style="border-color:rgba(255,0,0,1)" class="aright Payments_Amount">{$order->get('Payments Amount')}</td>
+            </tr>
+
+            </tbody>
+        </table>
+
+
+
+    </div>
 <div class="block " style="align-items: stretch;flex: 1 ">
     <table border="0" class="totals" style="position:relative;top:-5px">
 
@@ -525,31 +576,6 @@
         </tr>
 
 
-        <tbody id="total_payments" class="{if $order->get('State Index')<0}hide{/if}">
-
-        <tr class="total Order_Payments_Amount  {if $order->get('Order To Pay Amount')==0    }hide{/if}  ">
-            <td class="label">{t}Paid{/t}</td>
-            <td class="aright Payments_Amount">{$order->get('Payments Amount')}</td>
-        </tr>
-        <tr class="total  Order_To_Pay_Amount {if $order->get('Order To Pay Amount')==0    }hide{/if} button" amount="{$order->get('Order To Pay Amount')}"
-            onclick="try_to_pay(this)">
-            <td class="label">{t}To pay{/t}</td>
-            <td class="aright To_Pay_Amount   ">{$order->get('To Pay Amount')}</td>
-        </tr>
-        <tr class="total success  Order_Paid {if $order->get('Order To Pay Amount')!=0   or $order->get('Order Total Amount')==0  }hide{/if}">
-
-            <td colspan="2" class="align_center "><i class="fa fa-check-circle" aria-hidden="true"></i> {t}Paid{/t}</td>
-        </tr>
-        </tbody>
-
-
-        <tbody id="total_payments_cancelled_order" class="error {if $order->get('State Index')>0}hide{/if}">
-        <tr class="total Order_Payments_Amount  {if $order->get('Order Payments Amount')==0    }hide{/if}  "  style="background-color: rgba(255,0,0,.05); " >
-            <td style="border-color:rgba(255,0,0,1)" class="label">{t}Paid{/t}</td>
-            <td style="border-color:rgba(255,0,0,1)" class="aright Payments_Amount">{$order->get('Payments Amount')}</td>
-        </tr>
-
-        </tbody>
 
 
 

@@ -11,7 +11,14 @@
 
 $tab     = 'invoice.items';
 $ar_file = 'ar_orders_tables.php';
-$tipo    = 'invoice.items';
+
+if( $state['_object']->get('Invoice Type')=='Refund'){
+    $tipo    = 'refund.items';
+
+}else{
+    $tipo    = 'invoice.items';
+
+}
 
 $default = $user->get_tab_defaults($tab);
 
@@ -21,10 +28,7 @@ $table_views = array(
         'label' => _('Description'),
         'title' => _('Description')
     ),
-    'tariff_codes' => array(
-        'label' => _('Tariff Codes'),
-        'title' => _('Tariff Codes')
-    ),
+
 
 );
 

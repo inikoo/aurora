@@ -34,8 +34,8 @@ switch ($tipo) {
     case 'create_refund':
         $data = prepare_values(
             $_REQUEST, array(
-                         'key'         => array('type' => 'key'),
-                         'transactions'   => array('type' => 'json array'),
+                         'key'          => array('type' => 'key'),
+                         'transactions' => array('type' => 'json array'),
 
 
                      )
@@ -651,7 +651,7 @@ function new_payment($data, $editor, $smarty, $db, $account, $user) {
     foreach ($order->get_payments('objects', 'Completed') as $payment) {
 
 
-        if ($payment->payment_account->get('Payment Account Block') == 'Accounts'  or $payment->get('Payment Type')=='Credit' ) {
+        if ($payment->payment_account->get('Payment Account Block') == 'Accounts' or $payment->get('Payment Type') == 'Credit') {
             $_code = _('Credit');
         } else {
             $_code = $payment->get('Payment Account Code');
@@ -659,8 +659,7 @@ function new_payment($data, $editor, $smarty, $db, $account, $user) {
         }
 
         $payments_xhtml .= sprintf(
-            '<div class="payment node"><span class="node_label link" onClick="change_view(\'%s\')" >%s</span><span class="node_amount" >%s</span></div>', '/order/'.$order->id.'/payment/'.$payment->id,
-            $_code, $payment->get('Transaction Amount')
+            '<div class="payment node"><span class="node_label link" onClick="change_view(\'%s\')" >%s</span><span class="node_amount" >%s</span></div>', '/order/'.$order->id.'/payment/'.$payment->id, $_code, $payment->get('Transaction Amount')
 
         );
     }
@@ -952,8 +951,8 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user) {
 
     foreach ($order->get_payments('objects', 'Completed') as $payment) {
         $payments_xhtml .= sprintf(
-            '<div class="payment node"><span class="node_label link" onClick="change_view(\'%s\')" >%s</span><span class="node_amount" >%s</span></div>', '/order/'.$order->id.'/payment/'.$payment->id,
-            $payment->get('Payment Account Code'), $payment->get('Transaction Amount')
+            '<div class="payment node"><span class="node_label link" onClick="change_view(\'%s\')" >%s</span><span class="node_amount" >%s</span></div>', '/order/'.$order->id.'/payment/'.$payment->id, $payment->get('Payment Account Code'),
+            $payment->get('Transaction Amount')
 
         );
     }
@@ -999,34 +998,32 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user) {
 }
 
 
-
 function create_refund($data, $editor, $smarty, $db) {
 
-
-    exit;
 
     $object         = get_object('order', $data['key']);
     $object->editor = $editor;
 
 
-
-    $object->create_refund($data['transactions']);
-
+    $refund = $object->create_refund($data['transactions']);
 
 
-    exit;
+    if ($refund->id) {
+        $response = array(
+            'state'      => 200,
+            'refund_key' => $refund->id
+        );
+    } else {
+        $response = array(
+            'state' => 400,
+            'msg'   => $object->msg
+        );
+    }
 
-    $response = array(
-        'state'       => 200,
-        'metadata'    => $object->get_update_metadata(),
-        'state_index' => $object->get('State Index')
-    );
 
     echo json_encode($response);
 
 }
-
-
 
 
 ?>

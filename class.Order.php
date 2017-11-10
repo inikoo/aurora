@@ -75,7 +75,7 @@ class Order extends DB_Table {
 
         } elseif ($key == 'public id' or $key == 'public_id') {
             $sql = sprintf("SELECT * FROM `Order Dimension` WHERE `Order Public ID`=%s", prepare_mysql($id));
-        }else{
+        } else {
             return;
         }
 
@@ -108,9 +108,8 @@ class Order extends DB_Table {
   					`Affected Order Key`,`Order Key`,`Order Date`,`Transaction Type`,`Transaction Description`,`Tax Category Code`,`Currency Code`)
   				VALUES (%f,%f,%s,%d,%s,%s,%s,%s,%s) ",
 
-            $credit_transaction_data['Transaction Net Amount'], $credit_transaction_data['Transaction Net Amount'], $credit_transaction_data['Transaction Tax Amount'],
-            prepare_mysql($credit_transaction_data['Affected Order Key']), $this->id, prepare_mysql($order_date), prepare_mysql('Credit'),
-            prepare_mysql($credit_transaction_data['Transaction Description']),
+            $credit_transaction_data['Transaction Net Amount'], $credit_transaction_data['Transaction Net Amount'], $credit_transaction_data['Transaction Tax Amount'], prepare_mysql($credit_transaction_data['Affected Order Key']), $this->id, prepare_mysql($order_date),
+            prepare_mysql('Credit'), prepare_mysql($credit_transaction_data['Transaction Description']),
 
             prepare_mysql($credit_transaction_data['Tax Category Code']),
 
@@ -127,8 +126,8 @@ class Order extends DB_Table {
 
         $sql = sprintf(
             "UPDATE `Order No Product Transaction Fact` SET `Transaction Outstanding Net Amount Balance`=%f,`Transaction Outstanding Tax Amount Balance`=%f,`Transaction Net Amount`=%f,`Transaction Tax Amount`=%f,`Transaction Description`=%s,`Tax Category Code`=%s WHERE `Order No Product Transaction Fact Key`=%d AND `Order Key`=%d ",
-            $credit_transaction_data['Transaction Net Amount'], $credit_transaction_data['Transaction Tax Amount'], $credit_transaction_data['Transaction Net Amount'],
-            $credit_transaction_data['Transaction Tax Amount'], prepare_mysql($credit_transaction_data['Transaction Description']),
+            $credit_transaction_data['Transaction Net Amount'], $credit_transaction_data['Transaction Tax Amount'], $credit_transaction_data['Transaction Net Amount'], $credit_transaction_data['Transaction Tax Amount'],
+            prepare_mysql($credit_transaction_data['Transaction Description']),
 
             prepare_mysql($credit_transaction_data['Tax Category Code']), $credit_transaction_data['Order No Product Transaction Fact Key'], $this->id
 
@@ -151,9 +150,9 @@ class Order extends DB_Table {
 
     function create_refund($transactions) {
 
-        $date=gmdate('Y-m-d H:i:s');
+        $date = gmdate('Y-m-d H:i:s');
 
-        $store = get_object( 'Store',($this->data['Order Store Key']));
+        $store = get_object('Store', ($this->data['Order Store Key']));
 
 
         $invoice_public_id = '';
@@ -175,15 +174,13 @@ class Order extends DB_Table {
                 if ($store->data['Store Next Invoice Public ID Method'] == 'Invoice Public ID') {
 
                     $sql = sprintf(
-                        "UPDATE `Store Dimension` SET `Store Invoice Last Invoice Public ID` = LAST_INSERT_ID(`Store Invoice Last Invoice Public ID` + 1) WHERE `Store Key`=%d",
-                        $this->data['Order Store Key']
+                        "UPDATE `Store Dimension` SET `Store Invoice Last Invoice Public ID` = LAST_INSERT_ID(`Store Invoice Last Invoice Public ID` + 1) WHERE `Store Key`=%d", $this->data['Order Store Key']
                     );
                     $this->db->exec($sql);
 
 
-
                     $invoice_public_id = sprintf(
-                        $store->data['Store Invoice Public ID Format'],$this->db->lastInsertId()
+                        $store->data['Store Invoice Public ID Format'], $this->db->lastInsertId()
                     );
 
                 } elseif ($store->data['Store Next Invoice Public ID Method'] == 'Order ID') {
@@ -245,8 +242,7 @@ class Order extends DB_Table {
             if ($store->data['Store Next Invoice Public ID Method'] == 'Invoice Public ID') {
 
                 $sql = sprintf(
-                    "UPDATE `Store Dimension` SET `Store Invoice Last Invoice Public ID` = LAST_INSERT_ID(`Store Invoice Last Invoice Public ID` + 1) WHERE `Store Key`=%d",
-                    $this->data['Order Store Key']
+                    "UPDATE `Store Dimension` SET `Store Invoice Last Invoice Public ID` = LAST_INSERT_ID(`Store Invoice Last Invoice Public ID` + 1) WHERE `Store Key`=%d", $this->data['Order Store Key']
                 );
                 $this->db->exec($sql);
                 $invoice_public_id = sprintf(
@@ -288,15 +284,11 @@ class Order extends DB_Table {
         }
 
 
-
-
-
-
         $refund_data = array(
             'Invoice Date'                          => $date,
             'Invoice Type'                          => 'Refund',
             'Invoice Public ID'                     => $invoice_public_id,
-            'Invoice File As'                       =>$invoice_public_id,
+            'Invoice File As'                       => $invoice_public_id,
             'Invoice Order Key'                     => $this->id,
             'Invoice Store Key'                     => $this->data['Order Store Key'],
             'Invoice Customer Key'                  => $this->data['Order Customer Key'],
@@ -335,27 +327,25 @@ class Order extends DB_Table {
 
             'Invoice Main Source Type' => '',
 
-            'Invoice Items Gross Amount'    => 0,
-            'Invoice Items Discount Amount' =>  0,
-
+            'Invoice Items Gross Amount'        => 0,
+            'Invoice Items Discount Amount'     => 0,
             'Invoice Items Net Amount'          => 0,
-            'Invoice Items Out of Stock Amount' =>  0,
-            'Invoice Shipping Net Amount'       =>  0,
+            'Invoice Items Out of Stock Amount' => 0,
+            'Invoice Shipping Net Amount'       => 0,
             'Invoice Charges Net Amount'        => 0,
-            'Invoice Insurance Net Amount'      =>  0,
-            'Invoice Total Net Amount'          =>  0,
-            'Invoice Total Tax Amount'          =>  0,
-            'Invoice Payments Amount'           =>  0,
-            'Invoice To Pay Amount'             =>  0,
-            'Invoice Total Amount'              =>  0,
+            'Invoice Insurance Net Amount'      => 0,
+            'Invoice Total Net Amount'          => 0,
+            'Invoice Total Tax Amount'          => 0,
+            'Invoice Payments Amount'           => 0,
+            'Invoice To Pay Amount'             => 0,
+            'Invoice Total Amount'              => 0,
             'Invoice Currency'                  => $this->data['Order Currency'],
 
 
         );
 
 
-
-        $refund = new Invoice('create refund', $refund_data,$transactions);
+        $refund = new Invoice('create refund', $refund_data, $transactions);
 
 
         return $refund;
@@ -365,7 +355,7 @@ class Order extends DB_Table {
         $invoices     = array();
         $invoices_ids = $this->get_invoices_ids();
         foreach ($invoices_ids as $invoice_key) {
-            $invoices[$invoice_key] = get_object( 'Invoice',$invoice_key);
+            $invoices[$invoice_key] = get_object('Invoice', $invoice_key);
         }
 
         return $invoices;
@@ -379,16 +369,15 @@ class Order extends DB_Table {
             "SELECT `Invoice Key` FROM `Invoice Dimension` WHERE `Invoice Order Key`=%d ", $this->id
         );
 
-        if ($result=$this->db->query($sql)) {
-        		foreach ($result as $row) {
-                    $invoices[$row['Invoice Key']] = $row['Invoice Key'];
-        		}
-        }else {
-        		print_r($error_info=$this->db->errorInfo());
-        		print "$sql\n";
-        		exit;
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $invoices[$row['Invoice Key']] = $row['Invoice Key'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
-
 
 
         return $invoices;
@@ -401,7 +390,7 @@ class Order extends DB_Table {
         );
 
 
-        if ($result=$this->db->query($sql)) {
+        if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
                 if ($suffix_counter > 100) {
                     return $refund_id.$suffix_counter;
@@ -414,15 +403,14 @@ class Order extends DB_Table {
                 }
 
                 return $this->get_refund_public_id($refund_id, $suffix_counter);
-        	}else{
+            } else {
                 return $refund_id.$suffix_counter;
             }
-        }else {
-        	print_r($error_info=$this->db->errorInfo());
-        	print "$sql\n";
-        	exit;
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
-
 
 
     }
@@ -547,8 +535,7 @@ class Order extends DB_Table {
 
 
                     $sql = sprintf(
-                        "UPDATE `Order Transaction Fact` SET `Current Dispatching State`='In Process' WHERE `Order Key`=%d  AND `Current Dispatching State` NOT IN ('Out of Stock in Basket')  ",
-                        $this->id
+                        "UPDATE `Order Transaction Fact` SET `Current Dispatching State`='In Process' WHERE `Order Key`=%d  AND `Current Dispatching State` NOT IN ('Out of Stock in Basket')  ", $this->id
 
 
                     );
@@ -641,8 +628,7 @@ class Order extends DB_Table {
                     $sql = sprintf(
 
 
-                        "UPDATE `Order Transaction Fact` SET `Current Dispatching State`='Submitted by Customer' WHERE `Order Key`=%d  AND `Current Dispatching State` NOT IN ('Out of Stock in Basket')  ",
-                        $this->id
+                        "UPDATE `Order Transaction Fact` SET `Current Dispatching State`='Submitted by Customer' WHERE `Order Key`=%d  AND `Current Dispatching State` NOT IN ('Out of Stock in Basket')  ", $this->id
 
                     );
 
@@ -721,8 +707,8 @@ class Order extends DB_Table {
                         'au_housekeeping', array(
                         'type'              => 'delivery_note_created',
                         'delivery_note_key' => $delivery_note->id,
-                        'customer_key' => $delivery_note->get('Delivery Note Customer Key'),
-                        'store_key' => $delivery_note->get('Delivery Note Store Key'),
+                        'customer_key'      => $delivery_note->get('Delivery Note Customer Key'),
+                        'store_key'         => $delivery_note->get('Delivery Note Store Key'),
                     ), $account->get('Account Code')
                     );
 
@@ -752,8 +738,7 @@ class Order extends DB_Table {
                     $sql = sprintf(
 
 
-                        "UPDATE `Order Transaction Fact` SET `Current Dispatching State`='Ready to Pick' WHERE `Order Key`=%d  AND `Current Dispatching State` NOT IN ('Out of Stock in Basket')  ",
-                        $this->id
+                        "UPDATE `Order Transaction Fact` SET `Current Dispatching State`='Ready to Pick' WHERE `Order Key`=%d  AND `Current Dispatching State` NOT IN ('Out of Stock in Basket')  ", $this->id
 
 
                     );
@@ -879,8 +864,7 @@ class Order extends DB_Table {
                     } elseif ($store->data['Store Next Invoice Public ID Method'] == 'Invoice Public ID') {
 
                         $sql = sprintf(
-                            "UPDATE `Store Dimension` SET `Store Invoice Last Invoice Public ID` = LAST_INSERT_ID(`Store Invoice Last Invoice Public ID` + 1) WHERE `Store Key`=%d",
-                            $this->data['Order Store Key']
+                            "UPDATE `Store Dimension` SET `Store Invoice Last Invoice Public ID` = LAST_INSERT_ID(`Store Invoice Last Invoice Public ID` + 1) WHERE `Store Key`=%d", $this->data['Order Store Key']
                         );
                         $this->db->exec($sql);
                         $public_id = $this->db->lastInsertId();
@@ -984,9 +968,6 @@ class Order extends DB_Table {
                             'Delivery Note State'                       => 'Approved',
                         )
                     );
-
-
-
 
 
                     $this->update_field('Order Invoiced Date', $date, 'no_history');
@@ -1113,9 +1094,7 @@ class Order extends DB_Table {
                                <span class="link" onClick="change_view(\'%s\')">%s</span> (<span class="Delivery_Note_State">%s</span>)
                                 <a class="pdf_link %s" target=\'_blank\' href="/pdf/dn.pdf.php?id=%d"> <img style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif"></a>
 
-                               </span></div>', $dn->id,
-                'delivery_notes/'.$dn->get('Delivery Note Store Key').'/'.$dn->id, $dn->get('ID'), $dn->get('Abbreviated State'),
-                ($dn->get('State Index')<90?'hide':''),$dn->id
+                               </span></div>', $dn->id, 'delivery_notes/'.$dn->get('Delivery Note Store Key').'/'.$dn->id, $dn->get('ID'), $dn->get('Abbreviated State'), ($dn->get('State Index') < 90 ? 'hide' : ''), $dn->id
 
             );
 
@@ -1714,8 +1693,7 @@ class Order extends DB_Table {
 
 
         $sql = sprintf(
-            "UPDATE `Order No Product Transaction Fact` SET `Delivery Note Date`=NULL,`Delivery Note Key`=NULL,`State`=%s ,`Consolidated`='Yes' WHERE `Order Key`=%d ", prepare_mysql('Cancelled'),
-            $this->id
+            "UPDATE `Order No Product Transaction Fact` SET `Delivery Note Date`=NULL,`Delivery Note Key`=NULL,`State`=%s ,`Consolidated`='Yes' WHERE `Order Key`=%d ", prepare_mysql('Cancelled'), $this->id
         );
         $this->db->exec($sql);
 
@@ -1873,7 +1851,7 @@ class Order extends DB_Table {
 
         $invoices = array();
         $sql      = sprintf(
-            "SELECT `Invoice Key` FROM `Order Transaction Fact` WHERE `Order Key`=%d  GROUP BY `Invoice Key`", $this->id
+            "SELECT `Invoice Key` FROM `Invoice Dimension` WHERE `Invoice Order Key`=%d  ", $this->id
         );
 
         if ($result = $this->db->query($sql)) {
@@ -1988,8 +1966,7 @@ class Order extends DB_Table {
 
     function get_replacement_public_id($dn_id, $suffix_counter = '') {
         $sql = sprintf(
-            "SELECT `Delivery Note ID` FROM `Delivery Note Dimension` WHERE `Delivery Note Store Key`=%d AND `Delivery Note ID`=%s ", $this->data['Order Store Key'],
-            prepare_mysql($dn_id.$suffix_counter)
+            "SELECT `Delivery Note ID` FROM `Delivery Note Dimension` WHERE `Delivery Note Store Key`=%d AND `Delivery Note ID`=%s ", $this->data['Order Store Key'], prepare_mysql($dn_id.$suffix_counter)
         );
         $res = mysql_query($sql);
         if ($row = mysql_fetch_assoc($res)) {
@@ -2044,10 +2021,9 @@ class Order extends DB_Table {
 
         $sql = sprintf(
             "INSERT INTO `Search Full Text Dimension` (`Store Key`,`Subject`,`Subject Key`,`First Search Full Text`,`Second Search Full Text`,`Search Result Name`,`Search Result Description`,`Search Result Image`) VALUES  (%s,'Order',%d,%s,%s,%s,%s,%s) ON DUPLICATE KEY
-		UPDATE `First Search Full Text`=%s ,`Second Search Full Text`=%s ,`Search Result Name`=%s,`Search Result Description`=%s,`Search Result Image`=%s", $this->data['Order Store Key'], $this->id,
-            prepare_mysql($first_full_search), prepare_mysql($second_full_search, false), prepare_mysql($this->data['Order Public ID'], false), prepare_mysql($description, false),
-            prepare_mysql($img, false), prepare_mysql($first_full_search), prepare_mysql($second_full_search, false), prepare_mysql($this->data['Order Public ID'], false),
-            prepare_mysql($description, false)
+		UPDATE `First Search Full Text`=%s ,`Second Search Full Text`=%s ,`Search Result Name`=%s,`Search Result Description`=%s,`Search Result Image`=%s", $this->data['Order Store Key'], $this->id, prepare_mysql($first_full_search),
+            prepare_mysql($second_full_search, false), prepare_mysql($this->data['Order Public ID'], false), prepare_mysql($description, false), prepare_mysql($img, false), prepare_mysql($first_full_search), prepare_mysql($second_full_search, false),
+            prepare_mysql($this->data['Order Public ID'], false), prepare_mysql($description, false)
 
 
             , prepare_mysql($img, false)
@@ -2068,8 +2044,7 @@ class Order extends DB_Table {
         $family      = array();
         $departments = array();
         $sql         =
-            "SELECT OTF.`Product Key` ,`Product Family Key`,`Product Store Key` FROM `Order Transaction Fact` OTF LEFT JOIN `Product Dimension` PD ON (PD.`Product Key`=OTF.`Product Key`)WHERE `Order Key`="
-            .$this->data['Order Key']." GROUP BY OTF.`Product Key`";
+            "SELECT OTF.`Product Key` ,`Product Family Key`,`Product Store Key` FROM `Order Transaction Fact` OTF LEFT JOIN `Product Dimension` PD ON (PD.`Product Key`=OTF.`Product Key`)WHERE `Order Key`=".$this->data['Order Key']." GROUP BY OTF.`Product Key`";
         $result      = mysql_query($sql);
         //   print $sql;
         if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -2205,8 +2180,8 @@ class Order extends DB_Table {
         $this->data['Order Current XHTML Dispatch State'] = _('Dispatched');
 
         $sql = sprintf(
-            "UPDATE `Order Dimension` SET `Order Dispatched Date`=%s , `Order Current XHTML Dispatch State`=%s ,`Order Current Dispatch State`=%s WHERE `Order Key`=%d", prepare_mysql($date),
-            prepare_mysql($this->data['Order Current XHTML Dispatch State']), prepare_mysql($this->data['Order Current Dispatch State']), $this->id
+            "UPDATE `Order Dimension` SET `Order Dispatched Date`=%s , `Order Current XHTML Dispatch State`=%s ,`Order Current Dispatch State`=%s WHERE `Order Key`=%d", prepare_mysql($date), prepare_mysql($this->data['Order Current XHTML Dispatch State']),
+            prepare_mysql($this->data['Order Current Dispatch State']), $this->id
         );
         $this->db->exec($sql);
 
@@ -2250,8 +2225,8 @@ class Order extends DB_Table {
         $this->data['Order Current XHTML Dispatch State'] = _('Dispatched');
 
         $sql = sprintf(
-            "UPDATE `Order Dimension` SET `Order Dispatched Date`=%s , `Order Current XHTML Dispatch State`=%s ,`Order Current Dispatch State`=%s WHERE `Order Key`=%d", prepare_mysql($date),
-            prepare_mysql($this->data['Order Current XHTML Dispatch State']), prepare_mysql($this->data['Order Current Dispatch State']), $this->id
+            "UPDATE `Order Dimension` SET `Order Dispatched Date`=%s , `Order Current XHTML Dispatch State`=%s ,`Order Current Dispatch State`=%s WHERE `Order Key`=%d", prepare_mysql($date), prepare_mysql($this->data['Order Current XHTML Dispatch State']),
+            prepare_mysql($this->data['Order Current Dispatch State']), $this->id
         );
         $this->db->exec($sql);
         //print "$sql\n";
@@ -2314,9 +2289,8 @@ class Order extends DB_Table {
         if ($row = mysql_fetch_assoc($res)) {
 
             $sql = sprintf(
-                "INSERT INTO `Order Post Transaction Dimension` (`Order Transaction Fact Key`,`Order Key`,`Quantity`,`Operation`,`Reason`,`To Be Returned`,`Customer Key`,'Credit') VALUES (%d,%d,%f,%s,%s,%s,%d,%f)",
-                $row['Order Transaction Fact Key'], $this->id, $row['Invoice Quantity'], prepare_mysql('Refund'), prepare_mysql($data['Reason']), prepare_mysql($data['To Be Returned']),
-                $this->data['Order Customer Key'], $row['value']
+                "INSERT INTO `Order Post Transaction Dimension` (`Order Transaction Fact Key`,`Order Key`,`Quantity`,`Operation`,`Reason`,`To Be Returned`,`Customer Key`,'Credit') VALUES (%d,%d,%f,%s,%s,%s,%d,%f)", $row['Order Transaction Fact Key'], $this->id,
+                $row['Invoice Quantity'], prepare_mysql('Refund'), prepare_mysql($data['Reason']), prepare_mysql($data['To Be Returned']), $this->data['Order Customer Key'], $row['value']
             );
             $this->db->exec($sql);
 
@@ -2661,9 +2635,8 @@ class Order extends DB_Table {
 
         } else {
             $sql = sprintf(
-                "INSERT INTO `Order Post Transaction Dimension` (`Order Transaction Fact Key`,`Order Key`,`Quantity`,`Operation`,`Reason`,`To Be Returned`,`Customer Key`) VALUES (%d,%d,%f,%s,%s,%s,%d)",
-                $otf_key, $this->id, $values['Quantity'], prepare_mysql($values['Operation']), prepare_mysql($values['Reason']), prepare_mysql($values['To Be Returned']),
-                $this->data['Order Customer Key']
+                "INSERT INTO `Order Post Transaction Dimension` (`Order Transaction Fact Key`,`Order Key`,`Quantity`,`Operation`,`Reason`,`To Be Returned`,`Customer Key`) VALUES (%d,%d,%f,%s,%s,%s,%d)", $otf_key, $this->id, $values['Quantity'],
+                prepare_mysql($values['Operation']), prepare_mysql($values['Reason']), prepare_mysql($values['To Be Returned']), $this->data['Order Customer Key']
             );
 
             mysql_query($sql);
@@ -2755,16 +2728,13 @@ VALUES (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 
                 0, prepare_mysql(''),
 
-                $bonus_quantity, prepare_mysql('Resend'), $data['Order Tax Rate'], prepare_mysql($data['Order Tax Code']), prepare_mysql($this->data['Order Currency']),
-                $row['Product Package Weight'] * $row['Quantity'],
+                $bonus_quantity, prepare_mysql('Resend'), $data['Order Tax Rate'], prepare_mysql($data['Order Tax Code']), prepare_mysql($this->data['Order Currency']), $row['Product Package Weight'] * $row['Quantity'],
 
-                prepare_mysql($order_date), $product->historic_id, $product->data['Product ID'], prepare_mysql($product->data['Product Code']), $product->data['Product Family Key'],
-                $product->data['Product Main Department Key'],
+                prepare_mysql($order_date), $product->historic_id, $product->data['Product ID'], prepare_mysql($product->data['Product Code']), $product->data['Product Family Key'], $product->data['Product Main Department Key'],
 
                 prepare_mysql('In Process'), prepare_mysql($data['Current Payment State']), prepare_mysql($this->data['Order Customer Key']),
 
-                $row['Quantity'], prepare_mysql($data['Ship To Key']), prepare_mysql($data['Billing To Key']), $data['Gross'], 0, $data['Gross'], prepare_mysql($data['Metadata'], false),
-                prepare_mysql($this->data['Order Store Key']), $row['Product Units Per Case']
+                $row['Quantity'], prepare_mysql($data['Ship To Key']), prepare_mysql($data['Billing To Key']), $data['Gross'], 0, $data['Gross'], prepare_mysql($data['Metadata'], false), prepare_mysql($this->data['Order Store Key']), $row['Product Units Per Case']
 
             );
 
@@ -2946,9 +2916,7 @@ VALUES (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
                 }
 
                 if ($row['Deal Info']) {
-                    $deal_info =
-                        '<br/><span style="font-style:italics;color:#555555;font-size:90%">'.$row['Deal Info'].($row['Order Transaction Total Discount Amount'] ? ', <span style="font-weight:800">-'
-                            .money(
+                    $deal_info = '<br/><span style="font-style:italics;color:#555555;font-size:90%">'.$row['Deal Info'].($row['Order Transaction Total Discount Amount'] ? ', <span style="font-weight:800">-'.money(
                                 $row['Order Transaction Total Discount Amount'], $row['Order Currency Code']
                             ).'</span>' : '').'</span>';
                 } else {
@@ -3059,9 +3027,8 @@ VALUES (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
                 $sql = sprintf(
-                    'INSERT INTO `Order Transaction Out of Stock in Basket Bridge` (`Order Transaction Fact Key`,`Date`,`Store Key`,`Order Key`,`Product Key`,`Product ID`,`Quantity`,`Amount`) VALUES (%d,%s,%d,%d,%d,%d,%f,%.2f)',
-                    $row['Order Transaction Fact Key'], prepare_mysql(gmdate('Y-m-d H:i:s')), $this->data['Order Store Key'], $this->id, $row['Product Key'], $row['Product ID'],
-                    $row['Order Quantity'], $row['Order Transaction Amount']
+                    'INSERT INTO `Order Transaction Out of Stock in Basket Bridge` (`Order Transaction Fact Key`,`Date`,`Store Key`,`Order Key`,`Product Key`,`Product ID`,`Quantity`,`Amount`) VALUES (%d,%s,%d,%d,%d,%d,%f,%.2f)', $row['Order Transaction Fact Key'],
+                    prepare_mysql(gmdate('Y-m-d H:i:s')), $this->data['Order Store Key'], $this->id, $row['Product Key'], $row['Product ID'], $row['Order Quantity'], $row['Order Transaction Amount']
                 );
 
                 $this->db->exec($sql);
@@ -3262,8 +3229,7 @@ VALUES (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 
 
         $sql = sprintf(
-            "SELECT * FROM `Insurance Dimension` WHERE `Insurance Trigger`='Order' AND (`Insurance Trigger Key`=%d  OR `Insurance Trigger Key` IS NULL) AND `Insurance Store Key`=%d", $this->id,
-            $this->data['Order Store Key']
+            "SELECT * FROM `Insurance Dimension` WHERE `Insurance Trigger`='Order' AND (`Insurance Trigger Key`=%d  OR `Insurance Trigger Key` IS NULL) AND `Insurance Store Key`=%d", $this->id, $this->data['Order Store Key']
         );
 
         if ($result = $this->db->query($sql)) {
@@ -3280,8 +3246,7 @@ VALUES (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
                         case 'Order Items Net Amount':
 
                             $sql = sprintf(
-                                "SELECT sum(`Order Transaction Net Amount`*(`Delivery Note Quantity`/`Order Quantity`)) AS amount FROM `Order Transaction Fact` WHERE `Order Key`=%d AND `Delivery Note Key`=%d AND `Order Quantity`!=0",
-                                $this->id, $dn_key
+                                "SELECT sum(`Order Transaction Net Amount`*(`Delivery Note Quantity`/`Order Quantity`)) AS amount FROM `Order Transaction Fact` WHERE `Order Key`=%d AND `Delivery Note Key`=%d AND `Order Quantity`!=0", $this->id, $dn_key
                             );
                             $res = mysql_query($sql);
                             if ($row2 = mysql_fetch_assoc($res)) {
@@ -3295,8 +3260,7 @@ VALUES (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
                         case 'Order Items Gross Amount':
                         default:
                             $sql = sprintf(
-                                "SELECT sum(`Order Transaction Gross Amount`*(`Delivery Note Quantity`/`Order Quantity`)) AS amount FROM `Order Transaction Fact` WHERE `Order Key`=%d AND `Delivery Note Key`=%d AND `Order Quantity`!=0",
-                                $this->id, $dn_key
+                                "SELECT sum(`Order Transaction Gross Amount`*(`Delivery Note Quantity`/`Order Quantity`)) AS amount FROM `Order Transaction Fact` WHERE `Order Key`=%d AND `Delivery Note Key`=%d AND `Order Quantity`!=0", $this->id, $dn_key
                             );
                             $res = mysql_query($sql);
                             if ($row2 = mysql_fetch_assoc($res)) {
@@ -3367,8 +3331,7 @@ VALUES (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 
 
                 $sql  = sprintf(
-                    "SELECT `Order No Product Transaction Fact Key`  FROM `Order No Product Transaction Fact` WHERE `Order Key`=%d  AND `Transaction Type`='Insurance' AND `Transaction Type Key`=%d ",
-                    $this->id, $row['Insurance Key']
+                    "SELECT `Order No Product Transaction Fact Key`  FROM `Order No Product Transaction Fact` WHERE `Order Key`=%d  AND `Transaction Type`='Insurance' AND `Transaction Type Key`=%d ", $this->id, $row['Insurance Key']
                 );
                 $res2 = mysql_query($sql);
                 if ($row2 = mysql_fetch_assoc($res2)) {

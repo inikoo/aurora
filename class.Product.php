@@ -1715,6 +1715,7 @@ class Product extends Asset {
             } else {
 
 
+
                 $msg = new_fork(
                     'housekeeping',
                     array(

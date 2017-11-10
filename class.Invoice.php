@@ -118,7 +118,7 @@ class Invoice extends DB_Table {
 
 
         $sql = "insert into `Invoice Dimension` $keys  $values ;";
-        print "$sql\n\n";
+        //print "$sql\n\n";
 
         if ($this->db->exec($sql)) {
             $this->id = $this->db->lastInsertId();
@@ -126,6 +126,8 @@ class Invoice extends DB_Table {
 
             $this->get_data('id', $this->id);
 
+
+          //  print_r($transactions);
 
             foreach ($transactions as $transaction) {
 
@@ -146,21 +148,24 @@ class Invoice extends DB_Table {
                                     $amount = -1.0 * $transaction['amount'];
 
                                     $sql = sprintf(
-                                        'INSERT INTO  `Order Transaction Fact Key` (`Order Date`,`Order Last Updated Date`,`Order Transaction Type`,`Order Key`,`Invoice Key`,
+                                        'INSERT INTO  `Order Transaction Fact` (`Order Date`,`Order Last Updated Date`,`Invoice Date`,`Order Transaction Type`,`Order Key`,`Invoice Key`,
 
                                 `Product Key`,`Product ID`,`Store Key`,`Customer Key`,
-                                `Order Transaction Gross Amount`,`Order Transaction Amount`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Invoice Currency Code`,`Invoice Currency Exchange Rate`
-                                ) VALUES (%s,%s,%s,%d,%d,
+                                `Order Transaction Gross Amount`,`Order Transaction Amount`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Invoice Currency Code`,`Invoice Currency Exchange Rate`,
+                                `Product Code`
+                                ) VALUES (%s,%s,%s,%s,%d,%d,
                                         %d,%d,%d,%d,
-                                        %.2f, %.2f,%f,%s,%s,%s,%f
+                                        %.2f, %.2f,%f,%s,%s,%s,%f,%s
                                         
                                         
-                                ) ', prepare_mysql($date), prepare_mysql($date), prepare_mysql('Refund'), $this->data['Invoice Order Key'], $this->id,
+                                ) ', prepare_mysql($date), prepare_mysql($date), prepare_mysql($date), prepare_mysql('Refund'), $this->data['Invoice Order Key'], $this->id,
                                         $row['Product Key'], $row['Product ID'], $row['Store Key'], $row['Customer Key'],
                                         $amount, $amount, $row['Transaction Tax Rate'], prepare_mysql($row['Transaction Tax Code']),
-                                        prepare_mysql($row['Order Currency Code']), prepare_mysql($row['Invoice Currency Code']), $base_data['Invoice Currency Exchange']
+                                        prepare_mysql($row['Order Currency Code']), prepare_mysql($row['Invoice Currency Code']), $base_data['Invoice Currency Exchange'],prepare_mysql($row['Product Code'])
                                     );
 
+
+                                    $this->db->exec($sql);
                                     print "$sql\n";
                                 }
                             }
@@ -172,15 +177,72 @@ class Invoice extends DB_Table {
 
 
                     }
+                    elseif($transaction['type'] == 'onptf'){
+
+
+                        $sql = sprintf(
+                            'SELECT * FROM `Order No Product Transaction Fact` WHERE `Order Key`=%d AND `Order No Product Transaction Fact Key`=%d AND `Type`="Order" ', $this->data['Invoice Order Key'], $transaction['id']
+                        );
+
+                        if ($result = $this->db->query($sql)) {
+                            if ($row = $result->fetch()) {
+
+                                if ($transaction['amount']>0 and $transaction['amount'] <= ($row['Transaction Net Amount'] - $row['Transaction Refund Net Amount'])) {
+                                    $amount = -1.0 * $transaction['amount'];
+
+                                    $sql = sprintf(
+                                        'INSERT INTO  `Order No Product Transaction Fact` (
+`Order Date`,`Invoice Date`,`Type`,`Order Key`,
+`Invoice Key`,`Transaction Type`,`Transaction Type Key`,
+                                `Transaction Description`,
+                                `Transaction Gross Amount`,`Transaction Net Amount`,`Tax Category Code`,
+                                `Currency Code`,`Currency Exchange`
+                            
+                                ) VALUES (%s,%s,%s,%d,
+                                %d,%s,%d,
+                                        %s,
+                                        %.2f, %.2f,%s,
+                                        %s,%f
+                                        
+                                        
+                                ) ', prepare_mysql($date), prepare_mysql($date), prepare_mysql('Refund'), $this->data['Invoice Order Key'],
+                                        $this->id,prepare_mysql($row['Transaction Type']),$row['Transaction Type Key'],
+                                        prepare_mysql($row['Transaction Description']),
+                                        $amount, $amount, prepare_mysql($row['Tax Category Code']),
+                                        prepare_mysql($row['Currency Code']),$row['Currency Exchange']
+                                    );
+
+
+                                    $this->db->exec($sql);
+                                //    print "$sql\n";
+                                }
+                            }
+                        } else {
+                            print_r($error_info = $this->db->errorInfo());
+                            print "$sql\n";
+                            exit;
+                        }
+
+
+
+                    }
 
 
             }
 
 
-            exit;
+            //exit;
 
 
             $data = array();
+
+
+            $shipping_net=0;
+            $charges_net=0;
+            $insurance_net=0;
+            $other_net=0;
+            $item_net=0;
+            $tax_total=0;
 
             $sql = sprintf(
                 "SELECT  `Transaction Tax Code`,sum(`Order Transaction Amount`) AS net   FROM `Order Transaction Fact` WHERE `Invoice Key`=%d  GROUP BY  `Transaction Tax Code`  ", $this->id
@@ -190,6 +252,7 @@ class Invoice extends DB_Table {
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
                     $data[$row['Transaction Tax Code']] = $row['net'];
+                    $item_net+=$row['net'];
 
                 }
             } else {
@@ -197,6 +260,36 @@ class Invoice extends DB_Table {
                 print "$sql\n";
                 exit;
             }
+
+            //'Credit','Unknown','Refund','Shipping','Charges','Adjust','Other','Deal','Insurance','Discount'
+
+            $sql = sprintf(
+                "SELECT   sum(`Transaction Net Amount`) AS net ,`Transaction Type` FROM `Order No Product Transaction Fact` WHERE `Invoice Key`=%d  GROUP BY  `Transaction Type`  ", $this->id
+            );
+
+
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
+
+
+                    if ($row['Transaction Type']=='Shipping') {
+                        $shipping_net+= $row['net'];
+                    }  elseif ($row['Transaction Type']=='Charges') {
+                        $charges_net+= $row['net'];
+                    }elseif ($row['Transaction Type']=='Insurance') {
+                        $insurance_net+= $row['net'];
+                    } else {
+                        $other_net+= $row['net'];
+                    }
+
+
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+
 
 
             $sql = sprintf(
@@ -238,7 +331,7 @@ class Invoice extends DB_Table {
 
                 $tax_category = get_object('Tax_Category', $tax_code);
                 $tax          = round($tax_category->get('Tax Category Rate') * $amount, 2);
-
+                $tax_total+=$tax;
                 $is_base = 'Yes';
 
                 $sql = sprintf(
@@ -257,21 +350,29 @@ class Invoice extends DB_Table {
 
             }
 
+            $net_total=$item_net+$shipping_net+$charges_net+$insurance_net;
+           $total=$tax_total+$net_total;
 
-            $sql = sprintf(
-                "UPDATE `Payment Dimension` SET `Payment Invoice Key`=%d  WHERE `Payment Order Key`=%d",
+            $this->fast_update(
 
-                $this->id, $this->data['Invoice Order Key']
+                array(
+                    'Invoice Items Gross Amount'        => $item_net,
+                    'Invoice Items Discount Amount'     => 0,
+                    'Invoice Items Net Amount'          => $item_net,
+                    'Invoice Items Out of Stock Amount' => 0,
+                    'Invoice Shipping Net Amount'       => $shipping_net,
+                    'Invoice Charges Net Amount'        => $charges_net,
+                    'Invoice Insurance Net Amount'      => $insurance_net,
+                    'Invoice Total Net Amount'          => $net_total,
+                    'Invoice Total Tax Amount'          => $tax_total,
+                    'Invoice Payments Amount'           => 0,
+                    'Invoice To Pay Amount'             => $total,
+                    'Invoice Total Amount'              => $total,
+                )
+
             );
-            $this->db->exec($sql);
 
 
-            $sql = sprintf(
-                "UPDATE `Order Payment Bridge` SET `Invoice Key`=%d  WHERE `Order Key`=%d",
-
-                $this->id, $this->data['Invoice Order Key']
-            );
-            $this->db->exec($sql);
 
 
             $this->update_payments_totals();
@@ -280,6 +381,8 @@ class Invoice extends DB_Table {
             //todo distribute_insurance_over_the_otf
             //$this->distribute_insurance_over_the_otf();
 
+
+            return $this;
 
         } else {
 
@@ -290,6 +393,9 @@ class Invoice extends DB_Table {
 
 
     }
+
+
+
 
     function update_payments_totals() {
 
@@ -314,7 +420,8 @@ class Invoice extends DB_Table {
 
         $to_pay = round($this->data['Invoice Total Amount'] - $payments, 2);
 
-        $this->update(
+/*
+        print_r(
             array(
 
                 'Invoice Payments Amount'       => $payments,
@@ -322,7 +429,19 @@ class Invoice extends DB_Table {
                 'Invoice Has Been Paid In Full' => ($to_pay == 0 ? 'Yes' : 'No'),
                 'Invoice Paid'                  => ($to_pay == 0 ? 'Yes' : ($payments == 0 ? 'No' : 'Partially')),
 
-            ), 'no_history'
+            )
+
+        );
+*/
+        $this->fast_update(
+            array(
+
+                'Invoice Payments Amount'       => $payments,
+                'Invoice To Pay Amount'         => $to_pay,
+                'Invoice Has Been Paid In Full' => ($to_pay == 0 ? 'Yes' : 'No'),
+                'Invoice Paid'                  => ($to_pay == 0 ? 'Yes' : ($payments == 0 ? 'No' : 'Partially')),
+
+            )
         );
 
         if ($to_pay == 0) {
@@ -1770,6 +1889,27 @@ class Invoice extends DB_Table {
                 return money(
                     $this->data['Invoice '.$key], $this->data['Invoice Currency']
                 );
+
+            case('Refund Items Gross Amount'):
+            case('Refund Items Discount Amount'):
+            case('Refund Items Net Amount'):
+            case('Refund Items Tax Amount'):
+            case('Refund Charges Net Amount'):
+            case('Refund Shipping Net Amount'):
+            case('Refund Insurance Net Amount'):
+            case('Refund Total Net Amount'):
+            case('Refund Total Tax Amount'):
+            case('Refund Total Amount'):
+            case('Refund Total Net Adjust Amount'):
+            case('Refund Total Tax Adjust Amount'):
+
+            $key=preg_replace('/Refund /','',$key);
+
+                return money(
+                    -1*$this->data['Invoice '.$key], $this->data['Invoice Currency']
+                );
+
+
                 break;
             case ('Net Amount Off'):
                 return money(
@@ -1862,20 +2002,39 @@ class Invoice extends DB_Table {
 
     function get_formatted_payment_state() {
 
-        switch ($this->data['Invoice Paid']) {
-            case 'Yes':
-                return _('Paid in full');
-                break;
-            case 'No':
-                return _('Not Paid');
-                break;
-            case 'Partially':
-                return _('Partially Paid');
-                break;
-            default:
-                return _('Unknown');
+        if($this->data['Invoice Type']=='Refund'){
+            switch ($this->data['Invoice Paid']) {
+                case 'Yes':
+                    return _('Paid back in full');
+                    break;
+                case 'No':
+                    return _('Not paid back');
+                    break;
+                case 'Partially':
+                    return _('Partially paid back');
+                    break;
+                default:
+                    return _('Unknown');
 
+            }
+        }else{
+            switch ($this->data['Invoice Paid']) {
+                case 'Yes':
+                    return _('Paid in full');
+                    break;
+                case 'No':
+                    return _('Not paid');
+                    break;
+                case 'Partially':
+                    return _('Partially Paid');
+                    break;
+                default:
+                    return _('Unknown');
+
+            }
         }
+
+
     }
 
 
