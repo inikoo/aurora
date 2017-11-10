@@ -322,6 +322,17 @@ $object_fields = array(
 
 
             ),
+            array(
+                'edit'     => ($edit ? 'textarea' : ''),
+                'id'       => 'Store_Proforma_Message',
+                'value'    => $object->get('Store Proforma Message'),
+                'label'    => ucfirst($object->get_field_label('Store Proforma Message')),
+                'required' => false,
+
+                'type' => 'value'
+
+
+            ),
 
 
         )

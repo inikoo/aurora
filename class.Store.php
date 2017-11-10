@@ -2428,9 +2428,11 @@ class Store extends DB_Table {
                 $label = _('Emails signature');
                 break;
             case 'Store Invoice Message':
-                $label = _('Invoices signature');
+                $label = _('Invoice signature');
                 break;
-
+            case 'Store Proforma Message':
+                $label = _('Proforma signature');
+                break;
             case 'Store Collect Address':
                 $label = _("Collection address");
                 break;

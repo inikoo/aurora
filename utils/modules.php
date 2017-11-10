@@ -667,12 +667,21 @@ $modules = array(
                         ),
                         'icon'  => 'database'
                     ),
-                    'invoice.history'        => array(
+                    'invoice.payments'        => array(
                         'label' => _(
-                            'History'
+                            'Payments'
                         ),
-                        'icon'  => 'road'
+                        'icon'  => 'usd',
+
                     ),
+                    'invoice.history'        => array(
+                        'label' => '',
+                        'title' => _('History'),
+                        'icon'  => 'road',
+                        'class' => 'right icon_only'
+
+                    )
+                    /*,
                     'invoice.orders'         => array(
                         'label' => _(
                             'Orders'
@@ -685,6 +694,7 @@ $modules = array(
                         ),
                         'icon'  => 'truck'
                     ),
+                    */
                 )
 
             ),

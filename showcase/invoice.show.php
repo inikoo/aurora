@@ -20,6 +20,8 @@ function get_invoice_showcase($data,$smarty, $user,$db) {
 
 
     $data['_object']->update_payments_totals();
+
+
     $smarty->assign('invoice', $data['_object']);
 
     $smarty->assign('order',get_object('order', $data['_object']->get('Invoice Order Key')));
@@ -36,13 +38,23 @@ function get_invoice_showcase($data,$smarty, $user,$db) {
         prepare_mysql($account->get('Account Country Code'))
     );
 
-
+    if(($data['_object']->get('Invoice Type')=='Refund')){
+        $factor=-1;
+    }else{
+        $factor=1;
+    }
     if ($result=$db->query($sql)) {
     		foreach ($result as $row) {
+
+
+
+
+
                 $tax_data[] = array(
                     'name'   => $row['Tax Category Name'],
+
                     'amount' => money(
-                        $row['Tax Amount'], $invoice->data['Invoice Currency']
+                        $factor*$row['Tax Amount'], $invoice->data['Invoice Currency']
                     )
                 );
     		}
@@ -57,7 +69,14 @@ function get_invoice_showcase($data,$smarty, $user,$db) {
 
     $smarty->assign('tax_data', $tax_data);
 
-    return $smarty->fetch('showcase/invoice.tpl');
+
+    if($data['_object']->get('Invoice Type')=='Refund'){
+        return $smarty->fetch('showcase/refund.tpl');
+
+    }else{
+        return $smarty->fetch('showcase/invoice.tpl');
+
+    }
 
 
 }

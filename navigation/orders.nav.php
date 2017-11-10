@@ -2089,8 +2089,13 @@ function get_invoice_navigation($data, $smarty, $user, $db, $account) {
         $sections[$_section]['selected'] = true;
     }
 
+if($object->get('Invoice Type')=='Refund'){
+    $title = _('Refund').' <span class="id Invoice_Public_ID">'.$object->get('Invoice Public ID').'</span>';
 
+}else{
     $title = _('Invoice').' <span class="id Invoice_Public_ID">'.$object->get('Invoice Public ID').'</span>';
+
+}
 
 
     $_content = array(
