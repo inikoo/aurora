@@ -12,6 +12,7 @@
 require_once 'common.php';
 require_once 'utils/ar_common.php';
 require_once 'utils/table_functions.php';
+require_once 'utils/object_functions.php';
 
 
 if (!isset($_REQUEST['tipo'])) {
@@ -38,7 +39,10 @@ switch ($tipo) {
         break;
     case 'payments':
     case 'order.payments':
-        payments(get_table_parameters(), $db, $user);
+    case 'invoice.payments':
+    case 'refund.payments':
+
+    payments(get_table_parameters(), $db, $user);
         break;
     default:
         $response = array(
@@ -167,6 +171,26 @@ function payments($_data, $db, $user) {
     include_once 'prepare_table/init.php';
 
 
+    $parent=get_object($_data['parameters']['parent'],$_data['parameters']['parent_key']);
+
+
+    $is_refund=false;
+    if($parent->get_object_name()=='Order'  and $parent->get('State Index')<90 ){
+        $show_operations=true;
+    }elseif($parent->get_object_name()=='Invoice' and $parent->get('Invoice Type')=='Refund'){
+        $show_operations=true;
+        $is_refund=true;
+    }
+    else{
+        $show_operations=false;
+
+    }
+
+
+
+
+
+
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
     $adata = array();
@@ -196,6 +220,17 @@ function payments($_data, $db, $user) {
 
             $refundable_amount = $data['Payment Transaction Amount'] - $refund_amount;
 
+
+           if($is_refund){
+              $to_refund=  -1*$parent->get('Invoice To Pay Amount');
+
+              if($to_refund<$refundable_amount){
+                  $refundable_amount=$to_refund;
+
+              }
+
+           }
+
             $operations = '';
             switch ($data['Payment Transaction Status']) {
                 case 'Pending':
@@ -208,13 +243,16 @@ function payments($_data, $db, $user) {
                     if ($data['Payment Account Block'] == 'Accounts') {
                         $operations = '';
                     } else {
+
+
+
                         $operations = sprintf(
                             '<span class="operations">
                             <i class="fa fa-trash button %s" aria-hidden="true" title="'._('Remove payment').'"  onClick="cancel_payment(this,%d)"  ></i>
                             <i class="fa fa-share fa-flip-horizontal button %s" data-settings=\'{"reference":"%s","amount_formatted":"%s","amount":"%s","can_refund_online":"%s"}\'   aria-hidden="true" title="'
                             ._('Refund/Credit payment').'"  onClick="open_refund_dialog(this,%d)"  ></i>
 
-                            </span>', ($data['Payment Submit Type'] != 'Manual' ? 'hide' : ''), $data['Payment Key'],
+                            </span>', (($data['Payment Submit Type'] != 'Manual' or $is_refund )? 'hide' : ''), $data['Payment Key'],
 
                             (($data['Payment Type'] == 'Payment' and $refundable_amount > 0) ? '' : 'hide'),
 
@@ -275,12 +313,12 @@ function payments($_data, $db, $user) {
                 'id'         => (integer)$data['Payment Key'],
                 'currency'   => $data['Payment Currency Code'],
                 'amount'     => $amount,
-                'reference'  => sprintf("<span class='link' onclick='change_view(\"/payment/%d\")' >%05d", $data['Payment Key'], $data['Payment Transaction ID']),
+                'reference'  => sprintf("<span class='link' onclick='change_view(\"/payment/%d\")' >%s</span>", $data['Payment Key'], $data['Payment Transaction ID']),
                 'type'       => $type,
                 'status'     => $status,
                 'notes'      => $notes,
                 'date'       => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Payment Last Updated Date'].' +0:00')),
-                'operations' => $operations,
+                'operations' => ($show_operations?$operations:''),
                 'refunds'    => $refunds,
                 'account'    => $account
 

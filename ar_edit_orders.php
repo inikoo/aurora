@@ -54,6 +54,7 @@ switch ($tipo) {
                          'reference'   => array('type' => 'string'),
                          'submit_type' => array('type' => 'string'),
                          'amount'      => array('type' => 'string'),
+                         'payback_refund'      => array('type' => 'string'),
 
 
                      )
@@ -563,7 +564,29 @@ function new_payment($data, $editor, $smarty, $db, $account, $user) {
     include_once 'utils/currency_functions.php';
 
 
-    $order         = get_object('Order', $data['parent_key']);
+    $payback_refund = false;
+
+    if ($data['parent'] == 'invoice') {
+
+        $invoice = get_object($data['parent'], $data['parent_key']);
+
+        if ($invoice->get('Invoice Type') == 'Refund') {
+
+            $payback_refund = true;
+            $data['amount'] = -1 * $data['amount'];
+
+
+        }
+
+        $order = get_object('Order', $invoice->get('Invoice Order Key'));
+
+
+    } else {
+        $order = get_object('Order', $data['parent_key']);
+
+    }
+
+
     $order->editor = $editor;
 
     $payment_account         = get_object('Payment_Account', $data['payment_account_key']);
@@ -597,9 +620,9 @@ function new_payment($data, $editor, $smarty, $db, $account, $user) {
 
     );
 
+    $customer = get_object('Customer', $order->get('Customer Key'));
 
-    if ($payment_account->get('Payment Account Block') == 'Accounts') {
-        $customer = get_object('Customer', $order->get('Customer Key'));
+    if ($payment_account->get('Payment Account Block') == 'Accounts' and !$payback_refund) {
 
 
         if ($customer->get('Customer Account Balance') < $data['amount']) {
@@ -641,6 +664,13 @@ function new_payment($data, $editor, $smarty, $db, $account, $user) {
 
     $order->add_payment($payment);
     $order->update_totals();
+
+    if (!$payback_refund) {
+
+        $invoice=get_object('invoice', $order->get('Order Invoice Key'));
+    }
+
+    $invoice->add_payment($payment);
 
 
     $operations = array();
@@ -944,6 +974,17 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user) {
     $order->add_payment($refund);
     $order->update_totals();
 
+
+    if($data['payback_refund']){
+        $invoice=get_object('invoice',$data['payback_refund']);
+    }else{
+        $invoice=get_object('invoice',$order->get('Invoice Order Key'));
+
+    }
+
+    $invoice->add_payment($refund);
+
+
     $operations = array();
 
 
@@ -1011,7 +1052,9 @@ function create_refund($data, $editor, $smarty, $db) {
     if ($refund->id) {
         $response = array(
             'state'      => 200,
-            'refund_key' => $refund->id
+            'refund_key' => $refund->id,
+            'store_key' => $refund->get('Store Key')
+
         );
     } else {
         $response = array(

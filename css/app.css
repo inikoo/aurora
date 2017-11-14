@@ -8308,4 +8308,12 @@ table.filter {
   margin-left: -8.75em;
   content: attr(data-tip); }
 
+.payment_button {
+  color: #aaa;
+  border-color: #dddddd; }
+
+.payment_button.selected {
+  color: #08728b;
+  border-color: #08728b; }
+
 /*# sourceMappingURL=app.css.map */

@@ -1440,6 +1440,16 @@ class Order extends DB_Table {
                 );
 
                 break;
+
+            case('Total Balance'):
+            case('Total Refunds'):
+                return money(
+                     $this->data['Order '.$key], $this->data['Order Currency']
+                );
+                break;
+
+
+
             case('Shipping And Handing Net Amount'):
                 return money($this->data['Order Shipping Net Amount'] + $this->data['Order Charges Net Amount']);
                 break;

@@ -2475,7 +2475,18 @@ $tab_defaults = array(
 
 
     ),
-    'order.payments'                          => array(
+
+    'invoice.payments'                          => array(
+        'view'        => 'overview',
+        'sort_key'    => 'date',
+        'sort_order'  => -1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'reference'
+
+
+    ),
+    'refund.payments'                          => array(
         'view'        => 'overview',
         'sort_key'    => 'date',
         'sort_order'  => -1,

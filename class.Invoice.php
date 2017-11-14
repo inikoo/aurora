@@ -166,7 +166,7 @@ class Invoice extends DB_Table {
 
 
                                     $this->db->exec($sql);
-                                    print "$sql\n";
+                                   // print "$sql\n";
                                 }
                             }
                         } else {
@@ -399,6 +399,8 @@ class Invoice extends DB_Table {
 
     function update_payments_totals() {
 
+
+
         $payments = 0;
 
         $sql = sprintf(
@@ -409,6 +411,9 @@ class Invoice extends DB_Table {
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
+
+                //print_r($row);
+
                 $payments = round($row['amount'], 2);
             }
         } else {
@@ -1902,12 +1907,21 @@ class Invoice extends DB_Table {
             case('Refund Total Amount'):
             case('Refund Total Net Adjust Amount'):
             case('Refund Total Tax Adjust Amount'):
-
+            case('Refund Payments Amount'):
+            case 'Refund To Pay Amount':
             $key=preg_replace('/Refund /','',$key);
 
-                return money(
-                    -1*$this->data['Invoice '.$key], $this->data['Invoice Currency']
-                );
+
+                if($this->data['Invoice '.$key]==0){
+                    return money(0,$this->data['Invoice Currency']);
+
+                }else{
+                    return money(
+                        -1*$this->data['Invoice '.$key], $this->data['Invoice Currency']
+                    );
+                }
+
+
 
 
                 break;
@@ -2061,7 +2075,9 @@ class Invoice extends DB_Table {
                 }
 
                 if ($scope == 'objects') {
-                    $payments[$row['Payment Key']] = get_object('Payment', $row['Payment Key']);
+                    $_object=get_object('Payment', $row['Payment Key']);
+                    $_object->load_payment_account();
+                    $payments[$row['Payment Key']] = $_object;
 
                 } else {
                     $payments[$row['Payment Key']] = $row['Payment Key'];
@@ -2073,9 +2089,27 @@ class Invoice extends DB_Table {
         }
 
 
+
+
         return $payments;
 
     }
+
+
+    function add_payment($payment) {
+
+        $payment->update(array('Payment Invoice Key' => $this->id), 'no_history');
+
+        $sql = sprintf('update `Order Payment Bridge` set `Invoice Key`=%d where `Payment Key`=%d ', $this->id, $payment->id);
+
+        $this->db->exec($sql);
+        $this->update_payments_totals();
+
+
+
+
+    }
+
 
 }
 
