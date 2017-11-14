@@ -596,9 +596,7 @@ $modules = array(
                         'icon'  => 'file-text-o'
                     ),
                     'order.payments'       => array(
-                        'label' => _(
-                            'Payments'
-                        ),
+                        'label' => _('Payments'),
                         'icon'  => 'usd'
                     ),
 
@@ -668,9 +666,7 @@ $modules = array(
                         'icon'  => 'database'
                     ),
                     'invoice.payments'        => array(
-                        'label' => _(
-                            'Payments'
-                        ),
+                        'label' => _('Payments'),
                         'icon'  => 'usd',
 
                     ),

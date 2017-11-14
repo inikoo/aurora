@@ -284,6 +284,10 @@ function save_refund(element){
     ajaxData.append("amount", $('#payment_refund_amount').val())
     ajaxData.append("reference", $('#payment_refund_reference').val())
 
+    ajaxData.append("payback_refund", $('#payback_refund').val())
+
+
+
 
     $.ajax({
         url: "/ar_edit_orders.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false, complete: function () {
@@ -292,7 +296,11 @@ function save_refund(element){
             if (data.state == '200') {
 
                 // todo: update current view instead of reload page
-                location.reload();
+
+
+                change_view(state.request,{ 'reload_showcase': 1})
+
+
 
                 // tr.removeClass('deleting_tr').addClass('deleted_tr')
                 // $('#delete_payment_button_' + payment_key).html(data.msg).closest('td').addClass('hide').html('')

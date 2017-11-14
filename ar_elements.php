@@ -232,7 +232,7 @@ switch ($tab) {
         );
         get_orders_archived_element_numbers($db, $data['parameters'], $user);
         break;
-
+    case 'invoices_server':
     case 'invoices':
     case 'customer.invoices':
         $data = prepare_values(
@@ -1879,7 +1879,8 @@ function get_invoices_element_numbers($db, $parameters) {
         list($where, $table) = invoices_awhere($raw_data);
 
 
-    } elseif ($parameters['parent'] == 'category') {
+    }
+    elseif ($parameters['parent'] == 'category') {
         $category = new Category($parameters['parent_key']);
 
 
@@ -1935,14 +1936,13 @@ function get_invoices_element_numbers($db, $parameters) {
             $store    = new Store($parameters['parent_key']);
             $currency = $store->data['Store Currency Code'];
         } else {
-            $where .= sprintf(' and  false');
+            $where = sprintf(' and  false');
         }
 
 
     } elseif ($parameters['parent'] == 'account') {
-        if (is_numeric($parameters['parent_key']) and in_array(
-                $parameters['parent_key'], $user->stores
-            )) {
+
+
 
             if (count($user->stores) == 0) {
                 $where = ' where false';
@@ -1953,7 +1953,9 @@ function get_invoices_element_numbers($db, $parameters) {
                 );
 
             }
-        }
+
+
+
     } elseif ($parameters['parent'] == 'order') {
 
         $table =
@@ -2010,7 +2012,7 @@ function get_invoices_element_numbers($db, $parameters) {
     );
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
-            $elements_numbers['source'][$row['element']] = number(
+            $elements_numbers['payment_state'][$row['element']] = number(
                 $row['number']
             );
         }

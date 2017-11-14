@@ -29,6 +29,11 @@
     <input type="hidden"  id="payment_refund_refund_type" value=""  >
     <input type="hidden"  id="payment_refund_submit_type" value=""  >
     <input type="hidden"  id="payment_refund_payment_key" value=""  >
+    <input type="hidden"  id="payback_refund" value="{if isset($payback_refund)}{$payback_refund}{/if}"  >
+
+
+
+
 
     <i class="fa fa-window-close button" onclick="close_refund_dialog()" aria-hidden="true" style="margin-bottom:5px"></i>
 

@@ -10,7 +10,7 @@
  Version 3.0
 */
 
-function get_invoice_showcase($data,$smarty, $user,$db) {
+function get_invoice_showcase($data, $smarty, $user, $db) {
 
     global $account;
 
@@ -24,8 +24,17 @@ function get_invoice_showcase($data,$smarty, $user,$db) {
 
     $smarty->assign('invoice', $data['_object']);
 
-    $smarty->assign('order',get_object('order', $data['_object']->get('Invoice Order Key')));
+    $smarty->assign('order', get_object('order', $data['_object']->get('Invoice Order Key')));
 
+
+    $store = get_object('store', $data['_object']->get('Store Key'));
+
+    $smarty->assign('store', $store);
+
+
+    $customer = get_object('customer', $data['_object']->get('Customer Key'));
+
+    $smarty->assign('customer', $customer);
 
     $smarty->assign('user', $user);
 
@@ -33,47 +42,62 @@ function get_invoice_showcase($data,$smarty, $user,$db) {
 
     $tax_data = array();
     $sql      = sprintf(
-        "SELECT `Tax Category Name`,`Tax Category Rate`,`Tax Amount`  FROM  `Invoice Tax Bridge` B  LEFT JOIN kbase.`Tax Category Dimension` T ON (T.`Tax Category Code`=B.`Tax Code`)  WHERE B.`Invoice Key`=%d  and `Tax Category Country Code`=%s  ",
-        $invoice->id,
+        "SELECT `Tax Category Name`,`Tax Category Rate`,`Tax Amount`  FROM  `Invoice Tax Bridge` B  LEFT JOIN kbase.`Tax Category Dimension` T ON (T.`Tax Category Code`=B.`Tax Code`)  WHERE B.`Invoice Key`=%d  AND `Tax Category Country Code`=%s  ", $invoice->id,
         prepare_mysql($account->get('Account Country Code'))
     );
 
-    if(($data['_object']->get('Invoice Type')=='Refund')){
-        $factor=-1;
-    }else{
-        $factor=1;
+    if (($data['_object']->get('Invoice Type') == 'Refund')) {
+        $factor = -1;
+    } else {
+        $factor = 1;
     }
-    if ($result=$db->query($sql)) {
-    		foreach ($result as $row) {
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
 
 
+            $tax_data[] = array(
+                'name' => $row['Tax Category Name'],
 
-
-
-                $tax_data[] = array(
-                    'name'   => $row['Tax Category Name'],
-
-                    'amount' => money(
-                        $factor*$row['Tax Amount'], $invoice->data['Invoice Currency']
-                    )
-                );
-    		}
-    }else {
-    		print_r($error_info=$db->errorInfo());
-    		print "$sql\n";
-    		exit;
+                'amount' => money(
+                    $factor * $row['Tax Amount'], $invoice->data['Invoice Currency']
+                )
+            );
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
     }
-
-
 
 
     $smarty->assign('tax_data', $tax_data);
 
 
-    if($data['_object']->get('Invoice Type')=='Refund'){
+    if ($data['_object']->get('Invoice Type') == 'Refund') {
+
+
+
+
+        $smarty->assign(
+            'object_data', base64_encode(
+                             json_encode(
+                                 array(
+                                     'object' => $data['object'],
+                                     'key'    => $data['key'],
+                                     'symbol'=>currency_symbol($invoice->get('Order Currency')),
+                                     'tax_rate'=>$invoice->get('Invoice Tax Rate'),
+                                     'available_to_refund'=>$invoice->get('Invoice Total Amount'),
+                                     'tab' => $data['tab'],
+                                     'order_type'=>$invoice->get('Invoice Type'),
+                                 )
+                             )
+                         )
+        );
+
+
         return $smarty->fetch('showcase/refund.tpl');
 
-    }else{
+    } else {
         return $smarty->fetch('showcase/invoice.tpl');
 
     }

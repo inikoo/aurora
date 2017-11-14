@@ -143,7 +143,6 @@ function get_view($db, $smarty, $user, $account, $modules) {
 
 
 
-
     switch ($state['parent']) {
 
 
@@ -2383,6 +2382,7 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
     }
 
 
+
     if (isset($modules[$data['module']]['sections'][$data['section']]['tabs'][$data['tab']] ['subtabs'])) {
 
         $subtabs = $modules[$data['module']]['sections'][$data['section']]['tabs'][$data['tab']]['subtabs'];
@@ -2532,7 +2532,8 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
         //print_r($_content);
 
 
-    } elseif ($data['module'] == 'suppliers' and $data['section'] == 'order') {
+    }
+    elseif ($data['module'] == 'suppliers' and $data['section'] == 'order') {
         if ($data['_object']->get('Purchase Order State') == 'InProcess') {
 
             //$data['tab']='supplier.order.items';
@@ -2551,7 +2552,8 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
 
 
         }
-    } elseif ($data['module'] == 'products' and $data['section'] == 'webpage') {
+    }
+    elseif ($data['module'] == 'products' and $data['section'] == 'webpage') {
 
 
         if (!in_array(
@@ -2568,7 +2570,8 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
         }
 
 
-    } elseif ($data['section'] == 'website') {
+    }
+    elseif ($data['section'] == 'website') {
 
 
         if ($data['website']->get('Website Status') == 'Active') {
@@ -2628,6 +2631,9 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
     }
 
     $html = $smarty->fetch('tabs.tpl');
+
+
+
 
     return array(
         $data,

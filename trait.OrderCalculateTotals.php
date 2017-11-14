@@ -15,14 +15,13 @@ trait OrderCalculateTotals {
     function update_totals() {
 
 
-
         $number_items             = 0;
         $number_with_deals        = 0;
         $number_with_out_of_stock = 0;
         $number_with_problems     = 0;
         $total_weight             = 0;
         $total_items_gross        = 0;
-        $total_items_out_of_stock        = 0;
+        $total_items_out_of_stock = 0;
         $total_items_net          = 0;
         $total_items_discounts    = 0;
 
@@ -35,7 +34,7 @@ trait OrderCalculateTotals {
 		sum(`Order Transaction Out of Stock Amount`) AS out_of_stock ,
 		sum(if(`Order Transaction Total Discount Amount`!=0,1,0)) AS number_with_deals ,
 		sum(if(`No Shipped Due Out of Stock`!=0,1,0)) AS number_with_out_of_stock
-		FROM `Order Transaction Fact` WHERE `Order Key`=%d  ", $this->id
+		FROM `Order Transaction Fact` WHERE `Order Key`=%d AND `Order Transaction Type`='Order' ", $this->id
         );
 
 
@@ -46,7 +45,7 @@ trait OrderCalculateTotals {
                 $number_with_out_of_stock = $row['number_with_out_of_stock'];
 
 
-                $total_items_out_of_stock=  $row['out_of_stock'];
+                $total_items_out_of_stock = $row['out_of_stock'];
                 $total_weight             = $row['weight'];
                 $total_items_gross        = $row['gross'];
                 $total_items_net          = $row['net'];
@@ -56,7 +55,6 @@ trait OrderCalculateTotals {
             print_r($error_info = $this->db->errorInfo());
             exit;
         }
-
 
 
         $sql = sprintf(
@@ -81,15 +79,14 @@ trait OrderCalculateTotals {
 
         $total_net = 0;
         $total_tax = 0;
-        $data=array();
+        $data      = array();
 
         $sql = sprintf(
             "SELECT  `Transaction Tax Code`,sum(`Order Transaction Amount`) AS net   FROM `Order Transaction Fact` WHERE
-		`Order Key`=%d  GROUP BY  `Transaction Tax Code`  ", $this->id
+		`Order Key`=%d  AND `Order Transaction Type`='Order' GROUP BY  `Transaction Tax Code`  ", $this->id
         );
 
-      //  print $sql;
-
+        //  print $sql;
 
 
         if ($result = $this->db->query($sql)) {
@@ -106,7 +103,7 @@ trait OrderCalculateTotals {
 
         $sql = sprintf(
             "SELECT  `Tax Category Code`, sum(`Transaction Net Amount`) AS net  FROM `Order No Product Transaction Fact` WHERE
-		`Order Key`=%d   GROUP BY  `Tax Category Code`     ", $this->id
+		`Order Key`=%d  AND `Type`='Order' GROUP BY  `Tax Category Code`     ", $this->id
 
         );
 
@@ -132,20 +129,17 @@ trait OrderCalculateTotals {
 
         foreach ($data as $tax_code => $amount) {
 
-            $tax_category =    get_object('Tax_Category', $tax_code);
+            $tax_category = get_object('Tax_Category', $tax_code);
 
 
-
-            $total_net += round($amount,2);
+            $total_net += round($amount, 2);
             $tax       = round($tax_category->get('Tax Category Rate') * $amount, 2);
             $total_tax += $tax;
 
         }
 
 
-
-
-        $total = round($total_net + $total_tax,2);
+        $total = round($total_net + $total_tax, 2);
 
         $shipping  = 0;
         $charges   = 0;
@@ -154,7 +148,7 @@ trait OrderCalculateTotals {
 
         $sql = sprintf(
             "SELECT `Transaction Type`,  sum(`Transaction Net Amount`) AS net  FROM `Order No Product Transaction Fact` WHERE
-		`Order Key`=%d  GROUP BY  `Transaction Type`  ", $this->id
+		`Order Key`=%d  AND `Type`='Order' GROUP BY  `Transaction Type`  ", $this->id
         );
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
@@ -183,15 +177,14 @@ trait OrderCalculateTotals {
         $payments = 0;
 
         $sql = sprintf(
-            'SELECT sum(`Payment Transaction Amount`) AS amount  FROM `Order Payment Bridge` B LEFT JOIN `Payment Dimension` P  ON (B.`Payment Key`=P.`Payment Key`) WHERE `Order Key`=%d AND `Payment Transaction Status`="Completed" ',
-            $this->id
+            'SELECT sum(`Payment Transaction Amount`) AS amount  FROM `Order Payment Bridge` B LEFT JOIN `Payment Dimension` P  ON (B.`Payment Key`=P.`Payment Key`) WHERE `Order Key`=%d AND `Payment Transaction Status`="Completed" ', $this->id
         );
 
-       // print $sql;
+        // print $sql;
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-                $payments = round($row['amount'],2);
+                $payments = round($row['amount'], 2);
             }
         } else {
             print_r($error_info = $this->db->errorInfo());
@@ -200,6 +193,21 @@ trait OrderCalculateTotals {
         }
 
 
+        $total_refunds = 0;
+
+        $sql = sprintf('SELECT sum(`Invoice Total Amount`) AS amount FROM `Invoice Dimension` WHERE `Invoice Order Key`=%d AND `Invoice Type`="Refund"  ', $this->id);
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $total_refunds = round($row['amount'], 2);
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+        $total_balance = $total + $total_refunds;
 
 
         $this->fast_update(
@@ -211,29 +219,25 @@ trait OrderCalculateTotals {
                 'Order Items Net Amount'          => $total_items_net,
                 'Order Items Gross Amount'        => $total_items_gross,
                 'Order Items Discount Amount'     => $total_items_discounts,
-                'Order Items Out of Stock Amount'     => $total_items_out_of_stock,
+                'Order Items Out of Stock Amount' => $total_items_out_of_stock,
 
 
-
-                'Order Number Items Out of Stock'     => $number_with_out_of_stock,
-
+                'Order Number Items Out of Stock' => $number_with_out_of_stock,
 
 
-
-                'Order Shipping Net Amount'       => $shipping,
-                'Order Charges Net Amount'        => $charges,
-                'Order Insurance Net Amount'      => $insurance,
-                'Order Total Net Amount'          => $total_net,
-                'Order Total Tax Amount'          => $total_tax,
-                'Order Total Amount'              => $total,
-                'Order Payments Amount'           => $payments,
-                'Order To Pay Amount'             => round($total - $payments,2)
-
+                'Order Shipping Net Amount'  => $shipping,
+                'Order Charges Net Amount'   => $charges,
+                'Order Insurance Net Amount' => $insurance,
+                'Order Total Net Amount'     => $total_net,
+                'Order Total Tax Amount'     => $total_tax,
+                'Order Total Amount'         => $total,
+                'Order Payments Amount'      => $payments,
+                'Order To Pay Amount'        => round($total_balance - $payments, 2),
+                'Order Total Refunds'        => $total_refunds,
+                'Order Total Balance'        => $total_balance,
 
             )
         );
-
-
 
 
     }
