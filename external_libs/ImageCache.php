@@ -355,6 +355,12 @@ class ImageCache {
                 $server_request_scheme = 'http';
             }
 
+
+            if(empty($_SERVER['HTTP_HOST'])){
+                print_r($_SERVER['HTTP_HOST']);
+            }
+
+
             $image_url = $server_request_scheme."://".$_SERVER['HTTP_HOST'].'/'.$image_path;
 
 
