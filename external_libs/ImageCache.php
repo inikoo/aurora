@@ -372,9 +372,9 @@ class ImageCache {
         } else {
             $image_url = $this->cached_image_url."/".basename($src);
         }
-        if ($this->link_is_broken($image_url)) {
-            $this->error('Final image URL is broken');
-        }
+        //if ($this->link_is_broken($image_url)) {
+        //    $this->error('Final image URL is broken');
+        //}
 
 
         return $image_url;
