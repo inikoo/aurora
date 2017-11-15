@@ -290,7 +290,7 @@ class Payment_Account extends DB_Table {
             $balance  = $row['balance'];
         }
 
-        $this->update(
+        $this->fast_update(
             array(
                 'Payment Account Transactions'    => $transactions,
                 'Payment Account Payments Amount' => $payments,
@@ -300,7 +300,7 @@ class Payment_Account extends DB_Table {
                 'Payment Account Balance Amount' => $balance,
 
 
-            ), 'no_history'
+            )
         );
 
     }

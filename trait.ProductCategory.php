@@ -139,8 +139,7 @@ trait ProductCategory {
         if ($fork_key) {
 
             $sql = sprintf(
-                "UPDATE `Fork Dimension` SET `Fork State`='In Process' ,`Fork Operations Total Operations`=%d,`Fork Start Date`=NOW(),`Fork Result`=%d  WHERE `Fork Key`=%d ", count($dates),
-                $timeseries->id, $fork_key
+                "UPDATE `Fork Dimension` SET `Fork State`='In Process' ,`Fork Operations Total Operations`=%d,`Fork Start Date`=NOW(),`Fork Result`=%d  WHERE `Fork Key`=%d ", count($dates), $timeseries->id, $fork_key
             );
 
             $this->db->exec($sql);
@@ -250,8 +249,7 @@ trait ProductCategory {
             $sql = sprintf(
                 "SELECT count(DISTINCT `Invoice Key`)  AS invoices,count(DISTINCT `Customer Key`)  AS customers,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) net,sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)*`Invoice Currency Exchange Rate`) dc_net
 
-			FROM `Order Transaction Fact` WHERE `Product ID` IN (%s)  AND `Invoice Key`>0 AND  `Invoice Date`>=%s  AND   `Invoice Date`<=%s  ", $product_ids,
-                prepare_mysql($date_frequency_period['from']), prepare_mysql($date_frequency_period['to'])
+			FROM `Order Transaction Fact` WHERE `Product ID` IN (%s)  AND `Invoice Key`>0 AND  `Invoice Date`>=%s  AND   `Invoice Date`<=%s  ", $product_ids, prepare_mysql($date_frequency_period['from']), prepare_mysql($date_frequency_period['to'])
             );
 
 
@@ -349,8 +347,8 @@ trait ProductCategory {
             $data_to_update = array(
                 "Product Category $db_interval Acc Customers"          => $sales_product_category_data['customers'],
                 "Product Category $db_interval Acc Invoices"           => $sales_product_category_data['invoices'],
-                "Product Category $db_interval Acc Profit"             => round($sales_product_category_data['profit'],2),
-                "Product Category $db_interval Acc Invoiced Amount"    => round($sales_product_category_data['net'],2),
+                "Product Category $db_interval Acc Profit"             => round($sales_product_category_data['profit'], 2),
+                "Product Category $db_interval Acc Invoiced Amount"    => round($sales_product_category_data['net'], 2),
                 "Product Category $db_interval Acc Quantity Ordered"   => $sales_product_category_data['ordered'],
                 "Product Category $db_interval Acc Quantity Invoiced"  => $sales_product_category_data['invoiced'],
                 "Product Category $db_interval Acc Quantity Delivered" => $sales_product_category_data['delivered'],
@@ -358,13 +356,13 @@ trait ProductCategory {
             );
 
 
-            $this->fast_update($data_to_update,'Product Category Data');
+            $this->fast_update($data_to_update, 'Product Category Data');
 
             $data_to_update = array(
-                "Product Category DC $db_interval Acc Profit"          => round($sales_product_category_data['dc_profit'],2),
-                "Product Category DC $db_interval Acc Invoiced Amount" => round($sales_product_category_data['dc_net'],2)
+                "Product Category DC $db_interval Acc Profit"          => round($sales_product_category_data['dc_profit'], 2),
+                "Product Category DC $db_interval Acc Invoiced Amount" => round($sales_product_category_data['dc_net'], 2)
             );
-            $this->fast_update($data_to_update,'Product Category DC Data');
+            $this->fast_update($data_to_update, 'Product Category DC Data');
 
         }
 
@@ -377,20 +375,20 @@ trait ProductCategory {
             $data_to_update = array(
                 "Product Category $db_interval Acc 1YB Customers"          => $sales_product_category_data['customers'],
                 "Product Category $db_interval Acc 1YB Invoices"           => $sales_product_category_data['invoices'],
-                "Product Category $db_interval Acc 1YB Profit"             => round($sales_product_category_data['profit'],2),
-                "Product Category $db_interval Acc 1YB Invoiced Amount"    => round($sales_product_category_data['net'],2),
+                "Product Category $db_interval Acc 1YB Profit"             => round($sales_product_category_data['profit'], 2),
+                "Product Category $db_interval Acc 1YB Invoiced Amount"    => round($sales_product_category_data['net'], 2),
                 "Product Category $db_interval Acc 1YB Quantity Ordered"   => $sales_product_category_data['ordered'],
                 "Product Category $db_interval Acc 1YB Quantity Invoiced"  => $sales_product_category_data['invoiced'],
                 "Product Category $db_interval Acc 1YB Quantity Delivered" => $sales_product_category_data['delivered'],
 
             );
-            $this->fast_update($data_to_update,'Product Category Data');
+            $this->fast_update($data_to_update, 'Product Category Data');
 
             $data_to_update = array(
-                "Product Category DC $db_interval Acc 1YB Profit"          => round($sales_product_category_data['dc_profit'],2),
-                "Product Category DC $db_interval Acc 1YB Invoiced Amount" => round($sales_product_category_data['dc_net'],2)
+                "Product Category DC $db_interval Acc 1YB Profit"          => round($sales_product_category_data['dc_profit'], 2),
+                "Product Category DC $db_interval Acc 1YB Invoiced Amount" => round($sales_product_category_data['dc_net'], 2)
             );
-            $this->fast_update($data_to_update,'Product Category DC Data');
+            $this->fast_update($data_to_update, 'Product Category DC Data');
 
         }
 
@@ -406,7 +404,7 @@ trait ProductCategory {
                         ]
         )) {
 
-            $this->fast_update(['Product Category Acc To Day Updated' => gmdate('Y-m-d H:i:s')],'Product Category Dimension');
+            $this->fast_update(['Product Category Acc To Day Updated' => gmdate('Y-m-d H:i:s')], 'Product Category Dimension');
 
         } elseif (in_array(
             $db_interval, [
@@ -417,7 +415,7 @@ trait ProductCategory {
                         ]
         )) {
 
-            $this->fast_update(['Product Category Acc Ongoing Intervals Updated' => gmdate('Y-m-d H:i:s')],'Product Category Dimension');
+            $this->fast_update(['Product Category Acc Ongoing Intervals Updated' => gmdate('Y-m-d H:i:s')], 'Product Category Dimension');
         } elseif (in_array(
             $db_interval, [
                             'Last Month',
@@ -427,7 +425,7 @@ trait ProductCategory {
                         ]
         )) {
 
-            $this->fast_update(['Product Category Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')],'Product Category Dimension');
+            $this->fast_update(['Product Category Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')], 'Product Category Dimension');
         }
 
 
@@ -454,10 +452,6 @@ trait ProductCategory {
         if ($product_ids != '' and $this->get('Category Branch Type') != 'Root') {
 
 
-
-
-
-
             // todo quick hack before migration is done
             global $account;
             if ($account->get('Code') == 'AW') {
@@ -473,8 +467,8 @@ trait ProductCategory {
 		round(ifnull(sum(`Invoice Quantity`),0),1) AS invoiced,
 		round(ifnull(sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)*`Invoice Currency Exchange Rate`),0),2) AS dc_net,
 		round(ifnull(sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`+`Cost Supplier`)*`Invoice Currency Exchange Rate`),0),2) AS dc_profit
-		FROM `Order Transaction Fact` USE INDEX (`Product ID`,`Invoice Date`) WHERE    `Invoice Key` IS NOT NULL  AND  `Product ID` IN (%s) %s %s ", $product_ids,
-                    ($from_date ? sprintf('and `Invoice Date`>=%s', prepare_mysql($from_date)) : ''), ($to_date ? sprintf('and `Invoice Date`<%s', prepare_mysql($to_date)) : '')
+		FROM `Order Transaction Fact` USE INDEX (`Product ID`,`Invoice Date`) WHERE    `Invoice Key` IS NOT NULL  AND  `Product ID` IN (%s) %s %s ", $product_ids, ($from_date ? sprintf('and `Invoice Date`>=%s', prepare_mysql($from_date)) : ''),
+                    ($to_date ? sprintf('and `Invoice Date`<%s', prepare_mysql($to_date)) : '')
 
                 );
 
@@ -490,12 +484,11 @@ trait ProductCategory {
 		round(ifnull(sum(`Delivery Note Quantity`),0),1) AS invoiced,
 		round(ifnull(sum((`Order Transaction Amount`)*`Invoice Currency Exchange Rate`),0),2) AS dc_net,
 		round(ifnull(sum((`Order Transaction Amount`+`Cost Supplier`)*`Invoice Currency Exchange Rate`),0),2) AS dc_profit
-		FROM `Order Transaction Fact` USE INDEX (`Product ID`,`Invoice Date`) WHERE `Invoice Key` >0  AND  `Product ID` IN (%s) %s %s ", $product_ids,
-                    ($from_date ? sprintf('and `Invoice Date`>=%s', prepare_mysql($from_date)) : ''), ($to_date ? sprintf('and `Invoice Date`<%s', prepare_mysql($to_date)) : '')
+		FROM `Order Transaction Fact` USE INDEX (`Product ID`,`Invoice Date`) WHERE `Invoice Key` >0  AND  `Product ID` IN (%s) %s %s ", $product_ids, ($from_date ? sprintf('and `Invoice Date`>=%s', prepare_mysql($from_date)) : ''),
+                    ($to_date ? sprintf('and `Invoice Date`<%s', prepare_mysql($to_date)) : '')
 
                 );
             }
-
 
 
             //print "$sql\n";
@@ -534,8 +527,7 @@ trait ProductCategory {
         );
 
         $sql = sprintf(
-            "SELECT count(*) AS num ,`Product Category Status` FROM  `Product Category Dimension` P LEFT JOIN `Category Dimension` C ON (C.`Category Key`=P.`Product Category Key`)  WHERE `Category Parent Key`=%d  GROUP BY  `Product Category Status`   ",
-            $this->id
+            "SELECT count(*) AS num ,`Product Category Status` FROM  `Product Category Dimension` P LEFT JOIN `Category Dimension` C ON (C.`Category Key`=P.`Product Category Key`)  WHERE `Category Parent Key`=%d  GROUP BY  `Product Category Status`   ", $this->id
         );
 
 
@@ -633,11 +625,9 @@ trait ProductCategory {
 
             //  print_r($elements_status_numbers);
 
-            if ($elements_status_numbers['Discontinued'] > 0 and $elements_status_numbers['Active'] == 0 and $elements_status_numbers['Discontinuing'] == 0 and $elements_status_numbers['In Process']
-                == 0 and $elements_status_numbers['Suspended'] == 0) {
+            if ($elements_status_numbers['Discontinued'] > 0 and $elements_status_numbers['Active'] == 0 and $elements_status_numbers['Discontinuing'] == 0 and $elements_status_numbers['In Process'] == 0 and $elements_status_numbers['Suspended'] == 0) {
                 $category_status = 'Discontinued';
-            } elseif ($elements_status_numbers['Suspended'] > 0 and $elements_status_numbers['Active'] == 0 and $elements_status_numbers['Discontinuing'] == 0
-                and $elements_status_numbers['In Process'] == 0) {
+            } elseif ($elements_status_numbers['Suspended'] > 0 and $elements_status_numbers['Active'] == 0 and $elements_status_numbers['Discontinuing'] == 0 and $elements_status_numbers['In Process'] == 0) {
                 $category_status = 'Suspended';
             } elseif ($elements_status_numbers['Discontinuing'] > 0 and $elements_status_numbers['Active'] == 0 and $elements_status_numbers['In Process'] == 0) {
                 $category_status = 'Discontinuing';
@@ -656,8 +646,7 @@ trait ProductCategory {
             //'For Sale','Out of Stock','Discontinued','Offline'
 
             $sql = sprintf(
-                "SELECT count(*) AS num ,`Product Web State` AS web_state FROM  `Product Dimension` P WHERE `Product ID` IN (%s) AND `Product Status` IN ('Active','Discontinuing') GROUP BY  `Product Web State`   ",
-                $product_ids
+                "SELECT count(*) AS num ,`Product Web State` AS web_state FROM  `Product Dimension` P WHERE `Product ID` IN (%s) AND `Product Status` IN ('Active','Discontinuing') GROUP BY  `Product Web State`   ", $product_ids
 
             );
 
@@ -734,8 +723,7 @@ trait ProductCategory {
 
         $type = 'Category';
         $sql  = sprintf(
-            "SELECT B.`Category Key` FROM `Category Bridge` B LEFT JOIN `Category Dimension` C ON (C.`Category Key`=B.`Category Key`) WHERE  `Category Branch Type`='Head'  AND B.`Subject Key`=%d AND B.`Subject`=%s",
-            $this->id, prepare_mysql($type)
+            "SELECT B.`Category Key` FROM `Category Bridge` B LEFT JOIN `Category Dimension` C ON (C.`Category Key`=B.`Category Key`) WHERE  `Category Branch Type`='Head'  AND B.`Subject Key`=%d AND B.`Subject`=%s", $this->id, prepare_mysql($type)
         );
 
 
@@ -754,8 +742,7 @@ trait ProductCategory {
     function get_webpage() {
 
 
-
-        $this->webpage    =get_object('Webpage',$this->data['Product Category Webpage Key']);
+        $this->webpage         = get_object('Webpage', $this->data['Product Category Webpage Key']);
         $this->webpage->editor = $this->editor;
 
 
@@ -775,8 +762,7 @@ trait ProductCategory {
         );
 
         $sql = sprintf(
-            "SELECT count(*) AS num ,`Part Stock Status` FROM  `Part Dimension` P LEFT JOIN `Category Bridge` B ON (P.`Part SKU`=B.`Subject Key`)  WHERE B.`Category Key`=%d AND `Subject`='Part' GROUP BY  `Part Stock Status`   ",
-            $this->id
+            "SELECT count(*) AS num ,`Part Stock Status` FROM  `Part Dimension` P LEFT JOIN `Category Bridge` B ON (P.`Part SKU`=B.`Subject Key`)  WHERE B.`Category Key`=%d AND `Subject`='Part' GROUP BY  `Part Stock Status`   ", $this->id
         );
 
         if ($result = $this->db->query($sql)) {
@@ -804,8 +790,7 @@ trait ProductCategory {
 
         $sql = sprintf(
             "UPDATE `Product Category Dimension` SET `Product Category Number Surplus Parts`=%d ,`Product Category Number Optimal Parts`=%d ,`Product Category Number Low Parts`=%d ,`Product Category Number Critical Parts`=%d ,`Product Category Number Out Of Stock Parts`=%d ,`Product Category Number Error Parts`=%d  WHERE `Product Category Key`=%d",
-            $elements_numbers['Surplus'], $elements_numbers['Optimal'], $elements_numbers['Low'], $elements_numbers['Critical'], $elements_numbers['Out_Of_Stock'], $elements_numbers['Error'],
-            $this->id
+            $elements_numbers['Surplus'], $elements_numbers['Optimal'], $elements_numbers['Low'], $elements_numbers['Critical'], $elements_numbers['Out_Of_Stock'], $elements_numbers['Error'], $this->id
         );
 
         $this->db->exec($sql);
@@ -947,8 +932,7 @@ trait ProductCategory {
 
 
         $sql = sprintf(
-            "SELECT B.`Category Key` FROM `Category Dimension` C LEFT JOIN `Category Bridge` B ON (B.`Category Key`=C.`Category Key`) WHERE `Subject`=%s AND `Subject Key`=%d AND `Category Branch Type`!='Root'",
-            prepare_mysql($type), $this->id
+            "SELECT B.`Category Key` FROM `Category Dimension` C LEFT JOIN `Category Bridge` B ON (B.`Category Key`=C.`Category Key`) WHERE `Subject`=%s AND `Subject Key`=%d AND `Category Branch Type`!='Root'", prepare_mysql($type), $this->id
         );
 
         if ($result = $this->db->query($sql)) {
@@ -1292,20 +1276,23 @@ trait ProductCategory {
 
 
 
-            $stack=0;
+
+
+            $stack = 0;
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
+
+
 
                     if ($row['Product Category Index Product ID'] == '') {
                         $null_stacks = true;
 
 
-                        $product=get_object('product',$row['Product ID']);
-                        $image = new Image($product->get('Product Main Image Key'));
-                        $image_375x250='';
-                        if($image->id) {
+                        $product       = get_object('product', $row['Product ID']);
+                        $image         = new Image($product->get('Product Main Image Key'));
+                        $image_375x250 = '';
+                        if ($image->id) {
                             $_image_filename = uniqid('tmp_ftc_image_a_');
-
 
 
                             $image->save_image_to_file('/tmp', $_image_filename, $image->fit_to_canvas(375, 275));
@@ -1321,7 +1308,7 @@ trait ProductCategory {
 
                             );
 
-                            // print_r($image_data);
+
                             $image = $this->webpage->add_image($image_data);
 
                             if ($image) {
@@ -1330,16 +1317,13 @@ trait ProductCategory {
                                 unlink($image_filename);
                             }
 
-                            //  print "========";
+
 
                             // print_r($image);
 
 
-
-
                         }
 
-                        //print_r($product);
 
                         $_data = array(
                             'code'          => $product->get('Code'),
@@ -1357,19 +1341,18 @@ trait ProductCategory {
                         );
 
 
-
-                            $sql = sprintf(
+                        $sql = sprintf(
                             'INSERT INTO `Product Category Index` (`Product Category Index Category Key`,`Product Category Index Product ID`,`Product Category Index Website Key`,`Product Category Index Product Webpage Key`,`Product Category Index Content Data`,`Product Category Index Stack`) VALUES (%d,%d,%d,%d,%s,%d) ',
                             $this->id, $row['Product ID'], $this->webpage->id, $product->get('Product Webpage Key'), prepare_mysql(json_encode($_data)), $stack
                         );
 
 
-                          //  print "$sql\n";
+
 
                         $this->db->exec($sql);
 
 
-                      //  exit;
+                        //  exit;
 
                     }
 
@@ -1467,6 +1450,8 @@ trait ProductCategory {
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
 
+                    // print_r($row);
+
 
                     if ($row['Category Webpage Index Category Key'] == '') {
                         $null_stacks = true;
@@ -1491,38 +1476,115 @@ trait ProductCategory {
                                     $image_375x250 = '/image_root.php?id='.$image_data['id'];
                                 }
                             }
-/*
-
-                            require_once 'external_libs/ImageCache.php';
-                            $imagecache                         = new ImageCache();
-                            $imagecache->cached_image_directory = 'EcomB2B/server_files/cached_images/';
 
 
-                            $image_key = $row['Category Main Image Key'];
+                            if (is_writable('EcomB2B/server_files/cached_images/') and is_writable('EcomB2B/server_files/tmp/')) {
 
-                            $_size_image_product_webpage = '320_200';
 
-                            if ($image_key) {
+                                require_once 'external_libs/ImageCache.php';
+                                $imagecache                         = new ImageCache();
+                                $imagecache->cached_image_directory = 'EcomB2B/server_files/cached_images/';
 
-                                if (file_exists('EcomB2B/server_files/cached_images/'.md5($image_key.'_'.$_size_image_product_webpage.'.jpeg').'.jpeg')) {
-                                    $image_mobile_website = 'server_files/cached_images/'.md5($image_key.'_'.$_size_image_product_webpage.'.jpeg').'.jpeg';
-                                } else {
-                                    $image          = get_object('Image', $image_key);
-                                    $image_filename = 'EcomB2B/server_files/tmp/'.$image_key.'_'.$_size_image_product_webpage.'.jpeg';
 
-                                    if (!file_exists($image_filename)) {
-                                        $image->save_image_to_file('EcomB2B/server_files/tmp', $image_key.'_'.$_size_image_product_webpage, $image->fit_to_canvas(320, 200), 'jpeg');
+                                $image_key = $row['Category Main Image Key'];
+
+                                $_size_image_product_webpage = '320_200';
+
+                                if ($image_key) {
+
+                                    $image_format = 'jpeg';
+                                    if (file_exists('EcomB2B/server_files/cached_images/'.md5($image_key.'_'.$_size_image_product_webpage.'.'.$image_format).'.'.$image_format)) {
+                                        $image_mobile_website = 'server_files/cached_images/'.md5($image_key.'_'.$_size_image_product_webpage.'.'.$image_format).'.'.$image_format;
+                                    } else {
+                                        $image          = get_object('Image', $image_key);
+                                        $image_filename = 'EcomB2B/server_files/tmp/'.$image_key.'_'.$_size_image_product_webpage.'.'.$image_format;
+
+                                        if (!file_exists($image_filename)) {
+
+
+                                            $_image = $image->fit_to_canvas(320, 200);
+
+
+                                            if ($image->get('Image File Format') == 'png') {
+                                                $image->save_image_to_file_as_jpeg('EcomB2B/server_files/tmp', $image_key.'_'.$_size_image_product_webpage, $_image, $image_format);
+                                            } else {
+                                                $image->save_image_to_file('EcomB2B/server_files/tmp', $image_key.'_'.$_size_image_product_webpage, $_image, $image_format);
+
+                                            }
+
+
+                                        }
+
+
+                                        $image_mobile_website = $imagecache->cache($image_filename);
+
+
+                                        unlink($image_filename);
                                     }
-                                    $image_mobile_website = $imagecache->cache($image_filename);
-                                    unlink($image_filename);
-                                }
 
+
+                                } else {
+                                    $image_mobile_website = '/art/nopic.png';
+
+                                }
 
                             } else {
                                 $image_mobile_website = '/art/nopic.png';
+                                $image_key            = $row['Category Main Image Key'];
+                                if ($image_key) {
 
+                                    $image_mobile_website = '/image_root.php?id='.$image_key;
+
+                                }
                             }
-*/
+
+                            /*
+
+                                                    $image_mobile_website = '/art/nopic.png';
+                                                    $image_key = $row['Category Main Image Key'];
+                                                    if ($image_key) {
+
+                                                        $image_mobile_website = '/image_root.php?id='.$image_key;
+
+                                                    }
+
+
+
+
+                                                    require_once 'external_libs/ImageCache.php';
+                                                    $imagecache                         = new ImageCache();
+                                                    $imagecache->cached_image_directory = 'EcomB2B/server_files/cached_images/';
+
+
+                                                    $image_key = $row['Category Main Image Key'];
+
+                                                    $_size_image_product_webpage = '320_200';
+
+                                                    if ($image_key) {
+
+                                                        if (file_exists('EcomB2B/server_files/cached_images/'.md5($image_key.'_'.$_size_image_product_webpage.'.jpeg').'.jpeg')) {
+                                                            $image_mobile_website = 'server_files/cached_images/'.md5($image_key.'_'.$_size_image_product_webpage.'.jpeg').'.jpeg';
+                                                        } else {
+                                                            $image          = get_object('Image', $image_key);
+                                                            $image_filename = 'EcomB2B/server_files/tmp/'.$image_key.'_'.$_size_image_product_webpage.'.jpeg';
+
+                                                            if (!file_exists($image_filename)) {
+                                                                $image->save_image_to_file('EcomB2B/server_files/tmp', $image_key.'_'.$_size_image_product_webpage, $image->fit_to_canvas(320, 200), 'jpeg');
+                                                            }
+
+
+
+
+                                                            $image_mobile_website = $imagecache->cache($image_filename);
+                                                            unlink($image_filename);
+                                                        }
+
+
+                                                    } else {
+                                                        $image_mobile_website = '/art/nopic.png';
+
+                                                    }
+                        */
 
                             $_data = array(
                                 'category_key'         => $subject->id,
@@ -1530,16 +1592,17 @@ trait ProductCategory {
                                 'image_375x250'        => $image_375x250,
                                 //   'image_600x375' => $image_600x375,
                                 'image_src'            => $subject->get('Image'),
-                             //   'image_mobile_website' => $image_mobile_website,
+                                'image_mobile_website' => $image_mobile_website,
                                 'footer_text'          => $subject->get('Code'),
                             );
 
 
+                            // print_r($_data);
+
                             $sql = sprintf(
                                 'INSERT INTO `Category Webpage Index` (`Category Webpage Index Section Key`,`Category Webpage Index Content Data`,`Category Webpage Index Parent Category Key`,
-`Category Webpage Index Category Key`,`Category Webpage Index Webpage Key`,`Category Webpage Index Category Webpage Key`) VALUES (%d,%s,%d,%d,%d,%d) ',
-                                $anchor_section_key, prepare_mysql(json_encode($_data)), $this->id,
-                                $row['Subject Key'], $this->webpage->id, $subject_webpage->id
+`Category Webpage Index Category Key`,`Category Webpage Index Webpage Key`,`Category Webpage Index Category Webpage Key`) VALUES (%d,%s,%d,%d,%d,%d) ', $anchor_section_key, prepare_mysql(json_encode($_data)), $this->id, $row['Subject Key'], $this->webpage->id,
+                                $subject_webpage->id
                             );
 
                             //print "$sql\n";
@@ -1554,8 +1617,7 @@ trait ProductCategory {
                         //todo, Temporal hack can delete later when all categories has image_mobile_website
 
 
-                       // if ($row['Subject Key'] == 444) {
-
+                        // if ($row['Subject Key'] == 444) {
 
 
                         //}
@@ -1638,8 +1700,7 @@ trait ProductCategory {
             $subjects = array();
 
             $sql = sprintf(
-                "SELECT `Product Category Index Stack`,`Product Category Index Key`,`Product Category Index Product ID` AS subject_key,`Product Category Index Category Key` FROM `Product Category Index`    WHERE  `Product Category Index Category Key`=%d ",
-                $this->id
+                "SELECT `Product Category Index Stack`,`Product Category Index Key`,`Product Category Index Product ID` AS subject_key,`Product Category Index Category Key` FROM `Product Category Index`    WHERE  `Product Category Index Category Key`=%d ", $this->id
             );
 
 
@@ -1695,14 +1756,13 @@ trait ProductCategory {
             }
 
 
-          //  print_r($page_breaks);
+            //  print_r($page_breaks);
 
 
             $subjects = array();
 
             $sql = sprintf(
-                "SELECT `Category Webpage Index Stack`,`Category Webpage Index Key`,`Category Webpage Index Category Key` AS subject_key FROM `Category Webpage Index`    WHERE  `Category Webpage Index Parent Category Key`=%d ",
-                $this->id
+                "SELECT `Category Webpage Index Stack`,`Category Webpage Index Key`,`Category Webpage Index Category Key` AS subject_key FROM `Category Webpage Index`    WHERE  `Category Webpage Index Parent Category Key`=%d ", $this->id
             );
 
 

@@ -411,10 +411,11 @@ class Website extends DB_Table {
 
             case 'User Password Recovery Email':
 
-                global  $user;
+                global $user;
+
                 return $user->get('User Password Recovery Email');
 
-            break;
+                break;
 
 
             case 'Palette':
@@ -553,9 +554,8 @@ class Website extends DB_Table {
         //  print_r($im);
 
         $sql = sprintf(
-            "INSERT INTO `Website Image Dimension`  (`Website Image Website Key`,`Website Image Scope`,`Website Image Scope Key`,`Website Image Data`,`Website Image Date`,`Website Image Format`) VALUES (%d,%s,%s,%s,%s,%s) ",
-            $this->id, prepare_mysql($scope_data['scope']), prepare_mysql($scope_data['scope_key'], true), "'".addslashes($image->get_image_blob($im, $image_format))."'",
-            prepare_mysql(gmdate('Y-m-d H;i:s')), prepare_mysql($image_format)
+            "INSERT INTO `Website Image Dimension`  (`Website Image Website Key`,`Website Image Scope`,`Website Image Scope Key`,`Website Image Data`,`Website Image Date`,`Website Image Format`) VALUES (%d,%s,%s,%s,%s,%s) ", $this->id,
+            prepare_mysql($scope_data['scope']), prepare_mysql($scope_data['scope_key'], true), "'".addslashes($image->get_image_blob($im, $image_format))."'", prepare_mysql(gmdate('Y-m-d H;i:s')), prepare_mysql($image_format)
 
         );
         $this->db->exec($sql);
@@ -655,29 +655,29 @@ class Website extends DB_Table {
         include_once 'class.Page.php';
 
 
+        if (empty($data['Webpage Code'])) {
+            $this->error = true;
+            $this->msg   = 'Webpage code empty';
 
-
-
-        if(empty($data['Webpage Code'])){
-            $this->error=true;
-            $this->msg='Webpage code empty';
             return;
         }
 
-        if(empty($data['Webpage Name'])){
-            $this->error=true;
-            $this->msg='Webpage name empty';
+        if (empty($data['Webpage Name'])) {
+            $this->error = true;
+            $this->msg   = 'Webpage name empty';
+
             return;
         }
 
-        if(empty($data['Webpage Browser Title'])){
-            $this->error=true;
-            $this->msg='Webpage Browser Title empty';
+        if (empty($data['Webpage Browser Title'])) {
+            $this->error = true;
+            $this->msg   = 'Webpage Browser Title empty';
+
             return;
         }
 
-        if(empty($data['Webpage Meta Description'])){
-            $data['Webpage Meta Description']='';
+        if (empty($data['Webpage Meta Description'])) {
+            $data['Webpage Meta Description'] = '';
         }
 
 
@@ -695,8 +695,8 @@ class Website extends DB_Table {
             'Page Store Key'                       => $this->get('Website Store Key'),
             'Page Store Creation Date'             => gmdate('Y-m-d H:i:s'),
             'Number See Also Links'                => 0,
-            'Page Store Content Display Type'      =>'Template',
-            'Page Store Content Template Filename' =>  $data['Webpage Template Filename'],
+            'Page Store Content Display Type'      => 'Template',
+            'Page Store Content Template Filename' => $data['Webpage Template Filename'],
             'Page Title'                           => $data['Webpage Name'],
             'Page Short Title'                     => $data['Webpage Browser Title'],
             'Page Parent Key'                      => 0,
@@ -747,7 +747,6 @@ class Website extends DB_Table {
     }
 
 
-
     function update_labels_in_localised_labels($labels, $operation = 'append') {
 
         $localised_labels = $this->get('Localised Labels');
@@ -763,6 +762,7 @@ class Website extends DB_Table {
 
 
     }
+
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
 
 
@@ -775,8 +775,8 @@ class Website extends DB_Table {
             case 'User Password Recovery Email':
 
                 global $user;
-                $user->editor=$this->editor;
-                $user->update(array('User Password Recovery Email'=>$value));
+                $user->editor = $this->editor;
+                $user->update(array('User Password Recovery Email' => $value));
 
                 break;
             default:
@@ -859,8 +859,7 @@ class Website extends DB_Table {
         $template_key = false;
 
         $sql = sprintf(
-            'SELECT `Template Key` FROM `Template Dimension` WHERE `Template Website Key`=%d AND `Template Scope`=%s AND `Template Device`=%s ', $this->id, prepare_mysql($scope),
-            prepare_mysql($device)
+            'SELECT `Template Key` FROM `Template Dimension` WHERE `Template Website Key`=%d AND `Template Scope`=%s AND `Template Device`=%s ', $this->id, prepare_mysql($scope), prepare_mysql($device)
 
         );
         if ($result = $this->db->query($sql)) {
@@ -927,8 +926,8 @@ class Website extends DB_Table {
         $category = new Category($category_key);
 
         $sql = sprintf(
-            "SELECT `Page Key` FROM `Page Store Dimension` WHERE `Webpage Scope`=%s AND `Webpage Scope Key`=%d  AND `Webpage Website Key`=%d ",
-            prepare_mysql(($category->get('Category Subject') == 'Product' ? 'Category Products' : 'Category Categories')), $category_key, $this->id
+            "SELECT `Page Key` FROM `Page Store Dimension` WHERE `Webpage Scope`=%s AND `Webpage Scope Key`=%d  AND `Webpage Website Key`=%d ", prepare_mysql(($category->get('Category Subject') == 'Product' ? 'Category Products' : 'Category Categories')), $category_key,
+            $this->id
         );
 
         //print "$sql\n";
@@ -1024,17 +1023,28 @@ class Website extends DB_Table {
         );
 
 
-        //print_r($page_data);
+       // print_r($page_data);
         $page = new Page('find', $page_data, 'create');
 
         $category->update(array('Product Category Webpage Key' => $page->id), 'no_history');
+
+
+
+        $sql = sprintf(
+            'UPDATE `Product Category Index` SET `Product Category Index Website Key`=%d WHERE `Product Category Index Category Key`=%d  ', $page->id,$category->id
+        );
+//        print "$sql\n";
+        $this->db->exec($sql);
+
+
 
         if ($page->new) {
             $page->reset_object();
         }
 
 
-        //  print_r($page->data);
+       //   print_r($page->data);
+      //  print_r($category->get('Category Subject'));
 
         $webpage_type->update_number_webpages();
 
@@ -1051,65 +1061,63 @@ class Website extends DB_Table {
         $this->error        = $page->error;
 
 
+        if ($category->get('Category Subject') == 'Product') {
 
 
-            if ($category->get('Category Subject') == 'Product') {
+            $title = $category->get('Label');
+            if ($title == '') {
+                $title = $category->get('Code');
+            }
+            if ($title == '') {
+                $title = _('Title');
+            }
+
+            $description = $category->get('Product Category Description');
+            if ($description == '') {
+                $description = $category->get('Label');
+            }
+            if ($description == '') {
+                $description = $category->get('Code');
+            }
+            if ($description == '') {
+                $description = _('Description');
+            }
 
 
-                $title = $category->get('Label');
-                if ($title == '') {
-                    $title = $category->get('Code');
-                }
-                if ($title == '') {
-                    $title = _('Title');
-                }
+            $image_src = $category->get('Image');
 
-                $description = $category->get('Product Category Description');
-                if ($description == '') {
-                    $description = $category->get('Label');
-                }
-                if ($description == '') {
-                    $description = $category->get('Code');
-                }
-                if ($description == '') {
-                    $description = _('Description');
-                }
+            $content_data = array(
+                'description_block' => array(
+                    'class' => '',
 
+                    'blocks' => array(
 
-                $image_src = $category->get('Image');
+                        'webpage_content_header_image' => array(
+                            'type'      => 'image',
+                            'image_src' => $image_src,
+                            'caption'   => '',
+                            'class'     => ''
 
-                $content_data = array(
-                    'description_block' => array(
-                        'class' => '',
+                        ),
 
-                        'blocks' => array(
-
-                            'webpage_content_header_image' => array(
-                                'type'      => 'image',
-                                'image_src' => $image_src,
-                                'caption'   => '',
-                                'class'     => ''
-
-                            ),
-
-                            'webpage_content_header_text' => array(
-                                'class'   => '',
-                                'type'    => 'text',
-                                'content' => sprintf('<h1 class="description_title">%s</h1><div class="description">%s</div>', $title, $description)
-
-                            )
+                        'webpage_content_header_text' => array(
+                            'class'   => '',
+                            'type'    => 'text',
+                            'content' => sprintf('<h1 class="description_title">%s</h1><div class="description">%s</div>', $title, $description)
 
                         )
+
                     )
+                )
 
-                );
+            );
 
-                //print_r($content_data);
-                $page->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
+          //  print_r($content_data);
+            $page->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
 
 
-                $category->create_stack_index(true);
-            }
+            $category->create_stack_index(true);
+        }
 
 
         //$this->update_product_totals();
@@ -1122,11 +1130,9 @@ class Website extends DB_Table {
     function create_product_webpage($product_id) {
 
 
-
         include_once 'class.Webpage_Type.php';
         include_once 'class.Page.php';
         include_once 'class.Product.php';
-
 
 
         //include_once 'class.Site.php';
@@ -1145,6 +1151,7 @@ class Website extends DB_Table {
                 $product = new Product($product_id);
 
                 $product->fast_update(array('Product Webpage Key' => $row['Page Key']));
+
                 return $row['Page Key'];
 
 
@@ -1156,7 +1163,7 @@ class Website extends DB_Table {
         }
 
 
-        $product=get_object('product',$product_id);
+        $product = get_object('product', $product_id);
 
         $page_code = $this->get_unique_code($product->get('Code'), 'Webpage');
 
@@ -1231,21 +1238,13 @@ class Website extends DB_Table {
         );
 
 
-
-
         $page = new Page('find', $page_data, 'create');
 
 
-
-       // print $page->id;
-
-
+        // print $page->id;
 
 
         $product->fast_update(array('Product Webpage Key' => $page->id));
-
-
-
 
 
         $webpage_type->update_number_webpages();
@@ -1279,14 +1278,12 @@ class Website extends DB_Table {
 
 
         //todo: AUR-33
-       // 'InProcess','Active','Suspended','Discontinuing','Discontinued'
-        if($product->get('Product Status')=='Discontinued' or $product->get('Product Status')=='Suspended' ){
+        // 'InProcess','Active','Suspended','Discontinuing','Discontinued'
+        if ($product->get('Product Status') == 'Discontinued' or $product->get('Product Status') == 'Suspended') {
             $page->unpublish();
-        }elseif($product->get('Product Status')=='Discontinuing' or $product->get('Product Status')=='Active' ){
+        } elseif ($product->get('Product Status') == 'Discontinuing' or $product->get('Product Status') == 'Active') {
             $page->publish();
         }
-
-
 
 
         return $page->id;
@@ -1298,20 +1295,16 @@ class Website extends DB_Table {
         if ($type == 'website_footer') {
 
 
-
-
-            $footer         = get_object('footer',$this->get('Website Footer Key'));
+            $footer         = get_object('footer', $this->get('Website Footer Key'));
             $footer->editor = $this->editor;
             $footer->reset();
 
         } elseif ($type == 'website_header') {
 
 
-
-            $header         = get_object('header',$this->get('Website Header Key'));
+            $header         = get_object('header', $this->get('Website Header Key'));
             $header->editor = $this->editor;
             $header->reset();
-
 
 
         }
@@ -1376,9 +1369,7 @@ class Website extends DB_Table {
         include_once 'class.Page.php';
 
 
-
         $this->update(array('Website Status' => 'Active'));
-
 
 
         $sql = sprintf(
@@ -1407,9 +1398,9 @@ class Website extends DB_Table {
         global $account;
         new_housekeeping_fork(
             'au_housekeeping', array(
-            'type'     => 'website_launched',
+            'type'        => 'website_launched',
             'website_key' => $this->id,
-            'editor'=>$this->editor,
+            'editor'      => $this->editor,
 
         ), $account->get('Account Code')
         );
@@ -1423,9 +1414,9 @@ class Website extends DB_Table {
 
         $this->new = false;
 
-        $data['editor']             = $this->editor;
+        $data['editor']                   = $this->editor;
         $data['Website User Website Key'] = $this->id;
-        $data['Website User Active'] = 'Yes';
+        $data['Website User Active']      = 'Yes';
 
 
         $website_user = new Website_User('new', $data);
@@ -1434,11 +1425,6 @@ class Website extends DB_Table {
         if ($website_user->id) {
 
             if ($website_user->new) {
-
-
-
-
-
 
 
             } else {
@@ -1455,21 +1441,18 @@ class Website extends DB_Table {
         }
     }
 
-    function update_users_data(){
+    function update_users_data() {
         // todo collect user/customers stats here, call when a user is created
 
     }
 
 
-
     function update_sitemap() {
-
 
 
         $sql = sprintf(
             "DELETE FROM `Sitemap Dimension` WHERE `Sitemap Website Key`=%d  ", $this->id
         );
-
 
 
         $this->db->exec($sql);
@@ -1484,51 +1467,44 @@ class Website extends DB_Table {
 
 
         $sql = sprintf(
-            "SELECT `Webpage Launch Date`,`Webpage URL` FROM `Page Store Dimension`  WHERE `Webpage Website Key`=%d  and  `Webpage Scope`  IN  ('About','HomepageLogout','Info','ShippingInfo','TandC') AND `Webpage State`='Online'   ",
-            $this->id
+            "SELECT `Webpage Launch Date`,`Webpage URL` FROM `Page Store Dimension`  WHERE `Webpage Website Key`=%d  AND  `Webpage Scope`  IN  ('About','HomepageLogout','Info','ShippingInfo','TandC') AND `Webpage State`='Online'   ", $this->id
         );
 
-        if ($result=$this->db->query($sql)) {
-        		foreach ($result as $row) {
-                    $updated = $row['Webpage Launch Date'];
-                    $sitemap->url($row['Webpage URL'], $updated, 'monthly');
-        		}
-        }else {
-        		print_r($error_info=$this->db->errorInfo());
-        		print "$sql\n";
-        		exit;
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $updated = $row['Webpage Launch Date'];
+                $sitemap->url($row['Webpage URL'], $updated, 'monthly');
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
-
 
 
         $sitemap->page('products');
 
         $sql = sprintf(
-            "SELECT `Webpage Launch Date`,`Webpage URL` FROM `Page Store Dimension`  WHERE `Webpage Website Key`=%d  and  `Webpage Scope`  IN  ('Category Categories','Category Products','Product') AND `Webpage State`='Online'   ",
-            $this->id
+            "SELECT `Webpage Launch Date`,`Webpage URL` FROM `Page Store Dimension`  WHERE `Webpage Website Key`=%d  AND  `Webpage Scope`  IN  ('Category Categories','Category Products','Product') AND `Webpage State`='Online'   ", $this->id
         );
 
-        if ($result=$this->db->query($sql)) {
-        		foreach ($result as $row) {
-                    $updated = $row['Webpage Launch Date'];
-                    $sitemap->url($row['Webpage URL'], $updated, 'weekly');
-        		}
-        }else {
-        		print_r($error_info=$this->db->errorInfo());
-        		print "$sql\n";
-        		exit;
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $updated = $row['Webpage Launch Date'];
+                $sitemap->url($row['Webpage URL'], $updated, 'weekly');
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
-
-
 
 
         $sitemap->close();
         unset ($sitemap);
 
 
-        $this->update_field('Website Sitemap Last Update',gmdate("Y-m-d H:i:s"),'no_history');
-
-
+        $this->update_field('Website Sitemap Last Update', gmdate("Y-m-d H:i:s"), 'no_history');
 
 
     }
@@ -1566,8 +1542,7 @@ class Website extends DB_Table {
                 if ($code -= 200) {
                     $msg = "OK";
                 } else {
-                    $msg
-                        = "{$host} ping was unsuccessful.<br />Code: {$code}<br />Response: {$response}";
+                    $msg = "{$host} ping was unsuccessful.<br />Code: {$code}<br />Response: {$response}";
                 }
 
 
@@ -1583,7 +1558,6 @@ class Website extends DB_Table {
 
 
     }
-
 
 
 }

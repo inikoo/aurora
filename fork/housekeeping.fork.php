@@ -30,14 +30,14 @@ function fork_housekeeping($job) {
 
             $payment                  = get_object('Payment', $data['payment_key']);
             $payment_account          = get_object('Payment_Account', $payment->get('Payment Account Key'));
-            $payment_service_provider = get_object('Payment_Service_Provider', $payment->get('	Payment Service Provider Key'));
+            $payment_service_provider = get_object('Payment_Service_Provider', $payment->get('Payment Service Provider Key'));
 
             $payment_account->update_payments_data();
             $payment_service_provider->update_payments_data();
 
 
             $account = get_object('Account', '');
-            $store   = get_object('Store', $data['store_key']);
+            $store   = get_object('Store', $payment->get('Payment Store Key'));
 
 
             $store->update_orders();
