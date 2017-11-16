@@ -388,6 +388,8 @@ if(view=='overview'){
 grid.columns.findWhere({ name: 'name'} ).set("renderable", true)
 
 grid.columns.findWhere({ name: 'price'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'margin'} ).set("renderable", true)
+
 grid.columns.findWhere({ name: 'status'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'web_state'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'dc_sales'} ).set("renderable", true)
