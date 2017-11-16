@@ -67,7 +67,22 @@ function process_form_validation(validation, submitting) {
     }
     $('#fields .controls').removeClass('invalid valid potentially_valid').addClass(validation).addClass('changed')
 
-    reset_controls()
+if(validation=='invalid') {
+    $(".value").each(function (index) {
+
+        var field = $(this).attr('field')
+
+
+        if (!$('#' + field + '_field').hasClass('valid')) {
+
+            $('#' + field + '_field').addClass('invalid')
+
+        }
+
+    })
+}
+
+        reset_controls()
 
 }
 
