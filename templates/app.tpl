@@ -81,7 +81,7 @@
         <script type="text/javascript" src="/js/edit.js?v171019a"></script>
         <script type="text/javascript" src="/js/edit_webpage_edit.js?v171019"></script>
 
-        <script type="text/javascript" src="/js/new.js?v171019a"></script>
+        <script type="text/javascript" src="/js/new.js?v171115"></script>
         <script type="text/javascript" src="/js/order.common.js?v171114v3"></script>
         <script type="text/javascript" src="/js/supplier.order.js"></script>
         <script type="text/javascript" src="/js/supplier.delivery.js"></script>
