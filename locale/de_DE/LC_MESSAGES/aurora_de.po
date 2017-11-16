@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Kaktus 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-11-03 15:55+0800\n"
-"PO-Revision-Date: 2017-11-03 15:56+0800\n"
+"PO-Revision-Date: 2017-11-15 13:02+0100\n"
 "Last-Translator: Raul <raul@inikoo.com>\n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -22,83 +22,79 @@ msgid ""
 "There was a problem processing your credit card; please double check your "
 "payment information and try again"
 msgstr ""
+"Beim Verarbeiten Ihrer Kreditkarte ist ein Problem aufgetreten. Bitte "
+"überprüfen Sie Ihre Zahlungsinformationen und versuchen Sie es erneut"
 
 #: EcomB2B/ar_web_checkout.php:458 EcomB2B/ar_web_recover_password.php:112
 #: EcomB2B/ar_web_register.php:219 ar_edit_email_template.php:182
-#, fuzzy
 msgid "Empty email subject"
-msgstr "E-Mail"
+msgstr "Leerer E-Mail-Betreff"
 
 #: EcomB2B/ar_web_checkout.php:557
-#, fuzzy
 msgid "Sorry, but the amount is too large"
-msgstr "Dateiformat nicht unterstützt."
+msgstr "Tut mir leid, aber die Menge ist zu groß"
 
 #: EcomB2B/ar_web_checkout.php:562
 msgid "Sorry, we don't accept this credit card type"
-msgstr ""
+msgstr "Leider akzeptieren wir diesen Kreditkartentyp nicht"
 
 #: EcomB2B/ar_web_checkout.php:565
 msgid "Sorry, we don't support this payment instrument"
-msgstr ""
+msgstr "Leider unterstützen wir dieses Zahlungsmittel nicht"
 
 #: EcomB2B/ar_web_checkout.php:568
 msgid ""
 "There was a problem processing your credit card, please provide your payment "
 "information again"
 msgstr ""
+"Bei der Bearbeitung Ihrer Kreditkarte ist ein Problem aufgetreten. Geben Sie "
+"Ihre Zahlungsinformationen erneut an."
 
 #: EcomB2B/ar_web_checkout.php:571
 msgid "Phone number is invalid"
-msgstr ""
+msgstr "Telefonnummer ist ungültig"
 
 #: EcomB2B/ar_web_checkout.php:575 EcomB2B/ar_web_checkout.php:590
-#, fuzzy
-#| msgid "required"
 msgid "CVV is required"
-msgstr "erforderlich"
+msgstr "CVV wird benötigt"
 
 #: EcomB2B/ar_web_checkout.php:578
 msgid "CVV must be 3 or 4 digits"
-msgstr ""
+msgstr "CVV muss 3 oder 4 Stellen haben"
 
 #: EcomB2B/ar_web_checkout.php:581
 msgid "Expiration date is required"
-msgstr ""
+msgstr "Ablaufdatum ist erforderlich"
 
 #: EcomB2B/ar_web_checkout.php:587
-#, fuzzy
-#| msgid "Email address invalid"
 msgid "Expiration date is invalid"
-msgstr "Ungültige E-Mail-Adresse"
+msgstr "Ablaufdatum ist ungültig"
 
 #: EcomB2B/ar_web_checkout.php:598
 msgid ""
 "There was a problem processing your credit card, please double check your "
 "payment information and try again"
 msgstr ""
+"Bei der Bearbeitung Ihrer Kreditkarte ist ein Problem aufgetreten. "
+"Überprüfen Sie Ihre Zahlungsinformationen und versuchen Sie es erneut."
 
 #: EcomB2B/ar_web_login.php:119 _smarty.php:12650
 #: conf/website_system_webpages.php:313
-#, fuzzy
 msgid "Email not registered"
-msgstr "E-Mail wurde erstellt"
+msgstr "E-Mail ist nicht registriert"
 
 #: EcomB2B/ar_web_login.php:122
 msgid "This account is banned"
-msgstr ""
+msgstr "Dieses Konto ist gesperrt"
 
 #: EcomB2B/ar_web_login.php:125 utils/invalid_messages.php:191
 #: utils/invalid_messages.php:218
-#, fuzzy
-#| msgid "Current Password"
 msgid "Incorrect password"
-msgstr "Aktuelles Passwort"
+msgstr "Falsches Passwort"
 
 #: EcomB2B/ar_web_login.php:128
-#, fuzzy
 msgid "Invalid login credentials"
-msgstr "Kontakte"
+msgstr "Ungültige Login-Details"
 
 #: EcomB2B/class.DBW_Table.php:139 class.DB_Table.php:70
 #: class.EmailCredentials.php:239
@@ -133,42 +129,40 @@ msgstr "Kundenname"
 #: EcomB2B/class.DBW_Table.php:503 class.DB_Table.php:421
 #, php-format
 msgid "%s %s %s was added"
-msgstr ""
+msgstr "%s %s %s wurde hinzugefügt"
 
 #: EcomB2B/class.DBW_Table.php:508 class.DB_Table.php:426
 #, php-format
 msgid "%s %s %s was removed"
-msgstr ""
+msgstr "%s %s %s wurde entfernt"
 
 #: EcomB2B/class.DBW_Table.php:513 class.DB_Table.php:431
 #, php-format
 msgid "%s %s was set as %s"
-msgstr ""
+msgstr "%s %s wurde als %s eingestellt"
 
 #: EcomB2B/class.DBW_Table.php:521 class.DB_Table.php:439
-#, fuzzy, php-format
+#, php-format
 msgid "%s %s %s was deleted"
-msgstr "als Hauptlieferadresse festlegen"
+msgstr "%s %s %s wurde gelöscht"
 
 #: EcomB2B/class.DBW_Table.php:525 class.DB_Table.php:443
 #, php-format
 msgid "%s %s set as %s"
-msgstr ""
+msgstr "%s %s wurde als %s eingestellt"
 
 #: EcomB2B/class.DBW_Table.php:529 class.DB_Table.php:447
-#, fuzzy, php-format
+#, php-format
 msgid "%s %s was changed to %s"
-msgstr "Stellungsbeschreibung verändert"
+msgstr "%s %s wurde auf %s geändert"
 
 #: EcomB2B/class.DBW_Table.php:535 class.DB_Table.php:453
 msgid "changed"
 msgstr "geändert"
 
 #: EcomB2B/class.DBW_Table.php:552 EcomB2B/class.DBW_Table.php:564
-#, fuzzy
-#| msgid "Cancelled by customer"
 msgid "Updated by customer"
-msgstr "Vom Kunden storniert"
+msgstr "Vom Kunden aktualiziert"
 
 #: EcomB2B/class.DBW_Table.php:553 EcomB2B/class.DBW_Table.php:565
 #: _smarty.php:2225 _smarty.php:2339 _smarty.php:5321 _smarty.php:5609
@@ -205,77 +199,66 @@ msgstr "Keine Bilddatei"
 
 #: EcomB2B/class.Image.php:355 class.Image.php:355
 msgid "File format not supported"
-msgstr "Dateiformat nicht unterstützt."
+msgstr "Dateiformat nicht unterstützt"
 
 #: EcomB2B/class.Image.php:362 class.Image.php:362
 msgid "Can not read image"
-msgstr "Bild nicht lesbar."
+msgstr "Bild nicht lesbar"
 
 #: EcomB2B/class.Image.php:433 EcomB2B/class.Image.php:549
 #: EcomB2B/class.Image.php:724 class.Image.php:433 class.Image.php:549
 #: class.Image.php:724
 msgid "Can not resize image"
-msgstr "Größe des Bildes nicht änderbar."
+msgstr "Größe des Bildes nicht änderbar"
 
 #: EcomB2B/class.Image.php:851 class.Image.php:851
-#, fuzzy
-#| msgid "Caption"
 msgid "caption"
-msgstr "Bildtext"
+msgstr "Bildbeschriftung"
 
 #: EcomB2B/class.Image.php:856 class.Attachment.php:457
 #: class.Attachment.php:508 class.Image.php:856
-#, fuzzy
 msgid "Employee can see file"
-msgstr "Kundenliste"
+msgstr "Datei für Kunden Angestellte sichtbar"
 
 #: EcomB2B/class.Image.php:858 class.Image.php:858
-#, fuzzy
 msgid "Customers can see"
-msgstr "Kunden"
+msgstr "Für Kunden sichtbar"
 
 #: EcomB2B/class.Image.php:860 ar_attachments_tables.php:63
 #: ar_images_tables.php:74 class.Attachment.php:459 class.Attachment.php:508
 #: class.Attachment.php:517 class.Image.php:860 conf/fields/family.fld.php:68
-#, fuzzy
 msgid "Public"
-msgstr "Öffentlicher Verkauf"
+msgstr "Öffentlich"
 
 #: EcomB2B/class.Image.php:864 _smarty.php:11672 class.Attachment.php:463
 #: class.Image.php:864
-#, fuzzy
 msgid "File"
-msgstr "Keine Bilddatei"
+msgstr "Datei"
 
 #: EcomB2B/class.Image.php:867 class.Attachment.php:466 class.Image.php:867
-#, fuzzy
 msgid "File name"
-msgstr "Dateiname der Originalquelle"
+msgstr "Dateiname"
 
 #: EcomB2B/class.Image.php:870 _smarty.php:1646 _smarty.php:1670
 #: class.Attachment.php:469 class.Image.php:870
-#, fuzzy
 msgid "File size"
-msgstr "Keine Bilddatei"
+msgstr "Dateigröße"
 
 #: EcomB2B/class.Image.php:873 _smarty.php:2150 _smarty.php:3005
 #: _smarty.php:3590 _smarty.php:4727 _smarty.php:5885 class.Attachment.php:472
 #: class.Image.php:873 pdf/supplier.order.pdf.php:48
-#, fuzzy
 msgid "Preview"
-msgstr "Haushaltsprodukte"
+msgstr "Vorschau"
 
 #: EcomB2B/class.Public_Customer.php:107 class.Customer.php:147
 #: class.Public_Customer.php:107
-#, fuzzy
 msgid "Another customer with same email has been found"
-msgstr "Name des Kunden  "
+msgstr "Ein anderer Kunde mit der selben E-Mail-Adresse wurde gefunden"
 
 #: EcomB2B/class.Public_Customer.php:199 class.Public_Customer.php:199
-#, fuzzy, php-format
-#| msgid "Customer Created"
+#, php-format
 msgid "Customer %s registered"
-msgstr "Kunde erstellt"
+msgstr "Kunde %s erstellt"
 
 #: EcomB2B/class.Public_Customer.php:204
 #: EcomB2B/class.Public_Website_User.php:123 _smarty.php:440 _smarty.php:464
@@ -323,17 +306,13 @@ msgstr "Kunde"
 
 #: EcomB2B/class.Public_Customer.php:391 class.Customer.php:355
 #: class.Order.php:1229 class.Public_Customer.php:391
-#, fuzzy
-#| msgid "Validated"
 msgid "Validated online"
-msgstr "Überprüft"
+msgstr "Online Überprüft"
 
 #: EcomB2B/class.Public_Customer.php:395 class.Customer.php:359
 #: class.Order.php:1233 class.Public_Customer.php:395
-#, fuzzy
-#| msgid "Set up tax number"
 msgid "Set up manually"
-msgstr "USt-IdNr. eingeben"
+msgstr "Manuell einrichten"
 
 #: EcomB2B/class.Public_Customer.php:407 class.Customer.php:371
 #: class.Order.php:1245 class.Public_Customer.php:407
@@ -353,33 +332,29 @@ msgstr "Nicht gültig"
 #: EcomB2B/class.Public_Customer.php:761 class.Public_Customer.php:761
 #: class.Subject.php:908
 msgid "Company name can't be empty if the contact name is empty as well"
-msgstr ""
+msgstr "Firmenname darf nicht leer sein, wenn auch der Kontaktname leer ist"
 
 #: EcomB2B/class.Public_Customer.php:852 class.Public_Customer.php:852
 msgid "Contact name can't be empty if the company name is empty"
 msgstr ""
+"Der Kontaktname darf nicht leer sein, wenn auch der Firmenname leer ist"
 
 #: EcomB2B/class.Public_Customer.php:907 class.Public_Customer.php:907
-#, fuzzy
-#| msgid "Value can not be zero"
 msgid "Email can't be empty"
-msgstr "Wert kann nicht null sein"
+msgstr "E-Mail kann nicht leer sein"
 
 #: EcomB2B/class.Public_Customer.php:923 EcomB2B/class.Public_Customer.php:952
 #: class.Public_Customer.php:923 class.Public_Customer.php:952
 #: class.Subject.php:1306 class.Subject.php:1335 class.Subject.php:1652
 #: class.Subject.php:1683
-#, fuzzy
-#| msgid "The customer already has this email"
 msgid "Another customer has this email"
-msgstr "Der Kunde hat bereits diese E-Mail"
+msgstr "Ein andere Kunde hat bereits diese E-Mail"
 
 #: EcomB2B/class.Public_Customer.php:925 EcomB2B/class.Public_Customer.php:955
 #: class.Public_Customer.php:925 class.Public_Customer.php:955
 #: class.Subject.php:1308 class.Subject.php:1338 class.Subject.php:1388
-#, fuzzy
 msgid "Another object has this email"
-msgstr "E-Mail-Adresse ist bereits einem anderen Kunden zugeteilt."
+msgstr "Ein anderes Objekt hat bereits diese E-Mail-Adresse"
 
 #: EcomB2B/class.Public_Customer.php:950 class.Public_Customer.php:950
 #: class.Subject.php:1333 class.Subject.php:1650 class.Subject.php:1681
@@ -400,29 +375,24 @@ msgstr "Sehr geehrte/r"
 
 #: EcomB2B/class.Public_Customer.php:1443 class.Customer.php:2864
 #: class.Public_Customer.php:1443
-#, fuzzy
-#| msgid "Registration number"
 msgid "registration number"
-msgstr "Unternehmensnr."
+msgstr "Unternehmensnummer"
 
 #: EcomB2B/class.Public_Customer.php:1446 class.Customer.php:2867
 #: class.Public_Customer.php:1446
-#, fuzzy
 msgid "tax number"
-msgstr "USt-IdNr.:"
+msgstr "USt-IdNr."
 
 #: EcomB2B/class.Public_Customer.php:1449 class.Customer.php:2870
 #: class.Public_Customer.php:1449
-#, fuzzy
 msgid "tax number validity"
-msgstr "USt-IdNr.:"
+msgstr "Gültigkeit der USt-IdNr."
 
 #: EcomB2B/class.Public_Customer.php:1452 class.Agent.php:416
 #: class.Customer.php:2873 class.Public_Customer.php:1452 class.Store.php:2418
 #: class.Supplier.php:1517
-#, fuzzy
 msgid "company name"
-msgstr "Faxmodus:"
+msgstr "Unternehmensname"
 
 #: EcomB2B/class.Public_Customer.php:1455 class.Agent.php:419
 #: class.Customer.php:2876 class.Public_Customer.php:1455
@@ -464,38 +434,32 @@ msgstr "Telefon"
 #: EcomB2B/class.Public_Customer.php:1472 class.Agent.php:436
 #: class.Customer.php:2893 class.Public_Customer.php:1472
 #: class.Supplier.php:1537
-#, fuzzy
 msgid "mobile"
-msgstr "Handynummer gelöscht"
+msgstr "Handynummer"
 
 #: EcomB2B/class.Public_Customer.php:1476 class.Agent.php:440
 #: class.Customer.php:2897 class.Public_Customer.php:1476
 #: class.Supplier.php:1541
-#, fuzzy
-#| msgid "Tax"
 msgid "fax"
-msgstr "Steuer"
+msgstr "Faxnummer"
 
 #: EcomB2B/class.Public_Customer.php:1479 class.Agent.php:443
 #: class.Customer.php:2900 class.Public_Customer.php:1479
 #: class.Supplier.php:1544
-#, fuzzy
 msgid "other telephone"
-msgstr "Sonstige"
+msgstr "andere Telefonnummer"
 
 #: EcomB2B/class.Public_Customer.php:1482 class.Agent.php:446
 #: class.Customer.php:2903 class.Public_Customer.php:1482
 #: class.Supplier.php:1547
-#, fuzzy
 msgid "main contact number"
-msgstr "Kontaktname"
+msgstr "Hauptkontaktnummer"
 
 #: EcomB2B/class.Public_Customer.php:1485 class.Agent.php:449
 #: class.Customer.php:2906 class.Public_Customer.php:1485
 #: class.Supplier.php:1550
-#, fuzzy
 msgid "fiscal name"
-msgstr "Der Geschäftsname einer Person kann nicht verändert werden"
+msgstr "steuerlicher Name"
 
 #: EcomB2B/class.Public_Customer.php:1489 class.Agent.php:453
 #: class.Customer.php:2910 class.Public_Customer.php:1489
@@ -507,10 +471,8 @@ msgstr "Kontaktadresse"
 
 #: EcomB2B/class.Public_Customer.php:1493 class.Customer.php:2914
 #: class.Public_Customer.php:1493
-#, fuzzy
-#| msgid "Delivery address"
 msgid "invoice address"
-msgstr "Lieferadresse"
+msgstr "Rechnungsadresse"
 
 #: EcomB2B/class.Public_Customer.php:1496 class.Customer.php:1236
 #: class.Customer.php:2917 class.Public_Customer.php:1496 class.Subject.php:317
@@ -521,10 +483,8 @@ msgstr "Lieferadresse"
 
 #: EcomB2B/class.Public_Customer.php:1499 class.Customer.php:2920
 #: class.Public_Customer.php:1499
-#, fuzzy
-#| msgid "Delivery address"
 msgid "other delivery address"
-msgstr "Lieferadresse"
+msgstr "weitere Lieferadresse"
 
 #: EcomB2B/class.Public_DealComponent.php:87 _smarty.php:98 _smarty.php:125
 #: _smarty.php:146 _smarty.php:167 _smarty.php:314 _smarty.php:938
@@ -582,14 +542,13 @@ msgstr "Eingestellt"
 
 #: EcomB2B/class.Public_Order.php:178 class.Order.php:529
 #: class.Public_Order.php:178
-#, fuzzy
 msgid "Order submited"
-msgstr "Nummer der Bestellung"
+msgstr "Bestellung eingereicht"
 
 #: EcomB2B/class.Public_Payment.php:132 ar_payments_tables.php:202
 #: class.Payment.php:154
 msgid "Pending"
-msgstr "ausstehend"
+msgstr "Steht aus"
 
 #: EcomB2B/class.Public_Payment.php:135 ar_payments_tables.php:205
 #: class.Payment.php:157
@@ -615,7 +574,7 @@ msgstr "Abgeschlossen"
 #: conf/elements_options.php:1130 conf/elements_options.php:1175
 #: conf/elements_options.php:1210 pdf/supplier.order.pdf.php:41
 msgid "Cancelled"
-msgstr "storniert"
+msgstr "Storniert"
 
 #: EcomB2B/class.Public_Payment.php:141 _smarty.php:14 _smarty.php:848
 #: _smarty.php:2687 _smarty.php:10265 _smarty.php:10268 _smarty.php:10271
@@ -685,9 +644,8 @@ msgstr "Sonstige"
 #: class.Payment.php:202 conf/user_groups.php:35 conf/user_groups.php:36
 #: navigation/account.nav.php:66 navigation/menu.mobile.php:471
 #: navigation/menu.php:516 utils/modules.php:5682
-#, fuzzy
 msgid "Account"
-msgstr "Konto hinzugefügt"
+msgstr "Konto"
 
 #: EcomB2B/class.Public_Payment.php:261 EcomB2B/class.Public_Payment.php:280
 #: EcomB2B/class.Public_Payment.php:290 EcomB2B/class.Public_Payment.php:299
@@ -715,13 +673,12 @@ msgid "is in process"
 msgstr "ist in Bearbeitung"
 
 #: EcomB2B/class.Public_Payment.php:274 class.Payment.php:364
-#, fuzzy
 msgid "has been paid from the customer account"
-msgstr "Weiteren Kunden hinzufügen"
+msgstr "wurde vom Kundenkonto bezahlt"
 
 #: EcomB2B/class.Public_Payment.php:282 class.Payment.php:372
 msgid "has been completed sucessfully"
-msgstr "wurde erfolgreich fertiggestellt."
+msgstr "wurde erfolgreich abgeschlossen"
 
 #: EcomB2B/class.Public_Payment.php:282 EcomB2B/class.Public_Payment.php:345
 #: _smarty.php:239 _smarty.php:329 _smarty.php:617 _smarty.php:743
@@ -778,24 +735,20 @@ msgid "has had an error"
 msgstr "wies einen Fehler auf"
 
 #: EcomB2B/class.Public_Payment.php:336 class.Payment.php:428
-#, fuzzy
 msgid "payment in process"
-msgstr "in Bearbeitung"
+msgstr "Zahlung in Prozess"
 
 #: EcomB2B/class.Public_Payment.php:345 class.Payment.php:437
-#, fuzzy
 msgid "payment completed successfully"
-msgstr "wurde erfolgreich fertiggestellt."
+msgstr "Zahlung erfolgreich abgeschlossen"
 
 #: EcomB2B/class.Public_Payment.php:354 class.Payment.php:446
-#, fuzzy
 msgid "payment cancelled"
-msgstr "storniert"
+msgstr "Zahlung storniert"
 
 #: EcomB2B/class.Public_Payment.php:364 class.Payment.php:456
-#, fuzzy
 msgid "payment has had an error"
-msgstr "wies einen Fehler auf"
+msgstr "Zahlung wies einen Fehler auf"
 
 #: EcomB2B/class.Public_Payment_Account.php:241
 #: EcomB2B/class.Public_Product.php:923 class.Agent.php:407
@@ -829,9 +782,8 @@ msgid "Account beneficiary"
 msgstr "Empfänger"
 
 #: EcomB2B/class.Public_Payment_Account.php:250 class.Payment_Account.php:341
-#, fuzzy
 msgid "Bank address"
-msgstr "Als Hauptrechnungsadresse festlegen"
+msgstr "Bankadresse"
 
 #: EcomB2B/class.Public_Payment_Account.php:253 class.Payment_Account.php:344
 #, fuzzy
@@ -846,37 +798,31 @@ msgid "Bank code"
 msgstr "BLZ"
 
 #: EcomB2B/class.Public_Payment_Account.php:259 class.Payment_Account.php:350
-#, fuzzy
-#| msgid "Unknown name"
 msgid "bank name"
-msgstr "Unbekannter Name"
+msgstr "Bankname"
 
 #: EcomB2B/class.Public_Payment_Account.php:265 class.Payment_Account.php:356
-#, fuzzy
 msgid "Account IBAN"
-msgstr "Konto hinzugefügt"
+msgstr "Konto IBAN"
 
 #: EcomB2B/class.Public_Product.php:367 _smarty.php:13493
 #: class.Category.php:782 class.Page.php:900 class.Product.php:507
 #: class.Product.php:799 class.Public_Product.php:367
 #: conf/fields/product.fld.php:36 conf/fields/service.fld.php:37
-#, fuzzy
 msgid "Automatic"
-msgstr ""
-"Leider konnte Ihr Passwort nicht zurückgesetzt werden. Bitte versuchen Sie "
-"es später nocheinmal oder kontaktieren Sie uns telefonisch"
+msgstr "Automatisch"
 
 #: EcomB2B/class.Public_Product.php:371 class.Category.php:786
 #: class.Page.php:904 class.Product.php:511 class.Public_Product.php:371
 #: class.User.php:481 class.User.php:522 class.User.php:558 class.User.php:593
 #: class.User.php:726
 msgid "none"
-msgstr ""
+msgstr "keiner"
 
 #: EcomB2B/class.Public_Product.php:445 ar_products_tables.php:217
 #: class.Product.php:580 class.Public_Product.php:445
 msgid "Launching soon"
-msgstr ""
+msgstr "Startet Bald"
 
 #: EcomB2B/class.Public_Product.php:456 class.Page.php:3219 class.Page.php:3398
 #: class.Page.php:3611 class.Page.php:4157 class.Page.php:4370
@@ -904,40 +850,34 @@ msgstr "Nicht vorrätig"
 #: class.Part.php:723 class.Product.php:857 class.Public_Product.php:491
 #: class.SupplierPart.php:1813
 msgid "On demand"
-msgstr ""
+msgstr "Auf Nachfrage"
 
 #: EcomB2B/class.Public_Product.php:604 class.Asset.php:741
 #: class.Public_Product.php:604
-#, fuzzy
 msgid "Diameter"
-msgstr "Liberia"
+msgstr "Durchmesser"
 
 #: EcomB2B/class.Public_Product.php:735 class.Product.php:3722
 #: class.Public_Product.php:735
-#, fuzzy
 msgid "Material safety data sheet"
-msgstr "hinzugefügt"
+msgstr "Materialsicherheitsdatenblatt"
 
 #: EcomB2B/class.Public_Product.php:737 _smarty.php:9845 class.Product.php:3724
 #: class.Public_Product.php:737 conf/fields/attachment.fld.php:109
 #: navigation/agent.nav.php:1068 navigation/hr.nav.php:1154
 #: navigation/inventory.nav.php:1739 navigation/suppliers.nav.php:2583
-#, fuzzy
 msgid "Attachment"
-msgstr "Ersetzung"
+msgstr "Anhang"
 
 #: EcomB2B/class.Public_Product.php:908 class.Product.php:1061
 #: class.Public_Product.php:908 class.Staff.php:1839
-#, fuzzy
-#| msgid "d"
 msgid "id"
-msgstr "T"
+msgstr "Id"
 
 #: EcomB2B/class.Public_Product.php:913 class.Product.php:1066
 #: class.Public_Product.php:913
-#, fuzzy
 msgid "Outer cost"
-msgstr "Sonstige"
+msgstr "Artikelkosten"
 
 #: EcomB2B/class.Public_Product.php:917 class.Product.php:1070
 #: class.Public_Product.php:917
@@ -948,9 +888,8 @@ msgstr "Produktbeschreibung"
 
 #: EcomB2B/class.Public_Product.php:920 class.Product.php:1073
 #: class.Public_Product.php:920
-#, fuzzy
 msgid "Webpage title"
-msgstr "Browsername"
+msgstr "Webseite Titel"
 
 #: EcomB2B/class.Public_Product.php:926 class.Category.php:3843
 #: class.Charge.php:283 class.DealCampaign.php:560 class.Product.php:1079
@@ -963,15 +902,13 @@ msgstr "Beschreibung"
 #: EcomB2B/class.Public_Product.php:929 class.Part.php:2448
 #: class.Product.php:1082 class.Public_Product.php:929
 #: class.SupplierPart.php:1804
-#, fuzzy
 msgid "unit description"
-msgstr "Einheit"
+msgstr "Einheit Beschreibung"
 
 #: EcomB2B/class.Public_Product.php:932 class.Product.php:1085
 #: class.Public_Product.php:932 conf/export_edit_template_fields.php:637
-#, fuzzy
 msgid "Outer price"
-msgstr "Versandt"
+msgstr "Artikelpreis"
 
 #: EcomB2B/class.Public_Product.php:935 class.DeliveryNote.php:2120
 #: class.Product.php:1088 class.Public_Product.php:935
@@ -981,69 +918,57 @@ msgstr "Gewicht"
 
 #: EcomB2B/class.Public_Product.php:938 class.Product.php:1091
 #: class.Public_Product.php:938
-#, fuzzy
 msgid "dimensions"
-msgstr "Menüs bearbeiten"
+msgstr "Maße"
 
 #: EcomB2B/class.Public_Product.php:941 class.Product.php:1094
 #: class.Public_Product.php:941
-#, fuzzy
 msgid "retail units per outer"
-msgstr "pro Artikel"
+msgstr "Einzelhandelseinheiten pro Artikel"
 
 #: EcomB2B/class.Public_Product.php:945 class.Product.php:1098
 #: class.Public_Product.php:945
-#, fuzzy
 msgid "unit type"
-msgstr "Einheit"
+msgstr "Einheitstyp"
 
 #: EcomB2B/class.Public_Product.php:948 class.Product.php:1101
 #: class.Public_Product.php:948
-#, fuzzy
 msgid "label in family"
-msgstr "Familie"
+msgstr "Label in der Familie"
 
 #: EcomB2B/class.Public_Product.php:952 class.Part.php:2477
 #: class.Product.php:1105 class.Public_Product.php:952
-#, fuzzy
 msgid "unit weight"
-msgstr "Gewicht"
+msgstr "Einheitgewicht"
 
 #: EcomB2B/class.Public_Product.php:955 class.Part.php:2480
 #: class.Product.php:1108 class.Public_Product.php:955
-#, fuzzy
 msgid "unit dimensions"
-msgstr "Einheit"
+msgstr "Einheitmaße"
 
 #: EcomB2B/class.Public_Product.php:958 class.Product.php:1111
 #: class.Public_Product.php:958
-#, fuzzy
 msgid "units per outer"
-msgstr "pro Artikel"
+msgstr "Einheiten pro Artikel"
 
 #: EcomB2B/class.Public_Product.php:961 class.Part.php:2451
 #: class.Product.php:1114 class.Public_Product.php:961
 #: class.SupplierPart.php:1807
-#, fuzzy
 msgid "unit label"
-msgstr "Kategorien mit dem Etikett"
+msgstr "EInheitlabel"
 
 #: EcomB2B/class.Public_Product.php:964 class.Product.php:1117
 #: class.Public_Product.php:964 class.Upload.php:185
-#, fuzzy
 msgid "parts"
-msgstr "Aktualisieren"
+msgstr "Teile"
 
 #: EcomB2B/class.Public_Product.php:967 class.Product.php:1120
 #: class.Public_Product.php:967
-#, fuzzy
-#| msgid "Suriname"
 msgid "unit name"
-msgstr "Suriname"
+msgstr "Einheitname"
 
 #: EcomB2B/class.Public_Product.php:971 class.Product.php:1124
 #: class.Public_Product.php:971
-#, fuzzy
 msgid "unit RRP"
 msgstr "UVP"
 
@@ -1056,45 +981,39 @@ msgstr "Tariffkode"
 
 #: EcomB2B/class.Public_Product.php:979 class.Part.php:2487
 #: class.Product.php:1132 class.Public_Product.php:979
-#, fuzzy
 msgid "duty rate"
-msgstr "Ungültiges Gewicht"
+msgstr "Zollsatz"
 
 #: EcomB2B/class.Public_Product.php:983 _smarty.php:7952 _smarty.php:8246
 #: _smarty.php:8543 _smarty.php:8828 _smarty.php:9113 class.Part.php:2491
 #: class.Product.php:1136 class.Public_Product.php:983
 #: conf/export_edit_template_fields.php:292
 #: conf/export_edit_template_fields.php:534
-#, fuzzy
 msgid "UN number"
-msgstr "Nummer"
+msgstr "UN Nummer"
 
 #: EcomB2B/class.Public_Product.php:987 _smarty.php:7961 _smarty.php:8255
 #: _smarty.php:8552 _smarty.php:8837 _smarty.php:9122 class.Part.php:2495
 #: class.Product.php:1140 class.Public_Product.php:987
 #: conf/export_edit_template_fields.php:302
 #: conf/export_edit_template_fields.php:544
-#, fuzzy
 msgid "UN class"
-msgstr "Nummer"
+msgstr "UN Klasse"
 
 #: EcomB2B/class.Public_Product.php:990 class.Part.php:2498
 #: class.Product.php:1143 class.Public_Product.php:990
-#, fuzzy
 msgid "packing group"
-msgstr "Verpacken"
+msgstr "Verpackungsgruppe"
 
 #: EcomB2B/class.Public_Product.php:993 class.Part.php:2501
 #: class.Product.php:1146 class.Public_Product.php:993
-#, fuzzy
 msgid "proper shipping name"
-msgstr "Versand"
+msgstr "richtiger Versandname"
 
 #: EcomB2B/class.Public_Product.php:996 class.Part.php:2504
 #: class.Product.php:1149 class.Public_Product.php:996
-#, fuzzy
 msgid "hazard identification number"
-msgstr "Nummer"
+msgstr "Gefahrenidentifikationsnummer"
 
 #: EcomB2B/class.Public_Product.php:999 _smarty.php:7925 _smarty.php:8219
 #: _smarty.php:8516 _smarty.php:8801 _smarty.php:9086 class.Part.php:2507
@@ -1102,29 +1021,25 @@ msgstr "Nummer"
 #: conf/export_edit_template_fields.php:495
 #: conf/fields/website_localization.fld.php:118
 #: conf/fields/website_localization.fld.php:119
-#, fuzzy
 msgid "Materials/Ingredients"
-msgstr "Erstellen"
+msgstr "Materialien/Zutaten"
 
 #: EcomB2B/class.Public_Product.php:1002 class.Agent.php:462
 #: class.Part.php:2510 class.Product.php:1155 class.Public_Product.php:1002
 #: class.Supplier.php:1563
-#, fuzzy
 msgid "country of origin"
-msgstr "Land"
+msgstr "Ursprungsland"
 
 #: EcomB2B/class.Public_Product.php:1005 class.Part.php:2513
 #: class.Product.php:1158 class.Public_Product.php:1005
 #: class.SupplierPart.php:1810
-#, fuzzy
 msgid "units per SKO"
-msgstr "pro Artikel"
+msgstr "Einheiten pro Artikel"
 
 #: EcomB2B/class.Public_Product.php:1008 class.Part.php:2516
 #: class.Product.php:1161 class.Public_Product.php:1008
-#, fuzzy
 msgid "barcode"
-msgstr "Paketart"
+msgstr "Strichcode"
 
 #: EcomB2B/class.Public_Product.php:1011 class.Part.php:2519
 #: class.Product.php:1164 class.Public_Product.php:1011
@@ -1244,10 +1159,8 @@ msgstr "Gültige USt-IdNr."
 #: EcomB2B/trait.OrderTax.php:340 EcomB2B/trait.OrderTax.php:518
 #: EcomB2B/trait.OrderTax.php:696 trait.OrderTax.php:340 trait.OrderTax.php:518
 #: trait.OrderTax.php:696
-#, fuzzy
 msgid "VAT might be exempt with a valid tax number"
-msgstr ""
-"Wenn Sie eine gültige USt-IdNr. haben, müssen Sie keine MwSt. bezahlen."
+msgstr "Wenn Sie eine gültige UID haben, müssen Sie keine MwSt. bezahlen"
 
 #: EcomB2B/trait.OrderTax.php:341 EcomB2B/trait.OrderTax.php:519
 #: EcomB2B/trait.OrderTax.php:697 trait.OrderTax.php:341 trait.OrderTax.php:519
@@ -1285,7 +1198,7 @@ msgstr "Von MwSt. ausgenommen"
 #: pdf/invoice.pdf.php:518 pdf/supplier.order.pdf.php:653
 #: trait.OrderTax.php:433 trait.OrderTax.php:610 utils/modules.php:5113
 msgid "No Tax"
-msgstr "Keine MwSt."
+msgstr "Keine Steuer"
 
 #: EcomB2B/trait.OrderTax.php:436 EcomB2B/trait.OrderTax.php:613
 #: pdf/invoice.pdf.php:524 pdf/supplier.order.pdf.php:659
@@ -1340,16 +1253,14 @@ msgid "Sales history"
 msgstr "Umsatz"
 
 #: _smarty.php:35
-#, fuzzy
 msgid "Non zero records"
-msgstr "Anzeigen des Desktops: %s\n"
+msgstr "Keine-Null-Aufzeichnungen"
 
 #: _smarty.php:38 _smarty.php:50 _smarty.php:3413 _smarty.php:5309
 #: _smarty.php:9713 _smarty.php:9728 _smarty.php:10019 _smarty.php:10034
 #: _smarty.php:13499
-#, fuzzy
 msgid "Last updated"
-msgstr "zuletzt aktualisiert"
+msgstr "Zuletzt aktualisiert"
 
 #: _smarty.php:41
 #, fuzzy
@@ -1528,9 +1439,8 @@ msgstr "Name"
 #: _smarty.php:10688 ar_edit.php:392 ar_edit.php:482 ar_setup.php:1651
 #: ar_setup.php:1673 navigation/hr.nav.php:1799 navigation/hr.nav.php:1994
 #: navigation/suppliers.nav.php:2431
-#, fuzzy
 msgid "Deleted"
-msgstr "gelöscht"
+msgstr "Gelöscht"
 
 #: _smarty.php:107 _smarty.php:134 _smarty.php:155 _smarty.php:176
 #: utils/modules.php:5920
@@ -1550,9 +1460,8 @@ msgstr "Tochtergesellschaften"
 #: _smarty.php:10298 navigation/warehouses.nav.php:74
 #: navigation/warehouses.nav.php:102 navigation/warehouses.nav.php:151
 #: utils/modules.php:4150 utils/modules.php:4151
-#, fuzzy
 msgid "Warehouses"
-msgstr "Zuordnung der Be&nutzernamen:"
+msgstr "Lager"
 
 #: _smarty.php:116 _smarty.php:143 _smarty.php:164 _smarty.php:185
 #: _smarty.php:10289 ar_views.php:5715 class.Upload.php:449
@@ -1939,9 +1848,8 @@ msgstr "Lagerort"
 
 #: _smarty.php:272 _smarty.php:359 _smarty.php:656 _smarty.php:1121
 #: _smarty.php:4367 _smarty.php:5198
-#, fuzzy
 msgid "Last PO"
-msgstr "letzte/r/s"
+msgstr "Letzte Bestellung"
 
 #: _smarty.php:275 _smarty.php:1085 _smarty.php:1124 _smarty.php:4370
 #: _smarty.php:5201 ar_account_tables.php:484 utils/modules.php:4505
@@ -1951,10 +1859,8 @@ msgstr "Seite"
 
 #: _smarty.php:278 _smarty.php:812 _smarty.php:1088 _smarty.php:1127
 #: _smarty.php:4373 _smarty.php:5204
-#, fuzzy
-#| msgid "Active Contacts"
 msgid "Active parts"
-msgstr "aktive Kontakte"
+msgstr "Aktive Teile"
 
 #: _smarty.php:281 _smarty.php:368 _smarty.php:662 _smarty.php:833
 #: _smarty.php:1091 _smarty.php:1130 _smarty.php:4376 _smarty.php:5207
@@ -2000,10 +1906,8 @@ msgstr "Nicht vorrätig"
 
 #: _smarty.php:296 _smarty.php:383 _smarty.php:677 _smarty.php:1106
 #: _smarty.php:1145 _smarty.php:4391 _smarty.php:5222
-#, fuzzy
-#| msgid "Pending"
 msgid "Pending PO"
-msgstr "ausstehend"
+msgstr "Ausstehende Bestellung"
 
 #: _smarty.php:299 _smarty.php:386 _smarty.php:512 _smarty.php:680
 #: _smarty.php:1148 _smarty.php:1214 _smarty.php:1535 _smarty.php:1586
@@ -2095,9 +1999,8 @@ msgid "Sales"
 msgstr "Umsatz"
 
 #: _smarty.php:323 conf/elements_options.php:750 conf/elements_options.php:753
-#, fuzzy
 msgid "Required by client"
-msgstr "erforderlich"
+msgstr "Vom Kunden erforderlich"
 
 #: _smarty.php:326
 #, fuzzy
@@ -2216,7 +2119,7 @@ msgstr "Kunden"
 #: _smarty.php:12206 ar_edit_email_template.php:814 conf/export_fields.php:205
 #: conf/export_fields.php:454 conf/website_system_webpages.php:479
 msgid "Net"
-msgstr "netto"
+msgstr "Netto"
 
 #: _smarty.php:428 _smarty.php:452 _smarty.php:476 _smarty.php:2117
 #: _smarty.php:9338 _smarty.php:11111 _smarty.php:11990 _smarty.php:12209
@@ -2297,7 +2200,7 @@ msgstr "Status"
 #: _smarty.php:494 _smarty.php:1196 _smarty.php:1517 _smarty.php:1568
 #: _smarty.php:1736 _smarty.php:4127 _smarty.php:4178 _smarty.php:5933
 msgid "Since"
-msgstr " Seit"
+msgstr "Seit"
 
 #: _smarty.php:497 _smarty.php:1199 _smarty.php:1520 _smarty.php:1571
 #: _smarty.php:1739 _smarty.php:4130 _smarty.php:4181 _smarty.php:5936
@@ -2382,13 +2285,13 @@ msgstr "Beschreibung"
 #: _smarty.php:5303 _smarty.php:6902 _smarty.php:13241 class.ReadEmail.php:194
 #: class.ReadEmail.php:253
 msgid "From"
-msgstr "ab"
+msgstr "Preis ab"
 
 #: _smarty.php:542 _smarty.php:584 _smarty.php:1715 _smarty.php:1811
 #: _smarty.php:5306 _smarty.php:11288 _smarty.php:11291 class.ReadEmail.php:195
 #: class.ReadEmail.php:254
 msgid "To"
-msgstr "zu"
+msgstr "Bis"
 
 #: _smarty.php:545 _smarty.php:590 _smarty.php:1718 _smarty.php:1814
 #: _smarty.php:3479 _smarty.php:6488 _smarty.php:9584 _smarty.php:10286
@@ -2449,9 +2352,8 @@ msgstr "Kategorien mit dem Etikett"
 #: _smarty.php:602 _smarty.php:701 _smarty.php:1493 _smarty.php:2807
 #: _smarty.php:2843 _smarty.php:2921 _smarty.php:3824 _smarty.php:4415
 #: _smarty.php:5177
-#, fuzzy
 msgid "Level"
-msgstr "vorrätig"
+msgstr "Ebene"
 
 #: _smarty.php:605 _smarty.php:704 _smarty.php:1496 _smarty.php:2810
 #: _smarty.php:2846 _smarty.php:2924 _smarty.php:3827 _smarty.php:4418
@@ -2511,7 +2413,7 @@ msgstr ""
 #: ar_customers_tables.php:134 conf/elements_options.php:44
 #: conf/elements_options.php:1351
 msgid "Lost"
-msgstr "verloren"
+msgstr "Verloren"
 
 #: _smarty.php:635 _smarty.php:2606
 msgid "Bought"
@@ -2712,10 +2614,8 @@ msgid "Category status"
 msgstr "Kategorie"
 
 #: _smarty.php:809 _smarty.php:11234
-#, fuzzy
-#| msgid "is in process"
 msgid "Parts in process"
-msgstr "ist in Bearbeitung"
+msgstr "Teile werden bearbeitet"
 
 #: _smarty.php:815
 #, fuzzy
@@ -2723,10 +2623,8 @@ msgid "Discontinuing parts"
 msgstr "Konten"
 
 #: _smarty.php:818 utils/modules.php:4339
-#, fuzzy
-#| msgid "Discontinued"
 msgid "Discontinued parts"
-msgstr "aus dem Sortiment genommen"
+msgstr "Aus dem Sortiment genommenen Teile"
 
 #: _smarty.php:830
 #, fuzzy
@@ -2795,7 +2693,7 @@ msgstr "Konten"
 #: conf/fields/supplier_part.fld.php:50 locale.php:40 locale.php:50
 #: utils/modules.php:4203
 msgid "Discontinued"
-msgstr "aus dem Sortiment genommen"
+msgstr "Nicht vorrätig"
 
 #: _smarty.php:950 _smarty.php:992 _smarty.php:1022
 #, fuzzy
@@ -2932,10 +2830,8 @@ msgid "Contact number"
 msgstr "Kontaktname"
 
 #: _smarty.php:1322
-#, fuzzy
-#| msgid "Assigned Field"
 msgid "Assignment title"
-msgstr "zugewiesenes Feld"
+msgstr "Zugewiesenes Feld"
 
 #: _smarty.php:1325 _smarty.php:2276 _smarty.php:2390 _smarty.php:3056
 #: _smarty.php:4091 _smarty.php:7325 _smarty.php:7478 _smarty.php:7646
@@ -2965,11 +2861,8 @@ msgstr ""
 #: conf/fields/employee.fld.php:728 conf/fields/user.system.fld.php:63
 #: tabs/account.setup.add_employees.tab.php:36 tabs/contractors.tab.php:27
 #: tabs/employees.tab.php:33 tabs/position.employees.tab.php:33
-#, fuzzy
 msgid "System user"
-msgstr ""
-"Die neue Art, sicher und schnell online zu bezahlen. Geben Sie einfach Ihre "
-"Bankdaten im sicheren SOFORT System ein."
+msgstr "Benutzer"
 
 #: _smarty.php:1340 _smarty.php:2291 _smarty.php:2405 _smarty.php:3071
 #: _smarty.php:4106
@@ -3004,7 +2897,7 @@ msgstr "Status der Zahlung"
 #: ar_account_tables.php:658 ar_edit.php:490 ar_setup.php:1681
 #: class.Department.php:296 class.Department.php:306 class.Family.php:322
 msgid "Created"
-msgstr "erstellt"
+msgstr "Erstellt"
 
 #: _smarty.php:1622 _smarty.php:2945 _smarty.php:3464 _smarty.php:3476
 msgid "Store Name"
@@ -3016,9 +2909,8 @@ msgid "New"
 msgstr "Neu"
 
 #: _smarty.php:1634
-#, fuzzy
 msgid "Loosing"
-msgstr "verschwindende Kontakte"
+msgstr "Verlieren"
 
 #: _smarty.php:1640 _smarty.php:1661 _smarty.php:1682 _smarty.php:2186
 #: _smarty.php:2300 _smarty.php:2486 _smarty.php:3518 _smarty.php:3899
@@ -3122,9 +3014,8 @@ msgid "Picked"
 msgstr "Kommissioniert"
 
 #: _smarty.php:1934 _smarty.php:1988 _smarty.php:6887
-#, fuzzy
 msgid "Required"
-msgstr "erforderlich"
+msgstr "Erforderlich"
 
 #: _smarty.php:1937 _smarty.php:1991
 #, fuzzy
@@ -3245,7 +3136,7 @@ msgstr "Originalquelle"
 #: _smarty.php:2237 _smarty.php:2351 _smarty.php:5333 _smarty.php:5621
 #: ar_hr_tables.php:502
 msgid "Ignored"
-msgstr "ignoriert"
+msgstr "Ignoriert"
 
 #: _smarty.php:2255 _smarty.php:2369 _smarty.php:3035 _smarty.php:4070
 #: _smarty.php:7223 _smarty.php:7409 _smarty.php:7544
@@ -3425,14 +3316,12 @@ msgstr "Wert"
 
 #: _smarty.php:2897 _smarty.php:5771 _smarty.php:5819 _smarty.php:10976
 #: _smarty.php:11201 conf/export_fields.php:551 conf/fields/part.fld.php:474
-#, fuzzy
 msgid "Stock value"
-msgstr "vorrätig"
+msgstr "Bestandswert"
 
 #: _smarty.php:2939
-#, fuzzy
 msgid "Work cost"
-msgstr "Dieser Link wird in 24 Stunden ungültig."
+msgstr "Arbeitskosten"
 
 #: _smarty.php:2948 ar_views.php:6733 ar_views.php:6739 ar_views.php:6751
 #: ar_views.php:6770 ar_views.php:6793 navigation/marketing.nav.php:140
@@ -3785,9 +3674,8 @@ msgid "Other locations stock"
 msgstr "Lagerort"
 
 #: _smarty.php:4928 _smarty.php:5789 _smarty.php:5855
-#, fuzzy
 msgid "Eventual Stock"
-msgstr "vorrätig"
+msgstr "Eventueller Bestand"
 
 #: _smarty.php:4931 _smarty.php:5792 _smarty.php:5858
 msgid "Recommended SKOs quantity"
@@ -4033,10 +3921,8 @@ msgid "Subnodes"
 msgstr ""
 
 #: _smarty.php:5879
-#, fuzzy
-#| msgid "Created"
 msgid "Created by"
-msgstr "erstellt"
+msgstr "Erstellt von"
 
 #: _smarty.php:5894 _smarty.php:6005 _smarty.php:6047 _smarty.php:6053
 #: _smarty.php:6083 _smarty.php:6194 _smarty.php:6200
@@ -4107,7 +3993,7 @@ msgstr "Seite"
 #: ar_suppliers_tables.php:1159 class.PurchaseOrder.php:539
 #: conf/elements_options.php:640 locale.php:44
 msgid "In Process"
-msgstr "in Bearbeitung"
+msgstr "In Bearbeitung"
 
 #: _smarty.php:6188 _smarty.php:6965 ar_products_tables.php:211
 #: class.Page.php:949 class.Page.php:6196 class.Part.php:478 class.Part.php:494
@@ -4207,9 +4093,8 @@ msgid "Interval"
 msgstr "Italien"
 
 #: _smarty.php:6272 _smarty.php:6509
-#, fuzzy
 msgid "Year to day"
-msgstr "zu tätigende Rückerst."
+msgstr "Im letzten Jahr"
 
 #: _smarty.php:6275 _smarty.php:6512 _smarty.php:13202
 msgid "YTD"
@@ -4236,15 +4121,13 @@ msgstr "WBD"
 #: _smarty.php:6290 _smarty.php:6293 _smarty.php:6473 _smarty.php:6527
 #: _smarty.php:6530 _smarty.php:6698 _smarty.php:13211
 #: navigation/hr.nav.php:1366 utils/natural_language.php:553
-#, fuzzy
 msgid "Today"
-msgstr "heute"
+msgstr "Heute"
 
 #: _smarty.php:6296 _smarty.php:6533 _smarty.php:6701
 #: utils/natural_language.php:541
-#, fuzzy
 msgid "Yesterday"
-msgstr "gestern"
+msgstr "Gestern"
 
 #: _smarty.php:6299 _smarty.php:6536 _smarty.php:13214
 msgid "Y'day"
@@ -4268,9 +4151,8 @@ msgid "Last month"
 msgstr "Monat"
 
 #: _smarty.php:6311 _smarty.php:6548 _smarty.php:13220
-#, fuzzy
 msgid "Last M"
-msgstr "letzte/r/s"
+msgstr "Im letzten Monat"
 
 #: _smarty.php:6314 _smarty.php:6551
 #, fuzzy
@@ -4363,9 +4245,8 @@ msgstr "Warenkorb"
 #: ar_suppliers_tables.php:1162 class.Order.php:1523
 #: class.PurchaseOrder.php:543 conf/elements_options.php:298
 #: conf/elements_options.php:391 utils/order_functions.php:151
-#, fuzzy
 msgid "Submitted"
-msgstr "Vom Kunden eingegeben."
+msgstr "Eingereicht"
 
 #: _smarty.php:6371 _smarty.php:6407 _smarty.php:6449
 msgid "Unpaid submitted orders"
@@ -4414,9 +4295,8 @@ msgid "Dispatched today"
 msgstr "Versandt"
 
 #: _smarty.php:6398 _smarty.php:6434
-#, fuzzy
 msgid "Today's dispatched orders"
-msgstr "Bestellung ohne Wert versandt."
+msgstr "Heute versandte Bestellungen"
 
 #: _smarty.php:6437 ar_views.php:2783 ar_views.php:2900 ar_views.php:3984
 #: ar_views.php:3991 ar_views.php:3999 ar_views.php:4081 ar_views.php:4100
@@ -4454,10 +4334,8 @@ msgid "Locations with errors"
 msgstr "Lagerort"
 
 #: _smarty.php:6479
-#, fuzzy
-#| msgid "In stock"
 msgid "Excess stock"
-msgstr "vorrätig"
+msgstr "Übermäßiger Bestand"
 
 #: _smarty.php:6482
 #, fuzzy
@@ -4522,14 +4400,12 @@ msgstr ""
 #: class.Upload.php:147 conf/elements_options.php:575
 #: conf/elements_options.php:1027 conf/elements_options.php:1110
 #: conf/elements_options.php:1190 utils/modules.php:4186
-#, fuzzy
 msgid "In process"
-msgstr "in Bearbeitung"
+msgstr "In Bearbeitung"
 
 #: _smarty.php:6650 _smarty.php:6653
-#, fuzzy
 msgid "In process (Paid)"
-msgstr "in Bearbeitung"
+msgstr "In Bearbeitung (Gezahlt)"
 
 #: _smarty.php:6656 _smarty.php:6659 _smarty.php:10988
 #: conf/elements_options.php:302 conf/elements_options.php:395
@@ -4598,10 +4474,8 @@ msgid "Insufficient picking stock"
 msgstr ""
 
 #: _smarty.php:6752
-#, fuzzy
-#| msgid "Set as main delivery address"
 msgid "Set as default delivery address"
-msgstr "als Hauptlieferadresse festlegen"
+msgstr "Als Hauptlieferadresse festlegen"
 
 #: _smarty.php:6755
 #, fuzzy
@@ -4679,21 +4553,20 @@ msgid "Please assign packer"
 msgstr "Verpacker"
 
 #: _smarty.php:6845
-#, fuzzy
 msgid "Delivery Note No."
-msgstr "Versandanzeige"
+msgstr "Lieferschein Nr."
 
 #: _smarty.php:6848 _smarty.php:9245 _smarty.php:11756
 #: conf/fields/payment_account.fld.php:181 conf/fields/webpage.fld.php:259
 msgid "VAT Number"
-msgstr "USt-IDNr."
+msgstr "UID"
 
 #: _smarty.php:6851 _smarty.php:10925 _smarty.php:13052 _smarty.php:13055
 #: _web_smarty.php:1187 _web_smarty.php:1190 _web_smarty.php:1277
 #: _web_smarty.php:1280 conf/website_system_webpages.php:401
 #: conf/website_system_webpages.php:402
 msgid "Registration number"
-msgstr "Unternehmensnr."
+msgstr "Unternehmensnummer"
 
 #: _smarty.php:6857 _smarty.php:9254 _smarty.php:9506 _smarty.php:11765
 msgid "of"
@@ -4744,9 +4617,8 @@ msgstr "Abteilung"
 
 #: _smarty.php:6914 _smarty.php:9431 ar_address.php:102 ar_views.php:4938
 #: navigation/hr.nav.php:167 utils/modules.php:5216 utils/modules.php:5217
-#, fuzzy
 msgid "Organization"
-msgstr "bearbeiten"
+msgstr "Unternehmen"
 
 #: _smarty.php:6917 _smarty.php:9434 ar_address.php:107
 msgid "Line 1"
@@ -4814,9 +4686,8 @@ msgid "Retype new password"
 msgstr "Neues Passwort eingeben"
 
 #: _smarty.php:6953
-#, fuzzy
 msgid "Refundable amount"
-msgstr "liefert"
+msgstr "Erstattungsbetrag"
 
 #: _smarty.php:6956 _smarty.php:9362 _smarty.php:11096 _smarty.php:11996
 #: _smarty.php:12215 _web_smarty.php:98 _web_smarty.php:143 _web_smarty.php:470
@@ -4971,10 +4842,8 @@ msgid "Set as text only email"
 msgstr "Normal"
 
 #: _smarty.php:7070
-#, fuzzy
-#| msgid "Green"
 msgid "Greetings"
-msgstr "grün"
+msgstr "Willkommen"
 
 #: _smarty.php:7073
 #, fuzzy
@@ -5384,9 +5253,8 @@ msgid ""
 msgstr ""
 
 #: _smarty.php:7691
-#, fuzzy
 msgid "How to add new part?"
-msgstr "Abteilung"
+msgstr "Wie füge ich ein neues Teil hinzu?"
 
 #: _smarty.php:7694 _smarty.php:9161
 msgid "Click in the <i class=\"fa fa-plus\"></i> icon at the table header"
@@ -5554,9 +5422,8 @@ msgstr "UVP"
 
 #: _smarty.php:7841 _smarty.php:8135 _smarty.php:8432 _smarty.php:8717
 #: _smarty.php:9002 conf/export_edit_template_fields.php:628
-#, fuzzy
 msgid "Units per outer"
-msgstr "pro Artikel"
+msgstr "Einheiten pro Packung"
 
 #: _smarty.php:7850 _smarty.php:8144 _smarty.php:8441 _smarty.php:8726
 #: _smarty.php:9011
@@ -5678,18 +5545,16 @@ msgid "for automatically assign next available barcode"
 msgstr "Brennvorgang abgebrochen"
 
 #: _smarty.php:8291
-#, fuzzy
 msgid "How to add new supplier's part?"
-msgstr "Lieferant"
+msgstr "Wie füge ich neuen Lieferanten Produkte hinzu?"
 
 #: _smarty.php:8297
 msgid "How to add supplier's parts in bulk?"
 msgstr ""
 
 #: _smarty.php:9158
-#, fuzzy
 msgid "How to add new location?"
-msgstr "Lagerort"
+msgstr "Wie füge ich eine neue Lokation hinzu?"
 
 #: _smarty.php:9164
 msgid "How to add locations in bulk?"
@@ -5785,7 +5650,7 @@ msgstr "Betrag"
 #: pdf/invoice.pdf.php:434 pdf/supplier.order.pdf.php:439
 #: pdf/supplier.order.pdf.php:590 utils/modules.php:1906
 msgid "Charges"
-msgstr "Gebühr für kl. Best."
+msgstr "Gebühren"
 
 #: _smarty.php:9329 _smarty.php:10952 _smarty.php:11822 pdf/invoice.pdf.php:263
 #: pdf/invoice.pdf.php:446 pdf/supplier.order.pdf.php:451
@@ -5823,9 +5688,8 @@ msgid "Was not possible to log in with these credentials"
 msgstr ""
 
 #: _smarty.php:9386 _smarty.php:9395
-#, fuzzy
 msgid "Set up"
-msgstr "als Hauptlieferadresse festlegen"
+msgstr "Konfiguration"
 
 #: _smarty.php:9389 _smarty.php:9392
 #, fuzzy
@@ -5920,9 +5784,8 @@ msgid "Mark all in list"
 msgstr "Kundenliste"
 
 #: _smarty.php:9569
-#, fuzzy
 msgid "Abandoned cart email"
-msgstr "E-Mail kann der Verteilerliste nicht hinzugefügt werden."
+msgstr "Verlassene Warenkorb E-Mail"
 
 #: _smarty.php:9572
 #, fuzzy
@@ -5946,10 +5809,8 @@ msgid "Filtered orders"
 msgstr "Bestellungen"
 
 #: _smarty.php:9587
-#, fuzzy
-#| msgid "Charges"
 msgid "Purges"
-msgstr "Gebühr für kl. Best."
+msgstr "Ausräumen"
 
 #: _smarty.php:9590
 #, fuzzy
@@ -5997,16 +5858,12 @@ msgid "Recommended replenishment quantity"
 msgstr ""
 
 #: _smarty.php:9668 _smarty.php:9686
-#, fuzzy
-#| msgid "Mark as Send"
 msgid "Mark as audited"
-msgstr "als versandt markieren"
+msgstr "Als geprüft markieren"
 
 #: _smarty.php:9674 _smarty.php:9692
-#, fuzzy
-#| msgid "removed from"
 msgid "Move from"
-msgstr "entfernt von"
+msgstr "Entfernen von"
 
 #: _smarty.php:9680 _smarty.php:11162
 #, fuzzy
@@ -6331,9 +6188,8 @@ msgid "Log in to your account"
 msgstr "Erstellen Ihres Kontos"
 
 #: _smarty.php:10148
-#, fuzzy
 msgid "Setup mail list"
-msgstr "Ausgewählte Schriftartenfamilien:"
+msgstr "Mail-Liste einrichten"
 
 #: _smarty.php:10151
 #, fuzzy
@@ -6380,10 +6236,8 @@ msgid "Send back to basket"
 msgstr "Warenkorb"
 
 #: _smarty.php:10190 _smarty.php:10193 _smarty.php:11051 _smarty.php:11054
-#, fuzzy
-#| msgid "Mark as Send"
 msgid "Unmark as send"
-msgstr "als versandt markieren"
+msgstr "Als Gesendet un markieren"
 
 #: _smarty.php:10199 _smarty.php:11060
 #, fuzzy
@@ -6426,9 +6280,8 @@ msgid "Hard bounced"
 msgstr ""
 
 #: _smarty.php:10244
-#, fuzzy
 msgid "Basket updated"
-msgstr "zuletzt aktualisiert"
+msgstr "Warenkorb aktualisiert"
 
 #: _smarty.php:10247
 #, fuzzy
@@ -6570,9 +6423,8 @@ msgid "has place one order"
 msgstr "Bestellung tätigen"
 
 #: _smarty.php:10439 _smarty.php:10646 _smarty.php:10715
-#, fuzzy
 msgid "placed"
-msgstr "Name des Kunden  "
+msgstr "platziert"
 
 #: _smarty.php:10442 _smarty.php:10649 _smarty.php:10718
 #, fuzzy
@@ -6608,14 +6460,12 @@ msgid "per order"
 msgstr "pro Artikel"
 
 #: _smarty.php:10463
-#, fuzzy
 msgid "This agent used to place an order every"
-msgstr "Name des Kunden  "
+msgstr "Dieser Agent tätigte eine Bestellung jeden"
 
 #: _smarty.php:10466
-#, fuzzy
 msgid "This agent usually places an order every"
-msgstr "Name des Kunden  "
+msgstr "Dieser Agent tätigt, in der Regel. eine Bestellung jeden"
 
 #: _smarty.php:10469 _smarty.php:10502
 #, fuzzy
@@ -6693,10 +6543,8 @@ msgid "Supplier's orders created"
 msgstr "Lieferant"
 
 #: _smarty.php:10532
-#, fuzzy
-#| msgid "created"
 msgid "SOs created"
-msgstr "erstellt"
+msgstr "Erstellt"
 
 #: _smarty.php:10535
 #, fuzzy
@@ -6711,9 +6559,8 @@ msgstr "Werbekampagne erstellen"
 #: _smarty.php:10595 _smarty.php:10922 _smarty.php:12374 _smarty.php:13046
 #: _smarty.php:13049 _web_smarty.php:1181 _web_smarty.php:1184
 #: _web_smarty.php:1271 _web_smarty.php:1274 tabs/ec_sales_list.tab.php:35
-#, fuzzy
 msgid "Tax number"
-msgstr "USt-IdNr.:"
+msgstr "USt-IdNr."
 
 #: _smarty.php:10601
 #, fuzzy
@@ -6726,19 +6573,16 @@ msgid "Partner Customer"
 msgstr "Kunde"
 
 #: _smarty.php:10607
-#, fuzzy
 msgid "Losing Customer"
-msgstr "verschwindende Kontakte"
+msgstr "Verliert Kunden"
 
 #: _smarty.php:10610 _smarty.php:10637
-#, fuzzy
 msgid "Lost Customer"
-msgstr "verloren"
+msgstr "Kunden verloren"
 
 #: _smarty.php:10613
-#, fuzzy
 msgid "Contact Since"
-msgstr " Seit"
+msgstr "Kontaktiert Seit"
 
 #: _smarty.php:10616 _web_smarty.php:863 _web_smarty.php:1022
 #: conf/fields/customer.fld.php:245 conf/fields/customer.fld.php:580
@@ -6784,23 +6628,20 @@ msgid "Warning!, loosing customer"
 msgstr "Achtung: Nummer auch assoziiert mit Kunde"
 
 #: _smarty.php:10670
-#, fuzzy
 msgid "This customer used to place an order every"
-msgstr "Name des Kunden  "
+msgstr "Dieser Kunde tätigte eine Bestellung jeden"
 
 #: _smarty.php:10673
-#, fuzzy
 msgid "This customer usually places an order every"
-msgstr "Name des Kunden  "
+msgstr "Dieser Kunde tätigt, in der Regel, eine Bestellung jeden"
 
 #: _smarty.php:10685
 msgid "Payroll Id"
 msgstr ""
 
 #: _smarty.php:10697 _smarty.php:11594
-#, fuzzy
 msgid "Contact since"
-msgstr " Seit"
+msgstr "Kontaktieren Seit"
 
 #: _smarty.php:10700 _smarty.php:11603
 #, fuzzy
@@ -6808,9 +6649,8 @@ msgid "Products origin"
 msgstr "Produkte"
 
 #: _smarty.php:10706
-#, fuzzy
 msgid "Lost Supplier"
-msgstr "bearbeiten"
+msgstr "Verlorener Lieferant"
 
 #: _smarty.php:10709
 #, fuzzy
@@ -6818,14 +6658,12 @@ msgid "Warning!, loosing supplier"
 msgstr "Achtung: Nummer auch assoziiert mit Kunde"
 
 #: _smarty.php:10739
-#, fuzzy
 msgid "This supplier used to place an order every"
-msgstr "Name des Kunden  "
+msgstr "Dieser Lieferant tätigte, in der Regel, eine Bestellung jeden"
 
 #: _smarty.php:10742
-#, fuzzy
 msgid "This supplier usually places an order every"
-msgstr "Name des Kunden  "
+msgstr "Dieser Lieferant tätigt, in der Regel, eine Bestellung jeden"
 
 #: _smarty.php:10763
 msgid "Sealed"
@@ -6878,9 +6716,8 @@ msgid "Kg"
 msgstr "Kg"
 
 #: _smarty.php:10829
-#, fuzzy
 msgid "Set consignment"
-msgstr "als Hauptlieferadresse festlegen"
+msgstr "Sendung einreichen"
 
 #: _smarty.php:10853 navigation/orders.nav.php:2188 utils/modules.php:622
 #: utils/modules.php:1082 utils/modules.php:1135
@@ -6974,14 +6811,12 @@ msgid "Deliver to"
 msgstr "Notizdokumentation"
 
 #: _smarty.php:11027 conf/fields/store.fld.php:232
-#, fuzzy
 msgid "Collection"
-msgstr "zur Abholung"
+msgstr "Persönliche Abholung"
 
 #: _smarty.php:11030
-#, fuzzy
 msgid "Billed to"
-msgstr "gesendet an"
+msgstr "Ausgestellt an"
 
 #: _smarty.php:11117 _smarty.php:11123 _smarty.php:11126 _web_smarty.php:95
 #: _web_smarty.php:140 _web_smarty.php:467 _web_smarty.php:506
@@ -6999,9 +6834,8 @@ msgid "To pay"
 msgstr "Zu bezahlen"
 
 #: _smarty.php:11129
-#, fuzzy
 msgid "Customer credit"
-msgstr "fusioniert"
+msgstr "Kunden Kredit"
 
 #: _smarty.php:11168
 #, fuzzy
@@ -7028,9 +6862,8 @@ msgid "Stock available for sale"
 msgstr "Verfügbar"
 
 #: _smarty.php:11183 _smarty.php:11279
-#, fuzzy
 msgid "Next shipment"
-msgstr "nächste/r"
+msgstr "Nächste Lieferung"
 
 #: _smarty.php:11186 _smarty.php:11246
 #, fuzzy
@@ -7045,9 +6878,8 @@ msgid ""
 msgstr ""
 
 #: _smarty.php:11195 class.Part.php:533 class.Part.php:547 class.Part.php:569
-#, fuzzy
 msgid "SKO stock value no set up yet"
-msgstr "vorrätig"
+msgstr "SKO Bestandswert noch nicht eingerichtet"
 
 #: _smarty.php:11198
 msgid "Add stock via a purchase order or update Stock value (per SKO)"
@@ -7085,10 +6917,8 @@ msgid "Parts discontinuing"
 msgstr "Konten"
 
 #: _smarty.php:11243
-#, fuzzy
-#| msgid "Discontinued"
 msgid "Parts discontinued"
-msgstr "aus dem Sortiment genommen"
+msgstr "Artikel aus dem Sortiment genommen"
 
 #: _smarty.php:11261 _smarty.php:11327 _smarty.php:11729
 #, fuzzy
@@ -7137,15 +6967,12 @@ msgstr "Verpackt & überprüft"
 #: conf/elements_options.php:1045 conf/elements_options.php:1088
 #: conf/elements_options.php:1126 conf/elements_options.php:1169
 #: conf/elements_options.php:1206
-#, fuzzy
 msgid "Placed"
-msgstr "Name des Kunden  "
+msgstr "Eingereicht"
 
 #: _smarty.php:11465
-#, fuzzy
-#| msgid "your order will be cancelled"
 msgid "This purchase order will be fulfilled by"
-msgstr "Ihre Bestellung wird storniert werden."
+msgstr "Ihre Bestellung wird bearbeitet durch"
 
 #: _smarty.php:11468
 msgid "This purchase order is been fulfilled by"
@@ -7154,9 +6981,8 @@ msgstr ""
 #: _smarty.php:11492 _smarty.php:11498 ar_suppliers_tables.php:883
 #: ar_suppliers_tables.php:985 conf/elements_options.php:1070
 #: conf/elements_options.php:1151
-#, fuzzy
 msgid "Submitted to agent"
-msgstr "Vom Kunden eingegeben."
+msgstr "An Agent übergeben"
 
 #: _smarty.php:11504
 #, fuzzy
@@ -7240,9 +7066,8 @@ msgid "Ready for scan"
 msgstr "Fertig"
 
 #: _smarty.php:11741
-#, fuzzy
 msgid "Item placed"
-msgstr "Name des Kunden  "
+msgstr "Artikel platziert"
 
 #: _smarty.php:11744
 msgid "SKO with this barcode not found in delivery"
@@ -7254,9 +7079,8 @@ msgid "Assign to part"
 msgstr "Teil"
 
 #: _smarty.php:11753
-#, fuzzy
 msgid "Purchase order no."
-msgstr "Kaufauftrag"
+msgstr "Bestellung Nr."
 
 #: _smarty.php:11768 navigation/suppliers.nav.php:1719
 msgid "Purchase Order"
@@ -7267,9 +7091,8 @@ msgid "Preview only, not submitted yet!"
 msgstr ""
 
 #: _smarty.php:11783
-#, fuzzy
 msgid "Account no."
-msgstr "Konto hinzugefügt"
+msgstr "Konto Nr."
 
 #: _smarty.php:11786
 #, fuzzy
@@ -7277,9 +7100,8 @@ msgid "Supplier's address"
 msgstr "Adresse hinzufügen"
 
 #: _smarty.php:11789
-#, fuzzy
 msgid "Ship to address"
-msgstr "versandbereit"
+msgstr "Sende an folgende Adresse"
 
 #: _smarty.php:11834 class.Manufacture_Task.php:380 class.Staff.php:1924
 msgid "cost"
@@ -7334,9 +7156,8 @@ msgid "Upload"
 msgstr "Hochladen"
 
 #: _smarty.php:11897
-#, fuzzy
 msgid "Last page"
-msgstr "letzte/r/s"
+msgstr "Letzte Seite"
 
 #: _smarty.php:11900
 #, fuzzy
@@ -7355,9 +7176,8 @@ msgid "Previous page"
 msgstr "Seite"
 
 #: _smarty.php:11909
-#, fuzzy
 msgid "First page"
-msgstr "zuerst verkauft"
+msgstr "Erste Seite"
 
 #: _smarty.php:11912 conf/elements_options.php:80
 #: conf/fields/category.webpage.fld.php:277
@@ -7451,10 +7271,8 @@ msgid "Can't add category"
 msgstr "MIN(Wert;Wert;...)"
 
 #: _smarty.php:12050 _smarty.php:12158
-#, fuzzy
-#| msgid "is already in the database!"
 msgid "Category already in the web page"
-msgstr " ist bereits in der Datenbank!"
+msgstr "Kategorie bereits auf der Webseite vorhanden"
 
 #: _smarty.php:12056
 #, fuzzy
@@ -7694,7 +7512,6 @@ msgid "Skype username"
 msgstr "Suriname"
 
 #: _smarty.php:12380 _smarty.php:12383 _smarty.php:12386
-#, fuzzy
 msgid "Custom text"
 msgstr "benutzerdefiniertes Feld"
 
@@ -7792,9 +7609,8 @@ msgid "Item"
 msgstr "Artikel"
 
 #: _smarty.php:12491 conf/header_data.php:308
-#, fuzzy
 msgid "Submenu"
-msgstr "Vom Kunden eingegeben."
+msgstr "Untermenü"
 
 #: _smarty.php:12500 _smarty.php:12509 _smarty.php:12521 _smarty.php:12533
 #: _smarty.php:12572 class.Page.php:7434 class.Page.php:7562
@@ -7860,10 +7676,8 @@ msgstr "Wir benötigen Ihre E-Mail-Adresse"
 #: _web_smarty.php:1220 _web_smarty.php:1310
 #: conf/fields/website_localization.fld.php:266
 #: conf/fields/website_localization.fld.php:267 utils/invalid_messages.php:227
-#, fuzzy
-#| msgid "Invalid Email"
 msgid "Invalid email"
-msgstr "ungültige E-Mail-Adresse"
+msgstr "Ungültige E-Mail-Adresse"
 
 #: _smarty.php:12620 _web_smarty.php:599 _web_smarty.php:608
 #: _web_smarty.php:617 _web_smarty.php:626
@@ -7883,10 +7697,8 @@ msgid "Missing password"
 msgstr "Falsches Passwort"
 
 #: _smarty.php:12629
-#, fuzzy
-#| msgid "Reset your password"
 msgid "Please enter your password\""
-msgstr "Passwort zurücksetzen"
+msgstr "Bitte geben Sie Ihr Passwort ein\""
 
 #: _smarty.php:12635 _smarty.php:12641
 #, fuzzy
@@ -8065,10 +7877,8 @@ msgid "Address labels"
 msgstr "Adressen"
 
 #: _smarty.php:13091
-#, fuzzy
-#| msgid "Reset your password"
 msgid "Please enter your new password\""
-msgstr "Passwort zurücksetzen"
+msgstr "Bitte geben Sie Ihr neues Passwort ein\""
 
 #: _smarty.php:13094
 #, fuzzy
@@ -8183,9 +7993,8 @@ msgstr "Hochladen"
 #: _smarty.php:13253 _smarty.php:13259 _smarty.php:13265 _smarty.php:13274
 #: _smarty.php:13280 _smarty.php:13286 _smarty.php:13397 _smarty.php:13403
 #: _smarty.php:13409 _web_smarty.php:452
-#, fuzzy
 msgid "Delete panel"
-msgstr "gelöscht"
+msgstr "Panel löschen"
 
 #: _smarty.php:13262 _smarty.php:13283 _smarty.php:13406
 #, fuzzy
@@ -8202,10 +8011,8 @@ msgid "Make category not public"
 msgstr ""
 
 #: _smarty.php:13313 _smarty.php:13331 _smarty.php:13442
-#, fuzzy
-#| msgid "Set as Main"
 msgid "Set as Ready"
-msgstr "als Hauptlieferadresse festlegen"
+msgstr "Als bereit festlegen"
 
 #: _smarty.php:13316 _smarty.php:13334 _smarty.php:13445
 #, fuzzy
@@ -8221,10 +8028,8 @@ msgstr "Rabatt wählen"
 #: _smarty.php:13358 _smarty.php:13385 _smarty.php:13469 _web_smarty.php:665
 #: _web_smarty.php:737 _web_smarty.php:779 _web_smarty.php:809
 #: _web_smarty.php:839 conf/fields/website_localization.fld.php:52
-#, fuzzy
-#| msgid "For prices, please"
 msgid "For prices, please login or register"
-msgstr "Für Preise bitte "
+msgstr "Für Preise bitte einloggen oder registrieren"
 
 #: _smarty.php:13361 _web_smarty.php:749 conf/fields/part.fld.php:498
 #: conf/fields/product.fld.php:377 conf/fields/service.fld.php:378
@@ -8341,9 +8146,8 @@ msgid "Finish"
 msgstr "Fertig"
 
 #: _smarty.php:13526
-#, fuzzy
 msgid "Unpaid breaks"
-msgstr "Die Bilddatei »%s« konnte nicht gefunden werden.\n"
+msgstr "Unbezahlte Pausen"
 
 #: _smarty.php:13556 _smarty.php:13565
 #, fuzzy
@@ -8358,9 +8162,8 @@ msgid "minutes"
 msgstr "Minute"
 
 #: _smarty.php:13562
-#, fuzzy
 msgid "add break"
-msgstr "E-Mail kann der Verteilerliste nicht hinzugefügt werden."
+msgstr "Pause hinzufügen"
 
 #: _web_smarty.php:2
 #, fuzzy
@@ -8379,16 +8182,12 @@ msgid "Results"
 msgstr "Ergebnisse"
 
 #: _web_smarty.php:62 _web_smarty.php:107
-#, fuzzy
-#| msgid "Delivery Address"
 msgid "Delivery Address:"
-msgstr "Lieferadresse"
+msgstr "Lieferadresse:"
 
 #: _web_smarty.php:65 _web_smarty.php:110
-#, fuzzy
-#| msgid "Recollect Data"
 msgid "To be collected at:"
-msgstr "Daten erneut sammeln"
+msgstr "Abholung bei:"
 
 #: _web_smarty.php:74 _web_smarty.php:119 _web_smarty.php:644
 #, fuzzy
@@ -8397,10 +8196,8 @@ msgid "Items Discounts"
 msgstr "Rabatte"
 
 #: _web_smarty.php:152 _web_smarty.php:317
-#, fuzzy
-#| msgid "Set for collection"
 msgid "Order for collection"
-msgstr "zur Abholung"
+msgstr "Bestellung zur Abholung"
 
 #: _web_smarty.php:191 _web_smarty.php:356
 #, fuzzy
@@ -8439,9 +8236,8 @@ msgstr "Als Hauptrechnungsadresse festlegen"
 #: _web_smarty.php:1352 _web_smarty.php:1355 _web_smarty.php:1358
 #: _web_smarty.php:1367 _web_smarty.php:1373 _web_smarty.php:1385
 #: _web_smarty.php:1391
-#, fuzzy
 msgid "Required field"
-msgstr "erforderlich"
+msgstr "Pflichtfeld"
 
 #: _web_smarty.php:278 _web_smarty.php:308 _web_smarty.php:539
 #, fuzzy
@@ -8520,9 +8316,8 @@ msgid "Click to be notified by email"
 msgstr ""
 
 #: _web_smarty.php:734
-#, fuzzy
 msgid "Sorry, but this product is discontinued"
-msgstr "Dateiformat nicht unterstützt."
+msgstr "Entschuldigung, aber dieses Produkt ist eingestellt"
 
 #: _web_smarty.php:746
 msgid "Sorry, this product is discontinued"
@@ -8575,9 +8370,8 @@ msgstr "E-Mail-Adresse bereits in Verteilerliste"
 #: _web_smarty.php:1319 _web_smarty.php:1328 _web_smarty.php:1370
 #: _web_smarty.php:1379 _web_smarty.php:1388 _web_smarty.php:1397
 #: conf/fields/website_localization.fld.php:242
-#, fuzzy
 msgid "Enter at least 8 characters"
-msgstr "letzte/r/s"
+msgstr "Geben Sie mindestens 8 Zeichen ein"
 
 #: _web_smarty.php:968 _web_smarty.php:1127 _web_smarty.php:1235
 #: _web_smarty.php:1325 _web_smarty.php:1376 _web_smarty.php:1394
@@ -8787,7 +8581,7 @@ msgstr "Knoten"
 
 #: ar_customers_tables.php:119 ar_customers_tables.php:125
 msgid "Same as Contact"
-msgstr "identisch mit der Kontaktadresse"
+msgstr "identisch mit dem Kontaktdaten"
 
 #: ar_customers_tables.php:127
 msgid "Same as Billing"
@@ -8803,7 +8597,7 @@ msgstr "Statisch"
 
 #: ar_customers_tables.php:258 class.List.php:157
 msgid "Dynamic"
-msgstr "dynamisch"
+msgstr "Dynamisch"
 
 #: ar_edit.php:456 ar_products_tables.php:275 class.Part.php:633
 #: class.Part.php:659 class.Product.php:618 class.Product.php:665
@@ -8836,9 +8630,8 @@ msgid "Supplier not found"
 msgstr "Lieferant"
 
 #: ar_edit.php:1632
-#, fuzzy
 msgid "Image deleted"
-msgstr "gelöscht"
+msgstr "Bild gelöscht"
 
 #: ar_edit.php:1641 ar_edit.php:1695 ar_edit.php:2481
 #: trait.ImageSubject.php:686
@@ -8848,9 +8641,8 @@ msgid "Image not found"
 msgstr "E-Mail nicht gefunden"
 
 #: ar_edit.php:1756
-#, fuzzy
 msgid "Attachment deleted"
-msgstr "gelöscht"
+msgstr "Anhang gelöscht"
 
 #: ar_edit.php:1768 trait.AttachmentSubject.php:177
 #, fuzzy
@@ -8859,9 +8651,8 @@ msgstr "Kontakt"
 
 #: ar_edit.php:2453 ar_edit.php:2456 ar_images_tables.php:107
 #: class.Part.php:2460 tabs/part.images.tab.php:45
-#, fuzzy
 msgid "SKO image"
-msgstr "als Hauptlieferadresse festlegen"
+msgstr "SKO Bild"
 
 #: ar_edit_email_template.php:196
 #, fuzzy
@@ -8884,9 +8675,8 @@ msgid "Payment amount exceeds customer account balance"
 msgstr ""
 
 #: ar_edit_stock.php:194
-#, fuzzy
 msgid "Location already associated with the part"
-msgstr "Sind Sie sicher, dass Sie diese Funktion entfernen möchten?"
+msgstr "Eine Lokation wurde bereits zu diesem Artikel zugeordnet"
 
 #: ar_edit_stock.php:225 ar_edit_stock.php:303
 msgid "Error, please try again"
@@ -8975,10 +8765,8 @@ msgid "Out"
 msgstr "Verkauft"
 
 #: ar_fire_tables.php:74
-#, fuzzy
-#| msgid "off"
 msgid "Off"
-msgstr "aus"
+msgstr "Aus"
 
 #: ar_fork.php:115
 msgid "customer"
@@ -9135,9 +8923,8 @@ msgid "Clocking machine"
 msgstr "Kommissionieren & Verpacken"
 
 #: ar_hr_tables.php:465
-#, fuzzy
 msgid "Working hours mark"
-msgstr "Dieser Link wird in 24 Stunden ungültig."
+msgstr "Arbeitsstunden Zeichen"
 
 #: ar_hr_tables.php:468
 #, fuzzy
@@ -9154,9 +8941,8 @@ msgid "Clocking record"
 msgstr "Alle Ergebnisse anzeigen"
 
 #: ar_hr_tables.php:488 class.Timesheet_Record.php:217
-#, fuzzy
 msgid "No associated clock out"
-msgstr "Anzahl der Teile, die dieser Kategorie zugewiesen sind."
+msgstr "Keine zugeordnete Abmeldung"
 
 #: ar_hr_tables.php:499 ar_reports_tables.php:242 ar_search.php:2180
 #: ar_views.php:6644 ar_views.php:6674 ar_warehouse_tables.php:200
@@ -9222,10 +9008,8 @@ msgstr[0] "Beschreibung"
 msgstr[1] "Beschreibung"
 
 #: ar_images_tables.php:90
-#, fuzzy
-#| msgid "Set as Main"
 msgid "Set as first"
-msgstr "als Hauptlieferadresse festlegen"
+msgstr "Als erstes einstellen"
 
 #: ar_images_tables.php:116 ar_views.php:3032 ar_views.php:3049
 #: ar_views.php:3125 ar_views.php:3144 ar_views.php:3248 ar_views.php:3254
@@ -9240,9 +9024,8 @@ msgid "Marketing"
 msgstr "Marketing"
 
 #: ar_inventory_tables.php:222
-#, fuzzy
 msgid "No set"
-msgstr "vorrätig"
+msgstr "Nicht eigestellt"
 
 #: ar_inventory_tables.php:611 ar_warehouse_tables.php:397
 #, fuzzy, php-format
@@ -9365,9 +9148,8 @@ msgstr "Ungültiges Gewicht"
 
 #: ar_marketing_tables.php:170 ar_marketing_tables.php:296
 #: ar_marketing_tables.php:418
-#, fuzzy
 msgid "Present"
-msgstr "gegenwärtig"
+msgstr "Vorhanden"
 
 #: ar_mobile_views.php:504 ar_views.php:2639 ar_views.php:6588
 #: navigation/dashboard.nav.php:34 navigation/menu.mobile.php:21
@@ -9466,10 +9248,8 @@ msgstr ""
 
 #: ar_orders_tables.php:1544 ar_search.php:2416 class.DeliveryNote.php:551
 #: class.DeliveryNote.php:601
-#, fuzzy
-#| msgid "Cancelled to Restock"
 msgid "Cancelled to restock"
-msgstr "storniert & zurückgeräumt"
+msgstr "Wiederauffüllung abgebrochen"
 
 #: ar_orders_tables.php:1547 ar_search.php:2419 class.DeliveryNote.php:554
 #: class.DeliveryNote.php:604
@@ -9545,9 +9325,8 @@ msgid "free"
 msgstr "gratis"
 
 #: ar_orders_tables.php:2010
-#, fuzzy
 msgid "Product out of stock, removed from basket"
-msgstr "entfernt von"
+msgstr "Produkt nicht auf Lager, aus dem Korb entfernt"
 
 #: ar_orders_tables.php:2160 pdf/invoice.pdf.php:179 pdf/invoice.pdf.php:324
 #: pdf/supplier.order.pdf.php:380 pdf/supplier.order.pdf.php:504
@@ -9601,9 +9380,8 @@ msgid "Refund/Credit payment"
 msgstr "Zahlung mit Debit-/Kreditkarte"
 
 #: ar_payments_tables.php:236
-#, fuzzy
 msgid "Declined"
-msgstr "aus dem Sortiment genommen"
+msgstr "Abgelehnt"
 
 #: ar_payments_tables.php:257
 #, fuzzy
@@ -9628,7 +9406,7 @@ msgstr "Verfügbar"
 
 #: ar_production_tables.php:154
 msgid "NA"
-msgstr "-"
+msgstr "Nicht verfügbar"
 
 #: ar_reports_tables.php:197 utils/table_functions.php:419
 #, fuzzy, php-format
@@ -9679,7 +9457,7 @@ msgstr "Verpackt & überprüft"
 
 #: ar_search.php:2174
 msgid "Ready to Ship"
-msgstr "versandbereit"
+msgstr "Versandbereit"
 
 #: ar_search.php:2389 class.DeliveryNote.php:524
 #, fuzzy
@@ -9738,14 +9516,12 @@ msgid "Another user is using this login"
 msgstr "CLOSE name"
 
 #: ar_setup.php:771 ar_validation.php:192
-#, fuzzy
 msgid "Another contractor is using this payroll Id"
-msgstr "E-Mail-Adresse ist bereits einem anderen Kunden zugeteilt."
+msgstr "Ein anderer Auftragnehmer verwendet diese Abrechnungs-ID"
 
 #: ar_setup.php:784 ar_validation.php:205 ar_validation.php:218
-#, fuzzy
 msgid "Another contractor is using this code"
-msgstr "E-Mail-Adresse ist bereits einem anderen Kunden zugeteilt."
+msgstr "Ein anderer Auftragnehmer verwendet diesen Code"
 
 #: ar_setup.php:797 ar_setup.php:827 ar_validation.php:231
 #: ar_validation.php:316
@@ -9764,14 +9540,12 @@ msgid "Another employee is using this code"
 msgstr "CLOSE name"
 
 #: ar_setup.php:848 ar_validation.php:337
-#, fuzzy
 msgid "Another store is using this code"
-msgstr "falsche ID"
+msgstr "Ein anderes Geschäft verwendet diesen Code"
 
 #: ar_setup.php:863 ar_validation.php:352
-#, fuzzy
 msgid "Another category is using this code"
-msgstr "Es gibt bereits eine andere Abteilung mit diesem Kode."
+msgstr "Es gibt bereits eine andere Abteilung mit diesem Code"
 
 #: ar_setup.php:878 ar_setup.php:890 ar_setup.php:918 ar_setup.php:930
 #: ar_setup.php:1001 ar_setup.php:1014 ar_validation.php:367
@@ -9785,10 +9559,8 @@ msgstr "Der Kunde hat bereits diese E-Mail"
 #: ar_setup.php:903 ar_setup.php:942 ar_setup.php:955 ar_setup.php:975
 #: ar_setup.php:988 ar_validation.php:392 ar_validation.php:431
 #: ar_validation.php:444 ar_validation.php:464 ar_validation.php:477
-#, fuzzy
-#| msgid "Code already used on this website"
 msgid "Email already set up in this customer"
-msgstr "Kode bereits in der Webseite verwendet."
+msgstr "In diesem Kunden bereits eingerichtete E-Mail-Adresse"
 
 #: ar_setup.php:1036 ar_setup.php:1048 ar_setup.php:1076 ar_setup.php:1087
 #: ar_setup.php:1158 ar_setup.php:1170 ar_validation.php:525
@@ -9801,10 +9573,8 @@ msgstr "Der Kunde hat bereits diese E-Mail"
 #: ar_setup.php:1061 ar_setup.php:1099 ar_setup.php:1112 ar_setup.php:1132
 #: ar_setup.php:1145 ar_validation.php:550 ar_validation.php:588
 #: ar_validation.php:601 ar_validation.php:621 ar_validation.php:634
-#, fuzzy
-#| msgid "Code already used on this website"
 msgid "Email already set up in this supplier"
-msgstr "Kode bereits in der Webseite verwendet."
+msgstr "In diesem Lieferanten bereits eingerichtete E-Mail-Adresse"
 
 #: ar_setup.php:1191 ar_validation.php:738
 #, fuzzy
@@ -9813,10 +9583,8 @@ msgid "Part reference already used"
 msgstr "Kategorienkode bereits vewendet"
 
 #: ar_setup.php:1238 ar_validation.php:901
-#, fuzzy
-#| msgid "Error: There is another store with the same code"
 msgid "There is another object with the same value"
-msgstr "Fehler: Es gibt einen anderen Shop mit dem gleichen Kode."
+msgstr "Ein anderes Objekt mit dem gleichen Wert bereits vorhanden"
 
 #: ar_setup.php:1524 tabs/account.setup.root_user.tab.php:61
 #: utils/modules.php:5950
@@ -9826,9 +9594,8 @@ msgid "Root user"
 msgstr "Wurzelknoten"
 
 #: ar_setup.php:1531
-#, fuzzy
 msgid "Set up complete!"
-msgstr "Abgeschlossen"
+msgstr "Einstellung Abgeschlossen!"
 
 #: ar_suppliers_tables.php:800 ar_suppliers_tables.php:889
 #: ar_suppliers_tables.php:991 ar_suppliers_tables.php:1093
@@ -9877,9 +9644,8 @@ msgid "%s availability"
 msgstr "Verfügbar"
 
 #: ar_suppliers_tables.php:1390 ar_suppliers_tables.php:2411
-#, fuzzy
 msgid "Stock (cartons)"
-msgstr "vorrätig"
+msgstr "Bestand (Kartons)"
 
 #: ar_suppliers_tables.php:1854
 #, fuzzy
@@ -9887,9 +9653,8 @@ msgid "Show locations"
 msgstr "Filteroptionen"
 
 #: ar_suppliers_tables.php:1855
-#, fuzzy
 msgid "Hide locations"
-msgstr "gratis"
+msgstr "Verstecke Lokation"
 
 #: ar_suppliers_tables.php:1939 class.SupplierDelivery.php:1285
 #: class.SupplierDelivery.php:1538
@@ -10026,9 +9791,8 @@ msgid "File can't be uploaded"
 msgstr "Bild bereits hochgeladen"
 
 #: ar_upload.php:716 ar_upload.php:1135
-#, fuzzy
 msgid "Invalid file type"
-msgstr "Zusammengesetzter Typ »%s.%s«"
+msgstr "Ungültiger Dateityp"
 
 #: ar_upload.php:869 ar_upload.php:1304
 #, fuzzy
@@ -10052,10 +9816,8 @@ msgid "Missing required fields"
 msgstr ""
 
 #: ar_upload_tables.php:123
-#, fuzzy
-#| msgid "Assigned Field"
 msgid "Missing required field"
-msgstr "zugewiesenes Feld"
+msgstr "Fehlendes Pflichtfeld"
 
 #: ar_upload_tables.php:134
 msgid "Duplicated unique field"
@@ -10109,9 +9871,8 @@ msgid "Fail access"
 msgstr ""
 
 #: ar_users_tables.php:562
-#, fuzzy
 msgid "Fail operation"
-msgstr "entfernt einen Index"
+msgstr "Operation fehlgeschlagen"
 
 #: ar_users_tables.php:565
 #, fuzzy
@@ -10216,7 +9977,7 @@ msgstr "Neue Kategorie"
 #: ar_views.php:3081 ar_views.php:3334 navigation/products.nav.php:2198
 #: navigation/products.nav.php:2513
 msgid "Charge"
-msgstr "abzubuchender Betrag"
+msgstr "Abzubuchender Betrag"
 
 #: ar_views.php:3225
 #, fuzzy
@@ -10251,9 +10012,8 @@ msgid "Customers (All stores)"
 msgstr "Kunden je Unterfirma"
 
 #: ar_views.php:3375 ar_views.php:6719
-#, fuzzy
 msgid "(All stores)"
-msgstr "Tochtergesellschaften"
+msgstr "(Alle Geschäfte)"
 
 #: ar_views.php:3390 ar_views.php:3440 ar_views.php:3492
 #: navigation/customers.nav.php:238
@@ -10352,9 +10112,8 @@ msgstr "Import"
 
 #: ar_views.php:4804 tabs/deleted.employees.tab.php:36
 #: tabs/deleted.employees.tab.php:37 utils/modules.php:5163
-#, fuzzy
 msgid "Deleted employees"
-msgstr "gelöscht"
+msgstr "gelöschte Angestellter"
 
 #: ar_views.php:4827 tabs/employee.attachments.tab.php:33
 #: tabs/part.attachments.tab.php:33 tabs/supplier.attachments.tab.php:33
@@ -10449,15 +10208,13 @@ msgid "Locations's categories"
 msgstr "Kategorien"
 
 #: ar_views.php:5639 tabs/warehouses.tab.php:48
-#, fuzzy
 msgid "New warehouse"
-msgstr "Zuordnung der Be&nutzernamen:"
+msgstr "Neues Lager"
 
 #: ar_views.php:5680 ar_views.php:5695 navigation/warehouses.nav.php:978
 #: navigation/warehouses.nav.php:1133
-#, fuzzy
 msgid "Stock leakages"
-msgstr "vorrätig"
+msgstr "Verlust auf Lager"
 
 #: ar_views.php:5728
 #, fuzzy
@@ -10564,10 +10321,8 @@ msgid "Production (All manufactures)"
 msgstr "Quelltext"
 
 #: ar_views.php:6543
-#, fuzzy
-#| msgid "All Contacts"
 msgid "(All manufactures)"
-msgstr "alle Kontakte"
+msgstr "(Alle Hersteller)"
 
 #: ar_views.php:6549 conf/user_groups.php:98 navigation/menu.mobile.php:334
 #: navigation/menu.mobile.php:345 navigation/menu.php:363
@@ -10698,11 +10453,8 @@ msgstr "Fußzeile aktualisiert"
 
 #: ar_websites_tables.php:607 class.DB_Table.php:483 class.Webpage_Type.php:75
 #: conf/webpage_types.php:59
-#, fuzzy
 msgid "System"
-msgstr ""
-"Die neue Art, sicher und schnell online zu bezahlen. Geben Sie einfach Ihre "
-"Bankdaten im sicheren SOFORT System ein."
+msgstr "System"
 
 #: ar_websites_tables.php:610
 #, fuzzy
@@ -10859,9 +10611,9 @@ msgid "has been deleted from"
 msgstr "Wurde gelöscht aus"
 
 #: class.Agent.php:238
-#, fuzzy, php-format
+#, php-format
 msgid "Agent %s created"
-msgstr "erstellt"
+msgstr "Agent %s erstellt"
 
 #: class.Agent.php:413 class.Supplier.php:1514
 #, fuzzy
@@ -10976,9 +10728,8 @@ msgid "Top secret file"
 msgstr ""
 
 #: class.Barcode.php:127
-#, fuzzy
 msgid "Barcode already in the system"
-msgstr " ist bereits in der Datenbank!"
+msgstr "Strichcode ist bereits in der Datenbank"
 
 #: class.Barcode.php:197
 msgid "Barcode check digit error"
@@ -10999,9 +10750,8 @@ msgid "Barcode record %s created"
 msgstr "%1 gab einen Fehler zurück: %2"
 
 #: class.Barcode.php:280
-#, fuzzy
 msgid "Error, can not create barcode"
-msgstr "Fehler: Kontakt kann nicht erstellt werden."
+msgstr "Fehler: Strichcode kann nicht erstellt werden."
 
 #: class.Barcode.php:332
 #, fuzzy
@@ -11015,10 +10765,8 @@ msgid "%s associated"
 msgstr "Faxnummer zugewiesen"
 
 #: class.Barcode.php:376
-#, fuzzy
-#| msgid " Error can not create store"
 msgid "Error, can't associate asset"
-msgstr "Fehler: Shop kann nicht erstellt werden."
+msgstr "Fehler: Assets können nicht zugeordnet werden"
 
 #: class.Barcode.php:503 class.Category.php:3856
 #, fuzzy
@@ -11107,9 +10855,9 @@ msgid "associated with category"
 msgstr "Der Kategorie zugewiesen"
 
 #: class.Category.php:2130
-#, fuzzy, php-format
+#, php-format
 msgid "Product %s disassociated from category %s"
-msgstr "entfernt von"
+msgstr "Produkt %s wurde von Kategorie %s getrennt"
 
 #: class.Category.php:2268
 msgid "Category Deleted"
@@ -11117,7 +10865,7 @@ msgstr "Kategorie gelöscht"
 
 #: class.Category.php:3137 class.Category.php:3434
 msgid "Subject can't be associated with category"
-msgstr "Subjekt kann der Kategorie nicht zugewiesen werden."
+msgstr "Subjekt kann der Kategorie nicht zugewiesen werden"
 
 #: class.Category.php:3224
 #, fuzzy, php-format
@@ -11175,10 +10923,8 @@ msgid "%s customer record created"
 msgstr "Kunde erstellt"
 
 #: class.Customer.php:277 conf/fields/customer.fld.php:29
-#, fuzzy
-#| msgid "Same as contact address"
 msgid "Same as invoice address"
-msgstr "identisch mit der Kontaktadresse"
+msgstr "identisch mit der Rechnungsadresse"
 
 #: class.Customer.php:279 conf/fields/customer.fld.php:30
 msgid "Unrelated to invoice address"
@@ -11367,11 +11113,11 @@ msgstr "Paketart"
 
 #: class.Department.php:189
 msgid "Error: Wrong department code"
-msgstr "Fehler:Falscher Abteilungsname."
+msgstr "Fehler: Falscher Abteilungsname"
 
 #: class.Department.php:197
 msgid "Warning: No department name"
-msgstr "Achtung: Kein Abteilungsname."
+msgstr "Achtung: Kein Abteilungsname"
 
 #: class.Department.php:202
 msgid "Error: Incorrect Store Key"
@@ -11379,7 +11125,7 @@ msgstr "Fehler: Falscher Shopschlüssel"
 
 #: class.Department.php:226
 msgid "There is already another department with this code"
-msgstr "Es gibt bereits eine andere Abteilung mit diesem Kode."
+msgstr "Es gibt bereits eine andere Abteilung mit diesem Kode"
 
 #: class.Department.php:274 class.Department.php:293 class.Department.php:303
 #, fuzzy
@@ -11393,7 +11139,7 @@ msgstr "Abteilung - Verkaufstyp aktualisiert"
 
 #: class.Department.php:504
 msgid "Error: Department sales type could not be updated "
-msgstr "Fehler: Abteilung - Verkaufstyp konnte nicht aktualisiert werden."
+msgstr "Fehler: Abteilung - Verkaufstyp konnte nicht aktualisiert werden"
 
 #: class.Department.php:511 class.Family.php:1064
 msgid "Error: wrong value"
@@ -11405,7 +11151,7 @@ msgstr "Fehler: Falscher Kode (leer)"
 
 #: class.Department.php:544
 msgid "Error: Another department with the same code"
-msgstr "Fehler: Eine andere Abteilung hat den gleichen Kode."
+msgstr "Fehler: Eine andere Abteilung hat den gleichen Kode"
 
 #: class.Department.php:554
 msgid "Department code updated"
@@ -11430,7 +11176,7 @@ msgstr "Fehler: Falscher Name (leer)"
 
 #: class.Department.php:618
 msgid "Error: Another department with the same name"
-msgstr "Fehler: Eine andere Abteilung hat den gleichen Namen."
+msgstr "Fehler: Eine andere Abteilung hat den gleichen Namen"
 
 #: class.Department.php:630
 msgid "Department name updated"
@@ -11449,9 +11195,8 @@ msgid "name changed from"
 msgstr "Name geändert von"
 
 #: class.Department.php:726 class.Department.php:776
-#, fuzzy
 msgid "Department deleted"
-msgstr "gelöscht"
+msgstr "Abteilung gelöscht"
 
 #: class.Department.php:1593 class.Family.php:2626
 msgid "No change"
@@ -11479,7 +11224,7 @@ msgstr "E-Mail-Adresse bereits in Verteilerliste"
 
 #: class.EmailCampaign.php:332
 msgid "Can not add email to mailing list"
-msgstr "E-Mail kann der Verteilerliste nicht hinzugefügt werden."
+msgstr "E-Mail kann der Verteilerliste nicht hinzugefügt werden"
 
 #: class.EmailCampaign.php:460
 msgid "Email Address Added"
@@ -11504,11 +11249,11 @@ msgstr "E-Mail-Adresse bereits in Verteilerliste"
 
 #: class.EmailCampaign.php:1127
 msgid "Campaign already sending emails"
-msgstr "Kampagne sendet bereits E-Mails."
+msgstr "Kampagne sendet bereits E-Mails"
 
 #: class.EmailCampaign.php:1133
 msgid "Campaign already send"
-msgstr "Kampagne bereits gesandt."
+msgstr "Kampagne bereits gesendet"
 
 #: class.EmailCredentials.php:164
 #, fuzzy
@@ -11517,32 +11262,31 @@ msgstr "Weitere E-Mail hinzugefügt"
 
 #: class.EmailSend.php:86
 msgid "Email to be Send Created"
-msgstr "zu sendende E-Mail wurde erstellt"
+msgstr "Zu sendende E-Mail wurde erstellt"
 
 #: class.EmailSend.php:92
 msgid " Error can not create email to be send"
-msgstr "Fehler: zu sendende E-Mail konnte nicht erstellt werden"
+msgstr "Fehler: Zu sendende E-Mail konnte nicht erstellt werden"
 
 #: class.EmailSiteReminder.php:148
-#, fuzzy
 msgid "Email site reminder created"
-msgstr "Erinnerungs-E-Mail bereits gesandt."
+msgstr "Erinnerungs-E-Mail bereits erstellt."
 
 #: class.EmailSiteReminder.php:155
 msgid "Error can not create email reminder"
-msgstr "Fehler: Erinnerungs-E-Mail kann nicht erstellt werden."
+msgstr "Fehler: Erinnerungs-E-Mail kann nicht erstellt werden"
 
 #: class.EmailSiteReminder.php:180 class.EmailSiteReminder.php:207
 msgid "Email reminder already sent"
-msgstr "Erinnerungs-E-Mail bereits gesandt."
+msgstr "Erinnerungs-E-Mail bereits gesandt"
 
 #: class.EmailSiteReminder.php:185
 msgid "Email reminder already cancelled"
-msgstr "Erinnerungs-E-Mail bereits storniert."
+msgstr "Erinnerungs-E-Mail bereits storniert"
 
 #: class.EmailSiteReminder.php:212
 msgid "Email reminder is cancelled"
-msgstr "Erinnerungs-E-Mail wurde storniert."
+msgstr "Erinnerungs-E-Mail wurde storniert"
 
 #: class.FTP.php:54
 msgid "FTP not supported by server"
@@ -11558,7 +11302,7 @@ msgstr "Login nicht möglich"
 
 #: class.FTP.php:118
 msgid "Server do not support passive mode"
-msgstr "Server unterstützt den Passivmodus nicht."
+msgstr "Server unterstützt den Passivmodus nicht"
 
 #: class.FTP.php:161 class.FTP.php:324
 msgid "Can not upload file"
@@ -11584,7 +11328,7 @@ msgstr "Keine ähnlichen Familien"
 
 #: class.Family.php:520
 msgid "No correlated families"
-msgstr "keine verwandten Familien"
+msgstr "Keine verwandten Familien"
 
 #: class.Family.php:543
 msgid "No in website"
@@ -11596,25 +11340,23 @@ msgstr "Abteilung der Familie geändert"
 
 #: class.Family.php:929
 msgid "Error: Another family with the same code"
-msgstr "Fehler: Eine andere Familie hat den gleichen Kode."
+msgstr "Fehler: Eine andere Familie hat den gleichen Kode"
 
 #: class.Family.php:939
 msgid "Family code updated"
 msgstr "Familienkode aktualisiert"
 
 #: class.Family.php:954
-#, fuzzy
 msgid "Product family Code changed"
-msgstr "Dieser Produktkode kann nicht geändert werden."
+msgstr "Produkt Familienkode wurde geändert"
 
 #: class.Family.php:956
 msgid "changed code from"
 msgstr "Kode geändert von"
 
 #: class.Family.php:996
-#, fuzzy
 msgid "Error: Another family with the same name"
-msgstr "Fehler: Eine andere Familie hat den gleichen Kode."
+msgstr "Fehler: Eine andere Familie hat den gleichen Namen"
 
 #: class.Family.php:1006
 msgid "Family name updated"
@@ -11630,9 +11372,8 @@ msgid "Family Sales Type updated"
 msgstr "Abteilung - Verkaufstyp aktualisiert"
 
 #: class.Family.php:1057
-#, fuzzy
 msgid "Error: Family sales type could not be updated "
-msgstr "Fehler: Abteilung - Verkaufstyp konnte nicht aktualisiert werden."
+msgstr "Fehler: Abteilung - Verkaufstyp konnte nicht aktualisiert werden"
 
 #: class.Family.php:1081
 #, fuzzy
@@ -11641,7 +11382,7 @@ msgstr "Produktbeschreibung"
 
 #: class.Family.php:1134
 msgid "Error: can not delete family"
-msgstr "Fehler: Familie kann nicht gelöscht werden."
+msgstr "Fehler: Familie kann nicht gelöscht werden"
 
 #: class.Invoice.php:1972
 msgid "Paid in full"
@@ -11658,9 +11399,8 @@ msgid "List added"
 msgstr "Listenname"
 
 #: class.Location.php:79 class.Location.php:344
-#, fuzzy
 msgid "Wrong location code"
-msgstr "Fehler:Falscher Abteilungsname."
+msgstr "Fehler:Falscher Abteilungsname"
 
 #: class.Location.php:130
 #, fuzzy, php-format
@@ -11673,9 +11413,8 @@ msgid "Location do not exist"
 msgstr "Zu erledigen"
 
 #: class.Location.php:356
-#, fuzzy
 msgid "Other location has this code"
-msgstr "falsche ID"
+msgstr "Eine andere Abteilung hat diesen Kode"
 
 #: class.Location.php:388
 #, fuzzy
@@ -11850,9 +11589,8 @@ msgid "reward amount"
 msgstr "Betrag"
 
 #: class.Material.php:81
-#, fuzzy
 msgid "Material added"
-msgstr "hinzugefügt"
+msgstr "Material hinzugefügt"
 
 #: class.Order.php:484
 #, fuzzy
@@ -11908,7 +11646,7 @@ msgstr ""
 
 #: class.Order.php:1578
 msgid "Order can not be cancelled, because has already been dispatched"
-msgstr "Bestellung kann nicht storniert werden, da sie bereits versandt wurde."
+msgstr "Bestellung kann nicht storniert werden, da sie bereits versandt wurde"
 
 #: class.Order.php:1585
 msgid "Order is already cancelled"
@@ -11985,7 +11723,7 @@ msgstr "Gleicher Wert wie der alte Vermerk"
 
 #: class.Page.php:2471
 msgid "Code already used on this website"
-msgstr "Kode bereits in der Webseite verwendet."
+msgstr "Kode bereits in der Webseite verwendet"
 
 #: class.Page.php:2493
 msgid "Record can not be updated"
@@ -12068,7 +11806,7 @@ msgstr "Bestellen"
 #: class.Page.php:3541
 #, php-format
 msgid "In stock"
-msgstr "vorrätig"
+msgstr "Vorrätig"
 
 #: class.Page.php:3542 class.Page.php:4783 class.Page.php:6311
 #, php-format
@@ -12201,19 +11939,17 @@ msgid "No products associated"
 msgstr "Produkte"
 
 #: class.Part.php:535 class.Part.php:549
-#, fuzzy
 msgid "SKO stock value"
-msgstr "vorrätig"
+msgstr "SKO Bestandswert"
 
 #: class.Part.php:557
-#, fuzzy
 msgid "Total stock value"
-msgstr "vorrätig"
+msgstr "Gesamtbestandswert"
 
 #: class.Part.php:572
-#, fuzzy, php-format
+#, php-format
 msgid "SKO stock value %s"
-msgstr "vorrätig"
+msgstr "SKO Bestandswert %s"
 
 #: class.Part.php:579
 #, php-format
@@ -12280,9 +12016,8 @@ msgid "unit recommended RRP"
 msgstr ""
 
 #: class.Part.php:2522
-#, fuzzy
 msgid "Stock value (per SKO)"
-msgstr "vorrätig"
+msgstr "Bestandswert (pro SKO)"
 
 #: class.Part.php:2525 conf/export_edit_template_fields.php:114
 #: conf/export_edit_template_fields.php:449
@@ -12361,9 +12096,9 @@ msgid "Part's families not configured"
 msgstr "Familien mit diesem Namen"
 
 #: class.Part.php:3331 class.Product.php:2749
-#, fuzzy, php-format
+#, php-format
 msgid "Dimensions can't be parsed (%s)"
-msgstr "benutzerdefiniertes Feld"
+msgstr "Dimensionen können nicht geparst werden (%s)"
 
 #: class.Part.php:3365 class.Product.php:2704
 #, fuzzy, php-format
@@ -12391,9 +12126,9 @@ msgid "Invalid part status"
 msgstr "Elemente mit"
 
 #: class.PartLocation.php:242
-#, fuzzy, php-format
+#, php-format
 msgid "Part %s associated with %s"
-msgstr "assoziiert mit"
+msgstr "Artikel %s assoziiert mit %s"
 
 #: class.PartLocation.php:268
 #, fuzzy
@@ -12410,9 +12145,8 @@ msgid "Minimum quantity has to be lower than the maximum quantity"
 msgstr ""
 
 #: class.PartLocation.php:884
-#, fuzzy
 msgid "Part no longer associated with location"
-msgstr "Sind Sie sicher, dass Sie diese Funktion entfernen möchten?"
+msgstr "Artikel ist nicht mehr mit der Abteilung assoziiert"
 
 #: class.PartLocation.php:888
 #, fuzzy
@@ -12480,9 +12214,8 @@ msgid "To Move Quantity greater than the stock on the location"
 msgstr "Operation"
 
 #: class.PartLocation.php:1292
-#, fuzzy
 msgid "Destination location is the same as this one"
-msgstr "falsche ID"
+msgstr "Zielabteilung ist dieselbe wie diese"
 
 #: class.PartLocation.php:1308
 #, fuzzy
@@ -12585,9 +12318,9 @@ msgid "Code can't have commas"
 msgstr "Schlüssel-Kunde"
 
 #: class.Product.php:2918
-#, fuzzy, php-format
+#, php-format
 msgid "Another product has this code (%s)"
-msgstr "falsche ID"
+msgstr "Ein anderes Produkt hat diesen Kode (%s)"
 
 #: class.Product.php:2940
 #, fuzzy
@@ -12610,19 +12343,17 @@ msgid "Invalid unit RRP (%s)"
 msgstr "Zusammengesetzter Typ »%s.%s«"
 
 #: class.Product.php:3058 class.Store.php:2644
-#, fuzzy
 msgid "Units per outer missing"
-msgstr "pro Artikel"
+msgstr "Einheit pro Artikel nicht vorhanden"
 
 #: class.Product.php:3066 class.Store.php:2652
-#, fuzzy, php-format
+#, php-format
 msgid "Invalid units per outer (%s)"
-msgstr "pro Artikel"
+msgstr "Einheit pro Artikel ungültig (%s)"
 
 #: class.Product.php:3193
-#, fuzzy
 msgid "Product families not configured"
-msgstr "Dieser Produktkode kann nicht geändert werden."
+msgstr "Produktfamilien nicht konfiguriert"
 
 #: class.Product.php:3407
 msgid "Another user updated current part list, refresh and try again"
@@ -12683,9 +12414,8 @@ msgid "other"
 msgstr "Sonstige"
 
 #: class.PurchaseOrder.php:546
-#, fuzzy
 msgid "Submitted to Agent"
-msgstr "Vom Kunden eingegeben."
+msgstr "Vom Agenten eingegeben."
 
 #: class.PurchaseOrder.php:552 class.PurchaseOrder.php:585
 #: class.PurchaseOrder.php:616 class.SupplierDelivery.php:312
@@ -12694,10 +12424,8 @@ msgid "Checking"
 msgstr "Scheck"
 
 #: class.PurchaseOrder.php:575 class.PurchaseOrder.php:606
-#, fuzzy
-#| msgid "In Process by Customer"
 msgid "In process by client"
-msgstr "in Bearbeitung von Seiten des Kunden"
+msgstr "In Bearbeitung durch den Kunden"
 
 #: class.PurchaseOrder.php:582 class.PurchaseOrder.php:613
 #, fuzzy
@@ -12781,9 +12509,8 @@ msgid "Message will send shortly"
 msgstr "Nachricht wird in Kürze gesandt"
 
 #: class.Shelf.php:100
-#, fuzzy
 msgid "Shelf Created"
-msgstr "erstellt"
+msgstr "Selbst erstellt"
 
 #: class.Shelf.php:101
 #, fuzzy
@@ -12815,27 +12542,27 @@ msgstr "Blau"
 
 #: class.Site.php:234 class.Warehouse.php:212
 msgid "Green"
-msgstr "grün"
+msgstr "Grün"
 
 #: class.Site.php:235 class.Warehouse.php:213
 msgid "Orange"
-msgstr "orange"
+msgstr "Orange"
 
 #: class.Site.php:236 class.Warehouse.php:214
 msgid "Pink"
-msgstr "pink"
+msgstr "Rosa"
 
 #: class.Site.php:237 class.Warehouse.php:215
 msgid "Purple"
-msgstr "lila"
+msgstr "Lila"
 
 #: class.Site.php:238 class.Warehouse.php:216
 msgid "Red"
-msgstr "rot"
+msgstr "Rot"
 
 #: class.Site.php:239 class.Warehouse.php:217
 msgid "Yellow"
-msgstr "gelb"
+msgstr "Gelb"
 
 #: class.Site.php:267 class.Site.php:279
 #, fuzzy
@@ -12860,9 +12587,8 @@ msgid "Site default footer changed"
 msgstr "Standardfußzeile geändert"
 
 #: class.Site.php:2158
-#, fuzzy
 msgid "Can't delete"
-msgstr "Fehler: Abteilung kann nicht gelöscht werden."
+msgstr "Nicht Löschbar"
 
 #: class.Site.php:2186
 #, fuzzy
@@ -12993,9 +12719,8 @@ msgid "date of birth"
 msgstr "Stand"
 
 #: class.Staff.php:1862
-#, fuzzy
 msgid "contact number"
-msgstr "USt-IdNr.:"
+msgstr "Kontakt Nummer"
 
 #: class.Staff.php:1865 class.Store.php:2412 class.Warehouse.php:969
 #: class.Webpage.php:517 class.Website.php:830
@@ -13013,9 +12738,8 @@ msgid "currently working"
 msgstr "Angemeldet"
 
 #: class.Staff.php:1886
-#, fuzzy
 msgid "working from"
-msgstr "Dieser Link wird in 24 Stunden ungültig."
+msgstr "Arbeitet ab"
 
 #: class.Staff.php:1891
 #, fuzzy
@@ -13048,14 +12772,12 @@ msgid "supervisor"
 msgstr "Superuser"
 
 #: class.Staff.php:1917
-#, fuzzy
 msgid "insite working hours"
-msgstr "Dieser Link wird in 24 Stunden ungültig."
+msgstr "Arbeitszeit vor Ort"
 
 #: class.Staff.php:1919
-#, fuzzy
 msgid "working hours"
-msgstr "Dieser Link wird in 24 Stunden ungültig."
+msgstr "Arbeitszeit"
 
 #: class.Staff.php:1926
 msgid "salary"
@@ -13165,10 +12887,8 @@ msgstr ""
 
 #: class.Store.php:2415 conf/website_system_webpages.php:396
 #: conf/website_system_webpages.php:397
-#, fuzzy
-#| msgid "VAT Number"
 msgid "VAT number"
-msgstr "USt-IDNr."
+msgstr "UID Nummer"
 
 #: class.Store.php:2421
 #, fuzzy
@@ -13447,9 +13167,8 @@ msgid "Supplier delivery created"
 msgstr "Versandanzeige"
 
 #: class.SupplierDelivery.php:316 class.SupplierDelivery.php:326
-#, fuzzy
 msgid "Placing"
-msgstr "Name des Kunden  "
+msgstr "Platzierung"
 
 #: class.SupplierDelivery.php:842
 #, fuzzy
@@ -13689,10 +13408,8 @@ msgid "source"
 msgstr "Originalquelle"
 
 #: class.Timesheet_Record.php:236
-#, fuzzy
-#| msgid "Ignored"
 msgid "Ignoredx"
-msgstr "ignoriert"
+msgstr "Ignoriert"
 
 #: class.Upload.php:179
 #, fuzzy
@@ -13875,9 +13592,8 @@ msgid "Warehouse (%s) created"
 msgstr "Lager"
 
 #: class.Warehouse.php:281
-#, fuzzy
 msgid " Error can not create warehouse"
-msgstr "Fehler: Kontakt kann nicht erstellt werden."
+msgstr "Fehler: Lager kann nicht erstellt werden"
 
 #: class.Warehouse.php:298
 #, fuzzy
@@ -13921,9 +13637,8 @@ msgid "Webpage created"
 msgstr "Abteilung erstellt"
 
 #: class.Webpage.php:329 class.Webpage.php:361
-#, fuzzy
 msgid "Editable Title"
-msgstr "bearbeiten"
+msgstr "Bearbeitbarer Titel"
 
 #: class.Webpage.php:335 class.Webpage.php:367
 msgid "This is a CMS block edited from admin panel"
@@ -13958,9 +13673,8 @@ msgid "Another header has same code %s"
 msgstr "Fehler: Eine andere Produktgruppe hat denselben Namen"
 
 #: class.WebsiteHeader.php:156
-#, fuzzy
 msgid "Website header created"
-msgstr "Erinnerungs-E-Mail bereits gesandt."
+msgstr "Website-Header erstellt"
 
 #: class.WebsiteNode.php:194
 #, fuzzy
@@ -13978,9 +13692,8 @@ msgid "Active/Lost"
 msgstr "Aktiv"
 
 #: conf/elements_options.php:40
-#, fuzzy
 msgid "Losing"
-msgstr "verschwindende Kontakte"
+msgstr "Verlieren"
 
 #: conf/elements_options.php:55 locale.php:41
 msgid "Normal"
@@ -14019,9 +13732,8 @@ msgid "Deployments"
 msgstr "Abteilungen"
 
 #: conf/elements_options.php:265 conf/elements_options.php:358
-#, fuzzy
 msgid "Showroom"
-msgstr "Anzeigen des Desktops: %s\n"
+msgstr "Ausstellungsraum"
 
 #: conf/elements_options.php:291 conf/elements_options.php:387
 #: utils/get_addressing.php:228
@@ -14075,16 +13787,12 @@ msgid "Part discontinuing"
 msgstr "Konten"
 
 #: conf/elements_options.php:734
-#, fuzzy
-#| msgid "Discontinued"
 msgid "Part discontinued"
-msgstr "aus dem Sortiment genommen"
+msgstr "Artikel aus dem Sortiment genommen"
 
 #: conf/elements_options.php:757
-#, fuzzy
-#| msgid "required"
 msgid "Not required"
-msgstr "erforderlich"
+msgstr "Nicht erforderlich"
 
 #: conf/elements_options.php:765 conf/export_edit_template_fields.php:132
 #: conf/export_fields.php:320 conf/export_fields.php:399
@@ -14144,9 +13852,8 @@ msgstr "Kundenliste"
 
 #: conf/elements_options.php:1033 conf/elements_options.php:1076
 #: conf/elements_options.php:1157
-#, fuzzy
 msgid "Submitted, in transit"
-msgstr "Vom Kunden eingegeben."
+msgstr "Eingereicht, unterwegs"
 
 #: conf/elements_options.php:1312
 #, fuzzy
@@ -14154,24 +13861,20 @@ msgid "No Assigned"
 msgstr "Kommissionierer zugeteilt"
 
 #: conf/elements_options.php:1323
-#, fuzzy
 msgid "Tax number status"
-msgstr "USt-IdNr.:"
+msgstr "Steuernummer Status"
 
 #: conf/elements_options.php:1326
-#, fuzzy
 msgid "Tax number valid"
-msgstr "USt-IdNr.:"
+msgstr "Steuernummer gültig"
 
 #: conf/elements_options.php:1330
-#, fuzzy
 msgid "Tax number invalid"
-msgstr "USt-IdNr.:"
+msgstr "Steuernummer ungültig"
 
 #: conf/elements_options.php:1334
-#, fuzzy
 msgid "No tax number"
-msgstr "USt-IdNr.:"
+msgstr "Steuernummer nicht vorhanden"
 
 #: conf/elements_options.php:1347
 #, fuzzy
@@ -14210,17 +13913,15 @@ msgstr "Bestellbestätigung"
 #: conf/export_edit_template_fields.php:78
 #: conf/export_edit_template_fields.php:431 conf/export_fields.php:315
 #: conf/export_fields.php:394
-#, fuzzy
 msgid "Units per SKO"
-msgstr "pro Artikel"
+msgstr "Artikel pro SKO"
 
 #: conf/export_edit_template_fields.php:91 conf/fields/agent_part.fld.php:258
 #: conf/fields/agent_part.fld.php:263 conf/fields/product.fld.php:69
 #: conf/fields/service.fld.php:73 conf/fields/supplier_part.fld.php:275
 #: conf/fields/supplier_part.fld.php:280
-#, fuzzy
 msgid "Piece"
-msgstr " seit %1"
+msgstr "Stück"
 
 #: conf/export_edit_template_fields.php:123
 #, fuzzy
@@ -14259,9 +13960,8 @@ msgstr "Land"
 #: conf/export_edit_template_fields.php:643 conf/fields/product.fld.php:293
 #: conf/fields/product.fld.php:298 conf/fields/service.fld.php:295
 #: conf/fields/service.fld.php:300
-#, fuzzy
 msgid "piece"
-msgstr " seit %1"
+msgstr "Stück"
 
 #: conf/export_edit_template_fields.php:440
 #, fuzzy
@@ -14362,21 +14062,16 @@ msgid "Country Code"
 msgstr "Ländercode"
 
 #: conf/export_fields.php:448
-#, fuzzy
-#| msgid "Registration number"
 msgid "VAT registration number"
-msgstr "Unternehmensnr."
+msgstr "UID Nummer"
 
 #: conf/export_fields.php:464
-#, fuzzy
-#| msgid "Registration number"
 msgid "VAT registration number validation"
-msgstr "Unternehmensnr."
+msgstr "Überprüfung der Umsatzsteuer-Identifikationsnummer"
 
 #: conf/export_fields.php:513
-#, fuzzy
 msgid "Stock value per SKO"
-msgstr "vorrätig"
+msgstr "Bestandswert pro SKO"
 
 #: conf/export_fields.php:560
 #, fuzzy
@@ -14493,9 +14188,8 @@ msgstr "Zahlungsart wählen"
 
 #: conf/fields/agent.fld.php:175 conf/fields/customer.fld.php:377
 #: conf/fields/supplier.fld.php:198
-#, fuzzy
 msgid "Add email"
-msgstr "E-Mail kann der Verteilerliste nicht hinzugefügt werden."
+msgstr "E-Mail hinzufügen"
 
 #: conf/fields/agent.fld.php:184 conf/fields/customer.fld.php:128
 #: conf/fields/customer.fld.php:395
@@ -14533,9 +14227,8 @@ msgstr "Seite"
 #: conf/fields/agent_part.fld.php:48
 #: conf/fields/part.supplier_part.new.fld.php:24
 #: conf/fields/supplier_part.fld.php:49
-#, fuzzy
 msgid "No stock"
-msgstr "vorrätig"
+msgstr "Nicht vorrätig"
 
 #: conf/fields/agent_part.fld.php:74 conf/fields/supplier_part.fld.php:75
 #: tabs/production.suppliers.tab.php:31
@@ -14556,10 +14249,9 @@ msgstr "Verfügbar"
 #: conf/fields/agent_part.fld.php:154
 #: conf/fields/part.supplier_part.new.fld.php:215
 #: conf/fields/supplier_part.fld.php:488
-#, fuzzy, php-format
-#| msgid "Not in use"
+#, php-format
 msgid "amount in %s "
-msgstr "Nicht in Gebrauch"
+msgstr "Menge in % s"
 
 #: conf/fields/agent_part.fld.php:218 conf/fields/part.fld.php:169
 #: conf/fields/supplier_part.fld.php:221
@@ -14577,9 +14269,8 @@ msgid "Product packing"
 msgstr "Pakistan"
 
 #: conf/fields/agent_part.fld.php:299
-#, fuzzy
 msgid "Units packed in"
-msgstr "fertig verpackt am"
+msgstr "Einheiten verpackt in"
 
 #: conf/fields/agent_part.fld.php:312
 #, fuzzy
@@ -14610,9 +14301,8 @@ msgid "Restrictions"
 msgstr "Beschreibung"
 
 #: conf/fields/attachment.fld.php:146
-#, fuzzy
 msgid "Delete attachment"
-msgstr "Fehler: Abteilung kann nicht gelöscht werden."
+msgstr "Anhang löschen"
 
 #: conf/fields/barcode.fld.php:85
 #, fuzzy
@@ -14642,9 +14332,8 @@ msgstr "Löschen"
 
 #: conf/fields/category.product.fld.php:22 conf/fields/department.fld.php:23
 #: conf/fields/family.fld.php:58
-#, fuzzy
 msgid "Visibility"
-msgstr "Erster Besuch?"
+msgstr "Sichtbarkeit"
 
 #: conf/fields/category.product.fld.php:32 conf/fields/department.fld.php:33
 #, fuzzy
@@ -14723,9 +14412,8 @@ msgstr "Konten"
 
 #: conf/fields/category.webpage.fld.php:319
 #: conf/fields/payment_account.fld.php:293 conf/fields/webpage.fld.php:493
-#, fuzzy
 msgid "Reset webpage"
-msgstr "gelöscht"
+msgstr "Webseite zurücksetzen"
 
 #: conf/fields/contractor.fld.php:23 conf/fields/employee.fld.php:34
 #, fuzzy
@@ -14752,9 +14440,8 @@ msgid "Contract"
 msgstr "Kontakt"
 
 #: conf/fields/contractor.fld.php:319
-#, fuzzy
 msgid "Working hours & cost"
-msgstr "Dieser Link wird in 24 Stunden ungültig."
+msgstr "Arbeitszeit und Kosten"
 
 #: conf/fields/contractor.fld.php:439 conf/fields/contractor.fld.php:487
 #: conf/fields/employee.fld.php:656 conf/fields/employee.fld.php:739
@@ -14869,16 +14556,12 @@ msgid "Warning, editing invoice details can be illegal"
 msgstr ""
 
 #: conf/fields/invoice.fld.php:55
-#, fuzzy
-#| msgid "Customer Name"
 msgid "Customer tax number"
-msgstr "Name des Kunden  "
+msgstr "Kundensteuernummer"
 
 #: conf/fields/invoice.fld.php:62
-#, fuzzy
-#| msgid "Registration number"
 msgid "Customer registration number"
-msgstr "Unternehmensnr."
+msgstr "Kundenregistrierungsnummer"
 
 #: conf/fields/invoice.fld.php:91
 #, fuzzy
@@ -14917,9 +14600,8 @@ msgstr "Telefon"
 
 #: conf/fields/part.fld.php:32 conf/fields/product.fld.php:24
 #: conf/fields/service.fld.php:24
-#, fuzzy
 msgid "None"
-msgstr "keine mit dem Kode"
+msgstr "Keiner"
 
 #: conf/fields/part.fld.php:71
 #, fuzzy
@@ -14937,14 +14619,12 @@ msgid "Part's family not found"
 msgstr "Teil"
 
 #: conf/fields/part.fld.php:144
-#, fuzzy
 msgid "Part's family will be created"
-msgstr "Dieser Produktkode kann nicht geändert werden."
+msgstr "Teilfamilie wird erstellt"
 
 #: conf/fields/part.fld.php:157
-#, fuzzy
 msgid "Part unit"
-msgstr "entfernt einen Index"
+msgstr "Teileinheit"
 
 #: conf/fields/part.fld.php:242 conf/fields/part.fld.php:434
 msgid "L x W x H (in cm)"
@@ -15031,9 +14711,8 @@ msgstr "Lieferanten"
 
 #: conf/fields/part.supplier_part.new.fld.php:194
 #: conf/fields/supplier_part.fld.php:446
-#, fuzzy
 msgid "Cost/price"
-msgstr "Standard-&Längeneinheit:"
+msgstr "Kosten/Preis"
 
 #: conf/fields/part.supplier_part.new.fld.php:213
 #: conf/fields/part.supplier_part.new.fld.php:253
@@ -15101,9 +14780,8 @@ msgid "Linked to part value"
 msgstr "Teil"
 
 #: conf/fields/product.fld.php:245 conf/fields/service.fld.php:234
-#, fuzzy
 msgid "Outer"
-msgstr "pro Artikel"
+msgstr "Äußere"
 
 #: conf/fields/product.fld.php:285 conf/fields/service.fld.php:287
 #, fuzzy
@@ -15129,10 +14807,8 @@ msgid "Contact/Details"
 msgstr "Kontaktangaben"
 
 #: conf/fields/store.fld.php:242
-#, fuzzy
-#| msgid "Set for collection"
 msgid "Accept orders for collection"
-msgstr "zur Abholung"
+msgstr "Bestellungen zur Abholung annehmen"
 
 #: conf/fields/store.fld.php:298
 #, fuzzy
@@ -15272,9 +14948,8 @@ msgid "Webpage settings"
 msgstr "Woche beginnend am"
 
 #: conf/fields/webpage_version.fld.php:59
-#, fuzzy
 msgid "Delete webpage version"
-msgstr "gelöscht"
+msgstr "Webseitenversion löschen"
 
 #: conf/fields/website.fld.php:77 utils/modules.php:2132
 msgid "Look & feel"
@@ -15647,9 +15322,8 @@ msgid "Phone"
 msgstr "Telefon (geschäftlich)"
 
 #: conf/webpage_types.php:37
-#, fuzzy
 msgid "Customer operations"
-msgstr "Die Bilddatei »%s« konnte nicht gefunden werden.\n"
+msgstr "Kundenbetriebe"
 
 #: conf/webpage_types.php:43
 #, fuzzy
@@ -15697,15 +15371,12 @@ msgid ""
 msgstr ""
 
 #: conf/website_system_webpages.php:130
-#, fuzzy
-#| msgid "Other email added"
 msgid "Enter email ..."
-msgstr "Weitere E-Mail hinzugefügt"
+msgstr "Gebe E-Mail ein..."
 
 #: conf/website_system_webpages.php:133
-#, fuzzy
 msgid "Hours"
-msgstr "Dieser Link wird in 24 Stunden ungültig."
+msgstr "Stunden"
 
 #: conf/website_system_webpages.php:134
 #, fuzzy
@@ -15747,10 +15418,8 @@ msgid "E-mail"
 msgstr "E-Mail"
 
 #: conf/website_system_webpages.php:199
-#, fuzzy
-#| msgid "Forgot Password"
 msgid "Forgot password?"
-msgstr "Passwort vergessen"
+msgstr "Passwort vergessen?"
 
 #: conf/website_system_webpages.php:200
 #, fuzzy
@@ -15758,10 +15427,8 @@ msgid "Keep me logged in"
 msgstr "Angemeldet"
 
 #: conf/website_system_webpages.php:208 conf/website_system_webpages.php:311
-#, fuzzy
-#| msgid "You have successfully logged in"
 msgid "Your request successfully sent!"
-msgstr "Sie haben sich erfolgreich angemeldet"
+msgstr "Ihre Anfrage wurde erfolgreich gesendet!"
 
 #: conf/website_system_webpages.php:209
 #, fuzzy
@@ -15778,9 +15445,8 @@ msgid "Try again"
 msgstr ""
 
 #: conf/website_system_webpages.php:242 conf/website_system_webpages.php:355
-#, fuzzy
 msgid "Email address"
-msgstr "E-Mail-Adresse kann nicht leer sein."
+msgstr "E-Mail-Adresse"
 
 #: conf/website_system_webpages.php:243
 #, fuzzy
@@ -15789,10 +15455,8 @@ msgid "Needed to verify your account"
 msgstr "Erstellen Ihres Kontos"
 
 #: conf/website_system_webpages.php:246 conf/website_system_webpages.php:379
-#, fuzzy
-#| msgid "Don't know your password?"
 msgid "Don't forget your password"
-msgstr "Passwort vergessen?"
+msgstr "Vergessen Sie nicht Ihr Passwort?"
 
 #: conf/website_system_webpages.php:248 conf/website_system_webpages.php:318
 #: conf/website_system_webpages.php:320
@@ -15802,10 +15466,8 @@ msgid "Confirm password"
 msgstr "Passwort bestätigen"
 
 #: conf/website_system_webpages.php:249
-#, fuzzy
-#| msgid "Forgot your password?"
 msgid "Confirm your password"
-msgstr "Passwort vergessen?"
+msgstr "Passwort Bestätigung"
 
 #: conf/website_system_webpages.php:252 conf/website_system_webpages.php:384
 msgid "Needed to enter your mobile/telephone"
@@ -15868,9 +15530,8 @@ msgid "Customer section"
 msgstr "Benutzer"
 
 #: conf/website_system_webpages.php:345
-#, fuzzy
 msgid "Customer <i>Orders</i>"
-msgstr "Name des Kunden  "
+msgstr "Kunde <i> Bestellungen </i>"
 
 #: conf/website_system_webpages.php:346
 #, fuzzy
@@ -15910,11 +15571,8 @@ msgid "Needed to login to your account"
 msgstr "Erstellen Ihres Kontos"
 
 #: conf/website_system_webpages.php:360
-#, fuzzy
 msgid "Login details"
-msgstr ""
-"Die neue Art, sicher und schnell online zu bezahlen. Geben Sie einfach Ihre "
-"Bankdaten im sicheren SOFORT System ein."
+msgstr "Login Details"
 
 #: conf/website_system_webpages.php:362 conf/website_system_webpages.php:470
 #, fuzzy
@@ -16010,14 +15668,12 @@ msgid "Save card"
 msgstr "Gespeichert"
 
 #: conf/website_system_webpages.php:552
-#, fuzzy
-#| msgid ""
-#| "Please after place your order, go to your bank, or online bank and make "
-#| "this payment to our bank, details below"
 msgid ""
 "Please go to your bank and make a payment of <b>[Order Amount]</b>  to our "
 "bank account, details below"
-msgstr "Bitte verwenden Sie für die Banküberweisung untenstehende Bankdaten."
+msgstr ""
+"Bitte gehen Sie zu Ihrer Bank und leisten Sie eine Zahlung von<b>[Order "
+"Amount]</b> auf unser Bankkonto, Details unten"
 
 #: conf/website_system_webpages.php:553
 #, fuzzy
@@ -16053,9 +15709,8 @@ msgid "Thanks for your order"
 msgstr "Bestellung"
 
 #: conf/website_system_webpages.php:609
-#, fuzzy
 msgid "Oops... Page Not Found!"
-msgstr "Kommissioniert"
+msgstr "Ups.....Seite nicht gefunden!"
 
 #: conf/website_system_webpages.php:610
 #, fuzzy
@@ -16113,7 +15768,7 @@ msgstr "Chinesisch"
 
 #: locale.php:43
 msgid "Historic"
-msgstr "historisch"
+msgstr "Historisch"
 
 #: locale.php:48
 #, fuzzy
@@ -16139,7 +15794,7 @@ msgstr "Warenannahme"
 
 #: locale.php:59
 msgid "On display"
-msgstr "ausgestellt sein"
+msgstr "Ausgestellt sein"
 
 #: navigation/account.nav.php:26
 #, fuzzy
@@ -16247,10 +15902,8 @@ msgstr "Suchen"
 #: navigation/customers.nav.php:764 navigation/customers.nav.php:966
 #: navigation/customers.nav.php:1295 navigation/orders.nav.php:1127
 #: navigation/suppliers.nav.php:1917
-#, fuzzy
-#| msgid "Search Customers"
 msgid "Search customers"
-msgstr "nach Kunden suchen"
+msgstr "Nach Kunden suchen"
 
 #: navigation/agent.nav.php:828 navigation/agent.nav.php:1307
 #: navigation/orders.nav.php:39 navigation/orders.nav.php:78
@@ -16379,9 +16032,8 @@ msgid "Deal"
 msgstr "Es gibt kein Angebot mit diesem Namen"
 
 #: navigation/customers.nav.php:1211
-#, fuzzy
 msgid "New order"
-msgstr "pro Artikel"
+msgstr "Neue Bestellung"
 
 #: navigation/customers.nav.php:1216 navigation/inventory.nav.php:414
 #: navigation/inventory.nav.php:1386 navigation/products.nav.php:639
@@ -16514,9 +16166,8 @@ msgstr "Abspielreihenfolge"
 
 #: navigation/inventory.nav.php:666 utils/modules.php:4470
 #: utils/modules.php:4844
-#, fuzzy
 msgid "Stock movements"
-msgstr "vorrätig"
+msgstr "Lagerbewegungen"
 
 #: navigation/inventory.nav.php:713 navigation/inventory.nav.php:758
 #: navigation/inventory.nav.php:775 utils/modules.php:4458
@@ -16605,9 +16256,8 @@ msgid "Incoming orders"
 msgstr "Ausstehende Bestellungen"
 
 #: navigation/menu.mobile.php:440
-#, fuzzy
 msgid "Pending Orders"
-msgstr "ausstehend"
+msgstr "Ausstehende Bestellungen"
 
 #: navigation/orders.nav.php:186
 #, fuzzy
@@ -16780,9 +16430,8 @@ msgid "Search products"
 msgstr "Produkte"
 
 #: navigation/products.nav.php:180
-#, fuzzy
 msgid "Edit store"
-msgstr "bearbeiten"
+msgstr "Geschäft bearbeiten"
 
 #: navigation/products.nav.php:245 navigation/products.nav.php:261
 #, fuzzy
@@ -17097,14 +16746,12 @@ msgid "Invoice No."
 msgstr "Rechnungsnr."
 
 #: pdf/invoice.pdf.php:105 pdf/supplier.order.pdf.php:306
-#, fuzzy
 msgid "Credit Note No."
-msgstr "Gutschrift"
+msgstr "Gutschrift Nr."
 
 #: pdf/invoice.pdf.php:109 pdf/supplier.order.pdf.php:310
-#, fuzzy
 msgid "Refund No."
-msgstr "Rückerstattung"
+msgstr "Rückerstattung Nr."
 
 #: pdf/invoice.pdf.php:254 pdf/invoice.pdf.php:437
 #: pdf/supplier.order.pdf.php:442 pdf/supplier.order.pdf.php:593
@@ -17201,9 +16848,9 @@ msgid "Repeat customers %s"
 msgstr "Import"
 
 #: showcase/payment_account.show.php:350
-#, fuzzy, php-format
+#, php-format
 msgid "All payments since: %s"
-msgstr "in Bearbeitung"
+msgstr "Alle Zahlungen seit: % s"
 
 #: showcase/product.show.php:379 utils/table_functions.php:113
 #, fuzzy, php-format
@@ -17705,9 +17352,8 @@ msgid "Add department"
 msgstr "Hinzufügen"
 
 #: tabs/category.categories.tab.php:178 tabs/store.departments.tab.php:34
-#, fuzzy
 msgid "Department code"
-msgstr "Fehler:Falscher Abteilungsname."
+msgstr "Abteilungskode"
 
 #: tabs/category.categories.tab.php:247
 #, fuzzy
@@ -18065,7 +17711,7 @@ msgstr "Abteilung"
 
 #: tabs/page.users.tab.php:28 tabs/website.users.tab.php:28
 msgid "Customer Name"
-msgstr "Name des Kunden  "
+msgstr "Name des Kunden"
 
 #: tabs/part.products.tab.php:51 tabs/part.supplier_parts.tab.php:46
 #: tabs/products.tab.php:67 utils/modules.php:2653 utils/modules.php:4701
@@ -18144,9 +17790,8 @@ msgid "New service"
 msgstr "Nicht auf der Webseite"
 
 #: tabs/store.departments.tab.php:38
-#, fuzzy
 msgid "Department name"
-msgstr "Achtung: Kein Abteilungsname."
+msgstr "Abteilungsname."
 
 #: tabs/store.new.tab.php:21
 #, php-format
@@ -18296,9 +17941,8 @@ msgid "Order Amount"
 msgstr "Menge"
 
 #: tabs/webpage.email_template.tab.php:109
-#, fuzzy
 msgid "Payment information"
-msgstr "entfernt einen Index"
+msgstr "Zahlungsinformationen"
 
 #: tabs/website.in_process_webpages.tab.php:37 utils/modules.php:2259
 #, fuzzy
@@ -18326,10 +17970,8 @@ msgid "Page code"
 msgstr "Seite"
 
 #: trait.AttachmentSubject.php:50
-#, fuzzy
-#| msgid "is already created"
 msgid "File already attached"
-msgstr "wurde bereits erstellt"
+msgstr "Datei bereits angehängt"
 
 #: trait.AttachmentSubject.php:56
 #, fuzzy
@@ -18430,7 +18072,7 @@ msgstr "Deutschland"
 
 #: utils/geography_functions.php:23
 msgid "United Kingdom"
-msgstr " Vereinigtes Königreich von Großbritannien und Nordirland"
+msgstr " Vereinigtes Königreich von Großbritannien"
 
 #: utils/geography_functions.php:26
 msgid "France"
@@ -18572,9 +18214,8 @@ msgstr "Bestellungen mit einem Mindestwert von"
 
 #: utils/invalid_messages.php:173 utils/invalid_messages.php:181
 #: utils/invalid_messages.php:192
-#, fuzzy
 msgid "Invalid password"
-msgstr "Ungültiger Benutzername oder Passwort!"
+msgstr "Ungültiger Benutzername oder Passwort"
 
 #: utils/invalid_messages.php:175 utils/invalid_messages.php:183
 #: utils/invalid_messages.php:194
@@ -18635,9 +18276,8 @@ msgid "Please provide a recipient"
 msgstr "Hinzufügen"
 
 #: utils/invalid_messages.php:241
-#, fuzzy
 msgid "Please provide the address first line"
-msgstr "Bitte tragen Sie Ihren Vor- und Nachnamen ein:"
+msgstr "Bitte geben Sie die Adresse erste Zeile"
 
 #: utils/invalid_messages.php:243
 #, fuzzy
@@ -19013,9 +18653,8 @@ msgid "Templates"
 msgstr "Es gibt kein Angebot mit diesem Namen"
 
 #: utils/modules.php:2206
-#, fuzzy
 msgid "In process web pages"
-msgstr "in Bearbeitung"
+msgstr "Webseite in Bearbeitung"
 
 #: utils/modules.php:2211
 #, fuzzy
@@ -19272,9 +18911,8 @@ msgid "Company departments"
 msgstr "Abteilung"
 
 #: utils/modules.php:5240
-#, fuzzy
 msgid "Organizational chart"
-msgstr "bearbeiten"
+msgstr "Organigramm"
 
 #: utils/modules.php:5261
 msgid "Today timesheet"
@@ -19402,9 +19040,8 @@ msgid "About"
 msgstr "Über Sie"
 
 #: utils/natural_language.php:7
-#, fuzzy
 msgid "Instantaneity"
-msgstr "Name des Kunden  "
+msgstr "Instantanität"
 
 #: utils/natural_language.php:15 utils/natural_language.php:24
 #: utils/natural_language.php:110 utils/natural_language.php:452
@@ -19510,9 +19147,8 @@ msgid "1 Day"
 msgstr "Tage"
 
 #: utils/natural_language.php:623
-#, fuzzy
 msgid "1 Hour"
-msgstr "Dieser Link wird in 24 Stunden ungültig."
+msgstr "1 Stunde"
 
 #: utils/order_functions.php:29
 #, fuzzy
@@ -19539,9 +19175,8 @@ msgid "Cash on Delivery"
 msgstr "Barzahlung"
 
 #: utils/order_functions.php:224
-#, fuzzy
 msgid "Using Credit"
-msgstr "unter Verwendung von"
+msgstr "Kredit verwenden"
 
 #: utils/order_functions.php:275
 #, fuzzy
@@ -19629,9 +19264,8 @@ msgid "Undo dispatch"
 msgstr "Aktionen nach Versand"
 
 #: utils/order_functions.php:477
-#, fuzzy
 msgid "Item to be resended in process"
-msgstr "in Bearbeitung"
+msgstr "Zu sendender Artikel in Bearbeitung"
 
 #: utils/order_functions.php:505
 #, fuzzy
@@ -19644,9 +19278,8 @@ msgid "Credit in customer file"
 msgstr "Gutschrift"
 
 #: utils/order_handing_functions.php:213
-#, fuzzy
 msgid "No location !"
-msgstr "Pfad"
+msgstr "Keine Abteilung!"
 
 #: utils/store_functions.php:31
 msgid "each"
@@ -19752,11 +19385,11 @@ msgstr[0] "Einträge ausblenden"
 msgstr[1] "Einträge ausblenden"
 
 #: utils/table_functions.php:177
-#, fuzzy, php-format
+#, php-format
 msgid "%s warehouse"
 msgid_plural "%s warehouses"
-msgstr[0] "Zuordnung der Be&nutzernamen:"
-msgstr[1] "Zuordnung der Be&nutzernamen:"
+msgstr[0] "%s Lager"
+msgstr[1] "%s Lagern"
 
 #: utils/table_functions.php:181
 #, fuzzy, php-format
@@ -19797,11 +19430,11 @@ msgstr[0] "Benutzer"
 msgstr[1] "Benutzer"
 
 #: utils/table_functions.php:201
-#, fuzzy, php-format
+#, php-format
 msgid "%s report"
 msgid_plural "%s reports"
-msgstr[0] "Bericht wird gedruckt ..."
-msgstr[1] "Bericht wird gedruckt ..."
+msgstr[0] "%s Bericht"
+msgstr[1] "%s Berichte"
 
 #: utils/table_functions.php:205
 #, fuzzy, php-format
@@ -20609,12 +20242,12 @@ msgstr[1] ""
 
 #: utils/tax_number_functions.php:78 utils/validate_tax_number.php:77
 msgid "Can't verify the tax numbers in this country"
-msgstr "Steuernummern dieses Landes können nicht überprüft werden."
+msgstr "Steuernummern dieses Landes können nicht überprüft werden"
 
 #: utils/tax_number_functions.php:120 utils/tax_number_functions.php:126
 #: utils/validate_tax_number.php:119 utils/validate_tax_number.php:125
 msgid "Invalid tax number format"
-msgstr "ungültiges USt-IdNr.-Format"
+msgstr "Ungültiges USt-IdNr.-Format"
 
 #: utils/tax_number_functions.php:132 utils/validate_tax_number.php:132
 msgid "Validations server is busy please try later"
