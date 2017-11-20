@@ -43,9 +43,8 @@
 
 
                 <div class="title"><h1 ><span id="_title" class="_title" >{$content._title}</span><span class="line"></span></h1></div>
-
-                        <div id="_with_items_div" class="{if $products|@count==0}hide{/if}">{$content._text}</div>
-                        <div id="_no_items_div" class="{if $products|@count>=0}hide{/if}">{$content._text_empty}</div>
+                        <div id="_with_items_div" class="{if ($products|@count)==0}hide{/if}">{$content._text}</div>
+                        <div id="_no_items_div" class="{if ($products|@count)>0}hide{/if}">{$content._text_empty}</div>
 
                     </div>
 
