@@ -34,7 +34,7 @@
 
                 <div class="asset_description   fr-view">
                     <div id="_with_items_div" class="{if $products|@count==0}hide{/if}">{$content._text}</div>
-                    <div id="_no_items_div" class="{if $products|@count>=0}hide{/if}">{$content._text_empty}</div>
+                    <div id="_no_items_div" class="{if ($products|@count)>0}hide{/if}">{$content._text_empty}</div>
                 </div>
 
 
