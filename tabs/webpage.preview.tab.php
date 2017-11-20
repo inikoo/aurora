@@ -46,7 +46,7 @@ if ($state['_object']->get('Webpage Template Filename') == 'products_showcase' o
 
 
 
-    $control_template = $theme.'/control.'.$webpage->get('Webpage Template Filename').'.'.$theme.'.tpl';
+    $control_template = $theme.'/control.'.  strtolower($webpage->get('Webpage Template Filename')).'.'.$theme.'.tpl';
 
     // print $control_template;
 
