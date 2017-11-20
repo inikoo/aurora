@@ -4,7 +4,7 @@
 
     <table style="font-size:1.8mm;" border="0">
         <tr>
-            <td style=" text-align: center;vertical-align:bottom;padding:1px 5px 0px 5px;">
+            <td style=" text-align: center;vertical-align:bottom;padding:1px 5px 0px 5px;{if ($part->get('Package Description')|count_characters)>30}font-size:1.7mm;{/if}">
                     <b> {$part->get('Reference')}</b> {$part->get('Package Description')}
 
             </td>
