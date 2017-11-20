@@ -68,7 +68,7 @@ if ($webpage->get('Webpage Template Filename') == 'products_showcase') {
 } else {
 
 
-    $template = $theme.'/'.$webpage->get('Webpage Template Filename').'.'.$theme.'.tpl';
+    $template = $theme.'/'.strtolower($webpage->get('Webpage Template Filename')).'.'.$theme.'.tpl';
 
     if (!file_exists('templates/'.$template)) {
         $template = $theme.'/webpage_blocks.'.$theme.'.tpl';
