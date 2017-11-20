@@ -9,6 +9,8 @@
 
             </td>
         </tr>
+        <tr><td> </td>
+        </tr>
         <tr>
             <td style="text-align: center"><img style="max-height: 50px" src="/barcode_asset.php?type=code128&number={$part->get('Part SKO Barcode')}">
             </td>
