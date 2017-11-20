@@ -17,15 +17,9 @@ $default = $user->get_tab_defaults($tab);
 
 
 $table_views = array(
-    'overview' => array(
-        'label' => _('Carton'),
-    ),
-    'sales' => array(
-        'label' => _('Carton (sales)'),
-    ),
-    'unit' => array(
-        'label' => _('Unit'),
-    ),
+    'overview' => array('label' => _('Ordering cartons'),),
+    'sales'    => array('label' => _('Ordering cartons (show sales)'),),
+    // 'unit' => array('label' => _('Unit'),),
 
 );
 
@@ -85,14 +79,14 @@ $smarty->assign(
 );
 $smarty->assign(
     'table_metadata', base64_encode(
-        json_encode(
-            array(
-                'parent'     => $state['object'],
-                'parent_key' => $state['key'],
-                'field'      => 'Purchase Order Quantity'
-            )
-        )
-    )
+                        json_encode(
+                            array(
+                                'parent'     => $state['object'],
+                                'parent_key' => $state['key'],
+                                'field'      => 'Purchase Order Quantity'
+                            )
+                        )
+                    )
 );
 
 

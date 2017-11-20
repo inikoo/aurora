@@ -66,7 +66,7 @@ $sql_totals
 
 $fields
     .= "
-`Part Reference`,`Part Package Description`,`Supplier Part Reference`,`Supplier Part Status`,`Part Stock Status`,`Part Units Per Package`,`Supplier Part Packages Per Carton`,`Supplier Part Unit Cost`,`Part Unit Description`,`Supplier Part Currency Code`,
+`Part Reference`,`Part Package Description`,`Supplier Part Reference`,`Supplier Part Status`,`Part Stock Status`,`Part Units Per Package`,`Supplier Part Packages Per Carton`,`Supplier Part Unit Cost`,`Supplier Part Description`,`Part Package Description`,`Supplier Part Currency Code`,
 `Supplier Part Minimum Carton Order`,`Supplier Part Key`,`Supplier Part Supplier Key`,`Supplier Part Part SKU`,`Part Current Stock`,`Part Current Stock In Process`+ `Part Current Stock Ordered Paid` as required
 
 

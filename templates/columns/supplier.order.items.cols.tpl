@@ -8,14 +8,6 @@ renderable: false
 
 
 },{
-name: "product_pid",
-label: "",
-editable: false,
-cell: "integer",
-renderable: false
-
-
-},{
 name: "checkbox",
 renderable:false,
 label: "",
@@ -88,7 +80,8 @@ sortType: "toggle",
 {if $sort_key=='subtotals'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: ""} ),
 
-}, {
+},
+{
 name: "quantity",
 label: "{t}Cartons{/t}",
 renderable: {if $data['_object']->get('Purchase Order State')=='InProcess'}true{else}false{/if},

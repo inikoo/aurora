@@ -80,7 +80,7 @@ if ($parameters['f_field'] == 'reference' and $f_value != '') {
     $wheref = " and  `Part Reference` like '".addslashes($f_value)."%'";
 } elseif ($parameters['f_field'] == 'description' and $f_value != '') {
     $wheref = sprintf(
-        ' and `Part Unit Description` REGEXP "[[:<:]]%s" ', addslashes($f_value)
+        ' and `Part Package Description` REGEXP "[[:<:]]%s" ', addslashes($f_value)
     );
 }
 
@@ -91,8 +91,6 @@ if ($order == 'id') {
     $order = 'P.`Part SKU`';
 } elseif ($order == 'reference') {
     $order = '`Part Reference`';
-} elseif ($order == 'unit_description') {
-    $order = '`Part Unit Description`';
 } elseif ($order == 'status') {
     $order = '`Part Status`';
 } else {
@@ -103,7 +101,7 @@ if ($order == 'id') {
 $sql_totals
     = "select count(Distinct P.`Part SKU`) as num from $table  $where  ";
 
-$fields .= "$associated_field `Category Code`,`Category Key`,P.`Part SKU`,`Part Reference`,`Part Unit Description`,`Part Status`";
+$fields .= "$associated_field `Category Code`,`Category Key`,P.`Part SKU`,`Part Reference`,`Part Status`";
 
 
 ?>

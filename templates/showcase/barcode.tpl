@@ -2,18 +2,7 @@
 
 
     <div id="asset_data"  style="float:left;" >
-        <div class="data_container">
 
-            <div class="data_field">
-                <h1><span class="Part_Unit_Description">{$barcode->get('Part Unit Description')}</span> <span
-                            class="Store_Product_Price">{$barcode->get('Price')}</span></h1>
-            </div>
-
-        </div>
-        <div class="data_container">
-
-
-        </div>
         <div style="clear:both">
         </div>
         <div class="data_container">

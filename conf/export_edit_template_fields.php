@@ -25,9 +25,30 @@ $export_edit_template_fields = array(
             'default_value' => '',
             'show_for_new'  => true,
             'required'      => true,
-            'header'        => "Supplier's SKU",
+            'header'        => "Supplier's part code",
             'name'          => 'Supplier Part Reference',
-            'label'         => _("Supplier's SKU"),
+            'label'         => _("Supplier's part code"),
+            'checked'       => 0
+        ),
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => true,
+            'header'        => "Supplier's unit description",
+            'name'          => 'Supplier Part Description',
+            'label'         => _("Supplier's part unit description").' ('._("for supplier's POs").')',
+            'checked'       => 0
+        ),
+
+
+
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'Family',
+            'name'          => 'Part Family Category Code',
+            'label'         => _('Family'),
             'checked'       => 0
         ),
         array(
@@ -38,34 +59,13 @@ $export_edit_template_fields = array(
             'name'          => 'Part Reference',
             'label'         => _('Part reference'),
             'checked'       => 0
-        ),
-        array(
-            'default_value' => '',
-            'show_for_new'  => true,
-            'required'      => false,
-            'header'        => 'Unit barcode (EAN-13)',
-            'name'          => 'Part Barcode Number',
-            'label'         => _('Unit barcode'),
-            'checked'       => 0,
-            'cell_type'     => 'string'
-        ),
-        array(
-            'default_value' => '',
-            'show_for_new'  => true,
-            'required'      => false,
-            'header'        => 'Family',
-            'name'          => 'Part Family Category Code',
-            'label'         => _('Family'),
-            'checked'       => 0
-        ),
-
-        array(
-            'default_value' => '',
+        ),  array(
+            'default_value' => _('Piece'),
             'show_for_new'  => true,
             'required'      => true,
-            'header'        => 'SKO description',
-            'name'          => 'Part Package Description',
-            'label'         => _('SKO description'),
+            'header'        => 'Unit label',
+            'name'          => 'Part Unit Label',
+            'label'         => _('Unit label'),
             'checked'       => 0
         ),
 
@@ -82,20 +82,24 @@ $export_edit_template_fields = array(
             'default_value' => '',
             'show_for_new'  => true,
             'required'      => true,
-            'header'        => 'Unit description',
-            'name'          => 'Part Unit Description',
-            'label'         => _('Unit description'),
+            'header'        => 'SKO description (picking aid)',
+            'name'          => 'Part Package Description',
+            'label'         => _('SKO description').' ('._('for picking aid').')',
             'checked'       => 0
         ),
+
         array(
-            'default_value' => _('Piece'),
+            'default_value' => '',
             'show_for_new'  => true,
-            'required'      => true,
-            'header'        => 'Unit label',
-            'name'          => 'Part Unit Label',
-            'label'         => _('Unit label'),
+            'required'      => false,
+            'header'        => 'SKO Barcode',
+            'name'          => 'Part SKO Barcode',
+            'label'         => _('Part SKO Barcode').' ('._('stock control').')',
             'checked'       => 0
         ),
+
+
+
         array(
             'default_value' => '',
             'show_for_new'  => true,
@@ -114,15 +118,7 @@ $export_edit_template_fields = array(
             'label'         => _('Recommended SKOs per selling outer'),
             'checked'       => 0
         ),
-        array(
-            'default_value' => '',
-            'show_for_new'  => true,
-            'required'      => false,
-            'header'        => 'SKO Barcode',
-            'name'          => 'Part SKO Barcode',
-            'label'         => _('Part SKO Barcode'),
-            'checked'       => 0
-        ),
+
         array(
             'default_value' => '',
             'show_for_new'  => false,
@@ -208,7 +204,25 @@ $export_edit_template_fields = array(
             'label'         => _('Unit recommended RRP'),
             'checked'       => 0
         ),
-
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => true,
+            'header'        => 'Unit recommended description (website)',
+            'name'          => 'Part Recommended Product Unit Name',
+            'label'         => _('Unit recommended description').' ('._('website').')',
+            'checked'       => 0
+        ),
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'Unit barcode (EAN-13, for website)',
+            'name'          => 'Part Barcode Number',
+            'label'         => _('Unit barcode'),
+            'checked'       => 0,
+            'cell_type'     => 'string'
+        ),
         array(
             'default_value' => '',
             'show_for_new'  => true,
@@ -365,15 +379,7 @@ $export_edit_template_fields = array(
             'checked'       => 0,
             'cell_type'     => 'string'
         ),
-        array(
-            'default_value' => '',
-            'show_for_new'  => true,
-            'required'      => true,
-            'header'        => 'Unit description',
-            'name'          => 'Part Unit Description',
-            'label'         => _('Unit description'),
-            'checked'       => 0
-        ),
+
         array(
             'default_value' => _('piece'),
             'show_for_new'  => true,
@@ -420,7 +426,15 @@ $export_edit_template_fields = array(
             'label'         => _('Unit recommended RRP'),
             'checked'       => 0
         ),
-
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => true,
+            'header'        => 'Unit recommended description (website)',
+            'name'          => 'Part Recommended Product Unit Name',
+            'label'         => _('Unit recommended description').' ('._('website').')',
+            'checked'       => 0
+        ),
 
         array(
             'default_value' => '',

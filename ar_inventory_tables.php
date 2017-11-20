@@ -1014,7 +1014,7 @@ function supplier_parts($_data, $db, $user, $account) {
                 'barcode_sko'      => $data['Part SKO Barcode'],
 
 
-                'description'    => '<span  data-field="Part Unit Description"  data-item_class="item_Part_Unit_Description" class="table_item_editable item_Part_Unit_Description"  >'.$data['Part Unit Description'].'</span>',
+                'description'    => '<span  data-field="Supplier Part Description"  data-item_class="item_Supplier_Part_Description" class="table_item_editable item_Supplier_Part_Description"  >'.$data['Supplier Part Description'].'</span>',
                 'status'         => $status,
                 'cost'           => sprintf(
                     '<span class="part_cost"  pid="%d" cost="%s"  currency="%s"   onClick="open_edit_cost(this)">%s</span>', $data['Supplier Part Key'], $data['Supplier Part Unit Cost'], $data['Supplier Part Currency Code'],
@@ -1524,7 +1524,7 @@ function category_all_available_parts($_data, $db, $user) {
                 'id'               => (integer)$data['Part SKU'],
                 'associated'       => $associated,
                 'reference'        => $data['Part Reference'],
-                'unit_description' => $data['Part Unit Description'],
+                'description' => $data['Part Package Description'],
                 'family'           => $data['Category Code']
             );
         }
@@ -1583,7 +1583,7 @@ function category_all_parts($_data, $db, $user) {
             $record_data[] = array(
                 'id'               => (integer)$data['Part SKU'],
                 'reference'        => $data['Part Reference'],
-                'unit_description' => $data['Part Unit Description'],
+                'description' => $data['Part Package Description'],
                 'family'           => ($data['Category Code'] == '' ? '<span class="very_discreet italic">'._('Not associated').'</span>' : '<span class="link" onClick="change_view(\'category/'.$data['Category Key'].'\')">'.$data['Category Code'].'</span>'),
                 'status'           => $status
             );

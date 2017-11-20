@@ -5,22 +5,16 @@ editable: false,
 renderable: false,
 cell: "string",
 
-}, {
+},
+
+
+{
 name: "status",
 label: "",
 editable: false,
 sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({
 className: "width_20"
-})
-
-}, {
-name: "reference",
-label: "{t}Reference{/t}",
-editable: false,
-sortType: "toggle",
-
-cell: Backgrid.HtmlCell.extend({
 })
 
 },
@@ -37,6 +31,29 @@ cell: Backgrid.HtmlCell.extend({
 
 },
 
+{
+name: "reference",
+label: "{t}Supplier's code{/t}",
+editable: false,
+sortType: "toggle",
+
+cell: Backgrid.HtmlCell.extend({
+})
+
+},
+
+{
+name: "description",
+label: "{t}Supplier's unit description{/t}",
+editable: false,
+sortType: "toggle",
+
+cell: Backgrid.HtmlCell.extend({
+
+
+})
+
+},
 
 {
 name: "cost",

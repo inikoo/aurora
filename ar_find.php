@@ -832,7 +832,7 @@ function find_parts($db, $account, $memcache_ip, $data) {
 
     }
 
-   // print_r($data);
+    // print_r($data);
 
     $results_data = $cache->get($memcache_fingerprint);
 
@@ -845,41 +845,28 @@ function find_parts($db, $account, $memcache_ip, $data) {
         $candidates_data = array();
 
 
-        if(!empty($data['metadata']['with_no_sko_barcodes'])){
-            $scope='barcodes';
+        if (!empty($data['metadata']['with_no_sko_barcodes'])) {
+            $scope = 'barcodes';
 
-        }else{
-            $scope='';
+        } else {
+            $scope = '';
         }
-
-
 
 
         // todo a way t only displays parts in Purchase order (Supplier Delivery)
-        if(empty($data['metadata']['supplier_delivery_key'])){
+        if (empty($data['metadata']['supplier_delivery_key'])) {
 
 
-
-        }else{
-
-
+        } else {
 
 
         }
 
 
-
-
-        $where=" and `Part Status` in ('In Use','Discontinuing','In Process')";
-        $sql = sprintf(
-            "select `Part SKU`,`Part Reference`,`Part Unit Description`,`Part SKO Barcode` from `Part Dimension`  where  `Part Reference` like '%s%%'  %s   order by `Part Reference` limit $max_results ",
-            $q,
-            $where
+        $where = " and `Part Status` in ('In Use','Discontinuing','In Process')";
+        $sql   = sprintf(
+            "select `Part SKU`,`Part Reference`,`Part Package Description`,`Part SKO Barcode` from `Part Dimension`  where  `Part Reference` like '%s%%'  %s   order by `Part Reference` limit $max_results ", $q, $where
         );
-
-
-
-
 
 
         if ($result = $db->query($sql)) {
@@ -896,9 +883,9 @@ function find_parts($db, $account, $memcache_ip, $data) {
                 }
 
                 $candidates_data[$row['Part SKU']] = array(
-                    'Part Reference'        => $row['Part Reference'],
-                    'Part Unit Description' => $row['Part Unit Description'],
-                    'Part SKO Barcode' => $row['Part SKO Barcode']
+                    'Part Reference'           => $row['Part Reference'],
+                    'Part Package Description' => $row['Part Package Description'],
+                    'Part SKO Barcode'         => $row['Part SKO Barcode']
                 );
 
             }
@@ -929,15 +916,15 @@ function find_parts($db, $account, $memcache_ip, $data) {
         foreach ($candidates as $part_sku => $candidate) {
 
 
-            if($scope=='barcodes'){
-                $description= '<span class="'.($candidates_data[$part_sku]['Part SKO Barcode']!=''?'strikethrough  discreet ':'').'" >'.$candidates_data[$part_sku]['Part Unit Description'].' '.($candidates_data[$part_sku]['Part SKO Barcode']==''?'':'  <i class="fa fa-barcode" aria-hidden="true"></i> '.$candidates_data[$part_sku]['Part SKO Barcode']).'  </span>';
-               $code='<span class="'.($candidates_data[$part_sku]['Part SKO Barcode']!=''?'strikethrough  discreet ':'').'" >'.$candidates_data[$part_sku]['Part Reference'].'</span>';
+            if ($scope == 'barcodes') {
+                $description = '<span class="'.($candidates_data[$part_sku]['Part SKO Barcode'] != '' ? 'strikethrough  discreet ' : '').'" >'.$candidates_data[$part_sku]['Part Package Description'].' '.($candidates_data[$part_sku]['Part SKO Barcode'] == '' ? ''
+                        : '  <i class="fa fa-barcode" aria-hidden="true"></i> '.$candidates_data[$part_sku]['Part SKO Barcode']).'  </span>';
+                $code        = '<span class="'.($candidates_data[$part_sku]['Part SKO Barcode'] != '' ? 'strikethrough  discreet ' : '').'" >'.$candidates_data[$part_sku]['Part Reference'].'</span>';
 
-            }else{
-                $description= $candidates_data[$part_sku]['Part Unit Description'];
-                $code=$candidates_data[$part_sku]['Part Reference'];
+            } else {
+                $description = $candidates_data[$part_sku]['Part Package Description'];
+                $code        = $candidates_data[$part_sku]['Part Reference'];
             }
-
 
 
             $results[$part_sku] = array(
@@ -945,7 +932,7 @@ function find_parts($db, $account, $memcache_ip, $data) {
                 'description'     => $description,
                 'value'           => $part_sku,
                 'formatted_value' => $candidates_data[$part_sku]['Part Reference'],
-                'barcode'=>$candidates_data[$part_sku]['Part SKO Barcode']
+                'barcode'         => $candidates_data[$part_sku]['Part SKO Barcode']
             );
 
         }
@@ -1061,8 +1048,7 @@ function find_products($db, $account, $memcache_ip, $data) {
 
 
         $sql = sprintf(
-            "select `Product ID`,`Product Code`,`Product Name`,`Product Current Key`,`Product Availability` from `Product Dimension` where  `Product Code` like '%s%%' %s order by `Product Code` limit $max_results ", $q,
-            $where
+            "select `Product ID`,`Product Code`,`Product Name`,`Product Current Key`,`Product Availability` from `Product Dimension` where  `Product Code` like '%s%%' %s order by `Product Code` limit $max_results ", $q, $where
         );
 
 
@@ -1083,7 +1069,7 @@ function find_products($db, $account, $memcache_ip, $data) {
 
                 $candidates_data[$row['Product ID']] = array(
                     'Product Code'        => $row['Product Code'],
-                    'Product Name'        => $row['Product Name'].', <span style="font-style: italic"  class="'.($row['Product Availability']<=0?'error':'').'" >'._('Stock').': '.number($row['Product Availability']).'</span>',
+                    'Product Name'        => $row['Product Name'].', <span style="font-style: italic"  class="'.($row['Product Availability'] <= 0 ? 'error' : '').'" >'._('Stock').': '.number($row['Product Availability']).'</span>',
                     'Product Current Key' => $row['Product Current Key']
 
                 );
@@ -1215,7 +1201,7 @@ function find_supplier_parts($db, $account, $memcache_ip, $data) {
 
 
         $sql = sprintf(
-            "SELECT `Supplier Part Reference`,`Supplier Part Historic Key`,`Supplier Part Key`,`Part Reference`,`Part Unit Description` FROM   `Supplier Part Dimension` SP LEFT JOIN  `Part Dimension` ON (`Supplier Part Part SKU`=`Part SKU`) WHERE %s `Supplier Part Reference` LIKE '%s%%'  ORDER BY `Supplier Part Reference` LIMIT %d ",
+            "SELECT `Supplier Part Reference`,`Supplier Part Historic Key`,`Supplier Part Key`,`Part Reference`,`Supplier Part Description` FROM   `Supplier Part Dimension` SP LEFT JOIN  `Part Dimension` ON (`Supplier Part Part SKU`=`Part SKU`) WHERE %s `Supplier Part Reference` LIKE '%s%%'  ORDER BY `Supplier Part Reference` LIMIT %d ",
             $where, $q, $max_results
         );
 
@@ -1238,7 +1224,7 @@ function find_supplier_parts($db, $account, $memcache_ip, $data) {
                     'Supplier Part Historic Key' => $row['Supplier Part Historic Key'],
                     'Supplier Part Reference'    => $row['Supplier Part Reference'],
                     'Part Reference'             => $row['Part Reference'],
-                    'Part Unit Description'      => $row['Part Unit Description']
+                    'Supplier Part Description'  => $row['Supplier Part Description']
                 );
 
             }
@@ -1249,7 +1235,7 @@ function find_supplier_parts($db, $account, $memcache_ip, $data) {
 
 
         $sql = sprintf(
-            "SELECT `Supplier Part Key`,`Supplier Part Historic Key`,`Supplier Part Reference`,`Part Reference`,`Part Unit Description` FROM   `Supplier Part Dimension` SP LEFT JOIN  `Part Dimension` ON (`Supplier Part Part SKU`=`Part SKU`) WHERE %s `Part Reference` LIKE '%s%%'  ORDER BY `Part Reference` LIMIT %d ",
+            "SELECT `Supplier Part Key`,`Supplier Part Historic Key`,`Supplier Part Reference`,`Part Reference`,`Supplier Part Description` FROM   `Supplier Part Dimension` SP LEFT JOIN  `Part Dimension` ON (`Supplier Part Part SKU`=`Part SKU`) WHERE %s `Part Reference` LIKE '%s%%'  ORDER BY `Part Reference` LIMIT %d ",
             $where, $q, $max_results
         );
 
@@ -1272,7 +1258,7 @@ function find_supplier_parts($db, $account, $memcache_ip, $data) {
                     'Supplier Part Historic Key' => $row['Supplier Part Historic Key'],
                     'Supplier Part Reference'    => $row['Supplier Part Reference'],
                     'Part Reference'             => $row['Part Reference'],
-                    'Part Unit Description'      => $row['Part Unit Description']
+                    'Supplier Part Description'  => $row['Supplier Part Description']
                 );
 
             }
@@ -1303,7 +1289,7 @@ function find_supplier_parts($db, $account, $memcache_ip, $data) {
         foreach ($candidates as $supplier_part_key => $candidate) {
 
 
-            $description = $candidates_data[$supplier_part_key]['Part Unit Description'];
+            $description = $candidates_data[$supplier_part_key]['Supplier Part Description'];
             if ($candidates_data[$supplier_part_key]['Part Reference'] != $candidates_data[$supplier_part_key]['Supplier Part Reference']) {
                 $description .= ' ('.highlightkeyword(
                         $candidates_data[$supplier_part_key]['Part Reference'], $q
@@ -1857,8 +1843,7 @@ function number_orders_in_process($db, $data) {
     $orders_list              = '';
     $msg                      = '';
     $sql                      = sprintf(
-        "SELECT `Purchase Order Key`,`Purchase Order Public ID`,`Purchase Order Store Key`  FROM `Purchase Order Dimension` WHERE `Purchase Order Customer Key`=%d AND `Purchase Order Current Dispatch State`='In Process'",
-        $data['customer_key']
+        "SELECT `Purchase Order Key`,`Purchase Order Public ID`,`Purchase Order Store Key`  FROM `Purchase Order Dimension` WHERE `Purchase Order Customer Key`=%d AND `Purchase Order Current Dispatch State`='In Process'", $data['customer_key']
     );
 
 
@@ -1960,8 +1945,8 @@ function new_purchase_order_options($db, $data) {
     $warehouse_options        = array();
     $warehouse_key            = false;
     $sql                      = sprintf(
-        "SELECT `Purchase Order Key`,`Purchase Order Public ID`,`Purchase Order Warehouse Key` FROM `Purchase Order Dimension` WHERE `Purchase Order Parent`=%s AND `Purchase Order Parent Key`=%d AND `Purchase Order State`='In Process'",
-        prepare_mysql($data['parent']), $data['parent_key']
+        "SELECT `Purchase Order Key`,`Purchase Order Public ID`,`Purchase Order Warehouse Key` FROM `Purchase Order Dimension` WHERE `Purchase Order Parent`=%s AND `Purchase Order Parent Key`=%d AND `Purchase Order State`='In Process'", prepare_mysql($data['parent']),
+        $data['parent_key']
     );
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
@@ -2117,7 +2102,7 @@ function find_webpages($db, $account, $memcache_ip, $data) {
         );
 
 
-     //   print $sql;
+        //   print $sql;
 
 
         if ($result = $db->query($sql)) {
@@ -2134,7 +2119,7 @@ function find_webpages($db, $account, $memcache_ip, $data) {
                 }
 
                 $candidates_data[$row['Page Key']] = array(
-                    'Webpage Code'    => $row['Webpage Code'],
+                    'Webpage Code' => $row['Webpage Code'],
                     'Webpage Name' => $row['Webpage Name']
                 );
 
@@ -3083,13 +3068,13 @@ function find_part($db, $account, $memcache_ip, $data) {
             if ($row = $result->fetch()) {
 
 
-                $part=get_object('Part',$row['Part SKU']);
+                $part = get_object('Part', $row['Part SKU']);
 
                 $object_data = array(
-                    'key' => $row['Part SKU'],
-                    'reference' => $row['Part Reference'],
+                    'key'         => $row['Part SKU'],
+                    'reference'   => $row['Part Reference'],
                     'description' => $row['Part Package Description'],
-                    'image'=>$part->get('Package Description Image')
+                    'image'       => $part->get('Package Description Image')
 
                 );
 
@@ -3132,8 +3117,8 @@ function find_part($db, $account, $memcache_ip, $data) {
                 }
 
                 $candidates_data[$row['Part SKU']] = array(
-                    'Part Reference'        => $row['Part Reference'],
-                    'Part Unit Description' => $row['Part Unit Description']
+                    'Part Reference'           => $row['Part Reference'],
+                    'Part Package Description' => $row['Part Package Description']
                 );
 
             }
@@ -3165,7 +3150,7 @@ function find_part($db, $account, $memcache_ip, $data) {
 
             $results[$part_sku] = array(
                 'code'            => $candidates_data[$part_sku]['Part Reference'],
-                'description'     => $candidates_data[$part_sku]['Part Unit Description'],
+                'description'     => $candidates_data[$part_sku]['Part Package Description'],
                 'value'           => $part_sku,
                 'formatted_value' => $candidates_data[$part_sku]['Part Reference']
             );
@@ -3236,11 +3221,6 @@ function find_location($db, $account, $memcache_ip, $data) {
     if (!$results_data or true) {
 
 
-        $candidates = array();
-
-        $candidates_data = array();
-
-
         switch ($data['field']) {
             case 'code':
                 $sql = sprintf(
@@ -3267,7 +3247,7 @@ function find_location($db, $account, $memcache_ip, $data) {
 
                 $object_data = array(
                     'code' => $row['Location Code'],
-                    'key' => $row['Location Key'],
+                    'key'  => $row['Location Key'],
 
                 );
 
@@ -3296,78 +3276,8 @@ function find_location($db, $account, $memcache_ip, $data) {
         }
 
 
-        if ($result = $db->query($sql)) {
-            foreach ($result as $row) {
-
-                if ($row['Part Reference'] == $q) {
-                    $candidates[$row['Part SKU']] = 1000;
-                } else {
-
-                    $len_name                     = strlen($row['Part SKU']);
-                    $len_q                        = strlen($q);
-                    $factor                       = $len_q / $len_name;
-                    $candidates[$row['Part SKU']] = 500 * $factor;
-                }
-
-                $candidates_data[$row['Part SKU']] = array(
-                    'Part Reference'        => $row['Part Reference'],
-                    'Part Unit Description' => $row['Part Unit Description']
-                );
-
-            }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            exit;
-        }
-
-
-        arsort($candidates);
-
-
-        $total_candidates = count($candidates);
-
-        if ($total_candidates == 0) {
-            $response = array(
-                'state'   => 200,
-                'results' => 0,
-                'data'    => ''
-            );
-            echo json_encode($response);
-
-            return;
-        }
-
-
-        $results = array();
-        foreach ($candidates as $part_sku => $candidate) {
-
-            $results[$part_sku] = array(
-                'code'            => $candidates_data[$part_sku]['Part Reference'],
-                'description'     => $candidates_data[$part_sku]['Part Unit Description'],
-                'value'           => $part_sku,
-                'formatted_value' => $candidates_data[$part_sku]['Part Reference']
-            );
-
-        }
-
-        $results_data = array(
-            'n' => count($results),
-            'd' => $results
-        );
-        $cache->set($memcache_fingerprint, $results_data, $memcache_time);
-
-
     }
-    $response = array(
-        'state'          => 200,
-        'number_results' => $results_data['n'],
-        'results'        => $results_data['d'],
-        'q'              => $q
-    );
-
-    echo json_encode($response);
-
 }
 
 
-?>
+    ?>

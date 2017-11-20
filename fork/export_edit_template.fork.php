@@ -396,9 +396,7 @@ function fork_export_edit_template($job) {
                                                 $value = $skos_per_outer.'x '.$object->get('Reference');
                                                 break;
                                             case 'Product Name':
-                                                $value = $object->get(
-                                                    'Part Unit Description'
-                                                );
+                                                $value = $object->get('Part Recommended Product Unit Name');
                                                 break;
                                             case 'Product Family Category Code':
                                                 $value = $family->get('Code');

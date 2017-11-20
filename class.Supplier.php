@@ -680,10 +680,6 @@ class Supplier extends SubjectSupplier {
         }
 
 
-        if (isset($data['Supplier Part Unit Description']) and !isset($data['Part Unit Description'])) {
-            $data['Part Unit Description'] = $data['Supplier Part Unit Description'];
-            unset($data['Supplier Part Unit Description']);
-        }
 
         if (isset($data['Supplier Part Unit Label']) and !isset($data['Part Unit Label'])) {
             $data['Part Unit Label'] = $data['Supplier Part Unit Label'];
@@ -695,6 +691,15 @@ class Supplier extends SubjectSupplier {
             $this->error      = true;
             $this->msg        = _("Supplier's part reference missing");
             $this->error_code = 'supplier_part_reference_missing';
+            $this->metadata   = '';
+
+            return;
+        }
+
+        if (!isset($data['Supplier Part Description']) or $data['Supplier Part Description'] == '') {
+            $this->error      = true;
+            $this->msg        = _("Supplier's part unit description missing");
+            $this->error_code = 'supplier_part_unt_description_missing';
             $this->metadata   = '';
 
             return;
@@ -729,6 +734,15 @@ class Supplier extends SubjectSupplier {
             $this->error      = true;
             $this->msg        = _("Part reference missing");
             $this->error_code = 'part_reference_missing';
+            $this->metadata   = '';
+
+            return;
+        }
+
+        if (empty($data['Part Recommended Product Unit Name'])) {
+            $this->error      = true;
+            $this->msg        = _("Unit recommended description (for website) missing");
+            $this->error_code = 'part_recommended_unit_name_missing';
             $this->metadata   = '';
 
             return;
@@ -881,15 +895,8 @@ class Supplier extends SubjectSupplier {
             return;
         }
 
-        if (!isset($data['Part Unit Description']) or $data['Part Unit Description'] == '') {
 
 
-            $this->error      = true;
-            $this->msg        = _('Unit description missing');
-            $this->error_code = 'part_unit_description_missing';
-
-            return;
-        }
 
         if (!isset($data['Part Package Description']) or $data['Part Package Description'] == '') {
 

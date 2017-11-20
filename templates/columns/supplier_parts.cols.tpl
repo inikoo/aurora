@@ -38,7 +38,7 @@ className: "width_20"
 
 {
 name: "reference",
-label: "{t}Reference{/t}",
+label: "{t}Supplier's code{/t}",
 editable: false,
 sortType: "toggle",
 
@@ -50,7 +50,7 @@ cell: Backgrid.HtmlCell.extend({
 
  {
 name: "description",
-label: "{t}Unit description{/t}",
+label: "{t}Supplier's unit description{/t}",
 editable: false,
 sortType: "toggle",
 

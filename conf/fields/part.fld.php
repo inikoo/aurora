@@ -182,22 +182,6 @@ $part_fields[] = array(
         ),
 
 
-        array(
-            'id'     => 'Part_Unit_Description',
-            //'class'=>($supplier_part_scope?'hide':''),
-            'render' => ($supplier_part_scope ? false : true),
-            'edit'   => (($edit and !$supplier_part_scope) ? 'string' : ''),
-
-            'value'           => htmlspecialchars(
-                $object->get('Part Unit Description')
-            ),
-            'formatted_value' => $object->get('Unit Description'),
-            'label'           => ucfirst($object->get_field_label('Part Unit Description')),
-            'required'        => true,
-            'type'            => 'value'
-
-
-        ),
 
         array(
             'id'     => 'Part_Unit_Label',
@@ -274,6 +258,17 @@ $part_fields[] = array(
             ),
             'type'            => 'value'
         ),
+        array(
+            'id'   => 'Part_Recommended_Product_Unit_Name',
+            'edit' => ($edit ? 'string' : ''),
+            'render' => ($supplier_part_scope ? false : true),
+
+            'value'           => htmlspecialchars($object->get('Part Recommended Product Unit Name')),
+            'formatted_value' => $object->get('Recommended Product Unit Name'),
+            'label'           => ucfirst($object->get_field_label('Part Recommended Product Unit Name')).' ('._('website').')',
+            'required'        => true,
+            'type'            => 'value'
+        ),
 
 
     )
@@ -331,14 +326,11 @@ $part_fields[] = array(
         array(
             'id'   => 'Part_SKO_Barcode',
             'edit' => ($edit ? 'string' : ''),
+            'render' => (($new and $supplier_part_scope ) ? false : true),
 
-            'value'             => htmlspecialchars(
-                $object->get('Part SKO Barcode')
-            ),
+            'value'             => htmlspecialchars($object->get('Part SKO Barcode')),
             'formatted_value'   => $object->get('SKO Barcode'),
-            'label'             => ucfirst(
-                $object->get_field_label('SKO Barcode').' ('._('Stock control').')'
-            ),
+            'label'             => ucfirst($object->get_field_label('SKO Barcode').' ('._('stock control').')'),
             'required'          => false,
             'server_validation' => json_encode(
                 array(
@@ -362,7 +354,7 @@ $part_fields[] = array(
             ),
             'formatted_value' => $object->get('Package Description'),
             'label'           => ucfirst(
-                $object->get_field_label('Part Package Description')
+                $object->get_field_label('Part Package Description').' ('._('for picking aid').')'
             ),
             'required'        => true,
             'type'            => 'value'
