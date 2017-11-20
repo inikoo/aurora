@@ -3511,7 +3511,7 @@ class Part extends Asset {
                         );
 
 
-                        $smarty->assign('data', $_data);
+                        $smarty->assign('data', $data);
 
 
                         $this->update_metadata = array('parts_with_no_sko_barcode' => $smarty->fetch('dashboard/inventory.parts_with_no_sko_barcode.dbard.tpl'));
