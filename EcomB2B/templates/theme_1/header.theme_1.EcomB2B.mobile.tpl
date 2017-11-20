@@ -108,6 +108,7 @@
             {if $logged_in}
                 <a class="default-link" href="basket.sys"><i class="icon-bg bg-orange-dark  ion-ios-cart"></i><span>{t}Basket{/t}</span><i class="ion-record"></i></a>
                 <a class="default-link" href="profile.sys"><i class="icon-bg bg-orange-dark  ion-person"></i><span>{t}Profile{/t}</span><i class="ion-record"></i></a>
+                <a class="default-link" href="favourites.sys"><i class="icon-bg bg-orange-dark  ion-heart"></i><span>{t}Favourites{/t}</span><i class="ion-record"></i></a>
 
             {else}
 

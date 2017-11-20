@@ -401,10 +401,10 @@ class Part extends Asset {
                 }
                 $suppliers = preg_replace('/\, $/', '', $suppliers);
 
-                if($this->data['Part SKOs per Carton']==''){
+                if ($this->data['Part SKOs per Carton'] == '') {
                     return '<span class="error">'._('Not set')."</span> <span class='italic very_discreet'>(".$suppliers.')</span>';
 
-                }else{
+                } else {
                     return number($this->data['Part SKOs per Carton'])." <span class='italic very_discreet'>(".$suppliers.')</span>';
 
                 }
@@ -1525,7 +1525,7 @@ class Part extends Asset {
 
         // todo find a way do it more efficient in aw
         global $account;
-        if($account->get('Code')=='AWEU'){
+        if ($account->get('Code') == 'AWEU') {
             $this->update_stock_run();
         }
 
@@ -2450,9 +2450,7 @@ class Part extends Asset {
             case 'Part Reference':
                 $label = _('reference');
                 break;
-            case 'Part Unit Description':
-                $label = _('unit description');
-                break;
+
             case 'Part Unit Label':
                 $label = _('unit label');
                 break;
@@ -2533,7 +2531,10 @@ class Part extends Asset {
             case 'Part SKOs per Carton':
                 $label = _('SKOs per selling carton');
                 break;
+            case 'Part Recommended Product Unit Name':
+                $label = _('Unit recommended description');
                 break;
+
             default:
                 $label = $field;
 
@@ -2928,20 +2929,7 @@ class Part extends Asset {
 
                 break;
 
-            case 'Part Unit Description':
 
-
-                if ($value == '') {
-                    $this->error = true;
-                    $this->msg   = _('Unit description missing');
-
-                    return;
-                }
-
-                $this->update_field($field, $value, $options);
-
-
-                break;
             case 'Part Package Description':
                 if ($value == '') {
                     $this->error = true;

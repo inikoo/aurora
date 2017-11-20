@@ -14,7 +14,7 @@ $table
        = "`Supplier Part Dimension` SP  left join `Part Dimension` P on (P.`Part SKU`=SP.`Supplier Part Part SKU`) left join `Supplier Dimension` S on (SP.`Supplier Part Supplier Key`=S.`Supplier Key`)  ";
 
 $fields
-    = '`Part Status`,`Supplier Code`,`Supplier Part Unit Extra Cost`,`Supplier Part Key`,`Supplier Part Part SKU`,`Part Reference`,`Part Unit Description`,`Supplier Part Supplier Key`,`Supplier Part Reference`,`Supplier Part Status`,`Supplier Part From`,`Supplier Part To`,`Supplier Part Unit Cost`,`Supplier Part Currency Code`,`Part Units Per Package`,`Supplier Part Packages Per Carton`,`Supplier Part Carton CBM`,`Supplier Part Minimum Carton Order`,
+    = '`Part Status`,`Supplier Code`,`Supplier Part Unit Extra Cost`,`Supplier Part Key`,`Supplier Part Part SKU`,`Part Reference`,`Supplier Part Description`,`Supplier Part Supplier Key`,`Supplier Part Reference`,`Supplier Part Status`,`Supplier Part From`,`Supplier Part To`,`Supplier Part Unit Cost`,`Supplier Part Currency Code`,`Part Units Per Package`,`Supplier Part Packages Per Carton`,`Supplier Part Carton CBM`,`Supplier Part Minimum Carton Order`,
 `Part Current Stock`,`Part Stock Status`,`Part Status`
 ';
 
@@ -84,20 +84,10 @@ if (isset($parameters['elements_type'])) {
     }
 }
 
-if ($parameters['f_field'] == 'used_in' and $f_value != '') {
-    $wheref .= " and  `Part XHTML Currently Used In` like '%".addslashes(
-            $f_value
-        )."%'";
-} elseif ($parameters['f_field'] == 'reference' and $f_value != '') {
+if ($parameters['f_field'] == 'reference' and $f_value != '') {
     $wheref .= " and  `Part Reference` like '".addslashes($f_value)."%'";
-} elseif ($parameters['f_field'] == 'supplied_by' and $f_value != '') {
-    $wheref .= " and  `Part XHTML Currently Supplied By` like '%".addslashes(
-            $f_value
-        )."%'";
-} elseif ($parameters['f_field'] == 'sku' and $f_value != '') {
-    $wheref .= " and  `Part SKU` ='".addslashes($f_value)."'";
 } elseif ($parameters['f_field'] == 'description' and $f_value != '') {
-    $wheref .= " and  `Part Unit Description` like '".addslashes($f_value)."%'";
+    $wheref .= " and  `Supplier Part Description` like '".addslashes($f_value)."%'";
 }
 
 $_order = $order;

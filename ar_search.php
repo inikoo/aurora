@@ -514,12 +514,12 @@ function search_suppliers($db, $account, $memcache_ip, $data) {
 
 
             $sql = sprintf(
-                "SELECT `Supplier Part Key`,`Part Unit Description` FROM `Supplier Part Dimension` LEFT JOIN   `Part Dimension`  ON (`Supplier Part Part SKU`=`Part SKU`)  WHERE `Part Unit Description`  REGEXP '[[:<:]]%s' LIMIT 100 ", $q
+                "SELECT `Supplier Part Key`,`Supplier Part Description` FROM `Supplier Part Dimension`   WHERE `Supplier Part Description`  REGEXP '[[:<:]]%s' LIMIT 100 ", $q
             );
 
             if ($result = $db->query($sql)) {
                 foreach ($result as $row) {
-                    if ($row['Part Unit Description'] == $q) {
+                    if ($row['Supplier Part Description'] == $q) {
 
                         if (isset($candidates['P'.$row['Supplier Part Key']])) {
                             $candidates['P'.$row['Supplier Part Key']] += 55;
@@ -531,7 +531,7 @@ function search_suppliers($db, $account, $memcache_ip, $data) {
 
                     } else {
 
-                        $len_name = strlen($row['Part Unit Description']);
+                        $len_name = strlen($row['Supplier Part Description']);
                         $len_q    = strlen($q);
                         $factor   = $len_q / $len_name;
 
@@ -686,7 +686,7 @@ function search_suppliers($db, $account, $memcache_ip, $data) {
 
         if ($number_supplier_parts_keys) {
             $sql = sprintf(
-                "SELECT `Supplier Part Key`,`Supplier Part Supplier Key`,`Supplier Part Reference`,`Part Unit Description` FROM `Supplier Part Dimension` LEFT JOIN   `Part Dimension`  ON (`Supplier Part Part SKU`=`Part SKU`)   WHERE `Supplier Part Key` IN (%s)",
+                "SELECT `Supplier Part Key`,`Supplier Part Supplier Key`,`Supplier Part Reference`,`Supplier Part Description` FROM `Supplier Part Dimension`    WHERE `Supplier Part Key` IN (%s)",
                 $supplier_parts_keys
             );
 
@@ -698,9 +698,7 @@ function search_suppliers($db, $account, $memcache_ip, $data) {
                         'label'   => '<i class="fa fa-stop fa-fw "></i> '.highlightkeyword(
                                 sprintf('%s', $row['Supplier Part Reference']), $queries
                             ),
-                        'details' => highlightkeyword(
-                            $row['Part Unit Description'], $queries
-                        ),
+                        'details' => highlightkeyword($row['Supplier Part Description'], $queries),
                         'view'    => sprintf(
                             'supplier/%d/part/%d', $row['Supplier Part Supplier Key'], $row['Supplier Part Key']
                         )
@@ -898,7 +896,7 @@ function search_inventory($db, $account, $memcache_ip, $data) {
 
 
             $sql = sprintf(
-                "SELECT `Part SKU`,`Part Reference`,`Part Unit Description`,`Part Status` FROM `Part Dimension` WHERE `Part Reference` LIKE '%s%%' LIMIT 20 ", $q
+                "SELECT `Part SKU`,`Part Reference`,`Part Status` FROM `Part Dimension` WHERE `Part Reference` LIKE '%s%%' LIMIT 20 ", $q
             );
 
 
@@ -932,12 +930,12 @@ function search_inventory($db, $account, $memcache_ip, $data) {
 
 
             $sql = sprintf(
-                "SELECT `Part SKU`,`Part Reference`,`Part Unit Description`,`Part Status` FROM `Part Dimension` WHERE `Part Unit Description`  REGEXP '[[:<:]]%s' LIMIT 100 ", $q
+                "SELECT `Part SKU`,`Part Reference`,`Part Package Description`,`Part Status` FROM `Part Dimension` WHERE `Part Package Description`  REGEXP '[[:<:]]%s' LIMIT 100 ", $q
             );
 
             if ($result = $db->query($sql)) {
                 foreach ($result as $row) {
-                    if ($row['Part Unit Description'] == $q) {
+                    if ($row['Part Package Description'] == $q) {
                         if ($row['Part Status'] == 'In Use') {
 
                             if (isset($candidates['P'.$row['Part SKU']])) {
@@ -961,7 +959,7 @@ function search_inventory($db, $account, $memcache_ip, $data) {
                         }
                     } else {
 
-                        $len_name = strlen($row['Part Unit Description']);
+                        $len_name = strlen($row['Part Package Description']);
                         $len_q    = strlen($q);
                         $factor   = $len_q / $len_name;
                         if ($row['Part Status'] == 'In Use') {
@@ -1112,7 +1110,7 @@ function search_inventory($db, $account, $memcache_ip, $data) {
 
         if ($number_parts_keys) {
             $sql = sprintf(
-                "SELECT P.`Part SKU`,`Part Reference`,`Part Unit Description`,`Part Status` FROM `Part Dimension` P  WHERE P.`Part SKU` IN (%s)", $part_keys
+                "SELECT P.`Part SKU`,`Part Reference`,`Part Package Description`,`Part Status` FROM `Part Dimension` P  WHERE P.`Part SKU` IN (%s)", $part_keys
             );
 
             if ($result = $db->query($sql)) {
@@ -1130,7 +1128,7 @@ function search_inventory($db, $account, $memcache_ip, $data) {
 
                     $results['P'.$row['Part SKU']] = array(
                         'label'   => $status.highlightkeyword(sprintf('%s', $row['Part Reference']), $queries),
-                        'details' => highlightkeyword($row['Part Unit Description'], $queries),
+                        'details' => highlightkeyword($row['Part Package Description'], $queries),
                         'view'    => sprintf('part/%d', $row['Part SKU'])
 
 
@@ -3214,18 +3212,18 @@ function agent_search($db, $account, $user, $memcache_ip, $data) {
 
 
             $sql = sprintf(
-                "SELECT `Supplier Part Key`,`Part Unit Description` FROM `Supplier Part Dimension`  LEFT JOIN `Agent Supplier Bridge` ON (`Supplier Part Supplier Key`=`Agent Supplier Supplier Key`) LEFT JOIN   `Part Dimension`  ON (`Supplier Part Part SKU`=`Part SKU`)  WHERE `Agent Supplier Agent Key`=%d  AND  `Part Unit Description`  REGEXP '[[:<:]]%s' LIMIT 100 ",
+                "SELECT `Supplier Part Key`,`Supplier Part Description` FROM `Supplier Part Dimension`  LEFT JOIN `Agent Supplier Bridge` ON (`Supplier Part Supplier Key`=`Agent Supplier Supplier Key`)   WHERE `Agent Supplier Agent Key`=%d  AND  `Supplier Part Description`  REGEXP '[[:<:]]%s' LIMIT 100 ",
                 $agent_key, $q
             );
 
             if ($result = $db->query($sql)) {
                 foreach ($result as $row) {
-                    if ($row['Part Unit Description'] == $q) {
+                    if ($row['Supplier Part Description'] == $q) {
                         $candidates['P'.$row['Supplier Part Key']] = 55;
                     } else {
 
                         $len_name                                  = strlen(
-                            $row['Part Unit Description']
+                            $row['Supplier Part Description']
                         );
                         $len_q                                     = strlen($q);
                         $factor                                    = $len_q / $len_name;
@@ -3302,7 +3300,7 @@ function agent_search($db, $account, $user, $memcache_ip, $data) {
 
         if ($number_supplier_parts_keys) {
             $sql = sprintf(
-                "SELECT `Supplier Part Key`,`Supplier Part Supplier Key`,`Supplier Part Reference`,`Part Unit Description` FROM `Supplier Part Dimension` LEFT JOIN   `Part Dimension`  ON (`Supplier Part Part SKU`=`Part SKU`)   WHERE `Supplier Part Key` IN (%s)",
+                "SELECT `Supplier Part Key`,`Supplier Part Supplier Key`,`Supplier Part Reference`,`Supplier Part Description` FROM `Supplier Part Dimension`  WHERE `Supplier Part Key` IN (%s)",
                 $supplier_parts_keys
             );
 
@@ -3315,7 +3313,7 @@ function agent_search($db, $account, $user, $memcache_ip, $data) {
                                 sprintf('%s', $row['Supplier Part Reference']), $queries
                             ),
                         'details' => highlightkeyword(
-                            $row['Part Unit Description'], $queries
+                            $row['Supplier Part Description'], $queries
                         ),
                         'view'    => sprintf(
                             'supplier/%d/part/%d', $row['Supplier Part Supplier Key'], $row['Supplier Part Key']

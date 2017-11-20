@@ -38,6 +38,49 @@ if ($webpage->id) {
         $content         = $offline_webpage->get('Content Data');
         $template        = $theme.'/offline.'.$theme.'.'.$website->get('Website Type').$template_suffix.'.tpl';
 
+    } elseif ($webpage->get('Webpage Template Filename') == 'Favourites') {
+        if (!$logged_in) {
+            header('Location: /index.php');
+            exit;
+        }
+
+
+        $favourite_products = array();
+
+        $sql = sprintf(
+            "SELECT `Customer Favourite Product Key`,`Customer Favourite Product Product ID`  FROM `Customer Favourite Product Fact` B  LEFT JOIN `Product Dimension` P ON (`Customer Favourite Product Product ID`=P.`Product ID`)  WHERE  `Customer Favourite Product Customer Key`=%d  AND `Product Web State` IN  ('For Sale','Out of Stock')   ORDER BY `Product Code`",
+            $customer->id
+        );
+
+
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
+
+
+                $favourite_products[] = array(
+                    'header_text' => '',
+                    'object'      => get_object('Product',$row['Customer Favourite Product Product ID']),
+                    'index_key'   => $row['Customer Favourite Product Key'],
+
+
+                );
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+
+      //  print_r($favourite_products);
+
+        $smarty->assign('products', $favourite_products);
+
+
+
+        $template = $theme.'/favourites.'.$theme.'.'.$website->get('Website Type').$template_suffix.'.tpl';
+
     } elseif ($webpage->get('Webpage Template Filename') == 'register') {
 
         if ($logged_in) {
@@ -90,18 +133,17 @@ if ($webpage->id) {
 
         }
 
-        if(!empty($_REQUEST['ref'])){
-            if($_REQUEST['ref']=='basket'){
-                $redirect='basket.sys';
-            }elseif($_REQUEST['ref']=='profile'){
-                $redirect='profile.sys';
+        if (!empty($_REQUEST['ref'])) {
+            if ($_REQUEST['ref'] == 'basket') {
+                $redirect = 'basket.sys';
+            } elseif ($_REQUEST['ref'] == 'profile') {
+                $redirect = 'profile.sys';
 
             }
 
         }
 
         $smarty->assign('redirect', $redirect);
-
 
 
         if ($logged_in) {
@@ -518,7 +560,7 @@ if ($webpage->id) {
                 '[Order Amount]'  => $placed_order->get('To Pay'),
                 '[Pay Info]'      => get_pay_info($placed_order, $website, $smarty),
                 '[Order]'         => $smarty->fetch($theme.'/placed_order.'.$theme.'.EcomB2B.tpl'),
-                '#order_number'=>$placed_order->get('Public ID')
+                '#order_number'   => $placed_order->get('Public ID')
 
 
             );
@@ -551,7 +593,6 @@ if ($webpage->id) {
                 header('Location: /login.sys?ref=basket');
                 exit;
             }
-
 
 
             if (isset($order) and $order->id) {

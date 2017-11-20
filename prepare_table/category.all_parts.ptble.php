@@ -80,20 +80,10 @@ if (in_array(
         = "`Part $db_period Acc 1YB Sold` as sold_1y,`Part $db_period Acc 1YB Sold Amount` as revenue_1y";
 }
 
-if ($parameters['f_field'] == 'used_in' and $f_value != '') {
-    $wheref .= " and  `Part XHTML Currently Used In` like '%".addslashes(
-            $f_value
-        )."%'";
-} elseif ($parameters['f_field'] == 'reference' and $f_value != '') {
+if ($parameters['f_field'] == 'reference' and $f_value != '') {
     $wheref .= " and  `Part Reference` like '".addslashes($f_value)."%'";
-} elseif ($parameters['f_field'] == 'supplied_by' and $f_value != '') {
-    $wheref .= " and  `Part XHTML Currently Supplied By` like '%".addslashes(
-            $f_value
-        )."%'";
-} elseif ($parameters['f_field'] == 'sku' and $f_value != '') {
-    $wheref .= " and  `Part SKU` ='".addslashes($f_value)."'";
 } elseif ($parameters['f_field'] == 'description' and $f_value != '') {
-    $wheref .= " and  `Part Unit Description` like '".addslashes($f_value)."%'";
+    $wheref .= " and  `Part Package Description` like '".addslashes($f_value)."%'";
 }
 
 $_order = $order;
@@ -107,8 +97,8 @@ if ($order == 'id') {
     $order = '`Part Stock Status`';
 } elseif ($order == 'reference') {
     $order = '`Part Reference`';
-} elseif ($order == 'unit_description') {
-    $order = '`Part Unit Description`';
+} elseif ($order == 'description') {
+    $order = '`Part Package Description`';
 } elseif ($order == 'available_for') {
     $order = '`Part Days Available Forecast`';
 
@@ -139,7 +129,7 @@ $fields
     .= "$associated_field `Category Code`,
 
 
-P.`Part SKU`,`Part Reference`,`Part Unit Description`,`Part Current Stock`,`Part Stock Status`,`Part Days Available Forecast`,
+P.`Part SKU`,`Part Reference`,`Part Package Description`,`Part Current Stock`,`Part Stock Status`,`Part Days Available Forecast`,
 `Part $db_period Acc Sold` as sold,
 
 

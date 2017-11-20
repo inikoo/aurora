@@ -10,14 +10,10 @@
 */
 
 
-
-
 $where = "where true  ";
-$table
-       = "`Supplier Part Dimension` SP  left join `Part Dimension` P on (P.`Part SKU`=SP.`Supplier Part Part SKU`) left join `Supplier Dimension` S on (SP.`Supplier Part Supplier Key`=S.`Supplier Key`)  ";
+$table = "`Supplier Part Dimension` SP  left join `Part Dimension` P on (P.`Part SKU`=SP.`Supplier Part Part SKU`) left join `Supplier Dimension` S on (SP.`Supplier Part Supplier Key`=S.`Supplier Key`)  ";
 
-$fields
-    = '`Part Status`,`Supplier Code`,`Supplier Part Unit Extra Cost`,`Supplier Part Key`,`Supplier Part Part SKU`,`Part Reference`,`Part Unit Description`,`Supplier Part Supplier Key`,`Supplier Part Reference`,`Supplier Part Status`,`Supplier Part From`,`Supplier Part To`,`Supplier Part Unit Cost`,`Supplier Part Currency Code`,`Part Units Per Package`,`Supplier Part Packages Per Carton`,`Supplier Part Carton CBM`,`Supplier Part Minimum Carton Order`,
+$fields = '`Part Status`,`Supplier Code`,`Supplier Part Unit Extra Cost`,`Supplier Part Key`,`Supplier Part Part SKU`,`Part Reference`,`Supplier Part Description`,`Supplier Part Supplier Key`,`Supplier Part Reference`,`Supplier Part Status`,`Supplier Part From`,`Supplier Part To`,`Supplier Part Unit Cost`,`Supplier Part Currency Code`,`Part Units Per Package`,`Supplier Part Packages Per Carton`,`Supplier Part Carton CBM`,`Supplier Part Minimum Carton Order`,
 `Part Current Stock`,`Part Stock Status`,`Part Status`,`Part Barcode Number`,`Part SKO Barcode`
 ';
 
@@ -95,8 +91,7 @@ if (isset($parameters['elements_type'])) {
         case 'part_status':
             $_elements      = '';
             $count_elements = 0;
-            foreach ($parameters['elements'][$parameters['elements_type']]['items'] as $_key => $_value
-            ) {
+            foreach ($parameters['elements'][$parameters['elements_type']]['items'] as $_key => $_value) {
                 if ($_value['selected']) {
                     $count_elements++;
 
@@ -104,10 +99,9 @@ if (isset($parameters['elements_type'])) {
                         $_key = "In Use";
                     } elseif ($_key == "NotInUse") {
                         $_key = "Not In Use";
-                    }elseif ($_key == 'InProcess') {
+                    } elseif ($_key == 'InProcess') {
                         $_key = "In Process";
                     }
-
 
 
                     $_elements .= ','.prepare_mysql($_key);
@@ -117,10 +111,9 @@ if (isset($parameters['elements_type'])) {
             $_elements = preg_replace('/^\,/', '', $_elements);
             if ($_elements == '') {
                 $where .= ' and false';
-            } elseif ($count_elements <4) {
+            } elseif ($count_elements < 4) {
 
                 $where .= ' and `Part Status` in ('.$_elements.')';
-
 
 
             }
@@ -130,20 +123,10 @@ if (isset($parameters['elements_type'])) {
     }
 }
 
-if ($parameters['f_field'] == 'used_in' and $f_value != '') {
-    $wheref .= " and  `Part XHTML Currently Used In` like '%".addslashes(
-            $f_value
-        )."%'";
-} elseif ($parameters['f_field'] == 'reference' and $f_value != '') {
+if ($parameters['f_field'] == 'reference' and $f_value != '') {
     $wheref .= " and  `Part Reference` like '".addslashes($f_value)."%'";
-} elseif ($parameters['f_field'] == 'supplied_by' and $f_value != '') {
-    $wheref .= " and  `Part XHTML Currently Supplied By` like '%".addslashes(
-            $f_value
-        )."%'";
-} elseif ($parameters['f_field'] == 'sku' and $f_value != '') {
-    $wheref .= " and  `Part SKU` ='".addslashes($f_value)."'";
 } elseif ($parameters['f_field'] == 'description' and $f_value != '') {
-    $wheref .= " and  `Part Unit Description` like '".addslashes($f_value)."%'";
+    $wheref .= " and  `Supplier Part Description` like '".addslashes($f_value)."%'";
 }
 
 $_order = $order;
@@ -153,6 +136,8 @@ if ($order == 'part_description') {
     $order = '`Part Reference`';
 } elseif ($order == 'reference') {
     $order = '`Supplier Part Reference`';
+} elseif ($order == 'description') {
+    $order = '`Supplier Part Description`';
 } elseif ($order == 'cost') {
     $order = '`Supplier Part Unit Cost`';
 } elseif ($order == 'delivered_cost') {
@@ -167,8 +152,7 @@ if ($order == 'part_description') {
 }
 
 
-$sql_totals
-    = "select count(Distinct SP.`Supplier Part Key`) as num from $table  $where  ";
+$sql_totals = "select count(Distinct SP.`Supplier Part Key`) as num from $table  $where  ";
 
 
 //print $sql_totals;

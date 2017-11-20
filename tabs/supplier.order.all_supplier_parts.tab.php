@@ -17,18 +17,15 @@ $tipo    = 'order.supplier_parts';
 $default = $user->get_tab_defaults($tab);
 
 
+
+
 $table_views = array(
-    'overview' => array(
-        'label' => _('Overview'),
-        'title' => _('Overview')
-    ),
-    'parts'    => array(
-        'label' => _('Inventory Part'),
-        'title' => _('Part details')
-    ),
-    'reorder'  => array('label' => _('Reorder')),
+    'overview' => array('label' => _('Ordering cartons'),),
+    'sales'    => array('label' => _('Ordering cartons (show sales)'),),
+    // 'unit' => array('label' => _('Unit'),),
 
 );
+
 
 $table_filters = array(
     'reference' => array(

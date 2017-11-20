@@ -1270,6 +1270,25 @@ $modules = array(
         'parent_type' => 'key',
         'sections'    => array(
 
+
+            'credits' => array(
+                'type'      => 'navigation',
+                'label'     => _(
+                    'Credits Vault'
+                ),
+                'icon'      => 'university',
+                'reference' => 'payment_service_providers',
+                'tabs'      => array(
+                    'payment_service_providers' => array(
+                        'label' => _(
+                            'Payment Service Providers'
+                        ),
+                        'icon'  => 'university'
+                    ),
+                )
+            ),
+
+
             'payment_service_providers' => array(
                 'type'      => 'navigation',
                 'label'     => _(

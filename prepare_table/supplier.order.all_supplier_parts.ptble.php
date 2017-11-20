@@ -17,14 +17,14 @@ $table
 
 
 $fields
-    = '`Supplier Part Historic Key`,`Supplier Code`,`Supplier Part Key`,`Supplier Part Part SKU`,`Part Reference`,`Part Unit Description`,`Supplier Part Supplier Key`,`Supplier Part Reference`,`Supplier Part Status`,`Supplier Part From`,`Supplier Part To`,`Supplier Part Unit Cost`,`Supplier Part Currency Code`,`Part Units Per Package`,`Supplier Part Packages Per Carton`,`Supplier Part Carton CBM`,`Supplier Part Minimum Carton Order`,
+    = '`Supplier Part Description`,`Supplier Part Historic Key`,`Supplier Code`,`Supplier Part Key`,`Supplier Part Part SKU`,`Part Reference`,`Supplier Part Description`,`Supplier Part Supplier Key`,`Supplier Part Reference`,`Supplier Part Status`,`Supplier Part From`,`Supplier Part To`,`Supplier Part Unit Cost`,`Supplier Part Currency Code`,`Part Units Per Package`,`Supplier Part Packages Per Carton`,`Supplier Part Carton CBM`,`Supplier Part Minimum Carton Order`,
 `Part Current Stock`,`Part Stock Status`,`Part Status`,`Part Package Weight`,
 `Part 1 Quarter Ago Dispatched`,`Part 2 Quarter Ago Dispatched`,`Part 3 Quarter Ago Dispatched`,`Part 4 Quarter Ago Dispatched`,
 `Part 1 Quarter Ago Invoiced Amount`,`Part 2 Quarter Ago Invoiced Amount`,`Part 3 Quarter Ago Invoiced Amount`,`Part 4 Quarter Ago Invoiced Amount`,
 `Part 1 Quarter Ago 1YB Dispatched`,`Part 2 Quarter Ago 1YB Dispatched`,`Part 3 Quarter Ago 1YB Dispatched`,`Part 4 Quarter Ago 1YB Dispatched`,
 `Part 1 Quarter Ago 1YB Invoiced Amount`,`Part 2 Quarter Ago 1YB Invoiced Amount`,`Part 3 Quarter Ago 1YB Invoiced Amount`,`Part 4 Quarter Ago 1YB Invoiced Amount`,
 `Part Quarter To Day Acc Dispatched`,`Part Stock Status`,`Part Current On Hand Stock`,`Part Reference`,`Part Total Acc Dispatched`,
-`Part Days Available Forecast`,`Part 1 Quarter Acc Dispatched`,`Part Products Web Status`,`Part On Demand`,`Part Fresh`
+`Part Days Available Forecast`,`Part 1 Quarter Acc Dispatched`,`Part Products Web Status`,`Part On Demand`,`Part Fresh`,`Part Package Description`
 
 
 ';
@@ -120,21 +120,15 @@ if (isset($parameters['elements_type'])) {
 
 if ($parameters['f_field'] == 'reference' and $f_value != '') {
     $wheref .= " and  `Part Reference` like '".addslashes($f_value)."%'";
-} elseif ($parameters['f_field'] == 'supplied_by' and $f_value != '') {
-    $wheref .= " and  `Part XHTML Currently Supplied By` like '%".addslashes(
-            $f_value
-        )."%'";
-} elseif ($parameters['f_field'] == 'sku' and $f_value != '') {
-    $wheref .= " and  `Part SKU` ='".addslashes($f_value)."'";
 } elseif ($parameters['f_field'] == 'description' and $f_value != '') {
-    $wheref .= " and  `Part Unit Description` like '".addslashes($f_value)."%'";
+    $wheref .= " and  `Supplier Part Description` like '".addslashes($f_value)."%'";
 }
 
 $_order = $order;
 $_dir   = $order_direction;
 
 if ($order == 'description') {
-    $order = '`Part Unit Description`';
+    $order = '`Supplier Part Description`';
 } elseif ($order == 'reference') {
     $order = '`Supplier Part Reference`';
 } elseif ($order == 'cost') {

@@ -49,7 +49,7 @@ if ($order == 'stock') {
 } elseif ($order == 'reference') {
     $order = '`Part Reference`';
 } elseif ($order == 'description') {
-    $order = '`Part Unit Description`';
+    $order = '`Supplier Part Description`';
 } elseif ($order == 'available_forecast') {
     $order = '`Part Days Available Forecast`';
 } elseif ($order == 'dispatched_per_week') {
@@ -67,7 +67,7 @@ $sql_totals
 
 $fields
     .= "
-`Part Package Description`,`Supplier Part Reference`,`Supplier Part Status`,`Part Stock Status`,`Part Units Per Package`,`Supplier Part Packages Per Carton`,`Supplier Part Unit Cost`,`Part Unit Description`,`Supplier Part Currency Code`,
+`Part Package Description`,`Supplier Part Reference`,`Supplier Part Status`,`Part Stock Status`,`Part Units Per Package`,`Supplier Part Packages Per Carton`,`Supplier Part Unit Cost`,`Supplier Part Description`,`Supplier Part Currency Code`,
 `Supplier Part Minimum Carton Order`,`Supplier Part Key`,`Supplier Part Supplier Key`,`Supplier Part Part SKU`,`Part Reference`,`Part Current Stock`,
 `Part 1 Quarter Ago Dispatched`,`Part 2 Quarter Ago Dispatched`,`Part 3 Quarter Ago Dispatched`,`Part 4 Quarter Ago Dispatched`,
 `Part 1 Quarter Ago Invoiced Amount`,`Part 2 Quarter Ago Invoiced Amount`,`Part 3 Quarter Ago Invoiced Amount`,`Part 4 Quarter Ago Invoiced Amount`,

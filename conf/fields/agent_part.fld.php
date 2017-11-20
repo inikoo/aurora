@@ -194,11 +194,11 @@ $supplier_part_fields[] = array(
         ),
 
         array(
-            'id'   => 'Supplier_Part_Unit_Description',
+            'id'   => 'Supplier_Part_Description',
             'edit' => ($edit ? 'string' : ''),
 
-            'value'           => htmlspecialchars($object->get('Part Part Unit Description')),
-            'formatted_value' => $object->get('Part Unit Description'),
+            'value'           => htmlspecialchars($object->get('Supplier Part Description')),
+            'formatted_value' => $object->get('Supplier Part Description'),
             'label'           =>  _('Unit description'),
             'required'        => true,
             'type'            => 'value'

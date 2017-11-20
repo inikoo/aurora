@@ -19,7 +19,7 @@
 
     <div class="site_wrapper">
 
-        <div class="content_fullwidth less2">
+        <div class="content_fullwidth less2" >
 
             <div class="container">
                 <div class="title"><h1 ><span id="_title" class="_title" contenteditable="true">{$content._title}</span><span class="line"></span></h1></div>
@@ -31,6 +31,9 @@
 
 
             <div class="clearfix marb12"></div>
+
+
+
 
 
         </div>

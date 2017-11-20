@@ -7,40 +7,57 @@ cell: "integer",
 renderable: false
 
 
-},{
-name: "product_pid",
-label: "",
-editable: false,
-cell: "integer",
-renderable: false
-
-
-},{
+},
+{
 name: "reference",
 label: "{t}S. Code{/t}",
 editable: false,
-cell: Backgrid.StringCell.extend({
-events: {
-"click": function() {
-change_view(this.model.get("parent_type")+"/"+this.model.get("parent_key")+"/part/"+this.model.get("id"))
-}
+cell: Backgrid.HtmlCell.extend({
+})
 },
-className: "link"
-}),
-},{
+{
 name: "description",
-label: "{t}Unit Description{/t}",
+label: "{t}Carton description{/t}",
 editable: false,
 cell: "html"
 
-}, {
+},
+{
+name: "description_sales",
+label: "{t}Carton description{/t}",
+editable: false,
+cell: "html"
+
+},
+
+{
+name: "unit",
+label: "{t}Unit description{/t}",
+editable: false,
+cell: "html"
+},
+
+{
+name: "unit_per_carton",
+label: "U/C",
+editable: false,
+cell: "html"
+},
+{
+name: "unit_cost",
+label: "{t}Unit cost{/t}",
+editable: false,
+cell: "html"
+},
+{
 name: "subtotals",
 label: "{t}Subtotals{/t}",
 defaultOrder:1,
 editable: false,
-sortable: false,
+sortType: "toggle",
 {if $sort_key=='subtotals'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.HtmlCell.extend( ),
+cell: Backgrid.HtmlCell.extend({ className: ""} ),
+
 },
 {
 name: "quantity",
@@ -55,4 +72,47 @@ headerCell: integerHeaderCell
 ]
 
 
-function change_table_view(view, save_state) {}
+function change_table_view(view, save_state) {
+
+
+grid.columns.findWhere({ name: 'description'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'description_sales'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'unit'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'unit_per_carton'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'unit_cost'} ).set("renderable", false)
+
+
+
+
+if(view=='overview'){
+grid.columns.findWhere({ name: 'description'} ).set("renderable", true)
+
+}else if(view=='sales'){
+grid.columns.findWhere({ name: 'description_sales'} ).set("renderable", true)
+
+}else if(view=='unit'){
+grid.columns.findWhere({ name: 'unit'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'unit_per_carton'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'unit_cost'} ).set("renderable", true)
+
+}
+
+
+
+
+{if isset($data['metadata']['create_delivery']) and $data['metadata']['create_delivery'] }
+
+    grid.columns.findWhere({
+    name: 'checkbox'
+    }).set("renderable", true)
+
+    grid.columns.findWhere({
+    name: 'operations'
+    }).set("renderable", true)
+
+    grid.columns.findWhere({
+    name: 'delivery_quantity'
+    }).set("renderable", true)
+{/if}
+
+}

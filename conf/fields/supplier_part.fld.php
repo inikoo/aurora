@@ -122,16 +122,11 @@ $supplier_part_fields[] = array(
             'id'   => 'Supplier_Part_Reference',
             'edit' => ($edit ? 'string' : ''),
 
-            'value'             => htmlspecialchars(
-                $object->get('Supplier Part Reference')
-            ),
+            'value'             => htmlspecialchars($object->get('Supplier Part Reference')),
             'formatted_value'   => $object->get('Reference'),
-            'label'             => ucfirst(
-                $object->get_field_label('Supplier Part Reference')
-            ),
+            'label'             => ucfirst($object->get_field_label('Supplier Part Reference')),
             'required'          => true,
-            'server_validation' => json_encode(
-                array('tipo' => 'check_for_duplicates')
+            'server_validation' => json_encode(array('tipo' => 'check_for_duplicates')
             ),
             'type'              => 'value'
         ),
@@ -139,12 +134,13 @@ $supplier_part_fields[] = array(
         array(
             'id'   => 'Part_Reference',
             'edit' => ($edit ? 'string' : ''),
+            'render'                   => (($new ) ? true : false),
 
             'value'             => htmlspecialchars(
                 $object->get('Part Part Reference')
             ),
             'formatted_value'   => $object->get('Part Reference'),
-            'label'             => _('Part SKO reference'),
+            'label'             => _('Part reference'),
             'required'          => true,
             'server_validation' => json_encode(
                 array(
@@ -161,13 +157,13 @@ $supplier_part_fields[] = array(
 
         array(
             'id'   => 'Supplier_Part_Package_Description',
+            'render'                   => (($new ) ? true : false),
+
             'edit' => ($edit ? 'string' : ''),
 
-            'value'           => htmlspecialchars(
-                $object->get('Part Part Package Description')
-            ),
+            'value'           => htmlspecialchars($object->get('Part Part Package Description')),
             'formatted_value' => $object->get('Part Package Description'),
-            'label'           => _('Part SKO description'),
+            'label'           => _('Part SKO description').' ('._('for picking aid').')',
             'required'        => true,
             'type'            => 'value'
         ),
@@ -175,11 +171,13 @@ $supplier_part_fields[] = array(
 
         array(
             'id'   => 'Part_SKO_Barcode',
+            'render'                   => (($new ) ? true : false),
+
             'edit' => ($edit ? 'string' : ''),
 
             'value'             => htmlspecialchars($object->get('Part Part SKO Barcode')),
             'formatted_value'   => $object->get('Part SKO Barcode'),
-            'label'             => _('Part SKO barcode').' ('._('Stock control').')',
+            'label'             => _('Part SKO barcode').' ('._('stock control').')',
             'required'          => false,
             'server_validation' => json_encode(
                 array(
@@ -195,6 +193,8 @@ $supplier_part_fields[] = array(
 
         array(
             'id'              => 'Part_Units_Per_Package',
+            'render'                   => (($new ) ? true : false),
+
             'edit'            => 'smallint_unsigned',
             'value'           => ($new
                 ? 1
@@ -214,11 +214,13 @@ $supplier_part_fields[] = array(
         ),
         array(
             'id'   => 'Part_Barcode',
+            'render'                   => (($new ) ? true : false),
+
             'edit' => ($edit ? 'barcode' : ''),
 
             'value'             => htmlspecialchars($object->get('Part Part Barcode Number')),
             'formatted_value'   => $object->get('Part Barcode Number'),
-            'label'             => _('Unit barcode (EAN-13)'),
+            'label'             => _('Unit barcode (EAN-13, for website)'),
             'required'          => false,
             'invalid_msg'       => get_invalid_message('barcode_ean'),
             'server_validation' => json_encode(
@@ -254,21 +256,20 @@ $supplier_part_fields[] = array(
             'type'            => 'value'
         ),
         array(
-            'id'   => 'Supplier_Part_Unit_Description',
+            'id'   => 'Supplier_Part_Description',
             'edit' => ($edit ? 'string' : ''),
 
-            'value'           => htmlspecialchars(
-                $object->get('Part Part Unit Description')
-            ),
-            'formatted_value' => $object->get('Part Unit Description'),
+            'value'           => htmlspecialchars($object->get('Supplier Part Description')),
+            'formatted_value' => $object->get('Supplier Part Description'),
             'label'           => ucfirst(
-                $object->get_field_label('Part Unit Description')
+                $object->get_field_label('Supplier Part Description')
             ),
             'required'        => true,
             'type'            => 'value'
         ),
         array(
             'id'   => 'Supplier_Part_Unit_Label',
+
             'edit' => ($edit ? 'string' : ''),
 
             'value'           => ($new
@@ -524,30 +525,59 @@ $supplier_part_fields[] = array(
         ),
 
 
-        array(
-            'id'   => 'Part_Unit_Price',
-            'edit' => 'amount_margin',
 
-            'value'           => htmlspecialchars($object->get('Part Part Unit Price')),
-            'formatted_value' => $object->get('Part Unit Price'),
-            'label'           => ucfirst($object->get_field_label('Part Unit Price')),
-            'required'        => false,
-            'placeholder'     => sprintf(_('amount in %s or margin (%%)'), $account->get('Currency')),
-            'type'            => 'value'
-        ),
-        array(
-            'id'              => 'Part_Unit_RRP',
-            'edit'            => 'amount_margin',
-            'value'           => htmlspecialchars($object->get('Part Part Unit RRP')),
-            'formatted_value' => $object->get('Part Unit RRP'),
-            'label'           => ucfirst($object->get_field_label('Part Unit RRP')),
-            'required'        => false,
-            'placeholder'     => sprintf(_('amount in %s or margin (%%)'), $account->get('Currency')),
-            'type'            => 'value'
-        ),
+
+
 
     )
 );
 
+if($new) {
+    $supplier_part_fields[] = array(
+        'label' => _('Recommended product values').' ('._('for website').')',
+
+        'show_title' => true,
+        'fields'     => array(
+
+
+            array(
+                'id'   => 'Part_Unit_Price',
+                'edit' => 'amount_margin',
+
+                'value'           => htmlspecialchars($object->get('Part Part Unit Price')),
+                'formatted_value' => $object->get('Part Unit Price'),
+                'label'           => ucfirst($object->get_field_label('Part Unit Price')),
+                'required'        => false,
+                'placeholder'     => sprintf(_('amount in %s or margin (%%)'), $account->get('Currency')),
+                'type'            => 'value'
+            ),
+            array(
+                'id'              => 'Part_Unit_RRP',
+                'edit'            => 'amount_margin',
+                'value'           => htmlspecialchars($object->get('Part Part Unit RRP')),
+                'formatted_value' => $object->get('Part Unit RRP'),
+                'label'           => ucfirst($object->get_field_label('Part Unit RRP')),
+                'required'        => false,
+                'placeholder'     => sprintf(_('amount in %s or margin (%%)'), $account->get('Currency')),
+                'type'            => 'value'
+            ),
+
+
+            array(
+                'id'   => 'Part_Recommended_Product_Unit_Name',
+                'edit' => ($edit ? 'string' : ''),
+
+                'value'           => htmlspecialchars($object->get('Part Part Recommended Product Unit Name')),
+                'formatted_value' => $object->get('Part Recommended Product Unit Name'),
+                'label'           => ucfirst($object->get_field_label('Part Recommended Product Unit Name')).' ('._('website').')',
+                'required'        => true,
+                'type'            => 'value'
+            ),
+
+
+        )
+    );
+
+}
 
 ?>

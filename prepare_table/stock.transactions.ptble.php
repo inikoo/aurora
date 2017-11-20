@@ -96,7 +96,7 @@ if ($parameters['f_field'] == 'used_in' and $f_value != '') {
 } elseif ($parameters['f_field'] == 'sku' and $f_value != '') {
     $wheref .= " and  `Part SKU` ='".addslashes($f_value)."'";
 } elseif ($parameters['f_field'] == 'description' and $f_value != '') {
-    $wheref .= " and  `Part Unit Description` like '".addslashes($f_value)."%'";
+    $wheref .= " and  `Part Package Description` like '".addslashes($f_value)."%'";
 }
 
 $_order = $order;

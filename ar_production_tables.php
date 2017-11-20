@@ -497,7 +497,7 @@ function supplier_parts($_data, $db, $user, $account) {
                 'part_description' => $part_description,
 
 
-                'description'    => $data['Part Unit Description'],
+                'description'    => $data['Supplier Part Description'],
                 'status'         => $status,
                 'cost'           => money(
                     $data['Supplier Part Unit Cost'], $data['Supplier Part Currency Code']
@@ -707,7 +707,7 @@ function materials($_data, $db, $user, $account) {
                 'part_description' => $part_description,
 
 
-                'description'    => $data['Part Unit Description'],
+                'description'    => $data['Supplier Part Description'],
                 'status'         => $status,
                 'cost'           => money(
                     $data['Supplier Part Unit Cost'], $data['Supplier Part Currency Code']

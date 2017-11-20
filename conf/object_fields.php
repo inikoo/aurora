@@ -267,11 +267,11 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
                     } else {
 
 
-                        $part = get_object('Part', $object->get('Supplier Part Part SKU'));
+                      //  $part = get_object('Part', $object->get('Supplier Part Part SKU'));
 
-                        $object_fields_part = get_object_fields($part, $db, $user, $smarty, array('supplier_part_scope' => true));
+                        //$object_fields_part = get_object_fields($part, $db, $user, $smarty, array('supplier_part_scope' => true));
 
-                        $supplier_part_fields = array_merge($supplier_part_fields, $object_fields_part);
+                      // $supplier_part_fields = array_merge($supplier_part_fields, $object_fields_part);
 
                         $operations = array(
                             'label'      => _('Operations'),

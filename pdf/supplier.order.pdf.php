@@ -131,7 +131,7 @@ if ($result = $db->query($sql)) {
 
         }
 
-        $description = $data['Part Unit Description'].' @'.money(
+        $description = $data['Supplier Part Description'].' @'.money(
                 $data['Supplier Part Historic Unit Cost'], $purchase_order->get('Purchase Order Currency Code')
             );
         $description .= '<span style="font-style: italic;font-size:90%">';

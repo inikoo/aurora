@@ -398,20 +398,17 @@ class SupplierPart extends DB_Table {
 
                 break;
 
-            case 'Supplier Part Unit Description':
+            case 'Supplier Part Description':
 
 
                 if ($value == '') {
                     $this->error = true;
-                    $this->msg   = _('Unit description missing');
+                    $this->msg   = _('Description missing');
 
                     return;
                 }
 
-                $this->part->update(
-                    array('Part Unit Description' => $value), $options
-                );
-                $this->updated = $this->part->updated;
+                $this->update_field($field, $value, $options);
 
 
                 break;
@@ -1126,7 +1123,6 @@ class SupplierPart extends DB_Table {
 
 
             case 'Supplier Part Units Per Package':
-            case 'Supplier Part Unit Description':
             case 'Supplier Part Unit Label':
             case 'Supplier Part Package Description':
                 $key = preg_replace('/Supplier /', '', $key);
@@ -1752,7 +1748,7 @@ class SupplierPart extends DB_Table {
         switch ($field) {
 
             case 'Supplier Part Reference':
-                $label = _("supplier's SKU");
+                $label = _("supplier's part code");
                 break;
             case 'Supplier Part Cost':
                 $label = _('unit cost');
@@ -1800,11 +1796,11 @@ class SupplierPart extends DB_Table {
             case 'Part Package Description':
                 $label = _("outers (SKO) description");
                 break;
-            case 'Part Unit Description':
-                $label = _("unit description");
+            case 'Supplier Part Description':
+                $label = _("supplier's part unit description");
                 break;
             case 'Part Unit Label':
-                $label = _("unit label");
+                $label = _("supplier's partunit label");
                 break;
             case 'Part Units Per Package':
                 $label = _("units per SKO");
@@ -1814,6 +1810,9 @@ class SupplierPart extends DB_Table {
                 break;
             case 'Supplier Part Fresh':
                 $label = _('Make to order');
+                break;
+            case 'Part Recommended Product Unit Name':
+                $label = _('Unit recommended description');
                 break;
             default:
                 $label = $field;
