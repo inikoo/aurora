@@ -40,6 +40,18 @@ $table_buttons[] = array(
 $smarty->assign('table_buttons', $table_buttons);
 
 
+
+$smarty->assign('history_notes_data',
+                array(
+
+                    'object'=>'customer',
+                    'key'=>$state['_object']->id
+                )
+);
+
+
+
+
 $smarty->assign('aux_templates', array('history_notes.tpl'));
 $smarty->assign('state', $state);
 
