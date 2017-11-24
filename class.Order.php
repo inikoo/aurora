@@ -148,208 +148,6 @@ class Order extends DB_Table {
         $this->update_totals();
     }
 
-    function create_refund($transactions) {
-
-        $date = gmdate('Y-m-d H:i:s');
-
-        $store = get_object('Store', ($this->data['Order Store Key']));
-
-
-        $invoice_public_id = '';
-
-
-        if ($store->data['Store Refund Public ID Method'] == 'Same Invoice ID') {
-
-            foreach ($this->get_invoices_objects() as $_invoice) {
-                if ($_invoice->data['Invoice Type'] == 'Invoice') {
-                    $invoice_public_id = $_invoice->data['Invoice Public ID'];
-                }
-            }
-
-
-            if ($invoice_public_id == '') {
-                //Next Invoice ID
-
-
-                if ($store->data['Store Next Invoice Public ID Method'] == 'Invoice Public ID') {
-
-                    $sql = sprintf(
-                        "UPDATE `Store Dimension` SET `Store Invoice Last Invoice Public ID` = LAST_INSERT_ID(`Store Invoice Last Invoice Public ID` + 1) WHERE `Store Key`=%d", $this->data['Order Store Key']
-                    );
-                    $this->db->exec($sql);
-
-
-                    $invoice_public_id = sprintf(
-                        $store->data['Store Invoice Public ID Format'], $this->db->lastInsertId()
-                    );
-
-                } elseif ($store->data['Store Next Invoice Public ID Method'] == 'Order ID') {
-
-                    $sql = sprintf(
-                        "UPDATE `Store Dimension` SET `Store Order Last Order ID` = LAST_INSERT_ID(`Store Order Last Order ID` + 1) WHERE `Store Key`=%d", $this->data['Order Store Key']
-                    );
-                    $this->db->exec($sql);
-                    $invoice_public_id = sprintf(
-                        $store->data['Store Order Public ID Format'], $this->db->lastInsertId()
-                    );
-
-
-                } else {
-
-                    $sql = sprintf(
-                        "UPDATE `Account Dimension` SET `Account Invoice Last Invoice Public ID` = LAST_INSERT_ID(`Account Invoice Last Invoice Public ID` + 1) WHERE `Account Key`=1"
-                    );
-                    $this->db->exec($sql);
-                    $public_id = $this->db->lastInsertId();
-                    include_once 'class.Account.php';
-                    $account           = new Account();
-                    $invoice_public_id = sprintf(
-                        $account->data['Account Invoice Public ID Format'], $public_id
-                    );
-
-                }
-
-
-            }
-
-
-        } elseif ($store->data['Store Refund Public ID Method'] == 'Account Wide Own Index') {
-            include_once 'class.Account.php';
-            $account = new Account();
-            $sql     = sprintf(
-                "UPDATE `Account Dimension` SET `Account Invoice Last Refund Public ID` = LAST_INSERT_ID(`Account Invoice Last Refund Public ID` + 1) WHERE `Account Key`=1"
-            );
-            $this->db->exec($sql);
-            $invoice_public_id = sprintf(
-                $account->data['Account Refund Public ID Format'], $this->db->lastInsertId()
-            );
-
-
-        } elseif ($store->data['Store Refund Public ID Method'] == 'Store Own Index') {
-
-            $sql = sprintf(
-                "UPDATE `Store Dimension` SET `Store Invoice Last Refund Public ID` = LAST_INSERT_ID(`Store Invoice Last Refund Public ID` + 1) WHERE `Store Key`=%d", $this->data['Order Store Key']
-            );
-            $this->db->exec($sql);
-            $invoice_public_id = sprintf(
-                $store->data['Store Refund Public ID Format'], $this->db->lastInsertId()
-            );
-
-
-        } else { //Next Invoice ID
-
-
-            if ($store->data['Store Next Invoice Public ID Method'] == 'Invoice Public ID') {
-
-                $sql = sprintf(
-                    "UPDATE `Store Dimension` SET `Store Invoice Last Invoice Public ID` = LAST_INSERT_ID(`Store Invoice Last Invoice Public ID` + 1) WHERE `Store Key`=%d", $this->data['Order Store Key']
-                );
-                $this->db->exec($sql);
-                $invoice_public_id = sprintf(
-                    $store->data['Store Invoice Public ID Format'], $this->db->lastInsertId()
-                );
-
-            } elseif ($store->data['Store Next Invoice Public ID Method'] == 'Order ID') {
-
-                $sql = sprintf(
-                    "UPDATE `Store Dimension` SET `Store Order Last Order ID` = LAST_INSERT_ID(`Store Order Last Order ID` + 1) WHERE `Store Key`=%d", $this->data['Order Store Key']
-                );
-                $this->db->exec($sql);
-                $invoice_public_id = sprintf(
-                    $store->data['Store Order Public ID Format'], $this->db->lastInsertId()
-                );
-
-
-            } else {
-
-                $sql = sprintf(
-                    "UPDATE `Account Dimension` SET `Account Invoice Last Invoice Public ID` = LAST_INSERT_ID(`Account Invoice Last Invoice Public ID` + 1) WHERE `Account Key`=1"
-                );
-                $this->db->exec($sql);
-                $public_id = $this->db->lastInsertId();
-                include_once 'class.Account.php';
-                $account           = new Account();
-                $invoice_public_id = sprintf(
-                    $account->data['Account Invoice Public ID Format'], $public_id
-                );
-
-            }
-
-        }
-
-        if ($invoice_public_id != '') {
-            $invoice_public_id = $this->get_refund_public_id(
-                $invoice_public_id.$store->data['Store Refund Suffix']
-            );
-        }
-
-
-        $refund_data = array(
-            'Invoice Date'                          => $date,
-            'Invoice Type'                          => 'Refund',
-            'Invoice Public ID'                     => $invoice_public_id,
-            'Invoice File As'                       => $invoice_public_id,
-            'Invoice Order Key'                     => $this->id,
-            'Invoice Store Key'                     => $this->data['Order Store Key'],
-            'Invoice Customer Key'                  => $this->data['Order Customer Key'],
-            'Invoice Tax Code'                      => $this->data['Order Tax Code'],
-            'Invoice Tax Shipping Code'             => $this->data['Order Tax Code'],
-            'Invoice Tax Charges Code'              => $this->data['Order Tax Code'],
-            'Invoice Metadata'                      => $this->data['Order Original Metadata'],
-            'Invoice Tax Number'                    => $this->data['Order Tax Number'],
-            'Invoice Tax Number Valid'              => $this->data['Order Tax Number Valid'],
-            'Invoice Tax Number Validation Date'    => $this->data['Order Tax Number Validation Date'],
-            'Invoice Tax Number Associated Name'    => $this->data['Order Tax Number Associated Name'],
-            'Invoice Tax Number Associated Address' => $this->data['Order Tax Number Associated Address'],
-            'Invoice Net Amount Off'                => 0,
-            'Invoice Customer Contact Name'         => $this->data['Order Customer Contact Name'],
-            'Invoice Customer Name'                 => $this->data['Order Customer Name'],
-
-            //   'Invoice Telephone'                    => $this->data['Order Telephone'],
-            //     'Invoice Email'                        => $this->data['Order Email'],
-            'Invoice Address Recipient'             => $this->data['Order Invoice Address Recipient'],
-            'Invoice Address Organization'          => $this->data['Order Invoice Address Organization'],
-            'Invoice Address Line 1'                => $this->data['Order Invoice Address Line 1'],
-            'Invoice Address Line 2'                => $this->data['Order Invoice Address Line 2'],
-            'Invoice Address Sorting Code'          => $this->data['Order Invoice Address Sorting Code'],
-            'Invoice Address Postal Code'           => $this->data['Order Invoice Address Postal Code'],
-            'Invoice Address Dependent Locality'    => $this->data['Order Invoice Address Dependent Locality'],
-            'Invoice Address Locality'              => $this->data['Order Invoice Address Locality'],
-            'Invoice Address Administrative Area'   => $this->data['Order Invoice Address Administrative Area'],
-            'Invoice Address Country 2 Alpha Code'  => $this->data['Order Invoice Address Country 2 Alpha Code'],
-            'Invoice Address Checksum'              => $this->data['Order Invoice Address Checksum'],
-            'Invoice Address Formatted'             => $this->data['Order Invoice Address Formatted'],
-            'Invoice Address Postal Label'          => $this->data['Order Invoice Address Postal Label'],
-            'Invoice Registration Number'           => $this->data['Order Registration Number'],
-
-
-            'Invoice Tax Liability Date' => $date,
-
-            'Invoice Main Source Type' => '',
-
-            'Invoice Items Gross Amount'        => 0,
-            'Invoice Items Discount Amount'     => 0,
-            'Invoice Items Net Amount'          => 0,
-            'Invoice Items Out of Stock Amount' => 0,
-            'Invoice Shipping Net Amount'       => 0,
-            'Invoice Charges Net Amount'        => 0,
-            'Invoice Insurance Net Amount'      => 0,
-            'Invoice Total Net Amount'          => 0,
-            'Invoice Total Tax Amount'          => 0,
-            'Invoice Payments Amount'           => 0,
-            'Invoice To Pay Amount'             => 0,
-            'Invoice Total Amount'              => 0,
-            'Invoice Currency'                  => $this->data['Order Currency'],
-
-
-        );
-
-
-        $refund = new Invoice('create refund', $refund_data, $transactions);
-
-
-        return $refund;
-    }
 
     function get_invoices_objects() {
         $invoices     = array();
@@ -420,7 +218,42 @@ class Order extends DB_Table {
 
         switch ($field) {
 
+            case('Replacement State'):
+                $delivery_note=get_object('delivery note',$metadata['Delivery Note Key']);
 
+                if($delivery_note->get('Delivery Note Order Key')!=$this->id or $delivery_note->get('Delivery Note Type')!='Replacement'){
+                    $this->error=true;
+                }
+
+                $delivery_note->update(array('Delivery Note State'=>$value));
+                $number_deliveries=0;
+                $deliveries_xhtml='';
+
+                foreach ($this->get_deliveries('objects') as $dn) {
+                    $number_deliveries++;
+                    $deliveries_xhtml .= sprintf(
+                        ' <div class="node"  id="delivery_node_%d"><span class="node_label"><i class="fa fa-truck fa-flip-horizontal fa-fw" aria-hidden="true"></i> 
+                               <span class="link" onClick="change_view(\'%s\')">%s</span> (<span class="Delivery_Note_State">%s</span>)
+                                <a class="pdf_link %s" target=\'_blank\' href="/pdf/dn.pdf.php?id=%d"> <img style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif"></a>
+
+                               </span></div>', $dn->id, 'delivery_notes/'.$dn->get('Delivery Note Store Key').'/'.$dn->id, $dn->get('ID'), $dn->get('Abbreviated State'), ($dn->get('State Index') < 90 ? 'hide' : ''), $dn->id
+
+                    );
+
+                }
+
+
+
+
+                $this->update_metadata = array(
+
+                    'deliveries_xhtml'  => $deliveries_xhtml
+
+                );
+
+
+
+                break;
             case('Order For Collection'):
 
                 $this->update_for_collection($value, $options);
@@ -1444,10 +1277,9 @@ class Order extends DB_Table {
             case('Total Balance'):
             case('Total Refunds'):
                 return money(
-                     $this->data['Order '.$key], $this->data['Order Currency']
+                    $this->data['Order '.$key], $this->data['Order Currency']
                 );
                 break;
-
 
 
             case('Shipping And Handing Net Amount'):
@@ -1647,7 +1479,7 @@ class Order extends DB_Table {
 
         $this->data['Order Cancel Note'] = $note;
 
-        $this->data['Order Current Payment State'] = 'No Applicable';
+        $this->data['Order Payment State'] = 'NA';
 
 
         $this->data['Order State'] = 'Cancelled';
@@ -1672,12 +1504,12 @@ class Order extends DB_Table {
         );
 
         $sql = sprintf(
-            "UPDATE `Order Dimension` SET  `Order Cancelled Date`=%s, `Order Current Payment State`=%s,`Order State`=%s,`Order Current XHTML Dispatch State`=%s,`Order Current XHTML Payment State`=%s,
+            "UPDATE `Order Dimension` SET  `Order Cancelled Date`=%s, `Order Payment State`=%s,`Order State`=%s,`Order Current XHTML Dispatch State`=%s,`Order Current XHTML Payment State`=%s,
 				`Order XHTML Invoices`='',`Order XHTML Delivery Notes`=''
 				,`Order Invoiced Balance Net Amount`=0,`Order Invoiced Balance Tax Amount`=0,`Order Invoiced Balance Total Amount`=0 ,`Order Invoiced Outstanding Balance Net Amount`=0,`Order Invoiced Outstanding Balance Tax Amount`=0,`Order Invoiced Outstanding Balance Total Amount`=0,`Order Invoiced Profit Amount`=0,`Order Cancel Note`=%s
 				,`Order Balance Net Amount`=0,`Order Balance tax Amount`=0,`Order Balance Total Amount`=0,`Order To Pay Amount`=%.2f
 				WHERE `Order Key`=%d"//     ,$no_shipped
-            , prepare_mysql($this->data['Order Cancelled Date']), prepare_mysql($this->data['Order Current Payment State']), prepare_mysql($this->data['Order State']), prepare_mysql(
+            , prepare_mysql($this->data['Order Cancelled Date']), prepare_mysql($this->data['Order Payment State']), prepare_mysql($this->data['Order State']), prepare_mysql(
                 $this->data['Order Current XHTML Dispatch State']
             ), prepare_mysql($this->data['Order Current XHTML Payment State']), prepare_mysql($this->data['Order Cancel Note']), $this->data['Order To Pay Amount'], $this->id
         );
@@ -1825,7 +1657,7 @@ class Order extends DB_Table {
 
         $deliveries = array();
         $sql        = sprintf(
-            "SELECT `Delivery Note Key` FROM `Delivery Note Dimension` WHERE `Delivery Note Order Key`=%d  ", $this->id
+            "SELECT `Delivery Note Key` FROM `Delivery Note Dimension` WHERE `Delivery Note Order Key`=%d order by `Delivery Note Key` desc ", $this->id
         );
 
         if ($result = $this->db->query($sql)) {
@@ -1978,23 +1810,30 @@ class Order extends DB_Table {
         $sql = sprintf(
             "SELECT `Delivery Note ID` FROM `Delivery Note Dimension` WHERE `Delivery Note Store Key`=%d AND `Delivery Note ID`=%s ", $this->data['Order Store Key'], prepare_mysql($dn_id.$suffix_counter)
         );
-        $res = mysql_query($sql);
-        if ($row = mysql_fetch_assoc($res)) {
-            if ($suffix_counter > 100) {
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                if ($suffix_counter > 100) {
+                    return $dn_id.$suffix_counter;
+                }
+
+                if (!$suffix_counter) {
+                    $suffix_counter = 2;
+                } else {
+                    $suffix_counter++;
+                }
+
+                return $this->get_replacement_public_id($dn_id, $suffix_counter);
+            } else {
                 return $dn_id.$suffix_counter;
             }
-
-            if (!$suffix_counter) {
-                $suffix_counter = 2;
-            } else {
-                $suffix_counter++;
-            }
-
-            return $this->get_replacement_public_id($dn_id, $suffix_counter);
-
         } else {
-            return $dn_id.$suffix_counter;
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
+
 
     }
 
@@ -2010,16 +1849,8 @@ class Order extends DB_Table {
             ).' '.$this->data['Order Customer Contact Name'];
         $img                = '';
 
-        $amount = '';
-        if ($this->data['Order Current Payment State'] == 'Waiting Payment' or $this->data['Order Current Payment State'] == 'Partially Paid') {
-            $amount = ' '.money(
-                    $this->data['Order Total Amount'], $this->data['Order Currency']
-                );
-        } elseif ($this->data['Order Current Payment State'] == 'Paid' or $this->data['Order Current Payment State'] == 'Payment Refunded') {
-            $amount = ' '.money(
-                    $this->data['Order Invoiced Balance Total Amount'], $this->data['Order Currency']
-                );
-        }
+
+        $amount = ' '.money($this->data['Order Total Amount'], $this->data['Order Currency']);
 
         $show_description = $this->data['Order Customer Name'].' ('.strftime(
                 "%e %b %Y", strtotime($this->data['Order Date'])
@@ -3417,6 +3248,305 @@ VALUES (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
         }
 
     }
+
+    function create_refund($transactions) {
+
+        $date = gmdate('Y-m-d H:i:s');
+
+        $store = get_object('Store', ($this->data['Order Store Key']));
+
+
+        $invoice_public_id = '';
+
+
+        if ($store->data['Store Refund Public ID Method'] == 'Same Invoice ID') {
+
+            foreach ($this->get_invoices_objects() as $_invoice) {
+                if ($_invoice->data['Invoice Type'] == 'Invoice') {
+                    $invoice_public_id = $_invoice->data['Invoice Public ID'];
+                }
+            }
+
+
+            if ($invoice_public_id == '') {
+                //Next Invoice ID
+
+
+                if ($store->data['Store Next Invoice Public ID Method'] == 'Invoice Public ID') {
+
+                    $sql = sprintf(
+                        "UPDATE `Store Dimension` SET `Store Invoice Last Invoice Public ID` = LAST_INSERT_ID(`Store Invoice Last Invoice Public ID` + 1) WHERE `Store Key`=%d", $this->data['Order Store Key']
+                    );
+                    $this->db->exec($sql);
+
+
+                    $invoice_public_id = sprintf(
+                        $store->data['Store Invoice Public ID Format'], $this->db->lastInsertId()
+                    );
+
+                } elseif ($store->data['Store Next Invoice Public ID Method'] == 'Order ID') {
+
+                    $sql = sprintf(
+                        "UPDATE `Store Dimension` SET `Store Order Last Order ID` = LAST_INSERT_ID(`Store Order Last Order ID` + 1) WHERE `Store Key`=%d", $this->data['Order Store Key']
+                    );
+                    $this->db->exec($sql);
+                    $invoice_public_id = sprintf(
+                        $store->data['Store Order Public ID Format'], $this->db->lastInsertId()
+                    );
+
+
+                } else {
+
+                    $sql = sprintf(
+                        "UPDATE `Account Dimension` SET `Account Invoice Last Invoice Public ID` = LAST_INSERT_ID(`Account Invoice Last Invoice Public ID` + 1) WHERE `Account Key`=1"
+                    );
+                    $this->db->exec($sql);
+                    $public_id = $this->db->lastInsertId();
+                    include_once 'class.Account.php';
+                    $account           = new Account();
+                    $invoice_public_id = sprintf(
+                        $account->data['Account Invoice Public ID Format'], $public_id
+                    );
+
+                }
+
+
+            }
+
+
+        } elseif ($store->data['Store Refund Public ID Method'] == 'Account Wide Own Index') {
+            include_once 'class.Account.php';
+            $account = new Account();
+            $sql     = sprintf(
+                "UPDATE `Account Dimension` SET `Account Invoice Last Refund Public ID` = LAST_INSERT_ID(`Account Invoice Last Refund Public ID` + 1) WHERE `Account Key`=1"
+            );
+            $this->db->exec($sql);
+            $invoice_public_id = sprintf(
+                $account->data['Account Refund Public ID Format'], $this->db->lastInsertId()
+            );
+
+
+        } elseif ($store->data['Store Refund Public ID Method'] == 'Store Own Index') {
+
+            $sql = sprintf(
+                "UPDATE `Store Dimension` SET `Store Invoice Last Refund Public ID` = LAST_INSERT_ID(`Store Invoice Last Refund Public ID` + 1) WHERE `Store Key`=%d", $this->data['Order Store Key']
+            );
+            $this->db->exec($sql);
+            $invoice_public_id = sprintf(
+                $store->data['Store Refund Public ID Format'], $this->db->lastInsertId()
+            );
+
+
+        } else { //Next Invoice ID
+
+
+            if ($store->data['Store Next Invoice Public ID Method'] == 'Invoice Public ID') {
+
+                $sql = sprintf(
+                    "UPDATE `Store Dimension` SET `Store Invoice Last Invoice Public ID` = LAST_INSERT_ID(`Store Invoice Last Invoice Public ID` + 1) WHERE `Store Key`=%d", $this->data['Order Store Key']
+                );
+                $this->db->exec($sql);
+                $invoice_public_id = sprintf(
+                    $store->data['Store Invoice Public ID Format'], $this->db->lastInsertId()
+                );
+
+            } elseif ($store->data['Store Next Invoice Public ID Method'] == 'Order ID') {
+
+                $sql = sprintf(
+                    "UPDATE `Store Dimension` SET `Store Order Last Order ID` = LAST_INSERT_ID(`Store Order Last Order ID` + 1) WHERE `Store Key`=%d", $this->data['Order Store Key']
+                );
+                $this->db->exec($sql);
+                $invoice_public_id = sprintf(
+                    $store->data['Store Order Public ID Format'], $this->db->lastInsertId()
+                );
+
+
+            } else {
+
+                $sql = sprintf(
+                    "UPDATE `Account Dimension` SET `Account Invoice Last Invoice Public ID` = LAST_INSERT_ID(`Account Invoice Last Invoice Public ID` + 1) WHERE `Account Key`=1"
+                );
+                $this->db->exec($sql);
+                $public_id = $this->db->lastInsertId();
+                include_once 'class.Account.php';
+                $account           = new Account();
+                $invoice_public_id = sprintf(
+                    $account->data['Account Invoice Public ID Format'], $public_id
+                );
+
+            }
+
+        }
+
+        if ($invoice_public_id != '') {
+            $invoice_public_id = $this->get_refund_public_id(
+                $invoice_public_id.$store->data['Store Refund Suffix']
+            );
+        }
+
+
+        $refund_data = array(
+            'Invoice Date'                          => $date,
+            'Invoice Type'                          => 'Refund',
+            'Invoice Public ID'                     => $invoice_public_id,
+            'Invoice File As'                       => $invoice_public_id,
+            'Invoice Order Key'                     => $this->id,
+            'Invoice Store Key'                     => $this->data['Order Store Key'],
+            'Invoice Customer Key'                  => $this->data['Order Customer Key'],
+            'Invoice Tax Code'                      => $this->data['Order Tax Code'],
+            'Invoice Tax Shipping Code'             => $this->data['Order Tax Code'],
+            'Invoice Tax Charges Code'              => $this->data['Order Tax Code'],
+            'Invoice Metadata'                      => $this->data['Order Original Metadata'],
+            'Invoice Tax Number'                    => $this->data['Order Tax Number'],
+            'Invoice Tax Number Valid'              => $this->data['Order Tax Number Valid'],
+            'Invoice Tax Number Validation Date'    => $this->data['Order Tax Number Validation Date'],
+            'Invoice Tax Number Associated Name'    => $this->data['Order Tax Number Associated Name'],
+            'Invoice Tax Number Associated Address' => $this->data['Order Tax Number Associated Address'],
+            'Invoice Net Amount Off'                => 0,
+            'Invoice Customer Contact Name'         => $this->data['Order Customer Contact Name'],
+            'Invoice Customer Name'                 => $this->data['Order Customer Name'],
+
+            //   'Invoice Telephone'                    => $this->data['Order Telephone'],
+            //     'Invoice Email'                        => $this->data['Order Email'],
+            'Invoice Address Recipient'             => $this->data['Order Invoice Address Recipient'],
+            'Invoice Address Organization'          => $this->data['Order Invoice Address Organization'],
+            'Invoice Address Line 1'                => $this->data['Order Invoice Address Line 1'],
+            'Invoice Address Line 2'                => $this->data['Order Invoice Address Line 2'],
+            'Invoice Address Sorting Code'          => $this->data['Order Invoice Address Sorting Code'],
+            'Invoice Address Postal Code'           => $this->data['Order Invoice Address Postal Code'],
+            'Invoice Address Dependent Locality'    => $this->data['Order Invoice Address Dependent Locality'],
+            'Invoice Address Locality'              => $this->data['Order Invoice Address Locality'],
+            'Invoice Address Administrative Area'   => $this->data['Order Invoice Address Administrative Area'],
+            'Invoice Address Country 2 Alpha Code'  => $this->data['Order Invoice Address Country 2 Alpha Code'],
+            'Invoice Address Checksum'              => $this->data['Order Invoice Address Checksum'],
+            'Invoice Address Formatted'             => $this->data['Order Invoice Address Formatted'],
+            'Invoice Address Postal Label'          => $this->data['Order Invoice Address Postal Label'],
+            'Invoice Registration Number'           => $this->data['Order Registration Number'],
+
+
+            'Invoice Tax Liability Date' => $date,
+
+            'Invoice Main Source Type' => '',
+
+            'Invoice Items Gross Amount'        => 0,
+            'Invoice Items Discount Amount'     => 0,
+            'Invoice Items Net Amount'          => 0,
+            'Invoice Items Out of Stock Amount' => 0,
+            'Invoice Shipping Net Amount'       => 0,
+            'Invoice Charges Net Amount'        => 0,
+            'Invoice Insurance Net Amount'      => 0,
+            'Invoice Total Net Amount'          => 0,
+            'Invoice Total Tax Amount'          => 0,
+            'Invoice Payments Amount'           => 0,
+            'Invoice To Pay Amount'             => 0,
+            'Invoice Total Amount'              => 0,
+            'Invoice Currency'                  => $this->data['Order Currency'],
+
+
+        );
+
+
+        $refund = new Invoice('create refund', $refund_data, $transactions);
+
+
+        return $refund;
+    }
+
+    function create_replacement($transactions) {
+
+
+
+        if(in_array($this->data['Order Replacement State'],array('InWarehouse','PackedDone','Approved'))){
+            $this->error=true;
+            $this->msg=_("This order has a replacement in progress");
+            return;
+        }
+
+        include_once 'utils/new_fork.php';
+
+
+        $date = gmdate('Y-m-d H:i:s');
+
+        $account = get_object('Account', 1);
+
+
+        $warehouse_key = 1;
+
+        include_once('class.DeliveryNote.php');
+
+
+        if ($this->data['Order For Collection'] == 'Yes') {
+            $dispatch_method = 'Collection';
+        } else {
+            $dispatch_method = 'Dispatch';
+        }
+
+        $store = get_object('Store', $this->data['Order Store Key']);
+
+
+        $replacement_public_id = $this->get_replacement_public_id(
+            $this->data['Order Public ID'].$store->data['Store Replacement Suffix']
+        );
+
+
+        $data_dn                                              = array(
+            'Delivery Note Warehouse Key' => $warehouse_key,
+            'Delivery Note Date Created'  => $date,
+            'Delivery Note Date'          => $date,
+            'Delivery Note Order Key'     => $this->id,
+            'Delivery Note Store Key'     => $this->data['Order Store Key'],
+
+            'Delivery Note Order Date Placed'            => $this->data['Order Date'],
+            'Delivery Note ID'                           => $replacement_public_id,
+            'Delivery Note File As'                      => $replacement_public_id,
+            'Delivery Note Type'                         => 'Replacement',
+            'Delivery Note Dispatch Method'              => $dispatch_method,
+            'Delivery Note Title'                        => '',
+            'Delivery Note Customer Key'                 => $this->data['Order Customer Key'],
+            'Delivery Note Metadata'                     => '',
+            'Delivery Note Customer Name'                => $this->data['Order Customer Name'],
+            'Delivery Note Customer Contact Name'        => $this->data['Order Customer Contact Name'],
+            'Delivery Note Telephone'                    => $this->data['Order Telephone'],
+            'Delivery Note Email'                        => $this->data['Order Email'],
+            'Delivery Note Address Recipient'            => $this->data['Order Delivery Address Recipient'],
+            'Delivery Note Address Organization'         => $this->data['Order Delivery Address Organization'],
+            'Delivery Note Address Line 1'               => $this->data['Order Delivery Address Line 1'],
+            'Delivery Note Address Line 2'               => $this->data['Order Delivery Address Line 2'],
+            'Delivery Note Address Sorting Code'         => $this->data['Order Delivery Address Sorting Code'],
+            'Delivery Note Address Postal Code'          => $this->data['Order Delivery Address Postal Code'],
+            'Delivery Note Address Dependent Locality'   => $this->data['Order Delivery Address Dependent Locality'],
+            'Delivery Note Address Locality'             => $this->data['Order Delivery Address Locality'],
+            'Delivery Note Address Administrative Area'  => $this->data['Order Delivery Address Administrative Area'],
+            'Delivery Note Address Country 2 Alpha Code' => $this->data['Order Delivery Address Country 2 Alpha Code'],
+            'Delivery Note Address Checksum'             => $this->data['Order Delivery Address Checksum'],
+            'Delivery Note Address Formatted'            => $this->data['Order Delivery Address Formatted'],
+            'Delivery Note Address Postal Label'         => $this->data['Order Delivery Address Postal Label'],
+            'Delivery Note Show in Warehouse Orders'     => $store->get('Store Show in Warehouse Orders')
+        );
+        $this->data['Delivery Note Show in Warehouse Orders'] = $store->data['Store Show in Warehouse Orders'];
+
+
+       // print_r($data_dn);
+         $replacement = new DeliveryNote('create replacement', $data_dn, $this,$transactions);
+
+         $this->fast_update(array('Order Replacement State'=>'InWarehouse'));
+
+
+        require_once 'utils/new_fork.php';
+        new_housekeeping_fork(
+            'au_housekeeping', array(
+            'type'        => 'replacement_created',
+            'order_key' => $this->id,
+            'editor'      => $this->editor
+        ), $account->get('Account Code'), $this->db
+        );
+
+
+
+       return $replacement;
+    }
+
+    function z(){}// just for better access to update_state function in PhpStorm editor
 
 
 }

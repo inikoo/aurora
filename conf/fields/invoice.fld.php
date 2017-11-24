@@ -13,10 +13,10 @@
 
 include_once 'utils/static_data.php';
 
-$new=false;
+$new = false;
 
 
-$invoice=$object;
+$invoice = $object;
 
 
 $object_fields = array(
@@ -26,11 +26,11 @@ $object_fields = array(
         'fields'     => array(
 
             array(
-                'edit'  => ($edit ? 'string' : ''),
-                'id'    => 'Invoice_Public_ID',
-                'value' => $invoice->get('Invoice Public ID'),
+                'edit'              => ($edit ? 'string' : ''),
+                'id'                => 'Invoice_Public_ID',
+                'value'             => $invoice->get('Invoice Public ID'),
                 'server_validation' => json_encode(array('tipo' => 'check_for_duplicates')),
-                'label' => _('Number').' <i class="fa fa-exclamation-triangle yellow" aria-hidden="true"  title="'._('Warning, editing invoice details can be illegal').'" ></i>',
+                'label'             => _('Number').' <i class="fa fa-exclamation-triangle yellow" aria-hidden="true"  title="'._('Warning, editing invoice details can be illegal').'" ></i>',
             ),
 
 
@@ -42,25 +42,25 @@ $object_fields = array(
         'fields'     => array(
 
             array(
-                'edit'  => ($edit ? 'string' : ''),
-                'id'    => 'Invoice_Customer_Name',
-                'value' => $invoice->get('Invoice Customer Name'),
-                'label' => _('Customer name').' <i class="fa fa-exclamation-triangle yellow" aria-hidden="true"  title="'._('Warning, editing invoice details can be illegal').'" ></i>',
-                'required'=>true
+                'edit'     => ($edit ? 'string' : ''),
+                'id'       => 'Invoice_Customer_Name',
+                'value'    => $invoice->get('Invoice Customer Name'),
+                'label'    => _('Customer name').' <i class="fa fa-exclamation-triangle yellow" aria-hidden="true"  title="'._('Warning, editing invoice details can be illegal').'" ></i>',
+                'required' => true
             ),
             array(
-                'edit'  => ($edit ? 'string' : ''),
-                'id'    => 'Invoice_Tax_Number',
-                'value' => $invoice->get('Invoice Tax Number'),
-                'label' => _('Customer tax number').' <i class="fa fa-exclamation-triangle yellow" aria-hidden="true"  title="'._('Warning, editing invoice details can be illegal').'" ></i>',
-                'required'=>false
+                'edit'     => ($edit ? 'string' : ''),
+                'id'       => 'Invoice_Tax_Number',
+                'value'    => $invoice->get('Invoice Tax Number'),
+                'label'    => _('Customer tax number').' <i class="fa fa-exclamation-triangle yellow" aria-hidden="true"  title="'._('Warning, editing invoice details can be illegal').'" ></i>',
+                'required' => false
             ),
             array(
-                'edit'  => ($edit ? 'string' : ''),
-                'id'    => 'Invoice_Registration_Number',
-                'value' => $invoice->get('Invoice Registration Number'),
-                'label' => _('Customer registration number').' <i class="fa fa-exclamation-triangle yellow" aria-hidden="true"  title="'._('Warning, editing invoice details can be illegal').'" ></i>',
-                'required'=>false
+                'edit'     => ($edit ? 'string' : ''),
+                'id'       => 'Invoice_Registration_Number',
+                'value'    => $invoice->get('Invoice Registration Number'),
+                'label'    => _('Customer registration number').' <i class="fa fa-exclamation-triangle yellow" aria-hidden="true"  title="'._('Warning, editing invoice details can be illegal').'" ></i>',
+                'required' => false
             ),
 
 
@@ -68,13 +68,13 @@ $object_fields = array(
     ),
 
 
-
 );
 
+if ($invoice->get('Invoice Type') == 'Invoice'){
 
-$order=get_object('order',$object->get('Invoice Order Key'));
+$order = get_object('order', $object->get('Invoice Order Key'));
 
-if($order->get('Order State')!='Dispatched') {
+if ($order->get('Order State') != 'Dispatched') {
 
     $operations = array(
         'label'      => _('Operations'),
@@ -87,8 +87,8 @@ if($order->get('Order State')!='Dispatched') {
                 'id'        => 'delete_payment',
                 'class'     => 'operation',
                 'value'     => '',
-                'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name(
-                    ).'", "key":"'.$object->id.'"}\' onClick="delete_object(this)" class="delete_object disabled">'._('Delete invoice').' <i class="fa fa-trash new_button link"></i></span>',
+                'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
+                    .'"}\' onClick="delete_object(this)" class="delete_object disabled">'._('Delete invoice').' <i class="fa fa-trash new_button link"></i></span>',
                 'reference' => '',
                 'type'      => 'operation'
             ),
@@ -99,6 +99,48 @@ if($order->get('Order State')!='Dispatched') {
     );
 
     $object_fields[] = $operations;
+}
+} else {
+
+
+    if($invoice->get('Invoice Payments Amount')!=0){
+        $delete_ops=array(
+            'id'        => 'delete_payment',
+            'class'     => 'operation',
+            'value'     => '',
+            'label'     => _('To delete refund all payments have to be cancelled first'),
+            'reference' => '',
+            'type'      => 'operation'
+        );
+    }else{
+        $delete_ops=array(
+            'id'        => 'delete_payment',
+            'class'     => 'operation',
+            'value'     => '',
+            'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
+                .'"}\' onClick="delete_object(this)" class="delete_object disabled">'._('Delete refund').' <i class="fa fa-trash new_button link"></i></span>',
+            'reference' => '',
+            'type'      => 'operation'
+        );
+    }
+
+
+    $operations = array(
+        'label'      => _('Operations'),
+        'show_title' => true,
+        'class'      => 'operations',
+        'fields'     => array(
+
+
+            $delete_ops,
+
+
+        )
+
+    );
+
+    $object_fields[] = $operations;
+
 
 }
 

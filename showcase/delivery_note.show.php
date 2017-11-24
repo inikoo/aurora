@@ -58,8 +58,9 @@ function get_delivery_note_showcase($data) {
 
     $smarty->assign('order', $order);
 
-
     return $smarty->fetch('showcase/delivery_note.tpl');
+
+
 
 
 }

@@ -722,6 +722,22 @@ $modules = array(
                 )
 
             ),
+            'replacement.new'        => array(
+                'type' => 'object',
+                'tabs' => array(
+
+
+                    'replacement.new.items'          => array(
+                        'label' => _(
+                            'Items'
+                        ),
+                        'icon'  => 'bars'
+                    )
+
+
+                )
+
+            ),
             'refund.new'        => array(
                 'type' => 'object',
                 'tabs' => array(

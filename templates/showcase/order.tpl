@@ -293,8 +293,7 @@
                     </div>
                 </div>
 
-
-                <div id="create_replacement_operations" class="order_operation {if {$order->get('State Index')}<100  }hide{/if}">
+                <div id="create_replacement_operations" class="order_operation {if {$order->get('State Index')}<100  or $order->get('Order Replacement State')=='InWarehouse' or $order->get('Order Replacement State')=='PackedDone'  or $order->get('Order Replacement State')=='Approved'   }hide{/if}">
                     <div  class="square_button right  " title="{t}Create replacement{/t}">
                         <i class="fa fa-truck red " aria-hidden="true" onclick="toggle_order_operation_dialog('create_replacement')"></i>
                         <table id="create_replacement_dialog" border="0" class="order_operation_dialog hide" style="color:#777" >
@@ -408,11 +407,29 @@
         {foreach from=$deliveries item=dn}
 
             <div class="node" id="delivery_node_{$dn->id}">
-                    <span class="node_label" >
-                         <i class="fa fa-truck fa-flip-horizontal fa-fw " aria-hidden="true"></i> <span class="link" onClick="change_view('delivery_notes/{$dn->get('Delivery Note Store Key')}/{$dn->id}')">{$dn->get('ID')}</span>
+                    <span class="node_label" {if  $dn->get('Delivery Note Type')=='Replacement'}error{/if}>
+                         <i class="fa fa-truck fa-flip-horizontal fa-fw  {if  $dn->get('Delivery Note Type')=='Replacement'}error{/if}" aria-hidden="true"></i> <span class="link  {if  $dn->get('Delivery Note Type')=='Replacement'}error{/if}" onClick="change_view('delivery_notes/{$dn->get('Delivery Note Store Key')}/{$dn->id}')">{$dn->get('ID')}</span>
                         (<span class="Delivery_Note_State">{$dn->get('Abbreviated State')}</span>)
                         <a class="pdf_link {if $dn->get('State Index')<90 }hide{/if}" target='_blank' href="/pdf/dn.pdf.php?id={$dn->id}"> <img style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif"></a>
                     </span>
+
+
+                <div id="submit_operations" class="order_operation {if !($dn->get('State Index')==80   and  $dn->get('Delivery Note Type')=='Replacement') }hide{/if}">
+                    <div  class="square_button right  " title="{t}Approve dispatch{/t}">
+                        <i class="fa fa-thumbs-up   " aria-hidden="true" onclick="toggle_order_operation_dialog('approve_replacement')"></i>
+                        <table id="approve_replacement_dialog" border="0" class="order_operation_dialog hide">
+                            <tr class="top">
+                                <td class="label" colspan="2">{t}Approve dispatch{/t}</td>
+                            </tr>
+                            <tr class="changed buttons">
+                                <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('approve_replacement')"></i></td>
+                                <td class="aright"><span data-data='{  "field": "Replacement State","value": "Replacement Approved","dialog_name":"approve_replacement","replacement_key":"{$dn->id}"}' id="approve_replacement_save_buttons" class="valid save button"
+                                                         onclick="save_order_operation(this)"><span class="label">{t}Save{/t}</span> <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
             </div>
         {/foreach}
 

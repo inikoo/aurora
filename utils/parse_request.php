@@ -1982,6 +1982,33 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                                     }
 
+                                    elseif ($view_path[1] == 'replacement') {
+
+                                        $section = 'replacement';
+                                        $object  = 'replacement';
+
+                                        $parent     = 'order';
+                                        $parent_key = $key;
+                                        if (isset($view_path[2])) {
+
+                                            if(is_numeric($view_path[2])){
+                                                $key = $view_path[2];
+                                            }elseif($view_path[2]=='new'){
+                                                $object     = 'order';
+                                                $key = $parent_key;
+                                                $parent     = 'store';
+                                                $parent_key = $arg1;
+                                                $section = 'replacement.new';
+                                            }
+
+
+
+
+                                        }
+
+                                    }
+
+
                                 }
                             }
 

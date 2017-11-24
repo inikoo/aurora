@@ -1719,9 +1719,14 @@ function get_delivery_note_navigation($data, $smarty, $user, $db, $account) {
     }
 
 
-    $title = _('Delivery Note').' <span class="id">'.$object->get(
-            'Delivery Note ID'
-        ).'</span>';
+if($object->get('Delivery Note Type')=='Replacement'){
+    $title = _('Replacement').' <span class="id">'.$object->get('Delivery Note ID').'</span>';
+}else{
+    $title = _('Delivery Note').' <span class="id">'.$object->get('Delivery Note ID').'</span>';
+
+}
+
+
 
 
     $_content = array(
@@ -2717,5 +2722,45 @@ function get_refund_new_navigation($data, $smarty, $user, $db, $account) {
 
 }
 
+function get_replacement_new_navigation($data, $smarty, $user, $db, $account) {
+
+
+    $sections = get_sections('orders_server');
+
+
+    $left_buttons[] = array(
+        'icon'      => 'arrow-left',
+        'title'     => _('Return to order'),
+        'reference' => 'orders/'.$data['_object']->get('Store Key').'/'.$data['_object']->id
+    );
+
+
+    $right_buttons = array();
+
+    if (isset($sections[$data['section']])) {
+        $sections[$data['section']]['selected'] = true;
+    }
+
+    $title = sprintf(_("New replacement for order %s"),'<span class="button" onclick="change_view(\'orders/'.$data['_object']->get('Store Key').'/'.$data['_object']->id.'\')">'.$data['_object']->get('Public ID').'</span>');
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search orders')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
 
 ?>

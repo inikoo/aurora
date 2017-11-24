@@ -53,11 +53,11 @@ function get_order_showcase($data, $smarty, $user, $db) {
 
     if($data['section']=='refund.new'){
         $smarty->assign('zero_amount',money(0,$store->get('Store Currency Code')));
-
-
-
-
         return $smarty->fetch('showcase/refund.new.tpl');
+
+    }elseif($data['section']=='replacement.new'){
+        $smarty->assign('zero_amount',money(0,$store->get('Store Currency Code')));
+        return $smarty->fetch('showcase/replacement.new.tpl');
 
     }else{
         return $smarty->fetch('showcase/order.tpl');

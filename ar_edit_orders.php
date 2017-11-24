@@ -31,6 +31,20 @@ $tipo = $_REQUEST['tipo'];
 switch ($tipo) {
 
 
+    case 'create_replacement':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'key'          => array('type' => 'key'),
+                         'transactions' => array('type' => 'json array'),
+
+
+                     )
+        );
+
+        create_replacement($data, $editor, $smarty, $db, $account, $user);
+
+
+        break;
     case 'create_refund':
         $data = prepare_values(
             $_REQUEST, array(
@@ -615,7 +629,8 @@ function new_payment($data, $editor, $smarty, $db, $account, $user) {
         'Payment Metadata'               => '',
         'Payment Submit Type'            => 'Manual',
         'Payment Currency Exchange Rate' => $exchange,
-        'Payment User Key'               => $user->id
+        'Payment User Key'               => $user->id,
+        'Payment Type'=>($payback_refund?'Refund':'Payment')
 
 
     );
@@ -1053,6 +1068,36 @@ function create_refund($data, $editor, $smarty, $db) {
         $response = array(
             'state'      => 200,
             'refund_key' => $refund->id,
+            'store_key' => $refund->get('Store Key')
+
+        );
+    } else {
+        $response = array(
+            'state' => 400,
+            'msg'   => $object->msg
+        );
+    }
+
+
+    echo json_encode($response);
+
+}
+
+
+function create_replacement($data, $editor, $smarty, $db) {
+
+
+    $object         = get_object('order', $data['key']);
+    $object->editor = $editor;
+
+
+    $refund = $object->create_replacement($data['transactions']);
+
+
+    if ($refund->id) {
+        $response = array(
+            'state'      => 200,
+            'replacement_key' => $refund->id,
             'store_key' => $refund->get('Store Key')
 
         );
