@@ -1805,18 +1805,11 @@ function get_orders_element_numbers($db, $data, $user) {
 
     // USE INDEX (`Current Payment State Store Key`)
     $sql = sprintf(
-        "SELECT %s AS number,`Order Current Payment State` AS element FROM %s  %s %s GROUP BY `Order Current Payment State` ", $count, $table, $where, $where_interval
+        "SELECT %s AS number,`Order Payment State` AS element FROM %s  %s %s GROUP BY `Order Current Payment State` ", $count, $table, $where, $where_interval
     );
     foreach ($db->query($sql) as $row) {
-        if ($row['element'] == 'Waiting Payment') {
-            $_element = 'WaitingPayment';
-        } elseif ($row['element'] == 'Partially Paid') {
-            $_element = 'PartiallyPaid';
-        } elseif ($row['element'] == 'No Applicable') {
-            $_element = 'NA';
-        } else {
-            $_element = $row['element'];
-        }
+        $_element = $row['element'];
+
         $elements_numbers['payment'][$_element] = number($row['number']);
     }
 

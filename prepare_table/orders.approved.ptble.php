@@ -142,15 +142,6 @@ if (isset($parameters['elements_type'])) {
                 $_value = $_value['selected'];
                 if ($_value) {
                     $num_elements_checked++;
-                    if ($_key == 'WaitingPayment') {
-                        $_key = 'Waiting Payment';
-                    }
-                    if ($_key == 'PartiallyPaid') {
-                        $_key = 'Partially Paid';
-                    }
-                    if ($_key == 'NA') {
-                        $_key = 'No Applicable';
-                    }
 
 
                     $_elements .= ", '$_key'";
@@ -159,11 +150,11 @@ if (isset($parameters['elements_type'])) {
 
             if ($_elements == '') {
                 $where .= ' and false';
-            } elseif ($num_elements_checked == 6) {
+            } elseif ($num_elements_checked == 4) {
 
             } else {
                 $_elements = preg_replace('/^,/', '', $_elements);
-                $where .= ' and `Order Current Payment State` in ('.$_elements.')';
+                $where .= ' and `Order Payment State` in ('.$_elements.')';
             }
             break;
     }
@@ -194,7 +185,7 @@ if ($order == 'public_id') {
 } elseif ($order == 'dispatch_state') {
     $order = 'O.`Order State`';
 } elseif ($order == 'payment_state') {
-    $order = 'O.`Order Current Payment State`';
+    $order = 'O.`Order Payment State`';
 } elseif ($order == 'total_amount') {
     $order = 'O.`Order Total Amount`';
 } else {
@@ -202,7 +193,7 @@ if ($order == 'public_id') {
 }
 
 $fields
-    = '`Order Invoiced`,`Order Number Items`,`Order Store Key`,`Payment Account Name`,`Order Payment Method`,`Order Balance Total Amount`,`Order Current Payment State`,`Order State`,`Order Type`,`Order Currency Exchange`,`Order Currency`,O.`Order Key`,O.`Order Public ID`,`Order Customer Key`,`Order Customer Name`,O.`Order Last Updated Date`,O.`Order Date`,`Order Total Amount`,
+    = '`Order Invoiced`,`Order Number Items`,`Order Store Key`,`Payment Account Name`,`Order Payment Method`,`Order Balance Total Amount`,`Order Payment State`,`Order State`,`Order Type`,`Order Currency Exchange`,`Order Currency`,O.`Order Key`,O.`Order Public ID`,`Order Customer Key`,`Order Customer Name`,O.`Order Last Updated Date`,O.`Order Date`,`Order Total Amount`,
      (select group_concat(`Delivery Note Key`) from `Delivery Note Dimension` where `Delivery Note Order Key`=O.`Order Key`   ) as delivery_notes
     
     

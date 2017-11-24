@@ -124,6 +124,17 @@ function fork_housekeeping($job) {
 
 
             break;
+        case 'replacement_created':
+            $order   = get_object('Order', $data['order_key']);
+            $account = get_object('Account', '');
+            $store   = get_object('Store', $order->get('Store Key'));
+
+
+            $store->update_orders();
+            $account->update_orders();
+
+
+            break;
 
         case 'order_created':
             include_once 'class.Order.php';

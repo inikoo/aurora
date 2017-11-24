@@ -781,6 +781,8 @@ ALTER TABLE `Customer Dimension` DROP `Customer Main Delivery Address Key`;
 ALTER TABLE `Customer Dimension` DROP `Customer Main Address Incomplete`;
 
 
+ALTER TABLE `Order Dimension` ADD `Order Replacement State` ENUM('NA','InWarehouse','PackedDone','Approved','Dispatched') NOT NULL DEFAULT 'NA' AFTER `Order State`, ADD INDEX (`Order Replacement State`);
+ALTER TABLE `Order Dimension` ADD `Order Payment State` ENUM('NA','Paid','ToPay','OverPaid') NOT NULL DEFAULT 'NA' AFTER `Order State`, ADD INDEX (`Order Payment State`);
 
 
 

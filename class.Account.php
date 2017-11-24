@@ -1781,6 +1781,25 @@ class Account extends DB_Table {
 
 
         $sql = sprintf(
+            "SELECT count(*) AS num FROM `Order Dimension` WHERE    `Order Replacement State` ='InWarehouse' "
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+                $data['warehouse']['number']    += $row['num'];
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+
+        $sql = sprintf(
             "SELECT count(*) AS num,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE   `Order State` ='InWarehouse' AND `Order Delivery Note Alert`='Yes'  "
         );
 
@@ -1798,6 +1817,29 @@ class Account extends DB_Table {
             print_r($error_info = $this->db->errorInfo());
             exit;
         }
+
+
+
+        $sql = sprintf(
+            "SELECT count(*) AS num FROM `Order Dimension` WHERE   `Order Replacement State` ='InWarehouse' AND `Order Delivery Note Alert`='Yes'  "
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+
+                $data['warehouse_with_alerts']['number'] += $row['num'];
+
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
 
         $data['warehouse_no_alerts']['number']    = $data['warehouse']['number'] - $data['warehouse_with_alerts']['number'];
         $data['warehouse_no_alerts']['dc_amount'] = $data['warehouse']['dc_amount'] - $data['warehouse_with_alerts']['dc_amount'];
@@ -1840,6 +1882,26 @@ class Account extends DB_Table {
 
                 $data['packed']['number']    = $row['num'];
                 $data['packed']['dc_amount'] = $row['dc_amount'];
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+
+        $sql = sprintf(
+            "SELECT count(*) AS num FROM `Order Dimension` WHERE `Order Replacement State` ='PackedDone'  "
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+
+                $data['packed']['number']    += $row['num'];
 
 
             }
@@ -1963,6 +2025,24 @@ class Account extends DB_Table {
 
                 $data['dispatched_today']['number']    = $row['num'];
                 $data['dispatched_today']['dc_amount'] = $row['dc_amount'];
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+        $sql = sprintf(
+            "SELECT count(*) AS num FROM `Order Dimension` WHERE   `Order Replacement State` ='Dispatched' AND `Order Post Transactions Dispatched Date`>=%s ", prepare_mysql(gmdate('Y-m-d 00:00:00'))
+
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+                $data['dispatched_today']['number']    += $row['num'];
 
 
             }

@@ -13,8 +13,7 @@
 trait OrderPayments {
 
 
-
-     function add_payment($payment) {
+    function add_payment($payment) {
 
         $payment->update(array('Payment Order Key' => $this->id), 'no_history');
 
@@ -24,40 +23,38 @@ trait OrderPayments {
         $this->db->exec($sql);
         $this->update_totals();
 
-         include_once 'utils/new_fork.php';
+        include_once 'utils/new_fork.php';
 
 
-
-         $account = get_object('Account', 1);
-
+        $account = get_object('Account', 1);
 
 
-         new_housekeeping_fork(
-             'au_housekeeping', array(
-             'type'      => 'payment_added_order',
-             'order_key' => $this->id,
-             'store_key' => $this->data['Order Store Key'],
-             'payment_key' => $payment->id,
-         ), $account->get('Account Code')
-         );
+        new_housekeeping_fork(
+            'au_housekeeping', array(
+            'type'        => 'payment_added_order',
+            'order_key'   => $this->id,
+            'store_key'   => $this->data['Order Store Key'],
+            'payment_key' => $payment->id,
+        ), $account->get('Account Code')
+        );
 
 
 
     }
-    
-    function get_payments($scope = 'keys',$filter='') {
+
+    function get_payments($scope = 'keys', $filter = '') {
 
 
-         if($filter=='Completed'){
-             $where=' and `Payment Transaction Status`="Completed" ';
-         }else{
-             $where='';
-         }
-     
+        if ($filter == 'Completed') {
+            $where = ' and `Payment Transaction Status`="Completed" ';
+        } else {
+            $where = '';
+        }
+
 
         $payments = array();
         $sql      = sprintf(
-            "SELECT B.`Payment Key` FROM `Order Payment Bridge` B left join `Payment Dimension` P  on (P.`Payment Key`=B.`Payment Key`)  WHERE `Order Key`=%d %s ", $this->id,$where
+            "SELECT B.`Payment Key` FROM `Order Payment Bridge` B LEFT JOIN `Payment Dimension` P  ON (P.`Payment Key`=B.`Payment Key`)  WHERE `Order Key`=%d %s ", $this->id, $where
         );
 
 
@@ -68,9 +65,9 @@ trait OrderPayments {
                 }
 
                 if ($scope == 'objects') {
-                    $_object=get_object('Payment',$row['Payment Key']);
+                    $_object = get_object('Payment', $row['Payment Key']);
                     $_object->load_payment_account();
-                    $payments[$row['Payment Key']] = $_object ;
+                    $payments[$row['Payment Key']] = $_object;
 
                 } else {
                     $payments[$row['Payment Key']] = $row['Payment Key'];
@@ -83,6 +80,29 @@ trait OrderPayments {
 
 
         return $payments;
+
+    }
+
+    function update_payment_state() {
+
+        if ($this->data['Order Total Amount'] == 0) {
+            $payment_state = 'NA';
+        } else {
+            if ($this->data['Order To Pay Amount'] > 0) {
+                $payment_state = 'ToPay';
+            } elseif ($this->data['Order To Pay Amount'] == 0) {
+                $payment_state = 'Paid';
+            } else {
+                $payment_state = 'OverPaid';
+            }
+
+
+        }
+
+        $this->fast_update(
+            array('Order Payment State' => $payment_state)
+        );
+
 
     }
 

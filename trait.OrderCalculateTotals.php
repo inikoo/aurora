@@ -239,8 +239,12 @@ trait OrderCalculateTotals {
             )
         );
 
+        $this->update_payment_state();
+
 
     }
+
+
 
 }
 

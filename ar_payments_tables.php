@@ -202,10 +202,10 @@ function payments($_data, $db, $user) {
 
             switch ($data['Payment Type']) {
                 case 'Payment':
-                    $type = _('Payment');
+                    $type = _('Order payment');
                     break;
                 case 'Refund':
-                    $type = _('Refund');
+                    $type = _('Refund pay back');
                     break;
                 case 'Credit':
                     $type = _('Credit');
@@ -252,7 +252,7 @@ function payments($_data, $db, $user) {
                             <i class="fa fa-share fa-flip-horizontal button %s" data-settings=\'{"reference":"%s","amount_formatted":"%s","amount":"%s","can_refund_online":"%s"}\'   aria-hidden="true" title="'
                             ._('Refund/Credit payment').'"  onClick="open_refund_dialog(this,%d)"  ></i>
 
-                            </span>', (($data['Payment Submit Type'] != 'Manual' or $is_refund )? 'hide' : ''), $data['Payment Key'],
+                            </span>', (($data['Payment Submit Type'] != 'Manual' or ($is_refund and $data['Payment Type']!='Refund'  ) )? 'hide' : ''), $data['Payment Key'],
 
                             (($data['Payment Type'] == 'Payment' and $refundable_amount > 0) ? '' : 'hide'),
 
@@ -285,7 +285,7 @@ function payments($_data, $db, $user) {
 
 
             $amount =
-                '<span class="'.($data['Payment Transaction Status'] != 'Completed' ? 'strikethrough' : '').'" >'.money($data['Payment Transaction Amount'], $data['Payment Currency Code']).'</span>';
+                '<span class=" '.($data['Payment Transaction Amount']<0?'error':'').'  '.($data['Payment Transaction Status'] != 'Completed' ? 'strikethrough' : '').'" >'.money($data['Payment Transaction Amount'], $data['Payment Currency Code']).'</span>';
 
 
             $refunds = '';

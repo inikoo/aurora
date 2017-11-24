@@ -95,7 +95,6 @@ trait OrderBasketOperations {
             $this->data['Order Payment Method'] = 'Unknown';
         }
 
-        $this->data['Order Current Payment State'] = 'Waiting Payment';
 
         // if (array_key_exists('Order Sales Representative Keys', $data)) {
         //     $this->data['Order Sales Representative Keys'] = $data['Order Sales Representative Keys'];

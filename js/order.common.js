@@ -274,10 +274,13 @@ function save_order_operation(element) {
 
     var metadata = {}
 
-    console.log('#' + dialog_name + '_dialog')
+    //console.log('#' + dialog_name + '_dialog')
 
     $('#' + dialog_name + '_dialog  .option_input_field').each(function () {
         var settings = $(this).data("settings")
+
+
+
         if (settings.type == 'datetime') {
             metadata[settings.field] = $('#' + settings.id).val() + ' ' + $('#' + settings.id + '_time').val()
 
@@ -286,8 +289,17 @@ function save_order_operation(element) {
 
     });
 
+    console.log(field)
+
+    if(field=='Replacement State'){
+        metadata['Delivery Note Key']=data.replacement_key;
+    }
+
 
     var request = '/ar_edit.php?tipo=edit_field&object=' + object + '&key=' + key + '&field=' + field + '&value=' + value + '&metadata=' + JSON.stringify(metadata)
+
+
+
     console.log(request)
     //  return;
     //=====

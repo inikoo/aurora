@@ -396,7 +396,7 @@ function get_rtext($record_label, $total_records) {
         );
     }  elseif ($record_label == 'order packed done') {
         return sprintf(
-            ngettext('%s order to invoice', '%s orders to invoice', $total_records), number($total_records)
+            ngettext('%s order packed and sealed', '%s packed and sealed', $total_records), number($total_records)
         );
     }  elseif ($record_label == 'order dispatched today') {
         return sprintf(

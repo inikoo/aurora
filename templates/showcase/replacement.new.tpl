@@ -2,7 +2,7 @@
 <!--
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 5 November 2017 at 12:44:12 GMT+8, Sanur, Bali, Indonesia
+ Created: 21 November 2017 at 18:25:42 GMT+8, Kaula Lumpur, Malaysia
  Copyright (c) 2017, Inikoo
 
  Version 3
@@ -41,11 +41,16 @@
             </div>
 
             <div class="data_field  " style="padding:10px 0px 20px 0px;">
+                <div style="float:left;padding-bottom:20px;padding-right:20px" class="Delivery_Address">
+                    <div style="margin-bottom:10px">
+                        <span class="{if $order->get('Order For Collection')=='Yes'}hide{/if}"><i   class="   fa fa-truck fa-flip-horizontal button" aria-hidden="true""></i>{t}Deliver to{/t}</span>
+                        <span class="{if $order->get('Order For Collection')=='No'}hide{/if}"><i   class="   fa fa-hand-rock-o fa-flip-horizontal button" aria-hidden="true""></i>{t}Collection{/t}</span>
 
-                <div style="float:left;padding-bottom:20px;" class="Billing_Address">
-                    <div style="margin-bottom:10px"><i class="fa fa-dollar button" aria-hidden="true""></i>{t}Billed to{/t}</div>
-                    <div class="small Order_Invoice_Address" style="max-width: 140px;">{$order->get('Order Invoice Address Formatted')}</div>
+                    </div>
+
+                    <div class="small Order_Delivery_Address " style="max-width: 140px;">{$order->get('Order Delivery Address Formatted')}</div>
                 </div>
+
                 <div style="clear:both"></div>
             </div>
 
@@ -213,12 +218,12 @@
             <div id="back_operations">
 
             </div>
-            <span style="float:left;padding-left:10px;padding-top:5px" class="Order_State"> {t}Creating refund{/t} </span>
+            <span style="float:left;padding-left:10px;padding-top:5px" class="Order_State"> {t}Creating replacement{/t} </span>
             <div id="forward_operations">
 
-                <div id="create_refund_operations" class="order_operation {if {$order->get('State Index')}<100  }hide{/if}">
-                    <div  class="square_button right  " title="{t}Create refund{/t}">
-                        <i class="fa fa-cloud save   open_create_refund_dialog_button" aria-hidden="true" onclick="save_refund(this)"></i>
+                <div id="create_replacement_operations" class="order_operation {if {$order->get('State Index')}<100  }hide{/if}">
+                    <div  class="square_button right  " title="{t}Create replacement{/t}">
+                        <i class="fa fa-cloud save   open_create_replacement_dialog_button" aria-hidden="true" onclick="save_replacement(this)"></i>
 
                     </div>
                 </div>
@@ -232,31 +237,14 @@
 
             <tr>
 
-                <td>
+                <td class="hide">
                     <span style=""><i class="fa fa-cube fa-fw discreet" aria-hidden="true"></i> <span class="affected_items">0</span> / <span class="Order_Number_items">{$order->get('Number Items')}</span></span>
-                    <span style="padding-left:20px"><i class="fa fa-percent fa-fw  " aria-hidden="true"></i> <span class="percentage_refunded">0.00</span>%</span>
 
 
                 </td>
             </tr>
 
-            <table border="0" class="totals" style="position:relative;top:20px">
 
-
-                <tr class="subtotal first">
-                    <td class="label">{t}Net{/t}</td>
-                    <td class="aright Refund_Net_Amount">{$zero_amount}</td>
-                </tr>
-                <tr class="subtotal first">
-                    <td class="label">{t}Tax{/t}</td>
-                    <td class="aright Refund_Tax_Amount">{$zero_amount}</td>
-                </tr>
-                <tr class="total first">
-                    <td class="label">{t}Total{/t}</td>
-                    <td class="aright Refund_Total_Amount">{$zero_amount}</td>
-                </tr>
-
-            </table>
 
 
 
@@ -265,61 +253,3 @@
 
     </div>
 <div style="clear:both"></div></div>
-
-<div id="add_payment" class="table_new_fields hide">
-
-    <div style="align-items: stretch;flex: 1;padding:10px 20px;border-bottom: 1px solid #ccc;position: relative">
-
-        <i style="position:absolute;top:10px;" class="fa fa-window-close fa-flip-horizontal button" aria-hidden="true" onclick="close_add_payment_to_order()"></i>
-
-        <table border="0" style="width:50%;float:right;xborder-left:1px solid #ccc;width:100%;">
-            <tr>
-                <td style="width: 500px">
-                <td>
-                <td></td>
-
-                <td>
-                    <div id="new_payment_payment_account_buttons">
-                        {foreach from=$store->get_payment_accounts('objects','Active') item=payment_account}
-
-                            {if $payment_account->get('Payment Account Block')=='Accounts'}
-                                <div class="button  {if $customer->get('Customer Account Balance')<=0}hide{/if} {$payment_account->get('Payment Account Block')}" onclick="select_payment_account(this)"
-                                     data-settings='{ "payment_account_key":"{$payment_account->id}", "max_amount":"{$customer->get('Customer Account Balance')}" , "payment_method":"{$payment_account->get('Default Payment Method')}", "block":"{$payment_account->get('Payment Account Block')}" }' class="new_payment_payment_account_button unselectable
-                        button {if $payment_account->get('Payment Account Block')=='Accounts' and $customer->get('Customer Account Balance')<=0  }hide{/if}" style="border:1px solid #ccc;padding:10px
-                        5px;margin-bottom:2px">{t}Customer credit{/t} <span class="discreet padding_left_10">{$customer->get('Account Balance')}</span></div>
-                                {else}
-                                <div  class="button" onclick="select_payment_account(this)"
-                                     data-settings='{ "payment_account_key":"{$payment_account->id}", "max_amount":"" , "payment_method":"{$payment_account->get('Default Payment Method')}", "block":"{$payment_account->get('Payment Account Block')}" }' class="new_payment_payment_account_button unselectable
-                        button {if $payment_account->get('Payment Account Block')=='Accounts' and $customer->get('Customer Account Balance')<=0  }hide{/if}" style="border:1px solid #ccc;padding:10px
-                        5px;margin-bottom:2px">{$payment_account->get('Name')}</div>
-                            {/if}
-
-
-
-                        {/foreach}
-                    </div>
-                    <input type="hidden" id="new_payment_payment_account_key" value="">
-                    <input type="hidden" id="new_payment_payment_method" value="">
-
-
-                </td>
-
-                <td class="payment_fields " style="padding-left:30px;width: 300px">
-                    <table>
-                        <tr>
-                            <td> {t}Amount{/t}</td>
-                            <td style="padding-left:20px"><input disabled=true class="new_payment_field" id="new_payment_amount" placeholder="{t}Amount{/t}"></td>
-                        </tr>
-                        <tr>
-                            <td>  {t}Reference{/t}</td>
-                            <td style="padding-left:20px"><input disabled=true class="new_payment_field" id="new_payment_reference" placeholder="{t}Reference{/t}"></td>
-                        </tr>
-                    </table>
-                </td>
-
-                <td id="save_new_payment" class="buttons save" onclick="save_new_payment()"><span>{t}Save{/t}</span> <i class=" fa fa-cloud " aria-hidden="true"></i></td>
-            </tr>
-
-        </table>
-    </div>
-</div>

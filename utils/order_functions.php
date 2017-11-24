@@ -142,7 +142,7 @@ function get_orders_operations($row, $user) {
 }
 
 
-function get_order_formatted_dispatch_state($state, $order_key) {
+function get_order_formatted_dispatch_state($state,$replacement_state, $order_key) {
     switch ($state) {
         case 'In Process by Customer':
             $dispatch_state = _('In Website');
@@ -153,6 +153,26 @@ function get_order_formatted_dispatch_state($state, $order_key) {
 
         case 'Packed Done':
             return _('Packed & Checked');
+            break;
+        case 'InWarehouse':
+            $dispatch_state = _('In warehouse');
+            break;
+        case 'Dispatched':
+            switch ($replacement_state){
+                case 'InWarehouse':
+                    $dispatch_state = _('Replacement in warehouse');
+                break;
+                case 'PackedDone':
+                    $dispatch_state = _('Replacement packed');
+                    break;
+                case 'Approved':
+                    $dispatch_state = _('Replacement approved to dispatch');
+                    break;
+                default:
+                    $dispatch_state = _('Dispatched');
+            }
+
+
             break;
         default:
             $dispatch_state = $state;
@@ -165,18 +185,17 @@ function get_order_formatted_dispatch_state($state, $order_key) {
 function get_order_formatted_payment_state($data) {
 
 
-    switch ($data['Order Current Payment State']) {
-        case 'No Applicable':
+    switch ($data['Order Payment State']) {
+        case 'NA':
             ///$payment_state='<span style="opacity:.6">'._('No Applicable').'</span>';
             $payment_state = '';
             break;
-        case 'Waiting Payment':
+        case 'ToPay':
 
-            if ($data['Order State'] == 'In Process by Customer' or $data['Order State'] == 'Cancelled') {
+            if ($data['Order State'] == 'InBasket' or $data['Order State'] == 'Cancelled') {
                 $payment_state = '';
             } else {
 
-                $payment_state = _('Waiting Payment');
                 //Credit Card','Cash','Paypal','Check','Bank Transfer','Cash on Delivery','Other','Unknown','Account
                 switch ($data['Order Payment Method']) {
                     case 'Bank Transfer':
@@ -207,28 +226,17 @@ function get_order_formatted_payment_state($data) {
 
             }
             break;
-        case 'Overpaid':
+        case 'OverPaid':
             $payment_state = _('Overpaid');
 
             break;
-        case 'Unknown':
-            $payment_state = '';
 
-            break;
         case 'Paid':
             $payment_state = _('Paid');
             break;
-        case 'Partially Paid':
 
-            if ($data['Order State'] == 'In Process by Customer') {
-                $payment_state = _('Using Credit');
-            } else {
-
-                $payment_state = _('Partially Paid');
-            }
-            break;
         default:
-            $payment_state = $data['Order Current Payment State'];
+            $payment_state = $data['Order Payment State'];
     }
     if ($payment_state != '') {
         $payment_state = '<span id="payment_state_'.$data['Order Key'].'">'.$payment_state.'</span>';

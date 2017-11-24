@@ -164,41 +164,8 @@ function orders_in_process_not_paid($_data, $db, $user) {
     foreach ($db->query($sql) as $data) {
 
 
-        switch ($data['Order Current Payment State']) {
-            case 'No Applicable':
-                ///$payment_state='<span style="opacity:.6">'._('No Applicable').'</span>';
-                $payment_state = '';
-                break;
-            case 'Waiting Payment':
 
-                $payment_state = '<i class="fa fa-check super_discreet" aria-hidden="true"></i>';
-
-
-                break;
-            case 'Overpaid':
-                $payment_state = _('Overpaid');
-
-                break;
-            case 'Unknown':
-                $payment_state = '<i class="fa fa-question" aria-hidden="true"></i>';
-
-                break;
-            case 'Paid':
-                $payment_state = '<i class="fa fa-check success" aria-hidden="true"></i>';
-                break;
-            case 'Partially Paid':
-
-                $payment_state = '<i class="fa fa-check discreet warning" aria-hidden="true"></i>';
-
-                break;
-            default:
-                $payment_state = $data['Order Current Payment State'];
-        }
-        if ($payment_state != '') {
-            $payment_state = '<span id="payment_state_'.$data['Order Key'].'">'.$payment_state.'</span>';
-        }
-
-
+        $payment_state=get_order_formatted_payment_state($data);
         include_once 'class.Order.php';
 
         $operations = '<div id="operations'.$data['Order Key'].'">';
@@ -233,7 +200,7 @@ function orders_in_process_not_paid($_data, $db, $user) {
             'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
             'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
             'customer'       => sprintf('<span class="link" onClick="change_view(\'customers/%d\')">%s</span>', $data['Order Customer Key'], $data['Order Customer Name']),
-            'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'], $data['Order Key']),
+            'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'],'', $data['Order Key']),
             'payment_state'  => $payment_state,
             'total_amount'   => money($data['Order Total Amount'], $data['Order Currency']),
             'actions'        => $operations
@@ -271,39 +238,7 @@ function orders_in_process_paid($_data, $db, $user) {
     foreach ($db->query($sql) as $data) {
 
 
-        switch ($data['Order Current Payment State']) {
-            case 'No Applicable':
-                ///$payment_state='<span style="opacity:.6">'._('No Applicable').'</span>';
-                $payment_state = '';
-                break;
-            case 'Waiting Payment':
-
-                $payment_state = '<i class="fa fa-check super_discreet" aria-hidden="true"></i>';
-
-
-                break;
-            case 'Overpaid':
-                $payment_state = _('Overpaid');
-
-                break;
-            case 'Unknown':
-                $payment_state = '<i class="fa fa-question" aria-hidden="true"></i>';
-
-                break;
-            case 'Paid':
-                $payment_state = '<i class="fa fa-check success" aria-hidden="true"></i>';
-                break;
-            case 'Partially Paid':
-
-                $payment_state = '<i class="fa fa-check discreet warning" aria-hidden="true"></i>';
-
-                break;
-            default:
-                $payment_state = $data['Order Current Payment State'];
-        }
-        if ($payment_state != '') {
-            $payment_state = '<span id="payment_state_'.$data['Order Key'].'">'.$payment_state.'</span>';
-        }
+        $payment_state=get_order_formatted_payment_state($data);
 
 
         include_once 'class.Order.php';
@@ -340,7 +275,7 @@ function orders_in_process_paid($_data, $db, $user) {
             'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
             'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
             'customer'       => sprintf('<span class="link" onClick="change_view(\'customers/%d\')">%s</span>', $data['Order Customer Key'], $data['Order Customer Name']),
-            'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'], $data['Order Key']),
+            'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'],'', $data['Order Key']),
             'payment_state'  => $payment_state,
             'total_amount'   => money($data['Order Total Amount'], $data['Order Currency']),
             'actions'        => $operations
@@ -377,40 +312,7 @@ function orders_in_warehouse($_data, $db, $user) {
     foreach ($db->query($sql) as $data) {
 
 
-        switch ($data['Order Current Payment State']) {
-            case 'No Applicable':
-                ///$payment_state='<span style="opacity:.6">'._('No Applicable').'</span>';
-                $payment_state = '';
-                break;
-            case 'Waiting Payment':
-
-                $payment_state = '<i class="fa fa-check super_discreet" aria-hidden="true"></i>';
-
-
-                break;
-            case 'Overpaid':
-                $payment_state = _('Overpaid');
-
-                break;
-            case 'Unknown':
-                $payment_state = '<i class="fa fa-question" aria-hidden="true"></i>';
-
-                break;
-            case 'Paid':
-                $payment_state = '<i class="fa fa-check success" aria-hidden="true"></i>';
-                break;
-            case 'Partially Paid':
-
-                $payment_state = '<i class="fa fa-check discreet warning" aria-hidden="true"></i>';
-
-                break;
-            default:
-                $payment_state = $data['Order Current Payment State'];
-        }
-        if ($payment_state != '') {
-            $payment_state = '<span id="payment_state_'.$data['Order Key'].'">'.$payment_state.'</span>';
-        }
-
+        $payment_state=get_order_formatted_payment_state($data);
 
         include_once 'class.Order.php';
 
@@ -449,7 +351,7 @@ function orders_in_warehouse($_data, $db, $user) {
             'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
             'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
             'customer'       => sprintf('<span class="link" onClick="change_view(\'customers/%d\')">%s</span>', $data['Order Customer Key'], $data['Order Customer Name']),
-            'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'], $data['Order Key']),
+            'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'],'', $data['Order Key']),
             'payment_state'  => $payment_state,
             'total_amount'   => money($data['Order Total Amount'], $data['Order Currency']),
             'actions'        => $operations
@@ -487,39 +389,9 @@ function orders_in_warehouse_no_alerts($_data, $db, $user) {
     foreach ($db->query($sql) as $data) {
 
 
-        switch ($data['Order Current Payment State']) {
-            case 'No Applicable':
-                ///$payment_state='<span style="opacity:.6">'._('No Applicable').'</span>';
-                $payment_state = '';
-                break;
-            case 'Waiting Payment':
-
-                $payment_state = '<i class="fa fa-check super_discreet" aria-hidden="true"></i>';
 
 
-                break;
-            case 'Overpaid':
-                $payment_state = _('Overpaid');
 
-                break;
-            case 'Unknown':
-                $payment_state = '<i class="fa fa-question" aria-hidden="true"></i>';
-
-                break;
-            case 'Paid':
-                $payment_state = '<i class="fa fa-check success" aria-hidden="true"></i>';
-                break;
-            case 'Partially Paid':
-
-                $payment_state = '<i class="fa fa-check discreet warning" aria-hidden="true"></i>';
-
-                break;
-            default:
-                $payment_state = $data['Order Current Payment State'];
-        }
-        if ($payment_state != '') {
-            $payment_state = '<span id="payment_state_'.$data['Order Key'].'">'.$payment_state.'</span>';
-        }
 
 
         include_once 'class.Order.php';
@@ -532,12 +404,12 @@ function orders_in_warehouse_no_alerts($_data, $db, $user) {
 
 
         $operations .= sprintf(
-            "<i class=\"fa fa-minus-circle error  padding_right_10 button edit\" onClick=\"open_cancel_dialog_from_list(this,%d,'%s, %s')\" title='%s'></i>", $data['Order Key'], $data['Order Public ID'], $data['Order Customer Name'], _('Cancel')
+            "<i class=\"fa fa-minus-circle error hide  padding_right_10 button edit\" onClick=\"open_cancel_dialog_from_list(this,%d,'%s, %s')\" title='%s'></i>", $data['Order Key'], $data['Order Public ID'], $data['Order Customer Name'], _('Cancel')
         );
 
         foreach (preg_split('/,/', $data['delivery_notes']) as $delivery_note_data) {
             $operations .= sprintf(
-                "<i class=\"fa fa-truck fa-flip-horizontal   button\" onClick=\"change_view('delivery_notes/%d/%d')\"></i>", $data['Order Store Key'], $delivery_note_data
+                "<i class=\"fa fa-truck fa-flip-horizontal padding_right_10  button\" onClick=\"change_view('delivery_notes/%d/%d')\"></i>", $data['Order Store Key'], $delivery_note_data
 
             );
         }
@@ -547,6 +419,44 @@ function orders_in_warehouse_no_alerts($_data, $db, $user) {
 
 
         $operations .= '</div>';
+
+
+
+
+        if($data['Order Replacement State']=='InWarehouse'){
+            $payment_state='';
+            $total_amount='';
+            $deliveries='';
+
+            if($data['delivery_notes']!='') {
+
+                foreach (preg_split('/,/', $data['delivery_notes']) as $delivery_note_data) {
+
+
+                    $_delivery_note_data = preg_split('/\|/', $delivery_note_data);
+
+
+                    $deliveries = sprintf(
+                        "<span class='padding_right_10 error link' onClick=\"change_view('delivery_notes/%d/%d')\"><i class=\"fa fa-truck   \" ></i> %s</span>", $data['Order Store Key'], $_delivery_note_data[0], $_delivery_note_data[1]
+
+                    );
+                }
+            }
+        }else{
+            $payment_state=get_order_formatted_payment_state($data);
+            $total_amount=money($data['Order Total Amount'], $data['Order Currency']);
+            $deliveries='';
+            foreach (preg_split('/,/', $data['delivery_notes']) as $delivery_note_data) {
+                $_delivery_note_data=preg_split('/\|/', $delivery_note_data);
+
+                $deliveries = sprintf(
+                    "<span class='padding_right_10 link' onClick=\"change_view('delivery_notes/%d/%d')\"><i class=\"fa fa-truck fa-flip-horizontal   \" ></i> %s</span>", $data['Order Store Key'], $_delivery_note_data[0],$_delivery_note_data[1]
+
+                );
+            }
+        }
+
+
 
 
         $adata[] = array(
@@ -559,10 +469,11 @@ function orders_in_warehouse_no_alerts($_data, $db, $user) {
             'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
             'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
             'customer'       => sprintf('<span class="link" onClick="change_view(\'customers/%d\')">%s</span>', $data['Order Customer Key'], $data['Order Customer Name']),
-            'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'], $data['Order Key']),
+            'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'],$data['Order Replacement State'], $data['Order Key']),
             'payment_state'  => $payment_state,
-            'total_amount'   => money($data['Order Total Amount'], $data['Order Currency']),
-            'actions'        => $operations
+            'total_amount'   => $total_amount,
+            'actions'        => $operations,
+            'deliveries'=>$deliveries
 
 
         );
@@ -593,44 +504,11 @@ function orders_in_warehouse_with_alerts($_data, $db, $user) {
     $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
-    //   print $sql;
+     // print $sql;
     foreach ($db->query($sql) as $data) {
 
 
-        switch ($data['Order Current Payment State']) {
-            case 'No Applicable':
-                ///$payment_state='<span style="opacity:.6">'._('No Applicable').'</span>';
-                $payment_state = '';
-                break;
-            case 'Waiting Payment':
-
-                $payment_state = '<i class="fa fa-check super_discreet" aria-hidden="true"></i>';
-
-
-                break;
-            case 'Overpaid':
-                $payment_state = _('Overpaid');
-
-                break;
-            case 'Unknown':
-                $payment_state = '<i class="fa fa-question" aria-hidden="true"></i>';
-
-                break;
-            case 'Paid':
-                $payment_state = '<i class="fa fa-check success" aria-hidden="true"></i>';
-                break;
-            case 'Partially Paid':
-
-                $payment_state = '<i class="fa fa-check discreet warning" aria-hidden="true"></i>';
-
-                break;
-            default:
-                $payment_state = $data['Order Current Payment State'];
-        }
-        if ($payment_state != '') {
-            $payment_state = '<span id="payment_state_'.$data['Order Key'].'">'.$payment_state.'</span>';
-        }
-
+        $payment_state=get_order_formatted_payment_state($data);
 
         include_once 'class.Order.php';
 
@@ -669,7 +547,7 @@ function orders_in_warehouse_with_alerts($_data, $db, $user) {
             'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
             'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
             'customer'       => sprintf('<span class="link" onClick="change_view(\'customers/%d\')">%s</span>', $data['Order Customer Key'], $data['Order Customer Name']),
-            'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'], $data['Order Key']),
+            'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'],'', $data['Order Key']),
             'payment_state'  => $payment_state,
             'total_amount'   => money($data['Order Total Amount'], $data['Order Currency']),
             'actions'        => $operations
@@ -695,6 +573,8 @@ function orders_in_warehouse_with_alerts($_data, $db, $user) {
 
 
 function orders_packed_done($_data, $db, $user) {
+
+
     $rtext_label = 'order packed done';
 
 
@@ -706,42 +586,7 @@ function orders_packed_done($_data, $db, $user) {
     //   print $sql;
     foreach ($db->query($sql) as $data) {
 
-
-        switch ($data['Order Current Payment State']) {
-            case 'No Applicable':
-                ///$payment_state='<span style="opacity:.6">'._('No Applicable').'</span>';
-                $payment_state = '';
-                break;
-            case 'Waiting Payment':
-
-                $payment_state = '<i class="fa fa-check super_discreet" aria-hidden="true"></i>';
-
-
-                break;
-            case 'Overpaid':
-                $payment_state = _('Overpaid');
-
-                break;
-            case 'Unknown':
-                $payment_state = '<i class="fa fa-question" aria-hidden="true"></i>';
-
-                break;
-            case 'Paid':
-                $payment_state = '<i class="fa fa-check success" aria-hidden="true"></i>';
-                break;
-            case 'Partially Paid':
-
-                $payment_state = '<i class="fa fa-check discreet warning" aria-hidden="true"></i>';
-
-                break;
-            default:
-                $payment_state = $data['Order Current Payment State'];
-        }
-        if ($payment_state != '') {
-            $payment_state = '<span id="payment_state_'.$data['Order Key'].'">'.$payment_state.'</span>';
-        }
-
-
+        $payment_state=get_order_formatted_payment_state($data);
         include_once 'class.Order.php';
 
         $operations = '<div id="operations'.$data['Order Key'].'">';
@@ -779,7 +624,7 @@ function orders_packed_done($_data, $db, $user) {
             'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
             'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
             'customer'       => sprintf('<span class="link" onClick="change_view(\'customers/%d\')">%s</span>', $data['Order Customer Key'], $data['Order Customer Name']),
-            'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'], $data['Order Key']),
+            'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'],'', $data['Order Key']),
             'payment_state'  => $payment_state,
             'total_amount'   => money($data['Order Total Amount'], $data['Order Currency']),
             'actions'        => $operations
@@ -816,41 +661,7 @@ function orders_approved($_data, $db, $user) {
     //   print $sql;
     foreach ($db->query($sql) as $data) {
 
-
-        switch ($data['Order Current Payment State']) {
-            case 'No Applicable':
-                ///$payment_state='<span style="opacity:.6">'._('No Applicable').'</span>';
-                $payment_state = '';
-                break;
-            case 'Waiting Payment':
-
-                $payment_state = '<i class="fa fa-check super_discreet" aria-hidden="true"></i>';
-
-
-                break;
-            case 'Overpaid':
-                $payment_state = _('Overpaid');
-
-                break;
-            case 'Unknown':
-                $payment_state = '<i class="fa fa-question" aria-hidden="true"></i>';
-
-                break;
-            case 'Paid':
-                $payment_state = '<i class="fa fa-check success" aria-hidden="true"></i>';
-                break;
-            case 'Partially Paid':
-
-                $payment_state = '<i class="fa fa-check discreet warning" aria-hidden="true"></i>';
-
-                break;
-            default:
-                $payment_state = $data['Order Current Payment State'];
-        }
-        if ($payment_state != '') {
-            $payment_state = '<span id="payment_state_'.$data['Order Key'].'">'.$payment_state.'</span>';
-        }
-
+        $payment_state=get_order_formatted_payment_state($data);
 
         include_once 'class.Order.php';
 
@@ -889,7 +700,7 @@ function orders_approved($_data, $db, $user) {
             'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
             'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
             'customer'       => sprintf('<span class="link" onClick="change_view(\'customers/%d\')">%s</span>', $data['Order Customer Key'], $data['Order Customer Name']),
-            'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'], $data['Order Key']),
+            'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'],'', $data['Order Key']),
             'payment_state'  => $payment_state,
             'total_amount'   => money($data['Order Total Amount'], $data['Order Currency']),
             'actions'        => $operations
@@ -926,42 +737,7 @@ function orders_dispatched_today($_data, $db, $user) {
     //   print $sql;
     foreach ($db->query($sql) as $data) {
 
-
-        switch ($data['Order Current Payment State']) {
-            case 'No Applicable':
-                ///$payment_state='<span style="opacity:.6">'._('No Applicable').'</span>';
-                $payment_state = '';
-                break;
-            case 'Waiting Payment':
-
-                $payment_state = '<i class="fa fa-check super_discreet" aria-hidden="true"></i>';
-
-
-                break;
-            case 'Overpaid':
-                $payment_state = _('Overpaid');
-
-                break;
-            case 'Unknown':
-                $payment_state = '<i class="fa fa-question" aria-hidden="true"></i>';
-
-                break;
-            case 'Paid':
-                $payment_state = '<i class="fa fa-check success" aria-hidden="true"></i>';
-                break;
-            case 'Partially Paid':
-
-                $payment_state = '<i class="fa fa-check discreet warning" aria-hidden="true"></i>';
-
-                break;
-            default:
-                $payment_state = $data['Order Current Payment State'];
-        }
-        if ($payment_state != '') {
-            $payment_state = '<span id="payment_state_'.$data['Order Key'].'">'.$payment_state.'</span>';
-        }
-
-
+        $payment_state=get_order_formatted_payment_state($data);
         include_once 'class.Order.php';
 
         $operations = '<div id="operations'.$data['Order Key'].'">';
@@ -999,7 +775,7 @@ function orders_dispatched_today($_data, $db, $user) {
             'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
             'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
             'customer'       => sprintf('<span class="link" onClick="change_view(\'customers/%d\')">%s</span>', $data['Order Customer Key'], $data['Order Customer Name']),
-            'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'], $data['Order Key']),
+            'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'],'', $data['Order Key']),
             'payment_state'  => $payment_state,
             'total_amount'   => money($data['Order Total Amount'], $data['Order Currency']),
             'actions'        => $operations
@@ -1036,40 +812,7 @@ function orders_in_process_old($_data, $db, $user) {
     //   print $sql;
     foreach ($db->query($sql) as $data) {
 
-
-        switch ($data['Order Current Payment State']) {
-            case 'No Applicable':
-                ///$payment_state='<span style="opacity:.6">'._('No Applicable').'</span>';
-                $payment_state = '';
-                break;
-            case 'Waiting Payment':
-
-                $payment_state = '<i class="fa fa-check super_discreet" aria-hidden="true"></i>';
-
-
-                break;
-            case 'Overpaid':
-                $payment_state = _('Overpaid');
-
-                break;
-            case 'Unknown':
-                $payment_state = '<i class="fa fa-question" aria-hidden="true"></i>';
-
-                break;
-            case 'Paid':
-                $payment_state = '<i class="fa fa-check success" aria-hidden="true"></i>';
-                break;
-            case 'Partially Paid':
-
-                $payment_state = '<i class="fa fa-check discreet warning" aria-hidden="true"></i>';
-
-                break;
-            default:
-                $payment_state = $data['Order Current Payment State'];
-        }
-        if ($payment_state != '') {
-            $payment_state = '<span id="payment_state_'.$data['Order Key'].'">'.$payment_state.'</span>';
-        }
+        $payment_state=get_order_formatted_payment_state($data);
 
 
         include_once 'class.Order.php';
@@ -1178,7 +921,7 @@ function orders_in_process_old($_data, $db, $user) {
             'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
             'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
             'customer'       => sprintf('<span class="link" onClick="change_view(\'customers/%d\')">%s</span>', $data['Order Customer Key'], $data['Order Customer Name']),
-            'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'], $data['Order Key']),
+            'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'],'', $data['Order Key']),
             'payment_state'  => $payment_state,
             'total_amount'   => money($data['Order Total Amount'], $data['Order Currency']),
             'actions'        => $operations
@@ -1357,7 +1100,7 @@ function orders_server($_data, $db, $user) {
             'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
             'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
             'customer'       => sprintf('<span class="link" onClick="change_view(\'customers/%d/%d\')">%s</span>', $data['Order Store Key'], $data['Order Customer Key'], $data['Order Customer Name']),
-            'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'], $data['Order Key']),
+            'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'],'', $data['Order Key']),
             'payment_state'  => get_order_formatted_payment_state($data),
             'total_amount'   => money($data['Order Total Amount'], $data['Order Currency']),
 
@@ -1445,7 +1188,7 @@ function orders($_data, $db, $user) {
             'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
             'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
             'customer'       => sprintf('<span class="link" onClick="change_view(\'customers/%d/%d\')">%s</span>', $data['Order Store Key'], $data['Order Customer Key'], $data['Order Customer Name']),
-            'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'], $data['Order Key']),
+            'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'],'', $data['Order Key']),
             'payment_state'  => get_order_formatted_payment_state($data),
             'total_amount'   => money($data['Order Total Amount'], $data['Order Currency']),
 
@@ -2847,6 +2590,103 @@ function refund_items($_data, $db, $user) {
         );
 
     }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+
+
+function replacement_new_items($_data, $db, $user) {
+
+    global $_locale;// fix this locale stuff
+
+    $rtext_label = 'item';
+
+    include_once 'prepare_table/init.php';
+
+
+    $customer_order = get_object('Order', $_data['parameters']['parent_key']);
+
+
+    $items = 0;
+
+
+    $adata = array();
+
+
+
+
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+//print $sql;
+    foreach ($db->query($sql) as $data) {
+
+
+        if ($data['Inventory Transaction Quantity'] != 0) {
+
+            $units    = $data['Product Units Per Case'];
+            $name     = $data['Product History Name'];
+            $price    = $data['Product History Price'];
+            $currency = $data['Product Currency'];
+
+
+            $description = '';
+            if ($units > 1) {
+                $description = number($units).'x ';
+            }
+            $description .= ' '.$name;
+            if ($price > 0) {
+                $description .= ' ('.money($price, $currency, $_locale).')';
+            }
+
+
+            $quantity = sprintf(
+                    '<span class="new_replacement_ordered_quantity button"  refunded_qty="0"  max_qty="%f"    >',
+
+                    -1*$data['Inventory Transaction Quantity']
+                ).number(-1*$data['Inventory Transaction Quantity']).'</span>';
+
+
+            $refund_net = sprintf(
+                '<input class="new_replacement_item %s item" style="width: 80px"  transaction_type="itf" transaction_id="%d"  max="%f"  />',
+                ($data['Inventory Transaction Quantity'] == 0 ? 'hide' : ''), $data['Inventory Transaction Key'], -1*$data['Inventory Transaction Quantity']
+            );
+
+            $adata[] = array(
+
+                'id'          => (integer)$data['Inventory Transaction Key'],
+                'code'        => sprintf('<span class="link" onclick="change_view(\'/products/%d/%d\')">%s</span>', $customer_order->get('Order Store Key'), $data['Product ID'], $data['Product Code']),
+                'reference'        => sprintf('<span class="link" onclick="change_view(\'/parts/%d\')">%s</span>', $data['Part SKU'], $data['Part Reference']),
+
+                'product_description' => $description,
+                'description'=>$data['Part Package Description'],
+                'quantity'    => $quantity,
+                'refund_net'  => $refund_net,
+                'quantity_order'=>number($data['Order Quantity']),
+
+                'net' => sprintf('<span class="new_refund_order_item_net button  " amount="%f" >%s</span>', $data['Order Transaction Amount'], money($data['Order Transaction Amount'], $data['Order Currency Code'])),
+
+            );
+
+            $items++;
+        }
+
+    }
+
+    $rtext=sprintf(
+        ngettext('%s send part', '%s send parts', $items), number($items)
+    );
 
     $response = array(
         'resultset' => array(
