@@ -12,9 +12,12 @@
 
 include_once 'class.DB_Table.php';
 include_once 'class.Part.php';
+include_once 'trait.NotesSubject.php';
+
 include_once 'utils/natural_language.php';
 
 class SupplierPart extends DB_Table {
+    use NotesSubject;
 
 
     function SupplierPart($a1, $a2 = false, $a3 = false, $_db = false) {
@@ -1051,6 +1054,11 @@ class SupplierPart extends DB_Table {
 
                 $this->update_field($field, $value, $options);
                 $this->part->update_cost();
+                break;
+            case 'History Note':
+
+
+                $this->add_note($value, '', '', $metadata['deletable']);
                 break;
             default:
 

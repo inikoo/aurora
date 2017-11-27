@@ -798,8 +798,6 @@ and add an uniqui index w  Tax Code; and Invoice Key
 ============= migration web[ages
 
 
-
-
 update `Page Store Dimension` set `Webpage Code`=LOWER(`Webpage Code`);
 update `Page Store Dimension` set `Webpage Name`=`Page Store Title` where `Webpage Name` is NULL or `Webpage Name`='' ;
 //update `Page Store Dimension`  P  left join `Page Dimension` PP on (PP.`Page Key`=P.`Page Key`)  set `Webpage Browser Title`=`Page Title` where `Webpage Browser Title` is NULL or `Webpage Browser Title`='' ;

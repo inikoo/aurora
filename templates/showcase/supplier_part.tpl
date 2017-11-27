@@ -10,6 +10,8 @@
     <div style="clear:both">
     </div>
 </div>
+{include file="sticky_note.tpl" value=$supplier_part->get('Sticky Note') object="Supplier_Part" key="{$supplier_part->id}" field="Supplier_Part_Sticky_Note"  }
+
 <div class="asset_container">
     <div class="block picture">
         <div class="data_container">

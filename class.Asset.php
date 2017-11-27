@@ -340,7 +340,6 @@ class Asset extends DB_Table {
                 break;
             case 'History Note':
 
-
                 $this->add_note($value, '', '', $metadata['deletable']);
                 break;
 

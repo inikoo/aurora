@@ -1293,6 +1293,16 @@ function get_supplier_part_navigation($data, $smarty, $user, $db, $account) {
         ).'</small>';
 
 
+
+
+    $right_buttons[] = array(
+        'icon'  => 'sticky-note',
+        'title' => _('Sticky note'),
+        'id'    => 'sticky_note_button',
+        'class' => ($data['_object']->get('Sticky Note') == '' ? '' : 'hide')
+    );
+
+
     $_content = array(
         'sections_class' => '',
         'sections'       => $sections,
