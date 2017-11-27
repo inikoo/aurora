@@ -17,6 +17,9 @@ if (!$user->can_view('locations') or !in_array(
 } else {
 
 
+    $warehouse=$state['warehouse'];
+
+
     $tab     = 'warehouse.locations';
     $ar_file = 'ar_warehouse_tables.php';
     $tipo    = 'locations';
@@ -65,7 +68,7 @@ if (!$user->can_view('locations') or !in_array(
     $table_buttons[] = array(
         'icon'      => 'plus',
         'title'     => _('New location'),
-        'reference' => "locations/".$state['warehouse']->id."/new"
+        'reference' => "locations/".$warehouse->id."/new"
     );
 
     $smarty->assign('table_buttons', $table_buttons);
@@ -74,8 +77,8 @@ if (!$user->can_view('locations') or !in_array(
         'upload_file', array(
                          'tipo'       => 'edit_objects',
                          'icon'       => 'fa-cloud-upload',
-                         'parent'     => $state['parent'],
-                         'parent_key' => $state['warehouse']->id,
+                         'parent'     => 'warehouse',
+                         'parent_key' => $warehouse->id,
                          'object'     => 'location',
                          'label'      => _("Upload locations")
 
@@ -88,6 +91,30 @@ if (!$user->can_view('locations') or !in_array(
 
 
     $smarty->assign('table_buttons', $table_buttons);
+
+    $flags=array();
+
+    $sql=sprintf('select `Warehouse Flag Key`,`Warehouse Flag Color`,`Warehouse Flag Label` FROM `Warehouse Flag Dimension` where `Warehouse Flag Warehouse Key`=%d ',
+                 $warehouse->id
+    );
+
+    $flags=array();
+    if ($result=$db->query($sql)) {
+        foreach ($result as $row) {
+            $flags[$row['Warehouse Flag Key']]=array('color'=>strtolower($row['Warehouse Flag Color']),'key'=>$row['Warehouse Flag Key'],'label'=>$row['Warehouse Flag Label']);
+        }
+    }else {
+        print_r($error_info=$this->db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+
+
+    $smarty->assign('flags', $flags);
+
+
+
+    $smarty->assign('aux_templates', array('edit_locations.tpl'));
 
 
     include 'utils/get_table_html.php';

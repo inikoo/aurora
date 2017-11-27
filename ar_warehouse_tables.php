@@ -214,8 +214,8 @@ function locations($_data, $db, $user, $account) {
             'warehouse_area_key' => (integer)$data['Location Warehouse Area Key'],
             'code'               => $data['Location Code'],
             'flag'               => ($data['Warehouse Flag Key'] ? sprintf(
-                '<i class="fa fa-flag %s" aria-hidden="true" title="%s"></i>', strtolower($data['Warehouse Flag Color']), $data['Warehouse Flag Label']
-            ) : '<i class="fa fa-flag-o super_discreet" aria-hidden="true"></i>'),
+                '<i id="flag_location_%d" class="fa fa-flag %s button" aria-hidden="true" onclick="show_edit_flag_dialog(this)" location_key="%d" title="%s"></i>', $data['Location Key'],strtolower($data['Warehouse Flag Color']),$data['Location Key'], $data['Warehouse Flag Label']
+            ) : '<i id="flag_location_'.$data['Location Key'].'"  class="fa fa-flag-o super_discreet button" aria-hidden="true" onclick="show_edit_flag_dialog(this)" key="" ></i>'),
             'flag_key'           => $data['Warehouse Flag Key'],
             'area'               => $data['Warehouse Area Code'],
             'max_weight'         => $max_weight,
