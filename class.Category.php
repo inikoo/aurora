@@ -2505,6 +2505,10 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
         // exit;
 
 
+
+
+
+
         if (array_key_exists($field, $this->base_data())) {
 
 
@@ -2550,7 +2554,8 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                 $this->update_field($field, $value, $options);
 
             }
-        } elseif (array_key_exists($field, $this->base_data('Product Category Dimension'))) {
+        }
+        elseif (array_key_exists($field, $this->base_data('Product Category Dimension'))) {
 
 
             switch ($field) {
@@ -2902,7 +2907,11 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
 
             switch ($field) {
+                case 'History Note':
 
+
+                    $this->add_note($value, '', '', $metadata['deletable']);
+                    break;
 
                 case 'Part Category Status Including Parts':
                     include_once 'class.Part.php';

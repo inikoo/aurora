@@ -2466,6 +2466,7 @@ class Product extends Asset {
         }
 
 
+
         switch ($field) {
 
             case 'Product Webpage Name':
@@ -3356,6 +3357,14 @@ class Product extends Asset {
 
                 $this->update_field($field, $value, $options);
                 break;
+
+            case 'History Note':
+
+
+                $this->add_note($value, '', '', $metadata['deletable']);
+                break;
+
+
             default:
 
                 if (array_key_exists($field, $this->base_data())) {

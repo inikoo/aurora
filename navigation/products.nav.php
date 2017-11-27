@@ -1222,11 +1222,18 @@ function get_product_navigation($data, $smarty, $user, $db, $account) {
 
 
     } elseif (count($product_parts) > 1) {
-        $title .= '<span class="small disceet padding_left_20">'._(
+        $title .= '<span class="small discreet padding_left_20">'._(
                 'Multiple parts'
             ).'</span>';
 
     }
+
+    $right_buttons[] = array(
+        'icon'  => 'sticky-note',
+        'title' => _('Sticky note'),
+        'id'    => 'sticky_note_button',
+        'class' => ($object->get('Sticky Note') == '' ? '' : 'hide')
+    );
 
 
     $_content = array(
@@ -1792,7 +1799,7 @@ function get_service_navigation($data, $smarty, $user, $db, $account) {
 
 
     } elseif (count($service_parts) > 1) {
-        $title .= '<span class="small disceet padding_left_20">'._(
+        $title .= '<span class="small discreet padding_left_20">'._(
                 'Multiple parts'
             ).'</span>';
 

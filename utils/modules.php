@@ -3321,16 +3321,14 @@ $modules = array(
 
 
                     'supplier_part.images'  => array(
-                        'label' => _(
-                            'Images'
-                        ),
+                        'label' => '',
+                        'title' => _('Images'),
                         'icon'  => 'camera-retro',
                         'class' => 'right icon_only'
                     ),
                     'supplier_part.history' => array(
-                        'label' => _(
-                            'History/Notes'
-                        ),
+                        'label' =>'',
+                        'title' => _('History/Notes'),
                         'icon'  => 'road',
                         'class' => 'right icon_only'
                     ),
@@ -3922,20 +3920,21 @@ $modules = array(
 
                     ),
 
+
+
                     'supplier_part.images'  => array(
-                        'label' => _(
-                            'Images'
-                        ),
+                        'label' => '',
+                        'title' => _('Images'),
                         'icon'  => 'camera-retro',
                         'class' => 'right icon_only'
                     ),
                     'supplier_part.history' => array(
-                        'label' => _(
-                            'History/Notes'
-                        ),
+                        'label' =>'',
+                        'title' => _('History/Notes'),
                         'icon'  => 'road',
                         'class' => 'right icon_only'
                     ),
+
 
 
                 )
@@ -3990,16 +3989,14 @@ $modules = array(
                     ),
 
                     'supplier_part.images'  => array(
-                        'label' => _(
-                            'Images'
-                        ),
+                        'label' => '',
+                        'title' => _('Images'),
                         'icon'  => 'camera-retro',
                         'class' => 'right icon_only'
                     ),
                     'supplier_part.history' => array(
-                        'label' => _(
-                            'History/Notes'
-                        ),
+                        'label' =>'',
+                        'title' => _('History/Notes'),
                         'icon'  => 'road',
                         'class' => 'right icon_only'
                     ),
@@ -4053,16 +4050,14 @@ $modules = array(
                     ),
 
                     'supplier_part.images'  => array(
-                        'label' => _(
-                            'Images'
-                        ),
+                        'label' => '',
+                        'title' => _('Images'),
                         'icon'  => 'camera-retro',
                         'class' => 'right icon_only'
                     ),
                     'supplier_part.history' => array(
-                        'label' => _(
-                            'History/Notes'
-                        ),
+                        'label' =>'',
+                        'title' => _('History/Notes'),
                         'icon'  => 'road',
                         'class' => 'right icon_only'
                     ),
@@ -4119,16 +4114,14 @@ $modules = array(
                     ),
 
                     'supplier_part.images'  => array(
-                        'label' => _(
-                            'Images'
-                        ),
+                        'label' => '',
+                        'title' => _('Images'),
                         'icon'  => 'camera-retro',
                         'class' => 'right icon_only'
                     ),
                     'supplier_part.history' => array(
-                        'label' => _(
-                            'History/Notes'
-                        ),
+                        'label' =>'',
+                        'title' => _('History/Notes'),
                         'icon'  => 'road',
                         'class' => 'right icon_only'
                     ),
@@ -6552,16 +6545,14 @@ $modules = array(
                     ),
 
                     'supplier_part.images'  => array(
-                        'label' => _(
-                            'Images'
-                        ),
+                        'label' => '',
+                        'title' => _('Images'),
                         'icon'  => 'camera-retro',
                         'class' => 'right icon_only'
                     ),
                     'supplier_part.history' => array(
-                        'label' => _(
-                            'History/Notes'
-                        ),
+                        'label' =>'',
+                        'title' => _('History/Notes'),
                         'icon'  => 'road',
                         'class' => 'right icon_only'
                     ),
@@ -6614,18 +6605,15 @@ $modules = array(
                         )
 
                     ),
-
                     'supplier_part.images'  => array(
-                        'label' => _(
-                            'Images'
-                        ),
+                        'label' => '',
+                        'title' => _('Images'),
                         'icon'  => 'camera-retro',
                         'class' => 'right icon_only'
                     ),
                     'supplier_part.history' => array(
-                        'label' => _(
-                            'History/Notes'
-                        ),
+                        'label' =>'',
+                        'title' => _('History/Notes'),
                         'icon'  => 'road',
                         'class' => 'right icon_only'
                     ),
@@ -6682,16 +6670,14 @@ $modules = array(
                     ),
 
                     'supplier_part.images'  => array(
-                        'label' => _(
-                            'Images'
-                        ),
+                        'label' => '',
+                        'title' => _('Images'),
                         'icon'  => 'camera-retro',
                         'class' => 'right icon_only'
                     ),
                     'supplier_part.history' => array(
-                        'label' => _(
-                            'History/Notes'
-                        ),
+                        'label' =>'',
+                        'title' => _('History/Notes'),
                         'icon'  => 'road',
                         'class' => 'right icon_only'
                     ),
@@ -6899,18 +6885,15 @@ $modules = array(
                         'icon'  => 'database'
                     ),
 
-
                     'supplier_part.images'  => array(
-                        'label' => _(
-                            'Images'
-                        ),
+                        'label' => '',
+                        'title' => _('Images'),
                         'icon'  => 'camera-retro',
                         'class' => 'right icon_only'
                     ),
                     'supplier_part.history' => array(
-                        'label' => _(
-                            'History/Notes'
-                        ),
+                        'label' =>'',
+                        'title' => _('History/Notes'),
                         'icon'  => 'road',
                         'class' => 'right icon_only'
                     ),

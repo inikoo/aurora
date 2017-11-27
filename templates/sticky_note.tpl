@@ -1,5 +1,5 @@
 <div id="sticky_note_container" class="{if $value==''}hide{/if}"  object="{$object}" key="{$key}"  field="{$field}"    >
-    <i style="top:10px" class="fa fa-cog button fa-fw" aria-hidden="true"></i>
+    <i style="top:10px" class="fa fa-cog button hide fa-fw" aria-hidden="true"></i>
     <i style="top:30px" class="fa fa-trash button fa-fw" aria-hidden="true"></i>
     <div id="sticky_note" contenteditable="true" >{$value}</div>
 </div>

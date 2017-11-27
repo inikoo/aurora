@@ -11,6 +11,7 @@
     </div>
 </div>
 
+{include file="sticky_note.tpl" value=$product->get('Sticky Note') object="Product" key="{$product->id}" field="Product_Sticky_Note"  }
 
 <div class="asset_container">
 
