@@ -27,7 +27,7 @@
                 <div type="{$column.type}" class="one_third _two_one {if !$smarty.foreach.two_one_columns.last}last{/if}">
                     <div class="address_info two">
                         <h4 class="light _title"   contenteditable="true"  >{$column._title}</h4>
-                        <p class="_text" contenteditable="true">{$column._text}</p>
+                        <div class="_text" contenteditable="true">{$column._text}</div>
                     </div>
 
 
