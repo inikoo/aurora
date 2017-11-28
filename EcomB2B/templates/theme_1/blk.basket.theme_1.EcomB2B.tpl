@@ -181,8 +181,11 @@
 
                     <form action="" method="post" enctype="multipart/form-data"  class="sky-form" style="box-shadow: none">
 
-                        <section class="col col-6">
-                            <button onclick="$(this).find('i').addClass('fa-spinner fa-spin'); window.location = 'checkout.sys'"  style="margin:0px" type="submit" class="button">{$data._go_checkout_label} <i  class=" fa fa-fw fa-arrow-right" aria-hidden="true"></i> </button>
+                        <section class="col col-11">
+                            <button onclick="$(this).find('i').addClass('fa-spinner fa-spin'); window.location = 'checkout.sys'"  style="margin:0px" type="submit" class="button"><b>{$data._go_checkout_label}</b> <i  class=" fa fa-fw fa-arrow-right" aria-hidden="true"></i> </button>
+
+                            <button onclick="$(this).find('i').addClass('fa-spinner fa-spin'); window.location = '/'"  style="margin:0px;margin-right:30px" type="submit" class="button"><i  class=" fa fa-fw fa-arrow-left" aria-hidden="true"></i> {if !empty($data._go_shop_label)}{$data._go_shop_label}{else}{t}Continue shopping{/t}{/if}  </button>
+
 
                         </section>
 

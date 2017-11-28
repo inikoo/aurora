@@ -1824,6 +1824,7 @@ function save_header($data, $editor) {
 function save_webpage_content($data, $editor, $db, $smarty) {
 
 
+
     include_once('class.Page.php');
     $webpage = new Page($data['key']);
 
@@ -1841,6 +1842,8 @@ function save_webpage_content($data, $editor, $db, $smarty) {
     //  print_r( json_decode($data['content_data'],true));
 
     // exit;
+
+
 
     $webpage->update(array('Page Store Content Data' => $data['content_data']), 'no_history');
     $webpage->publish();

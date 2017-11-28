@@ -82,7 +82,7 @@
         <script type="text/javascript" src="/js/edit_webpage_edit.js?v171019"></script>
 
         <script type="text/javascript" src="/js/new.js?v171115"></script>
-        <script type="text/javascript" src="/js/order.common.js?v171124"></script>
+        <script type="text/javascript" src="/js/order.common.js?v171126b"></script>
         <script type="text/javascript" src="/js/supplier.order.js"></script>
         <script type="text/javascript" src="/js/supplier.delivery.js"></script>
         <script type="text/javascript" src="/js/part_locations.edit.js"></script>

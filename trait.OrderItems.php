@@ -534,7 +534,12 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
     function get_items() {
 
         $sql = sprintf(
-            'SELECT OTF.`Product ID`,OTF.`Product Key`,`Order Transaction Fact Key`,`Order Currency Code`,`Order Transaction Amount`,`Order Quantity`,`Product History Name`,`Product History Units Per Case`,PD.`Product Code`,`Product Name`,`Product Units Per Case` FROM `Order Transaction Fact` OTF LEFT JOIN `Product History Dimension` PHD ON (OTF.`Product Key`=PHD.`Product Key`) LEFT JOIN `Product Dimension` PD ON (PD.`Product ID`=PHD.`Product ID`)  WHERE `Order Key`=%d  ORDER BY `Product Code File As` ',
+            'SELECT `Deal Info`,OTF.`Product ID`,OTF.`Product Key`,OTF.`Order Transaction Fact Key`,`Order Currency Code`,`Order Transaction Amount`,`Order Quantity`,`Product History Name`,`Product History Units Per Case`,PD.`Product Code`,`Product Name`,`Product Units Per Case` 
+FROM `Order Transaction Fact` OTF 
+LEFT JOIN `Product History Dimension` PHD ON (OTF.`Product Key`=PHD.`Product Key`)
+ LEFT JOIN `Product Dimension` PD ON (PD.`Product ID`=PHD.`Product ID`)  
+  left join  `Order Transaction Deal Bridge` B on (OTF.`Order Transaction Fact Key`=B.`Order Transaction Fact Key`)
+ WHERE OTF.`Order Key`=%d  ORDER BY `Product Code File As` ',
             $this->id
         );
 
@@ -554,16 +559,20 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
                 );
 
 
+                $deal_info = '<div id="transaction_deal_info_'.$row['Order Transaction Fact Key'].'" class="deal_info">'.$row['Deal Info'].'</div>';
+
+
+
                 $items[] = array(
-                    'code'        => $row['Product Code'],
+                    'code'        => sprintf('<a href="/%s">%s</a>',strtolower($row['Product Code']) ,$row['Product Code']),
                     'code_description' => '<b>'.$row['Product Code'].'</b> '.$row['Product History Units Per Case'].'x '.$row['Product History Name'],
-                    'description' => $row['Product History Units Per Case'].'x '.$row['Product History Name'],
+                    'description' => $row['Product History Units Per Case'].'x '.$row['Product History Name'].$deal_info,
                     'qty'         => number($row['Order Quantity']),
                     'qty_raw'         => $row['Order Quantity']+0,
                     'pid'=>$row['Product ID'],
                     'otf_key'=> $row['Order Transaction Fact Key'],
                     'edit_qty'    => $edit_quantity,
-                    'amount'      => '<span class="item_amount">'.money($row['Order Transaction Amount'], $row['Order Currency Code']).'</span>'
+                    'amount'      => '<span id="transaction_item_net_'.$row['Order Transaction Fact Key'].'" class="item_amount">'.money($row['Order Transaction Amount'], $row['Order Currency Code']).'</span>'
 
                 );
 

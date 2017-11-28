@@ -2,7 +2,7 @@
     <div id="contact_data" class="block" style="float:left;padding:20px 20px;max-width:500px;">
         <div class="data_container">
             <div class="data_field">
-                <i class="fa fa-fw  fa-user" title="{t}Customer name{/t}"  ></i> <span class="Invoice_Customer_Name">{$invoice->get('Invoice Customer Name')}</span>
+                <i class="fa fa-fw  fa-user" title="{t}Customer name{/t}"  ></i> <span onclick="change_view('/customers/{$invoice->get('Invoice Store Key')}/{$invoice->get('Invoice Customer Key')}')" class="link Invoice_Customer_Name">{$invoice->get('Invoice Customer Name')}</span>
             </div>
 
             <div class="data_field ">

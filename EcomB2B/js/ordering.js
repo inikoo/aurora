@@ -110,7 +110,7 @@ $(function() {
 
 
         var request = 'ar_web_basket.php?tipo=update_item&product_id=' + $(this).closest('.product_container').attr('product_id') + '&order_key=' + order_key + '&qty=' + order_qty + '&webpage_key=' + $('#webpage_data').attr('webpage_key') + '&page_section_type=Family'
-
+console.log(request)
         console.log(request)
         $.getJSON(request, function (data) {
 
@@ -136,9 +136,20 @@ $(function() {
 
                 input.val(data.quantity).attr('ovalue', data.quantity).prop('readonly', false);
 
+
+
+                for (var key in data.discounts_data) {
+                    console.log(key+': '+data.discounts_data[key])
+                    $('#transaction_deal_info_'+key).html(data.discounts_data[key]['deal_info'])
+                    $('#transaction_item_net_'+key).html(data.discounts_data[key]['item_net'])
+
+                    //$('.' + key).html(data.metadata.class_html[key])
+                }
+
+
             } else if (data.state == 201) {
 
-                window.location.href = 'waiting_payment_confirmation.php?referral_key=' + $('#webpage_data').attr('webpage_key')
+              //  window.location.href = 'waiting_payment_confirmation.php?referral_key=' + $('#webpage_data').attr('webpage_key')
 
 
             }
@@ -357,12 +368,23 @@ function save_item_qty_change(element) {
             }
 
             if (data.quantity == 0) data.quantity = ''
+console.log(data.discounts_data)
+
+            for (var key in data.discounts_data) {
+                console.log(key+': '+data.discounts_data[key])
+                $('#transaction_deal_info_'+key).html(data.discounts_data[key]['deal_info'])
+                $('#transaction_item_net_'+key).html(data.discounts_data[key]['item_net'])
+
+                //$('.' + key).html(data.metadata.class_html[key])
+            }
+
+
 
             //input.val(data.quantity).attr('ovalue', data.quantity).prop('readonly', false);
 
         } else if (data.state == 201) {
 
-            window.location.href = 'waiting_payment_confirmation.php?referral_key=' + $('#webpage_data').attr('webpage_key')
+           // window.location.href = 'waiting_payment_confirmation.php?referral_key=' + $('#webpage_data').attr('webpage_key')
 
 
         }else if (data.state == 400) {

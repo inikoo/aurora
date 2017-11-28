@@ -141,6 +141,7 @@
         validate_add_item()
 
         console.log($('#add_item_save').attr('item_key'))
+        console.log($('#add_item_save').attr('item_historic_key'))
 
 
     }
