@@ -63,12 +63,12 @@ switch ($tipo) {
     case 'refund_payment':
         $data = prepare_values(
             $_REQUEST, array(
-                         'operation'   => array('type' => 'string'),
-                         'key'         => array('type' => 'key'),
-                         'reference'   => array('type' => 'string'),
-                         'submit_type' => array('type' => 'string'),
-                         'amount'      => array('type' => 'string'),
-                         'payback_refund'      => array('type' => 'string'),
+                         'operation'      => array('type' => 'string'),
+                         'key'            => array('type' => 'key'),
+                         'reference'      => array('type' => 'string'),
+                         'submit_type'    => array('type' => 'string'),
+                         'amount'         => array('type' => 'string'),
+                         'payback_refund' => array('type' => 'string'),
 
 
                      )
@@ -292,6 +292,60 @@ function edit_item_in_order($account, $db, $user, $editor, $data, $smarty) {
 
     $transaction_data = $parent->update_item($data);
 
+
+    $discounts_data = array();
+
+    if ($data['parent'] == 'order') {
+        $sql = sprintf('SELECT `Order Transaction Amount`,OTF.`Product ID`,OTF.`Product Key`,`Order Transaction Total Discount Amount`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Order Transaction Amount`,`Order Currency Code`,OTF.`Order Transaction Fact Key`, `Deal Info` FROM `Order Transaction Fact` OTF left join  `Order Transaction Deal Bridge` B on (OTF.`Order Transaction Fact Key`=B.`Order Transaction Fact Key`) WHERE OTF.`Order Key`=%s ', $parent->id);
+
+        if ($result=$db->query($sql)) {
+        		foreach ($result as $row) {
+
+
+
+
+
+                    if (in_array(
+                        $parent->get('Order State'), array(
+                                                               'Cancelled',
+                                                               'Approved',
+                                                               'Dispatched',
+                                                           )
+                    )) {
+                        $discounts_class = '';
+                        $discounts_input = '';
+                    } else {
+                        $discounts_class = 'button';
+                        $discounts_input = sprintf(
+                            '<span class="hide order_item_percentage_discount_form" data-settings=\'{ "field": "Percentage" ,"transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   ><input class="order_item_percentage_discount_input" style="width: 70px" value="%s"> <i class="fa save fa-cloud" aria-hidden="true"></i></span>',
+                            $row['Order Transaction Fact Key'], $row['Product ID'], $row['Product Key'], percentage($row['Order Transaction Total Discount Amount'], $row['Order Transaction Gross Amount'])
+                        );
+                    }
+                    $discounts = $discounts_input.'<span class="order_item_percentage_discount   '.$discounts_class.' '.($row['Order Transaction Total Discount Amount'] == 0 ? 'super_discreet' : '').'"><span style="padding-right:5px">'.percentage(
+                            $row['Order Transaction Total Discount Amount'], $row['Order Transaction Gross Amount']
+                        ).'</span> <span class="'.($row['Order Transaction Total Discount Amount'] == 0 ? 'hide' : '').'">'.money($row['Order Transaction Total Discount Amount'], $row['Order Currency Code']).'</span></span>';
+
+
+
+                    $discounts_data[$row['Order Transaction Fact Key']]=
+                        array(
+                            'deal_info'=> $row['Deal Info'],
+                            'discounts'=>$discounts,
+                            'item_net'=>money($row['Order Transaction Amount'], $row['Order Currency Code'])
+                        );
+
+
+        		}
+        }else {
+        		print_r($error_info=$db->errorInfo());
+        		print "$sql\n";
+        		exit;
+        }
+
+
+    }
+
+
     if ($parent->error) {
         $response = array(
             'state' => 400,
@@ -302,7 +356,8 @@ function edit_item_in_order($account, $db, $user, $editor, $data, $smarty) {
         $response = array(
             'state'            => 200,
             'transaction_data' => $transaction_data,
-            'metadata'         => $parent->get_update_metadata()
+            'metadata'         => $parent->get_update_metadata(),
+            'discounts_data'   => $discounts_data
         );
     }
     echo json_encode($response);
@@ -630,7 +685,7 @@ function new_payment($data, $editor, $smarty, $db, $account, $user) {
         'Payment Submit Type'            => 'Manual',
         'Payment Currency Exchange Rate' => $exchange,
         'Payment User Key'               => $user->id,
-        'Payment Type'=>($payback_refund?'Refund':'Payment')
+        'Payment Type'                   => ($payback_refund ? 'Refund' : 'Payment')
 
 
     );
@@ -682,7 +737,7 @@ function new_payment($data, $editor, $smarty, $db, $account, $user) {
 
     if (!$payback_refund) {
 
-        $invoice=get_object('invoice', $order->get('Order Invoice Key'));
+        $invoice = get_object('invoice', $order->get('Order Invoice Key'));
     }
 
     $invoice->add_payment($payment);
@@ -990,10 +1045,10 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user) {
     $order->update_totals();
 
 
-    if($data['payback_refund']){
-        $invoice=get_object('invoice',$data['payback_refund']);
-    }else{
-        $invoice=get_object('invoice',$order->get('Invoice Order Key'));
+    if ($data['payback_refund']) {
+        $invoice = get_object('invoice', $data['payback_refund']);
+    } else {
+        $invoice = get_object('invoice', $order->get('Invoice Order Key'));
 
     }
 
@@ -1068,7 +1123,7 @@ function create_refund($data, $editor, $smarty, $db) {
         $response = array(
             'state'      => 200,
             'refund_key' => $refund->id,
-            'store_key' => $refund->get('Store Key')
+            'store_key'  => $refund->get('Store Key')
 
         );
     } else {
@@ -1096,9 +1151,9 @@ function create_replacement($data, $editor, $smarty, $db) {
 
     if ($refund->id) {
         $response = array(
-            'state'      => 200,
+            'state'           => 200,
             'replacement_key' => $refund->id,
-            'store_key' => $refund->get('Store Key')
+            'store_key'       => $refund->get('Store Key')
 
         );
     } else {

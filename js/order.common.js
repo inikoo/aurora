@@ -300,7 +300,7 @@ function save_order_operation(element) {
 
 
 
-    console.log(request)
+    //console.log(request)
     //  return;
     //=====
     var form_data = new FormData();
@@ -725,7 +725,9 @@ function save_item_qty_change(element) {
     }
 
     var request = '/ar_edit_orders.php?tipo=edit_item_in_order&parent=' + table_metadata.parent + '&field=' + settings.field + '&parent_key=' + table_metadata.parent_key + '&item_key=' + settings.item_key + '&qty=' + qty + '&transaction_key=' + settings.transaction_key
-
+    if (settings.item_historic_key != undefined) {
+        request+='&item_historic_key='+settings.item_historic_key
+    }
 
 
     if (settings.item_historic_key != undefined) {
@@ -739,6 +741,7 @@ function save_item_qty_change(element) {
     if (settings.field == 'Packed') {
         request = request + '&packer_key=' + $('#dn_data').attr('packer_key')
     }
+//console.log(request)
 
 
 
@@ -784,8 +787,8 @@ function save_item_qty_change(element) {
 
         if (data.state == 200) {
 
-           // console.log(data)
-           // console.log(table_metadata)
+            console.log(data)
+            console.log(table_metadata)
 
 
             input.val(data.transaction_data.qty).removeClass('discreet')
@@ -862,7 +865,14 @@ function save_item_qty_change(element) {
 
 
 
+                for (var key in data.discounts_data) {
+                    console.log(key+': '+data.discounts_data[key])
+                    $('#transaction_deal_info_'+key).html(data.discounts_data[key]['deal_info'])
+                    $('#transaction_discounts_'+key).html(data.discounts_data[key]['discounts'])
+                    $('#transaction_item_net_'+key).html(data.discounts_data[key]['item_net'])
 
+                    //$('.' + key).html(data.metadata.class_html[key])
+                }
 
 
                 if (data.metadata.items == 0) {

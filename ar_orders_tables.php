@@ -1692,7 +1692,7 @@ function order_items($_data, $db, $user) {
     $adata = array();
     foreach ($db->query($sql) as $data) {
 
-
+/*
         if ($data['Order Bonus Quantity'] != 0) {
             if ($data['Order Quantity'] != 0) {
                 $quantity .= '<br/> +'.number($data['Order Bonus Quantity']).' '._('free');
@@ -1700,7 +1700,7 @@ function order_items($_data, $db, $user) {
                 $quantity = number($data['Order Bonus Quantity']).' '._('free');
             }
         }
-
+*/
 
         if (is_numeric($data['Product Availability'])) {
             $stock = number($data['Product Availability']);
@@ -1708,10 +1708,9 @@ function order_items($_data, $db, $user) {
             $stock = '?';
         }
 
-        $deal_info = '';
-        if ($data['Deal Info'] != '') {
-            $deal_info = '<br/> <span class="deal_info">'.$data['Deal Info'].'</span>';
-        }
+
+            $deal_info = '<div id="transaction_deal_info_'.$data['Order Transaction Fact Key'].'" class="deal_info">'.$data['Deal Info'].'</div>';
+
 
         $units    = $data['Product Units Per Case'];
         $name     = $data['Product History Name'];
@@ -1787,10 +1786,10 @@ function order_items($_data, $db, $user) {
             'code'        => sprintf('<span class="link" onclick="change_view(\'/products/%d/%d\')">%s</span>', $customer_order->get('Order Store Key'), $data['Product ID'], $data['Product Code']),
             'description' => $description,
             'quantity'    => $quantity,
-            'discounts'   => '<span class="_item_discounts">'.$discounts.'</span>',
+            'discounts'   => '<span id="transaction_discounts_'.$data['Order Transaction Fact Key'].'" class="_item_discounts">'.$discounts.'</span>',
 
 
-            'net' => sprintf('<span class="_order_item_net">%s</span>', money($data['Order Transaction Amount'], $data['Order Currency Code'])),
+            'net' => sprintf('<span  id="transaction_item_net_'.$data['Order Transaction Fact Key'].'" class="_order_item_net">%s</span>', money($data['Order Transaction Amount'], $data['Order Currency Code'])),
 
 
         );

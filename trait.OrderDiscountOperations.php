@@ -40,7 +40,6 @@ trait OrderDiscountOperations {
         );
         $this->db->exec($sql);
 
-
         $this->get_allowances_from_order_trigger();
         $this->get_allowances_from_category_trigger();
         $this->get_allowances_from_product_trigger();
@@ -70,7 +69,6 @@ trait OrderDiscountOperations {
             "select * from `Deal Component Dimension` left join `Deal Dimension` D on (D.`Deal Key`=`Deal Component Deal Key`)  where `Deal Component Trigger`='Order'  and `Deal Component Status`='Active'  and `Deal Component Store Key`=%d  and `Deal Component Terms Type` not in ('Voucher AND Order Interval','Voucher AND Order Number','Voucher AND Amount','Voucher')  $where",
             $this->data['Order Store Key']
         );
-
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
@@ -196,32 +194,44 @@ trait OrderDiscountOperations {
                     "SELECT count(*) AS num FROM `Voucher Order Bridge` WHERE `Deal Key`=%d AND `Order Key`=%d ", $deal_component_data['Deal Component Deal Key'], $this->id
                 );
 
-                $res2 = mysql_query($sql);
-                if ($_row = mysql_fetch_assoc($res2)) {
+                if ($result2=$this->db->query($sql)) {
+                    if ($_row = $result2->fetch()) {
+                        if ($_row['num'] > 0) {
+
+                            $sql = sprintf(
+                                "SELECT count(*) AS num FROM `Order Dimension` WHERE `Order Customer Key`=%d AND `Order Key`!=%d AND  `Order State` NOT IN ('Cancelled') ",
+                                $this->data['Order Customer Key'], $this->id
+                            );
 
 
-                    if ($_row['num'] > 0) {
-
-                        $sql = sprintf(
-                            "SELECT count(*) AS num FROM `Order Dimension` WHERE `Order Customer Key`=%d AND `Order Key`!=%d AND  `Order State` NOT IN ('Cancelled') ",
-                            $this->data['Order Customer Key'], $this->id
-                        );
-
-                        $res3 = mysql_query($sql);
-                        if ($__row = mysql_fetch_assoc($res3)) {
-
-
-                            if ($__row['num'] == $order_number_term) {
-                                $this->deals['Order']['Terms'] = true;
-                                $this->get_allowances_from_deal_component_data(
-                                    $deal_component_data
-                                );
+                            if ($result3=$this->db->query($sql)) {
+                                if ($__row = $result3->fetch()) {
+                                    if ($__row['num'] == $order_number_term) {
+                                        $this->deals['Order']['Terms'] = true;
+                                        $this->get_allowances_from_deal_component_data(
+                                            $deal_component_data
+                                        );
+                                    }
+                            	}
+                            }else {
+                            	print_r($error_info=$this->db->errorInfo());
+                            	print "$sql\n";
+                            	exit;
                             }
+
+
+
+
                         }
-
-
-                    }
+                	}
+                }else {
+                	print_r($error_info=$this->db->errorInfo());
+                	print "$sql\n";
+                	exit;
                 }
+
+
+
                 break;
 
 
@@ -230,23 +240,32 @@ trait OrderDiscountOperations {
                 $sql  = sprintf(
                     "SELECT count(*) AS num FROM `Voucher Order Bridge` WHERE `Deal Key`=%d AND `Order Key`=%d ", $deal_component_data['Deal Component Deal Key'], $this->id
                 );
-                $res2 = mysql_query($sql);
-                if ($_row = mysql_fetch_assoc($res2)) {
-                    if ($_row['num'] > 0) {
-                        $terms       = preg_split(
-                            '/;/', $deal_component_data['Deal Component Terms']
-                        );
-                        $amount_term = $terms[1];
-                        $amount_type = $terms[2];
 
-                        if ($this->data[$amount_type] >= $amount_term) {
-                            $this->deals['Order']['Terms'] = true;
-                            $this->get_allowances_from_deal_component_data(
-                                $deal_component_data
+
+                if ($result2=$this->db->query($sql)) {
+                    if ($_row = $result2->fetch()) {
+                        if ($_row['num'] > 0) {
+                            $terms       = preg_split(
+                                '/;/', $deal_component_data['Deal Component Terms']
                             );
+                            $amount_term = $terms[1];
+                            $amount_type = $terms[2];
+
+                            if ($this->data[$amount_type] >= $amount_term) {
+                                $this->deals['Order']['Terms'] = true;
+                                $this->get_allowances_from_deal_component_data(
+                                    $deal_component_data
+                                );
+                            }
                         }
-                    }
+                	}
+                }else {
+                	print_r($error_info=$this->db->errorInfo());
+                	print "$sql\n";
+                	exit;
                 }
+
+
                 break;
 
 
@@ -256,47 +275,53 @@ trait OrderDiscountOperations {
                     "SELECT count(*) AS num FROM `Voucher Order Bridge` WHERE `Deal Key`=%d AND `Order Key`=%d ", $deal_component_data['Deal Component Deal Key'], $this->id
                 );
 
-                $res2 = mysql_query($sql);
-                if ($_row = mysql_fetch_assoc($res2)) {
 
+                if ($result2=$this->db->query($sql)) {
+                    if ($r_ow = $result2->fetch()) {
+                        if ($_row['num'] > 0) {
 
-                    if ($_row['num'] > 0) {
+                            $this->deals['Order']['Terms'] = true;
+                            $this->get_allowances_from_deal_component_data(
+                                $deal_component_data
+                            );
 
-                        $this->deals['Order']['Terms'] = true;
-                        $this->get_allowances_from_deal_component_data(
-                            $deal_component_data
-                        );
-
-                    }
+                        }
+                	}
+                }else {
+                	print_r($error_info=$this->db->errorInfo());
+                	print "$sql\n";
+                	exit;
                 }
+
+
                 break;
 
 
             case('Order Interval'):
 
                 $sql = sprintf(
-                    "SELECT count(*) AS num FROM `Order Dimension` WHERE `Order Customer Key`=%d AND `Order Key`!=%d AND `Order Dispatched Date`>=%s AND `Order State`='Dispatched' AND `Order Invoiced`='Yes'",
-                    $this->data['Order Customer Key'], $this->id, prepare_mysql(
-                        date(
-                            'Y-m-d', strtotime(
-                                       $this->data['Order Date']." -".$deal_component_data['Deal Component Terms']
-                                   )
-                        ).' 00:00:00'
-                    )
+                    "SELECT count(*) AS num FROM `Order Dimension` WHERE `Order Customer Key`=%d AND `Order Key`!=%d AND `Order Dispatched Date`>=%s AND `Order State`='Dispatched' ",
+                    $this->data['Order Customer Key'], $this->id, prepare_mysql(date('Y-m-d', strtotime($this->data['Order Date']." -".$deal_component_data['Deal Component Terms'])).' 00:00:00')
                 );
-                //print $sql;
-                $res2 = mysql_query($sql);
-                if ($_row = mysql_fetch_assoc($res2)) {
 
+//print "$sql\n";
+                if ($result=$this->db->query($sql)) {
+                    if ($_row = $result->fetch()) {
+//print_r($_row);
+                        if ($_row['num'] > 0) {
+                            $this->deals['Order']['Terms'] = true;
+                            // print_r($deal_component_data);
+                            $this->get_allowances_from_deal_component_data($deal_component_data);
 
-                    if ($_row['num'] > 0) {
-                        $this->deals['Order']['Terms'] = true;
-                        // print_r($deal_component_data);
-                        $this->get_allowances_from_deal_component_data(
-                            $deal_component_data
-                        );
-                    }
+                        }
+                	}
+                }else {
+                	print_r($error_info=$this->db->errorInfo());
+                	print "$sql\n";
+                	exit;
                 }
+
+
                 break;
 
             case('Amount'):
@@ -339,33 +364,32 @@ trait OrderDiscountOperations {
                 if ($amount_term_ok) {
 
                     $sql = sprintf(
-                        "SELECT count(*) AS num FROM `Order Dimension` WHERE `Order Customer Key`=%d AND `Order Key`!=%d AND `Order Dispatched Date`>=%s AND `Order State`='Dispatched' AND `Order Invoiced`='Yes'",
+                        "SELECT count(*) AS num FROM `Order Dimension` WHERE `Order Customer Key`=%d AND `Order Key`!=%d AND `Order Dispatched Date`>=%s AND `Order State`='Dispatched' ",
                         $this->data['Order Customer Key'], $this->id, prepare_mysql(
-                            date(
-                                'Y-m-d', strtotime(
-                                           $this->data['Order Date']." -".$interval_term
-                                       )
-                            ).' 00:00:00'
+                            date('Y-m-d', strtotime($this->data['Order Date']." -".$interval_term)).' 00:00:00'
                         )
                     );
-                    // print $deal_component_data['Deal Component Terms'];
-                    $res2 = mysql_query($sql);
-                    if ($_row = mysql_fetch_assoc($res2)) {
 
-
-                        if ($_row['num'] > 0) {
-                            $interval_term_ok = true;
-                        }
+                    if ($result=$this->db->query($sql)) {
+                        if ($_row = $result->fetch()) {
+                            if ($_row['num'] > 0) {
+                                $interval_term_ok = true;
+                            }
+                    	}
+                    }else {
+                    	print_r($error_info=$this->db->errorInfo());
+                    	print "$sql\n";
+                    	exit;
                     }
+
+
                 }
 
 
                 if ($amount_term_ok and $interval_term_ok) {
 
 
-                    $this->get_allowances_from_deal_component_data(
-                        $deal_component_data
-                    );
+                    $this->get_allowances_from_deal_component_data($deal_component_data);
                 }
             case('Amount AND Order Number'):
 
@@ -622,12 +646,14 @@ trait OrderDiscountOperations {
     function get_allowances_from_deal_component_data($deal_component_data) {
 
 
-        if (isset($deal_component_data['Deal Label'])) {
+//print_r($deal_component_data);
+
+        if (isset($deal_component_data['Deal Name Label'])) {
 
             $deal_info = sprintf(
-                "%s: %s, %s", ($deal_component_data['Deal Label'] == '' ? _('Offer') : $deal_component_data['Deal Label']),
-                (isset($deal_component_data['Deal XHTML Terms Description Label']) ? $deal_component_data['Deal XHTML Terms Description Label'] : ''),
-                $deal_component_data['Deal Component XHTML Allowance Description Label']
+                "%s: %s, %s", ($deal_component_data['Deal Name Label'] == '' ? _('Offer') : $deal_component_data['Deal Name Label']),
+                (isset($deal_component_data['Deal Term Label']) ? $deal_component_data['Deal Term Label'] : ''),
+                $deal_component_data['Deal Component Allowance Label']
 
             );
         } else {

@@ -584,7 +584,6 @@
         content_data.blocks=blocks
 
         console.log(content_data)
-//return;
 
         var ajaxData = new FormData();
 

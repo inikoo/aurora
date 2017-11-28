@@ -162,20 +162,38 @@ function update_item($_data, $customer, $website, $editor, $db) {
         $transaction_data = $order->update_item($data);
 
 
-        /*
+        $discounts_data = array();
 
-         if (!$transaction_data['updated']) {
-             $response = array(
-                 'state'    => 200,
-                 'newvalue' => $_REQUEST['oldvalue'],
-                 'key'      => $_REQUEST['id']
-             );
-             echo json_encode($response);
 
-             return;
-         }
 
- */
+            $sql = sprintf('SELECT `Order Transaction Amount`,OTF.`Product ID`,OTF.`Product Key`,`Order Transaction Total Discount Amount`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Order Transaction Amount`,`Order Currency Code`,OTF.`Order Transaction Fact Key`, `Deal Info` FROM `Order Transaction Fact` OTF left join  `Order Transaction Deal Bridge` B on (OTF.`Order Transaction Fact Key`=B.`Order Transaction Fact Key`) WHERE OTF.`Order Key`=%s ',
+                           $order->id);
+
+            if ($result=$db->query($sql)) {
+                foreach ($result as $row) {
+
+
+
+
+
+
+                    $discounts_data[$row['Order Transaction Fact Key']]=
+                        array(
+                            'deal_info'=> $row['Deal Info'],
+                            'item_net'=>money($row['Order Transaction Amount'], $row['Order Currency Code'])
+                        );
+
+
+                }
+            }else {
+                print_r($error_info=$db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+
+
+
+
 
         $basket_history = array(
             'otf_key'                 => $transaction_data['otf_key'],
@@ -196,6 +214,7 @@ function update_item($_data, $customer, $website, $editor, $db) {
             $discounted_products[$key] = $value;
         }
 
+        /*
         $adata = array();
 
         if (count($discounted_products) > 0) {
@@ -230,7 +249,7 @@ function update_item($_data, $customer, $website, $editor, $db) {
 
 
         }
-
+*/
 
         $class_html = array(
             'order_items_gross'       => $order->get('Items Gross Amount'),
@@ -258,7 +277,7 @@ function update_item($_data, $customer, $website, $editor, $db) {
 
 
             'to_charge'     => $transaction_data['to_charge'],
-            'discount_data' => $adata,
+            'discounts_data' => $discounts_data,
             'discounts'     => ($order->data['Order Items Discount Amount'] != 0 ? true : false),
             'charges'       => ($order->data['Order Charges Net Amount'] != 0 ? true : false)
         );

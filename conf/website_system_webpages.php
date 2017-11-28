@@ -154,10 +154,9 @@ function website_system_webpages_config($website_type) {
             'Webpage Scope Metadata'    => '',
             'Page Store Content Data'   => json_encode(
                 array(
-                    '_title'          => _('Favourites'),
-                    '_text' => _('Here you can see your favourites'),
-                     '_text_empty' => _('You still have no favourites'),
-
+                    '_title'      => _('Favourites'),
+                    '_text'       => _('Here you can see your favourites'),
+                    '_text_empty' => _('You still have no favourites'),
 
 
                 )
@@ -353,7 +352,7 @@ function website_system_webpages_config($website_type) {
 
                     '_contact_details_title' => _('Contact details'),
                     '_email_placeholder'     => _('Email address'),
-                    '_email_label'     => _('Email address (this is also your login name)'),
+                    '_email_label'           => _('Email address (this is also your login name)'),
                     '_email_tooltip'         => _('Needed to login to your account'),
 
 
@@ -369,48 +368,48 @@ function website_system_webpages_config($website_type) {
 
 
                     '_password_placeholder' => _('New password'),
-                    '_password_label' => _('Password'),
+                    '_password_label'       => _('Password'),
 
-                    '_password_tooltip'     => _("Write new password"),
+                    '_password_tooltip' => _("Write new password"),
 
                     '_password_confirm_placeholder' => _('Confirm new password'),
-                    '_password_confirm_label' => _('Confirm new password'),
+                    '_password_confirm_label'       => _('Confirm new password'),
 
-                    '_password_conform_tooltip'     => _("Don't forget your password"),
+                    '_password_conform_tooltip' => _("Don't forget your password"),
 
                     '_mobile_placeholder' => _('Mobile'),
-                    '_mobile_label' => _('Mobile'),
+                    '_mobile_label'       => _('Mobile'),
 
-                    '_mobile_tooltip'     => _('Needed to enter your mobile/telephone'),
+                    '_mobile_tooltip' => _('Needed to enter your mobile/telephone'),
 
                     '_contact_name_placeholder' => _('Contact name'),
-                    '_contact_name_label' => _('Contact name'),
+                    '_contact_name_label'       => _('Contact name'),
 
-                    '_contact_name_tooltip'     => _('Needed to enter your name'),
+                    '_contact_name_tooltip' => _('Needed to enter your name'),
 
                     '_company_placeholder' => _('Company'),
-                    '_company_label' => _('Company'),
+                    '_company_label'       => _('Company'),
 
-                    '_company_tooltip'     => _('Enter your account company name (optional)'),
+                    '_company_tooltip' => _('Enter your account company name (optional)'),
 
                     '_tax_number_placeholder' => _('VAT number'),
-                    '_tax_number_label' => _('VAT number'),
+                    '_tax_number_label'       => _('VAT number'),
 
-                    '_tax_number_tooltip'     => _('Enter your VAT number (optional)'),
+                    '_tax_number_tooltip' => _('Enter your VAT number (optional)'),
 
                     '_registration_number_placeholder' => _('Registration number'),
-                    '_registration_number_label' => _('Registration number'),
+                    '_registration_number_label'       => _('Registration number'),
 
-                    '_registration_number_tooltip'     => _('Enter your company registration number (optional)'),
+                    '_registration_number_tooltip' => _('Enter your company registration number (optional)'),
 
 
-                    '_save_contact_details_label' => _('Save'),
-                    '_save_login_details_label' => _('Save'),
-                    '_save_invoice_address_details_label' => _('Save'),
+                    '_save_contact_details_label'          => _('Save'),
+                    '_save_login_details_label'            => _('Save'),
+                    '_save_invoice_address_details_label'  => _('Save'),
                     '_save_delivery_address_details_label' => _('Save'),
 
 
-                    '_username_info'=>_('Your username is your email address')
+                    '_username_info' => _('Your username is your email address')
 
 
                 )
@@ -488,7 +487,7 @@ function website_system_webpages_config($website_type) {
                             '_special_instructions' => _('Special Instructions'),
                             '_voucher'              => _('Voucher'),
 
-
+                            '_go_to_shop_label'  => _('Continue shopping'),
                             '_go_checkout_label' => _('Go to checkout'),
                             '_voucher_label'     => _('Add Voucher'),
 
@@ -538,15 +537,14 @@ function website_system_webpages_config($website_type) {
                     '_credit_card_save'                        => _('Save card'),
 
 
-                    '_form_title_credit_card' => _('Checkout form'),
-                    '_form_title_paypal'      => _('Checkout form'),
-                    '_form_title_cond'        => _('Checkout form'),
-                    '_form_title_sofort'      => _('Checkout form'),
-                    '_form_title_bank'        => _('Checkout form'),
-                    '_form_title_other'       => _('Checkout form'),
+                    '_form_title_credit_card'          => _('Checkout form'),
+                    '_form_title_paypal'               => _('Checkout form'),
+                    '_form_title_cond'                 => _('Checkout form'),
+                    '_form_title_sofort'               => _('Checkout form'),
+                    '_form_title_bank'                 => _('Checkout form'),
+                    '_form_title_other'                => _('Checkout form'),
                     '_form_title_online_bank_transfer' => _('Checkout form'),
-                    '_form_title_cash_on_delivery' => _('Checkout form'),
-
+                    '_form_title_cash_on_delivery'     => _('Checkout form'),
 
 
                     '_bank_header' => _('Please go to your bank and make a payment of <b>[Order Amount]</b>  to our bank account, details below'),
@@ -557,12 +555,12 @@ function website_system_webpages_config($website_type) {
 
                     '_back_to_basket' => _('Go back to basket'),
 
-                    '_place_order'                  => _('Place order'),
-                    '_place_order_from_bank'        => _('Place order'),
-                    '_place_order_from_credit_card' => _('Place order'),
-                    '_place_order_from_paypal'      => _('Place order'),
-                    '_place_order_from_cash_on_delivery'        => _('Place order'),
-                    '_place_order_from_online_bank_transfer'        => _('Place order'),
+                    '_place_order'                           => _('Place order'),
+                    '_place_order_from_bank'                 => _('Place order'),
+                    '_place_order_from_credit_card'          => _('Place order'),
+                    '_place_order_from_paypal'               => _('Place order'),
+                    '_place_order_from_cash_on_delivery'     => _('Place order'),
+                    '_place_order_from_online_bank_transfer' => _('Place order'),
 
 
                 )

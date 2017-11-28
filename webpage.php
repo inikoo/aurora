@@ -41,6 +41,8 @@ $store = new Public_Store($webpage->get('Webpage Store Key'));
 $content_data = $webpage->get('Content Data');
 
 
+//print_r($content_data);
+
 if ($webpage->get('Webpage Template Filename') == 'products_showcase') {
     include_once 'class.Public_Product.php';
 
