@@ -808,6 +808,9 @@ ALTER TABLE `Payment Account Dimension` DROP `Payment Account Type`;
 
 ALTER TABLE `Invoice Dimension` ADD `Invoice Internal Description` TEXT NULL DEFAULT NULL AFTER `Invoice Category Key`, ADD `Invoice Public Description` TEXT NULL DEFAULT NULL AFTER `Invoice Internal Description`;
 
+update `Deal Component Dimension` set `Deal Component Allowance Target Type`='Items' ;
+update `Deal Component Dimension` set `Deal Component Allowance Target Type`='No Items' where `Deal Component Allowance Target` in ('Charge','Shipping') ;
+
 
 ===============
 
