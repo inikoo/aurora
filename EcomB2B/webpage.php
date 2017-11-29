@@ -648,7 +648,7 @@ if ($webpage->id) {
     $smarty->display($template);
 
 } else {
-    print 'error';
+    print 'error webpage id not found  '.$webpage_key.' ,'.$webpage->id;
 
 }
 
