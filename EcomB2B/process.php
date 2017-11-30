@@ -32,23 +32,23 @@ if (!array_key_exists('website_key', $_SESSION) or !$_SESSION['website_key']    
     include('utils/find_website_key.include.php');
 }
 
-$result = $mem->get('ECOMP'.md5($_SERVER['SERVER_NAME'].'_'.$_SERVER['REQUEST_URI']));
-$result = false;
-if (!$result  ) {
+$cached_webpage_key = $mem->get('ECOMP'.md5($_SERVER['SERVER_NAME'].'_'.$_SERVER['REQUEST_URI']));
+$cached_webpage_key = false;
+if (!$cached_webpage_key  ) {
 
 
 
 
-    $result = get_url($_SESSION['website_key'], $_SERVER['REQUEST_URI'], $dns_host, $dns_user, $dns_pwd, $dns_db);
-    $mem->set('ECOMP'.md5($_SERVER['SERVER_NAME'].'_'.$_SERVER['REQUEST_URI']), $result, 172800);
+    $cached_webpage_key = get_url($_SESSION['website_key'], $_SERVER['REQUEST_URI'], $dns_host, $dns_user, $dns_pwd, $dns_db);
+    $mem->set('ECOMP'.md5($_SERVER['SERVER_NAME'].'_'.$_SERVER['REQUEST_URI']), $cached_webpage_key, 172800);
 }
 
 
 
-if (is_numeric($result)) {
+if (is_numeric($cached_webpage_key)) {
 
     include_once 'common.php';
-    $webpage_key = $result;
+    $webpage_key = $cached_webpage_key;
     include 'webpage.php';
     exit;
 } else {
@@ -61,7 +61,7 @@ if (is_numeric($result)) {
 
 
 
-    header("Location: $protocol://".$_SERVER['SERVER_NAME']."$result");
+    header("Location: $protocol://".$_SERVER['SERVER_NAME']."$cached_webpage_key");
     exit;
 
 }
