@@ -222,6 +222,7 @@ function get_object($object_name, $key, $load_other_data = false) {
         case 'dealcampaign':
         case 'deal campaign':
         case 'deal_campaign':
+        case 'campaign_order_recursion':
             require_once "class.DealCampaign.php";
             $object = new DealCampaign($key);
             break;

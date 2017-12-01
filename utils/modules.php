@@ -2531,6 +2531,64 @@ $modules = array(
 
                 )
             ),
+
+
+            'campaign_order_recursion' => array(
+                'type' => 'object',
+
+
+                'tabs' => array(
+                    'campaign.details' => array(
+                        'label' => _('Data'),
+                        'icon'  => 'database',
+                        'title' => _('Details')
+                    ),
+
+                    'campaign_order_recursion.components'     => array(
+                        'label'         => _('Allowances'),
+                        'icon'          => 'tags',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number Active Components'
+                        ),
+                    ),
+                    'campaign_order_recursion.reminders'     => array(
+                        'label'         => _('Reminders'),
+                        'icon'          => 'envelope'
+
+                    ),
+                    'campaign.orders'    => array(
+                        'label'         => _('Orders'),
+                        'icon'          => 'shopping-cart',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Used Orders'
+                        ),
+                    ),
+                    'campaign.customers' => array(
+                        'label'         => _('Customers'),
+                        'icon'          => 'users',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Used Customers'
+                        ),
+                    ),
+                    'campaign.history'   => array(
+                        'title'         => _('History, notes'),
+                        'label'         => '',
+                        'icon'          => 'road',
+                        'class'         => 'right icon_only',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number History Records'
+                        ),
+                    ),
+
+                )
+            ),
+
+
+
             'deal'     => array(
                 'type' => 'object',
 

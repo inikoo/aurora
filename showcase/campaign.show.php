@@ -23,7 +23,16 @@ function get_campaign_showcase($data, $smarty) {
 
     $smarty->assign('campaign', $campaign);
 
-    return $smarty->fetch('showcase/campaign.tpl');
+
+
+    if($data['store']->get('Store Order Recursion Campaign Key')==$campaign->id){
+        return $smarty->fetch('showcase/campaign_order_recursion.tpl');
+
+    }else{
+        return $smarty->fetch('showcase/campaign.tpl');
+
+    }
+
 
 
 }

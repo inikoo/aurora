@@ -238,7 +238,7 @@ class Voucher extends DB_Table {
 
         }
 
-        foreach ($this->get_deal_keys() as $deal_key) {
+        foreach ($this->get_deals('keys') as $deal_key) {
             $deal = new Deal($deal_key);
             $deal->update_status_from_dates();
 

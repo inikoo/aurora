@@ -785,6 +785,8 @@ ALTER TABLE `Order Dimension` ADD `Order Replacement State` ENUM('NA','InWarehou
 ALTER TABLE `Order Dimension` ADD `Order Payment State` ENUM('NA','Paid','ToPay','OverPaid') NOT NULL DEFAULT 'NA' AFTER `Order State`, ADD INDEX (`Order Payment State`);
 
 
+ALTER TABLE `Deal Component Dimension` ADD `Deal Component Allowance Target Label` VARCHAR(255) NULL DEFAULT NULL AFTER `Deal Component Allowance Target Key`;
+update `Deal Component Dimension` set `Deal Component Allowance Target Label`=`Deal Component Allowance Target XHTML Label`;
 
 ======= fer migracion ordering in dw and costa
 

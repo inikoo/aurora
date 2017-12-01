@@ -99,8 +99,7 @@ class DealCampaign extends DB_Table {
         }
 
         $sql = sprintf(
-            "SELECT `Deal Campaign Key` FROM `Deal Campaign Dimension` WHERE  `Deal Campaign Name`=%s AND `Deal Campaign Store Key`=%d ", prepare_mysql($data['Deal Campaign Name']),
-            $data['Deal Campaign Store Key']
+            "SELECT `Deal Campaign Key` FROM `Deal Campaign Dimension` WHERE  `Deal Campaign Name`=%s AND `Deal Campaign Store Key`=%d ", prepare_mysql($data['Deal Campaign Name']), $data['Deal Campaign Store Key']
         );
 
 
@@ -205,8 +204,32 @@ class DealCampaign extends DB_Table {
 
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
 
-
         switch ($field) {
+
+
+            case 'Deal Campaign Order Recursion Days':
+
+
+                if (!is_numeric($value)) {
+                    $this->error = true;
+                    $this->msg   = 'value must be numeric';
+                }
+
+                if ($value <= 0) {
+                    $this->error = true;
+                    $this->msg   = 'value must be more than zero';
+                }
+
+
+                $deals = $this->get_deals();
+                $deal  = array_pop($deals);
+
+
+                $deal->editor = $this->editor;
+                $deal->update(array('Deal Terms' => $value.' day'), $options);
+
+
+                break;
 
             case 'Deal Campaign Icon':
 
@@ -250,6 +273,32 @@ class DealCampaign extends DB_Table {
 
     }
 
+    function get_deals($type = 'objects') {
+        $deals = array();
+        $sql   = sprintf(
+            "SELECT `Deal Key` FROM `Deal Dimension` WHERE `Deal Campaign Key`=%d ORDER BY `Deal Key`", $this->id
+        );
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                if ($type == 'objects') {
+                    $deals[] = get_object('deal', $row['Deal Key']);
+                } else {
+                    $deals[] = $row['Deal Key'];
+                }
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        return $deals;
+
+    }
+
     function add_deal($data) {
 
 
@@ -280,12 +329,11 @@ class DealCampaign extends DB_Table {
         return $deal;
     }
 
-
     function update_number_of_deals() {
         $number_deals         = 0;
         $number_current_deals = 0;
 
-        $sql                  = sprintf("SELECT count(*) AS num FROM `Deal Dimension` WHERE `Deal Campaign Key`=%d  and `Deal Status`='Active'  ", $this->id);
+        $sql = sprintf("SELECT count(*) AS num FROM `Deal Dimension` WHERE `Deal Campaign Key`=%d  AND `Deal Status`='Active'  ", $this->id);
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
@@ -297,7 +345,7 @@ class DealCampaign extends DB_Table {
             exit;
         }
 
-        $sql                  = sprintf("SELECT count(*) AS num FROM `Deal Dimension` WHERE `Deal Campaign Key`=%d ", $this->id);
+        $sql = sprintf("SELECT count(*) AS num FROM `Deal Dimension` WHERE `Deal Campaign Key`=%d ", $this->id);
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
@@ -317,20 +365,6 @@ class DealCampaign extends DB_Table {
 
             )
         );
-
-    }
-
-    function get_deal_keys() {
-        $deal_keys = array();
-        $sql       = sprintf(
-            "SELECT `Deal Key` FROM `Deal Dimension` WHERE `Deal Campaign Key`=%d ", $this->id
-        );
-        $res       = mysql_query($sql);
-        while ($row = mysql_fetch_assoc($res)) {
-            $deal_keys[] = $row['Deal Key'];
-        }
-
-        return $deal_keys;
 
     }
 
@@ -524,6 +558,17 @@ class DealCampaign extends DB_Table {
                 }
 
                 return $duration;
+
+            case 'Deal Campaign Order Recursion Days':
+            case 'Order Recursion Days':
+
+                $deals = $this->get_deals();
+                $deal  = array_pop($deals);
+
+
+                return $deal->get('Deal Terms Days');
+                break;
+
 
             default:
                 if (array_key_exists($key, $this->data)) {
