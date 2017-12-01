@@ -2855,6 +2855,15 @@ $tab_defaults = array(
         'f_field'       => 'name',
 
     ),
+    'campaign_order_recursion.components'                           => array(
+        'view'          => 'overview',
+        'sort_key'      => 'name',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'name',
+
+    ),
     'deal.orders'                          => array(
         'view'          => 'overview',
         'sort_key'      => 'id',

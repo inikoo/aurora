@@ -231,6 +231,10 @@ class Deal extends DB_Table {
 
                 return $duration;
                 break;
+            case 'Deal Terms Days':
+            case 'Terms Days':
+                return preg_replace("/[^0-9,.]/", "", $this->data['Deal Terms']);
+                break;
             default:
                 if (array_key_exists($key, $this->data)) {
                     return $this->data[$key];
@@ -360,7 +364,24 @@ class Deal extends DB_Table {
 
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
 
+
         switch ($field) {
+
+
+            case 'Deal Terms':
+
+
+                $this->update_field($field, $value, $options);
+
+
+                $components=$this->get_deal_components('objects','All');
+                foreach($components as $component){
+                    $component->editor=$this->editor;
+                    $component->update(array('Deal Component Terms'),$options);
+                }
+
+
+                break;
 
             case 'Deal Term Label':
                 $this->update_field($field, $value, $options);

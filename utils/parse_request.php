@@ -2457,9 +2457,21 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                     if (isset($view_path[1])) {
 
                         if (is_numeric($view_path[1])) {
-                            $section = 'campaign';
+
                             $key     = $view_path[1];
+
+
                             $object  = 'campaign';
+                           $store=get_object('store',$parent_key);
+
+                           if($store->get('Store Order Recursion Campaign Key')==$key){
+                               $section = 'campaign_order_recursion';
+
+                           }else{
+                               $section = 'campaign';
+
+                           }
+
 
                             if (isset($view_path[2])) {
                                 if ($view_path[2] == 'deal') {

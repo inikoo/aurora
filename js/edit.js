@@ -1944,6 +1944,11 @@ function delete_object(element) {
 }
 
 
+function suspend_object(element) {
+    save_object_operation('suspend', element)
+}
+
+
 function reset_object(element) {
     save_object_operation('reset', element)
 }

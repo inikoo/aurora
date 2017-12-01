@@ -1,0 +1,1 @@
+deal.components.ptble.php

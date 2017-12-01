@@ -1207,6 +1207,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     );
                     break;
                 case ('campaign'):
+                case ('campaign_order_recursion'):
                     return get_campaign_navigation(
                         $data, $smarty, $user, $db, $account
                     );
@@ -2375,6 +2376,8 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
     }
 
 
+
+
     if (isset($modules[$data['module']]['sections'][$data['section']]['tabs'])) {
         $tabs = $modules[$data['module']]['sections'][$data['section']]['tabs'];
     } else {
@@ -3270,7 +3273,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     'icon'      => 'bullhorn',
                     'reference' => ''
                 );
-            } elseif ($state['section'] == 'campaign') {
+            } elseif ($state['section'] == 'campaign' or $state['section'] == 'campaign_order_recursion') {
                 $branch[] = array(
                     'label'     => _('Marketing').' <span class="Store_Code">'.$state['store']->get('Code').'</span>',
                     'icon'      => 'bullhorn',

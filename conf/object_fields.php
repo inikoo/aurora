@@ -19,15 +19,15 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
     $edit = true;
 
 
-
-
     switch ($object->get_object_name()) {
         case 'Email Campaign':
             include 'fields/email_campaign.fld.php';
+
             return $object_fields;
             break;
         case 'Charge':
             include 'fields/charge.fld.php';
+
             return $object_fields;
             break;
         case 'Delivery Note':
@@ -97,8 +97,8 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
                     'Invoice'       => _('Invoice'),
                     'PurchaseOrder' => _('Purchase order'),
                     'Catalogue'     => _('Catalogue'),
-                    'Image'       => _('Image'),
-                    'Contact Card'       => _('Contact card'),
+                    'Image'         => _('Image'),
+                    'Contact Card'  => _('Contact card'),
                     'Other'         => _('Other'),
 
                 );
@@ -161,7 +161,21 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
             return $object_fields;
             break;
         case 'Deal Campaign':
-            include 'fields/campaign.fld.php';
+
+
+            if ($options['store']->get('Store Order Recursion Campaign Key') == $object->id) {
+
+                $deals = $object->get_deals();
+                $deal  = array_pop($deals);
+                $store = $options['store'];
+
+                include 'fields/campaign_order_recursion.fld.php';
+
+            } else {
+                include 'fields/campaign.fld.php';
+
+            }
+
 
             return $object_fields;
             break;
@@ -173,14 +187,13 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
         case 'Website':
 
 
-            if (!empty($options['localization']) ) {
+            if (!empty($options['localization'])) {
                 include 'fields/website_localization.fld.php';
 
 
-            }else{
+            } else {
                 include 'fields/website.fld.php';
             }
-
 
 
             return $object_fields;
@@ -267,11 +280,11 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
                     } else {
 
 
-                      //  $part = get_object('Part', $object->get('Supplier Part Part SKU'));
+                        //  $part = get_object('Part', $object->get('Supplier Part Part SKU'));
 
                         //$object_fields_part = get_object_fields($part, $db, $user, $smarty, array('supplier_part_scope' => true));
 
-                      // $supplier_part_fields = array_merge($supplier_part_fields, $object_fields_part);
+                        // $supplier_part_fields = array_merge($supplier_part_fields, $object_fields_part);
 
                         $operations = array(
                             'label'      => _('Operations'),
@@ -283,8 +296,8 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
                                     'id'    => 'delete_supplier_part',
                                     'class' => 'operation',
                                     'value' => '',
-                                    'label' => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'
-                                        .$object->get_object_name().'", "key":"'.$object->id.'"}\' onClick="delete_object(this)" class="delete_object disabled">'._(
+                                    'label' => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
+                                        .'"}\' onClick="delete_object(this)" class="delete_object disabled">'._(
                                             "Delete supplier's part & related part"
                                         ).' <i class="fa fa-trash new_button link"></i></span>',
 
@@ -391,6 +404,7 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
         default:
             print $object->get_object_name();
+
             return '';
             break;
     }

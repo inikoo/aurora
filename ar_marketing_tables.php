@@ -50,6 +50,9 @@ switch ($tipo) {
     case 'components':
         components(get_table_parameters(), $db, $user);
         break;
+    case 'campaign_order_recursion_components':
+        campaign_order_recursion_components(get_table_parameters(), $db, $user);
+        break;
 
     default:
         $response = array(
@@ -67,8 +70,7 @@ function marketing_server($_data, $db, $user) {
     $rtext_label = 'store';
     include_once 'prepare_table/init.php';
 
-    $sql
-           = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
     // print $sql;
@@ -80,10 +82,10 @@ function marketing_server($_data, $db, $user) {
             $adata[] = array(
                 'id' => (integer)$data['Store Key'],
 
-                'code'      => sprintf('<span class="link" onClick="change_view(\'marketing/%d\')">%s</span>',$data['Store Key'],$data['Store Code']),
+                'code'      => sprintf('<span class="link" onClick="change_view(\'marketing/%d\')">%s</span>', $data['Store Key'], $data['Store Code']),
                 'name'      => $data['Store Name'],
-                'campaigns' => sprintf('<span class="link" onClick="change_view(\'campaigns/%d\')">%s</span>',$data['Store Key'],$data['campaigns']),
-                'deals'     => sprintf('<span class="link" onClick="change_view(\'deals/%d\')">%s</span>',$data['Store Key'],$data['deals']),
+                'campaigns' => sprintf('<span class="link" onClick="change_view(\'campaigns/%d\')">%s</span>', $data['Store Key'], $data['campaigns']),
+                'deals'     => sprintf('<span class="link" onClick="change_view(\'deals/%d\')">%s</span>', $data['Store Key'], $data['deals']),
             );
 
 
@@ -114,8 +116,7 @@ function deals($_data, $db, $user) {
     $rtext_label = 'offer';
     include_once 'prepare_table/init.php';
 
-    $sql
-           = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
     // print $sql;
@@ -240,8 +241,7 @@ function campaigns($_data, $db, $user) {
     $rtext_label = 'campaign';
     include_once 'prepare_table/init.php';
 
-    $sql
-           = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
     // print $sql;
@@ -362,14 +362,40 @@ function components($_data, $db, $user) {
     $rtext_label = 'allowance';
     include_once 'prepare_table/init.php';
 
-    $sql
-           = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
     // print $sql;
 
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
+
+
+            switch ($data['Deal Component Allowance Type']) {
+                case 'Percentage Off':
+                    $allowance = percentage($data['Deal Component Allowance'],1);
+                    break;
+
+                default:
+                    $allowance = $data['Deal Component Allowance Type'].' '.$data['Deal Component Allowance'];
+            }
+
+            switch ($data['Deal Component Allowance Target']) {
+                case 'Category':
+                    $target = sprintf(
+                        '<i class="fa fa-sitemap fa-fw" aria-hidden="true" title="%s" ></i> <span class="link" onclick="change_view(\'/products/%d/category/%d\')" >%s</span>', _('Category'), $data['Deal Component Store Key'], $data['Deal Component Allowance Target Key'],
+                        $data['Deal Component Allowance Target Label']
+                    );
+                    break;
+                case 'Charge':
+                    $target = sprintf(
+                        '<i class="fa fa-money fa-fw" aria-hidden="true" title="%s" ></i> <span class="link" onclick="change_view(\'/store/%d/charge/%d\')" >%s</span>', _('Charges'), $data['Deal Component Store Key'], $data['Deal Component Allowance Target Key'],
+                        $data['Deal Component Allowance Target Label']
+                    );
+                    break;
+                default:
+                    $target = $data['Deal Component Allowance Target'];
+            }
 
 
             switch ($data['Deal Component Status']) {
@@ -436,26 +462,161 @@ function components($_data, $db, $user) {
             } else {
                 $from = '';
             }
-/*
-            if (strlen(strip_tags($data['Deal Term Allowances Label'])) > 75) {
-                $description_class = 'super_small';
-            } elseif (strlen(strip_tags($data['Deal Term Allowances Label'])) > 60) {
-                $description_class = 'very_small';
-            } elseif (strlen(strip_tags($data['Deal Term Allowances Label'])) > 50) {
-                $description_class = 'small';
-            } else {
-                $description_class = '';
-            }
 
-*/
             $adata[] = array(
                 'id'          => (integer)$data['Deal Component Key'],
                 'status'      => $status,
-                //'name'        => $data['Deal Name'],
-                //'description' => sprintf('<span class="%s" title="%s">%s</span>', $description_class, strip_tags($data['Deal Term Allowances']), $data['Deal Term Allowances Label']),
+                'name'        => $data['Deal Component Name Label'],
+                'description' => $data['Deal Component Term Label'].' <i class="fa fa-arrow-right"></i> '.$data['Deal Component Allowance Label'],
                 'from'        => $from,
                 'to'          => $to,
-                'duration'          => $duration,
+                'target'      => $target,
+                'duration'    => $duration,
+                'allowance' => $allowance,
+
+                'orders'      => number($data['Deal Component Total Acc Used Orders']),
+                'customers'   => number($data['Deal Component Total Acc Used Customers'])
+
+            );
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+function campaign_order_recursion_components($_data, $db, $user) {
+
+    $rtext_label = 'allowance';
+    include_once 'prepare_table/init.php';
+
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $adata = array();
+
+    // print $sql;
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+
+
+            switch ($data['Deal Component Allowance Type']) {
+                case 'Percentage Off':
+                    $allowance = percentage($data['Deal Component Allowance'],1);
+                    break;
+
+                default:
+                    $allowance = $data['Deal Component Allowance Type'].' '.$data['Deal Component Allowance'];
+            }
+
+            switch ($data['Deal Component Allowance Target']) {
+                case 'Category':
+                    $target = sprintf(
+                        '<i class="fa fa-sitemap fa-fw" aria-hidden="true" title="%s" ></i> <span class="link" onclick="change_view(\'/products/%d/category/%d\')" >%s</span>', _('Category'), $data['Deal Component Store Key'], $data['Deal Component Allowance Target Key'],
+                        $data['Deal Component Allowance Target Label']
+                    );
+                    break;
+                case 'Charge':
+                    $target = sprintf(
+                        '<i class="fa fa-money fa-fw" aria-hidden="true" title="%s" ></i> <span class="link" onclick="change_view(\'/store/%d/charge/%d\')" >%s</span>', _('Charges'), $data['Deal Component Store Key'], $data['Deal Component Allowance Target Key'],
+                        $data['Deal Component Allowance Target Label']
+                    );
+                    break;
+                default:
+                    $target = $data['Deal Component Allowance Target'];
+            }
+
+
+            switch ($data['Deal Component Status']) {
+                case 'Waiting':
+                    $status = sprintf(
+                        '<i class="fa fa-clock-o discreet fa-fw" aria-hidden="true" title="%s" ></i>', _('Waiting')
+                    );
+                    break;
+                case 'Active':
+                    $status = sprintf(
+                        '<i class="fa fa-play success fa-fw" aria-hidden="true" title="%s" ></i>', _('Active')
+                    );
+                    break;
+                case 'Suspended':
+                    $status = sprintf(
+                        '<i class="fa fa-pause error fa-fw" aria-hidden="true" title="%s" ></i>', _('Suspended')
+                    );
+                    break;
+                case 'Finish':
+                    $status = sprintf(
+                        '<i class="fa fa-stop discreet fa-fw" aria-hidden="true" title="%s" ></i>', _('Finished')
+                    );
+                    break;
+                default:
+                    $status = $data['Deal Component Status'];
+            }
+
+            $duration = '';
+            if ($data['Deal Component Expiration Date'] == '' and $data['Deal Component Begin Date'] == '') {
+                $duration = _('Permanent');
+            } else {
+
+                if ($data['Deal Component Begin Date'] != '') {
+                    $duration = strftime(
+                        "%x", strtotime($data['Deal Component Begin Date']." +00:00")
+                    );
+
+                }
+                $duration .= ' - ';
+                if ($data['Deal Component Expiration Date'] != '') {
+                    $duration .= strftime(
+                        "%x", strtotime($data['Deal Component Expiration Date']." +00:00")
+                    );
+
+                } else {
+                    $duration .= _('Present');
+                }
+
+            }
+
+            if ($data['Deal Component Expiration Date'] != '') {
+                $to = strftime(
+                    "%x", strtotime($data['Deal Component Expiration Date']." +00:00")
+                );
+            } else {
+                $to = _('Permanent');
+            }
+
+
+            if ($data['Deal Component Begin Date'] != '') {
+                $from = strftime(
+                    "%x", strtotime($data['Deal Component Begin Date']." +00:00")
+                );
+            } else {
+                $from = '';
+            }
+
+            $adata[] = array(
+                'id'          => (integer)$data['Deal Component Key'],
+                'status'      => $status,
+                'name'        => $data['Deal Component Name Label'],
+                'description' => $data['Deal Component Allowance Label'],
+                'allowance' => $allowance,
+                'from'        => $from,
+                'to'          => $to,
+                'target'      => $target,
+                'duration'    => $duration,
                 'orders'      => number($data['Deal Component Total Acc Used Orders']),
                 'customers'   => number($data['Deal Component Total Acc Used Customers'])
 
