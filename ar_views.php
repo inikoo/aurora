@@ -2083,7 +2083,41 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 
             return get_profile_navigation($data, $smarty, $user, $db, $account);
             break;
-
+        case ('payments_server'):
+            require_once 'navigation/payments.nav.php';
+            switch ($data['section']) {
+                case ('payment_service_provider'):
+                    return get_payment_service_provider_navigation(
+                        $data, $user, $smarty, $db
+                    );
+                    break;
+                case ('payment_service_providers'):
+                    return get_payment_service_providers_navigation(
+                        $data, $user, $smarty, $db
+                    );
+                    break;
+                case ('payment_account'):
+                    return get_payment_account_navigation($data, $user, $smarty, $db);
+                    break;
+                case ('payment_accounts'):
+                    return get_payment_accounts_navigation(
+                        $data, $user, $smarty, $db
+                    );
+                    break;
+                case ('payment'):
+                    return get_payment_navigation($data, $user, $smarty, $db);
+                    break;
+                case ('payments'):
+                    return get_payments_navigation($data, $user, $smarty, $db);
+                    break;
+                case ('credits'):
+                    return get_credits_navigation($data, $user, $smarty, $db);
+                    break;
+                case ('payments_by_store'):
+                    return get_payments_by_store_navigation($data, $user, $smarty, $db);
+                    break;
+            }
+            break;
         case ('payments'):
             require_once 'navigation/payments.nav.php';
             switch ($data['section']) {
@@ -4112,9 +4146,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 case 'payments':
                     if ($user->get_number_stores() > 1) {
                         $branch[] = array(
-                            'label' => _('Payments').' ('._(
-                                    'All stores'
-                                ).')',
+                            'label' => _('Payments').' ('._('All stores').')',
                             'icon'  => 'bars',
                             'url'   => 'payments/all'
                         );
@@ -5950,6 +5982,280 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 'icon'      => '',
                 'reference' => 'profile'
             );
+
+
+            break;
+        case 'payments_server':
+
+            if ($state['section'] == 'payment_account') {
+
+
+                /*
+
+			include_once 'class.Payment_Service_Provider.php';
+
+			$psp=new Payment_Service_Provider($state['_object']->get('Payment Service Provider Key'));
+
+			$branch[]=array('label'=>_('Payment service provider').'  <span id="id">'.$psp->get('Payment Service Provider Code').'</span>', 'icon'=>'', 'reference'=>'account/payment_service_provider/'.$psp->id);
+
+			$branch[]=array('label'=>_('Payment account').'  <span id="id">'.$state['_object']->get('Payment Account Code').'</span>', 'icon'=>'', 'reference'=>'account/payment_service_provider/'.$state['_object']->id);
+*/
+
+
+                if ($state['parent'] == 'account') {
+                    $branch[] = array(
+                        'label'     => '('._('All stores').')',
+                        'icon'      => 'cc',
+                        'reference' => 'payment_accounts/all'
+                    );
+
+                }
+
+                $branch[] = array(
+                    'label'     => _('Payment account').'  <span id="id">'.$state['_object']->get(
+                            'Payment Account Code'
+                        ).'</span>',
+                    'icon'      => '',
+                    'reference' => 'account/payment_service_provider/'.$state['_object']->id
+                );
+
+
+            }
+            elseif ($state['section'] == 'payment_accounts') {
+                if ($state['parent'] == 'store') {
+                    $store = new Store($state['parent_key']);
+                    if ($user->get_number_stores() > 1) {
+                        $branch[] = array(
+                            'label'     => '('._('All stores').')',
+                            'icon'      => '',
+                            'reference' => 'payment_accounts/all'
+                        );
+                    }
+
+                    $branch[] = array(
+                        'label'     => _('Payment accounts').'  <span id="id">('.$store->get('Code').')</span>',
+                        'icon'      => '',
+                        'reference' => 'payment_accounts/'.$store->id
+                    );
+                } elseif ($state['parent'] == 'account') {
+
+                    $branch[] = array(
+                        'label'     => _('Payment accounts').' ('._(
+                                'All stores'
+                            ).')',
+                        'icon'      => '',
+                        'reference' => 'payment_accounts/all'
+                    );
+
+                } elseif ($state['parent'] == 'payment_service_provider') {
+
+                    include_once 'class.Payment_Service_Provider.php';
+
+                    $psp = new Payment_Service_Provider($state['parent_key']);
+
+                    $branch[] = array(
+                        'label'     => _(
+                                'Payment service provider'
+                            ).'  <span id="id">'.$psp->get(
+                                'Payment Service Provider Code'
+                            ).'</span>',
+                        'icon'      => '',
+                        'reference' => 'payment_service_provider/'.$psp->id
+                    );
+                    $branch[] = array(
+                        'label'     => _('Payment accounts'),
+                        'icon'      => '',
+                        'reference' => ''
+                    );
+
+                }
+
+
+            } elseif ($state['section'] == 'payment_service_providers') {
+
+
+                $branch[] = array(
+                    'label'     => _('Payment service providers'),
+                    'icon'      => 'bank',
+                    'reference' => ''
+                );
+
+
+            } elseif ($state['section'] == 'payment_service_provider') {
+
+                $branch[] = array(
+                    'label'     => _('Payment service providers'),
+                    'icon'      => 'bank',
+                    'reference' => ''
+                );
+                $psp      = new Payment_Service_Provider(
+                    $state['_object']->get('Payment Service Provider Key')
+                );
+
+                $branch[] = array(
+                    'label'     => _(
+                            'Payment service provider'
+                        ).'  <span id="id">'.$psp->get('Code').'</span>',
+                    'icon'      => '',
+                    'reference' => ''
+                );
+
+
+            }
+            elseif ($state['section'] == 'payments') {
+
+                if ($state['parent'] == 'account') {
+                    $branch[] = array(
+                        'label'     => _('Payments').' ('._(
+                                'All stores'
+                            ).')',
+                        'icon'      => '',
+                        'reference' => 'payments/all'
+                    );
+
+                } elseif ($state['parent'] == 'store') {
+                    $store = new Store($state['parent_key']);
+
+
+                    if ($user->get_number_stores() > 1) {
+                        $branch[] = array(
+                            'label'     => '('._('All stores').')',
+                            'icon'      => '',
+                            'reference' => 'payments/all'
+                        );
+                    }
+
+                    $branch[] = array(
+                        'label'     => _('Payments').'  <span id="id">('.$store->get('Code').')</span>',
+                        'icon'      => '',
+                        'reference' => 'payments/'.$store->id
+                    );
+
+
+                } elseif ($state['parent'] == 'payment_service_provider') {
+                    include_once 'class.Payment_Service_Provider.php';
+                    $branch[] = array(
+                        'label'     => _(
+                                'Payment service provider'
+                            ).'  <span id="id">'.$psp->get(
+                                'Payment Service Provider Code'
+                            ).'</span>',
+                        'icon'      => '',
+                        'reference' => 'account/payment_service_provider/'.$psp->id
+                    );
+
+
+                } elseif ($state['parent'] == 'payment_account') {
+                    include_once 'class.Payment_Account.php';
+                    $payment_account = new Payment_Account(
+                        $state['_object']->get('Payment Account Key')
+                    );
+                    $branch[]        = array(
+                        'label'     => _('Payment account').'  <span id="id">'.$payment_account->get(
+                                'Payment Account Code'
+                            ).'</span>',
+                        'icon'      => '',
+                        'reference' => 'payment_service_provider/'.$psp->id.'/payment_account/'.$payment_account->id
+                    );
+
+
+                }
+
+
+            }
+
+            elseif ($state['section'] == 'credits') {
+
+
+                    $branch[] = array(
+                        'label'     => _('Credits').' ('._('All stores').')',
+                        'icon'      => '',
+                        'reference' => 'credits/all'
+                    );
+
+
+
+
+            } elseif ($state['section'] == 'payments_by_store') {
+
+
+                $branch[] = array(
+                    'label'     => _('Payments by store'),
+                    'icon'      => '',
+                    'reference' => 'payments/by_store'
+                );
+
+
+
+
+            }
+            elseif ($state['section'] == 'payment') {
+
+                if ($state['parent'] == 'account') {
+
+                } elseif ($state['parent'] == 'store') {
+                    $store = new Store($state['parent_key']);
+
+
+                    if ($user->get_number_stores() > 1) {
+                        $branch[] = array(
+                            'label'     => '('._('All stores').')',
+                            'icon'      => '',
+                            'reference' => 'payments/all'
+                        );
+                    }
+
+                    $branch[] = array(
+                        'label'     => _('Payments').'  <span id="id">('.$store->get('Code').')</span>',
+                        'icon'      => '',
+                        'reference' => 'payments/'.$store->id
+                    );
+
+
+                    $branch[] = array(
+                        'label'     => _('Payment').'  <span id="id">'.$state['_object']->get('Payment Key').'</span>',
+                        'icon'      => '',
+                        'reference' => ''
+                    );
+
+                } elseif ($state['parent'] == 'payment_service_provider') {
+                    include_once 'class.Payment_Service_Provider.php';
+                    $branch[] = array(
+                        'label'     => _(
+                                'Payment service provider'
+                            ).'  <span id="id">'.$psp->get(
+                                'Payment Service Provider Code'
+                            ).'</span>',
+                        'icon'      => '',
+                        'reference' => 'account/payment_service_provider/'.$psp->id
+                    );
+
+
+                } elseif ($state['parent'] == 'payment_account') {
+                    include_once 'class.Payment_Account.php';
+                    $payment_account = new Payment_Account(
+                        $state['_object']->get('Payment Account Key')
+                    );
+                    $branch[]        = array(
+                        'label'     => _('Payment account').'  <span id="id">'.$payment_account->get(
+                                'Payment Account Code'
+                            ).'</span>',
+                        'icon'      => '',
+                        'reference' => 'payment_service_provider/'.$psp->id.'/payment_account/'.$payment_account->id
+                    );
+
+                    $branch[] = array(
+                        'label'     => _('Payment').'  <span id="id">'.$state['_object']->get(
+                                'Payment Key'
+                            ).'</span>',
+                        'icon'      => '',
+                        'reference' => 'payment_account/'.$payment_account->id.'/payment/'.$state['_object']->id
+                    );
+
+                }
+
+
+            }
 
 
             break;

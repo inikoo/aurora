@@ -41,8 +41,19 @@ switch ($tipo) {
     case 'order.payments':
     case 'invoice.payments':
     case 'refund.payments':
+    case 'account.payments':
 
-    payments(get_table_parameters(), $db, $user);
+        payments(get_table_parameters(), $db, $user);
+        break;
+
+    case 'credits':
+    case 'account.credits':
+
+        credits(get_table_parameters(), $db, $user);
+        break;
+    case 'payments_group_by_store':
+
+        payments_group_by_store(get_table_parameters(), $db, $user);
         break;
     default:
         $response = array(
@@ -167,28 +178,23 @@ function payment_accounts($_data, $db, $user) {
 
 function payments($_data, $db, $user) {
     global $db, $account;
-    $rtext_label = 'transaction';
+    $rtext_label = 'payment';
     include_once 'prepare_table/init.php';
 
 
-    $parent=get_object($_data['parameters']['parent'],$_data['parameters']['parent_key']);
+    $parent = get_object($_data['parameters']['parent'], $_data['parameters']['parent_key']);
 
 
-    $is_refund=false;
-    if($parent->get_object_name()=='Order'  and $parent->get('State Index')<90 ){
-        $show_operations=true;
-    }elseif($parent->get_object_name()=='Invoice' and $parent->get('Invoice Type')=='Refund'){
-        $show_operations=true;
-        $is_refund=true;
+    $is_refund = false;
+    if ($parent->get_object_name() == 'Order' and $parent->get('State Index') < 90) {
+        $show_operations = true;
+    } elseif ($parent->get_object_name() == 'Invoice' and $parent->get('Invoice Type') == 'Refund') {
+        $show_operations = true;
+        $is_refund       = true;
+    } else {
+        $show_operations = false;
+
     }
-    else{
-        $show_operations=false;
-
-    }
-
-
-
-
 
 
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
@@ -221,15 +227,15 @@ function payments($_data, $db, $user) {
             $refundable_amount = $data['Payment Transaction Amount'] - $refund_amount;
 
 
-           if($is_refund){
-              $to_refund=  -1*$parent->get('Invoice To Pay Amount');
+            if ($is_refund) {
+                $to_refund = -1 * $parent->get('Invoice To Pay Amount');
 
-              if($to_refund<$refundable_amount){
-                  $refundable_amount=$to_refund;
+                if ($to_refund < $refundable_amount) {
+                    $refundable_amount = $to_refund;
 
-              }
+                }
 
-           }
+            }
 
             $operations = '';
             switch ($data['Payment Transaction Status']) {
@@ -245,19 +251,16 @@ function payments($_data, $db, $user) {
                     } else {
 
 
-
                         $operations = sprintf(
                             '<span class="operations">
                             <i class="fa fa-trash button %s" aria-hidden="true" title="'._('Remove payment').'"  onClick="cancel_payment(this,%d)"  ></i>
-                            <i class="fa fa-share fa-flip-horizontal button %s" data-settings=\'{"reference":"%s","amount_formatted":"%s","amount":"%s","can_refund_online":"%s"}\'   aria-hidden="true" title="'
-                            ._('Refund/Credit payment').'"  onClick="open_refund_dialog(this,%d)"  ></i>
+                            <i class="fa fa-share fa-flip-horizontal button %s" data-settings=\'{"reference":"%s","amount_formatted":"%s","amount":"%s","can_refund_online":"%s"}\'   aria-hidden="true" title="'._('Refund/Credit payment').'"  onClick="open_refund_dialog(this,%d)"  ></i>
 
-                            </span>', (($data['Payment Submit Type'] != 'Manual' or ($is_refund and $data['Payment Type']!='Refund'  ) )? 'hide' : ''), $data['Payment Key'],
+                            </span>', (($data['Payment Submit Type'] != 'Manual' or ($is_refund and $data['Payment Type'] != 'Refund')) ? 'hide' : ''), $data['Payment Key'],
 
                             (($data['Payment Type'] == 'Payment' and $refundable_amount > 0) ? '' : 'hide'),
 
-                            htmlspecialchars($data['Payment Transaction ID']), money($refundable_amount, $data['Payment Currency Code']), $refundable_amount,
-                            ($data['Payment Account Block'] == 'BTree' ? true : false), $data['Payment Key']
+                            htmlspecialchars($data['Payment Transaction ID']), money($refundable_amount, $data['Payment Currency Code']), $refundable_amount, ($data['Payment Account Block'] == 'BTree' ? true : false), $data['Payment Key']
                         );
                     }
 
@@ -284,8 +287,7 @@ function payments($_data, $db, $user) {
             $notes = '';
 
 
-            $amount =
-                '<span class=" '.($data['Payment Transaction Amount']<0?'error':'').'  '.($data['Payment Transaction Status'] != 'Completed' ? 'strikethrough' : '').'" >'.money($data['Payment Transaction Amount'], $data['Payment Currency Code']).'</span>';
+            $amount = '<span class=" '.($data['Payment Transaction Amount'] < 0 ? 'error' : '').'  '.($data['Payment Transaction Status'] != 'Completed' ? 'strikethrough' : '').'" >'.money($data['Payment Transaction Amount'], $data['Payment Currency Code']).'</span>';
 
 
             $refunds = '';
@@ -313,14 +315,18 @@ function payments($_data, $db, $user) {
                 'id'         => (integer)$data['Payment Key'],
                 'currency'   => $data['Payment Currency Code'],
                 'amount'     => $amount,
-                'reference'  => sprintf("<span class='link' onclick='change_view(\"/payment/%d\")' >%s</span>", $data['Payment Key'], $data['Payment Transaction ID']),
+                'reference'  => sprintf(
+                    "<span class='link' onclick='change_view(\"/payment/%d\")' >%s</span>", $data['Payment Key'], ($data['Payment Transaction ID'] == '' ? '<span class="discreet italic">'._('Reference missing').'</span>' : $data['Payment Transaction ID'])
+                ),
                 'type'       => $type,
                 'status'     => $status,
                 'notes'      => $notes,
                 'date'       => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Payment Last Updated Date'].' +0:00')),
-                'operations' => ($show_operations?$operations:''),
+                'operations' => ($show_operations ? $operations : ''),
                 'refunds'    => $refunds,
-                'account'    => $account
+                'account'    => $account,
+                'store'      => sprintf("<span class='link' onclick='change_view(\"/payments/%d\")' title='%s'>%s</span>", $data['Store Key'], $data['Store Name'], $data['Store Code'])
+
 
             );
 
@@ -425,6 +431,119 @@ function stores($_data, $db, $user) {
     );
     echo json_encode($response);
 }
+
+
+function credits($_data, $db, $user) {
+    global $db, $account;
+    $rtext_label = 'customer with credit';
+    include_once 'prepare_table/init.php';
+
+
+
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+
+    $adata = array();
+
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+
+
+            $adata[] = array(
+                'id'         => (integer)$data['Customer Key'],
+                'amount'     => money($data['Customer Account Balance'],$data['Store Currency Code']),
+                'store'      => sprintf("<span class='link' onclick='change_view(\"/credits/%d\")' title='%s'>%s</span>", $data['Store Key'], $data['Store Name'], $data['Store Code']),
+                'customer_id'      => sprintf("<span class='link' onclick='change_view(\"/customers/%d/%d\")' >%05d</span>", $data['Store Key'], $data['Customer Key'], $data['Customer Key']),
+                'customer'      => sprintf("<span class='link' onclick='change_view(\"/customers/%d/%d\")' >%s</span>", $data['Store Key'], $data['Customer Key'], $data['Customer Name']),
+
+            );
+
+        }
+
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+
+function payments_group_by_store($_data, $db, $user) {
+
+    $rtext_label = 'store';
+    include_once 'prepare_table/init.php';
+
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+    $total_orders         = 0;
+    $total_invoices       = 0;
+    $total_delivery_notes = 0;
+    $total_payments       = 0;
+
+
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+            $total_payments         += $data['payments'];
+
+
+            $adata[] = array(
+                'store_key'      => $data['Store Key'],
+                'code'           => sprintf('<span class="link" onclick="change_view(\'orders/%d\')">%s</span>', $data['Store Key'], $data['Store Code']),
+                'name'           => sprintf('<span class="link" onclick="change_view(\'orders/%d\')">%s</span>', $data['Store Key'], $data['Store Name']),
+                'payments'         => number($data['payments']),
+
+            );
+
+        }
+
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $adata[] = array(
+        'store_key' => '',
+        'name'      => '',
+        'code'      => _('Total').($filtered > 0 ? ' '.'<i class="fa fa-filter fa-fw"></i>' : ''),
+
+        'payments'         => number($total_payments),
+
+
+    );
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+        )
+    );
+    echo json_encode($response);
+}
+
 
 
 ?>

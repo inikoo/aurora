@@ -1,3 +1,14 @@
+{*
+<!--
+ About:
+ Author: Raul Perusquia <raul@inikoo.com>
+ Created: 2 December 2017 at 12:23:06 GMT+7, Bangkok, Thailand
+ Copyright (c) 2016, Inikoo
+
+ Version 3
+-->
+*}
+
 var columns = [
 {
 name: "id",
@@ -5,6 +16,12 @@ label: "",
 editable: false,
 renderable: false,
 cell: "string"
+},{
+name: "store",
+label:"{t}Store{/t}",
+editable: false,
+sortType: "toggle",
+cell: Backgrid.HtmlCell.extend({  }),
 },{
 name: "reference",
 label:"{t}Reference{/t}",
