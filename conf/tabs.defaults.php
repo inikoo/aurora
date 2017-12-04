@@ -573,7 +573,15 @@ $tab_defaults = array(
         'percentages' => 0
     ),
 
-
+    'payments_group_by_store'                => array(
+        'view'        => 'overview',
+        'sort_key'    => 'code',
+        'sort_order'  => -1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'code',
+        'percentages' => 0
+    ),
 
 
     'stores'                      => array(
@@ -2472,6 +2480,37 @@ $tab_defaults = array(
         'rpp'         => 100,
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'reference'
+
+
+    ),
+    'account.payments'                          => array(
+        'view'        => 'overview',
+        'sort_key'    => 'date',
+        'sort_order'  => -1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'reference'
+
+
+    ),
+
+    'credits'                          => array(
+        'view'        => 'overview',
+        'sort_key'    => 'customer',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'customer'
+
+
+    ),
+    'account.credits'                          => array(
+        'view'        => 'overview',
+        'sort_key'    => 'customer',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'customer'
 
 
     ),

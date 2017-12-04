@@ -4324,7 +4324,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                     break;
                 }
 
-                $module     = 'payments';
+                $module     = 'payments_server';
                 $section    = 'payment_service_providers';
                 $parent     = 'account';
                 $parent_key = 1;
@@ -4499,25 +4499,27 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                     break;
                 }
 
-                $module     = 'payments';
+                $module     = 'payments_server';
                 $section    = 'payment_accounts';
                 $parent     = 'account';
                 $parent_key = 1;
 
                 if (isset($view_path[0])) {
                     if (is_numeric($view_path[0]) and isset($view_path[1]) and is_numeric($view_path[1])) {
+                        $module     = 'payments';
                         $object     = 'payment_account';
                         $key        = $view_path[1];
                         $parent     = 'store';
                         $parent_key = $view_path[0];
                     } elseif (is_numeric($view_path[0])) {
+                        $module     = 'payments';
                         $parent     = 'store';
                         $parent_key = $view_path[0];
 
                     }
 
                 } else {
-
+                    $module     = 'payments';
                     $parent = 'store';
                     if ($user->data['User Hooked Store Key'] and in_array(
                             $user->data['User Hooked Store Key'], $user->stores
@@ -4538,18 +4540,64 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                     break;
                 }
 
-                $module     = 'payments';
+                $module     = 'payments_server';
                 $section    = 'payments';
                 $parent     = 'account';
                 $parent_key = 1;
 
+
+
+
                 if (isset($view_path[0])) {
                     if (is_numeric($view_path[0]) and isset($view_path[1]) and is_numeric($view_path[1])) {
+                        $module     = 'payments';
+
                         $object     = 'payment';
                         $key        = $view_path[1];
                         $parent     = 'store';
                         $parent_key = $view_path[0];
                     } elseif (is_numeric($view_path[0])) {
+                        $module     = 'payments';
+                        $parent     = 'store';
+                        $parent_key = $view_path[0];
+
+                    } elseif ($view_path[0]=='by_store') {
+                        $section    = 'payments_by_store';
+                    }
+
+                } else {
+
+                    $module     = 'payments';
+
+                    $parent = 'store';
+                    if ($user->data['User Hooked Store Key'] and in_array($user->data['User Hooked Store Key'], $user->stores)) {
+                        $parent_key = $user->data['User Hooked Store Key'];
+                    } else {
+                        $_tmp       = $user->stores;
+                        $parent_key = array_shift($_tmp);
+                    }
+
+                }
+                break;
+            case 'credits':
+                if (!$user->can_view('orders')) {
+                    $module  = 'utils';
+                    $section = 'forbidden';
+                    break;
+                }
+
+                $module     = 'payments_server';
+                $section    = 'credits';
+                $parent     = 'account';
+                $parent_key = 1;
+
+
+
+
+                if (isset($view_path[0])) {
+
+                    if (is_numeric($view_path[0])) {
+                        $module     = 'payments';
                         $parent     = 'store';
                         $parent_key = $view_path[0];
 
@@ -4557,10 +4605,10 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                 } else {
 
+                    $module     = 'payments';
+
                     $parent = 'store';
-                    if ($user->data['User Hooked Store Key'] and in_array(
-                            $user->data['User Hooked Store Key'], $user->stores
-                        )) {
+                    if ($user->data['User Hooked Store Key'] and in_array($user->data['User Hooked Store Key'], $user->stores)) {
                         $parent_key = $user->data['User Hooked Store Key'];
                     } else {
                         $_tmp       = $user->stores;

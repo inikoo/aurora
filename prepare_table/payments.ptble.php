@@ -2,8 +2,8 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 3 November 2015 at 17:00:28 CET, Tessera, Ialy
- Copyright (c) 2015, Inikoo
+ Created: 2 December 2017 at 12:24:59 GMT+7 , Bangkok Thailand
+ Copyright (c) 2017, Inikoo
 
  Version 3
 
@@ -12,7 +12,6 @@
 
 $filter_msg = '';
 
-$where = "where true";
 switch ($parameters['parent']) {
     case 'payment_service_provider':
         $where = sprintf(
@@ -70,16 +69,18 @@ if ($order == 'reference') {
     $order = 'P.`Payment Type`';
 } elseif ($order == 'status') {
     $order = 'P.`Payment Transaction Status`';
+}elseif ($order == 'store') {
+    $order = 'Store Code`';
 } else {
     $order = 'P.`Payment Key`';
 }
 
 
-$table = '`Payment Dimension` P left join `Payment Account Dimension` PA on (PA.`Payment Account Key`=P.`Payment Account Key`) ';
+$table = '`Payment Dimension` P left join `Payment Account Dimension` PA on (PA.`Payment Account Key`=P.`Payment Account Key`) left join `Store Dimension` on (`Payment Store Key`=`Store Key`)';
 
 $sql_totals = "select count(P.`Payment Key`) as num from $table  $where  ";
 $fields
-            = "PA.`Payment Account Code`,PA.`Payment Account Name`,`Payment Account Block`,`Payment Transaction Amount Refunded`,`Payment Transaction Amount Credited`,`Payment Submit Type`,`Payment Key`,`Payment Transaction ID`,`Payment Currency Code`,`Payment Transaction Amount`,P.`Payment Type`,`Payment Last Updated Date`,`Payment Transaction Status`,`Payment Transaction Status Info`";
+            = "`Store Code`,`Store Name`,`Store Key`,PA.`Payment Account Code`,PA.`Payment Account Name`,`Payment Account Block`,`Payment Transaction Amount Refunded`,`Payment Transaction Amount Credited`,`Payment Submit Type`,`Payment Key`,`Payment Transaction ID`,`Payment Currency Code`,`Payment Transaction Amount`,P.`Payment Type`,`Payment Last Updated Date`,`Payment Transaction Status`,`Payment Transaction Status Info`";
 
 
 ?>

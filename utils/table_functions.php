@@ -322,7 +322,11 @@ function get_rtext($record_label, $total_records) {
         return sprintf(
             ngettext('%s delivery', '%s deliveries', $total_records), number($total_records)
         );
-    } elseif ($record_label == 'deleted employee') {
+    }elseif ($record_label == 'payment') {
+        return sprintf(
+            ngettext('%s payment', '%s payments', $total_records), number($total_records)
+        );
+    }  elseif ($record_label == 'deleted employee') {
         return sprintf(
             ngettext(
                 '%s deleted employee', '%s deleted employees', $total_records
@@ -413,6 +417,10 @@ function get_rtext($record_label, $total_records) {
     }elseif ($record_label == 'part to produce as soon as possible') {
         return sprintf(
             ngettext('%s part to produce as soon as possible', '%s parts to produce as soon as possible', $total_records), number($total_records)
+        );
+    }elseif ($record_label == 'customer with credit') {
+        return sprintf(
+            ngettext('%s customer with credit', '%s customers with credit', $total_records), number($total_records)
         );
     } else {
         return sprintf(

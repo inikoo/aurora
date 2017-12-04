@@ -15,7 +15,7 @@ function get_payment_service_providers_navigation($data, $user, $smarty) {
 
 
     $sections                                          = get_sections(
-        'payments', ($user->data['User Hooked Store Key'] ? $user->data['User Hooked Store Key'] : 'all')
+        'payments_server', ($user->data['User Hooked Store Key'] ? $user->data['User Hooked Store Key'] : 'all')
     );
     $sections['payment_service_providers']['selected'] = true;
     $title                                             = _(
@@ -52,8 +52,8 @@ function get_payments_navigation($data, $user) {
         case 'account':
 
 
-            $title                            = _('Payments');
-            $sections                         = get_sections('payments', 'all');
+            $title                            = _('Payments').' ('._('All stores').')';
+            $sections                         = get_sections('payments_server', 'all');
             $sections['payments']['selected'] = true;
 
             break;
@@ -605,9 +605,7 @@ function get_payment_accounts_navigation($data, $user, $smarty) {
             $tab      = 'payment_accounts';
             $_section = 'payment_accounts';
 
-            $sections                                 = get_sections(
-                'payments', 'all'
-            );
+            $sections                                 = get_sections('payments_server', 'all');
             $sections['payment_accounts']['selected'] = true;
             $title                                    = _('Payments accounts').' ('._('All stores').')';
             break;
@@ -1110,5 +1108,205 @@ function get_payment_navigation($data, $user, $smarty, $db) {
 
 }
 
+
+function get_credits_navigation($data, $user) {
+    global $smarty;
+
+    $right_buttons = array();
+    $left_buttons  = array();
+
+    switch ($data['parent']) {
+        case 'account':
+
+
+            $title                            = _('Credits').' ('._('All stores').')';
+            $sections                         = get_sections('payments_server', 'all');
+            $sections['credits']['selected'] = true;
+
+            break;
+
+        case 'store':
+            $store = new Store($data['parent_key']);
+
+            $sections     = get_sections('payments', $store->id);
+            $up_button    = array();
+            $button_label = _('Payments %s');
+            $block_view   = 'payments';
+            if ($user->stores > 1) {
+                $up_button = array(
+                    'icon'      => 'arrow-up',
+                    'title'     => _("Payments"),
+                    'reference' => 'payments/all'
+                );
+
+                list($prev_key, $next_key) = get_prev_next(
+                    $store->id, $user->stores
+                );
+
+                $sql = sprintf(
+                    "SELECT `Store Code` FROM `Store Dimension` WHERE `Store Key`=%d", $prev_key
+                );
+                $res = mysql_query($sql);
+                if ($row = mysql_fetch_assoc($res)) {
+                    $prev_title = sprintf($button_label, $row['Store Code']);
+                } else {
+                    $prev_title = '';
+                }
+                $sql = sprintf(
+                    "SELECT `Store Code` FROM `Store Dimension` WHERE `Store Key`=%d", $next_key
+                );
+                $res = mysql_query($sql);
+                if ($row = mysql_fetch_assoc($res)) {
+                    $next_title = sprintf($button_label, $row['Store Code']);
+                } else {
+                    $next_title = '';
+                }
+
+
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-left',
+                    'title'     => $prev_title,
+                    'reference' => $block_view.'/'.$prev_key
+                );
+                $left_buttons[] = $up_button;
+
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-right',
+                    'title'     => $next_title,
+                    'reference' => $block_view.'/'.$next_key
+                );
+
+
+                $title                            = _('Payments').' <span class="id" title="'.$store->get(
+                        'Name'
+                    ).'">'.$store->get('Code').'</span>';
+                $sections['payments']['selected'] = true;
+
+            }
+
+            $sections['payments']['selected'] = true;
+
+            break;
+    }
+
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => false,
+            'placeholder' => _('Search payments')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+}
+
+function get_payments_by_store_navigation($data, $user) {
+    global $smarty;
+
+    $right_buttons = array();
+    $left_buttons  = array();
+
+    switch ($data['parent']) {
+        case 'account':
+
+
+            $title                            = _('Payments by store');
+            $sections                         = get_sections('payments_server', 'all');
+            $sections['payments_by_store']['selected'] = true;
+
+            break;
+
+        case 'store':
+            $store = new Store($data['parent_key']);
+
+            $sections     = get_sections('payments', $store->id);
+            $up_button    = array();
+            $button_label = _('Payments %s');
+            $block_view   = 'payments';
+            if ($user->stores > 1) {
+                $up_button = array(
+                    'icon'      => 'arrow-up',
+                    'title'     => _("Payments"),
+                    'reference' => 'payments/all'
+                );
+
+                list($prev_key, $next_key) = get_prev_next(
+                    $store->id, $user->stores
+                );
+
+                $sql = sprintf(
+                    "SELECT `Store Code` FROM `Store Dimension` WHERE `Store Key`=%d", $prev_key
+                );
+                $res = mysql_query($sql);
+                if ($row = mysql_fetch_assoc($res)) {
+                    $prev_title = sprintf($button_label, $row['Store Code']);
+                } else {
+                    $prev_title = '';
+                }
+                $sql = sprintf(
+                    "SELECT `Store Code` FROM `Store Dimension` WHERE `Store Key`=%d", $next_key
+                );
+                $res = mysql_query($sql);
+                if ($row = mysql_fetch_assoc($res)) {
+                    $next_title = sprintf($button_label, $row['Store Code']);
+                } else {
+                    $next_title = '';
+                }
+
+
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-left',
+                    'title'     => $prev_title,
+                    'reference' => $block_view.'/'.$prev_key
+                );
+                $left_buttons[] = $up_button;
+
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-right',
+                    'title'     => $next_title,
+                    'reference' => $block_view.'/'.$next_key
+                );
+
+
+                $title                            = _('Payments').' <span class="id" title="'.$store->get(
+                        'Name'
+                    ).'">'.$store->get('Code').'</span>';
+                $sections['payments']['selected'] = true;
+
+            }
+
+            $sections['payments']['selected'] = true;
+
+            break;
+    }
+
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => false,
+            'placeholder' => _('Search payments')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+}
 
 ?>

@@ -1280,6 +1280,185 @@ $modules = array(
         )
 
     ),
+
+
+    'payments_server'              => array(
+        'section'     => 'invoices',
+        'parent'      => 'store',
+        'parent_type' => 'key',
+        'sections'    => array(
+
+
+            'payment_accounts' => array(
+                'type'      => 'navigation',
+                'label'     => _("Payment accounts"),
+                'icon'      => 'cc',
+                'reference' => 'payment_accounts/%s',
+                'class'=>'left',
+                'tabs'      => array(
+                    'payment_accounts' => array(),
+                )
+            ),
+
+            'payment_service_providers' => array(
+                'type'      => 'navigation',
+                'label'     => _('Payment Service Providers'),
+                'icon'      => 'university',
+                'reference' => 'payment_service_providers',
+                'class'=>'left',
+                'tabs'      => array(
+                    'payment_service_providers' => array(
+                        'label' => _('Payment Service Providers'),
+                        'icon'  => 'university',
+
+                    ),
+                )
+            ),
+
+
+            'credits' => array(
+                'type'      => 'navigation',
+                'label'     => _('Credit vault'),
+                'icon'      => 'university',
+                'reference' => 'credits/all',
+                'tabs'      => array(
+                    'account.credits' => array(
+                        'label' => _('Credits'),
+                        'icon'  => 'university',
+
+                    ),
+                )
+            ),
+
+            'payments' => array(
+                'type'      => 'navigation',
+                'label'     => _('Payments'),
+                'icon'      => 'credit-card',
+                'reference' => 'payments/all',
+                'tabs'      => array(
+                    'account.payments' => array()
+                )
+            ),
+
+            'payments_by_store' => array(
+                'type'      => 'navigation',
+                'label'     => _('Group by store'),
+                'icon'      => 'compress',
+                'reference' => 'payments/by_store',
+                'tabs'      => array(
+                    'payments_group_by_store' => array()
+                )
+
+            ),
+
+            'payment_service_provider' => array(
+                'type' => 'object',
+                'tabs' => array(
+                    'payment_service_provider.details'  => array(
+                        'label' => _(
+                            'Data'
+                        ),
+                        'icon'  => 'database'
+                    ),
+                    'payment_service_provider.history'  => array(
+                        'label' => _(
+                            'History, notes'
+                        ),
+                        'icon'  => 'sticky-note-o'
+                    ),
+                    'payment_service_provider.accounts' => array(
+                        'label' => _(
+                            'Accounts'
+                        ),
+                        'title' => _(
+                            'Payment accounts'
+                        )
+                    ),
+                    'payment_service_provider.payments' => array(
+                        'label' => _(
+                            'Payments'
+                        ),
+                        'title' => _(
+                            'Payments transactions'
+                        )
+                    ),
+
+                )
+            ),
+            'payment_account'          => array(
+                'type' => 'object',
+                'tabs' => array(
+                    'payment_account.details'  => array(
+                        'label' => _(
+                            'Data'
+                        ),
+                        'icon'  => 'database',
+                        'title' => _(
+                            'Details'
+                        )
+                    ),
+                    'payment_account.history'  => array(
+                        'title'         => _('History, notes'),
+                        'label'         => '',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number History Records'
+                        ),
+
+                        'icon'  => 'road',
+                        'class' => 'right icon_only'
+                    ),
+                    'payment_account.payments' => array(
+                        'label'         => _('Transactions'),
+                        'title'         => _('Payments transactions'),
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Transactions'
+                        ),
+                    ),
+                    'payment_account.stores'   => array(
+                        'label'         => _('Stores'),
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number Stores'
+                        ),
+                    ),
+                    'payment_account.websites' => array(
+                        'label'         => _('Websites'),
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number Websites'
+                        ),
+                    ),
+
+                )
+            ),
+            'payment'                  => array(
+                'type' => 'object',
+                'tabs' => array(
+                    'payment.details' => array(
+                        'label' => _(
+                            'Data'
+                        ),
+                        'icon'  => 'database',
+                        'title' => _(
+                            'Details'
+                        )
+                    ),
+                    'payment.history' => array(
+                        'label' => _(
+                            'History, notes'
+                        ),
+                        'icon'  => 'sticky-note-o'
+                    ),
+
+                )
+            )
+
+
+        )
+    ),
+
     'payments'              => array(
         'section'     => 'invoices',
         'parent'      => 'store',
@@ -1289,38 +1468,19 @@ $modules = array(
 
             'credits' => array(
                 'type'      => 'navigation',
-                'label'     => _(
-                    'Credits Vault'
-                ),
+                'label'     => _('Credit vault'),
                 'icon'      => 'university',
-                'reference' => 'payment_service_providers',
+                'reference' => 'credits/all',
                 'tabs'      => array(
-                    'payment_service_providers' => array(
-                        'label' => _(
-                            'Payment Service Providers'
-                        ),
-                        'icon'  => 'university'
+                    'credits' => array(
+                        'label' => _('Credits'),
+                        'icon'  => 'university',
+
                     ),
                 )
             ),
 
 
-            'payment_service_providers' => array(
-                'type'      => 'navigation',
-                'label'     => _(
-                    'Payment Service Providers'
-                ),
-                'icon'      => 'university',
-                'reference' => 'payment_service_providers',
-                'tabs'      => array(
-                    'payment_service_providers' => array(
-                        'label' => _(
-                            'Payment Service Providers'
-                        ),
-                        'icon'  => 'university'
-                    ),
-                )
-            ),
 
             'payment_accounts' => array(
                 'type'      => 'navigation',
@@ -1341,6 +1501,8 @@ $modules = array(
                     'payments' => array()
                 )
             ),
+
+
 
             'payment_service_provider' => array(
                 'type' => 'object',
