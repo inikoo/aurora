@@ -289,7 +289,10 @@
                 }
 
                 #part_leakages_info td{
-                    padding:10px 5px;border:1px solid #ccc;text-align: center;width: 25%
+                    padding:5px 5px 10px 5px;border:1px solid #ccc;text-align: center;width: 25%
+                }
+                #part_leakages_info .label{
+                   padding-bottom:4px
                 }
 
                 </style>
@@ -299,15 +302,15 @@
 
               <tr id="unknown_location_tr" class="{if $part->get('Part Unknown Location Stock')==0}hide{/if}">
                   <td colspan="3"><i class="fa error fa-exclamation-circle" aria-hidden="true"></i>  {t}Unknown location{/t}</td>
-                  <td onCLick="show_dialog_consolidate_unknown_location(this)" id="Part_Unknown_Location_Stock" class="aright error strong Unknown_Location_Stock button"  part_sku="{$part->id}" qty="{$part->get('Part Unknown Location Stock')}"  >{$part->get('Unknown Location Stock')}</td>
+                  <td onCLick="show_dialog_consolidate_unknown_location(this)" id="Part_Unknown_Location_Stock" class="aright  strong Unknown_Location_Stock button"  part_sku="{$part->id}" qty="{$part->get('Part Unknown Location Stock')}"  >{$part->get('Unknown Location Stock')}</td>
               </tr>
 
 
                 <tr id="part_leakages_info">
-                    <td class=""><div>{t}Found{/t}</div><div>{$part->get('Part Stock Found SKOs')}</div></td>
-                    <td class="" ><div>{t}Errors{/t}</div><div>{$part->get('Part Stock Errors SKOs')}</div></td>
-                    <td ><div>{t}Damages{/t}</div><div>{$part->get('Part Stock Damaged SKOs')}</div></td>
-                    <td ><div>{t}Lost{/t}</div><div>{$part->get('Part Stock Lost SKOs')}</div></td>
+                    <td class=""><div class="label">{t}Found{/t}</div><div class="Stock_Found_SKOs">{$part->get('Stock Found SKOs')}</div></td>
+                    <td class="" ><div class="label">{t}Errors{/t}</div><div class="error Stock_Errors_SKOs" >{$part->get('Stock Errors SKOs')}</div></td>
+                    <td ><div class="label">{t}Damaged{/t}</div><div class="error Stock_Damaged_SKOs">{$part->get('Stock Damaged SKOs')}</div></td>
+                    <td ><div class="label">{t}Lost{/t}</div><div class="error Stock_Lost_SKOs">{$part->get('Stock Lost SKOs')}</div></td>
 
                 </tr>
 
@@ -328,7 +331,7 @@
                     </tr>
 
                     <tr  id="unknown_location_save_buttons">
-                        <td class=" super_discreet" type="Other Out" onclick="save_leakage(this)" style="width: 30%"><span class="label _error">{t}Error{/t}</span><i class="fa fa-spinner fa-spin hide"></i></td>
+                        <td class=" super_discreet" type="Other Out" onclick="save_leakage(this)" style="width: 30%"><span class="label _error"><span class="lost_error">{t}Error{/t}</span><span class="found_error">{t}Found{/t}</span></span><i class="fa fa-spinner fa-spin hide"></i></td>
                         <td class=" super_discreet" type="Broken" onclick="save_leakage(this)" style=""><span class="label damaged">{t}Damaged{/t}</span><i class="fa fa-spinner fa-spin hide"></i></td>
                         <td class=" super_discreet" type="Lost" onclick="save_leakage(this)" style="width: 30%"><span class="label lost">{t}Lost{/t}</span><i class="fa fa-spinner fa-spin hide"></i></td>
 

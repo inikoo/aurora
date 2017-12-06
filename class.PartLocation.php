@@ -1182,6 +1182,10 @@ class PartLocation extends DB_Table {
                 $record_type = 'Movement';
                 $section     = 'Other';
                 $details=sprintf(_('%s SKO lost'),-$qty_change).' ('.($value_change > 0 ? '+' : '').money($value_change,$account->get('Account Currency')).') '.$data['Note'];
+
+
+
+
                 break;
             case('Broken'):
 
@@ -1194,7 +1198,15 @@ class PartLocation extends DB_Table {
 
                 $record_type = 'Movement';
                 $section     = 'Other';
-                $details=sprintf(_('%s SKO leaked'),($qty_change > 0 ? '+' : '').$qty_change).' ('.($value_change > 0 ? '+' : '').money($value_change,$account->get('Account Currency')).') '.$data['Note'];
+
+                if($qty_change>0){
+                    $details=sprintf(_('%s SKO found'),($qty_change > 0 ? '+' : '').$qty_change).' ('.($value_change > 0 ? '+' : '').money($value_change,$account->get('Account Currency')).') '.$data['Note'];
+
+                }else{
+                    $details=sprintf(_('%s SKO leaked'),($qty_change > 0 ? '+' : '').$qty_change).' ('.($value_change > 0 ? '+' : '').money($value_change,$account->get('Account Currency')).') '.$data['Note'];
+
+                }
+
                 break;
 
            /*
@@ -1297,6 +1309,28 @@ class PartLocation extends DB_Table {
         $this->location->update_stock_value();
 
         $this->updated = true;
+
+
+        switch ($transaction_type) {
+            case('Lost'):
+                $this->part->update_leakages('Lost');
+                break;
+            case('Broken'):
+                $this->part->update_leakages('Damaged');
+                break;
+            case('Other Out'):
+                if($qty_change>0){
+                    $this->part->update_leakages('Found');
+
+                }else{
+                    $this->part->update_leakages('Errors');
+
+                }
+
+                break;
+
+
+        }
 
 
         return $transaction_id;
