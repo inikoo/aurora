@@ -332,7 +332,7 @@ if ($user->can_view('parts')) {
     $nav_menu[] = array(
         '<i class="fa fa-th-large fa-fw"></i>',
         _('Inventory'),
-        'inventory',
+        'inventory/dashboard',
         'inventory',
         'module',
         ''

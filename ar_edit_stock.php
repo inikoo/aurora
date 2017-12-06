@@ -337,6 +337,9 @@ function edit_stock($account, $db, $user, $editor, $data, $smarty) {
         $smarty->assign('locations_data', $part->get_locations('data'));
         $part_locations = $smarty->fetch('part_locations.edit.tpl');
 
+
+        $response['Part_Unknown_Location_Stock']=$part->get('Part Unknown Location Stock');
+
         $response['updated_fields'] = array(
             'Current_On_Hand_Stock'    => $part->get('Current On Hand Stock'),
             'Stock_Status_Icon'        => $part->get('Stock Status Icon'),
@@ -349,7 +352,8 @@ function edit_stock($account, $db, $user, $editor, $data, $smarty) {
             'Available_Forecast'       => $part->get('Available Forecast'),
             'Part_Locations'           => $part_locations,
             'Part_Status'              => $part->get('Status'),
-            'Part_Cost_in_Warehouse'   => $part->get('Cost in Warehouse')
+            'Part_Cost_in_Warehouse'   => $part->get('Cost in Warehouse'),
+            'Unknown_Location_Stock'=> $part->get('Unknown Location Stock'),
 
 
         );

@@ -21,28 +21,15 @@ function date_range($first, $last, $step = '+1 day', $output_format = 'Y-m-d') {
         $current = strtotime($step, $current);
     }
 
+
+
     return $dates;
 }
 
 
 function date_frequency_range($db, $frequency, $first, $last) {
 
-    /*
-if ($_data['parameters']['frequency']=='annually') {
-        $from_date=gmdate("Y-01-01 00:00:00", strtotime($from_date.' +0:00'));
-        $to_date=gmdate("Y-12-31 23:59:59", strtotime($to_date.' +0:00'));
-    }elseif ($_data['parameters']['frequency']=='monthly') {
-        $from_date=gmdate("Y-m-01 00:00:00", strtotime($from_date.' +0:00'));
-        $to_date=gmdate("Y-m-01 00:00:00", strtotime($to_date.' + 1 month +0:00'));
-    }elseif ($_data['parameters']['frequency']=='weekly') {
-        $from_date=gmdate("Y-m-d 00:00:00", strtotime($from_date.'  -1 week  +0:00'));
-        $to_date=gmdate("Y-m-d 00:00:00", strtotime($to_date.' + 1 week +0:00'));
-    }elseif ($_data['parameters']['frequency']=='daily') {
-        $from_date=$from_date.' 00:00:00';
-        $to_date=$to_date.' 23:59:59';
-    }
 
-*/
 
 
     $dates = array();
@@ -63,6 +50,10 @@ if ($_data['parameters']['frequency']=='annually') {
                         'from' => $row['date_index']." 00:00:00",
                         'to'   => $row['date_index']." 23:59:59"
                     );
+
+
+
+
                 }
             } else {
                 print_r($error_info = $db->errorInfo());
@@ -84,6 +75,17 @@ if ($_data['parameters']['frequency']=='annually') {
                         'from' => $row['date_index']."-01-01 00:00:00",
                         'to'   => $row['date_index']."-12-31 23:59:59"
                     );
+
+
+
+                    if(strtotime($row['date_index']."-01-01 00:00:00")<strtotime($first." 00:00:00")){
+                        $dates[$row['date_index']]['from']=$first." 00:00:00";
+                    }
+
+                    if(strtotime($row['date_index']."-12-31 23:59:59")>strtotime($last." 23:59:59")){
+                        $dates[$row['date_index']]['to']=$last." 23:59:59";
+                    }
+
                 }
             } else {
                 print_r($error_info = $db->errorInfo());
@@ -105,6 +107,16 @@ if ($_data['parameters']['frequency']=='annually') {
                         'from' => $row['date_index']."-01 00:00:00",
                         'to'   => $row['last_day']." 23:59:59"
                     );
+
+
+                    if(strtotime($row['date_index']."-01 00:00:00")<strtotime($first." 00:00:00")){
+                        $dates[$row['date_index']]['from']=$first." 00:00:00";
+                    }
+
+                    if(strtotime($row['last_day']." 23:59:59")>strtotime($last." 23:59:59")){
+                        $dates[$row['date_index']]['to']=$last." 23:59:59";
+                    }
+
                 }
             } else {
                 print_r($error_info = $db->errorInfo());
@@ -114,9 +126,12 @@ if ($_data['parameters']['frequency']=='annually') {
         case 'Weekly':
 
             $sql = sprintf(
-                "SELECT  Yearweek(`Date`)  AS date_index ,DATE_ADD(`Date`, INTERVAL(-WEEKDAY(`Date`)) DAY) AS start ,DATE_ADD(`Date`, INTERVAL(6-WEEKDAY(`Date`)) DAY) AS end FROM kbase.`Date Dimension` WHERE `Date`>=date(%s) AND `Date`<=DATE(%s)  GROUP BY Yearweek(`Date`) ",
+                "SELECT  Yearweek(`Date`,5)  AS date_index ,DATE_ADD(`Date`, INTERVAL(-WEEKDAY(`Date`)) DAY) AS start ,DATE_ADD(`Date`, INTERVAL(6-WEEKDAY(`Date`)) DAY) AS end FROM kbase.`Date Dimension` WHERE `Date`>=date(%s) AND `Date`<=DATE(%s)  GROUP BY Yearweek(`Date`,5) ",
                 prepare_mysql($first), prepare_mysql($last)
             );
+
+
+
 
 
             if ($result = $db->query($sql)) {
@@ -125,6 +140,22 @@ if ($_data['parameters']['frequency']=='annually') {
                         'from' => $row['start']." 00:00:00",
                         'to'   => $row['end']." 23:59:59"
                     );
+                    //print_r($dates);
+
+                    if(strtotime($row['start']." 00:00:00")<strtotime($first." 00:00:00")){
+                        $dates[$row['date_index']]['from']=$first." 00:00:00";
+                    }
+
+
+
+
+                    if(strtotime($row['end']." 23:59:59")>strtotime($last." 23:59:59")){
+                        $dates[$row['date_index']]['to']=$last." 23:59:59";
+                    }
+
+                    //print_r($dates);
+                   // exit;
+
                 }
             } else {
                 print_r($error_info = $db->errorInfo());
@@ -145,6 +176,14 @@ if ($_data['parameters']['frequency']=='annually') {
                         'from' => $row['start']." 00:00:00",
                         'to'   => $row['end']." 23:59:59"
                     );
+
+                    if(strtotime($row['start']." 00:00:00")<strtotime($first." 00:00:00")){
+                        $dates[$row['date_index']]['from']=$first." 00:00:00";
+                    }
+
+                    if(strtotime($row['end']." 23:59:59")>strtotime($last." 23:59:59")){
+                        $dates[$row['date_index']]['to']=$last." 23:59:59";
+                    }
                 }
             } else {
                 print_r($error_info = $db->errorInfo());
@@ -157,6 +196,9 @@ if ($_data['parameters']['frequency']=='annually') {
 
             break;
     }
+
+
+
 
     return $dates;
 

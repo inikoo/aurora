@@ -182,7 +182,7 @@ class PartLocation extends DB_Table {
         }
 
 
-        $location = new Location($this->data['Location Key']);
+       // $location = new Location($this->data['Location Key']);
 
 
         $keys   = '(';
@@ -387,10 +387,41 @@ class PartLocation extends DB_Table {
                 "INSERT INTO `Inventory Transaction Fact` (`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`,`Relations`) VALUES (%s,%s,%d,%d,%s,%f,%.3f,%s,%s,%s,%s)",
                 "'Movement'", "'Audit'", $this->part_sku, $this->location_key, "'Adjust'", $qty_change, $value_change, $this->editor['User Key'], prepare_mysql($details, false), prepare_mysql($date), prepare_mysql($audit_key)
             );
-            // print "$sql\n";
+
 
 
             $this->db->exec($sql);
+
+
+            if($qty_change!=0 and $this->location_key!=1){
+                $part_location_data = array(
+                    'Location Key' =>1,
+                    'Part SKU'     =>  $this->part_sku,
+                    'editor'       => $this->editor
+                );
+
+
+                $part_unk_location = new PartLocation('find', $part_location_data, 'create');
+
+                $_details='';
+
+
+                $sql = sprintf(
+                    "INSERT INTO `Inventory Transaction Fact` (`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`,`Relations`) VALUES (%s,%s,%d,%d,%s,%f,%.3f,%s,%s,%s,%s)",
+                    "'Movement'", "'Audit'", $part_unk_location->part_sku, $part_unk_location->location_key, "'Adjust'", -$qty_change, -$value_change, $this->editor['User Key'], prepare_mysql($_details, false), prepare_mysql($date), prepare_mysql($audit_key)
+                );
+                $this->db->exec($sql);
+
+
+
+
+                $part_unk_location->update_stock();
+                $this->part->update_unknown_location();
+
+
+            }
+
+
         }
 
 
@@ -504,7 +535,7 @@ class PartLocation extends DB_Table {
         $sql = sprintf(
             "UPDATE `Part Location Dimension` SET `Quantity On Hand`=%f ,`Quantity In Process`=%f,`Stock Value`=%f WHERE `Part SKU`=%d AND `Location Key`=%d", $stock, $in_process, $value, $this->part_sku, $this->location_key
         );
-        // print $sql;
+       //  print $sql;
 
         $this->db->exec($sql);
 
@@ -512,6 +543,10 @@ class PartLocation extends DB_Table {
         $this->part->update_stock();
         $this->location->update_stock_value();
 
+
+        if($this->location->id==1){
+            $this->part->update_unknown_location();
+        }
 
         foreach (
             $this->part->get_production_suppliers('objects') as $production

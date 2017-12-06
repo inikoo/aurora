@@ -28,8 +28,8 @@ if ($parameters['frequency'] == 'annually') {
 } elseif ($parameters['frequency'] == 'weekly') {
     $frequency = 'Weekly';
 
-    $group_by          = ' group by Yearweek(`Date`) ';
-    $sql_totals_fields = 'Yearweek(`Date`)';
+    $group_by          = ' group by Yearweek(`Date`,3) ';
+    $sql_totals_fields = 'Yearweek(`Date`,3)';
 } elseif ($parameters['frequency'] == 'daily') {
     $frequency = 'Daily';
 

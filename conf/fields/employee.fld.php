@@ -266,7 +266,6 @@ $object_fields = array(
 
                 'id'   => 'Staff_Birthday',
                 'edit' => ($edit ? 'date' : ''),
-
                 'time'            => '00:00:00',
                 'value'           => $employee->get('Staff Birthday'),
                 'formatted_value' => $employee->get('Birthday'),

@@ -22,8 +22,8 @@ if ($parameters['frequency'] == 'annually') {
     $group_by          = '  group by DATE_FORMAT(`Timeseries Record Date`,"%Y-%m") ';
     $sql_totals_fields = 'DATE_FORMAT(`Timeseries Record Date`,"%Y-%m")';
 } elseif ($parameters['frequency'] == 'weekly') {
-    $group_by          = ' group by Yearweek(`Timeseries Record Date`) ';
-    $sql_totals_fields = 'Yearweek(`Timeseries Record Date`)';
+    $group_by          = ' group by Yearweek(`Timeseries Record Date`,3) ';
+    $sql_totals_fields = 'Yearweek(`Timeseries Record Date`,3)';
 } elseif ($parameters['frequency'] == 'daily') {
     $group_by          = '';
     $sql_totals_fields = 'TR.`Timeseries Record Key`';

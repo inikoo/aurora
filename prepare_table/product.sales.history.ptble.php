@@ -30,8 +30,8 @@ if ($parameters['frequency'] == 'annually') {
     $group_by          = '  group by DATE_FORMAT(`Invoice Date`,"%Y-%m") ';
     $sql_totals_fields = 'DATE_FORMAT(`Invoice Date`,"%Y-%m")';
 } elseif ($parameters['frequency'] == 'weekly') {
-    $group_by          = ' group by Yearweek(`Invoice Date`) ';
-    $sql_totals_fields = 'Yearweek(`Invoice Date`)';
+    $group_by          = ' group by Yearweek(`Invoice Date`,3) ';
+    $sql_totals_fields = 'Yearweek(`Invoice Date`,3)';
 } elseif ($parameters['frequency'] == 'daily') {
     $group_by          = ' group by Date(`Invoice Date`) ';
     $sql_totals_fields = '`Invoice Date`';
