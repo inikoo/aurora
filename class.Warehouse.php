@@ -477,7 +477,7 @@ class Warehouse extends DB_Table {
         $number_locations                  = 0;
         $number_part_locations             = 0;
         $number_part_locations_with_errors = 0;
-        $stock_amount                      = 0;
+
 
         $pending_orders                         = 0;
         $pending_orders_with_missing_pick_stock = 0;
@@ -495,7 +495,7 @@ class Warehouse extends DB_Table {
             exit;
         }
 
-        $sql = sprintf('SELECT count(*) AS number  , sum(if(`Quantity On Hand`<0,1,0) ) AS errors ,sum(`Stock Value` ) AS amount FROM `Part Location Dimension` WHERE `Part Location Warehouse Key`=%d', $this->id);
+        $sql = sprintf('SELECT count(*) AS number  , sum(if(`Quantity On Hand`<0,1,0) ) AS errors  FROM `Part Location Dimension` WHERE `Part Location Warehouse Key`=%d', $this->id);
 
 
         if ($result = $this->db->query($sql)) {
@@ -510,51 +510,50 @@ class Warehouse extends DB_Table {
         }
 
 
-        /*
-        $sql=sprintf('select count(*) as number from `Shelf Dimension` where `Shelf Warehouse Key`=%d', $this->id);
-        $number_shelfs=0;
 
 
-        if ($result=$this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $number_shelfs=$row['number'];
 
-            }
-        }else {
-            print_r($error_info=$this->db->errorInfo());
-            exit;
-        }
-
-*/
-        /*
-
-        $sql=sprintf('select count(*) as number from `Warehouse Area Dimension` where `Warehouse Key`=%d', $this->id);
-        $number_areas=0;
-
-        if ($result=$this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $number_areas=$row['number'];
-
-            }
-        }else {
-            print_r($error_info=$this->db->errorInfo());
-            exit;
-        }
-
-*/
-
-
-        $this->update(
+        $this->fast_update(
             array(
                 'Warehouse Number Locations'      => $number_locations,
                 'Warehouse Part Locations'        => $number_part_locations,
                 'Warehouse Part Locations Errors' => $number_part_locations_with_errors,
+            )
+        );
+
+
+    }
+
+
+    function update_stock_amount() {
+
+
+
+        $stock_amount                      = 0;
+
+        $sql = sprintf('SELECT sum(`Stock Value` ) AS amount FROM `Part Location Dimension` WHERE `Part Location Warehouse Key`=%d', $this->id);
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+
+                $stock_amount                      = $row['amount'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        $this->update(
+            array(
                 'Warehouse Stock Amount'          => $stock_amount
             ), 'no_history'
         );
 
 
     }
+
 
     function get($key, $data = false) {
 

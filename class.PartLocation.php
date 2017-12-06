@@ -558,6 +558,9 @@ class PartLocation extends DB_Table {
             $production->update_locations_with_errors();
         }
 
+        $warehouse=get_object('Warehouse',$this->get('Part Location Warehouse Key'));
+$warehouse->update_stock_amount();
+
 
     }
 
