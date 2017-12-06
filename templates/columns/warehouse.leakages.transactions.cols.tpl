@@ -81,7 +81,7 @@ cell: Backgrid.StringCell.extend({ className: ""} ),
 },
 {
 name: "user",
-label: "{t}User{/t}",
+label: "{t}Reporter{/t}",
 editable: false,
 defaultOrder:-1,
 sortType: "toggle",

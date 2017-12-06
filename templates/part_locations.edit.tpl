@@ -2,7 +2,7 @@
 
 {foreach $locations_data item=location_data}
 
-
+{if $location_data.location_key!=1}
 
     <tr id="part_location_edit_{$location_data.location_key}" class="locations"  location_key="{$location_data.location_key}" >
         <td style="width:20px" class="unlink_operations hide"><i class="fa fa-fw  fa-unlink button super_discreet"
@@ -57,7 +57,15 @@
             <i class="fa fa-fw fa-caret-square-o-right move_trigger button super_discreet  " aria-hidden="true"
                title="{t}Move from{/t}" onclick="move(this)"></i></td>
     </tr>
+
+    {/if}
 {/foreach}
+
+
+
+
+
+
 <tr id="add_location_template" class="hide">
 
 
@@ -140,7 +148,11 @@
 <tr>
     <td></td>
     <td colspan="2" class="small" id="location_data_msg"></td>
-<tr>
+</tr>
+
+
+
+
 
     <div id="inventory_transaction_note" style="position:absolute;z-index:100" class="hide" scope="">
         <textarea></textarea>

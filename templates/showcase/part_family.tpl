@@ -194,7 +194,7 @@
                                                                                         class="aright discreet   &gt;&lt;span class="
                                                                                         save">{t}Save{/t}</span><i
                                             class="fa  fa-cloud   save " aria-hidden="true" title="{t}Save{/t}"
-                                            id="save_stock" onclick="save_stock()"></i></span> </td>
+                                            onclick="save_stock(this)"></i></span> </td>
                             </tr>
                         </table>
                     </td>

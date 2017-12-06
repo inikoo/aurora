@@ -5245,6 +5245,12 @@ $modules = array(
                     'stock_leakages' => array(
                         'label' => _('Leakages')
                     ),
+                    'stock_leakages_setup' => array(
+                        'label' => '',
+                        'title' => _('Setup'),
+                        'icon'  => 'sliders',
+                        'class' => 'right icon_only'
+                    ),
 
                 )
 

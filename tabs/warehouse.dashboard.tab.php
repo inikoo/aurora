@@ -17,7 +17,7 @@ $warehouse->update_children();
 $warehouse->update_warehouse_paid_ordered_parts();
 $warehouse->update_warehouse_part_locations_to_replenish();
 
-
+$warehouse->update_children();
 
 include_once 'widgets/warehouse_alerts.wget.php';
 

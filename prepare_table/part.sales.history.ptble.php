@@ -31,8 +31,8 @@ if ($parameters['frequency'] == 'annually') {
     $group_by          = '  group by DATE_FORMAT(`Date`,"%Y-%m") ';
     $sql_totals_fields = 'DATE_FORMAT(`Date`,"%Y-%m")';
 } elseif ($parameters['frequency'] == 'weekly') {
-    $group_by          = ' group by Yearweek(`Date`) ';
-    $sql_totals_fields = 'Yearweek(`Date`)';
+    $group_by          = ' group by Yearweek(`Date`,3) ';
+    $sql_totals_fields = 'Yearweek(`Date`,3)';
 } elseif ($parameters['frequency'] == 'daily') {
     $group_by          = ' group by Date(`Date`) ';
     $sql_totals_fields = '`Date`';

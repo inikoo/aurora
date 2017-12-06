@@ -217,7 +217,7 @@
                                 <td></td>
                                 <td id="saving_buttons" class="aright discreet  ">
                                     <span id="saving_buttons" class="aright discreet   ><span class=" save">{t}
-                                    Save{/t}</span ><i class="fa  fa-cloud   save " aria-hidden="true" title="{t}Save{/t}" id="save_stock" onClick="save_stock()"></i></span>
+                                    Save{/t}</span ><i class="fa  fa-cloud   save " aria-hidden="true" title="{t}Save{/t}"  onClick="save_stock(this)"></i></span>
                                 </td>
 
                             </tr>
@@ -250,8 +250,8 @@
                         <i id="close_edit_stock" class="fa fa-sign-out fa-flip-horizontal button hide" aria-hidden="true" title="{t}Exit edit stock{/t}" onClick="close_edit_stock()"></i></td>
                     <td class="aright">
                         <i id="open_edit_stock" class="fa fa-pencil button very_discreet " aria-hidden="true" title="{t}Edit stock{/t}" onClick="open_edit_stock()"></i>
-                        <span id="edit_stock_saving_buttons" class="aright discreet hide"><span class="save">{t}Save{/t}</span><i class="fa  fa-cloud   save padding_left_5" aria-hidden="true" title="{t}Save{/t}"
-                                                                                                                                  id="save_stock" onClick="save_stock()"></i></span>
+                        <span id="edit_stock_saving_buttons" class="aright discreet hide"><span class="save padding_right_5">{t}Save{/t}</span><i class="fa  fa-cloud   save " aria-hidden="true" title="{t}Save{/t}"
+                                                                                                                                 onClick="save_stock(this)"></i></span>
                     </td>
                 </tr>
 
@@ -278,7 +278,55 @@
                 </tbody>
 
 
+
+
+
             </table>
+
+
+
+            <table id="unknown_location_table" border="0" class="overview  {if $part->get('Part Unknown Location Stock')==0}hide{/if} " >
+
+              <tr id="unknown_location_tr" class="{if $part->get('Part Unknown Location Stock')==0}hide{/if}">
+                  <td colspan="2"><i class="fa error fa-exclamation-circle" aria-hidden="true"></i>  {t}Unknown location{/t}</td>
+                  <td xonCLick=show_dialog_consolidate_unknown_location(this)" id="Part_Unknown_Location_Stock" class="aright error strong Unknown_Location_Stock xbutton"  part_sku="{$part->id}" qty="{$part->get('Part Unknown Location Stock')}"  >{$part->get('Unknown Location Stock')}</td>
+              </tr>
+
+
+                <tr>
+                    <td style="padding:10px 5px;border:1px solid #ccc;text-align: center;width: 30%"><div>{t}Errors{/t}</div><div>{$part->get('Part Stock Errors SKOs')}</div></td>
+                    <td style="padding:10px 5px;border:1px solid #ccc;text-align: center"><div>{t}Damages{/t}</div><div>{$part->get('Part Stock Damaged SKOs')}</div></td>
+                    <td style="padding:10px 5px;border:1px solid #ccc;text-align: center;;width: 30%"><div>{t}Lost{/t}</div><div>{$part->get('Part Stock Lost SKOs')}</div></td>
+
+                </tr>
+
+            </table>
+
+            <div class="hide" id="edit_stock_dialog_consolidate_unknown_location" style="position:absolute;padding:10px;border:1px solid #ccc;background-color:#fff;z-index:2000">
+
+                <table  border="0" class=""  style="width: 300px">
+
+                    <tr>
+                        <td colspan="2">{t}Quantity{/t} <input  id="part_leakage_qty_input" style="width:60px;"  class="qty" val=""></td>
+                        <td class="aright"><i onclick="$('#edit_stock_dialog_consolidate_unknown_location').addClass('hide')"  class="fa fa-window-close button" style="position: relative;top:-10px" aria-hidden="true"></i></td>
+
+                    </tr>
+
+                    <tr>
+                        <td colspan="3"><textarea id="part_leakage_note_input" style="width:95%;"  plaecholder="{t}Note{/t}" /></td>
+                    </tr>
+
+                    <tr>
+                        <td class=" super_discreet" style="padding:10px 5px;border:1px solid #ccc;text-align: center;width: 30%"><div>{t}Error{/t}</div></td>
+                        <td class=" super_discreet" style="padding:10px 5px;border:1px solid #ccc;text-align: center"><div>{t}Damaged{/t}</div></td>
+                        <td class=" super_discreet" style="padding:10px 5px;border:1px solid #ccc;text-align: center;;width: 30%"><div>{t}Lost{/t}</div></td>
+
+                    </tr>
+
+                </table>
+
+            </div>
+
 
             <table id="barcode_data" border="0" class="overview {if $part->get('Part Barcode Number')==''}hide{/if} ">
                 <tr class="main">

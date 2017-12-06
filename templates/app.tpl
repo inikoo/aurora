@@ -85,7 +85,7 @@
         <script type="text/javascript" src="/js/order.common.js?v171126b"></script>
         <script type="text/javascript" src="/js/supplier.order.js"></script>
         <script type="text/javascript" src="/js/supplier.delivery.js"></script>
-        <script type="text/javascript" src="/js/part_locations.edit.js"></script>
+        <script type="text/javascript" src="/js/part_locations.edit.js?v=20171206v2"></script>
         <script type="text/javascript" src="/js/alert_dial.js"></script>
         <script type="text/javascript" src="/js/help.js"></script>
         <script type="text/javascript" src="/utils/country_data.js.php?locale={$locale}"></script>

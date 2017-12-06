@@ -1508,7 +1508,10 @@ class Part extends Asset {
         list($stock, $value, $in_process) = $this->get_current_stock();
         //print $stock;
 
-        $this->update(
+
+
+
+        $this->fast_update(
             array(
                 'Part Current Stock'            => $stock + $picked,
                 'Part Current Value'            => $value,
@@ -1516,7 +1519,7 @@ class Part extends Asset {
                 'Part Current Stock Picked'     => $picked,
                 'Part Current On Hand Stock'    => $stock,
 
-            ), 'no_history'
+            )
         );
 
 
@@ -1550,6 +1553,8 @@ class Part extends Asset {
         $in_process = 0;
 
 
+
+
         $sql = sprintf(
             "SELECT sum(`Quantity On Hand`) AS stock , sum(`Quantity In Process`) AS in_process , sum(`Stock Value`) AS value FROM `Part Location Dimension` WHERE `Part SKU`=%d ", $this->id
         );
@@ -1557,6 +1562,9 @@ class Part extends Asset {
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
+
+                //print_r($row);
+
                 $stock      = round($row['stock'], 3);
                 $in_process = round($row['in_process'], 3);
                 $value      = $row['value'];
@@ -4197,6 +4205,32 @@ class Part extends Asset {
             exit;
         }
 
+
+    }
+
+
+    function update_unknown_location(){
+
+        $stock=0;
+        $value=0;
+        $sql=sprintf("select `Quantity On Hand`,`Stock Value` from `Part Location Dimension` where `Location Key`=1 and `Part SKU`=%d ",$this->id);
+        if ($result=$this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $stock=$row['Quantity On Hand'];
+                $value=$row['Stock Value'];
+        	}
+        }else {
+        	print_r($error_info=$this->db->errorInfo());
+        	print "$sql\n";
+        	exit;
+        }
+
+
+        $this->fast_update(array(
+            'Part Unknown Location Stock'=>$stock,
+            'Part Unknown Location Stock Value'=>$value,
+
+                           ));
 
     }
 

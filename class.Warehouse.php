@@ -191,9 +191,15 @@ class Warehouse extends DB_Table {
 
         if ($this->db->exec($sql)) {
             $this->id  = $this->db->lastInsertId();
-            $this->msg = _("Warehouse Added");
+            $this->msg = _("Warehouse added");
             $this->get_data('id', $this->id);
             $this->new = true;
+
+            $sql = sprintf(
+                "INSERT INTO `Warehouse Data` VALUES('Warehouse Key')", $this->id
+            );
+
+            $this->db->exec($sql);
 
 
             /*
@@ -471,6 +477,7 @@ class Warehouse extends DB_Table {
         $number_locations                  = 0;
         $number_part_locations             = 0;
         $number_part_locations_with_errors = 0;
+        $stock_amount                      = 0;
 
         $pending_orders                         = 0;
         $pending_orders_with_missing_pick_stock = 0;
@@ -488,14 +495,14 @@ class Warehouse extends DB_Table {
             exit;
         }
 
-        $sql = sprintf('SELECT count(*) AS number  , sum(if(`Quantity On Hand`<0,1,0) ) AS errors FROM `Part Location Dimension` WHERE `Part Location Warehouse Key`=%d', $this->id);
+        $sql = sprintf('SELECT count(*) AS number  , sum(if(`Quantity On Hand`<0,1,0) ) AS errors ,sum(`Stock Value` ) AS amount FROM `Part Location Dimension` WHERE `Part Location Warehouse Key`=%d', $this->id);
 
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
                 $number_part_locations             = $row['number'];
                 $number_part_locations_with_errors = $row['errors'];
-
+                $stock_amount                      = $row['amount'];
             }
         } else {
             print_r($error_info = $this->db->errorInfo());
@@ -541,7 +548,8 @@ class Warehouse extends DB_Table {
             array(
                 'Warehouse Number Locations'      => $number_locations,
                 'Warehouse Part Locations'        => $number_part_locations,
-                'Warehouse Part Locations Errors' => $number_part_locations_with_errors
+                'Warehouse Part Locations Errors' => $number_part_locations_with_errors,
+                'Warehouse Stock Amount'          => $stock_amount
             ), 'no_history'
         );
 
@@ -578,6 +586,18 @@ class Warehouse extends DB_Table {
                 if (isset($this->areas[$data['id']])) {
                     return $this->areas[$data['id']];
                 }
+                break;
+            case('Leakage Timeseries From'):
+                if ($this->data['Warehouse Leakage Timeseries From'] == '') {
+                    return '';
+                }else{
+                    return strftime("%a %e %b %Y", strtotime($this->data['Warehouse Leakage Timeseries From'] .' +0:00'));
+                }
+
+
+
+
+
                 break;
             default:
 
@@ -971,6 +991,9 @@ class Warehouse extends DB_Table {
             case 'Warehouse Email Template Signature':
                 $label = '[Signature]';
                 break;
+            case 'Warehouse Leakage Timeseries From':
+                $label = _('Calculate leakage from');
+                break;
 
 
             default:
@@ -1081,7 +1104,7 @@ class Warehouse extends DB_Table {
 
 
         $where = sprintf(
-            " where `Inventory Transaction Type` = 'Adjust' and `Inventory Transaction Section`='Audit'  AND `Warehouse Key`=%d %s %s  ", $this->id, ($from_date ? sprintf('and  `Date`>=%s', prepare_mysql($from_date)) : ''),
+            " where `Inventory Transaction Type` = 'Adjust' and `Inventory Transaction Section`='Audit' and  `Inventory Transaction Quantity`<0   AND `Warehouse Key`=%d %s %s  ", $this->id, ($from_date ? sprintf('and  `Date`>=%s', prepare_mysql($from_date)) : ''),
             ($to_date ? sprintf('and `Date`<%s', prepare_mysql($to_date)) : '')
         );
 
@@ -1112,10 +1135,50 @@ class Warehouse extends DB_Table {
         );
 
 
+
+        $where = sprintf(
+            " where `Inventory Transaction Type` = 'Adjust' and  `Inventory Transaction Quantity`>0  and `Inventory Transaction Section`='Audit'  AND `Warehouse Key`=%d %s %s  ", $this->id, ($from_date ? sprintf('and  `Date`>=%s', prepare_mysql($from_date)) : ''),
+            ($to_date ? sprintf('and `Date`<%s', prepare_mysql($to_date)) : '')
+        );
+
+
+        $_stock_found = 0;
+
+        $sql = sprintf(
+            "SELECT sum(`Inventory Transaction Amount`) AS amount, count(*) AS num FROM `Inventory Transaction Fact` %s    AND `Inventory Transaction Quantity`<0  ", $where
+        );
+        foreach ($this->db->query($sql) as $row) {
+
+            $_stock_found              = $row['amount'];
+            $_stock_found_transactions = $row['num'];
+
+        }
+
+        if ($_stock_found == 0) {
+            $stock_found = '<span class="success"><i class="fa fa-thumbs-up" aria-hidden="true"></i> '.money(0, $account->get('Currency Code')).'</span>';
+
+        } else {
+            $stock_found = '<span class="">'.money($_stock_found, $account->get('Currency Code')).'</span>';
+        }
+
+
+        $stock_found= array(
+            'stock_found_amount'       => $stock_found,
+            'stock_found_transactions' => number($_stock_found_transactions)
+        );
+
+
+        $stock = array(
+            'stock_amount' => money($this->get('Warehouse Stock Amount'), $account->get('Account Currency'),false,'NO_FRACTION_DIGITS'),
+            //'stock_leakage_down_transactions' => number($_stock_leakage_transactions)
+        );
+
         return array(
 
             'stock_leakage' => $stock_leakage,
+            'stock_found' => $stock_found,
             'wpm'           => $wpm,
+            'stock'         => $stock,
 
         );
 
@@ -1383,13 +1446,18 @@ class Warehouse extends DB_Table {
         $index = 0;
 
 
+
         foreach ($dates as $date_frequency_period) {
             $index++;
 
 
-            //print_r($date_frequency_period);
+
 
             $sales_data = $this->get_leakages_data($date_frequency_period['from'], $date_frequency_period['to']);
+
+            //print_r($date_frequency_period);
+            //print_r($sales_data);
+            //exit;
             $_date      = gmdate('Y-m-d', strtotime($date_frequency_period['from'].' +0:00'));
 
 
@@ -1433,10 +1501,10 @@ class Warehouse extends DB_Table {
 
                 if (in_array(
                         $timeseries->get('Timeseries Frequency'), array(
-                        'Monthly',
-                        'Quarterly',
-                        'Yearly'
-                    )
+                                                                    'Monthly',
+                                                                    'Quarterly',
+                                                                    'Yearly'
+                                                                )
                     ) and false) {
 
                     foreach (preg_split('/\,/', $this->get_part_family_keys()) as $family_key) {
@@ -1461,6 +1529,9 @@ class Warehouse extends DB_Table {
                         //  exit;
 
                         $sales_data = $this->get_sales_data($date_frequency_period['from'], $date_frequency_period['to'], $part_skus);
+
+
+
                         $from_1yb   = date('Y-m-d H:i:s', strtotime($date_frequency_period['from'].' -1 year'));
                         $to_1yb     = date('Y-m-d H:i:s', strtotime($date_frequency_period['to'].' -1 year'));
 
@@ -1518,7 +1589,7 @@ class Warehouse extends DB_Table {
 
                             );
 
-                            //print "$sql\n";
+
                             $this->db->exec($sql);
                             // exit;
                         }
@@ -1580,6 +1651,8 @@ class Warehouse extends DB_Table {
 
 
         }
+
+      //  exit("x--------------------z\n");
 
         if ($fork_key) {
 

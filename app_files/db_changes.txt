@@ -788,6 +788,13 @@ ALTER TABLE `Order Dimension` ADD `Order Payment State` ENUM('NA','Paid','ToPay'
 ALTER TABLE `Deal Component Dimension` ADD `Deal Component Allowance Target Label` VARCHAR(255) NULL DEFAULT NULL AFTER `Deal Component Allowance Target Key`;
 update `Deal Component Dimension` set `Deal Component Allowance Target Label`=`Deal Component Allowance Target XHTML Label`;
 
+
+ALTER TABLE `Warehouse Dimension` ADD `Warehouse Stock Amount` DECIMAL(18,2) NOT NULL DEFAULT '0.00' AFTER `Warehouse Leakage Timeseries From`;
+
+
+
+
+
 ======= fer migracion ordering in dw and costa
 
                     ALTER TABLE `Invoice Tax Dimension` ADD `Invoice Tax Key` INT UNSIGNED NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`Invoice Tax Key`);
@@ -812,6 +819,9 @@ ALTER TABLE `Invoice Dimension` ADD `Invoice Internal Description` TEXT NULL DEF
 
 update `Deal Component Dimension` set `Deal Component Allowance Target Type`='Items' ;
 update `Deal Component Dimension` set `Deal Component Allowance Target Type`='No Items' where `Deal Component Allowance Target` in ('Charge','Shipping') ;
+
+
+ALTER TABLE `Part Dimension` ADD `Part Unknown Location Stock` FLOAT NOT NULL DEFAULT '0' AFTER `Part Margin`, ADD `Part Unknown Location Stock Value` DECIMAL(16,2) NOT NULL DEFAULT '0.00' AFTER `Part Unknown Location Stock`, ADD `Part Stock Errors SKOs` FLOAT NOT NULL DEFAULT '0' AFTER `Part Unknown Location Stock Value`, ADD `Part Stock Errors Value` DECIMAL(16,2) NOT NULL DEFAULT '0.00' AFTER `Part Stock Errors SKOs`, ADD `Part Stock Damaged SKOs` FLOAT NOT NULL DEFAULT '0' AFTER `Part Stock Errors Value`, ADD `Part Stock Damaged Value` DECIMAL(16,2) NOT NULL DEFAULT '0' AFTER `Part Stock Damaged SKOs`, ADD `Part Stock Lost SKOs` FLOAT NOT NULL DEFAULT '0' AFTER `Part Stock Damaged Value`, ADD `Part Stock Lost Value` DECIMAL(16,2) NOT NULL DEFAULT '0' AFTER `Part Stock Lost SKOs`;
 
 
 ===============

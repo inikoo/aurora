@@ -352,7 +352,17 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
             break;
 
         case 'Warehouse':
-            include 'fields/warehouse.fld.php';
+
+
+            if( !empty($options['type'])
+                and $options['type']=='leakages'){
+                include 'fields/warehouse.leakages.fld.php';
+
+            }else{
+                include 'fields/warehouse.fld.php';
+
+            }
+
 
             return $object_fields;
             break;

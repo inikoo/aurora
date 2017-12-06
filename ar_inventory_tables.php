@@ -1698,8 +1698,8 @@ function sales_history($_data, $db, $user, $account) {
         $sql_totals_fields = 'DATE_FORMAT(`Date`,"%Y-%m")';
     } elseif ($_data['parameters']['frequency'] == 'weekly') {
         $rtext_label       = 'week';
-        $_group_by         = ' group by Yearweek(`Date`) ';
-        $sql_totals_fields = 'Yearweek(`Date`)';
+        $_group_by         = ' group by Yearweek(`Date`,3) ';
+        $sql_totals_fields = 'Yearweek(`Date`,3)';
     } elseif ($_data['parameters']['frequency'] == 'daily') {
         $rtext_label = 'day';
 

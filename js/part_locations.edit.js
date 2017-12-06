@@ -702,7 +702,7 @@ function save_add_location() {
 
 }
 
-function save_stock() {
+function save_stock(element) {
 
 
     if (!$('#edit_stock_saving_buttons').hasClass('valid')) {
@@ -711,7 +711,9 @@ function save_stock() {
     }
 
     $('#inventory_transaction_note').addClass('hide')
-    $('#save_stock').removeClass('fa-cloud').addClass('fa-spinner fa-spin')
+    $(element).removeClass('fa-cloud').addClass('fa-spinner fa-spin ')
+
+    var icon=$(element);
 
     var parts_locations_data = []
 
@@ -735,8 +737,8 @@ function save_stock() {
 
     // used only for debug
     var request = '/ar_edit_stock.php?tipo=edit_stock&object=part&key=' + $('#locations_table').attr('part_sku') + '&parts_locations_data=' + JSON.stringify(parts_locations_data) + '&movements=' + JSON.stringify(_movements)
-    console.log(request)
-   //  return;
+
+
     //=====
     var form_data = new FormData();
     form_data.append("tipo", 'edit_stock')
@@ -754,7 +756,7 @@ function save_stock() {
 
     request.done(function (data) {
 
-        console.log(data)
+
 
         if (state.tab == 'part.stock.transactions' || state.tab == 'part.stock') {
             rows.fetch({
@@ -763,7 +765,7 @@ function save_stock() {
         }
 
 
-        $('#save_stock').addClass('fa-cloud').removeClass('fa-spinner fa-spin')
+        icon.addClass('fa-cloud').removeClass('fa-spinner fa-spin')
         $('#edit_stock_saving_buttons').removeClass('valid')
 
 
@@ -776,6 +778,10 @@ function save_stock() {
         }
 
 
+        if(data.Part_Unknown_Location_Stock!=0){
+            $('#unknown_location_tr').removeClass('hide')
+        }
+
     })
 
     request.fail(function (jqXHR, textStatus) {
@@ -783,6 +789,52 @@ function save_stock() {
 
 }
 
+
+function show_dialog_consolidate_unknown_location(element) {
+
+    part_sku=$(element).attr('part_sku')
+    qty=$(element).attr('qty')
+
+
+    $('#edit_stock_dialog_consolidate_unknown_location').removeClass('hide').offset({
+        top: $(element).position().top -3 , left: $(element).position().left+ $(element).width()- $('#edit_stock_dialog_consolidate_unknown_location').width()-20
+    }).attr('part_sku',part_sku).attr('max_qty',qty)
+
+
+    $('#part_leakage_qty_input').val(qty)
+    $('#part_leakage_note_input').val('')
+
+}
+
+
+
+
+$(document).on('input propertychange', '#part_leakage_qty_input', function() {
+    validate_part_leakage()
+
+
+});
+
+
+    $(document).on('input propertychange', '#part_leakage_note_input', function() {
+     validate_part_leakage()
+
+
+});
+
+
+
+
+    function validate_part_leakage(){
+
+        max=  $('#edit_stock_dialog_consolidate_unknown_location').attr('max_qty')
+        if(max<0){
+
+        }else{
+
+        }
+
+    }
 
 function open_edit_min_max(element) {
 

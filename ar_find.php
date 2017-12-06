@@ -666,7 +666,7 @@ function find_locations($db, $account, $memcache_ip, $data) {
 
 
     $where_warehouses = sprintf(
-        ' and `Location Warehouse Key` in (%s)', join(',', $user->warehouses)
+        ' and `Location Warehouse Key` in (%s) and `Location Key`!=1 ', join(',', $user->warehouses)
     );
 
     $memcache_fingerprint = $account->get('Account Code').'FIND_LOCATIONS'.md5(
