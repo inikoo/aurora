@@ -771,6 +771,15 @@ function stock_transactions($_data, $db, $user) {
                 case 'Error':
                     $type = '<i class="fa fa-question-circle error fa-fw" aria-hidden="true"></i>';
                     break;
+                case 'Lost':
+                    $type = '<i class="fa fa-question-circle error fa-fw" aria-hidden="true"></i>';
+                    break;
+                case 'Broken':
+                    $type = '<i class="fa fa-cross error fa-fw" aria-hidden="true"></i>';
+                    break;
+                case 'Other Out':
+                    $type = '<i class="fa fa-exclamation-circle  error fa-fw" aria-hidden="true"></i>';
+                    break;
 
                 case 'No Dispatched':
 

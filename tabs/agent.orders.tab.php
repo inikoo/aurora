@@ -30,7 +30,7 @@ $parameters = array(
 
 );
 
-/*
+
 $table_buttons   = array();
 $table_buttons[] = array(
     'icon'  => 'plus',
@@ -45,7 +45,7 @@ $table_buttons[] = array(
 );
 
 $smarty->assign('table_buttons', $table_buttons);
-*/
+
 $smarty->assign(
     'js_code', 'js/injections/supplier.orders.'.(_DEVEL ? '' : 'min.').'js'
 );

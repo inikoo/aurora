@@ -1392,7 +1392,7 @@ class Part extends Asset {
         }
 
         $sql = sprintf(
-            "SELECT PL.`Location Key`,`Location Code`,`Quantity On Hand`,`Location Warehouse Key`,`Part SKU`,`Minimum Quantity`,`Maximum Quantity`,`Moving Quantity`,`Can Pick` FROM `Part Location Dimension` PL LEFT JOIN `Location Dimension` L ON (L.`Location Key`=PL.`Location Key`)  WHERE `Part SKU`=%d 
+            "SELECT PL.`Location Key`,`Location Code`,`Quantity On Hand`,`Location Warehouse Key`,`Part SKU`,`Minimum Quantity`,`Maximum Quantity`,`Moving Quantity`,`Can Pick`, datediff(CURDATE(), `Part Location Last Audit`) AS days_last_audit,`Part Location Last Audit` FROM `Part Location Dimension` PL LEFT JOIN `Location Dimension` L ON (L.`Location Key`=PL.`Location Key`)  WHERE `Part SKU`=%d 
         ORDER BY `Can Pick`,`Location File As` 
 
 ", $this->sku
@@ -1462,8 +1462,13 @@ class Part extends Asset {
                         'max_qty'               => $row['Maximum Quantity'],
                         'move_qty'              => $row['Moving Quantity'],
 
-                        'can_pick' => $row['Can Pick'],
-                        'label'    => ($row['Can Pick'] == 'Yes' ? _('Picking location') : _('Set as picking location'))
+                        'can_pick'        => $row['Can Pick'],
+                        'label'           => ($row['Can Pick'] == 'Yes' ? _('Picking location') : _('Set as picking location')),
+                        'days_last_audit' => ($row['days_last_audit'] == ''
+                            ? '<span title="'._('Never been audited').'">-</span>'
+                            : sprintf(
+                                '<span title="%s">%s</span>', sprintf(_('Last audit %s'), strftime("%a %e %b %Y %H:%M %Z", strtotime($row['Part Location Last Audit'].' +0:00')), $row['Part Location Last Audit']), number($row['days_last_audit'])
+                            ))
 
 
                     );
@@ -1509,8 +1514,6 @@ class Part extends Asset {
         //print $stock;
 
 
-
-
         $this->fast_update(
             array(
                 'Part Current Stock'            => $stock + $picked,
@@ -1547,12 +1550,148 @@ class Part extends Asset {
 
     }
 
+
+    function update_leakages($type='all') {
+
+
+
+
+        if($type=='all' or $type=='Lost'){
+            $skos   = 0;
+            $amount = 0;
+
+            $sql = sprintf(
+                "SELECT sum(`Inventory Transaction Quantity`) AS qty, sum(`Inventory Transaction Amount`) AS amount FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d AND `Inventory Transaction Type`='Lost'", $this->id
+            );
+
+
+            if ($result = $this->db->query($sql)) {
+                if ($row = $result->fetch()) {
+                    $skos   = round($row['qty'], 1);
+                    $amount = round($row['amount'], 2);
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                exit;
+            }
+
+            $this->fast_update(
+                array(
+                    'Part Stock Lost SKOs'            => -$skos,
+                    'Part Stock Lost Amount'            => -$amount
+
+
+                )
+            );
+
+
+        }
+
+        if($type=='all' or $type=='Damaged'){
+            $skos   = 0;
+            $amount = 0;
+
+            $sql = sprintf(
+                "SELECT sum(`Inventory Transaction Quantity`) AS qty, sum(`Inventory Transaction Amount`) AS amount FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d AND `Inventory Transaction Type`='Broken'", $this->id
+            );
+
+
+            if ($result = $this->db->query($sql)) {
+                if ($row = $result->fetch()) {
+                    $skos   = round($row['qty'], 1);
+                    $amount = round($row['amount'], 2);
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                exit;
+            }
+
+            $this->fast_update(
+                array(
+                    'Part Stock Damaged SKOs'            => -$skos,
+                    'Part Stock Damaged Amount'            => -$amount
+
+
+                )
+            );
+
+
+        }
+
+        if($type=='all' or $type=='Errors'){
+            $skos   = 0;
+            $amount = 0;
+
+            $sql = sprintf(
+                "SELECT sum(`Inventory Transaction Quantity`) AS qty, sum(`Inventory Transaction Amount`) AS amount FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d AND `Inventory Transaction Type`='Other Out'  and  `Inventory Transaction Quantity`<0  ", $this->id
+            );
+
+
+            if ($result = $this->db->query($sql)) {
+                if ($row = $result->fetch()) {
+                    $skos   = round($row['qty'], 1);
+                    $amount = round($row['amount'], 2);
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                exit;
+            }
+
+            $this->fast_update(
+                array(
+                    'Part Stock Errors SKOs'            => -$skos,
+                    'Part Stock Errors Amount'            => -$amount
+
+
+                )
+            );
+
+
+        }
+
+        if($type=='all' or $type=='Found'){
+            $skos   = 0;
+            $amount = 0;
+
+            $sql = sprintf(
+                "SELECT sum(`Inventory Transaction Quantity`) AS qty, sum(`Inventory Transaction Amount`) AS amount FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d  AND `Inventory Transaction Type`='Other Out'  and  `Inventory Transaction Quantity`>0 ", $this->id
+            );
+
+
+            if ($result = $this->db->query($sql)) {
+                if ($row = $result->fetch()) {
+                    $skos   = round($row['qty'], 1);
+                    $amount = round($row['amount'], 2);
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                exit;
+            }
+
+            $this->fast_update(
+                array(
+                    'Part Stock Found SKOs'            => $skos,
+                    'Part Stock Found Amount'            => $amount
+
+
+                )
+            );
+
+
+        }
+
+
+
+
+
+
+    }
+
+
     function get_current_stock() {
         $stock      = 0;
         $value      = 0;
         $in_process = 0;
-
-
 
 
         $sql = sprintf(
@@ -1599,6 +1738,30 @@ class Part extends Asset {
             }
 
 
+        }
+
+
+    }
+
+    function update_stock_run() {
+
+        $running_stock = 0;
+
+        $sql = sprintf('SELECT `Inventory Transaction Key`, `Inventory Transaction Quantity` FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d ORDER BY `Date` ', $this->id);
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $running_stock = $running_stock + $row['Inventory Transaction Quantity'];
+                $sql           = sprintf(
+                    'UPDATE `Inventory Transaction Fact` SET `Running Stock`=%f WHERE `Inventory Transaction Key`=%d ', $running_stock, $row['Inventory Transaction Key']
+                );
+                $this->db->exec($sql);
+                //print "$sql\n";
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
 
 
@@ -2067,7 +2230,6 @@ class Part extends Asset {
         );
     }
 
-
     function update_stock_history() {
 
 
@@ -2351,6 +2513,47 @@ class Part extends Asset {
 
     }
 
+    /*
+    function get_products_data($with_objects = false) {
+
+        include_once 'class.Product.php';
+
+        $sql           = sprintf(
+            "SELECT `Linked Fields`,`Store Product Key`,`Parts Per Product`,`Note` FROM `Store Product Part Bridge` WHERE `Part SKU`=%d ", $this->id
+        );
+
+
+        $products_data = array();
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $product_data = $row;
+                if ($product_data['Linked Fields'] == '') {
+                    $product_data['Linked Fields']        = array();
+                    $product_data['Number Linked Fields'] = 0;
+                } else {
+                    $product_data['Linked Fields']        = json_decode(
+                        $row['Linked Fields'], true
+                    );
+                    $product_data['Number Linked Fields'] = count(
+                        $product_data['Linked Fields']
+                    );
+                }
+                if ($with_objects) {
+                    $product_data['Product'] = new Product(
+                        'id', $row['Store Product Key']
+                    );
+                }
+                $products_data[] = $product_data;
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+        return $products_data;
+    }
+*/
+
     function delete($metadata = false) {
 
 
@@ -2402,47 +2605,6 @@ class Part extends Asset {
 
 
     }
-
-    /*
-    function get_products_data($with_objects = false) {
-
-        include_once 'class.Product.php';
-
-        $sql           = sprintf(
-            "SELECT `Linked Fields`,`Store Product Key`,`Parts Per Product`,`Note` FROM `Store Product Part Bridge` WHERE `Part SKU`=%d ", $this->id
-        );
-
-
-        $products_data = array();
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                $product_data = $row;
-                if ($product_data['Linked Fields'] == '') {
-                    $product_data['Linked Fields']        = array();
-                    $product_data['Number Linked Fields'] = 0;
-                } else {
-                    $product_data['Linked Fields']        = json_decode(
-                        $row['Linked Fields'], true
-                    );
-                    $product_data['Number Linked Fields'] = count(
-                        $product_data['Linked Fields']
-                    );
-                }
-                if ($with_objects) {
-                    $product_data['Product'] = new Product(
-                        'id', $row['Store Product Key']
-                    );
-                }
-                $products_data[] = $product_data;
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-        return $products_data;
-    }
-*/
 
     function get_field_label($field) {
         global $account;
@@ -4184,20 +4346,15 @@ class Part extends Asset {
 
     }
 
-    function update_stock_run() {
+    function update_unknown_location() {
 
-        $running_stock = 0;
-
-        $sql = sprintf('SELECT `Inventory Transaction Key`, `Inventory Transaction Quantity` FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d ORDER BY `Date` ', $this->id);
-
+        $stock = 0;
+        $value = 0;
+        $sql   = sprintf("SELECT `Quantity On Hand`,`Stock Value` FROM `Part Location Dimension` WHERE `Location Key`=1 AND `Part SKU`=%d ", $this->id);
         if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                $running_stock = $running_stock + $row['Inventory Transaction Quantity'];
-                $sql           = sprintf(
-                    'UPDATE `Inventory Transaction Fact` SET `Running Stock`=%f WHERE `Inventory Transaction Key`=%d ', $running_stock, $row['Inventory Transaction Key']
-                );
-                $this->db->exec($sql);
-                //print "$sql\n";
+            if ($row = $result->fetch()) {
+                $stock = $row['Quantity On Hand'];
+                $value = $row['Stock Value'];
             }
         } else {
             print_r($error_info = $this->db->errorInfo());
@@ -4206,31 +4363,13 @@ class Part extends Asset {
         }
 
 
-    }
+        $this->fast_update(
+            array(
+                'Part Unknown Location Stock'       => $stock,
+                'Part Unknown Location Stock Value' => $value,
 
-
-    function update_unknown_location(){
-
-        $stock=0;
-        $value=0;
-        $sql=sprintf("select `Quantity On Hand`,`Stock Value` from `Part Location Dimension` where `Location Key`=1 and `Part SKU`=%d ",$this->id);
-        if ($result=$this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $stock=$row['Quantity On Hand'];
-                $value=$row['Stock Value'];
-        	}
-        }else {
-        	print_r($error_info=$this->db->errorInfo());
-        	print "$sql\n";
-        	exit;
-        }
-
-
-        $this->fast_update(array(
-            'Part Unknown Location Stock'=>$stock,
-            'Part Unknown Location Stock Value'=>$value,
-
-                           ));
+            )
+        );
 
     }
 

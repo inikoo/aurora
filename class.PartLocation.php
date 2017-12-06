@@ -182,7 +182,7 @@ class PartLocation extends DB_Table {
         }
 
 
-       // $location = new Location($this->data['Location Key']);
+        // $location = new Location($this->data['Location Key']);
 
 
         $keys   = '(';
@@ -275,7 +275,7 @@ class PartLocation extends DB_Table {
     function audit($qty, $note = '', $date = false, $include_current = false, $parent = '') {
 
         if (!$date) {
-            $date     = gmdate('Y-m-d H:i:s');
+            $date = gmdate('Y-m-d H:i:s');
         }
 
         if (!is_numeric($qty) or $qty < 0) {
@@ -307,7 +307,7 @@ class PartLocation extends DB_Table {
         $qty_change = $qty - $old_qty;
 
 
-        $value_change = $qty_change*$this->part->get('Part Cost in Warehouse');
+        $value_change = $qty_change * $this->part->get('Part Cost in Warehouse');
 
         $this->updated = true;
 
@@ -337,19 +337,21 @@ class PartLocation extends DB_Table {
 
         if ($parent == 'associate') {
             $details = sprintf(
-                '<span class="note_data"><span class="link" onClick="change_view(\'part/%d\')"><i class="fa fa-square" aria-hidden="true"></i> %s</span> <i class="fa fa-link" aria-hidden="true"></i> %s</span>%s', $this->part_sku, $this->part->get('Reference'), $location_link, $audit_note
+                '<span class="note_data"><span class="link" onClick="change_view(\'part/%d\')"><i class="fa fa-square" aria-hidden="true"></i> %s</span> <i class="fa fa-link" aria-hidden="true"></i> %s</span>%s', $this->part_sku, $this->part->get('Reference'),
+                $location_link, $audit_note
             );
 
         } elseif ($parent == 'disassociate') {
             $details = sprintf(
-                '<span class="note_data"><span class="link" onClick="change_view(\'part/%d\')"><i class="fa fa-square" aria-hidden="true"></i> %s</span> <i class="fa fa-unlink" aria-hidden="true"></i> %s</span>%s', $this->part_sku, $this->part->get('Reference'), $location_link, $audit_note
+                '<span class="note_data"><span class="link" onClick="change_view(\'part/%d\')"><i class="fa fa-square" aria-hidden="true"></i> %s</span> <i class="fa fa-unlink" aria-hidden="true"></i> %s</span>%s', $this->part_sku, $this->part->get('Reference'),
+                $location_link, $audit_note
             );
 
         } else {
 
             $details = sprintf(
-                '<span class="note_data"><i class="fa fa-dot-circle-o" aria-hidden="true"></i>: %s SKO <span class="link" onClick="change_view(\'part/%d\')"><i class="fa fa-square" aria-hidden="true"></i> %s</span> @ %s</span>%s', number($qty), $this->part_sku, $this->part->get('Reference'),
-                $location_link, $audit_note
+                '<span class="note_data"><i class="fa fa-dot-circle-o" aria-hidden="true"></i>: %s SKO <span class="link" onClick="change_view(\'part/%d\')"><i class="fa fa-square" aria-hidden="true"></i> %s</span> @ %s</span>%s', number($qty), $this->part_sku,
+                $this->part->get('Reference'), $location_link, $audit_note
             );
 
 
@@ -389,14 +391,13 @@ class PartLocation extends DB_Table {
             );
 
 
-
             $this->db->exec($sql);
 
 
-            if($qty_change!=0 and $this->location_key!=1){
+            if ($qty_change != 0 and $this->location_key != 1) {
                 $part_location_data = array(
-                    'Location Key' =>1,
-                    'Part SKU'     =>  $this->part_sku,
+                    'Location Key' => 1,
+                    'Part SKU'     => $this->part_sku,
                     'editor'       => $this->editor
                 );
 
@@ -404,9 +405,9 @@ class PartLocation extends DB_Table {
                 $part_unk_location = new PartLocation('find', $part_location_data, 'create');
 
 
-                if($qty_change<0) {
+                if ($qty_change < 0) {
                     $_details = sprintf(_('adding %s missing SKOs to unknown location'), -$qty_change);
-                }else{
+                } else {
                     $_details = sprintf(_('removing %s found SKOs from unknown location'), $qty_change);
                 }
 
@@ -415,8 +416,6 @@ class PartLocation extends DB_Table {
                     "'Movement'", "'Audit'", $part_unk_location->part_sku, $part_unk_location->location_key, "'Adjust'", -$qty_change, -$value_change, $this->editor['User Key'], prepare_mysql($_details, false), prepare_mysql($date), prepare_mysql($audit_key)
                 );
                 $this->db->exec($sql);
-
-
 
 
                 $part_unk_location->update_stock();
@@ -430,7 +429,15 @@ class PartLocation extends DB_Table {
 
 
         $this->update_stock();
+
+
+        $sql = sprintf(
+            "UPDATE `Part Location Dimension` SET  `Part Location Last Audit`=NOW() WHERE `Part SKU`=%d AND `Location Key`=%d ", $this->part_sku, $this->location_key
+        );
+        $this->db->exec($sql);
+
         $this->get_data();
+
 
         include_once 'utils/new_fork.php';
         global $account;
@@ -438,11 +445,10 @@ class PartLocation extends DB_Table {
 
         new_housekeeping_fork(
             'au_housekeeping', array(
-            'type'             => 'update_warehouse_leakages',
-            'warehouse_key'     => $this->location->get('Location Warehouse Key'),
+            'type'          => 'update_warehouse_leakages',
+            'warehouse_key' => $this->location->get('Location Warehouse Key'),
         ), $account->get('Account Code')
         );
-
 
 
         return $audit_key;
@@ -501,33 +507,6 @@ class PartLocation extends DB_Table {
     }
     */
 
-    function qty_analysis($a, $b) {
-        if ($b < $a) {
-            $tmp = $a;
-            $a   = $b;
-            $b   = $tmp;
-        }
-
-        if ($a >= 0 and $b >= 0) {
-            $above = $b - $a;
-            $below = 0;
-        } else {
-            if ($a <= 0 and $b <= 0) {
-                $above = 0;
-                $below = $b - $a;
-            } else {
-                $above = $b;
-                $below = -$a;
-            }
-        }
-
-        return array(
-            $above,
-            $below
-        );
-
-    }
-
     function update_stock() {
 
         list($stock, $value, $in_process) = $this->get_stock();
@@ -539,7 +518,7 @@ class PartLocation extends DB_Table {
         $sql = sprintf(
             "UPDATE `Part Location Dimension` SET `Quantity On Hand`=%f ,`Quantity In Process`=%f,`Stock Value`=%f WHERE `Part SKU`=%d AND `Location Key`=%d", $stock, $in_process, $value, $this->part_sku, $this->location_key
         );
-       //  print $sql;
+        //  print $sql;
 
         $this->db->exec($sql);
 
@@ -548,7 +527,7 @@ class PartLocation extends DB_Table {
         $this->location->update_stock_value();
 
 
-        if($this->location->id==1){
+        if ($this->location->id == 1) {
             $this->part->update_unknown_location();
         }
 
@@ -558,8 +537,8 @@ class PartLocation extends DB_Table {
             $production->update_locations_with_errors();
         }
 
-        $warehouse=get_object('Warehouse',$this->get('Part Location Warehouse Key'));
-$warehouse->update_stock_amount();
+        $warehouse = get_object('Warehouse', $this->get('Part Location Warehouse Key'));
+        $warehouse->update_stock_amount();
 
 
     }
@@ -571,24 +550,24 @@ $warehouse->update_stock_amount();
 
         // find last audit ans take that value as seed
         /*
-	    $sql=sprintf("select `Part Location Stock`,`Date` where  Part SKU=%d and Location Key=%d and `Inventory Transaction Type` like 'Audit' and `Date`<=%s order by `Date` desc limit 1 ",
-			 ,$this->part_sku
-			 ,$this->location_key
-			 ,prepare_mysql($date)
+        $sql=sprintf("select `Part Location Stock`,`Date` where  Part SKU=%d and Location Key=%d and `Inventory Transaction Type` like 'Audit' and `Date`<=%s order by `Date` desc limit 1 ",
+             ,$this->part_sku
+             ,$this->location_key
+             ,prepare_mysql($date)
 
 
-			 );
+             );
 
         if ($result=$this->db->query($sql)) {
             if ($row = $result->fetch()) {
                 $audit_date=$row['Date'];
                 $audit_stock=$row['Part Stock Location'];
                 $audit_stock_value=$row['Part Stock Value'];
-        	}
+            }
         }else {
-        	print_r($error_info=$this->db->errorInfo());
-        	print "$sql\n";
-        	exit;
+            print_r($error_info=$this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
         */
 
@@ -621,6 +600,50 @@ $warehouse->update_stock_amount();
             0
         );
 
+    }
+
+    function get($key = '', $args = false) {
+
+
+        if (!$this->ok) {
+            return;
+        }
+
+
+        switch ($key) {
+
+            case 'Part Location min max':
+                return array(
+                    $this->get('Minimum Quantity'),
+                    $this->get('Maximum Quantity')
+                );
+                break;
+            case 'min max':
+                return array(
+                    ($this->get('Minimum Quantity') != '' ? number(
+                        $this->get('Minimum Quantity')
+                    ) : '?'),
+                    ($this->get('Maximum Quantity') != '' ? number(
+                        $this->get('Maximum Quantity')
+                    ) : '?')
+                );
+                break;
+            case 'Part Location Moving Quantity':
+                return $this->data['Moving Quantity'];
+                break;
+            case 'Moving Quantity':
+                return $this->data['Moving Quantity'] != '' ? number(
+                    $this->data['Moving Quantity']
+                ) : '?';
+                break;
+
+            default:
+                if (array_key_exists($key, $this->data)) {
+                    return $this->data[$key];
+                }
+        }
+
+        return false;
     }
 
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
@@ -805,6 +828,33 @@ $warehouse->update_stock_amount();
             $this->data['Moving Quantity'] = $value;
         }
 
+
+    }
+
+    function qty_analysis($a, $b) {
+        if ($b < $a) {
+            $tmp = $a;
+            $a   = $b;
+            $b   = $tmp;
+        }
+
+        if ($a >= 0 and $b >= 0) {
+            $above = $b - $a;
+            $below = 0;
+        } else {
+            if ($a <= 0 and $b <= 0) {
+                $above = 0;
+                $below = $b - $a;
+            } else {
+                $above = $b;
+                $below = -$a;
+            }
+        }
+
+        return array(
+            $above,
+            $below
+        );
 
     }
 
@@ -1094,9 +1144,12 @@ $warehouse->update_stock_amount();
 
     }
 
-    function stock_transfer($data, $date) {
+    function stock_transfer($data, $date='') {
         // this is real time function
 
+
+
+        global $account;
 
         if (!is_numeric($this->data['Quantity On Hand'])) {
             $this->error;
@@ -1106,8 +1159,6 @@ $warehouse->update_stock_amount();
 
         $qty_change       = $data['Quantity'];
         $transaction_type = $data['Transaction Type'];
-
-
 
 
         $value_change = $this->part->get('Part Cost in Warehouse') * $qty_change;
@@ -1122,22 +1173,31 @@ $warehouse->update_stock_amount();
 
 
         $details = '';
-
+//'Move','Order In Process','No Dispatched','Sale','Audit','In','Adjust','Broken','Lost','Not Found','Associate','Disassociate','Move In','Move Out','Other Out','Restock','FailSale'
         switch ($transaction_type) {
             case('Lost'):
+
+
+
                 $record_type = 'Movement';
-                $section     = 'Out';
-                $tmp         = $data['Reason'].', '.$data['Action'];
-                $tmp         = preg_replace('/, $/', '', $tmp);
-                if (preg_match('/^\s*,\s*$/', $tmp)) {
-                    $tmp = '';
-                } else {
-                    $tmp = ' '.$tmp;
-                }
-                $details = number(-$qty_change).'x '.'<a href="part.php?sku='.$this->part_sku.'">'.$this->part->id.'</a>'.' '._(
-                        'lost from'
-                    ).' <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a>'.$tmp.': '.($qty_change > 0 ? '+' : '').number($qty_change).' ('.($value_change > 0 ? '+' : '').money($value_change).')';
+                $section     = 'Other';
+                $details=sprintf(_('%s SKO lost'),-$qty_change).' ('.($value_change > 0 ? '+' : '').money($value_change,$account->get('Account Currency')).') '.$data['Note'];
                 break;
+            case('Broken'):
+
+
+                $record_type = 'Movement';
+                $section     = 'Other';
+                $details=sprintf(_('%s SKO damaged'),-$qty_change).' ('.($value_change > 0 ? '+' : '').money($value_change,$account->get('Account Currency')).') '.$data['Note'];
+                break;
+            case('Other Out'):
+
+                $record_type = 'Movement';
+                $section     = 'Other';
+                $details=sprintf(_('%s SKO leaked'),($qty_change > 0 ? '+' : '').$qty_change).' ('.($value_change > 0 ? '+' : '').money($value_change,$account->get('Account Currency')).') '.$data['Note'];
+                break;
+
+           /*
             case('Broken'):
                 $record_type = 'Movement';
                 $section     = 'Out';
@@ -1152,6 +1212,7 @@ $warehouse->update_stock_amount();
                     number(-$qty_change).'x '.'<a href="part.php?sku='.$this->part_sku.'">'.$this->part->id.'</a>'.' '._('broken').' <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a>'.$tmp.': '.($qty_change > 0 ? '+' : '')
                     .number($qty_change).' ('.($value_change > 0 ? '+' : '').money($value_change).')';
                 break;
+
             case('Other Out'):
                 $record_type = 'Movement';
                 $section     = 'Out';
@@ -1167,7 +1228,7 @@ $warehouse->update_stock_amount();
                     ).' <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a>'.$tmp.': '.($qty_change > 0 ? '+' : '').number($qty_change).' ('.($value_change > 0 ? '+' : '').money($value_change).')';
                 break;
 
-
+  */
             case('Move Out'):
                 $record_type          = 'Helper';
                 $section              = 'Other';
@@ -1229,6 +1290,9 @@ $warehouse->update_stock_amount();
 
 
         $this->part->update_stock();
+
+        $this->part->update_unknown_location();
+
         $this->location->update_parts();
         $this->location->update_stock_value();
 
@@ -1242,9 +1306,7 @@ $warehouse->update_stock_amount();
     function update_stock_value() {
 
         $sql = sprintf(
-            "UPDATE `Part Location Dimension` SET `Stock Value`=%.3f WHERE `Part SKU`=%d AND `Location Key`=%d ",
-            $this->get('Quantity On Hand') * $this->part->get('Part Cost in Warehouse'),
-            $this->part_sku, $this->location_key
+            "UPDATE `Part Location Dimension` SET `Stock Value`=%.3f WHERE `Part SKU`=%d AND `Location Key`=%d ", $this->get('Quantity On Hand') * $this->part->get('Part Cost in Warehouse'), $this->part_sku, $this->location_key
         );
 
         $update = $this->db->prepare($sql);
@@ -1252,50 +1314,6 @@ $warehouse->update_stock_amount();
 
         $this->location->update_stock_value();
 
-    }
-
-    function get($key = '', $args = false) {
-
-
-        if (!$this->ok) {
-            return;
-        }
-
-
-        switch ($key) {
-
-            case 'Part Location min max':
-                return array(
-                    $this->get('Minimum Quantity'),
-                    $this->get('Maximum Quantity')
-                );
-                break;
-            case 'min max':
-                return array(
-                    ($this->get('Minimum Quantity') != '' ? number(
-                        $this->get('Minimum Quantity')
-                    ) : '?'),
-                    ($this->get('Maximum Quantity') != '' ? number(
-                        $this->get('Maximum Quantity')
-                    ) : '?')
-                );
-                break;
-            case 'Part Location Moving Quantity':
-                return $this->data['Moving Quantity'];
-                break;
-            case 'Moving Quantity':
-                return $this->data['Moving Quantity'] != '' ? number(
-                    $this->data['Moving Quantity']
-                ) : '?';
-                break;
-
-            default:
-                if (array_key_exists($key, $this->data)) {
-                    return $this->data[$key];
-                }
-        }
-
-        return false;
     }
 
     function move_stock($data, $date) {
@@ -1618,12 +1636,12 @@ $warehouse->update_stock_amount();
         }
 
         /*
-print "++++++++++\n";
-		 print_r($dates);
-	 print_r($intervals);
+    print "++++++++++\n";
+         print_r($dates);
+     print_r($intervals);
 
-	 print "---------\n";
-*/
+     print "---------\n";
+    */
 
         return $intervals;
 
@@ -1699,16 +1717,15 @@ print "++++++++++\n";
 
                 //$commercial_value_unit_cost=$this->part->get_unit_commercial_value($row['Date'].' 23:59:59');
 
-                if($this->part->get('Part Commercial Value')==''){
+                if ($this->part->get('Part Commercial Value') == '') {
                     $commercial_value_unit_cost = $this->part->get('Part Unit Price');
-                }else{
+                } else {
                     $commercial_value_unit_cost = $this->part->get('Part Commercial Value');
                 }
 
 
-
-                $value_day_cost             = $stock * $value_day_cost_unit_cost;
-                $commercial_value           = $stock * $commercial_value_unit_cost;
+                $value_day_cost   = $stock * $value_day_cost_unit_cost;
+                $commercial_value = $stock * $commercial_value_unit_cost;
 
                 $value_day_cost_open   = $open * $value_day_cost_unit_cost;
                 $commercial_value_open = $open * $commercial_value_unit_cost;
@@ -2024,15 +2041,13 @@ print "++++++++++\n";
                 $qty_change = $qty - $old_qty;
 
 
-                $value_change = $qty_change*$this->part->get('Part Cost in Warehouse');
+                $value_change = $qty_change * $this->part->get('Part Cost in Warehouse');
 
                 if ($qty_change != 0 or $value_change != 0) {
 
                     $audit_key = $row['Inventory Transaction Key'];
 
                     $note = $row['Note'];
-
-
 
 
                     $details = sprintf(
@@ -2087,11 +2102,10 @@ print "++++++++++\n";
 
         new_housekeeping_fork(
             'au_housekeeping', array(
-            'type'             => 'update_warehouse_leakages',
-            'warehouse_key'     => $this->location->get('Location Warehouse Key'),
+            'type'          => 'update_warehouse_leakages',
+            'warehouse_key' => $this->location->get('Location Warehouse Key'),
         ), $account->get('Account Code')
         );
-
 
 
     }

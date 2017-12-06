@@ -786,6 +786,8 @@ function validate_barcode(value, min_length, max_length) {
 function validate_number(value, min, max) {
 
 
+    console.log('caca')
+
     if (!$.isNumeric(value)) {
         return {
             class: 'invalid', type: 'no_numeric'
@@ -798,6 +800,9 @@ function validate_number(value, min, max) {
 
 
     if (min != undefined && value < min) {
+
+        console.log(value)
+        console.log(min)
 
         return {
             class: 'invalid', type: 'negative'
