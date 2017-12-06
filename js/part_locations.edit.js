@@ -1,6 +1,6 @@
 function open_edit_stock() {
 
-$('#part_stock_value').addClass('hide')
+    $('#part_stock_value').addClass('hide')
 
     process_edit_stock()
 
@@ -272,7 +272,7 @@ function stock_changed(element) {
     }
 
 
-    var validation = validate_number(value,0, 999999999)
+    var validation = validate_number(value, 0, 999999999)
 
     if (!validation) {
         validation = {
@@ -651,7 +651,7 @@ function save_add_location() {
             close_add_location()
 
 
-            var clone = $("#add_location_template").clone().removeClass('hide').addClass('locations').attr('id','part_location_edit_'+data.location_key).attr('location_key', data.location_key)
+            var clone = $("#add_location_template").clone().removeClass('hide').addClass('locations').attr('id', 'part_location_edit_' + data.location_key).attr('location_key', data.location_key)
 
             clone.find(".location_info")
 
@@ -713,7 +713,7 @@ function save_stock(element) {
     $('#inventory_transaction_note').addClass('hide')
     $(element).removeClass('fa-cloud').addClass('fa-spinner fa-spin ')
 
-    var icon=$(element);
+    var icon = $(element);
 
     var parts_locations_data = []
 
@@ -757,7 +757,6 @@ function save_stock(element) {
     request.done(function (data) {
 
 
-
         if (state.tab == 'part.stock.transactions' || state.tab == 'part.stock') {
             rows.fetch({
                 reset: true
@@ -778,7 +777,7 @@ function save_stock(element) {
         }
 
 
-        if(data.Part_Unknown_Location_Stock!=0){
+        if (data.Part_Unknown_Location_Stock != 0) {
             $('#unknown_location_tr').removeClass('hide')
         }
 
@@ -789,77 +788,182 @@ function save_stock(element) {
 
 }
 
+//'Move','Order In Process','No Dispatched','Sale','Audit','In','Adjust','Broken','Lost','Not Found','Associate','Disassociate','Move In','Move Out','Other Out','Restock','FailSale'
 
 function show_dialog_consolidate_unknown_location(element) {
 
-    part_sku=$(element).attr('part_sku')
-    qty=$(element).attr('qty')
+    part_sku = $(element).attr('part_sku')
+    qty = $(element).attr('qty')
 
 
     $('#edit_stock_dialog_consolidate_unknown_location').removeClass('hide').offset({
-        top: $(element).position().top -3 , left: $(element).position().left+ $(element).width()- $('#edit_stock_dialog_consolidate_unknown_location').width()-20
-    }).attr('part_sku',part_sku).attr('max_qty',qty)
+        top: $(element).position().top - 3, left: $(element).position().left + $(element).width() - $('#edit_stock_dialog_consolidate_unknown_location').width() - 20
+    }).attr('part_sku', part_sku).attr('max_qty', qty)
 
 
     $('#part_leakage_qty_input').val(qty)
     $('#part_leakage_note_input').val('')
+    $('#unknown_location_save_buttons td').addClass('super_discreet').removeClass('button')
+
+
+
+    if(qty>0){
+        $('#unknown_location_save_buttons .label').removeClass('hide')
+    }else{
+        $('#unknown_location_save_buttons .label').addClass('hide')
+        $('#unknown_location_save_buttons .label._error').removeClass('hide')
+
+    }
+
+
+
 
 }
 
 
-
-
-$(document).on('input propertychange', '#part_leakage_qty_input', function() {
+$(document).on('input propertychange', '#part_leakage_qty_input', function () {
     validate_part_leakage()
 
 
 });
 
 
-    $(document).on('input propertychange', '#part_leakage_note_input', function() {
-     validate_part_leakage()
+$(document).on('input propertychange', '#part_leakage_note_input', function () {
+    validate_part_leakage()
 
 
 });
 
 
+function validate_part_leakage() {
+    var error = false;
+    max = $('#edit_stock_dialog_consolidate_unknown_location').attr('max_qty')
+    if (max < 0) {
+
+var validate_qty=validate_number($('#part_leakage_qty_input').val(), max, 0);
+
+    } else {
+        var validate_qty=validate_number($('#part_leakage_qty_input').val(), 0,max);
+    }
+console.log(validate_qty)
+
+    if (validate_qty) {
+        error = true;
+        $('#part_leakage_qty_input').addClass('error')
+
+    } else {
+        $('#part_leakage_qty_input').removeClass('error')
+    }
 
 
-    function validate_part_leakage(){
-
-        max=  $('#edit_stock_dialog_consolidate_unknown_location').attr('max_qty')
-        if(max<0){
-
-        }else{
-
-        }
+    if ($('#part_leakage_note_input').val() == '') {
+        error = true;
+        $('#part_leakage_note_input').addClass('error')
+    } else {
+        $('#part_leakage_note_input').removeClass('error')
 
     }
+    if (error) {
+        $('#unknown_location_save_buttons td').addClass('super_discreet').removeClass('button')
+    } else {
+        $('#unknown_location_save_buttons td').removeClass('super_discreet').addClass('button')
+
+    }
+}
+
+
+
+function save_leakage(element) {
+
+
+    if ($(element).hasClass('super_discreet') ||  $(element).hasClass('wait')  ) {
+
+        return;
+    }
+
+    $('#unknown_location_save_buttons td').addClass('super_discreet')
+    $(element).addClass('wait').removeClass('super_discreet').find('span.label').addClass('hide')
+    $(element).find('i').removeClass('hide')
+
+    // used only for debug
+    var request = '/ar_edit_stock.php?tipo=edit_leakages&part_sku=' + $('#locations_table').attr('part_sku') + '&qty=' +$('#part_leakage_qty_input').val()+'&note='+$('#part_leakage_note_input').val()+'&type='+$(element).attr('type')
+
+   console.log(request)
+
+    //=====
+    var form_data = new FormData();
+    form_data.append("tipo", 'edit_leakages')
+    form_data.append("part_sku", $('#locations_table').attr('part_sku'))
+    form_data.append("qty",$('#part_leakage_qty_input').val())
+    form_data.append("note",$('#part_leakage_note_input').val())
+    form_data.append("type",$(element).attr('type'))
+
+
+    var request = $.ajax({
+
+        url: "/ar_edit_stock.php", data: form_data, processData: false, contentType: false, type: 'POST', dataType: 'json'
+
+    })
+
+    request.done(function (data) {
+
+
+        if (state.tab == 'part.stock.transactions' || state.tab == 'part.stock') {
+            rows.fetch({
+                reset: true
+            });
+        }
+
+        $('#edit_stock_dialog_consolidate_unknown_location').addClass('hide');
+
+        $('#unknown_location_save_buttons i').addClass('hide')
+        $('#unknown_location_save_buttons span.label').removeClass('hide')
+
+
+        $('#edit_stock_saving_buttons').removeClass('valid')
+
+
+        close_edit_stock()
+
+        for (var key in data.updated_fields) {
+            //console.log(key)
+            //console.log(data.updated_fields[key])
+            $('.' + key).html(data.updated_fields[key])
+        }
+
+
+        if (data.Part_Unknown_Location_Stock != 0) {
+            $('#unknown_location_tr').removeClass('hide')
+        }
+
+    })
+
+    request.fail(function (jqXHR, textStatus) {
+    });
+
+}
 
 function open_edit_min_max(element) {
 
-    location_key=$(element).attr('location_key')
-        min=$(element).attr('min')
-        max=$(element).attr('max')
+    location_key = $(element).attr('location_key')
+    min = $(element).attr('min')
+    max = $(element).attr('max')
 
 
     $('#edit_stock_min_max').removeClass('hide').offset({
-        top: $(element).position().top -3 , left: $(element).position().left
-    }).attr('location_key',location_key)
+        top: $(element).position().top - 3, left: $(element).position().left
+    }).attr('location_key', location_key)
 
 
-    $('#edit_stock_min_max').find('.recommended_min').val(min).attr('ovalue',min)
-    $('#edit_stock_min_max').find('.recommended_max').val(max).attr('ovalue',max)
-
-
-
+    $('#edit_stock_min_max').find('.recommended_min').val(min).attr('ovalue', min)
+    $('#edit_stock_min_max').find('.recommended_max').val(max).attr('ovalue', max)
 
 
 //    $(element).addClass('invisible').next().removeClass('hide').find('input:first').focus()
 //    $(element).closest('tr').find('.stock_input').addClass('hide')
 //    $(element).closest('td').attr('colspan', 2)
 
- //   $(element).closest('tr').find('.unlink_operations').addClass('invisible')
+    //   $(element).closest('tr').find('.unlink_operations').addClass('invisible')
 
 
 }
@@ -867,17 +971,16 @@ function open_edit_min_max(element) {
 function open_edit_recommended_move(element) {
 
 
-    location_key=$(element).attr('location_key')
-    recommended_move=$(element).attr('recommended_move')
-
+    location_key = $(element).attr('location_key')
+    recommended_move = $(element).attr('recommended_move')
 
 
     $('#edit_recommended_move').removeClass('hide').offset({
-        top: $(element).position().top -3 , left: $(element).position().left
-    }).attr('location_key',location_key)
+        top: $(element).position().top - 3, left: $(element).position().left
+    }).attr('location_key', location_key)
 
 
-    $('#edit_recommended_move').find('.recommended_move').val(recommended_move).attr('ovalue',recommended_move)
+    $('#edit_recommended_move').find('.recommended_move').val(recommended_move).attr('ovalue', recommended_move)
 
 
     //$(element).addClass('invisible').next().removeClass('hide').find('input:first').focus()
@@ -895,9 +998,6 @@ function close_edit_recommended_move(element) {
     recommended_move.val(recommended_move.attr('ovalue'))
 
     $('#edit_recommended_move').removeClass('valid invalid').addClass('hide')
-
-
-
 
 
 }
@@ -956,7 +1056,7 @@ function recommended_move_changed(element) {
     var move_input = $('#edit_recommended_move').find('.recommended_move')
     var validation = client_validation('smallint_unsigned', false, move_input.val(), '')
     //console.log(validation)
-  //  $('#edit_recommended_move').removeClass('valid invalid').addClass(validation.class)
+    //  $('#edit_recommended_move').removeClass('valid invalid').addClass(validation.class)
 
     move_input.removeClass('valid invalid').addClass(validation.class)
 
@@ -1020,10 +1120,10 @@ function save_recommendations(type, element) {
             if (type == 'min_max') {
 
 
-                $('#part_location_edit_'+location_key).find('.open_edit_min_max').attr('min',data.value[0])
-                $('#part_location_edit_'+location_key).find('.open_edit_min_max').attr('max',data.value[1])
-                $('#part_location_edit_'+location_key).find('.formatted_recommended_min').html(data.formatted_value[0])
-                $('#part_location_edit_'+location_key).find('.formatted_recommended_max').html(data.formatted_value[1])
+                $('#part_location_edit_' + location_key).find('.open_edit_min_max').attr('min', data.value[0])
+                $('#part_location_edit_' + location_key).find('.open_edit_min_max').attr('max', data.value[1])
+                $('#part_location_edit_' + location_key).find('.formatted_recommended_min').html(data.formatted_value[0])
+                $('#part_location_edit_' + location_key).find('.formatted_recommended_max').html(data.formatted_value[1])
 
                 $('#edit_stock_min_max').find('.save').addClass('fa-cloud').removeClass('fa-spinner fa-spin')
                 $('#edit_stock_min_max').find('.recommended_min').val(data.value[0]).attr('ovalue', data.value[0])
@@ -1035,8 +1135,8 @@ function save_recommendations(type, element) {
 
                 $('#edit_recommended_move').find('.save').addClass('fa-cloud').removeClass('fa-spinner fa-spin')
 
-                $('#part_location_edit_'+location_key).find('.recommended_move').val(data.value).attr('ovalue', data.value)
-                $('#part_location_edit_'+location_key).find('.formatted_recommended_move').html(data.formatted_value)
+                $('#part_location_edit_' + location_key).find('.recommended_move').val(data.value).attr('ovalue', data.value)
+                $('#part_location_edit_' + location_key).find('.formatted_recommended_move').html(data.formatted_value)
 
                 close_edit_recommended_move($(element).closest('tr').find('.close_move'))
             }
@@ -1106,18 +1206,18 @@ function set_as_picking_location(part_sku, location_key) {
                 console.log(data.part_locations_data[i])
 
 
-                var tr=$('#part_location_edit_'+data.part_locations_data[i].location_key)
+                var tr = $('#part_location_edit_' + data.part_locations_data[i].location_key)
 
-                var icon=   tr.find('.picking_location_icon i')
+                var icon = tr.find('.picking_location_icon i')
 
-                if(data.part_locations_data[i].can_pick=='Yes'){
+                if (data.part_locations_data[i].can_pick == 'Yes') {
 
-                    icon.removeClass('super_discreet_on_hover button').attr('title',data.part_locations_data[i].label)
+                    icon.removeClass('super_discreet_on_hover button').attr('title', data.part_locations_data[i].label)
                     tr.find('.open_edit_min_max').removeClass('hide')
                     tr.find('.open_edit_recommended_move').addClass('hide')
 
-                }else{
-                    icon.addClass('super_discreet_on_hover button').attr('title',data.part_locations_data[i].label)
+                } else {
+                    icon.addClass('super_discreet_on_hover button').attr('title', data.part_locations_data[i].label)
                     tr.find('.open_edit_min_max').addClass('hide')
                     tr.find('.open_edit_recommended_move').removeClass('hide')
 

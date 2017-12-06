@@ -1159,6 +1159,12 @@ function find_supplier_parts($db, $account, $memcache_ip, $data) {
             ' `Supplier Part Supplier Key`=%d and ', $data['metadata']['parent_key']
         );
 
+    }elseif ($data['metadata']['parent'] == 'Agent') {
+
+        $where = sprintf(
+            ' `Supplier Part Supplier Key`=%d and ', $data['metadata']['parent_key']
+        );
+
     }
 
     if (!isset($data['metadata']['options']['all_parts'])) {

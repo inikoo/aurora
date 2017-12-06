@@ -283,20 +283,31 @@
 
             </table>
 
+            <style>
+                #unknown_location_save_buttons td{
+                    padding:10px 5px;border:1px solid #ccc;text-align: center;
+                }
+
+                #part_leakages_info td{
+                    padding:10px 5px;border:1px solid #ccc;text-align: center;width: 25%
+                }
+
+                </style>
 
 
-            <table id="unknown_location_table" border="0" class="overview  {if $part->get('Part Unknown Location Stock')==0}hide{/if} " >
+            <table id="unknown_location_table" border="0" class="overview " >
 
               <tr id="unknown_location_tr" class="{if $part->get('Part Unknown Location Stock')==0}hide{/if}">
-                  <td colspan="2"><i class="fa error fa-exclamation-circle" aria-hidden="true"></i>  {t}Unknown location{/t}</td>
-                  <td xonCLick=show_dialog_consolidate_unknown_location(this)" id="Part_Unknown_Location_Stock" class="aright error strong Unknown_Location_Stock xbutton"  part_sku="{$part->id}" qty="{$part->get('Part Unknown Location Stock')}"  >{$part->get('Unknown Location Stock')}</td>
+                  <td colspan="3"><i class="fa error fa-exclamation-circle" aria-hidden="true"></i>  {t}Unknown location{/t}</td>
+                  <td onCLick="show_dialog_consolidate_unknown_location(this)" id="Part_Unknown_Location_Stock" class="aright error strong Unknown_Location_Stock button"  part_sku="{$part->id}" qty="{$part->get('Part Unknown Location Stock')}"  >{$part->get('Unknown Location Stock')}</td>
               </tr>
 
 
-                <tr>
-                    <td style="padding:10px 5px;border:1px solid #ccc;text-align: center;width: 30%"><div>{t}Errors{/t}</div><div>{$part->get('Part Stock Errors SKOs')}</div></td>
-                    <td style="padding:10px 5px;border:1px solid #ccc;text-align: center"><div>{t}Damages{/t}</div><div>{$part->get('Part Stock Damaged SKOs')}</div></td>
-                    <td style="padding:10px 5px;border:1px solid #ccc;text-align: center;;width: 30%"><div>{t}Lost{/t}</div><div>{$part->get('Part Stock Lost SKOs')}</div></td>
+                <tr id="part_leakages_info">
+                    <td class=""><div>{t}Found{/t}</div><div>{$part->get('Part Stock Found SKOs')}</div></td>
+                    <td class="" ><div>{t}Errors{/t}</div><div>{$part->get('Part Stock Errors SKOs')}</div></td>
+                    <td ><div>{t}Damages{/t}</div><div>{$part->get('Part Stock Damaged SKOs')}</div></td>
+                    <td ><div>{t}Lost{/t}</div><div>{$part->get('Part Stock Lost SKOs')}</div></td>
 
                 </tr>
 
@@ -316,10 +327,10 @@
                         <td colspan="3"><textarea id="part_leakage_note_input" style="width:95%;"  plaecholder="{t}Note{/t}" /></td>
                     </tr>
 
-                    <tr>
-                        <td class=" super_discreet" style="padding:10px 5px;border:1px solid #ccc;text-align: center;width: 30%"><div>{t}Error{/t}</div></td>
-                        <td class=" super_discreet" style="padding:10px 5px;border:1px solid #ccc;text-align: center"><div>{t}Damaged{/t}</div></td>
-                        <td class=" super_discreet" style="padding:10px 5px;border:1px solid #ccc;text-align: center;;width: 30%"><div>{t}Lost{/t}</div></td>
+                    <tr  id="unknown_location_save_buttons">
+                        <td class=" super_discreet" type="Other Out" onclick="save_leakage(this)" style="width: 30%"><span class="label _error">{t}Error{/t}</span><i class="fa fa-spinner fa-spin hide"></i></td>
+                        <td class=" super_discreet" type="Broken" onclick="save_leakage(this)" style=""><span class="label damaged">{t}Damaged{/t}</span><i class="fa fa-spinner fa-spin hide"></i></td>
+                        <td class=" super_discreet" type="Lost" onclick="save_leakage(this)" style="width: 30%"><span class="label lost">{t}Lost{/t}</span><i class="fa fa-spinner fa-spin hide"></i></td>
 
                     </tr>
 

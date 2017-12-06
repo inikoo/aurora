@@ -815,6 +815,10 @@ $elements_options = array(
                     'label'    => _('Audits'),
                     'selected' => false
                 ),
+                'Other'        => array(
+                    'label'    => _('Leakages'),
+                    'selected' => false
+                ),
                 'Move'         => array(
                     'label'    => _('Movements'),
                     'selected' => false

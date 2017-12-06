@@ -636,6 +636,7 @@ function get_stock_transactions_elements($db, $data, $user) {
         'stock_status' => array(
             'OIP'          => 0,
             'In'           => 0,
+            'Other'         => 0,
             'Move'         => 0,
             'Out'          => 0,
             'Audit'        => 0,

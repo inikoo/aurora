@@ -73,7 +73,7 @@ if (isset($parameters['elements_type'])) {
             $_elements = preg_replace('/^\,/', '', $_elements);
             if ($_elements == '') {
                 $where .= ' and false';
-            } elseif ($count_elements < 6) {
+            } elseif ($count_elements < 7) {
                 $where .= ' and `Inventory Transaction Section` in ('.$_elements.')';
 
             }

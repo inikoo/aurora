@@ -112,6 +112,22 @@ switch ($tipo) {
 
         edit_stock($account, $db, $user, $editor, $data, $smarty);
         break;
+
+    case 'edit_leakages':
+
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'note'               => array('type' => 'string'),
+                         'part_sku'                  => array('type' => 'key'),
+                         'type'               => array('type' => 'string'),
+                         'qty'               => array('type' => 'string'),
+
+                     )
+        );
+
+
+        edit_leakages($account, $db, $user, $editor, $data, $smarty);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -615,5 +631,61 @@ function set_as_picking_location($account, $db, $user, $editor, $data, $smarty) 
 
 
 }
+
+function edit_leakages($account, $db, $user, $editor, $data, $smarty){
+
+    include_once 'class.PartLocation.php';
+
+
+    $part_location_data = array(
+        'Location Key' => 1,
+        'Part SKU'     => $data['part_sku'],
+        'editor'       => $editor
+    );
+
+
+    $part_location = new PartLocation('find', $part_location_data, 'create');
+
+
+
+    $_data = array(
+        'Quantity'         => -$data['qty'],
+        'Transaction Type' => $data['type'],
+        'Note'           => $data['note']
+    );
+
+    $part_location->stock_transfer($_data);
+
+
+
+    $part = get_object('Part', $data['part_sku']);
+
+    $smarty->assign('part_sku', $part->id);
+
+    $smarty->assign('locations_data', $part->get_locations('data'));
+    $part_locations = $smarty->fetch('part_locations.edit.tpl');
+
+
+    $response['Part_Unknown_Location_Stock']=$part->get('Part Unknown Location Stock');
+
+    $response['updated_fields'] = array(
+        'Current_On_Hand_Stock'    => $part->get('Current On Hand Stock'),
+        'Stock_Status_Icon'        => $part->get('Stock Status Icon'),
+        'Current_Stock'            => $part->get('Current Stock'),
+        'Current_Stock_Picked'     => $part->get('Current Stock Picked'),
+        'Current_Stock_In_Process' => $part->get('Current Stock In Process'),
+        'Current_Stock_Available'  => $part->get('Current Stock Available'),
+        'Available_Forecast'       => $part->get('Available Forecast'),
+        'Part_Locations'           => $part_locations,
+        'Part_Status'              => $part->get('Status'),
+        'Part_Cost_in_Warehouse'   => $part->get('Cost in Warehouse'),
+        'Unknown_Location_Stock'=> $part->get('Unknown Location Stock'),
+
+
+    );
+    echo json_encode($response);
+
+}
+
 
 ?>
