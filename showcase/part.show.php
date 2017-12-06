@@ -20,7 +20,7 @@ function get_part_showcase($data, $smarty, $user, $db) {
    //     $pl->update_stock();
    // }
 
-    $part->update_leakages();
+    $part->update_unknown_location();
 
    // $part->update_stock();
   //  $part->validate_barcode();

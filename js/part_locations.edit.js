@@ -781,6 +781,8 @@ function save_stock(element) {
             $('#unknown_location_tr').removeClass('hide')
         }
 
+        $('#Part_Unknown_Location_Stock').attr('qty',data.Part_Unknown_Location_Stock)
+
     })
 
     request.fail(function (jqXHR, textStatus) {
@@ -793,6 +795,10 @@ function save_stock(element) {
 function show_dialog_consolidate_unknown_location(element) {
 
     part_sku = $(element).attr('part_sku')
+
+
+
+
     qty = $(element).attr('qty')
 
 
@@ -801,7 +807,9 @@ function show_dialog_consolidate_unknown_location(element) {
     }).attr('part_sku', part_sku).attr('max_qty', qty)
 
 
-    $('#part_leakage_qty_input').val(qty)
+    $('#edit_stock_dialog_consolidate_unknown_location').attr('factor',(qty>0?1:-1));
+
+    $('#part_leakage_qty_input').val(Math.abs(qty))
     $('#part_leakage_note_input').val('')
     $('#unknown_location_save_buttons td').addClass('super_discreet').removeClass('button')
 
@@ -809,9 +817,18 @@ function show_dialog_consolidate_unknown_location(element) {
 
     if(qty>0){
         $('#unknown_location_save_buttons .label').removeClass('hide')
+
+        $('#unknown_location_save_buttons .lost_error').removeClass('hide')
+        $('#unknown_location_save_buttons .found_error').addClass('hide')
+
+
     }else{
         $('#unknown_location_save_buttons .label').addClass('hide')
         $('#unknown_location_save_buttons .label._error').removeClass('hide')
+
+        $('#unknown_location_save_buttons .lost_error').addClass('hide')
+        $('#unknown_location_save_buttons .found_error').removeClass('hide')
+
 
     }
 
@@ -838,14 +855,12 @@ $(document).on('input propertychange', '#part_leakage_note_input', function () {
 function validate_part_leakage() {
     var error = false;
     max = $('#edit_stock_dialog_consolidate_unknown_location').attr('max_qty')
-    if (max < 0) {
 
-var validate_qty=validate_number($('#part_leakage_qty_input').val(), max, 0);
 
-    } else {
-        var validate_qty=validate_number($('#part_leakage_qty_input').val(), 0,max);
-    }
-console.log(validate_qty)
+    var validate_qty=validate_number($('#part_leakage_qty_input').val(), 0,Math.abs(max));
+
+
+    console.log(validate_qty)
 
     if (validate_qty) {
         error = true;
@@ -886,7 +901,7 @@ function save_leakage(element) {
     $(element).find('i').removeClass('hide')
 
     // used only for debug
-    var request = '/ar_edit_stock.php?tipo=edit_leakages&part_sku=' + $('#locations_table').attr('part_sku') + '&qty=' +$('#part_leakage_qty_input').val()+'&note='+$('#part_leakage_note_input').val()+'&type='+$(element).attr('type')
+    var request = '/ar_edit_stock.php?tipo=edit_leakages&part_sku=' + $('#locations_table').attr('part_sku') + '&qty=' +$('#part_leakage_qty_input').val()* $('#edit_stock_dialog_consolidate_unknown_location').attr('factor')+'&note='+$('#part_leakage_note_input').val()+'&type='+$(element).attr('type')
 
    console.log(request)
 
@@ -894,7 +909,7 @@ function save_leakage(element) {
     var form_data = new FormData();
     form_data.append("tipo", 'edit_leakages')
     form_data.append("part_sku", $('#locations_table').attr('part_sku'))
-    form_data.append("qty",$('#part_leakage_qty_input').val())
+    form_data.append("qty",$('#part_leakage_qty_input').val()* $('#edit_stock_dialog_consolidate_unknown_location').attr('factor'))
     form_data.append("note",$('#part_leakage_note_input').val())
     form_data.append("type",$(element).attr('type'))
 

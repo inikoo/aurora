@@ -389,6 +389,21 @@ class Part extends Asset {
 
         switch ($key) {
 
+            case 'Unknown Location Stock':
+
+                if($this->data['Part Unknown Location Stock']>0){
+                    return '<span class="error">'.number(-$this->data['Part Unknown Location Stock']).'</span>';
+                }elseif($this->data['Part Unknown Location Stock']<0) {
+                    return '<span class="success">+'.number(-$this->data['Part Unknown Location Stock']).'</span>';
+
+                }else{
+                    return '<span class="discreet">'.number($this->data['Part Unknown Location Stock']).'</span>';
+
+                }
+
+
+                break;
+
             case 'SKOs per Carton':
 
 

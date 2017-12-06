@@ -680,9 +680,17 @@ function edit_leakages($account, $db, $user, $editor, $data, $smarty){
         'Part_Status'              => $part->get('Status'),
         'Part_Cost_in_Warehouse'   => $part->get('Cost in Warehouse'),
         'Unknown_Location_Stock'=> $part->get('Unknown Location Stock'),
+        'Stock_Found_SKOs'              => $part->get('Stock Found SKOs'),
+        'Stock_Errors_SKOs'              => $part->get('Stock Errors SKOs'),
+        'Stock_Damaged_SKOs'              => $part->get('Stock Damaged SKOs'),
+        'Stock_Lost_SKOs'              => $part->get('Stock Lost SKOs'),
 
 
     );
+
+
+
+
     echo json_encode($response);
 
 }
