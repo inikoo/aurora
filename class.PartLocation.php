@@ -403,8 +403,12 @@ class PartLocation extends DB_Table {
 
                 $part_unk_location = new PartLocation('find', $part_location_data, 'create');
 
-                $_details='';
 
+                if($qty_change<0) {
+                    $_details = sprintf(_('adding %s missing SKOs to unknown location'), -$qty_change);
+                }else{
+                    $_details = sprintf(_('removing %s found SKOs from unknown location'), $qty_change);
+                }
 
                 $sql = sprintf(
                     "INSERT INTO `Inventory Transaction Fact` (`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`,`Relations`) VALUES (%s,%s,%d,%d,%s,%f,%.3f,%s,%s,%s,%s)",
