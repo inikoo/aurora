@@ -136,8 +136,7 @@ class Customer extends Subject {
 
 
         $sql = sprintf(
-            'SELECT `Customer Key` FROM `Customer Dimension` WHERE `Customer Store Key`=%d AND `Customer Main Plain Email`=%s ', $raw_data['Customer Store Key'],
-            prepare_mysql($raw_data['Customer Main Plain Email'])
+            'SELECT `Customer Key` FROM `Customer Dimension` WHERE `Customer Store Key`=%d AND `Customer Main Plain Email`=%s ', $raw_data['Customer Store Key'], prepare_mysql($raw_data['Customer Main Plain Email'])
         );
 
         if ($result = $this->db->query($sql)) {
@@ -184,15 +183,15 @@ class Customer extends Subject {
             $keys .= ",`".$key."`";
             if (in_array(
                 $key, array(
-                'Customer First Contacted Date',
-                'Customer Lost Date',
-                'Customer Last Invoiced Dispatched Date',
-                'Customer First Invoiced Order Date',
-                'Customer Last Invoiced Order Date',
-                'Customer Tax Number Validation Date',
-                'Customer Last Order Date',
-                'Customer First Order Date'
-            )
+                        'Customer First Contacted Date',
+                        'Customer Lost Date',
+                        'Customer Last Invoiced Dispatched Date',
+                        'Customer First Invoiced Order Date',
+                        'Customer Last Invoiced Order Date',
+                        'Customer Tax Number Validation Date',
+                        'Customer Last Order Date',
+                        'Customer First Order Date'
+                    )
             )) {
                 $values .= ','.prepare_mysql($value, true);
             } else {
@@ -456,10 +455,10 @@ class Customer extends Subject {
                 break;
             case('Account Balance'):
 
-                if(is_object($arg1)){
-                    $store=$arg1;
-                }else{
-                    $store=get_object('Store',$this->data['Customer Store Key']);
+                if (is_object($arg1)) {
+                    $store = $arg1;
+                } else {
+                    $store = get_object('Store', $this->data['Customer Store Key']);
                 }
 
                 return money(
@@ -626,8 +625,7 @@ class Customer extends Subject {
 
 
         $address_plain      = strip_tags($this->get('Contact Address'));
-        $first_full_search  =
-            $this->data['Customer Name'].' '.$this->data['Customer Name'].' '.$address_plain.' '.$this->data['Customer Main Contact Name'].' '.$this->data['Customer Main Plain Email'];
+        $first_full_search  = $this->data['Customer Name'].' '.$this->data['Customer Name'].' '.$address_plain.' '.$this->data['Customer Main Contact Name'].' '.$this->data['Customer Main Plain Email'];
         $second_full_search = '';
 
 
@@ -667,9 +665,9 @@ class Customer extends Subject {
         $sql = sprintf(
             "INSERT INTO `Search Full Text Dimension`  (`Store Key`,`Subject`,`Subject Key`,`First Search Full Text`,`Second Search Full Text`,`Search Result Name`,`Search Result Description`,`Search Result Image`)
                      VALUES  (%s,%s,%d,%s,%s,%s,%s,%s) ON DUPLICATE KEY
-                     UPDATE `First Search Full Text`=%s ,`Second Search Full Text`=%s ,`Search Result Name`=%s,`Search Result Description`=%s,`Search Result Image`=%s",
-            $this->data['Customer Store Key'], prepare_mysql('Customer'), $this->id, prepare_mysql($first_full_search), prepare_mysql($second_full_search), prepare_mysql($this->data['Customer Name']),
-            prepare_mysql($description), "''", prepare_mysql($first_full_search), prepare_mysql($second_full_search), prepare_mysql($this->data['Customer Name']), prepare_mysql($description), "''"
+                     UPDATE `First Search Full Text`=%s ,`Second Search Full Text`=%s ,`Search Result Name`=%s,`Search Result Description`=%s,`Search Result Image`=%s", $this->data['Customer Store Key'], prepare_mysql('Customer'), $this->id,
+            prepare_mysql($first_full_search), prepare_mysql($second_full_search), prepare_mysql($this->data['Customer Name']), prepare_mysql($description), "''", prepare_mysql($first_full_search), prepare_mysql($second_full_search),
+            prepare_mysql($this->data['Customer Name']), prepare_mysql($description), "''"
         );
         //print $sql;
         $this->db->exec($sql);
@@ -1009,8 +1007,7 @@ class Customer extends Subject {
                 $this->update_tax_number($value);
 
 
-                $sql =
-                    sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN (\'InBasket\',\'InProcess\',\'InWarehouse\',\'PackedDone\')  AND `Order Customer Key`=%d ', $this->id);
+                $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN (\'InBasket\',\'InProcess\',\'InWarehouse\',\'PackedDone\')  AND `Order Customer Key`=%d ', $this->id);
                 if ($result = $this->db->query($sql)) {
                     foreach ($result as $row) {
                         $order = get_object('Order', $row['Order Key']);
@@ -1028,8 +1025,7 @@ class Customer extends Subject {
                 $this->update_tax_number_valid($value);
 
 
-                $sql =
-                    sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN (\'InBasket\',\'InProcess\',\'InWarehouse\',\'PackedDone\')  AND `Order Customer Key`=%d ', $this->id);
+                $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN (\'InBasket\',\'InProcess\',\'InWarehouse\',\'PackedDone\')  AND `Order Customer Key`=%d ', $this->id);
                 if ($result = $this->db->query($sql)) {
                     foreach ($result as $row) {
                         $order = get_object('Order', $row['Order Key']);
@@ -1048,11 +1044,11 @@ class Customer extends Subject {
 
 
                 $this->other_fields_updated = array(
-                    'Customer_Delivery_Address'=>array(
-                        'field'              => 'Customer_Delivery_Address',
+                    'Customer_Delivery_Address' => array(
+                        'field'           => 'Customer_Delivery_Address',
                         'id'              => 'Customer_Delivery_Address',
-                        'edit'            =>'address',
-                        'render'=>($this->get('Customer Delivery Address Link')!='None'?false:true),
+                        'edit'            => 'address',
+                        'render'          => ($this->get('Customer Delivery Address Link') != 'None' ? false : true),
                         'value'           => htmlspecialchars($this->get('Customer Delivery Address')),
                         'formatted_value' => $this->get('Delivery Address'),
                         'label'           => ucfirst($this->get_field_label('Customer Delivery Address')),
@@ -1211,11 +1207,9 @@ class Customer extends Subject {
 
         ) VALUES (%d,%d,
         %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s
-        ) ', $this->get('Store Key'), $this->id, prepare_mysql($fields['Address Recipient'], false), prepare_mysql($fields['Address Organization'], false),
-            prepare_mysql($fields['Address Line 1'], false), prepare_mysql($fields['Address Line 2'], false), prepare_mysql($fields['Address Sorting Code'], false),
-            prepare_mysql($fields['Address Postal Code'], false), prepare_mysql($fields['Address Dependent Locality'], false), prepare_mysql($fields['Address Locality'], false),
-            prepare_mysql($fields['Address Administrative Area'], false), prepare_mysql($fields['Address Country 2 Alpha Code'], false), prepare_mysql($checksum), prepare_mysql($xhtml_address),
-            prepare_mysql($postal_label_formatter->format($address))
+        ) ', $this->get('Store Key'), $this->id, prepare_mysql($fields['Address Recipient'], false), prepare_mysql($fields['Address Organization'], false), prepare_mysql($fields['Address Line 1'], false), prepare_mysql($fields['Address Line 2'], false),
+            prepare_mysql($fields['Address Sorting Code'], false), prepare_mysql($fields['Address Postal Code'], false), prepare_mysql($fields['Address Dependent Locality'], false), prepare_mysql($fields['Address Locality'], false),
+            prepare_mysql($fields['Address Administrative Area'], false), prepare_mysql($fields['Address Country 2 Alpha Code'], false), prepare_mysql($checksum), prepare_mysql($xhtml_address), prepare_mysql($postal_label_formatter->format($address))
         );
 
         $prep = $this->db->prepare($sql);
@@ -1364,6 +1358,94 @@ class Customer extends Subject {
 
     }
 
+    function get_field_label($field) {
+
+
+        switch ($field) {
+
+            case 'Customer Delivery Address Link':
+                $label = _('delivery address link');
+                break;
+            case 'Customer Billing Address Link':
+                $label = _('invoice address link');
+                break;
+            case 'Customer Registration Number':
+                $label = _('registration number');
+                break;
+            case 'Customer Tax Number':
+                $label = _('tax number');
+                break;
+            case 'Customer Tax Number Valid':
+                $label = _('tax number validity');
+                break;
+            case 'Customer Company Name':
+                $label = _('company name');
+                break;
+            case 'Customer Main Contact Name':
+                $label = _('contact name');
+                break;
+            case 'Customer Main Plain Email':
+                $label = _('email');
+                break;
+            case 'Customer Main Email':
+                $label = _('main email');
+                break;
+            case 'Customer Other Email':
+                $label = _('other email');
+                break;
+            case 'Customer Main Plain Telephone':
+            case 'Customer Main XHTML Telephone':
+                $label = _('telephone');
+                break;
+            case 'Customer Main Plain Mobile':
+            case 'Customer Main XHTML Mobile':
+                $label = _('mobile');
+                break;
+            case 'Customer Main Plain FAX':
+            case 'Customer Main XHTML Fax':
+                $label = _('fax');
+                break;
+            case 'Customer Other Telephone':
+                $label = _('other telephone');
+                break;
+            case 'Customer Preferred Contact Number':
+                $label = _('main contact number');
+                break;
+            case 'Customer Fiscal Name':
+                $label = _('fiscal name');
+                break;
+
+            case 'Customer Contact Address':
+                $label = _('contact address');
+                break;
+
+            case 'Customer Invoice Address':
+                $label = _('invoice address');
+                break;
+            case 'Customer Delivery Address':
+                $label = _('delivery address');
+                break;
+            case 'Customer Other Delivery Address':
+                $label = _('other delivery address');
+                break;
+            case 'Customer Send Email Marketing':
+                $label = _('subscription to email marketing');
+                break;
+            case 'Customer Send Postal Marketing':
+                $label = _('subscription postal marketing');
+                break;
+            case 'Customer Send Newsletter':
+                $label = _('subscription to newsletter');
+                break;
+            default:
+                $label = $field;
+
+        }
+
+        return $label;
+
+    }
+
     function update_other_delivery_address($customer_delivery_address_key, $field, $fields, $options = '') {
 
 
@@ -1392,8 +1474,7 @@ class Customer extends Subject {
 
 
             $sql = sprintf(
-                'UPDATE `Customer Other Delivery Address Dimension` SET `%s`=%s WHERE `Customer Other Delivery Address Key`=%d ', addslashes('Customer Other Delivery '.$field),
-                prepare_mysql($value, true), $customer_delivery_address_key
+                'UPDATE `Customer Other Delivery Address Dimension` SET `%s`=%s WHERE `Customer Other Delivery Address Key`=%d ', addslashes('Customer Other Delivery '.$field), prepare_mysql($value, true), $customer_delivery_address_key
             );
 
             $update_op = $this->db->prepare($sql);
@@ -1434,8 +1515,7 @@ class Customer extends Subject {
             $new_checksum = md5(json_encode($address_fields));
 
             $sql = sprintf(
-                'UPDATE `Customer Other Delivery Address Dimension` SET `Customer Other Delivery Address Checksum`=%s WHERE `Customer Other Delivery Address Key`=%d ',
-                prepare_mysql($new_checksum, true), $customer_delivery_address_key
+                'UPDATE `Customer Other Delivery Address Dimension` SET `Customer Other Delivery Address Checksum`=%s WHERE `Customer Other Delivery Address Key`=%d ', prepare_mysql($new_checksum, true), $customer_delivery_address_key
             );
             $this->db->exec($sql);
 
@@ -1449,15 +1529,15 @@ class Customer extends Subject {
             );
 
 
-            $address = $address->withFamilyName($address_fields['Address Recipient'])->withOrganization($address_fields['Address Organization'])->withAddressLine1($address_fields['Address Line 1'])
-                ->withAddressLine2($address_fields['Address Line 2'])->withSortingCode($address_fields['Address Sorting Code'])->withPostalCode($address_fields['Address Postal Code'])
-                ->withDependentLocality(
-                    $address_fields['Address Dependent Locality']
-                )->withLocality($address_fields['Address Locality'])->withAdministrativeArea(
-                    $address_fields['Address Administrative Area']
-                )->withCountryCode(
-                    $address_fields['Address Country 2 Alpha Code']
-                );
+            $address = $address->withFamilyName($address_fields['Address Recipient'])->withOrganization($address_fields['Address Organization'])->withAddressLine1($address_fields['Address Line 1'])->withAddressLine2($address_fields['Address Line 2'])->withSortingCode(
+                $address_fields['Address Sorting Code']
+            )->withPostalCode($address_fields['Address Postal Code'])->withDependentLocality(
+                $address_fields['Address Dependent Locality']
+            )->withLocality($address_fields['Address Locality'])->withAdministrativeArea(
+                $address_fields['Address Administrative Area']
+            )->withCountryCode(
+                $address_fields['Address Country 2 Alpha Code']
+            );
 
             $xhtml_address = $formatter->format($address);
             $xhtml_address = preg_replace('/<br>\s/', "\n", $xhtml_address);
@@ -1482,14 +1562,12 @@ class Customer extends Subject {
 
 
             $sql = sprintf(
-                'UPDATE `Customer Other Delivery Address Dimension` SET `Customer Other Delivery Address Formatted`=%s WHERE `Customer Other Delivery Address Key`=%d ',
-                prepare_mysql($xhtml_address, true), $customer_delivery_address_key
+                'UPDATE `Customer Other Delivery Address Dimension` SET `Customer Other Delivery Address Formatted`=%s WHERE `Customer Other Delivery Address Key`=%d ', prepare_mysql($xhtml_address, true), $customer_delivery_address_key
             );
             $this->db->exec($sql);
 
             $sql = sprintf(
-                'UPDATE `Customer Other Delivery Address Dimension` SET `Customer Other Delivery Address Postal Label`=%s WHERE `Customer Other Delivery Address Key`=%d ',
-                prepare_mysql($postal_label_formatter->format($address), true), $customer_delivery_address_key
+                'UPDATE `Customer Other Delivery Address Dimension` SET `Customer Other Delivery Address Postal Label`=%s WHERE `Customer Other Delivery Address Key`=%d ', prepare_mysql($postal_label_formatter->format($address), true), $customer_delivery_address_key
             );
             $this->db->exec($sql);
 
@@ -1643,8 +1721,8 @@ class Customer extends Subject {
 
                     if ($this->editor['Author Alias'] != '' and $this->editor['Author Key']) {
                         $details = sprintf(
-                            '<a href="staff.php?id=%d&took_order">%s</a> took an order for %s (<a href="customer.php?id=%d">%s</a>) on %s', $this->editor['Author Key'], $this->editor['Author Alias'],
-                            $this->get('Customer Name'), $this->id, $this->get('Formatted ID'), strftime(
+                            '<a href="staff.php?id=%d&took_order">%s</a> took an order for %s (<a href="customer.php?id=%d">%s</a>) on %s', $this->editor['Author Key'], $this->editor['Author Alias'], $this->get('Customer Name'), $this->id, $this->get('Formatted ID'),
+                            strftime(
                                 "%e %b %Y %H:%M", strtotime($order->data ['Order Date'])
                             )
                         );
@@ -1720,8 +1798,8 @@ class Customer extends Subject {
                 );
                 if ($this->editor['Author Alias'] != '' and $this->editor['Author Key']) {
                     $details = sprintf(
-                        '<a href="staff.php?id=%d&took_order">%s</a> suspended %s (<a href="customer.php?id=%d">%s</a>) order <a href="order.php?id=%d">%s</a>  on %s', $this->editor['Author Key'],
-                        $this->editor['Author Alias'], $this->get('Customer Name'), $this->id, $this->get('Formatted ID'), $order->data ['Order Key'], $order->data ['Order Public ID'], $tz_date
+                        '<a href="staff.php?id=%d&took_order">%s</a> suspended %s (<a href="customer.php?id=%d">%s</a>) order <a href="order.php?id=%d">%s</a>  on %s', $this->editor['Author Key'], $this->editor['Author Alias'], $this->get('Customer Name'), $this->id,
+                        $this->get('Formatted ID'), $order->data ['Order Key'], $order->data ['Order Public ID'], $tz_date
                     );
                 } else {
                     $details = sprintf(
@@ -1768,8 +1846,7 @@ class Customer extends Subject {
 
         }
         $sql = sprintf(
-            "UPDATE `History Dimension` SET `History Abstract`=%s WHERE `Subject`='Customer' AND `Subject Key`=%d  AND `Direct Object`='Order' AND `Direct Object Key`=%d AND `Metadata`='Process'",
-            prepare_mysql($note_created), $this->id, $order->id
+            "UPDATE `History Dimension` SET `History Abstract`=%s WHERE `Subject`='Customer' AND `Subject Key`=%d  AND `Direct Object`='Order' AND `Direct Object Key`=%d AND `Metadata`='Process'", prepare_mysql($note_created), $this->id, $order->id
         );
         $this->db->exec($sql);
 
@@ -1906,10 +1983,9 @@ class Customer extends Subject {
         switch ($lang) {
             default :
                 $note = sprintf(
-                    'Order <a href="order.php?id=%d">%s</a> (%s) %s %s', $order->data ['Order Key'], $order->data ['Order Public ID'], $order->data['Order Current XHTML Payment State'],
-                    $order->get('Weight'), money(
-                        $order->data['Order Invoiced Balance Total Amount'], $order->data['Order Currency']
-                    )
+                    'Order <a href="order.php?id=%d">%s</a> (%s) %s %s', $order->data ['Order Key'], $order->data ['Order Public ID'], $order->data['Order Current XHTML Payment State'], $order->get('Weight'), money(
+                                                                           $order->data['Order Invoiced Balance Total Amount'], $order->data['Order Currency']
+                                                                       )
 
                 );
 
@@ -1945,8 +2021,8 @@ class Customer extends Subject {
 
                     if ($this->editor['Author Alias'] != '' and $this->editor['Author Key']) {
                         $details = sprintf(
-                            '<a href="staff.php?id=%d&took_order">%s</a> took an order for %s (<a href="customer.php?id=%d">%s</a>) on %s', $this->editor['Author Key'], $this->editor['Author Alias'],
-                            $this->get('Customer Name'), $this->id, $this->get('Formatted ID'), strftime(
+                            '<a href="staff.php?id=%d&took_order">%s</a> took an order for %s (<a href="customer.php?id=%d">%s</a>) on %s', $this->editor['Author Key'], $this->editor['Author Alias'], $this->get('Customer Name'), $this->id, $this->get('Formatted ID'),
+                            strftime(
                                 "%e %b %Y %H:%M", strtotime($order->data ['Order Date'])
                             )
                         );
@@ -1994,64 +2070,41 @@ class Customer extends Subject {
     public function update_orders() {
 
 
-        setlocale(LC_ALL, 'en_GB');
-        $sigma_factor = 3.2906;//99.9% value assuming normal distribution
 
-        $this->data['Customer Orders']                    = 0;
-        $this->data['Customer Orders Cancelled']          = 0;
-        $this->data['Customer Orders Invoiced']           = 0;
-        $this->data['Customer First Order Date']          = '';
-        $this->data['Customer Last Order Date']           = '';
-        $this->data['Customer First Invoiced Order Date'] = '';
-        $this->data['Customer Last Invoiced Order Date']  = '';
+        $customer_orders            = 0;
+        $orders_cancelled           = 0;
+        $orders_invoiced            = 0;
+        $orders_invoiced_first_date = '';
+        $orders_invoiced_last_date  = '';
+        $order_interval='';
+        $order_interval_std='';
 
-        $this->data['Customer Order Interval']     = '';
-        $this->data['Customer Order Interval STD'] = '';
+        $customer_with_orders='No';
+        $first_order ='';
+        $last_order  ='';
 
-        $this->data['Customer Net Balance']  = 0;
-        $this->data['Customer Net Refunds']  = 0;
-        $this->data['Customer Net Payments'] = 0;
-        $this->data['Customer Tax Balance']  = 0;
-        $this->data['Customer Tax Refunds']  = 0;
-        $this->data['Customer Tax Payments'] = 0;
-
-        $this->data['Customer Total Balance']  = 0;
-        $this->data['Customer Total Refunds']  = 0;
-        $this->data['Customer Total Payments'] = 0;
-
-        $this->data['Customer Profit']      = 0;
-        $this->data['Customer With Orders'] = 'No';
+        $payments=0;
+        $invoiced_amount=0;
+        $invoiced_net_amount=0;
 
 
-        $sql = sprintf(
-            "SELECT count(*) AS num FROM `Order Dimension` WHERE `Order Customer Key`=%d AND `Order State`='Cancelled' ", $this->id
-        );
 
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $this->data['Customer Orders Cancelled'] = $row['num'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
 
 
         $sql = sprintf(
             "SELECT count(*) AS num ,
-		min(`Order Date`) AS first_order_date ,
-		max(`Order Date`) AS last_order_date
+		min(`Invoice Date`) AS first_order_date ,
+		max(`Invoice Date`) AS last_order_date
 
-		FROM `Order Dimension` WHERE `Order Customer Key`=%d AND `Order Invoiced`='Yes'  ", $this->id
+		FROM `Invoice Dimension` WHERE `Invoice Type`='Invoice'  and `Invoice Customer Key`=%d  ", $this->id
         );
 
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-                $this->data['Customer Orders Invoiced']           = $row['num'];
-                $this->data['Customer First Invoiced Order Date'] = $row['first_order_date'];
-                $this->data['Customer Last Invoiced Order Date']  = $row['last_order_date'];
+                $orders_invoiced            = $row['num'];
+                $orders_invoiced_first_date = $row['first_order_date'];
+                $orders_invoiced_last_date  = $row['last_order_date'];
             }
         } else {
             print_r($error_info = $this->db->errorInfo());
@@ -2060,9 +2113,47 @@ class Customer extends Subject {
         }
 
 
-        if ($this->data['Customer Orders Invoiced'] > 1) {
-            $sql        = "SELECT `Order Date` AS date FROM `Order Dimension` WHERE `Order Invoiced`='Yes'  AND `Order Customer Key`=".$this->id." ORDER BY `Order Date`";
+        $sql = sprintf(
+            "SELECT sum(`Invoice Total Amount`) AS total ,sum(`Invoice Total Net Amount`) AS net FROM `Invoice Dimension` WHERE   `Invoice Customer Key`=%d  ", $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $invoiced_amount            = $row['total'];
+                $invoiced_net_amount = $row['net'];
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        $sql = sprintf(
+            "SELECT sum(`Payment Transaction Amount`) AS payments FROM `Payment Dimension` WHERE   `Payment Customer Key`=%d  and `Payment Transaction Status`='Completed' ", $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $payments            = $row['payments'];
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+
+
+        if ( $orders_invoiced> 1) {
+            $sql        = "SELECT `Invoice Date` AS date FROM `Invoice Dimension` WHERE `Invoice Type`='Invoice'  and `Invoice Customer Key`=".$this->id." ORDER BY `Invoice Date`";
             $last_order = false;
+            $last_date  = false;
             $intervals  = array();
 
 
@@ -2083,43 +2174,18 @@ class Customer extends Subject {
             }
 
 
-            $this->data['Customer Order Interval']     = average($intervals);
-            $this->data['Customer Order Interval STD'] = deviation($intervals);
 
+            $order_interval=average($intervals);
+            $order_interval_std=deviation($intervals);
 
         }
 
 
-        //get payments data directly from payment
 
-        $this->data['Customer Last Invoiced Dispatched Date'] = '';
-
-        $sql = sprintf(
-            "SELECT max(`Order Dispatched Date`) AS last_order_dispatched_date FROM `Order Dimension` WHERE `Order Customer Key`=%d  AND `Order State`='Dispatched' AND `Order Invoiced`='Yes'",
-            $this->id
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $this->data['Customer Last Invoiced Dispatched Date'] = $row['last_order_dispatched_date'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
 
 
         $sql = sprintf(
             "SELECT
-		sum(`Order Invoiced Profit Amount`) AS profit,
-		sum(`Order Net Refund Amount`+`Order Net Credited Amount`) AS net_refunds,
-		sum(`Order Invoiced Outstanding Balance Net Amount`) AS net_outstanding,
-		sum(`Order Invoiced Balance Net Amount`) AS net_balance,
-		sum(`Order Tax Refund Amount`+`Order Tax Credited Amount`) AS tax_refunds,
-		sum(`Order Invoiced Outstanding Balance Tax Amount`) AS tax_outstanding,
-		sum(`Order Invoiced Balance Tax Amount`) AS tax_balance,
 		min(`Order Date`) AS first_order_date ,
 		max(`Order Date`) AS last_order_date,
 		count(*) AS orders
@@ -2130,25 +2196,13 @@ class Customer extends Subject {
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
 
-                $this->data['Customer Orders'] = $row['orders'];
-
-                $this->data['Customer Net Balance']             = $row['net_balance'];
-                $this->data['Customer Net Refunds']             = $row['net_refunds'];
-                $this->data['Customer Net Payments']            = $row['net_balance'] - $row['net_outstanding'];
-                $this->data['Customer Outstanding Net Balance'] = $row['net_outstanding'];
-
-                $this->data['Customer Tax Balance']             = $row['tax_balance'];
-                $this->data['Customer Tax Refunds']             = $row['tax_refunds'];
-                $this->data['Customer Tax Payments']            = $row['tax_balance'] - $row['tax_outstanding'];
-                $this->data['Customer Outstanding Tax Balance'] = $row['tax_outstanding'];
-
-                $this->data['Customer Profit'] = $row['profit'];
+                $customer_orders = $row['orders'];
 
 
-                if ($this->data['Customer Orders'] > 0) {
-                    $this->data['Customer First Order Date'] = $row['first_order_date'];
-                    $this->data['Customer Last Order Date']  = $row['last_order_date'];
-                    $this->data['Customer With Orders']      = 'Yes';
+                if ($customer_orders > 0) {
+                    $first_order = $row['first_order_date'];
+                    $last_order  = $row['last_order_date'];
+                    $customer_with_orders = 'Yes';
                 }
             }
         } else {
@@ -2158,22 +2212,203 @@ class Customer extends Subject {
         }
 
 
-        $sql = sprintf(
-            "UPDATE `Customer Dimension` SET `Customer Last Invoiced Dispatched Date`=%s,`Customer Net Balance`=%.2f,`Customer Orders`=%d,`Customer Orders Cancelled`=%d,`Customer Orders Invoiced`=%d,`Customer First Order Date`=%s,`Customer Last Order Date`=%s,`Customer Order Interval`=%s,`Customer Order Interval STD`=%s,`Customer Net Refunds`=%.2f,`Customer Net Payments`=%.2f,`Customer Outstanding Net Balance`=%.2f,`Customer Tax Balance`=%.2f,`Customer Tax Refunds`=%.2f,`Customer Tax Payments`=%.2f,`Customer Outstanding Tax Balance`=%.2f,`Customer Profit`=%.2f ,`Customer With Orders`=%s  WHERE `Customer Key`=%d",
-            prepare_mysql($this->data['Customer Last Invoiced Dispatched Date']), $this->data['Customer Net Balance'], $this->data['Customer Orders'], $this->data['Customer Orders Cancelled'],
-            $this->data['Customer Orders Invoiced'], prepare_mysql($this->data['Customer First Order Date']), prepare_mysql($this->data['Customer Last Order Date']),
-            prepare_mysql($this->data['Customer Order Interval']), prepare_mysql($this->data['Customer Order Interval STD']), $this->data['Customer Net Refunds'], $this->data['Customer Net Payments'],
-            $this->data['Customer Outstanding Net Balance']
+        $update_data = array(
+            'Customer Orders'           => $customer_orders,
+            'Customer Orders Cancelled' => $orders_cancelled,
+            'Customer Orders Invoiced'  => $orders_invoiced,
+            'Customer First Invoiced Order Date' => $orders_invoiced_first_date,
+            'Customer Last Invoiced Order Date'  => $orders_invoiced_last_date,
+            'Customer First Order Date' => $first_order,
+            'Customer Last Order Date'  => $last_order,
+            'Customer Order Interval'=>$order_interval,
+            'Customer Order Interval STD'=>$order_interval_std,
+            'Customer With Orders'=>$customer_with_orders,
+            'Customer Payments Amount'=>$payments,
+            'Customer Sales Amount'=>$invoiced_amount,
+            'Customer Total Sales Amount'=>$invoiced_net_amount,
 
-            , $this->data['Customer Tax Balance'], $this->data['Customer Tax Refunds'], $this->data['Customer Tax Payments'], $this->data['Customer Outstanding Tax Balance']
-
-            , $this->data['Customer Profit'], prepare_mysql($this->data['Customer With Orders'])
-
-
-            , $this->id
         );
 
-        $this->db->exec($sql);
+
+
+
+
+
+
+
+        $this->fast_update($update_data);
+
+
+
+
+    }
+
+
+    public function update_invoices() {
+
+
+        $orders_invoiced            = 0;
+        $orders_invoiced_first_date = '';
+        $orders_invoiced_last_date  = '';
+        $order_interval='';
+        $order_interval_std='';
+
+
+
+        $invoiced_amount=0;
+        $invoiced_net_amount=0;
+
+
+
+
+
+
+
+        $sql = sprintf(
+            "SELECT count(*) AS num ,
+		min(`Invoice Date`) AS first_order_date ,
+		max(`Invoice Date`) AS last_order_date
+
+		FROM `Invoice Dimension` WHERE `Invoice Type`='Invoice'  and `Invoice Customer Key`=%d  ", $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $orders_invoiced            = $row['num'];
+                $orders_invoiced_first_date = $row['first_order_date'];
+                $orders_invoiced_last_date  = $row['last_order_date'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        $sql = sprintf(
+            "SELECT sum(`Invoice Total Amount`) AS total ,sum(`Invoice Total Net Amount`) AS net FROM `Invoice Dimension` WHERE   `Invoice Customer Key`=%d  ", $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $invoiced_amount            = $row['total'];
+                $invoiced_net_amount = $row['net'];
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+
+
+
+
+        if ( $orders_invoiced> 1) {
+            $sql        = "SELECT `Invoice Date` AS date FROM `Invoice Dimension` WHERE `Invoice Type`='Invoice'  and `Invoice Customer Key`=".$this->id." ORDER BY `Invoice Date`";
+            $last_order = false;
+            $last_date  = false;
+            $intervals  = array();
+
+
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
+                    $this_date = gmdate('U', strtotime($row['date']));
+                    if ($last_order) {
+                        $intervals[] = ($this_date - $last_date);
+                    }
+
+                    $last_date  = $this_date;
+                    $last_order = true;
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+
+
+
+            $order_interval=average($intervals);
+            $order_interval_std=deviation($intervals);
+
+        }
+
+
+
+
+
+
+
+        $update_data = array(
+            'Customer Orders Invoiced'  => $orders_invoiced,
+            'Customer First Invoiced Order Date' => $orders_invoiced_first_date,
+            'Customer Last Invoiced Order Date'  => $orders_invoiced_last_date,
+            'Customer Order Interval'=>$order_interval,
+            'Customer Order Interval STD'=>$order_interval_std,
+            'Customer Invoiced Amount'=>$invoiced_amount,
+            'Customer Invoiced Net Amount'=>$invoiced_net_amount,
+        );
+
+
+
+        $this->fast_update($update_data);
+
+
+
+
+    }
+
+    public function update_payments() {
+
+
+
+
+        $payments=0;
+
+
+
+
+
+        $sql = sprintf(
+            "SELECT sum(`Payment Transaction Amount`) AS payments FROM `Payment Dimension` WHERE   `Payment Customer Key`=%d  and `Payment Transaction Status`='Completed' ", $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $payments            = $row['payments'];
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+
+
+        $update_data = array(
+            'Customer Payments Amount'=>$payments,
+
+
+        );
+
+
+
+
+
+
+
+
+        $this->fast_update($update_data);
+
+
 
 
     }
@@ -2248,8 +2483,8 @@ class Customer extends Subject {
         }
 
         $sql = sprintf(
-            "UPDATE `Customer Dimension` SET `Customer Active`=%s,`Customer Type by Activity`=%s , `Customer Lost Date`=%s WHERE `Customer Key`=%d", prepare_mysql($this->data['Customer Active']),
-            prepare_mysql($this->data['Customer Type by Activity']), prepare_mysql($this->data['Customer Lost Date']), $this->id
+            "UPDATE `Customer Dimension` SET `Customer Active`=%s,`Customer Type by Activity`=%s , `Customer Lost Date`=%s WHERE `Customer Key`=%d", prepare_mysql($this->data['Customer Active']), prepare_mysql($this->data['Customer Type by Activity']),
+            prepare_mysql($this->data['Customer Lost Date']), $this->id
         );
 
         $this->db->exec($sql);
@@ -2362,8 +2597,8 @@ class Customer extends Subject {
 
         $sql = sprintf(
             "INSERT INTO `Customer Deleted Dimension` (`Customer Key`,`Customer Store Key`,`Customer Deleted Name`,`Customer Deleted Contact Name`,`Customer Deleted Email`,`Customer Deleted Metadata`,`Customer Deleted Date`,`Customer Deleted Note`) VALUE (%d,%d,%s,%s,%s,%s,%s,%s) ",
-            $this->id, $this->data['Customer Store Key'], prepare_mysql($this->data['Customer Name']), prepare_mysql($this->data['Customer Main Contact Name']),
-            prepare_mysql($this->data['Customer Main Plain Email']), prepare_mysql(gzcompress(json_encode($this->data), 9)), prepare_mysql($this->editor['Date']), prepare_mysql($note, false)
+            $this->id, $this->data['Customer Store Key'], prepare_mysql($this->data['Customer Name']), prepare_mysql($this->data['Customer Main Contact Name']), prepare_mysql($this->data['Customer Main Plain Email']),
+            prepare_mysql(gzcompress(json_encode($this->data), 9)), prepare_mysql($this->editor['Date']), prepare_mysql($note, false)
         );
 
 
@@ -2418,8 +2653,7 @@ class Customer extends Subject {
         $requests      = 0;
 
         $sql = sprintf(
-            "SELECT sum(`User Login Count`) AS logins, sum(`User Failed Login Count`) AS failed_logins, sum(`User Requests Count`) AS requests  FROM `User Dimension` WHERE `User Type`='Customer' AND `User Parent Key`=%d",
-            $this->id
+            "SELECT sum(`User Login Count`) AS logins, sum(`User Failed Login Count`) AS failed_logins, sum(`User Requests Count`) AS requests  FROM `User Dimension` WHERE `User Type`='Customer' AND `User Parent Key`=%d", $this->id
         );
 
 
@@ -2436,8 +2670,7 @@ class Customer extends Subject {
 
 
         $sql = sprintf(
-            "UPDATE `Customer Dimension` SET `Customer Number Web Logins`=%d , `Customer Number Web Failed Logins`=%d, `Customer Number Web Requests`=%d WHERE `Customer Key`=%d", $logins,
-            $failed_logins, $requests, $this->id
+            "UPDATE `Customer Dimension` SET `Customer Number Web Logins`=%d , `Customer Number Web Failed Logins`=%d, `Customer Number Web Requests`=%d WHERE `Customer Key`=%d", $logins, $failed_logins, $requests, $this->id
         );
         //print "$sql\n";
         $this->db->exec($sql);
@@ -2518,8 +2751,7 @@ class Customer extends Subject {
 
 
         $sql = sprintf(
-            "SELECT count(*) AS customers FROM `Customer Dimension` USE INDEX (`Customer Orders Invoiced`)  WHERE `Customer Store Key`=%d AND `Customer Orders Invoiced`<%d",
-            $this->data['Customer Store Key'], $this->data['Customer Orders Invoiced']
+            "SELECT count(*) AS customers FROM `Customer Dimension` USE INDEX (`Customer Orders Invoiced`)  WHERE `Customer Store Key`=%d AND `Customer Orders Invoiced`<%d", $this->data['Customer Store Key'], $this->data['Customer Orders Invoiced']
 
         );
 
@@ -2570,8 +2802,7 @@ class Customer extends Subject {
 
 
         $sql = sprintf(
-            "SELECT count(*) AS customers FROM `Customer Dimension` USE INDEX (`Customer Profit`) WHERE `Customer Store Key`=%d AND `Customer Profit`<%f", $this->data['Customer Store Key'],
-            $this->data['Customer Profit']
+            "SELECT count(*) AS customers FROM `Customer Dimension` USE INDEX (`Customer Profit`) WHERE `Customer Store Key`=%d AND `Customer Profit`<%f", $this->data['Customer Store Key'], $this->data['Customer Profit']
         );
 
         if ($result = $this->db->query($sql)) {
@@ -2592,8 +2823,7 @@ class Customer extends Subject {
 
         $sql = sprintf(
             "UPDATE `Customer Dimension` SET `Customer Invoices Top Percentage`=%f ,`Customer Orders Top Percentage`=%f ,`Customer Balance Top Percentage`=%f ,`Customer Profits Top Percentage`=%f  WHERE `Customer Key`=%d",
-            $this->data['Customer Invoices Top Percentage'], $this->data['Customer Orders Top Percentage'], $this->data['Customer Balance Top Percentage'],
-            $this->data['Customer Profits Top Percentage'],
+            $this->data['Customer Invoices Top Percentage'], $this->data['Customer Orders Top Percentage'], $this->data['Customer Balance Top Percentage'], $this->data['Customer Profits Top Percentage'],
 
             $this->id
         );
@@ -2628,7 +2858,6 @@ class Customer extends Subject {
         return $pending_amount;
     }
 
-
     function get_number_saved_credit_cards($delivery_address_checksum, $invoice_address_checksum) {
 
         $number_saved_credit_cards = 0;
@@ -2650,7 +2879,6 @@ class Customer extends Subject {
 
         return $number_saved_credit_cards;
     }
-
 
     function get_saved_credit_cards($delivery_address_checksum, $invoice_address_checksum) {
 
@@ -2799,7 +3027,6 @@ class Customer extends Subject {
 
     }
 
-
     function get_correlation_info() {
         $correlation_msg = '';
         $msg             = '';
@@ -2848,96 +3075,6 @@ class Customer extends Subject {
 
     }
 
-
-    function get_field_label($field) {
-
-
-        switch ($field) {
-
-            case 'Customer Delivery Address Link':
-                $label = _('delivery address link');
-                break;
-            case 'Customer Billing Address Link':
-                $label = _('invoice address link');
-                break;
-            case 'Customer Registration Number':
-                $label = _('registration number');
-                break;
-            case 'Customer Tax Number':
-                $label = _('tax number');
-                break;
-            case 'Customer Tax Number Valid':
-                $label = _('tax number validity');
-                break;
-            case 'Customer Company Name':
-                $label = _('company name');
-                break;
-            case 'Customer Main Contact Name':
-                $label = _('contact name');
-                break;
-            case 'Customer Main Plain Email':
-                $label = _('email');
-                break;
-            case 'Customer Main Email':
-                $label = _('main email');
-                break;
-            case 'Customer Other Email':
-                $label = _('other email');
-                break;
-            case 'Customer Main Plain Telephone':
-            case 'Customer Main XHTML Telephone':
-                $label = _('telephone');
-                break;
-            case 'Customer Main Plain Mobile':
-            case 'Customer Main XHTML Mobile':
-                $label = _('mobile');
-                break;
-            case 'Customer Main Plain FAX':
-            case 'Customer Main XHTML Fax':
-                $label = _('fax');
-                break;
-            case 'Customer Other Telephone':
-                $label = _('other telephone');
-                break;
-            case 'Customer Preferred Contact Number':
-                $label = _('main contact number');
-                break;
-            case 'Customer Fiscal Name':
-                $label = _('fiscal name');
-                break;
-
-            case 'Customer Contact Address':
-                $label = _('contact address');
-                break;
-
-            case 'Customer Invoice Address':
-                $label = _('invoice address');
-                break;
-            case 'Customer Delivery Address':
-                $label = _('delivery address');
-                break;
-            case 'Customer Other Delivery Address':
-                $label = _('other delivery address');
-                break;
-            case 'Customer Send Email Marketing':
-                $label = _('subscription to email marketing');
-                break;
-            case 'Customer Send Postal Marketing':
-                $label = _('subscription postal marketing');
-                break;
-            case 'Customer Send Newsletter':
-                $label = _('subscription to newsletter');
-                break;
-            default:
-                $label = $field;
-
-        }
-
-        return $label;
-
-    }
-
-
     function update_product_bridge() {
 
 
@@ -2948,8 +3085,7 @@ class Customer extends Subject {
 
 
         $sql = sprintf(
-            "SELECT `Product ID`, count(DISTINCT `Invoice Key`) invoices ,max(`Invoice Date`) AS date FROM `Order Transaction Fact`  WHERE     `Invoice Key`>0 AND (`Delivery Note Quantity`-`Refund Quantity`)>0  AND  `Customer Key`=%d  GROUP BY `Product ID` ",
-            $this->id
+            "SELECT `Product ID`, count(DISTINCT `Invoice Key`) invoices ,max(`Invoice Date`) AS date FROM `Order Transaction Fact`  WHERE     `Invoice Key`>0 AND (`Delivery Note Quantity`-`Refund Quantity`)>0  AND  `Customer Key`=%d  GROUP BY `Product ID` ", $this->id
         );
 
 
@@ -2979,8 +3115,8 @@ class Customer extends Subject {
 
 
                 $sql = sprintf(
-                    "INSERT INTO `Customer Product Bridge` (`Customer Product Customer Key`,`Customer Product Product ID`,`Customer Product Invoices`,`Customer Product Last Invoice Date`,`Customer Product Penultimate Invoice Date`) VALUES (%d,%d,%s,%s,%s) ",
-                    $this->id, $row['Product ID'], $row['invoices'], prepare_mysql($row['date']), prepare_mysql($penultimate_date)
+                    "INSERT INTO `Customer Product Bridge` (`Customer Product Customer Key`,`Customer Product Product ID`,`Customer Product Invoices`,`Customer Product Last Invoice Date`,`Customer Product Penultimate Invoice Date`) VALUES (%d,%d,%s,%s,%s) ", $this->id,
+                    $row['Product ID'], $row['invoices'], prepare_mysql($row['date']), prepare_mysql($penultimate_date)
 
                 );
 
@@ -3038,8 +3174,8 @@ class Customer extends Subject {
 
 
                 $sql = sprintf(
-                    "INSERT INTO `Customer Part Bridge` (`Customer Part Customer Key`,`Customer Part Part SKU`,`Customer Part Delivery Notes`,`Customer Part Last Delivery Note Date`,`Customer Part Penultimate Delivery Note Date`) VALUES (%d,%d,%s,%s,%s) ",
-                    $this->id, $row['Part SKU'], $row['delivery_notes'], prepare_mysql($row['date']), prepare_mysql($penultimate_date)
+                    "INSERT INTO `Customer Part Bridge` (`Customer Part Customer Key`,`Customer Part Part SKU`,`Customer Part Delivery Notes`,`Customer Part Last Delivery Note Date`,`Customer Part Penultimate Delivery Note Date`) VALUES (%d,%d,%s,%s,%s) ", $this->id,
+                    $row['Part SKU'], $row['delivery_notes'], prepare_mysql($row['date']), prepare_mysql($penultimate_date)
 
                 );
 
@@ -3123,22 +3259,22 @@ class Customer extends Subject {
     }
 
 
-    function update_account_balance(){
-        $balance=0;
-        $sql=sprintf('select sum(`Credit Transaction Amount`) as balance from `Credit Transaction Fact`  where `Credit Transaction Customer Key`=%d  ',
-            $this->id
-            );
-        if ($result=$this->db->query($sql)) {
+    function update_account_balance() {
+        $balance = 0;
+        $sql     = sprintf(
+            'SELECT sum(`Credit Transaction Amount`) AS balance FROM `Credit Transaction Fact`  WHERE `Credit Transaction Customer Key`=%d  ', $this->id
+        );
+        if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-                $balance=$row['balance'];
-        	}
-        }else {
-        	print_r($error_info=$this->db->errorInfo());
-        	print "$sql\n";
-        	exit;
+                $balance = $row['balance'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
 
-        $this->fast_update(array('Customer Account Balance'=>$balance));
+        $this->fast_update(array('Customer Account Balance' => $balance));
 
     }
 

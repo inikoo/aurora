@@ -371,6 +371,9 @@ class Invoice extends DB_Table {
             //$this->distribute_insurance_over_the_otf();
 
 
+            $customer = get_object('Customer', $this-get('Invoice Customer Key'));
+            $customer->update_invoices();
+
             return $this;
 
         } else {
@@ -1827,6 +1830,10 @@ class Invoice extends DB_Table {
             'invoice_category_key' => $invoice_category_key
         ), $account->get('Account Code')
         );
+
+
+        $customer = get_object('Customer', $customer_key);
+        $customer->update_invoices();
 
 
         $this->deleted = true;

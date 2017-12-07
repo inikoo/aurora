@@ -313,7 +313,7 @@ if ($order == 'name') {
 } elseif ($order == 'last_order') {
     $order = '`Customer Last Order Date`';
 } elseif ($order == 'last_invoice') {
-    $order = '`Customer Last Invoiced Order Date';
+    $order = '`Customer Last Invoiced Order Date`';
 } elseif ($order == 'contact_name') {
     $order = '`Customer Main Contact Name`';
 } elseif ($order == 'company_name') {
@@ -339,12 +339,13 @@ elseif ($order == 'ship_town') {
     $order = '`Customer Main Delivery Address Country Region`';
 } elseif ($order == 'ship_country') {
     $order = '`Customer Main Delivery Address Country`';
-} elseif ($order == 'net_balance') {
-    $order = '`Customer Net Balance`';
-} elseif ($order == 'balance') {
-    $order = '`Customer Outstanding Net Balance`';
-} elseif ($order == 'total_profit') {
-    $order = '`Customer Profit`';
+} elseif ($order == 'total_payments') {
+    $order = '`Customer Payments Amount`';
+} elseif ($order == 'total_invoiced_amount') {
+    $order = '`Customer Invoiced Amount`';
+} elseif ($order == 'total_invoiced_net_amount') {
+    $order = '`Customer Invoiced Net Amount`';
+
 } elseif ($order == 'customer_balance') {
     $order = '`Customer Account Balance`';
 } elseif ($order == 'total_payments') {
