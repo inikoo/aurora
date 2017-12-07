@@ -560,7 +560,7 @@ $modules = array(
             ),
 
 
-            'order'          => array(
+            'order'         => array(
                 'type' => 'object',
                 'tabs' => array(
 
@@ -603,7 +603,7 @@ $modules = array(
                 )
 
             ),
-            'delivery_note'  => array(
+            'delivery_note' => array(
                 'type' => 'object',
                 'tabs' => array(
 
@@ -648,29 +648,29 @@ $modules = array(
                 )
 
             ),
-            'invoice'        => array(
+            'invoice'       => array(
                 'type' => 'object',
                 'tabs' => array(
 
 
-                    'invoice.items'          => array(
+                    'invoice.items'    => array(
                         'label' => _(
                             'Items'
                         ),
                         'icon'  => 'bars'
                     ),
-                    'invoice.details'        => array(
+                    'invoice.details'  => array(
                         'label' => _(
                             'Data'
                         ),
                         'icon'  => 'database'
                     ),
-                    'invoice.payments'        => array(
+                    'invoice.payments' => array(
                         'label' => _('Payments'),
                         'icon'  => 'usd',
 
                     ),
-                    'invoice.history'        => array(
+                    'invoice.history'  => array(
                         'label' => '',
                         'title' => _('History'),
                         'icon'  => 'road',
@@ -696,24 +696,24 @@ $modules = array(
             ),
 
 
-            'refund'        => array(
+            'refund'          => array(
                 'type' => 'object',
                 'tabs' => array(
 
 
-                    'refund.items'          => array(
+                    'refund.items'   => array(
                         'label' => _(
                             'Items'
                         ),
                         'icon'  => 'bars'
                     ),
-                    'refund.details'        => array(
+                    'refund.details' => array(
                         'label' => _(
                             'Data'
                         ),
                         'icon'  => 'database'
                     ),
-                    'refund.history'        => array(
+                    'refund.history' => array(
                         'label' => _(
                             'History'
                         ),
@@ -722,12 +722,12 @@ $modules = array(
                 )
 
             ),
-            'replacement.new'        => array(
+            'replacement.new' => array(
                 'type' => 'object',
                 'tabs' => array(
 
 
-                    'replacement.new.items'          => array(
+                    'replacement.new.items' => array(
                         'label' => _(
                             'Items'
                         ),
@@ -738,12 +738,12 @@ $modules = array(
                 )
 
             ),
-            'refund.new'        => array(
+            'refund.new'      => array(
                 'type' => 'object',
                 'tabs' => array(
 
 
-                    'refund.new.items'          => array(
+                    'refund.new.items' => array(
                         'label' => _(
                             'Items'
                         ),
@@ -1282,7 +1282,7 @@ $modules = array(
     ),
 
 
-    'payments_server'              => array(
+    'payments_server' => array(
         'section'     => 'invoices',
         'parent'      => 'store',
         'parent_type' => 'key',
@@ -1294,7 +1294,7 @@ $modules = array(
                 'label'     => _("Payment accounts"),
                 'icon'      => 'cc',
                 'reference' => 'payment_accounts/%s',
-                'class'=>'left',
+                'class'     => 'left',
                 'tabs'      => array(
                     'payment_accounts' => array(),
                 )
@@ -1305,7 +1305,7 @@ $modules = array(
                 'label'     => _('Payment Service Providers'),
                 'icon'      => 'university',
                 'reference' => 'payment_service_providers',
-                'class'=>'left',
+                'class'     => 'left',
                 'tabs'      => array(
                     'payment_service_providers' => array(
                         'label' => _('Payment Service Providers'),
@@ -1459,7 +1459,7 @@ $modules = array(
         )
     ),
 
-    'payments'              => array(
+    'payments' => array(
         'section'     => 'invoices',
         'parent'      => 'store',
         'parent_type' => 'key',
@@ -1481,7 +1481,6 @@ $modules = array(
             ),
 
 
-
             'payment_accounts' => array(
                 'type'      => 'navigation',
                 'label'     => _("Payment accounts"),
@@ -1501,7 +1500,6 @@ $modules = array(
                     'payments' => array()
                 )
             ),
-
 
 
             'payment_service_provider' => array(
@@ -2706,7 +2704,7 @@ $modules = array(
                         'title' => _('Details')
                     ),
 
-                    'campaign_order_recursion.components'     => array(
+                    'campaign_order_recursion.components' => array(
                         'label'         => _('Allowances'),
                         'icon'          => 'tags',
                         'quantity_data' => array(
@@ -2714,12 +2712,12 @@ $modules = array(
                             'field'  => 'Number Active Components'
                         ),
                     ),
-                    'campaign_order_recursion.reminders'     => array(
-                        'label'         => _('Reminders'),
-                        'icon'          => 'envelope'
+                    'campaign_order_recursion.reminders'  => array(
+                        'label' => _('Reminders'),
+                        'icon'  => 'envelope'
 
                     ),
-                    'campaign.orders'    => array(
+                    'campaign.orders'                     => array(
                         'label'         => _('Orders'),
                         'icon'          => 'shopping-cart',
                         'quantity_data' => array(
@@ -2727,7 +2725,7 @@ $modules = array(
                             'field'  => 'Used Orders'
                         ),
                     ),
-                    'campaign.customers' => array(
+                    'campaign.customers'                  => array(
                         'label'         => _('Customers'),
                         'icon'          => 'users',
                         'quantity_data' => array(
@@ -2735,7 +2733,7 @@ $modules = array(
                             'field'  => 'Used Customers'
                         ),
                     ),
-                    'campaign.history'   => array(
+                    'campaign.history'                    => array(
                         'title'         => _('History, notes'),
                         'label'         => '',
                         'icon'          => 'road',
@@ -2750,8 +2748,7 @@ $modules = array(
             ),
 
 
-
-            'deal'     => array(
+            'deal' => array(
                 'type' => 'object',
 
 
@@ -3547,7 +3544,7 @@ $modules = array(
                         'class' => 'right icon_only'
                     ),
                     'supplier_part.history' => array(
-                        'label' =>'',
+                        'label' => '',
                         'title' => _('History/Notes'),
                         'icon'  => 'road',
                         'class' => 'right icon_only'
@@ -3733,6 +3730,36 @@ $modules = array(
                     'suppliers.deliveries' => array()
                 )
             ),
+
+            'settings' => array(
+                'type'      => 'navigation',
+                'label'     => '',
+                'title'     => _('Settings'),
+                'icon'      => 'sliders',
+                'reference' => 'suppliers/settings',
+                'class'     => 'icon_only right',
+                'tabs'      => array(
+                    'suppliers.settings'       => array(
+                        'label' => _(
+                            'General settings'
+                        ),
+                        'icon'  => 'sliders',
+                        'class' => ''
+                    ),
+                    'suppliers.email_template' => array(
+                        'label' => _(
+                            'Email template'
+                        ),
+                        'icon'  => 'envelope-o',
+                        'class' => ''
+                    ),
+
+
+                )
+
+
+            ),
+
 
             'order' => array(
                 'type' => 'object',
@@ -4141,7 +4168,6 @@ $modules = array(
                     ),
 
 
-
                     'supplier_part.images'  => array(
                         'label' => '',
                         'title' => _('Images'),
@@ -4149,12 +4175,11 @@ $modules = array(
                         'class' => 'right icon_only'
                     ),
                     'supplier_part.history' => array(
-                        'label' =>'',
+                        'label' => '',
                         'title' => _('History/Notes'),
                         'icon'  => 'road',
                         'class' => 'right icon_only'
                     ),
-
 
 
                 )
@@ -4215,7 +4240,7 @@ $modules = array(
                         'class' => 'right icon_only'
                     ),
                     'supplier_part.history' => array(
-                        'label' =>'',
+                        'label' => '',
                         'title' => _('History/Notes'),
                         'icon'  => 'road',
                         'class' => 'right icon_only'
@@ -4276,7 +4301,7 @@ $modules = array(
                         'class' => 'right icon_only'
                     ),
                     'supplier_part.history' => array(
-                        'label' =>'',
+                        'label' => '',
                         'title' => _('History/Notes'),
                         'icon'  => 'road',
                         'class' => 'right icon_only'
@@ -4340,7 +4365,7 @@ $modules = array(
                         'class' => 'right icon_only'
                     ),
                     'supplier_part.history' => array(
-                        'label' =>'',
+                        'label' => '',
                         'title' => _('History/Notes'),
                         'icon'  => 'road',
                         'class' => 'right icon_only'
@@ -4387,33 +4412,7 @@ $modules = array(
 
             ),
 
-            'settings'          => array(
-                'type'      => 'navigation',
-                'label'     => '',
-                'icon'      => 'sliders',
-                'reference' => 'suppliers/settings',
-                'class'     => 'icon_only',
-                'tabs'      => array(
-                    'suppliers.settings'       => array(
-                        'label' => _(
-                            'General settings'
-                        ),
-                        'icon'  => 'sliders',
-                        'class' => ''
-                    ),
-                    'suppliers.email_template' => array(
-                        'label' => _(
-                            'Email template'
-                        ),
-                        'icon'  => 'envelope-o',
-                        'class' => ''
-                    ),
 
-
-                )
-
-
-            ),
             'timeseries_record' => array(
                 'type'     => 'object',
                 'label'    => '',
@@ -5237,12 +5236,10 @@ $modules = array(
             ),
 
 
-
-
             'leakages' => array(
                 'type' => 'object',
                 'tabs' => array(
-                    'stock_leakages' => array(
+                    'stock_leakages'       => array(
                         'label' => _('Leakages')
                     ),
                     'stock_leakages_setup' => array(
@@ -5262,7 +5259,7 @@ $modules = array(
                 'showcase' => 'timeseries_record',
 
                 'tabs' => array(
-                    'warehouse.leakages.transactions'    => array(
+                    'warehouse.leakages.transactions' => array(
                         'label' => _('Transactions'),
                         'icon'  => 'fa-arrow-circle-o-right',
                         'class' => ''
@@ -6777,7 +6774,7 @@ $modules = array(
                         'class' => 'right icon_only'
                     ),
                     'supplier_part.history' => array(
-                        'label' =>'',
+                        'label' => '',
                         'title' => _('History/Notes'),
                         'icon'  => 'road',
                         'class' => 'right icon_only'
@@ -6831,14 +6828,14 @@ $modules = array(
                         )
 
                     ),
-                    'supplier_part.images'  => array(
+                    'supplier_part.images'          => array(
                         'label' => '',
                         'title' => _('Images'),
                         'icon'  => 'camera-retro',
                         'class' => 'right icon_only'
                     ),
-                    'supplier_part.history' => array(
-                        'label' =>'',
+                    'supplier_part.history'         => array(
+                        'label' => '',
                         'title' => _('History/Notes'),
                         'icon'  => 'road',
                         'class' => 'right icon_only'
@@ -6902,7 +6899,7 @@ $modules = array(
                         'class' => 'right icon_only'
                     ),
                     'supplier_part.history' => array(
-                        'label' =>'',
+                        'label' => '',
                         'title' => _('History/Notes'),
                         'icon'  => 'road',
                         'class' => 'right icon_only'
@@ -7035,22 +7032,22 @@ $modules = array(
             'agent_delivery' => array(
                 'type' => 'object',
                 'tabs' => array(
-                    'agent_delivery.items'         => array(
+                    'agent_delivery.items'   => array(
                         'label' => _('Items'),
                         'icon'  => 'bars'
                     ),
-                    'agent_delivery.cartons'         => array(
+                    'agent_delivery.cartons' => array(
                         'label' => _('Boxes'),
                         'icon'  => 'dropbox'
                     ),
-                    'agent_delivery.details'       => array(
+                    'agent_delivery.details' => array(
                         'label' => _('Data'),
                         'icon'  => 'database'
                     ),
 
 
                     'agent_delivery.history' => array(
-                        'label'=>'',
+                        'label' => '',
                         'title' => _('History/Notes'),
                         'icon'  => 'road',
                         'class' => 'right icon_only'
@@ -7118,7 +7115,7 @@ $modules = array(
                         'class' => 'right icon_only'
                     ),
                     'supplier_part.history' => array(
-                        'label' =>'',
+                        'label' => '',
                         'title' => _('History/Notes'),
                         'icon'  => 'road',
                         'class' => 'right icon_only'

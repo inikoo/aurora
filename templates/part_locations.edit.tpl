@@ -1,6 +1,6 @@
 
 
-{foreach $locations_data item=location_data}
+{foreach from=$locations_data item=location_data}
 
 {if $location_data.location_key!=1}
 
@@ -41,7 +41,7 @@
 
 	        </span>
         </td>
-
+        <td class="aright  last_audit_days">{$location_data.days_last_audit}</td>
         <td class="aright  formatted_stock">{$location_data.formatted_stock}</td>
         <td class="aright  hide stock_input"><span class="stock_change"></span>
 
