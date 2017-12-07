@@ -32,6 +32,8 @@ function fork_housekeeping($job) {
             $payment_account          = get_object('Payment_Account', $payment->get('Payment Account Key'));
             $payment_service_provider = get_object('Payment_Service_Provider', $payment->get('Payment Service Provider Key'));
 
+            $customer = get_object('Customer', $payment->get('Payment Customer Key'));
+
             $payment_account->update_payments_data();
             $payment_service_provider->update_payments_data();
 
@@ -39,7 +41,7 @@ function fork_housekeeping($job) {
             $account = get_object('Account', '');
             $store   = get_object('Store', $payment->get('Payment Store Key'));
 
-
+            $customer->update_payments();
             $store->update_orders();
             $account->update_orders();
 
@@ -91,25 +93,24 @@ function fork_housekeeping($job) {
             break;
         case 'update_charges_data':
 
-            $sql=sprintf('select `Charge Key` from `Charge Dimension` where `Charge Store Key`=%d  ',$data['store_key']);
+            $sql = sprintf('SELECT `Charge Key` FROM `Charge Dimension` WHERE `Charge Store Key`=%d  ', $data['store_key']);
 
-            if ($result=$db->query($sql)) {
-            		foreach ($result as $row) {
-                        $charge   = get_object('Charge', $row['Charge Key']);
-                        $charge->update_charge_usage();
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+                    $charge = get_object('Charge', $row['Charge Key']);
+                    $charge->update_charge_usage();
 
-                    }
-            }else {
-            		print_r($error_info=$db->errorInfo());
-            		print "$sql\n";
-            		exit;
+                }
+            } else {
+                print_r($error_info = $db->errorInfo());
+                print "$sql\n";
+                exit;
             }
-
 
 
             break;
         case 'customer_deleted':
-            $store   = get_object('Store', $data['store_key']);
+            $store = get_object('Store', $data['store_key']);
             $store->update_customers_data();
 
             break;
@@ -166,16 +167,16 @@ function fork_housekeeping($job) {
             $store    = get_object('Store', $order->get('Order Store Key'));
             $account  = get_object('Account', '');
 
-            $sql=sprintf('select `Transaction Type Key` from `Order No Product Transaction Fact` where `Transaction Type`="Charges" and   `Order Key`=%d  ',$order->id);
+            $sql = sprintf('SELECT `Transaction Type Key` FROM `Order No Product Transaction Fact` WHERE `Transaction Type`="Charges" AND   `Order Key`=%d  ', $order->id);
 
-            if ($result=$db->query($sql)) {
+            if ($result = $db->query($sql)) {
                 foreach ($result as $row) {
-                    $charge   = get_object('Charge', $row['Transaction Type Key']);
+                    $charge = get_object('Charge', $row['Transaction Type Key']);
                     $charge->update_charge_usage();
 
                 }
-            }else {
-                print_r($error_info=$db->errorInfo());
+            } else {
+                print_r($error_info = $db->errorInfo());
                 print "$sql\n";
                 exit;
             }
@@ -225,8 +226,7 @@ function fork_housekeeping($job) {
 
 
             $sql = sprintf(
-                "SELECT `Page Key` FROM `Page Store Dimension`  P LEFT JOIN `Webpage Type Dimension` WTD ON (WTD.`Webpage Type Key`=P.`Webpage Type Key`)  WHERE `Webpage Website Key`=%d AND `Webpage Scope`  IN ('Product') AND `Webpage State`='Ready'  ",
-                $website->id
+                "SELECT `Page Key` FROM `Page Store Dimension`  P LEFT JOIN `Webpage Type Dimension` WTD ON (WTD.`Webpage Type Key`=P.`Webpage Type Key`)  WHERE `Webpage Website Key`=%d AND `Webpage Scope`  IN ('Product') AND `Webpage State`='Ready'  ", $website->id
             );
 
             if ($result = $website->db->query($sql)) {
@@ -256,7 +256,7 @@ function fork_housekeeping($job) {
             $website_user = get_object('Website_User', $data['website_user_key']);
 
 
-            if($customer->get('Customer Tax Number')!=''){
+            if ($customer->get('Customer Tax Number') != '') {
 
                 $customer->update_tax_number_valid('Auto');
             }
@@ -333,8 +333,7 @@ function fork_housekeeping($job) {
 
 
             $sql = sprintf(
-                'SELECT `Product Part Part SKU` FROM `Order Transaction Fact` OTF LEFT JOIN `Product Part Bridge` PPB ON (OTF.`Product ID`=PPB.`Product Part Product ID`)  WHERE `Order Key`=%d  ',
-                $data['order_key']
+                'SELECT `Product Part Part SKU` FROM `Order Transaction Fact` OTF LEFT JOIN `Product Part Bridge` PPB ON (OTF.`Product ID`=PPB.`Product Part Product ID`)  WHERE `Order Key`=%d  ', $data['order_key']
             );
             // print "$sql\n";
             if ($result = $db->query($sql)) {
@@ -354,8 +353,7 @@ function fork_housekeeping($job) {
 
 
             $sql = sprintf(
-                'SELECT `Product Part Part SKU` FROM `Order Transaction Fact` OTF LEFT JOIN `Product Part Bridge` PPB ON (OTF.`Product ID`=PPB.`Product Part Product ID`)  WHERE  `Delivery Note Key`=%d  ',
-                $data['delivery_note_key']
+                'SELECT `Product Part Part SKU` FROM `Order Transaction Fact` OTF LEFT JOIN `Product Part Bridge` PPB ON (OTF.`Product ID`=PPB.`Product Part Product ID`)  WHERE  `Delivery Note Key`=%d  ', $data['delivery_note_key']
             );
             // print "$sql\n";
 
@@ -373,13 +371,14 @@ function fork_housekeeping($job) {
         case 'invoice_created':
 
             update_invoice_products_sales_data($db, $account, $data);
-
+            $customer = get_object('Customer', $data['customer_key']);
+            $customer->update_invoices();
 
             break;
 
         case 'update_warehouse_leakages':
 
-            $warehouse = get_object('warehouse',$data['warehouse_key']);
+            $warehouse = get_object('warehouse', $data['warehouse_key']);
             $warehouse->update_current_timeseries_record('WarehouseStockLeakages');
             break;
 

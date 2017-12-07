@@ -67,7 +67,21 @@ sortType: "toggle",
 cell: Backgrid.StringCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 
-}, {
+},
+{
+name: "total_payments",
+label: "{t}Payments{/t}",
+editable: false,
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='total_payments'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.StringCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+
+
+},
+
+{
 name: "invoices",
 label: "{t}Invoices{/t}",
 editable: false,
@@ -166,28 +180,28 @@ events: {
 }
 })
 }, {
-name: "total_payments",
-label: "{t}Payments{/t}",
+name: "total_invoiced_amount",
+label: "{t}Invoiced{/t}",
 editable: false,
 defaultOrder:1,
 sortType: "toggle",
-{if $sort_key=='total_payments'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='total_invoiced_amount'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.StringCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
-
-
-}, {
-name: "account_balance",
-label: "{t}Account Balance{/t}",
+},
+{
+name: "total_invoiced_net_amount",
+label: "{t}Invoiced Net{/t}",
 editable: false,
 defaultOrder:1,
 sortType: "toggle",
-{if $sort_key=='account_balance'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='total_invoiced_net_amount'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.StringCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
+}
 
 
-}]
+]
 
 function change_table_view(view,save_state){
 
@@ -210,7 +224,8 @@ grid.columns.findWhere({ name: 'email'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'mobile'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'telephone'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'total_payments'} ).set("renderable", false)
-grid.columns.findWhere({ name: 'account_balance'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'total_invoiced_amount'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'total_invoiced_net_amount'} ).set("renderable", false)
 
 
 if(view=='overview'){
@@ -220,6 +235,8 @@ grid.columns.findWhere({ name: 'location'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'invoices'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'last_invoice'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'contact_since'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'total_invoiced_net_amount'} ).set("renderable", true)
+
 }else if(view=='weblog'){
 grid.columns.findWhere({ name: 'logins'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'failed_logins'} ).set("renderable", true)
@@ -235,7 +252,8 @@ grid.columns.findWhere({ name: 'name'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'last_invoice'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'invoices'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'total_payments'} ).set("renderable", true)
-grid.columns.findWhere({ name: 'account_balance'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'total_invoiced_amount'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'total_invoiced_net_amount'} ).set("renderable", true)
 
 }
 

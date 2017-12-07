@@ -740,7 +740,12 @@ function new_payment($data, $editor, $smarty, $db, $account, $user) {
         $invoice = get_object('invoice', $order->get('Order Invoice Key'));
     }
 
-    $invoice->add_payment($payment);
+    if($invoice->id){
+        $invoice->add_payment($payment);
+    }
+
+
+
 
 
     $operations = array();

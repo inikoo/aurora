@@ -175,20 +175,10 @@ function customers($_data, $db, $user) {
 
                 'other_value' => $category_other_value,
 
-                'total_payments'  => money($data['Customer Net Payments'], $currency),
-                'net_balance'     => money(
-                    $data['Customer Net Balance'], $currency
-                ),
-                'total_refunds'   => money(
-                    $data['Customer Net Refunds'], $currency
-                ),
-                'total_profit'    => money($data['Customer Profit'], $currency),
-                'balance'         => money(
-                    $data['Customer Outstanding Net Balance'], $currency
-                ),
-                'account_balance' => money(
-                    $data['Customer Account Balance'], $currency
-                ),
+                'total_payments'  => money($data['Customer Payments Amount'], $currency),
+                'total_invoiced_amount'  => money($data['Customer Invoiced Amount'], $currency),
+                'total_invoiced_net_amount'  => money($data['Customer Invoiced Net Amount'], $currency),
+
 
 
                 'top_orders'       => percentage(
