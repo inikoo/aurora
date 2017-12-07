@@ -94,7 +94,7 @@ class Page extends DB_Table {
                 "SELECT * FROM `Page Store Dimension` PS LEFT JOIN `Page Dimension` P  ON (P.`Page Key`=PS.`Page Key`) WHERE `Page Code`=%s AND PS.`Page Site Key`=%d ", prepare_mysql($tag2), $tag
             );
 
-        }  elseif ($tipo == 'website_code') {
+        } elseif ($tipo == 'website_code') {
             $sql = sprintf(
                 "SELECT * FROM `Page Store Dimension` PS LEFT JOIN `Page Dimension` P  ON (P.`Page Key`=PS.`Page Key`) WHERE `Website Code`=%s AND PS.`Webpage Website Key`=%d ", prepare_mysql($tag2), $tag
             );
@@ -105,7 +105,7 @@ class Page extends DB_Table {
 
             );
 
-           // print "$sql\n";
+            // print "$sql\n";
         } else {
             $sql = sprintf(
                 "SELECT * FROM `Page Dimension` WHERE  `Page Key`=%d", $tag
@@ -179,27 +179,22 @@ class Page extends DB_Table {
         }
 
 
+        $sql = sprintf(
+            "SELECT P.`Page Key` FROM `Page Store Dimension` P  WHERE `Webpage Code`=%s AND `Webpage Website Key`=%d ", prepare_mysql($raw_data['Webpage Code']), $raw_data['Webpage Website Key']
+        );
 
 
-            $sql = sprintf(
-                "SELECT P.`Page Key` FROM `Page Store Dimension` P  WHERE `Webpage Code`=%s AND `Webpage Website Key`=%d ",
-                prepare_mysql($raw_data['Webpage Code']), $raw_data['Webpage Website Key']
-            );
-
-
-            if ($result = $this->db->query($sql)) {
-                if ($row = $result->fetch()) {
-                    $this->found     = true;
-                    $this->found_key = $row['Page Key'];
-                    $this->get_data('id', $this->found_key);
-                }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $this->found     = true;
+                $this->found_key = $row['Page Key'];
+                $this->get_data('id', $this->found_key);
             }
-
-
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
 
 
         if (!$this->found and $create) {
@@ -267,8 +262,8 @@ class Page extends DB_Table {
             }
 
             $sql = sprintf(
-                "INSERT INTO `Page State Timeline`  (`Page Key`,`Site Key`,`Store Key`,`Date`,`State`,`Operation`) VALUES (%d,%d,%d,%s,%s,'Created') ", $this->id, $this->data['Page Site Key'],
-                $this->data['Page Site Key'], prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql($this->data['Page State'])
+                "INSERT INTO `Page State Timeline`  (`Page Key`,`Site Key`,`Store Key`,`Date`,`State`,`Operation`) VALUES (%d,%d,%d,%s,%s,'Created') ", $this->id, $this->data['Page Site Key'], $this->data['Page Site Key'], prepare_mysql(gmdate('Y-m-d H:i:s')),
+                prepare_mysql($this->data['Page State'])
 
             );
             $this->db->exec($sql);
@@ -297,7 +292,6 @@ class Page extends DB_Table {
                 }
             }
         }
-
 
 
         $data['Page Key'] = $this->id;
@@ -339,8 +333,8 @@ class Page extends DB_Table {
 
 
             $sql = sprintf(
-                "INSERT INTO `Page Store Search Dimension` VALUES (%d,%d,%s,%s,%s,%s)", $this->id, $this->data['Webpage Website Key'], prepare_mysql($this->data['Webpage URL']),
-                prepare_mysql($this->data['Webpage Name'], false), prepare_mysql($this->data['Webpage Meta Description'], false), prepare_mysql($content, false)
+                "INSERT INTO `Page Store Search Dimension` VALUES (%d,%d,%s,%s,%s,%s)", $this->id, $this->data['Webpage Website Key'], prepare_mysql($this->data['Webpage URL']), prepare_mysql($this->data['Webpage Name'], false),
+                prepare_mysql($this->data['Webpage Meta Description'], false), prepare_mysql($content, false)
             );
             $this->db->exec($sql);
 
@@ -406,490 +400,18 @@ class Page extends DB_Table {
 
     }
 
-    function update_see_also() {
+    function update_url() {
 
+        $website = get_object('website', $this->get('Webpage Website Key'));
 
 
-        if ($this->data['Page Type'] != 'Store' or $this->data['Page Store See Also Type'] == 'Manual') {
-            return;
-        }
+        $this->update(array('Webpage URL' => 'https://'.$website->get('Website URL').'/'.strtolower($this->get('Code'))), 'no_history');
 
-
-        if (!isset($this->data['Number See Also Links'])) {
-            //print_r($this);
-            exit('error in update see also');
-
-        }
-
-        $max_links = $this->data['Number See Also Links']*2;
-
-
-        $max_sales_links = ceil($max_links * .6);
-
-
-        $min_sales_correlation_samples = 5;
-        $correlation_upper_limit       = .5 / ($min_sales_correlation_samples);
-        $see_also                      = array();
-        $number_links                  = 0;
-
-
-        switch ($this->data['Webpage Scope']) {
-            case 'Department Catalogue':
-                break;
-
-            case 'Category Products':
-
-
-
-
-
-                $sql = sprintf(
-                    "SELECT * FROM `Product Family Sales Correlation` WHERE `Family A Key`=%d ORDER BY `Correlation` DESC ", $this->data['Webpage Scope Key']
-                );
-
-
-                if ($result=$this->db->query($sql)) {
-                		foreach ($result as $row) {
-                            $_family = get_object('Category',$row['Family B Key']);
-                            $_webpage=$_family->get_webpage();
-                            // and $_webpage->data['Page Stealth Mode'] == 'No'
-                            if ($_webpage->id and $_webpage->data['Page State'] == 'Online' ) {
-                                $see_also[$_webpage->id] = array(
-                                    'type'     => 'Sales',
-                                    'value'    => $row['Correlation'],
-                                    'page_key' => $_webpage->id
-                                );
-                                $number_links                 = count($see_also);
-                                if ($number_links >= $max_sales_links) {
-                                    break;
-                                }
-                            }
-                		}
-                }else {
-                		print_r($error_info=$this->db->errorInfo());
-                		print "$sql\n";
-                		exit;
-                }
-
-
-
-
-                if ($number_links < $max_links) {
-                    $sql = sprintf(
-                        "SELECT * FROM `Product Family Semantic Correlation` WHERE `Family A Key`=%d ORDER BY `Weight` DESC LIMIT %d", $this->data['Webpage Scope Key'], ($max_links - $number_links) * 2
-                    );
-
-
-                    if ($result = $this->db->query($sql)) {
-                        foreach ($result as $row) {
-
-                            if (!array_key_exists($row['Family B Key'], $see_also)) {
-
-
-                                $_family = get_object('Category',$row['Family B Key']);
-                                $_webpage=$_family->get_webpage();
-                                // and $_webpage->data['Page Stealth Mode'] == 'No'
-                                if ($_webpage->id and $_webpage->data['Page State'] == 'Online' ) {
-                                    $see_also[$_webpage->id] = array(
-                                        'type'     => 'Semantic',
-                                        'value'    => $row['Weight'],
-                                        'page_key' => $_webpage->id
-                                    );
-                                    $number_links                 = count($see_also);
-                                    if ($number_links >= $max_links) {
-                                        break;
-                                    }
-                                }
-
-
-
-
-
-                            }
-
-                        }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        exit;
-                    }
-
-
-                }
-
-
-                if ($number_links < $max_links) {
-
-                    $category=get_object('Category',$this->data['Webpage Scope Key']);
-
-                    $sql = sprintf(
-                        "SELECT `Category Key` FROM `Category Dimension` left join   `Product Category Dimension` on (`Category Key`=`Product Category Key`)   left join `Page Store Dimension` on (`Product Category Webpage Key`=`Page Key`) WHERE `Category Parent Key`=%d  and `Webpage State`='Online'  and `Category Key`!=%d  ORDER BY RAND()  LIMIT %d",
-                        $category->get('Category Parent Key'),
-                        $category->id,
-                        ($max_links - $number_links) * 2
-                    );
-
-
-                    if ($result = $this->db->query($sql)) {
-                        foreach ($result as $row) {
-
-                            if (!array_key_exists($row['Category Key'], $see_also)) {
-
-
-                                $_family = get_object('Category',$row['Category Key']);
-                                $_webpage=$_family->get_webpage();
-                                // and $_webpage->data['Page Stealth Mode'] == 'No'
-                                if ($_webpage->id and $_webpage->data['Page State'] == 'Online' ) {
-                                    $see_also[$_webpage->id] = array(
-                                        'type'     => 'SameParent',
-                                        'value'    => .2,
-                                        'page_key' => $_webpage->id
-                                    );
-                                    $number_links                 = count($see_also);
-                                    if ($number_links >= $max_links) {
-                                        break;
-                                    }
-                                }
-
-
-
-
-
-                            }
-
-                        }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        exit;
-                    }
-
-
-
-                }
-
-
-                if ($number_links < $max_links) {
-
-
-                    $sql = sprintf(
-                        "SELECT `Category Key` FROM `Category Dimension` left join   `Product Category Dimension` on (`Category Key`=`Product Category Key`)   left join `Page Store Dimension` on (`Product Category Webpage Key`=`Page Key`) WHERE  `Webpage State`='Online'  and `Category Key`!=%d  and `Category Store Key`=%d ORDER BY RAND()  LIMIT %d",
-                        $this->data['Webpage Scope Key'],
-                        $category->get('Category Store Key'),
-                        ($max_links - $number_links) * 2
-                    );
-
-
-                    if ($result = $this->db->query($sql)) {
-                        foreach ($result as $row) {
-
-                            if (!array_key_exists($row['Category Key'], $see_also)) {
-
-
-                                $_family = get_object('Category',$row['Category Key']);
-                                $_webpage=$_family->get_webpage();
-                                // and $_webpage->data['Page Stealth Mode'] == 'No'
-                                if ($_webpage->id and $_webpage->data['Page State'] == 'Online' ) {
-                                    $see_also[$_webpage->id] = array(
-                                        'type'     => 'Other',
-                                        'value'    => .1,
-                                        'page_key' => $_webpage->id
-                                    );
-                                    $number_links                 = count($see_also);
-                                    if ($number_links >= $max_links) {
-                                        break;
-                                    }
-                                }
-
-
-
-
-
-                            }
-
-                        }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        exit;
-                    }
-
-
-
-                }
-
-
-                break;
-
-
-            case 'Product':
-
-                $product = get_object('Product', $this->data['Webpage Scope Key']);
-                $sql     = sprintf(
-                    "SELECT `Product Webpage Key`,`Product B ID`,`Correlation` FROM `Product Sales Correlation`  left join `Product Dimension` on (`Product ID`=`Product B ID`)    left join `Page Store Dimension` on (`Page Key`=`Product Webpage Key`)  WHERE `Product A ID`=%d and `Webpage State`='Online' and `Product Web State`='For Sale'  ORDER BY `Correlation` DESC", $product->id
-                );
-//  $see_also_page->data['Page Stealth Mode'] == 'No')
-
-                if ($result = $this->db->query($sql)) {
-                    foreach ($result as $row) {
-                        if (!array_key_exists($row['Product B ID'], $see_also) and $row['Product Webpage Key'] ) {
-
-                                    $see_also[$row['Product Webpage Key']] = array(
-                                        'type'     => 'Sales',
-                                        'value'    => $row['Correlation'],
-                                        'page_key' => $row['Product Webpage Key']
-                                    );
-                                    $number_links                 = count($see_also);
-                                    if ($number_links >= $max_links) {
-                                        break;
-                                    }
-
-                        }
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
-                }
-
-
-                if ($number_links >= $max_links) {
-                    break;
-                }
-
-
-
-                $max_customers=0;
-
-                $sql = sprintf(
-                    "SELECT P.`Product ID`,P.`Product Code`,`Product Web State`,`Product Webpage Key`,`Product Total Acc Customers` FROM `Product Dimension` P LEFT JOIN `Product Data Dimension` D ON (P.`Product ID`=D.`Product ID`)    left join `Page Store Dimension` on (`Page Key`=`Product Webpage Key`)  WHERE  `Product Web State`='For Sale' and `Webpage State`='Online' and P.`Product ID`!=%d  AND `Product Family Category Key`=%d ORDER BY `Product Total Acc Customers` DESC  ",
-                    $product->id,
-                    $product->get('Product Family Category Key')
-
-                );
-
-                if ($result = $this->db->query($sql)) {
-                    foreach ($result as $row) {
-
-
-                        if (!array_key_exists($row['Product ID'], $see_also)  and $row['Product Webpage Key'] ) {
-
-
-                            if($max_customers==0){
-                                $max_customers=$row['Product Total Acc Customers'];
-                            }
-
-
-                            $rnd=mt_rand() / mt_getrandmax();
-
-                                $see_also[$row['Product Webpage Key']] = array(
-                                    'type'     => 'Same Family',
-                                    'value'    => .25*$rnd*($row['Product Total Acc Customers']==0?1:$row['Product Total Acc Customers'])/($max_customers==0?1:$max_customers),
-                                    'page_key' => $row['Product Webpage Key']
-                                );
-                                $number_links                 = count($see_also);
-                                if ($number_links >= $max_links) {
-                                    break;
-                                }
-                            }
-
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
-                }
-
-
-
-
-                if ($number_links >= $max_links) {
-                    break;
-                }
-                $max_customers=0;
-                $sql = sprintf(
-                    "SELECT P.`Product ID`,P.`Product Code`,`Product Web State`,`Product Webpage Key`,`Product Total Acc Customers` FROM `Product Dimension` P LEFT JOIN `Product Data Dimension` D ON (P.`Product ID`=D.`Product ID`)    left join `Page Store Dimension` on (`Page Key`=`Product Webpage Key`)  WHERE  `Product Web State`='For Sale' and `Webpage State`='Online' and P.`Product ID`!=%d  AND `Product Store Key`=%d ORDER BY `Product Total Acc Customers` DESC  ",
-                    $product->id,
-                    $product->get('Product Store Key')
-
-                );
-
-                if ($result = $this->db->query($sql)) {
-                    foreach ($result as $row) {
-
-
-                        if (!array_key_exists($row['Product ID'], $see_also)  and $row['Product Webpage Key'] ) {
-
-                            if($max_customers==0){
-                                $max_customers=$row['Product Total Acc Customers'];
-                            }
-
-
-                            $rnd=mt_rand() / mt_getrandmax();
-
-                            $see_also[$row['Product Webpage Key']] = array(
-                                'type'     => 'Other',
-                                'value'    => .1*$rnd*($row['Product Total Acc Customers']==0?1:$row['Product Total Acc Customers'])/($max_customers==0?1:$max_customers),
-                                'page_key' => $row['Product Webpage Key']
-                            );
-                            $number_links                 = count($see_also);
-                            if ($number_links >= $max_links) {
-                                break;
-                            }
-                        }
-
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
-                }
-
-
-                break;
-            default:
-
-                break;
-        }
-
-
-
-        $sql = sprintf(
-            "DELETE FROM `Page Store See Also Bridge`WHERE `Page Store Key`=%d ", $this->id
-        );
-        $this->db->exec($sql);
-
-
-        $count = 0;
-
-        $order_value = 1;
-
-
-
-        if(count($see_also)>0) {
-
-
-            foreach ($see_also as $key => $row) {
-                $correlation[$key] = $row['value'];
-            }
-
-            //print_r($correlation);
-
-            array_multisort($correlation, SORT_DESC, $see_also);
-            // print_r($see_also);
-
-
-            foreach ($see_also as $see_also_page_key => $see_also_data) {
-
-                if ($count >= $this->data['Number See Also Links']) {
-                    break;
-                }
-
-                $sql = sprintf(
-                    "INSERT  INTO `Page Store See Also Bridge` (`Page Store Key`,`Page Store See Also Key`,`Correlation Type`,`Correlation Value`,`Webpage See Also Order`)  VALUES (%d,%d,%s,%f,%d) ", $this->id, $see_also_data['page_key'],
-                    prepare_mysql($see_also_data['type']), $see_also_data['value'], $order_value
-                );
-                $this->db->exec($sql);
-                $count++;
-                $order_value++;
-                //print "$sql\n";
-            }
-
-        }
-        $this->update(
-            array('Page See Also Last Updated' => gmdate('Y-m-d H:i:s')), 'no_history'
-        );
-
-    }
-
-    function update_image_key() {
-
-
-        if ($this->data['Page Type'] != 'Store') {
-            return;
-        }
-
-
-        $page_image_source = 'art/nopic.png';
-        $image_key         = '';
-
-
-        switch ($this->data['Webpage Scope']) {
-            case 'Category Categories':
-            case 'Category Products':
-                include_once 'class.Category.php';
-                $category = new Category('id', $this->data['Page Parent Key']);
-                if ($category->id and $category->get('Category Main Image Key')) {
-                    $_page_image = new Image($category->get('Category Main Image Key'));
-                    if ($_page_image->id) {
-                        $page_image_source = sprintf("images/%07d.%s", $_page_image->data['Image Key'], $_page_image->data['Image File Format']);
-                        $image_key         = $_page_image->id;
-                    }
-                }
-            case 'Product':
-                include_once 'class.Product.php';
-                $product = new Product('id', $this->data['Page Parent Key']);
-                if ($product->id and $product->get('Product Main Image Key')) {
-                    $_page_image = new Image($product->get('Product Main Image Key'));
-                    if ($_page_image->id) {
-                        $page_image_source = sprintf("images/%07d.%s", $_page_image->data['Image Key'], $_page_image->data['Image File Format']);
-                        $image_key         = $_page_image->id;
-                    }
-                }
-
-            default:
-
-                break;
-        }
-
-
-        $sql = sprintf(
-            "UPDATE `Page Store Dimension` SET `Page Store Image Key`=%s ,`Page Store Image URL`=%s   WHERE `Page Key`=%d ", prepare_mysql($image_key), prepare_mysql($page_image_source), $this->id
-        );
-        $this->db->exec($sql);
-
-        $this->data['Page Store Image Key'] = $image_key;
-        $this->data['Page Store Image URL'] = $page_image_source;
-
-
-    }
-
-    function refresh_cache() {
-        global $memcache_ip;
-
-
-        $account      = new Account($this->db);
-        $account_code = $account->get('Account Code');
-
-
-        $template_response = '';
-
-        // Tdo manage smarty cache
-        /*
-
-                if ($site->data['Site SSL'] == 'Yes') {
-                    $site_protocol = 'https';
-                } else {
-                    $site_protocol = 'http';
-                }
-                $template_response = file_get_contents(
-                    $site_protocol.'://'.$site->data['Site URL']."/maintenance/write_templates.php?parent=page_clean_cache&parent_key=".$this->id."&sk=x"
-                );
-
-                */
-
-        $mem = new Memcached();
-        $mem->addServer($memcache_ip, 11211);
-
-        $mem->set('ECOMP'.md5($account_code.$this->get('Webpage Website Key').'/'.$this->get('Page Code')), $this->id, 172800);
-        $mem->set(
-            'ECOMP'.md5($account_code.$this->get('Webpage Website Key').'/'.strtolower($this->get('Page Code'))), $this->id, 172800
-        );
-
-        return $template_response;
 
     }
 
     function get($key) {
         switch ($key) {
-
 
 
             case 'See Also':
@@ -1193,6 +715,106 @@ class Page extends DB_Table {
         return false;
     }
 
+    function get_see_also_data() {
+
+        $see_also = array();
+        $sql      = sprintf(
+            "SELECT `Page Store See Also Key`,`Correlation Type`,`Correlation Value` FROM  `Page Store See Also Bridge` WHERE `Page Store Key`=%d ORDER BY `Webpage See Also Order` ", $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+                $see_also_page = new Page($row['Page Store See Also Key']);
+                if ($see_also_page->id) {
+
+                    if ($this->data['Page Store See Also Type'] == 'Manual') {
+                        $formatted_correlation_type  = _('Manual');
+                        $formatted_correlation_value = '';
+                    } else {
+
+                        switch ($row['Correlation Type']) {
+                            case 'Manual':
+                                $formatted_correlation_type  = _('Manual');
+                                $formatted_correlation_value = '';
+                                break;
+                            case 'Sales':
+                                $formatted_correlation_type  = _('Sales');
+                                $formatted_correlation_value = percentage(
+                                    $row['Correlation Value'], 1
+                                );
+                                break;
+                            case 'Semantic':
+                                $formatted_correlation_type  = _('Semantic');
+                                $formatted_correlation_value = number(
+                                    $row['Correlation Value']
+                                );
+                                break;
+                            case 'New':
+                                $formatted_correlation_type  = _('New');
+                                $formatted_correlation_value = number(
+                                    $row['Correlation Value']
+                                );
+                                break;
+                            default:
+                                $formatted_correlation_type  = $row['Correlation Type'];
+                                $formatted_correlation_value = number(
+                                    $row['Correlation Value']
+                                );
+                                break;
+                        }
+                    }
+                    //if ($site_url)
+                    //$link='<a href="http://'.$site_url.'/'.$see_also_page->data['Page URL'].'">'.$see_also_page->data['Page Short Title'].'</a>';
+
+                    //else
+                    $link = '<a href="http://'.$see_also_page->data['Page URL'].'">'.$see_also_page->data['Page Short Title'].'</a>';
+
+                    $see_also[] = array(
+                        'link'                        => $link,
+                        'label'                       => $see_also_page->data['Page Short Title'],
+                        'url'                         => $see_also_page->data['Page URL'],
+                        'key'                         => $see_also_page->id,
+                        'code'                        => $see_also_page->data['Page Code'],
+                        'correlation_type'            => $row['Correlation Type'],
+                        'correlation_formatted'       => $formatted_correlation_type,
+                        'correlation_value'           => $row['Correlation Value'],
+                        'correlation_formatted_value' => $formatted_correlation_value,
+                        'image_key'                   => $see_also_page->data['Page Store Image Key']
+
+                    );
+                }
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        if ($this->data['Page See Also Last Updated'] == '') {
+            $last_updated = '';
+        } else {
+            $last_updated = strftime(
+                "%a %e %b %Y %H:%M:%S %Z", strtotime($this->data['Page See Also Last Updated'].' +0:00')
+            );
+        }
+
+
+        $data = array(
+            'website_key'  => $this->get('Page Site Key'),
+            'webpage_key'  => $this->id,
+            'type'         => $this->get('Page Store See Also Type'),
+            'number_links' => $this->get('Number See Also Links'),
+            'last_updated' => $last_updated,
+            'links'        => $see_also
+        );
+
+        return $data;
+    }
+
     function load_scope() {
 
         $this->scope_load = true;
@@ -1225,6 +847,460 @@ class Page extends DB_Table {
 
         }
 
+
+    }
+
+    function update_see_also() {
+
+
+        if ($this->data['Page Type'] != 'Store' or $this->data['Page Store See Also Type'] == 'Manual') {
+            return;
+        }
+
+
+        if (!isset($this->data['Number See Also Links'])) {
+            //print_r($this);
+            exit('error in update see also');
+
+        }
+
+        $max_links = $this->data['Number See Also Links'] * 2;
+
+
+        $max_sales_links = ceil($max_links * .6);
+
+
+        $min_sales_correlation_samples = 5;
+        $correlation_upper_limit       = .5 / ($min_sales_correlation_samples);
+        $see_also                      = array();
+        $number_links                  = 0;
+
+
+        switch ($this->data['Webpage Scope']) {
+            case 'Department Catalogue':
+                break;
+
+            case 'Category Products':
+
+
+                $sql = sprintf(
+                    "SELECT * FROM `Product Family Sales Correlation` WHERE `Family A Key`=%d ORDER BY `Correlation` DESC ", $this->data['Webpage Scope Key']
+                );
+
+
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+                        $_family  = get_object('Category', $row['Family B Key']);
+                        $_webpage = $_family->get_webpage();
+                        // and $_webpage->data['Page Stealth Mode'] == 'No'
+                        if ($_webpage->id and $_webpage->data['Page State'] == 'Online') {
+                            $see_also[$_webpage->id] = array(
+                                'type'     => 'Sales',
+                                'value'    => $row['Correlation'],
+                                'page_key' => $_webpage->id
+                            );
+                            $number_links            = count($see_also);
+                            if ($number_links >= $max_sales_links) {
+                                break;
+                            }
+                        }
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+
+                if ($number_links < $max_links) {
+                    $sql = sprintf(
+                        "SELECT * FROM `Product Family Semantic Correlation` WHERE `Family A Key`=%d ORDER BY `Weight` DESC LIMIT %d", $this->data['Webpage Scope Key'], ($max_links - $number_links) * 2
+                    );
+
+
+                    if ($result = $this->db->query($sql)) {
+                        foreach ($result as $row) {
+
+                            if (!array_key_exists($row['Family B Key'], $see_also)) {
+
+
+                                $_family  = get_object('Category', $row['Family B Key']);
+                                $_webpage = $_family->get_webpage();
+                                // and $_webpage->data['Page Stealth Mode'] == 'No'
+                                if ($_webpage->id and $_webpage->data['Page State'] == 'Online') {
+                                    $see_also[$_webpage->id] = array(
+                                        'type'     => 'Semantic',
+                                        'value'    => $row['Weight'],
+                                        'page_key' => $_webpage->id
+                                    );
+                                    $number_links            = count($see_also);
+                                    if ($number_links >= $max_links) {
+                                        break;
+                                    }
+                                }
+
+
+                            }
+
+                        }
+                    } else {
+                        print_r($error_info = $this->db->errorInfo());
+                        exit;
+                    }
+
+
+                }
+
+
+                if ($number_links < $max_links) {
+
+                    $category = get_object('Category', $this->data['Webpage Scope Key']);
+
+                    $sql = sprintf(
+                        "SELECT `Category Key` FROM `Category Dimension` LEFT JOIN   `Product Category Dimension` ON (`Category Key`=`Product Category Key`)   LEFT JOIN `Page Store Dimension` ON (`Product Category Webpage Key`=`Page Key`) WHERE `Category Parent Key`=%d  AND `Webpage State`='Online'  AND `Category Key`!=%d  ORDER BY RAND()  LIMIT %d",
+                        $category->get('Category Parent Key'), $category->id, ($max_links - $number_links) * 2
+                    );
+
+
+                    if ($result = $this->db->query($sql)) {
+                        foreach ($result as $row) {
+
+                            if (!array_key_exists($row['Category Key'], $see_also)) {
+
+
+                                $_family  = get_object('Category', $row['Category Key']);
+                                $_webpage = $_family->get_webpage();
+                                // and $_webpage->data['Page Stealth Mode'] == 'No'
+                                if ($_webpage->id and $_webpage->data['Page State'] == 'Online') {
+                                    $see_also[$_webpage->id] = array(
+                                        'type'     => 'SameParent',
+                                        'value'    => .2,
+                                        'page_key' => $_webpage->id
+                                    );
+                                    $number_links            = count($see_also);
+                                    if ($number_links >= $max_links) {
+                                        break;
+                                    }
+                                }
+
+
+                            }
+
+                        }
+                    } else {
+                        print_r($error_info = $this->db->errorInfo());
+                        exit;
+                    }
+
+
+                }
+
+
+                if ($number_links < $max_links) {
+
+
+                    $sql = sprintf(
+                        "SELECT `Category Key` FROM `Category Dimension` LEFT JOIN   `Product Category Dimension` ON (`Category Key`=`Product Category Key`)   LEFT JOIN `Page Store Dimension` ON (`Product Category Webpage Key`=`Page Key`) WHERE  `Webpage State`='Online'  AND `Category Key`!=%d  AND `Category Store Key`=%d ORDER BY RAND()  LIMIT %d",
+                        $this->data['Webpage Scope Key'], $category->get('Category Store Key'), ($max_links - $number_links) * 2
+                    );
+
+
+                    if ($result = $this->db->query($sql)) {
+                        foreach ($result as $row) {
+
+                            if (!array_key_exists($row['Category Key'], $see_also)) {
+
+
+                                $_family  = get_object('Category', $row['Category Key']);
+                                $_webpage = $_family->get_webpage();
+                                // and $_webpage->data['Page Stealth Mode'] == 'No'
+                                if ($_webpage->id and $_webpage->data['Page State'] == 'Online') {
+                                    $see_also[$_webpage->id] = array(
+                                        'type'     => 'Other',
+                                        'value'    => .1,
+                                        'page_key' => $_webpage->id
+                                    );
+                                    $number_links            = count($see_also);
+                                    if ($number_links >= $max_links) {
+                                        break;
+                                    }
+                                }
+
+
+                            }
+
+                        }
+                    } else {
+                        print_r($error_info = $this->db->errorInfo());
+                        exit;
+                    }
+
+
+                }
+
+
+                break;
+
+
+            case 'Product':
+
+                $product = get_object('Product', $this->data['Webpage Scope Key']);
+                $sql     = sprintf(
+                    "SELECT `Product Webpage Key`,`Product B ID`,`Correlation` FROM `Product Sales Correlation`  LEFT JOIN `Product Dimension` ON (`Product ID`=`Product B ID`)    LEFT JOIN `Page Store Dimension` ON (`Page Key`=`Product Webpage Key`)  WHERE `Product A ID`=%d AND `Webpage State`='Online' AND `Product Web State`='For Sale'  ORDER BY `Correlation` DESC",
+                    $product->id
+                );
+                //  $see_also_page->data['Page Stealth Mode'] == 'No')
+
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+                        if (!array_key_exists($row['Product B ID'], $see_also) and $row['Product Webpage Key']) {
+
+                            $see_also[$row['Product Webpage Key']] = array(
+                                'type'     => 'Sales',
+                                'value'    => $row['Correlation'],
+                                'page_key' => $row['Product Webpage Key']
+                            );
+                            $number_links                          = count($see_also);
+                            if ($number_links >= $max_links) {
+                                break;
+                            }
+
+                        }
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+
+                if ($number_links >= $max_links) {
+                    break;
+                }
+
+
+                $max_customers = 0;
+
+                $sql = sprintf(
+                    "SELECT P.`Product ID`,P.`Product Code`,`Product Web State`,`Product Webpage Key`,`Product Total Acc Customers` FROM `Product Dimension` P LEFT JOIN `Product Data Dimension` D ON (P.`Product ID`=D.`Product ID`)    LEFT JOIN `Page Store Dimension` ON (`Page Key`=`Product Webpage Key`)  WHERE  `Product Web State`='For Sale' AND `Webpage State`='Online' AND P.`Product ID`!=%d  AND `Product Family Category Key`=%d ORDER BY `Product Total Acc Customers` DESC  ",
+                    $product->id, $product->get('Product Family Category Key')
+
+                );
+
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+
+
+                        if (!array_key_exists($row['Product ID'], $see_also) and $row['Product Webpage Key']) {
+
+
+                            if ($max_customers == 0) {
+                                $max_customers = $row['Product Total Acc Customers'];
+                            }
+
+
+                            $rnd = mt_rand() / mt_getrandmax();
+
+                            $see_also[$row['Product Webpage Key']] = array(
+                                'type'     => 'Same Family',
+                                'value'    => .25 * $rnd * ($row['Product Total Acc Customers'] == 0 ? 1 : $row['Product Total Acc Customers']) / ($max_customers == 0 ? 1 : $max_customers),
+                                'page_key' => $row['Product Webpage Key']
+                            );
+                            $number_links                          = count($see_also);
+                            if ($number_links >= $max_links) {
+                                break;
+                            }
+                        }
+
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+
+                if ($number_links >= $max_links) {
+                    break;
+                }
+                $max_customers = 0;
+                $sql           = sprintf(
+                    "SELECT P.`Product ID`,P.`Product Code`,`Product Web State`,`Product Webpage Key`,`Product Total Acc Customers` FROM `Product Dimension` P LEFT JOIN `Product Data Dimension` D ON (P.`Product ID`=D.`Product ID`)    LEFT JOIN `Page Store Dimension` ON (`Page Key`=`Product Webpage Key`)  WHERE  `Product Web State`='For Sale' AND `Webpage State`='Online' AND P.`Product ID`!=%d  AND `Product Store Key`=%d ORDER BY `Product Total Acc Customers` DESC  ",
+                    $product->id, $product->get('Product Store Key')
+
+                );
+
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+
+
+                        if (!array_key_exists($row['Product ID'], $see_also) and $row['Product Webpage Key']) {
+
+                            if ($max_customers == 0) {
+                                $max_customers = $row['Product Total Acc Customers'];
+                            }
+
+
+                            $rnd = mt_rand() / mt_getrandmax();
+
+                            $see_also[$row['Product Webpage Key']] = array(
+                                'type'     => 'Other',
+                                'value'    => .1 * $rnd * ($row['Product Total Acc Customers'] == 0 ? 1 : $row['Product Total Acc Customers']) / ($max_customers == 0 ? 1 : $max_customers),
+                                'page_key' => $row['Product Webpage Key']
+                            );
+                            $number_links                          = count($see_also);
+                            if ($number_links >= $max_links) {
+                                break;
+                            }
+                        }
+
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+
+                break;
+            default:
+
+                break;
+        }
+
+
+        $sql = sprintf(
+            "DELETE FROM `Page Store See Also Bridge`WHERE `Page Store Key`=%d ", $this->id
+        );
+        $this->db->exec($sql);
+
+
+        $count = 0;
+
+        $order_value = 1;
+
+
+        if (count($see_also) > 0) {
+
+
+            foreach ($see_also as $key => $row) {
+                $correlation[$key] = $row['value'];
+            }
+
+            //print_r($correlation);
+
+            array_multisort($correlation, SORT_DESC, $see_also);
+            // print_r($see_also);
+
+
+            foreach ($see_also as $see_also_page_key => $see_also_data) {
+
+                if ($count >= $this->data['Number See Also Links']) {
+                    break;
+                }
+
+                $sql = sprintf(
+                    "INSERT  INTO `Page Store See Also Bridge` (`Page Store Key`,`Page Store See Also Key`,`Correlation Type`,`Correlation Value`,`Webpage See Also Order`)  VALUES (%d,%d,%s,%f,%d) ", $this->id, $see_also_data['page_key'],
+                    prepare_mysql($see_also_data['type']), $see_also_data['value'], $order_value
+                );
+                $this->db->exec($sql);
+                $count++;
+                $order_value++;
+                //print "$sql\n";
+            }
+
+        }
+        $this->update(
+            array('Page See Also Last Updated' => gmdate('Y-m-d H:i:s')), 'no_history'
+        );
+
+    }
+
+    function update_image_key() {
+
+
+        if ($this->data['Page Type'] != 'Store') {
+            return;
+        }
+
+
+        $page_image_source = 'art/nopic.png';
+        $image_key         = '';
+
+
+        switch ($this->data['Webpage Scope']) {
+            case 'Category Categories':
+            case 'Category Products':
+                include_once 'class.Category.php';
+                $category = new Category('id', $this->data['Page Parent Key']);
+                if ($category->id and $category->get('Category Main Image Key')) {
+                    $_page_image = new Image($category->get('Category Main Image Key'));
+                    if ($_page_image->id) {
+                        $page_image_source = sprintf("images/%07d.%s", $_page_image->data['Image Key'], $_page_image->data['Image File Format']);
+                        $image_key         = $_page_image->id;
+                    }
+                }
+            case 'Product':
+                include_once 'class.Product.php';
+                $product = new Product('id', $this->data['Page Parent Key']);
+                if ($product->id and $product->get('Product Main Image Key')) {
+                    $_page_image = new Image($product->get('Product Main Image Key'));
+                    if ($_page_image->id) {
+                        $page_image_source = sprintf("images/%07d.%s", $_page_image->data['Image Key'], $_page_image->data['Image File Format']);
+                        $image_key         = $_page_image->id;
+                    }
+                }
+
+            default:
+
+                break;
+        }
+
+
+        $sql = sprintf(
+            "UPDATE `Page Store Dimension` SET `Page Store Image Key`=%s ,`Page Store Image URL`=%s   WHERE `Page Key`=%d ", prepare_mysql($image_key), prepare_mysql($page_image_source), $this->id
+        );
+        $this->db->exec($sql);
+
+        $this->data['Page Store Image Key'] = $image_key;
+        $this->data['Page Store Image URL'] = $page_image_source;
+
+
+    }
+
+    function refresh_cache() {
+        global $memcache_ip;
+
+
+        $account      = new Account($this->db);
+        $account_code = $account->get('Account Code');
+
+
+        $template_response = '';
+
+        // Tdo manage smarty cache
+        /*
+
+                if ($site->data['Site SSL'] == 'Yes') {
+                    $site_protocol = 'https';
+                } else {
+                    $site_protocol = 'http';
+                }
+                $template_response = file_get_contents(
+                    $site_protocol.'://'.$site->data['Site URL']."/maintenance/write_templates.php?parent=page_clean_cache&parent_key=".$this->id."&sk=x"
+                );
+
+                */
+
+        $mem = new Memcached();
+        $mem->addServer($memcache_ip, 11211);
+
+        $mem->set('ECOMP'.md5($account_code.$this->get('Webpage Website Key').'/'.$this->get('Page Code')), $this->id, 172800);
+        $mem->set(
+            'ECOMP'.md5($account_code.$this->get('Webpage Website Key').'/'.strtolower($this->get('Page Code'))), $this->id, 172800
+        );
+
+        return $template_response;
 
     }
 
@@ -1355,9 +1431,8 @@ class Page extends DB_Table {
                 $this->update_url();
 
 
-
                 $this->update_metadata = array(
-                    'class_html'    => array(
+                    'class_html' => array(
                         'Webpage_URL' => $this->get('Webpage URL'),
 
                     ),
@@ -1370,7 +1445,9 @@ class Page extends DB_Table {
 
             case 'Webpage Browser Title':
 
-
+                $sql = sprintf('UPDATE `Page Dimension` SET `Page Title`=%s WHERE `Page Key`=%d ', prepare_mysql($value), $this->id);
+                $this->update_field($field, $value, $options);
+                break;
             case 'Webpage Name':
 
 
@@ -1442,7 +1519,6 @@ class Page extends DB_Table {
             case 'Webpage Template Filename':
 
 
-
                 if ($value == 'blank') {
 
 
@@ -1450,8 +1526,6 @@ class Page extends DB_Table {
                     $this->db->exec($sql);
 
                 } else {
-
-
 
 
                     $sql = sprintf('UPDATE `Page Store Dimension` SET `Page Store Content Display Type`="Template" WHERE `Page Key`=%d ', $this->id);
@@ -1462,7 +1536,6 @@ class Page extends DB_Table {
 
 
                 }
-
 
 
                 $this->update_field($field, $value, $options);
@@ -1700,8 +1773,7 @@ class Page extends DB_Table {
                                                                       'products_showcase',
                                                                       'categories_showcase'
                                                                   )
-            ) and $this->get('Page Store Content Display Type') == 'Template'
-        ) {
+            ) and $this->get('Page Store Content Display Type') == 'Template') {
             $version = 2;
         } elseif ($this->get('Webpage Scope') == 'Product') {
             $version = 2;
@@ -1728,8 +1800,7 @@ class Page extends DB_Table {
         }
 
 
-
-        if ($this->get('Webpage State') == 'Offline' or  $this->get('Webpage State') == 'InProcess' or  $this->get('Webpage State') == 'Ready'  ) {
+        if ($this->get('Webpage State') == 'Offline' or $this->get('Webpage State') == 'InProcess' or $this->get('Webpage State') == 'Ready') {
 
 
             $this->update_state('Online');
@@ -1792,19 +1863,19 @@ class Page extends DB_Table {
 
                     $webpage = new Page('scope', 'Product', $row['Product Category Index Product ID']);
 
-                   // print_r($webpage);
+                    // print_r($webpage);
                     //exit;
 
                     if ($webpage->id) {
 
 
-                       // if ($webpage->get('Webpage Launch Date') == '') {
+                        // if ($webpage->get('Webpage Launch Date') == '') {
 
 
-                          //  print $webpage->get('Webpage Code')."\n";
+                        //  print $webpage->get('Webpage Code')."\n";
 
-                            $webpage->publish();
-                      //  }
+                        $webpage->publish();
+                        //  }
                     }
 
                 }
@@ -1843,11 +1914,10 @@ class Page extends DB_Table {
         }
 
 
-
         $this->update_metadata = array(
             'class_html'    => array(
-                'Webpage_State_Icon' => $this->get('State Icon'),
-                'Webpage_State'      => $this->get('State'),
+                'Webpage_State_Icon'    => $this->get('State Icon'),
+                'Webpage_State'         => $this->get('State'),
                 'preview_publish_label' => _('Publish')
 
             ),
@@ -1871,9 +1941,6 @@ class Page extends DB_Table {
         $this->update_field('Webpage State', $value, $options);
 
 
-
-
-
         if ($old_state != $this->data['Webpage State']) {
 
 
@@ -1884,8 +1951,8 @@ class Page extends DB_Table {
             }
 
             $sql = sprintf(
-                "INSERT INTO `Page State Timeline`  (`Page Key`,`Site Key`,`Store Key`,`Date`,`State`,`Operation`) VALUES (%d,%d,%d,%s,%s,'Change') ", $this->id, $this->data['Webpage Website Key'],
-                $this->data['Webpage Store Key'], prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql($this->data['Webpage State'])
+                "INSERT INTO `Page State Timeline`  (`Page Key`,`Site Key`,`Store Key`,`Date`,`State`,`Operation`) VALUES (%d,%d,%d,%s,%s,'Change') ", $this->id, $this->data['Webpage Website Key'], $this->data['Webpage Store Key'], prepare_mysql(gmdate('Y-m-d H:i:s')),
+                prepare_mysql($this->data['Webpage State'])
 
             );
 
@@ -1921,8 +1988,7 @@ class Page extends DB_Table {
             }
 
             $sql = sprintf(
-                'SELECT `Category Webpage Index Webpage Key` FROM `Category Webpage Index` WHERE `Category Webpage Index Category Webpage Key`=%d  GROUP BY `Category Webpage Index Webpage Key` ',
-                $this->id
+                'SELECT `Category Webpage Index Webpage Key` FROM `Category Webpage Index` WHERE `Category Webpage Index Category Webpage Key`=%d  GROUP BY `Category Webpage Index Webpage Key` ', $this->id
             );
 
 
@@ -1944,10 +2010,6 @@ class Page extends DB_Table {
             $this->updated = true;
 
         }
-
-
-
-
 
 
         $show = array();
@@ -2015,8 +2077,7 @@ class Page extends DB_Table {
 
                 foreach ($subjects as $item_key) {
                     $sql = sprintf(
-                        'UPDATE `Category Webpage Index` SET `Category Webpage Index Subject Type`="Subject" WHERE `Category Webpage Index Webpage Key`=%d  AND `Category Webpage Index Category Key`=%d   ',
-                        $this->id, $item_key
+                        'UPDATE `Category Webpage Index` SET `Category Webpage Index Subject Type`="Subject" WHERE `Category Webpage Index Webpage Key`=%d  AND `Category Webpage Index Category Key`=%d   ', $this->id, $item_key
                     );
                     $this->db->exec($sql);
 
@@ -2152,7 +2213,7 @@ class Page extends DB_Table {
 
         //print_r($subject_category);
 
-        $subject_webpage  = new Public_Webpage('scope', ($subject_category->get('Category Subject') == 'Category' ? 'Category Categories' : 'Category Products'), $subject_category->id);
+        $subject_webpage = new Public_Webpage('scope', ($subject_category->get('Category Subject') == 'Category' ? 'Category Categories' : 'Category Products'), $subject_category->id);
 
 
         //  print_r($subject_category);
@@ -2160,8 +2221,7 @@ class Page extends DB_Table {
         if ($subject_webpage->id) {
 
             $sql = sprintf(
-                'SELECT max(`Category Webpage Index Stack`) AS stack FROM  `Category Webpage Index` WHERE `Category Webpage Index Webpage Key`=%d AND `Category Webpage Index Section Key`=%d ',
-                $this->id, $section_key
+                'SELECT max(`Category Webpage Index Stack`) AS stack FROM  `Category Webpage Index` WHERE `Category Webpage Index Webpage Key`=%d AND `Category Webpage Index Section Key`=%d ', $this->id, $section_key
 
 
             );
@@ -2242,8 +2302,7 @@ class Page extends DB_Table {
         $content_data     = $this->get('Content Data');
 
         $sql = sprintf(
-            'SELECT `Category Webpage Index Key`,`Category Webpage Index Section Key`,`Category Webpage Index Stack` FROM  `Category Webpage Index` WHERE `Category Webpage Index Webpage Key`=%d AND `Category Webpage Index Category Key`=%d ',
-            $this->id, $item_key
+            'SELECT `Category Webpage Index Key`,`Category Webpage Index Section Key`,`Category Webpage Index Stack` FROM  `Category Webpage Index` WHERE `Category Webpage Index Webpage Key`=%d AND `Category Webpage Index Category Key`=%d ', $this->id, $item_key
 
 
         );
@@ -2383,10 +2442,9 @@ class Page extends DB_Table {
 
 
             $sql = sprintf(
-                "INSERT INTO `Page Store Search Dimension` VALUES (%d,%d,%s,%s,%s,%s)  ON DUPLICATE KEY UPDATE `Page Store Title`=%s ,`Page Store Resume`=%s ,`Page Store Content`=%s  ", $this->id,
-                $this->data['Page Site Key'], prepare_mysql($this->data['Page URL']), prepare_mysql($this->data['Page Title'], false), prepare_mysql($this->data['Page Store Description'], false),
-                prepare_mysql($this->get_plain_content(), false), prepare_mysql($this->data['Page Title'], false), prepare_mysql($this->data['Page Store Description'], false),
-                prepare_mysql($this->get_plain_content(), false)
+                "INSERT INTO `Page Store Search Dimension` VALUES (%d,%d,%s,%s,%s,%s)  ON DUPLICATE KEY UPDATE `Page Store Title`=%s ,`Page Store Resume`=%s ,`Page Store Content`=%s  ", $this->id, $this->data['Page Site Key'], prepare_mysql($this->data['Page URL']),
+                prepare_mysql($this->data['Page Title'], false), prepare_mysql($this->data['Page Store Description'], false), prepare_mysql($this->get_plain_content(), false), prepare_mysql($this->data['Page Title'], false),
+                prepare_mysql($this->data['Page Store Description'], false), prepare_mysql($this->get_plain_content(), false)
             );
             $this->db->exec($sql);
 
@@ -2403,7 +2461,7 @@ class Page extends DB_Table {
             include_once 'class.Website.php';
             $website = new Website($this->get('Webpage Website Key'));
 
-            if ($website->get('Website Theme') == 'theme_1' and false  ) {
+            if ($website->get('Website Theme') == 'theme_1' and false) {
 
 
                 $sql = sprintf('DELETE FROM  `Category Webpage Index` WHERE `Category Webpage Index Webpage Key`=%d  ', $this->id);
@@ -2613,8 +2671,7 @@ class Page extends DB_Table {
 
         $related_products = array();
         $sql              = sprintf(
-            "SELECT `Webpage Related Product Product ID`,`Webpage Related Product Product Page Key`  FROM  `Webpage Related Product Bridge` WHERE `Webpage Related Product Page Key`=%d ORDER BY `Webpage Related Product Order` ",
-            $this->id
+            "SELECT `Webpage Related Product Product ID`,`Webpage Related Product Product Page Key`  FROM  `Webpage Related Product Bridge` WHERE `Webpage Related Product Page Key`=%d ORDER BY `Webpage Related Product Order` ", $this->id
         );
 
 
@@ -2681,8 +2738,8 @@ class Page extends DB_Table {
 
         $this->update_metadata = array(
             'class_html'      => array(
-                'Webpage_State_Icon' => $this->get('State Icon'),
-                'Webpage_State'      => $this->get('State'),
+                'Webpage_State_Icon'    => $this->get('State Icon'),
+                'Webpage_State'         => $this->get('State'),
                 'preview_publish_label' => _('Republish')
 
             ),
@@ -2697,106 +2754,6 @@ class Page extends DB_Table {
         );
 
 
-    }
-
-    function get_see_also_data() {
-
-        $see_also = array();
-        $sql      = sprintf(
-            "SELECT `Page Store See Also Key`,`Correlation Type`,`Correlation Value` FROM  `Page Store See Also Bridge` WHERE `Page Store Key`=%d ORDER BY `Webpage See Also Order` ", $this->id
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-                $see_also_page = new Page($row['Page Store See Also Key']);
-                if ($see_also_page->id) {
-
-                    if ($this->data['Page Store See Also Type'] == 'Manual') {
-                        $formatted_correlation_type  = _('Manual');
-                        $formatted_correlation_value = '';
-                    } else {
-
-                        switch ($row['Correlation Type']) {
-                            case 'Manual':
-                                $formatted_correlation_type  = _('Manual');
-                                $formatted_correlation_value = '';
-                                break;
-                            case 'Sales':
-                                $formatted_correlation_type  = _('Sales');
-                                $formatted_correlation_value = percentage(
-                                    $row['Correlation Value'], 1
-                                );
-                                break;
-                            case 'Semantic':
-                                $formatted_correlation_type  = _('Semantic');
-                                $formatted_correlation_value = number(
-                                    $row['Correlation Value']
-                                );
-                                break;
-                            case 'New':
-                                $formatted_correlation_type  = _('New');
-                                $formatted_correlation_value = number(
-                                    $row['Correlation Value']
-                                );
-                                break;
-                            default:
-                                $formatted_correlation_type  = $row['Correlation Type'];
-                                $formatted_correlation_value = number(
-                                    $row['Correlation Value']
-                                );
-                                break;
-                        }
-                    }
-                    //if ($site_url)
-                    //$link='<a href="http://'.$site_url.'/'.$see_also_page->data['Page URL'].'">'.$see_also_page->data['Page Short Title'].'</a>';
-
-                    //else
-                    $link = '<a href="http://'.$see_also_page->data['Page URL'].'">'.$see_also_page->data['Page Short Title'].'</a>';
-
-                    $see_also[] = array(
-                        'link'                        => $link,
-                        'label'                       => $see_also_page->data['Page Short Title'],
-                        'url'                         => $see_also_page->data['Page URL'],
-                        'key'                         => $see_also_page->id,
-                        'code'                        => $see_also_page->data['Page Code'],
-                        'correlation_type'            => $row['Correlation Type'],
-                        'correlation_formatted'       => $formatted_correlation_type,
-                        'correlation_value'           => $row['Correlation Value'],
-                        'correlation_formatted_value' => $formatted_correlation_value,
-                        'image_key'                   => $see_also_page->data['Page Store Image Key']
-
-                    );
-                }
-
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        if ($this->data['Page See Also Last Updated'] == '') {
-            $last_updated = '';
-        } else {
-            $last_updated = strftime(
-                "%a %e %b %Y %H:%M:%S %Z", strtotime($this->data['Page See Also Last Updated'].' +0:00')
-            );
-        }
-
-
-        $data = array(
-            'website_key'  => $this->get('Page Site Key'),
-            'webpage_key'  => $this->id,
-            'type'         => $this->get('Page Store See Also Type'),
-            'number_links' => $this->get('Number See Also Links'),
-            'last_updated' => $last_updated,
-            'links'        => $see_also
-        );
-
-        return $data;
     }
 
     function get_see_also() {
@@ -2923,8 +2880,7 @@ class Page extends DB_Table {
 
 
         $sql = sprintf(
-            "INSERT INTO `Page State Timeline`  (`Page Key`,`Site Key`,`Store Key`,`Date`,`State`,`Operation`) VALUES (%d,%d,%d,%s,'Offline','Deleted') ", $this->id, $this->data['Page Site Key'],
-            $this->data['Page Site Key'], prepare_mysql(gmdate('Y-m-d H:i:s'))
+            "INSERT INTO `Page State Timeline`  (`Page Key`,`Site Key`,`Store Key`,`Date`,`State`,`Operation`) VALUES (%d,%d,%d,%s,'Offline','Deleted') ", $this->id, $this->data['Page Site Key'], $this->data['Page Site Key'], prepare_mysql(gmdate('Y-m-d H:i:s'))
 
         );
         $this->db->exec($sql);
@@ -3054,8 +3010,7 @@ class Page extends DB_Table {
             $number_button_products       = 0;
 
             $sql = sprintf(
-                "SELECT PPD.`Product ID`,`Parent Type`,`Product Web State`  FROM `Page Product Dimension` PPD LEFT JOIN `Product Dimension` P ON (PPD.`Product ID`=P.`Product ID`) WHERE `Page Key`=%d GROUP BY PPD.`Product ID`",
-                $this->id
+                "SELECT PPD.`Product ID`,`Parent Type`,`Product Web State`  FROM `Page Product Dimension` PPD LEFT JOIN `Product Dimension` P ON (PPD.`Product ID`=P.`Product ID`) WHERE `Page Key`=%d GROUP BY PPD.`Product ID`", $this->id
             );
             //print $sql;
             //exit;
@@ -3193,19 +3148,16 @@ class Page extends DB_Table {
 
 
             $sql = sprintf(
-                "SELECT `Email Site Reminder Key` FROM `Email Site Reminder Dimension` WHERE `Trigger Scope`='Back in Stock' AND `Trigger Scope Key`=%d AND `User Key`=%d AND `Email Site Reminder In Process`='Yes' ",
-                $product->id, $this->user->id
+                "SELECT `Email Site Reminder Key` FROM `Email Site Reminder Dimension` WHERE `Trigger Scope`='Back in Stock' AND `Trigger Scope Key`=%d AND `User Key`=%d AND `Email Site Reminder In Process`='Yes' ", $product->id, $this->user->id
 
             );
             $res = mysql_query($sql);
             if ($row = mysql_fetch_assoc($res)) {
-                $email_reminder =
-                    '<br/><span id="send_reminder_wait_'.$product->id.'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._(
+                $email_reminder = '<br/><span id="send_reminder_wait_'.$product->id.'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._(
                         'Processing request'
                     ).'</span><span id="send_reminder_container_'.$product->id.'"  style="color:#777"><span id="send_reminder_info_'.$product->id.'" >'._(
                         "We'll notify you via email"
-                    ).' <span style="cursor:pointer" id="cancel_send_reminder_'.$row['Email Site Reminder Key'].'"  onClick="cancel_send_reminder('.$row['Email Site Reminder Key'].','.$product->id
-                    .')"  >('._('Cancel').')</span></span></span>';
+                    ).' <span style="cursor:pointer" id="cancel_send_reminder_'.$row['Email Site Reminder Key'].'"  onClick="cancel_send_reminder('.$row['Email Site Reminder Key'].','.$product->id.')"  >('._('Cancel').')</span></span></span>';
             } else {
                 $email_reminder = '<br/>
 					<span id="send_reminder_wait_'.$product->id.'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._(
@@ -3243,8 +3195,8 @@ class Page extends DB_Table {
 
             $form_id = 'order_button_'.$product->id;
 
-            $button = '<img onmouseover="this.src=\'art/ordernow_hover_'.$this->site->data['Site Locale'].'.png\'" onmouseout="this.src=\'art/ordernow_'.$this->site->data['Site Locale']
-                .'.png\'"    onClick="order_product_from_button(\''.$form_id.'\')"  style="height:28px;cursor:pointer;" src="art/ordernow_'.$this->site->data['Site Locale'].'.png" alt="'._(
+            $button = '<img onmouseover="this.src=\'art/ordernow_hover_'.$this->site->data['Site Locale'].'.png\'" onmouseout="this.src=\'art/ordernow_'.$this->site->data['Site Locale'].'.png\'"    onClick="order_product_from_button(\''.$form_id
+                .'\')"  style="height:28px;cursor:pointer;" src="art/ordernow_'.$this->site->data['Site Locale'].'.png" alt="'._(
                     'Order Product'
                 ).'"> <span style="visibility:hidden" id="waiting_'.$form_id.'"><img src="art/loading.gif" style="height:22px;position:relative;bottom:3px"></span>';
 
@@ -3269,8 +3221,8 @@ class Page extends DB_Table {
 
 
                              </div>", // $this->site->get_checkout_data('url').'/cf/add.cfm',$form_id,$form_id,
-                $form_id, $product->data['Product Code'], $form_id, $product->data['Product Code'], $product->data['Product Units Per Case'], $product->data['Product Name'], $form_id,
-                $this->data['Page URL'], $form_id, number_format($product->data['Product Price'], 2, '.', ''), $form_id, $button
+                $form_id, $product->data['Product Code'], $form_id, $product->data['Product Code'], $product->data['Product Units Per Case'], $product->data['Product Name'], $form_id, $this->data['Page URL'], $form_id,
+                number_format($product->data['Product Price'], 2, '.', ''), $form_id, $button
 
 
             );
@@ -3373,19 +3325,16 @@ class Page extends DB_Table {
 
             $message = '';
             $sql     = sprintf(
-                "SELECT `Email Site Reminder Key` FROM `Email Site Reminder Dimension` WHERE `Trigger Scope`='Back in Stock' AND `Trigger Scope Key`=%d AND `User Key`=%d AND `Email Site Reminder In Process`='Yes' ",
-                $product->id, $this->user->id
+                "SELECT `Email Site Reminder Key` FROM `Email Site Reminder Dimension` WHERE `Trigger Scope`='Back in Stock' AND `Trigger Scope Key`=%d AND `User Key`=%d AND `Email Site Reminder In Process`='Yes' ", $product->id, $this->user->id
 
             );
             $res     = mysql_query($sql);
             if ($row = mysql_fetch_assoc($res)) {
-                $email_reminder =
-                    '<br/><span id="send_reminder_wait_'.$product->id.'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._(
+                $email_reminder = '<br/><span id="send_reminder_wait_'.$product->id.'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._(
                         'Processing request'
                     ).'</span><span id="send_reminder_container_'.$product->id.'"  style="color:#777"><span id="send_reminder_info_'.$product->id.'" >'._(
                         "We'll notify you via email"
-                    ).' <span style="cursor:pointer" id="cancel_send_reminder_'.$row['Email Site Reminder Key'].'"  onClick="cancel_send_reminder('.$row['Email Site Reminder Key'].','.$product->id
-                    .')"  >('._('Cancel').')</span></span></span>';
+                    ).' <span style="cursor:pointer" id="cancel_send_reminder_'.$row['Email Site Reminder Key'].'"  onClick="cancel_send_reminder('.$row['Email Site Reminder Key'].','.$product->id.')"  >('._('Cancel').')</span></span></span>';
             } else {
                 $email_reminder = '<br/>
 					<span id="send_reminder_wait_'.$product->id.'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._(
@@ -3585,19 +3534,16 @@ class Page extends DB_Table {
 
 
             $sql = sprintf(
-                "SELECT `Email Site Reminder Key` FROM `Email Site Reminder Dimension` WHERE `Trigger Scope`='Back in Stock' AND `Trigger Scope Key`=%d AND `User Key`=%d AND `Email Site Reminder In Process`='Yes' ",
-                $product->id, $this->user->id
+                "SELECT `Email Site Reminder Key` FROM `Email Site Reminder Dimension` WHERE `Trigger Scope`='Back in Stock' AND `Trigger Scope Key`=%d AND `User Key`=%d AND `Email Site Reminder In Process`='Yes' ", $product->id, $this->user->id
 
             );
             $res = mysql_query($sql);
             if ($row = mysql_fetch_assoc($res)) {
-                $email_reminder =
-                    '<br/><span id="send_reminder_wait_'.$product->id.'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._(
+                $email_reminder = '<br/><span id="send_reminder_wait_'.$product->id.'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._(
                         'Processing request'
                     ).'</span><span id="send_reminder_container_'.$product->id.'"  style="color:#777"><span id="send_reminder_info_'.$product->id.'" >'._(
                         "We'll notify you via email"
-                    ).' <span style="cursor:pointer" id="cancel_send_reminder_'.$row['Email Site Reminder Key'].'"  onClick="cancel_send_reminder('.$row['Email Site Reminder Key'].','.$product->id
-                    .')"  >('._('Cancel').')</span></span></span>';
+                    ).' <span style="cursor:pointer" id="cancel_send_reminder_'.$row['Email Site Reminder Key'].'"  onClick="cancel_send_reminder('.$row['Email Site Reminder Key'].','.$product->id.')"  >('._('Cancel').')</span></span></span>';
             } else {
                 $email_reminder = '<br/>
 					<span id="send_reminder_wait_'.$product->id.'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._(
@@ -3634,9 +3580,8 @@ class Page extends DB_Table {
 
             $form_id = 'order_button_'.$product->id;
 
-            $button = '<img id="order_button_'.$product->id.'"    class="order_button" onmouseover="this.src=\'art/ordernow_hover_'.$this->site->data['Site Locale']
-                .'.png\'" onmouseout="this.src=\'art/ordernow_'.$this->site->data['Site Locale'].'.png\'"    onClick="order_product_from_button(\''.$product->id.'\',\''.$this->order->id.'\',\''
-                .$this->id.'\',\''.$this->data['Page Store Section Type'].'\')"   src="art/ordernow_'.$this->site->data['Site Locale'].'.png" alt="'._('Order Product').'">
+            $button = '<img id="order_button_'.$product->id.'"    class="order_button" onmouseover="this.src=\'art/ordernow_hover_'.$this->site->data['Site Locale'].'.png\'" onmouseout="this.src=\'art/ordernow_'.$this->site->data['Site Locale']
+                .'.png\'"    onClick="order_product_from_button(\''.$product->id.'\',\''.$this->order->id.'\',\''.$this->id.'\',\''.$this->data['Page Store Section Type'].'\')"   src="art/ordernow_'.$this->site->data['Site Locale'].'.png" alt="'._('Order Product').'">
 			<img class="button_feedback waiting" style="display:none" id="waiting_'.$product->id.'" src="art/loading.gif" >
 			<img class="button_feedback" style="display:none" id="done_'.$product->id.'" src="art/icons/accept.png" alt="ok" >';
 
@@ -4127,27 +4072,20 @@ class Page extends DB_Table {
 
 
                 $sql = sprintf(
-                    "SELECT `Email Site Reminder Key` FROM `Email Site Reminder Dimension` WHERE `Trigger Scope`='Back in Stock' AND `Trigger Scope Key`=%d AND `User Key`=%d AND `Email Site Reminder In Process`='Yes' ",
-                    $product['Product ID'], $this->user->id
+                    "SELECT `Email Site Reminder Key` FROM `Email Site Reminder Dimension` WHERE `Trigger Scope`='Back in Stock' AND `Trigger Scope Key`=%d AND `User Key`=%d AND `Email Site Reminder In Process`='Yes' ", $product['Product ID'], $this->user->id
 
                 );
                 $res = mysql_query($sql);
                 if ($row = mysql_fetch_assoc($res)) {
-                    $email_reminder =
-                        '<br/><span id="send_reminder_wait_'.$product['Product ID'].'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '
-                        ._(
+                    $email_reminder = '<br/><span id="send_reminder_wait_'.$product['Product ID'].'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._(
                             'Processing request'
                         ).'</span><span id="send_reminder_container_'.$product['Product ID'].'"  style="color:#777"><span id="send_reminder_info_'.$product['Product ID'].'" >'._(
                             "We'll notify you via email"
-                        ).' <span style="cursor:pointer" id="cancel_send_reminder_'.$row['Email Site Reminder Key'].'"  onClick="cancel_send_reminder('.$row['Email Site Reminder Key'].','
-                        .$product['Product ID'].')"  >('._('Cancel').')</span></span></span>';
+                        ).' <span style="cursor:pointer" id="cancel_send_reminder_'.$row['Email Site Reminder Key'].'"  onClick="cancel_send_reminder('.$row['Email Site Reminder Key'].','.$product['Product ID'].')"  >('._('Cancel').')</span></span></span>';
                 } else {
-                    $email_reminder =
-                        '<br/><span id="send_reminder_wait_'.$product['Product ID'].'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '
-                        ._(
+                    $email_reminder = '<br/><span id="send_reminder_wait_'.$product['Product ID'].'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._(
                             'Processing request'
-                        ).'</span><span id="send_reminder_container_'.$product['Product ID'].'" style="color:#777" ><span id="send_reminder_'.$product['Product ID']
-                        .'" style="cursor:pointer;" onClick="send_reminder('.$product['Product ID'].')">'._(
+                        ).'</span><span id="send_reminder_container_'.$product['Product ID'].'" style="color:#777" ><span id="send_reminder_'.$product['Product ID'].'" style="cursor:pointer;" onClick="send_reminder('.$product['Product ID'].')">'._(
                             'Notify me when back in stock'
                         ).' <img style="position:relative;bottom:-2px" src="art/send_mail.png"/></span></span><span id="send_reminder_msg_'.$product['Product ID'].'"></span></span>';
 
@@ -4219,8 +4157,7 @@ class Page extends DB_Table {
 
                 $product['Product Code'], $price,
 
-                $input, $form_id, $counter, number_format($product['Product Price'], 2, '.', ''), $form_id, $counter, $product['Product Code'], $this->clean_accents($product['long_description']),
-                $description
+                $input, $form_id, $counter, number_format($product['Product Price'], 2, '.', ''), $form_id, $counter, $product['Product Code'], $this->clean_accents($product['long_description']), $description
 
 
             );
@@ -4236,8 +4173,7 @@ class Page extends DB_Table {
 
                        </td></tr>
                        <tr><td colspan=1></td><td colspan="3">
-                       <img onmouseover="this.src=\'art/ordernow_hover_%s.png\'" onmouseout="this.src=\'art/ordernow_%s.png\'"   onClick="order_from_list(\''.$form_id
-            .'\')" style="height:30px;cursor:pointer" src="art/ordernow_%s.png" alt="'._('Order Product').'">
+                       <img onmouseover="this.src=\'art/ordernow_hover_%s.png\'" onmouseout="this.src=\'art/ordernow_%s.png\'"   onClick="order_from_list(\''.$form_id.'\')" style="height:30px;cursor:pointer" src="art/ordernow_%s.png" alt="'._('Order Product').'">
                         <img src="art/loading.gif" style="height:24px;position:relative;bottom:3px;visibility:hidden" id="waiting_%s">
                         </td></tr>
                        </tbody>
@@ -4340,27 +4276,20 @@ class Page extends DB_Table {
 
 
                 $sql = sprintf(
-                    "SELECT `Email Site Reminder Key` FROM `Email Site Reminder Dimension` WHERE `Trigger Scope`='Back in Stock' AND `Trigger Scope Key`=%d AND `User Key`=%d AND `Email Site Reminder In Process`='Yes' ",
-                    $product['Product ID'], $this->user->id
+                    "SELECT `Email Site Reminder Key` FROM `Email Site Reminder Dimension` WHERE `Trigger Scope`='Back in Stock' AND `Trigger Scope Key`=%d AND `User Key`=%d AND `Email Site Reminder In Process`='Yes' ", $product['Product ID'], $this->user->id
 
                 );
                 $res = mysql_query($sql);
                 if ($row = mysql_fetch_assoc($res)) {
-                    $email_reminder =
-                        '<br/><span id="send_reminder_wait_'.$product['Product ID'].'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '
-                        ._(
+                    $email_reminder = '<br/><span id="send_reminder_wait_'.$product['Product ID'].'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._(
                             'Processing request'
                         ).'</span><span id="send_reminder_container_'.$product['Product ID'].'"  style="color:#777"><span id="send_reminder_info_'.$product['Product ID'].'" >'._(
                             "We'll notify you via email"
-                        ).' <span style="cursor:pointer" id="cancel_send_reminder_'.$row['Email Site Reminder Key'].'"  onClick="cancel_send_reminder('.$row['Email Site Reminder Key'].','
-                        .$product['Product ID'].')"  >('._('Cancel').')</span></span></span>';
+                        ).' <span style="cursor:pointer" id="cancel_send_reminder_'.$row['Email Site Reminder Key'].'"  onClick="cancel_send_reminder('.$row['Email Site Reminder Key'].','.$product['Product ID'].')"  >('._('Cancel').')</span></span></span>';
                 } else {
-                    $email_reminder =
-                        '<br/><span id="send_reminder_wait_'.$product['Product ID'].'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '
-                        ._(
+                    $email_reminder = '<br/><span id="send_reminder_wait_'.$product['Product ID'].'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._(
                             'Processing request'
-                        ).'</span><span id="send_reminder_container_'.$product['Product ID'].'" style="color:#777" ><span id="send_reminder_'.$product['Product ID']
-                        .'" style="cursor:pointer;" onClick="send_reminder('.$product['Product ID'].')">'._(
+                        ).'</span><span id="send_reminder_container_'.$product['Product ID'].'" style="color:#777" ><span id="send_reminder_'.$product['Product ID'].'" style="cursor:pointer;" onClick="send_reminder('.$product['Product ID'].')">'._(
                             'Notify me when back in stock'
                         ).' <img style="position:relative;bottom:-2px" src="art/send_mail.png"/></span></span><span id="send_reminder_msg_'.$product['Product ID'].'"></span></span>';
 
@@ -4449,8 +4378,7 @@ class Page extends DB_Table {
 
                        </td></tr></form>
                        <tr><td colspan=1></td><td colspan="3">
-                       <img onmouseover="this.src=\'art/ordernow_hover_%s.png\'" onmouseout="this.src=\'art/ordernow_%s.png\'"   onClick="document.forms[\''.$form_id
-            .'\'].submit();" style="height:30px;cursor:pointer" src="art/ordernow_%s.png" alt="'._('Order Product').'">
+                       <img onmouseover="this.src=\'art/ordernow_hover_%s.png\'" onmouseout="this.src=\'art/ordernow_%s.png\'"   onClick="document.forms[\''.$form_id.'\'].submit();" style="height:30px;cursor:pointer" src="art/ordernow_%s.png" alt="'._('Order Product').'">
                         </td></tr>
                        </table>
                        ', $this->data['Page URL'], $this->site->data['Site Locale'], $this->site->data['Site Locale'], $this->site->data['Site Locale']
@@ -4467,8 +4395,7 @@ class Page extends DB_Table {
                       <input type="hidden" name="userid" value="%s">
                       <input type="hidden" name="customer_last_order" value="%s">
  						<input type="hidden" name="customer_key" value="%s">
-                      <input type="hidden" name="nnocart"> ', $this->site->get_checkout_data('url').'/shopping_cart.php', $this->site->get_checkout_data('id'),
-            $this->customer->get('Customer Last Order Date'), $this->customer->id
+                      <input type="hidden" name="nnocart"> ', $this->site->get_checkout_data('url').'/shopping_cart.php', $this->site->get_checkout_data('id'), $this->customer->get('Customer Last Order Date'), $this->customer->id
 
         );
         $counter = 1;
@@ -4623,27 +4550,20 @@ class Page extends DB_Table {
 
 
                 $sql = sprintf(
-                    "SELECT `Email Site Reminder Key` FROM `Email Site Reminder Dimension` WHERE `Trigger Scope`='Back in Stock' AND `Trigger Scope Key`=%d AND `User Key`=%d AND `Email Site Reminder In Process`='Yes' ",
-                    $product['Product ID'], $this->user->id
+                    "SELECT `Email Site Reminder Key` FROM `Email Site Reminder Dimension` WHERE `Trigger Scope`='Back in Stock' AND `Trigger Scope Key`=%d AND `User Key`=%d AND `Email Site Reminder In Process`='Yes' ", $product['Product ID'], $this->user->id
 
                 );
                 $res = mysql_query($sql);
                 if ($row = mysql_fetch_assoc($res)) {
-                    $email_reminder =
-                        '<br/><span id="send_reminder_wait_'.$product['Product ID'].'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '
-                        ._(
+                    $email_reminder = '<br/><span id="send_reminder_wait_'.$product['Product ID'].'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._(
                             'Processing request'
                         ).'</span><span id="send_reminder_container_'.$product['Product ID'].'"  style="color:#777"><span id="send_reminder_info_'.$product['Product ID'].'" >'._(
                             "We'll notify you via email"
-                        ).' <span style="cursor:pointer" id="cancel_send_reminder_'.$row['Email Site Reminder Key'].'"  onClick="cancel_send_reminder('.$row['Email Site Reminder Key'].','
-                        .$product['Product ID'].')"  >('._('Cancel').')</span></span></span>';
+                        ).' <span style="cursor:pointer" id="cancel_send_reminder_'.$row['Email Site Reminder Key'].'"  onClick="cancel_send_reminder('.$row['Email Site Reminder Key'].','.$product['Product ID'].')"  >('._('Cancel').')</span></span></span>';
                 } else {
-                    $email_reminder =
-                        '<br/><span id="send_reminder_wait_'.$product['Product ID'].'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '
-                        ._(
+                    $email_reminder = '<br/><span id="send_reminder_wait_'.$product['Product ID'].'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._(
                             'Processing request'
-                        ).'</span><span id="send_reminder_container_'.$product['Product ID'].'" style="color:#777" ><span id="send_reminder_'.$product['Product ID']
-                        .'" style="cursor:pointer;" onClick="send_reminder('.$product['Product ID'].')">'._(
+                        ).'</span><span id="send_reminder_container_'.$product['Product ID'].'" style="color:#777" ><span id="send_reminder_'.$product['Product ID'].'" style="cursor:pointer;" onClick="send_reminder('.$product['Product ID'].')">'._(
                             'Notify me when back in stock'
                         ).' <img style="position:relative;bottom:-2px" src="art/send_mail.png"/></span></span><span id="send_reminder_msg_'.$product['Product ID'].'"></span></span>';
 
@@ -4689,8 +4609,7 @@ class Page extends DB_Table {
                 }
 
                 $input = sprintf(
-                    '<input  onKeyUp="order_product_from_list_changed(\'%s\')"  maxlength=6  id="qty_%s_%s"  type="text" value="%s" ovalue="%s" class="list_input" >', $form_id, $form_id,
-                    $product['Product ID'], $old_qty, $old_qty
+                    '<input  onKeyUp="order_product_from_list_changed(\'%s\')"  maxlength=6  id="qty_%s_%s"  type="text" value="%s" ovalue="%s" class="list_input" >', $form_id, $form_id, $product['Product ID'], $old_qty, $old_qty
                 );
                 if ($old_qty != '') {
                     $number_fields_with_ordered_products++;
@@ -4752,8 +4671,8 @@ class Page extends DB_Table {
         $form .= sprintf(
             '
                        <tr><td colspan=1></td><td colspan="3">
-                       <img id="list_order_button_submit_%s"    onClick="order_from_list(\''.$form_id.'\',\''.$order_key.'\',\''.$this->id.'\',\''.$this->data['Page Store Section Type']
-            .'\')" style="height:30px;cursor:pointer" src="art/'.($number_fields_with_ordered_products ? 'ordered' : 'ordernow').'_%s.png" alt="'._('Order Product').'">
+                       <img id="list_order_button_submit_%s"    onClick="order_from_list(\''.$form_id.'\',\''.$order_key.'\',\''.$this->id.'\',\''.$this->data['Page Store Section Type'].'\')" style="height:30px;cursor:pointer" src="art/'
+            .($number_fields_with_ordered_products ? 'ordered' : 'ordernow').'_%s.png" alt="'._('Order Product').'">
                         <img class="list_feedback" src="art/loading.gif" style="display:none" id="waiting_%s">
                         <img class="list_feedback" src="art/icons/accept.png" style="display:none" id="done_%s">
                         </td></tr>
@@ -4892,8 +4811,8 @@ class Page extends DB_Table {
                 $tr_class = '';
             }
             $form .= sprintf(
-                '<tr %s ><td class="code">%s</td><td class="description">%s   <span class="%s">%s</span></td><td class="rrp">%s</td></tr>', $tr_class, $product['Product Code'],
-                $product['Product Units Per Case'].'x '.$product['Product Special Characteristic'], $class_state, $state, $rrp
+                '<tr %s ><td class="code">%s</td><td class="description">%s   <span class="%s">%s</span></td><td class="rrp">%s</td></tr>', $tr_class, $product['Product Code'], $product['Product Units Per Case'].'x '.$product['Product Special Characteristic'],
+                $class_state, $state, $rrp
 
             );
 
@@ -4970,8 +4889,7 @@ class Page extends DB_Table {
 
 
                 $order_button = sprintf(
-                    '<td></td><td colspan=2 style="padding:0px"><div style="background:#ffdada;color:red;display:table-cell; vertical-align:middle;font-size:90%%;text-align:center;;border:1px solid #ccc;height:18px;width:58px;">%s</div></td>',
-                    _('Sold Out')
+                    '<td></td><td colspan=2 style="padding:0px"><div style="background:#ffdada;color:red;display:table-cell; vertical-align:middle;font-size:90%%;text-align:center;;border:1px solid #ccc;height:18px;width:58px;">%s</div></td>', _('Sold Out')
                 );
 
 
@@ -5025,8 +4943,7 @@ class Page extends DB_Table {
                            <td class="description">%s <span class="rrp">%s</span></td>
 
 
-                           </tr>'."\n", $tr_class, $product['Product Code'], $order_button, $product['Product ID'], $order_key, $product['Product ID'], $product['Product ID'], $product['Product ID'],
-                $old_qty,
+                           </tr>'."\n", $tr_class, $product['Product Code'], $order_button, $product['Product ID'], $order_key, $product['Product ID'], $product['Product ID'], $product['Product ID'], $old_qty,
 
                 $price,
 
@@ -5098,27 +5015,20 @@ class Page extends DB_Table {
 
 
                 $sql = sprintf(
-                    "SELECT `Email Site Reminder Key` FROM `Email Site Reminder Dimension` WHERE `Trigger Scope`='Back in Stock' AND `Trigger Scope Key`=%d AND `User Key`=%d AND `Email Site Reminder In Process`='Yes' ",
-                    $product['Product ID'], $this->user->id
+                    "SELECT `Email Site Reminder Key` FROM `Email Site Reminder Dimension` WHERE `Trigger Scope`='Back in Stock' AND `Trigger Scope Key`=%d AND `User Key`=%d AND `Email Site Reminder In Process`='Yes' ", $product['Product ID'], $this->user->id
 
                 );
                 $res = mysql_query($sql);
                 if ($row = mysql_fetch_assoc($res)) {
-                    $email_reminder =
-                        '<br/><span id="send_reminder_wait_'.$product['Product ID'].'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '
-                        ._(
+                    $email_reminder = '<br/><span id="send_reminder_wait_'.$product['Product ID'].'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._(
                             'Processing request'
                         ).'</span><span id="send_reminder_container_'.$product['Product ID'].'"  style="color:#777"><span id="send_reminder_info_'.$product['Product ID'].'" >'._(
                             "We'll notify you via email"
-                        ).' <span style="cursor:pointer" id="cancel_send_reminder_'.$row['Email Site Reminder Key'].'"  onClick="cancel_send_reminder('.$row['Email Site Reminder Key'].','
-                        .$product['Product ID'].')"  >('._('Cancel').')</span></span></span>';
+                        ).' <span style="cursor:pointer" id="cancel_send_reminder_'.$row['Email Site Reminder Key'].'"  onClick="cancel_send_reminder('.$row['Email Site Reminder Key'].','.$product['Product ID'].')"  >('._('Cancel').')</span></span></span>';
                 } else {
-                    $email_reminder =
-                        '<br/><span id="send_reminder_wait_'.$product['Product ID'].'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '
-                        ._(
+                    $email_reminder = '<br/><span id="send_reminder_wait_'.$product['Product ID'].'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._(
                             'Processing request'
-                        ).'</span><span id="send_reminder_container_'.$product['Product ID'].'" style="color:#777" ><span id="send_reminder_'.$product['Product ID']
-                        .'" style="cursor:pointer;" onClick="send_reminder('.$product['Product ID'].')">'._(
+                        ).'</span><span id="send_reminder_container_'.$product['Product ID'].'" style="color:#777" ><span id="send_reminder_'.$product['Product ID'].'" style="cursor:pointer;" onClick="send_reminder('.$product['Product ID'].')">'._(
                             'Notify me when back in stock'
                         ).' <img style="position:relative;bottom:-2px" src="art/send_mail.png"/></span></span><span id="send_reminder_msg_'.$product['Product ID'].'"></span></span>';
 
@@ -5207,8 +5117,7 @@ class Page extends DB_Table {
 
                        </td></tr></form>
                        <tr><td colspan=1></td><td colspan="3">
-                       <img onmouseover="this.src=\'art/ordernow_hover_%s.png\'" onmouseout="this.src=\'art/ordernow_%s.png\'"   onClick="document.forms[\''.$form_id
-            .'\'].submit();" style="height:30px;cursor:pointer" src="art/ordernow_%s.png" alt="'._('Order Product').'">
+                       <img onmouseover="this.src=\'art/ordernow_hover_%s.png\'" onmouseout="this.src=\'art/ordernow_%s.png\'"   onClick="document.forms[\''.$form_id.'\'].submit();" style="height:30px;cursor:pointer" src="art/ordernow_%s.png" alt="'._('Order Product').'">
                         </td></tr>
                        </table>
                        ', $this->data['Page URL'], $this->site->data['Site Locale'], $this->site->data['Site Locale'], $this->site->data['Site Locale']
@@ -5216,7 +5125,6 @@ class Page extends DB_Table {
 
         return $form;
     }
-
 
     function display_top_bar() {
 
@@ -5227,24 +5135,21 @@ class Page extends DB_Table {
                 case 'Mals':
 
                     $basket = '<div style="float:left;"> '._('Total').': '.$this->currency_symbol
-                        .'<span id="total"> <img src="art/loading.gif" style="width:14px;position:relative;top:2px"/></span> (<span id="number_items"><img src="art/loading.gif" style="width:14px;position:relative;top:2px"/></span> '
-                        ._('items').') <span class="link basket"  id="see_basket"  onClick=\'window.location="'.$this->site->get_checkout_data('url').'/cf/review.cfm?userid='
-                        .$this->site->get_checkout_data('id').'&return='.$this->data['Page URL'].'"\' >'._('Basket & Checkout')
+                        .'<span id="total"> <img src="art/loading.gif" style="width:14px;position:relative;top:2px"/></span> (<span id="number_items"><img src="art/loading.gif" style="width:14px;position:relative;top:2px"/></span> '._('items')
+                        .') <span class="link basket"  id="see_basket"  onClick=\'window.location="'.$this->site->get_checkout_data('url').'/cf/review.cfm?userid='.$this->site->get_checkout_data('id').'&return='.$this->data['Page URL'].'"\' >'._('Basket & Checkout')
                         .'</span>  <img src="art/gear.png" style="visibility:hidden" class="dummy_img" /></div>';
 
-                    $basket = '<div style="float:left;position:relative;top:4px;margin-right:20px"><span>'.$this->customer->get_hello()
-                        .'</span>  <span class="link" onClick=\'window.location="logout.php"\' id="logout">'._('Log Out').'</span> <span  class="link" onClick=\'window.location="profile.php"\' >'._(
+                    $basket = '<div style="float:left;position:relative;top:4px;margin-right:20px"><span>'.$this->customer->get_hello().'</span>  <span class="link" onClick=\'window.location="logout.php"\' id="logout">'._('Log Out')
+                        .'</span> <span  class="link" onClick=\'window.location="profile.php"\' >'._(
                             'My Account'
                         ).'</span> </div>';
 
-                    $basket .= '<div  style="float:right;position:relative;top:2px"><span style="cursor:pointer" onClick=\'window.location="'.$this->site->get_checkout_data('url')
-                        .'/cf/review.cfm?sd=ignore&userid='.$this->site->get_checkout_data('id').'&return='.$this->data['Page URL'].'"\' > '._('Total').': '.$this->currency_symbol
-                        .'<span id="total"> <img src="art/loading.gif" style="width:14px;position:relative;top:2px;"/></span> (<span id="number_items"><img src="art/loading.gif" style="width:14px;position:relative;top:2px"/></span> '
-                        ._('items').')</span> <img onClick=\'window.location="'.$this->site->get_checkout_data('url').'/cf/review.cfm?sd=ignore&userid='.$this->site->get_checkout_data('id').'&return='
-                        .$this->data['Page URL']
+                    $basket .= '<div  style="float:right;position:relative;top:2px"><span style="cursor:pointer" onClick=\'window.location="'.$this->site->get_checkout_data('url').'/cf/review.cfm?sd=ignore&userid='.$this->site->get_checkout_data('id').'&return='
+                        .$this->data['Page URL'].'"\' > '._('Total').': '.$this->currency_symbol
+                        .'<span id="total"> <img src="art/loading.gif" style="width:14px;position:relative;top:2px;"/></span> (<span id="number_items"><img src="art/loading.gif" style="width:14px;position:relative;top:2px"/></span> '._('items')
+                        .')</span> <img onClick=\'window.location="'.$this->site->get_checkout_data('url').'/cf/review.cfm?sd=ignore&userid='.$this->site->get_checkout_data('id').'&return='.$this->data['Page URL']
                         .'"\' src="art/basket.jpg" style="height:15px;position:relative;top:3px;margin-left:10px;cursor:pointer"/> <span style="color:#ff8000;margin-left:0px" class="link basket"  id="see_basket"  onClick=\'window.location="'
-                        .$this->site->get_checkout_data('url').'/cf/review.cfm?sd=ignore&userid='.$this->site->get_checkout_data('id').'&return='.$this->data['Page URL'].'"\' >'._('Basket & Checkout')
-                        .'</span> </div>';
+                        .$this->site->get_checkout_data('url').'/cf/review.cfm?sd=ignore&userid='.$this->site->get_checkout_data('id').'&return='.$this->data['Page URL'].'"\' >'._('Basket & Checkout').'</span> </div>';
                     $html   = $basket;
 
                     break;
@@ -5269,8 +5174,8 @@ class Page extends DB_Table {
                         foreach (
                             $valid_currencies as $currency_code => $valid_currency
                         ) {
-                            $currency_dialog .= '<button class="'.($this->set_currency == $currency_code ? 'selected' : '').'  '.($_SESSION['user_currency'] == $currency_code ? 'recommended' : '')
-                                .'" onClick="change_currency(\''.$currency_code.'\')"  ><b>'.$currency_code.'</b>, '.$valid_currency['native_name'].'</button>';
+                            $currency_dialog .= '<button class="'.($this->set_currency == $currency_code ? 'selected' : '').'  '.($_SESSION['user_currency'] == $currency_code ? 'recommended' : '').'" onClick="change_currency(\''.$currency_code.'\')"  ><b>'
+                                .$currency_code.'</b>, '.$valid_currency['native_name'].'</button>';
                         }
                         $currency_dialog .= '</div></div>';
 
@@ -5313,9 +5218,9 @@ class Page extends DB_Table {
 
 
         } else {
-            $html = '<div style="float:right"> <span class="link" onClick=\'window.location="registration.php"\' id="show_register_dialog">'._('Create Account')
-                .'</span> <span class="link"  onClick=\'window.location="login.php?from='.$this->id.'"\' id="show_login_dialog">'._('Log in')
-                .'</span><img src="art/gear.png" style="visibility:hidden" class="dummy_img" /></div>';
+            $html =
+                '<div style="float:right"> <span class="link" onClick=\'window.location="registration.php"\' id="show_register_dialog">'._('Create Account').'</span> <span class="link"  onClick=\'window.location="login.php?from='.$this->id.'"\' id="show_login_dialog">'
+                ._('Log in').'</span><img src="art/gear.png" style="visibility:hidden" class="dummy_img" /></div>';
         }
 
 
@@ -5358,8 +5263,8 @@ class Page extends DB_Table {
             } else {
                 if ($this->data['Page Store Section Type'] == 'Family') {
                     $sql = sprintf(
-                        "INSERT INTO `Page Product List Dimension` (`Page Key`,`Site Key`,`Page Product List Code`,`Page Product List Type`,`Page Product List Parent Key`) VALUES  (%d,%d,%s,%s,%d)",
-                        $this->id, $this->data['Page Site Key'], prepare_mysql($list_key), prepare_mysql('FamilyList'), $this->data['Page Parent Key']
+                        "INSERT INTO `Page Product List Dimension` (`Page Key`,`Site Key`,`Page Product List Code`,`Page Product List Type`,`Page Product List Parent Key`) VALUES  (%d,%d,%s,%s,%d)", $this->id, $this->data['Page Site Key'], prepare_mysql($list_key),
+                        prepare_mysql('FamilyList'), $this->data['Page Parent Key']
 
                     );
                     mysql_query($sql);
@@ -5426,8 +5331,8 @@ class Page extends DB_Table {
                     $product = new Product('id', $product_pid);
 
                     $sql = sprintf(
-                        "INSERT INTO `Page Product Dimension` (`Parent Key`,`Site Key`,`Page Key`,`Product ID`,`Family Key`,`Parent Type`,`State`) VALUES  (%d,%d,%d,%d,%d,'List',%s) ON DUPLICATE KEY UPDATE `Site Key`=%d",
-                        $row['Page Product List Key'], $this->data['Page Site Key'], $this->id,
+                        "INSERT INTO `Page Product Dimension` (`Parent Key`,`Site Key`,`Page Key`,`Product ID`,`Family Key`,`Parent Type`,`State`) VALUES  (%d,%d,%d,%d,%d,'List',%s) ON DUPLICATE KEY UPDATE `Site Key`=%d", $row['Page Product List Key'],
+                        $this->data['Page Site Key'], $this->id,
 
                         $product_pid, $product->data['Product Family Key'], prepare_mysql($this->data['Page State']), $this->data['Page Site Key']
 
@@ -5573,17 +5478,16 @@ class Page extends DB_Table {
                 $number_buttons++;
                 if (!in_array($product->id, $old_page_buttons_to_delete)) {
                     $sql = sprintf(
-                        "INSERT INTO `Page Product Button Dimension` (`Site Key`,`Page Key`,`Product ID`) VALUES  (%d,%d,%d) ON DUPLICATE KEY UPDATE `Site Key`=%d, `Page Key`=%d ,`Product ID`=%d  ",
-                        $this->data['Page Site Key'], $this->id, $product->id, $this->data['Page Site Key'], $this->id, $product->id
+                        "INSERT INTO `Page Product Button Dimension` (`Site Key`,`Page Key`,`Product ID`) VALUES  (%d,%d,%d) ON DUPLICATE KEY UPDATE `Site Key`=%d, `Page Key`=%d ,`Product ID`=%d  ", $this->data['Page Site Key'], $this->id, $product->id,
+                        $this->data['Page Site Key'], $this->id, $product->id
                     );
                     mysql_query($sql);
                     //print "$sql\n";
 
                     $page_product_key = mysql_insert_id();
                     $sql              = sprintf(
-                        "INSERT INTO `Page Product Dimension` (`Page Key`,`Site Key`,`Product ID`,`Family Key`,`Parent Key`,`Parent Type`,`State`) VALUES  (%d,%d,%d,%d,%d,'Button',%s) ON DUPLICATE KEY UPDATE `Site Key`=%d",
-                        $this->id, $this->data['Page Site Key'], $product->id, $product->data['Product Family Key'], $page_product_key, prepare_mysql($this->data['Page State']),
-                        $this->data['Page Site Key']
+                        "INSERT INTO `Page Product Dimension` (`Page Key`,`Site Key`,`Product ID`,`Family Key`,`Parent Key`,`Parent Type`,`State`) VALUES  (%d,%d,%d,%d,%d,'Button',%s) ON DUPLICATE KEY UPDATE `Site Key`=%d", $this->id, $this->data['Page Site Key'],
+                        $product->id, $product->data['Product Family Key'], $page_product_key, prepare_mysql($this->data['Page State']), $this->data['Page Site Key']
                     );
                     mysql_query($sql);
 
@@ -5715,8 +5619,7 @@ class Page extends DB_Table {
         $pwd = uniqid('', true).sha1(mt_rand()).'.'.$r;
 
         $sql = sprintf(
-            "INSERT INTO `MasterKey Internal Dimension` (`User Key`,`Key`,`Valid Until`,`IP`)VALUES (%s,%s,%s,%s) ", 1, prepare_mysql($pwd),
-            prepare_mysql(gmdate("Y-m-d H:i:s", strtotime("now +5 minute"))), prepare_mysql(ip(), false)
+            "INSERT INTO `MasterKey Internal Dimension` (`User Key`,`Key`,`Valid Until`,`IP`)VALUES (%s,%s,%s,%s) ", 1, prepare_mysql($pwd), prepare_mysql(gmdate("Y-m-d H:i:s", strtotime("now +5 minute"))), prepare_mysql(ip(), false)
         );
 
         // print $sql;
@@ -5749,9 +5652,7 @@ class Page extends DB_Table {
             //       $command="mantenence/scripts/webkit2png  -C -o server_files/tmp/ph_image".$this->id."  --clipheight=80  --clipwidth=488  -s 0.5   http://localhost/dw/public_header_preview.php?id=".$this->id;
 
         } elseif (preg_match('/linux/i', $_system)) {
-            $command =
-                'xvfb-run --server-args="-screen 0, 1280x1024x24" python mantenence/scripts/webkit2png_linux.py --style=windows  --log=server_files/tmp/webkit2png_linux.log -o server_files/tmp/pp_image'
-                .$this->id.'-clipped.png    '.$url;
+            $command = 'xvfb-run --server-args="-screen 0, 1280x1024x24" python mantenence/scripts/webkit2png_linux.py --style=windows  --log=server_files/tmp/webkit2png_linux.log -o server_files/tmp/pp_image'.$this->id.'-clipped.png    '.$url;
 
 
             //  $command='xvfb-run --server-args="-screen 0, 1280x1024x24" python mantenence/scripts/webkit2png_linux.py --log=server_files/tmp/webkit2png_linux.log -o server_files/tmp/pp_image'.$this->id.'-clipped.png --scale  512 '.(ceil($height*0.5)).'    '.$url;
@@ -5813,8 +5714,7 @@ class Page extends DB_Table {
 
 
             $sql = sprintf(
-                "UPDATE `Page Store Dimension` SET `Page Preview Snapshot Image Key`=%d,`Page Preview Snapshot Last Update`=NOW()  WHERE `Page Key`=%d", $this->data['Page Preview Snapshot Image Key'],
-                $this->id
+                "UPDATE `Page Store Dimension` SET `Page Preview Snapshot Image Key`=%d,`Page Preview Snapshot Last Update`=NOW()  WHERE `Page Key`=%d", $this->data['Page Preview Snapshot Image Key'], $this->id
 
             );
             mysql_query($sql);
@@ -6070,8 +5970,8 @@ class Page extends DB_Table {
             ) = calculate_interval_dates($this->db, $interval);
 
         $sql = sprintf(
-            "SELECT count(*) AS num_requests ,count(DISTINCT `Visitor Session Key`) num_sessions ,count(DISTINCT `Visitor Key`) AS num_visitors   FROM  `User Request Dimension`   WHERE `Page Key`=%d  %s",
-            $this->id, ($from_date ? ' and `Date`>='.prepare_mysql($from_date) : '')
+            "SELECT count(*) AS num_requests ,count(DISTINCT `Visitor Session Key`) num_sessions ,count(DISTINCT `Visitor Key`) AS num_visitors   FROM  `User Request Dimension`   WHERE `Page Key`=%d  %s", $this->id,
+            ($from_date ? ' and `Date`>='.prepare_mysql($from_date) : '')
 
 
         );
@@ -6090,8 +5990,8 @@ class Page extends DB_Table {
         }
 
         $sql = sprintf(
-            "SELECT count(*) AS num_requests ,count(DISTINCT `Visitor Session Key`) num_sessions ,count(DISTINCT `User Key`) AS num_users   FROM  `User Request Dimension`  WHERE  `Is User`='Yes' AND `Page Key`=%d  %s",
-            $this->id, ($from_date ? ' and `Date`>='.prepare_mysql($from_date) : '')
+            "SELECT count(*) AS num_requests ,count(DISTINCT `Visitor Session Key`) num_sessions ,count(DISTINCT `User Key`) AS num_users   FROM  `User Request Dimension`  WHERE  `Is User`='Yes' AND `Page Key`=%d  %s", $this->id,
+            ($from_date ? ' and `Date`>='.prepare_mysql($from_date) : '')
 
 
         );
@@ -6114,8 +6014,8 @@ class Page extends DB_Table {
 	`Page Store '.$db_interval.' Acc Users Requests`=%d,
 	`Page Store '.$db_interval.' Acc Users Sessions`=%d,
 	`Page Store '.$db_interval.' Acc Users`=%d
-	WHERE `Page Key`=%d', $this->data['Page Store '.$db_interval.' Acc Requests'], $this->data['Page Store '.$db_interval.' Acc Sessions'], $this->data['Page Store '.$db_interval.' Acc Visitors'],
-            $this->data['Page Store '.$db_interval.' Acc Users Requests'], $this->data['Page Store '.$db_interval.' Acc Users Sessions'], $this->data['Page Store '.$db_interval.' Acc Users'],
+	WHERE `Page Key`=%d', $this->data['Page Store '.$db_interval.' Acc Requests'], $this->data['Page Store '.$db_interval.' Acc Sessions'], $this->data['Page Store '.$db_interval.' Acc Visitors'], $this->data['Page Store '.$db_interval.' Acc Users Requests'],
+            $this->data['Page Store '.$db_interval.' Acc Users Sessions'], $this->data['Page Store '.$db_interval.' Acc Users'],
 
             $this->id
         );
@@ -6204,6 +6104,9 @@ class Page extends DB_Table {
 
     }
 
+
+    //======= new methods
+
     function get_primary_content() {
         $content = '';
 
@@ -6211,9 +6114,6 @@ class Page extends DB_Table {
         return $content;
 
     }
-
-
-    //======= new methods
 
     function get_departments_data() {
         $departments = array();
@@ -6378,8 +6278,7 @@ class Page extends DB_Table {
     function get_products_data() {
         $products = array();
         $sql      = sprintf(
-            "SELECT PPD.`Product ID`,PSD.`Page Key` FROM `Page Product Dimension` PPD LEFT JOIN   `Page Store Dimension` PSD ON (PSD.`Page Parent Key`=PPD.`Product ID` AND `Page Store Section Type`='Product')      WHERE  PPD.`Page Key`=%d  ",
-            $this->id
+            "SELECT PPD.`Product ID`,PSD.`Page Key` FROM `Page Product Dimension` PPD LEFT JOIN   `Page Store Dimension` PSD ON (PSD.`Page Parent Key`=PPD.`Product ID` AND `Page Store Section Type`='Product')      WHERE  PPD.`Page Key`=%d  ", $this->id
         );
 
 
@@ -6445,8 +6344,7 @@ class Page extends DB_Table {
         foreach ($deals as $deal) {
             if ($deal['Status'] == 'Active' and !preg_match(
                     '/Voucher/', $deal['Terms Type']
-                )
-            ) {
+                )) {
                 $badges[] = sprintf(
                     '<div class="offer"><div class="name">%s</div><div class="allowances">%s</div> <div class="terms">%s</div></div>', $deal['Name'], $deal['Allowance Label'], $deal['Terms Label']
 
@@ -6482,8 +6380,8 @@ class Page extends DB_Table {
                     $target_found = false;
 
                     $sql = sprintf(
-                        'SELECT `Category Webpage Index Key`,`Category Webpage Index Section Key`,`Category Webpage Index Stack` FROM  `Category Webpage Index` WHERE `Category Webpage Index Webpage Key`=%d AND `Category Webpage Index Category Key`=%d ',
-                        $this->id, $item_key
+                        'SELECT `Category Webpage Index Key`,`Category Webpage Index Section Key`,`Category Webpage Index Stack` FROM  `Category Webpage Index` WHERE `Category Webpage Index Webpage Key`=%d AND `Category Webpage Index Category Key`=%d ', $this->id,
+                        $item_key
 
 
                     );
@@ -6516,8 +6414,7 @@ class Page extends DB_Table {
 
 
                         $sql = sprintf(
-                            'SELECT `Category Webpage Index Section Key`,`Category Webpage Index Stack` FROM  `Category Webpage Index` WHERE `Category Webpage Index Webpage Key`=%d AND `Category Webpage Index Category Key`=%d ',
-                            $this->id, $target_key
+                            'SELECT `Category Webpage Index Section Key`,`Category Webpage Index Stack` FROM  `Category Webpage Index` WHERE `Category Webpage Index Webpage Key`=%d AND `Category Webpage Index Category Key`=%d ', $this->id, $target_key
 
 
                         );
@@ -6551,8 +6448,7 @@ class Page extends DB_Table {
                             $subjects = array();
 
                             $sql = sprintf(
-                                "SELECT `Category Webpage Index Stack`,`Category Webpage Index Key`,`Category Webpage Index Category Key` AS subject_key FROM `Category Webpage Index`    WHERE  `Category Webpage Index Webpage Key`=%d ",
-                                $this->id
+                                "SELECT `Category Webpage Index Stack`,`Category Webpage Index Key`,`Category Webpage Index Category Key` AS subject_key FROM `Category Webpage Index`    WHERE  `Category Webpage Index Webpage Key`=%d ", $this->id
                             );
 
 
@@ -6605,8 +6501,7 @@ class Page extends DB_Table {
 
 
                             $sql = sprintf(
-                                'UPDATE `Category Webpage Index` SET `Category Webpage Index Section Key`=%d , `Category Webpage Index Stack`=%d WHERE `Category Webpage Index Key`=%d',
-                                $target_section_key, 0, $item_index_key
+                                'UPDATE `Category Webpage Index` SET `Category Webpage Index Section Key`=%d , `Category Webpage Index Stack`=%d WHERE `Category Webpage Index Key`=%d', $target_section_key, 0, $item_index_key
 
 
                             );
@@ -6682,8 +6577,7 @@ class Page extends DB_Table {
                         // move last square
 
                         $sql = sprintf(
-                            'SELECT max(`Category Webpage Index Stack`) AS stack FROM  `Category Webpage Index` WHERE `Category Webpage Index Webpage Key`=%d AND `Category Webpage Index Section Key`=%d ',
-                            $this->id, $target_section_key
+                            'SELECT max(`Category Webpage Index Stack`) AS stack FROM  `Category Webpage Index` WHERE `Category Webpage Index Webpage Key`=%d AND `Category Webpage Index Section Key`=%d ', $this->id, $target_section_key
 
 
                         );
@@ -6700,8 +6594,7 @@ class Page extends DB_Table {
 
                                     $subjects = array();
                                     $sql      = sprintf(
-                                        "SELECT `Category Webpage Index Stack`,`Category Webpage Index Key`,`Category Webpage Index Category Key` AS subject_key FROM `Category Webpage Index`    WHERE  `Category Webpage Index Webpage Key`=%d ",
-                                        $this->id
+                                        "SELECT `Category Webpage Index Stack`,`Category Webpage Index Key`,`Category Webpage Index Category Key` AS subject_key FROM `Category Webpage Index`    WHERE  `Category Webpage Index Webpage Key`=%d ", $this->id
                                     );
                                     if ($result = $this->db->query($sql)) {
                                         foreach ($result as $row) {
@@ -6729,8 +6622,7 @@ class Page extends DB_Table {
                                     $updated_metadata['section_keys'][] = $target_section_key;
 
                                     $sql = sprintf(
-                                        'UPDATE `Category Webpage Index` SET `Category Webpage Index Section Key`=%d , `Category Webpage Index Stack`=%d WHERE `Category Webpage Index Key`=%d',
-                                        $target_section_key, $stack + 1, $item_index_key
+                                        'UPDATE `Category Webpage Index` SET `Category Webpage Index Section Key`=%d , `Category Webpage Index Stack`=%d WHERE `Category Webpage Index Key`=%d', $target_section_key, $stack + 1, $item_index_key
 
 
                                     );
@@ -6802,8 +6694,7 @@ class Page extends DB_Table {
                     $target_found = false;
 
                     $sql = sprintf(
-                        'SELECT `Product Category Index Key`,`Product Category Index Stack` FROM  `Product Category Index` WHERE `Product Category Index Website Key`=%d AND `Product Category Index Product ID`=%d ',
-                        $this->id, $item_key
+                        'SELECT `Product Category Index Key`,`Product Category Index Stack` FROM  `Product Category Index` WHERE `Product Category Index Website Key`=%d AND `Product Category Index Product ID`=%d ', $this->id, $item_key
 
 
                     );
@@ -6835,8 +6726,7 @@ class Page extends DB_Table {
 
 
                         $sql = sprintf(
-                            'SELECT `Product Category Index Key`,`Product Category Index Stack` FROM  `Product Category Index` WHERE `Product Category Index Website Key`=%d AND `Product Category Index Product ID`=%d ',
-                            $this->id, $target_key
+                            'SELECT `Product Category Index Key`,`Product Category Index Stack` FROM  `Product Category Index` WHERE `Product Category Index Website Key`=%d AND `Product Category Index Product ID`=%d ', $this->id, $target_key
 
 
                         );
@@ -6870,8 +6760,7 @@ class Page extends DB_Table {
                             $subjects = array();
 
                             $sql = sprintf(
-                                "SELECT `Product Category Index Stack`,`Product Category Index Key`,`Product Category Index Product ID` AS subject_key FROM `Product Category Index` WHERE  `Product Category Index Website Key`=%d ",
-                                $this->id
+                                "SELECT `Product Category Index Stack`,`Product Category Index Key`,`Product Category Index Product ID` AS subject_key FROM `Product Category Index` WHERE  `Product Category Index Website Key`=%d ", $this->id
                             );
 
 
@@ -6960,8 +6849,7 @@ class Page extends DB_Table {
 
 
                 $sql = sprintf(
-                    'UPDATE `Category Webpage Index` SET `Category Webpage Index Section Key`=%d , `Category Webpage Index Stack`=`Category Webpage Index Stack`+%d WHERE `Category Webpage Index Section Key`=%d',
-                    $anchor_section_key, $stack, $section_key
+                    'UPDATE `Category Webpage Index` SET `Category Webpage Index Section Key`=%d , `Category Webpage Index Stack`=`Category Webpage Index Stack`+%d WHERE `Category Webpage Index Section Key`=%d', $anchor_section_key, $stack, $section_key
 
 
                 );
@@ -7062,8 +6950,7 @@ class Page extends DB_Table {
 
 
         $sql = sprintf(
-            'INSERT INTO `Webpage Section Dimension` (`Webpage Section Webpage Key`,`Webpage Section Webpage Stack Index`,`Webpage Section Data`) VALUES (%d,%d,%s) ', $this->id, $section_stack_index,
-            prepare_mysql(json_encode($section))
+            'INSERT INTO `Webpage Section Dimension` (`Webpage Section Webpage Key`,`Webpage Section Webpage Stack Index`,`Webpage Section Data`) VALUES (%d,%d,%s) ', $this->id, $section_stack_index, prepare_mysql(json_encode($section))
 
         );
 
@@ -7225,9 +7112,8 @@ class Page extends DB_Table {
         }
 
         $sql = sprintf(
-            'INSERT INTO `Webpage Panel Dimension` (`Webpage Panel Section Key`,`Webpage Panel Id`,`Webpage Panel Webpage Key`,`Webpage Panel Type`,`Webpage Panel Data`,`Webpage Panel Metadata`) VALUES (%d,%s,%d,%s,%s,%s) ',
-            $section_key, prepare_mysql($panel_data['id']), $this->id, prepare_mysql($panel_data['type']), ($panel_data['type'] == 'code' ? prepare_mysql($panel['content']) : prepare_mysql('')),
-            prepare_mysql(json_encode($panel))
+            'INSERT INTO `Webpage Panel Dimension` (`Webpage Panel Section Key`,`Webpage Panel Id`,`Webpage Panel Webpage Key`,`Webpage Panel Type`,`Webpage Panel Data`,`Webpage Panel Metadata`) VALUES (%d,%s,%d,%s,%s,%s) ', $section_key,
+            prepare_mysql($panel_data['id']), $this->id, prepare_mysql($panel_data['type']), ($panel_data['type'] == 'code' ? prepare_mysql($panel['content']) : prepare_mysql('')), prepare_mysql(json_encode($panel))
 
         );
 
@@ -7340,7 +7226,7 @@ class Page extends DB_Table {
 
 
                     ksort($subjects);
-                   // print $sql;
+                    // print $sql;
                     //print_r($subjects);
 
                     $stack_index = 0;
@@ -7373,8 +7259,6 @@ class Page extends DB_Table {
 
         include_once 'class.Website.php';
         $website = new Website($this->get('Webpage Website Key'));
-
-
 
 
         if ($this->get('Webpage Scope') == 'Category Products') {
@@ -7487,8 +7371,7 @@ class Page extends DB_Table {
             }
 
 
-        }
-        elseif ($this->get('Webpage Scope') == 'Category Categories') {
+        } elseif ($this->get('Webpage Scope') == 'Category Categories') {
 
             include_once 'class.Category.php';
 
@@ -7535,8 +7418,7 @@ class Page extends DB_Table {
                 $this->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
 
 
-            }
-            else {
+            } else {
 
 
                 include_once 'class.Category.php';
@@ -7562,9 +7444,9 @@ class Page extends DB_Table {
                 );
 
 
-             //  print "$sql\n";
+                //  print "$sql\n";
 
-               // $this->db->exec($sql);
+                // $this->db->exec($sql);
 
 
                 $title = $category->get('Label');
@@ -7625,8 +7507,7 @@ class Page extends DB_Table {
 
 
                 $sql = sprintf(
-                    'INSERT INTO `Webpage Section Dimension` (`Webpage Section Webpage Key`,`Webpage Section Webpage Stack Index`,`Webpage Section Data`) VALUES (%d,%d,%s) ', $this->id, 0,
-                    prepare_mysql(json_encode($section))
+                    'INSERT INTO `Webpage Section Dimension` (`Webpage Section Webpage Key`,`Webpage Section Webpage Stack Index`,`Webpage Section Data`) VALUES (%d,%d,%s) ', $this->id, 0, prepare_mysql(json_encode($section))
 
                 );
 
@@ -7638,7 +7519,6 @@ class Page extends DB_Table {
 
                 $content_data['sections'][] = $section;
                 $this->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
-
 
 
                 $category->create_stack_index(true);
@@ -7763,16 +7643,6 @@ class Page extends DB_Table {
         }
 
         return $label;
-
-    }
-
-    function update_url() {
-
-        $website = get_object('website', $this->get('Webpage Website Key'));
-
-
-        $this->update(array('Webpage URL' => 'https://'.$website->get('Website URL').'/'.strtolower($this->get('Code'))), 'no_history');
-
 
     }
 
