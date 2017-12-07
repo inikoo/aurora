@@ -1446,6 +1446,7 @@ class Page extends DB_Table {
             case 'Webpage Browser Title':
 
                 $sql = sprintf('UPDATE `Page Dimension` SET `Page Title`=%s WHERE `Page Key`=%d ', prepare_mysql($value), $this->id);
+                $this->db->exec($sql);
                 $this->update_field($field, $value, $options);
                 break;
             case 'Webpage Name':
