@@ -1480,10 +1480,9 @@ class Part extends Asset {
                         'can_pick'        => $row['Can Pick'],
                         'label'           => ($row['Can Pick'] == 'Yes' ? _('Picking location') : _('Set as picking location')),
                         'days_last_audit' => ($row['days_last_audit'] == ''
-                            ? '<span title="'._('Never been audited').'">-</span>'
+                            ? '<span title="'._('Never been audited').'">-</span> <i class="fa fa-clock-o padding_right_10" aria-hidden="true"></i> '
                             : sprintf(
-                                '<span title="%s">%s</span>', sprintf(_('Last audit %s'), strftime("%a %e %b %Y %H:%M %Z", strtotime($row['Part Location Last Audit'].' +0:00')), $row['Part Location Last Audit']), number($row['days_last_audit'])
-                            ))
+                                '<span title="%s">%s</span>', sprintf(_('Last audit %s'), strftime("%a %e %b %Y %H:%M %Z", strtotime($row['Part Location Last Audit'].' +0:00')), $row['Part Location Last Audit']), ($row['days_last_audit']>999?'<span class="error">+999</span>':number($row['days_last_audit']))).' <i class="fa fa-clock-o padding_right_10" aria-hidden="true"></i>'  )
 
 
                     );
