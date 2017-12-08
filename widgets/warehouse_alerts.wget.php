@@ -39,6 +39,26 @@ function get_warehouse_alerts( $db, $warehouse,$account, $user, $smarty) {
 
 
 
+
+    $data = get_widget_data_inverse(
+        $warehouse->get('Warehouse Part Location Unknown Locations'),
+        $warehouse->get('Warehouse Number Parts'),
+        $warehouse->get('Warehouse Tolerable Percentage Part Location Unknown Locations'),
+        $warehouse->get('Warehouse Max Percentage Part Location Unknown Locations')
+
+    );
+    if ($data['ok']) {
+
+
+        $smarty->assign('data', $data);
+        $html .= $smarty->fetch(
+            'dashboard/warehouse.parts_with_unknown_location.dbard.tpl'
+        );
+    }
+
+
+
+
     $data = get_widget_data(
         $warehouse->get('Warehouse Paid Ordered Parts To Replenish'),
         $warehouse->get('Warehouse Paid Ordered Parts'),

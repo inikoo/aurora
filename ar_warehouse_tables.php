@@ -71,7 +71,9 @@ switch ($tipo) {
     case 'leakages_transactions':
         leakages_transactions(get_table_parameters(), $db, $user, $account);
         break;
-
+    case 'warehouse.parts_with_unknown_location':
+        parts_with_unknown_location(get_table_parameters(), $db, $user, $account);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -214,7 +216,8 @@ function locations($_data, $db, $user, $account) {
             'warehouse_area_key' => (integer)$data['Location Warehouse Area Key'],
             'code'               => $data['Location Code'],
             'flag'               => ($data['Warehouse Flag Key'] ? sprintf(
-                '<i id="flag_location_%d" class="fa fa-flag %s button" aria-hidden="true" onclick="show_edit_flag_dialog(this)" location_key="%d" title="%s"></i>', $data['Location Key'],strtolower($data['Warehouse Flag Color']),$data['Location Key'], $data['Warehouse Flag Label']
+                '<i id="flag_location_%d" class="fa fa-flag %s button" aria-hidden="true" onclick="show_edit_flag_dialog(this)" location_key="%d" title="%s"></i>', $data['Location Key'], strtolower($data['Warehouse Flag Color']), $data['Location Key'],
+                $data['Warehouse Flag Label']
             ) : '<i id="flag_location_'.$data['Location Key'].'"  class="fa fa-flag-o super_discreet button" aria-hidden="true" onclick="show_edit_flag_dialog(this)" key="" ></i>'),
             'flag_key'           => $data['Warehouse Flag Key'],
             'area'               => $data['Warehouse Area Code'],
@@ -674,7 +677,7 @@ function stock_leakages($_data, $db, $user, $account) {
         case 'warehouse':
             $warehouse  = get_object('Warehouse', $_data['parameters']['parent_key']);
             $currency   = $account->get('Account Currency');
-            $from       = ($warehouse->get('Warehouse Leakage Timeseries From')!=''?$warehouse->get('Warehouse Leakage Timeseries From'):$warehouse->get('Warehouse Valid From'));
+            $from       = ($warehouse->get('Warehouse Leakage Timeseries From') != '' ? $warehouse->get('Warehouse Leakage Timeseries From') : $warehouse->get('Warehouse Valid From'));
             $to         = gmdate('Y-m-d');
             $date_field = '`Timeseries Record Date`';
             break;
@@ -989,6 +992,110 @@ function leakages_transactions($_data, $db, $user, $account) {
         'resultset' => array(
             'state'         => 200,
             'data'          => $record_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+function parts_with_unknown_location($_data, $db, $user, $account) {
+
+
+    $rtext_label = 'part';
+
+
+    include_once 'prepare_table/init.php';
+
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $adata = array();
+
+   // print $sql;
+
+
+    foreach ($db->query($sql) as $data) {
+
+        if ($data['Part Status'] == 'Not In Use') {
+            $part_status = '<i class="fa fa-square-o fa-fw  very_discreet" aria-hidden="true"></i> ';
+
+        } elseif ($data['Part Status'] == 'Discontinuing') {
+            $part_status = '<i class="fa fa-square fa-fw  very_discreet" aria-hidden="true"></i> ';
+
+        } else {
+            $part_status = '<i class="fa fa-square fa-fw " aria-hidden="true"></i> ';
+        }
+
+
+        $locations_data = preg_split('/,/', $data['location_data']);
+
+
+        $locations = '<div border=0 style="xwidth:150px">';
+
+
+
+
+
+        foreach ($locations_data as $raw_location_data) {
+            if ($raw_location_data != '') {
+                $_locations_data = preg_split('/\:/', $raw_location_data);
+
+if($_locations_data[2] == ''){
+    $last_audit= '<span title="'._('Never been audited').'">-</span> <i class="fa fa-clock-o padding_right_10" aria-hidden="true"></i> ';
+}else{
+    $last_audit=sprintf(
+            '<span title="%s">%s</span>', sprintf(_('Last audit %s'), strftime("%a %e %b %Y %H:%M %Z", strtotime($_locations_data[2].' +0:00')), $_locations_data[2]), ($_locations_data[4]>999?'<span class="error">+999</span>':number($_locations_data[4]))).' <i class="fa fa-clock-o padding_right_10" aria-hidden="true"></i>';
+
+
+}
+
+
+
+
+                if ($_locations_data[0] != $data['Location Key']) {
+                    $locations .= '<div style="clear:both">';
+                    $locations .= '<div style="float:left;min-width:100px;"><span class="link"  onClick="change_view(\'locations/'.$data['Location Warehouse Key'].'/'.$_locations_data[0].'\')" >'.$_locations_data[1].'</span></div>
+                                   <div style="float:left;min-width:50px;text-align:right">'.$last_audit.'</div>
+                                   <div style="float:left;min-width:100px;text-align:right">'.number($_locations_data[3]).'</div>';
+                    $locations .= '</div>';
+                }
+            }
+        }
+        $locations .= '</div>';
+
+
+
+
+
+        $adata[] = array(
+
+
+            'reference' => sprintf('<span class="link" onCLick="change_view(\'part/%d\')" >%s</span>', $data['Part SKU'], $data['Part Reference']),
+
+
+            'description' => $data['Part Package Description'],
+
+            'part_status' => $part_status,
+            'locations'   => $locations,
+
+            'sko_cost'    => money($data['Part Cost in Warehouse'], $account->get('Account Currency')),
+            'stock_value' => money($data['Stock Value'], $account->get('Account Currency')),
+            'quantity'    => sprintf(
+                '<span style="padding-left:3px;padding-right:7.5px" class="table_edit_cell  location_part_stock" title="%s" part_sku="%d" location_key="%d"  qty="%s" onxClick="open_location_part_stock_quantity_dialog(this)">%s</span>',
+                '', $data['Part SKU'],1, $data['Quantity On Hand'], '<strong class="'.($data['Quantity On Hand']<0?'success':'error').'" >'.($data['Quantity On Hand']<0?'+':'').number(-$data['Quantity On Hand']).'</strong>'
+            )
+
+
+        );
+
+    }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,

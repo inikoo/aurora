@@ -40,11 +40,7 @@ $object_fields = array();
 
 
 if (in_array(
-    $object->get('Webpage Scope'), array(
-                                     'Category Categories',
-                                     'Product',
-                                     'Category Products'
-                                 )
+    $object->get('Webpage Scope'), array('Category Categories', 'Product', 'Category Products')
 )) {
 
     $object_fields[] =
@@ -204,11 +200,7 @@ $object_fields[] = array(
 );
 
 
-if (in_array(
-    $object->get('Webpage Scope'), array(
-                                     'HomepageToLaunch'
-                                 )
-)) {
+if (in_array($object->get('Webpage Scope'), array('HomepageToLaunch'))) {
 
 
     $object_fields[] = array(
@@ -234,7 +226,6 @@ if (in_array(
         )
     );
 }
-
 
 if (in_array($object->get('Webpage Scope'), array('Contact'))) {
 
@@ -319,7 +310,6 @@ if (in_array($object->get('Webpage Scope'), array('Contact'))) {
 
 }
 
-
 if (in_array($object->get('Webpage Scope'), array('Category Categories'))) {
 
     $template_options = array(
@@ -364,8 +354,6 @@ if (in_array($object->get('Webpage Scope'), array('Category Categories'))) {
 
 }
 
-
-
 if (in_array($object->get('Webpage Scope'), array('Product'))) {
 
 
@@ -394,17 +382,6 @@ if (in_array($object->get('Webpage Scope'), array('Product'))) {
 
 
 }
-
-
-
-
-
-
-
-
-
-
-
 
 if(!$new and $object->get('Webpage Scope')=='Category Products'){
     $export_operations      = array(
@@ -476,6 +453,31 @@ $export_operations      = array(
 $object_fields[] = $export_operations;
 
 }
+
+
+if (in_array($object->get('Webpage Scope'), array('Register'))) {
+
+
+    $object_fields[] = array(
+        'label'      => _('Customer insights'),
+        'show_title' => true,
+        'fields'     => array(
+            array(
+                'id'              => 'Webpage_Customers_Source',
+                'edit'            => 'webpage_customers_source',
+                'value'           => '',
+                'formatted_value' => $object->get('Webpage Customers Source'),
+                'label'           => _('Where you found us?'),
+                'required'        => false,
+                'type'            => ''
+            ),
+
+
+        )
+    );
+}
+
+//262800
 
 
 $operations      = array(
