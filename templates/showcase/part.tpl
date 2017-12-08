@@ -301,7 +301,7 @@
             <table id="unknown_location_table" border="0" class="overview " >
 
               <tr id="unknown_location_tr" class="{if $part->get('Part Unknown Location Stock')==0}hide{/if}">
-                  <td colspan="3"><i class="fa error fa-exclamation-circle" aria-hidden="true"></i>  {t}Unknown location{/t}</td>
+                  <td colspan="3"><i class="fa error fa-exclamation-circle" aria-hidden="true"></i>  {t}Lost & found{/t}</td>
                   <td onCLick="show_dialog_consolidate_unknown_location(this)" id="Part_Unknown_Location_Stock" class="aright  strong Unknown_Location_Stock button"  part_sku="{$part->id}" qty="{$part->get('Part Unknown Location Stock')}"  >{$part->get('Unknown Location Stock')}</td>
               </tr>
 

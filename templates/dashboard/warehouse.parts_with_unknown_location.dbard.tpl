@@ -13,7 +13,7 @@
      onClick="get_widget_details(this,'warehouse.parts_with_unknown_location.wget',{ parent: 'warehouse','parent_key':{$warehouse->id}})">
     <div id="parts_with_unknown_location"
          style="padding-top: 10px;padding-right: 10px;padding-left: 10px;padding-bottom: 10px;"></div>
-    <div style="color:#aaa">{t}Leakages to fix{/t}
+    <div style="color:#aaa">{t}Lost & found{/t}
 </div>
 </div>
 
