@@ -475,8 +475,10 @@ class Warehouse extends DB_Table {
 
 
         $number_locations                  = 0;
+        $number_parts=0;
         $number_part_locations             = 0;
         $number_part_locations_with_errors = 0;
+        $number_part_locations_unknown=0;
 
 
         $pending_orders                         = 0;
@@ -495,14 +497,29 @@ class Warehouse extends DB_Table {
             exit;
         }
 
-        $sql = sprintf('SELECT count(*) AS number  , sum(if(`Quantity On Hand`<0,1,0) ) AS errors  FROM `Part Location Dimension` WHERE `Part Location Warehouse Key`=%d', $this->id);
+        $sql = sprintf('SELECT count(*) AS number  , sum(if(`Quantity On Hand`<0,1,0) ) AS errors , count(DISTINCT `Part SKU`) as parts  FROM `Part Location Dimension` WHERE `Part Location Warehouse Key`=%d', $this->id);
 
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
                 $number_part_locations             = $row['number'];
                 $number_part_locations_with_errors = $row['errors'];
-                $stock_amount                      = $row['amount'];
+                $number_parts = $row['parts'];
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+        $sql = sprintf('SELECT count(*) AS number  , sum(if(`Quantity On Hand`<0,1,0) ) AS errors,sum(`Stock Value`) as amount FROM `Part Location Dimension` WHERE `Part Location Warehouse Key`=%d  and `Location Key`=1  ', $this->id);
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $number_part_locations_unknown             = $row['number'];
+                //$number_part_locations_with_errors = $row['errors'];
+                //$stock_amount                      = $row['amount'];
             }
         } else {
             print_r($error_info = $this->db->errorInfo());
@@ -518,6 +535,8 @@ class Warehouse extends DB_Table {
                 'Warehouse Number Locations'      => $number_locations,
                 'Warehouse Part Locations'        => $number_part_locations,
                 'Warehouse Part Locations Errors' => $number_part_locations_with_errors,
+                'Warehouse Part Location Unknown Locations'=>$number_part_locations_unknown,
+                'Warehouse Number Parts'        =>$number_parts
             )
         );
 
