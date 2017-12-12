@@ -10,7 +10,7 @@
 */
 
 $where = sprintf(
-    " where  date(`Timesheet Date`)=%s ", prepare_mysql(date('Y-m-d'))
+    " where  date(`Timesheet Date`)=%s  and `Staff Currently Working`='Yes'  ", prepare_mysql(date('Y-m-d'))
 );
 
 
