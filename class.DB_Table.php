@@ -114,6 +114,8 @@ abstract class DB_Table extends stdClass {
 
     protected function update_field($field, $value, $options = '') {
 
+
+
         $this->update_table_field($field, $value, $options, $this->table_name, $this->table_name.' Dimension', $this->id);
 
     }

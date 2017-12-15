@@ -16,37 +16,70 @@ $tipo    = 'campaign_order_recursion_components';
 
 $default = $user->get_tab_defaults($tab);
 
-
 $table_views = array(
     'overview' => array(
         'label' => _('Overview'),
         'title' => _('Overview')
     ),
-
 );
 
 $table_filters = array(
-
     'name' => array('label' => _('Name')),
-
 );
 
 $parameters = array(
     'parent'     => $state['object'],
     'parent_key' => $state['key'],
-
 );
 
 
 $table_buttons   = array();
 
 
+
 $table_buttons[] = array(
-    'icon'      => 'plus',
-    'title'     => _('New allocance'),
-    'reference' => "deal/".$state['parent_key']."/".$state['key']."/deal/allowance"
+    'icon'     => 'plus',
+    'title'    => _('New allowance'),
+    'id'       => 'new_item',
+    'class'    => 'items_operation',
+    'add_allowance' => array(
+
+        'field_label' => _("Category").':',
+        'metadata'    => base64_encode(
+            json_encode(
+                array(
+                    'scope'      => 'targets',
+                    'store_key'     => $state['_object']->get('Store Key'),
+                    'parent'     => 'campaign',
+                    'parent_key' => $state['_object']->id,
+                    'options'    => array('order_recursion')
+                )
+            )
+        )
+
+    )
+
 );
+
+$smarty->assign(
+    'table_metadata', base64_encode(
+                        json_encode(
+                            array(
+                                'parent'     => $state['object'],
+                                'parent_key' => $state['key'],
+                                'field'      => 'target'
+                            )
+                        )
+                    )
+);
+
+
 $smarty->assign('table_buttons', $table_buttons);
+
+
+
+
+$smarty->assign('aux_templates', array('campaign_order_recursion_components.edit.tpl'));
 
 
 include 'utils/get_table_html.php';

@@ -58,12 +58,8 @@ $table_buttons[] = array(
             json_encode(
                 array(
                     'scope'      => 'supplier_part',
-                    'parent'     => $state['_object']->get(
-                        'Purchase Order Parent'
-                    ),
-                    'parent_key' => $state['_object']->get(
-                        'Purchase Order Parent Key'
-                    ),
+                    'parent'     => $state['_object']->get('Purchase Order Parent'),
+                    'parent_key' => $state['_object']->get('Purchase Order Parent Key'),
                     'options'    => array('for_purchase_order')
                 )
             )

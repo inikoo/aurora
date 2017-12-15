@@ -2926,6 +2926,19 @@ $tab_defaults = array(
         'elements_type' => each($elements_options['parts']) ['key'],
         'elements'      => $elements_options['parts'],
     ),
+    'inventory.stock.history.day'                      => array(
+        'view'          => 'overview',
+        'sort_key'      => 'reference',
+        'sort_order'    => 1,
+        'rpp'           => 1000,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'reference',
+
+    ),
+
+
+
+
 
     'warehouse.parts_to_replenish_picking_location.wget' => array(
         'view'        => 'overview',

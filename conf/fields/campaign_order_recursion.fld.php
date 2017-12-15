@@ -117,12 +117,6 @@ $object_fields = array(
                 'type' => 'value'
             ),
 
-
-
-
-
-
-
         )
     ),
 
@@ -133,7 +127,7 @@ $object_fields = array(
 
             array(
                 'render'          => true,
-                'id'              => 'Deal_Campaign_Order_Recursion_Reminder_Send',
+                'id'              => 'Deal_Campaign_Store_Send_Order_Recursion_Emails',
                 'edit'            => 'option',
                 'value'           => ($new ? 'No' : $store->get('Store Send Order Recursion Emails')),
                 'formatted_value' => ($new ? _('Yes') : $store->get('Send Order Recursion Emails')),
@@ -143,6 +137,7 @@ $object_fields = array(
             ),
             array(
                 'edit'              => ($edit ? 'smallint_unsigned' : ''),
+                'render'=>($store->get('Store Send Order Recursion Emails')=='Yes'?true:false),
                 'id'                => 'Deal_Campaign_Order_Recursion_Reminder_Days',
                 'value'             => $store->get('Store Order Recursion Emails Days'),
                 'label'             => _('Days before last dead-end'),
@@ -150,12 +145,6 @@ $object_fields = array(
                 'required'          => true,
                 'type' => 'value'
             ),
-
-
-
-
-
-
 
         )
     ),

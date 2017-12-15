@@ -107,9 +107,7 @@ $object_fields = array(
                 'options'         => $options_locale,
                 'value'           => $object->get('Store Locale'),
                 'formatted_value' => $object->get('Locale'),
-                'label'           => ucfirst(
-                    $object->get_field_label('Store Locale')
-                ),
+                'label'           => ucfirst($object->get_field_label('Store Locale')),
                 'type'            => 'value'
             ),
             array(

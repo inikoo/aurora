@@ -44,7 +44,23 @@ ALTER TABLE `Payment History Bridge`
   ADD KEY `History Key` (`History Key`),
   ADD KEY `Deletable` (`Deletable`),
   ADD KEY `Type` (`Type`);
-  
+
+   CREATE TABLE IF NOT EXISTS `Deal Component History Bridge` (
+   `Deal Component Key` mediumint(8) unsigned NOT NULL,
+   `History Key` int(10) unsigned NOT NULL,
+   `Deletable` enum('Yes','No') NOT NULL DEFAULT 'No',
+   `Strikethrough` enum('Yes','No') NOT NULL DEFAULT 'No',
+   `Type` enum('Notes','Changes') NOT NULL DEFAULT 'Notes'
+ ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+ ALTER TABLE `Deal Component History Bridge`
+   ADD PRIMARY KEY (`Deal Component Key`,`History Key`),
+   ADD KEY `Deal Component Key` (`Deal Component Key`),
+   ADD KEY `History Key` (`History Key`),
+   ADD KEY `Deletable` (`Deletable`),
+   ADD KEY `Type` (`Type`);
+
+
+
 //======^ done  
   
 CREATE TABLE IF NOT EXISTS `User API Dimension` (
@@ -792,6 +808,8 @@ update `Deal Component Dimension` set `Deal Component Allowance Target Label`=`D
 ALTER TABLE `Warehouse Dimension` ADD `Warehouse Stock Amount` DECIMAL(18,2) NOT NULL DEFAULT '0.00' AFTER `Warehouse Leakage Timeseries From`;
 
 
+ALTER TABLE `Inventory Spanshot Fact` ADD `Quantity Given` FLOAT UNSIGNED NOT NULL DEFAULT '0' AFTER `Quantity Sold`;
+ALTER TABLE `Inventory Transaction Fact` CHANGE `Inventory Transaction Section` `Inventory Transaction Section` ENUM('OIP','In','Move','Out','Audit','NoDispatched','Other','Production') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Other';
 
 
 

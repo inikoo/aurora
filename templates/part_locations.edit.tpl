@@ -1,5 +1,3 @@
-
-
 {foreach from=$locations_data item=location_data}
 
 {if $location_data.location_key!=1}
@@ -42,7 +40,7 @@
 	        </span>
         </td>
         <td class="aright  last_audit_days">{$location_data.days_last_audit}</td>
-        <td class="aright  formatted_stock">{$location_data.formatted_stock}</td>
+        <td class="aright  formatted_stock">{$location_data.formatted_stock}  <i onclick="open_sent_part_to_production(this)" location_key="{$location_data.location_key}" max="{$location_data.stock}"  class="fa fa-hand-rock-o padding_left_10 button production_supply_edit {if $part->get('Part Production Supply')=='No'}hide{/if}" aria-hidden="true"></i> </td>
         <td class="aright  hide stock_input"><span class="stock_change"></span>
 
             <i class="fa fa-dot-circle-o button super_discreet set_as_audit" aria-hidden="true"

@@ -48,7 +48,7 @@
 
 
 
-        <link href="/css/app.css?v171113" rel="stylesheet">
+        <link href="/css/app.css?v171213v2" rel="stylesheet">
         <script type="text/javascript" src="/js/libs/jquery-2.2.1.js"></script>
         <script type="text/javascript" src="/js/libs/jquery-ui.js"></script>
         <script type="text/javascript" src="/js/libs/moment-with-locales.js"></script>
@@ -85,7 +85,7 @@
         <script type="text/javascript" src="/js/order.common.js?v171126b"></script>
         <script type="text/javascript" src="/js/supplier.order.js"></script>
         <script type="text/javascript" src="/js/supplier.delivery.js"></script>
-        <script type="text/javascript" src="/js/part_locations.edit.js?v=20171206v6"></script>
+        <script type="text/javascript" src="/js/part_locations.edit.js?v=201715"></script>
         <script type="text/javascript" src="/js/alert_dial.js"></script>
         <script type="text/javascript" src="/js/help.js"></script>
         <script type="text/javascript" src="/utils/country_data.js.php?locale={$locale}"></script>

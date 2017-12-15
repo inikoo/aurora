@@ -584,6 +584,7 @@
         {/if}
 
         {if isset($button.add_item)}{include file="add_item.tpl" data=$button.add_item trigger={$button.id}}{/if}
+    {if isset($button.add_allowance)}{include file="add_allowance.tpl" data=$button.add_allowance trigger={$button.id}}{/if}
 
 
          {if isset($button.inline_new_object)}

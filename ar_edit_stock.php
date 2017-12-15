@@ -117,10 +117,10 @@ switch ($tipo) {
 
         $data = prepare_values(
             $_REQUEST, array(
-                         'note'               => array('type' => 'string'),
-                         'part_sku'                  => array('type' => 'key'),
-                         'type'               => array('type' => 'string'),
-                         'qty'               => array('type' => 'string'),
+                         'note'     => array('type' => 'string'),
+                         'part_sku' => array('type' => 'key'),
+                         'type'     => array('type' => 'string'),
+                         'qty'      => array('type' => 'string'),
 
                      )
         );
@@ -128,6 +128,23 @@ switch ($tipo) {
 
         edit_leakages($account, $db, $user, $editor, $data, $smarty);
         break;
+    case 'send_to_production':
+
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'note'     => array('type' => 'string'),
+                         'part_sku' => array('type' => 'key'),
+                         'location_key' => array('type' => 'key'),
+                         'qty'      => array('type' => 'string'),
+
+                     )
+        );
+
+
+        send_to_production($account, $db, $user, $editor, $data, $smarty);
+        break;
+
+
     default:
         $response = array(
             'state' => 405,
@@ -354,7 +371,7 @@ function edit_stock($account, $db, $user, $editor, $data, $smarty) {
         $part_locations = $smarty->fetch('part_locations.edit.tpl');
 
 
-        $response['Part_Unknown_Location_Stock']=$part->get('Part Unknown Location Stock');
+        $response['Part_Unknown_Location_Stock'] = $part->get('Part Unknown Location Stock');
 
         $response['updated_fields'] = array(
             'Current_On_Hand_Stock'    => $part->get('Current On Hand Stock'),
@@ -369,7 +386,7 @@ function edit_stock($account, $db, $user, $editor, $data, $smarty) {
             'Part_Locations'           => $part_locations,
             'Part_Status'              => $part->get('Status'),
             'Part_Cost_in_Warehouse'   => $part->get('Cost in Warehouse'),
-            'Unknown_Location_Stock'=> $part->get('Unknown Location Stock'),
+            'Unknown_Location_Stock'   => $part->get('Unknown Location Stock'),
 
 
         );
@@ -450,16 +467,13 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
             $part->editor = $editor;
 
 
-
             if ($old_value != $part->get('Part Cost in Warehouse')) {
 
 
                 $history_data = array(
                     'Action'           => 'edited',
                     'History Abstract' => sprintf(
-                        _('Part stock value changed to %s following %s policy after received from supplier delivery %s'),
-                        $part->get('Cost in Warehouse only'),
-                        '<span class="italic">'._('Last delivery cost set stock value').'</span>', $origin
+                        _('Part stock value changed to %s following %s policy after received from supplier delivery %s'), $part->get('Cost in Warehouse only'), '<span class="italic">'._('Last delivery cost set stock value').'</span>', $origin
                     ),
                     'History Details'  => ''
                 );
@@ -632,7 +646,8 @@ function set_as_picking_location($account, $db, $user, $editor, $data, $smarty) 
 
 }
 
-function edit_leakages($account, $db, $user, $editor, $data, $smarty){
+
+function edit_leakages($account, $db, $user, $editor, $data, $smarty) {
 
     include_once 'class.PartLocation.php';
 
@@ -647,15 +662,13 @@ function edit_leakages($account, $db, $user, $editor, $data, $smarty){
     $part_location = new PartLocation('find', $part_location_data, 'create');
 
 
-
     $_data = array(
         'Quantity'         => -$data['qty'],
         'Transaction Type' => $data['type'],
-        'Note'           => $data['note']
+        'Note'             => $data['note']
     );
 
     $part_location->stock_transfer($_data);
-
 
 
     $part = get_object('Part', $data['part_sku']);
@@ -666,7 +679,7 @@ function edit_leakages($account, $db, $user, $editor, $data, $smarty){
     $part_locations = $smarty->fetch('part_locations.edit.tpl');
 
 
-    $response['Part_Unknown_Location_Stock']=$part->get('Part Unknown Location Stock');
+    $response['Part_Unknown_Location_Stock'] = $part->get('Part Unknown Location Stock');
 
     $response['updated_fields'] = array(
         'Current_On_Hand_Stock'    => $part->get('Current On Hand Stock'),
@@ -679,16 +692,78 @@ function edit_leakages($account, $db, $user, $editor, $data, $smarty){
         'Part_Locations'           => $part_locations,
         'Part_Status'              => $part->get('Status'),
         'Part_Cost_in_Warehouse'   => $part->get('Cost in Warehouse'),
-        'Unknown_Location_Stock'=> $part->get('Unknown Location Stock'),
-        'Stock_Found_SKOs'              => $part->get('Stock Found SKOs'),
-        'Stock_Errors_SKOs'              => $part->get('Stock Errors SKOs'),
-        'Stock_Damaged_SKOs'              => $part->get('Stock Damaged SKOs'),
-        'Stock_Lost_SKOs'              => $part->get('Stock Lost SKOs'),
+        'Unknown_Location_Stock'   => $part->get('Unknown Location Stock'),
+        'Stock_Found_SKOs'         => $part->get('Stock Found SKOs'),
+        'Stock_Errors_SKOs'        => $part->get('Stock Errors SKOs'),
+        'Stock_Damaged_SKOs'       => $part->get('Stock Damaged SKOs'),
+        'Stock_Lost_SKOs'          => $part->get('Stock Lost SKOs'),
 
 
     );
 
 
+    echo json_encode($response);
+
+}
+
+
+
+function send_to_production($account, $db, $user, $editor, $data, $smarty) {
+
+    include_once 'class.PartLocation.php';
+
+
+    $part_location_data = array(
+        'Location Key' => $data['location_key'],
+        'Part SKU'     => $data['part_sku'],
+        'editor'       => $editor
+    );
+
+
+    $part_location = new PartLocation('find', $part_location_data, 'create');
+
+
+    $_data = array(
+        'Quantity'         => -$data['qty'],
+        'Transaction Type' => 'Production',
+        'Note'             => $data['note']
+    );
+
+   $part_location->stock_transfer($_data);
+
+
+    $part = get_object('Part', $data['part_sku']);
+
+
+
+    $smarty->assign('part_sku', $part->id);
+    $smarty->assign('part', $part);
+
+    $smarty->assign('locations_data', $part->get_locations('data'));
+    $part_locations = $smarty->fetch('part_locations.edit.tpl');
+
+
+    $response['Part_Unknown_Location_Stock'] = $part->get('Part Unknown Location Stock');
+
+
+
+    $response['updated_fields'] = array(
+        'Current_On_Hand_Stock'    => $part->get('Current On Hand Stock'),
+        'Stock_Status_Icon'        => $part->get('Stock Status Icon'),
+        'Current_Stock'            => $part->get('Current Stock'),
+        'Current_Stock_Picked'     => $part->get('Current Stock Picked'),
+        'Current_Stock_In_Process' => $part->get('Current Stock In Process'),
+        'Current_Stock_Available'  => $part->get('Current Stock Available'),
+        'Available_Forecast'       => $part->get('Available Forecast'),
+        'Part_Locations'           => $part_locations,
+        'Part_Status'              => $part->get('Status'),
+        'Part_Cost_in_Warehouse'   => $part->get('Cost in Warehouse'),
+        'Unknown_Location_Stock'   => $part->get('Unknown Location Stock'),
+        'Stock_Found_SKOs'         => $part->get('Stock Found SKOs'),
+        'Stock_Errors_SKOs'        => $part->get('Stock Errors SKOs'),
+        'Stock_Damaged_SKOs'       => $part->get('Stock Damaged SKOs'),
+        'Stock_Lost_SKOs'          => $part->get('Stock Lost SKOs'),
+    );
 
 
     echo json_encode($response);

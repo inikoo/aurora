@@ -155,7 +155,7 @@
         </table>
 
     </div>
-    <div class="block info">
+    <div class="block stock_info">
 
 
         <div id="overviews">
@@ -340,6 +340,30 @@
                 </table>
 
             </div>
+
+
+            <div class="hide" id="edit_stock_dialog_to_production" style="position:absolute;padding:10px;border:1px solid #ccc;background-color:#fff;z-index:2000">
+
+                <table  border="0" class=""  style="width: 300px">
+
+                    <tr>
+                        <td colspan="2">{t}Quantity{/t} <input  id="part_to_production_qty_input" style="width:60px;"  max="" class="qty" val=""> <span class="discreet italic">{t}max{/t} <span class="max"></span></span> </td>
+                        <td class="aright"><i onclick="$('#edit_stock_dialog_to_production').addClass('hide')"  class="fa fa-window-close button" style="position: relative;top:-10px" aria-hidden="true"></i></td>
+
+                    </tr>
+
+                    <tr>
+                        <td colspan="3"><textarea id="part_to_production_note_input" style="width:95%;"  plaecholder="{t}Note{/t}" /></td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" class="aright "><span onclick="save_stock_dialog_to_production(this)" class="save">{t}Send to production{/t} <i class="fa fa-hand-rock-o" aria-hidden="true"></i></span></td>
+                    </tr>
+
+                </table>
+
+            </div>
+
+
 
 
             <table id="barcode_data" border="0" class="overview {if $part->get('Part Barcode Number')==''}hide{/if} ">

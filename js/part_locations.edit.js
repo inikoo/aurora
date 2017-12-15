@@ -852,6 +852,74 @@ $(document).on('input propertychange', '#part_leakage_note_input', function () {
 });
 
 
+
+function open_sent_part_to_production(element){
+
+
+    $('#edit_stock_dialog_to_production').removeClass('hide').offset({
+        top: $(element).position().top - 3, left: $(element).position().left-$('#edit_stock_dialog_to_production').width()
+    }).attr('max', $(element).attr('max')).find('.max').html($(element).attr('max'))
+    $('#edit_stock_dialog_to_production').attr('location_key',$(element).attr('location_key'))
+}
+
+
+
+$(document).on('input propertychange', '#part_to_production_qty_input', function () {
+    validate_part_to_production()
+
+
+});
+
+
+$(document).on('input propertychange', '#part_to_production_note_input', function () {
+    validate_part_to_production()
+
+
+});
+
+
+
+
+function validate_part_to_production() {
+    var error = false;
+    max = $('#edit_stock_dialog_to_production').attr('max')
+
+
+    var validate_qty=validate_number($('#part_to_production_qty_input').val(), 0,Math.abs(max));
+
+
+
+    if (validate_qty) {
+        error = true;
+        $('#part_to_production_qty_input').addClass('error')
+
+    } else {
+        $('#part_to_production_qty_input').removeClass('error')
+    }
+
+
+    if ($('#part_to_production_note_input').val() == '') {
+        error = true;
+        $('#part_to_production_note_input').addClass('error')
+    } else {
+        $('#part_to_production_note_input').removeClass('error')
+
+    }
+
+
+    $('#edit_stock_dialog_to_production .save').addClass('changed')
+
+    if (error) {
+        $('#edit_stock_dialog_to_production .save').addClass('invalid').removeClass('valid')
+    } else {
+        $('#edit_stock_dialog_to_production .save').removeClass('invalid').addClass('valid')
+
+    }
+}
+
+
+
+
 function validate_part_leakage() {
     var error = false;
     max = $('#edit_stock_dialog_consolidate_unknown_location').attr('max_qty')
@@ -887,6 +955,72 @@ function validate_part_leakage() {
 }
 
 
+function save_stock_dialog_to_production(element) {
+
+
+    if (!$(element).hasClass('valid') ||  $(element).hasClass('wait')  ) {
+
+        return;
+    }
+
+    $(element).addClass('wait')
+    $(element).find('i').addClass('fa-spinner fa-spin')
+
+    // used only for debug
+    var request = '/ar_edit_stock.php?tipo=send_to_production&part_sku=' + $('#locations_table').attr('part_sku') + '&qty=' +$('#part_to_production_qty_input').val()+'&note='+$('#part_to_production_note_input').val()+'&location_key='+$('#edit_stock_dialog_to_production').attr('location_key')
+
+    console.log(request)
+
+    //=====
+    var form_data = new FormData();
+    form_data.append("tipo", 'send_to_production')
+    form_data.append("part_sku", $('#locations_table').attr('part_sku'))
+    form_data.append("qty",$('#part_to_production_qty_input').val())
+    form_data.append("note",$('#part_to_production_note_input').val())
+    form_data.append("location_key",$('#edit_stock_dialog_to_production').attr('location_key'))
+
+
+    var request = $.ajax({
+
+        url: "/ar_edit_stock.php", data: form_data, processData: false, contentType: false, type: 'POST', dataType: 'json'
+
+    })
+
+    request.done(function (data) {
+
+
+        if (state.tab == 'part.stock.transactions' || state.tab == 'part.stock') {
+            rows.fetch({
+                reset: true
+            });
+        }
+
+
+
+        $('#edit_stock_dialog_to_production').addClass('hide')
+
+        $(element).removeClass('wait')
+        $(element).find('i').removeClass('fa-spinner fa-spin')
+
+
+
+        for (var key in data.updated_fields) {
+            //console.log(key)
+            //console.log(data.updated_fields[key])
+            $('.' + key).html(data.updated_fields[key])
+        }
+
+
+        if (data.Part_Unknown_Location_Stock != 0) {
+            $('#unknown_location_tr').removeClass('hide')
+        }
+
+    })
+
+    request.fail(function (jqXHR, textStatus) {
+    });
+
+}
 
 function save_leakage(element) {
 
@@ -982,6 +1116,11 @@ function open_edit_min_max(element) {
 
 
 }
+
+
+
+
+
 
 function open_edit_recommended_move(element) {
 
