@@ -202,7 +202,6 @@ if ($result = $db->query($sql)) {
         $component_data = array(
             'Deal Component Terms Type' => 'Order Interval',
             'Deal Component Trigger'    => 'Order',
-
             'Deal Component Allowance Type'                    => 'Get Free',
             'Deal Component Allowance Target'                  => 'Charge',
             'Deal Component Allowance Target Type'             => 'No Items',

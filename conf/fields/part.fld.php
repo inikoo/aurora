@@ -36,11 +36,17 @@ $options_Packing_Group = array(
 );
 
 
-
 $options_status = array(
     'In Use'        => _('Active'),
     'Discontinuing' => _('Discontinued')
 );
+
+
+$options_yes_no = array(
+    'Yes' => _('Yes'),
+    'No'  => _('No')
+);
+
 
 
 $part_fields = array();
@@ -106,10 +112,6 @@ if (!($supplier_part_scope or $new)) {
             ),
 
 
-
-
-
-
         )
     );
 
@@ -160,9 +162,9 @@ $part_fields[] = array(
     'fields'     => array(
 
         array(
-            'id'   => 'Part_Barcode',
+            'id'     => 'Part_Barcode',
             'render' => ($supplier_part_scope ? false : true),
-            'edit' => ($edit ? 'barcode' : ''),
+            'edit'   => ($edit ? 'barcode' : ''),
 
             'value'             => htmlspecialchars($object->get('Part Barcode Number')),
             'formatted_value'   => $object->get('Barcode Number'),
@@ -180,7 +182,6 @@ $part_fields[] = array(
             ),
             'type'              => 'value'
         ),
-
 
 
         array(
@@ -259,8 +260,8 @@ $part_fields[] = array(
             'type'            => 'value'
         ),
         array(
-            'id'   => 'Part_Recommended_Product_Unit_Name',
-            'edit' => ($edit ? 'string' : ''),
+            'id'     => 'Part_Recommended_Product_Unit_Name',
+            'edit'   => ($edit ? 'string' : ''),
             'render' => ($supplier_part_scope ? false : true),
 
             'value'           => htmlspecialchars($object->get('Part Recommended Product Unit Name')),
@@ -295,7 +296,6 @@ $part_fields[] = array(
         ),
 
 
-
     )
 );
 
@@ -324,9 +324,9 @@ $part_fields[] = array(
             'type'            => 'value'
         ),
         array(
-            'id'   => 'Part_SKO_Barcode',
-            'edit' => ($edit ? 'string' : ''),
-            'render' => (($new and $supplier_part_scope ) ? false : true),
+            'id'     => 'Part_SKO_Barcode',
+            'edit'   => ($edit ? 'string' : ''),
+            'render' => (($new and $supplier_part_scope) ? false : true),
 
             'value'             => htmlspecialchars($object->get('Part SKO Barcode')),
             'formatted_value'   => $object->get('SKO Barcode'),
@@ -431,7 +431,7 @@ $part_fields[] = array(
     )
 );
 
-if(!$supplier_part_scope) {
+if (!$supplier_part_scope) {
 
     $part_fields[] = array(
         'label' => _('Cartons').' <small class="padding_left_10" ><i class="fa fa-exclamation-triangle yellow" aria-hidden="true"></i> <span class="warning">'._("This field is independent of Supplier's part ordering SKOs per carton").'</span></small>',
@@ -440,8 +440,8 @@ if(!$supplier_part_scope) {
         'fields'     => array(
             array(
 
-                'id'   => 'Part_SKOs_per_Carton',
-                'edit' => ($edit ? 'numeric' : ''),
+                'id'     => 'Part_SKOs_per_Carton',
+                'edit'   => ($edit ? 'numeric' : ''),
                 'render' => (!($supplier_part_scope or $new) ? true : false),
 
                 'value'           => $object->get('Part SKOs per Carton'),
@@ -455,12 +455,11 @@ if(!$supplier_part_scope) {
             ),
 
 
-
         )
     );
 }
 
-if(!($supplier_part_scope or $new)) {
+if (!($supplier_part_scope or $new)) {
 
     $part_fields[] = array(
         'label' => _('Stock value'),
@@ -517,8 +516,7 @@ $part_fields[] = array(
             ) : htmlspecialchars($object->get('Part Origin Country Code'))),
             'formatted_value'          => (($new and $supplier_part_scope) ? $options['parent_object']->get('Products Origin Country Code') : $object->get('Origin Country Code')),
             'stripped_formatted_value' => (($new and $supplier_part_scope)
-                ? ($options['parent_object']->get('Part Origin Country Code') != '' ? $options['parent_object']->get('Origin Country').' ('.$options['parent_object']->get('Part Origin Country Code')
-                    .')' : '')
+                ? ($options['parent_object']->get('Part Origin Country Code') != '' ? $options['parent_object']->get('Origin Country').' ('.$options['parent_object']->get('Part Origin Country Code').')' : '')
                 : ($object->get('Part Origin Country Code') != '' ? $object->get('Origin Country').' ('.$object->get(
                         'Part Origin Country Code'
                     ).')' : '')),
@@ -560,6 +558,7 @@ $part_fields[] = array(
 
 
 );
+
 $part_fields[] = array(
     'label' => ($supplier_part_scope
         ? _('Part health & safety')
@@ -601,15 +600,10 @@ $part_fields[] = array(
         array(
             'id'   => 'Part_Packing_Group',
             'edit' => ($edit ? 'option' : ''),
-
             'options'         => $options_Packing_Group,
-            'value'           => htmlspecialchars(
-                $object->get('Part Packing Group')
-            ),
+            'value'           => htmlspecialchars($object->get('Part Packing Group')),
             'formatted_value' => $object->get('Packing Group'),
-            'label'           => ucfirst(
-                $object->get_field_label('Part Packing Group')
-            ),
+            'label'           => ucfirst($object->get_field_label('Part Packing Group')),
             'required'        => false,
             'type'            => 'value'
         ),
@@ -647,6 +641,32 @@ $part_fields[] = array(
 );
 
 
+
+$part_fields[] = array(
+    'label' =>_('Production'),
+
+    'show_title' => true,
+    'fields'     => array(
+
+
+        array(
+            'id'   => 'Part_Production_Supply',
+            'edit' => ($edit ? 'option' : ''),
+            'options'         => $options_yes_no,
+            'value'           => htmlspecialchars($object->get('Part Production Supply')),
+            'formatted_value' => $object->get('Production Supply'),
+            'label'           => ucfirst($object->get_field_label('Part Production Supply')),
+            'required'        => false,
+            'type'            => 'value'
+        ),
+
+    )
+
+
+);
+
+
+
 if (!$new and !$supplier_part_scope) {
     $operations = array(
         'label'      => _('Operations'),
@@ -658,9 +678,8 @@ if (!$new and !$supplier_part_scope) {
                 'id'        => 'delete_part',
                 'class'     => 'operation',
                 'value'     => '',
-                'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name(
-                    ).'", "key":"'.$object->id.'"}\' onClick="delete_object(this)" class="delete_object disabled">'._("Delete part & related supplier's parts")
-                    .' <i class="fa fa-trash new_button link"></i></span>',
+                'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
+                    .'"}\' onClick="delete_object(this)" class="delete_object disabled">'._("Delete part & related supplier's parts").' <i class="fa fa-trash new_button link"></i></span>',
                 'reference' => '',
                 'type'      => 'operation'
             ),

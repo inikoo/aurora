@@ -281,12 +281,8 @@ class DealComponent extends DB_Table {
             case 'Deal Component Expiration Date':
                 $this->update_expiration_date($value, $options);
                 break;
-            case('term'):
-                $this->update_term($value);
-                break;
-            case('allowance'):
-                $this->update_allowance($value);
-                break;
+
+
             default:
                 $base_data = $this->base_data();
 

@@ -373,7 +373,7 @@ function components($_data, $db, $user) {
 
             switch ($data['Deal Component Allowance Type']) {
                 case 'Percentage Off':
-                    $allowance = percentage($data['Deal Component Allowance'],1);
+                    $allowance = percentage($data['Deal Component Allowance'], 1);
                     break;
 
                 default:
@@ -383,8 +383,8 @@ function components($_data, $db, $user) {
             switch ($data['Deal Component Allowance Target']) {
                 case 'Category':
                     $target = sprintf(
-                        '<i class="fa fa-sitemap fa-fw" aria-hidden="true" title="%s" ></i> <span class="link" onclick="change_view(\'/products/%d/category/%d\')" >%s</span>', _('Category'), $data['Deal Component Store Key'], $data['Deal Component Allowance Target Key'],
-                        $data['Deal Component Allowance Target Label']
+                        '<i class="fa fa-sitemap fa-fw" aria-hidden="true" title="%s" ></i> <span class="link" onclick="change_view(\'/products/%d/category/%d\')" >%s</span>', _('Category'), $data['Deal Component Store Key'],
+                        $data['Deal Component Allowance Target Key'], $data['Deal Component Allowance Target Label']
                     );
                     break;
                 case 'Charge':
@@ -472,10 +472,10 @@ function components($_data, $db, $user) {
                 'to'          => $to,
                 'target'      => $target,
                 'duration'    => $duration,
-                'allowance' => $allowance,
+                'allowance'   => $allowance,
 
-                'orders'      => number($data['Deal Component Total Acc Used Orders']),
-                'customers'   => number($data['Deal Component Total Acc Used Customers'])
+                'orders'    => number($data['Deal Component Total Acc Used Orders']),
+                'customers' => number($data['Deal Component Total Acc Used Customers'])
 
             );
 
@@ -517,7 +517,7 @@ function campaign_order_recursion_components($_data, $db, $user) {
 
             switch ($data['Deal Component Allowance Type']) {
                 case 'Percentage Off':
-                    $allowance = percentage($data['Deal Component Allowance'],1);
+                    $allowance = '<span id="deal_component_allowance_'.$data['Deal Component Key'].'"><span class="button" key="'.$data['Deal Component Key'].'" target="'.$data['Deal Component Allowance Target Label'].'" allowance="'.percentage($data['Deal Component Allowance'], 1).'" description="'.$data['Deal Component Allowance Label'].'"  onclick="edit_component_allowance(this)"   >'.percentage($data['Deal Component Allowance'], 1).'</span></span>';
                     break;
 
                 default:
@@ -527,8 +527,8 @@ function campaign_order_recursion_components($_data, $db, $user) {
             switch ($data['Deal Component Allowance Target']) {
                 case 'Category':
                     $target = sprintf(
-                        '<i class="fa fa-sitemap fa-fw" aria-hidden="true" title="%s" ></i> <span class="link" onclick="change_view(\'/products/%d/category/%d\')" >%s</span>', _('Category'), $data['Deal Component Store Key'], $data['Deal Component Allowance Target Key'],
-                        $data['Deal Component Allowance Target Label']
+                        '<i class="fa fa-sitemap fa-fw" aria-hidden="true" title="%s" ></i> <span class="link" onclick="change_view(\'/products/%d/category/%d\')" >%s</span>', _('Category'), $data['Deal Component Store Key'],
+                        $data['Deal Component Allowance Target Key'], $data['Deal Component Allowance Target Label']
                     );
                     break;
                 case 'Charge':
@@ -566,6 +566,8 @@ function campaign_order_recursion_components($_data, $db, $user) {
                 default:
                     $status = $data['Deal Component Status'];
             }
+
+            $status='<span id="deal_component_status_'.$data['Deal Component Key'].'"><span status="'.$data['Deal Component Status'].'" target="'.$data['Deal Component Allowance Target Label'].'" key="'.$data['Deal Component Key'].'" class="button" onclick="edit_component_status(this)">'.$status.'</span></span>';
 
             $duration = '';
             if ($data['Deal Component Expiration Date'] == '' and $data['Deal Component Begin Date'] == '') {
@@ -611,8 +613,8 @@ function campaign_order_recursion_components($_data, $db, $user) {
                 'id'          => (integer)$data['Deal Component Key'],
                 'status'      => $status,
                 'name'        => $data['Deal Component Name Label'],
-                'description' => $data['Deal Component Allowance Label'],
-                'allowance' => $allowance,
+                'description' => '<span id="deal_component_description_'.$data['Deal Component Key'].'">'.$data['Deal Component Allowance Label'].'</span>',
+                'allowance'   => $allowance,
                 'from'        => $from,
                 'to'          => $to,
                 'target'      => $target,

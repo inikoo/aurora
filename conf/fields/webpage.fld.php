@@ -11,6 +11,12 @@
 */
 
 
+$options_registration_type = array(
+    'Open' => _('Open'),
+    'ApprovedOnly'  => _('Only approved')
+
+);
+
 $website = get_object('Website', $object->get('Webpage Website Key'));
 
 
@@ -457,6 +463,25 @@ $object_fields[] = $export_operations;
 
 if (in_array($object->get('Webpage Scope'), array('Register'))) {
 
+    $object_fields[] = array(
+        'label'      => _('Registration type'),
+        'show_title' => true,
+        'fields'     => array(
+            array(
+                'id'              => 'Website_Registration_Type',
+                'edit'            => 'option',
+                'options'         => $options_registration_type,
+                'value'           => $website->get('Website Registration Type'),
+                'formatted_value' => $website->get('Registration Type'),
+                'label'           => $website->get_field_label('Website Registration Type'),
+                'required'        => false,
+                'type'            => ''
+            ),
+
+
+        )
+    );
+    /*
 
     $object_fields[] = array(
         'label'      => _('Customer insights'),
@@ -475,9 +500,10 @@ if (in_array($object->get('Webpage Scope'), array('Register'))) {
 
         )
     );
+
+    */
 }
 
-//262800
 
 
 $operations      = array(

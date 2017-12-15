@@ -1745,6 +1745,18 @@ class Page extends DB_Table {
 
                 break;
 
+            case 'Website Registration Type':
+
+
+                $website = get_object('website',$this->get('Webpage Website Key'));
+
+                $website->editor=$this->editor;
+                $website->update_field($field, $value, $options);
+
+
+
+                break;
+
 
             default:
 

@@ -136,7 +136,7 @@ switch ($tipo) {
                      )
         );
 
-        $data['user'] = $user;
+
 
         switch ($data['scope']) {
 
@@ -157,6 +157,9 @@ switch ($tipo) {
 
                     }
                 }
+                break;
+            case 'allowance_target':
+                find_allowance_targets($db, $account, $memcache_ip,$user, $data);
 
 
                 break;
@@ -182,7 +185,7 @@ switch ($tipo) {
                 find_products($db, $account, $memcache_ip, $data);
                 break;
             case 'families':
-                find_families($db, $account, $memcache_ip, $data);
+                find_families($db, $account, $memcache_ip, $user,$data);
                 break;
             case 'webpages':
                 find_webpages($db, $account, $memcache_ip, $data);
@@ -2836,12 +2839,12 @@ function find_employees($db, $account, $memcache_ip, $data) {
 }
 
 
-function find_families($db, $account, $memcache_ip, $data) {
+function find_families($db, $account, $memcache_ip, $user,$data) {
 
 
     $cache       = false;
     $max_results = 5;
-    $user        = $data['user'];
+    $user        = $user;
     $q           = trim($data['query']);
 
 
@@ -2855,6 +2858,9 @@ function find_families($db, $account, $memcache_ip, $data) {
 
         return;
     }
+
+
+    print_r($data);
 
 
     $where = '';
@@ -2871,6 +2877,11 @@ function find_families($db, $account, $memcache_ip, $data) {
 
 
                 $where = sprintf(" and `Category Store Key`=%d and  `Category Scope`='Product'  and `Category Branch Type`='Head'", $data['metadata']['parent_key']);
+                break;
+            case 'campaign':
+
+
+                $where = sprintf(" and `Category Store Key`=%d and  `Category Scope`='Product'  and `Category Branch Type`='Head'", $data['metadata']['store_key']);
                 break;
             default:
 
@@ -2890,9 +2901,7 @@ function find_families($db, $account, $memcache_ip, $data) {
     }
 
 
-    $memcache_fingerprint = $account->get('Account Code').'FIND_PRODUCTS'.md5(
-            $q
-        );
+    $memcache_fingerprint = $account->get('Account Code').'FIND_PRODUCTS'.md5($q);
 
     $cache = new Memcached();
     $cache->addServer($memcache_ip, 11211);
@@ -3284,6 +3293,175 @@ function find_location($db, $account, $memcache_ip, $data) {
 
     }
 }
+
+
+
+function find_allowance_targets($db, $account, $memcache_ip, $user,$data) {
+
+
+    $cache       = false;
+    $max_results = 5;
+    $user        = $user;
+    $q           = trim($data['query']);
+
+
+    if ($q == '') {
+        $response = array(
+            'state'   => 200,
+            'results' => 0,
+            'data'    => ''
+        );
+        echo json_encode($response);
+
+        return;
+    }
+
+
+    //print_r($data);
+
+
+    $where = '';
+
+    if (isset($data['metadata']['parent'])) {
+        switch ($data['metadata']['parent']) {
+                    case 'campaign':
+
+
+                $where = sprintf(" and `Category Store Key`=%d and  `Category Scope`='Product'  and `Category Branch Type`='Head'", $data['metadata']['store_key']);
+                break;
+            default:
+
+                break;
+        }
+    } else {
+
+        switch ($data['parent']) {
+            case 'store':
+                $where = sprintf(" and `Category Store Key`=%d   and `Category Scope`='Product'  and `Category Branch Type`='Head' ", $data['parent_key']);
+                break;
+            default:
+
+                break;
+        }
+
+    }
+
+
+    $memcache_fingerprint = $account->get('Account Code').'FIND_ALLOW_Target'.md5($q);
+
+    $cache = new Memcached();
+    $cache->addServer($memcache_ip, 11211);
+
+
+    if (strlen($q) <= 2) {
+        $memcache_time = 295200;
+    }
+    else if (strlen($q) <= 3) {
+        $memcache_time = 86400;
+    }
+    else if (strlen($q) <= 4) {
+        $memcache_time = 3600;
+    } else {
+        $memcache_time = 300;
+
+    }
+
+
+    $results_data = $cache->get($memcache_fingerprint);
+
+
+    if (!$results_data or true) {
+
+
+        $candidates = array();
+
+        $candidates_data = array();
+
+
+        $sql = sprintf(
+            "select `Category Key`,`Category Code`,`Category Label`,`Deal Component Key` from `Category Dimension` left join `Deal Component Dimension` on (`Deal Component Allowance Target Key`=`Category Key` and `Deal Component Allowance Target`='Category' and `Deal Component Campaign Key`=%d) where   `Category Code` like '%s%%' %s   and `Deal Component Key` is null order by `Category Code` limit $max_results ",
+
+
+            $data['metadata']['store_key'],$q, $where
+        );
+
+           //print $sql;
+
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
+
+                if ($row['Category Code'] == $q) {
+                    $candidates[$row['Category Key']] = 1000;
+                } else {
+
+                    $len_name                         = strlen(
+                        $row['Category Key']
+                    );
+                    $len_q                            = strlen($q);
+                    $factor                           = $len_q / $len_name;
+                    $candidates[$row['Category Key']] = 500 * $factor;
+                }
+
+                $candidates_data[$row['Category Key']] = array(
+                    'Category Code'  => $row['Category Code'],
+                    'Category Label' => $row['Category Label']
+                );
+
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            exit;
+        }
+
+
+        arsort($candidates);
+
+
+        $total_candidates = count($candidates);
+
+        if ($total_candidates == 0) {
+            $response = array(
+                'state'   => 200,
+                'results' => 0,
+                'data'    => ''
+            );
+            echo json_encode($response);
+
+            return;
+        }
+
+
+        $results = array();
+        foreach ($candidates as $category_key => $candidate) {
+
+            $results[$category_key] = array(
+                'code'            => $candidates_data[$category_key]['Category Code'],
+                'description'     => $candidates_data[$category_key]['Category Label'],
+                'value'           => $category_key,
+                'formatted_value' => $candidates_data[$category_key]['Category Code']
+            );
+
+        }
+
+        $results_data = array(
+            'n' => count($results),
+            'd' => $results
+        );
+        $cache->set($memcache_fingerprint, $results_data, $memcache_time);
+
+
+    }
+    $response = array(
+        'state'          => 200,
+        'number_results' => $results_data['n'],
+        'results'        => $results_data['d'],
+        'q'              => $q
+    );
+
+    echo json_encode($response);
+
+}
+
 
 
     ?>

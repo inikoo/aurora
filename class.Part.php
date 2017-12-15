@@ -2634,7 +2634,6 @@ class Part extends Asset {
             case 'Part Reference':
                 $label = _('reference');
                 break;
-
             case 'Part Unit Label':
                 $label = _('unit label');
                 break;
@@ -2647,7 +2646,6 @@ class Part extends Asset {
             case 'Part Package Image':
                 $label = _('SKO image');
                 break;
-
             case 'Part Unit Price':
                 $label = _('unit recommended price');
                 break;
@@ -2670,15 +2668,12 @@ class Part extends Asset {
             case 'Part Tariff Code':
                 $label = _('tariff code');
                 break;
-
             case 'Part Duty Rate':
                 $label = _('duty rate');
                 break;
-
             case 'Part UN Number':
                 $label = _('UN number');
                 break;
-
             case 'Part UN Class':
                 $label = _('UN class');
                 break;
@@ -2718,7 +2713,9 @@ class Part extends Asset {
             case 'Part Recommended Product Unit Name':
                 $label = _('Unit recommended description');
                 break;
-
+            case 'Part Production Supply':
+                $label = _('used in production');
+                break;
             default:
                 $label = $field;
 

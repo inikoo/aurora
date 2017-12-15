@@ -30,7 +30,7 @@ class PartLocation extends DB_Table {
         if (is_array($arg1)) {
             $data = $arg1;
             if (isset($data['LocationPart'])) {
-                $tmp                = split("_", $data['LocationPart']);
+                $tmp                = preg_split("/\_/", $data['LocationPart']);
                 $this->location_key = $tmp[1];
                 $this->part_sku     = $tmp[2];
 
@@ -1175,21 +1175,17 @@ class PartLocation extends DB_Table {
         $details = '';
 //'Move','Order In Process','No Dispatched','Sale','Audit','In','Adjust','Broken','Lost','Not Found','Associate','Disassociate','Move In','Move Out','Other Out','Restock','FailSale'
         switch ($transaction_type) {
+            case('Production'):
+                $record_type = 'Movement';
+                $section     = 'Out';
+                $details=sprintf(_('%s SKO send to production'),-$qty_change).' ('.($value_change > 0 ? '+' : '').money($value_change,$account->get('Account Currency')).') '.$data['Note'];
+                break;
             case('Lost'):
-
-
-
                 $record_type = 'Movement';
                 $section     = 'Other';
                 $details=sprintf(_('%s SKO lost'),-$qty_change).' ('.($value_change > 0 ? '+' : '').money($value_change,$account->get('Account Currency')).') '.$data['Note'];
-
-
-
-
                 break;
             case('Broken'):
-
-
                 $record_type = 'Movement';
                 $section     = 'Other';
                 $details=sprintf(_('%s SKO damaged'),-$qty_change).' ('.($value_change > 0 ? '+' : '').money($value_change,$account->get('Account Currency')).') '.$data['Note'];

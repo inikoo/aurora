@@ -314,6 +314,10 @@ function get_rtext($record_label, $total_records) {
         return sprintf(
             ngettext('%s agent', '%s agents', $total_records), number($total_records)
         );
+    } elseif ($record_label == 'allowance') {
+        return sprintf(
+            ngettext('%s allowance', '%s allowances', $total_records), number($total_records)
+        );
     } elseif ($record_label == 'user category') {
         return sprintf(
             ngettext('%s user category', '%s user categories', $total_records), number($total_records)
@@ -670,6 +674,10 @@ function get_rtext_with_filter($record_label, $total_with_filter, $total_no_filt
     } elseif ($record_label == 'offer') {
         return sprintf(
             ngettext('%s offer of %s', '%s offers of %s', $total_with_filter), number($total_with_filter), number($total_no_filter)
+        );
+    }elseif ($record_label == 'allowance') {
+        return sprintf(
+            ngettext('%s allowance of %s', '%s allowances of %s', $total_with_filter), number($total_with_filter), number($total_no_filter)
         );
     } elseif ($record_label == 'purchase order') {
         return sprintf(

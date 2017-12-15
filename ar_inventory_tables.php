@@ -35,9 +35,6 @@ switch ($tipo) {
     case 'parts_barcode_errors':
         parts_barcode_errors(get_table_parameters(), $db, $user, '', $account);
         break;
-
-
-
     case 'parts':
         parts(get_table_parameters(), $db, $user, '', $account);
         break;
@@ -88,8 +85,10 @@ switch ($tipo) {
         category_all_parts(get_table_parameters(), $db, $user);
         break;
     case 'sales_history':
-
         sales_history(get_table_parameters(), $db, $user, $account);
+        break;
+    case 'stock.history.day':
+        stock_history_day(get_table_parameters(), $db, $user, $account);
         break;
     default:
         $response = array(
@@ -741,8 +740,7 @@ function stock_transactions($_data, $db, $user) {
                     }
 
                     break;
-                case
-                'In':
+                case 'In':
                     $type = '<i class="fa fa-sign-in fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Audit':
@@ -776,6 +774,9 @@ function stock_transactions($_data, $db, $user) {
                     break;
                 case 'Broken':
                     $type = '<i class="fa fa-cross error fa-fw" aria-hidden="true"></i>';
+                    break;
+                case 'Production':
+                    $type = '<i class="fa fa-hand-rock-o  fa-fw" title="'._('Send to production').'" aria-hidden="true"></i>';
                     break;
                 case 'Other Out':
                     $type = '<i class="fa fa-exclamation-circle  error fa-fw" aria-hidden="true"></i>';
@@ -2065,5 +2066,64 @@ function parts_barcode_errors($_data, $db, $user) {
     );
     echo json_encode($response);
 }
+
+
+
+function stock_history_day($_data, $db, $user, $account) {
+
+
+    $rtext_label = 'part';
+
+    include_once 'prepare_table/init.php';
+
+    $sql = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+
+
+  //  print  $sql;
+
+    $record_data = array();
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+
+
+            $record_data[] = array(
+                'reference'   => sprintf('<span class="link" onClick="change_view(\'part/%d\')">%s</span>',$data['Part SKU'],$data['Part Reference']),
+
+                'description' => $data['Part Package Description'],
+
+                'stock' => number($data['stock']),
+                'stock_value' => money($data['stock_value'], $account->get('Currency Code')),
+                'cost' => ($data['stock']>0?money($data['stock_value']/$data['stock'], $account->get('Currency Code')):''),
+                'in'    => number($data['book_in']),
+                'sold'  => number($data['sold']),
+                'lost'  => number($data['lost']),
+                'given'  => number($data['given']),
+
+            );
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print $sql;
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $record_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
 
 ?>

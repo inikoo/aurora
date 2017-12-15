@@ -2102,7 +2102,7 @@ $modules = array(
                 'icon'      => 'shopping-bag',
                 'showcase'  => 'store',
                 'reference' => 'store/%d',
-                'class'     => 'icon_only',
+                'class'     => 'icon_only right',
 
                 'subtabs_parent' => array(
                     'store.sales.plot'     => 'store.sales',
@@ -2709,7 +2709,7 @@ $modules = array(
                         'icon'          => 'tags',
                         'quantity_data' => array(
                             'object' => '_object',
-                            'field'  => 'Number Active Components'
+                            'field'  => 'Number Deal Components'
                         ),
                     ),
                     'campaign_order_recursion.reminders'  => array(
@@ -3073,19 +3073,13 @@ $modules = array(
                                 )
                             ),
                             'customer.marketing.products'   => array(
-                                'label' => _(
-                                    'Products ordered'
-                                )
+                                'label' => _('Products ordered')
                             ),
                             'customer.marketing.families'   => array(
-                                'label' => _(
-                                    'Families ordered'
-                                )
+                                'label' => _('Families ordered')
                             ),
                             'customer.marketing.favourites' => array(
-                                'label' => _(
-                                    'Favourite products'
-                                )
+                                'label' => _('Favourite products')
                             ),
                             'customer.marketing.search'     => array(
                                 'label' => _(
@@ -3740,16 +3734,12 @@ $modules = array(
                 'class'     => 'icon_only right',
                 'tabs'      => array(
                     'suppliers.settings'       => array(
-                        'label' => _(
-                            'General settings'
-                        ),
+                        'label' => _('General settings'),
                         'icon'  => 'sliders',
                         'class' => ''
                     ),
                     'suppliers.email_template' => array(
-                        'label' => _(
-                            'Email template'
-                        ),
+                        'label' => _('Email template'),
                         'icon'  => 'envelope-o',
                         'class' => ''
                     ),

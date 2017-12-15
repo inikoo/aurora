@@ -409,6 +409,22 @@ class Website extends DB_Table {
 
         switch ($key) {
 
+            case 'Registration Type':
+
+              switch ($this->data['Website Registration Type']){
+                  case 'Open':
+                      return _('Open');
+                      break;
+                  case 'ApprovedOnly':
+                      return _('Only approved');
+                      break;
+                  default:
+                      return $this->data['Website Registration Type'];
+
+              }
+
+                break;
+
             case 'User Password Recovery Email':
 
                 global $user;
@@ -829,7 +845,9 @@ class Website extends DB_Table {
             case 'Website Address':
                 $label = _('address');
                 break;
-
+            case 'Website Registration Type':
+                $label = _('registration type');
+                break;
             default:
 
 

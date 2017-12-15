@@ -206,6 +206,26 @@ class DealCampaign extends DB_Table {
 
         switch ($field) {
 
+            case 'Deal Campaign Store Send Order Recursion Emails':
+
+
+                $store         = get_orders('store', $this->data['Deal Campaign Store Key']);
+                $store->editor = $this->editor;
+                $store->update(array('Store Send Order Recursion Emails' => $value), $options);
+
+
+                break;
+
+            case 'Deal Campaign Send Order Recursion Reminder':
+
+
+                $store         = get_orders('store', $this->data['Deal Campaign Store Key']);
+                $store->editor = $this->editor;
+                $store->update(array('Deal Terms' => $value.' day'), $options);
+
+
+                break;
+
 
             case 'Deal Campaign Order Recursion Days':
 
@@ -332,6 +352,8 @@ class DealCampaign extends DB_Table {
     function update_number_of_deals() {
         $number_deals         = 0;
         $number_current_deals = 0;
+        $number_deal_components        = 0;
+        $number_current_deal_components = 0;
 
         $sql = sprintf("SELECT count(*) AS num FROM `Deal Dimension` WHERE `Deal Campaign Key`=%d  AND `Deal Status`='Active'  ", $this->id);
 
@@ -358,10 +380,37 @@ class DealCampaign extends DB_Table {
         }
 
 
+        $sql = sprintf("SELECT count(*) AS num FROM `Deal Component Dimension` WHERE `Deal Component Campaign Key`=%d  AND `Deal Component Status`='Active'  ", $this->id);
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $number_current_deal_components = $row['num'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+        $sql = sprintf("SELECT count(*) AS num FROM `Deal Component Dimension` WHERE `Deal Component Campaign Key`=%d ", $this->id);
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $number_deal_components = $row['num'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
         $this->fast_update(
             array(
                 'Deal Campaign Number Deals'         => $number_deals,
-                'Deal Campaign Number Current Deals' => $number_current_deals
+                'Deal Campaign Number Current Deals' => $number_current_deals,
+                'Deal Campaign Number Deal Components'         => $number_deal_components,
+                'Deal Campaign Number Active Deal Components' => $number_current_deal_components
 
             )
         );
@@ -518,6 +567,15 @@ class DealCampaign extends DB_Table {
 
                 break;
 
+
+            case 'Number Deals':
+            case 'Number Active Deals':
+            case 'Number Deal Components':
+            case 'Number Active Deal Components':
+            return number($this->data['Deal Campaign '.$key]);
+
+            break;
+
             case 'Used Orders':
             case 'Used Customers':
             case 'Applied Orders':
@@ -570,6 +628,8 @@ class DealCampaign extends DB_Table {
                 break;
 
 
+
+                break;
             default:
                 if (array_key_exists($key, $this->data)) {
                     return $this->data[$key];
