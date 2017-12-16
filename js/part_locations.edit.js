@@ -971,7 +971,7 @@ function save_stock_dialog_to_production(element) {
 
     console.log(request)
 
-    //=====
+
     var form_data = new FormData();
     form_data.append("tipo", 'send_to_production')
     form_data.append("part_sku", $('#locations_table').attr('part_sku'))

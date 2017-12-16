@@ -449,7 +449,7 @@ function customers_server($_data, $db, $user) {
             $adata[] = array(
                 'store_key'                   => $data['Store Key'],
                 'code'                        => sprintf('<span class="link" onClick="change_view(\'customers/%d\')">%s</span>',$data['Store Key'],$data['Store Code']),
-                'name'                        => $data['Store Name'],
+                'name'                        => sprintf('<span class="link" onClick="change_view(\'customers/%d\')">%s</span>',$data['Store Key'],$data['Store Name']),
                 'contacts'                    => (integer)$data['Store Contacts'],
                 'active_contacts'             => (integer)$data['active'],
                 'new_contacts'                => (integer)$data['Store New Contacts'],
