@@ -88,7 +88,7 @@ if ($result = $db->query($sql)) {
         }
 
 
-        $customer->update_address('Contact', $address_fields);
+        $customer->update_address('Contact', $address_fields,'no_history');
 
         $location = $customer->get('Contact Address Locality');
         if ($location == '') {
@@ -165,7 +165,7 @@ if ($result = $db->query($sql)) {
         }
 
 
-        $customer->update_address('Delivery', $address_fields);
+        $customer->update_address('Delivery', $address_fields,'no_history');
 
 
         $fiscal_name  = get_fiscal_name($customer);
@@ -231,7 +231,7 @@ if ($result = $db->query($sql)) {
         }
 
 
-        $customer->update_address('Invoice', $address_fields);
+        $customer->update_address('Invoice', $address_fields,'no_history');
 
         $other_delivery_address_keys = get_delivery_address_keys(
             $db, $customer->id, $customer->get('Customer Billing Address Key')
@@ -329,14 +329,12 @@ function add_other_telephone($other_telephones, $customer) {
 
 
         foreach ($other_telephones as $other_telephone) {
-            $customer->update(
-                array('new telephone' => $other_telephone['number'])
-            );
+            $customer->update(array('new telephone' => $other_telephone['number']),'no_history');
             if ($customer->field_created_key and $other_telephone['label'] != '') {
                 $update_data = array();
                 $update_data['Customer Other Telephone Label '.$customer->field_created_key]
                              = $other_telephone['label'];
-                $customer->update($update_data);
+                $customer->update($update_data,'no_history');
 
             }
 
