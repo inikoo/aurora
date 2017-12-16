@@ -315,6 +315,15 @@ if ($result = $db->query($sql)) {
         add_other_telephone(get_other_telecoms_data($db, 'Mobile', $customer), $customer);
         add_other_telephone(get_other_telecoms_data($db, 'FAX', $customer), $customer);
 
+        if($customer->get('Customer Tax Number')!='' and  $customer->get('Customer Tax Number Validation Source')!='Manual' and( $customer->get('Customer Tax Number Valid')=='Unknown'  or $customer->get('Customer Tax Number Validation Date')=='0000-00-00 00:00:00' )){
+            $customer->update_tax_number_valid('Auto');
+
+        }
+
+
+
+
+
 
     }
 
