@@ -367,29 +367,20 @@ function address_fields($address_key, $recipient, $organization, $default_countr
             'Address Line 1'               => $lines[1],
             'Address Line 2'               => $lines[2],
             'Address Sorting Code'         => '',
-            'Address Postal Code'          => $address->get(
-                'Address Postal Code'
-            ),
-            'Address Dependent Locality'   => $address->display(
-                'Town Divisions'
-            ),
+            'Address Postal Code'          => $address->get('Address Postal Code'),
+            'Address Dependent Locality'   => $address->display('Town Divisions'),
             'Address Locality'             => $address->get('Address Town'),
-            'Address Administrative Area'  => $address->display(
-                'Country Divisions'
-            ),
+            'Address Administrative Area'  => $address->display('Country Divisions'),
             'Address Country 2 Alpha Code' => ($address->data['Address Country 2 Alpha Code'] == 'XX' ? $default_country : $address->data['Address Country 2 Alpha Code']),
 
         );
         //print_r($used_fields);
 
-        if (!in_array('recipient', $used_fields) or !in_array(
-                'organization', $used_fields
-            ) or !in_array('addressLine1', $used_fields)
-        ) {
-            print_r($used_fields);
-            print_r($address->data);
-            exit('no recipient or organization');
-        }
+        //if (!in_array('recipient', $used_fields) or !in_array('organization', $used_fields) or !in_array('addressLine1', $used_fields)) {
+        ////    print_r($used_fields);
+        //    print_r($address->data);
+        //    exit('no recipient or organization');
+       // }
 
         if (!in_array('addressLine2', $used_fields)) {
 
