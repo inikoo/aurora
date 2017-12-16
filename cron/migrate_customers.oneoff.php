@@ -302,15 +302,9 @@ if ($result = $db->query($sql)) {
         }
 
 
-        add_other_telephone(
-            get_other_telecoms_data($db, 'Telephone', $customer), $customer
-        );
-        add_other_telephone(
-            get_other_telecoms_data($db, 'Mobile', $customer), $customer
-        );
-        add_other_telephone(
-            get_other_telecoms_data($db, 'FAX', $customer), $customer
-        );
+        add_other_telephone(get_other_telecoms_data($db, 'Telephone', $customer), $customer);
+        add_other_telephone(get_other_telecoms_data($db, 'Mobile', $customer), $customer);
+        add_other_telephone(get_other_telecoms_data($db, 'FAX', $customer), $customer);
 
 
     }
