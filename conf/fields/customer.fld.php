@@ -125,7 +125,7 @@ if ($new) {
         ),
 
         array(
-            'label'      => _('Telephones'),
+            'label'      => _('Contact'),
             'show_title' => false,
             'fields'     => array(
 
@@ -179,6 +179,18 @@ if ($new) {
                     'invalid_msg'     => get_invalid_message('telephone'),
                     'required'        => false,
                     'type'            => 'value'
+                ),
+
+
+                array(
+                    'id'                => 'Customer_Website',
+                    'edit'              => ($edit ? 'string' : ''),
+                    'value'             => $object->get('Customer Website'),
+                    'formatted_value'   => $object->get('Website'),
+                    'label'             => ucfirst($object->get_field_label('Customer Website')),
+                    'invalid_msg'       => get_invalid_message('string'),
+                    'required'          => false,
+                    'type'              => 'value'
                 ),
 
             )
@@ -392,7 +404,7 @@ if ($new) {
         ),
 
         array(
-            'label'      => _('Telephones'),
+            'label'      => _('Contact'),
             'show_title' => false,
             'fields'     => array(
 
@@ -473,6 +485,17 @@ if ($new) {
                     'invalid_msg'     => get_invalid_message('telephone'),
                     'required'        => false,
                     'type'            => 'value'
+                ),
+
+                array(
+                    'id'                => 'Customer_Website',
+                    'edit'              => ($edit ? 'string' : ''),
+                    'value'             => $object->get('Customer Website'),
+                    'formatted_value'   => $object->get('Website'),
+                    'label'             => ucfirst($object->get_field_label('Customer Website')),
+                    'invalid_msg'       => get_invalid_message('string'),
+                    'required'          => false,
+                    'type'              => 'value'
                 ),
 
             )

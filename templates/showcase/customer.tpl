@@ -112,8 +112,8 @@
                     </tr>
                 {/if}
                 <tr>
-                    <td>{t}Contact Since{/t}:</td>
-                    <td>{$customer->get('Customer First Contacted Date')}</td>
+                    <td>{t}Contact since{/t}:</td>
+                    <td class="aright">{$customer->get('First Contacted Date')}</td>
                 </tr>
                 {assign var="correlation_msg" value=$customer->get_correlation_info()} {if $correlation_msg}
                     <tr>
