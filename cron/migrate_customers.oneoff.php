@@ -302,6 +302,15 @@ if ($result = $db->query($sql)) {
         }
 
 
+
+        if($customer->get('Customer Billing Address Link')=='Contact' and $customer->get('Customer Delivery Address Link')=='Contact'){
+            $customer->update(
+                array('Customer Delivery Address Link' => 'Billing'), 'no_history'
+            );
+
+        }
+
+
         add_other_telephone(get_other_telecoms_data($db, 'Telephone', $customer), $customer);
         add_other_telephone(get_other_telecoms_data($db, 'Mobile', $customer), $customer);
         add_other_telephone(get_other_telecoms_data($db, 'FAX', $customer), $customer);
