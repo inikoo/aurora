@@ -1445,6 +1445,9 @@ class Customer extends Subject {
             case 'Customer Send Newsletter':
                 $label = _('subscription to newsletter');
                 break;
+            case 'Customer Website':
+                $label = _('website');
+                break;
             default:
                 $label = $field;
 
