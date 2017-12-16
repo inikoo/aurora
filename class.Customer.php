@@ -881,12 +881,20 @@ class Customer extends Subject {
 
                 $website_user = get_object('Website_User', $this->get('Customer Website User Key'));
 
+                if ($website_user->id) {
+                    $website_user->editor = $this->editor;
 
-                $website_user->editor = $this->editor;
+                    $website_user->update(array('Website User Password' => hash('sha256', $value)), 'no_history');
 
-                $website_user->update(array('Website User Password' => hash('sha256', $value)), 'no_history');
+                    $website_user->update(array('Website User Password Hash' => password_hash(hash('sha256', $value), PASSWORD_DEFAULT, array('cost' => 12))), 'no_history');
+                }
 
-                $website_user->update(array('Website User Password Hash' => password_hash(hash('sha256', $value), PASSWORD_DEFAULT, array('cost' => 12))), 'no_history');
+                // todo: remove after migration finished
+
+
+                $sql = sprintf('UPDATE `User Dimension` SET `User Password`=%s WHERE `User Type`="Customer" AND `User Parent Key`=%d  ', prepare_mysql(hash('sha256', $value)), $this->id);
+                $this->db->exec($sql);
+
 
                 break;
             case 'Customer Contact Address':
@@ -2070,25 +2078,21 @@ class Customer extends Subject {
     public function update_orders() {
 
 
-
         $customer_orders            = 0;
         $orders_cancelled           = 0;
         $orders_invoiced            = 0;
         $orders_invoiced_first_date = '';
         $orders_invoiced_last_date  = '';
-        $order_interval='';
-        $order_interval_std='';
+        $order_interval             = '';
+        $order_interval_std         = '';
 
-        $customer_with_orders='No';
-        $first_order ='';
-        $last_order  ='';
+        $customer_with_orders = 'No';
+        $first_order          = '';
+        $last_order           = '';
 
-        $payments=0;
-        $invoiced_amount=0;
-        $invoiced_net_amount=0;
-
-
-
+        $payments            = 0;
+        $invoiced_amount     = 0;
+        $invoiced_net_amount = 0;
 
 
         $sql = sprintf(
@@ -2096,7 +2100,7 @@ class Customer extends Subject {
 		min(`Invoice Date`) AS first_order_date ,
 		max(`Invoice Date`) AS last_order_date
 
-		FROM `Invoice Dimension` WHERE `Invoice Type`='Invoice'  and `Invoice Customer Key`=%d  ", $this->id
+		FROM `Invoice Dimension` WHERE `Invoice Type`='Invoice'  AND `Invoice Customer Key`=%d  ", $this->id
         );
 
 
@@ -2120,7 +2124,7 @@ class Customer extends Subject {
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-                $invoiced_amount            = $row['total'];
+                $invoiced_amount     = $row['total'];
                 $invoiced_net_amount = $row['net'];
 
             }
@@ -2132,13 +2136,13 @@ class Customer extends Subject {
 
 
         $sql = sprintf(
-            "SELECT sum(`Payment Transaction Amount`) AS payments FROM `Payment Dimension` WHERE   `Payment Customer Key`=%d  and `Payment Transaction Status`='Completed' ", $this->id
+            "SELECT sum(`Payment Transaction Amount`) AS payments FROM `Payment Dimension` WHERE   `Payment Customer Key`=%d  AND `Payment Transaction Status`='Completed' ", $this->id
         );
 
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-                $payments            = $row['payments'];
+                $payments = $row['payments'];
 
             }
         } else {
@@ -2148,10 +2152,8 @@ class Customer extends Subject {
         }
 
 
-
-
-        if ( $orders_invoiced> 1) {
-            $sql        = "SELECT `Invoice Date` AS date FROM `Invoice Dimension` WHERE `Invoice Type`='Invoice'  and `Invoice Customer Key`=".$this->id." ORDER BY `Invoice Date`";
+        if ($orders_invoiced > 1) {
+            $sql        = "SELECT `Invoice Date` AS date FROM `Invoice Dimension` WHERE `Invoice Type`='Invoice'  AND `Invoice Customer Key`=".$this->id." ORDER BY `Invoice Date`";
             $last_order = false;
             $last_date  = false;
             $intervals  = array();
@@ -2174,14 +2176,10 @@ class Customer extends Subject {
             }
 
 
-
-            $order_interval=average($intervals);
-            $order_interval_std=deviation($intervals);
+            $order_interval     = average($intervals);
+            $order_interval_std = deviation($intervals);
 
         }
-
-
-
 
 
         $sql = sprintf(
@@ -2200,8 +2198,8 @@ class Customer extends Subject {
 
 
                 if ($customer_orders > 0) {
-                    $first_order = $row['first_order_date'];
-                    $last_order  = $row['last_order_date'];
+                    $first_order          = $row['first_order_date'];
+                    $last_order           = $row['last_order_date'];
                     $customer_with_orders = 'Yes';
                 }
             }
@@ -2213,32 +2211,24 @@ class Customer extends Subject {
 
 
         $update_data = array(
-            'Customer Orders'           => $customer_orders,
-            'Customer Orders Cancelled' => $orders_cancelled,
-            'Customer Orders Invoiced'  => $orders_invoiced,
+            'Customer Orders'                    => $customer_orders,
+            'Customer Orders Cancelled'          => $orders_cancelled,
+            'Customer Orders Invoiced'           => $orders_invoiced,
             'Customer First Invoiced Order Date' => $orders_invoiced_first_date,
             'Customer Last Invoiced Order Date'  => $orders_invoiced_last_date,
-            'Customer First Order Date' => $first_order,
-            'Customer Last Order Date'  => $last_order,
-            'Customer Order Interval'=>$order_interval,
-            'Customer Order Interval STD'=>$order_interval_std,
-            'Customer With Orders'=>$customer_with_orders,
-            'Customer Payments Amount'=>$payments,
-            'Customer Sales Amount'=>$invoiced_amount,
-            'Customer Total Sales Amount'=>$invoiced_net_amount,
+            'Customer First Order Date'          => $first_order,
+            'Customer Last Order Date'           => $last_order,
+            'Customer Order Interval'            => $order_interval,
+            'Customer Order Interval STD'        => $order_interval_std,
+            'Customer With Orders'               => $customer_with_orders,
+            'Customer Payments Amount'           => $payments,
+            'Customer Sales Amount'              => $invoiced_amount,
+            'Customer Total Sales Amount'        => $invoiced_net_amount,
 
         );
 
 
-
-
-
-
-
-
         $this->fast_update($update_data);
-
-
 
 
     }
@@ -2250,18 +2240,12 @@ class Customer extends Subject {
         $orders_invoiced            = 0;
         $orders_invoiced_first_date = '';
         $orders_invoiced_last_date  = '';
-        $order_interval='';
-        $order_interval_std='';
+        $order_interval             = '';
+        $order_interval_std         = '';
 
 
-
-        $invoiced_amount=0;
-        $invoiced_net_amount=0;
-
-
-
-
-
+        $invoiced_amount     = 0;
+        $invoiced_net_amount = 0;
 
 
         $sql = sprintf(
@@ -2269,7 +2253,7 @@ class Customer extends Subject {
 		min(`Invoice Date`) AS first_order_date ,
 		max(`Invoice Date`) AS last_order_date
 
-		FROM `Invoice Dimension` WHERE `Invoice Type`='Invoice'  and `Invoice Customer Key`=%d  ", $this->id
+		FROM `Invoice Dimension` WHERE `Invoice Type`='Invoice'  AND `Invoice Customer Key`=%d  ", $this->id
         );
 
 
@@ -2293,7 +2277,7 @@ class Customer extends Subject {
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-                $invoiced_amount            = $row['total'];
+                $invoiced_amount     = $row['total'];
                 $invoiced_net_amount = $row['net'];
 
             }
@@ -2304,12 +2288,8 @@ class Customer extends Subject {
         }
 
 
-
-
-
-
-        if ( $orders_invoiced> 1) {
-            $sql        = "SELECT `Invoice Date` AS date FROM `Invoice Dimension` WHERE `Invoice Type`='Invoice'  and `Invoice Customer Key`=".$this->id." ORDER BY `Invoice Date`";
+        if ($orders_invoiced > 1) {
+            $sql        = "SELECT `Invoice Date` AS date FROM `Invoice Dimension` WHERE `Invoice Type`='Invoice'  AND `Invoice Customer Key`=".$this->id." ORDER BY `Invoice Date`";
             $last_order = false;
             $last_date  = false;
             $intervals  = array();
@@ -2332,33 +2312,24 @@ class Customer extends Subject {
             }
 
 
-
-            $order_interval=average($intervals);
-            $order_interval_std=deviation($intervals);
+            $order_interval     = average($intervals);
+            $order_interval_std = deviation($intervals);
 
         }
 
 
-
-
-
-
-
         $update_data = array(
-            'Customer Orders Invoiced'  => $orders_invoiced,
+            'Customer Orders Invoiced'           => $orders_invoiced,
             'Customer First Invoiced Order Date' => $orders_invoiced_first_date,
             'Customer Last Invoiced Order Date'  => $orders_invoiced_last_date,
-            'Customer Order Interval'=>$order_interval,
-            'Customer Order Interval STD'=>$order_interval_std,
-            'Customer Invoiced Amount'=>$invoiced_amount,
-            'Customer Invoiced Net Amount'=>$invoiced_net_amount,
+            'Customer Order Interval'            => $order_interval,
+            'Customer Order Interval STD'        => $order_interval_std,
+            'Customer Invoiced Amount'           => $invoiced_amount,
+            'Customer Invoiced Net Amount'       => $invoiced_net_amount,
         );
 
 
-
         $this->fast_update($update_data);
-
-
 
 
     }
@@ -2366,22 +2337,17 @@ class Customer extends Subject {
     public function update_payments() {
 
 
-
-
-        $payments=0;
-
-
-
+        $payments = 0;
 
 
         $sql = sprintf(
-            "SELECT sum(`Payment Transaction Amount`) AS payments FROM `Payment Dimension` WHERE   `Payment Customer Key`=%d  and `Payment Transaction Status`='Completed' ", $this->id
+            "SELECT sum(`Payment Transaction Amount`) AS payments FROM `Payment Dimension` WHERE   `Payment Customer Key`=%d  AND `Payment Transaction Status`='Completed' ", $this->id
         );
 
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-                $payments            = $row['payments'];
+                $payments = $row['payments'];
 
             }
         } else {
@@ -2391,24 +2357,14 @@ class Customer extends Subject {
         }
 
 
-
-
         $update_data = array(
-            'Customer Payments Amount'=>$payments,
+            'Customer Payments Amount' => $payments,
 
 
         );
 
 
-
-
-
-
-
-
         $this->fast_update($update_data);
-
-
 
 
     }
