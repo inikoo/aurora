@@ -34,7 +34,7 @@ require_once 'class.Address.php';
 
 
 $sql = sprintf(
-    'SELECT `Customer Key` FROM `Customer Dimension` WHERE `Customer Key`=229496 ORDER BY `Customer Key` DESC '
+    'SELECT `Customer Key` FROM `Customer Dimension` WHERE `Customer Key`=287194 ORDER BY `Customer Key` DESC '
 );
 $sql = sprintf('SELECT `Customer Key` FROM `Customer Dimension` ORDER BY `Customer Key` DESC ');
 
@@ -88,7 +88,7 @@ if ($result = $db->query($sql)) {
         }
 
 
-        $customer->update_address('Contact', $address_fields,'no_history');
+        $customer->update_address('Contact', $address_fields,'no_history  ');
 
         $location = $customer->get('Contact Address Locality');
         if ($location == '') {
@@ -165,7 +165,7 @@ if ($result = $db->query($sql)) {
         }
 
 
-        $customer->update_address('Delivery', $address_fields,'no_history');
+        $customer->update_address('Delivery', $address_fields,'no_history no_old_address');
 
 
         $fiscal_name  = get_fiscal_name($customer);
@@ -231,7 +231,7 @@ if ($result = $db->query($sql)) {
         }
 
 
-        $customer->update_address('Invoice', $address_fields,'no_history');
+        $customer->update_address('Invoice', $address_fields,'no_history no_old_address');
 
         $other_delivery_address_keys = get_delivery_address_keys(
             $db, $customer->id, $customer->get('Customer Billing Address Key')
