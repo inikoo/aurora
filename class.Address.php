@@ -42,14 +42,14 @@ class _Address extends DB_Table {
       (start example)
       // Load data from `Address Dimension` table where  `Address Key`=3
       $key=3;
-      $address = New Address($key);
+      $address = new _Address($key);
 
       // Load data from `Address Dimension` table where  `Address`='raul@gmail.com'
-      $address = New Address('raul@gmail.com');
+      $address = new _Address('raul@gmail.com');
 
       // Insert row to `Address Dimension` table
       $data=array();
-      $address = New Address('new',$data);
+      $address = new _Address('new',$data);
 
 
       (end example)
@@ -57,6 +57,10 @@ class _Address extends DB_Table {
     */
 
     function _Address($arg1 = false, $arg2 = false) {
+
+
+        global $db;
+        $this->db = $db;
 
         $this->table_name    = 'Address';
         $this->ignore_fields = array(
@@ -233,7 +237,7 @@ class _Address extends DB_Table {
             $subject_key    = preg_replace('/[^\d]/', '', $match[0]);
             $subject_type   = 'Customer';
             $subject_object = new Customer($subject_key);
-            $in_contact     = $subject_object->get_contact_keys();
+            $in_contact     = array();//$subject_object->get_contact_keys();
 
 
         }
@@ -288,7 +292,7 @@ class _Address extends DB_Table {
 
         if (isset($raw_data['Street Data'])) {
 
-            $tmp = Address::parse_street($raw_data['Street Data']);
+            $tmp = _Address::parse_street($raw_data['Street Data']);
             foreach ($tmp as $key => $value) {
                 $raw_data[$key] = $value;
             }
@@ -611,7 +615,7 @@ class _Address extends DB_Table {
 
 
         if ($data['Address Country Code'] == 'UNK') {
-            $data                             = Address::prepare_country_data(
+            $data                             = _Address::prepare_country_data(
                 $data, $default_2alpha_code
             );
             $country                          = new Country('code', 'UNK');
@@ -681,7 +685,7 @@ class _Address extends DB_Table {
         }
 
 
-        $data = Address::prepare_country_data($data, $default_2alpha_code);
+        $data = _Address::prepare_country_data($data, $default_2alpha_code);
 
         //print_r($data);
         // foreach($country as $key=>$value){
@@ -697,7 +701,7 @@ class _Address extends DB_Table {
             $tmp  = new Country('find', $_tmp);
             if ($tmp->data['Country Code'] != 'UNK') {
                 $data['Address Country Key'] = $tmp->id;
-                $data                        = Address::prepare_country_data(
+                $data                        = _Address::prepare_country_data(
                     $data, $default_2alpha_code
                 );
             }
@@ -708,7 +712,7 @@ class _Address extends DB_Table {
 
         if (preg_match('/^\s*BFPO\s*\d{1,}\s*$/i', $_p)) {
             $data['Address Country Name'] = 'UK';
-            $data                         = Address::prepare_country_data(
+            $data                         = _Address::prepare_country_data(
                 $data, $default_2alpha_code
             );
 
@@ -948,14 +952,14 @@ class _Address extends DB_Table {
 
 
                         $raw_data['Address Line 1'] = '';
-                        if (Address::is_internal($parte_0) and Address::is_street($parte_1)) {
+                        if (Address::is_internal($parte_0) and _Address::is_street($parte_1)) {
 
                             $raw_data['Address Line 1'] = $parte_0;
                             $raw_data['Address Line 3'] = $parte_1;
-                        } elseif (Address::is_internal($parte_1) and Address::is_street($parte_0)) {
+                        } elseif (Address::is_internal($parte_1) and _Address::is_street($parte_0)) {
                             $raw_data['Address Line 1'] = $parte_1;
                             $raw_data['Address Line 3'] = $parte_0;
-                        } elseif (Address::is_street($parte_1) and Address::is_street($parte_0)) {
+                        } elseif (Address::is_street($parte_1) and _Address::is_street($parte_0)) {
                             $raw_data['Address Line 3'] = $parte_0.', '.$parte_1;
                         } elseif (Address::is_street($parte_0) and !Address::is_street($parte_1)) {
                             $raw_data['Address Line 3'] = $parte_0;
@@ -1233,7 +1237,7 @@ class _Address extends DB_Table {
                 if ($town_filled) {
                     if (Address::is_country_d2(
                             $data['Address Town'], $data['Address Country 2 Alpha Code']
-                        ) and Address::is_town(
+                        ) and _Address::is_town(
                             $data['Address Town Second Division'], $data['Address Country 2 Alpha Code']
                         )
                     ) {
@@ -1422,7 +1426,7 @@ class _Address extends DB_Table {
 
                 if (Address::is_town(
                         $data['Address Town Second Division'], $data['Address Country 2 Alpha Code']
-                    ) and Address::is_country_d2(
+                    ) and _Address::is_country_d2(
                         $data['Address Town'], $data['Address Country 2 Alpha Code']
                     )
                 ) {
@@ -1986,7 +1990,7 @@ class _Address extends DB_Table {
                     $data['Address Country First Division']
                 );
 
-                if (count($town_split) == 2 and Address::is_country_d1(
+                if (count($town_split) == 2 and _Address::is_country_d1(
                         $town_split[1], $data['Address Country 2 Alpha Code']
                     )
                 ) {
@@ -3002,7 +3006,7 @@ class _Address extends DB_Table {
                 $town_split = preg_split(
                     '/\s*\-\s*|\s*,\s*/', $data['Address Town']
                 );
-                if (count($town_split) == 2 and Address::is_country_d1(
+                if (count($town_split) == 2 and _Address::is_country_d1(
                         $town_split[1], $data['Address Country 2 Alpha Code']
                     )
                 ) {
@@ -3367,7 +3371,7 @@ class _Address extends DB_Table {
             $data[$key] = _trim($val);
         }
 
-        $street_data = Address::parse_street(
+        $street_data = _Address::parse_street(
             _trim($raw_data['Address Line 3'])
         );
 
@@ -3379,7 +3383,7 @@ class _Address extends DB_Table {
         $data['Address Building'] = $raw_data['Address Line 2'];
         $data['Address Internal'] = $raw_data['Address Line 1'];
 
-        $postcode_data = Address::parse_postcode(
+        $postcode_data = _Address::parse_postcode(
             $data['Address Postal Code'], $data['Address Country Code']
         );
 
@@ -3419,7 +3423,7 @@ class _Address extends DB_Table {
             '/^,\s*/', '', $data['Address Fuzzy Type']
         );
 
-        $data['Address Location'] = Address::location($data);
+        $data['Address Location'] = _Address::location($data);
 
         return $data;
     }
@@ -3490,7 +3494,7 @@ class _Address extends DB_Table {
 
 
     /*Method: create
-      Creates a new address record
+      Creates a new _Address record
 
 
       Parameter:
@@ -3573,7 +3577,7 @@ class _Address extends DB_Table {
 
         //  print "---------------------\n";
 
-        $country_data = Address::prepare_country_data($raw_data);
+        $country_data = _Address::prepare_country_data($raw_data);
         //print_r($country_data);
         foreach ($country_data as $key => $value) {
             $raw_data[$key] = $value;
@@ -3693,9 +3697,32 @@ class _Address extends DB_Table {
         $subject_type   = $subject_data['subject_type'];
         $subject_object = $subject_data['subject_object'];
 
-        $address_keys = $subject_object->get_address_keys();
+        //$address_keys = $subject_object->get_address_keys();
+
+
+
+        $sql=sprintf("select * from `Address Bridge` CB where   `Subject Type`='Customer' and `Subject Key`=%d  group by `Address Key` order by `Is Main` desc  ",$subject_object->id);
+        // print $sql;
+        $address_keys=array();
+
+
+        if ($result=$this->db->query($sql)) {
+        		foreach ($result as $row) {
+                    $address_keys[$row['Address Key']]= $row['Address Key'];
+        		}
+        }else {
+        		print_r($error_info=$this->db->errorInfo());
+        		print "$sql\n";
+        		exit;
+        }
+
+
+
+
+
+
         foreach ($address_keys as $address_key) {
-            $address      = new Address($address_key);
+            $address      = new _Address($address_key);
             $same_address = true;
 
             foreach ($data as $key => $value) {
@@ -4368,17 +4395,17 @@ class _Address extends DB_Table {
         }
 
 
-        if ($data['Address Country Key'] and Address::is_country_key(
+        if ($data['Address Country Key'] and _Address::is_country_key(
                 $data['Address Country Key']
             )
         ) {
 
             $country = new Country('id', $data['Address Country Key']);
         } else {
-            if ($data['Address Country Code'] != 'UNK' and Address::is_country_code($data['Address Country Code'])) {
+            if ($data['Address Country Code'] != 'UNK' and _Address::is_country_code($data['Address Country Code'])) {
 
                 $country = new Country('code', $data['Address Country Code']);
-            } elseif ($data['Address Country 2 Alpha Code'] != 'XX' and Address::is_country_2alpha_code(
+            } elseif ($data['Address Country 2 Alpha Code'] != 'XX' and _Address::is_country_2alpha_code(
                     $data['Address Country 2 Alpha Code']
                 )
             ) {
@@ -5835,7 +5862,7 @@ class _Address extends DB_Table {
 		$addresses=$parent_object->get_address_keys();
 
 		if (count($addresses)==0) {
-			$address=new Address('find create',array('Address Country Code'=>$country_code));
+			$address=new _Address('find create',array('Address Country Code'=>$country_code));
 			$address_key=$address->id;
 
 		} else {

@@ -447,14 +447,10 @@ class Subject extends DB_Table {
 
                 $location = $this->get('Contact Address Locality');
                 if ($location == '') {
-                    $location = $this->get(
-                        'Contact Address Administrative Area'
-                    );
+                    $location = $this->get('Contact Address Administrative Area');
                 }
                 if ($location == '') {
-                    $location = $this->get(
-                        $this->table_name.' Contact Address Postal Code'
-                    );
+                    $location = $this->get($this->table_name.' Contact Address Postal Code');
                 }
 
 
@@ -476,19 +472,222 @@ class Subject extends DB_Table {
 
             }
 
-            /*
 
-            if ($this->table_name == 'Customer') {
 
-                if ($type == 'Contact' and $old_checksum == $this->get($this->table_name.' Invoice Address Checksum')
-                ) {
-                    $this->update_address('Invoice', $fields, $options);
-                }
 
-            }
-*/
 
         }
+
+
+
+
+        // todo remove when migrate the websites
+        if ($this->table_name == 'Customer') {
+
+
+
+            if ($type == 'Contact' and $this->get('Customer Main Address Key')  and !preg_match('/no_old_address/',$options)) {
+
+
+               // print_r($fields);
+
+                $_data = array(
+                    'id'    => $this->get('Customer Main Address Key'),
+                    'value' => array(
+                        'use_tel'      => '',
+                        'telephone'    => '',
+                        'use_contact'  => '',
+                        'contact'      => '',
+                        'key'          => $this->get('Customer Main Address Key'),
+                        'country'      =>  $fields['Address Country 2 Alpha Code'],
+                        'country_code' =>  $fields['Address Country 2 Alpha Code'],
+                        'country_d1'   =>  $fields['Address Administrative Area'],
+                        'country_d2'   => '',
+                        'town'         => $fields['Address Locality'],
+                        'postal_code'  => $fields['Address Postal Code'],
+                        'town_d1'      => $fields['Address Dependent Locality'],
+                        'town_d2'      => '',
+                        'fuzzy'        => 'No',
+                        'street'       => $fields['Address Line 2'],
+                        'building'     => $fields['Address Line 1'],
+                        'internal'     => '',
+                        'description'  => ''
+                    )
+
+                );
+
+               // print_r($_data);
+
+                 $this->to_remove_edit_old_address($_data);
+
+            }
+
+        }
+
+    }
+
+
+    function to_remove_edit_old_address($data) {
+
+        $warning = '';
+
+
+        include_once 'class.Address.php';
+
+        //print_r($data);
+
+        $id = $data['id'];
+        // $subject=$data['subject'];
+        // $subject_key=$data['subject_key'];
+        $raw_data = $data['value'];
+        //    if ($subject=='Customer' and $_REQUEST['key']=='Billing') {
+        //        edit_billing_address($raw_data);
+        //        exit;
+        //    }
+
+
+        $subject_object = $this;
+
+
+        $address = new _Address('id', $id);
+
+        if (!$address->id) {
+            $response = array(
+                'state' => 400,
+                'msg'   => 'Address not found'
+            );
+            echo json_encode($response);
+
+            return;
+        }
+        $address->set_editor($this->editor);
+
+
+        $translator = array(
+            'country_code' => 'Address Country Code',
+            'country_d1'   => 'Address Country First Division',
+            'country_d2'   => 'Address Country Second Division',
+            'town'         => 'Address Town',
+            'town_d1'      => 'Address Town First Division',
+            'town_d2'      => 'Address Town Second Division',
+            'postal_code'  => 'Address Postal Code',
+            'street'       => 'Street Data',
+            'internal'     => 'Address Internal',
+            'building'     => 'Address Building',
+            'contact'      => 'Address Contact'
+        );
+
+
+        $update_data = array('editor' => $this->editor);
+
+        foreach ($raw_data as $key => $value) {
+            if (array_key_exists($key, $translator)) {
+                $update_data[$translator[$key]] = strip_tags($value);
+            }
+        }
+
+        $proposed_address = new _Address("find complete in Customer ".$this->id, $update_data);
+
+        if ($proposed_address->id) {
+
+
+            if (preg_match('/^contact$/i', $_REQUEST['key'])) {
+
+                if ($address->id == $proposed_address->id) {
+
+                    $address->update($update_data, 'cascade');
+
+                    if ($address->updated) {
+                        $response = address_response($address->id, $subject, $subject_object, $warning);
+                        echo json_encode($response);
+                    } else {
+                        $response = array(
+                            'state'  => 200,
+                            'action' => 'nochange',
+                            'msg'    => $address->msg_updated,
+                            'key'    => '',
+                            'xxx'    => 'xx'
+                        );
+                        echo json_encode($response);
+                    }
+
+
+                    exit;
+                } else {
+
+
+                    $subject_object->update_principal_address($proposed_address->id);
+
+                    $response = address_response($proposed_address->id, $subject, $subject_object);
+                    $response = array(
+                        'state'  => 200,
+                        'action' => 'error',
+                        'msg'    => $address->msg_updated,
+                        'key'    => $translator[$_REQUEST['key']],
+                        'zzz'    => 'x'
+                    );
+                    echo json_encode($response);
+
+                    return;
+
+                }
+
+
+            } else {
+
+                //print_r($data['value']);
+
+                if ($data['value']['use_tel'] or $data['value']['use_contact']) {
+
+                    edit_address_main_telephone($data['value']['telephone'], $proposed_address->id);
+                    edit_address_main_contact($data['value']['contact'], $proposed_address->id);
+
+                    $response = address_response($proposed_address->id, $subject, $subject_object);
+
+
+                    echo json_encode($response);
+
+                    return;
+
+                    exit();
+
+
+                } else {
+                    $msg      = "This Customer has already another address with this data";
+                    $response = array(
+                        'state'  => 200,
+                        'action' => 'nochange',
+                        'msg'    => $msg
+                    );
+                    echo json_encode($response);
+
+                    return;
+                }
+            }
+
+
+        } else {// address not found inside customer
+            $proposed_address = new _Address("find complete ", $update_data);
+
+            if ($proposed_address->id) {
+                $address_parents = $proposed_address->get_parent_keys('Customer');
+
+                $parent_label = '';
+
+                foreach ($address_parents as $parent_key) {
+                    $parent       = new Customer($parent_key);
+                    $parent_label .= sprintf(', <a href="customer.php?id=%d">%s</a>', $parent->id, $parent->data['Customer Name']);
+                }
+                $parent_label = preg_replace('/^,/', '', $parent_label);
+                $warning      .= ngettext(count($address_parents), 'Customer', 'Customers').' '.$parent_label;
+
+            }
+        }
+
+        // print_r($update_data);
+
+        //$address->update($update_data, 'cascade');
+
 
     }
 
@@ -540,15 +739,16 @@ class Subject extends DB_Table {
         list($address, $formatter, $postal_label_formatter) = get_address_formatter($country, $locale);
 
 
-        $address = $address->withFamilyName($this->get($type.' Address Recipient'))->withOrganization($this->get($type.' Address Organization'))->withAddressLine1($this->get($type.' Address Line 1'))
-            ->withAddressLine2($this->get($type.' Address Line 2'))->withSortingCode($this->get($type.' Address Sorting Code'))->withPostalCode($this->get($type.' Address Postal Code'))
-            ->withDependentLocality(
-                $this->get($type.' Address Dependent Locality')
-            )->withLocality($this->get($type.' Address Locality'))->withAdministrativeArea(
-                $this->get($type.' Address Administrative Area')
-            )->withCountryCode(
-                $this->get($type.' Address Country 2 Alpha Code')
-            );
+        $address =
+            $address->withFamilyName($this->get($type.' Address Recipient'))->withOrganization($this->get($type.' Address Organization'))->withAddressLine1($this->get($type.' Address Line 1'))->withAddressLine2($this->get($type.' Address Line 2'))->withSortingCode(
+                    $this->get($type.' Address Sorting Code')
+                )->withPostalCode($this->get($type.' Address Postal Code'))->withDependentLocality(
+                    $this->get($type.' Address Dependent Locality')
+                )->withLocality($this->get($type.' Address Locality'))->withAdministrativeArea(
+                    $this->get($type.' Address Administrative Area')
+                )->withCountryCode(
+                    $this->get($type.' Address Country 2 Alpha Code')
+                );
 
 
         $xhtml_address = $formatter->format($address);
@@ -616,18 +816,17 @@ class Subject extends DB_Table {
 
             }
 
-           // print $type;
+            // print $type;
 
             if ($type == 'Invoice') {
                 $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN ("InBasket")   AND `Order Customer Key`=%d ', $this->id);
-               // print "$sql\n";
+                // print "$sql\n";
                 if ($result = $this->db->query($sql)) {
                     foreach ($result as $row) {
-                      //  print_r($row);
+                        //  print_r($row);
                         $order = get_object('Order', $row['Order Key']);
 
                         $order->editor = $this->editor;
-
 
 
                         $order->update(array('Order Invoice Address' => $this->get('Customer Invoice Address')), $options, array('no_propagate_customer' => true));
@@ -658,6 +857,8 @@ class Subject extends DB_Table {
 
 
     }
+
+
 
     function update_subject_field_switcher($field, $value, $options = '', $metadata) {
 
@@ -695,11 +896,11 @@ class Subject extends DB_Table {
 
                 $this->add_note($value, '', '', $metadata['deletable']);
                 break;
-          //  case $this->table_name.' Contact Address':
+            //  case $this->table_name.' Contact Address':
             //    $this->update_address('Contact', json_decode($value, true));
 
-              //  return true;
-               // break;
+            //  return true;
+            // break;
 
             case $this->table_name.' Main Plain Email':
 
@@ -781,8 +982,7 @@ class Subject extends DB_Table {
                                 $this->table_name.' Preferred Contact Number'
                             ) == 'Mobile' ? ' <i title="'._(
                                     'Main contact number'
-                                ).'" class="fa fa-star discreet"></i>' : ' <i onClick="set_this_as_main(this)" title="'._('Set as main contact number').'" class="fa fa-star-o discreet button"></i>')
-                                : ''),
+                                ).'" class="fa fa-star discreet"></i>' : ' <i onClick="set_this_as_main(this)" title="'._('Set as main contact number').'" class="fa fa-star-o discreet button"></i>') : ''),
                         'value'           => $this->get(
                             $this->table_name.' Main Plain Mobile'
                         ),
@@ -801,8 +1001,7 @@ class Subject extends DB_Table {
                                 $this->table_name.' Preferred Contact Number'
                             ) == 'Telephone' ? ' <i title="'._(
                                     'Main contact number'
-                                ).'" class="fa fa-star discreet"></i>' : ' <i onClick="set_this_as_main(this)" title="'._('Set as main contact number').'" class="fa fa-star-o discreet button"></i>')
-                                : ''),
+                                ).'" class="fa fa-star discreet"></i>' : ' <i onClick="set_this_as_main(this)" title="'._('Set as main contact number').'" class="fa fa-star-o discreet button"></i>') : ''),
 
                     );
                 } else {
@@ -1052,8 +1251,8 @@ class Subject extends DB_Table {
                             )
                         );
                         $sql       = sprintf(
-                            'DELETE FROM `%s Other Email Dimension`  WHERE `%s Other Email %s Key`=%d AND `%s Other Email Key`=%d ', addslashes($this->table_name), addslashes($this->table_name),
-                            addslashes($this->table_name), $this->id, addslashes($this->table_name), $other_email_key
+                            'DELETE FROM `%s Other Email Dimension`  WHERE `%s Other Email %s Key`=%d AND `%s Other Email Key`=%d ', addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), $this->id, addslashes($this->table_name),
+                            $other_email_key
                         );
                         $prep      = $this->db->prepare($sql);
                         $prep->execute();
@@ -1070,9 +1269,8 @@ class Subject extends DB_Table {
                         }
                     } else {
                         $sql = sprintf(
-                            'UPDATE `%s Other Email Dimension` SET `%s Other Email Email`=%s WHERE `%s Other Email %s Key`=%d AND `%s Other Email Key`=%d ', addslashes($this->table_name),
-                            addslashes($this->table_name), prepare_mysql($value), addslashes($this->table_name), addslashes($this->table_name), $this->id, addslashes($this->table_name),
-                            $other_email_key
+                            'UPDATE `%s Other Email Dimension` SET `%s Other Email Email`=%s WHERE `%s Other Email %s Key`=%d AND `%s Other Email Key`=%d ', addslashes($this->table_name), addslashes($this->table_name), prepare_mysql($value),
+                            addslashes($this->table_name), addslashes($this->table_name), $this->id, addslashes($this->table_name), $other_email_key
                         );
                         $tmp = $this->db->prepare($sql);
                         $tmp->execute();
@@ -1126,8 +1324,8 @@ class Subject extends DB_Table {
                             )
                         );
                         $sql       = sprintf(
-                            'DELETE FROM `%s Other Telephone Dimension`  WHERE `%s Other Telephone %s Key`=%d AND `%s Other Telephone Key`=%d ', addslashes($this->table_name),
-                            addslashes($this->table_name), addslashes($this->table_name), $this->id, addslashes($this->table_name), $subject_telephone_key
+                            'DELETE FROM `%s Other Telephone Dimension`  WHERE `%s Other Telephone %s Key`=%d AND `%s Other Telephone Key`=%d ', addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), $this->id,
+                            addslashes($this->table_name), $subject_telephone_key
                         );
                         $prep      = $this->db->prepare($sql);
                         $prep->execute();
@@ -1188,8 +1386,8 @@ class Subject extends DB_Table {
                         }
 
                         $sql = sprintf(
-                            'UPDATE `%s Other Telephone Dimension` SET `%s Other Telephone Number`=%s, `%s Other Telephone Formatted Number`=%s WHERE `%s Other Telephone %s Key`=%d AND `%s Other Telephone Key`=%d ',
-                            $this->table_name, $this->table_name, prepare_mysql($value), $this->table_name, prepare_mysql($formatted_value), $this->table_name, $this->table_name,
+                            'UPDATE `%s Other Telephone Dimension` SET `%s Other Telephone Number`=%s, `%s Other Telephone Formatted Number`=%s WHERE `%s Other Telephone %s Key`=%d AND `%s Other Telephone Key`=%d ', $this->table_name, $this->table_name,
+                            prepare_mysql($value), $this->table_name, prepare_mysql($formatted_value), $this->table_name, $this->table_name,
 
                             $this->id, $this->table_name, $subject_telephone_key
                         );
@@ -1232,8 +1430,7 @@ class Subject extends DB_Table {
 
 
                     $sql = sprintf(
-                        'UPDATE `Customer Other Telephone Dimension` SET `Customer Other Telephone Label`=%s  WHERE `Customer Other Telephone Customer Key`=%d AND `Customer Other Telephone Key`=%d ',
-                        prepare_mysql($value), $this->id, $subject_telephone_key
+                        'UPDATE `Customer Other Telephone Dimension` SET `Customer Other Telephone Label`=%s  WHERE `Customer Other Telephone Customer Key`=%d AND `Customer Other Telephone Key`=%d ', prepare_mysql($value), $this->id, $subject_telephone_key
                     );
                     $tmp = $this->db->prepare($sql);
                     $tmp->execute();
@@ -1267,8 +1464,7 @@ class Subject extends DB_Table {
             }
             $this->update_field($field, $other_value['email'], 'no_history');
             $sql  = sprintf(
-                'DELETE FROM `%s Other Email Dimension`  WHERE `%s Other Email %s Key`=%d AND `%s Other Email Key`=%d ', addslashes($this->table_name), addslashes($this->table_name),
-                addslashes($this->table_name), $this->id, addslashes($this->table_name), $other_key
+                'DELETE FROM `%s Other Email Dimension`  WHERE `%s Other Email %s Key`=%d AND `%s Other Email Key`=%d ', addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), $this->id, addslashes($this->table_name), $other_key
             );
             $prep = $this->db->prepare($sql);
             $prep->execute();
@@ -1294,9 +1490,8 @@ class Subject extends DB_Table {
             if ($this->table_name == 'Customer') {
 
                 $sql = sprintf(
-                    'SELECT `%s Key`,`%s Name` FROM `%s Dimension`  WHERE `%s Main Plain Email`=%s AND `%s Store Key`=%d AND `%s Key`!=%d ', addslashes($this->table_name),
-                    addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), prepare_mysql($value), addslashes($this->table_name), $this->get('Store Key'),
-                    addslashes($this->table_name), $this->id
+                    'SELECT `%s Key`,`%s Name` FROM `%s Dimension`  WHERE `%s Main Plain Email`=%s AND `%s Store Key`=%d AND `%s Key`!=%d ', addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name),
+                    prepare_mysql($value), addslashes($this->table_name), $this->get('Store Key'), addslashes($this->table_name), $this->id
                 );
 
                 if ($result = $this->db->query($sql)) {
@@ -1320,9 +1515,9 @@ class Subject extends DB_Table {
                 }
 
                 $sql = sprintf(
-                    'SELECT `%s Key`,`%s Name` FROM `%s Other Email Dimension` LEFT JOIN `%s Dimension` ON (`%s Key`=`%s Other Email %s Key`) WHERE `%s Other Email Email`=%s AND `%s Other Email Store Key`=%d ',
-                    addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name),
-                    addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), prepare_mysql($value), addslashes($this->table_name), $this->get('Store Key')
+                    'SELECT `%s Key`,`%s Name` FROM `%s Other Email Dimension` LEFT JOIN `%s Dimension` ON (`%s Key`=`%s Other Email %s Key`) WHERE `%s Other Email Email`=%s AND `%s Other Email Store Key`=%d ', addslashes($this->table_name),
+                    addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), prepare_mysql($value),
+                    addslashes($this->table_name), $this->get('Store Key')
                 );
                 //print "$sql\n";
                 if ($result = $this->db->query($sql)) {
@@ -1374,8 +1569,8 @@ class Subject extends DB_Table {
             } else {
 
                 $sql = sprintf(
-                    'SELECT `%s Key`,`%s Name` FROM `%s Dimension`  WHERE `%s Main Plain Email`=%s AND `%s Key`!=%d ', addslashes($this->table_name), addslashes($this->table_name),
-                    addslashes($this->table_name), addslashes($this->table_name), prepare_mysql($value), addslashes($this->table_name), $this->id
+                    'SELECT `%s Key`,`%s Name` FROM `%s Dimension`  WHERE `%s Main Plain Email`=%s AND `%s Key`!=%d ', addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), prepare_mysql($value),
+                    addslashes($this->table_name), $this->id
 
                 );
 
@@ -1401,9 +1596,8 @@ class Subject extends DB_Table {
 
 
                 $sql = sprintf(
-                    'SELECT `%s Key`,`%s Name` FROM `%s Other Email Dimension` LEFT JOIN `%s Dimension` ON (`%s Key`=`%s Other Email %s Key`) WHERE `%s Other Email Email`=%s ',
-                    addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name),
-                    addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), prepare_mysql($value)
+                    'SELECT `%s Key`,`%s Name` FROM `%s Other Email Dimension` LEFT JOIN `%s Dimension` ON (`%s Key`=`%s Other Email %s Key`) WHERE `%s Other Email Email`=%s ', addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name),
+                    addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), prepare_mysql($value)
 
                 );
                 //print "$sql\n";
@@ -1455,9 +1649,8 @@ class Subject extends DB_Table {
     function get_other_emails_data() {
 
         $sql = sprintf(
-            "SELECT `%s Other Email Key`,`%s Other Email Email`,`%s Other Email Label` FROM `%s Other Email Dimension` WHERE `%s Other Email %s Key`=%d ORDER BY `%s Other Email Key`",
-            addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name),
-            $this->id, addslashes($this->table_name)
+            "SELECT `%s Other Email Key`,`%s Other Email Email`,`%s Other Email Label` FROM `%s Other Email Dimension` WHERE `%s Other Email %s Key`=%d ORDER BY `%s Other Email Key`", addslashes($this->table_name), addslashes($this->table_name),
+            addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), $this->id, addslashes($this->table_name)
 
         );
 
@@ -1638,8 +1831,8 @@ class Subject extends DB_Table {
         if ($this->table_name == 'Customer') {
 
             $sql = sprintf(
-                'SELECT `%s Key`,`%s Name` FROM `%s Dimension`  WHERE `%s Main Plain Email`=%s AND `%s Store Key`=%d ', addslashes($this->table_name), addslashes($this->table_name),
-                addslashes($this->table_name), addslashes($this->table_name), prepare_mysql($value), addslashes($this->table_name), $this->get('Store Key')
+                'SELECT `%s Key`,`%s Name` FROM `%s Dimension`  WHERE `%s Main Plain Email`=%s AND `%s Store Key`=%d ', addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), prepare_mysql($value),
+                addslashes($this->table_name), $this->get('Store Key')
             );
 
             if ($result = $this->db->query($sql)) {
@@ -1668,9 +1861,9 @@ class Subject extends DB_Table {
 
 
             $sql = sprintf(
-                'SELECT `%s Key`,`%s Name` FROM `%s Other Email Dimension` LEFT JOIN `%s Dimension` ON (`%s Key`=`%s Other Email %s Key`) WHERE `%s Other Email Email`=%s AND `%s Other Email Store Key`=%d ',
-                addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name),
-                addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), prepare_mysql($value), addslashes($this->table_name), $this->get('Store Key')
+                'SELECT `%s Key`,`%s Name` FROM `%s Other Email Dimension` LEFT JOIN `%s Dimension` ON (`%s Key`=`%s Other Email %s Key`) WHERE `%s Other Email Email`=%s AND `%s Other Email Store Key`=%d ', addslashes($this->table_name), addslashes($this->table_name),
+                addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), prepare_mysql($value), addslashes($this->table_name),
+                $this->get('Store Key')
             );
             //print "$sql\n";
             if ($result = $this->db->query($sql)) {
@@ -1699,14 +1892,13 @@ class Subject extends DB_Table {
 
 
             $sql = sprintf(
-                'INSERT INTO `%s Other Email Dimension` (`%s Other Email Store Key`,`%s Other Email %s Key`,`%s Other Email Email`) VALUES (%d,%d,%s)', addslashes($this->table_name),
-                addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), $this->get('Store Key'), $this->id, prepare_mysql($value)
+                'INSERT INTO `%s Other Email Dimension` (`%s Other Email Store Key`,`%s Other Email %s Key`,`%s Other Email Email`) VALUES (%d,%d,%s)', addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name),
+                addslashes($this->table_name), addslashes($this->table_name), $this->get('Store Key'), $this->id, prepare_mysql($value)
             );
         } else {
 
             $sql = sprintf(
-                'SELECT `%s Key`,`%s Name` FROM `%s Dimension`  WHERE `%s Main Plain Email`=%s ', addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name),
-                addslashes($this->table_name), prepare_mysql($value)
+                'SELECT `%s Key`,`%s Name` FROM `%s Dimension`  WHERE `%s Main Plain Email`=%s ', addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), prepare_mysql($value)
 
             );
 
@@ -1736,9 +1928,8 @@ class Subject extends DB_Table {
 
 
             $sql = sprintf(
-                'SELECT `%s Key`,`%s Name` FROM `%s Other Email Dimension` LEFT JOIN `%s Dimension` ON (`%s Key`=`%s Other Email %s Key`) WHERE `%s Other Email Email`=%s ',
-                addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name),
-                addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), prepare_mysql($value)
+                'SELECT `%s Key`,`%s Name` FROM `%s Other Email Dimension` LEFT JOIN `%s Dimension` ON (`%s Key`=`%s Other Email %s Key`) WHERE `%s Other Email Email`=%s ', addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name),
+                addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), prepare_mysql($value)
 
             );
             //print "$sql\n";
@@ -1768,8 +1959,8 @@ class Subject extends DB_Table {
 
 
             $sql = sprintf(
-                'INSERT INTO `%s Other Email Dimension` (`%s Other Email %s Key`,`%s Other Email Email`) VALUES (%d,%s)', addslashes($this->table_name), addslashes($this->table_name),
-                addslashes($this->table_name), addslashes($this->table_name), $this->id, prepare_mysql($value)
+                'INSERT INTO `%s Other Email Dimension` (`%s Other Email %s Key`,`%s Other Email Email`) VALUES (%d,%s)', addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), $this->id,
+                prepare_mysql($value)
             );
 
         }
@@ -1878,9 +2069,8 @@ class Subject extends DB_Table {
 
 
         $sql = sprintf(
-            'SELECT `%s Key` FROM `%s Dimension`  WHERE  `%s Key`=%d  AND (`%s Main Plain Telephone`=%s OR `%s Main Plain Mobile`=%s OR `%s Main Plain FAX`=%s)  ', addslashes($this->table_name),
-            addslashes($this->table_name), addslashes($this->table_name), $this->id, addslashes($this->table_name), prepare_mysql($value), addslashes($this->table_name), prepare_mysql($value),
-            addslashes($this->table_name), prepare_mysql($value)
+            'SELECT `%s Key` FROM `%s Dimension`  WHERE  `%s Key`=%d  AND (`%s Main Plain Telephone`=%s OR `%s Main Plain Mobile`=%s OR `%s Main Plain FAX`=%s)  ', addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), $this->id,
+            addslashes($this->table_name), prepare_mysql($value), addslashes($this->table_name), prepare_mysql($value), addslashes($this->table_name), prepare_mysql($value)
 
         );
 
@@ -1910,8 +2100,8 @@ class Subject extends DB_Table {
         }
 
         $sql = sprintf(
-            'SELECT `%s Other Telephone Key` FROM `%s Other Telephone Dimension`  WHERE  `%s Other Telephone %s Key`=%d  AND `%s Other Telephone Number`=%s  ', addslashes($this->table_name),
-            addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name),
+            'SELECT `%s Other Telephone Key` FROM `%s Other Telephone Dimension`  WHERE  `%s Other Telephone %s Key`=%d  AND `%s Other Telephone Number`=%s  ', addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name),
+            addslashes($this->table_name),
 
             $this->id, addslashes($this->table_name), prepare_mysql($value)
 
@@ -1946,15 +2136,13 @@ class Subject extends DB_Table {
 
         if ($this->table_name == 'Customer') {
             $sql = sprintf(
-                'INSERT INTO `%s Other Telephone Dimension` (`%s Other Telephone Store Key`,`%s Other Telephone %s Key`,`%s Other Telephone Number`,`%s Other Telephone Formatted Number`) VALUES (%d,%d,%s,%s)',
-                addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name),
-                addslashes($this->table_name), $this->get('Store Key'), $this->id, prepare_mysql($value), prepare_mysql($formatted_value)
+                'INSERT INTO `%s Other Telephone Dimension` (`%s Other Telephone Store Key`,`%s Other Telephone %s Key`,`%s Other Telephone Number`,`%s Other Telephone Formatted Number`) VALUES (%d,%d,%s,%s)', addslashes($this->table_name),
+                addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), $this->get('Store Key'), $this->id, prepare_mysql($value), prepare_mysql($formatted_value)
             );
         } else {
             $sql = sprintf(
-                'INSERT INTO `%s Other Telephone Dimension` (`%s Other Telephone %s Key`,`%s Other Telephone Number`,`%s Other Telephone Formatted Number`) VALUES (%d,%s,%s)',
-                addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), $this->id,
-                prepare_mysql($value), prepare_mysql($formatted_value)
+                'INSERT INTO `%s Other Telephone Dimension` (`%s Other Telephone %s Key`,`%s Other Telephone Number`,`%s Other Telephone Formatted Number`) VALUES (%d,%s,%s)', addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name),
+                addslashes($this->table_name), addslashes($this->table_name), $this->id, prepare_mysql($value), prepare_mysql($formatted_value)
             );
         }
 
@@ -2020,8 +2208,7 @@ class Subject extends DB_Table {
 
         $sql = sprintf(
             "SELECT `%s Other Telephone Key`,`%s Other Telephone Number`,`%s Other Telephone Formatted Number`,`%s Other Telephone Label` FROM `%s Other Telephone Dimension` WHERE `%s Other Telephone %s Key`=%d ORDER BY `%s Other Telephone Key`",
-            addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name),
-            addslashes($this->table_name), $this->id, addslashes($this->table_name)
+            addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), $this->id, addslashes($this->table_name)
         );
 
         $telephone_keys = array();
@@ -2209,8 +2396,7 @@ class Subject extends DB_Table {
 
                     $subject_email_key = $matches[2];
                     $sql               = sprintf(
-                        "SELECT `%s Other Email Email` FROM `%s Other Email Dimension` WHERE `%s Other Email Key`=%d ", addslashes($this->table_name), addslashes($this->table_name),
-                        addslashes($this->table_name), $subject_email_key
+                        "SELECT `%s Other Email Email` FROM `%s Other Email Dimension` WHERE `%s Other Email Key`=%d ", addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), $subject_email_key
                     );
                     if ($result = $this->db->query($sql)) {
                         if ($row = $result->fetch()) {
@@ -2236,8 +2422,7 @@ class Subject extends DB_Table {
 
                     $subject_telephone_key = $matches[1];
                     $sql                   = sprintf(
-                        "SELECT `%s Other Telephone Label` FROM `%s Other Telephone Dimension` WHERE `%s Other Telephone Key`=%d ", addslashes($this->table_name), addslashes($this->table_name),
-                        addslashes($this->table_name), $subject_telephone_key
+                        "SELECT `%s Other Telephone Label` FROM `%s Other Telephone Dimension` WHERE `%s Other Telephone Key`=%d ", addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), $subject_telephone_key
                     );
                     if ($result = $this->db->query($sql)) {
                         if ($row = $result->fetch()) {
@@ -2261,8 +2446,8 @@ class Subject extends DB_Table {
 
                     $subject_telephone_key = $matches[1];
                     $sql                   = sprintf(
-                        "SELECT `%s Other Telephone Number`,`%s Other Telephone Formatted Number` FROM `%s Other Telephone Dimension` WHERE `%s Other Telephone Key`=%d ",
-                        addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), $subject_telephone_key
+                        "SELECT `%s Other Telephone Number`,`%s Other Telephone Formatted Number` FROM `%s Other Telephone Dimension` WHERE `%s Other Telephone Key`=%d ", addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name),
+                        addslashes($this->table_name), $subject_telephone_key
                     );
                     if ($result = $this->db->query($sql)) {
                         if ($row = $result->fetch()) {
@@ -2283,8 +2468,8 @@ class Subject extends DB_Table {
 
                     $subject_telephone_key = $matches[1];
                     $sql                   = sprintf(
-                        "SELECT `%s Other Telephone Number`,`%s Other Telephone Formatted Number` FROM `%s Other Telephone Dimension` WHERE `%s Other Telephone Key`=%d ",
-                        addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), $subject_telephone_key
+                        "SELECT `%s Other Telephone Number`,`%s Other Telephone Formatted Number` FROM `%s Other Telephone Dimension` WHERE `%s Other Telephone Key`=%d ", addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name),
+                        addslashes($this->table_name), $subject_telephone_key
                     );
                     if ($result = $this->db->query($sql)) {
                         if ($row = $result->fetch()) {
