@@ -167,6 +167,12 @@ class Part extends Asset {
         if (!isset($data['Part Valid From']) or $data['Part Valid From'] == '') {
             $data['Part Valid From'] = gmdate('Y-m-d H:i:s');
         }
+
+
+        if (!isset($data['Part Production Supply']) or $data['Part Production Supply'] != 'Yes') {
+            $data['Part Production Supply'] ='No';
+        }
+
         $base_data = $this->base_data();
         foreach ($data as $key => $value) {
             if (array_key_exists($key, $base_data)) {
