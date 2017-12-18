@@ -21,7 +21,7 @@ if(!isset($_REQUEST['website_key']) or !is_numeric($_REQUEST['website_key'])){
 }
 
 if (!isset($_REQUEST['theme']) or !preg_match('/^theme\_\d+$/', $_REQUEST['theme'])) {
-    print 'no theme set up';
+    print 'no theme set up:->'.$_REQUEST['theme'].'<';
     return;
 }
 
