@@ -454,6 +454,31 @@ if (!$supplier_part_scope) {
                 'type'            => 'value'
             ),
 
+            array(
+                'id'     => 'Part_Carton_Barcode',
+                'edit'   => ($edit ? 'string' : ''),
+                'render' => (($new and $supplier_part_scope) ? false : true),
+
+                'value'             => htmlspecialchars($object->get('Part Carton Barcode')),
+                'formatted_value'   => $object->get('Carton Barcode'),
+                'label'             => ucfirst($object->get_field_label('Part Carton Barcode')),
+                'required'          => false,
+                'server_validation' => json_encode(
+                    array(
+                        'tipo'       => 'check_for_duplicates',
+                        'parent'     => 'account',
+                        'parent_key' => 1,
+                        'object'     => 'Part',
+                        'key'        => $object->id
+                    )
+                ),
+                'type'              => 'value'
+            ),
+
+
+
+            
+
 
         )
     );
