@@ -12,7 +12,7 @@
 
 require_once 'common.php';
 
-if(function_exists('mysql_connect')) {
+if (function_exists('mysql_connect')) {
 
     $default_DB_link = @mysql_connect($dns_host, $dns_user, $dns_pwd);
     if (!$default_DB_link) {
@@ -80,6 +80,8 @@ if ($result = $db->query($sql)) {
     exit;
 }
 */
+include_once('conf/webpage_types.php');
+include_once 'conf/website_system_webpages.php';
 
 
 //migrate_website($db);
@@ -89,30 +91,130 @@ if ($result = $db->query($sql)) {
 
 //migrate_product_pages($db);
 
+create_webpage_types($db);
 
 
-add_headers_and_footers($db);
+//add_headers_and_footers($db);
 
-delete_system_webpages($db);
 
-add_system_webpages($db);
+$sql = sprintf('SELECT `Website Key`,`Website Store Key` FROM `Website Dimension`  WHERE `Website Key`!=14  ');
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+        $website = get_object('website', $row['Website Key']);
+        $store   = get_object('store', $row['Website Store Key']);
+        $website->fast_update(array('Website Theme' => 'theme_1'));
+        $store->fast_update(array('Store Website Key' => $website->id));
+
+
+        $footer_data = array(
+            'Website Footer Code' => 'default',
+            'Website Footer Data' => json_encode(get_default_footer_data(1)),
+            'editor'              => $editor
+
+        );
+        $website->create_footer($footer_data);
+
+
+        $logo_image_key = $website->add_image(
+            array(
+                'Image Filename'                   => 'website.logo.png',
+                'Upload Data'                      => array(
+                    'tmp_name' => 'conf/website.logo.png',
+                    'type'     => 'png'
+                ),
+                'Image Subject Object Image Scope' => json_encode(
+                    array(
+                        'scope'     => 'website_logo',
+                        'scope_key' => $website->id
+
+                    )
+                )
+
+            )
+        );
+
+
+        $_header_data                   = get_default_header_data(1);
+        $_header_data['logo_image_key'] = $logo_image_key;
+        $header_data                    = array(
+            'Website Header Code' => 'default',
+            'Website Header Data' => json_encode($_header_data),
+            'editor'              => $editor
+
+        );
+        $website->create_header($header_data);
+
+
+        foreach ($webpage_types as $webpage_type) {
+            $sql = sprintf(
+                'INSERT INTO `Webpage Type Dimension` (`Webpage Type Website Key`,`Webpage Type Code`) VALUES (%d,%s) ', $website->id, prepare_mysql($webpage_type['code'])
+            );
+            $db->exec($sql);
+        }
+
+
+        //print_r($website);
+
+        foreach (website_system_webpages_config($website->get('Website Type')) as $website_system_webpages) {
+
+            //  print_r($website_system_webpages);
+
+            $website->create_system_webpage($website_system_webpages);
+        }
+
+
+        $sql = sprintf(
+            "SELECT `Page Key` FROM `Page Store Dimension`  P LEFT JOIN `Webpage Type Dimension` WTD ON (WTD.`Webpage Type Key`=P.`Webpage Type Key`)  WHERE `Webpage Website Key`=%d AND `Webpage Type Code` IN ('Info','Home','Ordering','Customer','Portfolio','Sys')   ",
+            $website->id
+        );
+
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
+
+                $webpage         = new Page($row['Page Key']);
+                $webpage->editor = $editor;
+
+                if ($webpage->get('Webpage Code') == 'launching.sys') {
+                    $webpage->update(array('Webpage State' => 'Offline'));
+                } else {
+                    $webpage->update(array('Webpage State' => 'Online'));
+                    $webpage->update(array('Webpage Launch Date' => gmdate('Y-m-d H:i:s')), 'no_history');
+                }
+
+
+            }
+        }
+
+
+    }
+} else {
+    print_r($error_info = $db->errorInfo());
+    print "$sql\n";
+    exit;
+}
+
+
+//delete_system_webpages($db);
+
+//add_system_webpages($db);
+
 
 //========
 //set_scope($db);
 
 
-function delete_system_webpages($db){
+function delete_system_webpages($db) {
 
-    $sql=sprintf("select `Page Key` from `Page Store Dimension` where `Webpage Code` like '%%.sys' ");
-    if ($result=$db->query($sql)) {
-    		foreach ($result as $row) {
-                $webpage = new Page($row['Page Key']);
-                $webpage->delete(false);
-            }
-    }else {
-    		print_r($error_info=$db->errorInfo());
-    		print "$sql\n";
-    		exit;
+    $sql = sprintf("SELECT `Page Key` FROM `Page Store Dimension` WHERE `Webpage Code` LIKE '%%.sys'   ");
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+            $webpage = new Page($row['Page Key']);
+            $webpage->delete(false);
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
     }
 
 
@@ -130,9 +232,9 @@ function add_system_webpages($db) {
 
             $website = new Website($row['Website Key']);
 
-            $db->exec('truncate ``');
+            //  $db->exec('truncate ``');
 
-            include_once ('conf/webpage_types.php');
+            include_once('conf/webpage_types.php');
             foreach ($webpage_types as $webpage_type) {
                 $sql = sprintf(
                     'INSERT INTO `Webpage Type Dimension` (`Webpage Type Website Key`,`Webpage Type Code`) VALUES (%d,%s) ', $website->id, prepare_mysql($webpage_type['code'])
@@ -141,13 +243,12 @@ function add_system_webpages($db) {
             }
 
 
-
             //print_r($website);
 
             include_once 'conf/website_system_webpages.php';
             foreach (website_system_webpages_config($website->get('Website Type')) as $website_system_webpages) {
 
-               print_r($website_system_webpages);
+                print_r($website_system_webpages);
 
                 $website->create_system_webpage($website_system_webpages);
             }
@@ -166,6 +267,7 @@ function add_headers_and_footers($db) {
 
     global $editor;
 
+
     $sql = sprintf('truncate `Website Footer Dimension`');
     $db->exec($sql);
 
@@ -179,52 +281,12 @@ function add_headers_and_footers($db) {
     $sql = sprintf('UPDATE `Website Dimension` SET `Website Footer Key`=NULL ,`Website Header Key`=NULL ');
     $db->exec($sql);
 
+
     $sql = sprintf('SELECT `Website Key` FROM `Website Dimension`');
 
 
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
-
-            $website = new Website($row['Website Key']);
-
-
-            $footer_data = array(
-                'Website Footer Code' => 'default',
-                'Website Footer Data' => json_encode(get_default_footer_data(1)),
-                'editor'              => $editor
-
-            );
-            $website->create_footer($footer_data);
-
-
-            $logo_image_key = $website->add_image(
-                array(
-                    'Image Filename'                   => 'website.logo.png',
-                    'Upload Data'                      => array(
-                        'tmp_name' => 'conf/website.logo.png',
-                        'type'     => 'png'
-                    ),
-                    'Image Subject Object Image Scope' => json_encode(
-                        array(
-                            'scope'     => 'website_logo',
-                            'scope_key' => $website->id
-
-                        )
-                    )
-
-                )
-            );
-
-
-            $_header_data                   = get_default_header_data(1);
-            $_header_data['logo_image_key'] = $logo_image_key;
-            $header_data                    = array(
-                'Website Header Code' => 'default',
-                'Website Header Data' => json_encode($_header_data),
-                'editor'              => $editor
-
-            );
-            $website->create_header($header_data);
 
 
         }
