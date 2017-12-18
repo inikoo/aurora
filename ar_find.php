@@ -96,7 +96,7 @@ switch ($tipo) {
                 find_part($db, $account, $memcache_ip, $data);
                 break;
             case 'location':
-                find_location($db, $account, $memcache_ip, $data);
+                find_location($db, $account, $memcache_ip, $data,$user);
                 break;
             default:
                 $response = array(
@@ -173,7 +173,7 @@ switch ($tipo) {
                 find_stores($db, $account, $memcache_ip, $data);
                 break;
             case 'locations':
-                find_locations($db, $account, $memcache_ip, $data);
+                find_locations($db, $account, $memcache_ip, $data,$user);
                 break;
             case 'parts':
                 find_parts($db, $account, $memcache_ip, $data);
@@ -647,12 +647,12 @@ function find_stores($db, $account, $memcache_ip, $data) {
 }
 
 
-function find_locations($db, $account, $memcache_ip, $data) {
+function find_locations($db, $account, $memcache_ip, $data,$user) {
 
 
     $cache       = false;
     $max_results = 10;
-    $user        = $data['user'];
+//    $user        = $data['user'];
     $q           = trim($data['query']);
 
 
@@ -3193,7 +3193,7 @@ function find_part($db, $account, $memcache_ip, $data) {
 
 
 
-function find_location($db, $account, $memcache_ip, $data) {
+function find_location($db, $account, $memcache_ip, $data,$user) {
 
     $cache       = false;
     $max_results = 5;
