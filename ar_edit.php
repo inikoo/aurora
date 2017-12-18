@@ -880,8 +880,8 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 
 
-            //TODO clear this after migration
-            exit('Cant create website ony after migration');
+            ////TODO clear this after migration
+           // exit('Cant create website ony after migration');
 
             $data['fields_data']['user'] = $user;
 
