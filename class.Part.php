@@ -2722,6 +2722,11 @@ class Part extends Asset {
             case 'Part Production Supply':
                 $label = _('used in production');
                 break;
+            case 'Part Carton Barcode':
+                $label = _('carton barcode');
+                break;
+
+
             default:
                 $label = $field;
 
