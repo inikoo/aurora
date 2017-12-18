@@ -300,10 +300,7 @@ function edit_stock($account, $db, $user, $editor, $data, $smarty) {
 
 
         if ($part_location_from->get('Quantity On Hand') != $movement['from_location_stock']) {
-            $part_location_from->audit(
-                $movement['from_location_stock'], ' '.$part_location_from->get('Quantity On Hand').'->'.$movement['from_location_stock'], $editor['Date']
-            );
-
+            $part_location_from->audit($movement['from_location_stock'], ' '.$part_location_from->get('Quantity On Hand').'->'.$movement['from_location_stock'], $editor['Date']);
         }
 
         $part_location_to         = new PartLocation($movement['part_sku'], $movement['to_location_key']);
@@ -366,6 +363,7 @@ function edit_stock($account, $db, $user, $editor, $data, $smarty) {
         );
 
         $smarty->assign('part_sku', $part->id);
+        $smarty->assign('part', $part);
 
         $smarty->assign('locations_data', $part->get_locations('data'));
         $part_locations = $smarty->fetch('part_locations.edit.tpl');
@@ -674,6 +672,7 @@ function edit_leakages($account, $db, $user, $editor, $data, $smarty) {
     $part = get_object('Part', $data['part_sku']);
 
     $smarty->assign('part_sku', $part->id);
+    $smarty->assign('part', $part);
 
     $smarty->assign('locations_data', $part->get_locations('data'));
     $part_locations = $smarty->fetch('part_locations.edit.tpl');
