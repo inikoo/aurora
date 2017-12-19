@@ -10,6 +10,7 @@
 */
 
 
+
 switch ($parameters['parent']) {
     case('warehouse'):
         $where = sprintf(
@@ -29,6 +30,8 @@ switch ($parameters['parent']) {
     default:
         exit ('parent not found '.$parameters['parent']);
 }
+
+$where.=' and `Location Key`!=1';
 
 
 switch ($parameters['elements_type']) {
@@ -115,6 +118,7 @@ $fields
     = "`Location Key`,`Warehouse Flag Label`,`Warehouse Flag Color`,`Location Warehouse Key`,`Location Warehouse Area Key`,`Location Code`,`Location Distinct Parts`,`Location Max Volume`,`Location Max Weight`, `Location Mainly Used For`,`Warehouse Area Code`,`Warehouse Flag Key`,`Warehouse Code`,`Location Stock Value`";
 
 $sql_totals = "select count(*) as num from $table $where ";
+
 
 
 ?>
