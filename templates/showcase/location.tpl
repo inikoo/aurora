@@ -13,6 +13,23 @@
 
             </table>
 
+
+            <table id="barcode_data" border="0" class="overview  ">
+                <tr class="main">
+                    <td class="label">
+                        <i  class="fa fa-barcode"></i>
+                    </td>
+                    <td class="barcode_labels aleft ">
+
+                        <a class="padding_left_10" title="{t}Location barcode{/t}" href="/asset_label.php?object=location&key={$location->id}&type=unit">{t}Barcode{/t}</a>
+                    </td>
+
+                </tr>
+
+
+            </table>
+
+
         </div>
     </div>
     <div style="clear:both">
