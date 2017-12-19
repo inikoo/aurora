@@ -21,7 +21,7 @@
                     </td>
                     <td class="barcode_labels aleft ">
 
-                        <a class="padding_left_10" title="{t}Location barcode{/t}" href="/asset_label.php?object=location&key={$location->id}&type=unit">{t}Barcode{/t}</a>
+                        <a class="padding_left_10" title="{t}Location barcode{/t}" href="/location_label.php?object=location&key={$location->id}">{t}Barcode{/t}</a>
                     </td>
 
                 </tr>
