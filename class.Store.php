@@ -3272,7 +3272,7 @@ class Store extends DB_Table {
 
 
         switch ($this->get('Store Type')) {
-
+            case 'B2BC':
             case 'B2B':
                 $data['Website Type'] = 'EcomB2B';
                 break;

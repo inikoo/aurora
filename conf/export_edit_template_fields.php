@@ -685,6 +685,110 @@ $export_edit_template_fields = array(
 
 
     ),
+
+    'product_b2bc'  => array(
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => true,
+            'header'        => 'Code',
+            'name'          => 'Product Code',
+            'label'         => _('Code'),
+            'checked'       => 0,
+            'cell_type'     => 'string'
+        ),
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => true,
+            'header'        => 'Parts',
+            'name'          => 'Parts',
+            'label'         => _('Parts'),
+            'checked'       => 0,
+            'cell_type'     => 'string'
+        ),
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'Family code',
+            'name'          => 'Family Category Code',
+            'label'         => _('Family code'),
+            'checked'       => 0,
+            'cell_type'     => 'string'
+        ),
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'Label in family',
+            'name'          => 'Product Label in Family',
+            'label'         => _('Label in family'),
+            'checked'       => 0
+        ),
+        array(
+            'default_value' => _('piece'),
+            'show_for_new'  => true,
+            'required'      => true,
+            'header'        => 'Unit label',
+            'name'          => 'Product Unit Label',
+            'label'         => _('Unit label'),
+            'checked'       => 0
+        ),
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => true,
+            'header'        => 'Unit name',
+            'name'          => 'Product Name',
+            'label'         => _('Unit name'),
+            'checked'       => 0,
+            'cell_type'     => 'string'
+        ),
+
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => true,
+            'header'        => 'Unit price',
+            'name'          => 'Product Unit Price',
+            'label'         => _('Unit price'),
+            'checked'       => 0
+        ),
+
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'Unit RRP',
+            'name'          => 'Product Unit RRP',
+            'label'         => _('Unit RRP'),
+            'checked'       => 0
+        ),
+
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => true,
+            'header'        => 'Inners',
+            'name'          => 'Product Inner',
+            'label'         => _('Units per outer'),
+            'checked'       => 0
+        ),
+
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => true,
+            'header'        => 'Units per carton',
+            'name'          => 'Product Units Per Case',
+            'label'         => _('Units per carton'),
+            'checked'       => 0
+        ),
+
+
+    ),
+
     'location' => array(
         array(
             'default_value' => '',

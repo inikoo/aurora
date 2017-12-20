@@ -34,6 +34,54 @@ $parameters = array(
 
 );
 
+
+
+$table_buttons   = array();
+
+
+
+$table_buttons[] = array(
+    'icon'     => 'plus',
+    'title'    => _('New part'),
+    'id'       => 'new_part',
+    'class'    => 'part',
+    'add_part_to_location' => array(
+
+        'field_label' => _("Part").':',
+        'metadata'    => base64_encode(
+            json_encode(
+                array(
+                    'scope'      => 'part',
+                    'parent'     => 'account',
+                    'parent_key' => 1,
+                    'options'    => array('in_use')
+                )
+            )
+        )
+
+    )
+
+);
+
+$smarty->assign(
+    'table_metadata', base64_encode(
+                        json_encode(
+                            array(
+                                'parent'     => $state['object'],
+                                'parent_key' => $state['key'],
+                                'field'      => 'part'
+                            )
+                        )
+                    )
+);
+
+
+$smarty->assign('table_buttons', $table_buttons);
+
+
+
+
+
 $smarty->assign('table_top_template', 'location.parts.edit.tpl');
 
 

@@ -94,7 +94,6 @@ function get_object($object_name, $key, $load_other_data = false) {
         case 'page':
         case 'webpage':
 
-
             include_once 'class.Page.php';
 
             $object = new Page($key);

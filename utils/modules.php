@@ -444,9 +444,7 @@ $modules = array(
                     'customer.invoices'  => array('label' => _('Invoices')),
                     'customer.marketing' => array(
                         'label'   => _('Interests'),
-                        'title'   => _(
-                            "Customer's interests"
-                        ),
+                        'title'   => _("Customer's interests"),
                         'subtabs' => array(
                             'customer.marketing.overview'   => array(
                                 'label' => _(
@@ -476,6 +474,10 @@ $modules = array(
 
                         )
 
+                    ),
+                    'customer.discounts'   => array(
+                        'label' => _('Discounts'),
+                        'icon'  => 'tags'
                     ),
 
                 )
@@ -1271,11 +1273,25 @@ $modules = array(
         'sections'    => array(
             'delivery_notes' => array(
                 'type' => 'navigation',
+                'icon'      => 'truck',
+                'label'     => _('Delivery notes'),
                 'tabs' => array(
                     'delivery_notes_server' => array()
                 )
 
             ),
+
+            'delivery_notes_by_store' => array(
+                'type'      => 'navigation',
+                'label'     => _('Group by store'),
+                'icon'      => 'compress',
+                'reference' => 'delivery_notes/by_store',
+                'tabs'      => array(
+                    'delivery_notes_group_by_store' => array()
+                )
+
+            ),
+
 
         )
 

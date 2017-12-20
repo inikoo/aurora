@@ -58,12 +58,8 @@ function fork_export_edit_template($job) {
             switch ($parent) {
                 case 'supplier':
 
-                    $sql_count = sprintf(
-                        'SELECT count(*) AS num FROM `Supplier Part Dimension` WHERE `Supplier Part Supplier Key`=%d', $parent_key
-                    );
-                    $sql_data  = sprintf(
-                        'SELECT `Supplier Part Key` AS id FROM `Supplier Part Dimension` WHERE `Supplier Part Supplier Key`=%d', $parent_key
-                    );
+                    $sql_count = sprintf('SELECT count(*) AS num FROM `Supplier Part Dimension` WHERE `Supplier Part Supplier Key`=%d', $parent_key);
+                    $sql_data  = sprintf('SELECT `Supplier Part Key` AS id FROM `Supplier Part Dimension` WHERE `Supplier Part Supplier Key`=%d', $parent_key);
 
                     break;
                 default:
@@ -124,6 +120,7 @@ function fork_export_edit_template($job) {
 
 
 
+
             switch ($parent) {
                 case 'part_category':
                     include_once 'class.Part.php';
@@ -148,6 +145,8 @@ function fork_export_edit_template($job) {
                     break;
 
                 case 'category':
+
+
                     include_once 'class.Product.php';
                     include_once 'class.Category.php';
 
@@ -192,6 +191,7 @@ function fork_export_edit_template($job) {
 
 
 
+
     if ($result = $db->query($sql_count)) {
         if ($row = $result->fetch()) {
             $number_rows = $row['num'];
@@ -202,10 +202,23 @@ function fork_export_edit_template($job) {
     }
 
 
+    if($objects=='product'  and $store->get('Store Type')=='B2BC' ){
+        $_objects='product_b2bc';
+    }else{
+        $_objects=$objects;
+    }
+
     $fields = array();
     foreach ($field_keys as $field_key) {
-        $fields[] = $export_edit_template_fields[$objects][$field_key];
+
+
+
+
+        $fields[] = $export_edit_template_fields[$_objects][$field_key];
+
+
     }
+
 
 
     $sql = sprintf(
@@ -229,8 +242,11 @@ function fork_export_edit_template($job) {
     $row_index = 1;
 
 
+
     if ($result = $db->query($sql_data)) {
         foreach ($result as $row) {
+
+
 
             switch ($objects) {
                 case 'supplier_part':
@@ -299,11 +315,15 @@ function fork_export_edit_template($job) {
                 case 'product':
 
 
+
                     switch ($parent) {
 
 
                         case 'category':
                         case 'part_family':
+
+
+
 
                             $object = new Product($row['id']);
 
@@ -417,6 +437,13 @@ function fork_export_edit_template($job) {
                                                     $value = round($skos_per_outer*$exchange * $object->get('Part Unit Price') * $object->get('Part Units Per Package'), 2);
                                                 }
                                                 break;
+                                            case 'Product Unit Price':
+                                                if ($object->get('Part Unit Price') == '') {
+                                                    $value = '';
+                                                } else {
+                                                    $value = round($exchange * $object->get('Part Unit Price') , 2);
+                                                }
+                                                break;
                                             case 'Product Unit RRP':
 
                                                 if ($object->get('Part Unit RRP') == '') {
@@ -424,6 +451,10 @@ function fork_export_edit_template($job) {
                                                 } else {
                                                     $value = round($exchange * $object->get('Part Unit RRP'), 2);
                                                 }
+                                                break;
+
+                                            case 'Product Units Per Case':
+                                                $value=$object->get('Part Units Per Package')*$object->get('Part SKOs per Carton');
                                                 break;
                                             default:
                                                 $value = $object->get($field['name']);
@@ -546,6 +577,7 @@ function fork_export_edit_template($job) {
         print_r($error_info = $db->errorInfo());
         exit;
     }
+
 
 
     $sheet        = $objPHPExcel->getActiveSheet();

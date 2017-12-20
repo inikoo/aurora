@@ -9,4 +9,4 @@
 -->
 *}
     <span style="font-size: 85%;font-style: italic" class="discreet  {if !$data.editing}invisible{/if} ">({t}Unpublished version on editor{/t})  <span class=" edited_date">{$data.edited_date}</span></span><br>
-    <span class=" {if !$data.published}invisible{/if}" >{t}Published{/t}  <span  class="small published_date discreet">{$data.published_date}</span></span>
+    <span class=" {if !$data.published}invisible{/if}" >{t}Published{/t}  <span  class="small published_date discreet">{if isset($data.published_date)}{$data.published_date}{/if}</span></span>

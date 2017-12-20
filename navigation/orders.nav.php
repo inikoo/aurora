@@ -887,7 +887,7 @@ function get_delivery_notes_server_navigation($data, $smarty, $user, $db, $accou
     $block_view = $data['section'];
 
 
-    $sections = get_sections('orders_server');
+    $sections = get_sections('delivery_notes_server');
     switch ($block_view) {
 
         case 'delivery_notes':

@@ -7,7 +7,7 @@ renderable: false,
 cell: "string",
 
 }, {
-name: "warehouse_area_key",
+name: "link",
 label: "",
 editable: false,
 renderable: false,

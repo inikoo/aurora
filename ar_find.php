@@ -137,7 +137,7 @@ switch ($tipo) {
         );
 
 
-
+        $data['user'] = $user;
         switch ($data['scope']) {
 
             case 'part_in_supplier_delivery':

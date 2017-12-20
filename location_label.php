@@ -37,7 +37,7 @@ $mpdf = new mPDF(
     $h
 ), '', '', 0, 0, 0, 0, 0, 0
 );
-$mpdf->SetTitle('Label '.$object->get_name().' '.$object->id);
+$mpdf->SetTitle(_('Location').': '.$object->get('Code'));
 $mpdf->SetAuthor('Aurora Systems');
 
 

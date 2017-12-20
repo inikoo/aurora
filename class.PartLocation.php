@@ -295,7 +295,8 @@ class PartLocation extends DB_Table {
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-                $old_qty   = round($row['stock'], 3);
+                //$old_qty   = round($row['stock'], 6);
+                $old_qty=$row['stock'];
                 $old_value = $row['value'];
             }
         } else {
@@ -307,7 +308,7 @@ class PartLocation extends DB_Table {
         $qty_change = $qty - $old_qty;
 
 
-        $value_change = $qty_change * $this->part->get('Part Cost in Warehouse');
+        $value_change = round($qty_change * $this->part->get('Part Cost in Warehouse'),2);
 
         $this->updated = true;
 
@@ -408,7 +409,7 @@ class PartLocation extends DB_Table {
                 if ($qty_change < 0) {
                     $_details = sprintf(_('adding %s missing SKOs to unknown location'), -$qty_change);
                 } else {
-                    $_details = sprintf(_('removing %s found SKOs from unknown location'), $qty_change);
+                    $_details = sprintf(_('setting %s SKOs as found'), $qty_change);
                 }
 
                 $sql = sprintf(
@@ -511,14 +512,25 @@ class PartLocation extends DB_Table {
 
         list($stock, $value, $in_process) = $this->get_stock();
 
+
+
+       // print $stock;
+
+
+
+        $value=$stock * $this->part->get('Part Cost in Warehouse');
+
         $this->data['Quantity On Hand']    = $stock;
-        $this->data['Stock Value']         = $stock * $this->part->get('Part Cost in Warehouse');
+        $this->data['Stock Value']         = $value;
         $this->data['Quantity In Process'] = $in_process;
 
         $sql = sprintf(
-            "UPDATE `Part Location Dimension` SET `Quantity On Hand`=%f ,`Quantity In Process`=%f,`Stock Value`=%f WHERE `Part SKU`=%d AND `Location Key`=%d", $stock, $in_process, $value, $this->part_sku, $this->location_key
+            "UPDATE `Part Location Dimension` SET `Quantity On Hand`=%f ,`Quantity In Process`=%f,`Stock Value`=%f WHERE `Part SKU`=%d AND `Location Key`=%d",
+            $stock,
+            $in_process,
+            $value, $this->part_sku, $this->location_key
         );
-        //  print $sql;
+        // print "$sql\n";
 
         $this->db->exec($sql);
 
@@ -576,7 +588,6 @@ class PartLocation extends DB_Table {
             "SELECT sum(`Inventory Transaction Quantity`) AS stock ,sum(`Inventory Transaction Amount`) AS value
 			       FROM `Inventory Transaction Fact` WHERE  `Date`<=%s AND `Part SKU`=%d AND `Location Key`=%d", prepare_mysql($date), $this->part_sku, $this->location_key
         );
-
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
