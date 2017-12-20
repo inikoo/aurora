@@ -150,11 +150,11 @@ $object_fields[] = array(
 
         array(
             'id'     => 'Webpage_Code',
-            'render' => ($can_update_code  ? true : false),
+            'render' => ($can_update_code or $new ? true : false),
             'edit'   => ($edit ? 'string' : ''),
             'value'           => htmlspecialchars($object->get('Webpage Code')),
             'formatted_value' => $object->get('Code'),
-            'label'           => ucfirst($object->get_field_label('Webpage Code')).' <span class="warning small"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> '._('URL will change').'</span>',
+            'label'           => ucfirst($object->get_field_label('Webpage Code')).' <span class="warning small '.($new?'hide':'').'   "><i class="fa fa-exclamation-triangle    " aria-hidden="true"></i> '._('URL will change').'</span>',
             'required'        => true,
             'type'            => 'value' ,
             'server_validation' => json_encode(array('tipo' => 'check_for_duplicates')),
