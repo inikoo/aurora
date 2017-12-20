@@ -7,7 +7,21 @@
 function scanned_barcode(value) {
 
 
-console.log(state)
+        var matches_location = value.match(/^\!W(\d+)L(\d+)/);
+
+
+        console.log(parseInt(matches_location.length))
+
+        if(parseInt(matches_location.length)==3){
+
+            console.log(matches_location)
+            change_view('/locations/'+matches_location[1]+'/'+matches_location[2]+'&tab=location.parts');
+
+            return;
+        }
+
+
+
 
     if (state.object == 'delivery_note') {
         scanned_barcode_in_delivery_note(value)
@@ -29,6 +43,10 @@ console.log(state)
 
 
     }
+
+
+
+
 
 }
 

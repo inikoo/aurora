@@ -21,12 +21,12 @@
         <tr><td> </td>
         </tr>
         <tr>
-            <td style="text-align: center"><img style="max-height: 50px" src="/barcode_asset.php?type=code128&number=!L{"%08d"|sprintf:$location->id}">
+            <td style="text-align: center"><img style="max-height: 50px" src="/barcode_asset.php?type=code128&number=!W{$location->get('Location Warehouse Key')}L{"%08d"|sprintf:$location->id}">
             </td>
 
         </tr>
         <tr>
-            <td style="text-align: center">{"%07d"|sprintf:$location->id}</td>
+            <td style="text-align: center">{$account->get('Code')|lower}.aurora.systems/locations/{$location->get('Location Warehouse Key')}/{$location->id}</td>
 
         </tr>
     </table>
