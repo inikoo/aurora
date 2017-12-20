@@ -74,7 +74,7 @@
 
         <script type="text/javascript" src="/js/app.js"></script>
         <script type="text/javascript" src="/js/keyboard_shortcuts.js"></script>
-        <script type="text/javascript" src="/js/barcode_scanner.js"></script>
+        <script type="text/javascript" src="/js/barcode_scanner.js?v1712v2"></script>
         <script type="text/javascript" src="/js/search.js"></script>
         <script type="text/javascript" src="/js/table.js"></script>
         <script type="text/javascript" src="/js/validation.js?v171206v3"></script>
