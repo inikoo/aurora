@@ -329,7 +329,6 @@ function parts($_data, $db, $user, $account) {
     $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
-    //print $sql;
 
 
     foreach ($db->query($sql) as $data) {
@@ -346,10 +345,13 @@ function parts($_data, $db, $user, $account) {
 
             'can_pick' => ($data['Can Pick'] == 'Yes' ? _('Yes') : _('No')),
 
+            'link' =>  '<span id="link_'.$data['Part SKU'].'"><i class="fa fa-chain-broken '. ($data['Quantity On Hand'] !=0?'invisible':'button').'" aria-hidden="true" part_sku="'.$data['Part SKU'].'" onclick="location_part_disassociate_from_table(this)"></i>',
+
+
             'sko_cost'    => money($data['Part Cost in Warehouse'], $account->get('Account Currency')),
-            'stock_value' => money($data['Stock Value'], $account->get('Account Currency')),
+            'stock_value' => '<span id="stock_value_'.$data['Part SKU'].'">'.money($data['Stock Value'], $account->get('Account Currency')).'</span>',
             'quantity'    => sprintf(
-                '<span style="padding-left:3px;padding-right:7.5px" class="table_edit_cell  location_part_stock" title="%s" part_sku="%d" location_key="%d"  qty="%s" onClick="open_location_part_stock_quantity_dialog(this)">%s</span>', '', $data['Part SKU'],
+                '<span id="quantity_'.$data['Part SKU'].'"><span style="padding-left:3px;padding-right:7.5px" class="table_edit_cell  location_part_stock" title="%s" part_sku="%d" location_key="%d"  qty="%s" onClick="open_location_part_stock_quantity_dialog(this)">%s</span></span>', '', $data['Part SKU'],
                 $data['Location Key'], $data['Quantity On Hand'], number($data['Quantity On Hand'])
             )
 

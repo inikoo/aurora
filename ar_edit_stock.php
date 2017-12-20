@@ -78,6 +78,38 @@ switch ($tipo) {
 
         new_part_location($account, $db, $user, $editor, $data, $smarty);
         break;
+
+    case 'add_part_to_location':
+
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'stock'       => array('type' => 'string'),
+                         'note'       => array('type' => 'string'),
+                         'part_sku'     => array('type' => 'key'),
+                         'location_key' => array('type' => 'key'),
+
+                     )
+        );
+
+
+        add_part_to_location($account, $db, $user, $editor, $data, $smarty);
+        break;
+
+
+    case 'disassociate_location_part':
+
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'part_sku'     => array('type' => 'key'),
+                         'location_key' => array('type' => 'key'),
+
+                     )
+        );
+
+
+        disassociate_location_part($account, $db, $user, $editor, $data, $smarty);
+        break;
+
     case 'edit_part_location_stock':
 
         $data = prepare_values(
@@ -132,10 +164,10 @@ switch ($tipo) {
 
         $data = prepare_values(
             $_REQUEST, array(
-                         'note'     => array('type' => 'string'),
-                         'part_sku' => array('type' => 'key'),
+                         'note'         => array('type' => 'string'),
+                         'part_sku'     => array('type' => 'key'),
                          'location_key' => array('type' => 'key'),
-                         'qty'      => array('type' => 'string'),
+                         'qty'          => array('type' => 'string'),
 
                      )
         );
@@ -244,6 +276,40 @@ function new_part_location($account, $db, $user, $editor, $data, $smarty) {
 }
 
 
+function disassociate_location_part($account, $db, $user, $editor, $data, $smarty) {
+
+    include_once 'class.PartLocation.php';
+
+
+    $part_location         = new PartLocation($data['part_sku'], $data['location_key']);
+    $part_location->editor = $editor;
+
+    if (!$part_location->ok) {
+        $response = array(
+            'state' => 200,
+            'msg'   => _('Error, please try again').' location part not associated'
+        );
+
+
+        echo json_encode($response);
+        exit;
+
+    }
+
+    $part_location->disassociate();
+
+    $number_parts_in_location = count($part_location->location->get_parts());
+
+    $response = array(
+        'state' => 200,
+        'rtext' => sprintf(ngettext('%s part', '%s parts', $number_parts_in_location), number($number_parts_in_location))
+    );
+    echo json_encode($response);
+
+
+}
+
+
 function edit_part_location_stock($account, $db, $user, $editor, $data, $smarty) {
 
     include_once 'class.PartLocation.php';
@@ -264,20 +330,27 @@ function edit_part_location_stock($account, $db, $user, $editor, $data, $smarty)
 
     }
 
-    $part_location->audit(
-        $data['qty'], $data['note'], $editor['Date']
-    );
+    $part_location->audit($data['qty'], $data['note'], $editor['Date']);
 
 
     $update_metadata['location_part_stock_cell'] = sprintf(
-        '<span  class="table_edit_cell location_part_stock" title="%s" part_sku="%d" location_key="%d"  qty="%s" onClick="open_location_part_stock_quantity_dialog(this)">%s</span>', '', $data['part_sku'], $data['location_key'], $part_location->get('Quantity On Hand'),
+        '<span style="padding-left:3px;padding-right:7.5px" class="table_edit_cell location_part_stock" title="%s" part_sku="%d" location_key="%d"  qty="%s" onClick="open_location_part_stock_quantity_dialog(this)">%s</span>', '', $data['part_sku'], $data['location_key'], $part_location->get('Quantity On Hand'),
         number($part_location->get('Quantity On Hand'))
     );
 
 
+
+
+
+
+    $update_metadata['location_part_stock_value_cell'] =money($part_location->get('Stock Value'), $account->get('Account Currency'));
+
+    $update_metadata['location_part_link_cell'] ='<i class="fa fa-chain-broken '. ($part_location->get('Quantity On Hand') !=0?'invisible':'button').'" aria-hidden="true" part_sku="'.$data['part_sku'].'" onclick="location_part_disassociate_from_table(this)"></i>';
+
     $response = array(
         'state'           => 200,
-        'update_metadata' => $update_metadata
+        'update_metadata' => $update_metadata,
+        'part_sku'=>$part_location->part->id
     );
     echo json_encode($response);
 
@@ -706,7 +779,6 @@ function edit_leakages($account, $db, $user, $editor, $data, $smarty) {
 }
 
 
-
 function send_to_production($account, $db, $user, $editor, $data, $smarty) {
 
     include_once 'class.PartLocation.php';
@@ -728,11 +800,10 @@ function send_to_production($account, $db, $user, $editor, $data, $smarty) {
         'Note'             => $data['note']
     );
 
-   $part_location->stock_transfer($_data);
+    $part_location->stock_transfer($_data);
 
 
     $part = get_object('Part', $data['part_sku']);
-
 
 
     $smarty->assign('part_sku', $part->id);
@@ -743,7 +814,6 @@ function send_to_production($account, $db, $user, $editor, $data, $smarty) {
 
 
     $response['Part_Unknown_Location_Stock'] = $part->get('Part Unknown Location Stock');
-
 
 
     $response['updated_fields'] = array(
@@ -768,6 +838,35 @@ function send_to_production($account, $db, $user, $editor, $data, $smarty) {
     echo json_encode($response);
 
 }
+
+
+
+function add_part_to_location($account, $db, $user, $editor, $data, $smarty) {
+
+    include_once 'class.PartLocation.php';
+
+
+    $part_location_data = array(
+        'Location Key' => $data['location_key'],
+        'Part SKU'     => $data['part_sku'],
+        'editor'       => $editor
+    );
+
+
+    $part_location = new PartLocation('find', $part_location_data, 'create');
+    $part_location->editor=$editor;
+
+    $part_location->audit($data['stock'], $data['note'], $editor['Date']);
+
+    $response = array('state'=> 200);
+
+    echo json_encode($response);
+    exit;
+
+
+}
+
+
 
 
 ?>

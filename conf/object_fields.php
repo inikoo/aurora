@@ -53,6 +53,8 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
             break;
 
         case 'Page':
+
+
             include 'fields/webpage.fld.php';
 
             return $object_fields;

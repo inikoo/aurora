@@ -1634,11 +1634,13 @@ function product_families($_data, $db, $user) {
         foreach ($result as $data) {
 
 
+           // print_r($data);
+
             if ($data['category_data'] == '') {
                 $family          = '<span class="super_discreet">'._('Family not set').'</span>';
                 $number_products = '<span class="super_discreet">-</span>';
                 $operations      = (in_array($data['Store Key'], $user->stores) ? '<i class="fa fa-plus button" aria-hidden="true" onClick="open_new_product_family('.$data['Store Key'].')" ></i>' : '<i class="fa fa-lock "></i>');
-                $code            = sprintf('<span >%s</span>', $data['Store Code']);
+                $code            = sprintf('<span >%s</span>', $data['Store Code']).($data['Store Type']=='B2BC'?' <i class="fa fa-dropbox" aria-hidden="true" title="'._("Carton's store").'"  ></i>':'');
 
             } else {
                 $family_data = preg_split('/,/', $data['category_data']);
@@ -1647,7 +1649,7 @@ function product_families($_data, $db, $user) {
                 $family          = sprintf('<span class="button" onClick="change_view(\'products/%d/category/%d\')">%s</span>', $data['Store Key'], $family_data[0], $family_data[1]);
                 $number_products = number($data['number_products']);
                 $operations      = (in_array($data['Store Key'], $user->stores) ? '<i class="fa fa-refresh button" aria-hidden="true" onClick="open_new_product_family('.$data['Store Key'].')" )"></i>' : '<i class="fa fa-lock "></i>');
-                $code            = sprintf('<span class="button" onClick="change_view(\'products/%d/category/%d\')">%s</span>', $data['Store Key'], $family_data[0], $data['Store Code']);
+                $code            = sprintf('<span class="button" onClick="change_view(\'products/%d/category/%d\')">%s</span>', $data['Store Key'], $family_data[0], $data['Store Code']).($data['Store Type']=='B2BC'?'<i class="fa fa-dropbox" title="'._("Carton's store").'"  aria-hidden="true"></i>':'');
             }
 
 

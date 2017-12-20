@@ -50,7 +50,7 @@ $sql_totals
 
 $fields = sprintf(
     "
-`Store Key`,`Store Code`,`Store Name`,
+`Store Key`,`Store Code`,`Store Name`,`Store Type`,
 (select Concat_ws(',',`Category Key`,`Category Label`,`Category Code`) from `Category Dimension` where `Category Scope`='Product' and `Category Code`=%s and `Category Root Key`=`Store Family Category Key` ) as category_data ,
 (select `Category Number Subjects` from `Category Dimension` where `Category Scope`='Product' and `Category Code`=%s and `Category Root Key`=`Store Family Category Key` ) as number_products 
 

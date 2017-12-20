@@ -18,33 +18,34 @@ $scope_metadata = $webpage->get('Scope Metadata');
 if ($webpage->get('Webpage Code') == 'register.sys') {
 
 
-    $email_template_key           = $scope_metadata['emails']['welcome']['key'];
-    $published_email_template_key = $scope_metadata['emails']['welcome']['published_key'];
+    $email_template_key = $scope_metadata['emails']['welcome']['key'];
+
+    if (empty($scope_metadata['emails']['welcome']['published_key'])) {
+        $published_email_template_key = 0;
+    } else {
+        $published_email_template_key = $scope_metadata['emails']['welcome']['published_key'];
+    }
+
 
     $role = 'Welcome';
-
 
 
 } elseif ($webpage->get('Webpage Code') == 'login.sys') {
 
 
     $email_template_key           = $scope_metadata['emails']['reset_password']['key'];
-    $published_email_template_key =  $scope_metadata['emails']['reset_password']['published_key'];
+    $published_email_template_key = $scope_metadata['emails']['reset_password']['published_key'];
 
     $role = 'Reset_Password';
-
-
 
 
 } elseif ($webpage->get('Webpage Code') == 'checkout.sys') {
 
 
     $email_template_key           = $scope_metadata['emails']['order_confirmation']['key'];
-    $published_email_template_key =  $scope_metadata['emails']['order_confirmation']['published_key'];
+    $published_email_template_key = $scope_metadata['emails']['order_confirmation']['published_key'];
 
     $role = 'Order_Confirmation';
-
-
 
 
 } else {
@@ -69,8 +70,7 @@ $email_template = new Email_Template($email_template_key);
 $smarty->assign('email_template_redirect', '&subtab=webpage.email_template');
 
 
-
-if ($email_template->id and ! ($email_template->get('Email Template Type')=='HTML' and $email_template->get('Email Template Editing JSON')=='' )  ) {
+if ($email_template->id and !($email_template->get('Email Template Type') == 'HTML' and $email_template->get('Email Template Editing JSON') == '')) {
 
     $smarty->assign('control_template', $control_template);
 
@@ -86,27 +86,22 @@ if ($email_template->id and ! ($email_template->get('Email Template Type')=='HTM
     }
 
 
-
-
     $smarty->assign('email_template', $email_template);
 
 
-
-    $send_email_to=$user->get_staff_email();
-
+    $send_email_to = $user->get_staff_email();
 
 
+    $merge_tags     = '';
+    $merge_contents = '';
 
-    $merge_tags='';
-    $merge_contents='';
 
+    if ($email_template->get('Email Template Role') == 'Reset_Password') {
+        $merge_tags = ",{ name: '"._('Reset password URL')."',value: '[Reset_Password_URL]'}";
 
-    if($email_template->get('Email Template Role')=='Reset_Password'){
-        $merge_tags=",{ name: '"._('Reset password URL')."',value: '[Reset_Password_URL]'}";
-
-    }elseif($email_template->get('Email Template Role')=='Order_Confirmation'){
-        $merge_tags=",{ name: '"._('Order number')."',value: '[Order Number]'},{ name: '"._('Order Amount')."',value: '[Order Amount]'}";
-        $merge_contents="{ name: '"._('Payment information')."',value: '[Pay Info]'},{ name: '"._('Order')."',value: '[Order]'}";
+    } elseif ($email_template->get('Email Template Role') == 'Order_Confirmation') {
+        $merge_tags     = ",{ name: '"._('Order number')."',value: '[Order Number]'},{ name: '"._('Order Amount')."',value: '[Order Amount]'}";
+        $merge_contents = "{ name: '"._('Payment information')."',value: '[Pay Info]'},{ name: '"._('Order')."',value: '[Order]'}";
 
     }
 
@@ -115,7 +110,6 @@ if ($email_template->id and ! ($email_template->get('Email Template Type')=='HTM
     $smarty->assign('merge_contents', $merge_contents);
 
     $smarty->assign('send_email_to', $send_email_to);
-
 
 
     $html = $smarty->fetch('email_template.tpl');
@@ -134,7 +128,7 @@ if ($email_template->id and ! ($email_template->get('Email Template Type')=='HTM
     );
 
 
-    $smarty->assign('show_back_button',false);
+    $smarty->assign('show_back_button', false);
 
 
     $parameters = array(
@@ -146,8 +140,6 @@ if ($email_template->id and ! ($email_template->get('Email Template Type')=='HTM
     $smarty->assign('role', $role);
     $smarty->assign('scope', 'Webpage');
     $smarty->assign('scope_key', $state['key']);
-
-
 
 
     $smarty->assign('table_top_template', 'email_blueprints.showcase.tpl');

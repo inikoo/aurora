@@ -31,6 +31,15 @@ $title = sprintf(
 
 
 $objects = 'product';
+
+
+if($objects=='product'  and $store->get('Store Type')=='B2BC' ){
+    $_objects='product_b2bc';
+}else{
+    $_objects=$objects;
+}
+
+
 $smarty->assign('title', $title);
 
 
@@ -46,7 +55,7 @@ $smarty->assign('parent', 'store');
 $smarty->assign('parent_key', $store->id);
 $smarty->assign('parent_code', $store->get('Code'));
 $smarty->assign('objects', $objects);
-$smarty->assign('edit_fields', $export_edit_template_fields[$objects]);
+$smarty->assign('edit_fields', $export_edit_template_fields[$_objects]);
 $smarty->assign('return_tab', $state['tab']);
 
 

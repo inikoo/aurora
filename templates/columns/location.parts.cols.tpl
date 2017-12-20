@@ -7,12 +7,12 @@ renderable: false,
 cell: "string",
 
 }, {
-name: "stock_status",
+name: "link",
 label: "",
 editable: false,
-sortType: "toggle",
+sortable:false,
 cell: Backgrid.HtmlCell.extend({
-className: "width_20"
+className: "width_40"
 })
 
 },{

@@ -812,6 +812,11 @@ ALTER TABLE `Inventory Spanshot Fact` ADD `Quantity Given` FLOAT UNSIGNED NOT NU
 ALTER TABLE `Inventory Transaction Fact` CHANGE `Inventory Transaction Section` `Inventory Transaction Section` ENUM('OIP','In','Move','Out','Audit','NoDispatched','Other','Production') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Other';
 
 
+ALTER TABLE `Store Dimension` CHANGE `Store Type` `Store Type` ENUM('B2B','B2BC','B2C','Dropshipping') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+ALTER TABLE `Store Dimension` ADD `Store Base Store Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Store Send Order Recursion Emails`;
+
+
+
 
 ======= fer migracion ordering in dw and costa
 
