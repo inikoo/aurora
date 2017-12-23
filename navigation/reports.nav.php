@@ -133,6 +133,7 @@ function get_ec_sales_list_navigation($user, $smarty, $data) {
 
 }
 
+
 function get_georegion_taxcategory_navigation($user, $smarty, $data) {
 
     $block_view = $data['section'];
@@ -233,6 +234,128 @@ function get_invoices_georegion_taxcategory_navigation($user, $smarty, $data, $t
     );
     $smarty->assign('_content', $_content);
 
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
+
+function get_intrastat_navigation($user, $smarty, $data) {
+
+
+    $left_buttons  = array();
+    $right_buttons = array();
+    $sections      = array();
+
+    if (isset($sections[$data['section']])) {
+        $sections[$data['section']]['selected'] = true;
+    }
+
+    $title = _('Intrastat');
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search reports')
+        )
+    );
+    $smarty->assign('_content', $_content);
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
+
+function get_intrastat_products_navigation($user, $smarty, $data) {
+
+
+
+    $up_button = array(
+        'icon'      => 'arrow-up',
+        'title'     => _("Intrastat report"),
+        'reference' => 'report/intrastat'
+    );
+
+    $left_buttons  = array($up_button);
+    $right_buttons = array();
+    $sections      = array();
+
+    if (isset($sections[$data['section']])) {
+        $sections[$data['section']]['selected'] = true;
+    }
+
+    $_data  = preg_split('/\|/', $data['extra']);
+    $__data = preg_split('/\_/', $_data[1]);
+
+    include_once 'class.Country.php';
+
+    $country = new Country('2alpha', $__data[0]);
+
+
+    $title = _('Intrastat').": ".sprintf(_('Products send to %s with commodity code %s'), $country->get('Country Name'), $__data[1]);
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search reports')
+        )
+    );
+    $smarty->assign('_content', $_content);
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
+
+function get_intrastat_orders_navigation($user, $smarty, $data) {
+
+
+    $up_button = array(
+        'icon'      => 'arrow-up',
+        'title'     => _("Intrastat report"),
+        'reference' => 'report/intrastat'
+    );
+
+    $left_buttons  = array($up_button);
+    $right_buttons = array();
+    $sections      = array();
+
+    if (isset($sections[$data['section']])) {
+        $sections[$data['section']]['selected'] = true;
+    }
+
+    $_data  = preg_split('/\|/', $data['extra']);
+    $__data = preg_split('/\_/', $_data[1]);
+
+    include_once 'class.Country.php';
+
+    $country = new Country('2alpha', $__data[0]);
+
+
+    $title = _('Intrastat').": ".sprintf(_('%s orders with commodity code %s'), $country->get('Country Name'), $__data[1]);
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search reports')
+        )
+    );
+    $smarty->assign('_content', $_content);
     $html = $smarty->fetch('navigation.tpl');
 
     return $html;

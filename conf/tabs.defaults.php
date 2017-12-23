@@ -2732,6 +2732,42 @@ $tab_defaults = array(
 
     ),
 
+    'intrastat' => array(
+        'view'          => 'overview',
+        'sort_key'      => 'country_code',
+        'sort_order'    => 1,
+        'rpp'           => 500,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'commodity',
+        'from'          => '',
+        'to'            => '',
+        'period'        => 'last_m',
+
+
+    ),
+
+    'intrastat_orders'               => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'number',
+
+    ),
+
+    'intrastat_products' => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'code',
+        'f_period'      => 'ytd',
+
+
+    ),
+
     'billingregion_taxcategory' => array(
         'view'            => 'overview',
         'sort_key'        => 'billing_region',

@@ -32,6 +32,15 @@ switch ($tipo) {
     case 'ec_sales_list':
         ec_sales_list(get_table_parameters(), $db, $user, $account);
         break;
+    case 'intrastat':
+        intrastat(get_table_parameters(), $db, $user, $account);
+        break;
+    case 'intrastat_orders':
+        intrastat_orders(get_table_parameters(), $db, $user, $account);
+        break;
+    case 'intrastat_products':
+        intrastat_products(get_table_parameters(), $db, $user, $account);
+        break;
     case 'billingregion_taxcategory':
         billingregion_taxcategory(get_table_parameters(), $db, $user, $account);
         break;
@@ -104,8 +113,7 @@ function ec_sales_list($_data, $db, $user, $account) {
     $rtext_label = 'record';
     include_once 'prepare_table/init.php';
 
-    $sql
-           = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+    $sql   = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
     //print $sql;
@@ -117,16 +125,13 @@ function ec_sales_list($_data, $db, $user, $account) {
 
             switch ($data['Invoice Tax Number Valid']) {
                 case 'Yes':
-                    $tax_number_valid
-                        = '<i class="fa fa-check-circle success padding_right_5" aria-hidden="true"></i> ';
+                    $tax_number_valid = '<i class="fa fa-check-circle success padding_right_5" aria-hidden="true"></i> ';
                     break;
                 case 'No':
-                    $tax_number_valid
-                        = '<i class="fa fa-exclamation-circle error padding_right_5" aria-hidden="true"></i> ';
+                    $tax_number_valid = '<i class="fa fa-exclamation-circle error padding_right_5" aria-hidden="true"></i> ';
                     break;
                 case 'Unknown':
-                    $tax_number_valid
-                        = '<i class="fa fa-question-circle very_discreet padding_right_5" aria-hidden="true"></i> ';
+                    $tax_number_valid = '<i class="fa fa-question-circle very_discreet padding_right_5" aria-hidden="true"></i> ';
                     break;
                 default:
                     $tax_number_valid = '';
@@ -137,13 +142,12 @@ function ec_sales_list($_data, $db, $user, $account) {
                 $tax_number_valid = '';
             }
 
-            $tax_number = $data['Invoice Tax Number'];
-            $country_2alpha_code
-                        = $data['Invoice Billing Country 2 Alpha Code'];
-            $tax_number = preg_replace(
+            $tax_number          = $data['Invoice Tax Number'];
+            $country_2alpha_code = $data['Invoice Billing Country 2 Alpha Code'];
+            $tax_number          = preg_replace(
                 '/^'.$country_2alpha_code.'/i', '', $tax_number
             );
-            $tax_number = preg_replace(
+            $tax_number          = preg_replace(
                 '/[^a-z^0-9]/i', '', $tax_number
             );
 
@@ -221,8 +225,7 @@ function billingregion_taxcategory($_data, $db, $user, $account) {
     $rtext_label = 'record';
     include_once 'prepare_table/init.php';
 
-    $sql
-        = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+    $sql = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
 
     $adata = array();
 
@@ -263,13 +266,11 @@ function billingregion_taxcategory($_data, $db, $user, $account) {
 
 
                 'invoices' => sprintf(
-                    '<span class="link" onClick="change_view(\'report/billingregion_taxcategory/invoices/%s/%s\')" >%s</span>', $data['Invoice Billing Region'], $data['Invoice Tax Code'],
-                    number($data['invoices'])
+                    '<span class="link" onClick="change_view(\'report/billingregion_taxcategory/invoices/%s/%s\')" >%s</span>', $data['Invoice Billing Region'], $data['Invoice Tax Code'], number($data['invoices'])
                 ),
 
                 'refunds' => sprintf(
-                    '<span class="link" onClick="change_view(\'report/billingregion_taxcategory/refunds/%s/%s\')" >%s</span>', $data['Invoice Billing Region'], $data['Invoice Tax Code'],
-                    number($data['refunds'])
+                    '<span class="link" onClick="change_view(\'report/billingregion_taxcategory/refunds/%s/%s\')" >%s</span>', $data['Invoice Billing Region'], $data['Invoice Tax Code'], number($data['refunds'])
                 ),
 
                 'customers' => number($data['customers']),
@@ -291,8 +292,7 @@ function billingregion_taxcategory($_data, $db, $user, $account) {
 
     if (is_array($parameters['excluded_stores']) and count(
             $parameters['excluded_stores']
-        ) > 0
-    ) {
+        ) > 0) {
         $excluded_stores = '';
         $sql             = sprintf(
             'SELECT `Store Key`,`Store Code`,`Store Name` FROM `Store Dimension` WHERE `Store Key` IN (%s)', join($parameters['excluded_stores'], ',')
@@ -337,8 +337,7 @@ function invoices_billingregion_taxcategory($_data, $db, $user) {
     $rtext_label = 'invoice';
     include_once 'prepare_table/init.php';
 
-    $sql
-        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
     $adata = array();
 
@@ -369,9 +368,9 @@ function invoices_billingregion_taxcategory($_data, $db, $user) {
             }
 
             $adata[] = array(
-                'id'                   => (integer)$data['Invoice Key'],
+                'id' => (integer)$data['Invoice Key'],
 
-                'number'               => sprintf('<span class="link" onclick="change_view(\'invoices/%d/%d\')">%s</span>',$data['Invoice Store Key'],$data['Invoice Key'],$data['Invoice Public ID']),
+                'number'               => sprintf('<span class="link" onclick="change_view(\'invoices/%d/%d\')">%s</span>', $data['Invoice Store Key'], $data['Invoice Key'], $data['Invoice Public ID']),
                 'customer'             => $data['Invoice Customer Name'],
                 'store_code'           => sprintf('<span title="%s">%s</span>', $data['Store Name'], $data['Store Code']),
                 'date'                 => strftime("%e %b %Y", strtotime($data['Invoice Date'].' +0:00')),
@@ -391,7 +390,7 @@ function invoices_billingregion_taxcategory($_data, $db, $user) {
                     $data['Invoice Items Net Amount'], $data['Invoice Currency']
                 ),
                 'type'                 => $type,
-                'payment_method'               => $method,
+                'payment_method'       => $method,
                 'state'                => $state,
                 'billing_country'      => $data['Invoice Billing Country 2 Alpha Code'],
                 'billing_country_flag' => sprintf(
@@ -408,8 +407,7 @@ function invoices_billingregion_taxcategory($_data, $db, $user) {
 
     if (is_array($parameters['excluded_stores']) and count(
             $parameters['excluded_stores']
-        ) > 0
-    ) {
+        ) > 0) {
         $excluded_stores = '';
         $sql             = sprintf(
             'SELECT `Store Key`,`Store Code`,`Store Name` FROM `Store Dimension` WHERE `Store Key` IN (%s)', join($parameters['excluded_stores'], ',')
@@ -425,8 +423,203 @@ function invoices_billingregion_taxcategory($_data, $db, $user) {
         }
 
         $excluded_stores = preg_replace('/, $/', '', $excluded_stores);
-        $rtext .= ' ('._('Excluding').': '.$excluded_stores.')';
+        $rtext           .= ' ('._('Excluding').': '.$excluded_stores.')';
     }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function intrastat($_data, $db, $user, $account) {
+
+    $rtext_label = 'record';
+    include_once 'prepare_table/init.php';
+
+    $sql   = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+    $adata = array();
+
+    // print $sql;
+
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+            $adata[] = array(
+
+                'country_code' => $data['Delivery Note Address Country 2 Alpha Code'],
+                // 'invoices'     => number($data['invoices']),
+
+                'period'      => $data['monthyear'],
+                'tariff_code' => $data['tariff_code'],
+                'value'       => money($data['value'], $account->get('Account Currency')),
+                'items'       => $data['items'],
+                'products'    => sprintf(
+                    '<span class="link" onClick="change_view(\'report/intrastat/products/%s/%s\')" >%s</span>', $data['Delivery Note Address Country 2 Alpha Code'], ($data['tariff_code'] == '' ? 'missing' : $data['tariff_code']), number($data['products'])
+                ),
+                'orders'      => sprintf(
+                    '<span class="link" onClick="change_view(\'report/intrastat/orders/%s/%s\')" >%s</span>', $data['Delivery Note Address Country 2 Alpha Code'], ($data['tariff_code'] == '' ? 'missing' : $data['tariff_code']), number($data['orders'])
+                ),
+
+                'weight' => weight($data['weight'], 'Kg', 2, false, true),
+
+
+            );
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $sql  = "select $fields from $table $where $wheref $group_by";
+    $stmt = $db->prepare($sql);
+    $stmt->execute();
+
+    $total_records = $stmt->rowCount();
+
+    $rtext = sprintf(
+            ngettext('%s record', '%s records', $total_records), number($total_records)
+        ).' <span class="discreet">'.$rtext.'</span>';
+
+
+    //$rtext=preg_replace('/\(|\)/', '', $rtext);
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function intrastat_orders($_data, $db, $user, $account) {
+
+    $rtext_label = 'order';
+    include_once 'prepare_table/init.php';
+
+    $sql   = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+    $adata = array();
+
+    // print $sql;
+
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+            $adata[] = array(
+
+
+                'number'       => sprintf('<span class="link" onClick="change_view(\'orders/%s/%s\')" >%s</span>', $data['Order Store Key'], $data['Order Key'], $data['Order Public ID']),
+                'customer'     => sprintf('<span class="link" onClick="change_view(\'customers/%s/%s\')" >%s</span>', $data['Order Store Key'], $data['Order Customer Key'], $data['Order Customer Name']),
+                'date'         => strftime("%e %b %Y", strtotime($data['Delivery Note Date'].' +0:00')),
+                'total_amount' => money($data['Order Total Amount'], $data['Order Currency Code'])
+
+
+            );
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $sql  = "select $fields from $table $where $wheref $group_by";
+    $stmt = $db->prepare($sql);
+    $stmt->execute();
+
+    $total_records = $stmt->rowCount();
+
+    $rtext = sprintf(
+            ngettext('%s order', '%s orders', $total_records), number($total_records)
+        ).' <span class="discreet">'.$rtext.'</span>';
+
+
+    //$rtext=preg_replace('/\(|\)/', '', $rtext);
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function intrastat_products($_data, $db, $user, $account) {
+
+    $rtext_label = 'product';
+    include_once 'prepare_table/init.php';
+
+    $sql   = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+    $adata = array();
+
+    // print $sql;
+
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+            $adata[] = array(
+
+                'store' => sprintf('<span class="link" onClick="change_view(\'products/%s\')" title="%s">%s</span>', $data['Product Store Key'], $data['Store Name'], $data['Store Code']),
+
+                'code'   => sprintf('<span class="link" onClick="change_view(\'products/%s/%s\')" >%s</span>', $data['Product Store Key'], $data['Product ID'], $data['Product Code']),
+                'name'   => $data['Product Name'],
+                'units'  => number($data['Product Units Per Case']),
+                'price'  => money($data['Product Price'] / $data['Product Units Per Case'], $data['Order Currency Code']),
+                'weight' => weight($data['Product Unit Weight'], 'Kg', 3, false, true),
+                'units_send'=>number($data['units_send']),
+
+            );
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $sql  = "select $fields from $table $where $wheref $group_by";
+    $stmt = $db->prepare($sql);
+    $stmt->execute();
+
+    $total_records = $stmt->rowCount();
+
+    $rtext = sprintf(
+            ngettext('%s product', '%s products', $total_records), number($total_records)
+        ).' <span class="discreet">'.$rtext.'</span>';
+
+
+    //$rtext=preg_replace('/\(|\)/', '', $rtext);
+
 
     $response = array(
         'resultset' => array(

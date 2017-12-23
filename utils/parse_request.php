@@ -1951,10 +1951,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                 $key        = $view_path[0];
 
 
-
-
-
-                                if(isset($view_path[1])) {
+                                if (isset($view_path[1])) {
 
                                     if ($view_path[1] == 'refund') {
 
@@ -1965,24 +1962,20 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                         $parent_key = $key;
                                         if (isset($view_path[2])) {
 
-                                            if(is_numeric($view_path[2])){
+                                            if (is_numeric($view_path[2])) {
                                                 $key = $view_path[2];
-                                            }elseif($view_path[2]=='new'){
+                                            } elseif ($view_path[2] == 'new') {
                                                 $object     = 'order';
-                                                $key = $parent_key;
+                                                $key        = $parent_key;
                                                 $parent     = 'store';
                                                 $parent_key = $arg1;
-                                                $section = 'refund.new';
+                                                $section    = 'refund.new';
                                             }
-
-
 
 
                                         }
 
-                                    }
-
-                                    elseif ($view_path[1] == 'replacement') {
+                                    } elseif ($view_path[1] == 'replacement') {
 
                                         $section = 'replacement';
                                         $object  = 'replacement';
@@ -1991,17 +1984,15 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                         $parent_key = $key;
                                         if (isset($view_path[2])) {
 
-                                            if(is_numeric($view_path[2])){
+                                            if (is_numeric($view_path[2])) {
                                                 $key = $view_path[2];
-                                            }elseif($view_path[2]=='new'){
+                                            } elseif ($view_path[2] == 'new') {
                                                 $object     = 'order';
-                                                $key = $parent_key;
+                                                $key        = $parent_key;
                                                 $parent     = 'store';
                                                 $parent_key = $arg1;
-                                                $section = 'replacement.new';
+                                                $section    = 'replacement.new';
                                             }
-
-
 
 
                                         }
@@ -2458,19 +2449,19 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                         if (is_numeric($view_path[1])) {
 
-                            $key     = $view_path[1];
+                            $key = $view_path[1];
 
 
-                            $object  = 'campaign';
-                           $store=get_object('store',$parent_key);
+                            $object = 'campaign';
+                            $store  = get_object('store', $parent_key);
 
-                           if($store->get('Store Order Recursion Campaign Key')==$key){
-                               $section = 'campaign_order_recursion';
+                            if ($store->get('Store Order Recursion Campaign Key') == $key) {
+                                $section = 'campaign_order_recursion';
 
-                           }else{
-                               $section = 'campaign';
+                            } else {
+                                $section = 'campaign';
 
-                           }
+                            }
 
 
                             if (isset($view_path[2])) {
@@ -2685,7 +2676,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                                         if (isset($view_path[3])) {
                                             if (is_numeric($view_path[3])) {
-                                                $section = 'timeseries_record';
+                                                $section    = 'timeseries_record';
                                                 $parent     = 'timeseries';
                                                 $parent_key = $view_path[2];
                                                 $object     = 'timeseries_record';
@@ -2701,7 +2692,6 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                     }
 
                                 }
-
 
 
                             } elseif ($view_path[1] == 'locations') {
@@ -2918,8 +2908,6 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                         }
 
 
-
-
                     } elseif ($view_path[0] == 'stock_history') {
                         $section = 'stock_history';
 
@@ -2934,8 +2922,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                     } elseif ($view_path[0] == 'categories') {
                         $section = 'categories';
-                    }
-                    else {
+                    } else {
                         if ($view_path[0] == 'category') {
                             $section = 'category';
                             $object  = 'category';
@@ -4060,6 +4047,31 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                         $section = 'ec_sales_list';
 
 
+                    } elseif ($view_path[0] == 'intrastat') {
+                        $section = 'intrastat';
+
+                        if (isset($view_path[1])) {
+                            if ($view_path[1] == 'orders') {
+
+                                if (isset($view_path[2]) and isset($view_path[3])) {
+
+                                    $section = 'intrastat_orders';
+
+
+                                    $extra = 'country_tariff_code|'.$view_path[2].'_'.$view_path[3];
+
+                                }
+
+
+                            } elseif ($view_path[1] == 'products') {
+                                if (isset($view_path[2]) and isset($view_path[3])) {
+                                    $section = 'intrastat_products';
+                                    $extra   = 'country_tariff_code|'.$view_path[2].'_'.$view_path[3];
+                                }
+                            }
+
+                        }
+
                     }
 
                 }
@@ -4519,7 +4531,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                     }
 
                 } else {
-                    $module     = 'payments';
+                    $module = 'payments';
                     $parent = 'store';
                     if ($user->data['User Hooked Store Key'] and in_array(
                             $user->data['User Hooked Store Key'], $user->stores
@@ -4546,11 +4558,9 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                 $parent_key = 1;
 
 
-
-
                 if (isset($view_path[0])) {
                     if (is_numeric($view_path[0]) and isset($view_path[1]) and is_numeric($view_path[1])) {
-                        $module     = 'payments';
+                        $module = 'payments';
 
                         $object     = 'payment';
                         $key        = $view_path[1];
@@ -4561,13 +4571,13 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                         $parent     = 'store';
                         $parent_key = $view_path[0];
 
-                    } elseif ($view_path[0]=='by_store') {
-                        $section    = 'payments_by_store';
+                    } elseif ($view_path[0] == 'by_store') {
+                        $section = 'payments_by_store';
                     }
 
                 } else {
 
-                    $module     = 'payments';
+                    $module = 'payments';
 
                     $parent = 'store';
                     if ($user->data['User Hooked Store Key'] and in_array($user->data['User Hooked Store Key'], $user->stores)) {
@@ -4592,8 +4602,6 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                 $parent_key = 1;
 
 
-
-
                 if (isset($view_path[0])) {
 
                     if (is_numeric($view_path[0])) {
@@ -4605,7 +4613,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                 } else {
 
-                    $module     = 'payments';
+                    $module = 'payments';
 
                     $parent = 'store';
                     if ($user->data['User Hooked Store Key'] and in_array($user->data['User Hooked Store Key'], $user->stores)) {

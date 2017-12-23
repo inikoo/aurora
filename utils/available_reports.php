@@ -13,13 +13,19 @@
 $available_reports = array(
 
     'billingregion_taxcategory' => array(
-        'Label'      => 'Billing Country/Tax Categories',
+        'Label'      => _('Billing Country/Tax Categories'),
         'Group'      => 'tax',
         'GroupLabel' => 'Tax',
 
     ),
     'ec_sales_list'             => array(
-        'Label'      => 'EC Sales List',
+        'Label'      => _('EC Sales List'),
+        'Group'      => 'tax',
+        'GroupLabel' => 'Tax',
+
+    ),
+    'intrastat'             => array(
+        'Label'      => _('Intrastat'),
         'Group'      => 'tax',
         'GroupLabel' => 'Tax',
 

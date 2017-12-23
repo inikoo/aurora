@@ -5381,6 +5381,32 @@ $modules = array(
                 )
 
             ),
+
+            'intrastat'                      => array(
+                'type' => '',
+                'tabs' => array(
+                    'intrastat' => array(),
+
+                )
+
+            ),
+            'intrastat_orders'                      => array(
+                'type' => '',
+                'tabs' => array(
+                    'intrastat_orders' => array(),
+
+                )
+
+            ),
+            'intrastat_products'                      => array(
+                'type' => '',
+                'tabs' => array(
+                    'intrastat_products' => array(),
+
+                )
+
+            ),
+
             'billingregion_taxcategory'          => array(
                 'type' => '',
                 'tabs' => array(
