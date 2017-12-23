@@ -210,13 +210,7 @@ function fork_export_edit_template($job) {
 
     $fields = array();
     foreach ($field_keys as $field_key) {
-
-
-
-
         $fields[] = $export_edit_template_fields[$_objects][$field_key];
-
-
     }
 
 
@@ -417,6 +411,13 @@ function fork_export_edit_template($job) {
                                                 break;
                                             case 'Product Name':
                                                 $value = $object->get('Part Recommended Product Unit Name');
+                                                break;
+
+
+                                            case 'Product Inner':
+
+                                                $value = $object->get('Part Units Per Package');
+
                                                 break;
                                             case 'Product Family Category Code':
                                                 $value = $family->get('Code');

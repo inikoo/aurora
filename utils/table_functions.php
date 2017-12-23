@@ -80,6 +80,7 @@ function get_table_totals($db, $sql_totals, $wheref = '', $record_label = '', $m
 
 
     } else {
+
         return array(
             '',
             0,

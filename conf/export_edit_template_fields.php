@@ -772,7 +772,7 @@ $export_edit_template_fields = array(
             'required'      => true,
             'header'        => 'Inners',
             'name'          => 'Product Inner',
-            'label'         => _('Units per outer'),
+            'label'         => _('Inners'),
             'checked'       => 0
         ),
 

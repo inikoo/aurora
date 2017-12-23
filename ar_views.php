@@ -23,7 +23,7 @@ switch ($tipo) {
         get_view($db, $smarty, $user, $account, $modules);
         break;
     case 'widget_details':
-        get_widget_details($db, $smarty, $user, $account,$modules);
+        get_widget_details($db, $smarty, $user, $account, $modules);
         break;
     case 'tab':
         $data     = prepare_values(
@@ -52,7 +52,7 @@ switch ($tipo) {
 
 }
 
-function get_widget_details($db, $smarty, $user, $account,$modules) {
+function get_widget_details($db, $smarty, $user, $account, $modules) {
 
     $data = prepare_values(
         $_REQUEST, array(
@@ -67,10 +67,6 @@ function get_widget_details($db, $smarty, $user, $account,$modules) {
 
 
     $state = $data['metadata'];
-
-
-
-
 
 
     $html     = get_tab(
@@ -131,7 +127,6 @@ function get_view($db, $smarty, $user, $account, $modules) {
     $state = parse_request($data, $db, $modules, $account, $user);
 
 
-
     $state['current_store']     = $_SESSION['current_store'];
     $state['current_website']   = $_SESSION['current_website'];
     $state['current_warehouse'] = $_SESSION['current_warehouse'];
@@ -140,7 +135,6 @@ function get_view($db, $smarty, $user, $account, $modules) {
     $store     = '';
     $website   = '';
     $warehouse = '';
-
 
 
     switch ($state['parent']) {
@@ -174,7 +168,6 @@ function get_view($db, $smarty, $user, $account, $modules) {
 
             $state['current_store'] = $_parent->id;
             $store                  = $_parent;
-
 
 
             break;
@@ -254,8 +247,8 @@ function get_view($db, $smarty, $user, $account, $modules) {
         case 'timeseries':
             $_parent = get_object($state['parent'], $state['parent_key']);
 
-            if($_parent->get('Timeseries Parent')=='Warehouse'){
-                $warehouse                  = get_object('Warehouse',$_parent->get('Timeseries Parent Key'));
+            if ($_parent->get('Timeseries Parent') == 'Warehouse') {
+                $warehouse = get_object('Warehouse', $_parent->get('Timeseries Parent Key'));
 
             }
             break;
@@ -557,8 +550,8 @@ function get_view($db, $smarty, $user, $account, $modules) {
 
 
     $sql = sprintf(
-        'INSERT INTO `User System View Fact`  (`User Key`,`Date`,`Module`,`Section`,`Tab`,`Parent`,`Parent Key`,`Object`,`Object Key`)  VALUES (%d,%s,%s,%s,%s,%s,%s,%s,%s)', $user->id,
-        prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql($state['module']), prepare_mysql($state['section']), prepare_mysql(
+        'INSERT INTO `User System View Fact`  (`User Key`,`Date`,`Module`,`Section`,`Tab`,`Parent`,`Parent Key`,`Object`,`Object Key`)  VALUES (%d,%s,%s,%s,%s,%s,%s,%s,%s)', $user->id, prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql($state['module']),
+        prepare_mysql($state['section']), prepare_mysql(
             ($state['subtab'] != '' ? $state['subtab'] : $state['tab'])
         ), prepare_mysql($state['parent']), prepare_mysql($state['parent_key']), prepare_mysql($state['object']), prepare_mysql($state['key'])
 
@@ -591,8 +584,8 @@ function get_view($db, $smarty, $user, $account, $modules) {
     }
 
 
-    if ($data['old_state']['module'] != $state['module'] or $data['old_state']['section'] != $state['section'] or $data['old_state']['parent_key'] != $state['parent_key'] or $data['old_state']['key']
-        != $state['key'] or $reload or isset($data['metadata']['reload_showcase'])
+    if ($data['old_state']['module'] != $state['module'] or $data['old_state']['section'] != $state['section'] or $data['old_state']['parent_key'] != $state['parent_key'] or $data['old_state']['key'] != $state['key'] or $reload
+        or isset($data['metadata']['reload_showcase'])
 
     ) {
 
@@ -666,15 +659,11 @@ function get_view($db, $smarty, $user, $account, $modules) {
 
     if ($state['object'] != '' and ($modules[$state['module']]['sections'][$state['section']]['type'] == 'object' or isset($modules[$state['module']]['sections'][$state['section']]['showcase']))) {
 
-        if (isset($data['metadata']['reload_showcase']) or !($data['old_state']['module'] == $state['module'] and $data['old_state']['section'] == $state['section'] and $data['old_state']['object']
-                == $state['object'] and $data['old_state']['key'] == $state['key'])) {
+        if (isset($data['metadata']['reload_showcase']) or !($data['old_state']['module'] == $state['module'] and $data['old_state']['section'] == $state['section'] and $data['old_state']['object'] == $state['object'] and $data['old_state']['key'] == $state['key'])) {
 
 
             $response['object_showcase'] = get_object_showcase(
-                (isset($modules[$state['module']]['sections'][$state['section']]['showcase']) ? $modules[$state['module']]['sections'][$state['section']]['showcase'] : $state['object']), $state,
-                                                                                                                                                                                           $smarty,
-                                                                                                                                                                                           $user, $db,
-                                                                                                                                                                                           $account
+                (isset($modules[$state['module']]['sections'][$state['section']]['showcase']) ? $modules[$state['module']]['sections'][$state['section']]['showcase'] : $state['object']), $state, $smarty, $user, $db, $account
             );
 
         }
@@ -708,8 +697,8 @@ function get_view($db, $smarty, $user, $account, $modules) {
     $response['state'] = $state;
 
 
-   // print_r($response);
-   // exit;
+    // print_r($response);
+    // exit;
 
     echo json_encode($response);
 
@@ -732,9 +721,8 @@ function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state = false, $
     $smarty->assign('data', $state);
 
 
-
     if (file_exists('tabs/'.$actual_tab.'.tab.php')) {
-    //print 'tabs/'.$actual_tab.'.tab.php';
+        //print 'tabs/'.$actual_tab.'.tab.php';
 
         include_once 'tabs/'.$actual_tab.'.tab.php';
     } else {
@@ -1012,11 +1000,11 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             break;
         case 'timeseries_record':
             include_once 'showcase/timeseries_record.show.php';
-            $html = get_timeseries_record_showcase($data, $smarty, $user, $db,$account);
+            $html = get_timeseries_record_showcase($data, $smarty, $user, $db, $account);
             break;
         case 'email_campaign':
             include_once 'showcase/email_campaign.show.php';
-            $html = get_email_campaign_showcase($data, $smarty, $user, $db,$account);
+            $html = get_email_campaign_showcase($data, $smarty, $user, $db, $account);
             break;
         default:
             $html = $data['object'].' -> '.$data['key'];
@@ -1526,6 +1514,15 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     break;
                 case ('sales'):
                     return get_sales_navigation($user, $smarty, $data);
+                    break;
+                case ('intrastat'):
+                    return get_intrastat_navigation($user, $smarty, $data);
+                    break;
+                case ('intrastat_orders'):
+                    return get_intrastat_orders_navigation($user, $smarty, $data);
+                    break;
+                case ('intrastat_products'):
+                    return get_intrastat_products_navigation($user, $smarty, $data);
                     break;
                 case ('tax'):
                     return get_tax_navigation($user, $smarty, $data);
@@ -2400,8 +2397,6 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 function get_tabs($data, $db, $account, $modules, $user, $smarty) {
 
 
-
-
     if (preg_match('/\_edit$/', $data['tab'])) {
         return array(
             $data,
@@ -2410,14 +2405,11 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
     }
 
 
-
-
     if (isset($modules[$data['module']]['sections'][$data['section']]['tabs'])) {
         $tabs = $modules[$data['module']]['sections'][$data['section']]['tabs'];
     } else {
         $tabs = array();
     }
-
 
 
     if (isset($modules[$data['module']]['sections'][$data['section']]['tabs'][$data['tab']] ['subtabs'])) {
@@ -2569,8 +2561,7 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
         //print_r($_content);
 
 
-    }
-    elseif ($data['module'] == 'suppliers' and $data['section'] == 'order') {
+    } elseif ($data['module'] == 'suppliers' and $data['section'] == 'order') {
         if ($data['_object']->get('Purchase Order State') == 'InProcess') {
 
             //$data['tab']='supplier.order.items';
@@ -2589,8 +2580,7 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
 
 
         }
-    }
-    elseif ($data['module'] == 'products' and $data['section'] == 'webpage') {
+    } elseif ($data['module'] == 'products' and $data['section'] == 'webpage') {
 
 
         if (!in_array(
@@ -2607,8 +2597,7 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
         }
 
 
-    }
-    elseif ($data['section'] == 'website') {
+    } elseif ($data['section'] == 'website') {
 
 
         if ($data['website']->get('Website Status') == 'Active') {
@@ -2670,8 +2659,6 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
     $html = $smarty->fetch('tabs.tpl');
 
 
-
-
     return array(
         $data,
         $html
@@ -2721,7 +2708,6 @@ function get_view_position($db, $state, $user, $smarty, $account) {
         case 'products':
 
 
-
             if ($user->get_number_stores() > 1) {
                 $branch[] = array(
                     'label'     => _('Stores'),
@@ -2763,8 +2749,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 );
                 $state['current_store'] = $state['_object']->id;
 
-            }
-            elseif ($state['section'] == 'product') {
+            } elseif ($state['section'] == 'product') {
 
                 if ($state['parent'] == 'store') {
                     $branch[] = array(
@@ -2869,8 +2854,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     'reference' => $_ref
                 );
 
-            }
-            elseif ($state['section'] == 'products') {
+            } elseif ($state['section'] == 'products') {
 
 
                 $branch[] = array(
@@ -2880,8 +2864,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 );
 
 
-            }
-            elseif ($state['section'] == 'service') {
+            } elseif ($state['section'] == 'service') {
 
                 if ($state['parent'] == 'store') {
                     $branch[] = array(
@@ -2976,11 +2959,6 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 }
 
 
-
-
-
-
-
                 $state['current_store'] = $state['store']->id;
                 $_ref                   = $state['parent'].'/'.$state['parent_key'].'/service/'.$state['_object']->id;
                 if (isset($state['otf'])) {
@@ -2993,8 +2971,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     'reference' => $_ref
                 );
 
-            }
-            elseif ($state['section'] == 'services') {
+            } elseif ($state['section'] == 'services') {
 
 
                 $branch[] = array(
@@ -3006,15 +2983,13 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 );
 
 
-            }
-            elseif ($state['section'] == 'categories') {
+            } elseif ($state['section'] == 'categories') {
                 $branch[] = array(
                     'label'     => _("Products's categories").' <span class="id">'.$state['store']->get('Code').'</span>',
                     'icon'      => 'sitemap',
                     'reference' => ''
                 );
-            }
-            elseif ($state['section'] == 'category') {
+            } elseif ($state['section'] == 'category') {
                 $category = $state['_object'];
                 $branch[] = array(
                     'label'     => _("Products's categories").' <span class="id">'.$state['store']->get('Code').'</span>',
@@ -3062,8 +3037,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         }
                     }
                 }
-            }
-            elseif ($state['section'] == 'main_category.new') {
+            } elseif ($state['section'] == 'main_category.new') {
                 $branch[] = array(
                     'label'     => _("Products's categories"),
                     'icon'      => 'sitemap',
@@ -3076,13 +3050,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 );
 
 
-            }
-
-
-
-
-            elseif ($state['section'] == 'refund.new') {
-
+            } elseif ($state['section'] == 'refund.new') {
 
 
                 if ($state['parent'] == 'campaign') {
@@ -3098,9 +3066,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'reference' => 'campaigns/'.$state['store']->id.'/'.$state['_parent']->id
                     );
 
-                }
-                elseif ($state['parent'] == 'deal') {
-
+                } elseif ($state['parent'] == 'deal') {
 
 
                     $branch[] = array(
@@ -3109,7 +3075,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'reference' => 'marketing/'.$state['store']->id
                     );
 
-                    $campaign=get_object('Campaign',$state['_parent']->get('Deal Campaign Key'));
+                    $campaign = get_object('Campaign', $state['_parent']->get('Deal Campaign Key'));
 
                     $branch[] = array(
                         'label'     => '<span class="Deal_Campaign_Name">'.$campaign->get('Name').'</span>',
@@ -3124,11 +3090,10 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     );
 
 
-
                 } elseif ($state['parent'] == 'charge') {
 
 
-                    $branch[]               = array(
+                    $branch[] = array(
                         'label'     => _('Store').' <span class="Store_Code id">'.$state['store']->get('Store Code').'</span>',
                         'icon'      => 'shopping-bag',
                         'reference' => 'store/'.$state['_object']->id
@@ -3142,61 +3107,52 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     );
 
 
+                } else {
 
-                }
-                else{
-
-                        $branch[] = array(
-                            'label'     => _('Products').' <span class="id">'.$state['_parent']->get('Store Code').'</span>',
-                            'icon'      => '',
-                            'reference' => 'products/'.$state['_parent']->get('Store Key')
-                        );
-
-
-                        $branch[] = array(
-                            'label'     => '<span class=" Product_Code">'.$state['_parent']->get('Code').'</span>',
-                            'icon'      => 'cube',
-                            'reference' => 'product/'.$state['_parent']->id
-                        );
-
-                }
-
-
-
-
-
-
+                    $branch[] = array(
+                        'label'     => _('Products').' <span class="id">'.$state['_parent']->get('Store Code').'</span>',
+                        'icon'      => '',
+                        'reference' => 'products/'.$state['_parent']->get('Store Key')
+                    );
 
 
                     $branch[] = array(
+                        'label'     => '<span class=" Product_Code">'.$state['_parent']->get('Code').'</span>',
+                        'icon'      => 'cube',
+                        'reference' => 'product/'.$state['_parent']->id
+                    );
+
+                }
+
+
+                $branch[] = array(
                     'label'     => '<span class="id ">'.$state['_object']->get('Order Public ID').'</span>',
                     'icon'      => 'shopping-cart',
                     'reference' => ''
                 );
 
-            }elseif ($state['section'] == 'customer') {
+            } elseif ($state['section'] == 'customer') {
 
 
+                if ($state['parent'] == 'campaign') {
+                    $branch[] = array(
+                        'label'     => _('Marketing').' <span class="Store_Code">'.$state['store']->get('Code').'</span>',
+                        'icon'      => 'bullhorn',
+                        'reference' => 'marketing/'.$state['store']->id
+                    );
 
-            if ($state['parent'] == 'campaign') {
-                $branch[] = array(
-                    'label'     => _('Marketing').' <span class="Store_Code">'.$state['store']->get('Code').'</span>',
-                    'icon'      => 'bullhorn',
-                    'reference' => 'marketing/'.$state['store']->id
-                );
+                    $branch[] = array(
+                        'label'     => '<span class="Deal_Campaign_Name">'.$state['_parent']->get('Name').'</span>',
+                        'icon'      => 'tags',
+                        'reference' => 'campaigns/'.$state['store']->id.'/'.$state['_parent']->id
+                    );
 
-                $branch[] = array(
-                    'label'     => '<span class="Deal_Campaign_Name">'.$state['_parent']->get('Name').'</span>',
-                    'icon'      => 'tags',
-                    'reference' => 'campaigns/'.$state['store']->id.'/'.$state['_parent']->id
-                );
-
-                $branch[] = array(
-                    'label'     => '<span class="id ">'.$state['_object']->get_formatted_id().'</span>',
-                    'icon'      => 'user',
-                    'reference' => ''
-                );
-            }elseif ($state['parent'] == 'deal') {
+                    $branch[] = array(
+                        'label'     => '<span class="id ">'.$state['_object']->get_formatted_id().'</span>',
+                        'icon'      => 'user',
+                        'reference' => ''
+                    );
+                } elseif ($state['parent'] == 'deal') {
 
                     $branch[] = array(
                         'label'     => _('Marketing').' <span class="Store_Code">'.$state['store']->get('Code').'</span>',
@@ -3204,7 +3160,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'reference' => 'marketing/'.$state['store']->id
                     );
 
-                    $campaign=get_object('Campaign',$state['_parent']->get('Deal Campaign Key'));
+                    $campaign = get_object('Campaign', $state['_parent']->get('Deal Campaign Key'));
 
                     $branch[] = array(
                         'label'     => '<span class="Deal_Campaign_Name">'.$campaign->get('Name').'</span>',
@@ -3212,11 +3168,11 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'reference' => 'campaigns/'.$state['store']->id.'/'.$state['_parent']->id
                     );
 
-                $branch[] = array(
-                    'label'     => '<span class="Deal_Name">'.$state['_parent']->get('Name').'</span>',
-                    'icon'      => 'tags',
-                    'reference' => 'campaigns/'.$state['store']->id.'/'.$state['_parent']->get('Deal Campaign Key').'/deal/'.$state['_parent']->id
-                );
+                    $branch[] = array(
+                        'label'     => '<span class="Deal_Name">'.$state['_parent']->get('Name').'</span>',
+                        'icon'      => 'tags',
+                        'reference' => 'campaigns/'.$state['store']->id.'/'.$state['_parent']->get('Deal Campaign Key').'/deal/'.$state['_parent']->id
+                    );
 
                     $branch[] = array(
                         'label'     => '<span class="id ">'.$state['_object']->get_formatted_id().'</span>',
@@ -3225,7 +3181,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     );
                 }
 
-            }elseif ($state['section'] == 'website') {
+            } elseif ($state['section'] == 'website') {
 
                 $branch[]               = array(
                     'label'     => _('Store').' <span class="Store_Code id">'.$state['store']->get('Code').'</span>',
@@ -3381,13 +3337,13 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     'icon'      => 'tag',
                     'reference' => ''
                 );
-            }elseif ($state['section'] == 'charge'){
+            } elseif ($state['section'] == 'charge') {
 
-             $branch[] = array(
-                 'label'     => _('Store').' <span class="Store_Code id">'.$state['store']->get('Store Code').'</span>',
-                 'icon'      => 'shopping-bag',
-                 'reference' => 'store/'.$state['store']->id
-             );
+                $branch[] = array(
+                    'label'     => _('Store').' <span class="Store_Code id">'.$state['store']->get('Store Code').'</span>',
+                    'icon'      => 'shopping-bag',
+                    'reference' => 'store/'.$state['store']->id
+                );
                 $branch[] = array(
                     'label'     => _('Charge').': <span class="Charge_Name id">'.$state['_object']->get('Charge Name').'</span>',
                     'icon'      => 'money',
@@ -3395,9 +3351,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 );
 
 
-
-
-        }
+            }
 
 
             break;
@@ -3459,7 +3413,6 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     break;
 
                 case 'customer':
-
 
 
                     if ($state['parent'] == 'store') {
@@ -4007,7 +3960,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     'reference' => ''
                 );
 
-            }elseif ($state['section'] == 'timeseries_record') {
+            } elseif ($state['section'] == 'timeseries_record') {
                 $branch[] = array(
                     'label'     => _('Suppliers'),
                     'icon'      => '',
@@ -4106,9 +4059,9 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
                     if ($user->get_number_stores() > 1) {
                         $branch[] = array(
-                            'label' => '('._('All stores').')',
-                            'icon'  => '',
-                            'reference'   => 'orders/all/dashboard'
+                            'label'     => '('._('All stores').')',
+                            'icon'      => '',
+                            'reference' => 'orders/all/dashboard'
                         );
                     }
 
@@ -4121,15 +4074,13 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     break;
 
 
-
-
                 case 'orders':
 
                     if ($user->get_number_stores() > 1) {
                         $branch[] = array(
-                            'label' => '('._('All stores').')',
-                            'icon'  => '',
-                            'reference'   => 'orders/all'
+                            'label'     => '('._('All stores').')',
+                            'icon'      => '',
+                            'reference' => 'orders/all'
                         );
                     }
 
@@ -4156,7 +4107,6 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 case 'payment':
 
                     if ($state['parent'] == 'order') {
-
 
 
                         $branch[] = array(
@@ -4226,7 +4176,6 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     } else {
 
 
-
                         $branch[] = array(
                             'label'     => _('Orders').' '.$state['store']->data['Store Code'],
                             'icon'      => '',
@@ -4287,7 +4236,6 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     } else {
 
 
-
                         $branch[] = array(
                             'label'     => _('Orders').' '.$state['store']->data['Store Code'],
                             'icon'      => '',
@@ -4345,9 +4293,9 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 case 'invoices':
                     if ($user->get_number_stores() > 1) {
                         $branch[] = array(
-                            'label' => '('._('All stores').')',
-                            'icon'  => '',
-                            'reference'   => 'invoices/all'
+                            'label'     => '('._('All stores').')',
+                            'icon'      => '',
+                            'reference' => 'invoices/all'
                         );
                     }
                     $store = new Store($state['parent_key']);
@@ -4399,8 +4347,6 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 case 'email_campaign':
 
 
-
-
                     if ($user->get_number_stores() > 1) {
                         $branch[] = array(
                             'label'     => '('._('All stores').')',
@@ -4410,15 +4356,11 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     }
 
 
-
-
                     $branch[] = array(
                         'label'     => _('Orders control panel').' '.$state['store']->get('Code'),
                         'icon'      => '',
                         'reference' => 'orders/'.$state['store']->id.'/dashboard/website/mailshots'
                     );
-
-
 
 
                     $branch[] = array(
@@ -5738,7 +5680,6 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 case 'leakages':
 
 
-
                     $branch[] = array(
                         'label'     => _('Warehouse dashboard'),
                         'icon'      => 'tachometer',
@@ -5753,7 +5694,6 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 case 'timeseries_record':
 
 
-
                     $branch[] = array(
                         'label'     => _('Warehouse dashboard'),
                         'icon'      => 'tachometer',
@@ -5764,11 +5704,11 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'icon'      => 'inbox',
                         'reference' => 'warehouse/'.$state['warehouse']->id.'/leakages'
                     );
-                   $branch[] = array(
-                       'label'     => '<span class="id">'.$state['_object']->get('Code').'</span>',
-                       'icon'      => 'table',
-                       'reference' => ''
-                   );
+                    $branch[] = array(
+                        'label'     => '<span class="id">'.$state['_object']->get('Code').'</span>',
+                        'icon'      => 'table',
+                        'reference' => ''
+                    );
                     break;
 
 
@@ -6020,8 +5960,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 );
 
 
-            }
-            elseif ($state['section'] == 'payment_accounts') {
+            } elseif ($state['section'] == 'payment_accounts') {
                 if ($state['parent'] == 'store') {
                     $store = new Store($state['parent_key']);
                     if ($user->get_number_stores() > 1) {
@@ -6101,8 +6040,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 );
 
 
-            }
-            elseif ($state['section'] == 'payments') {
+            } elseif ($state['section'] == 'payments') {
 
                 if ($state['parent'] == 'account') {
                     $branch[] = array(
@@ -6162,18 +6100,14 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 }
 
 
-            }
-
-            elseif ($state['section'] == 'credits') {
+            } elseif ($state['section'] == 'credits') {
 
 
-                    $branch[] = array(
-                        'label'     => _('Credits').' ('._('All stores').')',
-                        'icon'      => '',
-                        'reference' => 'credits/all'
-                    );
-
-
+                $branch[] = array(
+                    'label'     => _('Credits').' ('._('All stores').')',
+                    'icon'      => '',
+                    'reference' => 'credits/all'
+                );
 
 
             } elseif ($state['section'] == 'payments_by_store') {
@@ -6186,10 +6120,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 );
 
 
-
-
-            }
-            elseif ($state['section'] == 'payment') {
+            } elseif ($state['section'] == 'payment') {
 
                 if ($state['parent'] == 'account') {
 
@@ -6957,6 +6888,109 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     ),
                     'icon'      => '',
                     'reference' => 'report/billingregion_taxcategory'
+                );
+
+            }
+            if ($state['section'] == 'intrastat') {
+                $branch[] = array(
+                    'label'     => _('Intrastat'),
+                    'icon'      => '',
+                    'reference' => ''
+                );
+
+            }
+            if ($state['section'] == 'intrastat_products') {
+                $branch[] = array(
+                    'label'     => _('Intrastat'),
+                    'icon'      => '',
+                    'reference' => 'report/intrastat'
+                );
+
+
+                $_data  = preg_split('/\|/', $state['extra']);
+                $__data = preg_split('/\_/', $_data[1]);
+
+                $_parameters = array(
+
+                    'period' => (!empty($_SESSION['table_state']['intrastat']['period']) ? $_SESSION['table_state']['intrastat']['period'] : 'last_m'),
+                    'from'   => (!empty($_SESSION['table_state']['intrastat']['from']) ? $_SESSION['table_state']['intrastat']['from'] : ''),
+                    'to'     => (!empty($_SESSION['table_state']['intrastat']['to']) ? $_SESSION['table_state']['intrastat']['to'] : '')
+
+
+                );
+
+
+
+                include_once 'utils/date_functions.php';
+
+                list($db_interval, $from, $to, $from_date_1yb, $to_1yb)
+                    = calculate_interval_dates(
+                    $db, $_parameters['period'], $_parameters['from'], $_parameters['to']
+                );
+
+                $_from = strftime('%d %b %Y', strtotime($from));
+                $_to   = strftime('%d %b %Y', strtotime($to));
+                $_period='';
+                if ($_from != $_to) {
+                    $_period .= " ($_from-$_to)";
+                } else {
+                    $_period .= " ($_from)";
+                }
+
+                $_tariff_code=($__data[1]=='missing'?_('comodity code missing'):$__data[1]);
+
+                $branch[] = array(
+                    'label'     => _('Products')."; $__data[0], $_tariff_code  $_period",
+                    'icon'      => '',
+                    'reference' => ''
+                );
+
+
+            }
+            if ($state['section'] == 'intrastat_orders') {
+                $branch[] = array(
+                    'label'     => _('Intrastat'),
+                    'icon'      => '',
+                    'reference' => 'report/intrastat'
+                );
+
+
+                $_data  = preg_split('/\|/', $state['extra']);
+                $__data = preg_split('/\_/', $_data[1]);
+
+                $_parameters = array(
+
+                    'period' => (!empty($_SESSION['table_state']['intrastat']['period']) ? $_SESSION['table_state']['intrastat']['period'] : 'last_m'),
+                    'from'   => (!empty($_SESSION['table_state']['intrastat']['from']) ? $_SESSION['table_state']['intrastat']['from'] : ''),
+                    'to'     => (!empty($_SESSION['table_state']['intrastat']['to']) ? $_SESSION['table_state']['intrastat']['to'] : '')
+
+
+                );
+
+
+
+                include_once 'utils/date_functions.php';
+
+                list($db_interval, $from, $to, $from_date_1yb, $to_1yb)
+                    = calculate_interval_dates(
+                    $db, $_parameters['period'], $_parameters['from'], $_parameters['to']
+                );
+
+                $_from = strftime('%d %b %Y', strtotime($from));
+                $_to   = strftime('%d %b %Y', strtotime($to));
+                $_period='';
+                if ($_from != $_to) {
+                    $_period .= " ($_from-$_to)";
+                } else {
+                    $_period .= " ($_from)";
+                }
+
+                $_tariff_code=($__data[1]=='missing'?_('comodity code missing'):$__data[1]);
+
+                $branch[] = array(
+                    'label'     => _('Orders')."; $__data[0], $_tariff_code  $_period",
+                    'icon'      => '',
+                    'reference' => ''
                 );
 
             } else {
