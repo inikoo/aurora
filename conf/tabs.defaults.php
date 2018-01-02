@@ -2750,6 +2750,7 @@ $tab_defaults = array(
         'from'          => '',
         'to'            => '',
         'period'        => 'last_m',
+        'export_fields' => $export_fields['intrastat']
 
 
     ),

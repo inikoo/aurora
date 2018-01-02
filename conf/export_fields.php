@@ -744,6 +744,40 @@ $export_fields = array(
         ),
 
     ),
+    'intrastat' => array(
+        array(
+            'name'    => 'date_format( min(`Delivery Note Date`),\'%y%m\')',
+            'label'   => _('Period'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => 'LEFT(`Product Tariff Code`,8)',
+            'label'   => _('Commodity code'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Delivery Note Address Country 2 Alpha Code`',
+            'label'   => _('Country'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => 'count(distinct OTF.`Order Key`) ',
+            'label'   => _('Orders'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => 'sum(`Delivery Note Quantity`*`Product Units Per Case`) ',
+            'label'   => _('Units send'),
+            'checked' => 1
+        ),
+
+        array(
+            'name'    => 'sum(`Delivery Note Quantity`*`Product Unit Weight`*`Product Units Per Case`)',
+            'label'   => _('Weight').' (Kg)',
+            'checked' => 1
+        ),
+
+    ),
 
 );
 
