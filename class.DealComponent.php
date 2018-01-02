@@ -63,6 +63,10 @@ class DealComponent extends DB_Table {
 
         switch ($key) {
 
+            case 'Allowance':
+
+                return $this->get_formatted_allowances();
+                break;
 
             case('Description'):
             case('Deal Description'):
@@ -184,51 +188,54 @@ class DealComponent extends DB_Table {
     }
 
     function update_allowance_description() {
+        $allowance='';
+        switch ($this->data['Deal Component Allowance Type']) {
+            case 'Percentage Off':
+                $allowance = sprintf(_('%s off'),percentage($this->data['Deal Component Allowance'],1,0));
 
-        $allowance       = $this->data['Deal Component Allowance Description'];
-        $allowance_plain = $this->data['Deal Component Allowance Description'];
-        if ($this->data['Deal Component Allowance Target XHTML Label'] != ''
+                break;
+        };
 
-            and !($this->data['Deal Component Allowance Type'] == 'Get Free' and in_array(
-                    $this->data['Deal Component Allowance Target'], array(
-                                                                      'Product',
-                                                                      'Family'
-                                                                  )
-                ))
+        $this->update(
+            array(
+                'Deal Component Allowance Description' => $allowance,
 
-            and !in_array(
-                $this->data['Deal Component Terms Type'], array(
-                                                            'Department Quantity Ordered',
-                                                            'Department For Every Quantity Ordered',
-                                                            'Department For Every Quantity Any Product Ordered',
-                                                            'Family Quantity Ordered',
-                                                            'Family For Every Quantity Ordered',
-                                                            'Family For Every Quantity Any Product Ordered',
-                                                            'Product Quantity Ordered',
-                                                            'Product For Every Quantity Ordered'
+            ), 'no_history'
+        );
 
-                                                        )
-            )) {
-            $allowance       .= ' ('.$this->data['Deal Component Allowance Target XHTML Label'].')';
-            $allowance_plain .= ' '.$this->data['Deal Component Allowance Target XHTML Label'];
 
-        }
 
-        if ($this->data['Deal Component Allowance Target XHTML Label'] != '' and $this->data['Deal Component Trigger'] == 'Customer') {
-            $allowance       .= ' ('.$this->data['Deal Component Allowance Target XHTML Label'].')';
-            $allowance_plain .= ' '.$this->data['Deal Component Allowance Target XHTML Label'];
+    }
+
+    function update_terms_description() {
+
+        $terms = '';
+
+        $deal=get_object('Deal',$this->data['Deal Component Deal Key']);
+
+        switch ($deal->get('Deal Terms Type')) {
+
+            case 'Order Interval':
+                $terms = sprintf('last order within %d days', $deal->get('Deal Terms'));
+
+
+                break;
+            case 'Category Quantity Ordered':
+
+                $terms = sprintf('order %d or more %s', $deal->get('Deal Terms'), $this->get('Deal Component Allowance Target Label'));
+
+                break;
+
         }
 
 
         $this->update(
             array(
-                'Deal Component Allowance XHTML Description' => $allowance,
-                'Deal Component Allowance Plain Description' => strip_tags($allowance_plain)
+                'Deal Component Terms Description' => $terms,
 
             ), 'no_history'
         );
 
-        $this->data['Deal Component Allowance XHTML Description'] = $allowance;
 
 
     }
@@ -268,6 +275,17 @@ class DealComponent extends DB_Table {
                 $deal->editor = $this->editor;
                 $deal->update(array('Deal Term Label' => $value));
                 break;
+            case 'Deal Terms':
+                $deal = get_object('Deal', $this->data['Deal Component Deal Key']);
+                $deal->editor = $this->editor;
+
+
+
+                $deal->update(array('Deal Terms' => $value));
+
+
+                break;
+
 
             case 'Deal Component Allowance Label':
                 $this->update_field($field, $value, $options);
@@ -282,6 +300,15 @@ class DealComponent extends DB_Table {
                 $this->update_expiration_date($value, $options);
                 break;
 
+
+            case 'Deal Component Allowance':
+                $this->update_field($field, $value, $options);
+                $deal = get_object('Deal', $this->data['Deal Component Deal Key']);
+                $deal->editor = $this->editor;
+                $this->update_allowance_description();
+                $deal->update_term_allowances();
+
+                break;
 
             default:
                 $base_data = $this->base_data();
@@ -521,6 +548,27 @@ class DealComponent extends DB_Table {
 
 
     }
+
+    function get_formatted_allowances() {
+
+
+
+        switch ($this->data['Deal Component Allowance Type']) {
+            case 'Percentage Off':
+                $allowance = sprintf(_('%s off'),percentage($this->data['Deal Component Allowance'],1,0));
+
+                break;
+
+            default:
+                $allowance=$this->data['Deal Component Allowance'];
+
+        };
+
+        return $allowance;
+
+
+    }
+
 
 }
 

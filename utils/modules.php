@@ -4704,6 +4704,7 @@ $modules = array(
                     'part.supplier.deliveries' => 'part.purchase_orders',
                     'part.stock.history'       => 'part.stock',
                     'part.stock.transactions'  => 'part.stock',
+                    'part.stock.cost'  => 'part.stock',
                     'part.stock.history.plot'  => 'part.stock',
                     'part.sales.plot'          => 'part.sales',
                     'part.sales.history'       => 'part.sales',
@@ -4770,10 +4771,12 @@ $modules = array(
                                 'icon'  => 'area-chart'
                             ),
                             'part.stock.transactions' => array(
-                                'label' => _(
-                                    'Stock movements'
-                                ),
+                                'label' => _('Stock movements'),
                                 'icon'  => 'exchange',
+                            ),
+                            'part.stock.cost' => array(
+                                'label' => _('Stock cost'),
+                                'icon'  => 'usd',
                             ),
                         )
 

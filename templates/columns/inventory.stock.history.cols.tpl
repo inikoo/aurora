@@ -77,7 +77,7 @@ sortType: "toggle",
 
 {
 name: "parts",
-label: "{t}Partss{/t}",
+label: "{t}Parts{/t}",
 editable: false,
 sortable: false,
 

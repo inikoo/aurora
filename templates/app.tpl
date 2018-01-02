@@ -48,7 +48,7 @@
 
 
 
-        <link href="/css/app.css?v171213v2" rel="stylesheet">
+        <link href="/css/app.css?v171230v2" rel="stylesheet">
         <script type="text/javascript" src="/js/libs/jquery-2.2.1.js"></script>
         <script type="text/javascript" src="/js/libs/jquery-ui.js"></script>
         <script type="text/javascript" src="/js/libs/moment-with-locales.js"></script>
@@ -78,7 +78,7 @@
         <script type="text/javascript" src="/js/search.js"></script>
         <script type="text/javascript" src="/js/table.js"></script>
         <script type="text/javascript" src="/js/validation.js?v171206v3"></script>
-        <script type="text/javascript" src="/js/edit.js?v171019a"></script>
+        <script type="text/javascript" src="/js/edit.js?v171229"></script>
         <script type="text/javascript" src="/js/edit_webpage_edit.js?v171019"></script>
 
         <script type="text/javascript" src="/js/new.js?v171115"></script>

@@ -173,6 +173,14 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
                 include 'fields/campaign_order_recursion.fld.php';
 
+            } elseif ($options['store']->get('Store Bulk Discounts Campaign Key') == $object->id) {
+
+                $deals = $object->get_deals();
+                $deal  = array_pop($deals);
+                $store = $options['store'];
+
+                include 'fields/campaign_bulk_discounts.fld.php';
+
             } else {
                 include 'fields/campaign.fld.php';
 
@@ -182,7 +190,23 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
             return $object_fields;
             break;
         case 'Deal':
-            include 'fields/deal.fld.php';
+
+
+            $campaign = get_object('DealCampaign', $object->get('Deal Campaign Key'));
+            $store    = get_object('Store', $object->get('Deal Store Key'));
+
+
+
+            if ($store->get('Store Bulk Discounts Campaign Key') == $campaign->id) {
+
+
+                include 'fields/bulk_deal.fld.php';
+
+            } else {
+                include 'fields/campaign.fld.php';
+
+            }
+
 
             return $object_fields;
             break;
@@ -356,11 +380,10 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
         case 'Warehouse':
 
 
-            if( !empty($options['type'])
-                and $options['type']=='leakages'){
+            if (!empty($options['type']) and $options['type'] == 'leakages') {
                 include 'fields/warehouse.leakages.fld.php';
 
-            }else{
+            } else {
                 include 'fields/warehouse.fld.php';
 
             }

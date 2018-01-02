@@ -92,6 +92,9 @@ $smarty->assign('template', $webpage->get('Webpage Template Filename'));
 
 
 if (file_exists('templates/'.$template)) {
+
+
+
     $smarty->display($template);
 } else {
     printf("template %s not found", $template);

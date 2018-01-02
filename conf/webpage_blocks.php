@@ -193,15 +193,8 @@ function get_webpage_blocks($theme = '') {
             'label'    => _('Images'),
             'icon'     => 'fa-image',
             'show'     => 1,
-            'template' => '4',
-            'images'   => array(
-                'src'        => '',
-                'tooltip'    => '',
-                'link'       => '',
-                'text_1'     => _('title'),
-                'text_2'     => _('label'),
-                'text_class' => ''
-            )
+
+            'images'   => array()
 
 
         ),

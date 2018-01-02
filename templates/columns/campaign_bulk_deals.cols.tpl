@@ -1,3 +1,13 @@
+{*/*
+ About:
+ Author: Raul Perusquia <raul@inikoo.com>
+ Created: 27 December 2017 at 13:36:25 GMT, Sheffield, UK
+ Copyright (c) 2017, Inikoo
+
+ Version 3
+*/*}
+
+
 var columns = [
 {
 name: "id",
@@ -5,14 +15,6 @@ label: "",
 editable: false,
 renderable: false,
 cell: "string",
-
-}, {
-name: "store_key",
-label: "",
-editable: false,
-renderable: false,
-cell: "string",
-sortType: "toggle",
 
 },
 {
@@ -25,9 +27,19 @@ className: "width_20"
 })
 
 },
+
 {
 name: "name",
-label: "{t}Name{/t}",
+label: "{t}Offer{/t}",
+editable: false,
+
+sortType: "toggle",
+editable: false,
+cell: Backgrid.HtmlCell.extend({ })
+},
+{
+name: "target",
+label: "{t}Family{/t}",
 editable: false,
 
 sortType: "toggle",
@@ -36,7 +48,7 @@ cell: Backgrid.HtmlCell.extend({ })
 },
 {
 name: "description",
-label: "{t}Offer{/t}",
+label: "{t}Terms & allowances{/t}",
 editable: false,
 
 sortType: "toggle",

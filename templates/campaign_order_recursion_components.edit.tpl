@@ -73,7 +73,7 @@
 
         }
 
-        if (description == '') {
+        if (description.val() == '') {
             error = true;
             description.addClass('error')
         } else {
@@ -107,13 +107,13 @@
 
 
         // used only for debug
-        var request = '/ar_edit_marketing.php?tipo=edit_campaign_component_allowance&deal_component_key=' + $('#campaign_order_recursion_components_edit_dialog').attr('key') + '&allowance=' + $('#campaign_order_recursion_components_edit_dialog').find('.allowance').val() + '&description=' + $('#campaign_order_recursion_components_edit_dialog').find('.description').val()
+        var request = '/ar_edit_marketing.php?tipo=edit_campaign_order_recursion_data&deal_component_key=' + $('#campaign_order_recursion_components_edit_dialog').attr('key') + '&allowance=' + $('#campaign_order_recursion_components_edit_dialog').find('.allowance').val() + '&description=' + $('#campaign_order_recursion_components_edit_dialog').find('.description').val()
 
         console.log(request)
 
         //=====
         var form_data = new FormData();
-        form_data.append("tipo", 'edit_campaign_component_allowance')
+        form_data.append("tipo", 'edit_campaign_order_recursion_data')
         form_data.append("deal_component_key", $('#campaign_order_recursion_components_edit_dialog').attr('key'))
         form_data.append("allowance", $('#campaign_order_recursion_components_edit_dialog').find('.allowance').val())
         form_data.append("description", $('#campaign_order_recursion_components_edit_dialog').find('.description').val())

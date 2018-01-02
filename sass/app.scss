@@ -42,7 +42,7 @@ $height_calendar_cell: 16px;
 $height_calendar_th: 20px;
 
 $left_menu_width: 200px;
-$grid_section_width: 1440px;
+$grid_section_width: 1460px;
 
 $font_title: "Ubuntu", "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;
 $font_text: "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;
@@ -405,9 +405,9 @@ input {
   margin-left: $left_menu_width;
   height: 100%;
   float: left;
-  width: 1099px;
 
-  width: 1239px;
+
+  width: 1260px;
   border-right: 1px solid #ccc;
   #navigation {
     margin-top: $height_short_row;

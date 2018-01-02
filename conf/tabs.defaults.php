@@ -1901,6 +1901,14 @@ $tab_defaults = array(
                            ) ['key'],
         'elements'      => $elements_options['part_stock_transactions'],
     ),
+    'part.stock.cost'             => array(
+        'view'          => 'overview',
+        'sort_key'      => 'date',
+        'sort_order'    => 1,
+        'rpp'           => 1000,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'note',
+    ),
 
     'part.stock.history' => array(
         'view'        => 'overview',
@@ -2875,6 +2883,16 @@ $tab_defaults = array(
         'elements_type' => each($elements_options['deals'])['key'],
         'elements'      => $elements_options['deals'],
     ),
+
+    'campaign_bulk_deals'                      => array(
+        'view'        => 'overview',
+        'sort_key'    => 'from',
+        'sort_order'  => -1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'target',
+
+    ),
     'campaign.orders'                     => array(
         'view'          => 'overview',
         'sort_key'      => 'id',
@@ -2920,11 +2938,11 @@ $tab_defaults = array(
     ),
     'campaign_order_recursion.components' => array(
         'view'        => 'overview',
-        'sort_key'    => 'name',
-        'sort_order'  => 1,
+        'sort_key'    => 'from',
+        'sort_order'  => -1,
         'rpp'         => 100,
         'rpp_options' => $default_rrp_options,
-        'f_field'     => 'name',
+        'f_field'     => 'target',
 
     ),
     'deal.orders'                         => array(

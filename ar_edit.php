@@ -330,7 +330,6 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
 
 
 
-
     if (isset($data['metadata'])) {
 
 
@@ -511,6 +510,9 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
             $msg             = '';
             $formatted_value = $object->get($formatted_field);
             $action          = '';
+
+
+
         }
 
 
@@ -759,6 +761,12 @@ function object_operation($account, $db, $user, $editor, $data, $smarty) {
             break;
         case 'delete':
             $request = $object->delete();
+            break;
+        case 'suspend':
+            $request = $object->suspend();
+            break;
+        case 'activate':
+            $request = $object->activate();
             break;
         case 'archive':
             $request = $object->archive();

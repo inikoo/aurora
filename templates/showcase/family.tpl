@@ -210,7 +210,7 @@
                     {foreach from=$deal_components item=deal_component name=deal_component}
                         <tr class="main">
                             <td>
-                                {$deal_component->get('Icon')}
+                                <span class="button">{if $deal_component->get('Icon')==''}<i class="fa fa-tag discreet" aria-hidden="true"></i>{else}{$deal_component->get('Icon')}{/if}</span>
                             </td>
                             <td class="aright ">
                                 {$deal_component->get('Description')}

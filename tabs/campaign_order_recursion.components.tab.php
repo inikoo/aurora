@@ -24,7 +24,7 @@ $table_views = array(
 );
 
 $table_filters = array(
-    'name' => array('label' => _('Name')),
+    'target' => array('label' => _('Target')),
 );
 
 $parameters = array(
@@ -35,14 +35,12 @@ $parameters = array(
 
 $table_buttons   = array();
 
-
-
 $table_buttons[] = array(
     'icon'     => 'plus',
     'title'    => _('New allowance'),
     'id'       => 'new_item',
     'class'    => 'items_operation',
-    'add_allowance' => array(
+    'add_allowance_to_order_recursion_deal' => array(
 
         'field_label' => _("Category").':',
         'metadata'    => base64_encode(
@@ -75,12 +73,7 @@ $smarty->assign(
 
 
 $smarty->assign('table_buttons', $table_buttons);
-
-
-
-
 $smarty->assign('aux_templates', array('campaign_order_recursion_components.edit.tpl'));
-
 
 include 'utils/get_table_html.php';
 

@@ -26,69 +26,16 @@ switch ($parameters['parent']) {
         $where = 'where false';
 }
 
-/*
-if (isset($parameters['elements_type'])) {
-    switch ($parameters['elements_type']) {
-        case 'status':
 
-            $_elements      = '';
-            $count_elements = 0;
-            foreach (
-                $parameters['elements'][$parameters['elements_type']]['items'] as $_key => $_value
-            ) {
-                if ($_value['selected']) {
-                    $count_elements++;
-                    $_elements .= ",'".addslashes($_key)."'";
-
-
-                }
-            }
-
-            $_elements = preg_replace('/^\,/', '', $_elements);
-            if ($_elements == '') {
-                $where .= ' and false';
-            } elseif ($count_elements < 4) {
-                $where .= ' and `Deal Status` in ('.$_elements.')';
-
-
-            }
-
-            break;
-        case 'trigger':
-            $_elements      = '';
-            $count_elements = 0;
-            foreach (
-                $parameters['elements'][$parameters['elements_type']]['items'] as $_key => $_value
-            ) {
-                if ($_value['selected']) {
-                    $count_elements++;
-                    $_elements .= ",'".addslashes(
-                            preg_replace('/_/', ' ', $_key)
-                        )."'";
-
-
-                }
-            }
-
-            $_elements = preg_replace('/^\,/', '', $_elements);
-            if ($_elements == '') {
-                $where .= ' and false';
-            } elseif ($count_elements < 7) {
-                $where .= ' and `Deal Trigger` in ('.$_elements.')';
-
-
-            }
-
-            break;
-
-    }
-}
-*/
 
 $wheref = '';
-if ($parameters['f_field'] == 'name' and $f_value != '') {
+if ($parameters['f_field'] == 'target' and $f_value != '') {
     $wheref = sprintf(
-        ' and `Deal Name` REGEXP "[[:<:]]%s" ', addslashes($f_value)
+        ' and `Deal Component Allowance Target Label` REGEXP "[[:<:]]%s" ', addslashes($f_value)
+    );
+}elseif ($parameters['f_field'] == 'name' and $f_value != '') {
+    $wheref = sprintf(
+        ' and `Deal Term Allowances Label` REGEXP "[[:<:]]%s" ', addslashes($f_value)
     );
 }
 
@@ -103,11 +50,11 @@ if ($order == 'target') {
 }elseif ($order == 'allowance') {
     $order = '`Deal Component Allowance`';
 } elseif ($order == 'customers') {
-    $order = '`Deal Total Acc Used Customers`';
+    $order = '`Deal Component Total Acc Used Customers`';
 } elseif ($order == 'from') {
-    $order = '`Deal Begin Date`';
+    $order = '`Deal Component Begin Date`';
 } elseif ($order == 'to') {
-    $order = '`Deal Expiration Date`';
+    $order = '`Deal Component Expiration Date`';
 } elseif ($order == 'description') {
     $order = '`Deal Term Allowances Label`';
 } else {

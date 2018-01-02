@@ -1948,6 +1948,10 @@ function suspend_object(element) {
     save_object_operation('suspend', element)
 }
 
+function activate_object(element) {
+    save_object_operation('activate', element)
+}
+
 
 function reset_object(element) {
     save_object_operation('reset', element)
