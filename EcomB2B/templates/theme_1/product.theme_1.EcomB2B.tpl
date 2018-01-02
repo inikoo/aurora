@@ -38,7 +38,6 @@
 
 
                         {assign 'parent_family'  $product->get_parent_category('data') }
-
                         {assign 'prev_product'  $product->get_prev_product('data') }
                         {assign 'next_product'  $product->get_next_product('data') }
                         <div style="float: left">
