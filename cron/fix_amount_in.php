@@ -42,6 +42,7 @@ require_once 'class.Warehouse.php';
 require_once 'class.Part.php';
 require_once 'class.Material.php';
 require_once 'class.Page.php';
+require_once 'class.DeliveryNote.php';
 
 require_once 'class.Product.php';
 include_once 'utils/parse_materials.php';
