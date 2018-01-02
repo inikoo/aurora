@@ -9,11 +9,7 @@
 -->
 *}
 
-<style>
 
-
-
-</style>
 
 
 <div id="blocks_showcase" class="hide" style="z-index: 2000;background-color: #fff;padding:20px;border:1px solid #ccc;width: 300px;position: absolute;"  webpage_key="{$webpage->id}" >
@@ -59,7 +55,7 @@
             {include file="theme_1/blk.control.$block_type.theme_1.tpl" }
         {/foreach}
 
-
+        </div>
 
 
 

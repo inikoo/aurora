@@ -90,6 +90,9 @@ switch ($tipo) {
     case 'stock.history.day':
         stock_history_day(get_table_parameters(), $db, $user, $account);
         break;
+    case 'stock_cost':
+        stock_cost(get_table_parameters(), $db, $user, $account);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -2126,6 +2129,68 @@ function stock_history_day($_data, $db, $user, $account) {
     );
     echo json_encode($response);
 }
+
+
+
+
+function stock_cost($_data, $db, $user,$account) {
+
+
+    $rtext_label = 'transaction';
+
+    include_once 'prepare_table/init.php';
+
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+    //print $sql;
+    $record_data = array();
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+            //MossRB-04 227330 Taken from: 11A1
+
+            $note  = $data['Note'];
+            $change = $data['Inventory Transaction Quantity'];
+            $cost = $data['Inventory Transaction Amount'];
+
+
+
+
+
+            $record_data[] = array(
+                'id'   => (integer)$data['Inventory Transaction Key'],
+                'date' => strftime("%a %e %b %Y", strtotime($data['Date'].' +0:00')),
+                'delivery' => sprintf(
+                    '<span class="link" onclick="change_view(\'%s/%d/delivery/%d\')" >%s</span>  ', strtolower($data['Supplier Delivery Parent']), $data['Supplier Delivery Parent Key'], $data['Supplier Delivery Key'], $data['Supplier Delivery Public ID']
+                ),
+                'skos' => $change,
+                'cost' => money($cost,$account->get('Account Currency Code')),
+
+            );
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print $sql;
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $record_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
 
 
 ?>

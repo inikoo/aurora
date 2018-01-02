@@ -462,6 +462,11 @@ function client_validation(type, required, value, field) {
 
             }
 
+        case 'positive_integer_more_than_zero':
+            var res = validate_integer(value, 1,65535)
+            if (res) return res
+            break;
+
         case 'smallint_unsigned':
             var res = validate_signed_integer(value, 65535)
             if (res) return res
@@ -847,6 +852,42 @@ function validate_signed_integer(value, max_value) {
             class: 'invalid',
 
             type: 'negative'
+        }
+    }
+    if (Math.floor(value) != value) {
+
+
+        return {
+            class: 'invalid',
+
+            type: 'not_integer'
+        }
+    }
+
+    return false
+}
+
+function validate_integer(value, min_value,max_value) {
+
+    if (!$.isNumeric(value)) {
+        return {
+            class: 'invalid', type: 'not_integer'
+        }
+    }
+
+    if (value > max_value) {
+        return {
+            class: 'invalid',
+
+            type: 'too_big'
+        }
+    }
+
+    if (value < min_value) {
+        return {
+            class: 'invalid',
+
+            type: 'too_small'
         }
     }
     if (Math.floor(value) != value) {

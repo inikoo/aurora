@@ -120,7 +120,6 @@
 
 
 
-
     <div id="blocks" class="site_wrapper">
         {foreach from=$content.blocks item=$block key=key}
             {include file="{$theme}/blk.{$block.type}.{$theme}.tpl" data=$block key=$key  }
@@ -678,6 +677,17 @@
 
 
                         $(element).closest('.one_half').find('img').attr('src',data.image_src).attr('image_key',data.img_key)
+
+
+                    }else if(element.attr('name')=='images'){
+
+                        //$('#image_control_panel').attr('img_src',data.image_src)
+                        var image_index=$('#image_control_panel').find('.image_upload').attr('image_index')
+                        var   image=  $('.blk_images .image:nth-child('+image_index+') img')
+
+
+                        image.attr('src',data.image_src);
+
 
 
                     }

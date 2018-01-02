@@ -113,9 +113,9 @@ if ($order == 'name') {
 } else {
     $order = '`Deal Key`';
 }
-$table  = '`Deal Dimension` D left join `Deal Campaign Dimension` C on (C.`Deal Campaign Key`=D.`Deal Campaign Key`) ';
+$table  = '`Deal Dimension` D left join `Deal Campaign Dimension` C on (C.`Deal Campaign Key`=D.`Deal Campaign Key`) left join `Store Dimension` on (`Deal Store Key`=`Store Key`) ';
 $fields = "`Deal Key`,`Deal Name`,`Deal Term Allowances`,`Deal Term Allowances Label`,`Deal Store Key`,D.`Deal Campaign Key`,`Deal Status`,`Deal Begin Date`,`Deal Expiration Date`,
-`Deal Total Acc Used Orders`,`Deal Total Acc Used Customers`";
+`Deal Total Acc Used Orders`,`Deal Total Acc Used Customers`,`Store Bulk Discounts Campaign Key`";
 
 
 $sql_totals = "select count(*) as num from $table $where ";

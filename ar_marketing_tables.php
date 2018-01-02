@@ -47,6 +47,9 @@ switch ($tipo) {
     case 'deals':
         deals(get_table_parameters(), $db, $user);
         break;
+    case 'campaign_bulk_deals':
+        campaign_bulk_deals(get_table_parameters(), $db, $user);
+        break;
     case 'components':
         components(get_table_parameters(), $db, $user);
         break;
@@ -199,14 +202,16 @@ function deals($_data, $db, $user) {
             } else {
                 $description_class = '';
             }
+
+
+            $description = sprintf('<span class="%s"  >%s</span>', $description_class, $data['Deal Term Allowances Label']);
+
+
             $adata[] = array(
                 'id'          => (integer)$data['Deal Key'],
-                'store_key'   => (integer)$data['Deal Store Key'],
                 'status'      => $status,
-                'name'        => $data['Deal Name'],
-                'description' => sprintf(
-                    '<span class="%s" title="%s">%s</span>', $description_class, strip_tags($data['Deal Term Allowances']), $data['Deal Term Allowances Label']
-                ),
+                'name'        => sprintf('<span class="link" onClick="change_view(\'campaigns/%d/%d/deal/%d\')">%s</span>', $data['Deal Store Key'], $data['Deal Campaign Key'], $data['Deal Key'], $data['Deal Name']),
+                'description' => $description,
                 'from'        => $from,
                 'to'          => $to,
                 'orders'      => number($data['Deal Total Acc Used Orders']),
@@ -517,7 +522,9 @@ function campaign_order_recursion_components($_data, $db, $user) {
 
             switch ($data['Deal Component Allowance Type']) {
                 case 'Percentage Off':
-                    $allowance = '<span id="deal_component_allowance_'.$data['Deal Component Key'].'"><span class="button" key="'.$data['Deal Component Key'].'" target="'.$data['Deal Component Allowance Target Label'].'" allowance="'.percentage($data['Deal Component Allowance'], 1).'" description="'.$data['Deal Component Allowance Label'].'"  onclick="edit_component_allowance(this)"   >'.percentage($data['Deal Component Allowance'], 1).'</span></span>';
+                    $allowance = '<span id="deal_component_allowance_'.$data['Deal Component Key'].'"><span class="button" key="'.$data['Deal Component Key'].'" target="'.$data['Deal Component Allowance Target Label'].'" allowance="'.percentage(
+                            $data['Deal Component Allowance'], 1
+                        ).'" description="'.$data['Deal Component Allowance Label'].'"  onclick="edit_component_allowance(this)"   >'.percentage($data['Deal Component Allowance'], 1).'</span></span>';
                     break;
 
                 default:
@@ -567,7 +574,8 @@ function campaign_order_recursion_components($_data, $db, $user) {
                     $status = $data['Deal Component Status'];
             }
 
-            $status='<span id="deal_component_status_'.$data['Deal Component Key'].'"><span status="'.$data['Deal Component Status'].'" target="'.$data['Deal Component Allowance Target Label'].'" key="'.$data['Deal Component Key'].'" class="button" onclick="edit_component_status(this)">'.$status.'</span></span>';
+            $status = '<span id="deal_component_status_'.$data['Deal Component Key'].'"><span status="'.$data['Deal Component Status'].'" target="'.$data['Deal Component Allowance Target Label'].'" key="'.$data['Deal Component Key']
+                .'" class="button" onclick="edit_component_status(this)">'.$status.'</span></span>';
 
             $duration = '';
             if ($data['Deal Component Expiration Date'] == '' and $data['Deal Component Begin Date'] == '') {
@@ -621,6 +629,148 @@ function campaign_order_recursion_components($_data, $db, $user) {
                 'duration'    => $duration,
                 'orders'      => number($data['Deal Component Total Acc Used Orders']),
                 'customers'   => number($data['Deal Component Total Acc Used Customers'])
+
+            );
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function campaign_bulk_deals($_data, $db, $user) {
+
+    $rtext_label = 'offer';
+    include_once 'prepare_table/init.php';
+
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $adata = array();
+
+    //print $sql;
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+
+
+            switch ($data['Deal Status']) {
+                case 'Waiting':
+                    $status = sprintf(
+                        '<i class="fa fa-clock-o discreet fa-fw" aria-hidden="true" title="%s" ></i>', _('Waiting')
+                    );
+                    break;
+                case 'Active':
+                    $status = sprintf(
+                        '<i class="fa fa-play success fa-fw" aria-hidden="true" title="%s" ></i>', _('Active')
+                    );
+                    break;
+                case 'Suspended':
+                    $status = sprintf(
+                        '<i class="fa fa-pause error fa-fw" aria-hidden="true" title="%s" ></i>', _('Suspended')
+                    );
+                    break;
+                case 'Finish':
+                    $status = sprintf(
+                        '<i class="fa fa-stop discreet fa-fw" aria-hidden="true" title="%s" ></i>', _('Finished')
+                    );
+                    break;
+                default:
+                    $status = $data['Deal Status'];
+            }
+
+            $duration = '';
+            if ($data['Deal Expiration Date'] == '' and $data['Deal Begin Date'] == '') {
+                $duration = _('Permanent');
+            } else {
+
+                if ($data['Deal Begin Date'] != '') {
+                    $duration = strftime(
+                        "%x", strtotime($data['Deal Begin Date']." +00:00")
+                    );
+
+                }
+                $duration .= ' - ';
+                if ($data['Deal Expiration Date'] != '') {
+                    $duration .= strftime(
+                        "%x", strtotime($data['Deal Expiration Date']." +00:00")
+                    );
+
+                } else {
+                    $duration .= _('Present');
+                }
+
+            }
+
+            if ($data['Deal Expiration Date'] != '') {
+                $to = strftime(
+                    "%x", strtotime($data['Deal Expiration Date']." +00:00")
+                );
+            } else {
+                $to = _('Permanent');
+            }
+
+
+            if ($data['Deal Begin Date'] != '') {
+                $from = strftime(
+                    "%x", strtotime($data['Deal Begin Date']." +00:00")
+                );
+            } else {
+                $from = '';
+            }
+
+            if (strlen(strip_tags($data['Deal Term Allowances Label'])) > 75) {
+                $description_class = 'super_small';
+            } elseif (strlen(strip_tags($data['Deal Term Allowances Label'])) > 60) {
+                $description_class = 'very_small';
+            } elseif (strlen(strip_tags($data['Deal Term Allowances Label'])) > 50) {
+                $description_class = 'small';
+            } else {
+                $description_class = '';
+            }
+
+
+            $description = sprintf(
+                '<span id="deal_component_description_%d"><span  class="%s button"  key="%d" target="%s" terms="%d"  allowance="%s" description_terms="%s" description_allowances="%s"  onclick="edit_volume_deal(this)"  title="%s">%s</span></span>',
+                $data['Deal Component Key'],
+                $description_class,
+                $data['Deal Component Key'],
+                $data['Deal Component Allowance Target Label'],
+                $data['Deal Component Terms'],
+                percentage($data['Deal Component Allowance'], 1),
+                $data['Deal Term Label'],
+                $data['Deal Component Allowance Label'],
+                strip_tags($data['Deal Term Label'].' '.$data['Deal Component Allowance Label']),
+                $data['Deal Term Allowances Label']
+            );
+
+
+            $adata[] = array(
+                'id'          => (integer)$data['Deal Key'],
+                'status'      => $status,
+                'name'        => sprintf('<span class="link" onClick="change_view(\'campaigns/%d/%d/deal/%d\')">%s</span>', $data['Deal Store Key'], $data['Deal Campaign Key'], $data['Deal Key'], $data['Deal Name']),
+                'target' => sprintf('<span class="link" onClick="change_view(\'products/%d/category/%d\')">%s</span>', $data['Deal Store Key'], $data['Deal Component Allowance Target Key'], $data['Deal Component Allowance Target Label']),
+                'description' => $description,
+
+                'from'        => $from,
+                'to'          => $to,
+                'orders'      => number($data['Deal Total Acc Used Orders']),
+                'customers'   => number($data['Deal Total Acc Used Customers'])
 
             );
 

@@ -1764,6 +1764,7 @@ class PartLocation extends DB_Table {
                     $commercial_value_unit_cost = $this->part->get('Part Commercial Value');
                 }
 
+                $value_day_cost_unit_cost=$this->part->get('Part Cost in Warehouse');
 
                 $value_day_cost   = $stock * $value_day_cost_unit_cost;
                 $commercial_value = $stock * $commercial_value_unit_cost;

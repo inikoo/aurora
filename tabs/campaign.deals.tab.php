@@ -10,41 +10,122 @@
 */
 
 
-$tab     = 'deals';
-$ar_file = 'ar_marketing_tables.php';
-$tipo    = 'deals';
+if($state['store']->get('Store Bulk Discounts Campaign Key')==$state['key']){
 
-$default = $user->get_tab_defaults($tab);
+    $tab     = 'campaign_bulk_deals';
+    $ar_file = 'ar_marketing_tables.php';
+    $tipo    = 'campaign_bulk_deals';
 
-
-$table_views = array(
-    'overview' => array(
-        'label' => _('Overview'),
-        'title' => _('Overview')
-    ),
-
-);
-
-$table_filters = array(
-
-    'name' => array('label' => _('Name')),
-
-);
-
-$parameters = array(
-    'parent'     => $state['object'],
-    'parent_key' => $state['key'],
-
-);
+    $default = $user->get_tab_defaults($tab);
 
 
-$table_buttons   = array();
-$table_buttons[] = array(
-    'icon'      => 'plus',
-    'title'     => _('New offer'),
-    'reference' => "campaigns/".$state['parent_key']."/".$state['key']."/deal/new"
-);
-$smarty->assign('table_buttons', $table_buttons);
+    $table_views = array(
+
+
+    );
+
+    $table_filters = array(
+
+        'target' => array('label' => _('Target')),
+
+    );
+
+    $parameters = array(
+        'parent'     => $state['object'],
+        'parent_key' => $state['key'],
+
+    );
+
+
+    $table_buttons   = array();
+
+    $table_buttons[] = array(
+        'icon'     => 'plus',
+        'title'    => _('New offer'),
+        'id'       => 'new_item',
+        'class'    => 'items_operation',
+        'add_bulk_deal' => array(
+
+            'field_label' => _("Category").':',
+            'metadata'    => base64_encode(
+                json_encode(
+                    array(
+                        'scope'      => 'targets',
+                        'store_key'     => $state['_object']->get('Store Key'),
+                        'parent'     => 'campaign',
+                        'parent_key' => $state['_object']->id,
+                        'options'    => array('bulk_deals')
+                    )
+                )
+            )
+
+        )
+
+    );
+
+    $smarty->assign(
+        'table_metadata', base64_encode(
+                            json_encode(
+                                array(
+                                    'parent'     => $state['object'],
+                                    'parent_key' => $state['key'],
+                                    'field'      => 'target'
+                                )
+                            )
+                        )
+    );
+
+
+    $smarty->assign('table_buttons', $table_buttons);
+
+
+    $smarty->assign('aux_templates', array('campaign_bulk_deals.edit.tpl'));
+
+
+}else{
+
+    $tab     = 'deals';
+    $ar_file = 'ar_marketing_tables.php';
+    $tipo    = 'deals';
+
+    $default = $user->get_tab_defaults($tab);
+
+
+    $table_views = array(
+        'overview' => array(
+            'label' => _('Overview'),
+            'title' => _('Overview')
+        ),
+
+    );
+
+    $table_filters = array(
+
+        'name' => array('label' => _('Name')),
+
+    );
+
+    $parameters = array(
+        'parent'     => $state['object'],
+        'parent_key' => $state['key'],
+
+    );
+
+
+    $table_buttons   = array();
+    $table_buttons[] = array(
+        'icon'      => 'plus',
+        'title'     => _('New offer'),
+        'reference' => "campaigns/".$state['parent_key']."/".$state['key']."/deal/new"
+    );
+    $smarty->assign('table_buttons', $table_buttons);
+
+
+
+
+
+}
+
 
 
 include 'utils/get_table_html.php';

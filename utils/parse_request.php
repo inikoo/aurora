@@ -1800,6 +1800,15 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                         } elseif ($view_path[0] == 'lists') {
                             $section = 'lists';
+
+
+                            if(!empty($view_path[1])){
+                                if($view_path[1]=='new'){
+                                    $section = 'list.new';
+
+                                }
+                            }
+
                         } elseif ($view_path[0] == 'categories') {
                             $section = 'categories';
 

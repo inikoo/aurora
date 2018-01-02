@@ -2159,26 +2159,7 @@ trait OrderDiscountOperations {
 
     }
 
-    function get_deals_info() {
-        $deals_info = array();
-        $sql        = sprintf(
-            'SELECT B.`Deal Key`,`Deal Name`,`Deal Description`,`Deal Term Allowances` FROM `Order Deal Bridge` B LEFT JOIN `Deal Dimension` D ON (B.`Deal Key`=D.`Deal Key`) WHERE `Order Key`=%d  AND `Deal Trigger` IN ("Order","Customer") AND `Deal Terms Type`!="Voucher" GROUP BY B.`Deal Key`',
-            $this->id
-        );
 
-        $res = mysql_query($sql);
-        while ($row = mysql_fetch_assoc($res)) {
-            $deals_info[] = array(
-                'key'              => $row['Deal Key'],
-                'name'             => $row['Deal Name'],
-                'description'      => $row['Deal Description'],
-                'terms_allowances' => $row['Deal Term Allowances'],
-            );
-        }
-
-        return $deals_info;
-
-    }
 
 
 }
