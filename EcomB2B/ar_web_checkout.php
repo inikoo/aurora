@@ -508,8 +508,12 @@ function send_order_confirmation_email($store,$website, $customer, $order, $smar
     );
 
 
+    $from_name = base64_encode($store->get('Store Name'));
+    $_source = "=?utf-8?B?$from_name?= <$sender_email_address>";
+
     $request                                    = array();
-    $request['Source']                          = sprintf('%s <%s>',$store->get('Store Name'), $sender_email_address) ;
+   // $request['Source']                          = sprintf('%s <%s>',$store->get('Store Name'), $sender_email_address) ;
+    $request['Source']   =$_source;
     $request['Destination']['ToAddresses']      = array($order->get('Order Email'));
     $request['Message']['Subject']['Data']      = $published_email_template->get('Published Email Template Subject');
     $request['Message']['Body']['Text']['Data'] = strtr($published_email_template->get('Published Email Template Text'), $placeholders);
