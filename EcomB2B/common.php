@@ -44,12 +44,13 @@ if(session_id() == '' || !isset($_SESSION)) {
     session_start();
 }
 
+$_SESSION['website_key']=0;
 
-//if (!array_key_exists('website_key', $_SESSION) or !$_SESSION['website_key']    ) {
+if (!array_key_exists('website_key', $_SESSION) or !$_SESSION['website_key']    ) {
 
     include('utils/find_website_key.include.php');
 
-//}
+}
 
 $is_cached = false;
 
