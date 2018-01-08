@@ -52,18 +52,12 @@ class SupplierPart extends DB_Table {
         }
 
         if ($this->data = $this->db->query($sql)->fetch()) {
-            $this->id = $this->data['Supplier Part Key'];
+            $this->id   = $this->data['Supplier Part Key'];
             $this->part = new Part('id', $this->data['Supplier Part Part SKU'], false, $this->db);
         }
 
 
     }
-
-    function load_supplier(){
-
-        $this->supplier=get_object('Supplier',$this->data['Supplier Part Supplier Key']);
-    }
-
 
     function find($raw_data, $options) {
         if (isset($raw_data['editor'])) {
@@ -119,8 +113,7 @@ class SupplierPart extends DB_Table {
 
         if ($data['Supplier Part Part SKU'] > 0 and $data['Supplier Part Status'] != 'Discontinued') {
             $sql = sprintf(
-                "SELECT `Supplier Part Key` FROM `Supplier Part Dimension` WHERE `Supplier Part Supplier Key`=%d AND `Supplier Part Part SKU`=%d AND `Supplier Part Status`!='Discontinued' ",
-                $data['Supplier Part Supplier Key'], $data['Supplier Part Part SKU']
+                "SELECT `Supplier Part Key` FROM `Supplier Part Dimension` WHERE `Supplier Part Supplier Key`=%d AND `Supplier Part Part SKU`=%d AND `Supplier Part Status`!='Discontinued' ", $data['Supplier Part Supplier Key'], $data['Supplier Part Part SKU']
             );
 
 
@@ -143,8 +136,7 @@ class SupplierPart extends DB_Table {
 
 
         $sql = sprintf(
-            "SELECT `Supplier Part Key` FROM `Supplier Part Dimension` WHERE  `Supplier Part Supplier Key`=%d AND `Supplier Part Reference`=%s  ", $data['Supplier Part Supplier Key'],
-            prepare_mysql($data['Supplier Part Reference'])
+            "SELECT `Supplier Part Key` FROM `Supplier Part Dimension` WHERE  `Supplier Part Supplier Key`=%d AND `Supplier Part Reference`=%s  ", $data['Supplier Part Supplier Key'], prepare_mysql($data['Supplier Part Reference'])
         );
 
 
@@ -189,19 +181,17 @@ class SupplierPart extends DB_Table {
         }
 
         if ($base_data['Supplier Part Unit Extra Cost Percentage'] == '') {
-            $base_data['Supplier Part Unit Extra Cost Percentage'] =0;
+            $base_data['Supplier Part Unit Extra Cost Percentage'] = 0;
 
         }
 
 
-        if (preg_match('/\%$/',  $base_data['Supplier Part Unit Extra Cost Percentage'])) {
-            $base_data['Supplier Part Unit Extra Cost Percentage'] = floatval(preg_replace('/\%^/', '',  $base_data['Supplier Part Unit Extra Cost Percentage']) / 100);
+        if (preg_match('/\%$/', $base_data['Supplier Part Unit Extra Cost Percentage'])) {
+            $base_data['Supplier Part Unit Extra Cost Percentage'] = floatval(preg_replace('/\%^/', '', $base_data['Supplier Part Unit Extra Cost Percentage']) / 100);
             // $value = $this->data['Supplier Part Unit Cost'] * $value / 100;
         }
 
-        $base_data['Supplier Part Unit Extra Cost']=  floatval($base_data['Supplier Part Unit Extra Cost Percentage'])*  floatval($base_data['Supplier Part Unit Cost']);
-
-
+        $base_data['Supplier Part Unit Extra Cost'] = floatval($base_data['Supplier Part Unit Extra Cost Percentage']) * floatval($base_data['Supplier Part Unit Cost']);
 
 
         $keys   = '(';
@@ -241,9 +231,14 @@ class SupplierPart extends DB_Table {
             return;
         } else {
             $this->msg = "Error can not create supplier part";
-           // print $sql;
+            // print $sql;
             exit;
         }
+    }
+
+    function load_supplier() {
+
+        $this->supplier = get_object('Supplier', $this->data['Supplier Part Supplier Key']);
     }
 
     function get_historic_data($key) {
@@ -289,8 +284,7 @@ class SupplierPart extends DB_Table {
                               'No',
                               'Yes'
                           )
-                )
-                ) {
+                )) {
                     $this->error = true;
                     $this->msg   = sprintf(
                         _('Invalid value, valid values: %s'), '"Yes", "No"'
@@ -341,8 +335,7 @@ class SupplierPart extends DB_Table {
                               'No',
                               'Yes'
                           )
-                )
-                ) {
+                )) {
                     $this->error = true;
                     $this->msg   = sprintf(
                         _('Invalid value, valid values: %s'), '"Yes", "No"'
@@ -440,8 +433,7 @@ class SupplierPart extends DB_Table {
                               'NoAvailable',
                               'Discontinued'
                           )
-                )
-                ) {
+                )) {
                     $this->error = true;
                     $this->msg   = _('Invalid availability value');
 
@@ -516,14 +508,10 @@ class SupplierPart extends DB_Table {
                 include_once 'class.Supplier.php';
 
 
-
-
                 if ($value == $this->get('Supplier Part Supplier Key')) {
 
                     return;
                 }
-
-
 
 
                 $supplier = new Supplier('id', $value, false, $this->db);
@@ -547,14 +535,8 @@ class SupplierPart extends DB_Table {
                 }
 
 
-
-
-
-
-
                 $sql = sprintf(
-                    'SELECT count(*) AS num FROM `Supplier Part Dimension` WHERE `Supplier Part Reference`=%s AND `Supplier Part Supplier Key`=%d AND `Supplier Part Key`!=%d ',
-                    prepare_mysql($this->get('Supplier Part Reference')), $supplier->id, $this->id
+                    'SELECT count(*) AS num FROM `Supplier Part Dimension` WHERE `Supplier Part Reference`=%s AND `Supplier Part Supplier Key`=%d AND `Supplier Part Key`!=%d ', prepare_mysql($this->get('Supplier Part Reference')), $supplier->id, $this->id
                 );
 
 
@@ -764,8 +746,7 @@ class SupplierPart extends DB_Table {
                 }
 
                 $sql = sprintf(
-                    'SELECT count(*) AS num FROM `Supplier Part Dimension` WHERE `Supplier Part Reference`=%s AND `Supplier Part Supplier Key`=%d AND `Supplier Part Key`!=%d ', prepare_mysql($value),
-                    $this->get('Supplier Part Supplier Key'), $this->id
+                    'SELECT count(*) AS num FROM `Supplier Part Dimension` WHERE `Supplier Part Reference`=%s AND `Supplier Part Supplier Key`=%d AND `Supplier Part Key`!=%d ', prepare_mysql($value), $this->get('Supplier Part Supplier Key'), $this->id
                 );
 
 
@@ -907,7 +888,6 @@ class SupplierPart extends DB_Table {
             case 'Supplier Part Packages Per Carton skip update part':
 
 
-
                 if ($value == '') {
                     $this->error = true;
                     $this->msg   = _('Outers (SKO) per carton missing');
@@ -928,7 +908,6 @@ class SupplierPart extends DB_Table {
                 $this->update_field('Supplier Part Packages Per Carton', $value, $options);
 
 
-
                 $this->other_fields_updated = array(
                     'Supplier_Part_Unit_Cost' => array(
                         'field'           => 'Supplier_Part_Unit_Cost',
@@ -942,13 +921,10 @@ class SupplierPart extends DB_Table {
                 );
 
 
-
-                if($field=='Supplier Part Packages Per Carton'){
+                if ($field == 'Supplier Part Packages Per Carton') {
                     //$this->part->editor=$this->editor;
                     //$this->part->update(array('Part SKOs per Carton skip update supplier part'=>$value));
                 }
-
-
 
 
                 if (!preg_match('/skip_update_historic_object/', $options)) {
@@ -1101,6 +1077,7 @@ class SupplierPart extends DB_Table {
 
 
     }
+
 
     function get_supplier_data() {
 
@@ -1285,10 +1262,10 @@ class SupplierPart extends DB_Table {
                 }
 
                 include_once 'utils/currency_functions.php';
-                $exchange       = currency_conversion($this->db, $this->data['Supplier Part Currency Code'], $account->get('Account Currency'), '- 1 day');
+                $exchange = currency_conversion($this->db, $this->data['Supplier Part Currency Code'], $account->get('Account Currency'), '- 1 day');
 
                 return money(
-                    $exchange*$this->data['Supplier Part Unit Cost'] * $this->part->data['Part Units Per Package'], $account->get('Account Currency')
+                    $exchange * $this->data['Supplier Part Unit Cost'] * $this->part->data['Part Units Per Package'], $account->get('Account Currency')
                 );
                 break;
 
@@ -1352,7 +1329,7 @@ class SupplierPart extends DB_Table {
                         ).' '._('units').')</span>';
                 }
 
-                $value.=' <span class="italic very_discreet">('.$this->part->data['Part SKOs per Carton'].' '._("SKOs per selling carton").')</span>';
+                $value .= ' <span class="italic very_discreet">('.$this->part->data['Part SKOs per Carton'].' '._("SKOs per selling carton").')</span>';
 
 
                 return $value;
@@ -1391,11 +1368,9 @@ class SupplierPart extends DB_Table {
                 }
                 if ($this->data['Supplier Part Packages Per Carton'] != 1 and is_numeric(
                         $this->data['Supplier Part Packages Per Carton']
-                    )
-                ) {
+                    )) {
                     $cost_other_info .= ', '.money(
-                            $this->data['Supplier Part Unit Cost'] * $this->part->data['Part Units Per Package'] * $this->data['Supplier Part Packages Per Carton'],
-                            $this->data['Supplier Part Currency Code']
+                            $this->data['Supplier Part Unit Cost'] * $this->part->data['Part Units Per Package'] * $this->data['Supplier Part Packages Per Carton'], $this->data['Supplier Part Currency Code']
                         ).' '._('per carton');
                 }
 
@@ -1410,11 +1385,11 @@ class SupplierPart extends DB_Table {
 
             case 'SKO Margin':
                 include_once 'utils/currency_functions.php';
-                $exchange       = currency_conversion(
+                $exchange = currency_conversion(
                     $this->db, $this->data['Supplier Part Currency Code'], $account->get('Account Currency'), '- 1 day'
                 );
 
-                $unit_margin = $this->part->data['Part Unit Price'] - $this->data['Supplier Part Unit Cost'] *$exchange;
+                $unit_margin = $this->part->data['Part Unit Price'] - $this->data['Supplier Part Unit Cost'] * $exchange;
 
                 return sprintf(
                     '<span class="'.($unit_margin < 0 ? 'error' : '').'">'._('margin %s').'</span>', percentage($unit_margin, $this->part->data['Part Unit Price'])
@@ -1546,8 +1521,7 @@ class SupplierPart extends DB_Table {
                 $price_other_info = '';
                 if ($this->part->data['Part Units Per Package'] != 1 and is_numeric(
                         $this->part->data['Part Units Per Package']
-                    )
-                ) {
+                    )) {
                     $price_other_info = '('.money(
                             $this->part->data['Part Unit Price'] * $this->part->data['Part Units Per Package'], $account->get('Account Currency')
                         ).' '._('per SKO').'), ';
@@ -1557,11 +1531,11 @@ class SupplierPart extends DB_Table {
                 if ($this->part->data['Part Units Per Package'] != 0 and is_numeric($this->part->data['Part Units Per Package'])) {
 
                     include_once 'utils/currency_functions.php';
-                    $exchange       = currency_conversion(
+                    $exchange = currency_conversion(
                         $this->db, $this->data['Supplier Part Currency Code'], $account->get('Account Currency'), '- 1 day'
                     );
 
-                    $unit_margin = $this->part->data['Part Unit Price'] - $this->data['Supplier Part Unit Cost'] *$exchange;
+                    $unit_margin = $this->part->data['Part Unit Price'] - $this->data['Supplier Part Unit Cost'] * $exchange;
 
                     $price_other_info .= sprintf(
                         '<span class="'.($unit_margin < 0 ? 'error' : '').'">'._('margin %s').'</span>', percentage($unit_margin, $this->part->data['Part Unit Price'])
@@ -1576,8 +1550,8 @@ class SupplierPart extends DB_Table {
                 }
 
                 return $unit_price;
-                
-                
+
+
                 break;
             default:
                 if (preg_match('/^Part /', $key)) {
@@ -1610,9 +1584,8 @@ class SupplierPart extends DB_Table {
         $sql = sprintf(
             'SELECT `Supplier Part Historic Key` FROM `Supplier Part Historic Dimension` WHERE
 		`Supplier Part Historic Supplier Part Key`=%d AND `Supplier Part Historic Reference`=%s AND `Supplier Part Historic Unit Cost`=%f AND
-		`Supplier Part Historic Units Per Package`=%d AND `Supplier Part Historic Packages Per Carton`=%d  AND `Supplier Part Historic Carton CBM`=%f AND `Supplier Part Historic Currency Code`=%s',
-            $this->id, prepare_mysql($this->data['Supplier Part Reference']), $this->data['Supplier Part Unit Cost'], $this->part->data['Part Units Per Package'],
-            $this->data['Supplier Part Packages Per Carton'], $this->data['Supplier Part Carton CBM'], prepare_mysql($this->data['Supplier Part Currency Code'])
+		`Supplier Part Historic Units Per Package`=%d AND `Supplier Part Historic Packages Per Carton`=%d  AND `Supplier Part Historic Carton CBM`=%f AND `Supplier Part Historic Currency Code`=%s', $this->id, prepare_mysql($this->data['Supplier Part Reference']),
+            $this->data['Supplier Part Unit Cost'], $this->part->data['Part Units Per Package'], $this->data['Supplier Part Packages Per Carton'], $this->data['Supplier Part Carton CBM'], prepare_mysql($this->data['Supplier Part Currency Code'])
         );
 
         //print "$sql\n";
@@ -1631,9 +1604,8 @@ class SupplierPart extends DB_Table {
                     'INSERT INTO `Supplier Part Historic Dimension` (`Supplier Part Historic Supplier Part Key`,`Supplier Part Historic Reference`,`Supplier Part Historic Unit Cost`,
 						`Supplier Part Historic Units Per Package`, `Supplier Part Historic Packages Per Carton`,`Supplier Part Historic Carton CBM`, `Supplier Part Historic Currency Code`
 
-				) VALUES (%d,%s,%f,%d,%d,%f,%s) ', $this->id, prepare_mysql($this->data['Supplier Part Reference']), $this->data['Supplier Part Unit Cost'],
-                    $this->part->data['Part Units Per Package'], $this->data['Supplier Part Packages Per Carton'], $this->data['Supplier Part Carton CBM'],
-                    prepare_mysql($this->data['Supplier Part Currency Code'])
+				) VALUES (%d,%s,%f,%d,%d,%f,%s) ', $this->id, prepare_mysql($this->data['Supplier Part Reference']), $this->data['Supplier Part Unit Cost'], $this->part->data['Part Units Per Package'], $this->data['Supplier Part Packages Per Carton'],
+                    $this->data['Supplier Part Carton CBM'], prepare_mysql($this->data['Supplier Part Currency Code'])
                 );
                 //print "$sql\n";
                 if ($this->db->exec($sql)) {
@@ -1678,8 +1650,7 @@ class SupplierPart extends DB_Table {
                                                                                                      'Supplier Part Carton CBM'
                                                                                                  ), $row['Purchase Order Quantity'] * $this->get(
                                                                                                      'Supplier Part Packages Per Carton'
-                                                                                                 ) * $this->get('Part Package Weight'),
-                        $row['Purchase Order Quantity'] * $units_per_carton * $this->get('Supplier Part Unit Cost'),
+                                                                                                 ) * $this->get('Part Package Weight'), $row['Purchase Order Quantity'] * $units_per_carton * $this->get('Supplier Part Unit Cost'),
 
                         $row['Purchase Order Transaction Fact Key']
                     );
@@ -1706,9 +1677,8 @@ class SupplierPart extends DB_Table {
 
 
         $sql = sprintf(
-            'INSERT INTO `Supplier Part Deleted Dimension`  (`Supplier Part Deleted Key`,`Supplier Part Deleted Reference`,`Supplier Part Deleted From`,`Supplier Part Deleted To`,`Supplier Part Metadata`) VALUES (%d,%s,%s,%s,%s) ',
-            $this->id, prepare_mysql($this->get('Supplier Part Reference')), prepare_mysql($this->get('Supplier Part From')), prepare_mysql(gmdate('Y-m-d H:i:s')),
-            prepare_mysql(gzcompress(json_encode($this->data), 9))
+            'INSERT INTO `Supplier Part Deleted Dimension`  (`Supplier Part Deleted Key`,`Supplier Part Deleted Reference`,`Supplier Part Deleted From`,`Supplier Part Deleted To`,`Supplier Part Metadata`) VALUES (%d,%s,%s,%s,%s) ', $this->id,
+            prepare_mysql($this->get('Supplier Part Reference')), prepare_mysql($this->get('Supplier Part From')), prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql(gzcompress(json_encode($this->data), 9))
 
         );
 
@@ -1744,7 +1714,7 @@ class SupplierPart extends DB_Table {
         $this->deleted = true;
 
 
-       return 'part/'.$this->data['Supplier Part Part SKU'];
+        return 'part/'.$this->data['Supplier Part Part SKU'];
 
 
     }
@@ -1808,7 +1778,7 @@ class SupplierPart extends DB_Table {
                 $label = _("supplier's part unit description");
                 break;
             case 'Part Unit Label':
-                $label = _("supplier's partunit label");
+                $label = _("supplier's part unit label");
                 break;
             case 'Part Units Per Package':
                 $label = _("units per SKO");
@@ -1833,6 +1803,77 @@ class SupplierPart extends DB_Table {
 
 
     function update_next_supplier_shippment() {
+
+    }
+
+
+    function get_next_deliveries_data() {
+
+
+        $next_deliveries_data = array();
+
+
+
+        $sql = sprintf(
+            'SELECT  `Supplier Delivery Parent`,`Supplier Delivery Parent Key`,`Purchase Order Quantity`,POTF.`Supplier Delivery Key`,`Supplier Delivery Public ID` FROM `Purchase Order Transaction Fact` POTF LEFT JOIN `Supplier Delivery Dimension` PO  ON (PO.`Supplier Delivery Key`=POTF.`Supplier Delivery Key`)  WHERE POTF.`Supplier Part Key`=%d  and  POTF.`Supplier Delivery Key` is not null and  `Supplier Delivery Transaction Placed`!="Yes"   ', $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+
+                $next_deliveries_data[] = array(
+                    'qty'  => number($row['Purchase Order Quantity']),
+                    'date' => '',
+                    'link' => sprintf('<span class="link" onclick="change_view(\'supplier/%d/delivery/%d\')"><i class="fa fa-truck" aria-hidden="true"></i> %s</span>',$row['Supplier Delivery Parent'],$row['Supplier Delivery Parent Key'],$row['Supplier Delivery Key'],$row['Supplier Delivery Public ID']),
+                );
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+
+
+        $sql = sprintf(
+            'SELECT POTF.`Purchase Order Transaction State`,`Purchase Order Quantity`,`Supplier Delivery Key` ,`Purchase Order Estimated Receiving Date`,`Purchase Order Public ID`,POTF.`Purchase Order Key` FROM `Purchase Order Transaction Fact` POTF LEFT JOIN `Purchase Order Dimension` PO  ON (PO.`Purchase Order Key`=POTF.`Purchase Order Key`)  WHERE `Supplier Part Key`=%d  and  POTF.`Supplier Delivery Key` is null and POTF.`Purchase Order Transaction State` not in ("Placed","Cancelled") ', $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+
+                if($row['Purchase Order Transaction State']=='InProcess'){
+                    $date='<span class="very_discreet italic">'._('Draft').'</span>';
+                    $link= sprintf('<span class="link discreet" onclick="change_view(\'suppliers/order/%d\')"><i class="fa fa-clipboard" aria-hidden="true"></i> %s</span>',$row['Purchase Order Key'],$row['Purchase Order Public ID']);
+                    $qty='<span class="very_discreet italic">+'.number($row['Purchase Order Quantity']).'</span>';
+
+                }else{
+                    $date = strftime("%e %b %y", strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00'));
+                    $link= sprintf('<span class="link" onclick="change_view(\'suppliers/order/%d\')"><i class="fa fa-clipboard" aria-hidden="true"></i> %s</span> <i class="fa fa-paper-plane-o" aria-hidden="true"></i>',$row['Purchase Order Key'],$row['Purchase Order Public ID']);
+                    $qty='+'.number($row['Purchase Order Quantity']);
+                }
+
+
+                $next_deliveries_data[] = array(
+                    'qty'  => $qty,
+                    'date' => $date,
+                    'link' =>$link,
+                );
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+        return $next_deliveries_data;
 
     }
 

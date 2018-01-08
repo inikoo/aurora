@@ -72,6 +72,8 @@ else {
         $_tipo = 'parts';
     } elseif ($_data['tipo'] == 'parts_barcode_errors'  ) {
         $_tipo = 'part_barcode_errors';
+    } elseif ($_data['tipo'] == 'parts_to_replenish_picking_location'  ) {
+        $_tipo = 'warehouse_parts_to_replenish_picking_location';
     }  else {
         $_tipo = $_data['tipo'];
     }

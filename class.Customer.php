@@ -879,7 +879,9 @@ class Customer extends Subject {
 
             case 'Customer Web Login Password':
 
+
                 $website_user = get_object('Website_User', $this->get('Customer Website User Key'));
+
 
                 if ($website_user->id) {
                     $website_user->editor = $this->editor;

@@ -186,7 +186,27 @@
 
             </table>
         </div>
+
+
+        <table border="0" class="overview" style="">
+            <tr class="main">
+                <td>{t}Webpage{/t}</td>
+                <td class="aright ">
+                        <span class="Webpage_State_Icon">
+                            {$category->webpage->get('State Icon')}
+                        </span>
+                    <span onclick="change_view('webpage/{$category->webpage->id}')" class="link">{$category->webpage->get('Code')|lower}</span>
+
+                </td>
+            </tr>
+        </table>
+
     </div>
+
+
+
+
+
 
     <div style="clear:both">
     </div>

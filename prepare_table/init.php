@@ -48,6 +48,7 @@ if (!isset($dont_save_table_state)) {
     $_SESSION['table_state'][$_data['parameters']['tab']]['f_value'] = $f_value;
 }
 
+//print 'prepare_table/'.$_data['parameters']['tab'].'.ptble.php';
 
 include_once 'prepare_table/'.$_data['parameters']['tab'].'.ptble.php';
 if (!isset($skip_get_table_totals)) {

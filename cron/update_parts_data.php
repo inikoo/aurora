@@ -34,6 +34,10 @@ function update_parts_data($db) {
         foreach ($result as $row) {
             $part = new Part($row['Part SKU']);
 
+
+            $part->update_next_deliveries_data();
+
+
             /*
                         $part->activate();
 
@@ -43,7 +47,7 @@ function update_parts_data($db) {
                         $part->update_history_records_data();
                         $part->update_attachments_data();
                         $part->update_images_data();
-            */
+
 
 
             $sql = sprintf(
@@ -66,7 +70,7 @@ function update_parts_data($db) {
 
             }
 
-
+   */
         }
 
     } else {

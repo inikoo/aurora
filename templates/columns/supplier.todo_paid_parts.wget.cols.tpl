@@ -56,47 +56,24 @@ cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
 
+{
+name: "next_deliveries",
+label: "{t}In production{/t}",
+editable: false,
+sortable:false,
+
+{if $sort_key=='next_deliveries'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({  className: "aright"  } ),
+
+headerCell: integerHeaderCell
+},
+
 
 ]
 
-function get_quarter_label(index) {
-var d = new Date();
-d.setMonth(d.getMonth() - 3 * index);
-return getQuarter(d) + 'Q ' + d.getFullYear().toString().substr(2, 2)
-}
-
-function getQuarter(d) {
-d = d || new Date();
-var q = [1, 2, 3, 4];
-return q[Math.floor(d.getMonth() / 3)];
-}
 
 
 function change_table_view(view,save_state){
 
-$('.view').removeClass('selected');
-$('#view_'+view).addClass('selected');
-
-
-close_columns_period_options()
-$('#columns_period').addClass('hide');
-
-//   grid.columns.findWhere({ name: 'description'} ).set("renderable", false)
-//  grid.columns.findWhere({ name: 'stock'} ).set("renderable", false)
-//   grid.columns.findWhere({ name: 'dispatched_per_week'} ).set("renderable", false)
-//  grid.columns.findWhere({ name: 'weeks_available'} ).set("renderable", false)
-
-
-if(view=='overview'){
-//    $('#columns_period').removeClass('hide');
-//   grid.columns.findWhere({ name: 'description'} ).set("renderable", true)
-//  grid.columns.findWhere({ name: 'stock'} ).set("renderable", true)
-}
-
-if(save_state){
-var request = "/ar_state.php?tipo=set_table_view&tab={$tab}&table_view=" + view
-
-$.getJSON(request, function(data) {});
-}
 
 }

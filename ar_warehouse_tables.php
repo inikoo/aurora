@@ -330,7 +330,6 @@ function parts($_data, $db, $user, $account) {
     $adata = array();
 
 
-
     foreach ($db->query($sql) as $data) {
 
         $adata[] = array(
@@ -345,13 +344,14 @@ function parts($_data, $db, $user, $account) {
 
             'can_pick' => ($data['Can Pick'] == 'Yes' ? _('Yes') : _('No')),
 
-            'link' =>  '<span id="link_'.$data['Part SKU'].'"><i class="fa fa-chain-broken '. ($data['Quantity On Hand'] !=0?'invisible':'button').'" aria-hidden="true" part_sku="'.$data['Part SKU'].'" onclick="location_part_disassociate_from_table(this)"></i>',
+            'link' => '<span id="link_'.$data['Part SKU'].'"><i class="fa fa-chain-broken '.($data['Quantity On Hand'] != 0 ? 'invisible' : 'button').'" aria-hidden="true" part_sku="'.$data['Part SKU'].'" onclick="location_part_disassociate_from_table(this)"></i>',
 
 
             'sko_cost'    => money($data['Part Cost in Warehouse'], $account->get('Account Currency')),
             'stock_value' => '<span id="stock_value_'.$data['Part SKU'].'">'.money($data['Stock Value'], $account->get('Account Currency')).'</span>',
             'quantity'    => sprintf(
-                '<span id="quantity_'.$data['Part SKU'].'"><span style="padding-left:3px;padding-right:7.5px" class="table_edit_cell  location_part_stock" title="%s" part_sku="%d" location_key="%d"  qty="%s" onClick="open_location_part_stock_quantity_dialog(this)">%s</span></span>', '', $data['Part SKU'],
+                '<span id="quantity_'.$data['Part SKU']
+                .'"><span style="padding-left:3px;padding-right:7.5px" class="table_edit_cell  location_part_stock" title="%s" part_sku="%d" location_key="%d"  qty="%s" onClick="open_location_part_stock_quantity_dialog(this)">%s</span></span>', '', $data['Part SKU'],
                 $data['Location Key'], $data['Quantity On Hand'], number($data['Quantity On Hand'])
             )
 
@@ -559,10 +559,31 @@ function part_locations_to_replenish_picking_location($_data, $db, $user) {
     $table_data = array();
 
 
-    //print $sql;
-
-
     foreach ($db->query($sql) as $data) {
+
+//print_r($data);
+        $storing_locations = '';
+        if($data['storing_locations_data']!='') {
+            foreach (preg_split('/\,/', $data['storing_locations_data']) as $storing_locations_data_set) {
+                $storing_locations_data = preg_split('/\|/', $storing_locations_data_set);
+
+                if($storing_locations_data[1]==1){
+                    $storing_locations      .= ', '.sprintf(
+                            '<span   >%s</span> <span class="discreet" title="'._('Stock').'">(%s)</span>', $storing_locations_data[2], number($storing_locations_data[3])
+                        );
+                }else{
+                    $storing_locations      .= ', '.sprintf(
+                            '<span  class="link"  onclick="change_view(\'locations/%d/%d\')">%s</span> <span class="discreet" title="'._('Stock').'">(%s)</span>', $storing_locations_data[0], $storing_locations_data[1], $storing_locations_data[2], number($storing_locations_data[3])
+                        );
+                }
+
+
+
+            }
+        }
+
+        $storing_locations=preg_replace('/^, /','',$storing_locations);
+
 
         $table_data[] = array(
             'reference' => sprintf('<span class="link"  title="%s" onclick="change_view(\'part/%d\')">%s</span>', $data['Part Package Description'], $data['Part SKU'], $data['Part Reference']),
@@ -573,7 +594,7 @@ function part_locations_to_replenish_picking_location($_data, $db, $user) {
             'to_pick'             => number(ceil($data['to_pick'])),
 
             'total_stock'       => number(floor($data['Part Current Stock'])),
-            'storing_locations' => $data['storing_locations']
+            'storing_locations' => $storing_locations
 
 
         );
@@ -1015,7 +1036,7 @@ function parts_with_unknown_location($_data, $db, $user, $account) {
     $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
-   // print $sql;
+    // print $sql;
 
 
     foreach ($db->query($sql) as $data) {
@@ -1037,23 +1058,20 @@ function parts_with_unknown_location($_data, $db, $user, $account) {
         $locations = '<div border=0 style="xwidth:150px">';
 
 
-
-
-
         foreach ($locations_data as $raw_location_data) {
             if ($raw_location_data != '') {
                 $_locations_data = preg_split('/\:/', $raw_location_data);
 
-if($_locations_data[2] == ''){
-    $last_audit= '<span title="'._('Never been audited').'">-</span> <i class="fa fa-clock-o padding_right_10" aria-hidden="true"></i> ';
-}else{
-    $last_audit=sprintf(
-            '<span title="%s">%s</span>', sprintf(_('Last audit %s'), strftime("%a %e %b %Y %H:%M %Z", strtotime($_locations_data[2].' +0:00')), $_locations_data[2]), ($_locations_data[4]>999?'<span class="error">+999</span>':number($_locations_data[4]))).' <i class="fa fa-clock-o padding_right_10" aria-hidden="true"></i>';
+                if ($_locations_data[2] == '') {
+                    $last_audit = '<span title="'._('Never been audited').'">-</span> <i class="fa fa-clock-o padding_right_10" aria-hidden="true"></i> ';
+                } else {
+                    $last_audit = sprintf(
+                            '<span title="%s">%s</span>', sprintf(_('Last audit %s'), strftime("%a %e %b %Y %H:%M %Z", strtotime($_locations_data[2].' +0:00')), $_locations_data[2]),
+                            ($_locations_data[4] > 999 ? '<span class="error">+999</span>' : number($_locations_data[4]))
+                        ).' <i class="fa fa-clock-o padding_right_10" aria-hidden="true"></i>';
 
 
-}
-
-
+                }
 
 
                 if ($_locations_data[0] != $data['Location Key']) {
@@ -1066,9 +1084,6 @@ if($_locations_data[2] == ''){
             }
         }
         $locations .= '</div>';
-
-
-
 
 
         $adata[] = array(
@@ -1085,8 +1100,8 @@ if($_locations_data[2] == ''){
             'sko_cost'    => money($data['Part Cost in Warehouse'], $account->get('Account Currency')),
             'stock_value' => money($data['Stock Value'], $account->get('Account Currency')),
             'quantity'    => sprintf(
-                '<span style="padding-left:3px;padding-right:7.5px" class="table_edit_cell  location_part_stock" title="%s" part_sku="%d" location_key="%d"  qty="%s" onxClick="open_location_part_stock_quantity_dialog(this)">%s</span>',
-                '', $data['Part SKU'],1, $data['Quantity On Hand'], '<strong class="'.($data['Quantity On Hand']<0?'success':'error').'" >'.($data['Quantity On Hand']<0?'+':'').number(-$data['Quantity On Hand']).'</strong>'
+                '<span style="padding-left:3px;padding-right:7.5px" class="table_edit_cell  location_part_stock" title="%s" part_sku="%d" location_key="%d"  qty="%s" onxClick="open_location_part_stock_quantity_dialog(this)">%s</span>', '', $data['Part SKU'], 1,
+                $data['Quantity On Hand'], '<strong class="'.($data['Quantity On Hand'] < 0 ? 'success' : 'error').'" >'.($data['Quantity On Hand'] < 0 ? '+' : '').number(-$data['Quantity On Hand']).'</strong>'
             )
 
 

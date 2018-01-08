@@ -12,6 +12,7 @@
 
 
 $webpage = new Public_Webpage($webpage_key);
+
 if ($webpage->id) {
 
 
@@ -30,8 +31,6 @@ if ($webpage->id) {
                 exit();
 
             }
-
-
         }
 
         $offline_webpage = $website->get_webpage('offline.sys');

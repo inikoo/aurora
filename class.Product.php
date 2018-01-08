@@ -3756,6 +3756,100 @@ class Product extends Asset {
     }
 
 
+    function get_next_deliveries_data() {
+
+        $next_deliveries_data = array();
+
+        $parts_data=$this->get_parts_data();
+
+        if(count($parts_data)==1){
+
+            $part_data=array_pop($parts_data);
+
+            $part=get_object('Part',$part_data['Part SKU']);
+            $supplier_parts=$part->get_supplier_parts();
+            if(count($supplier_parts)>0){
+
+
+                $sql = sprintf(
+                    'SELECT  `Supplier Delivery Parent`,`Supplier Delivery Parent Key`,`Purchase Order Quantity`,POTF.`Supplier Delivery Key`,`Supplier Delivery Public ID` FROM `Purchase Order Transaction Fact` POTF LEFT JOIN `Supplier Delivery Dimension` PO  ON (PO.`Supplier Delivery Key`=POTF.`Supplier Delivery Key`)  WHERE POTF.`Supplier Part Key` in (%s)  and  POTF.`Supplier Delivery Key` is not null and  `Supplier Delivery Transaction Placed`!="Yes"   ', join($supplier_parts,',')
+                );
+
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+
+
+                        $next_deliveries_data[] = array(
+                            'qty'  => number($row['Purchase Order Quantity']*$part_data['Ratio']),
+                            'date' => '',
+                            'link' => sprintf('<span class="link" onclick="change_view(\'supplier/%d/delivery/%d\')"><i class="fa fa-truck" aria-hidden="true"></i> %s</span>',$row['Supplier Delivery Parent'],$row['Supplier Delivery Parent Key'],$row['Supplier Delivery Key'],$row['Supplier Delivery Public ID']),
+                        );
+
+
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+
+
+
+                $sql = sprintf(
+                    'SELECT POTF.`Purchase Order Transaction State`,`Purchase Order Quantity`,`Supplier Delivery Key` ,`Purchase Order Estimated Receiving Date`,`Purchase Order Public ID`,POTF.`Purchase Order Key` FROM `Purchase Order Transaction Fact` POTF LEFT JOIN `Purchase Order Dimension` PO  ON (PO.`Purchase Order Key`=POTF.`Purchase Order Key`)  WHERE `Supplier Part Key`in (%s) and  POTF.`Supplier Delivery Key` is null and POTF.`Purchase Order Transaction State` not in ("Placed","Cancelled") ', join($supplier_parts,',')
+                );
+
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+
+
+                        if($row['Purchase Order Transaction State']=='InProcess'){
+                            $date='<span class="very_discreet italic">'._('Draft').'</span>';
+                            $link= sprintf('<span class="link discreet" onclick="change_view(\'suppliers/order/%d\')"><i class="fa fa-clipboard" aria-hidden="true"></i> %s</span>',$row['Purchase Order Key'],$row['Purchase Order Public ID']);
+                            $qty='<span class="very_discreet italic">+'.number($row['Purchase Order Quantity']*$part_data['Ratio']).'</span>';
+
+                        }else{
+                            $date = strftime("%e %b %y", strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00'));
+                            $link= sprintf('<span class="link" onclick="change_view(\'suppliers/order/%d\')"><i class="fa fa-clipboard" aria-hidden="true"></i> %s</span> <i class="fa fa-paper-plane-o" aria-hidden="true"></i>',$row['Purchase Order Key'],$row['Purchase Order Public ID']);
+                            $qty='+'.number($row['Purchase Order Quantity']*$part_data['Ratio']);
+                        }
+
+
+                        $next_deliveries_data[] = array(
+                            'qty'  => $qty,
+                            'date' => $date,
+                            'link' =>$link,
+                        );
+
+
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+            }
+
+
+
+
+        }
+
+
+
+
+
+
+
+
+        return $next_deliveries_data;
+
+    }
+
+
+
 }
 
 
