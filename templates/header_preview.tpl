@@ -49,7 +49,7 @@
         <tr><td data-type="10-10" >11-20</td></tr>
         <tr><td data-type="20-10" >21-30</td></tr>
         <tr><td ></td></tr>
-        <tr><td data-type="1-15" >&nbsp;&nbsp;1-15</td></tr>
+        <tr><td data-type="0-15" >&nbsp;&nbsp;1-15</td></tr>
         <tr><td data-type="15-15" >16-30</td></tr>
         <tr><td data-type="30-15" >31-45</td></tr>
 
