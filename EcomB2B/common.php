@@ -44,7 +44,6 @@ if(session_id() == '' || !isset($_SESSION)) {
     session_start();
 }
 
-$_SESSION['website_key'] =12;
 
 if (!array_key_exists('website_key', $_SESSION) or !$_SESSION['website_key']    ) {
 
