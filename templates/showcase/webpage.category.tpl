@@ -13,7 +13,7 @@
 
     <h4 class="Webpage_URL">{$webpage->get('Webpage URL')}</h4>
 
-    <i class="fa fa-site-map" aria-hidden="true" title="{t}Webpage for category{/t}"></i> <span onclick="change_view('products/{$category->get('Store Key')}/{$product->id}')" class="link">{$category->get('Code')}</span> {$category->get('Name')}
+    <i class="fa fa-site-map" aria-hidden="true" title="{t}Webpage for category{/t}"></i> <span onclick="change_view('products/{$category->get('Store Key')}/category/{$category->id}')" class="link">{$category->get('Code')}</span> {$category->get('Name')}
 
 
 

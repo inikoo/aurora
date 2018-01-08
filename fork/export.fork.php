@@ -45,6 +45,7 @@ function fork_export($job) {
     $number_rows = 0;
 
 
+
     if ($sql_count != '') {
 
         if ($result = $db->query($sql_count)) {
@@ -58,6 +59,10 @@ function fork_export($job) {
 
     } else {
         $stmt = $db->prepare($sql_data);
+
+
+
+
         $stmt->execute();
 
         $number_rows = $stmt->rowCount();

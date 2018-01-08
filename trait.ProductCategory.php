@@ -741,9 +741,9 @@ trait ProductCategory {
 
     function get_webpage() {
 
-
         $this->webpage         = get_object('Webpage', $this->data['Product Category Webpage Key']);
         $this->webpage->editor = $this->editor;
+
 
 
         return $this->webpage;

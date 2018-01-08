@@ -25,6 +25,9 @@ function get_department_showcase($data, $smarty) {
     }
 
     $category->load_acc_data();
+    $category->get_webpage();
+
+
 
     $smarty->assign('category', $category);
 

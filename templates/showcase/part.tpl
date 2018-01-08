@@ -35,9 +35,43 @@
             {include file='upload_main_image.tpl' object='Part' key=$part->id class="{if $image_key!=''}hide{/if}"}
         </div>
         <div style="clear:both"></div>
+
+        <table id="barcode_data" border="0" class="overview {if $part->get('Part Barcode Number')==''}hide{/if} ">
+            <tr class="main">
+                <td class="label">
+                    <i {if $part->get('Part Barcode Key')} class="fa fa-barcode button" onClick="change_view('inventory/barcode/{$part->get('Part Barcode Key')}')"{else}  class="fa fa-barcode"{/if} ></i>
+                </td>
+                <td><span  class="Part_Barcode_Number  {if $part->get('Part Barcode Key')} link" onClick="change_view('inventory/barcode/{$part->get('Part Barcode Key')}')" {else}"{/if}   >{$part->get('Part Barcode Number')}</span> <span class="error small  Barcode_Number_Error_with_Duplicates_Links">{$part->get('Barcode Number Error with Duplicates Links')}</span></td>
+                <td class="barcode_labels aright ">
+
+                    <a class="padding_left_10" title="{t}Commercial unit label{/t}" href="/asset_label.php?object=part&key={$part->id}&type=unit"><i class="fa fa-tags "></i></a>
+                </td>
+
+            </tr>
+            <tr class="main">
+                <td class="label">
+
+                        <span style="position:relative;left:-4px;top:2px;font-size:80%" class="fa-stack">
+  <i class="fa fa-square-o fa-stack-2x very_discreet"></i>
+  <i class="fa fa-barcode fa-stack-1x"></i>
+</span>
+
+
+                </td>
+                <td class="Part_SKO_Barcode ">{$part->get('Part SKO Barcode')} </td>
+                <td class="barcode_labels aright {if !$part->get('Part Barcode Key')}xhide{/if}">
+                    <a title="{t}Stock keeping unit (Outer){/t}" href="/asset_label.php?object=part&key={$part->id}&type=package"><i class="fa fa-tag "></i></a>
+
+                </td>
+
+            </tr>
+
+        </table>
+
+
     </div>
     <div class="block sales_data">
-        <table>
+        <table class="sales">
             <tr class="header {if $part->get('Part Number Active Products')==0}hide{/if} ">
                 <td colspan=3>{t}SKO commercial value{/t} <b>{$part->get('Commercial Value')}</b> <span class="tooltip" data-tooltip-content="#tooltip_part_margin">({$part->get('Margin')})</td>
             </tr>
@@ -51,7 +85,7 @@
             </tr>
         </table>
 
-        <table>
+        <table class="sales">
             <tr class="header">
                 <td>{$year_data.0.header}</td>
                 <td>{$year_data.1.header}</td>
@@ -154,7 +188,19 @@
             </tr>
         </table>
 
+
+
+
+
     </div>
+
+
+
+
+
+
+
+
     <div class="block stock_info">
 
 
@@ -366,37 +412,23 @@
 
 
 
-            <table id="barcode_data" border="0" class="overview {if $part->get('Part Barcode Number')==''}hide{/if} ">
-                <tr class="main">
-                    <td class="label">
-                        <i {if $part->get('Part Barcode Key')} class="fa fa-barcode button" onClick="change_view('inventory/barcode/{$part->get('Part Barcode Key')}')"{else}  class="fa fa-barcode"{/if} ></i>
-                    </td>
-                    <td><span  class="Part_Barcode_Number  {if $part->get('Part Barcode Key')} link" onClick="change_view('inventory/barcode/{$part->get('Part Barcode Key')}')" {else}"{/if}   >{$part->get('Part Barcode Number')}</span> <span class="error small  Barcode_Number_Error_with_Duplicates_Links">{$part->get('Barcode Number Error with Duplicates Links')}</span></td>
-                    <td class="barcode_labels aright ">
 
-                        <a class="padding_left_10" title="{t}Commercial unit label{/t}" href="/asset_label.php?object=part&key={$part->id}&type=unit"><i class="fa fa-tags "></i></a>
-                    </td>
 
+
+
+            <table border="0" class="overview with_title next_deliveries">
+                <tr class="top">
+                    <td colspan="3">{t}Next deliveries{/t}</td>
                 </tr>
-                <tr class="main">
-                    <td class="label">
-
-                        <span style="position:relative;left:-4px;top:2px;font-size:80%" class="fa-stack">
-  <i class="fa fa-square-o fa-stack-2x very_discreet"></i>
-  <i class="fa fa-barcode fa-stack-1x"></i>
-</span>
-
-
-                    </td>
-                    <td class="Part_SKO_Barcode ">{$part->get('Part SKO Barcode')} </td>
-                    <td class="barcode_labels aright {if !$part->get('Part Barcode Key')}xhide{/if}">
-                        <a title="{t}Stock keeping unit (Outer){/t}" href="/asset_label.php?object=part&key={$part->id}&type=package"><i class="fa fa-tag "></i></a>
-
-                    </td>
-
-                </tr>
-
+                {foreach from=$part->get_next_deliveries_data() item=next_delivery }
+                    <tr class="main ">
+                        <td>{$next_delivery.link}</td>
+                        <td>{$next_delivery.date}</td>
+                        <td class="aright highlight">{$next_delivery.qty}</td>
+                    </tr>
+                {/foreach}
             </table>
+
 
         </div>
     </div>

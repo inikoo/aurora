@@ -36,9 +36,7 @@ $wheref = '';
 if ($parameters['f_field'] == 'location' and $f_value != '') {
     $wheref .= " and  `Location Code` like '".addslashes($f_value)."%'";
 }
-if ($parameters['f_field'] == 'sku' and $f_value != '') {
-    $wheref .= " and  PL.`Part SKU` like '".addslashes($f_value)."%'";
-}
+
 
 
 $_order = $order;
@@ -60,7 +58,7 @@ if ($order == 'part') {
     $order = 'effective_stock';
 } else {
 
-    $order = '`Part SKU`';
+    $order = 'PL.`Part SKU`';
 }
 
 

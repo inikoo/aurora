@@ -28,6 +28,24 @@
         </div>
         <div style="clear:both">
         </div>
+
+
+        <table id="barcode_data" border="0" class="overview {if $product->get('Product Barcode Number')==''}hide{/if} ">
+            <tr class="main">
+                <td class="label">
+                    <i {if $product->get('Product Barcode Key')} class="fa fa-barcode button" onClick="change_view('inventory/barcode/{$product->get('Product Barcode Key')}')"{else}  class="fa fa-barcode"{/if} ></i>
+                </td>
+                <td class="Product_Barcode_Number highlight">{$product->get('Product Barcode Number')} </td>
+                <td class="barcode_labels aright {if !$product->get('Product Barcode Key')}hide{/if}">
+                    <a class="padding_left_10" title="{t}Unit label{/t}"
+                       href="/asset_label.php?object=product&key={$product->id}&type=unit"><i class="fa fa-tags "></i></a>
+                </td>
+
+            </tr>
+
+
+        </table>
+
     </div>
 
     <div class="block sales_data">
@@ -176,10 +194,23 @@
                     <td class="aright Product_Availability">{$product->get('Availability')}</td>
                 </tr>
 
-                <tr class="{if $product->get('Product Next Supplier Shipment')==''}hide{/if}">
-                    <td >{t}Next shipment{/t}</td>
-                    <td class="aright">{$product->get('Next Supplier Shipment')}</td>
-                </tr>
+                {assign "next_deliveries" $product->get_next_deliveries_data()}
+
+                {if $next_deliveries|@count >0}
+                <table border="0" class="overview with_title next_deliveries">
+                    <tr class="top">
+                        <td colspan="3">{t}Next deliveries{/t}</td>
+                    </tr>
+                    {foreach from=$next_deliveries item=next_delivery }
+                        <tr class="main ">
+                            <td>{$next_delivery.link}</td>
+                            <td>{$next_delivery.date}</td>
+                            <td class="aright highlight">{$next_delivery.qty}</td>
+                        </tr>
+                    {/foreach}
+                </table>
+                {/if}
+
 
             </table>
 
@@ -211,21 +242,7 @@
             </table>
 
 
-            <table id="barcode_data" border="0" class="overview {if $product->get('Product Barcode Number')==''}hide{/if} ">
-                <tr class="main">
-                    <td class="label">
-                        <i {if $product->get('Product Barcode Key')} class="fa fa-barcode button" onClick="change_view('inventory/barcode/{$product->get('Product Barcode Key')}')"{else}  class="fa fa-barcode"{/if} ></i>
-                    </td>
-                    <td class="Product_Barcode_Number highlight">{$product->get('Product Barcode Number')} </td>
-                    <td class="barcode_labels aright {if !$product->get('Product Barcode Key')}hide{/if}">
-                        <a class="padding_left_10" title="{t}Unit label{/t}"
-                           href="/asset_label.php?object=product&key={$product->id}&type=unit"><i class="fa fa-tags "></i></a>
-                    </td>
 
-                </tr>
-
-
-            </table>
 
             <table border="0" class="overview" style="">
                 <tr class="main">

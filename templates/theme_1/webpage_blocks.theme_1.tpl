@@ -309,6 +309,10 @@
                     })
 
                     break;
+
+
+
+                    break;
                 case 'image':
 
                     blocks.push({
@@ -576,9 +580,43 @@
                     })
 
 
+                case 'images':
+                    var images=[]
+
+                    $('.blk_images .image', obj).each(function(i, col) {
+
+                        var img=$(col).find('img')
+
+                        _col={
+                            src  : img.attr('src'),
+                            title  : img.attr('alt'),
+                            caption_class  : img.attr('display_class'),
+                           caption : $(col).find('figcaption').html()
+                        }
+
+
+                        images.push(_col)
+
+                    });
+
+
+                    blocks.push({
+                        type: 'images',
+                        label: '{t}Images{/t}',
+                        icon: 'fa-image',
+                        show: ($(obj).hasClass('hide') ? 0 : 1 ),
+                        top_margin: $(obj).find('.blk_images').attr('top_margin'),
+                        bottom_margin:$(obj).find('.blk_images').attr('bottom_margin'),
+
+                        images:images
+
+                    })
+
             }
 
         });
+
+
 
         content_data.blocks=blocks
 
@@ -851,6 +889,89 @@
         e.preventDefault();
         e.returnValue = false;
     });
+
+
+
+
+    $(document).on('click', '.blk_images .image img', function (e) {
+        open_image_control_panel(this);
+    })
+
+
+    $(document).on('click', '#image_control_panel .caption_align i', function (e) {
+
+
+
+        $('#image_control_panel').find('.caption_align i').addClass('super_discreet').removeClass('selected')
+        $(this).removeClass('super_discreet').addClass('selected')
+
+
+
+    })
+
+
+    function open_image_control_panel(element){
+
+
+        if(! $('#image_control_panel').hasClass('hide')){
+            return
+        }
+
+        var image_index= $('span.image').index($(element).closest('.image') )+1
+
+        $('#image_control_panel').removeClass('hide').offset({ top: .25*( $(element).offset().top +  $(element).height() )/2, left: $(element).offset().left }).attr('image_index', image_index).addClass('in_use')
+
+
+        $('#image_control_panel').find('.image_tooltip').val($(element).attr('alt'))
+        $('#image_control_panel').find('.image_link').val($(element).attr('link'))
+        $('#image_control_panel').attr('old_image_src',$(element).attr('src'))
+
+        $('#image_control_panel').find('.caption_align i').addClass('super_discreet').removeClass('selected')
+        $('#image_control_panel').find('.caption_align i.'+$(element).attr('display_class')).removeClass('super_discreet').addClass('selected')
+
+        $('#image_control_panel').find('.image_upload').attr('image_index',image_index)
+
+
+
+
+    }
+
+    function close_image_control_panel(){
+
+
+
+        var   image=  $('.blk_images .image:nth-child('+$('#image_control_panel').attr('image_index')+') img')
+
+        image.attr('src', $('#image_control_panel').attr('old_image_src'))
+
+
+
+
+        $('#image_control_panel').addClass('hide')
+
+    }
+
+    function update_image(){
+
+        var   image=  $('.blk_images .image:nth-child('+$('#image_control_panel').attr('image_index')+') img')
+        image.attr('alt',$('#image_control_panel').find('.image_tooltip').val())
+        image.attr('link',$('#image_control_panel').find('.image_link').val())
+
+        var caption_class=$('#image_control_panel').find('.caption_align i.selected').attr('display_class')
+        image.attr('display_class',caption_class)
+
+        image.closest('figure').find('figcaption').removeClass('caption_left caption_right caption_center caption_hide').addClass(caption_class)
+
+        $('#image_control_panel').addClass('hide')
+        $('#save_button', window.parent.document).addClass('save button changed valid')
+
+
+
+
+    }
+
+
+
 
 </script>
 

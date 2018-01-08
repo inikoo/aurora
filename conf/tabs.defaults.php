@@ -3002,6 +3002,7 @@ $tab_defaults = array(
         'rpp'         => 500,
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'reference',
+    //    'export_fields' => $export_fields['warehouse_parts_to_replenish_picking_location']
 
     ),
     'supplier.parts_to_replenish_picking_location.wget'  => array(

@@ -42,8 +42,8 @@
         </div>
 
 
-        <span style="position: relative;top:1px"  id="open_images_layout_ideas" onclick="change_images_template()" class="button"  ><i class="fa fa-lightbulb-o" aria-hidden="true"></i>  {t}Layout ideas{/t}</span>
-
+        <span   id="open_images_layout_ideas" onclick="change_images_template()" class="button"  ><i class="fa fa-lightbulb-o" aria-hidden="true"></i>  {t}Layout ideas{/t}</span>
+        <span style="margin-left:50px">{t}Margin{/t}:</span>  {t}top{/t} <input margin="top" class="image_margin" value="{if isset($block.top_margin)}{$block.top_margin}{/if}" style="width: 40px" placeholder="0"> {t}bottom{/t} <input  margin="bottom" class="image_margin" value="{if isset($block.bottom_margin)}{$block.bottom_margin}{/if}" style="width: 40px" placeholder="0">
 
     </div>
     <div style="clear: both"></div>
@@ -76,12 +76,55 @@
     $('#images_layout_ideas').on('click', 'img', function () {
 
         var template=$(this).attr('template')
-        $('#open_images_layout_ideas').attr('src','/art/images_layout_'+template+'.png').attr('template',template)
+
+
+        //$('#open_images_layout_ideas').attr('src','/art/images_layout_'+template+'.png').attr('template',template)
+
+
+
+
         $('#images_layout_ideas').addClass('hide')
     });
 
     function change_images_template() {
         $('#images_layout_ideas').removeClass('hide')
 
+
+        $('#preview').contents().find('#header').removeClass('hide')
+
+
+
     }
+
+    $(document).on('input propertychange', '.image_margin', function (evt) {
+
+
+        if(!validate_signed_integer($(this).val(),50)){
+            $(this).removeClass('error')
+            var value=$(this).val()
+
+        }else{
+            value=0;
+
+            $(this).addClass('error')
+        }
+
+
+        if($(this).attr('margin')=='top'){
+            $("#preview").contents().find('#block_{$key}').find('.blk_images').attr('top_margin',value).css( "margin-top",value+"px")
+        }else if($(this).attr('margin')=='bottom'){
+            $("#preview").contents().find('#block_{$key}').find('.blk_images').attr('botton_margin',value).css( "margin-bottom",value+"px")
+        }
+
+
+        $('#save_button').addClass('save button changed valid')
+
+
+
+        console.log(value)
+
+
+    });
+
+
 </script>

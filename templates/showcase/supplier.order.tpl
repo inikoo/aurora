@@ -24,6 +24,21 @@
         </li>
 
 
+        {if $deliveries|@count ==0}
+
+            <li id="send_node" class=" li ">
+                <div class="label">
+                    <span class="state ">{t}Estimated delivery date{/t} <span></i></span></span>
+                </div>
+                <div class="timestamp">
+			<span class="Purchase_Order_Dispatched_Date">&nbsp;{$order->get('Estimated Receiving Date')} &nbsp;</span>
+                </div>
+                <div class="dot">
+                </div>
+            </li>
+
+
+        {/if}
         {foreach from=$deliveries item=dn name=deliveries}
 
         <li id="send_node" class="li button {if $dn->get('State Index')==100}complete{/if} "  onclick="change_view('{$order->get('Purchase Order Parent')|lower}/{$order->get('Purchase Order Parent Key')}/delivery/{$dn->id}')"  >

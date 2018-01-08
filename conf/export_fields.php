@@ -779,6 +779,22 @@ $export_fields = array(
 
     ),
 
+    'warehouse_parts_to_replenish_picking_location'=>array(
+        array(
+            'name'    => 'P.`Part Reference`',
+            'label'   => _('Part reference'),
+            'checked' => 1
+        ),
+
+        array(
+            'name'    => 'P.`Part Package Description`',
+            'label'   => _('Part description'),
+            'checked' => 1
+        ),
+    )
+
+
+
 );
 
 ?>

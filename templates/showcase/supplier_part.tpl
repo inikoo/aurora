@@ -135,6 +135,24 @@
                     </tr>
                 </table>
             </div>
+
+
+            <div id="purchase_orders_data" style="padding-top:10px;clear:both">
+                <table border="0" class="overview with_title">
+                    <tr class="top">
+                        <td colspan="3">{t}Next deliveries{/t}</td>
+                    </tr>
+                    {foreach from=$supplier_part->get_next_deliveries_data() item=next_delivery }
+                    <tr class="main ">
+                        <td>{$next_delivery.link}</td>
+                        <td>{$next_delivery.date}</td>
+                        <td class="aright highlight">{$next_delivery.qty}</td>
+                    </tr>
+                    {/foreach}
+                </table>
+            </div>
+
+
         </div>
     </div>
     <div style="clear:both">

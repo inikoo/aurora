@@ -11,20 +11,7 @@ name: "public_id",
 label: "{t}Number{/t}",
 editable: false,
 sortType: "toggle",
-cell: Backgrid.StringCell.extend({
-events: {
-"click": function() {
-{if $tab=='suppliers.deliveries'}
-    change_view("delivery/" + this.model.get("id")  )
-
-{else}
-    change_view("{$data['object']}/{$data['key']}/delivery/" + this.model.get("id")  )
-
-{/if}
-}
-},
-className: "link",
-})
+cell: Backgrid.HtmlCell.extend({ })
 }, {
 name: "date",
 label: "{t}Date{/t}",
