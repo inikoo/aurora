@@ -83,6 +83,8 @@ class Public_Store {
                     $this->get('Store Department Category Key'), $limit[0], $limit[1]
                 );
 
+                print $sql;
+
                 break;
             case 'families':
                 $sql = sprintf(
