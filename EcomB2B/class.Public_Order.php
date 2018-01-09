@@ -232,7 +232,10 @@ class Public_Order extends DBW_Table {
 
 
         switch ($key) {
+            case 'Currency Code':
 
+                return $this->data['Order Currency'];
+                break;
 
 
             case 'Order Invoice Address':
@@ -269,11 +272,27 @@ class Public_Order extends DBW_Table {
                 break;
 
             case 'Basket To Pay Amount':
-                return money($this->data['Order Total Amount'] - $this->data['Order Available Credit Amount'], $this->data['Order Currency']);
+
+                if($this->data['Order Total Amount']>$this->data['Order Available Credit Amount']){
+                    return money($this->data['Order Total Amount'] - $this->data['Order Available Credit Amount'], $this->data['Order Currency']);
+
+                }else{
+                    return money(0 , $this->data['Order Currency']);
+
+                }
+
+
                 break;
 
             case 'Order Basket To Pay Amount':
-                return $this->data['Order Total Amount'] - $this->data['Order Available Credit Amount'];
+
+                if($this->data['Order Total Amount']>$this->data['Order Available Credit Amount']){
+                    return $this->data['Order Total Amount'] - $this->data['Order Available Credit Amount'];
+                }else{
+                    return $this->data['Order Total Amount'];
+
+                }
+
                 break;
 
             case 'Products':
@@ -282,6 +301,18 @@ class Public_Order extends DBW_Table {
 
             case 'Total':
                 return money($this->data['Order Total Amount'], $this->data['Order Currency']);
+                break;
+
+            case 'Available Credit Amount':
+
+                if($this->data['Order Total Amount']>$this->data['Order Available Credit Amount']){
+                    return money(-1*$this->data['Order Available Credit Amount'], $this->data['Order Currency']);
+
+                }else{
+                    return money(-1*$this->data['Order Total Amount'], $this->data['Order Currency']);
+                }
+
+
                 break;
 
             default:

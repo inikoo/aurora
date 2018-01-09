@@ -48,12 +48,12 @@
 
                         <td class="text-right payments_amount">{$order->get('Payments Amount')}</td>
                     </tr>
-                    <tr class="available_credit_amount_tr {if $order->get('Order Available Credit Amount')==0}hide{/if}" >
+                    <tr class="tax available_credit_amount_tr {if $order->get('Order Available Credit Amount')==0}hide{/if}" >
                         <td>{if isset($labels._order_available_credit_amount) and $labels._order_available_credit_amount!=''}{$labels._order_available_credit_amount}{else}{t}Credit{/t}{/if}</td>
 
                         <td class="text-right available_credit_amount ">{$order->get('Available Credit Amount')}</td>
                     </tr>
-                    <tr class="to_pay_amount_tr {if $order->get('Order Payments Amount')==0 and $order->get('Order Available Credit Amount')==0 }hide{/if}" >
+                    <tr class="to_pay_amount_tr {if $order->get('Order Available Credit Amount')!=0}total{/if} {if $order->get('Order Payments Amount')==0 and $order->get('Order Available Credit Amount')==0 }hide{/if}" >
                         <td>{if isset($labels._order_to_pay_amount) and $_order_to_pay_amoount._total!=''}{$labels._order_to_pay_amoount}{else}{t}To pay{/t}{/if}</td>
 
                         <td class="text-right to_pay_amount">{$order->get('Basket To Pay Amount')}</td>
@@ -62,8 +62,18 @@
                     </tbody>
                 </table>
 
+                <form action="" method="post" enctype="multipart/form-data"  class="sky-form {if $order->get('Order Basket To Pay Amount')!=0}hide{/if}" style="box-shadow: none">
+                    <footer>
+                        <button  data-settings='{ "tipo":"place_order_pay_later", "payment_account_key":"{$store->get('Store Customer Payment Account Key')}", "order_key":"{$order->id}"}' onclick="place_order(this)" class="button" id="_place_order_from_bank">{$content._place_order_from_bank} <i class="margin_left_10 fa fa-fw fa-arrow-right" aria-hidden="true"></i> </button>
+                    </footer>
+
+                </form>
+
             </div>
 
+
+
+            {if  $order->get('Order Basket To Pay Amount')!=0}
 
             {assign "payment_accounts" $website->get_payment_accounts($order->get('Order Delivery Address Country 2 Alpha Code'))  }
 
@@ -417,7 +427,7 @@
             {/foreach}
 
 
-
+            {/if}
 
 
 

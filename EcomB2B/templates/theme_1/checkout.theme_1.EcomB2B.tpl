@@ -100,12 +100,22 @@
                 </div>
 
 
+
+
+                <form action="" method="post" enctype="multipart/form-data"  class="sky-form {if $order->get('Order Basket To Pay Amount')!=0}hide{/if}" style="box-shadow: none">
+
+                    <footer>
+                        <button  data-settings='{ "tipo":"place_order_pay_later", "payment_account_key":"{$store->get('Store Customer Payment Account Key')}", "order_key":"{$order->id}"}' onclick="place_order(this)" class="button" id="_place_order_from_bank">{$content._place_order_from_bank} <i class="margin_left_10 fa fa-fw fa-arrow-right" aria-hidden="true"></i> </button>
+                    </footer>
+
+                </form>
+
             </div>
 
 
             <div class="clearfix marb6"></div>
 
-            <div class="container">
+            <div class="container {if $order->get('Order Basket To Pay Amount')==0}hide{/if}">
 
 
                 {assign "payment_accounts" $website->get_payment_accounts($order->get('Order Delivery Address Country 2 Alpha Code'))  }
