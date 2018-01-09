@@ -170,7 +170,7 @@ class Public_Store {
                 return $this->data['Store '.$key];
                 break;
 
-
+            case 'Store Customer Payment Account Key':
             case 'Store Currency Code':
             case 'Store Name':
             case 'Store Show in Warehouse Orders':

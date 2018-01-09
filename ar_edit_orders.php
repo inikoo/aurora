@@ -1057,7 +1057,10 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user) {
 
     }
 
-    $invoice->add_payment($refund);
+    if($invoice->id){
+        $invoice->add_payment($refund);
+    }
+
 
 
     $operations = array();

@@ -53,7 +53,7 @@ class Public_Customer extends DBW_Table {
 
         } elseif ($key == 'key_store') {
             $sql = sprintf(
-                "SELECT * FROM `Customer Dimension` WHERE `Customer Key`=%d  AND `Cusstomer Store Key`=%d ", $id, $id2
+                "SELECT * FROM `Customer Dimension` WHERE `Customer Key`=%d  AND `Customer Store Key`=%d ", $id, $id2
             );
 
         } else {
@@ -1506,6 +1506,31 @@ class Public_Customer extends DBW_Table {
         return $label;
 
     }
+
+
+
+
+    function update_account_balance() {
+        $balance = 0;
+        $sql     = sprintf(
+            'SELECT sum(`Credit Transaction Amount`) AS balance FROM `Credit Transaction Fact`  WHERE `Credit Transaction Customer Key`=%d  ', $this->id
+        );
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $balance = $row['balance'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+        $this->fast_update(array('Customer Account Balance' => $balance));
+
+    }
+
+
+
 
 }
 
