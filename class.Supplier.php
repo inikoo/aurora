@@ -1899,10 +1899,6 @@ class Supplier extends SubjectSupplier {
 
 
 
-        $dates=array(
-            '2017-12'=>array('from'=>'2017-12-01 00:00:00','to'=>'2017-12-31 23:59:59')
-        );
-
 
 
 
