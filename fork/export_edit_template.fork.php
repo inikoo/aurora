@@ -286,7 +286,12 @@ function fork_export_edit_template($job) {
 
                     break;
                 case 'part':
+
+
+
+
                     $object = get_object('Part',$row['id']);
+
 
                     $data_rows = array();
 
@@ -297,9 +302,17 @@ function fork_export_edit_template($job) {
 
                     foreach ($fields as $field) {
 
+                        if($field['name']=='Part Barcode'){
+                            $_field_name='Part Barcode Number';
+                        }else{
+                            $_field_name=$field['name'];
+                        }
+
+
+
                         $data_rows[] = array(
                             'cell_type' => (isset($field['cell_type']) ? $field['cell_type'] : 'auto'),
-                            'value'     => $object->get($field['name']),
+                            'value'     => $object->get($_field_name),
                             'field'     => $field['name']
                         );
                     }
