@@ -2872,7 +2872,7 @@ function sales_history($_data, $db, $user, $account) {
                     'deliveries'          => $deliveries,
                     'supplier_deliveries' => number($data['supplier_deliveries']),
                     'dispatched'          => $dispatched,
-                    'date'                => $record_data[$_date]['date'].' '.$data['Timeseries Record Key']
+                    'date'                => $record_data[$_date]['date']
 
 
                 );
