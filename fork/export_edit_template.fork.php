@@ -202,11 +202,11 @@ function fork_export_edit_template($job) {
     }
 
 
-    if($objects=='product'  and $store->get('Store Type')=='B2BC' ){
-        $_objects='product_b2bc';
-    }else{
+  //  if($objects=='product'  and $store->get('Store Type')=='B2BC' ){
+  //      $_objects='product_b2bc';
+  //  }else{
         $_objects=$objects;
-    }
+   // }
 
     $fields = array();
     foreach ($field_keys as $field_key) {
