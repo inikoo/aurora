@@ -101,12 +101,8 @@ class Timeseries extends DB_Table {
 
 
         $sql = sprintf(
-            "SELECT `Timeseries Key` FROM `Timeseries Dimension` WHERE `Timeseries Type`=%s AND `Timeseries Frequency`=%s AND `Timeseries Scope`=%s  AND `Timeseries Parent`=%s  AND `Timeseries Parent Key`=%s",
-            prepare_mysql($data['Timeseries Type']),
-            prepare_mysql($data['Timeseries Frequency']),
-            prepare_mysql($data['Timeseries Scope']),
-            prepare_mysql($data['Timeseries Parent']),
-            prepare_mysql($data['Timeseries Parent Key'])
+            "SELECT `Timeseries Key` FROM `Timeseries Dimension` WHERE `Timeseries Type`=%s AND `Timeseries Frequency`=%s AND `Timeseries Scope`=%s  AND `Timeseries Parent`=%s  AND `Timeseries Parent Key`=%s", prepare_mysql($data['Timeseries Type']),
+            prepare_mysql($data['Timeseries Frequency']), prepare_mysql($data['Timeseries Scope']), prepare_mysql($data['Timeseries Parent']), prepare_mysql($data['Timeseries Parent Key'])
 
         );
 
@@ -140,7 +136,6 @@ class Timeseries extends DB_Table {
 
         $this->duplicated = false;
         $this->new        = false;
-
 
 
         $this->editor = $data['editor'];
@@ -212,13 +207,15 @@ class Timeseries extends DB_Table {
 
     function get($key = '') {
 
-        if(!$this->id){return '';}
+        if (!$this->id) {
+            return '';
+        }
 
 
         switch ($key) {
 
             case 'Parent':
-                return get_object($this->data['Timeseries Parent'],$this->data['Timeseries Parent Key']);
+                return get_object($this->data['Timeseries Parent'], $this->data['Timeseries Parent Key']);
 
                 break;
 
@@ -285,36 +282,78 @@ class Timeseries extends DB_Table {
 
     function create_record($data) {
 
+
+        $record_key  = false;
+        $record_date = false;
+        $found       = false;
+
+
         $sql = sprintf(
-            'SELECT `Timeseries Record Key`,`Timeseries Record Date` FROM `Timeseries Record Dimension` WHERE `Timeseries Record Timeseries Key`=%d AND  `Timeseries Record Date`=%s', $this->id,
-            prepare_mysql($data['Timeseries Record Date'])
+            'SELECT `Timeseries Record Key`,`Timeseries Record Date` FROM `Timeseries Record Dimension` WHERE `Timeseries Record Timeseries Key`=%d AND  `Timeseries Record Date`=%s', $this->id, prepare_mysql($data['Timeseries Record Date'])
         );
+
+       // print "$sql\n";
+
         if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                return array(
-                    $row['Timeseries Record Key'],
-                    $row['Timeseries Record Date']
-                );
-            } else {
-                $sql = sprintf(
-                    'INSERT INTO `Timeseries Record Dimension` (`Timeseries Record Timeseries Key`, `Timeseries Record Date`) VALUES (%d,%s)', $this->id, prepare_mysql($data['Timeseries Record Date'])
-                );
+            foreach ($result as $row) {
 
+                $record_key  = $row['Timeseries Record Key'];
+                $record_date = $row['Timeseries Record Date'];
 
-                if ($this->db->exec($sql)) {
-                    return array(
-                        $this->db->lastInsertId(),
-                        $data['Timeseries Record Date']
-                    );
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    exit;
+                if ($found) {
+                    $sql = sprintf('DELETE FROM `Timeseries Record Dimension` WHERE `Timeseries Record Key`=%d ', $record_key);
+                    //print "$sql\n";
+                    $this->db->exec($sql);
                 }
+
+
+                $found = true;
+
             }
         } else {
             print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
             exit;
         }
+
+        if (!$found) {
+            $sql = sprintf(
+                'INSERT INTO `Timeseries Record Dimension` (`Timeseries Record Timeseries Key`, `Timeseries Record Date`) VALUES (%d,%s)', $this->id, prepare_mysql($data['Timeseries Record Date'])
+            );
+
+
+            if ($this->db->exec($sql)) {
+
+                $record_key = $this->db->lastInsertId();
+
+                $record_date = $data['Timeseries Record Date'];
+
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                exit;
+            }
+        }
+
+
+      //  print_r($this->data);
+
+        if($this->get('Timeseries Frequency')=='Monthly'  ){
+
+
+            $sql=sprintf('delete from `Timeseries Record Dimension` where  `Timeseries Record Timeseries Key`=65540   and DATE_FORMAT(`Timeseries Record Date`,\'%%e\')!=1;');
+            $this->db->exec($sql);
+
+        }
+
+
+
+     //   exit;
+
+
+        return array(
+            $record_key,
+            $record_date
+        );
 
 
     }
@@ -323,8 +362,7 @@ class Timeseries extends DB_Table {
     function update_stats() {
 
         $sql = sprintf(
-            'SELECT count(*) AS num , min(`Timeseries Record Date`) AS from_date , max(`Timeseries Record Date`) AS  to_date FROM `Timeseries Record Dimension` WHERE `Timeseries Record Timeseries Key`=%d',
-            $this->id
+            'SELECT count(*) AS num , min(`Timeseries Record Date`) AS from_date , max(`Timeseries Record Date`) AS  to_date FROM `Timeseries Record Dimension` WHERE `Timeseries Record Timeseries Key`=%d', $this->id
         );
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
