@@ -2801,6 +2801,9 @@ function sales_history($_data, $db, $user, $account) {
         foreach ($result as $data) {
 
 
+           // print_r($data);
+
+
             if ($_data['parameters']['frequency'] == 'annually') {
                 $_date           = strftime("%Y", strtotime($data['Date'].' +0:00'));
                 $_date_last_year = strftime("%Y", strtotime($data['Date'].' - 1 year'));
@@ -2869,7 +2872,7 @@ function sales_history($_data, $db, $user, $account) {
                     'deliveries'          => $deliveries,
                     'supplier_deliveries' => number($data['supplier_deliveries']),
                     'dispatched'          => $dispatched,
-                    'date'                => $record_data[$_date]['date']
+                    'date'                => $record_data[$_date]['date'].' '.$data['Timeseries Record Key']
 
 
                 );

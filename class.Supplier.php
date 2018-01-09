@@ -1817,6 +1817,8 @@ class Supplier extends SubjectSupplier {
 
         $timeseries = new Timeseries('find', $data, 'create');
 
+
+
         if ($timeseries->id) {
             require_once 'utils/date_functions.php';
 
@@ -1837,6 +1839,10 @@ class Supplier extends SubjectSupplier {
             $sql        = sprintf(
                 'DELETE FROM `Timeseries Record Dimension` WHERE `Timeseries Record Timeseries Key`=%d AND `Timeseries Record Date`<%s ', $timeseries->id, prepare_mysql($from)
             );
+
+
+
+
             $update_sql = $this->db->prepare($sql);
             $update_sql->execute();
             if ($update_sql->rowCount()) {
@@ -1893,6 +1899,10 @@ class Supplier extends SubjectSupplier {
 
 
 
+        $dates=array(
+            '2017-12'=>array('from'=>'2017-12-01 00:00:00','to'=>'2017-12-31 23:59:59')
+        );
+
 
 
 
@@ -1901,10 +1911,17 @@ class Supplier extends SubjectSupplier {
             $index++;
 
 
+            //
+            //
+            //
+            //
+            //
             //print_r($date_frequency_period);
 
             $sales_data = $this->get_sales_data($date_frequency_period['from'], $date_frequency_period['to']);
             $_date      = gmdate('Y-m-d', strtotime($date_frequency_period['from'].' +0:00'));
+
+
 
 
             if ($sales_data['deliveries'] > 0 or $sales_data['supplier_deliveries'] > 0 or $sales_data['dispatched'] > 0 or $sales_data['invoiced_amount'] != 0 or $sales_data['required'] != 0 or $sales_data['profit'] != 0 or $sales_data['purchased_amount'] != 0) {
@@ -1931,16 +1948,19 @@ class Supplier extends SubjectSupplier {
                 );
 
 
-                //  print "$sql\n";
+
 
                 $update_sql = $this->db->prepare($sql);
                 $update_sql->execute();
+
+
+
                 if ($update_sql->rowCount() or $date == date('Y-m-d')) {
                     $timeseries->fast_update(array('Timeseries Updated' => gmdate('Y-m-d H:i:s')));
                 }
 
 
-                if( in_array($timeseries->get('Timeseries Frequency'),array('Monthly','Quarterly','Yearly'))  ) {
+                if( in_array($timeseries->get('Timeseries Frequency'),array('Monthly','Quarterly','Yearly'))   ) {
 
                     foreach (preg_split('/\,/', $this->get_part_family_keys()) as $family_key) {
 
