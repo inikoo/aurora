@@ -34,7 +34,7 @@ function get_order_info($order) {
 		<td style="padding:5px;vertical-align:top;border-bottom:1px solid #cccccc">%s</td>
 		<td style="padding:5px;vertical-align:top;border-bottom:1px solid #cccccc">%s</td>
 		<td style="padding:5px;vertical-align:top;text-align:right;border-bottom:1px solid #cccccc">%s</td>
-		<td style="padding:5px;vertical-align:top;text-align:right;border-bottom:1px solid #cccccc">%s</td></tr>', $data['code'], $data['description'], $data['qty'], $data['amount']
+		<td style="padding:5px;vertical-align:top;text-align:right;border-bottom:1px solid #cccccc">%s</td></tr>', strip_tags($data['code']), $data['description'], $data['qty'], $data['amount']
 
         );
     }
