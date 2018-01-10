@@ -2,6 +2,14 @@
 {assign invoices $order->get_invoices('objects')}
 {assign payments $order->get_payments('objects','Completed')}
 
+
+
+<div id="sticky_note_container" class="{if $order->get('Order Customer Message')==''}hide{/if}"     >
+
+    <div id="sticky_note"  >{$order->get('Order Customer Message')}</div>
+</div>
+
+
 <div class="timeline_horizontal with_time   {if $order->get('State Index')<0}hide{/if}  ">
 
     <ul class="timeline">
