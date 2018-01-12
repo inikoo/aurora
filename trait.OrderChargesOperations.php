@@ -90,6 +90,30 @@ trait OrderChargesOperations {
 
     }
 
+
+    function get_charges_public_info(){
+
+        $charges_public_info='';
+        $sql=sprintf('select `Charge Public Description`,`Charge Name` from `Order No Product Transaction Fact` ONPTF  left join `Charge Dimension` C on (C.`Charge Key`=`Transaction Type Key` ) where `Order Key`=%d and `Transaction Type`="Charges"',$this->id);
+
+        if ($result=$this->db->query($sql)) {
+        		foreach ($result as $row) {
+
+                    $charges_public_info.=', <h3>'.$row['Charge Name'].'</h3><p>'.$row['Charge Public Description']."</p>";
+        		}
+        }else {
+        		print_r($error_info=$this->db->errorInfo());
+        		print "$sql\n";
+        		exit;
+        }
+
+        $charges_public_info=preg_replace('/^, /','',$charges_public_info);
+
+        return $charges_public_info;
+
+    }
+
+
     function get_charges($dn_key = false) {
         
         
