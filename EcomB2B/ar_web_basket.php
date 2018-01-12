@@ -58,8 +58,8 @@ switch ($tipo) {
     case 'update_favourite':
         $data = prepare_values(
             $_REQUEST, array(
-                         'pid'          => array('type' => 'key'),
-                         'customer_key' => array('type' => 'key'),
+                         'pid'           => array('type' => 'key'),
+                         'customer_key'  => array('type' => 'key'),
                          'favourite_key' => array('type' => 'numeric'),
 
                      )
@@ -69,7 +69,10 @@ switch ($tipo) {
 
 
         break;
+    case 'get_charges_info':
 
+        get_charges_info($db, $order);
+        break;
     case 'special_instructions':
         $data = prepare_values(
             $_REQUEST, array(
@@ -131,8 +134,8 @@ function update_item($_data, $customer, $website, $editor, $db) {
     $quantity    = $_data['qty'];
 
 
-    if($quantity==''){
-        $quantity=0;
+    if ($quantity == '') {
+        $quantity = 0;
     }
 
     if (is_numeric($quantity) and $quantity >= 0) {
@@ -165,34 +168,27 @@ function update_item($_data, $customer, $website, $editor, $db) {
         $discounts_data = array();
 
 
+        $sql = sprintf(
+            'SELECT `Order Transaction Amount`,OTF.`Product ID`,OTF.`Product Key`,`Order Transaction Total Discount Amount`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Order Transaction Amount`,`Order Currency Code`,OTF.`Order Transaction Fact Key`, `Deal Info` FROM `Order Transaction Fact` OTF LEFT JOIN  `Order Transaction Deal Bridge` B ON (OTF.`Order Transaction Fact Key`=B.`Order Transaction Fact Key`) WHERE OTF.`Order Key`=%s ',
+            $order->id
+        );
 
-            $sql = sprintf('SELECT `Order Transaction Amount`,OTF.`Product ID`,OTF.`Product Key`,`Order Transaction Total Discount Amount`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Order Transaction Amount`,`Order Currency Code`,OTF.`Order Transaction Fact Key`, `Deal Info` FROM `Order Transaction Fact` OTF left join  `Order Transaction Deal Bridge` B on (OTF.`Order Transaction Fact Key`=B.`Order Transaction Fact Key`) WHERE OTF.`Order Key`=%s ',
-                           $order->id);
-
-            if ($result=$db->query($sql)) {
-                foreach ($result as $row) {
-
-
-
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
 
 
-
-                    $discounts_data[$row['Order Transaction Fact Key']]=
-                        array(
-                            'deal_info'=> $row['Deal Info'],
-                            'item_net'=>money($row['Order Transaction Amount'], $row['Order Currency Code'])
-                        );
+                $discounts_data[$row['Order Transaction Fact Key']] = array(
+                    'deal_info' => $row['Deal Info'],
+                    'item_net'  => money($row['Order Transaction Amount'], $row['Order Currency Code'])
+                );
 
 
-                }
-            }else {
-                print_r($error_info=$db->errorInfo());
-                print "$sql\n";
-                exit;
             }
-
-
-
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
 
 
         $basket_history = array(
@@ -276,18 +272,14 @@ function update_item($_data, $customer, $website, $editor, $db) {
             'metadata' => array('class_html' => $class_html),
 
 
-            'to_charge'     => $transaction_data['to_charge'],
+            'to_charge'      => $transaction_data['to_charge'],
             'discounts_data' => $discounts_data,
-            'discounts'     => ($order->data['Order Items Discount Amount'] != 0 ? true : false),
-            'charges'       => ($order->data['Order Charges Net Amount'] != 0 ? true : false)
+            'discounts'      => ($order->data['Order Items Discount Amount'] != 0 ? true : false),
+            'charges'        => ($order->data['Order Charges Net Amount'] != 0 ? true : false)
         );
     } else {
         $response = array('state' => 200);
     }
-
-
-
-
 
 
     echo json_encode($response);
@@ -494,7 +486,6 @@ function update_special_instructions($db, $data, $order, $editor) {
 }
 
 
-
 function update_favourite($data, $customer, $website, $editor, $db) {
 
 
@@ -502,41 +493,54 @@ function update_favourite($data, $customer, $website, $editor, $db) {
 
     if ($data['favourite_key']) {
 
-        $sql=sprintf('delete from `Customer Favourite Product Fact` where `Customer Favourite Product Key`=%d ',$data['favourite_key'] );
+        $sql = sprintf('DELETE FROM `Customer Favourite Product Fact` WHERE `Customer Favourite Product Key`=%d ', $data['favourite_key']);
 
 
         $db->exec($sql);
 
-        $favourite_key=0;
-        $pid=$data['pid'];
+        $favourite_key = 0;
+        $pid           = $data['pid'];
 
-    }else {
+    } else {
 
-        $product=get_object('Product',$data['pid']);
-        $sql=sprintf('insert into  `Customer Favourite Product Fact` (`Customer Favourite Product Customer Key`,`Customer Favourite Product Product ID`,`Customer Favourite Product Store Key`,`Customer Favourite Product Creation Date`) values
-		(%d,%d,%d,%s) on duplicate key update `Customer Favourite Product Store Key`=%d
-		',
-                     $data['customer_key'],
-                     $product->id,
-                     $product->data['Product Store Key'],
+        $product = get_object('Product', $data['pid']);
+        $sql     = sprintf(
+            'INSERT INTO  `Customer Favourite Product Fact` (`Customer Favourite Product Customer Key`,`Customer Favourite Product Product ID`,`Customer Favourite Product Store Key`,`Customer Favourite Product Creation Date`) VALUES
+		(%d,%d,%d,%s) ON DUPLICATE KEY UPDATE `Customer Favourite Product Store Key`=%d
+		', $data['customer_key'], $product->id, $product->data['Product Store Key'],
 
-                     prepare_mysql(gmdate('Y-m-d H:i:s')),
-                     $product->data['Product Store Key']
+            prepare_mysql(gmdate('Y-m-d H:i:s')), $product->data['Product Store Key']
 
         );
 
-       // print $sql;
+        // print $sql;
         $db->exec($sql);
 
-        $favourite_key=$db->lastInsertId();
-        $pid=$product->id;
+        $favourite_key = $db->lastInsertId();
+        $pid           = $product->id;
 
     }
 
-    $response= array('state'=>200,'favourite_key'=>$favourite_key,'pid'=>$pid);
+    $response = array(
+        'state'         => 200,
+        'favourite_key' => $favourite_key,
+        'pid'           => $pid
+    );
     echo json_encode($response);
 
 
+}
+
+function get_charges_info($db, $order) {
+
+
+
+    $response = array(
+        'state'         => 200,
+        'title'=>_('Charges'),
+        'text' => $order->get_charges_public_info()
+    );
+    echo json_encode($response);
 
 }
 

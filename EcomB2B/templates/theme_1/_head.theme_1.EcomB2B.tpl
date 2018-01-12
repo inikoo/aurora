@@ -58,7 +58,7 @@
     <!-- ######### CSS STYLES ######### -->
     <link rel="stylesheet" href="https://use.fontawesome.com/3052dece40.css">
 
-    <link rel="stylesheet" href="css/style.theme_1.EcomB2B.min.css?v171023b" type="text/css"/>
+    <link rel="stylesheet" href="css/style.theme_1.EcomB2B.min.css?v180112" type="text/css"/>
     <!-- #
        <link rel="stylesheet" href="/theme_1/css/reset.css" type="text/css"/>
                <link rel="stylesheet" href="/theme_1/css/style.css" type="text/css"/>
@@ -161,7 +161,11 @@
 
     <script type="text/javascript" src="/js/sweetalert.min.js"></script>
 
-     <script type="text/javascript" src="/theme_1/tooltips/jquery.darktooltip.js"></script>
+
+
+
+
+    <script type="text/javascript" src="/theme_1/tooltips/jquery.darktooltip.js"></script>
 
      <script src="/theme_1/aninum/jquery.animateNumber.min.js"></script>
     <script  src="/theme_1/animations/js/animations.min.js" type="text/javascript"></script>
@@ -184,7 +188,7 @@
 
     <script type="text/javascript" src="/js/jquery.form.min.js"></script>
     <script type="text/javascript" src="/js/sha256.js"></script>
-    <script type="text/javascript" src="/js/aurora.js?20171101"></script>
+    <script type="text/javascript" src="/js/aurora.js?20180112"></script>
     <script type="text/javascript" src="/js/validation.js"></script>
 
     <script type="text/javascript" src="/js/ordering.js?v20171126"></script>

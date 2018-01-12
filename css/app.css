@@ -1778,15 +1778,6 @@ table.totals .total td {
     padding: 20px;
     background-color: #ff69b4; }
 
-.sticky_note_container {
-  width: 100%;
-  position: relative;
-  color: white; }
-  .sticky_note_container .sticky_note {
-    border-bottom: 1px solid #ccc;
-    padding: 20px;
-    background-color: #ff69b4; }
-
 textarea {
   position: relative;
   padding: 4px 6px;

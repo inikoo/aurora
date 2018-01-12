@@ -77,7 +77,7 @@
                             <td class="text-right order_items_net">{$order->get('Items Net Amount')}</td>
                         </tr>
                         <tr class="order_charges_container {if $order->get('Order Charges Net Amount')==0 }hide{/if}">
-                            <td>{if isset($labels._items_charges) and $labels._items_charges!=''}{$labels._items_charges}{else}{t}Charges{/t}{/if}</td>
+                            <td><i class="button fa fa-info-circle padding_right_5 info" style="color: #007fff;" onclick="show_charges_info()" ></i>  {if isset($labels._items_charges) and $labels._items_charges!=''}{$labels._items_charges}{else}{t}Charges{/t}{/if}</td>
 
                             <td class="text-right order_charges">{$order->get('Charges Net Amount')}</td>
                         </tr>
@@ -472,7 +472,40 @@
     </form>
 </div>
 
+
 <script>
+
+
+    function show_charges_info(){
+
+
+
+        var request = '/ar_web_basket.php?tipo=get_charges_info'
+        console.log(request)
+
+
+        $.getJSON(request, function (data) {
+
+            if (data.state == 200) {
+
+                swal({
+                    html:true,
+                    title: '',
+                    text:data.text,
+
+                })
+
+
+            }
+
+        })
+
+
+
+
+    }
+
+
     $("form").submit(function(e) {
 
         e.preventDefault();
