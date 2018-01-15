@@ -255,7 +255,7 @@
 
                     </script>
 
-                    <section class="product_tabs" style="margin-top:20px;margin-bottom: 40px">
+                    <div class="product_tabs" style="margin-top:20px;margin-bottom: 40px">
 
                         <input id="tab-properties" type="radio" name="grp" class="{if !$has_properties_tab}hide{/if}" {if $has_properties_tab}checked="checked"{/if} />
                         <label for="tab-properties">{t}Properties{/t}</label>
@@ -305,7 +305,7 @@
                         </div>
 
 
-                    </section>
+                    </div>
                     {assign 'see_also'  $webpage->get_see_also() }
 
 
