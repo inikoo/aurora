@@ -56,7 +56,7 @@
 
 
                          {assign 'product' $product_data.object}
-                         <div id="product_target_div_{$stack_index}" stack_index="{$stack_index}" product_code="{$product->get('Code')}" product_id="{$product->id}"
+                         <div id="product_target_div_{$stack_index}" data-stack_index="{$stack_index}" data-product_code="{$product->get('Code')}" data-product_id="{$product->id}"
                               class="product_block product_showcase product_container" style="position:relative;border-bottom:none;">
 
                              <a href="{$product->get('Code')|lower}">
@@ -65,7 +65,7 @@
                              </a>
                              {if !empty($customer)}
                                  {assign 'favourite_key' {$product->get('Favourite Key',{$customer->id})} }
-                                 <span style="position:absolute;top:5px;left:5px" class="  favourite  " product_id="{$product->id}" favourite_key="{$favourite_key}">
+                                 <span style="position:absolute;top:5px;left:5px" class="favourite" data-product_id="{$product->id}" data-favourite_key="{$favourite_key}">
                                                 <i class="fa {if $favourite_key}fa-heart marked{else}fa-heart-o{/if}" aria-hidden="true"></i>  </span>
                              {/if}
 
@@ -79,7 +79,7 @@
                                  <div class="wrap_to_center product_image">
 
 
-                                     <img src="{$product->get('Image')}"/>
+                                     <img alt="" src="{$product->get('Image')}"/>
                                  </div>
                              </a>
 
@@ -126,7 +126,7 @@
                                  {elseif $product->get('Web State')=='For Sale'}
                                      {assign 'quantity_ordered' $product->get('Ordered Quantity',$order_key) }
                                      <div class="order_row {if $quantity_ordered!=''}ordered{else}empty{/if}">
-                                         <input maxlength=6 style="" class='order_input ' id='but_qty{$product->id}' type="text"' size='2' value='{$quantity_ordered}' ovalue='{$quantity_ordered}'>
+                                         <input maxlength=6 style="" class='order_input ' id='but_qty{$product->id}' type="text"' size='2' value='{$quantity_ordered}' data-ovalue='{$quantity_ordered}'>
                                          {if $quantity_ordered==''}
                                              <div class="label sim_button   " style="margin-left:57px"><i class="fa fa-hand-pointer-o fa-fw" aria-hidden="true"></i> <span
                                                          class="">{if empty($labels._ordering_order_now)}{t}Order now{/t}{else}{$labels._ordering_order_now}{/if}</span></div>
