@@ -1,9 +1,3 @@
    <style>
-
-
-
-
-     
-       {$css}
-       
-       </style>
+          {$css}
+   </style>
