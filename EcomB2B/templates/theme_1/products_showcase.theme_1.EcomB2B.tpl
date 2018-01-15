@@ -126,7 +126,7 @@
 
                                 {if $product_data.type=='product'}
                                     {assign 'product' $product_data.object}
-                                    <div id="product_target_div_{$stack_index}" data-stack_index="{$stack_index}" data-product_code="{$product->get('Code')}" data-product_id="{$product->id}"
+                                    <div   data-product_code="{$product->get('Code')}" data-product_id="{$product->id}"
                                          class="product_block product_showcase product_container " style="position:relative;border-bottom:none;">
 
 
@@ -211,7 +211,7 @@
 
                                         {else}
                                             <div class=" order_row " style="display:flex;">
-                                                <div onclick='window.location.href = "/login.sys"' class="mark_on_hover" class="mark_on_hover"
+                                                <div onclick='window.location.href = "/login.sys"' class="mark_on_hover"
                                                      style="flex-grow:1;text-align:center;border-right:1px solid #fff;  font-weight: 800;"><span
                                                             class="sim_button">{if empty($labels._Login)}{t}Login{/t}{else}{$labels._Login}{/if}</span></div>
                                                 <div onclick='window.location.href = "/register.sys"' class="mark_on_hover" style="flex-grow:1;text-align:center;border-left:1px solid #fff;  font-weight: 800;"><span
@@ -232,11 +232,11 @@
 
                                         </div>
                                     {elseif $product_data.data.type=='code'}
-                                        <div id="{$product_data.data.id}" code_key="{$product_data.data.key}" style="position:relative;" class=" panel image panel_{$product_data.data.size}">
+                                        <div id="{$product_data.data.id}"  style="position:relative;" class=" panel image panel_{$product_data.data.size}">
 
 
-                                            <iframe class="" src="/panel_code.php?id={$product_data.data.key}" style="position: absolute; height: 100%;width: 100%;padding:0px;margin:0px;background-color: white "
-                                                    marginwidth="0" marginheight="0" hspace="0" vspace="0" frameborder="0" scrolling="no" sandbox="allow-scripts allow-same-origin allow-popups allow-top-navigation"
+                                            <iframe class="" src="/panel_code.php?id={$product_data.data.key}" style="position: absolute; height: 100%;width: 100%;padding:0px;margin:0px;background-color: white;border: 0px;overflow:hidden; "
+                                                    sandbox="allow-scripts allow-same-origin allow-popups allow-top-navigation"
 
                                             >
 
@@ -272,7 +272,7 @@
 
 
                                     {assign 'product' $product_data.object}
-                                    <div id="product_target_div_{$stack_index}" data-stack_index="{$stack_index}" data-product_code="{$product->get('Code')}" data-product_id="{$product->id}"
+                                    <div  data-stack_index="{$stack_index}" data-product_code="{$product->get('Code')}" data-product_id="{$product->id}"
                                          class="product_block product_showcase product_container" style="position:relative;border-bottom:none;">
 
                                         <a href="{$product->get('Code')|lower}">
@@ -409,6 +409,7 @@
 
     </div>
 
+</div>
 
 {include file="theme_1/bottom_scripts.theme_1.EcomB2B.tpl"}</body>
 
