@@ -644,6 +644,15 @@ if ($webpage->id) {
     $smarty->assign('content', $content);
     $smarty->assign('labels', $website->get('Localised Labels'));
 
+
+
+    if (isset($_SERVER['HTTP_USER_AGENT']) and
+    (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE') !== false)){
+        header('X-UA-Compatible: IE=edge,chrome=1');
+    }
+
+
+
     $smarty->display($template);
 
 } else {
