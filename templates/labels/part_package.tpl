@@ -24,3 +24,11 @@
         </tr>
     </table>
 </div>
+
+Saldi ed offerte
+A chi piace guardare un sito alla ricerca delle offerte più convenienti? Vi chiedo scusa se vi rovino il divertimento ma ho pensato di raggruppare qui tutte le offerte più vantaggiose.
+Vi proponiamo un’assortimento di articoli con forti sconti e promozioni sull'acquisto.
+
+Potrete beneficiare di un boost in articoli da esporre o, usare il risparmio per proporre qualche offerta a prezzi stracciati per attirare i clienti nella vostra attività.
+
+Tutte le scorte sono a quantità limitata e una volta finite non saranno più disponibili per cui affrettatevi ed acquistate oggi stesso o perderete l’occasione che desiderate.

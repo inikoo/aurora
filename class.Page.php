@@ -7659,6 +7659,16 @@ class Page extends DB_Table {
 
     }
 
+    function get_parents_data(){
+
+        $parents=array();
+
+        return $parents;
+
+
+
+    }
+
 }
 
 

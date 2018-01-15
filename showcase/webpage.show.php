@@ -36,11 +36,18 @@ function get_webpage_showcase($data, $smarty) {
             $template = 'showcase/webpage.category_products.tpl';
             break;
         case 'Category Categories':
-
             $category = get_object('Category', $webpage->get('Webpage Scope Key'));
             $smarty->assign('category', $category);
 
-            $template = 'showcase/webpage.category.tpl';
+
+            if($data['store']->get('Store Department Category Key')==$category->get('Category Root Key')){
+                $template = 'showcase/webpage.department.tpl';
+
+            }else{
+                $template = 'showcase/webpage.category.tpl';
+
+            }
+
             break;
         default:
             $template = 'showcase/webpage.tpl';
