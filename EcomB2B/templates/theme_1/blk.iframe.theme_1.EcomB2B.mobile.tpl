@@ -10,8 +10,8 @@
 *}
 
 {if !empty($data.src_mobile)}
-<div class="{$data.type} _block  " style="Width:100%;height: 250px;" h="{$data.height_mobile}" w="420"  >
-    <iframe onload="var div=$(this).closest('div');div.css({ height: $(this).width()*div.attr('h')/div.attr('w') })" class="block_iframe" src="https://{$data.src_mobile}" width="100%" height="100%" scrolling="no" frameborder="0" allowtransparency="true" allowfullscreen="true"></iframe>
+<div class="{$data.type} _block  " style="Width:100%;height: 250px;" data-h="{$data.height_mobile}" data-w="420"  >
+    <iframe onload="var div=$(this).closest('div');div.css({ height: $(this).width()*div.data('h')/div.data('w') })" class="block_iframe" style="width:100%;border: 0px;overflow:hidden;" src="https://{$data.src_mobile}"   allowfullscreen ></iframe>
 </div>
 {/if}
 
