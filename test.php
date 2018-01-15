@@ -48,7 +48,7 @@
         <!-- Add Reference to spin.js (an animated spinner) -->
         <script src="http://fgnass.github.io/spin.js/spin.min.js"></script>
 
-        <script type="text/javascript">
+        <script>
 
             var wcppPingDelay_ms = 10000; 
 

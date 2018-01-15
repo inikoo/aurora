@@ -71,8 +71,8 @@
     <link rel="stylesheet" media="screen" href="/theme_1/comingsoon/homepage_to_launch.css" type="text/css"/>
 
 
-    <script src="/theme_1/local/jquery.js" type="text/javascript"></script>
-    <script src="/theme_1/local/moment.min.js" type="text/javascript"></script>
+    <script src="/theme_1/local/jquery.js" ></script>
+    <script src="/theme_1/local/moment.min.js" ></script>
 
 
 </head>
@@ -149,13 +149,13 @@
 
 
 
-<script src="/theme_1/animations/js/animations.min.js" type="text/javascript"></script>
+<script src="/theme_1/animations/js/animations.min.js" ></script>
 
 
 <script src="/theme_1/flipclock/flipclock.min.js"></script>
 
 
-<script type="text/javascript">
+<script>
 
 
 

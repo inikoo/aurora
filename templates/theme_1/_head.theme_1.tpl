@@ -140,7 +140,7 @@
      <script src="/theme_1/tooltips/jquery.darktooltip.js"></script>
 
      <script src="/theme_1/aninum/jquery.animateNumber.min.js"></script>
-    <script  src="/theme_1/animations/js/animations.min.js" type="text/javascript"></script>
+    <script  src="/theme_1/animations/js/animations.min.js" ></script>
 
      <script src="/theme_1/cubeportfolio/js/jquery.cubeportfolio.js"></script>
 

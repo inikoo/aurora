@@ -5,7 +5,7 @@
     <div style="color:#aaa">{t}To replenish{/t}</div>
 </div>
 
-<script type="text/javascript">
+<script>
     // // globals
     var dial = new AlertDial('#part_locations_to_replenish', {
         ringBackgroundColor: ['{$data['color_min']}', '{$data['color_max']}'],

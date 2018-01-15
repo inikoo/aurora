@@ -143,7 +143,7 @@
     {/if}
 
 
-        <script src="https://app-rsrc.getbee.io/plugin/BeePlugin.js" type="text/javascript"></script>
+        <script src="https://app-rsrc.getbee.io/plugin/BeePlugin.js"></script>
 
 
 

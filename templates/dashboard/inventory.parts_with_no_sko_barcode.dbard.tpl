@@ -5,7 +5,7 @@
     <div style="color:#aaa">{t}Missing SKO Barcodes{/t}</div>
 </div>
 
-<script type="text/javascript">
+<script>
     // // globals
     var dial = new AlertDial('#parts_no_sko_barcode', {
         ringBackgroundColor: ['{$data['color_min']}', '{$data['color_max']}'],

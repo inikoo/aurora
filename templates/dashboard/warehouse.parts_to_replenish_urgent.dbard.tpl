@@ -5,7 +5,7 @@
     <div style="color:#aaa">{t}Insufficient picking stock{/t}</div>
 </div>
 
-<script type="text/javascript">
+<script>
     // // globals
     var dial = new AlertDial('#parts_to_replenish', {
         ringBackgroundColor: ['{$data['color_min']}', '{$data['color_max']}'],

@@ -35,7 +35,7 @@
     <br /><br />
     <input type="button" style="font-size:18px" onclick="javascript:jsWebClientPrint.print('useDefaultPrinter=' + $('#useDefaultPrinter').attr('checked') + '&printerName=' + $('#installedPrinterName').val());" value="Print Label..." />
         
-    <script type="text/javascript">
+    <script>
         var wcppGetPrintersDelay_ms = 5000; //5 sec
 
         function wcpGetPrintersOnSuccess(){
@@ -62,7 +62,7 @@
     </script>
     
     <!-- Add Reference to jQuery at Google CDN -->
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js" type="text/javascript"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
 
     <?php
     //Get Absolute URL of this page
