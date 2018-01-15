@@ -73,7 +73,7 @@
                             {else}
                                 <p>
                                     <a href="/login.sys" class="button" ><i class="fa fa-sign-in" aria-hidden="true"></i> {if empty($labels._Login)}{t}Login{/t}{else}{$labels._Login}{/if}</a>
-                                    <a href="/register.sys"class="button" ><i class="fa fa-user-plus" aria-hidden="true"></i> {if empty($labels._Register)}{t}Register{/t}{else}{$labels._Register}{/if}</a>
+                                    <a href="/register.sys" class="button" ><i class="fa fa-user-plus" aria-hidden="true"></i> {if empty($labels._Register)}{t}Register{/t}{else}{$labels._Register}{/if}</a>
                                 </p>
                             {/if}
 
