@@ -20,7 +20,7 @@
 
                 {foreach from=$feature_column  item=feature_row name=feature_rows}
                     <div class="_row">
-                    <div class="left  "><i aria-hidden="true" class="six_pack_icon simple_line_item_icon {$feature_row.icon}" icon="{$feature_row.icon}" ></i></div>
+                    <div class="left  "><i aria-hidden="true" class="six_pack_icon simple_line_item_icon {$feature_row.icon}" ></i></div>
                     <div class="right">
                         <h5 class="light six_pack_title" >{$feature_row.title}</h5>
                         <p class="six_pack_text" >{$feature_row.text}</p>
