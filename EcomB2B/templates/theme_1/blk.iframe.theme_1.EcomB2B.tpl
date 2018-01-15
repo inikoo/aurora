@@ -9,13 +9,8 @@
 -->
 *}
 
-{if $detected_device!='mobile'}
 
-<div class="{$data.type} _block  " style="Width:100%;" h="{$data.height}" w="1240"  >
-<iframe onload="var div=$(this).closest('div');div.css({ height: $(this).width()*div.attr('h')/div.attr('w') })" src="https://{$data.src}" width="100%" height="100%" scrolling="no" frameborder="0" allowtransparency="true" allowfullscreen="true"></iframe>
+
+<div class="{$data.type} _block  "  style="Width:100%;" data-h="{$data.height}" data-w="1240"  >
+    <iframe onload="var div=$(this).closest('div');div.css({ height: $(this).width()*div.data('h')/div.data('w') })"  style="width:100%;border: 0px;overflow:hidden;" src="https://{$data.src}"   allowfullscreen ></iframe>
 </div>
-{else}
-
-
-
-{/if}
