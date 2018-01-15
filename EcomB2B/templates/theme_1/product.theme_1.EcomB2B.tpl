@@ -98,7 +98,7 @@
                     </div>
 
 
-                    <div id="product_bd" style="padding:5px 20px 0px 20px;clear:both;" class="product_container" product_id="{$product->id}">
+                    <div id="product_bd" style="padding:5px 20px 0px 20px;clear:both;" class="product_container" data-product_id="{$product->id}">
 
 
                         {if $product->get('Status')=='Discontinued' }
@@ -130,7 +130,7 @@
                                     {$product->get('Name')}
                                     {if !empty($customer)}
                                         {assign 'favourite_key' {$product->get('Favourite Key',{$customer->id})} }
-                                        <span class="  favourite  " product_id="{$product->id}" favourite_key="{$favourite_key}">
+                                        <span class="favourite" data-product_id="{$product->id}" data-favourite_key="{$favourite_key}">
                                             <i style="" class="fa {if $favourite_key}fa-heart marked{else}fa-heart-o{/if}" aria-hidden="true"></i>  </span>
                                     {/if}
 
@@ -176,7 +176,7 @@
                                                 <div class="order_row {if $quantity_ordered!=''}ordered{else}empty{/if}">
 
                                                     <input maxlength=6 style="border-left:1px solid #ccc;" class='order_input ' id='but_qty{$product->id}' type="text"' size='2' value='{$quantity_ordered}'
-                                                    ovalue='{$quantity_ordered}'>
+                                                    data-ovalue='{$quantity_ordered}'>
 
                                                     {if $quantity_ordered==''}
                                                         <div class="label sim_button" style="margin-left:57px"><i class="fa fa-hand-pointer-o fa-fw" aria-hidden="true"></i> <span

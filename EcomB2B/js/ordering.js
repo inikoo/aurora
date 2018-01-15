@@ -80,7 +80,7 @@ $(function() {
 
     }, function () {
         var input = $(this).closest('.order_row').find('.order_input');
-        if (input.attr('ovalue') == '' && !input.is('[readonly]')) {
+        if (input.data('ovalue') == '' && !input.is('[readonly]')) {
             input.val('')
         }
     });
@@ -109,7 +109,7 @@ $(function() {
         }
 
 
-        var request = 'ar_web_basket.php?tipo=update_item&product_id=' + $(this).closest('.product_container').attr('product_id') + '&order_key=' + order_key + '&qty=' + order_qty + '&webpage_key=' + $('#webpage_data').data('webpage_key') + '&page_section_type=Family'
+        var request = 'ar_web_basket.php?tipo=update_item&product_id=' + $(this).closest('.product_container').data('product_id') + '&order_key=' + order_key + '&qty=' + order_qty + '&webpage_key=' + $('#webpage_data').data('webpage_key') + '&page_section_type=Family'
 console.log(request)
         console.log(request)
         $.getJSON(request, function (data) {
@@ -134,7 +134,7 @@ console.log(request)
 
                 if (data.quantity == 0) data.quantity = ''
 
-                input.val(data.quantity).attr('ovalue', data.quantity).prop('readonly', false);
+                input.val(data.quantity).data('ovalue', data.quantity).prop('readonly', false);
 
 
 
@@ -173,7 +173,7 @@ console.log(request)
 
         console.log(button)
 
-        if (order_qty != $(this).attr('ovalue')) {
+        if (order_qty != $(this).data('ovalue')) {
 
 
             button.html($('#ordering_settings').data('labels').update)
@@ -264,7 +264,7 @@ console.log(request)
 
 $(document).on('input propertychange', '.order_qty', function (evt) {
 
-  //  if ($(this).val() == $(this).attr('ovalue')) {
+  //  if ($(this).val() == $(this).data('ovalue')) {
   //      $(this).closest('span').find('i').removeClass('fa-floppy-o exclamation-circle error').addClass('fa-plus')
 
 //    } else {
@@ -380,7 +380,7 @@ console.log(data.discounts_data)
 
 
 
-            //input.val(data.quantity).attr('ovalue', data.quantity).prop('readonly', false);
+            //input.val(data.quantity).data('ovalue', data.quantity).prop('readonly', false);
 
         } else if (data.state == 201) {
 

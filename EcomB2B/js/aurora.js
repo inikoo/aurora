@@ -80,14 +80,14 @@ $(function() {
         }
 
 
-        var request = 'ar_web_basket.php?tipo=update_favourite&pid=' + $(this).attr('product_id') + '&customer_key=' + $('#webpage_data').data('customer_key') + '&favourite_key=' + $(this).attr('favourite_key')
+        var request = 'ar_web_basket.php?tipo=update_favourite&pid=' + $(this).data('product_id') + '&customer_key=' + $('#webpage_data').data('customer_key') + '&favourite_key=' + $(this).data('favourite_key')
 
         console.log(request)
         $.getJSON(request, function (data) {
 
             console.log(data)
 
-            element.attr('favourite_key',data.favourite_key)
+            element.data('favourite_key',data.favourite_key)
 
         })
 
