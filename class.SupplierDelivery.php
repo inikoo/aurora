@@ -1056,6 +1056,8 @@ class SupplierDelivery extends DB_Table {
 
         }
 
+        $supplier_part->part->update_next_deliveries_data();
+
         $this->update_totals();
 
         $this->update_metadata = array(
@@ -1291,6 +1293,7 @@ class SupplierDelivery extends DB_Table {
             print_r($error_info = $this->db->errorInfo());
             exit;
         }
+        $supplier_part->part->update_next_deliveries_data();
 
         $this->update_totals();
 
@@ -1551,6 +1554,7 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
             print_r($error_info = $this->db->errorInfo());
             exit;
         }
+        $supplier_part->part->update_next_deliveries_data();
 
         $this->update_totals();
 
@@ -1628,6 +1632,30 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
         if ($this->data['Supplier Delivery State'] == 'InProcess') {
 
 
+            $items = array();
+            $sql   = sprintf(
+                "SELECT POTF.`Supplier Part Historic Key`,`Purchase Order Quantity`,`Supplier Part Reference`,POTF.`Supplier Part Key`,`Supplier Part Part SKU` FROM `Purchase Order Transaction Fact` POTF
+			LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Historic Key`=SPH.`Supplier Part Historic Key`)
+            LEFT JOIN  `Supplier Part Dimension` SP ON (POTF.`Supplier Part Key`=SP.`Supplier Part Key`)
+
+			WHERE `Supplier Delivery Key`=%d", $this->id
+            );
+
+
+            if ($result = $this->db->query($sql)) {
+
+                foreach ($result as $row) {
+                    $items[] = array(
+                        $row['Supplier Part Historic Key'],
+                        $row['Supplier Part Reference'],
+                        $row['Purchase Order Quantity'],
+                        $row['Supplier Part Key'],
+                        $row['Supplier Part Part SKU'],
+                    );
+                }
+            }
+
+
             $sql = sprintf(
                 "DELETE FROM `Supplier Delivery Dimension` WHERE `Supplier Delivery Key`=%d", $this->id
             );
@@ -1683,6 +1711,12 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
 
 
             $this->deleted = true;
+
+            foreach($items as $item){
+                $part=get_object('Part',$item[4]);
+                $part->update_next_deliveries_data();
+
+            }
 
 
             return sprintf(

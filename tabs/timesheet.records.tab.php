@@ -47,6 +47,9 @@ $smarty->assign(
     'js_code', 'js/injections/timesheet_records.'.(_DEVEL ? '' : 'min.').'js'
 );
 
+$smarty->assign('table_top_template', 'timesheet_records.edit.tpl');
+
+
 
 include 'utils/get_table_html.php';
 

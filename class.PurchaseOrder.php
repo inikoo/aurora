@@ -761,7 +761,7 @@ class PurchaseOrder extends DB_Table {
                             $tax = 0;
                         }
                         $sql = sprintf(
-                            'UPDATE `Purchase Order Transaction Fact` SET `Supplier Delivery Net Amount`=%f,`Supplier Delivery Tax Amount`=%f,`Supplier Delivery Quantity`=%f,`Supplier Delivery Key`=%d,`Supplier Delivery Transaction State`=%s WHERE `Purchase Order Transaction Fact Key`=%d',
+                            'UPDATE `Purchase Order Transaction Fact` SET `Supplier Delivery Net Amount`=%f,`Supplier Delivery Tax Amount`=%f,`Supplier Delivery Quantity`=%f,`Supplier Delivery Key`=%d,`Supplier Delivery Transaction State`=%s  ,`Supplier Delivery Transaction Placed`="No" WHERE `Purchase Order Transaction Fact Key`=%d',
                             $net, $tax, $qty, $delivery->id, prepare_mysql('InProcess'), $potf_key
                         );
                         $this->db->exec($sql);
@@ -1179,7 +1179,6 @@ class PurchaseOrder extends DB_Table {
 
     function update_affected_parts() {
 
-        include_once 'class.SupplierPart.php';
 
         $sql = sprintf(
             "SELECT `Supplier Part Key` FROM `Purchase Order Transaction Fact` WHERE `Purchase Order Key`=%d", $this->id
@@ -1188,8 +1187,11 @@ class PurchaseOrder extends DB_Table {
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
-                $supplier_part = new SupplierPart($row['Supplier Part Key']);
-                $supplier_part->part->update_next_shipment();
+                $supplier_part = get_object('SupplierPart',$row['Supplier Part Key']);
+                $supplier_part->part->update_next_deliveries_data();
+
+
+
             }
         } else {
             print_r($error_info = $this->db->errorInfo());
@@ -1450,7 +1452,7 @@ class PurchaseOrder extends DB_Table {
 
 
         }
-
+        $supplier_part->part->update_next_deliveries_data();
         $this->update_totals();
         $operations = array();
 
@@ -1589,7 +1591,7 @@ class PurchaseOrder extends DB_Table {
 
             $items = array();
             $sql   = sprintf(
-                "SELECT POTF.`Supplier Part Historic Key`,`Purchase Order Quantity`,`Supplier Part Reference` FROM `Purchase Order Transaction Fact` POTF
+                "SELECT POTF.`Supplier Part Historic Key`,`Purchase Order Quantity`,`Supplier Part Reference`,POTF.`Supplier Part Key`,`Supplier Part Part SKU` FROM `Purchase Order Transaction Fact` POTF
 			LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Historic Key`=SPH.`Supplier Part Historic Key`)
             LEFT JOIN  `Supplier Part Dimension` SP ON (POTF.`Supplier Part Key`=SP.`Supplier Part Key`)
 
@@ -1603,7 +1605,9 @@ class PurchaseOrder extends DB_Table {
                     $items[] = array(
                         $row['Supplier Part Historic Key'],
                         $row['Supplier Part Reference'],
-                        $row['Purchase Order Quantity']
+                        $row['Purchase Order Quantity'],
+                        $row['Supplier Part Key'],
+                        $row['Supplier Part Part SKU'],
                     );
                 }
             }
@@ -1680,10 +1684,6 @@ class PurchaseOrder extends DB_Table {
                         }
 
 
-                        $res2 = mysql_query($sql);
-                        while ($row2 = mysql_fetch_assoc($res2)) {
-
-                        }
                     }
 
 
@@ -1719,6 +1719,14 @@ class PurchaseOrder extends DB_Table {
             $this->error = true;
             $this->msg   = 'Can not deleted submitted purchase orders';
         }
+
+
+        foreach($items as $item){
+            $part=get_object('Part',$item[4]);
+            $part->update_next_deliveries_data();
+
+        }
+
     }
 
     function mark_as_confirmed($data) {

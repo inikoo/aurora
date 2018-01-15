@@ -196,7 +196,7 @@ function get_object($object_name, $key, $load_other_data = false) {
             $object = new Upload($key);
             break;
         case 'supplier_part':
-        case 'supplier part':
+        case 'supplierpart':
             require_once "class.SupplierPart.php";
             $object = new SupplierPart($key);
             break;
