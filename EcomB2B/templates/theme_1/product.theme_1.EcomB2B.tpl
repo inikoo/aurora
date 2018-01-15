@@ -256,7 +256,7 @@
                     </script>
 
                     <section class="product_tabs" style="margin-top:20px;margin-bottom: 40px">
-                        <h1 class="hide">{t}Properties{/t}</h1>
+                        <h6 class="hide">{t}Properties{/t}</h6>
 
                         <input id="tab-properties" type="radio" name="grp" class="{if !$has_properties_tab}hide{/if}" {if $has_properties_tab}checked="checked"{/if} />
                         <label for="tab-properties">{t}Properties{/t}</label>
