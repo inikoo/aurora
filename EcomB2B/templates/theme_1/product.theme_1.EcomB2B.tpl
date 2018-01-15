@@ -115,7 +115,7 @@
 
                                 <div class="fotorama" data-nav="thumbs" data-width="400">
                                     {foreach from=$product->get_images_slidesshow() item=image name=foo}
-                                        <a href="/{$image.normal_url}"><img src="/{$image.small_url}"></a>
+                                        <a href="/{$image.normal_url}"><img alt="" src="/{$image.small_url}"></a>
                                     {/foreach}
 
 
@@ -317,7 +317,7 @@
                                 <div class="warp_element see_also">
                                     <div class="image" >
                                         <a href="{$see_also_item->get('URL')}">
-                                            <img src="{$see_also_item->get('Image')}" style=""/>
+                                            <img src="{$see_also_item->get('Image')}" alt=""/>
                                         </a>
 
 
@@ -344,6 +344,9 @@
         </div>
 
     </div>
+
+
+</div>
 
     <script>
         $(function () {
