@@ -12,5 +12,5 @@
 
 
 <div class="{$data.type} _block  "  style="Width:100%;" data-h="{$data.height}" data-w="1240"  >
-    <iframe onload="var div=$(this).closest('div');div.css({ height: $(this).width()*div.data('h')/div.data('w') })"  style="width:100%;border: 0px;overflow:hidden;" src="https://{$data.src}"   allowfullscreen ></iframe>
+    <iframe onload="var div=$(this).closest('div');div.css({ height: $(this).width()*div.data('h')/div.data('w') });console.log($(this).width()*div.data('h')/div.data('w'))"  style="width:100%;height: 100%; border: 0px;overflow:hidden;" src="https://{$data.src}"   allowfullscreen ></iframe>
 </div>
