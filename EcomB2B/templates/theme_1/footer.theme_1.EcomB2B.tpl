@@ -41,7 +41,7 @@
                             <ul class="footer_block faddress">
                                 {foreach from=$column.items item=item }
                                     {if $item.type=='logo'}
-                                        <li  class="item _logo"><img   src="{$item.src}" title=" {$item.title}" /></li>
+                                        <li  class="item _logo"><img src="{$item.src}" alt="" title="{$item.title}" /></li>
                                     {elseif $item.type=='text'}
                                         <li   class="item _text" ><i   class="fa fa-fw {$item.icon}"></i> <span >
                                           {if $item.text=='#tel' and  $store->get('Telephone')!=''}{$store->get('Telephone')}
