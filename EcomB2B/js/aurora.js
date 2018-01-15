@@ -31,14 +31,14 @@ $(function() {
             icon.removeClass('fa-envelope-o').addClass('fa-envelope').addClass('marked').attr('title', '{t}Click to remove notification{/t}')
 
 
-            var request = 'ar_reminders.php?tipo=send_reminder&pid=' + $(this).closest('.product_showcase').attr('product_id')
+            var request = 'ar_reminders.php?tipo=send_reminder&pid=' + $(this).closest('.product_showcase').data('product_id')
 
 
         } else {
 
 
             icon.removeClass('fa-envelope').addClass('fa-envelope-o').removeClass('marked').attr('title', '{t}Click to be notified by email{/t}')
-            var request = 'ar_reminders.php?tipo=cancel_send_reminder&esr_key=' + $(this).attr('reminder_key')
+            var request = 'ar_reminders.php?tipo=cancel_send_reminder&esr_key=' + $(this).data('reminder_key')
 
         }
 
@@ -50,7 +50,7 @@ $(function() {
 
             if (data.state == 200) {
                 element.removeClass('lock')
-                element.attr('reminder_key', data.id)
+                element.data('reminder_key', data.id)
 
             }
 
@@ -210,7 +210,7 @@ $(function() {
         }
 
 
-        var request = 'ar_web_basket.php?tipo=update_item&product_id=' + $(this).closest('.product_container').attr('product_id') + '&order_key=' + order_key + '&qty=' + order_qty + '&webpage_key=' + $('#webpage_data').data('webpage_key') + '&page_section_type=Family'
+        var request = 'ar_web_basket.php?tipo=update_item&product_id=' + $(this).closest('.product_container').data('product_id') + '&order_key=' + order_key + '&qty=' + order_qty + '&webpage_key=' + $('#webpage_data').data('webpage_key') + '&page_section_type=Family'
 
         console.log(request)
         $.getJSON(request, function (data) {
@@ -235,7 +235,7 @@ $(function() {
 
                 if (data.quantity == 0) data.quantity = ''
 
-                input.val(data.quantity).attr('ovalue', data.quantity).prop('readonly', false);
+                input.val(data.quantity).data('ovalue', data.quantity).prop('readonly', false);
 
             } else if (data.state == 201) {
 
@@ -284,7 +284,7 @@ function save_special_instructions(){
     var ajaxData = new FormData();
 
     ajaxData.append("tipo", 'update_order')
-    ajaxData.append("order_key", $('webpage_data').attr('order_key'))
+    ajaxData.append("order_key", $('webpage_data').data('order_key'))
     ajaxData.append("field", 'Order Special Instructions')
     ajaxData.append("value",$('#_special_instructions').val())
 
