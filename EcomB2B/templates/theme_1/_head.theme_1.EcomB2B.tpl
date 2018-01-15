@@ -159,45 +159,45 @@
     <!--  <script src="/theme_1/local/bootstrap.js"></script> -->
 
 
-    <script type="text/javascript" src="/js/sweetalert.min.js"></script>
+    <script  src="/js/sweetalert.min.js"></script>
 
 
 
 
 
-    <script type="text/javascript" src="/theme_1/tooltips/jquery.darktooltip.js"></script>
+    <script  src="/theme_1/tooltips/jquery.darktooltip.js"></script>
 
      <script src="/theme_1/aninum/jquery.animateNumber.min.js"></script>
     <script  src="/theme_1/animations/js/animations.min.js" type="text/javascript"></script>
 
-     <script type="text/javascript" src="/theme_1/cubeportfolio/js/jquery.cubeportfolio.js"></script>
+     <script  src="/theme_1/cubeportfolio/js/jquery.cubeportfolio.js"></script>
 
 
 
-    <script type="text/javascript" src="/theme_1/tabs/assets/js/responsive-tabs.min.js"></script>
+    <script  src="/theme_1/tabs/assets/js/responsive-tabs.min.js"></script>
 
 
 
         <script src="/theme_1/mainmenu/customeUI.js"></script>
-        <script type="text/javascript" src="/theme_1/mainmenu/sticky.js"></script>
-        <script type="text/javascript" src="/theme_1/mainmenu/modernizr.custom.75180.js"></script>
+        <script  src="/theme_1/mainmenu/sticky.js"></script>
+        <script  src="/theme_1/mainmenu/modernizr.custom.75180.js"></script>
 
 
 
 
 
-    <script type="text/javascript" src="/js/jquery.form.min.js"></script>
-    <script type="text/javascript" src="/js/sha256.js"></script>
-    <script type="text/javascript" src="/js/aurora.js?20180112"></script>
-    <script type="text/javascript" src="/js/validation.js"></script>
+    <script  src="/js/jquery.form.min.js"></script>
+    <script  src="/js/sha256.js"></script>
+    <script  src="/js/aurora.js?20180112"></script>
+    <script  src="/js/validation.js"></script>
 
-    <script type="text/javascript" src="/js/ordering.js?v20171126"></script>
-    <script type="text/javascript" src="/js/fotorama.js"></script>
+    <script  src="/js/ordering.js?v20171126"></script>
+    <script  src="/js/fotorama.js"></script>
 
     <link rel="stylesheet" href="/website.color.EcomB2B.css.php?&theme=theme_1" type="text/css"/>
 
 
-    <script type="text/javascript" src="/js/braintree.js"></script>
+    <script  src="/js/braintree.js"></script>
 
 
     {if $smarty.server.SERVER_NAME!='ecom.bali' and $zendesk_chat_code!=''}
