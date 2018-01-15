@@ -61,7 +61,7 @@
 
     <script src="/theme_1/local/jquery.js" type="text/javascript"></script>
     <script src="/theme_1/local/moment.min.js" type="text/javascript"></script>
-    <script type="text/javascript" src="/js/libs/base64.js"></script>
+    <script src="/js/libs/base64.js"></script>
 
 
 </head>

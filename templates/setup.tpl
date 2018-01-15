@@ -18,43 +18,43 @@
         <link href="/css/backgrid.css" rel="stylesheet">
         <link href="/css/backgrid-filter.css" rel="stylesheet">
         <link href="/css/app.css" rel="stylesheet">
-        <script type="text/javascript" src="/js/libs/jquery-2.2.1.js"></script>
-        <script type="text/javascript" src="/js/libs/jquery-ui.js"></script>
-        <script type="text/javascript" src="/js/libs/moment-with-locales.js"></script>
-        <script type="text/javascript" src="/js/libs/chrono.js"></script>
-        <script type="text/javascript" src="/js/libs/sha256.js"></script>
-        <script type="text/javascript" src="/js/libs/underscore.js"></script>
-        <script type="text/javascript" src="/js/libs/backbone.js"></script>
-        <script type="text/javascript" src="/js/libs/backbone.paginator.js"></script>
-        <script type="text/javascript" src="/js/libs/backgrid.js"></script>
-        <script type="text/javascript" src="/js/libs/backgrid-filter.js"></script>
-        <script type="text/javascript" src="/js/libs/intlTelInput.js"></script>
-        <script type="text/javascript" src="/js/libs/d3.js"></script>
-        <script type="text/javascript" src="/js/libs/d3fc.layout.js"></script>
-        <script type="text/javascript" src="/js/libs/d3fc.js"></script>
-        <script type="text/javascript" src="/js/keyboard_shorcuts.js"></script>
-        <script type="text/javascript" src="/js/search.js"></script>
-        <script type="text/javascript" src="/js/table.js"></script>
-        <script type="text/javascript" src="/js/validation.js"></script>
-        <script type="text/javascript" src="/js/edit.js"></script>
-        <script type="text/javascript" src="/js/new.js"></script>
-        <script type="text/javascript" src="/js/help.js"></script>
-        <script type="text/javascript" src="/js/setup/setup.js"></script>
+        <script src="/js/libs/jquery-2.2.1.js"></script>
+        <script src="/js/libs/jquery-ui.js"></script>
+        <script src="/js/libs/moment-with-locales.js"></script>
+        <script src="/js/libs/chrono.js"></script>
+        <script src="/js/libs/sha256.js"></script>
+        <script src="/js/libs/underscore.js"></script>
+        <script src="/js/libs/backbone.js"></script>
+        <script src="/js/libs/backbone.paginator.js"></script>
+        <script src="/js/libs/backgrid.js"></script>
+        <script src="/js/libs/backgrid-filter.js"></script>
+        <script src="/js/libs/intlTelInput.js"></script>
+        <script src="/js/libs/d3.js"></script>
+        <script src="/js/libs/d3fc.layout.js"></script>
+        <script src="/js/libs/d3fc.js"></script>
+        <script src="/js/keyboard_shorcuts.js"></script>
+        <script src="/js/search.js"></script>
+        <script src="/js/table.js"></script>
+        <script src="/js/validation.js"></script>
+        <script src="/js/edit.js"></script>
+        <script src="/js/new.js"></script>
+        <script src="/js/help.js"></script>
+        <script src="/js/setup/setup.js"></script>
 
-        <script type="text/javascript" src="/js/libs/countrySelect.js"></script>
+        <script src="/js/libs/countrySelect.js"></script>
 
-        <script type="text/javascript" src="/utils/country_data.js.php?locale={$locale}"></script>
+        <script src="/utils/country_data.js.php?locale={$locale}"></script>
 
 
     {else}
         <link href="/build/css/libs.min.css" rel="stylesheet">
         <link href="/build/css/app.min.css" rel="stylesheet">
-        <script type="text/javascript" src="/js/libs/countrySelect.js"></script>
+        <script src="/js/libs/countrySelect.js"></script>
 
-        <script type="text/javascript" src="/utils/country_data.js.php?locale={$locale}"></script>
-        <script type="text/javascript" src="/build/js/libs.min.js"></script>
-        <script type="text/javascript" src="/build/js/app.min.js"></script>
-        <script type="text/javascript" src="/build/js/setup.min.js"></script>
+        <script src="/utils/country_data.js.php?locale={$locale}"></script>
+        <script src="/build/js/libs.min.js"></script>
+        <script src="/build/js/app.min.js"></script>
+        <script src="/build/js/setup.min.js"></script>
     {/if}
 
 

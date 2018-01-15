@@ -14,8 +14,8 @@
   <link rel="stylesheet" href="../../css/fdk/colors/white.css" />
 
 
-  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-  <script type="text/javascript" src="../../js/libs/fdk.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+  <script src="../../js/libs/fdk.min.js"></script>
 </head>
 
 <body>

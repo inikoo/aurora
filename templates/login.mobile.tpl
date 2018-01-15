@@ -91,8 +91,8 @@
 <input id="_request" type="hidden" val="{$_request}">
 <script src="js/libs/material.min.js"></script>
 <script src="js/libs/jquery-2.2.1.js"></script>
-<script type="text/javascript" src="js/libs/sha256.js"></script>
-<script type="text/javascript" src="js/libs/aes.js"></script>
+<script src="js/libs/sha256.js"></script>
+<script src="js/libs/aes.js"></script>
 <script src="js/login/login.js"></script>
 
 <script src="js/login/login.mobile.js"></script>
