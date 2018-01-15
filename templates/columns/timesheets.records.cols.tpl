@@ -145,6 +145,13 @@ label: "{t}Ignored{/t}",
 sortType: "toggle",
 cell:'string'
 },
+{
+name: "notes",
+label: "{t}Notes{/t}",
+editable: false,
+sortable:false,
+cell:'Html'
+},
 
 ]
 

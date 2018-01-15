@@ -454,7 +454,7 @@ function update_parts_next_supplier_shipment($db) {
         foreach ($result as $row) {
             $part = new Part($row['Part SKU']);
 
-            $part->update_next_shipment();
+            $part->update_next_deliveries_data();
 
 
         }

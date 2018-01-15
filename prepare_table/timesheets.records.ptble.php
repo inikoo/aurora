@@ -81,7 +81,7 @@ $sql_totals = "select count(*) as num from $table  $where  ";
 //print $sql_totals;
 $fields
     = "
-A.`Staff Alias` authoriser,
+A.`Staff Alias` authoriser,`Timesheet Record Note`,
 I.`Staff Alias` ignorer,
 
 `Timesheet Record Ignored Due Missing End`,

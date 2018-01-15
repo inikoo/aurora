@@ -552,23 +552,19 @@ function timesheet_records($_data, $db, $user) {
             }
 
             $notes = sprintf(
-                '<span id="notes_%d" ></span>', $data['Timesheet Record Key']
+                '<span class="button" key="%d" onclick="open_timesheet_record_notes(this)" id="notes_%d" >%s<span class="note">%s</span></span>', $data['Timesheet Record Key'],$data['Timesheet Record Key'],'<i class="fa fa-sticky-note-o very_discreet '.($data['Timesheet Record Note']!=''?'hide':'').'" aria-hidden="true"></i> ',($data['Timesheet Record Note'])
             );
+
+
 
             $adata[] = array(
 
                 'id'                     => (integer)$data['Timesheet Record Key'],
                 'staff_key'              => (integer)$data['Timesheet Record Staff Key'],
                 'timesheet_key'          => (integer)$data['Timesheet Record Timesheet Key'],
-                'staff_formatted_id'     => sprintf(
-                    "%04d", $data['Timesheet Record Staff Key']
-                ),
-                'formatted_id'           => sprintf(
-                    "%06d", $data['Timesheet Record Key']
-                ),
-                'formatted_timesheet_id' => sprintf(
-                    "%06d", $data['Timesheet Record Timesheet Key']
-                ),
+                'staff_formatted_id'     => sprintf("%04d", $data['Timesheet Record Staff Key']),
+                'formatted_id'           => sprintf("%06d", $data['Timesheet Record Key']),
+                'formatted_timesheet_id' => sprintf("%06d", $data['Timesheet Record Timesheet Key']),
                 'alias'                  => $data['Staff Alias'],
                 'name'                   => $data['Staff Name'],
                 'type'                   => $type,
@@ -577,12 +573,9 @@ function timesheet_records($_data, $db, $user) {
                 'ignored'                => $ignored,
                 'used'                   => $used,
                 'notes'                  => $notes,
-                'date'                   => ($data['Timesheet Record Date'] != '' ? strftime(
-                    "%a %e %b %Y %H:%M %Z", strtotime($data['Timesheet Record Date'])
-                ) : ''),
-                'time'                   => ($data['Timesheet Record Date'] != '' ? strftime(
-                    "%H:%M:%S", strtotime($data['Timesheet Record Date'])
-                ) : ''),
+                'date'                   => ($data['Timesheet Record Date'] != '' ? strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Timesheet Record Date'])) : ''),
+                'time'                   => ($data['Timesheet Record Date'] != '' ? strftime("%H:%M:%S", strtotime($data['Timesheet Record Date'])) : ''),
+
 
 
             );
