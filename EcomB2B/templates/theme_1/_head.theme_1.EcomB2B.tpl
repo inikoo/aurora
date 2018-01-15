@@ -191,7 +191,7 @@
     <script  src="/js/aurora.js?20180115"></script>
     <script  src="/js/validation.js"></script>
 
-    <script  src="/js/ordering.js?20180115"></script>
+    <script  src="/js/ordering.js?20180115v2"></script>
     <script  src="/js/fotorama.js"></script>
 
     <link rel="stylesheet" href="/website.color.EcomB2B.css.php?&theme=theme_1" type="text/css"/>

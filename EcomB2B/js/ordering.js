@@ -327,7 +327,7 @@ function save_item_qty_change(element) {
 
     }
 
-    if (qty == '') qty =
+    if (qty == '') qty = 0;
 
     var settings = $(element).closest('span').data('settings')
 
