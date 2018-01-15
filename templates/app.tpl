@@ -49,87 +49,87 @@
 
 
         <link href="/css/app.css?v180110v2" rel="stylesheet">
-        <script type="text/javascript" src="/js/libs/jquery-2.2.1.js"></script>
-        <script type="text/javascript" src="/js/libs/jquery-ui.js"></script>
-        <script type="text/javascript" src="/js/libs/moment-with-locales.js"></script>
-        <script type="text/javascript" src="/js/libs/chrono.js"></script>
-        <script type="text/javascript" src="/js/libs/sha256.js"></script>
-        <script type="text/javascript" src="/js/libs/underscore.min.js"></script>
-        <script type="text/javascript" src="/js/libs/backbone.min.js"></script>
-        <script type="text/javascript" src="/js/libs/backbone.paginator.js"></script>
-        <script type="text/javascript" src="/js/libs/backgrid.js"></script>
-        <script type="text/javascript" src="/js/libs/backgrid-filter.js"></script>
-        <script type="text/javascript" src="/js/libs/snap.svg.js"></script>
-        <script type="text/javascript" src="/js/libs/svg-dial.js"></script>
-        <script type="text/javascript" src="/js/libs/countrySelect.js"></script>
-        <script type="text/javascript" src="/js/libs/intlTelInput.js"></script>
-        <script type="text/javascript" src="/js/libs/d3.js"></script>
-        <script type="text/javascript" src="/js/libs/d3fc.layout.js"></script>
-        <script type="text/javascript" src="/js/libs/d3fc.js"></script>
-        <script type="text/javascript" src="/js/libs/sweetalert.min.js"></script>
+        <script src="/js/libs/jquery-2.2.1.js"></script>
+        <script src="/js/libs/jquery-ui.js"></script>
+        <script src="/js/libs/moment-with-locales.js"></script>
+        <script src="/js/libs/chrono.js"></script>
+        <script src="/js/libs/sha256.js"></script>
+        <script src="/js/libs/underscore.min.js"></script>
+        <script src="/js/libs/backbone.min.js"></script>
+        <script src="/js/libs/backbone.paginator.js"></script>
+        <script src="/js/libs/backgrid.js"></script>
+        <script src="/js/libs/backgrid-filter.js"></script>
+        <script src="/js/libs/snap.svg.js"></script>
+        <script src="/js/libs/svg-dial.js"></script>
+        <script src="/js/libs/countrySelect.js"></script>
+        <script src="/js/libs/intlTelInput.js"></script>
+        <script src="/js/libs/d3.js"></script>
+        <script src="/js/libs/d3fc.layout.js"></script>
+        <script src="/js/libs/d3fc.js"></script>
+        <script src="/js/libs/sweetalert.min.js"></script>
 
-        <script type="text/javascript" src="/js/libs/fotorama.js"></script>
-        <script type="text/javascript" src="/js/libs/tooltipster.bundle.min.js"></script>
+        <script src="/js/libs/fotorama.js"></script>
+        <script src="/js/libs/tooltipster.bundle.min.js"></script>
 
 
-        <script type="text/javascript" src="/js/app.js"></script>
-        <script type="text/javascript" src="/js/keyboard_shortcuts.js"></script>
-        <script type="text/javascript" src="/js/barcode_scanner.js?v1712v2"></script>
-        <script type="text/javascript" src="/js/search.js"></script>
-        <script type="text/javascript" src="/js/table.js"></script>
-        <script type="text/javascript" src="/js/validation.js?v171206v3"></script>
-        <script type="text/javascript" src="/js/edit.js?v171229"></script>
-        <script type="text/javascript" src="/js/edit_webpage_edit.js?v171019"></script>
+        <script src="/js/app.js"></script>
+        <script src="/js/keyboard_shortcuts.js"></script>
+        <script src="/js/barcode_scanner.js?v1712v2"></script>
+        <script src="/js/search.js"></script>
+        <script src="/js/table.js"></script>
+        <script src="/js/validation.js?v171206v3"></script>
+        <script src="/js/edit.js?v171229"></script>
+        <script src="/js/edit_webpage_edit.js?v171019"></script>
 
-        <script type="text/javascript" src="/js/new.js?v171115"></script>
-        <script type="text/javascript" src="/js/order.common.js?v171126b"></script>
-        <script type="text/javascript" src="/js/supplier.order.js"></script>
-        <script type="text/javascript" src="/js/supplier.delivery.js"></script>
-        <script type="text/javascript" src="/js/part_locations.edit.js?v=201715"></script>
-        <script type="text/javascript" src="/js/alert_dial.js"></script>
-        <script type="text/javascript" src="/js/help.js"></script>
-        <script type="text/javascript" src="/utils/country_data.js.php?locale={$locale}"></script>
-        <script type="text/javascript" src="/js/libs/editor/froala_editor.min.js"></script>
-        <script type="text/javascript" src="/js/libs/editor/codemirror.js"></script>
-        <script type="text/javascript" src="/js/libs/editor/codemirror.xml.js"></script>
-        <script type="text/javascript" src="/js/libs/editor/codemirror_active-line.js"></script>
+        <script src="/js/new.js?v171115"></script>
+        <script src="/js/order.common.js?v171126b"></script>
+        <script src="/js/supplier.order.js"></script>
+        <script src="/js/supplier.delivery.js"></script>
+        <script src="/js/part_locations.edit.js?v=201715"></script>
+        <script src="/js/alert_dial.js"></script>
+        <script src="/js/help.js"></script>
+        <script src="/utils/country_data.js.php?locale={$locale}"></script>
+        <script src="/js/libs/editor/froala_editor.min.js"></script>
+        <script src="/js/libs/editor/codemirror.js"></script>
+        <script src="/js/libs/editor/codemirror.xml.js"></script>
+        <script src="/js/libs/editor/codemirror_active-line.js"></script>
 
-        <script type="text/javascript" src="/js/libs/editor/plugins/align.min.js"></script>
-        <script type="text/javascript" src="/js/libs/editor/plugins/draggable.min.js"></script>
+        <script src="/js/libs/editor/plugins/align.min.js"></script>
+        <script src="/js/libs/editor/plugins/draggable.min.js"></script>
 
-        <script type="text/javascript" src="/js/libs/editor/plugins/char_counter.min.js"></script>
-        <script type="text/javascript" src="/js/libs/editor/plugins/code_beautifier.min.js"></script>
-        <script type="text/javascript" src="/js/libs/editor/plugins/code_view.min.js"></script>
-        <script type="text/javascript" src="/js/libs/editor/plugins/colors.min.js"></script>
-        <script type="text/javascript" src="/js/libs/editor/plugins/emoticons.min.js"></script>
-        <script type="text/javascript" src="/js/libs/editor/plugins/entities.min.js"></script>
-        <script type="text/javascript" src="/js/libs/editor/plugins/file.min.js"></script>
-        <script type="text/javascript" src="/js/libs/editor/plugins/font_family.min.js"></script>
-        <script type="text/javascript" src="/js/libs/editor/plugins/font_size.min.js"></script>
-        <script type="text/javascript" src="/js/libs/editor/plugins/fullscreen.min.js"></script>
-        <script type="text/javascript" src="/js/libs/editor/plugins/image.min.js"></script>
-        <script type="text/javascript" src="/js/libs/editor/plugins/image_manager.min.js"></script>
-        <script type="text/javascript" src="/js/libs/editor/plugins/inline_style.min.js"></script>
-        <script type="text/javascript" src="/js/libs/editor/plugins/line_breaker.min.js"></script>
-        <script type="text/javascript" src="/js/libs/editor/plugins/link.min.js"></script>
-        <script type="text/javascript" src="/js/libs/editor/plugins/lists.min.js"></script>
-        <script type="text/javascript" src="/js/libs/editor/plugins/paragraph_format.min.js"></script>
-        <script type="text/javascript" src="/js/libs/editor/plugins/paragraph_style.min.js"></script>
-        <script type="text/javascript" src="/js/libs/editor/plugins/quick_insert.min.js"></script>
-        <script type="text/javascript" src="/js/libs/editor/plugins/quote.min.js"></script>
-        <script type="text/javascript" src="/js/libs/editor/plugins/table.min.js"></script>
-        <script type="text/javascript" src="/js/libs/editor/plugins/save.min.js"></script>
-        <script type="text/javascript" src="/js/libs/editor/plugins/url.min.js"></script>
-        <script type="text/javascript" src="/js/libs/editor/plugins/video.min.js"></script>
-        <script type="text/javascript" src="/js/libs/amcharts/amcharts.js"></script>
-        <script type="text/javascript" src="/js/libs/amcharts/serial.js"></script>
-        <script type="text/javascript" src="/js/libs/amcharts/amstock.js"></script>
-        <script type="text/javascript" src="/js/libs/amcharts/plugins/dataloader/dataloader.min.js"></script>
-        <script type="text/javascript" src="/js/libs/amcharts/plugins/export/export.min.js"></script>
-        <script type="text/javascript" src="/js/libs/jquery.scannerdetection.js"></script>
-        <script type="text/javascript" src="/js/libs/jquery.fancybox.min.js"></script>
-        <script type="text/javascript" src="/js/libs/jquery.awesome-cursor.min.js"></script>
-        <script type="text/javascript" src="/js/libs/base64.js"></script>
+        <script src="/js/libs/editor/plugins/char_counter.min.js"></script>
+        <script src="/js/libs/editor/plugins/code_beautifier.min.js"></script>
+        <script src="/js/libs/editor/plugins/code_view.min.js"></script>
+        <script src="/js/libs/editor/plugins/colors.min.js"></script>
+        <script src="/js/libs/editor/plugins/emoticons.min.js"></script>
+        <script src="/js/libs/editor/plugins/entities.min.js"></script>
+        <script src="/js/libs/editor/plugins/file.min.js"></script>
+        <script src="/js/libs/editor/plugins/font_family.min.js"></script>
+        <script src="/js/libs/editor/plugins/font_size.min.js"></script>
+        <script src="/js/libs/editor/plugins/fullscreen.min.js"></script>
+        <script src="/js/libs/editor/plugins/image.min.js"></script>
+        <script src="/js/libs/editor/plugins/image_manager.min.js"></script>
+        <script src="/js/libs/editor/plugins/inline_style.min.js"></script>
+        <script src="/js/libs/editor/plugins/line_breaker.min.js"></script>
+        <script src="/js/libs/editor/plugins/link.min.js"></script>
+        <script src="/js/libs/editor/plugins/lists.min.js"></script>
+        <script src="/js/libs/editor/plugins/paragraph_format.min.js"></script>
+        <script src="/js/libs/editor/plugins/paragraph_style.min.js"></script>
+        <script src="/js/libs/editor/plugins/quick_insert.min.js"></script>
+        <script src="/js/libs/editor/plugins/quote.min.js"></script>
+        <script src="/js/libs/editor/plugins/table.min.js"></script>
+        <script src="/js/libs/editor/plugins/save.min.js"></script>
+        <script src="/js/libs/editor/plugins/url.min.js"></script>
+        <script src="/js/libs/editor/plugins/video.min.js"></script>
+        <script src="/js/libs/amcharts/amcharts.js"></script>
+        <script src="/js/libs/amcharts/serial.js"></script>
+        <script src="/js/libs/amcharts/amstock.js"></script>
+        <script src="/js/libs/amcharts/plugins/dataloader/dataloader.min.js"></script>
+        <script src="/js/libs/amcharts/plugins/export/export.min.js"></script>
+        <script src="/js/libs/jquery.scannerdetection.js"></script>
+        <script src="/js/libs/jquery.fancybox.min.js"></script>
+        <script src="/js/libs/jquery.awesome-cursor.min.js"></script>
+        <script src="/js/libs/base64.js"></script>
 
 
 
@@ -137,9 +137,9 @@
     {else}
         <link href="/build/css/libs.min.css" rel="stylesheet">
         <link href="/build/css/app.min.css" rel="stylesheet">
-        <script type="text/javascript" src="/build/js/libs.js"></script>
-        <script type="text/javascript" src="/build/js/app.js"></script>
-        <script type="text/javascript" src="/utils/country_data.js.php?locale={$locale}"></script>
+        <script src="/build/js/libs.js"></script>
+        <script src="/build/js/app.js"></script>
+        <script src="/utils/country_data.js.php?locale={$locale}"></script>
     {/if}
 
 

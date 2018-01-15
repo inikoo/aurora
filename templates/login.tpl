@@ -14,19 +14,19 @@
             <link href="/css/backgrid.css" rel="stylesheet">
             <link href="/css/backgrid-filter.css" rel="stylesheet">
             <link href="/css/login.css" rel="stylesheet">
-            <script type="text/javascript" src="js/libs/jquery-2.2.1.js"></script>
-            <script type="text/javascript" src="js/libs/sha256.js"></script>
-            <script type="text/javascript" src="js/libs/aes.js"></script>
-            <script type="text/javascript" src="/js/libs/base64.js"></script>
+            <script src="js/libs/jquery-2.2.1.js"></script>
+            <script src="js/libs/sha256.js"></script>
+            <script src="js/libs/aes.js"></script>
+            <script src="/js/libs/base64.js"></script>
 
-            <script type="text/javascript" src="js/login/login.js"></script>
-            <script type="text/javascript" src="js/libs/jquery.backstretch.min.js"></script>
+            <script src="js/login/login.js"></script>
+            <script src="js/libs/jquery.backstretch.min.js"></script>
 
 
         {else}
             <link href="/css/libs.min.css" rel="stylesheet">
             <link href="/css/login.min.css" rel="stylesheet">
-            <script type="text/javascript" src="js/login.min.js"></script>
+            <script src="js/login.min.js"></script>
         {/if}
     </head>
     <body class="align">

@@ -7,7 +7,7 @@
 
     <script src="/theme_1/local/jquery.js"></script>
 
-    <script type="text/javascript" src="/js/braintree.js"></script>
+    <script src="/js/braintree.js"></script>
 
 
     <style>
