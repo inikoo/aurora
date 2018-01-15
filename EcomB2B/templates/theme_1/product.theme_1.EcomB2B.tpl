@@ -279,7 +279,7 @@
                                 <tr class="{if $Materials==''}hide{/if}">
                                     <td>{if empty($labels._product_materials)}{t}Materials{/t}/{t}Ingredients{/t}{else}{$labels._product_materials}{/if}</td>
                                     <td>
-                                        <div style="width:70%"> {$Materials}</div>
+                                        <p style="width:70%"> {$Materials}</p>
                                     </td>
                                 </tr>
                                 <tr class="{if $CPNP==''}hide{/if}">
