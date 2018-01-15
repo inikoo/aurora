@@ -11,7 +11,7 @@
 
 
 
-<div id="block_{$key}" block="{$data.type}" class="{$data.type} _block  " style="Width:100%;" >
+<div id="block_{$key}"  class="{$data.type} _block  " style="Width:100%;" >
 
     <div class="heading-strip bg-1" style="padding: 10px 20px;margin-bottom: 10px">
         <h3>{t}Basket{/t}</h3>

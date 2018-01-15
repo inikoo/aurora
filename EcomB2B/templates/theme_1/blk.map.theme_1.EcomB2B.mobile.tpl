@@ -11,7 +11,7 @@
 
 
 
-<div id="block_{$key}" block="{$data.type}" class="{$data.type} _block  " style="Width:100%;" >
+<div id="block_{$key}"  class="{$data.type} _block  " style="Width:100%;" >
 
   <div class="content-fullscreen">
                 <iframe class="responsive-image maps no-bottom" src="{$store->get('Store Google Map URL')}"></iframe>

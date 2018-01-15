@@ -11,7 +11,7 @@
 
 
 
-<div id="block_{$key}" block="{$data.type}" class="{$data.type} _block {if !$data.show}hide{/if} " style="Width:100%;" >
+<div id="block_{$key}"  class="{$data.type} _block {if !$data.show}hide{/if} " style="Width:100%;" >
 
 
         {if $data.link!=''}<a href="{$data.link}">{/if}
