@@ -98,7 +98,7 @@ $(function() {
         $(this).find('i').removeClass('fa-hand-pointer-o').addClass('fa-spinner fa-spin  ')
         input.prop('readonly', true);
 
-        var order_key = $('#webpage_data').attr('order_key');
+        var order_key = $('#webpage_data').data('order_key');
         if (order_key == '') order_key = 0;
 
         if (order_qty > 0) {
@@ -109,7 +109,7 @@ $(function() {
         }
 
 
-        var request = 'ar_web_basket.php?tipo=update_item&product_id=' + $(this).closest('.product_container').attr('product_id') + '&order_key=' + order_key + '&qty=' + order_qty + '&webpage_key=' + $('#webpage_data').attr('webpage_key') + '&page_section_type=Family'
+        var request = 'ar_web_basket.php?tipo=update_item&product_id=' + $(this).closest('.product_container').attr('product_id') + '&order_key=' + order_key + '&qty=' + order_qty + '&webpage_key=' + $('#webpage_data').data('webpage_key') + '&page_section_type=Family'
 console.log(request)
         console.log(request)
         $.getJSON(request, function (data) {
@@ -149,7 +149,7 @@ console.log(request)
 
             } else if (data.state == 201) {
 
-              //  window.location.href = 'waiting_payment_confirmation.php?referral_key=' + $('#webpage_data').attr('webpage_key')
+              //  window.location.href = 'waiting_payment_confirmation.php?referral_key=' + $('#webpage_data').data('webpage_key')
 
 
             }
@@ -327,12 +327,12 @@ function save_item_qty_change(element) {
 
     }
 
-    if (qty == '') qty = 0;
+    if (qty == '') qty =
 
     var settings = $(element).closest('span').data('settings')
 
 
-    var request = 'ar_web_basket.php?tipo=update_item&product_id=' + settings.item_key + '&order_key=' + $('#webpage_data').attr('order_key') + '&qty=' + qty + '&webpage_key=' + $('#webpage_data').attr('webpage_key') + '&page_section_type=Basket'
+    var request = 'ar_web_basket.php?tipo=update_item&product_id=' + settings.item_key + '&order_key=' + $('#webpage_data').data('order_key') + '&qty=' + qty + '&webpage_key=' + $('#webpage_data').data('webpage_key') + '&page_section_type=Basket'
 
 
     $.getJSON(request, function (data) {
@@ -384,7 +384,7 @@ console.log(data.discounts_data)
 
         } else if (data.state == 201) {
 
-           // window.location.href = 'waiting_payment_confirmation.php?referral_key=' + $('#webpage_data').attr('webpage_key')
+           // window.location.href = 'waiting_payment_confirmation.php?referral_key=' + $('#webpage_data').data('webpage_key')
 
 
         }else if (data.state == 400) {
@@ -432,7 +432,7 @@ function save_special_instructions(){
     var ajaxData = new FormData();
 
     ajaxData.append("tipo", 'update_order')
-    ajaxData.append("order_key", $('webpage_data').attr('order_key'))
+    ajaxData.append("order_key", $('webpage_data').data('order_key'))
     ajaxData.append("field", 'Order Special Instructions')
     ajaxData.append("value",$('#_special_instructions').val())
 

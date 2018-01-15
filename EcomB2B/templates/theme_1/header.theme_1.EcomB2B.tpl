@@ -13,9 +13,9 @@
 
 
 <span id="webpage_data" style="display:none"
-      webpage_key="{$webpage->id}"
-      customer_key="{$customer_key}"
-      order_key="{$order_key}"
+      data-webpage_key="{$webpage->id}"
+      data-customer_key="{$customer_key}"
+      data-order_key="{$order_key}"
 ></span>
 <header id="header">
         <div id="topHeader">

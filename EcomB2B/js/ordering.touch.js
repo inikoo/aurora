@@ -198,7 +198,7 @@ function save_item_qty_change(element) {
     var settings = order_div.data('settings')
 
 
-    var request = 'ar_web_basket.php?tipo=update_item&product_id=' + settings.pid + '&order_key=' + $('#webpage_data').attr('order_key') + '&qty=' + qty + '&webpage_key=' + $('#webpage_data').attr('webpage_key') + '&page_section_type=Basket'
+    var request = 'ar_web_basket.php?tipo=update_item&product_id=' + settings.pid + '&order_key=' + $('#webpage_data').data('order_key') + '&qty=' + qty + '&webpage_key=' + $('#webpage_data').data('webpage_key') + '&page_section_type=Basket'
 
 console.log(request)
 
@@ -261,7 +261,7 @@ console.log(request)
 
         } else if (data.state == 201) {
 
-            window.location.href = 'waiting_payment_confirmation.php?referral_key=' + $('#webpage_data').attr('webpage_key')
+            window.location.href = 'waiting_payment_confirmation.php?referral_key=' + $('#webpage_data').data('webpage_key')
 
 
         }else if (data.state == 400) {

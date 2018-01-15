@@ -38,23 +38,23 @@
     <link rel="stylesheet" href="/theme_1/local/font-awesome/css/font-awesome.min.css">
 
 
-    <script type="text/javascript" src="/theme_1/mobile/jquery.js"></script>
-    <script type="text/javascript" src="/theme_1/mobile/plugins.js"></script>
-    <script type="text/javascript" src="/theme_1/mobile/custom.js"></script>
-    <script type="text/javascript" src="/js/sweetalert.min.js"></script>
+    <script src="/theme_1/mobile/jquery.js"></script>
+    <script src="/theme_1/mobile/plugins.js"></script>
+    <script src="/theme_1/mobile/custom.js"></script>
+    <script src="/js/sweetalert.min.js"></script>
 
     <script src="/theme_1/local/jquery-ui.js"></script>
-    <script type="text/javascript" src="/js/sha256.js"></script>
+    <script src="/js/sha256.js"></script>
 
     <script src="/theme_1/sky_forms/js/jquery.form.min.js"></script>
     <script src="/theme_1/sky_forms/js/jquery.validate.min.js"></script>
     <script src="/theme_1/sky_forms/js/additional-methods.min.js"></script>
 
-    <script src="/js/aurora.js?20171101"></script>
-    <script type="text/javascript" src="/js/validation.js"></script>
+    <script src="/js/aurora.js?20180115"></script>
+    <script src="/js/validation.js"></script>
 
-    <script src="/js/ordering.touch.js"></script>
-    <script type="text/javascript" src="/js/braintree.js"></script>
+    <script src="/js/ordering.touch.js?20180115"></script>
+    <script src="/js/braintree.js"></script>
 
 
 </head>
