@@ -349,7 +349,7 @@
 
 
 
-
+        {if isset($extra_style)}{$extra_style}{/if}
 
     </style>
 
