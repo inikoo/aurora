@@ -9,7 +9,7 @@
 -->
 *}
 
-<div id="block_{$key}" block="{$data.type}" class="{$data.type} _block  ">
+<div id="block_{$key}"  class="{$data.type} _block  ">
     
         {if $data.link!=''}
             <a href="{$data.link}"><img class="preload-image responsive-image" data-original="{$data.src}" alt="img"></a>

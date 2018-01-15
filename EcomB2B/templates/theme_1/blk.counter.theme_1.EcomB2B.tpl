@@ -10,7 +10,7 @@
 *}
 
 
-<div id="block_{$key}" block="{$data.type}" class="{$data.type} _block  ">
+<div id="block_{$key}" class="{$data.type} _block  ">
 
     <div class="features_sec31">
         <div class="container">

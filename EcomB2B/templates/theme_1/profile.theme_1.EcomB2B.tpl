@@ -34,27 +34,27 @@
                         <ul class="arrows_list1">
 
                             <li>
-                                <span block="_contact_details" onClick="change_block(this)" class="block_link  like_button  selected" style="cursor: pointer"  >
+                                <span data-block="_contact_details" onClick="change_block(this)" class="block_link  like_button  selected" style="cursor: pointer"  >
                                     <i class="fa fa-angle-right"></i>
                                     <span class="_contact_details_title">{$content._contact_details_title}</span>
                                 </span>
                             </li>
                             <li>
-                                <span  block="_login_details" onClick="change_block(this)" class="block_link  like_button"  style="cursor: pointer">
+                                <span  data-block="_login_details" onClick="change_block(this)" class="block_link  like_button"  style="cursor: pointer">
                                     <i class="fa fa-angle-right"></i>
                                     <span class="_login_details_title">{$content._login_details_title}</span>
                                 </span>
                             </li>
 
                             <li>
-                                <span  block="_invoice_address_details" onClick="change_block(this)" class="block_link like_button "  style="cursor: pointer">
+                                <span  data-block="_invoice_address_details" onClick="change_block(this)" class="block_link like_button "  style="cursor: pointer">
                                     <i class="fa fa-angle-right"></i>
                                     <span class="_invoice_address_title">{$content._invoice_address_title}</span>
                                     </span>
                             </li>
 
                             <li>
-                                <span  block="_delivery_addresses_details" onClick="change_block(this)" class="block_link like_button " style="cursor: pointer">
+                                <span  data-block="_delivery_addresses_details" onClick="change_block(this)" class="block_link like_button " style="cursor: pointer">
                                     <i class="fa fa-angle-right"></i>
                                     <span class="_delivery_addresses_title">{$content._delivery_addresses_title}</span>
 
@@ -73,7 +73,7 @@
                                 <span class="block_link    selected">
                                     <i class="fa fa-angle-right"></i>
                                     <span class="_orders_title">{$content._orders_title}</span>
-                                    <i block="_orders" onClick="change_block(this)" class="padding_left_10 fa like_button fa-floppy-o"></i>
+                                    <i data-block="_orders" onClick="change_block(this)" class="padding_left_10 fa like_button fa-floppy-o"></i>
                                 </span>
                             </li>
 
@@ -529,7 +529,7 @@
     function change_block(element) {
 
         $('.block').addClass('hide')
-        $('#' + $(element).attr('block')).removeClass('hide')
+        $('#' + $(element).data('block')).removeClass('hide')
 
         $('.sidebar_widget .block_link').removeClass('selected')
         $(element).addClass('selected')

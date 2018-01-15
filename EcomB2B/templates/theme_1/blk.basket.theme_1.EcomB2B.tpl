@@ -11,7 +11,7 @@
 
 
 
-<div id="block_{$key}" block="{$data.type}" class="{$data.type} _block  " style="Width:100%;" >
+<div id="block_{$key}"  class="{$data.type} _block  " style="Width:100%;" >
 
     <div class="clearfix marb6"></div>
 

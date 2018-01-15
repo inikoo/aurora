@@ -9,7 +9,7 @@
 -->
 *}
 
-<div id="block_{$key}" block="{$data.type}" class="{$data.type} _block  ">
+<div id="block_{$key}"  class="{$data.type} _block  ">
 
 
             <div class="content single_line_height_plus" style="margin-top:10px;margin-bottom: 5px">
