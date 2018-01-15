@@ -89,7 +89,7 @@
                                     </div>
                                 {elseif $data.type=='image'}
                                     <div id="{$id}" class="webpage_content_header webpage_content_header_image">
-                                        <img src="{$data.image_src}" style="width:100%" title="{if isset($data.caption)}{$data.caption}{/if}"/>
+                                        <img alt="" src="{$data.image_src}" style="width:100%" title="{if isset($data.caption)}{$data.caption}{/if}"/>
                                     </div>
                                 {/if}
                             {/foreach}
@@ -250,7 +250,7 @@
                                             {if $product_data.data.link!=''}
                                                 <a href="{$product_data.data.link}"><img src="{$product_data.data.image_src}" title="{$product_data.data.caption}"/></a>
                                             {else}
-                                                <img src="{$product_data.data.image_src}" title="{$product_data.data.caption}"/>
+                                                <img alt="" src="{$product_data.data.image_src}" title="{$product_data.data.caption}"/>
                                             {/if}
 
 
@@ -295,7 +295,7 @@
                                             <div class="wrap_to_center product_image">
 
 
-                                                <img src="{$product->get('Image')}"/>
+                                                <img alt="" src="{$product->get('Image')}"/>
                                             </div>
                                         </a>
 
@@ -383,7 +383,7 @@
                                 <div class="warp_element see_also">
                                     <div class="image" >
                                         <a href="{$see_also_item->get('URL')}">
-                                            <img src="{$see_also_item->get('Image')}" style=""/>
+                                            <img src="{$see_also_item->get('Image')}" alt=""/>
                                         </a>
 
 
