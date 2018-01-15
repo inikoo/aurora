@@ -89,7 +89,7 @@
                                     {foreach from=$header_data.menu.columns item=column key=key}
                                     <li  id="menu_column_{$key}" class="dropdown {if !$column.show}hide{/if} on _column {if $column.type=='three_columns'}yamm-fw  3_columns{else}single_column{/if}  " >
                                         <a  href="" data-toggle="dropdown" class="dropdown-toggle ">
-                                            {if $column.icon!=''}<i class="fa _column_label_icon {$column.icon} item_icon padding_right_5  " icon="{$column.icon}" aria-hidden="true"></i>  {/if}<span>{$column.label}</span>
+                                            {if $column.icon!=''}<i class="fa _column_label_icon {$column.icon} item_icon padding_right_5  "  aria-hidden="true"></i>  {/if}<span>{$column.label}</span>
                                         </a>
 
 
@@ -113,7 +113,7 @@
 
 
                                                                     <li class="item_li">
-                                                                        <a href="{$item.url}" ><i class="fa item_icon fa-fw {$item.icon}" icon="{$item.icon}" ></i> <span class="_item_label" >{$item.label}</span></a>
+                                                                        <a href="{$item.url}" ><i class="fa item_icon fa-fw {$item.icon}"  ></i> <span class="_item_label" >{$item.label}</span></a>
                                                                     </li >
                                                                     {/foreach}
 
