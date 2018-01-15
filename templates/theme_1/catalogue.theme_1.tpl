@@ -422,7 +422,7 @@
 
 </script>
 
-    <script type="text/javascript">
+    <script>
         jQuery(document).ready( function() {
             jQuery('#grid-container').cubeportfolio({
                 filters: '#filters-container',

@@ -167,7 +167,7 @@
     <script  src="/theme_1/tooltips/jquery.darktooltip.js"></script>
 
      <script src="/theme_1/aninum/jquery.animateNumber.min.js"></script>
-    <script  src="/theme_1/animations/js/animations.min.js" type="text/javascript"></script>
+    <script  src="/theme_1/animations/js/animations.min.js" ></script>
 
      <script  src="/theme_1/cubeportfolio/js/jquery.cubeportfolio.js"></script>
 
@@ -201,7 +201,7 @@
 
     {if $smarty.server.SERVER_NAME!='ecom.bali' and $zendesk_chat_code!=''}
         <!--Start of Zendesk Chat Script-->
-        <script type="text/javascript">
+        <script>
             window.$zopim||(function(d,s){ var z=$zopim=function(c){
             z._.push(c)},$=z.s=
                 d.createElement(s),e=d.getElementsByTagName(s)[0];z.set=function(o) {

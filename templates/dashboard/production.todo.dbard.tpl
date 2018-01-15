@@ -4,7 +4,7 @@
     <div style="color:#aaa">{t}To produce{/t}</div>
 </div>
 
-<script type="text/javascript">
+<script>
     // // globals
     var dial = new AlertDial('#todo', {
         ringBackgroundColor: ['{$data['color_min']}', '{$data['color_max']}'],

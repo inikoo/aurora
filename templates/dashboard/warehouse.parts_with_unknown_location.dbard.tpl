@@ -17,7 +17,7 @@
 </div>
 </div>
 
-<script type="text/javascript">
+<script>
     // // globals
     var dial = new AlertDial('#parts_with_unknown_location', {
         ringBackgroundColor: ['{$data['color_min']}', '{$data['color_max']}'],

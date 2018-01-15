@@ -4,7 +4,7 @@
     <div style="color:#aaa">{t}Urgent{/t}</div>
 </div>
 
-<script type="text/javascript">
+<script>
     // // globals
     var dial = new AlertDial('#todo_urgent', {
         ringBackgroundColor: ['{$data['color_min']}', '{$data['color_max']}'],

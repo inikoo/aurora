@@ -180,7 +180,7 @@ class WebClientPrint {
         }
         
         $url = $webClientPrintControllerAbsoluteUrl.'?'.self::GEN_DETECT_WCPP_SCRIPT.'='.$sessionID;
-        return '<script src="'.$url.'" type="text/javascript"></script>';
+        return '<script src="'.$url.'" ></script>';
          
     }
     
@@ -217,7 +217,7 @@ class WebClientPrint {
         $wcpHandler .= $sessionID;
         $wcpHandler .= '&'.self::GEN_WCP_SCRIPT_URL.'=';
         $wcpHandler .= base64_encode($clientPrintJobAbsoluteUrl);
-        return '<script src="'.$wcpHandler.'" type="text/javascript"></script>';
+        return '<script src="'.$wcpHandler.'" ></script>';
     }
     
     

@@ -4,7 +4,7 @@
     <div style="color:#aaa">{t}Excess stock{/t}</div>
 </div>
 
-<script type="text/javascript">
+<script>
     var dial;
     dial = new AlertDial('#surplus', {
         ringBackgroundColor: ['{$data['color_min']}', '{$data['color_max']}'],

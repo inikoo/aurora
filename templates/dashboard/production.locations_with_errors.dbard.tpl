@@ -5,7 +5,7 @@
     <div style="color:#aaa">{t}Locations with errors{/t}</div>
 </div>
 
-<script type="text/javascript">
+<script>
     // // globals
     var dial = new AlertDial('#locations_with_errors', {
         ringBackgroundColor: ['{$data['color_min']}', '{$data['color_max']}'],

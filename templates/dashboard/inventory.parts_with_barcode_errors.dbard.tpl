@@ -5,7 +5,7 @@
     <div style="color:#aaa">{t}EAN barcodes errors{/t}</div>
 </div>
 
-<script type="text/javascript">
+<script>
     // // globals
     var dial = new AlertDial('#parts_barcode_errors', {
         ringBackgroundColor: ['{$data['color_min']}', '{$data['color_max']}'],
