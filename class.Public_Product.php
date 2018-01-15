@@ -246,7 +246,7 @@ class Public_Product {
                     include_once 'class.Country.php';
                     $country = new Country('code', $this->data['Product Origin Country Code']);
 
-                    return '<img src="/art/flags/'.strtolower($country->get('Country 2 Alpha Code')).'.gif" title="'.$country->get('Country Code').'"> '._($country->get('Country Name'));
+                    return '<img alt="" src="/art/flags/'.strtolower($country->get('Country 2 Alpha Code')).'.gif" title="'.$country->get('Country Code').'"> '._($country->get('Country Name'));
                 } else {
                     return '';
                 }
