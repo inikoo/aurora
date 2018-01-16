@@ -50,6 +50,38 @@ $tab_defaults = array(
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'code'
     ),
+    'customers.geo'               => array(
+        'view'        => 'overview',
+        'sort_key'    => 'customers',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'country'
+    ),
+    'customers_poll.queries'               => array(
+        'view'        => 'overview',
+        'sort_key'    => 'query',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'query'
+    ),
+    'customers_poll.query.options'               => array(
+        'view'        => 'overview',
+        'sort_key'    => 'option',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'option'
+    ),
+    'customers_poll.reply.customers'               => array(
+        'view'        => 'overview',
+        'sort_key'    => 'query',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'query'
+    ),
     'customer.history'              => array(
         'view'          => 'overview',
         'sort_key'      => 'date',
@@ -3095,6 +3127,15 @@ $tab_defaults = array(
         'f_field'       => 'note',
         'elements_type' => each($elements_options['webpage_publishing_history'])['key'],
         'elements'      => $elements_options['webpage_publishing_history']
+    ),
+
+    'deleted.webpage.history'     => array(
+        'view'        => 'overview',
+        'sort_key'    => 'date',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'note'
     ),
 
     'webpage.email_blueprints'            => array(

@@ -17,43 +17,59 @@ function get_webpage_showcase($data, $smarty) {
     if (!$webpage->id) {
         return "";
     }
-    $website=get_object('Website',$webpage->get('Webpage Website Key'));
 
 
-    switch ($webpage->get('Webpage Scope')) {
-        case 'Product':
+    if ($data['_object']->deleted) {
+        $template = 'showcase/deleted_webpage.tpl';
 
-            $product = get_object('Product', $webpage->get('Webpage Scope Key'));
-            $smarty->assign('product', $product);
+        $smarty->assign('webpage', $webpage);
 
-            $template = 'showcase/webpage.product.tpl';
-            break;
-        case 'Category Products':
+    }else{
 
-            $category = get_object('Category', $webpage->get('Webpage Scope Key'));
-            $smarty->assign('category', $category);
-
-            $template = 'showcase/webpage.category_products.tpl';
-            break;
-        case 'Category Categories':
-            $category = get_object('Category', $webpage->get('Webpage Scope Key'));
-            $smarty->assign('category', $category);
+        $website=get_object('Website',$webpage->get('Webpage Website Key'));
 
 
-            if($data['store']->get('Store Department Category Key')==$category->get('Category Root Key')){
-                $template = 'showcase/webpage.department.tpl';
+        switch ($webpage->get('Webpage Scope')) {
+            case 'Product':
 
-            }else{
-                $template = 'showcase/webpage.category.tpl';
+                $product = get_object('Product', $webpage->get('Webpage Scope Key'));
+                $smarty->assign('product', $product);
 
-            }
+                $template = 'showcase/webpage.product.tpl';
+                break;
+            case 'Category Products':
 
-            break;
-        default:
-            $template = 'showcase/webpage.tpl';
+                $category = get_object('Category', $webpage->get('Webpage Scope Key'));
+                $smarty->assign('category', $category);
+
+                $template = 'showcase/webpage.category_products.tpl';
+                break;
+            case 'Category Categories':
+                $category = get_object('Category', $webpage->get('Webpage Scope Key'));
+                $smarty->assign('category', $category);
+
+
+                if($data['store']->get('Store Department Category Key')==$category->get('Category Root Key')){
+                    $template = 'showcase/webpage.department.tpl';
+
+                }else{
+
+
+
+                    $template = 'showcase/webpage.category.tpl';
+
+                }
+
+                break;
+            default:
+                $template = 'showcase/webpage.tpl';
+        }
+        $smarty->assign('webpage', $webpage);
+        $smarty->assign('website', $website);
     }
-    $smarty->assign('webpage', $webpage);
-    $smarty->assign('website', $website);
+
+
+
 
     return $smarty->fetch($template);
 

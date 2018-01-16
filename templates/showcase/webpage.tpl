@@ -9,9 +9,27 @@
 -->
 *}
 
-<div class="container" style="min-height:200px">
+<div class="name_and_categories">
 
-    {$webpage->id}
+    {if $webpage->get('Webpage Scope')=='Info'}
+        <span class="strong">{t}Information page{/t}</span>
+
+    {else}
+
+        <span class="strong">{$webpage->get('Webpage Scope')}</span>
 
 
+    {/if}
+
+
+
+    <ul class="tags " style="float:right">
+        {foreach from=$webpage->get_parents_data() item=item key=key}
+            <li><span class="button" onclick="change_view('category/{$item.category_key}')" title="{$item.label}">{$item.code}</span></li>
+        {/foreach}
+    </ul>
+    <div style="clear:both"></div>
+</div>
+
+<div class="asset_container">
 </div>

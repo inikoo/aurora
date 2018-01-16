@@ -335,6 +335,8 @@ $modules = array(
                     'customers.lists' => array()
                 )
             ),
+
+            /*
             'categories' => array(
                 'type'      => 'navigation',
                 'label'     => _('Categories'),
@@ -345,42 +347,37 @@ $modules = array(
                 ),
 
             ),
-            'statistics' => array(
+            */
+            'insights' => array(
                 'type'      => 'navigation',
-                'label'     => _('Statistics'),
-                'icon'      => 'line-chart',
-                'reference' => 'customers/%dstatistics',
+                'label'     => _('Insights'),
+                'icon'      => 'graduation-cap',
+                'reference' => 'customers/%s/insights',
                 'tabs'      => array(
+                    'customers_poll.queries'       => array(
+                        'label' => _('Poll')
+                    ),
+                    'customers.geo'            => array(
+                        'label' => _('Geographic Distribution')
+                    ),
+                    /*
                     'contacts'       => array(
-                        'label' => _(
-                            'Contacts'
-                        )
+                        'label' => _('Contacts')
                     ),
                     'customers'      => array(
-                        'label' => _(
-                            'Customers'
-                        )
+                        'label' => _('Customers')
                     ),
                     'orders'         => array(
-                        'label' => _(
-                            'Orders'
-                        )
+                        'label' => _('Orders')
                     ),
                     'data_integrity' => array(
-                        'label' => _(
-                            'Data Integrity'
-                        )
+                        'label' => _('Data Integrity')
                     ),
-                    'geo'            => array(
-                        'label' => _(
-                            'Geographic Distribution'
-                        )
-                    ),
+
                     'correlations'   => array(
-                        'label' => _(
-                            'Correlations'
-                        )
+                        'label' => _('Correlations')
                     ),
+                    */
 
                 )
 
@@ -2637,6 +2634,25 @@ $modules = array(
 
                 )
             ),
+
+
+
+
+            'deleted.webpage' => array(
+                'type' => 'object',
+                'tabs' => array(
+
+
+                    'deleted.webpage.history'       => array(
+                        'label' => _('History/Notes'),
+                        'icon'  => 'road',
+                        'class' => 'right icon_only'
+                    )
+
+                )
+
+            ),
+
 
             'marketing' => array(
                 'type'  => 'navigation',

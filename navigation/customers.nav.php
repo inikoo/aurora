@@ -678,7 +678,7 @@ function get_customers_dashboard_navigation($data, $smarty, $user, $db) {
 }
 
 
-function get_customers_statistics_navigation($data, $smarty, $user, $db) {
+function get_customers_insights_navigation($data, $smarty, $user, $db) {
 
 
     require_once 'class.Store.php';
@@ -706,7 +706,7 @@ function get_customers_statistics_navigation($data, $smarty, $user, $db) {
         );
         if ($result = $db->query($sql)) {
             if ($row = $result->fetch()) {
-                $prev_title = _("Customer's Stats").' '.$row['Store Code'];
+                $prev_title = _("Customer's insights").' '.$row['Store Code'];
             } else {
                 $prev_title = '';
             }
@@ -720,7 +720,7 @@ function get_customers_statistics_navigation($data, $smarty, $user, $db) {
         );
         if ($result = $db->query($sql)) {
             if ($row = $result->fetch()) {
-                $next_title = _("Customer's Stats").' '.$row['Store Code'];
+                $next_title = _("Customer's insights").' '.$row['Store Code'];
             } else {
                 $next_title = '';
             }
@@ -733,14 +733,14 @@ function get_customers_statistics_navigation($data, $smarty, $user, $db) {
         $left_buttons[] = array(
             'icon'      => 'arrow-left',
             'title'     => $prev_title,
-            'reference' => 'customers/statistics/'.$prev_key
+            'reference' => 'customers/'.$prev_key.'/insights/'
         );
         //$left_buttons[]=array('icon'=>'arrow-up','title'=>_('Customers').' '.$store->data['Store Code'],'reference'=>'customers/'.$store->id);
 
         $left_buttons[] = array(
             'icon'      => 'arrow-right',
             'title'     => $next_title,
-            'reference' => 'customers/statistics/'.$next_key
+            'reference' => 'customers/'.$next_key.'/insights/'
         );
     }
 
@@ -758,7 +758,7 @@ function get_customers_statistics_navigation($data, $smarty, $user, $db) {
         'sections'       => $sections,
         'left_buttons'   => $left_buttons,
         'right_buttons'  => $right_buttons,
-        'title'          => _("Customer's Stats").' <span class="id">'.$store->get('Store Code').'</span>',
+        'title'          => _("Customer's insights").' <span class="id">'.$store->get('Store Code').'</span>',
         'search'         => array(
             'show'        => true,
             'placeholder' => _('Search customers')

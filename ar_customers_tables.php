@@ -14,6 +14,7 @@ require_once 'class.Store.php';
 
 require_once 'utils/ar_common.php';
 require_once 'utils/table_functions.php';
+require_once 'utils/object_functions.php';
 
 
 if (!$user->can_view('customers')) {
@@ -52,6 +53,9 @@ switch ($tipo) {
     case 'categories':
         categories(get_table_parameters(), $db, $user);
         break;
+    case 'customers_geographic_distribution':
+        customers_geographic_distribution(get_table_parameters(), $db, $user);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -73,8 +77,7 @@ function customers($_data, $db, $user) {
 
     include_once 'prepare_table/init.php';
 
-    $sql
-        = "select  $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+    $sql = "select  $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
 
 
     $adata = array();
@@ -104,8 +107,8 @@ function customers($_data, $db, $user) {
             } else {
                 $last_invoice_date = strftime(
                     "%e %b %y", strtotime(
-                        $data['Customer Last Invoiced Order Date']." +00:00"
-                    )
+                                  $data['Customer Last Invoiced Order Date']." +00:00"
+                              )
                 );
             }
 
@@ -175,10 +178,9 @@ function customers($_data, $db, $user) {
 
                 'other_value' => $category_other_value,
 
-                'total_payments'  => money($data['Customer Payments Amount'], $currency),
-                'total_invoiced_amount'  => money($data['Customer Invoiced Amount'], $currency),
-                'total_invoiced_net_amount'  => money($data['Customer Invoiced Net Amount'], $currency),
-
+                'total_payments'            => money($data['Customer Payments Amount'], $currency),
+                'total_invoiced_amount'     => money($data['Customer Invoiced Amount'], $currency),
+                'total_invoiced_net_amount' => money($data['Customer Invoiced Net Amount'], $currency),
 
 
                 'top_orders'       => percentage(
@@ -232,8 +234,7 @@ function lists($_data, $db, $user) {
     $rtext_label = 'list';
     include_once 'prepare_table/init.php';
 
-    $sql
-        = "select $fields from `List Dimension` CLD $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql = "select $fields from `List Dimension` CLD $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
     $adata = array();
     if ($result = $db->query($sql)) {
@@ -293,8 +294,7 @@ function categories($_data, $db, $user) {
     $rtext_label = 'category';
     include_once 'prepare_table/init.php';
 
-    $sql
-           = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
     if ($result = $db->query($sql)) {
@@ -364,8 +364,7 @@ function customers_server($_data, $db, $user) {
     $rtext_label = 'store';
     include_once 'prepare_table/init.php';
 
-    $sql
-        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
 
     $total_contacts                    = 0;
@@ -378,7 +377,7 @@ function customers_server($_data, $db, $user) {
     $total_new_contacts_with_orders    = 0;
     $total_lost_contacts_with_orders   = 0;
     $total_losing_contacts_with_orders = 0;
-    $total_users=0;
+    $total_users                       = 0;
 
 
     if ($result = $db->query($sql)) {
@@ -387,14 +386,14 @@ function customers_server($_data, $db, $user) {
 
             $total_contacts += $data['Store Contacts'];
 
-            $total_active_contacts += $data['active'];
-            $total_new_contacts += $data['Store New Contacts'];
-            $total_lost_contacts += $data['Store Lost Contacts'];
-            $total_losing_contacts += $data['Store Losing Contacts'];
-            $total_contacts_with_orders += $data['Store Contacts With Orders'];
+            $total_active_contacts             += $data['active'];
+            $total_new_contacts                += $data['Store New Contacts'];
+            $total_lost_contacts               += $data['Store Lost Contacts'];
+            $total_losing_contacts             += $data['Store Losing Contacts'];
+            $total_contacts_with_orders        += $data['Store Contacts With Orders'];
             $total_active_contacts_with_orders += $data['active_with_orders'];
-            $total_new_contacts_with_orders += $data['Store New Contacts With Orders'];
-            $total_lost_contacts_with_orders += $data['Store Lost Contacts With Orders'];
+            $total_new_contacts_with_orders    += $data['Store New Contacts With Orders'];
+            $total_lost_contacts_with_orders   += $data['Store Lost Contacts With Orders'];
             $total_losing_contacts_with_orders += $data['Store Losing Contacts With Orders'];
 
 
@@ -448,8 +447,8 @@ function customers_server($_data, $db, $user) {
         */
             $adata[] = array(
                 'store_key'                   => $data['Store Key'],
-                'code'                        => sprintf('<span class="link" onClick="change_view(\'customers/%d\')">%s</span>',$data['Store Key'],$data['Store Code']),
-                'name'                        => sprintf('<span class="link" onClick="change_view(\'customers/%d\')">%s</span>',$data['Store Key'],$data['Store Name']),
+                'code'                        => sprintf('<span class="link" onClick="change_view(\'customers/%d\')">%s</span>', $data['Store Key'], $data['Store Code']),
+                'name'                        => sprintf('<span class="link" onClick="change_view(\'customers/%d\')">%s</span>', $data['Store Key'], $data['Store Name']),
                 'contacts'                    => (integer)$data['Store Contacts'],
                 'active_contacts'             => (integer)$data['active'],
                 'new_contacts'                => (integer)$data['Store New Contacts'],
@@ -529,6 +528,71 @@ function customers_server($_data, $db, $user) {
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
             'total_records' => $total
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function customers_geographic_distribution($_data, $db, $user) {
+
+
+    $rtext_label = 'country';
+
+
+    if ($_data['parameters']['parent'] == 'store') {
+        $store           = get_object('Store', $_data['parameters']['parent_key']);
+        $total_customers = $store->get('Store Contacts');
+        $total_sales     = $store->get('Store Total Acc Invoiced Amount');
+
+        $currency = $store->get('Store Currency Code');
+    } else {
+        exit('ar_customers_tables, todo E:1234a');
+    }
+
+
+    include_once 'prepare_table/init.php';
+
+    $sql = "select  $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+
+
+    $adata = array();
+
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+
+            $adata[] = array(
+                'id'      => (integer)$data['Country Key'],
+                'country' => $data['Country Name'],
+
+                'customers'            => number($data['customers']),
+                'customers_percentage' => percentage($data['customers'], $total_customers),
+                'invoices'                => number($data['invoices']),
+                'sales'                => money($data['sales'], $currency),
+                'sales_percentage'     => percentage($data['sales'], $total_sales),
+                'sales_per_customer'=>money($data['sales_per_registration'], $currency),
+
+
+            );
+        }
+
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
         )
     );
     echo json_encode($response);

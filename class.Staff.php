@@ -2213,9 +2213,7 @@ class Staff extends DB_Table {
             'History Details'  => '',
             'Action'           => 'deleted'
         );
-        $history_key  = $this->add_subject_history(
-            $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
-        );
+        $history_key  = $this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id);
 
         $sql = sprintf(
             'INSERT INTO `HR History Bridge`  (`HR Key`,`History Key`,`Type`) VALUES (1,%d,"Changes")  ', $history_key
