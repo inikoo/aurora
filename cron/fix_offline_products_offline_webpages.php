@@ -32,12 +32,13 @@ $editor = array(
     'Author Type'  => '',
     'Author Key'   => '',
     'User Key'     => 0,
-    'Date'         => gmdate('Y-m-d H:i:s')
+    'Date'         => gmdate('Y-m-d H:i:s'),
+    'Subject'=>'System'
 );
 
 
 
-$sql = sprintf("SELECT `History Abstract`,`Direct Object Key`,`History Date`  FROM  `History Dimension`  WHERE `Indirect Object`='Product Web Configuration' AND `History Date`  > '2018-01-01 00:52:48' AND `User Key`=0   and `Direct Object Key`=152700 ORDER BY `History Date` ASC;");
+$sql = sprintf("SELECT `History Abstract`,`Direct Object Key`,`History Date`  FROM  `History Dimension`  WHERE `Indirect Object`='Product Web Configuration' AND `History Date`  > '2018-01-01 00:52:48' AND `User Key`=0   and `Direct Object Key`=152698 ORDER BY `History Date` ASC;");
 
 
 
@@ -49,7 +50,7 @@ if ($result = $db->query($sql)) {
         $product = get_object('Product', $row['Direct Object Key']);
         $product->editor=$editor;
 
-        print_r($product);
+       // print_r($product);
 
         $product->update(
             array(
@@ -58,7 +59,7 @@ if ($result = $db->query($sql)) {
         );
 
 
-        print_r($product);
+       // print_r($product);
 
         $product->update_web_state();
         $product->update_availability();
