@@ -18,7 +18,7 @@ function fork_housekeeping($job) {
     }
 
 
-    list($account, $db, $data) = $_data;
+    list($account, $db, $data, $editor) = $_data;
 
     //print_r($data);
 
@@ -32,7 +32,7 @@ function fork_housekeeping($job) {
             $payment_account          = get_object('Payment_Account', $payment->get('Payment Account Key'));
             $payment_service_provider = get_object('Payment_Service_Provider', $payment->get('Payment Service Provider Key'));
 
-            $customer = get_object('Customer', $payment->get('Payment Customer Key'));
+            $customer                = get_object('Customer', $payment->get('Payment Customer Key'));
 
             $payment_account->update_payments_data();
             $payment_service_provider->update_payments_data();
@@ -144,6 +144,7 @@ function fork_housekeeping($job) {
             $order = new Order($data['subject_key']);
 
             $customer         = new Customer($order->get('Order Customer Key'));
+            $data['editor']['Date']=gmdate('Y-m-d H:i:s');
             $customer->editor = $data['editor'];
             $customer->add_history_new_order($order);
             $customer->update_orders();
@@ -194,6 +195,7 @@ function fork_housekeeping($job) {
 
 
             $website         = get_object('Website', $data['website_key']);
+            $data['editor']['Date']=gmdate('Y-m-d H:i:s');
             $website->editor = $data['editor'];
 
 
@@ -256,6 +258,8 @@ function fork_housekeeping($job) {
             $website_user = get_object('Website_User', $data['website_user_key']);
 
 
+
+
             if ($customer->get('Customer Tax Number') != '') {
 
                 $customer->update_tax_number_valid('Auto');
@@ -281,9 +285,15 @@ function fork_housekeeping($job) {
 
             include_once 'class.Product.php';
             $product = new Product('id', $data['product_id']);
-            $product->update_web_state_slow_forks(
-                $data['web_availability_updated']
-            );
+
+            if(isset($data['editor'])){
+                $data['editor']['Date']=gmdate('Y-m-d H:i:s');
+                $product->editor=$data['editor'];
+            }else{
+                $product->editor=$editor;
+            }
+
+            $product->update_web_state_slow_forks($data['web_availability_updated']);
 
             break;
 
@@ -292,11 +302,24 @@ function fork_housekeeping($job) {
             include_once 'class.Part.php';
             $part = new Part($data['part_sku']);
 
+            if(isset($data['editor'])){
+                $data['editor']['Date']=gmdate('Y-m-d H:i:s');
+                $part->editor=$data['editor'];
+            }else{
+                $part->editor=$editor;
+            }
+
 
             $part->update_available_forecast();
             $part->update_stock_status();
 
             foreach ($part->get_products('objects') as $product) {
+                if(isset($data['editor'])){
+                    $data['editor']['Date']=gmdate('Y-m-d H:i:s');
+                    $product->editor=$data['editor'];
+                }else{
+                    $product->editor=$editor;
+                }
                 $product->update_availability(true);
             }
 

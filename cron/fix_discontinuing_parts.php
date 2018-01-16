@@ -38,7 +38,10 @@ $editor = array(
     'Author Type'  => '',
     'Author Key'   => '',
     'User Key'     => 0,
-    'Date'         => gmdate('Y-m-d H:i:s')
+    'Date'         => gmdate('Y-m-d H:i:s'),
+    'Subject'=>'System',
+    'Subject Key'=>0,
+    'Author Name'=>'Script (fix disc parts)'
 );
 
 $account = new Account();
@@ -52,7 +55,7 @@ $account = new Account();
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
             $part = new Part($row['Part SKU']);
-
+$part->editor=$editor;
             $part->discontinue_trigger();
 
         }
@@ -64,6 +67,7 @@ $account = new Account();
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
             $part = new Part($row['Part SKU']);
+            $part->editor=$editor;
 
             $part->discontinue_trigger();
 
@@ -76,6 +80,7 @@ $account = new Account();
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
             $part = new Part($row['Part SKU']);
+            $part->editor=$editor;
 
             $part->discontinue_trigger();
 

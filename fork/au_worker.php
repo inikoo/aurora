@@ -52,6 +52,21 @@ while ($worker->work()) {
 
 function get_fork_metadata($job) {
 
+
+    $editor = array(
+
+
+        'Author Type'  => '',
+        'Author Key'   => '',
+        'User Key'     => 0,
+        'Date'         => gmdate('Y-m-d H:i:s'),
+        'Subject'=>'System',
+        'Subject Key'=>0,
+        'Author Name'=>'Fork',
+        'Author Alias' => 'Fork',
+    );
+
+
     global $db, $account;
 
    // $fork_encrypt_key = md5('huls0fjhslsshskslgjbtqcwijnbxhl2391');
@@ -119,7 +134,8 @@ function get_fork_metadata($job) {
     return array(
         $account,
         $db,
-        $fork_metadata['data']
+        $fork_metadata['data'],
+        $editor
     );
 
 
@@ -129,6 +145,20 @@ function get_fork_metadata($job) {
 function get_fork_data($job) {
 
     global $db, $account;
+
+
+    $editor = array(
+
+
+        'Author Type'  => '',
+        'Author Key'   => '',
+        'User Key'     => 0,
+        'Date'         => gmdate('Y-m-d H:i:s'),
+        'Subject'=>'System',
+        'Subject Key'=>0,
+        'Author Name'=>'Fork',
+        'Author Alias' => 'Fork',
+    );
 
    // $fork_encrypt_key = md5('huls0fjhslsshskslgjbtqcwijnbxhl2391');
     $fork_raw_data    = $job->workload();
@@ -206,7 +236,8 @@ function get_fork_data($job) {
                 'fork_key'            => $fork_key,
                 'inikoo_account_code' => $inikoo_account_code,
                 'fork_data'           => $fork_data,
-                'db'                  => $db
+                'db'                  => $db,
+                'editor'=>$editor
             );
         } else {
             print "fork data not found";

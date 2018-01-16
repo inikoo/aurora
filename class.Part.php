@@ -284,6 +284,7 @@ class Part extends Asset {
         );
 
         foreach ($this->get_products('objects') as $product) {
+            $product->editor=$this->editor;
             $product->update_next_shipment();
         }
 
@@ -1393,6 +1394,7 @@ class Part extends Asset {
 
 
             foreach ($this->get_products('objects') as $product) {
+                $product->editor=$this->editor;
                 $product->update_next_shipment();
             }
 
@@ -1442,7 +1444,7 @@ class Part extends Asset {
                 }
 
                 foreach ($this->get_products('objects') as $product) {
-
+                    $product->editor=$this->editor;
                     $product->update_cost();
                 }
 
@@ -2425,6 +2427,7 @@ class Part extends Asset {
 
 
         foreach ($this->get_products('objects') as $product) {
+            $product->editor=$this->editor;
             $product->update_cost();
         }
 
@@ -2686,7 +2689,7 @@ class Part extends Asset {
 
         $products = $this->get_products('objects');
         foreach ($products as $product) {
-
+            $product->editor=$this->editor;
             $product->update_status_from_parts();
         }
 
@@ -3378,6 +3381,7 @@ class Part extends Asset {
 
 
         foreach ($this->get_products('objects') as $product) {
+            $product->editor=$this->editor;
             $product->update_availability();
         }
     }

@@ -300,7 +300,8 @@ class Public_Store {
                     'au_housekeeping', array(
                     'type'     => 'customer_created',
                     'customer_key' => $customer->id,
-                    'website_user_key' => $website_user->id
+                    'website_user_key' => $website_user->id,
+                    'editor'=>$this->editor
                 ), $account->get('Account Code')
                 );
 

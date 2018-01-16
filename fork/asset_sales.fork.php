@@ -19,7 +19,7 @@ function fork_asset_sales($job) {
     }
 
 
-    list($account, $db, $data) = $_data;
+    list($account, $db, $data,$editor) = $_data;
 
 
 

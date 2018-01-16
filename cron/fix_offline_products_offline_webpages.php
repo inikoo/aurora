@@ -27,15 +27,16 @@ require_once 'class.Webpage_Type.php';
 require_once 'class.Part.php';
 
 $editor = array(
-    'Author Name'  => 'script',
-    'Author Alias' => 'script',
+
+
     'Author Type'  => '',
     'Author Key'   => '',
     'User Key'     => 0,
     'Date'         => gmdate('Y-m-d H:i:s'),
     'Subject'=>'System',
     'Subject Key'=>0,
-    'Author Name'=>'Script (fix offline)'
+    'Author Name'=>'Script (fix offline)',
+    'Author Alias' => 'Script (fix offline)',
 );
 
 
