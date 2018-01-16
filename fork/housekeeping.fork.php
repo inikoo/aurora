@@ -297,6 +297,41 @@ function fork_housekeeping($job) {
 
             break;
 
+
+
+        case 'full_after_part_stock_update':
+            // for use in pre migration inikoo
+
+            $part = get_object('Part',$data['part_sku']);
+
+            if(isset($data['editor'])){
+                $data['editor']['Date']=gmdate('Y-m-d H:i:s');
+                $part->editor=$data['editor'];
+            }else{
+                $part->editor=$editor;
+            }
+
+            $part->activate();
+            $part->discontinue_trigger();
+
+
+
+
+            $part->update_available_forecast();
+            $part->update_stock_status();
+
+            foreach ($part->get_products('objects') as $product) {
+                if(isset($data['editor'])){
+                    $data['editor']['Date']=gmdate('Y-m-d H:i:s');
+                    $product->editor=$data['editor'];
+                }else{
+                    $product->editor=$editor;
+                }
+                $product->update_availability(true);
+            }
+
+            break;
+
         case 'update_part_products_availability':
 
             include_once 'class.Part.php';
@@ -337,9 +372,8 @@ function fork_housekeeping($job) {
 
                 $suppliers = $part_location->part->get_suppliers();
                 foreach ($suppliers as $supplier_key) {
-                    $supplier_production = new Supplier_Production(
-                        $supplier_key
-                    );
+                    $supplier_production = new Supplier_Production($supplier_key);
+
                     if ($supplier_production->id) {
                         $supplier_production->update_locations_with_errors();
                     }
