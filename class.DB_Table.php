@@ -370,10 +370,10 @@ abstract class DB_Table extends stdClass {
 
         //  print_r($data);
 
-        if ($data['Subject'] == '' and isset($this->editor['Subject']) and isset($this->editor['Subject Key']) and isset($this->editor['Subject Name'])) {
-            $data['Subject']     = $editor_data['Subject'];
-            $data['Subject Key'] = $editor_data['Subject Key'];
-            $data['Author Name'] = $editor_data['Author Name'];
+        if ($data['Subject'] == '' and isset($this->editor['Subject']) and isset($this->editor['Subject Key']) and isset($this->editor['Author Name'])) {
+            $data['Subject']     = $this->editor['Subject'];
+            $data['Subject Key'] = $this->editor['Subject Key'];
+            $data['Author Name'] = $this->editor['Author Name'];
         }
 
 
@@ -388,7 +388,7 @@ abstract class DB_Table extends stdClass {
             } else {
                 $data['Subject']     = 'Staff';
                 $data['Subject Key'] = 0;
-                $data['Author Name'] = _('Unknown');
+                $data['Author Name'] = _('Unknown').'.';
             }
 
         }
