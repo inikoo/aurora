@@ -1812,6 +1812,9 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                         } elseif ($view_path[0] == 'categories') {
                             $section = 'categories';
 
+                        }elseif ($view_path[0] == 'insights') {
+                            $section = 'insights';
+
                         } elseif ($view_path[0] == 'category') {
 
                             $section = 'category';

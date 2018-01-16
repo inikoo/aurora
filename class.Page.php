@@ -28,7 +28,7 @@ class Page extends DB_Table {
     var $set_title = false;
     var $set_currency = 'GBP';
     var $set_currency_exchange = 1;
-
+    var $deleted = false;
 
     function Page($arg1 = false, $arg2 = false, $arg3 = false, $_db = false) {
 
@@ -105,7 +105,10 @@ class Page extends DB_Table {
 
             );
 
-            // print "$sql\n";
+        } elseif ($tipo == 'deleted') {
+            $this->get_deleted_data($tag);
+
+            return;
         } else {
             $sql = sprintf(
                 "SELECT * FROM `Page Dimension` WHERE  `Page Key`=%d", $tag
@@ -158,6 +161,29 @@ class Page extends DB_Table {
         }
 
 
+    }
+
+    function get_deleted_data($tag) {
+
+        $this->deleted = true;
+        $sql           = sprintf(
+            "SELECT * FROM `Page Store Deleted Dimension` WHERE `Page Key`=%d", $tag
+        );
+
+        // print $sql;
+
+
+        if ($this->data = $this->db->query($sql)->fetch()) {
+            $this->id = $this->data['Page Store Deleted Key'];
+
+
+            if ($this->data['Page Store Deleted Metadata'] != '') {
+                $deleted_data = json_decode(gzuncompress($this->data['Page Store Deleted Metadata']), true);
+                foreach ($deleted_data['data'] as $key => $value) {
+                    $this->data[$key] = $value;
+                }
+            }
+        }
     }
 
     function find($raw_data, $options) {
@@ -1748,11 +1774,10 @@ class Page extends DB_Table {
             case 'Website Registration Type':
 
 
-                $website = get_object('website',$this->get('Webpage Website Key'));
+                $website = get_object('website', $this->get('Webpage Website Key'));
 
-                $website->editor=$this->editor;
+                $website->editor = $this->editor;
                 $website->update_field($field, $value, $options);
-
 
 
                 break;
@@ -2956,31 +2981,53 @@ class Page extends DB_Table {
 
 
         if (array_key_exists('Webpage Website Key', $this->data)) {
-            $website = new Website($this->data['Webpage Website Key']);
+            $website = get_object('website', $this->data['Webpage Website Key']);
             $website->update_webpages();
         }
 
 
         if ($create_deleted_page_record) {
+
+
+            $deleted_metadata = gzcompress(json_encode($this->data), 9);
+
+
             include_once 'class.PageDeleted.php';
             $data = array(
-                'Page Code'          => $this->data['Page Code'],
-                'Page Key'           => $this->id,
-                'Site Key'           => $this->data['Webpage Website Key'],
-                'Store Key'          => $this->data['Page Store Key'],
-                'Page Store Section' => $this->data['Page Store Section'],
-                'Page Parent Key'    => $this->data['Page Parent Key'],
-                'Page Parent Code'   => $this->data['Page Parent Code'],
-                'Page Title'         => $this->data['Webpage Browser Title'],
-                'Page Short Title'   => $this->data['Webpage name'],
-                'Page Description'   => $this->data['Webpage MetaDescription'],
-                'Page URL'           => $this->data['Webpage URL'],
-                'Page Valid To'      => gmdate('Y-m-d H:i:s'),
+                'Page Code'                   => $this->data['Page Code'],
+                'Page Key'                    => $this->id,
+                'Site Key'                    => $this->data['Webpage Website Key'],
+                'Store Key'                   => $this->data['Page Store Key'],
+                'Page Store Section'          => $this->data['Page Store Section'],
+                'Page Parent Key'             => $this->data['Page Parent Key'],
+                'Page Parent Code'            => $this->data['Page Parent Code'],
+                'Page Title'                  => $this->data['Webpage Browser Title'],
+                'Page Short Title'            => $this->data['Webpage Name'],
+                'Page Description'            => $this->data['Webpage Meta Description'],
+                'Page URL'                    => $this->data['Webpage URL'],
+                'Page Valid To'               => gmdate('Y-m-d H:i:s'),
+                'Page Store Deleted Metadata' => $deleted_metadata
+
 
             );
 
             $deleted_page = new PageDeleted();
             $deleted_page->create($data);
+
+
+            $abstract = sprintf(
+                _('Webpage %s deleted'), sprintf(
+                                           '<span class="button" onClick="change_view(\'webpage/%d\')">%s</span>', $this->id, $this->data['Page Code']
+                                       )
+            );
+
+
+            $history_data = array(
+                'History Abstract' => $abstract,
+                'History Details'  => '',
+                'Action'           => 'deleted'
+            );
+            $this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id);
 
 
             require_once 'class.Webpage_Type.php';
@@ -7659,12 +7706,11 @@ class Page extends DB_Table {
 
     }
 
-    function get_parents_data(){
+    function get_parents_data() {
 
-        $parents=array();
+        $parents = array();
 
         return $parents;
-
 
 
     }

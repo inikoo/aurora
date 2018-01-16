@@ -378,6 +378,9 @@ function get_view($db, $smarty, $user, $account, $modules) {
 
         if (!$_object->id and $modules[$state['module']]['sections'][$state['section']]['type'] == 'object') {
 
+
+
+
             if ($state['object'] == 'barcode') {
                 $_object          = new Barcode('deleted', $state['key']);
                 $state['_object'] = $_object;
@@ -451,6 +454,21 @@ function get_view($db, $smarty, $user, $account, $modules) {
                         $state['tab'], $modules[$state['module']]['sections'][$state['section']]['tabs']
                     )) {
                         $state['tab'] = 'deleted.contractor.history';
+                    }
+
+                }
+            }elseif ($state['object'] == 'webpage') {
+                $_object          = get_object('PageDeleted', $state['key']);
+
+
+
+                $state['_object'] = $_object;
+                if ($_object->id) {
+                    $state['section'] = 'deleted.webpage';
+                    if (!array_key_exists(
+                        $state['tab'], $modules[$state['module']]['sections'][$state['section']]['tabs']
+                    )) {
+                        $state['tab'] = 'deleted.webpage.history';
                     }
 
                 }
@@ -1162,6 +1180,9 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                 case ('webpage'):
                     return get_webpage_navigation($data, $smarty, $user, $db, $account);
                     break;
+                case ('deleted.webpage'):
+                    return get_deleted_webpage_navigation($data, $smarty, $user, $db, $account);
+                    break;
                 case ('webpage.new'):
                     return get_new_webpage_navigation($data, $smarty, $user, $db, $account);
                     break;
@@ -1297,9 +1318,9 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                         $data, $smarty, $user, $db, $account
                     );
                     break;
-                case ('statistics'):
+                case ('insights'):
 
-                    return get_customers_statistics_navigation(
+                    return get_customers_insights_navigation(
                         $data, $smarty, $user, $db, $account
                     );
                     break;
@@ -3218,6 +3239,30 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 );
 
 
+            } elseif ($state['section'] == 'deleted.webpage') {
+
+                $branch[]               = array(
+                    'label'     => _('Store').' <span class="Store_Code id">'.$state['store']->get('Code').'</span>',
+                    'icon'      => 'shopping-bag',
+                    'reference' => 'store/'.$state['store']->id
+                );
+                $state['current_store'] = $state['store']->id;
+
+                $branch[] = array(
+                    'label'     => '<span class=" Website_Code">'.$state['website']->get('Code').'</span>',
+                    'icon'      => 'globe',
+                    'reference' => 'store/'.$state['store']->id.'/website'
+                );
+
+
+
+                $branch[] = array(
+                    'label'     => '<span class=" Webpage_Code error"> ('._('Deleted').')  '.$state['_object']->get('Page Title').'</span>',
+                    'icon'      => 'file-text error',
+                    'reference' => ''
+                );
+
+
             } elseif ($state['section'] == 'webpage.new') {
 
 
@@ -3506,13 +3551,11 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'reference' => 'customers/'.$store->id.'/lists'
                     );
                     break;
-                case 'statistics':
+                case 'insights':
                     $branch[] = array(
-                        'label'     => _(
-                                "Customer's stats"
-                            ).' '.$store->data['Store Code'],
-                        'icon'      => 'line-chart',
-                        'reference' => 'customers/statistics/'.$store->id
+                        'label'     => _("Customer's insights").' '.$store->data['Store Code'],
+                        'icon'      => 'graduation-cap',
+                        'reference' => 'customers/'.$store->id.'/insights'
                     );
                     break;
                 case 'pending_orders':

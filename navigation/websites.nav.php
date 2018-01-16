@@ -11,6 +11,8 @@
 */
 
 
+
+
 function get_websites_navigation($data, $smarty, $user, $db, $account) {
 
 
@@ -1602,6 +1604,46 @@ function get_website_new_navigation($data, $smarty, $user, $db, $account) {
         'search'         => array(
             'show'        => true,
             'placeholder' => _('Search products').' '.$data['store']->get('Code')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
+
+function get_deleted_webpage_navigation($data, $smarty, $user, $db, $account) {
+
+
+
+
+    $sections_class = '';
+    $title          = '<span class="error">'._('Deleted webpage').': '.$data['_object']->get('Page Title').'</span>';
+
+    $left_buttons = array();
+
+
+    $right_buttons = array();
+
+
+    $sections = get_sections('websites_server');
+    if (isset($sections[$data['section']])) {
+        $sections[$data['section']]['selected'] = true;
+    }
+
+
+    $_content = array(
+        'sections_class' => $sections_class,
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search websites (all)')
         )
 
     );

@@ -382,7 +382,7 @@ abstract class DB_Table extends stdClass {
             $user = new User($data['User Key']);
             if ($user->id) {
 
-                $data['Subject']     = $user->data['User Type'];
+                $data['Subject']     = ($user->data['User Type']=='Contractor'?'Staff':$user->data['User Type']);
                 $data['Subject Key'] = $user->data['User Parent Key'];
                 $data['Author Name'] = $user->data['User Alias'];
             } else {
@@ -768,6 +768,11 @@ abstract class DB_Table extends stdClass {
         }
 
         $history_key = $this->add_table_history($history_data, $force_save, '', '', $table_name, $table_key);
+
+
+        if($table_name=='Page'){
+            $table_name='Webpage';
+        }
 
         $sql = sprintf(
             "INSERT INTO `%s History Bridge` VALUES (%d,%d,%s,'No',%s)", $table_name, $table_key, $history_key, prepare_mysql($deletable), prepare_mysql($type)

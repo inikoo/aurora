@@ -36,7 +36,24 @@ if (isset($options['new']) and $options['new']) {
 
 $can_change_state = ($object->get('Webpage Scope') == 'System' ? false : true);
 $can_update_code =(in_array($object->get('Webpage Scope'),array('Product','Category Categories','Category Products','Info')) ? true : false);
-$can_delete       = false;
+
+
+
+$can_delete =(in_array($object->get('Webpage Scope'),array('Info')) ? true : false);
+
+
+// This can be deleted if we make impossible  to have this error
+
+
+if(in_array($object->get('Webpage Scope'),array('Category Categories'))){
+    $category = get_object('Category', $object->get('Webpage Scope Key'));
+
+
+    if(!$category->id){
+        $can_delete=true;
+    }
+}
+
 
 
 $content_data = $object->get('Content Data');
@@ -519,6 +536,18 @@ $operations      = array(
             'value'     => '',
             'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "webpage", "key":"'.$object->id
                 .'"}\' onClick="reset_object(this)" class="delete_object disabled ">'._("Reset webpage").' <i class="fa fa-recycle  "></i></span>',
+            'reference' => '',
+            'type'      => 'operation'
+        ),
+
+        array(
+            'id'        => 'delete_website',
+            'render'=>$can_delete,
+            'class'     => 'operation',
+            'value'     => '',
+            'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'
+                .$object->get_object_name().'", "key":"'.$object->id.'"}\' onClick="delete_object(this)" class="delete_object disabled">'._("Delete webpage")
+                .' <i class="fa fa-trash new_button link"></i></span>',
             'reference' => '',
             'type'      => 'operation'
         ),

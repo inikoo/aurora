@@ -186,10 +186,14 @@ if ($parameters['parent'] == 'customer' or $parameters['parent'] == 'order_custo
 } elseif ($parameters['parent'] == 'hr') {
     $where   = sprintf(' where  true ');
     $subject = 'HR';
+}elseif ($parameters['parent'] == 'webpage') {
+    $where   = sprintf(' where  true ');
+    $subject = 'Webpage';
 } else {
     print_r($parameters);
     exit('parent not set up '.$parameters['parent']);
 }
+
 
 
 if (isset($parameters['elements']['type']['items'])) {
@@ -260,7 +264,6 @@ $table
 $sql_totals
     = "select count(Distinct B.`History Key`) as num from $table  $where  ";
 
-//print $sql_totals;
 $fields
     = "`Type`,`Strikethrough`,`Deletable`,`Subject`,`Author Name`,`History Details`,`History Abstract`,H.`History Key`,`History Date`";
 
