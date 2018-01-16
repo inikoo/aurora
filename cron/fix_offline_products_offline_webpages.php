@@ -27,8 +27,8 @@ require_once 'class.Webpage_Type.php';
 require_once 'class.Part.php';
 
 $editor = array(
-    'Author Name'  => '',
-    'Author Alias' => '',
+    'Author Name'  => 'script',
+    'Author Alias' => 'script',
     'Author Type'  => '',
     'Author Key'   => '',
     'User Key'     => 0,
@@ -45,7 +45,7 @@ if ($result = $db->query($sql)) {
     foreach ($result as $row) {
 
         $product = get_object('Product', $row['Direct Object Key']);
-
+        $product->editor=$editor;
 
         $product->fast_update(
             array(
