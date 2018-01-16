@@ -24,7 +24,6 @@ class Product extends Asset {
         }
 
 
-
         $this->table_name    = 'Product';
         $this->ignore_fields = array('Product ID');
         $this->webpage       = false;
@@ -57,7 +56,6 @@ class Product extends Asset {
             $sql = sprintf(
                 "SELECT * FROM `Product Dimension` WHERE `Product ID`=%d", $id
             );
-
 
 
             if ($this->data = $this->db->query($sql)->fetch()) {
@@ -576,7 +574,7 @@ class Product extends Asset {
 
             case 'Webpage Out of Stock Label':
 
-                if ($this->get('Product Total Acc Quantity Ordered') ==0 and  $this->data['Product Web Configuration'] != 'Online Force Out of Stock' and $this->data['Product Status']!='Discontinuing') {
+                if ($this->get('Product Total Acc Quantity Ordered') == 0 and $this->data['Product Web Configuration'] != 'Online Force Out of Stock' and $this->data['Product Status'] != 'Discontinuing') {
                     return _('Launching soon');
                 } else {
                     return _('Out of stock');
@@ -1378,17 +1376,17 @@ class Product extends Asset {
 
         if ($status == 'Active') {
             if ($this->get('Product Status') == 'Discontinuing') {
-                $this->update(array('Product Status' => 'Active'), 'no_history');
+                $this->update(array('Product Status' => 'Active'));
 
             }
         } elseif ($status == 'Discontinuing') {
             if ($this->get('Product Status') == 'Active') {
-                $this->update(array('Product Status' => 'Discontinuing'), 'no_history');
+                $this->update(array('Product Status' => 'Discontinuing'));
 
             }
         } elseif ($status == 'Discontinued') {
 
-            $this->update(array('Product Status' => 'Discontinued'), 'no_history');
+            $this->update(array('Product Status' => 'Discontinued'));
 
 
         }
@@ -1555,6 +1553,7 @@ class Product extends Asset {
         $this->update_web_state($use_fork);
 
         foreach ($this->get_categories('objects') as $category) {
+            $category->editor = $this->editor;
             $category->update_product_category_products_data();
         }
 
@@ -1594,7 +1593,6 @@ class Product extends Asset {
         }
 
         $web_state = $this->get_web_state();
-
 
 
         $this->update_field('Product Web State', $web_state, 'no_history');
@@ -1712,25 +1710,22 @@ class Product extends Asset {
                     'type'                     => 'update_web_state_slow_forks',
                     'web_availability_updated' => $web_availability_updated,
                     'product_id'               => $this->id,
-                    'xx'                       => 'zz'
+                    'xx'                       => 'zz',
+                    'editor'                   => $this->editor
                 ), $account->get('Account Code')
                 );
 
             } else {
 
 
-
                 $msg = new_fork(
-                    'housekeeping',
-                    array(
-                    'type'       => 'product_web_state',
-                    'product_id' => $this->id,
-                    'wa'         => $web_availability,
-                    'wa_updated' => $web_availability_updated
+                    'housekeeping', array(
+                                      'type'       => 'product_web_state',
+                                      'product_id' => $this->id,
+                                      'wa'         => $web_availability,
+                                      'wa_updated' => $web_availability_updated
 
-                ),
-                    $account->get('Account Code'),
-                    $this->db
+                                  ), $account->get('Account Code'), $this->db
                 );
 
 
@@ -2468,7 +2463,6 @@ class Product extends Asset {
         if (is_string($value)) {
             $value = _trim($value);
         }
-
 
 
         switch ($field) {
@@ -3764,19 +3758,20 @@ class Product extends Asset {
 
         $next_deliveries_data = array();
 
-        $parts_data=$this->get_parts_data();
+        $parts_data = $this->get_parts_data();
 
-        if(count($parts_data)==1){
+        if (count($parts_data) == 1) {
 
-            $part_data=array_pop($parts_data);
+            $part_data = array_pop($parts_data);
 
-            $part=get_object('Part',$part_data['Part SKU']);
-            $supplier_parts=$part->get_supplier_parts();
-            if(count($supplier_parts)>0){
+            $part           = get_object('Part', $part_data['Part SKU']);
+            $supplier_parts = $part->get_supplier_parts();
+            if (count($supplier_parts) > 0) {
 
 
                 $sql = sprintf(
-                    'SELECT  `Supplier Delivery Parent`,`Supplier Delivery Parent Key`,`Purchase Order Quantity`,POTF.`Supplier Delivery Key`,`Supplier Delivery Public ID` FROM `Purchase Order Transaction Fact` POTF LEFT JOIN `Supplier Delivery Dimension` PO  ON (PO.`Supplier Delivery Key`=POTF.`Supplier Delivery Key`)  WHERE POTF.`Supplier Part Key` in (%s)  and  POTF.`Supplier Delivery Key` is not null and  `Supplier Delivery Transaction Placed`!="Yes"   ', join($supplier_parts,',')
+                    'SELECT  `Supplier Delivery Parent`,`Supplier Delivery Parent Key`,`Purchase Order Quantity`,POTF.`Supplier Delivery Key`,`Supplier Delivery Public ID` FROM `Purchase Order Transaction Fact` POTF LEFT JOIN `Supplier Delivery Dimension` PO  ON (PO.`Supplier Delivery Key`=POTF.`Supplier Delivery Key`)  WHERE POTF.`Supplier Part Key` IN (%s)  AND  POTF.`Supplier Delivery Key` IS NOT NULL AND  `Supplier Delivery Transaction Placed`!="Yes"   ',
+                    join($supplier_parts, ',')
                 );
 
                 if ($result = $this->db->query($sql)) {
@@ -3784,9 +3779,12 @@ class Product extends Asset {
 
 
                         $next_deliveries_data[] = array(
-                            'qty'  => number($row['Purchase Order Quantity']*$part_data['Ratio']),
+                            'qty'  => number($row['Purchase Order Quantity'] * $part_data['Ratio']),
                             'date' => '',
-                            'link' => sprintf('<span class="link" onclick="change_view(\'supplier/%d/delivery/%d\')"><i class="fa fa-truck" aria-hidden="true"></i> %s</span>',$row['Supplier Delivery Parent'],$row['Supplier Delivery Parent Key'],$row['Supplier Delivery Key'],$row['Supplier Delivery Public ID']),
+                            'link' => sprintf(
+                                '<span class="link" onclick="change_view(\'supplier/%d/delivery/%d\')"><i class="fa fa-truck" aria-hidden="true"></i> %s</span>', $row['Supplier Delivery Parent'], $row['Supplier Delivery Parent Key'], $row['Supplier Delivery Key'],
+                                $row['Supplier Delivery Public ID']
+                            ),
                         );
 
 
@@ -3798,32 +3796,34 @@ class Product extends Asset {
                 }
 
 
-
-
                 $sql = sprintf(
-                    'SELECT POTF.`Purchase Order Transaction State`,`Purchase Order Quantity`,`Supplier Delivery Key` ,`Purchase Order Estimated Receiving Date`,`Purchase Order Public ID`,POTF.`Purchase Order Key` FROM `Purchase Order Transaction Fact` POTF LEFT JOIN `Purchase Order Dimension` PO  ON (PO.`Purchase Order Key`=POTF.`Purchase Order Key`)  WHERE `Supplier Part Key`in (%s) and  POTF.`Supplier Delivery Key` is null and POTF.`Purchase Order Transaction State` not in ("Placed","Cancelled") ', join($supplier_parts,',')
+                    'SELECT POTF.`Purchase Order Transaction State`,`Purchase Order Quantity`,`Supplier Delivery Key` ,`Purchase Order Estimated Receiving Date`,`Purchase Order Public ID`,POTF.`Purchase Order Key` FROM `Purchase Order Transaction Fact` POTF LEFT JOIN `Purchase Order Dimension` PO  ON (PO.`Purchase Order Key`=POTF.`Purchase Order Key`)  WHERE `Supplier Part Key`IN (%s) AND  POTF.`Supplier Delivery Key` IS NULL AND POTF.`Purchase Order Transaction State` NOT IN ("Placed","Cancelled") ',
+                    join($supplier_parts, ',')
                 );
 
                 if ($result = $this->db->query($sql)) {
                     foreach ($result as $row) {
 
 
-                        if($row['Purchase Order Transaction State']=='InProcess'){
-                            $date='<span class="very_discreet italic">'._('Draft').'</span>';
-                            $link= sprintf('<span class="link discreet" onclick="change_view(\'suppliers/order/%d\')"><i class="fa fa-clipboard" aria-hidden="true"></i> %s</span>',$row['Purchase Order Key'],$row['Purchase Order Public ID']);
-                            $qty='<span class="very_discreet italic">+'.number($row['Purchase Order Quantity']*$part_data['Ratio']).'</span>';
+                        if ($row['Purchase Order Transaction State'] == 'InProcess') {
+                            $date = '<span class="very_discreet italic">'._('Draft').'</span>';
+                            $link = sprintf('<span class="link discreet" onclick="change_view(\'suppliers/order/%d\')"><i class="fa fa-clipboard" aria-hidden="true"></i> %s</span>', $row['Purchase Order Key'], $row['Purchase Order Public ID']);
+                            $qty  = '<span class="very_discreet italic">+'.number($row['Purchase Order Quantity'] * $part_data['Ratio']).'</span>';
 
-                        }else{
+                        } else {
                             $date = strftime("%e %b %y", strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00'));
-                            $link= sprintf('<span class="link" onclick="change_view(\'suppliers/order/%d\')"><i class="fa fa-clipboard" aria-hidden="true"></i> %s</span> <i class="fa fa-paper-plane-o" aria-hidden="true"></i>',$row['Purchase Order Key'],$row['Purchase Order Public ID']);
-                            $qty='+'.number($row['Purchase Order Quantity']*$part_data['Ratio']);
+                            $link = sprintf(
+                                '<span class="link" onclick="change_view(\'suppliers/order/%d\')"><i class="fa fa-clipboard" aria-hidden="true"></i> %s</span> <i class="fa fa-paper-plane-o" aria-hidden="true"></i>', $row['Purchase Order Key'],
+                                $row['Purchase Order Public ID']
+                            );
+                            $qty  = '+'.number($row['Purchase Order Quantity'] * $part_data['Ratio']);
                         }
 
 
                         $next_deliveries_data[] = array(
                             'qty'  => $qty,
                             'date' => $date,
-                            'link' =>$link,
+                            'link' => $link,
                         );
 
 
@@ -3837,21 +3837,12 @@ class Product extends Asset {
             }
 
 
-
-
         }
-
-
-
-
-
-
 
 
         return $next_deliveries_data;
 
     }
-
 
 
 }

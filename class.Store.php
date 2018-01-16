@@ -2636,7 +2636,8 @@ class Store extends DB_Table {
                     'au_housekeeping', array(
                     'type'             => 'customer_created',
                     'customer_key'     => $customer->id,
-                    'website_user_key' => $website_user_key
+                    'website_user_key' => $website_user_key,
+                    'editor'=>$this->editor
                 ), $account->get('Account Code')
                 );
 
