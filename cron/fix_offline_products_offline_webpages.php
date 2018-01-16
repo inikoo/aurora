@@ -37,12 +37,14 @@ $editor = array(
 
 
 
-$sql = sprintf('SELECT `History Abstract`,`Direct Object Key`,`History Date`  FROM  `History Dimension`  WHERE `Indirect Object`="Product Web Configuration" AND `History Date`  > \'2018-01-01 00:52:48\' AND `User Key`=0   and `Direct Object Key`=152702 ORDER BY `History Date` ASC;');
+$sql = sprintf("SELECT `History Abstract`,`Direct Object Key`,`History Date`  FROM  `History Dimension`  WHERE `Indirect Object`='Product Web Configuration' AND `History Date`  > '2018-01-01 00:52:48' AND `User Key`=0   and `Direct Object Key`=152702 ORDER BY `History Date` ASC;");
 
 
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
+
+        print_r($row);
 
         $product = get_object('Product', $row['Direct Object Key']);
         $product->editor=$editor;
