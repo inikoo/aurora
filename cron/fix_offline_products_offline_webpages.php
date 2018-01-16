@@ -51,21 +51,29 @@ if ($result = $db->query($sql)) {
         $product = get_object('Product', $row['Direct Object Key']);
         $product->editor=$editor;
 
-       // print_r($product);
 
-        $product->update(
-            array(
-                'Product Web Configuration' => 'Online Auto'
-            )
-        );
+        if (!($this->get('Product Status') == 'Active' or $this->get('Product Status') == 'Discontinuing') or ($this->get('Product Number of Parts') == 0)) {
 
 
-       // print_r($product);
+        }else{
+            // print_r($product);
+
+            $product->update(
+                array(
+                    'Product Web Configuration' => 'Online Auto'
+                )
+            );
+
+
+            // print_r($product);
+
+
+            //exit;
+
+        }
 
         $product->update_web_state();
         $product->update_availability();
-        //exit;
-
 
     }
 } else {
