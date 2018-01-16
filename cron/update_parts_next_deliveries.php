@@ -29,7 +29,7 @@ if ($result = $db->query($sql)) {
 } else {
     print_r($error_info = $db->errorInfo());
     exit;
-}
+
 }
 
 
