@@ -52,7 +52,7 @@ if ($result = $db->query($sql)) {
         $product->editor=$editor;
 
 
-        if (!($this->get('Product Status') == 'Active' or $this->get('Product Status') == 'Discontinuing') or ($this->get('Product Number of Parts') == 0)) {
+        if (!($product->get('Product Status') == 'Active' or $product->get('Product Status') == 'Discontinuing') or ($product->get('Product Number of Parts') == 0)) {
 
 
         }else{
