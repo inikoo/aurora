@@ -35,7 +35,7 @@ $editor = array(
     'Date'         => gmdate('Y-m-d H:i:s'),
     'Subject'=>'System',
     'Subject Key'=>0,
-    'Author Name'=>'fix_offline_products'
+    'Author Name'=>'script (fix offline)'
 );
 
 
