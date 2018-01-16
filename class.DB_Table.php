@@ -115,7 +115,6 @@ abstract class DB_Table extends stdClass {
     protected function update_field($field, $value, $options = '') {
 
 
-
         $this->update_table_field($field, $value, $options, $this->table_name, $this->table_name.' Dimension', $this->id);
 
     }
@@ -371,8 +370,14 @@ abstract class DB_Table extends stdClass {
 
         //  print_r($data);
 
+        if ($data['Subject'] == '' and isset($editor_data['Subject']) and isset($editor_data['Subject Key']) and isset($editor_data['Subject Name'])) {
+            $data['Subject']     = $editor_data['Subject'];
+            $data['Subject Key'] = $editor_data['Subject Key'];
+            $data['Author Name'] = $editor_data['Author Name'];
+        }
 
-        if ($data['Subject'] == '' or (!$data['Subject Key']) and in_array($data['Subject'], array('System'))) {
+
+        if ($data['Subject'] == '') {
             include_once 'class.User.php';
             $user = new User($data['User Key']);
             if ($user->id) {
