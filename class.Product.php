@@ -1592,6 +1592,8 @@ class Product extends Asset {
 
         $web_state = $this->get_web_state();
 
+        print "$old_web_state $web_state";
+
 
         $this->update_field('Product Web State', $web_state, 'no_history');
 
