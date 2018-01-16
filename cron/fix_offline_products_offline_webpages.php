@@ -49,6 +49,8 @@ if ($result = $db->query($sql)) {
         $product = get_object('Product', $row['Direct Object Key']);
         $product->editor=$editor;
 
+        print_r($product);
+
         $product->fast_update(
             array(
                 'Product Web Configuration' => 'Online Auto'
@@ -56,7 +58,7 @@ if ($result = $db->query($sql)) {
         );
 
 
-        //print_r($product);
+        print_r($product);
 
         $product->update_web_state();
         $product->update_availability();
