@@ -37,7 +37,7 @@ $editor = array(
 
 
 
-$sql = sprintf("SELECT `History Abstract`,`Direct Object Key`,`History Date`  FROM  `History Dimension`  WHERE `Indirect Object`='Product Web Configuration' AND `History Date`  > '2018-01-01 00:52:48' AND `User Key`=0   and `Direct Object Key`=152702 ORDER BY `History Date` ASC;");
+$sql = sprintf("SELECT `History Abstract`,`Direct Object Key`,`History Date`  FROM  `History Dimension`  WHERE `Indirect Object`='Product Web Configuration' AND `History Date`  > '2018-01-01 00:52:48' AND `User Key`=0   and `Direct Object Key`=152700 ORDER BY `History Date` ASC;");
 
 
 
@@ -51,7 +51,7 @@ if ($result = $db->query($sql)) {
 
         print_r($product);
 
-        $product->fast_update(
+        $product->update(
             array(
                 'Product Web Configuration' => 'Online Auto'
             )

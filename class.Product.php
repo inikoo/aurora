@@ -1169,6 +1169,9 @@ class Product extends Asset {
             case 'Product Webpage Meta Description':
                 $label = _('webpage META description');
                 break;
+            case 'Product Web Configuration':
+                $label = _('web configuration');
+                break;
             default:
                 $label = $field;
 
