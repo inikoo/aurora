@@ -564,10 +564,10 @@ class Warehouse extends DB_Table {
         }
 
 
-        $this->update(
+        $this->fast_update(
             array(
                 'Warehouse Stock Amount'          => $stock_amount
-            ), 'no_history'
+            )
         );
 
 
