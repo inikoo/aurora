@@ -388,7 +388,7 @@ abstract class DB_Table extends stdClass {
             } else {
                 $data['Subject']     = 'Staff';
                 $data['Subject Key'] = 0;
-                $data['Author Name'] = _('Unknown').'.';
+                $data['Author Name'] = _('Unknown');
             }
 
         }
