@@ -52,17 +52,19 @@ if ($result = $db->query($sql)) {
         $product->editor=$editor;
 
 
-        if (!($product->get('Product Status') == 'Active' or $product->get('Product Status') == 'Discontinuing') or ($product->get('Product Number of Parts') == 0)) {
-
-
-        }else{
-            // print_r($product);
-
+        if (($product->get('Product Status') == 'Active' or $product->get('Product Status') == 'Discontinuing')  and ($product->get('Product Number of Parts') > 0)) {
             $product->update(
                 array(
                     'Product Web Configuration' => 'Online Auto'
                 )
             );
+
+            print $product->id."\n";
+
+        }else{
+            // print_r($product);
+
+
 
 
             // print_r($product);
