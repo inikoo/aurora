@@ -566,6 +566,7 @@ function customers_geographic_distribution($_data, $db, $user) {
             $adata[] = array(
                 'id'      => (integer)$data['Country Key'],
                 'country' => $data['Country Name'],
+                'flag'=>sprintf('<img alt="%s" title="%s" src="/art/flags/%s.gif"/>',$data['Country 2 Alpha Code'],$data['Country 2 Alpha Code'].' '.$data['Country Name'],strtolower($data['Country 2 Alpha Code'])),
 
                 'customers'            => number($data['customers']),
                 'customers_percentage' => percentage($data['customers'], $total_customers),
