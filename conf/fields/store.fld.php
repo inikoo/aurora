@@ -246,7 +246,7 @@ $object_fields = array(
                 'render'=>($object->get('Store Can Collect')=='Yes'?true:false),
                 'countries'       => $countries,
                 'value'           => htmlspecialchars($object->get('Store Collect Address')),
-                'formatted_value' => $object->get('Store Collect Address Formatted'),
+                'formatted_value' => ($object->get('Store Collect Address Formatted')==''?'<span class="warning" style="position: relative;top:5px"><i class="fa fa-warning "></i>  '._('Input collection address').'</span>':$object->get('Store Collect Address Formatted')),
                 'label'           => ucfirst($object->get_field_label('Store Collect Address')),
                 'invalid_msg'     => get_invalid_message('address'),
                 'required'        => false
