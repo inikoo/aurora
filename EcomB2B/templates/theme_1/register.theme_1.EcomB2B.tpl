@@ -84,14 +84,14 @@
                                 <section class="col col-6 " >
                                     <label id="_tax_number" class="input" >
                                         <input type="text" name="tax_number" placeholder="{if isset($content._tax_number) and $content._tax_number!=''}{$content._tax_number}{else}{t}Tax number{/t}{/if}">
-                                        <b id="_tax_number_tooltip"  class="tooltip tooltip-bottom-right">{if isset($content._tax_number) and $content._tax_number!=''}{$content._tax_number}{else}{t}Tax number{/t}{/if}</b>
+                                        <b id="_tax_number_tooltip"  class="tooltip tooltip-bottom-right">{if isset($content._tax_number_tooltip) and $content._tax_number_tooltip!=''}{$content._tax_number_tooltip}{else}{t}Tax number{/t}{/if}</b>
 
                                     </label>
                                 </section>
                                 <section class="col col-6">
                                     <label id="_registration_number" class="input" ">
                                         <input type="text" name="registration_number" placeholder="{if isset($content._registration_number) and $content._registration_number!=''}{$content._registration_number}{else}{t}Registration number{/t}{/if}">
-                                        <b id="_registration_number_tooltip"  class="tooltip tooltip-bottom-right">{if isset($content._registration_number) and $content._registration_number!=''}{$content._registration_number}{else}{t}Registration number{/t}{/if}</b>
+                                        <b id="_registration_number_tooltip"  class="tooltip tooltip-bottom-right">{if isset($content._registration_number_tooltip) and $content._registration_number_tooltip!=''}{$content._registration_number_tooltip}{else}{t}Registration number{/t}{/if}</b>
 
                                     </label>
                                 </section>
@@ -133,7 +133,7 @@
 
                             <div id="postalCode" class="row {if 'postalCode'|in_array:$used_address_fields}{else}hide{/if}">
                                 <section class="col col-6 " >
-                                    <label class="input">
+                                    <label class="input"> 
                                         <input type="text" name="postalCode" class="{if 'postalCode'|in_array:$used_address_fields}{else}ignore{/if}" placeholder="{if isset($labels["postalCode_`$address_labels.postalCode.code`"]) and $labels["postalCode_`$address_labels.postalCode.code`"]!=''}{$labels["postalCode_`$address_labels.postalCode.code`"]}{else}{$address_labels.postalCode.label}{/if}">
                                         <b class="tooltip tooltip-bottom-right">{if isset($labels["postalCode_`$address_labels.postalCode.code`"]) and $labels["postalCode_`$address_labels.postalCode.code`"]!=''}{$labels["postalCode_`$address_labels.postalCode.code`"]}{else}{$address_labels.postalCode.label}{/if}</b>
                                     </label>
