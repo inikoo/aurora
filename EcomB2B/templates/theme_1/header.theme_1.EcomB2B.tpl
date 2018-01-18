@@ -64,7 +64,12 @@
                                     <a href="basket.sys" class="button" >
                                         <span  id="header_order_products"  class="ordered_products_number" >{if isset($order)}{$order->get('Products')}{else}0{/if}</span>
                                         <i style="padding-right:5px;padding-left:5px" class="fa fa-shopping-cart fa-flip-horizontal  " style="cursor:pointer"   title="{t}Basket{/t}"  aria-hidden="true"></i>
-                                        <span id="header_order_total_amount" class="order_total" style="padding-right:10px" >{if isset($order)}{$order->get('Total')}{else}{$zero_money}{/if}</span>
+                                        {if !empty($website->settings['Info Bar Basket Amount Type']) and $website->settings['Info Bar Basket Amount Type']=='items_net'}
+                                            <span id="header_order_items_net_amount" class="order_items_net" style="padding-right:10px" title="{if isset($labels._items_net) and $labels._items_net!=''}{$labels._items_net}{else}{t}Items Net{/t}{/if}"  >{if isset($order)}{$order->get('Items Net Amount')}{else}{$zero_money}{/if}</span>
+                                        {else}
+                                            <span id="header_order_total_amount" class="order_total" style="padding-right:10px" title="{if isset($labels._total) and $labels._total!=''}{$labels._total}{else}{t}Total{/t}{/if}">{if isset($order)}{$order->get('Total')}{else}{$zero_money}{/if}</span>
+
+                                        {/if}
                                     </a>
 
 

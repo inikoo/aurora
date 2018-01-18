@@ -267,10 +267,6 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
 
 
 
-
-
-
-
         $object->update_labels_in_localised_labels(array(  preg_replace('/^Localised_Labels/','',$data['field']) => $data['value']  ));
 
 
@@ -280,6 +276,36 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
             'action'             => '',
             'formatted_value'    => $data['value'] ,
             'value'              => $data['value'] ,
+            'other_fields'       => $object->get_other_fields_update_info(),
+            'new_fields'         => $object->get_new_fields_info(),
+            'deleted_fields'     => $object->get_deleted_fields_info(),
+            'update_metadata'    => '',
+            'directory_field'    => '',
+            'directory'          => '',
+            'items_in_directory' => ''
+        );
+
+        echo json_encode($response);
+
+
+        return;
+
+    }
+    if($data['object']=='Website' and preg_match('/^Website_Settings_/',$data['field']) ){
+
+
+
+        $object->update_settings(array(  preg_replace('/_/', ' ',  preg_replace('/^Website_Settings_/','',$data['field'])) => $data['value']  ));
+
+        $field = preg_replace('/_/', ' ', $data['field']);
+        $formatted_field = preg_replace('/^Website /', '', $field);
+
+        $response = array(
+            'state'              => 200,
+            'msg'                => '',
+            'action'             => '',
+            'formatted_value'    => $object->get($formatted_field) ,
+            'value'              => $object->get($field) ,
             'other_fields'       => $object->get_other_fields_update_info(),
             'new_fields'         => $object->get_new_fields_info(),
             'deleted_fields'     => $object->get_deleted_fields_info(),

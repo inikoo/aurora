@@ -57,6 +57,12 @@ class Website extends DB_Table {
         if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id   = $this->data['Website Key'];
             $this->code = $this->data['Website Code'];
+
+            if ($this->data['Website Settings'] == '') {
+                $this->settings = array();
+            } else {
+                $this->settings = json_decode($this->data['Website Settings'], true);
+            }
         }
 
 
@@ -409,6 +415,9 @@ class Website extends DB_Table {
 
         switch ($key) {
 
+
+
+
             case 'Registration Type':
 
               switch ($this->data['Website Registration Type']){
@@ -495,8 +504,49 @@ class Website extends DB_Table {
                 }
                 break;
 
+            case 'Settings Info Bar Basket Amount Type':
+
+
+                switch ($this->get('Website Settings Info Bar Basket Amount Type')){
+                    case 'items_net':
+                        return _('Items net');
+                    default:
+                        return _('Total');
+
+                }
+
+                break;
 
             default:
+
+
+                if(preg_match('/^Website Settings /',$key)){
+
+
+
+
+                    $_key=preg_replace('/^Website Settings /','',$key);
+                    if(isset($this->settings[$_key])){
+                        return $this->settings[$_key];
+                    }else{
+                        return '';
+                    }
+
+                }
+
+                if(preg_match('/^Settings /',$key)){
+
+
+
+
+                    $_key=preg_replace('/^Settings /','',$key);
+                    if(isset($this->settings[$_key])){
+                        return $this->settings[$_key];
+                    }else{
+                        return '';
+                    }
+
+                }
 
 
                 if (array_key_exists($key, $this->data)) {
@@ -773,8 +823,23 @@ class Website extends DB_Table {
         }
 
 
-        $this->update(array('Website Localised Labels' => json_encode($localised_labels)), 'no_history');
+        $this->fast_update(array('Website Localised Labels' => json_encode($localised_labels)));
 
+
+    }
+
+    function update_settings($labels, $operation = 'append') {
+
+
+        switch ($operation) {
+            case 'append':
+                $this->settings = array_merge($this->settings, $labels);
+
+
+        }
+
+
+        $this->fast_update(array('Website Settings' => json_encode($this->settings)));
 
     }
 
@@ -846,6 +911,9 @@ class Website extends DB_Table {
                 break;
             case 'Website Registration Type':
                 $label = _('registration type');
+                break;
+            case 'Website Settings Info Bar Basket Amount Type':
+                $label = _('info bar basket amount type');
                 break;
             default:
 

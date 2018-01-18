@@ -196,7 +196,6 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
             $store    = get_object('Store', $object->get('Deal Store Key'));
 
 
-
             if ($store->get('Store Bulk Discounts Campaign Key') == $campaign->id) {
 
 
@@ -215,6 +214,10 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
             if (!empty($options['localization'])) {
                 include 'fields/website_localization.fld.php';
+
+
+            } elseif (!empty($options['info_bar'])) {
+                include 'fields/website_info_bar.fld.php';
 
 
             } else {

@@ -2260,6 +2260,8 @@ $modules = array(
 
                     'website.footer.preview' => 'website.templates',
                     'website.header.preview' => 'website.templates',
+                    'website.info_bar' => 'website.templates',
+
                     'website.templates'      => 'website.templates',
 
 
@@ -2419,11 +2421,16 @@ $modules = array(
                     ),
 
                     'website.templates' => array(
-                        'label'   => _('Templates'),
+                        'label'   => _('Header & footer'),
                         'icon'    => 'code',
                         'subtabs' => array(
 
+                            'website.info_bar' => array(
+                                'label' => _('Info bar'),
+                                'icon'  => 'info',
 
+
+                            ),
                             'website.header.preview' => array(
                                 'label' => _('Header'),
                                 'icon'  => 'header',
@@ -2437,7 +2444,7 @@ $modules = array(
 
                             ),
 
-
+/*
                             'website.templates' => array(
                                 'label' => '',
                                 'title' => _('Templates'),
@@ -2446,6 +2453,7 @@ $modules = array(
 
 
                             ),
+*/
 
                         ),
 
