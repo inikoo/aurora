@@ -62,6 +62,15 @@ class Public_Website {
         if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id   = $this->data['Website Key'];
             $this->code = $this->data['Website Code'];
+
+
+
+            if ($this->data['Website Settings'] == '') {
+                $this->settings = array();
+            } else {
+                $this->settings = json_decode($this->data['Website Settings'], true);
+            }
+
         }
 
 
@@ -270,6 +279,8 @@ class Public_Website {
 
                 return $labels;
                 break;
+
+
 
             case 'Website Store Key':
             case 'Website Locale':
