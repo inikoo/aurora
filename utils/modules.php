@@ -2257,7 +2257,6 @@ $modules = array(
 
                     'website.fonts'        => 'website.style',
                     'website.colours'      => 'website.style',
-                    'website.localization' => 'website.style',
 
                     'website.footer.preview' => 'website.templates',
                     'website.header.preview' => 'website.templates',
@@ -2270,11 +2269,43 @@ $modules = array(
 
 
                     'website.details'   => array(
-                        'label' => _(
-                            'Data'
-                        ),
+                        'label' => _('Data'),
                         'icon'  => 'database'
                     ),
+
+
+                    'website.style' => array(
+                        'label'   => _('Look & fill'),
+                        'icon'    => 'paint-brush',
+                        'subtabs' => array(
+
+                            'website.colours' => array(
+                                'label' => _('Colours'),
+                                'icon'  => 'tint',
+
+
+                            ),
+
+                            'website.fonts' => array(
+                                'label' => _('Fonts'),
+                                'icon'  => 'font',
+
+
+                            ),
+
+
+
+
+                        ),
+
+                    ),
+
+                    'website.localization'   => array(
+                        'label' => _('Localization'),
+                        'icon'  => 'language',
+                    ),
+
+
                     'website.analytics' => array(
                         'label' => _('Analytics'),
                         'icon'  => 'line-chart',
@@ -2384,38 +2415,6 @@ $modules = array(
 
                         )
 
-
-                    ),
-
-                    'website.style' => array(
-                        'label'   => _('Look & feel'),
-                        'icon'    => 'paint-brush',
-                        'subtabs' => array(
-
-                            'website.colours' => array(
-                                'label' => _('Colours'),
-                                'icon'  => 'tint',
-
-
-                            ),
-
-                            'website.fonts' => array(
-                                'label' => _('Fonts'),
-                                'icon'  => 'font',
-
-
-                            ),
-
-
-                            'website.localization' => array(
-                                'label' => _('Localization'),
-                                'icon'  => 'language',
-
-
-                            ),
-
-
-                        ),
 
                     ),
 

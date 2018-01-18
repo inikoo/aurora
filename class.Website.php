@@ -450,7 +450,6 @@ class Website extends DB_Table {
 
                 return $labels;
                 break;
-            case 'Localised Labels':
             case 'Data':
 
                 if ($this->data['Website '.$key] == '') {
