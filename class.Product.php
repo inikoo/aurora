@@ -2779,6 +2779,7 @@ class Product extends Asset {
 
 
                 $this->update_field($tag.' Dimensions', $dim, $options);
+                $this->fast_update(array('Product Unit XHTML Dimensions'=>$this->get('Unit Dimensions')));
 
 
                 break;
@@ -2877,6 +2878,8 @@ class Product extends Asset {
 
 
                 $this->update_field('Product Materials', $materials, $options);
+                $this->fast_update(array('Product Unit XHTML Materials'=>$this->get('Materials')));
+
                 $updated = $this->updated;
 
 
@@ -3388,9 +3391,6 @@ class Product extends Asset {
     function update_part_list($value, $options = '') {
 
 
-        //print_r($value);
-
-
         $value = json_decode($value, true);
 
 
@@ -3481,11 +3481,13 @@ class Product extends Asset {
         $this->get_data('id', $this->id);
 
 
-        $this->update(array('Product Parts Data' => json_encode($this->get_parts_data())), 'no_history');
+        $this->fast_update(array('Product Parts Data' => json_encode($this->get_parts_data())));
 
         $this->update_part_numbers();
         $this->update_availability();
         $this->update_cost();
+
+        $this->fast_update(array('Product XHTML Parts'=>$this->get('Parts')));
 
         foreach ($this->get_parts('objects') as $part) {
             $part->update_products_data();

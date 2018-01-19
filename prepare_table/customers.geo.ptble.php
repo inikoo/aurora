@@ -37,7 +37,7 @@ $_dir   = $order_direction;
 
 
 if ($order == 'country') {
-    $order = '`Country Name``';
+    $order = '`Country Name`';
 }elseif ($order == 'customers' or $order == 'customers_percentage') {
     $order = 'customers';
 } elseif ($order == 'sales' or $order == 'sales_percentage') {

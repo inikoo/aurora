@@ -13,7 +13,6 @@
 require_once 'common.php';
 
 
-
 require_once 'class.Product.php';
 require_once 'class.Category.php';
 
@@ -34,10 +33,9 @@ print date('l jS \of F Y h:i:s A')."\n";
 //print "updated fiels from parts\n";
 //update_web_state($db);
 
-update_categories_data($db);
+//update_categories_data($db);
 
 update_products_data($db);
-
 
 
 function update_products_data($db) {
@@ -50,17 +48,38 @@ function update_products_data($db) {
 
 
             $product = new Product($row['Product ID']);
-            $product->update_part_numbers();
-            $product->update_order_numbers();
-            $product->update_customers_favored_numbers();
+            //$product->update_part_numbers();
+            //$product->update_order_numbers();
+            //$product->update_customers_favored_numbers();
 
-            $product->update_history_records_data();
-            $product->update_images_data();
+            // $product->update_history_records_data();
+            //  $product->update_images_data();
 
-            $product->update_interval_sales();
-            $product->update_up_today_sales();
+            //  $product->update_interval_sales();
+            //$product->update_up_today_sales();
 
-           // $product->update(array('Product Parts Data'=>json_encode($product->get_parts_data())),'no_history');
+            // print_r(array('Product XHTML Parts'=>$product->get('Parts')));
+
+            $product->fast_update(array('Product XHTML Parts' => $product->get('Parts')));
+            $product->fast_update(array('Product Unit XHTML Dimensions' => $product->get('Unit Dimensions')));
+            $product->fast_update(array('Product Unit XHTML Materials' => $product->get('Materials')));
+
+            $webpage = get_object('Webpage', $product->get('Product Webpage Key'));
+
+            $web_text = '';
+            if ($webpage->id) {
+                $content_data = $webpage->get('Content Data');
+                if (isset($content_data['description_block']['content'])) {
+                    $web_text = $content_data['description_block']['content'];
+                }
+            }
+
+
+
+            $product->fast_update(array('Product Published Webpage Description' => $web_text));
+
+
+            // $product->update(array('Product Parts Data'=>json_encode($product->get_parts_data())),'no_history');
 
         }
 
@@ -74,9 +93,9 @@ function update_products_data($db) {
 
 function update_categories_data($db) {
 
-    $sql = sprintf("SELECT `Category Key` FROM `Category Dimension` WHERE `Category Subject`='Product'  and `Category Key`=17400");
+    $sql = sprintf("SELECT `Category Key` FROM `Category Dimension` WHERE `Category Subject`='Product'  AND `Category Key`=17400");
 
-    $sql = sprintf("SELECT `Category Key` FROM `Category Dimension` WHERE `Category Subject`='Product'" );
+    $sql = sprintf("SELECT `Category Key` FROM `Category Dimension` WHERE `Category Subject`='Product'");
 
 
     if ($result = $db->query($sql)) {
@@ -88,7 +107,6 @@ function update_categories_data($db) {
             $category->update_product_category_products_data();
             $category->update_images_data();
             $category->update_history_records_data();
-
 
 
         }
