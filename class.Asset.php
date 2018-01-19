@@ -405,9 +405,7 @@ class Asset extends DB_Table {
 
                 include_once 'class.Category.php';
                 if ($this->get($this->table_name.' Family Category Key') > 0) {
-                    $family = new Category(
-                        $this->get($this->table_name.' Family Category Key')
-                    );
+                    $family = new Category($this->get($this->table_name.' Family Category Key'));
                     if ($family->id) {
                         return array(
                             true,

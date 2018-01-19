@@ -706,37 +706,122 @@ $export_fields = array(
             'label'   => _('Code'),
             'checked' => 1
         ),
-
-        array(
-            'name'    => '`Product Name`',
-            'label'   => _('Name'),
-            'checked' => 1
-        ),
-        array(
-            'name'    => '`Product Units Per Case`',
-            'label'   => _('Units per outer'),
-            'checked' => 1
-        ),
-        array(
-            'name'    => '`Product Unit Type`',
-            'label'   => _('Unit type'),
-            'checked' => 1
-        ),
-        array(
-            'name'    => '`Product Price`',
-            'label'   => _('Outer price'),
-            'checked' => 1
-        ),
-        array(
-            'name'    => '`Product RRP`',
-            'label'   => _('Outer RRP'),
-            'checked' => 1
-        ),
         array(
             'name'    => '`Product Barcode Number`',
             'label'   => _('Barcode'),
             'checked' => 1
         ),
+        array(
+            'name'    => '`Product CPNP Number`',
+            'label'   => _('CPNP number'),
+            'checked' => 0
+        ),
+
+        array(
+            'name'    => '`Product XHTML Parts`',
+            'label'   => _('Parts'),
+            'checked' => 0
+        ),
+
+
+        array(
+            'name'    => '( select `Category Code` from `Category Dimension` where `Category Key`=`Product Family Category Key`)',
+            'label'   => _('Family'),
+            'checked' => 0
+        ),
+
+
+        array(
+            'name'    => '`Product Label in Family`',
+            'label'   => _('Label in family'),
+            'checked' => 0
+        ),
+
+
+        array(
+            'name'    => '`Product Units Per Case`',
+            'label'   => _('Units per outer'),
+            'checked' => 1
+        ),
+
+        array(
+            'name'    => '`Product Price`',
+            'label'   => _('Outer price'),
+            'checked' => 1
+        ),
+
+        array(
+            'name'    => '`Product Unit Type`',
+            'label'   => _('Unit label'),
+            'checked' => 1
+        ),
+
+        array(
+            'name'    => '`Product Name`',
+            'label'   => _('Unit Name'),
+            'checked' => 1
+        ),
+
+
+
+        array(
+            'name'    => '`Product RRP`/`Product Units Per Case`',
+            'label'   => _('Unit RRP'),
+            'checked' => 1
+        ),
+
+        array(
+            'name'    => '`Product Unit Weight`',
+            'label'   => _('Unit weight'),
+            'checked' => 1
+        ),
+
+        array(
+            'name'    => '`Product Unit XHTML Dimensions`',
+            'label'   => _('Unit dimensions'),
+            'checked' => 1
+        ),
+
+        array(
+            'name'    => '`Product Unit XHTML Materials`',
+            'label'   => _('Materials/Ingredients'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Product Published Webpage Description`',
+            'label'   => _('Webpage description (html)'),
+            'checked' => 0,
+            'html'=>1
+        ),
+
+        array(
+            'name'    => '(`Product Published Webpage Description`) as plain',
+            'label'   => _('Webpage description (plain text)'),
+            'checked' => 0,
+        ),
+
+
+        array(
+            'name'    => '`Product Origin Country Code`',
+            'label'   => _('Country of origin'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Product Tariff Code`',
+            'label'   => _('Tariff code'),
+            'checked' => 0
+        ),
+        array(
+            'name'    => '`Product Duty Rate`',
+            'label'   => _('Duty rate'),
+            'checked' => 0
+        ),
+        array(
+            'name'    => '`Product Availability`',
+            'label'   => _('Stock'),
+            'checked' => 1
+        ),
+
         array(
             'name'    => '`Product Web State`',
             'label'   => _('Web state'),

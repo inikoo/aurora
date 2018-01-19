@@ -17,103 +17,98 @@ editable: false,
 renderable: false,
 cell: "string",
 
-}, 
-{
-name: "flag",
-label: "",
-editable: false,
-sortType: "toggle",
-cell: Backgrid.HtmlCell.extend({
-className: "width_20"
-})
-
 },
 {
-name: "country",
-label: "{t}Country{/t}",
+name: "position",
+label: "{t}nth{/t}",
 sortType: "toggle",
-cell: Backgrid.StringCell.extend({
+editable: false,
+sortType: "toggle",
+{if $sort_key=='position'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({
+}
+)
+},
+{
+name: "query",
+label: "{t}Query{/t}",
+sortType: "toggle",
+editable: false,
+sortType: "toggle",
+{if $sort_key=='query'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({
 }
 )
 },
 
 {
+name: "type",
+label: "{t}Type{/t}",
+sortType: "toggle",
+editable: false,
+sortable:false,
+cell: Backgrid.HtmlCell.extend({
+
+}
+)
+},
+
+{
+name: "in_registration",
+label: "{t}In registration{/t}",
+sortType: "toggle",
+editable: false,
+sortType: "toggle",
+{if $sort_key=='in_registration'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({
+className: 'width_200'
+
+}
+)
+},
+
+{
+name: "in_profile",
+label: "{t}In profile{/t}",
+sortType: "toggle",
+editable: false,
+sortType: "toggle",
+{if $sort_key=='in_profile'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({
+className: 'width_200'
+}
+)
+},
+
+
+
+{
 name: "customers",
-label: "{t}Registrations{/t}",
+label: "{t}Customers{/t}",
 defaultOrder:1,
 editable: false,
 sortType: "toggle",
 {if $sort_key=='customers'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
 
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
-headerCell: integerHeaderCell
+cell: Backgrid.HtmlCell.extend({ className: "aright width_100"} ),
+headerCell: integerHeaderCell,
+
 
 },
+
 {
 name: "customers_percentage",
-label: "%",
+label: "{t}Reply %{/t}",
 defaultOrder:1,
 editable: false,
 sortType: "toggle",
 {if $sort_key=='customers_percentage'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
 
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
-headerCell: integerHeaderCell
+cell: Backgrid.HtmlCell.extend({ className: "aright width_200"} ),
+headerCell: integerHeaderCell,
 
-},
-{
-name: "invoices",
-label: "{t}Invoices{/t}",
-defaultOrder:1,
-editable: false,
-sortType: "toggle",
-{if $sort_key=='invoices'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-
-
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
-headerCell: integerHeaderCell
-
-},
-
-{
-name: "sales",
-label: "{t}Sales{/t}",
-defaultOrder:1,
-editable: false,
-sortType: "toggle",
-{if $sort_key=='sales'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-
-
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
-headerCell: integerHeaderCell
-
-},
-{
-name: "sales_percentage",
-label: "%",
-defaultOrder:1,
-editable: false,
-sortType: "toggle",
-{if $sort_key=='sales_percentage'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-
-
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
-headerCell: integerHeaderCell
-
-},
-{
-name: "sales_per_customer",
-label: "{t}Sales per registration{/t}",
-defaultOrder:1,
-editable: false,
-sortType: "toggle",
-{if $sort_key=='sales_per_customer'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-
-
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
-headerCell: integerHeaderCell
 
 }
 ]

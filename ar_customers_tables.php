@@ -56,6 +56,11 @@ switch ($tipo) {
     case 'customers_geographic_distribution':
         customers_geographic_distribution(get_table_parameters(), $db, $user);
         break;
+    case 'poll_queries':
+        poll_queries(get_table_parameters(), $db, $user);
+        break;
+
+
     default:
         $response = array(
             'state' => 405,
@@ -566,14 +571,78 @@ function customers_geographic_distribution($_data, $db, $user) {
             $adata[] = array(
                 'id'      => (integer)$data['Country Key'],
                 'country' => $data['Country Name'],
-                'flag'=>sprintf('<img alt="%s" title="%s" src="/art/flags/%s.gif"/>',$data['Country 2 Alpha Code'],$data['Country 2 Alpha Code'].' '.$data['Country Name'],strtolower($data['Country 2 Alpha Code'])),
+                'flag'    => sprintf('<img alt="%s" title="%s" src="/art/flags/%s.gif"/>', $data['Country 2 Alpha Code'], $data['Country 2 Alpha Code'].' '.$data['Country Name'], strtolower($data['Country 2 Alpha Code'])),
 
                 'customers'            => number($data['customers']),
                 'customers_percentage' => percentage($data['customers'], $total_customers),
-                'invoices'                => number($data['invoices']),
+                'invoices'             => number($data['invoices']),
                 'sales'                => money($data['sales'], $currency),
                 'sales_percentage'     => percentage($data['sales'], $total_sales),
-                'sales_per_customer'=>money($data['sales_per_registration'], $currency),
+                'sales_per_customer'   => money($data['sales_per_registration'], $currency),
+
+
+            );
+        }
+
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function poll_queries($_data, $db, $user) {
+
+
+
+    if ($_data['parameters']['parent'] == 'store') {
+        $store           = get_object('Store', $_data['parameters']['parent_key']);
+        $total_customers = $store->get('Store Contacts');
+
+    } else {
+        exit('ar_customers_tables, todo E:1234a');
+    }
+
+    $rtext_label = 'query';
+
+    $ordinal_formatter = new \NumberFormatter("en-GB", \NumberFormatter::ORDINAL);
+
+    include_once 'prepare_table/init.php';
+
+    $sql = "select  $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+
+
+    $adata = array();
+
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+
+            $adata[] = array(
+                'id'              => (integer)$data['Customer Insight Query Key'],
+                'query'           =>sprintf('<span class="link" onclick="change_view(\'/customers/%d/poll_query/%d\')" title="%s">%s</span>',$data['Customer Insight Query Store Key'],$data['Customer Insight Query Key'],$data['Customer Insight Query Label'],$data['Customer Insight Query Name']),
+                'label'           => $data['Customer Insight Query Label'],
+                'in_registration' => ($data['Customer Insight Query In Registration'] == 'Yes' ? '<i class="fa fa-check success"></i>' : '<i class="fa fa-check discreet"></i>'),
+                'in_profile'      => ($data['Customer Insight Query In Profile'] == 'Yes' ? '<i class="fa fa-check success"></i>' : '<i class="fa fa-check discreet"></i>'),
+                'customers'       => number($data['Customer Insight Query Customers']),
+                'customers_percentage'       => percentage($data['Customer Insight Query Customers'],$total_customers),
+
+                'position'=>$ordinal_formatter->format($data['Customer Insight Query Position']),
 
 
             );

@@ -11,6 +11,7 @@
 */
 
 
+
 include_once 'utils/static_data.php';
 
 if ($user->can_edit('parts')) {
@@ -195,7 +196,7 @@ $product_fields = array(
     ),
 
     array(
-        'label'      => _('Family'),
+        'label'      => _('Family').$object->get('Family Category Key'),
         'show_title' => true,
         'fields'     => array(
             array(
@@ -211,9 +212,7 @@ $product_fields = array(
                 'value'                    => htmlspecialchars(
                     $object->get('Product Family Category Key')
                 ),
-                'formatted_value'          => $object->get(
-                    'Family Category Key'
-                ),
+                'formatted_value'          => $object->get('Family Category Key'),
                 'stripped_formatted_value' => '',
                 'label'                    => _('Family'),
                 'required'                 => true,
@@ -226,13 +225,9 @@ $product_fields = array(
                 'id'   => 'Product_Label_in_Family',
                 'edit' => ($edit ? 'string' : ''),
 
-                'value'           => htmlspecialchars(
-                    $object->get('Product Label in Family')
-                ),
+                'value'           => htmlspecialchars($object->get('Product Label in Family')),
                 'formatted_value' => $object->get('Label in Family'),
-                'label'           => ucfirst(
-                    $object->get_field_label('Product Label in Family')
-                ),
+                'label'           => ucfirst($object->get_field_label('Product Label in Family')),
                 'required'        => false,
                 'type'            => 'value'
 
@@ -386,9 +381,7 @@ $product_fields = array(
 
                 'render' => ($new ? false : true),
 
-                'value'           => htmlspecialchars(
-                    $object->get('Product Materials')
-                ),
+                'value'           => htmlspecialchars($object->get('Product Materials')),
                 'formatted_value' => $object->get('Materials'),
                 'label'           => ucfirst(
                         $object->get_field_label('Product Materials')

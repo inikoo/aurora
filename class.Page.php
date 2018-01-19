@@ -1924,8 +1924,22 @@ class Page extends DB_Table {
             }
 
 
-        }
+        } elseif ($this->get('Webpage Scope') == 'Product') {
 
+
+
+            if(isset($content_data['description_block']['content'])){
+                $web_text=$content_data['description_block']['content'];
+            }else{
+                $web_text='';
+            }
+
+
+
+            $product = get_object('Product', $this->get('Webpage Scope Key'));
+            $product->fast_update(array('Product Published Webpage Description'=>$web_text));
+
+        }
 
         $sql = sprintf(
             'UPDATE  `Webpage Related Product Bridge` SET  `Webpage Related Product Content Published Data`=`Webpage Related Product Content Data`,`Webpage Related Product Published Order`=`Webpage Related Product Order` WHERE `Webpage Related Product Page Key`=%d ',
@@ -6298,7 +6312,7 @@ class Page extends DB_Table {
                 'unit_dimensions' => $product->get(
                     'Product Unit XHTML Dimensions'
                 ),
-                'ingrediens'      => strip_tags(
+                'ingredients'     => strip_tags(
                     $product->get('Product Unit XHTML Materials')
                 ),
                 'units'           => $product->get('Product Units Per Case'),

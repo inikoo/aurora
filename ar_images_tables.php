@@ -60,9 +60,7 @@ function images($_data, $db, $user) {
 
     $adata = array();
 
-    $ordinal_formatter = new \NumberFormatter(
-        "en-GB", \NumberFormatter::ORDINAL
-    );
+    $ordinal_formatter = new \NumberFormatter("en-GB", \NumberFormatter::ORDINAL);
 
     if ($result = $db->query($sql)) {
 

@@ -139,9 +139,18 @@ function fork_export($job) {
             $char_index = 1;
             foreach ($row as $value) {
                 $char = number2alpha($char_index);
-                $objPHPExcel->getActiveSheet()->setCellValue(
-                    $char.$row_index, strip_tags($value)
-                );
+
+
+
+                if(isset($fork_data['field_set'][$char_index-1]['html'])){
+                    $_value=$value;
+                }else{
+                    $_value=strip_tags($value);
+
+                }
+
+
+                $objPHPExcel->getActiveSheet()->setCellValue($char.$row_index, $_value);
                 $char_index++;
             }
             $row_index++;
