@@ -94,6 +94,9 @@ else {
 }
 
 
+
+
+
 $group_by = '';
 include_once 'prepare_table/init.php';
 
@@ -122,6 +125,22 @@ if ($_data['type'] == 'excel') {
 } else {
     $output = $_data['type'];
 }
+
+
+if ($_data['tipo'] == 'products'  ) {
+
+    $placeholders=array(
+        '[image_address]'=>$account->get('Account System Public URL').'/i.php?id='
+    );
+
+
+
+    $sql=strtr($sql, $placeholders);
+
+
+}
+
+
 
 $export_data = array(
     'table'      => $_data['tipo'],

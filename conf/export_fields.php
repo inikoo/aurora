@@ -827,6 +827,26 @@ $export_fields = array(
             'label'   => _('Web state'),
             'checked' => 1
         ),
+        array(
+            'name'    => '( select group_concat(concat("[image_address]",`Image Subject Key`) order by `Image Subject Order`) from `Image Subject Bridge` where `Image Subject Object`="Product" and `Image Subject Object Key`=P.`Product ID` and `Image Subject Is Public`="Yes"  ) as imges',
+            'label'   => _('Images'),
+            'checked' => 0
+        ),
+        array(
+            'name'    => '(select concat("[image_address]",`Image Subject Key`)  from `Image Subject Bridge` where `Image Subject Object`="Product" and `Image Subject Object Key`=P.`Product ID` and `Image Subject Is Public`="Yes"  order by `Image Subject Order` limit 1 offset 0) as img1',
+            'label'   => _('1st image'),
+            'checked' => 0
+        ),
+        array(
+            'name'    => '(select concat("[image_address]",`Image Subject Key`)  from `Image Subject Bridge` where `Image Subject Object`="Product" and `Image Subject Object Key`=P.`Product ID` and `Image Subject Is Public`="Yes"  order by `Image Subject Order` limit 1 offset 1) as img2',
+            'label'   => _('2nd image'),
+            'checked' => 0
+        ),
+        array(
+            'name'    => '(select concat("[image_address]",`Image Subject Key`)  from `Image Subject Bridge` where `Image Subject Object`="Product" and `Image Subject Object Key`=P.`Product ID` and `Image Subject Is Public`="Yes"  order by `Image Subject Order` limit 1 offset 2) as img3',
+            'label'   => _('3rd image'),
+            'checked' => 0
+        ),
 
     ),
     'intrastat' => array(
