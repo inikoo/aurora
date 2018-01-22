@@ -31,7 +31,7 @@ if (isset($parameters['period']) ) {
 }
 
 $total_dp=0;
-$sql=sprintf("select count(`Delivery Note Key`)*sum(`Picked`) as dp from  `Inventory Transaction Fact` $where group by `Picker Key` ");
+$sql=sprintf("select count(distinct `Delivery Note Key`)*sum(`Picked`) as dp from  `Inventory Transaction Fact` $where group by `Picker Key` ");
 
 if ($result=$db->query($sql)) {
 		foreach ($result as $row) {
