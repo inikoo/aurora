@@ -48,7 +48,7 @@
 
 
 
-        <link href="/css/app.css?v180110v2" rel="stylesheet">
+        <link href="/css/app.css?v180122" rel="stylesheet">
         <script src="/js/libs/jquery-2.2.1.js"></script>
         <script src="/js/libs/jquery-ui.js"></script>
         <script src="/js/libs/moment-with-locales.js"></script>

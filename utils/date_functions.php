@@ -308,11 +308,13 @@ function prepare_mysql_dates($date1 = '', $date2 = '', $date_field = 'date', $op
         $d_option = 'date';
 
 
-        $date_only = true;
+       // $date_only = true;
     } else {
         $d_option  = 'datetime';
-        $date_only = false;
+        //$date_only = false;
     }
+
+
 
 
     $tmp = prepare_mysql_datetime($date1, $d_option.$start);
@@ -354,18 +356,26 @@ function prepare_mysql_dates($date1 = '', $date2 = '', $date_field = 'date', $op
         $mysql_date2 = ($mysql_date2 == '' ? '' : $mysql_date2.' 23:59:59');
 
     }
+    if($options=='only dates'){
+
+
+        $mysql_date1=preg_replace('/\s\d{2}:\d{2}:\d{2}/','',$mysql_date1);
+        $mysql_date2=preg_replace('/\s\d{2}:\d{2}:\d{2}/','',$mysql_date2);
+
+    }
 
     if ($mysql_date2 == '' and $mysql_date1 == '') {
         $mysql_interval = "";
     } elseif ($mysql_date2 != '' and $mysql_date1 != '') {
-        $mysql_interval
-            = " and $date_field1>='$mysql_date1' and $date_field2<='$mysql_date2'";
+        $mysql_interval = " and $date_field1>='$mysql_date1' and $date_field2<='$mysql_date2'";
 
     } elseif ($mysql_date2 != '') {
         $mysql_interval = " and $date_field2<='$mysql_date2'";
     } else {
         $mysql_interval = " and $date_field1>='$mysql_date1' ";
     }
+
+
 
 
     return array(

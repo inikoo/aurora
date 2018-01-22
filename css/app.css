@@ -255,6 +255,9 @@ input {
   color: #444;
   cursor: pointer; }
 
+.square_button.text {
+  width: 100px; }
+
 .square_button .disabled {
   opacity: .2; }
 

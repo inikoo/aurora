@@ -1533,6 +1533,12 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                 case ('performance'):
                     return get_performance_navigation($user, $smarty, $data);
                     break;
+                case ('pickers'):
+                    return get_pickers_navigation($user, $smarty, $data);
+                    break;
+                case ('packers'):
+                    return get_packers_navigation($user, $smarty, $data);
+                    break;
                 case ('sales'):
                     return get_sales_navigation($user, $smarty, $data);
                     break;
@@ -6934,7 +6940,31 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 );
 
             }
-            if ($state['section'] == 'intrastat') {
+            elseif ($state['section'] == 'sales') {
+                $branch[] = array(
+                    'label'     => _('Sales'),
+                    'icon'      => '',
+                    'reference' => ''
+                );
+
+            }
+            elseif ($state['section'] == 'pickers') {
+                $branch[] = array(
+                    'label'     => _('Pickers productivity'),
+                    'icon'      => '',
+                    'reference' => ''
+                );
+
+            }
+            elseif ($state['section'] == 'packers') {
+                $branch[] = array(
+                    'label'     => _('Packers productivity'),
+                    'icon'      => '',
+                    'reference' => ''
+                );
+
+            }
+            elseif ($state['section'] == 'intrastat') {
                 $branch[] = array(
                     'label'     => _('Intrastat'),
                     'icon'      => '',
@@ -6942,7 +6972,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 );
 
             }
-            if ($state['section'] == 'intrastat_products') {
+            elseif ($state['section'] == 'intrastat_products') {
                 $branch[] = array(
                     'label'     => _('Intrastat'),
                     'icon'      => '',
@@ -6990,7 +7020,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 
             }
-            if ($state['section'] == 'intrastat_orders') {
+            elseif ($state['section'] == 'intrastat_orders') {
                 $branch[] = array(
                     'label'     => _('Intrastat'),
                     'icon'      => '',
@@ -7036,7 +7066,8 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     'reference' => ''
                 );
 
-            } else {
+            }
+            else {
                 if ($state['section'] == 'billingregion_taxcategory.invoices') {
                     $branch[] = array(
                         'label'     => _(

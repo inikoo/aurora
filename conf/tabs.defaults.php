@@ -2787,6 +2787,43 @@ $tab_defaults = array(
 
     ),
 
+    'sales' => array(
+        'view'          => 'overview',
+        'sort_key'      => 'store',
+        'sort_order'    => 1,
+        'rpp'           => 500,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'store',
+        'from'          => '',
+        'to'            => '',
+        'period'        => 'mtd'
+
+    ),
+    'pickers' => array(
+        'view'          => 'overview',
+        'sort_key'      => 'name',
+        'sort_order'    => -1,
+        'rpp'           => 500,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'name',
+        'from'          => '',
+        'to'            => '',
+        'period'        => 'today'
+
+    ),
+    'packers' => array(
+        'view'          => 'overview',
+        'sort_key'      => 'name',
+        'sort_order'    => -1,
+        'rpp'           => 500,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'name',
+        'from'          => '',
+        'to'            => '',
+        'period'        => 'today'
+
+    ),
+
     'intrastat_orders'               => array(
         'view'          => 'overview',
         'sort_key'      => 'id',

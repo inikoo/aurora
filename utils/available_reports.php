@@ -11,23 +11,40 @@
 */
 
 $available_reports = array(
+    'pickers' => array(
+        'Label'      => _('Pickers'),
+        'Group'      => 'productivity',
+        'GroupLabel' => _('Productivity'),
 
+    ),
+    'packers' => array(
+        'Label'      => _('Packers'),
+        'Group'      => 'productivity',
+        'GroupLabel' => _('Productivity'),
+
+    ),
+    'sales' => array(
+        'Label'      => _('Sales'),
+        'Group'      => 'sales',
+        'GroupLabel' => _('Sales'),
+
+    ),
     'billingregion_taxcategory' => array(
         'Label'      => _('Billing Country/Tax Categories'),
         'Group'      => 'tax',
-        'GroupLabel' => 'Tax',
+        'GroupLabel' => _('Tax'),
 
     ),
     'ec_sales_list'             => array(
         'Label'      => _('EC Sales List'),
         'Group'      => 'tax',
-        'GroupLabel' => 'Tax',
+        'GroupLabel' => _('Tax'),
 
     ),
     'intrastat'             => array(
         'Label'      => _('Intrastat'),
         'Group'      => 'tax',
-        'GroupLabel' => 'Tax',
+        'GroupLabel' => _('Tax'),
 
     ),
 );
