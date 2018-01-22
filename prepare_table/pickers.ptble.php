@@ -95,9 +95,9 @@ $group_by
 
 $table = ' `Inventory Transaction Fact` ITF left join `Staff Dimension` S on (S.`Staff Key`=ITF.`Picker Key`) ';
 
-$fields = "`Staff Name`,`Staff Key`,count(`Delivery Note Key`) as deliveries ,sum(`Picked`) as picked, count(`Delivery Note Key`)*sum(`Picked`) dp ,(count(`Delivery Note Key`)*sum(`Picked`))/$total_dp dp_percentage ,
+$fields = "`Staff Name`,`Staff Key`,count(distinct `Delivery Note Key`) as deliveries ,sum(`Picked`) as picked, count(distinct `Delivery Note Key`)*sum(`Picked`) dp ,(count(distinct `Delivery Note Key`)*sum(`Picked`))/$total_dp dp_percentage ,
 (select sum(`Timesheet Clocked Time`)/3600 from `Timesheet Dimension` where `Timesheet Staff Key`=`Picker Key` $where_interval_working_hours ) as hrs,
-count(`Delivery Note Key`)*sum(`Picked`)/(select sum(`Timesheet Clocked Time`)/3600 from `Timesheet Dimension` where `Timesheet Staff Key`=`Picker Key` $where_interval_working_hours ) dp_per_hour
+count(distinct `Delivery Note Key`)*sum(`Picked`)/(select sum(`Timesheet Clocked Time`)/3600 from `Timesheet Dimension` where `Timesheet Staff Key`=`Picker Key` $where_interval_working_hours ) dp_per_hour
 
 ";
 
