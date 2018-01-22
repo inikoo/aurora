@@ -16,9 +16,9 @@
 <div id="header" >
     {foreach from=$_content.left_buttons item=button }
         <div {if isset($button.id) and $button.id }id="{$button.id}"{/if}
-             class="square_button left" {if isset($button.reference) and $button.reference!=''}onclick="change_view('{$button.reference}')"{/if}
+             class="square_button {if !empty($button.class)}{$button.class}{/if} left"   {if isset($button.reference) and $button.reference!=''}onclick="change_view('{$button.reference}')"{/if}
              title="{$button.title}">
-            <i class="fa fa-{$button.icon} fa-fw"></i>
+            <i class="fa fa-{$button.icon} fa-fw"></i>{if isset($button.text)}{$button.text}{/if}
         </div>
     {/foreach}
 
@@ -61,7 +61,7 @@
              class=" {if isset($button.class)}{$button.class}{/if}  square_button right {if $smarty.foreach.right_buttons.first}border{/if}"
              {if isset($button.reference) and $button.reference!=''}onclick="change_view('{$button.reference}')"
              {/if}title="{$button.title}">
-            <i class="fa fa-{$button.icon} fa-fw "></i>
+            {if isset($button.pre_text)}{$button.pre_text}{/if} <i class="fa fa-{$button.icon} fa-fw "></i> {if isset($button.text)}{$button.text}{/if}
         </div>
     {/foreach}
 </div>

@@ -32,6 +32,12 @@ switch ($tipo) {
     case 'ec_sales_list':
         ec_sales_list(get_table_parameters(), $db, $user, $account);
         break;
+    case 'pickers':
+        pickers(get_table_parameters(), $db, $user, $account);
+        break;
+    case 'packers':
+        packers(get_table_parameters(), $db, $user, $account);
+        break;
     case 'intrastat':
         intrastat(get_table_parameters(), $db, $user, $account);
         break;
@@ -591,12 +597,12 @@ function intrastat_products($_data, $db, $user, $account) {
 
                 'store' => sprintf('<span class="link" onClick="change_view(\'products/%s\')" title="%s">%s</span>', $data['Product Store Key'], $data['Store Name'], $data['Store Code']),
 
-                'code'   => sprintf('<span class="link" onClick="change_view(\'products/%s/%s\')" >%s</span>', $data['Product Store Key'], $data['Product ID'], $data['Product Code']),
-                'name'   => $data['Product Name'],
-                'units'  => number($data['Product Units Per Case']),
-                'price'  => money($data['Product Price'] / $data['Product Units Per Case'], $data['Order Currency Code']),
-                'weight' => weight($data['Product Unit Weight'], 'Kg', 3, false, true),
-                'units_send'=>number($data['units_send']),
+                'code'       => sprintf('<span class="link" onClick="change_view(\'products/%s/%s\')" >%s</span>', $data['Product Store Key'], $data['Product ID'], $data['Product Code']),
+                'name'       => $data['Product Name'],
+                'units'      => number($data['Product Units Per Case']),
+                'price'      => money($data['Product Price'] / $data['Product Units Per Case'], $data['Order Currency Code']),
+                'weight'     => weight($data['Product Unit Weight'], 'Kg', 3, false, true),
+                'units_send' => number($data['units_send']),
 
             );
 
@@ -619,6 +625,115 @@ function intrastat_products($_data, $db, $user, $account) {
 
 
     //$rtext=preg_replace('/\(|\)/', '', $rtext);
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function pickers($_data, $db, $user, $account) {
+
+    $rtext_label = 'picker';
+
+
+
+    foreach ($_data['parameters'] as $parameter => $parameter_value) {
+        $_SESSION['table_state']['packers'][$parameter] = $parameter_value;
+
+    }
+
+    include_once 'prepare_table/init.php';
+
+    $sql   = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+    $adata = array();
+
+
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+            $adata[] = array(
+
+                'name'          => $data['Staff Name'],
+                'deliveries'    => number($data['deliveries']),
+                'picked'        => number($data['picked']),
+                'dp'            => number($data['dp']),
+                'dp_percentage' => percentage($data['dp_percentage'], 1),
+                'hrs'           => number($data['hrs'], 1, true),
+                'dp_per_hour'   => ($data['dp_per_hour'] == '' ? '' : number($data['dp_per_hour'], 1, true)),
+
+            );
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+function packers($_data, $db, $user, $account) {
+
+    $rtext_label = 'packer';
+
+
+    foreach ($_data['parameters'] as $parameter => $parameter_value) {
+        $_SESSION['table_state']['pickers'][$parameter] = $parameter_value;
+
+    }
+
+    include_once 'prepare_table/init.php';
+
+    $sql   = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+    $adata = array();
+
+    //print $sql;
+
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+            $adata[] = array(
+
+                'name'          => $data['Staff Name'],
+                'deliveries'    => number($data['deliveries']),
+                'packed'        => number($data['packed']),
+                'dp'            => number($data['dp']),
+                'dp_percentage' => percentage($data['dp_percentage'], 1),
+                'hrs'           => number($data['hrs'], 1, true),
+                'dp_per_hour'   => ($data['dp_per_hour'] == '' ? '' : number($data['dp_per_hour'], 1, true)),
+
+            );
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
 
 
     $response = array(

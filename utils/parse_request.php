@@ -4059,6 +4059,18 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                         $section = 'ec_sales_list';
 
 
+                    }elseif ($view_path[0] == 'sales') {
+                        $section = 'sales';
+
+
+                    }elseif ($view_path[0] == 'pickers') {
+                        $section = 'pickers';
+
+
+                    }elseif ($view_path[0] == 'packers') {
+                        $section = 'packers';
+
+
                     } elseif ($view_path[0] == 'intrastat') {
                         $section = 'intrastat';
 

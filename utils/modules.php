@@ -5408,6 +5408,32 @@ $modules = array(
 
             ),
 
+            'pickers'                      => array(
+                'type' => '',
+                'tabs' => array(
+                    'pickers' => array(),
+
+                )
+
+            ),
+            'packers'                      => array(
+                'type' => '',
+                'tabs' => array(
+                    'packers' => array(),
+
+                )
+
+            ),
+
+            'sales'                      => array(
+                'type' => '',
+                'tabs' => array(
+                    'sales' => array(),
+
+                )
+
+            ),
+
             'intrastat'                      => array(
                 'type' => '',
                 'tabs' => array(

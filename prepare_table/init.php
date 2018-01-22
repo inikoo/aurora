@@ -36,8 +36,7 @@ if (isset($_data['f_field']) and $_data['f_field'] != '') {
 
 
 foreach ($parameters as $parameter => $parameter_value) {
-    $_SESSION['table_state'][$_data['parameters']['tab']][$parameter]
-        = $parameter_value;
+    $_SESSION['table_state'][$_data['parameters']['tab']][$parameter] = $parameter_value;
 
 }
 

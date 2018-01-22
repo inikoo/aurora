@@ -10,6 +10,122 @@
  Version 3.0
 */
 
+
+function get_sales_navigation($user, $smarty, $data) {
+
+
+    $left_buttons  = array();
+    $right_buttons = array();
+    $sections      = array();
+
+    if (isset($sections[$data['section']])) {
+        $sections[$data['section']]['selected'] = true;
+    }
+
+    $title = _('Sales');
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search reports')
+        )
+    );
+    $smarty->assign('_content', $_content);
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
+
+
+function get_pickers_navigation($user, $smarty, $data) {
+
+
+    $left_buttons  = array();
+    $right_buttons = array();
+    $sections      = array();
+
+
+    $right_buttons[]
+        = array(
+        'icon'  => 'arrow-right',
+        'title' => '',
+        'click'=>"change_view('/report/packers')",
+        'pre_text'=>_('Packers'),
+        'class'=>'text'
+    );
+
+    if (isset($sections[$data['section']])) {
+        $sections[$data['section']]['selected'] = true;
+    }
+
+    $title = _('Pickers productivity');
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search reports')
+        )
+    );
+    $smarty->assign('_content', $_content);
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
+
+function get_packers_navigation($user, $smarty, $data) {
+
+
+    $left_buttons  = array();
+    $right_buttons = array();
+    $sections      = array();
+
+
+    $right_buttons[]
+        = array(
+        'icon'  => 'arrow-left',
+        'title' => '',
+        'click'=>"change_view('/report/pickers')",
+        'text'=>_('Pickers'),
+        'class'=>'text'
+        );
+
+
+    if (isset($sections[$data['section']])) {
+        $sections[$data['section']]['selected'] = true;
+    }
+
+    $title = _('Packers productivity');
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search reports')
+        )
+    );
+    $smarty->assign('_content', $_content);
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
+
 function get_reports_navigation($user, $smarty, $data) {
 
     $block_view = $data['section'];

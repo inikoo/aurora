@@ -109,6 +109,8 @@ function get_table_totals($db, $sql_totals, $wheref = '', $record_label = '', $m
 
 
 function get_rtext($record_label, $total_records) {
+
+
     if ($record_label == 'customer') {
         return sprintf(
             ngettext('%s customer', '%s customers', $total_records), number($total_records)
@@ -266,6 +268,14 @@ function get_rtext($record_label, $total_records) {
     } elseif ($record_label == 'day') {
         return sprintf(
             ngettext('%s day', '%s days', $total_records), number($total_records)
+        );
+    }  elseif ($record_label == 'picker') {
+        return sprintf(
+            ngettext('%s picker', '%s pickers', $total_records), number($total_records)
+        );
+    } elseif ($record_label == 'packer') {
+        return sprintf(
+            ngettext('%s packer', '%s packers', $total_records), number($total_records)
         );
     } elseif ($record_label == 'operative') {
         return sprintf(
@@ -811,6 +821,19 @@ function get_rtext_with_filter($record_label, $total_with_filter, $total_no_filt
     } elseif ($record_label == 'country') {
         return sprintf(
             ngettext('%s country of %s', '%s countries of %s', $total_with_filter), number($total_with_filter), number($total_no_filter)
+        );
+    } elseif ($record_label == 'picker') {
+        return sprintf(
+            ngettext(
+                '%s picker of %s', '%s pickers of %s', $total_with_filter
+            ), number($total_with_filter), number($total_no_filter)
+        );
+    }
+    elseif ($record_label == 'packer') {
+        return sprintf(
+            ngettext(
+                '%s packer of %s', '%s packers of %s', $total_with_filter
+            ), number($total_with_filter), number($total_no_filter)
         );
     } else {
         return sprintf(
