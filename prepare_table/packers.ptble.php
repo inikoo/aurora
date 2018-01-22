@@ -31,7 +31,7 @@ if (isset($parameters['period']) ) {
 }
 
 $total_dp=0;
-$sql=sprintf("select count(`Delivery Note Key`)*sum(`Packed`) as dp from  `Inventory Transaction Fact` $where group by `Packer Key` ");
+$sql=sprintf("select count(distinct `Delivery Note Key`)*sum(`Packed`) as dp from  `Inventory Transaction Fact` $where group by `Packer Key` ");
 
 if ($result=$db->query($sql)) {
 		foreach ($result as $row) {
@@ -96,9 +96,9 @@ $group_by
 
 $table = ' `Inventory Transaction Fact` ITF left join `Staff Dimension` S on (S.`Staff Key`=ITF.`Packer Key`) ';
 
-$fields = "`Staff Name`,`Staff Key`,count(`Delivery Note Key`) as deliveries ,sum(`Packed`) as packed, count(`Delivery Note Key`)*sum(`Packed`) dp ,(count(`Delivery Note Key`)*sum(`Packed`))/$total_dp dp_percentage ,
+$fields = "`Staff Name`,`Staff Key`,count(distinct `Delivery Note Key`) as deliveries ,sum(`Packed`) as packed, count(distinct `Delivery Note Key`)*sum(`Packed`) dp ,(count(distinct `Delivery Note Key`)*sum(`Packed`))/$total_dp dp_percentage ,
 (select sum(`Timesheet Clocked Time`)/3600 from `Timesheet Dimension` where `Timesheet Staff Key`=`Packer Key` $where_interval_working_hours ) as hrs,
-count(`Delivery Note Key`)*sum(`Packed`)/(select sum(`Timesheet Clocked Time`)/3600 from `Timesheet Dimension` where `Timesheet Staff Key`=`Packer Key` $where_interval_working_hours ) dp_per_hour
+count(distinct `Delivery Note Key`)*sum(`Packed`)/(select sum(`Timesheet Clocked Time`)/3600 from `Timesheet Dimension` where `Timesheet Staff Key`=`Packer Key` $where_interval_working_hours ) dp_per_hour
 
 ";
 
