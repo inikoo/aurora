@@ -74,7 +74,7 @@ if ($invoice->get('Invoice Type') == 'Invoice'){
 
 $order = get_object('order', $object->get('Invoice Order Key'));
 
-if ($order->get('Order State') != 'Dispatched') {
+if ($order->get('Order State') != 'Dispatched' or true  ) {
 
     $operations = array(
         'label'      => _('Operations'),
@@ -84,7 +84,7 @@ if ($order->get('Order State') != 'Dispatched') {
 
 
             array(
-                'id'        => 'delete_payment',
+                'id'        => 'delete_invoice',
                 'class'     => 'operation',
                 'value'     => '',
                 'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
@@ -105,7 +105,7 @@ if ($order->get('Order State') != 'Dispatched') {
 
     if($invoice->get('Invoice Payments Amount')!=0){
         $delete_ops=array(
-            'id'        => 'delete_payment',
+            'id'        => 'info_delete_refund',
             'class'     => 'operation',
             'value'     => '',
             'label'     => _('To delete refund all payments have to be cancelled first'),
@@ -114,7 +114,7 @@ if ($order->get('Order State') != 'Dispatched') {
         );
     }else{
         $delete_ops=array(
-            'id'        => 'delete_payment',
+            'id'        => 'delete_refund',
             'class'     => 'operation',
             'value'     => '',
             'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
