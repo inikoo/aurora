@@ -1821,7 +1821,7 @@ class Page extends DB_Table {
 
         }
 
-        $this->update(array('Webpage Version' => $version), 'no_history');
+        $this->fast_update(array('Webpage Version' => $version));
 
     }
 

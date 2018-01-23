@@ -147,7 +147,7 @@ function recover_password($db, $data, $editor,$website) {
             $placeholders = array(
                 '[Greetings]'=>$customer->get_greetings(),
                 '[Name]'=>$customer->get('Name'),
-                '[Name,Company]'=>preg_replace('/^, /','',$customer->get('Customer Main Contact Name').($customer->get('Customer Company Name')==''?'':', '.$customer->get('Customer Company Name'))),
+                '[Name,Company]'=>preg_replace('/^, /','',$customer->get('Customer Main Contact Name').(($customer->get('Customer Company Name')=='' or  $customer->get('Customer Company Name')==$customer->get('Customer Main Contact Name') )?'':', '.$customer->get('Customer Company Name'))),
                 '[Reset_Password_URL]'=>'https://'.$website->get('Website URL').'/reset.php?s='.$selector.'&a='.$authenticator,
                 '[Signature]'=>$webpage->get('Signature'),
             );
