@@ -653,7 +653,34 @@ function pickers($_data, $db, $user, $account) {
 
     }
 
+
+
+
+
     include_once 'prepare_table/init.php';
+
+
+    $total_dp=0;
+    $sql=sprintf("select sum(`Inventory Transaction Weight`) as weight,count(distinct `Delivery Note Key`) as delivery_notes,count(distinct `Delivery Note Key`,`Part SKU`) as units  from  `Inventory Transaction Fact` $where group by `Picker Key` ");
+
+
+    if ($result=$db->query($sql)) {
+        foreach ($result as $row) {
+            $total_dp+=($row['units']);
+
+        }
+    }else {
+        print_r($error_info=$db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+
+
+
+    if($total_dp==0){
+        $total_dp=1;
+    }
+
 
     $sql   = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
@@ -663,13 +690,15 @@ function pickers($_data, $db, $user, $account) {
 
         foreach ($result as $data) {
 
+
+
             $adata[] = array(
 
                 'name'          => $data['Staff Name'],
                 'deliveries'    => number($data['deliveries']),
-                'picked'        => number($data['picked']),
+                'picked'        => number($data['picked'],0),
                 'dp'            => number($data['dp']),
-                'dp_percentage' => percentage($data['dp_percentage'], 1),
+                'dp_percentage' => percentage($data['dp'], $total_dp),
                 'hrs'           => number($data['hrs'], 1, true),
                 'dp_per_hour'   => ($data['dp_per_hour'] == '' ? '' : number($data['dp_per_hour'], 1, true)),
 
@@ -708,6 +737,29 @@ function packers($_data, $db, $user, $account) {
 
     include_once 'prepare_table/init.php';
 
+
+    $total_dp=0;
+    $sql=sprintf("select sum(`Inventory Transaction Weight`) as weight,count(distinct `Delivery Note Key`) as delivery_notes,count(distinct `Delivery Note Key`,`Part SKU`) as units  from  `Inventory Transaction Fact` $where group by `Packer Key` ");
+
+
+    if ($result=$db->query($sql)) {
+        foreach ($result as $row) {
+            $total_dp+=($row['units']);
+
+        }
+    }else {
+        print_r($error_info=$db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+
+
+
+    if($total_dp==0){
+        $total_dp=1;
+    }
+
+
     $sql   = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
@@ -721,11 +773,12 @@ function packers($_data, $db, $user, $account) {
 
                 'name'          => $data['Staff Name'],
                 'deliveries'    => number($data['deliveries']),
-                'packed'        => number($data['packed']),
+                'packed'        => number($data['packed'],0),
                 'dp'            => number($data['dp']),
-                'dp_percentage' => percentage($data['dp_percentage'], 1),
+                'dp_percentage' => percentage($data['dp'], $total_dp),
                 'hrs'           => number($data['hrs'], 1, true),
                 'dp_per_hour'   => ($data['dp_per_hour'] == '' ? '' : number($data['dp_per_hour'], 1, true)),
+
 
             );
 

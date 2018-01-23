@@ -21,6 +21,7 @@ name: "name",
 label: "{t}Name{/t}",
 sortType: "toggle",
 editable: false,
+{if $sort_key=='name'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({
 className: "",})
 },
@@ -37,7 +38,7 @@ headerCell: integerHeaderCell
 },
 {
 name: "packed",
-label: "{t}SKOs{/t}",
+label: "{t}SKOs packed{/t}",
 editable: false,
 defaultOrder:1,
 sortType: "toggle",
@@ -47,7 +48,7 @@ headerCell: integerHeaderCell
 },
 {
 name: "dp",
-label: "{t}Deliveries x SKOs{/t} (DS)",
+label: "{t}Count(distinct Part,Delivery){/t} (PD)",
 editable: false,
 defaultOrder:1,
 sortType: "toggle",
@@ -57,7 +58,7 @@ headerCell: integerHeaderCell
 },
 {
 name: "dp_percentage",
-label: "DS %",
+label: "PD %",
 editable: false,
 defaultOrder:1,
 sortType: "toggle",
@@ -77,7 +78,7 @@ headerCell: integerHeaderCell
 },
 {
 name: "dp_per_hour",
-label: "DS/h",
+label: "PD/h",
 editable: false,
 defaultOrder:1,
 sortType: "toggle",
