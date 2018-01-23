@@ -17,6 +17,18 @@ require_once 'utils/date_functions.php';
 $mode='this HR year';
 
 
+if($mode=='this HR year'){
+
+    if(date('m-d')!=$account->get('Account HR Start Year')){
+        print "not start if HR date ".date('m-d').' != '.$account->get('Account HR Start Year')."\n";
+        exit();
+    }
+
+
+}
+
+
+
 $sql = sprintf(
     'SELECT `Staff Key` FROM `Staff Dimension` WHERE `Staff Type`!="Contractor"  ORDER BY `Staff Key` DESC '
 );
