@@ -22,7 +22,7 @@ if (!$result ) {
 
 if (is_numeric($result)) {
 	$page_key=$result;
-	include_once 'conf/dns.php';
+	include 'conf/dns.php';
 	include 'common.php';
 	include 'page.php';
 	exit;
@@ -59,9 +59,6 @@ function get_url($site_key,$url) {
 
 	$url=preg_replace('/^\//', '', $url);
 	$url=preg_replace('/\?.*$/', '', $url);
-
-
-
 	$original_url=$url;
 	$page_key=get_page_key_from_code($site_key,$url);
 	if ($page_key) {
@@ -78,10 +75,6 @@ function get_url($site_key,$url) {
 			//return $url;
 		}
 	}
-
-
-
-
 
 	if (preg_match('/[a-z0-9\_\-]\/$/i',$url)) {
 		return $_SERVER['HTTP_HOST'].'/index.php?error='.$_tmp_url;

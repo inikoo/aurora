@@ -23,30 +23,7 @@ $options_yn = array(
 asort($options_yn);
 
 $object_fields = array(
-    array(
-        'label'      => _('Id'),
-        'show_title' => true,
-        'class'      => 'edit_fields',
-        'fields'     => array(
 
-
-            array(
-
-                'id'    => 'API_Key_Key',
-                'value' => $apy_key->get('API Key Key'),
-                'label' => ucfirst($apy_key->get_field_label('API Key Key')),
-            ),
-            array(
-
-                'id'    => 'API_Key_Code',
-                'value' => $apy_key->get('API Key Code'),
-                'label' => ucfirst($apy_key->get_field_label('API Key Code')),
-
-            ),
-
-
-        )
-    ),
 
     array(
         'label'      => _('Access'),
@@ -61,9 +38,7 @@ $object_fields = array(
                 'value'           => $apy_key->get('API Key Active'),
                 'formatted_value' => $apy_key->get('Active'),
                 'options'         => $options_yn,
-                'label'           => ucfirst(
-                    $apy_key->get_field_label('API Key Active')
-                ),
+                'label'           => ucfirst($apy_key->get_field_label('API Key Active')),
                 'required'        => true
 
             ),

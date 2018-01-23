@@ -74,7 +74,7 @@ if ($invoice->get('Invoice Type') == 'Invoice'){
 
 $order = get_object('order', $object->get('Invoice Order Key'));
 
-if ($order->get('Order State') != 'Dispatched' or true  ) {
+if ($order->get('Order State') != 'Dispatched'   ) {
 
     $operations = array(
         'label'      => _('Operations'),

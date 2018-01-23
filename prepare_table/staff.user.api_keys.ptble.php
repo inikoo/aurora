@@ -68,6 +68,6 @@ $sql_totals
 //print $sql_totals;
 $fields
     = "`User Alias`,`User Handle`,AKD.`API Key User Key`,`API Key Key`,`API Key Valid From`,`API Key Valid To`,`API Key Allowed IP`,`API Key Active`,
-`API Key Scope`,`API Key Successful Requests`,`API Key Failed IP Requests`,`API Key Failed Time Limit Requests`,`API Key Last Request Date`";
+`API Key Scope`,`API Key Successful Requests`,`API Key Failed IP Requests`,`API Key Failed Time Limit Requests`,`API Key Last Request Date`,`API Key Key`,`User Parent Key`,`API Key Code`";
 
 ?>

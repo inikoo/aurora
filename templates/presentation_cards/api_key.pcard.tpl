@@ -28,8 +28,7 @@
                             class="fa fa-eye"></i></span><span class="hide"
                                                                id="api_key">{$api_key->get('API Key Code')}{$api_key->secret_key}</span>
                 <br>
-                <span class="warning"><i
-                            class="fa fa-exclamation-circle"></i> {t}The API key is a secret information and should be treated as a password{/t}</span>
+                <span class="warning"><i class="fa fa-exclamation-circle"></i> {t}The API key is a secret information and should be treated as a password{/t}</span>
             </td>
         </tr>
     </table>

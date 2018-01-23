@@ -30,6 +30,12 @@
 
             {if $logged_in}
 
+                {if $result.web_state=='Out of Stock'}
+
+
+
+                    <div style="margin-top:10px;"><span style="padding:5px 10px" class="{if $result.out_of_stock_class=='launching_soon'}highlight-green color-white{else}highlight-red color-white{/if}">{$result.out_of_stock_label}</span></div>
+                {elseif $result.web_state=='For Sale'}
 
                 <div class="mobile_ordering"  data-settings='{ "pid":{$result.key}}'>
                     <i onclick="save_item_qty_change(this)" class="ordering_button one_less fa fa-fw  fa-minus-circle color-red-dark"></i>
@@ -37,7 +43,7 @@
                     <i onclick="save_item_qty_change(this)" style="display:none" class="ordering_button save fa fa-fw fa-floppy-o color-blue-dark"></i>
                     <i onclick="save_item_qty_change(this)" class="ordering_button add_one fa fa-fw  fa-plus-circle color-green-dark"></i>
                 </div>
-
+{/if}
 
                 <span style="float:left;margin-left: 20px;position: relative;top:10px">{$result.price}</span>
 

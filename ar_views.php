@@ -675,6 +675,9 @@ function get_view($db, $smarty, $user, $account, $modules) {
     list($state, $response['tabs']) = get_tabs($state, $db, $account, $modules, $user, $smarty);// todo only calculate when is subtabs in the section
 
 
+
+  //  print_r($state);
+
     if ($state['object'] != '' and ($modules[$state['module']]['sections'][$state['section']]['type'] == 'object' or isset($modules[$state['module']]['sections'][$state['section']]['showcase']))) {
 
         if (isset($data['metadata']['reload_showcase']) or !($data['old_state']['module'] == $state['module'] and $data['old_state']['section'] == $state['section'] and $data['old_state']['object'] == $state['object'] and $data['old_state']['key'] == $state['key'])) {
@@ -769,6 +772,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
     if (preg_match('/\_edit$/', $data['tab'])) {
         return '';
     }
+
 
     switch ($showcase) {
         case 'material':
@@ -1023,6 +1027,10 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
         case 'email_campaign':
             include_once 'showcase/email_campaign.show.php';
             $html = get_email_campaign_showcase($data, $smarty, $user, $db, $account);
+            break;
+        case 'api_key':
+            include_once 'showcase/api_key.show.php';
+            $html = get_api_key_showcase($data, $smarty, $user, $db, $account);
             break;
         default:
             $html = $data['object'].' -> '.$data['key'];
@@ -6501,6 +6509,10 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 'icon'      => '',
                 'reference' => 'account'
             );
+
+
+
+
             if ($state['section'] == 'users') {
                 $branch[] = array(
                     'label'     => _('Users'),
@@ -6552,7 +6564,9 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     'icon'      => 'terminal',
                     'reference' => 'account/users/agents'
                 );
-            } elseif ($state['section'] == 'user') {
+            }
+
+            elseif ($state['section'] == 'user') {
                 $branch[] = array(
                     'label'     => _('Users'),
                     'icon'      => '',
@@ -6601,7 +6615,8 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     'reference' => 'account/user/'.$state['_object']->id
                 );
 
-            } elseif ($state['section'] == 'deleted.user') {
+            }
+            elseif ($state['section'] == 'deleted.user') {
                 $branch[] = array(
                     'label'     => _('Deteted users'),
                     'icon'      => '',
@@ -6615,7 +6630,62 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     'reference' => 'account/user/'.$state['_object']->id
                 );
 
-            } elseif ($state['section'] == 'settings') {
+            }
+            elseif($state['section']=='user.api_key'){
+
+                $branch[] = array(
+                    'label'     => _('Users'),
+                    'icon'      => '',
+                    'reference' => 'account/users'
+                );
+
+                switch ($state['_parent']->get('User Type')) {
+                    case 'Staff':
+                        $branch[] = array(
+                            'label'     => _('Employees'),
+                            'icon'      => '',
+                            'reference' => 'account/users/staff'
+                        );
+                        break;
+                    case 'Contractor':
+                        $branch[] = array(
+                            'label'     => _('Contractors'),
+                            'icon'      => '',
+                            'reference' => 'account/users/contractors'
+                        );
+                        break;
+                    case 'Agent':
+                        $branch[] = array(
+                            'label'     => _('Agents'),
+                            'icon'      => '',
+                            'reference' => 'account/users/agents'
+                        );
+                        break;
+                    case 'Suppliers':
+                        $branch[] = array(
+                            'label'     => _('Suppliers'),
+                            'icon'      => '',
+                            'reference' => 'account/users/suppliers'
+                        );
+                        break;
+                    default:
+
+                        break;
+                }
+                $branch[] = array(
+                    'label'     => '<span >'.$state['_parent']->get('User Handle').'</span>',
+                    'icon'      => 'terminal',
+                    'reference' => 'account/user/'.$state['_parent']->id
+                );
+
+                $branch[] = array(
+                    'label'     => _('API key').': <span class="id">'.$state['_object']->get('Scope').'</span> ('.$state['_object']->get('Code').')',
+                    'icon'      => '',
+                    'reference' => ''
+                );
+
+
+            }elseif ($state['section'] == 'settings') {
                 $branch[] = array(
                     'label'     => _('Settings'),
                     'icon'      => 'cog',

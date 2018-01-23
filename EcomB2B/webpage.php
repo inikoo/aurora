@@ -10,7 +10,6 @@
   Version 2.0
 */
 
-
 $webpage = new Public_Webpage($webpage_key);
 
 if ($webpage->id) {
@@ -18,6 +17,8 @@ if ($webpage->id) {
 
     $content      = $webpage->get('Content Data');
     $content_data = $content;
+
+
 
 
     if ($webpage->get('Webpage State') == 'Offline') {
@@ -166,6 +167,8 @@ if ($webpage->id) {
             $search_query = '';
         }
         $smarty->assign('search_query', $search_query);
+
+
 
         $template = $theme.'/search.'.$theme.'.'.$website->get('Website Type').$template_suffix.'.tpl';
     } elseif ($webpage->get('Webpage Template Filename') == 'welcome') {

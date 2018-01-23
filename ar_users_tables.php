@@ -85,8 +85,7 @@ function users($_data, $db, $user) {
     $rtext_label = 'user';
     include_once 'prepare_table/init.php';
 
-    $sql
-        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
     //print $sql;
     $adata = array();
@@ -149,8 +148,7 @@ function contractors($_data, $db, $user) {
     $rtext_label = 'user';
     include_once 'prepare_table/init.php';
 
-    $sql
-        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
 
     $adata = array();
@@ -213,8 +211,7 @@ function agents($_data, $db, $user) {
     $rtext_label = 'user';
     include_once 'prepare_table/init.php';
 
-    $sql
-           = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
     foreach ($db->query($sql) as $data) {
@@ -275,8 +272,7 @@ function login_history($_data, $db, $user) {
     $rtext_label = 'session';
     include_once 'prepare_table/init.php';
 
-    $sql
-        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
     $adata = array();
 
@@ -319,8 +315,7 @@ function user_categories($_data, $db, $user) {
     $rtext_label = 'user category';
     include_once 'prepare_table/init.php';
 
-    $sql
-        = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+    $sql = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
 
     //print $sql;
     $base_data = array(
@@ -419,8 +414,7 @@ function deleted_users($_data, $db, $user) {
     $rtext_label = 'users';
     include_once 'prepare_table/init.php';
 
-    $sql
-        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
     $adata = array();
 
@@ -478,29 +472,52 @@ function api_keys($_data, $db, $user) {
     $rtext_label = 'session';
     include_once 'prepare_table/init.php';
 
-    $sql
-        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+
 
     $adata = array();
 
     foreach ($db->query($sql) as $data) {
 
+
+        if ($data['API Key Active'] == 'Yes') {
+            $active = _('Yes');
+
+        } else {
+            $active = _('No');
+
+        }
+
+        switch ($data['API Key Scope']) {
+            case 'Timesheet':
+                $scope =  _('Timesheet machine');
+                break;
+            case 'Stock':
+                $scope =  _('Stock control app');
+                break;
+            case 'Picking':
+                $scope =  _('Picking app');
+                break;
+            default:
+                $scope = $data['API Key Scope'];
+        }
+
         $adata[] = array(
-            'id'          => (integer)$data['User Log Key'],
-            'user_key'    => (integer)$data['User Key'],
-            'handle'      => $data['User Handle'],
-            'user'        => $data['User Alias'],
-            'parent_key'  => $data['User Parent Key'],
-            'ip'          => $data['IP'],
-            'login_date'  => strftime(
-                "%a %e %b %Y %H:%M %Z", strtotime($data['Start Date'])
-            ),
-            'logout_date' => ($data['Logout Date'] != '' ? strftime(
-                "%a %e %b %Y %H:%M %Z", strtotime($data['Logout Date'])
-            ) : ''),
+            'id'     => (integer)$data['API Key Key'],
+            'code'   => sprintf('<span class="link" onclick="change_view(\'account/user/%d/api_key/%d\')">%s</span>', $data['API Key User Key'], $data['API Key Key'], $data['API Key Code']),
+            'active' => $active,
+            'scope'  => $scope,
+
+            'from'  => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['API Key Valid From'])),
         );
 
+
     }
+
+
+
+
 
     $response = array(
         'resultset' => array(
@@ -522,8 +539,7 @@ function api_requests($_data, $db, $user) {
     $rtext_label = 'request';
     include_once 'prepare_table/init.php';
 
-    $sql
-        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
     $adata = array();
 
