@@ -2808,7 +2808,7 @@ $tab_defaults = array(
         'f_field'       => 'name',
         'from'          => '',
         'to'            => '',
-        'period'        => 'today'
+        'period'        => 'last_w'
 
     ),
     'packers' => array(
@@ -2820,7 +2820,7 @@ $tab_defaults = array(
         'f_field'       => 'name',
         'from'          => '',
         'to'            => '',
-        'period'        => 'today'
+        'period'        => 'last_w'
 
     ),
 
