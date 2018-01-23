@@ -1661,7 +1661,7 @@ function get_api_key_navigation($data, $smarty, $user, $db, $account) {
                 $left_buttons[] = array(
                     'icon'      => 'arrow-left',
                     'title'     => $prev_title,
-                    'reference' => 'account/uapi_keyser/'.$prev_key
+                    'reference' => 'account/api_key/'.$prev_key
                 );
 
             } else {
@@ -1704,8 +1704,8 @@ function get_api_key_navigation($data, $smarty, $user, $db, $account) {
     $sections['users']['selected'] = true;
 
 
-    $title = '<span class="id">'.$object->get('API Key Code').' ('.$object->get_formatted_id().')</span>';
 
+    $title = _('API key').': <span class="">'.$object->get('Scope').'</span> (<span class="id">'.$object->get('Code').'</span>)';
 
     $_content = array(
         'sections_class' => '',

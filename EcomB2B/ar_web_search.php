@@ -117,7 +117,7 @@ function process_search($q, $db, $website, $order_key) {
 
 
         $sql = sprintf(
-            'SELECT  %s `Product Currency`,`Product Price`,`Product ID`,`Webpage Code`,`Page Key` ,`Product Main Image Key`,`Product Web State`,`Webpage URL`,`Webpage Name`,`Product Name`,`Product Code`,`Webpage Meta Description`,`Product Units Per Case`
+            'SELECT  %s `Product Currency`,`Product Price`,`Product ID`,`Webpage Code`,`Page Key` ,`Product Web State`,`Product Main Image Key`,`Product Web State`,`Webpage URL`,`Webpage Name`,`Product Name`,`Product Code`,`Webpage Meta Description`,`Product Units Per Case`
             FROM  `Product Dimension` P  
             LEFT JOIN `Page Store Dimension` PAS ON (PAS.`Page Key`=P.`Product Webpage Key`)
 
@@ -159,6 +159,12 @@ function process_search($q, $db, $website, $order_key) {
                 $candidates[$row['Page Key']]['title']        = $row['Webpage Name'];
                 $candidates[$row['Page Key']]['key']          = $row['Product ID'];
                 $candidates[$row['Page Key']]['ordered']      = $row['ordered'];
+
+                $candidates[$row['Page Key']]['web_state']     = $row['Product Web State'];
+                // todo a proper way to do this class
+                $candidates[$row['Page Key']]['out_of_stock_class']     = 'out_of_stock';
+                $candidates[$row['Page Key']]['out_of_stock_label']     = _('Out of stock');
+
 
                 $candidates[$row['Page Key']]['code']  = $row['Product Code'];
                 $candidates[$row['Page Key']]['name']  = $row['Product Units Per Case'].'x '.$row['Product Name'];
@@ -240,8 +246,8 @@ function process_search($q, $db, $website, $order_key) {
             }
 
             $sql = sprintf(
-                'SELECT %s `Product Currency`,`Product Price`,`Product ID`, `Webpage Code`,`Page Key` ,`Product Main Image Key`,`Product Web State`,`Webpage URL`,`Webpage Name`,`Product Name`,`Product Code`,`Webpage Meta Description`,`Product Units Per Case`
-     FROM  `Product Dimension` P  LEFT JOIN `Page Store Dimension` PAS ON (PAS.`Page Key`=P.`Product Webpage Key`)
+                'SELECT %s `Product Currency`,`Product Price`,`Product ID`,`Product Web State`, `Webpage Code`,`Page Key` ,`Product Main Image Key`,`Product Web State`,`Webpage URL`,`Webpage Name`,`Product Name`,`Product Code`,`Webpage Meta Description`,`Product Units Per Case`
+     FROM  `Product Dimension` P  LEFT JOIN `Page Store Dimension` PAS ON (PAS.`Page Key`=P.`Product Webpage Key`) 
 
 
 		 WHERE `Webpage Website Key`=%d AND `Product Name`  REGEXP \'[[:<:]]%s\'   AND  `Webpage State`="Online"   AND `Product Status` IN ("Active","Discontinuing")  ', $ordered, $website->id, $_q
@@ -264,6 +270,14 @@ function process_search($q, $db, $website, $order_key) {
                         $score_match_product_code = 0.7 * $score_match_product_code;
                     }
 
+
+                    if ($this->data['Product Total Acc Quantity Ordered'] > 0) {
+                        return 'out_of_stock';
+                    } else {
+                        return 'launching_soon';
+                    }
+
+
                     $page_scores[$row['Page Key']]                = $score_match_product_code;
                     $candidates[$row['Page Key']]                 = array();
                     $candidates[$row['Page Key']]['webpage_key']  = $row['Page Key'];
@@ -278,6 +292,12 @@ function process_search($q, $db, $website, $order_key) {
                     $candidates[$row['Page Key']]['name']    = $row['Product Units Per Case'].'x '.$row['Product Name'];
                     $candidates[$row['Page Key']]['price']   = money($row['Product Price'], $row['Product Currency']);
                     $candidates[$row['Page Key']]['ordered'] = $row['ordered'];
+
+                    $candidates[$row['Page Key']]['web_state']     = $row['Product Web State'];
+                    // todo a proper way to do this class
+                    $candidates[$row['Page Key']]['out_of_stock_class']     = 'out_of_stock';
+                    $candidates[$row['Page Key']]['out_of_stock_label']     = _('Out of stock');
+
 
                     $candidates[$row['Page Key']]['title']             = $row['Webpage Name'];
                     $candidates[$row['Page Key']]['description']       = $row['Webpage Meta Description'];

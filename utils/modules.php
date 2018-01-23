@@ -6416,7 +6416,7 @@ $modules = array(
                 )
             ),
             'user.api_key'     => array(
-                'type' => 'new_object',
+                'type' => 'object',
                 'tabs' => array(
                     'user.api_key.details'  => array(
                         'label' => _(

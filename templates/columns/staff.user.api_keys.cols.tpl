@@ -7,42 +7,39 @@ renderable: false,
 cell: "string",
 
 },
-{
-name: "user_key",
-label: "",
-editable: false,
-renderable: false,
-cell: "string",
 
-},
 {
-name: "formatted_id",
+name: "code",
 label: "{t}ID{/t}",
 editable: false,
 sortType: "toggle",
-{if $sort_key=='formatted_id'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='code'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
-cell: Backgrid.StringCell.extend({
-events: {
-"click": function() {
-change_view('account/user/'+this.model.get("user_key")+'/api_key/' +this.model.get("id"))
-}
-},
-className: "link"
-
+cell: Backgrid.HtmlCell.extend({
 })
 
-}, {
+},
+{
 name: "active",
 label: "{t}Active{/t}",
+editable: false,
 sortType: "toggle",
-cell:'string'
+{if $sort_key=='active'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+
+cell: Backgrid.HtmlCell.extend({
+})
+
 },
 {
 name: "scope",
 label: "{t}Scope{/t}",
+editable: false,
 sortType: "toggle",
-cell:'string'
+{if $sort_key=='scope'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+
+cell: Backgrid.HtmlCell.extend({
+})
+
 },
 
 {
@@ -52,7 +49,7 @@ editable: false,
 defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='from'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 
 },

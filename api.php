@@ -25,7 +25,7 @@ function authorization($db, $user_key, $api_key_key, $scope) {
     $parsed_scope = parse_scope($_SERVER['REDIRECT_URL']);
 
     if (!$scope) {
-        $response = log_api_key_access_failture(
+        $response = log_api_key_access_failure(
             $db, $api_key_key, 'Fail_Access', 'Wrong path'
         );
         echo json_encode($response);
@@ -33,7 +33,7 @@ function authorization($db, $user_key, $api_key_key, $scope) {
     }
 
     if ($parsed_scope != $scope) {
-        $response = log_api_key_access_failture(
+        $response = log_api_key_access_failure(
             $db, $api_key_key, 'Fail_Access', "Path and Scope don't match $parsed_scope $scope  "
         );
         echo json_encode($response);
@@ -61,7 +61,7 @@ function authorization($db, $user_key, $api_key_key, $scope) {
                 post_timesheet($db, $editor, $api_key_key);
 
             } else {
-                $response = log_api_key_access_failture(
+                $response = log_api_key_access_failure(
                     $db, $api_key_key, 'Fail_Access', "Unauthorized request method"
                 );
                 echo json_encode($response);
@@ -72,7 +72,7 @@ function authorization($db, $user_key, $api_key_key, $scope) {
 
             break;
         default:
-            $response = log_api_key_access_failture(
+            $response = log_api_key_access_failure(
                 $db, $api_key_key, 'Fail_Access', 'Wrong path'
             );
             echo json_encode($response);
@@ -96,6 +96,10 @@ function parse_scope($request) {
 
     if ($request == '/api/timesheet_record') {
         return 'Timesheet';
+    }elseif ($request == '/api/stock') {
+        return 'Stock';
+    }elseif ($request == '/api/picking') {
+        return 'Picking';
     }
 
     return false;
@@ -107,7 +111,7 @@ function authenticate($db) {
 
     if (!isset($_SERVER['HTTP_X_AUTH_KEY'])) {
 
-        $response = log_api_key_access_failture(
+        $response = log_api_key_access_failure(
             $db, 0, 'Fail_Attempt', 'No API key header'
         );
 
@@ -130,7 +134,7 @@ function authenticate($db) {
             if ($row = $db->query($sql)->fetch()) {
 
                 if ($row['API Key Active'] != 'Yes') {
-                    $response = log_api_key_access_failture(
+                    $response = log_api_key_access_failure(
                         $db, $row['API Key Key'], 'Fail_Access', 'API Key not active'
                     );
                     echo json_encode($response);
@@ -140,7 +144,7 @@ function authenticate($db) {
                 if (!password_verify($api_key_secret, $row['API Key Hash'])) {
 
 
-                    $response = log_api_key_access_failture(
+                    $response = log_api_key_access_failure(
                         $db, $row['API Key Key'], 'Fail_Access', 'API Key not valid'
                     );
                     echo json_encode($response);
@@ -151,13 +155,13 @@ function authenticate($db) {
                 if ($row['User Active'] != 'Yes') {
 
                     if ($row['User Key'] == '') {
-                        $response = log_api_key_access_failture(
+                        $response = log_api_key_access_failure(
                             $db, $row['API Key Key'], 'Fail_Access', 'User not found'
                         );
                         echo json_encode($response);
                         exit;
                     } else {
-                        $response = log_api_key_access_failture(
+                        $response = log_api_key_access_failure(
                             $db, $row['API Key Key'], 'Fail_Access', 'User is not active'
                         );
                         echo json_encode($response);
@@ -172,7 +176,7 @@ function authenticate($db) {
                     $row['API Key Scope']
                 );
             } else {
-                $response = log_api_key_access_failture(
+                $response = log_api_key_access_failure(
                     $db, 0, 'Fail_Attempt', 'API Key not found'
                 );
 
@@ -183,7 +187,7 @@ function authenticate($db) {
 
         } else {
 
-            $response = log_api_key_access_failture(
+            $response = log_api_key_access_failure(
                 $db, 0, 'Fail_Attempt', 'Invalid API key'
             );
             echo json_encode($response);
@@ -214,7 +218,7 @@ function get_db() {
 }
 
 
-function log_api_key_access_failture($db, $api_key_key, $fail_type, $fail_reason) {
+function log_api_key_access_failure($db, $api_key_key, $fail_type, $fail_reason) {
 
     include_once 'utils/detect_agent.php';
 

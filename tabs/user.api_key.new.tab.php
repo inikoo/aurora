@@ -17,7 +17,9 @@ include_once 'class.Staff.php';
 $api_key = $state['_object'];
 
 $options_API_Key_Scope = array(
-    'Timesheet' => _('Timesheet')
+    'Timesheet' => _('Timesheet machine'),
+    'Stock' => _('Stock control app'),
+    'Picking' => _('Picking app')
 );
 
 asort($options_API_Key_Scope);
@@ -72,15 +74,15 @@ $object_fields = array(
             array(
 
                 'id'              => 'API_Key_Allowed_Requests_per_Hour',
-                'edit'            => 'smallint_unsigned',
-                'value'           => 60,
-                'formatted_value' => 60,
+                'edit'            => 'int_unsigned',
+                'value'           => 360000,
+                'formatted_value' => 360000,
                 'label'           => ucfirst(
                     $api_key->get_field_label(
                         'API Key Allowed Requests per Hour'
                     )
                 ),
-                'invalid_msg'     => get_invalid_message('smallint_unsigned'),
+                'invalid_msg'     => get_invalid_message('int_unsigned'),
                 'required'        => true,
                 'type'            => 'value'
             )

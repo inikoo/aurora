@@ -100,8 +100,33 @@ class API_Key extends DB_Table {
 
     function get($key = '') {
 
+        if(!$this->id){
+            return '';
+        }
+
 
         switch ($key) {
+
+
+            case 'Scope':
+                switch ($this->data['API Key Scope']){
+
+
+                    case 'Timesheet':
+                        return _('Timesheet machine');
+                        break;
+                    case 'Stock':
+                        return _('Stock control app');
+                        break;
+                    case 'Picking':
+                        return _('Picking app');
+                        break;
+                    default:
+                return $this->data['API Key Scope'];
+                }
+
+                break;
+
             case 'Allowed Requests per Hour':
             case 'Successful Requests':
             case 'Failed Attempt Requests':
@@ -176,22 +201,47 @@ class API_Key extends DB_Table {
         );
 
         $sql = sprintf(
-            "SELECT count(*) AS num, `API Request State` AS state FROM `API Request Dimension` WHERE `API Key Key`=%d ", $this->id
+            "SELECT count(*) AS num, `Response` AS state FROM `API Request Dimension` WHERE `API Key Key`=%d group by `API Request State`", $this->id
         );
         foreach ($this->db->query($sql) as $row) {
             $request_elements[$row['state']] = $row['num'];
 
         }
 
-        $this->update(
+
+
+        $this->fast_update(
             array(
                 'API Key Successful Requests'        => $request_elements['OK'],
+                'API Key Failed Attempt Requests'        => $request_elements['Fail_Attempt'],
+                'API Key Failed Access Requests'        => $request_elements['Fail_Access'],
+                'API Key Failed Operation Requests'        => $request_elements['Fail_Operation'],
+
                 'API Key Failed IP Requests'         => $request_elements['Fail_IP'],
                 'API Key Failed Time Limit Requests' => $request_elements['Fail_TimeLimit'],
 
 
-            ), 'no_history'
+            )
         );
+
+
+        $sql=sprintf("select max(`Date`)  as last_request FROM `API Request Dimension` WHERE `API Key Key`=%d group by `API Request State`", $this->id);
+        if ($result=$this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $this->fast_update(
+                    array(
+                        'API Key Last Request Date'        => $row['last_request']
+
+
+
+                    )
+                );
+        	}
+        }else {
+        	print_r($error_info=$this->db->errorInfo());
+        	print "$sql\n";
+        	exit;
+        }
 
     }
 
@@ -203,12 +253,15 @@ class API_Key extends DB_Table {
             case 'API Key Scope':
                 $label = _('Scope');
                 break;
-            case 'API Key IP':
+            case 'API Key Allowed IP':
                 $label = _('Allowed IPs');
                 break;
 
             case 'API Key Allowed Requests per Hour':
                 $label = _('Max request/hr');
+                break;
+            case 'API Key Active':
+                $label = _('API active');
                 break;
 
 
