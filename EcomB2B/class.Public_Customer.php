@@ -1114,7 +1114,7 @@ class Public_Customer extends DBW_Table {
             return $unknown_name;
         }
         $greeting = $greeting_prefix.' '.$this->data[$this->table_name.' Main Contact Name'];
-        if ($this->data[$this->table_name.' Company Name'] != '') {
+        if ($this->data[$this->table_name.' Company Name'] != ''  and $this->data[$this->table_name.' Company Name'] !=$this->data[$this->table_name.' Main Contact Name']  ) {
             $greeting .= ', '.$this->data[$this->table_name.' Name'];
         }
 
