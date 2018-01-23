@@ -38,7 +38,7 @@ headerCell: integerHeaderCell
 },
 {
 name: "picked",
-label: "{t}SKOs{/t}",
+label: "{t}SKOs picked{/t}",
 editable: false,
 defaultOrder:1,
 sortType: "toggle",
@@ -48,7 +48,7 @@ headerCell: integerHeaderCell
 },
 {
 name: "dp",
-label: "{t}Deliveries x SKOs{/t} (DS)",
+label: "{t}Count(distinct Part,Delivery){/t} (PD)",
 editable: false,
 defaultOrder:1,
 sortType: "toggle",
@@ -58,7 +58,7 @@ headerCell: integerHeaderCell
 },
 {
 name: "dp_percentage",
-label: "DS %",
+label: "PD %",
 editable: false,
 defaultOrder:1,
 sortType: "toggle",
@@ -78,7 +78,7 @@ headerCell: integerHeaderCell
 },
 {
 name: "dp_per_hour",
-label: "DS/h",
+label: "PD/h",
 editable: false,
 defaultOrder:1,
 sortType: "toggle",

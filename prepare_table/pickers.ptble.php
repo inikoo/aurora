@@ -24,31 +24,11 @@ if (isset($parameters['period']) ) {
         = calculate_interval_dates(
         $db, $parameters['period'], $parameters['from'], $parameters['to']
     );
-    $where_interval = prepare_mysql_dates($from, $to, '`Date Picked`');
+    $where_interval = prepare_mysql_dates($from, $to, '`Date`');
     $where .= $where_interval['mysql'];
     $where_interval_working_hours = prepare_mysql_dates($from, $to, '`Timesheet Date`','only dates')['mysql'];
 
 }
-
-$total_dp=0;
-$sql=sprintf("select count(distinct `Delivery Note Key`)*sum(`Picked`) as dp from  `Inventory Transaction Fact` $where group by `Picker Key` ");
-
-if ($result=$db->query($sql)) {
-		foreach ($result as $row) {
-            $total_dp+=$row['dp'];
-
-        }
-}else {
-		print_r($error_info=$db->errorInfo());
-		print "$sql\n";
-		exit;
-}
-
-
-if($total_dp==0){
-    $total_dp=1;
-}
-
 
 
 
@@ -76,10 +56,8 @@ if ($order == 'name') {
     $order = 'picked';
 }elseif ($order == 'deliveries') {
     $order = 'deliveries';
-}elseif ($order == 'dp') {
+}elseif ($order == 'dp' or $order == 'dp_percentage') {
     $order = 'dp';
-}elseif ($order == 'dp_percentage') {
-    $order = 'dp_percentage';
 }elseif ($order == 'hrs') {
     $order = 'hrs';
 }elseif ($order == 'dp_per_hour') {
@@ -95,9 +73,9 @@ $group_by
 
 $table = ' `Inventory Transaction Fact` ITF left join `Staff Dimension` S on (S.`Staff Key`=ITF.`Picker Key`) ';
 
-$fields = "`Staff Name`,`Staff Key`,count(distinct `Delivery Note Key`) as deliveries ,sum(`Picked`) as picked, count(distinct `Delivery Note Key`)*sum(`Picked`) dp ,(count(distinct `Delivery Note Key`)*sum(`Picked`))/$total_dp dp_percentage ,
-(select sum(`Timesheet Clocked Time`)/3600 from `Timesheet Dimension` where `Timesheet Staff Key`=`Picker Key` $where_interval_working_hours ) as hrs,
-count(distinct `Delivery Note Key`)*sum(`Picked`)/(select sum(`Timesheet Clocked Time`)/3600 from `Timesheet Dimension` where `Timesheet Staff Key`=`Picker Key` $where_interval_working_hours ) dp_per_hour
+$fields = "`Staff Name`,`Staff Key`,@deliveries := count(distinct `Delivery Note Key`) as deliveries , sum(`Picked`) as picked, @dp :=  count(distinct `Delivery Note Key`,`Part SKU`) as dp ,
+@hrs :=  (select sum(`Timesheet Clocked Time`)/3600 from `Timesheet Dimension` where `Timesheet Staff Key`=`Picker Key` $where_interval_working_hours ) as hrs,
+  count(distinct `Delivery Note Key`,`Part SKU`)/ (select sum(`Timesheet Clocked Time`)/3600 from `Timesheet Dimension` where `Timesheet Staff Key`=`Picker Key` $where_interval_working_hours )  as dp_per_hour
 
 ";
 
