@@ -35,7 +35,7 @@ $date = gmdate('Y-m-d', strtotime('yesterday'));
 
 
 $sql = sprintf(
-    'SELECT `Supplier Key` FROM `Supplier Dimension` WHERE (`Supplier Type`!="Archived"  OR ( `Supplier Type`="Archived" AND DATE(`Supplier Valid To`)=%s ) ) ', $date
+    'SELECT `Supplier Key`,`Supplier Code` FROM `Supplier Dimension` WHERE (`Supplier Type`!="Archived"  OR ( `Supplier Type`="Archived" AND DATE(`Supplier Valid To`)=%s ) ) ', $date
 );
 
 if ($result = $db->query($sql)) {
@@ -46,8 +46,11 @@ if ($result = $db->query($sql)) {
 
         $timeseries_data = $timeseries['Supplier'];
 
-
+        print $row['Supplier Code']."\n";
         foreach ($timeseries_data as $time_series_data) {
+
+                print_r($time_series_data);
+
 
 
             $time_series_data['Timeseries Parent']     = 'Supplier';
@@ -58,6 +61,8 @@ if ($result = $db->query($sql)) {
             $time_series_data['editor'] = $editor;
 
             $object_timeseries = new Timeseries('find', $time_series_data, 'create');
+
+
             $supplier->update_timeseries_record($object_timeseries, $date, $date);
 
 
