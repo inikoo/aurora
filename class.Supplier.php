@@ -1915,6 +1915,10 @@ class Supplier extends SubjectSupplier {
             //print_r($date_frequency_period);
 
             $sales_data = $this->get_sales_data($date_frequency_period['from'], $date_frequency_period['to']);
+
+
+            print_r($sales_data);
+
             $_date      = gmdate('Y-m-d', strtotime($date_frequency_period['from'].' +0:00'));
 
 
