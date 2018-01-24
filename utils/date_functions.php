@@ -77,19 +77,19 @@ function date_frequency_range($db, $frequency, $first, $last) {
                     );
 
 
-                    if($first!=''){
+
                         if(strtotime($row['date_index']."-01-01 00:00:00")<strtotime($first." 00:00:00")){
                             $dates[$row['date_index']]['from']=$first." 00:00:00";
                         }
-                    }
 
 
 
-                    if($last!='') {
+
+
                         if (strtotime($row['date_index']."-12-31 23:59:59") > strtotime($last." 23:59:59")) {
                             $dates[$row['date_index']]['to'] = $last." 23:59:59";
                         }
-                    }
+
 
                 }
             } else {

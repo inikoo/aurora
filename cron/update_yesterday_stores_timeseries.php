@@ -49,17 +49,18 @@ if ($result = $db->query($sql)) {
 
         foreach ($timeseries_data as $time_series_data) {
 
+             if ($time_series_data['Timeseries Frequency'] == 'Daily') {
 
-            $time_series_data['Timeseries Parent']     = 'Store';
-            $time_series_data['Timeseries Parent Key'] = $store->id;
+                 $time_series_data['Timeseries Parent']     = 'Store';
+                 $time_series_data['Timeseries Parent Key'] = $store->id;
 
 
-            $editor['Date']             = gmdate('Y-m-d H:i:s');
-            $time_series_data['editor'] = $editor;
+                 $editor['Date']             = gmdate('Y-m-d H:i:s');
+                 $time_series_data['editor'] = $editor;
 
-            $object_timeseries = new Timeseries('find', $time_series_data, 'create');
-            $store->update_timeseries_record($object_timeseries, $date, $date);
-
+                 $object_timeseries = new Timeseries('find', $time_series_data, 'create');
+                 $store->update_timeseries_record($object_timeseries, $date, $date);
+             }
 
         }
     }
