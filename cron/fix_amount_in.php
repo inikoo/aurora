@@ -151,12 +151,12 @@ function fix_amount_in($db) {
 
                                 $old_amount_in=0;
                                 $sql=sprintf('select `Amount In` from `Inventory Transaction Fact`  WHERE `Inventory Transaction Key`=%d ', $key);
-                                if ($resultzz=$this->db->query($sql)) {
+                                if ($resultzz=$db->query($sql)) {
                                     if ($rowzz = $resultzz->fetch()) {
                                         $old_amount_in=$rowzz['Amount In'];
                                 	}
                                 }else {
-                                	print_r($error_info=$this->db->errorInfo());
+                                	print_r($error_info=$db->errorInfo());
                                 	print "$sql\n";
                                 	exit;
                                 }
