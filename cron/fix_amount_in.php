@@ -174,7 +174,7 @@ function fix_amount_in($db) {
                                         "UPDATE  `Inventory Transaction Fact`  SET `Amount In`=%f WHERE `Inventory Transaction Key`=%d ", $amount_in * $value, $key
                                     );
                                    // print "$sql\n";
-                                    //$db->exec($sql);
+                                    $db->exec($sql);
                                     // exit;
                                     // mysql_query( $sql );
                                 }
