@@ -80,7 +80,7 @@ function fix_amount_in($db) {
     //  $this->data['Delivery Note State']='Dispatched';
 
     $sql = sprintf('SELECT `Delivery Note Key` FROM `Delivery Note Dimension`  WHERE  `Delivery Note State`="Dispatched" AND   `Delivery Note Key`=2112972');
-    $sql = sprintf('SELECT `Delivery Note Key` FROM `Delivery Note Dimension`  WHERE  `Delivery Note State`="Dispatched" and `Delivery Note Date`>="2018-01-01" ORDER BY `Delivery Note Key` DESC');
+    $sql = sprintf('SELECT `Delivery Note Key`,`Delivery Note ID` FROM `Delivery Note Dimension`  WHERE  `Delivery Note State`="Dispatched" and `Delivery Note Date`>="2018-01-01" ORDER BY `Delivery Note Key` DESC');
 
     if ($result4 = $db->query($sql)) {
         foreach ($result4 as $row4) {
@@ -98,7 +98,7 @@ function fix_amount_in($db) {
                     foreach ($result3 as $row3) {
 
                         $sql = sprintf(
-                            "SELECT `Amount In`,`Note`,`Invoice Currency Exchange Rate`,`Order Transaction Fact Key`,`Order Transaction Amount`,`Delivery Note Quantity` FROM `Order Transaction Fact` WHERE `Order Transaction Fact Key`=%d ", $row3['Map To Order Transaction Fact Key']
+                            "SELECT `Invoice Currency Exchange Rate`,`Order Transaction Fact Key`,`Order Transaction Amount`,`Delivery Note Quantity` FROM `Order Transaction Fact` WHERE `Order Transaction Fact Key`=%d ", $row3['Map To Order Transaction Fact Key']
                         );
 
 
@@ -149,8 +149,21 @@ function fix_amount_in($db) {
                                 $amount_in = $row['Invoice Currency Exchange Rate'] * $row['Order Transaction Amount'];
 
 
-                                if($amount_in!=$row['Amount In']){
-                                    print "$amount_in\n";
+                                $old_amount_in=0;
+                                $sql=sprintf('select `Amount In` from `Inventory Transaction Fact`  WHERE `Inventory Transaction Key`=%d ', $key);
+                                if ($resultzz=$this->db->query($sql)) {
+                                    if ($rowzz = $resultzz->fetch()) {
+                                        $old_amount_in=$rowzz['Amount In'];
+                                	}
+                                }else {
+                                	print_r($error_info=$this->db->errorInfo());
+                                	print "$sql\n";
+                                	exit;
+                                }
+
+
+                                if($amount_in!=$old_amount_in){
+                                    print "$old_amount_in -> $amount_in\n";
                                     print_r($row);
                                 }
 
