@@ -80,7 +80,9 @@ function fix_amount_in($db) {
     //  $this->data['Delivery Note State']='Dispatched';
 
     $sql = sprintf('SELECT `Delivery Note Key` FROM `Delivery Note Dimension`  WHERE  `Delivery Note State`="Dispatched" AND   `Delivery Note Key`=2112972');
-    $sql = sprintf('SELECT `Delivery Note Key`,`Delivery Note ID` FROM `Delivery Note Dimension`  WHERE  `Delivery Note State`="Dispatched" and `Delivery Note Date`>="2018-01-01" ORDER BY `Delivery Note Key` DESC');
+    $sql = sprintf('SELECT `Delivery Note Key`,`Delivery Note ID` FROM `Delivery Note Dimension`  WHERE  `Delivery Note State`="Dispatched" and `Delivery Note Date`>=%s ORDER BY `Delivery Note Key` DESC',
+        date('Y-m-d 00:00:00')
+        );
 
     if ($result4 = $db->query($sql)) {
         foreach ($result4 as $row4) {
