@@ -1917,8 +1917,6 @@ class Supplier extends SubjectSupplier {
 
             $sales_data = $this->get_sales_data($date_frequency_period['from'], $date_frequency_period['to']);
 
-            print_r($date_frequency_period);
-            print_r($sales_data);
 
             $_date      = gmdate('Y-m-d', strtotime($date_frequency_period['from'].' +0:00'));
 
@@ -1948,7 +1946,6 @@ class Supplier extends SubjectSupplier {
 
                 );
 
-print $sql;
 
 
                 $update_sql = $this->db->prepare($sql);
