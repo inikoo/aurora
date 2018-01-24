@@ -81,8 +81,9 @@ function fix_amount_in($db) {
 
     $sql = sprintf('SELECT `Delivery Note Key` FROM `Delivery Note Dimension`  WHERE  `Delivery Note State`="Dispatched" AND   `Delivery Note Key`=2112972');
     $sql = sprintf('SELECT `Delivery Note Key`,`Delivery Note ID` FROM `Delivery Note Dimension`  WHERE  `Delivery Note State`="Dispatched" and `Delivery Note Date`>=%s ORDER BY `Delivery Note Key` DESC',
-        date('Y-m-d 00:00:00')
+        gmdate('Y-m-d H:i:s',strtotime('now -25 hours'))
         );
+   
 
     if ($result4 = $db->query($sql)) {
         foreach ($result4 as $row4) {
