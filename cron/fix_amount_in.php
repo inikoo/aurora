@@ -75,79 +75,12 @@ $account = new Account();
 
 fix_amount_in($db);
 
-function fix_dn_quantity_on_otf($db) {
-
-    $sql = sprintf('SELECT `Delivery Note Key` FROM `Delivery Note Dimension`  ');
-
-    if ($result = $db->query($sql)) {
-        foreach ($result as $row) {
-            $dn = get_object('DeliveryNote', $row['Delivery Note Key']);
-            if ($dn->get('State Index') >= 80) {
-
-
-                $sql = sprintf(
-                    'SELECT `Packed`,`Required`,`Given`,`Map To Order Transaction Fact Key` FROM `Inventory Transaction Fact` WHERE  `Delivery Note Key`=%d ', $dn->id
-                );
-
-
-                if ($result=$db->query($sql)) {
-                		foreach ($result as $row2) {
-
-
-
-
-
-
-                        $to_pack = $row2['Required'] + $row2['Given'];
-
-                        if ($to_pack == 0) {
-                            $ratio_of_packing = 1;
-                        } else {
-                            $ratio_of_packing = $row2['Packed'] / $to_pack;
-                        }
-
-                        // todo make get  `Order Transaction Amount` and do it properly to have exact cents
-
-                        $otf = $row2['Map To Order Transaction Fact Key'];
-
-                        $sql = sprintf(
-                            'UPDATE `Order Transaction Fact`  SET 
-                            `Delivery Note Quantity`=(`Order Quantity`+`Order Bonus Quantity`)*%f ,
-                            `Order Transaction Out of Stock Amount`=`Order Transaction Amount`*(1-%f) ,
-                               `Order Transaction Amount`=`Order Transaction Amount`*%f 
-                             WHERE `Order Transaction Fact Key`=%d ', $ratio_of_packing, $ratio_of_packing, $ratio_of_packing, $otf
-                        );
-
-
-                        //print "$sql\n";
-                          $db->exec($sql);
-
-
-                    }
-                }
-
-
-
-
-
-            }
-
-        }
-    } else {
-        print_r($error_info = $this->db->errorInfo());
-        print "$sql\n";
-        exit;
-    }
-
-
-}
-
 function fix_amount_in($db) {
 
     //  $this->data['Delivery Note State']='Dispatched';
 
     $sql = sprintf('SELECT `Delivery Note Key` FROM `Delivery Note Dimension`  WHERE  `Delivery Note State`="Dispatched" AND   `Delivery Note Key`=2112972');
-    $sql = sprintf('SELECT `Delivery Note Key` FROM `Delivery Note Dimension`  WHERE  `Delivery Note State`="Dispatched"  ORDER BY `Delivery Note Key` DESC');
+    $sql = sprintf('SELECT `Delivery Note Key` FROM `Delivery Note Dimension`  WHERE  `Delivery Note State`="Dispatched" and `Delivery Note Date`>="2018-01-01" ORDER BY `Delivery Note Key` DESC');
 
     if ($result4 = $db->query($sql)) {
         foreach ($result4 as $row4) {
@@ -165,7 +98,7 @@ function fix_amount_in($db) {
                     foreach ($result3 as $row3) {
 
                         $sql = sprintf(
-                            "SELECT `Invoice Currency Exchange Rate`,`Order Transaction Fact Key`,`Order Transaction Amount`,`Delivery Note Quantity` FROM `Order Transaction Fact` WHERE `Order Transaction Fact Key`=%d ", $row3['Map To Order Transaction Fact Key']
+                            "SELECT `Amount In`,`Note`,`Invoice Currency Exchange Rate`,`Order Transaction Fact Key`,`Order Transaction Amount`,`Delivery Note Quantity` FROM `Order Transaction Fact` WHERE `Order Transaction Fact Key`=%d ", $row3['Map To Order Transaction Fact Key']
                         );
 
 
@@ -215,6 +148,12 @@ function fix_amount_in($db) {
 
                                 $amount_in = $row['Invoice Currency Exchange Rate'] * $row['Order Transaction Amount'];
 
+
+                                if($amount_in!=$row['Amount In']){
+                                    print "$amount_in\n";
+                                    print_r($row);
+                                }
+
                                 //print_r($itf_transfer_factor);
 
                                 foreach ($itf_transfer_factor as $key => $value) {
@@ -222,7 +161,7 @@ function fix_amount_in($db) {
                                         "UPDATE  `Inventory Transaction Fact`  SET `Amount In`=%f WHERE `Inventory Transaction Key`=%d ", $amount_in * $value, $key
                                     );
                                    // print "$sql\n";
-                                    $db->exec($sql);
+                                    //$db->exec($sql);
                                     // exit;
                                     // mysql_query( $sql );
                                 }
@@ -996,6 +935,75 @@ function fix_products($db) {
 
 
 }
+
+
+function fix_dn_quantity_on_otf($db) {
+
+    $sql = sprintf('SELECT `Delivery Note Key` FROM `Delivery Note Dimension` where `Delivery Note Date`>="2018-01-01" ');
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+            $dn = get_object('DeliveryNote', $row['Delivery Note Key']);
+            if ($dn->get('State Index') >= 80) {
+
+
+                $sql = sprintf(
+                    'SELECT `Packed`,`Required`,`Given`,`Map To Order Transaction Fact Key` FROM `Inventory Transaction Fact` WHERE  `Delivery Note Key`=%d ', $dn->id
+                );
+
+
+                if ($result=$db->query($sql)) {
+                    foreach ($result as $row2) {
+
+
+
+
+
+
+                        $to_pack = $row2['Required'] + $row2['Given'];
+
+                        if ($to_pack == 0) {
+                            $ratio_of_packing = 1;
+                        } else {
+                            $ratio_of_packing = $row2['Packed'] / $to_pack;
+                        }
+
+                        // todo make get  `Order Transaction Amount` and do it properly to have exact cents
+
+                        $otf = $row2['Map To Order Transaction Fact Key'];
+
+                        $sql = sprintf(
+                            'UPDATE `Order Transaction Fact`  SET 
+                            `Delivery Note Quantity`=(`Order Quantity`+`Order Bonus Quantity`)*%f ,
+                            `Order Transaction Out of Stock Amount`=`Order Transaction Amount`*(1-%f) ,
+                               `Order Transaction Amount`=`Order Transaction Amount`*%f 
+                             WHERE `Order Transaction Fact Key`=%d ', $ratio_of_packing, $ratio_of_packing, $ratio_of_packing, $otf
+                        );
+
+
+                        //print "$sql\n";
+                        $db->exec($sql);
+
+
+                    }
+                }
+
+
+
+
+
+            }
+
+        }
+    } else {
+        print_r($error_info = $this->db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+
+
+}
+
 
 
 ?>
