@@ -162,9 +162,9 @@ function fix_amount_in($db) {
                                 }
 
 
-                                if($amount_in!=$old_amount_in){
-                                    print "$old_amount_in -> $amount_in\n";
-                                    print_r($row);
+                                if(round($amount_in,1)!=round($old_amount_in,1)){
+                                    print $row4['Delivery Note ID']." $old_amount_in -> $amount_in\n";
+                                   // print_r($row);
                                 }
 
                                 //print_r($itf_transfer_factor);
