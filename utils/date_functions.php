@@ -77,13 +77,18 @@ function date_frequency_range($db, $frequency, $first, $last) {
                     );
 
 
-
-                    if(strtotime($row['date_index']."-01-01 00:00:00")<strtotime($first." 00:00:00")){
-                        $dates[$row['date_index']]['from']=$first." 00:00:00";
+                    if($first!=''){
+                        if(strtotime($row['date_index']."-01-01 00:00:00")<strtotime($first." 00:00:00")){
+                            $dates[$row['date_index']]['from']=$first." 00:00:00";
+                        }
                     }
 
-                    if(strtotime($row['date_index']."-12-31 23:59:59")>strtotime($last." 23:59:59")){
-                        $dates[$row['date_index']]['to']=$last." 23:59:59";
+
+
+                    if($last!='') {
+                        if (strtotime($row['date_index']."-12-31 23:59:59") > strtotime($last." 23:59:59")) {
+                            $dates[$row['date_index']]['to'] = $last." 23:59:59";
+                        }
                     }
 
                 }
@@ -100,13 +105,21 @@ function date_frequency_range($db, $frequency, $first, $last) {
             );
 
 
+
+
+
             if ($result = $db->query($sql)) {
                 foreach ($result as $row) {
+
+
+
                     $dates[$row['date_index']]
                         = array(
                         'from' => $row['date_index']."-01 00:00:00",
                         'to'   => $row['last_day']." 23:59:59"
                     );
+
+
 
 
                     if(strtotime($row['date_index']."-01 00:00:00")<strtotime($first." 00:00:00")){
