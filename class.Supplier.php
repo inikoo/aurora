@@ -1887,6 +1887,7 @@ class Supplier extends SubjectSupplier {
 
 
 
+
         if ($fork_key) {
 
             $sql = sprintf(
@@ -1947,7 +1948,7 @@ class Supplier extends SubjectSupplier {
 
                 );
 
-
+print $sql;
 
 
                 $update_sql = $this->db->prepare($sql);
