@@ -84,7 +84,6 @@ function fix_amount_in($db) {
         prepare_mysql(gmdate('Y-m-d 00:00:00'))
         );
         
-        print $sql;
    
 
     if ($result4 = $db->query($sql)) {
