@@ -3,7 +3,7 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 15 February 2016 at 10:45:44 GMT+8, Kuala Lumpur, Malaysia
+ Created: 24 January 2018 at 16:05:44 GMT+8, Kuala Lumpur, Malaysia
  Copyright (c) 2016, Inikoo
 
  Version 3
@@ -81,9 +81,11 @@ function fix_amount_in($db) {
 
     $sql = sprintf('SELECT `Delivery Note Key` FROM `Delivery Note Dimension`  WHERE  `Delivery Note State`="Dispatched" AND   `Delivery Note Key`=2112972');
     $sql = sprintf('SELECT `Delivery Note Key`,`Delivery Note ID` FROM `Delivery Note Dimension`  WHERE  `Delivery Note State`="Dispatched" and `Delivery Note Date`>=%s ORDER BY `Delivery Note Key` DESC',
-        prepare_mysql(gmdate('Y-m-d H:i:s',strtotime('now -25 hours')))
+        prepare_mysql(gmdate('Y-m-d 00:00:00'))
         );
-
+        
+        print $sql;
+   
 
     if ($result4 = $db->query($sql)) {
         foreach ($result4 as $row4) {
