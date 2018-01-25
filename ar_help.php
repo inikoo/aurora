@@ -222,8 +222,18 @@ function get_whiteboard($data, $modules, $db, $account, $user, $smarty) {
 
         if ($result = $db->query($sql)) {
             if ($row = $result->fetch()) {
-                $text_tab  = $row['Whiteboard Text'];
-                $empty_tab = false;
+
+                if($row['Whiteboard Text']==''){
+                    $text_tab  = '<em class="very_discreet">'._('Fell free to type something about this tab').' ('.$tab.') </em>';
+                    $empty_tab = true;
+                }else{
+
+                    $text_tab  = $row['Whiteboard Text'];
+                    $empty_tab = false;
+                }
+
+
+
             } else {
                 $text_tab  = '<em class="very_discreet">'._('Fell free to type something about this tab').' ('.$tab.') </em>';
                 $empty_tab = true;
@@ -241,6 +251,8 @@ function get_whiteboard($data, $modules, $db, $account, $user, $smarty) {
     $sql = sprintf('SELECT `Whiteboard Text` FROM `Whiteboard Dimension` WHERE `Whiteboard Hash`=%s ', prepare_mysql($hash_page));
     if ($result = $db->query($sql)) {
         if ($row = $result->fetch()) {
+
+
             $text  = $row['Whiteboard Text'];
             $empty = false;
         } else {
