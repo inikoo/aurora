@@ -2026,6 +2026,18 @@ $tab_defaults = array(
         'elements_type' => each($elements_options['barcodes']) ['key'],
         'elements'      => $elements_options['barcodes'],
     ),
+
+
+    'part_family.part_locations' => array(
+        'view'        => 'overview',
+        'sort_key'    => 'reference',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'reference',
+
+    ),
+
     'part_family.product_families' => array(
         'view'        => 'overview',
         'sort_key'    => 'code',

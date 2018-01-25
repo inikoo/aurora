@@ -4675,10 +4675,11 @@ $modules = array(
                             'Subcategories'
                         )
                     ),
+                    'part_family.part_locations' => array(
+                        'label' => _('Parts locations')
+                    ),
                     'part_family.product_families' => array(
-                        'label' => _(
-                            'Product families'
-                        )
+                        'label' => _('Product families')
                     ),
                     'part_family.products'         => array(
                         'label' => _('Products')
