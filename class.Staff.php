@@ -1636,7 +1636,7 @@ class Staff extends DB_Table {
 
     }
 
-    function update_is_working($value, $options) {
+    function update_is_working($value, $options='') {
 
         global $account;
         include_once 'class.Timesheet.php';
@@ -1645,9 +1645,7 @@ class Staff extends DB_Table {
 
         if ($value == 'No') {
             $this->update_field('Staff Currently Working', $value, $options);
-            $this->update_field(
-                'Staff Valid To', gmdate('Y-m-d H:i:s'), 'no_history'
-            );
+            $this->update_field('Staff Valid To', gmdate('Y-m-d H:i:s'), 'no_history');
 
 
             $delete_from = date(
@@ -1663,6 +1661,8 @@ class Staff extends DB_Table {
             $sql = sprintf(
                 "SELECT `Timesheet Key` FROM `Timesheet Dimension` WHERE `Timesheet Staff Key`=%d AND `Timesheet Date`>=%s   ", $this->id, prepare_mysql($delete_from)
             );
+
+            print $sql;
 
             if ($result3 = $this->db->query($sql)) {
 

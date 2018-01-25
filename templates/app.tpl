@@ -48,7 +48,7 @@
 
 
 
-        <link href="/css/app.css?v180122" rel="stylesheet">
+        <link href="/css/app.css?v180124v2" rel="stylesheet">
         <script src="/js/libs/jquery-2.2.1.js"></script>
         <script src="/js/libs/jquery-ui.js"></script>
         <script src="/js/libs/moment-with-locales.js"></script>
@@ -71,8 +71,8 @@
         <script src="/js/libs/fotorama.js"></script>
         <script src="/js/libs/tooltipster.bundle.min.js"></script>
 
-
-        <script src="/js/app.js"></script>
+        <script src="/js/help.js?v180124v3"></script>
+        <script src="/js/app.js?v180124"></script>
         <script src="/js/keyboard_shortcuts.js"></script>
         <script src="/js/barcode_scanner.js?v1712v2"></script>
         <script src="/js/search.js"></script>
@@ -87,7 +87,7 @@
         <script src="/js/supplier.delivery.js"></script>
         <script src="/js/part_locations.edit.js?v=201715"></script>
         <script src="/js/alert_dial.js"></script>
-        <script src="/js/help.js"></script>
+
         <script src="/utils/country_data.js.php?locale={$locale}"></script>
         <script src="/js/libs/editor/froala_editor.min.js"></script>
         <script src="/js/libs/editor/codemirror.js"></script>
@@ -144,8 +144,6 @@
 
 
         <script src="https://app-rsrc.getbee.io/plugin/BeePlugin.js"></script>
-
-
 
 
 </head>
@@ -222,18 +220,20 @@
             </div>
         </div>
     </section>
-    <aside id="notifications">
+    <aside id="notifications" data-current_side_view="{$_side_block}" >
         <div class="top_buttons">
 
-
-            <div id="help_button" onclick="show_help()" class="square_button {if $show_help}selected{/if}"
-                 title="{t}Help{/t}">
+            <div id="whiteboard_button" onclick="show_side_content('whiteboard')" class="side_content_icon square_button {if $_side_block='whiteboard'}selected{/if}" title="{t}Whiteboard{/t}">
+                <i class="fa fa-pencil-square-o fa-fw  "></i>
+            </div>
+            <div id="help_button" onclick="show_side_content('help')" class="side_content_icon square_button {if $_side_block=='help'}selected{/if}" title="{t}Help{/t}">
                 <i class="fa fa-question-circle fa-fw  "></i>
             </div>
 
+
             <div style="clear:both"></div>
         </div>
-        <div id="help" class="{if !$show_help}hide{/if}">
+        <div id="help" class="side_content {if $_side_block!='help'}hide{/if}">
             <div class="top">
                 {t}Help{/t}
             </div>
@@ -242,6 +242,22 @@
             </div>
             <div class="content">
             </div>
+        </div>
+        <div id="whiteboard" class="side_content {if $_side_block!='whiteboard'}hide{/if}">
+            <div class="top">
+                {t}Whiteboard{/t}
+            </div>
+            <div class="navigation">
+                <span id="whiteboard_content_title" style="font-size:90%;padding-left:5px" class="help_title">{t}Page{/t}</span>
+            </div>
+            <div id="whiteboard_content" data-block="page" class="content" style="min-height: 200px;padding:10px" contenteditable="true"  ></div>
+            <div class="navigation">
+                <span id="whiteboard_content_tab_title" style="font-size:90%;padding-left:5px" class="help_title">{t}Tab{/t}</span>
+            </div>
+            <div id="whiteboard_content_tab"  data-block="tab"  class="content" style="min-height: 300px;padding:10px" contenteditable="true"  ></div>
+
+
+
         </div>
 
     </aside>

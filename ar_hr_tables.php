@@ -103,6 +103,11 @@ function employees($_data, $db, $user, $type = '') {
 
     include_once 'prepare_table/init.php';
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+    //print $sql;
+   // exit;
+
+
     $adata = array();
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
