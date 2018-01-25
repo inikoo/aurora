@@ -54,7 +54,6 @@ switch ($tipo) {
 function save_whiteboard($data, $modules, $db, $account, $user, $editor) {
 
 
-
     if (!isset($data['state']['module']) or !isset($data['state']['section'])) {
         $response = array(
             'status' => 400
@@ -86,14 +85,19 @@ function save_whiteboard($data, $modules, $db, $account, $user, $editor) {
     $sql = sprintf(
         'INSERT INTO `Whiteboard Dimension` (`Whiteboard Hash`,`Whiteboard Type`,`Whiteboard Module`,`Whiteboard Section`,`Whiteboard Tab`,`Whiteboard Text`,`Whiteboard Created`,`Whiteboard Updated`,`Whiteboard Last Updated User Key`,`Whiteboard Last Updated Staff Key`) 
         VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%d,%d) ON DUPLICATE KEY UPDATE `Whiteboard Text`=%s,`Whiteboard Updated`=%s,`Whiteboard Last Updated User Key`=%d ,`Whiteboard Last Updated Staff Key`=%d ', prepare_mysql($hash), prepare_mysql($type), prepare_mysql($module), prepare_mysql($section), prepare_mysql($tab),
-        prepare_mysql($data['content']), prepare_mysql($date), prepare_mysql($date), $user->id, $user->get_staff_key(), prepare_mysql($data['content']), prepare_mysql($date),  $user->id, $user->get_staff_key()
+        prepare_mysql($data['content'],false), prepare_mysql($date), prepare_mysql($date), $user->id, $user->get_staff_key(), prepare_mysql($data['content'],false), prepare_mysql($date),  $user->id, $user->get_staff_key()
 
     );
 
-  //  print $sql;
+
 
     $db->exec($sql);
 
+
+    $response = array(
+        'status' => 200
+    );
+    echo json_encode($response);
 
 }
 
