@@ -22,12 +22,25 @@ switch ($tipo) {
 
     case 'help':
         $data = prepare_values($_REQUEST, array('state' => array('type' => 'json array'),));
-
         get_help($data, $modules, $db, $account, $user, $smarty);
         break;
-    case 'show_help':
-        $data                  = prepare_values($_REQUEST, array('value' => array('type' => 'string'),));
-        $_SESSION['show_help'] = $data['value'];
+    case 'whiteboard':
+        $data = prepare_values($_REQUEST, array('state' => array('type' => 'json array'),));
+        get_whiteboard($data, $modules, $db, $account, $user, $smarty);
+        break;
+    case 'save_whiteboard':
+        $data = prepare_values(
+            $_REQUEST, array(
+            'state'   => array('type' => 'json array'),
+            'block'   => array('type' => 'string'),
+            'content' => array('type' => 'string'),
+        )
+        );
+        save_whiteboard($data, $modules, $db, $account, $user, $editor);
+        break;
+    case 'side_block':
+        $data                   = prepare_values($_REQUEST, array('value' => array('type' => 'string')));
+        $_SESSION['side_block'] = $data['value'];
         break;
     default:
         $response = array(
@@ -35,6 +48,52 @@ switch ($tipo) {
             'resp'  => 'Operation not found 2'
         );
         echo json_encode($response);
+
+}
+
+function save_whiteboard($data, $modules, $db, $account, $user, $editor) {
+
+
+
+    if (!isset($data['state']['module']) or !isset($data['state']['section'])) {
+        $response = array(
+            'status' => 400
+        );
+
+
+        echo json_encode($response);
+        exit;
+    }
+
+    $module  = $data['state']['module'];
+    $section = $data['state']['section'];
+
+    $tab = ($data['state']['subtab'] == '' ? $data['state']['tab'] : $data['state']['subtab']);
+
+
+    if ($data['block'] == 'tab') {
+
+        $hash = hash('crc32', $module.$section.$tab, false);
+        $type = 'Tab';
+    } else {
+        $hash = hash('crc32', $module.$section.'=P=', false);
+        $type = 'Page';
+    }
+
+
+    $date = gmdate('Y-m-d H:i:s');
+
+    $sql = sprintf(
+        'INSERT INTO `Whiteboard Dimension` (`Whiteboard Hash`,`Whiteboard Type`,`Whiteboard Module`,`Whiteboard Section`,`Whiteboard Tab`,`Whiteboard Text`,`Whiteboard Created`,`Whiteboard Updated`,`Whiteboard Last Updated User Key`,`Whiteboard Last Updated Staff Key`) 
+        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%d,%d) ON DUPLICATE KEY UPDATE `Whiteboard Text`=%s,`Whiteboard Updated`=%s,`Whiteboard Last Updated User Key`=%d ,`Whiteboard Last Updated Staff Key`=%d ', prepare_mysql($hash), prepare_mysql($type), prepare_mysql($module), prepare_mysql($section), prepare_mysql($tab),
+        prepare_mysql($data['content']), prepare_mysql($date), prepare_mysql($date), $user->id, $user->get_staff_key(), prepare_mysql($data['content']), prepare_mysql($date),  $user->id, $user->get_staff_key()
+
+    );
+
+  //  print $sql;
+
+    $db->exec($sql);
+
 
 }
 
@@ -72,7 +131,7 @@ function get_title($state, $account, $user) {
     } elseif ($state['tab'] == 'employee.new') {
         return _('Adding an employee');
 
-    }elseif ($state['tab'] == 'warehouse.locations') {
+    } elseif ($state['tab'] == 'warehouse.locations') {
         return _("Locations list");
 
     }
@@ -96,6 +155,115 @@ function get_content($state, $smarty, $account, $user) {
     }
 
     return _('There is not help for this section').' '.$state['module'].'.'.$state['tab'];
+}
+
+
+function get_whiteboard($data, $modules, $db, $account, $user, $smarty) {
+
+
+    if (!isset($data['state']['module']) or !isset($data['state']['section'])) {
+        $response = array(
+            'status' => 400
+        );
+
+
+        echo json_encode($response);
+        exit;
+    }
+
+    $module  = $data['state']['module'];
+    $section = $data['state']['section'];
+
+    $tab = ($data['state']['subtab'] == '' ? $data['state']['tab'] : $data['state']['subtab']);
+
+
+    $hash_page = hash('crc32', $module.$section.'=P=', false);
+
+    $hash_tab = hash('crc32', $module.$section.$tab, false);
+
+
+
+    $page_title=sprintf(_('%s (page)'),(isset($modules[$module]['sections'][$section]['label'])?$modules[$module]['sections'][$section]['label']:$section));
+
+
+    $empty_tab = true;
+    $text_tab  = '';
+    $tab_title='';
+    if (count($modules[$module]['sections'][$section]['tabs']) == 1) {
+        $has_tab = false;
+    } else {
+        $has_tab = true;
+
+        if($data['state']['subtab'] == ''){
+
+
+            $tab_title=sprintf(_('%s (tab)'),(isset($modules[$module]['sections'][$section]['tabs'][$tab]['label'])?$modules[$module]['sections'][$section]['tabs'][$tab]['label']:$tab));
+
+        }else{
+
+
+            $tab_title=sprintf(_('%s (tab)'),(
+                isset($modules[$module]['sections'][$section]['tabs'] [$data['state']['tab']] ['subtabs'][$data['state']['subtab']]['label'])
+                    ?
+                    $modules[$module]['sections'][$section]['tabs'][$data['state']['tab']]['subtabs'][$data['state']['subtab']]['label']
+                    :$tab
+            ));
+
+        }
+
+
+
+        $sql = sprintf('SELECT `Whiteboard Text` FROM `Whiteboard Dimension` WHERE `Whiteboard Hash`=%s ', prepare_mysql($hash_tab));
+
+
+        if ($result = $db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $text_tab  = $row['Whiteboard Text'];
+                $empty_tab = false;
+            } else {
+                $text_tab  = '<em class="very_discreet">'._('Fell free to type something about this tab').' ('.$tab.') </em>';
+                $empty_tab = true;
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+    }
+
+
+    $sql = sprintf('SELECT `Whiteboard Text` FROM `Whiteboard Dimension` WHERE `Whiteboard Hash`=%s ', prepare_mysql($hash_page));
+    if ($result = $db->query($sql)) {
+        if ($row = $result->fetch()) {
+            $text  = $row['Whiteboard Text'];
+            $empty = false;
+        } else {
+            $text  = '<em class="very_discreet">'._('Fell free to type something about this page').' ('.$data['state']['section'].') </em>';
+            $empty = true;
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+
+
+    $response = array(
+        'status'      => 200,
+        'empty'       => $empty,
+        'content'     => $text,
+        'has_tab'     => $has_tab,
+        'empty_tab'   => $empty_tab,
+        'content_tab' => $text_tab,
+        'page_title'=>$page_title,
+        'tab_title'=>$tab_title,
+
+    );
+
+    echo json_encode($response);
+
 }
 
 

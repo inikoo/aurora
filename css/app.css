@@ -212,39 +212,43 @@ input {
         opacity: 0.9; }
       #notifications .top_buttons .square_button.selected {
         opacity: 1;
-        color: red; }
+        color: #48769f; }
       #notifications .top_buttons .square_button:hover {
         opacity: 0.95; }
-  #notifications #help_button {
+  #notifications .side_content_icon {
     color: #9ABBD9; }
-  #notifications #help .top {
+  #notifications .side_content .top {
     padding: 2px 5px;
     background: #9ABBD9;
     color: #FFF; }
-  #notifications #help .navigation {
+  #notifications .side_content .navigation {
     padding: 2px 5px;
     border-bottom: 1px solid #9ABBD9;
     color: #6296c4; }
-  #notifications #help .content {
+  #notifications .side_content .content {
     padding: 12px 5px 10px 5px;
     font-size: 95%;
     border-bottom: 1px solid #9ABBD9;
     color: #777; }
-    #notifications #help .content .item {
+    #notifications .side_content .content .item {
       margin-bottom: 5px; }
-      #notifications #help .content .item .question {
+      #notifications .side_content .content .item .question {
         cursor: pointer;
         padding-left: 10px; }
-      #notifications #help .content .item .answer {
+      #notifications .side_content .content .item .answer {
         padding: 0px 0px 5px 15px;
         font-size: 90%; }
-        #notifications #help .content .item .answer ul {
+        #notifications .side_content .content .item .answer ul {
           margin: 0px;
           padding: 10px 20px; }
-        #notifications #help .content .item .answer li {
+        #notifications .side_content .content .item .answer li {
           padding: 2px 0px; }
-  #notifications #help .link {
+  #notifications .side_content .link {
     text-decoration: underline; }
+  #notifications .side_content #whiteboard_content:empty:before {
+    content: attr(data-placeholder);
+    display: block;
+    /* For Firefox */ }
 
 .square_button {
   height: 30px;

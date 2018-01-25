@@ -2733,7 +2733,7 @@ function search_hr($db, $account, $memcache_ip, $data) {
 
 
             $sql = sprintf(
-                "SELECT `Staff Key`,`Staff Alias` FROM `Staff Dimension` WHERE `Staff Currently Working`='Yes' AND   `Staff Alias` LIKE '%s%%' LIMIT 20 ", $q
+                "SELECT `Staff Key`,`Staff Alias`,`Staff Currently Working` FROM `Staff Dimension` WHERE   `Staff Alias` LIKE '%s%%' LIMIT 20 ", $q
             );
 
 
@@ -2741,15 +2741,13 @@ function search_hr($db, $account, $memcache_ip, $data) {
 
                 foreach ($result as $row) {
                     if ($row['Staff Alias'] == $q) {
-                        $candidates['S '.$row['Staff Key']] = 70;
+                        $candidates['S '.$row['Staff Key']] =  ($row['Staff Currently Working']=='Yes'?70:60);
                     } else {
 
-                        $len_name                           = strlen(
-                            $row['Staff Alias']
-                        );
+                        $len_name                           = strlen($row['Staff Alias']);
                         $len_q                              = strlen($q);
                         $factor                             = $len_q / $len_name;
-                        $candidates['S '.$row['Staff Key']] = 60 * $factor;
+                        $candidates['S '.$row['Staff Key']] = ($row['Staff Currently Working']=='Yes'?60:50) * $factor;
                     }
                 }
             } else {
@@ -2759,7 +2757,7 @@ function search_hr($db, $account, $memcache_ip, $data) {
 
 
             $sql = sprintf(
-                "SELECT `Staff Key`,`Staff Name` FROM `Staff Dimension` WHERE `Staff Currently Working`='Yes' AND  `Staff Name`  REGEXP '[[:<:]]%s' LIMIT 100 ", $q
+                "SELECT `Staff Key`,`Staff Name`,`Staff Currently Working` FROM `Staff Dimension` WHERE  `Staff Name`  REGEXP '[[:<:]]%s' LIMIT 100 ", $q
             );
 
 
@@ -2767,7 +2765,7 @@ function search_hr($db, $account, $memcache_ip, $data) {
 
                 foreach ($result as $row) {
                     if ($row['Staff Name'] == $q) {
-                        $candidates['S '.$row['Staff Key']] = 55;
+                        $candidates['S '.$row['Staff Key']] = ($row['Staff Currently Working']=='Yes'?55:45);
                     } else {
 
                         $len_name                           = strlen(
@@ -2775,7 +2773,7 @@ function search_hr($db, $account, $memcache_ip, $data) {
                         );
                         $len_q                              = strlen($q);
                         $factor                             = $len_q / $len_name;
-                        $candidates['S '.$row['Staff Key']] = 60 * $factor;
+                        $candidates['S '.$row['Staff Key']] = ($row['Staff Currently Working']=='Yes'?60:50) * $factor;
                     }
                 }
             } else {
@@ -2815,20 +2813,14 @@ function search_hr($db, $account, $memcache_ip, $data) {
             if ($_key[0] == 'S') {
 
                 $sql = sprintf(
-                    "SELECT `Staff Key`,`Staff ID`,`Staff Alias`,`Staff Name` FROM `Staff Dimension` WHERE  `Staff Key`=%d", $_key[1]
+                    "SELECT `Staff Key`,`Staff ID`,`Staff Alias`,`Staff Name`,`Staff Currently Working` FROM `Staff Dimension` WHERE  `Staff Key`=%d", $_key[1]
                 );
                 if ($result = $db->query($sql)) {
                     if ($row = $result->fetch()) {
                         $results[$row['Staff Key']] = array(
-                            'label'   => highlightkeyword(
-                                $row['Staff Alias'], $queries
-                            ),
-                            'details' => highlightkeyword(
-                                $row['Staff Name'], $queries
-                            ),
-                            'view'    => sprintf(
-                                'employee/%d', $row['Staff Key']
-                            ),
+                            'label'   => highlightkeyword($row['Staff Alias'], $queries),
+                            'details' => highlightkeyword($row['Staff Name'], $queries).($row['Staff Currently Working']=='No'?' ('._('ex-employee').')':''),
+                            'view'    => sprintf('employee/%d', $row['Staff Key']),
                             'score'   => $val
                         );
                     }

@@ -265,7 +265,7 @@ function change_view(_request, metadata) {
         }
 
         change_browser_history_state(data.state.request)
-        help()
+        show_side_content($('#notifications').data('current_side_view'))
 
     });
 
