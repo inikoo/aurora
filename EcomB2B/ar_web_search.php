@@ -271,11 +271,7 @@ function process_search($q, $db, $website, $order_key) {
                     }
 
 
-                    if ($this->data['Product Total Acc Quantity Ordered'] > 0) {
-                        return 'out_of_stock';
-                    } else {
-                        return 'launching_soon';
-                    }
+
 
 
                     $page_scores[$row['Page Key']]                = $score_match_product_code;
