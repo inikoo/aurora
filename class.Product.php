@@ -1541,12 +1541,12 @@ class Product extends Asset {
 
         //print $stock;exit;
 
-        $this->update(
+        $this->fast_update(
             array(
                 'Product Availability'       => $stock,
                 'Product Availability State' => $tipo,
 
-            ), 'no_history'
+            )
         );
 
 
