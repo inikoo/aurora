@@ -46,7 +46,7 @@ name: "item_index",
 renderable:false,
 label: "",
 editable: false,
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 events: {
 
 },

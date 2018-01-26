@@ -54,7 +54,7 @@ label: "{t}Can pick{/t}",
 editable: false,
 sortType: "toggle",
 
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 
 
 })

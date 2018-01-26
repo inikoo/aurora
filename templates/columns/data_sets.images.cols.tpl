@@ -11,7 +11,7 @@ renderable: false
 name: "formatted_id",
 label: "{t}Id{/t}",
 editable: false,
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 events: {
 "click": function() {
 change_view('/image/'+this.model.get("id"))
@@ -32,7 +32,7 @@ cell: Backgrid.HtmlCell.extend({
 name: "size",
 label: "{t}Size{/t}",
 editable: false,
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 className: "aright"
 }),
 headerCell: integerHeaderCell
@@ -40,7 +40,7 @@ headerCell: integerHeaderCell
 name: "filesize",
 label: "{t}File size{/t}",
 editable: false,
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 className: "aright"
 }),
 headerCell: integerHeaderCell

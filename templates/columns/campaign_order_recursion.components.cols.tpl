@@ -81,7 +81,7 @@ sortType: "toggle",
 {if $sort_key=='from'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
 
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 
 },
@@ -94,7 +94,7 @@ sortType: "toggle",
 {if $sort_key=='to'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
 
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 
 },
@@ -107,7 +107,7 @@ sortType: "toggle",
 {if $sort_key=='orders'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
 
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 
 },
@@ -120,7 +120,7 @@ sortType: "toggle",
 {if $sort_key=='customers'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
 
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 
 }

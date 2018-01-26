@@ -32,7 +32,7 @@ className: "width_20"
 name: "country",
 label: "{t}Country{/t}",
 sortType: "toggle",
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 }
 )
 },
@@ -46,7 +46,7 @@ sortType: "toggle",
 {if $sort_key=='customers'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
 
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 
 },
@@ -59,7 +59,7 @@ sortType: "toggle",
 {if $sort_key=='customers_percentage'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
 
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 
 },
@@ -72,7 +72,7 @@ sortType: "toggle",
 {if $sort_key=='invoices'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
 
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 
 },
@@ -86,7 +86,7 @@ sortType: "toggle",
 {if $sort_key=='sales'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
 
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 
 },
@@ -99,7 +99,7 @@ sortType: "toggle",
 {if $sort_key=='sales_percentage'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
 
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 
 },
@@ -112,7 +112,7 @@ sortType: "toggle",
 {if $sort_key=='sales_per_customer'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
 
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 
 }

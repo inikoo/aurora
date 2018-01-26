@@ -14,7 +14,7 @@ editable: false,
 sortType: "toggle",
 {if $sort_key=='id'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 orderSeparator: '',
 events: {
 "click": function() {
@@ -51,7 +51,7 @@ className: "width_20"
 name: "code",
 label: "Code",
 sortType: "toggle",
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 events: {
 "click": "enterEditMode"
 },
@@ -62,7 +62,7 @@ className: "width_200"
 name: "name",
 label: "{t}Company name{/t}",
 sortType: "toggle",
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 events: {
 "click": "enterEditMode"
 },
@@ -75,7 +75,7 @@ name: "contact",
 label: "{t}Contact{/t}",
 
 sortType: "toggle",
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 events: {
 "click": "enterEditMode"
 }
@@ -84,7 +84,7 @@ events: {
 name: "email",
 label: "{t}Email{/t}",
 sortType: "toggle",
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 
 })
 },
@@ -92,7 +92,7 @@ cell: Backgrid.StringCell.extend({
 name: "mobile",
 label: "{t}Mobile{/t}",
 sortType: "toggle",
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 className: "width_200"
 })
 },
@@ -100,7 +100,7 @@ className: "width_200"
 name: "telephone",
 label: "{t}Telephone{/t}",
 sortType: "toggle",
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 className: "width_200"
 })
 }

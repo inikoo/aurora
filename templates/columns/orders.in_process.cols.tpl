@@ -38,7 +38,7 @@ name: "public_id",
 label: "{t}Number{/t}",
 editable: false,
 sortType: "toggle",
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 events: {
 "click": function() {
 {if $data['object']!=''}
@@ -60,7 +60,7 @@ editable: false,
 defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='date'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 }, {
 name: "customer",
@@ -87,7 +87,7 @@ editable: false,
 defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='total_amount'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
 {

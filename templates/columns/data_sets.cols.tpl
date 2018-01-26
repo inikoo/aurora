@@ -25,7 +25,7 @@ className: "link",
 name: "sets",
 label: "{t}Sets{/t}",
 editable: false,
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 className: "aright"
 }),
 headerCell: integerHeaderCell
@@ -34,7 +34,7 @@ headerCell: integerHeaderCell
 name: "items",
 label: "{t}Records{/t}",
 editable: false,
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 className: "aright"
 }),
 headerCell: integerHeaderCell
@@ -43,7 +43,7 @@ headerCell: integerHeaderCell
 name: "size",
 label: "{t}Size{/t}",
 editable: false,
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 className: "aright"
 }),
 headerCell: integerHeaderCell

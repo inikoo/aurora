@@ -22,7 +22,7 @@ name: "type",
 label:"{t}Type{/t}",
 editable: false,
 sortType: "toggle",
-cell: Backgrid.StringCell.extend({  }),
+cell: Backgrid.HtmlCell.extend({  }),
 },  {
 name: "amount",
 label: "{t}Amount{/t}",
@@ -50,7 +50,7 @@ defaultOrder:1,
 editable: false,
 sortType: "toggle",
 {if $sort_key=='date'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },{
 name: "status",

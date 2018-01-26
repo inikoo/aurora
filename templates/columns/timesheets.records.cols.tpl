@@ -42,7 +42,7 @@ renderable: {if $data['object']=='timesheet' or $data['object']=='employee'}fals
 sortType: "toggle",
 {if $sort_key=='formatted_timesheet_id'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 events: {
 "click": function() {
 {if $data['object']==''}
@@ -67,7 +67,7 @@ editable: false,
 sortType: "toggle",
 {if $sort_key=='alias'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 events: {
 "click": function() {
 change_view('employee/'+this.model.get("staff_key"))
@@ -89,7 +89,7 @@ editable: false,
 defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='date'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 
 },
@@ -104,7 +104,7 @@ editable: false,
 defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='time'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.StringCell.extend({ className: "aright width_100 padding_right_20"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright width_100 padding_right_20"} ),
 headerCell: Backgrid.HeaderCell.extend({ className: "aright padding_right_20"})
 
 },
@@ -114,7 +114,7 @@ name: "type",
 label: "{t}Type{/t}",
 editable: false,
 sortType: "toggle",
-cell: Backgrid.StringCell.extend({ className: " padding_left_20 "} ),
+cell: Backgrid.HtmlCell.extend({ className: " padding_left_20 "} ),
 headerCell: Backgrid.HeaderCell.extend({ className: "padding_left_20"})
 
 

@@ -48,7 +48,7 @@ editable: false,
 defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='users'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 
 }, {
@@ -58,7 +58,7 @@ editable: false,
 defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='requests'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 
 }

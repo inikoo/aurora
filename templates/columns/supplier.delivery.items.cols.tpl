@@ -36,7 +36,7 @@ label: "{t}S. Code{/t}",
 renderable: {if $data['_object']->get('State Index')>=40}false{else}true{/if},
 
 editable: false,
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 }),
 },{
 name: "part_reference",
@@ -44,7 +44,7 @@ label: "{t}Part{/t}",
 renderable: {if $data['_object']->get('State Index')>=40}true{else}false{/if},
 
 editable: false,
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 
 }),
 },{

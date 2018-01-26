@@ -69,7 +69,7 @@ label: "{t}Unit description{/t}",
 editable: false,
 sortType: "toggle",
 
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 
 
 })

@@ -29,7 +29,7 @@ editable: false,
 sortType: "toggle",
 {if $sort_key=='handle'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 orderSeparator: '',
 events: {
 "click": function() {
@@ -44,7 +44,7 @@ className: "link"
 name: "name",
 label: "{t}Name{/t}",
 sortType: "toggle",
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 events: {
 "click": function() {
 change_view('employee/' + +this.model.get("employee_key"))

@@ -19,7 +19,7 @@ editable: false,
 defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='name'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.StringCell.extend({  }),
+cell: Backgrid.HtmlCell.extend({  }),
 },
 {
 name: "campaigns",

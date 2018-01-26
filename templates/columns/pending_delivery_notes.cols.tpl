@@ -25,7 +25,7 @@ editable: false,
 sortType: "toggle",
 {if $sort_key=='number'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 events: {
 "click": function() {
 change_view('delivery_notes/'+this.model.get("store_key")+'/' + this.model.get("id")  )
@@ -40,14 +40,14 @@ editable: false,
 defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='date'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 }, {
 name: "customer",
 label: "{t}Customer{/t}",
 sortType: "toggle",
 editable: false,
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 events: {
 "click": function() {
 change_view('customer/' + this.model.get("customer_key")  )
@@ -74,7 +74,7 @@ editable: false,
 defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='total_amount'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 }, {
 name: "parcels",
@@ -83,7 +83,7 @@ editable: false,
 defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='total_amount'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 }]
 

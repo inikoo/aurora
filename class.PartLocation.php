@@ -536,7 +536,7 @@ class PartLocation extends DB_Table {
 
 
         $this->part->update_stock();
-        $this->location->update_stock_value();
+        $this->update_stock_value();
 
 
         if ($this->location->id == 1) {
@@ -818,6 +818,27 @@ class PartLocation extends DB_Table {
 
 
     }
+
+    function update_note($value){
+
+        $sql = sprintf(
+            "UPDATE `Part Location Dimension` SET `Part Location Note`=%s ,`Last Updated`=NOW() WHERE `Part SKU`=%d AND `Location Key`=%d ", prepare_mysql($value), $this->part_sku, $this->location_key
+        );
+
+
+        $update = $this->db->prepare($sql);
+        $update->execute();
+
+        if ($update->rowCount()) {
+            $this->data['Part Location Note']=$value;
+            $this->updated          = true;
+
+
+
+        }
+
+    }
+
 
     function update_move_qty($value) {
 
@@ -1313,7 +1334,7 @@ class PartLocation extends DB_Table {
         $this->part->update_unknown_location();
 
         $this->location->update_parts();
-        $this->location->update_stock_value();
+        $this->update_stock_value();
 
         $this->updated = true;
 
@@ -1347,7 +1368,10 @@ class PartLocation extends DB_Table {
     function update_stock_value() {
 
         $sql = sprintf(
-            "UPDATE `Part Location Dimension` SET `Stock Value`=%.3f WHERE `Part SKU`=%d AND `Location Key`=%d ", $this->get('Quantity On Hand') * $this->part->get('Part Cost in Warehouse'), $this->part_sku, $this->location_key
+            "UPDATE `Part Location Dimension` SET `Stock Value`=%.3f WHERE `Part SKU`=%d AND `Location Key`=%d ",
+            $this->get('Quantity On Hand') * $this->part->get('Part Cost in Warehouse'),
+            $this->part_sku,
+            $this->location_key
         );
 
         $update = $this->db->prepare($sql);

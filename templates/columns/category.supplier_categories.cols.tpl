@@ -29,7 +29,7 @@ defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='assigned'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 
 },
@@ -41,7 +41,7 @@ defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='assigned'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 
 },
@@ -53,7 +53,7 @@ editable: false,
 defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='supplier_parts'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
 headerCell: integerHeaderCell
 },
@@ -65,7 +65,7 @@ editable: false,
 defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='active_supplier_parts'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
 headerCell: integerHeaderCell
 },
@@ -135,7 +135,7 @@ editable: false,
 defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='pending_po'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
 headerCell: integerHeaderCell
 },

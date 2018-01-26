@@ -20,7 +20,7 @@ label: "{t}Reference{/t}",
 editable: false,
 sortType: "toggle",
 
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 events: {
 "click": function() {
 change_view('/production/' + this.model.get("supplier_key") + '/part/' + this.model.get("id"))
@@ -39,7 +39,7 @@ label: "{t}Part{/t}",
 editable: false,
 sortType: "toggle",
 
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 events: {
 "click": function() {
 change_view('part/' + this.model.get("part_sku"))
@@ -55,7 +55,7 @@ label: "{t}Unit description{/t}",
 editable: false,
 sortType: "toggle",
 
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 
 
 })

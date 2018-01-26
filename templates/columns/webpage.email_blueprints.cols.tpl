@@ -37,7 +37,7 @@ name: "date",
 label: "{t}Date{/t}",
 editable: false,
 sortType: "toggle",
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 className: "aright"
 }),
 headerCell: integerHeaderCell

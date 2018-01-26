@@ -18,7 +18,7 @@ className: "width_20"
 name: "caption",
 label: "{t}Caption{/t}",
 editable: false,
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 events: {
 "click": function() {
 change_view('/{$data['object']}/{$data['key']}/attachment/'+this.model.get("id"))
@@ -31,7 +31,7 @@ className: "link"
 name: "type",
 label: "{t}Type{/t}",
 editable: false,
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 className: "contact_name"
 })
 
@@ -53,7 +53,7 @@ cell: "html"
 name: "size",
 label: "{t}Size{/t}",
 editable: false,
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 className: "aright"
 }),
 headerCell: integerHeaderCell

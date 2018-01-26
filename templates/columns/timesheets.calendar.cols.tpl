@@ -47,7 +47,7 @@ label: "{t}Days{/t}",
 renderable: {if $tipo=='days'}false{else}true{/if},
 
 editable: false,
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 className: "aright"
 }),
 headerCell: integerHeaderCell
@@ -55,7 +55,7 @@ headerCell: integerHeaderCell
 name: "employees",
 label: "{t}Employees{/t}",
 editable: false,
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 className: "aright"
 }),
 headerCell: integerHeaderCell
@@ -63,7 +63,7 @@ headerCell: integerHeaderCell
 name: "timesheets",
 label: "{t}Timesheets{/t}",
 editable: false,
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 className: "aright"
 }),
 headerCell: integerHeaderCell

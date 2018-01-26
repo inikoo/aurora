@@ -24,7 +24,7 @@ label: "{$columns_parameters.a.label}",
 editable: false,
 renderable: {$columns_parameters.a.render},
 
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 className: "aright"
 }),
 headerCell: integerHeaderCell,
@@ -35,7 +35,7 @@ name: "float_b",
 label: "{$columns_parameters.b.label}",
 editable: false,
 renderable: {$columns_parameters.b.render},
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 className: "aright"
 }),
 headerCell: integerHeaderCell,
@@ -46,7 +46,7 @@ name: "float_c",
 label: "{$columns_parameters.c.label}",
 editable: false,
 renderable: {$columns_parameters.c.render},
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 className: "aright"
 }),
 headerCell: integerHeaderCell,
@@ -57,7 +57,7 @@ name: "float_d",
 label: "{$columns_parameters.d.label}",
 editable: false,
 renderable: {$columns_parameters.d.render},
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 className: "aright"
 }),
 headerCell: integerHeaderCell,
@@ -67,7 +67,7 @@ name: "int_a",
 label: "{$columns_parameters.int_a.label}",
 editable: false,
 renderable: {$columns_parameters.int_a.render},
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 className: "aright"
 }),
 headerCell: integerHeaderCell,
@@ -77,7 +77,7 @@ name: "int_b",
 label: "{$columns_parameters.int_b.label}",
 editable: false,
 renderable: {$columns_parameters.int_b.render},
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 className: "aright"
 }),
 headerCell: integerHeaderCell,

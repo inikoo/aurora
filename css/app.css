@@ -245,10 +245,6 @@ input {
           padding: 2px 0px; }
   #notifications .side_content .link {
     text-decoration: underline; }
-  #notifications .side_content #whiteboard_content:empty:before {
-    content: attr(data-placeholder);
-    display: block;
-    /* For Firefox */ }
 
 .square_button {
   height: 30px;
@@ -614,7 +610,7 @@ right connector from last child*/
   color: #777; }
 
 .super_discreet_on_hover {
-  opacity: .0;
+  opacity: .1;
   color: #777; }
 
 .super_discreet_on_hover:hover {

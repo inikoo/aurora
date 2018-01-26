@@ -21,7 +21,7 @@ label: "{t}Part{/t}",
 editable: false,
 sortType: "toggle",
 
-cell: Backgrid.StringCell.extend({ })
+cell: Backgrid.HtmlCell.extend({ })
 
 },
 {
@@ -30,7 +30,7 @@ label: "{t}Description{/t}",
 editable: false,
 sortType: "toggle",
 
-cell: Backgrid.StringCell.extend({ })
+cell: Backgrid.HtmlCell.extend({ })
 
 },
 {

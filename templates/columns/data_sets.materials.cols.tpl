@@ -11,7 +11,7 @@ renderable: false
 name: "name",
 label: "{t}Name{/t}",
 editable: false,
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 events: {
 "click": function() {
 change_view('/account/data_sets/materials/'+this.model.get("id"))
@@ -32,7 +32,7 @@ cell: Backgrid.HtmlCell.extend({
 name: "parts",
 label: "{t}Parts{/t}",
 editable: false,
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 className: "aright"
 }),
 headerCell: integerHeaderCell

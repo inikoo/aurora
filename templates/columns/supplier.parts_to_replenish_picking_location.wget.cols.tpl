@@ -81,7 +81,7 @@ sortable: false,
 
 sortType: "toggle",
 
-cell: Backgrid.StringCell.extend({})
+cell: Backgrid.HtmlCell.extend({})
 
 }
 

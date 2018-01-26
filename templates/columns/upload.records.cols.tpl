@@ -11,7 +11,7 @@ renderable: false
 name: "row",
 label: "{t}Row{/t}",
 editable: false,
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 className: 'width_150'
 }),
 

@@ -303,6 +303,23 @@
 
             </table>
 
+            <div id="set_part_location_note_bis" class="hide" style="position:absolute;border:1px solid #ccc;background-color: white;padding:15px 10px 5px 10px;z-index: 100">
+                <table border="0">
+                    <tr style="height: 15px">
+                        <td class="aright" style="padding-bottom: 0px"> <i style="position:relative;top:-7px;margin-right:10px" class="fa fa-window-close button" onClick="close_part_location_notes_bis()" aria-hidden="true"></i></td>
+                    </tr>
+                    <tr>
+                        <td><textarea style="width: 200px"></textarea></td>
+                    </tr>
+                    <tr class="aright">
+                        <td><i  onClick="save_part_location_notes_bis()" class="fa  fa-cloud fa-fw button  save    " aria-hidden="true"/></td>
+                    </tr>
+                </table>
+
+
+
+            </div>
+
 
             <table id="locations_table" border="0" class="overview" part_sku="{$part->id}">
 

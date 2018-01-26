@@ -37,7 +37,7 @@ editable: false,
 sortType: "toggle",
 {if $sort_key=='alias'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 
 className: "padding_left_10 "
 
@@ -51,7 +51,7 @@ name: "clocking_records",
 label: "{t}Clockings{/t}",
 sortType: "toggle",
 editable: false,
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
 
