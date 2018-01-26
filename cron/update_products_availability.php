@@ -37,7 +37,14 @@ $editor = array(
 
 
             $product = new Product($row['Product ID']);
+            $web_state_old = $product->get_web_state();
                   $product->update_availability();
+            $web_state_new = $product->get_web_state();
+
+            if($web_state_old!=$web_state_new){
+                print $product->get('Store Key').' '.$product->get('Code')." $web_state_old $web_state_new \n";
+            }
+
 
         }
 
