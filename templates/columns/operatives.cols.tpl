@@ -15,7 +15,7 @@ renderable: false,
 sortType: "toggle",
 {if $sort_key=='id'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 events: {
 "click": function() {
 change_view('employee/' + +this.model.get("id"))
@@ -30,7 +30,7 @@ className: "link"
 name: "code",
 label: "{t}Code{/t}",
 sortType: "toggle",
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 events: {
 
 }
@@ -40,7 +40,7 @@ events: {
 name: "code_link",
 label: "{t}Code{/t}",
 sortType: "toggle",
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 events: {
 "click": function() {
 change_view('employee/' + +this.model.get("id"))
@@ -57,7 +57,7 @@ label: "{t}Payroll ID{/t}",
 editable: false,
 sortType: "toggle",
 {if $sort_key=='payroll_id'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 
 },
@@ -67,7 +67,7 @@ headerCell: integerHeaderCell
 name: "name",
 label: "{t}Name{/t}",
 sortType: "toggle",
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 events: {
 
 }
@@ -77,7 +77,7 @@ events: {
 name: "birthday",
 label: "{t}Date of birth{/t}",
 sortType: "toggle",
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
 
@@ -85,7 +85,7 @@ headerCell: integerHeaderCell
 name: "official_id",
 label: "{t}Official Id{/t}",
 sortType: "toggle",
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 events: {
 
 }
@@ -95,7 +95,7 @@ events: {
 name: "email",
 label: "{t}Email{/t}",
 sortType: "toggle",
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 events: {
 
 }
@@ -105,7 +105,7 @@ events: {
 name: "telephone",
 label: "{t}Contact number{/t}",
 sortType: "toggle",
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 events: {
 
 }
@@ -115,7 +115,7 @@ events: {
 name: "next_of_kind",
 label: "{t}Next of kind{/t}",
 sortType: "toggle",
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 events: {
 
 }
@@ -134,7 +134,7 @@ cell: "string"
 name: "job_title",
 label: "{t}Job title{/t}",
 sortType: "toggle",
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 events: {
 
 }
@@ -162,7 +162,7 @@ name: "from",
 label: "{t}Working since{/t}",
 editable: false,
 sortType: "toggle",
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
 {
@@ -198,7 +198,7 @@ sortType: "toggle",
 defaultOrder:1,
 
 {if $sort_key=='user_last_login'}direction: '{if $sort_order==1}ascending{else}descending{/if}',{/if}
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },{
 name: "user_last_login",
@@ -207,7 +207,7 @@ editable: false,
 sortType: "toggle",
 defaultOrder:1,
 
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
 

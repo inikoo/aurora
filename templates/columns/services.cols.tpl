@@ -18,7 +18,7 @@ label: "{t}Store{/t}",
 renderable: {if ($data['parent']=='account' or $data['parent']=='warehouse' ) }true{else}false{/if},
 editable: false,
 sortType: "toggle",
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 events: {
 "click": function() {
 change_view('services/'+this.model.get("store_key"))
@@ -45,7 +45,7 @@ name: "code",
 label: "{t}Code{/t}   ",
 editable: false,
 sortType: "toggle",
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 events: {
 "click": function() {
 change_view({if $data['section']=='category'}'products/{$data['store']->id}/category/{$data['_object']->get('Category Position')}/product/' + this.model.get("id"){else}'services/{$data['parent_key']}/'+this.model.get("id"){/if})
@@ -65,7 +65,7 @@ name: "price",
 label: "{t}Price{/t}",
 editable: false,
 sortType: "toggle",
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
 headerCell: integerHeaderCell
 }

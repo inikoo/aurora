@@ -71,7 +71,7 @@ sortType: "toggle",
 {if $sort_key=='last_invoice'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
 
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 
 },
@@ -83,7 +83,7 @@ editable: false,
 defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='supplier_parts'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
 headerCell: integerHeaderCell
 },
@@ -95,7 +95,7 @@ editable: false,
 defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='active_supplier_parts'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
 headerCell: integerHeaderCell
 },
@@ -166,7 +166,7 @@ editable: false,
 defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='pending_po'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
 headerCell: integerHeaderCell
 },
@@ -175,7 +175,7 @@ name: "company",
 label: "{t}Company{/t}",
 editable: false,
 sortType: "toggle",
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 events: {
 "dblclick": "enterEditMode"
 }
@@ -185,7 +185,7 @@ name: "contact",
 label: "{t}Main contact{/t}",
 editable: false,
 sortType: "toggle",
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 events: {
 "dblclick": "enterEditMode"
 }
@@ -205,7 +205,7 @@ name: "telephone",
 label: "{t}Telephone{/t}",
 editable: false,
 sortType: "toggle",
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 events: {
 "dblclick": "enterEditMode"
 }

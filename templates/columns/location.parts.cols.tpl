@@ -30,7 +30,7 @@ label: "{t}SKO description{/t}",
 editable: false,
 sortType: "toggle",
 
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 
 
 })
@@ -42,7 +42,7 @@ label: "{t}Picking here{/t}",
 editable: false,
 sortType: "toggle",
 
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 
 
 })

@@ -15,7 +15,7 @@ renderable: true,
 sortType: "toggle",
 {if $sort_key=='id'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 events: {
 "click": function() {
 change_view('manufacture_task/' + +this.model.get("id"))
@@ -34,7 +34,7 @@ label: "{t}Work cost{/t}",
 editable: false,
 sortType: "toggle",
 {if $sort_key=='payroll_id'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 
 },

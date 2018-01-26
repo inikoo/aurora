@@ -28,7 +28,7 @@ label: "{t}Code{/t}",
 editable: false,
 sortType: "toggle",
 
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 orderSeparator: '',
 events: {
 "click": function() {
@@ -46,7 +46,7 @@ renderable:false,
 editable: false,
 sortType: "toggle",
 
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 orderSeparator: '',
 events: {
 "click": function() {
@@ -98,7 +98,7 @@ editable: false,
 defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='parts'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
 {
@@ -108,7 +108,7 @@ editable: false,
 defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='stock_value'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
 ]

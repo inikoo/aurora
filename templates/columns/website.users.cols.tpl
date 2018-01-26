@@ -47,13 +47,13 @@ className: "link",
 name: "sessions",
 label: "{t}Sessions{/t}",
 editable: false,
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },{
 name: "last_login",
 label: "{t}Last Login{/t}",
 editable: false,
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 }
 

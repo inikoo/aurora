@@ -22,7 +22,7 @@ label: "{t}Name{/t}",
 sortType: "toggle",
 {if $sort_key=='name'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 events: {
 "dblclick": "enterEditMode"
 }
@@ -52,7 +52,7 @@ defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='contact_since'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 
 }, {
@@ -64,7 +64,7 @@ sortType: "toggle",
 {if $sort_key=='last_invoice'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
 
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 
 },
@@ -75,7 +75,7 @@ editable: false,
 defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='total_payments'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 
 
@@ -89,7 +89,7 @@ editable: false,
 defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='invoices'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
 headerCell: integerHeaderCell
 }, {
@@ -99,7 +99,7 @@ editable: false,
 defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='logins'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 }, {
 name: "failed_logins",
@@ -108,7 +108,7 @@ editable: false,
 defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='failed_logins'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 }, {
 name: "requests",
@@ -117,7 +117,7 @@ editable: false,
 defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='requests'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 }, {
 name: "company_name",
@@ -126,7 +126,7 @@ editable: false,
 sortType: "toggle",
 {if $sort_key=='company_name'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 events: {
 "dblclick": "enterEditMode"
 }
@@ -138,7 +138,7 @@ editable: false,
 sortType: "toggle",
 {if $sort_key=='contact_name'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 events: {
 "dblclick": "enterEditMode"
 }
@@ -162,7 +162,7 @@ editable: false,
 sortType: "toggle",
 {if $sort_key=='mobile'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 events: {
 "dblclick": "enterEditMode"
 }
@@ -174,7 +174,7 @@ editable: false,
 sortType: "toggle",
 {if $sort_key=='telephone'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 events: {
 "dblclick": "enterEditMode"
 }
@@ -186,7 +186,7 @@ editable: false,
 defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='total_invoiced_amount'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
 {
@@ -196,7 +196,7 @@ editable: false,
 defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='total_invoiced_net_amount'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 }
 

@@ -29,6 +29,10 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
+
+
+
+
     case 'set_as_picking_location':
 
         $data = prepare_values(
@@ -124,6 +128,19 @@ switch ($tipo) {
 
 
         edit_part_location_stock($account, $db, $user, $editor, $data, $smarty);
+        break;
+
+    case 'edit_part_location_note':
+
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'part_location_code'     => array('type' => 'string'),
+                         'note'         => array('type' => 'string'),
+                     )
+        );
+
+
+        edit_part_location_note($account, $db, $user, $editor, $data, $smarty);
         break;
 
 
@@ -867,6 +884,37 @@ function add_part_to_location($account, $db, $user, $editor, $data, $smarty) {
 }
 
 
+function edit_part_location_note($account, $db, $user, $editor, $data, $smarty) {
 
+    include_once 'class.PartLocation.php';
+
+
+    $part_location         = new PartLocation($data['part_location_code']);
+    $part_location->editor = $editor;
+
+    if (!$part_location->ok) {
+        $response = array(
+            'state' => 400,
+            'msg'   => _('Error, please try again').' location part not associated'
+        );
+
+
+        echo json_encode($response);
+        exit;
+
+    }
+
+    $part_location->update_note($data['note']);
+
+
+
+    $response = array(
+        'state'           => 200,
+        'value'=>$part_location->get('Part Location Note')
+    );
+    echo json_encode($response);
+
+
+}
 
 ?>

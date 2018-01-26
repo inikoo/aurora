@@ -16,7 +16,7 @@ editable: false,
 sortType: "toggle",
 {if $sort_key=='formatted_id'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 events: {
 "click": function() {
 {if $upload_objects=='employees'}
@@ -55,7 +55,7 @@ editable: false,
 defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='date'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.StringCell.extend({ className: "aright width_200 padding_right_20"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright width_200 padding_right_20"} ),
 headerCell: integerHeaderCell
 
 },
@@ -67,7 +67,7 @@ editable: false,
 defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='ok'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
 headerCell: integerHeaderCell
 },
@@ -79,7 +79,7 @@ editable: false,
 defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='warnings'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
 headerCell: integerHeaderCell
 },
@@ -91,7 +91,7 @@ editable: false,
 defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='errors'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
 headerCell: integerHeaderCell
 }

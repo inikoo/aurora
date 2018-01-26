@@ -11,7 +11,7 @@ cell: "string",
 name: "alias",
 label: "{t}Code{/t}",
 sortType: "toggle",
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 events: {
 "click": function() {
 change_view('contractor/' + +this.model.get("id"))
@@ -27,7 +27,7 @@ label: "{t}Payroll ID{/t}",
 editable: false,
 sortType: "toggle",
 {if $sort_key=='payroll_id'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 
 },
@@ -37,7 +37,7 @@ headerCell: integerHeaderCell
 name: "name",
 label: "{t}Name{/t}",
 sortType: "toggle",
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 events: {
 
 }
@@ -47,7 +47,7 @@ events: {
 name: "date",
 label: "{t}Deleted{/t}",
 sortType: "toggle",
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
 

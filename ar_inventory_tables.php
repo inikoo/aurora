@@ -96,6 +96,9 @@ switch ($tipo) {
     case 'part_family_part_locations':
         part_family_part_locations(get_table_parameters(), $db, $user, $account);
         break;
+    case 'part_locations':
+        part_locations(get_table_parameters(), $db, $user, $account);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -2235,6 +2238,77 @@ function part_family_part_locations($_data, $db, $user, $account) {
                 .'"><span style="padding-left:3px;padding-right:7.5px" class="table_edit_cell  location_part_stock" title="%s" part_sku="%d" location_key="%d"  qty="%s" onClick="open_location_part_stock_quantity_dialog(this)">%s</span></span>', '', $data['Part SKU'],
                 $data['Location Key'], $data['Quantity On Hand'], number($data['Quantity On Hand'])
             )
+
+
+        );
+
+    }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+
+function part_locations($_data, $db, $user, $account) {
+
+
+    if ($_data['parameters']['tab'] == 'warehouse.parts') {
+        $rtext_label = 'part location';
+    } else {
+        $rtext_label = 'part';
+
+    }
+
+
+    include_once 'prepare_table/init.php';
+
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $adata = array();
+
+
+    foreach ($db->query($sql) as $data) {
+
+
+        $notes = sprintf(
+            '<span class="button" key="%s" onclick="open_part_location_notes(this)" id="pl_notes_%d" >%s<span class="note">%s</span></span>', $data['Part SKU'].'_'.$data['Location Key'],$data['Part SKU'].'_'.$data['Location Key'],'<i class="fa fa-sticky-note-o very_discreet '.($data['Part Location Note']!=''?'hide':'').'" aria-hidden="true"></i> ',($data['Part Location Note'])
+        );
+
+
+        $adata[] = array(
+
+
+            'reference' => sprintf('<span class="link" onCLick="change_view(\'part/%d\')" >%s</span>', $data['Part SKU'], $data['Part Reference']),
+            'location'  => sprintf('<span class="link" onCLick="change_view(\'locations/%d/%d\')" >%s</span>', $data['Part Location Warehouse Key'], $data['Location Key'], $data['Location Code']),
+
+
+            'sko_description' => $data['Part Package Description'],
+
+
+            'can_pick' => ($data['Can Pick'] == 'Yes' ? '<i class="fa fa-shopping-basket"></i>' : ''),
+
+            'link' => '<span id="link_'.$data['Part SKU'].'"><i class="fa fa-chain-broken '.($data['Quantity On Hand'] != 0 ? 'invisible' : 'button').'" aria-hidden="true" part_sku="'.$data['Part SKU'].'" onclick="location_part_disassociate_from_table(this)"></i>',
+
+            'last_audit'=> ($data['Part Location Last Audit']==''?'<span class="very_discreet italic ">'._('No audited yet').'</span>':strftime("%a %e %b %Y", strtotime($data['Part Location Last Audit'].' +0:00'))),
+
+            'sko_cost'    => money($data['Part Cost in Warehouse'], $account->get('Account Currency')),
+            'stock_value' => '<span id="stock_value_'.$data['Part SKU'].'">'.money($data['Stock Value'], $account->get('Account Currency')).'</span>',
+            'quantity'    => sprintf(
+                '<span id="quantity_'.$data['Part SKU']
+                .'"><span style="padding-left:3px;padding-right:7.5px" class="table_edit_cell  location_part_stock" title="%s" part_sku="%d" location_key="%d"  qty="%s" onClick="open_location_part_stock_quantity_dialog(this)">%s</span></span>', '', $data['Part SKU'],
+                $data['Location Key'], $data['Quantity On Hand'], number($data['Quantity On Hand'])
+            ),
+            'notes'                  => $notes
 
 
         );

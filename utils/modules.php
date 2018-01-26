@@ -4850,6 +4850,12 @@ $modules = array(
                         ),
                         'icon'          => 'cube'
                     ),
+
+                    'part.locations'    => array(
+                        'label'         => _('Locations'),
+
+                        'icon'          => 'map-marker'
+                    ),
                     'part.history'     => array(
 
 

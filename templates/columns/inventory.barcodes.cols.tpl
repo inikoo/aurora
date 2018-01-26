@@ -32,7 +32,7 @@ label: "{t}Number{/t}",
 editable: false,
 sortType: "toggle",
 
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 orderSeparator: '',
 events: {
 
@@ -59,7 +59,7 @@ label: "{t}Notes{/t}",
 editable: false,
 sortType: "toggle",
 
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 
 
 })

@@ -47,7 +47,7 @@ name: "name",
 label:"{t}Name{/t}",
 editable: false,
 sortType: "toggle",
-cell: Backgrid.StringCell.extend({  }),
+cell: Backgrid.HtmlCell.extend({  }),
 }, {
 name: "transactions",
 label: "{t}Transactions{/t}",
@@ -55,7 +55,7 @@ defaultOrder:1,
 editable: false,
 sortType: "toggle",
 {if $sort_key=='transactions'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 }, {
 name: "payments",
@@ -64,7 +64,7 @@ defaultOrder:1,
 editable: false,
 sortType: "toggle",
 {if $sort_key=='payments'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 }, {
 name: "refunds",
@@ -73,7 +73,7 @@ defaultOrder:1,
 editable: false,
 sortType: "toggle",
 {if $sort_key=='refunds'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 }, {
 name: "balance",
@@ -82,7 +82,7 @@ defaultOrder:1,
 editable: false,
 sortType: "toggle",
 {if $sort_key=='balance'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 }
 

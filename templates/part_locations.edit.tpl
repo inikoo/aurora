@@ -1,3 +1,4 @@
+
 {foreach from=$locations_data item=location_data}
 
 {if $location_data.location_key!=1}
@@ -8,6 +9,14 @@
                                                                  onclick="disassociate_location(this)"></i></td>
         <td>
 	    <span class=" location_info">
+
+
+              <span class="picking_location_note" style="margin-right: 3px">
+                <i onclick="set_part_location_note_bis(this)" key="{$part_sku}_{$location_data.location_key}" class="button fa fa-fw   {if $location_data.note==''}super_discreet_on_hover fa-sticky-note-o{else}fa-sticky-note{/if}   " aria-hidden="true" title="{t}Part's location note{/t}" ></i>
+                     <div  class="hide picking_location_note_value">{$location_data.note}</div>
+              </span>
+
+
 	        <span class="picking_location_icon">
                 <i onclick="set_as_picking_location({$part_sku},{$location_data.location_key})" class="fa fa-fw fa-shopping-basket  {if $location_data.can_pick=='No'}super_discreet_on_hover button{else}{/if}   " aria-hidden="true" title="{if $location_data.can_pick=='No'}{t}Set as picking location{/t}{else}{t}Picking location{/t}{/if}" ></i>
             </span>
@@ -160,4 +169,9 @@
         $('#inventory_transaction_note textarea').bind('input propertychange', function () {
             inventory_transaction_note_changed()
         });
+
+
+
+
+
     </script>

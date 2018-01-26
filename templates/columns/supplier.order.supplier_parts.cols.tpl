@@ -12,7 +12,7 @@ editable: false,
 renderable: {if $data['object']=='supplier' }false{else}true{/if},
 sortType: "toggle",
 
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 events: {
 "click": function() {
 change_view('/supplier/' + this.model.get("supplier_key"))
@@ -37,7 +37,7 @@ label: "{t}Reference{/t}",
 editable: false,
 sortType: "toggle",
 
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 events: {
 "click": function() {
 change_view('/supplier/' + this.model.get("supplier_key") + '/part/' + this.model.get("id"))
@@ -56,7 +56,7 @@ label: "{t}Part{/t}",
 editable: false,
 sortType: "toggle",
 
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 events: {
 "click": function() {
 change_view('part/' + this.model.get("part_sku"))
@@ -72,7 +72,7 @@ label: "{t}Description{/t}",
 editable: false,
 sortType: "toggle",
 
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 
 
 })

@@ -689,6 +689,11 @@ function save_add_location() {
 
                 $('.' + key).html(data.updated_fields[key])
             }
+
+            if (state.tab == 'part.locations') {
+                rows.fetch({reset: true});
+            }
+
         } else if (data.state == 400) {
             $('#location_data_msg').addClass('error').html(data.msg)
         }
@@ -782,6 +787,10 @@ function save_stock(element) {
         }
 
         $('#Part_Unknown_Location_Stock').attr('qty',data.Part_Unknown_Location_Stock)
+
+        if (state.tab == 'part.locations') {
+            rows.fetch({reset: true});
+        }
 
     })
 
@@ -1015,6 +1024,10 @@ function save_stock_dialog_to_production(element) {
             $('#unknown_location_tr').removeClass('hide')
         }
 
+        if (state.tab == 'part.locations') {
+            rows.fetch({reset: true});
+        }
+
     })
 
     request.fail(function (jqXHR, textStatus) {
@@ -1083,6 +1096,10 @@ function save_leakage(element) {
 
         if (data.Part_Unknown_Location_Stock != 0) {
             $('#unknown_location_tr').removeClass('hide')
+        }
+
+        if (state.tab == 'part.locations') {
+            rows.fetch({reset: true});
         }
 
     })
@@ -1380,8 +1397,72 @@ function set_as_picking_location(part_sku, location_key) {
 
             }
 
+            if (state.tab == 'part.locations') {
+                rows.fetch({reset: true});
+            }
+
         }
 
     })
+
+}
+
+function set_part_location_note_bis(element) {
+
+    var element=$(element)
+    var offset = element.offset()
+
+    $('#set_part_location_note_bis').removeClass('hide').attr('key',element.attr('key')).offset({
+        top: offset.top -7.5,
+        left: offset.left +element.width()- $('#set_part_location_note_bis').width()-20}).data('element',element).find('textarea').val(element.closest('span').find('.picking_location_note_value').html())
+}
+
+
+
+
+$(document).on('input propertychange', '#set_part_location_note_bis', function () {
+
+
+    $('#set_part_location_note_bis').find('i.save').addClass('changed valid')
+})
+
+
+
+function close_part_location_notes_bis(element) {
+    $('#set_part_location_note_bis').addClass('hide')
+
+}
+
+function save_part_location_notes_bis(){
+
+    if($('#set_part_location_note_bis').find('i.save').hasClass('valid')) {
+        $('#set_part_location_note_bis').find('i.save').addClass('fa-spinner fa-spin').removeClass('valid changed')
+        var request = '/ar_edit_stock.php?tipo=edit_part_location_note&part_location_code=' + $('#set_part_location_note_bis').attr('key') + '&note=' + $('#set_part_location_note_bis').find('textarea').val()
+        console.log(request)
+
+
+        $.getJSON(request, function (r) {
+
+            $('#set_part_location_note_bis').find('i.save').removeClass('fa-spinner fa-spin')
+
+
+            element = $('#set_part_location_note_bis').data('element');
+            element.closest('span').find('.picking_location_note_value').html(r.value)
+            if(r.value==''){
+                element.addClass('super_discreet_on_hover fa-sticky-note-o').removeClass('fa-sticky-note')
+            }else{
+                element.addClass('fa-sticky-note').removeClass('super_discreet_on_hover fa-sticky-note-o')
+
+            }
+            close_part_location_notes_bis();
+
+            if (state.tab == 'part.locations') {
+                rows.fetch({reset: true});
+            }
+
+
+        });
+
+    }
 
 }

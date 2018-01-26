@@ -12,7 +12,7 @@ renderable: false
 name: "reference",
 label: "{t}Supplier's part code{/t}",
 editable: false,
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 events: {
 "click": function() {
 change_view(this.model.get("parent_type")+"/"+this.model.get("parent_key")+"/part/hk/"+this.model.get("supplier_part_historic_key"))

@@ -10,7 +10,7 @@ renderable: false
 name: "date",
 label: "{t}Date{/t}",
 editable: false,
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 className: "width_250 aright "
 }),
 headerCell: integerHeaderCell
@@ -18,7 +18,7 @@ headerCell: integerHeaderCell
 name: "author",
 label: "{t}Author{/t}",
 editable: false,
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 className: "width_200 "
 })
 

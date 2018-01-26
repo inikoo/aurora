@@ -7,7 +7,7 @@ renderable: true,
 sortType: "billing_region",
 {if $sort_key=='id'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
-cell: Backgrid.StringCell.extend({})
+cell: Backgrid.HtmlCell.extend({})
 
 },
 {
@@ -69,7 +69,7 @@ renderable: false,
 sortType: "toggle",
 defaultOrder:1,
 {if $sort_key=='customers'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 
 },
@@ -80,7 +80,7 @@ editable: false,
 sortType: "toggle",
 defaultOrder:1,
 {if $sort_key=='net'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 
 },
@@ -91,7 +91,7 @@ editable: false,
 sortType: "toggle",
 defaultOrder:1,
 {if $sort_key=='tax'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 
 },
@@ -102,7 +102,7 @@ editable: false,
 sortType: "toggle",
 defaultOrder:1,
 {if $sort_key=='total'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 
 },

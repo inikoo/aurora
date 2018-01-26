@@ -46,7 +46,7 @@ name: "size",
 label: "{t}Size{/t}",
 editable: false,
 sortType: "toggle",
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 className: "aright width_150"
 }),
 headerCell: integerHeaderCell
@@ -55,7 +55,7 @@ name: "dimensions",
 label: "{t}Dimensions{/t}",
 sortType: "toggle",
 editable: false,
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 className: " width_150 "
 }),
 }

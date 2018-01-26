@@ -9,7 +9,7 @@ cell: "string"
 name: "code",
 label: "{t}Code{/t}",
 editable: false,
-cell: Backgrid.StringCell.extend({ className: ""} )
+cell: Backgrid.HtmlCell.extend({ className: ""} )
 }, {
 name: "name",
 label:"{t}Store Name{/t}",
@@ -17,7 +17,7 @@ editable: false,
 defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='items'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 }, {
 name: "orders",
@@ -95,7 +95,7 @@ editable: false,
 defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='items'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 
 }

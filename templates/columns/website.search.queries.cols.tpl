@@ -9,7 +9,7 @@ cell: "string"
 name: "query",
 label: "{t}Query{/t}",
 editable: false,
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 
 
 })
@@ -17,25 +17,25 @@ cell: Backgrid.StringCell.extend({
 name: "results",
 label: "{t}Average number of results{/t}",
 editable: false,
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 }, {
 name: "date",
 label: "{t}Last searched{/t}",
 editable: false,
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 }, {
 name: "users",
 label: "{t}Distinct users{/t}",
 editable: false,
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 }, {
 name: "number",
 label: "{t}Searches{/t}",
 editable: false,
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 }
 
