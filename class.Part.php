@@ -300,22 +300,25 @@ class Part extends Asset {
 
 
             $sql = sprintf(
-                'SELECT  `Purchase Order Transaction State`,`Supplier Delivery Parent`,`Supplier Delivery Parent Key`,`Supplier Delivery Quantity`-`Supplier Delivery Placed Quantity` AS qty,POTF.`Supplier Delivery Key`,`Supplier Delivery Public ID` FROM `Purchase Order Transaction Fact` POTF LEFT JOIN `Supplier Delivery Dimension` PO  ON (PO.`Supplier Delivery Key`=POTF.`Supplier Delivery Key`)  WHERE POTF.`Supplier Part Key` IN (%s)  AND  POTF.`Supplier Delivery Key` IS NOT NULL AND  (`Supplier Delivery Transaction Placed`!="Yes"  OR `Supplier Delivery Transaction Placed` IS NULL)   ',
+                'SELECT  `Purchase Order Transaction State`,`Supplier Delivery Parent`,`Supplier Delivery Parent Key`,ifnull(`Supplier Delivery Quantity`,0) as qty ,ifnull(`Supplier Delivery Placed Quantity`,0) as placed,POTF.`Supplier Delivery Key`,`Supplier Delivery Public ID` FROM `Purchase Order Transaction Fact` POTF LEFT JOIN `Supplier Delivery Dimension` PO  ON (PO.`Supplier Delivery Key`=POTF.`Supplier Delivery Key`)  WHERE POTF.`Supplier Part Key` IN (%s)  AND  POTF.`Supplier Delivery Key` IS NOT NULL AND  (`Supplier Delivery Transaction Placed`!="Yes"  OR `Supplier Delivery Transaction Placed` IS NULL)   ',
                 join($supplier_parts, ',')
             );
+
 
 
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
 
-                    if ($row['qty'] > 0) {
+
+                    $qty=$row['qty']-$row['placed'];
+                    if( $qty> 0) {
 
                         $_next_delivery_time = strtotime('tomorrow');
 
 
                         $next_deliveries_data[] = array(
                             'type'           => 'delivery',
-                            'qty'            => $row['qty'],
+                            'qty'            => $qty,
                             'date'           => '',
                             'formatted_link' => sprintf(
                                 '<span class="link" onclick="change_view(\'%s/%d/delivery/%d\')"><i class="fa fa-truck" aria-hidden="true"></i> %s</span>', strtolower($row['Supplier Delivery Parent']), $row['Supplier Delivery Parent Key'], $row['Supplier Delivery Key'],
