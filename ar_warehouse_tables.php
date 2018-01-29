@@ -1036,7 +1036,7 @@ function parts_with_unknown_location($_data, $db, $user, $account) {
     $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
-    // print $sql;
+   //  print $sql;
 
 
     foreach ($db->query($sql) as $data) {
