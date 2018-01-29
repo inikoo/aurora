@@ -319,7 +319,17 @@
         },
 
         moveKnob: function (angle) {
+
+            console.log(angle)
+
+            if(isNaN(angle)){
+                angle=315;
+            }
+            console.log(angle)
+
             var dropShadowAlignment = calculateDropShadowAngle(angle);
+
+        console.log(dropShadowAlignment)
             var dropShadow = this.generateDropShadow({x: dropShadowAlignment[0], y: dropShadowAlignment[1]});
 
             this.innerCircle.attr({
