@@ -23,9 +23,11 @@ $editor = array(
     'Author Type'  => '',
     'Author Key'   => '',
     'User Key'     => 0,
-    'Date'         => gmdate('Y-m-d H:i:s')
+    'Date'         => gmdate('Y-m-d H:i:s'),
+    'Subject'      => 'System',
+    'Subject Key'  => 0,
+    'Author Name'  => 'Script (product availability)'
 );
-
 
 $sql = sprintf(
     "SELECT `Product ID` FROM `Product Dimension`  "
@@ -35,6 +37,7 @@ if ($result = $db->query($sql)) {
 
 
         $product       = new Product($row['Product ID']);
+        $product->editor=$editor;
         $web_state_old = $product->get_web_state();
         $product->update_availability();
         $web_state_new = $product->get_web_state();
