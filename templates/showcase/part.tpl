@@ -324,7 +324,7 @@
             <table id="locations_table" border="0" class="overview" part_sku="{$part->id}">
 
                 <tr id="move_stock_tr" class="discreet button hide " style="border-bottom:1px solid #ccc" max="">
-                    <td colspan=2><span id="move_from"></span> <i class="fa fa-fw fa-caret-square-o-right " aria-hidden="true"></i> <span id="move_to"></span>
+                    <td colspan=3><span id="move_from"></span> <i class="fa fa-fw fa-caret-square-o-right " aria-hidden="true"></i> <span id="move_to"></span>
                     </td>
 
                     <td class="aright">
