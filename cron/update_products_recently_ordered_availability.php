@@ -23,13 +23,16 @@ $editor = array(
     'Author Type'  => '',
     'Author Key'   => '',
     'User Key'     => 0,
-    'Date'         => gmdate('Y-m-d H:i:s')
+    'Date'         => gmdate('Y-m-d H:i:s'),
+    'Subject'      => 'System',
+    'Subject Key'  => 0,
+    'Author Name'  => 'Script (product availability recently processes)'
 );
 
 
 $sql = sprintf(
     "SELECT `Product ID` FROM   `Inventory Transaction Fact` ITF left join `Order Transaction Fact` on (`Map To Order Transaction Fact Key`=`Order Transaction Fact Key`) where ITF.`Date`>%s  and `Product ID`>0 group by `Product ID`",
-prepare_mysql(gmdate('Y-m-d H:i:s',strtotime('now -4 days')))
+prepare_mysql(gmdate('Y-m-d H:i:s',strtotime('now -2 hours')))
 
 );
 $number_products=0;
@@ -37,10 +40,11 @@ if ($result = $db->query($sql)) {
     foreach ($result as $row) {
 
         $number_products++;
-       
+
 
 
         $product       = new Product($row['Product ID']);
+        $product->editor=$editor;
         $web_state_old = $product->get_web_state();
         $product->update_availability();
         $web_state_new = $product->get_web_state();
