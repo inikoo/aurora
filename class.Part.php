@@ -284,7 +284,7 @@ class Part extends Asset {
         );
 
         foreach ($this->get_products('objects') as $product) {
-            $product->editor=$this->editor;
+            $product->editor = $this->editor;
             $product->update_next_shipment();
         }
 
@@ -300,18 +300,17 @@ class Part extends Asset {
 
 
             $sql = sprintf(
-                'SELECT  `Purchase Order Transaction State`,`Supplier Delivery Parent`,`Supplier Delivery Parent Key`,ifnull(`Supplier Delivery Quantity`,0) as qty ,ifnull(`Supplier Delivery Placed Quantity`,0) as placed,POTF.`Supplier Delivery Key`,`Supplier Delivery Public ID` FROM `Purchase Order Transaction Fact` POTF LEFT JOIN `Supplier Delivery Dimension` PO  ON (PO.`Supplier Delivery Key`=POTF.`Supplier Delivery Key`)  WHERE POTF.`Supplier Part Key` IN (%s)  AND  POTF.`Supplier Delivery Key` IS NOT NULL AND  (`Supplier Delivery Transaction Placed`!="Yes"  OR `Supplier Delivery Transaction Placed` IS NULL)   ',
+                'SELECT  `Purchase Order Transaction State`,`Supplier Delivery Parent`,`Supplier Delivery Parent Key`,ifnull(`Supplier Delivery Quantity`,0) AS qty ,ifnull(`Supplier Delivery Placed Quantity`,0) AS placed,POTF.`Supplier Delivery Key`,`Supplier Delivery Public ID` FROM `Purchase Order Transaction Fact` POTF LEFT JOIN `Supplier Delivery Dimension` PO  ON (PO.`Supplier Delivery Key`=POTF.`Supplier Delivery Key`)  WHERE POTF.`Supplier Part Key` IN (%s)  AND  POTF.`Supplier Delivery Key` IS NOT NULL AND  (`Supplier Delivery Transaction Placed`!="Yes"  OR `Supplier Delivery Transaction Placed` IS NULL)   ',
                 join($supplier_parts, ',')
             );
-
 
 
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
 
 
-                    $qty=$row['qty']-$row['placed'];
-                    if( $qty> 0) {
+                    $qty = $row['qty'] - $row['placed'];
+                    if ($qty > 0) {
 
                         $_next_delivery_time = strtotime('tomorrow');
 
@@ -356,17 +355,18 @@ class Part extends Asset {
 
                     if ($row['Purchase Order Transaction State'] == 'InProcess') {
                         $_next_delivery_time = 0;
-                        $date = '<span class="very_discreet italic">'._('Draft').'</span>';
-                        $link = sprintf('<span class="link discreet" onclick="change_view(\'suppliers/order/%d\')"><i class="fa fa-clipboard" aria-hidden="true"></i> %s</span>', $row['Purchase Order Key'], $row['Purchase Order Public ID']);
-                        $qty  = '<span class="very_discreet italic">+'.number($row['Purchase Order Quantity']).'</span>';
+                        $date                = '<span class="very_discreet italic">'._('Draft').'</span>';
+                        $link                = sprintf('<span class="link discreet" onclick="change_view(\'suppliers/order/%d\')"><i class="fa fa-clipboard" aria-hidden="true"></i> %s</span>', $row['Purchase Order Key'], $row['Purchase Order Public ID']);
+                        $qty                 = '<span class="very_discreet italic">+'.number($row['Purchase Order Quantity']).'</span>';
 
                     } else {
                         $_next_delivery_time = strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00');
-                        $date = strftime("%e %b %y", strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00'));
-                        $link = sprintf(
-                            '<span class="link" onclick="change_view(\'suppliers/order/%d\')"><i class="fa fa-clipboard" aria-hidden="true"></i> %s</span> <i class="fa fa-paper-plane-o" aria-hidden="true"></i>', $row['Purchase Order Key'], $row['Purchase Order Public ID']
+                        $date                = strftime("%e %b %y", strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00'));
+                        $link                = sprintf(
+                            '<span class="link" onclick="change_view(\'suppliers/order/%d\')"><i class="fa fa-clipboard" aria-hidden="true"></i> %s</span> <i class="fa fa-paper-plane-o" aria-hidden="true"></i>', $row['Purchase Order Key'],
+                            $row['Purchase Order Public ID']
                         );
-                        $qty  = '+'.number($row['Purchase Order Quantity']);
+                        $qty                 = '+'.number($row['Purchase Order Quantity']);
                     }
 
 
@@ -379,9 +379,6 @@ class Part extends Asset {
                         'order_id'       => $row['Purchase Order Public ID'],
                         'state'          => $row['Purchase Order Transaction State']
                     );
-
-
-
 
 
                     if ($_next_delivery_time > $next_delivery_time) {
@@ -1397,7 +1394,7 @@ class Part extends Asset {
 
 
             foreach ($this->get_products('objects') as $product) {
-                $product->editor=$this->editor;
+                $product->editor = $this->editor;
                 $product->update_next_shipment();
             }
 
@@ -1447,7 +1444,7 @@ class Part extends Asset {
                 }
 
                 foreach ($this->get_products('objects') as $product) {
-                    $product->editor=$this->editor;
+                    $product->editor = $this->editor;
                     $product->update_cost();
                 }
 
@@ -2430,7 +2427,7 @@ class Part extends Asset {
 
 
         foreach ($this->get_products('objects') as $product) {
-            $product->editor=$this->editor;
+            $product->editor = $this->editor;
             $product->update_cost();
         }
 
@@ -2539,7 +2536,7 @@ class Part extends Asset {
                         'part_sku'     => $row['Part SKU'],
 
                         'location_code' => $row['Location Code'],
-                        'note'=>$row['Part Location Note'],
+                        'note'          => $row['Part Location Note'],
 
 
                         'picking_location_icon' => $picking_location_icon,
@@ -2693,7 +2690,7 @@ class Part extends Asset {
 
         $products = $this->get_products('objects');
         foreach ($products as $product) {
-            $product->editor=$this->editor;
+            $product->editor = $this->editor;
             $product->update_status_from_parts();
         }
 
@@ -2765,6 +2762,7 @@ class Part extends Asset {
 
         $this->activate();
         $this->discontinue_trigger();
+        $this->part_stock_status();
 
         // todo find a way do it more efficient in aw
         global $account;
@@ -2777,7 +2775,7 @@ class Part extends Asset {
         global $account;
 
 
-        $msg = new_housekeeping_fork(
+        new_housekeeping_fork(
             'au_housekeeping', array(
             'type'     => 'update_part_products_availability',
             'part_sku' => $this->id
@@ -2868,6 +2866,12 @@ class Part extends Asset {
 
     function update_stock_status() {
 
+
+        //print 'Delivery days '.$this->data['Part Delivery Days']."\n";
+        //print 'Part Current Stock '.$this->data['Part Current Stock']."\n";
+        //print 'Part Days Available Forecast '.$this->data['Part Days Available Forecast']."\n";
+
+
         if ($this->data['Part Current Stock'] < 0) {
             $stock_state = 'Error';
         } elseif ($this->data['Part Current Stock'] == 0) {
@@ -2913,11 +2917,13 @@ class Part extends Asset {
 
         }
 
+        //print $stock_state;
 
-        $this->update(
+
+        $this->fast_update(
             array(
                 'Part Stock Status' => $stock_state
-            ), 'no_history'
+            )
         );
 
 
@@ -2985,12 +2991,15 @@ class Part extends Asset {
         }
 
 
-        $this->update(
+        $this->fast_update(
             array(
                 'Part Days Available Forecast'      => $this->data['Part Days Available Forecast'],
                 'Part XHTML Available for Forecast' => $this->data['Part XHTML Available For Forecast']
-            ), 'no_history'
+            )
         );
+
+
+        $this->update_stock_status();
 
 
     }
@@ -3111,6 +3120,37 @@ class Part extends Asset {
 
             }
 
+        }
+
+    }
+
+    function update_delivery_days($options = '') {
+
+
+        $sum_delivery_days     = 0;
+        $number_supplier_parts = 0;
+        foreach ($this->get_supplier_parts('objects') as $supplier_part) {
+            if ($supplier_part->get('Supplier Part Status') == 'Available') {
+                $number_supplier_parts++;
+                $sum_delivery_days += $supplier_part->get('Supplier Part Average Delivery Days');
+            }
+
+        }
+
+        if ($number_supplier_parts == 0) {
+            $average_delivery_days = 30;
+        } else {
+            $average_delivery_days = $sum_delivery_days / $number_supplier_parts;
+        }
+
+        $this->update(
+            array(
+                'Part Delivery Days' => $average_delivery_days
+            ), $options
+        );
+
+        if ($this->updated) {
+            $this->update_stock_status();
         }
 
     }
@@ -3385,7 +3425,7 @@ class Part extends Asset {
 
 
         foreach ($this->get_products('objects') as $product) {
-            $product->editor=$this->editor;
+            $product->editor = $this->editor;
             $product->update_availability();
         }
     }
@@ -4137,6 +4177,9 @@ class Part extends Asset {
                 $label = _('carton barcode');
                 break;
 
+            case 'Part Delivery Day':
+                $label = _('average delivery days');
+                break;
 
             default:
                 $label = $field;

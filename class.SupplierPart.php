@@ -351,7 +351,8 @@ class SupplierPart extends DB_Table {
                 }
                 $this->update_field($field, $value, $options);
                 $updated = $this->updated;
-                if ($this->updated) {
+                if ($updated) {
+                    $this->part->editor=$this->editor;
                     $this->part->update_fresh();
                 }
                 break;
@@ -473,6 +474,9 @@ class SupplierPart extends DB_Table {
                         'Average_Delivery' => $this->get('Average Delivery')
                     )
                 );
+
+                $this->part->editor=$this->editor;
+                $this->part->update_delivery_days($options);
 
                 break;
 
