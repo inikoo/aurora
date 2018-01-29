@@ -86,7 +86,7 @@
         <script src="/js/supplier.order.js"></script>
         <script src="/js/supplier.delivery.js"></script>
         <script src="/js/part_locations.edit.js?v=20180126"></script>
-        <script src="/js/alert_dial.js"></script>
+        <script src="/js/alert_dial.js?v20180128v2"></script>
 
         <script src="/utils/country_data.js.php?locale={$locale}"></script>
         <script src="/js/libs/editor/froala_editor.min.js"></script>
