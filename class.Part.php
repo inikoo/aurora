@@ -2762,7 +2762,7 @@ class Part extends Asset {
 
         $this->activate();
         $this->discontinue_trigger();
-        $this->part_stock_status();
+        $this->update_part_stock_status();
 
         // todo find a way do it more efficient in aw
         global $account;
