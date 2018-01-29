@@ -49,15 +49,6 @@ include_once 'utils/parse_materials.php';
 include_once 'utils/object_functions.php';
 
 
-$editor = array(
-    'Author Name'  => '',
-    'Author Alias' => '',
-    'Author Type'  => '',
-    'Author Key'   => '',
-    'User Key'     => 0,
-    'Date'         => gmdate('Y-m-d H:i:s')
-);
-
 $account = new Account();
 
 
@@ -77,20 +68,33 @@ fix_amount_in($db);
 
 function fix_amount_in($db) {
 
+
+    $editor = array(
+        'Author Name'  => '',
+        'Author Alias' => '',
+        'Author Type'  => '',
+        'Author Key'   => '',
+        'User Key'     => 0,
+        'Date'         => gmdate('Y-m-d H:i:s'),
+        'Subject'      => 'System',
+        'Subject Key'  => 0,
+        'Author Name'  => 'Script (fix amount in)'
+    );
+
     //  $this->data['Delivery Note State']='Dispatched';
 
     $sql = sprintf('SELECT `Delivery Note Key` FROM `Delivery Note Dimension`  WHERE  `Delivery Note State`="Dispatched" AND   `Delivery Note Key`=2112972');
-    $sql = sprintf('SELECT `Delivery Note Key`,`Delivery Note ID` FROM `Delivery Note Dimension`  WHERE  `Delivery Note State`="Dispatched" and `Delivery Note Date`>=%s ORDER BY `Delivery Note Key` DESC',
-        prepare_mysql(gmdate('Y-m-d H:i:s',strtotime('now -25 hours')))
-        );
+    $sql = sprintf(
+        'SELECT `Delivery Note Key`,`Delivery Note ID` FROM `Delivery Note Dimension`  WHERE  `Delivery Note State`="Dispatched" AND `Delivery Note Date`>=%s ORDER BY `Delivery Note Key` DESC', prepare_mysql(gmdate('Y-m-d H:i:s', strtotime('now -25 hours')))
+    );
 
 
     if ($result4 = $db->query($sql)) {
         foreach ($result4 as $row4) {
 
 
-            $dn = get_object('DeliveryNote', $row4['Delivery Note Key']);
-
+            $dn         = get_object('DeliveryNote', $row4['Delivery Note Key']);
+            $dn->editor = $editor;
 
             if ($dn->get('State Index') >= 90) {
 
@@ -152,22 +156,22 @@ function fix_amount_in($db) {
                                 $amount_in = $row['Invoice Currency Exchange Rate'] * $row['Order Transaction Amount'];
 
 
-                                $old_amount_in=0;
-                                $sql=sprintf('select `Amount In` from `Inventory Transaction Fact`  WHERE `Inventory Transaction Key`=%d ', $key);
-                                if ($resultzz=$db->query($sql)) {
+                                $old_amount_in = 0;
+                                $sql           = sprintf('SELECT `Amount In` FROM `Inventory Transaction Fact`  WHERE `Inventory Transaction Key`=%d ', $key);
+                                if ($resultzz = $db->query($sql)) {
                                     if ($rowzz = $resultzz->fetch()) {
-                                        $old_amount_in=$rowzz['Amount In'];
-                                	}
-                                }else {
-                                	print_r($error_info=$db->errorInfo());
-                                	print "$sql\n";
-                                	exit;
+                                        $old_amount_in = $rowzz['Amount In'];
+                                    }
+                                } else {
+                                    print_r($error_info = $db->errorInfo());
+                                    print "$sql\n";
+                                    exit;
                                 }
 
 
-                                if(round($amount_in,1)!=round($old_amount_in,1)){
+                                if (round($amount_in, 1) != round($old_amount_in, 1)) {
                                     print $row4['Delivery Note ID']." $old_amount_in -> $amount_in\n";
-                                   // print_r($row);
+                                    // print_r($row);
                                 }
 
                                 //print_r($itf_transfer_factor);
@@ -176,7 +180,7 @@ function fix_amount_in($db) {
                                     $sql = sprintf(
                                         "UPDATE  `Inventory Transaction Fact`  SET `Amount In`=%f WHERE `Inventory Transaction Key`=%d ", $amount_in * $value, $key
                                     );
-                                   // print "$sql\n";
+                                    // print "$sql\n";
                                     $db->exec($sql);
                                     // exit;
                                     // mysql_query( $sql );
@@ -955,7 +959,7 @@ function fix_products($db) {
 
 function fix_dn_quantity_on_otf($db) {
 
-    $sql = sprintf('SELECT `Delivery Note Key` FROM `Delivery Note Dimension` where `Delivery Note Date`>="2018-01-01" ');
+    $sql = sprintf('SELECT `Delivery Note Key` FROM `Delivery Note Dimension` WHERE `Delivery Note Date`>="2018-01-01" ');
 
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
@@ -968,12 +972,8 @@ function fix_dn_quantity_on_otf($db) {
                 );
 
 
-                if ($result=$db->query($sql)) {
+                if ($result = $db->query($sql)) {
                     foreach ($result as $row2) {
-
-
-
-
 
 
                         $to_pack = $row2['Required'] + $row2['Given'];
@@ -1005,9 +1005,6 @@ function fix_dn_quantity_on_otf($db) {
                 }
 
 
-
-
-
             }
 
         }
@@ -1019,7 +1016,6 @@ function fix_dn_quantity_on_otf($db) {
 
 
 }
-
 
 
 ?>

@@ -27,33 +27,29 @@ $editor = array(
 );
 
 
+$sql = sprintf(
+    "SELECT `Product ID` FROM `Product Dimension`  "
+);
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
 
 
-    $sql = sprintf(
-        "SELECT `Product ID` FROM `Product Dimension`  "
-    );
-    if ($result = $db->query($sql)) {
-        foreach ($result as $row) {
+        $product       = new Product($row['Product ID']);
+        $web_state_old = $product->get_web_state();
+        $product->update_availability();
+        $web_state_new = $product->get_web_state();
 
-
-            $product = new Product($row['Product ID']);
-            $web_state_old = $product->get_web_state();
-                  $product->update_availability();
-            $web_state_new = $product->get_web_state();
-
-            if($web_state_old!=$web_state_new){
-                print $product->get('Store Key').' '.$product->get('Code')." $web_state_old $web_state_new \n";
-            }
-
-
+        if ($web_state_old != $web_state_new) {
+            print $product->get('Store Key').' '.$product->get('Code')." $web_state_old $web_state_new \n";
         }
 
-    } else {
-        print_r($error_info = $db->errorInfo());
-        exit;
+
     }
 
-
+} else {
+    print_r($error_info = $db->errorInfo());
+    exit;
+}
 
 
 ?>
