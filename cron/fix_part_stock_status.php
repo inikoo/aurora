@@ -33,7 +33,7 @@ $sql = sprintf(
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
         $part = get_object('Part', $row['Part SKU']);
-        $part->editor=$this->editor;
+        $part->editor=$editor;
         $part->update_delivery_days();
         $part->update_available_forecast();
 
