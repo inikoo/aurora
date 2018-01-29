@@ -16,6 +16,10 @@ function get_part_showcase($data, $smarty, $user, $db) {
     $part = $data['_object'];
     $part->load_acc_data();
 
+
+   // $part->update_available_forecast();
+ //   $part->update_stock_status();
+
    // foreach($part->get_locations('part_location_object') as $pl){
    //     $pl->update_stock();
    // }

@@ -177,7 +177,7 @@ if ($order == 'id') {
     $order = '`Part Current On Hand Stock`';
 } elseif ($order == 'dispatched') {
     $order = 'dispatched';
-} elseif ($order == 'stock_status') {
+} elseif ($order == 'stock_status' or $order == 'stock_status_label') {
     $order = '`Part Stock Status`';
 } elseif ($order == 'reference') {
     $order = '`Part Reference`';
