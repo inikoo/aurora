@@ -72,6 +72,8 @@ if ($order == 'reference') {
 
 $sql_totals = "select count(*) as num from $table  $where  ";
 
+
+
 $fields
     .= "
 P.`Part SKU`,`Part Reference`,`Part Package Description`,`Part Current Stock`,`Part Stock Status`,`Part Days Available Forecast`,`Location Warehouse Key`,
