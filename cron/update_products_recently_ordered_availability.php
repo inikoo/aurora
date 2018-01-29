@@ -32,7 +32,7 @@ $editor = array(
 
 $sql = sprintf(
     "SELECT `Product ID` FROM   `Inventory Transaction Fact` ITF left join `Order Transaction Fact` on (`Map To Order Transaction Fact Key`=`Order Transaction Fact Key`) where ITF.`Date`>%s  and `Product ID`>0 group by `Product ID`",
-prepare_mysql(gmdate('Y-m-d H:i:s',strtotime('now -2 hours')))
+prepare_mysql(gmdate('Y-m-d H:i:s',strtotime('now -18 minutes')))
 
 );
 $number_products=0;
