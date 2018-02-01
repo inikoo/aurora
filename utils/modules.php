@@ -6365,19 +6365,22 @@ $modules = array(
                         )
                     ),
                     'user.api_keys'      => array(
-                        'label' => _(
-                            'API keys'
-                        ),
-                        'title' => _(
-                            'API keys'
-                        )
+                        'label' => _('API keys'),
+                        'title' => _('API keys')
                     ),
 
+
+
+
                     'user.history' => array(
-                        'label' => _(
-                            'History/Notes'
-                        ),
+                        'label' => _('History/Notes'),
                         'icon'  => 'road',
+                        'class' => 'right icon_only'
+                    ),
+                    'user.deleted_api_keys'      => array(
+                        'icon'  => 'road',
+                        'label' => _('Deleted API keys'),
+                        'title' => _('Deleted API keys'),
                         'class' => 'right icon_only'
                     ),
 
@@ -6426,17 +6429,33 @@ $modules = array(
                 'type' => 'object',
                 'tabs' => array(
                     'user.api_key.details'  => array(
-                        'label' => _(
-                            'Data'
-                        ),
+                        'label' => _('Data'),
                         'icon'  => 'database'
                     ),
                     'user.api_key.requests' => array(
-                        'label' => _(
-                            'Requests'
-                        ),
+                        'label' => _('Requests'),
                         'icon'  => 'arrow-circle-right'
                     ),
+                    'user.api_key.history' => array(
+                        'label' => _('History/Notes'),
+                        'icon'  => 'road',
+                        'class' => 'right icon_only'
+                    ),
+
+                )
+            ),
+            'deleted_api_key'     => array(
+                'type' => 'object',
+                'showcase'=>'deleted_api_key',
+                'tabs' => array(
+
+                    'api_key.history' => array(
+                        'label' => _('History/Notes'),
+                        'icon'  => 'road',
+                        'class' => 'right icon_only'
+                    ),
+
+
 
                 )
             ),
@@ -6591,9 +6610,7 @@ $modules = array(
                     ),
 
                     'agent.history' => array(
-                        'label' => _(
-                            'History/Notes'
-                        ),
+                        'label' => _('History/Notes'),
                         'icon'  => 'road',
                         'class' => 'right icon_only'
                     ),

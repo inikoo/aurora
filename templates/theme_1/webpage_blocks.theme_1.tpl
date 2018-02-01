@@ -228,6 +228,8 @@
         var labels= { };
 
 
+
+
         $('._block').each(function (i, obj) {
 
 

@@ -46,14 +46,38 @@ class API_Key extends DB_Table {
             $sql = sprintf(
                 "SELECT * FROM `API Key Dimension` WHERE `API Key Key`=%d", $tag
             );
-        } else {
+        } elseif ($tipo == 'deleted') {
+            $this->get_deleted_data($tag);
+
+            return;
+        }  else {
             return;
         }
         if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id = $this->data['API Key Key'];
+            $this->user=get_object('User',$this->data['API Key User Key']);
         }
 
     }
+
+
+    function get_deleted_data($tag) {
+
+        $this->deleted = true;
+        $sql           = sprintf(
+            "SELECT * FROM `API Key Deleted Dimension` WHERE `API Key Deleted Key`=%d", $tag
+        );
+
+
+        if ($this->data = $this->db->query($sql)->fetch()) {
+            $this->id = $this->data['API Key Deleted Key'];
+            $this->user=get_object('User',$this->data['API Key Deleted User Key']);
+
+        }
+
+
+    }
+
 
     function create($data) {
 
@@ -64,9 +88,7 @@ class API_Key extends DB_Table {
         $data['API Key Code'] = hash('crc32', generatePassword(32, 10), false);
 
 
-        $data['API Key Hash'] = password_hash(
-            $this->secret_key, PASSWORD_DEFAULT
-        );
+        $data['API Key Hash'] = password_hash($this->secret_key, PASSWORD_DEFAULT);
         $this->secret_key     = base64_encode($this->secret_key);
         $this->data           = $data;
 
@@ -75,7 +97,7 @@ class API_Key extends DB_Table {
 
 
         foreach ($this->data as $key => $value) {
-            $keys .= ",`".$key."`";
+            $keys   .= ",`".$key."`";
             $values .= ','.prepare_mysql($value, false);
         }
         $values = preg_replace('/^,/', '', $values);
@@ -90,6 +112,18 @@ class API_Key extends DB_Table {
             $this->new = true;
 
             $this->get_data('id', $this->id);
+
+
+            $history_data = array(
+                'History Abstract' => sprintf(_('%s API key created (%s)'), $this->get('Scope'), $this->get('Code')),
+                'History Details'  => '',
+                'Action'           => 'created'
+            );
+
+            $this->add_subject_history(
+                $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+            );
+
         } else {
             $this->error;
             $this->msg = 'Can not create API key';
@@ -100,16 +134,15 @@ class API_Key extends DB_Table {
 
     function get($key = '') {
 
-        if(!$this->id){
+        if (!$this->id) {
             return '';
         }
 
 
         switch ($key) {
 
-
             case 'Scope':
-                switch ($this->data['API Key Scope']){
+                switch ($this->data['API Key Scope']) {
 
 
                     case 'Timesheet':
@@ -122,7 +155,7 @@ class API_Key extends DB_Table {
                         return _('Picking app');
                         break;
                     default:
-                return $this->data['API Key Scope'];
+                        return $this->data['API Key Scope'];
                 }
 
                 break;
@@ -162,7 +195,29 @@ class API_Key extends DB_Table {
                         return $this->data['API Key Active'];
                 }
                 break;
+            case 'Address':
 
+                global $account;
+
+
+                switch ($this->data['API Key Scope']) {
+                    case 'Timesheet':
+                        $request = '/api/timesheet_record';
+                        break;
+                    case 'Stock':
+                        $request = '/api/stock';
+                        break;
+                    case 'Picking':
+                        $request = '/api/picking';
+                        break;
+                    default:
+                        $request = '/api/';
+                        break;
+                }
+
+                return $account->get('Account System Public URL').$request;
+
+                break;
             case 'Scope':
                 switch ($this->data['API Key Scope']) {
                     case 'Timesheet':
@@ -201,7 +256,7 @@ class API_Key extends DB_Table {
         );
 
         $sql = sprintf(
-            "SELECT count(*) AS num, `Response` AS state FROM `API Request Dimension` WHERE `API Key Key`=%d group by `API Request State`", $this->id
+            "SELECT count(*) AS num, `Response` AS state FROM `API Request Dimension` WHERE `API Key Key`=%d GROUP BY `API Request State`", $this->id
         );
         foreach ($this->db->query($sql) as $row) {
             $request_elements[$row['state']] = $row['num'];
@@ -209,13 +264,12 @@ class API_Key extends DB_Table {
         }
 
 
-
         $this->fast_update(
             array(
-                'API Key Successful Requests'        => $request_elements['OK'],
-                'API Key Failed Attempt Requests'        => $request_elements['Fail_Attempt'],
-                'API Key Failed Access Requests'        => $request_elements['Fail_Access'],
-                'API Key Failed Operation Requests'        => $request_elements['Fail_Operation'],
+                'API Key Successful Requests'       => $request_elements['OK'],
+                'API Key Failed Attempt Requests'   => $request_elements['Fail_Attempt'],
+                'API Key Failed Access Requests'    => $request_elements['Fail_Access'],
+                'API Key Failed Operation Requests' => $request_elements['Fail_Operation'],
 
                 'API Key Failed IP Requests'         => $request_elements['Fail_IP'],
                 'API Key Failed Time Limit Requests' => $request_elements['Fail_TimeLimit'],
@@ -225,23 +279,67 @@ class API_Key extends DB_Table {
         );
 
 
-        $sql=sprintf("select max(`Date`)  as last_request FROM `API Request Dimension` WHERE `API Key Key`=%d group by `API Request State`", $this->id);
-        if ($result=$this->db->query($sql)) {
+        $sql = sprintf("SELECT max(`Date`)  AS last_request FROM `API Request Dimension` WHERE `API Key Key`=%d GROUP BY `API Request State`", $this->id);
+        if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
                 $this->fast_update(
                     array(
-                        'API Key Last Request Date'        => $row['last_request']
-
+                        'API Key Last Request Date' => $row['last_request']
 
 
                     )
                 );
-        	}
-        }else {
-        	print_r($error_info=$this->db->errorInfo());
-        	print "$sql\n";
-        	exit;
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
+
+    }
+
+
+    function delete() {
+
+
+
+
+            $data   =  $this->data;
+            unset($data['API Key Hash']);
+            $metadata = json_encode($data);
+
+
+            $sql = sprintf(
+                "INSERT INTO `API Key Deleted Dimension`  (`API Key Deleted Key`,`API Key Deleted User Key`,`API Key Deleted Code`,`API Key Deleted Date`,`API Key Deleted Metadata`) VALUES (%d,%d,%s,%s,%s) ",
+                $this->id,$this->get('API Key User Key'),
+                prepare_mysql($this->get('API Key Code')), prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql(
+                    gzcompress(
+                        $metadata, 9
+                    )
+                )
+
+            );
+
+
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute();
+
+
+            $history_data = array(
+                'History Abstract' => _('API key deleted'),
+                'History Details'  => '',
+                'Action'           => 'deleted'
+            );
+            $this->add_subject_history(
+                $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+            );
+
+
+            $sql = sprintf(
+                "DELETE FROM `API Key Dimension` WHERE `API Key Key`=%d", $this->id
+            );
+            $this->db->exec($sql);
+
 
     }
 

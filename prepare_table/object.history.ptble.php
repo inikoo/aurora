@@ -189,6 +189,11 @@ if ($parameters['parent'] == 'customer' or $parameters['parent'] == 'order_custo
 }elseif ($parameters['parent'] == 'webpage') {
     $where   = sprintf(' where  true ');
     $subject = 'Webpage';
+} elseif ($parameters['parent'] == 'api_key') {
+    $where   = sprintf(
+        ' where   B.`API Key Key`=%d   ', $parameters['parent_key']
+    );
+    $subject = 'API Key';
 } else {
     print_r($parameters);
     exit('parent not set up '.$parameters['parent']);

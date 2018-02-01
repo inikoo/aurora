@@ -381,7 +381,15 @@ function get_view($db, $smarty, $user, $account, $modules) {
 
 
 
-            if ($state['object'] == 'barcode') {
+            if ($state['object'] == 'api_key') {
+                $_object          = new API_Key('deleted', $state['key']);
+                $state['_object'] = $_object;
+                if ($_object->id) {
+                    $state['section'] = 'deleted_api_key';
+                    $state['tab']     = 'api_key.history';
+
+                }
+            } if ($state['object'] == 'barcode') {
                 $_object          = new Barcode('deleted', $state['key']);
                 $state['_object'] = $_object;
                 if ($_object->id) {
@@ -773,7 +781,6 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
         return '';
     }
 
-
     switch ($showcase) {
         case 'material':
             include_once 'showcase/material.show.php';
@@ -1029,9 +1036,11 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             $html = get_email_campaign_showcase($data, $smarty, $user, $db, $account);
             break;
         case 'api_key':
+        case 'deleted_api_key':
             include_once 'showcase/api_key.show.php';
             $html = get_api_key_showcase($data, $smarty, $user, $db, $account);
             break;
+
         default:
             $html = $data['object'].' -> '.$data['key'];
             break;
@@ -2322,6 +2331,10 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     break;
                 case ('user.api_key.new') :
                     return get_new_api_key_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                case ('deleted_api_key') :
+                    return get_deleted_api_key_navigation(
                         $data, $smarty, $user, $db, $account
                     );
                     break;
@@ -6685,7 +6698,118 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 );
 
 
-            }elseif ($state['section'] == 'settings') {
+            }
+            elseif($state['section']=='user.api_key.new'){
+
+                $branch[] = array(
+                    'label'     => _('Users'),
+                    'icon'      => '',
+                    'reference' => 'account/users'
+                );
+
+                switch ($state['_parent']->get('User Type')) {
+                    case 'Staff':
+                        $branch[] = array(
+                            'label'     => _('Employees'),
+                            'icon'      => '',
+                            'reference' => 'account/users/staff'
+                        );
+                        break;
+                    case 'Contractor':
+                        $branch[] = array(
+                            'label'     => _('Contractors'),
+                            'icon'      => '',
+                            'reference' => 'account/users/contractors'
+                        );
+                        break;
+                    case 'Agent':
+                        $branch[] = array(
+                            'label'     => _('Agents'),
+                            'icon'      => '',
+                            'reference' => 'account/users/agents'
+                        );
+                        break;
+                    case 'Suppliers':
+                        $branch[] = array(
+                            'label'     => _('Suppliers'),
+                            'icon'      => '',
+                            'reference' => 'account/users/suppliers'
+                        );
+                        break;
+                    default:
+
+                        break;
+                }
+                $branch[] = array(
+                    'label'     => '<span >'.$state['_parent']->get('User Handle').'</span>',
+                    'icon'      => 'terminal',
+                    'reference' => 'account/user/'.$state['_parent']->id
+                );
+
+                $branch[] = array(
+                    'label'     => _('New API key'),
+                    'icon'      => '',
+                    'reference' => ''
+                );
+
+
+            }
+            elseif($state['section']=='deleted_api_key'){
+
+                $branch[] = array(
+                    'label'     => _('Users'),
+                    'icon'      => '',
+                    'reference' => 'account/users'
+                );
+
+                switch ($state['_parent']->get('User Type')) {
+                    case 'Staff':
+                        $branch[] = array(
+                            'label'     => _('Employees'),
+                            'icon'      => '',
+                            'reference' => 'account/users/staff'
+                        );
+                        break;
+                    case 'Contractor':
+                        $branch[] = array(
+                            'label'     => _('Contractors'),
+                            'icon'      => '',
+                            'reference' => 'account/users/contractors'
+                        );
+                        break;
+                    case 'Agent':
+                        $branch[] = array(
+                            'label'     => _('Agents'),
+                            'icon'      => '',
+                            'reference' => 'account/users/agents'
+                        );
+                        break;
+                    case 'Suppliers':
+                        $branch[] = array(
+                            'label'     => _('Suppliers'),
+                            'icon'      => '',
+                            'reference' => 'account/users/suppliers'
+                        );
+                        break;
+                    default:
+
+                        break;
+                }
+                $branch[] = array(
+                    'label'     => '<span >'.$state['_parent']->get('User Handle').'</span>',
+                    'icon'      => 'terminal',
+                    'reference' => 'account/user/'.$state['_parent']->id
+                );
+
+                $branch[] = array(
+                    'label'     => _('Deleted API key').': <span class="id">'.$state['_object']->get('Deleted Scope').'</span> ('.$state['_object']->get('Deleted Code').')',
+                    'icon'      => '',
+                    'reference' => ''
+                );
+
+
+            }
+            elseif ($state['section'] == 'settings') {
                 $branch[] = array(
                     'label'     => _('Settings'),
                     'icon'      => 'cog',

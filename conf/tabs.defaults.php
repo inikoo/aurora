@@ -2701,7 +2701,49 @@ $tab_defaults = array(
         'f_field'     => '',
 
     ),
+    'staff.user.deleted_api_keys'         => array(
+        'view'        => 'overview',
+        'sort_key'    => 'formatted_id',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => '',
+
+    ),
     'staff.user.api_key.requests' => array(
+        'view'        => 'overview',
+        'sort_key'    => 'date',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => '',
+        'from'        => '',
+        'to'          => '',
+        'period'      => 'all',
+
+    ),
+
+
+    'api_key.history'     => array(
+        'view'        => 'overview',
+        'sort_key'    => 'date',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'note'
+    ),
+
+
+    'deleted_api_key.history'     => array(
+        'view'        => 'overview',
+        'sort_key'    => 'date',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'note'
+    ),
+
+    'staff.user.deleted_api_key.requests' => array(
         'view'        => 'overview',
         'sort_key'    => 'date',
         'sort_order'  => 1,

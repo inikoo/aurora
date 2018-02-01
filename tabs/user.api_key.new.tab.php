@@ -48,8 +48,8 @@ $object_fields = array(
 
 
         )
-    ),
-
+    )
+/*
     array(
         'label'      => _('Restrictions'),
         'show_title' => true,
@@ -89,7 +89,7 @@ $object_fields = array(
 
         )
     ),
-
+*/
 
 );
 

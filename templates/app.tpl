@@ -70,6 +70,8 @@
 
         <script src="/js/libs/fotorama.js"></script>
         <script src="/js/libs/tooltipster.bundle.min.js"></script>
+        <script src="/js/libs/jquery-qrcode-0.14.0.min.js"></script>
+
 
         <script src="/js/help.js?v180124v3"></script>
         <script src="/js/app.js?v180124"></script>

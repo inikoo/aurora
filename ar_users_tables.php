@@ -63,6 +63,9 @@ switch ($tipo) {
     case 'api_keys':
         api_keys(get_table_parameters(), $db, $user);
         break;
+    case 'deleted_api_keys':
+        deleted_api_keys(get_table_parameters(), $db, $user);
+        break;
     case 'api_requests':
         api_requests(get_table_parameters(), $db, $user);
         break;
@@ -469,7 +472,7 @@ function deleted_users($_data, $db, $user) {
 
 function api_keys($_data, $db, $user) {
 
-    $rtext_label = 'session';
+    $rtext_label = 'api key';
     include_once 'prepare_table/init.php';
 
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
@@ -532,6 +535,66 @@ function api_keys($_data, $db, $user) {
     );
     echo json_encode($response);
 }
+
+
+function deleted_api_keys($_data, $db, $user) {
+
+    $rtext_label = 'deleted api key';
+    include_once 'prepare_table/init.php';
+
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+
+
+    $adata = array();
+
+    foreach ($db->query($sql) as $data) {
+
+
+
+
+        switch ($data['API Key Deleted Scope']) {
+            case 'Timesheet':
+                $scope =  _('Timesheet machine');
+                break;
+            case 'Stock':
+                $scope =  _('Stock control app');
+                break;
+            case 'Picking':
+                $scope =  _('Picking app');
+                break;
+            default:
+                $scope = $data['API Key Deleted Scope'];
+        }
+
+        $adata[] = array(
+            'id'     => (integer)$data['API Key Deleted Key'],
+            'code'   => sprintf('<span class="link" onclick="change_view(\'account/user/%d/api_key/%d\')">%s</span>', $data['API Key Deleted User Key'], $data['API Key Deleted Key'], $data['API Key Deleted Code']),
+            'scope'  => $scope,
+            'deleted_date'  => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['API Key Deleted Date'])),
+        );
+
+
+    }
+
+
+
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
 
 
 function api_requests($_data, $db, $user) {

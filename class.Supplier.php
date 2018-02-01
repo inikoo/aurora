@@ -1918,6 +1918,8 @@ class Supplier extends SubjectSupplier {
             $sales_data = $this->get_sales_data($date_frequency_period['from'], $date_frequency_period['to']);
 
 
+
+
             $_date      = gmdate('Y-m-d', strtotime($date_frequency_period['from'].' +0:00'));
 
 
@@ -1947,7 +1949,6 @@ class Supplier extends SubjectSupplier {
                 );
 
 
-
                 $update_sql = $this->db->prepare($sql);
                 $update_sql->execute();
 
@@ -1964,7 +1965,12 @@ class Supplier extends SubjectSupplier {
 
 
                         $part_skus = array();
-                        $sql       = sprintf('SELECT `Part SKU` FROM `Part Dimension` WHERE  `Part Family Category Key`=%d ', $family_key);
+
+
+
+
+
+                        $sql       = sprintf('SELECT `Part SKU` FROM `Part Dimension`  left join `Supplier Part Dimension` on (`Part SKU`= `Supplier Part Part SKU`)    WHERE  `Supplier Part Supplier Key`=%d and  `Part Family Category Key`=%d ',$this->id, $family_key);
                         if ($result = $this->db->query($sql)) {
                             foreach ($result as $row) {
                                 $part_skus[$row['Part SKU']] = $row['Part SKU'];
