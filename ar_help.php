@@ -224,7 +224,7 @@ function get_whiteboard($data, $modules, $db, $account, $user, $smarty) {
             if ($row = $result->fetch()) {
 
                 if($row['Whiteboard Text']==''){
-                    $text_tab  = '<em class="very_discreet">'._('Fell free to type something about this tab').' ('.$tab.') </em>';
+                    $text_tab  = '<em class="very_discreet">'._('Feel free to type something about this tab').' ('.$tab.') </em>';
                     $empty_tab = true;
                 }else{
 
@@ -235,7 +235,7 @@ function get_whiteboard($data, $modules, $db, $account, $user, $smarty) {
 
 
             } else {
-                $text_tab  = '<em class="very_discreet">'._('Fell free to type something about this tab').' ('.$tab.') </em>';
+                $text_tab  = '<em class="very_discreet">'._('Feel free to type something about this tab').' ('.$tab.') </em>';
                 $empty_tab = true;
             }
         } else {
@@ -256,7 +256,7 @@ function get_whiteboard($data, $modules, $db, $account, $user, $smarty) {
             $text  = $row['Whiteboard Text'];
             $empty = false;
         } else {
-            $text  = '<em class="very_discreet">'._('Fell free to type something about this page').' ('.$data['state']['section'].') </em>';
+            $text  = '<em class="very_discreet">'._('Feel free to type something about this page').' ('.$data['state']['section'].') </em>';
             $empty = true;
         }
     } else {

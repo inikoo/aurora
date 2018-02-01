@@ -17,23 +17,43 @@ function get_api_key_showcase($data, $smarty) {
     if (!$api_key->id) {
         return "";
     }
-    $staff_user=get_object('User',$api_key->get('API Key User Key'));
-
-    $staff=get_object('Staff',$staff_user->get_staff_key());
 
 
-    $smarty->assign('api_key', $api_key);
-    $smarty->assign('staff_user', $staff_user);
-    $smarty->assign('staff', $staff);
+    if($api_key->deleted){
 
-    $title=sprintf('%s API access key for %s',
-                   sprintf('<span class="link">%s</span>',$staff->get('Name')),
-                   $api_key->get('Scope')
-    );
-    $smarty->assign('title', $title);
+        $staff_user=get_object('User',$api_key->get('API Key Deleted User Key'));
+
+        $staff=get_object('Staff',$staff_user->get_staff_key());
+        $smarty->assign('api_key', $api_key);
+        $smarty->assign('staff_user', $staff_user);
+        $smarty->assign('staff', $staff);
+
+;
 
 
-    return $smarty->fetch('showcase/api_key.tpl');
+        return $smarty->fetch('showcase/deleted_api_key.tpl');
+    }else{
+
+
+        $staff_user=get_object('User',$api_key->get('API Key User Key'));
+
+        $staff=get_object('Staff',$staff_user->get_staff_key());
+        $smarty->assign('api_key', $api_key);
+        $smarty->assign('staff_user', $staff_user);
+        $smarty->assign('staff', $staff);
+
+
+        $title=sprintf('%s API access key for %s',
+                       sprintf('<span class=\'link\'>%s</span>',$staff->get('Name')),
+                       $api_key->get('Scope')
+        );
+        $smarty->assign('title', $title);
+
+
+        return $smarty->fetch('showcase/api_key.tpl');
+    }
+
+
 
 
 }

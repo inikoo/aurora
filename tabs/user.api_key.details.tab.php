@@ -42,7 +42,7 @@ $object_fields = array(
                 'required'        => true
 
             ),
-
+/*
             array(
 
                 'id'          => 'API_Key_Allowed IP',
@@ -72,6 +72,8 @@ $object_fields = array(
 
             ),
 
+*/
+
 
         )
     ),
@@ -79,6 +81,28 @@ $object_fields = array(
 
 );
 
+
+$operations = array(
+    'label'      => _('Operations'),
+    'show_title' => true,
+    'class'      => 'operations',
+    'fields'     => array(
+
+        array(
+            'id'        => 'delete_api_key',
+            'class'     => 'operation',
+            'value'     => '',
+            'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$apy_key->get_object_name().'", "key":"'.$apy_key->id
+                .'"}\' onClick="delete_object(this)" class="delete_object disabled">'._("Delete API key").' <i class="fa fa-trash new_button link"></i></span>',
+            'reference' => '',
+            'type'      => 'operation'
+        ),
+
+
+    )
+
+);
+$object_fields[] = $operations;
 
 $smarty->assign('state', $state);
 $smarty->assign('object_fields', $object_fields);

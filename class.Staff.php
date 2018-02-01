@@ -1009,7 +1009,7 @@ class Staff extends DB_Table {
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-                $this->system_user = new User($row['User Key']);
+                $this->system_user = get_object('User',$row['User Key']);
 
                 return $this->system_user;
             } else {

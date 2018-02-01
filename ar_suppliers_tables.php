@@ -2801,7 +2801,7 @@ function sales_history($_data, $db, $user, $account) {
         foreach ($result as $data) {
 
 
-           // print_r($data);
+
 
 
             if ($_data['parameters']['frequency'] == 'annually') {

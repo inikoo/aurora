@@ -32,11 +32,13 @@ $timeseries = get_time_series_config();
 
 
 $date = gmdate('Y-m-d', strtotime('yesterday'));
+$date = gmdate('Y-m-d', strtotime('today -2 months'));
 
 
 $sql = sprintf(
     'SELECT `Supplier Key`,`Supplier Code` FROM `Supplier Dimension` WHERE (`Supplier Type`!="Archived"  OR ( `Supplier Type`="Archived" AND DATE(`Supplier Valid To`)=%s ) ) ', $date
 );
+
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
@@ -58,6 +60,7 @@ if ($result = $db->query($sql)) {
 
             }elseif ($time_series_data['Timeseries Frequency'] == 'Monthly') {
                 $from = gmdate('Y-m-01');
+
 
             }elseif ($time_series_data['Timeseries Frequency'] == 'Yearly') {
                 $from = gmdate('Y-01-01');

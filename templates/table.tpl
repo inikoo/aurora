@@ -974,7 +974,9 @@
     });
 
 
-    {if isset($elements) and count(elements)>0}
+    {if !empty($elements)}
+
+
     var with_elements = true;
     get_elements_numbers('{$tab}',{$parameters|@json_encode})
     {else}

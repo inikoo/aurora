@@ -1729,6 +1729,249 @@ function get_api_key_navigation($data, $smarty, $user, $db, $account) {
 }
 
 
+
+
+function get_deleted_api_key_navigation($data, $smarty, $user, $db, $account) {
+
+
+    $object        = $data['_object'];
+    $left_buttons  = array();
+    $right_buttons = array();
+
+    if ($data['parent']) {
+
+        switch ($data['parent']) {
+            case 'account':
+                $tab      = 'account.deleted_api_keys';
+                $_section = 'account';
+                break;
+            case 'user':
+                $tab      = 'staff.user.deleted_api_keys';
+                $_section = 'account';
+                break;
+
+        }
+
+
+        if (isset($_SESSION['table_state'][$tab])) {
+            $number_results  = $_SESSION['table_state'][$tab]['nr'];
+            $start_from      = 0;
+            $order           = $_SESSION['table_state'][$tab]['o'];
+            $order_direction = ($_SESSION['table_state'][$tab]['od'] == 1 ? 'desc' : '');
+            $f_value         = $_SESSION['table_state'][$tab]['f_value'];
+            $parameters      = $_SESSION['table_state'][$tab];
+        } else {
+
+            $default                  = $user->get_tab_defaults($tab);
+            $number_results           = $default['rpp'];
+            $start_from               = 0;
+            $order                    = $default['sort_key'];
+            $order_direction          = ($default['sort_order'] == 1 ? 'desc' : '');
+            $f_value                  = '';
+            $parameters               = $default;
+            $parameters['parent']     = $data['parent'];
+            $parameters['parent_key'] = $data['parent_key'];
+        }
+
+
+        include_once 'prepare_table/'.$tab.'.ptble.php';
+
+        $_order_field       = $order;
+        $order              = preg_replace('/^.*\.`/', '', $order);
+        $order              = preg_replace('/^`/', '', $order);
+        $order              = preg_replace('/`$/', '', $order);
+        $_order_field_value = $object->get($order);
+
+
+        $prev_title = '';
+        $next_title = '';
+        $prev_key   = 0;
+        $next_key   = 0;
+        $sql        = trim($sql_totals." $wheref");
+
+        if ($result2 = $db->query($sql)) {
+            if ($row2 = $result2->fetch() and $row2['num'] > 1) {
+
+
+                $sql = sprintf(
+                    "select `API Key Deleted Key` object_name,AKD.`API Key Deleted Key` as object_key from $table   $where $wheref
+	                and ($_order_field < %s OR ($_order_field = %s AND AKD.`API Key Deleted Key` < %d))  order by $_order_field desc , AKD.`API Key Deleted Key` desc limit 1",
+
+                    prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+                );
+
+                if ($result = $db->query($sql)) {
+                    if ($row = $result->fetch()) {
+                        $prev_key   = $row['object_key'];
+                        $prev_title = _("User").' '.$row['object_name'].' ('.$row['object_key'].')';
+                    }
+                } else {
+                    print $sql;
+                    print_r($error_info = $db->errorInfo());
+                    exit;
+                }
+
+
+                $sql = sprintf(
+                    "select `API Key Deleted Key` object_name,AKD.`API Key Deleted Key` as object_key from $table   $where $wheref
+	                and ($_order_field  > %s OR ($_order_field  = %s AND AKD.`API Key Deleted Key` > %d))  order by $_order_field   , AKD.`API Key Deleted Key`  limit 1", prepare_mysql($_order_field_value),
+                    prepare_mysql($_order_field_value), $object->id
+                );
+
+                if ($result = $db->query($sql)) {
+                    if ($row = $result->fetch()) {
+                        $next_key   = $row['object_key'];
+                        $next_title = _("User").' '.$row['object_name'].' ('.$row['object_key'].')';
+                    }
+                } else {
+                    print_r($error_info = $db->errorInfo());
+                    exit;
+                }
+
+
+                if ($order_direction == 'desc') {
+                    $_tmp1      = $prev_key;
+                    $_tmp2      = $prev_title;
+                    $prev_key   = $next_key;
+                    $prev_title = $next_title;
+                    $next_key   = $_tmp1;
+                    $next_title = $_tmp2;
+                }
+
+
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            exit;
+        }
+
+
+        if ($data['parent'] == 'user') {
+
+            $system_user = new User($data['parent_key']);
+
+
+            $up_button = array(
+                'icon'      => 'arrow-up',
+                'title'     => _("Staff user").' '.$system_user->get('Alias'),
+                'reference' => 'account/user/'.$system_user->id
+            );
+
+            if ($prev_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-left',
+                    'title'     => $prev_title,
+                    'reference' => 'account/user/'.$system_user->id.'/api_key/'.$prev_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-left disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+            $left_buttons[] = $up_button;
+
+
+            if ($next_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-right',
+                    'title'     => $next_title,
+                    'reference' => 'account/user/'.$system_user->id.'/api_key/'.$next_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-right disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+
+        } else {
+
+            $up_button = array(
+                'icon'      => 'arrow-up',
+                'title'     => _("Staff users"),
+                'reference' => 'account/users/staff'
+            );
+
+            if ($prev_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-left',
+                    'title'     => $prev_title,
+                    'reference' => 'account/api_key/'.$prev_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-left disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+            $left_buttons[] = $up_button;
+
+
+            if ($next_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-right',
+                    'title'     => $next_title,
+                    'reference' => 'account/api_key/'.$next_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-right disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+
+
+        }
+    } else {
+        $_section = 'staff';
+
+    }
+
+    $sections = get_sections('account', '');
+
+
+    $sections['users']['selected'] = true;
+
+
+
+    $title = _('Deleted API key').': <span class="">'.$object->get('Deleted Scope').'</span> (<span class="id">'.$object->get('Deleted Code').'</span>)';
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search account')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
+
+
+
 function get_profile_navigation($data, $smarty, $user, $db, $account) {
 
 

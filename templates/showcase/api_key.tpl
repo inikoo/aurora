@@ -10,12 +10,7 @@
 *}
 
 
-<div style="background: #fff;border:1px solid #ccc">
 
-
-
-
-</div>
 
 
 <div class="name_and_categories">
@@ -26,8 +21,18 @@
 
 <div class="asset_container">
 
+
+
+
     <div style="padding:20px 0px">
-        <span class="button">{t}Show private key{/t}</span> <span class="warning small"><i class="fa fa-exclamation-circle"></i> {t}The API key is a secret information and should be treated as a password{/t}</span>
+        <span class="button unselectable" onclick="regenerate_api_key()" style="border:1px solid #ccc;;padding:10px">{t}Regenerate private key{/t}</span>
     </div>
 
 </div>
+
+
+<script>
+    function regenerate_api_key(){
+
+    }
+    </script>
