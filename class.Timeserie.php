@@ -292,7 +292,7 @@ class Timeseries extends DB_Table {
             'SELECT `Timeseries Record Key`,`Timeseries Record Date` FROM `Timeseries Record Dimension` WHERE `Timeseries Record Timeseries Key`=%d AND  `Timeseries Record Date`=%s', $this->id, prepare_mysql($data['Timeseries Record Date'])
         );
 
-       // print "$sql\n";
+
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
@@ -340,8 +340,9 @@ class Timeseries extends DB_Table {
         if($this->get('Timeseries Frequency')=='Monthly'  ){
 
 
-            $sql=sprintf('delete from `Timeseries Record Dimension` where  `Timeseries Record Timeseries Key`=65540   and DATE_FORMAT(`Timeseries Record Date`,\'%%e\')!=1;');
+            $sql=sprintf('delete from `Timeseries Record Dimension` where  `Timeseries Record Timeseries Key`=%d   and DATE_FORMAT(`Timeseries Record Date`,\'%%e\')!=1;',$this->id);
             $this->db->exec($sql);
+
 
         }
 

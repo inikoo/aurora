@@ -844,7 +844,6 @@ function sales_history($_data, $db, $user, $account) {
     $last_year_data = array();
 
 
-
     if ($result = $db->query($sql)) {
 
 
@@ -877,12 +876,16 @@ function sales_history($_data, $db, $user, $account) {
 
             if (array_key_exists($_date, $record_data)) {
 
+
+
                 $record_data[$_date] = array(
                     'sales'     => money($data['sales'], $currency),
                     'customers' => number($data['customers']),
                     'invoices'  => number($data['invoices']),
                     'date'      => $record_data[$_date]['date']
                 );
+
+
 
 
                 if (isset($last_year_data[$_date_last_year])) {
@@ -901,6 +904,8 @@ function sales_history($_data, $db, $user, $account) {
         exit;
     }
 
+
+   // print_r($record_data);
 
     $response = array(
         'resultset' => array(
