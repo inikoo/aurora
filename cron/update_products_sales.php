@@ -13,23 +13,6 @@
 require_once 'common.php';
 
 
-$default_DB_link = @mysql_connect($dns_host, $dns_user, $dns_pwd);
-if (!$default_DB_link) {
-    print "Error can not connect with database server\n";
-}
-$db_selected = mysql_select_db($dns_db, $default_DB_link);
-if (!$db_selected) {
-    print "Error can not access the database\n";
-    exit;
-}
-mysql_set_charset('utf8');
-mysql_query("SET time_zone='+0:00'");
-
-
-require_once 'class.Product.php';
-require_once 'class.Category.php';
-
-
 $editor = array(
     'Author Name'  => '',
     'Author Alias' => '',
@@ -43,66 +26,68 @@ $print_est = true;
 
 print date('l jS \of F Y h:i:s A')."\n";
 
-update_sales($db, $print_est);
 
-
-function update_sales($db, $print_est) {
-
-    $where = 'where `Product ID`=971';
-    $where = '';
-    //	$where='where `Product Code` like "JBB-%"';
-    $sql = sprintf(
-        "SELECT count(*) AS num FROM `Product Dimension` %s", $where
-    );
-    if ($result = $db->query($sql)) {
-        if ($row = $result->fetch()) {
-            $total = $row['num'];
-        } else {
-            $total = 0;
-        }
+$where = 'where `Product ID`=971';
+$where = '';
+//$where='where `Product Code` like "JBB-%"';
+$sql = sprintf(
+    "SELECT count(*) AS num FROM `Product Dimension` %s", $where
+);
+if ($result = $db->query($sql)) {
+    if ($row = $result->fetch()) {
+        $total = $row['num'];
     } else {
-        print_r($error_info = $db->errorInfo());
-        exit;
+        $total = 0;
+    }
+} else {
+    print_r($error_info = $db->errorInfo());
+    exit;
+}
+
+$lap_time0 = date('U');
+$contador  = 0;
+
+
+$sql = sprintf(
+    "SELECT `Product ID` FROM `Product Dimension` %s ORDER BY `Product ID` DESC ", $where
+);
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+        $product = get_object('Product', $row['Product ID']);
+
+        $product->load_acc_data();
+
+
+
+        $product->update_previous_years_data();
+        $product->update_previous_quarters_data();
+        
+        $product->update_sales_from_invoices('Total');
+        $product->update_sales_from_invoices('Week To Day');
+
+        $product->update_sales_from_invoices('Month To Day');
+        $product->update_sales_from_invoices('Quarter To Day');
+
+        $product->update_sales_from_invoices('Year To Day');
+        $product->update_sales_from_invoices('1 Year');
+        $product->update_sales_from_invoices('1 Quarter');
+
+
+
+        $contador++;
+        $lap_time1 = date('U');
+
+        if ($print_est) {
+            print 'P   '.percentage($contador, $total, 3)."  lap time ".sprintf("%.2f", ($lap_time1 - $lap_time0) / $contador)." EST  ".sprintf(
+                    "%.1f", (($lap_time1 - $lap_time0) / $contador) * ($total - $contador) / 3600
+                )."h  ($contador/$total) \r";
+        }
+
     }
 
-    $lap_time0 = date('U');
-    $contador  = 0;
-
-
-    $sql = sprintf(
-        "SELECT `Product ID` FROM `Product Dimension` %s ORDER BY `Product ID` DESC ", $where
-    );
-    if ($result = $db->query($sql)) {
-        foreach ($result as $row) {
-            $product = new Product('id', $row['Product ID']);
-
-            $product->load_acc_data();
-
-            $product->update_sales_from_invoices('Total');
-            $product->update_sales_from_invoices('Month To Day');
-            $product->update_sales_from_invoices('Quarter To Day');
-            $product->update_sales_from_invoices('Year To Day');
-            $product->update_sales_from_invoices('1 Year');
-            $product->update_sales_from_invoices('1 Quarter');
-
-
-            $contador++;
-            $lap_time1 = date('U');
-
-            if ($print_est) {
-                print 'P   '.percentage($contador, $total, 3)."  lap time ".sprintf("%.2f", ($lap_time1 - $lap_time0) / $contador)." EST  ".sprintf(
-                        "%.1f", (($lap_time1 - $lap_time0) / $contador) * ($total - $contador) / 3600
-                    )."h  ($contador/$total) \r";
-            }
-
-        }
-
-    } else {
-        print_r($error_info = $db->errorInfo());
-        exit;
-    }
-
-
+} else {
+    print_r($error_info = $db->errorInfo());
+    exit;
 }
 
 

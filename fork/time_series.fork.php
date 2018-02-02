@@ -32,6 +32,7 @@ function fork_time_series($job) {
             $object         = get_object($fork_data['parent'], $fork_data['parent_key']);
             $object->editor = $fork_data['editor'];
             $object->create_timeseries($fork_data['time_series_data'], $fork_key);
+
             break;
         case 'isf':
 

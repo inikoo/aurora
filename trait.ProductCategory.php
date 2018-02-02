@@ -154,19 +154,23 @@ trait ProductCategory {
 
         foreach ($dates as $date_frequency_period) {
             $index++;
+
+
+           // print_r($date_frequency_period);
+
             list($invoices, $customers, $net, $dc_net) = $this->get_product_timeseries_record_data(
                 $timeseries, $date_frequency_period
             );
 
+
+           // print "$invoices, $customers, $net, $dc_net \n";
 
             $_date = gmdate(
                 'Y-m-d', strtotime($date_frequency_period['from'].' +0:00')
             );
 
             if ($invoices != 0 or $customers != 0 or $net != 0) {
-                list($timeseries_record_key, $date) = $timeseries->create_record(
-                    array('Timeseries Record Date' => $_date)
-                );
+                list($timeseries_record_key, $date) = $timeseries->create_record(array('Timeseries Record Date' => $_date));
                 $sql = sprintf(
                     'UPDATE `Timeseries Record Dimension` SET `Timeseries Record Integer A`=%d ,`Timeseries Record Integer B`=%d ,`Timeseries Record Float A`=%.2f ,`Timeseries Record Float B`=%.2f ,`Timeseries Record Type`=%s WHERE `Timeseries Record Key`=%d',
                     $invoices, $customers, $net, $dc_net, prepare_mysql('Data'), $timeseries_record_key
@@ -210,7 +214,6 @@ trait ProductCategory {
                 }
 
             }
-
             $timeseries->update_stats();
 
 
@@ -245,13 +248,21 @@ trait ProductCategory {
 
         if ($timeseries->get('Timeseries Scope') == 'Sales') {
 
+            // todo quick hack before migration is done
+            global $account;
+            if ($account->get('Code') == 'AW') {
 
-            $sql = sprintf(
-                "SELECT count(DISTINCT `Invoice Key`)  AS invoices,count(DISTINCT `Customer Key`)  AS customers,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) net,sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)*`Invoice Currency Exchange Rate`) dc_net
+                $sql = sprintf(
+                    "SELECT count(DISTINCT `Invoice Key`)  AS invoices,count(DISTINCT `Customer Key`)  AS customers, ifnull(sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`),0) net,ifnull(sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)*`Invoice Currency Exchange Rate`),0) dc_net FROM `Order Transaction Fact` WHERE `Product ID` IN (%s)  AND `Invoice Key`>0 AND  `Invoice Date`>=%s  AND   `Invoice Date`<=%s  ",
+                    $product_ids, prepare_mysql($date_frequency_period['from']), prepare_mysql($date_frequency_period['to'])
+                );
+            } else {
 
-			FROM `Order Transaction Fact` WHERE `Product ID` IN (%s)  AND `Invoice Key`>0 AND  `Invoice Date`>=%s  AND   `Invoice Date`<=%s  ", $product_ids, prepare_mysql($date_frequency_period['from']), prepare_mysql($date_frequency_period['to'])
-            );
-
+                $sql = sprintf(
+                    "SELECT count(DISTINCT `Invoice Key`)  AS invoices,count(DISTINCT `Customer Key`)  AS customers, round(ifnull(sum(`Order Transaction Amount`),0),2) AS net , 	round(ifnull(sum((`Order Transaction Amount`)*`Invoice Currency Exchange Rate`),0),2) AS dc_net FROM `Order Transaction Fact` WHERE `Product ID` IN (%s)  AND `Invoice Key`>0 AND  `Invoice Date`>=%s  AND   `Invoice Date`<=%s  ", $product_ids, prepare_mysql($date_frequency_period['from']), prepare_mysql($date_frequency_period['to'])
+                );
+            }
+//print "$sql\n";
 
             if ($result = $this->db->query($sql)) {
                 if ($row = $result->fetch()) {
@@ -354,7 +365,6 @@ trait ProductCategory {
                 "Product Category $db_interval Acc Quantity Delivered" => $sales_product_category_data['delivered'],
 
             );
-
 
             $this->fast_update($data_to_update, 'Product Category Data');
 
@@ -745,7 +755,6 @@ trait ProductCategory {
         $this->webpage->editor = $this->editor;
 
 
-
         return $this->webpage;
 
     }
@@ -867,8 +876,11 @@ trait ProductCategory {
             "Product Category DC 5 Year Ago Profit"          => $data_5y_ago['dc_net'],
             "Product Category DC 5 Year Ago Invoiced Amount" => $data_5y_ago['dc_profit']
         );
-        $this->update($data_to_update, 'no_history');
-        $this->update(['Part Category Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
+
+        $this->fast_update($data_to_update, 'Product Category Data');
+
+        $this->fast_update(['Product Category Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')], 'Product Category Dimension');
+
 
     }
 
@@ -914,9 +926,12 @@ trait ProductCategory {
 
 
             );
-            $this->update($data_to_update, 'no_history');
+
+            // print_r($data_to_update);
+
+            $this->fast_update($data_to_update, 'Product Category Data');
         }
-        $this->update(['Part Category Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
+        $this->fast_update(['Product Category Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')], 'Product Category Dimension');
 
     }
 
@@ -1275,13 +1290,9 @@ trait ProductCategory {
             );
 
 
-
-
-
             $stack = 0;
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
-
 
 
                     if ($row['Product Category Index Product ID'] == '') {
@@ -1318,7 +1329,6 @@ trait ProductCategory {
                             }
 
 
-
                             // print_r($image);
 
 
@@ -1345,8 +1355,6 @@ trait ProductCategory {
                             'INSERT INTO `Product Category Index` (`Product Category Index Category Key`,`Product Category Index Product ID`,`Product Category Index Website Key`,`Product Category Index Product Webpage Key`,`Product Category Index Content Data`,`Product Category Index Stack`) VALUES (%d,%d,%d,%d,%s,%d) ',
                             $this->id, $row['Product ID'], $this->webpage->id, $product->get('Product Webpage Key'), prepare_mysql(json_encode($_data)), $stack
                         );
-
-
 
 
                         $this->db->exec($sql);
@@ -1399,8 +1407,7 @@ trait ProductCategory {
             }
 
 
-        }
-        elseif ($this->get('Category Subject') == 'Category') {
+        } elseif ($this->get('Category Subject') == 'Category') {
 
 
             include_once 'class.Public_Webpage.php';

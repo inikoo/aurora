@@ -15,64 +15,63 @@ require_once 'class.Category.php';
 
 $print_est = true;
 
-update_parts_sales($db, $print_est);
-//update_categories_sales($db, $print_est);
 
-function update_parts_sales($db, $print_est) {
+$where = "where true";
+//$where="where `Category Key`=580";
 
-    $where = "where true";
-    //$where="where `Category Key`=15362";
+$sql = sprintf(
+    "select count(distinct `Category Key`) as num from `Category Dimension` $where and  `Category Scope`='Product' "
+);
 
-    $sql = sprintf(
-        "select count(distinct `Category Key`) as num from `Category Dimension` $where and  `Category Scope`='Product' "
-    );
-
-    if ($result = $db->query($sql)) {
-        if ($row = $result->fetch()) {
-            $total = $row['num'];
-        } else {
-            $total = 0;
-        }
+if ($result = $db->query($sql)) {
+    if ($row = $result->fetch()) {
+        $total = $row['num'];
     } else {
-        print_r($error_info = $db->errorInfo());
-        exit;
+        $total = 0;
     }
+} else {
+    print_r($error_info = $db->errorInfo());
+    exit;
+}
 
-    $lap_time0 = date('U');
-    $contador  = 0;
+$lap_time0 = date('U');
+$contador  = 0;
 
-    $sql = sprintf(
-        "select `Category Key` from `Category Dimension` $where and  `Category Scope`='Product' "
-    );
+$sql = sprintf(
+    "select `Category Key` from `Category Dimension` $where and  `Category Scope`='Product' "
+);
 
-    if ($result = $db->query($sql)) {
-        foreach ($result as $row) {
-            $category = new Category($row['Category Key']);
-
-            $category->update_product_category_sales('Total');
-            $category->update_product_category_sales('Week To Day');
-            $category->update_product_category_sales('Month To Day');
-            $category->update_product_category_sales('Quarter To Day');
-            $category->update_product_category_sales('Year To Day');
-            $category->update_product_category_sales('1 Year');
-            $category->update_product_category_sales('1 Quarter');
-
-            $contador++;
-            $lap_time1 = date('U');
-
-            if ($print_est) {
-                print 'Pa '.percentage($contador, $total, 3)."  lap time ".sprintf("%.2f", ($lap_time1 - $lap_time0) / $contador)." EST  ".sprintf(
-                        "%.1f", (($lap_time1 - $lap_time0) / $contador) * ($total - $contador) / 3600
-                    )."h  ($contador/$total) \r";
-            }
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+        $category = get_object('Category', $row['Category Key']);
 
 
+        $category->update_product_category_previous_years_data();
+        $category->update_product_category_previous_quarters_data();
+
+        $category->update_product_category_sales('Total');
+        $category->update_product_category_sales('Week To Day');
+        $category->update_product_category_sales('Month To Day');
+        $category->update_product_category_sales('Quarter To Day');
+        $category->update_product_category_sales('Year To Day');
+        $category->update_product_category_sales('1 Year');
+        $category->update_product_category_sales('1 Quarter');
+
+        $contador++;
+        $lap_time1 = date('U');
+
+        if ($print_est) {
+            print 'Pa '.percentage($contador, $total, 3)."  lap time ".sprintf("%.2f", ($lap_time1 - $lap_time0) / $contador)." EST  ".sprintf(
+                    "%.1f", (($lap_time1 - $lap_time0) / $contador) * ($total - $contador) / 3600
+                )."h  ($contador/$total) \r";
         }
 
-    } else {
-        print_r($error_info = $db->errorInfo());
-        exit;
+
     }
+
+} else {
+    print_r($error_info = $db->errorInfo());
+    exit;
 }
 
 
