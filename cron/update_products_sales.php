@@ -61,7 +61,7 @@ if ($result = $db->query($sql)) {
 
         $product->update_previous_years_data();
         $product->update_previous_quarters_data();
-        
+
         $product->update_sales_from_invoices('Total');
         $product->update_sales_from_invoices('Week To Day');
 
