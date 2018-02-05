@@ -230,6 +230,22 @@ switch ($tipo) {
     case 'get_available_barcode':
         get_available_barcode($db);
         break;
+
+
+    case 'regenerate_api':
+
+        $data = prepare_values(
+            $_REQUEST, array(
+
+                         'api_key' => array('type' => 'key'),
+
+                     )
+        );
+
+        regenerate_api($account, $db, $user, $editor, $data, $smarty);
+        break;
+        break;
+
     default:
         $response = array(
             'state' => 405,
@@ -260,22 +276,18 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
     $object->editor = $editor;
 
 
+    if ($data['object'] == 'Website' and preg_match('/^Localised_Labels/', $data['field'])) {
 
 
-
-    if($data['object']=='Website' and preg_match('/^Localised_Labels/',$data['field']) ){
-
-
-
-        $object->update_labels_in_localised_labels(array(  preg_replace('/^Localised_Labels/','',$data['field']) => $data['value']  ));
+        $object->update_labels_in_localised_labels(array(preg_replace('/^Localised_Labels/', '', $data['field']) => $data['value']));
 
 
         $response = array(
             'state'              => 200,
             'msg'                => '',
             'action'             => '',
-            'formatted_value'    => $data['value'] ,
-            'value'              => $data['value'] ,
+            'formatted_value'    => $data['value'],
+            'value'              => $data['value'],
             'other_fields'       => $object->get_other_fields_update_info(),
             'new_fields'         => $object->get_new_fields_info(),
             'deleted_fields'     => $object->get_deleted_fields_info(),
@@ -291,21 +303,20 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
         return;
 
     }
-    if($data['object']=='Website' and preg_match('/^Website_Settings_/',$data['field']) ){
+    if ($data['object'] == 'Website' and preg_match('/^Website_Settings_/', $data['field'])) {
 
 
+        $object->update_settings(array(preg_replace('/_/', ' ', preg_replace('/^Website_Settings_/', '', $data['field'])) => $data['value']));
 
-        $object->update_settings(array(  preg_replace('/_/', ' ',  preg_replace('/^Website_Settings_/','',$data['field'])) => $data['value']  ));
-
-        $field = preg_replace('/_/', ' ', $data['field']);
+        $field           = preg_replace('/_/', ' ', $data['field']);
         $formatted_field = preg_replace('/^Website /', '', $field);
 
         $response = array(
             'state'              => 200,
             'msg'                => '',
             'action'             => '',
-            'formatted_value'    => $object->get($formatted_field) ,
-            'value'              => $object->get($field) ,
+            'formatted_value'    => $object->get($formatted_field),
+            'value'              => $object->get($field),
             'other_fields'       => $object->get_other_fields_update_info(),
             'new_fields'         => $object->get_new_fields_info(),
             'deleted_fields'     => $object->get_deleted_fields_info(),
@@ -321,7 +332,6 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
         return;
 
     }
-
 
 
     $field = preg_replace('/_/', ' ', $data['field']);
@@ -353,7 +363,6 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
     } else {
         $options = '';
     }
-
 
 
     if (isset($data['metadata'])) {
@@ -413,8 +422,7 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
             );
             if (isset($object->deleted_value)) {
                 $msg = sprintf(
-                    '<span class="deleted">%s</span> <span class="discreet"><i class="fa fa-check " onClick="hide_edit_field_msg(\'%s\')" ></i> %s</span>', $object->deleted_value, $data['field'],
-                    _('Deleted')
+                    '<span class="deleted">%s</span> <span class="discreet"><i class="fa fa-check " onClick="hide_edit_field_msg(\'%s\')" ></i> %s</span>', $object->deleted_value, $data['field'], _('Deleted')
                 );
             }
 
@@ -456,9 +464,8 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
 
                 $update_metadata['price_cell'] = sprintf(
                     '<span style="cursor:text" class="product_price" title="%s" pid="%d" price="%s"    currency="%s"  exchange="%s" cost="%s" old_margin="%s" onClick="open_edit_price(this)">%s</span>',
-                    money($exchange * $object->get('Product Price'), $account->get('Account Currency')), $object->id, $object->get('Product Price'), $object->get('Store Currency Code'), $exchange,
-                    $object->get('Product Cost'), percentage($exchange * $object->get('Product Price') - $object->get('Product Cost'), $exchange * $object->get('Product Price')),
-                    money($object->get('Product Price'), $object->get('Store Currency Code'))
+                    money($exchange * $object->get('Product Price'), $account->get('Account Currency')), $object->id, $object->get('Product Price'), $object->get('Store Currency Code'), $exchange, $object->get('Product Cost'),
+                    percentage($exchange * $object->get('Product Price') - $object->get('Product Cost'), $exchange * $object->get('Product Price')), money($object->get('Product Price'), $object->get('Store Currency Code'))
                 );
 
 
@@ -478,8 +485,8 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
                     }
                     $rrp = sprintf(
                         '<span style="cursor:text" class="product_rrp" title="%s" pid="%d" rrp="%s"  currency="%s"   onClick="open_edit_rrp(this)">%s</span>',
-                        sprintf(_('margin %s'), percentage($object->get('Product RRP') - $object->get('Product Price'), $object->get('Product RRP'))), $object->get('Product ID'),
-                        $object->get('Product RRP') / $object->get('Product Units Per Case'), $object->get('Store Currency Code'), $rrp
+                        sprintf(_('margin %s'), percentage($object->get('Product RRP') - $object->get('Product Price'), $object->get('Product RRP'))), $object->get('Product ID'), $object->get('Product RRP') / $object->get('Product Units Per Case'),
+                        $object->get('Store Currency Code'), $rrp
 
                     );
 
@@ -492,8 +499,8 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
 
 
                 $cost = sprintf(
-                    '<span class="part_cost"  pid="%d" cost="%s"  currency="%s"   onClick="open_edit_cost(this)">%s</span>', $object->get('Supplier Part Key'), $object->get('Supplier Part Unit Cost'),
-                    $object->get('Supplier Part Currency Code'), money($object->get('Supplier Part Unit Cost'), $object->get('Supplier Part Currency Code'))
+                    '<span class="part_cost"  pid="%d" cost="%s"  currency="%s"   onClick="open_edit_cost(this)">%s</span>', $object->get('Supplier Part Key'), $object->get('Supplier Part Unit Cost'), $object->get('Supplier Part Currency Code'),
+                    money($object->get('Supplier Part Unit Cost'), $object->get('Supplier Part Currency Code'))
                 );
 
 
@@ -536,7 +543,6 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
             $msg             = '';
             $formatted_value = $object->get($formatted_field);
             $action          = '';
-
 
 
         }
@@ -872,8 +878,6 @@ function object_operation($account, $db, $user, $editor, $data, $smarty) {
 function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 
-
-
     $parent         = get_object($data['parent'], $data['parent_key']);
     $parent->editor = $editor;
 
@@ -913,9 +917,8 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             include_once 'class.Website.php';
 
 
-
             ////TODO clear this after migration
-           // exit('Cant create website ony after migration');
+            // exit('Cant create website ony after migration');
 
             $data['fields_data']['user'] = $user;
 
@@ -1133,14 +1136,13 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 
             $order_key = $parent->get_order_in_process_key();
-            if($order_key){
-                $object=get_object('Order',$order_key);
+            if ($order_key) {
+                $object = get_object('Order', $order_key);
             }
 
-            if( !( isset($object) and $object->id) ){
+            if (!(isset($object) and $object->id)) {
                 $object = $parent->create_order($data['fields_data']);
             }
-
 
 
             if (!$parent->error) {
@@ -2445,17 +2447,14 @@ function edit_image($account, $db, $user, $editor, $data, $smarty) {
                 case 'caption':
                     $sql = sprintf('UPDATE  `Image Subject Bridge` SET `Image Subject Image Caption`=%s WHERE `Image Subject Key`=%d ', prepare_mysql($data['value']), $data['image_bridge_key']);
                     $db->exec($sql);
-                    $formatted_value=$data['value'];
+                    $formatted_value = $data['value'];
                     break;
                 case 'scope':
                     $sql = sprintf('UPDATE  `Image Subject Bridge` SET `Image Subject Object Image Scope`=%s WHERE `Image Subject Key`=%d ', prepare_mysql($data['value']), $data['image_bridge_key']);
                     $db->exec($sql);
 
 
-
-
-
-                    if($object->get_object_name()=='Part' and $data['value']=='Marketing' ){
+                    if ($object->get_object_name() == 'Part' and $data['value'] == 'Marketing') {
 
 
                         $sql = sprintf(
@@ -2466,7 +2465,7 @@ function edit_image($account, $db, $user, $editor, $data, $smarty) {
                         if ($result = $this->db->query($sql)) {
                             foreach ($result as $row) {
 
-                                $product         = get_object('Product',$row['Product ID']);
+                                $product         = get_object('Product', $row['Product ID']);
                                 $product->editor = $this->editor;
                                 $product->link_image($image->id, $object_image_scope);
 
@@ -2482,16 +2481,16 @@ function edit_image($account, $db, $user, $editor, $data, $smarty) {
                     }
 
 
-                    switch ($data['value']){
+                    switch ($data['value']) {
                         case 'SKO':
-                            $formatted_value=_('SKO image');
+                            $formatted_value = _('SKO image');
                             break;
                         case 'Marketing':
-                            $formatted_value=_('SKO image');
+                            $formatted_value = _('SKO image');
                             break;
 
                         default:
-                        $formatted_value=$data['value'];
+                            $formatted_value = $data['value'];
 
                     }
 
@@ -2505,7 +2504,7 @@ function edit_image($account, $db, $user, $editor, $data, $smarty) {
             $response = array(
                 'state' => 200,
                 'msg'   => 'Image changed',
-                'value'=>$formatted_value
+                'value' => $formatted_value
 
             );
             echo json_encode($response);
@@ -2524,6 +2523,22 @@ function edit_image($account, $db, $user, $editor, $data, $smarty) {
         print_r($error_info = $db->errorInfo());
         exit;
     }
+}
+
+function regenerate_api($account, $db, $user, $editor, $data, $smarty) {
+
+    $api_key = get_object('api_key', $data['api_key']);
+    $api_key->editor=$editor;
+    $private_key = $api_key->regenerate_private_key();
+
+      $response = array(
+          'state' => 200,
+          'qrcode'  => $api_key->get('Address').','.$api_key->get('Code').','.$private_key
+
+      );
+            echo json_encode($response);
+
+
 }
 
 

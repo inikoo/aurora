@@ -4853,8 +4853,13 @@ $modules = array(
 
                     'part.locations'    => array(
                         'label'         => _('Locations'),
-
                         'icon'          => 'map-marker'
+                    ),
+                    'part.paid_orders_in_process'    => array(
+                        'label'         => '',
+                        'title'         => _('Paid orders in process by customer services'),
+                        'icon'          => 'shopping-cart',
+                        'class' => 'right icon_only'
                     ),
                     'part.history'     => array(
 
@@ -6360,25 +6365,25 @@ $modules = array(
                         'label' => _(
                             'Login history'
                         ),
-                        'title' => _(
-                            'Login history'
-                        )
+                        'title' => _('Login history'),
+                        'icon'=>'sign-in'
                     ),
                     'user.api_keys'      => array(
                         'label' => _('API keys'),
-                        'title' => _('API keys')
+                        'icon'=>'key'
                     ),
 
 
 
 
                     'user.history' => array(
-                        'label' => _('History/Notes'),
+                        'label' => '',
+                        'title' => _('History/Notes'),
                         'icon'  => 'road',
                         'class' => 'right icon_only'
                     ),
                     'user.deleted_api_keys'      => array(
-                        'icon'  => 'road',
+                        'icon'  => 'ban',
                         'label' => _('Deleted API keys'),
                         'title' => _('Deleted API keys'),
                         'class' => 'right icon_only'

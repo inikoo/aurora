@@ -6,35 +6,12 @@ editable: false,
 renderable: false,
 cell: "string",
 
-},{
-name: "formatted_id",
-label: "{t}ID{/t}",
-editable: false,
-renderable: false,
-
-sortType: "toggle",
-{if $sort_key=='id'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-
-cell: Backgrid.HtmlCell.extend({
-events: {
-"click": function() {
-change_view('employee/'  +this.model.get("id"))
-}
-},
-className: "link"
-
-})
-
 },
 {
 name: "code",
 label: "{t}Code{/t}",
 sortType: "toggle",
-cell: Backgrid.HtmlCell.extend({
-events: {
-
-}
-})
+cell: Backgrid.HtmlCell.extend({ events: { }})
 },
 {
 name: "code_link",
@@ -57,8 +34,7 @@ label: "{t}Payroll ID{/t}",
 editable: false,
 sortType: "toggle",
 {if $sort_key=='payroll_id'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
-headerCell: integerHeaderCell
+cell: Backgrid.HtmlCell.extend({ } ),
 
 },
 
@@ -140,6 +116,20 @@ events: {
 }
 })
 },
+
+
+{
+name: "user_name_bis",
+label: "{t}User{/t}",
+sortType: "toggle",
+cell: Backgrid.HtmlCell.extend({
+events: {
+
+}
+})
+},
+
+
 {
 name: "roles",
 label: "{t}Roles{/t}",
@@ -176,7 +166,7 @@ cell: "string"
 
 ,{
 name: "user_active",
-label: "{t}System user{/t}",
+label: "{t}User status{/t}",
 editable: false,
 sortType: "toggle",
 {if $sort_key=='user_active'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
@@ -188,7 +178,8 @@ label: "{t}User login{/t}",
 editable: false,
 sortType: "toggle",
 {if $sort_key=='user_login'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: "string"
+cell: Backgrid.HtmlCell.extend({ events: { }})
+
 },
 {
 name: "user_number_logins",
@@ -219,7 +210,10 @@ $('.view').removeClass('selected');
 $('#view_'+view).addClass('selected');
 
 grid.columns.findWhere({ name: 'payroll_id'} ).set("renderable", false)
-grid.columns.findWhere({ name: 'formatted_id'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'user_name_bis'} ).set("renderable", false)
+
+
+
 
 grid.columns.findWhere({ name: 'code'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'code_link'} ).set("renderable", false)
@@ -246,7 +240,7 @@ grid.columns.findWhere({ name: 'user_number_logins'} ).set("renderable", false)
 
 
 if(view=='overview'){
-grid.columns.findWhere({ name: 'formatted_id'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'user_name_bis'} ).set("renderable", true)
 
 grid.columns.findWhere({ name: 'payroll_id'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'code'} ).set("renderable", true)

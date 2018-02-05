@@ -77,7 +77,7 @@ if ($order == 'name') {
     $order = '`Staff Valid To`';
 } elseif ($order == 'roles') {
     $order = 'roles';
-} elseif ($order == 'user_login') {
+} elseif ($order == 'user_login' or $order == 'user_name_bis') {
     $order = '`User Handle`';
 } elseif ($order == 'user_active') {
     $order = '`User Active`';
@@ -107,7 +107,7 @@ $fields
     = "`Staff ID`,`Staff Job Title`,`Staff Birthday`,`Staff Official ID`,`Staff Email`,`Staff Telephone Formatted`,`Staff Telephone`,`Staff Next of Kind`,
 `Staff Alias`,SD.`Staff Key`,`Staff Name`,`Staff Type`,
 `Staff Valid To`,`Staff Valid From`,`User Login Count`,
-`User Handle`,`User Active`,`User Last Login`,
+`User Handle`,`User Active`,`User Last Login`,`User Key`,
 (select GROUP_CONCAT(`Role Code` ) from `Staff Role Bridge` B  where  B.`Staff Key`=SD.`Staff Key` ) as roles,
 (select GROUP_CONCAT(`Staff Alias`  order by `Staff Alias` separator \", \")    from  `Staff Supervisor Bridge` B left join `Staff Dimension` S on (B.`Supervisor Key`=S.`Staff Key`)  where  B.`Staff Key`=SD.`Staff Key` ) as supervisors
 	
