@@ -151,7 +151,7 @@ function employees($_data, $db, $user, $type = '') {
                 'formatted_id' => sprintf("%04d", $data['Staff Key']),
                 'payroll_id'   => $data['Staff ID'],
                 'name'         => $data['Staff Name'],
-                'code'         => $data['Staff Alias'],
+                'code'         => sprintf('<span class="link" onCLick="change_view(\'employee/%d\')">%s</span>',$data['Staff Key'],$data['Staff Alias']),
                 'code_link'    => $data['Staff Alias'],
 
 
@@ -183,6 +183,13 @@ function employees($_data, $db, $user, $type = '') {
 
                 'job_title'          => $data['Staff Job Title'],
                 'user_login'         => $data['User Handle'],
+
+                'user_login'         => sprintf('<span class="link" onCLick="change_view(\'account/user/%d\')">%s</span>',$data['User Key'],$data['User Handle']),
+                'user_name_bis'         => sprintf('<span class="link" onCLick="change_view(\'account/user/%d\')">%s</span>',$data['User Key'],$data['User Handle']),
+
+
+
+
                 'user_active'        => $user_active,
                 'user_last_login'    => ($data['User Last Login'] == ''
                     ? ''

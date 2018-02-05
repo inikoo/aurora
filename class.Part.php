@@ -3638,6 +3638,9 @@ class Part extends Asset {
 
     function update_stock_in_paid_orders() {
 
+
+        $old_value=$this->get('Part Current Stock Ordered Paid');
+
         $stock_in_paid_orders = 0;
 
 
@@ -3659,14 +3662,14 @@ class Part extends Asset {
         }
 
         // print "$sql\n";
-        $this->update(
+        $this->fast_update(
             array(
                 'Part Current Stock Ordered Paid' => $stock_in_paid_orders
 
-            ), 'no_history'
+            )
         );
 
-        if ($this->updated) {
+        if ($old_value!=$stock_in_paid_orders) {
             $this->update_stock();
         }
     }
@@ -3823,7 +3826,7 @@ class Part extends Asset {
             );
 
 
-            $this->update($data_to_update, 'no_history');
+            $this->fast_update($data_to_update, 'Part Data');
         }
         if ($from_date_1yb and $last_year) {
 
@@ -3844,7 +3847,7 @@ class Part extends Asset {
                 "Part $db_interval Acc 1YB With Stock Days"  => $sales_data['with_stock_days'],
 
             );
-            $this->update($data_to_update, 'no_history');
+            $this->fast_update($data_to_update, 'Part Data');
 
 
         }
@@ -3860,7 +3863,7 @@ class Part extends Asset {
                         ]
         )) {
 
-            $this->update(['Part Acc To Day Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
+            $this->fast_update(['Part Acc To Day Updated' => gmdate('Y-m-d H:i:s')]);
 
         } elseif (in_array(
             $db_interval, [
@@ -3871,7 +3874,7 @@ class Part extends Asset {
                         ]
         )) {
 
-            $this->update(['Part Acc Ongoing Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
+            $this->fast_update(['Part Acc Ongoing Intervals Updated' => gmdate('Y-m-d H:i:s')]);
         } elseif (in_array(
             $db_interval, [
                             'Last Month',
@@ -3881,7 +3884,7 @@ class Part extends Asset {
                         ]
         )) {
 
-            $this->update(['Part Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
+            $this->fast_update(['Part Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')]);
         }
 
 

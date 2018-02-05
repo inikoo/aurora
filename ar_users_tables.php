@@ -485,10 +485,10 @@ function api_keys($_data, $db, $user) {
 
 
         if ($data['API Key Active'] == 'Yes') {
-            $active = _('Yes');
+            $active = '<i class="fa fa-check success"></i> '._('Yes');
 
         } else {
-            $active = _('No');
+            $active = '<i class="fa fa-ban error"></i> '._('No');
 
         }
 

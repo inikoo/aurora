@@ -50,12 +50,12 @@ class API_Key extends DB_Table {
             $this->get_deleted_data($tag);
 
             return;
-        }  else {
+        } else {
             return;
         }
         if ($this->data = $this->db->query($sql)->fetch()) {
-            $this->id = $this->data['API Key Key'];
-            $this->user=get_object('User',$this->data['API Key User Key']);
+            $this->id   = $this->data['API Key Key'];
+            $this->user = get_object('User', $this->data['API Key User Key']);
         }
 
     }
@@ -70,8 +70,8 @@ class API_Key extends DB_Table {
 
 
         if ($this->data = $this->db->query($sql)->fetch()) {
-            $this->id = $this->data['API Key Deleted Key'];
-            $this->user=get_object('User',$this->data['API Key Deleted User Key']);
+            $this->id   = $this->data['API Key Deleted Key'];
+            $this->user = get_object('User', $this->data['API Key Deleted User Key']);
 
         }
 
@@ -302,43 +302,40 @@ class API_Key extends DB_Table {
     function delete() {
 
 
+        $data = $this->data;
+        unset($data['API Key Hash']);
+        $metadata = json_encode($data);
 
 
-            $data   =  $this->data;
-            unset($data['API Key Hash']);
-            $metadata = json_encode($data);
-
-
-            $sql = sprintf(
-                "INSERT INTO `API Key Deleted Dimension`  (`API Key Deleted Key`,`API Key Deleted User Key`,`API Key Deleted Code`,`API Key Deleted Date`,`API Key Deleted Metadata`) VALUES (%d,%d,%s,%s,%s) ",
-                $this->id,$this->get('API Key User Key'),
-                prepare_mysql($this->get('API Key Code')), prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql(
-                    gzcompress(
-                        $metadata, 9
-                    )
+        $sql = sprintf(
+            "INSERT INTO `API Key Deleted Dimension`  (`API Key Deleted Key`,`API Key Deleted User Key`,`API Key Deleted Code`,`API Key Deleted Date`,`API Key Deleted Metadata`) VALUES (%d,%d,%s,%s,%s) ", $this->id, $this->get('API Key User Key'),
+            prepare_mysql($this->get('API Key Code')), prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql(
+                gzcompress(
+                    $metadata, 9
                 )
+            )
 
-            );
-
-
-            $stmt = $this->db->prepare($sql);
-            $stmt->execute();
+        );
 
 
-            $history_data = array(
-                'History Abstract' => _('API key deleted'),
-                'History Details'  => '',
-                'Action'           => 'deleted'
-            );
-            $this->add_subject_history(
-                $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
-            );
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
 
 
-            $sql = sprintf(
-                "DELETE FROM `API Key Dimension` WHERE `API Key Key`=%d", $this->id
-            );
-            $this->db->exec($sql);
+        $history_data = array(
+            'History Abstract' => _('API key deleted'),
+            'History Details'  => '',
+            'Action'           => 'deleted'
+        );
+        $this->add_subject_history(
+            $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+        );
+
+
+        $sql = sprintf(
+            "DELETE FROM `API Key Dimension` WHERE `API Key Key`=%d", $this->id
+        );
+        $this->db->exec($sql);
 
 
     }
@@ -369,6 +366,37 @@ class API_Key extends DB_Table {
         }
 
         return $label;
+
+    }
+
+
+    function regenerate_private_key() {
+
+        include_once 'utils/password_functions.php';
+        $this->secret_key = generatePassword(40, 10);
+
+
+        $api_key_hash = password_hash($this->secret_key, PASSWORD_DEFAULT);
+        $secret_key   = base64_encode($this->secret_key);
+
+        $this->fast_update(
+            array(
+                'API Key Hash' => $api_key_hash
+            )
+        );
+
+        $history_data = array(
+            'History Abstract' => _('API private key regenerated'),
+            'History Details'  => '',
+            'Action'           => 'edited'
+        );
+        $this->add_subject_history(
+            $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+        );
+
+
+        return $secret_key;
+
 
     }
 

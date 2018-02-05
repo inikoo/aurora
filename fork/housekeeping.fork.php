@@ -48,6 +48,14 @@ function fork_housekeeping($job) {
             break;
 
 
+
+        case 'update_orders_in_basket_data': // remove after migration
+            $store   = get_object('Store', $data['store_key']);
+            $account = get_object('Account', '');
+            $store->update_orders_in_basket_data();
+            $account->update_orders_in_basket_data();
+
+            break;
         case 'order_items_changed':
             $order = get_object('Order', $data['order_key']);
 
@@ -380,6 +388,34 @@ function fork_housekeeping($job) {
                 }
             }
             break;
+
+        case 'order_payment_changed': // this can be removed after all inikoo gone
+
+
+             $order    = get_object('Order', $data['order_key']);
+
+            $store = get_object('Store', $order->get('Order Store Key'));
+            $store->update_orders();
+
+
+            $sql = sprintf(
+                'SELECT `Product Part Part SKU` FROM `Order Transaction Fact` OTF LEFT JOIN `Product Part Bridge` PPB ON (OTF.`Product ID`=PPB.`Product Part Product ID`)  WHERE `Order Key`=%d  ', $data['order_key']
+            );
+            // print "$sql\n";
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+                    $part = get_object('Part', $row['Product Part Part SKU']);
+                    $part->update_stock_in_paid_orders();
+                    //   print $part->get('Reference')."\n";
+                }
+            } else {
+                print_r($error_info = $db->errorInfo());
+                exit;
+            }
+
+
+            break;
+
         case 'payment_added_order':
 
 

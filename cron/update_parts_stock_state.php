@@ -11,10 +11,29 @@
 */
 
 require_once 'common.php';
-require_once 'class.Part.php';
-require_once 'class.Product.php';
-require_once 'class.Page.php';
-require_once 'class.Supplier.php';
+
+
+$print_est=true;
+
+$where = " where `Part SKU`=5291 ";
+//	$where=" where `Part Reference` like 'jbb-%' ";
+
+$where = "";
+
+$sql = sprintf("SELECT count(*) AS num FROM `Part Dimension` %s", $where);
+if ($result = $db->query($sql)) {
+    if ($row = $result->fetch()) {
+        $total = $row['num'];
+    } else {
+        $total = 0;
+    }
+} else {
+    print_r($error_info = $db->errorInfo());
+    exit;
+}
+
+$lap_time0 = date('U');
+$contador  = 0;
 
 
 //$sql=sprintf('select `Part SKU` from `Part Dimension` where `Part Key`=24 ');
@@ -22,19 +41,31 @@ $sql = sprintf(
     'SELECT `Part SKU` FROM `Part Dimension` ORDER BY `Part SKU` DESC  '
 );
 
+
+
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
-        $part = new Part($row['Part SKU']);
+        $part = get_object('Part', $row['Part SKU']);
 
-        foreach($part->get_locations('part_location_object') as $part_location){
-            $part_location->update_stock();
+        //foreach($part->get_locations('part_location_object') as $part_location){
+        //    $part_location->update_stock();
+        // }
+
+        $part->update_sales_from_invoices('1 Quarter',true,false);
+
+        $part->update_available_forecast();
+
+
+        $contador++;
+        $lap_time1 = date('U');
+
+        if ($print_est) {
+            print 'Pa '.percentage($contador, $total, 3)."  lap time ".sprintf("%.2f", ($lap_time1 - $lap_time0) / $contador)." EST  ".sprintf(
+                    "%.1f", (($lap_time1 - $lap_time0) / $contador) * ($total - $contador) / 3600
+                )."h  ($contador/$total) \r";
         }
 
 
-        $part->update_available_forecast();
-        $part->update_stock_status();
-
-
     }
 
 } else {
@@ -42,21 +73,5 @@ if ($result = $db->query($sql)) {
     exit;
 }
 
-
-$sql = sprintf('SELECT `Supplier Key` FROM `Supplier Dimension`  ');
-
-if ($result = $db->query($sql)) {
-    foreach ($result as $row) {
-        $supplier = new Supplier($row['Supplier Key']);
-
-        $supplier->update_supplier_parts();
-
-
-    }
-
-} else {
-    print_r($error_info = $db->errorInfo());
-    exit;
-}
 
 ?>
