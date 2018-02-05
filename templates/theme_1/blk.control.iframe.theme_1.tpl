@@ -9,7 +9,17 @@
 -->
 *}
 
+{if !isset($block.height_mobile)}
+    {assign var="height_mobile" value="250"}
+{else}
+    {assign var="height_mobile" value=$block.height_mobile}
+{/if}
 
+{if !isset($block.src_mobile)}
+    {assign var="src_mobile" value=""}
+{else}
+    {assign var="src_mobile" value=$block.src_mobile}
+{/if}
 
 <div id="edit_mode_{$key}" class=" edit_mode " type="{$block.type}" key="{$key}" style="height: 22px;line-height: 22px">
     <div style="float:left;margin-right:20px;min-width: 200px;">
