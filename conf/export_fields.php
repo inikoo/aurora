@@ -693,7 +693,7 @@ $export_fields = array(
         ),
 
     ),
-    'products'                                   => array(
+    'products'            => array(
 
         array(
             'name'    => '`Product Status`',
@@ -763,7 +763,6 @@ $export_fields = array(
         ),
 
 
-
         array(
             'name'    => '`Product RRP`/`Product Units Per Case`',
             'label'   => _('Unit RRP'),
@@ -791,7 +790,7 @@ $export_fields = array(
             'name'    => '`Product Published Webpage Description`',
             'label'   => _('Webpage description (html)'),
             'checked' => 0,
-            'html'=>1
+            'html'    => 1
         ),
 
         array(
@@ -849,7 +848,7 @@ $export_fields = array(
         ),
 
     ),
-    'intrastat' => array(
+    'intrastat'           => array(
         array(
             'name'    => 'date_format( min(`Delivery Note Date`),\'%y%m\')',
             'label'   => _('Period'),
@@ -884,7 +883,7 @@ $export_fields = array(
 
     ),
 
-    'warehouse_parts_to_replenish_picking_location'=>array(
+    'warehouse_parts_to_replenish_picking_location' => array(
         array(
             'name'    => 'P.`Part Reference`',
             'label'   => _('Part reference'),
@@ -896,9 +895,48 @@ $export_fields = array(
             'label'   => _('Part description'),
             'checked' => 1
         ),
+    ),
+
+
+
+    'abandoned_cart.mail_list' => array(
+        array(
+            'name'    => '`Customer Main Plain Email`',
+            'label'   => _('Email'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Customer Name`',
+            'label'   => _('Customer name'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Customer Company Name`',
+            'label'   => _('Company name'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Customer Main Contact Name`',
+            'label'   => _('Contact name'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Order Public ID`',
+            'label'   => _('Order number'),
+            'checked' => 1
+        ),
+
+        array(
+            'name'    => 'DATEDIFF(NOW(), `Order Last Updated Date`) ',
+            'label'   => _('Inactive days in basket'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Order Last Updated Date`',
+            'label'   => _('Order last updated'),
+            'checked' => 0
+        ),
     )
-
-
 
 );
 

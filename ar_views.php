@@ -1260,7 +1260,6 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     );
                     break;
                 case ('mailshots'):
-
                     return get_mailshots_navigation(
                         $data, $smarty, $user, $db, $account
                     );
@@ -1400,6 +1399,12 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     break;
                 case ('category'):
                     return get_invoices_category_server_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
+
+                case ('email_campaign'):
+                    return get_email_campaign_navigation(
                         $data, $smarty, $user, $db, $account
                     );
                     break;
@@ -4073,6 +4078,24 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     'icon'      => '',
                     'reference' => ''
                 );
+            } elseif ($state['section'] == 'email_campaign') {
+
+
+
+                $branch[] = array(
+                    'label'     => _("Orders control panel").' ('._('All stores').')',
+                    'icon'      => '',
+                    'reference' => 'orders/all/dashboard/website/mailshots'
+                );
+
+
+                $branch[] = array(
+                    'label'     => '<span class="Email_Campaign_Name">'.$state['_object']->get('Name').'</span>',
+                    'icon'      => 'at',
+                    'reference' => ''
+                );
+
+
             } else {
                 if ($state['section'] == 'invoices') {
 
@@ -4081,6 +4104,10 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'icon'      => '',
                         'reference' => ''
                     );
+
+
+
+
 
 
                 } else {
@@ -4096,6 +4123,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     }
                 }
             }
+
 
 
             break;

@@ -706,6 +706,9 @@ abstract class DB_Table extends stdClass {
         } elseif ($table_full_name == 'Page Store Dimension') {
             $key_field = 'Page Key';
 
+        } elseif ($table_full_name == 'Email Campaign Abandoned Cart Dimension') {
+            $key_field = 'Email Campaign Abandoned Cart Email Campaign Key';
+
         } elseif ($table_full_name == 'Product Category Data' or $table_full_name == 'Product Category DC Data' or $table_full_name == 'Product Category Dimension') {
             $key_field = 'Product Category Key';
 

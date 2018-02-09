@@ -74,6 +74,8 @@ else {
         $_tipo = 'part_barcode_errors';
     } elseif ($_data['tipo'] == 'parts_to_replenish_picking_location'  ) {
         $_tipo = 'warehouse_parts_to_replenish_picking_location';
+    }  elseif ($_data['tipo'] == 'abandoned_cart'  ) {
+        $_tipo = 'abandoned_cart.mail_list';
     }  else {
         $_tipo = $_data['tipo'];
     }

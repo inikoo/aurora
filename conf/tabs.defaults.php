@@ -22,6 +22,7 @@ $default_rrp_options = array(
 
 $tab_defaults = array(
 
+
     'customers'                     => array(
         'view'          => 'overview',
         'sort_key'      => 'formatted_id',
@@ -3267,6 +3268,26 @@ $tab_defaults = array(
         'export_fields' => $export_fields['supplier_timeseries_drill_down_families']
 
     ),
+    'email_campaign.mail_list'                     => array(
+        'view'          => 'overview',
+        'sort_key'      => 'email',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'email',
+
+    ),
+    'abandoned_cart.mail_list'                     => array(
+        'view'          => 'overview',
+        'sort_key'      => 'email',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'email',
+        'export_fields' => $export_fields['abandoned_cart.mail_list']
+
+
+    ),
 
     'email_campaign.history'          => array(
         'view'          => 'overview',
@@ -3278,6 +3299,7 @@ $tab_defaults = array(
         'elements_type' => each($elements_options['deal_history'])['key'],
         'elements'      => $elements_options['deal_history']
     ),
+
     'stock_leakages'                  => array(
         'view'        => 'overview',
         'sort_key'    => 'date',
@@ -3298,6 +3320,7 @@ $tab_defaults = array(
         'elements_type' => each($elements_options['leakages_transactions'])['key'],
         'elements'      => $elements_options['leakages_transactions']
     ),
+
 
 );
 

@@ -24,6 +24,7 @@ switch ($parameters['parent']) {
         $where = 'where false';
 }
 
+$where.=' and `Email Campaign Type`="AbandonedCart"';
 
 
 $wheref = '';
@@ -55,7 +56,7 @@ if ($order == 'name') {
     $order = '`Email Campaign Key`';
 }
 $table  = '`Email Campaign Dimension` C left join `Store Dimension` S on (S.`Store Key`=C.`Email Campaign Store Key`) ';
-$fields = "`Email Campaign Key`,`Email Campaign Name`,`Email Campaign Store Key`,S.`Store Code`,`Store Name`";
+$fields = "`Email Campaign Key`,`Email Campaign Name`,`Email Campaign Store Key`,S.`Store Code`,`Store Name`,`Email Campaign Last Updated Date`,`Email Campaign State`,`Email Campaign Number Estimated Emails`,`Email Campaign Store Key`";
 
 
 $sql_totals = "select count(*) as num from $table $where ";

@@ -18,6 +18,8 @@ table.totals {
 }
 
 .order_operation_dialog {
+  color: $color_font;
+  font-size: 15px;
   border: 1px solid #ccc;;
   min-width: 300px;
   position: absolute;
@@ -38,6 +40,10 @@ table.totals {
   }
   tr:last-child td {
     padding-bottom: 10px
+  }
+
+  tr.top td {
+    padding-left: 10px
   }
 
 }

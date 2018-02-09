@@ -449,6 +449,10 @@ function get_rtext($record_label, $total_records) {
         return sprintf(
             ngettext('%s deleted Api key', '%s deleted API keys', $total_records), number($total_records)
         );
+    } elseif ($record_label == 'recipient') {
+        return sprintf(
+            ngettext('%s recipient', '%s recipients', $total_records), number($total_records)
+        );
     } else {
         return sprintf(
             ngettext('%s record', '%s records', $total_records), number($total_records)

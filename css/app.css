@@ -1469,6 +1469,8 @@ table.totals .total td {
   border-top: 1px solid #aaa; }
 
 .order_operation_dialog {
+  color: #555;
+  font-size: 15px;
   border: 1px solid #ccc;
   min-width: 300px;
   position: absolute;
@@ -1483,6 +1485,8 @@ table.totals .total td {
     padding-top: 10px; }
   .order_operation_dialog tr:last-child td {
     padding-bottom: 10px; }
+  .order_operation_dialog tr.top td {
+    padding-left: 10px; }
 
 .order {
   border-bottom: 1px solid #ccc; }

@@ -2493,6 +2493,10 @@ function get_email_campaign_navigation($data, $smarty, $user, $db, $account) {
                 $tab      = 'orders.website.mailshots';
                 $_section = 'orders';
                 break;
+            case 'account':
+                $tab      = 'orders.website.mailshots';
+                $_section = 'orders';
+                break;
 
         }
 
@@ -2640,6 +2644,53 @@ function get_email_campaign_navigation($data, $smarty, $user, $db, $account) {
 
 
             $sections = get_sections('orders', $data['_parent']->id);
+
+
+        }
+        elseif ($data['parent'] == 'account') {
+
+            $up_button = array(
+                'icon'      => 'arrow-up',
+                'title'     => _("Abandoned card mailshots"),
+                'reference' => 'orders/all/dashboard/website/mailshots'
+            );
+
+            if ($prev_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-left',
+                    'title'     => $prev_title,
+                    'reference' => 'orders/all/dashboard/website/mailshots/'.$prev_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-left disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+            $left_buttons[] = $up_button;
+
+
+            if ($next_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-right',
+                    'title'     => $next_title,
+                    'reference' => 'orders/all/dashboard/website/mailshots/'.$next_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-right disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+
+
+            $sections = get_sections('orders_server');
 
 
         }

@@ -21,7 +21,17 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
     switch ($object->get_object_name()) {
         case 'Email Campaign':
-            include 'fields/email_campaign.fld.php';
+
+
+
+            switch ($object->get('Email Campaign Type')) {
+                case 'AbandonedCart':
+                    include 'fields/email_campaign.abandoned_cart.fld.php';
+                    break;
+                default:
+                    include 'fields/email_campaign.fld.php';
+            }
+
 
             return $object_fields;
             break;

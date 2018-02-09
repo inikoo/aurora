@@ -60,13 +60,140 @@ class EmailCampaign extends DB_Table {
 
         if ($this->data = $this->db->query($sql)->fetch()) {
 
-            $this->id   = $this->data['Email Campaign Key'];
+            $this->id = $this->data['Email Campaign Key'];
+        }
+
+        switch ($this->get('Email Campaign Type')) {
+            case 'AbandonedCart':
+
+                $sql = sprintf(
+                    "SELECT * FROM `Email Campaign Abandoned Cart Dimension` WHERE  `Email Campaign Abandoned Cart Email Campaign Key`=%d", $tag
+                );
+
+                if ($result = $this->db->query($sql)) {
+                    if ($row = $result->fetch()) {
+                        foreach ($row as $key => $value) {
+                            $this->data[$key] = $value;
+                        }
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    exit;
+                }
+
+
+                break;
+            default:
+
         }
 
 
+    }
+
+    function get($key) {
+
+        if (!$this->id) {
+            return false;
+        }
+
+        switch ($key) {
+
+            case ('State Index'):
+
+                switch ($this->data['Email Campaign State']) {
+                    case 'InProcess':
+                        return 10;
+                        break;
+                    case 'ComposingEmail':
+                        return 20;
+                        break;
+                    case 'Ready':
+                        return 30;
+                        break;
+                    case 'Scheduled':
+                        return 40;
+                        break;
+                    case 'Sending':
+                        return 50;
+                        break;
+                    case 'Cancelled':
+                        return 70;
+                        break;
+                    case 'Send':
+                        return 100;
+                        break;
 
 
 
+
+                    default:
+                        return 0;
+                        break;
+                }
+
+                break;
+            case 'State':
+                //'InProcess','ComposingEmail','Ready','Sending','Complete'
+                switch ($this->data['Email Campaign State']) {
+                    case 'InProcess':
+                        return _('Setting up mailing list');
+                        break;
+                    case 'ComposingEmail':
+                        return _('Composing email');
+                        break;
+                    case 'Ready':
+                        return _('Ready to send');
+                        break;
+                    case 'Scheduled':
+                        return _('Scheduled to be send');
+                        break;
+
+                    case 'Sending':
+                        return _('Sending');
+
+                        break;
+                    case 'Cancelled':
+                        return _('Cancelled');
+                        break;
+                    case 'Send':
+                        return _('Send');
+                        break;
+
+
+
+
+                    default:
+                        return $this->data['Email Campaign State'];
+                        break;
+                }
+
+
+                break;
+
+            case 'Abandoned Cart Days Inactive in Basket':
+            case 'Number Estimated Emails':
+                return number($this->data['Email Campaign '.$key]);
+                break;
+
+
+            case 'Creation Date':
+
+                return strftime('%e %b %y %k:%M', strtotime($this->data['Email Campaign '.$key]));
+
+                break;
+
+
+            default:
+                if (isset($this->data[$key])) {
+                    return $this->data[$key];
+                }
+
+                if (array_key_exists('Email Campaign '.$key, $this->data)) {
+                    return $this->data[$this->table_name.' '.$key];
+                }
+        }
+
+        return false;
     }
 
     function find($raw_data, $options) {
@@ -85,30 +212,27 @@ class EmailCampaign extends DB_Table {
 
 
         $sql = sprintf(
-            "SELECT `Email Campaign Key` FROM `Email Campaign Dimension` WHERE `Email Campaign Store Key`=%d AND `Email Campaign Name`=%s", $raw_data['Email Campaign Store Key'],
-            prepare_mysql($raw_data['Email Campaign Name'])
+            "SELECT `Email Campaign Key` FROM `Email Campaign Dimension` WHERE `Email Campaign Store Key`=%d AND `Email Campaign Name`=%s", $raw_data['Email Campaign Store Key'], prepare_mysql($raw_data['Email Campaign Name'])
         );
 
 
-        if ($result=$this->db->query($sql)) {
+        if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
                 $this->found_key = $row['Email Campaign Key'];
                 $this->found     = true;
-                $this->get_data('id',$this->found_key );
-        	}
-        }else {
-        	print_r($error_info=$this->db->errorInfo());
-        	print "$sql\n";
-        	exit;
+                $this->get_data('id', $this->found_key);
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
-
 
 
         $create = '';
         if (preg_match('/create/i', $options)) {
             $create = 'create';
         }
-
 
 
         if ($create and !$this->found) {
@@ -119,17 +243,16 @@ class EmailCampaign extends DB_Table {
 
     function create($raw_data) {
 
-        $data         = $this->base_data();
+        $data = $this->base_data();
 
 
         foreach ($raw_data as $key => $value) {
             if (array_key_exists($key, $data)) {
 
-                    $data[$key] = _trim($value);
+                $data[$key] = _trim($value);
 
             }
         }
-
 
 
         if ($data['Email Campaign Name'] == '') {
@@ -140,13 +263,11 @@ class EmailCampaign extends DB_Table {
         }
 
 
-
-
         $keys   = '(';
         $values = 'values(';
         foreach ($data as $key => $value) {
             $keys .= "`$key`,";
-            if (  $key = '') {
+            if ($key = '') {
                 $values .= prepare_mysql($value, false).",";
             } else {
                 $values .= prepare_mysql($value).",";
@@ -160,31 +281,54 @@ class EmailCampaign extends DB_Table {
 
         $sql = "insert into `Email Campaign Dimension` $keys  $values";
 
-//print $sql;
+        //print $sql;
 
         if ($this->db->exec($sql)) {
             $this->id = $this->db->lastInsertId();
 
-
             $this->get_data('id', $this->id);
+
+            switch ($this->get('Email Campaign Type')) {
+                case 'AbandonedCart':
+
+                    $sql = sprintf('INSERT INTO `Email Campaign Abandoned Cart Dimension`  (`Email Campaign Abandoned Cart Email Campaign Key`) VALUES (%d) ', $this->id);
+
+                    $this->db->exec($sql);
+                    $this->get_data('id', $this->id);
+                    break;
+                default:
+
+            }
+
+
             $this->new = true;
 
-            /*
-            $store = new Store($this->data['Email Campaign Store Key']);
-            switch ($this->data['Email Campaign Type']) {
-                case 'Marketing':
-                    //$store->update_email_campaign_data();
+            $store = get_object('Store', $this->data['Email Campaign Store Key']);
+            $store->update_email_campaign_data();
+
+
+            switch ($this->get('Email Campaign Type')) {
+                case 'AbandonedCart':
+                    $history_abstract = sprintf(_('Abandoned cart mailshot %s created'), '<b>'.$this->data['Email Campaign Name'].'</b>');
+
                     break;
-                case 'Newsletter':
-                    //update_newsletter_data();
-                    break;
-                case 'Reminder':
-                    //update_newsletter_data();
+                default:
+
+                    $history_abstract = sprintf(_('Email campaign %s created'), $this->data['Email Campaign Name']);
                     break;
             }
 
-*/
+            $this->update_estimated_recipients();
 
+            $history_data = array(
+                'History Abstract' => $history_abstract,
+                'History Details'  => '',
+                'Action'           => 'created'
+            );
+
+            $history_key = $this->add_subject_history(
+                $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+            );
 
 
         } else {
@@ -193,6 +337,44 @@ class EmailCampaign extends DB_Table {
             // exit("$sql\n");
         }
 
+
+    }
+
+    function update_estimated_recipients() {
+
+
+        if ($this->get('State Index') < 40) {
+
+
+            $estimated_recipients = 0;
+
+            switch ($this->get('Email Campaign Type')) {
+                case 'AbandonedCart':
+
+                    $sql = sprintf(
+                        'SELECT count(DISTINCT O.`Order Key`) AS num FROM `Order Dimension` O LEFT JOIN `Customer Dimension` ON (`Order Customer Key`=`Customer Key`) WHERE `Order Class`="InWebsite" AND `Customer Main Plain Email`!="" AND `Customer Send Email Marketing`="Yes" AND `Order Store Key`=%d AND `Order Last Updated Date`<= CURRENT_DATE - INTERVAL %d DAY',
+                        $this->data['Email Campaign Store Key'], $this->data['Email Campaign Abandoned Cart Days Inactive in Basket']
+                    );
+
+                    if ($result = $this->db->query($sql)) {
+                        if ($row = $result->fetch()) {
+                            $estimated_recipients = $row['num'];
+                        }
+                    } else {
+                        print_r($error_info = $this->db->errorInfo());
+                        print "$sql\n";
+                        exit;
+                    }
+
+                    break;
+
+                default:
+
+            }
+
+            $this->fast_update(array('Email Campaign Number Estimated Emails' => $estimated_recipients));
+
+        }
 
     }
 
@@ -349,8 +531,7 @@ class EmailCampaign extends DB_Table {
 
         $sql = sprintf(
             "INSERT INTO `Email Campaign Mailing List` (`Email Campaign Key`,`Email Key`,`Email Address`,`Email Contact Name`,`Customer Key`,`Email Content Key`)
-                     VALUES (%d,%s,%s,%s,%s,%d)", $this->id, prepare_mysql($data['Email Key']), prepare_mysql($data['Email Address']), prepare_mysql($data['Email Contact Name'], false),
-            prepare_mysql($data['Customer Key']), $email_content_key
+                     VALUES (%d,%s,%s,%s,%s,%d)", $this->id, prepare_mysql($data['Email Key']), prepare_mysql($data['Email Address']), prepare_mysql($data['Email Contact Name'], false), prepare_mysql($data['Customer Key']), $email_content_key
 
         );
         mysql_query($sql);
@@ -391,8 +572,7 @@ class EmailCampaign extends DB_Table {
         if ($customer_list_data['List Type'] == 'Static') {
 
             $sql = sprintf(
-                "SELECT `Customer Main Contact Name`,C.`Customer Key`,`Customer Main Plain Email`,`Customer Send Email Marketing` FROM `List Customer Bridge` B LEFT JOIN `Customer Dimension` C ON (B.`Customer Key`=C.`Customer Key`) WHERE `List Key`=%d ",
-                $list_key
+                "SELECT `Customer Main Contact Name`,C.`Customer Key`,`Customer Main Plain Email`,`Customer Send Email Marketing` FROM `List Customer Bridge` B LEFT JOIN `Customer Dimension` C ON (B.`Customer Key`=C.`Customer Key`) WHERE `List Key`=%d ", $list_key
             );
 
 
@@ -470,7 +650,7 @@ class EmailCampaign extends DB_Table {
         if ($emails_already_in_the_mailing_list) {
             $msg .= '<tr><td>'._('Skipped (Email already added)').':</td><td>'.$emails_already_in_the_mailing_list.'</td></tr>';
         }
-        $msg .= '</table>';
+        $msg       .= '</table>';
         $this->msg = $msg;
 
 
@@ -482,25 +662,65 @@ class EmailCampaign extends DB_Table {
     }
 
     function delete() {
-        if ($this->data['Email Campaign State'] == 'Creating') {
-            $content_keys = $this->get_content_data_keys();
-            $sql          = sprintf(
-                "DELETE FROM `Email Campaign Content Bridge` WHERE `Email Campaign Key`=%d", $this->id
-            );
-            mysql_query($sql);
+
+
+        if ($this->data['Email Campaign State'] == 'InProcess') {
+
+
+            $store = get_object('Store', $this->data['Email Campaign Store Key']);
+
+            $sql = sprintf('SELECT `History Key` FROM `Email Campaign History Bridge` WHERE `Email Campaign Key`=%d ', $this->id);
+
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
+                    $sql = sprintf("DELETE FROM `History Dimension` WHERE  `History Key`=%d", $row['History Key']);
+                    $this->db->exec($sql);
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+
+            $sql = sprintf("DELETE FROM `Email Campaign History Bridge` WHERE `Email Campaign Key`=%d ", $this->id);
+            $this->db->exec($sql);
+
+
+            switch ($this->get('Email Campaign Type')) {
+                case 'AbandonedCart':
+
+
+                    $sql = sprintf("DELETE FROM `Email Campaign Abandoned Cart Dimension` WHERE  `Email Campaign Abandoned Cart Email Campaign Key`=%d", $this->id);
+                    $this->db->exec($sql);
+
+
+                    break;
+                default:
+
+            }
+
+
             $sql = sprintf(
                 "DELETE FROM `Email Campaign Dimension` WHERE `Email Campaign Key`=%d", $this->id
             );
-            mysql_query($sql);
-            $sql = sprintf(
-                "DELETE FROM `Email Campaign Mailing List` WHERE `Email Campaign Key`=%d", $this->id
-            );
-            mysql_query($sql);
-            $sql = sprintf(
-                "DELETE FROM `Email Content Dimension` WHERE `Email Content Key` IN (%s)", join(',', $content_keys)
-            );
-            mysql_query($sql);
+
+            $this->db->exec($sql);
+
+            $store->update_email_campaign_data();
+
+
             $this->updated = true;
+            $this->deleted = true;
+
+            switch ($this->get('Email Campaign Type')) {
+                case 'AbandonedCart':
+                    return sprintf('orders/%d/dashboard/website/mailshots', $store->id);
+
+                    break;
+                default:
+
+            }
+
 
         } else {
             $this->error = true;
@@ -508,105 +728,6 @@ class EmailCampaign extends DB_Table {
         }
 
     }
-
-
-
-    function get($key) {
-
-
-        switch ($key) {
-
-            case 'State':
-                switch ($this->data['Email Campaign State']) {
-                    case 'InProcess':
-                        return _('Setting up mailing list');
-                        break;
-
-
-                    case 'InProcess':
-                        return 30;
-                        break;
-                    case 'InWarehouse':
-                        return 40;
-                        break;
-
-                    case 'PackedDone':
-                        return 80;
-                        break;
-                    case 'Approved':
-                        return 90;
-                        break;
-                    case 'Dispatched':
-                        return 100;
-                        break;
-                    case 'Cancelled':
-                        return -10;
-                        break;
-
-
-                    default:
-                        return 0;
-                        break;
-                }
-
-
-                break;
-            case ('State Index'):
-
-
-                switch ($this->data['Email Campaign State']) {
-                    case 'InProcess':
-                        return 10;
-                        break;
-
-
-                    case 'InProcess':
-                        return 30;
-                        break;
-                    case 'InWarehouse':
-                        return 40;
-                        break;
-
-                    case 'PackedDone':
-                        return 80;
-                        break;
-                    case 'Approved':
-                        return 90;
-                        break;
-                    case 'Dispatched':
-                        return 100;
-                        break;
-                    case 'Cancelled':
-                        return -10;
-                        break;
-
-
-                    default:
-                        return 0;
-                        break;
-                }
-
-                break;
-            case 'Creation Date':
-
-                return strftime('%e %b %y %k:%M',strtotime($this->data['Email Campaign '.$key]));
-
-                break;
-
-
-            default:
-                if (isset($this->data[$key])) {
-                    return $this->data[$key];
-                }
-
-                if (array_key_exists('Email Campaign '.$key, $this->data)) {
-                    return $this->data[$this->table_name.' '.$key];
-                }
-        }
-
-        return false;
-    }
-
 
     function get_recipient_email($email_mailing_list_key = false) {
         if (!$email_mailing_list_key) {
@@ -715,11 +836,9 @@ class EmailCampaign extends DB_Table {
 
                 if (!$content_data['header_image_key']) {
                     if ($content_data['template_type'] == 'Postcard') {
-                        $header_src
-                            = $content_data['color_scheme']['Header_Slim_Image_Source'];
+                        $header_src = $content_data['color_scheme']['Header_Slim_Image_Source'];
                     } else {
-                        $header_src
-                            = $content_data['color_scheme']['Header_Image_Source'];
+                        $header_src = $content_data['color_scheme']['Header_Image_Source'];
                     }
 
                     $data = array(
@@ -741,22 +860,19 @@ class EmailCampaign extends DB_Table {
 
 
                     $sql = sprintf(
-                        "SELECT `Email Template Header Image Key` FROM `Email Template Header Image Dimension` WHERE `Store Key`=%d AND `Image Key`=%d", $this->data['Email Campaign Store Key'],
-                        $image->id
+                        "SELECT `Email Template Header Image Key` FROM `Email Template Header Image Dimension` WHERE `Store Key`=%d AND `Image Key`=%d", $this->data['Email Campaign Store Key'], $image->id
                     );
 
 
                     $res = mysql_query($sql);
                     if ($row = mysql_fetch_assoc($res)) {
 
-                        $_header_image_key
-                            = $row['Email Template Header Image Key'];
+                        $_header_image_key = $row['Email Template Header Image Key'];
                     } else {
 
 
                         $sql = sprintf(
-                            "INSERT INTO `Email Template Header Image Dimension` (`Email Template Header Image Name`,`Store Key`,`Image Key`) VALUES (%s,%d,%d) ", prepare_mysql(basename($header_src)),
-                            $this->data['Email Campaign Store Key'], $image->id
+                            "INSERT INTO `Email Template Header Image Dimension` (`Email Template Header Image Name`,`Store Key`,`Image Key`) VALUES (%s,%d,%d) ", prepare_mysql(basename($header_src)), $this->data['Email Campaign Store Key'], $image->id
 
                         );
                         mysql_query($sql);
@@ -776,8 +892,7 @@ class EmailCampaign extends DB_Table {
 
                 if ($content_data['template_type'] == 'Postcard' and !$content_data['postcard_image_key']) {
 
-                    $postcard_src
-                        = $content_data['color_scheme']['Postcard_Image_Source'];
+                    $postcard_src = $content_data['color_scheme']['Postcard_Image_Source'];
 
 
                     $data = array(
@@ -822,29 +937,26 @@ class EmailCampaign extends DB_Table {
                 $historic_keys   = '';
                 $historic_values = '';
                 foreach ($base_data as $_key => $_value) {
-                    $where .= sprintf(
+                    $where           .= sprintf(
                         " and `%s`=%s", $_key, prepare_mysql($_value)
                     );
-                    $historic_keys .= ",`$_key`";
+                    $historic_keys   .= ",`$_key`";
                     $historic_values .= ",".prepare_mysql($_value);
                 }
                 $where           = preg_replace('/^ and/', '', $where);
                 $historic_keys   = preg_replace('/^,/', '', $historic_keys);
                 $historic_values = preg_replace('/^,/', '', $historic_values);
-                $sql
-                                 = "select `Email Template Historic Color Scheme Key` from `Email Template Historic Color Scheme Dimension` where $where";
+                $sql             = "select `Email Template Historic Color Scheme Key` from `Email Template Historic Color Scheme Dimension` where $where";
 
 
                 $res = mysql_query($sql);
                 if ($row = mysql_fetch_assoc($res)) {
 
-                    $historic_color_scheme
-                        = $row['Email Template Historic Color Scheme Key'];
+                    $historic_color_scheme = $row['Email Template Historic Color Scheme Key'];
                 } else {
 
 
-                    $sql
-                        = "insert into `Email Template Historic Color Scheme Dimension`($historic_keys) values ($historic_values) ";
+                    $sql = "insert into `Email Template Historic Color Scheme Dimension`($historic_keys) values ($historic_values) ";
                     mysql_query($sql);
                     $historic_color_scheme = mysql_insert_id();
 
@@ -861,8 +973,6 @@ class EmailCampaign extends DB_Table {
 
 
     }
-
-
 
     function get_message_data($email_mailing_list_key = false, $smarty = false, $inikoo_public_path = '') {
 
@@ -887,12 +997,9 @@ class EmailCampaign extends DB_Table {
             $email_content_key = $row['Email Content Key'];
             $customer          = new Customer($row['Customer Key']);
             if (!$customer->id) {
-                $customer->data['Customer Main Contact Name']
-                    = $row['Email Contact Name'];
-                $customer->data['Customer Name']
-                    = $row['Email Contact Name'];
-                $customer->data['Customer Main Plain Email']
-                    = $row['Email Address'];
+                $customer->data['Customer Main Contact Name'] = $row['Email Contact Name'];
+                $customer->data['Customer Name']              = $row['Email Contact Name'];
+                $customer->data['Customer Main Plain Email']  = $row['Email Address'];
 
                 $customer->data['Customer Type'] = 'person';
 
@@ -972,8 +1079,6 @@ class EmailCampaign extends DB_Table {
         );
     }
 
-
-
     function update_send_emails() {
         $this->data['Number of Read Emails'] = 0;
         $sql                                 = sprintf(
@@ -994,6 +1099,23 @@ class EmailCampaign extends DB_Table {
 
 
         switch ($field) {
+
+            case 'Email Campaign Abandoned Cart Days Inactive in Basket':
+                $this->fast_update(array('Email Campaign Abandoned Cart Days Inactive in Basket' => $value), 'Email Campaign Abandoned Cart Dimension');
+                $this->update_estimated_recipients();
+
+
+                $this->update_metadata = array(
+                    'class_html' => array(
+                        'Email_Campaign_Number_Estimated_Emails' => $this->get('Email Campaign Number Estimated Emails'),
+                        'Number_Estimated_Emails' => $this->get('Number Estimated Emails'),
+
+                    ),
+
+                );
+
+
+                break;
             case('Email Campaign Content Text'):
                 $this->update_content_text($value);
                 break;
@@ -1012,8 +1134,6 @@ class EmailCampaign extends DB_Table {
 
         }
     }
-
-
 
     function add_objective($scope_data) {
 
@@ -1067,8 +1187,7 @@ class EmailCampaign extends DB_Table {
                 break;
             case 'External Link':
                 $parent_key    = 0;
-                $parent_name
-                               = $scope_data['Email Campaign Objective Parent Name'];
+                $parent_name   = $scope_data['Email Campaign Objective Parent Name'];
                 $term          = 'Visit';
                 $term_metadata = '432000';
                 break;
@@ -1084,8 +1203,8 @@ class EmailCampaign extends DB_Table {
 
 
             $sql = sprintf(
-                "SELECT `Email Campaign Objective Key` FROM `Email Campaign Objective Dimension` WHERE `Email Campaign Key`=%d  AND `Email Campaign Objective Parent`=%s  AND  `Email Campaign Objective Parent Key`=%d ",
-                $this->id, prepare_mysql($scope_data['Email Campaign Objective Parent']), $parent_key
+                "SELECT `Email Campaign Objective Key` FROM `Email Campaign Objective Dimension` WHERE `Email Campaign Key`=%d  AND `Email Campaign Objective Parent`=%s  AND  `Email Campaign Objective Parent Key`=%d ", $this->id,
+                prepare_mysql($scope_data['Email Campaign Objective Parent']), $parent_key
             );
             $res = mysql_query($sql);
             if ($row = mysql_fetch_assoc($res)) {
@@ -1119,7 +1238,6 @@ class EmailCampaign extends DB_Table {
 
     }
 
-
     function set_as_ready($lag_seconds) {
 
         if ($this->data['Email Campaign State'] == 'Sending') {
@@ -1135,7 +1253,7 @@ class EmailCampaign extends DB_Table {
             return;
         }
 
-        $this->data['Email Campaign State']             = 'Ready';
+        $this->data['Email Campaign State']              = 'Ready';
         $this->data['Email Campaign Start Overdue Date'] = date(
             "Y-m-d H:i:s", strtotime(sprintf('now +%d seconds ', $lag_seconds))
         );
@@ -1149,7 +1267,6 @@ class EmailCampaign extends DB_Table {
 
     }
 
-
     function get_field_label($field) {
 
         switch ($field) {
@@ -1157,7 +1274,9 @@ class EmailCampaign extends DB_Table {
             case 'Email Campaign Name':
                 $label = _('name');
                 break;
-
+            case 'Email Campaign Abandoned Cart Days Inactive in Basket':
+                $label = _('Inactive days in basket');
+                break;
 
             default:
                 $label = $field;
