@@ -100,10 +100,14 @@
     </ul>
 </div>
 
-<div id="order" class="order" style="display: flex;" data-object="{$object_data}" order_key="{$email_campaign->id}">
+<div id="email_campaign" class="order" style="display: flex;" data-object="{$object_data}" email_campaign_key="{$email_campaign->id}">
     <div class="block" style="padding:10px 20px; align-items: stretch;flex: 1">
 
-        <span>{t}Abandoned cart mailshot{/t}</span>
+
+            <div class="{if $email_campaign->get('State Index')>=50}hide{/if}">
+                <span class="hide Email_Campaign_Number_Estimated_Emails">{$email_campaign->get('Email Campaign Number Estimated Emails')}</span>
+            <span>{t}Estimated recipients{/t}</span> <span class="strong Number_Estimated_Emails">{$email_campaign->get('Number Estimated Emails')}</span>
+            </div>
 
         <div style="clear:both"></div>
     </div>
@@ -111,61 +115,63 @@
         <div class="state" style="height:30px;margin-bottom:10px;position:relative;top:-5px">
             <div id="back_operations">
 
-                <div id="cancel_operations" class="order_operation {if $email_campaign->get('State Index')<0}hide{/if}">
+                <div id="delete_operations" class="email_campaign_operation {if $email_campaign->get('State Index')<0}hide{/if}">
                     <div class="square_button left" title="{t}Cancel{/t}">
-                        <i class="fa fa-minus-circle error " aria-hidden="true" onclick="toggle_order_operation_dialog('cancel')"></i>
-                        <table id="cancel_dialog" border="0" class="order_operation_dialog hide">
+
+
+                        <i class="fa fa-trash discreet " aria-hidden="true" onclick="toggle_order_operation_dialog('delete')"></i>
+                        <table id="delete_dialog" border="0" class="order_operation_dialog hide">
                             <tr class="top">
-                                <td colspan="2">{t}Cancel order{/t}</td>
+                                <td colspan="2" >{t}Delete mailshot{/t}</td>
                             </tr>
                             <tr class="changed buttons">
                                 <td>
-                                    <i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('cancel')"></i>
+                                    <i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('delete')"></i>
                                 </td>
                                 <td class="aright">
-                                    <span data-data='{ "field": "Order State","value": "Cancelled","dialog_name":"cancel"}' id="cancel_save_buttons" class="error save button"
-                                          onclick="save_order_operation(this)">
-                                        <span class="label">{t}Cancel{/t}</span>
-                                        <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i>
+                                    <span data-data='{ "object": "email_campaign", "key":"{$email_campaign->id}"  }' onClick="delete_object(this)">
+                                    <span class="label">{t}Delete{/t}</span>
+                                    <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i>
                                     </span>
                                 </td>
                             </tr>
                         </table>
                     </div>
+
                 </div>
-                <div id="undo_submit_operations" class="order_operation {if $email_campaign->get('State Index')!=30}hide{/if}">
+                <div id="undo_submit_operations" class="email_campaign_operation {if $email_campaign->get('State Index')!=30}hide{/if}">
                     <div class="square_button left" title="{t}Send back to basket{/t}">
-												<span class="fa-stack" onclick="toggle_order_operation_dialog('undo_submit')">
+												<span class="fa-stack" onclick="toggle_email_campaign_operation_dialog('undo_submit')">
 						<i class="fa fa-paper-plane-o discreet " aria-hidden="true"></i>
 						<i class="fa fa-ban fa-stack-1x discreet error"></i>
 						</span>
 
 
-                        <table id="undo_submit_dialog" border="0" class="order_operation_dialog hide">
+                        <table id="undo_submit_dialog" border="0" class="email_campaign_operation_dialog hide">
                             <tr class="top">
                                 <td class="label" colspan="2">{t}Send back to basket{/t}</td>
                             </tr>
                             <tr class="changed buttons">
                                 <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('undo_submit')"></i></td>
                                 <td class="aright"><span data-data='{  "field": "Order State","value": "InBasket","dialog_name":"undo_submit"}' id="undo_submit_save_buttons" class="valid save button"
-                                                         onclick="save_order_operation(this)"><span class="label">{t}Save{/t}</span> <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>
+                                                         onclick="save_email_campaign_operation(this)"><span class="label">{t}Save{/t}</span> <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>
                             </tr>
                         </table>
                     </div>
                 </div>
-                <div id="undo_send_operations" class="order_operation {if $email_campaign->get('Order State')!='Send'}hide{/if}">
+                <div id="undo_send_operations" class="email_campaign_operation {if $email_campaign->get('Order State')!='Send'}hide{/if}">
                     <div class="square_button left" xstyle="padding:0;margin:0;position:relative;top:-5px" title="{t}Unmark as send{/t}">
-						<span class="fa-stack" onclick="toggle_order_operation_dialog('undo_send')">
+						<span class="fa-stack" onclick="toggle_email_campaign_operation_dialog('undo_send')">
 						<i class="fa fa-plane discreet " aria-hidden="true"></i>
 						<i class="fa fa-ban fa-stack-1x very_discreet error"></i>
 						</span>
-                        <table id="undo_send_dialog" border="0" class="order_operation_dialog hide">
+                        <table id="undo_send_dialog" border="0" class="email_campaign_operation_dialog hide">
                             <tr class="top">
                                 <td colspan="2" class="label">{t}Unmark as send{/t}</td>
                             </tr>
                             <tr class="buttons changed">
                                 <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('undo_send')"></i></td>
-                                <td class="aright"><span id="undo_send_save_buttons" class="valid save button" onclick="save_order_operation('undo_send','Submitted')"><span class="label">{t}Save{/t}</span> <i
+                                <td class="aright"><span id="undo_send_save_buttons" class="valid save button" onclick="save_email_campaign_operation('undo_send','Submitted')"><span class="label">{t}Save{/t}</span> <i
                                                 class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>
                             </tr>
                         </table>
@@ -176,51 +182,42 @@
             <div id="forward_operations">
 
 
-                <div id="create_invoice_operations" class="order_operation {if {$email_campaign->get('State Index')}!=80  }hide{/if}">
+                <div id="create_invoice_operations" class="email_campaign_operation {if {$email_campaign->get('State Index')}!=80  }hide{/if}">
                     <div  class="square_button right  " title="{t}Create invoice{/t}">
-                        <i class="fa fa-file-text-o  " aria-hidden="true" onclick="toggle_order_operation_dialog('create_invoice')"></i>
-                        <table id="create_invoice_dialog" border="0" class="order_operation_dialog hide">
+                        <i class="fa fa-file-text-o  " aria-hidden="true" onclick="toggle_email_campaign_operation_dialog('create_invoice')"></i>
+                        <table id="create_invoice_dialog" border="0" class="email_campaign_operation_dialog hide">
                             <tr class="top">
                                 <td class="label" colspan="2">{t}Invoice order{/t}</td>
                             </tr>
                             <tr class="changed buttons">
                                 <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('create_invoice')"></i></td>
                                 <td class="aright"><span data-data='{  "field": "Order State","value": "Approved","dialog_name":"create_invoice"}' id="create_invoice_save_buttons" class="valid save button"
-                                                         onclick="save_order_operation(this)"><span class="label">{t}Save{/t}</span> <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>
+                                                         onclick="save_email_campaign_operation(this)"><span class="label">{t}Save{/t}</span> <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>
                             </tr>
                         </table>
                     </div>
                 </div>
                 
-                <div id="send_to_warehouse_operations" class="order_operation {if {$email_campaign->get('State Index')|intval}>30 or  {$email_campaign->get('State Index')|intval}<10   or $email_campaign->get('Order Number Items')==0   }hide{/if}">
+                <div id="send_to_warehouse_operations" class="email_campaign_operation {if {$email_campaign->get('State Index')|intval}>30 or  {$email_campaign->get('State Index')|intval}<10   or $email_campaign->get('Order Number Items')==0   }hide{/if}">
                     <div  class="square_button right  " title="{t}Send to warehouse{/t}">
-                        <i class="fa fa-map   " aria-hidden="true" onclick="toggle_order_operation_dialog('send_to_warehouse')"></i>
-                        <table id="send_to_warehouse_dialog" border="0" class="order_operation_dialog hide">
+                        <i class="fa fa-map   " aria-hidden="true" onclick="toggle_email_campaign_operation_dialog('send_to_warehouse')"></i>
+                        <table id="send_to_warehouse_dialog" border="0" class="email_campaign_operation_dialog hide">
                             <tr class="top">
                                 <td class="label" colspan="2">{t}Send to warehouse{/t}</td>
                             </tr>
                             <tr class="changed buttons">
                                 <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('send_to_warehouse')"></i></td>
                                 <td class="aright"><span data-data='{  "field": "Order State","value": "InWarehouse","dialog_name":"send_to_warehouse"}' id="send_to_warehouse_save_buttons" class="valid save button"
-                                                         onclick="save_order_operation(this)"><span class="label">{t}Save{/t}</span> <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>
+                                                         onclick="save_email_campaign_operation(this)"><span class="label">{t}Save{/t}</span> <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>
                             </tr>
                         </table>
                     </div>
                 </div>
 
-                <div id="submit_operations" class="order_operation {if $email_campaign->get('State Index')!=10   or  $email_campaign->get('Order Number Items')==0 }hide{/if}">
+                <div id="compose_email_operations" class="email_campaign_operation {if $email_campaign->get('State Index')!=10   or  $email_campaign->get('Email Campaign Number Estimated Emails')==0 }hide{/if}">
                     <div  class="square_button right  " title="{t}Submit{/t}">
-                        <i class="fa fa-paper-plane-o   " aria-hidden="true" onclick="toggle_order_operation_dialog('submit')"></i>
-                        <table id="submit_dialog" border="0" class="order_operation_dialog hide">
-                            <tr class="top">
-                                <td class="label" colspan="2">{t}Submit order{/t}</td>
-                            </tr>
-                            <tr class="changed buttons">
-                                <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('submit')"></i></td>
-                                <td class="aright"><span data-data='{  "field": "Order State","value": "InProcess","dialog_name":"submit"}' id="submit_save_buttons" class="valid save button"
-                                                         onclick="save_order_operation(this)"><span class="label">{t}Save{/t}</span> <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>
-                            </tr>
-                        </table>
+                        <i class="fa fa-arrow-right button"  id="compose_email_save_buttons" aria-hidden="true"  data-data='{  "field": "Email Campaign State","value": "ComposingEmail","dialog_name":"compose_email"}'   onclick="save_email_campaign_operation(this)" ></i>
+
                     </div>
                 </div>
 

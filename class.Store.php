@@ -319,9 +319,7 @@ class Store extends DB_Table {
 
 
             $history_data = array(
-                'History Abstract' => sprintf(
-                    _('Store %s (%s) created'), $this->data['Store Name'], $this->data['Store Code']
-                ),
+                'History Abstract' => sprintf(_('Store %s (%s) created'), $this->data['Store Name'], $this->data['Store Code']),
                 'History Details'  => '',
                 'Action'           => 'created'
             );
@@ -2299,7 +2297,7 @@ class Store extends DB_Table {
         }
 
 
-        $this->update(array('Store Email Campaigns' => $email_campaigns), 'no_history');
+        $this->fast_update(array('Store Email Campaigns' => $email_campaigns) );
 
 
     }

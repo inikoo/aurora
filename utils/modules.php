@@ -779,13 +779,13 @@ $modules = array(
                 'type' => 'object',
                 'tabs' => array(
                     'email_campaign.details' => array(
-                        'label' => _(
-                            'Data'
-                        ),
+                        'label' => _('Data'),
                         'icon'  => 'database',
-                        'title' => _(
-                            'Details'
-                        )
+                        'title' => _('Details')
+                    ),
+                    'email_campaign.mail_list' => array(
+                        'label' => _('Recipients'),
+                        'icon'  => 'users',
                     ),
                     'email_campaign.history' => array(
                         'title' => _('History'),
@@ -846,6 +846,27 @@ $modules = array(
                 )
 
             ),
+            'email_campaign' => array(
+                'type' => 'object',
+                'tabs' => array(
+                    'email_campaign.details' => array(
+                        'label' => _('Data'),
+                        'icon'  => 'database',
+                        'title' => _('Details')
+                    ),
+                    'email_campaign.mail_list' => array(
+                        'label' => _('Recipients'),
+                        'icon'  => 'users',
+                    ),
+                    'email_campaign.history' => array(
+                        'title' => _('History'),
+                        'label' => '',
+                        'icon'  => 'road',
+                        'class' => 'right icon_only'
+                    ),
+
+                )
+            )
 
         )
 

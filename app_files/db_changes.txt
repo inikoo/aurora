@@ -817,6 +817,10 @@ ALTER TABLE `Store Dimension` ADD `Store Base Store Key` MEDIUMINT UNSIGNED NULL
 
 
 
+ALTER TABLE `Email Campaign Dimension` ADD `Email Campaign Number Estimated Emails` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Email Campaign Recipients Preview`;
+ALTER TABLE `Email Campaign Dimension` CHANGE `Email Campaign State` `Email Campaign State` ENUM('InProcess','ComposingEmail','Ready','Scheduled','Sending','Send','Cancelled') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'InProcess';
+
+
 
 ======= fer migracion ordering in dw and costa
 
