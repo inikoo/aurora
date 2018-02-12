@@ -12,7 +12,7 @@
 
 
 $group_by=' group by ITF.`Part SKU` ';
-
+$group_by=' ';
 $where = sprintf(
     ' where   ITF.`Delivery Note Key`=%d and `Inventory Transaction Type`!="Adjust"', $parameters['parent_key']
 );
