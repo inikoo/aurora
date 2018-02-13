@@ -51,7 +51,7 @@ function save_whiteboard_content(object){
   //  console.log($('#whiteboard_content').html())
 
 
-    console.log($(object).html())
+  //  console.log($(object).html())
 
 
     var ajaxData = new FormData();
@@ -123,7 +123,7 @@ function whiteboard() {
 
     var request = "/ar_help.php?tipo=whiteboard&state=" + JSON.stringify(state)
 
-    console.log(request)
+   // console.log(request)
 
     $.getJSON(request, function (data) {
 

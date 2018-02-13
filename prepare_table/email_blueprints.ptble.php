@@ -15,9 +15,11 @@ $table
 $fields = "`Email Blueprint Name`,`Email Blueprint Created`,`Email Blueprint Key`,`Email Blueprint Image Key`,`Staff Alias`";
 
 switch ($parameters['parent']) {
-    case 'Welcome':
+
+    case 'EmailCampaign':
+    case 'Webpage':
         $where = sprintf(
-            " where `Email Blueprint Role`='Welcome' and `Email Blueprint Scope Key`=%d", $parameters['parent_key']
+            " where `Email Blueprint Scope`=%s and `Email Blueprint Scope Key`=%d", prepare_mysql($parameters['parent']),$parameters['parent_key']
         );
         break;
     case 'product':
@@ -44,6 +46,7 @@ switch ($parameters['parent']) {
         exit('email blueprint parent not done yet '.$parameters['parent']);
 
 }
+
 
 
 $wheref = '';

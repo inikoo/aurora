@@ -957,7 +957,8 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                 $smarty->assign('object', $object);
 
                 $pcard        = '';
-                $updated_data = array('redirect' => sprintf('campaigns/%d/%d', $object->get('Deal Campaign Store Key'), $object->id));
+                $redirect=sprintf('campaigns/%d/%d', $object->get('Deal Campaign Store Key'), $object->id);
+                $updated_data = array();
 
             }
             break;

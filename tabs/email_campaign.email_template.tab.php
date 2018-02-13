@@ -2,63 +2,46 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 21 September 2016 at 13:52:10 GMT+8, Kuala Lumpur, Malaysia
- Copyright (c) 2015, Inikoo
+ Created: 9 February 2018 at 22:46:50 GMT+8, Kuala Lumpur, Malaysia
+ Copyright (c) 2018, Inikoo
 
  Version 3
 
 */
 
 
-$webpage = $state['_object'];
+$email_campaign = $state['_object'];
 
-$scope_metadata = $webpage->get('Scope Metadata');
-
-
-if ($webpage->get('Webpage Code') == 'register.sys') {
+$scope_metadata = $email_campaign->get('Scope Metadata');
 
 
-    $email_template_key = $scope_metadata['emails']['welcome']['key'];
+$email_template_key = 0;
+$published_email_template_key = 0;
+switch ($email_campaign->get('Email Campaign Type')){
 
-    if (empty($scope_metadata['emails']['welcome']['published_key'])) {
-        $published_email_template_key = 0;
-    } else {
-        $published_email_template_key = $scope_metadata['emails']['welcome']['published_key'];
-    }
+    case 'AbandonedCart':
+        $role               = 'AbandonedCart';
+        $email_template_key = $scope_metadata['emails']['AbandonedCart']['key'];
 
+        if (empty($scope_metadata['emails']['AbandonedCart']['published_key'])) {
+            $published_email_template_key = 0;
+        } else {
+            $published_email_template_key = $scope_metadata['emails']['AbandonedCart']['published_key'];
+        }
 
-    $role = 'Welcome';
-
-
-} elseif ($webpage->get('Webpage Code') == 'login.sys') {
-
-
-    $email_template_key           = $scope_metadata['emails']['reset_password']['key'];
-    $published_email_template_key = $scope_metadata['emails']['reset_password']['published_key'];
-
-    $role = 'Reset_Password';
-
-
-} elseif ($webpage->get('Webpage Code') == 'checkout.sys') {
-
-
-    $email_template_key           = $scope_metadata['emails']['order_confirmation']['key'];
-    $published_email_template_key = $scope_metadata['emails']['order_confirmation']['published_key'];
-
-    $role = 'Order_Confirmation';
-
-
-} else {
-    return;
+        break;
+    default:
+        return;
 }
 
-$control_template = 'control.webpage.email_template.tpl';
+
+$control_template = 'control.email_template.tpl';
 
 
-$control_blueprint_template = 'control.webpage.blueprints.tpl';
+$control_blueprint_template = 'control.email_campaign.blueprints.tpl';
 
 
-$content = $webpage->get('Content Data');
+$content = $email_campaign->get('Content Data');
 
 $smarty->assign('control_template', $control_template);
 $smarty->assign('control_blueprint_template', $control_blueprint_template);
@@ -67,7 +50,7 @@ $smarty->assign('control_blueprint_template', $control_blueprint_template);
 include_once 'class.Email_Template.php';
 $email_template = new Email_Template($email_template_key);
 
-$smarty->assign('email_template_redirect', '&subtab=webpage.email_template');
+$smarty->assign('email_template_redirect', '&tab=email_campaign.email_template');
 
 
 if ($email_template->id and !($email_template->get('Email Template Type') == 'HTML' and $email_template->get('Email Template Editing JSON') == '')) {
@@ -115,7 +98,7 @@ if ($email_template->id and !($email_template->get('Email Template Type') == 'HT
     $html = $smarty->fetch('email_template.tpl');
 } else {
 
-    $tab     = 'webpage.email_blueprints';
+    $tab     = 'email_campaign.email_blueprints';
     $ar_file = 'ar_email_template_tables.php';
     $tipo    = 'email_blueprints';
 
@@ -132,13 +115,13 @@ if ($email_template->id and !($email_template->get('Email Template Type') == 'HT
 
 
     $parameters = array(
-        'parent'     => 'Webpage',
+        'parent'     => 'EmailCampaign',
         'parent_key' => $state['key'],
 
     );
 
     $smarty->assign('role', $role);
-    $smarty->assign('scope', 'Webpage');
+    $smarty->assign('scope', 'EmailCampaign');
     $smarty->assign('scope_key', $state['key']);
 
 

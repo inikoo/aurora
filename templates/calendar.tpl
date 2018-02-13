@@ -175,7 +175,6 @@
                     + "H" + w1 * cellSize + "V" + (d1 + 1) * cellSize
                     + "H" + (w1 + 1) * cellSize + "V" + 0
                     + "H" + (w0 + 1) * cellSize + "Z";
-//alert(mpath)
             return mpath;
         }
 

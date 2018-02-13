@@ -22,19 +22,18 @@ $table_views = array();
 $table_filters = array();
 
 $sql = sprintf(
-    "SELECT `Timesheet Key` FROM `Timesheet Dimension` T  WHERE `Timesheet Staff Key` =%d AND `Timesheet Date`=%s ",
-$state['key'],
-    prepare_mysql(gmdate('Y-m-d'))
+    "SELECT `Timesheet Key` FROM `Timesheet Dimension` T  WHERE `Timesheet Staff Key` =%d AND `Timesheet Date`=%s ", $state['key'], prepare_mysql(gmdate('Y-m-d'))
 );
 
 //print $sql;
 
 if ($result = $db->query($sql)) {
     if ($row = $result->fetch()) {
-        $timesheet=new Timesheet($row['Timesheet Key']);
-    }else{
-        $html= _('Timesheet not found');
-    return;
+        $timesheet = new Timesheet($row['Timesheet Key']);
+    } else {
+        $html = _('Timesheet not found');
+
+        return;
     }
 } else {
     print_r($error_info = $db->errorInfo());
@@ -43,7 +42,7 @@ if ($result = $db->query($sql)) {
 }
 
 
-$parameters    = array(
+$parameters = array(
     'parent'     => 'Timesheet',
     'parent_key' => $timesheet->id,
 
@@ -60,8 +59,8 @@ $table_buttons[] = array(
         'field_edit'  => 'time',
         'date'        => $timesheet->get('IsoDate'),
         'object'      => 'Timesheet_Record',
-         'parent'     => 'Timesheet',
-    'parent_key' => $timesheet->id,
+        'parent'      => 'Timesheet',
+        'parent_key'  => $timesheet->id,
 
     )
 

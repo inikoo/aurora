@@ -4,8 +4,12 @@
  Version 3.0*/
 
 function toggle_options(field) {
-    if ($('#' + field + '_options').hasClass('hide')) $('#' + field + '_options').removeClass('hide')
-    else $('#' + field + '_options').addClass('hide')
+    if ($('#' + field + '_options').hasClass('hide')) {
+
+        $('#' + field + '_options').removeClass('hide')
+    } else {
+        $('#' + field + '_options').addClass('hide')
+    }
 
 }
 
@@ -53,7 +57,7 @@ function get_form_validation_state(submitting) {
 
     });
 
-console.log(form_validation)
+    console.log(form_validation)
 
     return form_validation
 
@@ -67,22 +71,22 @@ function process_form_validation(validation, submitting) {
     }
     $('#fields .controls').removeClass('invalid valid potentially_valid').addClass(validation).addClass('changed')
 
-if(validation=='invalid') {
-    $(".value").each(function (index) {
+    if (validation == 'invalid') {
+        $(".value").each(function (index) {
 
-        var field = $(this).attr('field')
+            var field = $(this).attr('field')
 
 
-        if (!$('#' + field + '_field').hasClass('valid')) {
+            if (!$('#' + field + '_field').hasClass('valid')) {
 
-            $('#' + field + '_field').addClass('invalid')
+                $('#' + field + '_field').addClass('invalid')
 
-        }
+            }
 
-    })
-}
+        })
+    }
 
-        reset_controls()
+    reset_controls()
 
 }
 
@@ -137,77 +141,73 @@ function save_new_object(object, form_type) {
 
         var form_data = new FormData();
 
-        $(".value").each(
-            function (index) {
+        $(".value").each(function (index) {
 
 
-                var field_tr = $(this).closest('tr')
-                console.log($(this).attr('field'))
+            var field_tr = $(this).closest('tr')
+            console.log($(this).attr('field'))
 
-                //      if (!field_tr.hasClass('hidden') && field_tr.hasClass('hide')) {
-                //         return
-                //    }
-
-
-                var field = $(this).attr('field')
-                var field_type = $(this).attr('field_type')
-
-                //console.log(field)
+            //      if (!field_tr.hasClass('hidden') && field_tr.hasClass('hide')) {
+            //         return
+            //    }
 
 
-                if (field_type == 'time') {
-                    value = clean_time($('#' + field).val())
-                } else if (field_type == 'password' || field_type == 'password_with_confirmation' || field_type == 'password_with_confirmation_paranoid' || field_type == 'pin' || field_type == 'pin_with_confirmation' || field_type == 'pin_with_confirmation_paranoid') {
-                    value = sha256_digest($('#' + field).val())
-                } else if (field_type == 'attachment') {
-                    form_data.append("file", $('#' + field).prop("files")[0])
-                    value = ''
-                } else if (field_type == 'country_select') {
-                    value = $('#' + field).countrySelect("getSelectedCountryData").code
+            var field = $(this).attr('field')
+            var field_type = $(this).attr('field_type')
 
-                } else if (field_type == 'telephone') {
-                    value = $('#' + field).intlTelInput("getNumber");
+            //console.log(field)
 
-                } else if (field_type == 'parts_list') {
-                    var part_list_data = [];
 
-                    $('#parts_list_items  tr.part_tr').each(function (i, obj) {
+            if (field_type == 'time') {
+                value = clean_time($('#' + field).val())
+            } else if (field_type == 'password' || field_type == 'password_with_confirmation' || field_type == 'password_with_confirmation_paranoid' || field_type == 'pin' || field_type == 'pin_with_confirmation' || field_type == 'pin_with_confirmation_paranoid') {
+                value = sha256_digest($('#' + field).val())
+            } else if (field_type == 'attachment') {
+                form_data.append("file", $('#' + field).prop("files")[0])
+                value = ''
+            } else if (field_type == 'country_select') {
+                value = $('#' + field).countrySelect("getSelectedCountryData").code
 
-                        //   if (!$(obj).find('.sku').val()) return true;
+            } else if (field_type == 'telephone') {
+                value = $('#' + field).intlTelInput("getNumber");
 
-                        if ($(obj).hasClass('very_discreet')) {
-                            var ratio = 0;
-                        } else {
-                            var ratio = $(obj).find('.parts_per_product').val()
-                        }
-                        var part_data = {
-                            'Key': $(obj).find('.product_part_key').val(),
-                            'Part SKU': $(obj).find('.sku').val(),
-                            'Ratio': ratio,
-                            'Note': $(obj).find('.note').val(),
+            } else if (field_type == 'parts_list') {
+                var part_list_data = [];
 
-                        }
-                        part_list_data.push(part_data)
+                $('#parts_list_items  tr.part_tr').each(function (i, obj) {
 
-                    });
+                    //   if (!$(obj).find('.sku').val()) return true;
 
-                    value = JSON.stringify(part_list_data)
-
-                }else if (field_type == 'subscription') {
-                    var icon=$(this).find('i')
-                    if(icon.hasClass('fa-toggle-on')){
-                        value = 'Yes'
-
-                    }else{
-                        value = 'No'
+                    if ($(obj).hasClass('very_discreet')) {
+                        var ratio = 0;
+                    } else {
+                        var ratio = $(obj).find('.parts_per_product').val()
                     }
+                    var part_data = {
+                        'Key': $(obj).find('.product_part_key').val(), 'Part SKU': $(obj).find('.sku').val(), 'Ratio': ratio, 'Note': $(obj).find('.note').val(),
 
-                }  else {
-                    var value = $('#' + field).val()
+                    }
+                    part_list_data.push(part_data)
+
+                });
+
+                value = JSON.stringify(part_list_data)
+
+            } else if (field_type == 'subscription') {
+                var icon = $(this).find('i')
+                if (icon.hasClass('fa-toggle-on')) {
+                    value = 'Yes'
+
+                } else {
+                    value = 'No'
                 }
-                console.log($(this).attr('id') + ' ' + field + ' ' + $(this).closest('tr').hasClass('hide'))
-                fields_data[field.replace(re, ' ')] = value
-            });
+
+            } else {
+                var value = $('#' + field).val()
+            }
+            console.log($(this).attr('id') + ' ' + field + ' ' + $(this).closest('tr').hasClass('hide'))
+            fields_data[field.replace(re, ' ')] = value
+        });
 
 
         if (form_type == 'setup') {
@@ -231,7 +231,7 @@ function save_new_object(object, form_type) {
         console.log(request)
 
 
-         //return;
+        //return;
         //=====
         form_data.append("tipo", (form_type != '' ? form_type : tipo))
         form_data.append("object", object)
@@ -241,12 +241,7 @@ function save_new_object(object, form_type) {
 
         var request = $.ajax({
 
-            url: "/" + ar_file,
-            data: form_data,
-            processData: false,
-            contentType: false,
-            type: 'POST',
-            dataType: 'json'
+            url: "/" + ar_file, data: form_data, processData: false, contentType: false, type: 'POST', dataType: 'json'
 
         })
 
@@ -262,10 +257,7 @@ function save_new_object(object, form_type) {
             if (data.state == 200) {
 
 
-
-
-
-                if(data.pcard=='' && data.redirect!= ''){
+                if (data.pcard == '' && data.redirect != '') {
 
                     console.log(data.updated_data.redirect)
                     change_view(data.redirect)
@@ -382,12 +374,7 @@ function save_inline_new_object(trigger) {
     form_data.append("fields_data", JSON.stringify(fields_data))
 
     var request = $.ajax({
-        url: "/ar_edit.php",
-        data: form_data,
-        processData: false,
-        contentType: false,
-        type: 'POST',
-        dataType: 'json'
+        url: "/ar_edit.php", data: form_data, processData: false, contentType: false, type: 'POST', dataType: 'json'
     })
 
     request.done(function (data) {
@@ -420,8 +407,7 @@ function save_inline_new_object(trigger) {
 
             if (with_elements) get_elements_numbers(rows.tab, rows.parameters)
 
-            if (
-                data.metadata != undefined && data.metadata.updated_showcase_fields != '') {
+            if (data.metadata != undefined && data.metadata.updated_showcase_fields != '') {
                 for (var key in data.metadata.updated_showcase_fields) {
                     $('.' + key).html(data.metadata.updated_showcase_fields[key])
                 }
@@ -587,7 +573,7 @@ function update_new_address_fields(field, country_code, hide_recipient_fields, a
 
 
                 var validation = validate_field(field, value, type, required, server_validation, parent, parent_key, _object, key)
-               // console.log(validation)
+                // console.log(validation)
 
                 /*
                  if (arg == 'init') {
@@ -651,11 +637,11 @@ function post_update_related_fields(country_data) {
 }
 
 
-function show_field_options(element){
+function show_field_options(element) {
 
-$(element).addClass('hide')
+    $(element).addClass('hide')
 
-    $('#'+$(element).attr('field')+'_options_ul').removeClass('hide')
+    $('#' + $(element).attr('field') + '_options_ul').removeClass('hide')
 
 }
 
@@ -664,16 +650,14 @@ function select_option_for_new_object(element, field, value, formatted_value) {
 
 
     $('#' + field).val(value).addClass('hide')
-    $('#' + field+'_formatted').val(formatted_value).removeClass('hide')
-
+    $('#' + field + '_formatted').val(formatted_value).removeClass('hide')
 
 
     $('#' + field + '_options li').removeClass('selected')
     $(element).addClass('selected')
 
 
-
-    $('#'+field+'_options_ul').addClass('hide')
+    $('#' + field + '_options_ul').addClass('hide')
 
 
     on_changed_value(field, value)

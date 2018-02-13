@@ -41,6 +41,13 @@ $email_templates_data = array(
         'subject'=>_('Dispatch confirmation'),
         'sender'=>'Store'
 
+    ),
+    'AbandonedCart' => array(
+        'key'=>'AbandonedCart',
+        'name'=>_('Abandoned cart'),
+        'subject'=>_('Abandoned cart'),
+        'sender'=>'Store'
+
     )
 
 

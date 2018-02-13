@@ -1911,6 +1911,9 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                                         if (is_numeric($view_path[3])) {
 
+
+
+
                                             $section = 'email_campaign';
                                             $object  = 'email_campaign';
                                             $key     = $view_path[3];
@@ -1961,6 +1964,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                             $section = 'email_campaign';
                                             $object  = 'email_campaign';
                                             $key     = $view_path[3];
+
 
 
                                         }
@@ -2504,6 +2508,8 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                             $key = $view_path[3];
                                         } elseif ($view_path[3] == 'new') {
 
+
+                                            $key =0;
                                             $section = 'deal.new';
 
                                         }
@@ -4698,6 +4704,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
     }
 
 
+
     list($tab, $subtab) = parse_tabs($module, $section, $_data, $modules);
 
 
@@ -4733,8 +4740,12 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 function parse_tabs($module, $section, $_data, $modules) {
 
 
+
     $subtab = '';
     if (isset($_data['subtab'])) {
+
+       // print_r($_data);
+
         $subtab = $_data['subtab'];
         $tab    = $modules[$module]['sections'][$section]['subtabs_parent'][$subtab];
 
@@ -4749,6 +4760,8 @@ function parse_tabs($module, $section, $_data, $modules) {
 
             $tab = $_SESSION['state'][$module][$section]['tab'];
             //Special default tabs
+
+
 
             if ($module == 'suppliers') {
                 if ($section == 'order') {

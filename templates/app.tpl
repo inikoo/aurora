@@ -48,7 +48,7 @@
 
 
 
-        <link href="/css/app.css?v180206v2" rel="stylesheet">
+        <link href="/css/app.css?v180206v3" rel="stylesheet">
         <script src="/js/libs/jquery-2.2.1.js"></script>
         <script src="/js/libs/jquery-ui.js"></script>
         <script src="/js/libs/moment-with-locales.js"></script>
@@ -73,7 +73,7 @@
         <script src="/js/libs/jquery-qrcode-0.14.0.min.js"></script>
 
 
-        <script src="/js/help.js?v180124v3"></script>
+        <script src="/js/help.js?v180124v4"></script>
         <script src="/js/app.js?v180124"></script>
         <script src="/js/keyboard_shortcuts.js"></script>
         <script src="/js/barcode_scanner.js?v1712v2"></script>
@@ -83,7 +83,7 @@
         <script src="/js/edit.js?v171229"></script>
         <script src="/js/edit_webpage_edit.js?v171019"></script>
 
-        <script src="/js/new.js?v171115"></script>
+        <script src="/js/new.js?v180210v2"></script>
         <script src="/js/order.common.js?v171126b"></script>
         <script src="/js/email_campaign.common.js?v170207"></script>
 

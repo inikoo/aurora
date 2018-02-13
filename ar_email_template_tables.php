@@ -31,6 +31,8 @@ switch ($tipo) {
         email_blueprints(get_table_parameters(), $db, $user);
         break;
     case 'email_blueprints':
+
+
         email_blueprints(get_table_parameters(), $db, $user);
         break;
 
@@ -74,8 +76,8 @@ function email_blueprints($_data, $db, $user) {
 
 
                 $operations .= sprintf(
-                    '<span class="button" onClick="select_blueprint(this,%d)"><i class="fa fa-trophy fa-fw"></i> %s</span>',
-                     $data['Email Blueprint Key'], _('Use me')
+                    '<span class="button" onClick="select_blueprint_from_table(this,%d,\'%s\')"><i class="fa fa-trophy fa-fw"></i> %s</span>',
+                   $data['Email Blueprint Key'],  base64_url_decode($_data['parameters']['redirect']),_('Use me')
                 );
 
 

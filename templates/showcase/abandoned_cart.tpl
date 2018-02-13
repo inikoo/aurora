@@ -8,29 +8,33 @@
  Version 3
 -->
 *}
+<style>
+   #select_date_control_panel td{
+       padding:0px}
+</style>
 
 
 <div class="timeline_horizontal with_time   {if $email_campaign->get('State Index')<0}hide{/if}  ">
 
     <ul class="timeline">
-        <li id="submitted_node" class="li {if $email_campaign->get('State Index')>=30}complete{/if}">
+        <li id="submitted_node" class="li {if $email_campaign->get('State Index')>=20}complete{/if}">
             <div class="label">
                 <span class="state ">{t}Setup mail list{/t}</span>
             </div>
             <div class="timestamp">
-                <span class="Email_Campaign_Setup_Mail_List_Date">&nbsp;{$email_campaign->get('Setup Mail List Date')}</span> <span class="start_date">{$email_campaign->get('Creation Date')}</span>
+                <span class="">&nbsp;</span> <span class="start_date">{$email_campaign->get('Creation Date')}</span>
             </div>
             <div class="dot"></div>
         </li>
 
-        <li id="in_warehouse_node" class="li {if $email_campaign->get('State Index')>=40}complete{/if} ">
+        <li id="in_warehouse_node" class="li {if $email_campaign->get('State Index')>=30}complete{/if} ">
             <div class="label">
                 <span class="state" >&nbsp;{t}Compose email{/t}&nbsp;<span></i></span></span>
             </div>
             <div class="timestamp">
 			<span class="Order_In_Warehouse" ">&nbsp;
 
-                    <span class="Order_Send_to_Warehouse_Date">&nbsp;{$email_campaign->get('Send to Warehouse Date')}</span>
+                    <span class="">&nbsp;</span>
 
                 &nbsp;</span>
             </div>
@@ -116,7 +120,7 @@
             <div id="back_operations">
 
                 <div id="delete_operations" class="email_campaign_operation {if $email_campaign->get('State Index')<0}hide{/if}">
-                    <div class="square_button left" title="{t}Cancel{/t}">
+                    <div class="square_button left" title="{t}Delete{/t}">
 
 
                         <i class="fa fa-trash discreet " aria-hidden="true" onclick="toggle_order_operation_dialog('delete')"></i>
@@ -139,15 +143,15 @@
                     </div>
 
                 </div>
-                <div id="undo_submit_operations" class="email_campaign_operation {if $email_campaign->get('State Index')!=30}hide{/if}">
-                    <div class="square_button left" title="{t}Send back to basket{/t}">
+                <div id="undo_submit_operations" class="email_campaign_operation {if $email_campaign->get('State Index')!=50}hide{/if}">
+                    <div class="square_button left" title="{t}Stop sending emails{/t}">
 												<span class="fa-stack" onclick="toggle_email_campaign_operation_dialog('undo_submit')">
 						<i class="fa fa-paper-plane-o discreet " aria-hidden="true"></i>
 						<i class="fa fa-ban fa-stack-1x discreet error"></i>
 						</span>
 
 
-                        <table id="undo_submit_dialog" border="0" class="email_campaign_operation_dialog hide">
+                        <table id="undo_submit_dialog" border="0" class="order_operation_dialog hide">
                             <tr class="top">
                                 <td class="label" colspan="2">{t}Send back to basket{/t}</td>
                             </tr>
@@ -159,60 +163,86 @@
                         </table>
                     </div>
                 </div>
-                <div id="undo_send_operations" class="email_campaign_operation {if $email_campaign->get('Order State')!='Send'}hide{/if}">
-                    <div class="square_button left" xstyle="padding:0;margin:0;position:relative;top:-5px" title="{t}Unmark as send{/t}">
-						<span class="fa-stack" onclick="toggle_email_campaign_operation_dialog('undo_send')">
-						<i class="fa fa-plane discreet " aria-hidden="true"></i>
-						<i class="fa fa-ban fa-stack-1x very_discreet error"></i>
-						</span>
-                        <table id="undo_send_dialog" border="0" class="email_campaign_operation_dialog hide">
-                            <tr class="top">
-                                <td colspan="2" class="label">{t}Unmark as send{/t}</td>
-                            </tr>
-                            <tr class="buttons changed">
-                                <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('undo_send')"></i></td>
-                                <td class="aright"><span id="undo_send_save_buttons" class="valid save button" onclick="save_email_campaign_operation('undo_send','Submitted')"><span class="label">{t}Save{/t}</span> <i
-                                                class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
+
             </div>
             <span style="float:left;padding-left:10px;padding-top:5px" class="Order_State"> {$email_campaign->get('State')} </span>
             <div id="forward_operations">
 
 
-                <div id="create_invoice_operations" class="email_campaign_operation {if {$email_campaign->get('State Index')}!=80  }hide{/if}">
-                    <div  class="square_button right  " title="{t}Create invoice{/t}">
-                        <i class="fa fa-file-text-o  " aria-hidden="true" onclick="toggle_email_campaign_operation_dialog('create_invoice')"></i>
-                        <table id="create_invoice_dialog" border="0" class="email_campaign_operation_dialog hide">
+
+                <div id="schedule_mailshot_operations" class="email_campaign_operation {if {$email_campaign->get('State Index')}!=30  }hide{/if}">
+                    <div  class="square_button right  " title="{t}Schedule mailshot{/t}">
+                        <i class="fa fa-clock-o  " aria-hidden="true" onclick="toggle_order_operation_dialog('schedule_mailshot')"></i>
+
+
+
+
+
+
+                        <table id="schedule_mailshot_dialog" style="width: 650px" border="1" class="order_operation_dialog hide">
                             <tr class="top">
-                                <td class="label" colspan="2">{t}Invoice order{/t}</td>
+                                <td class="label" colspan="2"><i class="fa fa-sign-out fa-flip-horizontal button padding_left_20" aria-hidden="true" onclick="close_dialog('schedule_mailshot')"></i>{t}Schedule mailshot{/t}</td>
                             </tr>
+
+                            <tr style="height: 50px">
+                                <td style="text-align: center">
+                                    <span class="square_button" style="border:1px solid #ccc;padding:5px">{t}Send now{/t}</span>
+                                    <span class="square_button" style="border:1px solid #ccc;padding:5px;margin-right: 10px;margin-left: 10px">{t}Send in <em>n</em> hours{/t}</span>
+                                    <span class="square_button" style="border:1px solid #ccc;padding:5px">{t}Choose time{/t}</span>
+
+                                </td>
+                            </tr>
+
+
                             <tr class="changed buttons">
-                                <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('create_invoice')"></i></td>
-                                <td class="aright"><span data-data='{  "field": "Order State","value": "Approved","dialog_name":"create_invoice"}' id="create_invoice_save_buttons" class="valid save button"
+
+                                <td style="text-align: center">{t}Send in{/t}  <input type="number"  style="width:3em"  > {t}hours{/t}  <span class="save "><i class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>
+                            </tr>
+
+
+
+                            <tr class="changed buttons">
+
+                                <td style="text-align: center">
+
+                                    <div id="select_date_control_panel" class="xhide">
+                                        <div id="select_date_datepicker" class="datepicker" style="float:left">
+                                        </div>
+                                        <div class="date_chooser_form">
+
+                                            <table>
+                                                <tr  style="height: 20px"><td style="text-align: left;line-height:20px" class="small">{t}Date{/t}</td></tr>
+                                                <tr><td> <input id="select_date_formatted"  style="width: 7em" class="" value=""/></td><td></td></tr>
+                                                <tr style="height: 20px"><td  style="text-align: left;line-height:20px" class="small">{t}time{/t}</td></tr>
+                                                <tr ><td style="text-align: left"> <input id="select_time_formatted"  style="width: 5em" class="" value=""/></td>
+                                                    <td><i onclick="submit_date()" id="select_date_save" class="fa button fa-play save padding_left_20"></i></td>
+                                                </tr>
+                                            </table>
+
+
+
+                                        </div>
+                                        <div style="clear:both"></div>
+                                    </div>
+
+                                </td>
+                            </tr>
+
+
+
+
+
+
+
+                            <tr class="changed buttons">
+
+                                <td class="aright"><span data-data='{  "field": "Order State","value": "Approved","dialog_name":"schedule_mailshot"}' id="schedule_mailshot_save_buttons" class="valid save button"
                                                          onclick="save_email_campaign_operation(this)"><span class="label">{t}Save{/t}</span> <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>
                             </tr>
                         </table>
                     </div>
                 </div>
-                
-                <div id="send_to_warehouse_operations" class="email_campaign_operation {if {$email_campaign->get('State Index')|intval}>30 or  {$email_campaign->get('State Index')|intval}<10   or $email_campaign->get('Order Number Items')==0   }hide{/if}">
-                    <div  class="square_button right  " title="{t}Send to warehouse{/t}">
-                        <i class="fa fa-map   " aria-hidden="true" onclick="toggle_email_campaign_operation_dialog('send_to_warehouse')"></i>
-                        <table id="send_to_warehouse_dialog" border="0" class="email_campaign_operation_dialog hide">
-                            <tr class="top">
-                                <td class="label" colspan="2">{t}Send to warehouse{/t}</td>
-                            </tr>
-                            <tr class="changed buttons">
-                                <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('send_to_warehouse')"></i></td>
-                                <td class="aright"><span data-data='{  "field": "Order State","value": "InWarehouse","dialog_name":"send_to_warehouse"}' id="send_to_warehouse_save_buttons" class="valid save button"
-                                                         onclick="save_email_campaign_operation(this)"><span class="label">{t}Save{/t}</span> <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
+
 
                 <div id="compose_email_operations" class="email_campaign_operation {if $email_campaign->get('State Index')!=10   or  $email_campaign->get('Email Campaign Number Estimated Emails')==0 }hide{/if}">
                     <div  class="square_button right  " title="{t}Submit{/t}">
@@ -342,44 +372,36 @@
 </div>
 <div style="clear:both"></div></div>
 
-<div id="add_payment" class="table_new_fields hide">
 
-    <div style="align-items: stretch;flex: 1;padding:10px 20px;border-bottom: 1px solid #ccc;position: relative">
+<script>
 
-        <i style="position:absolute;top:10px;" class="fa fa-window-close fa-flip-horizontal button" aria-hidden="true" onclick="close_add_payment_to_order()"></i>
+    $("#select_date_datepicker").datepicker({
+        showOtherMonths: true,
+        selectOtherMonths: true,
+        defaultDate: new Date(""),
+        altField: "#select_date",
+        altFormat: "yy-mm-dd",
+        minDate: 0,
+        onSelect: function () {
+            $('#select_date').change();
+            $('#select_date_formatted').val($.datepicker.formatDate("dd-mm-yy", $(this).datepicker("getDate")))
+            validate_date()
+        }
+    });
 
-        <table border="0" style="width:50%;float:right;xborder-left:1px solid #ccc;width:100%;">
-            <tr>
-                <td style="width: 500px">
-                <td>
-                <td></td>
+    function validate_date() {
+        $('#select_date_save').removeClass('possible_valid valid invalid')
 
-                <td>
-                    <div id="new_payment_payment_account_buttons">
+        if ($("#select_date_formatted").val() == '') {
+            validation = 'possible_valid';
+        } else {
+            validation = 'valid';
 
-                    </div>
-                    <input type="hidden" id="new_payment_payment_account_key" value="">
-                    <input type="hidden" id="new_payment_payment_method" value="">
+        }
+        $('#select_date_save').addClass(validation)
+
+    }
 
 
-                </td>
 
-                <td class="payment_fields " style="padding-left:30px;width: 300px">
-                    <table>
-                        <tr>
-                            <td> {t}Amount{/t}</td>
-                            <td style="padding-left:20px"><input disabled=true class="new_payment_field" id="new_payment_amount" placeholder="{t}Amount{/t}"></td>
-                        </tr>
-                        <tr>
-                            <td>  {t}Reference{/t}</td>
-                            <td style="padding-left:20px"><input disabled=true class="new_payment_field" id="new_payment_reference" placeholder="{t}Reference{/t}"></td>
-                        </tr>
-                    </table>
-                </td>
-
-                <td id="save_new_payment" class="buttons save" onclick="save_new_payment()"><span>{t}Save{/t}</span> <i class=" fa fa-cloud " aria-hidden="true"></i></td>
-            </tr>
-
-        </table>
-    </div>
-</div>
+</script>
