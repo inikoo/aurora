@@ -472,6 +472,13 @@ function publish_email_template($data, $editor, $smarty, $db) {
 
     $publish_email_template = $email_template->publish($publish_email_template_data);
 
+
+    if($email_template->get('Email Template Scope')=='EmailCampaign'){
+        $email_campaign=get_object('EmailCampaign',$email_template->get('Email Template Scope Key'));
+        $email_campaign->editor=$editor;
+        $email_campaign->update(array('Email Campaign State'=>'Ready'));
+    }
+
     if ($publish_email_template->id) {
 
 
@@ -513,6 +520,7 @@ function save_blueprint($data, $editor, $smarty, $db) {
     if ($blueprint->id) {
         $response = array(
             'state' => 200,
+            'blueprint_key'=>$blueprint->id
 
 
         );
@@ -581,7 +589,10 @@ function select_blueprint($data, $editor, $db) {
     $scope = get_object($data['scope'], $data['scope_key']);
 
 
+
+
     $metadata = $scope->get('Scope Metadata');
+
 
 
     if ($metadata['emails'][$key]['key'] > 0) {
@@ -628,8 +639,10 @@ function select_blueprint($data, $editor, $db) {
         );
 
 
+
         $email_template = new Email_Template('find', $email_template_data, 'create');
     }
+
     $metadata['emails'][$key]['key'] = $email_template->id;
 
     $scope->update(array('Scope Metadata' => json_encode($metadata)), 'no_history');

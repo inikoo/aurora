@@ -14,7 +14,6 @@ include_once 'utils/invalid_messages.php';
 include_once 'conf/object_fields.php';
 
 
-
 $object_fields = get_object_fields(
     $state['_object'], $db, $user, $smarty, array(
                          'parent'              => $state['parent'],
@@ -31,9 +30,7 @@ $smarty->assign('object_fields', $object_fields);
 
 
 
-$smarty->assign(
-    'js_code', 'js/injections/deal.new.'.(_DEVEL ? '' : 'min.').'js'
-);
+//$smarty->assign('js_code', 'js/injections/deal.new.'.(_DEVEL ? '' : 'min.').'js');
 
 $html = $smarty->fetch('new_object.tpl');
 

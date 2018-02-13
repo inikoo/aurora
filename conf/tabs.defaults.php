@@ -3288,7 +3288,14 @@ $tab_defaults = array(
 
 
     ),
-
+    'email_campaign.email_blueprints'            => array(
+        'view'        => 'overview',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'name'
+    ),
     'email_campaign.history'          => array(
         'view'          => 'overview',
         'sort_key'      => 'date',

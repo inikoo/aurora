@@ -49,8 +49,10 @@ $table_filters = array(
 );
 
 $parameters = array(
-    'parent'     => 'Welcome',
+    'parent'     => 'Webpage',
     'parent_key' => $state['key'],
+    'redirect' => base64_url_encode('&subtab=webpage.email_template'),
+
 
 );
 

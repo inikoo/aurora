@@ -315,7 +315,7 @@ $modules = array(
                 )
             ),
 
-            'customers'  => array(
+            'customers' => array(
                 'type'      => 'navigation',
                 'label'     => _('Customers'),
                 'icon'      => 'users',
@@ -326,7 +326,7 @@ $modules = array(
 
 
             ),
-            'lists'      => array(
+            'lists'     => array(
                 'type'      => 'navigation',
                 'label'     => _('Lists'),
                 'icon'      => 'list',
@@ -348,16 +348,16 @@ $modules = array(
 
             ),
             */
-            'insights' => array(
+            'insights'  => array(
                 'type'      => 'navigation',
                 'label'     => _('Insights'),
                 'icon'      => 'graduation-cap',
                 'reference' => 'customers/%s/insights',
                 'tabs'      => array(
-                    'customers_poll.queries'       => array(
+                    'customers_poll.queries' => array(
                         'label' => _('Poll')
                     ),
-                    'customers.geo'            => array(
+                    'customers.geo'          => array(
                         'label' => _('Geographic Distribution')
                     ),
                     /*
@@ -472,7 +472,7 @@ $modules = array(
                         )
 
                     ),
-                    'customer.discounts'   => array(
+                    'customer.discounts' => array(
                         'label' => _('Discounts'),
                         'icon'  => 'tags'
                     ),
@@ -778,7 +778,7 @@ $modules = array(
             'email_campaign' => array(
                 'type' => 'object',
                 'tabs' => array(
-                    'email_campaign.details' => array(
+                    'email_campaign.details'   => array(
                         'label' => _('Data'),
                         'icon'  => 'database',
                         'title' => _('Details')
@@ -787,6 +787,16 @@ $modules = array(
                         'label' => _('Recipients'),
                         'icon'  => 'users',
                     ),
+
+                    'email_campaign.email_template'   => array(
+                        'label' => _('Email'),
+                        'icon'  => 'envelope-o'
+                    ),
+                    'email_campaign.email_blueprints' => array(
+                        'label' => _('Email HTML templates'),
+                        'icon'  => 'html5'
+                    ),
+
                     'email_campaign.history' => array(
                         'title' => _('History'),
                         'label' => '',
@@ -849,7 +859,7 @@ $modules = array(
             'email_campaign' => array(
                 'type' => 'object',
                 'tabs' => array(
-                    'email_campaign.details' => array(
+                    'email_campaign.details'   => array(
                         'label' => _('Data'),
                         'icon'  => 'database',
                         'title' => _('Details')
@@ -858,12 +868,23 @@ $modules = array(
                         'label' => _('Recipients'),
                         'icon'  => 'users',
                     ),
-                    'email_campaign.history' => array(
+                    'email_campaign.email_blueprints' => array(
+                        'label' => _('Email HTML templates'),
+                        'icon'  => 'html5'
+                    ),
+                    'email_campaign.email_template'   => array(
+                        'label' => _('Email'),
+                        'icon'  => 'envelope-o'
+                    ),
+
+                    'email_campaign.history'   => array(
                         'title' => _('History'),
                         'label' => '',
                         'icon'  => 'road',
                         'class' => 'right icon_only'
                     ),
+
+
 
                 )
             )
@@ -1290,10 +1311,10 @@ $modules = array(
         'section'     => 'orders',
         'sections'    => array(
             'delivery_notes' => array(
-                'type' => 'navigation',
-                'icon'      => 'truck',
-                'label'     => _('Delivery notes'),
-                'tabs' => array(
+                'type'  => 'navigation',
+                'icon'  => 'truck',
+                'label' => _('Delivery notes'),
+                'tabs'  => array(
                     'delivery_notes_server' => array()
                 )
 
@@ -2276,14 +2297,14 @@ $modules = array(
                     'website.webpage.types'       => 'website.webpages',
                     'website.in_process_webpages' => 'website.webpages',
 
-                    'website.fonts'        => 'website.style',
-                    'website.colours'      => 'website.style',
+                    'website.fonts'   => 'website.style',
+                    'website.colours' => 'website.style',
 
                     'website.footer.preview' => 'website.templates',
                     'website.header.preview' => 'website.templates',
-                    'website.info_bar' => 'website.templates',
+                    'website.info_bar'       => 'website.templates',
 
-                    'website.templates'      => 'website.templates',
+                    'website.templates' => 'website.templates',
 
 
                 ),
@@ -2291,7 +2312,7 @@ $modules = array(
                 'tabs' => array(
 
 
-                    'website.details'   => array(
+                    'website.details' => array(
                         'label' => _('Data'),
                         'icon'  => 'database'
                     ),
@@ -2317,13 +2338,11 @@ $modules = array(
                             ),
 
 
-
-
                         ),
 
                     ),
 
-                    'website.localization'   => array(
+                    'website.localization' => array(
                         'label' => _('Localization'),
                         'icon'  => 'language',
                     ),
@@ -2446,7 +2465,7 @@ $modules = array(
                         'icon'    => 'code',
                         'subtabs' => array(
 
-                            'website.info_bar' => array(
+                            'website.info_bar'       => array(
                                 'label' => _('Info bar'),
                                 'icon'  => 'info',
 
@@ -2465,16 +2484,16 @@ $modules = array(
 
                             ),
 
-/*
-                            'website.templates' => array(
-                                'label' => '',
-                                'title' => _('Templates'),
-                                'icon'  => 'code',
-                                'class' => 'right icon_only',
+                            /*
+                                                        'website.templates' => array(
+                                                            'label' => '',
+                                                            'title' => _('Templates'),
+                                                            'icon'  => 'code',
+                                                            'class' => 'right icon_only',
 
 
-                            ),
-*/
+                                                        ),
+                            */
 
                         ),
 
@@ -2664,14 +2683,12 @@ $modules = array(
             ),
 
 
-
-
             'deleted.webpage' => array(
                 'type' => 'object',
                 'tabs' => array(
 
 
-                    'deleted.webpage.history'       => array(
+                    'deleted.webpage.history' => array(
                         'label' => _('History/Notes'),
                         'icon'  => 'road',
                         'class' => 'right icon_only'
@@ -4696,7 +4713,7 @@ $modules = array(
                             'Subcategories'
                         )
                     ),
-                    'part_family.part_locations' => array(
+                    'part_family.part_locations'   => array(
                         'label' => _('Parts locations')
                     ),
                     'part_family.product_families' => array(
@@ -4749,7 +4766,7 @@ $modules = array(
                     'part.supplier.deliveries' => 'part.purchase_orders',
                     'part.stock.history'       => 'part.stock',
                     'part.stock.transactions'  => 'part.stock',
-                    'part.stock.cost'  => 'part.stock',
+                    'part.stock.cost'          => 'part.stock',
                     'part.stock.history.plot'  => 'part.stock',
                     'part.sales.plot'          => 'part.sales',
                     'part.sales.history'       => 'part.sales',
@@ -4819,7 +4836,7 @@ $modules = array(
                                 'label' => _('Stock movements'),
                                 'icon'  => 'exchange',
                             ),
-                            'part.stock.cost' => array(
+                            'part.stock.cost'         => array(
                                 'label' => _('Stock cost'),
                                 'icon'  => 'usd',
                             ),
@@ -4863,7 +4880,7 @@ $modules = array(
                         'icon'          => 'stop'
                     ),
 
-                    'part.products'    => array(
+                    'part.products' => array(
                         'label'         => _('Products'),
                         'quantity_data' => array(
                             'object' => '_object',
@@ -4872,17 +4889,17 @@ $modules = array(
                         'icon'          => 'cube'
                     ),
 
-                    'part.locations'    => array(
-                        'label'         => _('Locations'),
-                        'icon'          => 'map-marker'
+                    'part.locations'              => array(
+                        'label' => _('Locations'),
+                        'icon'  => 'map-marker'
                     ),
-                    'part.paid_orders_in_process'    => array(
-                        'label'         => '',
-                        'title'         => _('Paid orders in process by customer services'),
-                        'icon'          => 'shopping-cart',
+                    'part.paid_orders_in_process' => array(
+                        'label' => '',
+                        'title' => _('Paid orders in process by customer services'),
+                        'icon'  => 'shopping-cart',
                         'class' => 'right icon_only'
                     ),
-                    'part.history'     => array(
+                    'part.history'                => array(
 
 
                         'title'         => _('History/Notes'),
@@ -4895,7 +4912,7 @@ $modules = array(
                         'icon'  => 'road',
                         'class' => 'right icon_only'
                     ),
-                    'part.images'      => array(
+                    'part.images'                 => array(
                         'title'         => _('Images'),
                         'label'         => '',
                         'quantity_data' => array(
@@ -4905,7 +4922,7 @@ $modules = array(
                         'icon'          => 'camera-retro',
                         'class'         => 'right icon_only'
                     ),
-                    'part.attachments' => array(
+                    'part.attachments'            => array(
                         'title'         => _('Attachments'),
                         'label'         => '',
                         'quantity_data' => array(
@@ -5432,7 +5449,7 @@ $modules = array(
 
             ),
 
-            'ec_sales_list'                      => array(
+            'ec_sales_list' => array(
                 'type' => '',
                 'tabs' => array(
                     'ec_sales_list' => array(),
@@ -5441,7 +5458,7 @@ $modules = array(
 
             ),
 
-            'pickers'                      => array(
+            'pickers' => array(
                 'type' => '',
                 'tabs' => array(
                     'pickers' => array(),
@@ -5449,7 +5466,7 @@ $modules = array(
                 )
 
             ),
-            'packers'                      => array(
+            'packers' => array(
                 'type' => '',
                 'tabs' => array(
                     'packers' => array(),
@@ -5458,7 +5475,7 @@ $modules = array(
 
             ),
 
-            'sales'                      => array(
+            'sales' => array(
                 'type' => '',
                 'tabs' => array(
                     'sales' => array(),
@@ -5467,7 +5484,7 @@ $modules = array(
 
             ),
 
-            'intrastat'                      => array(
+            'intrastat'          => array(
                 'type' => '',
                 'tabs' => array(
                     'intrastat' => array(),
@@ -5475,7 +5492,7 @@ $modules = array(
                 )
 
             ),
-            'intrastat_orders'                      => array(
+            'intrastat_orders'   => array(
                 'type' => '',
                 'tabs' => array(
                     'intrastat_orders' => array(),
@@ -5483,7 +5500,7 @@ $modules = array(
                 )
 
             ),
-            'intrastat_products'                      => array(
+            'intrastat_products' => array(
                 'type' => '',
                 'tabs' => array(
                     'intrastat_products' => array(),
@@ -6387,23 +6404,21 @@ $modules = array(
                             'Login history'
                         ),
                         'title' => _('Login history'),
-                        'icon'=>'sign-in'
+                        'icon'  => 'sign-in'
                     ),
                     'user.api_keys'      => array(
                         'label' => _('API keys'),
-                        'icon'=>'key'
+                        'icon'  => 'key'
                     ),
 
 
-
-
-                    'user.history' => array(
+                    'user.history'          => array(
                         'label' => '',
                         'title' => _('History/Notes'),
                         'icon'  => 'road',
                         'class' => 'right icon_only'
                     ),
-                    'user.deleted_api_keys'      => array(
+                    'user.deleted_api_keys' => array(
                         'icon'  => 'ban',
                         'label' => _('Deleted API keys'),
                         'title' => _('Deleted API keys'),
@@ -6462,7 +6477,7 @@ $modules = array(
                         'label' => _('Requests'),
                         'icon'  => 'arrow-circle-right'
                     ),
-                    'user.api_key.history' => array(
+                    'user.api_key.history'  => array(
                         'label' => _('History/Notes'),
                         'icon'  => 'road',
                         'class' => 'right icon_only'
@@ -6470,17 +6485,16 @@ $modules = array(
 
                 )
             ),
-            'deleted_api_key'     => array(
-                'type' => 'object',
-                'showcase'=>'deleted_api_key',
-                'tabs' => array(
+            'deleted_api_key'  => array(
+                'type'     => 'object',
+                'showcase' => 'deleted_api_key',
+                'tabs'     => array(
 
                     'api_key.history' => array(
                         'label' => _('History/Notes'),
                         'icon'  => 'road',
                         'class' => 'right icon_only'
                     ),
-
 
 
                 )

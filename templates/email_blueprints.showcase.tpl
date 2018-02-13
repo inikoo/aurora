@@ -110,6 +110,7 @@
 
         ajaxData.append("blueprint", $(this).attr('blueprint'))
 
+        console.log('ar_edit_email_template.php?tipo=select_blueprint&role={$role}&scope={$scope}&scope_key={$scope_key}&blueprint='+$(this).attr('blueprint'))
 
         $.ajax({
             url: "/ar_edit_email_template.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,

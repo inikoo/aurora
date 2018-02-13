@@ -202,21 +202,39 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
         case 'Deal':
 
 
-            $campaign = get_object('DealCampaign', $object->get('Deal Campaign Key'));
-            $store    = get_object('Store', $object->get('Deal Store Key'));
 
 
-            if ($store->get('Store Bulk Discounts Campaign Key') == $campaign->id) {
 
 
-                include 'fields/bulk_deal.fld.php';
+            if($options['new']){
+               switch ($options['parent']){
+                   case 'campaign':
 
-            } else {
-                include 'fields/campaign.fld.php';
+                       include 'fields/new_deal.fld.php';
+
+
+                       break;
+               }
+
+            }else{
+
+                $campaign = get_object('DealCampaign', $object->get('Deal Campaign Key'));
+                $store    = get_object('Store', $object->get('Deal Store Key'));
+
+
+                if ($store->get('Store Bulk Discounts Campaign Key') == $campaign->id) {
+
+
+                    include 'fields/bulk_deal.fld.php';
+
+                } else {
+                    include 'fields/campaign.fld.php';
+
+                }
+
+
 
             }
-
-
             return $object_fields;
             break;
         case 'Website':

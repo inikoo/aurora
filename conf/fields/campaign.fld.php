@@ -44,6 +44,7 @@ $object_fields = array(
             array(
                 'id'              => 'Deal_Campaign_Description',
                 'edit'            => ($edit ? 'editor' : ''),
+                'render'          => ($new ? false : true),
                 'class'           => 'editor',
                 'editor_data'     => array(
                     'id'      => 'Deal_Campaign_Description',
@@ -81,16 +82,13 @@ $object_fields = array(
                     )
 
                 ),
-                'value'             => $object->get('Deal Campaign Description'),
-                'formatted_value'             => $object->get('Deal Campaign Description'),
+                'value'           => $object->get('Deal Campaign Description'),
+                'formatted_value' => $object->get('Deal Campaign Description'),
 
-                'label'             => ucfirst($object->get_field_label('Deal Campaign Description')),
-                'required'          => false,
-                'type'            => 'value'
+                'label'    => ucfirst($object->get_field_label('Deal Campaign Description')),
+                'required' => false,
+                'type'     => ''
             ),
-
-
-
 
 
         )
@@ -137,10 +135,7 @@ $object_fields = array(
 );
 
 
-
-
-
-if (!$new ) {
+if (!$new) {
     $operations = array(
         'label'      => _('Operations'),
         'show_title' => true,
@@ -151,9 +146,8 @@ if (!$new ) {
                 'id'        => 'delete_part',
                 'class'     => 'operation',
                 'value'     => '',
-                'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name(
-                    ).'", "key":"'.$object->id.'"}\' onClick="delete_object(this)" class="delete_object disabled">'._("Delete campaign")
-                    .' <i class="fa fa-trash new_button link"></i></span>',
+                'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
+                    .'"}\' onClick="delete_object(this)" class="delete_object disabled">'._("Delete campaign").' <i class="fa fa-trash new_button link"></i></span>',
                 'reference' => '',
                 'type'      => 'operation'
             ),

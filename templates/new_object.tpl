@@ -532,6 +532,8 @@ function input_barcode_to_new_object(field) {
 
         var value = $('#' + field).val()
 
+
+
         var field_data = $('#' + field + '_container')
         var type = field_data.attr('field_type')
 
@@ -550,6 +552,10 @@ function input_barcode_to_new_object(field) {
         var _object = field_data.attr('object')
         var key = field_data.attr('key')
 
+
+console.log(field)
+console.log(value)
+console.log(type)
 
         var validation = validate_field(field, value, type, required, server_validation, parent, parent_key, _object, key)
 

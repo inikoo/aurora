@@ -58,7 +58,7 @@ function get_new_campaign_navigation($data, $smarty, $user, $db) {
     $sections      = get_sections('products', $data['parent_key']);
 
 
-    $sections['campaigns']['selected'] = true;
+    $sections['marketing']['selected'] = true;
 
 
     $_content = array(
@@ -75,6 +75,8 @@ function get_new_campaign_navigation($data, $smarty, $user, $db) {
 
     );
     $smarty->assign('_content', $_content);
+
+
 
     $html = $smarty->fetch('navigation.tpl');
 

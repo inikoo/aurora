@@ -2,8 +2,8 @@
 <!--
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 12 February 2018 at 10:39:56 GMT+8, Kuala Lumpur, Malaysia
- Copyright (c) 2018, Inikoo
+ Created: 21 September 2016 at 13:58:35 GMT+8, Kuala Lumpur, Malaysia
+ Copyright (c) 2016, Inikoo
 
  Version 3
 -->
@@ -26,7 +26,7 @@
 
 
 
-    <span id="change_template" onclick="change_view(state.request + '&tab=email_campaign.email_blueprints')" class="button  {if $email_template->get('Email Template Type')=='Text'}hide{/if}" style="border:1px solid #ccc;padding:5px 10px;margin-left:40px"
+    <span id="change_template" onclick="change_view(state.request + '&subtab=webpage.email_blueprints')" class="button  {if $email_template->get('Email Template Type')=='Text'}hide{/if}" style="border:1px solid #ccc;padding:5px 10px;margin-left:40px"
           title="{$change_template_label}, ({t}Change template{/t}) ">
       <i class="fa fa-th-large padding_right_5" aria-hidden="true"></i> {t}Email Templates{/t}
     </span>

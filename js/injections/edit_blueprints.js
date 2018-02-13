@@ -59,7 +59,7 @@ function delete_blueprint(element,blueprint_key) {
 }
 
 
-function select_blueprint(element,blueprint_key) {
+function select_blueprint_from_table(element,blueprint_key,redirect) {
 
 
 
@@ -85,7 +85,6 @@ function select_blueprint(element,blueprint_key) {
 
 
 
-
     $.ajax({
         url: "/ar_edit_email_template.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
         complete: function () {
@@ -93,7 +92,7 @@ function select_blueprint(element,blueprint_key) {
 
             if (data.state == '200') {
 
-               change_view(state.request + '&tab=email_template')
+               change_view(state.request + redirect)
             } else if (data.state == '400') {
                 icon.removeClass('fa-spinner fa-spin')
 

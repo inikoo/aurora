@@ -98,6 +98,18 @@ class EmailCampaign extends DB_Table {
 
         switch ($key) {
 
+            case 'Scope Metadata':
+
+                if ($this->data['Email Campaign '.$key] == '') {
+                    $content_data = false;
+                } else {
+                    $content_data = json_decode($this->data['Email Campaign '.$key], true);
+                }
+
+                return $content_data;
+                break;
+
+
             case ('State Index'):
 
                 switch ($this->data['Email Campaign State']) {
@@ -122,8 +134,6 @@ class EmailCampaign extends DB_Table {
                     case 'Send':
                         return 100;
                         break;
-
-
 
 
                     default:
@@ -158,8 +168,6 @@ class EmailCampaign extends DB_Table {
                     case 'Send':
                         return _('Send');
                         break;
-
-
 
 
                     default:
@@ -1100,6 +1108,16 @@ class EmailCampaign extends DB_Table {
 
         switch ($field) {
 
+            case 'Email Campaign State':
+
+                $this->update_state($value);
+                break;
+
+            case 'Scope Metadata':
+
+                $this->update_field('Email Campaign '.$field, $value, $options);
+                break;
+
             case 'Email Campaign Abandoned Cart Days Inactive in Basket':
                 $this->fast_update(array('Email Campaign Abandoned Cart Days Inactive in Basket' => $value), 'Email Campaign Abandoned Cart Dimension');
                 $this->update_estimated_recipients();
@@ -1108,7 +1126,7 @@ class EmailCampaign extends DB_Table {
                 $this->update_metadata = array(
                     'class_html' => array(
                         'Email_Campaign_Number_Estimated_Emails' => $this->get('Email Campaign Number Estimated Emails'),
-                        'Number_Estimated_Emails' => $this->get('Number Estimated Emails'),
+                        'Number_Estimated_Emails'                => $this->get('Number Estimated Emails'),
 
                     ),
 
@@ -1116,12 +1134,7 @@ class EmailCampaign extends DB_Table {
 
 
                 break;
-            case('Email Campaign Content Text'):
-                $this->update_content_text($value);
-                break;
-            case('Email Campaign Subject'):
-                $this->update_subject($value);
-                break;
+
 
             default:
                 $base_data = $this->base_data();
@@ -1135,7 +1148,99 @@ class EmailCampaign extends DB_Table {
         }
     }
 
-    function add_objective($scope_data) {
+
+    function update_state($value) {
+
+        switch ($value) {
+
+            case 'ComposingEmail':
+
+                //'InProcess','ComposingEmail','Ready','Scheduled','Sending','Send','Cancelled'
+
+                if ($this->data['Email Campaign State'] == 'Sending') {
+                    $this->error = true;
+                    $this->msg   = _('Campaign already sending emails');
+
+                    return;
+                }
+                if ($this->data['Email Campaign State'] == 'Send') {
+                    $this->error = true;
+                    $this->msg   = _('Campaign already send');
+
+                    return;
+                }
+
+                if ($this->data['Email Campaign State'] == 'Scheduled' or $this->data['Email Campaign State'] == 'Ready' or $this->data['Email Campaign State'] == 'Cancelled' or $this->data['Email Campaign State'] == 'ComposingEmail') {
+
+                    $this->fast_update(
+                        array(
+                            'Email Campaign Last Updated Date' => gmdate('Y-m-d H:i:s')
+                        )
+                    );
+                }else{
+
+                    $this->fast_update(
+                        array(
+                            'Email Campaign State'             => $value,
+                            'Email Campaign Last Updated Date' => gmdate('Y-m-d H:i:s')
+                        )
+                    );
+                }
+
+
+
+
+                break;
+
+            case 'Ready':
+
+                //'InProcess','ComposingEmail','Ready','Scheduled','Sending','Send','Cancelled'
+
+                if ($this->data['Email Campaign State'] == 'Sending') {
+                    $this->error = true;
+                    $this->msg   = _('Campaign already sending emails');
+
+                    return;
+                }
+                if ($this->data['Email Campaign State'] == 'Send') {
+                    $this->error = true;
+                    $this->msg   = _('Campaign already send');
+
+                    return;
+                }
+
+
+
+                if ($this->data['Email Campaign State'] == 'Scheduled' or  $this->data['Email Campaign State'] == 'Cancelled') {
+
+                    $this->fast_update(
+                        array(
+                            'Email Campaign Last Updated Date' => gmdate('Y-m-d H:i:s')
+                        )
+                    );
+                }else{
+                    $this->fast_update(
+                        array(
+                            'Email Campaign State'             => $value,
+                            'Email Campaign Last Updated Date' => gmdate('Y-m-d H:i:s')
+                        )
+                    );
+                }
+
+
+
+
+
+                break;
+
+        }
+
+
+    }
+
+    /*
+
+    function add_objective_to_delete($scope_data) {
 
         $scope_data['Email Campaign Key'] = $this->id;
 
@@ -1237,35 +1342,7 @@ class EmailCampaign extends DB_Table {
         //     print $sql;
 
     }
-
-    function set_as_ready($lag_seconds) {
-
-        if ($this->data['Email Campaign State'] == 'Sending') {
-            $this->error = true;
-            $this->msg   = _('Campaign already sending emails');
-
-            return;
-        }
-        if ($this->data['Email Campaign State'] == 'Complete') {
-            $this->error = true;
-            $this->msg   = _('Campaign already send');
-
-            return;
-        }
-
-        $this->data['Email Campaign State']              = 'Ready';
-        $this->data['Email Campaign Start Overdue Date'] = date(
-            "Y-m-d H:i:s", strtotime(sprintf('now +%d seconds ', $lag_seconds))
-        );
-        $sql                                             = sprintf(
-            "UPDATE `Email Campaign Dimension` SET `Email Campaign State`='Ready'  , `Email Campaign Start Overdue Date`=%s ", prepare_mysql($this->data['Email Campaign Start Overdue Date'])
-
-        );
-
-        //print $sql;
-        mysql_query($sql);
-
-    }
+*/
 
     function get_field_label($field) {
 
