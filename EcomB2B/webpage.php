@@ -430,9 +430,19 @@ if ($webpage->id) {
         $cpnp                = $product->get('CPNP Number');
         $materials           = $product->get('Materials');
         $weight              = $product->get('Unit Weight');
-        $dimensions          = $product->get('Unit Dimensions');
+
+        if ($detected_device == 'mobile') {
+            $dimensions          =$product->get('Unit Dimensions Short');
+        }else{
+            $dimensions          = $product->get('Unit Dimensions');
+        }
+
+
         $product_attachments = $product->get_attachments();
         $barcode             = $product->get('Barcode Number');
+
+
+
 
         $smarty->assign('CPNP', $cpnp);
         $smarty->assign('Materials', $materials);
