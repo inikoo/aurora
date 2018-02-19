@@ -1457,7 +1457,7 @@ trait ProductCategory {
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
 
-                    // print_r($row);
+
 
 
                     if ($row['Category Webpage Index Category Key'] == '') {

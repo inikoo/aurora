@@ -7447,11 +7447,15 @@ class Page extends DB_Table {
             }
 
 
-        } elseif ($this->get('Webpage Scope') == 'Category Categories') {
+        }
+        elseif ($this->get('Webpage Scope') == 'Category Categories') {
 
             include_once 'class.Category.php';
 
             $category = new Category($this->get('Webpage Scope Key'));
+
+
+
 
             if ($website->get('Website Theme') == 'theme_1x') {
 
@@ -7522,7 +7526,7 @@ class Page extends DB_Table {
 
                 //  print "$sql\n";
 
-                // $this->db->exec($sql);
+                $this->db->exec($sql);
 
 
                 $title = $category->get('Label');
@@ -7595,7 +7599,6 @@ class Page extends DB_Table {
 
                 $content_data['sections'][] = $section;
                 $this->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
-
 
                 $category->create_stack_index(true);
 
