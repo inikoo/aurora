@@ -7055,6 +7055,9 @@ class Page extends DB_Table {
         $target_index  = 0;
 
         $_sections = $content_data['sections'];
+
+
+
         foreach ($_sections as $index => $section_data) {
 
 
@@ -7069,6 +7072,9 @@ class Page extends DB_Table {
         }
 
 
+       
+
+
         if (!$section_index or !$target_index) {
 
             $this->error = true;
@@ -7077,7 +7083,7 @@ class Page extends DB_Table {
             return;
         }
 
-        if ($section_index = $target_index) {
+        if ($section_index == $target_index) {
 
             $this->error = true;
             $this->msg   = "Same section index and target ";
@@ -7087,6 +7093,8 @@ class Page extends DB_Table {
 
 
         $sections = array();
+
+
 
 
         if ($target_index > $section_index) {
