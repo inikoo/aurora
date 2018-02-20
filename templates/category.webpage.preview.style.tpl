@@ -304,8 +304,7 @@
 
     .product_footer.order_button{
         width:102px;
-        color:#fff;
-        background-color: orange;
+
     }
 
     .product_footer.order_button:hover{

@@ -7072,7 +7072,7 @@ class Page extends DB_Table {
         }
 
 
-       
+
 
 
         if (!$section_index or !$target_index) {

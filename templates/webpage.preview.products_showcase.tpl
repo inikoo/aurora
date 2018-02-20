@@ -9,6 +9,10 @@
 -->
 *}
 
+
+<link rel="stylesheet" href="/website.color.css.php?website_key={$website->id}&theme=theme_1" type="text/css"/>
+
+
 <style>
 
 
@@ -150,9 +154,7 @@
 
 
 {assign 'see_also'  $category->webpage->get_see_also() }
-
 {assign 'css'  $category->webpage->get('CSS') }
-
 {include file="category.webpage.preview.style.tpl" }
 
 

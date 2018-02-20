@@ -1507,6 +1507,21 @@ function update_webpage_section_order($data, $editor, $smarty, $db) {
 
     $webpage->update_webpage_section_order($data['section_key'], $data['target_key']);
 
+    if($webpage->error){
+
+        $response = array(
+            'state'    => 400,
+            'msg' => $webpage->msg,
+
+
+
+        );
+        echo json_encode($response);
+        exit;
+
+    }
+
+
     $content_data = $webpage->get('Content Data');
 
     $overview = '';

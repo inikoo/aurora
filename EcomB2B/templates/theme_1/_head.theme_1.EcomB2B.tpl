@@ -57,7 +57,7 @@
     <!-- ######### CSS STYLES ######### -->
     <link rel="stylesheet" href="https://use.fontawesome.com/3052dece40.css">
 
-    <link rel="stylesheet" href="css/style.theme_1.EcomB2B.min.css?v180123v2" type="text/css"/>
+    <link rel="stylesheet" href="css/style.theme_1.EcomB2B.css?v180219" type="text/css"/>
     <!-- #
        <link rel="stylesheet" href="/theme_1/css/reset.css" type="text/css"/>
                <link rel="stylesheet" href="/theme_1/css/style.css" type="text/css"/>
@@ -345,6 +345,27 @@
 
         header  .list-unstyled li span {
             color: {$header_data.color.items}
+        }
+
+
+
+        .order_row,.out_of_stock_row{
+           background-color: {$website->get('Website Button Color')};color:{$website->get('Website Button Text Color')}
+
+        }
+
+
+        .order_row.empty:hover{
+            background-color:  {$website->get('Website Active Button Color')};
+            color:{$website->get('Website Active Button Text Color')}
+
+        }
+
+
+        .order_row.ordered{
+            background-color:  {$website->get('Website Active Button Color')};
+            color:{$website->get('Website Active Button Text Color')}
+
         }
 
 

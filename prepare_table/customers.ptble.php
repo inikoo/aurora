@@ -155,6 +155,12 @@ elseif ($parameters['parent'] == 'list') {
     $fields
         = ' *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds`';
 
+} elseif ($parameters['parent'] == 'customer_poll_query_option') {
+    $table = '`Customer Poll Fact` CPF  left join `Customer Dimension` C on (CPF.`Customer Poll Customer Key`=C.`Customer Key`) ';
+
+    $where = sprintf(' where  `Customer Poll Query Option Key`=%d ', $parameters['parent_key']);
+
+
 } else {
 
     if (count($user->stores) == 0) {

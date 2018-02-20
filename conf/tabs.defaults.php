@@ -35,6 +35,7 @@ $tab_defaults = array(
         'export_fields' => $export_fields['customers']
 
     ),
+
     'customers.lists'               => array(
         'view'        => 'overview',
         'sort_key'    => 'creation_date',
@@ -61,19 +62,30 @@ $tab_defaults = array(
     ),
     'customers_poll.queries'               => array(
         'view'        => 'overview',
-        'sort_key'    => 'query',
-        'sort_order'  => 1,
+        'sort_key'    => 'position',
+        'sort_order'  => -1,
         'rpp'         => 100,
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'query'
     ),
+
+    'poll_query.history'              => array(
+        'view'          => 'overview',
+        'sort_key'      => 'date',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'note',
+        'elements_type' => each($elements_options['poll_query_history'])['key'],
+        'elements'      => $elements_options['poll_query_history']
+    ),
     'customers_poll.query.options'               => array(
         'view'        => 'overview',
-        'sort_key'    => 'option',
+        'sort_key'    => 'code',
         'sort_order'  => 1,
         'rpp'         => 100,
         'rpp_options' => $default_rrp_options,
-        'f_field'     => 'option'
+        'f_field'     => 'code'
     ),
     'customers_poll.reply.customers'               => array(
         'view'        => 'overview',
@@ -83,6 +95,21 @@ $tab_defaults = array(
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'query'
     ),
+    'poll_query_option.customers'                     => array(
+        'view'          => 'overview',
+        'sort_key'      => 'formatted_id',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'name',
+        'elements_type' => each($elements_options['customers']) ['key'],
+        'elements'      => $elements_options['customers'],
+        'export_fields' => $export_fields['customers']
+
+    ),
+
+
+
     'customer.history'              => array(
         'view'          => 'overview',
         'sort_key'      => 'date',

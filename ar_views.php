@@ -1040,7 +1040,14 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             include_once 'showcase/api_key.show.php';
             $html = get_api_key_showcase($data, $smarty, $user, $db, $account);
             break;
-
+        case 'Customer_Poll_Query':
+            include_once 'showcase/customer_poll_query.show.php';
+            $html = get_customer_poll_query_showcase($data, $smarty, $user, $db, $account);
+            break;
+        case 'Customer_Poll_Query_Option':
+            include_once 'showcase/customer_poll_query_option.show.php';
+            $html = get_customer_poll_query_option_showcase($data, $smarty, $user, $db, $account);
+            break;
         default:
             $html = $data['object'].' -> '.$data['key'];
             break;
@@ -1337,6 +1344,26 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                 case ('insights'):
 
                     return get_customers_insights_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
+                case ('poll_query.new'):
+                    return get_customers_new_poll_query_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
+                case ('poll_query'):
+                    return get_customers_poll_query_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
+                case ('poll_query_option.new'):
+                    return get_customers_new_poll_query_option_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
+                case ('poll_query_option'):
+                    return get_customers_poll_query_option_navigation(
                         $data, $smarty, $user, $db, $account
                     );
                     break;
@@ -2688,6 +2715,30 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
         //  exit;
 
 
+    }elseif ($data['section'] == 'poll_query') {
+
+        if($data['_object']->get('Customer Poll Query Type')=='Options'){
+
+            if($data['tab'] == 'poll_query.answers'){
+                data['tab'] == 'poll_query.options';
+            }
+
+            $_content['tabs']['poll_query.answers']['class'] = 'hide';
+            $_content['tabs']['poll_query.options']['class'] = '';
+
+        }else{
+            if($data['tab'] == 'poll_query.options'){
+                data['tab'] == 'poll_query.answers';
+            }
+            $_content['tabs']['poll_query.options']['class'] = 'hide';
+            $_content['tabs']['poll_query.answers']['class'] = '';
+
+
+        }
+
+
+
+
     }
 
 
@@ -3590,6 +3641,72 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'reference' => 'customers/'.$store->id.'/insights'
                     );
                     break;
+
+                case 'poll_query.new':
+                    $branch[] = array(
+                        'label'     => _("Customer's insights").' '.$store->data['Store Code'],
+                        'icon'      => 'graduation-cap',
+                        'reference' => 'customers/'.$store->id.'/insights'
+                    );
+                    $branch[] = array(
+                        'label'     => _('New poll query'),
+                        'icon'      => '',
+                        'reference' => ''
+                    );
+                    break;
+                case 'poll_query':
+                    $branch[] = array(
+                        'label'     => _("Customer's insights").' '.$store->data['Store Code'],
+                        'icon'      => 'graduation-cap',
+                        'reference' => 'customers/'.$store->id.'/insights'
+                    );
+                    $branch[] = array(
+                        'label'     => sprintf(_('Poll query %s'),$state['_object']->get('Name')),
+                        'icon'      => '',
+                        'reference' => ''
+                    );
+                    break;
+
+                case 'poll_query_option.new':
+
+
+                    $store=get_object('Store',$state['_parent']->get('Store Key'));
+
+                    $branch[] = array(
+                        'label'     => _("Customer's insights").' '.$store->data['Store Code'],
+                        'icon'      => 'graduation-cap',
+                        'reference' => 'customers/'.$store->id.'/insights'
+                    );
+                    $branch[] = array(
+                        'label'     => sprintf(_('Poll query %s'),$state['_parent']->get('Name')),
+                        'icon'      => '',
+                        'reference' => 'customers/'.$store->id.'/poll_query/'.$state['_parent']->id,
+                    );
+                    $branch[] = array(
+                        'label'     => _('New option'),
+                        'icon'      => '',
+                        'reference' => ''
+                    );
+                    break;
+                case 'poll_query_option':
+                    $store=get_object('Store',$state['_object']->get('Store Key'));
+                    $branch[] = array(
+                        'label'     => _("Customer's insights").' '.$store->data['Store Code'],
+                        'icon'      => 'graduation-cap',
+                        'reference' => 'customers/'.$store->id.'/insights'
+                    );
+                    $branch[] = array(
+                        'label'     => sprintf(_('Poll query %s'),$state['_parent']->get('Name')),
+                        'icon'      => '',
+                        'reference' => 'customers/'.$store->id.'/poll_query/'.$state['_parent']->id
+                    );
+                    $branch[] = array(
+                        'label'     => sprintf(_('Option %s'),$state['_object']->get('Name')),
+                        'icon'      => '',
+                        'reference' => ''
+                    );
+                    break;
+
                 case 'pending_orders':
                     $branch[] = array(
                         'label'     => _(

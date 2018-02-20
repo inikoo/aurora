@@ -453,6 +453,14 @@ function get_rtext($record_label, $total_records) {
         return sprintf(
             ngettext('%s recipient', '%s recipients', $total_records), number($total_records)
         );
+    } elseif ($record_label == 'poll query') {
+        return sprintf(
+            ngettext('%s poll query', '%s poll queries', $total_records), number($total_records)
+        );
+    } elseif ($record_label == 'poll option') {
+        return sprintf(
+            ngettext('%s poll option', '%s poll options', $total_records), number($total_records)
+        );
     } else {
         return sprintf(
             ngettext('%s record', '%s records', $total_records), number($total_records)
@@ -857,6 +865,24 @@ function get_rtext_with_filter($record_label, $total_with_filter, $total_no_filt
         return sprintf(
             ngettext(
                 '%s deleted API key of %s', '%s deleted API keys of %s', $total_with_filter
+            ), number($total_with_filter), number($total_no_filter)
+        );
+    } elseif ($record_label == 'recipient') {
+        return sprintf(
+            ngettext(
+                '%s recipient of %s', '%s recipients of %s', $total_with_filter
+            ), number($total_with_filter), number($total_no_filter)
+        );
+    }elseif ($record_label == 'poll query') {
+        return sprintf(
+            ngettext(
+                '%s poll query of %s', '%s poll queries of %s', $total_with_filter
+            ), number($total_with_filter), number($total_no_filter)
+        );
+    }elseif ($record_label == 'poll option') {
+        return sprintf(
+            ngettext(
+                '%s poll option of %s', '%s poll options of %s', $total_with_filter
             ), number($total_with_filter), number($total_no_filter)
         );
     }

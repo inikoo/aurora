@@ -18,18 +18,27 @@ $default = $user->get_tab_defaults($tab);
 
 $table_views   = array();
 $table_filters = array(
-    'name' => array(
-        'label' => _('Option'),
-        'title' => _('Option')
+    'code' => array(
+        'label' => _('Code'),
+        'title' => _('Code')
     ),
 
 );
 
 $parameters = array(
-    'parent'     => $state['parent'],
-    'parent_key' => $state['parent_key'],
+    'parent'     => $state['object'],
+    'parent_key' => $state['key'],
 
 );
+
+$table_buttons   = array();
+
+$table_buttons[] = array(
+    'icon'      => 'plus',
+    'title'     => _('New option'),
+    'reference' => "customers/".$state['parent_key']."/poll_query/".$state['key'].'/option/new'
+);
+$smarty->assign('table_buttons', $table_buttons);
 
 
 include('utils/get_table_html.php');

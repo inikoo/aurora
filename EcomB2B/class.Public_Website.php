@@ -296,6 +296,11 @@ class Public_Website {
             case 'Website Client Analytics Code':
             case 'Website Primary Color':
             case 'Website Secondary Color':
+            case 'Website Button Color':
+            case 'Website Button Text Color':
+            case 'Website Active Button Color':
+            case 'Website Active Button Text Color':
+
             case 'Website Accent Color':
             case 'Website Zendesk Chat Code':
             case 'Website Google Tag Manager Code':

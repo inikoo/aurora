@@ -152,9 +152,9 @@ switch ($tab) {
         break;
     case 'customers':
     case 'website.favourites.customers':
-
     case 'product.customers':
     case 'product.customers.favored':
+    case 'poll_query_option.customers':
 
         $data = prepare_values(
             $_REQUEST, array(
@@ -1205,16 +1205,16 @@ function get_customers_element_numbers($db, $data) {
 
         case 'product':
             $table = '`Order Transaction Fact` OTF  left join `Customer Dimension` C on (OTF.`Customer Key`=C.`Customer Key`) ';
-
             $where = sprintf(' where  `Product ID`=%d ', $data['parent_key']);
+            break;
+        case 'customer_poll_query_option':
+            $table = '`Customer Poll Fact` CPF  left join `Customer Dimension` C on (CPF.`Customer Poll Customer Key`=C.`Customer Key`) ';
+            $where = sprintf(' where  `Customer Poll Query Option Key`=%d ', $data['parent_key']);
+
 
             break;
-
         case 'favourites':
-
             $table = '`Customer Favourite Product Fact` F  left join `Customer Dimension` C   on (C.`Customer Key`=F.`Customer Favourite Product Customer Key`)  ';
-
-
             $where = sprintf(' where  F.`Customer Favourite Product Product ID`=%d ', $data['parent_key']);
 
             break;

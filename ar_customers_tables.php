@@ -59,6 +59,9 @@ switch ($tipo) {
     case 'poll_queries':
         poll_queries(get_table_parameters(), $db, $user);
         break;
+    case 'poll_query_options':
+        poll_query_options(get_table_parameters(), $db, $user);
+        break;
     case 'abandoned_cart':
         abandoned_cart(get_table_parameters(), $db, $user);
         break;
@@ -607,20 +610,11 @@ function customers_geographic_distribution($_data, $db, $user) {
 }
 
 
-function poll_queries($_data, $db, $user) {
+function abandoned_cart($_data, $db, $user) {
 
 
-    if ($_data['parameters']['parent'] == 'store') {
-        $store           = get_object('Store', $_data['parameters']['parent_key']);
-        $total_customers = $store->get('Store Contacts');
+    $rtext_label = 'recipient';
 
-    } else {
-        exit('ar_customers_tables, todo E:1234a');
-    }
-
-    $rtext_label = 'query';
-
-    $ordinal_formatter = new \NumberFormatter("en-GB", \NumberFormatter::ORDINAL);
 
     include_once 'prepare_table/init.php';
 
@@ -634,19 +628,26 @@ function poll_queries($_data, $db, $user) {
         foreach ($result as $data) {
 
 
-            $adata[] = array(
-                'id'                   => (integer)$data['Customer Insight Query Key'],
-                'query'                => sprintf(
-                    '<span class="link" onclick="change_view(\'/customers/%d/poll_query/%d\')" title="%s">%s</span>', $data['Customer Insight Query Store Key'], $data['Customer Insight Query Key'], $data['Customer Insight Query Label'],
-                    $data['Customer Insight Query Name']
-                ),
-                'label'                => $data['Customer Insight Query Label'],
-                'in_registration'      => ($data['Customer Insight Query In Registration'] == 'Yes' ? '<i class="fa fa-check success"></i>' : '<i class="fa fa-check discreet"></i>'),
-                'in_profile'           => ($data['Customer Insight Query In Profile'] == 'Yes' ? '<i class="fa fa-check success"></i>' : '<i class="fa fa-check discreet"></i>'),
-                'customers'            => number($data['Customer Insight Query Customers']),
-                'customers_percentage' => percentage($data['Customer Insight Query Customers'], $total_customers),
+            $inactive_since = strftime("%e %b %y", strtotime($data['Order Date']." +00:00"));
 
-                'position' => $ordinal_formatter->format($data['Customer Insight Query Position']),
+
+            $customer_link_format = '/customers/%d/%d';
+            $order_link_format    = '/orders/%d/%d';
+
+
+            $adata[] = array(
+                'id'           => (integer)$data['Customer Key'],
+                'store_key'    => $data['Customer Store Key'],
+                'formatted_id' => sprintf('<span class="link" onClick="change_view(\''.$customer_link_format.'\')">%06d</span>', $data['Order Store Key'], $data['Customer Key'], $data['Customer Key']),
+                'order'        => sprintf('<span class="link" onClick="change_view(\''.$order_link_format.'\')">%s</span>', $data['Order Store Key'], $data['Order Key'], $data['Order Public ID']),
+
+                'name'         => $data['Customer Name'],
+                'company_name' => $data['Customer Company Name'],
+                'contact_name' => $data['Customer Main Contact Name'],
+
+                'email'          => $data['Customer Main Plain Email'],
+                'inactive_since' => $inactive_since,
+                'inactive_days'  => '<span title="'.sprintf(_('Inactive since %s'), $inactive_since).'">'.number($data['inactive_days']).'</span>'
 
 
             );
@@ -672,11 +673,22 @@ function poll_queries($_data, $db, $user) {
     echo json_encode($response);
 }
 
-function abandoned_cart($_data, $db, $user) {
 
 
-    $rtext_label = 'recipient';
+function poll_queries($_data, $db, $user) {
 
+
+    if ($_data['parameters']['parent'] == 'store') {
+        $store           = get_object('Store', $_data['parameters']['parent_key']);
+        $total_customers = $store->get('Store Contacts');
+
+    } else {
+        exit('ar_customers_tables, todo E:1234a');
+    }
+
+    $rtext_label = 'poll query';
+
+    $ordinal_formatter = new \NumberFormatter("en-GB", \NumberFormatter::ORDINAL);
 
     include_once 'prepare_table/init.php';
 
@@ -690,26 +702,137 @@ function abandoned_cart($_data, $db, $user) {
         foreach ($result as $data) {
 
 
-            $inactive_since = strftime("%e %b %y", strtotime($data['Order Date']." +00:00"));
 
 
-            $customer_link_format = '/customers/%d/%d';
-            $order_link_format = '/orders/%d/%d';
+            switch ($data['Customer Poll Query Type']) {
+                case 'Options':
+                    $type = _('Multiple choice');
+
+                    $title_on_enough_options=_('Query will not be shown to customer until it has more than one option');
+
+                    if ($data['Customer Poll Query Options'] == 0) {
+
+
+
+                        $type.=' <span class="error">('._('Not options set').')</span>';
+                        $in_registration=($data['Customer Poll Query In Registration'] == 'Yes' ? '<i title="'.$title_on_enough_options.'" class="fa fa-check error discreet"></i>' : '<i class="fa fa-check discreet"></i>');
+                        $in_profile=($data['Customer Poll Query In Profile'] == 'Yes' ? '<i title="'.$title_on_enough_options.'" class="fa fa-check error discreet"></i>' : '<i class="fa fa-check discreet"></i>');
+                    } elseif ($data['Customer Poll Query Options'] == 1) {
+                        $type.=' <span class="warning">('._('Only one options set').')</span>';
+                        $in_registration=($data['Customer Poll Query In Registration'] == 'Yes' ? '<i title="'.$title_on_enough_options.'" class="fa fa-check error warning"></i>' : '<i class="fa fa-check discreet"></i>');
+                        $in_profile=($data['Customer Poll Query In Profile'] == 'Yes' ? '<i title="'.$title_on_enough_options.'" class="fa fa-check error warning"></i>' : '<i class="fa fa-check discreet"></i>');
+                    } else {
+                        $type.=' ('.sprintf(
+                                ngettext(
+                                    "%s option", "%s options", $data['Customer Poll Query Options']
+                                ), number($data['Customer Poll Query Options'])
+                            ).')';
+
+                        $in_registration=($data['Customer Poll Query In Registration'] == 'Yes' ? '<i class="fa fa-check success"></i>' : '<i class="fa fa-check discreet"></i>');
+                        $in_profile=($data['Customer Poll Query In Profile'] == 'Yes' ? '<i class="fa fa-check success"></i>' : '<i class="fa fa-check discreet"></i>');
+
+                    }
+
+
+
+
+
+                    break;
+                case 'Open':
+                    $type = _('Open answer');
+                    $in_registration=($data['Customer Poll Query In Registration'] == 'Yes' ? '<i class="fa fa-check success"></i>' : '<i class="fa fa-check discreet"></i>');
+                    $in_profile=($data['Customer Poll Query In Profile'] == 'Yes' ? '<i class="fa fa-check success"></i>' : '<i class="fa fa-check discreet"></i>');
+                    break;
+                default:
+                    exit('error not customer poll query E1');
+                    break;
+
+            }
 
 
             $adata[] = array(
-                'id'           => (integer)$data['Customer Key'],
-                'store_key'    => $data['Customer Store Key'],
-                'formatted_id' => sprintf('<span class="link" onClick="change_view(\''.$customer_link_format.'\')">%06d</span>', $data['Order Store Key'], $data['Customer Key'], $data['Customer Key']),
-                'order' => sprintf('<span class="link" onClick="change_view(\''.$order_link_format.'\')">%s</span>', $data['Order Store Key'], $data['Order Key'], $data['Order Public ID']),
+                'id'                   => (integer)$data['Customer Poll Query Key'],
+                'type'                 => $type,
+                'query'                => sprintf(
+                    '<span class="link" onclick="change_view(\'/customers/%d/poll_query/%d\')" title="%s">%s</span>', $data['Customer Poll Query Store Key'], $data['Customer Poll Query Key'], $data['Customer Poll Query Label'], $data['Customer Poll Query Name']
+                ),
+                'label'                => $data['Customer Poll Query Label'],
+                'in_registration'      => $in_registration,
+                'in_profile'           => $in_profile,
+                'customers'            => number($data['Customer Poll Query Customers']),
+                'customers_percentage' => percentage($data['Customer Poll Query Customers'], $total_customers),
 
-                'name'         => $data['Customer Name'],
-                'company_name' => $data['Customer Company Name'],
-                'contact_name' => $data['Customer Main Contact Name'],
+                'position' => $ordinal_formatter->format($data['Customer Poll Query Position']),
 
-                'email' => $data['Customer Main Plain Email'],
-                'inactive_since'=>$inactive_since,
-                'inactive_days'=>'<span title="'.sprintf(_('Inactive since %s'),$inactive_since).'">'.number($data['inactive_days']).'</span>'
+
+            );
+        }
+
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+
+function poll_query_options($_data, $db, $user) {
+
+
+
+    if ($_data['parameters']['parent'] == 'Customer_Poll_Query') {
+        $poll           = get_object('Customer_Poll_Query', $_data['parameters']['parent_key']);
+        $total_customers = $poll->get('Customer Poll Query Customers');
+
+    } else {
+        exit('ar_customers_tables, todo E:1234a');
+    }
+
+    $rtext_label = 'poll option';
+
+    $ordinal_formatter = new \NumberFormatter("en-GB", \NumberFormatter::ORDINAL);
+
+    include_once 'prepare_table/init.php';
+
+    $sql = "select  $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+
+
+    $adata = array();
+
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+
+
+
+
+
+
+            $adata[] = array(
+                'id'                   => (integer)$data['Customer Poll Query Option Key'],
+                'code'                => sprintf(
+                    '<span class="link" onclick="change_view(\'/customers/%d/poll_query/%d/option/%d\')" title="%s">%s</span>', $data['Customer Poll Query Option Store Key'], $data['Customer Poll Query Option Query Key'], $data['Customer Poll Query Option Key'],$data['Customer Poll Query Option Label'], $data['Customer Poll Query Option Name']
+                ),
+                'label'                => $data['Customer Poll Query Option Label'],
+
+                'customers'            => number($data['Customer Poll Query Option Customers']),
+                'customers_percentage' => percentage($data['Customer Poll Query Option Customers'], $total_customers),
+
 
 
             );

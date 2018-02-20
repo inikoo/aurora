@@ -1802,8 +1802,8 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                             $section = 'lists';
 
 
-                            if(!empty($view_path[1])){
-                                if($view_path[1]=='new'){
+                            if (!empty($view_path[1])) {
+                                if ($view_path[1] == 'new') {
                                     $section = 'list.new';
 
                                 }
@@ -1812,18 +1812,64 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                         } elseif ($view_path[0] == 'categories') {
                             $section = 'categories';
 
-                        }elseif ($view_path[0] == 'insights') {
+                        } elseif ($view_path[0] == 'insights') {
                             $section = 'insights';
+
+
+
+
+                        }  elseif ($view_path[0] == 'poll_query') {
+                            $section = 'insights';
+
+
+                            if (isset($view_path[1])) {
+                                $object = 'Customer_Poll_Query';
+
+                                if (is_numeric($view_path[1])) {
+                                    $section = 'poll_query';
+                                    $key     = $view_path[1];
+
+
+
+                                    if (isset($view_path[2]) and $view_path[2]=='option'  and isset($view_path[3])  ) {
+                                        $object = 'Customer_Poll_Query_Option';
+
+                                        $parent='customer_poll_query';
+                                        $parent_key=$key;
+
+                                        if (is_numeric($view_path[3])) {
+                                            $section = 'poll_query_option';
+                                            $key     = $view_path[3];
+
+
+
+
+
+                                        } elseif ($view_path[3] == 'new') {
+                                            $section = 'poll_query_option.new';
+                                            $key     = 0;
+                                        }
+
+
+                                    }
+
+
+
+                                } elseif ($view_path[1] == 'new') {
+                                    $section = 'poll_query.new';
+                                    $key     = 0;
+                                }
+
+
+                            }
+
 
                         } elseif ($view_path[0] == 'category') {
 
                             $section = 'category';
+                            $object  = 'category';
 
-                            $object = 'category';
-
-                            if (isset($view_path[1]) and is_numeric(
-                                    $view_path[1]
-                                )) {
+                            if (isset($view_path[1]) and is_numeric($view_path[1])) {
 
                                 include_once 'class.Category.php';
                                 $key = $view_path[1];
@@ -1912,8 +1958,6 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                         if (is_numeric($view_path[3])) {
 
 
-
-
                                             $section = 'email_campaign';
                                             $object  = 'email_campaign';
                                             $key     = $view_path[3];
@@ -1964,7 +2008,6 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                             $section = 'email_campaign';
                                             $object  = 'email_campaign';
                                             $key     = $view_path[3];
-
 
 
                                         }
@@ -2509,7 +2552,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                         } elseif ($view_path[3] == 'new') {
 
 
-                                            $key =0;
+                                            $key     = 0;
                                             $section = 'deal.new';
 
                                         }
@@ -4082,15 +4125,15 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                         $section = 'ec_sales_list';
 
 
-                    }elseif ($view_path[0] == 'sales') {
+                    } elseif ($view_path[0] == 'sales') {
                         $section = 'sales';
 
 
-                    }elseif ($view_path[0] == 'pickers') {
+                    } elseif ($view_path[0] == 'pickers') {
                         $section = 'pickers';
 
 
-                    }elseif ($view_path[0] == 'packers') {
+                    } elseif ($view_path[0] == 'packers') {
                         $section = 'packers';
 
 
@@ -4704,7 +4747,6 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
     }
 
 
-
     list($tab, $subtab) = parse_tabs($module, $section, $_data, $modules);
 
 
@@ -4740,11 +4782,10 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 function parse_tabs($module, $section, $_data, $modules) {
 
 
-
     $subtab = '';
     if (isset($_data['subtab'])) {
 
-       // print_r($_data);
+        // print_r($_data);
 
         $subtab = $_data['subtab'];
         $tab    = $modules[$module]['sections'][$section]['subtabs_parent'][$subtab];
@@ -4760,7 +4801,6 @@ function parse_tabs($module, $section, $_data, $modules) {
 
             $tab = $_SESSION['state'][$module][$section]['tab'];
             //Special default tabs
-
 
 
             if ($module == 'suppliers') {

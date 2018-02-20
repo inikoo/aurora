@@ -651,6 +651,120 @@ class Public_Product {
 
                 break;
 
+            case 'Unit Dimensions Short':
+
+
+                $key = 'Unit Dimensions';
+                include_once 'utils/natural_language.php';
+
+
+                $dimensions = '';
+
+
+                $tag = preg_replace('/ Dimensions$/', '', $key);
+
+                if ($this->data[$this->table_name.' '.$key] != '') {
+                    $data = json_decode(
+                        $this->data[$this->table_name.' '.$key], true
+                    );
+                    include_once 'utils/units_functions.php';
+
+
+                    switch ($data['type']) {
+                        case 'Rectangular':
+
+                            $dimensions = number(
+                                    convert_units(
+                                        $data['l'], 'm', $data['units']
+                                    )
+                                ).'x'.number(
+                                    convert_units(
+                                        $data['w'], 'm', $data['units']
+                                    )
+                                ).'x'.number(
+                                    convert_units(
+                                        $data['h'], 'm', $data['units']
+                                    )
+                                ).' ('.$data['units'].')';
+
+
+                            break;
+                        case 'Sheet':
+                            $dimensions = number(
+                                    convert_units(
+                                        $data['l'], 'm', $data['units']
+                                    )
+                                ).'x'.number(
+                                    convert_units(
+                                        $data['w'], 'm', $data['units']
+                                    )
+                                ).' ('.$data['units'].')';
+
+                            break;
+
+                        case 'Cilinder':
+                            $dimensions = number(
+                                    convert_units(
+                                        $data['h'], 'm', $data['units']
+                                    )
+                                ).'x'.number(
+                                    convert_units(
+                                        $data['w'], 'm', $data['units']
+                                    )
+                                ).' ('.$data['units'].')';
+
+
+                            break;
+                            print_r($data);
+                            exit;
+                            if (!$part->data['Part '.$tag.' Dimensions Length Display'] or !$part->data['Part '.$tag.' Dimensions Diameter Display']) {
+                                $dimensions = '';
+                            } else {
+                                $dimensions = 'L:'.number(
+                                        $part->data['Part '.$tag.' Dimensions Length Display']
+                                    ).' &#8709;:'.number(
+                                        $part->data['Part '.$tag.' Dimensions Diameter Display']
+                                    ).' ('.$part->data['Part '.$tag.' Dimensions Display Units'].')';
+                            }
+                            break;
+                        case 'Sphere':
+
+
+                            $dimensions = _('Diameter').' '.number(
+                                    convert_units(
+                                        $data['l'], 'm', $data['units']
+                                    )
+                                ).$data['units'];
+
+
+                        case 'String':
+                            $dimensions = number(
+                                    convert_units(
+                                        $data['l'], 'm', $data['units']
+                                    )
+                                ).$data['units'];
+                            break;
+
+                            if (!$part->data['Part '.$tag.' Dimensions Length Display']) {
+                                $dimensions = '';
+                            } else {
+                                $dimensions = 'L:'.number(
+                                        $part->data['Part '.$tag.' Dimensions Length Display']
+                                    ).' ('.$part->data['Part '.$tag.' Dimensions Display Units'].')';
+                            }
+                            break;
+
+                        default:
+                            $dimensions = '';
+                    }
+
+                }
+
+
+                return $dimensions;
+
+                break;
+
             case 'Materials':
 
                 if ($this->data[$this->table_name.' Materials'] != '') {

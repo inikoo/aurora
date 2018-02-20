@@ -276,7 +276,7 @@ abstract class DB_Table extends stdClass {
 
 
             if (preg_match(
-                    '/api key|email campaign|deal|charge|deal campaign|attachment bridge|location|site|page|part|barcode|agent|customer|contact|company|order|staff|supplier|address|telecom|user|store|product|company area|company department|position|category/i', $table_name
+                    '/deal|charge|deal campaign|attachment bridge|location|site|page|part|barcode|agent|customer|contact|company|order|staff|supplier|address|telecom|user|store|product|company area|company department|position|category|customer poll query|customer poll query option|api key|email campaign/i', $table_name
                 ) and !$this->new and $save_history) {
 
 
