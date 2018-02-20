@@ -13,7 +13,7 @@
 switch ($parameters['parent']) {
     case('store'):
         $where = sprintf(
-            ' where  `Customer Insight Query Store Key`=%d', $parameters['parent_key']
+            ' where  `Customer Poll Query Store Key`=%d', $parameters['parent_key']
         );
         break;
 
@@ -28,7 +28,7 @@ switch ($parameters['parent']) {
 $wheref = '';
 if ($parameters['f_field'] == 'query' and $f_value != '') {
     $wheref = sprintf(
-        ' and `	Customer Insight Query Name` REGEXP "[[:<:]]%s" ', addslashes($f_value)
+        ' and `	Customer Poll Query Name` REGEXP "[[:<:]]%s" ', addslashes($f_value)
     );
 }
 
@@ -37,18 +37,18 @@ $_dir   = $order_direction;
 
 
 if ($order == 'query') {
-    $order = '`Customer Insight Query Name`';
+    $order = '`Customer Poll Query Name`';
 }elseif ($order == 'label') {
-    $order = '`Customer Insight Query Label`';
+    $order = '`Customer Poll Query Label`';
 }elseif ($order == 'customers' or $order == 'customers_percentage') {
-    $order = 'Customer Insight Query Customers';
+    $order = 'Customer Poll Query Customers';
 }  else {
-    $order = '`Customer Insight Query Position`';
+    $order = '`Customer Poll Query Position`';
 }
 
 
-$table  = '`Customer Insight Query Dimension`   ';
-$fields = "`Customer Insight Query Store Key`,`Customer Insight Query Key`,`Customer Insight Query Type`,`Customer Insight Query Position`,`Customer Insight Query Name`,`Customer Insight Query Label`,`Customer Insight Query In Profile`,`Customer Insight Query In Registration`,`Customer Insight Query Registration Required`,`Customer Insight Query Customers`,`Customer Insight Query Options` ";
+$table  = '`Customer Poll Query Dimension`   ';
+$fields = "`Customer Poll Query Store Key`,`Customer Poll Query Key`,`Customer Poll Query Type`,`Customer Poll Query Position`,`Customer Poll Query Name`,`Customer Poll Query Label`,`Customer Poll Query In Profile`,`Customer Poll Query In Registration`,`Customer Poll Query Registration Required`,`Customer Poll Query Customers`,`Customer Poll Query Options` ";
 $group_by='';
 $sql_totals = "select count(*) as num from $table $where ";
 

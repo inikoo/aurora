@@ -58,7 +58,7 @@ class Website extends DB_Table {
             $this->id   = $this->data['Website Key'];
             $this->code = $this->data['Website Code'];
 
-            if ($this->data['Website Settings'] == '') {
+            if (empty($this->data['Website Settings'])) {
                 $this->settings = array();
             } else {
                 $this->settings = json_decode($this->data['Website Settings'], true);

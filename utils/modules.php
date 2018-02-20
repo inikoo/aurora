@@ -383,6 +383,9 @@ $modules = array(
 
             ),
 
+
+
+
             'list'     => array(
                 'type' => 'object',
                 'tabs' => array(
@@ -433,6 +436,10 @@ $modules = array(
                         'label' => _('Data'),
                         'icon'  => 'database'
                     ),
+                    'customer.insights'   => array(
+                        'label' => _('Insights'),
+                        'icon'  => 'graduation-cap'
+                    ),
                     'customer.history'   => array(
                         'label' => _('History, notes'),
                         'icon'  => 'sticky-note-o'
@@ -481,6 +488,8 @@ $modules = array(
             ),
 
 
+
+
             'customer.new' => array(
                 'type' => 'new_object',
                 'tabs' => array(
@@ -488,6 +497,77 @@ $modules = array(
                         'label' => _(
                             'New customer'
                         )
+                    ),
+
+                )
+
+            ),
+
+
+            'poll_query' => array(
+                'type'           => 'object',
+                'label'          => _('Poll query'),
+                'title'          => _('Poll query'),
+                'icon'           => '',
+
+                'tabs'           => array(
+                    'poll_query.details'   => array(
+                        'label' => _('Data'),
+                        'icon'  => 'database'
+                    ),
+
+                    'poll_query.answers'  => array('label' => _('Answers')),
+                    'poll_query.options'  => array('label' => _('Poll options')),
+                    'poll_query.history'   => array(
+                        'title' => _('History, notes'),
+                        'label' => '',
+                        'icon'  => 'road',
+                        'class'=>'icon_only right'
+                    ),
+
+                )
+            ),
+
+            'poll_query.new' => array(
+                'type' => 'new_object',
+                'tabs' => array(
+                    'poll_query.new' => array(
+                        'label' => _('New poll query')
+                    ),
+
+                )
+
+            ),
+
+
+            'poll_query_option' => array(
+                'type'           => 'object',
+                'label'          => _('Poll query option'),
+                'title'          => _('Poll query option'),
+                'icon'           => '',
+
+                'tabs'           => array(
+                    'poll_query_option.details'   => array(
+                        'label' => _('Data'),
+                        'icon'  => 'database'
+                    ),
+
+                    'poll_query_option.customers'  => array('label' => _('Customers')),
+                    'poll_query_option.history'   => array(
+                        'title' => _('History, notes'),
+                        'label' => '',
+                        'icon'  => 'road',
+                        'class'=>'icon_only right'
+                    ),
+
+                )
+            ),
+
+            'poll_query_option.new' => array(
+                'type' => 'new_object',
+                'tabs' => array(
+                    'poll_query_option.new' => array(
+                        'label' => _('New poll query option')
                     ),
 
                 )
@@ -2319,7 +2399,7 @@ $modules = array(
 
 
                     'website.style' => array(
-                        'label'   => _('Look & fill'),
+                        'label'   => _('Look & feel'),
                         'icon'    => 'paint-brush',
                         'subtabs' => array(
 
@@ -3132,6 +3212,10 @@ $modules = array(
                         'label' => _('Data'),
                         'icon'  => 'database'
                     ),
+                    'customer.insights'   => array(
+                        'label' => _('Insights'),
+                        'icon'  => 'graduation-cap'
+                    ),
                     'customer.history'   => array(
                         'label' => _('History, notes'),
                         'icon'  => 'sticky-note-o'
@@ -3140,9 +3224,7 @@ $modules = array(
                     'customer.invoices'  => array('label' => _('Invoices')),
                     'customer.marketing' => array(
                         'label'   => _('Interests'),
-                        'title'   => _(
-                            "Customer's interests"
-                        ),
+                        'title'   => _("Customer's interests"),
                         'subtabs' => array(
                             'customer.marketing.overview'   => array(
                                 'label' => _(

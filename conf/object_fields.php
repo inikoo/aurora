@@ -283,7 +283,13 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
             break;
         case 'Customer':
 
-            include 'fields/customer.fld.php';
+
+
+            if(!empty($options['poll'])){
+                include 'fields/customer.poll.fld.php';
+            }else{
+                include 'fields/customer.fld.php';
+            }
 
             return $customer_fields;
             break;
@@ -467,7 +473,16 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
             return $object_fields;
             break;
+        case 'Customer Poll Query':
+            include 'fields/poll_query.fld.php';
 
+            return $object_fields;
+            break;
+        case 'Customer Poll Query Option':
+            include 'fields/poll_query_option.fld.php';
+
+            return $object_fields;
+            break;
         default:
             print $object->get_object_name();
 

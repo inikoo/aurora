@@ -1098,16 +1098,20 @@ class Customer extends Subject {
                 }
 
 
-                if (preg_match(
-                    '/^Customer Other Delivery Address (\d+)/i', $field, $matches
-                )) {
+                if (preg_match('/^Customer Other Delivery Address (\d+)/i', $field, $matches)) {
 
                     $customer_delivery_address_key = $matches[1];
-
-
                     $this->update_other_delivery_address(
                         $customer_delivery_address_key, $field, json_decode($value, true), $options
                     );
+
+                    return;
+                }
+
+                if (preg_match('/^Customer Poll Query (\d+)/i', $field, $matches)) {
+
+                    $poll_key = $matches[1];
+                    $this->update_poll_answer($poll_key, $value, $options);
 
                     return;
                 }
@@ -3238,6 +3242,16 @@ class Customer extends Subject {
         $this->fast_update(array('Customer Account Balance' => $balance));
 
     }
+
+
+    function update_poll_answer($poll_key, $value, $options) {
+
+        $poll = get_object('Customer_Poll_Query', $poll_key);
+        $poll->add_customer($this, $value);
+
+
+    }
+
 
 }
 

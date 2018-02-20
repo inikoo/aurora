@@ -741,15 +741,9 @@
                                                 <a  href="" data-toggle="dropdown" class="dropdown-toggle ">
                                                     <i class="fa _column_label_icon {if $column.icon==''}fa-ban {else}{$column.icon}{/if} item_icon padding_right_5  " icon="{$column.icon}" aria-hidden="true"></i>  <span class="_column_label" contenteditable="true">{$column.label}</span>
                                                 </a>
-
-
-
-
                                                 {if $column.type=='three_columns'}
-
-
-                                                        <ul class="dropdown-menu">
-                                                            <li>
+                                                    <ul class="dropdown-menu">
+                                                        <li>
                                                                 <div class="yamm-content">
                                                                     <div id="_3col_{$key}" class="row">
                                                                         {foreach from=$column.sub_columns item=sub_column key=col_key}
@@ -841,13 +835,9 @@
                                                                     </div>
                                                                 </div>
                                                             </li>
-                                                        </ul>
-
-
-
-
+                                                    </ul>
                                                 {elseif $column.type=='single_column'}
-                                                              <ul class="dropdown-menu multilevel sortable" role="menu">
+                                                    <ul class="dropdown-menu multilevel sortable" role="menu">
 
 
                                                             {foreach from=$column.items item=item key=item_key}
@@ -899,26 +889,9 @@
 
 
                                                         </ul>
-
                                                 {/if}
-
                                             </li>
-
-
-
-
                                             {/foreach}
-
-
-
-
-
-
-
-
-
-
-
                                         </ul>
 
                                     </div>
@@ -1424,6 +1397,12 @@
 
         }
 
+
+        function delete_column(key){
+
+            $('#menu_column_'+key).remove();
+        }
+
         function move_column(key,pre, post) {
 
             //console.log(key+' '+pre+' '+post)
@@ -1457,6 +1436,10 @@
 
 
         }
+
+
+
+
 
         function hide_column(key) {
 
@@ -1763,6 +1746,13 @@
         $("body").on('DOMSubtreeModified', "#header", function() {
             $('#save_button', window.parent.document).addClass('save button changed valid')
         });
+
+        function add_column(key,label){
+
+            $('#_columns').append( $('<li  id="menu_column_'+key+'" class="dropdown  on _column single_column" > <a  href="" data-toggle="dropdown" class="dropdown-toggle "> <i class="fa _column_label_icon fa-ban  item_icon padding_right_5  " icon="" aria-hidden="true"></i>  <span class="_column_label" contenteditable="true">'+label+'</span> </a> <ul class="dropdown-menu multilevel sortable" role="menu"> </ul> </li>') )
+            $('#menu_column_'+key+' > ul.dropdown-menu').html($('#single_column_stem_cell').clone().html())
+
+        }
 
     </script>
 

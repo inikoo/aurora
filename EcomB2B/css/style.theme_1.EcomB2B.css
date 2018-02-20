@@ -20457,8 +20457,6 @@ table.properties td {
 
 .order_row, .out_of_stock_row {
   width: 100%;
-  background-color: orange;
-  color: white;
   height: 30px;
   line-height: 30px;
   text-align: center;
@@ -20466,12 +20464,6 @@ table.properties td {
   position: absolute;
   bottom: 0;
   text-align: left; }
-
-.order_row.empty:hover {
-  background-color: firebrick; }
-
-.order_row.ordered {
-  background-color: firebrick; }
 
 .out_of_stock_row.out_of_stock {
   background-color: darkgray; }

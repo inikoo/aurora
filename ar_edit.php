@@ -957,7 +957,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                 $smarty->assign('object', $object);
 
                 $pcard        = '';
-                $redirect=sprintf('campaigns/%d/%d', $object->get('Deal Campaign Store Key'), $object->id);
+                $redirect     = sprintf('campaigns/%d/%d', $object->get('Deal Campaign Store Key'), $object->id);
                 $updated_data = array();
 
             }
@@ -1582,6 +1582,62 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             if (!$parent->error) {
                 $pcard        = '';
                 $updated_data = array();
+            }
+            break;
+        case 'Customer Poll Query':
+            include_once 'class.Customer_Poll_Query.php';
+
+            $data['fields_data']['user'] = $user;
+
+
+            $object = $parent->create_poll_query($data['fields_data']);
+
+
+            if (!$parent->error) {
+
+                $smarty->assign('account', $account);
+                $smarty->assign('parent', $parent);
+
+                $smarty->assign('object', $object);
+
+                if ($object->get('Customer Poll Query Type') == 'Options') {
+
+                    $pcard        = '';
+                    $redirect     = 'customers/'.$parent->id.'/poll_query/'.$object->id;
+                    $updated_data = array();
+
+                } else {
+
+
+                    $pcard        = $smarty->fetch('presentation_cards/customer_poll_query.pcard.tpl');
+                    $updated_data = array();
+                }
+
+
+            }
+            break;
+
+        case 'Customer Poll Query Option':
+            include_once 'class.Customer_Poll_Query_Option.php';
+
+            $data['fields_data']['user'] = $user;
+
+
+            $object = $parent->create_option($data['fields_data']);
+
+
+            if (!$parent->error) {
+
+                $smarty->assign('account', $account);
+                $smarty->assign('parent', $parent);
+
+                $smarty->assign('poll_option', $object);
+
+
+                $pcard        = $smarty->fetch('presentation_cards/customer_poll_query_option.pcard.tpl');
+                $updated_data = array();
+
+
             }
             break;
 
@@ -2528,16 +2584,16 @@ function edit_image($account, $db, $user, $editor, $data, $smarty) {
 
 function regenerate_api($account, $db, $user, $editor, $data, $smarty) {
 
-    $api_key = get_object('api_key', $data['api_key']);
-    $api_key->editor=$editor;
-    $private_key = $api_key->regenerate_private_key();
+    $api_key         = get_object('api_key', $data['api_key']);
+    $api_key->editor = $editor;
+    $private_key     = $api_key->regenerate_private_key();
 
-      $response = array(
-          'state' => 200,
-          'qrcode'  => $api_key->get('Address').','.$api_key->get('Code').','.$private_key
+    $response = array(
+        'state'  => 200,
+        'qrcode' => $api_key->get('Address').','.$api_key->get('Code').','.$private_key
 
-      );
-            echo json_encode($response);
+    );
+    echo json_encode($response);
 
 
 }

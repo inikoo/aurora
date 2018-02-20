@@ -29,6 +29,8 @@ $smarty->assign('primary_color',$website->get('Website Primary Color'));
 $smarty->assign('primary_color_darker',adjustBrightness($website->get('Website Primary Color'),-30));
 $smarty->assign('primary_color_lighter',adjustBrightness($website->get('Website Primary Color'),+30));
 
+$smarty->assign('order_button_color',$website->get('Website Order Button Color'));
+$smarty->assign('order_button_selected_color',$website->get('Website Order Button Color'));
 
 
 

@@ -31,6 +31,15 @@ $parameters = array(
 
 );
 
+$table_buttons   = array();
+
+$table_buttons[] = array(
+    'icon'      => 'plus',
+    'title'     => _('New query'),
+    'reference' => "customers/".$state['parent_key']."/poll_query/new"
+);
+$smarty->assign('table_buttons', $table_buttons);
+
 
 include('utils/get_table_html.php');
 

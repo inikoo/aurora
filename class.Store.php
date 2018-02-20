@@ -3135,6 +3135,55 @@ class Store extends DB_Table {
 
     }
 
+
+    function create_poll_query($data) {
+
+        $this->new_poll_query     = false;
+
+        $data['editor']                           = $this->editor;
+        $data['Customer Poll Query Store Key']         = $this->id;
+        $data['Customer Poll Query Creation Date']     = gmdate('Y-m-d H:i:s');
+
+
+
+
+        $poll_query         = new Customer_Poll_Query('new', $data);
+
+
+        if ($poll_query->id) {
+            $this->new_poll_query_msg = $poll_query->msg;
+
+            if ($poll_query->new) {
+                $this->new_poll_query = true;
+
+                $history_data = array(
+                    'History Abstract' => sprintf(
+                        _('Customer poll query (%s) created'), '<span class="link" onclick="change_view(\'customers/'.$this->id.'/poll_query/'.$poll_query->id.'\')">'.$poll_query->get('Name').'</span>'
+                    ),
+                    'History Details'  => '',
+                    'Action'           => 'created'
+                );
+
+                $this->add_subject_history(
+                    $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+                );
+
+
+            } else {
+                //$this->error = true;
+                //$this->msg   = $email_campaign->msg;
+
+            }
+
+            return $poll_query;
+        } else {
+            $this->error = true;
+            $this->msg   = $poll_query->msg;
+        }
+
+
+    }
+
     function create_email_campaign($data) {
 
         $this->new_email_campaign     = false;

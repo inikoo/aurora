@@ -15,16 +15,9 @@ require_once 'common.php';
 
 
 
-
-
-
 $smarty->assign('primary_color',$website->get('Website Primary Color'));
 $smarty->assign('primary_color_darker',adjustBrightness($website->get('Website Primary Color'),-30));
 $smarty->assign('primary_color_lighter',adjustBrightness($website->get('Website Primary Color'),+30));
-
-
-
-
 $smarty->assign('secondary_color',$website->get('Website Secondary Color'));
 $smarty->assign('secondary_color_darker',adjustBrightness($website->get('Website Secondary Color'),-20));
 

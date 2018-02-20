@@ -175,6 +175,9 @@ $elements_options = array(
 
         )
     ),
+
+
+
     'supplier_part_history'  => array(
         'type' => array(
             'label' => _('Type'),
@@ -211,6 +214,26 @@ $elements_options = array(
 
         )
     ),
+
+
+    'poll_query_history' => array(
+        'type' => array(
+            'label' => _('Type'),
+            'items' => array(
+                'Notes'   => array(
+                    'label'    => _('Notes'),
+                    'selected' => true
+                ),
+                'Changes' => array(
+                    'label'    => _('Changes'),
+                    'selected' => true
+                ),
+            ),
+
+        )
+    ),
+
+
     'orders_archived'        => array(
         'dispatch' => array(
             'label' => _('Dispatched'),

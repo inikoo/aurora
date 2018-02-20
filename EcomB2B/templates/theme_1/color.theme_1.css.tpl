@@ -11,6 +11,13 @@
 
 
 
+
+.product_footer.order_button{
+color:#fff;
+background-color: {$primary_color};
+}
+
+
 .header ul.nav>li>a.active {
 	color:{$primary_color};
 }
