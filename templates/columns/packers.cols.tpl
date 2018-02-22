@@ -86,6 +86,51 @@ sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
+{
+name: "deliveries_with_errors",
+label: "{t}Errors{/t} (D)",
+title: "{t}Deliveries with errors{/t}",
+editable: false,
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='deliveries_with_errors'}deliveries: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+},
+{
+name: "deliveries_with_errors_percentage",
+label: "{t}Errors{/t} (D)%",
+title: "{t}Percentage deliveries with errors{/t}",
+editable: false,
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='deliveries_with_errors_percentage'}deliveries: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+},
+{
+name: "picks_with_errors",
+label: "{t}Errors{/t} (P)",
+title: "{t}Picks with errors{/t}",
+editable: false,
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='picks_with_errors'}deliveries: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+},
+{
+name: "picks_with_errors_percentage",
+label: "{t}Errors{/t} (P)%",
+title: "{t}Percentage picks with errors{/t}",
+editable: false,
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='picks_with_errors_percentage'}deliveries: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+},
+
 ]
 
 function change_table_view(view,save_state){}

@@ -696,6 +696,10 @@ function pickers($_data, $db, $user, $account) {
 
                 'name'          => $data['Staff Name'],
                 'deliveries'    => number($data['deliveries']),
+                'deliveries_with_errors'=> number($data['deliveries_with_errors']),
+                'deliveries_with_errors_percentage'=>  percentage($data['deliveries_with_errors'], $data['deliveries']),
+                'picks_with_errors'=> number($data['picks_with_errors']),
+                'picks_with_errors_percentage'=>  percentage($data['picks_with_errors_percentage'], 1),
                 'picked'        => number($data['picked'],0),
                 'dp'            => number($data['dp']),
                 'dp_percentage' => percentage($data['dp'], $total_dp),
@@ -778,6 +782,10 @@ function packers($_data, $db, $user, $account) {
                 'dp_percentage' => percentage($data['dp'], $total_dp),
                 'hrs'           => number($data['hrs'], 1, true),
                 'dp_per_hour'   => ($data['dp_per_hour'] == '' ? '' : number($data['dp_per_hour'], 1, true)),
+                'deliveries_with_errors'=> number($data['deliveries_with_errors']),
+                'deliveries_with_errors_percentage'=>  percentage($data['deliveries_with_errors'], $data['deliveries']),
+                'picks_with_errors'=> number($data['picks_with_errors']),
+                'picks_with_errors_percentage'=>  percentage($data['picks_with_errors_percentage'], 1),
 
 
             );
