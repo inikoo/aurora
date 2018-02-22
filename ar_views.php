@@ -2728,7 +2728,7 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
 
         }else{
             if($data['tab'] == 'poll_query.options'){
-                data['tab'] == 'poll_query.answers';
+                $data['tab'] == 'poll_query.answers';
             }
             $_content['tabs']['poll_query.options']['class'] = 'hide';
             $_content['tabs']['poll_query.answers']['class'] = '';
