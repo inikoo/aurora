@@ -56,6 +56,14 @@ if ($order == 'name') {
     $order = 'picked';
 }elseif ($order == 'deliveries') {
     $order = 'deliveries';
+}elseif ($order == 'deliveries_with_errors') {
+    $order = 'deliveries_with_errors';
+}elseif ($order == 'deliveries_with_errors_percentage') {
+    $order = ' ( count(distinct OPTD.`Picker Fault Delivery Note Key`)/count(distinct ITF.`Delivery Note Key`))  ';
+}elseif ($order == 'picks_with_errors') {
+    $order = 'picks_with_errors';
+}elseif ($order == 'picks_with_errors_percentage') {
+    $order = ' picks_with_errors_percentage ';
 }elseif ($order == 'dp' or $order == 'dp_percentage') {
     $order = 'dp';
 }elseif ($order == 'hrs') {
@@ -71,11 +79,14 @@ if ($order == 'name') {
 $group_by
     = 'group by `Picker Key`';
 
-$table = ' `Inventory Transaction Fact` ITF left join `Staff Dimension` S on (S.`Staff Key`=ITF.`Picker Key`) ';
+$table = ' `Inventory Transaction Fact` ITF  left join `Order Post Transaction Dimension` OPTD on (ITF.`Inventory Transaction Key`=OPTD.`Inventory Transaction Key`)   left join `Staff Dimension` S on (S.`Staff Key`=ITF.`Picker Key`) ';
 
-$fields = "`Staff Name`,`Staff Key`,@deliveries := count(distinct `Delivery Note Key`) as deliveries , sum(`Picked`) as picked, @dp :=  count(distinct `Delivery Note Key`,`Part SKU`) as dp ,
+$fields = "`Staff Name`,`Staff Key`,@deliveries := count(distinct ITF.`Delivery Note Key`) as deliveries , sum(`Picked`) as picked, @dp :=  count(distinct ITF.`Delivery Note Key`,`Part SKU`) as dp ,
 @hrs :=  (select sum(`Timesheet Clocked Time`)/3600 from `Timesheet Dimension` where `Timesheet Staff Key`=`Picker Key` $where_interval_working_hours ) as hrs,
-  count(distinct `Delivery Note Key`,`Part SKU`)/ (select sum(`Timesheet Clocked Time`)/3600 from `Timesheet Dimension` where `Timesheet Staff Key`=`Picker Key` $where_interval_working_hours )  as dp_per_hour
+  count(distinct ITF.`Delivery Note Key`,`Part SKU`)/ (select sum(`Timesheet Clocked Time`)/3600 from `Timesheet Dimension` where `Timesheet Staff Key`=`Picker Key` $where_interval_working_hours )  as dp_per_hour,
+  @deliveries_with_error := count(distinct OPTD.`Picker Fault Delivery Note Key`) as deliveries_with_errors,
+   sum( OPTD.`Picker Fault`) as picks_with_errors,
+    sum( OPTD.`Picker Fault`)/count(*) as picks_with_errors_percentage
 
 ";
 

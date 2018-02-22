@@ -821,6 +821,12 @@ ALTER TABLE `Email Campaign Dimension` ADD `Email Campaign Number Estimated Emai
 ALTER TABLE `Email Campaign Dimension` CHANGE `Email Campaign State` `Email Campaign State` ENUM('InProcess','ComposingEmail','Ready','Scheduled','Sending','Send','Cancelled') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'InProcess';
 
 
+ALTER TABLE `Order Post Transaction Dimension` ADD `Inventory Transaction Key` INT UNSIGNED NULL DEFAULT NULL AFTER `Order Transaction Fact Key`, ADD INDEX (`Inventory Transaction Key`);
+ALTER TABLE `Order Post Transaction Dimension` ADD `Picker Fault` FLOAT NULL DEFAULT '0' AFTER `Credit Paid`, ADD `Packer Fault` FLOAT NULL DEFAULT '0' AFTER `Picker Fault`, ADD `Customer Services Fault` FLOAT NULL DEFAULT '0' AFTER `Packer Fault`;
+
+
+ALTER TABLE `Order Post Transaction Dimension` ADD `Picker Fault Delivery Note Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Customer Services Fault`, ADD `Packer Fault Delivery Note Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Picker Fault Delivery Note Key`, ADD `Customer Services Fault Delivery Note Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Packer Fault Delivery Note Key`;
+
 
 ======= fer migracion ordering in dw and costa
 
