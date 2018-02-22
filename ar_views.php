@@ -2720,7 +2720,7 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
         if($data['_object']->get('Customer Poll Query Type')=='Options'){
 
             if($data['tab'] == 'poll_query.answers'){
-                data['tab'] == 'poll_query.options';
+                $data['tab'] == 'poll_query.options';
             }
 
             $_content['tabs']['poll_query.answers']['class'] = 'hide';
