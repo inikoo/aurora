@@ -14,7 +14,7 @@ function get_customer_poll_query_showcase($data, $smarty) {
 
 
     $poll_query = $data['_object'];
-
+    $poll_query->update_answers();
 
     if (!$poll_query->id) {
         return "";

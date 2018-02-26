@@ -253,7 +253,8 @@ switch ($tab) {
     case 'supplier.history':
     case 'charge.history':
     case 'email_campaign.history':
-
+    case 'poll_query_option.history':
+    case 'poll_query.history':
         $data = prepare_values(
             $_REQUEST, array(
                          'parameters' => array('type' => 'json array')
@@ -1355,6 +1356,9 @@ function get_history_elements($db, $data) {
             'Deployment'  => 0
         )
     );
+
+   // print_r($data);
+
     if ($data['parent'] == 'category') {
         $sql = sprintf(
             "SELECT count(*) AS num ,`Type` FROM  `%s Category History Bridge` WHERE  `Category Key`=%d GROUP BY  `Type`", $data['subject'], $data['parent_key']
@@ -1410,6 +1414,14 @@ function get_history_elements($db, $data) {
     }elseif ($data['parent'] == 'email_campaign') {
         $sql = sprintf(
             "SELECT count(*) AS num ,`Type` FROM  `Email Campaign History Bridge` WHERE  `Email Campaign Key`=%d GROUP BY  `Type`", $data['parent_key']
+        );
+    }elseif ($data['parent'] == 'Customer_Poll_Query_Option') {
+        $sql = sprintf(
+            "SELECT count(*) AS num ,`Type` FROM  `Customer Poll Query Option History Bridge` WHERE  `Customer Poll Query Option Key`=%d GROUP BY  `Type`", $data['parent_key']
+        );
+    }elseif ($data['parent'] == 'Customer_Poll_Query') {
+        $sql = sprintf(
+            "SELECT count(*) AS num ,`Type` FROM  `Customer Poll Query History Bridge` WHERE  `Customer Poll Query Key`=%d GROUP BY  `Type`", $data['parent_key']
         );
     } elseif ($data['parent'] == 'none') {
         $sql = sprintf(

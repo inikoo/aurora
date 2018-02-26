@@ -574,6 +574,18 @@ $modules = array(
 
             ),
 
+            'deleted_customer_poll_query_option'   => array(
+                'type' => 'object',
+                'tabs' => array(
+                    'poll_query_option.history' => array(
+                        'label' => _('History'),
+                        'icon'  => 'road'
+                    ),
+
+
+                )
+            ),
+
 
         )
     ),

@@ -160,7 +160,7 @@
 
     <script src="/theme_1/masterslider/masterslider.min.js"></script>
 
-    <script src="/js/libs/base64.js"></script>
+    <script src="/js/libs/base64.js?v2"></script>
 
     <script src="/js/edit.js"></script>
     <script src="/js/validation.js"></script>

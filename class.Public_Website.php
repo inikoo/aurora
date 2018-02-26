@@ -64,7 +64,6 @@ class Public_Website {
             $this->code = $this->data['Website Code'];
 
 
-
             if ($this->data['Website Settings'] == '') {
                 $this->settings = array();
             } else {
@@ -95,8 +94,7 @@ class Public_Website {
         $template_key = false;
 
         $sql = sprintf(
-            'SELECT `Template Key` FROM `Template Dimension` WHERE `Template Website Key`=%d AND `Template Scope`=%s AND `Template Device`=%s ', $this->id, prepare_mysql($scope),
-            prepare_mysql($device)
+            'SELECT `Template Key` FROM `Template Dimension` WHERE `Template Website Key`=%d AND `Template Scope`=%s AND `Template Device`=%s ', $this->id, prepare_mysql($scope), prepare_mysql($device)
 
         );
         if ($result = $this->db->query($sql)) {
@@ -180,7 +178,7 @@ class Public_Website {
 
         global $store;
 
-        $categories=array();
+        $categories = array();
 
         switch ($type) {
             case 'departments':
@@ -189,8 +187,6 @@ class Public_Website {
 
                     $store->get('Store Department Category Key')
                 );
-
-
 
 
                 if ($result = $this->db->query($sql)) {
@@ -281,7 +277,6 @@ class Public_Website {
                 break;
 
 
-
             case 'Website Store Key':
             case 'Website Locale':
             case 'Website Name':
@@ -314,24 +309,18 @@ class Public_Website {
     }
 
 
-
-
-
-
-    function get_payment_accounts($delivery_2alpha_country='') {
+    function get_payment_accounts($delivery_2alpha_country = '') {
 
         $payments_accounts = array();
 
         $sql = sprintf(
-            'SELECT `Payment Account Store Payment Account Key` FROM `Payment Account Store Bridge` WHERE `Payment Account Store Website Key`=%d AND `Payment Account Store Status`="Active" AND `Payment Account Store Show in Cart`="Yes"  ORDER BY `Payment Account Store Show Cart Order`    ', $this->id
+            'SELECT `Payment Account Store Payment Account Key` FROM `Payment Account Store Bridge` WHERE `Payment Account Store Website Key`=%d AND `Payment Account Store Status`="Active" AND `Payment Account Store Show in Cart`="Yes"  ORDER BY `Payment Account Store Show Cart Order`    ',
+            $this->id
         );
 
-       
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
-
-
 
 
                 $payment_account = get_object('Payment_Account', $row['Payment Account Store Payment Account Key']);
@@ -340,45 +329,42 @@ class Public_Website {
                         $icon            = 'fa-credit-card';
                         $tab_label_index = '_credit_card_label';
                         $tab_label       = '';
-                        $short_label='<i class="fa fa-credit-card" aria-hidden="true"></i>';
+                        $short_label     = '<i class="fa fa-credit-card" aria-hidden="true"></i>';
                         break;
                     case 'BTreePaypal':
                         $icon            = 'fa-paypal';
                         $tab_label       = 'Paypal';
                         $tab_label_index = '';
-                        $short_label='<i class="fa fa-paypal" aria-hidden="true"></i>';
+                        $short_label     = '<i class="fa fa-paypal" aria-hidden="true"></i>';
 
                         break;
                     case 'Paypal':
                         $icon            = 'fa-paypal';
                         $tab_label       = 'Paypal';
                         $tab_label_index = '';
-                        $short_label='<i class="fa fa-paypal" aria-hidden="true"></i>';
+                        $short_label     = '<i class="fa fa-paypal" aria-hidden="true"></i>';
 
                         break;
                     case 'Bank':
                         $icon            = 'fa-university';
                         $tab_label_index = '_bank_label';
                         $tab_label       = '';
-                        $short_label='';
+                        $short_label     = '';
 
                         break;
 
                     case 'ConD':
 
 
-
-                        if(! in_array($delivery_2alpha_country,$payment_account->get('Valid Delivery Countries'))){
+                        if (!in_array($delivery_2alpha_country, $payment_account->get('Valid Delivery Countries'))) {
                             continue 2;
                         }
-
-
 
 
                         $icon            = 'fa-handshake-o';
                         $tab_label_index = '_cash_on_delivery_label';
                         $tab_label       = '';
-                        $short_label='';
+                        $short_label     = '';
                         break;
                     default:
 
@@ -391,7 +377,7 @@ class Public_Website {
                     'icon'            => $icon,
                     'tab_label_index' => $tab_label_index,
                     'tab_label'       => $tab_label,
-                    'short_label'=>$short_label
+                    'short_label'     => $short_label
                 );
 
             }
@@ -401,7 +387,7 @@ class Public_Website {
             exit;
         }
 
-      //  print_r($payments_accounts);
+        //  print_r($payments_accounts);
 
         return $payments_accounts;
 
@@ -442,6 +428,103 @@ class Public_Website {
         }
     }
 
+
+    function get_poll_queries($webpage, $customer = false) {
+
+        $poll_queries = array();
+
+        switch ($webpage->get('Webpage Code')) {
+            case 'profile.sys':
+                $where        = ' and `Customer Poll Query In Profile`="Yes" ';
+                $customer_key = $customer->id;
+                break;
+            case 'register.sys':
+                $where        = ' and `Customer Poll Query In Registration`="Yes" ';
+                $customer_key = 0;
+                break;
+            default:
+                return array();
+
+        }
+
+
+        $sql = sprintf(
+            'SELECT `Customer Poll Query Key`,`Customer Poll Query Label`,`Customer Poll Query Type`,`Customer Poll Query Options`,`Customer Poll Query Registration Required` FROM `Customer Poll Query Dimension` WHERE `Customer Poll Query Store Key`=%d  %s ORDER BY `Customer Poll Query Position`',
+            $this->data['Website Store Key'], $where
+
+        );
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                if ($row['Customer Poll Query Type'] == 'Options') {
+
+                    if ($row['Customer Poll Query Options'] < 2) {
+                        continue;
+                    }
+                    $options = array();
+                    $sql     = sprintf(
+                        'SELECT `Customer Poll Query Option Key`,`Customer Poll Query Option Label` FROM `Customer Poll Query Option Dimension` WHERE `Customer Poll Query Option Query Key`=%d ORDER BY `Customer Poll Query Option Label` ', $row['Customer Poll Query Key']
+                    );
+                    if ($result2 = $this->db->query($sql)) {
+                        foreach ($result2 as $row2) {
+                            $options[] = $row2;
+                        }
+                    } else {
+                        print_r($error_info = $this->db->errorInfo());
+                        print "$sql\n";
+                        exit;
+                    }
+
+                    if (count($options) < 2) {
+                        continue;
+                    }
+
+                    $row['Options'] = $options;
+                    $reply=0;
+                    if ($customer_key) {
+                        $sql = sprintf('SELECT `Customer Poll Query Option Key` FROM `Customer Poll Fact` WHERE `Customer Poll Customer Key`=%d AND `Customer Poll Query Key`=%d ', $customer_key, $row['Customer Poll Query Key']);
+                        if ($result2 = $this->db->query($sql)) {
+                            if ($row2 = $result2->fetch()) {
+                                $reply=$row2['Customer Poll Query Option Key'];
+                            }
+                        } else {
+                            print_r($error_info = $this->db->errorInfo());
+                            print "$sql\n";
+                            exit;
+                        }
+                    }
+                    $row['Reply']=$reply;
+
+                }else{
+                    $reply='';
+                    if ($customer_key) {
+                        $sql = sprintf('SELECT `Customer Poll Reply` FROM `Customer Poll Fact` WHERE `Customer Poll Customer Key`=%d AND `Customer Poll Query Key`=%d ', $customer_key, $row['Customer Poll Query Key']);
+                        if ($result2 = $this->db->query($sql)) {
+                            if ($row2 = $result2->fetch()) {
+                                $reply=$row2['Customer Poll Reply'];
+                            }
+                        } else {
+                            print_r($error_info = $this->db->errorInfo());
+                            print "$sql\n";
+                            exit;
+                        }
+                    }
+                    $row['Reply']=$reply;
+
+                }
+
+
+                $poll_queries[] = $row;
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+        return $poll_queries;
+
+    }
 
 }
 

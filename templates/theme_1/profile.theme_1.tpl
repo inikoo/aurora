@@ -49,7 +49,7 @@
     <table style="width:100%;">
         <tr>
             <td >{t}Address Line 1{/t}</td>
-            <td><input id="address_addressLine1" class="website_localized_label" style="width:100%" value="{if isset($labels.address_addressLine1) and $labels.address_addressLine1!=''}{$labels.address_addressLine1}{else}{t}Address Line 1{/t}{/if}" /></td>
+            <td><input id="address_addressLine1" class="website_localized_label" style="width:100%" value="{if !empty($labels.address_addressLine1)}{$labels.address_addressLine1}{else}{t}Address Line 1{/t}{/if}" /></td>
         </tr>
         <tr>
             <td >{t}Address Line 2{/t}</td>
@@ -237,12 +237,19 @@
                             <li>
                                 <span class="block_link like_button">
                                     <i class="fa fa-angle-right"></i>
-                                    <span id="_delivery_addresses_title" co contenteditable="true" class="_delivery_addresses_title">{$content._delivery_addresses_title}</span>
+                                    <span id="_delivery_addresses_title"  contenteditable="true" class="_delivery_addresses_title">{$content._delivery_addresses_title}</span>
                                     <i block="_delivery_addresses_details" onClick="change_block(this)" class="padding_left_10 fa like_button fa-arrow-right"></i>
                                     </span>
                             </li>
-
-
+                            {if !empty($poll_queries)}
+                            <li>
+                                <span class="block_link like_button">
+                                    <i class="fa fa-angle-right"></i>
+                                    <span id="_poll_title"  contenteditable="true" class="_poll_title">{if empty($content._poll_title)}{t}Poll{/t}{else}{$content._poll_title}{/if}</span>
+                                    <i block="_poll_details" onClick="change_block(this)" class="padding_left_10 fa like_button fa-arrow-right"></i>
+                                    </span>
+                            </li>
+                            {/if}
 
                         </ul>
 
@@ -272,7 +279,7 @@
 
 
                     <div id="_contact_details" class="block reg_form">
-                        <form id="sky-form" class="sky-form">
+                        <form  class="sky-form">
                             <header class="mirror_master" id="_contact_details_title" contenteditable="true">{$content._contact_details_title}</header>
 
                             <fieldset>
@@ -356,7 +363,7 @@
                         </form>
                     </div>
                     <div id="_login_details" class="block hide reg_form">
-                        <form id="sky-form" class="sky-form">
+                        <form  class="sky-form">
                             <header class="mirror_master" id="_login_details_title" contenteditable="true">{$content._login_details_title}</header>
 
                             <fieldset>
@@ -401,11 +408,11 @@
 
 
 
-                            <fieldset id="address_fields" style="position:relative">
+                            <fieldset id="invoice_address_fields" style="position:relative">
 
 
 
-                                <section id="addressLine1" class="{if 'addressLine1'|in_array:$used_address_fields}{else}hide{/if}">
+                                <section id="addressLine1" >
 
                                     <label for="file" class="input">
                                         <input type="text" name="addressLine1" placeholder="{if isset($labels.address_addressLine1) and $labels.address_addressLine1!=''}{$labels.address_addressLine1}{else}{t}Address Line 1{/t}{/if}">
@@ -413,7 +420,7 @@
                                     </label>
                                 </section>
 
-                                <section id="addressLine2" class="{if 'addressLine2'|in_array:$used_address_fields}{else}hide{/if}">
+                                <section id="addressLine2" >
                                     <label for="file" class="input">
                                         <input type="text" name="addressLine2" placeholder="{if isset($labels.address_addressLine2) and $labels.address_addressLine2!=''}{$labels.address_addressLine2}{else}{t}Address Line 2{/t}{/if}">
                                         <b class="tooltip tooltip-bottom-right">{if isset($labels.address_addressLine2) and $labels.address_addressLine2!=''}{$labels.address_addressLine2}{else}{t}Address Line 2{/t}{/if}</b>
@@ -422,79 +429,18 @@
 
 
 
-                                <div id="sortingCode" class="row {if 'sortingCode'|in_array:$used_address_fields}{else}hide{/if}">
+                                <div id="sortingCode" class="row">
                                     <section class="col col-6 " >
                                         <label class="input">
-                                            <input type="text" name="sortingCode" placeholder="{if isset($labels.address_sorting_code) and $labels.address_sorting_code!=''}{$labels.address_sorting_code}{else}{t}Sorting code{/t}{/if}">
-                                            <b class="tooltip tooltip-bottom-right">{if isset($labels.address_sorting_code) and $labels.address_sorting_code!=''}{$labels.address_sorting_code}{else}{t}Sorting code{/t}{/if}</b>
+                                            <input type="text" name="sortingCode" placeholder="{t}Etc..{/t}">
+                                            <b class="tooltip tooltip-bottom-right">{t}Address labels can be translated in Website localization tab{/t}</b>
                                         </label>
                                     </section>
 
 
                                 </div>
 
-                                <div id="postalCode" class="row {if 'postalCode'|in_array:$used_address_fields}{else}hide{/if}">
-                                    <section class="col col-6 " >
-                                        <label class="input">
-                                            <input type="text" name="postalCode" placeholder="{if isset($labels["postalCode_`$address_labels.postalCode.code`"]) and $labels["postalCode_`$address_labels.postalCode.code`"]!=''}{$labels["postalCode_`$address_labels.postalCode.code`"]}{else}{$address_labels.postalCode.label}{/if}">
-                                            <b class="tooltip tooltip-bottom-right">{if isset($labels["postalCode_`$address_labels.postalCode.code`"]) and $labels["postalCode_`$address_labels.postalCode.code`"]!=''}{$labels["postalCode_`$address_labels.postalCode.code`"]}{else}{$address_labels.postalCode.label}{/if}</b>
-                                        </label>
-                                    </section>
 
-
-                                </div>
-
-                                <div id="dependentLocality" class="row {if 'dependentLocality'|in_array:$used_address_fields}{else}hide{/if}">
-                                    <section class="col col-6 " >
-                                        <label class="input">
-                                            <input type="text" name="dependentLocality" placeholder="{if isset($labels["dependentLocality_`$address_labels.dependentLocality.code`"]) and $labels["dependentLocality_`$address_labels.dependentLocality.code`"]!=''}{$labels["dependentLocality_`$address_labels.dependentLocality.code`"]}{else}{$address_labels.dependentLocality.label}{/if}">
-                                            <b class="tooltip tooltip-bottom-right">{if isset($labels["dependentLocality_`$address_labels.dependentLocality.code`"]) and $labels["dependentLocality_`$address_labels.dependentLocality.code`"]!=''}{$labels["dependentLocality_`$address_labels.dependentLocality.code`"]}{else}{$address_labels.dependentLocality.label}{/if}</b>
-                                        </label>
-                                    </section>
-
-                                </div>
-
-                                <div id="locality" class="row {if 'locality'|in_array:$used_address_fields}{else}hide{/if}">
-                                    <section class="col col-6 " >
-                                        <label class="input">
-                                            <input type="text" name="locality" placeholder="{if isset($labels["locality_`$address_labels.locality.code`"]) and $labels["locality_`$address_labels.locality.code`"]!=''}{$labels["locality_`$address_labels.locality.code`"]}{else}{$address_labels.locality.label}{/if}">
-                                            <b class="tooltip tooltip-bottom-right">{if isset($labels["locality_`$address_labels.locality.code`"]) and $labels["locality_`$address_labels.locality.code`"]!=''}{$labels["locality_`$address_labels.locality.code`"]}{else}{$address_labels.locality.label}{/if}</b>
-                                        </label>
-                                    </section>
-
-                                </div>
-
-
-                                <div id="administrativeArea" class="row {if 'administrativeArea'|in_array:$used_address_fields}{else}hide{/if}">
-                                    <section class="col col-6 " >
-                                        <label class="input">
-                                            <input type="text" name="locality" placeholder="{if isset($labels["administrativeArea_`$address_labels.administrativeArea.code`"]) and $labels["administrativeArea_`$address_labels.administrativeArea.code`"]!=''}{$labels["administrativeArea_`$address_labels.administrativeArea.code`"]}{else}{$address_labels.administrativeArea.label}{/if}">
-                                            <b class="tooltip tooltip-bottom-right">{if isset($labels["administrativeArea_`$address_labels.administrativeArea.code`"]) and $labels["administrativeArea_`$address_labels.administrativeArea.code`"]!=''}{$labels["administrativeArea_`$address_labels.administrativeArea.code`"]}{else}{$address_labels.administrativeArea.label}{/if}</b>
-                                        </label>
-                                    </section>
-
-                                </div>
-
-
-                                <div class="row" >
-                                    <section class="col col-5">
-                                        <label class="select">
-                                            <select id="country_select" name="country">
-                                                <option value="0" selected disabled>{if isset($labels.address_country) and $labels.address_country!=''}{$labels.address_country}{else}{t}Country{/t}{/if}</option>
-
-                                                {foreach from=$countries item=country}
-                                                    <option value="{$country.2alpha}" {if $country.2alpha==$selected_country}selected{/if} >{$country.name}</option>
-                                                {/foreach}
-
-
-                                                <select><i></i>
-                                        </label>
-                                    </section>
-
-                                    <section class="col col-5">
-                                        <span style="position:absolute;cursor: pointer" onclick="show_address_labels_editor()" ><i  class="fa fa-language" aria-hidden="true"></i>  {t}Address labels{/t} </span>
-                                    </section>
-                                </div>
 
 
                             </fieldset>
@@ -509,7 +455,7 @@
 
                     <div id="_delivery_addresses_details" class="block hide reg_form">
 
-                        <form id="sky-form" class="sky-form">
+                        <form  class="sky-form">
                             <header id="_delivery_addresses_title" contenteditable="true" class="_delivery_addresses_title" >{$content._delivery_addresses_title}</header>
 
 
@@ -518,7 +464,7 @@
 
 
 
-                                <section id="addressLine1" class="{if 'addressLine1'|in_array:$used_address_fields}{else}hide{/if}">
+                                <section id="addressLine1" >
 
                                     <label for="file" class="input">
                                         <input type="text" name="addressLine1" placeholder="{if isset($labels.address_addressLine1) and $labels.address_addressLine1!=''}{$labels.address_addressLine1}{else}{t}Address Line 1{/t}{/if}">
@@ -526,7 +472,7 @@
                                     </label>
                                 </section>
 
-                                <section id="addressLine2" class="{if 'addressLine2'|in_array:$used_address_fields}{else}hide{/if}">
+                                <section id="addressLine2" >
                                     <label for="file" class="input">
                                         <input type="text" name="addressLine2" placeholder="{if isset($labels.address_addressLine2) and $labels.address_addressLine2!=''}{$labels.address_addressLine2}{else}{t}Address Line 2{/t}{/if}">
                                         <b class="tooltip tooltip-bottom-right">{if isset($labels.address_addressLine2) and $labels.address_addressLine2!=''}{$labels.address_addressLine2}{else}{t}Address Line 2{/t}{/if}</b>
@@ -535,78 +481,15 @@
 
 
 
-                                <div id="sortingCode" class="row {if 'sortingCode'|in_array:$used_address_fields}{else}hide{/if}">
+                                <div id="sortingCode" class="row ">
                                     <section class="col col-6 " >
                                         <label class="input">
-                                            <input type="text" name="sortingCode" placeholder="{if isset($labels.address_sorting_code) and $labels.address_sorting_code!=''}{$labels.address_sorting_code}{else}{t}Sorting code{/t}{/if}">
-                                            <b class="tooltip tooltip-bottom-right">{if isset($labels.address_sorting_code) and $labels.address_sorting_code!=''}{$labels.address_sorting_code}{else}{t}Sorting code{/t}{/if}</b>
+                                            <input type="text" name="sortingCode" placeholder="{t}Etc..{/t}">
+                                            <b class="tooltip tooltip-bottom-right">{t}Address labels can be translated in Website localization tab{/t}</b>
                                         </label>
                                     </section>
 
 
-                                </div>
-
-                                <div id="postalCode" class="row {if 'postalCode'|in_array:$used_address_fields}{else}hide{/if}">
-                                    <section class="col col-6 " >
-                                        <label class="input">
-                                            <input type="text" name="postalCode" placeholder="{if isset($labels["postalCode_`$address_labels.postalCode.code`"]) and $labels["postalCode_`$address_labels.postalCode.code`"]!=''}{$labels["postalCode_`$address_labels.postalCode.code`"]}{else}{$address_labels.postalCode.label}{/if}">
-                                            <b class="tooltip tooltip-bottom-right">{if isset($labels["postalCode_`$address_labels.postalCode.code`"]) and $labels["postalCode_`$address_labels.postalCode.code`"]!=''}{$labels["postalCode_`$address_labels.postalCode.code`"]}{else}{$address_labels.postalCode.label}{/if}</b>
-                                        </label>
-                                    </section>
-
-
-                                </div>
-
-                                <div id="dependentLocality" class="row {if 'dependentLocality'|in_array:$used_address_fields}{else}hide{/if}">
-                                    <section class="col col-6 " >
-                                        <label class="input">
-                                            <input type="text" name="dependentLocality" placeholder="{if isset($labels["dependentLocality_`$address_labels.dependentLocality.code`"]) and $labels["dependentLocality_`$address_labels.dependentLocality.code`"]!=''}{$labels["dependentLocality_`$address_labels.dependentLocality.code`"]}{else}{$address_labels.dependentLocality.label}{/if}">
-                                            <b class="tooltip tooltip-bottom-right">{if isset($labels["dependentLocality_`$address_labels.dependentLocality.code`"]) and $labels["dependentLocality_`$address_labels.dependentLocality.code`"]!=''}{$labels["dependentLocality_`$address_labels.dependentLocality.code`"]}{else}{$address_labels.dependentLocality.label}{/if}</b>
-                                        </label>
-                                    </section>
-
-                                </div>
-
-                                <div id="locality" class="row {if 'locality'|in_array:$used_address_fields}{else}hide{/if}">
-                                    <section class="col col-6 " >
-                                        <label class="input">
-                                            <input type="text" name="locality" placeholder="{if isset($labels["locality_`$address_labels.locality.code`"]) and $labels["locality_`$address_labels.locality.code`"]!=''}{$labels["locality_`$address_labels.locality.code`"]}{else}{$address_labels.locality.label}{/if}">
-                                            <b class="tooltip tooltip-bottom-right">{if isset($labels["locality_`$address_labels.locality.code`"]) and $labels["locality_`$address_labels.locality.code`"]!=''}{$labels["locality_`$address_labels.locality.code`"]}{else}{$address_labels.locality.label}{/if}</b>
-                                        </label>
-                                    </section>
-
-                                </div>
-
-
-                                <div id="administrativeArea" class="row {if 'administrativeArea'|in_array:$used_address_fields}{else}hide{/if}">
-                                    <section class="col col-6 " >
-                                        <label class="input">
-                                            <input type="text" name="locality" placeholder="{if isset($labels["administrativeArea_`$address_labels.administrativeArea.code`"]) and $labels["administrativeArea_`$address_labels.administrativeArea.code`"]!=''}{$labels["administrativeArea_`$address_labels.administrativeArea.code`"]}{else}{$address_labels.administrativeArea.label}{/if}">
-                                            <b class="tooltip tooltip-bottom-right">{if isset($labels["administrativeArea_`$address_labels.administrativeArea.code`"]) and $labels["administrativeArea_`$address_labels.administrativeArea.code`"]!=''}{$labels["administrativeArea_`$address_labels.administrativeArea.code`"]}{else}{$address_labels.administrativeArea.label}{/if}</b>
-                                        </label>
-                                    </section>
-
-                                </div>
-
-
-                                <div class="row" >
-                                    <section class="col col-5">
-                                        <label class="select">
-                                            <select id="country_select" name="country">
-                                                <option value="0" selected disabled>{if isset($labels.address_country) and $labels.address_country!=''}{$labels.address_country}{else}{t}Country{/t}{/if}</option>
-
-                                                {foreach from=$countries item=country}
-                                                    <option value="{$country.2alpha}" {if $country.2alpha==$selected_country}selected{/if} >{$country.name}</option>
-                                                {/foreach}
-
-
-                                                <select><i></i>
-                                        </label>
-                                    </section>
-
-                                    <section class="col col-5">
-                                        <span style="position:absolute;cursor: pointer" onclick="show_address_labels_editor()" ><i  class="fa fa-language" aria-hidden="true"></i>  {t}Address labels{/t} </span>
-                                    </section>
                                 </div>
 
 
@@ -619,6 +502,62 @@
                         </form>
                     </div>
 
+
+
+                    <div id="_poll_details" class="block hide reg_form">
+                        <form  class="sky-form">
+                            <header class="mirror_master" id="_poll_details_title" contenteditable="true">{if empty($content._poll_details_title)}{t}Poll{/t}{else}{$content._poll_details_title}{/if}</header>
+
+                            <fieldset>
+                                <section>
+
+                                    <label class="input">
+                                        <span id="_poll_info" contenteditable="true">{if empty($content._poll_info)}{t}Please let know you better so we can serve you better{/t}{else}{$content._poll_info}{/if}
+                                    </label>
+                                </section>
+
+
+
+                                {foreach from=$poll_queries item=query}
+
+                                    {if $query['Customer Poll Query Type']=='Open'}
+                                        <section>
+                                            <label data-query_key="{$query['Customer Poll Query Key']}" class="label poll_query_label" contenteditable="true">{$query['Customer Poll Query Label']}</label>
+                                            <label class="textarea">
+                                                <textarea rows="4" name="message" id="message"></textarea>
+                                            </label>
+                                        </section>
+                                    {else}
+                                        <section>
+                                            <label data-query_key="{$query['Customer Poll Query Key']}" class="label poll_query_label" contenteditable="true">{$query['Customer Poll Query Label']}</label>
+                                            <label class="select">
+                                                <select name="gender">
+                                                    <option value="0" selected disabled>{if !empty($labels._choose_one)}{$labels._choose_one}{else}{t}{t}Please choose one{/t}{/t}{/if}</option>
+
+                                                    {foreach from=$query['Options'] item=option}
+                                                        <option value="{$option['Customer Poll Query Option Key']}">{$option['Customer Poll Query Option Label']}</option>
+                                                    {/foreach}
+
+
+                                                </select>
+                                                <i></i>
+                                            </label>
+                                        </section>
+
+                                    {/if}
+
+                                {/foreach}
+
+
+
+
+                            </fieldset>
+                            <footer>
+                                <button type="submit" class="button " id="_save_poll_details_label" contenteditable="true">{if empty($content._save_poll_details_label)}{t}Save{/t}{else}{$content._save_poll_details_label}{/if}</button>
+                            </footer>
+                        </form>
+                    </div>
+                    
 
                     <div id="_current_order" class="block hide">
 
@@ -761,10 +700,18 @@
 
 
         content_data = { };
+        poll_labels = { };
         labels= { };
 
         $('[contenteditable=true]').each(function (i, obj) {
-            content_data[$(obj).attr('id')] = $(obj).html()
+
+            if($(obj).hasClass('poll_query_label')){
+                poll_labels[$(obj).data('query_key')]= base64_url_encode($(obj).html())
+            }else{
+                content_data[$(obj).attr('id')] = $(obj).html()
+            }
+
+
         })
 
 
@@ -793,7 +740,7 @@
        // content_data['send_email']=$('#send_email', window.parent.document).hasClass('success')
 
         console.log(content_data)
-
+        console.log(poll_labels)
 
 
         var ajaxData = new FormData();
@@ -802,6 +749,7 @@
         ajaxData.append("key", '{$webpage->id}')
         ajaxData.append("content_data", JSON.stringify(content_data))
         ajaxData.append("labels", JSON.stringify(labels))
+        ajaxData.append("poll_labels", JSON.stringify(poll_labels))
 
 
         $.ajax({

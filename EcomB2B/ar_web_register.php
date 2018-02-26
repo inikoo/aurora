@@ -52,6 +52,8 @@ switch ($tipo) {
 
 function register($db, $website, $data, $editor) {
 
+
+
     include_once 'class.Public_Store.php';
 
     $store = new Public_Store($data['store_key']);
@@ -125,6 +127,21 @@ function register($db, $website, $data, $editor) {
                 $_SESSION['customer_key']         = $customer->id;
                 $_SESSION['website_user_key']     = $website_user->id;
                 $_SESSION['website_user_log_key'] = $website_user_log_key;
+
+
+                foreach($raw_data as $_key=>$value){
+
+                    if (preg_match('/^poll_(\d+)/i', $_key, $matches)) {
+
+                        $poll_key = $matches[1];
+                        $customer->update(array('Customer Poll Query '.$poll_key=>$value) ,'no_history');
+
+
+                    }
+
+
+                }
+
 
 
                 require_once "external_libs/random/lib/random.php";

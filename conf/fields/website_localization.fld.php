@@ -501,6 +501,26 @@ $object_fields = array(
         )
     ),
 
+    array(
+        'label'      => _('General'),
+        'show_title' => true,
+        'fields'     => array(
+
+            array(
+                'id'       => 'Localised_Labels_choose_one',
+                'edit'     => ($edit ? 'string' : ''),
+                'value'    => (empty($labels['_choose_one']) ? _('Please, choose one') : $labels['_choose_one']),
+                'label'    => _('Pick an option'),
+                'required' => true,
+                'type'     => 'value'
+            ),
+
+
+        )
+    ),
+
+
+
 );
 
 

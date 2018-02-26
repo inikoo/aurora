@@ -380,7 +380,6 @@ function get_view($db, $smarty, $user, $account, $modules) {
 
 
 
-
             if ($state['object'] == 'api_key') {
                 $_object          = new API_Key('deleted', $state['key']);
                 $state['_object'] = $_object;
@@ -395,6 +394,14 @@ function get_view($db, $smarty, $user, $account, $modules) {
                 if ($_object->id) {
                     $state['section'] = 'deleted_barcode';
                     $state['tab']     = 'barcode.history';
+
+                }
+            }if ($state['object'] == 'Customer_Poll_Query_Option') {
+                $_object          = new Customer_Poll_Query_Option('deleted', $state['key']);
+                $state['_object'] = $_object;
+                if ($_object->id) {
+                    $state['section'] = 'deleted_customer_poll_query_option';
+                    $state['tab']     = 'poll_query_option.history';
 
                 }
             } elseif ($state['object'] == 'location') {
@@ -1301,6 +1308,8 @@ function get_navigation($user, $smarty, $data, $db, $account) {
             }
         case ('customers'):
             require_once 'navigation/customers.nav.php';
+
+
             switch ($data['section']) {
 
                 case ('customer'):
@@ -1364,6 +1373,11 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     break;
                 case ('poll_query_option'):
                     return get_customers_poll_query_option_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
+                case ('deleted_customer_poll_query_option'):
+                    return get_customers_deleted_poll_query_option_navigation(
                         $data, $smarty, $user, $db, $account
                     );
                     break;
@@ -3519,6 +3533,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
             }
 
+
             switch ($state['section']) {
                 case 'list':
                     $list  = new SubjectList($state['key']);
@@ -3706,7 +3721,27 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'reference' => ''
                     );
                     break;
+                case 'deleted_customer_poll_query_option':
 
+                    //print_r($state['_object']->data);
+
+                    $store=get_object('Store',$state['_parent']->get('Store Key'));
+                    $branch[] = array(
+                        'label'     => _("Customer's insights").' '.$store->data['Store Code'],
+                        'icon'      => 'graduation-cap',
+                        'reference' => 'customers/'.$store->id.'/insights'
+                    );
+                    $branch[] = array(
+                        'label'     => sprintf(_('Poll query %s'),$state['_parent']->get('Name')),
+                        'icon'      => '',
+                        'reference' => 'customers/'.$store->id.'/poll_query/'.$state['_parent']->id
+                    );
+                    $branch[] = array(
+                        'label'     => sprintf(_('Deleted option %s'),$state['_object']->get('Customer Poll Query Option Deleted Name')),
+                        'icon'      => '',
+                        'reference' => ''
+                    );
+                    break;
                 case 'pending_orders':
                     $branch[] = array(
                         'label'     => _(

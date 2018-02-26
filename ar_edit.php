@@ -263,9 +263,10 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
     $object = get_object($data['object'], $data['key']);
 
 
+
     if (!$object->id) {
         $response = array(
-            'state' => 405,
+            'state' => 406,
             'resp'  => 'Object not found'
         );
         echo json_encode($response);
@@ -426,6 +427,8 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
                 );
             }
 
+
+           // print $formatted_field;
 
             $formatted_value = $object->get($formatted_field);
 

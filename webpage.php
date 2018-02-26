@@ -41,6 +41,9 @@ $store = new Public_Store($webpage->get('Webpage Store Key'));
 $content_data = $webpage->get('Content Data');
 
 
+
+
+
 //print_r($content_data);
 
 if ($webpage->get('Webpage Template Filename') == 'products_showcase') {
@@ -89,6 +92,9 @@ $smarty->assign('store', $store);
 $smarty->assign('website', $website);
 $smarty->assign('theme', $theme);
 $smarty->assign('template', $webpage->get('Webpage Template Filename'));
+
+
+$smarty->assign('poll_queries', $website->get_poll_queries($webpage));
 
 
 if (file_exists('templates/'.$template)) {

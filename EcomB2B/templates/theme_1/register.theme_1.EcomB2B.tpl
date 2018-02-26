@@ -195,6 +195,57 @@
 
                         </fieldset>
 
+
+                        {if !empty($poll_queries)}
+
+                            <fieldset>
+                                <section>
+
+                                    <label class="input">
+                                        <span id="_poll_info" contenteditable="true">{if empty($content._poll_info)}{t}Please let know you better so we can serve you better{/t}{else}{$content._poll_info}{/if}
+                                    </label>
+                                </section>
+
+
+                                {foreach from=$poll_queries item=query}
+
+
+                                    {if $query['Customer Poll Query Type']=='Open'}
+                                        <section>
+                                            <label data-query_key="{$query['Customer Poll Query Key']}" class="label poll_query_label" >{$query['Customer Poll Query Label']}</label>
+                                            <label class="textarea">
+                                                <textarea rows="4"  name="poll_{$query['Customer Poll Query Key']}"  id="poll_{$query['Customer Poll Query Key']}"></textarea>
+                                            </label>
+                                        </section>
+                                    {else}
+                                        <section>
+                                            <label  class="label poll_query_label" >{$query['Customer Poll Query Label']}</label>
+                                            <label class="select">
+                                                <select name="poll_{$query['Customer Poll Query Key']}">
+                                                    <option value="0" selected disabled>{if !empty($labels._choose_one)}{$labels._choose_one}{else}{t}{t}Please choose one{/t}{/t}{/if}</option>
+
+                                                    {foreach from=$query['Options'] item=option}
+                                                        <option value="{$option['Customer Poll Query Option Key']}">{$option['Customer Poll Query Option Label']}</option>
+                                                    {/foreach}
+
+
+                                                </select>
+                                                <i></i>
+                                            </label>
+                                        </section>
+
+                                    {/if}
+
+                                {/foreach}
+
+
+
+
+                            </fieldset>
+
+                        {/if}
+
+
                         <fieldset class="last">
 
 
@@ -315,6 +366,13 @@
 
                 });
 
+                $("#registration_form textarea:not(.ignore)").each(function(i, obj) {
+                    if(!$(obj).attr('name')==''){
+                        register_data[$(obj).attr('name')]=$(obj).val()
+                    }
+
+                });
+
                 $("#registration_form select:not(.ignore)").each(function(i, obj) {
                     if(!$(obj).attr('name')==''){
 
@@ -335,6 +393,9 @@
                 ajaxData.append("data", JSON.stringify(register_data))
 
 
+
+               
+
                 $.ajax({
                     url: "/ar_web_register.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
                     complete: function () {
@@ -353,10 +414,11 @@
 
                         } else if (data.state == '400') {
                             swal("{t}Error{/t}!", data.msg, "error")
+                            $('#register_button').removeClass('wait')
+                            $('#register_button i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
                         }
 
-                        $('#register_button').removeClass('wait')
-                        $('#register_button i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
+
 
 
                     }, error: function () {

@@ -1612,6 +1612,56 @@ function get_customers_new_poll_query_option_navigation($data, $smarty, $user, $
 
 }
 
+
+function get_customers_deleted_poll_query_option_navigation($data, $smarty, $user, $db) {
+
+
+    $left_buttons  = array();
+    $right_buttons = array();
+
+
+    $sections = get_sections('customers', $data['_parent']->get('Store Key'));
+
+    $_section = 'insights';
+    if (isset($sections[$_section])) {
+        $sections[$_section]['selected'] = true;
+    }
+
+    $up_button = array(
+        'icon'      => 'arrow-up',
+        'title'     => sprintf(_('Poll query %s'),$data['_parent']->get('Name')),
+        'reference' => 'customers/'.$data['_parent']->get('Store Key').'/poll_query/'.$data['_parent']->id
+    );
+
+
+    $left_buttons[] = $up_button;
+
+
+    $title ='<span class="error">'.sprintf(_('Deleted option: %s'),'<span class="id">'.$data['_parent']->get('Name').'</span>').'</span>';
+
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search customers')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
+
+
 function get_customers_poll_query_option_navigation($data, $smarty, $user, $db) {
 
 
@@ -1792,7 +1842,7 @@ function get_customers_poll_query_option_navigation($data, $smarty, $user, $db) 
     $sections['insights']['selected'] = true;
 
 
-    $title = '<span class="id"><span class="Customer_Poll_Query_Option_Name">'.$poll_option->get('Name').'</span></span>';
+    $title = sprintf(_('Poll option: %s'),'<span class="id"><span class="Customer_Poll_Query_Option_Name">'.$poll_option->get('Name').'</span></span>');  ;
 
 
     $_content = array(

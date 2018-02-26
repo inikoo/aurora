@@ -335,7 +335,7 @@ if (!$is_cached) {
     $js_files = array_merge($base_js_files, $js_files);
 
     $smarty->assign('css_files', join(',', $css_files).'?v=150608');
-    $smarty->assign('js_files', join(',', $js_files).'?v=150814');
+    $smarty->assign('js_files', join(',', $js_files).'?v=150814x');
 
 
     include 'template_assignments.php';

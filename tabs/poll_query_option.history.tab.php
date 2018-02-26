@@ -2,14 +2,14 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 15 February 2018 at 16:45:41 GMT+8, Cyberjaya, Malaysia
+ Created: 26 February 2018 at 12:49:56 GMT+8, Kuala Lumpur, Malaysia
  Copyright (c) 2018, Inikoo
 
  Version 3
 
 */
 
-$tab     = 'poll_query.history';
+$tab     = 'poll_query_option.history';
 $ar_file = 'ar_history_tables.php';
 $tipo    = 'object_history';
 
@@ -32,11 +32,14 @@ $parameters = array(
 
 
 $table_buttons   = array();
-$table_buttons[] = array(
-    'icon'  => 'sticky-note-o',
-    'title' => _('New note'),
-    'id'    => "show_history_note_dialog"
-);
+if(!$state['_object']->deleted) {
+
+    $table_buttons[] = array(
+        'icon'  => 'sticky-note-o',
+        'title' => _('New note'),
+        'id'    => "show_history_note_dialog"
+    );
+}
 $smarty->assign('table_buttons', $table_buttons);
 
 
@@ -44,7 +47,7 @@ $smarty->assign('table_buttons', $table_buttons);
 $smarty->assign('history_notes_data',
                 array(
 
-                    'object'=>'customer_poll_query',
+                    'object'=>'customer_poll_query_option',
                     'key'=>$state['_object']->id
                 )
 );
