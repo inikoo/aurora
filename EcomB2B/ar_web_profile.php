@@ -70,7 +70,15 @@ switch ($tipo) {
         );
         update_password($db, $data, $editor);
         break;
+    case 'poll':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'data' => array('type' => 'json array'),
 
+                     )
+        );
+        update_poll($db, $data, $customer, $editor);
+        break;
 
     default:
         $response = array(
@@ -216,15 +224,15 @@ function contact_details($db, $data, $customer, $editor) {
             $key = 'Customer Registration Number';
         } elseif ($key == 'tax_number') {
             $key = 'Customer Tax Number';
-        }elseif ($key == 'newsletter') {
-            $key = 'Customer Send Newsletter';
-            $value=($value?'Yes':'No');
-        }elseif ($key == 'email_marketing') {
-            $key = 'Customer Send Email Marketing';
-            $value=($value?'Yes':'No');
-        }elseif ($key == 'postal_marketing') {
-            $key = 'Customer Send Postal Marketing';
-            $value=($value?'Yes':'No');
+        } elseif ($key == 'newsletter') {
+            $key   = 'Customer Send Newsletter';
+            $value = ($value ? 'Yes' : 'No');
+        } elseif ($key == 'email_marketing') {
+            $key   = 'Customer Send Email Marketing';
+            $value = ($value ? 'Yes' : 'No');
+        } elseif ($key == 'postal_marketing') {
+            $key   = 'Customer Send Postal Marketing';
+            $value = ($value ? 'Yes' : 'No');
         }
         $update_data[$key] = $value;
 
@@ -294,6 +302,29 @@ function update_password($db, $data, $editor) {
     }
 
 
+}
+
+
+function update_poll($db, $data, $customer, $editor) {
+
+    $customer->editor = $editor;
+    foreach ($data['data'] as $_key => $value) {
+
+        if (preg_match('/^poll_(\d+)/i', $_key, $matches)) {
+
+            $poll_key = $matches[1];
+            $customer->update(array('Customer Poll Query '.$poll_key=>$value));
+
+
+        }
+    }
+
+    echo json_encode(
+        array(
+            'state' => 200
+        )
+    );
+    exit;
 }
 
 

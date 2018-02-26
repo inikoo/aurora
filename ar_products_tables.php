@@ -104,15 +104,15 @@ function stores($_data, $db, $user) {
         $record_data[] = array(
             'access' => (in_array($data['Store Key'], $user->stores) ? '' : '<i class="fa fa-lock "></i>'),
 
-            'id'   => (integer)$data['Store Key'],
-            'code' => sprintf('<span class="link" onClick="change_view(\'store/%d\')" >%s</span>',$data['Store Key'],$data['Store Code']),
-            'name' => sprintf('<span class="link" onClick="change_view(\'store/%d\')" >%s</span>',$data['Store Key'],$data['Store Name']),
-            'website' => sprintf('<span class="link" onClick="change_view(\'store/%d/website\')" title="%s" >%s</span>',$data['Store Key'],$data['Website Name'],$data['Website Code']),
+            'id'      => (integer)$data['Store Key'],
+            'code'    => sprintf('<span class="link" onClick="change_view(\'store/%d\')" >%s</span>', $data['Store Key'], $data['Store Code']),
+            'name'    => sprintf('<span class="link" onClick="change_view(\'store/%d\')" >%s</span>', $data['Store Key'], $data['Store Name']),
+            'website' => sprintf('<span class="link" onClick="change_view(\'store/%d/website\')" title="%s" >%s</span>', $data['Store Key'], $data['Website Name'], $data['Website Code']),
 
-            'in_process'=>number($data['Store New Products']),
-            'active'=>number($data['Store Active Products']),
-            'discontinuing'=>number($data['Store Discontinuing Products']),
-            'discontinued'=>number($data['Store Discontinued Products']),
+            'in_process'    => number($data['Store New Products']),
+            'active'        => number($data['Store Active Products']),
+            'discontinuing' => number($data['Store Discontinuing Products']),
+            'discontinued'  => number($data['Store Discontinued Products']),
 
         );
 
@@ -170,16 +170,16 @@ function products($_data, $db, $user, $account) {
 
             switch ($data['Product Status']) {
                 case 'Active':
-                    $status = sprintf('<i class="fa fa-cube" aria-hidden="true" title="%s"></i>',_('Active'));
+                    $status = sprintf('<i class="fa fa-cube" aria-hidden="true" title="%s"></i>', _('Active'));
                     break;
                 case 'Suspended':
-                    $status = sprintf('<i class="fa fa-cube warning" aria-hidden="true" title="%s"></i>',_('Suspended'));
+                    $status = sprintf('<i class="fa fa-cube warning" aria-hidden="true" title="%s"></i>', _('Suspended'));
                     break;
                 case 'Discontinued':
-                    $status = sprintf('<i class="fa fa-cube very_discreet" aria-hidden="true" title="%s"></i>',_('Discontinued'));
+                    $status = sprintf('<i class="fa fa-cube very_discreet" aria-hidden="true" title="%s"></i>', _('Discontinued'));
                     break;
                 case 'Suspended':
-                    $status = sprintf('<i class="fa fa-cube error" aria-hidden="true" title="%s"></i>',_('Suspended'));
+                    $status = sprintf('<i class="fa fa-cube error" aria-hidden="true" title="%s"></i>', _('Suspended'));
                     break;
                 default:
                     $status = $data['Product Status'];
@@ -207,19 +207,17 @@ function products($_data, $db, $user, $account) {
 */
             switch ($data['Product Web State']) {
                 case 'For Sale':
-                    $web_state =
-                        '<span class="'.(($data['Product Availability'] <= 0 and $data['Product Number of Parts'] > 0) ? 'error' : '').'">'._('Online').'</span>'.($data['Product Web Configuration']
-                        == 'Online Force For Sale' ? ' <i class="fa fa-thumb-tack padding_left_5" aria-hidden="true"></i>' : '');
+                    $web_state = '<span class="'.(($data['Product Availability'] <= 0 and $data['Product Number of Parts'] > 0) ? 'error' : '').'">'._('Online').'</span>'.($data['Product Web Configuration'] == 'Online Force For Sale'
+                            ? ' <i class="fa fa-thumb-tack padding_left_5" aria-hidden="true"></i>' : '');
                     break;
                 case 'Out of Stock':
 
-                    if ($data['Product Total Acc Quantity Ordered'] == 0 and $data['Product Web Configuration'] != 'Online Force Out of Stock' and $data['Product Status']!='Discontinuing' ) {
-                        $web_state=_('Launching soon');
-                    }else{
-                        $web_state = '<span  class="'.(($data['Product Availability'] > 0 and $data['Product Number of Parts'] > 0) ? 'error' : '').'">'._('Out of Stock').'</span>'
-                            .($data['Product Web Configuration'] == 'Online Force Out of Stock' ? ' <i class="fa fa-thumb-tack padding_left_5" aria-hidden="true"></i>' : '');
+                    if ($data['Product Total Acc Quantity Ordered'] == 0 and $data['Product Web Configuration'] != 'Online Force Out of Stock' and $data['Product Status'] != 'Discontinuing') {
+                        $web_state = _('Launching soon');
+                    } else {
+                        $web_state = '<span  class="'.(($data['Product Availability'] > 0 and $data['Product Number of Parts'] > 0) ? 'error' : '').'">'._('Out of Stock').'</span>'.($data['Product Web Configuration'] == 'Online Force Out of Stock'
+                                ? ' <i class="fa fa-thumb-tack padding_left_5" aria-hidden="true"></i>' : '');
                     }
-
 
 
                     break;
@@ -232,8 +230,8 @@ function products($_data, $db, $user, $account) {
                         $web_state = _('Offline');
                     } else {
 
-                        $web_state = '<span class="'.(($data['Product Availability'] > 0 and $data['Product Number of Parts'] > 0) ? 'error' : '').'">'._('Offline').'</span>'.($data['Product Status']
-                            == 'Active' ? ' <i class="fa fa-thumb-tack padding_left_5" aria-hidden="true"></i>' : '');
+                        $web_state = '<span class="'.(($data['Product Availability'] > 0 and $data['Product Number of Parts'] > 0) ? 'error' : '').'">'._('Offline').'</span>'.($data['Product Status'] == 'Active'
+                                ? ' <i class="fa fa-thumb-tack padding_left_5" aria-hidden="true"></i>' : '');
                     }
                     break;
                 default:
@@ -271,9 +269,8 @@ function products($_data, $db, $user, $account) {
                     $rrp .= '/'.$data['Product Unit Label'];
                 }
                 $rrp = sprintf(
-                    '<span style="cursor:text" class="product_rrp" title="%s" pid="%d" rrp="%s"  currency="%s"   onClick="open_edit_rrp(this)">%s</span>',
-                    sprintf(_('margin %s'), percentage($data['Product RRP'] - $data['Product Price'], $data['Product RRP'])), $data['Product ID'],
-                    $data['Product RRP'] / $data['Product Units Per Case'], $data['Store Currency Code'], $rrp
+                    '<span style="cursor:text" class="product_rrp" title="%s" pid="%d" rrp="%s"  currency="%s"   onClick="open_edit_rrp(this)">%s</span>', sprintf(_('margin %s'), percentage($data['Product RRP'] - $data['Product Price'], $data['Product RRP'])),
+                    $data['Product ID'], $data['Product RRP'] / $data['Product Units Per Case'], $data['Store Currency Code'], $rrp
 
                 );
 
@@ -315,7 +312,7 @@ function products($_data, $db, $user, $account) {
 
             */
 
-            $margin='<span class="product_margin" title="'._('Cost').':'.money($data['Product Cost'], $account->get('Account Currency')).'">'.percentage(
+            $margin = '<span class="product_margin" title="'._('Cost').':'.money($data['Product Cost'], $account->get('Account Currency')).'">'.percentage(
                     $exchange * $data['Product Price'] - $data['Product Cost'], $exchange * $data['Product Price']
                 ).'<span>';
 
@@ -329,14 +326,12 @@ function products($_data, $db, $user, $account) {
                 'name'       => $name,
                 'price'      => sprintf(
                     '<span style="cursor:text" class="product_price" title="%s" pid="%d" price="%s"    currency="%s"  exchange="%s" cost="%s" old_margin="%s" onClick="open_edit_price(this)">%s</span>',
-                    money($exchange * $data['Product Price'], $account->get('Account Currency')), $data['Product ID'], $data['Product Price'], $data['Store Currency Code'], $exchange,
-                    $data['Product Cost'], percentage($exchange * $data['Product Price'] - $data['Product Cost'], $exchange * $data['Product Price']),
-                    money($data['Product Price'], $data['Store Currency Code'])
+                    money($exchange * $data['Product Price'], $account->get('Account Currency')), $data['Product ID'], $data['Product Price'], $data['Store Currency Code'], $exchange, $data['Product Cost'],
+                    percentage($exchange * $data['Product Price'] - $data['Product Cost'], $exchange * $data['Product Price']), money($data['Product Price'], $data['Store Currency Code'])
                 ),
 
 
                 'rrp' => $rrp,
-
 
 
                 'margin'           => $margin,
@@ -576,9 +571,6 @@ function categories($_data, $db, $user) {
     }
 
 
-
-
-
     $response = array(
         'resultset' => array(
             'state'         => 200,
@@ -732,8 +724,7 @@ function sales_history($_data, $db, $user, $account) {
 
 
     $sql = sprintf(
-        'SELECT `Date` FROM kbase.`Date Dimension` WHERE `Date`>=date(%s) AND `Date`<=DATE(%s) %s ORDER BY %s  LIMIT %s', prepare_mysql($from), prepare_mysql($to), $_group_by,
-        "`Date` $order_direction ", "$start_from,$number_results"
+        'SELECT `Date` FROM kbase.`Date Dimension` WHERE `Date`>=date(%s) AND `Date`<=DATE(%s) %s ORDER BY %s  LIMIT %s', prepare_mysql($from), prepare_mysql($to), $_group_by, "`Date` $order_direction ", "$start_from,$number_results"
     );
 
 
@@ -877,7 +868,6 @@ function sales_history($_data, $db, $user, $account) {
             if (array_key_exists($_date, $record_data)) {
 
 
-
                 $record_data[$_date] = array(
                     'sales'     => money($data['sales'], $currency),
                     'customers' => number($data['customers']),
@@ -886,11 +876,8 @@ function sales_history($_data, $db, $user, $account) {
                 );
 
 
-
-
                 if (isset($last_year_data[$_date_last_year])) {
-                    $record_data[$_date]['delta_sales_1yb'] =
-                        '<span class="" title="'.money($last_year_data[$_date_last_year]['_sales'], $currency).'">'.delta($data['sales'], $last_year_data[$_date_last_year]['_sales']).' '.delta_icon(
+                    $record_data[$_date]['delta_sales_1yb'] = '<span class="" title="'.money($last_year_data[$_date_last_year]['_sales'], $currency).'">'.delta($data['sales'], $last_year_data[$_date_last_year]['_sales']).' '.delta_icon(
                             $data['sales'], $last_year_data[$_date_last_year]['_sales']
                         ).'</span>';
                 }
@@ -905,7 +892,7 @@ function sales_history($_data, $db, $user, $account) {
     }
 
 
-   // print_r($record_data);
+    // print_r($record_data);
 
     $response = array(
         'resultset' => array(
@@ -1001,9 +988,8 @@ function parts($_data, $db, $user, $account) {
                 'picking_note'        => $data['Product Part Note'],
                 'stock_status'        => $stock_status,
                 'stock_status_label'  => $stock_status_label,
-                'stock'               => '<span  class="  '.($data['Part Current Stock'] < 0 ? 'error' : '').'">'.number(floor($data['Part Current Stock']))
-                    .'</span>  <i class="fa fa-fighter-jet padding_left_5 super_discreet  '.($data['Part On Demand'] == 'Yes' ? '' : 'invisible').' " title='._('On demand')
-                    .' aria-hidden="true"></i>     ',
+                'stock'               => '<span  class="  '.($data['Part Current Stock'] < 0 ? 'error' : '').'">'.number(floor($data['Part Current Stock'])).'</span>  <i class="fa fa-fighter-jet padding_left_5 super_discreet  '.($data['Part On Demand'] == 'Yes' ? ''
+                        : 'invisible').' " title='._('On demand').' aria-hidden="true"></i>     ',
                 'weeks_available'     => $weeks_available,
                 'dispatched_per_week' => $dispatched_per_week
             );
@@ -1044,13 +1030,11 @@ function product_categories_categories($_data, $db, $user) {
     $store  = new Store($parent->get('Category Store Key'));
     if ($store->get('Store Family Category Key') == $parent->get(
             'Category Root Key'
-        )
-    ) {
+        )) {
         $rtext_label = 'family';
     } elseif ($store->get('Store Department Category Key') == $parent->get(
             'Category Root Key'
-        )
-    ) {
+        )) {
         $rtext_label = 'department';
     } else {
         $rtext_label = 'category';
@@ -1115,12 +1099,10 @@ function product_categories_categories($_data, $db, $user) {
                     delta_icon($data["Product Category Year To Day Acc Invoiced Amount"], $data["Product Category Year To Day Acc 1YB Invoiced Amount"])
                 ),
                 'sales_year1' => sprintf(
-                    '<span>%s</span> %s', money($data['Product Category 1 Year Ago Invoiced Amount'], $data['Product Category Currency Code']),
-                    delta_icon($data["Product Category 1 Year Ago Invoiced Amount"], $data["Product Category 2 Year Ago Invoiced Amount"])
+                    '<span>%s</span> %s', money($data['Product Category 1 Year Ago Invoiced Amount'], $data['Product Category Currency Code']), delta_icon($data["Product Category 1 Year Ago Invoiced Amount"], $data["Product Category 2 Year Ago Invoiced Amount"])
                 ),
                 'sales_year2' => sprintf(
-                    '<span>%s</span> %s', money($data['Product Category 2 Year Ago Invoiced Amount'], $data['Product Category Currency Code']),
-                    delta_icon($data["Product Category 2 Year Ago Invoiced Amount"], $data["Product Category 3 Year Ago Invoiced Amount"])
+                    '<span>%s</span> %s', money($data['Product Category 2 Year Ago Invoiced Amount'], $data['Product Category Currency Code']), delta_icon($data["Product Category 2 Year Ago Invoiced Amount"], $data["Product Category 3 Year Ago Invoiced Amount"])
                 ),
                 'sales_year3' => sprintf(
                     '<span>%s</span> %s', money(
@@ -1214,8 +1196,7 @@ function product_categories_products($_data, $db, $user) {
 
     if ($store->get('Store Department Category Key') == $parent->get(
             'Category Root Key'
-        )
-    ) {
+        )) {
         $rtext_label = 'family';
     } else {
         $rtext_label = 'category';
@@ -1234,20 +1215,20 @@ function product_categories_products($_data, $db, $user) {
 
         switch ($data['Product Category Status']) {
             case 'In Process':
-                $status =sprintf('<i class="fa fa-circle-thin warning discreet" aria-hidden="true" title="%s"></i>', _('Empty'));
+                $status = sprintf('<i class="fa fa-circle-thin warning discreet" aria-hidden="true" title="%s"></i>', _('Empty'));
                 break;
             case 'Active':
-                $status =sprintf('<i class="fa fa-sitemap" aria-hidden="true" title="%s"></i>', _('Active'));
+                $status = sprintf('<i class="fa fa-sitemap" aria-hidden="true" title="%s"></i>', _('Active'));
                 break;
             case 'Suspended':
                 $status = _('Suspended');
                 break;
             case 'Discontinued':
-                $status =sprintf('<i class="fa fa-sitemap very_discreet" aria-hidden="true" title="%s"></i>', _('Discontinued'));
+                $status = sprintf('<i class="fa fa-sitemap very_discreet" aria-hidden="true" title="%s"></i>', _('Discontinued'));
 
                 break;
             case 'Discontinuing':
-                $status =sprintf('<i class="fa fa-sitemap warning discreet" aria-hidden="true" title="%s"></i>', _('Discontinuing'));
+                $status = sprintf('<i class="fa fa-sitemap warning discreet" aria-hidden="true" title="%s"></i>', _('Discontinuing'));
 
                 break;
             default:
@@ -1256,17 +1237,15 @@ function product_categories_products($_data, $db, $user) {
         }
 
 
-        if ($data['Page Key'] > 0 and $data['Product Category Public']=='Yes') {
+        if ($data['Page Key'] > 0 and $data['Product Category Public'] == 'Yes') {
             $webpage = sprintf(
-                '<span onclick="change_view(\'webpage/%d\')" class="link %s">%s</span>',$data['Page Key'],
-                ($data['Webpage State'] == 'Offline' ? 'discreet strikethrough' : ''),
-                $data['Webpage Code']
+                '<span onclick="change_view(\'webpage/%d\')" class="link %s">%s</span>', $data['Page Key'], ($data['Webpage State'] == 'Offline' ? 'discreet strikethrough' : ''), $data['Webpage Code']
             );
 
-            if($data['Webpage State'] =='InProcess'){
-               $webpage.='  <i class="fa fa-child" aria-hidden="true"></i>';
+            if ($data['Webpage State'] == 'InProcess') {
+                $webpage .= '  <i class="fa fa-child" aria-hidden="true"></i>';
 
-               }
+            }
 
         } else {
             $webpage = '<span class="super_discreet">-</span>';
@@ -1283,10 +1262,10 @@ function product_categories_products($_data, $db, $user) {
             } else {
 
                 if ($data['Webpage State'] == 'Online') {
-                    if($data['Product Category Status']=='Discontinued'){
+                    if ($data['Product Category Status'] == 'Discontinued') {
                         $webpage_state = '<i class="fa fa-globe warning" aria-hidden="true"></i>';
 
-                    }else{
+                    } else {
                         $webpage_state = '<i class="fa fa-globe success" aria-hidden="true"></i>';
 
                     }
@@ -1302,12 +1281,9 @@ function product_categories_products($_data, $db, $user) {
         }
 
 
-        $code=sprintf(
-            '<span class="link" onClick="change_view(\'products/%d/category/%d>%d\')">%s</span>', $data['Category Store Key'],
-            $parent->id,
-            $data['Product Category Key'], $data['Category Code']
+        $code = sprintf(
+            '<span class="link" onClick="change_view(\'products/%d/category/%d>%d\')">%s</span>', $data['Category Store Key'], $parent->id, $data['Product Category Key'], $data['Category Code']
         );
-
 
 
         $record_data[] = array(
@@ -1327,9 +1303,9 @@ function product_categories_products($_data, $db, $user) {
             'sales_1yb'               => delta($data['sales'], $data['sales_1yb']),
             'qty_invoiced'            => number($data['qty_invoiced']),
             'qty_invoiced_1yb'        => delta($data['qty_invoiced'], $data['qty_invoiced_1yb']),
-            'online'                  => ($data['Product Category Public'] =='Yes' ? number($data['online']) : '<span class="super_discreet">-</span>'),
-            'out_of_stock'            => ($data['Product Category Public'] =='Yes' ? number($data['Product Category Active Web Out of Stock']) : '<span class="super_discreet">-</span>'),
-            'percentage_out_of_stock' => ($data['Product Category Public'] =='Yes'  ? percentage($data['Product Category Active Web Out of Stock'], $data['online']) : ''),
+            'online'                  => ($data['Product Category Public'] == 'Yes' ? number($data['online']) : '<span class="super_discreet">-</span>'),
+            'out_of_stock'            => ($data['Product Category Public'] == 'Yes' ? number($data['Product Category Active Web Out of Stock']) : '<span class="super_discreet">-</span>'),
+            'percentage_out_of_stock' => ($data['Product Category Public'] == 'Yes' ? percentage($data['Product Category Active Web Out of Stock'], $data['online']) : ''),
             'webpage'                 => $webpage,
             'webpage_state'           => $webpage_state,
 
@@ -1338,12 +1314,10 @@ function product_categories_products($_data, $db, $user) {
                 delta_icon($data["Product Category Year To Day Acc Invoiced Amount"], $data["Product Category Year To Day Acc 1YB Invoiced Amount"])
             ),
             'sales_year1' => sprintf(
-                '<span>%s</span> %s', money($data['Product Category 1 Year Ago Invoiced Amount'], $data['Product Category Currency Code']),
-                delta_icon($data["Product Category 1 Year Ago Invoiced Amount"], $data["Product Category 2 Year Ago Invoiced Amount"])
+                '<span>%s</span> %s', money($data['Product Category 1 Year Ago Invoiced Amount'], $data['Product Category Currency Code']), delta_icon($data["Product Category 1 Year Ago Invoiced Amount"], $data["Product Category 2 Year Ago Invoiced Amount"])
             ),
             'sales_year2' => sprintf(
-                '<span>%s</span> %s', money($data['Product Category 2 Year Ago Invoiced Amount'], $data['Product Category Currency Code']),
-                delta_icon($data["Product Category 2 Year Ago Invoiced Amount"], $data["Product Category 3 Year Ago Invoiced Amount"])
+                '<span>%s</span> %s', money($data['Product Category 2 Year Ago Invoiced Amount'], $data['Product Category Currency Code']), delta_icon($data["Product Category 2 Year Ago Invoiced Amount"], $data["Product Category 3 Year Ago Invoiced Amount"])
             ),
             'sales_year3' => sprintf(
                 '<span>%s</span> %s', money(
@@ -1401,7 +1375,7 @@ function product_categories_products($_data, $db, $user) {
 
     }
 
-  //  print_r($record_data);
+    //  print_r($record_data);
 
     $response = array(
         'resultset' => array(
@@ -1418,9 +1392,6 @@ function product_categories_products($_data, $db, $user) {
 }
 
 
-
-
-
 function charges($_data, $db, $user) {
 
 
@@ -1435,10 +1406,12 @@ function charges($_data, $db, $user) {
 
 
         $record_data[] = array(
-            'id'   => (integer)$data['Charge Key'],
-            'code' => sprintf('<span class="link" onClick="change_view(\'store/%d/charge/%d\')" >%s</span>',$data['Charge Store Key'],$data['Charge Key'],$data['Charge Name']),
-            'name' => sprintf('<span class="link" onClick="change_view(\'store/%d/charge/%d\')" >%s</span>',$data['Charge Store Key'],$data['Charge Key'],$data['Charge Description']),
-
+            'id'     => (integer)$data['Charge Key'],
+            'code'   => sprintf('<span class="link" onClick="change_view(\'store/%d/charge/%d\')" >%s</span>', $data['Charge Store Key'], $data['Charge Key'], $data['Charge Name']),
+            'name'   => sprintf('<span class="link" onClick="change_view(\'store/%d/charge/%d\')" >%s</span>', $data['Charge Store Key'], $data['Charge Key'], $data['Charge Description']),
+            'orders' => number($data['Charge Total Acc Orders']),
+            'customers' => number($data['Charge Total Acc Customers']),
+            'amount' => money($data['Charge Total Acc Amount'],$data['Store Currency Code'])
 
         );
 
@@ -1459,7 +1432,6 @@ function charges($_data, $db, $user) {
 }
 
 
-
 function shipping_zones($_data, $db, $user) {
 
 
@@ -1476,8 +1448,8 @@ function shipping_zones($_data, $db, $user) {
 
         $record_data[] = array(
             'id'   => (integer)$data['Shipping Zone Key'],
-            'code' => sprintf('<span class="link" onClick="change_view(\'store/%d/shipping_zone/%d\')" >%s</span>',$data['Shipping Zone Store Key'],$data['Shipping Zone Key'],$data['Shipping Zone Name']),
-            'name' => sprintf('<span class="link" onClick="change_view(\'store/%d/shipping_zone/%d\')" >%s</span>',$data['Shipping Zone Store Key'],$data['Shipping Zone Key'],$data['Shipping Zone Description']),
+            'code' => sprintf('<span class="link" onClick="change_view(\'store/%d/shipping_zone/%d\')" >%s</span>', $data['Shipping Zone Store Key'], $data['Shipping Zone Key'], $data['Shipping Zone Name']),
+            'name' => sprintf('<span class="link" onClick="change_view(\'store/%d/shipping_zone/%d\')" >%s</span>', $data['Shipping Zone Store Key'], $data['Shipping Zone Key'], $data['Shipping Zone Description']),
 
 
         );

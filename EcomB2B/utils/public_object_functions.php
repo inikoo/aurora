@@ -108,7 +108,18 @@ function get_object($object_name, $key, $load_other_data = false) {
             require_once "class.Public_DealComponent.php";
             $object = new Public_DealComponent($key);
             break;
-
+        case 'customer_poll_query':
+        case 'customer poll query':
+        case 'customerpollquery':
+            require_once "class.Public_Customer_Poll_Query.php";
+            $object = new Customer_Poll_Query($key);
+            break;
+        case 'customer_poll_query_option':
+        case 'customer poll query option':
+        case 'customerpollqueryoption':
+            require_once "class.Public_Customer_Poll_Query_Option.php";
+            $object = new Customer_Poll_Query_Option($key);
+            break;
 
         default:
             exit('need to complete E1: >'.strtolower($object_name.' '.$load_other_data)."<\n");

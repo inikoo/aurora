@@ -552,6 +552,30 @@ class Customer extends Subject {
 
                 }
 
+                if (preg_match('/^Poll Query (\d+)/i', $key, $matches)) {
+
+                    $poll_key = $matches[1];
+                    $poll_query=get_object('Customer_Poll_Query',$poll_key);
+
+                    list($answer_code, $answer_label, $answer_key) = $poll_query->get_answer($this->id);
+
+                    return $answer_label;
+
+
+                }
+
+                if (preg_match('/^Customer Poll Query (\d+)/i', $key, $matches)) {
+
+                    $poll_key = $matches[1];
+                    $poll_query=get_object('Customer_Poll_Query',$poll_key);
+
+                    list($answer_code, $answer_label, $answer_key) = $poll_query->get_answer($this->id);
+
+                    return $answer_code;
+
+
+                }
+
 
         }
 
@@ -3247,7 +3271,7 @@ class Customer extends Subject {
     function update_poll_answer($poll_key, $value, $options) {
 
         $poll = get_object('Customer_Poll_Query', $poll_key);
-        $poll->add_customer($this, $value);
+        $poll->add_customer($this, $value,$options);
 
 
     }

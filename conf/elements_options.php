@@ -233,6 +233,23 @@ $elements_options = array(
         )
     ),
 
+    'poll_query_option_history' => array(
+        'type' => array(
+            'label' => _('Type'),
+            'items' => array(
+                'Notes'   => array(
+                    'label'    => _('Notes'),
+                    'selected' => true
+                ),
+                'Changes' => array(
+                    'label'    => _('Changes'),
+                    'selected' => true
+                ),
+            ),
+
+        )
+    ),
+
 
     'orders_archived'        => array(
         'dispatch' => array(

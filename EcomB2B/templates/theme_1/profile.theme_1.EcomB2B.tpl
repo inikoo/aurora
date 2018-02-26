@@ -60,7 +60,12 @@
 
                                     </span>
                             </li>
-
+                            <li>
+                                <span  data-block="_poll_details" onClick="change_block(this)" class="block_link like_button "  style="cursor: pointer">
+                                    <i class="fa fa-angle-right"></i>
+                                    <span class="_invoice_address_title">{if empty($content._poll_title)}{t}Poll{/t}{else}{$content._poll_title}{/if}</span>
+                                    </span>
+                            </li>
 
 
                         </ul>
@@ -468,7 +473,7 @@
                                     <div class="row" >
                                         <section class="col col-5">
                                             <label class="select">
-                                                <select id="invoice_country_select" name="country">
+                                                <select id="delivery_country_select" name="country">
                                                     <option value="0" selected disabled>{if isset($labels.address_country) and $labels.address_country!=''}{$labels.address_country}{else}{t}Country{/t}{/if}</option>
 
                                                     {foreach from=$countries item=country}
@@ -496,7 +501,59 @@
 
                     </div>
 
+                    <div id="_poll_details" class="block hide reg_form">
+                        <form  id="poll_details" class="sky-form">
+                            <header class="mirror_master" id="_poll_details_title" contenteditable="true">{if empty($content._poll_details_title)}{t}Poll{/t}{else}{$content._poll_details_title}{/if}</header>
 
+                            <fieldset>
+                                <section>
+
+                                    <label class="input">
+                                        <span id="_poll_info" contenteditable="true">{if empty($content._poll_info)}{t}Please let know you better so we can serve you better{/t}{else}{$content._poll_info}{/if}
+                                    </label>
+                                </section>
+
+
+
+                                {foreach from=$poll_queries item=query}
+
+                                    {if $query['Customer Poll Query Type']=='Open'}
+                                        <section>
+                                            <label  class="label poll_query_label" >{$query['Customer Poll Query Label']}</label>
+                                            <label class="textarea">
+                                                <textarea rows="4"  name="poll_{$query['Customer Poll Query Key']}"  id="poll_{$query['Customer Poll Query Key']}">{$query['Reply']}</textarea>
+                                            </label>
+                                        </section>
+                                    {else}
+                                        <section>
+                                            <label data-query_key="{$query['Customer Poll Query Key']}" class="label poll_query_label" >{$query['Customer Poll Query Label']}</label>
+                                            <label class="select">
+                                                <select name="poll_{$query['Customer Poll Query Key']}">
+                                                    <option value="0" selected disabled>{if !empty($labels._choose_one)}{$labels._choose_one}{else}{t}{t}Please choose one{/t}{/t}{/if}</option>
+
+                                                    {foreach from=$query['Options'] item=option}
+                                                        <option value="{$option['Customer Poll Query Option Key']}"   {if $option['Customer Poll Query Option Key']==$query['Reply']}selected{/if}   >{$option['Customer Poll Query Option Label']}</option>
+                                                    {/foreach}
+
+
+                                                </select>
+                                                <i></i>
+                                            </label>
+                                        </section>
+
+                                    {/if}
+
+                                {/foreach}
+
+
+
+
+                            </fieldset>
+                            <footer>
+                                <button type="submit" class="button " id="save_poll_details" >{if empty($content._save_poll_details_label)}{t}Save{/t}{else}{$content._save_poll_details_label}{/if} <i  class="margin_left_10 fa fa-fw fa-floppy-o" aria-hidden="true"></i> </button>
+                            </footer>
+                        </form>
+                    </div>
 
 
                     <div id="_orders" class="block hide">
@@ -821,6 +878,89 @@
         error.insertAfter(element.parent());
     }
     });
+
+
+
+    $("#poll_details").validate(
+        {
+
+            submitHandler: function(form)
+            {
+
+                var button=$('#save_poll_details');
+
+                if(button.hasClass('wait')){
+                    return;
+                }
+
+                button.addClass('wait')
+                button.find('i').removeClass('fa-floppy-o').addClass('fa-spinner fa-spin')
+
+
+                var poll_data={ }
+
+                $("#poll_details textarea:not(.ignore)").each(function(i, obj) {
+                    if(!$(obj).attr('name')==''){
+                        poll_data[$(obj).attr('name')]=$(obj).val()
+                    }
+
+                });
+
+                $("#poll_details select:not(.ignore)").each(function(i, obj) {
+                    if(!$(obj).attr('name')==''){
+
+
+                        poll_data[$(obj).attr('name')]=$(obj).val()
+                    }
+
+                });
+
+
+                //  register_data['pwd']=sha256_digest(register_data['pwd']);
+
+                var ajaxData = new FormData();
+
+                ajaxData.append("tipo", 'poll')
+
+                ajaxData.append("data", JSON.stringify(poll_data))
+
+                $.ajax({
+                    url: "/ar_web_profile.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+                    complete: function () {
+                    }, success: function (data) {
+
+                        console.log(data)
+
+                        if (data.state == '200') {
+
+
+
+
+                        } else if (data.state == '400') {
+                            swal("{t}Error{/t}!", data.msg, "error")
+                        }
+
+                        button.removeClass('wait')
+                        button.find('i').addClass('fa-floppy-o').removeClass('fa-spinner fa-spin')
+
+                    }, error: function () {
+                        button.removeClass('wait')
+                        button.find('i').addClass('fa-floppy-o').removeClass('fa-spinner fa-spin')
+                    }
+                });
+
+
+            },
+
+
+
+            // Do not change code below
+            errorPlacement: function(error, element)
+            {
+                error.insertAfter(element.parent());
+            }
+        });
+
 
 
     $(document).on('keyup paste change', "#login_details :input", function(ev){

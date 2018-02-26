@@ -62,6 +62,9 @@ switch ($tipo) {
     case 'poll_query_options':
         poll_query_options(get_table_parameters(), $db, $user);
         break;
+    case 'poll_query_answers':
+        poll_query_answers(get_table_parameters(), $db, $user);
+        break;
     case 'abandoned_cart':
         abandoned_cart(get_table_parameters(), $db, $user);
         break;
@@ -674,7 +677,6 @@ function abandoned_cart($_data, $db, $user) {
 }
 
 
-
 function poll_queries($_data, $db, $user) {
 
 
@@ -702,46 +704,40 @@ function poll_queries($_data, $db, $user) {
         foreach ($result as $data) {
 
 
-
-
             switch ($data['Customer Poll Query Type']) {
                 case 'Options':
                     $type = _('Multiple choice');
 
-                    $title_on_enough_options=_('Query will not be shown to customer until it has more than one option');
+                    $title_on_enough_options = _('Query will not be shown to customer until it has more than one option');
 
                     if ($data['Customer Poll Query Options'] == 0) {
 
 
-
-                        $type.=' <span class="error">('._('Not options set').')</span>';
-                        $in_registration=($data['Customer Poll Query In Registration'] == 'Yes' ? '<i title="'.$title_on_enough_options.'" class="fa fa-check error discreet"></i>' : '<i class="fa fa-check discreet"></i>');
-                        $in_profile=($data['Customer Poll Query In Profile'] == 'Yes' ? '<i title="'.$title_on_enough_options.'" class="fa fa-check error discreet"></i>' : '<i class="fa fa-check discreet"></i>');
+                        $type            .= ' <span class="error">('._('Not options set').')</span>';
+                        $in_registration = ($data['Customer Poll Query In Registration'] == 'Yes' ? '<i title="'.$title_on_enough_options.'" class="fa fa-check error discreet"></i>' : '<i class="fa fa-check discreet"></i>');
+                        $in_profile      = ($data['Customer Poll Query In Profile'] == 'Yes' ? '<i title="'.$title_on_enough_options.'" class="fa fa-check error discreet"></i>' : '<i class="fa fa-check discreet"></i>');
                     } elseif ($data['Customer Poll Query Options'] == 1) {
-                        $type.=' <span class="warning">('._('Only one options set').')</span>';
-                        $in_registration=($data['Customer Poll Query In Registration'] == 'Yes' ? '<i title="'.$title_on_enough_options.'" class="fa fa-check error warning"></i>' : '<i class="fa fa-check discreet"></i>');
-                        $in_profile=($data['Customer Poll Query In Profile'] == 'Yes' ? '<i title="'.$title_on_enough_options.'" class="fa fa-check error warning"></i>' : '<i class="fa fa-check discreet"></i>');
+                        $type            .= ' <span class="warning">('._('Only one options set').')</span>';
+                        $in_registration = ($data['Customer Poll Query In Registration'] == 'Yes' ? '<i title="'.$title_on_enough_options.'" class="fa fa-check error warning"></i>' : '<i class="fa fa-check discreet"></i>');
+                        $in_profile      = ($data['Customer Poll Query In Profile'] == 'Yes' ? '<i title="'.$title_on_enough_options.'" class="fa fa-check error warning"></i>' : '<i class="fa fa-check discreet"></i>');
                     } else {
-                        $type.=' ('.sprintf(
+                        $type .= ' ('.sprintf(
                                 ngettext(
                                     "%s option", "%s options", $data['Customer Poll Query Options']
                                 ), number($data['Customer Poll Query Options'])
                             ).')';
 
-                        $in_registration=($data['Customer Poll Query In Registration'] == 'Yes' ? '<i class="fa fa-check success"></i>' : '<i class="fa fa-check discreet"></i>');
-                        $in_profile=($data['Customer Poll Query In Profile'] == 'Yes' ? '<i class="fa fa-check success"></i>' : '<i class="fa fa-check discreet"></i>');
+                        $in_registration = ($data['Customer Poll Query In Registration'] == 'Yes' ? '<i class="fa fa-check success"></i>' : '<i class="fa fa-check discreet"></i>');
+                        $in_profile      = ($data['Customer Poll Query In Profile'] == 'Yes' ? '<i class="fa fa-check success"></i>' : '<i class="fa fa-check discreet"></i>');
 
                     }
 
 
-
-
-
                     break;
                 case 'Open':
-                    $type = _('Open answer');
-                    $in_registration=($data['Customer Poll Query In Registration'] == 'Yes' ? '<i class="fa fa-check success"></i>' : '<i class="fa fa-check discreet"></i>');
-                    $in_profile=($data['Customer Poll Query In Profile'] == 'Yes' ? '<i class="fa fa-check success"></i>' : '<i class="fa fa-check discreet"></i>');
+                    $type            = _('Open answer');
+                    $in_registration = ($data['Customer Poll Query In Registration'] == 'Yes' ? '<i class="fa fa-check success"></i>' : '<i class="fa fa-check discreet"></i>');
+                    $in_profile      = ($data['Customer Poll Query In Profile'] == 'Yes' ? '<i class="fa fa-check success"></i>' : '<i class="fa fa-check discreet"></i>');
                     break;
                 default:
                     exit('error not customer poll query E1');
@@ -789,13 +785,11 @@ function poll_queries($_data, $db, $user) {
 }
 
 
-
 function poll_query_options($_data, $db, $user) {
 
 
-
     if ($_data['parameters']['parent'] == 'Customer_Poll_Query') {
-        $poll           = get_object('Customer_Poll_Query', $_data['parameters']['parent_key']);
+        $poll            = get_object('Customer_Poll_Query', $_data['parameters']['parent_key']);
         $total_customers = $poll->get('Customer Poll Query Customers');
 
     } else {
@@ -818,21 +812,16 @@ function poll_query_options($_data, $db, $user) {
         foreach ($result as $data) {
 
 
-
-
-
-
-
             $adata[] = array(
-                'id'                   => (integer)$data['Customer Poll Query Option Key'],
-                'code'                => sprintf(
-                    '<span class="link" onclick="change_view(\'/customers/%d/poll_query/%d/option/%d\')" title="%s">%s</span>', $data['Customer Poll Query Option Store Key'], $data['Customer Poll Query Option Query Key'], $data['Customer Poll Query Option Key'],$data['Customer Poll Query Option Label'], $data['Customer Poll Query Option Name']
+                'id'    => (integer)$data['Customer Poll Query Option Key'],
+                'code'  => sprintf(
+                    '<span class="link" onclick="change_view(\'/customers/%d/poll_query/%d/option/%d\')" title="%s">%s</span>', $data['Customer Poll Query Option Store Key'], $data['Customer Poll Query Option Query Key'], $data['Customer Poll Query Option Key'],
+                    $data['Customer Poll Query Option Label'], $data['Customer Poll Query Option Name']
                 ),
-                'label'                => $data['Customer Poll Query Option Label'],
+                'label' => $data['Customer Poll Query Option Label'],
 
                 'customers'            => number($data['Customer Poll Query Option Customers']),
                 'customers_percentage' => percentage($data['Customer Poll Query Option Customers'], $total_customers),
-
 
 
             );
@@ -857,5 +846,59 @@ function poll_query_options($_data, $db, $user) {
     );
     echo json_encode($response);
 }
+
+
+function poll_query_answers($_data, $db, $user) {
+
+
+    $rtext_label = 'answer';
+
+
+    include_once 'prepare_table/init.php';
+
+    $sql = "select  $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+
+
+    $adata = array();
+
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+
+            $link_format = '/store/%d/customer/%d';
+
+
+            $adata[] = array(
+                'id'           => (integer)$data['Customer Poll Key'],
+                'formatted_id' => sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $data['Customer Store Key'], $data['Customer Key'], $data['Customer Key']),
+                'customer'         => $data['Customer Name'],
+                'answer'       => $data['Customer Poll Reply'],
+                'date'         => strftime("%e %b %y", strtotime($data['Customer Poll Date']." +00:00"))
+
+
+            );
+        }
+
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
 
 ?>

@@ -79,6 +79,26 @@ $tab_defaults = array(
         'elements_type' => each($elements_options['poll_query_history'])['key'],
         'elements'      => $elements_options['poll_query_history']
     ),
+    'poll_query_option.history'              => array(
+        'view'          => 'overview',
+        'sort_key'      => 'date',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'note',
+        'elements_type' => each($elements_options['poll_query_option_history'])['key'],
+        'elements'      => $elements_options['poll_query_option_history']
+    ),
+
+
+    'customers_poll.query.answers'               => array(
+        'view'        => 'overview',
+        'sort_key'    => 'code',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'code'
+    ),
     'customers_poll.query.options'               => array(
         'view'        => 'overview',
         'sort_key'    => 'code',

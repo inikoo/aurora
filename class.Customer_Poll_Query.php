@@ -78,6 +78,9 @@ class Customer_Poll_Query extends DB_Table {
 
 
         $this->new = false;
+
+        $this->editor=$data['editor'];
+
         $base_data = $this->base_data();
 
         foreach ($data as $key => $value) {
@@ -168,16 +171,6 @@ class Customer_Poll_Query extends DB_Table {
 
                 if (array_key_exists('Customer Poll Query '.$key, $this->data)) {
                     return $this->data['Customer Poll Query '.$key];
-                }
-
-
-                if (preg_match(
-                    '/(Customer Poll Query )?Flag Label (.+)$/', $key, $match
-                )) {
-
-                    if (isset($this->flags[$match[2]])) {
-                        return $this->flags[$match[2]]['Customer Poll Query Flag Label'];
-                    }
                 }
 
 
@@ -317,28 +310,31 @@ class Customer_Poll_Query extends DB_Table {
 
         $number_options   = 0;
         $number_customers = 0;
-        $last_answered='';
+        $last_answered    = '';
 
         if ($this->data['Customer Poll Query Type'] == 'Options') {
-            $sql = sprintf('SELECT count(*) AS options ,count(DISTINCT `Customer Poll Query Option Customers`) AS customers ,max(`Customer Poll Query Option Last Answered`) as last_answered FROM `Customer Poll Query Option Dimension` WHERE `Customer Poll Query Option Query Key`=%d', $this->id);
-
+            $sql = sprintf(
+                'SELECT count(*) AS options ,sum(`Customer Poll Query Option Customers`) AS customers ,max(`Customer Poll Query Option Last Answered`) AS last_answered FROM `Customer Poll Query Option Dimension` WHERE `Customer Poll Query Option Query Key`=%d',
+                $this->id
+            );
 
             if ($result = $this->db->query($sql)) {
                 if ($row = $result->fetch()) {
-                    $number_options = $row['options'];
+
+
+                    $number_options   = $row['options'];
                     $number_customers = $row['customers'];
-                    $last_answered = $row['last_answered'];
+                    $last_answered    = $row['last_answered'];
 
                 }
             } else {
                 print_r($error_info = $this->db->errorInfo());
                 exit;
             }
-        }
-        else{
+        } else {
 
 
-            $sql = sprintf('SELECT count(DISTINCT `Customer Poll Customer Key`) AS number ,max(`Customer Poll Date`) as last_answered  FROM `Customer Poll Fact` WHERE `Customer Poll Query Key`=%d', $this->id);
+            $sql = sprintf('SELECT count(DISTINCT `Customer Poll Customer Key`) AS number ,max(`Customer Poll Date`) AS last_answered  FROM `Customer Poll Fact` WHERE `Customer Poll Query Key`=%d', $this->id);
 
 
             if ($result = $this->db->query($sql)) {
@@ -354,14 +350,11 @@ class Customer_Poll_Query extends DB_Table {
         }
 
 
-
-
-
         $this->fast_update(
             array(
-                'Customer Poll Query Options'   => $number_options,
-                'Customer Poll Query Customers' => $number_customers,
-                'Customer Poll Query Last Answered'=>$last_answered
+                'Customer Poll Query Options'       => $number_options,
+                'Customer Poll Query Customers'     => $number_customers,
+                'Customer Poll Query Last Answered' => $last_answered
 
 
             )
@@ -384,16 +377,6 @@ class Customer_Poll_Query extends DB_Table {
                     if ($value != $this->data[$field]) {
                         $this->update_field($field, $value, $options);
                     }
-                }
-
-                if (preg_match(
-                    '/(Customer Poll Query Flag Label) (.+)$/', $field, $match
-                )) {
-
-
-                    $this->update_flag($match[2], $match[1], $value);
-
-
                 }
 
 
@@ -493,42 +476,60 @@ class Customer_Poll_Query extends DB_Table {
 
     function add_customer($customer, $value) {
 
-        if($customer->get('Store Key')!=$this->get('Store Key')){
+        if ($customer->get('Store Key') != $this->get('Store Key')) {
 
-            $this->error=true;
-            $this->msg='customer not in poll store';
+            $this->error = true;
+            $this->msg   = 'customer not in poll store';
+
             return;
         }
 
 
         if ($this->get('Customer Poll Query Type') == 'Open') {
 
+
+            $sql = sprintf('DELETE FROM `Customer Poll Fact` WHERE `Customer Poll Customer Key`=%d AND `Customer Poll Query Key`=%d ', $customer->id, $this->id);
+            $this->db->exec($sql);
+
+            if ($value != '') {
+                $sql = sprintf(
+                    'INSERT INTO `Customer Poll Fact` (`Customer Poll Customer Key`,`Customer Poll Query Key`,`Customer Poll Reply`,`Customer Poll Date`) VALUES (%d,%d,%s,%s)', $customer->id, $this->id, prepare_mysql($value), prepare_mysql(gmdate('Y-m-d H:i:s'))
+                );
+                $this->db->exec($sql);
+            }
+
+
+            $this->update_answers();
+
+
         } else {
 
-            $poll_option=get_object('Customer_Poll_Query_Option',$value);
+            $poll_option = get_object('Customer_Poll_Query_Option', $value);
 
-            if($poll_option->get('Query Key')!=$this->id){
+            if ($poll_option->get('Query Key') != $this->id) {
 
-                $this->error=true;
-                $this->msg='option not in poll';
+                $this->error = true;
+                $this->msg   = 'option not in poll';
+
                 return;
             }
 
 
-            $sql=sprintf('select `Customer Poll Key` from `Customer Poll Fact` where `Customer Poll Customer Key`=%d and `Customer Poll Query Key`=%d and `Customer Poll Query Option Key`=%d ',
-                         $customer->id,$this->id,$value
-                );
-            if ($result=$this->db->query($sql)) {
+            $sql = sprintf(
+                'SELECT `Customer Poll Key` FROM `Customer Poll Fact` WHERE `Customer Poll Customer Key`=%d AND `Customer Poll Query Key`=%d AND `Customer Poll Query Option Key`=%d ', $customer->id, $this->id, $value
+            );
+            if ($result = $this->db->query($sql)) {
                 if ($row = $result->fetch()) {
-                    $sql=sprintf('delete from `Customer Poll Fact` where `Customer Poll Customer Key`=%d and `Customer Poll Query Key`=%d  and `Customer Poll Key`!=%d ',$customer->id,$this->id,$row['Customer Poll Key']);
+                    $sql = sprintf('DELETE FROM `Customer Poll Fact` WHERE `Customer Poll Customer Key`=%d AND `Customer Poll Query Key`=%d  AND `Customer Poll Key`!=%d ', $customer->id, $this->id, $row['Customer Poll Key']);
                     $this->db->exec($sql);
 
-                }else{
-                    $sql=sprintf('delete from `Customer Poll Fact` where `Customer Poll Customer Key`=%d and `Customer Poll Query Key`=%d ',$customer->id,$this->id);
+                } else {
+                    $sql = sprintf('DELETE FROM `Customer Poll Fact` WHERE `Customer Poll Customer Key`=%d AND `Customer Poll Query Key`=%d ', $customer->id, $this->id);
                     $this->db->exec($sql);
 
-                    $sql=sprintf('insert into `Customer Poll Fact` (`Customer Poll Customer Key`,`Customer Poll Query Key`,`Customer Poll Query Option Key`,`Customer Poll Date`) values (%d,%d,%d,%s)',
-                                 $customer->id,$this->id,$value,prepare_mysql(gmdate('Y-m-d H:i:s')));
+                    $sql = sprintf(
+                        'INSERT INTO `Customer Poll Fact` (`Customer Poll Customer Key`,`Customer Poll Query Key`,`Customer Poll Query Option Key`,`Customer Poll Date`) VALUES (%d,%d,%d,%s)', $customer->id, $this->id, $value, prepare_mysql(gmdate('Y-m-d H:i:s'))
+                    );
                     $this->db->exec($sql);
 
 
@@ -537,18 +538,146 @@ class Customer_Poll_Query extends DB_Table {
                 $poll_option->update_customers();
 
                 $this->update_answers();
-            }else {
-            	print_r($error_info=$this->db->errorInfo());
-            	print "$sql\n";
-            	exit;
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
             }
-
-
-
 
 
         }
 
+    }
+
+
+    function delete() {
+
+        $replies=array();
+        switch ($this->data['Customer Poll Query Type']) {
+            case 'Open':
+
+                $sql=sprintf('select `Customer Poll Customer Key`,`Customer Poll Reply` from `Customer Poll Fact` where `Customer Poll Query Key`=%d ',$this->id);
+
+                if ($result=$this->db->query($sql)) {
+                		foreach ($result as $row) {
+                            $replies[$row['Customer Poll Customer Key']]=$row['Customer Poll Reply'];
+                		}
+                }else {
+                		print_r($error_info=$this->db->errorInfo());
+                		print "$sql\n";
+                		exit;
+                }
+
+
+                break;
+
+            case 'Options':
+
+                $options=array();
+
+                $sql=sprintf('select `Customer Poll Query Option Key`,`Customer Poll Query Option Name`,`Customer Poll Query Option Label` from `Customer Poll Query Option Dimension` where `Customer Poll Query Option Query Key`=%d ',$this->id);
+
+                if ($result=$this->db->query($sql)) {
+                    foreach ($result as $row) {
+                        $options[$row['Customer Poll Query Option Key']]=array($row['Customer Poll Query Option Name'],$row['Customer Poll Query Option Label']);
+                    }
+                }else {
+                    print_r($error_info=$this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+
+
+                $sql=sprintf('select `Customer Poll Customer Key`,`Customer Poll Query Option Key` from `Customer Poll Fact` where `Customer Poll Query Key`=%d ',$this->id);
+
+                if ($result=$this->db->query($sql)) {
+                    foreach ($result as $row) {
+                        $replies[$row['Customer Poll Customer Key']]=$row['Customer Poll Query Option Key'];
+                    }
+                }else {
+                    print_r($error_info=$this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+
+                break;
+
+            default:
+
+        }
+
+
+
+
+        $data = $this->data;
+        unset($data['Customer Poll Query Key']);
+        unset($data['Customer Poll Query Name']);
+        unset($data['Customer Poll Query Label']);
+        $data['Replies']=$replies;
+
+
+
+
+        $sql = sprintf(
+            'INSERT INTO `Customer Poll Query Deleted Dimension`  (`Customer Poll Query Deleted Key`,`Customer Poll Query Deleted Date`,`Customer Poll Query Deleted Name`,`Customer Poll Query Deleted Label`,`Customer Poll Query Deleted Metadata`) VALUES (%d,%s,%s,%s,%s) ', $this->id,
+            prepare_mysql(gmdate('Y-m-d H:i:s')),
+            prepare_mysql($this->get('Customer Poll Query Name')), prepare_mysql($this->get('Customer Poll Query Label')),  prepare_mysql(gzcompress(json_encode($data), 9))
+
+
+        );
+
+        $this->db->exec($sql);
+
+
+
+        switch ($this->data['Customer Poll Query Type']) {
+            case 'Open':
+
+
+                $sql=sprintf('delete from `Customer Poll Fact` where `Customer Poll Query Key`=%d ',$this->id);
+                $this->db->exec($sql);
+
+
+                break;
+
+            case 'Options':
+
+
+                $sql=sprintf('delete from `Customer Poll Query Option Dimension` where `Customer Poll Query Option Query Key`=%d ',$this->id);
+                $this->db->exec($sql);
+
+                $sql=sprintf('delete from `Customer Poll Fact` where `Customer Poll Query Key`=%d ',$this->id);
+                $this->db->exec($sql);
+
+                break;
+
+            default:
+
+        }
+
+
+        $sql = sprintf(
+            'DELETE FROM `Customer Poll Query Dimension`  WHERE `Customer Poll Query Key`=%d ', $this->id
+        );
+        $this->db->exec($sql);
+
+
+        $history_data = array(
+            'History Abstract' => sprintf(
+                _('Customer poll %s deleted'), $this->data['Customer Poll Query Name']
+            ),
+            'History Details'  => '',
+            'Action'           => 'deleted'
+        );
+
+        $this->add_subject_history(
+            $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+        );
+
+
+        $this->deleted = true;
     }
 
 

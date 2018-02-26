@@ -33,14 +33,14 @@ switch ($tipo) {
     case 'save_deal_component_labels':
         $data = prepare_values(
             $_REQUEST, array(
-                         'key'  => array('type' => 'key'),
+                         'key'   => array('type' => 'key'),
                          'label' => array('type' => 'string'),
                          'value' => array('type' => 'string')
 
 
                      )
         );
-        save_deal_component_labels($data,$editor);
+        save_deal_component_labels($data, $editor);
         break;
 
     case 'save_webpage_content':
@@ -49,6 +49,10 @@ switch ($tipo) {
                          'key'          => array('type' => 'key'),
                          'content_data' => array('type' => 'string'),
                          'labels'       => array(
+                             'type'     => 'string',
+                             'optional' => true
+                         ),
+                         'poll_labels'  => array(
                              'type'     => 'string',
                              'optional' => true
                          )
@@ -348,7 +352,7 @@ switch ($tipo) {
     case 'refresh_webpage_see_also':
         $data = prepare_values(
             $_REQUEST, array(
-                         'key'    => array('type' => 'key')
+                         'key' => array('type' => 'key')
                      )
         );
         refresh_webpage_see_also($account, $db, $user, $editor, $data, $smarty);
@@ -376,7 +380,6 @@ switch ($tipo) {
 
 
 function refresh_webpage_see_also($account, $db, $user, $editor, $data, $smarty) {
-
 
 
     $object         = get_object('webpage', $data['key']);
@@ -583,8 +586,7 @@ function webpage_content_data($data, $editor, $db, $smarty) {
 
 
                         $sql = sprintf(
-                            'SELECT `Category Webpage Index Key` ,`Category Webpage Index Content Data` FROM `Category Webpage Index` WHERE `Category Webpage Index Key`=%d  ',
-                            $content_data['sections'][$section_index]['items'][$item_index]['index_key']
+                            'SELECT `Category Webpage Index Key` ,`Category Webpage Index Content Data` FROM `Category Webpage Index` WHERE `Category Webpage Index Key`=%d  ', $content_data['sections'][$section_index]['items'][$item_index]['index_key']
 
 
                         );
@@ -597,8 +599,7 @@ function webpage_content_data($data, $editor, $db, $smarty) {
 
 
                                 $sql = sprintf(
-                                    'UPDATE `Category Webpage Index` SET `Category Webpage Index Content Data`=%s WHERE `Category Webpage Index Key`=%d ',
-                                    prepare_mysql(json_encode($item_content_data)), $row['Category Webpage Index Key']
+                                    'UPDATE `Category Webpage Index` SET `Category Webpage Index Content Data`=%s WHERE `Category Webpage Index Key`=%d ', prepare_mysql(json_encode($item_content_data)), $row['Category Webpage Index Key']
                                 );
 
                                 $db->exec($sql);
@@ -711,8 +712,8 @@ function webpage_content_data($data, $editor, $db, $smarty) {
                         $data['value']                                 = base64_decode($data['value']);
                         $content_data['panels'][$panel_key]['content'] = $data['value'];
                         $sql                                           = sprintf(
-                            'UPDATE `Webpage Panel Dimension` SET `Webpage Panel Data`=%s ,`Webpage Panel Metadata`=%s WHERE `Webpage Panel Key`=%d ', prepare_mysql($data['value']),
-                            prepare_mysql(json_encode($content_data['panels'][$panel_key])), $content_data['panels'][$panel_key]['key']
+                            'UPDATE `Webpage Panel Dimension` SET `Webpage Panel Data`=%s ,`Webpage Panel Metadata`=%s WHERE `Webpage Panel Key`=%d ', prepare_mysql($data['value']), prepare_mysql(json_encode($content_data['panels'][$panel_key])),
+                            $content_data['panels'][$panel_key]['key']
                         );
                         $db->exec($sql);
                         break;
@@ -922,9 +923,8 @@ function webpage_content_data($data, $editor, $db, $smarty) {
         }
 
         $sql = sprintf(
-            'INSERT INTO `Webpage Panel Dimension` (`Webpage Panel Id`,`Webpage Panel Webpage Key`,`Webpage Panel Type`,`Webpage Panel Data`,`Webpage Panel Metadata`) VALUES (%s,%d,%s,%s,%s) ',
-            prepare_mysql($data['block']), $webpage->id, prepare_mysql($panel_data['type']), ($panel_data['type'] == 'code' ? prepare_mysql($panel['content']) : prepare_mysql('')),
-            prepare_mysql(json_encode($panel))
+            'INSERT INTO `Webpage Panel Dimension` (`Webpage Panel Id`,`Webpage Panel Webpage Key`,`Webpage Panel Type`,`Webpage Panel Data`,`Webpage Panel Metadata`) VALUES (%s,%d,%s,%s,%s) ', prepare_mysql($data['block']), $webpage->id,
+            prepare_mysql($panel_data['type']), ($panel_data['type'] == 'code' ? prepare_mysql($panel['content']) : prepare_mysql('')), prepare_mysql(json_encode($panel))
 
         );
 
@@ -1074,8 +1074,7 @@ function update_product_category_index($data, $editor, $db, $smarty) {
 
 
             $sql = sprintf(
-                'UPDATE `Product Category Index` SET `Product Category Index Content Data`=%s   WHERE `Product Category Index Key`=%d ', prepare_mysql(json_encode($product_content_data)),
-                $row['Product Category Index Key']
+                'UPDATE `Product Category Index` SET `Product Category Index Content Data`=%s   WHERE `Product Category Index Key`=%d ', prepare_mysql(json_encode($product_content_data)), $row['Product Category Index Key']
             );
             $db->exec($sql);
 
@@ -1134,8 +1133,7 @@ function update_webpage_related_product($data, $editor, $db) {
 
 
             $sql = sprintf(
-                'UPDATE `Webpage Related Product Bridge` SET `Webpage Related Product Content Data`=%s   WHERE `Webpage Related Product Key`=%d ', prepare_mysql(json_encode($product_content_data)),
-                $row['Webpage Related Product Key']
+                'UPDATE `Webpage Related Product Bridge` SET `Webpage Related Product Content Data`=%s   WHERE `Webpage Related Product Key`=%d ', prepare_mysql(json_encode($product_content_data)), $row['Webpage Related Product Key']
             );
             $db->exec($sql);
 
@@ -1507,12 +1505,11 @@ function update_webpage_section_order($data, $editor, $smarty, $db) {
 
     $webpage->update_webpage_section_order($data['section_key'], $data['target_key']);
 
-    if($webpage->error){
+    if ($webpage->error) {
 
         $response = array(
-            'state'    => 400,
-            'msg' => $webpage->msg,
-
+            'state' => 400,
+            'msg'   => $webpage->msg,
 
 
         );
@@ -1752,11 +1749,7 @@ function save_footer($data, $editor) {
     include_once('class.WebsiteFooter.php');
 
 
-
-
-    $footer_data = json_decode($data['footer_data'],true);
-
-
+    $footer_data = json_decode($data['footer_data'], true);
 
 
     $footer         = new WebsiteFooter($data['footer_key']);
@@ -1796,9 +1789,7 @@ function save_header($data, $editor) {
     include_once('class.WebsiteHeader.php');
 
 
-
-    $header_data = json_decode($data['header_data'],true);
-
+    $header_data = json_decode($data['header_data'], true);
 
 
     //print_r($header_data);
@@ -1839,15 +1830,35 @@ function save_header($data, $editor) {
 function save_webpage_content($data, $editor, $db, $smarty) {
 
 
-
     include_once('class.Page.php');
-    $webpage = new Page($data['key']);
-
+    $webpage         = new Page($data['key']);
+    $webpage->editor = $editor;
 
     if (isset($data['labels'])) {
         include_once('class.Website.php');
-        $website = new Website($webpage->get('Webpage Website Key'));
+        $website         = new Website($webpage->get('Webpage Website Key'));
+        $website->editor = $editor;
         $website->update_labels_in_localised_labels(json_decode($data['labels'], true));
+
+        //print_r($data['labels']);
+    }
+
+
+    if (isset($data['poll_labels'])) {
+        $poll_labels_data = json_decode($data['poll_labels'], true);
+
+        foreach ($poll_labels_data as $poll_key => $label) {
+            $label = base64_decode($label);
+
+            $_data = array('Customer Poll Query Label' => $label);
+
+            $poll_query         = get_object('Customer_Poll_Query', $poll_key);
+            $poll_query->editor = $editor;
+            $poll_query->update($_data);
+
+        }
+
+
     }
 
 
@@ -1857,7 +1868,6 @@ function save_webpage_content($data, $editor, $db, $smarty) {
     //  print_r( json_decode($data['content_data'],true));
 
     // exit;
-
 
 
     $webpage->update(array('Page Store Content Data' => $data['content_data']), 'no_history');
@@ -1905,22 +1915,22 @@ function launch_website($account, $db, $user, $editor, $data, $smarty) {
 
 }
 
-function save_deal_component_labels($data,$editor){
+function save_deal_component_labels($data, $editor) {
 
     $deal_component         = get_object('Deal Component', $data['key']);
     $deal_component->editor = $editor;
 
-    $update_fields=array();
+    $update_fields = array();
 
-    switch ($data['label']){
+    switch ($data['label']) {
         case 'name':
-            $update_fields=array('Deal Component Name Label'=>$data['value']);
+            $update_fields = array('Deal Component Name Label' => $data['value']);
             break;
         case 'term':
-            $update_fields=array('Deal Component Term Label'=>$data['value']);
+            $update_fields = array('Deal Component Term Label' => $data['value']);
             break;
         case 'allowance':
-            $update_fields=array('Deal Component Allowance Label'=>$data['value']);
+            $update_fields = array('Deal Component Allowance Label' => $data['value']);
             break;
 
     }

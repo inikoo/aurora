@@ -1025,6 +1025,16 @@ class Public_Customer extends DBW_Table {
 
                 break;
             default:
+
+
+
+                if (preg_match('/^Customer Poll Query (\d+)/i', $field, $matches)) {
+                    $poll_key = $matches[1];
+                    $this->update_poll_answer($poll_key, $value, $options);
+
+                    return;
+                }
+
                 // print ">>>".$field."\n";
 
         }
@@ -1529,7 +1539,14 @@ class Public_Customer extends DBW_Table {
 
     }
 
+    function update_poll_answer($poll_key, $value, $options) {
 
+        $poll = get_object('Customer_Poll_Query', $poll_key);
+
+        $poll->add_customer($this, $value,$options);
+
+
+    }
 
 
 }

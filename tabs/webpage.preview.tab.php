@@ -45,8 +45,7 @@ if ($state['_object']->get('Webpage Template Filename') == 'products_showcase' o
 
 
 
-
-    $control_template = $theme.'/control.'.  strtolower($webpage->get('Webpage Template Filename')).'.'.$theme.'.tpl';
+    $control_template = $theme.'/control.'.strtolower($webpage->get('Webpage Template Filename')).'.'.$theme.'.tpl';
 
     // print $control_template;
 
@@ -60,11 +59,11 @@ if ($state['_object']->get('Webpage Template Filename') == 'products_showcase' o
         $smarty->assign('blocks', $blocks);
 
 
-
         $smarty->assign('control_template', $theme.'/control.webpage_blocks.'.$theme.'.tpl');
     }
 
     // print_r( $webpage->get('Content Data'));
+
 
     $html = $smarty->fetch('webpage_preview.tpl');
 

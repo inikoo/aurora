@@ -22,15 +22,28 @@ if ($result = $db->query($sql)) {
         $poll_query = get_object('Customer_Poll_Query', $row['Customer Poll Query Key']);
         if ($poll_query->get('Customer Poll Query Type') == 'Open') {
 
-            $fields[] = array(
-                'edit'        => ($edit ? 'textarea' : ''),
-                'id'          => 'Customer_Poll_Query_'.$poll_query->id,
-                'value'       => $poll_query->get_answer($customer->id)[1],
-                'label'       => $poll_query->get('Customer Poll Query Label'),
-                'invalid_msg' => get_invalid_message('string'),
-                'required'    => false,
-                'type'        => 'value'
+
+
+
+            $customer_fields[] = array(
+                'label'      => $poll_query->get('Customer Poll Query Label'),
+                'show_title' => true,
+                'fields'     => array(
+
+                    array(
+                        'edit'        => ($edit ? 'textarea' : ''),
+                        'id'          => 'Customer_Poll_Query_'.$poll_query->id,
+                        'value'       => $poll_query->get_answer($customer->id)[1],
+                        'label'           => sprintf(
+                            '<span class="link" onclick="change_view(\'customers/%d/poll_query/%d\')" >%s</span>', $poll_query->get('Store Key'), $poll_query->id, $poll_query->get('Customer Poll Query Name')
+                        ),
+                        'invalid_msg' => get_invalid_message('string'),
+                        'required'    => false,
+                        'type'        => 'value'
+                    )
+                )
             );
+
 
         } else {
 

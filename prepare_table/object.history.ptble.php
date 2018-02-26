@@ -194,7 +194,17 @@ if ($parameters['parent'] == 'customer' or $parameters['parent'] == 'order_custo
         ' where   B.`API Key Key`=%d   ', $parameters['parent_key']
     );
     $subject = 'API Key';
-} else {
+} elseif ($parameters['parent'] == 'Customer_Poll_Query') {
+    $where   = sprintf(
+        ' where   B.`Customer Poll Query Key`=%d   ', $parameters['parent_key']
+    );
+    $subject = 'Customer Poll Query';
+}elseif ($parameters['parent'] == 'Customer_Poll_Query_Option') {
+    $where   = sprintf(
+        ' where   B.`Customer Poll Query Option Key`=%d   ', $parameters['parent_key']
+    );
+    $subject = 'Customer Poll Query Option';
+}else {
     print_r($parameters);
     exit('parent not set up '.$parameters['parent']);
 }

@@ -475,6 +475,19 @@ function fork_housekeeping($job) {
             $warehouse->update_current_timeseries_record('WarehouseStockLeakages');
             break;
 
+        case 'update_poll_data':
+
+            $poll = get_object('Customer_Poll_Query', $data['poll_key']);
+            $poll->update_answers();
+            break;
+
+        case 'update_poll_option_data':
+
+
+            $poll_option = get_object('Customer_Poll_Query', $data['poll_key']);
+            $poll->update_answers();
+            break;
+
         default:
             break;
 

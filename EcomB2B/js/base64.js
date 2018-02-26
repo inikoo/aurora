@@ -203,3 +203,18 @@
  : typeof global !== 'undefined' ? global
  : this
 );
+
+
+
+
+
+function base64_url_encode($input) {
+
+    var tmp=btoa($input);
+
+    tmp = tmp.replace(/\+/g, '-');
+    tmp = tmp.replace(/\//g, '_');
+    tmp = tmp.replace(/\=/g, '.');
+
+    return tmp
+}

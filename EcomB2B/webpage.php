@@ -112,6 +112,11 @@ if ($webpage->id) {
         $smarty->assign('used_address_fields', $used_fields);
         $smarty->assign('countries', $countries);
         $smarty->assign('selected_country', $country_code);
+
+
+        $smarty->assign('poll_queries', $website->get_poll_queries($webpage));
+
+
         $template = $theme.'/register.'.$theme.'.'.$website->get('Website Type').$template_suffix.'.tpl';
 
     } elseif ($webpage->get('Webpage Template Filename') == 'login') {
@@ -533,6 +538,10 @@ if ($webpage->id) {
 
         $countries = get_countries($website->get('Website Locale'));
         $smarty->assign('countries', $countries);
+
+
+
+        $smarty->assign('poll_queries', $website->get_poll_queries($webpage,$customer));
 
 
         $template = $theme.'/profile.'.$theme.'.'.$website->get('Website Type').$template_suffix.'.tpl';

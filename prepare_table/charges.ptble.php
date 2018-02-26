@@ -58,10 +58,12 @@ if ($order == 'code') {
 }
 $table  = '`Charge Dimension` C left join `Store Dimension` S on (S.`Store Key`=C.`Charge Store Key`) ';
 $fields = "`Charge Key`,`Charge Name`,`Charge Description`,`Charge Store Key`,S.`Store Code`,`Store Name`,`Charge Active`,`Charge Begin Date`,`Charge Expiration Date`,
-`Charge Total Acc Orders`,`Charge Total Acc Customers`,`Charge Total Acc Amount`";
+`Charge Total Acc Orders`,`Charge Total Acc Customers`,`Charge Total Acc Amount`,`Store Currency Code`";
 
 
 $sql_totals = "select count(*) as num from $table $where ";
+
+
 
 
 ?>
