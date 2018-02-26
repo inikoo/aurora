@@ -2397,8 +2397,8 @@ function get_charge_navigation($data, $smarty, $user, $db, $account) {
 
 
                     $sql = sprintf(
-                        "select O.`Order Public ID` object_name,O.`Order Key` as object_key from $table   $where $wheref
-	                and ($_order_field < %s OR ($_order_field = %s AND O.`Order Key` < %d))  order by $_order_field desc , O.`Order Key` desc limit 1",
+                        "select C.`Charge Name` object_name,C.`Charge Key` as object_key from $table   $where $wheref
+	                and ($_order_field < %s OR ($_order_field = %s AND C.`Charge Key` < %d))  order by $_order_field desc , C.`Charge Key`desc limit 1",
 
                         prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
                     );
@@ -2417,8 +2417,8 @@ function get_charge_navigation($data, $smarty, $user, $db, $account) {
 
 
                     $sql = sprintf(
-                        "select O.`Order Public ID` object_name,O.`Order Key` as object_key from $table   $where $wheref
-	                and ($_order_field  > %s OR ($_order_field  = %s AND O.`Order Key` > %d))  order by $_order_field   , O.`Order Key`  limit 1", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+                        "select  C.`Charge Name` object_name,C.`Charge Key` as object_key from $table   $where $wheref
+	                and ($_order_field  > %s OR ($_order_field  = %s AND C.`Charge Key` > %d))  order by $_order_field   , C.`Charge Key` limit 1", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
                     );
 
                     if ($result = $db->query($sql)) {
@@ -2458,15 +2458,15 @@ function get_charge_navigation($data, $smarty, $user, $db, $account) {
 
             $up_button = array(
                 'icon'      => 'arrow-up',
-                'title'     => _("Product").' '.$data['_parent']->get('Code'),
-                'reference' => 'product/'.$data['_parent']->id
+                'title'     => _("Store").' '.$data['_parent']->get('Code'),
+                'reference' => 'store/'.$data['_parent']->id
             );
 
             if ($prev_key) {
                 $left_buttons[] = array(
                     'icon'      => 'arrow-left',
                     'title'     => $prev_title,
-                    'reference' => 'product/'.$data['_parent']->id.'/order/'.$prev_key
+                    'reference' => 'store/'.$data['_parent']->id.'/charge/'.$prev_key
                 );
 
             } else {
@@ -2484,7 +2484,7 @@ function get_charge_navigation($data, $smarty, $user, $db, $account) {
                 $left_buttons[] = array(
                     'icon'      => 'arrow-right',
                     'title'     => $next_title,
-                    'reference' => 'product/'.$data['_parent']->id.'/order/'.$next_key
+                    'reference' => 'store/'.$data['_parent']->id.'/charge/'.$next_key
                 );
 
             } else {

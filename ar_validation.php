@@ -161,7 +161,7 @@ function check_for_duplicates($data, $db, $user, $account) {
                 'sql'         => $sql,
                 'invalid_msg' => $invalid_msg
             );
-           
+
 
             break;
         case 'User':
