@@ -87,44 +87,42 @@ switch ($tipo) {
 }
 
 
-
 function valid_redirection_webpage_code($data, $db, $user, $account) {
 
-    $invalid_msg              = '';
+    $invalid_msg = '';
 
 
-    $sql                      = sprintf(
-        "SELECT P.`Page Key` AS `key` ,`Webpage Code` ,`Webpage State`  FROM `Page Store Dimension` P WHERE  `Webpage Code`=%s  AND `Webpage Website Key`=%s  ",
-        prepare_mysql($data['value']), $data['parent_key']
+    $sql = sprintf(
+        "SELECT P.`Page Key` AS `key` ,`Webpage Code` ,`Webpage State`  FROM `Page Store Dimension` P WHERE  `Webpage Code`=%s  AND `Webpage Website Key`=%s  ", prepare_mysql($data['value']), $data['parent_key']
 
     );
 
-    if ($result=$db->query($sql)) {
+    if ($result = $db->query($sql)) {
         if ($row = $result->fetch()) {
 
-            if($row['key']==$data['key']){
-                $invalid_msg              = _("Webpage can't be redirected to itself");
-            }elseif($row['Webpage State']!='Online'){
-                $invalid_msg              = _("Redirection webpage is not online");
+            if ($row['key'] == $data['key']) {
+                $invalid_msg = _("Webpage can't be redirected to itself");
+            } elseif ($row['Webpage State'] != 'Online') {
+                $invalid_msg = _("Redirection webpage is not online");
             }
 
 
-    	}else{
-            $invalid_msg              = _('Webpage not found');
+        } else {
+            $invalid_msg = _('Webpage not found');
 
         }
-    }else {
-    	print_r($error_info=$db->errorInfo());
-    	print "$sql\n";
-    	exit;
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
     }
 
-    if($invalid_msg==''){
-        $validation='valid';
-        $msg='';
-    }else{
-        $validation='invalid';
-        $msg=$invalid_msg;
+    if ($invalid_msg == '') {
+        $validation = 'valid';
+        $msg        = '';
+    } else {
+        $validation = 'invalid';
+        $msg        = $invalid_msg;
     }
 
     $response = array(
@@ -151,13 +149,27 @@ function check_for_duplicates($data, $db, $user, $account) {
     switch ($data['object']) {
 
 
+        case 'Customer Poll Query Option':
+            $invalid_msg = _('Another option has same code');
+            $sql         = sprintf(
+                "SELECT `Customer Poll Query Option Key`AS `key` ,`Customer Poll Query Option Name` AS field FROM `Customer Poll Query Option Dimension` WHERE `Customer Poll Query Option Store Key`=%d  AND `Customer Poll Query Option Name`=%s",
+                $data['parent_key'],
+                prepare_mysql($data['value'])
+            );
 
+            $validation_sql_queries[] = array(
+                'sql'         => $sql,
+                'invalid_msg' => $invalid_msg
+            );
+           
+
+            break;
         case 'User':
             switch ($field) {
                 case 'Staff User Handle':
                     $invalid_msg = _('Another user is using this login');
                     $sql         = sprintf(
-                        "SELECT `User Key`AS `key` ,`User Handle` AS field FROM `User Dimension` WHERE `User Type` in ('Staff','Contractor','Administrator')  AND `User Handle`=%s", prepare_mysql($data['value'])
+                        "SELECT `User Key`AS `key` ,`User Handle` AS field FROM `User Dimension` WHERE `User Type` IN ('Staff','Contractor','Administrator')  AND `User Handle`=%s", prepare_mysql($data['value'])
                     );
 
                     $validation_sql_queries[] = array(
@@ -168,7 +180,7 @@ function check_for_duplicates($data, $db, $user, $account) {
                 case 'User Password Recovery Email':
                     $invalid_msg = _('Another user is using this email');
                     $sql         = sprintf(
-                        "SELECT `User Key`AS `key` ,`User Handle` AS field FROM `User Dimension` WHERE `User Type` in ('Staff','Contractor') AND `User Password Recovery Email`=%s", prepare_mysql($data['value'])
+                        "SELECT `User Key`AS `key` ,`User Handle` AS field FROM `User Dimension` WHERE `User Type` IN ('Staff','Contractor') AND `User Password Recovery Email`=%s", prepare_mysql($data['value'])
                     );
 
                     $validation_sql_queries[] = array(
@@ -367,8 +379,7 @@ function check_for_duplicates($data, $db, $user, $account) {
                         'Another customer have this email'
                     );
                     $sql                      = sprintf(
-                        "SELECT `Customer Key` AS `key` ,`Customer Main Plain Email` AS field FROM `Customer Dimension` WHERE `Customer Main Plain Email`=%s AND `Customer Store Key`=%d ",
-                        prepare_mysql($data['value']), $data['parent_key']
+                        "SELECT `Customer Key` AS `key` ,`Customer Main Plain Email` AS field FROM `Customer Dimension` WHERE `Customer Main Plain Email`=%s AND `Customer Store Key`=%d ", prepare_mysql($data['value']), $data['parent_key']
                     );
                     $validation_sql_queries[] = array(
                         'sql'         => $sql,
@@ -392,8 +403,8 @@ function check_for_duplicates($data, $db, $user, $account) {
                         'Email already set up in this customer'
                     );
                     $sql                      = sprintf(
-                        "SELECT `Customer Other Email Customer Key` AS `key` ,`Customer Other Email Email` AS field FROM `Customer Other Email Dimension` WHERE `Customer Other Email Email`=%s AND  `Customer Other Email Customer Key`=%d ",
-                        prepare_mysql($data['value']), $data['key']
+                        "SELECT `Customer Other Email Customer Key` AS `key` ,`Customer Other Email Email` AS field FROM `Customer Other Email Dimension` WHERE `Customer Other Email Email`=%s AND  `Customer Other Email Customer Key`=%d ", prepare_mysql($data['value']),
+                        $data['key']
                     );
                     $validation_sql_queries[] = array(
                         'sql'         => $sql,
@@ -407,8 +418,7 @@ function check_for_duplicates($data, $db, $user, $account) {
                         'Another customer have this email'
                     );
                     $sql                      = sprintf(
-                        "SELECT `Customer Key` AS `key` ,`Customer Main Plain Email` AS field FROM `Customer Dimension` WHERE `Customer Main Plain Email`=%s AND `Customer Store Key`=%d ",
-                        prepare_mysql($data['value']), $data['parent_key']
+                        "SELECT `Customer Key` AS `key` ,`Customer Main Plain Email` AS field FROM `Customer Dimension` WHERE `Customer Main Plain Email`=%s AND `Customer Store Key`=%d ", prepare_mysql($data['value']), $data['parent_key']
                     );
                     $validation_sql_queries[] = array(
                         'sql'         => $sql,
@@ -431,8 +441,8 @@ function check_for_duplicates($data, $db, $user, $account) {
                         'Email already set up in this customer'
                     );
                     $sql                      = sprintf(
-                        "SELECT `Customer Other Email Customer Key` AS `key` ,`Customer Other Email Email` AS field FROM `Customer Other Email Dimension` WHERE `Customer Other Email Email`=%s AND  `Customer Other Email Customer Key`=%d ",
-                        prepare_mysql($data['value']), $data['key']
+                        "SELECT `Customer Other Email Customer Key` AS `key` ,`Customer Other Email Email` AS field FROM `Customer Other Email Dimension` WHERE `Customer Other Email Email`=%s AND  `Customer Other Email Customer Key`=%d ", prepare_mysql($data['value']),
+                        $data['key']
                     );
                     $validation_sql_queries[] = array(
                         'sql'         => $sql,
@@ -464,8 +474,7 @@ function check_for_duplicates($data, $db, $user, $account) {
                             'Email already set up in this customer'
                         );
                         $sql                      = sprintf(
-                            "SELECT `Customer Key` AS `key` ,`Customer Main Plain Email` AS field FROM `Customer Dimension` WHERE `Customer Main Plain Email`=%s  AND `Customer Key`=%d ",
-                            prepare_mysql($data['value']), $data['key']
+                            "SELECT `Customer Key` AS `key` ,`Customer Main Plain Email` AS field FROM `Customer Dimension` WHERE `Customer Main Plain Email`=%s  AND `Customer Key`=%d ", prepare_mysql($data['value']), $data['key']
                         );
                         $validation_sql_queries[] = array(
                             'sql'         => $sql,
@@ -490,8 +499,7 @@ function check_for_duplicates($data, $db, $user, $account) {
                             'Another customer have this email'
                         );
                         $sql                      = sprintf(
-                            "SELECT `Customer Key` AS `key` ,`Customer Main Plain Email` AS field FROM `Customer Dimension` WHERE `Customer Main Plain Email`=%s AND `Customer Store Key`=%d ",
-                            prepare_mysql($data['value']), $data['parent_key']
+                            "SELECT `Customer Key` AS `key` ,`Customer Main Plain Email` AS field FROM `Customer Dimension` WHERE `Customer Main Plain Email`=%s AND `Customer Store Key`=%d ", prepare_mysql($data['value']), $data['parent_key']
                         );
                         $validation_sql_queries[] = array(
                             'sql'         => $sql,
@@ -503,8 +511,8 @@ function check_for_duplicates($data, $db, $user, $account) {
                             'Another customer have this email'
                         );
                         $sql                      = sprintf(
-                            "SELECT `Customer Other Email Customer Key` AS `key` ,`Customer Other Email Email` AS field FROM `Customer Other Email Dimension` WHERE `Customer Other Email Email`=%s AND `Customer Other Email Store Key`=%d  ",
-                            prepare_mysql($data['value']), $data['parent_key']
+                            "SELECT `Customer Other Email Customer Key` AS `key` ,`Customer Other Email Email` AS field FROM `Customer Other Email Dimension` WHERE `Customer Other Email Email`=%s AND `Customer Other Email Store Key`=%d  ", prepare_mysql($data['value']),
+                            $data['parent_key']
                         );
                         $validation_sql_queries[] = array(
                             'sql'         => $sql,
@@ -550,8 +558,8 @@ function check_for_duplicates($data, $db, $user, $account) {
                         'Email already set up in this supplier'
                     );
                     $sql                      = sprintf(
-                        "SELECT `Supplier Other Email Supplier Key` AS `key` ,`Supplier Other Email Email` AS field FROM `Supplier Other Email Dimension` WHERE `Supplier Other Email Email`=%s AND  `Supplier Other Email Supplier Key`=%d ",
-                        prepare_mysql($data['value']), $data['key']
+                        "SELECT `Supplier Other Email Supplier Key` AS `key` ,`Supplier Other Email Email` AS field FROM `Supplier Other Email Dimension` WHERE `Supplier Other Email Email`=%s AND  `Supplier Other Email Supplier Key`=%d ", prepare_mysql($data['value']),
+                        $data['key']
                     );
                     $validation_sql_queries[] = array(
                         'sql'         => $sql,
@@ -576,8 +584,8 @@ function check_for_duplicates($data, $db, $user, $account) {
                         'Another supplier have this email'
                     );
                     $sql                      = sprintf(
-                        "SELECT `Supplier Other Email Supplier Key` AS `key` ,`Supplier Other Email Email` AS field FROM `Supplier Other Email Dimension` WHERE `Supplier Other Email Email`=%s  AND `Supplier Other Email Supplier Key`!=%d ",
-                        prepare_mysql($data['value']), $data['key']
+                        "SELECT `Supplier Other Email Supplier Key` AS `key` ,`Supplier Other Email Email` AS field FROM `Supplier Other Email Dimension` WHERE `Supplier Other Email Email`=%s  AND `Supplier Other Email Supplier Key`!=%d ", prepare_mysql($data['value']),
+                        $data['key']
                     );
                     $validation_sql_queries[] = array(
                         'sql'         => $sql,
@@ -588,8 +596,8 @@ function check_for_duplicates($data, $db, $user, $account) {
                         'Email already set up in this supplier'
                     );
                     $sql                      = sprintf(
-                        "SELECT `Supplier Other Email Supplier Key` AS `key` ,`Supplier Other Email Email` AS field FROM `Supplier Other Email Dimension` WHERE `Supplier Other Email Email`=%s AND  `Supplier Other Email Supplier Key`=%d ",
-                        prepare_mysql($data['value']), $data['key']
+                        "SELECT `Supplier Other Email Supplier Key` AS `key` ,`Supplier Other Email Email` AS field FROM `Supplier Other Email Dimension` WHERE `Supplier Other Email Email`=%s AND  `Supplier Other Email Supplier Key`=%d ", prepare_mysql($data['value']),
+                        $data['key']
                     );
                     $validation_sql_queries[] = array(
                         'sql'         => $sql,
@@ -621,8 +629,7 @@ function check_for_duplicates($data, $db, $user, $account) {
                             'Email already set up in this supplier'
                         );
                         $sql                      = sprintf(
-                            "SELECT `Supplier Key` AS `key` ,`Supplier Main Plain Email` AS field FROM `Supplier Dimension` WHERE `Supplier Main Plain Email`=%s  AND `Supplier Key`=%d ",
-                            prepare_mysql($data['value']), $data['key']
+                            "SELECT `Supplier Key` AS `key` ,`Supplier Main Plain Email` AS field FROM `Supplier Dimension` WHERE `Supplier Main Plain Email`=%s  AND `Supplier Key`=%d ", prepare_mysql($data['value']), $data['key']
                         );
                         $validation_sql_queries[] = array(
                             'sql'         => $sql,
@@ -659,8 +666,7 @@ function check_for_duplicates($data, $db, $user, $account) {
                             'Another supplier have this email'
                         );
                         $sql                      = sprintf(
-                            "SELECT `Supplier Other Email Supplier Key` AS `key` ,`Supplier Other Email Email` AS field FROM `Supplier Other Email Dimension` WHERE `Supplier Other Email Email`=%s   ",
-                            prepare_mysql($data['value'])
+                            "SELECT `Supplier Other Email Supplier Key` AS `key` ,`Supplier Other Email Email` AS field FROM `Supplier Other Email Dimension` WHERE `Supplier Other Email Email`=%s   ", prepare_mysql($data['value'])
                         );
                         $validation_sql_queries[] = array(
                             'sql'         => $sql,
@@ -680,38 +686,33 @@ function check_for_duplicates($data, $db, $user, $account) {
                 case 'Part Part Barcode Number':
 
 
-
-
-                   // $invalid_msg              =
-                    $sql                      = sprintf(
-                        "SELECT P.`Part SKU` AS `key` ,`Part Barcode Number` AS field  ,`Part Reference` as name FROM `Part Dimension` P WHERE  `Part Barcode Number`=%s and `Part SKU`!=%d  ",
-                        prepare_mysql($data['value']),
-                        $data['key']
+                    // $invalid_msg              =
+                    $sql = sprintf(
+                        "SELECT P.`Part SKU` AS `key` ,`Part Barcode Number` AS field  ,`Part Reference` AS name FROM `Part Dimension` P WHERE  `Part Barcode Number`=%s AND `Part SKU`!=%d  ", prepare_mysql($data['value']), $data['key']
                     );
 
 
-
-                    if ($result=$db->query($sql)) {
+                    if ($result = $db->query($sql)) {
                         if ($row = $result->fetch()) {
                             $response = array(
                                 'state'      => 200,
                                 'validation' => 'invalid',
-                                'msg'        =>  sprintf(_('Unit barcode already used by %s'),'<span class="link error" style="color:red"  onclick="change_view(\'/part/'.$row['key'].'\')" >'.$row['name'].'</span>')
+                                'msg'        => sprintf(_('Unit barcode already used by %s'), '<span class="link error" style="color:red"  onclick="change_view(\'/part/'.$row['key'].'\')" >'.$row['name'].'</span>')
                             );
 
-                    	}else{
+                        } else {
                             $response = array(
                                 'state'      => 200,
                                 'validation' => 'valid',
-                                'msg'        =>  ''
+                                'msg'        => ''
                             );
                         }
                         echo json_encode($response);
                         exit;
-                    }else {
-                    	print_r($error_info=$db->errorInfo());
-                    	print "$sql\n";
-                    	exit;
+                    } else {
+                        print_r($error_info = $db->errorInfo());
+                        print "$sql\n";
+                        exit;
                     }
 
 
@@ -770,8 +771,7 @@ function check_for_duplicates($data, $db, $user, $account) {
 
                     $invalid_msg              = _('Product code already used');
                     $sql                      = sprintf(
-                        "SELECT P.`Product ID` AS `key` ,`Product Code` AS field FROM `Product Dimension` P WHERE  `Product Code`=%s  AND `Product Store Key`=%s AND `Product Status`!='Discontinued' ",
-                        prepare_mysql($data['value']), $data['parent_key']
+                        "SELECT P.`Product ID` AS `key` ,`Product Code` AS field FROM `Product Dimension` P WHERE  `Product Code`=%s  AND `Product Store Key`=%s AND `Product Status`!='Discontinued' ", prepare_mysql($data['value']), $data['parent_key']
 
                     );
                     $validation_sql_queries[] = array(
@@ -841,8 +841,7 @@ function check_for_duplicates($data, $db, $user, $account) {
 
                     $invalid_msg              = _('Webpage code already used');
                     $sql                      = sprintf(
-                        "SELECT P.`Page Key` AS `key` ,`Webpage Code` AS field FROM `Page Store Dimension` P WHERE  `Webpage Code`=%s  AND `Webpage Website Key`=%s  ",
-                        prepare_mysql($data['value']), $data['parent_key']
+                        "SELECT P.`Page Key` AS `key` ,`Webpage Code` AS field FROM `Page Store Dimension` P WHERE  `Webpage Code`=%s  AND `Webpage Website Key`=%s  ", prepare_mysql($data['value']), $data['parent_key']
 
                     );
                     $validation_sql_queries[] = array(
@@ -861,8 +860,6 @@ function check_for_duplicates($data, $db, $user, $account) {
     }
 
 
-
-
     if (count($validation_sql_queries) == 0) {
         switch (strtolower($data['parent'])) {
             case 'store':
@@ -876,12 +873,12 @@ function check_for_duplicates($data, $db, $user, $account) {
                 );
                 break;
             case 'supplier':
-                if($data['object']=='Purchase Order'){
+                if ($data['object'] == 'Purchase Order') {
                     $parent_where = sprintf(
                         ' and `Purchase Order Parent Key`=%d ', $data['parent_key']
                     );
 
-                }else {
+                } else {
                     $parent_where = sprintf(
                         ' and `%s Supplier Key`=%d ', $data['object'], $data['parent_key']
                     );
@@ -899,17 +896,10 @@ function check_for_duplicates($data, $db, $user, $account) {
 
 
         $sql = sprintf(
-            'SELECT `%s Key` AS `key` ,`%s` AS field FROM `%s Dimension` WHERE `%s`=%s %s %s',
-            addslashes(preg_replace('/_/', ' ', $data['object'])),
-            addslashes($_field),
-            addslashes(preg_replace('/_/', ' ', $data['object'])),
-            addslashes($_field), prepare_mysql($data['value']),
-            $parent_where,
-            $options_where
+            'SELECT `%s Key` AS `key` ,`%s` AS field FROM `%s Dimension` WHERE `%s`=%s %s %s', addslashes(preg_replace('/_/', ' ', $data['object'])), addslashes($_field), addslashes(preg_replace('/_/', ' ', $data['object'])), addslashes($_field),
+            prepare_mysql($data['value']), $parent_where, $options_where
 
         );
-
-
 
 
         if (!isset($invalid_msg)) {
