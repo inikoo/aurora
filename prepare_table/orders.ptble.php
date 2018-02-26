@@ -162,7 +162,7 @@ if (isset($parameters['awhere']) and $parameters['awhere']) {
     $table
         = '`Order No Product Transaction Fact` OTF  left join     `Order Dimension` O   on (OTF.`Order Key`=O.`Order Key`)   left join `Payment Account Dimension` P on (P.`Payment Account Key`=O.`Order Payment Account Key`)';
 
-    $where = sprintf(' where  `Transaction Type`="Charges" and `Transaction Type Key`=%d   and `Order State`!="InBasket" ', $parameters['parent_key']);
+    $where = sprintf(' where  `Transaction Type` in ("Charges","Premium") and `Transaction Type Key`=%d   and `Order State`!="InBasket" ', $parameters['parent_key']);
 
     $group_by = ' group by OTF.`Order Key` ';
 

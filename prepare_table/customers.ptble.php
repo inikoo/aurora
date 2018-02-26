@@ -127,7 +127,7 @@ elseif ($parameters['parent'] == 'list') {
 } elseif ($parameters['parent'] == 'charge') {
     $table = '`Order No Product Transaction Fact` OTF left join     `Order Dimension` O   on (OTF.`Order Key`=O.`Order Key`)  left join `Customer Dimension` C on (`Order Customer Key`=C.`Customer Key`)  ';
 
-    $where = sprintf(' where  `Transaction Type`="Charges" and `Transaction Type Key`=%d   and `Order State`!="InBasket" ', $parameters['parent_key']);
+    $where = sprintf(' where  `Transaction Type` in ("Charges","Premium") and `Transaction Type Key`=%d   and `Order State`!="InBasket" ', $parameters['parent_key']);
 
 
 
