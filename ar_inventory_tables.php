@@ -2160,6 +2160,7 @@ function stock_cost($_data, $db, $user, $account) {
                 $note = _('Stock audit').' '.$data['Note'];
             }
 
+            $note=$data['Note'];
 
             $cost=sprintf(
                 '<span  class="part_cost button"  data-itf_key="%d" data-cost="%s"  data-skos="%s"  data-currency_symbol="%s"  data-cost_per_sko="%s" onClick="open_edit_cost(this)">%s</span>',
