@@ -44,9 +44,10 @@ class Customer_Poll_Query extends DB_Table {
             $this->get_deleted_data($tag);
 
             return;
+        }else{
+            return;
         }
-
-
+        
         if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id = $this->data['Customer Poll Query Key'];
         }

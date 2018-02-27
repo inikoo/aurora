@@ -484,7 +484,7 @@ function fork_housekeeping($job) {
         case 'update_poll_option_data':
 
 
-            $poll_option = get_object('Customer_Poll_Query', $data['poll_key']);
+            $poll = get_object('Customer_Poll_Query', $data['poll_key']);
             $poll->update_answers();
             break;
 
