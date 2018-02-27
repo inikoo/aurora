@@ -2843,18 +2843,61 @@ class Part extends Asset {
     function update_stock_run() {
 
         $running_stock = 0;
+        $running_cost_per_sko='';
 
-        $sql = sprintf('SELECT `Inventory Transaction Key`, `Inventory Transaction Quantity` FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d ORDER BY `Date` ', $this->id);
+        $sql = sprintf('SELECT `Inventory Transaction Key`, `Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Inventory Transaction Type`,`Inventory Transaction Section`,`Running Cost per SKO`,`Running Stock Value`,`Running Cost per SKO` FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d ORDER BY `Date` ', $this->id);
+
+        //print "$sql\n";
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
+
                 $running_stock = $running_stock + $row['Inventory Transaction Quantity'];
+
+
+
+
+                if($row['Inventory Transaction Type']=='Adjust' and $row['Inventory Transaction Quantity']>0){
+                    if($running_cost_per_sko==''){
+                        $running_cost_per_sko=$row['Inventory Transaction Amount']/$row['Inventory Transaction Quantity'];
+                    }else{
+                        $running_cost_per_sko=($row['Inventory Transaction Amount']+$row['Running Stock Value'])/($row['Running Stock']+$row['Inventory Transaction Quantity']);
+                    }
+
+
+                }elseif($row['Inventory Transaction Section']=='In' and $row['Inventory Transaction Quantity']>0){
+                    if($running_cost_per_sko==''){
+                        $running_cost_per_sko=$row['Inventory Transaction Amount']/$row['Inventory Transaction Quantity'];
+                    }else{
+                        $running_cost_per_sko=($row['Inventory Transaction Amount']+$row['Running Stock Value'])/($row['Running Stock']+$row['Inventory Transaction Quantity']);
+                    }
+                }
+
+                if($running_cost_per_sko==''){
+                    $running_stock_value=0;
+                }else{
+                    $running_stock_value=$running_stock*$running_cost_per_sko;
+
+                }
+
+
+
                 $sql           = sprintf(
-                    'UPDATE `Inventory Transaction Fact` SET `Running Stock`=%f WHERE `Inventory Transaction Key`=%d ', $running_stock, $row['Inventory Transaction Key']
+                    'UPDATE `Inventory Transaction Fact` SET `Running Stock`=%f,`Running Stock Value`=%f,`Running Cost per SKO`=%s  WHERE `Inventory Transaction Key`=%d ',
+                    $running_stock,
+                    $running_stock_value,
+                    prepare_mysql($running_cost_per_sko),
+                    $row['Inventory Transaction Key']
                 );
                 $this->db->exec($sql);
-                //print "$sql\n";
+               // print "$sql\n";
             }
+
+
+            $this->update_field_switcher('Part Cost in Warehouse',$running_cost_per_sko,'no_history');
+
+
+
         } else {
             print_r($error_info = $this->db->errorInfo());
             print "$sql\n";
@@ -4580,6 +4623,67 @@ class Part extends Asset {
 
             )
         );
+
+    }
+
+    function redo_inventory_snapshot_fact(){
+
+        $from = $this->get('Part Valid From');
+        $to   = ($this->get('Part Status') == 'Not In Use' ? $this->get('Part Valid To') : gmdate('Y-m-d H:i:s'));
+
+
+        $sql = sprintf(
+            "DELETE FROM `Inventory Spanshot Fact` WHERE `Part SKU`=%d  AND (`Date`<%s  OR `Date`>%s  )", $this->sku, prepare_mysql($from), prepare_mysql($to)
+        );
+        $this->db->exec($sql);
+
+
+        //$from='2016-03-18';
+        //$to='2016-03-18';
+        $sql = sprintf(
+            "SELECT `Date` FROM kbase.`Date Dimension` WHERE `Date`>=date(%s) AND `Date`<=DATE(%s) ORDER BY `Date` DESC", prepare_mysql($from), prepare_mysql($to)
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+
+                $sql = sprintf(
+                    "SELECT `Location Key`  FROM `Inventory Transaction Fact` WHERE  `Inventory Transaction Type` LIKE 'Associate' AND  `Part SKU`=%d AND `Date`<=%s GROUP BY `Location Key`",
+                    $this->id, prepare_mysql($row['Date'].' 23:59:59')
+                );
+
+
+                if ($result3 = $this->db->query($sql)) {
+                    foreach ($result3 as $row3) {
+                       // print $row['Date'].' '.$this->id.'_'.$row3['Location Key']."\r";
+
+                        $part_location = new PartLocation(
+                            $this->id.'_'.$row3['Location Key']
+                        );
+                        $part_location->update_stock_history_date($row['Date']);
+
+
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    exit;
+                }
+
+
+
+
+
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
 
     }
 

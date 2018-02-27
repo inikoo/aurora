@@ -828,6 +828,10 @@ ALTER TABLE `Order Post Transaction Dimension` ADD `Picker Fault` FLOAT NULL DEF
 ALTER TABLE `Order Post Transaction Dimension` ADD `Picker Fault Delivery Note Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Customer Services Fault`, ADD `Packer Fault Delivery Note Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Picker Fault Delivery Note Key`, ADD `Customer Services Fault Delivery Note Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Packer Fault Delivery Note Key`;
 
 
+ALTER TABLE `Inventory Transaction Fact` ADD `Running Stock Value` FLOAT NOT NULL DEFAULT '0' AFTER `Running Stock`, ADD `Running Cost per SKO` FLOAT NULL DEFAULT NULL AFTER `Running Stock Value`;
+ALTER TABLE `Inventory Transaction Fact` CHANGE `Running Stock Value` `Running Stock Value` FLOAT NULL DEFAULT '0';
+
+
 ======= fer migracion ordering in dw and costa
 
                     ALTER TABLE `Invoice Tax Dimension` ADD `Invoice Tax Key` INT UNSIGNED NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`Invoice Tax Key`);

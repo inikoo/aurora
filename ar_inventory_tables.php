@@ -222,21 +222,14 @@ function parts($_data, $db, $user, $type, $account) {
             );
 
 
-
-
             $cost = money($data['Part Cost'], $account->get('Account Currency'));
 
             if ($data['Part Cost in Warehouse'] == '') {
                 $sko_stock_value = '<span class="super_discreet">'._('No set').'</span>';
 
 
-
-
-
-
             } else {
                 $sko_stock_value = money($data['Part Cost in Warehouse'], $account->get('Account Currency'));
-
 
 
             }
@@ -404,7 +397,7 @@ function parts($_data, $db, $user, $type, $account) {
 
                 'cost'            => $cost,
                 'sko_stock_value' => $sko_stock_value,
-                'margin'          => '<span class="'.($data['Part Margin']<=0?'error':'').'">'.percentage($data['Part Margin'],1).'</span>'
+                'margin'          => '<span class="'.($data['Part Margin'] <= 0 ? 'error' : '').'">'.percentage($data['Part Margin'], 1).'</span>'
             );
 
 
@@ -603,9 +596,9 @@ function stock_transactions($_data, $db, $user) {
         foreach ($result as $data) {
             //MossRB-04 227330 Taken from: 11A1
 
-            $note  = $data['Note'];
+            $note   = $data['Note'];
             $change = $data['Inventory Transaction Quantity'];
-            $stock = $data['Running Stock'];
+            $stock  = $data['Running Stock'];
 
 
             switch ($data['Inventory Transaction Type']) {
@@ -758,7 +751,7 @@ function stock_transactions($_data, $db, $user) {
                     $type = '<i class="fa fa-fw fa-dot-circle-o" aria-hidden="true"></i>';
 
                     $change = sprintf('<b>'.$data['Part Location Stock'].'</b>');
-                    $stock='';
+                    $stock  = '';
                     break;
                 case 'Adjust':
 
@@ -773,7 +766,7 @@ function stock_transactions($_data, $db, $user) {
 
                 case 'Move':
                     $change = '±'.number($data['Metadata']);
-                    $type  = '<i class="fa fa-refresh fa-fw" aria-hidden="true"></i>';
+                    $type   = '<i class="fa fa-refresh fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Error':
                     $type = '<i class="fa fa-question-circle error fa-fw" aria-hidden="true"></i>';
@@ -845,7 +838,7 @@ function stock_transactions($_data, $db, $user) {
                 ),
 
                 'change' => $change,
-                'stock' => $stock,
+                'stock'  => $stock,
                 'note'   => $note,
                 'type'   => $type,
 
@@ -1540,11 +1533,11 @@ function category_all_available_parts($_data, $db, $user) {
 
 
             $record_data[] = array(
-                'id'               => (integer)$data['Part SKU'],
-                'associated'       => $associated,
-                'reference'        => $data['Part Reference'],
+                'id'          => (integer)$data['Part SKU'],
+                'associated'  => $associated,
+                'reference'   => $data['Part Reference'],
                 'description' => $data['Part Package Description'],
-                'family'           => $data['Category Code']
+                'family'      => $data['Category Code']
             );
         }
 
@@ -1600,11 +1593,11 @@ function category_all_parts($_data, $db, $user) {
             }
 
             $record_data[] = array(
-                'id'               => (integer)$data['Part SKU'],
-                'reference'        => $data['Part Reference'],
+                'id'          => (integer)$data['Part SKU'],
+                'reference'   => $data['Part Reference'],
                 'description' => $data['Part Package Description'],
-                'family'           => ($data['Category Code'] == '' ? '<span class="very_discreet italic">'._('Not associated').'</span>' : '<span class="link" onClick="change_view(\'category/'.$data['Category Key'].'\')">'.$data['Category Code'].'</span>'),
-                'status'           => $status
+                'family'      => ($data['Category Code'] == '' ? '<span class="very_discreet italic">'._('Not associated').'</span>' : '<span class="link" onClick="change_view(\'category/'.$data['Category Key'].'\')">'.$data['Category Code'].'</span>'),
+                'status'      => $status
             );
         }
 
@@ -1643,13 +1636,13 @@ function product_families($_data, $db, $user) {
         foreach ($result as $data) {
 
 
-           // print_r($data);
+            // print_r($data);
 
             if ($data['category_data'] == '') {
                 $family          = '<span class="super_discreet">'._('Family not set').'</span>';
                 $number_products = '<span class="super_discreet">-</span>';
                 $operations      = (in_array($data['Store Key'], $user->stores) ? '<i class="fa fa-plus button" aria-hidden="true" onClick="open_new_product_family('.$data['Store Key'].')" ></i>' : '<i class="fa fa-lock "></i>');
-                $code            = sprintf('<span >%s</span>', $data['Store Code']).($data['Store Type']=='B2BC'?' <i class="fa fa-dropbox" aria-hidden="true" title="'._("Carton's store").'"  ></i>':'');
+                $code            = sprintf('<span >%s</span>', $data['Store Code']).($data['Store Type'] == 'B2BC' ? ' <i class="fa fa-dropbox" aria-hidden="true" title="'._("Carton's store").'"  ></i>' : '');
 
             } else {
                 $family_data = preg_split('/,/', $data['category_data']);
@@ -1658,7 +1651,9 @@ function product_families($_data, $db, $user) {
                 $family          = sprintf('<span class="button" onClick="change_view(\'products/%d/category/%d\')">%s</span>', $data['Store Key'], $family_data[0], $family_data[1]);
                 $number_products = number($data['number_products']);
                 $operations      = (in_array($data['Store Key'], $user->stores) ? '<i class="fa fa-refresh button" aria-hidden="true" onClick="open_new_product_family('.$data['Store Key'].')" )"></i>' : '<i class="fa fa-lock "></i>');
-                $code            = sprintf('<span class="button" onClick="change_view(\'products/%d/category/%d\')">%s</span>', $data['Store Key'], $family_data[0], $data['Store Code']).($data['Store Type']=='B2BC'?'<i class="fa fa-dropbox" title="'._("Carton's store").'"  aria-hidden="true"></i>':'');
+                $code            =
+                    sprintf('<span class="button" onClick="change_view(\'products/%d/category/%d\')">%s</span>', $data['Store Key'], $family_data[0], $data['Store Code']).($data['Store Type'] == 'B2BC' ? '<i class="fa fa-dropbox" title="'._("Carton's store")
+                        .'"  aria-hidden="true"></i>' : '');
             }
 
 
@@ -2012,7 +2007,7 @@ function parts_barcode_errors($_data, $db, $user) {
             if ($data['Part Status'] == 'In Use') {
                 $status = _('Active');
             } elseif ($data['Part Status'] == 'Discontinuing') {
-                $status             = _('Discontinuing');
+                $status = _('Discontinuing');
 
             } elseif ($data['Part Status'] == 'Not In Use') {
                 $status = _('Discontinued');
@@ -2025,35 +2020,34 @@ function parts_barcode_errors($_data, $db, $user) {
             }
 
 
-            switch ($data['Part Barcode Number Error']){
+            switch ($data['Part Barcode Number Error']) {
                 case 'Duplicated':
-                    $error='<span class="barcode_number_error error">'._('Duplicated').'</span>';
+                    $error = '<span class="barcode_number_error error">'._('Duplicated').'</span>';
                     break;
                 case 'Size':
-                    $error='<span class="barcode_number_error error">'._('Barcode should be 13 digits').'</span>';
+                    $error = '<span class="barcode_number_error error">'._('Barcode should be 13 digits').'</span>';
                     break;
                 case 'Short_Duplicated':
-                    $error='<span class="barcode_number_error error">'._('Check digit missing, will duplicate').'</span>';
+                    $error = '<span class="barcode_number_error error">'._('Check digit missing, will duplicate').'</span>';
                     break;
                 case 'Checksum_missing':
-                    $error='<span class="barcode_number_error error">'._('Check digit missing').'</span>';
+                    $error = '<span class="barcode_number_error error">'._('Check digit missing').'</span>';
                     break;
                 case 'Checksum':
-                    $error='<span class="barcode_number_error error">'._('Invalid check digit').'</span>';
+                    $error = '<span class="barcode_number_error error">'._('Invalid check digit').'</span>';
                     break;
                 default:
-                    $error='<span class="barcode_number_error error">'.$data['Part Barcode Number Error'].'</span>';
+                    $error = '<span class="barcode_number_error error">'.$data['Part Barcode Number Error'].'</span>';
             }
 
             $record_data[] = array(
                 'id'          => (integer)$data['Part SKU'],
-                'reference'   => sprintf('<span class="link" onClick="change_view(\'part/%d\')">%s</span>',$data['Part SKU'],$data['Part Reference']),
-                'error' => $error,
-                'status'=>$status,
+                'reference'   => sprintf('<span class="link" onClick="change_view(\'part/%d\')">%s</span>', $data['Part SKU'], $data['Part Reference']),
+                'error'       => $error,
+                'status'      => $status,
                 'description' => $data['Part Package Description'],
                 'barcode'     => sprintf(
-                    '<input class="barcode_number" style="width:200px" value="%s" part_sku="%d" > <i class="fa save_barcode_number fa-cloud very_discreet" aria-hidden="true"></i> <span class="barcode_number_msg error" ></span>',
-                    $data['Part Barcode Number'],
+                    '<input class="barcode_number" style="width:200px" value="%s" part_sku="%d" > <i class="fa save_barcode_number fa-cloud very_discreet" aria-hidden="true"></i> <span class="barcode_number_msg error" ></span>', $data['Part Barcode Number'],
                     $data['Part SKU']
                 )
             );
@@ -2079,7 +2073,6 @@ function parts_barcode_errors($_data, $db, $user) {
 }
 
 
-
 function stock_history_day($_data, $db, $user, $account) {
 
 
@@ -2090,7 +2083,7 @@ function stock_history_day($_data, $db, $user, $account) {
     $sql = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
 
 
-  //  print  $sql;
+    //  print  $sql;
 
     $record_data = array();
 
@@ -2099,17 +2092,17 @@ function stock_history_day($_data, $db, $user, $account) {
 
 
             $record_data[] = array(
-                'reference'   => sprintf('<span class="link" onClick="change_view(\'part/%d\')">%s</span>',$data['Part SKU'],$data['Part Reference']),
+                'reference' => sprintf('<span class="link" onClick="change_view(\'part/%d\')">%s</span>', $data['Part SKU'], $data['Part Reference']),
 
                 'description' => $data['Part Package Description'],
 
-                'stock' => number($data['stock']),
+                'stock'       => number($data['stock']),
                 'stock_value' => money($data['stock_value'], $account->get('Currency Code')),
-                'cost' => ($data['stock']>0?money($data['stock_value']/$data['stock'], $account->get('Currency Code')):''),
-                'in'    => number($data['book_in']),
-                'sold'  => number($data['sold']),
-                'lost'  => number($data['lost']),
-                'given'  => number($data['given']),
+                'cost'        => ($data['stock'] > 0 ? money($data['stock_value'] / $data['stock'], $account->get('Currency Code')) : ''),
+                'in'          => number($data['book_in']),
+                'sold'        => number($data['sold']),
+                'lost'        => number($data['lost']),
+                'given'       => number($data['given']),
 
             );
 
@@ -2137,9 +2130,7 @@ function stock_history_day($_data, $db, $user, $account) {
 }
 
 
-
-
-function stock_cost($_data, $db, $user,$account) {
+function stock_cost($_data, $db, $user, $account) {
 
 
     $rtext_label = 'transaction';
@@ -2155,22 +2146,39 @@ function stock_cost($_data, $db, $user,$account) {
         foreach ($result as $data) {
             //MossRB-04 227330 Taken from: 11A1
 
-            $note  = $data['Note'];
+
             $change = $data['Inventory Transaction Quantity'];
-            $cost = $data['Inventory Transaction Amount'];
+
+            $cost_per_sko = $data['Inventory Transaction Amount'] / $data['Inventory Transaction Quantity'];
 
 
+            if ($data['Supplier Delivery Parent'] != '') {
+                $note = sprintf(
+                    '<span class="link" onclick="change_view(\'%s/%d/delivery/%d\')" >%s</span>  ', strtolower($data['Supplier Delivery Parent']), $data['Supplier Delivery Parent Key'], $data['Supplier Delivery Key'], $data['Supplier Delivery Public ID']
+                );
+            } else {
+                $note = _('Stock audit').' '.$data['Note'];
+            }
 
 
+            $cost=sprintf(
+                '<span  class="part_cost button"  data-itf_key="%d" data-cost="%s"  data-skos="%s"  data-currency_symbol="%s"  data-cost_per_sko="%s" onClick="open_edit_cost(this)">%s</span>',
+                 $data['Inventory Transaction Key'], $data['Inventory Transaction Amount'],$data['Inventory Transaction Quantity'],$account->get('Account Currency Symbol'),
+                money($cost_per_sko, $account->get('Account Currency Code')),
+               money($data['Inventory Transaction Amount'], $account->get('Account Currency Code'))
+            );
+            $sko_cost=sprintf(
+                '<span  class="part_cost_per_sko "  >%s</span>',
+                money($cost_per_sko, $account->get('Account Currency Code'))
+            );
 
             $record_data[] = array(
-                'id'   => (integer)$data['Inventory Transaction Key'],
-                'date' => strftime("%a %e %b %Y", strtotime($data['Date'].' +0:00')),
-                'delivery' => sprintf(
-                    '<span class="link" onclick="change_view(\'%s/%d/delivery/%d\')" >%s</span>  ', strtolower($data['Supplier Delivery Parent']), $data['Supplier Delivery Parent Key'], $data['Supplier Delivery Key'], $data['Supplier Delivery Public ID']
-                ),
-                'skos' => $change,
-                'cost' => money($cost,$account->get('Account Currency Code')),
+                'id'       => (integer)$data['Inventory Transaction Key'],
+                'date'     => strftime("%a %e %b %Y %R", strtotime($data['Date'].' +0:00')),
+                'delivery' => $note,
+                'skos'     => $change,
+                'cost'     => $cost,
+                'sko_cost' => $sko_cost
 
             );
 
@@ -2259,7 +2267,6 @@ function part_family_part_locations($_data, $db, $user, $account) {
 }
 
 
-
 function part_locations($_data, $db, $user, $account) {
 
 
@@ -2281,7 +2288,8 @@ function part_locations($_data, $db, $user, $account) {
 
 
         $notes = sprintf(
-            '<span class="button" key="%s" onclick="open_part_location_notes(this)" id="pl_notes_%d" >%s<span class="note">%s</span></span>', $data['Part SKU'].'_'.$data['Location Key'],$data['Part SKU'].'_'.$data['Location Key'],'<i class="fa fa-sticky-note-o very_discreet '.($data['Part Location Note']!=''?'hide':'').'" aria-hidden="true"></i> ',($data['Part Location Note'])
+            '<span class="button" key="%s" onclick="open_part_location_notes(this)" id="pl_notes_%d" >%s<span class="note">%s</span></span>', $data['Part SKU'].'_'.$data['Location Key'], $data['Part SKU'].'_'.$data['Location Key'],
+            '<i class="fa fa-sticky-note-o very_discreet '.($data['Part Location Note'] != '' ? 'hide' : '').'" aria-hidden="true"></i> ', ($data['Part Location Note'])
         );
 
 
@@ -2299,7 +2307,7 @@ function part_locations($_data, $db, $user, $account) {
 
             'link' => '<span id="link_'.$data['Part SKU'].'"><i class="fa fa-chain-broken '.($data['Quantity On Hand'] != 0 ? 'invisible' : 'button').'" aria-hidden="true" part_sku="'.$data['Part SKU'].'" onclick="location_part_disassociate_from_table(this)"></i>',
 
-            'last_audit'=> ($data['Part Location Last Audit']==''?'<span class="very_discreet italic ">'._('No audited yet').'</span>':strftime("%a %e %b %Y", strtotime($data['Part Location Last Audit'].' +0:00'))),
+            'last_audit' => ($data['Part Location Last Audit'] == '' ? '<span class="very_discreet italic ">'._('No audited yet').'</span>' : strftime("%a %e %b %Y", strtotime($data['Part Location Last Audit'].' +0:00'))),
 
             'sko_cost'    => money($data['Part Cost in Warehouse'], $account->get('Account Currency')),
             'stock_value' => '<span id="stock_value_'.$data['Part SKU'].'">'.money($data['Stock Value'], $account->get('Account Currency')).'</span>',
@@ -2308,7 +2316,7 @@ function part_locations($_data, $db, $user, $account) {
                 .'"><span style="padding-left:3px;padding-right:7.5px" class="table_edit_cell  location_part_stock" title="%s" part_sku="%d" location_key="%d"  qty="%s" onClick="open_location_part_stock_quantity_dialog(this)">%s</span></span>', '', $data['Part SKU'],
                 $data['Location Key'], $data['Quantity On Hand'], number($data['Quantity On Hand'])
             ),
-            'notes'                  => $notes
+            'notes'       => $notes
 
 
         );
