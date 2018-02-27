@@ -31,8 +31,6 @@ $tipo = $_REQUEST['tipo'];
 switch ($tipo) {
 
 
-
-
     case 'set_as_picking_location':
 
         $data = prepare_values(
@@ -87,8 +85,8 @@ switch ($tipo) {
 
         $data = prepare_values(
             $_REQUEST, array(
-                         'stock'       => array('type' => 'string'),
-                         'note'       => array('type' => 'string'),
+                         'stock'        => array('type' => 'string'),
+                         'note'         => array('type' => 'string'),
                          'part_sku'     => array('type' => 'key'),
                          'location_key' => array('type' => 'key'),
 
@@ -134,8 +132,8 @@ switch ($tipo) {
 
         $data = prepare_values(
             $_REQUEST, array(
-                         'part_location_code'     => array('type' => 'string'),
-                         'note'         => array('type' => 'string'),
+                         'part_location_code' => array('type' => 'string'),
+                         'note'               => array('type' => 'string'),
                      )
         );
 
@@ -193,6 +191,19 @@ switch ($tipo) {
         send_to_production($account, $db, $user, $editor, $data, $smarty);
         break;
 
+    case 'itf_cost':
+
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'key'   => array('type' => 'key'),
+                         'value' => array('type' => 'string'),
+
+                     )
+        );
+
+
+        update_itf_amount($account, $db, $user, $editor, $data, $smarty);
+        break;
 
     default:
         $response = array(
@@ -351,23 +362,19 @@ function edit_part_location_stock($account, $db, $user, $editor, $data, $smarty)
 
 
     $update_metadata['location_part_stock_cell'] = sprintf(
-        '<span style="padding-left:3px;padding-right:7.5px" class="table_edit_cell location_part_stock" title="%s" part_sku="%d" location_key="%d"  qty="%s" onClick="open_location_part_stock_quantity_dialog(this)">%s</span>', '', $data['part_sku'], $data['location_key'], $part_location->get('Quantity On Hand'),
-        number($part_location->get('Quantity On Hand'))
+        '<span style="padding-left:3px;padding-right:7.5px" class="table_edit_cell location_part_stock" title="%s" part_sku="%d" location_key="%d"  qty="%s" onClick="open_location_part_stock_quantity_dialog(this)">%s</span>', '', $data['part_sku'],
+        $data['location_key'], $part_location->get('Quantity On Hand'), number($part_location->get('Quantity On Hand'))
     );
 
 
+    $update_metadata['location_part_stock_value_cell'] = money($part_location->get('Stock Value'), $account->get('Account Currency'));
 
-
-
-
-    $update_metadata['location_part_stock_value_cell'] =money($part_location->get('Stock Value'), $account->get('Account Currency'));
-
-    $update_metadata['location_part_link_cell'] ='<i class="fa fa-chain-broken '. ($part_location->get('Quantity On Hand') !=0?'invisible':'button').'" aria-hidden="true" part_sku="'.$data['part_sku'].'" onclick="location_part_disassociate_from_table(this)"></i>';
+    $update_metadata['location_part_link_cell'] = '<i class="fa fa-chain-broken '.($part_location->get('Quantity On Hand') != 0 ? 'invisible' : 'button').'" aria-hidden="true" part_sku="'.$data['part_sku'].'" onclick="location_part_disassociate_from_table(this)"></i>';
 
     $response = array(
         'state'           => 200,
         'update_metadata' => $update_metadata,
-        'part_sku'=>$part_location->part->id
+        'part_sku'        => $part_location->part->id
     );
     echo json_encode($response);
 
@@ -857,7 +864,6 @@ function send_to_production($account, $db, $user, $editor, $data, $smarty) {
 }
 
 
-
 function add_part_to_location($account, $db, $user, $editor, $data, $smarty) {
 
     include_once 'class.PartLocation.php';
@@ -870,12 +876,12 @@ function add_part_to_location($account, $db, $user, $editor, $data, $smarty) {
     );
 
 
-    $part_location = new PartLocation('find', $part_location_data, 'create');
-    $part_location->editor=$editor;
+    $part_location         = new PartLocation('find', $part_location_data, 'create');
+    $part_location->editor = $editor;
 
     $part_location->audit($data['stock'], $data['note'], $editor['Date']);
 
-    $response = array('state'=> 200);
+    $response = array('state' => 200);
 
     echo json_encode($response);
     exit;
@@ -907,14 +913,76 @@ function edit_part_location_note($account, $db, $user, $editor, $data, $smarty) 
     $part_location->update_note($data['note']);
 
 
-
     $response = array(
-        'state'           => 200,
-        'value'=>$part_location->get('Part Location Note')
+        'state' => 200,
+        'value' => $part_location->get('Part Location Note')
     );
     echo json_encode($response);
 
 
 }
+
+function update_itf_amount($account, $db, $user, $editor, $data, $smarty) {
+
+
+    $sql = sprintf('SELECT `Inventory Transaction Key`,`Part SKU`,`Inventory Transaction Quantity`,`Inventory Transaction Amount` FROM `Inventory Transaction Fact`  WHERE `Inventory Transaction Key`=%d ', $data['key']);
+    if ($result = $db->query($sql)) {
+        if ($row = $result->fetch()) {
+
+            $amount=$data['value'];
+
+            $sql = sprintf(
+                'UPDATE `Inventory Transaction Fact` SET `Inventory Transaction Amount`=%.2f WHERE `Inventory Transaction Key`=%d ', $amount, $row['Inventory Transaction Key']
+            );
+
+            $db->exec($sql);
+            $part=get_object('Part',$row['Part SKU']);
+            $part->update_stock_run();
+
+            
+            
+            $cost_per_sko = $amount / $row['Inventory Transaction Quantity'];
+
+            $cost=sprintf(
+                '<span  class="part_cost button"  data-itf_key="%d" data-cost="%s"  data-skos="%s"  data-currency_symbol="%s"  data-cost_per_sko="%s" onClick="open_edit_cost(this)">%s</span>',
+                $row['Inventory Transaction Key'], $amount,$row['Inventory Transaction Quantity'],$account->get('Account Currency Symbol'),
+                money($cost_per_sko, $account->get('Account Currency Code')),
+                money($amount, $account->get('Account Currency Code'))
+            );
+            $sko_cost=sprintf(
+                '<span  class="part_cost_per_sko "  >%s</span>',
+                money($cost_per_sko, $account->get('Account Currency Code'))
+            );
+
+            $part->redo_inventory_snapshot_fact();
+
+            $response = array(
+                'state' => 200,
+                'part_cost_cell' => $cost,
+                'part_cost_per_sko_cell' => $sko_cost,
+                'class_html'=>array(
+                    'Part_Cost_in_Warehouse'=>$part->get('Cost in Warehouse')
+
+
+                )
+            );
+            echo json_encode($response);
+            
+            
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+
+
+    
+
+  
+
+
+}
+
 
 ?>

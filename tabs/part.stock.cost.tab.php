@@ -34,6 +34,11 @@ $parameters = array(
 
 );
 
+$smarty->assign('account', $account);
+
+$smarty->assign('table_top_template', 'part.costs.edit.tpl');
+
+
 include 'utils/get_table_html.php';
 
 

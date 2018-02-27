@@ -20,11 +20,11 @@ cell: "string",
 
 {
 name: "delivery",
-label: "{t}Supplier delivery{/t}",
+label: "{t}Stock transaction{/t}",
 editable: false,
-defaultOrder:-1,
-sortType: "toggle",
-{if $sort_key=='purchase_order'}direction: '{if $sort_order==1}ascending{else}descending{/if}',{/if}
+sortable: false,
+
+{if $sort_key=='delivery'}direction: '{if $sort_order==1}ascending{else}descending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ } ),
 },
 
@@ -58,7 +58,17 @@ sortable: false,
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
 headerCell: integerHeaderCell
+},
+{
+name: "sko_cost",
+label: "{t}Cost per SKO{/t}",
+editable: false,
+sortable: false,
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+
+headerCell: integerHeaderCell
 }
+
 
 
 
