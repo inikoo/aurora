@@ -2843,44 +2843,97 @@ class Part extends Asset {
     function update_stock_run() {
 
         $running_stock = 0;
+        $running_stock_value=0;
         $running_cost_per_sko='';
 
-        $sql = sprintf('SELECT `Inventory Transaction Key`, `Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Inventory Transaction Type`,`Inventory Transaction Section`,`Running Cost per SKO`,`Running Stock Value`,`Running Cost per SKO` FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d ORDER BY `Date` ', $this->id);
+        $sql = sprintf('SELECT `Note`,`Running Stock`,`Inventory Transaction Key`, `Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Inventory Transaction Type`,`Location Key`,`Inventory Transaction Section`,`Running Cost per SKO`,`Running Stock Value`,`Running Cost per SKO` FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d ORDER BY `Date` ', $this->id);
 
-        //print "$sql\n";
+      //  print "$sql\n";
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
 
+
+
+
+                if( !( ($row['Inventory Transaction Type']=='Adjust' and $row['Inventory Transaction Quantity']>0 and $row['Location Key']!=1) or ($row['Inventory Transaction Section']=='In' and $row['Inventory Transaction Quantity']>0) )  and  $running_cost_per_sko!='' ){
+
+                    $sql           = sprintf(
+                        'UPDATE `Inventory Transaction Fact` SET `Inventory Transaction Amount`=%f  WHERE `Inventory Transaction Key`=%d ',
+                        $row['Inventory Transaction Quantity']*$running_cost_per_sko,
+
+                        $row['Inventory Transaction Key']
+                    );
+                    $this->db->exec($sql);
+                   // print "$sql\n";
+
+                    $row['Inventory Transaction Amount']=$row['Inventory Transaction Quantity']*$running_cost_per_sko;
+
+                }
+
+
+
+
+               // print_r($row);
+
+             //   print "**) ".$row['Inventory Transaction Amount']/$row['Inventory Transaction Quantity']."\n";
+
+                //print "1) $running_stock_value   Running cost/sko $running_cost_per_sko\n";
+
                 $running_stock = $running_stock + $row['Inventory Transaction Quantity'];
-
-
-
-
-                if($row['Inventory Transaction Type']=='Adjust' and $row['Inventory Transaction Quantity']>0){
-                    if($running_cost_per_sko==''){
-                        $running_cost_per_sko=$row['Inventory Transaction Amount']/$row['Inventory Transaction Quantity'];
-                    }else{
-                        $running_cost_per_sko=($row['Inventory Transaction Amount']+$row['Running Stock Value'])/($row['Running Stock']+$row['Inventory Transaction Quantity']);
-                    }
-
-
-                }elseif($row['Inventory Transaction Section']=='In' and $row['Inventory Transaction Quantity']>0){
-                    if($running_cost_per_sko==''){
-                        $running_cost_per_sko=$row['Inventory Transaction Amount']/$row['Inventory Transaction Quantity'];
-                    }else{
-                        $running_cost_per_sko=($row['Inventory Transaction Amount']+$row['Running Stock Value'])/($row['Running Stock']+$row['Inventory Transaction Quantity']);
-                    }
-                }
-
-                if($running_cost_per_sko==''){
-                    $running_stock_value=0;
+                $running_stock_value=$running_stock_value+$row['Inventory Transaction Amount'];
+                if($running_stock==0){
+                    $running_cost_per_sko='';
                 }else{
-                    $running_stock_value=$running_stock*$running_cost_per_sko;
-
+                    $running_cost_per_sko=$running_stock_value/$running_stock;
                 }
 
+//print "$running_stock $running_stock_value\n";
+           //     print "2) Running cost/sko $running_cost_per_sko\n";
 
+
+
+                /*
+
+                                if($row['Inventory Transaction Type']=='Adjust' and $row['Inventory Transaction Quantity']>0){
+                                    if($running_cost_per_sko==''){
+                                        $running_cost_per_sko=$row['Inventory Transaction Amount']/$row['Inventory Transaction Quantity'];
+                                    }else{
+                                        $running_cost_per_sko=($row['Inventory Transaction Amount']+$running_stock_value)/($running_stock);
+
+                                        print $row['Running Stock Value']."\n";
+                                        print $row['Running Stock']."\n";
+
+                                        print $row['Inventory Transaction Amount']/$row['Inventory Transaction Quantity']."\n";
+                                        print $row['Running Stock Value']/$row['Running Stock']."\n";
+
+                                        exit;
+
+                                    }
+
+
+                                }elseif($row['Inventory Transaction Section']=='In' and $row['Inventory Transaction Quantity']>0){
+                                    if($running_cost_per_sko==''){
+                                        $running_cost_per_sko=$row['Inventory Transaction Amount']/$row['Inventory Transaction Quantity'];
+                                    }else{
+                                        $running_cost_per_sko=($row['Inventory Transaction Amount']+$running_stock_value)/($running_stock);
+
+
+
+                                    }
+                                }
+
+                                print "2) Running cost/sko $running_cost_per_sko\n";
+
+
+                                if($running_cost_per_sko==''){
+                                    $running_stock_value=0;
+                                }else{
+                                    $running_stock_value=$running_stock*$running_cost_per_sko;
+
+                                }
+
+                */
 
                 $sql           = sprintf(
                     'UPDATE `Inventory Transaction Fact` SET `Running Stock`=%f,`Running Stock Value`=%f,`Running Cost per SKO`=%s  WHERE `Inventory Transaction Key`=%d ',
@@ -2890,7 +2943,10 @@ class Part extends Asset {
                     $row['Inventory Transaction Key']
                 );
                 $this->db->exec($sql);
-               // print "$sql\n";
+              // print "$sql\n";
+
+
+
             }
 
 
