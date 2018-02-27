@@ -1379,6 +1379,11 @@ class PartLocation extends DB_Table {
 
         $this->location->update_stock_value();
 
+
+        $warehouse=get_object('Warehouse',$this->data['Part Location Warehouse Key']);
+        $warehouse->update_stock_amount();
+
+
     }
 
     function move_stock($data, $date) {
