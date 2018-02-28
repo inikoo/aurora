@@ -936,7 +936,37 @@ $export_fields = array(
             'label'   => _('Order last updated'),
             'checked' => 0
         ),
-    )
+    ),
+
+    'mail_list'=>array(
+        array(
+            'name'    => '`Customer Main Plain Email`',
+            'label'   => _('Email'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Customer Key`',
+            'label'   => _('Customer Id'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Customer Name`',
+            'label'   => _('Customer name'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Customer Company Name`',
+            'label'   => _('Company name'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Customer Main Contact Name`',
+            'label'   => _('Contact name'),
+            'checked' => 1
+        ),
+
+    ),
+
 
 );
 

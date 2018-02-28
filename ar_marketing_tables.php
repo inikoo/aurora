@@ -56,7 +56,9 @@ switch ($tipo) {
     case 'campaign_order_recursion_components':
         campaign_order_recursion_components(get_table_parameters(), $db, $user);
         break;
-
+    case 'newsletters':
+        newsletters(get_table_parameters(), $db, $user);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -796,4 +798,90 @@ function campaign_bulk_deals($_data, $db, $user) {
     echo json_encode($response);
 }
 
+
+
+function newsletters($_data, $db, $user) {
+
+    $rtext_label = 'newsletter';
+
+
+    include_once 'prepare_table/init.php';
+
+
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+    //print $sql;
+
+    $adata = array();
+
+
+
+
+    foreach ($db->query($sql) as $data) {
+
+
+
+            $name =  sprintf('<span class="link" onClick="change_view(\'newsletters/%d/%d\')">%s</span>', $data['Email Campaign Store Key'], $data['Email Campaign Key'], $data['Email Campaign Name']);
+
+
+        switch ($data['Email Campaign State']) {
+            case 'InProcess':
+                $state= _('Setting up mailing list');
+                break;
+            case 'ComposingEmail':
+                $state =_('Composing email');
+                break;
+            case 'Ready':
+                $state= _('Ready to send');
+                break;
+            case 'Scheduled':
+                $state =_('Scheduled to be send');
+                break;
+            case 'Sending':
+                $state =_('Sending');
+
+                break;
+            case 'Cancelled':
+                $state =_('Cancelled');
+                break;
+            case 'Send':
+                $state =_('Send');
+                break;
+
+
+
+            default:
+                $state =$data['Email Campaign State'];
+                break;
+        }
+
+
+        $adata[] = array(
+            'id' => (integer)$data['Email Campaign Key'],
+            'date'           => strftime("%a %e %b %Y", strtotime($data['Email Campaign Last Updated Date'].' +0:00')),
+
+
+            'name' => $name,
+            'state'=>$state,
+            'emails'=>number($data['Email Campaign Number Estimated Emails']),
+
+
+
+        );
+
+    }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
 ?>

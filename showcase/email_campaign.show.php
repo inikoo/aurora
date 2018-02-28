@@ -18,6 +18,7 @@ function get_email_campaign_showcase($data, $smarty, $user, $db) {
 
 
     $email_campaign = $data['_object'];
+    $email_campaign->update_estimated_recipients();
 
     $smarty->assign('email_campaign',$email_campaign);
 
@@ -42,8 +43,10 @@ function get_email_campaign_showcase($data, $smarty, $user, $db) {
 
 switch ($email_campaign->get('Email Campaign Type')){
     case 'AbandonedCart':
-        return $smarty->fetch('showcase/abandoned_cart.tpl');
+    case 'Newsletter':
+        return $smarty->fetch('showcase/email_campaign.tpl');
         break;
+
 
 }
 

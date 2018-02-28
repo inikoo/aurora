@@ -376,6 +376,20 @@ class EmailCampaign extends DB_Table {
 
                     break;
 
+                case 'Newsletter':
+                    $sql=sprintf('select count(*)  as num from `Customer Dimension` where `Customer Store Key`=%d and `Customer Main Plain Email`!="" and `Customer Send Newsletter`="Yes" ',$this->get('Store Key'));
+                    if ($result=$this->db->query($sql)) {
+                        if ($row = $result->fetch()) {
+                            $estimated_recipients = $row['num'];
+                    	}
+                    }else {
+                    	print_r($error_info=$this->db->errorInfo());
+                    	print "$sql\n";
+                    	exit;
+                    }
+
+                    break;
+
                 default:
 
             }
@@ -672,7 +686,7 @@ class EmailCampaign extends DB_Table {
     function delete() {
 
 
-        if ($this->data['Email Campaign State'] == 'InProcess') {
+        if (in_array($this->data['Email Campaign State'] ,array('InProcess','ComposingEmail','Ready'))) {
 
 
             $store = get_object('Store', $this->data['Email Campaign Store Key']);
@@ -723,6 +737,10 @@ class EmailCampaign extends DB_Table {
             switch ($this->get('Email Campaign Type')) {
                 case 'AbandonedCart':
                     return sprintf('orders/%d/dashboard/website/mailshots', $store->id);
+
+                    break;
+                case 'Newsletter':
+                    return sprintf('customers/%d/email_campaigns', $store->id);
 
                     break;
                 default:

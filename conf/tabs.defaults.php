@@ -128,6 +128,16 @@ $tab_defaults = array(
 
     ),
 
+    'email_campaigns.newsletters' => array(
+        'view'        => 'overview',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 500,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'id',
+
+
+    ),
 
 
     'customer.history'              => array(
@@ -3318,10 +3328,22 @@ $tab_defaults = array(
     'email_campaign.mail_list'                     => array(
         'view'          => 'overview',
         'sort_key'      => 'email',
-        'sort_order'    => 1,
+        'sort_order'    => -1,
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'email',
+        'export_fields' => $export_fields['mail_list']
+
+    ),
+    'newsletter.mail_list'                     => array(
+        'view'          => 'overview',
+        'sort_key'      => 'email',
+        'sort_order'    => -1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'email',
+        'export_fields' => $export_fields['mail_list']
+
 
     ),
     'abandoned_cart.mail_list'                     => array(

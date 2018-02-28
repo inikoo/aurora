@@ -65,10 +65,12 @@ switch ($tipo) {
     case 'poll_query_answers':
         poll_query_answers(get_table_parameters(), $db, $user);
         break;
-    case 'abandoned_cart':
-        abandoned_cart(get_table_parameters(), $db, $user);
+    case 'abandoned_cart_mail_list':
+        abandoned_cart_mail_list(get_table_parameters(), $db, $user);
         break;
-
+    case 'newsletter_mail_list':
+        newsletter_mail_list(get_table_parameters(), $db, $user);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -613,7 +615,7 @@ function customers_geographic_distribution($_data, $db, $user) {
 }
 
 
-function abandoned_cart($_data, $db, $user) {
+function abandoned_cart_mail_list($_data, $db, $user) {
 
 
     $rtext_label = 'recipient';
@@ -651,6 +653,65 @@ function abandoned_cart($_data, $db, $user) {
                 'email'          => $data['Customer Main Plain Email'],
                 'inactive_since' => $inactive_since,
                 'inactive_days'  => '<span title="'.sprintf(_('Inactive since %s'), $inactive_since).'">'.number($data['inactive_days']).'</span>'
+
+
+            );
+        }
+
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function newsletter_mail_list($_data, $db, $user) {
+
+
+    $rtext_label = 'recipient';
+
+
+    include_once 'prepare_table/init.php';
+
+    $sql = "select  $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+
+
+    $adata = array();
+
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+
+
+
+            $customer_link_format = '/customers/%d/%d';
+
+
+            $adata[] = array(
+                'id'           => (integer)$data['Customer Key'],
+                'store_key'    => $data['Customer Store Key'],
+                'formatted_id' => sprintf('<span class="link" onClick="change_view(\''.$customer_link_format.'\')">%06d</span>', $data['Customer Store Key'], $data['Customer Key'], $data['Customer Key']),
+
+                'name'         => $data['Customer Name'],
+                'company_name' => $data['Customer Company Name'],
+                'contact_name' => $data['Customer Main Contact Name'],
+
+                'email'          => $data['Customer Main Plain Email'],
 
 
             );

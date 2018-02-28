@@ -1042,6 +1042,12 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             include_once 'showcase/email_campaign.show.php';
             $html = get_email_campaign_showcase($data, $smarty, $user, $db, $account);
             break;
+
+        case 'newsletter':
+            include_once 'showcase/email_campaign.show.php';
+            $html = get_email_campaign_showcase($data, $smarty, $user, $db, $account);
+            break;
+
         case 'api_key':
         case 'deleted_api_key':
             include_once 'showcase/api_key.show.php';
@@ -1350,6 +1356,19 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                         $data, $smarty, $user, $db, $account
                     );
                     break;
+                case ('email_campaigns'):
+
+                    return get_customers_email_campaigns_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
+                case ('newsletter'):
+                case ('email_campaign'):
+                    return get_email_campaign_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
+                    break;
                 case ('insights'):
 
                     return get_customers_insights_navigation(
@@ -1445,7 +1464,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     break;
 
                 case ('email_campaign'):
-                    return get_email_campaign_navigation(
+                    return get_abandoned_card_email_navigation(
                         $data, $smarty, $user, $db, $account
                     );
                     break;
@@ -1502,7 +1521,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_payment_navigation($data, $smarty, $user, $db, $account);
                     break;
                 case ('email_campaign'):
-                    return get_email_campaign_navigation($data, $smarty, $user, $db, $account);
+                    return get_abandoned_card_email_navigation($data, $smarty, $user, $db, $account);
                     break;
                 case ('refund.new'):
                     return get_refund_new_navigation($data, $smarty, $user, $db, $account);
@@ -3656,7 +3675,28 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'reference' => 'customers/'.$store->id.'/insights'
                     );
                     break;
+                case 'email_campaigns':
+                    $branch[] = array(
+                        'label'     => _("Email campaigns").' '.$store->data['Store Code'],
+                        'icon'      => 'envelope',
+                        'reference' => 'customers/'.$store->id.'/email_campaigns'
+                    );
+                    break;
 
+                case 'newsletter':
+                    $branch[] = array(
+                        'label'     => _("Email campaigns").' '.$store->data['Store Code'],
+                        'icon'      => 'envelope',
+                        'reference' => 'customers/'.$store->id.'/email_campaigns'
+                    );
+
+                    $branch[] = array(
+                        'label'     => _("Newsletter").' <span class="id Email_Campaign_Name">'.$state['_object']->get('Name').'</span>',
+                        'icon'      => '',
+                        'reference' => 'customers/'.$store->id.'/email_campaigns'
+                    );
+
+                    break;
                 case 'poll_query.new':
                     $branch[] = array(
                         'label'     => _("Customer's insights").' '.$store->data['Store Code'],

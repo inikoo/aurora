@@ -863,7 +863,6 @@ function object_operation($account, $db, $user, $editor, $data, $smarty) {
             }
         }
 
-
     } else {
         $response = array(
             'state' => 400,

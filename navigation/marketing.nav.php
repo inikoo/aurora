@@ -38,7 +38,7 @@ function get_new_deal_navigation($data, $smarty, $user, $db) {
         'title'          => $title,
         'search'         => array(
             'show'        => true,
-            'placeholder' => _('Search marketing')
+            'placeholder' => _('Search offers')
         )
 
     );
@@ -70,7 +70,7 @@ function get_new_campaign_navigation($data, $smarty, $user, $db) {
         'title'          => _('New Campaign'),
         'search'         => array(
             'show'        => true,
-            'placeholder' => _('Search marketing')
+            'placeholder' => _('Search offers')
         )
 
     );
@@ -102,10 +102,10 @@ function get_marketing_navigation($data, $smarty, $user, $db) {
         'sections'       => $sections,
         'left_buttons'   => $left_buttons,
         'right_buttons'  => $right_buttons,
-        'title'          => _('Marketing').' <span class="id">'.$data['_parent']->get('Code').'</span>',
+        'title'          => _('Campaigns & offers').' <span class="id">'.$data['_parent']->get('Code').'</span>',
         'search'         => array(
             'show'        => true,
-            'placeholder' => _('Search marketing')
+            'placeholder' => _('Search offers')
         )
 
     );
@@ -226,7 +226,7 @@ function get_campaigns_navigation($data, $smarty, $user, $db) {
         'title'         => _('Campaigns').sprintf(' <span class="Store_Code id">%s</span>', $data['store']->get('Code')),
         'search'        => array(
             'show'        => true,
-            'placeholder' => _('Search marketing')
+            'placeholder' => _('Search offers')
         )
 
     );
@@ -349,7 +349,7 @@ function get_deals_navigation($data, $smarty, $user, $db) {
             ),
         'search'        => array(
             'show'        => true,
-            'placeholder' => _('Search marketing')
+            'placeholder' => _('Search offers')
         )
 
     );
@@ -389,7 +389,7 @@ function get_marketing_server_navigation($data) {
         'search'        => array(
             'show'        => true,
             'placeholder' => _(
-                'Search marketing all stores'
+                'Search offers all stores'
             )
         )
 
@@ -598,7 +598,7 @@ function get_campaign_navigation($data, $smarty, $user, $db) {
         'title'          => $title,
         'search'         => array(
             'show'        => true,
-            'placeholder' => _('Search marketing')
+            'placeholder' => _('Search offers')
         )
 
     );
@@ -907,7 +907,7 @@ function get_deal_navigation($data, $smarty, $user, $db) {
         'title'          => $title,
         'search'         => array(
             'show'        => true,
-            'placeholder' => _('Search marketing')
+            'placeholder' => _('Search offers')
         )
 
     );

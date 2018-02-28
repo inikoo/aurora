@@ -15,6 +15,7 @@ $email_campaign = $state['_object'];
 $scope_metadata = $email_campaign->get('Scope Metadata');
 
 
+
 $email_template_key = 0;
 $published_email_template_key = 0;
 switch ($email_campaign->get('Email Campaign Type')){
@@ -27,6 +28,17 @@ switch ($email_campaign->get('Email Campaign Type')){
             $published_email_template_key = 0;
         } else {
             $published_email_template_key = $scope_metadata['emails']['AbandonedCart']['published_key'];
+        }
+
+        break;
+    case 'Newsletter':
+        $role               = 'Newsletter';
+        $email_template_key = $scope_metadata['emails']['Newsletter']['key'];
+
+        if (empty($scope_metadata['emails']['Newsletter']['published_key'])) {
+            $published_email_template_key = 0;
+        } else {
+            $published_email_template_key = $scope_metadata['emails']['Newsletter']['published_key'];
         }
 
         break;
