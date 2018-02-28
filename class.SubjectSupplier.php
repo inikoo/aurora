@@ -641,7 +641,7 @@ class SubjectSupplier extends Subject {
                 $this->table_name." $db_interval Acc With Stock Days"  => $sales_data['with_stock_days'],
             );
 
-            print_r($data_to_update);
+           // print_r($data_to_update);
 
             $this->fast_update($data_to_update, $this->table_name.' Data');
         }
