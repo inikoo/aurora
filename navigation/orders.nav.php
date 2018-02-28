@@ -2476,7 +2476,7 @@ function get_payment_navigation($data, $smarty, $user, $db, $account) {
 
 }
 
-function get_email_campaign_navigation($data, $smarty, $user, $db, $account) {
+function get_abandoned_card_email_navigation($data, $smarty, $user, $db, $account) {
 
 
 

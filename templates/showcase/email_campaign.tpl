@@ -17,29 +17,49 @@
 <div class="timeline_horizontal with_time   {if $email_campaign->get('State Index')<0}hide{/if}  ">
 
     <ul class="timeline">
-        <li id="submitted_node" class="li {if $email_campaign->get('State Index')>=20}complete{/if}">
-            <div class="label">
-                <span class="state ">{t}Setup mail list{/t}</span>
-            </div>
-            <div class="timestamp">
-                <span class="">&nbsp;</span> <span class="start_date">{$email_campaign->get('Creation Date')}</span>
-            </div>
-            <div class="dot"></div>
-        </li>
 
-        <li id="in_warehouse_node" class="li {if $email_campaign->get('State Index')>=30}complete{/if} ">
-            <div class="label">
-                <span class="state" >&nbsp;{t}Compose email{/t}&nbsp;<span></i></span></span>
-            </div>
-            <div class="timestamp">
-			<span class="Order_In_Warehouse" ">&nbsp;
+        {if $email_campaign->get('Email Campaign Type')=='Newsletter'}
+
+            <li id="compose_email_node" class="li {if $email_campaign->get('State Index')>=30}complete{/if}">
+                <div class="label     ">
+                    <span class="state ">{t}Compose newsletter{/t}</span>
+                </div>
+                <div class="timestamp">
+                    <span class="">&nbsp;</span> <span class="start_date">{$email_campaign->get('Creation Date')}</span>
+                </div>
+                <div class="dot"></div>
+            </li>
+
+
+
+        {else}
+
+            <li id="setup_mail_list_node" class="li {if $email_campaign->get('State Index')>=20}complete{/if}">
+                <div class="label     ">
+                    <span class="state ">{t}Setup mail list{/t}</span>
+                </div>
+                <div class="timestamp">
+                    <span class="">&nbsp;</span> <span class="start_date">{$email_campaign->get('Creation Date')}</span>
+                </div>
+                <div class="dot"></div>
+            </li>
+
+            <li id="compose_email_node" class="li  {if $email_campaign->get('State Index')>=30}complete{/if} ">
+                <div class="label">
+                    <span class="state" >&nbsp;{t}Compose email{/t}&nbsp;<span></i></span></span>
+                </div>
+                <div class="timestamp">
+                    <span class="Order_In_Warehouse" ">&nbsp;
 
                     <span class="">&nbsp;</span>
 
-                &nbsp;</span>
-            </div>
-            <div class="dot"></div>
-        </li>
+                    &nbsp;</span>
+                </div>
+                <div class="dot"></div>
+            </li>
+        {/if}
+
+
 
         <li id="packed_done_node" class="li {if $email_campaign->get('State Index')>=80}complete{/if} ">
             <div class="label">

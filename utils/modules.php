@@ -348,6 +348,10 @@ $modules = array(
 
             ),
             */
+
+
+
+
             'insights'  => array(
                 'type'      => 'navigation',
                 'label'     => _('Insights'),
@@ -384,6 +388,78 @@ $modules = array(
             ),
 
 
+            'email_campaigns'   => array(
+                'type'      => 'navigation',
+                'label' => _('Marketing emails'),
+                'icon'  => 'envelope',
+                'reference' => 'customers/%s/email_campaigns',
+                'tabs'      => array(
+                    'email_campaigns.newsletters' => array(
+                        'label' => _('Newsletters')
+                    ),
+                    'email_campaigns.mailshots'          => array(
+                        'label' => _('Mailshots')
+                    ),
+                    'email_campaigns.reminders'          => array(
+                        'label' => _('Reminders')
+                    ),
+                    'email_campaigns.back_in_stock'          => array(
+                        'label' => _('Back in stock')
+                    ),
+                    /*
+                    'contacts'       => array(
+                        'label' => _('Contacts')
+                    ),
+                    'customers'      => array(
+                        'label' => _('Customers')
+                    ),
+                    'orders'         => array(
+                        'label' => _('Orders')
+                    ),
+                    'data_integrity' => array(
+                        'label' => _('Data Integrity')
+                    ),
+
+                    'correlations'   => array(
+                        'label' => _('Correlations')
+                    ),
+                    */
+
+                )
+            ),
+
+
+               'newsletter' => array(
+                'type' => 'object',
+                'tabs' => array(
+                    'email_campaign.details'   => array(
+                        'label' => _('Data'),
+                        'icon'  => 'database',
+                        'title' => _('Details')
+                    ),
+                    'email_campaign.mail_list' => array(
+                        'label' => _('Recipients'),
+                        'icon'  => 'users',
+                    ),
+
+                    'email_campaign.email_template'   => array(
+                        'label' => _('Email'),
+                        'icon'  => 'envelope-o'
+                    ),
+                    'email_campaign.email_blueprints' => array(
+                        'label' => _('Email HTML templates'),
+                        'icon'  => 'html5'
+                    ),
+
+                    'email_campaign.history' => array(
+                        'title' => _('History'),
+                        'label' => '',
+                        'icon'  => 'road',
+                        'class' => 'right icon_only'
+                    ),
+
+                )
+            ),
 
 
             'list'     => array(
@@ -2793,9 +2869,9 @@ $modules = array(
 
             'marketing' => array(
                 'type'  => 'navigation',
-                'label' => _('Marketing'),
+                'label' => _('Offers'),
 
-                'icon'      => 'bullhorn',
+                'icon'      => 'tags',
                 'reference' => 'marketing/%d',
                 'tabs'      => array(
                     'campaigns' => array(
@@ -3224,6 +3300,7 @@ $modules = array(
                         'label' => _('Data'),
                         'icon'  => 'database'
                     ),
+
                     'customer.insights'   => array(
                         'label' => _('Insights'),
                         'icon'  => 'graduation-cap'

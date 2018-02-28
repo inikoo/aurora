@@ -10,13 +10,26 @@
 */
 
 
+$parameters = array(
+    'parent'     =>$state['object'],
+    'parent_key' => $state['key'],
+
+);
+
 
 switch ($state['_object']->get('Email Campaign Type')) {
     case 'AbandonedCart':
 
         $tab     = 'abandoned_cart.mail_list';
         $ar_file = 'ar_customers_tables.php';
-        $tipo    = 'abandoned_cart';
+        $tipo    = 'abandoned_cart_mail_list';
+        break;
+    case 'Newsletter':
+
+        $tab     = 'newsletter.mail_list';
+        $ar_file = 'ar_customers_tables.php';
+        $tipo    = 'newsletter_mail_list';
+        $parameters['store_key']=$state['_object']->get('Store Key');
         break;
     default:
 
@@ -59,11 +72,6 @@ $table_filters = array(
 
 );
 
-$parameters = array(
-    'parent'     =>$state['object'],
-    'parent_key' => $state['key'],
-
-);
 
 
 $table_buttons   = array();

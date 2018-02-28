@@ -1501,10 +1501,10 @@ class Store extends DB_Table {
                     ,`Store Invoices`=%d ,`Store Refunds`=%d ,`Store Paid Invoices`=%d ,`Store Paid Refunds`=%d ,`Store Partially Paid Invoices`=%d ,`Store Partially Paid Refunds`=%d
                      ,`Store Ready to Pick Delivery Notes`=%d,`Store Picking Delivery Notes`=%d,`Store Packing Delivery Notes`=%d,`Store Ready to Dispatch Delivery Notes`=%d,`Store Dispatched Delivery Notes`=%d,`Store Returned Delivery Notes`=%d
                      ,`Store Delivery Notes For Replacements`=%d,`Store Delivery Notes For Shortages`=%d,`Store Delivery Notes For Samples`=%d,`Store Delivery Notes For Donations`=%d,`Store Delivery Notes For Orders`=%d
-                     WHERE `Store Key`=%d", $this->data['Store Dispatched Orders'], $this->data['Store Cancelled Orders'], $this->data['Store Invoices'], $this->data['Store Refunds'], $this->data['Store Paid Invoices'],
-            $this->data['Store Paid Refunds'], $this->data['Store Partially Paid Invoices'], $this->data['Store Partially Paid Refunds'], $this->data['Store Ready to Pick Delivery Notes'], $this->data['Store Picking Delivery Notes'],
-            $this->data['Store Picking Delivery Notes'], $this->data['Store Ready to Dispatch Delivery Notes'], $this->data['Store Dispatched Delivery Notes'], $this->data['Store Returned Delivery Notes'], $this->data['Store Delivery Notes For Replacements'],
-            $this->data['Store Delivery Notes For Shortages'], $this->data['Store Delivery Notes For Samples'], $this->data['Store Delivery Notes For Donations'], $this->data['Store Delivery Notes For Orders'], $this->id
+                     WHERE `Store Key`=%d", $this->data['Store Dispatched Orders'], $this->data['Store Cancelled Orders'], $this->data['Store Invoices'], $this->data['Store Refunds'], $this->data['Store Paid Invoices'], $this->data['Store Paid Refunds'],
+            $this->data['Store Partially Paid Invoices'], $this->data['Store Partially Paid Refunds'], $this->data['Store Ready to Pick Delivery Notes'], $this->data['Store Picking Delivery Notes'], $this->data['Store Picking Delivery Notes'],
+            $this->data['Store Ready to Dispatch Delivery Notes'], $this->data['Store Dispatched Delivery Notes'], $this->data['Store Returned Delivery Notes'], $this->data['Store Delivery Notes For Replacements'], $this->data['Store Delivery Notes For Shortages'],
+            $this->data['Store Delivery Notes For Samples'], $this->data['Store Delivery Notes For Donations'], $this->data['Store Delivery Notes For Orders'], $this->id
         );
         $this->db->exec($sql);
 
@@ -1696,7 +1696,7 @@ class Store extends DB_Table {
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
 
-                $data['warehouse']['number']    += $row['num'];
+                $data['warehouse']['number'] += $row['num'];
 
 
             }
@@ -1707,7 +1707,8 @@ class Store extends DB_Table {
 
 
         $sql = sprintf(
-            "SELECT count(*) AS num,ifnull(sum(`Order Total Net Amount`),0) AS amount,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE   `Order Store Key`=%d   and  `Order State` ='InWarehouse' AND `Order Delivery Note Alert`='Yes'  ",$this->id
+            "SELECT count(*) AS num,ifnull(sum(`Order Total Net Amount`),0) AS amount,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE   `Order Store Key`=%d   AND  `Order State` ='InWarehouse' AND `Order Delivery Note Alert`='Yes'  ",
+            $this->id
         );
 
 
@@ -1729,7 +1730,7 @@ class Store extends DB_Table {
 
 
         $sql = sprintf(
-            "SELECT count(*) AS num FROM `Order Dimension` WHERE    `Order Store Key`=%d   and  `Order Replacement State` ='InWarehouse' AND `Order Delivery Note Alert`='Yes'  ",$this->id
+            "SELECT count(*) AS num FROM `Order Dimension` WHERE    `Order Store Key`=%d   AND  `Order Replacement State` ='InWarehouse' AND `Order Delivery Note Alert`='Yes'  ", $this->id
         );
 
 
@@ -1740,13 +1741,11 @@ class Store extends DB_Table {
                 $data['warehouse_with_alerts']['number'] += $row['num'];
 
 
-
             }
         } else {
             print_r($error_info = $this->db->errorInfo());
             exit;
         }
-
 
 
         $data['warehouse_no_alerts']['number'] = $data['warehouse']['number'] - $data['warehouse_with_alerts']['number'];
@@ -1823,7 +1822,7 @@ class Store extends DB_Table {
             foreach ($result as $row) {
 
 
-                $data['packed']['number']    += $row['num'];
+                $data['packed']['number'] += $row['num'];
 
 
             }
@@ -1989,8 +1988,7 @@ class Store extends DB_Table {
 
 
         $sql = sprintf(
-            "SELECT count(*) AS num FROM `Order Dimension` WHERE  `Order Store Key`=%d  AND   `Order Replacement State` ='Dispatched' AND `Order Post Transactions Dispatched Date`>=%s ",
-            $this->id, prepare_mysql(gmdate('Y-m-d 00:00:00'))
+            "SELECT count(*) AS num FROM `Order Dimension` WHERE  `Order Store Key`=%d  AND   `Order Replacement State` ='Dispatched' AND `Order Post Transactions Dispatched Date`>=%s ", $this->id, prepare_mysql(gmdate('Y-m-d 00:00:00'))
 
         );
 
@@ -1999,8 +1997,7 @@ class Store extends DB_Table {
             foreach ($result as $row) {
 
 
-                $data['dispatched_today']['number']    += $row['num'];
-
+                $data['dispatched_today']['number'] += $row['num'];
 
 
             }
@@ -2297,7 +2294,7 @@ class Store extends DB_Table {
         }
 
 
-        $this->fast_update(array('Store Email Campaigns' => $email_campaigns) );
+        $this->fast_update(array('Store Email Campaigns' => $email_campaigns));
 
 
     }
@@ -2635,7 +2632,7 @@ class Store extends DB_Table {
                     'type'             => 'customer_created',
                     'customer_key'     => $customer->id,
                     'website_user_key' => $website_user_key,
-                    'editor'=>$this->editor
+                    'editor'           => $this->editor
                 ), $account->get('Account Code')
                 );
 
@@ -3022,7 +3019,7 @@ class Store extends DB_Table {
                     }
                 }
 
-                foreach ($product->get_parts('objects') as $part){
+                foreach ($product->get_parts('objects') as $part) {
                     $part->update_products_data();
                     $part->update_commercial_value();
                 }
@@ -3032,11 +3029,10 @@ class Store extends DB_Table {
                 }
 
                 if ($family_key) {
-                    $product->update(array('Product Family Category Key' => $family_key), 'no_history'
+                    $product->update(
+                        array('Product Family Category Key' => $family_key), 'no_history'
                     );
                 }
-
-
 
 
                 $this->update_product_data();
@@ -3138,16 +3134,14 @@ class Store extends DB_Table {
 
     function create_poll_query($data) {
 
-        $this->new_poll_query     = false;
+        $this->new_poll_query = false;
 
-        $data['editor']                           = $this->editor;
-        $data['Customer Poll Query Store Key']         = $this->id;
-        $data['Customer Poll Query Creation Date']     = gmdate('Y-m-d H:i:s');
-
-
+        $data['editor']                            = $this->editor;
+        $data['Customer Poll Query Store Key']     = $this->id;
+        $data['Customer Poll Query Creation Date'] = gmdate('Y-m-d H:i:s');
 
 
-        $poll_query         = new Customer_Poll_Query('new', $data);
+        $poll_query = new Customer_Poll_Query('new', $data);
 
 
         if ($poll_query->id) {
@@ -3186,8 +3180,8 @@ class Store extends DB_Table {
 
     function create_email_campaign($data) {
 
-        $this->new_email_campaign     = false;
-        $this->new_website_user = false;
+        $this->new_email_campaign = false;
+        $this->new_website_user   = false;
 
         $data['editor']                           = $this->editor;
         $data['Email Campaign Store Key']         = $this->id;
@@ -3197,21 +3191,23 @@ class Store extends DB_Table {
 
         if (empty($data['Email Campaign Name'])) {
 
-            switch($data['Email Campaign Type']) {
-            case 'AbandonedCart':
-                $data['Email Campaign Name']     = sprintf(_('Abandoned cart %s'),strftime('%x'));
-                break;
-            default:
-                break;
+            switch ($data['Email Campaign Type']) {
+                case 'AbandonedCart':
+                    $data['Email Campaign Name'] = sprintf(_('%s %s'), $this->get('Code'), strftime('%x'));
+                    break;
+                case 'Newsletter':
+                    $data['Email Campaign Name']  = sprintf(_('%s %s'), $this->get('Code'), strftime('%x'));
+                    $data['Email Campaign State'] = 'ComposingEmail';
+                    break;
+                default:
+                    break;
             }
-            
 
-    
+
         }
-        
-        
 
-        $email_campaign         = new EmailCampaign('new', $data);
+
+        $email_campaign = new EmailCampaign('new', $data);
 
 
         if ($email_campaign->id) {
@@ -3242,7 +3238,7 @@ class Store extends DB_Table {
             return $email_campaign;
         } else {
             $this->error = true;
-            $this->msg   = 'E2' .$email_campaign->msg;
+            $this->msg   = 'E2'.$email_campaign->msg;
         }
 
 
@@ -3313,10 +3309,10 @@ class Store extends DB_Table {
         $data['Website From'] = gmdate('Y-m-d H:i:s');
 
 
-        $data['Website Primary Color']='#b22222';
-        $data['Website Secondary Color']='#ffa500';
-        $data['Website Accent Color']='#ff6600';
-        $data['Website Text Background']='#333';
+        $data['Website Primary Color']   = '#b22222';
+        $data['Website Secondary Color'] = '#ffa500';
+        $data['Website Accent Color']    = '#ff6600';
+        $data['Website Text Background'] = '#333';
 
 
         switch ($this->get('Store Type')) {
@@ -3568,10 +3564,10 @@ class Store extends DB_Table {
 
         $address =
             $address->withFamilyName($this->get($type.' Address Recipient'))->withOrganization($this->get($type.' Address Organization'))->withAddressLine1($this->get($type.' Address Line 1'))->withAddressLine2($this->get($type.' Address Line 2'))->withSortingCode(
-                    $this->get($type.' Address Sorting Code')
-                )->withPostalCode($this->get($type.' Address Postal Code'))->withDependentLocality($this->get($type.' Address Dependent Locality'))->withLocality($this->get($type.' Address Locality'))->withAdministrativeArea(
-                    $this->get($type.' Address Administrative Area')
-                )->withCountryCode($this->get($type.' Address Country 2 Alpha Code'));
+                $this->get($type.' Address Sorting Code')
+            )->withPostalCode($this->get($type.' Address Postal Code'))->withDependentLocality($this->get($type.' Address Dependent Locality'))->withLocality($this->get($type.' Address Locality'))->withAdministrativeArea(
+                $this->get($type.' Address Administrative Area')
+            )->withCountryCode($this->get($type.' Address Country 2 Alpha Code'));
 
 
         $xhtml_address = $formatter->format($address);

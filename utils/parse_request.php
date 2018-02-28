@@ -1812,6 +1812,9 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                         } elseif ($view_path[0] == 'categories') {
                             $section = 'categories';
 
+                        }elseif ($view_path[0] == 'email_campaigns') {
+                            $section = 'email_campaigns';
+
                         } elseif ($view_path[0] == 'insights') {
                             $section = 'insights';
 
@@ -1894,7 +1897,28 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                 }
 
                 break;
+            case 'newsletters':
+                $module  = 'customers';
+                $section    = 'newsletter';
+                $parent     = 'store';
 
+                if (isset($view_path[0])) {
+                    $parent_key = $view_path[0];
+
+                    if (isset($view_path[1])) {
+
+                        $object='email_campaign';
+                        $key = $view_path[1];
+
+                    }
+
+
+                }
+
+
+
+
+                break;
             case 'receipts':
                 $module  = 'account';
                 $section = 'orders_index';

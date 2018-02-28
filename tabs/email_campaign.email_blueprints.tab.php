@@ -21,6 +21,10 @@ switch ($email_campaign->get('Email Campaign Type')){
    //     $email_template_key = $scope_metadata['emails']['welcome']['key'];
         $role               = 'AbandonedCart';
         break;
+    case 'Newsletter':
+        //     $email_template_key = $scope_metadata['emails']['welcome']['key'];
+        $role               = 'Newsletter';
+        break;
     default:
         return;
 }

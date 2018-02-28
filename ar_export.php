@@ -76,7 +76,13 @@ else {
         $_tipo = 'warehouse_parts_to_replenish_picking_location';
     }  elseif ($_data['tipo'] == 'abandoned_cart'  ) {
         $_tipo = 'abandoned_cart.mail_list';
-    }  else {
+    } elseif ($_data['tipo'] == 'newsletter_mail_list'  ) {
+        $_tipo = 'mail_list';
+    }
+
+
+
+    else {
         $_tipo = $_data['tipo'];
     }
 
