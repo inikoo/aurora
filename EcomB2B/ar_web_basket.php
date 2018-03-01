@@ -89,7 +89,7 @@ switch ($tipo) {
 
                      )
         );
-        invoice_address($db, $data, $order, $editor);
+        invoice_address($db, $data, $order, $editor,$website);
         break;
     case 'delivery_address':
         $data = prepare_values(
@@ -98,7 +98,7 @@ switch ($tipo) {
 
                      )
         );
-        delivery_address($db, $data, $order, $editor);
+        delivery_address($db, $data, $order, $editor, $website);
         break;
 }
 
@@ -247,6 +247,14 @@ function update_item($_data, $customer, $website, $editor, $db) {
         }
 */
 
+        $labels = $website->get('Localised Labels');
+
+        if ($order->get('Shipping Net Amount') == 'TBC') {
+            $shipping_amount = sprintf('<i class="fa error fa-exclamation-circle" title="" aria-hidden="true"></i> <small>%s</small>', (!empty($labels['_we_will_contact_you']) ? $labels['_we_will_contact_you'] : _('We will contact you')));
+        } else {
+            $shipping_amount = $order->get('Shipping Net Amount');
+        }
+
         $class_html = array(
             'order_items_gross'       => $order->get('Items Gross Amount'),
             'order_items_discount'    => $order->get('Items Discount Amount'),
@@ -255,7 +263,7 @@ function update_item($_data, $customer, $website, $editor, $db) {
             'order_tax'               => $order->get('Total Tax Amount'),
             'order_charges'           => $order->get('Charges Net Amount'),
             'order_credits'           => $order->get('Net Credited Amount'),
-            'order_shipping'          => $order->get('Shipping Net Amount'),
+            'order_shipping'          => $shipping_amount,
             'order_total'             => $order->get('Total Amount'),
             'ordered_products_number' => $order->get('Number Items'),
         );
@@ -303,7 +311,7 @@ function create_order($editor, $customer) {
 }
 
 
-function invoice_address($db, $data, $order, $editor) {
+function invoice_address($db, $data, $order, $editor,$website) {
 
 
     $address_data = array(
@@ -347,6 +355,15 @@ function invoice_address($db, $data, $order, $editor) {
     $order->update(array('Order Invoice Address' => json_encode($address_data)));
 
 
+    $labels = $website->get('Localised Labels');
+
+    if ($order->get('Shipping Net Amount') == 'TBC') {
+        $shipping_amount = sprintf('<i class="fa error fa-exclamation-circle" title="" aria-hidden="true"></i> <small>%s</small>', (!empty($labels['_we_will_contact_you']) ? $labels['_we_will_contact_you'] : _('We will contact you')));
+    } else {
+        $shipping_amount = $order->get('Shipping Net Amount');
+    }
+
+
     $class_html = array(
         'order_items_gross'       => $order->get('Items Gross Amount'),
         'order_items_discount'    => $order->get('Items Discount Amount'),
@@ -355,7 +372,7 @@ function invoice_address($db, $data, $order, $editor) {
         'order_tax'               => $order->get('Total Tax Amount'),
         'order_charges'           => $order->get('Charges Net Amount'),
         'order_credits'           => $order->get('Net Credited Amount'),
-        'order_shipping'          => $order->get('Shipping Net Amount'),
+        'order_shipping'          => $shipping_amount,
         'order_total'             => $order->get('Total Amount'),
         'ordered_products_number' => $order->get('Number Items'),
 
@@ -379,7 +396,7 @@ function invoice_address($db, $data, $order, $editor) {
 
 }
 
-function delivery_address($db, $data, $order, $editor) {
+function delivery_address($db, $data, $order, $editor, $website) {
 
 
     $order->editor = $editor;
@@ -432,6 +449,14 @@ function delivery_address($db, $data, $order, $editor) {
     }
 
 
+    $labels = $website->get('Localised Labels');
+
+    if ($order->get('Shipping Net Amount') == 'TBC') {
+        $shipping_amount = sprintf('<i class="fa error fa-exclamation-circle" title="" aria-hidden="true"></i> <small>%s</small>', (!empty($labels['_we_will_contact_you']) ? $labels['_we_will_contact_you'] : _('We will contact you')));
+    } else {
+        $shipping_amount = $order->get('Shipping Net Amount');
+    }
+
     $class_html = array(
         'order_items_gross'       => $order->get('Items Gross Amount'),
         'order_items_discount'    => $order->get('Items Discount Amount'),
@@ -440,7 +465,7 @@ function delivery_address($db, $data, $order, $editor) {
         'order_tax'               => $order->get('Total Tax Amount'),
         'order_charges'           => $order->get('Charges Net Amount'),
         'order_credits'           => $order->get('Net Credited Amount'),
-        'order_shipping'          => $order->get('Shipping Net Amount'),
+        'order_shipping'          => $shipping_amount,
         'order_total'             => $order->get('Total Amount'),
         'ordered_products_number' => $order->get('Number Items'),
 
@@ -534,11 +559,10 @@ function update_favourite($data, $customer, $website, $editor, $db) {
 function get_charges_info($db, $order) {
 
 
-
     $response = array(
-        'state'         => 200,
-        'title'=>_('Charges'),
-        'text' => $order->get_charges_public_info()
+        'state' => 200,
+        'title' => _('Charges'),
+        'text'  => $order->get_charges_public_info()
     );
     echo json_encode($response);
 

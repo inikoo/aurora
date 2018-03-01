@@ -325,7 +325,7 @@ class Public_Order extends DBW_Table {
                     return 'TBC';
                 }else{
                     return money(
-                        $this->exchange * $this->data['hipping Net Amount'], $this->currency_code
+                        $this->exchange * $this->data['Order Shipping Net Amount'], $this->currency_code
                     );
                 }
 
