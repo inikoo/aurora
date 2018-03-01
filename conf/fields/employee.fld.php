@@ -269,9 +269,7 @@ $object_fields = array(
                 'time'            => '00:00:00',
                 'value'           => $employee->get('Staff Birthday'),
                 'formatted_value' => $employee->get('Birthday'),
-                'label'           => ucfirst(
-                    $employee->get_field_label('Staff Birthday')
-                ),
+                'label'           => ucfirst($employee->get_field_label('Staff Birthday')),
                 'invalid_msg'     => get_invalid_message('date'),
                 'required'        => false,
                 'type'            => 'value'

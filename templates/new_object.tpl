@@ -187,7 +187,7 @@
 		{if $edit=='string' or $edit=='handle' or $edit=='dimensions'  or $edit=='email' or   $edit=='numeric_unsigned' or  $edit=='int_unsigned' or $edit=='smallint_unsigned' or $edit=='mediumint_unsigned' or $edit=='int' or $edit=='smallint' or $edit=='mediumint' or $edit=='anything' or  $edit=='percentage' or $edit=='numeric'  or $edit=='amount'  or $edit=='amount_margin'  or $edit=='amount_percentage' }
 		
 	
-		<input id="{$field.id}" class="input_field " value="{$field.value}" {if $locked}readonly="readonly="{/if}  has_been_valid="0" {if isset($field.placeholder)}placeholder="{$field.placeholder}"{/if}/>
+		<input id="{$field.id}" class="input_field {if isset($field.class)}{$field.class}{/if}" value="{$field.value}" {if $locked}readonly="readonly="{/if}  has_been_valid="0" {if isset($field.placeholder)}placeholder="{$field.placeholder}"{/if}/>
 		<span id="{$field.id}_msg" class="msg"></span>
 
 		{elseif $edit=='no_icon'  }

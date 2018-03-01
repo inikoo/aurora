@@ -29,7 +29,7 @@
 
     <link href="/css/sweetalert.css" rel="stylesheet">
 
-    <link rel="stylesheet" type="text/css" href="/theme_1/mobile/style.css">
+    <link rel="stylesheet" type="text/css" href="/theme_1/mobile/style.css?v=180301">
     <link rel="stylesheet" type="text/css" href="/theme_1/mobile/skin.css">
     <link rel="stylesheet" type="text/css" href="/theme_1/mobile/framework.css?v=171011b">
     <link rel="stylesheet" type="text/css" href="/theme_1/mobile/ionicons.min.css">

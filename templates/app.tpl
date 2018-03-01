@@ -83,7 +83,7 @@
         <script src="/js/edit.js?v171229"></script>
         <script src="/js/edit_webpage_edit.js?v171019"></script>
 
-        <script src="/js/new.js?v180210v2"></script>
+        <script src="/js/new.js?v180301"></script>
         <script src="/js/order.common.js?v171126b"></script>
         <script src="/js/email_campaign.common.js?v170207"></script>
 

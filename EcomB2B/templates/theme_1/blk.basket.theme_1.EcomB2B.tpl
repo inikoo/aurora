@@ -77,14 +77,14 @@
                             <td class="text-right order_items_net">{$order->get('Items Net Amount')}</td>
                         </tr>
                         <tr class="order_charges_container {if $order->get('Order Charges Net Amount')==0 }hide{/if}">
-                            <td><i class="button fa fa-info-circle padding_right_5 info" style="color: #007fff;" onclick="show_charges_info()" ></i>  {if isset($labels._items_charges) and $labels._items_charges!=''}{$labels._items_charges}{else}{t}Charges{/t}{/if}</td>
+                            <td><i class="button fa fa-info-circle padding_right_5 info" style="color: #007fff;" onclick="show_charges_info()" ></i>  {if !empty($labels._items_charges)}{$labels._items_charges}{else}{t}Charges{/t}{/if}</td>
 
                             <td class="text-right order_charges">{$order->get('Charges Net Amount')}</td>
                         </tr>
                         <tr>
                             <td>{if isset($labels._items_shipping) and $labels._items_shipping!=''}{$labels._items_shipping}{else}{t}Shipping{/t}{/if}</td>
 
-                            <td class="text-right order_shipping">{$order->get('Shipping Net Amount')}</td>
+                            <td class="text-right order_shipping">{if $order->get('Shipping Net Amount')=='TBC'}<i class="fa error fa-exclamation-circle" title="" aria-hidden="true"></i> <small>{if !empty($labels._we_will_contact_you)}{$labels._we_will_contact_you}{else}{t}We will contact you{/t}{/if}</small>{else}{$order->get('Shipping Net Amount')}    {/if}  </td>
                         </tr>
                         <tr>
                             <td>{if isset($labels._total_net) and $labels._total_net!=''}{$labels._total_net}{else}{t}Total Net{/t}{/if}</td>

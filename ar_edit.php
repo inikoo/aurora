@@ -1642,7 +1642,27 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
             }
             break;
+        case 'Customers_List':
+            include_once 'class.List.php';
+            $object = $parent->create_customers_list($data['fields_data']);
 
+            if ($parent->new_list) {
+
+                $pcard        = '';
+                $redirect     = 'customers/'.$parent->id.'/lists/'.$object->id;
+                $updated_data = array();
+            } else {
+
+
+                $response = array(
+                    'state' => 400,
+                    'msg'   => $parent->msg
+
+                );
+                echo json_encode($response);
+                exit;
+            }
+            break;
         default:
             $response = array(
                 'state' => 400,

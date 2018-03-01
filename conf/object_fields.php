@@ -19,6 +19,8 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
     $edit = true;
 
 
+
+
     switch ($object->get_object_name()) {
         case 'Email Campaign':
 
@@ -483,8 +485,25 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
             return $object_fields;
             break;
+        case 'List':
+
+
+            switch ( $options['scope']){
+                case 'customers':
+                    include 'fields/customers_new_list.fld.php';
+                    break;
+
+            }
+
+
+
+
+
+
+            return $object_fields;
+            break;
         default:
-            print $object->get_object_name();
+            print 'todo object in object fields'.$object->get_object_name();
 
             return '';
             break;

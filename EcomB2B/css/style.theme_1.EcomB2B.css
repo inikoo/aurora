@@ -20755,4 +20755,10 @@ section.product_tabs input[type=radio]:checked + label + div {
 body {
   font-family: "system"; }
 
+.error {
+  color: red; }
+
+small {
+  font-size: smaller; }
+
 /*# sourceMappingURL=style.theme_1.EcomB2B.css.map */

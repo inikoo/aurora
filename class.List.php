@@ -164,7 +164,7 @@ class SubjectList extends DB_Table {
                     return $this->data[$key];
                 } else {
 
-                    return $key;
+
                 }
         }
 

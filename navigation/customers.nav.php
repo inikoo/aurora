@@ -120,7 +120,6 @@ function get_customers_list_navigation($data, $smarty, $user, $db) {
 
 
     require_once 'class.Store.php';
-    include_once 'class.List.php';
 
     include_once 'class.List.php';
 
@@ -489,7 +488,6 @@ function get_customers_lists_navigation($data, $smarty, $user, $db) {
             break;
     }
 
-    $block_view = $data['section'];
 
 
     $left_buttons = array();
@@ -547,11 +545,6 @@ function get_customers_lists_navigation($data, $smarty, $user, $db) {
 
     $right_buttons = array();
 
-    $right_buttons[] = array(
-        'icon'      => 'plus',
-        'title'     => _('New list'),
-        'reference' => "customers/".$store->id.'/lists/new'
-    );
 
     $sections = get_sections('customers', $store->id);
     if (isset($sections[$data['section']])) {
@@ -1401,6 +1394,57 @@ function get_new_customer_navigation($data, $smarty, $user, $db) {
     return $html;
 
 }
+
+
+
+function get_new_list_navigation($data, $smarty, $user, $db) {
+
+
+    $left_buttons  = array();
+    $right_buttons = array();
+
+
+    $sections = get_sections('customers', $data['parent_key']);
+
+    $_section = 'lists';
+    if (isset($sections[$_section])) {
+        $sections[$_section]['selected'] = true;
+    }
+
+    $up_button = array(
+        'icon'      => 'arrow-up',
+        'title'     => _("Customers lists"),
+        'reference' => 'customers/'.$data['parent_key'].'/lists'
+    );
+
+
+    $left_buttons[] = $up_button;
+
+
+    $title = _('New Customers list').' ('._('Store').' <span class="id">'.$data['store']->get('Code').'</span>)';
+
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search customers')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
+
 
 function get_customers_new_poll_query_navigation($data, $smarty, $user, $db) {
 
