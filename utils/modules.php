@@ -470,6 +470,19 @@ $modules = array(
 
 
             ),
+
+            'list.new' => array(
+                'type' => 'new_object',
+                'tabs' => array(
+                    'customers_list.new' => array(
+                        'label' => _('New customer list')
+                    ),
+
+                )
+
+            ),
+
+
             'category' => array(
                 'type' => 'object',
 

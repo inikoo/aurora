@@ -1033,6 +1033,71 @@ class Store extends DB_Table {
 
     }
 
+    function create_customers_list($data) {
+
+
+        include_once 'class.List.php';
+
+        if (!array_key_exists('List Name', $data) or $data['List Name'] == '') {
+            $this->error = true;
+            $this->msg   = 'error, no list name';
+
+            return;
+        }
+
+
+
+        if ($data['Deal Campaign Valid From'] == '') {
+            $data['Deal Campaign Valid From'] = gmdate('Y-m-d');
+        }
+
+        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $data['Deal Campaign Valid From'])) {
+            $data['Deal Campaign Valid From'] .= ' 00:00:00';
+        }
+
+        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $data['Deal Campaign Valid To'])) {
+            $data['Deal Campaign Valid To'] .= ' 23:59:59';
+        }
+
+        $data['Deal Campaign Store Key'] = $this->id;
+
+
+        $campaign = new DealCampaign('find create', $data);
+
+
+        if ($campaign->id) {
+            $this->new_object_msg = $campaign->msg;
+
+            if ($campaign->new) {
+                $this->new_object = true;
+                $this->update_campaigns_data();
+
+
+            } else {
+                $this->error = true;
+                if ($campaign->found) {
+
+                    $this->error_code     = 'duplicated_field';
+                    $this->error_metadata = json_encode(array($campaign->duplicated_field));
+
+                    if ($campaign->duplicated_field == 'Deal Campaign Name') {
+                        $this->msg = _('Duplicated campaign name');
+                    }
+
+
+                } else {
+                    $this->msg = $campaign->msg;
+                }
+            }
+
+            return $campaign;
+        } else {
+            $this->error = true;
+            $this->msg   = $campaign->msg;
+        }
+
+    }
+
     function update_campaigns_data() {
 
         $campaigns = 0;

@@ -145,10 +145,23 @@ function check_for_duplicates($data, $db, $user, $account) {
     $options_where = '';
 
 
-
     switch ($data['object']) {
 
+        case 'Customers_List':
+            $invalid_msg = _('Another list has same name');
+            $sql         = sprintf(
+                "SELECT `List Key`AS `key` ,`List Name` AS field FROM `List Dimension` WHERE `List Parent Key`=%d  AND `List Name`=%s",
+                $data['parent_key'],
+                prepare_mysql($data['value'])
+            );
 
+            $validation_sql_queries[] = array(
+                'sql'         => $sql,
+                'invalid_msg' => $invalid_msg
+            );
+
+
+            break;
         case 'Customer Poll Query Option':
             $invalid_msg = _('Another option has same code');
             $sql         = sprintf(

@@ -1351,6 +1351,11 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                         $data, $smarty, $user, $db, $account
                     );
                     break;
+                case ('list.new'):
+                    return get_new_list_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
                 case ('dashboard'):
                     return get_customers_dashboard_navigation(
                         $data, $smarty, $user, $db, $account

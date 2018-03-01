@@ -514,6 +514,14 @@ $object_fields = array(
                 'required' => true,
                 'type'     => 'value'
             ),
+            array(
+                'id'       => 'Localised_Labels_we_will_contact_you',
+                'edit'     => ($edit ? 'string' : ''),
+                'value'    => (empty($labels['_we_will_contact_you']) ? _('We will contact you') : $labels['_we_will_contact_you']),
+                'label'    => _('Unknown shipping amount'),
+                'required' => true,
+                'type'     => 'value'
+            ),
 
 
         )

@@ -31,6 +31,9 @@ function get_form_validation_state(submitting) {
         var field = $(this).attr('field')
 
 
+        console.log(field)
+        console.log($('#' + field + '_field').hasClass('valid'))
+
         if ($('#' + field + '_field').hasClass('invalid')) {
             component_validation = 'invalid'
         } else if ($('#' + field + '_field').hasClass('valid')) {

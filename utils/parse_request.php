@@ -1805,6 +1805,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                             if (!empty($view_path[1])) {
                                 if ($view_path[1] == 'new') {
                                     $section = 'list.new';
+                                    $object     = 'list';
 
                                 }
                             }

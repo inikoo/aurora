@@ -95,16 +95,10 @@ $object_fields = array(
                 'render'          => true,
                 'id'              => 'User_Active',
                 'edit'            => 'option',
-                'value'           => ($new
-                    ? 'Yes'
-                    : $object->get(
-                        'User Active'
-                    )),
+                'value'           => ($new ? 'Yes' : $object->get('User Active')),
                 'formatted_value' => ($new ? _('Yes') : $object->get('Active')),
                 'options'         => $options_yn,
-                'label'           => ucfirst(
-                    $object->get_field_label('User Active')
-                ),
+                'label'           => ucfirst($object->get_field_label('User Active')),
                 'type'            => 'value'
             ),
 

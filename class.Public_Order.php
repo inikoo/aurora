@@ -231,7 +231,11 @@ class Public_Order extends DBW_Table {
     function get($key, $arg1 = '') {
 
 
+
         switch ($key) {
+
+
+
             case 'Currency Code':
 
                 return $this->data['Order Currency'];
@@ -314,6 +318,20 @@ class Public_Order extends DBW_Table {
 
 
                 break;
+
+
+            case 'Shipping Net Amount':
+                if( $this->data['Order Shipping Method'] == 'TBC'){
+                    return 'TBC';
+                }else{
+                    return money(
+                        $this->exchange * $this->data['hipping Net Amount'], $this->currency_code
+                    );
+                }
+
+              break;
+
+
 
             default:
 
