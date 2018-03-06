@@ -569,6 +569,9 @@ if ($webpage->id) {
 
             $smarty->assign('placed_order', $placed_order);
 
+
+            $smarty->assign('labels', $website->get('Localised Labels'));
+
             $placeholders = array(
                 '[Greetings]'     => $customer->get_greetings(),
                 '[Customer Name]' => $customer->get('Name'),

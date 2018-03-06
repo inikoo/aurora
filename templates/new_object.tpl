@@ -491,6 +491,7 @@ function input_barcode_to_new_object(field) {
 		                $('#{$field.id}').change();
 		                $('#{$field.id}_formatted_From').val($.datepicker.formatDate("dd/mm/yy", $(this).datepicker("getDate")))
 		                $('#{$field.id}_From_datepicker').addClass('hide')
+		                post_process_form_validation();
 		            }
 		        });
 		        
@@ -505,6 +506,7 @@ function input_barcode_to_new_object(field) {
 		                $('#{$field.id}').change();
 		                $('#{$field.id}_formatted_To').val($.datepicker.formatDate("dd/mm/yy", $(this).datepicker("getDate")))
 		                $('#{$field.id}_To_datepicker').addClass('hide')
+		                post_process_form_validation();
 		            }
 		        });
 		        
@@ -531,9 +533,13 @@ function input_barcode_to_new_object(field) {
 		      
 
 		    });
-		    $('#{$field.id}_From').on('change', function() {
-		        on_changed_value('{$field.id}_From', $('#{$field.id}_From').val())
 
+
+		    $('#{$field.id}_From').on('change', function() {
+
+
+		        on_changed_value('{$field.id}_From', $('#{$field.id}_From').val())
+ post_process_form_validation();
 		    });
 
 		    if ('{$field.value['From']}' == '') {
@@ -563,6 +569,7 @@ function input_barcode_to_new_object(field) {
 		    });
 		    $('#{$field.id}_To').on('change', function() {
 		        on_changed_value('{$field.id}_To', $('#{$field.id}_To').val())
+ post_process_form_validation();
 
 		    });
 
@@ -679,14 +686,13 @@ if(field_data.length==0){
 
 
         var validation = validate_field(field, value, type, required, server_validation, parent, parent_key, _object, key)
-console.log('zzzzz')
-console.log(validation)
+
 
             if (validation.class == 'invalid' && value == '') {
                 validation.class = 'potentially_valid'
             }
             //console.log(field)
-            console.log('#' + field + '_field')
+           // console.log('#' + field + '_field')
 
 
 if(type!='date_interval'){

@@ -206,7 +206,7 @@ function parse_customer_list($data,$db) {
         if ($data['Order State Processing'] == 'Yes') {
             $tmp .= ' "Submitted by Customer","Ready to Pick" ';
         }
-        if ($data['Order State Processing'] == 'Yes') {
+        if ($data['Order State Dispatched'] == 'Yes') {
             $tmp .= ' "Dispatched", ';
         }
         if ($data['Order State Cancelled'] == 'Yes') {

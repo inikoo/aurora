@@ -185,7 +185,70 @@ $object_fields = array(
 
         )
     ),
+    array(
+        'label'      => _('Order'),
+        'show_title' => true,
+        'fields'     => array(
 
+            array(
+                'id'       => 'Localised_Labels_delivery_address_label',
+                'edit'     => ($edit ? 'string' : ''),
+                'value'    => (empty($labels['_delivery_address_label']) ? _('Delivery address') : $labels['_delivery_address_label']),
+                'label'    => _('Delivery address'),
+                'required' => true,
+                'type'     => 'value'
+            ),
+            array(
+                'id'       => 'Localised_Labels_invoice_address_label',
+                'edit'     => ($edit ? 'string' : ''),
+                'value'    => (empty($labels['_invoice_address_label']) ? _('Invoice address') : $labels['_invoice_address_label']),
+                'label'    => _('Invoice address'),
+                'required' => true,
+                'type'     => 'value'
+            ),
+            array(
+                'id'       => 'Localised_Labels_items_gross',
+                'edit'     => ($edit ? 'string' : ''),
+                'value'    => (empty($labels['_items_gross']) ? _('Items gross') : $labels['_items_gross']),
+                'label'    => _('Items gross'),
+                'required' => true,
+                'type'     => 'value'
+            ),
+            array(
+                'id'       => 'Localised_Labels_items_discounts',
+                'edit'     => ($edit ? 'string' : ''),
+                'value'    => (empty($labels['_items_discounts']) ? _('Items gross') : $labels['_items_discounts']),
+                'label'    => _('Items discounts'),
+                'required' => true,
+                'type'     => 'value'
+            ),
+            array(
+                'id'       => 'Localised_Labels_items_net',
+                'edit'     => ($edit ? 'string' : ''),
+                'value'    => (empty($labels['_items_net']) ? _('Items net') : $labels['_items_net']),
+                'label'    => _('Items net'),
+                'required' => true,
+                'type'     => 'value'
+            ),
+            array(
+                'id'       => 'Localised_Labels_items_charges',
+                'edit'     => ($edit ? 'string' : ''),
+                'value'    => (empty($labels['_items_charges']) ? _('Charges') : $labels['_items_charges']),
+                'label'    => _('Charges'),
+                'required' => true,
+                'type'     => 'value'
+            ),
+            array(
+                'id'       => 'Localised_Labels_items_shipping',
+                'edit'     => ($edit ? 'string' : ''),
+                'value'    => (empty($labels['_items_shipping']) ? _('Shipping') : $labels['_items_shipping']),
+                'label'    => _('Shipping'),
+                'required' => true,
+                'type'     => 'value'
+            ),
+
+        )
+    ),
     array(
         'label'      => _('Forms feedback'),
         'show_title' => true,

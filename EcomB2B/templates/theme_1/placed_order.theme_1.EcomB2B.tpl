@@ -20,7 +20,7 @@
         <h5>
             <i class="fa fa-fw fa-truck" aria-hidden="true"></i>
             <span id="_delivery_address_label" class="website_localized_label"
-                  >{if isset($labels._delivery_address_label) and $labels._delivery_address_label!=''}{$labels._delivery_address_label}{else}{t}Delivery Address{/t}{/if}</span>
+                  >{if !empty($labels._delivery_address_label) }{$labels._delivery_address_label}{else}{t}Delivery address{/t}{/if}</span>
         </h5>
         <p>
             {$placed_order->get('Order Delivery Address Formatted')}
@@ -31,7 +31,7 @@
         <h5>
             <i class="fa fa-fw fa-usd" aria-hidden="true"></i>
             <span id="_invoice_address_label" class="website_localized_label"
-                  >{if isset($labels._invoice_address_label) and $labels._invoice_address_label!=''}{$labels._invoice_address_label}{else}{t}Invoice Address{/t}{/if}</span>
+                  >{if !empty($labels._invoice_address_label) }{$labels._invoice_address_label}{else}{t}Invoice address{/t}{/if}</span>
 
 
 
@@ -49,17 +49,17 @@
 
             <tbody>
             <tr>
-                <td>{if isset($labels._items_gross) and $labels._items_gross!=''}{$labels._items_gross}{else}{t}Items Gross{/t}{/if}</td>
+                <td>{if isset($labels._items_gross) and $labels._items_gross!=''}{$labels._items_gross}{else}{t}Items gross{/t}{/if}</td>
 
                 <td class="text-right order_items_gross ">{$placed_order->get('Items Gross Amount')}</td>
             </tr>
             <tr class="order_items_discount_container {if $placed_order->get('Order Items Discount Amount')==0 }hide{/if}">
-                <td>{if isset($labels._items_discounts) and $labels._items_discounts!=''}{$labels._items_discounts}{else}{t}Items Discounts{/t}{/if}</td>
+                <td>{if isset($labels._items_discounts) and $labels._items_discounts!=''}{$labels._items_discounts}{else}{t}Items discounts{/t}{/if}</td>
 
                 <td class="text-right order_items_discount">{$placed_order->get('Items Discount Amount')}</td>
             </tr>
             <tr>
-                <td>{if isset($labels._items_net) and $labels._items_net!=''}{$labels._items_net}{else}{t}Items Net{/t}{/if}</td>
+                <td>{if isset($labels._items_net) and $labels._items_net!=''}{$labels._items_net}{else}{t}Items net{/t}{/if}</td>
 
                 <td class="text-right order_items_net">{$placed_order->get('Items Net Amount')}</td>
             </tr>
@@ -74,7 +74,7 @@
                 <td class="text-right order_shipping">{$placed_order->get('Shipping Net Amount')}</td>
             </tr>
             <tr>
-                <td>{if isset($labels._total_net) and $labels._total_net!=''}{$labels._total_net}{else}{t}Total Net{/t}{/if}</td>
+                <td>{if isset($labels._total_net) and $labels._total_net!=''}{$labels._total_net}{else}{t}Total net{/t}{/if}</td>
 
                 <td class="text-right order_net">{$placed_order->get('Total Net Amount')}</td>
             </tr>
