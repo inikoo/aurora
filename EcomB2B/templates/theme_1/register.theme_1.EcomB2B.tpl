@@ -202,7 +202,7 @@
                                 <section>
 
                                     <label class="input">
-                                        <span id="_poll_info" contenteditable="true">{if empty($content._poll_info)}{t}Please let know you better so we can serve you better{/t}{else}{$content._poll_info}{/if}
+                                        <span id="_poll_info" >{if empty($content._poll_info)}{t}Please let know you better so we can serve you better{/t}{else}{$content._poll_info}{/if}
                                     </label>
                                 </section>
 
