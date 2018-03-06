@@ -147,8 +147,12 @@ function parse_customer_list($data,$db) {
             		exit;
             }
 
-            $sql=sprintf('select `Subject Key` from `Category Dimension` C left join `Category Bridge` B on (B.`Category Key`=C.`Category Key`) where `Category Code`=%s and `Category Store Key`=%d and `Category Scope`="Product" ',prepare_mysql($asset_code),$data['store_key']);
 
+
+
+
+            $sql=sprintf('select `Subject Key` from `Category Dimension` C left join `Category Bridge` B on (B.`Category Key`=C.`Category Key`) where `Category Code`=%s and `Category Store Key`=%d and `Category Scope`="Product" and  `Category Subject`="Product"  ',prepare_mysql($asset_code),$data['store_key']);
+          //  print $sql;
             if ($result=$db->query($sql)) {
                 foreach ($result as $row) {
                     $product_ids[$row['Subject Key']]=$row['Subject Key'];
@@ -159,7 +163,43 @@ function parse_customer_list($data,$db) {
                 exit;
             }
 
-           // print_r($product_ids);
+            $sql=sprintf('select `Subject Key` from `Category Dimension` C left join `Category Bridge` B on (B.`Category Key`=C.`Category Key`) where `Category Code`=%s and `Category Store Key`=%d and `Category Scope`="Product" and  `Category Subject`="Category" ',prepare_mysql($asset_code),$data['store_key']);
+          //  print $sql;
+            $categories=array();
+
+            if ($result=$db->query($sql)) {
+                foreach ($result as $row) {
+
+                    $categories[$row['Subject Key']]=$row['Subject Key'];
+
+
+                }
+            }else {
+                print_r($error_info=$db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+
+
+            if(count($categories)>1){
+
+                $sql=sprintf('select `Subject Key` from  `Category Bridge` where  `Subject`="Product"  and `Category Key` in (%s) ',join(',',$categories));
+
+              //  print $sql;
+
+                if ($result=$db->query($sql)) {
+                    foreach ($result as $row) {
+                        $product_ids[$row['Subject Key']]=$row['Subject Key'];
+                    }
+                }else {
+                    print_r($error_info=$db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+            }
+
+            // print_r($product_ids);
 
 
 
@@ -220,7 +260,7 @@ function parse_customer_list($data,$db) {
 
     }
 
-
+//print $where;
     return array(
         $table,
         $where,
