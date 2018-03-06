@@ -148,6 +148,7 @@ function check_for_duplicates($data, $db, $user, $account) {
     switch ($data['object']) {
 
         case 'Customers_List':
+        case 'List':
             $invalid_msg = _('Another list has same name');
             $sql         = sprintf(
                 "SELECT `List Key`AS `key` ,`List Name` AS field FROM `List Dimension` WHERE `List Parent Key`=%d  AND `List Name`=%s",

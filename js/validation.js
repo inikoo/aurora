@@ -5,6 +5,8 @@
 
 function validate_field(field, new_value, field_type, required, server_validation_settings, parent, parent_key, object, key) {
 
+
+
     var validation = client_validation(field_type, required, new_value, field)
 
 
@@ -99,7 +101,7 @@ function validate_address(field) {
 function client_validation(type, required, value, field) {
 
 
-    console.log(type + ' ' + value + ' ' + field)
+    //console.log(type + ' ' + value + ' ' + field+ ' required:' + required)
 
     var valid_state = {
         class: 'valid', type: ''
@@ -108,7 +110,6 @@ function client_validation(type, required, value, field) {
 
     if (value == '') {
         if (required) {
-
 
             if (type == 'dropdown_select') {
 
@@ -132,6 +133,7 @@ function client_validation(type, required, value, field) {
             }
 
         } else {
+
             return {
                 class: 'valid', type: ''
             }
@@ -210,6 +212,7 @@ function client_validation(type, required, value, field) {
             break;
 
         case 'date':
+        case 'date_interval':
             break;
 
         case 'barcode':
@@ -621,6 +624,8 @@ function client_validation(type, required, value, field) {
     }
 
 
+   // console.log(valid_state)
+
     return valid_state;
 }
 
@@ -711,7 +716,6 @@ function validate_ean_barcode(value) {
         }
     }
 
-    console.log(value.length)
 
 
     if (value.length == 12) {
@@ -791,7 +795,7 @@ function validate_barcode(value, min_length, max_length) {
 function validate_number(value, min, max) {
 
 
-    console.log('caca')
+
 
     if (!$.isNumeric(value)) {
         return {
@@ -806,8 +810,8 @@ function validate_number(value, min, max) {
 
     if (min != undefined && value < min) {
 
-        console.log(value)
-        console.log(min)
+        //console.log(value)
+        //console.log(min)
 
         return {
             class: 'invalid', type: 'negative'

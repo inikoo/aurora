@@ -465,7 +465,22 @@ $modules = array(
             'list'     => array(
                 'type' => 'object',
                 'tabs' => array(
-                    'customers.list' => array()
+                    'list.details'   => array(
+                        'label' => _('Data'),
+                        'icon'  => 'database',
+                        'title' => _('Details')
+                    ),
+                    'customers.list' => array(
+                        'label' => _('Customers'),
+                        'icon'  => 'users',
+
+                    ),
+                    'list.history' => array(
+                        'title' => _('History'),
+                        'label' => '',
+                        'icon'  => 'road',
+                        'class' => 'right icon_only'
+                    ),
                 )
 
 

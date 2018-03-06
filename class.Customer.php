@@ -2410,7 +2410,7 @@ class Customer extends Subject {
 
         $orders = $this->data['Customer Orders'];
 
-        $store = new Store($this->data['Customer Store Key']);
+        $store = get_object('store',$this->data['Customer Store Key']);
 
         if ($orders == 0) {
             $this->data['Customer Type by Activity'] = 'Active';

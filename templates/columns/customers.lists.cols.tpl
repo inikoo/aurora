@@ -11,21 +11,16 @@ sortType: "toggle",
 name: "name",
 label: "{t}Name{/t}",
 sortType: "toggle",
-
+editable: false,
 
 cell: Backgrid.HtmlCell.extend({
-events: {
-"dblclick": "enterEditMode",
-"click": function() {
-change_view('customers/list/' + this.model.get("id"))
-}
-},
-className: "link"
 })
 }, {
 name: "type",
 label: "{t}Type{/t}",
 sortType: "toggle",
+editable: false,
+
 cell: "string",
 }, {
 name: "creation_date",

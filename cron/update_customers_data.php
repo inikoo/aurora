@@ -60,7 +60,7 @@ if ($result = $db->query($sql)) {
         $customer->update_orders();
         $customer->update_invoices();
         $customer->update_payments();
-
+        $customer->update_activity();
 
 
         $contador++;
@@ -79,5 +79,13 @@ if ($result = $db->query($sql)) {
     exit;
 }
 
+
+$sql = sprintf("SELECT `Store Key` FROM `Store Dimension`");
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+        $store = get_object('Store', $row['Store Key']);
+        $store->update_customers_data();
+    }
+}
 
 ?>

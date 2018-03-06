@@ -492,6 +492,9 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
                 case 'customers':
                     include 'fields/customers_new_list.fld.php';
                     break;
+                default:
+                    include 'fields/list.fld.php';
+                    break;
 
             }
 

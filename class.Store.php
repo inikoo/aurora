@@ -1033,71 +1033,6 @@ class Store extends DB_Table {
 
     }
 
-    function create_customers_list($data) {
-
-
-        include_once 'class.List.php';
-
-        if (!array_key_exists('List Name', $data) or $data['List Name'] == '') {
-            $this->error = true;
-            $this->msg   = 'error, no list name';
-
-            return;
-        }
-
-
-
-        if ($data['Deal Campaign Valid From'] == '') {
-            $data['Deal Campaign Valid From'] = gmdate('Y-m-d');
-        }
-
-        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $data['Deal Campaign Valid From'])) {
-            $data['Deal Campaign Valid From'] .= ' 00:00:00';
-        }
-
-        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $data['Deal Campaign Valid To'])) {
-            $data['Deal Campaign Valid To'] .= ' 23:59:59';
-        }
-
-        $data['Deal Campaign Store Key'] = $this->id;
-
-
-        $campaign = new DealCampaign('find create', $data);
-
-
-        if ($campaign->id) {
-            $this->new_object_msg = $campaign->msg;
-
-            if ($campaign->new) {
-                $this->new_object = true;
-                $this->update_campaigns_data();
-
-
-            } else {
-                $this->error = true;
-                if ($campaign->found) {
-
-                    $this->error_code     = 'duplicated_field';
-                    $this->error_metadata = json_encode(array($campaign->duplicated_field));
-
-                    if ($campaign->duplicated_field == 'Deal Campaign Name') {
-                        $this->msg = _('Duplicated campaign name');
-                    }
-
-
-                } else {
-                    $this->msg = $campaign->msg;
-                }
-            }
-
-            return $campaign;
-        } else {
-            $this->error = true;
-            $this->msg   = $campaign->msg;
-        }
-
-    }
-
     function update_campaigns_data() {
 
         $campaigns = 0;
@@ -1118,6 +1053,95 @@ class Store extends DB_Table {
 
 
         $this->update(array('Store Active Deal Campaigns' => $campaigns), 'no_history');
+
+    }
+
+    function create_customers_list($data) {
+
+        $this->new_list=false;
+
+        include_once 'class.List.php';
+
+        if (empty($data['List Name'])) {
+            $this->error = true;
+            $this->msg   = 'error, no list name';
+
+            return;
+        }
+
+
+        $sql = sprintf(
+            "SELECT `List Key`AS `key` ,`List Name` AS field FROM `List Dimension` WHERE `List Parent Key`=%d  AND `List Name`=%s", $this->id, prepare_mysql($data['List Name'])
+        );
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $this->error = true;
+                $this->msg   = 'error, duplicated list name';
+
+                return;
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+
+
+
+        $list_data['List Creation Date'] = gmdate('Y-m-d H:i:s');
+
+
+        $list_data['List Scope']    = 'Customer';
+        $list_data['List Use Type'] = 'UserCreated';
+
+        $list_data['List Parent Key'] = $this->id;
+        $list_data['editor']=$this->editor;
+        $list_data['List Name']=$data['List Name'];
+        $list_data['List Type']=$data['List Type'];
+
+        unset($data['List Name']);
+        unset($data['List Type']);
+
+
+
+        $list_data['List Metadata']=json_encode($data);
+
+        $list = new SubjectList('new', $list_data);
+
+
+        if ($list->id) {
+            $this->new_object_msg = $list->msg;
+
+            if ($list->new) {
+                $this->new_list = true;
+
+
+
+            } else {
+                $this->error = true;
+                if ($list->found) {
+
+                    $this->error_code     = 'duplicated_field';
+                    $this->error_metadata = json_encode(array($list->duplicated_field));
+
+                    if ($list->duplicated_field == 'List Name') {
+                        $this->msg = _('Duplicated list name');
+                    }
+
+
+                } else {
+                    $this->msg = $list->msg;
+                }
+            }
+
+            return $list;
+        } else {
+            $this->error = true;
+            $this->msg   = $list->msg;
+        }
 
     }
 

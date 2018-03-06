@@ -1061,6 +1061,10 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             include_once 'showcase/customer_poll_query_option.show.php';
             $html = get_customer_poll_query_option_showcase($data, $smarty, $user, $db, $account);
             break;
+        case 'list':
+            include_once 'showcase/list.show.php';
+            $html = get_list_showcase($data, $smarty, $user, $db);
+            break;
         default:
             $html = $data['object'].' -> '.$data['key'];
             break;
@@ -3572,7 +3576,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'reference' => 'customers/'.$store->id.'/lists'
                     );
                     $branch[] = array(
-                        'label'     => $list->get('List Name'),
+                        'label'     => '<span class="List_Name">'.$list->get('List Name').'</span>',
                         'icon'      => '',
                         'reference' => 'customers/list/'.$list->id
                     );
@@ -3614,16 +3618,12 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         $list = new SubjectList($state['parent_key']);
 
                         $branch[] = array(
-                            'label'     => _(
-                                    "Customer's lists"
-                                ).' '.$store->data['Store Code'],
+                            'label'     => _("Customer's lists").' '.$store->data['Store Code'],
                             'icon'      => 'list',
                             'reference' => 'customers/'.$store->id.'/lists'
                         );
                         $branch[] = array(
-                            'label'     => $list->get(
-                                'List Name'
-                            ),
+                            'label'     => '<span class="List_Name">'.$list->get('List Name').'</span>',
                             'icon'      => '',
                             'reference' => 'customers/list/'.$list->id
                         );

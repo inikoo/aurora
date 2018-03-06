@@ -31,16 +31,27 @@ function get_form_validation_state(submitting) {
         var field = $(this).attr('field')
 
 
-        console.log(field)
-        console.log($('#' + field + '_field').hasClass('valid'))
+       // console.log(field)
+       // console.log($('#' + field + '_field').hasClass('valid'))
 
-        if ($('#' + field + '_field').hasClass('invalid')) {
-            component_validation = 'invalid'
-        } else if ($('#' + field + '_field').hasClass('valid')) {
+        //console.log($(this).attr('field_type'))
+
+
+        if($(this).attr('field_type')=='date_interval'){
             component_validation = 'valid'
-        } else {
-            component_validation = 'potentially_valid'
+
+        }else{
+            if ($('#' + field + '_field').hasClass('invalid')) {
+                component_validation = 'invalid'
+            } else if ($('#' + field + '_field').hasClass('valid')) {
+                component_validation = 'valid'
+            } else {
+                component_validation = 'potentially_valid'
+            }
         }
+
+
+
 
 
         // if (component_validation != 'valid') console.log(field + ' ' + component_validation)
@@ -60,7 +71,7 @@ function get_form_validation_state(submitting) {
 
     });
 
-    console.log(form_validation)
+    //console.log(form_validation)
 
     return form_validation
 
@@ -90,6 +101,18 @@ function process_form_validation(validation, submitting) {
     }
 
     reset_controls()
+
+    post_process_form_validation();
+
+}
+
+function  post_process_form_validation(){
+
+    if($('#fields').attr('Object')=='Customers_List'){
+        post_process_new_customer_list_form_validation()
+    }
+
+
 
 }
 
@@ -130,14 +153,18 @@ function save_new_object(object, form_type) {
     process_form_validation(form_validation, true)
 
 
-    if ($('tr.controls').hasClass('valid')) {
+    if ($('tr.controls').hasClass('valid') && !$('tr.controls').hasClass('waiting')) {
 
 
-        $('tr.controls').removeClass('valid').addClass('waiting')
-        $('#' + object + '_save_icon').removeClass('fa-cloud');
-        $('#' + object + '_save_icon').addClass('fa-spinner fa-spin');
-        $('#save_label').addClass('hide')
-        $('#saving_label').removeClass('hide')
+        $('tr.controls').addClass('waiting')
+
+        $('#' + object + '_save_icon').removeClass('fa-cloud').addClass('fa-spinner fa-spin');;
+
+       // $('#save_label').addClass('hide')
+       // $('#saving_label').removeClass('hide')
+
+
+
 
         var fields_data = {};
         var re = new RegExp('_', 'g');
@@ -148,7 +175,7 @@ function save_new_object(object, form_type) {
 
 
             var field_tr = $(this).closest('tr')
-            console.log($(this).attr('field'))
+           // console.log($(this).attr('field'))
 
             //      if (!field_tr.hasClass('hidden') && field_tr.hasClass('hide')) {
             //         return
@@ -159,10 +186,19 @@ function save_new_object(object, form_type) {
             var field_type = $(this).attr('field_type')
 
             //console.log(field)
+            //console.log(field_type+' '+field)
 
 
             if (field_type == 'time') {
                 value = clean_time($('#' + field).val())
+            }else if (field_type == 'date' || field_type == 'date_interval') {
+                if($('#' + field).val()!='') {
+                    value = $('#' + field).val() + ' ' + $('#' + field + '_time').val()
+                }else{
+                    value=''
+                }
+               // console.log(field_type+' '+field+' '+value)
+
             } else if (field_type == 'password' || field_type == 'password_with_confirmation' || field_type == 'password_with_confirmation_paranoid' || field_type == 'pin' || field_type == 'pin_with_confirmation' || field_type == 'pin_with_confirmation_paranoid') {
                 value = sha256_digest($('#' + field).val())
             } else if (field_type == 'attachment') {
@@ -205,10 +241,30 @@ function save_new_object(object, form_type) {
                     value = 'No'
                 }
 
+            }  else if (field_type == 'elements') {
+                var icon = $(this).find('i')
+                if (icon.hasClass('fa-check-square-o')) {
+                    value = 'Yes'
+
+                } else {
+                    value = 'No'
+                }
+
+            } else if (field_type == 'with_field') {
+                var icon = $(this).find('i')
+                if (icon.hasClass('fa-toggle-on')) {
+                    value = 'Yes'
+
+                }else if (icon.hasClass('fa-toggle-off')) {
+                    value = 'No'
+
+                } else {
+                    value = ''
+                }
             } else {
                 var value = $('#' + field).val()
             }
-            console.log($(this).attr('id') + ' ' + field + ' ' + $(this).closest('tr').hasClass('hide'))
+            //console.log($(this).attr('id') + ' ' + field + ' ' + $(this).closest('tr').hasClass('hide'))
             fields_data[field.replace(re, ' ')] = value
         });
 
@@ -231,7 +287,7 @@ function save_new_object(object, form_type) {
 
         // used only for debug
         var request = '/' + ar_file + '?tipo=' + (form_type != '' ? form_type : tipo) + '&object=' + object + '&parent=' + $('#fields').attr('parent') + '&parent_key=' + $('#fields').attr('parent_key') + '&fields_data=' + JSON.stringify(fields_data)
-        console.log(request)
+       // console.log(request)
 
 
         //return;
@@ -251,18 +307,18 @@ function save_new_object(object, form_type) {
         request.done(function (data) {
 
 
-            console.log(data)
+            //console.log(data)
             $('#' + object + '_save_icon').addClass('fa-cloud');
             $('#' + object + '_save_icon').removeClass('fa-spinner fa-spin');
-            $('#save_label').removeClass('hide')
-            $('#saving_label').addClass('hide')
-            $('tr.controls').removeClass('waiting');
+           // $('#save_label').removeClass('hide')
+           // $('#saving_label').addClass('hide')
+            $('tr.controls').removeClass('waiting').removeClass('valid');
             if (data.state == 200) {
 
 
                 if (data.pcard == '' && data.redirect != '') {
 
-                    console.log(data.updated_data.redirect)
+                    //console.log(data.updated_data.redirect)
                     change_view(data.redirect)
                     return;
 
@@ -293,13 +349,13 @@ function save_new_object(object, form_type) {
         })
 
         request.fail(function (jqXHR, textStatus) {
-            console.log(textStatus)
+            //console.log(textStatus)
 
-            console.log(jqXHR.responseText)
-            $('#' + object + '_save').addClass('fa-cloud').removeClass('fa-spinner fa-spin')
-            $('tr.controls').removeClass('waiting').addClass('valid')
-            $('#save_label').removeClass('hide')
-            $('#saving_label').addClass('hide')
+            //console.log(jqXHR.responseText)
+            $('#' + object + '_save_icon').addClass('fa-cloud').removeClass('fa-spinner fa-spin')
+            $('tr.controls').removeClass('waiting valid').addClass('error')
+            //$('#save_label').removeClass('hide')
+            //$('#saving_label').addClass('hide')
 
             $('#inline_new_object_msg').html('Server error please contact Aurora support').addClass('error')
 
@@ -314,7 +370,7 @@ function save_new_object(object, form_type) {
 
 function post_new_actions(object, data) {
 
-    console.log(data)
+   // console.log(data)
 
     switch (object) {
         case 'Timesheet_Record':
@@ -368,7 +424,7 @@ function save_inline_new_object(trigger) {
 
     fields_data[field.replace(re, ' ')] = value
     var request = '/ar_edit.php?tipo=new_object&object=' + object + '&parent=' + parent + '&parent_key=' + parent_key + '&fields_data=' + JSON.stringify(fields_data)
-    console.log(request)
+    //console.log(request)
     var form_data = new FormData();
     form_data.append("tipo", 'new_object')
     form_data.append("object", object)
@@ -426,9 +482,9 @@ function save_inline_new_object(trigger) {
     })
 
     request.fail(function (jqXHR, textStatus) {
-        console.log(textStatus)
+        //console.log(textStatus)
 
-        console.log(jqXHR.responseText)
+       // console.log(jqXHR.responseText)
         $('#' + object + '_save').addClass('fa-cloud').removeClass('fa-spinner fa-spin')
         $('#inline_new_object_msg').html('Server error please contact Aurora support').addClass('error')
 
@@ -576,7 +632,7 @@ function update_new_address_fields(field, country_code, hide_recipient_fields, a
 
 
                 var validation = validate_field(field, value, type, required, server_validation, parent, parent_key, _object, key)
-                // console.log(validation)
+
 
                 /*
                  if (arg == 'init') {

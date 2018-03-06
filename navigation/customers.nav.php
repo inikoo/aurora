@@ -287,9 +287,7 @@ function get_customers_list_navigation($data, $smarty, $user, $db) {
 
         'left_buttons'  => $left_buttons,
         'right_buttons' => $right_buttons,
-        'title'         => _("Customer's List").' <span class="id">'.$list->get(
-                'List Name'
-            ).'</span>',
+        'title'         => _("Customer's List").' <span class="id List_Name">'.$list->get('List Name').'</span>',
         'search'        => array(
             'show'        => true,
             'placeholder' => _('Search customers')

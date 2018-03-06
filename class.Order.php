@@ -1061,11 +1061,7 @@ class Order extends DB_Table {
                                    )
                             );
                         if ($_tmp < 3600) {
-                            $date = strftime(
-                                "%e %b %Y %H:%M:%S %Z", strtotime(
-                                                          $this->data['Order Tax Number Validation Date'].' +0:00'
-                                                      )
-                            );
+                            $date = strftime("%e %b %Y %H:%M:%S %Z", strtotime($this->data['Order Tax Number Validation Date'].' +0:00'));
 
                         } elseif ($_tmp < 86400) {
                             $date = strftime(
