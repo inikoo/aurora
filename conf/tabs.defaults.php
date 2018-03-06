@@ -36,6 +36,18 @@ $tab_defaults = array(
 
     ),
 
+
+    'customers.list'                     => array(
+        'view'          => 'overview',
+        'sort_key'      => 'formatted_id',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'name',
+        'export_fields' => $export_fields['customers']
+
+    ),
+
     'customers.lists'               => array(
         'view'        => 'overview',
         'sort_key'    => 'creation_date',
@@ -920,6 +932,7 @@ $tab_defaults = array(
         'elements_type' => each($elements_options['deal_history'])['key'],
         'elements'      => $elements_options['deal_history']
     ),
+
 
 
     'category.product.sales.history'       => array(
@@ -3396,14 +3409,20 @@ $tab_defaults = array(
         'elements_type' => each($elements_options['leakages_transactions'])['key'],
         'elements'      => $elements_options['leakages_transactions']
     ),
+    'list.history' => array(
+        'view'          => 'overview',
+        'sort_key'      => 'date',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => '',
+        'elements_type' => each($elements_options['list_history'])['key'],
+        'elements'      => $elements_options['list_history']
+    ),
 
 
 );
 
-
-$tab_defaults_alias = array(
-    'customers.list' => 'customers'
-);
 
 
 ?>

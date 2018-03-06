@@ -26,7 +26,7 @@
         </tr>
         {/foreach}
         {else}
-	{foreach from=$field_group.fields item=field name=fields} 
+	        {foreach from=$field_group.fields item=field name=fields}
 
 		{if isset($field.type)}{assign "type" $field.type}{else}{assign "type" "ignore"}{/if} 
         {if $type=='ignore'}{continue}{/if}
@@ -465,7 +465,114 @@ function input_barcode_to_new_object(field) {
 
 
 		     </script>
+        {elseif $edit=='date_interval' } 
+		<input id="{$field.id}_From" type="hidden"  class="value"  field="{$field.id}_From"  field_type="date_interval" value="{$field.value['From']}" has_been_valid="0"   />
+		<input id="{$field.id}_From_time" type="hidden" value="{$field.time['From']}" />
+		<input id="{$field.id}_formatted_From" class="option_input_field "  value="{$field.formatted_value['From']}" />
+		<span id="{$field.id}_msg_From" class="msg"></span> 
+		<div id="{$field.id}_From_datepicker" class="hide datepicker"></div>
+		
+		<input id="{$field.id}_To" type="hidden"  class="value"  field="{$field.id}_To"  field_type="date_interval"  value="{$field.value['To']}" has_been_valid="0"/>
+		<input id="{$field.id}_To_time" type="hidden" value="{$field.time['To']}" />
+		<input id="{$field.id}_formatted_To" class="option_input_field "  value="{$field.formatted_value['To']}" />
+		<span id="{$field.id}_msg_To" class="msg"></span> 
+		<div id="{$field.id}_To_datepicker" class="hide datepicker"></div>
+		
+		<script>
+		
+		    $(function() {
+		        $("#{$field.id}_From_datepicker").datepicker({
+		            showOtherMonths: true,
+		            selectOtherMonths: true,
+		            defaultDate: new Date('{$field.value['From']}'),
+		            altField: "#{$field.id}_From",
+		            altFormat: "yy-mm-dd",
+		            onSelect: function() {
+		                $('#{$field.id}').change();
+		                $('#{$field.id}_formatted_From').val($.datepicker.formatDate("dd/mm/yy", $(this).datepicker("getDate")))
+		                $('#{$field.id}_From_datepicker').addClass('hide')
+		            }
+		        });
+		        
+		        
+		          $("#{$field.id}_To_datepicker").datepicker({
+		            showOtherMonths: true,
+		            selectOtherMonths: true,
+		            defaultDate: new Date('{$field.value['To']}'),
+		            altField: "#{$field.id}_To",
+		            altFormat: "yy-mm-dd",
+		            onSelect: function() {
+		                $('#{$field.id}').change();
+		                $('#{$field.id}_formatted_To').val($.datepicker.formatDate("dd/mm/yy", $(this).datepicker("getDate")))
+		                $('#{$field.id}_To_datepicker').addClass('hide')
+		            }
+		        });
+		        
+		        
+		    });
 
+		    $('#{$field.id}_formatted_From').focusin(function() {
+		        $('#{$field.id}_From_datepicker').removeClass('hide')
+
+		    });
+
+		    $('#{$field.id}_formatted_From').on('input', function() {
+		        var date = chrono.parseDate($('#{$field.id}_formatted_From').val())
+
+		        if (date == null) {
+		            var value = '';
+		        } else {
+		            var value = date.toISOString().slice(0, 10)
+		            $("#{$field.id}_From_datepicker").datepicker("setDate", date);
+		        }
+
+
+		        $('#{$field.id}_From').val(value).change()
+		      
+
+		    });
+		    $('#{$field.id}_From').on('change', function() {
+		        on_changed_value('{$field.id}_From', $('#{$field.id}_From').val())
+
+		    });
+
+		    if ('{$field.value['From']}' == '') {
+		        $('#{$field.id}_From').val('')
+		    }
+
+		    
+		       $('#{$field.id}_formatted_To').focusin(function() {
+		        $('#{$field.id}_To_datepicker').removeClass('hide')
+
+		    });
+
+		    $('#{$field.id}_formatted_To').on('input', function() {
+		        var date = chrono.parseDate($('#{$field.id}_formatted_To').val())
+
+		        if (date == null) {
+		            var value = '';
+		        } else {
+		            var value = date.toISOString().slice(0, 10)
+		            $("#{$field.id}_To_datepicker").datepicker("setDate", date);
+		        }
+
+
+		        $('#{$field.id}_To').val(value).change()
+		      
+
+		    });
+		    $('#{$field.id}_To').on('change', function() {
+		        on_changed_value('{$field.id}_To', $('#{$field.id}_To').val())
+
+		    });
+
+		    if ('{$field.value['To']}' == '') {
+		        $('#{$field.id}_To').val('')
+		    }
+
+		    
+
+		     </script>
         {/if} 
   	    
   
@@ -534,7 +641,21 @@ function input_barcode_to_new_object(field) {
 
 
 
+
+
+
         var field_data = $('#' + field + '_container')
+
+
+if(field_data.length==0){
+            if(field=='Register_Date_From'){
+                  field_data = $('#Register_Date_container')
+            }else if(field=='Register_Date_To'){
+                  field_data = $('#Register_Date_container')
+            }
+}
+
+
         var type = field_data.attr('field_type')
 
 
@@ -553,21 +674,27 @@ function input_barcode_to_new_object(field) {
         var key = field_data.attr('key')
 
 
-console.log(field)
-console.log(value)
-console.log(type)
+//console.log(field)
+//console.log(value)
+
 
         var validation = validate_field(field, value, type, required, server_validation, parent, parent_key, _object, key)
-
-
+console.log('zzzzz')
+console.log(validation)
 
             if (validation.class == 'invalid' && value == '') {
                 validation.class = 'potentially_valid'
             }
             //console.log(field)
-            //console.log(validation)
+            console.log('#' + field + '_field')
 
-         $('#' + field + '_field').removeClass('invalid potentially_valid valid').addClass(validation.class)
+
+if(type!='date_interval'){
+
+             $('#' + field + '_field').removeClass('invalid potentially_valid valid').addClass(validation.class)
+
+}
+
 
 
 

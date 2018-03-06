@@ -94,20 +94,10 @@ class Country {
                 }
             }
 
-            if (strlen($id) == 3) {
-                $sql = sprintf(
-                    "SELECT * FROM kbase.`Country Dimension` C WHERE `Country Code`=%s", prepare_mysql($id)
-                );
-                if ($this->data = $this->db->query($sql)->fetch()) {
-                    $this->id = $this->data['Country Key'];
-
-                    return;
-                }
-            }
 
 
             $sql = sprintf(
-                "SELECT `Country Key`  FROM kbase.`Country Dimension`WHERE  `Country Name`=%s  ", prepare_mysql($id)
+                "SELECT *  FROM kbase.`Country Dimension`WHERE  `Country Name`=%s  ", prepare_mysql($id)
             );
             if ($this->data = $this->db->query($sql)->fetch()) {
                 $this->id = $this->data['Country Key'];

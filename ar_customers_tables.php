@@ -225,6 +225,7 @@ function customers($_data, $db, $user) {
 
     } else {
         print_r($error_info = $db->errorInfo());
+        print "$sql\n";
         exit;
     }
 
@@ -272,7 +273,7 @@ function lists($_data, $db, $user) {
             $adata[] = array(
                 'id'            => (integer)$data['List key'],
                 'type'          => $customer_list_type,
-                'name'          => $data['List Name'],
+                'name'          => sprintf('<span class="link"  onclick="change_view(\'customers/list/%d\')">%s</span>',$data['List key'],$data['List Name']),
                 'creation_date' => strftime(
                     "%a %e %b %Y %H:%M %Z", strtotime($data['List Creation Date']." +00:00")
                 ),

@@ -79,11 +79,11 @@
         <script src="/js/barcode_scanner.js?v1712v2"></script>
         <script src="/js/search.js"></script>
         <script src="/js/table.js"></script>
-        <script src="/js/validation.js?v171206v3"></script>
-        <script src="/js/edit.js?v171229"></script>
+        <script src="/js/validation.js?v171206v5"></script>
+        <script src="/js/edit.js?v171229v5"></script>
         <script src="/js/edit_webpage_edit.js?v171019"></script>
 
-        <script src="/js/new.js?v180301"></script>
+        <script src="/js/new.js?v180302v9"></script>
         <script src="/js/order.common.js?v171126b"></script>
         <script src="/js/email_campaign.common.js?v170207"></script>
 

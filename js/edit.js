@@ -555,20 +555,22 @@ function on_changed_value(field, new_value) {
     var field_data = $('#' + field + '_container')
     var type = field_data.attr('field_type')
 
-    if (type == 'date') {
+    if (type == 'date' || type == 'date_interval') {
         new_value = new_value + ' ' + $('#' + field + '_time').val()
     }
 
 
+    /*
+
     if (new_value != $('#' + field + '_value').val()) {
         var changed = true;
 
-        //$('#' + field + '_field').addClass('changed')
+        $('#' + field + '_field').addClass('changed')
     } else {
         var changed = false;
-        //$('#' + field + '_field').removeClass('changed')
+        $('#' + field + '_field').removeClass('changed')
     }
-
+*/
 
     $('#' + field).closest('tbody.address_fields').attr('has_been_changed', 1)
 
@@ -581,6 +583,7 @@ function on_changed_value(field, new_value) {
     var validation = validate(field, new_value)
 
 
+
     process_validation(validation, field, false)
 
 
@@ -588,8 +591,6 @@ function on_changed_value(field, new_value) {
 
 
 function validate(field, value) {
-
-
 
     var field_data = $('#' + field + '_container')
 
@@ -615,6 +616,9 @@ function validate(field, value) {
     if (type == 'salary') {
         return validate_salary_components();
     } else {
+
+        console.log('xxxxx: '+field+' '+value+' '+type+' '+required)
+
         return validate_field(field, value, type, required, server_validation, parent, parent_key, _object, key)
     }
 
