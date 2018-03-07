@@ -2005,6 +2005,12 @@ textarea {
   #parts_list .add_new_part_tr .button {
     padding-right: 15px; }
 
+.button_radio_options .button {
+  opacity: .5; }
+  .button_radio_options .button.selected {
+    opacity: 1;
+    border-color: #000; }
+
 .presentation_card {
   padding: 10px; }
 
