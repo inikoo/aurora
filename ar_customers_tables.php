@@ -163,17 +163,27 @@ function customers($_data, $db, $user) {
             }
 
 
-            if ($parameters['parent'] == 'store') {
+
+            if ($parameters['parent'] == 'store' ) {
                 $link_format = '/customers/%d/%d';
+                $formatted_id=sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $parameters['parent_key'], $data['Customer Key'], $data['Customer Key']);
+
+            } elseif ($parameters['parent']=='customer_poll_query_option' or $parameters['parent']=='customer_poll_query') {
+                $link_format = '/customers/%d/%d';
+                $formatted_id=sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $data['Customer Store Key'], $data['Customer Key'], $data['Customer Key']);
+
             } else {
                 $link_format = '/'.$parameters['parent'].'/%d/customer/%d';
+
+                $formatted_id=sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $parameters['parent_key'], $data['Customer Key'], $data['Customer Key']);
+
             }
 
 
             $adata[] = array(
                 'id'           => (integer)$data['Customer Key'],
                 'store_key'    => $data['Customer Store Key'],
-                'formatted_id' => sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $parameters['parent_key'], $data['Customer Key'], $data['Customer Key']),
+                'formatted_id' => $formatted_id,
 
                 'name'         => $data['Customer Name'],
                 'company_name' => $data['Customer Company Name'],
