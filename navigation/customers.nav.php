@@ -1927,7 +1927,8 @@ function get_customers_poll_query_option_navigation($data, $smarty, $user, $db) 
 
 
         $placeholder=_('Search customers');
-        $sections = get_sections('customers', $poll_option->get('Customer Poll Query OptionStore Key'));
+        $sections = get_sections('customers', $poll_option->get('Customer Poll Query Option Store Key'));
+
 
 
 
