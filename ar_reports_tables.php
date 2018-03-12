@@ -828,6 +828,18 @@ function sales($_data, $db, $user, $account) {
     $sql   = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
+    $totals=array(
+        'store' =>_('Total'),
+        'invoices' =>0,
+        'refunds' =>0,
+        'replacements' =>0,
+        'customers' =>0,
+        'refund_amount' =>0,
+        'revenue' =>0,
+        'profit' =>0,
+        'margin' =>0,
+    );
+
     // print $sql;
 
     if ($result = $db->query($sql)) {
@@ -850,26 +862,31 @@ function sales($_data, $db, $user, $account) {
                 'profit' =>$profit
             );
 
+            $totals['customers']+=$data['customers'];
+            $totals['invoices']+=$data['invoices'];
+            $totals['refunds']+=$data['refunds'];
+            $totals['refund_amount']+=$data['refunds_amount_oc'];
+            $totals['revenue']+=$data['revenue_oc'];
+            $totals['profit']+=$data['profit_oc'];
+
+
         }
     } else {
         print_r($error_info = $db->errorInfo());
         exit;
     }
 
-
-    $sql  = "select $fields from $table $where $wheref $group_by";
-    $stmt = $db->prepare($sql);
-    $stmt->execute();
-
-    $total_records = $stmt->rowCount();
-
-    $rtext = sprintf(
-            ngettext('%s record', '%s records', $total_records), number($total_records)
-        ).' <span class="discreet">'.$rtext.'</span>';
+    $totals['invoices']=number($totals['invoices']);
+    $totals['refunds']=number($totals['refunds']);
+    $totals['customers']=number($totals['customers']);
 
 
-    //$rtext=preg_replace('/\(|\)/', '', $rtext);
+    $totals['margin']=percentage($totals['profit'],$totals['revenue']);
+    $totals['refund_amount']=money($totals['refund_amount'],$account->get('Account Currency Code'));
+    $totals['revenue']=money($totals['revenue'],$account->get('Account Currency Code'));
+    $totals['profit']=money($totals['profit'],$account->get('Account Currency Code'));
 
+    $adata[] =$totals;
 
     $response = array(
         'resultset' => array(
