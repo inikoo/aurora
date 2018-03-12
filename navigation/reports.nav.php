@@ -22,7 +22,128 @@ function get_sales_navigation($user, $smarty, $data) {
         $sections[$data['section']]['selected'] = true;
     }
 
-    $title = _('Sales');
+    $title = _('Invoice sales');
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search reports')
+        )
+    );
+    $smarty->assign('_content', $_content);
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
+
+
+function get_report_orders_navigation($user, $smarty, $data) {
+
+
+    $left_buttons  = array();
+    $right_buttons = array();
+    $sections      = array();
+
+
+
+    $right_buttons[]
+        = array(
+        'icon'  => 'tasks',
+        'title' => '',
+        'click'=>"change_view('/report/report_orders_components')",
+        'pre_text'=>_("X-rays"),
+        'class'=>'text'
+    );
+
+
+    if (isset($sections[$data['section']])) {
+        $sections[$data['section']]['selected'] = true;
+    }
+
+    $title = _('Dispatched orders sales');
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search reports')
+        )
+    );
+    $smarty->assign('_content', $_content);
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
+
+
+function get_report_orders_components_navigation($user, $smarty, $data) {
+
+
+    $left_buttons  = array();
+    $right_buttons = array();
+    $sections      = array();
+
+
+
+    $right_buttons[]
+        = array(
+        'icon'  => 'usd',
+        'title' => '',
+        'click'=>"change_view('/report/report_orders')",
+        'pre_text'=>_("Sales"),
+        'class'=>'text'
+    );
+
+
+    if (isset($sections[$data['section']])) {
+        $sections[$data['section']]['selected'] = true;
+    }
+
+    $title = _('Dispatched orders X-rays');
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search reports')
+        )
+    );
+    $smarty->assign('_content', $_content);
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
+
+
+
+function get_report_delivery_notes_navigation($user, $smarty, $data) {
+
+
+    $left_buttons  = array();
+    $right_buttons = array();
+    $sections      = array();
+
+    if (isset($sections[$data['section']])) {
+        $sections[$data['section']]['selected'] = true;
+    }
+
+    $title = _('Delivery notes');
 
     $_content = array(
         'sections_class' => '',

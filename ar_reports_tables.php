@@ -38,6 +38,15 @@ switch ($tipo) {
     case 'packers':
         packers(get_table_parameters(), $db, $user, $account);
         break;
+    case 'sales':
+        sales(get_table_parameters(), $db, $user, $account);
+        break;
+    case 'orders':
+        dispatched_orders(get_table_parameters(), $db, $user, $account);
+        break;
+    case 'delivery_notes':
+        dispatched_delivery_notes(get_table_parameters(), $db, $user, $account);
+        break;
     case 'intrastat':
         intrastat(get_table_parameters(), $db, $user, $account);
         break;
@@ -84,10 +93,8 @@ function reports($_data, $db, $user) {
     foreach ($available_reports as $key => $data) {
 
         $adata[] = array(
-            'name'            => $data['Label'],
-            'report_request'  => 'report/'.$key,
-            'section'         => $data['GroupLabel'],
-            'section_request' => 'reports/'.$data['Group']
+            'name'            =>sprintf('<span class="link" onclick="change_view(\'/report/%s\')">%s</span>', $key,$data['Label']),
+            'section'         => sprintf('<span class="link" onclick="change_view(\'/reports/%s\')">%s</span>', $data['Group'],$data['GroupLabel'])
 
         );
 
@@ -795,6 +802,212 @@ function packers($_data, $db, $user, $account) {
         print_r($error_info = $db->errorInfo());
         exit;
     }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+
+function sales($_data, $db, $user, $account) {
+
+    $rtext_label = 'store';
+    include_once 'prepare_table/init.php';
+
+    $sql   = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+    $adata = array();
+
+    // print $sql;
+
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+
+            $refund_amount=money($data['refunds_amount_oc'],$account->get('Account Currency Code'));
+            $revenue=money($data['revenue_oc'],$account->get('Account Currency Code'));
+            $profit=money($data['profit_oc'],$account->get('Account Currency Code'));
+
+            $adata[] = array(
+
+                'store' =>$data['Store Code'],
+                'invoices' =>number($data['invoices']),
+                'refunds' =>number($data['refunds']),
+                'customers' =>number($data['customers']),
+                'refund_amount' =>$refund_amount,
+                'revenue' =>$revenue,
+                'profit' =>$profit
+            );
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $sql  = "select $fields from $table $where $wheref $group_by";
+    $stmt = $db->prepare($sql);
+    $stmt->execute();
+
+    $total_records = $stmt->rowCount();
+
+    $rtext = sprintf(
+            ngettext('%s record', '%s records', $total_records), number($total_records)
+        ).' <span class="discreet">'.$rtext.'</span>';
+
+
+    //$rtext=preg_replace('/\(|\)/', '', $rtext);
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function dispatched_orders($_data, $db, $user, $account) {
+
+    $rtext_label = 'store';
+    include_once 'prepare_table/init.php';
+
+    $sql   = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+    $adata = array();
+
+    // print $sql;
+
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+
+            $refund_amount=money($data['refunds_amount_oc'],$account->get('Account Currency Code'));
+            $revenue=money($data['revenue_oc'],$account->get('Account Currency Code'));
+            $profit=money($data['profit_oc'],$account->get('Account Currency Code'));
+
+            $adata[] = array(
+
+                'store' =>$data['Store Code'],
+                'orders' =>number($data['orders']),
+                'refunds' =>number($data['refunds']),
+                'replacements' =>number($data['replacements']),
+                'customers' =>number($data['customers']),
+                'refund_amount' =>$refund_amount,
+                'revenue' =>$revenue,
+                'profit' =>$profit,
+                'margin' =>percentage($data['profit_oc'],$data['revenue_oc'])
+            );
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $sql  = "select $fields from $table $where $wheref $group_by";
+    $stmt = $db->prepare($sql);
+    $stmt->execute();
+
+    $total_records = $stmt->rowCount();
+
+    $rtext = sprintf(
+            ngettext('%s record', '%s records', $total_records), number($total_records)
+        ).' <span class="discreet">'.$rtext.'</span>';
+
+
+    //$rtext=preg_replace('/\(|\)/', '', $rtext);
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+
+function dispatched_delivery_notes($_data, $db, $user, $account) {
+
+    $rtext_label = 'store';
+    include_once 'prepare_table/init.php';
+
+    $sql   = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+    $adata = array();
+
+    // print $sql;
+
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+
+           // $refund_amount=money($data['refunds_amount_oc'],$account->get('Account Currency Code'));
+           // $revenue=money($data['revenue_oc'],$account->get('Account Currency Code'));
+          //  $profit=money($data['profit_oc'],$account->get('Account Currency Code'));
+
+            $adata[] = array(
+
+                'store' =>$data['Store Code'],
+                'shipments' =>number($data['shipments']),
+
+                'delivery_notes' =>number($data['shipments']-$data['replacements']),
+                //'refunds' =>number($data['refunds']),
+                'replacements' =>number($data['replacements']),
+                'customers' =>number($data['customers']),
+                //'refund_amount' =>$refund_amount,
+                //'revenue' =>$revenue,
+                //'profit' =>$profit,
+                //'margin' =>percentage($data['profit_oc'],$data['revenue_oc'])
+            );
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $sql  = "select $fields from $table $where $wheref $group_by";
+    $stmt = $db->prepare($sql);
+    $stmt->execute();
+
+    $total_records = $stmt->rowCount();
+
+    $rtext = sprintf(
+            ngettext('%s record', '%s records', $total_records), number($total_records)
+        ).' <span class="discreet">'.$rtext.'</span>';
+
+
+    //$rtext=preg_replace('/\(|\)/', '', $rtext);
 
 
     $response = array(

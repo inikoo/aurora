@@ -4154,6 +4154,18 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                         $section = 'sales';
 
 
+                    }  elseif ($view_path[0] == 'report_orders') {
+                        $section = 'report_orders';
+
+
+                    }  elseif ($view_path[0] == 'report_orders_components') {
+                        $section = 'report_orders_components';
+
+
+                    }  elseif ($view_path[0] == 'report_delivery_notes') {
+                        $section = 'report_delivery_notes';
+
+
                     } elseif ($view_path[0] == 'pickers') {
                         $section = 'pickers';
 

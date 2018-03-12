@@ -386,7 +386,20 @@
                 </td>
             </tr>
 
-            <table border="0" class="totals" style="position:relative;top:20px">
+            <table border="0" class="totals" style="position:relative;top:20px;">
+
+
+                <tr class="subtotal first">
+                    <td class="label">{t}Items profit{/t}</td>
+                    <td class="aright "><span class="Profit_Amount">{$order->get('Profit Amount')} (<span class="Margin">{$order->get('Margin')}</span>)</span></td>
+                </tr>
+
+
+            </table>
+
+
+
+            <table border="0" class="totals" style="position:relative;top:30px;">
 
 
                 <tr class="subtotal first">

@@ -1394,7 +1394,7 @@ class DeliveryNote extends DB_Table {
                 }
 
                 $value = 'Approved';
-                $this->update_field('Delivery Note Date Dispatched', $date, 'no_history');
+                $this->update_field('Delivery Note Date Dispatched', '', 'no_history');
                 $this->update_field('Delivery Note Date', $date, 'no_history');
                 $this->update_field('Delivery Note State', $value, 'no_history');
 
@@ -1410,7 +1410,7 @@ class DeliveryNote extends DB_Table {
                 }
 
 
-                $this->update_field('Delivery Note Date Dispatched', '', 'no_history');
+                $this->update_field('Delivery Note Date Dispatched', $date, 'no_history');
                 $this->update_field('Delivery Note Date', $date, 'no_history');
                 $this->update_field('Delivery Note State', $value, 'no_history');
 

@@ -48,7 +48,7 @@
 
 
 
-        <link href="/css/app.css?v180206v3" rel="stylesheet">
+        <link href="/css/app.css?v180307v5" rel="stylesheet">
         <script src="/js/libs/jquery-2.2.1.js"></script>
         <script src="/js/libs/jquery-ui.js"></script>
         <script src="/js/libs/moment-with-locales.js"></script>
@@ -134,7 +134,7 @@
         <script src="/js/libs/jquery.scannerdetection.js"></script>
         <script src="/js/libs/jquery.fancybox.min.js"></script>
         <script src="/js/libs/jquery.awesome-cursor.min.js"></script>
-        <script src="/js/libs/base64.js"></script>
+        <script src="/js/libs/base64.js?v2"></script>
 
 
 

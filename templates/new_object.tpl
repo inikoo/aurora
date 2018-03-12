@@ -192,9 +192,11 @@
 
 		{elseif $edit=='no_icon'  }
 		{$field.formatted_value}
-		{elseif $edit=='parts_list'  } 
-	
-		{include file="parts_list.edit.tpl" field=$field parts_list=$object->get_parts_data(true) mode='new'} 
+		{elseif $edit=='parts_list'  } {include file="parts_list.edit.tpl" field=$field parts_list=$object->get_parts_data(true) mode='new'}
+		{elseif $edit=='customer'  } {include file="select_customer.edit.tpl" field=$field  mode='new'}
+		{elseif $edit=='customer_list'  } {include file="select_customer_list.edit.tpl" field=$field  mode='new'}
+		{elseif $edit=='asset'  } {include file="select_asset.edit.tpl" field=$field  mode='new'}
+
 		{elseif $edit=='dropdown_select'}
 			<input id="{$field.id}" type="hidden" class=" input_field" value="{$field.value}" has_been_valid="0"/>
 		<input id="{$field.id}_dropdown_select_label"  field="{$field.id}" create_new="{if isset($field.create_new)}{$field.create_new}{else}0{/if}" scope="{$field.scope}" parent="{$field.parent}" parent_key="{$field.parent_key}" class=" dropdown_select" value="{$field.formatted_value}" has_been_valid="0" placeholder="{if isset($field.placeholder)}{$field.placeholder}{/if}"/>

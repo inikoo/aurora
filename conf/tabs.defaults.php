@@ -2934,6 +2934,30 @@ $tab_defaults = array(
         'period'        => 'mtd'
 
     ),
+    'report_orders' => array(
+        'view'          => 'overview',
+        'sort_key'      => 'store',
+        'sort_order'    => 1,
+        'rpp'           => 500,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'store',
+        'from'          => '',
+        'to'            => '',
+        'period'        => 'mtd'
+
+    ),
+    'report_delivery_notes' => array(
+        'view'          => 'overview',
+        'sort_key'      => 'store',
+        'sort_order'    => 1,
+        'rpp'           => 500,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'store',
+        'from'          => '',
+        'to'            => '',
+        'period'        => 'mtd'
+
+    ),
     'pickers' => array(
         'view'          => 'overview',
         'sort_key'      => 'name',

@@ -5682,6 +5682,32 @@ $modules = array(
                 )
 
             ),
+            'report_orders' => array(
+                'type' => '',
+                'tabs' => array(
+                    'report_orders' => array(),
+
+                )
+
+            ),
+
+            'report_orders_components' => array(
+                'type' => '',
+                'tabs' => array(
+                    'report_orders_components' => array(),
+
+                )
+
+            ),
+
+            'report_delivery_notes' => array(
+                'type' => '',
+                'tabs' => array(
+                    'report_delivery_notes' => array(),
+
+                )
+
+            ),
 
             'intrastat'          => array(
                 'type' => '',

@@ -1873,7 +1873,7 @@ class Invoice extends DB_Table {
             case('Outstanding Total Amount'):
             case('Credit Net Amount'):
             case('Credit Net Amount'):
-
+            case('Total Profit'):
 
                 return money(
                     $this->data['Invoice '.$key], $this->data['Invoice Currency']
@@ -1978,7 +1978,9 @@ class Invoice extends DB_Table {
                         return $this->data['Invoice Paid'];
                         break;
                 }
-
+            case 'Margin':
+                return percentage($this->data['Invoice Total Profit']/$this->data['Invoice Items Net Amount'],1);
+                break;
 
         }
 

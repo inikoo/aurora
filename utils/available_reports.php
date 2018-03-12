@@ -24,11 +24,25 @@ $available_reports = array(
 
     ),
     'sales' => array(
-        'Label'      => _('Sales'),
+        'Label'      => _('Invoices'),
         'Group'      => 'sales',
         'GroupLabel' => _('Sales'),
 
     ),
+
+    'report_orders' => array(
+        'Label'      => _('Dispatched orders'),
+        'Group'      => 'sales',
+        'GroupLabel' => _('Sales'),
+
+    ),
+    'report_delivery_notes' => array(
+        'Label'      => _('Dispatched delivery notes'),
+        'Group'      => 'sales',
+        'GroupLabel' => _('Sales'),
+
+    ),
+
     'billingregion_taxcategory' => array(
         'Label'      => _('Billing Country/Tax Categories'),
         'Group'      => 'tax',

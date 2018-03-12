@@ -28,9 +28,10 @@ $smarty->assign('object', $state['_object']);
 $smarty->assign('object_name', $state['_object']->get_object_name());
 $smarty->assign('object_fields', $object_fields);
 
+$smarty->assign('store_key', $state['_parent']->get('Store Key'));
 
 
-//$smarty->assign('js_code', 'js/injections/deal.new.'.(_DEVEL ? '' : 'min.').'js');
+$smarty->assign('js_code', 'js/injections/deal.new.'.(_DEVEL ? '' : 'min.').'js');
 
 $html = $smarty->fetch('new_object.tpl');
 
