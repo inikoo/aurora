@@ -896,6 +896,19 @@ function dispatched_orders($_data, $db, $user, $account) {
 
     // print $sql;
 
+
+    $totals=array(
+        'store' =>_('Total'),
+        'orders' =>0,
+        'refunds' =>0,
+        'replacements' =>0,
+        'customers' =>0,
+        'refund_amount' =>0,
+        'revenue' =>0,
+        'profit' =>0,
+        'margin' =>0,
+    );
+
     if ($result = $db->query($sql)) {
 
         foreach ($result as $data) {
@@ -918,26 +931,29 @@ function dispatched_orders($_data, $db, $user, $account) {
                 'margin' =>percentage($data['profit_oc'],$data['revenue_oc'])
             );
 
+
+            $totals['customers']+=$data['customers'];
+            $totals['orders']+=$data['orders'];
+            $totals['refunds']+=$data['refunds'];
+            $totals['replacements']+=$data['replacements'];
+            $totals['refund_amount']+=$data['refunds_amount_oc'];
+            $totals['revenue']+=$data['revenue_oc'];
+            $totals['profit']+=$data['profit_oc'];
+
         }
     } else {
         print_r($error_info = $db->errorInfo());
         exit;
     }
 
+    $totals['margin']=percentage($totals['profit'],$totals['revenue']);
 
-    $sql  = "select $fields from $table $where $wheref $group_by";
-    $stmt = $db->prepare($sql);
-    $stmt->execute();
+    $totals['refund_amount']=money($totals['refund_amount'],$account->get('Account Currency Code'));
+    $totals['revenue']=money($totals['revenue'],$account->get('Account Currency Code'));
 
-    $total_records = $stmt->rowCount();
+    $totals['profit']=money($totals['profit'],$account->get('Account Currency Code'));
 
-    $rtext = sprintf(
-            ngettext('%s record', '%s records', $total_records), number($total_records)
-        ).' <span class="discreet">'.$rtext.'</span>';
-
-
-    //$rtext=preg_replace('/\(|\)/', '', $rtext);
-
+    $adata[] =$totals;
 
     $response = array(
         'resultset' => array(
@@ -965,6 +981,16 @@ function dispatched_delivery_notes($_data, $db, $user, $account) {
 
     // print $sql;
 
+
+    $totals=array(
+        'store' =>_('Total'),
+        'shipments' =>0,
+        'delivery_notes' =>0,
+        'replacements' =>0,
+        'customers' =>0,
+    );
+
+
     if ($result = $db->query($sql)) {
 
         foreach ($result as $data) {
@@ -989,11 +1015,18 @@ function dispatched_delivery_notes($_data, $db, $user, $account) {
                 //'margin' =>percentage($data['profit_oc'],$data['revenue_oc'])
             );
 
+
+            $totals['customers']+=$data['customers'];
+            $totals['shipments']+=$data['shipments'];
+            $totals['delivery_notes']+=$data['shipments']-$data['replacements'];
+            $totals['replacements']+=$data['replacements'];
         }
     } else {
         print_r($error_info = $db->errorInfo());
         exit;
     }
+
+    $adata[] =$totals;
 
 
     $sql  = "select $fields from $table $where $wheref $group_by";
