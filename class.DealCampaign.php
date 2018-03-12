@@ -533,7 +533,9 @@ class DealCampaign extends DB_Table {
                 if ($this->data['Deal Campaign Valid From'] == '') {
                     return '';
                 } else {
-                    return gmdate('d-m-Y', strtotime($this->data['Deal Campaign Valid From'].' +0:00'));
+
+                    //return gmdate('d-m-Y', strtotime($this->data['Deal Campaign Valid From'].' +0:00'));
+                    return strftime("%e %b %Y", strtotime($this->data['Deal Campaign Valid From'].' +0:00'));
                 }
 
                 break;
@@ -541,7 +543,8 @@ class DealCampaign extends DB_Table {
                 if ($this->data['Deal Campaign Valid To'] == '') {
                     return '';
                 } else {
-                    return gmdate('d-m-Y', strtotime($this->data['Deal Campaign Valid To'].' +0:00'));
+                    //return gmdate('d-m-Y', strtotime($this->data['Deal Campaign Valid To'].' +0:00'));
+                    return strftime("%e %b %Y", strtotime($this->data['Deal Campaign Valid To'].' +0:00'));
                 }
                 break;
             case 'Status':

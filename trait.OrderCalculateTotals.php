@@ -24,13 +24,16 @@ trait OrderCalculateTotals {
         $total_items_out_of_stock = 0;
         $total_items_net          = 0;
         $total_items_discounts    = 0;
+        $profit                   = 0;
 
 
         $sql = sprintf(
             "SELECT
 		count(*) AS number_items,
+		sum(`Cost Supplier`) AS cost,
 		sum(`Estimated Weight`) AS weight,
-		sum(`Order Transaction Amount`) AS net ,sum(`Order Transaction Total Discount Amount`) AS discounts ,sum(`Order Transaction Gross Amount`) AS gross ,
+		sum(`Order Transaction Amount`) AS net ,
+		sum(`Order Transaction Total Discount Amount`) AS discounts ,sum(`Order Transaction Gross Amount`) AS gross ,
 		sum(`Order Transaction Out of Stock Amount`) AS out_of_stock ,
 		sum(if(`Order Transaction Total Discount Amount`!=0,1,0)) AS number_with_deals ,
 		sum(if(`No Shipped Due Out of Stock`!=0,1,0)) AS number_with_out_of_stock
@@ -40,6 +43,8 @@ trait OrderCalculateTotals {
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
+
+
                 $number_items             = $row['number_items'];
                 $number_with_deals        = $row['number_with_deals'];
                 $number_with_out_of_stock = $row['number_with_out_of_stock'];
@@ -50,11 +55,37 @@ trait OrderCalculateTotals {
                 $total_items_gross        = $row['gross'];
                 $total_items_net          = $row['net'];
                 $total_items_discounts    = $row['discounts'];
+
             }
         } else {
             print_r($error_info = $this->db->errorInfo());
             exit;
         }
+
+
+
+
+        $sql = sprintf(
+            "SELECT
+	
+		sum(`Order Transaction Amount`) AS net ,sum(`Cost Supplier`) AS cost
+		
+		FROM `Order Transaction Fact` WHERE `Order Key`=%d  ", $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+
+
+                $profit                   = $row['net'] - $row['cost'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
 
 
         $sql = sprintf(
@@ -210,6 +241,7 @@ trait OrderCalculateTotals {
         $total_balance = $total + $total_refunds;
 
 
+
         $this->fast_update(
             array(
                 'Order Number Items'              => $number_items,
@@ -235,6 +267,8 @@ trait OrderCalculateTotals {
                 'Order To Pay Amount'        => round($total_balance - $payments, 2),
                 'Order Total Refunds'        => $total_refunds,
                 'Order Total Balance'        => $total_balance,
+                'Order Profit Amount'        => $profit,
+                'Order Margin'               => ($total_items_net == 0 ? '' : $profit / $total_items_net)
 
             )
         );
@@ -243,7 +277,6 @@ trait OrderCalculateTotals {
 
 
     }
-
 
 
 }

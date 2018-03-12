@@ -1103,6 +1103,7 @@ function orders_server($_data, $db, $user) {
             'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'],'', $data['Order Key']),
             'payment_state'  => get_order_formatted_payment_state($data),
             'total_amount'   => money($data['Order Total Amount'], $data['Order Currency']),
+            'margin'   => sprintf('<span title="%s: %s">%s</span>',_('Profit'),money($data['Order Profit Amount'], $data['Order Currency']),percentage($data['Order Margin'],1)),
 
 
         );
@@ -1191,6 +1192,7 @@ function orders($_data, $db, $user) {
             'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'],'', $data['Order Key']),
             'payment_state'  => get_order_formatted_payment_state($data),
             'total_amount'   => money($data['Order Total Amount'], $data['Order Currency']),
+            'margin'   => sprintf('<span title="%s: %s">%s</span>',_('Profit'),money($data['Order Profit Amount'], $data['Order Currency']),percentage($data['Order Margin'],1)),
 
 
         );

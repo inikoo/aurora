@@ -113,7 +113,7 @@ table.totals {
 
 }
 
-.xorder, .invoice, .xdelivery_note {
+ .invoice {
 
   border-bottom: 1px solid #ccc;
 
@@ -157,22 +157,16 @@ table.totals {
     padding: 20px 30px;
   }
 
-  .order {
-    #contact_data {
-      width: 500px;
-    }
+
+
     #dates {
       width: 310px;
-    }
-  }
-  .invoice {
-    #dates {
-      width: 310px;
+      border-right: 1px solid #ccc;
     }
     #totals {
       width: 310px;
     }
-  }
+
 
   .block {
     float: right;

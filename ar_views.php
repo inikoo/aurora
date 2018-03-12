@@ -1633,6 +1633,15 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                 case ('sales'):
                     return get_sales_navigation($user, $smarty, $data);
                     break;
+                case ('report_orders'):
+                    return get_report_orders_navigation($user, $smarty, $data);
+                    break;
+                case ('report_orders_components'):
+                    return get_report_orders_components_navigation($user, $smarty, $data);
+                    break;
+                case ('report_delivery_notes'):
+                    return get_report_delivery_notes_navigation($user, $smarty, $data);
+                    break;
                 case ('intrastat'):
                     return get_intrastat_navigation($user, $smarty, $data);
                     break;
@@ -7361,7 +7370,31 @@ function get_view_position($db, $state, $user, $smarty, $account) {
             }
             elseif ($state['section'] == 'sales') {
                 $branch[] = array(
-                    'label'     => _('Sales'),
+                    'label'     => _('Invoice sales'),
+                    'icon'      => '',
+                    'reference' => ''
+                );
+
+            }
+            elseif ($state['section'] == 'report_orders') {
+                $branch[] = array(
+                    'label'     => _("Dispatched order's sales"),
+                    'icon'      => '',
+                    'reference' => ''
+                );
+
+            }
+            elseif ($state['section'] == 'report_orders_components') {
+                $branch[] = array(
+                    'label'     => _("Dispatched order's x-rays"),
+                    'icon'      => '',
+                    'reference' => ''
+                );
+
+            }
+            elseif ($state['section'] == 'report_delivery_notes') {
+                $branch[] = array(
+                    'label'     => _('Delivery notes'),
                     'icon'      => '',
                     'reference' => ''
                 );

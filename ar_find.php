@@ -98,10 +98,11 @@ switch ($tipo) {
             case 'location':
                 find_location($db, $account, $memcache_ip, $data,$user);
                 break;
+
             default:
                 $response = array(
                     'state' => 405,
-                    'resp'  => 'Scope not found '.$data['scope']
+                    'resp'  => 'Scope not found: '.$data['scope']
                 );
                 echo json_encode($response);
                 exit;
@@ -160,8 +161,15 @@ switch ($tipo) {
                 break;
             case 'allowance_target':
                 find_allowance_targets($db, $account, $memcache_ip,$user, $data);
-
-
+            case 'customers':
+                find_customers($db, $account, $memcache_ip, $data,$user);
+                break;
+            case 'customer_lists':
+                find_customer_lists($db, $account, $memcache_ip, $data,$user);
+                break;
+            case 'assets_on_sale':
+                find_assets_on_sale($db, $account, $memcache_ip, $data,$user);
+                break;
                 break;
             case 'employee':
                 find_employees($db, $account, $memcache_ip, $data);
@@ -797,6 +805,335 @@ function find_locations($db, $account, $memcache_ip, $data,$user) {
 }
 
 
+function find_customers($db, $account, $memcache_ip, $data,$user) {
+
+
+    $cache       = false;
+    $max_results = 10;
+    //    $user        = $data['user'];
+    $q           = trim($data['query']);
+
+
+    if ($q == '') {
+        $response = array(
+            'state'   => 200,
+            'results' => 0,
+            'data'    => ''
+        );
+        echo json_encode($response);
+
+        return;
+    }
+
+   // print_r($data);
+
+    $where_stores = sprintf(
+        ' and `Customer Store Key`=%d', $data['parent_key']
+    );
+
+    $memcache_fingerprint = $account->get('Account Code').'FIND_CUSTOMERS'.md5(
+            $q
+        );
+
+    $cache = new Memcached();
+    $cache->addServer($memcache_ip, 11211);
+
+
+    if (strlen($q) <= 2) {
+        $memcache_time = 295200;
+    }
+    elseif (strlen($q) <= 3) {
+        $memcache_time = 86400;
+    }
+    elseif (strlen($q) <= 4) {
+        $memcache_time = 3600;
+    } else {
+        $memcache_time = 300;
+
+    }
+
+
+    $results_data = $cache->get($memcache_fingerprint);
+
+
+    if (!$results_data or true) {
+
+
+        $candidates = array();
+
+        $candidates_data = array();
+
+
+
+        if(is_numeric($q)){
+            $sql = sprintf(
+                "select `Customer Key`,`Customer Name`,`Store Key`,`Store Code` from `Customer Dimension` left join `Store Dimension` on (`Store Key`=`Customer Store Key`) where true $where_stores and `Customer ID`=%d  ",
+                $q
+            );
+
+
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+
+
+                    $candidates[$row['Customer Key']] = 1001;
+                    $candidates_data[$row['Customer Key']] = array(
+                        'Customer Name'  => $row['Customer Name'],
+                        'Store Code' => $row['Store Code']
+                    );
+
+                }
+            } else {
+                print_r($error_info = $db->errorInfo());
+                exit;
+            }
+
+
+        }
+
+        $sql = sprintf(
+            "select `Customer Key`,`Customer Name`,`Store Key`,`Store Code` from `Customer Dimension` left join `Store Dimension` on (`Store Key`=`Customer Store Key`) where true $where_stores and `Customer Name` REGEXP \"[[:<:]]%s\"  order by `Customer File As` limit $max_results ",
+            $q
+        );
+
+
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
+
+                if ($row['Customer Name'] == $q) {
+                    $candidates[$row['Customer Key']] = 1000;
+                } else {
+
+                    $len_name                         = strlen($row['Customer Name']);
+                    $len_q                            = strlen($q);
+                    $factor                           = $len_q / $len_name;
+                    $candidates[$row['Customer Key']] = 500 * $factor;
+                }
+
+                $candidates_data[$row['Customer Key']] = array(
+                    'Customer Name'  => $row['Customer Name'],
+                    'Store Code' => $row['Store Code']
+                );
+
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            exit;
+        }
+
+
+        arsort($candidates);
+
+
+        $total_candidates = count($candidates);
+
+        if ($total_candidates == 0) {
+            $response = array(
+                'state'   => 200,
+                'results' => 0,
+                'data'    => ''
+            );
+            echo json_encode($response);
+
+            return;
+        }
+
+
+        $results = array();
+        foreach ($candidates as $customer_key => $candidate) {
+
+
+            $results[$customer_key] = array(
+                'code'        => sprintf('%05d',$customer_key),
+                'description' => highlightkeyword(
+                    sprintf(
+                        '%s', $candidates_data[$customer_key]['Customer Name']
+                    ), $q
+                ),
+
+
+                'value'           => $customer_key,
+                'formatted_value' => $candidates_data[$customer_key]['Customer Name']
+
+
+            );
+
+        }
+
+
+        $results_data = array(
+            'n' => count($results),
+            'd' => $results
+        );
+        $cache->set($memcache_fingerprint, $results_data, $memcache_time);
+
+
+    }
+    $response = array(
+        'state'          => 200,
+        'number_results' => $results_data['n'],
+        'results'        => $results_data['d'],
+        'q'              => $q
+    );
+
+    echo json_encode($response);
+
+}
+
+
+
+function find_customer_lists($db, $account, $memcache_ip, $data,$user) {
+
+
+    $cache       = false;
+    $max_results = 10;
+    //    $user        = $data['user'];
+    $q           = trim($data['query']);
+
+
+    if ($q == '') {
+        $response = array(
+            'state'   => 200,
+            'results' => 0,
+            'data'    => ''
+        );
+        echo json_encode($response);
+
+        return;
+    }
+
+    // print_r($data);
+
+    $where_stores = sprintf(
+        ' and  `List Scope`="Customer" and  `List Parent Key`=%d', $data['parent_key']
+    );
+
+    $memcache_fingerprint = $account->get('Account Code').'FIND_CUSTOMER_LISTS'.md5(
+            $q
+        );
+
+    $cache = new Memcached();
+    $cache->addServer($memcache_ip, 11211);
+
+
+    if (strlen($q) <= 2) {
+        $memcache_time = 295200;
+    }
+    elseif (strlen($q) <= 3) {
+        $memcache_time = 86400;
+    }
+    elseif (strlen($q) <= 4) {
+        $memcache_time = 3600;
+    } else {
+        $memcache_time = 300;
+
+    }
+
+
+    $results_data = $cache->get($memcache_fingerprint);
+
+
+    if (!$results_data or true) {
+
+
+        $candidates = array();
+
+        $candidates_data = array();
+
+
+
+
+        $sql = sprintf(
+            "select `List Key`,`List Name`,`List Type`,`List Number Items` from `List Dimension`  where true $where_stores and `List Name` REGEXP \"[[:<:]]%s\"   limit $max_results ",
+            $q
+        );
+
+
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
+
+                if ($row['List Name'] == $q) {
+                    $candidates[$row['List Key']] = 1000;
+                } else {
+
+                    $len_name                         = strlen($row['List Name']);
+                    $len_q                            = strlen($q);
+                    $factor                           = $len_q / $len_name;
+                    $candidates[$row['List Key']] = 500 * $factor;
+                }
+
+                $candidates_data[$row['List Key']] = array(
+                    'List Name'  => $row['List Name'],
+                    'List Type'  => ($row['List Type']=='Static'?_('Static'):_('Dynamic')),
+                    'Customers'  => $row['List Number Items'],
+                );
+
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            exit;
+        }
+
+
+        arsort($candidates);
+
+
+        $total_candidates = count($candidates);
+
+        if ($total_candidates == 0) {
+            $response = array(
+                'state'   => 200,
+                'results' => 0,
+                'data'    => ''
+            );
+            echo json_encode($response);
+
+            return;
+        }
+
+
+        $results = array();
+        foreach ($candidates as $list_key => $candidate) {
+
+
+            $results[$list_key] = array(
+                'code'        => $candidates_data[$list_key]['List Type'].', '.sprintf(ngettext('%s customer', '%s customers', $candidates_data[$list_key]['Customers']), number( $candidates_data[$list_key]['Customers'])),
+                'description' => highlightkeyword(
+                    sprintf(
+                        '%s', $candidates_data[$list_key]['List Name']
+                    ), $q
+                ),
+
+
+                'value'           => $list_key,
+                'formatted_value' => $candidates_data[$list_key]['List Name']
+
+
+            );
+
+        }
+
+
+        $results_data = array(
+            'n' => count($results),
+            'd' => $results
+        );
+        $cache->set($memcache_fingerprint, $results_data, $memcache_time);
+
+
+    }
+    $response = array(
+        'state'          => 200,
+        'number_results' => $results_data['n'],
+        'results'        => $results_data['d'],
+        'q'              => $q
+    );
+
+    echo json_encode($response);
+
+}
+
+
 function find_parts($db, $account, $memcache_ip, $data) {
 
     $cache       = false;
@@ -1098,6 +1435,305 @@ function find_products($db, $account, $memcache_ip, $data) {
             echo json_encode($response);
 
             return;
+        }
+
+
+        $results = array();
+        foreach ($candidates as $product_sku => $candidate) {
+
+            $results[$product_sku] = array(
+                'code'              => $candidates_data[$product_sku]['Product Code'],
+                'description'       => $candidates_data[$product_sku]['Product Name'],
+                'item_historic_key' => $candidates_data[$product_sku]['Product Current Key'],
+
+                'value'           => $product_sku,
+                'formatted_value' => $candidates_data[$product_sku]['Product Code']
+            );
+
+        }
+
+        $results_data = array(
+            'n' => count($results),
+            'd' => $results
+        );
+        $cache->set($memcache_fingerprint, $results_data, $memcache_time);
+
+
+    }
+    $response = array(
+        'state'          => 200,
+        'number_results' => $results_data['n'],
+        'results'        => $results_data['d'],
+        'q'              => $q
+    );
+
+    echo json_encode($response);
+
+}
+
+function find_assets_on_sale($db, $account, $memcache_ip, $data) {
+
+
+    $cache       = false;
+    $max_results = 5;
+    $user        = $data['user'];
+    $q           = trim($data['query']);
+
+
+    if ($q == '') {
+        $response = array(
+            'state'   => 200,
+            'results' => 0,
+            'data'    => ''
+        );
+        echo json_encode($response);
+
+        return;
+    }
+
+
+    $where = '';
+
+
+    if (isset($data['metadata']['parent'])) {
+        switch ($data['metadata']['parent']) {
+            case 'Store':
+            case 'store':
+
+                $where_products = sprintf(
+                    ' and `Product Store Key`=%d', $data['metadata']['parent_key']
+                );
+            $where_categories = sprintf(
+                ' and `Category Store Key`=%d', $data['metadata']['parent_key']
+            );
+                break;
+            default:
+
+                break;
+        }
+    } else {
+
+        switch ($data['parent']) {
+            case 'store':
+                $where_products = sprintf(
+                    ' and `Product Store Key`=%d', $data['parent_key']
+                );
+                $where_categories = sprintf(
+                    ' and `Category Store Key`=%d',$data['parent_key']
+                );
+                break;
+            default:
+
+                break;
+        }
+
+    }
+
+    if (!isset($data['metadata']['options']['for_order'])) {
+        $where .= "  and  `Product Status` not in ( 'Suspended','Discontinued')  ";
+    }
+
+
+    $memcache_fingerprint = $account->get('Account Code').'FIND_PRODUCTS'.md5(
+            $q
+        );
+
+    $cache = new Memcached();
+    $cache->addServer($memcache_ip, 11211);
+
+
+    if (strlen($q) <= 2) {
+        $memcache_time = 295200;
+    }
+    if (strlen($q) <= 3) {
+        $memcache_time = 86400;
+    }
+    if (strlen($q) <= 4) {
+        $memcache_time = 3600;
+    } else {
+        $memcache_time = 300;
+
+    }
+
+
+    $results_data = $cache->get($memcache_fingerprint);
+
+
+    if (!$results_data or true) {
+
+
+        $candidates = array();
+
+        $candidates_data = array();
+
+
+        $sql = sprintf(
+            "select `Product ID`,`Product Code`,`Product Name`,`Product Current Key`,`Product Availability` from `Product Dimension` where  `Product Code` like '%s%%' %s order by `Product Code` limit $max_results ", $q, $where
+        );
+
+
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
+
+                if ($row['Product Code'] == $q) {
+                    $candidates['P'.$row['Product ID']] = 1000;
+                } else {
+
+                    $len_name                       = strlen(
+                        $row['Product ID']
+                    );
+                    $len_q                          = strlen($q);
+                    $factor                         = $len_q / $len_name;
+                    $candidates['P'.$row['Product ID']] = 500 * $factor;
+                }
+
+                $candidates_data['P'.$row['Product ID']] = array(
+                    'Product Code'        => $row['Product Code'],
+                    'Product Name'        => $row['Product Name'].', <span style="font-style: italic"  class="'.($row['Product Availability'] <= 0 ? 'error' : '').'" >'._('Stock').': '.number($row['Product Availability']).'</span>',
+                    'Product Current Key' => $row['Product Current Key']
+
+                );
+
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            exit;
+        }
+
+
+
+        $sql = sprintf(
+            "select `Category Key`,`Category Code`,`Category Label`,`Category Number Active Subjects`,`Category Subject` from `Category Dimension` where  `Category Code` like '%s%%' %s  limit $max_results ", $q, $where
+        );
+
+
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
+
+                if ($row['Product Code'] == $q) {
+                    $candidates['C'.$row['Category Key']] = 1000;
+                } else {
+
+                    $len_name                       = strlen($row['Category Code']);
+                    $len_q                          = strlen($q);
+                    $factor                         = $len_q / $len_name;
+                    $candidates['C'.$row['Category Key']] = 500 * $factor;
+                }
+
+                $candidates_data['C'.$row['Category Key']] = array(
+                    'Product Code'        => $row['Category Code'],
+                    'Product Name'        => $row['Category Label'].', <span style="font-style: italic"  >('.($row['Category Subject']=='Category'?_('Department'):_('Family')).') <i class="fa fa-fw fa-cube"></i>: '.number($row['Category Number Active Subjects']).'</span>',
+                    'Product Current Key' => $row['Product Current Key']
+
+                );
+
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            exit;
+        }
+
+
+        arsort($candidates);
+
+
+        $total_candidates = count($candidates);
+
+        if ($total_candidates == 0) {
+            $response = array(
+                'state'   => 200,
+                'results' => 0,
+                'data'    => ''
+            );
+            echo json_encode($response);
+
+            return;
+        }
+
+
+        $product_ids='';
+        $number_product_ids=0;
+        $category_keys='';
+        $number_categories_keys=0;
+        $counter=0;
+        foreach ($candidates as $_key => $val) {
+            $counter++;
+
+            if ($_key[0] == 'P') {
+                $key            = preg_replace('/^P/', '', $_key);
+                $product_ids      .= ','.$key;
+                $results[$_key] = '';
+                $number_product_ids++;
+
+            } elseif ($_key[0] == 'C') {
+                $key            = preg_replace('/^C/', '', $_key);
+                $category_keys  .= ','.$key;
+                $results[$_key] = '';
+                $number_categories_keys++;
+
+            }
+
+            if ($counter > $max_results) {
+                break;
+            }
+        }
+        $product_ids     = preg_replace('/^,/', '', $product_ids);
+        $category_keys = preg_replace('/^,/', '', $category_keys);
+
+
+        if ($number_product_ids) {
+            $sql = sprintf(
+                "SELECT P.`Product ID`,`Product Code`,`Product Name`,`Product Availability'` FROM `Product Dimension` P  WHERE P.`Product ID` IN (%s)", $product_ids
+            );
+
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+
+
+                    $results['P'.$row['Part SKU']] = array(
+                        'label'   => highlightkeyword(sprintf('%s', $row['Product Code']), $q),
+                        'details' => highlightkeyword($row['Product Name'], $q).', <span style="font-style: italic"  class="'.($row['Product Availability'] <= 0 ? 'error' : '').'" >'._('Stock').': '.number($row['Product Availability']).'</span>',
+
+
+                    );
+
+                }
+            } else {
+                print_r($error_info = $db->errorInfo());
+                print $sql;
+                exit;
+            }
+
+        }
+
+        if ($number_categories_keys) {
+            $sql = sprintf(
+                "SELECT `Category Code`,`Category Store Key`,`Category Key`,`Category Code`,`Category Label` FROM `Category Dimension` WHERE `Category Key` IN (%s)", $category_keys
+            );
+
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+
+
+                    $icon = '<i class="fa fa-sitemap fa-fw padding_right_5" aria-hidden="true" ></i> ';
+
+                    $results['C'.$row['Category Key']] = array(
+                        'label'   => $icon.highlightkeyword(
+                                sprintf('%s', $row['Category Code']), $q
+                            ),
+                        'details' => highlightkeyword(
+                            $row['Category Label'], $q
+                        ),
+
+
+
+                    );
+                }
+            } else {
+                print_r($error_info = $db->errorInfo());
+                print $sql;
+                exit;
+            }
         }
 
 
@@ -3293,6 +3929,7 @@ function find_location($db, $account, $memcache_ip, $data,$user) {
 
     }
 }
+
 
 
 

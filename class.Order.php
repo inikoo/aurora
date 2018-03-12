@@ -148,86 +148,20 @@ class Order extends DB_Table {
         $this->update_totals();
     }
 
-
-    function get_invoices_objects() {
-        $invoices     = array();
-        $invoices_ids = $this->get_invoices_ids();
-        foreach ($invoices_ids as $invoice_key) {
-            $invoices[$invoice_key] = get_object('Invoice', $invoice_key);
-        }
-
-        return $invoices;
-    }
-
-    function get_invoices_ids() {
-
-        $invoices = array();
-
-        $sql = sprintf(
-            "SELECT `Invoice Key` FROM `Invoice Dimension` WHERE `Invoice Order Key`=%d ", $this->id
-        );
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                $invoices[$row['Invoice Key']] = $row['Invoice Key'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        return $invoices;
-
-    }
-
-    function get_refund_public_id($refund_id, $suffix_counter = '') {
-        $sql = sprintf(
-            "SELECT `Invoice Public ID` FROM `Invoice Dimension` WHERE `Invoice Store Key`=%d AND `Invoice Public ID`=%s ", $this->data['Order Store Key'], prepare_mysql($refund_id.$suffix_counter)
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                if ($suffix_counter > 100) {
-                    return $refund_id.$suffix_counter;
-                }
-
-                if (!$suffix_counter) {
-                    $suffix_counter = 2;
-                } else {
-                    $suffix_counter++;
-                }
-
-                return $this->get_refund_public_id($refund_id, $suffix_counter);
-            } else {
-                return $refund_id.$suffix_counter;
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-    }
-
-
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
 
         switch ($field) {
 
             case('Replacement State'):
-                $delivery_note=get_object('delivery note',$metadata['Delivery Note Key']);
+                $delivery_note = get_object('delivery note', $metadata['Delivery Note Key']);
 
-                if($delivery_note->get('Delivery Note Order Key')!=$this->id or $delivery_note->get('Delivery Note Type')!='Replacement'){
-                    $this->error=true;
+                if ($delivery_note->get('Delivery Note Order Key') != $this->id or $delivery_note->get('Delivery Note Type') != 'Replacement') {
+                    $this->error = true;
                 }
 
-                $delivery_note->update(array('Delivery Note State'=>$value));
-                $number_deliveries=0;
-                $deliveries_xhtml='';
+                $delivery_note->update(array('Delivery Note State' => $value));
+                $number_deliveries = 0;
+                $deliveries_xhtml  = '';
 
                 foreach ($this->get_deliveries('objects') as $dn) {
                     $number_deliveries++;
@@ -243,14 +177,11 @@ class Order extends DB_Table {
                 }
 
 
-
-
                 $this->update_metadata = array(
 
-                    'deliveries_xhtml'  => $deliveries_xhtml
+                    'deliveries_xhtml' => $deliveries_xhtml
 
                 );
-
 
 
                 break;
@@ -302,6 +233,38 @@ class Order extends DB_Table {
 
                 }
         }
+
+    }
+
+    function get_deliveries($scope = 'keys') {
+
+
+        $deliveries = array();
+        $sql        = sprintf(
+            "SELECT `Delivery Note Key` FROM `Delivery Note Dimension` WHERE `Delivery Note Order Key`=%d ORDER BY `Delivery Note Key` DESC ", $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                if ($row['Delivery Note Key'] == '') {
+                    continue;
+                }
+
+                if ($scope == 'objects') {
+
+                    $deliveries[$row['Delivery Note Key']] = get_object('DeliveryNote', $row['Delivery Note Key']);
+
+                } else {
+                    $deliveries[$row['Delivery Note Key']] = $row['Delivery Note Key'];
+                }
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        return $deliveries;
 
     }
 
@@ -997,7 +960,7 @@ class Order extends DB_Table {
         }
 
         if (preg_match(
-            '/^(Balance (Total|Net|Tax)|Invoiced Total Net Adjust|Invoiced Total Tax Adjust|Invoiced Refund Net|Invoiced Refund Tax|Total|Items|Invoiced Items|Invoiced Tax|Invoiced Net|Invoiced Charges|Payments|To Pay|Invoiced Shipping|Invoiced Insurance |(Shipping |Charges |Insurance )?Net).*(Amount)$/',
+            '/^(Balance (Total|Net|Tax)|Invoiced Total Net Adjust|Invoiced Total Tax Adjust|Invoiced Refund Net|Invoiced Refund Tax|Total|Items|Invoiced Items|Invoiced Tax|Invoiced Net|Invoiced Charges|Payments|To Pay|Invoiced Shipping|Invoiced Insurance |(Shipping |Charges |Insurance )?Net|Profit).*(Amount)$/',
             $key
         )) {
             $amount = 'Order '.$key;
@@ -1016,6 +979,11 @@ class Order extends DB_Table {
 
         switch ($key) {
 
+
+            case 'Margin':
+
+                return percentage($this->data['Order Margin'], 1);
+                break;
 
             case 'Expected Payment':
 
@@ -1645,38 +1613,6 @@ class Order extends DB_Table {
 
 
         return true;
-
-    }
-
-    function get_deliveries($scope = 'keys') {
-
-
-        $deliveries = array();
-        $sql        = sprintf(
-            "SELECT `Delivery Note Key` FROM `Delivery Note Dimension` WHERE `Delivery Note Order Key`=%d order by `Delivery Note Key` desc ", $this->id
-        );
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                if ($row['Delivery Note Key'] == '') {
-                    continue;
-                }
-
-                if ($scope == 'objects') {
-
-                    $deliveries[$row['Delivery Note Key']] = get_object('DeliveryNote', $row['Delivery Note Key']);
-
-                } else {
-                    $deliveries[$row['Delivery Note Key']] = $row['Delivery Note Key'];
-                }
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        return $deliveries;
 
     }
 
@@ -2851,6 +2787,39 @@ VALUES (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 
     }
 
+    function get_invoices_objects() {
+        $invoices     = array();
+        $invoices_ids = $this->get_invoices_ids();
+        foreach ($invoices_ids as $invoice_key) {
+            $invoices[$invoice_key] = get_object('Invoice', $invoice_key);
+        }
+
+        return $invoices;
+    }
+
+    function get_invoices_ids() {
+
+        $invoices = array();
+
+        $sql = sprintf(
+            "SELECT `Invoice Key` FROM `Invoice Dimension` WHERE `Invoice Order Key`=%d ", $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $invoices[$row['Invoice Key']] = $row['Invoice Key'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        return $invoices;
+
+    }
+
     function remove_out_of_stocks_from_basket($product_pid) {
 
 
@@ -3448,13 +3417,50 @@ VALUES (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
         return $refund;
     }
 
+    function get_refund_public_id($refund_id, $suffix_counter = '') {
+        $sql = sprintf(
+            "SELECT `Invoice Public ID` FROM `Invoice Dimension` WHERE `Invoice Store Key`=%d AND `Invoice Public ID`=%s ", $this->data['Order Store Key'], prepare_mysql($refund_id.$suffix_counter)
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                if ($suffix_counter > 100) {
+                    return $refund_id.$suffix_counter;
+                }
+
+                if (!$suffix_counter) {
+                    $suffix_counter = 2;
+                } else {
+                    $suffix_counter++;
+                }
+
+                return $this->get_refund_public_id($refund_id, $suffix_counter);
+            } else {
+                return $refund_id.$suffix_counter;
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+    }
+
     function create_replacement($transactions) {
 
 
+        if (in_array(
+            $this->data['Order Replacement State'], array(
+            'InWarehouse',
+            'PackedDone',
+            'Approved'
+        )
+        )) {
+            $this->error = true;
+            $this->msg   = _("This order has a replacement in progress");
 
-        if(in_array($this->data['Order Replacement State'],array('InWarehouse','PackedDone','Approved'))){
-            $this->error=true;
-            $this->msg=_("This order has a replacement in progress");
             return;
         }
 
@@ -3522,27 +3528,27 @@ VALUES (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
         $this->data['Delivery Note Show in Warehouse Orders'] = $store->data['Store Show in Warehouse Orders'];
 
 
-       // print_r($data_dn);
-         $replacement = new DeliveryNote('create replacement', $data_dn, $this,$transactions);
+        // print_r($data_dn);
+        $replacement = new DeliveryNote('create replacement', $data_dn, $this, $transactions);
 
-         $this->fast_update(array('Order Replacement State'=>'InWarehouse'));
+        $this->fast_update(array('Order Replacement State' => 'InWarehouse'));
 
 
         require_once 'utils/new_fork.php';
         new_housekeeping_fork(
             'au_housekeeping', array(
-            'type'        => 'replacement_created',
+            'type'      => 'replacement_created',
             'order_key' => $this->id,
-            'editor'      => $this->editor
+            'editor'    => $this->editor
         ), $account->get('Account Code'), $this->db
         );
 
 
-
-       return $replacement;
+        return $replacement;
     }
 
-    function z(){}// just for better access to update_state function in PhpStorm editor
+    function z() {
+    }// just for better access to update_state function in PhpStorm editor
 
 
 }

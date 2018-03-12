@@ -149,7 +149,39 @@
         </div>
 
     </div>
-    <div id="dates" class="block dates" style="width: 300px">
+
+    <div  class="block totals"  style="width: 250px">
+
+
+        <table border="0" >
+
+
+            <tr class="bottom-border">
+                <td class="aright">{t}Items Profit{/t}</td>
+                <td class="aright">{$invoice->get('Total Profit')}</td>
+            </tr>
+            <tr class="bottom-border">
+                <td class="aright">{t}Margin{/t}</td>
+                <td class="aright">{$invoice->get('Margin')}</td>
+            </tr>
+
+        </table>
+
+        <div id="sticky_note_div" class="sticky_note pink"
+             style="position:relative;left:-20px;width:270px;{if $invoice->get('Sticky Note')==''}display:none{/if}">
+            <img id="sticky_note_bis" style="float:right;cursor:pointer" src="/art/icons/edit.gif">
+            <div id="sticky_note_content" style="padding:10px 15px 10px 15px;">
+                {$invoice->get('Sticky Note')}
+            </div>
+        </div>
+
+
+        <div style="clear:both">
+        </div>
+
+    </div>
+
+    <div id="dates" class="block dates" >
         <table border="0" class="date_and_state">
             <tr class="date">
                 <td class="button"  onclick="change_view('orders/{$order->get('Order Store Key')}/{$order->id}')" ><i class="fa fa-shopping-cart" aria-hidden="true"></i> {$order->get('Public ID')}</td>

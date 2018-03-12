@@ -1446,23 +1446,23 @@ table.totals .total td {
       padding-right: 10px;
       padding-top: 5px; }
 
-.xorder, .invoice, .xdelivery_note {
+.invoice {
   border-bottom: 1px solid #ccc; }
-  .xorder .state, .invoice .state, .xdelivery_note .state {
+  .invoice .state {
     height: 30px;
     border-bottom: 1px solid #ccc; }
-  .xorder .full_date, .invoice .full_date, .xdelivery_note .full_date {
+  .invoice .full_date {
     width: 250px;
     text-align: right; }
-  .xorder .contact_name, .invoice .contact_name, .xdelivery_note .contact_name {
+  .invoice .contact_name {
     width: 150px;
     white-space: normal;
     white-space: nowrap; }
-  .xorder .presentation_card, .invoice .presentation_card, .xdelivery_note .presentation_card {
+  .invoice .presentation_card {
     padding: 10px 20px; }
-  .xorder .showcase, .invoice .showcase, .xdelivery_note .showcase {
+  .invoice .showcase {
     padding-top: 0px; }
-  .xorder h1, .invoice h1, .xdelivery_note h1 {
+  .invoice h1 {
     padding: 0px;
     margin: 0px;
     color: #555;
@@ -1470,62 +1470,59 @@ table.totals .total td {
     font-size: 21px;
     font-family: "Ubuntu", "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;
     font-weight: 700; }
-  .xorder .pdf_link img, .invoice .pdf_link img, .xdelivery_note .pdf_link img {
+  .invoice .pdf_link img {
     height: 10px;
     vertical-align: 0px; }
-  .xorder #containers, .invoice #containers, .xdelivery_note #containers {
+  .invoice #containers {
     padding: 20px 30px; }
-  .xorder .order #contact_data, .invoice .order #contact_data, .xdelivery_note .order #contact_data {
-    width: 500px; }
-  .xorder .order #dates, .invoice .order #dates, .xdelivery_note .order #dates {
+  .invoice #dates {
+    width: 310px;
+    border-right: 1px solid #ccc; }
+  .invoice #totals {
     width: 310px; }
-  .xorder .invoice #dates, .invoice .invoice #dates, .xdelivery_note .invoice #dates {
-    width: 310px; }
-  .xorder .invoice #totals, .invoice .invoice #totals, .xdelivery_note .invoice #totals {
-    width: 310px; }
-  .xorder .block, .invoice .block, .xdelivery_note .block {
+  .invoice .block {
     float: right;
     border-left: 1px solid #ccc; }
-  .xorder #dates .date_and_state, .invoice #dates .date_and_state, .xdelivery_note #dates .date_and_state {
+  .invoice #dates .date_and_state {
     width: 100%;
     text-align: center; }
-    .xorder #dates .date_and_state .date, .invoice #dates .date_and_state .date, .xdelivery_note #dates .date_and_state .date {
+    .invoice #dates .date_and_state .date {
       padding: 3px;
       border-bottom: 1px solid #ccc; }
-    .xorder #dates .date_and_state .state, .invoice #dates .date_and_state .state, .xdelivery_note #dates .date_and_state .state {
+    .invoice #dates .date_and_state .state {
       font-size: 80%;
       border-bottom: 1px solid #ccc; }
-      .xorder #dates .date_and_state .state td, .invoice #dates .date_and_state .state td, .xdelivery_note #dates .date_and_state .state td {
+      .invoice #dates .date_and_state .state td {
         padding: 3px 0px; }
-    .xorder #dates .date_and_state .two-columns td:first-of-type, .invoice #dates .date_and_state .two-columns td:first-of-type, .xdelivery_note #dates .date_and_state .two-columns td:first-of-type {
+    .invoice #dates .date_and_state .two-columns td:first-of-type {
       width: 50%;
       border-right: 1px solid #ccc; }
-  .xorder #dates .ul_table, .invoice #dates .ul_table, .xdelivery_note #dates .ul_table {
+  .invoice #dates .ul_table {
     width: 100%;
     padding: 5px;
     margin-top: 10px; }
-    .xorder #dates .ul_table .icon, .invoice #dates .ul_table .icon, .xdelivery_note #dates .ul_table .icon {
+    .invoice #dates .ul_table .icon {
       width: 24px;
       text-align: right; }
-    .xorder #dates .ul_table .state, .invoice #dates .ul_table .state, .xdelivery_note #dates .ul_table .state {
+    .invoice #dates .ul_table .state {
       text-align: right;
       padding-right: 10px;
       font-size: 80%; }
-  .xorder #totals, .xorder .block, .invoice #totals, .invoice .block, .xdelivery_note #totals, .xdelivery_note .block {
+  .invoice #totals, .invoice .block {
     padding-top: 5px; }
-    .xorder #totals table, .xorder .block table, .invoice #totals table, .invoice .block table, .xdelivery_note #totals table, .xdelivery_note .block table {
+    .invoice #totals table, .invoice .block table {
       width: 100%; }
-    .xorder #totals td, .xorder .block td, .invoice #totals td, .invoice .block td, .xdelivery_note #totals td, .xdelivery_note .block td {
+    .invoice #totals td, .invoice .block td {
       padding: 4px 8px; }
-    .xorder #totals .top-border, .xorder .block .top-border, .invoice #totals .top-border, .invoice .block .top-border, .xdelivery_note #totals .top-border, .xdelivery_note .block .top-border {
+    .invoice #totals .top-border, .invoice .block .top-border {
       border-top: 1px solid #ccc; }
-    .xorder #totals .bottom-border, .xorder .block .bottom-border, .invoice #totals .bottom-border, .invoice .block .bottom-border, .xdelivery_note #totals .bottom-border, .xdelivery_note .block .bottom-border {
+    .invoice #totals .bottom-border, .invoice .block .bottom-border {
       border-bottom: 1px solid #ccc; }
-    .xorder #totals .top-strong-border, .xorder .block .top-strong-border, .invoice #totals .top-strong-border, .invoice .block .top-strong-border, .xdelivery_note #totals .top-strong-border, .xdelivery_note .block .top-strong-border {
+    .invoice #totals .top-strong-border, .invoice .block .top-strong-border {
       border-top: 1px solid #aaa; }
-    .xorder #totals .bottom-strong-border, .xorder .block .bottom-strong-border, .invoice #totals .bottom-strong-border, .invoice .block .bottom-strong-border, .xdelivery_note #totals .bottom-strong-border, .xdelivery_note .block .bottom-strong-border {
+    .invoice #totals .bottom-strong-border, .invoice .block .bottom-strong-border {
       border-bottom: 1px solid #aaa; }
-  .xorder #account .block, .invoice #account .block, .xdelivery_note #account .block {
+  .invoice #account .block {
     min-width: 150px; }
 
 .order_header {

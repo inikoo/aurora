@@ -79,7 +79,7 @@ if ($order == 'name') {
 $group_by
     = 'group by `Packer Key`';
 
-$table = ' `Inventory Transaction Fact` ITF  left join `Order Post Transaction Dimension` OPTD on (ITF.`Inventory Transaction Key`=OPTD.`Inventory Transaction Key`) left join `Staff Dimension` S on (S.`Staff Key`=ITF.`Packer Key`) ';
+$table = ' `Inventory Transaction Fact` ITF  left join `Order Post Transaction Dimension` OPTD on (ITF.`Inventory Transaction Key`=OPTD.`Order Transaction Fact Key`) left join `Staff Dimension` S on (S.`Staff Key`=ITF.`Packer Key`) ';
 
 $fields = "`Staff Name`,`Staff Key`,@deliveries := count(distinct ITF.`Delivery Note Key`) as deliveries , sum(`Packed`) as packed, @dp :=  count(distinct ITF.`Delivery Note Key`,`Part SKU`) as dp ,
 @hrs :=  (select sum(`Timesheet Clocked Time`)/3600 from `Timesheet Dimension` where `Timesheet Staff Key`=`Packer Key` $where_interval_working_hours ) as hrs,
@@ -92,5 +92,6 @@ $fields = "`Staff Name`,`Staff Key`,@deliveries := count(distinct ITF.`Delivery 
 
 
 $sql_totals = "select count(Distinct `Packer Key` )  as num from $table  $where  ";
+
 
 ?>

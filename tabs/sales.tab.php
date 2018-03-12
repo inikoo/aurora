@@ -2,37 +2,37 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created:21 December 2017 at 11:16:12 GMT, Sheffield, UK
+ Created: 21 December 2017 at 11:16:12 GMT, Sheffield, UK
  Copyright (c) 2017, Inikoo
 
  Version 3
 
 */
 
-$tab     = 'intrastat';
+$tab     = 'sales';
 $ar_file = 'ar_reports_tables.php';
-$tipo    = 'intrastat';
+$tipo    = 'sales';
 
 $default = $user->get_tab_defaults($tab);
 
-if (isset($_SESSION['table_state']['intrastat']['to'])) {
-    $default['to'] = $_SESSION['table_state']['intrastat']['to'];
+if (isset($_SESSION['table_state']['sales']['to'])) {
+    $default['to'] = $_SESSION['table_state']['sales']['to'];
 }
-if (isset($_SESSION['table_state']['intrastat']['from'])) {
-    $default['from'] = $_SESSION['table_state']['intrastat']['from'];
+if (isset($_SESSION['table_state']['sales']['from'])) {
+    $default['from'] = $_SESSION['table_state']['sales']['from'];
 }
-if (isset($_SESSION['table_state']['intrastat']['period'])) {
-    $default['period'] = $_SESSION['table_state']['intrastat']['period'];
+if (isset($_SESSION['table_state']['sales']['period'])) {
+    $default['period'] = $_SESSION['table_state']['sales']['period'];
 }
-if (isset($_SESSION['table_state']['intrastat']['excluded_stores'])) {
+if (isset($_SESSION['table_state']['sales']['excluded_stores'])) {
     $default['excluded_stores']
-        = $_SESSION['table_state']['intrastat']['excluded_stores'];
+        = $_SESSION['table_state']['sales']['excluded_stores'];
 }
 $table_views = array();
 
 $table_filters = array(
     //	'customer'=>array('label'=>_('Customer'), 'title'=>_('Customer name')),
-    'commodity' => array('label' => _('Comodity')),
+    'store' => array('label' => _('Store')),
 
 );
 
