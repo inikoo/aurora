@@ -1780,31 +1780,18 @@ function get_orders_element_numbers($db, $data, $user) {
 
         $elements_numbers['state']['Cancelled'] = $object->get('Orders Cancelled Number');
 
-    }
+    }else{
+        $sql = sprintf(
+            "SELECT %s AS number,`Order State` AS element FROM %s %s %s GROUP BY `Order State` ", $count, $table, $where, $where_interval
+        );
+        foreach ($db->query($sql) as $row) {
 
-    /*
-
-    //USE INDEX (`Main Source Type Store Key`)
-    $sql = sprintf(
-        "SELECT count(*) AS number,`Order Main Source Type` AS element FROM %s    %s  %s GROUP BY `Order Main Source Type` ", $table, $where, $where_interval
-    );
-
-    print $sql;
-
-    if ($result = $db->query($sql)) {
-        foreach ($result as $row) {
-            $elements_numbers['source'][$row['element']] = number(
-                $row['number']
-            );
+            $elements_numbers['state'][$row['element']] = number($row['number']);
         }
-    } else {
-        print "$sql";
-        print_r($error_info = $db->errorInfo());
-        exit;
-    }
-*/
 
-    // USE INDEX (`Type Store Key`)
+    }
+
+
 
 
     $sql = sprintf(
