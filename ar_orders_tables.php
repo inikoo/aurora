@@ -1148,56 +1148,63 @@ function orders($_data, $db, $user) {
         $link_format = '/'.$parameters['parent'].'/%d/order/%d';
     }
 
+    if ($result=$db->query($sql)) {
+    		foreach ($result as $data) {
 
-    foreach ($db->query($sql) as $data) {
+                switch ($data['Order State']) {
+                    case('InBasket'):
+                        $state = _('In Basket');
+                        break;
+                    case('InProcess'):
+                        $state = _('Submitted');
+                        break;
+                    case('InWarehouse'):
+                        $state = _('In Warehouse');
+                        break;
+                    case('PackedDone'):
+                        $state = _('Packed Done');
+                        break;
+                    case('Dispatch Approved'):
+                        $state = _('Dispatch Approved');
+                        break;
+                    case('Dispatched'):
+                        $state = _('Dispatched');
+                        break;
+                    case('Cancelled'):
+                        $state = _('Cancelled');
+                        break;
+                    default:
+                        $state = $data['Order State'];
 
-
-        switch ($data['Order State']) {
-            case('InBasket'):
-                $state = _('In Basket');
-                break;
-            case('InProcess'):
-                $state = _('Submitted');
-                break;
-            case('InWarehouse'):
-                $state = _('In Warehouse');
-                break;
-            case('PackedDone'):
-                $state = _('Packed Done');
-                break;
-            case('Dispatch Approved'):
-                $state = _('Dispatch Approved');
-                break;
-            case('Dispatched'):
-                $state = _('Dispatched');
-                break;
-            case('Cancelled'):
-                $state = _('Cancelled');
-                break;
-            default:
-                $state = $data['Order State'];
-
-        }
-
-
-        $adata[] = array(
-            'id' => (integer)$data['Order Key'],
-
-            'public_id' => sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%s</span>', $parameters['parent_key'], $data['Order Key'], $data['Order Public ID']),
-            'state'     => $state,
-
-            'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
-            'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
-            'customer'       => sprintf('<span class="link" onClick="change_view(\'customers/%d/%d\')">%s</span>', $data['Order Store Key'], $data['Order Customer Key'], $data['Order Customer Name']),
-            'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'],'', $data['Order Key']),
-            'payment_state'  => get_order_formatted_payment_state($data),
-            'total_amount'   => money($data['Order Total Amount'], $data['Order Currency']),
-            'margin'   => sprintf('<span title="%s: %s">%s</span>',_('Profit'),money($data['Order Profit Amount'], $data['Order Currency']),percentage($data['Order Margin'],1)),
+                }
 
 
-        );
+                $adata[] = array(
+                    'id' => (integer)$data['Order Key'],
 
+                    'public_id' => sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%s</span>', $parameters['parent_key'], $data['Order Key'], $data['Order Public ID']),
+                    'state'     => $state,
+
+                    'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
+                    'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
+                    'customer'       => sprintf('<span class="link" onClick="change_view(\'customers/%d/%d\')">%s</span>', $data['Order Store Key'], $data['Order Customer Key'], $data['Order Customer Name']),
+                    'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'],'', $data['Order Key']),
+                    'payment_state'  => get_order_formatted_payment_state($data),
+                    'total_amount'   => money($data['Order Total Amount'], $data['Order Currency']),
+                    'margin'   => sprintf('<span title="%s: %s">%s</span>',_('Profit'),money($data['Order Profit Amount'], $data['Order Currency']),percentage($data['Order Margin'],1)),
+
+
+                );
+    		}
+    }else {
+    		print_r($error_info=$db->errorInfo());
+    		print "$sql\n";
+    		exit;
     }
+
+
+
+
 
     $response = array(
         'resultset' => array(
