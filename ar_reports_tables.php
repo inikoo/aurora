@@ -47,6 +47,12 @@ switch ($tipo) {
     case 'delivery_notes':
         dispatched_delivery_notes(get_table_parameters(), $db, $user, $account);
         break;
+
+    case 'orders_components':
+        dispatched_orders_components(get_table_parameters(), $db, $user, $account);
+        break;
+
+
     case 'intrastat':
         intrastat(get_table_parameters(), $db, $user, $account);
         break;
@@ -1074,5 +1080,88 @@ function dispatched_delivery_notes($_data, $db, $user, $account) {
     echo json_encode($response);
 }
 
+
+
+function dispatched_orders_components($_data, $db, $user, $account) {
+
+    $rtext_label = 'store';
+    include_once 'prepare_table/init.php';
+
+    $sql   = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+    $adata = array();
+
+    // print $sql;
+
+
+    $totals=array(
+        'store' =>_('Total'),
+        'orders' =>0,
+        'refunds' =>0,
+        'replacements' =>0,
+        'customers' =>0,
+        'refund_amount' =>0,
+        'revenue' =>0,
+        'profit' =>0,
+        'margin' =>0,
+    );
+
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+
+            $adata[] = array(
+
+                'store' =>$data['Store Code'],
+                'items_cost' =>money($data['items_cost'],$account->get('Account Currency Code')),
+                'shipping_cost' =>money($data['shipping_cost'],$account->get('Account Currency Code')),
+                'items_net' =>money($data['items_net'],$account->get('Account Currency Code')),
+                'shipping_net' =>money($data['shipping_net'],$account->get('Account Currency Code')),
+                'charges_net' =>money($data['charges_net'],$account->get('Account Currency Code')),
+                'tax' =>money($data['tax'],$account->get('Account Currency Code')),
+
+                'refund_amount' =>$refund_amount,
+                'revenue' =>$revenue,
+                'profit' =>$profit,
+                'margin' =>percentage($data['profit_oc'],$data['revenue_oc'])
+            );
+
+
+            $totals['customers']+=$data['customers'];
+            $totals['orders']+=$data['orders'];
+            $totals['refunds']+=$data['refunds'];
+            $totals['replacements']+=$data['replacements'];
+            $totals['refund_amount']+=$data['refunds_amount_oc'];
+            $totals['revenue']+=$data['revenue_oc'];
+            $totals['profit']+=$data['profit_oc'];
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+    $totals['margin']=percentage($totals['profit'],$totals['revenue']);
+
+    $totals['refund_amount']=money($totals['refund_amount'],$account->get('Account Currency Code'));
+    $totals['revenue']=money($totals['revenue'],$account->get('Account Currency Code'));
+
+    $totals['profit']=money($totals['profit'],$account->get('Account Currency Code'));
+
+    $adata[] =$totals;
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
 
 ?>
