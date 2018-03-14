@@ -119,7 +119,9 @@ console.log(request)
                 $('#Shipping_Net_Amount_input').val(data.metadata.shipping).attr('ovalue',data.metadata.shipping)
                 $('#Charges_Net_Amount_input').val(data.metadata.charges).attr('ovalue',data.metadata.charges)
 
-                if (data.metadata.to_pay == 0 || data.metadata.payments == 0) {
+
+
+                if (data.metadata.to_pay == 0) {
                     $('.Order_Payments_Amount').addClass('hide')
                     $('.Order_To_Pay_Amount').addClass('hide')
 
@@ -787,8 +789,8 @@ function save_item_qty_change(element) {
 
         if (data.state == 200) {
 
-            console.log(data)
-            console.log(table_metadata)
+            //console.log(data)
+            //console.log(table_metadata)
 
 
             input.val(data.transaction_data.qty).removeClass('discreet')
@@ -815,7 +817,10 @@ function save_item_qty_change(element) {
                 $('#Shipping_Net_Amount_input').val(data.metadata.shipping).attr('ovalue',data.metadata.shipping)
                 $('#Charges_Net_Amount_input').val(data.metadata.charges).attr('ovalue',data.metadata.charges)
 
-                if (data.metadata.to_pay == 0 || data.metadata.payments == 0) {
+
+
+
+                if (data.metadata.to_pay == 0) {
                     $('.Order_Payments_Amount').addClass('hide')
                     $('.Order_To_Pay_Amount').addClass('hide')
 
@@ -1502,7 +1507,7 @@ function save_new_payment() {
                     $('#Shipping_Net_Amount_input').val(data.metadata.shipping).attr('ovalue', data.metadata.shipping)
                     $('#Charges_Net_Amount_input').val(data.metadata.charges).attr('ovalue', data.metadata.charges)
 
-                    if (data.metadata.to_pay == 0 || data.metadata.payments == 0) {
+                    if (data.metadata.to_pay == 0) {
                         $('.Order_Payments_Amount').addClass('hide')
                         $('.Order_To_Pay_Amount').addClass('hide')
 

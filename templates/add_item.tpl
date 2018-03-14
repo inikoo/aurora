@@ -285,7 +285,7 @@
                 $('.Order_To_Pay_Amount').attr('amount', data.metadata.to_pay)
 
 
-                if (data.metadata.to_pay == 0 || data.metadata.payments == 0) {
+                if (data.metadata.to_pay == 0) {
                     $('.Order_Payments_Amount').addClass('hide')
                     $('.Order_To_Pay_Amount').addClass('hide')
 

@@ -25,7 +25,7 @@ trait OrderCalculateTotals {
         $total_items_net          = 0;
         $total_items_discounts    = 0;
         $profit                   = 0;
-
+        $items_cost=0;
 
         $sql = sprintf(
             "SELECT
@@ -79,6 +79,7 @@ trait OrderCalculateTotals {
 
 
                 $profit                   = $row['net'] - $row['cost'];
+                $items_cost= $row['cost'];
             }
         } else {
             print_r($error_info = $this->db->errorInfo());
@@ -268,7 +269,8 @@ trait OrderCalculateTotals {
                 'Order Total Refunds'        => $total_refunds,
                 'Order Total Balance'        => $total_balance,
                 'Order Profit Amount'        => $profit,
-                'Order Margin'               => ($total_items_net == 0 ? '' : $profit / $total_items_net)
+                'Order Margin'               => ($total_items_net == 0 ? '' : $profit / $total_items_net),
+                'Order Items Cost'        => $items_cost
 
             )
         );
