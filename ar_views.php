@@ -2768,22 +2768,26 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
 
     }elseif ($data['section'] == 'poll_query') {
 
+
         if($data['_object']->get('Customer Poll Query Type')=='Options'){
 
             if($data['tab'] == 'poll_query.answers'){
-                $data['tab'] == 'poll_query.options';
+                $data['tab'] ='poll_query.options';
             }
 
             $_content['tabs']['poll_query.answers']['class'] = 'hide';
-            $_content['tabs']['poll_query.options']['class'] = '';
+           $_content['tabs']['poll_query.options']['class'] = '';
+
+            $_content['tabs']['poll_query.options']['selected'] = true;
 
         }else{
             if($data['tab'] == 'poll_query.options'){
-                $data['tab'] == 'poll_query.answers';
+                $data['tab'] = 'poll_query.answers';
             }
             $_content['tabs']['poll_query.options']['class'] = 'hide';
             $_content['tabs']['poll_query.answers']['class'] = '';
 
+            $_content['tabs']['poll_query.answers']['selected'] = true;
 
         }
 

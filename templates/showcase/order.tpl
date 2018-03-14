@@ -391,7 +391,7 @@
 
                 <tr class="subtotal first">
                     <td class="label">{t}Items profit{/t}</td>
-                    <td class="aright "><span class="Profit_Amount">{$order->get('Profit Amount')} (<span class="Margin">{$order->get('Margin')}</span>)</span></td>
+                    <td class="aright "><span class="Profit_Amount">{$order->get('Profit Amount')}</span> (<span class="Order_Margin">{$order->get('Margin')}</span>)</td>
                 </tr>
 
 
@@ -781,7 +781,7 @@
                     $('#Shipping_Net_Amount_input').val(data.metadata.shipping).attr('ovalue',data.metadata.shipping)
                     $('#Charges_Net_Amount_input').val(data.metadata.charges).attr('ovalue',data.metadata.charges)
 
-                    if (data.metadata.to_pay == 0 || data.metadata.payments == 0) {
+                    if (data.metadata.to_pay == 0) {
                         $('.Order_Payments_Amount').addClass('hide')
                         $('.Order_To_Pay_Amount').addClass('hide')
 
@@ -892,7 +892,7 @@
                 $('#Shipping_Net_Amount_input').val(data.metadata.shipping).attr('ovalue',data.metadata.shipping)
                 $('#Charges_Net_Amount_input').val(data.metadata.charges).attr('ovalue',data.metadata.charges)
 
-                if (data.metadata.to_pay == 0 || data.metadata.payments == 0) {
+                if (data.metadata.to_pay == 0) {
                     $('.Order_Payments_Amount').addClass('hide')
                     $('.Order_To_Pay_Amount').addClass('hide')
 
@@ -1044,7 +1044,7 @@
                     $('#Charges_Net_Amount_input').val(data.metadata.charges).attr('ovalue',data.metadata.charges)
                     $('#Charges_Net_Amount_input').val(data.metadata.charges).attr('ovalue',data.metadata.charges)
 
-                    if (data.metadata.to_pay == 0 || data.metadata.payments == 0) {
+                    if (data.metadata.to_pay == 0) {
                         $('.Order_Payments_Amount').addClass('hide')
                         $('.Order_To_Pay_Amount').addClass('hide')
 
@@ -1155,7 +1155,7 @@
                     $('#Charges_Net_Amount_input').val(data.metadata.charges).attr('ovalue',data.metadata.charges)
                     $('#Charges_Net_Amount_input').val(data.metadata.charges).attr('ovalue',data.metadata.charges)
 
-                    if (data.metadata.to_pay == 0 || data.metadata.payments == 0) {
+                    if (data.metadata.to_pay == 0) {
                         $('.Order_Payments_Amount').addClass('hide')
                         $('.Order_To_Pay_Amount').addClass('hide')
 

@@ -164,6 +164,7 @@ function customers($_data, $db, $user) {
 
 
 
+
             if ($parameters['parent'] == 'store' ) {
                 $link_format = '/customers/%d/%d';
                 $formatted_id=sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $parameters['parent_key'], $data['Customer Key'], $data['Customer Key']);
@@ -938,7 +939,7 @@ function poll_query_answers($_data, $db, $user) {
         foreach ($result as $data) {
 
 
-            $link_format = '/store/%d/customer/%d';
+            $link_format = '/customers/%d/%d';
 
 
             $adata[] = array(

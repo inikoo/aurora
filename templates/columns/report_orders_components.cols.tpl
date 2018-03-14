@@ -26,48 +26,70 @@ cell: Backgrid.HtmlCell.extend({
 })
 },
 {
-name: "customers",
-label: "{t}Customers{/t}",
+name: "items_cost",
+label: "{t}Items cost{/t}",
 editable: false,
 defaultOrder:1,
 sortType: "toggle",
-{if $sort_key=='customers'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='items_cost'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
 {
-name: "orders",
-label: "{t}Orders dispatched{/t}",
+name: "shipping_cost",
+label: "{t}Shipping cost{/t}",
 editable: false,
 defaultOrder:1,
 sortType: "toggle",
-{if $sort_key=='total_amount'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='shipping_cost'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
 {
-name: "replacements",
-label: "{t}Replacements{/t}",
+name: "replacement_cost",
+label: "{t}Rpl cost{/t}",
+title: "{t}Replacement cost{/t}",
+
 editable: false,
 defaultOrder:1,
 sortType: "toggle",
-{if $sort_key=='replacements'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='replacement_cost'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
 {
-name: "refunds",
-label: "{t}Refunds{/t}",
+name: "items_net",
+label: "{t}Items{/t}",
 editable: false,
 defaultOrder:1,
 sortType: "toggle",
-{if $sort_key=='refunds'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='items_net'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+},
+{
+name: "shipping_net",
+label: "{t}Shipping{/t}",
+editable: false,
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='shipping_net'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+},
+{
+name: "charges_net",
+label: "{t}Charges{/t}",
+editable: false,
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='charges_net'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
 {
 name: "refund_amount",
-label: "{t}Refund amount{/t}",
+label: "{t}Refunds{/t}",
 editable: false,
 defaultOrder:1,
 sortType: "toggle",
@@ -75,14 +97,24 @@ sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
-
 {
-name: "revenue",
-label: "{t}Revenue{/t}",
+name: "total_net",
+label: "{t}Total net{/t}",
 editable: false,
 defaultOrder:1,
 sortType: "toggle",
-{if $sort_key=='revenue'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='total_net'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+},
+
+{
+name: "tax",
+label: "{t}Tax{/t}",
+editable: false,
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='tax'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },

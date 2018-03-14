@@ -80,18 +80,26 @@ $table = ' `Order Dimension` O  left join `Store Dimension` S on (`Store Key`=`O
 
 $fields = "
 `Store Key`,`Store Code`,`Store Name`,
-count(distinct `Order Key`) orders,
 
-sum(if  (   (`Order Replacement State`='NA' or `Order Replacement State`='Cancelled' ),0,1)) as replacements,
 
-sum(if(`Order Total Refunds`=0 ,0,1)) as refunds,
+sum(`Order Items Net Amount` * `Order Currency Exchange`)  items_net,
+sum(`Order Shipping Net Amount` * `Order Currency Exchange`)  shipping_net,
+sum(`Order Charges Net Amount` * `Order Currency Exchange`)  charges_net,
 
-sum(`Order Total Refunds` * `Order Currency Exchange`)  refunds_amount_oc,
+sum(`Order Items Cost` )  items_cost,
+sum(`Order Shipping Cost` )  shipping_cost,
+sum(`Order Replacement Cost` )  replacement_cost,
 
-sum(`Order Total Refunds` * `Order Currency Exchange`)  refunds_amount_oc,
-sum(`Order Total Balance` * `Order Currency Exchange`) revenue_oc,
-sum(`Order Profit Amount` * `Order Currency Exchange`) profit_oc,
-count(distinct `Order Customer Key`) customers
+
+
+sum(`Order Total Net Amount` * `Order Currency Exchange`)  total_net,
+
+sum(`Order Total Tax Amount` * `Order Currency Exchange`)  tax,
+
+
+sum(`Order Total Refunds` * `Order Currency Exchange`)  refund_amount,
+sum(`Order Total Balance` * `Order Currency Exchange`) revenue,
+sum(`Order Profit Amount` * `Order Currency Exchange`) profit
 
 
 
