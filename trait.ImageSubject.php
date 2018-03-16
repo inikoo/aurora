@@ -67,7 +67,9 @@ trait ImageSubject {
         $image = new Image('find', $data, 'create');
 
         if ($image->id) {
+
             $this->link_image($image->id, $object_image_scope);
+
 
             if ($this->table_name == 'Part') {
 
@@ -117,7 +119,7 @@ trait ImageSubject {
             elseif ($this->table_name == 'Page') {
 
 
-                // print_r($scope_data);
+
 
 
                 if ($scope_data['scope'] == 'content') {
@@ -225,6 +227,10 @@ trait ImageSubject {
 
                 }
 
+
+
+
+
             }
 
             return $image;
@@ -306,18 +312,14 @@ trait ImageSubject {
 
 
 
-
             $this->db->exec($sql);
-
             $this->update_images_data();
 
             $image_subject_key = $this->db->lastInsertId();
 
-
             //print $sql;
 
             $this->reindex_order();
-
 
             $sql = sprintf(
                 "SELECT `Image Subject Key`,`Image Subject Is Principal`,`Image Key`,`Image Subject Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` FROM `Image Subject Bridge` B LEFT JOIN `Image Dimension` ID ON (`Image Key`=`Image Subject Image Key`) WHERE `Image Subject Object`=%s AND `Image Subject Object Key`=%d AND  `Image Key`=%d",
@@ -365,6 +367,9 @@ trait ImageSubject {
 
             return $image;
         } else {
+
+
+
             $this->error = true;
             $this->msg   = "Can't create/found image (a), ".$image->msg;
 
@@ -401,6 +406,9 @@ trait ImageSubject {
 
     function update_images_data() {
 
+
+
+
         $number_images = 0;
 
         $subject = $this->table_name;
@@ -421,8 +429,8 @@ trait ImageSubject {
         }
 
 
-        $this->update(
-            array(($this->get_object_name() == 'Category' ? $this->subject_table_name : $this->get_object_name()).' Number Images' => $number_images), 'no_history'
+        $this->fast_update(
+            array(($this->get_object_name() == 'Category' ? $this->subject_table_name : $this->get_object_name()).' Number Images' => $number_images)
         );
 
 
@@ -465,6 +473,8 @@ trait ImageSubject {
     function update_main_image() {
 
 
+
+
         $image_key = $this->get_main_image_key();
 
 
@@ -483,12 +493,12 @@ trait ImageSubject {
         //$this->data['Product Main Image Key']=$main_image_key;
 
 
-        $this->update(
+        $this->fast_update(
             array(
                 $this->table_name.' Main Image'     => $main_image_src,
                 $this->table_name.' Main Image Key' => $main_image_key
 
-            ), 'no_history'
+            )
         );
 
 

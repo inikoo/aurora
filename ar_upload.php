@@ -533,9 +533,7 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
 
         );
 
-
         $image = $parent->add_image($image_data, $options);
-
 
         if ($parent->error) {
 
@@ -551,8 +549,9 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
         }
 
 
-    }
 
+
+    }
 
     if (isset($data['response_type']) and $data['response_type'] == 'froala') {
         echo json_encode(array('link' => sprintf('/image_root.php?id=%d', $image->id)));
@@ -573,6 +572,11 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
             $msg = '<i class="fa fa-exclamation-circle"></i>';
         }
 
+
+     //   print "xx $errors  $uploads";
+
+
+
         $response = array(
             'state'          => 200,
             'tipo'           => 'upload_images',
@@ -589,6 +593,9 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
 
         );
 
+
+
+
         if (isset($data['response_type']) and $data['response_type'] == 'upload_item_image') {
             $response['images']=$parent->get_images_slidesshow();
 
@@ -598,6 +605,9 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
         if ($parent->get_object_name() == 'Page' or $parent->get_object_name() == 'Webpage') {
             $response['publish'] = $parent->get('Publish');
         }
+
+
+      //  print_r($response);
 
         echo json_encode($response);
 

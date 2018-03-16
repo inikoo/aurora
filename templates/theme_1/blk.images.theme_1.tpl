@@ -48,18 +48,18 @@
     }
 
     figcaption.caption_left{
-        text-align: left;
+        text-align: left;padding-left:5px
 
     }
     figcaption.caption_right{
-        text-align: right;
+        text-align: right;padding-right:5px
     }
     figcaption.caption_center{
         text-align: center;
 
     }
     figcaption.caption_hide{
-        visibility: hidden;
+
     }
 
     .success{
@@ -282,7 +282,7 @@
     {foreach from=$data.images item=image}
         <span class=" image">
         <figure>
-            <img class="button" src="{$image.src}" alt="{$image.title}" display_class="{$image.caption_class}">
+            <img class="button" src="{$image.src}" alt="{$image.title}" link="{if isset($image.link)}{$image.link}{else}{/if}" display_class="{$image.caption_class}">
             <figcaption contenteditable="true" class="{$image.caption_class}" >{$image.caption}</figcaption>
         </figure>
     </span>
