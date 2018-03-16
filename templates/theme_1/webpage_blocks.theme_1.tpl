@@ -591,11 +591,15 @@
 
                         _col={
                             src  : img.attr('src'),
+                            link  : img.attr('link'),
                             title  : img.attr('alt'),
                             caption_class  : img.attr('display_class'),
                            caption : $(col).find('figcaption').html()
                         }
 
+
+
+                        console.log(_col)
 
                         images.push(_col)
 
@@ -708,6 +712,9 @@
 
             }, success: function (data) {
 
+
+                console.log(data)
+
                 if (data.state == '200') {
 
                     $('#save_button', window.parent.document).addClass('save button changed valid')
@@ -722,11 +729,11 @@
                     }else if(element.attr('name')=='images'){
 
                         //$('#image_control_panel').attr('img_src',data.image_src)
-                        var image_index=$('#image_control_panel').find('.image_upload').attr('image_index')
-                        var   image=  $('.blk_images .image:nth-child('+image_index+') img')
+                        var img_element=$('#image_control_panel').find('.image_upload').data('img')
 
+console.log(img_element)
 
-                        image.attr('src',data.image_src);
+                        $(img_element).attr('src',data.image_src);
 
 
 
@@ -907,7 +914,13 @@
         $('#image_control_panel').find('.caption_align i').addClass('super_discreet').removeClass('selected')
         $(this).removeClass('super_discreet').addClass('selected')
 
-      console.log(  $('#image_control_panel').attr('image_index'))
+        element= $('#image_control_panel').data('element');
+
+        $(element).attr('display_class',$(this).attr('display_class'))
+
+$(element).closest('figure').find('figcaption').removeClass('caption_left caption_right caption_center caption_hide').addClass($(this).attr('display_class'))
+console.log($(element))
+
         $('#save_button', window.parent.document).addClass('save button changed valid')
 
     })
@@ -916,13 +929,15 @@
     function open_image_control_panel(element){
 
 
+
+
         if(! $('#image_control_panel').hasClass('hide')){
             return
         }
 
         var image_index= $('span.image').index($(element).closest('.image') )+1
 
-        $('#image_control_panel').removeClass('hide').offset({ top: .25*( $(element).offset().top +  $(element).height() )/2, left: $(element).offset().left }).attr('image_index', image_index).addClass('in_use')
+        $('#image_control_panel').removeClass('hide').offset({ top: .25*( $(element).offset().top +  $(element).height() )/2, left: $(element).offset().left }).attr('image_index', image_index).addClass('in_use').data('element',$(element))
 
 
         $('#image_control_panel').find('.image_tooltip').val($(element).attr('alt'))
@@ -932,7 +947,7 @@
         $('#image_control_panel').find('.caption_align i').addClass('super_discreet').removeClass('selected')
         $('#image_control_panel').find('.caption_align i.'+$(element).attr('display_class')).removeClass('super_discreet').addClass('selected')
 
-        $('#image_control_panel').find('.image_upload').attr('image_index',image_index)
+        $('#image_control_panel').find('.image_upload').attr('image_index',image_index).data('img',$(element))
 
 
 
@@ -956,7 +971,10 @@
 
     function update_image(){
 
-        var   image=  $('.blk_images .image:nth-child('+$('#image_control_panel').attr('image_index')+') img')
+       // var   image=  $('.blk_images .image:nth-child('+$('#image_control_panel').attr('image_index')+') img')
+
+        var image=$('#image_control_panel').data('element');
+
         image.attr('alt',$('#image_control_panel').find('.image_tooltip').val())
         image.attr('link',$('#image_control_panel').find('.image_link').val())
 
