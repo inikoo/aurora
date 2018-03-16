@@ -24,7 +24,7 @@ function get_delivery_note_showcase($data) {
     $delivery_note = $data['_object'];
 
 
-    $delivery_note->update_totals();
+  //  $delivery_note->update_totals();
 
 
     $order = new Order('id', $delivery_note->get('Delivery Note Order Key'));

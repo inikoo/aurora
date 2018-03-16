@@ -244,7 +244,7 @@
 
                 <tr>
             <td class="label">{t}Items cost{/t}:</td>
-                    <td class="aright" >{$delivery_note->get('Items Cost')}</td>
+                    <td class="aright Items_Cost" >{$delivery_note->get('Items Cost')}</td>
                 </tr>
             </table>
         </div>
