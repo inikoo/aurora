@@ -670,7 +670,6 @@ class DeliveryNote extends DB_Table {
             if ($row = $result->fetch()) {
 
 
-
                 $ordered          = $row['ordered'];
                 $picked           = $row['picked'];
                 $packed           = $row['packed'];
@@ -695,7 +694,7 @@ class DeliveryNote extends DB_Table {
                 'Delivery Note Number To Pick Items' => $to_pick,
                 'Delivery Note Number Ordered Parts' => $ordered_parts,
                 'Delivery Note Estimated Weight'     => $estimated_weight,
-                'Delivery Note Items Cost'    => $items_cost,
+                'Delivery Note Items Cost'           => $items_cost,
 
             )
         );
@@ -1210,7 +1209,7 @@ class DeliveryNote extends DB_Table {
                 $this->update_field('Delivery Note Approved Done', 'Yes', 'no_history');
                 $this->update_field('Delivery Note Date', $date, 'no_history');
 
-
+                $this->update_totals();
                 if ($this->data['Delivery Note Type'] == 'Order') {
 
 
@@ -1268,6 +1267,8 @@ class DeliveryNote extends DB_Table {
                     );
 
                 }
+
+                $order->update_totals();
 
                 break;
 
@@ -1572,8 +1573,8 @@ class DeliveryNote extends DB_Table {
                 'Delivery_Note_Packed_Percentage_or_Datetime' => '&nbsp;'.$this->get('Packed Percentage or Datetime').'&nbsp;',
                 'Delivery_Note_Dispatched_Approved_Datetime'  => '&nbsp;'.$this->get('Dispatched Approved Datetime').'&nbsp;',
                 'Delivery_Note_Dispatched_Datetime'           => '&nbsp;'.$this->get('Dispatched Datetime').'&nbsp;',
-
-                'Delivery_Note_State' => $this->get('State')
+                'Items_Cost'                                  => $this->get('Items Cost'),
+                'Delivery_Note_State'                         => $this->get('State')
 
 
             ),
@@ -2258,7 +2259,8 @@ class DeliveryNote extends DB_Table {
                 'Delivery_Note_Dispatched_Approved_Datetime'  => '&nbsp;'.$this->get('Dispatched Approved Datetime').'&nbsp;',
                 'Delivery_Note_Dispatched_Datetime'           => '&nbsp;'.$this->get('Dispatched Datetime').'&nbsp;',
 
-                'Delivery_Note_State' => $this->get('State')
+                'Delivery_Note_State' => $this->get('State'),
+                'Items_Cost' => $this->get('Items Cost')
 
 
             ),
