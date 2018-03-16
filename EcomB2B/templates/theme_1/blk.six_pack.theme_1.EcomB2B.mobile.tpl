@@ -16,7 +16,7 @@
             {counter}
 
 
-    {if $i==1 or $i==3 or $i==5} <div class="one-half-responsive"> {/if}
+                {if $i==1 or $i==3 or $i==5} <div class="one-half-responsive"> {/if}
 
 
 
@@ -26,7 +26,7 @@
                 </div>
 
 
-        {if $i==2 or $i==4 or $i==6} </div> {/if}
+                    {if $i==2 or $i==4 or $i==6} </div> {/if}
 
 
         {/foreach}

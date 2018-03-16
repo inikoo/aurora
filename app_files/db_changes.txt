@@ -849,14 +849,20 @@ ALTER TABLE `Inventory Transaction Fact` ADD `Running Stock Value` FLOAT NOT NUL
 ALTER TABLE `Inventory Transaction Fact` CHANGE `Running Stock Value` `Running Stock Value` FLOAT NULL DEFAULT '0';
 
 
-======= fer migracion ordering in dw and costa
+ALTER TABLE `Order Dimension` ADD `Order Items Cost` DECIMAL(16,2) NULL DEFAULT '0.00' AFTER `Order Total Balance`, ADD `Order Shipping Cost` DECIMAL(16,2) NULL DEFAULT '0.00' AFTER `Order Items Cost`;
+ALTER TABLE `Order Dimension` ADD `Order Replacement Cost` DECIMAL(16,2) NULL DEFAULT '0.00' AFTER `Order Shipping Cost`;
+ALTER TABLE `Delivery Note Dimension` ADD `Delivery Note Items Cost` DECIMAL(16,2) NULL DEFAULT '0' AFTER `Delivery Note Premium Key`, ADD `Delivery Note Shipping Cost` DECIMAL(16,2) NULL DEFAULT '0' AFTER `Delivery Note Items Cost`;
+
+
+
+======= fer migration ordering in dw and costa
 
                     ALTER TABLE `Invoice Tax Dimension` ADD `Invoice Tax Key` INT UNSIGNED NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`Invoice Tax Key`);
 ALTER TABLE  `Invoice Tax Bridge` ADD  `Invoice Tax Bridge Key` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST ;
-than fix the indeces
+than fix the indexes
 `ALTER TABLE Invoice Tax Bridge DROP INDEX Tax Code;`
 `ALTER TABLE Invoice Tax Bridge DROP INDEX Invoice Key_2;`
-and add an uniqui index w  Tax Code; and Invoice Key
+and add an unique index w  Tax Code; and Invoice Key
 
 ============= migration web[ages
 

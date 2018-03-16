@@ -1030,6 +1030,11 @@ right connector from last child*/
   line-height: 22px;
   font-size: 90%; }
 
+.smaller {
+  font-size: 95%; }
+  .smaller button {
+    font-size: 98.5%; }
+
 .order_flow.selected {
   border-bottom: 1px solid white;
   background-color: white; }

@@ -470,12 +470,98 @@
     var out_of_stock_dialog_open = false;
 
 
-    function save_picking_offline() {
+
+    function save_picking_offline(force_pick) {
 
 
         if ($('#save_picking_offline').hasClass('wait') || !$('#save_picking_offline').hasClass('valid')) {
             return
         }
+
+        if(force_pick===undefined){
+
+
+
+            var hard_no_pick = 0;
+            var soft_no_pick = 0;
+            hard_no_pick_parts = '';
+            soft_no_pick_parts = '';
+
+            $('#table .picked_offline').each(function (i, obj) {
+
+
+                settings = $(obj).closest('.picked_quantity').data('settings')
+
+                to_pick = $(obj).attr('to_pick') - $(obj).val()
+                available_in_location = $(obj).closest('tr').find('.location').data('available')
+
+                if (to_pick > 0) {
+
+                    if (available_in_location > $(obj).attr('to_pick')) {
+
+                        console.log(available_in_location)
+                        console.log($(obj).attr('to_pick'))
+
+                        hard_no_pick++;
+                        hard_no_pick_parts += ', ' + settings.reference;
+                    }
+                    if (settings.stock > $(obj).attr('to_pick')) {
+                        soft_no_pick++;
+                        soft_no_pick_parts += ', ' + settings.reference;
+                    }
+                }
+
+
+            });
+
+
+            if (hard_no_pick > 0) {
+
+                hard_no_pick_parts = hard_no_pick_parts.replace(/^, /i, '')
+
+
+                swal(hard_no_pick_parts,'{t}Not picked{/t}', "warning");
+
+
+                swal({
+                    title: hard_no_pick_parts,
+                    text:'{t}Not picked{/t}',
+                    icon:"error",
+                    buttons: ["{t}Ok, i will fix it{/t} :)", "{t}Continue anyway{/t}"],
+                    dangerMode: true
+                }).then((willDelete) => { if (willDelete) { save_picking_offline(true)}
+                });
+
+                return;
+            }
+
+
+            if (soft_no_pick > 0) {
+
+                soft_no_pick_parts = soft_no_pick_parts.replace(/^, /i, '')
+
+                // if(hard_no_pick==1){
+                swal({
+                    title: soft_no_pick_parts,
+                    text:'{t}There is more stock in other locations, replenish picking location and try again{/t}',
+                    icon:"warning",
+                    buttons: ["{t}I will replenish the location{/t} :)", "{t}Continue anyway{/t}"],
+                    dangerMode: true
+                }).then((willDelete) => { if (willDelete) { save_picking_offline(true)}
+                });
+
+                //}else{
+                //     swal('{t}There is some parts not picked{/t}', hard_no_pick_parts, "warning");
+                // }
+
+
+                return;
+            }
+
+
+        }
+
+
 
         $('#save_picking_offline').addClass('wait')
         $('#save_picking_offline i').removeClass('save').addClass('fa-spinner fa-spin')
@@ -620,7 +706,7 @@
 
             if (!input.is('[readonly]') && input.val() == '') {
 
-                input.val($(obj).attr('qty')).trigger('propertychange')
+                input.val(input.attr('max')).trigger('propertychange')
 
             }
 
@@ -710,7 +796,7 @@
             }
 
 
-            if (input.val() < input.attr('max')) {
+            if (input.val() < input.attr('to_pick')) {
                 input.css({
                     'background-color': 'rgba(255,55,55, 0.2)'
                 })

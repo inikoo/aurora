@@ -1,0 +1,1 @@
+payment_bank_details.inc.mobile.tpl

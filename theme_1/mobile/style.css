@@ -131,6 +131,10 @@
     position:absolute;
 }
 
+.header-icon i.fa{
+	margin-top:16px;
+}
+
 .header-logo-center .header-icon-1{left:0px; border-right:solid 1px;}
 .header-logo-center .header-icon-2{left:50px;}
 .header-logo-center .header-icon-3{right:50px;}
@@ -538,7 +542,7 @@
 	height:56px;
 	overflow:hidden!important;
 	padding-top:30px;
-	line-height:20px;
+	//line-height:20px;
 	transition:all 500ms ease;
 }
 
@@ -598,7 +602,11 @@
 	transform:scale(0.7,0.7);
 }
 
-.sidebars-light .sidebar-header-classic .sidebar-socials a{color:#000000!important; border-bottom:solid 1px rgba(0,0,0,0.08); border-top:solid 1px rgba(0,0,0,0.05);	}
+.sidebar-socials{
+	padding-top:10px
+}
+
+.sidebars-light .sidebar-header-classic . sidebar-socials a{color:#000000!important; border-bottom:solid 1px rgba(0,0,0,0.08); border-top:solid 1px rgba(0,0,0,0.05);	}
 .sidebars-light .sidebar-header-classic .sidebar-socials a i{color:#000000!important;}
 .sidebars-light .sidebar-header-classic .sidebar-logo{background-image:url(/art/mobile_logo.png);}
 .sidebars-light .sidebar-header-classic strong{color:#000000;	border-bottom:solid 1px rgba(0,0,0,0.08);}

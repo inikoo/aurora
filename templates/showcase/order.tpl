@@ -209,10 +209,10 @@
         <div style="clear:both"></div>
     </div>
     <div class="block " style="align-items: stretch;flex: 1;">
-        <div class="state" style="height:30px;margin-bottom:10px;position:relative;top:-5px">
+        <div class="state" style="height:30px;">
             <div id="back_operations">
 
-                <div id="cancel_operations" class="order_operation {if $order->get('State Index')<0 or  $order->get('State Index')>=100 }hide{/if}">
+                <div id="cancel_operations" class="order_operation {if $order->get('State Index')<0 or  $order->get('State Index')>=40 }hide{/if}">
                     <div class="square_button left" title="{t}Cancel{/t}">
                         <i class="fa fa-minus-circle error " aria-hidden="true" onclick="toggle_order_operation_dialog('cancel')"></i>
                         <table id="cancel_dialog" border="0" class="order_operation_dialog hide">
@@ -385,8 +385,8 @@
                                 class="Order_Number_Items_with_Returned">{$order->get('Number Items Returned')}</span></span>
                 </td>
             </tr>
-
-            <table border="0" class="totals" style="position:relative;top:20px;">
+        </table>
+            <table border="0" class="totals" style=";">
 
 
                 <tr class="subtotal first">
@@ -398,8 +398,18 @@
             </table>
 
 
+            <table border="0" class="totals  {if $order->get('Order Items Out of Stock Amount')==0}hide{/if} " style=";">
 
-            <table border="0" class="totals" style="position:relative;top:30px;">
+
+                <tr class="subtotal first error">
+                    <td class="label"><i class="fa fa-cube fa-fw  " aria-hidden="true"></i> {t}lost revenue{/t}</td>
+                    <td class="aright Items_Discount_Amount">{$order->get('Items Out of Stock Amount')}</td>
+                </tr>
+
+
+            </table>
+
+            <table border="0" class="totals" style="">
 
 
                 <tr class="subtotal first">
@@ -416,7 +426,7 @@
 
 
 
-        </table>
+
 
     </div>
     <div class="block " style="align-items: stretch;flex: 1 ">

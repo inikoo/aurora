@@ -229,16 +229,20 @@ function toggle_order_operation_dialog(dialog_name) {
 
         $('.order_operation_dialog').addClass('hide')
 
-        // console.log($('#' + dialog_name + '_operations').parents('#back_operations').length)
+       //  console.log($('#' + dialog_name + '_operations').parents('#back_operations').length)
         if ($('#' + dialog_name + '_operations').parent('div#back_operations').length) {
             $('#' + dialog_name + '_dialog').removeClass('hide').css({
                 'left': -2
             });
         } else {
 
-            $('#' + dialog_name + '_dialog').removeClass('hide').css({
-                'right': -2
-            });
+
+           // var offset = $('#columns_frequency .fa').position();
+
+          var offset=  $('#' + dialog_name + '_dialog').closest('.block').position();
+
+
+            $('#' + dialog_name + '_dialog').removeClass('hide').offset({ left:offset.left+30 })
         }
     } else {
         close_dialog(dialog_name)

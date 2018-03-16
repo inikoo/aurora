@@ -69,10 +69,80 @@
 
 </style>
 
+<div id="template_1" class="hide">
+<span class=" image">
+        <figure>
+            <img class="button" src="https://placehold.it/1240x250" alt="" display_class="caption_left">
+            <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
+        </figure>
+    </span>
+
+</div>
+
+<div id="template_2" class="hide">
+<span class=" image">
+        <figure>
+            <img class="button" src="https://placehold.it/610x250" alt="" display_class="caption_left">
+            <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
+        </figure>
+    </span>
+    <span class=" image">
+        <figure>
+            <img class="button" src="https://placehold.it/610x250" alt="" display_class="caption_left">
+            <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
+        </figure>
+    </span>
+
+</div>
+
+
+<div id="template_3" class="hide">
+<span class=" image">
+        <figure>
+            <img class="button" src="https://placehold.it/400x250" alt="" display_class="caption_left">
+            <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
+        </figure>
+    </span>
+    <span class=" image">
+        <figure>
+            <img class="button" src="https://placehold.it/400x250" alt="" display_class="caption_left">
+            <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
+        </figure>
+    </span>
+    <span class=" image">
+        <figure>
+            <img class="button" src="https://placehold.it/400x250" alt="" display_class="caption_left">
+            <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
+        </figure>
+    </span>
+</div>
+
+
+<div id="template_3" class="hide">
+<span class=" image">
+        <figure>
+            <img class="button" src="https://placehold.it/610x250" alt="" display_class="caption_left">
+            <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
+        </figure>
+    </span>
+    <span class=" image">
+        <figure>
+            <img class="button" src="https://placehold.it/610x250" alt="" display_class="caption_left">
+            <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
+        </figure>
+    </span>
+
+</div>
+
+
+
 <div id="block_{$key}" block="{$data.type}" class="{$data.type} _block {if !$data.show}hide{/if} " style="Width:100%" >
 
 
     <div class="blk_images " top_margin="{if isset($block.top_margin)}{$block.top_margin}{/if}" bottom_margin="{if isset($block.bottom_margin)}{$block.bottom_margin}{/if}" style="{if !empty($block.top_margin)}margin-top:{$block.top_margin}px{/if};{if !empty($block.bottom_margin)}margin-top:{$block.bottom_margin}px{/if}"  >
+
+
+
 
 {if  $data.images|@count==0}
 

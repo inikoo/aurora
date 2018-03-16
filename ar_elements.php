@@ -232,6 +232,18 @@ switch ($tab) {
         );
         get_orders_archived_element_numbers($db, $data['parameters'], $user);
         break;
+
+    case 'delivery_notes_server':
+
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'parameters' => array('type' => 'json array')
+                     )
+        );
+        get_delivery_notes_element_numbers($db, $data['parameters'], $user);
+        break;
+
+
     case 'invoices_server':
     case 'invoices':
     case 'customer.invoices':
@@ -1669,15 +1681,7 @@ function get_orders_archived_element_numbers($db, $data, $user) {
 
 function get_orders_element_numbers($db, $data, $user) {
 
-    if (!$user->can_view('orders')) {
-        echo json_encode(
-            array(
-                'state' => 405,
-                'resp'  => 'Forbidden'
-            )
-        );
-        exit;
-    }
+
 
 
     list($db_interval, $from, $to, $from_date_1yb, $to_1yb) = calculate_interval_dates($db, $data['period'], $data['from'], $data['to']);
@@ -1686,6 +1690,7 @@ function get_orders_element_numbers($db, $data, $user) {
     $parent_key = $data['parent_key'];
 
     $count = ' count(*)';
+
 
     switch ($data['parent']) {
         case 'account':
@@ -1824,6 +1829,122 @@ function get_orders_element_numbers($db, $data, $user) {
 
 
 }
+
+
+
+
+function get_delivery_notes_element_numbers($db, $data, $user) {
+
+    if (!$user->can_view('orders')) {
+        echo json_encode(
+            array(
+                'state' => 405,
+                'resp'  => 'Forbidden'
+            )
+        );
+        exit;
+    }
+
+
+    list($db_interval, $from, $to, $from_date_1yb, $to_1yb) = calculate_interval_dates($db, $data['period'], $data['from'], $data['to']);
+
+
+    $parent_key = $data['parent_key'];
+
+    $count = ' count(*)';
+
+    switch ($data['parent']) {
+        case 'account':
+            $table = '`Delivery Note Dimension` DN';
+            $where = sprintf('where  true');
+
+
+            break;
+
+        default:
+            exit ($data['parent']);
+            break;
+    }
+
+    $where_interval = prepare_mysql_dates($from, $to, 'O.`Delivery Note Date`');
+    $where_interval = $where_interval['mysql'];
+
+    $elements_numbers = array(
+        'state'   => array(
+            'Ready'    => 0,
+            'Picking'   => 0,
+            'Packed' => 0,
+            'Done'  => 0,
+            'Send'    => 0,
+            'Returned'  => 0
+        ),
+        'type'  => array(
+            'Order' => 0,
+            'Replacements'     => 0
+        ),
+
+
+    );
+
+    $sql = sprintf(
+        "SELECT %s AS number,`Delivery Note State` AS element FROM %s %s %s GROUP BY `Delivery Note State` ", $count, $table, $where, $where_interval
+    );
+
+    if ($result=$db->query($sql)) {
+    		foreach ($result as $row) {
+
+                if($row['element']=='Ready to be Picked' or $row['element']=='Picker & Packer Assigned' or $row['element']=='Picker Assigned' or $row['element']=='Packer Assigned')$row['element']='Ready';
+                if($row['element']=='Picking & Packing' or  $row['element']=='Picking' or  $row['element']=='Picked' or  $row['element']=='Packing' )$row['element']='Picking';
+
+                if($row['element']=='Approved' or $row['element']=='Packed Done')$row['element']='Done';
+                if($row['element']=='Dispatched')$row['element']='Send';
+                if($row['element']=='Cancelled' or $row['element']=='Cancelled to Restock'    )$row['element']='Returned';
+
+                $elements_numbers['state'][$row['element']] += $row['number'];
+
+            }
+    }else {
+    		print_r($error_info=$db->errorInfo());
+    		print "$sql\n";
+    		exit;
+    }
+
+//'Replacement & Shortages','Order','Replacement','Shortages','Sample','Donation'
+    $sql = sprintf(
+        "SELECT %s AS number,`Delivery Note Type` AS element FROM %s %s %s GROUP BY `Delivery Note Type` ", $count, $table, $where, $where_interval
+    );
+
+    if ($result=$db->query($sql)) {
+        foreach ($result as $row) {
+
+            if($row['element']=='Replacement & Shortages' or $row['element']=='Replacement' or $row['element']=='Shortages')$row['element']='Replacements';
+
+            if($row['element']=='Order' or $row['element']=='Sample' or $row['element']=='Donation')$row['element']='Order';
+
+            $elements_numbers['type'][$row['element']] += $row['number'];
+
+        }
+    }else {
+        print_r($error_info=$db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+
+
+
+
+    //print_r($elements_numbers);
+
+
+    $response = array(
+        'state'            => 200,
+        'elements_numbers' => $elements_numbers
+    );
+    echo json_encode($response);
+
+
+}
+
 
 
 function get_invoices_element_numbers($db, $parameters) {
