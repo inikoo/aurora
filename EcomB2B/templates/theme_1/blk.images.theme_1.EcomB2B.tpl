@@ -15,7 +15,7 @@
     <span class=" image">
         <figure>
                {if !empty($image.link)}<a href="{$image.link}">{/if}
-                <img src="{$image.src}" alt="{$image.title}  title="{$image.title}" />
+                <img src="{$image.src}" alt="{$image.title}"  title="{$image.title}" />
                 {if !empty($image.link)}</a>{/if}
             <figcaption class="{$image.caption_class}">{$image.caption}</figcaption>
         </figure>
