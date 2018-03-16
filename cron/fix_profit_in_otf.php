@@ -65,7 +65,14 @@ if ($result = $db->query($sql)) {
             }
 
 
-        } else {
+        } elseif($row['Current Dispatching State']=='Cancelled') {
+            // get cost from product
+
+
+            $cost    =0;
+
+
+        }else {
             // get cost from product
 
             $qty     = $row['Order Quantity'] + $row['Order Bonus Quantity'];
