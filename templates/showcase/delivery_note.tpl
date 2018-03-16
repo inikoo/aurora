@@ -18,12 +18,8 @@
         </li>
 
 
-
-
-
-
-
-        <li id="start_picking_node" class="li  {if $delivery_note->get('State Index')>=20   }complete{/if} {if $delivery_note->get('State Index')<0 } {if   $delivery_note->get('Delivery Note Date Start Picking')=='' }hide{else}complete{/if}{/if}">
+        <li id="start_picking_node"
+            class="li  {if $delivery_note->get('State Index')>=20   }complete{/if} {if $delivery_note->get('State Index')<0 } {if   $delivery_note->get('Delivery Note Date Start Picking')=='' }hide{else}complete{/if}{/if}">
             <div class="label">
                 <span class="state Delivery_Note_Packed_Label">{t}Start picking{/t}<span></i></span></span>
             </div>
@@ -34,7 +30,8 @@
         </li>
 
 
-        <li id="picked_node" class="li  {if $delivery_note->get('State Index')>=30   }complete{/if} {if $delivery_note->get('State Index')<0 } {if   $delivery_note->get('Delivery Note Date Finish Picking')=='' }hide{else}complete{/if}{/if}">
+        <li id="picked_node"
+            class="li  {if $delivery_note->get('State Index')>=30   }complete{/if} {if $delivery_note->get('State Index')<0 } {if   $delivery_note->get('Delivery Note Date Finish Picking')=='' }hide{else}complete{/if}{/if}">
             <div class="label">
                 <span class="state Delivery_Note_Picked_Label">{if $delivery_note->get('State Index')==20 }{t}Picking{/t}{else}{t}Picked{/t}{/if}<span></i></span></span>
             </div>
@@ -44,7 +41,8 @@
             <div class="dot"></div>
         </li>
 
-        <li id="packed_node" class="li  {if $delivery_note->get('State Index')>=70   }complete{/if} {if $delivery_note->get('State Index')<0 } {if   $delivery_note->get('Delivery Note Date Finish Packing')=='' }hide{else}complete{/if}{/if}">
+        <li id="packed_node"
+            class="li  {if $delivery_note->get('State Index')>=70   }complete{/if} {if $delivery_note->get('State Index')<0 } {if   $delivery_note->get('Delivery Note Date Finish Packing')=='' }hide{else}complete{/if}{/if}">
             <div class="label">
                 <span class="state Delivery_Note_Packed_Label">{if $delivery_note->get('State Index')==40 }{t}Packing{/t}{else}{t}Packed{/t}{/if}<span></i></span></span>
             </div>
@@ -55,7 +53,8 @@
         </li>
 
 
-        <li id="packed_done_node" class="li  {if $delivery_note->get('State Index')>=80   }complete{/if} {if $delivery_note->get('State Index')<0} {if  $delivery_note->get('Delivery Note Date Done Approved')=='' }hide{else}complete{/if}{/if}">
+        <li id="packed_done_node"
+            class="li  {if $delivery_note->get('State Index')>=80   }complete{/if} {if $delivery_note->get('State Index')<0} {if  $delivery_note->get('Delivery Note Date Done Approved')=='' }hide{else}complete{/if}{/if}">
             <div class="label">
                 <span class="state Delivery_Note_Packed_Label">{t}Sealed{/t}<span></i></span></span>
             </div>
@@ -68,7 +67,8 @@
         </li>
 
 
-        <li id="dispatch_approved_node" class="li  {if $delivery_note->get('State Index')>=90  }complete{/if}   {if $delivery_note->get('State Index')<0} {if $delivery_note->get('Delivery Note Date Dispatched Approved')=='' }hide{else}complete{/if}{/if}">
+        <li id="dispatch_approved_node"
+            class="li  {if $delivery_note->get('State Index')>=90  }complete{/if}   {if $delivery_note->get('State Index')<0} {if $delivery_note->get('Delivery Note Date Dispatched Approved')=='' }hide{else}complete{/if}{/if}">
             <div class="label">
                 <span class="state ">{t}Dispatch Approved{/t} <span></i></span></span>
             </div>
@@ -90,7 +90,6 @@
         </li>
 
 
-
         {if $delivery_note->get('State Index')<0   }
             <li id="received_node" class="li  cancelled">
                 <div class="label">
@@ -102,8 +101,6 @@
                 <div class="dot"></div>
             </li>
         {/if}
-
-
 
 
     </ul>
@@ -164,12 +161,13 @@
                                 <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('undo_picking')"></i></td>
                                 <td class="aright">
                                     <span data-data='{  "field": "Delivery Note State","value": "Ready to be Picked","dialog_name":"undo_picking"}' id="undo_picking_save_buttons" class="valid save button"
-                                                         onclick="save_order_operation(this)"><span class="label">{t}Save{/t}</span> <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>
+                                          onclick="save_order_operation(this)"><span class="label">{t}Save{/t}</span> <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>
                             </tr>
                         </table>
                     </div>
                 </div>
-                <div id="cancel_operations" class="order_operation {if $delivery_note->get('Delivery Note Number Picked Items')==0  or  $delivery_note->get('State Index')<0 or  $delivery_note->get('State Index')>=90  }hide{/if}">
+                <div id="cancel_operations"
+                     class="order_operation {if $delivery_note->get('Delivery Note Number Picked Items')==0  or  $delivery_note->get('State Index')<0 or  $delivery_note->get('State Index')>=90  }hide{/if}">
                     <div class="square_button left" title="{t}Cancel{/t}">
                         <i class="fa fa-minus-circle error " aria-hidden="true" onclick="toggle_order_operation_dialog('cancel')"></i>
                         <table id="cancel_dialog" border="0" class="order_operation_dialog hide">
@@ -180,8 +178,7 @@
                                 <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('cancel')"></i></td>
                                 <td class="aright"><span data-data='{  "field": "Delivery Note State","value": "Cancelled","dialog_name":"cancel"}' id="cancel_save_buttons" class="error save button"
 
-                                                         onclick="save_order_operation(this)"><span class="label">{t}Cancel{/t}</span> <i
-                                                class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span>
+                                                         onclick="save_order_operation(this)"><span class="label">{t}Cancel{/t}</span> <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span>
                                 </td>
                             </tr>
                         </table>
@@ -211,7 +208,8 @@
 
                 <div id="packed_done_operations" class="order_operation {if $delivery_note->get('State Index')!=70    }hide{/if}">
                     <div class="square_button right  " title="{t}Set as packed and sealed{/t}">
-                        <i id="packed_done_save_buttons" class="fa button fa-archive  fa-fw  {if $delivery_note->get('Delivery Note Weight Source')!='Given'  or  $delivery_note->get('Delivery Note Number Parcels')=='' }  very_discreet{/if} "
+                        <i id="packed_done_save_buttons"
+                           class="fa button fa-archive  fa-fw  {if $delivery_note->get('Delivery Note Weight Source')!='Given'  or  $delivery_note->get('Delivery Note Number Parcels')=='' }  very_discreet{/if} "
                            data-data='{  "field": "Delivery Note State","value": "Packed Done","dialog_name":"packed_done"}' aria-hidden="true" onclick="save_order_operation(this)"></i>
 
                     </div>
@@ -222,8 +220,8 @@
                     <div id="dispatch_operation" class="square_button right  " title="{t}Dispatch{/t}">
 
 
-                        <i id="dispatch_save_buttons" class="fa button fa-paper-plane fa-fw   "
-                           data-data='{  "field": "Delivery Note State","value": "Dispatched","dialog_name":"dispatch"}' aria-hidden="true" onclick="save_order_operation(this)"></i>
+                        <i id="dispatch_save_buttons" class="fa button fa-paper-plane fa-fw   " data-data='{  "field": "Delivery Note State","value": "Dispatched","dialog_name":"dispatch"}' aria-hidden="true"
+                           onclick="save_order_operation(this)"></i>
 
 
                     </div>
@@ -232,24 +230,33 @@
         </div>
 
         <div class="{if $delivery_note->get('State Index')<90 }hide{/if}" style="text-align: center;border-bottom: 1px solid #ccc;padding:5px 0px;">
-           <a class="pdf_link" target='_blank' href="/pdf/dn.pdf.php?id={$delivery_note->id}"> <img style="width: 50px;height:16px" src="/art/pdf.gif"></a>
+            <a class="pdf_link" target='_blank' href="/pdf/dn.pdf.php?id={$delivery_note->id}"> <img style="width: 50px;height:16px" src="/art/pdf.gif"></a>
 
         </div>
 
 
-        <div class="date"  style="padding:10px;margin-bottom:0px;text-align: center;border-bottom: 1px solid #ccc">
-            <span class="button"  onclick="change_view('orders/{$order->get('Order Store Key')}/{$order->id}')" ><i class="fa fa-shopping-cart" aria-hidden="true"></i> {$order->get('Public ID')}</span>
+        <div class="date" style="padding:10px;margin-bottom:0px;text-align: center;border-bottom: 1px solid #ccc">
+            <span class="button" onclick="change_view('orders/{$order->get('Order Store Key')}/{$order->id}')"><i class="fa fa-shopping-cart" aria-hidden="true"></i> {$order->get('Public ID')}</span>
+        </div>
+        <div class="" style="padding:5px 10px;margin-bottom:0px;border-bottom: 1px solid #ccc">
+            <table border="0" style="width: 100%;">
+
+
+                <tr>
+            <td class="label">{t}Items cost{/t}:</td>
+                    <td class="aright" >{$delivery_note->get('Items Cost')}</td>
+                </tr>
+            </table>
         </div>
 
-        <div class="state"  style="text-align: center;padding:5px 10px;border-bottom:none">
-        <table border="0" style="width: 100%;"  >
+        <div class="state" style="text-align: center;padding:5px 10px;border-bottom:none">
+            <table border="0" style="width: 100%;">
 
 
+                <tr>
 
-            <tr>
 
-
-                <td>
+                    <td>
                     <span style=""><i class="fa fa-square fa-fw discreet" aria-hidden="true"></i>
                           <span class="Number_Ordered_Parts">{$delivery_note->get('Number Ordered Parts')}</span> (<span class="Number_Ordered_Items">{$delivery_note->get('Number Ordered Items')}</span>)
 
@@ -257,22 +264,22 @@
                            class="Order_Number_Items_with_Out_of_Stock">{$delivery_note->get('Number Items Out of Stock')}</span></span>
                     <span class="error {if $delivery_note->get('Order Number Items Returned')==0}hide{/if}" style="padding-left:20px"><i class="fa fa-thumbs-o-down fa-fw   " aria-hidden="true"></i> <span
                                 class="Order_Number_Items_with_Returned">{$delivery_note->get('Number Items Returned')}</span></span>
-                </td>
+                    </td>
 
-                <td>
-                    <span style="padding-left:20px"><i class="fa fa-balance-scale fa-fw discreet " aria-hidden="true"></i> <span class="Weight_Details">{$delivery_note->get('Weight Details')}</span></span>
-                </td>
-                <td>
+                    <td>
+                        <span style="padding-left:20px"><i class="fa fa-balance-scale fa-fw discreet " aria-hidden="true"></i> <span class="Weight_Details">{$delivery_note->get('Weight Details')}</span></span>
+                    </td>
+                    <td>
 
                     <span style="padding-left:20px" class="Delivery_Note_Number_Parcels">
                         {$delivery_note->get('Number Parcels')}
                     </span>
-                </td>
+                    </td>
 
-            </tr>
+                </tr>
 
 
-        </table>
+            </table>
         </div>
     </div>
 
@@ -281,8 +288,6 @@
 
 
         <table border="0" class="info_block  {if $delivery_note->get('State Index')<70 or $delivery_note->get('State Index')>90 }hide{/if} ">
-
-
 
 
             <tr>
@@ -307,8 +312,6 @@
             </tr>
 
         </table>
-
-
 
 
     </div>
@@ -470,12 +473,104 @@
     var out_of_stock_dialog_open = false;
 
 
-    function save_picking_offline() {
+    function save_picking_offline(force_pick) {
+
+
+
+
+
+
 
 
         if ($('#save_picking_offline').hasClass('wait') || !$('#save_picking_offline').hasClass('valid')) {
             return
         }
+
+
+        if(force_pick===undefined){
+
+
+
+            var hard_no_pick = 0;
+            var soft_no_pick = 0;
+            hard_no_pick_parts = '';
+            soft_no_pick_parts = '';
+
+            $('#table .picked_offline').each(function (i, obj) {
+
+
+                settings = $(obj).closest('.picked_quantity').data('settings')
+
+                to_pick = $(obj).attr('to_pick') - $(obj).val()
+                available_in_location = $(obj).closest('tr').find('.location').data('available')
+
+                if (to_pick > 0) {
+
+                    if (available_in_location > $(obj).attr('to_pick')) {
+
+                        console.log(available_in_location)
+                        console.log($(obj).attr('to_pick'))
+
+                        hard_no_pick++;
+                        hard_no_pick_parts += ', ' + settings.reference;
+                    }
+                    if (settings.stock > $(obj).attr('to_pick')) {
+                        soft_no_pick++;
+                        soft_no_pick_parts += ', ' + settings.reference;
+                    }
+                }
+
+
+            });
+
+
+            if (hard_no_pick > 0) {
+
+                hard_no_pick_parts = hard_no_pick_parts.replace(/^, /i, '')
+
+
+                swal(hard_no_pick_parts,'{t}Not picked{/t}', "warning");
+
+
+                swal({
+                    title: hard_no_pick_parts,
+                    text:'{t}Not picked{/t}',
+                    icon:"error",
+                    buttons: ["{t}Ok, i will fix it{/t} :)", "{t}Continue anyway{/t}"],
+                    dangerMode: true
+                }).then((willDelete) => { if (willDelete) { save_picking_offline(true)}
+                });
+
+                return;
+            }
+
+
+            if (soft_no_pick > 0) {
+
+                soft_no_pick_parts = soft_no_pick_parts.replace(/^, /i, '')
+
+                // if(hard_no_pick==1){
+                swal({
+                    title: soft_no_pick_parts,
+                    text:'{t}There is more stock in other locations, replenish picking location and try again{/t}',
+                    icon:"warning",
+                    buttons: ["{t}I will replenish the location{/t} :)", "{t}Continue anyway{/t}"],
+                    dangerMode: true
+                }).then((willDelete) => { if (willDelete) { save_picking_offline(true)}
+                });
+
+                //}else{
+                //     swal('{t}There is some parts not picked{/t}', hard_no_pick_parts, "warning");
+                // }
+
+
+                return;
+            }
+
+          
+        }
+
+
 
         $('#save_picking_offline').addClass('wait')
         $('#save_picking_offline i').removeClass('save').addClass('fa-spinner fa-spin')
@@ -514,9 +609,6 @@
                 if (data.state == '200') {
 
 
-
-
-
                     console.log(data)
 
 
@@ -543,16 +635,14 @@
                     $('.timeline .li').removeClass('complete')
 
 
-
-
                     $('#order_node').addClass('complete')
 
                     if (data.update_metadata.state_index >= 20) {
-                            $('#start_picking_node').addClass('complete')
-                        }
-                        if (data.update_metadata.state_index >= 30) {
-                            $('#picked_node').addClass('complete')
-                        }
+                        $('#start_picking_node').addClass('complete')
+                    }
+                    if (data.update_metadata.state_index >= 30) {
+                        $('#picked_node').addClass('complete')
+                    }
                     if (data.update_metadata.state_index >= 70) {
                         $('#packed_node').addClass('complete')
                     }
@@ -566,22 +656,19 @@
                         $('#dispatched_node').addClass('complete')
                     }
 
-                    if (data.update_metadata.state_index >= 70 &&  data.update_metadata.state_index <= 90    ) {
+                    if (data.update_metadata.state_index >= 70 && data.update_metadata.state_index <= 90) {
                         $('.info_block').removeClass('hide')
-                    }else{
+                    } else {
                         $('.info_block').addClass('hide')
                     }
 
 
-
-
-                        $('.order_operation').addClass('hide')
+                    $('.order_operation').addClass('hide')
                     $('.items_operation').addClass('hide')
 
                     for (var key in data.update_metadata.operations) {
                         $('#' + data.update_metadata.operations[key]).removeClass('hide')
                     }
-
 
 
                     $('#Delivery_Note_State_Index').val(data.update_metadata.state_index)
@@ -593,7 +680,6 @@
 
 
                     $('.fast_track_packing_operation').addClass('hide')
-
 
 
                 } else if (data.state == '400') {
@@ -620,7 +706,7 @@
 
             if (!input.is('[readonly]') && input.val() == '') {
 
-                input.val($(obj).attr('qty')).trigger('propertychange')
+                input.val(input.attr('max')).trigger('propertychange')
 
             }
 
@@ -710,7 +796,7 @@
             }
 
 
-            if (input.val() < input.attr('max')) {
+            if (input.val() < input.attr('to_pick')) {
                 input.css({
                     'background-color': 'rgba(255,55,55, 0.2)'
                 })
@@ -1014,16 +1100,11 @@
         var icon = $(element)
 
 
-
-        if (!icon.hasClass('save') || icon.hasClass('wait') ) {
+        if (!icon.hasClass('save') || icon.hasClass('wait')) {
             return
         }
 
         $(element).addClass('fa-spinner fa-spin');
-
-
-
-
 
 
         qty = parseFloat(input.val())

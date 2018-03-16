@@ -41,7 +41,7 @@
         <link href="/css/editor/plugins/draggable.css" rel="stylesheet">
 
         <link href="/css/amcharts/style.css" rel="stylesheet">
-        <link href="/css/sweetalert.css" rel="stylesheet">
+
         <link href="/css/fotorama.css" rel="stylesheet">
         <link href="/css/jquery.fancybox.min.css" rel="stylesheet">
         <link href="/css/tooltipster.bundle.min.css" rel="stylesheet" type="text/css">
@@ -66,7 +66,7 @@
         <script src="/js/libs/d3.js"></script>
         <script src="/js/libs/d3fc.layout.js"></script>
         <script src="/js/libs/d3fc.js"></script>
-        <script src="/js/libs/sweetalert.min.js"></script>
+        <script src="/js/libs/sweetalert.min.js?v2"></script>
 
         <script src="/js/libs/fotorama.js"></script>
         <script src="/js/libs/tooltipster.bundle.min.js"></script>
@@ -84,7 +84,7 @@
         <script src="/js/edit_webpage_edit.js?v171019"></script>
 
         <script src="/js/new.js?v180302v9"></script>
-        <script src="/js/order.common.js?v180314v1"></script>
+        <script src="/js/order.common.js?v180314v5"></script>
         <script src="/js/email_campaign.common.js?v170207"></script>
 
 

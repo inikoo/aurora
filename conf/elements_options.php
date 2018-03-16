@@ -500,12 +500,12 @@ $elements_options = array(
                     'label'    => _('Picking'),
                     'selected' => true
                 ),
-                'Packing'  => array(
-                    'label'    => _('Packing'),
+                'Packed'  => array(
+                    'label'    => _('Packed'),
                     'selected' => true
                 ),
                 'Done'     => array(
-                    'label'    => _('Done'),
+                    'label'    => _('Closed'),
                     'selected' => true
                 ),
                 'Send'     => array(
@@ -527,30 +527,13 @@ $elements_options = array(
                     ),
                     'selected' => true
                 ),
-                'Sample'       => array(
-                    'label'    => _(
-                        'Sample'
-                    ),
-                    'selected' => true
-                ),
-                'Donation'     => array(
-                    'label'    => _(
-                        'Donation'
-                    ),
-                    'selected' => true
-                ),
                 'Replacements' => array(
                     'label'    => _(
                         'Replacements'
                     ),
                     'selected' => true
-                ),
-                'Shortages'    => array(
-                    'label'    => _(
-                        'Shortages'
-                    ),
-                    'selected' => true
-                ),
+                )
+
             )
         )
 

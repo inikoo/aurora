@@ -15,17 +15,18 @@ trait OrderCalculateTotals {
     function update_totals() {
 
 
-        $number_items             = 0;
-        $number_with_deals        = 0;
-        $number_with_out_of_stock = 0;
-        $number_with_problems     = 0;
-        $total_weight             = 0;
-        $total_items_gross        = 0;
-        $total_items_out_of_stock = 0;
-        $total_items_net          = 0;
-        $total_items_discounts    = 0;
-        $profit                   = 0;
-        $items_cost=0;
+        $number_items                    = 0;
+        $number_with_deals               = 0;
+        $number_items_with_out_of_stock  = 0;
+        $number_with_problems            = 0;
+        $total_weight                    = 0;
+        $total_items_gross               = 0;
+        $total_items_out_of_stock_amount = 0;
+        $total_items_net                 = 0;
+        $total_items_discounts           = 0;
+        $profit                          = 0;
+        $replacement_costs               = 0;
+        $items_cost                      = 0;
 
         $sql = sprintf(
             "SELECT
@@ -36,25 +37,25 @@ trait OrderCalculateTotals {
 		sum(`Order Transaction Total Discount Amount`) AS discounts ,sum(`Order Transaction Gross Amount`) AS gross ,
 		sum(`Order Transaction Out of Stock Amount`) AS out_of_stock ,
 		sum(if(`Order Transaction Total Discount Amount`!=0,1,0)) AS number_with_deals ,
-		sum(if(`No Shipped Due Out of Stock`!=0,1,0)) AS number_with_out_of_stock
+		sum(if(`No Shipped Due Out of Stock`!=0,1,0)) AS number_items_with_out_of_stock
 		FROM `Order Transaction Fact` WHERE `Order Key`=%d AND `Order Transaction Type`='Order' ", $this->id
         );
 
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
+                //print_r($row);
+
+                $number_items                   = $row['number_items'];
+                $number_with_deals              = $row['number_with_deals'];
+                $number_items_with_out_of_stock = $row['number_items_with_out_of_stock'];
 
 
-                $number_items             = $row['number_items'];
-                $number_with_deals        = $row['number_with_deals'];
-                $number_with_out_of_stock = $row['number_with_out_of_stock'];
-
-
-                $total_items_out_of_stock = $row['out_of_stock'];
-                $total_weight             = $row['weight'];
-                $total_items_gross        = $row['gross'];
-                $total_items_net          = $row['net'];
-                $total_items_discounts    = $row['discounts'];
+                $total_items_out_of_stock_amount = $row['out_of_stock'];
+                $total_weight                    = $row['weight'];
+                $total_items_gross               = $row['gross'];
+                $total_items_net                 = $row['net'];
+                $total_items_discounts           = $row['discounts'];
 
             }
         } else {
@@ -63,7 +64,7 @@ trait OrderCalculateTotals {
         }
 
 
-
+        $items_net_for_profit_calculation = 0;
 
         $sql = sprintf(
             "SELECT
@@ -78,8 +79,30 @@ trait OrderCalculateTotals {
             if ($row = $result->fetch()) {
 
 
-                $profit                   = $row['net'] - $row['cost'];
-                $items_cost= $row['cost'];
+                $items_net_for_profit_calculation = $row['net'];
+                $items_cost                       = $row['cost'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+        ////'Replacement & Shortages','Order','Replacement','Shortages','Sample','Donation'
+
+        $sql = sprintf(
+            "SELECT
+	
+		sum(`Delivery Note Items Cost`) AS replacements_cost 
+		
+		FROM `Delivery Note Dimension` WHERE `Delivery Note Order Key`=%d  AND `Delivery Note Type` IN ('Replacement & Shortages','Replacement','Shortages') ", $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+
+
+                $replacement_costs = $row['replacements_cost'];
             }
         } else {
             print_r($error_info = $this->db->errorInfo());
@@ -87,7 +110,7 @@ trait OrderCalculateTotals {
         }
 
 
-
+        $profit = $items_net_for_profit_calculation - $items_cost - $replacement_costs;
 
         $sql = sprintf(
             "SELECT
@@ -241,21 +264,17 @@ trait OrderCalculateTotals {
 
         $total_balance = $total + $total_refunds;
 
-
-
         $this->fast_update(
             array(
                 'Order Number Items'              => $number_items,
                 'Order Number Items with Deals'   => $number_with_deals,
-                'Order Number Items Out of Stock' => $number_with_out_of_stock,
+                'Order Number Items Out of Stock' => $number_items_with_out_of_stock,
+
                 'Order Number Items Returned'     => $number_with_problems,
                 'Order Items Net Amount'          => $total_items_net,
                 'Order Items Gross Amount'        => $total_items_gross,
                 'Order Items Discount Amount'     => $total_items_discounts,
-                'Order Items Out of Stock Amount' => $total_items_out_of_stock,
-
-
-                'Order Number Items Out of Stock' => $number_with_out_of_stock,
+                'Order Items Out of Stock Amount' => $total_items_out_of_stock_amount,
 
 
                 'Order Shipping Net Amount'  => $shipping,
@@ -270,7 +289,8 @@ trait OrderCalculateTotals {
                 'Order Total Balance'        => $total_balance,
                 'Order Profit Amount'        => $profit,
                 'Order Margin'               => ($total_items_net == 0 ? '' : $profit / $total_items_net),
-                'Order Items Cost'        => $items_cost
+                'Order Items Cost'           => $items_cost,
+                'Order Replacement Cost'     => $replacement_costs
 
             )
         );

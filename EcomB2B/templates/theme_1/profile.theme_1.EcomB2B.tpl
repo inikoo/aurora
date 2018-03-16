@@ -63,7 +63,7 @@
                             <li>
                                 <span  data-block="_poll_details" onClick="change_block(this)" class="block_link like_button "  style="cursor: pointer">
                                     <i class="fa fa-angle-right"></i>
-                                    <span class="_invoice_address_title">{if empty($content._poll_title)}{t}Poll{/t}{else}{$content._poll_title}{/if}</span>
+                                    <span class="_poll_address_title">{if empty($content._poll_title)}{t}Poll{/t}{else}{$content._poll_title}{/if}</span>
                                     </span>
                             </li>
 

@@ -20,13 +20,13 @@
     <div class="sidebar sidebar-left">
         <div class="sidebar-header sidebar-header-image bg-1">
             <div class="overlay "></div>
-            <div class="sidebar-socials">
+            <div class="sidebar-socials" >
                 <a  class="invisible"  href="tel:{$store->get('Telephone')}"><i class="ion-ios-telephone"></i></a>
 
                 <a class="invisible" href="#"><i class="ion-social-facebook"></i></a>
                 <a class="invisible" href="#"><i class="ion-social-twitter"></i></a>
                 <a class="invisible" href="#"><i class="ion-android-mail"></i></a>
-                <a class="close-sidebar" href="#"><i class="ion-android-close"></i></a>
+                <a class="close-sidebar" href="#"><i class="fa fa-times"></i></a>
                 <div class="clear"></div>
             </div>
             <a href="/" class="sidebar-logo">
@@ -45,7 +45,7 @@
                 <a data-sub="sidebar-sub-{$key}" href="#" class="{if !$column.show}hide{/if}">
                     <i class="icon-bg bg-orange-dark fa  {$column.icon}"></i>
 
-                    <span>{$column.label}</span><strong class="plushide-animated"></strong></a>
+                    <span>{$column.label|strip_tags}</span><strong class="plushide-animated"></strong></a>
 
                 {if $column.type=='three_columns'}
 
@@ -84,14 +84,14 @@
             {/foreach}
 
 
-            <a href="#" class="close-sidebar"><i class="icon-bg bg-red-light ion-android-close"></i><span>Close</span><i class="ion-record"></i></a>
-            <em class="menu-divider">Copyright <u class="copyright-year"></u>. All rights reserved</em>
+            <a href="#" class="close-sidebar hide"><i class="icon-bg bg-red-light fa fa-times"></i><span>{t}Close{/t}</span><i class="ion-record"></i></a>
+            <em class="menu-divider">{t}Copyright{/t} <u class="copyright-year"></u>. {t}All rights reserved{/t}</em>
         </div>
     </div>
     <div class="sidebar sidebar-right">
         <div class="sidebar-header sidebar-header-classic">
             <div class="sidebar-socials">
-                <a class="close-sidebar" href="#"><i class="ion-android-close"></i></a>
+                <a class="close-sidebar" href="#"><i class="fa fa-times"></i></a>
                 <a class="" href="#"></a>
                 <a class="" href="#"></a>  <a class="" href="#"></a>
                 <a class="" href="#"></a>
@@ -106,14 +106,14 @@
 
 
             {if $logged_in}
-                <a class="default-link" href="basket.sys"><i class="icon-bg bg-orange-dark  ion-ios-cart"></i><span>{t}Basket{/t}</span><i class="ion-record"></i></a>
-                <a class="default-link" href="profile.sys"><i class="icon-bg bg-orange-dark  ion-person"></i><span>{t}Profile{/t}</span><i class="ion-record"></i></a>
-                <a class="default-link" href="favourites.sys"><i class="icon-bg bg-orange-dark  ion-heart"></i><span>{t}Favourites{/t}</span><i class="ion-record"></i></a>
+                <a class="default-link" href="basket.sys"><i class="icon-bg bg-orange-dark  fa fa-shopping-cart"></i><span>{t}Basket{/t}</span><i class="ion-record"></i></a>
+                <a class="default-link" href="profile.sys"><i class="icon-bg bg-orange-dark  fa fa-user"></i><span>{t}Profile{/t}</span><i class="ion-record"></i></a>
+                <a class="default-link" href="favourites.sys"><i class="icon-bg bg-orange-dark  fa fa-heart"></i><span>{t}Favourites{/t}</span><i class="ion-record"></i></a>
 
             {else}
 
-            <a class="default-link" href="login.sys"><i class="icon-bg bg-orange-light ion-log-in"></i><span>{if empty($labels._Login)}{t}Login{/t}{else}{$labels._Login}{/if}</span><i class="ion-record"></i></a>
-            <a class="default-link" href="register.sys"><i class="icon-bg bg-orange-light ion-android-add-circle"></i><span>{if empty($labels._Register)}{t}Register{/t}{else}{$labels._Register}{/if}</span><i class="ion-record"></i></a>
+            <a class="default-link" href="login.sys"><i class="icon-bg bg-orange-light fa fa-sign-in"></i><span>{if empty($labels._Login)}{t}Login{/t}{else}{$labels._Login}{/if}</span><i class="ion-record"></i></a>
+            <a class="default-link" href="register.sys"><i class="icon-bg bg-orange-light fa fa-plus-circle"></i><span>{if empty($labels._Register)}{t}Register{/t}{else}{$labels._Register}{/if}</span><i class="ion-record"></i></a>
             {/if}
 
 
@@ -156,9 +156,9 @@
     <a href="#" class="header-icon header-icon-1 hamburger-animated open-sidebar-left"></a>
     <a href="/" class="header-logo">{$website->get('Website Name')}</a>
     {if $logged_in}
-        <a href="#" class="header-icon header-icon-4 open-sidebar-right"><i class="ion-ios-cart-outline"></i></a>
+        <a href="#" class="header-icon header-icon-4 open-sidebar-right "><i class="fa fa-shopping-cart"></i></a>
     {else}
-        <a href="#" class="header-icon header-icon-4 open-sidebar-right"><i class="ion-log-in"></i></a>
+        <a href="#" class="header-icon header-icon-4 open-sidebar-right"><i class="fa fa-sign-in"></i></a>
     {/if}
 </div>
 {/if}

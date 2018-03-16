@@ -104,8 +104,13 @@ if (!$is_cached) {
     require_once 'external_libs/mobile_detect/Mobile_Detect.php';
     $detect = new Mobile_Detect;
 
-    if ($detect->isMobile() or   $detect->isTablet() ) {
+    if ($detect->isMobile()  ) {
         $detected_device = 'mobile';
+    }elseif (   $detect->isTablet() ) {
+        $detected_device = 'tablet';
+        // todo !!!!!!!!
+        $detected_device = 'mobile';
+
     } else {
         $detected_device = 'desktop';
 
@@ -121,6 +126,8 @@ if (!$is_cached) {
 
     if($detected_device=='mobile'){
         $template_suffix='.mobile';
+    }elseif($detected_device=='tablet'){
+        $template_suffix='.tablet';
     }else{
         $template_suffix='';
     }

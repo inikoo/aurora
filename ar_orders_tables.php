@@ -1763,7 +1763,16 @@ function order_items($_data, $db, $user) {
             <i onClick="save_item_qty_change(this)" class="fa plus  fa-plus fa-fw button" aria-hidden="true"></i></span>', $data['Order Transaction Fact Key'], $data['Product ID'], $data['Product Key'], $data['Order Quantity'] + 0, $data['Order Quantity'] + 0
             );
         } else {
-            $quantity = number($data['Order Quantity']);
+
+            if($data['Order Quantity']!=$data['Delivery Note Quantity']){
+               // $quantity = number($data['Delivery Note Quantity']).' <i class="fa fa-exclamation-circle error"></i> <span class="discreet " title="'._('Ordered quantity').'">('.$data['Order Quantity'].')</span>';
+                $quantity = '<span class="discreet " title="'.sprintf(_('%s ordered by customer'),number($data['Order Quantity'])).'" >(<span class="strikethrough">'.number($data['Order Quantity']).'</span>)</span> '.number($data['Delivery Note Quantity']);
+
+            }else{
+                $quantity = number($data['Order Quantity']);
+
+            }
+
         }
 
 
@@ -2034,9 +2043,7 @@ function delivery_note_fast_track_packing($_data, $db, $user) {
             //   'product_pid' => $data['Product ID'],
             'description'       => $description,
             'quantity'          => $quantity,
-            'dispatched'        => number(
-                -1 * $data['Inventory Transaction Quantity']
-            ),
+            'dispatched'        => number(-1 * $data['Inventory Transaction Quantity']),
             'overview_required' => number($data['Required']),
 
             'overview_packed'  => number($data['Packed']),

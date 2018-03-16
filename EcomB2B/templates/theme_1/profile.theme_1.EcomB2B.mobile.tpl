@@ -22,27 +22,34 @@
             </div>
 
 
-            <div class="menu-bottom-bar menu-bottom-bar-four color-menu-bar menu-bottom-bar-text flat-menu-bar">
+            <div class="menu-bottom-bar menu-bottom-bar-{if empty($poll_queries)}four{else}five{/if} color-menu-bar menu-bottom-bar-text flat-menu-bar">
 
 
 
 
 
                     <a  class="like_button profile_button no-smoothState bg-black border-orange-dark  "  data-tab="_contact_details">
-                        <i class="fa fa-user  color-orange-dark" aria-hidden="true"></i>
+                        <i class="fa fa-user  color-orange-dark" aria-hidden="true" style="margin-top: 7px"></i>
                         <em style="font-size: 11px">{$content._contact_details_title}</em>
                     </a>
 
+
+                <a  class="like_button profile_button no-smoothState bg-black border-black color-gray-light  "  data-tab="_poll_details">
+                    <i class="fa fa-sign-in  color-gray-light" aria-hidden="true"  style="margin-top: 7px"></i>
+                    <em style="font-size: 11px">{if empty($content._poll_title)}{t}Poll{/t}{else}{$content._poll_title}{/if}</em>
+                </a>
+
+
                 <a  class="like_button profile_button no-smoothState bg-black border-black color-gray-light  "  data-tab="_login_details">
-                    <i class="fa fa-sign-in  color-gray-light" aria-hidden="true"></i>
+                    <i class="fa fa-sign-in  color-gray-light" aria-hidden="true"  style="margin-top: 7px"></i>
                     <em style="font-size: 11px">{$content._login_details_title}</em>
                 </a>
                 <a  class="like_button profile_button no-smoothState bg-black border-black color-gray-light  "   data-tab="_invoice_address_details">
-                    <i class="fa fa-dollar color-gray-light" aria-hidden="true"></i>
+                    <i class="fa fa-dollar color-gray-light" aria-hidden="true"  style="margin-top: 7px"></i>
                     <em style="font-size: 11px">{$content._invoice_address_title}</em>
                 </a>
                 <a  class="like_button profile_button no-smoothState bg-black border-black color-gray-light  "  data-tab="_delivery_addresses_details">
-                    <i class="fa fa-truck color-gray-light" aria-hidden="true"></i>
+                    <i class="fa fa-truck color-gray-light" aria-hidden="true"  style="margin-top: 7px"></i>
                     <em style="font-size: 11px">{$content._delivery_addresses_title}</em>
                 </a>
 
@@ -149,6 +156,62 @@
                     </footer>
                 </form>
             </div>
+
+
+            <div id="_poll_details" class="profile_block hide profile_form">
+                <form  id="poll_details" class="sky-form">
+                    <header class="mirror_master" id="_poll_details_title" contenteditable="true">{if empty($content._poll_details_title)}{t}Poll{/t}{else}{$content._poll_details_title}{/if}</header>
+
+                    <fieldset>
+                        <section>
+
+                            <label class="input">
+                                        <span id="_poll_info" contenteditable="true">{if empty($content._poll_info)}{t}Please let know you better so we can serve you better{/t}{else}{$content._poll_info}{/if}
+                            </label>
+                        </section>
+
+
+
+                        {foreach from=$poll_queries item=query}
+
+                            {if $query['Customer Poll Query Type']=='Open'}
+                                <section>
+                                    <label  class="label poll_query_label" >{$query['Customer Poll Query Label']}</label>
+                                    <label class="textarea">
+                                        <textarea rows="4"  name="poll_{$query['Customer Poll Query Key']}"  id="poll_{$query['Customer Poll Query Key']}">{$query['Reply']}</textarea>
+                                    </label>
+                                </section>
+                            {else}
+                                <section>
+                                    <label data-query_key="{$query['Customer Poll Query Key']}" class="label poll_query_label" >{$query['Customer Poll Query Label']}</label>
+                                    <label class="select">
+                                        <select name="poll_{$query['Customer Poll Query Key']}">
+                                            <option value="0" selected disabled>{if !empty($labels._choose_one)}{$labels._choose_one}{else}{t}{t}Please choose one{/t}{/t}{/if}</option>
+
+                                            {foreach from=$query['Options'] item=option}
+                                                <option value="{$option['Customer Poll Query Option Key']}"   {if $option['Customer Poll Query Option Key']==$query['Reply']}selected{/if}   >{$option['Customer Poll Query Option Label']}</option>
+                                            {/foreach}
+
+
+                                        </select>
+                                        <i></i>
+                                    </label>
+                                </section>
+
+                            {/if}
+
+                        {/foreach}
+
+
+
+
+                    </fieldset>
+                    <footer>
+                        <button type="submit" class="button " id="save_poll_details" >{if empty($content._save_poll_details_label)}{t}Save{/t}{else}{$content._save_poll_details_label}{/if} <i  class="margin_left_10 fa fa-fw fa-floppy-o" aria-hidden="true"></i> </button>
+                    </footer>
+                </form>
+            </div>
+
             <div id="_login_details" class="profile_block hide profile_form">
                 <form id="login_details" class="sky-form">
                     <header class="mirror_master" id="_login_details_title">{$content._login_details_title}</header>
@@ -430,7 +493,7 @@
                             <div class="row" >
                                 <section class="col col-5">
                                     <label class="select">
-                                        <select id="invoice_country_select" name="country">
+                                        <select id="delivery_country_select" name="country">
                                             <option value="0" selected disabled>{if isset($labels.address_country) and $labels.address_country!=''}{$labels.address_country}{else}{t}Country{/t}{/if}</option>
 
                                             {foreach from=$countries item=country}

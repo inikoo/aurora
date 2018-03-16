@@ -78,7 +78,11 @@
         var template=$(this).attr('template')
 
 
-        //$('#open_images_layout_ideas').attr('src','/art/images_layout_'+template+'.png').attr('template',template)
+        console.log(template)
+
+        $('#preview').contents().find('.blk_images').html($('#preview').contents().find('#template_'+template).html())
+
+
 
 
 

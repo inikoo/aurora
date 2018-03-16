@@ -13,20 +13,27 @@
 error_reporting(E_ALL);
 date_default_timezone_set('UTC');
 include_once 'utils/general_functions.php';
+include_once 'utils/object_functions.php';
 
 $db = get_db();
 
 list($user_key, $api_key_key, $scope) = authenticate($db);
+
+
 authorization($db, $user_key, $api_key_key, $scope);
+
+
 
 
 function authorization($db, $user_key, $api_key_key, $scope) {
     $method       = $_SERVER['REQUEST_METHOD'];
     $parsed_scope = parse_scope($_SERVER['REDIRECT_URL']);
 
+
+
     if (!$scope) {
         $response = log_api_key_access_failure(
-            $db, $api_key_key, 'Fail_Access', 'Wrong path'
+            $db, $api_key_key, 'Fail_Access', 'Wrong URL'
         );
         echo json_encode($response);
         exit;
@@ -69,11 +76,15 @@ function authorization($db, $user_key, $api_key_key, $scope) {
 
             }
 
+        case 'Stock':
+
+            include_once 'api_stock.php';
+
 
             break;
         default:
             $response = log_api_key_access_failure(
-                $db, $api_key_key, 'Fail_Access', 'Wrong path'
+                $db, $api_key_key, 'Fail_Access', 'Unknown scope'
             );
             echo json_encode($response);
             exit;
@@ -109,6 +120,19 @@ function parse_scope($request) {
 
 function authenticate($db) {
 
+   // print_r($_SERVER);
+   // print_r(apache_request_headers());
+
+    $_headers=apache_request_headers();
+
+        if(!isset($_SERVER['HTTP_X_AUTH_KEY']) and isset($_headers['HTTP_X_AUTH_KEY'])){
+            $_SERVER['HTTP_X_AUTH_KEY']=$_headers['HTTP_X_AUTH_KEY'];
+        }
+
+
+
+
+
     if (!isset($_SERVER['HTTP_X_AUTH_KEY'])) {
 
         $response = log_api_key_access_failure(
@@ -119,6 +143,7 @@ function authenticate($db) {
         exit;
     } else {
         $api_key = $_SERVER['HTTP_X_AUTH_KEY'];
+
 
 
         if (preg_match('/^([a-z0-9]{8})(.+)$/', $api_key, $matches)) {
@@ -168,7 +193,6 @@ function authenticate($db) {
                         exit;
                     }
                 }
-
 
                 return array(
                     $row['API Key User Key'],

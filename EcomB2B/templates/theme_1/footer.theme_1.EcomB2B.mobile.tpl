@@ -29,9 +29,9 @@
 
     <div class="footer-socials">
 
-        <a href="#" class="show-share-bottom"><i class="ion-android-share-alt"></i></a>
+        <a href="#" class="show-share-bottom hide"><i class="ion-android-share-alt"></i></a>
     </div>
-    <p class="copyright-text">&copy; Copyright <span class="copyright-year"></span>. {t}All rights reserved{/t}</p>
+    <p class="copyright-text">&copy; {t}Copyright{/t} <span class="copyright-year"></span>. {t}All rights reserved{/t}</p>
 </div>
 
 </div>

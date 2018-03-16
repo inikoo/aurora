@@ -18,6 +18,21 @@ $account = new Account();
 
 
 $sql = sprintf(
+    "SELECT `Delivery Note Key` FROM `Delivery Note Dimension` "
+);
+
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+        $dn = get_object('Delivery Note', $row['Delivery Note Key']);
+        $dn->update_totals();
+    }
+} else {
+    print_r($error_info = $this->db->errorInfo());
+    print "$sql\n";
+    exit;
+}
+
+$sql = sprintf(
     "SELECT `Order Transaction Fact Key`,`Current Dispatching State`,`Order Quantity`,`Order Bonus Quantity`,`Product ID` FROM `Order Transaction Fact` "
 );
 

@@ -1095,10 +1095,14 @@ function dispatched_orders_components($_data, $db, $user, $account) {
 
     $totals=array(
         'store' =>_('Total'),
-        'orders' =>0,
-        'refunds' =>0,
-        'replacements' =>0,
-        'customers' =>0,
+        'items_cost' =>0,
+        'shipping_cost' =>0,
+        'replacement_cost' =>0,
+        'items_net' =>0,
+        'shipping_net' =>0,
+        'charges_net' =>0,
+        'total_net' =>0,
+        'tax' =>0,
         'refund_amount' =>0,
         'revenue' =>0,
         'profit' =>0,
@@ -1115,25 +1119,33 @@ function dispatched_orders_components($_data, $db, $user, $account) {
                 'store' =>$data['Store Code'],
                 'items_cost' =>money($data['items_cost'],$account->get('Account Currency Code')),
                 'shipping_cost' =>money($data['shipping_cost'],$account->get('Account Currency Code')),
+                'replacement_cost' =>money($data['replacement_cost'],$account->get('Account Currency Code')),
+
                 'items_net' =>money($data['items_net'],$account->get('Account Currency Code')),
                 'shipping_net' =>money($data['shipping_net'],$account->get('Account Currency Code')),
                 'charges_net' =>money($data['charges_net'],$account->get('Account Currency Code')),
+                'total_net' =>money($data['total_net'],$account->get('Account Currency Code')),
+
                 'tax' =>money($data['tax'],$account->get('Account Currency Code')),
 
-                'refund_amount' =>$refund_amount,
-                'revenue' =>$revenue,
-                'profit' =>$profit,
-                'margin' =>percentage($data['profit_oc'],$data['revenue_oc'])
+                'refund_amount' =>money($data['refund_amount'],$account->get('Account Currency Code')),
+                'revenue' =>money($data['revenue'],$account->get('Account Currency Code')),
+                'profit' =>money($data['profit'],$account->get('Account Currency Code')),
+                'margin' =>percentage($data['profit'],$data['revenue'])
             );
 
+            $totals['items_cost']+=$data['items_cost'];
+            $totals['shipping_cost']+=$data['shipping_cost'];
+            $totals['replacement_cost']+=$data['replacement_cost'];
+            $totals['items_net']+=$data['items_net'];
+            $totals['shipping_net']+=$data['shipping_net'];
+            $totals['charges_net']+=$data['charges_net'];
+            $totals['total_net']+=$data['total_net'];
+            $totals['tax']+=$data['tax'];
 
-            $totals['customers']+=$data['customers'];
-            $totals['orders']+=$data['orders'];
-            $totals['refunds']+=$data['refunds'];
-            $totals['replacements']+=$data['replacements'];
-            $totals['refund_amount']+=$data['refunds_amount_oc'];
-            $totals['revenue']+=$data['revenue_oc'];
-            $totals['profit']+=$data['profit_oc'];
+            $totals['refund_amount']+=$data['refund_amount'];
+            $totals['revenue']+=$data['revenue'];
+            $totals['profit']+=$data['profit'];
 
         }
     } else {
@@ -1142,11 +1154,20 @@ function dispatched_orders_components($_data, $db, $user, $account) {
     }
 
     $totals['margin']=percentage($totals['profit'],$totals['revenue']);
-
     $totals['refund_amount']=money($totals['refund_amount'],$account->get('Account Currency Code'));
     $totals['revenue']=money($totals['revenue'],$account->get('Account Currency Code'));
-
     $totals['profit']=money($totals['profit'],$account->get('Account Currency Code'));
+
+
+    $totals['items_cost']=money($totals['items_cost'],$account->get('Account Currency Code'));
+    $totals['shipping_cost']=money($totals['shipping_cost'],$account->get('Account Currency Code'));
+    $totals['replacement_cost']=money($totals['replacement_cost'],$account->get('Account Currency Code'));
+    $totals['items_net']=money($totals['items_net'],$account->get('Account Currency Code'));
+    $totals['shipping_net']=money($totals['shipping_net'],$account->get('Account Currency Code'));
+    $totals['charges_net']=money($totals['charges_net'],$account->get('Account Currency Code'));
+    $totals['total_net']=money($totals['total_net'],$account->get('Account Currency Code'));
+    $totals['tax']=money($totals['tax'],$account->get('Account Currency Code'));
+
 
     $adata[] =$totals;
 

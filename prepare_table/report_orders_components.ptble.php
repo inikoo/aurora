@@ -88,7 +88,7 @@ sum(`Order Charges Net Amount` * `Order Currency Exchange`)  charges_net,
 
 sum(`Order Items Cost` )  items_cost,
 sum(`Order Shipping Cost` )  shipping_cost,
-sum(`Order Replacement Cost` )  replacement_cost,
+sum(ifnull(`Order Replacement Cost`,0) )  replacement_cost,
 
 
 

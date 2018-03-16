@@ -628,6 +628,12 @@ class DeliveryNote extends DB_Table {
             case('Fraction Packed'):
             case('Fraction Picked'):
                 return percentage($this->data['Delivery Note'.' '.$key], 1);
+
+            case 'Items Cost':
+                global $account;
+
+                return money($this->data['Delivery Note '.$key], $account->get('Currency Code')).$account->get('Currency Code');
+
         }
 
 
@@ -652,17 +658,18 @@ class DeliveryNote extends DB_Table {
         $to_pick          = 0;
         $ordered_parts    = 0;
         $estimated_weight = 0;
+        $items_cost       = 0;
 
         // if($this->id){
         $sql = sprintf(
-            'SELECT sum(`Inventory Transaction Weight`) AS estimated_weight,   count(DISTINCT `Part SKU`) AS ordered_parts, sum(`Required`+`Given`) AS ordered, sum(`Required`+`Given`) AS ordered,sum(`Required`+`Given`-`Out of Stock`) AS to_pick, sum(`Picked`) AS picked,sum(`Packed`) AS packed   FROM `Inventory Transaction Fact` WHERE `Delivery Note Key`=%d ',
+            'SELECT  sum(`Inventory Transaction Amount`) AS items_cost, sum(`Inventory Transaction Weight`) AS estimated_weight,   count(DISTINCT `Part SKU`) AS ordered_parts, sum(`Required`+`Given`) AS ordered, sum(`Required`+`Given`) AS ordered,sum(`Required`+`Given`-`Out of Stock`) AS to_pick, sum(`Picked`) AS picked,sum(`Packed`) AS packed   FROM `Inventory Transaction Fact` WHERE `Delivery Note Key`=%d ',
             $this->id
         );
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
 
-                // print_r($row);
+
 
                 $ordered          = $row['ordered'];
                 $picked           = $row['picked'];
@@ -670,6 +677,8 @@ class DeliveryNote extends DB_Table {
                 $to_pick          = $row['to_pick'];
                 $ordered_parts    = $row['ordered_parts'];
                 $estimated_weight = $row['estimated_weight'];
+                $items_cost       = -1 * $row['items_cost'];
+
             }
         } else {
             print_r($error_info = $this->db->errorInfo());
@@ -678,15 +687,17 @@ class DeliveryNote extends DB_Table {
         }
 
 
-        $this->update(
+        $this->fast_update(
             array(
                 'Delivery Note Number Picked Items'  => $picked,
                 'Delivery Note Number Packed Items'  => $packed,
                 'Delivery Note Number Ordered Items' => $ordered,
                 'Delivery Note Number To Pick Items' => $to_pick,
                 'Delivery Note Number Ordered Parts' => $ordered_parts,
-                'Delivery Note Estimated Weight'     => $estimated_weight
-            ), 'no_options'
+                'Delivery Note Estimated Weight'     => $estimated_weight,
+                'Delivery Note Items Cost'    => $items_cost,
+
+            )
         );
 
 
@@ -1181,6 +1192,8 @@ class DeliveryNote extends DB_Table {
                 );
 
 
+                $order = get_object('order', $this->data['Delivery Note Order Key']);
+                $order->update_totals();
                 //   $order=
 
                 //   print "----";
@@ -1204,7 +1217,7 @@ class DeliveryNote extends DB_Table {
                     // todo make it work for multiple parts
 
                     $sql = sprintf(
-                        'SELECT `Packed`,`Required`,`Given`,`Map To Order Transaction Fact Key` FROM `Inventory Transaction Fact` WHERE  `Delivery Note Key`=%d ', $this->id
+                        'SELECT `Packed`,`Required`,`Given`, `Out of Stock`,`No Authorized`,`Not Found`,`No Picked Other`,  `Map To Order Transaction Fact Key` FROM `Inventory Transaction Fact` WHERE  `Delivery Note Key`=%d ', $this->id
                     );
 
 
@@ -1227,9 +1240,10 @@ class DeliveryNote extends DB_Table {
                             $sql = sprintf(
                                 'UPDATE `Order Transaction Fact`  SET 
                             `Delivery Note Quantity`=(`Order Quantity`+`Order Bonus Quantity`)*%f ,
+                             `No Shipped Due Out of Stock`=(`Order Quantity`+`Order Bonus Quantity`)*(1-%f),
                             `Order Transaction Out of Stock Amount`=`Order Transaction Amount`*(1-%f) ,
                                `Order Transaction Amount`=`Order Transaction Amount`*%f 
-                             WHERE `Order Transaction Fact Key`=%d ', $ratio_of_packing, $ratio_of_packing, $ratio_of_packing, $otf
+                             WHERE `Order Transaction Fact Key`=%d ', $ratio_of_packing, $ratio_of_packing, $ratio_of_packing, $ratio_of_packing, $otf
                             );
 
 
@@ -2096,11 +2110,15 @@ class DeliveryNote extends DB_Table {
 
         } else {
 
-            $order->update(
-                array(
-                    'Order State' => 'InProcess'
-                )
-            );
+
+            if ($order->get('Order State') != 'Cancelled') {
+                $order->update(
+                    array(
+                        'Order State' => 'InProcess'
+                    )
+                );
+            }
+
 
         }
 
@@ -2169,6 +2187,26 @@ class DeliveryNote extends DB_Table {
 
                     $this->db->exec($sql);
 
+                    $cost = 0;
+
+                    $sql = sprintf('SELECT sum(`Inventory Transaction Amount`) AS amount FROM `Inventory Transaction Fact` WHERE `Map To Order Transaction Fact Key`=%d ', $row['Map To Order Transaction Fact Key']);
+                    if ($result2 = $this->db->query($sql)) {
+                        if ($row2 = $result2->fetch()) {
+                            if ($row2['amount'] == '') {
+                                $row2['amount'] = 0;
+                            }
+
+                            $cost = -1 * $row2['amount'];
+                        }
+                    } else {
+                        print_r($error_info = $this->db->errorInfo());
+                        print "$sql\n";
+                        exit;
+                    }
+
+                    $sql = sprintf('UPDATE `Order Transaction Fact` SET `Cost Supplier`=%f  WHERE  `Order Transaction Fact Key`=%d', $cost, $row['Map To Order Transaction Fact Key']);
+                    //print "$sql\n";
+                    $this->db->exec($sql);
 
                     // todo: fork this
                     $part_location = get_object('Part_Location', $row['Part SKU'].'_'.$row['Location Key']);

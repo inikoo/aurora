@@ -190,6 +190,57 @@
 
                     </fieldset>
 
+
+                    {if !empty($poll_queries)}
+
+                        <fieldset>
+                            <section>
+
+                                <label class="input">
+                                        <span id="_poll_info" >{if empty($content._poll_info)}{t}Please let know you better so we can serve you better{/t}{else}{$content._poll_info}{/if}
+                                </label>
+                            </section>
+
+
+                            {foreach from=$poll_queries item=query}
+
+
+                                {if $query['Customer Poll Query Type']=='Open'}
+                                    <section>
+                                        <label data-query_key="{$query['Customer Poll Query Key']}" class="label poll_query_label" >{$query['Customer Poll Query Label']}</label>
+                                        <label class="textarea">
+                                            <textarea rows="4"  name="poll_{$query['Customer Poll Query Key']}"  id="poll_{$query['Customer Poll Query Key']}"></textarea>
+                                        </label>
+                                    </section>
+                                {else}
+                                    <section>
+                                        <label  class="label poll_query_label" >{$query['Customer Poll Query Label']}</label>
+                                        <label class="select">
+                                            <select name="poll_{$query['Customer Poll Query Key']}">
+                                                <option value="0" selected disabled>{if !empty($labels._choose_one)}{$labels._choose_one}{else}{t}{t}Please choose one{/t}{/t}{/if}</option>
+
+                                                {foreach from=$query['Options'] item=option}
+                                                    <option value="{$option['Customer Poll Query Option Key']}">{$option['Customer Poll Query Option Label']}</option>
+                                                {/foreach}
+
+
+                                            </select>
+                                            <i></i>
+                                        </label>
+                                    </section>
+
+                                {/if}
+
+                            {/foreach}
+
+
+
+
+                        </fieldset>
+
+                    {/if}
+
+
                     <fieldset class="last">
 
 
