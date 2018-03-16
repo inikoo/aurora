@@ -118,16 +118,61 @@
 </div>
 
 
-<div id="template_3" class="hide">
+
+<div id="template_4" class="hide">
 <span class=" image">
         <figure>
-            <img class="button" src="https://placehold.it/610x250" alt="" display_class="caption_left">
+            <img class="button" src="https://placehold.it/300x250" alt="" display_class="caption_left">
             <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
         </figure>
     </span>
     <span class=" image">
         <figure>
-            <img class="button" src="https://placehold.it/610x250" alt="" display_class="caption_left">
+            <img class="button" src="https://placehold.it/300x250" alt="" display_class="caption_left">
+            <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
+        </figure>
+    </span>
+    <span class=" image">
+        <figure>
+            <img class="button" src="https://placehold.it/300x250" alt="" display_class="caption_left">
+            <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
+        </figure>
+    </span>
+    <span class=" image">
+        <figure>
+            <img class="button" src="https://placehold.it/300x250" alt="" display_class="caption_left">
+            <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
+        </figure>
+    </span>
+</div>
+
+
+<div id="template_12" class="hide">
+<span class=" image">
+        <figure>
+            <img class="button" src="https://placehold.it/400x250" alt="" display_class="caption_left">
+            <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
+        </figure>
+    </span>
+    <span class=" image">
+        <figure>
+            <img class="button" src="https://placehold.it/800x250" alt="" display_class="caption_left">
+            <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
+        </figure>
+    </span>
+
+</div>
+
+<div id="template_21" class="hide">
+<span class=" image">
+        <figure>
+            <img class="button" src="https://placehold.it/800x250" alt="" display_class="caption_left">
+            <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
+        </figure>
+    </span>
+    <span class=" image">
+        <figure>
+            <img class="button" src="https://placehold.it/400x250" alt="" display_class="caption_left">
             <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
         </figure>
     </span>
