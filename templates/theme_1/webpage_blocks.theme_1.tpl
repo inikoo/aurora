@@ -907,7 +907,8 @@
         $('#image_control_panel').find('.caption_align i').addClass('super_discreet').removeClass('selected')
         $(this).removeClass('super_discreet').addClass('selected')
 
-
+      console.log(  $('#image_control_panel').attr('image_index'))
+        $('#save_button', window.parent.document).addClass('save button changed valid')
 
     })
 
