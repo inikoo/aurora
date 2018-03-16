@@ -88,6 +88,10 @@
 
 
         $('#images_layout_ideas').addClass('hide')
+
+        $('#save_button').addClass('save button changed valid')
+
+
     });
 
     function change_images_template() {

@@ -180,6 +180,67 @@
 </div>
 
 
+<div id="template_13" class="hide">
+<span class=" image">
+        <figure>
+            <img class="button" src="https://placehold.it/310x250" alt="" display_class="caption_left">
+            <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
+        </figure>
+    </span>
+    <span class=" image">
+        <figure>
+            <img class="button" src="https://placehold.it/910x250" alt="" display_class="caption_left">
+            <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
+        </figure>
+    </span>
+
+
+</div>
+
+
+
+<div id="template_31" class="hide">
+<span class=" image">
+        <figure>
+            <img class="button" src="https://placehold.it/910x250" alt="" display_class="caption_left">
+            <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
+        </figure>
+    </span>
+    <span class=" image">
+        <figure>
+            <img class="button" src="https://placehold.it/310x250" alt="" display_class="caption_left">
+            <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
+        </figure>
+    </span>
+
+
+</div>
+
+
+
+<div id="template_211" class="hide">
+<span class=" image">
+        <figure>
+            <img class="button" src="https://placehold.it/600x250" alt="" display_class="caption_left">
+            <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
+        </figure>
+    </span>
+    <span class=" image">
+        <figure>
+            <img class="button" src="https://placehold.it/300x250" alt="" display_class="caption_left">
+            <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
+        </figure>
+    </span>
+    <span class=" image">
+        <figure>
+            <img class="button" src="https://placehold.it/300x250" alt="" display_class="caption_left">
+            <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
+        </figure>
+    </span>
+
+</div>
+
+
 
 <div id="block_{$key}" block="{$data.type}" class="{$data.type} _block {if !$data.show}hide{/if} " style="Width:100%" >
 
@@ -291,4 +352,9 @@
     </div>
 
 </div>
+
+<script>
+
+
+</script>
 
