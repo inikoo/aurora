@@ -67,9 +67,7 @@ trait OrderCalculateTotals {
         $items_net_for_profit_calculation = 0;
 
         $sql = sprintf(
-            "SELECT
-	
-		sum(`Order Transaction Amount`) AS net ,sum(`Cost Supplier`) AS cost
+            "SELECT sum(`Order Transaction Amount`) AS net ,sum(`Cost Supplier`) AS cost
 		
 		FROM `Order Transaction Fact` WHERE `Order Key`=%d  ", $this->id
         );
@@ -77,7 +75,6 @@ trait OrderCalculateTotals {
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-
 
                 $items_net_for_profit_calculation = $row['net'];
                 $items_cost                       = $row['cost'];
@@ -264,6 +261,18 @@ trait OrderCalculateTotals {
 
         $total_balance = $total + $total_refunds;
 
+
+        $margin=($total_items_net == 0 ? '' : $profit / $total_items_net);
+
+        if($this->data['Order State']=='Cancelled'){
+
+            $profit=0;
+            $margin='';
+            $items_cost=0;
+            $replacement_costs=0;
+        }
+
+
         $this->fast_update(
             array(
                 'Order Number Items'              => $number_items,
@@ -288,7 +297,7 @@ trait OrderCalculateTotals {
                 'Order Total Refunds'        => $total_refunds,
                 'Order Total Balance'        => $total_balance,
                 'Order Profit Amount'        => $profit,
-                'Order Margin'               => ($total_items_net == 0 ? '' : $profit / $total_items_net),
+                'Order Margin'               => $margin,
                 'Order Items Cost'           => $items_cost,
                 'Order Replacement Cost'     => $replacement_costs
 
