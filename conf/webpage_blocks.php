@@ -28,15 +28,25 @@ function get_webpage_blocks($theme = '') {
                     'bg_image'=>''
                 ),
         */
+
+        'text'   => array(
+            'type'      => 'text',
+            'label'     => _('Text'),
+            'icon'      => 'fa-font',
+            'show'      => 1,
+            '_text'     => '<h1>Title</h1>When an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also electronics typesetting, remaining essentially believable.',
+        ),
+/*
         'one_pack'   => array(
             'type'      => 'one_pack',
-            'label'     => _('One-Pack'),
+            'label'     => _('One-Pack').'discontinued',
             'icon'      => 'fa-minus',
             'show'      => 1,
             '_title'    => _('Title'),
             '_subtitle' => 'Here goes an abstract of your content',
             '_text'     => 'When an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also electronics typesetting, remaining essentially believable.',
         ),
+*/
         'two_pack'   => array(
             'type'  => 'two_pack',
             'label' => _('Two-Pack'),

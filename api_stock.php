@@ -81,10 +81,37 @@ switch ($_REQUEST['action']){
         echo json_encode($response);
         exit;
         break;
-    default:
-        $response = log_api_key_access_failure(
-            $db, $api_key_key, 'Fail_Operation', "Unknown missing ".$_REQUEST['action']
+
+    case 'search_location_by_code':
+
+        if(empty($_REQUEST['query']))$_REQUEST['query']='';
+
+        include_once 'search_functions.php';
+
+
+
+        search_locations($db, $account, $memcache_ip, $data);
+
+        $response= array(
+            'state' => 'OK',
+            'data'  => ''
         );
+        echo json_encode($response);
+        exit;
+        break;
+
+    default:
+
+
+            $response= array(
+                'state' => 'Error',
+                'msg'  => "Action ".$_REQUEST['action'].' not found'
+            );
+            echo json_encode($response);
+            exit;
+
+
+        //$response = log_api_key_access_failure($db, $api_key_key, 'Fail_Operation', "Action ".$_REQUEST['action'].' not found');
         echo json_encode($response);
         exit;
 

@@ -37,9 +37,10 @@ $(document).on('click', '.add_webpage_block', function (e) {
 
     var request = '/ar_website.php?tipo=webpage_block&code=' + $(this).attr('block') + '&theme=theme_1'
     console.log(request)
-    console.log('cacaca')
 
     $.getJSON(request, function (data) {
+
+        console.log(data)
 
         $('#blk_control_container').prepend(data.controls)
 
@@ -47,9 +48,12 @@ $(document).on('click', '.add_webpage_block', function (e) {
         $("#preview").contents().find("#blocks").prepend(data.block)
         $('#blocks_showcase').addClass('hide')
 
+
+
+
         if (data.type == 'static_banner') {
             $('#preview')[0].contentWindow.create_static_banner()
-        } else if (data.type == 'one_pack' || data.type == 'two_pack' ) {
+        } else if (data.type == 'one_pack' || data.type == 'two_pack' || data.type == 'text' ) {
             $('#preview')[0].contentWindow.set_up_froala_editor(data.block_key)
         }
 
