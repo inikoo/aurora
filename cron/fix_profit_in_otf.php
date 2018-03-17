@@ -16,7 +16,6 @@ require_once 'common.php';
 $account = new Account();
 
 
-
 $sql = sprintf(
     "SELECT `Delivery Note Key` FROM `Delivery Note Dimension` "
 );
@@ -65,14 +64,14 @@ if ($result = $db->query($sql)) {
             }
 
 
-        } elseif($row['Current Dispatching State']=='Cancelled') {
+        } elseif ($row['Current Dispatching State'] == 'Cancelled') {
             // get cost from product
 
 
-            $cost    =0;
+            $cost = 0;
 
 
-        }else {
+        } else {
             // get cost from product
 
             $qty     = $row['Order Quantity'] + $row['Order Bonus Quantity'];
@@ -120,11 +119,7 @@ if ($result = $db->query($sql)) {
         $profit = 0;
         if ($invoice->get('Invoice Type') == 'Invoice') {
             $sql = sprintf(
-                "SELECT
-	
-		sum(`Cost Supplier`) AS cost,
-		sum(`Order Transaction Amount`) AS net 
-		FROM `Order Transaction Fact` WHERE `Invoice Key`=%d AND `Order Transaction Type`='Order' ", $invoice->id
+                "SELECT sum(`Cost Supplier`) AS cost, sum(`Order Transaction Amount`) AS net  FROM `Order Transaction Fact` WHERE `Invoice Key`=%d AND `Order Transaction Type`='Order' ", $invoice->id
             );
 
             if ($result = $db->query($sql)) {
@@ -140,11 +135,7 @@ if ($result = $db->query($sql)) {
         } else {
 
             $sql = sprintf(
-                "SELECT
-	
-	
-		sum(`Order Transaction Amount`) AS net 
-		FROM `Order Transaction Fact` WHERE `Invoice Key`=%d AND `Order Transaction Type`='Refund' ", $invoice->id
+                "SELECT sum(`Order Transaction Amount`) AS net  FROM `Order Transaction Fact` WHERE `Invoice Key`=%d AND `Order Transaction Type`='Refund' ", $invoice->id
             );
 
             if ($result = $db->query($sql)) {

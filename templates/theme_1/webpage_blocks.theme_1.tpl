@@ -494,6 +494,26 @@
                     })
 
                     break;
+                case 'text':
+
+
+                    var text=$(obj).find('._text').froalaEditor('html.get')
+
+
+
+                    blocks.push({
+                        type: 'text',
+                        label: '{t}Text{/t}',
+                        icon: 'fa-font',
+                        show: ($(obj).hasClass('hide') ? 0 : 1 ),
+
+
+
+
+                        _text:text
+                    })
+
+                    break;
                 case 'one_pack':
 
 
@@ -855,7 +875,7 @@ console.log(img_element)
 
 
     {foreach from=$content.blocks item=$block key=key}
-    {if $block.type=='one_pack' or  $block.type=='two_pack'  }
+    {if $block.type=='one_pack' or  $block.type=='two_pack' or  $block.type=='text'  }
     set_up_froala_editor('{$key}')
      {elseif $block.type=='static_banner'}
 

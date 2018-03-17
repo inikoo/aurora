@@ -374,6 +374,26 @@ class Invoice extends DB_Table {
             $customer = get_object('Customer', $this-get('Invoice Customer Key'));
             $customer->update_invoices();
 
+
+            $profit = 0;
+            $sql = sprintf(
+                "SELECT sum(`Order Transaction Amount`) AS net  FROM `Order Transaction Fact` WHERE `Invoice Key`=%d AND `Order Transaction Type`='Refund' ", $this->id
+            );
+
+            if ($result = $this->db->query($sql)) {
+                if ($row = $result->fetch()) {
+
+
+                    $profit = $row['net'];
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                exit;
+            }
+            $this->fast_update(array('Invoice Total Profit' => $profit));
+
+
+
             return $this;
 
         } else {
@@ -631,6 +651,24 @@ class Invoice extends DB_Table {
 
 
             $this->update_payments_totals();
+
+
+            $profit = 0;
+            $sql = sprintf(
+                "SELECT sum(`Cost Supplier`) AS cost, sum(`Order Transaction Amount`) AS net  FROM `Order Transaction Fact` WHERE `Invoice Key`=%d AND `Order Transaction Type`='Order' ", $this->id
+            );
+
+            if ($result = $this->db->query($sql)) {
+                if ($row = $result->fetch()) {
+
+
+                    $profit = $row['net'] - $row['cost'];
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                exit;
+            }
+            $this->fast_update(array('Invoice Total Profit' => $profit));
 
 
             //todo distribute_insurance_over_the_otf

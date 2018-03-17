@@ -10,7 +10,6 @@
 *}
 
 <div id="block_{$key}" block="{$data.type}" class="{$data.type} _block {if !$data.show}hide{/if} ">
-
            <div class="page_title4">
             <div class="container">
                 <div class="title"><h1 ><span class="_title" contenteditable="true">{$data._title}</span><span class="line"></span></h1></div>
