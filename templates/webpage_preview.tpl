@@ -13,7 +13,7 @@
 
 <div style="padding:20px 20px 10px 20px;border-bottom:1px solid #ccc;" class="control_panel">
 
-    <span id="save_button" class="" style="float:right;" onClick="$('#preview')[0].contentWindow.save()"><i class="fa fa-cloud  " aria-hidden="true"></i> {t}Save{/t}</span>
+    <span id="save_button"  data-store_key="{$webpage->get('Store Key')}" class="" style="float:right;" onClick="$('#preview')[0].contentWindow.save()"><i class="fa fa-cloud  " aria-hidden="true"></i> {t}Save{/t}</span>
 
     {if isset($control_template)}
         {include file=$control_template content=$content}

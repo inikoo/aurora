@@ -10,6 +10,8 @@
 *}
 
 <div id="block_{$key}" block="{$data.type}" class="{$data.type} _block {if !$data.show}hide{/if} ">
-    <div  class="_text  container" style="padding-top:20px;padding-bottom: 20px">{$data._text}</div>
+    <div  class="_text  container" style="margin-top:{if isset($data.top_margin)}{$data.top_margin}{else}20{/if}px;margin-bottom: {if isset($data.bottom_margin)}{$data.bottom_margin}{else}20{/if}px">
+        {$data._text}
+    </div>
 </div>
 

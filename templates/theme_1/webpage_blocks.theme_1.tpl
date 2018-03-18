@@ -11,24 +11,134 @@
 
 
 <style>
-    #simple_line_icons_control_center{
-        z-index:3000;position: absolute;background-color: #fff;border:1px solid #ccc;padding: 10px 20px 20px 20px
+    #simple_line_icons_control_center {
+        z-index: 3000;
+        position: absolute;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        padding: 10px 20px 20px 20px
     }
 
-    #simple_line_icons_control_center i{
-        padding:2px;font-size: 110%;cursor:pointer
+    #simple_line_icons_control_center i {
+        padding: 2px;
+        font-size: 110%;
+        cursor: pointer
     }
+
+    .text_blocks {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .text_template_2 > div,
+    .text_template_3 > div,
+    .text_template_4 > div {
+        flex: 1;
+
+    }
+
+
+    .text_template_12 > div:nth-child(1) {
+        width: calc(100% / 3 * 1);
+    }
+
+    .text_template_12 > div:nth-child(2) {
+        width: calc(100% / 3 * 2);
+    }
+
+    .text_template_21 > div:nth-child(1) {
+        width: calc(100% / 3 * 2);
+    }
+
+    .text_template_21 > div:nth-child(2) {
+        width: calc(100% / 3 * 1);
+    }
+
+    .text_template_31 > div:nth-child(1) {
+        width: calc(100% / 4 * 3);
+    }
+
+    .text_template_31 > div:nth-child(2) {
+        width: calc(100% / 4 * 1);
+    }
+
+    .text_template_13 > div:nth-child(1) {
+        width: calc(100% / 4 * 1);
+    }
+
+    .text_template_13 > div:nth-child(2) {
+        width: calc(100% / 4 * 3);
+    }
+
+    .text_template_211 > div:nth-child(1) {
+        width: calc(100% / 4 * 2);
+    }
+
+    .text_template_211 > div:nth-child(2) {
+        width: calc(100% / 4 * 1);
+    }
+    .text_template_211 > div:nth-child(3) {
+        width: calc(100% / 4 * 1);
+    }
+
+
 </style>
 
 {include file="theme_1/_head.theme_1.tpl"}
 
 
+<div id="text_template_1" class="hide">
+    <div class="text_blocks  text_blocks" data-template="t1">
+        <div class="text_block"><h1>Title</h1>When an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also
+            electronics typesetting, remaining
+            essentially believable.
+        </div>
+    </div>
+</div>
+<div id="text_template_2" class="hide">
+        <div class="text_block"><h1>Title</h1>When an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also electronics typesetting,
+            remaining essentially believable.
+        </div>
+        <div class="text_block"><h1>Title</h1>When an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also electronics typesetting,
+            remaining essentially believable.
+        </div>
+
+</div>
+<div id="text_template_3" class="hide">
+
+        <div class="text_block"><h1>Title</h1>When an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also electronics typesetting,
+            remaining essentially believable.
+        </div>
+        <div class="text_block"><h1>Title</h1>When an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also electronics typesetting,
+            remaining essentially believable.
+        </div>
+        <div class="text_block"><h1>Title</h1>When an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also electronics typesetting,
+            remaining essentially believable.
+        </div>
+
+
+</div>
+<div id="text_template_4" class="hide">
+        <div class="text_block"><h1>Title</h1>When an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also electronics typesetting,
+            remaining essentially believable.
+        </div>
+        <div class="text_block"><h1>Title</h1>When an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also electronics typesetting,
+            remaining essentially believable.
+        </div>
+        <div class="text_block"><h1>Title</h1>When an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also electronics typesetting,
+            remaining essentially believable.
+        </div>
+        <div class="text_block"><h1>Title</h1>When an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also electronics typesetting,
+            remaining essentially believable.
+        </div>
+
+</div>
 
 
 
 <div id="simple_line_icons_control_center" class="input_container  hide   " style="">
 
-    <div style="margin-bottom:5px">  <i  onClick="$(this).closest('div').addClass('hide')" style="position:relative;top:-5px" class="button fa fa-fw fa-window-close" aria-hidden="true"></i>  </div>
+    <div style="margin-bottom:5px"><i onClick="$(this).closest('div').addClass('hide')" style="position:relative;top:-5px" class="button fa fa-fw fa-window-close" aria-hidden="true"></i></div>
 
 
     <div>{t}Contact{/t}</div>
@@ -55,31 +165,31 @@
 
     <div>{t}Store{/t}</div>
     <div>
-    <i icon="icon-wallet" aria-hidden="true" class="icon-wallet"></i>
-    <i icon="icon-calculator" aria-hidden="true" class="icon-calculator"></i>
-    <i icon="icon-home" aria-hidden="true" class="icon-home"></i>
-    <i icon="icon-login" aria-hidden="true" class="icon-login"></i>
-    <i icon="icon-logout" aria-hidden="true" class="icon-logout"></i>
-    <i icon="icon-directions" aria-hidden="true" class="icon-directions"></i>
-    <i icon="icon-map" aria-hidden="true" class="icon-map"></i>
-    <i icon="icon-compass" aria-hidden="true" class="icon-compass"></i>
-    <i icon="icon-cursor" aria-hidden="true" class="icon-cursor"></i>
-    <i icon="icon-trophy" aria-hidden="true" class="icon-trophy"></i>
-    <i icon="icon-tag" aria-hidden="true" class="icon-tag"></i>
-    <i icon="icon-bulb" aria-hidden="true" class="icon-bulb"></i>
+        <i icon="icon-wallet" aria-hidden="true" class="icon-wallet"></i>
+        <i icon="icon-calculator" aria-hidden="true" class="icon-calculator"></i>
+        <i icon="icon-home" aria-hidden="true" class="icon-home"></i>
+        <i icon="icon-login" aria-hidden="true" class="icon-login"></i>
+        <i icon="icon-logout" aria-hidden="true" class="icon-logout"></i>
+        <i icon="icon-directions" aria-hidden="true" class="icon-directions"></i>
+        <i icon="icon-map" aria-hidden="true" class="icon-map"></i>
+        <i icon="icon-compass" aria-hidden="true" class="icon-compass"></i>
+        <i icon="icon-cursor" aria-hidden="true" class="icon-cursor"></i>
+        <i icon="icon-trophy" aria-hidden="true" class="icon-trophy"></i>
+        <i icon="icon-tag" aria-hidden="true" class="icon-tag"></i>
+        <i icon="icon-bulb" aria-hidden="true" class="icon-bulb"></i>
 
-    <i icon="icon-present" aria-hidden="true" class="icon-present"></i>
-    <i icon="icon-handbag" aria-hidden="true" class="icon-handbag"></i>
-    <i icon="icon-globe" aria-hidden="true" class="icon-globe"></i>
-    <i icon="icon-drawer" aria-hidden="true" class="icon-drawer"></i>
-    <i icon="icon-basket" aria-hidden="true" class="icon-basket"></i>
-    <i icon="icon-bag" aria-hidden="true" class="icon-bag"></i>
-    <i icon="icon-credit-card" aria-hidden="true" class="icon-credit-card"></i>
-    <i icon="icon-paypal" aria-hidden="true" class="icon-paypal"></i>
-    <i icon="icon-social-dropbox" aria-hidden="true" class="icon-social-dropbox"></i>
+        <i icon="icon-present" aria-hidden="true" class="icon-present"></i>
+        <i icon="icon-handbag" aria-hidden="true" class="icon-handbag"></i>
+        <i icon="icon-globe" aria-hidden="true" class="icon-globe"></i>
+        <i icon="icon-drawer" aria-hidden="true" class="icon-drawer"></i>
+        <i icon="icon-basket" aria-hidden="true" class="icon-basket"></i>
+        <i icon="icon-bag" aria-hidden="true" class="icon-bag"></i>
+        <i icon="icon-credit-card" aria-hidden="true" class="icon-credit-card"></i>
+        <i icon="icon-paypal" aria-hidden="true" class="icon-paypal"></i>
+        <i icon="icon-social-dropbox" aria-hidden="true" class="icon-social-dropbox"></i>
 
     </div>
-        <div>{t}Other{/t}</div>
+    <div>{t}Other{/t}</div>
     <div>
         <i icon="icon-cup" aria-hidden="true" class="icon-cup"></i>
         <i icon="icon-emotsmile" aria-hidden="true" class="icon-emotsmile"></i>
@@ -103,13 +213,11 @@
         <i icon="icon-star" aria-hidden="true" class="icon-star"></i>
         <i icon="icon-heart" aria-hidden="true" class="icon-heart"></i>
 
-        </div>
-
     </div>
 
 </div>
 
-
+</div>
 
 
 <body xmlns="http://www.w3.org/1999/html">
@@ -117,10 +225,7 @@
 <div class="wrapper_boxed">
 
 
-
-
-
-    <div id="blocks" class="site_wrapper">
+    <div id="blocks" class="site_wrapper" data-webpage_key="{$webpage->id}">
         {foreach from=$content.blocks item=$block key=key}
             {include file="{$theme}/blk.{$block.type}.{$theme}.tpl" data=$block key=$key  }
 
@@ -135,40 +240,36 @@
 <script>
 
 
-    document.addEventListener("paste", function(e) {
+    document.addEventListener("paste", function (e) {
         e.preventDefault();
         var text = e.clipboardData.getData("text/plain");
         document.execCommand("insertHTML", false, text);
     });
 
 
-
-
-
-    $( document ).ready(function() {
+    $(document).ready(function () {
         resize_banners();
     });
 
-    $(window).resize(function() {
+    $(window).resize(function () {
         resize_banners();
 
     });
 
-    function resize_banners(){
-        $('.iframe').each(function(i, obj) {
-            $(this).css({ height: $(this).width()*$(this).attr('h')/$(this).attr('w') })
+    function resize_banners() {
+        $('.iframe').each(function (i, obj) {
+            $(this).css({
+                height: $(this).width() * $(this).attr('h') / $(this).attr('w')})
         });
     }
-
 
 
     $(document).on('click', '.simple_line_item_icon', function (e) {
 
 
-
         $('#simple_line_icons_control_center').removeClass('hide').offset({
-            top:$(this).offset().top-69 ,
-            left:$(this).offset().left+$(this).width()    }).data('item',$(this))
+            top: $(this).offset().top - 69, left: $(this).offset().left + $(this).width()
+        }).data('item', $(this))
 
 
     })
@@ -178,19 +279,17 @@
         //console.log($('#icons_control_center').data('item'))
 
 
-        var input_container=$('#simple_line_icons_control_center')
-        var icon= input_container.data('item')
+        var input_container = $('#simple_line_icons_control_center')
+        var icon = input_container.data('item')
 
-        icon.removeClass (function (index, className) {
+        icon.removeClass(function (index, className) {
 
 
-            return (className.match (/\bicon-\S+/g) || []).join(' ');
+            return (className.match(/\bicon-\S+/g) || []).join(' ');
         }).addClass($(this).attr('icon'))
 
 
-
-        icon.attr('icon',$(this).attr('icon'))
-
+        icon.attr('icon', $(this).attr('icon'))
 
 
         input_container.addClass('hide')
@@ -200,7 +299,6 @@
 
 
     })
-
 
 
     function move_block(pre, post) {
@@ -216,18 +314,16 @@
     function save() {
 
         if (!$('#save_button', window.parent.document).hasClass('save')) {
-           return;
+            return;
         }
 
         $('#save_button', window.parent.document).find('i').addClass('fa-spinner fa-spin')
 
 
-        content_data = { };
+        content_data = {};
 
-        var blocks=[]
-        var labels= { };
-
-
+        var blocks = []
+        var labels = {};
 
 
         $('._block').each(function (i, obj) {
@@ -236,40 +332,61 @@
             console.log($(obj).attr('block'))
 
             switch ($(obj).attr('block')) {
+
+
+                case 'text':
+
+
+                    //var text=$(obj).find('._text').froalaEditor('html.get')
+
+
+                    var text_blocks = []
+
+
+                    $("#blocks .text_block").each(function () {
+                        text_blocks.push({
+                            text: $(this).html(),
+                        })
+                    });
+
+
+                    blocks.push({
+                        type: 'text',
+                        label: '{t}Text{/t}',
+                        icon: 'fa-font',
+                        show: ($(obj).hasClass('hide') ? 0 : 1),
+                        top_margin: $(obj).find('._text').attr('top_margin'),
+                        bottom_margin: $(obj).find('._text').attr('bottom_margin'),
+
+                        template: $(obj).find('.text_blocks').data('template'),
+                        text_blocks: text_blocks
+                    })
+
+                    break;
+
                 case 'basket':
 
 
-
-
-
                     var content_data = {
-                        type: 'basket',
-                        label: '{t}Basket{/t}',
-                        icon: 'fa-basket',
-                        show: 1,
+                        type: 'basket', label: '{t}Basket{/t}', icon: 'fa-basket', show: 1,
 
 
                     }
 
-                        $('[contenteditable=true]').each(function (i, obj) {
+                    $('[contenteditable=true]').each(function (i, obj) {
 
-                            if($(obj).hasClass('website_localized_label')){
-                                labels[$(obj).attr('id')] = $(obj).html()
-                            }else{
-                                content_data[$(obj).attr('id')] = $(obj).html()
-                            }
-
-
-                        })
+                        if ($(obj).hasClass('website_localized_label')) {
+                            labels[$(obj).attr('id')] = $(obj).html()
+                        } else {
+                            content_data[$(obj).attr('id')] = $(obj).html()
+                        }
 
 
-                    content_data['_voucher']=$('#_voucher').val()
-                    content_data['_special_instructions']=$('#_special_instructions').val()
+                    })
 
 
-
-
-
+                    content_data['_voucher'] = $('#_voucher').val()
+                    content_data['_special_instructions'] = $('#_special_instructions').val()
 
 
                     blocks.push(content_data)
@@ -281,11 +398,11 @@
                         type: 'iframe',
                         label: 'iFrame',
                         icon: 'fa-window-restore',
-                        show: ($(obj).hasClass('hide') ? 0 : 1 ),
+                        show: ($(obj).hasClass('hide') ? 0 : 1),
                         height: $(obj).attr('h'),
-                        src:$(obj).find('iframe').attr('src').replace(/(^\w+:|^)\/\//, ''),
+                        src: $(obj).find('iframe').attr('src').replace(/(^\w+:|^)\/\//, ''),
                         height_mobile: $(obj).attr('h_mobile'),
-                        src_mobile:$(obj).attr('src_mobile').replace(/(^\w+:|^)\/\//, '')
+                        src_mobile: $(obj).attr('src_mobile').replace(/(^\w+:|^)\/\//, '')
                     })
 
                     console.log($(obj))
@@ -297,21 +414,18 @@
                         type: 'static_banner',
                         label: '{t}Header{/t}',
                         icon: 'fa-header',
-                        show: ($(obj).hasClass('hide') ? 0 : 1 ),
-                        _top_text_left:'customize',
-                        _top_text_right:'your own',
-                        _title:'Chic &amp; Unique Header',
-                        _text:'in easy peasy steps :)',
-                        link:'',
-                        bg_image:'',
-
-
+                        show: ($(obj).hasClass('hide') ? 0 : 1),
+                        _top_text_left: 'customize',
+                        _top_text_right: 'your own',
+                        _title: 'Chic &amp; Unique Header',
+                        _text: 'in easy peasy steps :)',
+                        link: '',
+                        bg_image: '',
 
 
                     })
 
                     break;
-
 
 
                     break;
@@ -321,31 +435,27 @@
                         type: 'image',
                         label: '{t}Image{/t}',
                         icon: 'fa-image',
-                        show: ($(obj).hasClass('hide') ? 0 : 1 ),
+                        show: ($(obj).hasClass('hide') ? 0 : 1),
                         tooltip: $(obj).find('img').attr('title'),
                         link: $(obj).find('img').attr('link'),
-                        src:$(obj).find('img').attr('src')
+                        src: $(obj).find('img').attr('src')
                     })
 
                     break;
 
                 case 'six_pack':
 
-                    var columns=[]
+                    var columns = []
 
 
+                    $('._col', obj).each(function (i, col) {
 
 
-                    $('._col', obj).each(function(i, col) {
+                        var _col = []
+                        $('._row', col).each(function (j, row) {
 
-
-                        var _col=[]
-                        $('._row', col).each(function(j, row) {
-
-                            var _row={
-                                icon:$(row).find('.six_pack_icon').attr('icon'),
-                                title:$(row).find('.six_pack_title').html(),
-                                text:$(row).find('.six_pack_text').html(),
+                            var _row = {
+                                icon: $(row).find('.six_pack_icon').attr('icon'), title: $(row).find('.six_pack_title').html(), text: $(row).find('.six_pack_text').html(),
 
                             }
 
@@ -359,13 +469,8 @@
                     });
 
 
-
                     blocks.push({
-                        type: 'six_pack',
-                        label: '{t}Siz-Pack{/t}',
-                        icon: 'fa-th-large',
-                        show: ($(obj).hasClass('hide') ? 0 : 1 ),
-                        columns:columns
+                        type: 'six_pack', label: '{t}Siz-Pack{/t}', icon: 'fa-th-large', show: ($(obj).hasClass('hide') ? 0 : 1), columns: columns
 
                     })
 
@@ -373,19 +478,14 @@
 
                 case 'counter':
 
-                    var columns=[]
+                    var columns = []
 
 
+                    $('._counter', obj).each(function (i, col) {
 
 
-                    $('._counter', obj).each(function(i, col) {
-
-
-
-                        _col={
-                            label  : $(col).find('h4').html(),
-                            number : $(col).attr('number'),
-                            link:$(col).attr('link')
+                        _col = {
+                            label: $(col).find('h4').html(), number: $(col).attr('number'), link: $(col).attr('link')
                         }
 
 
@@ -394,13 +494,8 @@
                     });
 
 
-
                     blocks.push({
-                        type: 'counter',
-                        label: '{t}Counter{/t}',
-                        icon: 'fa-sort-numeric-asc',
-                        show: ($(obj).hasClass('hide') ? 0 : 1 ),
-                        columns:columns
+                        type: 'counter', label: '{t}Counter{/t}', icon: 'fa-sort-numeric-asc', show: ($(obj).hasClass('hide') ? 0 : 1), columns: columns
 
                     })
 
@@ -408,19 +503,14 @@
 
                 case 'three_pack':
 
-                    var columns=[]
+                    var columns = []
 
 
+                    $('._three_pack', obj).each(function (i, col) {
 
 
-                    $('._three_pack', obj).each(function(i, col) {
-
-
-
-                        _col={
-                            icon:$(col).find('._icon').attr('icon'),
-                            title  : $(col).find('._title').html(),
-                            text :  $(col).find('._text').html(),
+                        _col = {
+                            icon: $(col).find('._icon').attr('icon'), title: $(col).find('._title').html(), text: $(col).find('._text').html(),
                         }
 
 
@@ -429,15 +519,14 @@
                     });
 
 
-
                     blocks.push({
                         type: 'three_pack',
                         label: '{t}Three-Pack{/t}',
                         icon: 'fa-bars fa-rotate-90',
-                        show: ($(obj).hasClass('hide') ? 0 : 1 ),
+                        show: ($(obj).hasClass('hide') ? 0 : 1),
                         title: ($(obj).find('._main_title').html()),
-                        subtitle:($(obj).find('._main_subtitle').html()),
-                        columns:columns
+                        subtitle: ($(obj).find('._main_subtitle').html()),
+                        columns: columns
 
                     })
 
@@ -447,91 +536,57 @@
 
 
                     blocks.push({
-                        type: 'button',
-                        label: '{t}Button{/t}',
-                        icon: 'fa-hand-pointer-o',
-                        show: ($(obj).hasClass('hide') ? 0 : 1 ),
+                        type: 'button', label: '{t}Button{/t}', icon: 'fa-hand-pointer-o', show: ($(obj).hasClass('hide') ? 0 : 1),
 
-                        title: $(obj).find('._title').html(),
-                        text: $(obj).find('._text').html(),
-                        button_label: $(obj).find('._button').html(),
+                        title: $(obj).find('._title').html(), text: $(obj).find('._text').html(), button_label: $(obj).find('._button').html(),
 
-                        link:  $(obj).find('._button').attr('link'),
+                        link: $(obj).find('._button').attr('link'),
 
-                        bg_color : '' ,
+                        bg_color: '',
 
 
-                        bg_image : $(obj).find('.button_block').attr('button_bg'),
+                        bg_image: $(obj).find('.button_block').attr('button_bg'),
 
-                        text_color : '',
-                        button_bg_color : '',
-                        button_text_color : '',
+                        text_color: '', button_bg_color: '', button_text_color: '',
 
 
                     })
-
 
 
                     break;
 
                 case 'two_pack':
 
-                    var text=$(obj).find('._text').froalaEditor('html.get')
+                    var text = $(obj).find('._text').froalaEditor('html.get')
 
 
                     blocks.push({
                         type: 'two_pack',
                         label: '{t}Two-Pack{/t}',
                         icon: 'fa-pause',
-                        show: ($(obj).hasClass('hide') ? 0 : 1 ),
+                        show: ($(obj).hasClass('hide') ? 0 : 1),
                         _image: $(obj).find('._image').attr('src'),
                         _image_key: $(obj).find('._image').attr('image_key'),
                         _image_tooltip: $(obj).find('._image_tooltip').attr('tooltip'),
 
-                        _title:$(obj).find('._title').html(),
-                        _subtitle:$(obj).find('._subtitle').html(),
-                        _text:text
+                        _title: $(obj).find('._title').html(),
+                        _subtitle: $(obj).find('._subtitle').html(),
+                        _text: text
                     })
 
                     break;
-                case 'text':
 
-
-                    var text=$(obj).find('._text').froalaEditor('html.get')
-
-
-
-                    blocks.push({
-                        type: 'text',
-                        label: '{t}Text{/t}',
-                        icon: 'fa-font',
-                        show: ($(obj).hasClass('hide') ? 0 : 1 ),
-
-
-
-
-                        _text:text
-                    })
-
-                    break;
                 case 'one_pack':
 
 
-                    var text=$(obj).find('._text').froalaEditor('html.get')
-
+                    var text = $(obj).find('._text').froalaEditor('html.get')
 
 
                     blocks.push({
-                        type: 'one_pack',
-                        label: '{t}One-Pack{/t}',
-                        icon: 'fa-minus',
-                        show: ($(obj).hasClass('hide') ? 0 : 1 ),
+                        type: 'one_pack', label: '{t}One-Pack{/t}', icon: 'fa-minus', show: ($(obj).hasClass('hide') ? 0 : 1),
 
 
-
-                        _title:$(obj).find('._title').html(),
-                        _subtitle:$(obj).find('._subtitle').html(),
-                        _text:text
+                        _title: $(obj).find('._title').html(), _subtitle: $(obj).find('._subtitle').html(), _text: text
                     })
 
                     break;
@@ -539,14 +594,9 @@
                 case 'telephone':
 
                     blocks.push({
-                        type: 'telephone',
-                        label: '{t}Telephone{/t}',
-                        icon: 'fa-phone',
-                        show: ($(obj).hasClass('hide') ? 0 : 1 ),
+                        type: 'telephone', label: '{t}Telephone{/t}', icon: 'fa-phone', show: ($(obj).hasClass('hide') ? 0 : 1),
 
-                        _title:$(obj).find('._title').html(),
-                        _text:$(obj).find('._text').html(),
-                        _telephone:$(obj).find('._telephone').html(),
+                        _title: $(obj).find('._title').html(), _text: $(obj).find('._text').html(), _telephone: $(obj).find('._telephone').html(),
 
                     })
 
@@ -554,20 +604,16 @@
 
                 case 'two_one':
 
-                    var columns=[]
+                    var columns = []
 
 
+                    $('._two_one', obj).each(function (i, col) {
 
 
-                    $('._two_one', obj).each(function(i, col) {
+                        _col = {
+                            type: $(col).attr('type'),
 
-
-
-                        _col={
-                            type  : $(col).attr('type'),
-
-                            _title  : $(col).find('._title').html(),
-                            _text :  $(col).find('._text').html(),
+                            _title: $(col).find('._title').html(), _text: $(col).find('._text').html(),
                         }
 
 
@@ -576,14 +622,10 @@
                     });
 
 
-
                     blocks.push({
-                        type: 'two_one',
-                        label: '{t}Two-One{/t}',
-                        icon: 'fa-window-maximize fa-rotate-90',
-                        show: ($(obj).hasClass('hide') ? 0 : 1 ),
+                        type: 'two_one', label: '{t}Two-One{/t}', icon: 'fa-window-maximize fa-rotate-90', show: ($(obj).hasClass('hide') ? 0 : 1),
 
-                        columns:columns
+                        columns: columns
 
                     })
 
@@ -593,30 +635,22 @@
                 case 'map':
 
                     blocks.push({
-                        type: 'map',
-                        label: '{t}Map{/t}',
-                        icon: 'fa-map-marker',
-                        show: ($(obj).hasClass('hide') ? 0 : 1 ),
+                        type: 'map', label: '{t}Map{/t}', icon: 'fa-map-marker', show: ($(obj).hasClass('hide') ? 0 : 1),
 
-                        src:$(obj).find('iframe').attr('_src')
+                        src: $(obj).find('iframe').attr('_src')
                     })
 
 
                 case 'images':
-                    var images=[]
+                    var images = []
 
-                    $('.blk_images .image', obj).each(function(i, col) {
+                    $('.blk_images .image', obj).each(function (i, col) {
 
-                        var img=$(col).find('img')
+                        var img = $(col).find('img')
 
-                        _col={
-                            src  : img.attr('src'),
-                            link  : img.attr('link'),
-                            title  : img.attr('alt'),
-                            caption_class  : img.attr('display_class'),
-                           caption : $(col).find('figcaption').html()
+                        _col = {
+                            src: img.attr('src'), link: img.attr('link'), title: img.attr('alt'), caption_class: img.attr('display_class'), caption: $(col).find('figcaption').html()
                         }
-
 
 
                         console.log(_col)
@@ -630,11 +664,11 @@
                         type: 'images',
                         label: '{t}Images{/t}',
                         icon: 'fa-image',
-                        show: ($(obj).hasClass('hide') ? 0 : 1 ),
+                        show: ($(obj).hasClass('hide') ? 0 : 1),
                         top_margin: $(obj).find('.blk_images').attr('top_margin'),
-                        bottom_margin:$(obj).find('.blk_images').attr('bottom_margin'),
+                        bottom_margin: $(obj).find('.blk_images').attr('bottom_margin'),
 
-                        images:images
+                        images: images
 
                     })
 
@@ -643,8 +677,7 @@
         });
 
 
-
-        content_data.blocks=blocks
+        content_data.blocks = blocks
 
         console.log(content_data)
 
@@ -657,8 +690,7 @@
 
 
         $.ajax({
-            url: "/ar_edit_website.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
-            complete: function () {
+            url: "/ar_edit_website.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false, complete: function () {
             }, success: function (data) {
 
                 if (data.state == '200') {
@@ -672,31 +704,24 @@
                 }
 
 
-
             }, error: function () {
 
             }
         });
 
 
-
-
-
     }
 
 
-
-    $(document).on('input paste','[contenteditable=true]', function (e) {
+    $(document).on('input paste', '[contenteditable=true]', function (e) {
         $('#save_button', window.parent.document).addClass('save button changed valid')
     });
-
 
 
     var droppedFiles = false;
 
 
     $(document).on('change', '.image_upload', function (e) {
-
 
 
         var ajaxData = new FormData();
@@ -722,7 +747,7 @@
         ajaxData.append("options", JSON.stringify($(this).data('options')))
         ajaxData.append("response_type", 'webpage')
 
-        var element=$(this)
+        var element = $(this)
 
         $.ajax({
             url: "/ar_upload.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
@@ -740,21 +765,20 @@
                     $('#save_button', window.parent.document).addClass('save button changed valid')
 
 
-                    if(element.attr('name')=='two_pack'){
+                    if (element.attr('name') == 'two_pack') {
 
 
-                        $(element).closest('.one_half').find('img').attr('src',data.image_src).attr('image_key',data.img_key)
+                        $(element).closest('.one_half').find('img').attr('src', data.image_src).attr('image_key', data.img_key)
 
 
-                    }else if(element.attr('name')=='images'){
+                    } else if (element.attr('name') == 'images') {
 
                         //$('#image_control_panel').attr('img_src',data.image_src)
-                        var img_element=$('#image_control_panel').find('.image_upload').data('img')
+                        var img_element = $('#image_control_panel').find('.image_upload').data('img')
 
-console.log(img_element)
+                        console.log(img_element)
 
-                        $(img_element).attr('src',data.image_src);
-
+                        $(img_element).attr('src', data.image_src);
 
 
                     }
@@ -777,8 +801,6 @@ console.log(img_element)
 
 
     });
-
-
 
 
     function create_static_banner() {
@@ -833,38 +855,31 @@ console.log(img_element)
     }
 
 
+    function set_up_froala_editor(key) {
 
 
-
-
-    function  set_up_froala_editor(key){
-
-
-        console.log(key)
-
-        $('#block_'+key+'_editor').froalaEditor({
-
-
+        $('#block_' + key + '_editor').froalaEditor({
             toolbarInline: true,
             charCounterCount: false,
-            toolbarButtons:['fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|', 'fontFamily', 'fontSize', 'color', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', '-', 'insertLink', 'insertImage', 'insertVideo', 'insertFile', 'insertTable', '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'spellChecker', 'help', 'html', '|', 'undo', 'redo'],
-            toolbarButtonsMD:['fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|', 'fontFamily', 'fontSize', 'color', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', '-', 'insertLink', 'insertImage', 'insertVideo', 'insertFile', 'insertTable', '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'spellChecker', 'help', 'html', '|', 'undo', 'redo'],
-            toolbarButtonsSM:['fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|', 'fontFamily', 'fontSize', 'color', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', '-', 'insertLink', 'insertImage', 'insertVideo', 'insertFile', 'insertTable', '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'spellChecker', 'help', 'html', '|', 'undo', 'redo'],
-            toolbarButtonsXS:['fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|', 'fontFamily', 'fontSize', 'color', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', '-', 'insertLink', 'insertImage', 'insertVideo', 'insertFile', 'insertTable', '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'spellChecker', 'help', 'html', '|', 'undo', 'redo'],
-
+            toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|', 'fontFamily', 'fontSize', 'color', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', '-', 'insertLink', 'insertImage', 'insertVideo', 'insertFile', 'insertTable', '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'spellChecker', 'help', 'html', '|', 'undo', 'redo'],
+            toolbarButtonsMD: ['bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|', 'fontFamily', 'fontSize', 'color', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', '-', 'insertLink', 'insertImage', 'insertVideo', 'insertFile', 'insertTable', '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'spellChecker', 'help', 'html', '|', 'undo', 'redo'],
+            toolbarButtonsSM: ['bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|', 'fontFamily', 'fontSize', 'color', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', '-', 'insertLink', 'insertImage', 'insertVideo', 'insertFile', 'insertTable', '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'spellChecker', 'help', 'html', '|', 'undo', 'redo'],
+            toolbarButtonsXS: ['bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|', 'fontFamily', 'fontSize', 'color', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', '-', 'insertLink', 'insertImage', 'insertVideo', 'insertFile', 'insertTable', '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'spellChecker', 'help', 'html', '|', 'undo', 'redo'],
             defaultImageDisplay: 'inline',
-
-
             zIndex: 1000,
+            pastePlain: true,
+            imageUploadURL: '/ar_upload.php',
+            imageUploadParams: {
+                tipo: 'upload_images', parent: 'old_page', parent_key: $('#blocks').data('webpage_key'), parent_object_scope: JSON.stringify({
+                    scope: 'block', block_key: key
 
-            pastePlain: true
+                }), response_type: 'froala'
 
-        })
-
-
-
-
-        $('#block_{$key}_editor').on('froalaEditor.contentChanged', function (e, editor, keyupEvent) {
+            },
+            imageUploadMethod: 'POST',
+            imageMaxSize: 5 * 1024 * 1024,
+            imageAllowedTypes: ['jpeg', 'jpg', 'png', 'gif'],
+        }).on('froalaEditor.contentChanged', function (e, editor, keyupEvent) {
             $('#save_button', window.parent.document).addClass('save button changed valid')
         });
 
@@ -875,9 +890,19 @@ console.log(img_element)
 
 
     {foreach from=$content.blocks item=$block key=key}
-    {if $block.type=='one_pack' or  $block.type=='two_pack' or  $block.type=='text'  }
+    {if $block.type=='one_pack' or  $block.type=='two_pack'   }
     set_up_froala_editor('{$key}')
-     {elseif $block.type=='static_banner'}
+
+    {elseif $block.type=='text'}
+
+
+    $("#block_{$key} .text_block").each(function () {
+
+        console.log($(this))
+        set_up_froala_editor('{$key}_'+$(this).data('text_block_key'))
+    });
+
+    {elseif $block.type=='static_banner'}
 
     create_static_banner('{$key}')
     {/if}
@@ -887,25 +912,25 @@ console.log(img_element)
 
     $(document).on('click', '._image_tooltip', function (e) {
 
-        if( $('#image_tooltip_edit').hasClass('hide')){
+        if ($('#image_tooltip_edit').hasClass('hide')) {
 
             $('#image_tooltip_edit').removeClass('hide').offset({
-                top:$(this).offset().top -30,
-                left:$(this).offset().left+$(this).width()+10    }).data('element',$(this)).find('input').val($(this).attr('tooltip')).focus()
-        }else{
+                top: $(this).offset().top - 30, left: $(this).offset().left + $(this).width() + 10
+            }).data('element', $(this)).find('input').val($(this).attr('tooltip')).focus()
+        } else {
             set_image_tooltip()
         }
 
     })
 
-    function set_image_tooltip(){
+    function set_image_tooltip() {
 
-        value=$('#image_tooltip_edit').find('input').val()
-        $('#image_tooltip_edit').addClass('hide').data('element').attr('tooltip',value)
+        value = $('#image_tooltip_edit').find('input').val()
+        $('#image_tooltip_edit').addClass('hide').data('element').attr('tooltip', value)
 
-        if(value==''){
+        if (value == '') {
             $('#image_tooltip_edit').data('element').removeClass('fa-commenting-o').addClass('fa-comment-o')
-        }else{
+        } else {
             $('#image_tooltip_edit').data('element').addClass('fa-commenting-o').removeClass('fa-comment-o')
 
         }
@@ -920,8 +945,6 @@ console.log(img_element)
     });
 
 
-
-
     $(document).on('click', '.blk_images .image img', function (e) {
         open_image_control_panel(this);
     })
@@ -930,76 +953,70 @@ console.log(img_element)
     $(document).on('click', '#image_control_panel .caption_align i', function (e) {
 
 
-
         $('#image_control_panel').find('.caption_align i').addClass('super_discreet').removeClass('selected')
         $(this).removeClass('super_discreet').addClass('selected')
 
-        element= $('#image_control_panel').data('element');
+        element = $('#image_control_panel').data('element');
 
-        $(element).attr('display_class',$(this).attr('display_class'))
+        $(element).attr('display_class', $(this).attr('display_class'))
 
-$(element).closest('figure').find('figcaption').removeClass('caption_left caption_right caption_center caption_hide').addClass($(this).attr('display_class'))
-console.log($(element))
+        $(element).closest('figure').find('figcaption').removeClass('caption_left caption_right caption_center caption_hide').addClass($(this).attr('display_class'))
+        console.log($(element))
 
         $('#save_button', window.parent.document).addClass('save button changed valid')
 
     })
 
 
-    function open_image_control_panel(element){
+    function open_image_control_panel(element) {
 
 
-
-
-        if(! $('#image_control_panel').hasClass('hide')){
+        if (!$('#image_control_panel').hasClass('hide')) {
             return
         }
 
-        var image_index= $('span.image').index($(element).closest('.image') )+1
+        var image_index = $('span.image').index($(element).closest('.image')) + 1
 
-        $('#image_control_panel').removeClass('hide').offset({ top: .25*( $(element).offset().top +  $(element).height() )/2, left: $(element).offset().left }).attr('image_index', image_index).addClass('in_use').data('element',$(element))
+        $('#image_control_panel').removeClass('hide').offset({
+            top: .25 * ($(element).offset().top + $(element).height()) / 2, left: $(element).offset().left
+        }).attr('image_index', image_index).addClass('in_use').data('element', $(element))
 
 
         $('#image_control_panel').find('.image_tooltip').val($(element).attr('alt'))
         $('#image_control_panel').find('.image_link').val($(element).attr('link'))
-        $('#image_control_panel').attr('old_image_src',$(element).attr('src'))
+        $('#image_control_panel').attr('old_image_src', $(element).attr('src'))
 
         $('#image_control_panel').find('.caption_align i').addClass('super_discreet').removeClass('selected')
-        $('#image_control_panel').find('.caption_align i.'+$(element).attr('display_class')).removeClass('super_discreet').addClass('selected')
+        $('#image_control_panel').find('.caption_align i.' + $(element).attr('display_class')).removeClass('super_discreet').addClass('selected')
 
-        $('#image_control_panel').find('.image_upload').attr('image_index',image_index).data('img',$(element))
-
-
+        $('#image_control_panel').find('.image_upload').attr('image_index', image_index).data('img', $(element))
 
 
     }
 
-    function close_image_control_panel(){
+    function close_image_control_panel() {
 
 
-
-        var   image=  $('.blk_images .image:nth-child('+$('#image_control_panel').attr('image_index')+') img')
+        var image = $('.blk_images .image:nth-child(' + $('#image_control_panel').attr('image_index') + ') img')
 
         image.attr('src', $('#image_control_panel').attr('old_image_src'))
-
-
 
 
         $('#image_control_panel').addClass('hide')
 
     }
 
-    function update_image(){
+    function update_image() {
 
-       // var   image=  $('.blk_images .image:nth-child('+$('#image_control_panel').attr('image_index')+') img')
+        // var   image=  $('.blk_images .image:nth-child('+$('#image_control_panel').attr('image_index')+') img')
 
-        var image=$('#image_control_panel').data('element');
+        var image = $('#image_control_panel').data('element');
 
-        image.attr('alt',$('#image_control_panel').find('.image_tooltip').val())
-        image.attr('link',$('#image_control_panel').find('.image_link').val())
+        image.attr('alt', $('#image_control_panel').find('.image_tooltip').val())
+        image.attr('link', $('#image_control_panel').find('.image_link').val())
 
-        var caption_class=$('#image_control_panel').find('.caption_align i.selected').attr('display_class')
-        image.attr('display_class',caption_class)
+        var caption_class = $('#image_control_panel').find('.caption_align i.selected').attr('display_class')
+        image.attr('display_class', caption_class)
 
         image.closest('figure').find('figcaption').removeClass('caption_left caption_right caption_center caption_hide').addClass(caption_class)
 
@@ -1007,17 +1024,67 @@ console.log($(element))
         $('#save_button', window.parent.document).addClass('save button changed valid')
 
 
+    }
+
+    function change_text_template(block_key, template) {
+        console.log(block_key)
+        console.log(template)
+
+        var text_blocks= $('#block_'+block_key).find('.text_blocks')
+
+        var old_template=text_blocks.data('template')
+
+        if(old_template==template)return;
+
+        if(template=='12' || template=='21' || template=='13' || template=='31'){
+            var _template='2';
+        } if(template=='211'){
+            var _template='3';
+        }else{
+            var _template=template;
+        }
+
+
+
+        text_blocks.data('template',template).html($('#text_template_'+_template).html())
+
+        text_blocks.removeClass('text_template_'+old_template)
+        text_blocks.addClass('text_template_'+template)
+        if(template=='1'){
+            text_blocks.find('div:nth-child(1)').attr('id','block_'+block_key+'_0_editor')
+            set_up_froala_editor(block_key+'_0')
+        }else if(template=='2' || template=='12' || template=='21'  || template=='13' || template=='31'){
+            text_blocks.find('div:nth-child(1)').attr('id','block_'+block_key+'_0_editor')
+            set_up_froala_editor(block_key+'_0')
+            text_blocks.find('div:nth-child(2)').attr('id','block_'+block_key+'_1_editor')
+            set_up_froala_editor(block_key+'_1')
+        } else if(template=='3' || template=='211'){
+            text_blocks.find('div:nth-child(1)').attr('id','block_'+block_key+'_0_editor')
+            set_up_froala_editor(block_key+'_0')
+            text_blocks.find('div:nth-child(2)').attr('id','block_'+block_key+'_1_editor')
+            set_up_froala_editor(block_key+'_1')
+            text_blocks.find('div:nth-child(3)').attr('id','block_'+block_key+'_2_editor')
+            set_up_froala_editor(block_key+'_2')
+        }else if(template=='4'){
+            text_blocks.find('div:nth-child(1)').attr('id','block_'+block_key+'_0_editor')
+            set_up_froala_editor(block_key+'_0')
+            text_blocks.find('div:nth-child(2)').attr('id','block_'+block_key+'_1_editor')
+            set_up_froala_editor(block_key+'_1')
+            text_blocks.find('div:nth-child(3)').attr('id','block_'+block_key+'_2_editor')
+            set_up_froala_editor(block_key+'_2')
+            text_blocks.find('div:nth-child(4)').attr('id','block_'+block_key+'_3_editor')
+            set_up_froala_editor(block_key+'_3')
+        }
+
+        //template_equal_cols
+
+        // $('#block_'+block_key+'_editor').froalaEditor('html.set', $('#text_template_'+template).html());
 
 
     }
 
 
-
-
 </script>
-
-
-
 
 
 </body>
