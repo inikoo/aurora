@@ -13,6 +13,7 @@ require_once 'common.php';
 require_once 'utils/ar_common.php';
 require_once 'utils/table_functions.php';
 require_once 'utils/date_functions.php';
+require_once 'utils/object_functions.php';
 
 
 if (!$user->can_view('stores')) {
@@ -43,14 +44,19 @@ switch ($tipo) {
 
         $data = prepare_values(
             $_REQUEST, array(
-                         'code' => array('type' => 'string'),
-                         'theme' => array('type' => 'string')
+                         'code'      => array('type' => 'string'),
+                         'theme'     => array('type' => 'string'),
+                         'store_key' => array(
+                             'type'     => 'key',
+                             'optional' => true
+                         )
+
                      )
         );
 
-        webpage_block($data, $db, $user,$smarty);
+        webpage_block($data, $db, $user, $smarty);
         break;
- 
+
     default:
         $response = array(
             'state' => 405,
@@ -62,7 +68,7 @@ switch ($tipo) {
 }
 
 
-function webpage_block($data, $db, $user,$smarty) {
+function webpage_block($data, $db, $user, $smarty) {
 
     include_once('conf/webpage_blocks.php');
 
@@ -71,30 +77,35 @@ function webpage_block($data, $db, $user,$smarty) {
     $block = $blocks[$data['code']];
 
 
-    $block_id=preg_replace('/\./','_',uniqid('web_block',true));
+    $block_id = preg_replace('/\./', '_', uniqid('web_block', true));
+
+    if ($data['code'] == 'text') {
+        $smarty->assign('template', 't1');
+
+        $block['text_blocks'][0]['text'] = preg_replace('/block_block_key_t1_editor/', 'block_'.$block_id.'_t1_editor', $block['text_blocks'][0]['text']);
+    }elseif ($data['code'] == 'map') {
+        $smarty->assign('store', get_object('store',$data['store_key']));
+
+    }
 
     $smarty->assign('key', $block_id);
+
 
     $smarty->assign('data', $block);
     $smarty->assign('block', $block);
 
 
-
-
     $response = array(
-        'state' => 200,
-        'button'=>$smarty->fetch($data['theme'].'/blk.control_label.'.$data['theme'].'.tpl'),
-        'controls'=>$smarty->fetch($data['theme'].'/blk.control.'.$data['code'].'.'.$data['theme'].'.tpl'),
-        'block'=>$smarty->fetch($data['theme'].'/blk.'.$data['code'].'.'.$data['theme'].'.tpl'),
-        'type'=>$data['code'],
-        'block_key'=>$block_id
+        'state'     => 200,
+        'button'    => $smarty->fetch($data['theme'].'/blk.control_label.'.$data['theme'].'.tpl'),
+        'controls'  => $smarty->fetch($data['theme'].'/blk.control.'.$data['code'].'.'.$data['theme'].'.tpl'),
+        'block'     => $smarty->fetch($data['theme'].'/blk.'.$data['code'].'.'.$data['theme'].'.tpl'),
+        'type'      => $data['code'],
+        'block_key' => $block_id
     );
     echo json_encode($response);
 
 }
-
-
-
 
 
 ?>

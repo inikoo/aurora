@@ -35,7 +35,7 @@ $(document).on('click', '.add_webpage_block', function (e) {
 
 
 
-    var request = '/ar_website.php?tipo=webpage_block&code=' + $(this).attr('block') + '&theme=theme_1'
+    var request = '/ar_website.php?tipo=webpage_block&code=' + $(this).attr('block') + '&theme=theme_1&store_key='+$('#save_button').data('store_key')
     console.log(request)
 
     $.getJSON(request, function (data) {
@@ -53,8 +53,10 @@ $(document).on('click', '.add_webpage_block', function (e) {
 
         if (data.type == 'static_banner') {
             $('#preview')[0].contentWindow.create_static_banner()
-        } else if (data.type == 'one_pack' || data.type == 'two_pack' || data.type == 'text' ) {
+        } else if (data.type == 'one_pack' || data.type == 'two_pack' ) {
             $('#preview')[0].contentWindow.set_up_froala_editor(data.block_key)
+        } else if (data.type == 'text' ) {
+            $('#preview')[0].contentWindow.set_up_froala_editor(data.block_key+'_t1')
         }
 
 
@@ -182,6 +184,9 @@ $(document).on('click', '.slider_preview', function (e) {
 
     function edit_webpage_block_column(key) {
 
+
+
+
         $("#preview").removeClass('hide')
 
         $('.edit_block').addClass('hide')
@@ -200,7 +205,7 @@ $(document).on('click', '.slider_preview', function (e) {
 
         $('.options_dialog').addClass('hide')
 
-        $('#save_button').addClass('hide')
+        //$('#save_button').addClass('hide')
 
 
         $("#preview").contents().find('._block').addClass('hide')

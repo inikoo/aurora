@@ -81,7 +81,7 @@
         <script src="/js/table.js"></script>
         <script src="/js/validation.js?v171206v5"></script>
         <script src="/js/edit.js?v171229v5"></script>
-        <script src="/js/edit_webpage_edit.js?v180317"></script>
+        <script src="/js/edit_webpage_edit.js?v180318"></script>
 
         <script src="/js/new.js?v180302v9"></script>
         <script src="/js/order.common.js?v180314v5"></script>

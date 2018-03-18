@@ -29,24 +29,44 @@ function get_webpage_blocks($theme = '') {
                 ),
         */
 
-        'text'   => array(
-            'type'      => 'text',
-            'label'     => _('Text'),
-            'icon'      => 'fa-font',
-            'show'      => 1,
-            '_text'     => '<h1>Title</h1>When an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also electronics typesetting, remaining essentially believable.',
+        'text'       => array(
+            'type'        => 'text',
+            'label'       => _('Text'),
+            'icon'        => 'fa-font',
+            'show'        => 1,
+            'template'    => 't1',
+            'text_blocks' => array(
+                array(
+                    'text' => '<div id="block_block_key_t1_editor" data-template="t1" class="text_block"><h1>Title</h1>When an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also electronics typesetting, remaining essentially believable.</div>'
+                )
+            ),
         ),
-/*
-        'one_pack'   => array(
-            'type'      => 'one_pack',
-            'label'     => _('One-Pack').'discontinued',
-            'icon'      => 'fa-minus',
-            'show'      => 1,
-            '_title'    => _('Title'),
-            '_subtitle' => 'Here goes an abstract of your content',
-            '_text'     => 'When an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also electronics typesetting, remaining essentially believable.',
+
+
+        'images'     => array(
+            'type'  => 'images',
+            'label' => _('Images'),
+            'icon'  => 'fa-image',
+            'show'  => 1,
+
+            'images' => array()
+
+
         ),
-*/
+
+
+        /*
+                'one_pack'   => array(
+                    'type'      => 'one_pack',
+                    'label'     => _('One-Pack').'discontinued',
+                    'icon'      => 'fa-minus',
+                    'show'      => 1,
+                    '_title'    => _('Title'),
+                    '_subtitle' => 'Here goes an abstract of your content',
+                    '_text'     => 'When an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also electronics typesetting, remaining essentially believable.',
+                ),
+        */
+        /*
         'two_pack'   => array(
             'type'  => 'two_pack',
             'label' => _('Two-Pack'),
@@ -90,6 +110,8 @@ function get_webpage_blocks($theme = '') {
 
 
         ),
+        */
+
         'six_pack'   => array(
             'type'  => 'six_pack',
             'label' => _('Six-Pack'),
@@ -146,6 +168,8 @@ function get_webpage_blocks($theme = '') {
 
 
         ),
+
+        /*
         'two_one'    => array(
             'type'  => 'two_one',
             'label' => _('Two-One'),
@@ -168,6 +192,9 @@ function get_webpage_blocks($theme = '') {
 
 
         ),
+
+        */
+
         'button'     => array(
             'type'              => 'button',
             'label'             => _('Button'),
@@ -198,16 +225,6 @@ function get_webpage_blocks($theme = '') {
 
         ),
 */
-        'images' => array(
-            'type'     => 'images',
-            'label'    => _('Images'),
-            'icon'     => 'fa-image',
-            'show'     => 1,
-
-            'images'   => array()
-
-
-        ),
 
 
         'iframe'    => array(
