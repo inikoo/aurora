@@ -565,7 +565,7 @@
         <i icon="fa fa-lightbulb" class="button  fa fa-fw fa-lightbulb" aria-hidden="true"></i>
              <i icon="fa fa-plus" class="button  fa fa-fw fa-plus" aria-hidden="true"></i>
         <i icon="fa fa-percent" class="button  fa fa-fw fa-percent" aria-hidden="true"></i>
-        <i icon="fa a-gift" class="button  fa fa-fw fa-gift" aria-hidden="true"></i>
+        <i icon="fa fa-gift" class="button  fa fa-fw fa-gift" aria-hidden="true"></i>
         <i icon="fa fa-handshake" class="button  fa fa-fw fa-handshake" aria-hidden="true"></i>
         <i icon="fa fa-bullhorn" class="button  fa fa-fw fa-bullhorn" aria-hidden="true"></i>
         <i icon="fa fa-badge" class="button  fa fa-fw fa-badge" aria-hidden="true"></i>
