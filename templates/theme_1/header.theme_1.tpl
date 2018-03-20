@@ -578,6 +578,7 @@
 
     </div>
     <div>
+        <i icon="fa fa-home" class="button  fa fa-fw fa-home" aria-hidden="true"></i>
 
         <i icon="fa fa-shopping-basket" class="button  fa fa-fw fa-shopping-basket" aria-hidden="true"></i>
         <i icon="fa fa-shopping-basket" class="button  far fa-fw fa-shopping-basket" aria-hidden="true"></i>
