@@ -7,9 +7,7 @@
 
  Version 3
 -->
-*}
-
-
+*}{include file="theme_1/_head.theme_1.tpl"}
 <style>
 
     #image_control_panel{
@@ -143,9 +141,6 @@
 
 
 </style>
-
-{include file="theme_1/_head.theme_1.tpl"}
-
 
 <div id="template_1" class="hide">
 <span class=" image">

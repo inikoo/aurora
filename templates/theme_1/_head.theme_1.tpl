@@ -39,24 +39,24 @@
 
 
     <link href="/css/jquery-ui.css" rel="stylesheet">
-    <link href="/css/editor/froala_editor.css" rel="stylesheet"/>
-    <link href="/css/editor/froala_style.css" rel="stylesheet"/>
+    <link href="/css/editor_v1/froala_editor.css" rel="stylesheet"/>
+    <link href="/css/editor_v1/froala_style.css" rel="stylesheet"/>
 
-    <link href="/css/editor/codemirror.css" rel="stylesheet">
-    <link href="/css/editor/codemirror_dracula.css" rel="stylesheet">
-    <link href="/css/editor/plugins/char_counter.css" rel="stylesheet">
-    <link href="/css/editor/plugins/code_view.css" rel="stylesheet">
-    <link href="/css/editor/plugins/colors.css" rel="stylesheet">
-    <link href="/css/editor/plugins/emoticons.css" rel="stylesheet">
-    <link href="/css/editor/plugins/file.css" rel="stylesheet">
-    <link href="/css/editor/plugins/fullscreen.css" rel="stylesheet">
-    <link href="/css/editor/plugins/image.css" rel="stylesheet">
-    <link href="/css/editor/plugins/image_manager.css" rel="stylesheet">
-    <link href="/css/editor/plugins/line_breaker.css" rel="stylesheet">
-    <link href="/css/editor/plugins/quick_insert.css" rel="stylesheet">
-    <link href="/css/editor/plugins/table.css" rel="stylesheet">
-    <link href="/css/editor/plugins/video.css" rel="stylesheet">
-    <link href="/css/editor/plugins/draggable.css" rel="stylesheet">
+    <link href="/css/editor_v1/codemirror.css" rel="stylesheet">
+    <link href="/css/editor_v1/codemirror_dracula.css" rel="stylesheet">
+    <link href="/css/editor_v1/plugins/char_counter.css" rel="stylesheet">
+    <link href="/css/editor_v1/plugins/code_view.css" rel="stylesheet">
+    <link href="/css/editor_v1/plugins/colors.css" rel="stylesheet">
+    <link href="/css/editor_v1/plugins/emoticons.css" rel="stylesheet">
+    <link href="/css/editor_v1/plugins/file.css" rel="stylesheet">
+    <link href="/css/editor_v1/plugins/fullscreen.css" rel="stylesheet">
+    <link href="/css/editor_v1/plugins/image.css" rel="stylesheet">
+    <link href="/css/editor_v1/plugins/image_manager.css" rel="stylesheet">
+    <link href="/css/editor_v1/plugins/line_breaker.css" rel="stylesheet">
+    <link href="/css/editor_v1/plugins/quick_insert.css" rel="stylesheet">
+    <link href="/css/editor_v1/plugins/table.css" rel="stylesheet">
+    <link href="/css/editor_v1/plugins/video.css" rel="stylesheet">
+    <link href="/css/editor_v1/plugins/draggable.css" rel="stylesheet">
 
 
 
@@ -104,38 +104,38 @@
     <script src="/js/libs/sweetalert.min.js"></script>
 
 
-    <script src="/js/libs/editor/froala_editor.min.js"></script>
-    <script src="/js/libs/editor/codemirror.js"></script>
-    <script src="/js/libs/editor/codemirror.xml.js"></script>
-    <script src="/js/libs/editor/codemirror_active-line.js"></script>
+    <script src="/js/libs/editor_v1/froala_editor.min.js"></script>
+    <script src="/js/libs/editor_v1/codemirror.js"></script>
+    <script src="/js/libs/editor_v1/codemirror.xml.js"></script>
+    <script src="/js/libs/editor_v1/codemirror_active-line.js"></script>
 
-    <script src="/js/libs/editor/plugins/align.min.js"></script>
-    <script src="/js/libs/editor/plugins/draggable.min.js"></script>
+    <script src="/js/libs/editor_v1/plugins/align.min.js"></script>
+    <script src="/js/libs/editor_v1/plugins/draggable.min.js"></script>
 
-    <script src="/js/libs/editor/plugins/char_counter.min.js"></script>
-    <script src="/js/libs/editor/plugins/code_beautifier.min.js"></script>
-    <script src="/js/libs/editor/plugins/code_view.min.js"></script>
-    <script src="/js/libs/editor/plugins/colors.min.js"></script>
-    <script src="/js/libs/editor/plugins/emoticons.min.js"></script>
-    <script src="/js/libs/editor/plugins/entities.min.js"></script>
-    <script src="/js/libs/editor/plugins/file.min.js"></script>
-    <script src="/js/libs/editor/plugins/font_family.min.js"></script>
-    <script src="/js/libs/editor/plugins/font_size.min.js"></script>
-    <script src="/js/libs/editor/plugins/fullscreen.min.js"></script>
-    <script src="/js/libs/editor/plugins/image.min.js"></script>
-    <script src="/js/libs/editor/plugins/image_manager.min.js"></script>
-    <script src="/js/libs/editor/plugins/inline_style.min.js"></script>
-    <script src="/js/libs/editor/plugins/line_breaker.min.js"></script>
-    <script src="/js/libs/editor/plugins/link.min.js"></script>
-    <script src="/js/libs/editor/plugins/lists.min.js"></script>
-    <script src="/js/libs/editor/plugins/paragraph_format.min.js"></script>
-    <script src="/js/libs/editor/plugins/paragraph_style.min.js"></script>
-    <script src="/js/libs/editor/plugins/quick_insert.min.js"></script>
-    <script src="/js/libs/editor/plugins/quote.min.js"></script>
-    <script src="/js/libs/editor/plugins/table.min.js"></script>
-    <script src="/js/libs/editor/plugins/save.min.js"></script>
-    <script src="/js/libs/editor/plugins/url.min.js"></script>
-    <script src="/js/libs/editor/plugins/video.min.js"></script>
+    <script src="/js/libs/editor_v1/plugins/char_counter.min.js"></script>
+    <script src="/js/libs/editor_v1/plugins/code_beautifier.min.js"></script>
+    <script src="/js/libs/editor_v1/plugins/code_view.min.js"></script>
+    <script src="/js/libs/editor_v1/plugins/colors.min.js"></script>
+    <script src="/js/libs/editor_v1/plugins/emoticons.min.js"></script>
+    <script src="/js/libs/editor_v1/plugins/entities.min.js"></script>
+    <script src="/js/libs/editor_v1/plugins/file.min.js"></script>
+    <script src="/js/libs/editor_v1/plugins/font_family.min.js"></script>
+    <script src="/js/libs/editor_v1/plugins/font_size.min.js"></script>
+    <script src="/js/libs/editor_v1/plugins/fullscreen.min.js"></script>
+    <script src="/js/libs/editor_v1/plugins/image.min.js"></script>
+    <script src="/js/libs/editor_v1/plugins/image_manager.min.js"></script>
+    <script src="/js/libs/editor_v1/plugins/inline_style.min.js"></script>
+    <script src="/js/libs/editor_v1/plugins/line_breaker.min.js"></script>
+    <script src="/js/libs/editor_v1/plugins/link.min.js"></script>
+    <script src="/js/libs/editor_v1/plugins/lists.min.js"></script>
+    <script src="/js/libs/editor_v1/plugins/paragraph_format.min.js"></script>
+    <script src="/js/libs/editor_v1/plugins/paragraph_style.min.js"></script>
+    <script src="/js/libs/editor_v1/plugins/quick_insert.min.js"></script>
+    <script src="/js/libs/editor_v1/plugins/quote.min.js"></script>
+    <script src="/js/libs/editor_v1/plugins/table.min.js"></script>
+    <script src="/js/libs/editor_v1/plugins/save.min.js"></script>
+    <script src="/js/libs/editor_v1/plugins/url.min.js"></script>
+    <script src="/js/libs/editor_v1/plugins/video.min.js"></script>
 
 
      <script src="/theme_1/tooltips/jquery.darktooltip.js"></script>
